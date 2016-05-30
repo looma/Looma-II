@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Browser</title>
+	<link rel='stylesheet' type='text/css' href='css/homepage-stylesheet.css'/>
+	<link rel='stylesheet' type='text/css' href='css/internet-stylesheet.css'/>
+	
+	<script>
+		
+		function goToAddress(frm)
+		{
+			var address = document.getElementById("address").value;
+			var prefix = "";
+			if(address.substring(0, '/').split(".").length - 1 <= 1)	//add www. to string if necessary
+				prefix = "www.";
+			document.getElementById("browser").src = "http://" + prefix + address;
+		}
+		
+		// window.onload = function(){
+// 			var url = document.referrer;
+// 			document.getElementById('browser').href=url+"/register";
+//         };
+		
+		//hides the loading indicator when page finishes loading
+		function hideIndicator()
+		{
+			document.getElementById('load-indicator').style.display = 'none';
+		}
+		
+	</script>
+</head>
+<body background="images/looma website background.png">
+	
+	<form id="address-bar" method="get" action="" onsubmit="return false">
+  		<input type="text" id="address">
+  		<input type="submit" id="submit" value="Submit" onclick="goToAddress(this.form)">
+  		<img id="load-indicator" src="images/loading.gif">
+	</form>
+	
+
+	<iframe id="browser" src="http://www.wikipedia.net" onload="hideIndicator()">
+			<p>Your browser does not support iframes.</p>
+		</iframe>
+
+	<!-- 
+<div id="centerfier">
+		
+		
+    </div>
+ -->
+    <iframe id="footer" src="footer.html" seamless></iframe>
+</body>
+</html>

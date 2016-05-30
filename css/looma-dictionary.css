@@ -1,0 +1,47 @@
+h2 {
+    text-align:center;
+    font-size: 25px;
+    background-color: aquamarine;
+    color:black;
+    padding: 10px;
+}
+p {
+    font-size: 2em;
+    text-align:center;
+}
+form {
+    text-align: center;
+    height: 12%;
+    vertical-align:middle;
+    font-size : 2em;
+    background-color:deepskyblue;
+    color:black;
+    padding-top: 10px;
+}
+
+input#word {
+	border: none;
+	border-radius: 6px;
+	margin: auto 0;
+}
+
+button#submit {
+	margin:auto 0;
+	font-size: 1em;
+}
+
+#theword{
+    text-align: center;
+    font-size: 4em;
+    font-weight:bolder;
+}
+#nepali{
+    text-align: center;
+    font-size: 6em;
+    font-weight:bolder;
+}
+#definition{
+    text-align: center;
+    font-size: 2em;
+    font-weight:bolder;
+}

@@ -1,0 +1,17 @@
+div#list {
+
+	width:20%;
+	margin:auto;
+	text-align:left;
+}
+
+span.themespan img {
+	display:none;
+
+}
+
+span.themespan:hover img {
+	display:inline;
+	position:absolute;
+	left:250px;
+}

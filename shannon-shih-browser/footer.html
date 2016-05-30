@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!--contains home, whiteboard, internet, library buttons as well as translate, back/forward, and clock-->
+<html>
+	<head>
+		<link rel='stylesheet' type='text/css' href='css/footer-stylesheet.css'/>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Cache-control" content="no-cache">
+    
+    <!-- Enables parent webpage to go to appropriate location when button is clicked -->
+	
+	<script type="text/javascript" src="js/clock.js"></script>
+
+	<script>
+		//if currentLang null, initialize it to English
+		if(!localStorage.currentLang)	
+			localStorage.currentLang = "English";
+
+		// this function changes the current language
+		function toggleLanguage()
+		{
+			if(localStorage.currentLang == "English")
+			{
+				localStorage.currentLang = "native";
+			}
+			else
+			{
+				localStorage.currentLang = "English";
+			}
+
+			//changes the language of the translate button and clock
+			loadLang();
+
+			//check if function exists before calling
+			if (typeof parent.loadLang == 'function')
+				parent.loadLang();
+		}
+
+		// this function changes buttons and text to appropriate language indicated by localStorage.currentLang
+		function loadLang()
+		{
+			if(localStorage.currentLang == "English")
+				document.getElementById('translate').innerHTML = 'Translate';
+			else
+				document.getElementById('translate').innerHTML = 'अनुवाद';
+
+			// updates clock to correct language
+			startClock();
+		}
+	</script>
+    
+	</head>
+
+	<body onload="loadLang()">
+		<div id="footer">
+			<div id="back-button" onclick="parent.history.back();"><img src="images/flipleft1.png" width = "85" height = "55"  > </div>
+			<a class="text" id="translate" onclick="toggleLanguage()">Translate</a>
+			<a onclick="parent.location.href = 'index.php';" id="blue-footer" class="footer-button"><img src="images/house.png" width = "55" height = "55" ></a>
+			<a onclick="parent.location.href = 'paint/looma-paint.html';" id="pink-footer" class="footer-button"><img src="images/draw1.png" height = "57" width = "45" ></a>
+			<a onclick="parent.location.href = 'internet.html';" id="green-footer" class="footer-button"><img src="images/web1.png" width = "55" height = "57" ></a>
+			<a onclick="parent.location.href = 'library.html';" id="purple-footer" class="footer-button"><img src="images/library1.png" width = "45" height= "57" ></a>
+			<a onclick="parent.location.href = 'calculator/calculator.html';" id="orange-footer" class="footer-button"><img src="images/calculator1.png" width = "50" height = "57" ></a>
+			<div id="footer-text">
+				<p id="date-time"></p>
+				<div id="info"><img id="license" onclick="parent.location.href = 'info.html';" src="images/CC-BY-SA.png"/> &copy; 2015 by <div id="VTSLink" onclick="parent.location.href = 'http://www.villagetechsolutions.org/';">VillageTech Solutions</div> <img id="loomaIcon" src="images/LoomaLogo.png"/></div>
+			</div>
+			<div id="forward-button" onclick="parent.history.forward()"><img src="images/flipright1.png" width = "85" height = "55" ></div>
+		</div>
+	</body>
+</html>

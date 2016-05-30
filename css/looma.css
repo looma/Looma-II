@@ -1,0 +1,696 @@
+html {
+	background-color: gray;
+	height:100vh;
+	width:100vw;
+	position:relative;
+	margin:0;
+}
+
+body {
+	margin:0;
+	padding:0;
+    font: bold 1.5em Calibri, sans-serif;
+	/*color: #FCC110;*/
+	box-sizing: border-box;
+		/*background-color: #A1BEF3;*/
+		/* medium blue is #1853C1;*/
+		/* "looma" dark blue is #091F48;*/
+	position: relative;
+	/*margin: auto;*/
+	width:100%;
+	height: 100%;
+	/*max-width:1280px;
+	max-height:900px;*/
+	overflow: hidden;
+	text-align: center;
+}
+
+#main-container {
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	position:absolute;
+	text-align: center;
+	top:0;
+	left:0;
+	margin:auto;
+	/*background-color: #d4d4d4;	*/
+	/*border: 1px solid black;    */
+}
+
+#main-container-horizontal {
+	width:100%;
+	height:90%;
+	overflow:hidden;
+	position:absolute;
+	text-align: center;
+	top:0;
+	left:0;
+	margin:auto;
+	/*background-color: #ddd;	*/
+	/*border: 1px solid black;		*/
+}
+
+#toolbar-container {
+	width: 100%;
+	height:10%;
+	position: absolute;
+	overflow: hidden;
+	bottom: 0;
+	text-align:center;
+	vertical-align:middle;
+	/*background-color: #ccc;	*/
+	/*border: 1px solid black;		*/
+
+}
+
+#main-container-vertical {
+	width: 94%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	/*background-color: #ddd;	*/
+	/*border: 1px solid black;		*/
+}
+
+#toolbar-container-vertical {
+	width: 6%;
+	height:100%;;
+	position: absolute;
+	overflow: hidden;
+	right: 0;
+	text-align:center;
+	vertical-align:middle;
+	/*background-color: #ccc;	*/
+	/*border: 1px solid black;		*/
+
+}
+
+#main-container.scroll            { overflow:auto; }
+
+#main-container-horizontal.scroll { overflow:auto;}
+
+#main-container-vertical.scroll   { overflow:auto; }
+
+::-webkit-scrollbar-track-piece {
+    background: #aaaaff; /*light blue*/
+}
+::-webkit-scrollbar-thumb {
+     -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.75);
+
+    -webkit-border-radius: 35px;
+    /*border: 2px solid red;*/
+    border-radius: 35px;
+
+ /* background: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(206,206,206,1));*/ /*Safari 5.1-6*/
+
+background: -webkit-linear-gradient(left, #ffffff, #dfdfdf, #cecece);
+
+	/*
+	background: -webkit-gradient(linear, left top, right top,
+		from(#fff)
+		color-stop(0.5, #dfdfdf),
+		to(#cecece)
+		*/
+}
+::-webkit-scrollbar { width:40px;}
+
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 35px;
+}
+
+/* laptop
+@media only screen
+		and (min-device-height: 900px)
+		and (max-device-width: 1440px)
+		and (orientation : landscape) {
+			body { width: 1280px;
+				background-color:#0b212a}
+		}
+
+/* tablet landscape
+@media only screen
+		and (min-device-height: 481px)
+		and (max-device-width: 1024px)
+		and (orientation : landscape) {
+			body { width: 1024px;
+				height: 480px;
+				background-color:#0b212a}
+		}
+/* tablet portrait
+@media only screen
+		and (min-device-height: 481px)
+		and (max-device-width: 1024px)
+		and (orientation : portrait) {
+			body { width: 720px;
+				height: 960px;
+			background-color:#00FF00}
+		}
+
+/* iphone
+@media only screen
+		and (max-device-width: 480px) {
+			body { width: 480px;
+				height: 568px;
+			background-color:#00FF88}
+		}
+*/
+
+h1.title, h2.title, h3.title {
+	/*size:90%;*/
+	font-size: 3em;
+	margin:auto;
+	text-align:center
+}
+
+.credit{
+    text-align: right;
+    margin-right:5px;
+    font-size: 10px;
+    line-height: 12px;
+
+    position: absolute;
+    right:3%;
+    bottom:12%;
+    width:25%;
+}
+
+div.viewer {
+	width:100%;
+	height:100%;
+	overflow:hidden;
+}
+
+div.viewer img {
+	margin: 0 auto;
+	width: 100%;
+	height: 100%;
+}
+input[type="range"] {
+	display: inline;
+	width:50%;
+}
+
+footer {
+	width:100%;
+	height: 50px;
+	text-align:center;
+	float:right;
+}
+
+.screensize, .bodysize{
+	width:10%;
+	/*color:black;*/
+	vertical-align:middle;
+	font-size: 0.75em;
+}
+
+button.flag-vertical {
+	height:7.3%;
+	width:100%;
+}
+
+button img#flag {height: 100%;}
+
+div.fullframe, iframe {
+	height:100%;
+	width:100%;
+	margin:auto;
+	overflow-y: auto;
+	/*overflow-x: hidden;*/
+}
+
+.button-div {
+	overflow:hidden;
+	position: absolute;
+	text-align: center;
+	margin: 0 auto;
+
+}
+
+.button-div#row1 {
+	top:33%;
+	left:5%;
+	width: 90%;
+	height: 25%;
+	min-height:25%;
+}
+
+.button-div#row2 {
+	top:55%;
+	left:10%;
+	width: 80%;
+	height: 30%;
+	padding: 2%;
+	min-height:25%;
+}
+
+.button-div#toolbar {
+	top:0;
+	left:0;
+	width: 85%;
+	height: 99%;
+	min-height:99%;
+	border:none;
+}
+.button-div#toolbar-vertical {
+	top:0;
+	left:0;
+	width: 85%;
+	height: 100%;
+	min-height:100%;
+	padding: 10% 0 0 0;
+	border:none;
+}
+/*
+.button-div ul {
+	min-height:100%;
+	width:100%;
+}
+*/
+
+/*
+ul.menu-bar {
+	width:100%;
+	height:20%;
+	text-align:center;
+}
+
+
+ul.menu-bar li {
+	width:16%;
+	height:100%;
+	display:inline;
+}
+
+ul.menu-bar li button.img {
+	width:15%;
+}
+
+ul.menu-bar li button.img img {
+	width:25%;
+	height:100%;
+}
+*/
+
+table {
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	border-collapse: separate;
+	border-spacing: 15px;
+	table-layout: fixed;
+}
+
+table#dir-table {
+	height:0;
+	max-height:30%;
+}
+
+table#file-table {
+	height:0;
+}
+
+button.img:hover {
+	transform: scale(1.2,1.2);
+}
+
+button.class:hover {
+	transform: scale(1.05,1.05);
+}
+
+th, td {
+	width: 30%;
+	max-width:30%;
+	overflow: hidden;
+	text-align: center;
+	padding: 4px 5px;
+}
+
+th {
+	max-height:50px;
+}
+
+td button, th button {
+	font-size: 1.5em;
+	width:90%;
+	height:100%;
+	margin: 5px;
+	overflow:hidden;
+}
+
+/*------------------------*/
+/* BUTTON styling here. "button" defines color, background and font. "button.classname" defines sizes (height, width, font-size, etc)*/
+/*------------------------*/
+
+button {
+	background-color:#ffffff;
+	color:#000000;
+	border-color: #FFFFFF;
+	border: 5px;
+	border-radius: 5px;
+
+	display:inline-block;
+	height:80%;
+
+	overflow: hidden;
+
+	vertical-align:middle;
+	text-align:center;
+
+}
+
+button:hover {
+	color: white;
+	background-color:#091F48;
+	border-color: white;
+	/*transform: scale(1.5,1.5);*/
+}
+
+button.back {
+	    background-image: url("../images/back-arrow.png");
+	    background-size: 80% 80%;
+	    background-repeat: no-repeat;
+	    background-color: transparent;
+}
+
+button#back-button {
+	    background-image: url("../images/back-arrow.png");
+	    background-size: 80% 80%;
+	    background-repeat: no-repeat;
+	    background-color: transparent;
+	    position:absolute;
+	    right:3%;
+	    bottom:12%;
+	    height:8%;
+	    width:7%;
+	    border:none;
+	    box-shadow: none;
+	    z-index:1000;
+	    cursor: pointer;
+}
+
+.button-4 {
+	width:20%;
+	margin: 2% 2%;
+	font-size: 3em;
+}
+
+.button-5 {
+	width:15%;
+	height:80%;
+	margin: 1% 2%;
+	font-size: 2em;
+}
+
+.button-6 {
+	width:14%;
+	margin: 1%;
+	font-size: 2.4em;
+	/*background: linear-gradient(to right, red , blue); /* Standard syntax */
+
+    background: linear-gradient(rgba(191,234,234, 0.4), rgba(168, 206, 206, 0.3)); /* Chrome10+,Safari5.1+ */
+	background: linear-gradient(to bottom, rgba(191,234,234, 1) , rgba(168, 206, 206, 1)); /* Standard syntax */
+}
+
+.button-8 {
+	width:11%;
+	height:65%;
+	font-size: 4.5em;
+	overflow: hidden;
+	padding:0 0 5px 0;
+	margin:0;
+}
+
+.little {
+	font-size:0.35em;
+	line-height:1em;
+	padding:0;
+	margin:0;
+}
+
+.toolbar-button {
+	position:relative;
+	width:6%;
+	margin: 0.5%;
+	font-size: 1em;
+}
+
+/*
+.toolbar-button span, .toolbar-button-vertical span {
+	display:none;
+}
+*/
+
+/*
+.toolbar-button:hover span {
+	display:block;
+	position:absolute;
+	top:2.5em;
+	right:em;
+	z-index: 100;
+	border: 2px solid #996633;
+	border-radius: 3px;
+	background-color:#ffff66;
+	color:#000000;
+}
+*/
+
+/*
+.toolbar-button-vertical:hover span {
+	display:block;
+	position:absolute;
+	font-size: 0.75em;
+	top:2.5em;
+	left:0.3em;
+	z-index: 100;
+	border: 2px solid #996633;
+	border-radius: 3px;
+	background-color:#ffff66;
+	color:#000000;
+}
+*/
+
+.toolbar-button:hover, .toolbar-button-vertical:hover {
+	transform: scale(1.2,1.2);
+	background-color:#888;
+	border: 2px solid white;
+}
+.toolbar-button-vertical {
+	height:7.3%;
+	width: 100%;
+	margin: 5% auto;
+	font-size: 1em;
+}
+
+.xlat {display:none;}
+
+span:hover .xlat {
+	display:block;
+	position:absolute;
+	top:1em;
+	right:0;
+	z-index: 100;
+	border: 1px solid #000000;
+	border-radius: 3px;
+	background-color:#FAFCAC;
+	color:#000000;}
+
+span.tip { display:none;}
+
+button:hover span.tip.yes-show 	{
+	display:block;
+	position:absolute;
+	top:3.5em;
+	right:0;
+	font-size: 0.7em;
+	z-index: 100;
+	border: 1px solid #000000;
+	border-radius: 3px;
+	background-color: #C4E9F5;
+	color:#000000;}
+
+#logo-div {
+	display:inline-block;
+	width:15%;
+	height:100%;
+	float:right;
+}
+
+span.logo {
+	display:inline-block;
+	height:70%;
+	width:100%;
+}
+span#datetime {
+	margin:0 0 5px 0 ;
+	display:inline-block;
+	color: #000;
+}
+
+span.logo-vertical {
+	display:inline-block;
+	height: 20%;
+	width: 100%;
+}
+
+span.logo img {
+	height:80%;
+	width:100%;
+	padding-top:5%;
+}
+
+button.toolbar {
+	width:7%;
+	font-size: 1.2em;
+	margin:5px;
+	padding: 5px;
+}
+
+button.navigate {
+	width:25%;
+	height:3em;
+	font-size: 3em;
+}
+
+/*****************
+ * buttons of class 'speak' can be placed on any page
+ * they are 'fixed' on the page and semi-transparent
+ ********************/
+
+button.speak {
+	position: absolute;
+	bottom:5%;
+	right:15%;
+	height:10%;
+	width:7.5%;
+	z-index:1000;
+	opacity: 0.4;
+    background-image: url("../images/speech.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+	background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+	/*  img:src = images/speak.png */
+}
+
+#fullscreen {
+	position: relative;
+	width:100%;
+	height:100%;
+}
+
+button#fullscreen-control {
+	position: absolute;
+	opacity: 0.4;
+	bottom:15%;
+	right:5%;
+	height:10%;
+	width:7.5%;
+	z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    background-image: url("../images/fullscreen2.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+	background-color:rgba(200,200,200,0.3);  /*transparent light gray*/
+}
+
+video { height: 100% }
+
+video::-webkit-media-controls {display: none !important;}
+
+button.img {
+
+	height: 150px;
+	vertical-align:middle;
+	text-align:center;
+}
+
+button.img img {
+	height:100%;
+	float:left;
+	max-width:50%;
+}
+
+button.img.play {max-width:33vw;}
+
+th button.img {
+	height:75px;
+}
+
+th button.img:hover {
+	transform:none;
+}
+th button.img img {
+	height:100%;
+	width:15%;
+	max-width:50%;
+}
+
+button.img.subject {
+	font-size: 1.5em;
+}
+button.img.play, button.img.activity{
+	font-size: 30px;
+	font-weight:bold;
+}
+
+button.img.subject img {
+	width:45%;
+	height:50%;
+	margin:5px 2px;
+	float:left;
+}
+
+button.img p {
+	vertical-align:middle}
+
+button.pdf, button.media{
+	width:10%;
+	height:5%;
+}
+
+button.heading  {
+	transform:none;
+}
+button.heading:hover {
+	border:none;
+}
+
+button.chapter:hover, button.activity:hover {
+	transform: scale(1.2,1.2);
+}
+
+button.footer {
+	height: 50%;
+	width:  8%;
+	/* margin: 3px; */
+	font-size: 75%;
+	background-color: #999999;
+}
+
+span#themes {font-size: 1.5em}
+
+input.theme{
+	height: 50px;
+	width:  50px;
+	vertical-align:middle;
+}
+
+img.looma-logo{
+	display: block;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+div.center {
+	position:relative;
+	width:90%;
+	min-height: 600px;
+	margin:auto;
+	text-align:center;
+}
+div#popup {
+	background-color: blue;
+}
+

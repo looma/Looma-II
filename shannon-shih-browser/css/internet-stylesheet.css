@@ -1,0 +1,62 @@
+#address
+{
+  font-family:Arial; 
+  font-size:16px; 
+  padding:5px; 
+  width:30%;
+  border-color:#CCCCCC #999999 #999999 #CCCCCC;
+  border-style:solid;
+  border-width: 1px;
+  margin:0;
+}
+
+#submit
+{
+	width: 10%;
+	height: 10%;
+}
+
+#address-bar
+{
+	position: absolute;
+    left: 0px;
+	width: 100%;
+	text-align: center; 
+	color: #ffffff; 
+	margin-top: 3%;
+	margin-bottom: 15%;
+}
+
+#load-indicator
+{
+	position: relative;
+	top: 1%;
+	height: 3.5%;
+	width: 3.5%;
+	display: visible;
+}
+
+#centerfier
+{
+	position: absolute;
+    left: 0px;
+	width: 100%;
+	height: 74%;
+	text-align: center; 
+	color: #ffffff; 
+	margin-top: 6%;
+	background-color: red;	
+}
+
+#browser
+{
+	position: absolute;
+    left: -25%;
+	width: 150%;
+	height: 125%;
+	text-align: center; 
+	color: #ffffff; 
+	margin-top: -7%;
+	-webkit-transform:scale(0.5);	/*scales the webpage to size of the frame*/
+	
+}

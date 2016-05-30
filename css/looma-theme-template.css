@@ -1,0 +1,30 @@
+body {
+	background-color: xxxxx;
+	font-family: "xxxxx", cursive, sans-serif;
+	color: xxxxx;
+}
+
+#toolbar-container, #toolbar-container-vertical {
+	background-color: xxxxx;
+}
+
+button {
+
+	background-color: xxxxx;
+	color:xxxxx;
+	border: xxxxx;
+	border-radius: xxxxx;
+	font: bold 3em;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: xxxxx;
+	color: xxxx;
+}
+
+button.active {
+	background: none;
+	background-color: xxxxx;
+	color:xxxxx;
+}

@@ -1,0 +1,158 @@
+/*
+Author: Sasha Cassidy and Lily Barnett
+Description: looma-vocab-flashcard.css contains the style for looma-vocab-flashcard.php
+*/
+
+#prev, #next {
+  width:10%;
+  height:20%;
+  font-weight: bold;
+  font-size: 2em;
+  color:#383838;
+  border: none;
+  text-align:center;
+  vertical-align:middle;
+}
+
+#next img, #prev img {
+	height:90%;
+	width:90%
+}
+
+#prev{
+  position: absolute;
+  left:2%;
+  top:50%;
+  visibility: hidden;
+}
+
+#next{
+  position: absolute;
+  right:2%;
+  top:50%;
+  visibility: visible;
+}
+
+#homePage{
+	position: absolute;
+	width:10%;
+	height:20%;
+	left: 2%;
+	top: 28%;
+	font-size:36px;
+}
+.stage {
+	perspective: 1000;
+	-webkit-perspective: 1000;
+
+	text-align:center;
+	width: 72%;
+	height: 78%;
+	overflow: hidden;
+	margin:0 auto;
+}
+
+	/* flip the pane when hovered */
+.stage.flipped .flashcard {
+		transform: rotateX(180deg);
+		-webkit-transform-style: preserve-3d;
+	    transform-style: preserve-3d;
+	}
+
+.front, .back {
+
+}
+
+.flashcard {
+	height:100%;
+	width:90%;
+	margin:0 auto;
+	transition: 0.7s;  /* flip speed */
+	transform-style: preserve-3d;
+
+	transform-origin: 100% 50%; /* half of height */
+
+	position: relative;
+
+}
+
+/* hide back of pane during swap */
+.front, .back {
+	backface-visibility: hidden;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	min-width:100%;
+	min-height:100%;
+	overflow: hidden;
+	margin: 0 auto;
+	background-color: #f8f8f8;
+    color: #222222;
+    border-radius: 6px;
+    text-align:center;
+}
+
+/* front pane, placed above back */
+.front {
+	z-index: 2;
+	/* for firefox 31 */
+	transform: rotateX(0deg);
+		-webkit-transform-style: preserve-3d;
+	    transform-style: preserve-3d;
+
+}
+
+/* back, initially hidden pane */
+.back {
+	transform: rotateX(180deg);
+		-webkit-transform-style: preserve-3d;
+	    transform-style: preserve-3d;
+}
+
+.front p {
+  padding-left: 2px;
+  padding-right: 2px;
+  margin-top: 8%;
+  font-size: 7em;
+}
+
+.back p {
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-bottom: 5px;
+  padding-top: 0;
+  margin-top: 2%;
+}
+
+.back p#smallWordBack {
+  font-size: 2em;
+}
+
+.back p#mediumWordBack {
+  font-size: 3em;
+}
+
+.back p#largeWordBack {
+  font-size: 4em;
+  min-height:30%;
+}
+
+p#wordFront {
+	font-size: 7em;
+	font-weight:bold;
+}
+
+p#nepaliBack {
+	font-size: 7em;
+	font-weight:bold;
+}
+
+p.clickToFlip {
+	height: 10%;
+	margin: 10px 0;
+	line-height:10%;
+	font-size: 20px;
+	color:inherit;
+}

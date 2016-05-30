@@ -1,0 +1,60 @@
+ /*not using keyframe and webkit animation. replaced with jQuery for browser compativility
+@keyframes credits {
+  0%   { top:  100%;}
+  100% { top: -500%;} /*adjust this for length of the list
+}
+*/
+
+ .screensize, .bodysize{
+	width:15%;
+	/*color:black;*/
+	vertical-align:middle;
+	font-size: 0.75em;
+}
+ .screensize {
+	position:absolute;
+	bottom:8em;
+	right:15em;
+}
+.bodysize{
+	position:absolute;
+	bottom:4em;
+	right:15em;
+}
+ #logos {
+ 	margin: 0 25% 0 5%;
+ 	background-color: white;
+ 	border-radius:5px;
+ 	padding:5px;
+ 	max-width:75%;
+ }
+ #credits-box {
+ 	position:absolute;
+ 	background: #fff;
+ 	top:7%;
+ 	left:80%;
+ 	width: 220px;
+ 	height: 700px;
+ 	overflow:hidden;
+ 	border: 1px solid black;
+ }
+
+#credits-box h2 {
+	color:#0000FF;
+	opacity:45%;
+}
+
+#credits-wrapper {
+  		margin: 25px;
+  		position: absolute;
+ 		top: 100%; /*start with the content just off the bottom of the box*/
+ 		color: #000;
+ 		/*not useing webkit animation. replaced with jQuery for browser compativility
+ 		-webkit-animation: 40s credits linear infinite;
+ 		*/
+
+}
+
+p {
+	margin:auto;
+}

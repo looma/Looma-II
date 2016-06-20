@@ -24,8 +24,7 @@ $(document).ready(function(){
     search($("#searchArea").val(), true, page);
   });
 
-  $("button").click(function() {
-    alert("test");
+  $("button.chapter").click(function() {
     //called when a CHAPTER button is pressed
     var button = event.target;
     var chapter_id = this.getAttribute('data-ch');

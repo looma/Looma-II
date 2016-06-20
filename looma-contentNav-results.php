@@ -3,9 +3,11 @@ function populateResults($title, $text) {
 	include 'looma-contentNav-result.php';
 }
 
+//Connents to Mongo DB
 $m = new MongoClient();
 $fileDB = $m->looma;
 $activities = $fileDB -> activities;
+
 $request = $_GET["q"];
 $page = $_GET["page"] * 10;
 

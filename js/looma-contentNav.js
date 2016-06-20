@@ -1,15 +1,18 @@
 $(document).ready(function(){
   var page = 0;
+  var lvlSelected;
   $(".individualResult").click(function(){
     $(this).children(".fullResult").slideToggle("slow");
   });
   $(".lvlSelect").click(function(){
     $(".lvlSelect").removeClass("active");
     $(this).addClass("active");
+    lvlSelected = this.id;
   });
   $(".classSelect").click(function(){
     $(".classSelect").removeClass("active");
     $(this).addClass("active");
+    loadPage(lvlSelected, this.id);
   });
   // $(document).scroll(function() {
   //   if (document).height() {
@@ -21,6 +24,15 @@ $(document).ready(function(){
     search($("#searchArea").val(), true, page);
   });
 
+  $("button").click(function() {
+    alert("test");
+    //called when a CHAPTER button is pressed
+    var button = event.target;
+    var chapter_id = this.getAttribute('data-ch');
+    alert(chapter_id);
+  });
+
+  //scroll to prior scroll position
   search("", false, page);
 });
 
@@ -35,31 +47,12 @@ function search(search, append, page) {
       }
     }
   };
+  if (!append) {
+    page = 0;
+  }
   xmlhttp.open("GET", "looma-contentNav-results.php?q=" + search + "&page=" + page, true);
   xmlhttp.send();
 }
-
-function classButtonClicked(){
-  //called when a CLASS button is pressed
-  className = this.getAttribute('id');
-  activateClass(className);              //activate this CLASS - highlights the button
-  LOOMA.setStore("class", className, 'local');  //set a COOKIE for CLASS (lifetime = this browser session)
-  displaySubjects(className);              // display SUBJECT buttons for this CLASS
-  activateSubject(null);                  // de-activate all SUBJECTS
-
-}; // end classButtonClicked()
-
-function subjectButtonClicked(){
-  //called when a SUBJECT button is pressed
-  subjectName = this.getAttribute('id');
-  LOOMA.setStore("subject", subjectName, 'local');  //set a COOKIE for SUBJECT (lifetime = this browser session)
-  //send GET request to chapters.php with CLASS and SUBJECT values
-
-  //set scroll position to top of page
-  LOOMA.setStore('scroll', 0), 'session';
-
-  loadPage(className, subjectName);
-};  //  end subjectButtonClicked()
 
 //See contentNav for jQuery listeners
 function loadPage(className, subjectName) {

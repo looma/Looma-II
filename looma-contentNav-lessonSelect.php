@@ -110,6 +110,4 @@ Still Work In Progress
 	?>
 	</div></div>
    	<?php include ('includes/js-includes.php'); ?>
-  	<script src="js/looma-chapters.js"></script>          <!-- Looma Javascript -->
-Status API Training Shop Blog About
-© 2016 GitHub, Inc. Terms Privacy Security Contact Help
+  	<script src="js/contentNav-lessonSelect.js"></script>          <!-- Looma Javascript -->

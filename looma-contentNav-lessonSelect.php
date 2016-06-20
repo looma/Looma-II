@@ -64,10 +64,6 @@ Still Work In Progress
 			if ($tb_fn != null) echo "<th><button class='heading img' id='englishTitle' disabled> $tb_dn
 									  <img src=" . $tb_fp . thumbnail($tb_fn) . "></button></th>";
 			else                echo "<th></th>";
-			if ($tb_nfn != null) echo "<th><button class='heading img' id='nativeTitle' disabled> $tb_ndn
-									  <img src=" . $tb_fp . thumbnail($tb_nfn) . "></button></th>";
-			else                echo "<th></th>";
-			echo "<th><button class='heading img' id='activitiesTitle' disabled>"; keyword('Activities'); echo "</button></th>";
 			echo "</tr>";
 			//echo "<br>DEBUG: displayname:  " . $tb_dn . ", file: " . $tb_fn . ", path: " . $tb_fp;
 			//echo "<br>DEBUG: nativedisplayname:  " . $tb_ndn . ", nativefile: " . $tb_nfn . ". path: " . $tb_fp;
@@ -109,35 +105,6 @@ Still Work In Progress
 					                  </button></td>";
 						  }
 				else {echo "<td><button class='chapter' style='visibility: visable'></button></dt>";}
-				// display chapter button for 2nd native] textbook, if any
-				if ($tb_nfn && $ch_npn) { echo "<td><button class='chapter'
-									  data-fn='$tb_nfn'
-									  data-fp='$tb_fp'
-									  data-ft='pdf'
-					                  data-pg='$ch_npn'
-					                  data-ch='$ch_id'>
-					                  $ch_ndn
-					                  </button></td>";
-						  }
-				else {echo "<td><button class='chapter' style='visibility: visable'></button></dt>";}
-				// finally, display a button for the activities of this chapter wiht data-activity=CHAPTER_ID key value
-				// first check whether there are any activities for this chapter and make the button invisible if not
-				//get the activities for this chapter
-				$query = array('ch_id' => $ch_id);
-				//returns only these fields of the activity record
-				$projection = array('_id' => 0,
-								'ch_id' => 1,
-								);
-				//check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create a button
-				$activities = $activities_collection -> findOne($query, $projection);
-				if ($activities) {
-					echo "<td><button class='activity'
-							data-ch='$ch_id'
-							data-chdn='$ch_dn'>";
-					keyword('Activities');
-					echo "</button></td>";
-				}
-				echo "</tr>";
 			}
 			echo "</table>";
 	?>

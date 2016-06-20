@@ -7,11 +7,13 @@ $m = new MongoClient();
 $fileDB = $m->looma;
 $activities = $fileDB -> activities;
 $request = $_GET["q"];
+$page = $_GET["page"] * 10;
 
 $regex = new MongoRegex("/^$request/i");
 $query = array("dn" => $regex); //note the single quotes around '$gt'
-$cursor = $activities->find($query);
+$cursor = $activities->find($query)->skip($page)->limit(10);
 
+//If count returns less than ten stop updating the database unless query changes
 $count = 0;
 
 foreach ($cursor as $d)
@@ -23,4 +25,5 @@ foreach ($cursor as $d)
 	$d_description = "sample text";
 	populateResults($d_title, $d_description);
 }
+
 ?>

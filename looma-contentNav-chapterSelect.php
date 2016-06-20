@@ -67,10 +67,6 @@ Description: Modified Home Page To Select Chapter
 	?>
 
     <div class="button-div" id="row2">
-		<button type="button" class="subject button-5 img" id="nepali"  hidden>
-			<?php keyword('Nepali') ?>  <br>
-			<img class="en-tb" >  <img class="np-tb" ><br>
-		</button>
 		<button type="button" class="subject button-5 img" id="english" hidden>
 			<?php keyword('English') ?>    <br>
 			<img class="en-tb" >  <img class="np-tb" ><br>
@@ -92,4 +88,4 @@ Description: Modified Home Page To Select Chapter
 	</div>
 	</section>
    	<?php include ('includes/js-includes.php'); ?>
-   	<script src="js/looma-contentNav-classSelect.js"></script>          <!-- Looma Javascript -->
+   	<script src="js/looma-contentNav-chapterSelect.js"></script>          <!-- Looma Javascript -->

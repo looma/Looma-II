@@ -77,7 +77,7 @@ Description:  Provides a system for adding activities to the looma system
 	<div class="col-md-2"></div>
 
 
-	<!-- Init Script Last To Improve Load Time->
+	<!-- Init Script Last To Improve Load Time-->
 	<script src="js/looma-contentNav.js"></script>
 </body>
 </html>

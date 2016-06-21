@@ -1,3 +1,12 @@
+<!--
+Name: Ian
+Email: ian.costello@menloschool.org
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: 2016 6
+Revision: Looma 2.0.0
+File: looma-contentNav-classNav.php
+Description:  Button Groups To Select Class
+-->
 <html>
   <head>
     <script src='js/looma-contentNav-classNav.js'></script>
@@ -8,7 +17,7 @@
     </style>
   </head>
   <body>
-    <!-- Level Select -->
+    <!-- Level Select NOTE: ID Relates To Position in Database -->
     <div class="btn-group btn-group-justified">
       <a href="#" id="class1" class="btn btn-default lvlSelect">1</a>
       <a href="#" id="class2" class="btn btn-default lvlSelect">2</a>
@@ -20,9 +29,8 @@
       <a href="#" id="class8" class="btn btn-default lvlSelect">8</a>
     </div>
 
-    <!-- Class Select -->
+    <!-- Level Select NOTE: ID Relates To Position in Database -->
     <div class="btn-group btn-group-justified" style="margin-top:10px;" onclick="classButtonClicked">
-      <a href="#" id="nepali" class="btn btn-default classSelect">Nepali</a>
       <a href="#" id="english" class="btn btn-default classSelect">English</a>
       <a href="#" id="math" class="btn btn-default classSelect">Math</a>
       <a href="#" id="science" class="btn btn-default classSelect">Science</a>

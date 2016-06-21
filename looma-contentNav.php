@@ -1,3 +1,12 @@
+<!--
+Name: Ian
+Email: ian.costello@menloschool.org
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: 2016 6
+Revision: Looma 2.0.0
+File: looma-contentNav.php
+Description:  Provides a system for adding activities to the looma system
+-->
 <html>
 <head>
 	<!-- JQuery -->
@@ -14,7 +23,7 @@
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-	<!-- My Theme -->
+	<!-- Custom Theme -->
 	<link rel="stylesheet" href="css/looma-contentNav.css">
 </head>
 <body style="margin-top: 30px;">
@@ -29,24 +38,24 @@
 					<!-- Modal -->
 					<div id="contentNavModal" class="modal fade" role="dialog">
 						<div class="modal-dialog">
-
 							<!-- Modal content-->
-							<div class="modal-content">
+							<div class="modal-content" id="contentNavModal">
+								<!-- Modal Header -->
 								<div class="modal-header">
 									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h4 class="modal-title">Location To Add To</h4>
+									<h4 class="modal-title">Select File Insert Location</h4>
 								</div>
+								<!-- Class Nav Loaded In Here -->
 								<div class="modal-body">
 										<div id="classSelect"> <?php include 'looma-contentNav-classNav.php' ?> </div>
 										<div id="lessonSelect"> </div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+
+				<!-- Search Bar -->
 				<div class="col-md-9">
 					<form role="form">
 						<div class="form-group">
@@ -55,7 +64,10 @@
 					</form>
 				</div>
 			</div>
+
+			<!-- Results are Loaded in Here-->
 			<div id="resultsArea"></div>
+			<!-- Loads More Results On Hover -->
 			<div id="loadMore" class="well well-sm individualResult">
 				<h3 style="text-align: center;"> Hover To Load More Content </h3>
 			</div>
@@ -65,7 +77,7 @@
 	<div class="col-md-2"></div>
 
 
-	<! Init Script Last To Improve Load Time->
+	<!-- Init Script Last To Improve Load Time->
 	<script src="js/looma-contentNav.js"></script>
 </body>
 </html>

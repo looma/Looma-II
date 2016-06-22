@@ -1,6 +1,85 @@
-body{
-  font-family: Georgia;
+html, body {
+  overflow: hidden;
 }
-h1 {
-  background-color: orange;
+
+body{
+  font-family: serif;
+  background: #EBEBEB;
+}
+
+/* Over Arching Container For Page*/
+.container-fluid {
+  margin-top: 15px;
+  margin-left: 25px;
+  margin-right: 25px;
+  height: 100%;
+  min-height: 100%;
+  overflow:hidden;
+}
+
+.heading {
+  background-color: #e87510;
+  padding: 7px;
+  height: 60px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.preview {
+  width: 49%;
+  height: 59%;
+  margin-top: 5px;
+  margin-left: 2%;
+  background-color: white;
+  border-radius: 3px;
+}
+
+.results {
+  width: 49%;
+  height: 59%;
+  overflow: scroll;
+  background-color: white;
+  margin-top: 5px;
+  border-radius: 3px;
+
+}
+
+.edit {
+  padding: 4px;
+  margin-top: 1%;
+  height: 17%;
+  background-color: white;
+  border-radius: 3px;
+}
+
+.centerVert {
+  vertical-align: center;
+  padding-top: 14px;
+}
+
+.search {
+  padding: 3px;
+  background-color: white;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  vertical-align
+}
+
+#searchBar {
+  margin-left: 15px;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  font-family: "Arial Black", Gadget, sans-serif;
+  text-align: left;
+
+}
+
+img.logo {
+  height: 50px;
+  align-content: center;
+  margin: auto;
 }

@@ -22,16 +22,14 @@ Description: Single row of search results
 		border: 1px solid transparent;
 	}
 
+	.well {
+		margin: 10px;
+	}
+
 	</style>
 
 	<div class="well well-sm individualResult">
 		<h4><?php echo $title ?></h4>
 		<div class="limitedResult">This is the limited result <?php echo $text ?></div>
-		<a href="#" class="btn btn-info btn-lg">
-          <span class="glyphicon glyphicon-plus"></span> Add
-    </a>
-		<div class="fullResult">
-			This is a bunch of text
-		</div>
 	</div>
 </div>

@@ -7,6 +7,7 @@ Revision: Looma 2.0.0
 File: looma-contentNav.js
 Description:  Javascript for looma-contentNav.php
 */
+var resultsShown;
 
 $(document).ready(function(){
   var page = 0;
@@ -34,16 +35,22 @@ $(document).ready(function(){
 
   //When a chapter/lesson is selected set the database id and close the modal
   $(document).on('click', 'button.chapterButton', function(){
-      var button = event.target;
-      chapter_id = this.getAttribute('data-ch');
-      $('#contentNavModal').modal('toggle');
-   });
-
-  //On Hover Grab the next 10 results
-  $('#loadMore').mouseover(function() {
-    page +=1;
-    search($("#searchArea").val(), true, page);
+    var button = event.target;
+    chapter_id = this.getAttribute('data-ch');
+    $('#contentNavModal').modal('toggle');
   });
+
+  //Infinite scroll
+  $('#resultsArea').on('scroll', function() {
+    //If There Are More Results To Show
+    if (resultsShown%10 == 0) {
+      //If They've Hit Bottom of Div
+      if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+        page +=1;
+        search($("#searchBar").val(), true, page);
+      }
+    }
+  })
 
   //Default Search
   search("", false, page);
@@ -59,6 +66,13 @@ function search(search, append, page) {
       } else {
         document.getElementById("resultsArea").innerHTML += xmlhttp.responseText;
       }
+
+      resultsShown = $("#resultsArea div").length;
+      if (resultsShown%10 != 0) {
+        $('#loadMore').hide();
+      } else {
+        $('#loadMore').show();
+      }
     }
   };
   if (!append) {
@@ -66,6 +80,8 @@ function search(search, append, page) {
   }
   xmlhttp.open("GET", "looma-contentNav-results.php?q=" + search + "&page=" + page, true);
   xmlhttp.send();
+
+
 }
 
 //Loads all the chapters given a set className and subjectName

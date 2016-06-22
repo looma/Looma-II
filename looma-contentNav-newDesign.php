@@ -20,51 +20,68 @@
 
 
 <body>
-  <h1><img class=".img-responsible" src="images/logos/LoomaLogoTransparent.png" alt="Looma Logo" width = 300 length = 200</img>Content Navigation: Adding Activities</h1>
-  <h2><!-- Trigger the modal with a button -->
-    <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#contentNavModal">Location To Add To</button>
-
-    <!-- Modal -->
-    <div id="contentNavModal" class="modal fade" role="dialog">
-      <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Location To Add To</h4>
-          </div>
-          <div class="modal-body">
-            <div id="classSelect"> <?php include 'looma-contentNav-classNav.php' ?> </div>
-            <div id="lessonSelect"> </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-9">
-      <form role="form">
-        <div class="form-group">
-          <input type="text" id="searchArea" class="form-control" size="30" onkeyup="search(this.value, false, 0)">
-        </div>
-      </form>
-    </div>
-  </h1>
-
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-6" style="background-color:lavender;">Activities
-        <div id="resultsArea"></div>
-        <div id="loadMore" class="well well-sm individualResult">
-          <h3 style="text-align: center;"> Hover To Load More Content </h3>
+    <div class="row navbar">
+      <!-- Logo and Title -->
+      <div class="row heading">
+        <div class="col-md-2">
+          <img class="img-responsive logo" src="images/logos/LoomaLogoTransparentTrimmed.png" alt="Looma Logo"</img>
+        </div>
+        <div class="col-md-6">
+          <div class="title">Content Navigation: Adding Activities</div>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+      <!-- Search and Nav-->
+      <div class="row search">
+        <div class="centerVert">
+          <div class="col-md-5 ">
+            <form role="form">
+              <div class="form-group">
+                <input type="text" id="searchBar" class="form-control" placeholder="Search Activities" size="30" onkeyup="search(this.value, false, 0)">
+              </div>
+            </form>
+          </div>
+          <div class="col-md-5">
+            <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#contentNavModal">Location To Add To</button>
+          </div>
         </div>
       </div>
-      <div class="col-md-6" style="background-color:lavenderblush;">Preview</div>
+    </div>
+    <!-- results -->
+    <div class="row">
+      <div class="col-sm-6 results" id="resultsArea">
+      </div>
+      <div class="col-sm-6 preview">
+        Implement Preview View Here
+      </div>
+    </div>
+    <div class="row edit">
+      Implement Edit Area Here
     </div>
   </div>
-  <! Init Script Last To Improve Load Time->
+
+  <!-- Send Modal Last -->
+  <div id="contentNavModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Location To Add To</h4>
+        </div>
+        <div class="modal-body">
+          <div id="classSelect"> <?php include 'looma-contentNav-classNav.php' ?> </div>
+          <div id="lessonSelect"> </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Init Script Last To Improve Load Time-->
   <script src="js/looma-contentNav.js"></script>
 </body>
 </html>

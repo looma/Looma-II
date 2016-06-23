@@ -1,5 +1,4 @@
-<html>
-
+<html> 
 <head>
   <!-- JQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
@@ -50,32 +49,32 @@
     </div>
     <!-- results -->
     <div class="row">
-      <div class="col-sm-6 results" id="resultsArea">
-      </div>
+      <div class="col-sm-6 results" id="resultsArea"></div>
       <div class="col-sm-6 preview">
-        Implement Preview View Here
+        <div id="preview">
+
+        </div>
       </div>
     </div>
-    <div class="row edit">
-      Implement Edit Area Here
-    </div>
-  </div>
 
-  <!-- Send Modal Last -->
-  <div id="contentNavModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Location To Add To</h4>
-        </div>
-        <div class="modal-body">
-          <div id="classSelect"> <?php include 'looma-contentNav-classNav.php' ?> </div>
-          <div id="lessonSelect"> </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <div class="row edit">
+    </div>
+    <!-- Send Modal Last -->
+    <div id="contentNavModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Location To Add To</h4>
+          </div>
+          <div class="modal-body">
+            <div id="classSelect"> <?php include 'looma-contentNav-classNav.php' ?> </div>
+            <div id="lessonSelect"> </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
         </div>
       </div>
     </div>

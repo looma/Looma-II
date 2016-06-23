@@ -28,7 +28,7 @@ Description: Single row of search results
 
 	</style>
 
-	<div class="well well-sm individualResult">
+	<div class="well well-sm individualResult" dbid=<?php echo $d_id; ?>>
 		<h4><?php echo $title ?></h4>
 		<div class="limitedResult">This is the limited result <?php echo $text ?></div>
 	</div>

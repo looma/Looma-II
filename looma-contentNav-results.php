@@ -8,7 +8,7 @@ File: looma-contentNav-results.php
 Description: Connents to MONGO DB Database and grabs activities to show
 -->
 <?php
-function populateResults($title, $text) {
+function populateResults($title, $text, $d_id) {
 	include 'looma-contentNav-result.php';
 }
 
@@ -36,7 +36,7 @@ foreach ($cursor as $d)
 	$d_description = "sample text";
 
 	//Add the search result
-	populateResults($d_title, $d_description);
+	populateResults($d_title, $d_description, $d_id);
 }
 
 ?>

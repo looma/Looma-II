@@ -13,25 +13,39 @@ $(document).ready(function(){
   var page = 0;
   var lvlSelected;
   var chapter_id;
+  var selectedId;
 
   //When a chapter/lesson is selected set the database id and close the modal
   $(document).on('click', '.individualResult', function(){
-    db_id = $(this).attr("dbid");
-    loadPreview(db_id);
+    selectedId = $(this).attr('dbid');
+    loadPreview(selectedId);
+    $('#titleInput').val($(this).attr('title'));
   });
 
   //On Level Select Update the Selected level
-  $(".lvlSelect").click(function(){
-    $(".lvlSelect").removeClass("active");
-    $(this).addClass("active");
+  $('.lvlSelect').click(function(){
+    $('.lvlSelect').removeClass('active');
+    $(this).addClass('active');
     lvlSelected = this.id;
   });
 
   //On Class Select load the correct chapters
-  $(".classSelect").click(function(){
-    $(".classSelect").removeClass("active");
-    $(this).addClass("active");
+  $('.classSelect').click(function(){
+    $('.classSelect').removeClass('active');
+    $(this).addClass('active');
     loadPage(lvlSelected, this.id);
+  });
+
+  //On Class Select load the correct chapters
+  $('#inputButton').click(function(){
+    var titleText = $('#titleInput').val();
+    if (titleText == undefined) {
+      alert("Please Select An Activity First!")
+    } else if (chapter_id == undefined) {
+      alert("Please Select A Destination To Insert!")
+    }  else {
+      updateDatabase(selectedId, chapter_id, titleText);
+    }
   });
 
   //When a chapter/lesson is selected set the database id and close the modal
@@ -48,15 +62,13 @@ $(document).ready(function(){
       //If They've Hit Bottom of Div
       if($(this)[0].scrollHeight <= $(this).scrollTop() + $(this).innerHeight()) {
         page +=1;
-        search($("#searchBar").val(), true, page);
+        search($('#searchBar').val(), true, page);
       }
     }
   })
   //Default Search
   search("", false, page);
 });
-
-
 
 //Search Function
 function search(search, append, page) {
@@ -88,6 +100,20 @@ function loadPreview(db_id) {
     }
   };
   xmlhttp.open("GET", "looma-contentPreview.php?" + "dbid=" + db_id, true);
+  xmlhttp.send();
+}
+
+
+//Updates a given database entry
+function updateDatabase(db_id, ch_id, title) {
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      document.getElementById("outputField").innerHTML = xmlhttp.responseText;
+      window.alert("Activity " + title + " successfully updated!");
+    }
+  };
+  xmlhttp.open("GET", "looma-contentNav-databaseUpdate.php?title=" + title + "&dbid=" + db_id + "&chid=" + ch_id);
   xmlhttp.send();
 }
 

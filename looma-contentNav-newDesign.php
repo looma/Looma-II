@@ -1,4 +1,4 @@
-<html> 
+<html>
 <head>
   <!-- JQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
@@ -42,7 +42,6 @@
             </form>
           </div>
           <div class="col-md-5">
-            <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#contentNavModal">Location To Add To</button>
           </div>
         </div>
       </div>
@@ -50,15 +49,20 @@
     <!-- results -->
     <div class="row">
       <div class="col-sm-6 results" id="resultsArea"></div>
-      <div class="col-sm-6 preview">
-        <div id="preview">
+      <div class="col-sm-6">
+        <div class="row preview" id="preview">
 
+        </div>
+        <div class="row edit">
+          Title: <input id="titleInput" type="text" name="firstname" value=""> <br><br>
+          <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#contentNavModal">Location To Add To</button><br>
+          <input id="inputButton" type="submit" value="Submit">
+          <div id="outputField"></div>
         </div>
       </div>
     </div>
 
-    <div class="row edit">
-    </div>
+
     <!-- Send Modal Last -->
     <div id="contentNavModal" class="modal fade" role="dialog">
       <div class="modal-dialog">

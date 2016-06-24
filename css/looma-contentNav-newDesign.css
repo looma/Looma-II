@@ -25,9 +25,27 @@ body{
   border-top-right-radius: 3px;
 }
 
+.contentPreview {
+  width: 48%;
+  height: 70%;
+  margin-top: 5px;
+  margin-left: 2%;
+  background-color: white;
+  border-radius: 3px;
+}
+
 .preview {
-  width: 49%;
-  height: 59%;
+  width: 100%;
+  height: 56%;
+  margin-top: 9px;
+  margin-left: 2%;
+  background-color: white;
+  border-radius: 3px;
+}
+
+.edit {
+  padding: 4px;
+  height: 20%;
   margin-top: 5px;
   margin-left: 2%;
   background-color: white;
@@ -35,21 +53,13 @@ body{
 }
 
 .results {
-  width: 49%;
-  height: 59%;
+  width: 48%;
+  height: 77%;
   overflow: scroll;
   background-color: white;
   margin-top: 5px;
   border-radius: 3px;
 
-}
-
-.edit {
-  padding: 4px;
-  margin-top: 1%;
-  height: 17%;
-  background-color: white;
-  border-radius: 3px;
 }
 
 .centerVert {

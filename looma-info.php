@@ -9,17 +9,17 @@ File: looma-info.php
 Description:  for Looma 2
 -->
 <?php $page_title = 'Looma Information';
-	  include ('includes/header.php'); 
-?>	
-		<link rel="stylesheet" href="css/looma-info.css"> 
+	  include ('includes/header.php');
+?>
+		<link rel="stylesheet" href="css/looma-info.css">
 	</head>
 
 	<body>
 	<div id="main-container-horizontal">
 		<h2 class="title">Looma Info page</h2>
-			
+
 	<h3>Looma 2</h3>
-	<h4>Release 2.2, March 2016</h4>
+	<h4>Release 2.2.2, March 2016</h4>
 	<h4>Contact: info at villagetechsolutions dot org</h4>
 	<h4> <span class='glyphicon glyphicon-copyright-mark'></span> VillageTech Solutions</h4>
 	<br><br><br><br>
@@ -30,7 +30,7 @@ Description:  for Looma 2
 		<p>jsKeyboard,leaflet.js, paper.js, TileMill, jQuery, jQuery UI, bootstrap, mongodb, modernizer, pico2wave</p>
 			<p>viewer.js, pdf.js, responsiveVoice.js, FullScreen.js topojson.js, google translate</p>
 			<p>xnepali.net/fonts, stackoverflow</p>
-			
+
 			ntent:
 5Gear Studios
 Ales Kladnik
@@ -91,7 +91,7 @@ Pocobor
 Three60
 
 Employed software
-Bootstrap 
+Bootstrap
 Flipper.css
 Google translate
 Leaflet
@@ -282,7 +282,7 @@ OSM, geoFabrik, others?
                <p>William Hoff</p>
                <p>Wouter Zwart</p>
                <p>Zach Jesberger</p>
-		
+
 		<!--	<p>Peter Williams</p>
 			<p>Wouter Zwart</p>
 			<p>Rob Grande </p>
@@ -343,14 +343,14 @@ OSM, geoFabrik, others?
 		-->
 		</div>
 	  </div>
-	</div>	
-			<p>		
-				<span class="screensize"></span>	
-			<br><br>	
-				<span class="bodysize"></span>		
+	</div>
+			<p>
+				<span class="screensize"></span>
+			<br><br>
+				<span class="bodysize"></span>
 			</p>
 	<br>
-		
+
 		<h3>Tested only in Google Chrome</h3>
 		<h3>Report bugs and suggestions to info AT villagetechsolutions.org</h3>
 	<br>
@@ -373,32 +373,32 @@ OSM, geoFabrik, others?
 			<span><img src="images/logos/stackoverflow.png" height="66px"></span>
 		</div>
 		<br>
-		
+
 		<span><img src="images/logos/LoomaLogoTransparent.png" height="100px"></span>
-		
+
 		<!--button showing CC license icon, with link to the license info page -->
    		<a class="footer" href="looma-info.php">
 			<img src="images/logos/CC-BY-SA.png" height="33px">
 		</a>
-   		
+
    		<!-- copyright notice, with link to vts.org-->
     	<span class='glyphicon glyphicon-copyright-mark'></span>
     		<?php echo date("Y"); ?>
 		<a class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
-	
+
 		<a href="http://www.globalgiving.org"><img src="images/logos/globalgiving-vetted.png" height="66px"></a>
 		<br>
 
 
 
-    	<!-- W3C validator link    new URL=https://validator.w3.org/nu/ 
-   		<a class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->	
+    	<!-- W3C validator link    new URL=https://validator.w3.org/nu/
+   		<a class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->
 
 	</footer>
 	</div>
-	
-   	<?php include ('includes/toolbar.php'); ?>   	   		
-   	<?php include ('includes/js-includes.php'); ?> 
-   	<script src="js/looma-info.js"></script></html>	
+
+   	<?php include ('includes/toolbar.php'); ?>
+   	<?php include ('includes/js-includes.php'); ?>
+   	<script src="js/looma-info.js"></script></html>
    </body>
 </html>

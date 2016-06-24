@@ -53,7 +53,8 @@ LOOMA.playMedia = function (button) {
             case "audio":
             case "mp3":
                 window.location = 'looma-audio.php?fn=' + button.getAttribute('data-fn') +
-                                                 '&fp=' + button.getAttribute('data-fp');
+                                                 '&fp=' + button.getAttribute('data-fp') +
+                                                 '&dn=' + button.getAttribute('data-dn');
                 break;
             case "pdf":
                 /*
@@ -390,10 +391,12 @@ LOOMA.removeErrorMessage = function(id) {
 
 /* LOOMA.speak()
 * Author: Akshay Srivatsan
+* modified: Skip
 * Date: Summer 2015
 * Description: Put this function in your JavaScript file to use speech
 *   synthesis, or just import this file from your HTML file.
-* Requirements: pico2wave must be installed on the Looma or server that serves
+* Requirements: Uses the built-in javascript speechSynthesis object if implemented by the browser.
+*   Otherwise, attempts to use server-side PHP and pico2wave. pico2wave must be installed on the Looma or server that serves
 *   this JS file. The speech synthesis PHP file must be at "/Looma/looma-speech.php".
 */
  LOOMA.speak = function(text) {

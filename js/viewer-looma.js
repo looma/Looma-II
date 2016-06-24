@@ -1,40 +1,23 @@
-/*
- * Name: shannon, nolan, nikhil, skip
-Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 2015 6..12
-Revision: Looma 2.0.0
-
-filename: looma-viewer.js
-Description: Looma specific mods to pdf.js ["viewer.js"] for Looma
- */
-
-'use strict';/*********************
+/*********************
+* Author: Shannon
+* Owner: VillageTech Solutions (villagetechsolutions.org)
+* Date: 2016 06
+* File: viewer-looma.js
+* This file overrides certain variables and functions in the original viewer.js
+* Currently, it does the following:
+* - highlights the Hand Tool when selected
+* - renders thumbnails of each bookmarked page appear in the Outline View
+* 
 * Known bugs:
-* - changes to DEFAULT_PREFERENCES in viewer-looma.js not affecting
-*   the viewer behavior, because the components that the preferences 
-*   influence have already loaded by the time viewer-looma.js is run
 * - canvases in outline view sometimes don't render properly and 
 *   only display a blank page
 * - pdf loads more slowly
 *********************/
-// Need this to be present when the rest of it loads.
-var DEFAULT_PREFERENCES = {
-  showPreviousViewOnLoad: true,
-  defaultZoomValue: '',
-  // 
-  sidebarViewOnLoad: 2,
-  // 
-  enableHandToolOnLoad: false,
-  enableWebGL: false,
-  pdfBugEnabled: false,
-  disableRange: false,
-  disableStream: false,
-  disableAutoFetch: false,
-  disableFontFace: false,
-  disableTextLayer: false,
-  useOnlyCssZoom: false
-};
 
+
+// overrode original HandTool in viewer.js to make it highlighted when it is active 
+// and unhighlighted when inactive
+// Most of the code in this function is identical to the original except where indicated in comments
 var HandTool = {
   initialize: function handToolInitialize(options) {
     var toggleHandTool = options.toggleHandTool;
@@ -48,7 +31,7 @@ var HandTool = {
           toggleHandTool.title =
             mozL10n.get('hand_tool_disable.title', null, 'Disable hand tool');
           /*************************/
-          toggleHandTool.classList.add("toggled");
+          toggleHandTool.classList.add("toggled"); // added code
           /************************/
           toggleHandTool.firstElementChild.textContent =
             mozL10n.get('hand_tool_disable_label', null, 'Disable hand tool');
@@ -56,7 +39,7 @@ var HandTool = {
           toggleHandTool.title =
             mozL10n.get('hand_tool_enable.title', null, 'Enable hand tool');
           /*************************/
-          toggleHandTool.classList.remove("toggled");
+          toggleHandTool.classList.remove("toggled"); // added code
           /*************************/
           toggleHandTool.firstElementChild.textContent =
             mozL10n.get('hand_tool_enable_label', null, 'Enable hand tool');
@@ -97,6 +80,7 @@ var HandTool = {
 };
 
 
+/*********Code to make thumbnails appear in table of contents (called outlineview)************/
 
 /************************
 * Code to render the canvas. 
@@ -145,6 +129,12 @@ function showCanvas(pg, doc, canvas, width, height) {
 }; 
 /********* end canvas rendering code **********/
 
+
+/*
+* Added code to override original DocumentOutlineView in viewer.js
+* This modified version makes the thumbnail of each bookmarked page
+* appear in the sidebar when OutlineView is selected.
+*/
 
 var DocumentOutlineView = function documentOutlineView(options) {
   var outline = options.outline;
@@ -211,19 +201,18 @@ var DocumentOutlineView = function documentOutlineView(options) {
       thumbDiv.id = 'outlineThumbnailContainer' + id;
       thumbDiv.className = 'outlineThumbnail';
       this.thumbDiv = thumbDiv;
-      //element.appendChild(thumbDiv);
-      // if (id === 1) {
-      //   // Highlight the thumbnail of the first page when no page number is
-      //   // specified (or exists in cache) when the document is loaded.
-      //   thumbDiv.classList.add('selected');
-      // }
+        
       var ring = document.createElement('div');
       ring.className = 'thumbnailSelectionRing';
       var borderAdjustment = 2;
       ring.style.width = this.canvasWidth + borderAdjustment + 'px';
       ring.style.height = this.canvasHeight + borderAdjustment + 'px';
       this.ring = ring;
-
+        
+      
+      /*
+      * Draw actual thumbnail
+      */
       // var canvas = document.getElementById('thumbnail' + id);
       var canvas = document.createElement('canvas');
       canvas.id = "thumbnail" + id;

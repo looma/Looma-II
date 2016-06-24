@@ -18,5 +18,8 @@ Comments:
 
 window.onload = function ()
     {
-        /*this function executes when the page is done loading*/
+        function notice () {alert('button clicked');}
+
+        var button = document.getElementById('teach');
+        button.addEventListener('click', notice);
     };

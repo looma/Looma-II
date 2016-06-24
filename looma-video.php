@@ -37,7 +37,7 @@ Usage: 	<button id="testvideo" data-fn="galaxies.mp4"
 		$filepath = $_REQUEST['fp'];
 	?>
 	<div id="main-container-horizontal">
-		<div height="95%">
+		<div id="video-player">
 			<div id="fullscreen" class="viewer">
 				<video id="video"
 				<?php echo 'poster="' . $filepath . thumbnail($filename) . '">'; ?>
@@ -46,7 +46,7 @@ Usage: 	<button id="testvideo" data-fn="galaxies.mp4"
 				<button  id="fullscreen-control"></button><br>
 			</div>
 		</div>
-	  <div id="video-controls">
+	  <div id="media-controls">
    		  <br><button type="button" class="media" id="play-pause"><?php keyword('Play') ?></button>
   		  <input type="range"       class="video" id="seek-bar" value="0" style="display:inline-block">
    		  <br><button type="button" class="media" id="volume">    <?php keyword('Volume') ?></button>

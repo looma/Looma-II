@@ -1,20 +1,20 @@
 <!--
 Author: modified for Looma by skip
-		adapted from Mozilla viewer.html for pdf.js	
-		
+		adapted from Mozilla viewer.html for pdf.js
+
 		***********************************************
-		* 
+		*
 		* generally the LOOMA modifications are done in viewer.css and looma-viewer.css, not here
-		* 
+		*
 		* future improvements:
 		* 	- remove L10n and other libraries [compatibility.js?]
-		* 
+		*
 		* 	- remove unwanted buttons from this HTML file instead of HIDING them with CSS
-		* 
+		*
 		***********************************************
 Filename: viewer.html
 Date: 6/15..2/16
-Description: 
+Description:
 
 -->
 
@@ -63,11 +63,13 @@ http://sourceforge.net/adobe/cmap/wiki/License/
 
     <!-- <script src="debugger.js"></script> -->
     <script src="viewer.js"></script>
-    
-    <!-- viewer-looma.js is SHANNON's code [+nolan&nikhil?] it overwrites some viewer.js functions, but not clear what it does
-    <script src="viewer-looma.js"></script>
-    -->
-    
+
+    <!-- viewer-looma.js, included below, is SHANNON's code [+nolan&nikhil?] it overwrites some viewer.js functions
+         and does things like enabling thumbnails on bookmarks.
+         It also changes the HANDTOOL, although we dont use the handtool in Looma for now -->
+    <script src="looma-viewer.js"></script>
+
+
     <!-- <script src="annotator/jquery.js"></script>  -->
     <!-- <script src="annotator/annotator.min.js"></script> -->
     <!-- <script async defer src="//hypothes.is/embed.js"></script> -->
@@ -121,7 +123,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
           <label for="findMatchCase" class="toolbarLabel" tabindex="95" data-l10n-id="find_match_case_label">Match case</label>
           <span id="findMsg" class="toolbarLabel"></span>
         </div>  <!-- findbar -->
-        
+
         <div id="secondaryToolbar" class="secondaryToolbar hidden doorHangerRight">
           <div id="secondaryToolbarButtonContainer">
             <button id="secondaryPresentationMode" class="secondaryToolbarButton presentationMode visibleLargeView" title="Switch to Presentation Mode" tabindex="51" data-l10n-id="presentation_mode">

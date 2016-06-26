@@ -126,6 +126,7 @@ Description:  displays and navigates content folders for Looma 2
 	echo "<br><table id='file-table'><tr>";
 	$buttons = 1;
 	$maxButtons = 3;
+    $specials = array("_", "-", ".", "/", "'");
 
 	// iterate through the files in this DIR and make buttons for each included FILE
 
@@ -155,7 +156,7 @@ Description:  displays and navigates content folders for Looma 2
 								);
 			$activity = $activities_collection -> findOne($query, $projection);
 
-  			$dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : $base;
+  			$dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : str_replace($specials, " ", $base);
 		//
 		//DEBUG   echo "activity is " . $activity['dn'] . " looked up '" . $file . "' and got '" . $dn . "'";
 

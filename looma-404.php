@@ -3,8 +3,8 @@
 Author:
 Email: skip@stritter.com
 Filename: yyy.html
-Date: x/x/2015
-Description: 
+Date: 6/2015
+Description: custom 404 page for looma browser if no internet present
 
 -->
 	<?php $page_title = 'Looma Games ';

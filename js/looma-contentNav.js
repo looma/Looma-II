@@ -12,6 +12,7 @@ var resultsShown;
 $(document).ready(function(){
   var page = 0;
   var lvlSelected;
+  var classSelected;
   var chapter_id;
   var selectedId;
 
@@ -27,13 +28,19 @@ $(document).ready(function(){
     $('.lvlSelect').removeClass('active');
     $(this).addClass('active');
     lvlSelected = this.id;
+    if (classSelected != undefined) {
+      loadPage(lvlSelected, classSelected)
+    }
   });
 
   //On Class Select load the correct chapters
   $('.classSelect').click(function(){
     $('.classSelect').removeClass('active');
     $(this).addClass('active');
-    loadPage(lvlSelected, this.id);
+    classSelected = this.id
+    if (lvlSelected != undefined) {
+      loadPage(lvlSelected, classSelected);
+    }
   });
 
   //On Class Select load the correct chapters
@@ -109,7 +116,6 @@ function updateDatabase(db_id, ch_id, title) {
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-      document.getElementById("outputField").innerHTML = xmlhttp.responseText;
       window.alert("Activity " + title + " successfully updated!");
     }
   };

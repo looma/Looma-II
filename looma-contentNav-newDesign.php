@@ -1,5 +1,7 @@
 <html>
 <head>
+  <title> Looma Content Nav </title>
+
   <!-- JQuery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 
@@ -17,32 +19,27 @@
   <link href="css/looma-contentNav-newDesign.css" type="text/css" rel="stylesheet">
 </head>
 
-
 <body>
   <div class="container-fluid">
     <div class="row navbar">
       <!-- Logo and Title -->
       <div class="row heading">
-        <div class="col-md-2">
+        <div class="col-sm-2">
           <img class="img-responsive logo" src="images/logos/LoomaLogoTransparentTrimmed.png" alt="Looma Logo"</img>
         </div>
-        <div class="col-md-6">
+        <div class="col-sm-6">
           <div class="title">Content Navigation: Adding Activities</div>
         </div>
-        <div class="col-md-3"></div>
+        <div class="col-sm-3"></div>
       </div>
       <!-- Search and Nav-->
       <div class="row search">
         <div class="centerVert">
-          <div class="col-md-5 ">
-            <form role="form">
-              <div class="form-group">
-                <input type="text" id="searchBar" class="form-control" placeholder="Search Activities" size="30" onkeyup="search(this.value, false, 0)">
-              </div>
-            </form>
-          </div>
-          <div class="col-md-5">
-          </div>
+          <form role="form">
+            <div class="form-group">
+              <input type="text" id="searchBar" class="form-control" placeholder="Search Activities" size="30" onkeyup="search(this.value, false, 0)">
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -51,7 +48,6 @@
       <div class="col-sm-6 results" id="resultsArea"></div>
       <div class="col-sm-6">
         <div class="row preview" id="preview">
-
         </div>
         <div class="row edit">
           Title: <input id="titleInput" type="text" name="firstname" value=""> <br><br>

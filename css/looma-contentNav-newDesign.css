@@ -25,6 +25,10 @@ body{
   border-top-right-radius: 3px;
 }
 
+#searchBar {
+  width: 50%;
+}
+
 .contentPreview {
   width: 48%;
   height: 70%;

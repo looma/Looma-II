@@ -102,9 +102,10 @@ img.logo {
 	background-color: #008CBA;
     color: white;
     padding: 15px 32px;
+    height: 20px;
     text-align: center;
     display: inline-block;
-    font-size: 12px;
+    font-size: 10px;
     margin: 4px 2px;
     cursor: pointer;
 }

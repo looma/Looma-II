@@ -95,7 +95,7 @@ foreach ($chapters as $ch) {
 	$ch_id  = array_key_exists('_id', $ch) ? $ch['_id'] : null;	//$ch_id is chapter ID string
 	// display chapter button for first [english] textbook, if any
 	if ($tb_fn && $ch_pn) {
-		echo "<td><button class='chapterButton'
+		echo "<td><button class='lessonButton'
 		onclick='chapterClick()'
 		data-fn='$tb_fn'
 		data-fp='$tb_fp'

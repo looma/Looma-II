@@ -110,9 +110,6 @@ img.logo {
     cursor:pointer;
     border-radius: 6px;
     border: solid 1px #2A4E77;
-    -webkit-transition-duration: 0.2s;
-    -moz-transition-duration: 0.2s;
-    transition-duration: 0.2s;
 }
 .lessonButton:hover, .lessonButton:focus {
     background: #356094;

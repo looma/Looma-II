@@ -23,7 +23,7 @@ $page = $_GET["page"] * 10;
 
 //Search Database and Get Cursor
 $regex = new MongoRegex("/^$request/i");
-$query = array("dn" => $regex); //note the single quotes around '$gt'
+$query = array("dn" => $regex, $fileTypes); //note the single quotes around '$gt'
 $cursor = $activities->find($query)->skip($page)->limit(10);
 
 

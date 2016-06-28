@@ -54,10 +54,10 @@ Description: Loads a preview of a page given an id
         image($fn, $ft, "content/images/");
         break;
       case "audio":
-        image($fn, $ft, "content/audio/");
+        audio($fn, $ft, "content/audio/");
         break;
       case "mp3":
-        image($fn, $ft, "content/audio/");
+        audio($fn, $ft, "content/audio/");
         break;
       case "pdf":
         pdf ($fn, $ft, "content/pdfs/");
@@ -95,6 +95,7 @@ Description: Loads a preview of a page given an id
     echo $source;
   }
   function epaath($fn, $ft, $fp) {
+    if ($fn->contains)
     $fileLocation = $fp . $fn . "/index.html";
     $source = '<iframe id="epaathFrame" src="' . $fileLocation . '" width="100%" height="90%"></iframe>';
     echo $source;

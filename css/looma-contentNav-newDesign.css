@@ -99,12 +99,22 @@ img.logo {
 }
 
 .lessonButton {
-	background-color: #008CBA;
+	background-color: #4479BA;
     color: white;
     padding: 15px 32px;
     text-align: center;
     display: inline-block;
-    font-size: 12px;
+    font-size: 16px;
     margin: 4px 2px;
-    cursor: pointer;
+    cursor:pointer;
+    border-radius: 6px;
+    border: solid 1px #2A4E77;
+    -webkit-transition-duration: 0.2s;
+    -moz-transition-duration: 0.2s;
+    transition-duration: 0.2s;
+}
+.lessonButton:hover, .lessonButton:focus {
+    background: #356094;
+    border: solid 1px #2A4E77;
+    text-decoration: none;
 }

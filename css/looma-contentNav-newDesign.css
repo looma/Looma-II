@@ -99,13 +99,13 @@ img.logo {
 }
 
 .lessonButton {
-	background-color: #4479BA;
+  background-color: #4479BA;
     color: white;
     padding: 15px 32px;
-    height: 20px;
     text-align: center;
     display: inline-block;
-    font-size: 10px;
+    font-size: 13px;
+    font-family: georgia;
     margin: 4px 2px;
     cursor:pointer;
     border-radius: 6px;

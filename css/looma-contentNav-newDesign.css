@@ -27,6 +27,7 @@ body{
 
 #searchBar {
   width: 50%;
+  margin-left: 15px;
 }
 
 .contentPreview {
@@ -45,6 +46,10 @@ body{
   margin-left: 2%;
   background-color: white;
   border-radius: 3px;
+}
+
+#titleInput {
+  width: 50%;
 }
 
 .edit {
@@ -77,10 +82,6 @@ body{
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
   vertical-align
-}
-
-#searchBar {
-  margin-left: 15px;
 }
 
 .title {

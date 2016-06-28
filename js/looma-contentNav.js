@@ -91,18 +91,18 @@ function search(search, append, page) {
       resultsShown = $("#resultsArea div").length;
     }
   };
-  var videosChecked = document.getElementById("videosChecked").checked;
-  var webpagesChecked = document.getElementById("webpagesChecked").checked;
-  var audioChecked = document.getElementById("audioChecked").checked;
-  var imagesChecked = document.getElementById("imagesChecked").checked;
+  // var videosChecked = document.getElementById("videosChecked").checked;
+  // var webpagesChecked = document.getElementById("webpagesChecked").checked;
+  // var audioChecked = document.getElementById("audioChecked").checked;
+  // var imagesChecked = document.getElementById("imagesChecked").checked;
   if (!append) {
     page = 0;
   }
   var toLoad = "looma-contentNav-results.php?q=" + search + "&page=" + page;
-  toLoad += "&videosChecked=" + videosChecked;
-  toLoad += "&webpagesChecked=" + webpagesChecked;
-  toLoad += "&audioChecked=" + audioChecked;
-  toLoad += "&imagesChecked=" + imagesChecked;
+  // toLoad = toLoad + "&videosChecked=" + videosChecked;
+  // toLoad = toLoad + "&webpagesChecked=" + webpagesChecked;
+  // toLoad = toLoad + "&audioChecked=" + audioChecked;
+  // toLoad = toLoad + "&imagesChecked=" + imagesChecked;
   xmlhttp.open("GET", toLoad, true);
   xmlhttp.send();
 }

@@ -35,11 +35,25 @@
       <!-- Search and Nav-->
       <div class="row search">
         <div class="centerVert">
-          <form role="form">
-            <div class="form-group">
-              <input type="text" id="searchBar" class="form-control" placeholder="Search Activities" size="30" onkeyup="search(this.value, false, 0)">
-            </div>
-          </form>
+          <div class="col-md-6">
+            <form role="form">
+              <div class="form-group">
+                <input type="text" id="searchBar" class="form-control" placeholder="Search Activities" size="30" onkeyup="search(this.value, false, 0)">
+              </div>
+            </form>
+          </div>
+          <div class="col-md-1">
+            <input id ="videosCheck" type="checkbox" name="fileType" value="videos" checked> Videos<br>
+          </div>
+          <div class="col-md-1">
+            <input id = "webpagesCheck" type="checkbox" name="fileType" value="webpages" checked> Webpages<br>
+          </div>
+          <div class="col-md-1">
+            <input id = "audioCheck" type="checkbox" name="fileType" value="audio" checked> Audio<br>
+          </div>
+          <div class="col-md-1">
+            <input id = "imagesCheck" type="checkbox" name="fileType" value="images" checked> Images<br>
+          </div>
         </div>
       </div>
     </div>

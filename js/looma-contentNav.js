@@ -56,7 +56,7 @@ $(document).ready(function(){
   });
 
   //When a chapter/lesson is selected set the database id and close the modal
-  $(document).on('click', 'button.chapterButton', function(){
+  $(document).on('click', 'button.lessonButton', function(){
     var button = event.target;
     chapter_id = this.getAttribute('data-ch');
     $('#contentNavModal').modal('toggle');
@@ -73,6 +73,9 @@ $(document).ready(function(){
       }
     }
   })
+  $(':checkbox').change(function() {
+    search($('#searchBar').val(), false, page);
+   });
   //Default Search
   search("", false, page);
 });
@@ -91,18 +94,21 @@ function search(search, append, page) {
       resultsShown = $("#resultsArea div").length;
     }
   };
-  // var videosChecked = document.getElementById("videosChecked").checked;
-  // var webpagesChecked = document.getElementById("webpagesChecked").checked;
-  // var audioChecked = document.getElementById("audioChecked").checked;
-  // var imagesChecked = document.getElementById("imagesChecked").checked;
+  var videosChecked = document.getElementById("videosChecked").checked;
+  var webpagesChecked = document.getElementById("webpagesChecked").checked;
+  var audioChecked = document.getElementById("audioChecked").checked;
+  var imagesChecked = document.getElementById("imagesChecked").checked;
+  var pdsChecked = document.getElementById("pdfsChecked").checked;
   if (!append) {
     page = 0;
   }
   var toLoad = "looma-contentNav-results.php?q=" + search + "&page=" + page;
-  // toLoad = toLoad + "&videosChecked=" + videosChecked;
-  // toLoad = toLoad + "&webpagesChecked=" + webpagesChecked;
-  // toLoad = toLoad + "&audioChecked=" + audioChecked;
-  // toLoad = toLoad + "&imagesChecked=" + imagesChecked;
+  toLoad = toLoad + "&videosChecked=" + videosChecked;
+  toLoad = toLoad + "&webpagesChecked=" + webpagesChecked;
+  toLoad = toLoad + "&audioChecked=" + audioChecked;
+  toLoad = toLoad + "&imagesChecked=" + imagesChecked;
+  toLoad = toLoad + "&pdfsChecked=" + pdsChecked;
+
   xmlhttp.open("GET", toLoad, true);
   xmlhttp.send();
 }

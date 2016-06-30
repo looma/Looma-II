@@ -21,11 +21,35 @@ $activities = $fileDB -> activities;
 $request = $_GET["q"];
 $page = $_GET["page"] * 10;
 
+//Get Search Parameters
+$fileTypes = array();
+$showVideo = $_GET["videosChecked"];
+$showAudio = $_GET["audioChecked"];
+$showImages = $_GET["imagesChecked"];
+$showWebpages = $_GET["webpagesChecked"];
+$showPdfs = $_GET["pdfsChecked"];
+
+//Append Relevant File Types
+if ($showVideo == "true") {
+	array_push($fileTypes, "mp4", "video", "mov");
+}
+if ($showAudio == "true") {
+	array_push($fileTypes, "mp3", "audio");
+}
+if ($showImages == "true") {
+	array_push($fileTypes, "image", "jpg", "png", "gif");
+}
+if ($showWebpages == "true") {
+	array_push($fileTypes, "EP", "html", "htm", "php", "asp");
+}
+if ($showPdfs == "true") {
+	array_push($fileTypes, "pdf");
+}
+
 //Search Database and Get Cursor
 $regex = new MongoRegex("/^$request/i");
-$query = array("dn" => $regex); 
+$query = array("dn" => $regex, 'ft' => array('$in' => $fileTypes));
 $cursor = $activities->find($query)->skip($page)->limit(10);
-
 
 
 foreach ($cursor as $d)

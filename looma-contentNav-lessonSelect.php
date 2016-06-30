@@ -36,7 +36,6 @@ include ('includes/headerWithoutStyling.php');
 		$class = trim($_GET['class']);
 		$subject = trim($_GET['subject']) ;
 		echo "	<div id='main-container-horizontal' class='scroll'>";
-		echo "<h2 class='title'>Chapters for " . ucfirst($class) . " " . ucfirst($subject) . "</h2>";
 		//get a textbook record for this CLASS and SUBJECT
 		$query = array('class' => $class, 'subject' => $subject);
 		//returns only these fields of the textbook record
@@ -59,12 +58,7 @@ include ('includes/headerWithoutStyling.php');
 	$tb_nfn = array_key_exists('nfn', $tb) ? $tb['nfn'] : null;	//nfn is textbook native filename
 	$tb_ndn = array_key_exists('ndn', $tb) ? $tb['ndn'] : null;		//dn is textbook displayname
 	$prefix = array_key_exists('prefix', $tb) ? $tb['prefix'] : null; //prefix is the chapter-id starting characters, e.g. "2EN"
-	echo "<br><br><table>";
-	echo "<tr>";
-	if ($tb_fn != null) echo "<th><button class='heading img' id='englishTitle' disabled> $tb_dn
-	<img src=" . $tb_fp . thumbnail($tb_fn) . "></button></th>";
-	else                echo "<th></th>";
-	echo "</tr>";
+	echo "<br><table>";
 	//echo "<br>DEBUG: displayname:  " . $tb_dn . ", file: " . $tb_fn . ", path: " . $tb_fp;
 	//echo "<br>DEBUG: nativedisplayname:  " . $tb_ndn . ", nativefile: " . $tb_nfn . ". path: " . $tb_fp;
 	// REMOVED: CHAPTERS collection doesnt have CLASS and SUBJECT , just CH_ID
@@ -97,6 +91,7 @@ foreach ($chapters as $ch) {
 	if ($tb_fn && $ch_pn) {
 		echo "<td><button class='lessonButton'
 		onclick='chapterClick()'
+		style='margin-left: 50%; width: 275px;'
 		data-fn='$tb_fn'
 		data-fp='$tb_fp'
 		data-ch='$ch_id'

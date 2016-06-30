@@ -40,12 +40,16 @@ body{
 }
 
 .preview {
-  width: 100%;
+  width: 105%;
   height: 56%;
-  margin-top: 9px;
-  margin-left: 2%;
+  margin-top: 5px;
+  margin-left: 1%;
   background-color: white;
   border-radius: 3px;
+}
+
+.contentFilters{
+  padding-top: 10px;
 }
 
 #titleInput {
@@ -55,14 +59,15 @@ body{
 .edit {
   padding: 4px;
   height: 20%;
-  margin-top: 5px;
-  margin-left: 2%;
+  width: 105%;
+  margin-top: 9px;
+  margin-left: 1%;
   background-color: white;
   border-radius: 3px;
 }
 
 .results {
-  width: 48%;
+  width: 49%;
   height: 77%;
   overflow: scroll;
   background-color: white;
@@ -100,20 +105,48 @@ img.logo {
 }
 
 .lessonButton {
+  margin-top: 10px;
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background-color:#f9f9f9;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	cursor:pointer;
+	color:#666666;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 76px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+}
+.lessonButton:hover {
+	background-color:#e9e9e9;
+}
+.lessonButton:active {
+	position:relative;
+	top:1px;
+}
+
+/*.lessonButton {
   background-color: #4479BA;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    display: inline-block;
-    font-size: 13px;
-    font-family: georgia;
-    margin: 4px 2px;
-    cursor:pointer;
-    border-radius: 6px;
-    border: solid 1px #2A4E77;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 13px;
+  font-family: georgia;
+  margin: 4px 2px;
+  cursor:pointer;
+  border-radius: 6px;
+  border: solid 1px #2A4E77;
 }
 .lessonButton:hover, .lessonButton:focus {
     background: #356094;
     border: solid 1px #2A4E77;
     text-decoration: none;
-}
+}*/

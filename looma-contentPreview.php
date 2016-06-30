@@ -22,15 +22,17 @@ Description: Loads a preview of a page given an id
   $projection = array(
             'ft' => 1,
             'fn' => 1,
+            'fp' => 1,
             );
 
   $activity = $activities->findOne($query, $projection);
 
   $ft = $activity['ft'];
   $fn = $activity['fn'];
-  $lookupPath= get_include_lookup_path($ft, $fn);
+  $filePath = $activity['fp'];
+  $lookupPath= get_include_lookup_path($ft, $fn, $filePath);
 
-  function get_include_lookup_path($ft, $fn) {
+  function get_include_lookup_path($ft, $fn, $filePath) {
     switch ($ft) {
       case "video":
         video($fn, $ft, "content/videos/");
@@ -65,6 +67,15 @@ Description: Loads a preview of a page given an id
       case "EP":
         epaath($fn, $ft, "content/epaath/activities/");
         break;
+      case "html":
+        webpage("content/webpages/", $filePath);
+        break;
+      case "htm":
+        webpage("content/webpages/", $filePath);
+        break;
+      case "php":
+        webpage("content/webpages/", $filePath);
+        break;
       default:
         echo "unknown filetype " . $ft . "in activities.php";
         break;
@@ -76,11 +87,13 @@ Description: Loads a preview of a page given an id
     echo '<video width="100%" height="90%" controls>';
       echo $source;
     echo '</video>';
+    echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
   }
   function image($fn, $ft, $fp) {
     $fileLocation = $fp . $fn;
     $source = '<img src="' . $fileLocation . '.' . $ft. '" style="height:100%;width:90%;">';
     echo $source;
+    echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
   }
   function audio($fn, $ft, $fp) {
     $fileLocation = $fp . $fn;
@@ -93,10 +106,17 @@ Description: Loads a preview of a page given an id
     $fileLocation = $fp . $fn;
     $source = '<iframe src="' . $fileLocation . '" width="100%" height="90%">';
     echo $source;
+    echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
   }
   function epaath($fn, $ft, $fp) {
-    if ($fn->contains)
     $fileLocation = $fp . $fn . "/index.html";
+    $source = '<iframe id="epaathFrame" src="' . $fileLocation . '" width="100%" height="90%"></iframe>';
+    echo $source;
+    echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
+
+  }
+  function webpage($fileRoot, $filePath) {
+    $fileLocation = $fileRoot . $filePath;
     $source = '<iframe id="epaathFrame" src="' . $fileLocation . '" width="100%" height="90%"></iframe>';
     echo $source;
     echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';

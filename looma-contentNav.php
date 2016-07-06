@@ -67,7 +67,8 @@
         <div class="row preview" id="preview">
         </div>
         <div class="row edit">
-          Title: <input id="titleInput" type="text" name="firstname" value=""> <br><br>
+          Title: <input id="titleInput" type="text" name="firstname" value=""> <br>
+          Current Class: <span id="currClass"></span> <br> <br>
           <button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#contentNavModal">Location To Add To</button><br>
           <input id="inputButton" type="submit" value="Submit">
           <div id="outputField"></div>

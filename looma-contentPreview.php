@@ -76,6 +76,9 @@ Description: Loads a preview of a page given an id
       case "php":
         webpage("content/webpages/", $filePath);
         break;
+      case "loomaPage":
+        webpage("", $filePath);
+        break;
       default:
         echo "unknown filetype " . $ft . "in activities.php";
         break;

@@ -28,8 +28,8 @@ Description: Single row of search results
 
 	</style>
 
-	<div class="well well-sm individualResult" dbid=<?php echo $d_id; ?> title=<?php echo '"' . $title . '"'; ?>>
-		<h4><?php echo $title;?></h4>
-		<div class="limitedResult">This is the limited result <?php echo $text ?></div>
+	<div class="well well-sm individualResult" dbid=<?php echo $d_id; ?> title=<?php echo '"' . $d_title . '"'; ?> chid=<?php echo '"' . $chid . '"'; ?>>
+		<h4><?php echo $d_title;?></h4>
+		<div class="limitedResult"><b>Source</b> - Khan Academy </div>
 	</div>
 </div>

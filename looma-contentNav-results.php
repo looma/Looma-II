@@ -8,9 +8,6 @@ File: looma-contentNav-results.php
 Description: Connents to MONGO DB Database and grabs activities to show
 -->
 <?php
-function populateResults($title, $text, $d_id) {
-	include 'looma-contentNav-result.php';
-}
 
 //Connents to Mongo DB
 $m = new MongoClient();
@@ -57,10 +54,11 @@ foreach ($cursor as $d)
 	//Grab The ID, Title, and description
 	$d_id = array_key_exists('_id', $d) ? $d['_id'] : null;
 	$d_title = array_key_exists('dn', $d) ? $d['dn'] : null;
+	$chid = array_key_exists('ch_id', $d) ? $d['ch_id'] : null;
 	$d_description = "sample text";
 
 	//Add the search result
-	populateResults($d_title, $d_description, $d_id);
+	include 'looma-contentNav-result.php';
 }
 
 ?>

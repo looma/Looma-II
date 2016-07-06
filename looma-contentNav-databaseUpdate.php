@@ -9,7 +9,6 @@
   $ch_id = $_GET["chid"];
   $db_id = $_GET["dbid"];
 
-
   //Create Query For Activity
   $toFind = array('_id' => new MongoId($db_id));
 

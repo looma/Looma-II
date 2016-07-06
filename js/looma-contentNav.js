@@ -21,6 +21,11 @@ $(document).ready(function(){
     selectedId = $(this).attr('dbid');
     loadPreview(selectedId);
     $('#titleInput').val($(this).attr('title'));
+    var currClass = $(this).attr('chid');
+    if (currClass == "") {
+      currClass = "Not Assigned";
+    }
+    $('#currClass').text(currClass);
   });
 
   //On Level Select Update the Selected level

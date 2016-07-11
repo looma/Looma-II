@@ -30,6 +30,6 @@ Description: Single row of search results
 
 	<div class="well well-sm individualResult" dbid=<?php echo $d_id; ?> title=<?php echo '"' . $d_title . '"'; ?> chid=<?php echo '"' . $chid . '"'; ?>>
 		<h4><?php echo $d_title;?></h4>
-		<div class="limitedResult"><b>Source</b> - Khan Academy </div>
+		<div class="limitedResult"><b>Source</b> - </div>
 	</div>
 </div>

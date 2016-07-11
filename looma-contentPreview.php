@@ -44,16 +44,16 @@ Description: Loads a preview of a page given an id
         video($fn, $ft, "content/videos/");
         break;
       case "image":
-        image($fn, $ft, "content/images/");
+        image($fn, $ft, "content/pictures/");
         break;
       case "jpg":
-        image($fn, $ft, "content/images/");
+        image($fn, $ft, "content/pictures/");
         break;
       case "png":
-        image($fn, $ft, "content/images/");
+        image($fn, $ft, "content/pictures/");
         break;
       case "gif":
-        image($fn, $ft, "content/images/");
+        image($fn, $ft, "content/pictures/");
         break;
       case "audio":
         audio($fn, $ft, "content/audio/");
@@ -94,8 +94,9 @@ Description: Loads a preview of a page given an id
   }
   function image($fn, $ft, $fp) {
     $fileLocation = $fp . $fn;
-    $source = '<img src="' . $fileLocation . '.' . $ft. '" style="height:100%;width:90%;">';
+    $source = '<img src="' . $fileLocation . '" style="height:90%;width:90%;">';
     echo $source;
+    echo '<br>';
     echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
   }
   function audio($fn, $ft, $fp) {

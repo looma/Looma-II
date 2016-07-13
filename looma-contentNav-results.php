@@ -8,11 +8,7 @@ File: looma-contentNav-results.php
 Description: Connents to MONGO DB Database and grabs activities to show
 -->
 <?php
-
-//Connents to Mongo DB
-$m = new MongoClient();
-$fileDB = $m->looma;
-$activities = $fileDB -> activities;
+include 'includes/mongo-connect.php';
 
 //Get Query and Page To Load
 $request = $_GET["q"];
@@ -43,14 +39,19 @@ if ($showPdfs == "true") {
 	array_push($fileTypes, "pdf");
 }
 
-//Search Database and Get Cursor
-$regex = new MongoRegex("/^$request/i");
+//Build Regex .* is anything and i is ignore case
+$regex = new MongoRegex('/^.*' . $request . '/i');
+
+//Query For Item
 $query = array("dn" => $regex, 'ft' => array('$in' => $fileTypes));
-$cursor = $activities->find($query)->skip($page)->limit(10);
+$cursor = $activities_collection->find($query)->skip($page)->limit(10);
 
 
 foreach ($cursor as $d)
 {
+	// $d_id = $cursor['_id'];
+	// $d_title = $cursor['dn'];
+	// $chid = $cursor['ch_id'];
 	//Grab The ID, Title, and description
 	$d_id = array_key_exists('_id', $d) ? $d['_id'] : null;
 	$d_title = array_key_exists('dn', $d) ? $d['dn'] : null;
@@ -58,7 +59,14 @@ foreach ($cursor as $d)
 	$d_description = "sample text";
 
 	//Add the search result
-	include 'looma-contentNav-result.php';
+	echo "
+	<div class='row'>
+		<div class='well well-sm individualResult' dbid='$d_id' title='$d_title' chid='$chid'>
+			<h4> $d_title </h4>
+			<div class='limitedResult'><b>Source</b> - </div>
+		</div>
+	</div>
+	";
 }
 
 ?>

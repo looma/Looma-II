@@ -8,31 +8,88 @@ File: looma-contentPreview.php
 Description: Loads a preview of a page given an id
 -->
 <?php
+  include 'includes/mongo-connect.php';
+
   //Get chapter lookup
   $db_id = $_GET['dbid'];
 
-  //Connent to Mongo DB
-  $m = new MongoClient();
-  $fileDB = $m->looma;
-  $activities = $fileDB -> activities;
+  if ($db_id != null) {
+    //Create Query For Activity
+    $query = array('_id' => new MongoId($db_id));
+    //Only Get File Type and Filename
+    $projection = array(
+              'ft' => 1,
+              'fn' => 1,
+              'fp' => 1,
+              );
 
-  //Create Query For Activity
-  $query = array('_id' => new MongoId($db_id));
-  //Only Get File Type and Filename
-  $projection = array(
-            'ft' => 1,
-            'fn' => 1,
-            'fp' => 1,
-            );
+    $activity = $activities_collection->findOne($query, $projection);
 
-  $activity = $activities->findOne($query, $projection);
+    $ft = $activity['ft'];
+    $fn = $activity['fn'];
+    $fp = $activity['fp'];
+    load_from_relative_path($ft, $fn, $fp);
+  } else {
+    $ft = $_GET['ft'];
+    $fn = $_GET['fn'];
+    $fp = $_GET['fp'];
+    load_from_filePath($ft, $fp);
+  }
 
-  $ft = $activity['ft'];
-  $fn = $activity['fn'];
-  $filePath = $activity['fp'];
-  $lookupPath= get_include_lookup_path($ft, $fn, $filePath);
+  function load_from_filePath($ft, $fp) {
+    switch ($ft) {
+      case "video":
+        video($fp, $ft, "$activities_collection");
+        break;
+      case "mp4":
+        video($fp, $ft, "");
+        break;
+      case "mov":
+        video($fp, $ft, "");
+        break;
+      case "image":
+        image($fp, $ft, "");
+        break;
+      case "jpg":
+        image($fp, $ft, "");
+        break;
+      case "png":
+        image($fp, $ft, "");
+        break;
+      case "gif":
+        image($fp, $ft, "");
+        break;
+      case "audio":
+        audio($fp, $ft, "");
+        break;
+      case "mp3":
+        audio($fp, $ft, "");
+        break;
+      case "pdf":
+        pdf ($fp, $ft, "");
+        break;
+      case "EP":
+        epaath($fp, $ft, "");
+        break;
+      case "html":
+        webpage("", $fp);
+        break;
+      case "htm":
+        webpage("", $fp);
+        break;
+      case "php":
+        webpage("", $fp);
+        break;
+      case "loomaPage":
+        webpage("", $fp);
+        break;
+      default:
+        echo "<h4> The filetype <b> $ft </b> in <b> $fn </b> is not supported! </h4>";
+        break;
+    }
+  }
 
-  function get_include_lookup_path($ft, $fn, $filePath) {
+  function load_from_relative_path($ft, $fn, $fp) {
     switch ($ft) {
       case "video":
         video($fn, $ft, "content/videos/");
@@ -65,22 +122,22 @@ Description: Loads a preview of a page given an id
         pdf ($fn, $ft, "content/pdfs/");
         break;
       case "EP":
-        epaath($fn, $ft, "content/epaath/activities/");
+        epaath($fn, $ft, "content/epaath/activities/$fp");
         break;
       case "html":
-        webpage("content/webpages/", $filePath);
+        webpage("content/webpages/", $fp);
         break;
       case "htm":
-        webpage("content/webpages/", $filePath);
+        webpage("content/webpages/", $fp);
         break;
       case "php":
-        webpage("content/webpages/", $filePath);
+        webpage("content/webpages/", $fp);
         break;
       case "loomaPage":
-        webpage("", $filePath);
+        webpage("", $fp);
         break;
       default:
-        echo "unknown filetype " . $ft . "in activities.php";
+        echo "unknown filetype " . $ft . "in $activities_collection.php";
         break;
     }
   }
@@ -113,7 +170,12 @@ Description: Loads a preview of a page given an id
     echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
   }
   function epaath($fn, $ft, $fp) {
-    $fileLocation = $fp . $fn . "/index.html";
+    $fileLocation;
+    if ($fp != "") {
+      $fileLocation = $fp . $fn . "/start.html";
+    } else {
+      $fileLocation = $fn;
+    }
     $source = '<iframe id="epaathFrame" src="' . $fileLocation . '" width="100%" height="90%"></iframe>';
     echo $source;
     echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';

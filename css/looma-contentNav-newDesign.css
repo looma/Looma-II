@@ -7,6 +7,10 @@ body{
   background: #EBEBEB;
 }
 
+.hidden {
+  display:none;
+}
+
 /* Over Arching Container For Page*/
 .container-fluid {
   margin-top: 15px;
@@ -25,9 +29,49 @@ body{
   border-top-right-radius: 3px;
 }
 
+#fileStructure {
+  padding-left: 0px;
+  margin-left: 0px;
+  width: 100%;
+}
+
 #searchBar {
   width: 50%;
   margin-left: 15px;
+}
+
+.directoryButton {
+  -webkit-border-radius: 3;
+  -moz-border-radius: 3;
+  border-radius: 3px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 12px;
+  background: #ff8533;
+  padding: 5px 18px 5px 18px;
+  text-decoration: none;
+}
+
+.directoryButton:hover {
+  background: #ff6600;
+  text-decoration: none;
+}
+
+.fileButton {
+  -webkit-border-radius: 3;
+  -moz-border-radius: 3;
+  border-radius: 3px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 12px;
+  background: #999999;
+  padding: 5px 18px 5px 18px;
+  text-decoration: none;
+}
+
+.fileButton:hover {
+  background: #b5b5b5;
+  text-decoration: none;
 }
 
 .contentPreview {
@@ -95,7 +139,6 @@ body{
   color: white;
   font-family: "Arial Black", Gadget, sans-serif;
   text-align: left;
-
 }
 
 img.logo {
@@ -124,29 +167,48 @@ img.logo {
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
 }
+
 .lessonButton:hover {
 	background-color:#e9e9e9;
 }
+
 .lessonButton:active {
 	position:relative;
 	top:1px;
 }
 
-/*.lessonButton {
-  background-color: #4479BA;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  display: inline-block;
-  font-size: 13px;
-  font-family: georgia;
-  margin: 4px 2px;
-  cursor:pointer;
-  border-radius: 6px;
-  border: solid 1px #2A4E77;
+footer.well {
+    margin-top: 0px;
+    border-bottom: none;
 }
-.lessonButton:hover, .lessonButton:focus {
-    background: #356094;
-    border: solid 1px #2A4E77;
-    text-decoration: none;
-}*/
+.result {
+  background-color: grey;
+  padding-left: 30px;
+}
+.fullResult {
+  display: none;
+  border: 1px solid transparent;
+}
+
+.well {
+  margin: 10px;
+}
+
+#modeSelector {
+}
+
+#chapterNavOpener {
+  margin-top: 10px;
+}
+
+#inputButton {
+  margin-top: 10px;
+}
+
+#subjectSelect {
+  margin-top: 10px;
+}
+
+#unassignButton {
+  margin-top: 10px;
+}

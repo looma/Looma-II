@@ -30,12 +30,14 @@ Description:  Button Groups To Select Class
     </div>
 
     <!-- Level Select NOTE: ID Relates To Position in Database -->
-    <div class="btn-group btn-group-justified" style="margin-top:10px;" onclick="classButtonClicked">
+    <div id="subjectSelect" class="btn-group btn-group-justified" onclick="classButtonClicked">
       <a href="#" id="english" class="btn btn-default classSelect">English</a>
       <a href="#" id="math" class="btn btn-default classSelect">Math</a>
       <a href="#" id="science" class="btn btn-default classSelect">Science</a>
       <a href="#" id="social studies" class="btn btn-default classSelect">Social Studies</a>
     </div>
+
+    <center><button id="unassignButton" type="button" class="btn btn-default"> Unassign </button></center>
 
     <div id="lessonSelect"> </div>
   </body>

@@ -18,59 +18,104 @@ $(document).ready(function(){
   var currSelectedFile;
   var currSelectedFileType;
   var inSearch = true;
+  var displayThumbnails = true;
 
   //Toggle Between activity adder and results
-  $(document).on('click', '#modeSelector', function(){
+  $(document).on("click", "#modeSelector", function(){
     if (inSearch) {
       $("#headingTitle").text("Content Navigation: Adding Activities");
       $("#modeSelector").text("Editor");
-      openContentNav("");
+      $("#showThumbnails").removeClass("hidden");
+      openContentNav("", displayThumbnails);
       inSearch = false;
     } else {
       $("#headingTitle").text("Content Navigation: Assigning Activities");
       $("#modeSelector").text("Adder");
-      search($('#searchBar').val(), false, page);
+      $("#showThumbnails").addClass("hidden");
+      search($("#searchBar").val(), false, page);
       inSearch = true;
     }
   });
 
-  $(document).on('click', '.directoryButton', function(){
+  //
+  //Toggle Between activity adder and results
+  $(document).on("click", "#thumbnailButton", function(){
+    displayThumbnails = document.getElementById("thumbnailButton").checked;
+  });
+
+  $(document).on("click", ".directoryButton", function(){
     var linksTo = $(this).attr("linksTo");
     //If User Choose To Back
     if ($(this).attr("shouldGoToParent") == "true") {
       linksTo = linksTo.substr(0, linksTo.length-1);
       linksTo = linksTo.substr(0, linksTo.lastIndexOf("/")+1);
     }
-    openContentNav(linksTo);
+    openContentNav(linksTo, displayThumbnails);
   });
 
-  $(document).on('click', '.fileButton', function(){
+  $(document).on("click", ".fileButton", function(){
     var filePath = "content/" + $(this).attr("linksTo");
     currSelectedFile = filePath.substring(filePath.lastIndexOf("/") + 1);
     currSelectedFileType = filePath.substring(filePath.lastIndexOf(".") + 1);
 
+    //Try To Guess File Name by removing underscores
+    var displayName = currSelectedFile.substring(0, currSelectedFile.indexOf("."));
+    for (var i = 0; i < displayName.length; i+=1) {
+      var charAt = displayName.charAt(i);
+      if (charAt == "_" || charAt == "-") {
+        displayName.replace("_", " ");
+        displayName = displayName.substring(0, i) + " " + displayName.substring(i+1, displayName.length);
+      }
+    }
+
     //Update and load info
     loadPreviewWithParams(filePath, currSelectedFile, currSelectedFileType);
-    $('#titleInput').val("");
+    $("#titleInput").val(displayName);
     loadChapterId(currSelectedFile);
   });
 
   //When a chapter/lesson is selected set the database id and close the modal
-  $(document).on('click', '.individualResult', function(){
-    selectedId = $(this).attr('dbid');
+  $(document).on("click", "#contentNavButton", function() {
+    $(".chapterNav").removeClass('hidden');
+    $(".chapterSearch").addClass('hidden');
+  });
+
+  //When a chapter/lesson is selected set the database id and close the modal
+  $(document).on("click", "#searchLessonButton", function() {
+    $(".chapterNav").addClass('hidden');
+    $(".chapterSearch").removeClass('hidden');
+  });
+
+  //When a chapter/lesson is selected set the database id and close the modal
+  $(document).on("click", ".chapterResult", function() {
+    chapter_id = $(this).attr('ch_id');
+    $("#contentNavModal").modal("toggle");
+    $(".chapterNav").removeClass("hidden");
+    $(".chapterSearch").addClass('hidden');
+    $("#chapterSearchBar").val("");
+    lvlSelected = null;
+    classSelected = null;
+    resetModal();
+  });
+
+  //When a chapter/lesson is selected set the database id and close the modal
+  $(document).on("click", ".individualResult", function(){
+    selectedId = $(this).attr("dbid");
     loadPreview(selectedId);
-    $('#titleInput').val($(this).attr('title'));
-    var currClass = $(this).attr('chid');
+    $("#titleInput").val($(this).attr("title"));
+    $(".individualResult").removeClass("highlighted");
+    $(this).addClass("highlighted");
+    var currClass = $(this).attr("chid");
     if (currClass == "") {
       currClass = "Not Assigned";
     }
-    $('#currClass').text(currClass);
+    $("#currClass").text(currClass);
   });
 
   //On Level Select Update the Selected level
-  $('.lvlSelect').click(function(){
-    $('.lvlSelect').removeClass('active');
-    $(this).addClass('active');
+  $(document).on("click", ".lvlSelect", function() {
+    $(".lvlSelect").removeClass("active");
+    $(this).addClass("active");
     lvlSelected = this.id;
     if (classSelected != undefined) {
       loadPage(lvlSelected, classSelected)
@@ -78,9 +123,9 @@ $(document).ready(function(){
   });
 
   //On Class Select load the correct chapters
-  $('.classSelect').click(function(){
-    $('.classSelect').removeClass('active');
-    $(this).addClass('active');
+  $(document).on("click", ".classSelect", function() {
+    $(".classSelect").removeClass("active");
+    $(this).addClass("active");
     classSelected = this.id
     if (lvlSelected != undefined) {
       loadPage(lvlSelected, classSelected);
@@ -88,8 +133,8 @@ $(document).ready(function(){
   });
 
   //On Class Select load chapters titles
-  $(document).on('click', '#inputButton', function() {
-    var titleText = $('#titleInput').val();
+  $(document).on("click", "#inputButton", function() {
+    var titleText = $("#titleInput").val();
 
     //Make sure user selected activity and destination
     if (titleText == undefined) {
@@ -97,73 +142,82 @@ $(document).ready(function(){
     } else if (chapter_id == undefined) {
       alert("Please Select A Destination To Insert!")
     } else {
-      $('#confirmationModal').modal('show');
-      $('#activityName').text(titleText);
-      $('#locationName').text(chapter_id);
-      if ($('#currClass').text() != "Not Assigned") {
-        $('#confirmButton').removeClass('hidden');
+      $("#confirmationModal").modal("show");
+      $("#activityName").text(titleText);
+      $("#locationName").text(chapter_id);
+      if ($("#currClass").text() != "Not Assigned") {
+        $("#confirmButton").removeClass("hidden");
       }
     }
   });
 
   //When a chapter/lesson is selected set the database id and close the modal
-  $(document).on('click', 'button.lessonButton', function(){
+  $(document).on("click", "button.lessonButton", function(){
     var button = event.target;
-    chapter_id = this.getAttribute('data-ch');
-    $('#contentNavModal').modal('toggle');
+    chapter_id = this.getAttribute("data-ch");
+    $("#contentNavModal").modal("toggle");
+    lvlSelected = null;
+    classSelected = null;
+    resetModal();
   });
 
   //If They Choose To Unassign An Activity
-  $(document).on('click', '#unassignButton', function() {
+  $(document).on("click", "#unassignButton", function() {
     chapter_id = "Not Assigned";
-    $('#contentNavModal').modal('toggle');
+    $("#contentNavModal").modal("toggle");
+    lvlSelected = null;
+    classSelected = null;
+    resetModal();
   });
 
   //Confirm placement of activity
-  $(document).on('click', '#overrideButton', function() {
-    var titleText = $('#titleInput').val();
+  $(document).on("click", "#overrideButton", function() {
+    var titleText = $("#titleInput").val();
 
     if (inSearch) {
       updateDatabase(selectedId, chapter_id, titleText, false);
 
       //Update Info On Page
-      search($('#searchBar').val(), false, page);
+      search($("#searchBar").val(), false, page);
     } else {
       insertToDatabase(chapter_id, titleText, currSelectedFile, currSelectedFileType);
     }
 
-    $('#currClass').text(chapter_id);
-    $('#confirmationModal').modal('hide');
-    $('#confirmButton').addClass('hidden');
+    $("#currClass").text(chapter_id);
+    $("#confirmationModal").modal("hide");
+    $("#confirmButton").addClass("hidden");
   });
 
   //Confirm placement of activity
-  $(document).on('click', '#confirmButton', function() {
-    var titleText = $('#titleInput').val();
+  $(document).on("click", "#confirmButton", function() {
+    var titleText = $("#titleInput").val();
     updateDatabase(selectedId, chapter_id, titleText, true);
-    $('#confirmationModal').modal('hide');
-    $('#confirmButton').addClass('hidden');
+    $("#confirmationModal").modal("hide");
+    $("#confirmButton").addClass("hidden");
+    resetModal();
 
     //Update Info On Page
-    search($('#searchBar').val(), false, page);
-    $('#currClass').text(chapter_id);
+    search($("#searchBar").val(), false, page);
+    $("#currClass").text(chapter_id);
   });
 
   //When The Bottom Of Results is hit load more
-  $('#resultsArea').on('scroll', function() {
+  $(".results").on("scroll", function() {
     //If There Are More Results To Show
     if (inSearch && resultsShown%10 == 0) {
-      //If They've Hit Bottom of Div
+      //If They"ve Hit Bottom of Div
       if($(this)[0].scrollHeight <= $(this).scrollTop() + $(this).innerHeight()) {
         page +=1;
-        search($('#searchBar').val(), true, page);
+        search($("#searchBar").val(), true, page);
       }
     }
   })
 
   //When user filters out a type update
-  $(':checkbox').change(function() {
-    search($('#searchBar').val(), false, page);
+  $(":checkbox").change(function() {
+    if(inSearch) {
+      search($("#searchBar").val(), false, page);
+    }
    });
 
   //On page load, load default results
@@ -212,14 +266,32 @@ function search(search, append, page) {
   xmlhttp.send();
 } //END OF SEARCH
 
-function openContentNav(toAppend) {
+/*Chapter search Function
+Search: String To Search For
+Append: Whether To Append to Exisiting Results or Replace
+Page: What page of results to load
+*/
+function chapterSearch(search) {
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      document.getElementById("chapterResults").innerHTML = xmlhttp.responseText;
+    }
+  };
+
+  //Send Request
+  xmlhttp.open("GET", "looma-textbook-search.php?q=" + search, true);
+  xmlhttp.send();
+}
+
+function openContentNav(toAppend, displayThumbnails) {
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
       document.getElementById("resultsArea").innerHTML = xmlhttp.responseText;
     }
   };
-  xmlhttp.open("GET", "looma-contentNav-fileNav.php?q="+ toAppend, true);
+  xmlhttp.open("GET", "looma-contentNav-fileNav.php?q="+ toAppend + "&showThumbnails=" + displayThumbnails, true);
   xmlhttp.send();
 }
 
@@ -272,6 +344,19 @@ function insertToDatabase(ch_id, title, fileName, fileType) {
 function updateDatabase(db_id, ch_id, title, isDuplicate) {
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.open("GET", "looma-contentNav-databaseUpdate.php?cmd=update&title=" + title + "&dbid=" + db_id + "&chid=" + ch_id + "&duplicate=" + isDuplicate);
+  xmlhttp.send();
+}
+
+function resetModal() {
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      document.getElementById("classSelect").innerHTML = xmlhttp.responseText;
+      document.getElementById("lessonSelect").innerHTML = "";
+      document.getElementById("chapterResults").innerHTML = "";
+    }
+  };
+  xmlhttp.open("GET", "looma-contentNav-classNav.php");
   xmlhttp.send();
 }
 

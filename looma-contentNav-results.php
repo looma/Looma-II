@@ -12,7 +12,7 @@ include 'includes/mongo-connect.php';
 
 //Get Query and Page To Load
 $request = $_GET["q"];
-$page = $_GET["page"] * 10;
+$page = $_GET["page"] * 20;
 
 //Get Search Parameters
 $fileTypes = array();
@@ -44,7 +44,7 @@ $regex = new MongoRegex('/^.*' . $request . '/i');
 
 //Query For Item
 $query = array("dn" => $regex, 'ft' => array('$in' => $fileTypes));
-$cursor = $activities_collection->find($query)->skip($page)->limit(10);
+$cursor = $activities_collection->find($query)->skip($page)->limit(20);
 
 
 foreach ($cursor as $d)
@@ -59,13 +59,20 @@ foreach ($cursor as $d)
 	$d_description = "sample text";
 
 	//Add the search result
+	// echo "
+	// <div class='row'>
+	// 	<div class='well well-sm individualResult' dbid='$d_id' title='$d_title' chid='$chid'>
+	// 		<h4> $d_title </h4>
+	// 		<div class='limitedResult'></div>
+	// 	</div>
+	// </div>
+	// ";
 	echo "
-	<div class='row'>
-		<div class='well well-sm individualResult' dbid='$d_id' title='$d_title' chid='$chid'>
+	<tr>
+		<td class='individualResult' dbid='$d_id' title='$d_title' chid='$chid'>
 			<h4> $d_title </h4>
-			<div class='limitedResult'><b>Source</b> - </div>
-		</div>
-	</div>
+		</td>
+	</tr>
 	";
 }
 

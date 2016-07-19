@@ -37,7 +37,8 @@ Description:  Button Groups To Select Class
       <a href="#" id="social studies" class="btn btn-default classSelect">Social Studies</a>
     </div>
 
-    <center><button id="unassignButton" type="button" class="btn btn-default"> Unassign </button></center>
+    <button id="unassignButton" type="button" class="btn btn-default"> Remove </button>
+    <button id="searchLessonButton" type="button" class="btn btn-default"> Search </button>
 
     <div id="lessonSelect"> </div>
   </body>

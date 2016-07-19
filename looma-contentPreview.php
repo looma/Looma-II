@@ -147,15 +147,17 @@ Description: Loads a preview of a page given an id
     echo '<video width="100%" height="90%" controls>';
       echo $source;
     echo '</video>';
-    echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
+    echo '<input type="button" class="newTabButton" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
   }
+
   function image($fn, $ft, $fp) {
     $fileLocation = $fp . $fn;
     $source = '<img src="' . $fileLocation . '" style="height:90%;width:90%;">';
     echo $source;
     echo '<br>';
-    echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
+    echo '<input type="button" class="newTabButton" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
   }
+
   function audio($fn, $ft, $fp) {
     $fileLocation = $fp . $fn;
     $source = '<source src="' . $fileLocation . '" type="audio/' . $ft . '">';
@@ -163,12 +165,14 @@ Description: Loads a preview of a page given an id
       echo $source;
     echo '</audio>';
   }
+
   function pdf($fn, $ft, $fp) {
     $fileLocation = $fp . $fn;
     $source = '<iframe src="' . $fileLocation . '" width="100%" height="90%">';
     echo $source;
-    echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
+    echo '<input type="button" class="newTabButton" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
   }
+
   function epaath($fn, $ft, $fp) {
     $fileLocation;
     if ($fp != "") {
@@ -178,13 +182,14 @@ Description: Loads a preview of a page given an id
     }
     $source = '<iframe id="epaathFrame" src="' . $fileLocation . '" width="100%" height="90%"></iframe>';
     echo $source;
-    echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
-
+    echo '<input type="button" class="newTabButton" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
   }
+
   function webpage($fileRoot, $filePath) {
     $fileLocation = $fileRoot . $filePath;
     $source = '<iframe id="epaathFrame" src="' . $fileLocation . '" width="100%" height="90%"></iframe>';
     echo $source;
-    echo '<input type="button" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
+    echo '<input type="button" class="newTabButton" onclick="window.open(\'' .  $fileLocation . '\')" value="Open In New Tab">';
   }
+  
 ?>

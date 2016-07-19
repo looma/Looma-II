@@ -12,20 +12,17 @@ Description:  Provides a system for adding activities to the looma system
   <title> Looma Content Navigation </title>
 
   <!-- JQuery -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+  <script src="js/jquery.js"></script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
 
   <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <script src="js/bootstrap.min3.js"></script>
 
-  <link href="css/looma-contentNav-newDesign.css" type="text/css" rel="stylesheet">
+  <link href="css/looma-contentNav.css" type="text/css" rel="stylesheet">
 </head>
 
 <body>
@@ -79,7 +76,15 @@ Description:  Provides a system for adding activities to the looma system
 
     <!-- Results -->
     <div class="row">
-      <div class="col-sm-6 results" id="resultsArea"></div>
+      <div class="col-sm-6 results">
+        <div id="showThumbnails" class="hidden">
+          <input type="checkbox" checked="true" id="thumbnailButton"> Display Thumbnails <br>
+        </div>
+        <table class="table">
+          <tbody id="resultsArea">
+          </tbody>
+        </table>
+      </div>
       <div class="col-sm-6">
         <div class="row preview" id="preview">
         </div>
@@ -89,7 +94,7 @@ Description:  Provides a system for adding activities to the looma system
           Title: <input id="titleInput" type="text" name="firstname" value=""> <br>
           Current Class: <span id="currClass"></span> <br>
           <button id="chapterNavOpener" type="button" class="btn btn-primary" data-toggle="modal" data-target="#contentNavModal">Location To Add To</button><br>
-          <button id="inputButton" class="btn btn-primary">Submit</button>
+          <button id="inputButton" class="btn btn-success">Submit</button>
           <div id="outputField"></div>
         </div>
       </div>
@@ -108,8 +113,8 @@ Description:  Provides a system for adding activities to the looma system
             <div id="confirmation">Are you sure you want to add <span id="activityName"></span> to <span id="locationName"></span>?</div>
           </div>
           <div class="modal-footer">
-            <button id="overrideButton" type="button" class="btn btn-default" data-dismiss="modal">Override Current</button>
-            <button id="confirmButton" type="button" class="btn btn-default hidden" data-dismiss="modal">Duplicate Current</button>
+            <button id="overrideButton" type="button" class="btn btn-default" data-dismiss="modal">Change Current</button>
+            <button id="confirmButton" type="button" class="btn btn-default hidden" data-dismiss="modal">Add New</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
           </div>
         </div>
@@ -126,8 +131,22 @@ Description:  Provides a system for adding activities to the looma system
             <h4 class="modal-title">Location To Add To</h4>
           </div>
           <div class="modal-body">
-            <div id="classSelect"> <?php include 'looma-contentNav-classNav.php' ?> </div>
-            <div id="lessonSelect"> </div>
+            <div class="chapterNav">
+              <div id="classSelect"> <?php include 'looma-contentNav-classNav.php' ?> </div>
+              <div id="lessonSelect"> </div>
+            </div>
+            <div class="chapterSearch hidden">
+              <button id="contentNavButton" type="button" class="btn btn-default"> Navigation </button>
+              <form role="form">
+                <span class="form-group">
+                  <input type="text" id="chapterSearchBar" class="form-control" placeholder="Search Chapters" size="30" onkeyup="chapterSearch(this.value)">
+                </span>
+              </form>
+              <table class="table">
+                <tbody id="chapterResults">
+                </tbody>
+              </table>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

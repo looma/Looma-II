@@ -1,8 +1,10 @@
 <?php
   include 'includes/mongo-connect.php';
 
+  //Get Command
   $cmd = $_GET["cmd"];
 
+  //Update Command
   if ($cmd == "update") {
     //Get Query and Page To Load
     $title = $_GET["title"];

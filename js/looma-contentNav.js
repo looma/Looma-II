@@ -30,7 +30,7 @@ $(document).ready(function(){
       inSearch = false;
     } else {
       $("#headingTitle").text("Content Navigation: Assigning Activities");
-      $("#modeSelector").text("Adder");
+      $("#modeSelector").text("Add New");
       $("#showThumbnails").addClass("hidden");
       search($("#searchBar").val(), false, page);
       inSearch = true;
@@ -145,7 +145,7 @@ $(document).ready(function(){
       $("#confirmationModal").modal("show");
       $("#activityName").text(titleText);
       $("#locationName").text(chapter_id);
-      if ($("#currClass").text() != "Not Assigned") {
+      if (!(((chapter_id == "Not Assigned")) || ($("#currClass").text() == "Not Assigned"))) {
         $("#confirmButton").removeClass("hidden");
       }
     }

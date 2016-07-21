@@ -68,7 +68,7 @@ Description:  Provides a system for adding activities to the looma system
             <input id="pdfsChecked" type="checkbox" name="fileType" value="images" checked> Pdfs<br>
           </div>
           <div class="col-md-1">
-            <button id="modeSelector" class="btn btn-secondary"> Editor </button>
+            <button id="modeSelector" class="btn btn-secondary"> Add New </button>
           </div>
         </div>
       </div>
@@ -94,7 +94,7 @@ Description:  Provides a system for adding activities to the looma system
           Title: <input id="titleInput" type="text" name="firstname" value=""> <br>
           Current Class: <span id="currClass"></span> <br>
           <button id="chapterNavOpener" type="button" class="btn btn-primary" data-toggle="modal" data-target="#contentNavModal">Location To Add To</button><br>
-          <button id="inputButton" class="btn btn-success">Submit</button>
+          <button id="inputButton" class="btn btn-primary">Submit</button>
           <div id="outputField"></div>
         </div>
       </div>
@@ -113,8 +113,8 @@ Description:  Provides a system for adding activities to the looma system
             <div id="confirmation">Are you sure you want to add <span id="activityName"></span> to <span id="locationName"></span>?</div>
           </div>
           <div class="modal-footer">
-            <button id="overrideButton" type="button" class="btn btn-default" data-dismiss="modal">Change Current</button>
-            <button id="confirmButton" type="button" class="btn btn-default hidden" data-dismiss="modal">Add New</button>
+            <button id="overrideButton" type="button" class="btn btn-default" data-dismiss="modal">Replace Current</button>
+            <button id="confirmButton" type="button" class="btn btn-default hidden" data-dismiss="modal">Add To New Location</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
           </div>
         </div>

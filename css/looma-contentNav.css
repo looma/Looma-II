@@ -237,17 +237,24 @@ footer.well {
 
 #unassignButton {
   margin-top: 10px;
-  margin-left: 35%;
-}
-
-#contentNavButton {
-  margin-left: 45%;
-  margin-bottom: 7px;
+  margin-left: 33%;
+  margin-right: 1%;
+  width: 15%;
 }
 
 #searchLessonButton {
   margin-top: 10px;
+  margin-left: 3%;
+  width: 15%;
 }
+
+#contentNavButton {
+  margin-left: 40%;
+  width: 20%;
+  margin-bottom: 7px;
+}
+
+
 
 #chapterSearchBar {
   width: 60%;

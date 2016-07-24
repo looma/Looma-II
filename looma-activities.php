@@ -102,7 +102,15 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 								   "'><img src='" . $fp . thumbnail($fn) . "'>" .
 								   $dn . "</button>";
 						break;
-					case "image":
+                    case "SS":      //slideshows
+                        break;
+                    case "EV":      //edited videos
+                        break;
+                    case "VOC":     //vocabulary reviews
+                        break;
+                    case "LP";      //lesson plan
+                        break;
+                    case "image":
 					case "jpg":
 					case "png":
 					case "gif":

@@ -11,6 +11,10 @@
         and  ii. delete the file after sending it the client
  */
 
+
+ //uses PICO2WAVE to generate WAV file on the server side
+ // not currently used - replaced by MIMIC TTS [file=looma-mimic.php]
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: audio/wav");
 //$text = urldecode($_GET["text"]);  //skip's version

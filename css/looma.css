@@ -207,12 +207,6 @@ footer {
 	float:right;
 }
 
-.screensize, .bodysize{
-	width:10%;
-	/*color:black;*/
-	vertical-align:middle;
-	font-size: 0.75em;
-}
 
 button.flag-vertical {
 	height:7.3%;
@@ -531,6 +525,15 @@ span.logo {
 	height:70%;
 	width:100%;
 }
+
+span.logo img {width:80%;}
+
+#padlock {
+    height:75%;
+    width:15%;
+    display:inline;
+
+}
 span#datetime {
 	margin:0 0 5px 0 ;
 	display:inline-block;
@@ -563,23 +566,63 @@ button.navigate {
 }
 
 /*****************
- * buttons of class 'speak' can be placed on any page
+ * buttons of class 'speak' and 'lookup' can be placed on any page
  * they are 'fixed' on the page and semi-transparent
  ********************/
 
 button.speak {
-	position: absolute;
-	bottom:5%;
-	right:15%;
-	height:10%;
-	width:7.5%;
-	z-index:1000;
-	opacity: 0.4;
+    position: absolute;
+    bottom:5%;
+    right:15%;
+    height:10%;
+    width:7.5%;
+    z-index:1000;
+    opacity: 0.4;
     background-image: url("../images/speech.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
-	background-color:rgba(200,200,200,0.7); /* transparent light gray*/
-	/*  img:src = images/speak.png */
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+    /*  img:src = images/speak.png */
+}
+
+button.lookup {
+    position: absolute;
+    bottom:20%;
+    right:15%;
+    height:10%;
+    width:7.5%;
+    z-index:1000;
+    opacity: 0.4;
+    background-image: url("../images/dictionary.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 75% 75%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
+#popup {
+    position:fixed;
+    top:33%;
+    left:25%;
+    margin:auto;
+    height:60%;
+    overflow:auto;
+    width:50%;
+    background-color:#fff;
+    color:black;
+    font-size:2.5em;
+    border:2px solid black;
+    border-radius:6px;
+    z-index:9999;
+}
+
+#dictionary-popup {
+    max-height:50%;
+    overflow:hidden;
+}
+
+.modal-dialog {
+    max-height: 50%;
 }
 
 #fullscreen {
@@ -704,7 +747,9 @@ div.center {
 	margin:auto;
 	text-align:center;
 }
+/*
 div#popup {
 	background-color: blue;
 }
+*/
 

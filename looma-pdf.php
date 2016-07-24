@@ -61,7 +61,7 @@ Usage: <button id="testpdf" data-fn="Math-2.pdf"
 					//NOTE: the following line works OK if PDF.js extension is installed in the browser
 					   //echo " src='" . $filepath .  $filename . "#page=" . $pagenum ."'";
 
-				echo " src='looma-pdf-viewer/web/looma-viewer.html?file=../../" .
+				echo " src='looma-viewer.html?file=" .
 						$filepath .  $filename .
 						"#page=" . $pagenum .
 						"&zoom=160" .
@@ -81,6 +81,7 @@ Usage: <button id="testpdf" data-fn="Math-2.pdf"
 		</div>
 	</div>
 
+    <button class="lookup"></button>
     <button class="speak"></button>
 
     <!-- OLD CODE

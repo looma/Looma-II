@@ -5,6 +5,7 @@
 }
 */
 
+
  .screensize, .bodysize{
 	width:15%;
 	/*color:black;*/
@@ -13,13 +14,13 @@
 }
  .screensize {
 	position:absolute;
-	bottom:8em;
-	right:15em;
+	bottom:5em;
+	left:5em;
 }
 .bodysize{
 	position:absolute;
-	bottom:4em;
-	right:15em;
+	bottom:3em;
+	left:5em;
 }
  #logos {
  	margin: 0 25% 0 5%;
@@ -34,7 +35,7 @@
  	top:7%;
  	left:80%;
  	width: 220px;
- 	height: 700px;
+ 	height: 90%;
  	overflow:hidden;
  	border: 1px solid black;
  }

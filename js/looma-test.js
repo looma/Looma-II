@@ -6,22 +6,12 @@ Date: 2015 03
 Revision: Looma 2.0.0
 
 filename: xxxxx.js
-Description: 
+Description:
  */
 
 'use strict';
 
-window.onload = function() {
-	
-			var on = true;
-			$('#canvas').click(function()
-				{
-					
-					console.log('cursor is ' + $('#canvas').css('cursor'));
-					
-					if (on) $('#canvas').css("cursor", 'no-drop');
-					else 	$('#canvas').css("cursor", 'crosshair');
-							
-					on = !on;
-				});
-	};
+window.onload = function()
+{
+		$('#show').click(function(e){e.preventDefault(); $('#iframe').toggle(1000);});
+};

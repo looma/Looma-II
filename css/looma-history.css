@@ -1,0 +1,287 @@
+body {
+	background-color:  #091F48; 
+	font: "Comic Sans MS", serif, bold;
+	color: yellow;
+}
+
+#toolbar-container, #toolbar-container-vertical {
+	background-color:  #ff00ff; /*#BD00A5;*/
+}
+
+h1{
+    font-family: "Comic Sans MS", serif;
+    font-size: 40px;
+}
+
+button {
+
+	background-color: #FFFFFF;
+	color:black;
+	border: 0;
+	border-radius: 10px;
+	font: bold 10em;
+	cursor: pointer;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
+    box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+button:hover {
+	background-color: #008;
+	color: black;
+}
+
+button.active {
+	background-color: #00f;
+	color:black;
+    border-radius: 10px;
+}
+	/* COLORS:
+	 * 	lime	59b606
+	 * blue		027bbf
+	 * pink		8ff
+	 * lt blue	f8f
+	 */
+
+form {
+  font: 18px "Comic Sans MS", serif, bold;
+  position:fixed;
+
+}
+
+a {
+  text-decoration: none
+  ;
+}
+
+li {
+  list-style: none;
+}
+
+h2 {
+  font-size: 24;
+  font-weight: 600;
+  margin: 25px 0 10px;
+  text-align: center;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 750px;
+  max-height: 300px;
+  border-radius: 10px;
+}
+
+.row {
+  float: left;
+  width: 100%;
+}
+
+.timeline-both-side {
+  float: left;
+  width: 96%;
+  margin-left: 19px;
+  padding-left: 4px;
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+.timeline-both-side:before {
+  background-color: #ccc;
+  border-radius: 10px;
+  bottom: 0; content: " ";
+  left: 50%;
+  position: absolute;
+  top: 0;
+  width: 4px;
+}
+
+.timeline-both-side:after {
+  border-radius: 10px;
+  bottom: -22px;
+  content: "";
+  height: 18px;
+  left: 50%;
+  margin-left: -11px;
+  position: absolute;
+  width: 18px;
+  border: 5px solid #ccc;
+  color: white
+}
+
+.timeline-both-side li {
+  position: relative;
+  float: left;
+  width: 100%;
+}
+
+.timeline-both-side li .border-line {
+  background-color: white;
+  font-size: 1.4em;
+  height: 4px;
+  left: 50%;
+  margin-left: -8%;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  width: 8%;
+  z-index: 100;
+}
+
+.timeline-both-side li.opposite-side .border-line {
+  left: auto; right: 50%;
+  margin-left: 0;
+  margin-right: -8%;
+}
+
+.timeline-both-side li .border-line:before {
+  background-color: white;
+  content: "";
+  height: 7px;
+  position: absolute;
+  right: -4px;
+  top: -1px;
+  width: 10px;
+}
+
+.timeline-both-side li.opposite-side .border-line:before {
+  left: -4px;
+  right: auto;
+}
+
+.timeline-both-side li .timeline-description {
+  border-radius: 2px;
+  background-color: #f1f1f1;
+  border: 1px solid white;
+  float: left;
+  font-size: 13px;
+  padding: 10px;
+  position: relative;
+  width: 42%;
+}
+
+.timeline-both-side li.opposite-side .timeline-description {
+  float: right;
+}
+
+.dropbtn {
+  padding: 10px;
+  font: 24px "Comic Sans MS", serif, bold;
+  border: none;
+  cursor: pointer;
+  min-width: 100px;
+  background-color: #FFFFFF;
+  color: black;
+  border: 0;
+  border-radius: 10px;
+  font: bold 10em;
+  cursor: pointer;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
+  box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+.dropdown {
+  position: relative;
+  border: 1px solid white;
+  display: inline-block;
+  font : 24   
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #091F48;
+  font: 20px "Comic Sans MS", serif, bold;
+  border-color: white;
+  min-width: 100px;
+  min-height: 50px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  font: 20px;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 30px 30px;
+  text-decoration: none;
+  display: block;
+  font: 20px;
+}
+
+.dropdown-content a:hover {
+  background-color: white
+  color:black;
+  padding: 10px;
+  font: 24px "Comic Sans MS", serif, bold, black;
+  border: none;
+  cursor: pointer;
+  min-width: 100px;
+  background-color: #FFFFFF;
+  border: 0;
+  border-radius: 10px;
+  font: bold 10em;
+  cursor: pointer;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  border: 1px solid white;
+  text-align: center;
+  font: 20px;
+  font color: black;
+  border-radius: 10px;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: white;
+  font : 20px;
+  font color: black;
+}
+
+button.scrollButtonDown {
+  position: fixed;
+  top:300px;
+  left:50px;
+  right:800px;
+  bottom:200px;
+  width: 80px;
+  height:50px;
+  padding: 10px;
+  font: 20px "Comic Sans MS", serif, bold;
+  border: none;
+  cursor: pointer;
+  min-width: 100px;
+  background-color: #FFFFFF;
+  color:black;
+  border: 0;
+  border-radius: 10px;
+  font: bold 10em;
+  cursor: pointer;
+}
+
+button.scrollButtonUp {
+  position: fixed;
+  top:230px;
+  left: 50px;
+  right:800px;
+  bottom:180px;
+  width: 80px;
+  height: 50px;
+  padding: 10px;
+  font: 20px "Comic Sans MS", serif, bold;
+  border: none;
+  cursor: pointer;
+  min-width: 100px;
+  background-color: #FFFFFF;
+  color:black;
+  border: 0;
+  border-radius: 10px;
+  font: bold 10em;
+  cursor: pointer;
+}
+
+.searchBar {
+  width: 100px;
+  height: 50px;
+  border-radius: 10px;
+}

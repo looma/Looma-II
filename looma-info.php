@@ -19,94 +19,36 @@ Description:  for Looma 2
 		<h2 class="title">Looma Info page</h2>
 
 	<h3>Looma 2</h3>
-	<h4>Release 2.2.2, March 2016</h4>
+	<h4>Release 2.2.3, July 2016</h4>
 	<h4>Contact: info at villagetechsolutions dot org</h4>
 	<h4> <span class='glyphicon glyphicon-copyright-mark'></span> VillageTech Solutions</h4>
-	<br><br><br><br>
+	<br>
 
-	<!--	<h4>- attributions for borrowed content</h4>
-		<p>OLE Nepal, Khan academy, Wikipedia, Open Street Maps, ...</p>
-		<h4>- attribution for open source code used, etc. </h4>
-		<p>jsKeyboard,leaflet.js, paper.js, TileMill, jQuery, jQuery UI, bootstrap, mongodb, modernizer, pico2wave</p>
-			<p>viewer.js, pdf.js, responsiveVoice.js, FullScreen.js topojson.js, google translate</p>
-			<p>xnepali.net/fonts, stackoverflow</p>
-
-			ntent:
-5Gear Studios
-Ales Kladnik
-Antonio Palma
-BBC
-Bodhaguru
-Bozeman Science
-California Academy
-Chuchu TV Kids Songs
-Crash Course
-Earth Island Institute
-Emily Dassel
-ETH Zurich
-Fit Factor Kids Exercize
-Frank Gregorio
-Global Help Videos
-Healthfirst NY
-Hesperian Foundation
-IPPF/FPAN
-Jonathan Bergmann
-Joshua Manley
-KALite
-Khan
-Laurent Schwebel
-Make Me Genius
-Mitja Cvetko
-NASA
-NatGeo
-Nellie and Ed
-OLE Nepal
-Orin Zebest
-Patakiskola
-Peter Bohacek
-Peter Erb
-Playsongs
-Sarah Christenson
-SciShow
-Strength Project
-The Happy Scientist
-The Tokin Tube
-Think Pictures
-Tiger Productions
-Transpower NZ
-Wikipedia
-WorldPossible
-
-NGO
-KISC EQUIP
-Lew/Ntungi
-Museum of Science Boston
-Nepal Youth Foundation
-UMN (United Mission to Nepal)
-
-Corporate
-Inquiring Systems Inc.
-Perkins Coie
-Pocobor
-Three60
-
-Employed software
-Bootstrap
-Flipper.css
-Google translate
-Leaflet
-Miro Video Converter
-ThumbsUp
-TileMill, MapBox
-WordNet, EasyDefine
-OSM, geoFabrik, others?
-	-->
 	<div id="credits-box">
 		<h2>Contributors</h2>
 
 		<div><div id="credits-wrapper">
-		<!-- updated list fro DS May '16-->
-		   <p>Akshay Srivatsan</p>
+		<!-- updated list from DS July '16-->
+               <p>Akshay Srivatsan</p>
+               <p>Niko Bhatia</p>
+               <p>Aaron Brown</p>
+               <p>Colton Conley</p>
+               <p>Ian Costello</p>
+               <p>Christopher Crouch</p>
+               <p>Charlie Donnelly</p>
+               <p>Ryan Fischbach</p>
+               <p>Matt Flower</p>
+               <p>Connor Kennedy</p>
+               <p>Elysha Kunwar</p>
+               <p>Jai Mehra</p>
+               <p>Anika Padwekar</p>
+               <p>Maxwell Patterson</p>
+               <p>Sam Rosenberg</p>
+               <p>Tinyen Shih</p>
+               <p>Nikhil Singhal</p>
+               <p>John Weingart</p>
+               <p>Thomas Woodside</p>
+               <p>Jane Zafran</p>
                <p>Alex Manolo</p>
                <p>Alexander Lee</p>
                <p>Alexander Vaschenko</p>
@@ -283,78 +225,20 @@ OSM, geoFabrik, others?
                <p>Wouter Zwart</p>
                <p>Zach Jesberger</p>
 
-		<!--	<p>Peter Williams</p>
-			<p>Wouter Zwart</p>
-			<p>Rob Grande </p>
-			<p>Keilan Crowe</p>
-			<p>Lauren Henske</p>
-			<p>Akshay Srivasan</p>
-			<p>Lauren Smith</p>
-			<p>Chris Cowdin</p>
-			<p>Grant Dumanian</p>
-			<p>Jayden Kunwar</p>
-			<p>Kate Lazar</p>
-			<p>Sasha Cassidy</p>
-			<p>Lily Barnett</p>
-			<p>Nikhil Bhatia</p>
-			<p>Griffin Scheinman</p>
-			<p>Daniel Chan</p>
-			<p>Chris Strong</p>
-			<p>Audrey Flower</p>
-			<p>John D Wilson</p>
-			<p>Shannon Shih</p>
-			<p>Justin Cardozo</p>
-			<p>Nolan Jimenez</p>
-			<p>Amanda Reilly</p>
-			<p>Gaurav Handa</p>
-			<p>Vikram Sharma</p>
-			<p>Sienna Stritter</p>
-			<p>Simran Aurora</p>
-			<p>David Sowerwine</p>
-			<p>Azwaldo</p>
-			<p>Hope Hahn</p>
-			<p>Anya Zamost</p>
-			<p>Brandon Varner</p>
-			<p>Joseph Swernofsky</p>
-			<p>Veena Singh</p>
-			<p>Shannon Shih</p>
-			<p>Dingli Qin</p>
-			<p>Katie Plichta</p>
-			<p>Roja Nunna</p>
-			<p>Emilylou Bice</p>
-			<p>Topraj Gurung</p>
-			<p>Paul Michelow</p>
-			<p>Roy Stehle</p>
-			<p>Bijay Niraula</p>
-			<p>Nirmal Neupane</p>
-			<p>Joe Farnham</p>
-			<p>Jonathon Adams</p>
-			<p>Ankurita Datta</p>
-			<p>Elis Feci</p>
-			<p>Forrest Miller</p>
-			<p>Mansi Joshi</p>
-			<p>Chloe Lee</p>
-			<p>Rachelle Morris</p>
-			<p>Roja Nunna</p>
-			<p>Shraddha Shah</p>
-			<p>Nitya Subramani</p>
-			<p>Joseph Swernowsky</p>
-			<p>Archana Vaidyanathan</p>
-		-->
 		</div>
 	  </div>
 	</div>
-			<p>
-				<span class="screensize"></span>
-			<br><br>
-				<span class="bodysize"></span>
-			</p>
-	<br>
 
-		<h3>Tested only in Google Chrome</h3>
-		<h3>Report bugs and suggestions to info AT villagetechsolutions.org</h3>
+	<div id="sizemessages">
+			<p class="screensize"></p>
+            <br>
+           	<p class="bodysize"></p>
+	</div>
+
+		<h4>Tested only in Google Chrome</h4>
+		<h5>Report bugs and suggestions to info AT villagetechsolutions DOT org</h5>
 	<br>
-		<h2> Attributions for code and content used in Looma </h2>
+		<h4> Attributions for code and content used in Looma </h4>
 	<footer>
 		<br>
 		<div id="logos">
@@ -369,24 +253,26 @@ OSM, geoFabrik, others?
 			<span><img src="images/logos/ole-nepal.jpg" height="66px"></span>
 			<span><img src="images/logos/wikipedia.jpg" height="66px"></span>
 			<span><img src="images/logos/google-translate.jpg" height="66px"></span>
-			<span><img src="images/logos/tilemill.png" height="66px"></span>
+            <span><img src="images/logos/tilemill.png" height="66px"></span>
+            <span><img src="images/logos/mycroft.png" height="33px"></span>
 			<span><img src="images/logos/stackoverflow.png" height="66px"></span>
 		</div>
 		<br>
 
-		<span><img src="images/logos/LoomaLogoTransparent.png" height="100px"></span>
+		<span><img src="images/logos/LoomaLogoTransparent.png" height="75%" width="30%"></span>
 
 		<!--button showing CC license icon, with link to the license info page -->
-   		<a class="footer" href="looma-info.php">
+   		<span href="looma-info.php">
 			<img src="images/logos/CC-BY-SA.png" height="33px">
-		</a>
+		</span>
 
    		<!-- copyright notice, with link to vts.org-->
-    	<span class='glyphicon glyphicon-copyright-mark'></span>
-    		<?php echo date("Y"); ?>
+    	<span class='glyphicon glyphicon-copyright-mark'></span>2016
 		<a class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
 
-		<a href="http://www.globalgiving.org"><img src="images/logos/globalgiving-vetted.png" height="66px"></a>
+		<!--  no longer using Global Giving
+		    <a href="http://www.globalgiving.org"><img src="images/logos/globalgiving-vetted.png" height="66px"></a>
+		-->
 		<br>
 
 
@@ -400,5 +286,84 @@ OSM, geoFabrik, others?
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
    	<script src="js/looma-info.js"></script></html>
+
+   	    <!--    <h4>- attributions for borrowed content</h4>
+        <p>OLE Nepal, Khan academy, Wikipedia, Open Street Maps, ...</p>
+        <h4>- attribution for open source code used, etc. </h4>
+        <p>jsKeyboard,leaflet.js, paper.js, TileMill, jQuery, jQuery UI, bootstrap, mongodb, modernizer, pico2wave</p>
+            <p>viewer.js, pdf.js, responsiveVoice.js, FullScreen.js topojson.js, google translate</p>
+            <p>xnepali.net/fonts, stackoverflow mimic by MyCroft.ai</p>
+
+            content:
+            5Gear Studios
+            Ales Kladnik
+            Antonio Palma
+            BBC
+            Bodhaguru
+            Bozeman Science
+            California Academy
+            Chuchu TV Kids Songs
+            Crash Course
+            Earth Island Institute
+            Emily Dassel
+            ETH Zurich
+            Fit Factor Kids Exercize
+            Frank Gregorio
+            Global Help Videos
+            Healthfirst NY
+            Hesperian Foundation
+            IPPF/FPAN
+            Jonathan Bergmann
+            Joshua Manley
+            KALite
+            Khan
+            Laurent Schwebel
+            Make Me Genius
+            Mitja Cvetko
+            NASA
+            NatGeo
+            Nellie and Ed
+            OLE Nepal
+            Orin Zebest
+            Patakiskola
+            Peter Bohacek
+            Peter Erb
+            Playsongs
+            Sarah Christenson
+            SciShow
+            Strength Project
+            The Happy Scientist
+            The Tokin Tube
+            Think Pictures
+            Tiger Productions
+            Transpower NZ
+            Wikipedia
+            WorldPossible
+
+            NGO
+            KISC EQUIP
+            Lew/Ntungi
+            Museum of Science Boston
+            Nepal Youth Foundation
+            UMN (United Mission to Nepal)
+
+            Corporate
+            Inquiring Systems Inc.
+            Perkins Coie
+            Pocobor
+            Three60
+
+            Employed software
+            Bootstrap
+            Flipper.css
+            Google translate
+            Leaflet
+            Miro Video Converter
+            ThumbsUp
+            TileMill, MapBox
+            WordNet, EasyDefine
+            OSM, geoFabrik, others?
+                -->
+
    </body>
 </html>

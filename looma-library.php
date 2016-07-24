@@ -142,6 +142,18 @@ Description:  displays and navigates content folders for Looma 2
 
     	if ($fileInfo -> isFile()) {
 
+    	    //insert code here to sort the filenames before sending them to client side
+    	    // iterate thru the directory, storing valid files in an array
+    	    /* $files = arr
+             foreach {$files[] =$file;]
+             * $files = array_sort($files);
+             * while ?? $next = array)shift($files);
+             *
+            */
+
+    	    //then SORT
+    	    //then iterate thru the array  making buttons
+
 		//this code is also in looma-activities.php - should be a FUNCTION
 		echo "<td>";
 		$ext = $fileInfo -> getExtension();
@@ -162,7 +174,8 @@ Description:  displays and navigates content folders for Looma 2
 
 			switch (strtolower($ext)) {
 				case "video":
-				case "mp4":
+                case "mp4":
+                case "m4v":
 				case "mov":
 
 				case "image":

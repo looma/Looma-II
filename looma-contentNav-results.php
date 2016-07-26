@@ -70,7 +70,7 @@ foreach ($cursor as $d)
 	echo "
 	<tr>
 		<td class='individualResult' dbid='$d_id' title='$d_title' chid='$chid'>
-			<h4> $d_title </h4>
+			<h4> <b> $d_title </b> </h4>
 		</td>
 	</tr>
 	";

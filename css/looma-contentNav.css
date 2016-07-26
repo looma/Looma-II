@@ -203,6 +203,11 @@ footer.well {
     margin-top: 0px;
     border-bottom: none;
 }
+
+h4 {
+  font-size: 25px;
+}
+
 .result {
   background-color: grey;
   padding-left: 30px;

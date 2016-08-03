@@ -1,0 +1,32 @@
+.popup{ /* All popups*/
+    z-index: 1000;
+    position : fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 5px;
+    background-color: #a8a8a8;
+    display: none;
+}
+
+.popup-button{ /*Buttons inside popups, for example the "OK" button*/
+    height: auto;
+    width: 7vw;
+    float : right;
+    font-size : 1.5vw;
+    position: relative;
+}
+#cancel-popup { /*Specifically the cancel button of a popup*/
+    float: left;
+}
+.popup textarea { /*The textarea inside the popup*/
+    color: black;
+}
+#dismiss-popup { /* close popup button*/
+    color : white;
+    background: red;
+    width: 3vw;
+}
+.all-transparent { /*makes screen transparent*/
+    opacity: .6;
+}

@@ -1,21 +1,23 @@
+<!doctype html>
 <!--
-Author: modified for Looma by skip
+Filename: looma-viewer.html
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: July 2016
+Revision: Looma 2.2.4
+
+Author: modified for Looma by skip & shannon
 		adapted from Mozilla viewer.html for pdf.js
 
 		***********************************************
 		*
 		* generally the LOOMA modifications are done in viewer.css and looma-viewer.css, not here
-		*
+		* in this file, the only modification is to include looma-viewer.css and looma-viewer.js
 		* future improvements:
 		* 	- remove L10n and other libraries [compatibility.js?]
 		*
 		* 	- remove unwanted buttons from this HTML file instead of HIDING them with CSS
 		*
 		***********************************************
-Filename: viewer.html
-Date: 6/15..2/16
-Description:
-
 -->
 
 <!--
@@ -43,30 +45,25 @@ http://sourceforge.net/adobe/cmap/wiki/License/
     <meta name="google" content="notranslate">
     <title>PDF.js viewer</title>
 
+    <link rel="stylesheet" href="css/viewer.css"/>          <!--CSS from pdf.js project -->
 
-    <link rel="stylesheet" href="css/viewer.css"/>
-    <link rel="stylesheet" href="css/looma-viewer.css"/>
+    <!-- ********************LOOMA modification  ********************** -->
+    <link rel="stylesheet" href="css/looma-viewer.css"/>    <!--CSS containing Looma modifications -->
 
 	<!-- might not need 'compatibility.js'  ??? -->
     <script src="js/compatibility.js"></script>
 
-
-
-<!-- This snippet is used in production (included from viewer.html) -->
-
-
-<link rel="resource" type="application/l10n" href="locale/locale.properties"/>
-<script src="js/l10n.js"></script>
-<script src="js/pdf.js"></script>
-
-
+    <!-- NOTE: looma uses a reduced size locale.properties, containing only US localization -->
+    <link rel="resource" type="application/l10n" href="locale/locale.properties"/>
+    <script src="js/l10n.js"></script>
+    <script src="js/pdf.js"></script>
 
     <!-- <script src="js/debugger.js"></script> -->
     <script src="js/viewer.js"></script>
 
-    <!-- viewer-looma.js is SHANNON's code [+nolan&nikhil?] it overwrites some viewer.js functions, but not clear what it does -->
-    <script src="js/viewer-looma.js"></script>
-
+    <!-- ********************LOOMA modification  ********************** ->
+    <!-- looma-viewer.js is SHANNON's code. it overwrites some viewer.js functions, and hides some toobar buttons -->
+    <script src="js/looma-viewer.js"></script>
 
     <!-- <script src="annotator/jquery.js"></script>  -->
     <!-- <script src="annotator/annotator.min.js"></script> -->
@@ -132,10 +129,10 @@ http://sourceforge.net/adobe/cmap/wiki/License/
               <span data-l10n-id="open_file_label">Open</span>
             </button>
 
-    <!--        <button id="secondaryPrint" class="secondaryToolbarButton print visibleMediumView" title="Print" tabindex="53" data-l10n-id="print">
+            <button id="secondaryPrint" class="secondaryToolbarButton print visibleMediumView" title="Print" tabindex="53" data-l10n-id="print">
               <span data-l10n-id="print_label">Print</span>
             </button>
--->
+
             <button id="secondaryDownload" class="secondaryToolbarButton download visibleMediumView" title="Download" tabindex="54" data-l10n-id="download">
               <span data-l10n-id="download_label">Download</span>
             </button>
@@ -146,9 +143,9 @@ http://sourceforge.net/adobe/cmap/wiki/License/
 
             <div class="horizontalToolbarSeparator visibleLargeView"></div>
 
-            <!-- <button id="firstPage" class="secondaryToolbarButton firstPage" title="Go to First Page" tabindex="56" data-l10n-id="first_page">
+             <button id="firstPage" class="secondaryToolbarButton firstPage" title="Go to First Page" tabindex="56" data-l10n-id="first_page">
               <span data-l10n-id="first_page_label">Go to First Page</span>
-            </button> -->
+            </button>
             <button id="lastPage" class="secondaryToolbarButton lastPage" title="Go to Last Page" tabindex="57" data-l10n-id="last_page">
               <span data-l10n-id="last_page_label">Go to Last Page</span>
             </button>
@@ -164,9 +161,9 @@ http://sourceforge.net/adobe/cmap/wiki/License/
 
             <div class="horizontalToolbarSeparator"></div>
 
-            <!-- <button id="toggleHandTool" class="secondaryToolbarButton handTool" title="Enable hand tool" tabindex="60" data-l10n-id="hand_tool_enable">
+             <button id="toggleHandTool" class="secondaryToolbarButton handTool" title="Enable hand tool" tabindex="60" data-l10n-id="hand_tool_enable">
               <span data-l10n-id="hand_tool_enable_label">Enable hand tool</span>
-            </button> -->
+            </button>
 
             <div class="horizontalToolbarSeparator"></div>
 
@@ -190,7 +187,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                 <!--          -->
                 <button id="firstPage" class="toolbarButton firstPage" title="Go to First Page" tabindex="56" data-l10n-id="first_page">
                     <img src="images/secondaryToolbarButton-firstPage.png"/>
-                      <!-- <span data-l10n-id="first_page_label">Go to First Page</span> -->
+                       <span data-l10n-id="first_page_label">Go to First Page</span>
                 </button>
                 <!--          -->
                 <div class="splitToolbarButton">
@@ -202,10 +199,10 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                     <span data-l10n-id="next_label">Next</span>
                   </button>
                 <!--          -->
-                <!-- <button id="lastPage" class="toolbarButton lastPage" title="Go to Last Page" tabindex="57" data-l10n-id="last_page">
+                 <button id="lastPage" class="toolbarButton lastPage" title="Go to Last Page" tabindex="57" data-l10n-id="last_page">
                     <img src="images/secondaryToolbarButton-lastPage.png"/>
                       <span data-l10n-id="last_page_label">Go to Last Page</span>
-                </button> -->
+                </button>
                 <!--        -->
                 </div>
                 <label id="pageNumberLabel" class="toolbarLabel" for="pageNumber" data-l10n-id="page_label">Page: </label>
@@ -216,7 +213,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                 <!--                  -->
                 <button id="toggleHandTool" class="toolbarButton handTool" title="Enable hand tool" tabindex="60" data-l10n-id="hand_tool_enable">
                     <img src="images/secondaryToolbarButton-handTool.png"/>
-                      <!-- <span data-l10n-id="hand_tool_enable_label">Enable hand tool</span> -->
+                       <span data-l10n-id="hand_tool_enable_label">Enable hand tool</span>
                 </button>
                 <!--          -->
                 <button id="presentationMode" class="toolbarButton presentationMode hiddenLargeView" title="Switch to Presentation Mode" tabindex="31" data-l10n-id="presentation_mode">
@@ -238,7 +235,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                   <span data-l10n-id="bookmark_label">Current View</span>
                 </a>
 
-                <!-- <div class="verticalToolbarSeparator hiddenSmallView"></div> -->
+                 <div class="verticalToolbarSeparator hiddenSmallView"></div>
 
                 <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools" tabindex="36" data-l10n-id="tools">
                   <span data-l10n-id="tools_label">Tools</span>
@@ -248,11 +245,11 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                 <div class="innerCenter" id="toolbarViewerMiddle">
                   <div class="splitToolbarButton">
                     <button id="zoomOut" class="toolbarButton zoomOut" title="Zoom Out" tabindex="21" >
-                            <!--<span data-l10n-id="zoom_out_label">Zoom Out</span>-->
+                            <span data-l10n-id="zoom_out_label">Zoom Out</span>
                     </button>
                     <div class="splitToolbarButtonSeparator"></div>
                     <button id="zoomIn" class="toolbarButton zoomIn" title="Zoom In" tabindex="22" >
-                      <!--<span data-l10n-id="zoom_in_label">Zoom In</span>-->
+                      <span data-l10n-id="zoom_in_label">Zoom In</span>
                      </button>
                   </div>
                   <span id="scaleSelectContainer" class="dropdownToolbarButton">
@@ -263,16 +260,16 @@ http://sourceforge.net/adobe/cmap/wiki/License/
                       <option id="pageWidthOption" title="" value="page-width" data-l10n-id="page_scale_width">Full Width</option>
                       <option id="customScaleOption" title="" value="custom"></option>
                       <option title="" value="0.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 50 }'>50%</option>
-                      <!--<option title="" value="0.75" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 75 }'>75%</option>
-                      -->
+                      <option title="" value="0.75" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 75 }'>75%</option>
+
                 	  <option title="" value="1" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 100 }'>100%</option>
-                      <!--<option title="" value="1.25" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 125 }'>125%</option>
-                      -->
-                      <!--<option title="" value="1.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 150 }'>150%</option>
-                      -->
+                      <option title="" value="1.25" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 125 }'>125%</option>
+
+                      <option title="" value="1.5" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 150 }'>150%</option>
+
                 	  <option title="" value="2" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 200 }'>200%</option>
-                      <!--<option title="" value="3" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 300 }'>300%</option>
-                      -->
+                      <option title="" value="3" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 300 }'>300%</option>
+
                 	<option title="" value="4" data-l10n-id="page_scale_percent" data-l10n-args='{ "scale": 400 }'>400%</option>
                     </select>
                   </span>

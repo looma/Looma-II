@@ -9,14 +9,25 @@ Description:
 
 	<?php  $page_title = 'Looma Web Page';
 	include ('includes/header.php'); ?>
-	<!-- add CSS files for this page:
-		<link rel="stylesheet" href="css/filename.css"> -->
+	<link rel="stylesheet" href="css/looma-web.css">
 	</head>
 
 	<body>
+		<div id="web-controls">
+			<button class="left-control" id="back">
+				<img src="images/back-arrow.png"/>
+				<?php tooltip('Back');?>
+			</button>
+			<button class="left-control" id="forward">
+				<img src="images/forward-arrow.png"/>
+				<?php tooltip('Forward');?>
+			</button>
+			<input id="address-bar"/>
+			<button class="right-control" id="submit"><?php keyword('Go');?></button>
+		</div>
 		<div id="main-container-horizontal">
 			<!-- if internet is accessible, JS will load an external website (e.g. Bing) in the iframe -->
-			<iframe id="frame" allowfullscreen></iframe>
+			<iframe id="frame" allowfullscreen sandbox="allow-scripts allow-same-origin"></iframe>
 		</div>
 
    	<?php include ('includes/toolbar.php'); ?>

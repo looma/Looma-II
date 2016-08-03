@@ -1,0 +1,122 @@
+.keyboardContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: inherit;
+    z-index: 2147483648;
+    display: none;
+}
+
+.keyboard {
+    /*margin: 0 auto;*/
+    /*width: 100%;*/
+    display: inline-block;
+}
+
+.keyboard-button {
+    float: left;
+    font-family: monospace;
+    margin: 2px;
+    /*padding: 15px;*/
+    height: 2em;
+    /*width: 7.6%;*/
+}
+
+.key-normal .key-shifted {
+    width: 6%;
+}
+
+.keyboard-space {
+    visibility: hidden;
+}
+
+.key-normal {
+    display: block;
+    width: 60px;
+}
+
+.key-shifted {
+    display: none;
+    width: 60px;
+}
+
+.key-nepali {
+    display: none;
+    width: 60px;
+}
+
+.key-nepali-shifted {
+    display: none;
+    width: 60px;
+}
+
+.shifted .key-normal {
+    display: none;
+}
+
+.shifted .key-shifted {
+    display: block;
+}
+
+.nepali .key-normal, .nepali .key-shifted, .nepali.shifted .key-shifted {
+    display: none;
+}
+
+.nepali .key-nepali {
+    display: block;
+}
+
+.nepali.shifted .key-nepali {
+    display: none;
+}
+
+.nepali.shifted .key-nepali-shifted {
+    display: block;
+}
+
+#keyboard-language {
+    width: 200px;
+}
+
+#englishButtonText {
+    display: none;
+}
+
+.nepali #englishButtonText {
+    display: inline;
+}
+
+.nepali #nepaliButtonText {
+    display: none;
+}
+
+.shifted #keyboard-shift {
+    color: green;
+}
+
+br {
+    clear: both;
+}
+
+#inputEntry, #textareaEntry {
+    font-size: 2em;
+    margin: 10px;
+    color: black;
+}
+
+.show-keyboard-button {
+    position: absolute;
+    bottom: 5%;
+    left: 15%;
+    height: 10%;
+    width: 7.5%;
+    z-index: 1000;
+    opacity: 0.4;
+    background-image: url("../images/keyboard.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 110% 110%;
+    background-color: rgba(200,200,200,0.7);
+}

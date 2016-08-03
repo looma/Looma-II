@@ -102,7 +102,14 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 								   "'><img src='" . $fp . thumbnail($fn) . "'>" .
 								   $dn . "</button>";
 						break;
-                    case "SS":      //slideshows
+                    // SLIDESHOW activity type from Thomas
+                    case "slideshow":
+                        $split = explode(" ", $fn);
+                        $imagesrc = $split[0];
+                        $mongoid  = $split[1];
+                        echo "<button class='activity play img'
+                                data-mongoid='$mongoid'
+                                data-ft='slideshow'><img src='$imagesrc'>$dn</button>";
                         break;
                     case "EV":      //edited videos
                         break;

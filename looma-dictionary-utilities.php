@@ -14,17 +14,17 @@ $page_title = 'Looma';
 
 /**
 *called by AJAX
-*		sample call (jQuery): 
+*		sample call (jQuery):
 *			   $.getJSON("looma-dictionary.php", {"cmd":"lookup", "word": word}, function(result) {wordObj = result;});
 *		supports commands: lookup [look up a word in the dictionary]
 *				           add    [add a word and definition to the dict]
 *				           random [return a list of randomly selected words, e.g. for a game]
 *		LOOKUP: returns a JSON object {en:"word", np:"nepaliword", defn:"definition", img: "filename of picture"}
 *				other properties (phonetic, useinsentence, partofspeech, hom, ant, syn) to be added later
-*		ADD:    takes a JSON object {en:"word", np:"nepaliword", defn:"definition", img: "filename of picture"} 
+*		ADD:    takes a JSON object {en:"word", np:"nepaliword", defn:"definition", img: "filename of picture"}
 *				validates properties and inserts the word in the database
 *				and returns success: TRUE or FALSE
-*		LIST: takes an object {class, subject, [count], [boolean]} and returns an array of english words 
+*		LIST: takes an object {class, subject, [count], [boolean]} and returns an array of english words
 *				matching the filter criteria,
 *				length=count and randomized if boolean=true
 */
@@ -42,14 +42,14 @@ if (isset($_GET["cmd"]))
 		// lookup $_GET["word"] in the dictionary and return an object describing the word
 		if(isset($_GET["word"]))
 		{
-			$englishWord = $_GET["word"];
-						 
-			$query = array('en' => new MongoRegex("/^$englishWord$/i"));  //NOTE: using regex to do a case insensitive search for the word 
+			$englishWord = trim($_GET["word"]);
+
+			$query = array('en' => new MongoRegex("/^$englishWord$/i"));  //NOTE: using regex to do a case insensitive search for the word
 			$word = $dictionary_collection -> findOne($query);
 			if($word != null)
 			{
 				//Add fields with blanks to avoid errors on code that recieves words
-				
+
 				if(!array_key_exists('np', $word))
 				{
 					$word['np'] = '';
@@ -139,7 +139,7 @@ if (isset($_GET["cmd"]))
 			exit();
 		}  // end ADD cmd
 	case "list":
-		// given "class", "subj"" and [opitonally] "count" and "random" (boolean), 
+		// given "class", "subj"" and [opitonally] "count" and "random" (boolean),
 		// return an array of 'count' words that match class&subj
 
 		//In the event that random isn't set, we set it to false by default
@@ -274,7 +274,7 @@ if (isset($_GET["cmd"]))
 			$startChapterId = "";
 			$hasChapterId = false;
 		}
-		
+
 		//If count is set then they have specified they want a certain number of words
 		//If not we return all results that match
 		//Ensures that we never send more than $MAX_NUM records
@@ -339,6 +339,6 @@ if (isset($_GET["cmd"]))
 	default:
 		echo "looma illegal command";
 		exit(); //end ILLEGAL CMD
-	} //end CASE  
+	} //end CASE
 } //end ISSET
 ?>

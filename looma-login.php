@@ -1,8 +1,8 @@
 <!doctype html>
 <!--
 LOOMA php code file
-Filename: looma-login.php
-Description: test program for login strategy
+Filename: xxx.php
+Description:
 
 Programmer name:
 Email:
@@ -14,131 +14,180 @@ Comments:
 -->
 
 <?php $page_title = 'Looma - Login';
-      include ('includes/header.php');
-      /*OPTIONAL*/ include ('includes/mongo-connect.php');
+	  include ('includes/header.php');
+	  include ('includes/mongo-connect.php');
 ?>
 
 </head>
 
 <body>
+	<div id="main-container-horizontal">
+
 <?php
+    /*
+     * loggedIn() checks if cookie has been set using user id
+    */
+    function loggedIn()
+    {
+        error_log("logged in?");
+        return isset($_COOKIE['login']);
+    }// end logggedIn
 
-/* This function determines an absolute URL and redirects the user there.
- * The function takes one argument: the page to be redirected to.
- * The argument defaults to index.php.
- */function redirect_user ($page = 'index.php') {
 
-    // Start defining the URL...
-    // URL is http:// plus the host name plus the current directory:
+    /*
+     * check_login() checks login against database entries and returns either true indicating the
+     * username and password matches an entry or false with an array containing
+     * the login errors. $id is the username the client provided, and $pass is the
+     * password the client entered.
+     */
+    function check_login($id, $pass)
+    {
+        global $logins_collection;
 
-    // Remove any trailing slashes:
-    $url = rtrim($url, '/\\');
+        error_log("start check login");
+        $errors = array();  //array with all login errors
 
-    // Add the page:
-    $url .= '/' . $page;
-
-    // Redirect the user:
-    header("Location: $url");
-    exit(); // Quit the script.
-
-} // End of redirect_user() function.
-
-/* This function validates the form data (the email address and password).
- * If both are present, the database is queried.
- * The function requires a datab    $url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
-ase connection.
- * The function returns an array of information, including:
- * - a TRUE/FALSE variable indicating success
- * - an array of either errors or the database result
- */
-function check_login($dbc, $email = '', $pass = '') {
-
-    $errors = array(); // Initialize error array.
-
-    // Validate the email address:
-    if (empty($email)) {
-        $errors[] = 'You forgot to enter your email address.';
-    } else {
-        $e = mysqli_real_escape_string($dbc, trim($email));
-    }
-
-    // Validate the password:
-    if (empty($pass)) {
-        $errors[] = 'You forgot to enter your password.';
-    } else {
-        $p = mysqli_real_escape_string($dbc, trim($pass));
-    }
-
-    if (empty($errors)) { // If everything's OK.
-
-        // Retrieve the user_id and first_name for that email/password combination:
-        $q = "SELECT user_id, first_name FROM users WHERE email='$e' AND pass=SHA1('$p')";
-        $r = @mysqli_query ($dbc, $q); // Run the query.
-
-        // Check the result:
-        if (mysqli_num_rows($r) == 1) {
-
-            // Fetch the record:
-            $row = mysqli_fetch_array ($r, MYSQLI_ASSOC);
-
-            // Return true and the record:
-            return array(true, $row);
-
-        } else { // Not a match!
-            $errors[] = 'The email address and password entered do not match those on file.';
+        //Validate id and add error if neccesary
+        if (empty($id))
+        {
+            $errors[] = 'You forgot to enter your username.';
+        }
+        else
+        {
+            $name = addslashes($id);
         }
 
-    } // End of empty($errors) IF.
+        //Validate the password and add error if neccesary
+        if (empty($pass))
+        {
+            $errors[] = 'You forgot to enter your password.';
+        }
+        else
+        {
+            $p = addslashes($pass);
+            $p = SHA1($p);
+        }
 
-    // Return false and the errors:
-    return array(false, $errors);
+        //Checks if username and password match the database or add error to array
+        // need connection to database
+        if (empty($errors))
+        {
+            error_log ("access logins collection in mongoDB");
 
-} // End of check_login() function.
+            $query = array('name' => $name, 'pw' => $p);
+            $r  = $logins_collection->findOne($query);
 
-    function loggedin() {
-        // check cookie name=login
+            if($r != null)
+            {
+                //login succesfull
+                return array(true, $name);
+            }
+            else
+            {
+                $errors[] = "The username and password entered do not match those on file.";
+            }
 
-    } //end loggedin()
+        }
+        error_log("end check login");
+        return array(false, $errors);
+    }//end check_login
 
-   if (!loggedin())
+/*
+ * Redirects user to the main php file if page is null or page specified
+ *
+ */
+function redirect_user($page)
+{
+
+ if (!isset($page) or $page == null)
+ {
+    $url = 'http://'.$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF']);
+    $url = rtrim($url, "/\\");
+    error_log("no page specified");
+ }
+ else
+ {
+    $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+    $url .= '/'.$page;
+ }
+
+    error_log("exit $url");
+    header("Location: $url");
+    exit();
+
+}//end redirect_user
+
+//Check for cookie
+if(!loggedin())
+{
+    error_log("not logged in");
+    //Check if login form has been submitted
+    if($_SERVER['REQUEST_METHOD'] == 'POST')
     {
-         $errors = "";
-         $name = $_GET["userid"];
-         $pw =   $_GET["password"];
+        error_log("received a post login attempt");
 
-            if (!$name)
-            { // error "enter a user name"
-            }
-            else if (!$pw) {
-                // error "enter a password"
-            }
-            else if (!verifylogin($name, $pw))
-            {
-                //error "not a registered user name and password"
-            }
+        //Uses check_login function to return boolean with passing and errors with login
+        list ($check, $data) = check_login($_POST['id'], $_POST['pass']);
 
-            if ($errors)
-            {
-                // to get SELF:     $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-                // use this in the 'action' of the login 'form'
+        //if login succesful set cookie and redirect_user to the PHP file
+        if ($check)
+        {
+            setcookie ("login", $_POST['id']);
+            redirect_user();
+        }
+        //Set errors to be displayed next login attempt
+        else
+        {
+            error_log("not post");
+            $errors = $data;
+        }// end of if login was found
+    }//end of if POST
 
-                //send errors and login page
-            }
-            else login($name, $pw);
+    $page_title = 'Login';
+    //include ('include/header.html');
+
+    //Error message for potential errors with login
+    if (isset($errors) && !empty($errors))
+    {
+        error_log("errors");
+        echo '<h1>Login error</h1>';
+        echo '<p>The following error(s) occured:<br><br>';
+
+        foreach ($errors as $msg)
+        {
+            echo '<p class="error">' . ($msg) . '</p><br />';
+        }
+        echo '<p>Please try again.</p>';
     }
 
-    { // normal page here
-        echo "normal php page appears here";
-    }
-
-
+    //The login form
+    echo "<!doctype html>
+        <h1>Login</h1>
+        <form method='post'>
+            <p>Username: <input type='text'     name='id' size='20' maxlength='60' autofocus>  </p>
+            <p>Password: <input type='password' name='pass' size='20' maxlength='20' >  </p>
+            <p>
+                <button type='submit'>Submit</button>
+                <button type='button' onclick= 'window.location = \"index.php\"'>Cancel</button>
+            </p>
+        </form>";
+    //exit();
+} //end if not login
+else {
+// Print a  message:
+     echo "<br><br><br><h1>Logged In</h1>
+     <p>You are now logged in as {$_COOKIE['login']}</p>";
+}
+//Display the form:
 ?>
 
 
+	</div>
+
 <?php
-        /*include either, but not both, of toolbar.php or toolbar-vertical.php*/
-          include ('includes/toolbar.php');
-        /*include ('includes/toolbar-vertical.php'); */
-          include ('includes/js-includes.php');
+   		/*include either, but not both, of toolbar.php or toolbar-vertical.php*/
+	      include ('includes/toolbar.php');
+   		/*include ('includes/toolbar-vertical.php'); */
+   		  include ('includes/js-includes.php');
     ?>
 </body>

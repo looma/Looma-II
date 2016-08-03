@@ -24,7 +24,6 @@ body {
 }
 
 #toolbarSidebar {
-  height: 64px;
   background-color: yellow; 
   background-image: none;
 }
@@ -97,44 +96,59 @@ html[dir='rtl'] .toolbarButton#secondaryToolbarToggle::before {
   content: url(../images/toolbarButton-secondaryToolbarToggle-rtl.png);
 }
 
+#viewThumbnail.toolbarButton::before {
+  background: url(../images/looma-viewThumbnail.png);
+}
+
+html[dir="ltr"] #viewOutline.toolbarButton::before, 
+html[dir="rtl"] #viewOutline.toolbarButton::before {
+  background: url(../images/looma-viewOutline.png);
+}
+
 html[dir='ltr'] .toolbarButton.findPrevious::before,
 html[dir='rtl'] .toolbarButton.findPrevious::before {
   background: url(../images/looma-up-smaller.png);
-  background-size: 100%;
-  content: "";
 }
 
 html[dir='ltr'] .toolbarButton.findNext::before,
 html[dir='rtl'] .toolbarButton.findNext::before {
   background: url(../images/looma-down-smaller.png);
-  background-size: 100%;
-  content: "";
 }
 
 html[dir='ltr'] .toolbarButton.pageUp::before, 
 html[dir='rtl'] .toolbarButton.pageUp::before {
   background: url(../images/looma-up-smaller.png);
-  background-size: 100%;
-  content: "";
 }
 
 html[dir='ltr'] .toolbarButton.pageDown::before, 
 html[dir='rtl'] .toolbarButton.pageDown::before {
   background: url(../images/looma-down-smaller.png);
-  background-size: 100%;
-  content: "";
 }
 
 .toolbarButton.zoomOut::before {
   background: url(../images/looma-plus-smaller.png);
-  background-size: 100%;
-  content: "";
 }
 
 .toolbarButton.zoomIn::before {
   background: url(../images/looma-minus-smaller.png);
-  background-size: 100%;
+}
+
+#viewThumbnail.toolbarButton::before, 
+html[dir="ltr"] #viewOutline.toolbarButton::before, 
+html[dir="rtl"] #viewOutline.toolbarButton::before, 
+html[dir='ltr'] .toolbarButton.findPrevious::before,
+html[dir='rtl'] .toolbarButton.findPrevious::before,
+html[dir='ltr'] .toolbarButton.findNext::before,
+html[dir='rtl'] .toolbarButton.findNext::before,
+html[dir='ltr'] .toolbarButton.pageUp::before, 
+html[dir='rtl'] .toolbarButton.pageUp::before,
+html[dir='ltr'] .toolbarButton.pageDown::before, 
+html[dir='rtl'] .toolbarButton.pageDown::before,
+.toolbarButton.zoomOut::before,
+.toolbarButton.zoomIn::before
+{
   content: "";
+  background-size: 100%;
 }
 
 .toolbarButton.presentationMode::before,
@@ -173,6 +187,10 @@ html[dir='rtl'] .toolbarButton.pageDown::before {
   height: 80%;
 }
 
+.toolbarField.pageNumber {
+  width: 8vh;
+}
+
 #viewer.textLayer-visible .textLayer > div,
 #viewer.textLayer-hover .textLayer > div:hover {
   background-color: blue;
@@ -188,17 +206,6 @@ html[dir='ltr'] .findbar {
 }
 
 /* removing more images */
-#viewThumbnail.toolbarButton::before {
-  content: none;
-}
-
-html[dir="ltr"] #viewOutline.toolbarButton::before {
-  content: none;
-}
-html[dir="rtl"] #viewOutline.toolbarButton::before {
-  content: none;
-}
-
 #viewAttachments.toolbarButton::before {
   content: none;
 }
@@ -324,11 +331,22 @@ html[dir="rtl"] #viewOutline.toolbarButton::before {
   background-size: 100% 100%;
 }
 
+#pageNumberLabel {
+  top: 10%;
+}
+
 /* CSS to make toolbar resizeable relative to window height*/
 
 #toolbarContainer, #toolbarViewer, 
-#toolbarviewerRight, #toolbarViewerLeft {
+#toolbarviewerRight, #toolbarViewerLeft,
+#toolbarSidebar {
   height: 7vh;
+}
+
+.toolbarButton, .dropdownToolbarButton, .secondaryToolbarButton, .overlayButton, 
+.toolbarField, .toolbarLabel,
+.dropdownToolbarButton > select {
+  font-size: 3vh;
 }
 
 .toolbarButton {
@@ -351,105 +369,13 @@ html[dir="rtl"] #viewOutline.toolbarButton::before {
 
 /* end toolbar resizing stuff */
 
-/*LOOMA replaces these toolbar button images 
-html[dir="ltr"] .secondaryToolbarButton::before {
-  left: 4px;
-}
-html[dir="rtl"] .secondaryToolbarButton::before {
-  right: 4px;
+
+/* Code that removes stuff from HTML */
+#secondaryPrint, #firstPage, #lastPage, #toggleHandTool,
+option[value="0.75"], option[value="1.25"], option[value="1.5"], option[value="3"]{
+  display: none;
 }
 
-html[dir='ltr'] .toolbarButton#sidebarToggle::before {
-  content: url(../images/toolbarButton-sidebarToggle.png);
-}
-html[dir='rtl'] .toolbarButton#sidebarToggle::before {
-  content: url(../images/toolbarButton-sidebarToggle-rtl.png);
-}
-
-html[dir='ltr'] .toolbarButton#secondaryToolbarToggle::before {
-  content: url(../images/toolbarButton-secondaryToolbarToggle.png);
-}
-html[dir='rtl'] .toolbarButton#secondaryToolbarToggle::before {
-  content: url(../images/toolbarButton-secondaryToolbarToggle-rtl.png);
-}
-
-html[dir='ltr'] .toolbarButton.findPrevious::before {
-  content: url(../images/findbarButton-previous.png);
-}
-html[dir='rtl'] .toolbarButton.findPrevious::before {
-  content: url(../images/findbarButton-previous-rtl.png);
-}
-
-html[dir='ltr'] .toolbarButton.findNext::before {
-  content: url(../images/findbarButton-next.png);
-}
-html[dir='rtl'] .toolbarButton.findNext::before {
-  content: url(../images/findbarButton-next-rtl.png);
-}
-
-html[dir='ltr'] .toolbarButton.pageUp::before {
-  content: url(../images/toolbarButton-pageUp.png);
-}
-html[dir='rtl'] .toolbarButton.pageUp::before {
-  content: url(../images/toolbarButton-pageUp-rtl.png);
-}
-
-html[dir='ltr'] .toolbarButton.pageDown::before {
-  content: url(../images/toolbarButton-pageDown.png);
-}
-html[dir='rtl'] .toolbarButton.pageDown::before {
-  content: url(../images/toolbarButton-pageDown-rtl.png);
-}
-
-.toolbarButton.zoomOut::before {
-  content: url(../images/toolbarButton-zoomOut.png);
-}
-
-.toolbarButton.zoomIn::before {
-  content: url(../images/toolbarButton-zoomIn.png);
-}
-
-.toolbarButton.presentationMode::before,
-.secondaryToolbarButton.presentationMode::before {
-  content: url(../images/toolbarButton-presentationMode.png);
-}
-
-.toolbarButton.print::before,
-.secondaryToolbarButton.print::before {
-  content: url(../images/toolbarButton-print.png);
-}
-
-.toolbarButton.openFile::before,
-.secondaryToolbarButton.openFile::before {
-  content: url(../images/toolbarButton-openFile.png);
-}
-
-.toolbarButton.download::before,
-.secondaryToolbarButton.download::before {
-  content: url(../images/toolbarButton-download.png);
-}
-LOOMA*/
-
-/* LOOMA
-#viewThumbnail.toolbarButton::before {
-  content: url(../images/toolbarButton-viewThumbnail.png);
-}
-
-html[dir="ltr"] #viewOutline.toolbarButton::before {
-  content: url(../images/toolbarButton-viewOutline.png);
-}
-html[dir="rtl"] #viewOutline.toolbarButton::before {
-  content: url(../images/toolbarButton-viewOutline-rtl.png);
-}
-
-#viewAttachments.toolbarButton::before {
-  content: url(../images/toolbarButton-viewAttachments.png);
-}
-
-#viewFind.toolbarButton::before {
-  content: url(../images/toolbarButton-search.png);
-}
-LOOMA*/
 ::-webkit-scrollbar-track-piece {
     background: #aaaaff; /*light blue*/
 }

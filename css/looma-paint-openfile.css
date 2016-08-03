@@ -1,6 +1,15 @@
 body {
   font-family: sans-serif;
+  background-color:white;
 }
+
+#back {
+    height:20vh;
+    width:10vw;
+    font-size:1.5em;
+}
+
+#back:hover { background-color:#ddd;}
 
 #back img {
 	height: 100px;
@@ -10,6 +19,8 @@ div {
   margin: 25px;
   margin-top: 100px;
 }
+
+div#previews {overflow:auto;}
 
 div a {
   width: 300px;
@@ -33,4 +44,6 @@ a button {
   font-size: 14pt;
   padding: 10px;
   float: right;
+  border:1px solid black;
+  margin: 2px;
 }

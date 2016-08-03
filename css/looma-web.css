@@ -1,0 +1,27 @@
+#main-container-horizontal {
+    height: 80vh;
+    top: 10vh;
+}
+
+#web-controls * {
+    height: 8vh;
+    margin: 1vh;
+    color: black;
+    font-size: 1.5em;
+}
+
+.left-control {
+    float: left;
+}
+
+.right-control {
+    float: right;
+}
+
+#web-controls button img {
+    height: 75%;
+}
+
+#address-bar {
+    width: 60vw;
+}

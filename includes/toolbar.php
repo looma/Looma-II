@@ -68,10 +68,12 @@
 
 		<div id="logo-div">
 			<!-- DATETIME ready to turn on. needs to be positioned with CSS-->
-			<span class="logo"><img  src="images/logos/LoomaLogoTransparent.png">
-      		<!--<img id="padlock" src="images/padlock-closed.png">  -->
+			<span class="logo">
+			    <img  id="logo"   src="images/logos/LoomaLogoTransparent.png" >
       		</span>
             <br>
 			<span id="datetime"></span>
 		</div>
+		<img id="padlock" src="images/padlock-closed.png" >
+
 	</div>

@@ -14,9 +14,11 @@
 	$m = new MongoClient();
 	$loomaDB = $m -> $dbname;
 
-
 	$activities_collection = $loomaDB -> activities;
 	$chapters_collection =   $loomaDB -> chapters;
 	$textbooks_collection =  $loomaDB -> textbooks;
-	$dictionary_collection = $loomaDB -> dictionary;
+    $dictionary_collection = $loomaDB -> dictionary;
+    $logins_collection =     $loomaDB -> logins;
+    $history_collection =    $loomaDB -> histories;
+    $slideshows_collection = $loomaDB -> slideshows;
 ?>

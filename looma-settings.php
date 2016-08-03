@@ -45,6 +45,10 @@ Description:  for Looma 2
             <div id="voicelist">
                 <h4>Change voices with these buttons</h4><br>
 
+                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_bdl"  value="cmu_us_bdl">   US male (bdl) </span>
+                <br>
+                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_clb"  value="cmu_us_clb">   US female (clb) </span>
+                 <br>
                 <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_aew"  value="cmu_us_aew">   US male (aew) </span>
                 <br>
                 <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_ahw"  value="cmu_us_ahw">   German male (ahw) </span>
@@ -54,10 +58,6 @@ Description:  for Looma 2
                 <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_awb"  value="cmu_us_awb">   Scottish male (awb) </span>
                 <br>
                 <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_axb"  value="cmu_us_axb">   Indian female (axb) </span>
-                 <br>
-               <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_bdl"  value="cmu_us_bdl">   US male (bdl) </span>
-                <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_clb"  value="cmu_us_clb">   US female (clb) </span>
                  <br>
                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_eey"  value="cmu_us_eey">   US female (eey) </span>
                 <br>
@@ -84,7 +84,7 @@ Description:  for Looma 2
             <a href="looma-speech-test.php"> LINK TO:  Looma speech test page </a>
 
             <hr>
-            <button class="login" style="height:10%;width:20%;font-size:1em;"> Login for Advanced Settings </button>
+            <button class="login" style="height:10%;width:20%;font-size:1em;">Login for Advanced Settings </button>
 
 	</div>
 

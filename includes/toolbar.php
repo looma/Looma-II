@@ -27,10 +27,20 @@
 				<?php tooltip("Paint") ?>
 			</button>
 
-			<button onclick="parent.location.href = 'looma-map.php';" class="toolbar-button ">
-				<img src="images/maps.png"  height = "80%" >
-				<?php tooltip("Maps") ?>
-			</button>
+            <button onclick="parent.location.href = 'looma-clock.php';" class="toolbar-button ">
+                <img src="images/clock.png"  height = "80%" >
+                <?php tooltip("Clocks") ?>
+            </button>
+
+            <button onclick="parent.location.href = 'looma-map.php';" class="toolbar-button ">
+                <img src="images/maps.png"  height = "80%" >
+                <?php tooltip("Maps") ?>
+            </button>
+
+            <button onclick="parent.location.href = 'looma-histories.php';" class="toolbar-button ">
+                <img src="images/history.png"  height = "80%" >
+                <?php tooltip("History") ?>
+            </button>
 
 			<button onclick="parent.location.href = 'looma-games.php';" class="toolbar-button ">
 				<img src="images/games.png"  height = "80%" >

@@ -40,12 +40,15 @@ Description: Initial "histories" page. Takes the user to the history timelines.
 			<br><br><br><br>
 			<br><br><br><br>
 		<a href="looma-history.php?chapterToLoad=7EN01.01">
-			<button type="button" class="navigate" ><?php keyword('Presidents') ?>  </button>
+			<button type="button" class="navigate" ><?php keyword('US Presidents') ?>  </button>
 			</a>
 
+<!--
 		<a href="looma-history.php?chapterToLoad=1EN03">
 			<button type="button" class="navigate"><?php keyword('Sports') ?>  </button>
 		</a>
+-->
+
 		</div>
 	</div>
 

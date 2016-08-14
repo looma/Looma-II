@@ -1,18 +1,23 @@
 body {
-  font-family: sans-serif;
   background-color:white;
 }
 
 #back {
+    position: absolute;
+    right:10vw;
+    top:3vh;
     height:20vh;
     width:10vw;
-    font-size:1.5em;
+    margin:10px;
+    font-size:0.75em;
+    border: 2px solid black;
 }
 
 #back:hover { background-color:#ddd;}
 
+
 #back img {
-	height: 100px;
+	height: 10vh;
 }
 
 div {
@@ -20,7 +25,7 @@ div {
   margin-top: 100px;
 }
 
-div#previews {overflow:auto;}
+div#previews {overflow:scroll;}
 
 div a {
   width: 300px;

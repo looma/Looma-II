@@ -1,52 +1,13 @@
-body {
-	background-color:  #091F48; 
-	font: "Comic Sans MS", serif, bold;
-	color: yellow;
+
+#playground {
+    margin:1vh 2vw;
+    padding:3em 1em;
+    border: 1px solid #ccc;
+    overflow-y:auto;
+    max-height:78%;
 }
 
-#toolbar-container, #toolbar-container-vertical {
-	background-color:  #ff00ff; /*#BD00A5;*/
-}
-
-h1{
-    font-family: "Comic Sans MS", serif;
-    font-size: 40px;
-}
-
-button {
-
-	background-color: #FFFFFF;
-	color:black;
-	border: 0;
-	border-radius: 10px;
-	font: bold 10em;
-	cursor: pointer;
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
-    box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
-}
-
-button:hover {
-	background-color: #008;
-	color: black;
-}
-
-button.active {
-	background-color: #00f;
-	color:black;
-    border-radius: 10px;
-}
-	/* COLORS:
-	 * 	lime	59b606
-	 * blue		027bbf
-	 * pink		8ff
-	 * lt blue	f8f
-	 */
-
-form {
-  font: 18px "Comic Sans MS", serif, bold;
-  position:fixed;
-
-}
+input#keywords {display:inline;}
 
 a {
   text-decoration: none
@@ -64,12 +25,13 @@ h2 {
   text-align: center;
 }
 
+/*
 .container {
   margin: 0 auto;
-  max-width: 750px;
-  max-height: 300px;
   border-radius: 10px;
+  overflow:scroll;
 }
+*/
 
 .row {
   float: left;
@@ -95,7 +57,7 @@ h2 {
   top: 0;
   width: 4px;
 }
-
+/* puts a little circle at the end of the timeline - deleted for now [confusing to user?]
 .timeline-both-side:after {
   border-radius: 10px;
   bottom: -22px;
@@ -108,11 +70,14 @@ h2 {
   border: 5px solid #ccc;
   color: white
 }
+*/
 
 .timeline-both-side li {
   position: relative;
   float: left;
   width: 100%;
+    margin-top:-20px;
+  margin-bottom:-20px;
 }
 
 .timeline-both-side li .border-line {
@@ -151,10 +116,9 @@ h2 {
 
 .timeline-both-side li .timeline-description {
   border-radius: 2px;
-  background-color: #f1f1f1;
-  border: 1px solid white;
+  background-color: #ddd;
+  /*border: 1px solid white; */
   float: left;
-  font-size: 13px;
   padding: 10px;
   position: relative;
   width: 42%;
@@ -166,25 +130,22 @@ h2 {
 
 .dropbtn {
   padding: 10px;
-  font: 24px "Comic Sans MS", serif, bold;
-  border: none;
+  font: 1em "Comic Sans MS", serif, bold;
   cursor: pointer;
-  min-width: 100px;
+  width:100%;
+  min-width: 8vw;
+  height: 15vh;
   background-color: #FFFFFF;
   color: black;
-  border: 0;
-  border-radius: 10px;
-  font: bold 10em;
-  cursor: pointer;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
   box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
 }
 
 .dropdown {
   position: relative;
-  border: 1px solid white;
+  width:100%;
   display: inline-block;
-  font : 24   
+  font-size: 24;
 }
 
 .dropdown-content {
@@ -208,7 +169,7 @@ h2 {
   font: 20px;
 }
 
-.dropdown-content a:hover {
+.dropdown-content:hover {
   background-color: white
   color:black;
   padding: 10px;
@@ -217,13 +178,10 @@ h2 {
   cursor: pointer;
   min-width: 100px;
   background-color: #FFFFFF;
-  border: 0;
   border-radius: 10px;
-  font: bold 10em;
-  cursor: pointer;
 }
 
-.dropdown:hover .dropdown-content {
+.timeline-description:hover .dropdown-content {
   display: block;
   border: 1px solid white;
   text-align: center;
@@ -238,50 +196,65 @@ h2 {
   font color: black;
 }
 
-button.scrollButtonDown {
+button img {height:100%;width:100%;}
+
+.scrollButtonDown {
   position: fixed;
-  top:300px;
-  left:50px;
-  right:800px;
-  bottom:200px;
-  width: 80px;
-  height:50px;
+  top:3vh;
+  right:30vw;
+  width: 7vw;
+  height:5vw;
   padding: 10px;
   font: 20px "Comic Sans MS", serif, bold;
-  border: none;
   cursor: pointer;
   min-width: 100px;
   background-color: #FFFFFF;
   color:black;
-  border: 0;
   border-radius: 10px;
-  font: bold 10em;
-  cursor: pointer;
 }
 
-button.scrollButtonUp {
+.scrollButtonUp {
   position: fixed;
-  top:230px;
-  left: 50px;
-  right:800px;
-  bottom:180px;
-  width: 80px;
-  height: 50px;
+  top:3vh;
+  right:20vw;
+  width: 7vw;
+  height: 5vw;
   padding: 10px;
   font: 20px "Comic Sans MS", serif, bold;
-  border: none;
   cursor: pointer;
   min-width: 100px;
   background-color: #FFFFFF;
   color:black;
-  border: 0;
   border-radius: 10px;
-  font: bold 10em;
+}
+.returnToTop {
+  position: fixed;
+  top:3vh;
+  right:10vw;
+  width: 7vw;
+  height: 5vw;
+  padding: 10px;
+  font: 50px "Comic Sans MS", serif, bold;
   cursor: pointer;
+  min-width: 100px;
+  background-color: #FFFFFF;
+  color:black;
+  border-radius: 10px;
+}
+
+label {
+    display:inline;
+    float:left;
+    font-size:1.5em;
+    margin:4vh 0 0 2vw;
 }
 
 .searchBar {
-  width: 100px;
-  height: 50px;
+  font: 18px "Comic Sans MS", serif, bold;
+  display:inline;
+  float:left;
+  margin:3vh 15px;
+  width: 25vw;;
+  height: 7vh;
   border-radius: 10px;
 }

@@ -214,8 +214,8 @@ footer {
 
 
 button.flag-vertical {
-	height:7.3%;
-	width:100%;
+	height:6%;
+	width:80%;
 }
 
 button img#flag {height: 100%;}
@@ -439,45 +439,10 @@ button#back-button {
 
 .toolbar-button {
 	position:relative;
-	width:6%;
-	margin: 0.5%;
+	width:5.5%;
 	font-size: 1em;
+	background-position: center;
 }
-
-/*
-.toolbar-button span, .toolbar-button-vertical span {
-	display:none;
-}
-*/
-
-/*
-.toolbar-button:hover span {
-	display:block;
-	position:absolute;
-	top:2.5em;
-	right:em;
-	z-index: 100;
-	border: 2px solid #996633;
-	border-radius: 3px;
-	background-color:#ffff66;
-	color:#000000;
-}
-*/
-
-/*
-.toolbar-button-vertical:hover span {
-	display:block;
-	position:absolute;
-	font-size: 0.75em;
-	top:2.5em;
-	left:0.3em;
-	z-index: 100;
-	border: 2px solid #996633;
-	border-radius: 3px;
-	background-color:#ffff66;
-	color:#000000;
-}
-*/
 
 .toolbar-button:hover, .toolbar-button-vertical:hover {
 	transform: scale(1.2,1.2);
@@ -485,10 +450,11 @@ button#back-button {
 	border: 2px solid white;
 }
 .toolbar-button-vertical {
-	height:7.3%;
-	width: 100%;
+	height:6%;
+	width: 80%;
 	margin: 5% auto;
 	font-size: 1em;
+    background-position: center;
 }
 
 .xlat {display:none;}
@@ -531,7 +497,25 @@ span.logo {
 	width:100%;
 }
 
-span.logo img {width:80%;}*
+span.logo img {width:80%;}
+
+/* for slideshow  */
+
+button.with-play {
+    float:left;
+    width:20%;
+}
+
+button.with-play.img img {
+    width: 100%;
+    color: red;
+    display: inline;
+}
+
+button.beside-play {
+    display: inline;
+    width:70%;
+}
 
 #padlock {
     position:absolute;
@@ -612,7 +596,6 @@ button.lookup {
     left:25%;
     margin:auto;
     padding: 5px;
-    height:60%;
     overflow:auto;
     width:50%;
     background-color:#fff;
@@ -752,14 +735,6 @@ button.footer {
 	/* margin: 3px; */
 	font-size: 75%;
 	background-color: #999999;
-}
-
-span#themes {font-size: 1.5em}
-
-input.theme{
-	height: 50px;
-	width:  50px;
-	vertical-align:middle;
 }
 
 img.looma-logo{

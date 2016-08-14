@@ -23,7 +23,7 @@ Description:  for Looma 2
                 <h4>Change themes with these buttons</h4><br>
                      <span class="themespan"><input type="radio" name="theme" class="theme" id="looma"        value="looma">      Looma Classic
                         <img class="thumb" src="images/theme-looma.png" > </span>
-                <br> <span class="themespan"><input type="radio" name="theme" class="theme" id="style-sheet"   value="style-sheet">Style Sheet
+                <br> <span class="themespan"><input type="radio" name="theme" class="theme" id="style-sheet"   value="style-sheet">   Style Sheet
                         <img class="thumb" src="images/theme-stylesheet.png" > </span>
                 <br> <span class="themespan"><input type="radio" name="theme" class="theme" id="white"        value="white">      White
                         <img class="thumb" src="images/theme-white.png" > </span>
@@ -31,13 +31,13 @@ Description:  for Looma 2
                         <img class="thumb" src="images/theme-ecogreen.png" > </span>
                 <br> <span class="themespan"><input type="radio" name="theme" class="theme" id="blackandwhite" value="blackandwhite">  Black & White
                         <img class="thumb" src="images/theme-black-and-white.png" > </span>
-                <br> <span class="themespan"><input type="radio" name="theme" class="theme" id="redandblack"   value="redandblack">Red and Black
+                <br> <span class="themespan"><input type="radio" name="theme" class="theme" id="redandblack"   value="redandblack">    Red and Black
                         <img class="thumb" src="images/theme-red-and-black.png" > </span>
                 <br> <span class="themespan"><input type="radio" name="theme" class="theme" id="kate"          value="kate">       Summer
                         <img class="thumb" src="images/theme-summer.png" > </span>
                 <br> <span class="themespan"><input type="radio" name="theme" class="theme" id="magenta"       value="magenta">    Magenta
                         <img class="thumb" src="images/theme-magenta.png" > </span>
-                <br> <span class="themespan"><input type="radio" name="theme" class="theme" id="blueandgreen"  value="blueandgreen">  Blue-Green
+                <br> <span class="themespan"><input type="radio" name="theme" class="theme" id="blueandgreen"  value="blueandgreen">    Blue-Green
                         <img class="thumb" src="images/theme-blue-green.png" > </span>
             </div>
 

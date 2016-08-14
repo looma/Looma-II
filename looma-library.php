@@ -65,6 +65,46 @@ Description:  displays and navigates content folders for Looma 2
 
 		};  //end makeButton()
 
+		//*********************************************************************
+        //Looma edited video changes
+        function makeEditedVideoButton($dn, $path, $ext, $file, $json) {
+                //Makes the buttons for edited video because they require different information to be sent
+                //echos button with path= $path  file= $file   ext= $ext
+
+                echo "<button class='activity play img'
+                              data-fn='" .  $file .
+                           "' data-fp='" .  $path .
+                           "' data-ft='" .  $ext .
+                                       "' data-dn='" .  urlencode($dn) .
+                                       "' data-content='" . urlencode($json) .
+                           "' data-zm='" .  160 .
+                           "' data-pg='1" .
+                           "'>";
+
+                //text and tooltip for BUTTON
+                echo "<span class='displayname'
+                            class='btn btn-default'
+                            data-toggle='tooltip'
+                            data-placement='top'
+                            title='" . $file . "'>" .
+                            "<img src='" . $path . $file . "_thumb.jpg" . "'>" .
+                            $dn . "</span>";
+
+                //finish BUTTON
+                echo "</button>";
+
+        };  //end makeEditedVideoButton()
+
+        // Check to make sure the folder edited videos exists
+        if (!file_exists("../content/edited videos/")) {
+            // Create "edited videos" folder
+            mkdir("../content/edited videos/", 0777, true);
+        }
+
+        //End of changes looma edited video
+        //**************************************************************************
+
+
 		function isEpaath($fp) {
 
 			//echo "<br>DEBUG: in isEpaath, FP is " . $fp . " Substr is " . mb_substr($fp, -7, 7);
@@ -103,14 +143,33 @@ Description:  displays and navigates content folders for Looma 2
 	if ( ! $ep ) {
 		foreach (new DirectoryIterator($path) as $fileInfo) {
    			$file =  $fileInfo->getFilename();
-			//if ($file{0}  == ".") continue;  //skips ".", "..", and any ".filename" (more thorough that isDot() )
+			//if ($file{0}  == ".") continue;  //skips ".", "..", and any ".filename" (more thorough than isDot() )
 
     		if (($fileInfo -> isDir()) && $file[0] !== "." && ( ! file_exists($path . $file . "/hidden.txt")))
     			//skips ".", "..", and any ".filename" (more thorough that isDot() )
     			//skips any directory with a file named "hidden.txt"
-    		{
-    			echo "<td><a href='looma-library.php?fp=" . $path . $file . "/'><button class='activity img zeroScroll'>" .
-    			thumb_image($path .$file) . $file . "</button></a></td>";
+
+    		          {
+                if (file_exists($path . $file . "/images.txt")) {
+                    /************************************************************************
+                     * EDITED: This if statement creates a button linking directories containing image.txt files
+                     * with Looma Picture Player
+                     */
+                    echo "<td>
+                            <a href='looma-slideshow.php?dir=$path$file'>
+                                    <button class='activity zeroScroll  with-play'>
+                                        <img src='images/play-slideshow-icon.png' class='img-responsive'>
+                                    </button>
+                                </a>";
+                    echo "<a href='looma-library.php?fp=" . $path . $file . "/'><button class='activity img zeroScroll beside-play'>" .
+                    thumb_image($path .$file) . $file . "</button></a></td>";
+
+                    }
+                else {
+
+        			echo "<td><a href='looma-library.php?fp=" . $path . $file . "/'><button class='activity img zeroScroll'>" .
+        			thumb_image($path .$file) . $file . "</button></a></td>";
+                }
 				$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
     		};
@@ -133,6 +192,35 @@ Description:  displays and navigates content folders for Looma 2
 		//TODO: should gather all the filenames into an array and sort it, use (natcasesort() or multisort(), before making the buttons
 
 	foreach (new DirectoryIterator($path) as $fileInfo) {
+
+          //****************************************************************
+        //Modifed by looma edited video
+        if($path == "../content/edited videos/") {
+            //If the folder being filled is the edited videos it fills it using
+            //all of the entries from the edited_videos collection in the database
+            $editedVideos = $edited_videos_collection->find();
+
+             foreach ($editedVideos as $doc) {
+                    echo "<td>";
+                    $dn = $doc['dn'];
+                    $file = $doc['vn'];
+                    $path = $doc['vp'];
+                    $ext = "evi";
+                    $json = $doc['JSON'];  //NOTE: this passes the full text of the edited script in the URL.
+                                           // should just pass the mongo ID and have the player retrieve the script's full text
+                    makeEditedVideoButton($dn, $path, $ext, $file, $json);
+
+                    echo "</td>";
+                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+            }
+        }
+        else {
+            //Otherwise it just fills the folder normally
+            //End of modifications
+            //************************************************
+
+
+
    		$file =  $fileInfo->getFilename();
 
 		//DEBUG  echo "   found " . $file . "<br>";
@@ -209,6 +297,9 @@ Description:  displays and navigates content folders for Looma 2
 
 				}
 			}
+          //****** End tag for inserted else [evi mods]
+          }
+          //******
 		} //end FOREACH file
 		echo "</tr></table>";
 ?>

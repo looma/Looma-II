@@ -16,12 +16,11 @@ $(document).ready (function() {
     //turn off any speech when user leaves the page
     if (speechSynthesis) {$(window).unload(function(){speechSynthesis.cancel();});}
 
-    var language;
     // for translation: on every page load, check localStore['language'] for language to be used
     // if stored value doesnt exist, create a stored value with language='english'
     // then use the value to set KEYWORDs and TOOLTIPs on the page to 'english' [default]
     // or 'native' [change class="english-keyword" to hidden and class="native-keyword" to visible]
-
+    var language;
     language = LOOMA.readStore('language', 'local');
     if (!language) {document.cookie = 'language=english'; language = 'english';}
 
@@ -37,54 +36,19 @@ $(document).ready (function() {
             LOOMA.setStore('language', language, 'local');
             // change all the keywords on the page to the new setting
             LOOMA.translate(language);
-
     }); // end anonymous function for translate.click
+
+
+    //NOTE: might be better to change the CLASS of #padlock, and use #padlock.classname in CSS to change the image src
+    if (LOOMA.loggedIn()) $('#padlock').attr('src','images/padlock-open.png');
 
 /*    $('.screensize').text('(Screen  ' + screen.width + ' x ' + screen.height + ')  ');
 */
     $('.screensize').text('Window size = ' + window.outerWidth + ' x ' + window.outerHeight);
     $('.bodysize').text('HTML body size = ' + $('body').outerWidth() + ' x ' + $('body').outerHeight());
 
-    /*    function toggleFullScreen() { //borrowed from developer.moz.org
-              if (!document.fullscreenElement &&    // alternative standard method
-                  !document.mozFullScreenElement &&
-                  !document.webkitFullscreenElement &&
-                  !document.msFullscreenElement ) {  // current working methods
-                if (document.documentElement.requestFullscreen) {
-                  document.documentElement.requestFullscreen();
-                } else if (document.documentElement.msRequestFullscreen) {
-                  document.documentElement.msRequestFullscreen();
-                } else if (document.documentElement.mozRequestFullScreen) {
-                  document.documentElement.mozRequestFullScreen();
-                } else if (document.documentElement.webkitRequestFullscreen) {
-                  document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-                }
-              } else { //the is currrently a fullscreen element
-                if (document.exitFullscreen) {
-                  document.exitFullscreen();
-                } else if (document.msExitFullscreen) {
-                  document.msExitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                  document.mozCancelFullScreen();
-                } else if (document.webkitExitFullscreen) {
-                  document.webkitExitFullscreen();
-                }
-              }
-            }; //end toggleFullScreen()
-    */
-    /* activate fullscreen button if present */
-/*    var fullScreenButton = document.getElementById("fullscreen-control");
 
-    if (fullScreenButton) {  // add event listener for the fullscreen button
-        var fullScreenElement = document.getElementById("fullscreen");
-        fullScreenButton.addEventListener("click", function(e){e.preventDefault();toggleFullScreen();});
-        };
-*/
-/*    document.getElementById("fullscreen").addEventListener("fullScreenChange", function(){
-        alert('FS change');});
-    document.getElementById("fullscreen").addEventListener("fullScreenError", function(){
-        alert('FS error');});
-*/
+
     function updateClock() {
         var now = new Date(); // current date
         var months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -106,4 +70,19 @@ $(document).ready (function() {
 
     if (datetime) updateClock(); // initial call
 
+    //attach LOOMA.speak() to the '.speak' button
+    //NOTE: this code is overwritten in looma-pdf.js because looma-pdf.php displays the PDF in an <iframe> so the current selection in in the iframe
+    $('button.speak').click(function(){
+        var toString = window.getSelection().toString();
+        console.log ('selected text to speak: ', toString);
+        LOOMA.speak(toString);
+    });
+
+    //attach LOOMA.lookup() to the '.lookup' button
+    //NOTE: this code is overwritten in looma-pdf.js because looma-pdf.php displays the PDF in an <iframe> so the current selection in in the iframe
+    $('button.lookup').click(function(){
+        var toString = window.getSelection().toString();
+        console.log ('selected text to lookup: "', toString, '"');
+        LOOMA.lookupWord(toString);
+    });
 }); //end of document.ready anonymous function

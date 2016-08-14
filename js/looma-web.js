@@ -31,19 +31,48 @@ function internet() { //check if can access the internet
 };  //end INTERNET()
  */
 
-$(document).ready(function()
-    {if (navigator.onLine)
-        {
-            console.log('WEB:  internet connection is OK');
-             $('#frame').attr('src','http://www.bing.com');
-             //  NOTE: cant use GOOGLE - they dont allow cross-origin access inside an iframe !
+var addressBar = document.getElementById("address-bar");
+var submitButton = document.getElementById("submit");
 
+var backButton = document.getElementById("back");
+var forwardButton = document.getElementById("forward");
+
+function navigate() {
+    var url = addressBar.value;
+    // If "http://" or "https://" isn't added, the iframe will treat it like a relative URL.
+    if (!url.indexOf('http') == 0) {
+        url = 'http://' + url;
+    }
+    $('#frame').attr('src', url);
+    // We can't keep track of the url in the iframe, so it's better not to show it.
+    addressBar.value = "";
+}
+
+$(document).ready(function() {
+    if (navigator.onLine) {
+        console.log('WEB:  internet connection is OK');
+
+        $('#frame').attr('src', 'http://www.bing.com');
+        // Google has issues with cross-origin access - a Chrome Plugin should be able to override it
+
+    } else {
+        console.log('WEB: No internet connection');
+        $('#frame').attr('src', 'looma-404.php');
+    };
+
+    addressBar.addEventListener("keydown", function(e) {
+         const CR = 13;  // RETURN key maps to keycode `13`
+        if (e.keyCode == CR) {
+            navigate();
         }
-     else
-         {
-              console.log('WEB: No internet connection');
-             $('#frame').attr('src','looma-404.php');
-             }
-     }
- );
+    });
 
+    submitButton.addEventListener("click", navigate);
+
+    backButton.addEventListener("click", function() {
+        history.back();
+    });
+    forwardButton.addEventListener("click", function() {
+        history.forward();
+    });
+});

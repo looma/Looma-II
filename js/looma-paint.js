@@ -359,12 +359,14 @@ select = function(e) {
 function showOpenMenu() {
   // Navigate to the "Open" menu.
 
-     var r = confirm("Save current drawing?\nClick 'OK' to save, 'Cancel' to delete current drawing");
-     if (r) saveFile();
-     window.location = ("looma-paint-openfile.php");
+//BUG - should detect if the user has made any changes to the current drawing. if not, dont ask to SAVE
+//
+
+     LOOMA.confirm("Save current drawing?", function (){saveFile();window.location = ("looma-paint-openfile.php");}, function(){window.location = ("looma-paint-openfile.php");});
+     //window.location = ("looma-paint-openfile.php");
 }
 
-function back() {window.location = 'index.php';}
+function back() {window.location = 'index.php';}   //currently goes to index.php, the homepage. should this just be history.back()?
 
 function saveFile() {
   /*
@@ -380,7 +382,7 @@ function saveFile() {
     })
   );
     localStorage.setItem(COUNTER, (counter + 1).toString());
-    LOOMA.notice('notice', 5);  //shows a hidden div with id='notice' for 5 seconds
+    LOOMA.alert('Drawing saved', 10);  //shows a hidden div with id='notice' for 5 seconds
   return "LOOMA_" + (counter + 1).toString();
 }
 

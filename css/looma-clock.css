@@ -1,0 +1,278 @@
+/* Main clock page */
+h1 {
+	text-align: center;
+}
+
+h2 {
+	font-size: 10px;
+	position: absolute;
+    top: 85%;
+	left: 70%;
+}
+
+#a {
+    position: absolute;
+    top: 20%;
+    left: 2%;
+    height: 11%;
+    font-size: 2.6em;
+}
+
+#b {
+    position: absolute;
+    top: 20%;
+    left: 75%;
+    height: 11%;
+    font-size: 2.6em;
+}
+
+#b2 {
+    position: absolute;
+    top: 20%;
+    left: 76%;
+    height: 11%;
+    font-size: 2.6em;
+    display: none;
+}
+
+#c {
+	position: absolute;
+    top: 70%;
+    left: 2%;
+    height: 11%;
+    font-size: 2.6em;
+}
+
+#d {
+	position: absolute;
+    top: 70%;
+    left: 75%;
+    height: 11%;
+    font-size: 2.6em;
+}
+
+#e {
+    position: absolute;
+    top: 85%;
+    left: 75%;
+    height: 11%;
+    width: 6%;
+    background-position: center;
+}
+
+#clockImage{
+    position: absolute;
+    left: 10%;
+    top: 12%;
+    width: auto;
+    height: auto;
+    max-width: 50px;
+    max-height: 60px;
+}
+
+#mainClock{
+    position: absolute;
+    top: 45%;
+    -webkit-transform: translate(-50%, -50%);
+}
+
+#digitalTime{
+    font-family: digitalFont;
+    color: lime;
+    font-size: 350%;
+    position: absolute;
+    top: 68%;
+    left: 45%;
+}
+
+#amOrPm1{
+    font-family: digitalFont;
+    color: lime;
+    font-size: 350%;
+    position: absolute;
+    top: 68%;
+    left: 53%;
+}
+#dragHands{
+    font-size: 130%;
+    position: absolute;
+    top: 45%;
+    left: 68%;
+}
+#toCurrentTime{
+    position: absolute;
+    top: 85%;
+    left: 43%;
+    height: 10%;
+    width: 15%;
+    font-size: 1.2em;
+}
+
+#clockBox{
+    border: 10px solid black;
+    position: absolute;
+    left: 34%;
+    top: 22%;
+    width: 30%;
+    height: 35%;
+    display: none;
+}
+
+#time {
+    font-family: digitalFont;
+    color: lime;
+    font-size: 900%;
+    position: absolute;
+    top: 31%;
+    left: 36%;
+    display: none;
+}
+#amOrPm {
+    font-family: digitalFont;
+    color: lime;
+    font-size: 500%;
+    position: absolute;
+    top: 32%;
+    left: 55%;
+    display: none;
+}
+#seconds {
+    font-family: digitalFont;
+    color: lime;
+    font-size: 300%;
+    position: absolute;
+    top: 44%;
+    left: 58%;
+    display: none;
+}
+#day {
+    font-family: digitalFont;
+    color: lime;
+    font-size: 300%;
+    position: absolute;
+    top: 49%;
+    left: 38%;
+    display: none;
+}
+#date {
+    font-family: digitalFont;
+    color: lime;
+    font-size: 200%;
+    position: absolute;
+    top: 25%;
+    left: 39%;
+    display: none;
+}
+
+#twentyFourHour{
+    position: absolute;
+    top: 70%;
+    left: 40%;
+    height: 10%;
+    width: 15%;
+    font-size: 1.2em;
+    display: none;
+}
+
+@font-face {
+    font-family: digitalFont;
+    src: url(digital-7.ttf);
+}
+
+/* Double Clock and Single Clock Game */
+#doubleClock{
+    position: absolute;
+    top: 45%;
+    -webkit-transform: translate(-50%, -50%);
+}
+
+#question{
+    position: absolute;
+    margin: auto;
+    left: 1%;
+    top: 77%;
+    font-size: 2.5em;
+}
+
+#getInput{
+    position: absolute;
+    top: 77%;
+    left: 23%;
+    font-size: 2.5em;
+    width: 100%;
+}
+
+#submit{
+    color: black;
+}
+
+#txtOutput{
+    color: black;
+    width: 100%;
+    position: absolute;
+    top: 90%;
+    left: 0%;
+    font-size: 2em;
+}
+
+#userHour{
+    -webkit-appearance: menulist-button;
+    color: black;
+    height: 200%;
+}
+#userMin{
+    -webkit-appearance: menulist-button;
+    color: black;
+    height: 200%;
+}
+
+/* World Clocks */
+#nepal{
+    top: 15%;
+    left: 16%;
+    position: absolute;
+}
+
+#tokyo{
+    top: 15%;
+    left: 33%;
+    position: absolute;
+}
+
+#newYork{
+    top: 15%;
+    left: 50%;
+    position: absolute;
+
+}
+
+#paris{
+    top: 15%;
+    left: 67%;
+    position: absolute;
+
+}
+
+#london{
+    top: 58%;
+    left: 16%;
+    position: absolute;
+}
+
+#sanFrancisco{
+    top: 58%;
+    left: 33%;
+    position: absolute;
+}
+
+#moscow{
+    top: 58%;
+    left: 50%;
+    position: absolute;
+}
+
+#cairo{
+    top: 58%;
+    left: 67%;
+    position: absolute;
+}

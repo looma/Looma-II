@@ -37,6 +37,5 @@ Comments:
    		/*include ('includes/toolbar-vertical.php'); */
    		  include ('includes/js-includes.php');
     ?>
-        <script src="js/looma-popups.js">  </script>
         <script src="js/looma-popup-test.js">  </script>
 </body>

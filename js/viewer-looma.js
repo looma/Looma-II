@@ -11,9 +11,9 @@ Description: Looma specific mods to pdf.js ["viewer.js"] for Looma
 'use strict';/*********************
 * Known bugs:
 * - changes to DEFAULT_PREFERENCES in viewer-looma.js not affecting
-*   the viewer behavior, because the components that the preferences 
+*   the viewer behavior, because the components that the preferences
 *   influence have already loaded by the time viewer-looma.js is run
-* - canvases in outline view sometimes don't render properly and 
+* - canvases in outline view sometimes don't render properly and
 *   only display a blank page
 * - pdf loads more slowly
 *********************/
@@ -21,9 +21,9 @@ Description: Looma specific mods to pdf.js ["viewer.js"] for Looma
 var DEFAULT_PREFERENCES = {
   showPreviousViewOnLoad: true,
   defaultZoomValue: '',
-  // 
+  //
   sidebarViewOnLoad: 2,
-  // 
+  //
   enableHandToolOnLoad: false,
   enableWebGL: false,
   pdfBugEnabled: false,
@@ -99,9 +99,9 @@ var HandTool = {
 
 
 /************************
-* Code to render the canvas. 
+* Code to render the canvas.
 ************************/
-var pdfDoc = null, 
+var pdfDoc = null,
 pageNum = 1,
 pageRendering = false,
 pageNumPending = null;
@@ -116,7 +116,7 @@ function renderCanvas(num, canvas, width, height) {
     canvas.height = height;
     var scale = width / page.getViewport(1).width;
     var viewport = page.getViewport(scale);
-    
+
     // Render PDF page into canvas context
     var renderContext = {
       canvasContext: ctx,
@@ -133,7 +133,7 @@ function renderCanvas(num, canvas, width, height) {
       }
     });  //end inner "then" function
   }); // end "then" anonymous function
-}  
+}
 
 function showCanvas(pg, doc, canvas, width, height) {
   PDFJS.getDocument(doc).then(function (pdfDoc_) {
@@ -141,8 +141,8 @@ function showCanvas(pg, doc, canvas, width, height) {
   pageNum = parseInt(pg);
   // Initial/first page rendering
   renderCanvas(pageNum, canvas, width, height);
-  }); 
-}; 
+  });
+};
 /********* end canvas rendering code **********/
 
 
@@ -179,7 +179,7 @@ var DocumentOutlineView = function documentOutlineView(options) {
       bindItemLink(a, item);
       /*****************************
       * Added code to show thumbnails in outline. To restore to original,
-      * delete everything between the '/********'s  and uncomment 
+      * delete everything between the '/********'s  and uncomment
       * a.textContent = item.title;
       *****************************/
       // gets the page number of the outline entry and stores it in id
@@ -199,11 +199,11 @@ var DocumentOutlineView = function documentOutlineView(options) {
       this.resume = null;
       this.renderingState = RenderingStates.INITIAL;
 
-      //gets the dimensions for the canvas from the corresponding 
+      //gets the dimensions for the canvas from the corresponding
       //  thumbnail of the page
-      this.canvasWidth = 
+      this.canvasWidth =
         linkService.pdfThumbnailViewer.thumbnails[id-1].canvasWidth;
-      this.canvasHeight = 
+      this.canvasHeight =
         linkService.pdfThumbnailViewer.thumbnails[id-1].canvasHeight;
 
 
@@ -229,7 +229,7 @@ var DocumentOutlineView = function documentOutlineView(options) {
       canvas.id = "thumbnail" + id;
       showCanvas(id, linkService.url, canvas, this.canvasWidth, this.canvasHeight);
 
-      // Do we need to show the selection rings? 
+      // Do we need to show the selection rings?
       ring.appendChild(canvas);
       thumbDiv.appendChild(ring);
       a.appendChild(thumbDiv);
@@ -254,17 +254,28 @@ var DocumentOutlineView = function documentOutlineView(options) {
   }
 };
 
-// makes sure pdf loads to correct page listed in url 
-// url format is: www.website.com/stuff.pdf#page=20
+//reduces number of zoom options in #scaleSelect
+window.onload = function() {
+  var scale = document.getElementById("scaleSelect");
+  scale.remove(11);
+  scale.remove(9);
+  scale.remove(8);
+  scale.remove(6);
+};
+
+
+// makes sure pdf loads to correct page listed in url
+// url format is: www.website.com/stuff.pdf#page=20&...
 var loadCorrectPage =  function (e) {
 	var pageNumber = document.getElementById('pageNumber');
 	var hash = document.location.hash; // gets part of URL after '#'
-	
+
 	// parses page number from URL and sets it to the value of pageNumber
-	pageNumber.value =hash.substring(hash.lastIndexOf("page=")+5, hash.lastIndexOf("&")); 
+    // (the +5 is to get the string AFTER "page=")
+	pageNumber.value =hash.substring(hash.lastIndexOf("page=")+5, hash.lastIndexOf("&"));
 
 	// triggers event to make viewer.js read the value of pageNumber and navigate to the correct page
 	// in other words, it simulates the user submitting the page number
-	pageNumber.dispatchEvent(new Event('change')); 
-}
+	pageNumber.dispatchEvent(new Event('change'));
+};
 document.addEventListener('pagesloaded', loadCorrectPage, true);

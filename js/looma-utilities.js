@@ -5,18 +5,15 @@ Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 03
 Revision: Looma 2.0.0
 
-filename: looma-utilities.js
+filename: xxxxx.js
 Description:
  */
 
 'use strict';
 
 // utility JS functions used by many LOOMA pages
-
 /*defines:
  * LOOMA.playMedia()
- * LOOMA.notice()
- * LOOMA.confirm() not defined yet
  * LOOMA.setStore()
  * LOOMA.readStore()
  * LOOMA.translate()
@@ -30,12 +27,24 @@ Description:
  * LOOMA.addErrorMessage()
  * LOOMA.removeErrorMessage()
  * LOOMA.speak(text)
+ * LOOMA.alert()
+ * LOOMA.confirm()
+ * LOOMA.prompt()
+ * LOOMA.translatableSpans()
  */
 
-var LOOMA = {}; //define namespace object for LOOMA
+var LOOMA = (function() {
+
+    // local VARs here
+
+    // local FUNCTIONS here
+
+    return {
+
+
 //this allows us to define LOOMA.playMedia() [and other LOOMA functions] that won't cause name conflicts
 
-LOOMA.playMedia = function(button) {
+playMedia : function(button) {
     switch (button.getAttribute("data-ft")) {
         case "video":
         case "mp4":
@@ -45,7 +54,17 @@ LOOMA.playMedia = function(button) {
                     'data-fn') +
                 '&fp=' + button.getAttribute('data-fp');
             break;
-        case "image":
+
+        case "evi":
+            //evi = edited video indicator
+            //If you click on an edited video it sends the filename, location and the information
+            //to looma-edited-video.php
+            window.location = 'looma-edited-video.php?fn=' + button.getAttribute('data-fn') +
+            '&fp=' + button.getAttribute('data-fp') +
+            '&txt=' + button.getAttribute('data-content') + '&dn=' + button.getAttribute('data-dn');
+            break;
+
+      case "image":
         case "jpg":
         case "png":
         case "gif":
@@ -53,6 +72,7 @@ LOOMA.playMedia = function(button) {
                     'data-fn') +
                 '&fp=' + button.getAttribute('data-fp');
             break;
+
         case "audio":
         case "mp3":
             window.location = 'looma-audio.php?fn=' + button.getAttribute(
@@ -60,6 +80,7 @@ LOOMA.playMedia = function(button) {
                 '&fp=' + button.getAttribute('data-fp') +
                 '&dn=' + button.getAttribute('data-dn');
             break;
+
         case "pdf":
             /*
             //direct call to  ViewerJS replaced with looma-pdf.php with iframe
@@ -74,6 +95,11 @@ LOOMA.playMedia = function(button) {
 
 
             break;
+
+        case "slideshow":      // SLIDESHOW activity type from Thomas
+                     window.location = 'looma-picture-player.php?id=' + button.getAttribute("data-mongoid");
+            break;
+
         case "epaath":
             /*var target = button.getAttribute('data-fp') +
                               button.getAttribute('data-fn') +
@@ -96,15 +122,11 @@ LOOMA.playMedia = function(button) {
             console.log("ERROR: in LOOMA.playMedia(), unknown type: " +
                 button.getAttribute("data-ft"));
     } //end SWITCH
-}; //end LOOMA.playMedia()
+}, //end LOOMA.playMedia()
 
-LOOMA.confirm = function(text, btn1, btn2) {}; //TODO: generate a popup with text=text and two buttons with bnt1, btn2 labels.
-//return T or F depending on which button is clicked
-// use #notice CSS styling from looma.css
-
-LOOMA.capitalize = function(string) {
+capitalize : function(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-}; //end capitalize()
+}, //end capitalize()
 
 
 //use LOOMA.setStore() and LOOMA.readStore()  to set/get LocalStore and Cookies,
@@ -115,16 +137,16 @@ LOOMA.capitalize = function(string) {
  * language, class, subject, chapter, arith-grade, arith-subject,
  * vocab-grade, vocab-subject, vocab-count, vocab-random [localStore]
  */
-LOOMA.setStore = function(name, value, type) {
+setStore : function(name, value, type) {
     if (type == 'local') localStorage.setItem(name, value);
     else if (type == 'session') sessionStorage.setItem(name, value);
     else if (type == 'cookie') document.cookie = name + '=' +
         encodeURIComponent(value);
     else console.log('LOOMA.utilities.setStore: unknown localStore type: ' +
         type);
-};
+},
 
-LOOMA.readStore = function(name, type) {
+readStore : function(name, type) {
     if (type == 'local') return localStorage.getItem(name);
     else if (type == 'session') return sessionStorage.getItem(name);
     else if (type == 'cookie') return LOOMA.readCookie(name);
@@ -133,9 +155,9 @@ LOOMA.readStore = function(name, type) {
             type);
         return null;
     }
-};
+},
 
-LOOMA.readCookie = function(name) {
+readCookie : function(name) {
     // look up COOKIE with KEY = name, return its value, or null if cookie doesnt exist
     var cookies = document.cookie.split(';'); //OK if no cookie? YES
     // iterate through all the cookies to find "name=..." cookie, return its value
@@ -148,9 +170,13 @@ LOOMA.readCookie = function(name) {
         if (cookie[0] == name) return cookie[1]; //return the value of cookie with key "name"
     }
     return null; // if cookie with key "name" is not found, return NULL
-}; // end readCookie()
+}, // end readCookie()
 
-LOOMA.translate = function(language) {
+loggedIn : function() {
+    return LOOMA.readCookie('login');
+}, //end loggedIn()
+
+translate : function(language) {
     // based on the value of LANGUAGE, hide or show all KEYWORDs and TIPs
     if (language == 'native') {
         $('.english-keyword').hide();
@@ -171,7 +197,7 @@ LOOMA.translate = function(language) {
 
     // DEBUG     console.log("LOOMA.translate: changing language to " + language);
 
-}; // end translate()
+}, // end translate()
 
 //***********  USING THE LOOMA DICTIONARY ***************
 //***********  functions are LOOKUP and WORDLIST *****************
@@ -193,9 +219,9 @@ LOOMA.translate = function(language) {
 //            fail: a FUNCTION to be called if the lookup request fails (for instance if the Looma server is down)
 //                typically, fail() would display "Dictionary lookup request failed" somewhere on the webpage
 
-LOOMA.lookup = function(word, succeed, fail) {
+lookup : function(word, succeed, fail) {
 
-    console.log('LOOMA.lookup: dictionary lookup - word is ' + word);
+    console.log('LOOMA.lookup: dictionary lookup - word is "' + word + '"');
 
     $.ajax(
         "looma-dictionary-utilities.php", //Looma Odroid
@@ -211,7 +237,7 @@ LOOMA.lookup = function(word, succeed, fail) {
         });
 
     return false;
-}; //end LOOKUP
+}, //end LOOKUP
 
 //when you need a list of words from the dictionary, call LOOMA.wordlist() with these parameters:
 //            class: the class level of the words [optional], should be in the format "class1", "class2", etc.
@@ -223,7 +249,7 @@ LOOMA.lookup = function(word, succeed, fail) {
 //                the parameter to 'succeed' is an array of [english] words
 //            fail: a FUNCTION to be called if the word list request fails (for instance if the Looma server is down)
 //                typically, fail() would display "Dictionary lookup request failed" somewhere on the webpage
-LOOMA.wordlist = function(grade, subj, count, random, succeed, fail) {
+wordlist : function(grade, subj, count, random, succeed, fail) {
 
     $.ajax(
         "looma-dictionary-utilities.php", //Looma Odroid
@@ -244,11 +270,11 @@ LOOMA.wordlist = function(grade, subj, count, random, succeed, fail) {
         });
 
     return false;
-}; //end WORDLIST
+}, //end WORDLIST
 
-LOOMA.rtl = function(element) { //enables Right-to-left input for numbers in looma-arith-problems.php
+rtl : function(element) { //enables Right-to-left input for numbers in looma-arith-problems.php
     if (element.setSelectionRange) element.setSelectionRange(0, 0);
-};
+},
 
 
 
@@ -261,7 +287,7 @@ LOOMA.rtl = function(element) { //enables Right-to-left input for numbers in loo
 //        setTheme () reads the 'theme' cookie to get 'newthemename'
 //            and changes the HREF of the LINK element with ID='theme' to point to the file 'looma-theme-newthemename.css
 
-LOOMA.setTheme = function() {
+setTheme : function() {
 
     var theme = LOOMA.readStore('theme', 'cookie'); //get the currently used theme, if any
     if (!theme) theme = 'looma'; //default THEME is "looma"
@@ -270,21 +296,93 @@ LOOMA.setTheme = function() {
     location.reload(); //some browsers need RELOAD to show the new THEME [??]
     // changes the HREF attribute of the LINK with ID 'theme-stylesheet' based on the 'theme' COOKIE value
     return theme;
-}; //end LOOMA.setTheme()
+}, //end LOOMA.setTheme()
 
-LOOMA.changeTheme = function(e) { //theme change button has been pressed
+changeTheme : function(e) { //theme change button has been pressed
     LOOMA.setStore('theme', encodeURIComponent(e.target.value), 'cookie');
     LOOMA.setTheme(); //change currently used theme
-}; //end LOOMA.changeTheme()
+}, //end LOOMA.changeTheme()
 
-LOOMA.changeVoice = function(e) { //voice change button has been pressed
+changeVoice : function(e) { //voice change button has been pressed
     LOOMA.setStore('voice', encodeURIComponent(e.target.value), 'cookie');
-}; //end LOOMA.changeVoice()
+}, //end LOOMA.changeVoice()
 
-LOOMA.alert = function(text, secs) { //show an 'alert' popup for x seconds, then dissolve
-    // make a popup with the text, then setlimit(secs) to a callback that removes the popup
-}; //end LOOMA.alert
 
+/* LOOMA.lookupWord()
+Programmer name: Matt Flower, Maxwell Patterson, Jai Mehra
+Email: matt.flower@menloschool.org , maxwell.patterson@menloschool.org , jai.mehra@menloschool.org
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: 7/7/2016
+ */
+
+    //Gets The JSON Object From dictionary collection in the Database by calling looma-dictionaryutilities.php
+lookupWord : function (text) {
+      var firstWord;
+
+      text = text.trim();
+      if (text.indexOf(' ') !== -1) firstWord = text.substr(0, text.indexOf(' '));
+      else firstWord = text;
+
+      $('#popup').remove();
+
+      var $popup =  $('<div id="popup"/>');
+      var $word =   $('<div id="word"/>');
+      var $nepali = $('<div id="nepali"/>');
+      var $def =    $('<div id="definition"/>');
+      var $pos =    $('<div id="partOfSpeech"/>');
+
+
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          //Parse JSON
+          var wordJSON = JSON.parse(xmlhttp.responseText);
+
+          //Get All Relevant Information and add it to the POPUP's HTML
+          $word.text(wordJSON.en);
+          $nepali.text(wordJSON.np);
+          if (wordJSON.def =='plural of') wordJSON.def = wordJSON.def + ' ' + wordJSON.rw;
+          $def.text(wordJSON.def);
+          $pos.html('<i>' + wordJSON.part + '</i>');
+
+          $popup.append($word, $nepali, $pos, $def);
+
+          $popup.appendTo('body').hide();
+
+          LOOMA.alert($popup.html(), 15);
+        }
+      };
+      xmlhttp.open("GET", "looma-dictionary-utilities.php?cmd=lookup&word=" + firstWord, true);
+      xmlhttp.send();
+    },   //end lookupWord()
+
+
+     /**
+     * Generates translatable spans given english and native translations. You will need to know the native translation;
+     * this program doesn't do any translation. For building translatable HTML on client side, e.g. from JS
+     * @param english  - the english phrase
+     * @param native   - the translation of the english phrase
+     * */
+    translatableSpans : function(english, native){
+        var language = LOOMA.readStore('language', 'local');
+
+        // rewrite to generate the spanss once, then set hidden on the correct span
+        if (language == "english") {
+            return "<span class='english-keyword'>" + english +
+                "<span class='xlat'>" + native + "</span>" + "</span>" +
+                "<span class='native-keyword' hidden>" + native +
+                "<span class='xlat'>" + english + "</span>" +
+                "</span>";
+        } else
+            return "<span class='english-keyword' hidden>" + english +
+                "<span class='xlat'>" + native + "</span>" + "</span>" +
+                "<span class='native-keyword'>" + native +
+                "<span class='xlat'>" + english + "</span>" +
+                "</span>";
+    } //end translatableSpan()
+
+    };  //end RETURN public functions
+}()); //IIEF immediately instantianted function expression
 
 
 /* LOOMA.speak()
@@ -341,7 +439,7 @@ LOOMA.speak = function(text, voice) {
      * Makes the "Speak" button translucent and regular sized, to show the user that the TTS is finished.
      * Only runs when Mimic is used.
      */
-    LOOMA.speak.disable = function() {
+   LOOMA.speak.disable = function() {
         if (speechButton) {
             // speechButton.style.opacity = "";
             $(speechButton).animate({
@@ -388,7 +486,7 @@ LOOMA.speak = function(text, voice) {
 
     if (
           /*comment out this "false" to use local JS speechSynthesis */
-          false &&
+          /*false && */
           /*  end of comment around "false" */
          speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1))
         {
@@ -466,217 +564,142 @@ LOOMA.speak = function(text, voice) {
         }
 
     }
-}; //end speak()
+}; //end LOOMA.speak()
 
-/* LOOMA.lookup()
-Programmer name: Matt Flower, Maxwell Patterson, Jai Mehra
-Email: matt.flower@menloschool.org , maxwell.patterson@menloschool.org , jai.mehra@menloschool.org
-Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 7/7/2016
+/*
+ from looma-alerts.js in the slideshow team code
+ Description: Creates a styled translatable popup interface.
+ NOTES: All methods support prompts/alerts in either text or html. If using either, any text can be converted into
+ Looma's translatable spans using the provided LOOMA.translatableSpans().
+
+ Programmer name: Thomas Woodside, Charlie Donnelly, and Sam Rosenberg
+ Owner: VillageTech Solutions (villagetechsolutions.org)
+ Date: 7/5/16
+ Revision: 0.4
+
+ * Makes the entire screen minus modal transparent and checks for clicks outside the modal
  */
+LOOMA.makeTransparent = function() {
+    var $container = $('body > div');
+    $container.addClass('all-transparent');
+    //the following click code doesnt work
+    //$container.click(function(e) { $container.click(); });
 
-//Get The Highlighted Text
-function getDictionaryLookup() {
-  var text = "";
-  if (window.getSelection) {
-    text = window.getSelection().toString();
-  } else if (document.selection && document.selection.type != "Control") {
-    text = document.selection.createRange().text;
-  }
-  var firstWord = text.substr(0, text.indexOf(' '));
+    //nor does this one
+    //$(document).click(function(e) {if (e.target !== $('.popup')[0]) LOOMA.closePopup();});
 
-  getWord(firstWord);
-}
+    //also set ESC key to cancel the popup
+    $(document).keydown(function (e) {
+        const ESC = 27;  // escape key maps to keycode `27`
+        if    (e.keyCode == ESC) LOOMA.closePopup() ;
+    });//end ESC listener
 
-//Gets The JSON Object From Database
-LOOMA.lookupWord = function (text) {
-  var firstWord;
-
-  text = text.trim();
-  if (text.indexOf(' ') !== -1) firstWord = text.substr(0, text.indexOf(' '));
-  else firstWord = text;
-
-  $('#popup').remove();
-
-  var $popup =  $('<div id="popup"/>');
-  var $word =   $('<div id="word"/>');
-  var $nepali = $('<div id="nepali"/>');
-  var $def =    $('<div id="definition"/>');
-  var $pos =    $('<div id="partOfSpeech"/>');
+};  // End of makeTransparent
 
 
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function() {
-    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-      //Parse JSON
-      var wordJSON = JSON.parse(xmlhttp.responseText);
+/** Removes any popups on the page */
+LOOMA.closePopup = function() {
+    $('.popup').remove();
+    var $container = $('body > div');
+    $container.removeClass('all-transparent');
+    $container.off('click');
+    $(document).off('keydown');  //stop listening for ESC
+    //$(document).off('click');  //stop listening for CLICK
+};  //end closePopup()
 
-      //Get All Relevant Information
-        //document.getElementById("word").innerHTML = wordJSON.en;
-        //document.getElementById("nepali").innerHTML = wordJSON.np;
-        //$popup.getElementById("definition").innerHTML = wordJSON.def;
-      $word.text(wordJSON.en);
-      $nepali.text(wordJSON.np);
-      if (wordJSON.def =='plural of') wordJSON.def = wordJSON.def + ' ' + wordJSON.rw;
-      $def.text(wordJSON.def);
-      $pos.html('<i>' + wordJSON.part + '</i>');
+/**
+ * This function creates a popup message box that can be dismissed by the user.
+ * @param msg - The message the user is presented.
+ * @param time (optional)- a delay in seconds after which the popup is automatically closed
+ * */
+//var popupInterval;
+LOOMA.alert = function(msg, time){
+    LOOMA.closePopup();
+    LOOMA.makeTransparent();
+    $(document.body).append("<div class= 'popup'>" +
+        "<button class='popup-button' id='dismiss-popup'><b>X</b></button>"+ msg +
+        "<button id ='close-popup' class ='popup-button'>" + LOOMA.translatableSpans("OK", "ठिक छ") + "</button></div>");
 
-      $popup.append($word, $nepali, $pos, $def);
+    $('#close-popup').click(function() {
+        LOOMA.closePopup();
+    });
+    $('#dismiss-popup').click(function() {
+        LOOMA.closePopup();
+    });
 
-      $popup.appendTo('body').hide();
-        //document.getElementById("partOfSpeech").innerHTML = wordJSON.part;
+   if (time) {
+        var timeLeft = time - 1;
+        var popupButton = $('#close-popup');
+        popupButton.html(LOOMA.translatableSpans("OK (" + Math.round(timeLeft + 1) + ")",
+            "ठिक छ(" + Math.round(timeLeft + 1) + ")"));
+        clearInterval(popupInterval);
+        var popupInterval = setInterval(function() {
+            if (timeLeft <= 0) {
+                clearInterval(popupInterval);
+                LOOMA.closePopup();
+            }
+            timeLeft -= 1;
+            popupButton.html(LOOMA.translatableSpans("OK (" + Math.round(timeLeft + 1) + ")",
+                "ठिक छ(" + Math.round(timeLeft + 1) + ")"));
+        },1000);
+    };
+};  //end alert()
 
-      LOOMA.notice('popup', 10);
-    }
-  };
-  xmlhttp.open("GET", "looma-dictionary-utilities.php?cmd=lookup&word=" + firstWord, true);
-  xmlhttp.send();
-}
+/**
+ * Prompts the user to confirm a message.
+ * @param msg - The message the user is presented in question format.
+ * @param confirmed - A function to call if the user confirms
+ * @param canceled - A function to call if the user cancels
+ * */
+LOOMA.confirm = function(msg, confirmed, canceled) {
+    LOOMA.closePopup();
+    LOOMA.makeTransparent();
+    $(document.body).append("<div class='popup confirmation'>" +
+        "<button class='popup-button' id='dismiss-popup'><b>X</b></button> " + msg +
+        "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
+        "<button id='confirm-popup' class='popup-button'>"+ LOOMA.translatableSpans("confirm", "निश्चय गर्नुहोस्") +"</button></div>");
 
+    $('#confirm-popup').click(function() {
+        $("#confirm-popup").off('click');
+        LOOMA.closePopup();
+        confirmed();
+    });
 
-LOOMA.notice = function(id, secs) {
-    var $notice = $('#' + id);
-    $notice.show();
-    setTimeout(function() { $notice.hide()  }, secs * 1000);
-}; //end notice()
+    $('#dismiss-popup, #close-popup').click(function() {
+        $("#close-popup").off('click');
+        $("#dismiss-popup").off('click');
+        LOOMA.closePopup();
+        canceled();
+   });
+};  //end confirm()
 
-/* EXTRA functions not currently used (July 2016)
- *
- *
- LOOMA.showScroll = function(x) { //reports scroll to console for DEBUGging
-    console.log('LOOMA.showScroll: scrolling ', $(
-        "#main-container-horizontal").scrollTop(), ' timer = ', x);
-};
+/**
+ /**
+ * Prompts the user to enter text.
+ * @param msg - The message the user is presented, prompting them to enter text.
+ * @param callback - A function where the user's text response will be sent.
+ * */
+LOOMA.prompt = function(msg, confirmed, canceled) {
+    LOOMA.closePopup();
+    LOOMA.makeTransparent();
+    $(document.body).append("<div class='popup textEntry'>" +
+        "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
+        "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
+        "<textarea id='popup-textarea' autofocus></textarea>" +
+        "<button id='confirm-popup' class='popup-button'>"+ LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>");
 
-LOOMA.scrollStop = function() {
+    $('#confirm-popup').click(function() {
+       $("#confirm-popup").off('click');
+       confirmed($('#popup-textarea').val());
+       LOOMA.closePopup();
+    });
 
-    //should call on $('.main-container-horizontal.scroll') ???
+    $('#dismiss-popup, #close-popup').click(function() {
+        $("#close-popup").off('click');
+        $("#dismiss-popup").off('click');
+        LOOMA.closePopup();
+        canceled();
+   });
+};  //end prompt()
 
-    //DEBUG     LOOMA.showScroll(scrollTimeout);
-
-    //still scrolling, so clear the timeout, then reset the timeout counter
-    if (scrollTimeout) clearTimeout(scrollTimeout);
-    //set the timer - when it  expires [after scrollDebounce msecs], call adjustScroll()
-    scrollTimeout = setTimeout(function() {
-        LOOMA.adjustScroll();
-    }, scrollDebounce);
-};
-
-LOOMA.adjustScroll = function() {
-    var increment = 166;
-    var temp;
-    //var i = $('#main-container-horizontal').scrollTop();
-    ///var j = i /increment;
-    //var k = Math.floor(j);
-    //var l = increment * k;
-
-    temp = increment * Math.floor($("#main-container-horizontal").scrollTop() /
-        increment);
-    $("#main-container-hroizontal").off('scroll');
-
-    $("#main-container-horizontal").scrollTop(temp);
-
-    $("#main-container-horizontal").scroll(LOOMA.scrollStop);
-
-    console.log('LOOMA.adjustScroll: scroll adjusted to ', temp);
-
-};
-
-// Function for setting the text of an element:
-LOOMA.setText = function(id, message) {
-    if ((typeof id == 'string') &&
-        (typeof message == 'string')) {
-        // Get a reference to the element:
-        var output = this.$(id);
-        if (!output) return false;
-
-        // Set the text
-        if (output.textContent !== undefined) {
-            output.textContent = message;
-        } else {
-            output.innerText = message;
-        }
-        return true;
-    } // End of main IF.
-}; // End of setText() function.
-
-// Function for creating event listeners:
-LOOMA.addEvent = function(obj, type, fn) {
-    if (obj && obj.addEventListener) { // W3C
-        obj.addEventListener(type, fn, false);
-    } else if (obj && obj.attachEvent) { // Older IE
-        obj.attachEvent('on' + type, fn);
-    }
-}; // End of addEvent() function.
-
-// Function for removing event listeners:
-LOOMA.removeEvent = function(obj, type, fn) {
-    if (obj && obj.removeEventListener) { // W3C
-        obj.removeEventListener(type, fn, false);
-    } else if (obj && obj.detachEvent) { // Older IE
-        obj.detachEvent('on' + type, fn);
-    }
-}; // End of removeEvent() function.
-
-LOOMA.addErrorMessage = function(id, msg) {
-    // Get the form element reference:
-    var elem = document.getElementById(id);
-
-    // Define the new span's ID value:
-    var newId = id + 'Error';
-
-    // Check for the existence of the span:
-    var span = document.getElementById(newId);
-    if (span) {
-        span.firstChild.value = msg; // Update
-    } else { // Create new.
-
-        // Create the span:
-        span = document.createElement('span');
-        span.id = newId;
-        span.className = 'error';
-        span.appendChild(document.createTextNode(msg));
-
-        // Add the span to the parent:
-        elem.parentNode.appendChild(span);
-
-        // PURSUE 2: allow the 'label' element to have multiple classes
-        if (elem.previousSibling.className !== null) //if there is an existing className then concat ' error'
-        {
-            elem.previousSibling.className += ' error';
-        } else //else set className to 'error'
-        {
-            elem.previousSibling.className = 'error';
-        }
-
-    } // End of main IF-ELSE.
-
-}; // End of addErrorMessage() function.
-
-// This function removes the error message.
-// It takes one argument: the form element ID.
-LOOMA.removeErrorMessage = function(id) {
-    // Get a reference to the span:
-    var span = document.getElementById(id + 'Error');
-    if (span) {
-
-        // Remove the class from the label:
-        //PURSUE 2: allow 'label' element to have multiple classes
-        if (span.previousSibling.previousSibling.className == 'error') //if the only class is 'error
-        {
-            span.previousSibling.previousSibling.className = null;
-        } //the set class=null
-        else {
-            span.previousSibling.previousSibling.className =
-                span.previousSibling.previousSibling.className.slice(0, -6);
-        } //else slice off ' error' from className
-
-        // Remove the span:
-        span.parentNode.removeChild(span);
-
-    } // End of IF.
-
-}; // End of removeErrorMessage() function.
-
- */
 

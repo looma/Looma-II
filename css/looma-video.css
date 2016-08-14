@@ -1,0 +1,495 @@
+.hidden {
+    display: none;
+}
+
+div#video-area {
+    height: 100%;
+    position: relative;
+    margin: 0 auto;
+    z-index: 0; /* 1 */
+}
+
+video {
+    height: 100%;
+}
+
+button#fullscreen-control {
+	position: absolute;
+	opacity: 0.4;
+	right: 5%;
+    bottom: 5%;
+	height: 10vh;
+	width:  10vh;
+	z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREENf */
+    background-image: url("../images/fullscreen2.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+	background-color:rgba(200,200,200,.5);  /*transparent light gray*/
+}
+
+.fullscreen video {width: 100%}
+
+:-webkit-full-screen {
+    background-color: black;
+}
+
+button#fullscreen-playpause {
+	position: absolute;
+    display: none;
+	opacity: 0.4;
+	bottom:11%; /* 5*/
+	left:5%;
+	height: 10vh;
+	width:  10vh;
+	z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    background-image: url("../images/video.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+	background-color:rgba(200,200,200,1);  /*transparent light gray*/
+}
+
+button#play-pause {
+    background-image: url("../images/video.png");
+   	background-size: 100% 100%;
+	background-color:rgba(255,255,255,1);
+	height: 5vh;
+	width:  5vh;
+	background-repeat: no-repeat;
+    color: transparent;
+}
+
+button#volume {
+	background-image: url("../images/audio.png");
+   	background-size: 100% 100%;
+	background-color:rgba(255,255,255,1); 
+	height: 5vh;
+	width:  5vh;
+	background-repeat: no-repeat;
+    color: transparent;
+}
+
+/*
+Titles and Descriptions
+*/
+div#title-area {
+    top: 0px;
+    right: 0px;
+    position: absolute;
+    text-align: center;
+    z-index: 0;
+}
+
+div#title-div {
+    height: 50%;
+    width: 100%;
+}
+
+#title {
+    word-break: break-all;
+}
+
+button#open-videos-folder {
+    height: 20%;
+    width: 100%;
+    display: block;
+    font-size: 2vw;
+}
+
+div#description-div {
+    height: 50%;
+    width: 100%;
+}
+
+#open-videos-folder-description {
+    word-break: break-all;
+    display: none;
+}
+
+#edit-description {
+    word-break: break-all;
+    display: none;
+}
+
+#save-description {
+    word-break: break-all;
+    display: none;
+}
+
+#cancel-description {
+    word-break: break-all;
+    display: none;
+}
+
+#text-description {
+    word-break: break-all;
+    display: none;
+}
+
+#image-description {
+    word-break: break-all;
+    display: none;
+}
+
+#pdf-description {
+    word-break: break-all;
+    display: none;
+}
+
+#video-description {
+    word-break: break-all;
+    display: none;
+}
+
+/*
+Edit Controls
+*/
+div#edit-controls
+{
+    width: 100%;
+    height: 10%;
+    text-align: center;
+    position: relative;
+}
+
+div#login-div {
+    float: left;
+}
+
+button#login {
+    height: 50%;
+    width: 100%;
+}
+
+button#edit {
+    height: 50%;
+    width: 20%;
+    display: none;
+    margin-top:0px;
+    margin: 0 auto;
+}
+
+button#create-edit {
+    height: 50%;
+    width: 20%;
+    display: none;
+    margin-top:0px;
+    margin: 0 auto;
+}
+    
+div#text-box-area {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 5; /* 4 */
+    height: 100%;
+    width: 100%;
+    margin: auto;
+}
+
+#text-playback {
+    display: none;
+    resize: none;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    color: black;
+    font: 35px/42px sans-serif;
+    text-align: center;
+}
+
+
+#text-box {
+    height: 100%;
+    width: 100%;
+}
+
+#image-area {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+}
+
+#pdf-area {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 3;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+}
+    
+#comments {
+    display: none;
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 0%;
+    font: 35px/42px sans-serif;
+    resize: none;
+    height: 100%;
+    width: 100%;
+}
+    
+
+#added-video-area {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 4; /* 3 */
+    height: 100%;
+    width: 100%;
+    margin: auto;
+}
+    
+#timeline-area {
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    text-align: left;
+    overflow-y: auto;
+    z-index: 0;
+    visibility: hidden;
+}
+
+#black-screen {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    background-color: black;
+}
+    
+::-webkit-scrollbar { 
+    width:30px;
+}
+
+button#rename {
+    height: 50%;
+    display: none;
+    float: left;
+    margin-top: 0;
+    margin-left: 20px;
+    /*margin-right: 2px;
+	left: 5%;*/
+}
+
+#video-player {
+    height: 70%;
+}
+
+/*
+#rename {
+    height: 50%;
+    display: none;
+    margin-top: 0px;
+    float: right;
+    margin-right: 20px;
+}
+*/
+
+#rename-form-div {
+    display: none;
+}
+
+#rename-error-prompt {
+    display: none;
+}
+
+#rename-text {
+    color: black;
+}
+
+#cancel {
+    height: 50%;
+    display: none;
+    float: left;
+    margin-left: 20px;
+    vertical-align: top;
+    margin-top: 0px;
+}
+
+#text {
+    height: 50%;
+    display:none;
+    margin-top:0px;
+}
+
+#image {
+    height: 50%;
+    display: none;
+    margin-top: 0px;
+}
+
+#pdf {
+    height: 50%;
+    display: none;
+    margin-top: 0px;
+}
+
+#submit {
+    height: 50%;
+    transform: translateY(50%);
+    display: none;
+    margin-top: 0px;
+}
+
+
+button#prev-frame {
+    height: 50%;
+    display: none;
+}
+
+button#next-frame {
+    height: 50%;
+    display: none;
+}
+
+button#next-frame5 {
+    height: 50%;
+    display: none;
+}
+
+button#prev-frame5 {
+    height: 50%;
+    display: none;
+}
+
+div#add-time-div {
+    height: 50%;
+    display: none;
+    margin-bottom: 10px;
+    text-align: center;
+    position: relative;
+}
+
+div#add-start-stop-time-div {
+    height: 100%;
+    display: inline-block;
+}
+
+button#start-time {
+    height: 100%;
+    width: 40%;
+}
+
+button#stop-time {
+    height: 100%;
+    width: 40%;
+}
+
+div#default-start-stop-time-div{
+    height: 0;
+    display: inline-block;
+    position: absolute;
+    width: 0;
+    vertical-align: top;
+    text-align: left;
+}
+
+button#default-start-stop-time{
+    height: 100%;
+    width: 25%;
+}
+
+#video-button {
+    height: 50%;
+    display: none;
+}
+
+#image-overlay {
+    width: 100%;
+    height: 100%;
+}
+
+#image-previews {
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: none;
+    white-space: nowrap;
+    height: 20%;
+    position: absolute;
+    width: 100vw;
+}
+
+#pdf-previews {
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: none;
+    white-space: nowrap;
+    height: 20%;
+    position: absolute;
+    width: 100vw;
+}
+
+#video-previews {
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: none;
+    white-space: nowrap;
+    height: 20%;
+    position: absolute;
+    width: 100vw;
+}
+
+#search-area {
+    float: right;
+    margin-top 0;
+    margin-right: 20px;
+}
+
+#search-box {
+    resize: none;
+    color: black;
+}
+
+
+button.img {
+	height: 100%;
+	vertical-align:middle;
+	text-align:center;
+}
+
+button.img:hover {
+	transform:none;
+}
+
+
+button.img img {
+	height:100%;
+	width:30%;
+	max-width:50%;
+}
+
+button.img.play, button.img.activity{
+	font-size: 30px;
+	font-weight:bold;
+    margin-left: 10px;
+    margin-right: 10px;
+} 
+
+button#delete {
+	background-image: url("../images/trash.png");
+   	background-size: 100% 100%;
+	background-color:rgba(255,255,255,1);  
+	height: 5vh;
+	width:  5vh;
+	background-repeat: no-repeat;
+    display: none;
+    margin-left: 2.3vw;
+}
+input#seek-bar
+{
+	display: inline;
+}
+
+#comments {
+    font-size: 32px/40px;
+    text-align: center;
+}

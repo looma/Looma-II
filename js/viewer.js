@@ -422,7 +422,7 @@ var Cache = function cacheCache(size) {
 var DEFAULT_PREFERENCES = {
   showPreviousViewOnLoad: true,
   defaultZoomValue: '',
-  sidebarViewOnLoad: 2,
+  sidebarViewOnLoad: 0,
   enableHandToolOnLoad: false,
   enableWebGL: false,
   pdfBugEnabled: true,
@@ -4641,7 +4641,7 @@ var PDFViewerApplication = {
   animationStartedPromise: null,
   mouseScrollTimeStamp: 0,
   mouseScrollDelta: 0,
-  preferenceSidebarViewOnLoad: SidebarView.THUMBS,  /*LOOMA - make sidebar  show Thumbs by default*/
+  preferenceSidebarViewOnLoad: SidebarView.NONE,  /*LOOMA - make sidebar  show Thumbs by default*/
   preferencePdfBugEnabled: false,
   isViewerEmbedded: (window.parent !== window),
   url: '',

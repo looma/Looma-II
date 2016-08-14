@@ -1,15 +1,14 @@
 div#themelist {
-    width:25%;
-    margin:auto;
+    width:20vw;
     margin-left:10%;
     text-align:left;
     float:left;
 }
 
 div#voicelist {
-    width:25%;
-    margin:auto;
-    margin-left:60%;
+    width:60vw;
+    margin-left:10%;
+    float:left;
     text-align:left;
 }
 
@@ -24,3 +23,16 @@ span.themespan:hover img {
 	left:30%;
 }
 
+span#themes {font-size: 1.5em}
+
+#themelist input {
+    height:4vh;
+}
+
+#voicelist input {
+    height:2vh;
+}
+
+input.theme, input.voice {
+    vertical-align:middle;
+}

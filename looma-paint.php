@@ -11,12 +11,11 @@ Description:  for Looma 2
 
 <?php $page_title = 'Looma Paint';
 	  include ('includes/header.php');
-	  include ('includes/mongo-connect.php');
+	  //include ('includes/mongo-connect.php');
 
  ?>
   	<!-- Replace .ico & apple-touch-icon.png in the root of your domain and delete these references -->
     <link rel="stylesheet" href="css/looma-paint.css">        	 <!-- Looma CSS -->
-
 
 </head>
 

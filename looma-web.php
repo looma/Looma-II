@@ -32,5 +32,7 @@ Description:
 
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
+    <script src="js/looma-keyboard.js">  </script>
+
    	<script src="js/looma-web.js"></script>
 </body>

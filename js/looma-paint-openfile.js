@@ -31,12 +31,12 @@ for (var i = 0; i < localStorage.length; i++) {
     with ({k: key}) {
       button.onclick = function(e) {
         e.preventDefault();
-        var r = confirm("Are you sure you want to erase this drawing?");
-        if (r) {
-          console.log(k);
-          localStorage.removeItem(k);
-          window.location = "";
-        }
+        function erase() {
+            console.log('in paint-openfile, erasing ', k);
+            localStorage.removeItem(k);
+            window.location = ""; //reloads the current page
+          };
+        LOOMA.confirm("Are you sure you want to erase this drawing?", erase, function(){return;});
       };
     }
     link.appendChild(button);

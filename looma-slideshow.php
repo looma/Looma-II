@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 LOOMA php code file
-Filename: looma-picture-player.php
+Filename: looma-slideshow.php
 Description: The main picture player page. Allows for slideshows of pictures.
 
 Programmer name: Thomas Woodside, Charlie Donnelly, and Sam Rosenberg
@@ -12,15 +12,16 @@ Revision: 0.4
 -->
 
 <?php
+
+      include ('includes/mongo-connect.php');
+
+
 $page_title = 'Looma Picture Player';
 include ('includes/header.php');
 if (isset($_GET["id"])) {
     $id = $_GET["id"];
     $mode = "existing";
-    $connection = new MongoClient();
-    $db = $connection->selectDB("looma");
-    $collection = $db->selectCollection("slideshows");
-    $entry = $collection->findOne(array("_id" => new MongoId($id)), array("order"));
+    $entry = $slideshows_collection->findOne(array("_id" => new MongoId($id)), array("order"));
 } else if (isset($_GET["dir"])){
     $mode = "dir";
 } else {
@@ -29,7 +30,7 @@ if (isset($_GET["id"])) {
 ?>
 <head>
     <!-- <link href="css/looma-contentNav-newDesign.css" type="text/css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="css/looma-picture-player.css"> <!-- Picture Player CSS -->
+    <link rel="stylesheet" href="css/looma-slideshow.css"> <!-- Picture Player CSS -->
 </head>
 
 <body>
@@ -43,7 +44,7 @@ if (isset($_GET["id"])) {
             <button class="controls carrot small" id="retract">
                 <img src="images/carrot.png" alt="Uncarrot" class = "small noDrag">
             </button>
-            <?php include "looma-picture-player-other-images.php";?>
+            <?php include "looma-slideshow-other-images.php";?>
                 <button class="controls carrot small" id="retract">
                     <img src="images/carrot.png" alt="Uncarrot" class = "small noDrag">
                 </button>
@@ -98,14 +99,15 @@ if (isset($_GET["id"])) {
                     }
                 } //else empty, echoes no thumbnails.
                 function echoThumbnail($filename, $caption,  $dirname) {
-                    if (!strpos($filename, '-thumb') and $filename != 'images.txt') //Non-thumbnails
+                    if (!strpos($filename, '_thumb') and ($filename != 'images.txt')) //Non-thumbnails
                     {
-                        $thumbnail = explode(".", $filename)[0];
+                        $pieces = explode(".", $filename);
+                        $thumbnail = $pieces[0];
                         if ($thumbnail == "")
                         {
                             return;
                         }
-                        $thumbnail .= "-thumb.jpeg";
+                        $thumbnail .= "_thumb.jpg";
                         if (file_exists("$dirname/$thumbnail")) {
                             echo "<li class='img-thumbnail'><img src='$dirname/$thumbnail' alt='thumbnail' data-fp='$dirname/$filename' data-caption='$caption'></li>";
                         }
@@ -136,10 +138,10 @@ if (isset($_GET["id"])) {
                 </button>
             </div>
             </div>
-            <div class="col-md-2 small"> 
+            <div class="col-md-2 small">
                 <button id="slow-down" class="controls small">
-                    <img src="images/slow-turtle.png" class="small noDrag"> 
-                    <?php tooltip("Slow")?></button> 
+                    <img src="images/slow-turtle.png" class="small noDrag">
+                    <?php tooltip("Slow")?></button>
             </div>
             <div class="col-md-3 small" id="slider-div">
                 <input id="slide" type="range" min="5" max="40" step="1" value = "20">
@@ -184,5 +186,5 @@ include ('includes/js-includes.php');
 <script src = "js/looma-utilities.js"> </script>      <!-- Looma utility functions -->
 <script src="js/looma-screenfull.js"></script>
 <script src="js/jquery-ui.min.js"></script>
-<script src="js/looma-picture-player.js"></script>
+<script src="js/looma-slideshow.js"></script>
 </body>

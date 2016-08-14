@@ -8,7 +8,7 @@
 </head>
 <body>
   <?php include ('includes/translate.php'); ?>
-  <h1><?php keyword('Pick a saved drawing'); ?></h1>
+  <h2><?php keyword('Pick a saved drawing'); ?></h2>
   <button id="back"><img src="images/back-arrow.png"><?php keyword('Back to the Paint page'); ?></button>
 
   <div id="previews">

@@ -19,4 +19,13 @@ $(document).ready (function() {
 
     console.log('reading cookie: ' + LOOMA.readStore('voice', 'cookie'));
     console.log('setting CHECKED on: ', '.voice#' + LOOMA.readStore('voice', 'cookie'));
+
+    if (!LOOMA.loggedIn())
+    {
+        $('.login').click( function(){ window.location = "looma-login.php";});
+    }
+    else
+    {
+        $('.login').toggleClass('loggedIn').click( function(){ window.location = "looma-logout.php";}).text('Logout');
+    }
 }); //end of document.ready anonymous function

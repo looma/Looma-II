@@ -21,4 +21,5 @@
     $logins_collection =     $loomaDB -> logins;
     $history_collection =    $loomaDB -> histories;
     $slideshows_collection = $loomaDB -> slideshows;
+    $edited_videos_collection = $loomaDB -> edited_videos;
 ?>

@@ -25,7 +25,7 @@ include ('includes/mongo-connect.php');
     $query = array("fn" => $oldName);
     $fileToUpdate = $edited_videos_collection->findOne($query);
 
-    if ($_REQUEST_['doesExist'] == "true" || $fileToUpdate != "")
+    if ($_REQUEST['doesExist'] == "true" || $fileToUpdate != "")
     {
         $fieldsToUpdate = array(
             "dn" => $newDn,

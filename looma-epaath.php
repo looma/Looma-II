@@ -10,8 +10,8 @@ Description:  for Looma 2
 -->
 
 <?php $page_title = 'Looma';
-	  include ('includes/header.php'); 
-?>	
+	  include ('includes/header.php');
+?>
 	<!-- add CSS files for this page:
 		<link rel="stylesheet" href="css/filename.css"> -->
 	</head>
@@ -30,7 +30,7 @@ Description:  for Looma 2
 		</div>
 	</div>
 
-   	<?php include ('includes/toolbar.php'); ?>   	   		
-   	<?php include ('includes/js-includes.php'); ?> 
-  	<script src="js/looma-screenfull.js"></script>	
-   	<script src="js/looma-epaath.js"></script>	
+   	<?php include ('includes/toolbar.php'); ?>
+   	<?php include ('includes/js-includes.php'); ?>
+  	<script src="js/looma-screenfull.js"></script>
+   	<script src="js/looma-epaath.js"></script>

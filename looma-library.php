@@ -10,150 +10,89 @@ Description:  displays and navigates content folders for Looma 2
 -->
 
 <?php $page_title = 'Looma Library';
-	  	include ('includes/header.php');
-    	include ('includes/mongo-connect.php');
-?>
-		<!-- add CSS files for this page:  <link rel="stylesheet" href="css/filename.css"> -->
-	</head>
+        require ('includes/header.php');
+        require ('includes/mongo-connect.php');
 
-	<body>
-	<!--  <hr style='width:90%; text-align:center'>  -->
-	<div id="main-container-horizontal" class="scroll">
+        // load: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+        require ('includes/activity-button.php');
+?>
+    </head>
+
+    <body>
+    <div id="main-container-horizontal" class="scroll">
 
 <?php
 
-		function thumbnail ($fn) {
-				//given a CONTENT filename, generate the corresponding THUMBNAIL filename
-				//find the last '.' in the filename, insert '_thumb' before the dot
-				//returns "" if no '.' found
-				//example: input 'aaa.bbb.mp4' returns 'aaa.bbb_thumb.jpg' - this is the looma standard for naming THUMBNAILS
-		 		$dot = strrpos($fn, ".");
-				if ( ! ($dot === false)) { return substr_replace($fn, "_thumb.jpg", $dot, 10);}
-				else return "";
-			}; //end function THUMBNAIL
+    function folderName ($path) {
+        // strip trailing '/' then get the last dir name, by finding the remaining last '/' and substr'ing
+         $a = explode("/", $path);
+         return $a[count($a) - 2];
+    };  //end FOLDERNAME()
 
-		function folderName ($path) {
-			// strip trailing '/' then get the last dir name, by finding the remainiong last '/' and substr'ing
-			 $a = explode("/", $path);
-			 return $a[count($a) - 2];
-			};
+    function isEpaath($fp) {
+        //echo "<br>DEBUG: in isEpaath, FP is " . $fp . " Substr is " . mb_substr($fp, -7, 7);
 
-		function makeButton($file, $path, $ext, $base, $dn, $thumb) {
+        if (mb_substr($fp, -7, 7) == "epaath/")
+             return true;
+        else return false;
+    }; //end function isEpaath
 
-				//DEBUG   echo "making button with path= $path  file= $file   ext= $ext"; //DEBUG
+    function isHTML($fp) {
+        if (file_exists($fp . "/index.html"))
+             return true;
+        else return false;
+    };  //end function isHTML
 
-				echo "<button class='activity play img'
-							  data-fn='" .  $file .
-						   "' data-fp='" .  $path .
-                           "' data-ft='" .  $ext .
-                           "' data-dn='" .  $dn .
-						   "' data-zm='" .  160 .
-						   "' data-pg=1" .
-						   ">";
+    function thumb_image ($fp) {  //for directories, look for filename "thumbnail.png" for a thumbnail representing the contents
+        if (file_exists($fp . "/thumbnail.png")) {
+             return "<img src='$fp/thumbnail.png' >"; }
+        else return "";
+    }; //end function thumbnail
 
-				//text and tooltip for BUTTON
-				echo "<span class='displayname'
-							class='btn btn-default'
-							data-toggle='tooltip'
-							data-placement='top'
-							title='" . $file . "'>" .
-						    "<img src='" . $thumb . "'>" .
-							$dn . "</span>";
+    $ep = false;  //set $ep to true for special case of EPaath
 
-				//finish BUTTON
-				echo "</button>";
+            // get filepath to use for start of DIR traversal
+            //this will be  "../content/" for Looma 2 Library starting folder [to be outside of web-accessible folder structure]
+    $path = "../content/";
+    if (isset($_GET['fp'])) $path = $_GET['fp'];
 
-		};  //end makeButton()
+            //echo "<br>DEBUG: directory is:  " .  $path . "<br><br>";
 
-		//*********************************************************************
-        //Looma edited video changes
-        function makeEditedVideoButton($dn, $path, $ext, $file, $json) {
-                //Makes the buttons for edited video because they require different information to be sent
-                //echos button with path= $path  file= $file   ext= $ext
+    //in ..resources/epaath/ DIR skip to ..resources/epaath/Activities/
+    if (isEpaath($path)) {$path = $path . "activities/"; $ep = true;};
 
-                echo "<button class='activity play img'
-                              data-fn='" .  $file .
-                           "' data-fp='" .  $path .
-                           "' data-ft='" .  $ext .
-                                       "' data-dn='" .  urlencode($dn) .
-                                       "' data-content='" . urlencode($json) .
-                           "' data-zm='" .  160 .
-                           "' data-pg='1" .
-                           "'>";
+    // check if this DIR contains HTML media
+    $html = isHTML($path);  //handle folders containing 'index.html' differently below
+                            //should also check for 'index.php' and others?
 
-                //text and tooltip for BUTTON
-                echo "<span class='displayname'
-                            class='btn btn-default'
-                            data-toggle='tooltip'
-                            data-placement='top'
-                            title='" . $file . "'>" .
-                            "<img src='" . $path . $file . "_thumb.jpg" . "'>" .
-                            $dn . "</span>";
+    // DEBUG echo "at path " . $path . "folderName is " . folderName($path);
+    echo "<br><h3 class='title'>"; keyword('Looma Library'); echo ":  " . folderName($path) . "</h3>";
 
-                //finish BUTTON
-                echo "</button>";
+    //  first list directories in this directory
+    echo "<br><br><table id='dir-table'><tr>";
+    $buttons = 1;
+    $maxButtons = 3;
 
-        };  //end makeEditedVideoButton()
+    // iterate through the files in this DIR and make buttons for each included DIR
+    if ( ! $ep ) {
 
-        // Check to make sure the folder edited videos exists
-        if (!file_exists("../content/edited videos/")) {
-            // Create "edited videos" folder
-            mkdir("../content/edited videos/", 0777, true);
-        }
+        //TODO: should gather all the filenames into an array and sort it, use (natcasesort() or multisort(), before making the buttons
 
-        //End of changes looma edited video
-        //**************************************************************************
+/*************** iterate through the files in this DIR and make buttons for the DIRs ******************/
+/******************************************************************************************************/
+        foreach (new DirectoryIterator($path) as $fileInfo) {
+            $file =  $fileInfo->getFilename();
+            //if ($file{0}  == ".") continue;  //skips ".", "..", and any ".filename" (more thorough than isDot() )
 
+            if (($fileInfo -> isDir()) && $file[0] !== "." && ( ! file_exists($path . $file . "/hidden.txt")))
+                //skips ".", "..", and any ".filename" (more thorough that isDot() )
+                //skips any directory with a file named "hidden.txt"
 
-		function isEpaath($fp) {
-
-			//echo "<br>DEBUG: in isEpaath, FP is " . $fp . " Substr is " . mb_substr($fp, -7, 7);
-
-			if (mb_substr($fp, -7, 7) == "epaath/")
-				 return true;
-			else return false;
-		}; //end function isEpaath
-
-		function thumb_image ($fp) {  //for directories, look for filename "thumb.png" for a thumbnail representing the contents
-			if (file_exists($fp . "/thumbnail.png")) {
-				 return "<img src='$fp/thumbnail.png' >"; }
-			else return "";
-		}; //end fucntion thumbnail
-
-	$ep = false;  //set $ep to true for special case of EPaath
-
-			// get filepath to use for start of DIR traversal
-			//this will be  "../content/" for Looma 2 Library starting folder [to be outside of web-accessible folder structure]
-	$path = "../content/";
-	if (isset($_GET['fp']))	$path = $_GET['fp'];
-
-			//echo "<br>DEBUG: directory is:  " .  $path . "<br><br>";
-
-	if (isEpaath($path)) {$path = $path . "activities/"; $ep = true;}; //in ..resources/epaath/ DIR skip to ..resources/epaath/Activities/
-
-	// DEBUG echo "at path " . $path . "folderName is " . folderName($path);
-	echo "<h3 class='title'>"; keyword('Looma Library'); echo ":  " . folderName($path) . "</h3>";
-
-	//  first list directories in this directory
-	echo "<br><br><table id='dir-table'><tr>";
-	$buttons = 1;
-	$maxButtons = 3;
-
-	// iterate through the files in this DIR and make buttons for each included DIR
-	if ( ! $ep ) {
-		foreach (new DirectoryIterator($path) as $fileInfo) {
-   			$file =  $fileInfo->getFilename();
-			//if ($file{0}  == ".") continue;  //skips ".", "..", and any ".filename" (more thorough than isDot() )
-
-    		if (($fileInfo -> isDir()) && $file[0] !== "." && ( ! file_exists($path . $file . "/hidden.txt")))
-    			//skips ".", "..", and any ".filename" (more thorough that isDot() )
-    			//skips any directory with a file named "hidden.txt"
-
-    		          {
+             {
                 if (file_exists($path . $file . "/images.txt")) {
                     /************************************************************************
-                     * EDITED: This if statement creates a button linking directories containing image.txt files
-                     * with Looma Picture Player
+                     * EDITED: This if statement creates a slideshow play button linking directories containing images.txt files
+                     * with Looma slideshow player
                      */
                     echo "<td>
                             <a href='looma-slideshow.php?dir=$path$file'>
@@ -161,41 +100,45 @@ Description:  displays and navigates content folders for Looma 2
                                         <img src='images/play-slideshow-icon.png' class='img-responsive'>
                                     </button>
                                 </a>";
-                    echo "<a href='looma-library.php?fp=" . $path . $file . "/'><button class='activity img zeroScroll beside-play'>" .
-                    thumb_image($path .$file) . $file . "</button></a></td>";
+                    echo "<a href='looma-library.php?fp=" . $path . $file .
+                         "/'><button class='activity img zeroScroll beside-play'>" .
+                    thumb_image($path . $file) . $file . "</button></a></td>";
 
                     }
                 else {
 
-        			echo "<td><a href='looma-library.php?fp=" . $path . $file . "/'><button class='activity img zeroScroll'>" .
-        			thumb_image($path .$file) . $file . "</button></a></td>";
+                    echo "<td><a href='looma-library.php?fp=" . $path . $file .
+                    "/'><button class='activity img zeroScroll'>" .
+                    thumb_image($path . $file) . $file . "</button></a></td>";
                 }
-				$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
-    		};
-		}; // end FOREACH directory
-	};
+            };
+        }; // ********** end FOREACH directory  **************
+    };
+/******************************************************************************************************/
+/******************************************************************************************************/
 
-	echo "</tr></table>";
+    echo "</tr></table>";
 
-	//now list files in this directory
+    //now list files in this directory
 
-	//DEBUG  echo "in dir " . $path;
-
-	echo "<br><table id='file-table'><tr>";
-	$buttons = 1;
-	$maxButtons = 3;
+    echo "<br><table id='file-table'><tr>";
+    $buttons = 1;
+    $maxButtons = 3;
     $specials = array("_", "-", ".", "/", "'");
 
-	// iterate through the files in this DIR and make buttons for each included FILE
+    // iterate through the files in this DIR and make buttons for each included FILE
 
-		//TODO: should gather all the filenames into an array and sort it, use (natcasesort() or multisort(), before making the buttons
+    //TODO: should gather all the filenames into an array and sort it, use (natcasesort() or multisort(), before making the buttons
 
-	foreach (new DirectoryIterator($path) as $fileInfo) {
+/*************** iterate through the files in this DIR and make buttons each of the FILES ******************/
+/******************************************************************************************************/
 
-          //****************************************************************
-        //Modifed by looma edited video
-        if($path == "../content/edited videos/") {
+        //modifications for EDITED VIDEOS
+        //make buttons for EDITED VIDEOS directory -- virtual folder, populated from edited_videos collection in mongoDB
+        //***************************
+        if($path == "../content/edited videos/") {  //populate virtual folder of EDITED VIDEOs
             //If the folder being filled is the edited videos it fills it using
             //all of the entries from the edited_videos collection in the database
             $editedVideos = $edited_videos_collection->find();
@@ -203,109 +146,152 @@ Description:  displays and navigates content folders for Looma 2
              foreach ($editedVideos as $doc) {
                     echo "<td>";
                     $dn = $doc['dn'];
-                    $file = $doc['vn'];
-                    $path = $doc['vp'];
-                    $ext = "evi";
-                    $json = $doc['JSON'];  //NOTE: this passes the full text of the edited script in the URL.
+                    $fn = $doc['vn'] . ".mp4"; //NOTE: BUG: assumes all videos are .mp4. should save extension with evi collection
+                    $fp = $doc['vp'];
+                    $ft = "evi";
+                    $id = $doc['_id'];
+                    //$json = $doc['JSON'];  //NOTE: this passed the full text of the edited script in the URL.
                                            // should just pass the mongo ID and have the player retrieve the script's full text
-                    makeEditedVideoButton($dn, $path, $ext, $file, $json);
+                     // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                    makeActivityButton($ft, $fp, $fn, $dn, "", "", $id, "", "");
+                    //makeEditedVideoButton($dn, $path, $ext, $file, $json);
 
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
             }
-        }
+        }  //end IF edited videos
+
+        else
+
+        //modifications for SLIDESHOW
+        //***************************
+        //make buttons for SLIDESHOW directory -- virtual folder, populated from SLIDESHOWS collection in mongoDB
+        if($path == "../content/slideshows/") {   //populate virtual folder of SLIDESHOWs
+            //If the folder being filled is the slideshow it fills it using
+            //all of the entries from the slideshows collection in the database
+
+           //echo "DEBUG number of slideshows is :" . $slideshows_collection->count();
+
+            $slideshows = $slideshows_collection->find();
+           //echo "DEBUG length of slideshows array is :" . count($slideshows);
+
+             foreach ($slideshows as $slideshow) {
+
+                        //echo "DEBUG   found slideshow " . $slideshow['dn'] . "<br>";
+
+                    echo "<td>";
+                    $dn = $slideshow['dn'];
+                    $fn = $slideshow['fn'];
+                    $fp = $slideshow['fp'];
+                    $thumb = thumbnail($fn);
+                      //NOTE: for now, fp and fn are concatenated in fn
+                    //$path = $slideshow['fp'];
+
+                    $ft = "slideshow";
+                    $id = $slideshow['_id'];  //mongoID of the descriptor for this slideshow
+                    makeActivityButton($ft, $fp, $fn, $dn, $thumb, "", $id, "", "");
+                    echo "</td>";
+                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+            } //end FOREACH slideshow
+        }  //end IF slideshows
+
         else {
-            //Otherwise it just fills the folder normally
-            //End of modifications
-            //************************************************
 
+        foreach (new DirectoryIterator($path) as $fileInfo) {
+            $file =  $fileInfo->getFilename();
 
+            //echo "DEBUG     found " . $file . "<br>";
 
-   		$file =  $fileInfo->getFilename();
+            //skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
+            if (($file[0]  == ".") || strpos($file, "_thumb") || $file == "thumbnail.png") continue;
 
-		//DEBUG  echo "   found " . $file . "<br>";
+            if ($fileInfo -> isFile()) {
 
-		//skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
-		if (($file[0]  == ".") || strpos($file, "_thumb") || $file == "thumbnail.png") continue;
+                //insert code here to sort the filenames before sending them to client side
+                // iterate thru the directory, storing valid files in an array
+                /* $files = arr
+                 foreach {$files[] =$file;]
+                 * $files = array_sort($files);
+                 * while ?? $next = array)shift($files);
+                 *
+                */
 
-    	if ($fileInfo -> isFile()) {
+                //then SORT
+                //then iterate thru the array  making buttons
 
-    	    //insert code here to sort the filenames before sending them to client side
-    	    // iterate thru the directory, storing valid files in an array
-    	    /* $files = arr
-             foreach {$files[] =$file;]
-             * $files = array_sort($files);
-             * while ?? $next = array)shift($files);
-             *
-            */
+            //this code is also in looma-activities.php - should be a FUNCTION
+            echo "<td>";
+            $ext = $fileInfo -> getExtension();
+            $file = $fileInfo -> getFilename();
+            $base = trim($fileInfo -> getBasename($ext), ".");  //$base is filename w/o the file extension
 
-    	    //then SORT
-    	    //then iterate thru the array  making buttons
+            // look in the database to see if this file has a DISPLAYNAME
+                $query = array('fn' => $file);
 
-		//this code is also in looma-activities.php - should be a FUNCTION
-		echo "<td>";
-		$ext = $fileInfo -> getExtension();
-		$file = $fileInfo -> getFilename();
-		$base = trim($fileInfo -> getBasename($ext), ".");  //$base is filename w/o the file extension
+                $projection = array('_id' => 0,
+                                    'dn' => 1,
+                                    );
+                $activity = $activities_collection -> findOne($query, $projection);
 
-		// look in the database to see if this file has a DISPLAYNAME
-			$query = array('fn' => $file);
+                $dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : str_replace($specials, " ", $base);
+            //
+            //DEBUG   echo "activity is " . $activity['dn'] . " looked up '" . $file . "' and got '" . $dn . "'";
 
-			$projection = array('_id' => 0,
-							    'dn' => 1,
-								);
-			$activity = $activities_collection -> findOne($query, $projection);
+                switch (strtolower($ext)) {
+                    case "video":
+                    case "mp4":
+                    case "m4v":
+                    case "mov":
 
-  			$dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : str_replace($specials, " ", $base);
-		//
-		//DEBUG   echo "activity is " . $activity['dn'] . " looked up '" . $file . "' and got '" . $dn . "'";
+                    case "image":
+                    case "jpg":
+                    case "png":
+                    case "gif":
 
-			switch (strtolower($ext)) {
-				case "video":
-                case "mp4":
-                case "m4v":
-				case "mov":
+                    case "audio":
+                    case "mp3":
 
-				case "image":
-				case "jpg":
-				case "png":
-				case "gif":
+                    case "pdf":
 
-				case "audio":
-				case "mp3":
+                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                        makeActivityButton ($ext, $path, $file, $dn, "", "", "", "", "");
+                        //makeButton($file, $path, $ext, $base, $dn, $path . $base . "_thumb.jpg");
+                        break;
 
-				case "pdf":
+                    default:
+                        // ignore unknown filetypes
+                        // echo "DEBUG: " . $fileInfo -> getFilename() . "unkown filetype in looma-library.php";
+                };  //end SWITCH
+                echo "</td>";
+                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
-					makeButton($file, $path, $ext, $base, $dn, $path . $base . "_thumb.jpg");
-					break;
+                }
+                else {  //handle Epaath special case
+                    if ($ep) {
+                        // display an EPAATH play button
+                        echo "<td>";
+                        $thumb = $file . "/thumbnail.jpg";
+                        $dn = 'ePaath ' . $file;
+                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                        makeActivityButton("epaath", $path, $file, $dn, $thumb, "", "", "", "");
+                        //makeButton($file, $path, 'epaath', $file, 'ePaath ' . $file, $path . $file . "/thumbnail.jpg");
+                        // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                        echo "</td>";
+                        $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
-				default:
-					// ignore unknown filetypes
-					// echo "DEBUG: " . $fileInfo -> getFilename() . "unkown filetype in looma-library.php";
-			};  //end SWITCH
-			echo "</td>";
-			$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-
-			}
-			else {  //handle Epaath special case
-				if ($ep) {
-					// display an EPAATH play button
-					echo "<td>";
-					makeButton($file, $path, 'epaath', $file, 'ePaath ' . $file, $path . $file . "/thumbnail.jpg");
-					echo "</td>";
-					$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-
-				}
-			}
-          //****** End tag for inserted else [evi mods]
-          }
-          //******
-		} //end FOREACH file
-		echo "</tr></table>";
+                    } //end if EP
+                    else if ($html) {
+                        //make a HTML button
+                    } // end if HTML
+                }
+              } //end FOREACH file
+            }
+        echo "</tr></table>";
 ?>
 
-	</div>
+    </div>
 
-   	<?php include ('includes/toolbar.php'); ?>
-   	<?php include ('includes/js-includes.php'); ?>
-   	<script src="js/looma-library.js"></script>  <!-- borrowed from looma-activities.js -->
+    <?php include ('includes/toolbar.php'); ?>
+    <?php include ('includes/js-includes.php'); ?>
+    <script src="js/looma-library.js"></script>
+    </body>

@@ -11,4 +11,9 @@ Description: When called it deletes the edited video database entry passed to it
 <?php
     include ('includes/mongo-connect.php');
     $array = $edited_videos_collection->remove(array('dn' => $_REQUEST['displayName']));
+
+    //NOTE: need to also remove any entries in ACTIVITIES collection that point to this
+    //
+    //
+
 ?>

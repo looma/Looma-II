@@ -93,12 +93,23 @@ https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
     width: 80%;
     font-size: 1.2em;
 }
-
+/* skip - moved play/pause button to above fullscreen button
 .full_play {
     position:fixed;
     top: 76vh;
     left: 70vw;
     opacity: 0.5;
+
+}
+*/
+
+#controllers.full_play {
+    position: fixed;
+    opacity: 0.4;
+    left:87%;
+    top:75%;
+    height: 10vh;
+    width:  15vh;
 }
 
 .controls img, .thumbnail-controls img { /* next/previous/forward scroll/backward scroll button icons */

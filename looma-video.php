@@ -11,7 +11,9 @@ they want to edit a video
 -->
 <?php $page_title = 'Looma Video Player';
 	  include ('includes/header.php');
+      include ('includes/activity-button.php');
 
+	  /*  thumbnail() is included with activity-button.php
 	  function thumbnail ($fn) {
 				//given a CONTENT filename, generate the corresponding THUMBNAIL filename
 				//find the last '.' in the filename, insert '_thumb.jpg' after the dot
@@ -21,7 +23,7 @@ they want to edit a video
 				if ( ! ($dot === false)) { return substr_replace($fn, "_thumb.jpg", $dot, 10);}
 				else return "";
       } //end function THUMBNAIL
-
+    */
 ?>
 
 	<link rel="stylesheet" type="text/css" href="css/looma-video.css">
@@ -33,12 +35,14 @@ they want to edit a video
             //Gets the filename, filepath, and the thumbnail location
             $filename = $_REQUEST['fn'];
             $filepath = $_REQUEST['fp'];
+            $displayname = $_REQUEST['dn'];
             $thumbFile = $filepath . thumbnail($filename);
 	    ?>
 			<script>
 				//Converts thumbFile to js
                 var fileName = "<?php echo $filename ?>";
                 var filePath = "<?php echo $filepath ?>";
+                var displayName = "<?php echo $displayname ?>"
 				var thumbFile = <?php echo json_encode($thumbFile); ?>;
 			</script>
 
@@ -61,7 +65,7 @@ they want to edit a video
 					<button id="fullscreen-control"></button>
 
 					<button id="fullscreen-playpause"></button>
-                    
+
 					<div id="time" class="title"></div>
 
 					<button type="button" class="media" id="play-pause">
@@ -85,7 +89,7 @@ they want to edit a video
 					<button type="button" class="media hidden_button" id="create-edit">
 							<?php keyword('Create Edited Video'); ?>
 					</button>
-                    
+
                     <div id="login-div">
                         <button type="button" class="media" id="login">
                             <?php keyword('Log In') ?>
@@ -93,7 +97,7 @@ they want to edit a video
                     </div>
 				</div>
 			</div>
-        
+
         <!--Adds the toolbar to the video player screen-->
         <?php include ('includes/toolbar.php'); ?>
         <?php include ('includes/js-includes.php'); ?>

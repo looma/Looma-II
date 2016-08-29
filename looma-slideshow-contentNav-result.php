@@ -4,7 +4,7 @@ Email: ian.costello@menloschool.org
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2016 6
 Revision: Looma 2.0.0
-File: looma-contentNav-result.php
+File: looma-slideshow-contentNav-result.php
 Description: Single row of search results
 
 Edited by Thomas Woodside for use in Looma Picture Player.

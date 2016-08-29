@@ -196,7 +196,11 @@ $(document).ready(function () {
     }
     function hideAllElements()
     {
-        hideElements([mediaControls, editButton, cancelButton, textButton, imageButton, pdfButton, videoButton, imagePreviewDiv, pdfPreviewDiv, videoPreviewDiv, submitButton, addTimeDiv, next5FrameButton, nextFrameButton, prev5FrameButton, prevFrameButton]);
+        hideElements([mediaControls, editButton, cancelButton,
+                      textButton, imageButton, pdfButton, videoButton,
+                      imagePreviewDiv, pdfPreviewDiv, videoPreviewDiv,
+                      submitButton, addTimeDiv, next5FrameButton, nextFrameButton,
+                      prev5FrameButton, prevFrameButton]);
     }
     function displayElementsInline(elements)
     {
@@ -299,7 +303,7 @@ $(document).ready(function () {
         }
         if (commands.videoTimes != null) {
             editsObj.videoTimes = commands.videoTimes;
-            console.log(editsObj.videoTimes);
+            console.log('video time = ' + editsObj.videoTimes);
             if (editsObj.videoTimes.indexOf("0") > -1)
             {
                 disableButton(textButton);
@@ -606,7 +610,7 @@ $(document).ready(function () {
         {
             loginButton.innerHTML = "Log Out";
             editButton.style.display = "inline";
-            videoDelete.style.display = "inline"
+            videoDelete.style.display = "inline";
             pauseVideo(video);
         }
     });
@@ -614,7 +618,9 @@ $(document).ready(function () {
     renameButton.addEventListener("click", function () {
         // Rename video
         pauseVideo(video);
-        hideElements([mediaControls, renameButton, cancelButton, textButton, imageButton, pdfButton, videoButton, submitButton, nextFrameButton, prevFrameButton, prev5FrameButton, next5FrameButton]);
+        hideElements([mediaControls, renameButton, cancelButton, textButton,
+                      imageButton, pdfButton, videoButton, submitButton,
+                      nextFrameButton, prevFrameButton, prev5FrameButton, next5FrameButton]);
         renameFormDiv.style.display = "block";
     });
 
@@ -667,7 +673,11 @@ $(document).ready(function () {
                     renameFormDiv.style.display = "none";
 
                     editsObj.fileName = newName;
-                    var videoName = editsObj.videoName.substring(0, editsObj.videoName.lastIndexOf("."));
+
+    //bug: [fixed by skip 8-26-16] dont trim extension from video name
+    //REMOVED: var videoName = editsObj.videoName.substring(0, editsObj.videoName.lastIndexOf("."));
+    //***********************
+
                     $.ajax("looma-edited-video-save.php", {
                         data: {info: editsObj, vn: videoName, vp: videoPath, location: editsObj.fileName, doesExist: didSaveToDBOnce},
                         method: "POST",
@@ -679,7 +689,7 @@ $(document).ready(function () {
                     document.getElementById("title").innerHTML = newName;
                 }
             }
-    }
+    };
 
     editButton.onmouseover = function() {
         if (editButton.innerHTML == "Save")
@@ -690,11 +700,12 @@ $(document).ready(function () {
         {
             editDesc.style.display = 'inline';
         }
-    }
+    };
     editButton.onmouseout = function() {
         editDesc.style.display = 'none';
         saveDesc.style.display = "none";
-    }
+    };
+
 	// Event listener for the edit button
 	editButton.addEventListener("click", function () {
 		if (editButton.innerHTML == "Save")
@@ -765,7 +776,10 @@ $(document).ready(function () {
     });
 
     function saveAs() {
-        hideElements([renameButton, cancelButton, textButton, imageButton, pdfButton, videoButton, submitButton, nextFrameButton, prevFrameButton, next5FrameButton, prev5FrameButton, mediaControls, imagePreviewDiv, textArea, videoPreviewDiv, pdfPreviewDiv, editButton, addTimeDiv]);
+        hideElements([renameButton, cancelButton, textButton, imageButton, pdfButton,
+                      videoButton, submitButton, nextFrameButton, prevFrameButton,
+                      next5FrameButton, prev5FrameButton, mediaControls, imagePreviewDiv,
+                      textArea, videoPreviewDiv, pdfPreviewDiv, editButton, addTimeDiv]);
 
         renameFormDiv.style.display = "block";
         //didSaveOnce = true;
@@ -785,10 +799,14 @@ $(document).ready(function () {
 
                 // Send to server to save as a txt file
                 var videoName = editsObj.videoName.substring(0, editsObj.videoName.lastIndexOf("."));
+
+           console.log('saving: ' + videoName);
+
                 $.ajax("looma-edited-video-save.php", {
                     data: {info: editsObj, vn: videoName, vp: videoPath, location: editsObj.fileName, doesExist: didSaveToDBOnce},
                     method: "POST",
-                    complete: function() {
+                    complete: function(response) {
+                        console.log(response);
                         didSaveToDBOnce = true;
                         didSaveOnce = true;
                     }
@@ -797,7 +815,9 @@ $(document).ready(function () {
 
     function toggleControlsForSaveButton() {
         // Hide Edit Controls
-        hideElements([renameButton, cancelButton, textButton, imageButton, pdfButton, videoButton, submitButton, nextFrameButton, prevFrameButton,  imagePreviewDiv, pdfPreviewDiv, videoPreviewDiv, addTimeDiv]);
+        hideElements([renameButton, cancelButton, textButton, imageButton, pdfButton,
+                      videoButton, submitButton, nextFrameButton, prevFrameButton,
+                      imagePreviewDiv, pdfPreviewDiv, videoPreviewDiv, addTimeDiv]);
 
         // Redisplay media controls
         mediaControls.style.display = "block";
@@ -1212,10 +1232,10 @@ $(document).ready(function () {
 
     cancelButton.onmouseover = function() {
         cancelDesc.style.display = 'inline';
-    }
+    };
     cancelButton.onmouseout = function() {
         cancelDesc.style.display = 'none';
-    }
+    };
 
     cancelButton.addEventListener("click", function () {
         pauseVideo(video);
@@ -1240,7 +1260,10 @@ $(document).ready(function () {
 
     function toggleControlsForCancelButton() {
         // Hide Edit Controls
-        hideElements([renameButton, cancelButton, textButton, imageButton, pdfButton, videoButton, textArea, submitButton, nextFrameButton, prevFrameButton, next5FrameButton, prev5FrameButton, imagePreviewDiv, pdfPreviewDiv, videoPreviewDiv, addTimeDiv]);
+        hideElements([renameButton, cancelButton, textButton, imageButton, pdfButton,
+                      videoButton, textArea, submitButton, nextFrameButton, prevFrameButton,
+                      next5FrameButton, prev5FrameButton, imagePreviewDiv, pdfPreviewDiv,
+                      videoPreviewDiv, addTimeDiv]);
 
         // Redisplay media controls
         mediaControls.style.display = "block";
@@ -1314,10 +1337,11 @@ $(document).ready(function () {
 
     textButton.onmouseover = function() {
         textDesc.style.display = 'inline';
-    }
+    };
+
     textButton.onmouseout = function() {
         textDesc.style.display = 'none';
-    }
+    };
 
 	// Event listener for the text button
 	textButton.addEventListener("click", function () {
@@ -1330,6 +1354,8 @@ $(document).ready(function () {
 
 		// show the text area and submit button
         displayElementsInline([textArea, submitButton]);
+
+        textArea.focus();  //added by SKIP
 
         //Puts textArea on top
         imageArea.style.zIndex = baseImageZ;
@@ -1355,10 +1381,11 @@ $(document).ready(function () {
 
     imageButton.onmouseover = function() {
         imageDesc.style.display = 'inline';
-    }
+    };
+
     imageButton.onmouseout = function() {
         imageDesc.style.display = 'none';
-    }
+    };
 
     // Event listener for image button
     imageButton.addEventListener("click", function () {
@@ -1378,7 +1405,7 @@ $(document).ready(function () {
 
         //Puts the image on top
         pdfArea.style.zIndex = basePdfZ;
-        textBoxArea.style.zIndex = baseTextZ
+        textBoxArea.style.zIndex = baseTextZ;
         addedVideoArea.style.zIndex = baseAddedVideoZ;
         imageArea.style.zIndex = overlayZ;
     });
@@ -1615,7 +1642,9 @@ $(document).ready(function () {
     function deleteButtonEventListener(button, type)
     {
         button.addEventListener("click", function() {
-            LOOMA.confirm(LOOMA.translatableSpans("Do you want to delete this edit?", "तपाईं यो सम्पादन मेटाउन चाहनुहुन्छ?"), function() {deleteEdit(button, type)}, function () {});
+            LOOMA.confirm(LOOMA.translatableSpans("Do you want to delete this edit?", "तपाईं यो सम्पादन मेटाउन चाहनुहुन्छ?"),
+                          function() {deleteEdit(button, type);},
+                          function () {});
         });
     }
 
@@ -1743,6 +1772,7 @@ $(document).ready(function () {
                 cancelButton.style.display = "none";
                 editButton.innerHTML = "Save";
                 textBoxArea.style.display = "block";
+                textBoxArea.focus();  //added by SKIP
 
                 findText(this); // find the text the user wants edit
 
@@ -1751,9 +1781,11 @@ $(document).ready(function () {
                 textArea.value = timelineImageText;
                 textArea.readOnly = false;
 
+                textArea.focus();
+
                 // Put the textBoxArea on top
                 pdfArea.style.zIndex = basePdfZ;
-                textBoxArea.style.zIndex = overlayZ
+                textBoxArea.style.zIndex = overlayZ;
                 addedVideoArea.style.zIndex = baseAddedVideoZ;
                 imageArea.style.zIndex = baseImageZ;
 
@@ -1789,7 +1821,7 @@ $(document).ready(function () {
 
                 //Puts the image on top
                 pdfArea.style.zIndex = basePdfZ;
-                textBoxArea.style.zIndex = baseTextZ
+                textBoxArea.style.zIndex = baseTextZ;
                 addedVideoArea.style.zIndex = baseAddedVideoZ;
                 imageArea.style.zIndex = overlayZ;
 
@@ -1829,7 +1861,7 @@ $(document).ready(function () {
 
                 //Puts the pdf on top
                 pdfArea.style.zIndex = overlayZ;
-                textBoxArea.style.zIndex = baseTextZ
+                textBoxArea.style.zIndex = baseTextZ;
                 addedVideoArea.style.zIndex = baseAddedVideoZ;
                 imageArea.style.zIndex = baseImageZ;
 
@@ -1871,7 +1903,7 @@ $(document).ready(function () {
 
                 //Puts the pdf on top
                 pdfArea.style.zIndex = basePdfZ;
-                textBoxArea.style.zIndex = baseTextZ
+                textBoxArea.style.zIndex = baseTextZ;
                 addedVideoArea.style.zIndex = overlayZ;
                 imageArea.style.zIndex = baseImageZ;
 
@@ -2076,10 +2108,11 @@ $(document).ready(function () {
 
     pdfButton.onmouseover = function() {
         pdfDesc.style.display = 'inline';
-    }
+    };
+
     pdfButton.onmouseout = function() {
         pdfDesc.style.display = 'none';
-    }
+    };
 
     pdfButton.addEventListener("click", function() {
         pauseVideo(video);
@@ -2126,10 +2159,11 @@ $(document).ready(function () {
 
     videoButton.onmouseover = function() {
         addedVideoDesc.style.display = 'inline';
-    }
+    };
+
     videoButton.onmouseout = function() {
         addedVideoDesc.style.display = 'none';
-    }
+    };
 
     videoButton.addEventListener("click", function () {
         pauseVideo(video);
@@ -2185,7 +2219,7 @@ $(document).ready(function () {
             document.getElementById("added-video-area").appendChild(addedVideo);
 
             var blackScreen = document.createElement("div");
-            currentBlackScreen = blackScreen
+            currentBlackScreen = blackScreen;
             blackScreen.id = "black-screen";
             blackScreen.style.zIndex = overlayZ - 1;
             videoArea.appendChild(blackScreen);
@@ -2291,11 +2325,11 @@ $(document).ready(function () {
 
     nextFrameButton.onmouseover = function() {
         nextFrameDesc.style.display = 'inline';
-    }
+    };
+
     nextFrameButton.onmouseout = function() {
         nextFrameDesc.style.display = 'none';
-    }
-
+    };
 
 	// prevFrameButton Event Listener
     prevFrameButton.addEventListener("click", function () {
@@ -2305,10 +2339,11 @@ $(document).ready(function () {
 
     prevFrameButton.onmouseover = function() {
         prevFrameDesc.style.display = 'inline';
-    }
+    };
+
     prevFrameButton.onmouseout = function() {
         prevFrameDesc.style.display = 'none';
-    }
+    };
 
 	next5FrameButton.addEventListener("click", function () {
 		video.currentTime += (10 / 29.97);
@@ -2316,10 +2351,11 @@ $(document).ready(function () {
 
     next5FrameButton.onmouseover = function() {
         next5FrameDesc.style.display = 'inline';
-    }
+    };
+
     next5FrameButton.onmouseout = function() {
         next5FrameDesc.style.display = 'none';
-    }
+    };
 
 	prev5FrameButton.addEventListener("click", function () {
         video.currentTime -= (10 / 29.97);
@@ -2327,10 +2363,11 @@ $(document).ready(function () {
 
     prev5FrameButton.onmouseover = function() {
         prev5FrameDesc.style.display = 'inline';
-    }
+    };
+
     prev5FrameButton.onmouseout = function() {
         prev5FrameDesc.style.display = 'none';
-    }
+    };
 
 
     // Event listener for the seek bar
@@ -2372,7 +2409,7 @@ $(document).ready(function () {
                     }
                     else
                     {
-                        i++
+                        i++;
                     }
                 }
                 else
@@ -2475,6 +2512,7 @@ $(document).ready(function () {
                         var message = editsObj.videoText[textsBefore];
                         textArea.value = message;
                         textArea.style.display = 'inline-block';
+                        textArea.focus();
                         pauseVideo(video);
 						fullscreenPlayPauseButton.style.backgroundImage = 'url("images/video.png")';
                         textArea.style.zIndex = overlayZ;

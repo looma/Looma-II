@@ -4,13 +4,13 @@ Email: ian.costello@menloschool.org
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2016 6
 Revision: Looma 2.0.0
-File: looma-contentNav-results.php
+File: looma-slideshow-contentNav-results.php
 Description: Connents to MONGO DB Database and grabs activities to show
 
 Modified by Thomas Woodside for use in Looma Picture Player.
 -->
 <?php
-include "looma-contentPreview-looma-picture-player-edited.php";
+include "looma-slideshow-contentPreview.php";
 //Connents to Mongo DB
 $m = new MongoClient();
 $fileDB = $m->looma;
@@ -39,7 +39,7 @@ foreach ($cursor as $d)
 	$d_description = "sample text";
 
 	//Add the search result
-	include 'looma-contentNav-result-picture-player-edited.php';
+	include 'looma-slideshow-contentNav-result.php';
 }
 
 ?>

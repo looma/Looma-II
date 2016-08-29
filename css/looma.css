@@ -639,7 +639,7 @@ button.lookup {
 #fullscreen {
 	position: relative;
 	max-width:100%;
-/*height:100%;*/ /*trying to find best way to size fullscreen video*/
+    height:100%; /*trying to find best way to size fullscreen video*/
 }
 
 #fullscreen:-webkit-full-screen {

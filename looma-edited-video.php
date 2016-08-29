@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <!--
 Name: Skip, Aaron, Connor, Ryan
 Email: skip@stritter.com
@@ -8,25 +8,34 @@ Revision: Looma Video Editor 1.0
 File: looma-edited-video.php
 Description: Edited Video viewer page for Looma 2
 
-Usage: 	<button id="testvideo" data-fn="A_Day_On_Earth_Edited.txt"
-						 data-fp="content/videos/"
-						 data-txt="{"fileTypes":[""],"videoName":"A_Day_On_Earth.mp4","videoTimes":[""],"filePaths":[""]}">
-			VIDEO TEST</button>
-	And: $("button#testvideo").click(LOOMA.playMedia);
+Usage: 	<button  id="testvideo"
+                 data-fn="A_Day_On_Earth_Edited.txt"
+                 data-fp="content/videos/"
+                 data-dn="A Day On Earth"
+				 data-id="<mongoID of the JSON commands for this edited video">
+			<img src=thumbnail
+		</button>
+
+	   And: $("button#testvideo").click(LOOMA.playMedia);
+
+	This code can be called from
+	a. clicking an 'activity button' created by looma-library.php or looma-activity.php
+	b. from looma-video.php when "edit" is clicked
+	c. in case the user enters looma-edited-video.php directly in the browser URL
+
+	In case (a) the URL hash includes "data-id=..." and
+	the id for accessing the edited video in the edited_videos collection in mongo is specified. in this case,
+	data-fp, data-fn, and data-dn are expected to be provided.
+
+	In case (b), no 'data-id' is specified, this is an unedited video and
+	the code expects data-fp, data-fn and data-dn to be provided
+
 -->
 
 <?php $page_title = 'Looma Video Player';
     include ('includes/header.php');
-
-    function thumbnail ($fn) {
-				//given a CONTENT filename, generate the corresponding THUMBNAIL filename
-				//find the last '.' in the filename, insert '_thumb.jpg' after the dot
-				//returns "" if no '.' found
-				//example: input 'aaa.bbb.mp4' returns 'aaa.bbb_thumb.jpg' - this is the looma standard for naming THUMBNAILS
-		 		$dot = strrpos($fn, ".");
-				if ( ! ($dot === false)) { return substr_replace($fn, "_thumb.jpg", $dot, 10);}
-				else return "";
-    } //end function THUMBNAIL
+    include ('includes/mongo-connect.php');
+    include ('includes/activity-button.php');
 ?>
 
 <link rel="stylesheet" type="text/css" href="css/looma-video.css">
@@ -35,11 +44,73 @@ Usage: 	<button id="testvideo" data-fn="A_Day_On_Earth_Edited.txt"
 
 <body>
     <?php
+
+        /* thumbnail() is included with activity-button.php
+         function thumbnail ($fn) {
+                    //given a CONTENT filename, generate the corresponding THUMBNAIL filename
+                    //find the last '.' in the filename, insert '_thumb.jpg' after the dot
+                    //returns "" if no '.' found
+                    //example: input 'aaa.bbb.mp4' returns 'aaa.bbb_thumb.jpg' - this is the looma standard for naming THUMBNAILS
+                    $dot = strrpos($fn, ".");
+                    if ( ! ($dot === false)) { return substr_replace($fn, "_thumb.jpg", $dot, 10);}
+                    else return "";
+        } //end function THUMBNAIL
+         */
+
+        // Create "edited videos" pseudo-folder if it doesnt exist
+         if (!file_exists("../content/edited videos/")) { mkdir("../content/edited videos/", 0777, true); };
+
+//*************** new init code - SKIP*******
+        if (isset($_REQUEST['id'])) {  //id is set, being called with the id of an existing edited video
+            $id = $_REQUEST['id'];
+            $dn = $_REQUEST['dn'];
+            $filepath = $_REQUEST['fp'];
+            $filename = $_REQUEST['fn'];
+
+
+           //fetch the JSON descriptor of this edited video from mongo
+           $query =      array('_id' => new MongoID($id));
+           $projection = array('_id' => 0, 'JSON' => 1);
+           $doc = $edited_videos_collection->findOne($query, $projection);
+           $json = $doc['JSON'];
+
+        }
+        else  //called with no 'id' means the fp/fn is an unedited video file
+        {
+            $dn =       (isset($_REQUEST['dn']) ? $_REQUEST['dn'] : "");
+            $filepath = (isset($_REQUEST['fp']) ? $_REQUEST['fp'] : "");
+            $filename = (isset($_REQUEST['fn']) ? $_REQUEST['fn'] : "");
+            $id = null;
+            $json = "null";
+        }
+
+        $thumbFile = $filepath . thumbnail($filename);
+
+?>
+            <script>
+                //Sends the information from the .txt file to js
+                var commands = <?php echo $json; ?>;
+                var displayName = "<?php echo addslashes($dn);?>";
+                var videoPath = "<?php echo $filepath; ?>";
+                var vn =        "<?php echo $filename ?>";
+                var thumbFile =  <?php echo json_encode($thumbFile); ?>;
+                var fn =        "<?php echo $dn; ?>";
+                console.log('video editor opening - ' + fn);
+            </script>
+
+
+<?php //************** end new init code ********?>
+
+<?php
+/*
             //Sets the filepath and filename
             //$dn being null means that the request came from looma-video.js and
             //looma-utilities.js
             $dn = $_REQUEST['dn'];
+            $id = $_REQUEST['id'];
             $filepath = $_REQUEST['fp'];
+            $filename = $_REQUEST['fn'];
+
             if ($dn != "null")
             {
                 $filename = findName($_REQUEST['txt']);
@@ -48,8 +119,9 @@ Usage: 	<button id="testvideo" data-fn="A_Day_On_Earth_Edited.txt"
             {
                 $filename = $_REQUEST['fn'];
             }
+
             $thumbFile = $filepath . thumbnail($filename);
-        
+
             //Finds the name of an edited video based of the text inside the file
             function findName($txt)
             {
@@ -58,54 +130,18 @@ Usage: 	<button id="testvideo" data-fn="A_Day_On_Earth_Edited.txt"
                 $endLoc = strpos(substr($txt, $startLoc), '"') + $startLoc;
                 $len = $endLoc - $startLoc;
                 return substr($txt, $startLoc, $len);
-            }
-        
-            function getJSON($file, $path, $ext) {
-            //Gets the path of the .txt file and return the information inside
-            $realpath = realpath($path) . '/';
-            return file_get_contents($realpath . $file, $realpath, null, 0);
-        }
+            }  //end findName()
 
-        function makeButton($file, $path, $ext, $base, $dn, $thumb)
-        {
-            // Copied from looma library
-            //DEBUG   echo "making button with path= $path  file= $file   ext= $ext"; //DEBUG 
-            
-            // ignore edited videos which are txt files
-            if ($ext != "txt")
-            {
-			
-            echo "<button class='activity play img' 
-                          data-fn='" .  $file . 
-                       "' data-fp='" .  $path .
-                       "' data-ft='" .  $ext . 
-                       "' data-zm='" .  160 .
-                       "' data-pg='1" .
-                       //If the file is a .txt file (used to store edited videos) it pulls the information from the file
-                       "' data-txt='" . ($ext == "txt" ? getJSON($file, $path, $ext) : null) .
-                                    "'>";
-					   
-            //text and tooltip for BUTTON		  
-            echo "<span class='displayname' 
-                        class='btn btn-default'
-                        data-toggle='tooltip' 
-                        data-placement='top' 
-                        title='" . $file . "'>" . 
-                  "<img src='" . $thumb . "'>" . 
-                                 $dn . "</span>";
+    // removed makeButton() and thumbfile()
 
-            //finish BUTTON
-            echo "</button>";
-            
-            }
+*/
 
-        };  //end makeButton()
-    ?>   
-        
+  //**************************************************
+    ?>
+<!--
 			<script>
 				//Sends the information from the .txt file to js
-				var commands = <?php echo $_REQUEST['txt']; ?>;
-				var commandsBackup = <?php echo $_REQUEST['txt']; ?>;
+				var commands = <?php echo $json; ?>;
                 if ("<?php echo $_REQUEST['dn'] ?>" != "null")
                 {
                     var displayName = "<?php echo addslashes($_REQUEST['dn']);?>";
@@ -114,10 +150,12 @@ Usage: 	<button id="testvideo" data-fn="A_Day_On_Earth_Edited.txt"
                 var vn = "<?php echo $filename ?>";
                 var thumbFile = <?php echo json_encode($thumbFile); ?>;
                 var fn = "<?php echo $_REQUEST['dn']; ?>";
-                console.log(fn);
+                console.log('video editor opening - ' + fn);
 			</script>
-
-			<link rel="stylesheet" type="text/css" href="css/looma-edited-video.css">
+-->
+			<!--
+			    <link rel="stylesheet" type="text/css" href="css/looma-edited-video.css">
+            -->
 
 			<div id="main-container-horizontal">
 				<div id="video-player">
@@ -194,51 +232,45 @@ Usage: 	<button id="testvideo" data-fn="A_Day_On_Earth_Edited.txt"
                             <?php keyword("Submit") ?>
                         </button>
                     </div>
-                    
+
                     <div id="add-time-div">
                         <div id="add-start-stop-time-div">
                             <button type="button" class="media hidden_button" id="start-time">
-                                <?php
-                                    keyword('Set Start Time')
-                                ?>
+                                <?php keyword('Set Start Time') ?>
                             </button>
 
                             <button type="button" class="media hidden_button" id="stop-time">
-                                <?php
-                                    keyword('Set Stop Time')
-                                ?>
+                                <?php keyword('Set Stop Time') ?>
                             </button>
                         </div>
                         <div id="default-start-stop-time-div">
                             <button type="button" class="media hidden_button" id="default-start-stop-time">
-                                <?php
-                                    keyword('Default');
-                                ?>
+                                <?php  keyword('Default'); ?>
                             </button>
                         </div>
                     </div>
-                        
+
                     <button type="button" class="media" id="cancel">
                         <?php keyword('Cancel') ?>
                     </button>
-                            
+
                     <form class="media" id="search-area" style="display: none">
-				        <input name="search" id="search-box" placeholder="Search for..."/>
+				        <input name="search" id="search-box" autofocus placeholder="Search for..."/>
                     </form>
-                            
+
                     <button type="button" class="media" id="delete">
                         <?php tooltip('Delete') ?>
                     </button>
                     <button type ="button" class="media" id="edit">
                         <?php keyword('Edit') ?>
                     </button>
-                            
+
                     <div id="login-div">
                         <button type="button" class="media" id="login">
                             <?php keyword('Log In') ?>
                         </button>
                     </div>
-                            
+
                     <button type="button" class="media hidden_button" id="prev-frame5">
                         &lt;&lt;&lt;
                         <?php
@@ -248,32 +280,26 @@ Usage: 	<button id="testvideo" data-fn="A_Day_On_Earth_Edited.txt"
 
                     <button type="button" class="media hidden_button" id="prev-frame">
                         &lt;
-                        <?php
-                            tooltip('Previous Frame')
-                        ?>
+                        <?php  tooltip('Previous Frame') ?>
                     </button>
 
                     <button type="button" class="media hidden_button" id="next-frame">
-                        >
-                        <?php
-                            tooltip('Next Frame')
-                        ?>
+                        &gt;
+                        <?php tooltip('Next Frame')  ?>
                     </button>
 
 
                     <button type="button" class="media hidden_button" id="next-frame5">
-                        >>>
-                        <?php
-                            tooltip('Next Frame')
-                        ?>
+                        &gt;&gt;&gt;
+                        <?php tooltip('Next Frame') ?>
                     </button>
 
                     <br>
-                                
+
                     <button type="button" class="media hidden_button" id="rename">
                         <?php keyword('Rename') ?>
                     </button>
-                            
+
                     <button type="button" class="media" id="text">
                         <?php keyword('Text') ?>
                     </button>
@@ -291,14 +317,14 @@ Usage: 	<button id="testvideo" data-fn="A_Day_On_Earth_Edited.txt"
                     <button type="button" class="media hidden_button" id="submit">
                         <?php keyword('Submit') ?>
                     </button>
-                            
+
                     <br>
                 </div>
                 <div id="image-previews">
                     <!-- Opens pictures folder when you want to select an image -->
 					<?php
                         $folder = "pictures";
-                        include ('includes/video-editor-file-viewer.php');
+                       include ('includes/looma-edited-video-fileviewer.php');
                     ?>
 				</div>
 
@@ -306,7 +332,7 @@ Usage: 	<button id="testvideo" data-fn="A_Day_On_Earth_Edited.txt"
 				<div id="pdf-previews">
 					<?php
                         $folder = "pdfs";
-                        include ('includes/video-editor-file-viewer.php');
+                        include ('includes/looma-edited-video-fileviewer.php');
                     ?>
 				</div>
 
@@ -314,14 +340,14 @@ Usage: 	<button id="testvideo" data-fn="A_Day_On_Earth_Edited.txt"
                     <!-- Opens the videos folder when you want to select a video -->
 					<?php
                         $folder = "videos";
-                        include ('includes/video-editor-file-viewer.php');
+                       include ('includes/looma-edited-video-fileviewer.php');
                     ?>
 				</div>
-                
+
 			</div> <!-- End of main container -->
-			<?php include ('includes/toolbar.php'); ?>
+            <?php include ('includes/toolbar.php'); ?>
             <?php include ('includes/js-includes.php'); ?>
-        
+
             <script src="js/jquery.js">          </script>      <!-- jQuery -->
             <script src = "js/looma-utilities.js"> </script>
             <script src="js/looma-screenfull.js"></script>

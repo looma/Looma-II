@@ -13,13 +13,16 @@ Revision: 0.4
 
 <?php
 
-      include ('includes/mongo-connect.php');
-
-
 $page_title = 'Looma Picture Player';
 include ('includes/header.php');
+include ('includes/mongo-connect.php');
+
+// Create "slideshows" pseudo-folder if it doesnt exist
+ if (!file_exists("../content/slideshows/")) { mkdir("../content/slideshows/", 0777, true); };
+
 if (isset($_GET["id"])) {
-    $id = $_GET["id"];
+    $id = trim($_GET["id"]);
+
     $mode = "existing";
     $entry = $slideshows_collection->findOne(array("_id" => new MongoId($id)), array("order"));
 } else if (isset($_GET["dir"])){
@@ -38,10 +41,10 @@ if (isset($_GET["id"])) {
 
     <div class="row main-slideshow"> <!-- The image and next and previous controls -->
         <div class = "col-md-1" id="otherImageCol">
-            <button class="controls carrot small" id="extend">
+            <button class="controls carrot small" id="extend" hidden>
                 <img src="images/carrot.png" alt="Carrot" class = "small noDrag">
             </button>
-            <button class="controls carrot small" id="retract">
+            <button class="controls carrot small" id="retract" hidden>
                 <img src="images/carrot.png" alt="Uncarrot" class = "small noDrag">
             </button>
             <?php include "looma-slideshow-other-images.php";?>
@@ -56,10 +59,9 @@ if (isset($_GET["id"])) {
         <div class="col-md-8" id="screenfull">
             <img class="img-responsive center-block"
                  id = "main-img"
-                 src=""
-                 alt="main image">
+                 src="">
             <button  id="fullscreen-control"></button><br>
-            <div class="captions-div" id="caption-text">
+            <div class="captions-div" id="caption-text" hidden>
                 <p id="caption"></p>
             </div>
         </div>
@@ -67,7 +69,8 @@ if (isset($_GET["id"])) {
             <img src="images/next-arrow.png" alt="Next Arrow" class="noDrag">
             <?php tooltip("Next") ?>
         </button>
-    </div>
+    </div> <!-- end of image and next and previous controls -->
+
     <div class="row"> <!--Thumbnails and next and previous control-->
         <div id="bottomOffset" class="search">
         </div>
@@ -83,10 +86,8 @@ if (isset($_GET["id"])) {
                 <?php
                 if ($mode == "existing") {
                     foreach($entry["order"] as $item) {
-                        $filepath = $item["src"];
-                        $fpSplit = explode("/", $filepath);
-                        $filename = array_pop($fpSplit);
-                        $dirpath = implode("/", $fpSplit);
+                        $dirpath = $item["fp"];
+                        $filename = $item["fn"];
                         echoThumbnail($filename, $item["caption"], $dirpath);
                     }
                 }
@@ -98,6 +99,7 @@ if (isset($_GET["id"])) {
                         echoThumbnail($filename, "", $_GET["dir"]);
                     }
                 } //else empty, echoes no thumbnails.
+
                 function echoThumbnail($filename, $caption,  $dirname) {
                     if (!strpos($filename, '_thumb') and ($filename != 'images.txt')) //Non-thumbnails
                     {
@@ -109,11 +111,15 @@ if (isset($_GET["id"])) {
                         }
                         $thumbnail .= "_thumb.jpg";
                         if (file_exists("$dirname/$thumbnail")) {
-                            echo "<li class='img-thumbnail'><img src='$dirname/$thumbnail' alt='thumbnail' data-fp='$dirname/$filename' data-caption='$caption'></li>";
+                            echo "<li class='img-thumbnail'>" .
+                                 "<img src='$dirname/$thumbnail' data-fp='$dirname/' data-fn='$filename' data-caption='$caption'>" .
+                                 "</li>";
                         }
                         else {
-                            echo "<li class='img-thumbnail'><img src='$dirname/$filename' alt='thumbnail' data-fp='$dirname/$filename' data-caption='$caption'></li>";
-                        }
+                            echo "<li class='img-thumbnail'>" .
+                                 "<img src='$dirname/$filename' data-fp='$dirname/' data-fn='$filename' data-caption='$caption'>" .
+                                 "</li>";
+                              }
                     }
                 }
                 ?>
@@ -125,7 +131,8 @@ if (isset($_GET["id"])) {
                 <?php tooltip("Scroll Forward")?>
             </button>
         </div>
-    </div>
+    </div>  <!--end of Thumbnails and next and previous control-->
+
     <div class="row slide-controls"> <!-- slideshow controls -->
             <div class = "col-md-1 small">
             </div>
@@ -151,7 +158,7 @@ if (isset($_GET["id"])) {
                     <img src="images/fast-rabbit.png" class="small noDrag">
                     <?php tooltip("Fast")?></button> </div>
         <div class="col-md-1 small">
-            <button id="save" class="center-block controls small">
+            <button id="save" hidden class="center-block controls small">
                 <img src="images/save-icon.png" alt="save-icon" class = "small noDrag"><?php tooltip("Save")?>
             </button>
             <button id="editor" class="center-block controls small">
@@ -160,30 +167,28 @@ if (isset($_GET["id"])) {
             </button>
         </div>
         <div class="col-md-2 small">
-            <button id="delete" class="center-block controls small nonExtendTrash">
+            <button id="delete" hidden class="center-block controls small nonExtendTrash">
                 <img src="images/delete-icon.png" alt="trash-icon" class = "small noDrag">
                 <?php tooltip("Delete")?>
             </button>
         </div>
+     </div>  <!-- end of slideshow controls -->
 
-    </div>
     <div class="captions-div captions-div-start">
         <!-- Caption: <input type="text" name="Caption"> <input type="submit" value="Submit"> -->
-        <button id = "edit"><img src="images/edit-icon.png" class="small noDrag"> <?php tooltip("Edit")?></button>
+        <button id = "edit" hidden><img src="images/edit-icon.png" class="small noDrag"> <?php tooltip("Edit")?></button>
         <textarea id = "caption-textarea" placeholder = "Enter a caption! एक क्याप्सन प्रविष्ट गर्नुहोस्!"></textarea>
         <button id = "submit" class = "small"><img src="images/save-icon.png" class="small noDrag"><?php tooltip("Save")?></button>
     </div>
 </div>
 <?php
-/*include either, but not both, of toolbar.php or toolbar-vertical.php*/
 include ('includes/toolbar.php');
-/*include ('includes/toolbar-vertical.php'); */
 include ('includes/js-includes.php');
 /*include looma header*/
 ?>
 
 <script src="js/jquery.js">          </script>      <!-- jQuery -->
-<script src = "js/looma-utilities.js"> </script>      <!-- Looma utility functions -->
+<script src="js/looma-utilities.js"> </script>      <!-- Looma utility functions -->
 <script src="js/looma-screenfull.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/looma-slideshow.js"></script>

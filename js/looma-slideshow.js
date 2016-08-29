@@ -96,7 +96,7 @@ $(document).ready(function() {
     $('#delete').click(function () {
         deleteImage();
     });
-    $('#ok').click(function () {
+    $('#ok').click(function () {  //NOTE (Skip): this function not used??  cant find function response() or id="ok"
         response();
     });
     $('#extend').click(function () {
@@ -177,8 +177,10 @@ function displayCaption() {
     var p = $("#caption");
     if (caption) {
         $(p).text(caption);
+        $("#caption-text").show();
     } else {
         $(p).text("");
+        $("#caption-text").hide();
     }
 }   // End of displayCaption
 
@@ -220,8 +222,8 @@ function toggleFullscreen() {
  * @param   element is the current thumbnail
  * */
 function displayThumbnail(element) {
-    var newSrcDisplay = $(element).find("img").attr("data-fp");
-    // This alters the source of the thumbnail to be the source of the displayed image.
+    var newSrcDisplay = $(element).find("img").attr("data-fp") + $(element).find("img").attr("data-fn");
+    // display the image defined by thumbnail "element" in the main image and set 'element' thumbnail to 'active'
     var mainImg = $('#main-img');
     mainImg.attr('src', newSrcDisplay);
 
@@ -386,19 +388,18 @@ function scroll(forwardBack) {
  * This gets the necessary information to save to the database.
  **/
 function saveConfiguration() {
-    LOOMA.prompt("<p>" + LOOMA.generateTranslatableSpans("What would you like to name this slideshow?",
+    LOOMA.prompt("<p>" + LOOMA.translatableSpans("What would you like to name this slideshow?",
             "कस्तो तपाईं स्लाइड शो नाम गर्न चाहनुहुन्छ?") + "</p>", function (response) {
         if (response) {
             $.get("looma-slideshow-save.php", {"dn": response}, function (id) {
                 if (/\S/.test(id)) {
-                    LOOMA.confirm("<p>" + LOOMA.generateTranslatableSpans("There is a already a slideshow with this name. Overwrite?",
-                            "यो नामको एक पहिले नै स्लाइड शो छ। अधिलेखन?") + "</p>", function () {
-                        sendConfiguration(id, response);
-                    }, function () {
-                    });
-                } else {
-                    sendConfiguration(false, response);
-                }
+                    LOOMA.confirm("<p>" +
+                                  LOOMA.translatableSpans("There is a already a slideshow with this name. Overwrite?",
+                                                          "यो नामको एक पहिले नै स्लाइड शो छ। अधिलेखन?") +
+                                  "</p>",
+                              function () {sendConfiguration(id, response);},
+                              function () {});
+                } else { sendConfiguration(false, response); }
             });
         }
     }, function() {});
@@ -409,7 +410,7 @@ function saveConfiguration() {
  **/
 function sendConfiguration(id, dn) {
     var tosend = [];
-    console.log(id);
+    console.log('SLIDESHOW - Saving: ' + id);
     $('#img-thumbs .img-thumbnail img').each(function () {
         var caption = $(this).data("caption");
         if (caption == undefined) {
@@ -417,18 +418,24 @@ function sendConfiguration(id, dn) {
         }
         tosend.push(
             {
-                "src": $(this).attr("data-fp"),
+                "fp": $(this).attr("data-fp"),
+                "fn": $(this).attr("data-fn"),
                 "caption": caption
             });
     });
+
+
+    console.log("fp: " + tosend[0]['fp']);
+    console.log("fn: " + tosend[0]['fn']);
+
     if (id) {
-        $.post("looma-slideshow-save.php", {_id: id, order: tosend, dn: dn}, function(response) {
-        });
-        alertWithLink(id);
+        $.post("looma-slideshow-save.php",
+               {_id: id, fn: tosend[0]['fn'], fp: tosend[0]['fp'], dn: dn, order: tosend},
+               function(response) {alertWithLink(id);});
     } else {
-        $.post("looma-slideshow-save.php", {order: tosend, dn: dn}, function (newId) {
-            alertWithLink(newId);
-        });
+        $.post("looma-slideshow-save.php",
+              {          fn: tosend[0]['fn'], fp: tosend[0]['fp'], dn: dn, order: tosend},
+              function (newId) {alertWithLink(newId);});
     }
 }   // End of sendConfiguration
 
@@ -436,7 +443,7 @@ function sendConfiguration(id, dn) {
  * This alerts the user of he permanent link to their slideshow.
  **/
 function alertWithLink(id) {
-    LOOMA.alert("<p>" + LOOMA.generateTranslatableSpans("The slideshow has been saved. You can show the slideshow " +
+    LOOMA.alert("<p>" + LOOMA.translatableSpans("The slideshow has been saved. You can show the slideshow " +
             "<a href='./looma-slideshow.php?id=" + id + "'>here</a>",
             "गर्नुहोस कि स्लाइड शो बचत गरीएको छ. शो पाउन सक्नुहुन्छ  तपाईं " +
             "<a href='./looma-slideshow.php?id=" + id + "'>यहाँ</a> स्लाइड शो") + "</p>");
@@ -446,13 +453,14 @@ function alertWithLink(id) {
  * Deletes an image from the slideshow
  **/
 function deleteImage() {
-    console.log("I am displaying");
-    LOOMA.confirm(LOOMA.generateTranslatableSpans("Are you sure you want to delete this image?", "तपाईं यो तस्बिर हटाउन चाहनुहुन्छ निश्चित हुनुहुन्छ?"),
-        function () {
-            var todelete = $('.active');
-            displayImage("next");
-            todelete.remove();
-        }, function () {});
+    console.log('SLIDESHOW - Deleting image:' + $('.active img').attr('src'));
+    LOOMA.confirm(LOOMA.translatableSpans("Are you sure you want to delete this image?",
+                                           "तपाईं यो तस्बिर हटाउन चाहनुहुन्छ निश्चित हुनुहुन्छ?"),
+            function () {
+                var todelete = $('.active');
+                displayImage("next");
+                todelete.remove();
+            }, function () {});
 }   // End of deleteImage
 
 /**
@@ -465,11 +473,11 @@ function toggleEdit() {
         $('#extend').show();
         $("#edit").show();
         $("#delete").show();
-        edit_mode = false;
         $("#save").show();
         $("#editor").hide();
         $('#retract').hide();
-    }
+        edit_mode = false;  //NOTE: this means we ARE IN EDIT MODE!
+  }
     else
     {
         hideOtherImages();
@@ -478,16 +486,17 @@ function toggleEdit() {
         $('#extend').hide();
         $("#edit").hide();
         $("#delete").hide();
-        edit_mode = true;
         $("#save").hide();
         $("#editor").show();
         $('#retract').hide();
+        edit_mode = true;  //NOTE: this means we ARE NOT IN EDIT MODE!
     }
 }       // End of toggleEdit
 
 /**
- * This function is called whenever the carrot is clicked. It pops out the other images. All elements are shifted over and the retract
- * button becomes visible. The images are draggable into the slideshow
+ * This function is called whenever the carrot is clicked. It pops out the other images.
+ * All elements are shifted over and the retract button becomes visible.
+ * The images are draggable into the slideshow
  */
 function showOtherImages() {
     $('#otherImageCol').addClass('col-md-2').removeClass('col-md-1').addClass('imageDropZone');

@@ -37,8 +37,8 @@ button#fullscreen-playpause {
 	position: absolute;
     display: none;
 	opacity: 0.4;
-	bottom:11%; /* 5*/
-	left:5%;
+	bottom:16%; /* 5*/
+	right:5%;
 	height: 10vh;
 	width:  10vh;
 	z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
@@ -61,7 +61,7 @@ button#play-pause {
 button#volume {
 	background-image: url("../images/audio.png");
    	background-size: 100% 100%;
-	background-color:rgba(255,255,255,1); 
+	background-color:rgba(255,255,255,1);
 	height: 5vh;
 	width:  5vh;
 	background-repeat: no-repeat;
@@ -175,7 +175,7 @@ button#create-edit {
     margin-top:0px;
     margin: 0 auto;
 }
-    
+
 div#text-box-area {
     position: absolute;
     top: 0px;
@@ -222,7 +222,7 @@ div#text-box-area {
     width: 100%;
     margin: auto;
 }
-    
+
 #comments {
     display: none;
     background-color: white;
@@ -234,7 +234,7 @@ div#text-box-area {
     height: 100%;
     width: 100%;
 }
-    
+
 
 #added-video-area {
     position: absolute;
@@ -245,7 +245,7 @@ div#text-box-area {
     width: 100%;
     margin: auto;
 }
-    
+
 #timeline-area {
     top: 0px;
     left: 0px;
@@ -265,8 +265,8 @@ div#text-box-area {
     margin: auto;
     background-color: black;
 }
-    
-::-webkit-scrollbar { 
+
+::-webkit-scrollbar {
     width:30px;
 }
 
@@ -472,12 +472,12 @@ button.img.play, button.img.activity{
 	font-weight:bold;
     margin-left: 10px;
     margin-right: 10px;
-} 
+}
 
 button#delete {
 	background-image: url("../images/trash.png");
    	background-size: 100% 100%;
-	background-color:rgba(255,255,255,1);  
+	background-color:rgba(255,255,255,1);
 	height: 5vh;
 	width:  5vh;
 	background-repeat: no-repeat;

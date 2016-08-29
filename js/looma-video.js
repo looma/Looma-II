@@ -12,35 +12,38 @@ Attribution: slightly borrowed from Matt West (blog.teamtreehouse.com)
  */
 
 'use strict';
+
+//NOTE: fileName, filePath , displayName, and thumbPath are set with JS injected by the PHP
+
 $(document).ready(function () {
     // Title
     document.getElementById("title").innerHTML = fileName;
-    
+
     // Video
 	var video = document.getElementById("video");
-    
+
     // Time Tracker
     var timeDiv = document.getElementById("time");
     timeDiv.innerHTML = "0:00";
 
-	// Media Controls - play, mute, volume 
+	// Media Controls - play, mute, volume
 	var mediaControls = document.getElementById("media-controls");
 	var playButton = document.getElementById("play-pause");
 	var muteButton = document.getElementById("volume");
-    
+
     // Sliders
 	var seekBar = document.getElementById("seek-bar");
 	var volumeBar = document.getElementById("volume-bar");
-	
+
 	// Make fullscreenPlayPauseButton invisible when not in fullscreen
     var fullscreenPlayPauseButton = document.getElementById("fullscreen-playpause");
 	var fullscreenButton = document.getElementById("fullscreen-control");
-    
+
     var editButton = document.getElementById("create-edit");
     var loginButton = document.getElementById("login");
-    
+
     var videoArea = document.getElementById("video-area");
-    
+
     var isFullscreen = false;
 	$('#fullscreen-control').click(function (e) {
 		e.preventDefault();
@@ -53,7 +56,7 @@ $(document).ready(function () {
             fullscreenPlayPauseButton.style.display = "block";
             videoArea.className = "fullscreen";
             videoArea.style.width = "100%";
-            
+
             if (video.paused == true)
             {
                 fullscreenPlayPauseButton.style.backgroundImage = 'url("images/video.png")';
@@ -73,18 +76,18 @@ $(document).ready(function () {
             videoArea.className = "";
 		}
 	});
-    
+
     function playVideo(vid)
     {
         vid.play();
-        playButton.style.backgroundImage = 'url("images/pause.png")';    
+        playButton.style.backgroundImage = 'url("images/pause.png")';
     }
     function pauseVideo(vid)
     {
         vid.pause();
         playButton.style.backgroundImage = 'url("images/video.png")';
     }
-    
+
     function minuteSecondTime (time)
     {
         //Converts all time to minutes:seconds
@@ -98,7 +101,7 @@ $(document).ready(function () {
         }
         return minutes + ":" + seconds;
     }
-    
+
     video.addEventListener('loadeddata', function () {
 		//Sets the video-area to the size of the video by finding the calculated width of the video
 		var vidWidth = window.getComputedStyle(video).getPropertyValue("width");
@@ -107,12 +110,12 @@ $(document).ready(function () {
 
 		var videoPlayer = document.getElementById("video-player");
         var titleArea = document.getElementById("title-area");
-        
+
         //Makes the title area fill the space to the right of the video
 		titleArea.style.width = ((videoPlayer.offsetWidth / 2) - (video.offsetWidth / 2)) + "px";
 		titleArea.style.height = video.offsetHeight + "px";
 	});
-    
+
     fullscreenPlayPauseButton.addEventListener("click", function() {
             if (video.paused == true) {
                 // Play the video
@@ -121,7 +124,7 @@ $(document).ready(function () {
                 // Update the button text to 'Pause'
                 fullscreenPlayPauseButton.style.backgroundImage = 'url("images/pause.png")';
 
-            } 
+            }
             else {
                 // Pause the video
                 pauseVideo(video);
@@ -130,12 +133,12 @@ $(document).ready(function () {
                 fullscreenPlayPauseButton.style.backgroundImage = 'url("images/video.png")';
             }
 	});
-    
+
     playButton.addEventListener("click", function () {
         if (video.paused == true) {
             // Play the video
-            playVideo(video); 
-        } 
+            playVideo(video);
+        }
         else {
             pauseVideo(video);
         }
@@ -149,7 +152,7 @@ $(document).ready(function () {
 
             // Update the button text
             muteButton.style.backgroundImage = 'url("images/mute.png")';
-        } 
+        }
         else {
             // Unmute the video
             video.muted = false;
@@ -174,13 +177,13 @@ $(document).ready(function () {
 	video.addEventListener("timeupdate", function () {
         // Calculate the slider value
         var value = (100 / video.duration) * video.currentTime;
-        
+
         // Update the slider value
         seekBar.value = value;
-        
-        timeDiv.innerHTML = minuteSecondTime(video.currentTime); 
+
+        timeDiv.innerHTML = minuteSecondTime(video.currentTime);
 	});
-    
+
     seekBar.addEventListener("mousedown", function () {
 		pauseVideo(video);
 	});
@@ -190,8 +193,8 @@ $(document).ready(function () {
 		// Update the video volume
 		video.volume = volumeBar.value;
 	});
-    
-    
+
+
     loginButton.addEventListener("click", function() {
         if (loginButton.innerHTML == "Log Out") {
             loginButton.innerHTML = "Log In";
@@ -204,11 +207,11 @@ $(document).ready(function () {
             pauseVideo(video);
         }
     });
-    
+
     editButton.addEventListener("click", function () {
-        // Call edited-video.php  
+        // Call edited-video.php
         window.location = 'looma-edited-video.php?fn=' + fileName +
-			'&fp=' + filePath + '&txt=' + null + '&dn=' + "null";  
+			'&fp=' + filePath +  '&dn=' + displayName;  //no ID in URL means this is an un-edited video
     });
 
 });

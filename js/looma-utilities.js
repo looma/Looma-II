@@ -50,9 +50,10 @@ playMedia : function(button) {
         case "mp4":
         case "m4v":
         case "mov":
-            window.location = 'looma-video.php?fn=' + button.getAttribute(
-                    'data-fn') +
-                '&fp=' + button.getAttribute('data-fp');
+            window.location = 'looma-video.php?' +
+                 'fn=' + button.getAttribute('data-fn') +
+                '&fp=' + button.getAttribute('data-fp') +
+                '&dn=' + button.getAttribute('data-dn');
             break;
 
         case "evi":
@@ -61,7 +62,8 @@ playMedia : function(button) {
             //to looma-edited-video.php
             window.location = 'looma-edited-video.php?fn=' + button.getAttribute('data-fn') +
             '&fp=' + button.getAttribute('data-fp') +
-            '&txt=' + button.getAttribute('data-content') + '&dn=' + button.getAttribute('data-dn');
+            '&id=' + button.getAttribute('data-id') +
+            '&dn=' + button.getAttribute('data-dn');
             break;
 
       case "image":
@@ -91,16 +93,21 @@ playMedia : function(button) {
             window.location = 'looma-pdf.php?fn=' + button.getAttribute(
                     'data-fn') +
                 '&fp=' + button.getAttribute('data-fp') +
+                '&zoom=' + button.getAttribute('data-zoom') +
                 '&pg=' + button.getAttribute('data-pg');
 
 
             break;
 
         case "slideshow":      // SLIDESHOW activity type from Thomas
-                     window.location = 'looma-picture-player.php?id=' + button.getAttribute("data-mongoid");
+                     window.location = 'looma-slideshow.php?id=' + button.getAttribute("data-id");
             break;
 
+        case "html":
+            // show folder in iframe (use looma-web??)
+            break;
         case "epaath":
+        case "EP":
             /*var target = button.getAttribute('data-fp') +
                               button.getAttribute('data-fn') +
                               "/start.html";
@@ -599,7 +606,10 @@ LOOMA.makeTransparent = function() {
 
 /** Removes any popups on the page */
 LOOMA.closePopup = function() {
-    $('.popup').remove();
+        //$("#confirm-popup").off('click'); //not needed if we do remove() below
+        //$("#close-popup").off('click');
+        //$("#dismiss-popup").off('click');
+    $('.popup').fadeOut(1000).remove();
     var $container = $('body > div');
     $container.removeClass('all-transparent');
     $container.off('click');
@@ -618,15 +628,18 @@ LOOMA.alert = function(msg, time){
     LOOMA.makeTransparent();
     $(document.body).append("<div class= 'popup'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>"+ msg +
-        "<button id ='close-popup' class ='popup-button'>" + LOOMA.translatableSpans("OK", "ठिक छ") + "</button></div>");
+        "<button id ='close-popup' class ='popup-button'>" +
+        LOOMA.translatableSpans("OK", "ठिक छ") + "</button></div>").hide().fadeIn(1000);
 
-    $('#close-popup').click(function() {
+    $('#close-popup, #dismiss-popup').click(function() {
+       // $("#close-popup").off('click');
+        //$("#dismiss-popup").off('click');
         LOOMA.closePopup();
     });
-    $('#dismiss-popup').click(function() {
+ /*   $('#dismiss-popup').click(function() {
         LOOMA.closePopup();
     });
-
+*/
    if (time) {
         var timeLeft = time - 1;
         var popupButton = $('#close-popup');
@@ -657,17 +670,18 @@ LOOMA.confirm = function(msg, confirmed, canceled) {
     $(document.body).append("<div class='popup confirmation'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button> " + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
-        "<button id='confirm-popup' class='popup-button'>"+ LOOMA.translatableSpans("confirm", "निश्चय गर्नुहोस्") +"</button></div>");
+        "<button id='confirm-popup' class='popup-button'>"+
+        LOOMA.translatableSpans("confirm", "निश्चय गर्नुहोस्") +"</button></div>").hide().fadeIn(1000);
 
     $('#confirm-popup').click(function() {
-        $("#confirm-popup").off('click');
+        //$("#confirm-popup").off('click');
         LOOMA.closePopup();
         confirmed();
     });
 
     $('#dismiss-popup, #close-popup').click(function() {
-        $("#close-popup").off('click');
-        $("#dismiss-popup").off('click');
+        //$("#close-popup").off('click');
+        //$("#dismiss-popup").off('click');
         LOOMA.closePopup();
         canceled();
    });
@@ -686,17 +700,18 @@ LOOMA.prompt = function(msg, confirmed, canceled) {
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<textarea id='popup-textarea' autofocus></textarea>" +
-        "<button id='confirm-popup' class='popup-button'>"+ LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>");
+        "<button id='confirm-popup' class='popup-button'>"+
+        LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>").hide().fadeIn(1000) ;
 
     $('#confirm-popup').click(function() {
-       $("#confirm-popup").off('click');
+       //$("#confirm-popup").off('click');
        confirmed($('#popup-textarea').val());
        LOOMA.closePopup();
     });
 
     $('#dismiss-popup, #close-popup').click(function() {
-        $("#close-popup").off('click');
-        $("#dismiss-popup").off('click');
+        //$("#close-popup").off('click');
+        //$("#dismiss-popup").off('click');
         LOOMA.closePopup();
         canceled();
    });

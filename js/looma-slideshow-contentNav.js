@@ -4,7 +4,7 @@ Email: ian.costello@menloschool.org
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2016 6
 Revision: Looma 2.0.0
-File: looma-contentNav.js
+File: looma-slideshow-contentNav.js
 Description:  Javascript for looma-contentNav.php
 
 Edited by Thomas Woodside for use with Looma Picture Player.
@@ -49,7 +49,7 @@ function search(search, append, page) {
   if (!append) {
     page = 0;
   }
-  var toLoad = "looma-contentNav-results-picture-player-edited.php?q=" + search + "&page=" + page;
+  var toLoad = "looma-slideshow-contentNav-results.php?q=" + search + "&page=" + page;
 
   xmlhttp.open("GET", toLoad, true);
   xmlhttp.send();

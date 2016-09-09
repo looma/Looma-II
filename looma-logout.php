@@ -22,7 +22,7 @@ Comments:
 
 <body>
 	<div id="main-container-horizontal">
-<?php # Script 12.6 - logout.php
+<?php
  // This page lets the user logout.
 
 function redirect_user($page)
@@ -47,19 +47,26 @@ function redirect_user($page)
  // If no cookie is present, redirect the user:
      if (isset($_COOKIE['login']))
      {
-         // Delete the cookie:
-         // set with:             setcookie ('login', $_POST['id']);
+        // Delete the cookie. it was set with:
+        //setcookie ('login', $_POST['id']);
+          setcookie ("login", "", time()-3600); //deletes the cookie
 
-        setcookie ("login", "", time()-3600); //deletes the cookie
-     }
+          $name = $_COOKIE['login'];
+   } else $name = "";
 
      // Set the page title and include the HTML header:
      $page_title = 'Loggedout';
 
-     // Print a customized message:
-     echo "<br><br><br><h1>Logged Out</h1>
-     <p>You are now logged out, {$_COOKIE['login']}</p>";
+?>
+<?php  //include looma-utilities.js before calling LOOMA.alert() below
+     include ('includes/js-includes.php');
 
+    // Print a  message:
+     echo "<br><br><br><h1>Logged Out</h1>";
+     echo "<p>You are now logged out" . (($name)? ', ' . $name : '') . "</p>";
+     echo "<script>   var timeout = 8;
+        LOOMA.alert('You are now logged out', timeout, true);
+        setTimeout(function(){  window.location = window.history.back();}, 1000 * timeout);</script>";
 ?>
 	</div>
 
@@ -67,6 +74,6 @@ function redirect_user($page)
    		/*include either, but not both, of toolbar.php or toolbar-vertical.php*/
 	      include ('includes/toolbar.php');
    		/*include ('includes/toolbar-vertical.php'); */
-   		  include ('includes/js-includes.php');
     ?>
+
 </body>

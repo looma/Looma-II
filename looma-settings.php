@@ -84,7 +84,17 @@ Description:  for Looma 2
             <a href="looma-speech-test.php"> LINK TO:  Looma speech test page </a>
 
             <hr>
-            <button class="login" style="height:10%;width:20%;font-size:1em;">Login for Advanced Settings </button>
+            <p id="login-status"></p>
+            <div>
+                <button class="login"></button>
+
+                <a href="../Looma-lesson-planner/FrontEnd/index2.html">
+                    <button id="lesson-planner" class="settings-control">Looma Lesson Planner</button>
+                </a>
+                <a href="../auto-gen-dictionary/editor.html">
+                    <button id="dictionary-gen" class="settings-control">Looma Dictionary Generator</button>
+                </a>
+            </div>
 
 	</div>
 

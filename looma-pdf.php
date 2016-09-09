@@ -57,8 +57,6 @@ Usage: <button id="testpdf" data-fn="Math-2.pdf"
    	<?php include ('includes/js-includes.php'); ?>
 
     <script type="text/javascript" src="js/looma-pdf.js"></script>
-    <!--
-        <script type="text/javascript" src="js/looma-alerts.js"></script>
-    -->
+
 </body>
 

@@ -265,9 +265,10 @@ input[type=range]::-webkit-slider-thumb {
     border-radius: 25px;
 }
 
-#retract{
+/*#retract{
 transform: rotateY(180deg);
-}
+}*/
+
 #thumb-div::-webkit-scrollbar {
     display: none;
 }

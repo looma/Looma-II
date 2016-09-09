@@ -5,10 +5,10 @@ Date: July 2016
 Description: Creates a timeline with search and hover functions. Information accessed through database.
 -->
 
-    <?php $page_title = 'Looma - History Timeline';
+  <?php $page_title = 'Looma - History Timeline';
 	  include ("includes/header.php");
 	  include ("includes/mongo-connect.php");
-    ?>
+  ?>
     <link href='css/looma-history.css' rel='stylesheet' type='text/css'>
 
     <title>Looma History Timeline</title>

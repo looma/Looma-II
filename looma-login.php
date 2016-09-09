@@ -24,15 +24,8 @@ Comments:
 	<div id="main-container-horizontal">
 
 <?php
-    /*
-     * loggedIn() checks if cookie has been set using user id
-    */
-    function loggedIn()
-    {
-        error_log("logged in?");
-        return isset($_COOKIE['login']);
-    }// end logggedIn
 
+          include ('includes/js-includes.php');
 
     /*
      * check_login() checks login against database entries and returns either true indicating the
@@ -175,8 +168,11 @@ if(!loggedin())
 } //end if not login
 else {
 // Print a  message:
-     echo "<br><br><br><h1>Logged In</h1>
-     <p>You are now logged in as {$_COOKIE['login']}</p>";
+     echo "<br><br><br><h1>Logged In</h1>";
+     echo "<p>You are now logged in as {$_COOKIE['login']}</p>";
+     echo "<script>   var timeout = 8;
+        LOOMA.alert('You are now logged in', timeout, true);
+        setTimeout(function(){  window.location = window.history.go(-2);}, 1000 * timeout);</script>";
 }
 //Display the form:
 ?>
@@ -188,6 +184,5 @@ else {
    		/*include either, but not both, of toolbar.php or toolbar-vertical.php*/
 	      include ('includes/toolbar.php');
    		/*include ('includes/toolbar-vertical.php'); */
-   		  include ('includes/js-includes.php');
     ?>
 </body>

@@ -84,6 +84,6 @@
             <br>
 			<span id="datetime"></span>
 		</div>
-		<img id="padlock" src="images/padlock-closed.png" >
+		<img id="padlock" src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
 
 	</div>

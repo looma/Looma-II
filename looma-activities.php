@@ -31,7 +31,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
 		echo "<br>";
 
-		echo "<h2 class='title'>Activities for " . ucfirst($class) . " " . ucfirst($subject) . ": \"" . $ch_dn . "\"";
+		echo "<h2 class='title'>Activities for " . ucfirst($class) . " " . ucfirst($subject) . ": \"" . $ch_dn . "\"</h2>";
 
 ?>
 	<div>
@@ -54,6 +54,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 		$projection = array('_id' => 0,
 							'ft' => 1,
 							'fn' => 1,
+							'fp' => 1,
 							'dn' => 1,
 							'mongoID' => 1
 							);
@@ -69,13 +70,13 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
 			$ft = $activity['ft'];
 			$dn = $activity['dn'];
-            $fn = $activity['fn'];
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
+            $fn = (isset($activity['fn']) ? $activity['fn'] : "");
             //DEBUG print_r($activity);
 
             if ($ft == 'slideshow' || $ft == 'evi') $id = new MongoID($activity['mongoID']);
 
-			$thumb = thumbnail($ft);
+			$thumb = thumbnail($fn);
 
 			switch ($ft) {
 				case "video":
@@ -94,12 +95,12 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
                     //$mongoid  = $split[1];
                     //$fp = urlencode('../content/slideshows/');
                      // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
-                    makeActivityButton($ft, "", "", "", "", $ch_id, $id, "", "");
+                    makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $id, "", "");
                     break;
 
                 case "evi":      //edited videos
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
-                    echo "making button: " . $fn . ".";
+                    //echo "making button: " . $fn . ".";
                     makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $ch_id, $id, "", "");
                     break;
 
@@ -129,6 +130,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 					break;
 
 				case "EP":
+                case "epaath":
                     $thumb = $fn . "/thumbnail.jpg";
                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
                     makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, "", "", "");
@@ -136,6 +138,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
                 case "html":
                     // make a HTML button
+                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, "", "", "");
                     break;
 
 				default:

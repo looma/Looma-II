@@ -19,8 +19,8 @@ Description:  for Looma 2
 		<h2 class="title">Looma Info page</h2>
 
 	<h3>Looma 2</h3>
-	<h4>Release 2.2.3, July 2016</h4>
-	<h4>Contact: info at villagetechsolutions dot org</h4>
+	<h4>Release 2.3, August 2016</h4>
+	<h4>Contact: info AT villagetechsolutions DOT org</h4>
 	<h4> <span class='glyphicon glyphicon-copyright-mark'></span> VillageTech Solutions</h4>
 	<br>
 

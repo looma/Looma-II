@@ -41,16 +41,16 @@ if (isset($_GET["id"])) {
 
     <div class="row main-slideshow"> <!-- The image and next and previous controls -->
         <div class = "col-md-1" id="otherImageCol">
-            <button class="controls carrot small" id="extend" hidden>
-                <img src="images/carrot.png" alt="Carrot" class = "small noDrag">
+            <button class="controls carrot small" id="extend" style="display:none;">
+                <img src="images/carrot-fwd.png" alt="Carrot" class = "small noDrag">
+                <?php tooltip("Search Panel") ?>
             </button>
-            <button class="controls carrot small" id="retract" hidden>
-                <img src="images/carrot.png" alt="Uncarrot" class = "small noDrag">
+            <button class="controls carrot small" id="retract" style="display:none;">
+                <img src="images/carrot-back.png" alt="Uncarrot" class = "small noDrag">
+                <?php tooltip("Hide Panel") ?>
             </button>
             <?php include "looma-slideshow-other-images.php";?>
-                <button class="controls carrot small" id="retract">
-                    <img src="images/carrot.png" alt="Uncarrot" class = "small noDrag">
-                </button>
+
         </div>
         <button class="col-md-1 previous controls" id="previous"> <!--Previous Button-->
             <img src="images/next-arrow.png" alt="Back Arrow" class="noDrag">
@@ -61,7 +61,7 @@ if (isset($_GET["id"])) {
                  id = "main-img"
                  src="">
             <button  id="fullscreen-control"></button><br>
-            <div class="captions-div" id="caption-text" hidden>
+            <div class="captions-div" id="caption-text" style="display:none;">
                 <p id="caption"></p>
             </div>
         </div>
@@ -98,7 +98,15 @@ if (isset($_GET["id"])) {
                         $filename = $item->getFilename();
                         echoThumbnail($filename, "", $_GET["dir"]);
                     }
-                } //else empty, echoes no thumbnails.
+                }
+                else { //else no DIR provided, open in ../content/pictures
+                    $dir = new DirectoryIterator("../content/pictures"); // an iterator for every file in the given directory.
+                    // we plan to make the path to the directory a parameter to this file.
+                    foreach($dir as $item) {
+                        $filename = $item->getFilename();
+                        echoThumbnail($filename, "", "../content/pictures");
+                    }
+                }
 
                 function echoThumbnail($filename, $caption,  $dirname) {
                     if (!strpos($filename, '_thumb') and ($filename != 'images.txt')) //Non-thumbnails
@@ -158,16 +166,16 @@ if (isset($_GET["id"])) {
                     <img src="images/fast-rabbit.png" class="small noDrag">
                     <?php tooltip("Fast")?></button> </div>
         <div class="col-md-1 small">
-            <button id="save" hidden class="center-block controls small">
+            <button id="save" style="display:none;" class="center-block controls small">
                 <img src="images/save-icon.png" alt="save-icon" class = "small noDrag"><?php tooltip("Save")?>
             </button>
-            <button id="editor" class="center-block controls small">
+            <button id="editor" class="center-block controls small" style="display:none;">
                 <img src="images/edit-icon-below.png" alt="edit-icon" class = "small noDrag">
                 <?php tooltip("Edit")?>
             </button>
         </div>
         <div class="col-md-2 small">
-            <button id="delete" hidden class="center-block controls small nonExtendTrash">
+            <button id="delete" style="display:none;" class="center-block controls small nonExtendTrash">
                 <img src="images/delete-icon.png" alt="trash-icon" class = "small noDrag">
                 <?php tooltip("Delete")?>
             </button>
@@ -176,7 +184,7 @@ if (isset($_GET["id"])) {
 
     <div class="captions-div captions-div-start">
         <!-- Caption: <input type="text" name="Caption"> <input type="submit" value="Submit"> -->
-        <button id = "edit" hidden><img src="images/edit-icon.png" class="small noDrag"> <?php tooltip("Edit")?></button>
+        <button id = "edit" style="display:none;"><img src="images/edit-icon.png" class="small noDrag"> <?php tooltip("Edit")?></button>
         <textarea id = "caption-textarea" placeholder = "Enter a caption! एक क्याप्सन प्रविष्ट गर्नुहोस्!"></textarea>
         <button id = "submit" class = "small"><img src="images/save-icon.png" class="small noDrag"><?php tooltip("Save")?></button>
     </div>

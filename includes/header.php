@@ -38,6 +38,10 @@ File: header.php
 <?php  /*retrieve 'theme' cookie from $_COOKIE and use it to load the correct 'css/looma-theme-xxxxxx.css' stylesheet*/
 	if(isset($_COOKIE["theme"])) $theme = $_COOKIE["theme"]; else $theme = "looma";
     echo "<link rel='stylesheet' href='css/looma-theme-" . $theme . ".css' id='theme-stylesheet'>";
+
+    function loggedIn() {
+        return (isset($_COOKIE['login']));
+    };
 ?>
 
 

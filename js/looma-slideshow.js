@@ -487,7 +487,8 @@ function toggleEdit() {
         $("#edit").hide();
         $("#delete").hide();
         $("#save").hide();
-        $("#editor").show();
+        if (LOOMA.loggedIn())
+            $("#editor").show();  //only show EDIT button for LOGGED IN users
         $('#retract').hide();
         edit_mode = true;  //NOTE: this means we ARE NOT IN EDIT MODE!
     }

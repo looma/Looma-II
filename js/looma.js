@@ -41,6 +41,17 @@ $(document).ready (function() {
 
     //NOTE: might be better to change the CLASS of #padlock, and use #padlock.classname in CSS to change the image src
     if (LOOMA.loggedIn()) $('#padlock').attr('src','images/padlock-open.png');
+    else                  $('#padlock').attr('src','images/padlock-closed.png');
+
+    $('#padlock').click(function(){
+        if (!LOOMA.loggedIn())
+            {window.location = "looma-login.php";}
+        else
+            {LOOMA.confirm('are you sure you want to log out?',
+                    function(){window.location = "looma-logout.php";},
+                    function(){}, true);
+            }
+        });
 
 /*    $('.screensize').text('(Screen  ' + screen.width + ' x ' + screen.height + ')  ');
 */

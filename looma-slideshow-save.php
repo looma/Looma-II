@@ -44,7 +44,7 @@ if (isset($_POST["dn"]))
             "ch_id"   => "1EN01",
             "fn"      => $_POST["order"][0]["src"]);
 
-        $activities_collection->insert($toinsertToActivities);
+      //  $activities_collection->insert($toinsertToActivities);
     }
 
     echo $id;

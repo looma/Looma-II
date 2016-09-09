@@ -13,12 +13,15 @@ Revision: Looma 2.0.x
 Comments:
 -->
 
-<?php $page_title = 'Looma - put page title here';
+<?php $page_title = 'Looma - popup tester';
 	  include ('includes/header.php');
 	  /*OPTIONAL*/ include ('includes/mongo-connect.php');
 ?>
-    <link rel="stylesheet" href="css/looma-popup.css">             <!-- Looma CSS -->
-
+<style>
+    button {height:30vh;
+            width:30vh;
+            }
+</style>
 </head>
 
 <body>
@@ -26,9 +29,11 @@ Comments:
 
 		<img src="images/logos/LoomaLogoTransparent.png" class="looma-logo" width="75%"/>
 		<h1>This is looma-popup-test.php</h1>
-<button id="alert">alert</button>
-<button id="confirm">confirm</button>
-<button id="prompt">prompt</button>
+
+            <button id="alert" >  alert   </button>
+            <button id="confirm"> confirm </button>
+            <button id="prompt">  prompt  </button>
+
 	</div>
 
 <?php

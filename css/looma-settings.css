@@ -36,3 +36,16 @@ span#themes {font-size: 1.5em}
 input.theme, input.voice {
     vertical-align:middle;
 }
+
+.login {
+    height:10%;
+    width:20%;
+    font-size:1em;
+}
+
+.settings-control {
+    height:10%;
+    width:20%;
+    font-size:1em;
+    display:none;
+}

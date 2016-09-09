@@ -71,6 +71,10 @@
 				<?php tooltip('Back');?>
 			</button>
 
+        <!--  padlock is not formatted correctly for vertical toolbar
+            <img id="padlock" src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
+        -->
+
 			<!--<button  class="toolbar-button-vertical next-prev" onclick="parent.history.forward()">
 				<img src="images/forward-arrow.png" width = "60px" height = "70%" ></button> -->
 

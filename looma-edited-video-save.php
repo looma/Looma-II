@@ -68,7 +68,7 @@ else
         );
 
         //$result =
-        $activities_collection->insert($toinsertToActivities);
+     //   $activities_collection->insert($toinsertToActivities);
 
         //echo "activities insert result = " . $result;
 
@@ -83,7 +83,7 @@ catch(mongoCursorException $e) {echo "error inserting activity = " . $e->getMess
     //    $toSet = array(
     //      '$set' => array("fn"=>$vn)
     //      );
-    $activities_collection->update(array("dn" => $dn), $toSet);
+   // $activities_collection->update(array("dn" => $dn), $toSet);
 }
 
 ?>

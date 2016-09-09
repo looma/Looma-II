@@ -20,12 +20,23 @@ $(document).ready (function() {
     console.log('reading cookie: ' + LOOMA.readStore('voice', 'cookie'));
     console.log('setting CHECKED on: ', '.voice#' + LOOMA.readStore('voice', 'cookie'));
 
-    if (!LOOMA.loggedIn())
-    {
-        $('.login').click( function(){ window.location = "looma-login.php";});
+    if (!LOOMA.loggedIn())  //not logged in
+    {   $('#login-status').text('You are not logged in');
+        $('.login').text('Login for Advanced Settings').click( function(){ window.location = "looma-login.php";});
+
     }
-    else
-    {
-        $('.login').toggleClass('loggedIn').click( function(){ window.location = "looma-logout.php";}).text('Logout');
+    else //logged in
+    {   $('#login-status').text('You are logged in as ' + LOOMA.readStore('login', 'cookie'));
+        $('.settings-control').show();
+        $('.login').toggleClass('loggedIn').text('Logout').click
+            ( function()
+                {
+                LOOMA.confirm('are you sure you want to log out?',
+                    function(){window.location = "looma-logout.php";},
+                    function(){}, true);
+                }
+            );
+
     }
+
 }); //end of document.ready anonymous function

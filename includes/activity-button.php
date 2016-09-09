@@ -38,6 +38,7 @@
 	    //SLIDESHOW        $ft, $id (or $fp)       [$thumb?]
 	    //EDITED VIDEO     $ft, $fn, $fp, $dn, $id [$thumb?]
 	    //ePAATH           $ft, $fn, $fp, $dn
+	    //HTML
 	    //VOCAB
 	    //LESSON PLAN
 
@@ -63,7 +64,12 @@
 
             case "evi": $fp = '../content/videos/'; break;
 
-   		    case "EP": $fp = '../content/epaath/activities/'; break;
+            case "html": $fp = '../content/html/'; break;
+
+            case "hist": $fp = '../content/histories/'; break;
+
+   		    case "EP":
+            case "epaath": $fp = '../content/epaath/activities/'; break;
 
             case "VOC": break;  //vocabulary reviews
 

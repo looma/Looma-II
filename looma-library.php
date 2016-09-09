@@ -38,6 +38,9 @@ Description:  displays and navigates content folders for Looma 2
     }; //end function isEpaath
 
     function isHTML($fp) {
+
+        //echo "DEBUG: in isHTML - fp = " . $fp . " and fileexists = " . (file_exists($fp . "/index.html")?"true":"false"). "<br>";
+
         if (file_exists($fp . "/index.html"))
              return true;
         else return false;
@@ -49,27 +52,27 @@ Description:  displays and navigates content folders for Looma 2
         else return "";
     }; //end function thumbnail
 
-    $ep = false;  //set $ep to true for special case of EPaath
-
             // get filepath to use for start of DIR traversal
             //this will be  "../content/" for Looma 2 Library starting folder [to be outside of web-accessible folder structure]
-    $path = "../content/";
+
     if (isset($_GET['fp'])) $path = $_GET['fp'];
+    else $path = "../content/";
 
             //echo "<br>DEBUG: directory is:  " .  $path . "<br><br>";
 
     //in ..resources/epaath/ DIR skip to ..resources/epaath/Activities/
-    if (isEpaath($path)) {$path = $path . "activities/"; $ep = true;};
+    if (isEpaath($path)) {$path = $path . "activities/"; $ep = true;}
+    else   $ep = false;
 
     // check if this DIR contains HTML media
-    $html = isHTML($path);  //handle folders containing 'index.html' differently below
+    //$html = isHTML($path);  //handle folders containing 'index.html' differently below
                             //should also check for 'index.php' and others?
 
     // DEBUG echo "at path " . $path . "folderName is " . folderName($path);
     echo "<br><h3 class='title'>"; keyword('Looma Library'); echo ":  " . folderName($path) . "</h3>";
 
     //  first list directories in this directory
-    echo "<br><br><table id='dir-table'><tr>";
+    echo "<br><table id='dir-table'><tr>";
     $buttons = 1;
     $maxButtons = 3;
 
@@ -80,11 +83,15 @@ Description:  displays and navigates content folders for Looma 2
 
 /*************** iterate through the files in this DIR and make buttons for the DIRs ******************/
 /******************************************************************************************************/
+/********************************/
+/**********  DIRs  **************/
+/********************************/
+
         foreach (new DirectoryIterator($path) as $fileInfo) {
             $file =  $fileInfo->getFilename();
             //if ($file{0}  == ".") continue;  //skips ".", "..", and any ".filename" (more thorough than isDot() )
 
-            if (($fileInfo -> isDir()) && $file[0] !== "." && ( ! file_exists($path . $file . "/hidden.txt")))
+            if (($fileInfo -> isDir()) && !isHTML($path . $file) && $file[0] !== "." && ( ! file_exists($path . $file . "/hidden.txt")))
                 //skips ".", "..", and any ".filename" (more thorough that isDot() )
                 //skips any directory with a file named "hidden.txt"
 
@@ -128,12 +135,16 @@ Description:  displays and navigates content folders for Looma 2
     $maxButtons = 3;
     $specials = array("_", "-", ".", "/", "'");
 
+echo "<hr>";
     // iterate through the files in this DIR and make buttons for each included FILE
 
     //TODO: should gather all the filenames into an array and sort it, use (natcasesort() or multisort(), before making the buttons
 
 /*************** iterate through the files in this DIR and make buttons each of the FILES ******************/
 /******************************************************************************************************/
+/********************************/
+/**********  FILEs  *************/
+/********************************/
 
         //modifications for EDITED VIDEOS
         //make buttons for EDITED VIDEOS directory -- virtual folder, populated from edited_videos collection in mongoDB
@@ -252,6 +263,7 @@ Description:  displays and navigates content folders for Looma 2
                     case "mp3":
 
                     case "pdf":
+                    case "html":
 
                         // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
                         makeActivityButton ($ext, $path, $file, $dn, "", "", "", "", "");
@@ -280,9 +292,18 @@ Description:  displays and navigates content folders for Looma 2
                         $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
                     } //end if EP
-                    else if ($html) {
-                        //make a HTML button
-                    } // end if HTML
+               else if (isHTML($path . $file)) {
+                        // display an HTML play button
+                        echo "<td>";
+                        $thumb = $file . "/thumbnail.jpg";
+                        $dn = $file;
+                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                        makeActivityButton("html", $path, $file . "/index.html", $dn, $thumb, "", "", "", "");
+                        //makeButton($file, $path, 'epaath', $file, 'ePaath ' . $file, $path . $file . "/thumbnail.jpg");
+                        // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                        echo "</td>";
+                        $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+                   } // end if HTML
                 }
               } //end FOREACH file
             }

@@ -16,6 +16,7 @@ Description:
  * LOOMA.playMedia()
  * LOOMA.setStore()
  * LOOMA.readStore()
+ * LOOMA.loggedIn()
  * LOOMA.translate()
  * LOOMA.lookup()
  * LOOMA.wordlist()
@@ -104,18 +105,21 @@ playMedia : function(button) {
             break;
 
         case "html":
-            // show folder in iframe (use looma-web??)
+            var fp = encodeURIComponent(button.getAttribute('data-fp'));
+            var fn = encodeURIComponent(button.getAttribute('data-fn'));
+            window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
             break;
+
         case "epaath":
         case "EP":
             /*var target = button.getAttribute('data-fp') +
                               button.getAttribute('data-fn') +
                               "/start.html";
             */
-            var fp = encodeURIComponent(button.getAttribute('data-fp'));
-            var fn = encodeURIComponent(button.getAttribute('data-fn') +
+            fp = encodeURIComponent(button.getAttribute('data-fp'));
+            fn = encodeURIComponent(button.getAttribute('data-fn') +
                 '/start.html');
-            window.location = 'looma-epaath.php?fp=' + fp + '&fn=' + fn;
+            window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
 
             /*window.location = button.getAttribute('data-fp') +
                               button.getAttribute('data-fn') +
@@ -136,7 +140,6 @@ capitalize : function(string) {
 }, //end capitalize()
 
 
-//use LOOMA.setStore() and LOOMA.readStore()  to set/get LocalStore and Cookies,
 //use localStore, type='local' or type='session' instead of cookies when the data doesnt have to be sent to the server
 /*current COOKIES and webstorage used:
  * theme [cookie]
@@ -623,9 +626,9 @@ LOOMA.closePopup = function() {
  * @param time (optional)- a delay in seconds after which the popup is automatically closed
  * */
 //var popupInterval;
-LOOMA.alert = function(msg, time){
+LOOMA.alert = function(msg, time, notTransparent){
     LOOMA.closePopup();
-    LOOMA.makeTransparent();
+    if (!notTransparent) LOOMA.makeTransparent();
     $(document.body).append("<div class= 'popup'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>"+ msg +
         "<button id ='close-popup' class ='popup-button'>" +
@@ -664,9 +667,9 @@ LOOMA.alert = function(msg, time){
  * @param confirmed - A function to call if the user confirms
  * @param canceled - A function to call if the user cancels
  * */
-LOOMA.confirm = function(msg, confirmed, canceled) {
+LOOMA.confirm = function(msg, confirmed, canceled, notTransparent) {
     LOOMA.closePopup();
-    LOOMA.makeTransparent();
+    if (!notTransparent) LOOMA.makeTransparent();
     $(document.body).append("<div class='popup confirmation'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button> " + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
@@ -693,9 +696,9 @@ LOOMA.confirm = function(msg, confirmed, canceled) {
  * @param msg - The message the user is presented, prompting them to enter text.
  * @param callback - A function where the user's text response will be sent.
  * */
-LOOMA.prompt = function(msg, confirmed, canceled) {
+LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
     LOOMA.closePopup();
-    LOOMA.makeTransparent();
+    if (!notTransparent) LOOMA.makeTransparent();
     $(document.body).append("<div class='popup textEntry'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +

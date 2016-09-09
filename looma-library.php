@@ -41,7 +41,7 @@ Description:  displays and navigates content folders for Looma 2
 
         //echo "DEBUG: in isHTML - fp = " . $fp . " and fileexists = " . (file_exists($fp . "/index.html")?"true":"false"). "<br>";
 
-        if (file_exists($fp . "/index.html"))
+        if (file_exists($fp . "/index.html") && !isEpaath($fp))
              return true;
         else return false;
     };  //end function isHTML

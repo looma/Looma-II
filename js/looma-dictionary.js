@@ -81,9 +81,10 @@ function init() {
     elem.addEventListener('submit', Listener);
 
     // SPEAK button will say the word, unless text is selected, in which case, it will speak the selected text
-    $('button.speak').click(function(){
+    $('button.speak').off('click').click(function(){
         var selectedString = document.getSelection().toString();
-        var vocabWord = document.getElementById('theword').textContent.toString();
+        var vocabWord = document.getElementById('word').value;
+        if (!vocabWord) vocabWord = document.getElementById('theword').innerText;
         var toSpeak = (selectedString ? selectedString : vocabWord);
         console.log ('VOCAB: speaking ', toSpeak);
         LOOMA.speak(toSpeak);

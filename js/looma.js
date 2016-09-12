@@ -83,6 +83,7 @@ $(document).ready (function() {
 
     //attach LOOMA.speak() to the '.speak' button
     //NOTE: this code is overwritten in looma-pdf.js because looma-pdf.php displays the PDF in an <iframe> so the current selection in in the iframe
+    //NOTE: this code is also overwritten in looma-dictionary.js because looma-dictionary.js so that the entered word can be spoken w/o selecting
     $('button.speak').click(function(){
         var toString = window.getSelection().toString();
         console.log ('selected text to speak: ', toString);

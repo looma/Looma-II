@@ -412,7 +412,7 @@ LOOMA.speak = function(text, voice) {
 
     if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_slt'; //get the currently used voice, if any. default VOICE is "slt"
 
-    console.log('speaking using:  ' + voice);
+    console.log('speaking : ' + text + ' using voice:  ' + voice);
 
     var speechButton = document.getElementsByClassName("speak")[0];
 

@@ -91,8 +91,13 @@ Description:  for Looma 2
                 <a href="../Looma-lesson-planner/FrontEnd/index2.html">
                     <button id="lesson-planner" class="settings-control">Looma Lesson Planner</button>
                 </a>
+
                 <a href="../auto-gen-dictionary/editor.html">
                     <button id="dictionary-gen" class="settings-control">Looma Dictionary Generator</button>
+                </a>
+
+                <a href=#>
+                    <button id="content-nav" class="settings-control">Looma Content Navigator</button>
                 </a>
             </div>
 

@@ -214,7 +214,11 @@ echo "<hr>";
             //echo "DEBUG     found " . $file . "<br>";
 
             //skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
-            if (($file[0]  == ".") || strpos($file, "_thumb") || $file == "thumbnail.png") continue;
+            if (($file[0]  == ".")       ||
+                 strpos($file, "_thumb") ||
+                 $file == "thumbnail.png"||
+                 $file == "images.txt")
+            continue;
 
             if ($fileInfo -> isFile()) {
 

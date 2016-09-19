@@ -80,9 +80,6 @@ Description:  for Looma 2
                 <span class="voicespan"><input type="radio" name="voice" class="voice" id="mycroft_voice_4.0"  value="mycroft_voice_4.0">   English male (mycroft) </span>
             </div>
 
-          <hr>
-            <a href="looma-speech-test.php"> LINK TO:  Looma speech test page </a>
-
             <hr>
             <p id="login-status"></p>
             <div>
@@ -96,8 +93,25 @@ Description:  for Looma 2
                     <button id="dictionary-gen" class="settings-control">Looma Dictionary Generator</button>
                 </a>
 
-                <a href=#>
-                    <button id="content-nav" class="settings-control">Looma Content Navigator</button>
+                <a href="../Looma-contentNav/looma-contentNav.php">
+                    <button class="settings-control">Looma Content Navigator</button>
+                </a>
+
+                <br><br>
+
+                <a href="#>
+                    <button id="dummy-button"></button>
+                </a>
+
+                <a href="looma-slideshow.php">
+                    <button id="dictionary-gen" class="settings-control">Slideshow Editor</button>
+                </a>
+                <a href="looma-edited-video.php">
+                    <button id="dictionary-gen" class="settings-control">Video Editor</button>
+                </a>
+
+                <a href="looma-speech-test.php">
+                    <button id="speechtest" class="settings-control">Looma Speech Test</button>
                 </a>
             </div>
 

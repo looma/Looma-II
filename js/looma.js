@@ -53,8 +53,12 @@ $(document).ready (function() {
             }
         });
 
-/*    $('.screensize').text('(Screen  ' + screen.width + ' x ' + screen.height + ')  ');
-*/
+    /*    TODO: add code here to show login name on hover over padlock
+    $('#padlock').hover(function(){
+        if (LOOMA.loggedIn()) $(#padlock .span).html('logged in as' + LOOMA.readCookie('login'));
+        });
+    */
+
     $('.screensize').text('Window size = ' + window.outerWidth + ' x ' + window.outerHeight);
     $('.bodysize').text('HTML body size = ' + $('body').outerWidth() + ' x ' + $('body').outerHeight());
 

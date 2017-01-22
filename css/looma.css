@@ -606,7 +606,7 @@ button.lookup {
     z-index:9999;
 }
 
-.popup textarea { /*The textarea inside the popup*/
+.popup input { /*The input inside the popup*/
     color: black;
 }
 

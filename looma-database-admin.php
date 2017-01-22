@@ -24,10 +24,13 @@ include ('includes/mongo-connect.php');
 	echo "<h3>this program will index heavily used database fields for faster database performance</h3>";
 	echo "<h4>Note: if you have modified the Dictionary collection in the database, please also run looma-dictionary-admin.php</h4>";
 	echo "<h3>Indexing the database runs asynchromously - may not complete for a while after this page terminates</h3>";
-	$activities_collection->createIndex(array('ch_id' => 1));	
-	$activities_collection->createIndex(array('fn' => 1));	
+	$activities_collection->createIndex(array('ch_id' => 1));
+    $activities_collection->createIndex(array('fn' => 1));
+
+    $text_files_collection->createIndex(array('dn' => 1), array('unique' => True));
+
 	//$chapters_collection->createIndex(array('_id' => 1));	 //not necessary, primary key for CHAPTERS is _id in ch_id format
-	//$textbooks_collection->createIndex(array('' => 1)); //not necessary, TEXTBOOKS collection is too small to bother indexing		
+	//$textbooks_collection->createIndex(array('' => 1)); //not necessary, TEXTBOOKS collection is too small to bother indexing
 	?>
 </body>
 </html>

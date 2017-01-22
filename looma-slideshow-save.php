@@ -44,13 +44,19 @@ if (isset($_POST["dn"]))
             "ch_id"   => "1EN01",
             "fn"      => $_POST["order"][0]["src"]);
 
-      //  $activities_collection->insert($toinsertToActivities);
-    }
 
-    echo $id;
+        $options = array("upsert"=>True, "w" => 1);
+        $result = $activities_collection->insert($toinsertToActivities, $options);
+        echo json_encode($result);
+     }
+
+
+
+    echo "   ID is: " . $id;
 }
 else if (isset($_GET["dn"])) {
-    echo $slideshows_collection->findOne(array("dn" => $_GET["dn"]))["_id"];
+    $result = $slideshows_collection->findOne(array("dn" => $_GET["dn"]));
+    echo $result["_id"];
 }
 ?>
 

@@ -9,6 +9,7 @@
         TEXT = the (English) text to convert to audio
         VOICE = the voice to speak with - either "cmu_us_*" or "mycroft_voice_4.0"
  */
+
 $text = htmlentities($_REQUEST["text"]);
 $voice = $_REQUEST["voice"];
 
@@ -37,10 +38,20 @@ if (file_exists($outputFileName)) // IF we get conflicting filenames, generate a
         $outputFileName = "/tmp/website.looma.tts.mimic." . $date->getTimestamp() . "_" . mt_rand() . "_" . mt_rand() . ".wav";
     }
 
-$command = "mimic -t " . escapeshellarg($text) . " -voice " . escapeshellarg($voiceFile) . " -o " . $outputFileName;
+$command = "~/mimic/bin/mimic -t " .
+            escapeshellarg($text) .
+           " -voice " .
+            escapeshellarg($voiceFile) .
+           " -o " . $outputFileName;
+
+/*
+$sample = escapeshellarg("sample text to speak 3");
+$command = "mimic -t " . $sample . " -o /tmp/temp3";
+*/
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: audio/wav");
 exec($command);                     // generate the wave file
 readfile($outputFileName);          // play the wave file to the client side
-unlink($outputFileName);            // delete the wave file
+ //unlink($outputFileName);            // delete the wave file
 ?>

@@ -1,13 +1,12 @@
 /*
 LOOMA javascript file
-Filename: xxx.JS
-Description:
+Filename: looma-search.js
+Description: supports includes/looma-search.php
 
-Programmer name:
-Email:
+Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date:
-Revision: Looma 2.0.x
+Date: Nov 16
+Revision: Looma 2.4
 
 Comments:
  */
@@ -18,5 +17,5 @@ Comments:
 
 window.onload = function ()
     {
-        /*this function executes when the page is done loading*/
+       $('#search-button').click( function() {$('#search-panel').show()'};);
     };

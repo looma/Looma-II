@@ -1,11 +1,11 @@
-/*
+ /*
  * Name: Skip
 Email: skip@stritter.com
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 03
 Revision: Looma 2.0.0
 
-filename: xxxxx.js
+filename: looma-utilities.js
 Description:
  */
 
@@ -31,6 +31,7 @@ Description:
  * LOOMA.alert()
  * LOOMA.confirm()
  * LOOMA.prompt()
+ * LOOMA.makeTransparent()
  * LOOMA.translatableSpans()
  */
 
@@ -67,7 +68,7 @@ playMedia : function(button) {
             '&dn=' + button.getAttribute('data-dn');
             break;
 
-      case "image":
+        case "image":
         case "jpg":
         case "png":
         case "gif":
@@ -101,7 +102,12 @@ playMedia : function(button) {
             break;
 
         case "slideshow":      // SLIDESHOW activity type from Thomas
-                     window.location = 'looma-slideshow.php?id=' + button.getAttribute("data-id");
+            window.location = 'looma-slideshow.php?id=' + button.getAttribute("data-id");
+            break;
+
+        case "text":
+            var id = encodeURIComponent(button.getAttribute('data-id'));
+            window.location = 'looma-text.php?id=' + id;
             break;
 
         case "html":
@@ -110,12 +116,18 @@ playMedia : function(button) {
             window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
             break;
 
+        case "map":
+            var fn = encodeURIComponent(button.getAttribute('data-fn'));
+            window.location = 'looma-map-' + fn + '.php';
+            break;
+
+        case "looma":
+            var fp = encodeURIComponent(button.getAttribute('data-fp'));
+            window.location = fp;
+            break;
+
         case "epaath":
         case "EP":
-            /*var target = button.getAttribute('data-fp') +
-                              button.getAttribute('data-fn') +
-                              "/start.html";
-            */
             fp = encodeURIComponent(button.getAttribute('data-fp'));
             fn = encodeURIComponent(button.getAttribute('data-fn') +
                 '/start.html');
@@ -129,6 +141,9 @@ playMedia : function(button) {
                                '&fp=' + button.getAttribute('data-fp');
                                */
             break;
+        case "lesson":
+            break;
+
         default:
             console.log("ERROR: in LOOMA.playMedia(), unknown type: " +
                 button.getAttribute("data-ft"));
@@ -313,8 +328,9 @@ changeTheme : function(e) { //theme change button has been pressed
     LOOMA.setTheme(); //change currently used theme
 }, //end LOOMA.changeTheme()
 
-changeVoice : function(e) { //voice change button has been pressed
-    LOOMA.setStore('voice', encodeURIComponent(e.target.value), 'cookie');
+changeVoice : function(newvoice) { //voice change button has been pressed
+    LOOMA.setStore('voice', newvoice, 'cookie');
+    console.log('LOOMA.changeVoice() voice changed to ', newvoice);
 }, //end LOOMA.changeVoice()
 
 
@@ -389,7 +405,47 @@ lookupWord : function (text) {
                 "<span class='native-keyword'>" + native +
                 "<span class='xlat'>" + english + "</span>" +
                 "</span>";
-    } //end translatableSpan()
+    }, //end translatableSpan()
+
+
+    //utility functions to construct and de-construct CH_IDs
+
+    // format for CH_IDs is "1M01" or "9SS02.09", etc  one letter grade in {1..8}, one or two letter subject
+    // in {M, EN, S, NP, SS} optional two-digit unit number with ".", required two-digit chapter number
+    // regex: /^[1-8](M|N|S|SS|EN)([0-9][0-9]\.)?[0-9][0-9]$/g
+
+    ch_id   :  function (grade, subject, unit, chapter) {
+
+        //UNTESTED
+
+        var subjects = { 'math' : 'M',
+                         'science' : 'S',
+                         'english' : 'EN',
+                         'nepali'  : 'NP',
+                         'socialstudies' : 'SS' };
+
+        ch_id = '';
+        if (grade >= 1 && grade <= 8)         ch_id = grade
+        else return "";
+
+        if (subjects.indexOf (subject) >= 0 ) ch_id += subjects[subject]
+        else return "";
+
+        if (unit >= 1 && unit <= 9)           ch_id += '0' + unit + '.'
+        else if (unit <= 99)                  ch_id += unit + '.'
+        else return "";
+
+        if (chapter >= 1 && chapter <= 9)     ch_id += '0' + chapter
+        else if (chapter <= 99)               ch_id += chapter
+        else return "";
+
+        return ch_id;
+    },
+
+    grade   :  function (ch_id) {},
+    subject :  function (ch_id) {},
+    unit    :  function (ch_id) {},
+    chapter :  function (ch_id) {}
 
     };  //end RETURN public functions
 }()); //IIEF immediately instantianted function expression
@@ -408,11 +464,19 @@ lookupWord : function (text) {
  * Requirements for mimic: Mimic must be installed on the Looma or server that serves
  *   this JS file. The speech synthesis PHP file must be at "/Looma/looma-mimic.php".
  */
-LOOMA.speak = function(text, voice) {
+LOOMA.speak = function(text, engine, voice) //speak the TEXT,
+                                            //using [optional] ENGINE (in {'synthesis', 'mimic'})
+                                            //using [optional] VOICE
 
-    if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_slt'; //get the currently used voice, if any. default VOICE is "slt"
+    {
+        var playPromise;
 
-    console.log('speaking : ' + text + ' using voice:  ' + voice);
+        if ( !engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) engine = 'synthesis';
+        if ( !engine) engine = 'mimic';
+
+        if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_slt'; //get the currently used voice, if any. default VOICE is "slt"
+
+    console.log('speaking : ' + text + ' using engine: ' + engine + ' and voice: ' + voice);
 
     var speechButton = document.getElementsByClassName("speak")[0];
 
@@ -486,6 +550,8 @@ LOOMA.speak = function(text, voice) {
         }
     }; // end speak.cleanup
 
+//start of LOOMA.speak code:
+
     if (LOOMA.speak.speechQueue == null) {
         LOOMA.speak.speechQueue = [];
     }
@@ -494,14 +560,12 @@ LOOMA.speak = function(text, voice) {
         LOOMA.speak.cleanup();
     };
 
-    if (
-          /*comment out this "false" to use local JS speechSynthesis */
-          /*false && */
-          /*  end of comment around "false" */
-         speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1))
-        {
-        // use speechSynthesis if the user is running Safari or Chrome.
-        //Firefox doesn't have speechSynthesis, and Chromium's speechSynthesis is broken.
+//speech processing starts here
+
+    if ( engine == 'synthesis') {
+        // we use synthesis if the user is running Safari or Chrome.
+        // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
+        // Chromium's speechSynthesis seems to be broken. (re-check this)
         if (speechSynthesis.speaking) {
             if (speechSynthesis.paused)
                 speechSynthesis.resume();
@@ -511,13 +575,16 @@ LOOMA.speak = function(text, voice) {
             var speech = new SpeechSynthesisUtterance(text);
             speechSynthesis.speak(speech);
         }
-    } else {
+    }
+
+    else { // engine is NOT 'synthesis', therefore call server-side looma-speech.php which uses 'mimic'
         if (LOOMA.speak.playingAudio != null) {
             // Stop the currently playing speech.
             console.log("Stopping Audio");
             LOOMA.speak.playingAudio.pause();
             LOOMA.speak.cleanup();
         } else {
+// NOTE: ??????  should not be if/else - always want to play the new text [after cancelling any current speech] ???????
             // To reduce latency before speech starts, split the speech into sentences, and speak each separately.
             console.log("Playing Audio: " + text);
 
@@ -534,13 +601,11 @@ LOOMA.speak = function(text, voice) {
                 var audioSource;
                 if (voice) {
                     audioSource = '/Looma/looma-mimic.php?text=' +
-                        encodeURIComponent(
-                            currentText) +
+                        encodeURIComponent(currentText) +
                         '&voice=' + encodeURIComponent(voice);
                 } else {
                     audioSource = '/Looma/looma-mimic.php?text=' +
-                        encodeURIComponent(
-                            currentText);
+                        encodeURIComponent(currentText);
                 }
                 // This is like preloading images – all the requests to mimic will execute early, so there won't be lag between phrases.
                 var currentAudio = new Audio(audioSource);
@@ -552,7 +617,7 @@ LOOMA.speak = function(text, voice) {
                     if (nextAudio != null) {
                         LOOMA.speak.playingAudio = nextAudio;
                         console.log("Playing Next Phrase");
-                        nextAudio.play();
+                        //playPromise = nextAudio.play();
                     } else {
                         // There's nothing else to do, just remove the flag.
                         console.log("Done with all phrases.");
@@ -567,13 +632,26 @@ LOOMA.speak = function(text, voice) {
                 }
                 lastAudio = currentAudio;
             }
+
             LOOMA.speak.playingAudio = firstAudio;
             console.log("Playing Phrase");
-            firstAudio.play();
-            LOOMA.speak.activate();
-        }
+            playPromise = firstAudio.play();
 
-    }
+            console.log('promise is ', playPromise);
+
+                    // In browsers that don’t yet support this functionality,
+                    // playPromise won’t be defined.
+                    if (playPromise !== undefined) {
+                      playPromise.then(function() { console.log ('Play started');
+                      }).catch(function(error)    { console.log('Play promise error: ', error);
+                      });
+                    };
+
+            LOOMA.speak.activate();
+
+            }
+
+    }  //end of code that calls server-side MIMIC
 }; //end LOOMA.speak()
 
 /*
@@ -589,8 +667,8 @@ LOOMA.speak = function(text, voice) {
 
  * Makes the entire screen minus modal transparent and checks for clicks outside the modal
  */
-LOOMA.makeTransparent = function() {
-    var $container = $('body > div');
+LOOMA.makeTransparent = function($container) {
+    if (!$container) $container  = $('body > div');
     $container.addClass('all-transparent');
     //the following click code doesnt work
     //$container.click(function(e) { $container.click(); });
@@ -620,6 +698,10 @@ LOOMA.closePopup = function() {
     //$(document).off('click');  //stop listening for CLICK
 };  //end closePopup()
 
+
+/* NOTE on LOOMA popups: nested calls to popups dont work
+ *      fix this sometime?
+ */
 /**
  * This function creates a popup message box that can be dismissed by the user.
  * @param msg - The message the user is presented.
@@ -674,7 +756,7 @@ LOOMA.confirm = function(msg, confirmed, canceled, notTransparent) {
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button> " + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<button id='confirm-popup' class='popup-button'>"+
-        LOOMA.translatableSpans("confirm", "निश्चय गर्नुहोस्") +"</button></div>").hide().fadeIn(1000);
+        LOOMA.translatableSpans("confirm", "निश्चय गर्नुहोस्") +"</button></div>");
 
     $('#confirm-popup').click(function() {
         //$("#confirm-popup").off('click');
@@ -702,13 +784,24 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
     $(document.body).append("<div class='popup textEntry'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
-        "<textarea id='popup-textarea' autofocus></textarea>" +
+        "<input id='popup-input' autofocus></input>" +
         "<button id='confirm-popup' class='popup-button'>"+
         LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>").hide().fadeIn(1000) ;
 
+    $('#popup-input').focus();
+
+    $('#popup-input').on( 'keydown', function( e ) {
+                if ( e.keyCode === 13 ) {
+                    console.log('PROMPT returned ', $('#popup-input').val());
+                    confirmed($('#popup-input').val());
+                    LOOMA.closePopup();
+                 };
+              });
+
     $('#confirm-popup').click(function() {
        //$("#confirm-popup").off('click');
-       confirmed($('#popup-textarea').val());
+       console.log('PROMPT returned ', $('#popup-input').val());
+       confirmed($('#popup-input').val());
        LOOMA.closePopup();
     });
 
@@ -720,4 +813,22 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
    });
 };  //end prompt()
 
-
+// from www.creativejuiz.fr  this function mimics server-side(PHP) $_GET[],
+// giving client-side (JS) access to URL search parameters
+function $_GET(param) {
+    var vars = {};
+    //uses regex to take apart the ? portion of the current URL building an array "vars" of [key:value] pairs
+    //
+    // USAGE: if the URL is "looma.php?name=joe&school=menlo" then
+    //var name = $_GET('name');  //'joe'
+    //var school = $_GET('school');       //'menlo'
+    //
+    window.location.href.replace( location.hash, '' ).replace(
+        /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+        function( m, key, value ) { // callback
+            vars[key] = value !== undefined ? value : '';
+        }
+    );
+    if ( param ) { return vars[param] ? vars[param] : null; }
+    return vars;
+};

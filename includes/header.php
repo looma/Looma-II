@@ -33,7 +33,7 @@ File: header.php
 
     <link rel="stylesheet" href="css/bootstrap.min.css">     <!-- Bootstrap CSS still needed ?? [but dont neet the JS]-->
     <link rel="stylesheet" href="css/looma.css">             <!-- Looma CSS -->
-    <link rel="stylesheet" href="css/looma-keyboard.css">             <!-- Looma keyboard CSS -->
+    <link rel="stylesheet" href="css/looma-keyboard.css">    <!-- Looma keyboard CSS -->
 
 <?php  /*retrieve 'theme' cookie from $_COOKIE and use it to load the correct 'css/looma-theme-xxxxxx.css' stylesheet*/
 	if(isset($_COOKIE["theme"])) $theme = $_COOKIE["theme"]; else $theme = "looma";

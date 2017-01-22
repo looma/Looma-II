@@ -1,0 +1,25 @@
+#commands {
+    position: absolute;
+    right:5vw;
+    height: 6vh;
+}
+
+.dropdown-menu {
+    padding: 10px;
+    width: 100%;
+}
+
+.dropdown-item {
+    font-size: 1.2em;
+    margin-top: 2px;
+    width:100%;
+}
+
+#cmd-btn {
+    visibility: visible;
+    font-size: 1.25em;
+    background-color: #fff;
+    /*padding: 10px;*/
+    color: #000;
+    width: 100%;
+}

@@ -11,3 +11,10 @@ Revision: Looma 2.0.x
 
 Comments:
 */
+#container {
+    height:50vh;
+    width:50vw;
+    background-color: white;
+    margin:auto;
+    overflow:hidden;
+}

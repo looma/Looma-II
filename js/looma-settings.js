@@ -10,12 +10,52 @@ Description:
  */
 
 'use strict';
+
+function populateVoiceList() {
+  if(typeof speechSynthesis === 'undefined') {
+    return;
+  }
+
+  var voices = speechSynthesis.getVoices();
+
+  for(var  i = 0; i < voices.length ; i++) {
+    var option = document.createElement('span');
+
+    //   <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_axb"  value="cmu_us_axb">   Indian female (axb) </span><br>
+    option.innerHTML = voices[i].name + ' (' + voices[i].lang + ')';
+
+    if(voices[i].default) {
+      option.innerHTML += ' -- DEFAULT';
+    }
+
+    option.setAttribute('data-lang', voices[i].lang);
+    option.setAttribute('data-name', voices[i].name);
+    document.getElementById("synth-voices").appendChild(option);
+  }
+}
+
+
 $(document).ready (function() {
     $('.theme').change(LOOMA.changeTheme); // change theme when a theme button is clicked
     $('.theme#' + LOOMA.readStore('theme', 'cookie')).attr('checked', 'checked'); //add checkmark on current theme
 
-    $('.voice').change(LOOMA.changeVoice); // change voice when voice button is clicked
+//new code to display a list of speechSynthesis voices
+/*
+                if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                  speechSynthesis.onvoiceschanged = populateVoiceList;
+                };
+*/
+
+    $('.voice').change(function() {
+                        var newVoice = encodeURIComponent(this.value);
+                        var engine = this.getAttribute('data-engine');
+                        LOOMA.changeVoice(newVoice); // change voice when voice button is clicked
+                        LOOMA.speak('the voice has been changed', engine, newVoice);
+                    });
+
     $('.voice#' + LOOMA.readStore('voice', 'cookie')).attr('checked', 'checked'); //add checkmark on current voice
+
+
 
     console.log('reading cookie: ' + LOOMA.readStore('voice', 'cookie'));
     console.log('setting CHECKED on: ', '.voice#' + LOOMA.readStore('voice', 'cookie'));
@@ -26,7 +66,7 @@ $(document).ready (function() {
 
     }
     else //logged in
-    {   $('#login-status').text('You are logged in as ' + LOOMA.readStore('login', 'cookie'));
+    {   $('#login-status').text('You are logged in as "' + LOOMA.readStore('login', 'cookie') + '"');
         $('.settings-control').show();
         $('.login').toggleClass('loggedIn').text('Logout').click
             ( function()

@@ -1,10 +1,10 @@
 /* add-on CSS for looma-viewer.html PDf viewer
  * hides many buttons from default PDF viewer [these could be removed from the HTML file instead]
- * 
+ *
  * changes BUTTON ICONS to LOOMA icons
- * 
+ *
  * adds LOOMA styling for SCROLLBAR
- * 
+ *
  * Skip - 2016-03
  */
 
@@ -24,18 +24,18 @@ body {
 }
 
 #toolbarSidebar {
-  background-color: yellow; 
+  background-color: yellow;
   background-image: none;
 }
 
 #toolbarContainer, .findbar, .secondaryToolbar {
-  vertical-align: middle; 
-  background-color: yellow; 
+  vertical-align: middle;
+  background-color: yellow;
   background-image: none;
 }
 
 .sidebarOpen .splitToolbarButton {
-  visibility: visible; 
+  visibility: visible;
 }
 
 html[dir='ltr'] .splitToolbarButton > .toolbarButton {
@@ -49,7 +49,7 @@ html[dir='ltr'] .splitToolbarButton > .toolbarButton {
 .toolbarButton.textButton {
 /*  background-image: inherit;*/
   background-clip: border-box;
-  
+
   border: 2px solid white;
   border-color: transparent;
   box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
@@ -100,7 +100,7 @@ html[dir='rtl'] .toolbarButton#secondaryToolbarToggle::before {
   background: url(../images/looma-viewThumbnail.png);
 }
 
-html[dir="ltr"] #viewOutline.toolbarButton::before, 
+html[dir="ltr"] #viewOutline.toolbarButton::before,
 html[dir="rtl"] #viewOutline.toolbarButton::before {
   background: url(../images/looma-viewOutline.png);
 }
@@ -115,34 +115,34 @@ html[dir='rtl'] .toolbarButton.findNext::before {
   background: url(../images/looma-down-smaller.png);
 }
 
-html[dir='ltr'] .toolbarButton.pageUp::before, 
+html[dir='ltr'] .toolbarButton.pageUp::before,
 html[dir='rtl'] .toolbarButton.pageUp::before {
   background: url(../images/looma-up-smaller.png);
 }
 
-html[dir='ltr'] .toolbarButton.pageDown::before, 
+html[dir='ltr'] .toolbarButton.pageDown::before,
 html[dir='rtl'] .toolbarButton.pageDown::before {
   background: url(../images/looma-down-smaller.png);
 }
 
 .toolbarButton.zoomOut::before {
-  background: url(../images/looma-plus-smaller.png);
-}
-
-.toolbarButton.zoomIn::before {
   background: url(../images/looma-minus-smaller.png);
 }
 
-#viewThumbnail.toolbarButton::before, 
-html[dir="ltr"] #viewOutline.toolbarButton::before, 
-html[dir="rtl"] #viewOutline.toolbarButton::before, 
+.toolbarButton.zoomIn::before {
+  background: url(../images/looma-plus-smaller.png);
+}
+
+#viewThumbnail.toolbarButton::before,
+html[dir="ltr"] #viewOutline.toolbarButton::before,
+html[dir="rtl"] #viewOutline.toolbarButton::before,
 html[dir='ltr'] .toolbarButton.findPrevious::before,
 html[dir='rtl'] .toolbarButton.findPrevious::before,
 html[dir='ltr'] .toolbarButton.findNext::before,
 html[dir='rtl'] .toolbarButton.findNext::before,
-html[dir='ltr'] .toolbarButton.pageUp::before, 
+html[dir='ltr'] .toolbarButton.pageUp::before,
 html[dir='rtl'] .toolbarButton.pageUp::before,
-html[dir='ltr'] .toolbarButton.pageDown::before, 
+html[dir='ltr'] .toolbarButton.pageDown::before,
 html[dir='rtl'] .toolbarButton.pageDown::before,
 .toolbarButton.zoomOut::before,
 .toolbarButton.zoomIn::before
@@ -259,12 +259,12 @@ html[dir='ltr'] .findbar {
       #firstPage {
         display: none;
       }
-   
+
 #toolbarContainer, .findbar, .secondaryToolbar #toolbarViewer{
 	height: 64px;
 	background-color: yellow;
  }
- 
+
 .toolbarButton {
 	height:60px;
 	width: 60px;
@@ -274,7 +274,7 @@ html[dir='ltr'] .findbar {
 	border: 2px solid white;
 	border-radius: 3px;
 	font: bold 3em;
-	cursor: pointer;	
+	cursor: pointer;
 }
 
 
@@ -337,13 +337,13 @@ html[dir='ltr'] .findbar {
 
 /* CSS to make toolbar resizeable relative to window height*/
 
-#toolbarContainer, #toolbarViewer, 
+#toolbarContainer, #toolbarViewer,
 #toolbarviewerRight, #toolbarViewerLeft,
 #toolbarSidebar {
   height: 7vh;
 }
 
-.toolbarButton, .dropdownToolbarButton, .secondaryToolbarButton, .overlayButton, 
+.toolbarButton, .dropdownToolbarButton, .secondaryToolbarButton, .overlayButton,
 .toolbarField, .toolbarLabel,
 .dropdownToolbarButton > select {
   font-size: 3vh;
@@ -380,7 +380,7 @@ option[value="0.75"], option[value="1.25"], option[value="1.5"], option[value="3
     background: #aaaaff; /*light blue*/
 }
 ::-webkit-scrollbar-thumb {
-     -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.75); 
+     -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.75);
 
     -webkit-border-radius: 35px;
     /*border: 2px solid red;*/
@@ -389,7 +389,7 @@ option[value="0.75"], option[value="1.25"], option[value="1.5"], option[value="3
  /* background: -webkit-linear-gradient(left,rgba(255,255,255,0),rgba(206,206,206,1));*/ /*Safari 5.1-6*/
 
 background: -webkit-linear-gradient(left, #ffffff, #dfdfdf, #cecece);
-	
+
 	/*
 	background: -webkit-gradient(linear, left top, right top,
 		from(#fff)
@@ -400,8 +400,8 @@ background: -webkit-linear-gradient(left, #ffffff, #dfdfdf, #cecece);
 }
 ::-webkit-scrollbar { width:40px;}
 
- 
+
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     border-radius: 35px;
 }

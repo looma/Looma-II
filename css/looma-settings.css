@@ -43,6 +43,11 @@ input.theme, input.voice {
     font-size:1em;
 }
 
+#login-status {
+    font-style:bold;
+    color:red;
+}
+
 .settings-control {
     height:10%;
     width:20%;

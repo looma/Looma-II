@@ -73,7 +73,9 @@
 
             case "VOC": break;  //vocabulary reviews
 
-            case "LP";  break;  //lesson plan
+            case "lesson";  break;  //lesson plan
+
+           case "text";  break;  //lesson plan
 
 			default:
 			     echo "unknown filetype " . $ft;
@@ -91,7 +93,9 @@
         if ($ft == 'pdf') {echo "data-pg='" . $pg . "' ";     //maybe should set pg=1 if pg not specified??
                           echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
                           echo ">";
-                          echo "<img src='" . $fp . $thumb . "'>";
+                          echo "<img src='" .
+                              ($ft == "looma" ? "" : $fp) .
+                              $thumb . "'>";
                           echo $dn . "</button>";
 
 	}; //end makeActivityButton()

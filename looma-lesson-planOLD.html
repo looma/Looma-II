@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+	<head>
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/bootstrap-wysiwyg.css">
+		<link rel="stylesheet" type="text/css" href="css/looma-lesson-plan.css">
+	</head>
+
+	<body onload="loadPageElements()">
+		<div id = "bigcontainerdiv">
+			<div id="headerDiv">
+				<div id="navbar">
+					<img id="logo" src="images/LoomaLogo.png">
+					<div id="titleString">
+		<!-- 				Title:&nbsp;<input type="text" name="title" class="textBox" placeholder="e.g. Level 1 Math" id="titleInput">
+		 -->			</div>
+
+				</div>
+				<div id="querybar">
+					<form id="div_filter">
+					</form>
+				</div>
+			</div>
+			<div id="container">
+				<div id="titleDiv">
+				</div>
+				<div id="outerResultsDiv">
+					<div id="innerResultsMenu">
+					</div>
+					<div id="innerResultsDiv">
+					</div>
+				</div>
+
+				<div id= "displaybox" style="overflow-y:auto;">
+				</div>
+
+		   		<div id = "wrapper">
+		    		<div class="timelineEntire" id="timelineDisplay">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="commands">
+         <div class="btn-group">
+          <button type="button" id="cmd-btn" class="btn btn-info" data-toggle="dropdown" aria-expanded="false">
+            &nbsp;File Commands &nbsp;
+            <i class="fa fa-caret-down" aria-hidden="true"></i>
+          </button>
+          <div class="dropdown-menu">
+            <button class="dropdown-item file-cmd" id="new">New</button><br>
+            <button class="dropdown-item file-cmd" id="open">Open</button><br>
+            <button class="dropdown-item file-cmd" id="save">Save</button><br>
+            <button class="dropdown-item file-cmd" id="saveas">Save As</button><br>
+            <button class="dropdown-item file-cmd" id="rename">Rename</button><br>
+            <button class="dropdown-item file-cmd" id="delete">Delete</button><br>
+
+            <div class="dropdown-divider"></div><br>
+
+            <button class="dropdown-item file-cmd" id="opentemplate">Open Template</button><br>
+            <button class="dropdown-item file-cmd admin" id="savetemplate">Save Template</button><br>
+            <button class="dropdown-item file-cmd admin" id="deletetemplate">Delete Template</button><br>
+
+            <div class="dropdown-divider"></div><br>
+
+            <button class="dropdown-item file-cmd" id="quit">Quit</button>
+          </div>
+        </div>
+      </div>
+
+	</body>
+
+    <script src="../Looma/js/jquery.min.js"></script>
+    <script src="../Looma/js/jquery-ui.min.js"></script>
+
+	<script type="text/javascript" src="js/looma-lesson-load.js"></script>
+	<script type="text/javascript" src="js/looma-lesson-plan.js"></script>
+
+</html>
+
+

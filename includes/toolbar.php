@@ -67,7 +67,7 @@
 				<?php tooltip("Info") ?>
 			</button>
 
-			<button  class="toolbar-button" onclick="parent.history.back();">
+			<button  class="toolbar-button back-button" onclick="parent.history.back();">
 				<img src="images/back-arrow.png" height = "80%"  >
 				<?php tooltip("Back") ?>
 			</button>

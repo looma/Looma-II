@@ -45,56 +45,58 @@ Description:  for Looma 2
             <div id="voicelist">
                 <h4>Change voices with these buttons</h4><br>
 
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_bdl"  value="cmu_us_bdl">   US male (bdl) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_bdl"  value="cmu_us_bdl">   US male (bdl) </span>
                 <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_clb"  value="cmu_us_clb">   US female (clb) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_clb"  value="cmu_us_clb">   US female (clb) </span>
                  <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_aew"  value="cmu_us_aew">   US male (aew) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_aew"  value="cmu_us_aew">   US male (aew) </span>
                 <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_ahw"  value="cmu_us_ahw">   German male (ahw) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_ahw"  value="cmu_us_ahw">   German male (ahw) </span>
                 <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_aup"  value="cmu_us_aup">   Indian male (aup) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_aup"  value="cmu_us_aup">   Indian male (aup) </span>
                 <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_awb"  value="cmu_us_awb">   Scottish male (awb) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_awb"  value="cmu_us_awb">   Scottish male (awb) </span>
                 <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_axb"  value="cmu_us_axb">   Indian female (axb) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_axb"  value="cmu_us_axb">   Indian female (axb) </span>
                  <br>
-               <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_eey"  value="cmu_us_eey">   US female (eey) </span>
+               <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_eey"  value="cmu_us_eey">   US female (eey) </span>
                 <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_fem"  value="cmu_us_fem">   German male (fem) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_fem"  value="cmu_us_fem">   German male (fem) </span>
                  <br>
-               <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_gka"  value="cmu_us_gka">   Indian male (gka) </span>
+               <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_gka"  value="cmu_us_gka">   Indian male (gka) </span>
                 <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_jmk"  value="cmu_us_jmk">   US male (jmk) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_jmk"  value="cmu_us_jmk">   US male (jmk) </span>
                  <br>
-               <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_ksp"  value="cmu_us_ksp">   Indian male (ksp) </span>
+               <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_ksp"  value="cmu_us_ksp">   Indian male (ksp) </span>
                 <br
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_ljm"  value="cmu_us_ljm">   US female (ljm) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_ljm"  value="cmu_us_ljm">   US female (ljm) </span>
                  <br>
-               <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_rms"  value="cmu_us_rms">   US male (rms) </span>
+               <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_rms"  value="cmu_us_rms">   US male (rms) </span>
                 <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_rxr"  value="cmu_us_rxr">   US male (rxr) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_rxr"  value="cmu_us_rxr">   US male (rxr) </span>
                   <br>
-              <span class="voicespan"><input type="radio" name="voice" class="voice" id="cmu_us_slt"  value="cmu_us_slt">   US female (slt) </span>
+              <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_slt"  value="cmu_us_slt">   US female (slt) </span>
                 <br>
-                <span class="voicespan"><input type="radio" name="voice" class="voice" id="mycroft_voice_4.0"  value="mycroft_voice_4.0">   English male (mycroft) </span>
+                <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="mycroft_voice_4.0"  value="mycroft_voice_4.0">   English male (mycroft) </span>
             </div>
+
+            <div id="synth-voices"></div>
 
             <hr>
             <p id="login-status"></p>
             <div>
                 <button class="login"></button>
 
-                <a href="../Looma-lesson-planner/FrontEnd/index2.html">
-                    <button id="lesson-planner" class="settings-control">Looma Lesson Planner</button>
+                <a href="looma-lesson-plan.php">
+                    <button class="settings-control">Lesson Planner</button>
                 </a>
 
                 <a href="../auto-gen-dictionary/editor.html">
-                    <button id="dictionary-gen" class="settings-control">Looma Dictionary Generator</button>
+                    <button class="settings-control">Dictionary Generator</button>
                 </a>
 
                 <a href="../Looma-contentNav/looma-contentNav.php">
-                    <button class="settings-control">Looma Content Navigator</button>
+                    <button class="settings-control">Content Navigator</button>
                 </a>
 
                 <br><br>
@@ -104,14 +106,18 @@ Description:  for Looma 2
                 </a>
 
                 <a href="looma-slideshow.php">
-                    <button id="dictionary-gen" class="settings-control">Slideshow Editor</button>
+                    <button class="settings-control">Slideshow Editor</button>
                 </a>
                 <a href="looma-edited-video.php">
-                    <button id="dictionary-gen" class="settings-control">Video Editor</button>
+                    <button class="settings-control">Video Editor</button>
+                </a>
+
+                <a href="looma-text-editor.php">
+                    <button class="settings-control">Text Editor</button>
                 </a>
 
                 <a href="looma-speech-test.php">
-                    <button id="speechtest" class="settings-control">Looma Speech Test</button>
+                    <button id="speechtest" class="settings-control">Speech Test</button>
                 </a>
             </div>
 

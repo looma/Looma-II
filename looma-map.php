@@ -51,7 +51,7 @@ Description:
 		echo "</td><td>";
 				makeButton("looma-map-zoneMap.php",   "../content/maps/zoneMap_thumb.png", "Nepal Zones Map");
 		echo "</td><td>";
-					makeButton("looma-map-topoMap.php",   "../content/maps/topoMap_thumb.png", "Nepal Topography Map");
+				makeButton("looma-map-topoMap.php",   "../content/maps/topoMap_thumb.png", "Nepal Topography Map");
 		echo "</td></tr><tr><td>";
                 makeButton("looma-map-streetMap.php", "../content/maps/streetMap_thumb.png", "Kathmandu Street Map");
         echo "</td><td>";

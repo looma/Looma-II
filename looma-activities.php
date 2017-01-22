@@ -56,6 +56,8 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 							'fn' => 1,
 							'fp' => 1,
 							'dn' => 1,
+							'url' => 1,
+							'thumb' => 1,
 							'mongoID' => 1
 							);
 
@@ -72,11 +74,13 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 			$dn = $activity['dn'];
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
             $fn = (isset($activity['fn']) ? $activity['fn'] : "");
+            $url = (isset($activity['url']) ? $activity['url'] : "");
+            $thumb = (isset($activity['thumb']) ? $activity['thumb'] : thumbnail($fn));
             //DEBUG print_r($activity);
 
-            if ($ft == 'slideshow' || $ft == 'evi') $id = new MongoID($activity['mongoID']);
+            if ($ft == 'slideshow' || $ft == 'text' || $ft == 'evi') $id = new MongoID($activity['mongoID']);
 
-			$thumb = thumbnail($fn);
+			//if ($ft != 'looma') $thumb = thumbnail($fn);
 
 			switch ($ft) {
 				case "video":
@@ -127,9 +131,29 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 				case "pdf":
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
                     makeActivityButton($ft, "", $fn, $dn, "", $ch_id, "", "1", "auto");
-					break;
+                    break;
 
-				case "EP":
+                case "text":
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                    makeActivityButton($ft, "", $fn, $dn, "", $ch_id, $id, "", "");
+                    break;
+
+                case "map";
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                    makeActivityButton($ft, $fp, $fn, $dn, "/" . $fn . "_thumb.png", $ch_id, "", "", "");
+                   break;
+
+                 case "looma";  //open a Looma page (e.g. calculator or paint)
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                    makeActivityButton($ft, $url, "", $dn, $thumb, $ch_id, "", "", "");
+                   break;
+
+                 case "lesson";  //open a lesson in lesson player
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                    makeActivityButton($ft, $url, "", $dn, $thumb, $ch_id, "", "", "");
+                   break;
+
+                case "EP":
                 case "epaath":
                     $thumb = $fn . "/thumbnail.jpg";
                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
@@ -138,7 +162,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
                 case "html":
                     // make a HTML button
-                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, "", "", "");
+                    makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, "", "", "");
                     break;
 
 				default:

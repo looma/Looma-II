@@ -14,7 +14,7 @@ Description:
 $(document).ready (function() {
 
     //turn off any speech when user leaves the page
-    if (speechSynthesis) {$(window).unload(function(){speechSynthesis.cancel();});}
+    if (speechSynthesis) {$(window).on("unload", function(){speechSynthesis.cancel();});}
 
     // for translation: on every page load, check localStore['language'] for language to be used
     // if stored value doesnt exist, create a stored value with language='english'

@@ -1,0 +1,23 @@
+/*
+LOOMA css file
+Filename: looma-text.css
+Description:
+Associated code files:looma-text.php
+Programmer name:skip
+Email:
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date:Oct 16
+Revision: Looma 2.4
+
+Comments:
+*/
+#fullscreen {
+    height:75vh;
+    font-size:1.5em;
+    width:75vw;
+    background-color: white;
+    color:black;
+    padding: 5%;
+    margin:10vh auto;
+    overflow:hidden;
+}

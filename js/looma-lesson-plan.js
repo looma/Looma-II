@@ -395,7 +395,7 @@ var getFileType = function(ft) {
 }; // end getFileType()
 
 
-var getImgFilepath = function(item) {
+var getThumb = function(item) {
 
     //builds a filepath/filename for the thumbnail of this "item" based on type
     //SOME HARD-CODING HERE to be fixed
@@ -460,7 +460,7 @@ var getImgFilepath = function(item) {
 	// Note: We don't use thumbnails for dictionary.
 
 	return imgsrc;
-}; // end getImgFilepath()
+}; // end getThumb()
 
 //rewrite extractItemId() to use REGEX
 //  m=s.match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])(\.[0-9][0-9])?$/);
@@ -546,7 +546,7 @@ var createActivityDiv = function(item, previtem) {   //NOTE: previtem not used
 
                 $("<img/>", {
                     class : "resultsimg",
-                    src : getImgFilepath(item, collection)
+                    src : getThumb(item, collection)
                 }).appendTo(thumbnaildiv);
 
                 // Result Text
@@ -1168,7 +1168,7 @@ var fillInDOM = function() {
 
                 $("<img/>", {
                     class : "resultsimg",
-                    src : getImgFilepath(item, collection)
+                    src : getThumb(item, collection)
                 }).appendTo(thumbnaildiv);
 
 
@@ -1512,7 +1512,7 @@ var createChapterDiv = function(item, previtem) {
 
     $("<img/>", {
         class : "resultsimg",
-        src : getImgFilepath(item, collection)
+        src : getThumb(item, collection)
     }).appendTo(div);
 
     // Display name
@@ -1570,7 +1570,7 @@ var createTextbookDiv = function(item) {
 
     $("<img/>", {
         class : "resultsimg",
-        src : getImgFilepath(item, collection)
+        src : getThumb(item, collection)
     }).appendTo(thumbnaildiv);
 
     // Result Text
@@ -1831,7 +1831,7 @@ var createTimelineElement = function(item, collection, issection){
         thumbnail_prefix = thumbnail_prefix.substr(0, thumbnail_prefix.indexOf('.'));
         $("<img/>", {
             class : "timelineimg",
-            src : getImgFilepath(item, collection)
+            src : getThumb(item, collection)
         }).appendTo(textdiv);
         $("<p/>", { html : "<b>Textbook:</b>" }).appendTo(textdiv);
         $("<p/>", { html : "<b>" + item.dn + "</b>" }).appendTo(textdiv);
@@ -1844,7 +1844,7 @@ var createTimelineElement = function(item, collection, issection){
     if(collection == "chapters" || item.pn != null) {
         $("<img/>", {
             class : "timelineimg",
-            src : getImgFilepath(item, collection)
+            src : getThumb(item, collection)
         }).appendTo(textdiv);
 
         if (issection == 1) {
@@ -1872,7 +1872,7 @@ var createTimelineElement = function(item, collection, issection){
         // Thumbnail
         $("<img/>", {
             class : "timelineimg",
-            src : getImgFilepath(item, collection)
+            src : getThumb(item, collection)
         }).appendTo(textdiv);
 
         //$("<p/>", { html : "<b>" + getFileType(item.ft) + ":</b>" }).appendTo(textdiv);

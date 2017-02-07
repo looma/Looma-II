@@ -1,37 +1,127 @@
 /*
 LOOMA css file
 Filename: looma-lesson-present.css
-Description:
-Associated code files:
-Programmer name: SCU
+Programmer name: SCU [rev 1], Skip [rev 2]
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date:
-Revision: Looma 2.0.x
+Date: Rev 1 - Spring 2016, Rev 2 - 2017 01 29
+Revision: 2.0
 
 Comments:
-*/#displaybox {
-	width: 100%;
-	height: 500px;
-	background: white;
-	position: relative;
-	margin: 0 auto;
-/*	margin-top: 3%;
-*//*	border-radius:10px;
-*/	margin-bottom: 0px;
-	/*margin-top: 28px;
-	margin-right: 25px;*/
-	box-shadow: 0px 0px 25px #C4C4C4;
-	overflow-y:scroll;
+*/
+html {  box-sizing: border-box;
 }
 
-#presentwrapper {
-	  padding: 10px;
-	  width: 98%;
-	  margin: 0 auto;
-	  height:150px;
-	  overflow-x:auto;
-	  overflow-y:hidden;
-	  background: white;
-	  margin-top:10px;
-	  box-shadow: 0px 0px 25px #C4C4C4;
+#viewer {
+    position:relative;
+    /*top: 3vh;*/
+    height: 100%;
+    width:100%;
+    background-color: #eee;
+}
+
+#timeline {
+    /*display:none;*/
+    position:absolute;
+    display: inline-flex;
+    bottom:0;
+    left:0;
+    z-index:100;
+    min-height:12%;
+    max-height:10%;
+    width:5000px;
+    padding:2px;
+    background-color:#C4E9F5;
+    color:black;
+    vertical-align:center;
+}
+
+button.activity {display:none;}
+
+
+button.lesson-element {
+    position: relative;
+    margin:2px;
+    z-index:200;
+    max-height:80%;
+    float:left;
+}
+
+/*
+button.lesson-element:hover span{
+        display:inline;
+        font-size:0.5em;
+}
+*/
+
+button.lesson-element span {display:none;}
+
+button.lesson-element img {
+   height:6vh;
+   width:5vw;
+}
+
+#controlpanel {
+    //position: absolute;
+    z-index: 1000;
+    position : fixed;
+    /*transform: translate(-50%, -50%);*/
+    padding: 5px;
+    background-color: #a8a8a8;
+    height: 7vh;
+    width: 40vw;
+    top: 90vh;
+    left: 30vw;
+    /*background: rgba(256, 256, 256, 0.3)  white background with 30% opacity */
+    vertical-align:middle;
+    border-radius: 3px;
+}
+
+
+span .filename {
+    text-align:center;
+    float:none;
+}
+
+#button-box {
+    position;relative;
+    display: inline-flex;
+    float:right;
+    height: 90%;
+    width:50%;
+    vertical-align:middle;
+}
+
+.control-button {
+    position: relative;
+    background: white;
+    background-position: left top;
+    background-size: 100% 100%;
+    margin: 0 1vw 0 1vw;
+    width:100%;
+    height:100%;
+}
+
+.control-button img {
+    margin: 0;
+    padding: 0;
+    height: 70%;
+    width: 70%;
+    /*vertical-align:middle;*/
+}
+
+#dismiss {
+    color : white;
+    background-color: red;
+    border-color: red;
+    /*width: 3vw;*/
+}
+
+#back    { background-image: url("../images/carrot-back.png"); }
+#pause   { background-image: url("../images/pause-button.png"); }
+#forward { background-image: url("../images/carrot-fwd.png"); }
+#dismiss { background-image: url("../images/delete-icon.png"); }
+
+button#fullscreen-control {
+    bottom:15%;
+    right:5%;
 }

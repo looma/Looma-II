@@ -378,7 +378,7 @@ li:hover {
 
 /************* Preview module ***************/
 
-#displaybox {
+#previewpanel {
     overflow-y:hidden;
     overflow-x:hidden;
     width: 70vw;
@@ -397,16 +397,16 @@ li:hover {
     box-shadow: 0px 0px 25px #C4C4C4;
 }
 
-#displaybox video {
+#previewpanel video {
     max-height:55vh;
 }
 video::-webkit-media-controls {display: block !important;}
 
-#displaybox object {
+#previewpanel object {
     height:100%;
 }
 
-#displaybox p {
+#previewpanel p {
     margin-top:10px;
     margin-left:10px;
 }
@@ -417,7 +417,7 @@ video::-webkit-media-controls {display: block !important;}
 
 /************* Timeline module ***************/
 
-#wrapper {
+#timeline {
   /*min-height:50px; min-width:100px;
   display:inline-block;*/
   float: left;

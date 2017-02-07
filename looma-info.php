@@ -29,6 +29,8 @@ Description:  for Looma 2
 
 		<div><div id="credits-wrapper">
 		<!-- updated list from DS July '16-->
+
+		<!-- THIS LIST SHOULD BE IN A MONGO COLLECTION -->
                <p>Akshay Srivatsan</p>
                <p>Niko Bhatia</p>
                <p>Aaron Brown</p>
@@ -242,20 +244,27 @@ Description:  for Looma 2
 	<footer>
 		<br>
 		<div id="logos">
-			<a href="http://www.villagetechsolutions.org"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
-			<span><img src="images/logos/mongodb-logo.png" height="66px"></span>
-			<span><img src="images/logos/leaflet-logo.png" height="66px"></span>
-			<span><img src="images/logos/jquery-logo.png" height="66px"></span>
-			<span><img src="images/logos/css3-html5-logo.png" height="66px"></span>
-			<span><img src="images/logos/openstreetmap-logo.png" height="66px"></span>
-			<span><img src="images/logos/aptana-logo.png" height="66px"></span>
-			<span><img src="images/logos/khan.jpg" height="66px"></span>
+
+	<!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
+
+		    <span><img src="images/logos/khan.jpg" height="66px"></span>
 			<span><img src="images/logos/ole-nepal.jpg" height="66px"></span>
-			<span><img src="images/logos/wikipedia.jpg" height="66px"></span>
+            <span><img src="images/logos/wikipedia.jpg" height="66px"></span>
+            <span><img src="images/logos/PHET.png" height="44px"></span>
+
+			<span><img src="images/logos/leaflet-logo.png" height="66px"></span>
+			<span><img src="images/logos/openstreetmap-logo.png" height="66px"></span>
 			<span><img src="images/logos/google-translate.jpg" height="66px"></span>
             <span><img src="images/logos/tilemill.png" height="66px"></span>
             <span><img src="images/logos/mycroft.png" height="33px"></span>
+
+			<span><img src="images/logos/jquery-logo.png" height="66px"></span>
+			<span><img src="images/logos/css3-html5-logo.png" height="44px"></span>
+            <span><img src="images/logos/mongodb-logo.png" height="66px"></span>
+			<span><img src="images/logos/aptana-logo.png" height="44px"></span>
 			<span><img src="images/logos/stackoverflow.png" height="66px"></span>
+
+			<a href="http://www.villagetechsolutions.org"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
 		</div>
 		<br>
 

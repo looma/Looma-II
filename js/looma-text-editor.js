@@ -47,7 +47,7 @@ function textclear() {
        $editor.focus();
 };
 
-function textdisplay (data) {$editor.html(data);};
+function textdisplay (response) {$editor.html(response.data);};
 
 function textsave(name) {
     savefile(name, currentcollection, currentfiletype, $editor.html(), true);

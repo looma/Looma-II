@@ -14,25 +14,28 @@ Description:
 // utility JS functions used by many LOOMA pages
 /*defines:
  * LOOMA.playMedia()
+ * LOOMA.capitalize()
  * LOOMA.setStore()
  * LOOMA.readStore()
+ * LOOMA.readCookie()
  * LOOMA.loggedIn()
  * LOOMA.translate()
  * LOOMA.lookup()
+ * LOOMA.lookupWord()
  * LOOMA.wordlist()
+ * LOOMA.rtl()
  * LOOMA.setTheme()
  * LOOMA.changeTheme()
- * LOOMA.setText()
- * LOOMA.addEvent()
- * LOOMA.removeEvent()
- * LOOMA.addErrorMessage()
- * LOOMA.removeErrorMessage()
+ * LOOMA.changeVoice()
+ * LOOMA.translatableSpans()
+ * LOOMA.ch_id()
+ * LOOMA.parseCH_ID()
  * LOOMA.speak(text)
+ * LOOMA.makeTransparent()
+ * LOOMA.closePopup()
  * LOOMA.alert()
  * LOOMA.confirm()
  * LOOMA.prompt()
- * LOOMA.makeTransparent()
- * LOOMA.translatableSpans()
  */
 
 var LOOMA = (function() {
@@ -225,7 +228,7 @@ translate : function(language) {
 }, // end translate()
 
 //***********  USING THE LOOMA DICTIONARY ***************
-//***********  functions are LOOKUP and WORDLIST *****************
+//***********  functions are LOOKUP, LOOKUPWORD and WORDLIST *****************
 //
 //when you need a word looked up in the dictionary, call LOOMA.lookup() with these parameters:
 //            word: the word to look up
@@ -248,9 +251,9 @@ lookup : function(word, succeed, fail) {
 
     console.log('LOOMA.lookup: dictionary lookup - word is "' + word + '"');
 
+    //returns OBJECT result == {en:english, np:nepali, phon:phonetic, def:definition, img:picture, ch_id:chapter}
     $.ajax(
         "looma-dictionary-utilities.php", //Looma Odroid
-        //"http://192.168.1.135/Database Editor/looma-dictionary-utilities.php",  //justin's macbook
         {
             type: 'GET',
             cache: false,
@@ -263,6 +266,60 @@ lookup : function(word, succeed, fail) {
 
     return false;
 }, //end LOOKUP
+
+
+/* LOOMA.lookupWord()
+Programmer name: Matt Flower, Maxwell Patterson, Jai Mehra
+Email: matt.flower@menloschool.org , maxwell.patterson@menloschool.org , jai.mehra@menloschool.org
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: 7/7/2016
+ */
+
+    //Gets The JSON Object From dictionary collection in the Database by calling looma-dictionaryutilities.php
+    // displays a popup with the WORD, NP, DEF, etc
+    // NOTE:  this should be re-written to use LOOMA.lookup()
+
+lookupWord : function (text) {
+      var firstWord;
+
+      text = text.trim();
+      if (text.indexOf(' ') !== -1) firstWord = text.substr(0, text.indexOf(' '));
+      else firstWord = text;
+
+      $('#popup').remove();
+
+      var $popup =  $('<div id="popup"/>');
+      var $word =   $('<div id="word"/>');
+      var $nepali = $('<div id="nepali"/>');
+      var $def =    $('<div id="definition"/>');
+      var $pos =    $('<div id="partOfSpeech"/>');
+
+
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          //Parse JSON
+          var wordJSON = JSON.parse(xmlhttp.responseText);
+
+          //Get All Relevant Information and add it to the POPUP's HTML
+          $word.text(wordJSON.en);
+          $nepali.text(wordJSON.np);
+          if (wordJSON.def =='plural of') wordJSON.def = wordJSON.def + ' ' + wordJSON.rw;
+          $def.text(wordJSON.def);
+          $pos.html('<i>' + wordJSON.part + '</i>');
+
+          $popup.append($word, $nepali, $pos, $def);
+
+          $popup.appendTo('body').hide();
+
+          LOOMA.alert($popup.html(), 15);
+        }
+      };
+      xmlhttp.open("GET", "looma-dictionary-utilities.php?cmd=lookup&word=" + firstWord, true);
+      xmlhttp.send();
+    },   //end lookupWord()
+
+
 
 //when you need a list of words from the dictionary, call LOOMA.wordlist() with these parameters:
 //            class: the class level of the words [optional], should be in the format "class1", "class2", etc.
@@ -334,62 +391,13 @@ changeVoice : function(newvoice) { //voice change button has been pressed
 }, //end LOOMA.changeVoice()
 
 
-/* LOOMA.lookupWord()
-Programmer name: Matt Flower, Maxwell Patterson, Jai Mehra
-Email: matt.flower@menloschool.org , maxwell.patterson@menloschool.org , jai.mehra@menloschool.org
-Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 7/7/2016
- */
-
-    //Gets The JSON Object From dictionary collection in the Database by calling looma-dictionaryutilities.php
-lookupWord : function (text) {
-      var firstWord;
-
-      text = text.trim();
-      if (text.indexOf(' ') !== -1) firstWord = text.substr(0, text.indexOf(' '));
-      else firstWord = text;
-
-      $('#popup').remove();
-
-      var $popup =  $('<div id="popup"/>');
-      var $word =   $('<div id="word"/>');
-      var $nepali = $('<div id="nepali"/>');
-      var $def =    $('<div id="definition"/>');
-      var $pos =    $('<div id="partOfSpeech"/>');
-
-
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-          //Parse JSON
-          var wordJSON = JSON.parse(xmlhttp.responseText);
-
-          //Get All Relevant Information and add it to the POPUP's HTML
-          $word.text(wordJSON.en);
-          $nepali.text(wordJSON.np);
-          if (wordJSON.def =='plural of') wordJSON.def = wordJSON.def + ' ' + wordJSON.rw;
-          $def.text(wordJSON.def);
-          $pos.html('<i>' + wordJSON.part + '</i>');
-
-          $popup.append($word, $nepali, $pos, $def);
-
-          $popup.appendTo('body').hide();
-
-          LOOMA.alert($popup.html(), 15);
-        }
-      };
-      xmlhttp.open("GET", "looma-dictionary-utilities.php?cmd=lookup&word=" + firstWord, true);
-      xmlhttp.send();
-    },   //end lookupWord()
-
-
      /**
      * Generates translatable spans given english and native translations. You will need to know the native translation;
      * this program doesn't do any translation. For building translatable HTML on client side, e.g. from JS
      * @param english  - the english phrase
      * @param native   - the translation of the english phrase
      * */
-    translatableSpans : function(english, native){
+ translatableSpans : function(english, native){
         var language = LOOMA.readStore('language', 'local');
 
         // rewrite to generate the spanss once, then set hidden on the correct span
@@ -414,7 +422,7 @@ lookupWord : function (text) {
     // in {M, EN, S, NP, SS} optional two-digit unit number with ".", required two-digit chapter number
     // regex: /^[1-8](M|N|S|SS|EN)([0-9][0-9]\.)?[0-9][0-9]$/g
 
-    ch_id   :  function (grade, subject, unit, chapter) {
+ch_id   :  function (grade, subject, unit, chapter) {
 
         //UNTESTED
 
@@ -425,27 +433,72 @@ lookupWord : function (text) {
                          'socialstudies' : 'SS' };
 
         ch_id = '';
-        if (grade >= 1 && grade <= 8)         ch_id = grade
+        if (grade >= 1 && grade <= 8)         ch_id = grade;
         else return "";
 
-        if (subjects.indexOf (subject) >= 0 ) ch_id += subjects[subject]
+        if (subjects.indexOf (subject) >= 0 ) ch_id += subjects[subject];
         else return "";
 
-        if (unit >= 1 && unit <= 9)           ch_id += '0' + unit + '.'
-        else if (unit <= 99)                  ch_id += unit + '.'
-        else return "";
+        if (unit) {  //unit is optional
+            if (unit >= 1 && unit <= 9)       ch_id += '0' + unit + '.';
+            else if (unit <= 99)              ch_id += unit + '.';
+            else return "";
+        };
 
-        if (chapter >= 1 && chapter <= 9)     ch_id += '0' + chapter
-        else if (chapter <= 99)               ch_id += chapter
+        if (chapter >= 1 && chapter <= 9)     ch_id += '0' + chapter;
+        else if (chapter <= 99)               ch_id += chapter;
         else return "";
 
         return ch_id;
     },
 
+
+    //these functions not used. to implement them, call parseCH_ID()
     grade   :  function (ch_id) {},
     subject :  function (ch_id) {},
     unit    :  function (ch_id) {},
-    chapter :  function (ch_id) {}
+    chapter :  function (ch_id) {},
+
+
+    //LOOMA parseCH_ID(s)
+    //  m=s.match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])(\.[0-9][0-9])?$/);
+    //  then if m != null, m[0] is the ch_id,
+    //                     m[1] is the class digit,
+    //                     m[2] is the subj letter(s),
+    //                     m[3] is the chapter/unit, and m[4] is null or chapter#
+    //       e.g. "8N01.04".match(regex) is ["8N01.04", "8", "N", "01", ".04"]
+    /* */
+ parseCH_ID : function (ch_id) {
+        var elements = {
+            currentSection: null,
+            currentChapter: null,
+            currentSubject: null,
+            currentGradeNumber: null,
+            currentGradeFolder: null,
+            currentSubjectFull: null,
+            chprefix: null};
+        var names = {
+            EN: "English",
+            N:  "Nepali",
+            M:  "Math",
+            S:  "Science",
+            SS: "SocialStudies"};
+
+        if (ch_id) {
+            var pieces = ch_id.toString().match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])(\.[0-9][0-9])?$/);
+
+            if (pieces) {
+                elements['currentGradeNumber'] = pieces[1];
+                elements['currentSubject']     = pieces[2];
+                elements['currentSection']     = pieces[4] ? pieces[3] : null;
+                elements['currentChapter']     = pieces[4] ? pieces[4].substr(1) : pieces[3];
+                elements['currentGradeFolder'] = 'Class' + pieces[1];
+                elements['currentSubjectFull'] = names[pieces[2]];
+                elements['chprefix']           = pieces[1] + pieces[2];
+            };
+         };
+        return elements;
+    }    //end parseCH_ID
 
     };  //end RETURN public functions
 }()); //IIEF immediately instantianted function expression
@@ -464,108 +517,91 @@ lookupWord : function (text) {
  * Requirements for mimic: Mimic must be installed on the Looma or server that serves
  *   this JS file. The speech synthesis PHP file must be at "/Looma/looma-mimic.php".
  */
-LOOMA.speak = function(text, engine, voice) //speak the TEXT,
-                                            //using [optional] ENGINE (in {'synthesis', 'mimic'})
-                                            //using [optional] VOICE
+LOOMA.speak = function(text, engine, voice) {
+        //speak the TEXT,
+        //using [optional] ENGINE (in {'synthesis', 'mimic'})
+        //using [optional] VOICE
+     var playPromise;
 
-    {
-        var playPromise;
+    // use speechsynthesis if present
+    if ( !engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) engine = 'synthesis';
+    if ( !engine) engine = 'mimic';  //efault engine is mimic
+    if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_slt'; //get the currently used voice, if any. default VOICE is "slt"
 
-        if ( !engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) engine = 'synthesis';
-        if ( !engine) engine = 'mimic';
-
-        if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_slt'; //get the currently used voice, if any. default VOICE is "slt"
-
-    console.log('speaking : ' + text + ' using engine: ' + engine + ' and voice: ' + voice);
+    console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
 
     var speechButton = document.getElementsByClassName("speak")[0];
 
-    if (LOOMA.speak.animationsInProgress == null) {
-        LOOMA.speak.animationsInProgress = 0;
-    }
-    /*
-     * Makes the "Speak" button opqaue and four times as large, to give feedback to the user while the TTS request is waiting.
-     * Only runs when Mimic is used.
-     */
-    LOOMA.speak.activate = function() {
-        if (speechButton) {
-            LOOMA.speak.animationsInProgress += 1;
-            //console.log("Add Animation: " + LOOMA.speak.animationsInProgress);
-            // If an animation is in progress, leave the settings alone.
-            if (LOOMA.speak.animationsInProgress == 1) {
-                speechButton.oldOpacity = $(speechButton).css("opacity");
-                speechButton.oldWidth = $(speechButton).css("width");
-                speechButton.oldHeight = $(speechButton).css("height");
-                //console.log("UPDATE");
-            }
-            //console.log(speechButton.oldWidth);
-            $(speechButton).animate({
-                opacity: 1,
-                width: parseFloat(speechButton.oldWidth) * 2 +
-                    "px",
-                height: parseFloat(speechButton.oldHeight) * 2 +
-                    "px",
-            }, 500);
-        }
-    }; // end speak.activate()
+    if (LOOMA.speak.animationsInProgress == null) { LOOMA.speak.animationsInProgress = 0; };
 
-    /*
-     * Makes the "Speak" button translucent and regular sized, to show the user that the TTS is finished.
-     * Only runs when Mimic is used.
-     */
-   LOOMA.speak.disable = function() {
-        if (speechButton) {
-            // speechButton.style.opacity = "";
-            $(speechButton).animate({
-                opacity: speechButton.oldOpacity,
-                width: speechButton.oldWidth,
-                height: speechButton.oldHeight,
-            }, 500, undefined, function() {
-                speechButton.style.opacity = "";
-                speechButton.style.width = "";
-                speechButton.style.height = "";
+    if (LOOMA.speak.speechQueue == null) { LOOMA.speak.speechQueue = []; };
 
-                //console.log("Remove Animation: " + LOOMA.speak.animationsInProgress);
-                LOOMA.speak.animationsInProgress -= 1;
-                if (LOOMA.speak.animationsInProgress == 0) {
-                    speechButton.oldOpacity = null;
-                    speechButton.oldWidth = null;
-                    speechButton.oldHeight = null;
-                }
-            });
-        }
-    }; // end speak.disable()
-
-    /*
-     * Resets the TTS and button to their original states (only when Mimic is used).
-     */
-    LOOMA.speak.cleanup = function() {
-        if (speechSynthesis.speaking) speechSynthesis.pause()
-        else
-        {
-            LOOMA.speak.playingAudio.pause();
-            LOOMA.speak.playingAudio = null;
-            LOOMA.speak.speechQueue = [];
-            LOOMA.speak.disable();
-        }
-    }; // end speak.cleanup
-
-//start of LOOMA.speak code:
-
-    if (LOOMA.speak.speechQueue == null) {
-        LOOMA.speak.speechQueue = [];
-    }
     window.onbeforeunload = function() {
-        console.log("Stopping Audio");
+        console.log("Leaving this page. Stopping Audio");
         LOOMA.speak.cleanup();
     };
 
-//speech processing starts here
+         /*
+         * speak.activate() makes the "Speak" button opqaue and four times as large,
+         * to give feedback to the user while the TTS request is waiting.
+         * Only called when Mimic is used.
+         */
+        LOOMA.speak.activate = function() {
+            if (speechButton) {
+                LOOMA.speak.animationsInProgress += 1;
+                // If no animation is in progress, remember the button size
+                if (LOOMA.speak.animationsInProgress == 1) {
+                    speechButton.oldOpacity = $(speechButton).css("opacity");
+                    speechButton.oldWidth =   $(speechButton).css("width");
+                    speechButton.oldHeight =  $(speechButton).css("height");
+
+                    $(speechButton).animate({
+                        opacity: 1,
+                        width: parseFloat(speechButton.oldWidth) * 2 + "px",
+                        height: parseFloat(speechButton.oldHeight) * 2 + "px",
+                    }, 500);
+                }
+            }
+        }; // end speak.activate()
+
+        /*
+         * speak.disable() makes the "Speak" button translucent and regular sized,
+         * to show the user that the TTS is finished.
+         * Only called when Mimic is used.
+         */
+       LOOMA.speak.disable = function() {
+            if (speechButton) {
+               LOOMA.speak.animationsInProgress -= 1;
+               if (LOOMA.speak.animationsInProgress == 0) {
+                   $(speechButton).animate({
+                        opacity: speechButton.oldOpacity,
+                        width: speechButton.oldWidth,
+                        height: speechButton.oldHeight,
+                    }, 500);}
+            }
+        }; // end speak.disable()
+
+        /*
+         * Resets the TTS and button to their original states (only when Mimic is used).
+         */
+        LOOMA.speak.cleanup = function() {
+            if (speechSynthesis.speaking) speechSynthesis.pause();
+            else
+            {   LOOMA.speak.playingAudio.pause();
+                LOOMA.speak.playingAudio = null;
+                LOOMA.speak.speechQueue = [];
+                LOOMA.speak.disable();
+            }
+        }; // end speak.cleanup
+
+////////////////////////////////
+//start of LOOMA.speak code: ///
+////////////////////////////////
 
     if ( engine == 'synthesis') {
-        // we use synthesis if the user is running Safari or Chrome.
-        // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
-        // Chromium's speechSynthesis seems to be broken. (re-check this)
+            // we use synthesis if the user is running Safari or Chrome.
+            // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
+            // Chromium's speechSynthesis seems to be broken. (re-check this)
         if (speechSynthesis.speaking) {
             if (speechSynthesis.paused)
                 speechSynthesis.resume();
@@ -579,45 +615,47 @@ LOOMA.speak = function(text, engine, voice) //speak the TEXT,
 
     else { // engine is NOT 'synthesis', therefore call server-side looma-speech.php which uses 'mimic'
         if (LOOMA.speak.playingAudio != null) {
-            // Stop the currently playing speech.
+            // If speaking, stop the currently playing speech.
             console.log("Stopping Audio");
             LOOMA.speak.playingAudio.pause();
             LOOMA.speak.cleanup();
-        } else {
-// NOTE: ??????  should not be if/else - always want to play the new text [after cancelling any current speech] ???????
-            // To reduce latency before speech starts, split the speech into sentences, and speak each separately.
+        } else {  //else start the new speech
             console.log("Playing Audio: " + text);
 
-            // Splitting over these punctuation marks will usually work.
+           // To reduce latency before speech starts, split the speech into sentences, and speak each separately.
+           // Splitting over these punctuation marks will usually work.
             //There are a few cases where it will sound unusual ("Dr.", "Mr.", "Ms.", etc).
             //It may lag on unusually long sentences without punctuation.
             var splitSentences = text.split(/[.,?!;:]/);
+            console.log("Speaking " + splitSentences.length + " phrases.");
+
             var lastAudio = null;
             var firstAudio = null;
-            console.log("Speaking " + splitSentences.length + " phrases.");
 
             for (var i = 0; i < splitSentences.length; i++) {
                 var currentText = splitSentences[i];
                 var audioSource;
                 if (voice) {
-                    audioSource = '/Looma/looma-mimic.php?text=' +
+                    audioSource = 'looma-mimic.php?text=' +
                         encodeURIComponent(currentText) +
                         '&voice=' + encodeURIComponent(voice);
                 } else {
-                    audioSource = '/Looma/looma-mimic.php?text=' +
+                    audioSource = 'looma-mimic.php?text=' +
                         encodeURIComponent(currentText);
                 }
                 // This is like preloading images – all the requests to mimic will execute early, so there won't be lag between phrases.
                 var currentAudio = new Audio(audioSource);
 
+                //this 'onended' handler is attached to each phrase before it is entered into the queue
                 currentAudio.onended = function() {
-                    // When this phrase is over, start the next one.
+                    // When this phrase is over, start the next one, by popping it off the queue
                     console.log("End of Phrase");
                     var nextAudio = LOOMA.speak.speechQueue.pop(); // The equivalent of "dequeue". (Pulls from the end of the array.)
                     if (nextAudio != null) {
                         LOOMA.speak.playingAudio = nextAudio;
                         console.log("Playing Next Phrase");
-                        //playPromise = nextAudio.play();
+                        //play the next phrase
+                        playPromise = nextAudio.play();
                     } else {
                         // There's nothing else to do, just remove the flag.
                         console.log("Done with all phrases.");
@@ -625,16 +663,18 @@ LOOMA.speak = function(text, engine, voice) //speak the TEXT,
                     }
                 };
 
-                if (lastAudio == null) {
+                if (lastAudio == null) { //for the first phrase, dont put it on the queue, just play it
                     firstAudio = currentAudio;
                 } else {
+                    //push this phrase onto the queue
                     LOOMA.speak.speechQueue.unshift(currentAudio); // The equivalent of "enqueue". (Puts it at the beginning of the array.)
-                }
+                };
                 lastAudio = currentAudio;
-            }
+            }  // end FOR loop which builds the queue of audio phrases to play
 
             LOOMA.speak.playingAudio = firstAudio;
             console.log("Playing Phrase");
+            //play the first phrase
             playPromise = firstAudio.play();
 
             console.log('promise is ', playPromise);
@@ -648,9 +688,7 @@ LOOMA.speak = function(text, engine, voice) //speak the TEXT,
                     };
 
             LOOMA.speak.activate();
-
             }
-
     }  //end of code that calls server-side MIMIC
 }; //end LOOMA.speak()
 

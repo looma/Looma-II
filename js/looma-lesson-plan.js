@@ -7,69 +7,51 @@ Programmer name: SCU
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: version 1:spring 2016, version 2: Nov 16
 Revision: Looma 2.4
-
-Comments:
  */
 
 'use strict';
 
-/////////////////////////// INITIALIZING THINGS ///////////////////////////
+/////////////////////////// INITIALIZING  ///////////////////////////
 
-var timelineAssArray = new Object();
+//var timelineAssArray = new Object();
 
 var homedirectory = "../";
 
-/////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
-var makesortable = function() {
-    $("#timelineDisplay").sortable({
-        opacity: 0.7,   // makes dragged element transparent
-        revert: true,   //Animates the drop
-        axis:   "x",
-        scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
-        handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
-    }).disableSelection();
-};
-
-/////////////////////////// DROPPABLE UI ////////  requires jQuery UI  ///////////////////
-//set up Drag'n'Drop  - -  code borrowed from looma-slideshow.js [T. Woodside, summer 2016]
-function makedraggable() {
-     $($('.resultitem  .activityDiv')).draggable({
-        connectToSortable: "#timelineDisplay",
-        helper: "clone",
-        containment: "#timelineDisplay",
-        start: function(event, ui) {
-            //$(ui.helper).css("z-index", "10000").find("img").css("height", "15vh").css("width", "auto"); //Sometimes will display under buttons
-            $('#timelineDisplay').sortable("option", "scroll", false);
-        },
-        stop: function(event, ui) {
-            var newElem = $(ui.helper);
-            if ($('#timelineDisplay').has($(newElem)).length > 0) {
-                makesortable();
-                //$('#timelineDisplay').sortable("option", "scroll", true);
-                //$(newElem).removeAttr("style");
-                //$(newElem).find("img").removeAttr("style");
-
-                };
-            }
-        });
-}; //end makedraggable()
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
-// This loads all the preliminary elements in the page.
 window.onload = function () {
 
-    fillInDOM(); // fills in DOM elements - could be done in static HTML in the PHP file
+    initializeDOM(); // fills in DOM elements - could be done in static HTML in the PHP file
 
     $('#clear_button').click(clearFilter);
 
+
 ///////////////////////////////
-//FILE COMMANDS setup /////////
+// click handlers for '.add', '.preview' buttons
 ///////////////////////////////
+
+    //$(elementlist).on(event, selector, handler).
+    $('#innerResultsDiv'           ).on('click', '.add',        function() {
+            insertTimelineElement($(this).closest('.activityDiv'));return false;});
+    $('                  #timeline').on('click', '.remove',     function() {
+            removeTimelineElement(this);return false;});
+    $('#innerResultsDiv, #timeline').on('click', '.preview',    function() {
+            preview_result($(this).closest('.activityDiv'));return false;});
+    $('#innerResultsDiv, #timeline').on('click', '.resultsimg', function() {
+            preview_result($(this).closest('.activityDiv'));return false;});
+
+
+
+//////////////////////////////////////
+/////////FILE COMMANDS setup /////////
+//////////////////////////////////////
 
 var $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
-
 var savedTimeline;   //savedTimeline is checkpoint of timeline for checking for modification
-var loginname;
+
+var loginname = LOOMA.loggedIn();
+
+    //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
 
 /*  callback functions expected by looma-filecommands.js:  */
 callbacks ['clear'] = lessonclear;
@@ -83,9 +65,9 @@ callbacks ['checkpoint'] = lessoncheckpoint;
 callbacks ['undocheckpoint'] = lessonundocheckpoint;
 
 /*  variable assignments expected by looma-filecommands.js:  */
-currentname = "";
-currentcollection = 'lesson';
-currentfiletype = 'lesson';
+currentname = "";             //currentname       is defined in looma-filecommands.js and gets set and used there
+currentcollection = 'lesson'; //currentcollection is defined in looma-filecommands.js and is used there
+currentfiletype = 'lesson';   //currentfiletype   is defined in looma-filecommands.js and is used there
 
 $('#search-form  #collection').val('lesson');
 
@@ -106,53 +88,64 @@ function lessonmodified()   {
 function lessonclear() {
        setname("");
        currentid="";
-       $timeline.html("");
-       //savedTimeline = "";
+       $timeline.empty();
        lessoncheckpoint();
 };
 
 lessonclear();
 
 function lessonpack (html) { // pack the timeline into an array of collection/id pairs for storage
-    var packitem = {collection: '', id: ''};
+    var packitem;
     var packarray = [];
 
     $(html).each(function() {
+            packitem = {};  //make a new object, unlinking the references already pushed into packarray
             packitem.collection = $(this).data('collection');
             packitem.id         = $(this).data('id');
             packarray.push(packitem);
         });
 
     return packarray;
-};
+}; //end lessonpack()
 
-function lessonunpack (data) {  //unpack the array of collection/id pairs into html to display on the timeline
+function lessonunpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
+    var newDiv;
 
     //for each element in data, call createActivityDiv, and attach the resturn value to #timelinediv
     // also set filename, [and collection??]
 
-    $(data).each(function() {
-        $('#timelinediv').empty();
-       var newDiv = createActivityDiv(this, null);
-       insertTimelineElement(newDiv);
-    });
-    return data;
-};
+    //$('#timelineDisplay').empty();
+    lessonclear();
 
-function lessondisplay (data) {$timeline.html(lessonunpack(data));};
+    setname(response.dn);
+
+    // need to record ID of newly opened LP so that later SAVEs can overwrite it
+
+    $(response.data).each(function() {
+       // retrieve each timeline element from mongo and add it to the current timeline
+         newDiv = null;  //reset newDiv so previous references to it are broken
+         $.post("looma-database-utilities.php",
+            {cmd: "openByID", collection: this.collection, id: this.id},
+            function(result) {
+                newDiv = createActivityDiv(result);
+                insertTimelineElement(newDiv.firstChild);
+            },
+            'json'
+          );
+    });
+}; //end lessonunpack()
+
+function lessondisplay (response) {$timeline.html(lessonunpack(response));};
 
 function lessonsave(name) {
-    savefile(name, currentcollection, currentfiletype, lessonpack($timeline.html()), true);
-}; //end testsave()
+    savefile(name, 'lesson', 'lesson', lessonpack($timeline.html()), true);
+}; //end lessonsave()
 
 function lessontemplatesave(name) {
-    savefile(name, currentcollection, currentfiletype + '-template', lessonpack($timeline.html()), false);
-}; //end testsave()
+    savefile(name, 'lesson', 'lesson' + '-template', lessonpack($timeline.html()), false);
+}; //end lessontemplatesave()
 
 
-
-    var loginname = LOOMA.loggedIn();
-    //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
 
 // end FILE COMMANDS stuff
 
@@ -162,23 +155,30 @@ function lessontemplatesave(name) {
 
                   $("#innerResultsMenu").empty();
                   $("#innerResultsDiv" ).empty();
-                  $("#displaybox").empty();
-
-                  var loadingmessage = $("<p/>", {html : "Loading results..."}).appendTo("#innerResultsMenu");
+                  $("#previewpanel"    ).empty();
 
                   if (!isFilterSet()) {
                         $('#innerResultsDiv').html('Please select at least 1 filter option before searching.');
                   } else {
-                  $.post( "looma-database-utilities.php",
-                           $( "#search" ).serialize(),
-                           function (result) {
-                                loadingmessage.remove();
-                                displayResults(result);return;},
-                           'json');
-                  //this POST to looma-databas-search.php sends all the submit FORM elements
-                  // and returns an array of objects which are mongo documents that match the search criteria from the form
+
+                    var loadingmessage = $("<p/>", {html : "Loading results"}).appendTo("#innerResultsMenu");
+                    $('<span id="ellipsis1" class="ellipsis"></span>').appendTo(loadingmessage);
+
+                    var ellipsisTimer = setInterval(function () {
+                        $('#ellipsis1').text($('#ellipsis1').text().length < 10 ? $('#ellipsis1').text() + '.' : '');
+                        },100);
+
+                      //this POST to looma-databas-search.php serializes and sends all the submit FORM elements
+                      // and returns an array of objects which are mongo documents that match the search criteria from the form
+                      $.post( "looma-database-utilities.php",
+                             $( "#search" ).serialize(),
+                               function (result) {
+                                    loadingmessage.remove();
+                                    clearInterval(ellipsisTimer);
+                                    displayResults(result);return;},
+                               'json');
                   };
-            });
+           });
 
         makesortable();
 
@@ -204,7 +204,7 @@ var clearFilter = function() {
 
      $("#innerResultsMenu").empty();
      $("#innerResultsDiv").empty();
-     $("#displaybox").empty();
+     $("#previewpanel").empty();
 }; //end clearFilter()
 
 var isFilterSet = function() {
@@ -237,9 +237,9 @@ function displayResults(results) {
          else                               result_array['activities'].push(results[i]);
       };
 
-      printFilterData(result_array);
+      displaySearchResults(result_array);
 
-     //makedraggable();  //not working for now
+      makedraggable();  //not working for now
 
      }; //end displayresults()
 
@@ -248,7 +248,7 @@ function displayResults(results) {
 /////////////////  FILL IN SEARCH RESULTS PANE //////////////
 /////////////////////////////////////////////////////////////
 
-var printFilterData = function(filterdata_object) {
+var displaySearchResults = function(filterdata_object) {
 	var currentResultDiv = document.createElement("div");
 	currentResultDiv.id = "currentResultDiv";
 	// currentResultDiv.appendTo("#innerResultsDiv");
@@ -278,7 +278,7 @@ var printFilterData = function(filterdata_object) {
 	actResultDiv.appendChild(collectionTitle);
 
 	for(var i=0; i<filterdata_object.activities.length; i++) {
-		var rElement = createActivityDiv(filterdata_object.activities[i], null);  //BUG: array[i-1] not defined when i==0
+		var rElement = createActivityDiv(filterdata_object.activities[i]);  //BUG: array[i-1] not defined when i==0
 
             actResultDiv.appendChild(rElement);
 
@@ -304,7 +304,7 @@ var printFilterData = function(filterdata_object) {
             actResultDiv.appendChild(collectionTitle);
 
             for(i=0; i<filterdata_object.chapters.length; i++) {
-                rElement = createActivityDiv(filterdata_object.chapters[i], null);  //BUG: array[i-1] not defined when i==0
+                rElement = createActivityDiv(filterdata_object.chapters[i]);  //BUG: array[i-1] not defined when i==0
 
                 actResultDiv.appendChild(rElement);
             };
@@ -312,15 +312,6 @@ var printFilterData = function(filterdata_object) {
 
 // end Print Chapters Array
 
-
-///////////////////////////////
-// click handlers for '.add', '.preview' buttons
-///////////////////////////////
-
-    $('.add').click(function() {insertTimelineElement($(this).closest('.activityDiv'));});
-    $('.preview').click(function() {
-        preview_result($(this).closest('.activityDiv')[0]);});
-    $('.remove').click(function() {removeTimelineElement(this);});
 ///////////////////////////////
 // Create inner results menu
 //////////////////////////////
@@ -363,7 +354,7 @@ var printFilterData = function(filterdata_object) {
 
 
 
-}; //end printFilterData()
+}; //end displaySearchResults()
 
 /* //////////////////////TO-DO FOR RESULTS
 
@@ -381,7 +372,7 @@ THUMBNAILS
 //returns an english describing the file type, given a FT
 // could use a key:value array instead
 
-var getFileType = function(ft) {
+var filetype = function(ft) {
     //converts a file extension into
 	     if (ft == "gif" || ft == "jpg" || ft == "png") return "Image";
 	else if (ft == "mov" || ft == "mp4" || ft == "mp5") return "Video";
@@ -392,57 +383,81 @@ var getFileType = function(ft) {
 	else if (ft == "text")      return "Text File";
     else if (ft == "looma")     return "Looma Page";
     else if (ft == "chapter")   return "Chapter";
-}; // end getFileType()
+}; // end filetype()
 
-
-var getThumb = function(item) {
+            /*
+             //FOR reference: PHP version of thumbnail():
+                  function thumbnail ($fn) {  //NEW VERSION AUG '16
+                        //given a CONTENT filename, generate the corresponding THUMBNAIL filename
+                        //find the last '.' in the filename, strip off the extension, and append '_thumb.jpg'
+                        //returns "" if no '.' found
+                        //example: input 'aaa.bbb.mp4' returns 'aaa.bbb_thumb.jpg' - this is the looma standard for naming THUMBNAILS
+                        $dot = strrpos($fn, ".");  //strrpos finds the LAST occurance
+                        if ( $dot ) { return substr($fn, 0, $dot) . "_thumb.jpg";}
+                        else return "";
+                  } //end function THUMBNAIL
+             */
+var thumbnail = function(item) {
 
     //builds a filepath/filename for the thumbnail of this "item" based on type
     //SOME HARD-CODING HERE to be fixed
-    // need to store FP in Activities and use it here
+    var collection;
+    var filetype;
+    var filename;
+    var filepath;
+    var thumbnail_prefix;
+    var path;
+    var imgsrc;
+    var idExtractArray;
 
-    var collection = $(item).attr('collection');
-    var filetype = $(item).attr('type');
-    if ($(item).attr('fn')) var filename = $(item).attr('fn');
+    collection = $(item).attr('collection');
+    filetype = $(item).attr('ft');
+    if ($(item).attr('fn')) filename = $(item).attr('fn');
+    if ($(item).attr('fp')) filepath = $(item).attr('fp');
 
-	var idExtractArray = extractItemId(item);
+	idExtractArray = extractItemId(item);
 
-	var imgsrc = "";
+    imgsrc = "";
 
 	if (collection == "chapters" || item.pn != null) {
-
 	    //NOTE: in the next statement, sometimes get error "Uncaught TypeError: Cannot read property 'concat' of undefined"
-		var thumbnail_prefix = idExtractArray["currentSubjectFull"].concat("-", idExtractArray["currentGradeNumber"]);
-
+		thumbnail_prefix = idExtractArray["currentSubjectFull"].concat("-", idExtractArray["currentGradeNumber"]);
 		imgsrc = homedirectory + "content/textbooks/" + idExtractArray["currentGradeFolder"] + "/" + idExtractArray["currentSubjectFull"] + "/" + thumbnail_prefix + "_thumb.jpg";
-
 	}
 
+/*
 	else if (collection == "textbooks" || item.subject != null) {
-		var thumbnail_prefix = item.fn;
+		thumbnail_prefix = item.fn;
 		thumbnail_prefix = thumbnail_prefix.substr(0, thumbnail_prefix.indexOf('.'));
 		imgsrc = homedirectory + "content/" + item.fp + thumbnail_prefix + "_thumb.jpg";
 	}
-///////***** changed 'activity' to 'activities' ///////////////
+*/
+
 	else if (collection == "activities" || item.ft != null) {
-		var thumbnail_prefix = item.fn;
 		if (item.ft == "mp3") {	 //audio
-			imgsrc = homedirectory + "content/audio/thumbnail.png";
+            if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
+			imgsrc = path + "thumbnail.png";
 		}
 		else if (item.ft == "mp4" || item.ft == "mp5") { //video
-			thumbnail_prefix = thumbnail_prefix.substr(0, thumbnail_prefix.indexOf('.'));
-			imgsrc = homedirectory + "content/videos/" + thumbnail_prefix + "_thumb.jpg";
+			thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+            if (filepath) path = filepath; else path = homedirectory + 'content/videos/';
+			imgsrc = path + thumbnail_prefix + "_thumb.jpg";
 		}
 		else if (item.ft == "jpg"  || item.ft == "gif" || item.ft == "png" ) { //picture
-			var thumbnail_prefix = item.fn;
-			thumbnail_prefix = thumbnail_prefix.substr(0, thumbnail_prefix.indexOf('.'));
-			imgsrc = homedirectory + "content/pictures/" + thumbnail_prefix + "_thumb.jpg";
+			thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+            if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
+			imgsrc = path + thumbnail_prefix + "_thumb.jpg";
 		}
 		else if (item.ft == "pdf") { //pdf
-			var thumbnail_prefix = item.fn;
-			thumbnail_prefix = thumbnail_prefix.substr(0, thumbnail_prefix.indexOf('.'));
-			imgsrc = homedirectory + "content/pdfs/" + thumbnail_prefix + "_thumb.jpg";
-		}
+            thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+            if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
+            imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+        }
+        else if (item.ft == "html") { //html
+            thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+            if (filepath) path = filepath; else path = homedirectory + 'content/html/';
+            imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+        }
 		else if (item.ft == "EP") {
 			imgsrc = homedirectory + "content/epaath/activities/" + item.fn + "/thumbnail.jpg";
 		}
@@ -457,18 +472,17 @@ var getThumb = function(item) {
         }
 	}
 
-	// Note: We don't use thumbnails for dictionary.
-
 	return imgsrc;
-}; // end getThumb()
+}; // end thumbnail()
 
-//rewrite extractItemId() to use REGEX
-//  m=s.match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])(\.[0-9][0-9])?$/);
+
+//rewrote extractItemId() to use REGEX
+//  m=s.match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])\.([0-9][0-9])?$/);
 //  then if m != null, m[0] is the ch_id,
 //                     m[1] is the class digit,
 //                     m[2] is the subj letter(s),
 //                     m[3] is the chapter/unit, and m[4] is null or chapter#
-//       e.g. "8N01.04".match(regex) is ["8N01.04", "8", "N", "01", ".04"]
+//       e.g. "8N01.04".match(regex) is ["8N01.04", "8", "N", "01", "04"]
 /* */
     function extractItemId(item) {
         var ch_id = (item['ft'] == 'chapter')? item['_id'] : item['ch_id'];
@@ -482,7 +496,7 @@ var getThumb = function(item) {
             chprefix: null};
         var names = {
             EN: "English",
-            N:  "Nepal",
+            N:  "Nepali",
             M:  "Math",
             S:  "Science",
             SS: "SocialStudies"};
@@ -507,7 +521,7 @@ var getThumb = function(item) {
 
 
 
-var createActivityDiv = function(item, previtem) {   //NOTE: previtem not used
+var createActivityDiv = function(activity) {
 
 
     var innerActivityDiv = function(item) {
@@ -515,6 +529,7 @@ var createActivityDiv = function(item, previtem) {   //NOTE: previtem not used
             // activityDiv looks like this:
             //      <div class="activityDiv" data-collection=collection>
             //                               data-id=_id
+            //                               data-type = ft
             //                               jqueryData = {'mongo': wholeMONGOdocument }>
             //          <div class="thumbnaildiv"><img src=   ></div>
             //          <div class="textdiv">
@@ -546,7 +561,7 @@ var createActivityDiv = function(item, previtem) {   //NOTE: previtem not used
 
                 $("<img/>", {
                     class : "resultsimg",
-                    src : getThumb(item, collection)
+                    src : thumbnail(item, collection)
                 }).appendTo(thumbnaildiv);
 
                 // Result Text
@@ -565,7 +580,7 @@ var createActivityDiv = function(item, previtem) {   //NOTE: previtem not used
                 // File Type
                 $("<span/>", {
                     class : "result_ft",
-                    html : getFileType(item.ft) + "  "
+                    html : filetype(item.ft) + "  "
                 }).appendTo(textdiv);
 
                 // ID
@@ -602,7 +617,7 @@ var createActivityDiv = function(item, previtem) {   //NOTE: previtem not used
                buttondiv.appendChild(addButton);
 
                 // "Delete" button
-                var removeButton = $("<button/>", {class: "remove", html:"Delete"}); //.bind("click", removeTimelineElement);
+                var removeButton = $("<button/>", {class: "remove", html:"Delete"});
                 $(buttondiv).append(removeButton);
 
                 // "Preview" button
@@ -620,100 +635,16 @@ var createActivityDiv = function(item, previtem) {   //NOTE: previtem not used
             }; //end innerActivityDiv()
 
 
-
-
-    //var collection = "activities";
-    //var issection = 0;
-
-    var idExtractArray = extractItemId(item);
-   // if (previtem != null) {   var idExtractArray_prev = extractItemId(previtem, collection);}
+    var idExtractArray = extractItemId(activity);
 
     var div = document.createElement("div");
     div.className = "resultitem";
-    //$(div).attr("data-chprefix", idExtractArray["chprefix"]);
-    //$(div).attr("data-type", "section");
-    //$(div).attr("data-collection", collection);
 
-
-
-
-//NOTE [skip] big chunk of code removed that kept track of section number and chapter number
-//            and inserted correct labels. This code seems to depend on the activity items being displayed being
-//            returned in section/chapter order, but unless we do mondodb.sort() that is not a valid assumption
-/*
-	// If this item is the first item
-	if (previtem == null) {
-		// Create h3 Chapter element
-		//$("<h5/>", {
-			//html : "Chapter " + idExtractArray["currentChapter"]
-		//}).appendTo(div);
-
-		// If the item ID has a decimal
-		if (item.ch_id && item.ch_id.indexOf(".") >= 0) {
-			// Create a section div & append to main div
-			issection = 1;
-			var sectionDiv = innerActivityDiv(item);
-			$(sectionDiv).attr("data-type", "section").appendTo(div);
-		}
-		// Else if the item ID doesn't have a decimal
-		else {
-			// Create a chapter div & append to main div
-			var chapterDiv = innerActivityDiv(item);
-			$(chapterDiv).attr("data-type", "chapter").appendTo(div);
-		}
-	}
-	// If this item isn't the first item
-	else if (previtem != null) {
-		// If the item  ID has a decimal
-		if (
-
-		    item.ch_id &&
-
-		    item.ch_id.indexOf(".") >= 0) {
-			issection = 1;
-			// If the ID prefix matches the prefix of the last one
-			if (idExtractArray["chprefix"] == idExtractArray_prev["chprefix"]) {
-				//	Make a section div
-				var sectionDiv = innerActivityDiv(item);
-				$(sectionDiv).attr("data-type", "section").appendTo(div);
-			}
-			// Else if the ID prefix doesn't match the last one
-			else if (idExtractArray["chprefix"] != idExtractArray_prev["chprefix"]) {
-				// Create a new Chapter section
-
-			//	$("<h5/>", {
-				//	html : "Chapter " + idExtractArray["currentChapter"]
-			//	}).appendTo(div);
-
-				issection = 1;
-				var sectionDiv = innerActivityDiv(item);
-				$(sectionDiv).attr("data-type", "section").appendTo(div);
-			}
-		}
-		// Else if the item ID doesn't have a decimal
-		else {
-			// Create h3 Chapter element
-
-			//$("<h5/>", {
-				//html : "Chapter " + idExtractArray["currentChapter"]
-			//}).appendTo(div);
-
-			var chapterDiv = innerActivityDiv(item);
-			$(chapterDiv).attr("data-type", "chapter").appendTo(div);
-
-		}
-	}
-*/  //end of removed code
-
-// replacing above removed code with:
-    var newDiv = innerActivityDiv(item);
-    //$(chapterDiv).attr("data-type", "chapter").appendTo(div);
+    var newDiv = innerActivityDiv(activity);
     $(newDiv).appendTo(div);
-//
+
 	return div;
 };  // end createActivityDiv()
-
-
 
 
 
@@ -724,32 +655,32 @@ var createActivityDiv = function(item, previtem) {   //NOTE: previtem not used
 // When you click the preview button
 var preview_result = function(item) {
 
-	//$("<p/>", {html : "Loading preview..."}).appendTo("#displaybox");
-    $('#displaybox').empty().append($("<p/>", {html : "Loading preview..."}));
+    $('#previewpanel').empty().append($("<p/>", {html : "Loading preview..."}));
 
-    var collection = $(item).data('collection');
+    var collection = $(item).attr('data-collection');
     var filetype = $(item).data('type');
     var filename = $(item).data('mongo').fn;
 
-        console.log ("collection is " + collection + " filename is " + filename + " and filetype is " + filetype);
+        //console.log ("collection is " + collection + " filename is " + filename + " and filetype is " + filetype);
 
-	var idExtractArray = extractItemId(item);
+	var idExtractArray = extractItemId($(item).data('mongo'));
 
 	if (collection == "chapters") {
         var pagenum = $(item).data('mongo').pn;
 
-		document.querySelector("div#displaybox").innerHTML = '<embed src="' +
-		                        homedirectory + 'content/textbooks/' +
-		                        idExtractArray["currentGradeFolder"] + "/" +
-		                        idExtractArray["currentSubjectFull"] + "/" +
-		                        idExtractArray["currentSubjectFull"] + "-" +
-		                        idExtractArray["currentGradeNumber"] +
-		                        '.pdf#page=' + pagenum + '" width="100%" height="100%" type="application/pdf">';
+		document.querySelector("div#previewpanel").innerHTML = '<embed src="' +
+		                        //encodeURI(
+		                           homedirectory + 'content/textbooks/' +
+		                           idExtractArray["currentGradeFolder"] + '/' +
+		                           idExtractArray["currentSubjectFull"] + '/' +
+		                           idExtractArray["currentSubjectFull"] + '-' +
+		                           idExtractArray["currentGradeNumber"] +
+		                            '.pdf#page=' + pagenum + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"' + '>';
 	}
 
 /*
 	else if (collection == "textbooks") {
-		document.querySelector("div#displaybox").innerHTML = '<embed src="' +
+		document.querySelector("div#previewpanel").innerHTML = '<embed src="' +
 		                        homedirectory + 'content/' + item.fp + filename +
 		                        '" width="100%" height="100%" type="application/pdf">';
 	}
@@ -758,43 +689,67 @@ var preview_result = function(item) {
 	else if (collection == "activities") {
 
 		if(filetype == "mp4" || filetype == "mov" || filetype == "mp5") {
-			document.querySelector("#displaybox").innerHTML = '<video controls> <source src="' + homedirectory +
+			document.querySelector("#previewpanel").innerHTML = '<video controls> <source src="' + homedirectory +
 			         'content/videos/' + filename + '" type="video/mp4"> </video>';
 			// var newParagraph = document.createElement("p");
 			// newParagraph.innerText = "media type: video";
 			// document.querySelector("div#timelineBox").appendChild(newParagraph);
 		}
+		else if (filetype=="pdf") {
+			document.querySelector("div#previewpanel").innerHTML =
+			     '<iframe src="' + homedirectory + 'content/pdfs/' + filename + '"' +
+			     ' style="height:60vh;width:60vw;" type="application/pdf">';
+		}
 		else if(filetype=="mp3") {
-		document.querySelector("div#displaybox").innerHTML = '<audio controls> <source src="' +
+		document.querySelector("div#previewpanel").innerHTML = '<br><br><br><audio controls> <source src="' +
 		                      homedirectory + 'content/audio/' +
 		                      filename + '" type="audio/mpeg"></audio>';
 		}
 		// Pictures
 		else if(filetype=="jpg" || filetype=="gif" || filetype=="png") {
-			document.querySelector("div#displaybox").innerHTML = '<img src="' +
+			document.querySelector("div#previewpanel").innerHTML = '<img src="' +
 			                     homedirectory + 'content/pictures/' +
 			                     filename + '"id="displayImage">';
 		}
-		else if (filetype=="EP" || filetype == "html") {
-		document.querySelector("div#displaybox").innerHTML =
+        else if (filetype == "html") {
+        document.querySelector("div#previewpanel").innerHTML =
+          '<object type="text/html" data="' + $(item).data('mongo').fp +
+            filename  + '" style="height:60vh;width:60vw;"> </object>';
+        }
+        else if (filetype=="EP") {
+		document.querySelector("div#previewpanel").innerHTML =
 		  '<object type="text/html" data="' + homedirectory + 'content/epaath/activities/' +
 		    filename  + '/index.html" style="height:60vh;width:60vw;"> </object>';
 		}
-		else if (filetype=="pdf") {
-			document.querySelector("div#displaybox").innerHTML =
-			     '<embed src="' + homedirectory + 'content/pdfs/' + filename + '"' +
-			     ' style="height:60vh;width:60vw;" type="application/pdf">';
-		}
 		else if (filetype=="looma")
-            document.querySelector("div#displaybox").innerHTML = '<img src="images/looma-screenshots/' +
+            document.querySelector("div#previewpanel").innerHTML = '<img src="images/looma-screenshots/' +
             $(item).data('mongo').dn + '.png" id="displayImage">';
 
-        else if (filetype=="slideshow")
-            document.querySelector("div#displaybox").innerHTML = "Preview will show here";
+        else if (filetype=="slideshow") {
+            //use the mongoID of the slideshow to query text_files collection and retrieve the first image for this slideshow
 
+             $.post("looma-database-utilities.php",
+                {cmd: "openByID", collection: "slideshow", id: $(item).data('mongo').mongoID.$id},
+                function(result) {
+                    //document.querySelector("div#previewpanel").innerHTML = result.data;
+
+                    document.querySelector("div#previewpanel").innerHTML = '<img src="' +
+                                 result.fp +
+                                 result.fn + '"id="displayImage">';
+                },
+                'json'
+              );
+        }
 		else if (filetype=="text") {
-		    //use the _id to query text_files collection and retrieve HTML for this text file
-            document.querySelector("div#displaybox").innerHTML = "Preview will show here";
+		    //use the mongoID of the textfile to query text_files collection and retrieve HTML for this text file
+
+	         $.post("looma-database-utilities.php",
+                {cmd: "openByID", collection: "text", id: $(item).data('mongo').mongoID.$id},
+                function(result) {
+                    document.querySelector("div#previewpanel").innerHTML = result.data;
+                },
+                'json'
+              );
         }
 	}
 
@@ -802,15 +757,18 @@ var preview_result = function(item) {
 	else if (collection == "dictionary") {
 		$("<p/>", {
 			html : item.def
-		}).appendTo("#displaybox");
-		// document.querySelector("div#displaybox").innerHTML = item.def;
+		}).appendTo("#previewpanel");
+		// document.querySelector("div#previewpanel").innerHTML = item.def;
 	}
 	*/
 };  // end preview_result()
 
 
 function insertTimelineElement(source) {
-        var dest = $(source).clone(true).appendTo("#timelineDisplay");  //the 'true' option sets the the clone to copy 'deepWithDataAndEvents'
+        var $dest = $(source).clone(true).appendTo("#timelineDisplay");  //the 'true' option sets the the clone to copy 'deepWithDataAndEvents'
+
+        // scroll the timeline so that the new element is in the middle - animated to slow scrolling
+        $('#timeline').animate( { scrollLeft: $dest.outerWidth(true) * ( $dest.index() - 3 ) }, 1000);
 
         makesortable();  //TIMELINE elements can be drag'n'dropped
 
@@ -821,153 +779,55 @@ var removeTimelineElement = function(elem) {
   //var outerDiv = this.parentNode.parentNode;
   //outerDiv.remove();    // "Remove" button is within 3 divs
 
-  elem.closest('.activityDiv').remove();
+        $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 3 ) }, 1000);
+        $(elem).closest('.activityDiv').remove();
 
 };
 
 
-/////////////////////////// SAVE ///////////////////////////
+/////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
+var makesortable = function() {
+    $("#timelineDisplay").sortable({
+        opacity: 0.7,   // makes dragged element transparent
+        revert: true,   //Animates the drop
+        axis:   "x",
+        scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
+        handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
+    }).disableSelection();
+};
 
-/*
-var save = function(){
-    console.log("saving...");
-    var itemIds = [];
-    var titleInput = document.getElementById("titleInput").value;
-    console.log("title:" + titleInput);
+/////////////////////////// DROPPABLE UI ////////  requires jQuery UI  ///////////////////
+//set up Drag'n'Drop  - -  code borrowed from looma-slideshow.js [T. Woodside, summer 2016]
+function makedraggable() {
+     var $clone;
+     $('.resultitem  .activityDiv').draggable({
+        connectToSortable: "#timelineDisplay",
+        //opacity: 0.7,
+        addClasses: false,
+        helper: "clone",
+        //containment: "#timelineDisplay",
+        start: function(event, ui) {
+            $clone = $(this).clone(true, true); //make a 'deep' clone of this element. preserves jQuery 'data' attributes
+        },
+        //start: function(event, ui) {
+            //$(ui.helper).css("z-index", "10000").find("img").css("height", "15vh").css("width", "auto"); //Sometimes will display under buttons
+        //    $('#timelineDisplay').sortable("option", "scroll", false);
+        //},
+        stop: function(event, ui) {
 
-    if(titleInput == "") {
-    	alert("Lesson plan requires a title before saving.");
-    }
-    else {
-    	console.log("TITLE INPUT IS RUNNING");
-	    var timelineDivs = document.getElementsByClassName("timelinediv");
-	    var objectId = "";
-	    for (var i=0; i<timelineDivs.length; i++) {
-	    	objectId = timelineAssArray[$(timelineDivs[i]).data("objid")]._id;
-	    	itemIds.push(objectId);
-	    }
+                if ($('#timelineDisplay').find(ui.helper).length > 0) {  //if the helper was dropped on the timeline...
 
-	    var timeline = {
-			timeline_id: getParameterByName("timelineId"),
-	   		lesson_title : titleInput,
-	   		items_array : itemIds
-	   	};
+                    $(ui.helper).remove(); //the helper is not a 'deep' clone. we need to remove it and append the deep clone we make
+                    $('#timelineDisplay').append($clone);
+                    makesortable();
+                //$('#timelineDisplay').sortable("option", "scroll", true);
+                //$(newElem).find("img").removeAttr("style");
+                }
+              }
+        });
+}; //end makedraggable()
 
-	 	console.log(timeline);
-
-		$.post("looma-lesson-save.php", timeline, function(data) {
-			console.log(data);
-			console.log("Saved!");
-		}).fail(function(data){
-			console.log(data);
-		});
-		alert("Your timeline, " + titleInput + ", has been saved!");
-	}
-}; end [OLD] save()
-*/
-
-////////////////////////// Present button from index  /////////////////////////////
-
-//var indexToPresent = function(){
-//	console.log("opening timeline in present...");
-//	var itemIdArray = [];
-//
-//	var timelineDivs = document.getElementsByClassName("timelinediv");
-//
-//	var objectId = "";
-//	var form = $("<form/>", {
-//		method: "post",
-//		action: homedirectory + "present.php",
-//	});
-//
-//	for (var i=0; i<timelineDivs.length; i++) {
-//		var formInput = $("<input/>", {
-//			type : "text",
-//			name : "objid",
-//			value: $(timelineDivs[i]).data("objid"),
-//		});
-//
-//		form.append(formInput);
-//	}
-//	form.submit();
-//}
-
-
-/*
-//QUERYSEARCH() no longer used
-var querySearch = function() {
-    $("#innerResultsMenu").empty();
-    $("#innerResultsDiv" ).empty();
-
-// var filetypes = {
-  //          "image" :   {   id : "ft_image",     display : "Image"     },
-  //          "video" :   {   id : "ft_video",     display : "Video"     },
-  //         "audio" :   {   id : "ft_audio",     display : "Audio"     },
-  //         "pdf" :     {   id : "ft_pdf",       display : "PDF"       },
-  //         "text" :    {   id : "ft_text",      display : "Text"      },
-  //          "chapter":  {   id : "ft_chapt",     display : "Chapter"   },
-  //          "html" :    {   id : "ft_html",      display : "HTML"      },
-  //          "looma":    {   id : "ft_looma",     display : "Looma Page"},
-  //          "slideshow":{   id : "ft_slideshow", display : "Slide Show"}
-
-
-    var filterdata = {
-        'grade' : document.getElementById('dropdown_grade').value,
-        'subject' : document.getElementById('dropdown_subject').value,
-          // 'chapter' : document.getElementById('dropdown_chapter').value,
-          // 'section': document.getElementById('dropdown_section').value,
-        'image'  : document.getElementById('ft_image').checked,
-        'video'  : document.getElementById('ft_video').checked,
-        'audio'  : document.getElementById('ft_audio').checked,
-        'pdf'    : document.getElementById('ft_pdf').checked,
-        'text'   : document.getElementById('ft_text').checked,
-        'chapter': document.getElementById('ft_chapt').checked,
-        'html'   : document.getElementById('ft_html').checked,
-        'looma'  : document.getElementById('ft_looma').checked,
-        'slideshow' : document.getElementById('ft_slideshow').checked
-    };
-    //console.log(filterdata['image']);
-
-    if (!isFilterSet) {
-        $("#innerResultsMenu").empty().html("Please select at least 1 filter option before searching.") }
-
-//    if (filterdata['grade']   == "" &&
-//        filterdata['subject'] == "" &&
-//        filterdata['image'] == false &&
-//        filterdata['video'] == false &&
-//        filterdata['audio'] == false &&
-//        filterdata['pdf'] == false &&
-//        filterdata['text'] == false &&
-//        filterdata['chapter'] == false &&
-//        filterdata['html'] == false &&
-//        filterdata['slideshow']  == false) {
-//        $("#innerResultsDiv").html("Please select at least 1 filter option before searching.");
-
-
-    else {
-        $('#innerResultsMenu').empty();
-        $('#innerResultsDiv').empty();
-        $("#displaybox").empty();
-
-        var loadingmessage = $("<p/>", {html : "Loading results..."}).appendTo("#outerResultsMenu");
-
-        $.get("looma-lesson-query.php", filterdata, function(filterdata) {
-            $(loadingmessage).remove();
-            console.log(JSON.parse(filterdata));
-            var filterdata_object = storeFilterData(filterdata);
-            printFilterData(filterdata_object);
-        }); //Send filter data to server via GET request
-
-    }
-}; //end querySearch()
-
-//storeFilterData() no longer used
-var storeFilterData = function(filterdata) {
-    var filterdata_object = JSON.parse(filterdata;
-    return filterdata_object;
-};  //end storeFilterData()
-*/
-var fillInDOM = function() {
+var initializeDOM = function() {
 
     //////////////////////////////////////////////////////
 /////////////////////////// Fill in the DOM //////////
@@ -1134,7 +994,8 @@ var fillInDOM = function() {
 
         // Title string
         $("<p/>", {
-            html : "Lesson Plan name:&nbsp;&nbsp;"
+            html : "Lesson Plan name:&nbsp;&nbsp;",
+            class: "ellipsis"
         }).appendTo("#titleDiv");
 
         $("<p/>", {
@@ -1143,7 +1004,7 @@ var fillInDOM = function() {
 
 
 
-}; // end FillInDOM()
+}; // end initializeDOM()
 
 
   /*          var OLDinnerActivityDiv = function(item) {
@@ -1168,7 +1029,7 @@ var fillInDOM = function() {
 
                 $("<img/>", {
                     class : "resultsimg",
-                    src : getThumb(item, collection)
+                    src : thumbnail(item, collection)
                 }).appendTo(thumbnaildiv);
 
 
@@ -1187,7 +1048,7 @@ var fillInDOM = function() {
                 // File Type
                 $("<span/>", {
                     class : "result_ft",
-                    html : getFileType(item.ft) + "  "
+                    html : filetype(item.ft) + "  "
                 }).appendTo(textdiv);
 
                 // ID
@@ -1512,7 +1373,7 @@ var createChapterDiv = function(item, previtem) {
 
     $("<img/>", {
         class : "resultsimg",
-        src : getThumb(item, collection)
+        src : thumbnail(item, collection)
     }).appendTo(div);
 
     // Display name
@@ -1570,7 +1431,7 @@ var createTextbookDiv = function(item) {
 
     $("<img/>", {
         class : "resultsimg",
-        src : getThumb(item, collection)
+        src : thumbnail(item, collection)
     }).appendTo(thumbnaildiv);
 
     // Result Text
@@ -1831,7 +1692,7 @@ var createTimelineElement = function(item, collection, issection){
         thumbnail_prefix = thumbnail_prefix.substr(0, thumbnail_prefix.indexOf('.'));
         $("<img/>", {
             class : "timelineimg",
-            src : getThumb(item, collection)
+            src : thumbnail(item, collection)
         }).appendTo(textdiv);
         $("<p/>", { html : "<b>Textbook:</b>" }).appendTo(textdiv);
         $("<p/>", { html : "<b>" + item.dn + "</b>" }).appendTo(textdiv);
@@ -1844,7 +1705,7 @@ var createTimelineElement = function(item, collection, issection){
     if(collection == "chapters" || item.pn != null) {
         $("<img/>", {
             class : "timelineimg",
-            src : getThumb(item, collection)
+            src : thumbnail(item, collection)
         }).appendTo(textdiv);
 
         if (issection == 1) {
@@ -1872,10 +1733,10 @@ var createTimelineElement = function(item, collection, issection){
         // Thumbnail
         $("<img/>", {
             class : "timelineimg",
-            src : getThumb(item, collection)
+            src : thumbnail(item, collection)
         }).appendTo(textdiv);
 
-        //$("<p/>", { html : "<b>" + getFileType(item.ft) + ":</b>" }).appendTo(textdiv);
+        //$("<p/>", { html : "<b>" + filetype(item.ft) + ":</b>" }).appendTo(textdiv);
         $("<p/>", { html : "<b>" + item.dn + "</b>" }).appendTo(textdiv);
 
 
@@ -1905,7 +1766,7 @@ var createTimelineElement = function(item, collection, issection){
     });
     $(buttondiv).append(previewbutton);
 
-    var removebutton = $("<button/>", {class: "remove", html:"X"});  //.bind("click", removeTimelineElement);
+    var removebutton = $("<button/>", {class: "remove", html:"X"});
     $(buttondiv).append(removebutton);
 
     $(textdiv).appendTo(innerdiv);
@@ -1949,4 +1810,216 @@ var getSectionChapterByPrefix = function(currentResultsDiv, rElement) {
     }
 };  // end getSectionChapterByPrefix()
 
+*/
+
+/*
+//NOTE [skip] big chunk of code removed that kept track of section number and chapter number
+//            and inserted correct labels. This code seems to depend on the activity items being displayed being
+//            returned in section/chapter order, but unless we do mondodb.sort() that is not a valid assumption
+
+    // If this item is the first item
+    if (previtem == null) {
+        // Create h3 Chapter element
+        //$("<h5/>", {
+            //html : "Chapter " + idExtractArray["currentChapter"]
+        //}).appendTo(div);
+
+        // If the item ID has a decimal
+        if (item.ch_id && item.ch_id.indexOf(".") >= 0) {
+            // Create a section div & append to main div
+            issection = 1;
+            var sectionDiv = innerActivityDiv(item);
+            $(sectionDiv).attr("data-type", "section").appendTo(div);
+        }
+        // Else if the item ID doesn't have a decimal
+        else {
+            // Create a chapter div & append to main div
+            var chapterDiv = innerActivityDiv(item);
+            $(chapterDiv).attr("data-type", "chapter").appendTo(div);
+        }
+    }
+    // If this item isn't the first item
+    else if (previtem != null) {
+        // If the item  ID has a decimal
+        if (
+
+            item.ch_id &&
+
+            item.ch_id.indexOf(".") >= 0) {
+            issection = 1;
+            // If the ID prefix matches the prefix of the last one
+            if (idExtractArray["chprefix"] == idExtractArray_prev["chprefix"]) {
+                //  Make a section div
+                var sectionDiv = innerActivityDiv(item);
+                $(sectionDiv).attr("data-type", "section").appendTo(div);
+            }
+            // Else if the ID prefix doesn't match the last one
+            else if (idExtractArray["chprefix"] != idExtractArray_prev["chprefix"]) {
+                // Create a new Chapter section
+
+            //  $("<h5/>", {
+                //  html : "Chapter " + idExtractArray["currentChapter"]
+            //  }).appendTo(div);
+
+                issection = 1;
+                var sectionDiv = innerActivityDiv(item);
+                $(sectionDiv).attr("data-type", "section").appendTo(div);
+            }
+        }
+        // Else if the item ID doesn't have a decimal
+        else {
+            // Create h3 Chapter element
+
+            //$("<h5/>", {
+                //html : "Chapter " + idExtractArray["currentChapter"]
+            //}).appendTo(div);
+
+            var chapterDiv = innerActivityDiv(item);
+            $(chapterDiv).attr("data-type", "chapter").appendTo(div);
+
+        }
+    }
+  //end of removed code
+  */
+
+/////////////////////////// SAVE ///////////////////////////
+
+/*
+var save = function(){
+    console.log("saving...");
+    var itemIds = [];
+    var titleInput = document.getElementById("titleInput").value;
+    console.log("title:" + titleInput);
+
+    if(titleInput == "") {
+        alert("Lesson plan requires a title before saving.");
+    }
+    else {
+        console.log("TITLE INPUT IS RUNNING");
+        var timelineDivs = document.getElementsByClassName("timelinediv");
+        var objectId = "";
+        for (var i=0; i<timelineDivs.length; i++) {
+            objectId = timelineAssArray[$(timelineDivs[i]).data("objid")]._id;
+            itemIds.push(objectId);
+        }
+
+        var timeline = {
+            timeline_id: getParameterByName("timelineId"),
+            lesson_title : titleInput,
+            items_array : itemIds
+        };
+
+        console.log(timeline);
+
+        $.post("looma-lesson-save.php", timeline, function(data) {
+            console.log(data);
+            console.log("Saved!");
+        }).fail(function(data){
+            console.log(data);
+        });
+        alert("Your timeline, " + titleInput + ", has been saved!");
+    }
+}; end [OLD] save()
+*/
+
+////////////////////////// Present button from index  /////////////////////////////
+
+//var indexToPresent = function(){
+//  console.log("opening timeline in present...");
+//  var itemIdArray = [];
+//
+//  var timelineDivs = document.getElementsByClassName("timelinediv");
+//
+//  var objectId = "";
+//  var form = $("<form/>", {
+//      method: "post",
+//      action: homedirectory + "present.php",
+//  });
+//
+//  for (var i=0; i<timelineDivs.length; i++) {
+//      var formInput = $("<input/>", {
+//          type : "text",
+//          name : "objid",
+//          value: $(timelineDivs[i]).data("objid"),
+//      });
+//
+//      form.append(formInput);
+//  }
+//  form.submit();
+//}
+
+
+/*
+//QUERYSEARCH() no longer used
+var querySearch = function() {
+    $("#innerResultsMenu").empty();
+    $("#innerResultsDiv" ).empty();
+
+// var filetypes = {
+  //          "image" :   {   id : "ft_image",     display : "Image"     },
+  //          "video" :   {   id : "ft_video",     display : "Video"     },
+  //         "audio" :   {   id : "ft_audio",     display : "Audio"     },
+  //         "pdf" :     {   id : "ft_pdf",       display : "PDF"       },
+  //         "text" :    {   id : "ft_text",      display : "Text"      },
+  //          "chapter":  {   id : "ft_chapt",     display : "Chapter"   },
+  //          "html" :    {   id : "ft_html",      display : "HTML"      },
+  //          "looma":    {   id : "ft_looma",     display : "Looma Page"},
+  //          "slideshow":{   id : "ft_slideshow", display : "Slide Show"}
+
+
+    var filterdata = {
+        'grade' : document.getElementById('dropdown_grade').value,
+        'subject' : document.getElementById('dropdown_subject').value,
+          // 'chapter' : document.getElementById('dropdown_chapter').value,
+          // 'section': document.getElementById('dropdown_section').value,
+        'image'  : document.getElementById('ft_image').checked,
+        'video'  : document.getElementById('ft_video').checked,
+        'audio'  : document.getElementById('ft_audio').checked,
+        'pdf'    : document.getElementById('ft_pdf').checked,
+        'text'   : document.getElementById('ft_text').checked,
+        'chapter': document.getElementById('ft_chapt').checked,
+        'html'   : document.getElementById('ft_html').checked,
+        'looma'  : document.getElementById('ft_looma').checked,
+        'slideshow' : document.getElementById('ft_slideshow').checked
+    };
+    //console.log(filterdata['image']);
+
+    if (!isFilterSet) {
+        $("#innerResultsMenu").empty().html("Please select at least 1 filter option before searching.") }
+
+//    if (filterdata['grade']   == "" &&
+//        filterdata['subject'] == "" &&
+//        filterdata['image'] == false &&
+//        filterdata['video'] == false &&
+//        filterdata['audio'] == false &&
+//        filterdata['pdf'] == false &&
+//        filterdata['text'] == false &&
+//        filterdata['chapter'] == false &&
+//        filterdata['html'] == false &&
+//        filterdata['slideshow']  == false) {
+//        $("#innerResultsDiv").html("Please select at least 1 filter option before searching.");
+
+
+    else {
+        $('#innerResultsMenu').empty();
+        $('#innerResultsDiv').empty();
+        $("#previewpanel").empty();
+
+        var loadingmessage = $("<p/>", {html : "Loading results..."}).appendTo("#outerResultsMenu");
+
+        $.get("looma-lesson-query.php", filterdata, function(filterdata) {
+            $(loadingmessage).remove();
+            console.log(JSON.parse(filterdata));
+            var filterdata_object = storeFilterData(filterdata);
+            displaySearchResults(filterdata_object);
+        }); //Send filter data to server via GET request
+
+    }
+}; //end querySearch()
+
+//storeFilterData() no longer used
+var storeFilterData = function(filterdata) {
+    var filterdata_object = JSON.parse(filterdata;
+    return filterdata_object;
+};  //end storeFilterData()
 */

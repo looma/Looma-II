@@ -38,10 +38,10 @@
                     </div>
                 </div>
 
-                <div id= "displaybox">
+                <div id= "previewpanel">
                 </div>
 
-                <div id = "wrapper">
+                <div id = "timeline">
                     <div class="timelineEntire" id="timelineDisplay">
                     </div>
                 </div>
@@ -57,7 +57,6 @@
 <?php   include ('includes/looma-filecommands.php');
         include ('includes/looma-search.php');
 ?>
-        <script type="text/javascript" src="js/looma-lesson-load.js"></script>
         <script type="text/javascript" src="js/looma-lesson-plan.js"></script>
 
     </body>

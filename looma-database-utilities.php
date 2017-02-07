@@ -97,31 +97,21 @@ if (isset($_REQUEST["cmd"]) && isset($_REQUEST["collection"]))
 
    $collection =  $_REQUEST["collection"];
 
-
         //DEBUG
         //echo "cmd is " . $cmd . ", collection is " . $collection . ", ";
         //echo "dn is " . $_POST['dn'] . ", ft is " .  $_POST['ft'];
         //
 
-
-   //accepted collections are "text" [others to be added]
-
    switch ($collection) {
-       case "text":
-           $dbCollection =  $text_files_collection;
-           break;
+       case "text":       $dbCollection =  $text_files_collection;  break;
+       case "activities": $dbCollection =  $activities_collection;  break;
+       case "lesson":     $dbCollection =  $lessons_collection;     break;
+       case "chpater":    $dbCollection =  $chapters_collection;    break;
+       case "slideshow":  $dbCollection =  $slideshows_collection;  break;
+       case "text":       $dbCollection =  $text_files_collection;  break;
+       case "edited_video": $dbCollection =  $edited_videos_collection; break;
 
-     case "activities":
-           $dbCollection =  $activities_collection;
-           break;
-
-       case "lesson":
-           $dbCollection =  $lessons_collection;
-           break;
-
-       default:
-           echo "unknown collection: " . $collection;
-           return;
+       default: echo "unknown collection: " . $collection;        return;
    };
 
    /* NOTE: mongoDB collections list:
@@ -147,6 +137,15 @@ if (isset($_REQUEST["cmd"]) && isset($_REQUEST["collection"]))
            else echo json_encode(array("error" =>"File not found"));  // in not found, return an error object {'error': errormessage}
            return;
             // end case "open"
+
+        case "openByID":
+            $query = array('_id' => new MongoID($_REQUEST['id']));
+           //look up this ID (mongoID) in this collection (dbCollection)
+           $file = $dbCollection -> findOne($query);  // assumes someone is maintaining this collection with unique DNs (index unique)
+           if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
+           else echo json_encode(array("error" =>"File not found " . $_REQUEST['id'] . " in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
+           return;
+            // end case "openByID"
 
         case "save":
            // if ($collection == "text") {

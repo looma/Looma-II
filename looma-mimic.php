@@ -10,8 +10,11 @@
         VOICE = the voice to speak with - either "cmu_us_*" or "mycroft_voice_4.0"
  */
 
+//exit ("DEBUG - in mimic.php: ");
+
 $text = htmlentities($_REQUEST["text"]);
 $voice = $_REQUEST["voice"];
+
 
 if (empty($voice))
     {   // Good Voices: cmu_us_bdl (male), cmu_us_jmk (male), cmu_us_ljm (female), cmu_us_slt (female), mycroft_voice_4.0 (male)
@@ -31,26 +34,29 @@ $date = new DateTime();
 // If multiple phrases are submitted, this server page could be called more than once per second.
 // Adding the random number will create a unique filename.
 $outputFileName = "/tmp/website.looma.tts.mimic." . $date->getTimestamp() . "_" . mt_rand() . ".wav";
-
+//echo "output file name: " . $outputFileName;
 if (file_exists($outputFileName)) // IF we get conflicting filenames, generate a different filename
                                   //This is extremely unlikely. (There are 2^31 possibilities.)
     {
         $outputFileName = "/tmp/website.looma.tts.mimic." . $date->getTimestamp() . "_" . mt_rand() . "_" . mt_rand() . ".wav";
     }
 
-$command = "~/mimic/bin/mimic -t " .
+//NOTE; mimic must be installed on the server and be in the SPATH for shell commands
+// try "which mimic" in shell to verify that mimic is installed as a shell command
+$command = "mimic -t " .
             escapeshellarg($text) .
            " -voice " .
             escapeshellarg($voiceFile) .
            " -o " . $outputFileName;
 
-/*
-$sample = escapeshellarg("sample text to speak 3");
+
+/*$sample = escapeshellarg("sample text to speak 3");
 $command = "mimic -t " . $sample . " -o /tmp/temp3";
 */
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: audio/wav");
+//echo $command;
 exec($command);                     // generate the wave file
 readfile($outputFileName);          // play the wave file to the client side
  //unlink($outputFileName);            // delete the wave file

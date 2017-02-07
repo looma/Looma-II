@@ -151,7 +151,7 @@ function openfile(openname, collection, filetype) {
                     else setname(openname);
 
                     currentid = response['_id'];
-                    callbacks['display'](response['data']);
+                    callbacks['display'](response);   //need to return the full 'response' from the db
                     //$('#cancel-result').on('click', closesearch);
                     callbacks['checkpoint']();
                     }

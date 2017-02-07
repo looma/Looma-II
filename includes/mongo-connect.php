@@ -28,9 +28,10 @@
         $lessons_collection =    $loomaDB -> lessons;
         $edited_videos_collection = $loomaDB -> edited_videos;
 
-        $activities_collection->createIndex(array('ch_id' => 1));
-        $activities_collection->createIndex(array('fn' => 1));
-        $text_files_collection->createIndex(array('dn' => 1), array('unique' => True));
+        //the lines below are commented out for now. some Looma installs have old MONGO versions that dont do 'createIndex'
+        //$activities_collection->createIndex(array('ch_id' => 1));
+        //$activities_collection->createIndex(array('fn' => 1));
+        //$text_files_collection->createIndex(array('dn' => 1), array('unique' => True));
 
     }
     catch(MongoConnectionException $e)

@@ -195,7 +195,7 @@ include ('includes/js-includes.php');
 /*include looma header*/
 ?>
 
-<script src="js/jquery.js">          </script>      <!-- jQuery -->
+<script src="js/jquery.min.js">          </script>      <!-- jQuery -->
 <script src="js/looma-utilities.js"> </script>      <!-- Looma utility functions -->
 <script src="js/looma-screenfull.js"></script>
 <script src="js/jquery-ui.min.js"></script>

@@ -89,6 +89,7 @@ function lessonclear() {
        setname("");
        currentid="";
        $timeline.empty();
+       clearFilter();
        lessoncheckpoint();
 };
 
@@ -135,7 +136,7 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
     });
 }; //end lessonunpack()
 
-function lessondisplay (response) {$timeline.html(lessonunpack(response));};
+function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response));};
 
 function lessonsave(name) {
     savefile(name, 'lesson', 'lesson', lessonpack($timeline.html()), true);
@@ -179,13 +180,10 @@ function lessontemplatesave(name) {
                                'json');
                   };
            });
-
-        makesortable();
-
-		//dont open timeline on launch
-		// wait for OPEN command
-
-		// openTimeline();
+  //
+  // $( "#timelineDisplay" ).sortable({disabled: true});
+  //
+        makesortable(); //makes the timeline sortable
 
 };  //end window.onload()
 
@@ -304,7 +302,7 @@ var displaySearchResults = function(filterdata_object) {
             actResultDiv.appendChild(collectionTitle);
 
             for(i=0; i<filterdata_object.chapters.length; i++) {
-                rElement = createActivityDiv(filterdata_object.chapters[i]);  //BUG: array[i-1] not defined when i==0
+                rElement = createActivityDiv(filterdata_object.chapters[i]);
 
                 actResultDiv.appendChild(rElement);
             };
@@ -546,9 +544,8 @@ var createActivityDiv = function(activity) {
                 var activityDiv = document.createElement("div");
                 activityDiv.className = "activityDiv";
 
-                //$(activityDiv).attr("data-chprefix", idExtractArray["chprefix"]);
-                $(activityDiv).attr("data-collection", (item.ft == 'chapter')?'chapters':'activities');
-                $(activityDiv).attr("data-id", item['_id']['$id']);
+                $(activityDiv).attr("data-collection", (item.ft == 'chapter') ? 'chapters' : 'activities');
+                $(activityDiv).attr("data-id",         (item.ft == 'chapter') ? item['_id'] : item['_id']['$id']);
                 $(activityDiv).attr("data-type", item['ft']);
 
                 item.collection = (item.ft == 'chapter')?'chapters':'activities';
@@ -689,21 +686,52 @@ var preview_result = function(item) {
 	else if (collection == "activities") {
 
 		if(filetype == "mp4" || filetype == "mov" || filetype == "mp5") {
-			document.querySelector("#previewpanel").innerHTML = '<video controls> <source src="' + homedirectory +
-			         'content/videos/' + filename + '" type="video/mp4"> </video>';
-			// var newParagraph = document.createElement("p");
-			// newParagraph.innerText = "media type: video";
-			// document.querySelector("div#timelineBox").appendChild(newParagraph);
-		}
+			document.querySelector("#previewpanel").innerHTML =
+
+	//		'<video controls> <source src="' + homedirectory +
+	//		         'content/videos/' + filename + '" type="video/mp4"> </video>';
+
+
+	          // '<div id="video-player">' +
+                    '<div id="video-area">' +
+                        '<div id="fullscreen">' +
+                            '<video id="video">' +
+                                '<source id="video-source" src="' + homedirectory +
+                                       'content/videos/' + filename + '" type="video/mp4">' +
+                            '</video>' +
+                    '</div></div></div>' +
+                '<div id="title-area"><h3 id="title"></h3></div>' +
+                '<div id="media-controls">' +
+
+                    //'<button id="fullscreen-playpause"></button>' +
+                    '<div id="time" class="title">0:00</div>' +
+                    '<button type="button" class="play-pause"></button>' +
+                    '<input type="range" class="video seek-bar" value="0" style="display:inline-block"><br>' +
+                    '<button type="button" class="mute"></button>' +
+                    '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
+                '</div>';
+
+             attachMediaControls();  //hook up event listeners to the audio and video HTML
+
+	   	}
 		else if (filetype=="pdf") {
 			document.querySelector("div#previewpanel").innerHTML =
 			     '<iframe src="' + homedirectory + 'content/pdfs/' + filename + '"' +
 			     ' style="height:60vh;width:60vw;" type="application/pdf">';
 		}
 		else if(filetype=="mp3") {
-		document.querySelector("div#previewpanel").innerHTML = '<br><br><br><audio controls> <source src="' +
+		      document.querySelector("div#previewpanel").innerHTML = '<br><br><br><audio id="audio"> <source src="' +
 		                      homedirectory + 'content/audio/' +
-		                      filename + '" type="audio/mpeg"></audio>';
+		                      filename + '" type="audio/mpeg"></audio>' +
+		                                      '<div id="media-controls">' +
+                                            '<div id="time" class="title">0:00</div>' +
+                                            '<button type="button" class="play-pause"></button>' +
+                                            '<input type="range" class="video seek-bar" value="0" style="display:inline-block"><br>' +
+                                            '<button type="button" class="mute"></button>' +
+                                            '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
+                                        '</div>';
+             attachMediaControls();  //hook up event listeners to the audio and video HTML
+
 		}
 		// Pictures
 		else if(filetype=="jpg" || filetype=="gif" || filetype=="png") {
@@ -765,10 +793,18 @@ var preview_result = function(item) {
 
 
 function insertTimelineElement(source) {
-        var $dest = $(source).clone(true).appendTo("#timelineDisplay");  //the 'true' option sets the the clone to copy 'deepWithDataAndEvents'
+        var $dest = $(source).clone(true).off(); // clone(true) to retain all DATA for the element
+                                                 //NOTE: crucial to "off()" event handlers,
+                                                 //or the new element will still be linked to the old
+        $dest.removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
+
+ //  ?? this next stmt needed??
+        $dest.addClass("ui-sortable-handle");
+ //
+        $dest.appendTo("#timelineDisplay");
 
         // scroll the timeline so that the new element is in the middle - animated to slow scrolling
-        $('#timeline').animate( { scrollLeft: $dest.outerWidth(true) * ( $dest.index() - 3 ) }, 1000);
+        $('#timeline').animate( { scrollLeft: $dest.outerWidth(true) * ( $dest.index() - 3 ) }, 100);
 
         makesortable();  //TIMELINE elements can be drag'n'dropped
 
@@ -779,7 +815,7 @@ var removeTimelineElement = function(elem) {
   //var outerDiv = this.parentNode.parentNode;
   //outerDiv.remove();    // "Remove" button is within 3 divs
 
-        $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 3 ) }, 1000);
+        $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 3 ) }, 100);
         $(elem).closest('.activityDiv').remove();
 
 };
@@ -787,6 +823,7 @@ var removeTimelineElement = function(elem) {
 
 /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
 var makesortable = function() {
+    //$('timelineDisplay').sortable( "destroy" ); //remove previous sortable state
     $("#timelineDisplay").sortable({
         opacity: 0.7,   // makes dragged element transparent
         revert: true,   //Animates the drop
@@ -807,7 +844,8 @@ function makedraggable() {
         helper: "clone",
         //containment: "#timelineDisplay",
         start: function(event, ui) {
-            $clone = $(this).clone(true, true); //make a 'deep' clone of this element. preserves jQuery 'data' attributes
+            $clone = $(this).clone(true, true).off(); //make a 'deep' clone of this element. preserves jQuery 'data' attributes
+                                                      //NOTE: crucial to "off()" event handlers, or the new element will still be linked to the old
         },
         //start: function(event, ui) {
             //$(ui.helper).css("z-index", "10000").find("img").css("height", "15vh").css("width", "auto"); //Sometimes will display under buttons
@@ -818,6 +856,7 @@ function makedraggable() {
                 if ($('#timelineDisplay').find(ui.helper).length > 0) {  //if the helper was dropped on the timeline...
 
                     $(ui.helper).remove(); //the helper is not a 'deep' clone. we need to remove it and append the deep clone we make
+                    $clone.removeClass('ui-draggable-handle');
                     $('#timelineDisplay').append($clone);
                     makesortable();
                 //$('#timelineDisplay').sortable("option", "scroll", true);
@@ -945,8 +984,9 @@ var initializeDOM = function() {
             "text" :    {   id : "ft_text",      display : "Text"   },
             "chapter" : {   id : "ft_chapt",     display : "Chapter"   },
             "html" :    {   id : "ft_html",      display : "HTML"   },
-            "looma":{  id : "ft_looma",     display : "Looma Page"   },
-            "slideshow":{   id : "ft_slideshow", display : "Slide Show"   }
+            "looma":{  id : "ft_looma",     display : "Looma Page"   }
+        // SLIDESHOW should be added
+        //    "slideshow":{   id : "ft_slideshow", display : "Slide Show"   }
         };
 
         $("<div/>", {
@@ -957,7 +997,6 @@ var initializeDOM = function() {
             $("<input/>", {
                 class : "filter_checkbox",
                 type : "checkbox",
-                style : "zoom:1.5",
                 id : value.id,
                 name : "type[]",
                 value: key
@@ -1007,1019 +1046,3 @@ var initializeDOM = function() {
 }; // end initializeDOM()
 
 
-  /*          var OLDinnerActivityDiv = function(item) {
-
-                var activityDiv = document.createElement("div");
-                activityDiv.className = "activityDiv";
-
-                $(activityDiv).attr("data-chprefix", idExtractArray["chprefix"]);
-                $(activityDiv).attr("data-collection", collection);
-
-                if (filetype == 'text') {
-                    $("<div/>", {
-                        class: "html",
-                        css: "visibility:none;"
-                    }).html(item.html).appendTo(activityDiv);
-                };
-
-                // Thumbnail
-                var thumbnaildiv = document.createElement("div");
-                thumbnaildiv.className = "thumbnaildiv";
-                $(thumbnaildiv).appendTo(activityDiv);
-
-                $("<img/>", {
-                    class : "resultsimg",
-                    src : thumbnail(item, collection)
-                }).appendTo(thumbnaildiv);
-
-
-                // Result Text
-                var textdiv = document.createElement("div");
-                textdiv.className = "textdiv";
-                $(textdiv).appendTo(activityDiv);
-
-                // Display Name
-                $("<p/>", {
-                    class : "result_dn",
-                    html : "<b>" + item.dn.substring(0, 18) + "</b>"
-                }).appendTo(textdiv);
-
-
-                // File Type
-                $("<span/>", {
-                    class : "result_ft",
-                    html : filetype(item.ft) + "  "
-                }).appendTo(textdiv);
-
-                // ID
-                if (item.ch_id) {
-                    $("<span/>", {
-                    class : "result_ID",
-                    html : "[" + item.ch_id + "]"
-                }).appendTo(textdiv);
-                };
-
-                $("<br>").appendTo(textdiv);
-
-                // Buttons
-                var buttondiv = document.createElement("div");
-                buttondiv.className = "buttondiv";
-                $(buttondiv).appendTo(activityDiv);
-
-                // "Add" button
-                var addButton = document.createElement("button");
-                addButton.innerText = "Add";
-                addButton.className = "add";
-                $(addButton).bind("click", function() {
-                   createTimelineElement(item, collection, issection);
-
-                });
-                buttondiv.appendChild(addButton);
-
-                var previewButton = document.createElement("button");
-                previewButton.innerText = "Preview";
-                previewButton.className = "preview";
-                // previewButton.onclick = preview_result(item);
-                $(previewButton).bind("click", function() {
-                    preview_result(collection, item);
-                });
-                buttondiv.appendChild(previewButton);
-
-                return activityDiv;
-            }; //end innerActivityDiv()
-*/
-
-/* */
-
-/*  OLD version -- replaced with a REGEX method
-var extractItemId = function(item, collection) {
-// returns an array, with KEYS currentSection, currentChapter, etc and VALUES extracted from the CH_ID
-
-    var elementsArray = [];
-
-    if (collection == "chapters" || item.pn != null) {
-        // Array will contain:
-            // currentSection
-            // currentChapter
-            // currentSubject
-            // currentGradeNumber
-            // currentGradeFolder
-            // currentSubjectFull (full name)
-            // chprefix
-
-        var itemId = item._id;
-        var itemId_splitArray = itemId.split("");
-        var arr_length = itemId_splitArray.length;
-
-        // Extracts the section number
-        if (itemId.indexOf(".") >= 0) {
-            var currentSection = itemId_splitArray[arr_length-2].concat(itemId_splitArray[arr_length-1]);
-            elementsArray["currentSection"] = currentSection;
-            itemId_splitArray.splice(arr_length-1, 1);
-            itemId_splitArray.splice(arr_length-2, 1);
-            itemId_splitArray.splice(arr_length-3, 1);
-            arr_length = itemId_splitArray.length;
-        }
-
-        // Extracts the last 2 numbers as the chapter
-        var currentChapter = itemId_splitArray[arr_length-2].concat(itemId_splitArray[arr_length-1]);
-        elementsArray["currentChapter"] = currentChapter;
-        itemId_splitArray.splice(arr_length-1, 1);
-        itemId_splitArray.splice(arr_length-2, 1);
-        arr_length = itemId_splitArray.length;
-
-        if (arr_length == 3) {  // If the subject is EN, or SS (or something with 2 letters)
-            var currentSubject = itemId_splitArray[arr_length-2].concat(itemId_splitArray[arr_length-1]);
-            elementsArray["currentSubject"] = currentSubject;
-            itemId_splitArray.splice(arr_length-1, 1);
-            itemId_splitArray.splice(arr_length-2, 1);
-            arr_length = itemId_splitArray.length;
-        }
-        else if (itemId_splitArray.length == 2) {   // If the subject is M or S, N (or something with 1 letter)
-            var currentSubject = itemId_splitArray[arr_length-1];
-            elementsArray["currentSubject"] = currentSubject;
-            itemId_splitArray.splice(arr_length-1, 1);
-            arr_length = itemId_splitArray.length;
-        }
-
-        var currentGradeNumber = itemId_splitArray[0];
-        elementsArray["currentGradeNumber"] = currentGradeNumber;
-
-        var currentGradeFolder = "Class".concat(currentGradeNumber);
-        elementsArray["currentGradeFolder"] = currentGradeFolder;
-
-        if (currentSubject == "EN") {
-            var currentSubjectFull = "English";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "M") {
-            var currentSubjectFull = "Math";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "N") {
-            var currentSubjectFull = "Nepali";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "S") {
-            var currentSubjectFull = "Science";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "SS") {
-            var currentSubjectFull = "SocialStudies";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-
-        var chprefix = currentGradeNumber.concat(currentSubject,currentChapter);
-        elementsArray["chprefix"] = chprefix;
-    }
-
-    else if (collection == "textbooks" || item.subject != null) {
-        // Array will contain:
-            // currentSubject
-            // currentGradeNumber
-            // currentSubjectFull
-
-        var itemId = item.prefix;
-        var itemId_splitArray = itemId.split("");
-        var arr_length = itemId_splitArray.length;
-
-        if (arr_length == 3) {  // If the subject is EN, or SS (or something with 2 letters)
-            var currentSubject = itemId_splitArray[arr_length-2].concat(itemId_splitArray[arr_length-1]);
-            elementsArray["currentSubject"] = currentSubject;
-            itemId_splitArray.splice(arr_length-1, 1);
-            itemId_splitArray.splice(arr_length-2, 1);
-            arr_length = itemId_splitArray.length;
-        }
-        else if (itemId_splitArray.length == 2) {   // If the subject is M or S, N (or something with 1 letter)
-            var currentSubject = itemId_splitArray[arr_length-1];
-            elementsArray["currentSubject"] = currentSubject;
-            itemId_splitArray.splice(arr_length-1, 1);
-            arr_length = itemId_splitArray.length;
-        }
-
-        var currentGradeNumber = itemId_splitArray[0];
-        elementsArray["currentGradeNumber"] = currentGradeNumber;
-
-        if (currentSubject == "EN") {
-            var currentSubjectFull = "English";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "M") {
-            var currentSubjectFull = "Math";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "N") {
-            var currentSubjectFull = "Nepali";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "S") {
-            var currentSubjectFull = "Science";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "SS") {
-            var currentSubjectFull = "SocialStudies";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-
-    }
-
-
-
-    else if (collection == "activity"
-           //|| item.ft != null || collection == "dictionary" || item.part != null
-            && item.ch_id) {
-        // Array will contain:
-            // currentSection
-            // currentChapter
-            // currentSubject
-            // currentGradeNumber
-            // currentGradeFolder
-            // currentSubjectFull
-            // chprefix
-
-        var itemId = item.ch_id;
-        var itemId_splitArray = itemId.split("");
-        var arr_length = itemId_splitArray.length;
-
-        // Extracts the section number
-        if (itemId.indexOf(".") >= 0) {
-            var currentSection = itemId_splitArray[arr_length-2].concat(itemId_splitArray[arr_length-1]);
-            elementsArray["currentSection"] = currentSection;
-            itemId_splitArray.splice(arr_length-1, 1);
-            itemId_splitArray.splice(arr_length-2, 1);
-            itemId_splitArray.splice(arr_length-3, 1);
-            arr_length = itemId_splitArray.length;
-        }
-
-        // Extracts the last 2 numbers as the chapter
-        var currentChapter = itemId_splitArray[arr_length-2].concat(itemId_splitArray[arr_length-1]);
-        elementsArray["currentChapter"] = currentChapter;
-        itemId_splitArray.splice(arr_length-1, 1);
-        itemId_splitArray.splice(arr_length-2, 1);
-        arr_length = itemId_splitArray.length;
-
-        if (arr_length == 3) {  // If the subject is EN, or SS (or something with 2 letters)
-            var currentSubject = itemId_splitArray[arr_length-2].concat(itemId_splitArray[arr_length-1]);
-            elementsArray["currentSubject"] = currentSubject;
-            itemId_splitArray.splice(arr_length-1, 1);
-            itemId_splitArray.splice(arr_length-2, 1);
-            arr_length = itemId_splitArray.length;
-        }
-        else if (itemId_splitArray.length == 2) {   // If the subject is M or S, N (or something with 1 letter)
-            var currentSubject = itemId_splitArray[arr_length-1];
-            elementsArray["currentSubject"] = currentSubject;
-            itemId_splitArray.splice(arr_length-1, 1);
-            arr_length = itemId_splitArray.length;
-        }
-
-        var currentGradeNumber = itemId_splitArray[0];
-        elementsArray["currentGradeNumber"] = currentGradeNumber;
-
-        var currentGradeFolder = "Class".concat(currentGradeNumber);
-        elementsArray["currentGradeFolder"] = currentGradeFolder;
-
-        if (currentSubject == "EN") {
-            var currentSubjectFull = "English";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "M") {
-            var currentSubjectFull = "Math";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "N") {
-            var currentSubjectFull = "Nepali";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "S") {
-            var currentSubjectFull = "Science";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-        else if (currentSubject == "SS") {
-            var currentSubjectFull = "SocialStudies";
-            elementsArray["currentSubjectFull"] = currentSubjectFull;
-        }
-
-        var chprefix = currentGradeNumber.concat(currentSubject,currentChapter);
-        elementsArray["chprefix"] = chprefix;
-    }
-
-return elementsArray;
-};  // end extractItemId()
-*/
-
-
-/*  createChapterDiv not used
-// Create "Chapter" collection results
-var createChapterDiv = function(item, previtem) {
-    var collection = "chapters";
-    var issection = 0;
-
-    var idExtractArray = extractItemId(item, collection);
-    if (previtem != null) {
-        var idExtractArray_prev = extractItemId(previtem, collection);
-    }
-
-    if (previtem != null) {
-        if (item._id.indexOf(".") >= 0) {
-            //  If the prefix is equal to the prefix before it
-            if (idExtractArray["chprefix"] == idExtractArray_prev["chprefix"]) {
-                issection = 1;
-                var sectionDiv = document.createElement("div");
-                sectionDiv.className = "result_chapter_section";
-                $(sectionDiv).attr("data-chprefix", idExtractArray["chprefix"]);
-                $(sectionDiv).attr("data-type", "section");
-                $(sectionDiv).attr("data-collection", collection);
-                // console.log("prefix for item " + item.dn + " is " + $(sectionDiv).data('chprefix'));
-
-                $("<p/>", {
-                    class : "result_dn",
-                    html : "<b>Section " + idExtractArray["currentSection"]
-                }).appendTo(sectionDiv);
-                $("<p/>", {
-                    class : "result_dn",
-                    html : item.dn
-                }).appendTo(sectionDiv);
-
-                var previewButton = document.createElement("button");
-                previewButton.innerText = "Preview";
-                previewButton.className = "preview";
-                // previewButton.onclick = preview_result(item);
-                $(previewButton).bind("click", function() {
-                    preview_result(collection, item);
-                });
-                sectionDiv.appendChild(previewButton);
-
-                var addButton = document.createElement("button");
-                addButton.innerText = "Add";
-                addButton.className = "add";
-                $(addButton).bind("click", function() {
-                    createTimelineElement(item, collection, issection);
-                });
-                sectionDiv.appendChild(addButton);
-
-                return sectionDiv;
-            }
-        }
-    }
-
-    var div = document.createElement("div");
-    div.className = "resultitem";
-    // var div = $("<div/>", {class:"resultitem"});
-
-
-    $(div).attr("data-chprefix", idExtractArray["chprefix"]);
-    $(div).attr("data-type", "chapter");
-    $(div).attr("data-collection", collection);
-
-    $("<img/>", {
-        class : "resultsimg",
-        src : thumbnail(item, collection)
-    }).appendTo(div);
-
-    // Display name
-    $("<p/>", {
-        class : "result_dn",
-        html : "<b>Chapter " + idExtractArray["currentChapter"] + ": " + item.dn + "</b>"
-    }).appendTo(div);
-
-    // Nepali Name
-    $("<p/>", {
-        class : "result_ndn",
-        html : item.ndn
-    }).appendTo(div);
-
-    // ID
-    $("<p/>", {
-        class : "result_ID",
-        html : item._id
-    }).appendTo(div);
-
-    // "Add" button
-    var addButton = document.createElement("button");
-    addButton.innerText = "Add";
-    addButton.className = "add";
-    $(addButton).bind("click", function() {
-        createTimelineElement(item, collection, issection);
-    });
-    div.appendChild(addButton);
-
-    var previewButton = document.createElement("button");
-    previewButton.innerText = "Preview";
-    previewButton.className = "preview";
-
-    $(previewButton).bind("click", function() {
-        preview_result(collection, item);
-    });
-    div.appendChild(previewButton);
-
-    return div;
-}; //end createChapterDiv()
-*/
-
-/*  createTextbookDiv not used
-// Create "Textbook" collection results
-var createTextbookDiv = function(item) {
-    var issection = 0;
-    var collection = "textbooks";
-    var resultdiv = document.createElement("div");
-    resultdiv.className = "resultitem";
-
-    // Thumbnail
-    var thumbnaildiv = document.createElement("div");
-    thumbnaildiv.className = "thumbnaildiv";
-    $(thumbnaildiv).appendTo(resultdiv);
-
-    $("<img/>", {
-        class : "resultsimg",
-        src : thumbnail(item, collection)
-    }).appendTo(thumbnaildiv);
-
-    // Result Text
-    var textdiv = document.createElement("div");
-    textdiv.className = "textdiv";
-    $(textdiv).appendTo(resultdiv);
-
-    $("<p/>", { // Display name
-        class : "result_dn",
-        html : "<b>" + item.dn + "</b>"
-    }).appendTo(textdiv);
-
-    $("<p/>", { // Nepali display name
-        class : "result_ndn",
-        html : item.ndn
-    }).appendTo(textdiv);
-
-    $("<p/>", { // Mongo ID
-        class : "result_ID",
-        html : item._id
-    }).appendTo(textdiv);
-
-
-    // Buttons
-    var buttondiv = document.createElement("div");
-    buttondiv.className = "buttondiv";
-    $(buttondiv).appendTo(resultdiv);
-
-    // "Add" button
-    var addButton = document.createElement("button");
-    addButton.innerText = "Add";
-    addButton.className = "add";
-    $(addButton).bind("click", function() {
-        createTimelineElement(item, collection, issection);
-    });
-    $(addButton).appendTo(buttondiv);
-
-    var previewButton = document.createElement("button");
-    previewButton.innerText = "Preview";
-    previewButton.className = "preview";
-    // previewButton.onclick = preview_result(item);
-    $(previewButton).bind("click", function() {
-        preview_result(collection,
-         item);
-    });
-    $(previewButton).appendTo(buttondiv);
-
-    return resultdiv;
-}; // end createTextbookDiv()
-*/
-
-/* createDictionaryDiv not used
-var createDictionaryDiv = function(item, previtem) {
-    var collection = "dictionary";
-    var issection = 0;
-
-    var idExtractArray = extractItemId(item, collection);
-    if (previtem != null) {
-        var idExtractArray_prev = extractItemId(previtem, collection);
-    }
-
-    var div = document.createElement("div");
-    div.className = "resultitem";
-
-    if (previtem == null) {
-        if (idExtractArray["currentChapter"] == "01") {
-            var headerdiv = document.createElement("div");
-            div.appendChild(headerdiv);
-            $("<h5/>", {
-                html : "Chapter 01"
-            }).appendTo(headerdiv);
-        }
-    }
-    else if (previtem != null) {
-        if (idExtractArray["chprefix"] != idExtractArray_prev["chprefix"]) {
-            var headerdiv = document.createElement("div");
-            div.appendChild(headerdiv);
-            $("<h5/>", {
-                html : "Chapter " + idExtractArray["currentChapter"]
-            }).appendTo(headerdiv);
-        }
-    }
-
-    var textdiv = document.createElement("div");
-    textdiv.className = "textdiv";
-    div.appendChild(textdiv);
-
-    var buttondiv = document.createElement("div");
-    buttondiv.className = "buttondiv";
-    div.appendChild(buttondiv);
-
-    $("<p/>", {
-        html : "<b>" + item.en + "</b> (" + item.part + ")"
-    }).appendTo(textdiv);
-
-    $("<p/>", {
-        html : item.ch_id
-    }).appendTo(textdiv);
-
-    // "Add" button
-    var addButton = document.createElement("button");
-    addButton.innerText = "Add";
-    addButton.className = "add";
-    $(addButton).bind("click", function() {
-        createTimelineElement(item, collection, issection);
-    });
-    buttondiv.appendChild(addButton);
-
-    var previewButton = document.createElement("button");
-    previewButton.innerText = "Preview";
-    previewButton.className = "preview";
-    // previewButton.onclick = preview_result(item);
-    $(previewButton).bind("click", function() {
-        preview_result(collection, item);
-    });
-    buttondiv.appendChild(previewButton);
-
-    return div;
-
-};// end createDictionaryDiv()
-*/
-
-//removed from print search results
-//
-/////////////////////////////////////////////////////////////
-    // Print Textbooks array
-/*
-    var textbookResultDiv = document.createElement("div");
-    textbookResultDiv.id = "textbookResultDiv";
-    $(textbookResultDiv).appendTo(currentResultDiv);
-
-    var collectionTitle = document.createElement("h1");
-    collectionTitle.id = "collectionTitle";
-
-    var arraylength = filterdata_object.textbooks.length;
-    if (arraylength > 0 ) {
-        if (arraylength == 1) {
-            collectionTitle.innerHTML = "<a class='heading'  name='textbooks'>Textbooks (" + arraylength + " Result)</a>";
-        }
-        else {
-            collectionTitle.innerHTML = "<a class='heading'  name='textbooks'>Textbooks (" + arraylength + " Results)</a>";
-        }
-        textbookResultDiv.appendChild(collectionTitle);
-    };
-
-    for(var i=0; i<filterdata_object.textbooks.length; i++) {
-        var rElement = createTextbookDiv(filterdata_object.textbooks[i]);
-
-        textbookResultDiv.appendChild(rElement);
-        console.log(filterdata_object.textbooks[i]._id);
-    }
-// end Print Textbook Array
-*/
-
-/*
-    // Print Chapter array
-    var chapterResultDiv = document.createElement("div");
-    chapterResultDiv.id = "chapterResultDiv";
-    $(chapterResultDiv).appendTo(currentResultDiv);
-
-    var collectionTitle = document.createElement("h1");
-    collectionTitle.id = "collectionTitle";
-    var arraylength = filterdata_object.chapters.length;        // WE NEED TO FIX THIS. This is counting sections as well!!!
-    if (arraylength > 0 ) {
-        if (arraylength == 1) {
-            collectionTitle.innerHTML = "<a class='heading'  name='chapters'>Chapters (" + arraylength + " Result)</a>";
-        }
-        else {
-            collectionTitle.innerHTML = "<a class='heading'  name='chapters'>Chapters (" + arraylength + " Results)</a>";
-        }
-        chapterResultDiv.appendChild(collectionTitle);
-    };
-
-    for(var i=0; i<filterdata_object.chapters.length; i++) {
-        var rElement = createChapterDiv(filterdata_object.chapters[i], filterdata_object.chapters[i-1]);
-        if ($(rElement).data("type") == "chapter") {
-            chapterResultDiv.appendChild(rElement);
-        }
-        else if ($(rElement).data("type") == "section") {
-            var matchingDiv = getSectionChapterByPrefix(chapterResultDiv, rElement);
-            if (matchingDiv != null) {
-                $(matchingDiv).append(rElement);
-            }
-            else {
-                chapterResultDiv.appendChild(rElement);
-            }
-
-            // var chapterResults = chapterResultDiv.getElementsByTagName("*");
-
-            // for (i=0; i<chapterResults.length; i++) {
-            //  console.log($(chapterResults[i]).data("chprefix"));
-            //  // if ($(chapterResults[i]).data("chprefix") == $(rElement).data("chprefix")) {
-            //  //  console.log("IT'S A MATCH!!!!!!!");
-            //  //  // append to chapterResults[i]
-            //  // }
-            //  // search through and check ch prefixes
-            // }
-            // var sectionChapterDiv = document.getElementBy
-        }
-        // var rElement = createChapterDiv(resultArray[i]);
-
-    }
-// end Print Chapter Array
-
-*/
-//above removed from show search results
-
-/*
-
-////////////////////////////////////////////////////////////////////////////
-/////////////////////////// TIMELINE MANIPULATION //////////////////////////
-////////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////     OPEN        /////////////////////////////
-
-// not used
-var openTimeline = function() {
-    var timelineElements = opentime();  // gets the ID from the URL and retrieves the whole timeline array
-    $.each(timelineElements, function(index, timelineObj) {
-        createTimelineElement(timelineObj);
-    });
-}; //end openTimeline()
-
-
-//collects timeline elements for later SAVE (???)
-var addToAssArray = function(object) {
-    timelineAssArray[object._id] = object;
-};
-
-
-var createTimelineElement = function(item, collection, issection){
-    console.log("item: ");
-    console.log(item);
-
-    var idExtractArray = extractItemId(item);
-    // currentSection
-    // currentChapter
-    // currentSubject
-    // currentGradeNumber
-    // currentGradeFolder
-    // currentSubjectFull
-    // chprefix
-
-    var timelinediv = $("<div/>", {class : "timelinediv"}).appendTo("#timelineDisplay");
-    $(timelinediv).attr("data-objid", item._id);
-
-    var innerdiv = document.createElement("div");
-    innerdiv.className = "innerdiv";
-    var textdiv = document.createElement("div");
-    textdiv.className = "timelineTextDiv";
-    var buttondiv = document.createElement("div");
-    buttondiv.className = "timelineButtonDiv";
-
-     //textbook
-    if(collection == "textbooks" || item.subject != null) {
-
-        var thumbnail_prefix = filename;
-        thumbnail_prefix = thumbnail_prefix.substr(0, thumbnail_prefix.indexOf('.'));
-        $("<img/>", {
-            class : "timelineimg",
-            src : thumbnail(item, collection)
-        }).appendTo(textdiv);
-        $("<p/>", { html : "<b>Textbook:</b>" }).appendTo(textdiv);
-        $("<p/>", { html : "<b>" + item.dn + "</b>" }).appendTo(textdiv);
-
-    }
-
-
-
-     //chapter
-    if(collection == "chapters" || item.pn != null) {
-        $("<img/>", {
-            class : "timelineimg",
-            src : thumbnail(item, collection)
-        }).appendTo(textdiv);
-
-        if (issection == 1) {
-            $("<p/>", { html : "<b>Chapter Section:</b>" }).appendTo(textdiv);
-            $("<p/>", { html : "<b>" + item.dn + "</b>" }).appendTo(textdiv);
-            $("<p/>", { html : "Class " + idExtractArray["currentGradeNumber"] +
-                                    " " + idExtractArray["currentSubjectFull"] +
-                                    ",<br/>Chapter " + idExtractArray["currentChapter"] +
-                                    ", Section " + idExtractArray["currentSection"]}).appendTo(textdiv);
-        }
-        else {
-            $("<p/>", { html : "<b>Chapter:</b>" }).appendTo(textdiv);
-            $("<p/>", { html : "<b>" + item.dn + "</b>" }).appendTo(textdiv);
-            $("<p/>", { html : "Class " + idExtractArray["currentGradeNumber"] +
-                                    " " + idExtractArray["currentSubjectFull"] +
-                                    ",<br/>Chapter " + idExtractArray["currentChapter"]}).appendTo(textdiv);
-        }
-    }
-
-
-
-    // activities    ///////***** changed 'activity' to 'activities' ///////////////
-    if(collection == "activities" || item.ft != null) {
-
-        // Thumbnail
-        $("<img/>", {
-            class : "timelineimg",
-            src : thumbnail(item, collection)
-        }).appendTo(textdiv);
-
-        //$("<p/>", { html : "<b>" + filetype(item.ft) + ":</b>" }).appendTo(textdiv);
-        $("<p/>", { html : "<b>" + item.dn + "</b>" }).appendTo(textdiv);
-
-
-        if (issection == 1) {
-            $("<p/>", { html : "<Class " + idExtractArray["currentGradeNumber"] + " " + idExtractArray["currentSubjectFull"] + ",<br/>Chapter " + idExtractArray["currentChapter"] + ", Section " + idExtractArray["currentSection"]}).appendTo(textdiv);
-        }
-        else {
-            $("<p/>", { html : "Class " + idExtractArray["currentGradeNumber"] + " " + idExtractArray["currentSubjectFull"] + ",<br/>Chapter " + idExtractArray["currentChapter"]}).appendTo(textdiv);
-        }
-
-    }
-
-
-
-    //dictionary
-    if(collection == "dictionary" || item.part != null) {
-        $("<p/>", { html : "<b>Dictionary Entry:</b>" }).appendTo(textdiv);
-
-        $("<p/>", { html : "Class " + idExtractArray["currentGradeNumber"] +
-                                " " + idExtractArray["currentSubjectFull"] +
-                                ",<br/>Chapter " + idExtractArray["currentChapter"]}).appendTo(textdiv);
-    }
-
-
-    var previewbutton = $("<button/>", {class: "preview", html:"Preview"}).bind("click", function() {
-        preview_result(collection, item);
-    });
-    $(buttondiv).append(previewbutton);
-
-    var removebutton = $("<button/>", {class: "remove", html:"X"});
-    $(buttondiv).append(removebutton);
-
-    $(textdiv).appendTo(innerdiv);
-    $(buttondiv).appendTo(innerdiv);
-
-    $(innerdiv).appendTo(timelinediv);
-    addToAssArray(item);
-    console.log("timeline ass array: ");
-    console.log(timelineAssArray);
-
-    makesortable();  //TIMELINE elements can be drag'n'dropped
-                     //why is this needed on each insertion?
-
-};  //end createTimelineElement()
-
- */
-
-
-/*
-//getSectionChapterByPrefix() no longer used
-var getSectionChapterByPrefix = function(currentResultsDiv, rElement) {
-    if ($(currentResultsDiv).html != "") {
-        if ($(rElement).data("collection") == "chapters") {
-            var chapterResults = currentResultsDiv.getElementsByTagName("div");
-            for (var i=0; i<chapterResults.length; i++) {
-                if ($(chapterResults[i]).data("collection") == "chapters" && $(chapterResults[i]).data("type") == "chapter" && $(chapterResults[i]).data("chprefix") == $(rElement).data("chprefix")) {
-                    return chapterResults[i];   // IT'S A MATCH!
-                }
-            }
-            return null;
-        }
-        else if ($(rElement).data("collection") == "activities") {
-            var actResults = currentResultsDiv.getElementsByTagName("div");
-            for (i=0; i<actResults.length; i++) {
-                if ($(actResults[i]).data("collection") == "activities" && $(actResults[i]).data("type") == "chapter" && $(actResults[i]).data("chprefix") == $(rElement).data("chprefix")) {
-                    return actResults[i];   // IT'S A MATCH!
-                }
-            }
-            return null;
-        }
-    }
-};  // end getSectionChapterByPrefix()
-
-*/
-
-/*
-//NOTE [skip] big chunk of code removed that kept track of section number and chapter number
-//            and inserted correct labels. This code seems to depend on the activity items being displayed being
-//            returned in section/chapter order, but unless we do mondodb.sort() that is not a valid assumption
-
-    // If this item is the first item
-    if (previtem == null) {
-        // Create h3 Chapter element
-        //$("<h5/>", {
-            //html : "Chapter " + idExtractArray["currentChapter"]
-        //}).appendTo(div);
-
-        // If the item ID has a decimal
-        if (item.ch_id && item.ch_id.indexOf(".") >= 0) {
-            // Create a section div & append to main div
-            issection = 1;
-            var sectionDiv = innerActivityDiv(item);
-            $(sectionDiv).attr("data-type", "section").appendTo(div);
-        }
-        // Else if the item ID doesn't have a decimal
-        else {
-            // Create a chapter div & append to main div
-            var chapterDiv = innerActivityDiv(item);
-            $(chapterDiv).attr("data-type", "chapter").appendTo(div);
-        }
-    }
-    // If this item isn't the first item
-    else if (previtem != null) {
-        // If the item  ID has a decimal
-        if (
-
-            item.ch_id &&
-
-            item.ch_id.indexOf(".") >= 0) {
-            issection = 1;
-            // If the ID prefix matches the prefix of the last one
-            if (idExtractArray["chprefix"] == idExtractArray_prev["chprefix"]) {
-                //  Make a section div
-                var sectionDiv = innerActivityDiv(item);
-                $(sectionDiv).attr("data-type", "section").appendTo(div);
-            }
-            // Else if the ID prefix doesn't match the last one
-            else if (idExtractArray["chprefix"] != idExtractArray_prev["chprefix"]) {
-                // Create a new Chapter section
-
-            //  $("<h5/>", {
-                //  html : "Chapter " + idExtractArray["currentChapter"]
-            //  }).appendTo(div);
-
-                issection = 1;
-                var sectionDiv = innerActivityDiv(item);
-                $(sectionDiv).attr("data-type", "section").appendTo(div);
-            }
-        }
-        // Else if the item ID doesn't have a decimal
-        else {
-            // Create h3 Chapter element
-
-            //$("<h5/>", {
-                //html : "Chapter " + idExtractArray["currentChapter"]
-            //}).appendTo(div);
-
-            var chapterDiv = innerActivityDiv(item);
-            $(chapterDiv).attr("data-type", "chapter").appendTo(div);
-
-        }
-    }
-  //end of removed code
-  */
-
-/////////////////////////// SAVE ///////////////////////////
-
-/*
-var save = function(){
-    console.log("saving...");
-    var itemIds = [];
-    var titleInput = document.getElementById("titleInput").value;
-    console.log("title:" + titleInput);
-
-    if(titleInput == "") {
-        alert("Lesson plan requires a title before saving.");
-    }
-    else {
-        console.log("TITLE INPUT IS RUNNING");
-        var timelineDivs = document.getElementsByClassName("timelinediv");
-        var objectId = "";
-        for (var i=0; i<timelineDivs.length; i++) {
-            objectId = timelineAssArray[$(timelineDivs[i]).data("objid")]._id;
-            itemIds.push(objectId);
-        }
-
-        var timeline = {
-            timeline_id: getParameterByName("timelineId"),
-            lesson_title : titleInput,
-            items_array : itemIds
-        };
-
-        console.log(timeline);
-
-        $.post("looma-lesson-save.php", timeline, function(data) {
-            console.log(data);
-            console.log("Saved!");
-        }).fail(function(data){
-            console.log(data);
-        });
-        alert("Your timeline, " + titleInput + ", has been saved!");
-    }
-}; end [OLD] save()
-*/
-
-////////////////////////// Present button from index  /////////////////////////////
-
-//var indexToPresent = function(){
-//  console.log("opening timeline in present...");
-//  var itemIdArray = [];
-//
-//  var timelineDivs = document.getElementsByClassName("timelinediv");
-//
-//  var objectId = "";
-//  var form = $("<form/>", {
-//      method: "post",
-//      action: homedirectory + "present.php",
-//  });
-//
-//  for (var i=0; i<timelineDivs.length; i++) {
-//      var formInput = $("<input/>", {
-//          type : "text",
-//          name : "objid",
-//          value: $(timelineDivs[i]).data("objid"),
-//      });
-//
-//      form.append(formInput);
-//  }
-//  form.submit();
-//}
-
-
-/*
-//QUERYSEARCH() no longer used
-var querySearch = function() {
-    $("#innerResultsMenu").empty();
-    $("#innerResultsDiv" ).empty();
-
-// var filetypes = {
-  //          "image" :   {   id : "ft_image",     display : "Image"     },
-  //          "video" :   {   id : "ft_video",     display : "Video"     },
-  //         "audio" :   {   id : "ft_audio",     display : "Audio"     },
-  //         "pdf" :     {   id : "ft_pdf",       display : "PDF"       },
-  //         "text" :    {   id : "ft_text",      display : "Text"      },
-  //          "chapter":  {   id : "ft_chapt",     display : "Chapter"   },
-  //          "html" :    {   id : "ft_html",      display : "HTML"      },
-  //          "looma":    {   id : "ft_looma",     display : "Looma Page"},
-  //          "slideshow":{   id : "ft_slideshow", display : "Slide Show"}
-
-
-    var filterdata = {
-        'grade' : document.getElementById('dropdown_grade').value,
-        'subject' : document.getElementById('dropdown_subject').value,
-          // 'chapter' : document.getElementById('dropdown_chapter').value,
-          // 'section': document.getElementById('dropdown_section').value,
-        'image'  : document.getElementById('ft_image').checked,
-        'video'  : document.getElementById('ft_video').checked,
-        'audio'  : document.getElementById('ft_audio').checked,
-        'pdf'    : document.getElementById('ft_pdf').checked,
-        'text'   : document.getElementById('ft_text').checked,
-        'chapter': document.getElementById('ft_chapt').checked,
-        'html'   : document.getElementById('ft_html').checked,
-        'looma'  : document.getElementById('ft_looma').checked,
-        'slideshow' : document.getElementById('ft_slideshow').checked
-    };
-    //console.log(filterdata['image']);
-
-    if (!isFilterSet) {
-        $("#innerResultsMenu").empty().html("Please select at least 1 filter option before searching.") }
-
-//    if (filterdata['grade']   == "" &&
-//        filterdata['subject'] == "" &&
-//        filterdata['image'] == false &&
-//        filterdata['video'] == false &&
-//        filterdata['audio'] == false &&
-//        filterdata['pdf'] == false &&
-//        filterdata['text'] == false &&
-//        filterdata['chapter'] == false &&
-//        filterdata['html'] == false &&
-//        filterdata['slideshow']  == false) {
-//        $("#innerResultsDiv").html("Please select at least 1 filter option before searching.");
-
-
-    else {
-        $('#innerResultsMenu').empty();
-        $('#innerResultsDiv').empty();
-        $("#previewpanel").empty();
-
-        var loadingmessage = $("<p/>", {html : "Loading results..."}).appendTo("#outerResultsMenu");
-
-        $.get("looma-lesson-query.php", filterdata, function(filterdata) {
-            $(loadingmessage).remove();
-            console.log(JSON.parse(filterdata));
-            var filterdata_object = storeFilterData(filterdata);
-            displaySearchResults(filterdata_object);
-        }); //Send filter data to server via GET request
-
-    }
-}; //end querySearch()
-
-//storeFilterData() no longer used
-var storeFilterData = function(filterdata) {
-    var filterdata_object = JSON.parse(filterdata;
-    return filterdata_object;
-};  //end storeFilterData()
-*/

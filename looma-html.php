@@ -33,4 +33,4 @@ Description:  for Looma 2
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
   	<script src="js/looma-screenfull.js"></script>
-   	<script src="js/looma-epaath.js"></script>
+   	<script src="js/looma-html.js"></script>

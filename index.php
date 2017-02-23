@@ -67,23 +67,23 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
 	?>
 
     <div class="button-div" id="row2">
-		<button type="button" class="subject button-5 img" id="nepali"  hidden>
+		<button type="button" class="subject button-5 img" id="nepali"  >
 			<?php keyword('Nepali') ?>  <br>
 			<img class="en-tb" >  <img class="np-tb" ><br>
 		</button>
-		<button type="button" class="subject button-5 img" id="english" hidden>
+		<button type="button" class="subject button-5 img" id="english" >
 			<?php keyword('English') ?>    <br>
 			<img class="en-tb" >  <img class="np-tb" ><br>
 		</button>
-		<button type="button" class="subject button-5 img" id="math"    hidden>
+		<button type="button" class="subject button-5 img" id="math"    >
 			<?php keyword('Math') ?>    <br>
 			<img class="en-tb" >  <img class="np-tb" ><br>
 		</button>
-		<button type="button" class="subject button-5 img" id="science" hidden>
+		<button type="button" class="subject button-5 img" id="science" >
 			<?php keyword('Science') ?>    <br>
 			<img class="en-tb" >  <img class="np-tb" ><br>
 		</button>
-		<button type="button" class="subject button-5 img" id="social studies" hidden>
+		<button type="button" class="subject button-5 img" id="social studies" >
 			<?php keyword('Social Studies') ?>    <br>
 			<img class="en-tb" >  <img class="np-tb" ><br>
 		</button>

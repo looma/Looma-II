@@ -19,8 +19,8 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
 <?php $page_title = 'Looma Audio Player';
 	  include ('includes/header.php');
 ?>
-	<!-- add CSS files for this page:
-		<link rel="stylesheet" href="css/filename.css"> -->
+    <!-- NOTE: audio.php shares media controls styling with video.php -->
+    <link rel="stylesheet" type="text/css" href="css/looma-media-controls.css">
 	</head>
 
 	<body>
@@ -42,12 +42,16 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
 		</div>
 
 	     <div id="media-controls">
-          <br><button type="button" class="media" id="play-pause"><?php keyword('Play') ?></button>
-          <input type="range"       class="video" id="seek-bar" value="0" style="display:inline-block">
-          <br><button type="button" class="media" id="volume">    <?php keyword('Volume') ?></button>
-          <input type="range"       class="video" id="volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">
-          <br><button type="button"     class="media" id="mute">      <?php keyword('Mute') ?></button>
-     </div>
+
+         <div id="time" class="title">0:00</div>
+
+              <br><button type="button" class="media play-pause"><?php keyword('Play') ?></button>
+              <input type="range"       class="video seek-bar" value="0" style="display:inline-block">
+              <br><button type="button" class="media mute">    <?php keyword('Volume') ?></button>
+              <input type="range"       class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">
+ <!--         <br><button type="button"     class="media" id="mute">      <?php keyword('Mute') ?></button>
+ -->
+         </div>
 	<!--
 	  <div id="audio-controls">
    		  <button type="button" class="media" id="play-pause">Play</button>
@@ -60,4 +64,5 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
 
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
-   	 <script src="js/looma-audio.js"></script>          <!-- Looma Javascript -->
+     <script src="js/looma-media-controls.js"></script>          <!-- Looma Javascript -->
+     <script src="js/looma-audio.js"></script>          <!-- Looma Javascript -->

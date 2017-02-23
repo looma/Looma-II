@@ -26,7 +26,8 @@ they want to edit a video
     */
 ?>
 
-	<link rel="stylesheet" type="text/css" href="css/looma-video.css">
+    <link rel="stylesheet" type="text/css" href="css/looma-video.css">
+    <link rel="stylesheet" type="text/css" href="css/looma-media-controls.css">
 
 	</head>
 
@@ -49,12 +50,14 @@ they want to edit a video
 			<div id="main-container-horizontal">
 				<div id="video-player">
 					<div id="video-area">
-						<video id="video">
-							<!--Gets the source of the video and the thumbnail of the video-->
-							<?php echo 'poster="' . $filepath . thumbnail($filename) . '">'; ?>
-								<?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">' ?>
-						</video>
-					</div>
+					    <div id="fullscreen">
+    						<video id="video">
+    							<!--Gets the source of the video and the thumbnail of the video-->
+    							<?php echo 'poster="' . $filepath . thumbnail($filename) . '">'; ?>
+    								<?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">' ?>
+    						</video>
+					    </div>
+				   </div>
 				</div>
                 <div id="title-area">
                     <h3 id="title"></h3>
@@ -63,23 +66,14 @@ they want to edit a video
 				<div id="media-controls">
 
 					<button id="fullscreen-control"></button>
-
 					<button id="fullscreen-playpause"></button>
 
-                    <div id="time" class="title">0:00</div>
+                    <div id="time" class="title"></div>
 
-					<button type="button" class="media" id="play-pause">
-						<?php
-                            keyword('Play/Pause');
-                        ?>
-					</button>
-					<input type="range" class="video" id="seek-bar" value="0" style="display:inline-block">
-					<br>
-
-					<button type="button" class="media" id="volume">
-						<?php keyword('Volume') ?>
-					</button>
-					<input type="range" class="video" id="volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">
+					<button type="button" class="media play-pause"><?php keyword('Play/Pause');?></button>
+					<input type="range" class="video seek-bar" value="0" style="display:inline-block"><br>
+					<button type="button" class="media mute"><?php keyword('Volume') ?></button>
+					<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">
 					<br>
 
 				</div>
@@ -106,6 +100,8 @@ they want to edit a video
         <?php include ('includes/toolbar.php'); ?>
         <?php include ('includes/js-includes.php'); ?>
         <script src="js/looma-screenfull.js"></script>
-        <script src="js/looma-video.js"></script>
+        <script src="js/looma-media-controls.js"></script>          <!-- Looma Javascript -->
+        <script src="js/looma-video.js"></script>          <!-- Looma Javascript -->
+
 
 	</body>

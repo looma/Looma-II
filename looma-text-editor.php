@@ -102,6 +102,7 @@ Comments:
    		  include ('includes/js-includes.php');
 ?>
         <script src="js/jquery.hotkeys.js">           </script>
+        <script src="js/tether.min.js">  </script>
         <script src="js/bootstrap.min.js">           </script>
         <script src="js/bootstrap-wysiwyg.min.js">   </script>
 

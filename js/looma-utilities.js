@@ -31,6 +31,7 @@ Description:
  * LOOMA.ch_id()
  * LOOMA.parseCH_ID()
  * LOOMA.speak(text)
+ * LOOMA.toggleFullscreen()
  * LOOMA.makeTransparent()
  * LOOMA.closePopup()
  * LOOMA.alert()
@@ -88,20 +89,13 @@ playMedia : function(button) {
                 '&dn=' + button.getAttribute('data-dn');
             break;
 
-        case "pdf":
-            /*
-            //direct call to  ViewerJS replaced with looma-pdf.php with iframe
-            window.location = 'ViewerJS/#../' + button.getAttribute('data-fp') + button.getAttribute('data-fn');
-            */
-
-            //old code using PDF.js
+        case "pdf":      //PDF
+        case "chapter":  //CHAPTER
             window.location = 'looma-pdf.php?fn=' + button.getAttribute(
-                    'data-fn') +
-                '&fp=' + button.getAttribute('data-fp') +
-                '&zoom=' + button.getAttribute('data-zoom') +
-                '&pg=' + button.getAttribute('data-pg');
-
-
+                              'data-fn') +
+                              '&fp=' + button.getAttribute('data-fp') +
+                              '&zoom=' + button.getAttribute('data-zoom') +
+                              '&pg=' + button.getAttribute('data-pg');
             break;
 
         case "slideshow":      // SLIDESHOW activity type from Thomas
@@ -145,6 +139,7 @@ playMedia : function(button) {
                                */
             break;
         case "lesson":
+            window.location = 'looma-lesson-present.php?id=' + button.getAttribute('data-id');
             break;
 
         default:
@@ -691,6 +686,11 @@ LOOMA.speak = function(text, engine, voice) {
             }
     }  //end of code that calls server-side MIMIC
 }; //end LOOMA.speak()
+
+//toggle fullscreen display of the element with id="fullscreen"
+LOOMA.toggleFullscreen = function() {
+    if (document.fullscreenElement) document.exitFullscreen(); else document.getElementById('fullscreen').requestFullscreen();
+}; //end LOOMA.toggelFullscreen()
 
 /*
  from looma-alerts.js in the slideshow team code

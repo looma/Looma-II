@@ -289,7 +289,7 @@ Usage: 	<button  id="testvideo"
             <?php include ('includes/toolbar.php'); ?>
             <?php include ('includes/js-includes.php'); ?>
 
-            <script src = "js/jquery.js">          </script>      <!-- jQuery -->
+            <script src = "js/jquery.min.js">          </script>      <!-- jQuery -->
             <script src = "js/looma-utilities.js"> </script>
             <script src = "js/looma-screenfull.js"></script>
             <script src = "js/looma-edited-video.js"></script>

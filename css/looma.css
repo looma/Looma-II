@@ -635,17 +635,18 @@ button.lookup {
     overflow:hidden;
 }
 
-
 #fullscreen {
 	position: relative;
 	max-width:100%;
+	width:100%;
     height:100%; /*trying to find best way to size fullscreen video*/
 }
 
-#fullscreen:-webkit-full-screen {
+/*#fullscreen:-webkit-full-screen {
     height: 95%;
     width:  95%;
   }
+*/
 
 button#fullscreen-control {
 	position: absolute;
@@ -716,6 +717,11 @@ button.pdf, button.media{
 	height:25%;
 	margin: 2px;
 	font-size:1.5em;
+	background-size: 100% 100%;
+}
+
+button.play-pause {
+        background-image: url("../images/video.png");
 }
 
 button.heading  {

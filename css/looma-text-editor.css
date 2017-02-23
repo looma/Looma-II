@@ -12,6 +12,11 @@ Revision: Looma 2.0.x
 Comments:
 */
 
+body {
+    color:black;
+    background-color:#eee;
+}
+
 .admin {
     display:none;
 }

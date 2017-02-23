@@ -7,61 +7,81 @@ Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: Jan 2017
 Revision: Looma 2.4
-
-
- */
+*/
 
 'use strict';
 
- //NOTE: looma-lesson-present.php sends "var lesson_id = ID"
-
 window.onload = function ()
     {
-        $('#controlpanel').draggable();
+        //$('#controlpanel').draggable(); //makes the control buttons moveable around the screen.
 
         $('.activity').removeClass('activity play img').addClass('lesson-element');
 
-//        $('#viewer').attr('src',  '../content/pictures/Bullfrog.jpg');
-//        $('#viewer').attr('src',  '../content/PhET/arithmetic_en.html');
-
         var $timeline = $('#timeline');
         var $viewer = $('#viewer');
-        var $currentItem = null;
-        // add click handlers for mini-toobar and for timeline entries
+        var $currentItem = $('#timeline').find('button:first').addClass('playing');
+        var playing = false;
 
-      $('#fullscreen-control').click(function (e) {
-                e.preventDefault();
-                screenfull.toggle($('#fullscreen')[0]);
-            });
-
-        $('#back').click( function()    { if ($currentItem.prev()) { play($currentItem.prev()); }; });
-        $('#forward').click( function() { if ($currentItem.next()) { play($currentItem.next()); }; });
-        $('#pause').click( function()   { $viewer.empty(); });
-        $('#dismiss').click( function() { });
+        // handlers for 'control panel' buttons
+        $('#back').click( function()    { if ($currentItem.prev()) { play($currentItem.prev()); } else pause();});
+        $('#forward').click( function() { if ($currentItem.next()) { play($currentItem.next()); } else pause(); });
+        $('#pause').click( function()   { if (playing) pause(); else play($currentItem); });
+        $('#dismiss').click( function() { parent.history.back(); });
 
         $timeline.on('click', 'button', function() { play($(this)); });
 
-        $('.lesson-element img').on('hover', function () {
-            LOOMA.alert('alert');
-        });
+        var $pop;
 
+        $('.lesson-element img').hover(
+            function () { //handlerIn
+                var $btn = $(this).closest('button');
+                $pop = $('<div class="pop">' + $btn.attr('data-dn') + '</div>').appendTo($('#timeline'));},
+            function () { //handlerOut
+                $pop.remove();
+              }
+         );
+
+ // create HTML for various players for filetypes
+
+        var $imageHTML = $(makeImageHTML());
+        var $audioHTML = $(makeAudioHTML());
+        var $videoHTML = $(makeVideoHTML());
+        var $pdfHTML   = $(makePdfHTML());
+        var $htmlHTML  = $(makeHtmlHTML());
+
+        var video = $('#video', $videoHTML).get(0); //the video DOM element
+        var audio = $('#audio', $audioHTML).get(0); //the audio DOM element
 
  //
  //NOTE: playActivity() should move to looma-utilities.js
  //
 
+        function pause() {
+            // $viewer.empty();
+            //if ($('#video')) $('#video').each(this.pause()); //pause video if there it is playing
+            playing = false;
+            //$timeline.fadeIn(500);
+            $('#pause').css('background-image', 'url("images/play-button.png")');
+        }; //end pause()
+
         function play($item) {
             $viewer.empty();
             $currentItem = $item;
-            $('timeline button').removeClass('playing');
+            playing = true;
+            $('#timeline button').removeClass('playing');
             $item.addClass('playing');
-            playActivity($item.data('ft'), $item.data('fn'), $item.data('fp'), $item.data('dn'), $item.data('id'), "", "");
+            $('#pause').css('background-image', 'url(" images/pause-button.png")');
+            //$timeline.fadeOut(500);  //this hides the timeline when playing media - decided to not hide the timeline [usability]
+
+            playActivity($item.data('ft'), $item.data('fn'), $item.data('fp'), $item.data('dn'), $item.data('id'), "", $item.data('pg'));
         }; //end play()
 
         function playActivity(ft, fn, fp, dn, id, ch, pg) //play the activity of type FT, named FP, in path FP, display-name DN
                                                           // depending on FT, may use ID, CH (a ch_id) or pg (for PDFs)
         {
-        // plays the selected (onClick) timeline element (activity) in the #viewer div
+        // plays the selected (onClick) timeline element (activity) in the $viewer div
+
+            restoreFullscreenControl(); //reset fullscreen operation in case video, which overrides normal fullscreen operation, has run
 
             switch (ft) {
                 case "image":
@@ -69,27 +89,41 @@ window.onload = function ()
                 case "png":
                 case "gif":
 
-                    $(imageHTML(fp, fn)).appendTo($viewer);
-
+                  //  $(imageHTML(fp, fn)).appendTo($viewer);
+                    $imageHTML.attr('src', fp + fn);
+                    $imageHTML.appendTo($viewer);
                     break;
                 case "video":
                 case "mp4":
                 case "m4v":
                 case "mov":
 
-                    $(videoHTML(fp,fn, dn)).appendTo($viewer);
+                    //$(videoHTML(fp, fn, dn)).appendTo($viewer);
+                    $videoHTML.find('source').attr('src', fp + fn);
+                    $videoHTML.find('video').attr('poster',  fp + fn.substr(0, fn.indexOf('.')) + '_thumb.jpg');
+                    $videoHTML.appendTo($viewer);
+                    attachMediaControls();  //hook up event listeners to the audio and video HTML
+                    attachFullscreenPlayPauseControl();
+                    modifyFullscreenControl();
 
                    break;
                 case "audio":
                 case "mp3":
 
-                    $(audioHTML(fp,fn, dn)).appendTo($viewer);
-
+                    //$(audioHTML(fp, fn, dn)).appendTo($viewer);
+                    $audioHTML.find('source').attr('src', fp + fn);
+                    $audioHTML.find('#songname').text(dn);
+                    $audioHTML.appendTo($viewer);
+                    attachMediaControls();  //hook up event listeners to the audio and video HTML
                     break;
                 case 'pdf':
+                case 'chapter':
 
-                    $(pdfHTML(fp,fn, dn)).appendTo($viewer);
+                    //$(pdfHTML(fp,fn, dn)).appendTo($viewer);
+                    //$pdfHTML.attr('src', fp + fn);
 
+                    $pdfHTML.find('iframe').attr('src', 'looma-viewer.html?file=' + fp + fn + '#page=' + pg + '&zoom=160');
+                    $pdfHTML.appendTo($viewer);
                     break;
 
                 case 'text':
@@ -102,13 +136,18 @@ window.onload = function ()
                  case 'EP':
                  case 'epaath':
 
-                    $(htmlHTML(fp,fn, dn)).appendTo($viewer);
-
+                    //$(htmlHTML(fp,fn, dn)).appendTo($viewer);
+                    $htmlHTML.find('embed').attr('src', fp + fn);
+                    $htmlHTML.appendTo($viewer);
                     break;
+
+                 case 'looma':
+                    window.location = $currentItem.data('url');
+                    break;
+
                 case 'evi':
                 case 'slideshow':
                 case 'map':
-                case 'looma':
                 case 'EP':
                     break;
 
@@ -117,8 +156,8 @@ window.onload = function ()
                    break;
             };  //end SWITCH(ft)
 
-          /*
 
+          /*other file types:
 
         case "evi":
             //evi = edited video indicator
@@ -130,33 +169,8 @@ window.onload = function ()
             '&dn=' + button.getAttribute('data-dn');
             break;
 
-        case "pdf":
-
-            //direct call to  ViewerJS replaced with looma-pdf.php with iframe
-            //window.location = 'ViewerJS/#../' + button.getAttribute('data-fp') + button.getAttribute('data-fn');
-
-
-            //old code using PDF.js
-            window.location = 'looma-pdf.php?fn=' + button.getAttribute(
-                    'data-fn') +
-                '&fp=' + button.getAttribute('data-fp') +
-                '&zoom=' + button.getAttribute('data-zoom') +
-                '&pg=' + button.getAttribute('data-pg');
-            break;
-
         case "slideshow":      // SLIDESHOW activity type from Thomas
             window.location = 'looma-slideshow.php?id=' + button.getAttribute("data-id");
-            break;
-
-        case "text":
-            var id = encodeURIComponent(button.getAttribute('data-id'));
-            window.location = 'looma-text.php?id=' + id;
-            break;
-
-        case "html":
-            var fp = encodeURIComponent(button.getAttribute('data-fp'));
-            var fn = encodeURIComponent(button.getAttribute('data-fn'));
-            window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
             break;
 
         case "map":
@@ -169,39 +183,31 @@ window.onload = function ()
             window.location = fp;
             break;
 
-        case "epaath":
-        case "EP":
-            fp = encodeURIComponent(button.getAttribute('data-fp'));
-            fn = encodeURIComponent(button.getAttribute('data-fn') +
-                '/start.html');
-            window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
-
-            break;
-        case "lesson":
-            break;
-
-        default:
-            console.log("ERROR: in LOOMA.playMedia(), unknown type: " +
-                button.getAttribute("data-ft"));
-    } //end SWITCH
          */
-
 
         }; //end playActivity()
 
-        function imageHTML(fp, fn) { return('<img src="' + fp + fn + '"/>');};
+        function makeImageHTML() { return('<img id="fullscreen" src="">');};
 
-        function pdfHTML(fp,fn, dn) {return('<embed src="' + fp + fn + '" height=100% width=100%>');};
+       // function makePdfHTML() {return('<embed id="fullscreen" src="" height=100% width=100%>');};
+
+
+       function makePdfHTML() // see looma-pdf.php for original code
+        { return ('<div id="fullscreen"><iframe id="iframe"' +
+                 'id="pdf-canvas" ><p hidden id="parameters" data-fn= data-fp= data-pg=></p>' +
+                '</iframe></div>');
+        };  //end makePdfHTML()
+
 
         function textHTML(id) {
-
              $.post("looma-database-utilities.php",
                 {cmd: "openByID", collection: 'activities', id: id},
                 function(result1) {
                     $.post("looma-database-utilities.php",
                     {cmd: "openByID", collection: 'text', id: result1.mongoID.$id},
                     function(result2) {
-                        $(result2.data).appendTo($viewer);
+                        $('<div id="fullscreen" style="background-color:white">').append($(result2.data)).appendTo($viewer);
+                       //  $(result2.data).appendTo($viewer);
                     },
                     'json'
                   );
@@ -210,47 +216,54 @@ window.onload = function ()
               );
         };
 
-        function htmlHTML(fp, fn) { return('<embed src="' + fp + fn + '" height=100% width=100%>');};
+        function makeHtmlHTML() { return('<div id="fullscreen"><embed src="" height=100% width=100%></div>');};
 
-        function audioHTML(fp, fn, dn) { return(
-            '<div>' +
-                '<div id="audio-viewer" class="viewer">' +
+        //function makeLoomaHTML() { return('<div id="fullscreen"><embed src="" height=100% width=100%></div>');};
+
+        function makeAudioHTML() { return(
+            '<div id="fullscreen">' +
+                '<div id="audio-viewer"">' +
                     '<br><br><br><br>' +
-                    '<h2>Looma Audio Player (' + dn + ')</h2>' +
+                    '<h2>Looma Audio Player (<span id="songname"></span>)</h2>' +
                     '<br><br><br><br>' +
-                    '<audio id="audio"><source src="' + fp + fn + '" type="audio/mpeg">' +
+                    '<audio id="audio"><source src="" type="audio/mpeg">' +
                     'Your browser does not support the audio element.' +
-                '</audio>' +
-            '</div>' +
-            '<div id="media-controls">' +
-              '<br><button type="button" class="media" id="play-pause">Play</button>' +
-              '<input type="range"       class="video" id="seek-bar" value="0" style="display:inline-block">' +
-              '<br><button type="button" class="media" id="volume">Volume</button>' +
-              '<input type="range"       class="video" id="volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">' +
-              '<br><button type="button" class="media" id="mute">Mute</button>' +
-            '</div></div>' +
-            '<script src="js/looma-audio.js"></script>');
+                    '</audio>' +
+                '</div>' +
+              '<div id="media-controls">' +
+                  '<div id="time" class="title">0:00</div>' +
+                  '<br><button type="button" class="media play-pause"></button>' +
+                  '<input type="range"       class="video seek-bar" value="0" style="display:inline-block">' +
+                  '<br><button type="button" class="media mute">Volume</button>' +
+                  '<input type="range"       class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">' +
+              '</div>' +
+            '</div>');
         }; //end audioHTML
 
-        function videoHTML(fp, fn, dn) { return (
+        function makeVideoHTML() { return (
+                // '<link rel="stylesheet" type="text/css" href="css/looma-video.css">' +
                  '<div id="video-player">' +
                     '<div id="video-area">' +
-                        '<video id="video">' +
-                            'poster="' + fp + thumbnail(fn) +  '">' +
-                            '<source id="video-source" src="' + fp + fn + 'type="video/mp4">' +
-                        '</video>' +
-                    '</div></div>' +
+                        '<div id="fullscreen">' +
+                            '<video id="video">' +
+                                '<source id="video-source" src="" type="video/mp4">' +
+                            '</video>' +
+                    '</div></div></div>' +
                 '<div id="title-area"><h3 id="title"></h3></div>' +
                 '<div id="media-controls">' +
-                    '<button id="fullscreen-control"></button>' +
+
                     '<button id="fullscreen-playpause"></button>' +
                     '<div id="time" class="title">0:00</div>' +
-                    '<button type="button" class="media" id="play-pause">Play/Pause</button>' +
-                    '<input type="range" class="video" id="seek-bar" value="0" style="display:inline-block"><br>' +
-                    '<button type="button" class="media" id="volume">Volume</button>' +
-                    '<input type="range" class="video" id="volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
-                '</div></div>' +
-                '<script src="js/looma-video.js"></script>');
+                    '<button type="button" class="media play-pause"></button>' +
+                    '<input type="range" class="video seek-bar" value="0" style="display:inline-block"><br>' +
+                    '<button type="button" class="media mute">Volume</button>' +
+                    '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
+                '</div>'
+ //               +
+ //               '<script>var fileName = "' + fn + '";' +
+ //               '        var filePath = "' + fp + '";' +
+ //               '        var displayName = "' + dn + '";</script>'
+                  );
         };  //end videoHTML
     }; //end window.onload
 

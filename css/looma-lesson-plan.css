@@ -7,30 +7,8 @@ Programmer name: SCU
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date:
 Revision: Looma 2.0.x
-
-Comments:
 */
 
-/* ************************ MEDIA QUERY ********************
-
-
-@media screen and (min-width: 1281px) {
-	body #div_search {
-		margin-top: .6%;
-	}
-	/*#btnSave {
-		background:black;
-	}*/
-/*	body #div_grade, #div_subject, #div_chapter, #div_section {
-		margin-top: -.5%;
-	} */
-/*	body #div_filetypes {
-		width: 245px;
-	}*/
-
-
-}
-*/
 html, body {margin:0;padding:0;height:100%;}
 
 /********** navigation bar ************/
@@ -39,6 +17,15 @@ html, body {margin:0;padding:0;height:100%;}
 	width:100vw;
 }
 
+span.hint {
+    position:absolute;
+    top:30%;
+    left:25%;
+    padding:10vh 0 0 0;
+    color:#aaa;
+    font-size:2em;
+    z-index:-1;
+}
 
 .admin, .template-cmd{
     display:none;
@@ -204,10 +191,14 @@ input {
 }
 
 .filter_label p, .filter_label {
-	font-size:18px;
+	font-size:1.2em;
 	text-align:left;
 	padding-right: 6px;
 	/*line-height:6px;*/
+}
+
+.filter_checkbox {
+    zoom:2;
 }
 
 .textdiv {
@@ -397,10 +388,26 @@ li:hover {
     box-shadow: 0px 0px 25px #C4C4C4;
 }
 
-#previewpanel video {
-    max-height:55vh;
+#previewpanel #video-area {
+    height:45vh;
+    max-height:45vh;
 }
-video::-webkit-media-controls {display: block !important;}
+
+#previewpanel #media-controls {
+    height:15vh;
+    max-height:15vh;
+}
+
+#previewpanel .mute, #previewpanel .play-pause {
+    width:5vh;
+    height:5vh;
+    margin:0 5wh 0 0;
+    background-color:white;
+    background-size: 100% 100%;
+}
+
+.play-pause { background-image: url("../images/play-button.png"); }
+.mute       { background-image: url("../images/mute.png");}
 
 #previewpanel object {
     height:100%;
@@ -433,10 +440,8 @@ video::-webkit-media-controls {display: block !important;}
 }
 
 .timelineEntire{
-	width:5000px;
+	width:100000px;
 	min-height:20vh;
-/*	background:white;*/
-/*	clear:both;*/
 }
 
 #results {

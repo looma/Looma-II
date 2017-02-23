@@ -1,0 +1,26 @@
+
+button.play-pause {
+    background-image: url("../images/video.png");
+    background-size: 100% 100%;
+    background-color:rgba(255,255,255,1);
+    height: 5vh;
+    width:  5vh;
+    margin-left:20vw;
+    background-repeat: no-repeat;
+    color: transparent;
+}
+
+button.mute {
+    background-image: url("../images/mute.png");
+    background-size: 100% 100%;
+    background-color:rgba(255,255,255,1);
+    height: 5vh;
+    width:  5vh;
+    margin-left:20vw;
+
+    background-repeat: no-repeat;
+    color: transparent;
+}
+input.seek-bar, input.volume-bar {
+    display: inline;
+}

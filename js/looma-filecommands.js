@@ -174,9 +174,9 @@ $(document).ready(function ()
                console.log("FILE COMMANDS: clicked new");
                if (callbacks['modified']())
                    savework(currentname, currentcollection, currentfiletype);
-               else {
+              // else {
                    callbacks['clear']();
-               };
+              // };
            });
 
 

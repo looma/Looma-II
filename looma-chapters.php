@@ -131,7 +131,7 @@ for a textbook (class/subject) for Looma 2
 						  }
 				else {echo "<td><button class='chapter' style='visibility: hidden'></button></dt>";}
 
-				// display chapter button for 2nd native] textbook, if any
+				// display chapter button for 2nd [native] textbook, if any
 				if ($tb_nfn && $ch_npn) { echo "<td><button class='chapter'
 									  data-fn='$tb_nfn'
 									  data-fp='$tb_fp'

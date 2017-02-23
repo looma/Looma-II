@@ -11,7 +11,25 @@ Description:
 
 'use strict';
 
+    function restoreFullscreenControl () {
+        $('#fullscreen-control').off('click').on('click', function (e) {
+            e.preventDefault();
+            //LOOMA.toggleFullscreen();
+            screenfull.toggle(document.getElementById('fullscreen'));
+    }); //end fullscreen
+  };
+
 $(document).ready (function() {
+
+    // LOOMA fullscreen display
+    // any page can include a button with ID 'fullscreen-control'
+    // to allow the user to make the element with id="fullscreen" display in fullscreen
+    // that page must include '<script src="js/looma-screenfull.js"></script>'
+
+
+
+    restoreFullscreenControl();
+
 
     //turn off any speech when user leaves the page
     if (speechSynthesis) {$(window).on("unload", function(){speechSynthesis.cancel();});}

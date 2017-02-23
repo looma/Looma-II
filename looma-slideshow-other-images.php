@@ -29,5 +29,5 @@ Revision: 0.3
     <div class="results" id="resultsArea"></div>
   </div>
 </div>
-<script src="js/jquery.js"></script>
+<script src="js/jquery.min.js"></script>
 <script src="js/looma-slideshow-contentNav.js"></script>

@@ -24,7 +24,7 @@
                 else return "";
       } //end function THUMBNAIL
 
-	function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom) {
+	function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom) {
 	    // makes an ACTIVITY button (for looma-library, looa-activities, etc)
 	    // some parameters are optional for some filetypes
 	    //    $ft - filetype, $fp - path to file, $fn - filename, $dn - display name,
@@ -73,11 +73,11 @@
    		    case "EP":
             case "epaath": $fp = '../content/epaath/activities/'; break;
 
-            case "VOC": break;  //vocabulary reviews
-
+            case "VOC":     break;  //vocabulary reviews
             case "lesson";  break;  //lesson plan
-
-           case "text";  break;  //lesson plan
+            case "text";    break;  //text
+            case "looma";   break;  //looma
+            case "chapter"; break;  //chapter
 
 		   default:
 			     echo "unknown filetype " . $ft;
@@ -92,8 +92,11 @@
         if ($dn)          echo "data-dn='" .  $dn . "' ";
         if ($mongo_id)    echo "data-id='" .  $mongo_id . "' ";
         if ($ch_id)       echo "data-ch='" .  $ch_id . "' ";
-        if ($ft == 'pdf') {echo "data-pg='" . $pg . "' ";     //maybe should set pg=1 if pg not specified??
+        if ($url)         echo "data-url='" .  $url . "' ";
+
+        if ($ft == 'pdf' || $ft == 'chapter') {echo "data-pg='" . $pg . "' ";     //maybe should set pg=1 if pg not specified??
                           echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
+
                           echo ">";
                           echo "<img src='" .
                               ($ft == "looma" ? "" : $fp) .

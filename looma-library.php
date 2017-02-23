@@ -13,7 +13,7 @@ Description:  displays and navigates content folders for Looma 2
         require ('includes/header.php');
         require ('includes/mongo-connect.php');
 
-        // load: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+        // load: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
         require ('includes/activity-button.php');
 ?>
     </head>
@@ -96,9 +96,9 @@ Description:  displays and navigates content folders for Looma 2
                 //skips any directory with a file named "hidden.txt"
 
              {
-                if (file_exists($path . $file . "/images.txt")) {
+                if (file_exists($path . $file . "/slideshows.txt")) { //this dir represents slideshows. add a play button to the dir button
                     /************************************************************************
-                     * EDITED: This if statement creates a slideshow play button linking directories containing images.txt files
+                     * EDITED: This if statement creates a slideshow play button linking directories containing slideshows.txt files
                      * with Looma slideshow player
                      */
                     echo "<td>
@@ -112,7 +112,9 @@ Description:  displays and navigates content folders for Looma 2
                     thumb_image($path . $file) . $file . "</button></a></td>";
 
                     }
-                else {
+
+
+                else {  //make a regular directory button
 
                     echo "<td><a href='looma-library.php?fp=" . $path . $file .
                     "/'><button class='activity img zeroScroll'>" .
@@ -163,8 +165,8 @@ echo "<hr>";
                     $id = $doc['_id'];
                     //$json = $doc['JSON'];  //NOTE: this passed the full text of the edited script in the URL.
                                            // should just pass the mongo ID and have the player retrieve the script's full text
-                     // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
-                    makeActivityButton($ft, $fp, $fn, $dn, "", "", $id, "", "");
+                     // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, $fp, $fn, $dn, "", "", $id, "", "", "");
                     //makeEditedVideoButton($dn, $path, $ext, $file, $json);
 
                     echo "</td>";
@@ -200,11 +202,38 @@ echo "<hr>";
 
                     $ft = "slideshow";
                     $id = $slideshow['_id'];  //mongoID of the descriptor for this slideshow
-                    makeActivityButton($ft, $fp, $fn, $dn, $thumb, "", $id, "", "");
+                    makeActivityButton($ft, $fp, $fn, $dn, $thumb, "", $id, "", "", "");
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
             } //end FOREACH slideshow
         }  //end IF slideshows
+
+
+        else
+
+        //modifications for LESSONPLANs
+        //***************************
+        //make buttons for LESSONPLAN directory -- virtual folder, populated from lessons collection in mongoDB
+        if($path == "../content/lessons/") {   //populate virtual folder of lesson plans
+
+           //echo "DEBUG number of lessons is :" . $lessons_collection->count();
+
+            $lessons = $lessons_collection->find();
+
+             foreach ($lessons as $lesson) {
+
+                        //echo "DEBUG   found lesson " . $lesson['dn'] . "<br>";
+
+                    echo "<td>";
+                    $dn = $lesson['dn'];
+                    $ft = "lesson";
+                    $thumb = $path . "/thumbnail.png";
+                    $id = $lesson['_id'];  //mongoID of the descriptor for this lesson
+                    makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
+                    echo "</td>";
+                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+            } //end FOREACH lesson
+        }  //end IF lessons
 
         else {
 
@@ -269,8 +298,8 @@ echo "<hr>";
                     case "pdf":
                     case "html":
 
-                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
-                        makeActivityButton ($ext, $path, $file, $dn, "", "", "", "", "");
+                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                        makeActivityButton ($ext, $path, $file, $dn, "", "", "", "", "", "");
                         //makeButton($file, $path, $ext, $base, $dn, $path . $base . "_thumb.jpg");
                         break;
 
@@ -288,10 +317,10 @@ echo "<hr>";
                         echo "<td>";
                         $thumb = $file . "/thumbnail.jpg";
                         $dn = 'ePaath ' . $file;
-                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
-                        makeActivityButton("epaath", $path, $file, $dn, $thumb, "", "", "", "");
+                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                        makeActivityButton("epaath", $path, $file, $dn, $thumb, "", "", "", "", "");
                         //makeButton($file, $path, 'epaath', $file, 'ePaath ' . $file, $path . $file . "/thumbnail.jpg");
-                        // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                        // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
                         echo "</td>";
                         $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
@@ -301,10 +330,10 @@ echo "<hr>";
                         echo "<td>";
                         $thumb = $file . "/thumbnail.jpg";
                         $dn = $file;
-                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
-                        makeActivityButton("html", $path, $file . "/index.html", $dn, $thumb, "", "", "", "");
+                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                        makeActivityButton("html", $path, $file . "/index.html", $dn, $thumb, "", "", "", "", "");
                         //makeButton($file, $path, 'epaath', $file, 'ePaath ' . $file, $path . $file . "/thumbnail.jpg");
-                        // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $pg, $zoom)
+                        // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
                         echo "</td>";
                         $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
                    } // end if HTML

@@ -13,38 +13,41 @@
     <body>
         <div id = "main-container-horizontal">
             <div id="headerDiv">
+
                 <div id="navbar">
                     <img id="logo" src="images/LoomaLogo.png">
                     <div id="titleString">
                     </div>
-
                 </div>
+
                 <div id="querybar">
                     <form id="search" name="search">
-
                         <input type="hidden" value="activities" name="collection" />
                         <input type="hidden" id="cmd" value="search" name="cmd" />
-
                     </form>
                 </div>
+
             </div>
+
             <div id="container">
-                <div id="titleDiv">
-                </div>
+                <div id="titleDiv"></div>
                 <div id="outerResultsDiv">
                     <div id="innerResultsMenu">
                     </div>
                     <div id="innerResultsDiv">
+                    <span class="hint">Search Results</span>
                     </div>
                 </div>
 
                 <div id= "previewpanel">
+                   <span class="hint">Preview Area</span>
                 </div>
 
                 <div id = "timeline">
                     <div class="timelineEntire" id="timelineDisplay">
+                    <span class="hint">Timeline</span>
                     </div>
-                </div>
+               </div>
             </div>
         </div>
 
@@ -52,12 +55,14 @@
 ?>
         <script src="js/jquery-ui.min.js">  </script>
         <script src="js/jquery.hotkeys.js"> </script>
+        <script src="js/tether.min.js">  </script>
         <script src="js/bootstrap.min.js">  </script>
 
 <?php   include ('includes/looma-filecommands.php');
         include ('includes/looma-search.php');
 ?>
-        <script type="text/javascript" src="js/looma-lesson-plan.js"></script>
+       <script src="js/looma-media-controls.js"></script>
+       <script src="js/looma-lesson-plan.js"></script>
 
     </body>
 </html>

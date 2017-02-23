@@ -12,9 +12,10 @@ Description: image display JS for looma-image.php
 'use strict';
 $(document).ready(function() {
 
-        $('#fullscreen').click(function (e) {
+    /*    FULLSCREEN is moved to looma.js
+    $('#fullscreen').click(function (e) {
                 e.preventDefault();
                 screenfull.toggle(this);
             });
-
+*/
 });

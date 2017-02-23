@@ -17,7 +17,7 @@ button#fullscreen-control {
 	position: absolute;
 	opacity: 0.4;
 	right: 5%;
-    bottom: 5%;
+    bottom: 15%;
 	height: 10vh;
 	width:  10vh;
 	z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREENf */
@@ -27,17 +27,19 @@ button#fullscreen-control {
 	background-color:rgba(200,200,200,.5);  /*transparent light gray*/
 }
 
-.fullscreen video {width: 100%}
+.fulldisplay video {width: 100%}
 
-:-webkit-full-screen {
-    background-color: black;
+
+ :-webkit-full-screen {
+    background-color: #091F48;
 }
+
 
 button#fullscreen-playpause {
 	position: absolute;
     display: none;
 	opacity: 0.4;
-	bottom:16%; /* 5*/
+	bottom:27%; /* 5*/
 	right:5%;
 	height: 10vh;
 	width:  10vh;
@@ -48,26 +50,13 @@ button#fullscreen-playpause {
 	background-color:rgba(200,200,200,1);  /*transparent light gray*/
 }
 
-button#play-pause {
-    background-image: url("../images/video.png");
-   	background-size: 100% 100%;
-	background-color:rgba(255,255,255,1);
-	height: 5vh;
-	width:  5vh;
-	background-repeat: no-repeat;
-    color: transparent;
+button#fullscreen-playpause:fullscreen {
+    display:block;
 }
 
-button#volume {
-	background-image: url("../images/audio.png");
-   	background-size: 100% 100%;
-	background-color:rgba(255,255,255,1);
-	height: 5vh;
-	width:  5vh;
-	background-repeat: no-repeat;
-    color: transparent;
+button#fullscreen-playpause:-webkit-full-screen {
+    display:block;
 }
-
 
 /*
 Titles and Descriptions
@@ -490,10 +479,6 @@ button#delete {
     display: none;
     margin-left: 2.3vw;
 
-}
-input#seek-bar
-{
-	display: inline;
 }
 
 #comments {

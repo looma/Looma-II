@@ -75,7 +75,7 @@ $page_title = 'Looma - Time';
         </form>
 
         <script src="js/looma-clock-doubleclock.js"></script>
-        <script src="js/jquery.js"></script>
+        <script src="js/jquery.min.js"></script>
         <script src="js/looma-utilities.js"></script>
     </div>
 </body>

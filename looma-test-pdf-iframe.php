@@ -15,7 +15,7 @@ Comments:
 
 <?php $page_title = 'Looma - put page title here';
       include ('includes/header.php');
-      /*OPTIONAL*/ include ('includes/mongo-connect.php');
+      /*OPTIONAL include ('includes/mongo-connect.php');*/
 ?>
 
 <style>

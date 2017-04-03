@@ -169,7 +169,7 @@ function keyword($english) {
 			 . $english .
 			 "<span class='xlat'>" . $native . "</span>" .
 		 "</span>";
-	echo "<span class='native-keyword' hidden>"
+	echo "<span class='native-keyword' >"
 			. $native .
 	    	"<span class='xlat'>" . $english . "</span>" .
 		 "</span>";

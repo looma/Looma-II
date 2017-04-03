@@ -61,6 +61,13 @@ $(document).ready (function() {
     if (LOOMA.loggedIn()) $('#padlock').attr('src','images/padlock-open.png');
     else                  $('#padlock').attr('src','images/padlock-closed.png');
 
+    $('#padlock').hover(
+        function()
+            {$('#login-id').show();},
+        function()
+            {$('#login-id').hide();}
+        );
+
     $('#padlock').click(function(){
         if (!LOOMA.loggedIn())
             {window.location = "looma-login.php";}

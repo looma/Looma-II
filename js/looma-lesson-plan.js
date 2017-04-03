@@ -86,8 +86,9 @@ function lessonmodified()   {
     return (savedTimeline !== $timeline.html());};
 
 function lessonclear() {
+
        setname("");
-       currentid="";
+       //currentid="";
        $timeline.empty();
        clearFilter();
        lessoncheckpoint();
@@ -98,6 +99,8 @@ lessonclear();
 function lessonpack (html) { // pack the timeline into an array of collection/id pairs for storage
     var packitem;
     var packarray = [];
+
+    //change below pack code to add an ordering INDEX
 
     $(html).each(function() {
             packitem = {};  //make a new object, unlinking the references already pushed into packarray
@@ -134,6 +137,9 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
             'json'
           );
     });
+
+    makesortable();
+
 }; //end lessonunpack()
 
 function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response));};
@@ -146,10 +152,10 @@ function lessontemplatesave(name) {
     savefile(name, 'lesson', 'lesson' + '-template', lessonpack($timeline.html()), false);
 }; //end lessontemplatesave()
 
-
-
 // end FILE COMMANDS stuff
 
+
+// search for ACTIVITIES (and CHAPTERS) to use in the lesson plan
 // when search button is clicked - submit the 'search' form to looma-database.search.php
             $('#search').submit(function( event ) {
                   event.preventDefault();
@@ -804,9 +810,9 @@ function insertTimelineElement(source) {
         $dest.appendTo("#timelineDisplay");
 
         // scroll the timeline so that the new element is in the middle - animated to slow scrolling
-        $('#timeline').animate( { scrollLeft: $dest.outerWidth(true) * ( $dest.index() - 3 ) }, 100);
+        $('#timeline').animate( { scrollLeft: $dest.outerWidth(true) * ( $dest.index() - 4 ) }, 100);
 
-        makesortable();  //TIMELINE elements can be drag'n'dropped
+        refreshsortable();  //TIMELINE elements can be drag'n'dropped
 
 }; //end insertTimelineElement()
 
@@ -815,7 +821,7 @@ var removeTimelineElement = function(elem) {
   //var outerDiv = this.parentNode.parentNode;
   //outerDiv.remove();    // "Remove" button is within 3 divs
 
-        $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 3 ) }, 100);
+        $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 4 ) }, 100);
         $(elem).closest('.activityDiv').remove();
 
 };
@@ -832,6 +838,14 @@ var makesortable = function() {
         handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
     }).disableSelection();
 };
+
+var refreshsortable = function() {
+    // the call to sortable ("refresh") below should refresh the sortability of the timeline, but it's not working, so call makesortable() instead
+    //$("#timelineDisplay").sortable( "refresh" );
+
+    makesortable();
+
+    };
 
 /////////////////////////// DROPPABLE UI ////////  requires jQuery UI  ///////////////////
 //set up Drag'n'Drop  - -  code borrowed from looma-slideshow.js [T. Woodside, summer 2016]
@@ -854,13 +868,8 @@ function makedraggable() {
         stop: function(event, ui) {
 
                 if ($('#timelineDisplay').find(ui.helper).length > 0) {  //if the helper was dropped on the timeline...
-
-                    $(ui.helper).remove(); //the helper is not a 'deep' clone. we need to remove it and append the deep clone we make
-                    $clone.removeClass('ui-draggable-handle');
-                    $('#timelineDisplay').append($clone);
-                    makesortable();
-                //$('#timelineDisplay').sortable("option", "scroll", true);
-                //$(newElem).find("img").removeAttr("style");
+                    $(ui.helper).data($clone.data());  // insert the data() we copied into $clone back into the new timeline element
+                    refreshsortable();
                 }
               }
         });
@@ -1007,6 +1016,9 @@ var initializeDOM = function() {
                 for : value.id,
                 html : value.display
             }).appendTo("#div_filetypes");
+
+            if(key == 'pdf') $('<br>').appendTo("#div_filetypes");
+
             //$("#div_filetypes").append("<br/>");
         });
 

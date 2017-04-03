@@ -17,10 +17,11 @@ Description:  for Looma 2
 
 	<body>
 	<div id="main-container-horizontal">
+	    <div id="settings">
 			<h3 class="title">Looma Settings page</h3>
 
-            <div id="themelist"
-                <h4>Change themes with these buttons</h4><br>
+            <div id="themelist">
+                <br><h4>Change themes with these buttons</h4>
                      <span class="themespan"><input type="radio" name="theme" name="voice" name="theme" class="theme" id="looma"        value="looma">      Looma Classic
                         <img class="thumb" src="images/theme-looma.png" > </span>
                 <br> <span class="themespan"><input type="radio" name="theme" name="voice" name="theme" class="theme" id="style-sheet"   value="style-sheet">   Style Sheet
@@ -43,7 +44,7 @@ Description:  for Looma 2
 
 
             <div id="voicelist">
-                <h4>Change voices with these buttons</h4><br>
+                <br><h4>Change voices with these buttons</h4>
 
                 <span class="voicespan"><input type="radio" name="voice" name="voice" data-engine="mimic" class="voice" id="cmu_us_bdl"  value="cmu_us_bdl">   US male (bdl) </span>
                 <br>
@@ -81,9 +82,9 @@ Description:  for Looma 2
             </div>
 
             <div id="synth-voices"></div>
-
-            <hr>
-            <p id="login-status"></p>
+        </div>
+             <p id="login-status"></p>
+         <div id="tools">
             <div>
                 <button class="login"></button>
 
@@ -120,7 +121,7 @@ Description:  for Looma 2
                     <button id="speechtest" class="settings-control">Speech Test</button>
                 </a>
             </div>
-
+        </div>
 	</div>
 
    	<?php include ('includes/toolbar.php'); ?>

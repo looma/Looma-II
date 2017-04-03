@@ -18,28 +18,43 @@ window.onload = function ()
         $('.activity').removeClass('activity play img').addClass('lesson-element');
 
         var $timeline = $('#timeline');
+       // $timeline.sortable({scroll: true, axis:"x"});
+
+    /*                            /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
+                        var makesortable = function() {
+                            //$('timelineDisplay').sortable( "destroy" ); //remove previous sortable state
+                            $("#timelineDisplay").sortable({
+                                opacity: 0.7,   // makes dragged element transparent
+                                revert: true,   //Animates the drop
+                                axis:   "x",
+                                scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
+                                handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
+                            }).disableSelection();
+                        };
+      */
+
+
         var $viewer = $('#viewer');
         var $currentItem = $('#timeline').find('button:first').addClass('playing');
         var playing = false;
 
         // handlers for 'control panel' buttons
-        $('#back').click( function()    { if ($currentItem.prev()) { play($currentItem.prev()); } else pause();});
-        $('#forward').click( function() { if ($currentItem.next()) { play($currentItem.next()); } else pause(); });
+        $('#back').click( function()    {
+            if ($currentItem.prev().is('button')) { play($currentItem.prev()); } else pause();});
+        $('#forward').click( function() {
+            if ($currentItem.next().is('button')) { play($currentItem.next()); } else pause(); });
         $('#pause').click( function()   { if (playing) pause(); else play($currentItem); });
         $('#dismiss').click( function() { parent.history.back(); });
 
         $timeline.on('click', 'button', function() { play($(this)); });
 
-        var $pop;
-
         $('.lesson-element img').hover(
-            function () { //handlerIn
+            function() {  //handlerIn
                 var $btn = $(this).closest('button');
-                $pop = $('<div class="pop">' + $btn.attr('data-dn') + '</div>').appendTo($('#timeline'));},
+                $('#subtitle').text($btn.attr('data-dn') + ' (' + LOOMA.typename($btn.attr('data-ft')) + ')');},
             function () { //handlerOut
-                $pop.remove();
-              }
-         );
+              $('#subtitle').text('');}
+        );
 
  // create HTML for various players for filetypes
 
@@ -52,9 +67,10 @@ window.onload = function ()
         var video = $('#video', $videoHTML).get(0); //the video DOM element
         var audio = $('#audio', $audioHTML).get(0); //the audio DOM element
 
- //
- //NOTE: playActivity() should move to looma-utilities.js
- //
+
+        function scrollTimeline($btn) {
+            $('#timeline').animate( { scrollLeft: $btn.outerWidth(true) * ( $btn.index() - 2 ) }, 100);
+        };
 
         function pause() {
             // $viewer.empty();
@@ -70,6 +86,7 @@ window.onload = function ()
             playing = true;
             $('#timeline button').removeClass('playing');
             $item.addClass('playing');
+            scrollTimeline($item);
             $('#pause').css('background-image', 'url(" images/pause-button.png")');
             //$timeline.fadeOut(500);  //this hides the timeline when playing media - decided to not hide the timeline [usability]
 
@@ -78,6 +95,9 @@ window.onload = function ()
 
         function playActivity(ft, fn, fp, dn, id, ch, pg) //play the activity of type FT, named FP, in path FP, display-name DN
                                                           // depending on FT, may use ID, CH (a ch_id) or pg (for PDFs)
+
+        //NOTE: playActivity() should move to looma-utilities.js (??)
+
         {
         // plays the selected (onClick) timeline element (activity) in the $viewer div
 
@@ -119,8 +139,6 @@ window.onload = function ()
                 case 'pdf':
                 case 'chapter':
 
-                    //$(pdfHTML(fp,fn, dn)).appendTo($viewer);
-                    //$pdfHTML.attr('src', fp + fn);
 
                     $pdfHTML.find('iframe').attr('src', 'looma-viewer.html?file=' + fp + fn + '#page=' + pg + '&zoom=160');
                     $pdfHTML.appendTo($viewer);
@@ -206,7 +224,7 @@ window.onload = function ()
                     $.post("looma-database-utilities.php",
                     {cmd: "openByID", collection: 'text', id: result1.mongoID.$id},
                     function(result2) {
-                        $('<div id="fullscreen" style="background-color:white">').append($(result2.data)).appendTo($viewer);
+                        $('<div id="fullscreen" style="background-color:white;color:black;">').append($(result2.data)).appendTo($viewer);
                        //  $(result2.data).appendTo($viewer);
                     },
                     'json'
@@ -241,7 +259,6 @@ window.onload = function ()
         }; //end audioHTML
 
         function makeVideoHTML() { return (
-                // '<link rel="stylesheet" type="text/css" href="css/looma-video.css">' +
                  '<div id="video-player">' +
                     '<div id="video-area">' +
                         '<div id="fullscreen">' +
@@ -259,10 +276,7 @@ window.onload = function ()
                     '<button type="button" class="media mute">Volume</button>' +
                     '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
                 '</div>'
- //               +
- //               '<script>var fileName = "' + fn + '";' +
- //               '        var filePath = "' + fp + '";' +
- //               '        var displayName = "' + dn + '";</script>'
+
                   );
         };  //end videoHTML
     }; //end window.onload

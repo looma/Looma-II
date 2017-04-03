@@ -113,6 +113,20 @@ Description:  displays and navigates content folders for Looma 2
 
                     }
 
+else
+        //modifications for Wikipedia for Schools
+        //***************************
+        //make a button that launches W4S index.htm -- virtual folder
+        if($path . $file == "../content/Wikipedia for Schools") {   //create a virtual folder for W4S
+
+                    echo "<td>";
+                    $dn = "Wikipedia for Schools";
+                    $ft = "html";
+                    $thumb = "thumbnail.png";
+                    makeActivityButton($ft, "../content/Wikipedia for Schools/", "index.htm", $dn, $thumb, "", "", "", "", "");
+                    echo "</td>";
+                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+        }  //end IF wiki4schools
 
                 else {  //make a regular directory button
 

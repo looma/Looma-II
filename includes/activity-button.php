@@ -42,10 +42,6 @@
 	    //VOCAB
 	    //LESSON PLAN
 
-		if (!$thumb)
-		  if ($ft == 'EP' || $ft == 'epaath') $thumb = $fn . "/thumbnail.jpg";
-          else { $thumb = ($fn ? thumbnail($fn) : ""); }
-
 		if (!$fp) switch ($ft) { //if $fp is not specified, use the default content folder for this $ft
 
 			case "video":
@@ -84,6 +80,13 @@
 			     return;
 		};  //end SWITCH
 
+             if ($thumb) $thumbSrc = $fp . $thumb;
+        else if ($ft == 'EP' || $ft == 'epaath') $thumbSrc = $fp . $fn . "/thumbnail.jpg";
+        else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
+        else if ($ft == 'looma') $thumbSrc = "images/LoomaLogo.png";
+        else                     $thumbSrc = $fp . thumbnail($fn);
+
+
         //Now make the BUTTON
                           echo "<button class='activity play img' ";
         if ($fn)          echo "data-fn='" .  $fn . "' ";
@@ -98,9 +101,7 @@
                           echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
 
                           echo ">";
-                          echo "<img src='" .
-                              ($ft == "looma" ? "" : $fp) .
-                              $thumb . "'>";
+                          echo "<img src='" . $thumbSrc . "'>";
                           echo "<span>" . $dn . "</span></button>";
 
 	}; //end makeActivityButton()

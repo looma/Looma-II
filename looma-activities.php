@@ -151,7 +151,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
                  case "looma";  //open a Looma page (e.g. calculator or paint)
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $url, "", $dn, $thumb, $ch_id, "", "", "", "");
+                    makeActivityButton($ft, $url, "", $dn, "", $ch_id, "", "", "", "");
                    break;
 
                  case "lesson";  //open a lesson in lesson player

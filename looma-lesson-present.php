@@ -34,7 +34,6 @@ Description: looma lesson plan presenter
         <div id="timeline-container">
 
         <div id="timeline" >
-
         <!--
             <span>Timeline: </span><span class="filename"></span>
         -->
@@ -45,7 +44,7 @@ Description: looma lesson plan presenter
             return $matches[1];
         };
 
-        //look up the lesson plan in mondo lessons collection
+        //look up the lesson plan in mongo lessons collection
         //send DN, AUTHOR and DATE in a hidden DIV
         //for each ACTIVITY in the DATA field of the lesson, create an 'activity button' in the timeline
 
@@ -62,8 +61,12 @@ Description: looma lesson plan presenter
 
             $lesson = $lessons_collection -> findOne($query, $projection);
 
-            $data = $lesson['data'];
             $displayname = $lesson['dn'];
+
+            $data = $lesson['data'];
+        //
+        // NEED TO SORT DATA
+        //
 
             //should send DN, AUTHOR and DATE in a hidden DIV
 
@@ -121,7 +124,8 @@ Description: looma lesson plan presenter
         </div>
 
          <div id="title">
-            <span>Looma Lesson:&nbsp; <span class="filename"><?php echo $displayname ?></span></span>
+             <span id="subtitle"></span>
+            <span>&nbsp; &nbsp; &nbsp; Looma Lesson:&nbsp; <span class="filename"><?php echo $displayname ?></span></span>
         </div>
 
     </div>
@@ -132,9 +136,10 @@ Description: looma lesson plan presenter
             <button class="control-button" id="back">
                 <!-- <img src="images/back-arrow.png"> -->
             </button>
+     <!--
             <button class="control-button" id="pause">
-               <!-- <img src="images/pause-button.png"> -->
             </button>
+     -->
             <button class="control-button" id="forward">
                 <!-- <img src="images/forward-arrow.png"> -->
             </button>

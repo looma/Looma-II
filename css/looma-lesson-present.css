@@ -19,7 +19,7 @@ span.hint {
     position:absolute;
     top:45%;
 
-    border:10vh 0 0 0;
+    padding:10vh 0 0 0;
     color:#888;
     z-index:-1;
 }
@@ -40,6 +40,11 @@ img#fullscreen {width:auto;}
     position:relative;
     max-width:75vw;
     min-height:10vh;
+    overflow:hidden;
+/*
+    overflow-x: scroll;
+    overflow-y: hidden;
+*/
 }
 
 #timeline {
@@ -50,15 +55,26 @@ img#fullscreen {width:auto;}
     left:0;
     z-index:100;
     height:10vh;
-    width:5000px;
-    padding:2px;
+    width:100000px;
+    max-width:100%;
+    padding:1px;
     background-color:yellow;
     color:black;
-    vertical-align:center;
+    vertical-align:middle;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
 }
 
+
+#timeline::-webkit-scrollbar {
+    display: none;
+}
+
+
 #controlpanel {
-    //position: absolute;
+    /*position: absolute;*/
     z-index: 1000;
     position : fixed;
     /*transform: translate(-50%, -50%);*/
@@ -79,10 +95,15 @@ img#fullscreen {width:auto;}
    position:absolute;
    right:0;
    bottom:11vh;
-   width:40%;
    text-align:right;
    margin-right:3vw;
 }
+
+#subtitle {
+    background-color:white;
+    color:black;
+    border:2px solid black;
+    border-radius:5px;}
 
 button.activity {display:none;}
 
@@ -90,17 +111,20 @@ button.activity {display:none;}
 button.lesson-element {
     position: relative;
     margin:auto 2px;
+    padding:0;
     z-index:200;
     max-height:80%;
+    min-width:5vw;
     float:left;
+    vertical-align:top;
 }
 
 button.lesson-element.playing {
-    border:2px solid blue;}
+    border:4px solid blue;}
 
 .pop {
     position:absolute;
-    top: -40px;
+    top: -3vh;;
     left: 40vw;
     color: black;
     background-color:white;
@@ -115,7 +139,9 @@ button.lesson-element.playing {
 button.lesson-element span {display:none;}
 
 button.lesson-element img {
-   height:6vh;
+   vertical-align:top;
+   min-height:6vh;
+   max-height:8vh;
    width:5vw;
 }
 
@@ -127,7 +153,7 @@ span .filename {
 }
 
 #button-box {
-    position;relative;
+    position:relative;
     display: inline-flex;
     float:right;
     height: 90%;

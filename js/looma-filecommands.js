@@ -82,13 +82,12 @@ function savework(name, collection, filetype) {
                         function(savename) {callbacks['save'](savename);
                                             setname(savename);
                                             },
-                        function(){   /* */  callbacks['undocheckpoint']();  return;},
+                        function(){callbacks['undocheckpoint']();  return;},
                         false);
            }
          else LOOMA.confirm('Save current work in file: ' + name + '?',
                             function () {callbacks['save'](name);},
-                            function () {   /* */  callbacks['undocheckpoint']();
-                                         return;},
+                            function () {callbacks['undocheckpoint'](); return;},
                             false);
  }; // end SAVEWORK()
 
@@ -174,9 +173,9 @@ $(document).ready(function ()
                console.log("FILE COMMANDS: clicked new");
                if (callbacks['modified']())
                    savework(currentname, currentcollection, currentfiletype);
-              // else {
+               else { //NOTE: cant call 'clear()' immediately because the savework() call uses asynch code [e.g. LOOMA.confirm()]
                    callbacks['clear']();
-              // };
+               };
            });
 
 

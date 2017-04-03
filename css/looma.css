@@ -1,3 +1,5 @@
+html, body {margin:0;padding:0;height:100%;position:relative;}
+
 html {
 	background-color: gray;
 	height:100vh;
@@ -85,6 +87,8 @@ body {
 	/*border: 1px solid black;		*/
 
 }
+
+.native-keyword {display:none;}
 
 #video-player {
     height:80%;
@@ -524,6 +528,15 @@ button.beside-play {
     height:3vh;
     width: 3vh;
 }
+
+#login-id {
+        position:absolute;
+        display:none;
+        right:0;
+        bottom:10px;
+        color:red;
+}
+
 span#datetime {
 	margin:0 0 5px 0 ;
 	display:inline-block;

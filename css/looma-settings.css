@@ -1,29 +1,48 @@
+#settings {
+    height:70%;
+    max-height: 70%;
+    overflow:hidden;
+    position:relative;
+}
+
+#settings p {
+    max-height:7vh;
+}
+
+#tools {
+    height:15%;
+    width:100%;
+    position:absolute;
+    bottom:0;
+}
+
 div#themelist {
     width:20vw;
     margin-left:10%;
     text-align:left;
+    font-size:0.8em;
     float:left;
 }
 
 div#voicelist {
     width:60vw;
     margin-left:10%;
-    float:left;
+    float:right;
+    font-size:0.8em;
     text-align:left;
 }
 
 span.themespan img {
 	display:none;
-
 }
 
 span.themespan:hover img {
 	display:inline;
 	position:absolute;
-	left:30%;
+	left:20%;
 }
 
-span#themes {font-size: 1.5em}
+span#themes {font-size: 1em}
 
 #themelist input {
     height:4vh;

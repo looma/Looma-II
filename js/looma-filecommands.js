@@ -296,6 +296,10 @@ $(document).ready(function ()
                else {
                     opensearch();
                     // for TEMPLATE EDIT, only show "text template", clicked and disabled
+
+                    $('#txt-chk input').attr('checked', false);
+                    $('#txt-chk').hide();
+
                     $('#template-chk').show();
                     $('#template-chk input').attr('checked', true).css('opacity', 0.5);
                     $('#template-chk input').click(function() {return false;});
@@ -384,4 +388,11 @@ $(document).ready(function ()
            if (callbacks['modified']()) savework(currentname, currentcollection, currentfiletype);
            else window.history.back();
          });
+
+       $(window).on("beforeunload", function() {
+           //note Chrome doesnt use the custom message provided
+           //note could check callbacks['modified']() but I couldnt get that to work in chrome
+            return "Do you really want to close?";
+        });
+
     });

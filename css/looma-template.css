@@ -1,20 +1,15 @@
 /*
 LOOMA css file
-Filename: xxx.css
-Description:
+Filename: looma-import.css
 Associated code files:
-Programmer name:
-Email:
+Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date:
+Date: Apr 2017
 Revision: Looma 2.0.x
 
 Comments:
 */
-#container {
-    height:50vh;
-    width:50vw;
-    background-color: white;
-    margin:auto;
-    overflow:hidden;
+p {
+    font-size: 0.75em;
+    line-height: 2em;
 }

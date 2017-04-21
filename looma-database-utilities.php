@@ -98,6 +98,26 @@ function changename($collection, $oldname, $newname, $activity) {
 /****   main code here    ****/
 /*****************************/
 
+
+/////////////////////////////////
+// commands supported:
+//
+//       many of these functions are specialized. they should be re-used and generalized when possible
+//
+//  search
+//  open
+//  openByID
+//  updateByID
+//  save
+//  rename
+//  exists
+//  delete
+//  deleteField
+//  chapterList
+//  addChapterID
+//  removeChapterID
+////////////////////////////////
+
 if (isset($_REQUEST["collection"])) {
 
    $collection =  $_REQUEST["collection"];
@@ -278,7 +298,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             foreach ($fileTypes as $type)
             switch ($type) {
                 case 'video':
-                    array_push($extensions, "mp4", "video", "mov"); break;
+                    array_push($extensions, "mp4", "video", "mov", "m4v"); break;
                 case 'audio':
                     array_push($extensions, "mp3", "audio"); break;
                 case 'image':
@@ -317,11 +337,6 @@ if ( isset($_REQUEST["cmd"]) ) {
                       //echo 'classSubjRegex is ' . $classSubjRegex;
                $classSubjRegex = new MongoRegex( $classSubjRegex . '/');
             };
-
-
-        //NOTE
-        //should fix above code so that search for ft=looma doesnt filter on class & subject
-        //
 
                     /* DEBUG
                     echo 'collection is ' . $_POST['collection'];
@@ -374,6 +389,24 @@ if ( isset($_REQUEST["cmd"]) ) {
             echo json_encode($result);
             return;
             // end case "search"
+
+         case 'addChapterID':
+                $query = array('_id' => new MongoID($_REQUEST['id']));
+                $update = array('$addToSet' => array('ch_id' => $_REQUEST['data']));
+                $result = $dbCollection->update($query, $update);
+
+                echo json_encode($result);
+            return;
+            // end case "addChapterID"
+
+        case 'removeChapterID':
+                $query = array('_id' => new MongoID($_REQUEST['id']));
+                $update = array('$pull' => array('ch_id' => $_REQUEST['data']));
+                $result = $dbCollection->update($query, $update);
+
+                echo json_encode($result);
+            return;
+            // end case "removeChapterID"
     }; //end switch "cmd"
 }
 else return; //no CMD given

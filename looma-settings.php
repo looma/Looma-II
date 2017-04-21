@@ -100,7 +100,7 @@ Description:  for Looma 2
                     <button class="settings-control">Content Navigator</button>
                 </a>
 
-                <br><br>
+                <br>
 
                 <a href="#>
                     <button id="dummy-button"></button>
@@ -116,6 +116,13 @@ Description:  for Looma 2
                 <a href="looma-text-editor.php">
                     <button class="settings-control">Text Editor</button>
                 </a>
+
+
+                <a href="looma-activity-register-to-chapter.php">
+                    <button id="register" class="settings-control">Register Activities</button>
+                </a>
+
+               <br>
 
                 <a href="looma-speech-test.php">
                     <button id="speechtest" class="settings-control">Speech Test</button>

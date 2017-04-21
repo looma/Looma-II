@@ -157,6 +157,7 @@ typename: function(ft) {
         jpg: 'image',
         png: 'image',
         gif: 'image',
+        JPG: 'image',
         pdf: 'pdf',
         mp3: 'audio',
         EP:  'ePaath',

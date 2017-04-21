@@ -1,14 +1,11 @@
 <!doctype html>
 <!--
-LOOMA php code file
-Filename: xxx.php
-Description:
+Filename: looma-login.php
+Description: login function for Looma admin and teacher tool pages
 
-Programmer name:
-Email:
+Programmer Anika:
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date:
-Revision: Looma 2.0.x
+Date:  Summer 2016
 
 Comments:
 -->
@@ -24,8 +21,6 @@ Comments:
 	<div id="main-container-horizontal">
 
 <?php
-
-          include ('includes/js-includes.php');
 
     /*
      * check_login() checks login against database entries and returns either true indicating the
@@ -89,29 +84,35 @@ Comments:
  * Redirects user to the main php file if page is null or page specified
  *
  */
-function redirect_user($page)
-{
+function redirect_user($page)  {
 
- if (!isset($page) or $page == null)
- {
-    $url = 'http://'.$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF']);
-    $url = rtrim($url, "/\\");
-    error_log("no page specified");
- }
- else
- {
-    $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
-    $url .= '/'.$page;
- }
+     if (!isset($page) or $page == null)
+     {
+        //$url = 'http://'.$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF']);
+        //$url = rtrim($url, "/\\");
+        //error_log("no page specified");
 
-    error_log("exit $url");
-    header("Location: $url");
-    exit();
-
-}//end redirect_user
+        $url = $_SERVER["HTTP_REFERER"];
+        if (isset($_SERVER["HTTP_REFERER"])) {
+            header("Location: " . $_SERVER["HTTP_REFERER"]);
+        }
+     }
+     else
+     {
+        $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+        $url .= '/'.$page;
+     }
+        error_log("exit $url");
+        header("Location: $url");
+        exit();
+    }//end redirect_user
 
 //Check for cookie
-if(!loggedin())
+
+   //include looma-utilities.js before calling LOOMA.alert() below
+   include ('includes/js-includes.php');
+
+   if(!loggedin())
 {
     error_log("not logged in");
     //Check if login form has been submitted
@@ -126,7 +127,7 @@ if(!loggedin())
         if ($check)
         {
             setcookie ("login", $_POST['id']);
-            redirect_user();
+            redirect_user("");
         }
         //Set errors to be displayed next login attempt
         else
@@ -170,19 +171,20 @@ else {
 // Print a  message:
      echo "<br><br><br><h1>Logged In</h1>";
      echo "<p>You are now logged in as {$_COOKIE['login']}</p>";
-     echo "<script>   var timeout = 8;
-        LOOMA.alert('You are now logged in', timeout, true);
-        setTimeout(function(){  window.location = window.history.go(-2);}, 1000 * timeout);</script>";
+     echo " <script>   var timeout = ;
+        /*LOOMA.alert('You are now logged in', 3, true);*/
+        setTimeout(function(){ window.location = window.history.go(-2);}, 1000 * timeout);
+        </script>";
+ /*    echo "<script>   var timeout = 8;" .
+        "LOOMA.alert('You are now logged in', timeout, true);" .
+        "setTimeout(function(){  console.log('logged in'); window.location = window.history.go(-2);}, 1000 * timeout);" .
+        "</script>"; */
 }
-//Display the form:
 ?>
-
 
 	</div>
 
-<?php
-   		/*include either, but not both, of toolbar.php or toolbar-vertical.php*/
-	      include ('includes/toolbar.php');
-   		/*include ('includes/toolbar-vertical.php'); */
+    <?php   include ('includes/js-includes.php');
+            include ('includes/toolbar.php');
     ?>
 </body>

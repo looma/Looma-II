@@ -1,0 +1,55 @@
+/*
+LOOMA css file
+Filename: looma-import.css
+Associated code files:
+Programmer name: Skip
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: Apr 2017
+Revision: Looma 2.0.x
+
+Comments:
+*/
+#main-container-horizontal {
+    text-align:left;
+    margin:10px;
+}
+
+div#buttons {
+    text-align:center;
+    margin:5px auto;
+}
+
+div#buttons h5 {text-align:center;}
+
+hr {
+  border-top: 1.5px solid #8c8c8c;
+}
+
+span {
+    font-size: 0.75em;
+    line-height: 2em;
+}
+
+button {
+    height:5vh;
+    width:20vw;
+    margin: 3px 3px;
+    font-size:1em;
+}
+
+.filter_checkbox {
+    margin-left:10px;
+    zoom:2;
+}
+
+input.text {
+    border-radius: 5px;
+    margin: 2px 5px;
+    width:15vw;
+}
+
+span.fn {
+    display: inline-block;
+    width:    25vw;
+    min-width:25vw;
+}

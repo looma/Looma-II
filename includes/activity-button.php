@@ -45,7 +45,8 @@
 		if (!$fp) switch ($ft) { //if $fp is not specified, use the default content folder for this $ft
 
 			case "video":
-			case "mp4":
+            case "mp4":
+            case "m4v":
 			case "mov": $fp = '../content/videos/'; break;
 
             case "image":

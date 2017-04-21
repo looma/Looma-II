@@ -535,6 +535,7 @@ button.beside-play {
         right:0;
         bottom:10px;
         color:red;
+        font-size: 1em;
 }
 
 span#datetime {

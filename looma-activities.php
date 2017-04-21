@@ -85,7 +85,8 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 			switch ($ft) {
 				case "video":
 				case "mp4":
-				case "mov":
+                case "mov":
+                case "m4v":
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
                     makeActivityButton($ft, "", $fn, $dn, "", $ch_id, "", "", "", "");
 					break;

@@ -3,6 +3,9 @@
     <?php $page_title = 'Looma - Lesson Plan editor';
           include ('includes/header.php');
           include ('includes/mongo-connect.php');
+
+          if (!loggedin()) header('Location: looma-login.php');
+
     ?>
 
     <head>

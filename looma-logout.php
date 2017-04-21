@@ -64,9 +64,9 @@ function redirect_user($page)
     // Print a  message:
      echo "<br><br><br><h1>Logged Out</h1>";
      echo "<p>You are now logged out" . (($name)? ', ' . $name : '') . "</p>";
-     echo "<script>   var timeout = 8;
-        LOOMA.alert('You are now logged out', timeout, true);
-        setTimeout(function(){  window.location = window.history.back();}, 1000 * timeout);</script>";
+     echo "<script>   var timeout = 4;
+        /*LOOMA.alert('You are now logged out', 3, true);*/
+        setTimeout(function(){   console.log('logged out'); window.location = window.history.back();}, 1000 * timeout);</script>";
 ?>
 	</div>
 

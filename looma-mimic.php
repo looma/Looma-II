@@ -12,6 +12,8 @@
 
 //exit ("DEBUG - in mimic.php: ");
 
+$content = "../content/";
+
 $text = htmlentities($_REQUEST["text"]);
 $voice = $_REQUEST["voice"];
 
@@ -27,7 +29,7 @@ if (preg_match('/[^\\p{Common}\\p{Latin}]/u', $text))
         $text = "I do not know how to speak Nepali.";
     }
 
-$voiceFile = "voices/" . $voice . ".flitevox";
+$voiceFile = $content . "voices/" . $voice . ".flitevox";
 date_default_timezone_set("UTC");
 $date = new DateTime();
 // The client side may break up a long text into multiple short texts and then call this server page for each

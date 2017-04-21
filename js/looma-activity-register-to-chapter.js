@@ -19,6 +19,7 @@ var homedirectory = "../";
 var $timeline;
 var $details;
 var $selectedActivity = null;
+var $rememberActivity;
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 window.onload = function () {
@@ -60,19 +61,24 @@ window.onload = function () {
     $('#previewpanel').on('click', '#rename',
         function()
             { if ($('#new_dn').val() != $selectedActivity.data("mongo").dn) {
-                $selectedActivity.data("mongo").dn = $('#new_dn').val();
+                var new_dn = $('#new_dn').val();
+                $selectedActivity.data("mongo").dn = new_dn;
                 renameActivity($selectedActivity);
-                $('#search').submit(); //redo the search to show the new name
-                $('#timelineDisplay').empty();
-
-                };
+                $('p.filename').text(new_dn);
+                $selectedActivity.find('p.result_dn').text(new_dn);
+                $rememberActivity.find('p.result_dn').text(new_dn);
+               //$('#search').submit(); //redo the search to show the new name
+                //$('#timelineDisplay').empty();
+                }
+             else LOOMA.alert('Enter a new Display Name');
             });
 
     $('#previewpanel').on('click', '#unassign',
-        function() { LOOMA.confirm('Unassign this activity from chapter CH_ID?',
-                            function () {clearCH_ID($selectedActivity);
-                                         $('#search').submit(); //redo the search to show the new ch_id
-                                         $('#timelineDisplay').empty();},
+        function() { LOOMA.prompt('Enter chapter ID to remove',
+                            function (ch_id) {
+                                removeChapterID($selectedActivity, ch_id);
+                                $('#search').submit(); //redo the search to show the new ch_id
+                                },
                             function () {return;},
                             false);
                    });
@@ -80,7 +86,9 @@ window.onload = function () {
     $('#previewpanel').on('click', '#assign',
         function() { LOOMA.getCH_ID('Select chapter',
                         function(ch_id) {
-                            assignActivity($selectedActivity, ch_id); },
+                            addChapterID($selectedActivity, ch_id);
+                            $('#search').submit(); //redo the search to show the new ch_id
+                            },
                         function () {return;},
                         false);
                    });
@@ -106,22 +114,14 @@ function renameActivity($activity) {
               );
 }; //end renameActivity()
 
-function clearCH_ID($activity) {
+function removeChapterID($activity, ch_id) {
 
-         console.log('Activity Register: unassigning activity  (id: ' + $activity.data("mongo")._id.$id + ')' );
-         var data = {'ch_id':1};
-
-    //NOTE: the 'unassign' only clears the ch_id field of the activity. this might create a duplicate of another copy
-    //      of the same activity also with no ch_id. in principle these could accumulate [if lots of 'unassigns' are done]
-    //      but except for the wasted memory this doesnt break anything.
-    //      AND, the activity (now with no ch_id) may still be pointed to by a [e.g.] lesson plan so deleting duplicates would
-    //      cause problems elsewhere
-
+         console.log('Activity Register: unassigning activity from ' + ch_id );
          $.post("looma-database-utilities.php",
-                {cmd: "deleteField",
+                {cmd: "removeChapterID",
                  collection: 'activities',
                  id: $activity.data("mongo")._id.$id,
-                 data: JSON.stringify( data ),
+                 data: ch_id,
                  activity:false},
 
                  function(response) {
@@ -132,22 +132,20 @@ function clearCH_ID($activity) {
 }; //end clearCH_ID()
 
 
-function assignActivity($activity, ch_id) {
+function addChapterID($activity, ch_id) {
         //open popup that asks for class and subject
         // then show list of chapter titles
         // when the user selects a chapter (by title)
         // confirm the selection, then Post to looma-database-utilities.php
         //      with command = 'save', and data = object representing all the fields of the activity including new ch_id
 
-         var data = $activity.data("mongo");
-         delete data._id; delete data.collection;
-         data.ch_id = ch_id;
 
          console.log('Activity Register: assign activity to: ' + ch_id);
          $.post("looma-database-utilities.php",
-                {cmd: "save",
+                {cmd: "addChapterID",
                  collection: 'activities',
-                 data:  data,
+                 id: $activity.data("mongo")._id.$id,
+                 data:  ch_id,
                  activity:false},
 
                  function(response) {
@@ -167,6 +165,8 @@ function assignActivity($activity, ch_id) {
                   $("#innerResultsDiv" ).empty();
                   $("#previewpanel"    ).empty();
                   $("#timelineDisplay"    ).empty();
+                  $('p.filename').text('');
+
 
                   if (!isFilterSet()) {
                         $('#innerResultsDiv').html('Please select at least 1 filter option before searching.');
@@ -178,6 +178,7 @@ function assignActivity($activity, ch_id) {
                     var ellipsisTimer = setInterval(function () {
                         $('#ellipsis1').text($('#ellipsis1').text().length < 10 ? $('#ellipsis1').text() + '.' : '');
                         },100);
+
 
                       //this POST to looma-databas-search.php serializes and sends all the submit FORM elements
                       // and returns an array of objects which are mongo documents that match the search criteria from the form
@@ -383,7 +384,7 @@ THUMBNAILS
 var filetype = function(ft) {
     //converts a file extension into
 	     if (ft == "gif" || ft == "jpg" || ft == "png") return "Image";
-	else if (ft == "mov" || ft == "mp4" || ft == "mp5") return "Video";
+	else if (ft == "mov" || ft == "mp4" || ft == "mp5" || ft == "m4v") return "Video";
 	else if (ft == "mp3")       return "Audio";
 	else if (ft == "EP")        return "Game";
 	else if (ft == "html")      return "Webpage";
@@ -446,7 +447,7 @@ var thumbnail = function(item) {
             if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
 			imgsrc = path + "thumbnail.png";
 		}
-		else if (item.ft == "mp4" || item.ft == "mp5") { //video
+		else if (item.ft == "mp4" || item.ft == "mp5" || item.ft == "m4v") { //video
 			thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
             if (filepath) path = filepath; else path = homedirectory + 'content/videos/';
 			imgsrc = path + thumbnail_prefix + "_thumb.jpg";
@@ -580,7 +581,7 @@ var createActivityDiv = function(activity) {
                 if (item.dn) var dn = item.dn.substring(0, 20); else dn = item.ndn.substring(0,20);
                 $("<p/>", {
                     class : "result_dn",
-                    html : "<b>" + dn + "</b>"
+                    html : dn
                 }).appendTo(textdiv);
 
 
@@ -689,7 +690,7 @@ var preview_result = function(item) {
 
 	else if (collection == "activities") {
 
-		if(filetype == "mp4" || filetype == "mov" || filetype == "mp5") {
+		if(filetype == "mp4" || filetype == "mov" || filetype == "m4v" ||filetype == "video" || filetype == "mp5") {
 			document.querySelector("#previewpanel").innerHTML =
 
 	//		'<video controls> <source src="' + homedirectory +
@@ -833,6 +834,7 @@ function insertTimelineElement(source) {
         $dest.addClass("ui-sortable-handle");
  //
         $dest.appendTo("#timelineDisplay");
+        $rememberActivity = $(source);
         $selectedActivity = $dest;
         $('p.filename').text($dest.data('mongo').dn);
 }; //end insertTimelineElement()

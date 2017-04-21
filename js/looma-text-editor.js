@@ -75,6 +75,4 @@ $(document).ready(function ()
         loginname = LOOMA.loggedIn();
         if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
 
-//the following TEMPLATE commands should be generalized and put into looma-filecommands.js
-
 });

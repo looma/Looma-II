@@ -89,7 +89,7 @@ Description: looma lesson plan presenter
                                            (isset($details['fn'])) ? $details['fn'] : null,
                                            (isset($details['dn'])) ? $details['dn'] : null,
                                            (isset($details['fn'])) ? thumbnail($details['fn']) : null,
-                                           (isset($details['ch_id'])) ? $details['ch_id'] : null,
+                                           "", //(isset($details['ch_id'])) ? $details['ch_id'] : null,
                                            $activity['id'],
                                            (isset($details['url'])) ? $details['url'] : null,
                                            null,

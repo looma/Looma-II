@@ -21,8 +21,9 @@ function save($collection, $insert) {
 }; //end SAVE
 
 //SAVETEXT function
-function saveText($collection, $name, $insert, $activity) {  // save a document in $collection with displayname $name inserting $insert fields.
-                                                         // if $activity is TRUE, also save a document in the Activities Collection
+function saveText($collection, $name, $insert, $activity) {
+      // save a document in $collection with displayname $name inserting $insert fields.
+      // if $activity is TRUE, also save a document in the Activities Collection
 
     global $activities_collection;
 
@@ -208,7 +209,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
             //end case "deleteField"
         case "save":
-            if ($collection == "text") {
+            if (($collection == "text") || ($collection == "lesson")){
 
                 $insert = array(
                     "dn"     => $_REQUEST["dn"],
@@ -238,9 +239,10 @@ if ( isset($_REQUEST["cmd"]) ) {
 
         case "exists": //find "dn" in the collection and return its ID if it exsits or NULL if doesnt exist
             $query = array('dn' => $_REQUEST['dn'], 'ft' => $_REQUEST['ft']);
-            $projection = array("_id" => 1);
+            $projection = array("_id" => 1,"author" => 1);
             $result = $dbCollection->findOne($query, $projection);
-            if ($result) echo json_encode(array("_id" => $result["_id"]));
+            if ($result) echo json_encode(array("_id" => $result["_id"],
+                                            "author" => (isset($result["author"]) ? $result["author"] : null)) );
             else         echo json_encode(array("_id" => ""));
             return;
             // end case "exists"
@@ -267,10 +269,19 @@ if ( isset($_REQUEST["cmd"]) ) {
             //    query chapters collection to get all chapters whose ch_id matches the prefix
             //    return a HTML string containing OPTION elements for a SELECT element
 
-            $query = array ('class' => $_REQUEST['class'], 'subject' => $_REQUEST['subject']);
+            $subjects = array(
+                 'S' => 'science',
+                 'M' => 'math',
+                 'EN' => 'english',
+                 'N' => 'nepali',
+                 'SS' => 'social studies');
+
+            $query = array ('class' => 'class' . $_REQUEST['class'], 'subject' => $subjects[$_REQUEST['subject']]);
 
             $projection = array('_id' => 0, 'prefix' => 1);
             $prefix = $textbooks_collection -> findOne($query, $projection);
+
+                //echo "prefix is "; print_r($prefix);
 
             $regex = "^" . $prefix['prefix'] . "[0-9]";
             $query = array('_id' => array('$regex' => $regex));
@@ -281,21 +292,28 @@ if ( isset($_REQUEST["cmd"]) ) {
 
         case "search":
             // called (from looma-search.js, from lesson-plan.js, etc) using POST with FORMDATA serialized by jquery
-            // $_POST[] can have these entries: collection, indexes: class, subj, sort, search-term, and type[] (arroy of checked types)
+            // $_POST[] can have these entries: collection, class, subj, category, sort, search-term,
+            // src[] (array of checked items) and type[] (arroy of checked types)
 
             //Get filetype Parameters
             /* known filetypes are the FT values in Activities collection
              * e.g. 'video', 'audio', 'image', 'pdf', 'textbook', 'text', 'html', 'slideshow', 'lesson', 'looma'*/
 
-            $fileTypes = array();       //array of FT filetypes to include in the search
+            $filetypes = array();       //array of FT filetypes to include in the search
 
-            if (!isset($_REQUEST['type'])) $fileTypes =
-                 array("video", "audio", "image", "pdf", "textbook", "text", "text-template", "html", "slideshow", "lesson" /* , "chapter" */);
-            else foreach ($_POST['type'] as $i) array_push($fileTypes, $i);
+            if (isset($_REQUEST['type'])) foreach ($_POST['type'] as $i) array_push($filetypes, $i);
+
+                     //echo "types is: "; print_r($filetypes);
+
+            $sources = array();       //array of sources to include in the search
+
+            if (isset($_REQUEST['src'])) foreach ($_POST['src'] as $i) array_push($sources, $i);
+
+                    //echo "sources is: "; print_r($sources);
 
             $extensions = array();
             // build $extensions[] array by pushing filetype names into the array
-            foreach ($fileTypes as $type)
+            foreach ($filetypes as $type)
             switch ($type) {
                 case 'video':
                     array_push($extensions, "mp4", "video", "mov", "m4v"); break;
@@ -317,18 +335,25 @@ if ( isset($_REQUEST["cmd"]) ) {
                     array_push($extensions, "slideshow"); break;
                 case 'lesson':
                     array_push($extensions, "lesson"); break;
-                //case 'looma':
-                //    array_push($extensions, "looma"); break;
+                case 'looma':
+                    array_push($extensions, "looma"); break;
             };
 
-            $nameRegex = null; $classSubjRegex = null;
+            $areaRegex = null; $nameRegex = null; $classSubjRegex = null;
+
+            if (isset($_POST['category']) && $_POST['category'] != "All") {
+                $areaRegex = new MongoRegex ('/' . $_POST['category'] . '/i');
+            };
 
             //Build Regex to match search term (i is ignore case)
             if (isset($_POST['search-term'])  && $_POST['search-term'] |= '')
                 $nameRegex = new MongoRegex('/' . $_POST["search-term"] . '/i');
 
             //if 'class' or 'subj' are specified, build another regex to match class/subj in ch_id
-            if ((isset($_POST['class']) && $_POST['class'] != '') || (isset($_POST['subj'])  && $_POST['subj'] != '')) {
+            if (isset($_POST['chapter']) && $_POST['chapter'] != '') {
+                $classSubjRegex = $_POST['chapter'];
+            }
+            elseif ((isset($_POST['class']) && $_POST['class'] != '') || (isset($_POST['subj'])  && $_POST['subj'] != '')) {
                $classSubjRegex = "/";
                       //echo 'classSubjRegex is ' . $classSubjRegex;
                if (isset($_POST['class']) && $_POST['class'] != '') $classSubjRegex .= '^' . $_POST['class'];
@@ -340,33 +365,36 @@ if ( isset($_REQUEST["cmd"]) ) {
 
                     /* DEBUG
                     echo 'collection is ' . $_POST['collection'];
-                    echo 'filetypes are '; print_r($fileTypes);
+                    echo 'filetypes are '; print_r($filetypes);
                     echo 'extensions are '; print_r($extensions);
                     echo 'class is ' . $_POST['class'] . ' and subj is ' . $_POST['subj'] . '       ';
                     echo '$nameRegex is ' . $nameRegex . '    and $classSubjRegex is ' . $classSubjRegex;
                     */
 
-            $query = array('ft' => array('$in' => $extensions));
-            if ($nameRegex)      $query['dn']    = $nameRegex;
-            if ($classSubjRegex) $query['ch_id'] = $classSubjRegex;
+            $query = array();
+            if (sizeof($extensions) > 0) $query['ft'] = array('$in' => $extensions);
+            if (sizeof($sources)   > 0) $query['src'] = array('$in' => $sources);
+            if ($areaRegex)          $query['area']   = $areaRegex;
+            if ($nameRegex)          $query['dn']     = $nameRegex;
+            if ($classSubjRegex)     $query['_id']  = $classSubjRegex;
 
                  //echo "Query is: "; print_r($query);
+                 //echo "$dbCollection is " . $dbCollection;
 
-           // NOTE: dont need to do this 'find' if $extensions.length == 0
             $cursor = $dbCollection->find($query);   //->skip($page)->limit(20);
 
             $result = array();
             if ($cursor -> count() > 0) { foreach ($cursor as $d) $result[] = $d; };
 
-            if (in_array('looma', $fileTypes)) {
+ /*           if (in_array('looma', $filetypes)) {
                 // for Looma Pages activities, dont filter with class/subject
                 $query = array('ft' => 'looma');
                 $cursor = $dbCollection->find($query);
                 if ($cursor -> count() > 0) { foreach ($cursor as $d) $result[] = $d; };
             };
-
+*/
             // search for CHAPTERS if requested
-            if (in_array('chapter', $fileTypes)) {
+/*            if (in_array('chapter', $filetypes)) {
 
                 $query = array('ft' => 'chapter');
                 if ($classSubjRegex) $query['_id'] = $classSubjRegex;
@@ -375,17 +403,17 @@ if ( isset($_REQUEST["cmd"]) ) {
                                         array("ndn" => $nameRegex)
                                               );
 
-                /*$query =  array("_id" => $classSubjRegex,
+                $query =  array("_id" => $classSubjRegex,
                                 '$or' => array(
                                       array("dn" => $nameRegex),
                                       array("ndn" => $nameRegex)
                                               )
                                 );
-                */
+
                 $cursor = $chapters_collection->find($query);
                 if ($cursor -> count() > 0) { foreach ($cursor as $d) $result[] = $d; };
             };
-
+*/
             echo json_encode($result);
             return;
             // end case "search"

@@ -1,0 +1,108 @@
+#!/bin/bash
+#processing Wikipedia for Schools HTML files 
+#put W4Snavigate (this file) in /Users/skip/bin, chmod 755, and PATH=$PATH:/Users/skip/bin
+#
+# this script creates a file /Users/skip/bin/W4Sfilelist 
+#  that contains looma format entries to create activities for all scanned media files
+#
+#process that W4Sfilelist file by opening looma-library-utilities.php?cmd=w4simport
+
+if [ "$#" != 1 -a -f /Users/skip/bin/w4sfilelist ]  #if this is the top level recursion, check whether to delete existing output file
+then
+    read -p "create new list file (yes) or append (no)?" answer
+    if [ $answer == "yes" ] 
+    then
+        rm /Users/skip/bin/w4sfilelist
+        echo "removed /Users/skip/bin/w4sfilelist"
+    fi
+fi
+
+cd "/Users/skip//Desktop/Aptana/content/W4S/wp/index/"
+#echo ".................."
+
+if [ "$#" -eq 1 ] 
+then
+    file="$1"
+else
+    file="subject.htm"    
+fi
+#echo '*** Parsing: ' $file
+
+# scan for lines that contain '<div class="categoryname"><table><tr><td><a href="../index/' 
+# and extract the filename [e.g. "subject.Music.htm"]
+
+#recursively scans $file for new $nextlevel files to scan
+
+while read -r line  ; do
+
+    REGEX='<div class="categoryname"><table><tr><td><a href=\"\.\.\/index\/(.*)">.*'
+    if [[ $line =~ $REGEX ]]; 
+    then 
+        nextlevel=${BASH_REMATCH[1]} 
+        #echo "+++++++  parsing " $nextlevel
+        /bin/bash ~/Desktop/Aptana/Looma/looma\ shell\ scripts/W4Snavigate $nextlevel
+    fi  
+done < $file
+
+#echo "~~~~~~~~~~~~~~~  starting activity scan of " $file
+# scan the filename ($file) for AREA, SUBAREA and TAG 
+#   [e.g. filename "subject.science.physics.matter.htm" has area=science, subarea=physics, tab=matter]
+
+    REGEX1='^subject\.(.*)\.(.*)\.(.*)\.htm$'
+    REGEX2='^subject\.(.*)\.(.*)\.htm$'
+    if [[ $file =~ $REGEX1 ]]
+    then
+        area=${BASH_REMATCH[1]}
+        subarea=${BASH_REMATCH[2]}
+        tag=${BASH_REMATCH[3]}
+  #     echo "for ${file}"
+  #     echo "- - - area: ${area}, sub: ${subarea}, tag: ${tag}"
+        
+    else
+        if [[ $file =~ $REGEX2 ]]
+        then
+            area=${BASH_REMATCH[1]}
+            subarea=${BASH_REMATCH[2]}
+            tag=""
+  #          echo "for ${file}" 
+  #          echo "- - - area: ${area}, sub: ${subarea}, tag: ${tag}"
+        fi
+    fi
+
+ 
+# scan for lines that contain '/wp/<letter>...' and extract fn, dn, and folder name (first letter of filename) containing the file
+ 
+while read -r line
+do   
+    REGEX3='\/wp\/(.)\/(.*)"\>(.*)\<\/a\>\<\/td\>'  # isolates the filename in BASH_REMATCH[1]
+    if [[ $line =~ $REGEX3 ]]; 
+    then 
+        
+         #1. GET FN 
+         fn=${BASH_REMATCH[2]} 
+          
+        #2. GET DN 
+        dn=${BASH_REMATCH[3]}
+        
+        #3. GET AREA
+        
+        #4. GET SUBAREA
+        
+        #5. GET TAG (sub-sub-area)
+        
+        #6. GET FP
+        letter=${BASH_REMATCH[1]}
+        fp="../content/W4S/wp/${letter}/"
+        
+        #7. GET thumbnail path
+        thumb="../content/W4S/wp/index/${file}.thumb.jpg"
+        
+        #9. SRC is wikipedia
+        src="wikipedia"
+
+# construct an Activity item in the output file (w4sfilelist)       
+        echo "{\"fn\": \"$fn\", \"dn\": \"$dn\", \"ft\":\"html\", \"fp\": \"$fp\", \"thumb\": \"$thumb\", \"src\": \"$src\", \"area\": \"$area\", \"subarea\": \"$subarea\", \"tag\": \"$tag\"}," >> /Users/skip/bin/w4sfilelist
+
+    fi  
+done < $file
+

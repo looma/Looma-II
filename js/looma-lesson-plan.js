@@ -16,6 +16,7 @@ Revision: Looma 2.4
 //var timelineAssArray = new Object();
 
 var homedirectory = "../";
+var $details;
 
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
@@ -25,6 +26,33 @@ window.onload = function () {
 
     $('#clear_button').click(clearFilter);
 
+    $('.filter_radio').change(changeCollection);
+
+    $('.chapterFilter').prop('disabled', true);
+    $('.mediaFilter').prop('disabled',   false);
+
+
+    $("#dropdown_grade, #dropdown_subject").change( function(){
+        $('#div_chapter').hide();
+
+        $('#dropdown_chapter').empty();
+        if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
+            $.post("looma-database-utilities.php",
+                {cmd: "chapterList",
+                 class: $('#dropdown_grade').val(),
+                 subject:   $('#dropdown_subject').val()},
+
+                 function(response) {
+                     console.log(response);
+                     //$('#chapter_label').show();
+                     $('#div_chapter').show();
+                     $('<option/>', {value: "", label: "<select a chapter>"}).appendTo('#dropdown_chapter');
+
+                     $('#dropdown_chapter').append(response);
+                 },
+                 'html'
+              );
+    });
 
 ///////////////////////////////
 // click handlers for '.add', '.preview' buttons
@@ -193,6 +221,32 @@ function lessontemplatesave(name) {
 
 };  //end window.onload()
 
+var changeCollection = function() {
+    $('#div_grade').toggle();
+    $('#div_subject').toggle();
+    $('#div_filetypes').toggle();
+    $('#div_sources').toggle();
+    $('#div_categories').toggle();
+
+
+
+    if ($('#collection').val() == 'activities') { //changing from ACTIVITIES to CHAPTERS
+        $('#collection').val('chapters');
+
+    if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
+    $('#div_chapter').show();
+
+        $('.chapterFilter').prop('disabled', false);
+        $('.mediaFilter').prop('disabled',   true);
+    } else { //changing from CHAPTERS to ACTIVITIES
+        $('#collection').val('activities');
+
+    $('#div_chapter').hide();
+
+        $('.chapterFilter').prop('disabled', true);
+        $('.mediaFilter').prop('disabled',   false);
+    };
+};// end changeCollection
 
 ///////////////////////////////////////////////////////////////////////
 /////////////////////////// SEARCH  RESULTS  ///////////////////////////
@@ -201,29 +255,37 @@ function lessontemplatesave(name) {
 var clearFilter = function() {
 	 console.log('clearFilter');
 
-     $('#searchString').val("");
+   if ($('#collection').val() == 'activities') {
+         $('#searchString').val("");
+    	 $(".filter_dropdown").each(function() { this.selectedIndex = 0; });
+    	 $(".filter_checkbox").each(function() { $(this).prop("checked", false); });
+    } else //collection=='chapters'
+    {
+         $("#dropdown_grade").val("").change();
+         $("#dropdown_subject").val("").change();
+    };
 
-	 $(".filter_dropdown").each(function() { this.selectedIndex = 0; });
-	 $(".filter_checkbox").each(function() { $(this).prop("checked", false); });
-
-     $("#innerResultsMenu").empty();
-     $("#innerResultsDiv").empty();
-     $("#previewpanel").empty();
+    $("#innerResultsMenu").empty();
+    $("#innerResultsDiv").empty();
+    $("#previewpanel").empty();
 }; //end clearFilter()
 
 var isFilterSet = function() {
     var set = false;
 
-     if ($('#searchString').val()) set = true;
+    if ($('#collection').val() == 'activities') {
+         if ($('#searchString').val()) set = true;
 
-     if ($("#dropdown_grade").val()) set = true;
-     if ($("#dropdown_subject").val()) set = true;
+         $(".filter_checkbox").each(function() {
+            if (this.checked) set = true;
+         });
+    } else //collection=='chapters'
+    {
+         if ($("#dropdown_grade").val() != "")   set = true;
+         if ($("#dropdown_subject").val() != "") set = true;
+    };
 
-     $(".filter_checkbox").each(function() {
-        if (this.checked) set = true;
-     });
-
-     return set;
+    return set;
 }; //end isFilterSet()
 
 
@@ -255,7 +317,6 @@ function displayResults(results) {
 var displaySearchResults = function(filterdata_object) {
 	var currentResultDiv = document.createElement("div");
 	currentResultDiv.id = "currentResultDiv";
-	// currentResultDiv.appendTo("#innerResultsDiv");
 	$(currentResultDiv).appendTo("#innerResultsDiv");
 
 
@@ -319,11 +380,7 @@ var displaySearchResults = function(filterdata_object) {
 ///////////////////////////////
 // Create inner results menu
 //////////////////////////////
-/*  $("<a/>", {
-        href : "#textbooks",
-        html : "Textbooks "
-    }).appendTo("#innerResultsMenu");
-*/
+
     $("<span/>", {
         id : "chaptersScroll",
         html : "Chapters (" + chaptersarraylength + ")&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -332,11 +389,7 @@ var displaySearchResults = function(filterdata_object) {
         id : "activitiesScroll",
         html : "Activities (" + activitiesarraylength + ')'
     }).appendTo("#innerResultsMenu");
-/*  $("<a/>", {
-        href : "#dictionary",
-        html : "Dictionary "
-    }).appendTo("#innerResultsMenu");
-    */
+
     $("#innerResultsMenu").css("border-bottom","1px solid #000");
 
     $('#chaptersScroll').click(function()  {$('#innerResultsDiv').scrollTop($('#chapterTitle').position().top);});
@@ -376,6 +429,9 @@ THUMBNAILS
 //returns an english describing the file type, given a FT
 // could use a key:value array instead
 
+var filetype = function(ft) { return LOOMA.typename(ft);};
+
+/*
 var filetype = function(ft) {
     //converts a file extension into
 	     if (ft == "gif" || ft == "jpg" || ft == "png") return "Image";
@@ -387,8 +443,9 @@ var filetype = function(ft) {
 	else if (ft == "text")      return "Text File";
     else if (ft == "looma")     return "Looma Page";
     else if (ft == "chapter")   return "Chapter";
+    else return ft;
 }; // end filetype()
-
+*/
             /*
              //FOR reference: PHP version of thumbnail():
                   function thumbnail ($fn) {  //NEW VERSION AUG '16
@@ -414,6 +471,8 @@ var thumbnail = function(item) {
     var imgsrc;
     var idExtractArray;
 
+    if ($(item).attr('thumb')) return $(item).attr('thumb');  //some activities have explicit thumbnail set
+
     collection = $(item).attr('collection');
     filetype = $(item).attr('ft');
     if ($(item).attr('fn')) filename = $(item).attr('fn');
@@ -429,25 +488,17 @@ var thumbnail = function(item) {
 		imgsrc = homedirectory + "content/textbooks/" + idExtractArray["currentGradeFolder"] + "/" + idExtractArray["currentSubjectFull"] + "/" + thumbnail_prefix + "_thumb.jpg";
 	}
 
-/*
-	else if (collection == "textbooks" || item.subject != null) {
-		thumbnail_prefix = item.fn;
-		thumbnail_prefix = thumbnail_prefix.substr(0, thumbnail_prefix.indexOf('.'));
-		imgsrc = homedirectory + "content/" + item.fp + thumbnail_prefix + "_thumb.jpg";
-	}
-*/
-
 	else if (collection == "activities" || item.ft != null) {
 		if (item.ft == "mp3") {	 //audio
             if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
 			imgsrc = path + "thumbnail.png";
 		}
-		else if (item.ft == "mp4" || item.ft == "mp5") { //video
+		else if (item.ft == "mp4" || item.ft == "mp5" || item.ft == "m4v" || item.ft == "mov" || item.ft == "video") { //video
 			thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
             if (filepath) path = filepath; else path = homedirectory + 'content/videos/';
 			imgsrc = path + thumbnail_prefix + "_thumb.jpg";
 		}
-		else if (item.ft == "jpg"  || item.ft == "gif" || item.ft == "png" ) { //picture
+		else if (item.ft == "jpg"  || item.ft == "gif" || item.ft == "png" || item.ft == "image" ) { //picture
 			thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
             if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
 			imgsrc = path + thumbnail_prefix + "_thumb.jpg";
@@ -573,7 +624,7 @@ var createActivityDiv = function(activity) {
                 $(textdiv).appendTo(activityDiv);
 
                 // Display Name
-                if (item.dn) var dn = item.dn.substring(0, 20); else dn = item.ndn.substring(0,20);
+                if (item.dn) var dn = item.dn.substring(0, 20); //else dn = item.ndn.substring(0,20);
                 $("<p/>", {
                     class : "result_dn",
                     html : "<b>" + dn + "</b>"
@@ -611,12 +662,7 @@ var createActivityDiv = function(activity) {
                 var addButton = document.createElement("button");
                 addButton.innerText = "Add";
                 addButton.className = "add";
-        /*        $(addButton).bind("click", function() {
-                 //   createTimelineElement(item, collection, issection);
-                 //TEST
-                    insertTimelineElement($(this).closest('.activityDiv'));
-                    });
-          */
+
                buttondiv.appendChild(addButton);
 
                 // "Delete" button
@@ -650,7 +696,6 @@ var createActivityDiv = function(activity) {
 };  // end createActivityDiv()
 
 
-
 ///////////////////////////////////////////////////////////////
 /////////////////////////// PREVIEW ///////////////////////////
 ///////////////////////////////////////////////////////////////
@@ -663,6 +708,9 @@ var preview_result = function(item) {
     var collection = $(item).attr('data-collection');
     var filetype = $(item).data('type');
     var filename = $(item).data('mongo').fn;
+    var $mongo = $(item).data('mongo');
+    var filepath;
+    if ('fp' in $mongo) filepath = $mongo.fp;
 
         //console.log ("collection is " + collection + " filename is " + filename + " and filetype is " + filetype);
 
@@ -681,17 +729,10 @@ var preview_result = function(item) {
 		                            '.pdf#page=' + pagenum + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"' + '>';
 	}
 
-/*
-	else if (collection == "textbooks") {
-		document.querySelector("div#previewpanel").innerHTML = '<embed src="' +
-		                        homedirectory + 'content/' + item.fp + filename +
-		                        '" width="100%" height="100%" type="application/pdf">';
-	}
-*/
-
 	else if (collection == "activities") {
 
-		if(filetype == "mp4" || filetype == "mov" || filetype == "mp5") {
+		if(filetype == "mp4" || filetype == "video" || filetype == "mov" || filetype == "m4v" || filetype == "mp5") {
+		    if (!filepath) filepath = '../content/videos/';
 			document.querySelector("#previewpanel").innerHTML =
 
 	//		'<video controls> <source src="' + homedirectory +
@@ -702,8 +743,8 @@ var preview_result = function(item) {
                     '<div id="video-area">' +
                         '<div id="fullscreen">' +
                             '<video id="video">' +
-                                '<source id="video-source" src="' + homedirectory +
-                                       'content/videos/' + filename + '" type="video/mp4">' +
+                                '<source id="video-source" src="' +
+                                       filepath + filename + '" type="video/mp4">' +
                             '</video>' +
                     '</div></div></div>' +
                 '<div id="title-area"><h3 id="title"></h3></div>' +
@@ -721,13 +762,15 @@ var preview_result = function(item) {
 
 	   	}
 		else if (filetype=="pdf") {
+            if (!filepath) filepath = '../content/pdfs/';
 			document.querySelector("div#previewpanel").innerHTML =
-			     '<iframe src="' + homedirectory + 'content/pdfs/' + filename + '"' +
+			     '<iframe src="' + filepath + filename + '"' +
 			     ' style="height:60vh;width:60vw;" type="application/pdf">';
 		}
 		else if(filetype=="mp3") {
+            if (!filepath) filepath = '../content/audio/';
 		      document.querySelector("div#previewpanel").innerHTML = '<br><br><br><audio id="audio"> <source src="' +
-		                      homedirectory + 'content/audio/' +
+		                      filepath +
 		                      filename + '" type="audio/mpeg"></audio>' +
 		                                      '<div id="media-controls">' +
                                             '<div id="time" class="title">0:00</div>' +
@@ -741,8 +784,9 @@ var preview_result = function(item) {
 		}
 		// Pictures
 		else if(filetype=="jpg" || filetype=="gif" || filetype=="png") {
+            if (!filepath) filepath = '../content/pictures/';
 			document.querySelector("div#previewpanel").innerHTML = '<img src="' +
-			                     homedirectory + 'content/pictures/' +
+			                     filepath +
 			                     filename + '"id="displayImage">';
 		}
         else if (filetype == "html") {
@@ -787,14 +831,6 @@ var preview_result = function(item) {
         }
 	}
 
-    /*
-	else if (collection == "dictionary") {
-		$("<p/>", {
-			html : item.def
-		}).appendTo("#previewpanel");
-		// document.querySelector("div#previewpanel").innerHTML = item.def;
-	}
-	*/
 };  // end preview_result()
 
 
@@ -881,36 +917,24 @@ var initializeDOM = function() {
 /////////////////////////// Fill in the DOM //////////
 //////////////////////////////////////////////////////
 
-    // Building Navbar -- all this could be in HTML
+    // Building Navbar and Querybar-- all this could be in HTML
 
         $("<p/>", {
-            html : "Lesson Plan Creator: Edit"
+            html : "Lesson Plan Editor"
         }).appendTo("#navbar");
 
-        // Filter: Search
-
+    // Filter: Search
         $("<div/>", {
             id : "div_search",
         }).appendTo("#search");
 
-        //insert a hidden input that sets the 'collection' name for searches
-        $("<input type='hidden' id='collection' value='activities' name='collection'/>").appendTo("#search");
-
-        $("<span/>", {
-            class : "filter_label",
-            html : "Search:",
-        }).appendTo("#div_search");
-
-        $("<input/>", {
-            id : "searchString",
-            class: "textBox",
-            type : "text",
-            placeholder: "enter search term...",
-            name : "search-term",
-        }).appendTo("#div_search");
+        $("<input type='radio' name='radio' value='activities' class='filter_radio' checked>").appendTo("#div_search");
+        $("<span class='filter_label'> Media</span>").appendTo("#div_search");
+        $('<br>').appendTo("#div_search");
+        $("<input type='radio' name='radio' value='chapters'  class='filter_radio' >").appendTo("#div_search");
+        $("<span class='filter_label'> Chapter</span>").appendTo("#div_search");
 
         // Filter: Grade
-
         $("<div/>", {
             id : "div_grade"
         }).appendTo("#search");
@@ -921,17 +945,17 @@ var initializeDOM = function() {
         }).appendTo("#div_grade");
 
         $("<select/>", {
-            class : "filter_dropdown",
+            class : "filter_dropdown chapterFilter",
             form  : "search",
             name  : "class",
             id : "dropdown_grade",
             placeholder: "Grade Level"
         }).appendTo("#div_grade");
 
-        for (var i=0; i<9; i++) { //fixed BUG: was "(var i=0, i<8, i++)" so that Chapter 8 did not show
+        for (var i=0; i<9; i++) {
             if (i == 0) {
                 $("<option/>", {
-                    html : "",
+                    html : "All",
                     value : "",
                     id : ""
                 }).appendTo("#dropdown_grade");
@@ -945,8 +969,7 @@ var initializeDOM = function() {
             }
         }
 
-        // Filter: Subject
-
+    // Filter: Subject
         var subjects = {
             "English"      : "EN",
             "Math"         : "M",
@@ -965,15 +988,15 @@ var initializeDOM = function() {
         }).appendTo("#div_subject");
 
         $("<select/>", {
-            class : "filter_dropdown",
+            class : "filter_dropdown chapterFilter",
             name  : "subj",
             form  : "search",
-            id : "dropdown_subject"
+            id : "dropdown_subject",
         }).appendTo("#div_subject");
 
         $('<option>', {
             value: "",
-            html : ""
+            html : "All"
         }).appendTo("#dropdown_subject");
 
         $.each(subjects, function (key, value) {
@@ -983,28 +1006,48 @@ var initializeDOM = function() {
             }).appendTo("#dropdown_subject");
         });
 
-        // Filter: File Type
+    // Filter: chapters
 
+        $("<div/>", {
+            id : "div_chapter"
+        }).appendTo("#search");
+
+        $("<span/>", {
+            class : "filter_label",
+            id : "chapter_label",
+            html : "Chapter: ",
+        }).appendTo("#div_chapter");
+
+        $('<select/>', {
+            class : "filter_dropdown chapterFilter",
+            form: "search",
+     //       size: "2",
+            name: "chapter",
+            id: "dropdown_chapter"
+        }).appendTo('#div_chapter');
+
+
+   // Filter: File Type
         var filetypes = {
             "image" :   {   id : "ft_image",     display : "Image"  },
             "video" :   {   id : "ft_video",     display : "Video"  },
             "audio" :   {   id : "ft_audio",     display : "Audio"   },
             "pdf" :     {   id : "ft_pdf",       display : "PDF"   },
             "text" :    {   id : "ft_text",      display : "Text"   },
-            "chapter" : {   id : "ft_chapt",     display : "Chapter"   },
-            "html" :    {   id : "ft_html",      display : "HTML"   },
-            "looma":{  id : "ft_looma",     display : "Looma Page"   }
-        // SLIDESHOW should be added
-        //    "slideshow":{   id : "ft_slideshow", display : "Slide Show"   }
+            "looma":    {   id : "ft_looma",      display : "Looma Page"   }
+            // SLIDESHOW should be added
+            //    "slideshow":{   id : "ft_slideshow", display : "Slide Show"   }
         };
 
         $("<div/>", {
             id : "div_filetypes"
         }).appendTo("#search");
 
+        $("<span class='filter_label'>Type:       </span>").appendTo("#div_filetypes");
+
         $.each(filetypes, function (key, value) {
             $("<input/>", {
-                class : "filter_checkbox",
+                class : "filter_checkbox mediaFilter",
                 type : "checkbox",
                 id : value.id,
                 name : "type[]",
@@ -1014,15 +1057,113 @@ var initializeDOM = function() {
             $("<label/>", {
                 class : "filter_label",
                 for : value.id,
+                style: "color:#00cc00;",
                 html : value.display
             }).appendTo("#div_filetypes");
 
-            if(key == 'pdf') $('<br>').appendTo("#div_filetypes");
-
-            //$("#div_filetypes").append("<br/>");
         });
 
-        // Buttons for Search and Clear search criteria
+        $('<br>').appendTo("#div_filetypes");
+
+    //checkboxes for SOURCE
+        var sources = {
+            "Dr Dann" :     {   id : "src_ck12",   display : "CK-12"    },
+            "PhET" :      {   id : "src_phet",   display : "PhET"     },
+            "ePaath" :    {   id : "src_epaath", display : "ePaath"   },
+            "khan" :      {   id : "src_khan",   display : "Khan"     },
+            "wikipedia" : {   id : "src_wiki",   display : "Wikipedia"}
+        };
+
+        $("<div/>", {
+            id : "div_sources"
+        }).appendTo("#div_filetypes");
+
+        $("<span class='filter_label'>Source: </span>").appendTo("#div_sources");
+
+        $.each(sources, function (key, value) {
+            $("<input/>", {
+                class : "filter_checkbox mediaFilter",
+                type : "checkbox",
+                id : value.id,
+                name : "src[]",
+                value: key
+            }).appendTo("#div_sources");
+            $("<label/>", {
+                class : "filter_label",
+                style: "color:blue;",
+                for : value.id,
+                html : value.display
+            }).appendTo("#div_sources");
+        });
+
+
+ // dropdowns for CATEGORIES  - - AREA, SUBAREA and TAG
+
+        var categories = {
+            "science" :  {   id : "cat_science",  display : "Science"  },
+            "math" :     {   id : "cat_math",     display : "Math"  },
+            "Art" :      {   id : "cat_art",      display : "Art"  },
+            "business" : {   id : "cat_business", display : "Business"  },
+            "citizen" :  {   id : "cat_citizen",  display : "Citizenship"  },
+            "design" :   {   id : "cat_design",   display : "Design"  },
+            "life" :     {   id : "cat_life",     display : "Life"  },
+            "geography": {   id : "cat_geography",display : "Geography"  },
+            "history" :  {   id : "cat_history",  display : "History"  },
+            "tech" :     {   id : "cat_tech",     display : "Technology"  },
+            "language" : {   id : "cat_language", display : "Language"  },
+            "music" :    {   id : "cat_music",    display : "Music"  },
+            "people" :   {   id : "cat_people",   display : "People"  },
+            "religion" : {   id : "cat_religion", display : "Religion"  }
+        };
+
+        $("<div/>", {
+            id : "div_categories"
+        }).appendTo("#search");
+
+        $("<span/>", {
+            class : "filter_label",
+            html : "Name:     ",
+        }).appendTo("#div_categories");
+
+        $("<input/>", {
+            id : "searchString",
+            class: "textBox mediaFilter",
+            type : "text",
+            placeholder: "enter search term...",
+            name : "search-term",
+        }).appendTo("#div_categories");
+
+        $('<br>').appendTo("#div_categories");
+
+        $("<span/>", {
+            class : "filter_label",
+            html : "Category: ",
+        }).appendTo("#div_categories");
+
+        $("<select/>", {
+            class : "filter_dropdown mediaFilter",
+            form  : "search",
+            name  : "category",
+            id : "dropdown_cat"
+        }).appendTo("#div_categories");
+
+        $("<option/>", {
+                class : "filter_checkbox",
+                name : "category",
+                html : "All",
+                value: "All"
+            }).appendTo("#dropdown_cat");
+        $.each(categories, function (key, value) {
+            $("<option/>", {
+                class : "filter_checkbox",
+                id : value.id,
+                name : "category",
+                html : value.display,
+                value: key
+            }).appendTo("#dropdown_cat");
+        });
+
+   // Buttons for Search and Clear search criteria
 
         $("<button/>", {
             class: "search",
@@ -1045,7 +1186,7 @@ var initializeDOM = function() {
 
         // Title string
         $("<p/>", {
-            html : "Lesson Plan name:&nbsp;&nbsp;",
+            html : "Activity name:&nbsp;&nbsp;",
             class: "ellipsis"
         }).appendTo("#titleDiv");
 
@@ -1053,7 +1194,8 @@ var initializeDOM = function() {
             class: "textBox filename",
         }).appendTo("#titleDiv");
 
-
+        $details = $('<div id="details"><div>' +
+                      '</div></div>');
 
 }; // end initializeDOM()
 

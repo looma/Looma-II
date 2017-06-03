@@ -36,7 +36,7 @@ function parent($file) { global $content;
 function isRegistered($name, $dir) {
              global $activities_collection;
 
-             $query = array('fn' => $name,'fp' => $dir);
+             $query = array('fn' => $name,'fp' => $dir . '/');
              $projection = array('_id' => 0, 'fn' => 1, 'dn' => 1,  'ch_id' => 1);
              $activity = $activities_collection -> findOne($query, $projection);
 
@@ -114,6 +114,62 @@ if ( isset($_REQUEST["cmd"]) ) {
             echo json_encode($list);
             return;
             // end case "list"
+
+// KHAN import
+// call with url=looma-library-utilities.php?cmd=khanimport
+// WARNING this is dangerous and can mess up Looma MongoDB activities collection
+// use with care
+//
+// reads directly from /Users/skip/bin/khanfilelist and creates activities for each line of khanfilelist
+//
+        case "khanimport":
+            $khanpath = "/Users/skip/bin/khanfilelist";
+            $khanfile = (file_get_contents($khanpath));
+            $khancontents = json_decode("[" . $khanfile . "]");
+            foreach ($khancontents as $item) {
+                //echo $item -> dn . '<br>'; //debug
+
+            //NOTE: following line is commented out to prevent inadvertent use
+            // uncomment it temporarily to do a khan import
+
+            make_activity($item);
+
+            };
+            return;
+        // end case "khanimport"
+
+       case "w4simport":
+            $w4spath = "/Users/skip/bin/w4sfilelist";
+            $w4sfile = (file_get_contents($w4spath));
+            $w4scontents = json_decode("[" . $w4sfile . "]");
+            foreach ($w4scontents as $item) {
+                //echo $item -> dn . '<br>'; //debug
+
+            //NOTE: following line is commented out to prevent inadvertent use
+            // uncomment it temporarily to do a khan import
+
+            //make_activity($item);
+
+            };
+            return;
+        // end case "w4simport"
+
+
+
+/// KHAN list (internal use only)
+        case "khanlist":
+            $khanpath = "/Users/skip/bin/khanfilelist";
+            $khanfile = (file_get_contents($khanpath));
+
+            echo "[";
+            print_r($khanfile);
+            echo "{}]";
+            //echo json_encode($khanfile);
+            return;
+///
+
+
+
 
 /// NEW ACTIVITIES
         case "new_activities":

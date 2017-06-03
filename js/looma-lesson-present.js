@@ -115,6 +115,7 @@ window.onload = function ()
                     break;
                 case "video":
                 case "mp4":
+                case "mp5":
                 case "m4v":
                 case "mov":
 

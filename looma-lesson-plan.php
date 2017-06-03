@@ -25,8 +25,8 @@
 
                 <div id="querybar">
                     <form id="search" name="search">
-                        <input type="hidden" value="activities" name="collection" />
-                        <input type="hidden" id="cmd" value="search" name="cmd" />
+                        <input type="hidden" name="collection" value="activities" id="collection"/>
+                        <input type="hidden" name="cmd"        value="search"     id="cmd" />
                     </form>
                 </div>
 

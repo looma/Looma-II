@@ -1,0 +1,65 @@
+// ONE TIME program to 
+//      1. merge ft='text' activities from loomaAWS (mongodump of AWS db) into activities on localhost looma
+//      1. merge ft='lessons' activities from loomaAWS (mongodump of AWS db) into activities on localhost looma
+//      1. merge 'lessons' collection from loomaAWS (mongodump of AWS db) into 'lessons' collection on localhost looma
+//      1. merge 'text_files' collection from loomaAWS (mongodump of AWS db) into 'text_files' collection on localhost looma
+//
+//
+//  run in MONGO SHELL with: load('lessonplanmerge')
+//
+
+// THINK before running this - - first get a mongodump from AWS and mongorestore it into --db loomaAWS
+//
+//TO SET UP:
+//in mongo shell: 'use loomaAWS'
+//then:           'var AWSdb = db'
+//then:           'use looma'
+//this sets AWSdb to the 'loomaAWS' source database
+//and  sets db to the 'looma' destination database
+
+print('db is ' + db);
+print('AWSdb is ' + AWSdb);
+print('');
+
+print ('*****merging text activities')
+var cursor = AWSdb.activities.find({'ft':'text'});
+while (cursor.hasNext()) {
+	var doc = cursor.next();
+    doc['marker'] = 'AWS';
+    print('adding: ' + doc.dn);
+	db.activities.insert(doc);
+	}
+
+//repeat for 'ft':'lesson'
+print('');
+print ('*****merging lesson activities');
+var cursor = AWSdb.activities.find({'ft':'lesson'});
+while (cursor.hasNext()) {
+    var doc = cursor.next();
+    doc['marker'] = 'AWS';
+    print('adding: ' + doc.dn);
+    db.activities.insert(doc);
+    }
+
+    
+//repeat for 'lessons' collection
+print('');
+print ('*****merging lessons collections');
+var cursor = AWSdb.lessons.find();
+while (cursor.hasNext()) {
+    var doc = cursor.next();
+    doc['marker'] = 'AWS';
+    print('adding: ' + doc.dn);
+    db.lessons.insert(doc);
+    }
+    
+//repeat for 'text_files' collection
+print('');
+print ('*****merging text_files collections');
+var cursor = AWSdb.text_files.find();
+while (cursor.hasNext()) {
+    var doc = cursor.next();
+    doc['marker'] = 'AWS';
+    print('adding: ' + doc.dn);
+    db.text_files.insert(doc);
+    }

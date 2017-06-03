@@ -31,6 +31,7 @@ Description:
  * LOOMA.translatableSpans()
  * LOOMA.ch_id()
  * LOOMA.parseCH_ID()
+ * LOOMA.getCH_ID()
  * LOOMA.speak(text)
  * LOOMA.toggleFullscreen()
  * LOOMA.makeTransparent()
@@ -149,19 +150,28 @@ playMedia : function(button) {
     } //end SWITCH
 }, //end LOOMA.playMedia()
 
+
+
+
+//returns an english describing the file type, given a FT
+
 typename: function(ft) {
     var names = {
         mp4: 'video',
         mov: 'video',
+        mp5: 'video',
         m4v: 'video',
         jpg: 'image',
         png: 'image',
         gif: 'image',
         JPG: 'image',
-        pdf: 'pdf',
+        pdf: 'Document',
         mp3: 'audio',
         EP:  'ePaath',
-        html:'HTML'
+        html:'HTML',
+        looma:'Looma Page',
+        chapter:'Chapter',
+        text: 'Text File'
     };
 
     return (ft in names) ? names[ft] : ft;
@@ -418,11 +428,11 @@ changeVoice : function(newvoice) { //voice change button has been pressed
         if (language == "english") {
             return "<span class='english-keyword'>" + english +
                 "<span class='xlat'>" + native + "</span>" + "</span>" +
-                "<span class='native-keyword' hidden>" + native +
+                "<span class='native-keyword' style='display:none'>" + native +
                 "<span class='xlat'>" + english + "</span>" +
                 "</span>";
         } else
-            return "<span class='english-keyword' hidden>" + english +
+            return "<span class='english-keyword' style='display:none'>" + english +
                 "<span class='xlat'>" + native + "</span>" + "</span>" +
                 "<span class='native-keyword'>" + native +
                 "<span class='xlat'>" + english + "</span>" +
@@ -516,6 +526,84 @@ ch_id   :  function (grade, subject, unit, chapter) {
 
     };  //end RETURN public functions
 }()); //IIEF immediately instantianted function expression
+
+
+ /**  LOOMA.getCH_ID()
+ /**
+ * Prompts the user to select Class, Subject and Chapter and returns the corresponding ch_id
+ * @param msg - The message the user is presented, prompting them to enter text.
+ * @param confirmed - A function where the user's text response will be sent.
+ * @param canceled - function called if user cancels the dialog
+ * $param notTransparent: F means grey out the background, T means dont
+ * */
+LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
+    LOOMA.closePopup();
+    if (!notTransparent) LOOMA.makeTransparent();
+
+    $(document.body).append("<div class='popup textEntry' id='ch_id_popup'>" +
+        "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
+        "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
+
+        "<div id='ch_id'>" +
+            "<span> Class: </span>" +
+            "<select id='classSelect'>" +
+                "<option value=''></option>" +
+                "<option value='1'>1</option>" +
+                "<option value='2'>2</option>" +
+                "<option value='3'>3</option>" +
+                "<option value='4'>4</option>" +
+                "<option value='5'>5</option>" +
+                "<option value='6'>6</option>" +
+                "<option value='7'>7</option>" +
+                "<option value='8'>8</option>  " +
+            "</select> " +
+            "<span> Subject: </span>" +
+            "<select id='subjectSelect'>" +
+                "<option value=''></option>" +
+                "<option value='EN'>English</option>" +
+                "<option value='M'>Math</option>" +
+                "<option value='N'>Nepali</option>" +
+                "<option value='S'>Science</option>" +
+                "<option value='SS'>Soc.Studies</option>" +
+            "</select> " +
+
+            "<span> Chapter: </span> <select id='chapterSelect'></select>" +
+        "</div>" +
+
+        "<button id='confirm-popup' class='popup-button'>" +
+        LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>").hide().fadeIn(1000) ;
+
+    $("#classSelect, #subjectSelect").change( function(){
+        $('#chapterSelect').empty();
+        if ( ($('#classSelect').val() != '') && ($('#subjectSelect').val() != ''))
+            $.post("looma-database-utilities.php",
+                {cmd: "chapterList",
+                 class: $('#classSelect').val(),
+                 subject:   $('#subjectSelect').val()},
+
+                 function(response) {
+                     console.log(response);
+                    $('#chapterSelect').append(response);
+                 },
+                 'html'
+              );
+    });
+
+    $('#confirm-popup').click(function() {
+       //$("#confirm-popup").off('click');
+       var ch_id = $('#ch_id #chapterSelect').val();
+       console.log('select CH_ID returned ', ch_id);
+       LOOMA.closePopup();
+       confirmed(ch_id);
+    });
+
+    $('#dismiss-popup, #close-popup').click(function() {
+        //$("#close-popup").off('click');
+        //$("#dismiss-popup").off('click');
+        LOOMA.closePopup();
+        canceled();
+   });
+};  //end getCH_ID()
 
 
 /* LOOMA.speak()
@@ -869,83 +957,6 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
         canceled();
    });
 };  //end prompt()
-
-/**
- /**
- * Prompts the user to select Class, Subject and Chapter and returns the corresponding ch_id
- * @param msg - The message the user is presented, prompting them to enter text.
- * @param confirmed - A function where the user's text response will be sent.
- * @param canceled - function called if user cancels the dialog
- * $param notTransparent: F means grey out the background, T means dont
- * */
-LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
-    LOOMA.closePopup();
-    if (!notTransparent) LOOMA.makeTransparent();
-
-    $(document.body).append("<div class='popup textEntry' id='ch_id_popup'>" +
-        "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
-        "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
-
-        "<div id='ch_id'>" +
-            "<span> Class: </span>" +
-            "<select id='classSelect'>" +
-                "<option value=''></option>" +
-                "<option value='class1'>1</option>" +
-                "<option value='class2'>2</option>" +
-                "<option value='class3'>3</option>" +
-                "<option value='class4'>4</option>" +
-                "<option value='class5'>5</option>" +
-                "<option value='class6'>6</option>" +
-                "<option value='class7'>7</option>" +
-                "<option value='class8'>8</option>  " +
-            "</select> " +
-            "<span> Subject: </span>" +
-            "<select id='subjectSelect'>" +
-                "<option value=''></option>" +
-                "<option value='english'>English</option>" +
-                "<option value='math'>Math</option>" +
-                "<option value='nepali'>Nepali</option>" +
-                "<option value='science'>Science</option>" +
-                "<option value='social studies'>Soc.Studies</option>" +
-            "</select> " +
-
-            "<span> Chapter: </span> <select id='chapterSelect'></select>" +
-        "</div>" +
-
-        "<button id='confirm-popup' class='popup-button'>" +
-        LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>").hide().fadeIn(1000) ;
-
-    $("#classSelect, #subjectSelect").change( function(){
-        $('#chapterSelect').empty();
-        if ( ($('#classSelect').val() != '') && ($('#subjectSelect').val() != ''))
-            $.post("looma-database-utilities.php",
-                {cmd: "chapterList",
-                 class: $('#classSelect').val(),
-                 subject:   $('#subjectSelect').val()},
-
-                 function(response) {
-                     console.log(response);
-                    $('#chapterSelect').append(response);
-                 },
-                 'html'
-              );
-    });
-
-    $('#confirm-popup').click(function() {
-       //$("#confirm-popup").off('click');
-       var ch_id = $('#ch_id #chapterSelect').val();
-       console.log('select CH_ID returned ', ch_id);
-       LOOMA.closePopup();
-       confirmed(ch_id);
-    });
-
-    $('#dismiss-popup, #close-popup').click(function() {
-        //$("#close-popup").off('click');
-        //$("#dismiss-popup").off('click');
-        LOOMA.closePopup();
-        canceled();
-   });
-};  //end getCH_ID()
 
 // from www.creativejuiz.fr  this function mimics server-side(PHP) $_GET[],
 // giving client-side (JS) access to URL search parameters

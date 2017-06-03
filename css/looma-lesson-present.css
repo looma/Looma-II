@@ -190,7 +190,7 @@ span .filename {
 #back    { background-image: url("../images/carrot-back.png"); }
 #pause   { background-image: url("../images/play-button.png"); }
 #forward { background-image: url("../images/carrot-fwd.png"); }
-#dismiss { background-image: url("../images/delete-icon.png"); }
+#dismiss { background-image: url("../images/back-arrow.png"); }
 
 button#fullscreen-control {
     bottom:15%;

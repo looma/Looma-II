@@ -18,7 +18,7 @@ var width = 1200,
 $(document).ready(function() {
 //Leaflet demonstration
 
-
+    var mapDir = "../maps/";
 
     var zoneMap = L.map('zoneMap',
             { center : [28.2, 84.2],
@@ -26,6 +26,6 @@ $(document).ready(function() {
                 maxBounds: L.latLngBounds(L.latLng(24,77.5), L.latLng(32,91.5)),
                 fullscreenControl: true,
                 fullscreenControlOptions: {position: 'topleft'}});
-L.tileLayer('../content/maps/zoneMap/{z}/{x}/{y}.png').addTo(zoneMap);
+L.tileLayer(mapDir + 'zoneMap/{z}/{x}/{y}.png').addTo(zoneMap);
 
 });

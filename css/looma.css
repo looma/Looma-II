@@ -625,7 +625,7 @@ button.lookup {
 }
 
 .popup-button{ /*Buttons inside popups, for example the "OK" button*/
-    height: auto;
+    height: 5vh;
     width: 7vw;
     float : right;
     font-size : 1.5vw;

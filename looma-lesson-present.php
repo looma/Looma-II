@@ -20,13 +20,10 @@ Description: looma lesson plan presenter
   <body>
     <?php
         //Gets the filename, filepath, and the thumbnail location
-        if (isset($_REQUEST['id'])) $lesson_id = $_REQUEST['id'];
+        if (isset($_REQUEST['id'])) $lesson_id = $_REQUEST['id']; else $lesson_id = null;
     ?>
 
-    <script>
-        //send "id" parameter to client-side JS
-        var lesson_id = "<?php echo $lesson_id ?>";
-    </script>
+
 
     <div id="main-container-horizontal">
 
@@ -48,14 +45,14 @@ Description: looma lesson plan presenter
         //send DN, AUTHOR and DATE in a hidden DIV
         //for each ACTIVITY in the DATA field of the lesson, create an 'activity button' in the timeline
 
-            //get the mongo document for this lesson
+         if ($lesson_id) {   //get the mongo document for this lesson
             $query = array('_id' => new MongoID($lesson_id));
             //returns only these fields of the activity record
             $projection = array('_id' => 0,
                                 'dn' => 1,
                                 'author' => 1,
                                 'date' => 1,
-                                'dn' => 1,
+                                'thumb' => 1,
                                 'data' => 1
                                 );
 
@@ -63,32 +60,47 @@ Description: looma lesson plan presenter
 
             $displayname = $lesson['dn'];
 
-            $data = $lesson['data'];
+            if (isset($lesson['data'])) $data = $lesson['data'];
+            else { echo "Lesson has no content"; $data = null;}
         //
         // NEED TO SORT DATA
         //
 
             //should send DN, AUTHOR and DATE in a hidden DIV
 
-            foreach ($data as $activity) {
+            if ($data) foreach ($data as $activity) {
 
                 //echo "ID is " . $activity['id'];
                 //echo "coll is " . $activity['collection'];
 
-                if ($activity['collection'] == 'activities') {
+                if (isset($details['thumb']))
+                     $thumbSrc = $details['thumb'];
+                else if (isset($details['fn']) && isset($details['fp']))
+                     $thumbSrc = $details['fp'] . thumbnail($details['fn']);
+                else $thumbSrc = null;
+
+               if ($activity['collection'] == 'activities') {
 
                     $query = array('_id' => new MongoID($activity['id']));
 
                     $db_collection =  $activities_collection;
                     $details = $db_collection -> findOne($query);
 
+                if (isset($details['thumb']))
+                     $thumbSrc = $details['thumb'];
+                else if (isset($details['fn']) && isset($details['fp']))
+                     $thumbSrc = $details['fp'] . thumbnail($details['fn']);
+                else $thumbSrc = null;
+
                     //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+
 
                         makeActivityButton($details['ft'],
                                            (isset($details['fp'])) ? $details['fp'] : null,
                                            (isset($details['fn'])) ? $details['fn'] : null,
                                            (isset($details['dn'])) ? $details['dn'] : null,
-                                           (isset($details['fn'])) ? thumbnail($details['fn']) : null,
+                                            $thumbSrc,
+
                                            "", //(isset($details['ch_id'])) ? $details['ch_id'] : null,
                                            $activity['id'],
                                            (isset($details['url'])) ? $details['url'] : null,
@@ -107,11 +119,14 @@ Description: looma lesson plan presenter
 
                     // makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
 
+                    if (isset($details['fn']) && isset($details['fp']))
+                             $thumbSrc = $details['fp'] . thumbnail($details['fn']);
+
                         makeActivityButton('pdf',
                                            (isset($textbook['fp'])) ? '../content/' . $textbook['fp'] : null,
                                            (isset($textbook['fn'])) ? $textbook['fn'] : null,
                                            (isset($chapter['dn'])) ? $chapter['dn'] : null,
-                                           (isset($textbook['fn'])) ? thumbnail($textbook['fn']) : null,
+                                           $thumbSrc,
                                            $chapter['_id'],
                                            null,
                                            null,
@@ -119,13 +134,16 @@ Description: looma lesson plan presenter
                                            160);
                 };
              };
+             }
+            else {echo "<h1>No lesson plan selected</h1>";
+                  $displayname = "<none>";};
            ?>
         </div>
         </div>
 
          <div id="title">
              <span id="subtitle"></span>
-            <span>&nbsp; &nbsp; &nbsp; Looma Lesson:&nbsp; <span class="filename"><?php echo $displayname ?></span></span>
+            <span>&nbsp; &nbsp; &nbsp; Looma Lesson:&nbsp; <span class="filename"><?php if ($displayname) echo $displayname ?></span></span>
         </div>
 
     </div>

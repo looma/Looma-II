@@ -83,7 +83,7 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
 			<?php keyword('Science') ?>    <br>
 			<img class="en-tb" >  <img class="np-tb" ><br>
 		</button>
-		<button type="button" class="subject button-5 img" id="social studies" >
+		<button type="button" class="subject button-5 img" id="social studies" >  <!-- blank in 'social studies' doesnt work -->
 			<?php keyword('Social Studies') ?>    <br>
 			<img class="en-tb" >  <img class="np-tb" ><br>
 		</button>

@@ -1,0 +1,58 @@
+#!/bin/bash
+#processes indivudual Khan HTML files 
+#to get fp, fn, area, subarea, srt, thumb:
+# called by khannavigate script 
+#put khannavigate and khanextract (this file) in /Users/skip/bin, chmod 744, and PATH=$PATH:/Users/skip/bin
+#
+# this script creates a file /Users/skip/bin/khanfilelist 
+
+
+for file in *.html 
+do
+
+	#1. GET DN
+	#grep to find lines with <h1>
+	#then cut the ‘<h1>, 
+	#then sed to remove the trailing ‘</h1>’
+
+	dn=$(grep '^<h1>\(.*\)</h1>' $file | cut -c5,5- | sed 's/<\/h1>//')
+
+	echo $dn
+
+	#2. GET FN
+	#grep to find lines with <source src=“
+	#then cut the <source src=“ 
+	#then sed to remove the trailing characters
+
+	fn=$(grep '^<source src="\.\.\/\.\.\/videos\/\(.*\)' $file | cut -c27-100 | sed "s/\" type='video\/mp4'>//")
+    bn=$(basename -- "$fn" ".mp4")
+    
+    #echo $fn "    " $bn
+
+	#3. GET AREA
+	area=$(pwd | cut -d/ -f8)
+
+	#4. GET SUBAREA
+	subarea=$(pwd | cut -d/ -f9)
+
+	#5. GET TAG (sub-sub-area)
+	tag=$(pwd | cut -d/ -f10)
+	
+	#6. GET FP
+	fp="../content/Khan/$area/$subarea/videos/"
+    
+    #7. GET thumbnail path
+    thumb="../content/Khan/$area/$subarea/thumbs/${bn}.jpg"
+    
+    #8. GET captions path
+    captions="../content/Khan/$area/$subarea/captions/${bn}.srt"
+
+    #9. SRC is Khan
+    src="khan"
+    
+	echo "{\"fn\": \"$fn\", \"dn\": \"$dn\", \"ft\":\"mp4\", \"fp\": \"$fp\", \"thumb\": \"$thumb\", \"captions\": \"$captions\", \"src\": \"khan\", \"area\": \"$area\", \"subarea\": \"$subarea\", \"tag\": \"$tag\"}," >> /Users/skip/bin/khanfilelist
+done
+#
+#
+
+

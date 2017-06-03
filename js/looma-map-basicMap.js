@@ -12,6 +12,8 @@ Description:
 
 'use strict';
 
+var mapDir = "../maps/";
+
 var width = 1200,
     height = 720;
 
@@ -23,7 +25,7 @@ $(document).ready(function() {
                 maxBounds: L.latLngBounds(L.latLng(24,77), L.latLng(33, 91.5)),
                 fullscreenControl: true,
                 fullscreenControlOptions: {position: 'topleft'}});
-L.tileLayer('../content/maps/basicMap/{z}/{x}/{y}.png').addTo(basicMap);
+L.tileLayer(mapDir + 'basicMap/{z}/{x}/{y}.png').addTo(basicMap);
 
 
     var basLegend = L.control({position: 'bottomright'});

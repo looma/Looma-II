@@ -18,7 +18,7 @@ var width = 2400,
 $(document).ready(function() {
 //Leaflet demonstration
 
-
+    var mapDir = "../maps/";
 
     var topoMap = L.map('topoMap',
             { center : [28.4, 83.9],
@@ -27,7 +27,7 @@ $(document).ready(function() {
                 fullscreenControl: true,
                 fullscreenControlOptions: {position: 'topleft'}});
 
-    L.tileLayer('../content/maps/topoMap/{z}/{x}/{y}.png').addTo(topoMap);
+    L.tileLayer(mapDir + 'topoMap/{z}/{x}/{y}.png').addTo(topoMap);
 
     var topLegend = L.control({position: 'bottomright'});
 

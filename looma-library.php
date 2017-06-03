@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <!--
 Name: Skip
 Email: skip@stritter.com
@@ -41,7 +41,7 @@ Description:  displays and navigates content folders for Looma 2
 
         //echo "DEBUG: in isHTML - fp = " . $fp . " and fileexists = " . (file_exists($fp . "/index.html")?"true":"false"). "<br>";
 
-        if (file_exists($fp . "/index.html") && !isEpaath($fp))
+        if ( $fp != '../content/Khan' && file_exists($fp . "/index.html") && !isEpaath($fp))
              return true;
         else return false;
     };  //end function isHTML
@@ -113,28 +113,38 @@ Description:  displays and navigates content folders for Looma 2
 
                     }
 
-else
         //modifications for Wikipedia for Schools
-        //***************************
         //make a button that launches W4S index.htm -- virtual folder
-        if($path . $file == "../content/Wikipedia for Schools") {   //create a virtual folder for W4S
-
+        else if($path . $file == "../content/W4S") {   //create a virtual folder for W4S
                     echo "<td>";
                     $dn = "Wikipedia for Schools";
                     $ft = "html";
-                    $thumb = "thumbnail.png";
-                    makeActivityButton($ft, "../content/Wikipedia for Schools/", "index.htm", $dn, $thumb, "", "", "", "", "");
+                    $thumb = "../content/W4S/thumbnail.png";
+                    makeActivityButton($ft, "../content/W4S/", "index.htm", $dn, $thumb, "", "", "", "", "");
                     echo "</td>";
-                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+                    //$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
         }  //end IF wiki4schools
 
-                else {  //make a regular directory button
+         //modifications for Khan Academy
+        //make a button that launches Khan index.html -- virtual folder
+        else if($path . $file == "../content/Khan") {   //create a virtual folder for Khan
+
+                    echo "<td>";
+                    $dn = "Khan Academy";
+                    $ft = "html";
+                    $thumb = "../content/Khan/thumbnail.png";
+                    makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $thumb, "", "", "", "", "");
+                    echo "</td>";
+                    //$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+        }  //end IF Khan
+
+        else {  //make a regular directory button
 
                     echo "<td><a href='looma-library.php?fp=" . $path . $file .
                     "/'><button class='activity img zeroScroll'>" .
                     thumb_image($path . $file) . $file . "</button></a></td>";
                 }
-                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+        $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
             };
         }; // ********** end FOREACH directory  **************
@@ -329,7 +339,7 @@ echo "<hr>";
                     if ($ep) {
                         // display an EPAATH play button
                         echo "<td>";
-                        $thumb = $file . "/thumbnail.jpg";
+                        $thumb = "../content/epaath/activities/" . $file . "/thumbnail.jpg";
                         $dn = 'ePaath ' . $file;
                         // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
                         makeActivityButton("epaath", $path, $file, $dn, $thumb, "", "", "", "", "");

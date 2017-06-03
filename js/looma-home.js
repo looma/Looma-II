@@ -85,8 +85,13 @@ Description:
              // de-activate all SUBJECT buttons
             $('.subject').removeClass('active');
              //  active button for this SUBJECT (unless called with 'null')
-            if (subjectName) $('#' + subjectName).addClass('active');
 
+            if (subjectName) {
+                //NOTE: getElementById below is used to get around problems with "id='social studies'" (the ID has a space)
+                //       which causes "$('#' + subjectName) to fail when id='social studies'"
+                var btn = document.getElementById(subjectName);
+                $(btn).addClass('active');
+            };
     };  //end activateSubject
 
     function classButtonClicked(){
@@ -125,12 +130,15 @@ $(document).ready (function() {
     LOOMA.setStore('scroll', 0, 'local');
 
     className = LOOMA.readStore('class', 'local');
-    if (className) {
-        activateClass (className);
-        displaySubjects(className);
-        subjectName = LOOMA.readStore('subject', 'local');
-        if (subjectName) {
-            activateSubject (subjectName);
-        }
-    }
+    if (!className) {
+         className = 'class1';
+         LOOMA.setStore("class", 'className', className, 'local');  //set a COOKIE for CLASS (lifetime = this browser session)
+    };
+
+    activateClass (className);
+    displaySubjects(className);
+
+    subjectName = LOOMA.readStore('subject', 'local');
+    if (subjectName) { activateSubject (subjectName); };
+
 }); //end of document.ready

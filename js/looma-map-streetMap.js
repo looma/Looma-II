@@ -18,6 +18,7 @@ var width = 1200,
 $(document).ready(function() {
 //Leaflet demonstration
 
+    var mapDir = "../maps/";
 
     var streetMap = L.map('streetMap',
             { center : [27.7, 85.3],
@@ -25,7 +26,7 @@ $(document).ready(function() {
                 maxBounds: L.latLngBounds(L.latLng(27.5545,85.1247), L.latLng(27.8372,85.5154)),
                 fullscreenControl: true,
                 fullscreenControlOptions: {position: 'topleft'}});
-L.tileLayer('../content/maps/streetMap/{z}/{x}/{y}.png').addTo(streetMap);
+L.tileLayer(mapDir + 'streetMap/{z}/{x}/{y}.png').addTo(streetMap);
 
 
     var legend = L.control({position: 'bottomright'});

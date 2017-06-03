@@ -1,0 +1,12 @@
+// ONE TIME program to FIX missing deleted TEXT file ACTIVITIES
+// DO NOT run this again - - saved as example of mongo terminal (JS) scripting
+//
+// this file needed because some textfile activities were lost when activities collection was replaced
+//  run in MONGO SHELL with: load('scriptname')
+//
+var cursor = db.oldactivities.find({'ft':'text'});
+while (cursor.hasNext()) {
+	var doc = cursor.next();
+	db.activities.insert(doc);  //this will fail if _id already exists
+}
+

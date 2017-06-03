@@ -1,0 +1,34 @@
+#!/bin/bash
+#processes indivudual W4S HTML files 
+#to get fp, fn, area, subarea, srt, thumb:
+# called by W4Snavigate script 
+#put W4Snavigate and W4Sextract (this file) in /Users/skip/bin, chmod 744, and PATH=$PATH:/Users/skip/bin
+#
+# this script creates a file /Users/skip/bin/w4sfilelist 
+
+
+    #1. FN is $fn
+    #2. DN is $dn
+
+	#3. GET AREA
+	area=
+
+	#4. GET SUBAREA
+	subarea=
+
+	#5. GET TAG (sub-sub-area)
+	tag=
+	
+	#6. GET FP
+	fp="../content/Wikipedia for Schools/wp/$letter/"
+    
+    #7. GET thumbnail path
+    thumb="../content/Wikipedia for Schools/index/${file }.thumb.jpg"
+
+    #9. SRC is wikipedia
+    src="wikipedia"
+    
+	echo "{\"fn\": \"$fn\", \"dn\": \"$dn\", \"ft\":\"html\", \"fp\": \"$fp\", \"thumb\": \"$thumb\", \"src\": \"$src\", \"area\": \"$area\", \"subarea\": \"$subarea\", \"tag\": \"$tag\"},"  # >> /Users/skip/bin/w4sfilelist
+
+
+

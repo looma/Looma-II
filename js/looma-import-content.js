@@ -62,6 +62,40 @@ function get_file_list(path) {
               );
 }; // end get_file_list()
 
+/*
+function get_khan() {
+         $('#filelist').empty();
+         $.post("looma-library-utilities.php",
+                {cmd: "khanlist", fp:path},
+                function(file_list) {
+                    var f = JSON.parse(file_list);
+                   if (f.length == 0) $('#filelist').empty().append($('<p>No files in this folder</p>'));
+                   else f.forEach(function(item) {$('#filelist').append($(
+                       '<p>' + item.fn +
+                       '  dn: ' + item.dn +
+                       '</p>'));});
+                }
+              );
+}; // end get_khan()
+*/
+
+/*
+function get_W4S() {
+         $('#filelist').empty();
+         $.post("looma-library-utilities.php",
+                {cmd: "w4slist", fp:path},
+                function(file_list) {
+                    var f = JSON.parse(file_list);
+                   if (f.length == 0) $('#filelist').empty().append($('<p>No files in this folder</p>'));
+                   else f.forEach(function(item) {$('#filelist').append($(
+                       '<p>' + item.fn +
+                       '  dn: ' + item.dn +
+                       '</p>'));});
+                }
+              );
+}; // end get_W4S()
+*/
+
 function get_folder_list(path) {
          $.post("looma-library-utilities.php",
                 {cmd: "open", fp:path},
@@ -90,7 +124,7 @@ function make_activities () {
         $('.fileitem.notreg').each(function(index, item) { //iterate thru files that are not registered and that are checked
             if ($(item).find('.check').prop('checked')) {
              list.push({fn: $(item).find('.filename').text() ,
-                 fp: path ,
+                 fp: path + '/' ,
                  ft:  $(item).find('.filetype').text(),
                  dn:  $(item).find('.dn').val(),
                  src:     $('#timeline #source').val(),
@@ -115,6 +149,38 @@ function make_activities () {
                 false);
 }; //end make_activities()
 
+/*
+function make_khan_activities () {
+        var list = [];
+        $('.fileitem.notreg').each(function(index, item) { //iterate thru files that are not registered and that are checked
+            if ($(item).find('.check').prop('checked')) {
+             list.push({fn: $(item).find('.filename').text() ,
+                 fp: path + '/' ,
+                 ft:  $(item).find('.filetype').text(),
+                 dn:  $(item).find('.dn').val(),
+                 src:     'khan',
+                 area:    $('#timeline #area').val() ,
+                 subarea: $('#timeline #subarea').val() ,
+                 tags:    $('#timeline #tags').val(),
+                 marker: 'actreg'});
+              };
+            });
+
+        if (list.length > 0) LOOMA.confirm (
+                'Registering ' + list.length + ' activities. Continue?',
+                function() {
+                    $.post("looma-library-utilities.php",
+                        {cmd: "new_activities", list: list},
+                        function(result) {console.log(result);},
+                        'json'
+                      );
+                      get_file_list(path);
+                    },
+                function(){return;},
+                false);
+}; //end make_khan_activities()
+*/
+
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 window.onload = function () {
 
@@ -126,7 +192,6 @@ window.onload = function () {
     $('.foldername').text(path);
 
     // call looma-library.php?fn=list&fp=path to get a list of files (not DIRs) in this folder
-    //display_file('banner');
     get_file_list (path);
     // call looma-library.php?fn=open&fp=path to get a list of dirs (not files) in this folder
     get_folder_list (path);
@@ -202,6 +267,8 @@ var thumbnail = function(item) {
     var path;
     var imgsrc;
     var idExtractArray;
+
+    if ($(item).attr('thumb')) return $(item).attr('thumb');  //some activities have explicit thumbnail set
 
     collection = $(item).attr('collection');
     filetype = $(item).attr('ft');

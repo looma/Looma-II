@@ -10,6 +10,8 @@ Description:
 	<?php  $page_title = 'Looma Maps';
 	include ('includes/header.php');
 
+    $mapDir = "../maps/";
+
 		function makeButton($file, $thumb, $dn) {
 
 				//DEBUG   echo "making button with path= $path  file= $file   ext= $ext"; //DEBUG
@@ -47,15 +49,15 @@ Description:
 
 		echo "<br><table id='file-table'><tr>";
 		echo "<td>";
-				makeButton("looma-map-basicMap.php",  "../content/maps/basicMap_thumb.png", "Basic Nepal Map");
+				makeButton("looma-map-basicMap.php",  $mapDir . "basicMap_thumb.png", "Basic Nepal Map");
 		echo "</td><td>";
-				makeButton("looma-map-zoneMap.php",   "../content/maps/zoneMap_thumb.png", "Nepal Zones Map");
+				makeButton("looma-map-zoneMap.php",   $mapDir . "zoneMap_thumb.png", "Nepal Zones Map");
 		echo "</td><td>";
-				makeButton("looma-map-topoMap.php",   "../content/maps/topoMap_thumb.png", "Nepal Topography Map");
+				makeButton("looma-map-topoMap.php",   $mapDir . "topoMap_thumb.png", "Nepal Topography Map");
 		echo "</td></tr><tr><td>";
-                makeButton("looma-map-streetMap.php", "../content/maps/streetMap_thumb.png", "Kathmandu Street Map");
+                makeButton("looma-map-streetMap.php", $mapDir . "streetMap_thumb.png", "Kathmandu Street Map");
         echo "</td><td>";
-                makeButton("looma-map-worldMap.php", "../content/maps/worldMap_thumb.png", "World Map");
+                makeButton("looma-map-worldMap.php",  $mapDir . "worldMap_thumb.png", "World Map");
     	echo "</tr></table>";
 			?>
 

@@ -46,6 +46,7 @@
 
 			case "video":
             case "mp4":
+            case "mp5":
             case "m4v":
 			case "mov": $fp = '../content/videos/'; break;
 
@@ -63,7 +64,8 @@
 
             case "evi": $fp = '../content/videos/'; break;
 
-            case "html": $fp = '../content/html/'; break;
+            case "html":
+            case "HTML": $fp = '../content/html/'; break;
 
             case "hist": $fp = '../content/histories/'; break;
 
@@ -81,16 +83,18 @@
 			     return;
 		};  //end SWITCH
 
-             if ($thumb) $thumbSrc = $fp . $thumb;
+             if ($thumb) $thumbSrc = $thumb;
         else if ($ft == 'EP' || $ft == 'epaath') $thumbSrc = $fp . $fn . "/thumbnail.jpg";
         else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
         else if ($ft == 'looma') $thumbSrc = "images/LoomaLogo.png";
         else                     $thumbSrc = $fp . thumbnail($fn);
 
+        $thumbSrc = htmlspecialchars($thumbSrc);
+        $fn = htmlspecialchars($fn);
 
         //Now make the BUTTON
                           echo "<button class='activity play img' ";
-        if ($fn)          echo "data-fn='" .  $fn . "' ";
+        if ($fn)          echo 'data-fn="' .  $fn . '" ';
         if ($fp)          echo "data-fp='" .  $fp . "' ";
         if ($ft)          echo "data-ft='" .  $ft . "' ";
         if ($dn)          echo "data-dn='" .  $dn . "' ";
@@ -102,7 +106,7 @@
                           echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
 
                           echo ">";
-                          echo "<img src='" . $thumbSrc . "'>";
+                          echo '<img src="' . $thumbSrc . '">';
                           echo "<span>" . $dn . "</span></button>";
 
 	}; //end makeActivityButton()

@@ -1,0 +1,52 @@
+#!/bin/bash
+#processing Khan HTML files 
+# khannavigate script - version to navigate all files
+# uses khanextract shell file
+#put khannavigate (this file) and khanextract in /Users/skip/bin, chmod 744, and PATH=$PATH:/Users/skip/bin
+#
+# this script creates a file /Users/skip/bin/khanfilelist 
+#       that contains looma format entries to create activities for all scanned media files
+#
+# then process that filelist file by opening looma-import-content.php?cmd=khanimport
+
+echo "navigate v2.0"
+echo "script will start at a khan subject, like 'math' or 'science'"
+
+echo
+
+if [ -f /Users/skip/bin/khanfilelist ]
+then
+    read -p "create new list file (yes) or append (no)?" answer
+    if [ $answer == "yes" ] 
+    then
+        rm /Users/skip/bin/khanfilelist
+        echo "removed /Users/skip/bin/khanfilelist"
+    fi
+fi
+
+read  -p "enter top DIR of Khan files:  " topdir
+cd "/Users/skip//Desktop/Aptana/content/Khan/$topdir"
+echo "starting work at " ; pwd      #e.g. Khan/math is l0
+
+for l1 in $(ls -d */ 2> /dev/null)  
+do
+	cd "$l1"                         #e.g. Khan/math/arithmetic is l1
+#	echo '**** **** **** opening ' $(pwd)
+	for l2 in $(ls -d */ 2> /dev/null) 
+	do
+		if [[ $l2 != "captions/" && $l2 != "thumbs/" && $l2 != "videos/" ]]
+		then	
+			cd "$l2"                   #e.g. Khan/math/arithmetic/addition-subraction is l2
+#			echo '**** **** opening ' $(pwd)
+			for l3 in $(ls -d */ 2> /dev/null)
+			do
+				cd "$l3"              #e.g. Khan/math/arithmetic/addition-subtraction/basic_addition
+#				echo '****  opening ' $(pwd)
+                source /Users/skip/bin/khanextract
+				cd ..
+			done
+			cd ..
+		fi
+	done
+	cd ..
+done

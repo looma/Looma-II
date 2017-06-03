@@ -75,7 +75,15 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
             $fn = (isset($activity['fn']) ? $activity['fn'] : "");
             $url = (isset($activity['url']) ? $activity['url'] : "");
-            $thumb = (isset($activity['thumb']) ? $activity['thumb'] : thumbnail($fn));
+
+            if (isset($activity['thumb']))
+                 $thumb = $activity['thumb'];
+            else if (isset($activity['fn']) && isset($activity['fp']))
+                 $thumb = $activity['fp'] . thumbnail($activity['fn']);
+            else $thumb = null;
+
+            //$thumb = (isset($activity['thumb']) ? $activity['thumb'] : thumbnail($fn));
+
             //DEBUG print_r($activity);
 
             if ($ft == 'slideshow' || $ft == 'lesson' || $ft == 'text' || $ft == 'evi') $id = new MongoID($activity['mongoID']);
@@ -88,7 +96,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
                 case "mov":
                 case "m4v":
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, "", $ch_id, "", "", "", "");
+                    makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, "", "", "", "");
 					break;
 
                 case "slideshow":
@@ -112,7 +120,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
                 case "evi":      //edited videos
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
                     //echo "making button: " . $fn . ".";
-                    makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $ch_id, $id, "", "", "");
+                    makeActivityButton($ft, $fp, $fn . ".mp4", $dn, $thumb, $ch_id, $id, "", "", "");
                     break;
 
                 case "VOC":     //vocabulary reviews
@@ -126,23 +134,23 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 				case "png":
 				case "gif":
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, "", $ch_id, "", "", "", "");
+                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, "", "", "", "");
 					break;
 
 				case "audio":
 				case "mp3":
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, "", $ch_id, "", "", "", "");
+                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, "", "", "", "");
                     break;
 
 				case "pdf":
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, "", $ch_id, "", "", "1", "auto");
+                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, "", "", "1", "auto");
                     break;
 
                 case "text":
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, "", $ch_id, $id, "", "", "");
+                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, $id, "", "", "");
                     break;
 
                 case "map";
@@ -164,10 +172,11 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
                 case "epaath":
                     $thumb = $fn . "/thumbnail.jpg";
                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, "", "", "", "");
+                    makeActivityButton($ft, "", $fn, $dn, "", $ch_id, "", "", "", "");
 					break;
 
                 case "html":
+                case "HTML":
                     // make a HTML button
                     makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, "", "", "", "");
                     break;

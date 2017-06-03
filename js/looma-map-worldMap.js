@@ -18,7 +18,7 @@ var width = 1200,
 $(document).ready(function() {
 //Leaflet demonstration
 
-
+    var mapDir = "../maps/";
 
     var worldMap = L.map('worldMap',
             { center : [28.2, 84.2],
@@ -26,6 +26,6 @@ $(document).ready(function() {
                 //maxBounds: L.latLngBounds(L.latLng(24,77.5), L.latLng(32,91.5)),
                 fullscreenControl: true,
                 fullscreenControlOptions: {position: 'topleft'}});
-L.tileLayer('../content/maps/en-worldmap/tile/{z}/{x}/{y}.jpg').addTo(worldMap);
+L.tileLayer(mapDir + 'en-worldmap/tile/{z}/{x}/{y}.jpg').addTo(worldMap);
 
 });

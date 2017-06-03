@@ -117,8 +117,9 @@ Description:  navigate content folders and import media files into activities co
                         <option value='khan'>Khan</option>
                         <option value='w4s'>Wikipedia for Schools</option>
                         <option value='ted'>TED</option>
+                        <option value='PhET'>PhET</option>
                         <option value='flickr'>Flickr</option>
-                        <option value='dann'>Dr Dann</option>
+                        <option value='Dr Dann'>Dr Dann</option>
                     </select>
 
                     Enter tags for these files: <input type='tags' id='tags'></input>

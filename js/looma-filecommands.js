@@ -30,6 +30,8 @@ Revision: Looma 2.4
 
 var currentid;
 var currentname;
+//var currentauthor;
+var owner; //TRUE if current logged in user is the author of the currrent file
 var currentfiletype;
 var currentcollection;
 
@@ -46,6 +48,8 @@ var callbacks = {
     showsearchitems: doNothing,
     undocheckpoint:  doNothing
 };
+
+function doNothing(){return;};  //not actually called
 
 function escapeHTML(text) {
   return text
@@ -69,7 +73,7 @@ function fileexists(name, collection, filetype, yes, no) {
                 {cmd: "exists", collection: collection, ft: filetype, dn: escapeHTML(name)},
                 function(result) {
                     if (result['_id'] == "") no(name);  //file not found, execute NO() function
-                    else                     yes(name); //file found, execute YES() function
+                    else                     yes(name, result['author']); //file found, execute YES() function
                 },
                 'json'
               );
@@ -82,13 +86,18 @@ function savework(name, collection, filetype) {
                         function(savename) {callbacks['save'](savename);
                                             setname(savename);
                                             },
-                        function(){callbacks['undocheckpoint']();  return;},
+                        function(){
+                            //callbacks['undocheckpoint']();
+                            return;},
                         false);
            }
-         else LOOMA.confirm('Save current work in file: ' + name + '?',
+         else if (owner) LOOMA.confirm('Save current work in file: ' + name + '?',
                             function () {callbacks['save'](name);},
-                            function () {callbacks['undocheckpoint'](); return;},
+                            function () {
+                                //callbacks['undocheckpoint']();
+                                return;},
                             false);
+         else callbacks['clear']();
  }; // end SAVEWORK()
 
 function savefile(name, collection, filetype, data, activityFlag) {
@@ -150,6 +159,11 @@ function openfile(openname, collection, filetype) {
                     else setname(openname);
 
                     currentid = response['_id'];
+                    //currentauthor = response['author'];
+                    if ('author' in response)
+                        owner = (response['author'] == LOOMA.loggedIn()  || LOOMA.loggedIn() == 'skip');
+                    else owner = false;
+
                     callbacks['display'](response);   //need to return the full 'response' from the db
                     //$('#cancel-result').on('click', closesearch);
                     callbacks['checkpoint']();
@@ -159,7 +173,6 @@ function openfile(openname, collection, filetype) {
             );
 };  // end OPENFILE()
 
-function doNothing(){return;};  //not actually called
 
 
 $(document).ready(function ()
@@ -224,12 +237,14 @@ $(document).ready(function ()
                                              function(savename) {LOOMA.alert('File already exists: ' + savename);},
                                              function(savename) {
                                                 callbacks['save'](savename);
-                                                setname(savename); }
+                                                setname(savename);
+                                                owner =  LOOMA.loggedIn(); }
                                             );},
                         function(){return;},
                         false);
            }
 
+           else if (!owner) LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
 
            else if (callbacks['modified']()) callbacks['save'](currentname);
 
@@ -245,7 +260,8 @@ $(document).ready(function ()
                                         function(savename) {LOOMA.alert('File already exists: ' + savename);},
                                         function(savename) {
                                             callbacks['save'](savename);
-                                            setname(savename); }
+                                            setname(savename);
+                                            owner =  LOOMA.loggedIn();  }
                                         );},
                     function(){return;},
                     false);
@@ -254,7 +270,10 @@ $(document).ready(function ()
    /*   RENAME    */
       $('#rename').click(function()   {
            console.log("FILE COMMANDS: clicked rename");
-           LOOMA.prompt('Enter a file name: ',
+
+              if (!owner) LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
+              else
+              LOOMA.prompt('Enter a file name: ',
                     function(newname) { fileexists(newname,
                                         currentcollection,
                                          currentfiletype,
@@ -271,14 +290,18 @@ $(document).ready(function ()
      $('#delete').click(function()
          {
            console.log("FILE COMMANDS: clicked delete");
-           LOOMA.prompt('Enter a file name: ',
+                 LOOMA.prompt('Enter a file name: ',
                     function(deletename) { fileexists(deletename,
-                                           currentcollection,
-                                           currentfiletype,
-                                           function(deletename) { deletefile(deletename, currentcollection, currentfiletype);
-                                                                if (currentname == deletename) callbacks['clear']();},
-                                           function(deletename) {
-                                             LOOMA.alert('File not found: ' + deletename); }
+                                              currentcollection,
+                                              currentfiletype,
+                                              function(deletename, author) {
+                                                  if (author == LOOMA.loggedIn() || LOOMA.loggedIn == 'skip') {
+                                                     deletefile(deletename, currentcollection, currentfiletype);
+                                                     if (currentname == deletename) callbacks['clear']();}
+                                                  else LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
+                                                     },
+                                              function(deletename) {
+                                              LOOMA.alert('File not found: ' + deletename); }
                                         );},
                     function(){return;},
                     false);
@@ -389,10 +412,11 @@ $(document).ready(function ()
            else window.history.back();
          });
 
-       $(window).on("beforeunload", function() {
+   /*    $(window).on("beforeunload", function() {
            //note Chrome doesnt use the custom message provided
            //note could check callbacks['modified']() but I couldnt get that to work in chrome
             return "Do you really want to close?";
         });
+   */
 
     });

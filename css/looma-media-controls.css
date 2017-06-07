@@ -1,3 +1,6 @@
+ #media-controls {
+     height:25%;
+ }
 
 button.play-pause {
     background-image: url("../images/video.png");

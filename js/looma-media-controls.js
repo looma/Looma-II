@@ -68,19 +68,19 @@ function attachMediaControls () {
         $mute.on('click', function() {
           if (!media.muted) {
               media.muted = true;
-              $mute.attr('style', 'background-image: url("images/audio.png")');
+              $mute.attr('style', 'background-image: url("images/mute.png")');
               //muteButton.innerHTML = "Unmute";
           } else {
               media.muted = false;
-              $mute.attr('style', 'background-image: url("images/mute.png")');
+              $mute.attr('style', 'background-image: url("images/audio.png")');
             //muteButton.innerHTML = "Mute";
           }
         });
 
         // Event listener for the volume bar
-        $volumebar.on("change", function() {
+        $volumebar.on('change', function() {
           // Update the media volume
-          media.volume = $volumebar.attr('value');
+          media.volume = $volumebar.val();
         });
 
         // Event listener for the seek bar

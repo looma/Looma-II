@@ -93,9 +93,7 @@ body {
 #video-player {
     height:80%;
 }
- #media-controls {
-     height:20%;
- }
+
 
 #main-container.scroll            { overflow:auto; }
 

@@ -844,10 +844,9 @@ LOOMA.closePopup = function() {
 };  //end closePopup()
 
 
-/* NOTE on LOOMA popups: nested calls to popups dont work
- *      fix this sometime?
- */
-/**
+/* NOTE on LOOMA popups: nested calls to popups dont work - -   fix this sometime?  */
+
+/**  LOOMA.alert()
  * This function creates a popup message box that can be dismissed by the user.
  * @param msg - The message the user is presented.
  * @param time (optional)- a delay in seconds after which the popup is automatically closed
@@ -888,7 +887,7 @@ LOOMA.alert = function(msg, time, notTransparent){
     };
 };  //end alert()
 
-/**
+/**    LOOMA.confirm()
  * Prompts the user to confirm a message.
  * @param msg - The message the user is presented in question format.
  * @param confirmed - A function to call if the user confirms
@@ -901,7 +900,7 @@ LOOMA.confirm = function(msg, confirmed, canceled, notTransparent) {
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button> " + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<button id='confirm-popup' class='popup-button'>"+
-        LOOMA.translatableSpans("confirm", "निश्चय गर्नुहोस्") +"</button></div>");
+        LOOMA.translatableSpans("confirm", "निश्चय गर्नुहोस्") +"</button></div>").hide().fadeIn(1000);
 
     $('#confirm-popup').click(function() {
         //$("#confirm-popup").off('click');
@@ -917,8 +916,8 @@ LOOMA.confirm = function(msg, confirmed, canceled, notTransparent) {
    });
 };  //end confirm()
 
-/**
- /**
+
+ /**     LOOMA.prompt()
  * Prompts the user to enter text.
  * @param msg - The message the user is presented, prompting them to enter text.
  * @param callback - A function where the user's text response will be sent.

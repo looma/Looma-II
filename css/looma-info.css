@@ -5,23 +5,19 @@
 }
 */
 
+#sizemessages {
+    position:absolute;
+    left:3em;
+    bottom:5em;
+}
 
  .screensize, .bodysize{
-	width:15%;
 	/*color:black;*/
 	vertical-align:middle;
+	text-align:left;
 	font-size: 0.75em;
 }
- .screensize {
-	position:absolute;
-	bottom:5em;
-	left:5em;
-}
-.bodysize{
-	position:absolute;
-	bottom:3em;
-	left:5em;
-}
+
  #logos {
  	margin: 0 25% 0 5%;
  	background-color: white;
@@ -29,14 +25,24 @@
  	padding:5px;
  	max-width:75%;
  }
+
+ #credits-title {
+     position:absolute;
+     left:80%;
+     top: 3%;
+ }
+
  #credits-box {
  	position:absolute;
+ 	  border-radius:5px;
  	background: #fff;
  	top:7%;
- 	left:80%;
- 	width: 220px;
+ 	left:77%;
  	height: 90%;
+ 	width: 20%;
  	overflow:hidden;
+ 	text-align:center;
+ 	margin-right:3em;
  	border: 1px solid black;
  }
 
@@ -44,18 +50,24 @@
 	color:#0000FF;
 	opacity:45%;
 }
+#credits-container {
+    margin:2px;
+    overflow:hidden;
+}
 
 #credits-wrapper {
-  		margin: 25px;
+  		margin: 2vw;
   		position: absolute;
+  		overflow:hidden;
  		top: 100%; /*start with the content just off the bottom of the box*/
  		color: #000;
  		/*not useing webkit animation. replaced with jQuery for browser compativility
  		-webkit-animation: 40s credits linear infinite;
  		*/
-
 }
 
-p {
-	margin:auto;
+span {
+    margin:auto;
 }
+h5 {text-align:left;
+    margin-left: 5vw;}

@@ -16,7 +16,5 @@ Description: custom 404 page for looma browser if no internet present
 	<h2>This Looma is not connected to the internet</h2>
     <span><img src="images/logos/LoomaLogoTransparent.png" height="100px"></span>
 
-    <?php include ('includes/toolbar.php'); ?>
-    <?php include ('includes/js-includes.php'); ?>
    </body>
 </html>

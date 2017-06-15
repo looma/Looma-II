@@ -132,7 +132,7 @@ $(document).ready (function() {
     className = LOOMA.readStore('class', 'local');
     if (!className) {
          className = 'class1';
-         LOOMA.setStore("class", 'className', className, 'local');  //set a COOKIE for CLASS (lifetime = this browser session)
+         LOOMA.setStore('class', className, 'local');  //set a COOKIE for CLASS (lifetime = this browser session)
     };
 
     activateClass (className);

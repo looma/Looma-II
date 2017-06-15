@@ -26,10 +26,7 @@ $(document).ready (function() {
     // to allow the user to make the element with id="fullscreen" display in fullscreen
     // that page must include '<script src="js/looma-screenfull.js"></script>'
 
-
-
     restoreFullscreenControl();
-
 
     //turn off any speech when user leaves the page
     if (speechSynthesis) {$(window).on("unload", function(){speechSynthesis.cancel();});}
@@ -40,7 +37,11 @@ $(document).ready (function() {
     // or 'native' [change class="english-keyword" to hidden and class="native-keyword" to visible]
     var language;
     language = LOOMA.readStore('language', 'local');
-    if (!language) {document.cookie = 'language=english'; language = 'english';}
+    if (!language) {
+        //document.cookie = 'language=english';  //BUG - must set in localstore, not in a cookie
+        LOOMA.setStore('language', 'english', 'local');
+        language = 'english';
+    };
 
     LOOMA.translate(language);
 
@@ -78,15 +79,9 @@ $(document).ready (function() {
             }
         });
 
-    /*    TODO: add code here to show login name on hover over padlock
-    $('#padlock').hover(function(){
-        if (LOOMA.loggedIn()) $(#padlock .span).html('logged in as' + LOOMA.readCookie('login'));
-        });
-    */
 
     $('.screensize').text('Window size = ' + window.outerWidth + ' x ' + window.outerHeight);
     $('.bodysize').text('HTML body size = ' + $('body').outerWidth() + ' x ' + $('body').outerHeight());
-
 
 
     function updateClock() {

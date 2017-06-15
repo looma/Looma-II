@@ -67,7 +67,7 @@ input.theme, input.voice {
     color:red;
 }
 
-.settings-control {
+.settings-control, .admin-control {
     height:10%;
     width:20%;
     font-size:1em;

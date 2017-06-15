@@ -92,41 +92,41 @@ Description:  for Looma 2
                     <button class="settings-control">Lesson Planner</button>
                 </a>
 
+                <a href="looma-text-editor.php">
+                    <button class="settings-control">Text Editor</button>
+                </a>
+
+                <a href="looma-speech-test.php">
+                    <button id="speechtest" class="settings-control">Speech Test</button>
+                </a>
+                <br>
+
                 <a href="../auto-gen-dictionary/editor.html">
-                    <button class="settings-control">Dictionary Generator</button>
+                    <button class="admin-control">Dictionary Generator</button>
                 </a>
 
                 <a href="../Looma-contentNav/looma-contentNav.php">
-                    <button class="settings-control">Content Navigator</button>
+                    <button class="admin-control">Content Navigator</button>
                 </a>
-
-                <br>
 
                 <a href="#>
                     <button id="dummy-button"></button>
                 </a>
 
                 <a href="looma-slideshow.php">
-                    <button class="settings-control">Slideshow Editor</button>
+                    <button class="admin-control">Slideshow Editor</button>
                 </a>
                 <a href="looma-edited-video.php">
-                    <button class="settings-control">Video Editor</button>
+                    <button class="admin-control">Video Editor</button>
                 </a>
-
-                <a href="looma-text-editor.php">
-                    <button class="settings-control">Text Editor</button>
-                </a>
-
 
                 <a href="looma-activity-register-to-chapter.php">
-                    <button id="register" class="settings-control">Register Activities</button>
+                    <button id="register" class="admin-control">Register Activities</button>
                 </a>
 
-               <br>
+                <br>
 
-                <a href="looma-speech-test.php">
-                    <button id="speechtest" class="settings-control">Speech Test</button>
-                </a>
+
             </div>
         </div>
 	</div>

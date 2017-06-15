@@ -20,14 +20,15 @@ Description:  for Looma 2
 
 	<h3>Looma 2</h3>
 	<h4>Release 2.5, May 2017</h4>
-	<h4>Contact: info AT villagetechsolutions DOT org</h4>
 	<h4> <span class='glyphicon glyphicon-copyright-mark'></span> VillageTech Solutions</h4>
+	<h4>Contact: info AT villagetechsolutions DOT org</h4>
 	<br>
 
+    <h2 id="credits-title">Contributors</h2>
 	<div id="credits-box">
-		<h2>Contributors</h2>
 
-		<div><div id="credits-wrapper">
+
+		<div id="credits-container"><div id="credits-wrapper">
 		<!-- updated list from DS July '16-->
 
 		<!-- THIS LIST SHOULD BE IN A MONGO COLLECTION -->
@@ -231,18 +232,25 @@ Description:  for Looma 2
 	  </div>
 	</div>
 
-	<div id="sizemessages">
-			<p class="screensize"></p>
-            <br>
-           	<p class="bodysize"></p>
-	</div>
+
 
 		<h4>Tested only in Google Chrome</h4>
-		<h5>Report bugs and suggestions to info AT villagetechsolutions DOT org</h5>
+		<h4>Report bugs and suggestions to info AT villagetechsolutions DOT org</h4>
 	<br>
-		<h4> Attributions for code and content used in Looma </h4>
 	<footer>
+		      <!--button showing CC license icon, with link to the license info page -->
+        <span href="looma-info.php">
+            <img src="images/logos/CC-BY-SA.png" height="33px">
+
+
+        <!-- copyright notice, with link to vts.org-->
+        <span class='glyphicon glyphicon-copyright-mark'></span>2016
+        <a class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
+        </span>
+
 		<br>
+        <h5> Attributions for code and content used in Looma: </h5>
+
 		<div id="logos">
 
 	<!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
@@ -268,23 +276,19 @@ Description:  for Looma 2
 		</div>
 		<br>
 
-		<span><img src="images/logos/LoomaLogoTransparent.png" height="75%" width="30%"></span>
+		<span><img src="images/logos/LoomaLogoTransparent.png"></span>
 
-		<!--button showing CC license icon, with link to the license info page -->
-   		<span href="looma-info.php">
-			<img src="images/logos/CC-BY-SA.png" height="33px">
-		</span>
 
-   		<!-- copyright notice, with link to vts.org-->
-    	<span class='glyphicon glyphicon-copyright-mark'></span>2016
-		<a class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
 
 		<!--  no longer using Global Giving
 		    <a href="http://www.globalgiving.org"><img src="images/logos/globalgiving-vetted.png" height="66px"></a>
 		-->
 		<br>
 
-
+    <div id="sizemessages">
+            <p class="screensize"></p>
+            <p class="bodysize"></p>
+    </div>
 
     	<!-- W3C validator link    new URL=https://validator.w3.org/nu/
    		<a class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->

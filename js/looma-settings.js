@@ -62,12 +62,15 @@ $(document).ready (function() {
 
     if (!LOOMA.loggedIn())  //not logged in
     {   $('#login-status').text('You are not logged in');
-        $('.login').text('Login for Advanced Settings').click( function(){ window.location = "looma-login.php";});
+        $('.login').addClass('loggedIn').text('Login for Advanced Settings').click( function(){ window.location = "looma-login.php";});
 
     }
     else //logged in
-    {   $('#login-status').text('You are logged in as "' + LOOMA.readStore('login', 'cookie') + '"');
-        $('.settings-control').show();
+    {   var loginname = LOOMA.readStore('login', 'cookie');
+        $('#login-status').text('You are logged in as "' + loginname + '"');
+        $('.settings-control').show();                       // show the teacher tools
+        if (loginname == 'skip') $('.admin-control').show(); // some tools arent debugged. show them only to'skip'
+
         $('.login').toggleClass('loggedIn').text('Logout').click
             ( function()
                 {

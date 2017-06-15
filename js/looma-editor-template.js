@@ -1,6 +1,6 @@
 /*
 LOOMA javascript file
-Filename: looma-lesson-plan.js
+Filename: looma-editor-template.js
 Description: version 1 [SCU, Spring 2016]
              version 2 [skip, Fall 2016]
 Programmer name: SCU
@@ -82,73 +82,68 @@ var loginname = LOOMA.loggedIn();
     //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
 
 /*  callback functions expected by looma-filecommands.js:
-callbacks ['clear'] = lessonclear;
-callbacks ['save']  = lessonsave;
-callbacks ['savetemplate']  = lessontemplatesave;
-//callbacks ['open']  = lessonopen;
-callbacks ['display'] = lessondisplay;
-callbacks ['modified'] = lessonmodified;
-callbacks ['showsearchitems'] = lessonshowsearchitems;
-callbacks ['checkpoint'] = lessoncheckpoint;
-callbacks ['undocheckpoint'] = lessonundocheckpoint;
+callbacks ['clear'] = TESTclear;
+callbacks ['save']  = TESTsave;
+callbacks ['savetemplate']  = TESTtemplatesave;
+//callbacks ['open']  = TESTopen;
+callbacks ['display'] = TESTdisplay;
+callbacks ['modified'] = TESTmodified;
+callbacks ['showsearchitems'] = TESTshowsearchitems;
+callbacks ['checkpoint'] = TESTcheckpoint;
+callbacks ['undocheckpoint'] = TESTundocheckpoint;
 */
 
 /*  variable assignments expected by looma-filecommands.js:  */
 currentname = "";             //currentname       is defined in looma-filecommands.js and gets set and used there
-currentcollection = 'lesson'; //currentcollection is defined in looma-filecommands.js and is used there
-currentfiletype = 'lesson';   //currentfiletype   is defined in looma-filecommands.js and is used there
+currentcollection = 'a'; //currentcollection is defined in looma-filecommands.js and is used there
+currentfiletype = 'test';   //currentfiletype   is defined in looma-filecommands.js and is used there
 
-$('#search-form  #collection').val('lesson');
+$('#search  #collection').val('activities');
 
-function lessonshowsearchitems() {
+function TESTshowsearchitems() {
                     $('#lesson-chk').show();
                     // for TEXT EDIT, only show "text", clicked and disabled
-                    $('#lesson-chk input').attr('checked', true).css('opacity', 0.5);
+                    //$('#lesson-chk input').attr('checked', true).css('opacity', 0.5);
                     //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
-                    $('#lesson-chk input').click(function() {return false;});
+                    //$('#lesson-chk input').click(function() {return false;});
 
 };
 
-function lessoncheckpoint() {         savedTimeline =   $timeline.html(); };
-function lessonundocheckpoint() {     $timeline.html(    savedTimeline);     };  //not used now??
-function lessonmodified()   {
+function TESTcheckpoint() {         savedTimeline =   $timeline.html(); };
+function TESTundocheckpoint() {     $timeline.html(    savedTimeline);     };  //not used now??
+function TESTmodified()   {
     return (savedTimeline !== $timeline.html());};
 
-function lessonclear() {
+function TESTclear() {
 
        setname("");
        //currentid="";
        $timeline.empty();
        clearFilter();
-       lessoncheckpoint();
+       TESTcheckpoint();
 };
 
-lessonclear();
+TESTclear();
 
-function lessonpack (html) { // pack the timeline into an array of collection/id pairs for storage
+function TESTpack (html) { // pack the timeline into an array of collection/id pairs for storage
     var packitem;
     var packarray = [];
 
-    //change below pack code to add an ordering INDEX
-
-    $(html).each(function() {
-            packitem = {};  //make a new object, unlinking the references already pushed into packarray
-            packitem.collection = $(this).data('collection');
-            packitem.id         = $(this).data('id');
-            packarray.push(packitem);
-        });
+    //
+    //code here to pack the timeline into a mongo object
+    //
 
     return packarray;
-}; //end lessonpack()
+}; //end TESTpack()
 
-function lessonunpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
+function TESTunpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
     var newDiv;
 
     //for each element in data, call createActivityDiv, and attach the resturn value to #timelinediv
     // also set filename, [and collection??]
 
     //$('#timelineDisplay').empty();
-    lessonclear();
+    TESTclear();
 
     setname(response.dn);
 
@@ -169,22 +164,22 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
 
     makesortable();
 
-}; //end lessonunpack()
+}; //end TESTunpack()
 
-function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response));};
+function TESTdisplay (response) {clearFilter(); $timeline.html(TESTunpack(response));};
 
-function lessonsave(name) {
-    savefile(name, 'lesson', 'lesson', lessonpack($timeline.html()), true);
-}; //end lessonsave()
+function TESTsave(name) {
+    //savefile(name, 'test', 'test', testpack($timeline.html()), true);
+}; //end TESTsave()
 
-function lessontemplatesave(name) {
-    savefile(name, 'lesson', 'lesson' + '-template', lessonpack($timeline.html()), false);
-}; //end lessontemplatesave()
+function TESTtemplatesave(name) {
+    //savefile(name, 'test', 'test' + '-template', testpack($timeline.html()), false);
+}; //end TESTtemplatesave()
 
 // end FILE COMMANDS stuff
 
 
-// search for ACTIVITIES (and CHAPTERS) to use in the lesson plan
+// search for ACTIVITIES (and CHAPTERS) to use in the test plan
 // when search button is clicked - submit the 'search' form to looma-database.search.php
             $('#search').submit(function( event ) {
                   event.preventDefault();
@@ -223,26 +218,26 @@ function lessontemplatesave(name) {
 };  //end window.onload()
 
 var changeCollection = function() {
+    // toggle "chapter" search items ON or OFF
     $('#div_grade').toggle();
     $('#div_subject').toggle();
+    // toggle "media" search items ON or OFF
     $('#div_filetypes').toggle();
     $('#div_sources').toggle();
     $('#div_categories').toggle();
 
-
-
     if ($('#collection').val() == 'activities') { //changing from ACTIVITIES to CHAPTERS
         $('#collection').val('chapters');
 
-    if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
-    $('#div_chapter').show();
+        if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
+        $('#div_chapter').show();
 
         $('.chapterFilter').prop('disabled', false);
         $('.mediaFilter').prop('disabled',   true);
     } else { //changing from CHAPTERS to ACTIVITIES
         $('#collection').val('activities');
 
-    $('#div_chapter').hide();
+        $('#div_chapter').hide();
 
         $('.chapterFilter').prop('disabled', true);
         $('.mediaFilter').prop('disabled',   false);
@@ -396,35 +391,8 @@ var displaySearchResults = function(filterdata_object) {
     $('#chaptersScroll').click(function()  {$('#innerResultsDiv').scrollTop($('#chapterTitle').position().top);});
     $('#activitiesScroll').click(function(){$('#innerResultsDiv').scrollTop($('#activityTitle').position().top);});
 
-    //click handlers for Preview, IMG and Add buttons
-
-    //FIX this - make clicking on the thumbnail img launch preview_result()
-
-    //$('.thumbnaildiv').on('click', function() {preview_result(this.data-collection, this);});
-
-        //NOTE: can't attach click handler to 'timlinediv'images which dont exist yet
-        //      so add the ON handler to the DIV which will contain the result elements
-    /*    $('#innerResultsDiv').on('click',
-                                'button.preview',
-                                function() {
-                                    var el = $(this).parent().parent(); preview_result(el.data("collection"), el);}
-                                ); */
-
-
-
 }; //end displaySearchResults()
 
-/* //////////////////////TO-DO FOR RESULTS
-
-THUMBNAILS
-- Take care of if the image source is null
-	- 	All the "thumbnail_prefix" variables: If the image source is null,
-		it shouldn't try to get the substring, because it'll break the code
-	- 	If the file isn't there. We need to make a little 404 image and
-		code it in.
-
-//////////////////////////END TO-DO */
-//*************************************************************************************start of things we need for presentation **********************************************
 
 
 //returns an english describing the file type, given a FT
@@ -432,21 +400,6 @@ THUMBNAILS
 
 var filetype = function(ft) { return LOOMA.typename(ft);};
 
-/*
-var filetype = function(ft) {
-    //converts a file extension into
-	     if (ft == "gif" || ft == "jpg" || ft == "png") return "Image";
-	else if (ft == "mov" || ft == "mp4" || ft == "mp5") return "Video";
-	else if (ft == "mp3")       return "Audio";
-	else if (ft == "EP")        return "Game";
-	else if (ft == "html")      return "Webpage";
-	else if (ft == "pdf")       return "Document";
-	else if (ft == "text")      return "Text File";
-    else if (ft == "looma")     return "Looma Page";
-    else if (ft == "chapter")   return "Chapter";
-    else return ft;
-}; // end filetype()
-*/
             /*
              //FOR reference: PHP version of thumbnail():
                   function thumbnail ($fn) {  //NEW VERSION AUG '16
@@ -921,7 +874,7 @@ var initializeDOM = function() {
     // Building Navbar and Querybar-- all this could be in HTML
 
         $("<p/>", {
-            html : "Lesson editor template"
+            html : "looma editor template"
         }).appendTo("#navbar");
 
     // Filter: Search

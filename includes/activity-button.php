@@ -90,6 +90,8 @@
         else                     $thumbSrc = $fp . thumbnail($fn);
 
         $thumbSrc = htmlspecialchars($thumbSrc);
+        if ( !file_exists($thumbSrc)) $thumbSrc = $fp . "thumbnail.png";
+
         $fn = htmlspecialchars($fn);
 
         //Now make the BUTTON

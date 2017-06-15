@@ -25,13 +25,10 @@ Description: Creates a timeline with search and hover functions. Information acc
       <?php
 
         //Load Timeline
-        if (isset($_REQUEST["title"]) || (isset($_REQUEST["chapterToLoad"]))) {
-        if (isset($_REQUEST["title"])) $hist = $_REQUEST["title"];
-        if (isset($_REQUEST["chapterToLoad"])) $ch_id = $_REQUEST["chapterToLoad"];
+        if (isset($_REQUEST["chapterToLoad"]))
+        {$ch_id = $_REQUEST["chapterToLoad"];
         //Search Database and Get Cursor
-        if (isset($hist)) $query = array("title" => $hist);
-        else       $query = array("ch_id" => $ch_id);
-
+        $query = array("ch_id" => $ch_id);
         $cursor =  $history_collection->find($query, array("title"=>1, "events"=>1)); //should be findOne()  ??
 
         foreach ($cursor as $doc) {

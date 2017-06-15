@@ -206,11 +206,12 @@ input {
 
 #clear_button {
 	height: 55px;
-	float: right;
+    width: 80px;
 	position: relative;
 	margin-top: 0px;
+/*    float: right;
 	margin-right: 2%;
-	width: 80px;
+	*/
 }
 
 .filter_label p, .filter_label {

@@ -783,7 +783,7 @@ var preview_result = function(item) {
 
 		}
 		// Pictures
-		else if(filetype=="jpg" || filetype=="gif" || filetype=="png") {
+		else if(filetype=="jpg" || filetype=="gif" || filetype=="png" || filetype=="image") {
             if (!filepath) filepath = '../content/pictures/';
 			document.querySelector("div#previewpanel").innerHTML = '<img src="' +
 			                     filepath +

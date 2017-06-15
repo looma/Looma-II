@@ -43,7 +43,7 @@ Comments:
         else
         {
             $name = addslashes($id);
-        }
+        };
 
         //Validate the password and add error if neccesary
         if (empty($pass))
@@ -54,7 +54,7 @@ Comments:
         {
             $p = addslashes($pass);
             $p = SHA1($p);
-        }
+        };
 
         //Checks if username and password match the database or add error to array
         // need connection to database
@@ -75,10 +75,10 @@ Comments:
                 $errors[] = "The username and password entered do not match those on file.";
             }
 
-        }
+        };
         error_log("end check login");
         return array(false, $errors);
-    }//end check_login
+    };//end check_login
 
 /*
  * Redirects user to the main php file if page is null or page specified
@@ -105,7 +105,7 @@ function redirect_user($page)  {
         error_log("exit $url");
         header("Location: $url");
         exit();
-    }//end redirect_user
+    };//end redirect_user
 
 //Check for cookie
 
@@ -113,7 +113,7 @@ function redirect_user($page)  {
    include ('includes/js-includes.php');
 
    if(!loggedin())
-{
+    {
     error_log("not logged in");
     //Check if login form has been submitted
     if($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -135,7 +135,7 @@ function redirect_user($page)  {
             error_log("not post");
             $errors = $data;
         }// end of if login was found
-    }//end of if POST
+    };//end of if POST
 
     $page_title = 'Login';
     //include ('include/header.html');
@@ -179,7 +179,7 @@ else {
         "LOOMA.alert('You are now logged in', timeout, true);" .
         "setTimeout(function(){  console.log('logged in'); window.location = window.history.go(-2);}, 1000 * timeout);" .
         "</script>"; */
-}
+};
 ?>
 
 	</div>

@@ -52,8 +52,9 @@ they want to edit a video
 					<div id="video-area">
 					    <div id="fullscreen">
     						<video id="video">
-    							<!--Gets the source of the video and the thumbnail of the video-->
-    							<?php echo 'poster="' . $filepath . thumbnail($filename) . '">'; ?>
+
+    						    <?php echo 'poster=\"' . $filepath . thumbnail($filename) . '\">';?>
+
     								<?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">' ?>
     						</video>
 					    </div>

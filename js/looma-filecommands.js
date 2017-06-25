@@ -11,9 +11,6 @@ Revision: Looma 2.4
 
 'use strict';
 
-/*define functions here */
-
-
 // USAGE NOTES: to use looma-filecommands, include "includes/looma-filecommands.php" in your looma php
 //      this will load the PHP, plus needed JS [this file] and CSS
 //      the JS of the page using FILECOMMANDS must keep the values of currentname, currentfiletype and currentcollection updated
@@ -87,15 +84,15 @@ function savework(name, collection, filetype) {
                                             setname(savename);
                                             },
                         function(){
-                            //callbacks['undocheckpoint']();
+                            callbacks['clear']();
                             return;},
                         false);
            }
          else if (owner) LOOMA.confirm('Save current work in file: ' + name + '?',
                             function () {callbacks['save'](name);},
                             function () {
-                                //callbacks['undocheckpoint']();
-                                return;},
+                               callbacks['clear']();
+                               return;},
                             false);
          else callbacks['clear']();
  }; // end SAVEWORK()
@@ -320,8 +317,8 @@ $(document).ready(function ()
                     opensearch();
                     // for TEMPLATE EDIT, only show "text template", clicked and disabled
 
-                    $('#txt-chk input').attr('checked', false);
-                    $('#txt-chk').hide();
+                    $('.typ-chk input').attr('checked', false);
+                    $('.typ-chk').hide();
 
                     $('#template-chk').show();
                     $('#template-chk input').attr('checked', true).css('opacity', 0.5);
@@ -355,11 +352,11 @@ $(document).ready(function ()
    /*   SAVE TEMPLATE    */
       $('#savetemplate').click(function() {
            console.log("FILE COMMANDS: clicked save template");
-           // save with type = 'text-template'
+           // save with type = currenttype + '-template'
            LOOMA.prompt('Enter a template name: ',
                         function(savename) { fileexists(savename,
                                              currentcollection,
-                                             'text-template',
+                                             currentfiletype + "-template",
                                              function(savename) {LOOMA.alert('Template already exists: ' + savename);},
                                              function(savename) {
                                                  callbacks['savetemplate'](savename);
@@ -378,7 +375,7 @@ $(document).ready(function ()
            LOOMA.prompt('Enter a template name: ',
                     function(deletename) { fileexists(deletename,
                                          currentcollection,
-                                         "text-template",
+                                         currentfiletype + "-template",
                                          function(deletename) { deletefile(deletename, currentcollection, currentfiletype + '-template'); },
                                          function(deletename) {
                                              LOOMA.alert('Template not found: ' + deletename); }

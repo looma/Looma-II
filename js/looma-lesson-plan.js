@@ -15,12 +15,21 @@ Revision: Looma 2.4
 
 //var timelineAssArray = new Object();
 
+
+var $timeline;
+var savedTimeline;   //savedTimeline is checkpoint of timeline for checking for modification
+var loginname;
+
 var homedirectory = "../";
 var $details;
-
-
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 window.onload = function () {
+
+
+    $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
+
+    loginname = LOOMA.loggedIn();
+    if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
 
     initializeDOM(); // fills in DOM elements - could be done in static HTML in the PHP file
 
@@ -74,28 +83,21 @@ window.onload = function () {
 /////////FILE COMMANDS setup /////////
 //////////////////////////////////////
 
-var $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
-var savedTimeline;   //savedTimeline is checkpoint of timeline for checking for modification
-
-var loginname = LOOMA.loggedIn();
-
-    //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
-
 /*  callback functions expected by looma-filecommands.js:  */
-callbacks ['clear'] = lessonclear;
-callbacks ['save']  = lessonsave;
-callbacks ['savetemplate']  = lessontemplatesave;
+callbacks ['clear'] =           lessonclear;
+callbacks ['save']  =           lessonsave;
+callbacks ['savetemplate']  =   lessontemplatesave;
 //callbacks ['open']  = lessonopen;
-callbacks ['display'] = lessondisplay;
-callbacks ['modified'] = lessonmodified;
+callbacks ['display'] =         lessondisplay;
+callbacks ['modified'] =        lessonmodified;
 callbacks ['showsearchitems'] = lessonshowsearchitems;
-callbacks ['checkpoint'] = lessoncheckpoint;
-callbacks ['undocheckpoint'] = lessonundocheckpoint;
+callbacks ['checkpoint'] =      lessoncheckpoint;
+callbacks ['undocheckpoint'] =  lessonundocheckpoint;
 
 /*  variable assignments expected by looma-filecommands.js:  */
 currentname = "";             //currentname       is defined in looma-filecommands.js and gets set and used there
 currentcollection = 'lesson'; //currentcollection is defined in looma-filecommands.js and is used there
-currentfiletype = 'lesson';   //currentfiletype   is defined in looma-filecommands.js and is used there
+currentfiletype =   'lesson';   //currentfiletype   is defined in looma-filecommands.js and is used there
 
 $('#search-form  #collection').val('lesson');
 
@@ -116,7 +118,7 @@ function lessonmodified()   {
 function lessonclear() {
 
        setname("");
-       //currentid="";
+       currentid="";
        $timeline.empty();
        clearFilter();
        lessoncheckpoint();
@@ -141,7 +143,8 @@ function lessonpack (html) { // pack the timeline into an array of collection/id
 }; //end lessonpack()
 
 function lessonunpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
-    var newDiv;
+
+    //var newDiv = null;  //reset newDiv so previous references to it are broken
 
     //for each element in data, call createActivityDiv, and attach the resturn value to #timelinediv
     // also set filename, [and collection??]
@@ -153,32 +156,45 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
 
     // need to record ID of newly opened LP so that later SAVEs can overwrite it
 
-    $(response.data).each(function() {
-       // retrieve each timeline element from mongo and add it to the current timeline
-         newDiv = null;  //reset newDiv so previous references to it are broken
-         $.post("looma-database-utilities.php",
+    var posts = [];  //we will push all the $.post() deferreds in the foreach below into posts[]
+
+    $(response.data).each(function(index) {
+         // retrieve each timeline element from mongo and add it to the current timeline
+         //var newDiv = null;  //reset newDiv so previous references to it are broken
+         posts.push($.post("looma-database-utilities.php",
             {cmd: "openByID", collection: this.collection, id: this.id},
             function(result) {
-                newDiv = createActivityDiv(result);
+                var newDiv = createActivityDiv(result);
+                //add data-index to timeline element for later sorting
+                //    (because the elements are delivered async, they may be out of order)
+                $(newDiv.firstChild).attr('data-index', index);
+                console.log('adding ID :' + result._id);
                 insertTimelineElement(newDiv.firstChild);
             },
             'json'
-          );
+          ));
     });
+
+    //  when all the $.post are complete, then re-order the timeline to account for out-of-order elements from asynch $.post calls
+    $.when.apply(null, posts).then(orderTimeline);
 
     makesortable();
 
 }; //end lessonunpack()
 
-function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response));};
+function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response)); lessoncheckpoint();};
 
 function lessonsave(name) {
-    savefile(name, 'lesson', 'lesson', lessonpack($timeline.html()), true);
+    savefile(name, currentcollection, currentfiletype, lessonpack($timeline.html()), true);
 }; //end lessonsave()
 
 function lessontemplatesave(name) {
-    savefile(name, 'lesson', 'lesson' + '-template', lessonpack($timeline.html()), false);
+    savefile(name, currentcollection, currentfiletype + '-template', lessonpack($timeline.html()), false);
 }; //end lessontemplatesave()
+
+
+
+
 
 // end FILE COMMANDS stuff
 
@@ -862,6 +878,17 @@ var removeTimelineElement = function(elem) {
 
 };
 
+
+var orderTimeline = function() {  // the timeline is populated with items that arrive acsynchronously by AJAX from the [mongo] server
+                                  // a 'data-index' attribute is stored with each timeline item
+                                  // this function [re-]orders the timeline based on those data-index values
+    var $timeline = $('#timelineDisplay');
+
+    $timeline.find('.activityDiv').sort(function(a, b) {
+        return +a.dataset.index - +b.dataset.index;
+        })
+    .appendTo($timeline);
+}; // end orderTimeline()
 
 /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
 var makesortable = function() {

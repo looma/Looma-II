@@ -27,9 +27,9 @@ span.hint {
     z-index:-1;
 }
 
-.admin, .template-cmd{
-    display:none;
-}
+.admin{  display:none;}
+/*.template-cmd{ display:none;}*/
+
 #cmd-btn {
     visibility: visible;
     font-size: 1.25em;

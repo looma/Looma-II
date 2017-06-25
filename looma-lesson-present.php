@@ -24,7 +24,6 @@ Description: looma lesson plan presenter
     ?>
 
 
-
     <div id="main-container-horizontal">
 
         <div id="viewer"></div>
@@ -68,23 +67,25 @@ Description: looma lesson plan presenter
 
             //should send DN, AUTHOR and DATE in a hidden DIV
 
-            if ($data) foreach ($data as $activity) {
+            if ($data) foreach ($data as $lesson_element) {
 
-                //echo "ID is " . $activity['id'];
-                //echo "coll is " . $activity['collection'];
+                //echo "ID is " . $lesson_element['id'];
+                //echo "coll is " . $lesson_element['collection'];
 
-                if (isset($details['thumb']))
+              /*removed 6/23/17
+                 if (isset($details['thumb']))
                      $thumbSrc = $details['thumb'];
                 else if (isset($details['fn']) && isset($details['fp']))
                      $thumbSrc = $details['fp'] . thumbnail($details['fn']);
                 else $thumbSrc = null;
+               */
 
-               if ($activity['collection'] == 'activities') {
 
-                    $query = array('_id' => new MongoID($activity['id']));
+               if ($lesson_element['collection'] == 'activities') {
 
-                    $db_collection =  $activities_collection;
-                    $details = $db_collection -> findOne($query);
+                    $query = array('_id' => new MongoID($lesson_element['id']));
+
+                    $details = $activities_collection -> findOne($query);
 
                 if (isset($details['thumb']))
                      $thumbSrc = $details['thumb'];
@@ -102,15 +103,15 @@ Description: looma lesson plan presenter
                                             $thumbSrc,
 
                                            "", //(isset($details['ch_id'])) ? $details['ch_id'] : null,
-                                           $activity['id'],
+                                           $lesson_element['id'],
                                            (isset($details['url'])) ? $details['url'] : null,
                                            null,
                                            null);
                 } else
 
-                if ($activity['collection'] == 'chapters') {
+                if ($lesson_element['collection'] == 'chapters') {
 
-                    $query = array('_id' => $activity['id']);
+                    $query = array('_id' => $lesson_element['id']);
                     $chapter = $chapters_collection -> findOne($query);
 
                     $query = array('prefix' => prefix($chapter['_id']));

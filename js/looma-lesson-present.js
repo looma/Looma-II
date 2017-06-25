@@ -33,10 +33,9 @@ window.onload = function ()
                         };
       */
 
-
+        var playing;
+        var $currentItem;
         var $viewer = $('#viewer');
-        var $currentItem = $('#timeline').find('button:first').addClass('playing');
-        var playing = false;
 
         // handlers for 'control panel' buttons
         $('#back').click( function()    {
@@ -67,6 +66,7 @@ window.onload = function ()
         var video = $('#video', $videoHTML).get(0); //the video DOM element
         var audio = $('#audio', $audioHTML).get(0); //the audio DOM element
 
+        play($('#timeline').find('button:first')); // automatically "play" the first item
 
         function scrollTimeline($btn) {
             $('#timeline').animate( { scrollLeft: $btn.outerWidth(true) * ( $btn.index() - 2 ) }, 100);
@@ -93,13 +93,11 @@ window.onload = function ()
             playActivity($item.data('ft'), $item.data('fn'), $item.data('fp'), $item.data('dn'), $item.data('id'), "", $item.data('pg'));
         }; //end play()
 
-        function playActivity(ft, fn, fp, dn, id, ch, pg) //play the activity of type FT, named FP, in path FP, display-name DN
+        function playActivity(ft, fn, fp, dn, id, ch, pg) {//play the activity of type FT, named FP, in path FP, display-name DN
                                                           // depending on FT, may use ID, CH (a ch_id) or pg (for PDFs)
+                                                          //NOTE: playActivity() should move to looma-utilities.js (??)
 
-        //NOTE: playActivity() should move to looma-utilities.js (??)
-
-        {
-        // plays the selected (onClick) timeline element (activity) in the $viewer div
+                // plays the selected (onClick) timeline element (activity) in the $viewer div
 
             restoreFullscreenControl(); //reset fullscreen operation in case video, which overrides normal fullscreen operation, has run
 

@@ -293,7 +293,7 @@ if ( isset($_REQUEST["cmd"]) ) {
         case "search":
             // called (from looma-search.js, from lesson-plan.js, etc) using POST with FORMDATA serialized by jquery
             // $_POST[] can have these entries: collection, class, subj, category, sort, search-term,
-            // src[] (array of checked items) and type[] (arroy of checked types)
+            // src[] (array of checked items) and type[] (array of checked types)
 
             //Get filetype Parameters
             /* known filetypes are the FT values in Activities collection
@@ -327,8 +327,12 @@ if ( isset($_REQUEST["cmd"]) ) {
                     array_push($extensions, "pdf"); break;
                 case 'text':
                     array_push($extensions, "text"); break;
-                case 'text-template':
-                    array_push($extensions, "text-template"); break;
+
+                case 'template':
+                         if ($collection == 'text')   array_push($extensions, "text-template");
+                    else if ($collection == 'lesson') array_push($extensions, "lesson-template");
+                    break;
+
                 case 'textbook':
                     array_push($extensions, "textbook"); break;
                 case 'slideshow':

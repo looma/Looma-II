@@ -13,5 +13,13 @@ Revision: Looma 2.4
 
 window.onload = function ()
     {
+        var button = document.getElementById("button");
+        var input = document.getElementById("input");
+        var output = document.getElementById("output");
 
+        button.addEventListener('click', function(){lookupword;});
     };
+
+function lookupword() {
+    LOOMA.lookup(input.value, function(response) {output.text = response;});
+};

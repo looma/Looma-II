@@ -50,7 +50,13 @@ body {
     margin:0 auto;
     overflow:hidden;
     color:black;
-}
+    }
+
+/*
+#editor font[size;'5'] {font-size:24px;}
+#editor font[size;'6'] {font-size:48px;}
+#editor font[size;'7'] {font-size:96px;}
+*/
 
 #commands {
     top: 20vh;

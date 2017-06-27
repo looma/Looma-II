@@ -79,7 +79,7 @@ var savedTimeline;   //savedTimeline is checkpoint of timeline for checking for 
 
 var loginname = LOOMA.loggedIn();
 
-    //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
+if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
 
 /*  callback functions expected by looma-filecommands.js:
 callbacks ['clear'] = TESTclear;

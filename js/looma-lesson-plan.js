@@ -17,7 +17,7 @@ Revision: Looma 2.4
 
 
 var $timeline;
-var savedTimeline;   //savedTimeline is checkpoint of timeline for checking for modification
+var savedSignature;   //savedTimeline is checkpoint of timeline for checking for modification
 var loginname;
 
 var homedirectory = "../";
@@ -110,18 +110,35 @@ function lessonshowsearchitems() {
 
 };
 
+/*
 function lessoncheckpoint() {         savedTimeline =   $timeline.html(); };
 function lessonundocheckpoint() {     $timeline.html(    savedTimeline);     };  //not used now??
-function lessonmodified()   {
-    return (savedTimeline !== $timeline.html());};
+function lessonmodified()   {return (savedTimeline !== $timeline.html());};
 
-function lessonclear() {
+*/
+    function lessoncheckpoint()       {savedSignature = signature($timeline);};
+    function lessonundocheckpoint() {}; //cant undo changes with signatures
+    function lessonmodified() {return (signature($timeline) !== savedSignature);};
+
+    function signature(elem) { //param is jQ object of the timeline ($timeline)
+        var sig = '';
+        elem.find('.activityDiv').each(function(index, x){
+            console.log('sig is ', sig);
+            console.log('x is ', x);
+            console.log('index is ', index)
+            sig += $(x).data('id');});
+        return sig;
+        };
+
+    function lessonclear() {
 
        setname("");
        currentid="";
        $timeline.empty();
        clearFilter();
-       lessoncheckpoint();
+       //lessoncheckpoint();
+       savedSignature = "";
+
 };
 
 lessonclear();

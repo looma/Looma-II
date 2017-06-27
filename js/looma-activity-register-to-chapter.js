@@ -96,7 +96,7 @@ window.onload = function () {
                         false);
                    });
 
-    //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
+        //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
 
 
 function renameActivity($activity) {

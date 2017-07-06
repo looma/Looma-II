@@ -27,10 +27,18 @@ span.hint {
     z-index:-1;
 }
 
-.admin, .template-cmd{
-    display:none;
-}
+.admin{  display:none;}
+/*.template-cmd{ display:none;}*/
 
+#cmd-btn {
+    visibility: visible;
+    font-size: 1.25em;
+    background-color: #fff;
+    /*padding: 10px;*/
+    color: #000;
+    width: 100%;
+    height: 6vh;
+}
 #navbar {
 	background: #D76126;
 	padding: 5px;
@@ -77,7 +85,7 @@ span.hint {
 	font-family: Helvetica;
 	font-size: 0.75em;
 	/*height: 37px;*/
-	width: 17vw;;
+	width: 10vw;;
 	/*margin-right: 30px;*/
 	padding: 3px;
 	border-radius:0.313em;
@@ -90,16 +98,16 @@ span.hint {
 }
 
 #div_search {
-
     float: left;
+    padding:0px 0px;
+    margin:auto;
+    text-align:left;
     position: relative;
-    padding:2px;
+    padding:0px 2px 2px 16px;
     line-height: 2px;
-    padding-top: 17px;
 
-	width: 23vw;
+	width: 12vw;
 	display:inline;
-    text-align:center;
 }
 
 #search_label {
@@ -109,7 +117,6 @@ span.hint {
 #dropdown_grade {
 	font-size: 20px;
 	display:inline;
-
 }
 
 #dropdown_subject {
@@ -118,6 +125,8 @@ span.hint {
 
 #dropdown_chapter {
 	font-size: 20px;
+	width: 30vw;
+	max-width; 30vw;
 }
 
 #dropdown_section {
@@ -125,40 +134,46 @@ span.hint {
 }
 
 #div_grade {
+    display: none;
 	float: left;
 	position: relative;
 	width: 8vw;;
     padding:2px;
 	line-height: 2px;
-	padding-top: 17px;
+	padding-top: 10px;
 }
 
 #div_subject {
+    display: none;
 	float: left;
 	position: relative;
 	width: 17vw ;
     padding:2px;
     line-height: 2px;
-	padding-top: 17px;
+	padding-top: 10px;
 
 }
 
-#div_chapter,#div_section {
+#div_chapter {
+    display:none;
 	float: left;
-	position: relative;
-	width: 5%;
-	margin-right: 30px;
+    position: relative;
+    padding:2px;
+
 	line-height: 2px;
-	padding-top: 17px;
+	padding-top: 10px;
 }
 
-
+#dropdown_chapter {
+    display:none;
+    float:right;
+}
 
 #div_filetypes {
     /*margin-top: 20px;*/
-    width: 40vw;;
+    width: 50vw;;
     float: left;
-    padding:0px 0px;
+    padding:0px 0px 0px 0px;
     margin:auto;
     text-align:left;
     /*margin-left: 30px;*/
@@ -166,6 +181,7 @@ span.hint {
 
 #div_categories {
     float:left;
+    width:25vw;
     margin:auto;
     text-align:left;
     padding: 0 0;
@@ -190,11 +206,12 @@ input {
 
 #clear_button {
 	height: 55px;
-	float: right;
+    width: 80px;
 	position: relative;
 	margin-top: 0px;
+/*    float: right;
 	margin-right: 2%;
-	width: 80px;
+	*/
 }
 
 .filter_label p, .filter_label {
@@ -204,7 +221,7 @@ input {
 	/*line-height:6px;*/
 }
 
-.filter_checkbox {
+.filter_checkbox, .filter_radio{
     zoom:2;
 }
 

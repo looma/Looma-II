@@ -54,6 +54,15 @@
             </div>
         </div>
 
+        <!-- new iFrame June 2017 - used to open the text-editor iFrame when called from in another editor, e.g. lesson plan
+            initially hidden by CSS, shown when New Text File button in filecommands.js is clicked  -->
+        <div id="textdiv">
+            <iframe id="textframe" src="./looma-text-frame.php" allowTransparency="true"> </iframe>
+        </div>
+
+        <img id="padlock" draggable="false" src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
+        <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
+
 <?php   include ('includes/js-includes.php');
 ?>
         <script src="js/jquery-ui.min.js">  </script>

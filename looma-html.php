@@ -26,6 +26,8 @@ Description:  for Looma 2
 			<div id="fullscreen">
 				<?php echo "<iframe src='$filepath$filename' allowfullscreen></iframe>"; ?>
 				<button  id="fullscreen-control"></button><br>
+				<button class = "speak"></button>
+                <button class = "lookup"></button>
 			</div>
 		</div>
 	</div>

@@ -176,7 +176,7 @@ h2 {
 
 @font-face {
     font-family: digitalFont;
-    src: url(digital-7.ttf);
+    src: url(../fonts/digital-7.ttf);
 }
 
 /* Double Clock and Single Clock Game */

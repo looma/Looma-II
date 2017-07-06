@@ -61,9 +61,6 @@ Description: looma lesson plan presenter
 
             if (isset($lesson['data'])) $data = $lesson['data'];
             else { echo "Lesson has no content"; $data = null;}
-        //
-        // NEED TO SORT DATA
-        //
 
             //should send DN, AUTHOR and DATE in a hidden DIV
 
@@ -144,7 +141,7 @@ Description: looma lesson plan presenter
 
          <div id="title">
              <span id="subtitle"></span>
-            <span>&nbsp; &nbsp; &nbsp; Looma Lesson:&nbsp; <span class="filename"><?php if ($displayname) echo $displayname ?></span></span>
+            <span id="lesson-name">&nbsp; &nbsp; &nbsp; Looma Lesson:&nbsp; <span class="filename"><?php if ($displayname) echo $displayname ?></span></span>
         </div>
 
     </div>
@@ -155,10 +152,7 @@ Description: looma lesson plan presenter
             <button class="control-button" id="back">
                 <!-- <img src="images/back-arrow.png"> -->
             </button>
-     <!--
-            <button class="control-button" id="pause">
-            </button>
-     -->
+
             <button class="control-button" id="forward">
                 <!-- <img src="images/forward-arrow.png"> -->
             </button>

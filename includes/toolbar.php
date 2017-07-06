@@ -85,6 +85,6 @@
 			<span id="datetime"></span>
 		</div>
 		<img id="padlock" draggable="false" src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
-		<p id="login-id" ><?php if (loggedIn()) echo "You are logged in as: " . $_COOKIE['login'] ?></p>
+		<p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
 
 	</div>

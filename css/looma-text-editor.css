@@ -28,11 +28,17 @@ body {
 
 .container {
     margin:0 auto;
+    width:95vw;
+}
+
+button.result {
+    color:white;
+    background:#2E3192;
 }
 
 #title {
     position: absolute;
-    top: 20vh;
+    top: 3vh;
     left:5vw;
     width:13vw;
     height: 8vh;
@@ -45,19 +51,14 @@ body {
 
 
 #editor {
-    height:60vh;
-    width:60vw;
+    height:39vh;
+    width:40vw;
+    zoom:200%;
     margin:0 auto;
     overflow:hidden;
     color:black;
-    }
-
-/*
-#editor font[size;'5'] {font-size:24px;}
-#editor font[size;'6'] {font-size:48px;}
-#editor font[size;'7'] {font-size:96px;}
-*/
+}
 
 #commands {
-    top: 20vh;
+    top: 3vh;
 }

@@ -92,4 +92,6 @@ $page_title = 'Looma - Time';
 <p id="date"></p>
 <div id="clockBox"></div>
 
+        <button class="speak"></button>
+
 </body>

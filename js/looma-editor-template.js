@@ -13,7 +13,9 @@ Revision: Looma 2.4
 
 /////////////////////////// INITIALIZING  ///////////////////////////
 
-//var timelineAssArray = new Object();
+var $timeline;
+var savedcheckpoint;   //savedTimeline is checkpoint of timeline for checking for modification
+var loginname;
 
 var homedirectory = "../";
 var $details;
@@ -21,6 +23,14 @@ var $details;
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 window.onload = function () {
+
+    // fix this
+    //$('#dismiss').click( function() { callbacks['quit'](); });
+
+    $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
+
+    loginname = LOOMA.loggedIn();
+    if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
 
     initializeDOM(); // fills in DOM elements - could be done in static HTML in the PHP file
 
@@ -81,43 +91,39 @@ var loginname = LOOMA.loggedIn();
 
 if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
 
-/*  callback functions expected by looma-filecommands.js:
+//callback functions expected by looma-filecommands.js:
 callbacks ['clear'] = TESTclear;
 callbacks ['save']  = TESTsave;
 callbacks ['savetemplate']  = TESTtemplatesave;
-//callbacks ['open']  = TESTopen;
 callbacks ['display'] = TESTdisplay;
 callbacks ['modified'] = TESTmodified;
 callbacks ['showsearchitems'] = TESTshowsearchitems;
 callbacks ['checkpoint'] = TESTcheckpoint;
-callbacks ['undocheckpoint'] = TESTundocheckpoint;
-*/
+
 
 /*  variable assignments expected by looma-filecommands.js:  */
 currentname = "";             //currentname       is defined in looma-filecommands.js and gets set and used there
-currentcollection = 'a'; //currentcollection is defined in looma-filecommands.js and is used there
-currentfiletype = 'test';   //currentfiletype   is defined in looma-filecommands.js and is used there
+currentcollection = 'test';   //currentcollection is defined in looma-filecommands.js and is used there
+currentfiletype   = 'test';   //currentfiletype   is defined in looma-filecommands.js and is used there
 
 $('#search  #collection').val('activities');
 
 function TESTshowsearchitems() {
-                    $('#lesson-chk').show();
-                    // for TEXT EDIT, only show "text", clicked and disabled
-                    //$('#lesson-chk input').attr('checked', true).css('opacity', 0.5);
+                    $('#TEST-chk').show();
+                    // for TEST EDIT, only show "TEST", clicked and disabled
+                    //$('#TEST-chk input').attr('checked', true).css('opacity', 0.5);
                     //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
-                    //$('#lesson-chk input').click(function() {return false;});
+                    //$('#TEST-chk input').click(function() {return false;});
 
 };
 
-function TESTcheckpoint() {         savedTimeline =   $timeline.html(); };
-function TESTundocheckpoint() {     $timeline.html(    savedTimeline);     };  //not used now??
+function TESTcheckpoint() {         /*savedcheckpoint =  <current edited state */ };
 function TESTmodified()   {
-    return (savedTimeline !== $timeline.html());};
+    return /*(savedcheckpoint ==  <current edited state)*/ ;};
 
 function TESTclear() {
 
        setname("");
-       //currentid="";
        $timeline.empty();
        clearFilter();
        TESTcheckpoint();
@@ -155,8 +161,8 @@ function TESTunpack (response) {  //unpack the array of collection/id pairs into
          $.post("looma-database-utilities.php",
             {cmd: "openByID", collection: this.collection, id: this.id},
             function(result) {
-                newDiv = createActivityDiv(result);
-                insertTimelineElement(newDiv.firstChild);
+                //newDiv = createActivityDiv(result);
+                //insertTimelineElement(newDiv.firstChild);
             },
             'json'
           );
@@ -169,11 +175,11 @@ function TESTunpack (response) {  //unpack the array of collection/id pairs into
 function TESTdisplay (response) {clearFilter(); $timeline.html(TESTunpack(response));};
 
 function TESTsave(name) {
-    //savefile(name, 'test', 'test', testpack($timeline.html()), true);
+    //savefile(name, currentcollection, currentfiletype, testpack($timeline.html()), true);
 }; //end TESTsave()
 
 function TESTtemplatesave(name) {
-    //savefile(name, 'test', 'test' + '-template', testpack($timeline.html()), false);
+    //savefile(name, currentcollection, currentfiletype + '-template', testpack($timeline.html()), false);
 }; //end TESTtemplatesave()
 
 // end FILE COMMANDS stuff

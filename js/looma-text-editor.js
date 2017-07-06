@@ -26,7 +26,7 @@ callbacks ['display'] =         textdisplay;
 callbacks ['modified'] =        textmodified;
 callbacks ['showsearchitems'] = textshowsearchitems;
 callbacks ['checkpoint'] =      textcheckpoint;
-callbacks ['undocheckpoint'] =  textundocheckpoint;
+//callbacks ['undocheckpoint'] =  textundocheckpoint;
 
 currentname = "";
 currentcollection = 'text';
@@ -35,20 +35,21 @@ currentfiletype = 'text';
 $('#collection').val('text');
 
 function textcheckpoint() {         savedHTML =   $editor.html(); };
-function textundocheckpoint() {     $editor.html( savedHTML);     };  //not used now??
+//function textundocheckpoint() {     $editor.html( savedHTML);     };  //not used now??
 function textmodified()   { return (savedHTML !== $editor.html());};
 
 function textclear() {
        setname("");
-       currentid="";
+       //currentid="";
        $editor.html("");
        textcheckpoint();
        $editor.focus();
 };
 
-function textdisplay (response) {$editor.html(response.data);};
+function textdisplay (response) {$editor.html(response.data); textcheckpoint();};
 
 function textsave(name) {
+    //$editor.cleanHtml();  // TRYING TO use bootstrap-wysiwyg "cleanHMTL function" BUT IT IS UNDEFINED ??
     savefile(name, currentcollection, currentfiletype, $editor.html(), true);
 }; //end testsave()
 

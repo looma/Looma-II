@@ -24,11 +24,15 @@ Description:  popup SEARCH panel for Looma pages
             <button class="dropdown-item file-cmd" id="saveas">Save As</button><br>
             <button class="dropdown-item file-cmd" id="rename">Rename</button><br>
             <button class="dropdown-item file-cmd" id="delete">Delete</button><br>
+            <!-- added New Text File button to launch text card editor in iFrame.
+                 this button initially hidden by css -->
+            <button class="dropdown-item file-cmd" id="show_text">New Text File</button><br>
 
             <div class="dropdown-divider"></div><br>
 
             <button class="dropdown-item file-cmd template-cmd" id="opentemplate">Open Template</button><br>
             <button class="dropdown-item file-cmd template-cmd admin" id="savetemplate">Save Template</button><br>
+            <button class="dropdown-item file-cmd template-cmd admin" id="saveastemplate">Save As Template</button><br>
             <button class="dropdown-item file-cmd template-cmd admin" id="deletetemplate">Delete Template</button><br>
 
             <div class="dropdown-divider"></div><br>

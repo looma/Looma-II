@@ -18,4 +18,11 @@ $(document).ready(function() {
                 screenfull.toggle(this);
             });
     */
-});
+
+        //attach LOOMA.speak() to the '.speak' button
+            $('button.speak').click(function(){
+                var toString = window.getSelection().toString();
+                console.log ('selected text is', toString);
+                LOOMA.speak(toString);
+            });
+        });

@@ -15,7 +15,9 @@ Comments:
 
 <?php $page_title = 'Looma - Login';
 	  include ('includes/header.php');
-	  /*OPTIONAL*/ include ('includes/mongo-connect.php');
+	  include ('includes/mongo-connect.php');
+
+      if (!loggedin()) header('Location: looma-login.php');
 ?>
 
 </head>

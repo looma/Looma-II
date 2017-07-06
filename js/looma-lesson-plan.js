@@ -15,16 +15,18 @@ Revision: Looma 2.4
 
 //var timelineAssArray = new Object();
 
-
 var $timeline;
 var savedSignature;   //savedTimeline is checkpoint of timeline for checking for modification
 var loginname;
 
 var homedirectory = "../";
 var $details;
+
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 window.onload = function () {
 
+    //show the "New Text File" button in filecommands.js to allow text-frame editor to be called in an iFrame
+    $('#show_text').show();
 
     $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
 
@@ -92,12 +94,12 @@ callbacks ['display'] =         lessondisplay;
 callbacks ['modified'] =        lessonmodified;
 callbacks ['showsearchitems'] = lessonshowsearchitems;
 callbacks ['checkpoint'] =      lessoncheckpoint;
-callbacks ['undocheckpoint'] =  lessonundocheckpoint;
+//callbacks ['undocheckpoint'] =  lessonundocheckpoint;
 
 /*  variable assignments expected by looma-filecommands.js:  */
-currentname = "";             //currentname       is defined in looma-filecommands.js and gets set and used there
-currentcollection = 'lesson'; //currentcollection is defined in looma-filecommands.js and is used there
-currentfiletype =   'lesson';   //currentfiletype   is defined in looma-filecommands.js and is used there
+currentname = "";                           //currentname       is defined in looma-filecommands.js and gets set and used there
+currentcollection = 'lesson';               //currentcollection is defined in looma-filecommands.js and is used there
+currentfiletype =   'lesson';               //currentfiletype   is defined in looma-filecommands.js and is used there
 
 $('#search-form  #collection').val('lesson');
 
@@ -110,22 +112,18 @@ function lessonshowsearchitems() {
 
 };
 
-/*
-function lessoncheckpoint() {         savedTimeline =   $timeline.html(); };
-function lessonundocheckpoint() {     $timeline.html(    savedTimeline);     };  //not used now??
-function lessonmodified()   {return (savedTimeline !== $timeline.html());};
 
-*/
     function lessoncheckpoint()       {savedSignature = signature($timeline);};
-    function lessonundocheckpoint() {}; //cant undo changes with signatures
-    function lessonmodified() {return (signature($timeline) !== savedSignature);};
+    //function lessonundocheckpoint() {}; //cant undo changes with signatures
+    function lessonmodified() {return (
+        signature($timeline) !== savedSignature);};
 
     function signature(elem) { //param is jQ object of the timeline ($timeline)
         var sig = '';
         elem.find('.activityDiv').each(function(index, x){
             console.log('sig is ', sig);
             console.log('x is ', x);
-            console.log('index is ', index)
+            console.log('index is ', index);
             sig += $(x).data('id');});
         return sig;
         };
@@ -133,11 +131,9 @@ function lessonmodified()   {return (savedTimeline !== $timeline.html());};
     function lessonclear() {
 
        setname("");
-       currentid="";
        $timeline.empty();
        clearFilter();
-       //lessoncheckpoint();
-       savedSignature = "";
+       lessoncheckpoint();
 
 };
 
@@ -193,13 +189,13 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
     });
 
     //  when all the $.post are complete, then re-order the timeline to account for out-of-order elements from asynch $.post calls
-    $.when.apply(null, posts).then(orderTimeline);
+    $.when.apply(null, posts).then(function(){orderTimeline();lessoncheckpoint();});
 
     makesortable();
 
 }; //end lessonunpack()
 
-function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response)); lessoncheckpoint();};
+function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response)); /*lessoncheckpoint();*/};
 
 function lessonsave(name) {
     savefile(name, currentcollection, currentfiletype, lessonpack($timeline.html()), true);
@@ -1230,7 +1226,7 @@ var initializeDOM = function() {
 
         // Title string
         $("<p/>", {
-            html : "Activity name:&nbsp;&nbsp;",
+            html : "Editing:&nbsp;&nbsp;",
             class: "ellipsis"
         }).appendTo("#titleDiv");
 

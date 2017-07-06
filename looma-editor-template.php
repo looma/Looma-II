@@ -1,11 +1,20 @@
 <!doctype html>
+<!--
+Name: Skip
+Email: skip@stritter.com
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date:
+Revision: Looma 3.x
+File: looma-editor-template.php
+Description:
+-->
+
 <html>
     <?php $page_title = 'Looma - Lesson editor template';
           include ('includes/header.php');
           include ('includes/mongo-connect.php');
 
           if (!loggedin()) header('Location: looma-login.php');
-
     ?>
 
     <head>
@@ -53,6 +62,13 @@
                </div>
             </div>
         </div>
+
+             <button class='control-button' id='dismiss' >
+                <!-- <img src="images/delete-icon.png"> -->
+            </button>
+
+        <img id="padlock" draggable="false" src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
+        <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
 
 <?php   include ('includes/js-includes.php');
 ?>

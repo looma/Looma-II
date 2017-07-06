@@ -11,6 +11,9 @@ Revision: Looma 2.4
 
 'use strict';
 
+/*define functions here */
+
+
 // USAGE NOTES: to use looma-filecommands, include "includes/looma-filecommands.php" in your looma php
 //      this will load the PHP, plus needed JS [this file] and CSS
 //      the JS of the page using FILECOMMANDS must keep the values of currentname, currentfiletype and currentcollection updated
@@ -25,12 +28,12 @@ Revision: Looma 2.4
 //          undocheckpoint: undo a checkpoint
 //          showsearchitems:  hide/show the search elements appropriate for this context
 
-var currentid;
+//var currentid;
 var currentname;
-//var currentauthor;
 var owner; //TRUE if current logged in user is the author of the currrent file
-var currentfiletype;
-var currentcollection;
+var currentfiletype;   //set by calling program - to 'text', 'lesson', etc e.g. base type this editor is dealing with
+var currentcollection;   //set by calling program - to 'text', 'lesson', etc e.g. mongo collection this editor is dealing with
+var template = false; // if TRUE the file currently being edited is a template; if FALSE it is a regular file
 
 var cmd;
 
@@ -43,7 +46,8 @@ var callbacks = {
     modified:        doNothing,
     checkpoint:      doNothing,
     showsearchitems: doNothing,
-    undocheckpoint:  doNothing
+    //undocheckpoint:  doNothing,
+    quit:            quit
 };
 
 function doNothing(){return;};  //not actually called
@@ -60,12 +64,14 @@ function escapeHTML(text) {
 function setname(newname) {
     currentname = newname;
     if (newname) $('.filename').text(newname); else $('.filename').text('<none>');
+    if (template) $('.filename').append($('<span> (template) </span>'));
 };
 
 //checks for existing file with this name.
 // if the file exists, execute yes(),
 // if it doesnt exist, executes no()
-function fileexists(name, collection, filetype, yes, no) {
+function fileexists(name, collection, filetype, yes, no) {  //filetype must be given as 'text' or 'text-template'
+         //var ft = (template) ? filetype + '-template' : filetype;
          $.post("looma-database-utilities.php",
                 {cmd: "exists", collection: collection, ft: filetype, dn: escapeHTML(name)},
                 function(result) {
@@ -76,30 +82,37 @@ function fileexists(name, collection, filetype, yes, no) {
               );
 }; // end FILEEXISTS()
 
-function savework(name, collection, filetype) {
+function savework(name, collection, filetype) {  // filetype is base type (not type-template)
 
         if (name == "") {
                LOOMA.prompt('Enter a file name to save current work: ',
-                        function(savename) {callbacks['save'](savename);
+                        function(savename) {if (template) callbacks['savetemplate'](savename);
+                                            else          callbacks['save'](savename);
                                             setname(savename);
                                             },
                         function(){
-                            callbacks['clear']();
-                            return;},
+                            //callbacks['clear']();
+                            callbacks['checkpoint']();
+                          return;},
                         false);
            }
          else if (owner) LOOMA.confirm('Save current work in file: ' + name + '?',
-                            function () {callbacks['save'](name);},
+                            function () {if (template) callbacks['savetemplate'](name);
+                                         else          callbacks['save'](name);
+                                         },
                             function () {
-                               callbacks['clear']();
-                               return;},
+                                callbacks['checkpoint']();
+                                return;},
                             false);
-         else callbacks['clear']();
+         else {  //NOT owner
+            LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
+            callbacks['checkpoint']();
+            }
  }; // end SAVEWORK()
 
-function savefile(name, collection, filetype, data, activityFlag) {
+function savefile(name, collection, filetype, data, activityFlag) {  //filetype must be given as 'text' or 'text-template'
 
-         console.log('FILE COMMANDS: saving file (' + name + ') with data: ' + data);
+         console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + filetype + 'and with data: ' + data);
          $.post("looma-database-utilities.php",
                 {cmd: "save",
                  collection: collection,
@@ -110,13 +123,18 @@ function savefile(name, collection, filetype, data, activityFlag) {
 
                  function(response) {
                     callbacks['checkpoint']();
-                    if (response['_id']) console.log("SAVE: upserted ID = ", response['_id']['$id']);
+                    if (response['_id']) {
+                       console.log("SAVE: upserted ID = ", response['_id']['$id']);
+                    }
+                    else {
+                      console.log("SAVE: didn't work?");
+                    }
                  },
                  'json'
               );
 }; //end SAVEFILE()
 
-function renamefile(newname, oldname, collection, filetype)  {
+function renamefile(newname, oldname, collection, filetype)  {  //only used for base files, not templates (for now)
 
          $.post("looma-database-utilities.php",
                 {cmd: "rename", collection: collection,
@@ -129,7 +147,7 @@ function renamefile(newname, oldname, collection, filetype)  {
                 'json'
               );};  // end RENAMEFILE()
 
-function deletefile(deletename, collection, filetype)  {
+function deletefile(deletename, collection, filetype)  { //filetype must be given as 'text' or 'text-template'
 
          $.post("looma-database-utilities.php",
                 {cmd: "delete", collection: collection,
@@ -141,7 +159,7 @@ function deletefile(deletename, collection, filetype)  {
                 'json'
               );};  // end DELETEFILE()
 
-function openfile(openname, collection, filetype) {
+function openfile(openname, collection, filetype) { //filetype must be given as 'text' or 'text-template'
 
         //OPEN from MONGO
         $.post("looma-database-utilities.php",
@@ -150,12 +168,13 @@ function openfile(openname, collection, filetype) {
                 if (response['error'])
                     LOOMA.alert(response['error'] + ': ' + openname, 3, true);  //better if returned an error flag + err msg
                 else {
-                    console.log("OPEN (", filetype, "), from ",collection, ': ', response);
+                    console.log("OPEN (ft: ", filetype, "), from ", collection, ' collection. response: ', response);
 
-                    if (filetype.includes('-template')) setname('');
-                    else setname(openname);
+                   // if (filetype.includes('-template')) setname('');
+                   // else
+                    setname(openname);
 
-                    currentid = response['_id'];
+                    //currentid = response['_id'];
                     //currentauthor = response['author'];
                     if ('author' in response)
                         owner = (response['author'] == LOOMA.loggedIn()  || LOOMA.loggedIn() == 'skip');
@@ -163,12 +182,19 @@ function openfile(openname, collection, filetype) {
 
                     callbacks['display'](response);   //need to return the full 'response' from the db
                     //$('#cancel-result').on('click', closesearch);
-                    callbacks['checkpoint']();
+
+                    // let calling programs checkpoint after OPEN, in case results are async
+                    //callbacks['checkpoint']();
                     }
                },
               'json'
             );
 };  // end OPENFILE()
+
+function  quit() {
+    if (callbacks['modified']()) savework(currentname, currentcollection, currentfiletype);
+    else window.history.back();  //race condition? savework() AJAX may not run??
+};
 
 
 
@@ -185,6 +211,8 @@ $(document).ready(function ()
                    savework(currentname, currentcollection, currentfiletype);
                else { //NOTE: cant call 'clear()' immediately because the savework() call uses asynch code [e.g. LOOMA.confirm()]
                    callbacks['clear']();
+                   template - false;
+                   owner = true;
                };
            });
 
@@ -209,7 +237,9 @@ $(document).ready(function ()
 
                                                 closesearch();
                                                 if ($(this).attr('id') !== 'cancel-results') //if file not found, dont call OPEN()
-                                                    openfile($(this).prop('title'), currentcollection, currentfiletype);
+                                                    {openfile($(this).prop('title'), currentcollection, currentfiletype);
+                                                     template = false;
+                                                 }
                                             }
                     );
 
@@ -226,7 +256,7 @@ $(document).ready(function ()
   /*   SAVE    */
        $('#save').click(function()     {
            console.log("FILE COMMANDS: clicked save");
-           if (currentname == "") { //first save
+           if (currentname == "" || template) { //first save
                LOOMA.prompt('Enter a file name: ',
                         function(savename) { fileexists(savename,
                                              currentcollection,
@@ -234,17 +264,24 @@ $(document).ready(function ()
                                              function(savename) {LOOMA.alert('File already exists: ' + savename);},
                                              function(savename) {
                                                 callbacks['save'](savename);
+                                                owner = true;
+                                                template = false;
                                                 setname(savename);
-                                                owner =  LOOMA.loggedIn(); }
+                                             }
                                             );},
                         function(){return;},
                         false);
            }
 
-           else if (!owner) LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
+           else if (!owner) {
+               LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
+                //callbacks['checkpoint']();
+            }
 
-           else if (callbacks['modified']()) callbacks['save'](currentname);
-
+           else if (callbacks['modified']()) {
+               callbacks['save'](currentname);
+               template = false;
+           }
        });
 
    /*   SAVE AS    */
@@ -257,15 +294,17 @@ $(document).ready(function ()
                                         function(savename) {LOOMA.alert('File already exists: ' + savename);},
                                         function(savename) {
                                             callbacks['save'](savename);
+                                            owner = true;
+                                            template = false;
                                             setname(savename);
-                                            owner =  LOOMA.loggedIn();  }
+                                            }
                                         );},
                     function(){return;},
                     false);
        });
 
    /*   RENAME    */
-      $('#rename').click(function()   {
+      $('#rename').click(function()   {//only used for base files, not templates (for now)
            console.log("FILE COMMANDS: clicked rename");
 
               if (!owner) LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
@@ -304,6 +343,15 @@ $(document).ready(function ()
                     false);
          });
 
+    $('#show_text').click(function()
+      {
+        console.log("FILE COMMANDS: clicked new text file");
+        $('#textdiv').show();
+        LOOMA.makeTransparent($('#main-container-horizontal'));
+        LOOMA.makeTransparent($('#commands'));
+        $('#textdiv').focus();
+      });
+
 
 
    /*   TEMPLATE OPERATIONS    */
@@ -315,10 +363,9 @@ $(document).ready(function ()
                    savework(currentname, currentcollection, currentfiletype);
                else {
                     opensearch();
-                    // for TEMPLATE EDIT, only show "text template", clicked and disabled
 
-                    $('.typ-chk input').attr('checked', false);
-                    $('.typ-chk').hide();
+                    $('#txt-chk input').attr('checked', false);
+                    $('#txt-chk').hide();
 
                     $('#template-chk').show();
                     $('#template-chk input').attr('checked', true).css('opacity', 0.5);
@@ -335,7 +382,9 @@ $(document).ready(function ()
 
                                                 closesearch();
                                                 if ($(this).attr('id') !== 'cancel-results') //if file not found, dont call OPEN()
-                                                    openfile($(this).prop('title'), currentcollection, currentfiletype + '-template');
+                                                    {openfile($(this).prop('title'), currentcollection, currentfiletype + '-template');
+                                                     template = true;
+                                                 }
                                             }
 
                     );
@@ -348,25 +397,56 @@ $(document).ready(function ()
                 };
        }); //end OPEN TEMPLATE
 
-
-   /*   SAVE TEMPLATE    */
-      $('#savetemplate').click(function() {
+  /*   SAVE  TEMPLATE  */
+       $('#savetemplate').click(function()     {
            console.log("FILE COMMANDS: clicked save template");
-           // save with type = currenttype + '-template'
-           LOOMA.prompt('Enter a template name: ',
+           if (currentname == "" || !template) { //first save
+               LOOMA.prompt('Enter a template name: ',
                         function(savename) { fileexists(savename,
                                              currentcollection,
-                                             currentfiletype + "-template",
-                                             function(savename) {LOOMA.alert('Template already exists: ' + savename);},
+                                             currentfiletype + '-template',
+                                             function(savename) {LOOMA.alert('File already exists: ' + savename);},
                                              function(savename) {
-                                                 callbacks['savetemplate'](savename);
-                                                //save(savename, currentcollection, currentfiletype + '-template', $editor.html());
+                                                callbacks['savetemplate'](savename);
+                                                owner = true;
+                                                template = true;
+                                                setname(savename);
                                                 }
                                             );},
                         function(){return;},
                         false);
+           }
+
+           else if (!owner) {
+               LOOMA.alert('You are not the owner of this template. Use SAVE-AS to make a copy you own', 5, true);
+                //callbacks['checkpoint']();
+            }
+
+           else if (callbacks['modified']()) {
+               callbacks['savetemplate'](currentname);
+               template = true;
+           };
        });
 
+   /*   SAVE AS TEMPLATE    */
+      $('#saveastemplate').click(function() {
+           console.log("FILE COMMANDS: clicked save as template");
+           // save with type = currentfiletype + '-template'
+           LOOMA.prompt('Enter a template name: ',
+                        function(savename) { fileexists(savename,
+                                             currentcollection,
+                                             currentfiletype + '-template',
+                                             function(savename) {LOOMA.alert('Template already exists: ' + savename);},
+                                             function(savename) {
+                                                 callbacks['savetemplate'](savename);
+                                                 owner = true;
+                                                 template = true;
+                                                 setname(savename);
+                                                 }
+                                            );},
+                        function(){return;},
+                        false);
+       });
 
 
    /*   DELETE TEMPLATE    */
@@ -375,7 +455,7 @@ $(document).ready(function ()
            LOOMA.prompt('Enter a template name: ',
                     function(deletename) { fileexists(deletename,
                                          currentcollection,
-                                         currentfiletype + "-template",
+                                         currentfiletype + '-template',
                                          function(deletename) { deletefile(deletename, currentcollection, currentfiletype + '-template'); },
                                          function(deletename) {
                                              LOOMA.alert('Template not found: ' + deletename); }
@@ -390,8 +470,7 @@ $(document).ready(function ()
      $('#quit').click(function()
          {
            console.log("FILE COMMANDS: clicked quit");
-           if (callbacks['modified']()) savework(currentname, currentcollection, currentfiletype);
-           else window.history.back();  //race condition? savework() AJAX may not run??
+           callbacks['quit']();
          });
 
 

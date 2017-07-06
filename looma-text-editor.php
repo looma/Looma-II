@@ -14,6 +14,9 @@ Comments:
 
 <?php $page_title = 'Looma - text editor';
 	  include ('includes/header.php');
+
+      if (!loggedin()) header('Location: looma-login.php');
+
 ?>
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap-wysiwyg.css">
@@ -97,6 +100,10 @@ Comments:
            </div>
         </div>
 	</div>
+
+        <img id="padlock" draggable="false" src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
+        <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
+
 
 <?php     include ('includes/toolbar.php');
    		  include ('includes/js-includes.php');

@@ -98,7 +98,7 @@ function drawInitialClock() {
 
 //increments the time, and then draws the clock
 function drawNextClock() {
-    console.log(radius);
+    //console.log(radius);
     second++;
     if (second > 59) {
         second = 0;
@@ -228,7 +228,7 @@ function drawHand(pos, length, width) {
 function drawDigitalClock(){
     var minutePrint = minute;
     var hourPrint = hour;
-    console.log(hour);
+    //console.log(hour);
 
     if (minute < 10) {
         minutePrint = "0" + minute;
@@ -348,8 +348,8 @@ function click(event) {
     var distance = Math.sqrt((mouseCoords.x - canvas.height / 2) * (mouseCoords.x - canvas.height / 2) + (mouseCoords.y - canvas.height / 2) * (mouseCoords.y - canvas.height / 2));
     var howFarOff = Math.abs(hourClicked - (hourCheck + minute / 60));
 
-    console.log(hourCheck + minute / 60);
-    console.log(hourClicked);
+    //console.log(hourCheck + minute / 60);
+    //console.log(hourClicked);
     if((minuteClicked == minute || minuteClicked == minute - 1) && distance < radius * 0.85) {
         mouseIsDown = true;
         checkHandLocation(minuteDouble);
@@ -570,4 +570,5 @@ function drawDigitalTime() {
 
         radius = canvas.height / 2;
     }
-}
+
+};

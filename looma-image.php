@@ -11,11 +11,9 @@ Description: Video viewer page for Looma 2
 -->
 
 <?php $page_title = 'Looma Image Player';
-	  include ('includes/header.php'); 
-?>	
-	<!-- add CSS files for this page:
-		<link rel="stylesheet" href="css/filename.css"> -->
-	</head>
+	  include ('includes/header.php');
+?>
+	<link rel="stylesheet" href="css/looma-image.css">	</head>
 
 	<body>
 	<?php
@@ -28,8 +26,10 @@ Description: Video viewer page for Looma 2
 			<button  id="fullscreen-control"></button><br>
 		</div>
 	</div>
-	
-   	<?php include ('includes/toolbar.php'); ?>   	   		
-  	<?php include ('includes/js-includes.php'); ?>  
-  	<script src="js/looma-screenfull.js"></script>	
-    <script src="js/looma-image.js"></script>
+
+   	<?php include ('includes/toolbar.php'); ?>
+  	<?php include ('includes/js-includes.php'); ?>
+  	<script src="js/looma-screenfull.js"></script>
+   <!-- nothing in looma-image.js for now
+        <script src="js/looma-image.js"></script>
+    -->

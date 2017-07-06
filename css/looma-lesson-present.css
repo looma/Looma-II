@@ -102,6 +102,8 @@ img#fullscreen {width:auto;}
 #subtitle {
     background-color:white;
     color:black;
+    width:100%;
+
     border:2px solid black;
     border-radius:5px;}
 
@@ -152,6 +154,9 @@ span .filename {
     float:none;
 }
 
+span#lesson-name {
+    color:black;
+}
 #button-box {
     position:relative;
     display: inline-flex;
@@ -195,4 +200,8 @@ span .filename {
 button#fullscreen-control {
     bottom:15%;
     right:5%;
+}
+
+#fullscreen.text-display {
+    padding:2vh 5vw;
 }

@@ -67,7 +67,7 @@ $(document).ready (function() {
     }
     else //logged in
     {   var loginname = LOOMA.readStore('login', 'cookie');
-        $('#login-status').text('You are logged in as "' + loginname + '"');
+        $('#login-status').text("You are logged in as '" + loginname + "'");
         $('.settings-control').show();                       // show the teacher tools
         if (loginname == 'skip') $('.admin-control').show(); // some tools arent debugged. show them only to'skip'
 

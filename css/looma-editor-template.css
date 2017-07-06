@@ -1,3 +1,4 @@
+
 /*
 LOOMA css file
 Filename: looma-lesson-plan.css
@@ -830,3 +831,31 @@ label {
     top: 0vh;
     vertical-align:middle;
 }
+.control-button {
+    position: absolute;
+    bottom: 2vh;
+    right:5vw;
+    background: white;
+    background-position: left top;
+    background-size: 100% 100%;
+    margin: 0 0.5vw 0 0.5vw;
+    width:5vw;
+    height:7vh;
+}
+
+.control-button img {
+    margin: 0;
+    padding: 0;
+    height: 70%;
+    width: 70%;
+    /*vertical-align:middle;*/
+}
+
+#dismiss {
+    color : white;
+    background-color: red;
+    border-color: red;
+    /*width: 3vw;*/
+}
+
+#dismiss { background-image: url("../images/back-arrow.png"); }

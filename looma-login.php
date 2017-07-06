@@ -170,7 +170,7 @@ function redirect_user($page)  {
 else {
 // Print a  message:
      echo "<br><br><br><h1>Logged In</h1>";
-     echo "<p>You are now logged in as {$_COOKIE['login']}</p>";
+     echo "<p>You are now logged in as '{$_COOKIE['login']}'</p>";
      echo " <script>   var timeout = ;
         /*LOOMA.alert('You are now logged in', 3, true);*/
         setTimeout(function(){ window.location = window.history.go(-2);}, 1000 * timeout);

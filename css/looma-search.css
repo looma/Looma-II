@@ -76,7 +76,7 @@ button.search {
     top:2vh;
     left:3vw;
     overflow-y:auto;
-    overflow-x:none;
+    overflow-x:hidden;
     max-height:95vh;
     margin:0 3vw;
     max-width:30vw;
@@ -90,6 +90,8 @@ button.search {
 .result {
     border:2px solid black;
     border-radius:5px;
+        color:white;
+    background:#2E3192;
 }
 
 .result-data {

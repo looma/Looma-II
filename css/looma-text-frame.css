@@ -1,0 +1,56 @@
+/*
+LOOMA css file
+Filename: looma-text-frame.css
+Description:
+Associated code files: looma-text-frame.php & .js
+Programmer name:skip
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: JUne 2017
+Revision: Looma 3.0
+
+Comments:
+*/
+
+body {
+    color:black;
+    background-color:#eee;
+}
+
+.admin {
+    display:none;
+}
+.btn-toolbar {
+    text-align:center;
+    display:inline-block;
+    color:black;
+}
+
+.container {
+    margin:0 auto;
+}
+
+#title {
+    position: absolute;
+    top: 20vh;
+    left:5vw;
+    width:13vw;
+    height: 8vh;
+    float:left;
+    border:black;
+    color:black;
+    background-color:white;
+    border-radius:2px;
+}
+
+
+#editor {
+    height:60vh;
+    width:60vw;
+    margin:0 auto;
+    overflow:hidden;
+    color:black;
+}
+
+#commands {
+    top: 20vh;
+}

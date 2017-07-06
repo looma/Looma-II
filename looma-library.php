@@ -101,14 +101,16 @@ Description:  displays and navigates content folders for Looma 2
                      * EDITED: This if statement creates a slideshow play button linking directories containing slideshows.txt files
                      * with Looma slideshow player
                      */
-                    echo "<td>
+                    /*
+                     * echo "<td>
                             <a href='looma-slideshow.php?dir=$path$file'>
                                     <button class='activity zeroScroll  with-play'>
                                         <img src='images/play-slideshow-icon.png' class='img-responsive'>
                                     </button>
                                 </a>";
-                    echo "<a href='looma-library.php?fp=" . $path . $file .
-                         "/'><button class='activity img zeroScroll beside-play'>" .
+                    */
+                    echo "<td><a href='looma-library.php?fp=" . $path . $file .
+                         "/'><button class='activity img zeroScroll'>" .
                     thumb_image($path . $file) . $file . "</button></a></td>";
 
                     }

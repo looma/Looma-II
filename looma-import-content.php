@@ -13,6 +13,8 @@ Description:  navigate content folders and import media files into activities co
         require ('includes/header.php');
         require ('includes/mongo-connect.php');
 
+        if (!loggedin()) header('Location: looma-login.php');
+
                 function folderName ($path) {
                     // strip trailing '/' then get the last dir name, by finding the remaining last '/' and substr'ing
                      $a = explode("/", $path);
@@ -119,6 +121,9 @@ Description:  navigate content folders and import media files into activities co
                         <option value='ted'>TED</option>
                         <option value='PhET'>PhET</option>
                         <option value='flickr'>Flickr</option>
+                        <option value='nasa'>NASA</option>
+                        <option value='unsplash'>UnSplash</option>
+
                         <option value='Dr Dann'>Dr Dann</option>
                     </select>
 

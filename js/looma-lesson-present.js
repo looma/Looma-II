@@ -50,10 +50,12 @@ window.onload = function ()
         $('.lesson-element img').hover(
             function() {  //handlerIn
                 var $btn = $(this).closest('button');
-                $('#subtitle').text($btn.attr('data-dn') + ' (' + LOOMA.typename($btn.attr('data-ft')) + ')');},
+                $('#subtitle').text($btn.attr('data-dn') + ' (' + LOOMA.typename($btn.attr('data-ft')) + ')').show();},
             function () { //handlerOut
-              $('#subtitle').text('');}
+              $('#subtitle').hide();}
         );
+
+        $('#subtitle').hide();
 
  // create HTML for various players for filetypes
 
@@ -82,6 +84,10 @@ window.onload = function ()
 
         function play($item) {
             $viewer.empty();
+
+            $videoHTML = $(makeVideoHTML());  //reset videoHTML to stop any running video
+            $audioHTML = $(makeAudioHTML());  //reset audioHTML to stop any running audio
+
             $currentItem = $item;
             playing = true;
             $('#timeline button').removeClass('playing');
@@ -223,8 +229,10 @@ window.onload = function ()
                     $.post("looma-database-utilities.php",
                     {cmd: "openByID", collection: 'text', id: result1.mongoID.$id},
                     function(result2) {
-                        $('<div id="fullscreen" style="background-color:white;color:black;">').append($(result2.data)).appendTo($viewer);
-                       //  $(result2.data).appendTo($viewer);
+                        $('<div id="fullscreen" class="text-display" style="background-color:white;color:black;">').append($(result2.data)).appendTo($viewer);
+                        $('#viewer font[size="4"]').css("fontSize", "1.7em");
+                        $('#viewer font[size="6"]').css("fontSize", "3em");
+                        $('#viewer font[size="7"]').css("fontSize", "4.5em");
                     },
                     'json'
                   );

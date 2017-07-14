@@ -1,247 +1,218 @@
+/*
+Author: Alexa Thomases, Catie Cassani, May Li
+Filename: looma-history.php
+Date: July 2017
+Description: Creates a timeline with search and hover functions. Information accessed through database.
+*/
 
+/*Framework for the buttons (which generally contain the titles of each event)*/
+button {
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+h1 {
+  font-size:2em;
+}
+
+/* TIMELINE
+â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“ */
+
+/*Makes it so that the lines and text of the timeline 
+  don't stack together and make the timeline look confusing*/
+.timeline {
+  white-space: nowrap;
+}
+
+/*Positioning of the timeline in the window*/
+.timeline ol {
+  font-size: 0;
+  width: 100vw;
+  padding: 19vh 0;
+}
+
+/*The display of the line of the timeline*/
+.timeline ol li {
+  position: relative;
+  display: inline-block;
+  list-style-type: none;
+  width: 25vw;
+  height: 0.5vh;
+  background: #ff0;
+}
+
+
+/*Aligns each white line segment to be in the proper position, 
+  relative to the each event point (yellow dot)*/
+.timeline ol li:not(:first-child) {
+  /*margin-left: 14px; */
+}
+
+/*The display of each event point in the timeline*/
+.timeline ol li::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 1px);
+  bottom: 0;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  border-radius: 50%; /*Determines the "roundness" of each point*/
+  display:none;
+}
+
+/*The positioning of the event information 
+(in the div of each list item)*/
+.timeline ol li div {
+  left: calc(100% + 2vw);
+  width: 35vw;
+  padding: 4vh;
+  font-size: 1rem;
+  white-space: normal;
+  color: black; /*The color of the hover text*/
+  /*z-index:2;*/
+}
+
+/*Specific position of each odd list item
+  --makes the odd list items go above the timeline*/
+.timeline ol li:nth-child(odd) div {
+  top: -0.1vh;
+  transform: translateY(-50%);
+}
+
+/*Keeps the timeline within a window*/
+@media screen and (max-width: 90vw) {
+  .timeline ol,
+  .timeline ol li {
+    width: auto; 
+  }
+}
+
+/*Establishes the dimensions and display of 
+  the primary div that contains the timeline*/
 #playground {
-    margin:1vh 2vw;
-    padding:3em 1em;
-    border: 1px solid #ccc;
-    overflow-y:auto;
-    max-height:78%;
+    margin: 1vh 2vw;
+    padding: 3em 1em;
+    border: 0.1vh solid #ccc;
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: 80%;
 }
 
 input#keywords {display:inline;}
 
-a {
-  text-decoration: none
-  ;
-}
-
-li {
-  list-style: none;
-}
-
-h2 {
-  font-size: 24;
-  font-weight: 600;
-  margin: 25px 0 10px;
-  text-align: center;
-}
-
-/*
-.container {
-  margin: 0 auto;
-  border-radius: 10px;
-  overflow:scroll;
-}
-*/
-
-.row {
+/*Keeps the timeline event buttons centered above the timeline points*/
+.timeline li .timeline-description {
+  border-radius: 0.2vh;
   float: left;
-  width: 100%;
-}
-
-.timeline-both-side {
-  float: left;
-  width: 96%;
-  margin-left: 19px;
-  padding-left: 4px;
-  position: relative;
-  box-sizing: border-box;
-  border-radius: 10px;
-}
-
-.timeline-both-side:before {
-  background-color: #ccc;
-  border-radius: 10px;
-  bottom: 0; content: " ";
-  left: 50%;
-  position: absolute;
-  top: 0;
-  width: 4px;
-}
-/* puts a little circle at the end of the timeline - deleted for now [confusing to user?]
-.timeline-both-side:after {
-  border-radius: 10px;
-  bottom: -22px;
-  content: "";
-  height: 18px;
-  left: 50%;
-  margin-left: -11px;
-  position: absolute;
-  width: 18px;
-  border: 5px solid #ccc;
-  color: white
-}
-*/
-
-.timeline-both-side li {
-  position: relative;
-  float: left;
-  width: 100%;
-    margin-top:-20px;
-  margin-bottom:-20px;
-}
-
-.timeline-both-side li .border-line {
-  background-color: white;
-  font-size: 1.4em;
-  height: 4px;
-  left: 50%;
-  margin-left: -8%;
-  position: absolute;
-  text-align: center;
-  top: 50%;
-  width: 8%;
-  z-index: 100;
-}
-
-.timeline-both-side li.opposite-side .border-line {
-  left: auto; right: 50%;
-  margin-left: 0;
-  margin-right: -8%;
-}
-
-.timeline-both-side li .border-line:before {
-  background-color: white;
-  content: "";
-  height: 7px;
-  position: absolute;
-  right: -4px;
-  top: -1px;
-  width: 10px;
-}
-
-.timeline-both-side li.opposite-side .border-line:before {
-  left: -4px;
-  right: auto;
-}
-
-.timeline-both-side li .timeline-description {
-  border-radius: 2px;
-  background-color: #ddd;
-  /*border: 1px solid white; */
-  float: left;
-  padding: 10px;
-  position: relative;
+  padding: 2vh;
   width: 42%;
-}
-
-.timeline-both-side li.opposite-side .timeline-description {
-  float: right;
-}
-
-.dropbtn {
-  padding: 10px;
-  font: 1em "Comic Sans MS", serif, bold;
-  cursor: pointer;
-  width:100%;
-  min-width: 8vw;
-  height: 15vh;
-  background-color: #FFFFFF;
-  color: black;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
-  box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
+  left:0vw;
+  position:relative;
+  z-index:10;
 }
 
 .dropdown {
-  position: relative;
   width:100%;
   display: inline-block;
   font-size: 24;
 }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  right: 0;
-  background-color: #091F48;
-  font: 20px "Comic Sans MS", serif, bold;
-  border-color: white;
-  min-width: 100px;
-  min-height: 50px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  font: 20px;
-}
 
-.dropdown-content a {
-  color: black;
-  padding: 30px 30px;
-  text-decoration: none;
-  display: block;
-  font: 20px;
-}
-
-.dropdown-content:hover {
-  background-color: white
-  color:black;
-  padding: 10px;
-  font: 24px "Comic Sans MS", serif, bold, black;
-  border: none;
+/*The display of the timeline event button*/
+.dropbtn {
+  padding: 2vh;
+  /*margin-top:10px;*/
+  font: 2.5em "Comic Sans MS", serif, bold;
   cursor: pointer;
-  min-width: 100px;
-  background-color: #FFFFFF;
-  border-radius: 10px;
+  width:100%;
+  min-width: 10vw;
+  height: inherit;
 }
 
-.timeline-description:hover .dropdown-content {
-  display: block;
-  border: 1px solid white;
-  text-align: center;
-  font: 20px;
-  font color: black;
-  border-radius: 10px;
+.dropdate {
+  font: 2.2em "Comic Sans MS", serif, bold;
+  cursor: pointer;
+  min-width: 8vw;
+  height: inherit;
+  padding: 2vh;
+  margin-top: 1vh;
 }
 
-.dropdown:hover .dropbtn {
-  background-color: white;
-  font : 20px;
-  font color: black;
+/*Keeps the even timeline event buttons 
+  properly spaced above the hover texts*/
+.timeline ol li:nth-child(odd) div .dropdate{
+  margin-bottom: -8.7vh;
+  margin-top:0.5vh;
 }
 
+.timeline ol li:nth-child(even) div .dropdate{
+  margin-top: -9.5vh;
+  margin-bottom: 0.5vh;
+}
+
+/*Keeps the odd timeline event buttons 
+  properly spaced above the hover texts*/
+.timeline ol li:nth-child(odd) .dropbtn{
+  margin-bottom:1vh;
+}
+
+
+/*Makes the button images visible*/
 button img {height:100%;width:100%;}
 
-.scrollButtonDown {
+/*The display of the left-scrolling button*/
+.scrollButtonLeft {
   position: fixed;
   top:3vh;
-  right:30vw;
-  width: 7vw;
-  height:5vw;
-  padding: 10px;
-  font: 20px "Comic Sans MS", serif, bold;
+  right:35vw;
+  width: 6vw;
+  height:10.2vh;
+  padding: 2vh;
   cursor: pointer;
-  min-width: 100px;
-  background-color: #FFFFFF;
-  color:black;
-  border-radius: 10px;
+  min-width: 7.5vw;
+  border-radius: 2vh;
 }
 
-.scrollButtonUp {
+/*The display of the right-scrolling button*/
+.scrollButtonRight {
   position: fixed;
   top:3vh;
-  right:20vw;
-  width: 7vw;
-  height: 5vw;
-  padding: 10px;
-  font: 20px "Comic Sans MS", serif, bold;
+  right:25vw;
+  width: 6vw;
+  height: 10.2vh;
+  padding: 2vh;
   cursor: pointer;
-  min-width: 100px;
-  background-color: #FFFFFF;
-  color:black;
-  border-radius: 10px;
-}
-.returnToTop {
-  position: fixed;
-  top:3vh;
-  right:10vw;
-  width: 7vw;
-  height: 5vw;
-  padding: 10px;
-  font: 50px "Comic Sans MS", serif, bold;
-  cursor: pointer;
-  min-width: 100px;
-  background-color: #FFFFFF;
-  color:black;
-  border-radius: 10px;
+  min-width: 7.5vw;
+  border-radius: 2vh;
 }
 
+/*The display of the return to the leftmost side button*/
+.returnToLeftmost {
+  position: fixed;
+  top:3vh;
+  right:15vw;
+  width: 7vw;
+  height: 10.2vh;
+  padding: 2vh;
+  cursor: pointer;
+  min-width: 7.5vw;
+  border-radius: 2vh;
+}
+
+button.lookup {
+  top:3vh;
+  right:5vw;
+}
+
+button.speak {
+  top:15vh;
+  right:5vw;
+}
+
+/*The display of the Search label*/
 label {
     display:inline;
     float:left;
@@ -249,12 +220,47 @@ label {
     margin:4vh 0 0 2vw;
 }
 
+/*The display of the search bar*/
 .searchBar {
   font: 18px "Comic Sans MS", serif, bold;
   display:inline;
   float:left;
   margin:3vh 15px;
-  width: 25vw;;
+  width: 30vw;
   height: 7vh;
   border-radius: 10px;
 }
+
+/* DROPBTN/POPUP WINDOW DISPLAY*/
+.popup {
+    font-size:2.5em;
+    font-stretch: 1;
+    margin-top: -30vh;
+    left: 15%;
+    width: 70%;
+    overflow-y:hidden;
+}
+
+/* display of buttons on popup */
+button.img.play, button.img.activity {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 2vh;
+    margin-left: 1vh;
+    margin-bottom: 3vh;
+}
+
+.popup button {
+  margin: 3vh;
+  display:inline-block;
+  margin-left: -55;
+}
+
+#dismiss-popup {
+    color: white;
+    margin-left: 1vh;
+    background: red;
+    width: 3vw;
+}
+
+::-webkit-scrollbar {height:6vh;}

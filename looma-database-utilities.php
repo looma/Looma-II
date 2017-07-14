@@ -135,7 +135,7 @@ if (isset($_REQUEST["collection"])) {
        case "chapters":    $dbCollection = $chapters_collection;    break;
        case "slideshow":   $dbCollection = $slideshows_collection;  break;
        case "text":        $dbCollection = $text_files_collection;  break;
-       case "edited_video":$dbCollection = $edited_videos_collection; break;
+       case "edited_videos":$dbCollection = $edited_videos_collection; break;
 
        default: echo "unknown collection: " . $collection;        return;
        };
@@ -209,7 +209,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
             //end case "deleteField"
         case "save":
-            if (($collection == "text") || ($collection == "lesson")){
+            if (($collection == "text") || ($collection == "lesson") || ($collection == "edited_videos")){
 
                 $insert = array(
                     "dn"     => $_REQUEST["dn"],

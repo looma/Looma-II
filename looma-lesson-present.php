@@ -117,14 +117,11 @@ Description: looma lesson plan presenter
 
                     // makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
 
-                    if (isset($details['fn']) && isset($details['fp']))
-                             $thumbSrc = $details['fp'] . thumbnail($details['fn']);
-
                         makeActivityButton('pdf',
                                            (isset($textbook['fp'])) ? '../content/' . $textbook['fp'] : null,
                                            (isset($textbook['fn'])) ? $textbook['fn'] : null,
                                            (isset($chapter['dn'])) ? $chapter['dn'] : null,
-                                           $thumbSrc,
+                                           "",
                                            $chapter['_id'],
                                            null,
                                            null,

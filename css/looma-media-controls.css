@@ -11,6 +11,11 @@ button.play-pause {
     margin-left:20vw;
     background-repeat: no-repeat;
     color: transparent;
+
+/**/
+    display:inline;
+    margin:auto;
+/**/
 }
 
 button.mute {
@@ -23,6 +28,11 @@ button.mute {
 
     background-repeat: no-repeat;
     color: transparent;
+
+/**/
+    display:inline;
+    margin:auto;
+/**/
 }
 input.seek-bar, input.volume-bar {
     display: inline;

@@ -8,6 +8,7 @@ var index = 0;
 var vocabGrade;
 var vocabSubject;
 var vocabCount;
+var vocabCh_id;
 var vocabRandom;
 var list;
 var word;
@@ -39,13 +40,13 @@ function init()
     vocabCount =   LOOMA.readStore("vocab-count",   'local'); if (!vocabCount) vocabCount = "25";
     vocabRandom =  LOOMA.readStore("vocab-random",  'local'); if (!vocabRandom) vocabRandom = "true";
 
-    LOOMA.wordlist(vocabGrade, vocabSubject, vocabCount, vocabRandom, succeed, fail);
+    LOOMA.wordlist(vocabGrade, vocabSubject, vocabCount, vocabCh_id, vocabRandom, succeed, fail);
 }
 
 //If it fails, it alerts the user and describes the failure
 function fail(jqXHR, textStatus, errorThrown)
 {
-    alert("enter function fail");
+    //alert("enter function fail");
     console.log('VOCAB: AJAX call to dictionary-utilities.php FAILed, jqXHR is ' + jqXHR.status);
     window.alert('failed with textStatus = ' + textStatus);
     window.alert('failed with errorThrown = ' + errorThrown);

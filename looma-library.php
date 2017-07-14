@@ -185,14 +185,15 @@ echo "<hr>";
              foreach ($editedVideos as $doc) {
                     echo "<td>";
                     $dn = $doc['dn'];
-                    $fn = $doc['vn'] . ".mp4"; //NOTE: BUG: assumes all videos are .mp4. should save extension with evi collection
-                    $fp = $doc['vp'];
+                /*  $fn = $doc['vn'] . ".mp4"; //NOTE: BUG: assumes all videos are .mp4. should save extension with evi collection
+                    $fp = $doc['vp'];  */
                     $ft = "evi";
                     $id = $doc['_id'];
                     //$json = $doc['JSON'];  //NOTE: this passed the full text of the edited script in the URL.
                                            // should just pass the mongo ID and have the player retrieve the script's full text
                      // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $fp, $fn, $dn, "", "", $id, "", "", "");
+            //  makeActivityButton($ft, $fp, $fn, $dn, "", "", $id, "", "", "");
+                    makeActivityButton($ft, "", "", $dn, "", "", $id, "", "", "");
                     //makeEditedVideoButton($dn, $path, $ext, $file, $json);
 
                     echo "</td>";
@@ -234,7 +235,6 @@ echo "<hr>";
             } //end FOREACH slideshow
         }  //end IF slideshows
 
-
         else
 
         //modifications for LESSONPLANs
@@ -249,7 +249,7 @@ echo "<hr>";
              foreach ($lessons as $lesson) {
 
                         //echo "DEBUG   found lesson " . $lesson['dn'] . "<br>";
-
+                if ($lesson['ft'] == "lesson") {  //do not display lesson templates
                     echo "<td>";
                     $dn = $lesson['dn'];
                     $ft = "lesson";
@@ -258,8 +258,58 @@ echo "<hr>";
                     makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+                }
             } //end FOREACH lesson
         }  //end IF lessons
+
+        else
+
+        //modifications for History Timelines
+        //***************************
+        //make buttons for timelines directory -- virtual folder, populated from histories collection in mongoDB
+        if($path == "../content/timelines/") {   //populate virtual folder of histories
+
+
+            $histories = $histories_collection->find();
+
+             foreach ($histories as $history) {
+
+                        //echo "DEBUG   found lesson " . $lesson['dn'] . "<br>";
+                    echo "<td>";
+                    $dn = $history['title'];
+                    $ft = "history";
+                    $thumb = $path . "/thumbnail.png";
+                    $id = $history['_id'];  //mongoID of the descriptor for this lesson
+                    makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
+                    echo "</td>";
+                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+
+            } //end FOREACH history
+        }  //end IF histories
+
+        else
+
+        //modifications for Maps
+        //***************************
+        //make buttons for maps directory -- virtual folder, populated from maps collection in mongoDB
+        if($path == "../content/maps/") {   //populate virtual folder of maps
+
+             $maps = $maps_collection->find();
+
+             foreach ($maps as $map) {
+
+                        //echo "DEBUG   found lesson " . $lesson['dn'] . "<br>";
+                    echo "<td>";
+                    $dn = $map['dn'];
+                    $ft = "map";
+                    $thumb = $path . "/thumbnail.png";
+                    $id = $map['_id'];  //mongoID of the descriptor for this lesson
+                    makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
+                    echo "</td>";
+                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+
+            } //end FOREACH map
+        }  //end IF maps
 
         else {
 

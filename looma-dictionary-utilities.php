@@ -139,21 +139,17 @@ if (isset($_GET["cmd"]))
 			exit();
 		}  // end ADD cmd
 	case "list":
-		// given "class", "subj"" and [opitonally] "count" and "random" (boolean),
-		// return an array of 'count' words that match class&subj
+		// given "class", "subj" OR "ch_id" and [opitonally] "count" and "random" (boolean),
+		// return an array of 'count' words that match class&subj or ch_id
 
 		//In the event that random isn't set, we set it to false by default
 		$randomValues =  array('true','false');
 		if(isset($_GET["random"]))
 		{
 			if($_GET["random"] != "" && in_array($_GET["random"], $randomValues))
-			{
 				$random = $_GET["random"];
-			}
 			else
-			{
 				$random = 'false';
-			}
 		}
 		else
 		{

@@ -72,10 +72,10 @@ they want to edit a video
                     <div id="time" class="title"></div>
 
 					<button type="button" class="media play-pause"><?php keyword('Play/Pause');?></button>
-					<input type="range" class="video seek-bar" value="0" ><br>
+					<input type="range" class="video seek-bar" value="0" ><br><br>
 					<button type="button" class="media mute"><?php keyword('Volume') ?></button>
 					<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" >
-					<br>
+
 
 				</div>
 

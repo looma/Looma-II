@@ -1,0 +1,37 @@
+// ONE TIME program to 
+//    register documents in histories collection as activities 
+//
+//  run in MONGO SHELL with: load('registerhistories')
+//
+//TO SET UP:
+//then:           'use looma'
+//this sets db to the 'looma'  database
+
+var historycursor;
+
+print('db is ' + db);
+print('');
+
+var count = 0;
+//repeat for 'histories' collection
+print ('*****scanning histories collection');
+historycursor = db.histories.find();
+while (historycursor.hasNext()) {
+    var doc = historycursor.next();
+    print ('checking: ' + doc.title);
+    var act ={};
+    act.ft = 'history';
+    act.dn = doc.title;
+    
+    act.mongoID = doc._id;
+    
+    act.thumb = '../content/timelines/' + doc.title + '_thumb.jpg';
+    print ('ft ' + act.ft + ' dn ' + act.dn + ' ID ' + act.mongoID + ' thumb ' + act.thumb);
+    db.activities.insert(act);
+    count += 1;
+    };
+ print('');
+ print('found ' + count + ' histories and made activities for them');
+ print(''); 
+
+ 

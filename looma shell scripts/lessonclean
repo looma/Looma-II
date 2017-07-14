@@ -1,0 +1,54 @@
+// ONE TIME program to 
+//    clean out ft=lesson activities that are not also in lessons collection//
+//
+//  run in MONGO SHELL with: load('lessonclean')
+//
+
+// THINK before running this - - first get a mongodump from AWS and mongorestore it into --db loomaAWS
+//                               or, db.databaseCopy('looma','loomaAWS')
+//
+//TO SET UP:
+//then:           'use looma'
+//this sets db to the 'looma'  database
+
+var activitycursor, lessoncursor;
+
+print('db is ' + db);
+print('');
+
+var count = 0;
+//repeat for 'activities' collection
+print ('*****scanning activities for ft=lesson');
+activitycursor = db.activities.find({'ft':'lesson'});
+while (activitycursor.hasNext()) {
+    var doc = activitycursor.next();
+    print ('checking: ' + doc.dn);
+    lessoncursor = db.lessons.find({'dn':doc.dn});
+    if (  ! lessoncursor.hasNext()) {
+        print('     found activity wo lesson: ' + doc.dn);
+        //db.activities.remove(doc);
+        count += 1;
+        }
+    };
+ print('');
+ print('found ' + count + ' lesson activities wo lessons');
+ print(''); 
+
+ 
+count = 0;
+//repeat for 'lessons' collection
+print ('*****scanning lessons');
+lessoncursor = db.lessons.find();
+while (lessoncursor.hasNext()) {
+    var doc = lessoncursor.next();
+    print ('checking: ' + doc.dn);
+    activitycursor = db.activities.find({'dn':doc.dn, 'ft':'lesson'});
+    if (  ! activitycursor.hasNext()) {
+        print('     found lesson wo activity: ' + doc.dn);
+        count += 1;
+        }
+    };
+ print('');
+ print('found ' + count + ' lessons without activities');
+ print(''); 
+ 

@@ -123,7 +123,7 @@ Description:  navigate content folders and import media files into activities co
                         <option value='flickr'>Flickr</option>
                         <option value='nasa'>NASA</option>
                         <option value='unsplash'>UnSplash</option>
-
+                        <option value='google images'>Google Images</option>
                         <option value='Dr Dann'>Dr Dann</option>
                     </select>
 

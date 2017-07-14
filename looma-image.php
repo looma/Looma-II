@@ -13,7 +13,8 @@ Description: Video viewer page for Looma 2
 <?php $page_title = 'Looma Image Player';
 	  include ('includes/header.php');
 ?>
-	<link rel="stylesheet" href="css/looma-image.css">	</head>
+	<link rel="stylesheet" href="css/looma-image.css">
+    </head>
 
 	<body>
 	<?php

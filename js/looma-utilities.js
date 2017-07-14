@@ -56,7 +56,7 @@ var LOOMA = (function() {
 
 playMedia : function(button) {
     console.log("here");
-    switch (button.getAttribute("data-ft")) {
+    switch (button.getAttribute("data-ft").toLowerCase()) {
         case "video":
         case "mp4":
         case "m4v":
@@ -71,7 +71,7 @@ playMedia : function(button) {
             //evi = edited video indicator
             //If you click on an edited video it sends the filename, location and the information
             //to looma-edited-video.php
-            window.location = 'looma-edited-video.php?fn=' + button.getAttribute('data-fn') +
+            window.location = 'looma-edited-video-old.php?fn=' + button.getAttribute('data-fn') +
             '&fp=' + button.getAttribute('data-fp') +
             '&id=' + button.getAttribute('data-id') +
             '&dn=' + button.getAttribute('data-dn');
@@ -143,8 +143,13 @@ playMedia : function(button) {
                                '&fp=' + button.getAttribute('data-fp');
                                */
             break;
+
         case "lesson":
             window.location = 'looma-lesson-present.php?id=' + button.getAttribute('data-id');
+            break;
+
+        case "history":
+            window.location = 'looma-history.php?title=' + button.getAttribute('data-dn');
             break;
 
         default:
@@ -381,7 +386,7 @@ Date: 7/7/2016
     // displays a popup with the WORD, NP, DEF, etc
     // NOTE:  this should be re-written to use LOOMA.lookup()
 
-lookupWord : function (text) {
+lookupWord : function (text) {   //no longer used
       var firstWord;
 
       text = text.trim();
@@ -421,6 +426,81 @@ lookupWord : function (text) {
       xmlhttp.send();
     },   //end lookupWord()
 
+definitionDiv : function(definition) {
+          var $div =    $('<div />');
+          var $word =   $('<div id="word"/>');
+          var $nepali = $('<div id="nepali"/>');
+          var $def =    $('<div id="definition"/>');
+          var $pos =    $('<div id="partOfSpeech"/>');
+
+          $word.text(definition.en);
+          $nepali.text(definition.np);
+
+          var def = definition.def;
+
+          if ((def == 'plural of')
+            || (def == 'past tense of')
+            || (def == 'past perfect tense of')
+            || (def == 'progressive form of')
+            || (def == 'present participle of')
+            || (def == 'past and past perfect tense of')
+            || (def == 'third person singular of'))
+                def += ' ' + definition.rw;
+
+          $def.text(def);
+          $pos.html('<i>' + definition.part + '</i>');
+
+          return  $div.append($word, $nepali, $pos, $def);
+}, //end LOOMA.definitionDiv()
+
+popupDefinition : function (text) {
+
+      function show(result) {
+          $('#popup').remove();
+
+          var $popup =  $('<div id="popup"/>');
+     /*
+          var $word =   $('<div id="word"/>');
+          var $nepali = $('<div id="nepali"/>');
+          var $def =    $('<div id="definition"/>');
+          var $pos =    $('<div id="partOfSpeech"/>');
+
+          $word.text(result.en);
+          $nepali.text(result.np);
+
+          var def = result.def;
+
+       if ((def == 'plural of')
+        || (def == 'past tense of')
+        || (def == 'past perfect tense of')
+        || (def == 'progressive form of')
+        || (def == 'present participle of')
+        || (def == 'past and past perfect tense of')
+        || (def == 'third person singular of'))
+            def += ' ' + definition.rw;
+
+          $def.text(def);
+          $pos.html('<i>' + result.part + '</i>');
+
+          $popup.append($word, $nepali, $pos, $def);
+   */
+          $popup.append(LOOMA.definitionDiv(result));
+
+          $popup.appendTo('body').hide();
+          LOOMA.alert($popup.html(), 15);
+          }; //end show()
+
+      function fail() {};
+
+      var firstWord;
+
+      text = text.trim();
+      if (text.indexOf(' ') !== -1) firstWord = text.substr(0, text.indexOf(' '));
+      else firstWord = text;
+
+      LOOMA.lookup(firstWord, show, fail);
+
+    },   //end lookupWord()
 
 
 //when you need a list of words from the dictionary, call LOOMA.wordlist() with these parameters:
@@ -433,7 +513,14 @@ lookupWord : function (text) {
 //                the parameter to 'succeed' is an array of [english] words
 //            fail: a FUNCTION to be called if the word list request fails (for instance if the Looma server is down)
 //                typically, fail() would display "Dictionary lookup request failed" somewhere on the webpage
-wordlist : function(grade, subj, count, random, succeed, fail) {
+wordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
+
+    var parameters = "cmd=list";
+            if (grade) parameters  += "&class="  + encodeURIComponent(grade);
+            if (subj) parameters   += "&subj="   + encodeURIComponent(subj);
+            if (ch_id) parameters  += "&subj="   + encodeURIComponent(ch_id);
+            if (count) parameters  += "&count="  + count.toString();
+            if (random) parameters += "&random=" + encodeURIComponent(random);
 
     $.ajax(
         "looma-dictionary-utilities.php", //Looma Odroid
@@ -444,11 +531,7 @@ wordlist : function(grade, subj, count, random, succeed, fail) {
             cache: false,
             crossDomain: true,
             dataType: "json", //jQ will convert the response back into JS, dont need parseJSON()
-            data: "cmd=list" +
-                "&class=" + encodeURIComponent(grade) +
-                "&subj=" + encodeURIComponent(subj) +
-                "&count=" + count.toString() +
-                "&random=" + encodeURIComponent(random),
+            data: parameters,
             error: fail,
             success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
         });

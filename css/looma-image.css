@@ -6,4 +6,5 @@ Revision: Looma 2.0.x
 
 Comments:
 */
+/* following code fixes image display being stretched */
 img {max-height:100%; width:auto}

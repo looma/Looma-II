@@ -43,6 +43,7 @@ event.preventDefault();
         else if (def =='past tense of') def= def + ' ' + definition.rw;
         else if (def =='past perfect tense of') def= def + ' ' + definition.rw;
         else if (def =='progressive form of') def= def + ' ' + definition.rw;
+        else if (def =='present participle of') def= def + ' ' + definition.rw;
         else if (def =='past and past perfect tense of') def= def + ' ' + definition.rw;
         else if (def =='third person singular of') def= def + ' ' + definition.rw;
 

@@ -149,6 +149,18 @@ window.onload = function ()
                     $pdfHTML.appendTo($viewer);
                     break;
 
+                case 'history':
+
+                    $pdfHTML.find('iframe').attr('src', 'looma-history.php?title=' + dn );
+                    $pdfHTML.appendTo($viewer);
+                    break;
+
+                case 'map':   //not tested
+
+                    $pdfHTML.find('iframe').attr('src', 'looma-map.php');
+                    $pdfHTML.appendTo($viewer);
+                    break;
+
                 case 'text':
 
                     textHTML(id);

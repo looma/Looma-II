@@ -67,7 +67,8 @@
             case "html":
             case "HTML": $fp = '../content/html/'; break;
 
-            case "hist": $fp = '../content/histories/'; break;
+            case "history": //$fp = '../content/histories/';
+                break;
 
    		    case "EP":
             case "epaath": $fp = '../content/epaath/activities/'; break;
@@ -77,6 +78,7 @@
             case "text";    break;  //text
             case "looma";   break;  //looma
             case "chapter"; break;  //chapter
+            case "map";     break;  //map
 
 		   default:
 			     echo "unknown filetype " . $ft;

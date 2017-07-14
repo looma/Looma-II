@@ -11,7 +11,7 @@ Revision: Looma 2.4
 
 'use strict';
 
-    var audio, video, media, $play;
+    var audio, video, media, $play, $mute;
 
     function playVideo(vid)
     { vid.play();
@@ -25,17 +25,24 @@ Revision: Looma 2.4
 
 
 
-function attachMediaControls () {
+function attachMediaControls (myMedia) {
 
-          // media
-          audio = document.getElementById("audio");
-          video = document.getElementById("video");
+          if(myMedia) {
+            media = myMedia;
+          }
+          else {
+            // media
+            audio = document.getElementById("audio");
+            video = document.getElementById("video");
 
-          media = (audio)?audio:video;
+            media = (audio)?audio:video;
+          }
+          
+          console.log(media);
 
           // Buttons
           $play = $('.play-pause');
-          var $mute = $('.mute');
+          $mute = $('.mute');
           var $seekbar = $('.seek-bar');
           var $volumebar = $('.volume-bar');
           var $time = $('#time');  $time.text('0:00');

@@ -29,6 +29,6 @@ $(document).ready (function() {
         var viewerWindow = document.getElementById('iframe').contentWindow;
         var word = viewerWindow.getSelection().toString();
         console.log ('In PDF viewer - selected text to lookup: "', word, '"');
-        LOOMA.lookupWord(word);
+        LOOMA.popupDefinition(word);
     });
 }); //end document.ready function

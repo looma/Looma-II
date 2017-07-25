@@ -21,7 +21,7 @@ $(document).ready(function ()
     function roll()
         {
         $('#credits-wrapper').css('top', '');
-        $('#credits-wrapper').animate({top:"-600%"}, 45000, roll);
+        $('#credits-wrapper').animate({top:"-1200%"}, 45000, roll);
 
         //NOTES on adjusting the CREDITS BOX:
         // ~30 names fit in the 'credit-box'

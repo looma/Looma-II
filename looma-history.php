@@ -38,7 +38,8 @@ Description: Creates a timeline with search and hover functions. Information acc
 
       <label for="keywords">Search:</label><input id="keywords" class="searchBar" size="18" placeholder="enter words to search" onkeypress="handleKeyPress(event)">
 
-
+      <button id= "previous"> <span class="english-keyword"> Prev </span> </button>
+      <button id= "next" clickcount = "-1"> <span class="english-keyword"> Next </span> </button>
 
       <button class="scrollButtonLeft">   <img src="images/back-arrow.png">        </button>
 
@@ -46,189 +47,191 @@ Description: Creates a timeline with search and hover functions. Information acc
 
       <button class="returnToLeftmost">      <img src="images/reverse-double-arrow.png"> </button><br>
 
-
-
       <?php
 
 
 
         //Load Timeline
 
-        if (isset($_REQUEST["title"]) || (isset($_REQUEST["chapterToLoad"]))) {
+        if (isset($_REQUEST["title"]) || (isset($_REQUEST["chapterToLoad"])) || (isset($_REQUEST["id"]))) {
 
-        if (isset($_REQUEST["title"])) $hist = $_REQUEST["title"];
+          if (isset($_REQUEST["title"])) $hist = $_REQUEST["title"];
 
-        if (isset($_REQUEST["chapterToLoad"])) $ch_id = $_REQUEST["chapterToLoad"];
+          if (isset($_REQUEST["chapterToLoad"])) $ch_id = $_REQUEST["chapterToLoad"];
 
-        //Search Database and Get Cursor
+          if (isset($_REQUEST["id"])) $_id = $_REQUEST["id"];
 
-        if (isset($hist)) $query = array("title" => $hist);
+          //Search Database and Get Cursor
 
-        else       $query = array("ch_id" => $ch_id);
+          if (isset($hist)) $query = array("title" => $hist);
 
-              
+          else if (isset($ch_id)) $query = array("ch_id" => $ch_id);
 
-        $cursor =  $history_collection->find($query, array("title"=>1, "events"=>1)); //should be findOne()  ??
+          else $query = array('_id' => new MongoID($_REQUEST['id']));
 
 
 
-        foreach ($cursor as $doc) {
+          $cursor =  $history_collection->find($query, array("title"=>1, "events"=>1)); //should be findOne()  ??
 
 
 
-          $title = array_key_exists('title', $doc) ? $doc['title'] : null;
+          foreach ($cursor as $doc) {
 
-          echo "<h1> History: $title </h1>";
 
 
+            $title = array_key_exists('title', $doc) ? $doc['title'] : null;
 
-echo '<div id="playground">';
+            echo "<h1> History: $title </h1>";
 
-    echo '<section class ="timeline">';
 
-       echo '<ol>';
 
+  echo '<div id="playground">';
 
+      echo '<section class ="timeline">';
 
-  $count = 0; 
+         echo '<ol>';
 
 
 
-          foreach($doc['events'] as $event) {
+    $count = 0;
 
-                /*working on getting id recognition working*/
 
-                //foreach($event['popup'] as $popinfo) {
 
+            foreach($doc['events'] as $event) {
 
+                  /*working on getting id recognition working*/
 
+                  //foreach($event['popup'] as $popinfo) {
 
 
-                $msg = "";
 
-                $id1 = "";
 
-                $id2 = "";
 
+                  $msg = "";
 
+                  $id1 = "";
 
-                 if(isset($event['popup'][0]))
+                  $id2 = "";
 
-                  $msg = 'data-msg=' . $event['popup'][0] ;
 
-                if(isset($event['popup'][1]))
 
-                  $id1 = 'data-id1=' . $event['popup'][1];
+                   if(isset($event['popup'][0]))
 
-                if(isset($event['popup'][2]))
+                    $msg = 'data-msg=' . $event['popup'][0] ;
 
-                  $id2 = 'data-id2='. $event['popup'][2];
+                  if(isset($event['popup'][1]))
 
-  
+                    $id1 = 'data-id1=' . $event['popup'][1];
 
-  /*
+                  if(isset($event['popup'][2]))
 
-                if(isset($popinfo['msg']))
+                    $id2 = 'data-id2='. $event['popup'][2];
 
-                  $msg = 'data-msg=' . $popinfo['msg'] ;
 
-                if(isset($popinfo['id1']))
 
-                  $id1 = 'data-id1=' . $popinfo['id1'];
+    /*
 
-                if(isset($popinfo['id2']))
+                  if(isset($popinfo['msg']))
 
-                  $id2 = 'data-id2='. $popinfo['id2'];
+                    $msg = 'data-msg=' . $popinfo['msg'] ;
 
-                  
+                  if(isset($popinfo['id1']))
 
+                    $id1 = 'data-id1=' . $popinfo['id1'];
 
+                  if(isset($popinfo['id2']))
 
-                 /*doesn't check if they exist like it should :(*/
+                    $id2 = 'data-id2='. $popinfo['id2'];
 
 
 
-                /*
 
-      
 
-                if($event.popup.id2)
+                   /*doesn't check if they exist like it should :(*/
 
-                  $id2 = 'data-id2= "$event.popup.id2 "';
 
 
+                  /*
 
-                if($event.popup.id3)
 
-                  $id3 = 'data-id3= "$event.popup.id3 "';
 
+                  if($event.popup.id2)
 
+                    $id2 = 'data-id2= "$event.popup.id2 "';
 
-                /*and a bit below (the id part)*/
 
-                //}
 
-                if ($count%2 == 0)
+                  if($event.popup.id3)
 
-                {
+                    $id3 = 'data-id3= "$event.popup.id3 "';
 
-            
 
-                 echo '
 
-                 <li>
+                  /*and a bit below (the id part)*/
 
-                   <div class="timeline-description">
+                  //}
 
-                     <div class="dropdown" style="float:">'; // edited out
+                  if ($count%2 == 0)
 
-                 echo '<button class="dropbtn"' . " " . $id1 . " " . $id2 . " " . $msg . '>' . $event['title'] . '</button>';
+                  {
 
-                 echo '<button class="dropdate">' . $event['date'] . '</button>';
 
-                     '</div>
 
-                 </li>';
+                   echo '
 
-               }
+                   <li>
 
-               else
+                     <div class="timeline-description">
 
-               {
+                       <div class="dropdown" style="float:">'; // edited out
 
-                    echo '
+                   echo '<button class="dropbtn"' . " " . $id1 . " " . $id2 . " " . $msg . '>' . $event['title'] . '</button>';
 
-                 <li>
+                   echo '<button class="dropdate">' . $event['date'] . '</button>';
 
-                   <div class="timeline-description">
+                       '</div>
 
-                     <div class="dropdown" style="float:">'; // edited out
+                   </li>';
 
-                     echo '<button class="dropdate">' . $event['date'] . '</button>';
+                 }
 
-                 echo '<button class="dropbtn"' . " " . $id1 . " " . $id2 . " " . $msg . '>' . $event['title'] . '</button>';
+                 else
 
-                 
+                 {
 
-                     '</div>
+                      echo '
 
-                 </li>';
+                   <li>
 
-               }
+                     <div class="timeline-description">
 
+                       <div class="dropdown" style="float:">'; // edited out
 
+                       echo '<button class="dropdate">' . $event['date'] . '</button>';
 
-                 $count += 1;
+                   echo '<button class="dropbtn"' . " " . $id1 . " " . $id2 . " " . $msg . '>' . $event['title'] . '</button>';
 
 
 
-          }  //end foreach doc[elements] as event
+                       '</div>
 
-          echo '</ol>';
+                   </li>';
 
-        } //end foreach cursor as doc
+                 }
 
-        } //end if isset()
+
+
+                   $count += 1;
+
+
+
+            }  //end foreach doc[elements] as event
+
+            echo '</ol>';
+
+          } //end foreach cursor as doc
+
+          } //end if isset()
 
         else
 
@@ -236,9 +239,6 @@ echo '<div id="playground">';
 
       ?>
 
-
-
- 
 
 </div>
 
@@ -252,7 +252,7 @@ echo '<div id="playground">';
 
 
 
-    <script type="text/javascript" src="js/hilitor-utf8.js"></script>
+    <script type="text/javascript" src="js/looma-hilitor-utf8.js"></script>
 
     <script type="text/javascript" src="js/looma-history.js"></script>
 
@@ -260,7 +260,7 @@ echo '<div id="playground">';
 
     <button class = "lookup"></button>
 
-
+    <script src="js/looma-keyboard.js">  </script>
 
 </body>
 

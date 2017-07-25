@@ -47,9 +47,32 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
 		//echo "<br>DEBUG: ch_id is ";
 		//print_r($ch_id);
+        echo "<br><table><tr>";
+        $buttons = 1;
 
-		//get all the activities for this chapter
-		$query = array('ch_id' => $ch_id);
+
+        //create a vocab review button if there are any words from this chapter in the dictionary
+        $query = array('ch_id' => $ch_id);
+        $words = $dictionary_collection -> find($query);
+        if ($words) {
+            echo "<td>";
+            //make a button with <a href="looma-vocab-flashcard.php?ch_id=CH_ID">
+
+            echo "<a href='looma-vocab-flashcard.php?ch_id=" . $ch_id . "'>";
+            echo "  <button class='activity play img'>";
+            echo "    <img src='images/dictionary.png'>";
+            echo "    <span>Vocabulary</span>";
+            echo "  </button>";
+            echo "</a>";
+
+            echo "</td>";
+            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+        };
+
+
+
+        //get all the activities for this chapter
+        $query = array('ch_id' => $ch_id);
 		//returns only these fields of the activity record
 		$projection = array('_id' => 0,
 							'ft' => 1,
@@ -64,8 +87,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 		$activities = $activities_collection -> find($query, $projection);
 
 		//Now: for each activity in the chapter's activities list from mongoDB, display a button
-		echo "<br><table><tr>";
-		$buttons = 1;
+
 		foreach ($activities as $activity) {
 			//depending on the filetype of the activity, display the appropriate button
 			echo "<td>";

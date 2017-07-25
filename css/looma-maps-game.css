@@ -1,0 +1,17 @@
+/* Map Game */
+h1 {
+	text-align: center;
+}
+
+#txtOutput{
+    color: black;
+    width: 100%;
+    position: absolute;
+    top: 90%;
+    left: 0%;
+    font-size: 2em;
+}
+
+#endOutput{
+}
+}

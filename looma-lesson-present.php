@@ -21,6 +21,7 @@ Description: looma lesson plan presenter
     <?php
         //Gets the filename, filepath, and the thumbnail location
         if (isset($_REQUEST['id'])) $lesson_id = $_REQUEST['id']; else $lesson_id = null;
+        if (isset($_REQUEST['ch_id'])) $lesson_ch_id = $_REQUEST['ch_id']; else $lesson_ch_id = null;
     ?>
 
 
@@ -44,8 +45,11 @@ Description: looma lesson plan presenter
         //send DN, AUTHOR and DATE in a hidden DIV
         //for each ACTIVITY in the DATA field of the lesson, create an 'activity button' in the timeline
 
-         if ($lesson_id) {   //get the mongo document for this lesson
-            $query = array('_id' => new MongoID($lesson_id));
+         if ($lesson_id || $lesson_ch_id) {   //get the mongo document for this lesson
+
+            if      ($lesson_id) $query = array('_id' => new MongoID($lesson_id));
+            else if ($lesson_ch_id) $query = array('ch_id' => $lesson_ch_id);
+
             //returns only these fields of the activity record
             $projection = array('_id' => 0,
                                 'dn' => 1,

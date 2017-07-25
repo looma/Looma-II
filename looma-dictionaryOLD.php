@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-Name: Grant, Jayden, and Mahir
+Name: Grant and Jayden and Mahir
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 08
 Revision: Looma 2.0.0
@@ -19,7 +19,7 @@ Description:  dictionary look-up UI for Looma 2
 
   		<br><br>
 
-        <h1 class="credit"> Created by Jayden and Grant</h1>
+        <h1 class="credit"> Created by Jayden, Grant, Mahir, Kendall</h1>
         <h2 class="title"> <?php keyword("Looma Dictionary"); ?> </h2>
         <div id = "para">
 
@@ -45,9 +45,7 @@ Description:  dictionary look-up UI for Looma 2
 
 
         <button class="speak"></button>
-        <!--
-            <button class = "lookup"></button>
-        -->
+        <!--   <button class = "lookup"></button>   -->
 
 
 
@@ -56,7 +54,6 @@ Description:  dictionary look-up UI for Looma 2
 	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
     <script src="js/looma-keyboard.js">  </script>
-    <script src="js/looma.js"> </script>
     <script src="js/looma-dictionary.js"></script>
 	</body>
 </html>

@@ -143,6 +143,9 @@ function addChapterID($activity, ch_id) {
         //      with command = 'save', and data = object representing all the fields of the activity including new ch_id
 
 
+
+//CHANGE: get 'collection' from the activity, not hard-wired. e.g. ft=lesson uses collection=lessons
+
          console.log('Activity Register: assign activity to: ' + ch_id);
          $.post("looma-database-utilities.php",
                 {cmd: "addChapterID",
@@ -991,6 +994,7 @@ var initializeDOM = function() {
             "audio" :   {   id : "ft_audio",     display : "Audio"   },
             "pdf" :     {   id : "ft_pdf",       display : "PDF"   },
             "text" :    {   id : "ft_text",      display : "Text"   },
+            "lesson" :    {   id : "ft_lesson",      display : "Lesson"   },
             "looma":    {   id : "ft_looma",      display : "Looma Page"   }
             // SLIDESHOW should be added
             //    "slideshow":{   id : "ft_slideshow", display : "Slide Show"   }

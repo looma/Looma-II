@@ -42,22 +42,20 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
     </div>
         <br><br><br>
 
-        <!--  display SUBJECT buttons,
-              all hidden until CLASS button is pressed,
-              then show SUBJECT buttons based on data-mask  -->
+
+        <!--  display SUBJECT buttons, all hidden until CLASS button is pressed, then show SUBJECT buttons based on data-mask  -->
 
     <?php
-        $subjects = array('nepali', 'english', 'math', 'science', 'social studies');
+        //$subjects = array('nepali', 'english', 'math', 'science', 'social studies');
     ?>
-
+<!--
     <div class="button-div" id="row2">
-        <!--<button type="button" class="subject button-5" id="nepali"         style="visibility: hidden"> <?php keyword('Nepali') ?>  </button> -->
         <button type="button" class="subject button-5" id="english"        style="visibility: hidden"> <?php keyword('English') ?>  </button>
         <button type="button" class="subject button-5" id="math"           style="visibility: hidden"> <?php keyword('Math') ?>  </button>
         <button type="button" class="subject button-5" id="science"        style="visibility: hidden"> <?php keyword('Science') ?>  </button>
         <button type="button" class="subject button-5" id="social studies" style="visibility: hidden"> <?php keyword('Social Studies') ?>  </button>
     </div>
-
+-->
     </div>
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>

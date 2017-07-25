@@ -24,7 +24,8 @@ Description:
  * LOOMA.loggedIn()
  * LOOMA.translate()
  * LOOMA.lookup()
- * LOOMA.lookupWord()
+ * LOOMA.lookupWord()  //no longer used
+ * LOOMA.popupDefinition()
  * LOOMA.wordlist()
  * LOOMA.rtl()
  * LOOMA.setTheme()
@@ -71,7 +72,7 @@ playMedia : function(button) {
             //evi = edited video indicator
             //If you click on an edited video it sends the filename, location and the information
             //to looma-edited-video.php
-            window.location = 'looma-edited-video-old.php?fn=' + button.getAttribute('data-fn') +
+            window.location = 'looma-evi-player.php?fn=' + button.getAttribute('data-fn') +
             '&fp=' + button.getAttribute('data-fp') +
             '&id=' + button.getAttribute('data-id') +
             '&dn=' + button.getAttribute('data-dn');
@@ -335,7 +336,7 @@ translate : function(language) {
 }, // end translate()
 
 //***********  USING THE LOOMA DICTIONARY ***************
-//***********  functions are LOOKUP, LOOKUPWORD and WORDLIST *****************
+//***********  functions are LOOKUP and WORDLIST *****************
 //
 //when you need a word looked up in the dictionary, call LOOMA.lookup() with these parameters:
 //            word: the word to look up
@@ -380,7 +381,6 @@ Programmer name: Matt Flower, Maxwell Patterson, Jai Mehra
 Email: matt.flower@menloschool.org , maxwell.patterson@menloschool.org , jai.mehra@menloschool.org
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 7/7/2016
- */
 
     //Gets The JSON Object From dictionary collection in the Database by calling looma-dictionaryutilities.php
     // displays a popup with the WORD, NP, DEF, etc
@@ -425,6 +425,7 @@ lookupWord : function (text) {   //no longer used
       xmlhttp.open("GET", "looma-dictionary-utilities.php?cmd=lookup&word=" + firstWord, true);
       xmlhttp.send();
     },   //end lookupWord()
+*/
 
 definitionDiv : function(definition) {
           var $div =    $('<div />');
@@ -436,12 +437,14 @@ definitionDiv : function(definition) {
           $word.text(definition.en);
           $nepali.text(definition.np);
 
-          var def = definition.def;
+          var def = definition.def.toLowerCase();
 
-          if ((def == 'plural of')
+           if ((def == 'plural of')
             || (def == 'past tense of')
-            || (def == 'past perfect tense of')
-            || (def == 'progressive form of')
+            || (def == 'contraction of')
+            || (def == 'comparative form of')
+            || (def == 'superlative form of')
+            || (def == 'past participle of')
             || (def == 'present participle of')
             || (def == 'past and past perfect tense of')
             || (def == 'third person singular of'))
@@ -453,41 +456,14 @@ definitionDiv : function(definition) {
           return  $div.append($word, $nepali, $pos, $def);
 }, //end LOOMA.definitionDiv()
 
-popupDefinition : function (text) {
+popupDefinition : function (text, time) {
 
       function show(result) {
           $('#popup').remove();
-
           var $popup =  $('<div id="popup"/>');
-     /*
-          var $word =   $('<div id="word"/>');
-          var $nepali = $('<div id="nepali"/>');
-          var $def =    $('<div id="definition"/>');
-          var $pos =    $('<div id="partOfSpeech"/>');
-
-          $word.text(result.en);
-          $nepali.text(result.np);
-
-          var def = result.def;
-
-       if ((def == 'plural of')
-        || (def == 'past tense of')
-        || (def == 'past perfect tense of')
-        || (def == 'progressive form of')
-        || (def == 'present participle of')
-        || (def == 'past and past perfect tense of')
-        || (def == 'third person singular of'))
-            def += ' ' + definition.rw;
-
-          $def.text(def);
-          $pos.html('<i>' + result.part + '</i>');
-
-          $popup.append($word, $nepali, $pos, $def);
-   */
           $popup.append(LOOMA.definitionDiv(result));
-
           $popup.appendTo('body').hide();
-          LOOMA.alert($popup.html(), 15);
+          LOOMA.alert($popup.html(), time, true);
           }; //end show()
 
       function fail() {};
@@ -500,7 +476,7 @@ popupDefinition : function (text) {
 
       LOOMA.lookup(firstWord, show, fail);
 
-    },   //end lookupWord()
+    },   //end popupDefinition()
 
 
 //when you need a list of words from the dictionary, call LOOMA.wordlist() with these parameters:
@@ -517,8 +493,8 @@ wordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
 
     var parameters = "cmd=list";
             if (grade) parameters  += "&class="  + encodeURIComponent(grade);
-            if (subj) parameters   += "&subj="   + encodeURIComponent(subj);
-            if (ch_id) parameters  += "&subj="   + encodeURIComponent(ch_id);
+            if (subj) parameters   += "&subject="   + encodeURIComponent(subj);
+            if (ch_id) parameters  += "&ch_id="   + encodeURIComponent(ch_id);
             if (count) parameters  += "&count="  + count.toString();
             if (random) parameters += "&random=" + encodeURIComponent(random);
 

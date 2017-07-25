@@ -116,8 +116,8 @@ Description:  for Looma 2
                 <a href="looma-slideshow.php">
                     <button class="admin-control">Slideshow Editor</button>
                 </a>
-                <a href="looma-edited-video.php">
-                    <button class="admin-control">Video Editor</button>
+                <a href="looma-evi-editor.php">
+                    <button class="settings-control">Video Editor</button>
                 </a>
 
                 <a href="looma-activity-register-to-chapter.php">

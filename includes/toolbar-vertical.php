@@ -36,7 +36,7 @@
 				<?php tooltip('Maps');?>
 			</button>
 
-            <button onclick="parent.location.href = 'looma-histories.php';" class="toolbar-button-vertical ">
+            <button onclick="parent.location.href = 'looma-library.php?fp=../content/timelines/';" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/history.png"  height = "70%" >
                 <?php tooltip("History") ?>
             </button>

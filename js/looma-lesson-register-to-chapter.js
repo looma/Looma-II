@@ -1,8 +1,8 @@
 /*
 LOOMA javascript file
-Filename: looma-lesson-plan.js
-Description: version 1 [SCU, Spring 2016]
-             version 2 [skip, Fall 2016]
+Filename: looma-activity-register-to-chapter.js
+Description: version 1 [skip, Fall 2016]
+Derived from looma-lesson-plan.js
 Programmer name: SCU
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: version 1:spring 2016, version 2: Nov 16
@@ -15,208 +15,154 @@ Revision: Looma 2.4
 
 //var timelineAssArray = new Object();
 
-var $timeline;
-var savedSignature;   //savedTimeline is checkpoint of timeline for checking for modification
-var loginname;
-
 var homedirectory = "../";
+var $timeline;
 var $details;
+var $selectedActivity = null;
+var $rememberActivity;
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 window.onload = function () {
-
-    //show the "New Text File" button in filecommands.js to allow text-frame editor to be called in an iFrame
-    $('#show_text').show();
-
-    $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
-
-    loginname = LOOMA.loggedIn();
-    if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
 
     initializeDOM(); // fills in DOM elements - could be done in static HTML in the PHP file
 
     $('#clear_button').click(clearFilter);
 
-    $('.filter_radio').change(changeCollection);
 
-    $('.chapterFilter').prop('disabled', true);
-    $('.mediaFilter').prop('disabled',   false);
+    $timeline = $('#timelineDisplay');  //the DIV where the activity will be edited
 
-
-    $("#dropdown_grade, #dropdown_subject").change( function(){
-        $('#div_chapter').hide();
-
-        $('#dropdown_chapter').empty();
-        if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
-            $.post("looma-database-utilities.php",
-                {cmd: "chapterList",
-                 class: $('#dropdown_grade').val(),
-                 subject:   $('#dropdown_subject').val()},
-
-                 function(response) {
-                     console.log(response);
-                     //$('#chapter_label').show();
-                     $('#div_chapter').show();
-                     $('<option/>', {value: "", label: "<select a chapter>"}).appendTo('#dropdown_chapter');
-
-                     $('#dropdown_chapter').append(response);
-                 },
-                 'html'
-              );
-    });
+    var loginname = LOOMA.loggedIn();
 
 ///////////////////////////////
-// click handlers for '.add', '.preview' buttons
+// click handlers for '.select', '.preview', '.assign', and '.remove' buttons on Activities in search results or 'timeline'
 ///////////////////////////////
 
     //$(elementlist).on(event, selector, handler).
     $('#innerResultsDiv'           ).on('click', '.add',        function() {
-            insertTimelineElement($(this).closest('.activityDiv'));return false;});
+            insertTimelineElement($(this).closest('.activityDiv'));
+            showDetails($selectedActivity);
+            return false;});
     $('                  #timeline').on('click', '.remove',     function() {
-            removeTimelineElement(this);return false;});
+            removeTimelineElement();return false;});
     $('#innerResultsDiv, #timeline').on('click', '.preview',    function() {
             preview_result($(this).closest('.activityDiv'));return false;});
     $('#innerResultsDiv, #timeline').on('click', '.resultsimg', function() {
             preview_result($(this).closest('.activityDiv'));return false;});
 
+    $('#timeline').on('click', '.assign',    function() {
+           // showDetails($(this).closest('.activityDiv'));return false;});
+            showDetails($selectedActivity);return false;});
 
 
-//////////////////////////////////////
-/////////FILE COMMANDS setup /////////
-//////////////////////////////////////
+///////////////////////////////
+// click handlers for #'save', '#assign', '#cancel' and '#delete buttons in Details panel activity-controls
+///////////////////////////////
 
-/*  callback functions expected by looma-filecommands.js:  */
-callbacks ['clear'] =           lessonclear;
-callbacks ['save']  =           lessonsave;
-callbacks ['savetemplate']  =   lessontemplatesave;
-//callbacks ['open']  = lessonopen;
-callbacks ['display'] =         lessondisplay;
-callbacks ['modified'] =        lessonmodified;
-callbacks ['showsearchitems'] = lessonshowsearchitems;
-callbacks ['checkpoint'] =      lessoncheckpoint;
-//callbacks ['undocheckpoint'] =  lessonundocheckpoint;
+    $('#previewpanel').on('click', '#cancel', function() {removeTimelineElement();});
 
-/*  variable assignments expected by looma-filecommands.js:  */
-currentname = "";                           //currentname       is defined in looma-filecommands.js and gets set and used there
+    $('#previewpanel').on('click', '#rename',
+        function()
+            { if ($('#new_dn').val() != $selectedActivity.data("mongo").dn) {
+                var new_dn = $('#new_dn').val();
+                $selectedActivity.data("mongo").dn = new_dn;
+                renameActivity($selectedActivity);
+                $('p.filename').text(new_dn);
+                $selectedActivity.find('p.result_dn').text(new_dn);
+                $rememberActivity.find('p.result_dn').text(new_dn);
+               //$('#search').submit(); //redo the search to show the new name
+                //$('#timelineDisplay').empty();
+                }
+             else LOOMA.alert('Enter a new Display Name');
+            });
 
-//NOTE: probably should be currentcollection = 'lessons'; but that needs to be tested
-currentcollection = 'lesson';               //currentcollection is defined in looma-filecommands.js and is used there
+    $('#previewpanel').on('click', '#unassign',
+        function() { LOOMA.prompt('Enter chapter ID to remove',
+                            function (ch_id) {
+                                removeChapterID($selectedActivity, ch_id);
+                                $('#search').submit(); //redo the search to show the new ch_id
+                                },
+                            function () {return;},
+                            false);
+                   });
 
-currentfiletype =   'lesson';               //currentfiletype   is defined in looma-filecommands.js and is used there
+    $('#previewpanel').on('click', '#assign',
+       function() { LOOMA.getCH_ID('Select chapter',
+        // function() { LOOMA.prompt('Enter chapter ID',
+                        function(ch_id) {
+                            addChapterID($selectedActivity, ch_id);
+                            $('#search').submit(); //redo the search to show the new ch_id
+                            },
+                        function () {return;},
+                        false);
+                   });
 
-$('#search-form  #collection').val('lesson');
-
-function lessonshowsearchitems() {
-                    $('#lesson-chk').show();
-                    // for TEXT EDIT, only show "text", clicked and disabled
-                    $('#lesson-chk input').attr('checked', true).css('opacity', 0.5);
-                    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
-                    $('#lesson-chk input').click(function() {return false;});
-
-};
-
-
-    function lessoncheckpoint()       {savedSignature = signature($timeline);};
-    //function lessonundocheckpoint() {}; //cant undo changes with signatures
-    function lessonmodified() {return (
-        signature($timeline) !== savedSignature);};
-
-    function signature(elem) { //param is jQ object of the timeline ($timeline)
-        var sig = '';
-        elem.find('.activityDiv').each(function(index, x){
-            console.log('sig is ', sig);
-            console.log('x is ', x);
-            console.log('index is ', index);
-            sig += $(x).data('id');});
-        return sig;
-        };
-
-    function lessonclear() {
-
-       setname("");
-       $timeline.empty();
-       clearFilter();
-       lessoncheckpoint();
-
-};
-
-lessonclear();
-
-function lessonpack (html) { // pack the timeline into an array of collection/id pairs for storage
-    var packitem;
-    var packarray = [];
+        //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
 
 
-    $(html).each(function() {
-            packitem = {};  //make a new object, unlinking the references already pushed into packarray
-            packitem.collection = $(this).data('collection');
-            packitem.id         = $(this).data('id');
-            packarray.push(packitem);
-        });
+function renameActivity($activity) {
 
-    return packarray;
-}; //end lessonpack()
+         var data = { dn : $activity.data("mongo").dn };
+         console.log('Activity Register: renaming activity  (id: ' + $activity.data("mongo")._id.$id + ') as: ' + data.dn);
+         $.post("looma-database-utilities.php",
+                {cmd: "updateByID",
+                 collection: 'lessons',
+                 id: $activity.data("mongo")._id.$id,
+                 data: JSON.stringify( data ),
+                 activity:false},
 
-function lessonunpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
+                 function(response) {
+                    console.log("RENAME: returned mongo writeResult.ok " + response.ok);
+                 },
+                 'json'
+              );
+}; //end renameActivity()
 
-    //var newDiv = null;  //reset newDiv so previous references to it are broken
+function removeChapterID($activity, ch_id) {
 
-    //for each element in data, call createActivityDiv, and attach the resturn value to #timelinediv
-    // also set filename, [and collection??]
+         console.log('Activity Register: unassigning activity from ' + ch_id );
+         $.post("looma-database-utilities.php",
+                {cmd: "removeChapterID",
+                 collection: 'lessons',
+                 id: $activity.data("mongo")._id.$id,
+                 data: ch_id,
+                 activity:false},
 
-    //$('#timelineDisplay').empty();
-    lessonclear();
+                 function(response) {
+                    console.log("UNASSIGN: returned mongo writeResult.ok " + response.ok);
+                 },
+                 'json'
+              );
+}; //end clearCH_ID()
 
-    setname(response.dn);
 
-    // need to record ID of newly opened LP so that later SAVEs can overwrite it
-
-    var posts = [];  //we will push all the $.post() deferreds in the foreach below into posts[]
-
-    $(response.data).each(function(index) {
-         // retrieve each timeline element from mongo and add it to the current timeline
-         //var newDiv = null;  //reset newDiv so previous references to it are broken
-         posts.push($.post("looma-database-utilities.php",
-            {cmd: "openByID", collection: this.collection, id: this.id},
-            function(result) {
-                var newDiv = createActivityDiv(result);
-                //add data-index to timeline element for later sorting
-                //    (because the elements are delivered async, they may be out of order)
-                $(newDiv.firstChild).attr('data-index', index);
-                console.log('adding ID :' + result._id);
-                insertTimelineElement(newDiv.firstChild);
-            },
-            'json'
-          ));
-    });
-
-    //  when all the $.post are complete, then re-order the timeline to account for out-of-order elements from asynch $.post calls
-    $.when.apply(null, posts).then(function(){orderTimeline();lessoncheckpoint();});
-
-    makesortable();
-
-}; //end lessonunpack()
-
-function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response)); /*lessoncheckpoint();*/};
-
-function lessonsave(name) {
-    savefile(name, currentcollection, currentfiletype, lessonpack($timeline.html()), false);
-                //note, the final param to 'savefile()' [to make an activity] set to 'false'
-                //because lessons dont need assiciated activities
-}; //end lessonsave()
-
-function lessontemplatesave(name) {
-    savefile(name, currentcollection, currentfiletype + '-template', lessonpack($timeline.html()), false);
-}; //end lessontemplatesave()
+function addChapterID($activity, ch_id) {
+        //open popup that asks for class and subject
+        // then show list of chapter titles
+        // when the user selects a chapter (by title)
+        // confirm the selection, then Post to looma-database-utilities.php
+        //      with command = 'save', and data = object representing all the fields of the activity including new ch_id
 
 
 
+//CHANGE: get 'collection' from the activity, not hard-wired. e.g. ft=lesson uses collection=lessons
+
+         console.log('Activity Register: assign activity to: ' + ch_id);
+         $.post("looma-database-utilities.php",
+                {cmd: "addChapterID",
+                 collection: 'lessons',
+                 id: $activity.data("mongo")._id.$id,
+                 data:  ch_id,
+                 activity:false},
+
+                 function(response) {
+                    console.log("ASSIGN: returned mongo writeResult.ok " + response.ok);
+                 },
+                 'json'
+              );
+    }; //end addChapterID()
 
 
-// end FILE COMMANDS stuff
-
-
-// search for ACTIVITIES (and CHAPTERS) to use in the lesson plan
+// search for lessons to register (attach to chapters)
 // when search button is clicked - submit the 'search' form to looma-database.search.php
             $('#search').submit(function( event ) {
                   event.preventDefault();
@@ -224,6 +170,9 @@ function lessontemplatesave(name) {
                   $("#innerResultsMenu").empty();
                   $("#innerResultsDiv" ).empty();
                   $("#previewpanel"    ).empty();
+                  $("#timelineDisplay"    ).empty();
+                  $('p.filename').text('');
+
 
                   if (!isFilterSet()) {
                         $('#innerResultsDiv').html('Please select at least 1 filter option before searching.');
@@ -235,6 +184,7 @@ function lessontemplatesave(name) {
                     var ellipsisTimer = setInterval(function () {
                         $('#ellipsis1').text($('#ellipsis1').text().length < 10 ? $('#ellipsis1').text() + '.' : '');
                         },100);
+
 
                       //this POST to looma-databas-search.php serializes and sends all the submit FORM elements
                       // and returns an array of objects which are mongo documents that match the search criteria from the form
@@ -254,32 +204,6 @@ function lessontemplatesave(name) {
 
 };  //end window.onload()
 
-var changeCollection = function() {
-    $('#div_grade').toggle();
-    $('#div_subject').toggle();
-    $('#div_filetypes').toggle();
-    $('#div_sources').toggle();
-    $('#div_categories').toggle();
-
-
-
-    if ($('#collection').val() == 'activities') { //changing from ACTIVITIES to CHAPTERS
-        $('#collection').val('chapters');
-
-    if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
-    $('#div_chapter').show();
-
-        $('.chapterFilter').prop('disabled', false);
-        $('.mediaFilter').prop('disabled',   true);
-    } else { //changing from CHAPTERS to ACTIVITIES
-        $('#collection').val('activities');
-
-    $('#div_chapter').hide();
-
-        $('.chapterFilter').prop('disabled', true);
-        $('.mediaFilter').prop('disabled',   false);
-    };
-};// end changeCollection
 
 ///////////////////////////////////////////////////////////////////////
 /////////////////////////// SEARCH  RESULTS  ///////////////////////////
@@ -288,37 +212,29 @@ var changeCollection = function() {
 var clearFilter = function() {
 	 console.log('clearFilter');
 
-   if ($('#collection').val() == 'activities') {
-         $('#searchString').val("");
-    	 $(".filter_dropdown").each(function() { this.selectedIndex = 0; });
-    	 $(".filter_checkbox").each(function() { $(this).prop("checked", false); });
-    } else //collection=='chapters'
-    {
-         $("#dropdown_grade").val("").change();
-         $("#dropdown_subject").val("").change();
-    };
+     $('#searchString').val("");
 
-    $("#innerResultsMenu").empty();
-    $("#innerResultsDiv").empty();
-    $("#previewpanel").empty();
+	 $(".filter_dropdown").each(function() { this.selectedIndex = 0; });
+	 $(".filter_checkbox").each(function() { $(this).prop("checked", false); });
+
+     $("#innerResultsMenu").empty();
+     $("#innerResultsDiv").empty();
+     $("#previewpanel").empty();
 }; //end clearFilter()
 
 var isFilterSet = function() {
     var set = false;
 
-    if ($('#collection').val() == 'activities') {
-         if ($('#searchString').val()) set = true;
+     if ($('#searchString').val()) set = true;
 
-         $(".filter_checkbox").each(function() {
-            if (this.checked) set = true;
-         });
-    } else //collection=='chapters'
-    {
-         if ($("#dropdown_grade").val() != "")   set = true;
-         if ($("#dropdown_subject").val() != "") set = true;
-    };
+     if ($("#dropdown_grade").val()) set = true;
+     if ($("#dropdown_subject").val()) set = true;
 
-    return set;
+     $(".filter_checkbox").each(function() {
+        if (this.checked) set = true;
+     });
+
+     return set;
 }; //end isFilterSet()
 
 
@@ -350,6 +266,7 @@ function displayResults(results) {
 var displaySearchResults = function(filterdata_object) {
 	var currentResultDiv = document.createElement("div");
 	currentResultDiv.id = "currentResultDiv";
+	// currentResultDiv.appendTo("#innerResultsDiv");
 	$(currentResultDiv).appendTo("#innerResultsDiv");
 
 
@@ -428,37 +345,9 @@ var displaySearchResults = function(filterdata_object) {
     $('#chaptersScroll').click(function()  {$('#innerResultsDiv').scrollTop($('#chapterTitle').position().top);});
     $('#activitiesScroll').click(function(){$('#innerResultsDiv').scrollTop($('#activityTitle').position().top);});
 
-    //click handlers for Preview, IMG and Add buttons
-
-    //FIX this - make clicking on the thumbnail img launch preview_result()
-
-    //$('.thumbnaildiv').on('click', function() {preview_result(this.data-collection, this);});
-
-        //NOTE: can't attach click handler to 'timlinediv'images which dont exist yet
-        //      so add the ON handler to the DIV which will contain the result elements
-    /*    $('#innerResultsDiv').on('click',
-                                'button.preview',
-                                function() {
-                                    var el = $(this).parent().parent(); preview_result(el.data("collection"), el);}
-                                ); */
-
-
-
 }; //end displaySearchResults()
 
-/* //////////////////////TO-DO FOR RESULTS
-
-THUMBNAILS
-- Take care of if the image source is null
-	- 	All the "thumbnail_prefix" variables: If the image source is null,
-		it shouldn't try to get the substring, because it'll break the code
-	- 	If the file isn't there. We need to make a little 404 image and
-		code it in.
-
-//////////////////////////END TO-DO */
-//*************************************************************************************start of things we need for presentation **********************************************
-
-
+// FILETYPE
 //returns an english describing the file type, given a FT
 // could use a key:value array instead
 
@@ -467,8 +356,8 @@ var filetype = function(ft) { return LOOMA.typename(ft);};
 /*
 var filetype = function(ft) {
     //converts a file extension into
-	     if (ft == "gif" || ft == "jpg" || ft == "png") return "Image";
-	else if (ft == "mov" || ft == "mp4" || ft == "mp5") return "Video";
+	     if (ft == "gif" || ft == "jpg" || ft == "png") || ft == "image") return "Image";
+	else if (ft == "mov" || ft == "mp4" || ft == "mp5" || ft == "m4v") return "Video";
 	else if (ft == "mp3")       return "Audio";
 	else if (ft == "EP")        return "Game";
 	else if (ft == "html")      return "Webpage";
@@ -476,9 +365,8 @@ var filetype = function(ft) {
 	else if (ft == "text")      return "Text File";
     else if (ft == "looma")     return "Looma Page";
     else if (ft == "chapter")   return "Chapter";
-    else return ft;
 }; // end filetype()
-*/
+
             /*
              //FOR reference: PHP version of thumbnail():
                   function thumbnail ($fn) {  //NEW VERSION AUG '16
@@ -491,10 +379,11 @@ var filetype = function(ft) {
                         else return "";
                   } //end function THUMBNAIL
              */
+
 var thumbnail = function(item) {
 
-    //builds a filepath/filename for the thumbnail of this "item" based on type
-    //SOME HARD-CODING HERE to be fixed
+    // called by createActivityDiv() to get the path to thumbnail for activity "item"
+
     var collection;
     var filetype;
     var filename;
@@ -502,7 +391,7 @@ var thumbnail = function(item) {
     var thumbnail_prefix;
     var path;
     var imgsrc;
-    var idExtractArray;
+    var parsed_ch_id;
 
     if ($(item).attr('thumb')) return $(item).attr('thumb');  //some activities have explicit thumbnail set
 
@@ -511,32 +400,31 @@ var thumbnail = function(item) {
     if ($(item).attr('fn')) filename = $(item).attr('fn');
     if ($(item).attr('fp')) filepath = $(item).attr('fp');
 
-	idExtractArray = extractItemId(item);
 
     imgsrc = "";
 
-	if (collection == "chapters" || item.pn != null) {
-	    //NOTE: in the next statement, sometimes get error "Uncaught TypeError: Cannot read property 'concat' of undefined"
-		thumbnail_prefix = idExtractArray["currentSubjectFull"].concat("-", idExtractArray["currentGradeNumber"]);
-		imgsrc = homedirectory + "content/textbooks/" + idExtractArray["currentGradeFolder"] + "/" + idExtractArray["currentSubjectFull"] + "/" + thumbnail_prefix + "_thumb.jpg";
-	}
+    if (collection == "chapters" || item.pn != null) {
+        parsed_ch_id = parse_ch_id(item);
+        thumbnail_prefix = parsed_ch_id["currentSubjectFull"].concat("-", parsed_ch_id["currentGradeNumber"]);
+        imgsrc = homedirectory + "content/textbooks/" + parsed_ch_id["currentGradeFolder"] + "/" + parsed_ch_id["currentSubjectFull"] + "/" + thumbnail_prefix + "_thumb.jpg";
+    }
 
-	else if (collection == "activities" || item.ft != null) {
-		if (item.ft == "mp3") {	 //audio
+    else if (collection == "activities" || item.ft != null) {
+        if (item.ft == "mp3") {  //audio
             if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
-			imgsrc = path + "thumbnail.png";
-		}
-		else if (item.ft == "mp4" || item.ft == "mp5" || item.ft == "m4v" || item.ft == "mov" || item.ft == "video") { //video
-			thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+            imgsrc = path + "thumbnail.png";
+        }
+        else if (item.ft == "mp4" || item.ft == "video" || item.ft == "mp5" || item.ft == "m4v") { //video
+            thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
             if (filepath) path = filepath; else path = homedirectory + 'content/videos/';
-			imgsrc = path + thumbnail_prefix + "_thumb.jpg";
-		}
-		else if (item.ft == "jpg"  || item.ft == "gif" || item.ft == "png" || item.ft == "image" ) { //picture
-			thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+            imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+        }
+        else if (item.ft == "jpg"  || item.ft == "gif" || item.ft == "png" || item.ft == "image" ) { //picture
+            thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
             if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
-			imgsrc = path + thumbnail_prefix + "_thumb.jpg";
-		}
-		else if (item.ft == "pdf") { //pdf
+            imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+        }
+        else if (item.ft == "pdf") { //pdf
             thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
             if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
             imgsrc = path + thumbnail_prefix + "_thumb.jpg";
@@ -546,10 +434,10 @@ var thumbnail = function(item) {
             if (filepath) path = filepath; else path = homedirectory + 'content/html/';
             imgsrc = path + thumbnail_prefix + "_thumb.jpg";
         }
-		else if (item.ft == "EP") {
-			imgsrc = homedirectory + "content/epaath/activities/" + item.fn + "/thumbnail.jpg";
-		}
-		else if (item.ft == "text") {
+        else if (item.ft == "EP") {
+            imgsrc = homedirectory + "content/epaath/activities/" + item.fn + "/thumbnail.jpg";
+        }
+        else if (item.ft == "text") {
             imgsrc = "images/textfile.png";
         }
         else if (item.ft == "slideshow") {
@@ -558,13 +446,12 @@ var thumbnail = function(item) {
         else if (item.ft == "looma") {
             imgsrc = item.thumb;
         }
-	}
+    }
 
-	return imgsrc;
+    return imgsrc;
 }; // end thumbnail()
 
-
-//rewrote extractItemId() to use REGEX
+//rewrote parse_ch_id() to use REGEX
 //  m=s.match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])\.([0-9][0-9])?$/);
 //  then if m != null, m[0] is the ch_id,
 //                     m[1] is the class digit,
@@ -572,7 +459,7 @@ var thumbnail = function(item) {
 //                     m[3] is the chapter/unit, and m[4] is null or chapter#
 //       e.g. "8N01.04".match(regex) is ["8N01.04", "8", "N", "01", "04"]
 /* */
-    function extractItemId(item) {
+    function parse_ch_id(item) {
         var ch_id = (item['ft'] == 'chapter')? item['_id'] : item['ch_id'];
         var elements = {
             currentSection: null,
@@ -605,7 +492,7 @@ var thumbnail = function(item) {
             };
          };
         return elements;
-    }
+    }  //end parse_ch_id()
 
 
 
@@ -657,10 +544,10 @@ var createActivityDiv = function(activity) {
                 $(textdiv).appendTo(activityDiv);
 
                 // Display Name
-                if (item.dn) var dn = item.dn.substring(0, 20); //else dn = item.ndn.substring(0,20);
+                if (item.dn) var dn = item.dn.substring(0, 20); else dn = ""; //item.ndn.substring(0,20);
                 $("<p/>", {
                     class : "result_dn",
-                    html : "<b>" + dn + "</b>"
+                    html : dn
                 }).appendTo(textdiv);
 
 
@@ -693,31 +580,30 @@ var createActivityDiv = function(activity) {
 
                 // "Add" button
                 var addButton = document.createElement("button");
-                addButton.innerText = "Add";
+                addButton.innerText = "Select";
                 addButton.className = "add";
-
-               buttondiv.appendChild(addButton);
+                buttondiv.appendChild(addButton);
 
                 // "Delete" button
-                var removeButton = $("<button/>", {class: "remove", html:"Delete"});
+                var removeButton = $("<button/>", {class: "remove", html:"Remove"});
                 $(buttondiv).append(removeButton);
 
                 // "Preview" button
                 var previewButton = document.createElement("button");
                 previewButton.innerText = "Preview";
                 previewButton.className = "preview";
-                // previewButton.onclick = preview_result(item);
-           /*     $(previewButton).bind("click", function() {
-                    preview_result(collection, item);
-                });
-             */
-               buttondiv.appendChild(previewButton);
+                $(buttondiv).append(previewButton);
+
+                var assignButton = $("<button/>", {class: "assign", html:"Show details"});
+                $(buttondiv).append(assignButton);
+
+
 
             return activityDiv;
             }; //end innerActivityDiv()
 
 
-    var idExtractArray = extractItemId(activity);
+    var parsed_ch_id = parse_ch_id(activity);
 
     var div = document.createElement("div");
     div.className = "resultitem";
@@ -729,6 +615,7 @@ var createActivityDiv = function(activity) {
 };  // end createActivityDiv()
 
 
+
 ///////////////////////////////////////////////////////////////
 /////////////////////////// PREVIEW ///////////////////////////
 ///////////////////////////////////////////////////////////////
@@ -736,18 +623,19 @@ var createActivityDiv = function(activity) {
 // When you click the preview button
 var preview_result = function(item) {
 
+    var filepath, filename, filetype, collection;
+
     $('#previewpanel').empty().append($("<p/>", {html : "Loading preview..."}));
 
-    var collection = $(item).attr('data-collection');
-    var filetype = $(item).data('type');
-    var filename = $(item).data('mongo').fn;
-    var $mongo = $(item).data('mongo');
-    var filepath;
-    if ('fp' in $mongo) filepath = $mongo.fp;
+    collection = $(item).attr('data-collection');
+    filetype = $(item).data('type');
+    filename = $(item).data('mongo').fn;
+    if ('fp' in $(item).data('mongo')) filepath = $(item).data('mongo').fp;
+    else filepath = null;
 
         //console.log ("collection is " + collection + " filename is " + filename + " and filetype is " + filetype);
 
-	var idExtractArray = extractItemId($(item).data('mongo'));
+	var parsed_ch_id = parse_ch_id($(item).data('mongo'));
 
 	if (collection == "chapters") {
         var pagenum = $(item).data('mongo').pn;
@@ -755,17 +643,26 @@ var preview_result = function(item) {
 		document.querySelector("div#previewpanel").innerHTML = '<embed src="' +
 		                        //encodeURI(
 		                           homedirectory + 'content/textbooks/' +
-		                           idExtractArray["currentGradeFolder"] + '/' +
-		                           idExtractArray["currentSubjectFull"] + '/' +
-		                           idExtractArray["currentSubjectFull"] + '-' +
-		                           idExtractArray["currentGradeNumber"] +
+		                           parsed_ch_id["currentGradeFolder"] + '/' +
+		                           parsed_ch_id["currentSubjectFull"] + '/' +
+		                           parsed_ch_id["currentSubjectFull"] + '-' +
+		                           parsed_ch_id["currentGradeNumber"] +
 		                            '.pdf#page=' + pagenum + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"' + '>';
 	}
 
+/*
+	else if (collection == "textbooks") {
+		document.querySelector("div#previewpanel").innerHTML = '<embed src="' +
+		                        homedirectory + 'content/' + item.fp + filename +
+		                        '" width="100%" height="100%" type="application/pdf">';
+	}
+*/
+
 	else if (collection == "activities") {
 
-		if(filetype == "mp4" || filetype == "video" || filetype == "mov" || filetype == "m4v" || filetype == "mp5") {
+		if(filetype == "mp4" || filetype == "mov" || filetype == "m4v" ||filetype == "video" || filetype == "mp5") {
 		    if (!filepath) filepath = '../content/videos/';
+
 			document.querySelector("#previewpanel").innerHTML =
 
 	//		'<video controls> <source src="' + homedirectory +
@@ -795,15 +692,13 @@ var preview_result = function(item) {
 
 	   	}
 		else if (filetype=="pdf") {
-            if (!filepath) filepath = '../content/pdfs/';
 			document.querySelector("div#previewpanel").innerHTML =
-			     '<iframe src="' + filepath + filename + '"' +
+			     '<iframe src="' + homedirectory + 'content/pdfs/' + filename + '"' +
 			     ' style="height:60vh;width:60vw;" type="application/pdf">';
 		}
 		else if(filetype=="mp3") {
-            if (!filepath) filepath = '../content/audio/';
 		      document.querySelector("div#previewpanel").innerHTML = '<br><br><br><audio id="audio"> <source src="' +
-		                      filepath +
+		                      homedirectory + 'content/audio/' +
 		                      filename + '" type="audio/mpeg"></audio>' +
 		                                      '<div id="media-controls">' +
                                             '<div id="time" class="title">0:00</div>' +
@@ -817,14 +712,13 @@ var preview_result = function(item) {
 		}
 		// Pictures
 		else if(filetype=="jpg" || filetype=="gif" || filetype=="png" || filetype=="image") {
-            if (!filepath) filepath = '../content/pictures/';
 			document.querySelector("div#previewpanel").innerHTML = '<img src="' +
-			                     filepath +
+			                     homedirectory + 'content/pictures/' +
 			                     filename + '"id="displayImage">';
 		}
-        else if (filetype == "html") {
+        else if (filetype == "html" || filetype=="htm") {
         document.querySelector("div#previewpanel").innerHTML =
-          '<object type="text/html" data="' + $(item).data('mongo').fp +
+          '<object data="' + $(item).data('mongo').fp +
             filename  + '" style="height:60vh;width:60vw;"> </object>';
         }
         else if (filetype=="EP") {
@@ -864,10 +758,50 @@ var preview_result = function(item) {
         }
 	}
 
+    /*
+	else if (collection == "dictionary") {
+		$("<p/>", {
+			html : item.def
+		}).appendTo("#previewpanel");
+		// document.querySelector("div#previewpanel").innerHTML = item.def;
+	}
+	*/
 };  // end preview_result()
+
+function showDetails(activity) {
+    //display contents of the activity
+    //allow user to edit contents
+    //ask user to select a chapter to register this activity to
+    //SUBMIT button
+    //confirm success of registration
+
+    var fp;
+
+    $('#previewpanel').empty().append($details.empty());
+
+    $details.append('<p>Display name: <input id="new_dn" value="' + activity.data("mongo").dn + '"</>');
+    $details.append('<p>File name:  '    + activity.data("mongo").fn + '</>');
+    if (activity.data("mongo").fp) fp = (activity.data("mongo").fp); else fp = 'default folder';
+    $details.append('<p>File path:  '    + fp + '</>');
+    $details.append('<p>File type:  '    + activity.data("mongo").ft + '</>');
+    if (activity.data("mongo").src) $details.append('<p>Source: ' + activity.data("mongo").src + '</>');
+    if (activity.data("mongo").area) $details.append('<p>Area: ' + activity.data("mongo").area + '</>');
+    if (activity.data("mongo").subarea) $details.append('<p>Subarea: ' + activity.data("mongo").subarea + '</>');
+    if (activity.data("mongo").tag) $details.append('<p>Tags: ' + activity.data("mongo").tag + '</>');
+    if (activity.data("mongo").ch_id && activity.data("mongo").ch_id.length != 0) $details.append('<p>Chapters:  '      + activity.data("mongo").ch_id + '</>');
+        else $details.append('<p>Chapters: not assigned to any chapters</p>');
+
+    var $controls = $('#activity-controls').clone().attr('style', 'display:flex;');
+    $('#previewpanel').append($controls);
+
+} //end registerActivity
 
 
 function insertTimelineElement(source) {
+
+        $timeline.empty();
+        $("#previewpanel").empty();
+
         var $dest = $(source).clone(true).off(); // clone(true) to retain all DATA for the element
                                                  //NOTE: crucial to "off()" event handlers,
                                                  //or the new element will still be linked to the old
@@ -877,35 +811,24 @@ function insertTimelineElement(source) {
         $dest.addClass("ui-sortable-handle");
  //
         $dest.appendTo("#timelineDisplay");
-
-        // scroll the timeline so that the new element is in the middle - animated to slow scrolling
-        $('#timeline').animate( { scrollLeft: $dest.outerWidth(true) * ( $dest.index() - 4 ) }, 100);
-
-        refreshsortable();  //TIMELINE elements can be drag'n'dropped
-
+        $rememberActivity = $(source);
+        $selectedActivity = $dest;
+        $('p.filename').text($dest.data('mongo').dn);
 }; //end insertTimelineElement()
 
-var removeTimelineElement = function(elem) {
+var removeTimelineElement = function() {
   // Removing list item from timelineHolder
   //var outerDiv = this.parentNode.parentNode;
   //outerDiv.remove();    // "Remove" button is within 3 divs
 
-        $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 4 ) }, 100);
-        $(elem).closest('.activityDiv').remove();
-
+       // $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 4 ) }, 100);
+        //$(elem).closest('.activityDiv').remove();
+        $('#timelineDisplay').empty();
+        $('#previewpanel').empty();
+        $('p.filename').text('');
+        $selectedActivity = null;
 };
 
-
-var orderTimeline = function() {  // the timeline is populated with items that arrive acsynchronously by AJAX from the [mongo] server
-                                  // a 'data-index' attribute is stored with each timeline item
-                                  // this function [re-]orders the timeline based on those data-index values
-    var $timeline = $('#timelineDisplay');
-
-    $timeline.find('.activityDiv').sort(function(a, b) {
-        return +a.dataset.index - +b.dataset.index;
-        })
-    .appendTo($timeline);
-}; // end orderTimeline()
 
 /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
 var makesortable = function() {
@@ -919,13 +842,7 @@ var makesortable = function() {
     }).disableSelection();
 };
 
-var refreshsortable = function() {
-    // the call to sortable ("refresh") below should refresh the sortability of the timeline, but it's not working, so call makesortable() instead
-    //$("#timelineDisplay").sortable( "refresh" );
-
-    makesortable();
-
-    };
+var refreshsortable = function() {$("#timelineDisplay").sortable( "refresh" );};
 
 /////////////////////////// DROPPABLE UI ////////  requires jQuery UI  ///////////////////
 //set up Drag'n'Drop  - -  code borrowed from looma-slideshow.js [T. Woodside, summer 2016]
@@ -948,8 +865,13 @@ function makedraggable() {
         stop: function(event, ui) {
 
                 if ($('#timelineDisplay').find(ui.helper).length > 0) {  //if the helper was dropped on the timeline...
-                    $(ui.helper).data($clone.data());  // insert the data() we copied into $clone back into the new timeline element
+
+                    $(ui.helper).remove(); //the helper is not a 'deep' clone. we need to remove it and append the deep clone we make
+                    $clone.removeClass('ui-draggable-handle');
+                    $('#timelineDisplay').append($clone);
                     refreshsortable();
+                //$('#timelineDisplay').sortable("option", "scroll", true);
+                //$(newElem).find("img").removeAttr("style");
                 }
               }
         });
@@ -961,24 +883,37 @@ var initializeDOM = function() {
 /////////////////////////// Fill in the DOM //////////
 //////////////////////////////////////////////////////
 
-    // Building Navbar and Querybar-- all this could be in HTML
+    // Building Navbar -- all this could be in HTML
 
         $("<p/>", {
-            html : "Lesson Plan Editor"
+            html : "Register Activity to Chapter"
         }).appendTo("#navbar");
 
-    // Filter: Search
+        // Filter: Search
+
         $("<div/>", {
             id : "div_search",
         }).appendTo("#search");
 
-        $("<input type='radio' name='radio' value='activities' class='filter_radio' checked>").appendTo("#div_search");
-        $("<span class='filter_label'> Media</span>").appendTo("#div_search");
-        $('<br>').appendTo("#div_search");
-        $("<input type='radio' name='radio' value='chapters'  class='filter_radio' >").appendTo("#div_search");
-        $("<span class='filter_label'> Chapter</span>").appendTo("#div_search");
+        //insert a hidden input that sets the 'collection' name for searches
+        //$("<input type='hidden' id='collection' value='activities' name='collection'/>").appendTo("#search");
 
+        $("<span/>", {
+            class : "filter_label",
+            html : "Name:",
+        }).appendTo("#div_search");
+
+        $("<input/>", {
+            id : "searchString",
+            class: "textBox",
+            type : "text",
+            placeholder: "enter search term...",
+            name : "search-term",
+        }).appendTo("#div_search");
+
+/*
         // Filter: Grade
+
         $("<div/>", {
             id : "div_grade"
         }).appendTo("#search");
@@ -989,14 +924,14 @@ var initializeDOM = function() {
         }).appendTo("#div_grade");
 
         $("<select/>", {
-            class : "filter_dropdown chapterFilter",
+            class : "filter_dropdown",
             form  : "search",
             name  : "class",
             id : "dropdown_grade",
             placeholder: "Grade Level"
         }).appendTo("#div_grade");
 
-        for (var i=0; i<9; i++) {
+        for (var i=0; i<9; i++) { //fixed BUG: was "(var i=0, i<8, i++)" so that Chapter 8 did not show
             if (i == 0) {
                 $("<option/>", {
                     html : "All",
@@ -1013,7 +948,8 @@ var initializeDOM = function() {
             }
         }
 
-    // Filter: Subject
+        // Filter: Subject
+
         var subjects = {
             "English"      : "EN",
             "Math"         : "M",
@@ -1032,10 +968,10 @@ var initializeDOM = function() {
         }).appendTo("#div_subject");
 
         $("<select/>", {
-            class : "filter_dropdown chapterFilter",
+            class : "filter_dropdown",
             name  : "subj",
             form  : "search",
-            id : "dropdown_subject",
+            id : "dropdown_subject"
         }).appendTo("#div_subject");
 
         $('<option>', {
@@ -1049,36 +985,11 @@ var initializeDOM = function() {
                 html : key
             }).appendTo("#dropdown_subject");
         });
+*/
+        // Filter: File Type
 
-    // Filter: chapters
-
-        $("<div/>", {
-            id : "div_chapter"
-        }).appendTo("#search");
-
-        $("<span/>", {
-            class : "filter_label",
-            id : "chapter_label",
-            html : "Chapter: ",
-        }).appendTo("#div_chapter");
-
-        $('<select/>', {
-            class : "filter_dropdown chapterFilter",
-            form: "search",
-     //       size: "2",
-            name: "chapter",
-            id: "dropdown_chapter"
-        }).appendTo('#div_chapter');
-
-
-   // Filter: File Type
         var filetypes = {
-            "image" :   {   id : "ft_image",     display : "Image"  },
-            "video" :   {   id : "ft_video",     display : "Video"  },
-            "audio" :   {   id : "ft_audio",     display : "Audio"   },
-            "pdf" :     {   id : "ft_pdf",       display : "PDF"   },
-            "text" :    {   id : "ft_text",      display : "Text"   },
-            "looma":    {   id : "ft_looma",      display : "Looma Page"   }
+            "lesson" :    {   id : "ft_lesson",      display : "Lesson"   }
             // SLIDESHOW should be added
             //    "slideshow":{   id : "ft_slideshow", display : "Slide Show"   }
         };
@@ -1087,11 +998,9 @@ var initializeDOM = function() {
             id : "div_filetypes"
         }).appendTo("#search");
 
-        $("<span class='filter_label'>Type:       </span>").appendTo("#div_filetypes");
-
         $.each(filetypes, function (key, value) {
             $("<input/>", {
-                class : "filter_checkbox mediaFilter",
+                class : "filter_checkbox",
                 type : "checkbox",
                 id : value.id,
                 name : "type[]",
@@ -1101,15 +1010,16 @@ var initializeDOM = function() {
             $("<label/>", {
                 class : "filter_label",
                 for : value.id,
-                style: "color:#00cc00;",
+                style: "color:green;",
                 html : value.display
             }).appendTo("#div_filetypes");
-
+            //if(key == 'looma') $('<br>').appendTo("#div_filetypes");
+            //$("#div_filetypes").append("<br/>");
         });
 
         $('<br>').appendTo("#div_filetypes");
 
-    //checkboxes for SOURCE
+     /*   //checkboxes for SOURCE
         var sources = {
             "Dr Dann" :     {   id : "src_ck12",   display : "CK-12"    },
             "PhET" :      {   id : "src_phet",   display : "PhET"     },
@@ -1122,26 +1032,26 @@ var initializeDOM = function() {
             id : "div_sources"
         }).appendTo("#div_filetypes");
 
-        $("<span class='filter_label'>Source: </span>").appendTo("#div_sources");
-
         $.each(sources, function (key, value) {
             $("<input/>", {
-                class : "filter_checkbox mediaFilter",
+                class : "filter_checkbox",
                 type : "checkbox",
                 id : value.id,
                 name : "src[]",
                 value: key
+                // html : value.display
             }).appendTo("#div_sources");
             $("<label/>", {
                 class : "filter_label",
-                style: "color:blue;",
                 for : value.id,
+                style: "color:blue;",
                 html : value.display
             }).appendTo("#div_sources");
+            //$("#div_filetypes").append("<br/>");
         });
 
-
- // dropdowns for CATEGORIES  - - AREA, SUBAREA and TAG
+*/
+        // dropdowns for AREA, SUBAREA and TAG
 
         var categories = {
             "science" :  {   id : "cat_science",  display : "Science"  },
@@ -1166,26 +1076,11 @@ var initializeDOM = function() {
 
         $("<span/>", {
             class : "filter_label",
-            html : "Name:     ",
-        }).appendTo("#div_categories");
-
-        $("<input/>", {
-            id : "searchString",
-            class: "textBox mediaFilter",
-            type : "text",
-            placeholder: "enter search term...",
-            name : "search-term",
-        }).appendTo("#div_categories");
-
-        $('<br>').appendTo("#div_categories");
-
-        $("<span/>", {
-            class : "filter_label",
-            html : "Category: ",
+            html : "Category:",
         }).appendTo("#div_categories");
 
         $("<select/>", {
-            class : "filter_dropdown mediaFilter",
+            class : "filter_dropdown",
             form  : "search",
             name  : "category",
             id : "dropdown_cat"
@@ -1207,7 +1102,44 @@ var initializeDOM = function() {
             }).appendTo("#dropdown_cat");
         });
 
-   // Buttons for Search and Clear search criteria
+/*
+                // Filter: Grade
+
+        $("<div/>", {
+            id : "div_grade"
+        }).appendTo("#search");
+
+        $("<span/>", {
+            class : "filter_label",
+            html : "Grade:",
+        }).appendTo("#div_grade");
+
+        $("<select/>", {
+            class : "filter_dropdown",
+            form  : "search",
+            name  : "class",
+            id : "dropdown_grade",
+            placeholder: "Grade Level"
+        }).appendTo("#div_grade");
+
+        for (var i=0; i<9; i++) { //fixed BUG: was "(var i=0, i<8, i++)" so that Chapter 8 did not show
+            if (i == 0) {
+                $("<option/>", {
+                    html : "All",
+                    value : "",
+                    id : ""
+                }).appendTo("#dropdown_grade");
+            }
+            else {
+                $("<option/>", {
+                    html : i,
+                    value : i,
+                    id : i
+                }).appendTo("#dropdown_grade");
+            }
+        }
+*/
+        // Buttons for Search and Clear search criteria
 
         $("<button/>", {
             class: "search",
@@ -1222,6 +1154,7 @@ var initializeDOM = function() {
 
         $("#div_filetypes").append("<br/>");  //WHAT IS THIS??
 
+
         $("<button/>", {
             id : "clear_button",
             type : "button",
@@ -1230,7 +1163,7 @@ var initializeDOM = function() {
 
         // Title string
         $("<p/>", {
-            html : "Editing:&nbsp;&nbsp;",
+            html : "Activity name:&nbsp;&nbsp;",
             class: "ellipsis"
         }).appendTo("#titleDiv");
 

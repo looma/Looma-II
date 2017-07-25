@@ -38,7 +38,7 @@
                        if (def =='plural of') def= def + ' ' + definition.rw;
                        else if (def =='past tense of') def= def + ' ' + definition.rw;
                        else if (def =='past perfect tense of') def= def + ' ' + definition.rw;
-                       else if (def =='progress ive form of') def= def + ' ' + definition.rw;
+                       else if (def =='progressive form of') def= def + ' ' + definition.rw;
                        else if (def =='past and past perfect tense of') def= def + ' ' + definition.rw;
                        else if (def =='third person singular of') def= def + ' ' + definition.rw;
 
@@ -54,14 +54,13 @@
                         document.getElementById("word").value = '';
                         event.preventDefault();
 
-                        document.getElementById("rootWord").innerHTML = "";                    
-                        document.getElementById("rwNepali").innerHTML = "";                           
-                        document.getElementById("rwDefinition").innerHTML = ""; 
-
                         if(definition.rw != '')
                         {
                             LOOMA.lookup(definition.rw, gotARootWord, fail);
                         }
+                            document.getElementById("rootWord").innerHTML = "";
+                            document.getElementById("rwNepali").innerHTML = "";
+                            document.getElementById("rwDefinition").innerHTML = "";
 
             } //end gotAWord
             function gotARootWord(definition)
@@ -102,10 +101,11 @@
 
             LOOMA.lookup(variable, gotAWord, fail);
 
-            } //end Listener
+            }; //end Listener
+
+$(document).ready (function() {
 
             //This code calls the Listener function when a word is submitted
-            function init() {
                 var elem = document.getElementById("lookup");
                 elem.addEventListener('submit', Listener);
 
@@ -119,5 +119,4 @@
                 LOOMA.speak(toSpeak);
             }); //end speak button onclick function
 
-        }
-        window.onload = init;
+        });

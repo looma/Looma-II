@@ -129,12 +129,12 @@ if (isset($_REQUEST["collection"])) {
         //
 
    switch ($collection) {
-       case "text":        $dbCollection = $text_files_collection;  break;
        case "activities":  $dbCollection = $activities_collection;  break;
-       case "lesson":      $dbCollection = $lessons_collection;     break;
        case "chapters":    $dbCollection = $chapters_collection;    break;
        case "slideshow":   $dbCollection = $slideshows_collection;  break;
        case "text":        $dbCollection = $text_files_collection;  break;
+       case "lessons":     $dbCollection = $lessons_collection;     break;
+       case "lesson":      $dbCollection = $lessons_collection;     break;
        case "edited_videos":$dbCollection = $edited_videos_collection; break;
 
        default: echo "unknown collection: " . $collection;        return;
@@ -208,8 +208,8 @@ if ( isset($_REQUEST["cmd"]) ) {
 
             return;
             //end case "deleteField"
-        case "save":
-            if (($collection == "text") || ($collection == "lesson") || ($collection == "edited_videos")){
+       case "save":
+            if (($collection == "text") || ($collection == "lesson")){
 
                 $insert = array(
                     "dn"     => $_REQUEST["dn"],
@@ -217,6 +217,18 @@ if ( isset($_REQUEST["cmd"]) ) {
                     "author" => $_COOKIE['login'],
                     "date"   => gmdate("Y.m.d"),  //using greenwich time
                     "data"   => $_REQUEST["data"]
+                    );
+                saveText($dbCollection, $_REQUEST['dn'], $insert, $_REQUEST['activity']);
+            }
+            else if ($collection == "edited_videos") {
+              $thumb = isset($_REQUEST['thumb']) ? $_REQUEST['thumb'] : "";
+              $insert = array(
+                    "dn"     => $_REQUEST["dn"],
+                    "ft"     => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template'
+                    "author" => $_COOKIE['login'],
+                    "date"   => gmdate("Y.m.d"),  //using greenwich time
+                    "data"   => $_REQUEST["data"],
+                    "thumb"  => $thumb
                     );
                 saveText($dbCollection, $_REQUEST['dn'], $insert, $_REQUEST['activity']);
             }

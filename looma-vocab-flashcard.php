@@ -21,7 +21,16 @@ Description:  for Looma 2
 <body >
     <div  id="main-container-horizontal">
 		<h2 class="title"><?php keyword('Vocabulary Games') ?></h2>
-        <p class="clickToFlip"> <?php keyword("Click flashcard for definition");?> <span class="credit">Created by Lily and Sasha</span></p>
+        <p class="clickToFlip"> <?php keyword("Click flashcard for definition");?> </p>
+
+	<?php
+		echo "<div id='params' hidden ";
+        if (isset($_GET["class"])) echo " data-class='" . $_GET["class"] . "'";
+        if (isset($_GET["subject"] )) echo " data-subj='"  . $_GET["subject"]  . "'";
+        if (isset($_GET["ch_id"])) echo " data-ch_id='" . $_GET["ch_id"] . "'";
+        echo "></div>";
+	?>
+
 		<div class="stage">
        <!-- Displays the flashcard -->
             <div class="flashcard">
@@ -42,6 +51,7 @@ Description:  for Looma 2
 		<button type="button" id="prev"><img src="images/back-arrow.png">   </button>
 		<button type="button" id="next"><img src="images/forward-arrow.png"></button>
 		<a href="looma-vocab.php"> <button class="navigate" id="homePage"><?php keyword('Menu') ?></button> </a>
+		<span class="credit">Created by Lily and Sasha</span>
 		<button class="speak"></button>
 	</div>
 

@@ -49,7 +49,7 @@ Description:
 
 		echo "<br><table id='file-table'><tr>";
 		echo "<td>";
-				makeButton("looma-map-basicMap.php",  $mapDir . "basicMap_thumb.png", "Basic Nepal Map");
+				makeButton("looma-maps-nepalLayers.php",  $mapDir . "nepalLayers_thumb.png", "Nepal Layer Map");
 		echo "</td><td>";
 				makeButton("looma-map-zoneMap.php",   $mapDir . "zoneMap_thumb.png", "Nepal Zones Map");
 		echo "</td><td>";
@@ -57,7 +57,11 @@ Description:
 		echo "</td></tr><tr><td>";
                 makeButton("looma-map-streetMap.php", $mapDir . "streetMap_thumb.png", "Kathmandu Street Map");
         echo "</td><td>";
+                makeButton("looma-maps-pokharaCity.php",  $mapDir . "pokharaCity_thumb.png", "Pokhara City Map");
+        echo "</td><td>";
                 makeButton("looma-map-worldMap.php",  $mapDir . "worldMap_thumb.png", "World Map");
+        echo "</td></tr><tr><td>";
+                makeButton("looma-maps-worldCities.php",  $mapDir . "worldCities_thumb.png", "World Cities Map");
     	echo "</tr></table>";
 			?>
 

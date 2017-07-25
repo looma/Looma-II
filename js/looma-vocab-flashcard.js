@@ -5,11 +5,12 @@
 
 var frontShowing = true;
 var index = 0;
-var vocabGrade;
-var vocabSubject;
-var vocabCount;
-var vocabCh_id;
-var vocabRandom;
+var count;  //number of words returned from wordList()
+var vocabGrade = '';
+var vocabSubject = '';
+var vocabCount   = 75;
+var vocabCh_id   = '';
+var vocabRandom  = 'true';
 var list;
 var word;
 
@@ -17,6 +18,14 @@ var word;
 //Reads the cookies in order to generate the word list
 function init()
 {
+
+    vocabGrade =   $('#params').data('class');
+    vocabSubject = $('#params').data('subj');
+    vocabCh_id =   $('#params').data('ch_id');
+
+console.log('grade is: ', vocabGrade, ' subj is ', vocabSubject, ' ch_id is ', vocabCh_id);
+
+
     document.getElementById("next").addEventListener("click", next);
     document.getElementById("prev").addEventListener("click", prev);
 
@@ -35,12 +44,13 @@ function init()
         LOOMA.speak(toSpeak);
     }); //end speak button onclick function
 
-    vocabGrade =   LOOMA.readStore("vocab-grade",   'local'); if (!vocabGrade) vocabGrade = "class1";
-    vocabSubject = LOOMA.readStore("vocab-subject", 'local'); if (!vocabSubject) vocabSubject = "english";
-    vocabCount =   LOOMA.readStore("vocab-count",   'local'); if (!vocabCount) vocabCount = "25";
-    vocabRandom =  LOOMA.readStore("vocab-random",  'local'); if (!vocabRandom) vocabRandom = "true";
+   // vocabGrade =   LOOMA.readStore("vocab-grade",   'local'); if (!vocabGrade) vocabGrade = "class1";
+   // vocabSubject = LOOMA.readStore("vocab-subject", 'local'); if (!vocabSubject) vocabSubject = "english";
+   // vocabCount =   LOOMA.readStore("vocab-count",   'local'); if (!vocabCount) vocabCount = "25";
+   // vocabRandom =  LOOMA.readStore("vocab-random",  'local'); if (!vocabRandom) vocabRandom = "true";
+   // vocabCh_id = '';
 
-    LOOMA.wordlist(vocabGrade, vocabSubject, vocabCount, vocabCh_id, vocabRandom, succeed, fail);
+    LOOMA.wordlist(vocabGrade, vocabSubject, vocabCh_id, vocabCount, vocabRandom, succeed, fail);
 }
 
 //If it fails, it alerts the user and describes the failure
@@ -61,6 +71,8 @@ function succeed(result)
     //$('#defn-output').text(result.def);
     //if (result.img) $('#img-output').html('<img src="' + result.img + '>');
     list = result;
+    count = list.length;
+    console.log('got ' + count + ' words');
     word = list[index];
     console.log('VOCAB: looking up ' + word);
     LOOMA.lookup(word, gotAWord, fail);
@@ -134,14 +146,14 @@ function gotAWord(definition)
 //If the current face is the backside, the card will be flipped to show the front of the next card. Otherwise, the new front will show.  The 'next' arrow will not be displayed on the last word card.
 function next()
 {
-    if (index < 25)
+    if (index < count - 1)
     {
         index++;
         word = list[index];
         LOOMA.lookup(word, gotAWord, fail);
     }
     document.getElementById("prev").style.visibility = 'visible';
-    if (index >= 24)
+    if (index >= count - 1)
     {
         document.getElementById("next").style.visibility = 'hidden';
         document.getElementById("prev").style.visibility = 'visible';

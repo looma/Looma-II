@@ -20,6 +20,8 @@ var vid_selected = false;
 var timeline_times = [];
 var timeline_id = [];
 var id_counter = 0;
+var mainThumbSrc = "";
+var openClick = false;
 
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
@@ -31,6 +33,7 @@ window.onload = function () {
     firstTimeVideoHTMLDeletion();
 
     $('#clear_button').click(clearFilter);
+    $('#clearPreview').click(clearPreview);
 
     $('.filter_radio').change(changeCollection);
 
@@ -64,7 +67,7 @@ window.onload = function () {
 ///////////////////////////////
 
     //$(elementlist).on(event, selector, handler).
-
+    
     $('#innerResultsDiv'           ).on('click', '.add',        function() {
         if(vid_selected == false) {
             vid_selected = true;
@@ -74,10 +77,15 @@ window.onload = function () {
             $('#div_search').show();
             $('#div_filetypes').show();
             $('#clear_button').show();
+            $('#search_label').html("Name:");
+            $('<br>').insertAfter('#searchString');
+            $('#div_categories').css("width", "25vw")
+            $('.filter_label').css("margin-left", "auto");
+
+            mainThumbSrc = $(this).closest('.activityDiv')[0].firstChild.firstChild.src;
+
             setname((($(this).closest('.activityDiv')).data('mongo').dn) + " Edited");
             display_video($(this).closest('.activityDiv'));
-            clearFilter();
-
         }
         else {
             insertTimelineElement($(this).closest('.activityDiv'), false);
@@ -87,7 +95,10 @@ window.onload = function () {
     $('                  #timeline').on('click', '.remove',     function() {
             removeTimelineElement(this);return false;});
     $('#innerResultsDiv, #timeline').on('click', '.preview',    function() {
-            preview_result($(this).closest('.activityDiv'));return false;});
+            preview_result($(this).closest('.activityDiv'));
+            $('#clearPreview').css('display', 'inline')
+            return false;
+          });
     $('#innerResultsDiv, #timeline').on('click', '.resultsimg', function() {
             preview_result($(this).closest('.activityDiv'));return false;});
 
@@ -105,15 +116,15 @@ var loginname = LOOMA.loggedIn();
     //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
 
 //callback functions expected by looma-filecommands.js:
-callbacks ['clear'] = lessonclear;
-callbacks ['save']  = lessonsave;
-callbacks ['savetemplate']  = lessontemplatesave;
-//callbacks ['open']  = lessonopen;
-callbacks ['display'] = lessondisplay;
-callbacks ['modified'] = lessonmodified;
-callbacks ['showsearchitems'] = lessonshowsearchitems;
-callbacks ['checkpoint'] = lessoncheckpoint;
-callbacks ['undocheckpoint'] = lessonundocheckpoint;
+callbacks ['clear'] = evinew;
+callbacks ['save']  = evisave;
+callbacks ['savetemplate']  = evitemplatesave;
+//callbacks ['open']  = eviopen;
+callbacks ['display'] = evidisplay;
+callbacks ['modified'] = evimodified;
+callbacks ['showsearchitems'] = evishowsearchitemsopen;
+callbacks ['checkpoint'] = evicheckpoint;
+callbacks ['undocheckpoint'] = eviundocheckpoint;
 
 
 /*  variable assignments expected by looma-filecommands.js:  */
@@ -123,32 +134,110 @@ currentfiletype = 'evi';   //currentfiletype   is defined in looma-filecommands.
 
 $('#search-form  #collection').val('edited_videos');
 
-function lessonshowsearchitems() {
-                    $('#evi-chk').show();
-                    // for TEXT EDIT, only show "text", clicked and disabled
-                    $('#evi-chk input').attr('checked', true).css('opacity', 0.5);
-                    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
-                    $('#evi-chk input').click(function() {return false;});
+function evishowsearchitemsopen() {
+    $('#search-form  #collection').val('edited_videos');
+
+    $('#evi-chk').show();
+    // for TEXT EDIT, only show "text", clicked and disabled
+    $('#evi-chk input').attr('checked', true).css('opacity', 0.5);
+    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
+    $('#evi-chk input').click(function() {return false;});
 
 };
 
-function lessoncheckpoint() {         savedTimeline =   $timeline.html(); };
-function lessonundocheckpoint() {     $timeline.html(    savedTimeline);     };  //not used now??
-function lessonmodified()   {
+function evishowsearchitemsnew() {
+    $('#search-form  #collection').val('activities');
+
+    $('#vid-chk').show();
+    // for TEXT EDIT, only show "text", clicked and disabled
+    $('#vid-chk input').attr('checked', true).css('opacity', 0.5);
+    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
+    $('#vid-chk input').click(function() {return false;});
+
+};
+
+function evicheckpoint() {         savedTimeline =   $timeline.html(); };
+function eviundocheckpoint() {     $timeline.html(    savedTimeline);     };  //not used now??
+function evimodified()   {
     return (savedTimeline !== $timeline.html());};
 
-function lessonclear() {
+function evinew()
+{
+    eviclear();
 
-       setname("");
-       //currentid="";
-       $timeline.empty();
-       clearFilter();
-       lessoncheckpoint();
+    callbacks ['showsearchitems'] = evishowsearchitemsnew;
+
+    opensearch(true);
+
+    $('#search-results').on('click', 'button', function()
+    {
+      closesearch();
+      if ($(this).attr('id') !== 'cancel-results') //if file not found, dont call OPEN()
+        {
+            vid_selected = true;
+            $('#del_video').remove();
+            $('#del_label').remove();
+            $('#del_div').remove();
+            $('#div_search').show();
+            $('#div_filetypes').show();
+            $('#clear_button').show();
+            $('#search_label').html("Name:");
+            $('<br>').insertAfter('#searchString');
+            $('#div_categories').css("width", "25vw")
+            $('.filter_label').css("margin-left", "auto");
+
+            mainThumbSrc = $(this).find('.thumbnaildiv')[0].firstChild.src;
+            setname(this.title + " Edited");
+
+            var video_id = $(this).data('id');
+
+            $.post("looma-database-utilities.php",
+            {
+                cmd: "openByID", collection: 'activities', id: video_id},
+                function(result) {
+                display_video(result, video_id);
+            },
+            'json');
+        }
+    });
+
+    $('#cancel-search').on('click', function() {
+       closesearch();
+    });
+
+    callbacks ['showsearchitems'] = evishowsearchitemsopen;
+}
+
+function eviclear() {
+
+    clearFilter();
+
+    if(vid_selected)
+    {
+      clearFilter();
+      $('#video-area').remove();
+      $('#title-area').remove();
+      $('#media-controls').remove();
+      firstTimeVideoHTMLDeletion();
+      vid_selected = false;
+      $('#del_video').prop("checked", true);
+      $('#div_categories br').remove();
+      $('#div_categories').css("width", "60vw")
+      $('.filter_label').css("margin-left", "1vw");
+    }
+
+    timeline_times = [];
+    timeline_id = [];
+    id_counter = 0;
+    setname("");
+    //currentid="";
+    $timeline.empty();
+    evicheckpoint();
 };
 
-lessonclear();
+evinew();
 
-function lessonpack (html) { // pack the timeline into an array of collection/id pairs for storage
+function evipack (html) { // pack the timeline into an array of collection/id pairs for storage
     var packitem;
     var packarray = [];
 
@@ -167,9 +256,9 @@ function lessonpack (html) { // pack the timeline into an array of collection/id
         });
 
     return packarray;
-}; //end lessonpack()
+}; //end evipack()
 
-function lessonunpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
+function eviunpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
     var newDiv;
     var timeArray = [];
 
@@ -177,7 +266,6 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
     // also set filename, [and collection??]
 
     //$('#timelineDisplay').empty();
-    lessonclear();
 
     setname(response.dn);
 
@@ -210,6 +298,16 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
           );
     });
 
+    if(response.thumb) 
+    {
+      mainThumbSrc = response.thumb;
+    }
+    else
+    {
+      //FIX LATER
+      mainThumbSrc = "";
+    }
+
     //makesortable();
     $('#del_video').remove();
     $('#del_label').remove();
@@ -217,24 +315,57 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
     $('#div_search').show();
     $('#div_filetypes').show();
     $('#clear_button').show();
+    $('#search_label').html("Name:")
     clearFilter();
-    vid_selected = "true";
-}; //end lessonunpack()
+    vid_selected = true;
+    $('<br>').insertAfter('#searchString');
+    $('#div_categories').css("width", "25vw")
+    $('.filter_label').css("margin-left", "auto");
+}; //end eviunpack()
 
-function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response));};
+function evidisplay (response) 
+{
+  clearFilter(); 
+  $timeline.html(eviunpack(response));
+};
 
-function lessonsave(name) {
-    savefile(name, 'edited_videos', 'evi', lessonpack($timeline.html()), true);
-}; //end lessonsave()
+function evisave(name) {
+    saveEviFile(name, 'edited_videos', 'evi', evipack($timeline.html()), mainThumbSrc, true);
+}; //end evisave()
 
-function lessontemplatesave(name) {
-    savefile(name, 'edited_videos', 'evi' + '-template', lessonpack($timeline.html()), false);
-}; //end lessontemplatesave()
+function evitemplatesave(name) {
+    saveEviFile(name, 'edited_videos', 'evi' + '-template', evipack($timeline.html()), mainThumbSrc, false);
+}; //end evitemplatesave()
+
+function saveEviFile(name, collection, filetype, data, thumb, activityFlag) {  //filetype must be given as 'text' or 'text-template'
+
+         console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + filetype + 'and with data: ' + data);
+         $.post("looma-database-utilities.php",
+                {cmd: "save",
+                 collection: collection,
+                 dn: escapeHTML(name),
+                 ft: filetype,
+                 data: data,
+                 thumb: thumb,
+                 activity:activityFlag}, //need to use escapeHtml() with POST??
+
+                 function(response) {
+                    callbacks['checkpoint']();
+                    if (response['_id']) {
+                       console.log("SAVE: upserted ID = ", response['_id']['$id']);
+                    }
+                    else {
+                      console.log("SAVE: didn't work?");
+                    }
+                 },
+                 'json'
+              );
+}; //end SAVEFILE()
 
 // end FILE COMMANDS stuff
 
 
-// search for ACTIVITIES (and CHAPTERS) to use in the lesson plan
+// search for ACTIVITIES (and CHAPTERS) to use in the evi plan
 // when search button is clicked - submit the 'search' form to looma-database.search.php
             $('#search').submit(function( event ) {
                   event.preventDefault();
@@ -258,7 +389,6 @@ function lessontemplatesave(name) {
                         // and returns an array of objects which are mongo documents that match the search criteria from the form
                         if(vid_selected == false) {
                             $.post( "looma-database-utilities.php",
-                                //UNHARD CODE LATER PLS***********************************************************************
                                 $( "#search" ).serialize() + "&type[]=video",
                                     function (result) {
                                         loadingmessage.remove();
@@ -324,7 +454,8 @@ var clearFilter = function() {
      console.log('clearFilter');
 
    $('#previewpanel').hide();
-
+   $('#clearPreview').hide();
+     
    if ($('#collection').val() == 'activities') {
          $('#searchString').val("");
          $(".filter_dropdown").each(function() { this.selectedIndex = 0; });
@@ -348,7 +479,7 @@ var isFilterSet = function() {
         }
 
         $(".filter_checkbox").each(function() {
-          if (this.checked) {
+          if (this.checked) { 
             set = true;
           }
          });
@@ -774,7 +905,7 @@ var createActivityDiv = function(activity) {
 ///////////////////////////////////////////////////////////////
 
 var display_video = function(item, id) {
-
+  console.log(item)
 
     $('vidpanel').append($("<p/>", {html : "Loading preview..."}));
 
@@ -795,7 +926,7 @@ var display_video = function(item, id) {
       var filename = item.fn;
       var filepath;
       $(item).attr('data-id', id)
-    }
+    }   
 
         //console.log ("collection is " + collection + " filename is " + filename + " and filetype is " + filetype);
 
@@ -830,13 +961,15 @@ var display_video = function(item, id) {
                     '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
                 '</div>';
 
-            attachMediaControls(document.getElementById("master_video"));  //hook up event listeners to the audio and video HTML
+              clearFilter();
+              attachMediaControls(document.getElementById("master_video"));  //hook up event listeners to the audio and video HTML
 
               $('#master_video').attr('data-collection', collection);
               $('#master_video').attr('data-id', $(item).attr('data-id'));
         }
     }
-}
+    $('#clearPreview').click(clearPreview);
+}   
 
 
 // When you click the preview button
@@ -990,7 +1123,6 @@ function insertTimelineElement(source, open) {
         id_counter += 1;
 
         var time = 0;
-
         if(open)
         {
           time = source.getAttribute("data-time");
@@ -999,11 +1131,11 @@ function insertTimelineElement(source, open) {
         {
           var timeString = $('.master_time').html();
 
-          if(timeString.length > 6)
+          if(timeString.length > 6) 
           {
             time = (parseInt(timeString) * (60*60)) + (parseInt(timeString.substring(timeString.length - 4)) * 60) + parseInt(timeString.substring(timeString.length - 2));
           }
-          else
+          else 
           {
             time = (parseInt(timeString) * 60) + parseInt(timeString.substring(timeString.length - 2));
           }
@@ -1013,17 +1145,17 @@ function insertTimelineElement(source, open) {
         $dest.attr("data-time", time);
 
         var index = 0;
-        while(index < timeline_times.length && time >= timeline_times[index])
+        while(index < timeline_times.length && parseInt(time) >= parseInt(timeline_times[index])) 
         {
           index += 1;
         }
 
-        if(index == timeline_times.length)
+        if(index == timeline_times.length) 
         {
           timeline_times.push(time);
           timeline_id.push(new_id)
         }
-        else
+        else 
         {
           var backwards_index = timeline_times.length - 1;
           while(index <= backwards_index)
@@ -1038,25 +1170,54 @@ function insertTimelineElement(source, open) {
               timeline_times[backwards_index] = timeline_times[backwards_index - 1];
               timeline_id[backwards_index] = timeline_id[backwards_index - 1];
             }
-            backwards_index -= 1;
+            backwards_index -= 1;  
           }
           timeline_times[index] = time;
           timeline_id[index] = new_id;
         }
+        var timeText;
 
+        if(open) 
+        {
+          if(time >= 3600) 
+          {
+            timeText = Math.floor(time/3600) + ":" + ((time/60)%60) + ":" + (time%3600);
+          }
+          else 
+          {
+            if(time%60 < 10)
+            {
+              timeText = Math.floor(time/60) + ":" + 0 + (time%60);
+            }
+            else{
+              timeText = Math.floor(time/60) + ":" + (time%60);
+            }
+          }
+        }
+        else
+        {
+          timeText = timeString;
+        }
+
+        $("<div/>", {
+            class : "time_popup",
+        }).text(timeText).appendTo($dest);
+
+        $dest[0].className += " timelineElement";
+        console.log($dest);
         if(index == timeline_times.length - 1)
         {
           $dest.appendTo("#timelineDisplay");
         }
-        else
+        else 
         {
-          $dest.insertBefore($('#' + timeline_id[index + 1]));
+          $dest.insertBefore($('#' + timeline_id[index + 1]));  
         }
 
         // scroll the timeline so that the new element is in the middle - animated to slow scrolling
         $('#timeline').animate( { scrollLeft: $dest.outerWidth(true) * ( $dest.index() - 4 ) }, 100);
 
-        //refreshsortable();  //TIMELINE elements can be drag'n'dropped
+        $('.timelineElement').off().hover(function() {$('.time_popup').show();}, function() {$('.time_popup').hide();})
 
 }; //end insertTimelineElement()
 
@@ -1073,6 +1234,12 @@ var removeTimelineElement = function(elem) {
         $(elem).closest('.activityDiv').remove();
 
 };
+
+function clearPreview() {
+  $('#previewpanel').hide();
+  $('#previewpanel').empty();
+  $('#clearPreview').hide();
+}
 
 
 /*/////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
@@ -1333,7 +1500,8 @@ var initializeDOM = function() {
 
         $("<span/>", {
             class : "filter_label",
-            html : "Name:     ",
+            id : "search_label",
+            html : "Name:",
         }).appendTo("#div_categories");
 
         $("<input/>", {
@@ -1344,7 +1512,7 @@ var initializeDOM = function() {
             name : "search-term",
         }).appendTo("#div_categories");
 
-        $('<br>').appendTo("#div_categories");
+        //$('<br>').appendTo("#div_categories");
 
         $("<span/>", {
             class : "filter_label",
@@ -1437,6 +1605,8 @@ var firstTimeVideoHTMLDeletion = function() {
         }).appendTo("#search");
 
     $("#del_div").html("Please select a video to edit");
+    $('#search_label').html("Base Video Name:")
+    $('#div_categories').css("width", "60vw")
 };
 
 

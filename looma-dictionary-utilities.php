@@ -24,7 +24,7 @@ $page_title = 'Looma';
 *		ADD:    takes a JSON object {en:"word", np:"nepaliword", defn:"definition", img: "filename of picture"}
 *				validates properties and inserts the word in the database
 *				and returns success: TRUE or FALSE
-*		LIST: takes an object {class, subject, [count], [boolean]} and returns an array of english words
+*		LIST: takes an object {class, subject, [ch_id], [count], [boolean]} and returns an array of english words
 *				matching the filter criteria,
 *				length=count and randomized if boolean=true
 */
@@ -38,68 +38,49 @@ if (isset($_GET["cmd"]))
 	$cmd = $_GET["cmd"];
 	switch ($cmd)
 	{
-	case "lookup":
+
+    ////////////////////////////
+    ////// command LOOKUP   ////
+    ////////////////////////////
+
+    case "lookup":
 		// lookup $_GET["word"] in the dictionary and return an object describing the word
 		if(isset($_GET["word"]))
-		{
-			$englishWord = trim($_GET["word"]);
+		{   $englishWord = trim($_GET["word"]);
 
 			$query = array('en' => new MongoRegex("/^$englishWord$/i"));  //NOTE: using regex to do a case insensitive search for the word
 			$word = $dictionary_collection -> findOne($query);
 			if($word != null)
-			{
-				//Add fields with blanks to avoid errors on code that recieves words
-
-				if(!array_key_exists('np', $word))
-				{
-					$word['np'] = '';
-				}
-				if(!array_key_exists('en', $word))
-				{
-					$word['en'] = '';
-				}
-				if(!array_key_exists('rw', $word))
-				{
-					$word['rw'] = '';
-				}
-				if(!array_key_exists('part', $word))
-				{
-					$word['part'] = '';
-				}
-				if(!array_key_exists('def', $word))
-				{
-					$word['def'] = '';
-				}
-				if(!array_key_exists('phon', $word))
-				{
-					$word['phon'] = '';
-				}
-				if(!array_key_exists('img', $word))
-				{
-					$word['img'] = '';
-				}
-				if(!array_key_exists('ch_id', $word))
-				{
-					$word['ch_id'] = '';
-				}
+			{   //Add fields with blanks to avoid errors on code that recieves words
+				if(!array_key_exists('np', $word))    $word['np'] = '';
+				if(!array_key_exists('en', $word))    $word['en'] = '';
+				if(!array_key_exists('rw', $word))    $word['rw'] = '';
+				if(!array_key_exists('part', $word))  $word['part'] = '';
+				if(!array_key_exists('def', $word))   $word['def'] = '';
+				if(!array_key_exists('phon', $word))  $word['phon'] = '';
+				if(!array_key_exists('img', $word))   $word['img'] = '';
+				if(!array_key_exists('ch_id', $word)) $word['ch_id'] = '';
 				$word = json_encode($word);
 				echo $word . "\n";
 			}
 			else
-			{
-				$failed = array('en' => $englishWord,'np' => '', 'ch_id' => '', 'def' => 'Word not found','phon' => '','img' => '');
+			{   $failed = array('en' => $englishWord,'np' => '', 'ch_id' => '', 'def' => 'Word not found','phon' => '','img' => '');
 				$failed = json_encode($failed);
 				echo "$failed";
 			}
 		}
 		else
-		{
-			$failed = array('en' => '','np' => '', 'ch_id' => '', 'def' => 'word not found','phon' => '','img' => '');
+		{   $failed = array('en' => '','np' => '', 'ch_id' => '', 'def' => 'word not found','phon' => '','img' => '');
 			$failed = json_encode($failed);
 			echo "$failed";
 		}
 		exit(); //end LOOKUP cmd
-	case "add":
+
+    ////////////////////////////
+    ////// command ADD   //////
+    ////////////////////////////
+
+    case "add":
 		// add a word to the dictionary using the object passed in, return T/F for success
 		// add a word only if it contains at the very least an english and nepali form of the word
 		if(isset($_GET["en"]) && isset($_GET["np"]))
@@ -137,42 +118,19 @@ if (isset($_GET["cmd"]))
 		{
 			echo "false";
 			exit();
-		}  // end ADD cmd
+		};  // end ADD cmd
+
+    ////////////////////////////
+	////// command LIST   //////
+	////////////////////////////
+
 	case "list":
-		// given "class", "subj" OR "ch_id" and [opitonally] "count" and "random" (boolean),
+		// given "class", "subj" OR "ch_id" and [optionally] "count" and "random" (boolean),
 		// return an array of 'count' words that match class&subj or ch_id
 
-		//In the event that random isn't set, we set it to false by default
-		$randomValues =  array('true','false');
-		if(isset($_GET["random"]))
-		{
-			if($_GET["random"] != "" && in_array($_GET["random"], $randomValues))
-				$random = $_GET["random"];
-			else
-				$random = 'false';
-		}
-		else
-		{
-			$random = "false";
-		}
+		$random =   (isset($_GET["random"])? ($_GET["random"] == "true") : true);
 
-		//Makes sure that count is set to a reasonable number
-		//If count is not set, set it to default
-		if(isset($_GET["count"]))
-		{
-			if($_GET["count"] > 0 && $_GET["count"] < $MAX_NUM)
-			{
-				$maxCount = $_GET["count"];
-			}
-			else
-			{
-				$maxCount = $DEFAULT_NUM;
-			}
-		}
-		else
-		{
-			$maxCount = $DEFAULT_NUM;
-		}
+        $maxCount = (isset($_GET["count"]) ? min(max(0,$_GET['count']),$MAX_NUM) : $DEFAULT_NUM);
 
 		$classes = array('class1','class2','class3','class4','class5','class6','class7','class8');
 		$subjects = array('english','math','social studies','science');
@@ -180,38 +138,24 @@ if (isset($_GET["cmd"]))
 		//Ensure that classes and subjects sent are valid types
 		$hasClass = false;
 		if(isset($_GET["class"]))
-		{
-			if($_GET["class"] != "" && in_array($_GET["class"], $classes))
-			{
-				$hasClass = true;
-			}
-		}
+			if($_GET["class"] != ""   && in_array($_GET["class"],   $classes)) $hasClass = true;
+
 		$hasSubject = false;
 		if(isset($_GET["subject"]))
-		{
-			if($_GET["subject"] != "" && in_array($_GET["subject"], $subjects))
-			{
-				$hasSubject = true;
-			}
-		}
+			if($_GET["subject"] != "" && in_array($_GET["subject"], $subjects)) $hasSubject = true;
 
 		//Tests to see if the parameter ch_id has been set, if it has been set and is valid it will override class and subject parameters
 		$hasValidChapterId = false;
 		if(isset($_GET["ch_id"]))
 		{
 			$ch_id = $_GET["ch_id"];
-			if(preg_match("/^[1-8](EN|S|M|SS|N)[0-9]{2}$/", $ch_id) || preg_match("/^[1-8](EN|S|M|SS|N)[0-9]{1,2}.[0-9]{2}$/", $ch_id))
-			{
+			if(preg_match("/^[1-8](EN|S|M|SS|N)[0-9]{2}(\.[0-9]{2})?$/", $ch_id))
 				$hasValidChapterId = true;
-			}
 		}
 
-		//Querties on chapter id if possible, then either class or subject if necessary, else just give random words
+		//Queries on chapter id if present, then either class or subject if necessary, else just give random words
 		$hasChapterId = true;
-		if($hasValidChapterId)
-		{
-			$startChapterId = $_GET["ch_id"];
-		}
+		if($hasValidChapterId) 	$startChapterId = $_GET["ch_id"];
 		else if($hasClass && $hasSubject)
 		{
 			$class = $_GET["class"];
@@ -219,22 +163,10 @@ if (isset($_GET["cmd"]))
 			//Gets the Class Number from the Class parameter
 			$startChapterId = substr($class, 5);
 			//Generates the Letter Abbreviation for the class and adds it to the number
-			if($subject == "english")
-			{
-				$startChapterId .= "EN";
-			}
-			else if($subject == "science")
-			{
-				$startChapterId .= "S[0-9]";
-			}
-			else if($subject == "math")
-			{
-				$startChapterId .= "M";
-			}
-			else if($subject == "social studies")
-			{
-				$startChapterId .= "SS";
-			}
+			if($subject == "english")      $startChapterId .= "EN";
+			else if($subject == "science") $startChapterId .= "S[0-9]";
+			else if($subject == "math")    $startChapterId .= "M";
+			else if($subject == "social studies")	$startChapterId .= "SS";
 		}
 		else if($hasClass)
 		{
@@ -247,22 +179,10 @@ if (isset($_GET["cmd"]))
 			//Handles providing words if only a subject is provided
 			$startChapterId = "[1-8]";
 			$subject = $_GET["subject"];
-			if($subject == "english")
-			{
-				$startChapterId .= "EN";
-			}
-			else if($subject == "science")
-			{
-				$startChapterId .= "S[0-9]";
-			}
-			else if($subject == "math")
-			{
-				$startChapterId .= "M";
-			}
-			else if($subject == "social studies")
-			{
-				$startChapterId .= "SS";
-			}
+			     if($subject == "english")  $startChapterId .= "EN";
+			else if($subject == "science")  $startChapterId .= "S[0-9]";
+			else if($subject == "math") 	$startChapterId .= "M";
+			else if($subject == "social studies") $startChapterId .= "SS";
 		}
 		else
 		{
@@ -274,20 +194,31 @@ if (isset($_GET["cmd"]))
 		//If count is set then they have specified they want a certain number of words
 		//If not we return all results that match
 		//Ensures that we never send more than $MAX_NUM records
-		if($random === "true")
+
+		//DEBUG: echo "random: $random, startChapterId: $startChapterId";
+
+		if($random)
 		{
-			//Uses fields within the words called rand to get a random document
+            // Should rewrite this to use $sample [mongo3.2 and later]
+
+			// Uses fields within the dictionary called rand to get a random document
 			$list = array();
+            $count = 0;
+
 			for($count = 0; $count < $maxCount; $count++)
 			{
+				//$newWord = null;
 				$value = (float)rand()/(float)getrandmax();
+
+                //echo 'random value is: ' . $value;
+
 				//Manages searches to work with randomization
-				if($hasChapterId)
+			if($hasChapterId)
 				{
 					$query = array('rand' => array('$gt' => $value), 'ch_id' => array('$regex' => new MongoRegex("/^$startChapterId/i")));
 					$newWord = $dictionary_collection -> findOne($query);
 					//A test in case we generate a number that is too high
-					if($newWord == null)
+					if(!$newWord)
 					{
 						$query = array('rand' => array('$lt' => $value), 'ch_id' => array('$regex' => new MongoRegex("/^$startChapterId/i")));
 						$newWord = $dictionary_collection -> findOne($query);
@@ -298,17 +229,26 @@ if (isset($_GET["cmd"]))
 					$query = array('rand' => array('$gt' => $value));
 					$newWord = $dictionary_collection -> findOne($query);
 					//A test in case we generate a number that is too high
-					if($newWord == null)
+					if(!$newWord)
 					{
 						$query = array('rand' => array('$lt' => $value));
 						$newWord = $dictionary_collection -> findOne($query);
 					}
 				}
-				$w_en = array_key_exists('en', $newWord) ? $newWord['en'] : null;
-				array_push($list, $w_en);
+
+				if (($newWord) &&
+				    array_key_exists('en', $newWord) &&
+				    ! in_array($newWord['en'], $list))
+				    {
+				        $count += 1;
+				        array_push($list, $newWord['en']);
+				    }
 			}
+
+//echo "count: $count, maxCount: $maxCount, list:";
+//for ($i=0;$i<count($list);$i++) echo $list[$i];
 		}
-		else
+		else  //not RANDOM list
 		{
 			//Just return the list in the order they appear in the database
 			$list = array();
@@ -324,10 +264,7 @@ if (isset($_GET["cmd"]))
 			$words->limit($maxCount);
 			$words = iterator_to_array($words);
 			foreach ($words as $newWord)
-			{
-				$w_en = array_key_exists('en', $newWord) ? $newWord['en'] : null;
-				array_push($list, $w_en);
-			}
+			    if (array_key_exists('en', $newWord)) array_push($list, $newWord['en']);
 		}
 		$list = json_encode($list) . "\n";
 		echo $list;

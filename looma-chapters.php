@@ -79,7 +79,11 @@ for a textbook (class/subject) for Looma 2
 
 			else                echo "<th></th>";
 
-			echo "<th><button class='heading img' id='activitiesTitle' disabled>"; keyword('Activities'); echo "</button></th>";
+			echo "<th>";
+                echo "<button class='heading  lesson'  disabled>"; keyword('Lesson'); echo "</button>";
+                echo "<button class='heading  activities' id='activitiesTitle' disabled>"; keyword('Activities'); echo "</button>";
+			echo "</th>";
+
 			echo "</tr>";
 
 			//echo "<br>DEBUG: displayname:  " . $tb_dn . ", file: " . $tb_fn . ", path: " . $tb_fp;
@@ -143,7 +147,33 @@ for a textbook (class/subject) for Looma 2
 						  }
 				else {echo "<td><button class='chapter' style='visibility: hidden'></button></dt>";}
 
-				// finally, display a button for the activities of this chapter wiht data-activity=CHAPTER_ID key value
+
+                // display a button for the lesson plans for this chapter with data-activity=CHAPTER_ID key value
+                // first check whether there are any activities for this chapter and make the button do not display the button if not
+
+                //get the activities for this chapter
+                $query = array('ch_id' => $ch_id);
+                //returns only these fields of the activity record
+                $projection = array('_id' => 0,
+                                'ch_id' => 1,
+                                );
+
+                echo "<td>";
+
+                //check in the database to see if there are any LESSON PLANS for this CHAPTER. if so, create a button
+                $lessons = $lessons_collection -> findOne($query, $projection);
+
+                if ($lessons) {
+                    echo "<button class='lesson'
+                            data-ch='$ch_id'
+                            data-chdn='$ch_dn'>";
+                    keyword('Lesson');
+                    echo "</button>";
+                }
+
+
+
+				// finally, display a button for the activities of this chapter with data-activity=CHAPTER_ID key value
 				// first check whether there are any activities for this chapter and make the button invisible if not
 
 				//get the activities for this chapter
@@ -157,12 +187,13 @@ for a textbook (class/subject) for Looma 2
 				$activities = $activities_collection -> findOne($query, $projection);
 
 				if ($activities) {
-					echo "<td><button class='activity'
+					echo "<button class='activities'
 							data-ch='$ch_id'
 							data-chdn='$ch_dn'>";
 					keyword('Activities');
-					echo "</button></td>";
+					echo "</button>";
 				}
+                echo "</td>";
 
 				echo "</tr>";
 			}

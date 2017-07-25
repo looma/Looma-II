@@ -34,6 +34,19 @@ Description:  for Looma 2
 		<!-- THIS LIST SHOULD BE IN A MONGO COLLECTION -->
                <p>Akshay Srivatsan</p>
                <p>Niko Bhatia</p>
+               <p>Alexa Thomases</p>
+               <p>Catie Cassani</p>
+               <p>May Li</p>
+               <p>Vivian Liu</p>
+               <p>Ally Stuart</p>
+               <p>Keeton Martin</p>
+               <p>Mohini Gupta</p>
+               <p>Matthew Phua</p>
+               <p>Julia Wang</p>
+               <p>Mahir Arora</p>
+               <p>Kendall Weingart</p>
+               <p>Taasin Saquib</p>
+               <p>Bo Leschly</p>
                <p>Aaron Brown</p>
                <p>Colton Conley</p>
                <p>Ian Costello</p>

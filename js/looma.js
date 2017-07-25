@@ -125,6 +125,6 @@ $(document).ready (function() {
         var toString = window.getSelection().toString();
         console.log ('selected text to lookup: "', toString, '"');
        // LOOMA.lookupWord(toString);
-        LOOMA.popupDefinition(toString);
+        LOOMA.popupDefinition(toString, 15);
     });
 }); //end of document.ready anonymous function

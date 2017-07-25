@@ -1,23 +1,26 @@
-/*
-Author: Alexa Thomases, Catie Cassani, May Li
-Filename: looma-history.php
+ /*
+Author: Alexa Thomases, May Li, Catie Cassani
+Filename: looma-history.css
+Verion: 2.0
 Date: July 2017
-Description: Creates a timeline with search and hover functions. Information accessed through database.
+Description:  
 */
 
 /*Framework for the buttons (which generally contain the titles of each event)*/
 button {
   border: none;
   cursor: pointer;
-  outline: none;
+  outline: none; 
 }
 
+/* Controls the font size of the header so it doesn't change in different Looma themes */
 h1 {
-  font-size:2em;
+  font-size: 3em;
+  margin-top: 3vh;
 }
 
 /* TIMELINE
-â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“â€“ */
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 /*Makes it so that the lines and text of the timeline 
   don't stack together and make the timeline look confusing*/
@@ -29,7 +32,7 @@ h1 {
 .timeline ol {
   font-size: 0;
   width: 100vw;
-  padding: 19vh 0;
+  padding: 18vh 0; 
 }
 
 /*The display of the line of the timeline*/
@@ -37,9 +40,10 @@ h1 {
   position: relative;
   display: inline-block;
   list-style-type: none;
-  width: 25vw;
-  height: 0.5vh;
-  background: #ff0;
+  left: -20vh;
+  width: 30vw;
+  height: 0.5vh; 
+  background: #ff0; 
 }
 
 
@@ -54,21 +58,22 @@ h1 {
   content: '';
   position: absolute;
   top: 50%;
-  left: calc(100% + 1px);
+  left: calc(100% + 0.5vw); 
   bottom: 0;
-  width: 12px;
-  height: 12px;
+  width: 4vw; 
+  height: 4vh; /* 1vh is about 4px !!!! */
   transform: translateY(-50%);
   border-radius: 50%; /*Determines the "roundness" of each point*/
+  /* background: #ffff00; */
   display:none;
 }
 
 /*The positioning of the event information 
 (in the div of each list item)*/
 .timeline ol li div {
-  left: calc(100% + 2vw);
+  left: calc(100% + 2vw); 
   width: 35vw;
-  padding: 4vh;
+  padding: 4vh; 
   font-size: 1rem;
   white-space: normal;
   color: black; /*The color of the hover text*/
@@ -83,7 +88,7 @@ h1 {
 }
 
 /*Keeps the timeline within a window*/
-@media screen and (max-width: 90vw) {
+@media screen and (max-width: 90vw) { 
   .timeline ol,
   .timeline ol li {
     width: auto; 
@@ -95,22 +100,28 @@ h1 {
 #playground {
     margin: 1vh 2vw;
     padding: 3em 1em;
-    border: 0.1vh solid #ccc;
+    border: 0.1vh solid #ccc; 
     overflow-x: auto;
     overflow-y: hidden;
-    max-height: 80%;
+    max-height: 75%;
+    margin-top: 3vh;
+}
+
+::-webkit-scrollbar { 
+  width: 7vw; 
+  height: 6vh; 
 }
 
 input#keywords {display:inline;}
 
 /*Keeps the timeline event buttons centered above the timeline points*/
 .timeline li .timeline-description {
-  border-radius: 0.2vh;
+  border-radius: 0.2vh; 
   float: left;
-  padding: 2vh;
+  padding: 2vh; 
   width: 42%;
-  left:0vw;
-  position:relative;
+  left: 0vw; 
+  position:absolute;
   z-index:10;
 }
 
@@ -120,16 +131,32 @@ input#keywords {display:inline;}
   font-size: 24;
 }
 
+ .dropdown-content {
+  display: none;
+  /* background-color: #ffffff; */
+  font: 1.5em "Comic Sans MS", serif, bold; 
+  border-color: white;
+  height:inherit;
+  width:inherit;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  font: 1.5em; 
+
+}
+
 
 /*The display of the timeline event button*/
 .dropbtn {
   padding: 2vh;
-  /*margin-top:10px;*/
-  font: 2.5em "Comic Sans MS", serif, bold;
+  font: 2.5em "Comic Sans MS", serif, bold; 
   cursor: pointer;
   width:100%;
-  min-width: 10vw;
+  min-width: 8vw;
+  /* margin-top: 1vh; */
+  /*margin-bottom: 3vh; */
   height: inherit;
+  /* background-color: #FFFFFF; */
+  /* color: black; */
+  /* background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
 }
 
 .dropdate {
@@ -139,13 +166,14 @@ input#keywords {display:inline;}
   height: inherit;
   padding: 2vh;
   margin-top: 1vh;
+  background: #dadaff;
 }
 
 /*Keeps the even timeline event buttons 
   properly spaced above the hover texts*/
 .timeline ol li:nth-child(odd) div .dropdate{
   margin-bottom: -8.7vh;
-  margin-top:0.5vh;
+  margin-top: 0.5vh;
 }
 
 .timeline ol li:nth-child(even) div .dropdate{
@@ -166,21 +194,21 @@ button img {height:100%;width:100%;}
 /*The display of the left-scrolling button*/
 .scrollButtonLeft {
   position: fixed;
-  top:3vh;
-  right:35vw;
+  top:2vh;
+  right:30vw;
   width: 6vw;
-  height:10.2vh;
-  padding: 2vh;
+  height: 10.2vh;
+  padding: 2vh; 
   cursor: pointer;
-  min-width: 7.5vw;
-  border-radius: 2vh;
+  min-width: 7.5vw; 
+  border-radius: 2vh; 
 }
 
 /*The display of the right-scrolling button*/
 .scrollButtonRight {
   position: fixed;
-  top:3vh;
-  right:25vw;
+  top:2vh;
+  right:21vw;
   width: 6vw;
   height: 10.2vh;
   padding: 2vh;
@@ -192,24 +220,14 @@ button img {height:100%;width:100%;}
 /*The display of the return to the leftmost side button*/
 .returnToLeftmost {
   position: fixed;
-  top:3vh;
-  right:15vw;
+  top:2vh;
+  right:12vw;
   width: 7vw;
-  height: 10.2vh;
+  height: 10.2vh; /* !!!!! */
   padding: 2vh;
   cursor: pointer;
   min-width: 7.5vw;
   border-radius: 2vh;
-}
-
-button.lookup {
-  top:3vh;
-  right:5vw;
-}
-
-button.speak {
-  top:15vh;
-  right:5vw;
 }
 
 /*The display of the Search label*/
@@ -222,13 +240,48 @@ label {
 
 /*The display of the search bar*/
 .searchBar {
-  font: 18px "Comic Sans MS", serif, bold;
+  font: 1.5em "Comic Sans MS", serif, bold;
   display:inline;
   float:left;
   margin:3vh 15px;
-  width: 30vw;
+  width: 23vw;;
   height: 7vh;
-  border-radius: 10px;
+  border-radius: 2vh;
+}
+
+.show-keyboard-button {
+  position: absolute;
+  bottom: 76.5%;
+  left: 2%;
+  height: 10%;
+  width: 7.5%;
+}
+
+/*The display of the enter button*/
+#previous {
+ position: fixed;
+  top:3vh;
+  right:58vw;
+  width: 6vw;
+  height:7vh;
+  padding: 2vh;
+  cursor: pointer;
+  min-width: 7.5vw;
+  border-radius: 2vh;
+  font-size: 1.5em;
+}
+
+#next {
+ position: fixed;
+  top:3vh;
+  right:50vw;
+  width: 6vw;
+  height:7vh;
+  padding: 2vh;
+  cursor: pointer;
+  min-width: 7.5vw;
+  border-radius: 2vh;
+  font-size: 1.5em;
 }
 
 /* DROPBTN/POPUP WINDOW DISPLAY*/
@@ -239,6 +292,36 @@ label {
     left: 15%;
     width: 70%;
     overflow-y:hidden;
+}
+
+button.speak {
+    position: absolute;
+    top: 14vh;
+    right:2%;
+    height:10%;
+    width:7.5%;
+    z-index:1000;
+    opacity: 0.4;
+    background-image: url("../images/speech.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+    /*  img:src = images/speak.png */
+}
+
+button.lookup {
+    position: absolute;
+    top: 2vh;
+    right:2%;
+    height:10%;
+    width:7.5%;
+    z-index:1000;
+    opacity: 0.4;
+    background-image: url("../images/dictionary.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 75% 75%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
 }
 
 /* display of buttons on popup */
@@ -262,5 +345,3 @@ button.img.play, button.img.activity {
     background: red;
     width: 3vw;
 }
-
-::-webkit-scrollbar {height:6vh;}

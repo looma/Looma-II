@@ -21,18 +21,22 @@ Description: page with linke to arithmetic and vocabulary games
 		<div class="center">
 			<br><br><br><br>
 			<br><br><br><br>
-		<a href="looma-vocab.php">	
-			<button type="button" class="navigate" ><?php keyword('Vocabulary Games') ?>  </button>
-			</a>	
-	
+		<a href="looma-vocab.php">
+			<button type="button" class="img activity navigate" ><?php keyword('Vocabulary Games') ?>
+			 <img src="images/dictionary.png">
+			</button>
+			</a>
+
 		<a href="looma-arith.php">
-			<button type="button" class="navigate"><?php keyword('Arithmetic Games') ?>  </button>
-		</a>		
-		</div>	
+			<button type="button" class="img activity navigate"><?php keyword('Arithmetic Games') ?>
+			   <img src="images/calc.png">
+			</button>
+		</a>
+		</div>
 	</div>
-	
-	<?php include ('includes/toolbar.php'); ?>   	   		
-   	<?php include ('includes/js-includes.php'); ?>   	   		
+
+	<?php include ('includes/toolbar.php'); ?>
+   	<?php include ('includes/js-includes.php'); ?>
 
   </body>
 </html>

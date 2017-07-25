@@ -37,6 +37,7 @@ Description:
 
     }  //end activateSubject
 
+/*
     function classButtonClicked(){
         //called when a CLASS button is pressed
         className = this.getAttribute('id');
@@ -77,6 +78,25 @@ Description:
                             encodeURIComponent(className) +
                             "&subject=" +
                             encodeURIComponent(subjectName);
+
+        // could use jQuery $.get here instead of window.location?
+
+    };  //  end subjectButtonClicked()
+
+*/
+    function classButtonClicked(){
+        //called when a SUBJECT button is pressed
+        className = this.getAttribute('id');
+        LOOMA.setStore("vocab-class", className, 'local');  //set a COOKIE for SUBJECT (lifetime = this browser session)
+
+        //code here for 'remember subject visited'
+        //$("button.subject").setAttribute('visit', false);
+        //this.setAttribute('visit', true);
+        // add CSS to color 'visit=true' different from 'visit=false'
+
+        //send GET request to chapters.php with CLASS and SUBJECT values
+        window.location = "looma-vocab-flashcard.php?class=" +
+                            encodeURIComponent(className);
 
         // could use jQuery $.get here instead of window.location?
 

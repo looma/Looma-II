@@ -47,9 +47,32 @@ function activityButtonClicked(){
         // could use jQuery $.get here instead of window.location?
     };  //  end activityButtonClicked()
 
+function lessonButtonClicked(){
+        //called when a ACTIVITY button is pressed
+        var chapter_id = this.getAttribute('data-ch');
+        var chapter_dn = this.getAttribute('data-chdn');
+        LOOMA.setStore('chapter', chapter_id, 'local');    //set a COOKIE for CHAPTER
+        //document.cookie = "chapter=" + chapter_id;  //set a COOKIE for CHAPTER
+
+        //remember scroll position
+        LOOMA.setStore('scroll', $("#main-container-horizontal").scrollTop(), 'session');
+
+        var className = LOOMA.readStore("class", 'local');
+        var subject = LOOMA.readStore("subject", 'local');
+        //activities = JSON.stringify(activities);
+        //send GET request to chapters.php with CLASS and SUBJECT values
+        chapter_id = encodeURIComponent(chapter_id);
+        chapter_dn = encodeURIComponent(chapter_dn);
+        window.location = "looma-lesson-present.php?ch_id=" + chapter_id;
+        // could use jQuery $.get here instead of window.location?
+    };  //  end lessonButtonClicked()
+
+
+
 $(document).ready (function() {
     //add listeners to ACTIVITY and CHAPTER buttons
-    $("button.activity").click(activityButtonClicked);
+    $("button.activities").click(activityButtonClicked);
+    $("button.lesson").click(lessonButtonClicked);
     $("button.chapter").click(chapterButtonClicked);
 
     // check cookies to see if there is an active CHAPTER
@@ -58,7 +81,8 @@ $(document).ready (function() {
     var chapterCookie = LOOMA.readStore('chapter', 'local');
     if (chapterCookie) {
         $('button.chapter[data-ch="' + chapterCookie + '"]').addClass('active');
-        $('button.activity[data-ch="' + chapterCookie + '"]').addClass('active');
+        $('button.activities[data-ch="' + chapterCookie + '"]').addClass('active');
+        $('button.lesson[data-ch="' + chapterCookie + '"]').addClass('active');
     };
 
     //scroll to prior scroll position

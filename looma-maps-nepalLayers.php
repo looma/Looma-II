@@ -1,24 +1,28 @@
 <html>
-  <head>
-    <title>Layer</title>
 
-    <?php $page_title = 'Layered Nepal Map';
-    	  include ('includes/header.php');
-    	?>
+    <?php $page_title = 'Nepal Layers';
+      include ('includes/header.php');
+      ?>
+    <link rel="stylesheet" href="css/looma-map.css">
+    <link rel="stylesheet" href="css/leaflet.css">
+    <link rel="stylesheet" href="css/looma-maps-nepalLayers.css" />
 
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css">
-    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-    <style>
-      #map {
-        height: 100%;
-        width: 100%;
-      }
-    </style>
-  </head>
   <body>
-    <?php include ('includes/toolbar.php'); ?>
-   	<?php include ('includes/js-includes.php'); ?>
+    <h2>Nepal Layers<h2>
+
+    <div id="main-container-horizontal">
+            <button id="fullscreen-control"></button><br>
+    </div>
+    <div class="viewer" id="fullscreen">
+
     <div id="map"></div>
+    <?php include ('includes/toolbar.php'); ?>
+    <?php include ('includes/js-includes.php'); ?>
+
+    <script src="js/leaflet.js"></script>
+    <script src="js/topojson.js"></script>
+    <script src="js/looma-screenfull.js"></script>
     <script src="js/looma-maps-nepalLayers.js"></script>
+
   </body>
 </html>

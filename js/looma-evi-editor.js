@@ -1167,8 +1167,8 @@ function insertTimelineElement(source, open) {
             }
             else
             {
-              timeline_times[backwards_index] = timeline_times[backwards_index - 1];
-              timeline_id[backwards_index] = timeline_id[backwards_index - 1];
+              timeline_times[backwards_index + 1] = timeline_times[backwards_index];
+              timeline_id[backwards_index + 1] = timeline_id[backwards_index];
             }
             backwards_index -= 1;  
           }
@@ -1204,7 +1204,7 @@ function insertTimelineElement(source, open) {
         }).text(timeText).appendTo($dest);
 
         $dest[0].className += " timelineElement";
-        console.log($dest);
+        
         if(index == timeline_times.length - 1)
         {
           $dest.appendTo("#timelineDisplay");

@@ -398,7 +398,7 @@ button#default-start-stop-time{
 }
 
 #image-overlay {
-    width: 100%;
+    width: auto;
     height: 100%;
 }
 

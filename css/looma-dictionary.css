@@ -1,7 +1,3 @@
-/*
-Author: Jayden, Grant, and Mahir
-Description: \looma-dictionary.css contains the style for looma-dictionary.php
-*/
 h2 {
     text-align:center;
     font-size: 25px;
@@ -36,34 +32,34 @@ button#submit {
 
 #theword{
     text-align: center;
-    font-size: 2em;/* mahir had this at 4em*/
+    font-size: 2em;
     font-weight:bolder;
 }
 
 #nepali{
     text-align: center;
-    font-size: 2em; /* mahir had this at 4em*/
+    font-size: 2em;
     font-weight:bolder;
 }
 #definition{
     text-align: center;
-    font-size: 1em; /* mahir had this at 1.67em*/
+    font-size: 1.67em;
     font-weight:bolder;
 }
 #rootWord{
     text-align: center;
-    font-size: 2em; /* mahir had this at 4em*/
+    font-size: 2em;
     font-weight:bolder;
 }
 
 #rwNepali{
     text-align: center;
-    font-size: 4em;
+    font-size: 2em;
     font-weight:bolder;
 }
 #rwDefinition{
     text-align: center;
-    font-size: 3em;
+    font-size: 2em;
     font-weight:bolder;
 }
 

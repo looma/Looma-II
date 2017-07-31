@@ -250,8 +250,6 @@ Description: Creates a timeline with search and hover functions. Information acc
 
     <?php include ('includes/js-includes.php'); ?>
 
-
-
     <script type="text/javascript" src="js/looma-hilitor-utf8.js"></script>
 
     <script type="text/javascript" src="js/looma-history.js"></script>

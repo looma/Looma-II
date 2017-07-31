@@ -253,6 +253,7 @@ window.onload = function () {
             imageArea.removeChild(currentImage);
             currentImage = null;
         }
+        $('#video').show();
     }
     function removeCurrentPdf()
     {
@@ -2840,6 +2841,7 @@ if (commands != null)
 		img.setAttribute("id", "image-overlay");
 		currentImage = img;
 		document.getElementById("image-area").appendChild(img);
+        $('#video').hide();
 	}
 
      function show_pdf(src) {

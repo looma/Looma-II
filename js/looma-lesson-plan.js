@@ -252,6 +252,15 @@ function lessontemplatesave(name) {
   //
         makesortable(); //makes the timeline sortable
 
+// from connor
+$('#timelineLeft').on('click', function(){
+        $('#timeline').animate({scrollLeft: '-=200px'}, 700);
+});
+$('#timelineRight').on('click', function(){
+        $('#timeline').animate({scrollLeft: '+=200px'}, 700);
+});
+// from connor
+
 };  //end window.onload()
 
 var changeCollection = function() {
@@ -1101,7 +1110,7 @@ var initializeDOM = function() {
             $("<label/>", {
                 class : "filter_label",
                 for : value.id,
-                style: "color:#00cc00;",
+                style: "color:#00b300;",
                 html : value.display
             }).appendTo("#div_filetypes");
 

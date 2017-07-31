@@ -46,11 +46,14 @@
                    <span class="hint">Preview Area</span>
                 </div>
 
-                <div id = "timeline">
-                    <div class="timelineEntire" id="timelineDisplay">
-                    <span class="hint">Timeline</span>
-                    </div>
-               </div>
+                <button type="button" id="timelineLeft" class="timelineScroll"><</button>
+                   <div id = "timeline">
+                        <div class="timelineEntire" id="timelineDisplay">
+                            <span class="hint">Timeline</span>
+                        </div>
+                   </div>
+                <button type="button" id="timelineRight" class="timelineScroll">></button>
+
             </div>
         </div>
 

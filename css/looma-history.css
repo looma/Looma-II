@@ -3,7 +3,7 @@ Author: Alexa Thomases, May Li, Catie Cassani
 Filename: looma-history.css
 Verion: 2.0
 Date: July 2017
-Description:  
+Description: Formats the timeline to be horizontal and handles the styling of the buttons, popups, and searchbar.
 */
 
 /*Framework for the buttons (which generally contain the titles of each event)*/
@@ -169,6 +169,13 @@ input#keywords {display:inline;}
   background: #dadaff;
 }
 
+/*Keeps dropdate button the same colors when its hovered over*/
+button.dropdate:hover {
+  background-color:#dadaff;
+  color:black;
+  margin: none;
+}
+
 /*Keeps the even timeline event buttons 
   properly spaced above the hover texts*/
 .timeline ol li:nth-child(odd) div .dropdate{
@@ -284,15 +291,19 @@ label {
   font-size: 1.5em;
 }
 
-/* DROPBTN/POPUP WINDOW DISPLAY*/
 .popup {
-    font-size:2.5em;
+    font-size: 2.5em;
     font-stretch: 1;
     margin-top: -30vh;
     left: 15%;
     width: 70%;
-    overflow-y:hidden;
+    overflow-y: visible;
+    max-height: 93vh;
+    padding: 30px;
 }
+
+/* Display of the scrollbar in the popup*/
+::-webkit-scrollbar {width:40px;}
 
 button.speak {
     position: absolute;
@@ -324,13 +335,18 @@ button.lookup {
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
 }
 
-/* display of buttons on popup */
+/* display of media buttons on popup */
 button.img.play, button.img.activity {
     font-size: 30px;
     font-weight: bold;
     margin-top: 2vh;
     margin-left: 1vh;
     margin-bottom: 3vh;
+}
+
+/*Keeps media buttons from enlarging when hovered over*/
+button.img:hover {
+  transform: scale(1,1);
 }
 
 .popup button {

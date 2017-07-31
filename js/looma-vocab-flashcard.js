@@ -85,6 +85,7 @@ function gotAWord(definition)
     document.getElementById("nepaliBack").innerHTML = definition.np;
 
 // Clean up the definition for display - italicize 'part of speech'
+         var def = definition.def;
          definition.def = definition.def.replace('pronoun', '<i>pronoun</i>');
          definition.def = definition.def.replace('preposition', '<i>preposition</i>');
          definition.def = definition.def.replace('noun', '<i>noun</i>');
@@ -108,6 +109,7 @@ function gotAWord(definition)
         else if (definition.def =='third person singular of') definition.def= definition.def + ' ' + definition.rw;
 
 //Change the font size according to definition length.  If definition is too long, chop it off accordingly
+
     if(definition.def.length < 144)
     {
         $('#largeWordBack').show();
@@ -140,8 +142,64 @@ function gotAWord(definition)
         document.getElementById("smallWordBack").innerHTML = definition.def.substring(0,750);
     }
     //document.getElementById("img-output").src = "images/apple.jpg";
+         document.getElementById("rootWord").innerHTML = "";
+        document.getElementById("rwNepali").innerHTML = "";
+        document.getElementById("rwDefinition").innerHTML = "";
+        if(definition.rw != '')
+          {
+             LOOMA.lookup(definition.rw, gotARootWord, fail);
+          }
 
 }
+            function gotARootWord(definition)
+            {
+                /*
+
+                */
+                //document.getElementById("definition").appendChild(newElement);
+                var def = definition.def;
+                if (def.includes('dictionary.reference.com')) def='Definition not found';
+                //the dictionary defines derivative forms with "plural of", "past tense of", etc. and has an entry "rw" for the root word
+                // here we reconstruct the definition by combining the generic phrase with the root word from the dictionary
+                //
+                //NOTE: in the future, should go the dictionary one more time and get the definition of the ROOT WORD
+                //
+                //This gets the word's nepali translation and displays it in the HTML
+              var rwDisplayWord = document.getElementById("rootWord");
+              var rwupperEnglishWord = definition.en.toUpperCase();
+              rwDisplayWord.textContent = rwupperEnglishWord;
+              var rwnp = document.getElementById("rwNepali");
+              rwnp.textContent = definition.np;
+              var rwdef = document.getElementById("rwDefinition");
+              rwdef.textContent = def;
+              event.preventDefault();
+              }// end of gotARootWord
+
+//If it fails, it alerts the user and describes the failure
+
+/*
+function fail(jqXHR, textStatus, errorThrown)
+{
+    alert("enter function fail");
+    console.log('VOCAB: AJAX call to dictionary-utilities.php FAILed, jqXHR is ' + jqXHR.status);
+    window.alert('failed with textStatus = ' + textStatus);
+    window.alert('failed with errorThrown = ' + errorThrown);
+}
+
+//Generates the next card with the front word and corresponding back information
+function succeed(result)
+{
+    console.log('VOCAB: success getting word list');
+    //$('#wordlist-output').text(result);
+    //$('#nepali-output').text(result.np);
+    //$('#defn-output').text(result.def);
+    //if (result.img) $('#img-output').html('<img src="' + result.img + '>');
+    list = result;
+    word = list[index];
+    console.log('VOCAB: looking up ' + word);
+    LOOMA.lookup(word, gotAWord, fail);
+}
+*/
 
 //If the current face is the backside, the card will be flipped to show the front of the next card. Otherwise, the new front will show.  The 'next' arrow will not be displayed on the last word card.
 function next()

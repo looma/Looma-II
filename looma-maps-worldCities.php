@@ -9,13 +9,20 @@
 
   <body>
     <h2>World Cities<h2>
-    <div id="map"></div>
 
+    <div id="main-container-horizontal">
+            <button id="fullscreen-control"></button><br>
+    </div>
+    <div class="viewer" id="fullscreen">
+
+    <div id="map"></div>
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>
 
     <script src="js/leaflet.js"></script>
     <script src="js/topojson.js"></script>
+    <script src="js/looma-screenfull.js"></script>
     <script src="js/looma-maps-worldCities.js"></script>
+
   </body>
 </html>

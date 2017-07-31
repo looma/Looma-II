@@ -1,5 +1,2 @@
 #map { width: 100%; height: 90%; }
-div.viewer img
-{
-  height: auto;
-}
+div.viewer img {height: auto;}

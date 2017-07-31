@@ -30,7 +30,7 @@ Usage: <button id="testpdf" data-fn="Math-2.pdf"
 	?>
 
 	<div id="main-container-vertical" class="scroll">
-		<div class="viewer">
+		<div class="viewer" id="fullscreen">
 
 			<?php
 				echo "<iframe id='iframe'";
@@ -39,7 +39,7 @@ Usage: <button id="testpdf" data-fn="Math-2.pdf"
 				echo " src='looma-viewer.html?file=" .
 						$filepath .  $filename .
 						"#page=" . $pagenum .
-						"&zoom=160" .
+						"&zoom=200" .
 						"'";
 
 				echo " id='pdf-canvas' >";
@@ -52,10 +52,12 @@ Usage: <button id="testpdf" data-fn="Math-2.pdf"
 
     <button class="lookup"></button>
     <button class="speak"></button>
+    <button id="fullscreen-control"></button>
 
    	<?php include ('includes/toolbar-vertical.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
 
+        <script src="js/looma-screenfull.js"></script>
     <script type="text/javascript" src="js/looma-pdf.js"></script>
 
 </body>

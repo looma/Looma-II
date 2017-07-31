@@ -47,22 +47,26 @@ Description:
 		<p>
 			<?php
 
-		echo "<br><table id='file-table'><tr>";
-		echo "<td>";
-				makeButton("looma-maps-nepalLayers.php",  $mapDir . "nepalLayers_thumb.png", "Nepal Layer Map");
-		echo "</td><td>";
-				makeButton("looma-map-zoneMap.php",   $mapDir . "zoneMap_thumb.png", "Nepal Zones Map");
-		echo "</td><td>";
-				makeButton("looma-map-topoMap.php",   $mapDir . "topoMap_thumb.png", "Nepal Topography Map");
-		echo "</td></tr><tr><td>";
-                makeButton("looma-map-streetMap.php", $mapDir . "streetMap_thumb.png", "Kathmandu Street Map");
-        echo "</td><td>";
-                makeButton("looma-maps-pokharaCity.php",  $mapDir . "pokharaCity_thumb.png", "Pokhara City Map");
-        echo "</td><td>";
-                makeButton("looma-map-worldMap.php",  $mapDir . "worldMap_thumb.png", "World Map");
-        echo "</td></tr><tr><td>";
-                makeButton("looma-maps-worldCities.php",  $mapDir . "worldCities_thumb.png", "World Cities Map");
-    	echo "</tr></table>";
+			echo "<br><table id='file-table'><tr>";
+			echo "<td>";
+					makeButton("looma-maps-nepalLayers.php",  $mapDir . "nepalLayers_thumb.png", "Nepal Layer Map");
+			echo "</td><td>";
+					makeButton("looma-map-zoneMap.php",   $mapDir . "zoneMap_thumb.png", "Nepal Zones Map");
+			echo "</td><td>";
+					makeButton("looma-map-topoMap.php",   $mapDir . "topoMap_thumb.png", "Nepal Topography Map");
+			echo "</td></tr><tr><td>";
+									makeButton("looma-map-streetMap.php", $mapDir . "streetMap_thumb.png", "Kathmandu Street Map");
+			echo "</td><td>";
+									makeButton("looma-maps-pokharaCity.php",  $mapDir . "pokharaCity_thumb.png", "Pokhara Street Map");
+			echo "</td><td>";
+									makeButton("looma-map-worldMap.php",  $mapDir . "worldMap_thumb.png", "World Map");
+			echo "</td></tr><tr><td>";
+									makeButton("looma-maps-worldCities.php",  $mapDir . "worldCities_thumb.png", "World Cities Map");
+			echo "</td><td>";
+									makeButton("looma-maps-asianCapitals.php",  $mapDir . "asianCapitals_thumb.png", "Asian Captials");
+
+
+			echo "</tr></table>";
 			?>
 
 			<!--

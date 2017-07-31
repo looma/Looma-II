@@ -44,8 +44,8 @@ include ('includes/js-includes.php');
         		<input id = "next" type = "submit" value ="Next Question"/>
         </form>
 
-        <script src="js/looma-maps-worldgame.js"></script>
         <script src="js/jquery.min.js"></script>
         <script src="js/looma-utilities.js"></script>
+        <script src="js/looma-maps-worldgame.js"></script>
     </div>
 </body>

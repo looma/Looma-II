@@ -462,7 +462,7 @@ popupDefinition : function (text, time) {
           $('#popup').remove();
           var $popup =  $('<div id="popup"/>');
           $popup.append(LOOMA.definitionDiv(result));
-          $popup.appendTo('body').hide();
+          // $popup.appendTo('body').hide();
           LOOMA.alert($popup.html(), time, true);
           }; //end show()
 

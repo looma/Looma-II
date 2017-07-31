@@ -452,9 +452,12 @@ li:hover {
   /*min-height:50px; min-width:100px;
   display:inline-block;*/
   float: left;
-  width: 99vw;
+  /*width: 99vw;*/
+  width: 90vw;
   min-height:20vh;
-  margin:1vh;
+  /*margin:1vh; */
+  margin-left: .5vw;
+  margin-right: .5vw;
   margin-bottom: 3vh;
   /*overflow-x:scroll;*/
   overflow-y:hidden;
@@ -466,6 +469,18 @@ li:hover {
 .timelineEntire{
 	width:100000px;
 	min-height:20vh;
+}
+#timelineLeft {
+    float: left;
+}
+
+#timelineRight {
+    float: right;
+}
+
+.timelineScroll {
+    width: 4.5vw;
+    height: 15vh;
 }
 
 #results {

@@ -16,7 +16,6 @@ Description:  displays and navigates content folders for Looma 2
         // load: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
         require ('includes/activity-button.php');
 ?>
-        <link rel = "Stylesheet" type = "text/css" href = "css/looma-library-search.css">
     </head>
 
     <body>
@@ -25,7 +24,7 @@ Description:  displays and navigates content folders for Looma 2
 <?php
 
     function folderName ($path) {
-        // strip trailing '/' then get the last dir name, by finding the remaining last '/' and substring
+        // strip trailing '/' then get the last dir name, by finding the remaining last '/' and substr'ing
          $a = explode("/", $path);
          return $a[count($a) - 2];
     };  //end FOLDERNAME()
@@ -53,9 +52,6 @@ Description:  displays and navigates content folders for Looma 2
         else return "";
     }; //end function thumbnail
 
-
-
-
             // get filepath to use for start of DIR traversal
             //this will be  "../content/" for Looma 2 Library starting folder [to be outside of web-accessible folder structure]
 
@@ -73,196 +69,13 @@ Description:  displays and navigates content folders for Looma 2
                             //should also check for 'index.php' and others?
 
     // DEBUG echo "at path " . $path . "folderName is " . folderName($path);
-    echo "<br><h3 class='title'>"; keyword('Looma Library'); 
-    if(foldername($path) != 'content') {echo ":  " . folderName($path);} echo "</h3>";
-  
+    echo "<br><h3 class='title'>"; keyword('Looma Library'); echo ":  " . folderName($path) . "</h3>";
 
-
-
-/****** creating the search tool ******/
-/**************************************/
-/**************  Search  **************/
-/**************************************/
-/*
-#search-panel has 4 sections. all optional. CSS sets them to display:none. use JS to make them visible
-the sections are #type-filter, #class-subj-filter, #sort-criteria, and #search-criteria
-
-in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. JS can turn on/off individual .typ-chk checkboxes.
-*/
-
-
-  /* add sources like in lesson planner
-  action='looma-database-utilities.php' method='post'*/  
-
-
-    echo "<hr style='visibility:hidden;'><div id='search-panel'>
-            <form id='search' name='search'>
-                <input type='hidden' id='collection' value='activities' name='collection'/>
-                <input type='hidden' id='cmd' value='search' name='cmd'/>";
-
-
-/**************************************/
-/********** Media v. Chapter **********/
-/**************************************/
-    echo "<div id='search-kind'>
-            <input type='radio' name='radio' value='activities' class='filter-radio black-outline' id='ft-media' checked>
-                <label class='filter_label' for='ft-media'>Media</label>
-            <input type='radio' name='radio' value='chapters' class='filter-radio black-outline' id='ft-chapter'>
-                <label class='filter_label' for='ft-chapter'>Chapter</label>
-        </div>";
-
-
-/**************************************/
-/************* Search Bar *************/
-/**************************************/
-    echo "<div id='search-bar-div' class='media-filter'>
-            <input id='search-term' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
-            <button id='media-submit' class='filesearch black-border' name='search' value='value' type='submit'></button>
-          </div>";
-
-
-
-/**************************************/
-/********** File Type Fields **********/
-/**************************************/
-    echo "<div id='type-div' class='chkbox-filter media-filter'>
-            <p>Type:</p>";
-
-    $types = array(
-        array("pdf", "img", "aud",  /*"template",*/ "txt", /*"gam",*/ /*"lesson",*/ /*"ss",*/ "vid"),
-        array("pdf", "image", "audio",  /*"text-template",*/ "text", /*"game",*/ /*"lesson",*/ /*"slideshow",*/ "video"),
-        array("PDF", "Image", "Audio", /*"Text Template",*/ "Text", /*"Game",*/ /*"Lesson",*/ /*"Slideshow",*/ "Video"),
-    );
-    for($x = 0; $x < count($types[0]); $x++) {
-        echo "<span class='typ-chk' id='" . $types[0][$x] ."-chk'>
-                <input id='" . $types[0][$x] ."' class='media-input flt-chkbx' type='checkbox' name='type[]'' value='" . $types[1][$x] . "'>
-                <label class='filter-label' for='" . $types[0][$x] . "'>" . $types[2][$x] . "</label>
-              </span>";/*if($x == 4){echo "<br>";}*/}
-    echo "</div>";
-
-
-/**************************************/
-/********* File Source  Fields ********/
-/**************************************/
-    echo "<div id='source-div' class='chkbox-filter media-filter'>
-            <p>Source:</p>";
-
-    $sources = array(
-        array("ck12", "phet", "epth", "khan", "w4s"),
-        array("Dr Dann", "PhET", "ePaath", "khan", "wikipedia"),
-        array("CK-12", "PhET", "ePaath", "Khan", "Wikipedia"),
-    );
-    for($x = 0; $x < count($sources[0]); $x++){
-        echo "<span class='src-chk' id='" . $sources[0][$x] ."-chk'>
-                <input id='" . $sources[0][$x] ."' class='media-input flt-chkbx' type='checkbox' name='src[]'' value='" . $sources[1][$x] . "'>
-                <label class='filter-label' for='" . $sources[0][$x] . "'>" . $sources[2][$x] . "</label>
-              </span>";}
-    echo "</div>"; 
-
-
-
-/**************************************/
-/*********** Grade Dropdown  **********/
-/**************************************/
-    echo "<div id='grade-div' class='chapter-filter'> 
-            <span class='drop-menu'>Grade:<select id='grade-drop-menu' class='chapter-input black-border' name='class' form='search'>
-                <option value='' selected>Select...</option>";
-    for($x = 1; $x <= 8; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";}
-    
-    echo "</select></span></div>";   
-
-
-
-/**************************************/
-/********* Subject Dropdown  **********/
-/**************************************/
-    echo "<div id='subject-div' class='chapter-filter'> 
-          <span class='drop-menu'>Subject:<select id='subject-drop-menu' class='chapter-input black-border' name='subj' form='search'>
-            <option value='' selected>Select...</option>";
-
-    $classInfo = array(
-        array("all", "EN", "N", "M", "S", "SS"),
-        array("All", "English", "Nepali", "Math", "Science", "Social Studies"),
-    );
-    for($x = 1; $x < count($classInfo[0]); $x++) {
-        echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";}
-
-    echo "</select></span></div>";
-
-
-
-/**************************************/
-/********* Chapter Dropdown  **********/
-/**************************************/
-    echo "<div id='chapter-div' class='chapter-filter'> 
-            <span class='drop-menu'>Chapter:<select id='chapter-drop-menu' class='chapter-input black-border' name='chapter' form='search'>
-                    <option value='all' selected>Select...</option>
-          </select></span></div>";
-
-
-/**************************************/
-/******* Chapter Submit Button ********/
-/**************************************/
-
-    echo "<button id='chapter-submit' class='filesearch chapter-filter black-border' name='search' value='value' type='submit'>Submit</button>
-        <br class='chapter-filter'>";
-
-    echo "<button id='cancel-search' type='button'>Cancel</button>
-        </form></div>";
-
-
-
-
-
-
-/**************************************/
-/*********** Search Results ***********/
-/**************************************/
-    echo "<div id='results-div'></div>";
-
-
-/**************************************/
-/********** Sorting Results ***********/
-/**************************************/
-    /*echo    "<div id='sort-criteria'>
-                Sort By:
-                <input type='radio' name='sort' value='name'> Filename
-                <input type='radio' name='sort' value='type'> Filetype
-            </div>";
-
-
-
-/**************************************/
-/********** Folder Hierarchy **********/
-/************* Navigation *************/
-/**************************************/
-if(foldername($path) == 'content') {
-        echo   "<br>";/*
-                <div>
-                    <fieldset>
-                        <ul>
-                            <legend>Content:</legend>
-                            <li>Science</li>
-                            <li>Math</li>
-                            <li>Social Studies</li>
-                            <li>English</li>
-                            <li>Nepali</li>
-                        </ul>
-                    </fieldset>
-                </div>*/
-        echo "<button id='toggle-database' class='toggle black-border'></button>";
-    } 
-
-
-/**************************************/
     //  first list directories in this directory
-    
-    
-    echo "<table id='dir-table'><tr>";
-    if(foldername($path) == 'content') {echo "<style>#dir-table{display: none;}</style>";}
-
+    echo "<br><table id='dir-table'><tr>";
     $buttons = 1;
     $maxButtons = 3;
+
     // iterate through the files in this DIR and make buttons for each included DIR
     if ( ! $ep ) {
 
@@ -270,8 +83,6 @@ if(foldername($path) == 'content') {
 
 /*************** iterate through the files in this DIR and make buttons for the DIRs ******************/
 /******************************************************************************************************/
-
-
 /********************************/
 /**********  DIRs  **************/
 /********************************/
@@ -290,14 +101,16 @@ if(foldername($path) == 'content') {
                      * EDITED: This if statement creates a slideshow play button linking directories containing slideshows.txt files
                      * with Looma slideshow player
                      */
-                    echo "<td>
+                    /*
+                     * echo "<td>
                             <a href='looma-slideshow.php?dir=$path$file'>
                                     <button class='activity zeroScroll  with-play'>
                                         <img src='images/play-slideshow-icon.png' class='img-responsive'>
                                     </button>
                                 </a>";
-                    echo "<a href='looma-library.php?fp=" . $path . $file .
-                         "/'><button class='activity img zeroScroll beside-play'>" .
+                    */
+                    echo "<td><a href='looma-library.php?fp=" . $path . $file .
+                         "/'><button class='activity img zeroScroll'>" .
                     thumb_image($path . $file) . $file . "</button></a></td>";
 
                     }
@@ -332,7 +145,7 @@ if(foldername($path) == 'content') {
                     echo "<td><a href='looma-library.php?fp=" . $path . $file .
                     "/'><button class='activity img zeroScroll'>" .
                     thumb_image($path . $file) . $file . "</button></a></td>";
-        }
+                }
         $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
             };
@@ -345,12 +158,12 @@ if(foldername($path) == 'content') {
 
     //now list files in this directory
 
-    if(foldername($path) == 'content') {echo "<br>";} echo "<table id='file-table'><tr>";
+    echo "<br><table id='file-table'><tr>";
     $buttons = 1;
     $maxButtons = 3;
     $specials = array("_", "-", ".", "/", "'");
 
-    if(foldername($path) == 'content') {echo "<hr>";}
+echo "<hr>";
     // iterate through the files in this DIR and make buttons for each included FILE
 
     //TODO: should gather all the filenames into an array and sort it, use (natcasesort() or multisort(), before making the buttons
@@ -369,22 +182,24 @@ if(foldername($path) == 'content') {
             //all of the entries from the edited_videos collection in the database
             $editedVideos = $edited_videos_collection->find();
 
-                foreach ($editedVideos as $doc) {
+             foreach ($editedVideos as $doc) {
                     echo "<td>";
                     $dn = $doc['dn'];
-                    $fn = $doc['vn'] . ".mp4"; //NOTE: BUG: assumes all videos are .mp4. should save extension with evi collection
-                    $fp = $doc['vp'];
+                /*  $fn = $doc['vn'] . ".mp4"; //NOTE: BUG: assumes all videos are .mp4. should save extension with evi collection
+                    $fp = $doc['vp'];  */
                     $ft = "evi";
+                    $thumb = (isset($doc['thumb'])) ? $doc['thumb'] : "";
                     $id = $doc['_id'];
                     //$json = $doc['JSON'];  //NOTE: this passed the full text of the edited script in the URL.
                                            // should just pass the mongo ID and have the player retrieve the script's full text
                      // change to use: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $fp, $fn, $dn, "", "", $id, "", "", "");
+            //  makeActivityButton($ft, $fp, $fn, $dn, "", "", $id, "", "", "");
+                    makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
                     //makeEditedVideoButton($dn, $path, $ext, $file, $json);
 
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-                }
+            }
         }  //end IF edited videos
 
         else
@@ -421,7 +236,6 @@ if(foldername($path) == 'content') {
             } //end FOREACH slideshow
         }  //end IF slideshows
 
-
         else
 
         //modifications for LESSONPLANs
@@ -436,7 +250,7 @@ if(foldername($path) == 'content') {
              foreach ($lessons as $lesson) {
 
                         //echo "DEBUG   found lesson " . $lesson['dn'] . "<br>";
-
+                if ($lesson['ft'] == "lesson") {  //do not display lesson templates
                     echo "<td>";
                     $dn = $lesson['dn'];
                     $ft = "lesson";
@@ -445,8 +259,59 @@ if(foldername($path) == 'content') {
                     makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+                }
             } //end FOREACH lesson
         }  //end IF lessons
+
+        else
+
+        //modifications for History Timelines
+        //***************************
+        //make buttons for timelines directory -- virtual folder, populated from histories collection in mongoDB
+        if($path == "../content/timelines/") {   //populate virtual folder of histories
+
+
+            $histories = $histories_collection->find();
+
+             foreach ($histories as $history) {
+
+                        //echo "DEBUG   found lesson " . $lesson['dn'] . "<br>";
+                    echo "<td>";
+                    $dn = $history['title'];
+                    $ft = "history";
+                    $thumb = $path . $dn . "_thumb.jpg";
+                    //$thumb = $path . "/thumbnail.png";
+                    $id = $history['_id'];  //mongoID of the descriptor for this lesson
+                    makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
+                    echo "</td>";
+                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+
+            } //end FOREACH history
+        }  //end IF histories
+
+        else
+
+        //modifications for Maps
+        //***************************
+        //make buttons for maps directory -- virtual folder, populated from maps collection in mongoDB
+        if($path == "../content/maps/") {   //populate virtual folder of maps
+
+             $maps = $maps_collection->find();
+
+             foreach ($maps as $map) {
+
+                        //echo "DEBUG   found lesson " . $lesson['dn'] . "<br>";
+                    echo "<td>";
+                    $dn = $map['dn'];
+                    $ft = "map";
+                    $thumb = $path . "/thumbnail.png";
+                    $id = $map['_id'];  //mongoID of the descriptor for this lesson
+                    makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
+                    echo "</td>";
+                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+
+            } //end FOREACH map
+        }  //end IF maps
 
         else {
 
@@ -555,11 +420,10 @@ if(foldername($path) == 'content') {
             }
         echo "</tr></table>";
 ?>
-        
+
     </div>
 
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>
-    <!--<script src="js/jquery-ui.min.js"></script>-->
-    <script src="js/looma-library-search.js"></script>
+    <script src="js/looma-library.js"></script>
     </body>

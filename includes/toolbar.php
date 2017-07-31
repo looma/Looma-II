@@ -11,7 +11,7 @@
 				<?php tooltip("Home") ?>
  			</button>
 
-			<button onclick="LOOMA.setStore('scroll', 0, 'session'); parent.location.href = 'looma-library.php?fp=../content/';" class="toolbar-button ">
+			<button onclick="LOOMA.setStore('scroll', 0, 'session'); parent.location.href = 'looma-library-search.php?fp=../content/';" class="toolbar-button ">
 				<!-- call looma-library.php with path to starting folder of the Library. -->
 				<img draggable="false" src="images/library.png"  height= "80%" >
 				<?php tooltip("Library") ?>
@@ -37,7 +37,7 @@
                 <?php tooltip("Maps") ?>
             </button>
 
-            <button onclick="parent.location.href = 'looma-library.php?fp=../content/timelines/';" class="toolbar-button ">
+            <button onclick="parent.location.href = 'looma-histories.php';" class="toolbar-button ">
                 <img draggable="false" src="images/history.png"  height = "80%" >
                 <?php tooltip("History") ?>
             </button>

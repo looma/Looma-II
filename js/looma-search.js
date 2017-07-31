@@ -21,8 +21,10 @@ Comments:
                     // also SHOW checkboxes in #search-filter that we want
                     //for instance: $('#txt-chk, #vid-chk').show();
 
+var activity = false;
+
 //open a file browse/search panel
-function opensearch() {
+function opensearch(isActivity) {
         //make the main page transparent
         LOOMA.makeTransparent($('#main-container-horizontal'));
         LOOMA.makeTransparent($('#commands'));
@@ -35,6 +37,10 @@ function opensearch() {
 
         //hide all type checkboxes - local code will show() the ones we want
         $('.typ-chk').attr('checked', false).hide(); //hide all type checkboxes - local code will show() the ones we want
+
+        if(isActivity) {
+          activity = true;
+        }
 
         callbacks['showsearchitems']();
 }; //end opensearch()
@@ -54,6 +60,8 @@ function closesearch() {
         $('.typ-chk').hide();
 
         $('#search-bar input').val('');
+
+        activity = false;
 };  //end closearch()
 
 function displayFileSearchResults(results)
@@ -82,18 +90,62 @@ function displayFileSearchResults(results)
                                 "<div class='result-data'>" + value['data'] + "</div>" +
                             "</button>" +
                      "</td</tr>"
-            ).show();
+                ).show();
            });
         };
     }; //end displayFileSearchResults()
 
+    function displayActivitySearchResults(results)
+    {
+        var $display = $('#search-results').empty().append('<table></table>');
+
+        if (results.length == 0) { //print empty button
+
+            $display.append(
+                     "<tr><td>" +
+                          "<button id='cancel-results'>" +
+                             "<h4> <b> No files found - Cancel</b> </h4>" +
+                          "</button>" +
+                      "</td></tr>"
+                ).show();
+            }
+        else {
+            $.each(results, function(index, value) {
+                var imgTag = "<img class='resultsimg' src=" + thumbnail(this) + ">";
+
+                $display.append(
+                     "<tr><td>" +
+                         "<button class='result' " +
+                            "data-id='" + value['_id']['$id'] + "' " +
+                            "title='" + value['dn'] + "'>" +
+                                "<div class='thumbnaildiv'>" + imgTag + "</div>" +
+                                "<h4 class='searchTitle'> <b> " + value['dn'] + " </b> </h4>" +
+                                "<div class='result-data'>" + value['data'] + "</div>" +
+                            "</button>" +
+                     "</td</tr>"
+                ).show();
+           });
+        };
+    };
+
     $(document).ready(function ()
-        { $('#search-form').submit(function( event ) {
+    { 
+          $('#search-form').submit(function( event ) {
                   event.preventDefault();
+                  console.log($( "#search-form" ).serialize());
                   $.post( "looma-database-utilities.php",
                            $( "#search-form" ).serialize(),
                            function (result) {
-                                displayFileSearchResults(result);return;},
+                                if(activity) 
+                                {
+                                  displayActivitySearchResults(result);
+                                }
+                                else
+                                {
+                                  displayFileSearchResults(result);
+                                }
+                                return;
+                            },
                            'json');
             });
-        });
+    });

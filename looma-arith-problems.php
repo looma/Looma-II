@@ -4,21 +4,22 @@ Author:
 Email: skip@stritter.com
 Filename: yyy.html
 Date: x/x/2015
-Description: 
+Description:
 -->
 
 	<?php  $page_title = 'Looma Arithmetic Review';
 	include ('includes/header.php'); ?>
+    <link rel="stylesheet" href="css/looma-keypad.css">    <!-- Looma keyboard CSS -->
 
 	<link href="css/looma-arithmetic.css" type="text/css" rel="stylesheet" />
 
 	</head>
-	<body>	
-	  <div id="main-container-horizontal">	
+	<body>
+	  <div id="main-container-horizontal">
         <h3 id="grade">          <span id="gradeValue"> </span></h3>
         <h3 id="topic">          <span id="topicValue"> </span></h3>
         <h3 id="problem-count">  <?php keyword("Correct problems"); ?> : <span id="countValue"> </span></h3>
-        
+
         <h1 class="credit"> Created by Joe</h1>
 
 
@@ -28,35 +29,35 @@ Description:
         	<?php keyword("Menu"); ?> </button>
 
         <div id="work-area">
-        
+
         	<img id="division-symbol" src="images/long-division.png" style="visibility:hidden">
          <!-- for division only - hidden for other operators-->
-       
+
         	<div name="num1"  id="num1"  ></div>
         	<div name="num2"  id="num2"  ></div>
 
 			<!--enter digits into the answer line rigth-to-left for '+', '-', '*'. but, left-to-right for '/'   -->
 			<input type="text" id="answer" name="answer" >
-       		
+
        		<hr   id='answerLine' style="visibility:hidden">
         	<div id="operation" >  </div>
-        	
-        	<div class="button-group">       		
+
+        	<div class="button-group">
 				<button id="enter" class="looma-button blue-footer"> <?php keyword("Enter"); ?> </button>
         		<button id="help"  class="looma-button blue-footer"> <?php keyword("Help"); ?>  </button>
         		<button id="reset" class="looma-button blue-footer"> <?php keyword("Clear"); ?> </button>
  			</div>
- 		
+
        		<h2 id="message-correct" style="visibility: hidden">CORRECT - Click 'New Problem' to generate a new problem</h2>
      	  	<h2 id="message-wrong"   style="visibility: hidden">Please try again</h2>
      	 </div>
      	</div>
-     	
-     	
+
+
        	<div id="calculator">
-       	
+
 			<input type="text" id="calcDisplay" />
-			
+
 			<table id="calcTable">
 			  <tr>
 				<td id="1" class="numButton">1</td>
@@ -86,14 +87,15 @@ Description:
 			</tr>
 			</table>
        	</div>
-	</div>	
+	</div>
 
        	<script src="js/looma-arithmetic.js" type="text/javascript"></script>
 		<script src="js/looma-utilities.js" type="text/javascript"></script>
- 
 
-   	<?php include ('includes/toolbar.php'); ?>   	   		
-   	<?php include ('includes/js-includes.php'); ?> 
+
+   	<?php include ('includes/toolbar.php'); ?>
+   	<?php include ('includes/js-includes.php'); ?>
 	<!--Include other JS here -->
-       	<script src="js/looma-arith-problems.js" type="text/javascript"></script>
+        <script src="js/looma-keypad.js" type="text/javascript"></script>
+        <script src="js/looma-arith-problems.js" type="text/javascript"></script>
 </html>

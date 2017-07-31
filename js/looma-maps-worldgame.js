@@ -4,17 +4,15 @@ LOOMA js code file
 Filename: looma-maps-continents.js
 Description: this file randomly chooses a continent and highlights it, then asks the user to name the continent. It checks if the user is right, then asks about a new continent.
 */
-	
+
 window.onload = function() {
 
-	var answers = ["North America", "South America", "Europe", "Asia", "Africa","Australia", "Antartica", "Pacific Ocean", 
-	"Atlantic Ocean", "Indian Ocean", "Arctic Ocean"]; 
-	var usedAnswers = [false, false, false, false, false, false, false, false, false, false, false];
+	var answers = ["North America", "South America", "Europe", "Asia", "Africa","Australia", "Antartica", "Pacific Ocean",
+	"Atlantic Ocean", "Indian Ocean", "Arctic Ocean"];
 	var currentAnswerNum;
 	var userGuess;
 	var outputValue;
-	var numCorrect = 0;
-	
+
 	var submitButton = document.getElementById("submit");
 	submitButton.addEventListener('click', userInput);
 
@@ -27,20 +25,18 @@ window.onload = function() {
 
 	//map to reference
 	var map = new Image();
-	map.src = "images/game-map.png";
 
-	showMap();
+	map.onload = function(){
+	    ctx.drawImage(map, 0, 0);
+        generateQuestion();
+	};
 
-	function showMap(){
-		ctx.drawImage(map, 0, 0);
-		generateQuestion();
-	}
+	map.src = "../maps/WorldGame/images/game-map.png";
 
 	function generateQuestion(){
 		currentAnswerNum = Math.floor(Math.random() * 10);
     	showMarker(answers[currentAnswerNum]);
 	}
-		
 
     function showMarker(answer){
     	var c = document.getElementById("myCanvas");
@@ -91,8 +87,8 @@ window.onload = function() {
     			ctx.arc(370, 30,40,0,2*Math.PI);
 				ctx.stroke();
     			break;
-    	}
-    }
+    	};
+    };
 
     function userInput(){
     	outputValue = "";
@@ -103,13 +99,12 @@ window.onload = function() {
     	if (userGuess === answers[currentAnswerNum])
     	{
     		outputValue = "Correct! This is ";
-    		numCorrect++;
     	}
     	else
     	{
-    		outputValue = "Incorrect. The right answer was "
+    		outputValue = "Incorrect. The right answer was ";
     	}
     	outputValue = outputValue + answers[currentAnswerNum];
     	txtOutput.value = outputValue;
-    }
-}
+    };
+};

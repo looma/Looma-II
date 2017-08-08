@@ -11,11 +11,12 @@
     <h2>Nepal Layers<h2>
 
     <div id="main-container-horizontal">
-            <button id="fullscreen-control"></button><br>
-    </div>
-    <div class="viewer" id="fullscreen">
+     <div class="viewer" id="fullscreen">
+     <button id="fullscreen-control"></button>
 
-    <div id="map"></div>
+         <div id="map"></div>
+     </div>
+    </div>
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>
 

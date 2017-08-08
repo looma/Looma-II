@@ -6,11 +6,11 @@ Filename: looma-history.php
 
 Date: July 2017
 
-Description: Creates a timeline with search and hover functions. Information accessed through database.
+Description: Creates history timelines with search, scroll, lookup, speech, and popup functions. Information accessed through database.
 
 -->
 
-
+  <h1 class="credit"> Created by Alexa, Catie, and May </h1>
 
   <?php $page_title = 'Looma - History Timeline';
 
@@ -36,7 +36,7 @@ Description: Creates a timeline with search and hover functions. Information acc
 
     <div id="main-container-horizontal">
 
-      <label for="keywords">Search:</label><input id="keywords" class="searchBar" size="18" placeholder="enter words to search" onkeypress="handleKeyPress(event)">
+      <label for="keywords">Search:</label><input id="keywords" class="searchBar" size="18" placeholder="enter words to search" >
 
       <button id= "previous"> <span class="english-keyword"> Prev </span> </button>
       <button id= "next" clickcount = "-1"> <span class="english-keyword"> Next </span> </button>
@@ -46,6 +46,8 @@ Description: Creates a timeline with search and hover functions. Information acc
       <button class="scrollButtonRight"> <img src="images/forward-arrow.png">      </button>
 
       <button class="returnToLeftmost">      <img src="images/reverse-double-arrow.png"> </button><br>
+
+      <button  id="fullscreen-control"></button>
 
       <?php
 
@@ -57,7 +59,7 @@ Description: Creates a timeline with search and hover functions. Information acc
 
           if (isset($_REQUEST["title"])) $hist = $_REQUEST["title"];
 
-          if (isset($_REQUEST["chapterToLoad"])) $ch_id = $_REQUEST["chapterToLoad"];
+          if (isset($_REQUEST["chapterToLoad"])) $ch_id = $_REQUEST["chapterToLoad"]; // currently not in use (previously used in US Presidents timeline)
 
           if (isset($_REQUEST["id"])) $_id = $_REQUEST["id"];
 
@@ -69,7 +71,7 @@ Description: Creates a timeline with search and hover functions. Information acc
 
           else $query = array('_id' => new MongoID($_REQUEST['id']));
 
-
+                
 
           $cursor =  $history_collection->find($query, array("title"=>1, "events"=>1)); //should be findOne()  ??
 
@@ -93,7 +95,7 @@ Description: Creates a timeline with search and hover functions. Information acc
 
 
 
-    $count = 0;
+    $count = 0; 
 
 
 
@@ -114,10 +116,9 @@ Description: Creates a timeline with search and hover functions. Information acc
                   $id2 = "";
 
 
-
                    if(isset($event['popup'][0]))
 
-                    $msg = 'data-msg=' . $event['popup'][0] ;
+                    $msg = 'data-msg=' .  $event['popup'][0] ;
 
                   if(isset($event['popup'][1]))
 
@@ -128,54 +129,11 @@ Description: Creates a timeline with search and hover functions. Information acc
                     $id2 = 'data-id2='. $event['popup'][2];
 
 
-
-    /*
-
-                  if(isset($popinfo['msg']))
-
-                    $msg = 'data-msg=' . $popinfo['msg'] ;
-
-                  if(isset($popinfo['id1']))
-
-                    $id1 = 'data-id1=' . $popinfo['id1'];
-
-                  if(isset($popinfo['id2']))
-
-                    $id2 = 'data-id2='. $popinfo['id2'];
-
-
-
-
-
-                   /*doesn't check if they exist like it should :(*/
-
-
-
-                  /*
-
-
-
-                  if($event.popup.id2)
-
-                    $id2 = 'data-id2= "$event.popup.id2 "';
-
-
-
-                  if($event.popup.id3)
-
-                    $id3 = 'data-id3= "$event.popup.id3 "';
-
-
-
-                  /*and a bit below (the id part)*/
-
-                  //}
-
-                  if ($count%2 == 0)
+                  if ($count%2 == 0) 
 
                   {
 
-
+              
 
                    echo '
 
@@ -185,9 +143,9 @@ Description: Creates a timeline with search and hover functions. Information acc
 
                        <div class="dropdown" style="float:">'; // edited out
 
-                   echo '<button class="dropbtn"' . " " . $id1 . " " . $id2 . " " . $msg . '>' . $event['title'] . '</button>';
+                   echo '<button class="dropbtn"' .  " " . $id1 . " " . $id2 . " " . $msg . '>' .  $event['title'] . '</button>'; 
 
-                   echo '<button class="dropdate">' . $event['date'] . '</button>';
+                   echo '<button class="dropdate">' . $event['date'] . '</button>'; //dropbtn before dropdate so dropbtn is on top
 
                        '</div>
 
@@ -211,7 +169,7 @@ Description: Creates a timeline with search and hover functions. Information acc
 
                    echo '<button class="dropbtn"' . " " . $id1 . " " . $id2 . " " . $msg . '>' . $event['title'] . '</button>';
 
-
+                   
 
                        '</div>
 
@@ -238,7 +196,7 @@ Description: Creates a timeline with search and hover functions. Information acc
         {echo 'no history found';}
 
       ?>
-
+ 
 
 </div>
 
@@ -250,15 +208,21 @@ Description: Creates a timeline with search and hover functions. Information acc
 
     <?php include ('includes/js-includes.php'); ?>
 
-    <script type="text/javascript" src="js/looma-hilitor-utf8.js"></script>
-
-    <script type="text/javascript" src="js/looma-history.js"></script>
 
     <button class="speak"></button>
 
     <button class = "lookup"></button>
 
     <script src="js/looma-keyboard.js">  </script>
+
+    <script src="js/looma-screenfull.js"></script>
+
+    <script type="text/javascript" src="js/looma-hilitor-utf8.js"></script>
+
+    <script type="text/javascript" src="js/looma-history.js"></script>
+
+
+    
 
 </body>
 

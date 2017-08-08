@@ -12,9 +12,18 @@ Description: image display JS for looma-image.php
 'use strict';
 $(document).ready(function() {
 
-        $('#fullscreen').click(function (e) {
-                e.preventDefault();
-                screenfull.toggle(this);
+	var div = document.getElementById('the_id');
+	$.post("looma-database-utilities.php",
+			{cmd: "openByID", collection: "text", id: div.getAttribute('data-id')},
+			function(result) {
+				document.querySelector("div#fullscreen").innerHTML = result.data;
+			},
+			'json'
+	);
+
+	$('#fullscreen').click(function (e) {
+			e.preventDefault();
+			screenfull.toggle(this);
             });
 
 });

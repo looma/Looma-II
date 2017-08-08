@@ -36,7 +36,7 @@ function saveText($collection, $name, $insert, $activity) {
     echo json_encode($result);
 
 // if $activity param is true, save new document in the activities collection or update 'dn' for existing activities pointing to this file
-    if ($activity) {
+    if ($activity  == "true") {
 
         $id = $result['_id'];
         //echo "ID is " . $id;
@@ -61,8 +61,6 @@ function saveText($collection, $name, $insert, $activity) {
             //echo "Mongo Error writing to Activities collection";
             echo json_encode(array('error'=>'Mongo error writing Activities collection'));
         };
-
-
 
     };
 };  //end SAVETEXT()
@@ -160,6 +158,11 @@ if ( isset($_REQUEST["cmd"]) ) {
 
     switch ($cmd)
     {
+
+
+ ////////////////////////
+ // - - - OPEN   - - - //
+ ////////////////////////
         case "open":
             $query = array('dn' => $_REQUEST['dn'], 'ft' => $_REQUEST['ft']);
            //look up this DN (display name) in this collection (dbCollection)
@@ -169,6 +172,10 @@ if ( isset($_REQUEST["cmd"]) ) {
            return;
             // end case "open"
 
+
+ ////////////////////////
+ // - - - OpenByID - - - //
+ ////////////////////////
         case "openByID":
             if ($collection == "chapters") $query = array('_id' =>             $_REQUEST['id']);
             else                           $query = array('_id' => new MongoID($_REQUEST['id']));
@@ -179,6 +186,10 @@ if ( isset($_REQUEST["cmd"]) ) {
            return;
             // end case "openByID"
 
+
+ ////////////////////////
+ // - - - UpdateByID - - - //
+ ////////////////////////
         case "updateByID":  //called with 'collection', 'id', and an update Object
 
            $query = array('_id' => new MongoID($_REQUEST['id']));
@@ -194,6 +205,10 @@ if ( isset($_REQUEST["cmd"]) ) {
            return;
             // end case "updateByID"
 
+
+ ////////////////////////
+ // - - - deleteField - - - //
+ ////////////////////////
         case "deleteField":
 
            $query = array('_id' => new MongoID($_REQUEST['id']));
@@ -208,6 +223,11 @@ if ( isset($_REQUEST["cmd"]) ) {
 
             return;
             //end case "deleteField"
+
+
+ ////////////////////////
+ // - - - SAVE - - - //
+ ////////////////////////
        case "save":
             if (($collection == "text") || ($collection == "lesson")){
 
@@ -244,11 +264,19 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
             // end case "save"
 
+
+ ////////////////////////
+ // - - - RENAMME - - - //
+ ////////////////////////
        case "rename":
             changename($dbCollection, $_REQUEST['dn'], $_REQUEST['newname'], true);
             return;
             // end case "rename"
 
+
+ ////////////////////////
+ // - - - EXISTS - - - //
+ ////////////////////////
         case "exists": //find "dn" in the collection and return its ID if it exsits or NULL if doesnt exist
             $query = array('dn' => $_REQUEST['dn'], 'ft' => $_REQUEST['ft']);
             $projection = array("_id" => 1,"author" => 1);
@@ -259,6 +287,10 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
             // end case "exists"
 
+
+ ////////////////////////
+ // - - - DELETE - - - //
+ ////////////////////////
         case "delete":
             $query = array('dn' => $_REQUEST['dn'], 'ft' => $_REQUEST['ft']);
             $file = $dbCollection -> findOne($query);
@@ -273,7 +305,11 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
             // end case "delete"
 
-        case "chapterList":
+
+ ////////////////////////
+ // - - - chapterList - - - //
+ ////////////////////////
+          case "chapterList":
             //echo "<option>One</option><option>Two</option>";
 
             // inputs are class and subject
@@ -302,6 +338,9 @@ if ( isset($_REQUEST["cmd"]) ) {
 
             return;
 
+ ////////////////////////
+ // - - - SEARCH - - - //
+ ////////////////////////
         case "search":
             // called (from looma-search.js, from lesson-plan.js, etc) using POST with FORMDATA serialized by jquery
             // $_POST[] can have these entries: collection, class, subj, category, sort, search-term,
@@ -340,10 +379,11 @@ if ( isset($_REQUEST["cmd"]) ) {
                 case 'text':
                     array_push($extensions, "text"); break;
 
-                case 'template':
-                         if ($collection == 'text')   array_push($extensions, "text-template");
-                    else if ($collection == 'lesson') array_push($extensions, "lesson-template");
-                    break;
+                case 'text-template':
+                    array_push($extensions, "text-template"); break;
+
+                case 'lesson-template':
+                    array_push($extensions, "lesson-template");break;
 
                 case 'textbook':
                     array_push($extensions, "textbook"); break;
@@ -434,7 +474,11 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
             // end case "search"
 
-         case 'addChapterID':
+
+ ////////////////////////
+ // - - - addChapterID - - - //
+ ////////////////////////
+        case 'addChapterID':
                 $query = array('_id' => new MongoID($_REQUEST['id']));
                 $update = array('$addToSet' => array('ch_id' => $_REQUEST['data']));
                 $result = $dbCollection->update($query, $update);
@@ -443,6 +487,10 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
             // end case "addChapterID"
 
+
+ ////////////////////////
+ // - - - removeChapterID - - - //
+ ////////////////////////
         case 'removeChapterID':
                 $query = array('_id' => new MongoID($_REQUEST['id']));
                 $update = array('$pull' => array('ch_id' => $_REQUEST['data']));

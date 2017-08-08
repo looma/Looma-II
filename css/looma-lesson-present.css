@@ -8,7 +8,8 @@ Revision: 2.0
 
 Comments:
 */
-html {  box-sizing: border-box;
+html {
+    box-sizing: border-box;
 }
 
 #main-container-horizontal {
@@ -96,14 +97,15 @@ img#fullscreen {width:auto;}
    right:0;
    bottom:11vh;
    text-align:right;
-   margin-right:3vw;
+   /*margin-right:3vw;*/
+   background-color: black;
+   padding: 10px;
 }
 
 #subtitle {
     background-color:white;
     color:black;
     width:100%;
-
     border:2px solid black;
     border-radius:5px;}
 
@@ -203,5 +205,17 @@ button#fullscreen-control {
 }
 
 #fullscreen.text-display {
-    padding:2vh 5vw;
+    width: 35vw;
+    height: 35vh;
+    zoom: 250%;
+    margin:0 auto;
+    overflow: hidden;
+    font-weight: normal;
+    background-color: white;
+    color: black;
+    font-size: 20px;
+}
+
+#viewer {
+    background-color: white;
 }

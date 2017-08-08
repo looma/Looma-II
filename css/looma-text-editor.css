@@ -51,14 +51,54 @@ button.result {
 
 
 #editor {
-    height:39vh;
-    width:40vw;
-    zoom:200%;
+    height: 35vh;
+    width: 35vw;
+    zoom: 200%;
     margin:0 auto;
     overflow:hidden;
     color:black;
+    margin-top: 1vh;
+    padding: 0 0;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+#editor::before {
+    content: "";
+    width: 2.2vw;
+    height: 35.2vh;
+    background-color: white;
+    left: 4vw;
+    position: absolute;
+    bottom: 0;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-bottom: 1px solid black;
+    box-sizing: border-box;
+}
+
+#editor::after {
+    content: "";
+    width: 2.2vw;
+    height: 35.2vh;
+    background-color: white;
+    right: 4vw;
+    position: absolute;
+    bottom: 0;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    box-sizing: border-box;
+}
+
+#editor div {
+    white-space: nowrap;
 }
 
 #commands {
     top: 3vh;
+}
+
+#editor b {
+    font-weight: bold;
 }

@@ -110,7 +110,7 @@ function savework(name, collection, filetype) {  // filetype is base type (not t
             }
  }; // end SAVEWORK()
 
-function savefile(name, collection, filetype, data, activityFlag) {  //filetype must be given as 'text' or 'text-template'
+function savefile(name, collection, filetype, data, activityFlag) {  //filetype must be given as (e.g.) 'text' or 'text-template'
 
          console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + filetype + 'and with data: ' + data);
          $.post("looma-database-utilities.php",
@@ -119,7 +119,7 @@ function savefile(name, collection, filetype, data, activityFlag) {  //filetype 
                  dn: escapeHTML(name),
                  ft: filetype,
                  data: data,
-                 activity:activityFlag}, //need to use escapeHtml() with POST??
+                 activity:activityFlag}, // NOTE: this is a STRING, either "false" or "true"
 
                  function(response) {
                     callbacks['checkpoint']();
@@ -362,14 +362,21 @@ $(document).ready(function ()
                if (callbacks['modified']())
                    savework(currentname, currentcollection, currentfiletype);
                else {
-                    opensearch();
+                    opensearch();  //do OPENSEARCH first, then hide/show FILTER checkboxes below
 
-                    $('#txt-chk input').attr('checked', false);
-                    $('#txt-chk').hide();
+                    $('.typ-chk input').attr('checked', false);
+                    $('.typ-chk').hide();
 
-                    $('#template-chk').show();
-                    $('#template-chk input').attr('checked', true).css('opacity', 0.5);
-                    $('#template-chk input').click(function() {return false;});
+                    if (currentfiletype == 'text') {
+                        $('#text-template-chk').show();
+                        $('#text-template-chk input').attr('checked', true).css('opacity', 0.5);
+                        $('#text-template-chk input').click(function() {return false;});
+                    }
+                    else if (currentfiletype == 'lesson') {
+                        $('#lesson-template-chk').show();
+                        $('#lesson-template-chk input').attr('checked', true).css('opacity', 0.5);
+                        $('#lesson-template-chk input').click(function() {return false;});
+                    };
 
                     //NOTE: can't attach click handler to 'results' which dont exist yet
                     //      so add the ON handler to the DIV which will contain the result elements

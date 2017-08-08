@@ -18,17 +18,15 @@ var savedHTML;   //savedHTML is textcheckpoint of HTML for checking for modifica
 var loginname;
 
 /*  callback functions and assignments expected by looma-filecommands.js:  */
-callbacks ['clear'] = textclear;
-callbacks ['save']  = textsave;
-// new function quitframe()  June 2017 - used to close the text-editor iFrame when called from in another editor, e.g. lesson plan
-callbacks ['quit'] = quitframe;
-callbacks ['savetemplate']  = texttemplatesave;
+callbacks ['clear'] =           textclear;
+callbacks ['save']  =           textsave;
+callbacks ['savetemplate']  =   texttemplatesave;
 //callbacks ['open']  = textopen;
-callbacks ['display'] = textdisplay;
-callbacks ['modified'] = textmodified;
+callbacks ['display'] =         textdisplay;
+callbacks ['modified'] =        textmodified;
 callbacks ['showsearchitems'] = textshowsearchitems;
-callbacks ['checkpoint'] = textcheckpoint;
-callbacks ['undocheckpoint'] = textundocheckpoint;
+callbacks ['checkpoint'] =      textcheckpoint;
+//callbacks ['undocheckpoint'] =  textundocheckpoint;
 
 currentname = "";
 currentcollection = 'text';
@@ -37,28 +35,29 @@ currentfiletype = 'text';
 $('#collection').val('text');
 
 function textcheckpoint() {         savedHTML =   $editor.html(); };
-function textundocheckpoint() {     $editor.html( savedHTML);     };  //not used now??
+//function textundocheckpoint() {     $editor.html( savedHTML);     };  //not used now??
 function textmodified()   { return (savedHTML !== $editor.html());};
 
 function textclear() {
        setname("");
+       //currentid="";
        $editor.html("");
-       savedHTML = "";
        textcheckpoint();
        $editor.focus();
 };
 
-function textdisplay (response) {$editor.html(response.data);};
+function textdisplay (response) {$editor.html(response.data); textcheckpoint();};
 
 function textsave(name) {
-    savefile(name, currentcollection, currentfiletype, $editor.html(), "true");
+    //$editor.cleanHtml();  // TRYING TO use bootstrap-wysiwyg "cleanHMTL function" BUT IT IS UNDEFINED ??
+    savefile(name, currentcollection, currentfiletype, $editor.html(), "false");
 }; //end testsave()
 
 function texttemplatesave(name) {
     savefile(name, currentcollection, currentfiletype + '-template', $editor.html(), "false");
 }; //end testsave()
 
-function textshowsearchitems() {               // also SHOW checkboxes in #search-filter that we want
+function textshowsearchitems() {
                     $('#txt-chk').show();
                     // for TEXT EDIT, only show "text", clicked and disabled
                     $('#txt-chk input').attr('checked', true).css('opacity', 0.5);
@@ -66,21 +65,14 @@ function textshowsearchitems() {               // also SHOW checkboxes in #searc
                     $('#txt-chk input').click(function() {return false;});
             };
 
-// new function June 2017 - used to close the text-editor iFrame when called from in another editor, e.g. lesson plan
-function quitframe() {
-  $('#main-container-horizontal', window.parent.document).removeClass('all-transparent');
-  $('#commands', window.parent.document).removeClass('all-transparent');
-  $('#textdiv', window.parent.document).hide();
-}
-
 $(document).ready(function ()
     {
 
-        $('#editor').wysiwyg();
         $editor = $('#editor');  //the DIV where the HTML is being edited
+        $editor.wysiwyg();
         textclear();
 
         loginname = LOOMA.loggedIn();
-        if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
+        if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
 
 });

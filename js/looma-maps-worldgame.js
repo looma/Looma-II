@@ -17,7 +17,10 @@ window.onload = function() {
 	submitButton.addEventListener('click', userInput);
 
 	var nextButton = document.getElementById("next");
-	next.addEventListener('click', generateQuestion);
+	next.addEventListener('click', newQuestion);
+
+    var userGuess = document.getElementById("userGuess");
+    var txtOutput = document.getElementById("txtOutput");
 
 	//create new canvas
 	var c = document.getElementById("myCanvas");
@@ -34,9 +37,18 @@ window.onload = function() {
 	map.src = "../maps/WorldGame/images/game-map.png";
 
 	function generateQuestion(){
-		currentAnswerNum = Math.floor(Math.random() * 10);
+	    txtOutput.value = '';
+		currentAnswerNum = Math.floor(Math.random() * answers.length);
     	showMarker(answers[currentAnswerNum]);
+    	return false;
 	}
+
+    function newQuestion(){
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.drawImage(map, 0, 0);
+        generateQuestion();
+
+    }
 
     function showMarker(answer){
     	var c = document.getElementById("myCanvas");
@@ -92,11 +104,9 @@ window.onload = function() {
 
     function userInput(){
     	outputValue = "";
-    	var userGuess = document.getElementById("userGuess");
-    	userGuess = userGuess.value;
-    	var txtOutput = document.getElementById("txtOutput");
+    	var guess = userGuess.value;
 
-    	if (userGuess === answers[currentAnswerNum])
+    	if (guess === answers[currentAnswerNum])
     	{
     		outputValue = "Correct! This is ";
     	}
@@ -106,5 +116,6 @@ window.onload = function() {
     	}
     	outputValue = outputValue + answers[currentAnswerNum];
     	txtOutput.value = outputValue;
+    	return false;
     };
 };

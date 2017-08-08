@@ -9,14 +9,15 @@ window.onload = function() {
 
 	var answers = ["Afghansitan", "Armenia", "Azerbaijan", "Bahrain", "Bangladesh", "Bhutan", "Brunei", "Cambodia", "China", "Cyprus", "Georgia", "India", "Indonesia", "Iran", "Iraq", "Israel", "Japan", "Jordan", "Kazakhstan", "Kuwait", "Kyrgyzstan", "Laos", "Lebanon", "Malaysia", "Mongolia", "Myanmar (Burma)", "Nepal", "North Korea", "Oman", "Pakistan", "Philippines", "Qatar", "Russia", "Saudi Arabia", "South Korea", "Sri Lanka", "Syria", "Taiwan", "Tajikistan", "Thailand", "Timor-Leste", "Turkey", "Turkmenistan", "United Arab Emirates (UAE)", "Uzbekistan", "Vietnam", "Yemen" ];
 	var currentAnswerNum;
-	var userGuess;
+    var userGuess = document.getElementById("userGuess");
+    var txtOutput = document.getElementById("txtOutput");
 	var outputValue;
 
 	var submitButton = document.getElementById("submit");
 	submitButton.addEventListener('click', userInput);
 
 	var nextButton = document.getElementById("next");
-	next.addEventListener('click', generateQuestion);
+	next.addEventListener('click', newQuestion);
 
 	//create new canvas
 	var c = document.getElementById("myCanvas");
@@ -33,9 +34,17 @@ window.onload = function() {
 	map.src = "../maps/AsiaCountriesGame/images/asia-countries.png";
 
 	function generateQuestion(){
-        currentAnswerNum = Math.floor(Math.random() * 47);
+	    txtOutput.value = '';
+        currentAnswerNum = Math.floor(Math.random() * answers.length);
     	showMarker(answers[currentAnswerNum]);
 	}
+
+    function newQuestion(){
+        ctx.clearRect(0, 0, c.width, c.height);
+        ctx.drawImage(map, 0, 0);
+        generateQuestion();
+
+    }
 
     function showMarker(answer){
     	var c = document.getElementById("myCanvas");
@@ -238,9 +247,7 @@ window.onload = function() {
 
     function userInput(){
     	outputValue = "";
-        var userGuess = document.getElementById("userGuess");
-        userGuess = userGuess.value;
-        var txtOutput = document.getElementById("txtOutput");
+        var guess = userGuess.value;
 
         if (userGuess === answers[currentAnswerNum])
         {

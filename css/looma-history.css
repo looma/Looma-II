@@ -3,7 +3,7 @@ Author: Alexa Thomases, May Li, Catie Cassani
 Filename: looma-history.css
 Verion: 2.0
 Date: July 2017
-Description: Formats the timeline to be horizontal and handles the styling of the buttons, popups, and searchbar.
+Description:  
 */
 
 /*Framework for the buttons (which generally contain the titles of each event)*/
@@ -235,6 +235,7 @@ button img {height:100%;width:100%;}
   cursor: pointer;
   min-width: 7.5vw;
   border-radius: 2vh;
+  display: none;
 }
 
 /*The display of the Search label*/
@@ -256,15 +257,20 @@ label {
   border-radius: 2vh;
 }
 
+/*The display of the on-screen keyboard button*/
 .show-keyboard-button {
-  position: absolute;
-  bottom: 76.5%;
-  left: 2%;
-  height: 10%;
-  width: 7.5%;
+  top: 13vh;
+  left: 2vw;
 }
 
-/*The display of the enter button*/
+/*The display of the full-screen button*/
+button#fullscreen-control {
+  bottom: 9vh;
+  right: 3.5vw;
+}
+
+
+/*The display of the prev button (for searching)*/
 #previous {
  position: fixed;
   top:3vh;
@@ -276,8 +282,10 @@ label {
   min-width: 7.5vw;
   border-radius: 2vh;
   font-size: 1.5em;
+  display: none;
 }
 
+/*The display of the next button (for searching)*/
 #next {
  position: fixed;
   top:3vh;
@@ -289,6 +297,7 @@ label {
   min-width: 7.5vw;
   border-radius: 2vh;
   font-size: 1.5em;
+  display: none;
 }
 
 .popup {

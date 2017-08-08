@@ -23,15 +23,12 @@ Comments:
 <body>
 	<div id="main-container-horizontal">
 	    <div id="fullscreen">
-      <?php
+    <?php
             $id = $_REQUEST['id'];
-
-            echo "<div id='the_id' data-id=" . $id . " hidden></div>"
-            //mongo look-up $id in text-file-collection
-            //$entry = $text_files_collection->findOne(array("_id" => new MongoId($id)));  
-            //had ", array("order")" param ????
-            //echo $entry['html'];
-       ?> 
+            //mongo look-up $id in text-file-collectio
+            $entry = $text_files_collection->findOne(array("_id" => new MongoId($id)));  //had ", array("order")" param ????
+            echo $entry['html'];
+     ?>
        <button id="fullscreen-control"></button>
 	   </div>
 	</div>

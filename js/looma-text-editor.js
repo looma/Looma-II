@@ -1,78 +1,93 @@
   /*
-LOOMA javascript file
-Filename: looma-text-editor.JS
-Description:
+    LOOMA javascript file
+    Filename: looma-text-editor.JS
+    Description:
 
-Programmer name: skip
-Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: nov 2016
-Revision: Looma 2.4
- */
+    Programmer name: skip
+    Owner: VillageTech Solutions (villagetechsolutions.org)
+    Date: nov 2016
+    Revision: Looma 2.4
+     */
 
-'use strict';
+  'use strict';
 
-/*define functions here */
+  /*define functions here */
 
-var $editor;  //the DIV where the HTML is being edited
-var savedHTML;   //savedHTML is textcheckpoint of HTML for checking for modification
-var loginname;
+  var $editor; //the DIV where the HTML is being edited
+  var savedHTML; //savedHTML is textcheckpoint of HTML for checking for modification
+  var loginname;
 
-/*  callback functions and assignments expected by looma-filecommands.js:  */
-callbacks ['clear'] =           textclear;
-callbacks ['save']  =           textsave;
-callbacks ['savetemplate']  =   texttemplatesave;
-//callbacks ['open']  = textopen;
-callbacks ['display'] =         textdisplay;
-callbacks ['modified'] =        textmodified;
-callbacks ['showsearchitems'] = textshowsearchitems;
-callbacks ['checkpoint'] =      textcheckpoint;
-//callbacks ['undocheckpoint'] =  textundocheckpoint;
+  /*  callback functions and assignments expected by looma-filecommands.js:  */
+  callbacks['clear'] = textclear;
+  callbacks['save'] = textsave;
+  callbacks['savetemplate'] = texttemplatesave;
+  //callbacks ['open']  = textopen;
+  callbacks['display'] = textdisplay;
+  callbacks['modified'] = textmodified;
+  callbacks['showsearchitems'] = textshowsearchitems;
+  callbacks['checkpoint'] = textcheckpoint;
+  callbacks['undocheckpoint'] = textundocheckpoint;
 
-currentname = "";
-currentcollection = 'text';
-currentfiletype = 'text';
+  currentname = "";
+  currentcollection = 'text';
+  currentfiletype = 'text';
 
-$('#collection').val('text');
+  $('#collection').val('text');
 
-function textcheckpoint() {         savedHTML =   $editor.html(); };
-//function textundocheckpoint() {     $editor.html( savedHTML);     };  //not used now??
-function textmodified()   { return (savedHTML !== $editor.html());};
+  function textcheckpoint() {
+      savedHTML = $editor.html();
+  };
 
-function textclear() {
-       setname("");
-       //currentid="";
-       $editor.html("");
-       textcheckpoint();
-       $editor.focus();
-};
+  function textundocheckpoint() {
+      $editor.html(savedHTML);
+  }; //not used now??
+  function textmodified() {
+      return (savedHTML !== $editor.html());
+  };
 
-function textdisplay (response) {$editor.html(response.data); textcheckpoint();};
+  function textclear() {
+      setname("");
+      currentid = "";
+      $editor.html("");
+      textcheckpoint();
+      $editor.focus();
+  };
 
-function textsave(name) {
-    //$editor.cleanHtml();  // TRYING TO use bootstrap-wysiwyg "cleanHMTL function" BUT IT IS UNDEFINED ??
-    savefile(name, currentcollection, currentfiletype, $editor.html(), true);
-}; //end testsave()
+  function textdisplay(response) {
+      $editor.html(response.data);
+  };
 
-function texttemplatesave(name) {
-    savefile(name, currentcollection, currentfiletype + '-template', $editor.html(), false);
-}; //end testsave()
+  function textsave(name) {
+      $editor.cleanHtml()
+      savefile(name, currentcollection, currentfiletype, $editor.html(), "false");
+  }; //end testsave()
 
-function textshowsearchitems() {
-                    $('#txt-chk').show();
-                    // for TEXT EDIT, only show "text", clicked and disabled
-                    $('#txt-chk input').attr('checked', true).css('opacity', 0.5);
-                    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
-                    $('#txt-chk input').click(function() {return false;});
-            };
+  function texttemplatesave(name) {
+      $editor.cleanHtml()
+      savefile(name, currentcollection, currentfiletype + '-template', $editor.html(),
+          "false");
+  }; //end testsave()
 
-$(document).ready(function ()
-    {
+  function textshowsearchitems() {
+      $('#txt-chk').show();
+      // for TEXT EDIT, only show "text", clicked and disabled
+      $('#txt-chk input').attr('checked', true).css('opacity', 0.5);
+      //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
+      $('#txt-chk input').click(function() {
+          return false;
+      });
+  };
 
-        $editor = $('#editor');  //the DIV where the HTML is being edited
-        $editor.wysiwyg();
-        textclear();
+  $(document).ready(function() {
 
-        loginname = LOOMA.loggedIn();
-        if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
+      $editor = $('#editor'); //the DIV where the HTML is being edited
+      $editor.wysiwyg();
+      textclear();
 
-});
+      loginname = LOOMA.loggedIn();
+      if (loginname && (loginname == 'kathy' || loginname == 'david' ||
+              loginname == 'vivian' || loginname == 'skip' || loginname ==
+              'akshay')) $('.admin')
+          .show();
+
+  });

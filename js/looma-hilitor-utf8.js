@@ -2,19 +2,12 @@
 // Please acknowledge use of this code by including this header.
 
 /*
-LOOMA javascript file
-Filename: looma-hilitor-utf8.js
-Description:  modified July 2017 by Looma History Timeline project 
-              to match needs of Looma timelines
-     
-Programmer name: May, Alexa, Catie
-Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: July 2017
-Revision: Looma 3.0
- */
+  Edited by: Alexa Thomases, Catie Cassani, and May Li
+  Filename: looma-hilitor-utf8.js
+  Date: July 2017
+  Description: Converts searched words in regular JavaScript expressions and applies/removes highlight on these words at appropriate times.
+*/
 
-
-//
 function Hilitor2(id, tag)
 {
 

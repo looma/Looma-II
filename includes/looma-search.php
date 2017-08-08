@@ -38,18 +38,25 @@ Description:  popup SEARCH panel for Looma pages
                 <span class="typ-chk"  id="txb-chk">
                     <input type="checkbox" name="type[]" value="textbook">textbook</input>
                 </span>
+
                 <span class="typ-chk"  id="txt-chk">
                     <input type="checkbox" name="type[]" value="text">    text    </input>
                 </span>
-                <span class="typ-chk"  id="template-chk">
+                <span class="typ-chk"  id="text-template-chk">
                     <input type="checkbox" name="type[]" value="text-template">text template</input>
                 </span>
-                <span class="typ-chk"  id="gam-chk">
-                    <input type="checkbox" name="type[]" value="game">    game    </input>
-                </span>
+
                 <span class="typ-chk"  id="lesson-chk">
                     <input type="checkbox" name="type[]" value="lesson">lesson</input>
                 </span>
+                <span class="typ-chk"  id="lesson-template-chk">
+                    <input type="checkbox" name="type[]" value="lesson-template">lesson template</input>
+                </span>
+
+                <span class="typ-chk"  id="gam-chk">
+                    <input type="checkbox" name="type[]" value="game">    game    </input>
+                </span>
+
                 <span class="typ-chk"  id="ss-chk">
                     <input type="checkbox" name="type[]" value="slideshow">slideshow</input>
                 </span>

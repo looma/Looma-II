@@ -3,12 +3,8 @@
 <?php
 $page_title = 'Looma - Maps';
 include ('includes/header.php');
-include ('includes/toolbar.php');
-include ('includes/js-includes.php');
+
 ?>
-
-
-<head>
 
 <link rel="Stylesheet" type="text/css" href="css/looma-maps-game.css">
 
@@ -18,7 +14,7 @@ include ('includes/js-includes.php');
     <div id="main-container-horizontal">
         <h1>Continents and Oceans Game</h1>
 
-        <canvas id="myCanvas" width = "725" height = "380"></canvas>
+        <canvas id="myCanvas" width="725" height="380"></canvas>
 
         <p id="question">What continent or ocean is this?</p>
         <form action="">
@@ -40,12 +36,13 @@ include ('includes/js-includes.php');
             <input type="text" id="txtOutput" />
         </form>
 
-        <form action ="">
-        		<input id = "next" type = "submit" value ="Next Question"/>
-        </form>
-
-        <script src="js/jquery.min.js"></script>
-        <script src="js/looma-utilities.js"></script>
-        <script src="js/looma-maps-worldgame.js"></script>
+        <input id = "next" type = "submit" value ="Next Question"/>
     </div>
+
+    <?php
+    include ('includes/toolbar.php');
+    include ('includes/js-includes.php');
+    ?>
+
+        <script src="js/looma-maps-worldgame.js"></script>
 </body>

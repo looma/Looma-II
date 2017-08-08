@@ -175,11 +175,11 @@ function TESTunpack (response) {  //unpack the array of collection/id pairs into
 function TESTdisplay (response) {clearFilter(); $timeline.html(TESTunpack(response));};
 
 function TESTsave(name) {
-    //savefile(name, currentcollection, currentfiletype, testpack($timeline.html()), true);
+    //savefile(name, currentcollection, currentfiletype, testpack($timeline.html()), "true");
 }; //end TESTsave()
 
 function TESTtemplatesave(name) {
-    //savefile(name, currentcollection, currentfiletype + '-template', testpack($timeline.html()), false);
+    //savefile(name, currentcollection, currentfiletype + '-template', testpack($timeline.html()), "false");
 }; //end TESTtemplatesave()
 
 // end FILE COMMANDS stuff

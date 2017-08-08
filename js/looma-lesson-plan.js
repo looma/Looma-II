@@ -200,13 +200,13 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
 function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response)); /*lessoncheckpoint();*/};
 
 function lessonsave(name) {
-    savefile(name, currentcollection, currentfiletype, lessonpack($timeline.html()), false);
+    savefile(name, currentcollection, currentfiletype, lessonpack($timeline.html()), "false");
                 //note, the final param to 'savefile()' [to make an activity] set to 'false'
-                //because lessons dont need assiciated activities
+                //because lessons dont need associated activities
 }; //end lessonsave()
 
 function lessontemplatesave(name) {
-    savefile(name, currentcollection, currentfiletype + '-template', lessonpack($timeline.html()), false);
+    savefile(name, currentcollection, currentfiletype + '-template', lessonpack($timeline.html()), "false");
 }; //end lessontemplatesave()
 
 

@@ -47,7 +47,8 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
 
               <br><button type="button" class="media play-pause"><?php keyword('Play') ?></button>
               <input type="range"       class="video seek-bar" value="0" style="display:inline-block">
-              <br><button type="button" class="media mute">    <?php keyword('Volume') ?></button>
+              <br><br>
+              <button type="button" class="media mute">    <?php keyword('Volume') ?></button>
               <input type="range"       class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">
  <!--         <br><button type="button"     class="media" id="mute">      <?php keyword('Mute') ?></button>
  -->

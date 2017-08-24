@@ -366,29 +366,32 @@ if ( isset($_REQUEST["cmd"]) ) {
             // build $extensions[] array by pushing filetype names into the array
             foreach ($filetypes as $type)
             switch ($type) {
-                case 'video':
-                    array_push($extensions, "mp4", "video", "mov", "m4v"); break;
-                case 'audio':
-                    array_push($extensions, "mp3", "audio"); break;
-                case 'image':
-                    array_push($extensions, "image", "jpg", "png", "gif"); break;
-                case 'html':
-                    array_push($extensions, "EP", "html", "htm", "php", "asp"); break;
                 case 'pdf':
                     array_push($extensions, "pdf"); break;
+                case 'video':
+                    array_push($extensions, "mp4", "video", "mov", "m4v"); break;
+                case 'image':
+                    array_push($extensions, "image", "jpg", "png", "gif"); break;
+                case 'history':
+                    array_push($extensions, "history"); break;
+                case 'slideshow':
+                    array_push($extensions, "slideshow"); break;
+                case 'map':
+                    array_push($extensions, "map"); break;
+                case 'evi':
+                    array_push($extensions, "evi"); break;
+                case 'audio':
+                    array_push($extensions, "mp3", "audio"); break;
                 case 'text':
                     array_push($extensions, "text"); break;
 
+                // the rest {html, templates, lesson and looma are not activities for now
+                case 'html':
+                    array_push($extensions, "EP", "html", "htm", "php", "asp"); break;
                 case 'text-template':
                     array_push($extensions, "text-template"); break;
-
                 case 'lesson-template':
                     array_push($extensions, "lesson-template");break;
-
-                case 'textbook':
-                    array_push($extensions, "textbook"); break;
-                case 'slideshow':
-                    array_push($extensions, "slideshow"); break;
                 case 'lesson':
                     array_push($extensions, "lesson"); break;
                 case 'looma':
@@ -434,13 +437,15 @@ if ( isset($_REQUEST["cmd"]) ) {
             if ($nameRegex)          $query['dn']     = $nameRegex;
             if ($classSubjRegex)     $query['_id']  = $classSubjRegex;
 
-                 //echo "Query is: "; print_r($query);
-                 //echo "$dbCollection is " . $dbCollection;
+                //echo "Query is: "; print_r($query);
+                //echo '$dbCollection is ' . $dbCollection;
 
             $cursor = $dbCollection->find($query);   //->skip($page)->limit(20);
 
             $result = array();
             if ($cursor -> count() > 0) { foreach ($cursor as $d) $result[] = $d; };
+
+                //echo "    result item " . $d;
 
  /*           if (in_array('looma', $filetypes)) {
                 // for Looma Pages activities, dont filter with class/subject

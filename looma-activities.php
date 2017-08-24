@@ -23,7 +23,12 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
 	<body>
 
-<?php	$class = trim($_GET['class']);
+<?php
+
+    /*
+     * NOTE: should validate these parameters, esp. using "isset"
+     */
+        $class = trim($_GET['class']);
 		$subject = trim($_GET['subject']) ;
 		$ch_id = trim($_GET['ch']);
 		$ch_dn = trim($_GET['chdn']);

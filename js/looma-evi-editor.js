@@ -21,11 +21,14 @@ var timeline_times = [];
 var timeline_id = [];
 var id_counter = 0;
 var mainThumbSrc = "";
-var openClick = false;
+//var openClick = false;
+var loginname;
+var $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
+var savedTimeline;   //savedTimeline is checkpoint of timeline for checking for modification
 
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
-window.onload = function () {
+$(document).ready(function() {
 
     $('#show_text').show();
 
@@ -84,7 +87,9 @@ window.onload = function () {
 
             mainThumbSrc = $(this).closest('.activityDiv')[0].firstChild.firstChild.src;
 
+            // if !fileexists, set name to dn+Edited, else setname to ""
             setname((($(this).closest('.activityDiv')).data('mongo').dn) + " Edited");
+            owner = true;
             display_video($(this).closest('.activityDiv'));
         }
         else {
@@ -94,37 +99,35 @@ window.onload = function () {
 
     $('                  #timeline').on('click', '.remove',     function() {
             removeTimelineElement(this);return false;});
+    
     $('#innerResultsDiv, #timeline').on('click', '.preview',    function() {
             preview_result($(this).closest('.activityDiv'));
             $('#clearPreview').css('display', 'inline')
             return false;
           });
+    
     $('#innerResultsDiv, #timeline').on('click', '.resultsimg', function() {
             preview_result($(this).closest('.activityDiv'));return false;});
-
-
+    
 
 //////////////////////////////////////
 /////////FILE COMMANDS setup /////////
 //////////////////////////////////////
 
-var $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
-var savedTimeline;   //savedTimeline is checkpoint of timeline for checking for modification
-
-var loginname = LOOMA.loggedIn();
-
+loginname = LOOMA.loggedIn();
+$('.template-cmd').hide();
     //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
 
 //callback functions expected by looma-filecommands.js:
-callbacks ['clear'] = evinew;
-callbacks ['save']  = evisave;
-callbacks ['savetemplate']  = evitemplatesave;
-//callbacks ['open']  = eviopen;
-callbacks ['display'] = evidisplay;
-callbacks ['modified'] = evimodified;
-callbacks ['showsearchitems'] = evishowsearchitemsopen;
-callbacks ['checkpoint'] = evicheckpoint;
-callbacks ['undocheckpoint'] = eviundocheckpoint;
+callbacks ['clear'] = eviNew;
+callbacks ['save']  = eviSave;
+callbacks ['savetemplate']  = eviTemplateSave;
+//callbacks ['open']  = eviOpen;
+callbacks ['display'] = eviDisplay;
+callbacks ['modified'] = eviModified;
+callbacks ['showsearchitems'] = eviShowSearchItemsOpen;
+callbacks ['checkpoint'] = eviCheckpoint;
+callbacks ['undocheckpoint'] = eviUndoCheckpoint;
 
 
 /*  variable assignments expected by looma-filecommands.js:  */
@@ -133,234 +136,6 @@ currentcollection = 'edited_videos'; //currentcollection is defined in looma-fil
 currentfiletype = 'evi';   //currentfiletype   is defined in looma-filecommands.js and is used there
 
 $('#search-form  #collection').val('edited_videos');
-
-function evishowsearchitemsopen() {
-    $('#search-form  #collection').val('edited_videos');
-
-    $('#evi-chk').show();
-    // for TEXT EDIT, only show "text", clicked and disabled
-    $('#evi-chk input').attr('checked', true).css('opacity', 0.5);
-    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
-    $('#evi-chk input').click(function() {return false;});
-
-};
-
-function evishowsearchitemsnew() {
-    $('#search-form  #collection').val('activities');
-
-    $('#vid-chk').show();
-    // for TEXT EDIT, only show "text", clicked and disabled
-    $('#vid-chk input').attr('checked', true).css('opacity', 0.5);
-    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
-    $('#vid-chk input').click(function() {return false;});
-
-};
-
-function evicheckpoint() {         savedTimeline =   $timeline.html(); };
-function eviundocheckpoint() {     $timeline.html(    savedTimeline);     };  //not used now??
-function evimodified()   {
-    return (savedTimeline !== $timeline.html());};
-
-function evinew()
-{
-    eviclear();
-
-    callbacks ['showsearchitems'] = evishowsearchitemsnew;
-
-    opensearch(true);
-
-    $('#search-results').on('click', 'button', function()
-    {
-      closesearch();
-      if ($(this).attr('id') !== 'cancel-results') //if file not found, dont call OPEN()
-        {
-            vid_selected = true;
-            $('#del_video').remove();
-            $('#del_label').remove();
-            $('#del_div').remove();
-            $('#div_search').show();
-            $('#div_filetypes').show();
-            $('#clear_button').show();
-            $('#search_label').html("Name:");
-            $('<br>').insertAfter('#searchString');
-            $('#div_categories').css("width", "25vw")
-            $('.filter_label').css("margin-left", "auto");
-
-            mainThumbSrc = $(this).find('.thumbnaildiv')[0].firstChild.src;
-            setname(this.title + " Edited");
-
-            var video_id = $(this).data('id');
-
-            $.post("looma-database-utilities.php",
-            {
-                cmd: "openByID", collection: 'activities', id: video_id},
-                function(result) {
-                display_video(result, video_id);
-            },
-            'json');
-        }
-    });
-
-    $('#cancel-search').on('click', function() {
-       closesearch();
-    });
-
-    callbacks ['showsearchitems'] = evishowsearchitemsopen;
-}
-
-function eviclear() {
-
-    clearFilter();
-
-    if(vid_selected)
-    {
-      clearFilter();
-      $('#video-area').remove();
-      $('#title-area').remove();
-      $('#media-controls').remove();
-      firstTimeVideoHTMLDeletion();
-      vid_selected = false;
-      $('#del_video').prop("checked", true);
-      $('#div_categories br').remove();
-      $('#div_categories').css("width", "60vw")
-      $('.filter_label').css("margin-left", "1vw");
-    }
-
-    timeline_times = [];
-    timeline_id = [];
-    id_counter = 0;
-    setname("");
-    //currentid="";
-    $timeline.empty();
-    evicheckpoint();
-};
-
-evinew();
-
-function evipack (html) { // pack the timeline into an array of collection/id pairs for storage
-    var packitem;
-    var packarray = [];
-
-    packitem = {};
-    packitem.collection = $('#master_video').data('collection');
-    packitem.id = $('#master_video').data('id');
-    packarray.push(packitem);
-
-    //change below pack code to add an ordering INDEX
-    $(html).each(function() {
-            packitem = {};  //make a new object, unlinking the references already pushed into packarray
-            packitem.collection = $(this).data('collection');
-            packitem.id         = $(this).data('id');
-            packitem.time       = $(this).data('time');
-            packarray.push(packitem);
-        });
-
-    return packarray;
-}; //end evipack()
-
-function eviunpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
-    var newDiv;
-    var timeArray = [];
-
-    //for each element in data, call createActivityDiv, and attach the resturn value to #timelinediv
-    // also set filename, [and collection??]
-
-    //$('#timelineDisplay').empty();
-
-    setname(response.dn);
-
-    var mainVideo = response.data.splice(0, 1)[0];
-
-    $.post("looma-database-utilities.php",
-            {cmd: "openByID", collection: mainVideo.collection, id: mainVideo.id},
-            function(result) {
-              display_video(result, mainVideo.id);
-            },
-            'json'
-          );
-
-    $(response.data).each(function(){
-      timeArray.push(this.time);
-    });
-
-    // need to record ID of newly opened LP so that later SAVEs can overwrite it
-    $(response.data).each(function(index) {
-       // retrieve each timeline element from mongo and add it to the current timeline
-         newDiv = null;  //reset newDiv so previous references to it are broken
-         $.post("looma-database-utilities.php",
-            {cmd: "openByID", collection: this.collection, id: this.id},
-            function(result) {
-                newDiv = createActivityDiv(result);
-                newDiv.firstChild.setAttribute("data-time", timeArray[index]);
-                insertTimelineElement(newDiv.firstChild, true);
-            },
-            'json'
-          );
-    });
-
-    if(response.thumb) 
-    {
-      mainThumbSrc = response.thumb;
-    }
-    else
-    {
-      //FIX LATER
-      mainThumbSrc = "";
-    }
-
-    //makesortable();
-    $('#del_video').remove();
-    $('#del_label').remove();
-    $('#del_div').remove();
-    $('#div_search').show();
-    $('#div_filetypes').show();
-    $('#clear_button').show();
-    $('#search_label').html("Name:")
-    clearFilter();
-    vid_selected = true;
-    $('<br>').insertAfter('#searchString');
-    $('#div_categories').css("width", "25vw")
-    $('.filter_label').css("margin-left", "auto");
-}; //end eviunpack()
-
-function evidisplay (response) 
-{
-  clearFilter(); 
-  $timeline.html(eviunpack(response));
-};
-
-function evisave(name) {
-    saveEviFile(name, 'edited_videos', 'evi', evipack($timeline.html()), mainThumbSrc, true);
-}; //end evisave()
-
-function evitemplatesave(name) {
-    saveEviFile(name, 'edited_videos', 'evi' + '-template', evipack($timeline.html()), mainThumbSrc, false);
-}; //end evitemplatesave()
-
-function saveEviFile(name, collection, filetype, data, thumb, activityFlag) {  //filetype must be given as 'text' or 'text-template'
-
-         console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + filetype + 'and with data: ' + data);
-         $.post("looma-database-utilities.php",
-                {cmd: "save",
-                 collection: collection,
-                 dn: escapeHTML(name),
-                 ft: filetype,
-                 data: data,
-                 thumb: thumb,
-                 activity:activityFlag}, //need to use escapeHtml() with POST??
-
-                 function(response) {
-                    callbacks['checkpoint']();
-                    if (response['_id']) {
-                       console.log("SAVE: upserted ID = ", response['_id']['$id']);
-                    }
-                    else {
-                      console.log("SAVE: didn't work?");
-                    }
-                 },
-                 'json'
-              );
-}; //end SAVEFILE()
 
 // end FILE COMMANDS stuff
 
@@ -409,15 +184,262 @@ function saveEviFile(name, collection, filetype, data, thumb, activityFlag) {  /
                         }
                   };
            });
-  //
-  // $( "#timelineDisplay" ).sortable({disabled: true});
-  //
-        //makesortable(); //makes the timeline sortable
-
+  
     //Must check box AFTER clear filter has happened
     $('#del_video').prop("checked", true);
+    
+    eviCheckpoint();
+    //eviNew();
+    
+});  //end document.ready()
 
-};  //end window.onload()
+function eviShowSearchItemsOpen() {
+    $('#search-form  #collection').val('edited_videos');
+    
+    $('#evi-chk').show();
+    // for TEXT EDIT, only show "text", clicked and disabled
+    $('#evi-chk input').attr('checked', true).css('opacity', 0.5);
+    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
+    $('#evi-chk input').click(function() {return false;});
+    
+};
+
+function eviShowSearchItemsNew() {
+    $('#search-form  #collection').val('activities');
+    
+    $('#vid-chk').show();
+    // for TEXT EDIT, only show "text", clicked and disabled
+    $('#vid-chk input').attr('checked', true).css('opacity', 0.5);
+    //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
+    $('#vid-chk input').click(function() {return false;});
+    
+};
+
+function eviCheckpoint() {         savedTimeline =   $timeline.html(); };
+function eviUndoCheckpoint() {     $timeline.html(   savedTimeline);     };  //not used now??
+function eviModified()   { return (savedTimeline !== $timeline.html());};
+
+function eviSetOwner() {
+    $.post("looma-database-utilities.php",
+        {cmd: "open", collection: 'edited_videos', dn: currentname, ft: 'evi'},
+        function(response) {
+            if (response['error']) owner = true;
+            else {
+                if ('author' in response)
+                    owner = (response['author'] == LOOMA.loggedIn());
+                else owner = false;
+            }
+        },
+        'json'
+    );
+};  // end eviSetOwner()
+
+function eviNew()
+{
+    eviClear();
+    
+    callbacks ['showsearchitems'] = eviShowSearchItemsNew;
+    
+    opensearch(true);
+    
+    $('#search-results').on('click', 'button', function()
+    {
+        closesearch();
+        if ($(this).attr('id') !== 'cancel-results') //if file not found, dont call OPEN()
+        {
+            vid_selected = true;
+            $('#del_video').remove();
+            $('#del_label').remove();
+            $('#del_div').remove();
+            $('#div_search').show();
+            $('#div_filetypes').show();
+            $('#clear_button').show();
+            $('#search_label').html("Name:");
+            $('<br>').insertAfter('#searchString');
+            $('#div_categories').css("width", "25vw")
+            $('.filter_label').css("margin-left", "auto");
+            
+            mainThumbSrc = $(this).find('.thumbnaildiv')[0].firstChild.src;
+            setname(this.title + " (edited)");
+            
+            //opened a new base video to edit. set owner of this EVI being made to current owner
+            eviSetOwner();
+            
+            //hack to make it like a newly loaded base video is 'modified'
+            savedTimeline = 'x';
+            
+            var video_id = $(this).data('id');
+            
+            $.post("looma-database-utilities.php",
+                {
+                    cmd: "openByID", collection: 'activities', id: video_id},
+                function(result) {
+                    display_video(result, video_id);
+                },
+                'json');
+        }
+    });
+    
+    $('#cancel-search').on('click', function() {
+        closesearch();
+    });
+    
+    callbacks ['showsearchitems'] = eviShowSearchItemsOpen;
+}  //end eviNew()
+
+function eviClear() {
+    
+    clearFilter();
+    
+    if(vid_selected)
+    {
+        clearFilter();
+        $('#video-area').remove();
+        $('#title-area').remove();
+        $('#media-controls').remove();
+        firstTimeVideoHTMLDeletion();
+        vid_selected = false;
+        $('#del_video').prop("checked", true);
+        $('#div_categories br').remove();
+        $('#div_categories').css("width", "60vw")
+        $('.filter_label').css("margin-left", "1vw");
+    }
+    
+    timeline_times = [];
+    timeline_id = [];
+    id_counter = 0;
+    setname("");
+    //currentid="";
+    $timeline.empty();
+    eviCheckpoint();
+}; //end eviClear()
+
+function eviPack (html) { // pack the timeline into an array of collection/id pairs for storage
+    var packitem;
+    var packarray = [];
+    
+    packitem = {};
+    packitem.collection = $('#master_video').data('collection');
+    packitem.id = $('#master_video').data('id');
+    packarray.push(packitem);
+    
+    //change below pack code to add an ordering INDEX
+    $(html).each(function() {
+        packitem = {};  //make a new object, unlinking the references already pushed into packarray
+        packitem.collection = $(this).data('collection');
+        packitem.id         = $(this).data('id');
+        packitem.time       = $(this).data('time');
+        packarray.push(packitem);
+    });
+    
+    return packarray;
+}; //end eviPack()
+
+function eviUnPack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
+    var newDiv;
+    var timeArray = [];
+    
+    //for each element in data, call createActivityDiv, and attach the resturn value to #timelinediv
+    // also set filename, [and collection??]
+    
+    //$('#timelineDisplay').empty();
+    
+    setname(response.dn);
+    
+    owner = (response.author == loginname) ? true : false;  //set boolean OWNER to TRUE if we are the author of this existing EVI
+    
+    var mainVideo = response.data.splice(0, 1)[0];
+    
+    $.post("looma-database-utilities.php",
+        {cmd: "openByID", collection: mainVideo.collection, id: mainVideo.id},
+        function(result) {
+            display_video(result, mainVideo.id);
+        },
+        'json'
+    );
+    
+    $(response.data).each(function(){
+        timeArray.push(this.time);
+    });
+    
+    // need to record ID of newly opened LP so that later SAVEs can overwrite it
+    $(response.data).each(function(index) {
+        // retrieve each timeline element from mongo and add it to the current timeline
+        newDiv = null;  //reset newDiv so previous references to it are broken
+        $.post("looma-database-utilities.php",
+            {cmd: "openByID", collection: this.collection, id: this.id},
+            function(result) {
+                newDiv = createActivityDiv(result);
+                newDiv.firstChild.setAttribute("data-time", timeArray[index]);
+                insertTimelineElement(newDiv.firstChild, true);
+            },
+            'json'
+        );
+    });
+    
+    if(response.thumb)
+    {
+        mainThumbSrc = response.thumb;
+    }
+    else
+    {
+        //FIX LATER
+        mainThumbSrc = "";
+    }
+    
+    //makesortable();
+    $('#del_video').remove();
+    $('#del_label').remove();
+    $('#del_div').remove();
+    $('#div_search').show();
+    $('#div_filetypes').show();
+    $('#clear_button').show();
+    $('#search_label').html("Name:")
+    clearFilter();
+    vid_selected = true;
+    $('<br>').insertAfter('#searchString');
+    $('#div_categories').css("width", "25vw")
+    $('.filter_label').css("margin-left", "auto");
+}; //end eviUnPack()
+
+function eviDisplay (response) {
+    clearFilter();
+    $timeline.html(eviUnPack(response));
+}; //end eviDisplay()
+
+function eviSave(name) {
+    saveEviFile(name, 'edited_videos', 'evi', eviPack($timeline.html()), mainThumbSrc, true);
+}; //end eviSave()
+
+function eviTemplateSave(name) {
+    saveEviFile(name, 'edited_videos', 'evi' + '-template', eviPack($timeline.html()), mainThumbSrc, false);
+}; //end eviTemplateSave()
+
+function saveEviFile(name, collection, filetype, data, thumb, activityFlag) {  //filetype must be given as 'text' or 'text-template'
+    
+    console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + filetype + 'and with data: ' + data);
+    $.post("looma-database-utilities.php",
+        {cmd: "save",
+            collection: collection,
+            dn: escapeHTML(name),
+            ft: filetype,
+            data: data,
+            thumb: thumb,
+            activity:activityFlag}, //need to use escapeHtml() with POST??
+        
+        function(response) {
+            callbacks['checkpoint']();
+            if (response['_id']) {
+                console.log("SAVE: upserted ID = ", response['_id']['$id']);
+            }
+            else {
+                console.log("SAVE: didn't work?");
+            }
+        },
+        'json'
+    );
+}; //end saveEviFile()
+
 
 var changeCollection = function() {
     $('#div_grade').toggle();
@@ -425,9 +447,7 @@ var changeCollection = function() {
     $('#div_filetypes').toggle();
     $('#div_sources').toggle();
     $('#div_categories').toggle();
-
-
-
+    
     if ($('#collection').val() == 'activities') { //changing from ACTIVITIES to CHAPTERS
         $('#collection').val('chapters');
 
@@ -455,7 +475,7 @@ var clearFilter = function() {
 
    $('#previewpanel').hide();
    $('#clearPreview').hide();
-     
+   
    if ($('#collection').val() == 'activities') {
          $('#searchString').val("");
          $(".filter_dropdown").each(function() { this.selectedIndex = 0; });
@@ -479,7 +499,7 @@ var isFilterSet = function() {
         }
 
         $(".filter_checkbox").each(function() {
-          if (this.checked) { 
+          if (this.checked) {
             set = true;
           }
          });
@@ -635,21 +655,6 @@ THUMBNAILS
 
 var filetype = function(ft) { return LOOMA.typename(ft);};
 
-/*
-var filetype = function(ft) {
-    //converts a file extension into
-         if (ft == "gif" || ft == "jpg" || ft == "png") return "Image";
-    else if (ft == "mov" || ft == "mp4" || ft == "mp5") return "Video";
-    else if (ft == "mp3")       return "Audio";
-    else if (ft == "EP")        return "Game";
-    else if (ft == "html")      return "Webpage";
-    else if (ft == "pdf")       return "Document";
-    else if (ft == "text")      return "Text File";
-    else if (ft == "looma")     return "Looma Page";
-    else if (ft == "chapter")   return "Chapter";
-    else return ft;
-}; // end filetype()
-*/
             /*
              //FOR reference: PHP version of thumbnail():
                   function thumbnail ($fn) {  //NEW VERSION AUG '16
@@ -693,7 +698,10 @@ var thumbnail = function(item) {
     }
 
     else if (collection == "activities" || item.ft != null) {
-        if (item.ft == "mp3") {  //audio
+        
+        imgsrc = LOOMA.thumbnail(item.fn, item .fp, item.ft);
+        
+ /*       if (item.ft == "mp3") {  //audio
             if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
             imgsrc = path + "thumbnail.png";
         }
@@ -729,8 +737,8 @@ var thumbnail = function(item) {
         else if (item.ft == "looma") {
             imgsrc = item.thumb;
         }
+ */
     }
-
     return imgsrc;
 }; // end thumbnail()
 
@@ -864,7 +872,7 @@ var createActivityDiv = function(activity) {
 
                 // "Add" button
                 var addButton = document.createElement("button");
-                addButton.innerText = "Add";
+                if (vid_selected) addButton.innerText = "Add"; else addButton.innerText = "Select";
                 addButton.className = "add";
 
                buttondiv.appendChild(addButton);
@@ -926,7 +934,7 @@ var display_video = function(item, id) {
       var filename = item.fn;
       var filepath;
       $(item).attr('data-id', id)
-    }   
+    }
 
         //console.log ("collection is " + collection + " filename is " + filename + " and filetype is " + filetype);
 
@@ -969,7 +977,7 @@ var display_video = function(item, id) {
         }
     }
     $('#clearPreview').click(clearPreview);
-}   
+}
 
 
 // When you click the preview button
@@ -1131,11 +1139,11 @@ function insertTimelineElement(source, open) {
         {
           var timeString = $('.master_time').html();
 
-          if(timeString.length > 6) 
+          if(timeString.length > 6)
           {
             time = (parseInt(timeString) * (60*60)) + (parseInt(timeString.substring(timeString.length - 4)) * 60) + parseInt(timeString.substring(timeString.length - 2));
           }
-          else 
+          else
           {
             time = (parseInt(timeString) * 60) + parseInt(timeString.substring(timeString.length - 2));
           }
@@ -1145,17 +1153,17 @@ function insertTimelineElement(source, open) {
         $dest.attr("data-time", time);
 
         var index = 0;
-        while(index < timeline_times.length && parseInt(time) >= parseInt(timeline_times[index])) 
+        while(index < timeline_times.length && parseInt(time) >= parseInt(timeline_times[index]))
         {
           index += 1;
         }
 
-        if(index == timeline_times.length) 
+        if(index == timeline_times.length)
         {
           timeline_times.push(time);
           timeline_id.push(new_id)
         }
-        else 
+        else
         {
           var backwards_index = timeline_times.length - 1;
           while(index <= backwards_index)
@@ -1170,20 +1178,20 @@ function insertTimelineElement(source, open) {
               timeline_times[backwards_index + 1] = timeline_times[backwards_index];
               timeline_id[backwards_index + 1] = timeline_id[backwards_index];
             }
-            backwards_index -= 1;  
+            backwards_index -= 1;
           }
           timeline_times[index] = time;
           timeline_id[index] = new_id;
         }
         var timeText;
 
-        if(open) 
+        if(open)
         {
-          if(time >= 3600) 
+          if(time >= 3600)
           {
             timeText = Math.floor(time/3600) + ":" + ((time/60)%60) + ":" + (time%3600);
           }
-          else 
+          else
           {
             if(time%60 < 10)
             {
@@ -1209,9 +1217,9 @@ function insertTimelineElement(source, open) {
         {
           $dest.appendTo("#timelineDisplay");
         }
-        else 
+        else
         {
-          $dest.insertBefore($('#' + timeline_id[index + 1]));  
+          $dest.insertBefore($('#' + timeline_id[index + 1]));
         }
 
         // scroll the timeline so that the new element is in the middle - animated to slow scrolling

@@ -1,118 +1,17 @@
 /*
- * 
-Name: Skip
-Email: skip@stritter.com
+author: Skip, Bo
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 2015 03
-Revision: Looma 2.0.0
+Date: 2015 03, 2017 07
+Revision: Looma 3.0
 
-
-
-filename: looma-activities.js
+filename: looma-library-search.js
 Description:
  */
 
 'use strict';
 
-function playMedia(button) {
-    console.log("here");
-    switch (button.getAttribute("data-ft")) {
-        case "video":
-        case "mp4":
-        case "m4v":
-        case "mov":
-            window.location = 'looma-video.php?' +
-                 'fn=' + button.getAttribute('data-fn') +
-                '&fp=' + button.getAttribute('data-fp') +
-                '&dn=' + button.getAttribute('data-dn');
-            break;
 
-        case "evi":
-            //evi = edited video indicator
-            //If you click on an edited video it sends the filename, location and the information
-            //to looma-edited-video.php
-            window.location = 'looma-edited-video.php?fn=' + button.getAttribute('data-fn') +
-            '&fp=' + button.getAttribute('data-fp') +
-            '&id=' + button.getAttribute('data-id') +
-            '&dn=' + button.getAttribute('data-dn');
-            break;
-
-        case "image":
-        case "jpg":
-        case "png":
-        case "gif":
-            window.location = 'looma-image.php?fn=' + button.getAttribute(
-                    'data-fn') +
-                '&fp=' + button.getAttribute('data-fp');
-            break;
-
-        case "audio":
-        case "mp3":
-            window.location = 'looma-audio.php?fn=' + button.getAttribute(
-                    'data-fn') +
-                '&fp=' + button.getAttribute('data-fp') +
-                '&dn=' + button.getAttribute('data-dn');
-            break;
-
-        case "pdf":      //PDF
-        case "chapter":  //CHAPTER
-            window.location = 'looma-pdf.php?fn=' + button.getAttribute('data-fn') +
-                              '&fp=' + button.getAttribute('data-fp') +
-                              '&zoom=' + button.getAttribute('data-zoom') +
-                              '&pg=' + button.getAttribute('data-pg');
-            break;
-
-        case "slideshow":      // SLIDESHOW activity type from Thomas
-            window.location = 'looma-slideshow.php?id=' + button.getAttribute("data-id");
-            break;
-
-        case "text":
-            var id = encodeURIComponent(button.getAttribute('data-id'));
-            window.location = 'looma-text.php?id=' + id;
-            break;
-
-        case "html":
-            var fp = encodeURIComponent(button.getAttribute('data-fp'));
-            var fn = encodeURIComponent(button.getAttribute('data-fn'));
-            window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
-            break;
-
-        case "map":
-            var fn = encodeURIComponent(button.getAttribute('data-fn'));
-            window.location = 'looma-map-' + fn + '.php';
-            break;
-
-        case "looma":
-            var fp = encodeURIComponent(button.getAttribute('data-fp'));
-            window.location = fp;
-            break;
-
-        case "epaath":
-        case "EP":
-            fp = encodeURIComponent(button.getAttribute('data-fp'));
-            fn = encodeURIComponent(button.getAttribute('data-fn') +
-                '/start.html');
-            window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
-
-            /*window.location = button.getAttribute('data-fp') +
-                              button.getAttribute('data-fn') +
-                              "/start.html";
-            */
-            /*'looma-epaath.php?fn=' + button.getAttribute('data-fn') +
-                               '&fp=' + button.getAttribute('data-fp');
-                               */
-            break;
-
-        case "lesson":
-            window.location = 'looma-lesson-present.php?id=' + button.getAttribute('data-id');
-            break;
-
-        default:
-            console.log("ERROR: in LOOMA.playMedia(), unknown type: " +
-                button.getAttribute("data-ft"));
-    } //end SWITCH
-};
-
+/*   replaced with LOOMA.thumbnail in looma-utilities.js
 function thumbnail (filename, filepath, filetype) {
             //builds a filepath/filename for the thumbnail of this "filename" based on type
             var thumbnail_prefix;
@@ -161,6 +60,7 @@ function thumbnail (filename, filepath, filetype) {
 
             return imgsrc;
 };
+*/
 
 function getDefaultFilePath(filetype, filename) {
     var homedirectory = '../';
@@ -216,23 +116,23 @@ function makeActivityButton (id, mongoID, appendToDiv) {
                var $newButton = $(
                        '<button class="activity play img" ' +
                        'data-fn="' + result.fn + '" ' +
-                       'data-fp="' + fp + '" ' + 
+                       'data-fp="' + fp + '" ' +
                        'data-ft="' + result.ft + '" ' +
                        'data-dn="' + result.dn + '" ' +
                        'data-id="' + mongoID + '" >'
                   );
 
                var thumb;
-               if(result.ft == "looma") {thumb = result.thumb;} 
-               else {thumb = thumbnail(result.fn, result.fp, result.ft);};
+               if(result.ft == "looma") {thumb = result.thumb;}
+               else {thumb = LOOMA.thumbnail(result.fn, result.fp, result.ft);};
 
                $newButton.append($('<img src="' + thumb + '">'));
                $newButton.append($('<span>').text(result.dn));
-               $newButton.click(function() {playMedia(this);});
+               $newButton.click(function() {
+                saveState();
+                LOOMA.playMedia(this);});
                $newButton.appendTo(appendToDiv);
-
-               //need to attach clickhandler (LOOMA.playMedia)
-           },
+        },
        'json'
      );
 }; //end makeActivityButton()
@@ -242,7 +142,8 @@ function makeChapterButton (id, appendToDiv) {
         {cmd: 'openByID', collection: 'chapters', id: id},
         function(result) {
             console.log(result);
-            var subj = getSubj(id), grade = id.charAt(0)
+            var chElements = LOOMA.parseCH_ID(id);
+            var subj = chElements['currentSubjectFull'], grade = chElements['currentGradeNumber'];
 
             var fn = subj + "-" + grade;
             var fp = getDefaultFilePath('textbook') + "Class" + grade + "/" + subj + "/";
@@ -251,7 +152,7 @@ function makeChapterButton (id, appendToDiv) {
             var $newButton = $(
                 '<button class="chapter play img" ' +
                 'data-fn="' + fn +'.pdf" ' +
-                'data-fp="' + fp + '" ' + 
+                'data-fp="' + fp + '" ' +
                 'data-ft="chapter" ' +
                 'data-zoom="100" ' +
                 'data-pg="' + pn + '" >'
@@ -262,7 +163,9 @@ function makeChapterButton (id, appendToDiv) {
 
             $newButton.append($('<img src="' + thumb + '">'));
             $newButton.append($('<span>').text(result.dn));
-            $newButton.click(function() {playMedia(this);});
+            $newButton.click(function() {
+                saveState();
+                LOOMA.playMedia(this);});
             $newButton.appendTo(appendToDiv);
         },
         'json'
@@ -305,7 +208,7 @@ function displayResults(results) {
             else                      result_array['activities'].push(e);
     });
 
-    var chapResults = result_array['chapters'].length; 
+    var chapResults = result_array['chapters'].length;
     var actResults = result_array['activities'].length;
 
     $display.append("<p>Chapters(" + chapResults + ")  Activities(" + actResults + ")</p>");
@@ -319,7 +222,7 @@ function displayResults(results) {
 
     $display.show();
 }; //end displayFileSearchResults()
-    
+
 function displayActivities(results, table) {
     var result = 1, row = 0, maxButtons = 3;
     $.each(results, function(index, value) {
@@ -332,7 +235,7 @@ function displayActivities(results, table) {
 
             var mongoID = (value['mongoID']) ? value['mongoID']['$id'] : "";
             makeActivityButton(value['_id']['$id'], mongoID, '#query-result-' + result);
-            result ++; 
+            result ++;
            });
 };
 
@@ -346,31 +249,12 @@ function displayChapters(results, table) {
         }
         $('#result-row-' + row).append("<td id='query-result-" + result + "'></td>");
         makeChapterButton(value['_id'], '#query-result-' + result);
-        result ++; 
-    });            
-};
-
-function playActivity(event) {
-    var button = event.currentTarget;
-
-    //event.target may be the contained IMG or SPAN, not the BUTTON,
-    //so use event.currentTarget which is always the element that the event is attached to,
-    //even if a containing element gets the click
-
-    // could instead catch the event in BUTTON during capture phase and 
-    // do event.endPropagation() to keep it from propogating
-    //
-    // something like $("button.play").on('click', playActivity, true);
-    // and, event.stopPropogation(); in the playActivity() function
-
-    //OLD CODE: in case click event has IMG or SPAN contained in the BUTTON, get the BUTTON element
-    //if (button.nodeName != 'BUTTON') button = button.parentNode;
-    LOOMA.setStore('scroll', $("#main-container-horizontal").scrollTop(), 'session');
-    console.log($("#main-container-horizontal").scrollTop());
-    playMedia(button);
+        result ++;
+    });
 };
 
 function changeCollection() {
+    $("#results-div").empty().hide();
     $('.media-filter').toggle();
     $('.chapter-filter').toggle();
 };
@@ -403,51 +287,112 @@ function isFilterSet() {
     return set;
 };
 
-function refreshPage() {
-    //start page on media search
-    $('#collection').val('activities');
-    $('#ft-media').prop('checked', true);
-    $('#ft-chapter').prop('checked', false);
+function resetState () {
+    LOOMA.clearStore('libraryScroll', 'session');
+    LOOMA.clearStore('saveForm',      'session');
     
-    //the chapter selector keeps popping up
-    $('.chapter-filter').hide();
+};  //end resetState()
 
-    //this is to keep the form from having unwanted inputs
-    $('.chapter-input').prop('disabled', true);
-    $('.media-input').prop('disabled',   false);
+function restoreState () {
+    $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
+    LOOMA.restoreForm($('#search'), 'saveForm');  //restore the search settings
+    
+    $('#search').submit();  //re-run the search
+    
+};  //end restoreState()
 
-    //clear all search fields
-    $('#search-term').val("");
-    $(".flt-chkbx").each(function() { $(this).prop("checked", false); });
-    $("#grade-drop-menu").val("").change();
-    $("#subject-drop-menu").val("").change();
+function saveState () {
+    // save SCROLL position
+    LOOMA.setStore('libraryScroll', $("#main-container-horizontal").scrollTop(), 'session');
+    // save FROM contents
+    LOOMA.saveForm($('#search'), 'saveForm');
+}; //end saveState()
+
+
+function refreshPage() {
+    //  if the FORM contents have been saved, then restore them, else make a clean search page with the form cleared
+    var formSettings = LOOMA.readStore('saveForm', 'session');
+    if (formSettings) {
+        restoreState();
+    } else {
+        //start page on media search
+        //NOTE: could use $('#form')[0].reset()  but need to restore #collection, etc afterwards
+        resetState();
+        $('#collection').val('activities');
+        $('#ft-media').prop('checked', true);
+        $('#ft-chapter').prop('checked', false);
+    
+        //the chapter selector keeps popping up
+        $('.chapter-filter').hide();
+    
+        //this is to keep the form from having unwanted inputs
+        $('.chapter-input').prop('disabled', true);
+        $('.media-input').prop('disabled', false);
+    
+        //clear all search fields
+        $('#search-term').val("").focus();
+        $(".flt-chkbx").each(function () {
+            $(this).prop("checked", false);
+        });
+        $("#grade-drop-menu").val("").change();
+        $("#subject-drop-menu").val("").change();
+    }
 };
 
 var scrollTimeout = null;
 var scrollDebounce = 5000; //msec delay to debounce scroll stop
 
 $(document).ready(function() {
+    
+    
+    $('#search').submit(function( event ) {
+        event.preventDefault();
+        
+        $('#results-div').empty().show();
+        
+        if (!isFilterSet()) {
+            $('#results-div').html('please select at least 1 filter option before searching');
+        } else {
+            
+            var loadingmessage = $("<p/>", {html : "Loading results"}).appendTo("#results-div");
+            /*$('<span id="ellipsis1" class="ellipsis"></span>').appendTo(loadingmessage);
 
-    refreshPage();
-
+            var ellipsisTimer = setInterval(
+                function () {$('#ellipsis1').text($('#ellipsis1').text().length < 10 ? $('#ellipsis1').text() + '.' : '');
+                },100);*/
+            
+            $.post( "looma-database-utilities.php",
+                $("#search").serialize(),
+                function (result) {
+                    loadingmessage.remove();
+                    //clearInterval(ellipsisTimer);
+                    displayResults(result);},
+                'json');
+            
+        }
+        return false;
+    });
+ 
     //changes the element that is clicked b4 it can change the collection
-    //$('.filter-radio').click(function() {if(!this.checked)changeCollection();});   
+    //$('.filter-radio').click(function() {if(!this.checked)changeCollection();});
 
     $('#ft-media').click(function() {
-        if ($('#collection').val() == 'chapters'){ //changing from CHAPTERS to ACTIVITIES
-            $('#collection').val('activities');  
-            changeCollection(); 
+            resetState();
+            if ($('#collection').val() == 'chapters'){ //changing from CHAPTERS to ACTIVITIES
+            $('#collection').val('activities');
+            changeCollection();
             $('.chapter-input').prop('disabled', true);
             $('.media-input').prop('disabled',   false);
             $('#chapter-div').hide();
-        }   
+        }
     });
 
     $('#ft-chapter').click(function() { //changing from ACTIVITIES to CHAPTERS
+        resetState();
         if ($('#collection').val() == 'activities') {
-            $('#collection').val('chapters'); 
+            $('#collection').val('chapters');
 
-            changeCollection(); 
+            changeCollection();
             $('.chapter-input').prop('disabled', false);
             $('.media-input').prop('disabled',   true);
 
@@ -478,41 +423,15 @@ $(document).ready(function() {
               );
     });
 
-    $('#search').submit(function( event ) {
-        event.preventDefault();
-
-        $('#results-div').empty().show();
-
-        if (!isFilterSet()) {
-            $('#results-div').html('please select at least 1 filter option before searching');
-        } else {
-
-            var loadingmessage = $("<p/>", {html : "Loading results"}).appendTo("#results-div");
-            /*$('<span id="ellipsis1" class="ellipsis"></span>').appendTo(loadingmessage);
-
-            var ellipsisTimer = setInterval(
-                function () {$('#ellipsis1').text($('#ellipsis1').text().length < 10 ? $('#ellipsis1').text() + '.' : '');
-                },100);*/
-
-            $.post( "looma-database-utilities.php",
-                    $("#search").serialize(),
-                    function (result) {
-                        loadingmessage.remove();
-                        //clearInterval(ellipsisTimer);
-                        displayResults(result);return;},
-                    'json');
-            
-        }
-    });
-
     $('#cancel-search').click(clearSearch);
+    
+    //$("#toggle-database").click(function(){$('#dir-table').toggle();});//'fade', {}, 1000
+    $("#toggle-database").click(function(){window.location = "looma-library.php";});//'fade', {}, 1000
 
-    $("#toggle-database").click(function(){$('#dir-table').toggle();});//'fade', {}, 1000
-
-    $("button.play").click(playActivity);
-
-    $("button.zeroScroll").click(function() {LOOMA.setStore('scroll', 0, 'local');});
-    $("#main-container-horizontal").scrollTop(LOOMA.readStore('scroll', 'session'));
-
+    $("#search-term").focus();
+    $("button.zeroScroll").click(function() {LOOMA.setStore('libraryScroll', 0, 'session');});
+    
+    refreshPage();
+    
 });
 

@@ -21,6 +21,8 @@ Description:
  * LOOMA.setStore()
  * LOOMA.readStore()
  * LOOMA.readCookie()
+ * LOOMA.saveForm()
+ * LOOMA.restoreForm()
  * LOOMA.loggedIn()
  * LOOMA.translate()
  * LOOMA.lookup()
@@ -56,7 +58,6 @@ var LOOMA = (function() {
 //this allows us to define LOOMA.playMedia() [and other LOOMA functions] that won't cause name conflicts
 
 playMedia : function(button) {
-    console.log("here");
     switch (button.getAttribute("data-ft").toLowerCase()) {
         case "video":
         case "mp4":
@@ -148,18 +149,23 @@ playMedia : function(button) {
         case "lesson":
             window.location = 'looma-lesson-present.php?id=' + button.getAttribute('data-id');
             break;
-
+        
         case "history":
+            window.location = 'looma-history.php?id=' + button.getAttribute("data-id");
+            break;
+        
+            /*case "history":
             window.location = 'looma-history.php?title=' + button.getAttribute('data-dn');
             break;
-
+            */
+            
         default:
             console.log("ERROR: in LOOMA.playMedia(), unknown type: " +
                 button.getAttribute("data-ft"));
     } //end SWITCH
 }, //end LOOMA.playMedia()
 
-makeActivityButton: function (id, appendToDiv) {
+makeActivityButton: function (id, mongoID, appendToDiv) {
     // given an ID for an activity in the activities collection in mongo,
     // attach a button [clickable button that launches that activity] to "appendToDiv"
 
@@ -174,7 +180,8 @@ makeActivityButton: function (id, appendToDiv) {
                                 'data-fn="' + result.fn + '" ' +
                                 fp +
                                 'data-ft="' + result.ft + '" ' +
-                                'data-dn="' + result.dn + '" >'
+                                'data-dn="' + result.dn + '" ' +
+                                'data-id="' + mongoID   + '" >'
                            );
 
                         $newButton.append($('<img src="' + LOOMA.thumbnail(result.fn, result.fp, result.ft) + '">'));
@@ -228,6 +235,15 @@ thumbnail: function (filename, filepath, filetype) {
             else if (filetype == "text") {
                 imgsrc = "images/textfile.png";
             }
+            /*fix by looking up DN in mongo*/         else if (filetype == "evi") {
+                imgsrc = "images/video.png";
+            }
+            /*fix by looking up DN in mongo*/        else if (filetype == "history") {
+                imgsrc = "images/history.png";
+            }
+            /*fix by looking up DN in mongo*/          else if (filetype == "map") {
+                imgsrc = "images/maps.png";
+            }
             else if (filetype == "slideshow") {
                 imgsrc = "images/play-slideshow-icon.png";
             }
@@ -267,11 +283,11 @@ capitalize : function(string) {
 
 
 //use localStore, type='local' or type='session' instead of cookies when the data doesnt have to be sent to the server
-/*current COOKIES and webstorage used:
- * theme [cookie]
- * scroll [sessionStore]
- * language, class, subject, chapter, arith-grade, arith-subject,
- * vocab-grade, vocab-subject, vocab-count, vocab-random [localStore]
+/*current COOKIES, LOCALstorage adn SESSIONstorage used:
+ * COOKIES: theme, voice, login
+ * LOCAL: language
+ * SESSION: libararyScroll, chapterScroll, historyScroll, class, subject, chapter, arith-grade, arith-subject,
+ * vocab-grade, vocab-subject, vocab-count, vocab-random
  */
 setStore : function(name, value, type) {
     if (type == 'local') localStorage.setItem(name, value);
@@ -293,6 +309,13 @@ readStore : function(name, type) {
     }
 },
 
+clearStore : function (name, type) {
+    if (type == 'local') return localStorage.removeItem(name);
+    else if (type == 'session') return sessionStorage.removeItem(name);
+    else if (type == 'cookie') document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    else console.log('LOOMA.utilities.readStore: unknown localStore type: ' + type);
+},
+
 readCookie : function(name) {
     // look up COOKIE with KEY = name, return its value, or null if cookie doesnt exist
     var cookies = document.cookie.split(';'); //OK if no cookie? YES
@@ -307,6 +330,23 @@ readCookie : function(name) {
     }
     return null; // if cookie with key "name" is not found, return NULL
 }, // end readCookie()
+
+saveForm : function(form, name) {  // save the settings of 'form' sessionStore'
+                            // 'form' is a jQuery object representing the form (e.g. $('#formName))
+    LOOMA.setStore( name,
+                    JSON.stringify(form.serializeArray()),
+                    'session');
+}, //end saveForm()
+
+restoreForm : function(form, name) {  // restore the settings of 'form' from sessionStore
+                                // 'form' is a jQuery object representing the form (e.g. $('#formName))
+    // load FORM values from sessionStore
+    var formSettings = JSON.parse(LOOMA.readStore(name, 'session'));
+    if (formSettings && formSettings.length > 0) {
+        // get the name, value pairs from formSettings and restore them in 'form'
+        $.each(formSettings, function (i, item) {form[item.name] = item.value;});
+    }
+},  //end restoreForm()
 
 loggedIn : function() {
     return LOOMA.readCookie('login');
@@ -336,7 +376,7 @@ translate : function(language) {
 }, // end translate()
 
 //***********  USING THE LOOMA DICTIONARY ***************
-//***********  functions are LOOKUP and WORDLIST *****************
+//***********  functions are LOOKUP, POPUPDEFINITION and WORDLIST *****************
 //
 //when you need a word looked up in the dictionary, call LOOMA.lookup() with these parameters:
 //            word: the word to look up
@@ -344,9 +384,13 @@ translate : function(language) {
 //                the parameter of the call to "succeed" is an object with these properties:
 //                    result.en = english word
 //                    result.np = nepali translation [may be ""]
-//                    result.phon = phonetic of nepali word [may be ""]
+//                    result.rw = root word if result.,en is a verb form, plural or contraction
+//                    result.part = part of speech
 //                    result.def = english definition [may be ""]
+//                optional properties:
 //                    result.img = filename for a picture of the word [may be ""]
+//                    result.phon = phonetic of nepali word [may be ""]
+//                    result.plural = plural of the word
 //                    result.ch_id = code for textbook chapter the word first appears in [may be ""]
 //                typically, succeed() would display the translation (result.np), the definition (result.def) and
 //                the picture (result.img) somewhere on the webpage
@@ -431,9 +475,9 @@ definitionDiv : function(definition) {
           var $div =    $('<div />');
           var $word =   $('<div id="word"/>');
           var $nepali = $('<div id="nepali"/>');
-          var $def =    $('<div id="definition"/>');
           var $pos =    $('<div id="partOfSpeech"/>');
-
+          var $def =    $('<div id="definition"/>');
+          
           $word.text(definition.en);
           $nepali.text(definition.np);
 
@@ -449,32 +493,99 @@ definitionDiv : function(definition) {
             || (def == 'past and past perfect tense of')
             || (def == 'third person singular of'))
                 def += ' ' + definition.rw;
-
-          $def.text(def);
-          $pos.html('<i>' + definition.part + '</i>');
+            
+            $def.text(def);
+            $pos.html('<i>' + definition.part + '</i>');
 
           return  $div.append($word, $nepali, $pos, $def);
 }, //end LOOMA.definitionDiv()
+    
+        defHTML: function (definition, rwdef) {
+            var $div = $('<div />');
+            var $word = $('<div id="word"/>');
+            var $nepali = $('<div id="nepali"/>');
+            var $pos = $('<div id="partOfSpeech"/>');
+            var $def = $('<div id="definition"/>');
+        
+            $word.text(definition.en);
+            $nepali.text(definition.np);
+            $pos.html('<i>' + definition.part + '</i>');
+        
+            var def = definition.def.toLowerCase();
+        
+            if ((def == 'plural of')
+                || (def == 'past tense of')
+                || (def == 'contraction of')
+                || (def == 'comparative form of')
+                || (def == 'superlative form of')
+                || (def == 'past participle of')
+                || (def == 'present participle of')
+                || (def == 'past and past perfect tense of')
+                || (def == 'third person singular of'))
+                def += ' ' + definition.rw;
+        
+            def = def.replace(/\;/g, ";</p><\p>");
+        
+            $def.html(def);
+        
+            $div.append($word, $nepali, $pos, $def);
+        
+            if (rwdef) {
+                var $rwdef = $('<div id="rwdef"/>');
+                rwdef.def = rwdef.def.replace(/\;/g, "</p><\p>");
+                $rwdef.html(rwdef.def);
+                $div.append($rwdef);
+            }
+        
+            var len = def.length;
+            if (rwdef) len += rwdef.length;
+            if (len < 70) $def.addClass('largeWord');
+            else if (len < 150) $def.addClass('mediumWord');
+            else $def.addClass('smallWord');
+        
+            return $div;
+        }, //end LOOMA.defHTML()
+        
+// function DEFINE looks up the word and returns HTML containing
+//                 the word, translation, definition, and rootword definition
+define : function(word, succeed, fail) {
+    LOOMA.lookup(word, found, notfound);
+    
+    function found(def) {
+        if (def.rw) {
+            LOOMA.lookup(def.rw, rwfound, rwnotfound);
+            function rwfound(rwdef) {
+                succeed (LOOMA.defHTML(def, rwdef));
+            };
+            function rwnotfound() {
+                succeed (LOOMA.defHTML(def));
+            };
+        } else {
+            succeed(LOOMA.defHTML(def));
+        }
+    };
+    
+    function notfound() {
+        fail();
+    };
+    
+}, //end LOOMA.define()
 
-popupDefinition : function (text, time) {
 
-      function show(result) {
+//  function POPUPDEFINITION looks up the word and displays its definition in a popup for 'time' seconds
+//
+popupDefinition : function (word, time) {
+
+      function show(html) {
           $('#popup').remove();
           var $popup =  $('<div id="popup"/>');
-          $popup.append(LOOMA.definitionDiv(result));
-          // $popup.appendTo('body').hide();
+          $popup.append(html);
           LOOMA.alert($popup.html(), time, true);
           }; //end show()
 
       function fail() {};
 
-      var firstWord;
-
-      text = text.trim();
-      if (text.indexOf(' ') !== -1) firstWord = text.substr(0, text.indexOf(' '));
-      else firstWord = text;
-
-      LOOMA.lookup(firstWord, show, fail);
+      LOOMA.define(word, show, fail);
 
     },   //end popupDefinition()
 
@@ -499,9 +610,7 @@ wordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
             if (random) parameters += "&random=" + encodeURIComponent(random);
 
     $.ajax(
-        "looma-dictionary-utilities.php", //Looma Odroid
-        //"http://192.168.1.135/Database Editor/looma-dictionary-utilities.php", //justin's macbook
-        //  "looma-dictionary.php",
+        "looma-dictionary-utilities.php",
         {
             type: 'GET',
             cache: false,
@@ -515,10 +624,10 @@ wordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
     return false;
 }, //end WORDLIST
 
+
 rtl : function(element) { //enables Right-to-left input for numbers in looma-arith-problems.php
     if (element.setSelectionRange) element.setSelectionRange(0, 0);
 },
-
 
 
 // ************** LOOMA THEME FUNCTIONS *******************

@@ -100,6 +100,7 @@ button.search {
     left:37vw;
     top:38vh;
     width:40vw;
+    max-width:100%;
     height:40vh;
     padding:2px 2px 2px;
     overflow:hidden;

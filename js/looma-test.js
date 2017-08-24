@@ -15,6 +15,6 @@ window.onload = function()
 {
 		$('#show').click(function(e){e.preventDefault(); $('#iframe').toggle(1000);});
 		var id = "58fd32b7cc33e63103d63af2";
-		LOOMA.makeActivityButton(id, $('#test')[0]);
+		LOOMA.makeActivityButton(id, "", $('#test')[0]);
 
 };

@@ -41,7 +41,7 @@ Description:
         //called when a CLASS button is pressed
         className = this.getAttribute('id');
         activateClass(className);              //activate this CLASS - highlights the button
-        LOOMA.setStore("vocab-grade", className, 'local');         //set a COOKIE for CLASS (lifetime = this browser session)
+        LOOMA.setStore("vocab-grade", className, 'session');         //set a COOKIE for CLASS (lifetime = this browser session)
         displaySubjects(className);              // display SUBJECT buttons for this CLASS
         activateSubject(null);                  // de-activate all SUBJECTS
         //code here for 'remember class visited'
@@ -65,7 +65,7 @@ Description:
     function susetStorebjectButtonClicked(){
         //called when a SUBJECT button is pressed
         subjectName = this.getAttribute('id');
-        LOOMA.setStore("vocab-subject", subjectName, 'local');  //set a COOKIE for SUBJECT (lifetime = this browser session)
+        LOOMA.setStore("vocab-subject", subjectName, 'session');  //set a COOKIE for SUBJECT (lifetime = this browser session)
 
         //code here for 'remember subject visited'
         //$("button.subject").setAttribute('visit', false);
@@ -91,18 +91,18 @@ $(document).ready (function() {
     //add listeners to all SUBJECT buttons
     $("button.subject").click(subjectButtonClicked);
 
-    var classCookie = LOOMA.readStore('vocab-grade', 'local');
+    var classCookie = LOOMA.readStore('vocab-grade', 'session');
     if (classCookie) {
         className = classCookie;
         activateClass (classCookie);
         displaySubjects(classCookie);
-        var subjectCookie = LOOMA.readStore('vocab-subject', 'local');
+        var subjectCookie = LOOMA.readStore('vocab-subject', 'session');
         if (subjectCookie) {
             subjectName = subjectCookie;
             activateSubject (subjectCookie);
         };
-    LOOMA.setStore("vocab-count", "25", 'local');        //set a COOKIE for count [number of words requested] (lifetime = this browser session)
-    LOOMA.setStore("vocab-random", "true", 'local');    //set a COOKIE for random ordering of word list (lifetime = this browser session)
+    LOOMA.setStore("vocab-count", "25", 'session');        //set a COOKIE for count [number of words requested] (lifetime = this browser session)
+    LOOMA.setStore("vocab-random", "true", 'session');    //set a COOKIE for random ordering of word list (lifetime = this browser session)
 
     }
 }); //end of document.ready anonymous function

@@ -56,10 +56,10 @@ var myHilitor;
             var id2 = $(target).attr("data-id2");
 
             if(id1 !== undefined && id1 !== null) {
-                 LOOMA.makeActivityButton($(target).attr("data-id1"), $(".popup"));
+                 LOOMA.makeActivityButton($(target).attr("data-id1"), "", $(".popup"));
             }
              if(id2 !== undefined && id2 !== null) {
-                LOOMA.makeActivityButton($(target).attr("data-id2"), $(".popup"));
+                LOOMA.makeActivityButton($(target).attr("data-id2"), "", $(".popup"));
             }
 
 

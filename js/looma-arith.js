@@ -41,7 +41,7 @@ Description:
 
         var className = this.getAttribute('id');
         activateClass(className);              //activate this CLASS - highlights the button
-        LOOMA.setStore("arith-grade", className, 'local');         //set a COOKIE for CLASS (lifetime = this browser session)
+        LOOMA.setStore("arith-grade", className, 'session');         //set a COOKIE for CLASS (lifetime = this browser session)
         displaySubjects(className);              // display SUBJECT buttons for this CLASS
         activateSubject(null);                  // de-activate all SUBJECTS
 
@@ -51,7 +51,7 @@ Description:
         //called when a SUBJECT button is pressed
         var subjectName = this.getAttribute('id');
         activateSubject(subjectName);              //activate this CLASS - highlights the button
-        LOOMA.setStore("arith-subject", subjectName, 'local');  //set a COOKIE for SUBJECT (lifetime = this browser session)
+        LOOMA.setStore("arith-subject", subjectName, 'session');  //set a COOKIE for SUBJECT (lifetime = this browser session)
 
         //code here for 'remember subject visited'
         //$("button.subject").setAttribute('visit', false);
@@ -83,11 +83,11 @@ $(document).ready (function() {
     //add listeners to all SUBJECT buttons
     $("button.subject").click(subjectButtonClicked);
 
-    var classCookie = LOOMA.readStore('arith-grade', 'local');
+    var classCookie = LOOMA.readStore('arith-grade', 'session');
     if (classCookie) {
         activateClass (classCookie);
         displaySubjects(classCookie);
-        var subjectCookie = LOOMA.readStore('arith-subject', 'local');
+        var subjectCookie = LOOMA.readStore('arith-subject', 'session');
         if (subjectCookie) {
             activateSubject (subjectCookie);
         };

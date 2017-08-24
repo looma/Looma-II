@@ -1,3 +1,14 @@
+<!doctype html>
+<!--
+Filename: looma-maps-nepalLayers.php
+Date: 2017 07
+Description:
+
+Author: Julia, Mohini, Matt, Matthew
+Owner:  VillageTech Solutions (villagetechsolutions.org)
+Looma version 3.0
+File: header.php
+-->
 <html>
 
     <?php $page_title = 'Nepal Layers';
@@ -12,11 +23,11 @@
 
     <div id="main-container-horizontal">
      <div class="viewer" id="fullscreen">
-     <button id="fullscreen-control"></button>
-
+         <button id="fullscreen-control"></button>
          <div id="map"></div>
      </div>
     </div>
+
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>
 

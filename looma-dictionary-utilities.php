@@ -3,13 +3,13 @@ header("Access-Control-Allow-Origin: *\n");
 $page_title = 'Looma';
 
 /**
-*Name: Justin Cardozo
+*Name: Justin Cardozo, skip
 *Email: justin.cardozo@menloschool.org
 *Owner: VillageTech Solutions (villagetechsolutions.org)
-*Date: 2015 03
-*Revision: Looma 2.0.0
+*Date: 2015 03, 2017 08
+*Revision: 2.1
+* for Looma 3.0
 *File: looma-dictionary-utilities.php
-*Description:  for Looma 2
 */
 
 /**
@@ -204,8 +204,9 @@ if (isset($_GET["cmd"]))
 			// Uses fields within the dictionary called rand to get a random document
 			$list = array();
             $count = 0;
-
-			for($count = 0; $count < $maxCount; $count++)
+			$tries = 0;
+			while ($count < $maxCount && $tries < 2 * $maxCount)
+			//don't increment $count when a duplicate is found (and discarded), but count $tries to be sure the WHILE terminates
 			{
 				//$newWord = null;
 				$value = (float)rand()/(float)getrandmax();
@@ -243,6 +244,7 @@ if (isset($_GET["cmd"]))
 				        $count += 1;
 				        array_push($list, $newWord['en']);
 				    }
+                $tries += 1;
 			}
 
 //echo "count: $count, maxCount: $maxCount, list:";

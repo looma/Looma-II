@@ -177,7 +177,7 @@ function openfile(openname, collection, filetype) { //filetype must be given as 
                     //currentid = response['_id'];
                     //currentauthor = response['author'];
                     if ('author' in response)
-                        owner = (response['author'] == LOOMA.loggedIn()  || LOOMA.loggedIn() == 'skip' || LOOMA.loggedIn() == 'vivian');
+                        owner = (response['author'] == LOOMA.loggedIn()  || LOOMA.loggedIn() == 'skip');
                     else owner = false;
 
                     callbacks['display'](response);   //need to return the full 'response' from the db
@@ -211,7 +211,7 @@ $(document).ready(function ()
                    savework(currentname, currentcollection, currentfiletype);
                else { //NOTE: cant call 'clear()' immediately because the savework() call uses asynch code [e.g. LOOMA.confirm()]
                    callbacks['clear']();
-                   template - false;
+                   template = false;
                    owner = true;
                };
            });

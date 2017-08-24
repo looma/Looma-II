@@ -21,11 +21,19 @@ $(document).ready(function() {
     var mapDir = "../maps/";
 
     var worldMap = L.map('worldMap',
-            { center : [28.2, 84.2],
-                zoom : 2 , minZoom: 2, maxZoom: 9,
+            { center : [20, 15],
+                zoom : 3 , minZoom: 2, maxZoom: 9,
                 //maxBounds: L.latLngBounds(L.latLng(24,77.5), L.latLng(32,91.5)),
                 fullscreenControl: true,
                 fullscreenControlOptions: {position: 'topleft'}});
 L.tileLayer(mapDir + 'en-worldmap/tile/{z}/{x}/{y}.jpg').addTo(worldMap);
-
+    
+    var southWest = L.latLng(-90,-180);
+    var northEast = L.latLng(90, 180);
+    var bounds = L.latLngBounds(southWest, northEast);
+    worldMap.setMaxBounds(bounds);
+    worldMap.on('drag', function () {
+        worldMap.panInsideBounds(bounds, {animate: false});
+    });
+    
 });

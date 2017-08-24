@@ -206,6 +206,8 @@ Description:  Creates a series of forms that allows the user to edit the activit
    }
   }
 
+
+
   $activityName = $_POST['displayname'];
   if(strlen($activityName) != 0)
   {
@@ -230,7 +232,7 @@ Description:  Creates a series of forms that allows the user to edit the activit
 ?>
 
 <!--These files are designed to make sure that the changes made are valid-->
-   	<?php include ('includes/js-includes.php'); ?>   	   		
+   	<?php include ('includes/js-includes.php'); ?>
 <script src="js/looma-dictionary-handler.js"></script>
 
 

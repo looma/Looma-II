@@ -1,4 +1,15 @@
 <!doctype html>
+<!--
+Filename: looma-maps-asiancountrygame.php
+Date: 2017 07
+Description:
+
+Author: Julia, Mohini, Matt, Matthew
+Owner:  VillageTech Solutions (villagetechsolutions.org)
+Looma version 3.0
+File: header.php
+-->
+
 
 <?php
 $page_title = 'Looma - Maps';
@@ -33,11 +44,11 @@ include ('includes/header.php');
                     ?>
                 </select>
                 <input id="submit" type="button" value="Submit"/>
+                <input id = "next" type = "submit" value ="Next Question"/>
             </fieldset>
             <input type="text" id="txtOutput" />
         </form>
 
-        <input id = "next" type = "submit" value ="Next Question"/>
     </div>
 
         <?php

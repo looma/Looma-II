@@ -18,14 +18,18 @@ html, body {margin:0;padding:0;height:100%;}
 }
 
 span.hint {
-    position:absolute;
-    top:30%;
-    left:25%;
-    padding:10vh 0 0 0;
+    float:left;
+    margin:5vh 0 0 10vh;
     color:#aaa;
     font-size:2em;
     z-index:-1;
 }
+
+div.hint {
+    padding:10vh;
+    color: #aaa;
+    font-size:2em;
+};
 
 .admin, .template-cmd{
     display:none;

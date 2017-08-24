@@ -16,7 +16,8 @@ Description:  displays and navigates content folders for Looma 2
         // load: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
         require ('includes/activity-button.php');
 ?>
-    </head>
+ <link rel = "Stylesheet" type = "text/css" href = "css/looma-library.css">
+ </head>
 
     <body>
     <div id="main-container-horizontal" class="scroll">
@@ -71,6 +72,9 @@ Description:  displays and navigates content folders for Looma 2
     // DEBUG echo "at path " . $path . "folderName is " . folderName($path);
     echo "<br><h3 class='title'>"; keyword('Looma Library'); echo ":  " . folderName($path) . "</h3>";
 
+    echo "<a href='looma-library-search.php'><button id='media-submit' class='filesearch black-border'></button></a>";
+
+
     //  first list directories in this directory
     echo "<br><table id='dir-table'><tr>";
     $buttons = 1;
@@ -89,6 +93,20 @@ Description:  displays and navigates content folders for Looma 2
 
         foreach (new DirectoryIterator($path) as $fileInfo) {
             $file =  $fileInfo->getFilename();
+
+            //
+            // to SORT results: do 'foreach(directoryiterator) dirs.push(fileinfo)
+            // when done: SORT dirs
+            // then foreach (file in dirs) do the following code
+            //
+            //  $dirs = [];
+            //  foreach (directoryiterator($path as $fileInfo) $dirs[$fileInfo->getFilename()] = $fileInfo;
+            //  ksort($dirs);
+            //  foreach ($dirs as $dir() {...
+            //
+
+
+
             //if ($file{0}  == ".") continue;  //skips ".", "..", and any ".filename" (more thorough than isDot() )
 
             if (($fileInfo -> isDir()) && !isHTML($path . $file) && $file[0] !== "." && ( ! file_exists($path . $file . "/hidden.txt")))
@@ -317,6 +335,16 @@ echo "<hr>";
 
         foreach (new DirectoryIterator($path) as $fileInfo) {
             $file =  $fileInfo->getFilename();
+
+
+
+            //
+            // to SORT results: do 'foreach(directoryiterator) dirs.push(fileinfo)
+            // when done: SORT dirs
+            // then foreach (file in dirs) do the following code
+            //
+
+
 
             //echo "DEBUG     found " . $file . "<br>";
 

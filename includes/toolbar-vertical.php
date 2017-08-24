@@ -10,7 +10,9 @@
  				<?php tooltip('Home');?>
  			</button>
 
-			<button onclick="LOOMA.setStore('scroll', 0, 'session'); parent.location.href = 'looma-library-search.php?fp=../content/';" class="toolbar-button-vertical ">
+            <button onclick="LOOMA.setStore('libraryScroll', 0, 'session');
+			                 LOOMA.setStore('saveForm',    0, 'session');
+                             parent.location.href = 'looma-library-search.php?fp=../content/';" class="toolbar-button-vertical ">
 				<!-- call looma-library.php with path to starting folder of the Library. -->
 				<img draggable="false" src="images/library.png"  height= "70%" >
 				<?php tooltip('Library');?>

@@ -13,6 +13,13 @@ Revision: Looma 2.0.x
 p{
     margin-bottom: 0px;
 }
+
+
+.black-border {
+    border: 2px solid black;
+}
+
+
 /***************************************/
 /******* Hide/Show Folders Button ******/
 /***************************************/
@@ -59,7 +66,11 @@ div#search-bar-div{
     margin-top: 14px;
 }
 button#media-submit{
-    width: 4%;
+    position: fixed;
+    top:4.5%;
+    right:5%;
+    width: 6vw;
+    height: 10vh;
     padding-bottom: 3.5%;
     vertical-align: middle;
     background-image: url("../images/looma-search2.png");

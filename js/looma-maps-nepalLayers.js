@@ -1,3 +1,14 @@
+/*
+LOOMA javascript file
+Filename: looma-maps-asianCapitals.js
+Description:
+
+Programmer name:
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: 2017 07
+Revision: Looma 3.0
+ */
+
 var background = L.tileLayer('../maps/layeredMap/Background/{z}/{x}/{y}.png', {
   minZoom: 7,
   maxZoom: 11
@@ -156,9 +167,18 @@ var CitiesWithPopups = L.layerGroup([Kathmandu, Pokhara, Patan, Bharatpur, Birat
 
 var map = L.map('map', {
 center: [28.2366, 83.7927],
-zoom: 7,
+zoom: 8,
 layers: [background, Forests, Farmland, WaterGlaciersWithPopups, TemplesWithPopups, MountainsWithPopups, CitiesWithPopups]
 });
+
+var southWest = L.latLng(25.78, 78);
+var northEast = L.latLng(30.75, 89);
+var bounds = L.latLngBounds(southWest, northEast);
+map.setMaxBounds(bounds);
+map.on('drag', function () {
+    map.panInsideBounds(bounds, {animate: false});
+});
+
 
 var legend = L.control({position: 'bottomright'});
 

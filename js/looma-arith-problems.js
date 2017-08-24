@@ -19,8 +19,8 @@ var enterKey = 13;
 
 function init(){
 
-    arithSubject = LOOMA.readStore('arith-subject', 'local');
-    arithClass = LOOMA.readStore('arith-grade', 'local');
+    arithSubject = LOOMA.readStore('arith-subject', 'session');
+    arithClass = LOOMA.readStore('arith-grade', 'session');
     // DEBUG    console.log ('ARITH: arith-grade is ' + arithClass);
 
     arithClass = arithClass.substr(0, arithClass.length - 1) + ' ' + arithClass.substr(arithClass.length-1);

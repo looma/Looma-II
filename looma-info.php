@@ -4,7 +4,7 @@ Name: Skip
 Email: skip@stritter.com
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 03
-Revision: Looma 2.0.0
+Revision: Looma 3.0.0
 File: looma-info.php
 Description:  for Looma 2
 -->
@@ -19,7 +19,7 @@ Description:  for Looma 2
 		<h2 class="title">Looma Info page</h2>
 
 	<h3>Looma 2</h3>
-	<h4>Release 2.5, May 2017</h4>
+	<h4>Release 3.0, August 2017</h4>
 	<h4> <span class='glyphicon glyphicon-copyright-mark'></span> VillageTech Solutions</h4>
 	<h4>Contact: info AT villagetechsolutions DOT org</h4>
 	<br>

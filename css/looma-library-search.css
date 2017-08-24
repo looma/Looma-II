@@ -16,7 +16,7 @@ p{
 /***************************************/
 button#toggle-database{
 	position: fixed;
-    bottom:13%;
+    top:4.5%;
     right:5%;
 	height:10%;
     width:6%;
@@ -57,8 +57,10 @@ div#search-bar-div{
     margin-top: 14px;
 }
 button#media-submit{
-    width: 4%;
-    padding-bottom: 3.5%;
+    width: 6vh;
+    height: 6vh;
+    margin: 14px 15px;
+    /*padding-bottom: 3.5%;*/
     vertical-align: middle;
     background-image: url("../images/looma-search2.png");
     background-repeat: no-repeat;
@@ -74,7 +76,7 @@ input#search-term {
 input#search-term::-webkit-search-cancel-button {
     -webkit-appearance: searchfield-cancel-button;
     position:relative;
-    right:2%; 
+    right:2%;
 }
 
 
@@ -121,6 +123,7 @@ span.drop-menu {
 /********* cancel button specs *********/
 /***************************************/
 button#cancel-search {
+    margin: 0 15px;
     border: 2px solid white;
     background-color: white;
     width: auto;
@@ -133,8 +136,7 @@ button#cancel-search {
 
 
 button#chapter-submit {
-    margin-top: 14px;
-    margin-bottom: 14px;
+    margin: 14px 15px;
     width: auto;
     font-size: 1.5em;
     font-weight: normal;
@@ -151,7 +153,7 @@ button#chapter-submit:hover {
 /***************************************/
 #results-div{
 	display: none;
-	margin: 2%; 
+	margin: 2%;
 	margin-left:5%;
     margin-right:5%;
     top:5vh;
@@ -159,7 +161,7 @@ button#chapter-submit:hover {
     padding: 2vw;
     background-color:rgba(27,71,177,.45);
     z-index:10;
-    overflow-y:hidden;
+    overflow-y:auto;
     border:2px solid black;
     border-radius:6px;
 }

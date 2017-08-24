@@ -73,10 +73,8 @@ Description:  displays and navigates content folders for Looma 2
                             //should also check for 'index.php' and others?
 
     // DEBUG echo "at path " . $path . "folderName is " . folderName($path);
-    echo "<br><h3 class='title'>"; keyword('Looma Library'); 
+    echo "<br><h3 class='title'>"; keyword('Looma Library');
     if(foldername($path) != 'content') {echo ":  " . folderName($path);} echo "</h3>";
-  
-
 
 
 /****** creating the search tool ******/
@@ -92,7 +90,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
 
   /* add sources like in lesson planner
-  action='looma-database-utilities.php' method='post'*/  
+  action='looma-database-utilities.php' method='post'*/
 
 
     echo "<hr style='visibility:hidden;'><div id='search-panel'>
@@ -118,8 +116,8 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
     echo "<div id='search-bar-div' class='media-filter'>
             <input id='search-term' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
             <button id='media-submit' class='filesearch black-border' name='search' value='value' type='submit'></button>
-          </div>";
-
+            <button id='cancel-search' type='button'>Clear</button>
+       </div>";
 
 
 /**************************************/
@@ -129,9 +127,9 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
             <p>Type:</p>";
 
     $types = array(
-        array("pdf", "img", "aud",  /*"template",*/ "txt", /*"gam",*/ /*"lesson",*/ /*"ss",*/ "vid"),
-        array("pdf", "image", "audio",  /*"text-template",*/ "text", /*"game",*/ /*"lesson",*/ /*"slideshow",*/ "video"),
-        array("PDF", "Image", "Audio", /*"Text Template",*/ "Text", /*"Game",*/ /*"Lesson",*/ /*"Slideshow",*/ "Video"),
+        array("pdf", "vid",   "img",   "hist",    "ss",        "map", "evi",          "aud",   "txt"),  //tags used as IDs for checkbox html elements
+        array("pdf", "video", "image", "history", "slideshow", "map", "evi",          "audio", "text"), //the 'ft' values used in the DB
+        array("PDF", "Video", "Image", "History", "Slideshow", "Map", "Edited video", "Audio", "Text"), //human readable versions for labels displayed on checkboxes
     );
     for($x = 0; $x < count($types[0]); $x++) {
         echo "<span class='typ-chk' id='" . $types[0][$x] ."-chk'>
@@ -157,8 +155,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
                 <input id='" . $sources[0][$x] ."' class='media-input flt-chkbx' type='checkbox' name='src[]'' value='" . $sources[1][$x] . "'>
                 <label class='filter-label' for='" . $sources[0][$x] . "'>" . $sources[2][$x] . "</label>
               </span>";}
-    echo "</div>"; 
-
+    echo "</div>";
 
 
 /**************************************/
@@ -168,9 +165,11 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
             <span class='drop-menu'>Grade:<select id='grade-drop-menu' class='chapter-input black-border' name='class' form='search'>
                 <option value='' selected>Select...</option>";
     for($x = 1; $x <= 8; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";}
-    
-    echo "</select></span></div>";   
 
+    echo "</select></span>";
+    echo "<button id='media-submit' class='filesearch black-border' name='search' value='value' type='submit'></button>";
+    echo "<button id='cancel-search' type='button'>Clear</button>";
+    echo "</div>";
 
 
 /**************************************/
@@ -190,29 +189,15 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
     echo "</select></span></div>";
 
 
-
 /**************************************/
 /********* Chapter Dropdown  **********/
 /**************************************/
     echo "<div id='chapter-div' class='chapter-filter'> 
             <span class='drop-menu'>Chapter:<select id='chapter-drop-menu' class='chapter-input black-border' name='chapter' form='search'>
-                    <option value='all' selected>Select...</option>
+                    <option value='' selected>Select...</option>
           </select></span></div>";
 
-
-/**************************************/
-/******* Chapter Submit Button ********/
-/**************************************/
-
-    echo "<button id='chapter-submit' class='filesearch chapter-filter black-border' name='search' value='value' type='submit'>Submit</button>
-        <br class='chapter-filter'>";
-
-    echo "<button id='cancel-search' type='button'>Cancel</button>
-        </form></div>";
-
-
-
-
+    echo "</form></div>";
 
 
 /**************************************/
@@ -251,14 +236,21 @@ if(foldername($path) == 'content') {
                     </fieldset>
                 </div>*/
         echo "<button id='toggle-database' class='toggle black-border'></button>";
-    } 
+    }
 
 
 /**************************************/
+/**************************************/
+/**************************************/
+
+ /*  NOTE: removing code that is now in LOOMA-LIBRARY.PHP but not used here [list DIRS and FILES]
     //  first list directories in this directory
-    
-    
-    echo "<table id='dir-table'><tr>";
+
+/**************************************
+/**************************************
+/**************************************
+
+echo "<table id='dir-table'><tr>";
     if(foldername($path) == 'content') {echo "<style>#dir-table{display: none;}</style>";}
 
     $buttons = 1;
@@ -266,15 +258,14 @@ if(foldername($path) == 'content') {
     // iterate through the files in this DIR and make buttons for each included DIR
     if ( ! $ep ) {
 
-        //TODO: should gather all the filenames into an array and sort it, use (natcasesort() or multisort(), before making the buttons
 
-/*************** iterate through the files in this DIR and make buttons for the DIRs ******************/
-/******************************************************************************************************/
+//*************** iterate through the files in this DIR and make buttons for the DIRs ******************
+//******************************************************************************************************
 
 
-/********************************/
-/**********  DIRs  **************/
-/********************************/
+//********************************
+//**********  DIRs  **************
+//********************************
 
         foreach (new DirectoryIterator($path) as $fileInfo) {
             $file =  $fileInfo->getFilename();
@@ -286,10 +277,10 @@ if(foldername($path) == 'content') {
 
              {
                 if (file_exists($path . $file . "/slideshows.txt")) { //this dir represents slideshows. add a play button to the dir button
-                    /************************************************************************
-                     * EDITED: This if statement creates a slideshow play button linking directories containing slideshows.txt files
-                     * with Looma slideshow player
-                     */
+                     // ************************************************************************
+                     // EDITED: This if statement creates a slideshow play button linking directories containing slideshows.txt files
+                     // with Looma slideshow player
+
                     echo "<td>
                             <a href='looma-slideshow.php?dir=$path$file'>
                                     <button class='activity zeroScroll  with-play'>
@@ -338,11 +329,11 @@ if(foldername($path) == 'content') {
             };
         }; // ********** end FOREACH directory  **************
     };
-/******************************************************************************************************/
-/******************************************************************************************************/
 
     echo "</tr></table>";
 
+//******************************************************************************************************
+//******************************************************************************************************
     //now list files in this directory
 
     if(foldername($path) == 'content') {echo "<br>";} echo "<table id='file-table'><tr>";
@@ -353,13 +344,12 @@ if(foldername($path) == 'content') {
     if(foldername($path) == 'content') {echo "<hr>";}
     // iterate through the files in this DIR and make buttons for each included FILE
 
-    //TODO: should gather all the filenames into an array and sort it, use (natcasesort() or multisort(), before making the buttons
 
-/*************** iterate through the files in this DIR and make buttons each of the FILES ******************/
-/******************************************************************************************************/
-/********************************/
-/**********  FILEs  *************/
-/********************************/
+//*************** iterate through the files in this DIR and make buttons each of the FILES ******************
+//******************************************************************************************************
+//********************************
+//**********  FILEs  *************
+//********************************
 
         //modifications for EDITED VIDEOS
         //make buttons for EDITED VIDEOS directory -- virtual folder, populated from edited_videos collection in mongoDB
@@ -464,14 +454,7 @@ if(foldername($path) == 'content') {
 
             if ($fileInfo -> isFile()) {
 
-                //insert code here to sort the filenames before sending them to client side
-                // iterate thru the directory, storing valid files in an array
-                /* $files = arr
-                 foreach {$files[] =$file;]
-                 * $files = array_sort($files);
-                 * while ?? $next = array)shift($files);
-                 *
-                */
+
 
                 //then SORT
                 //then iterate thru the array  making buttons
@@ -554,8 +537,11 @@ if(foldername($path) == 'content') {
               } //end FOREACH file
             }
         echo "</tr></table>";
+
+    //NOTE: end of commented out library code
+ */
 ?>
-        
+
     </div>
 
     <?php include ('includes/toolbar.php'); ?>

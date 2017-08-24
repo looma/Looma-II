@@ -285,13 +285,13 @@
 	border-radius: 5px;
 	}
 .leaflet-control-layers-toggle {
-	background-image: url(js/leaflet-images/layers.png);
-	width: 36px;
-	height: 36px;
+	background-image: url(../js/leaflet-images/layers.png);
+	width: 7vh;
+	height: 7vh;
 	}
 .leaflet-retina .leaflet-control-layers-toggle {
-	background-image: url(js/leaflet-images/layers-2x.png);
-	background-size: 26px 26px;
+	background-image: url(../js/leaflet-images/layers-2x.png);
+	background-size: 100% 100%;
 	}
 .leaflet-touch .leaflet-control-layers-toggle {
 	width: 44px;

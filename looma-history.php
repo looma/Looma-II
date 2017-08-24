@@ -1,13 +1,9 @@
+<!doctype html>
 <!--
-
 Author: Alexa Thomases, Catie Cassani, May Li
-
 Filename: looma-history.php
-
 Date: July 2017
-
 Description: Creates history timelines with search, scroll, lookup, speech, and popup functions. Information accessed through database.
-
 -->
 
   <h1 class="credit"> Created by Alexa, Catie, and May </h1>
@@ -71,7 +67,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
 
           else $query = array('_id' => new MongoID($_REQUEST['id']));
 
-                
+
 
           $cursor =  $history_collection->find($query, array("title"=>1, "events"=>1)); //should be findOne()  ??
 
@@ -95,7 +91,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
 
 
 
-    $count = 0; 
+    $count = 0;
 
 
 
@@ -129,11 +125,11 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
                     $id2 = 'data-id2='. $event['popup'][2];
 
 
-                  if ($count%2 == 0) 
+                  if ($count%2 == 0)
 
                   {
 
-              
+
 
                    echo '
 
@@ -143,7 +139,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
 
                        <div class="dropdown" style="float:">'; // edited out
 
-                   echo '<button class="dropbtn"' .  " " . $id1 . " " . $id2 . " " . $msg . '>' .  $event['title'] . '</button>'; 
+                   echo '<button class="dropbtn"' .  " " . $id1 . " " . $id2 . " " . $msg . '>' .  $event['title'] . '</button>';
 
                    echo '<button class="dropdate">' . $event['date'] . '</button>'; //dropbtn before dropdate so dropbtn is on top
 
@@ -169,7 +165,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
 
                    echo '<button class="dropbtn"' . " " . $id1 . " " . $id2 . " " . $msg . '>' . $event['title'] . '</button>';
 
-                   
+
 
                        '</div>
 
@@ -196,7 +192,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
         {echo 'no history found';}
 
       ?>
- 
+
 
 </div>
 
@@ -220,9 +216,6 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
     <script type="text/javascript" src="js/looma-hilitor-utf8.js"></script>
 
     <script type="text/javascript" src="js/looma-history.js"></script>
-
-
-    
 
 </body>
 

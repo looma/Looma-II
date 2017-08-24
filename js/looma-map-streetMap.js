@@ -22,12 +22,19 @@ $(document).ready(function() {
 
     var streetMap = L.map('streetMap',
             { center : [27.7, 85.3],
-                zoom : 12, minZoom: 12, maxZoom: 18,
+                zoom : 13, minZoom: 12, maxZoom: 18,
                 maxBounds: L.latLngBounds(L.latLng(27.5545,85.1247), L.latLng(27.8372,85.5154)),
                 fullscreenControl: true,
                 fullscreenControlOptions: {position: 'topleft'}});
 L.tileLayer(mapDir + 'streetMap/{z}/{x}/{y}.png').addTo(streetMap);
-
+    
+    var southWest = L.latLng(24, 70);
+    var northEast = L.latLng(33, 90);
+    var bounds = L.latLngBounds(southWest, northEast);
+    streetMap.setMaxBounds(bounds);
+    streetMap.on('drag', function () {
+        streetMap.panInsideBounds(bounds, {animate: false});
+    });
 
     var legend = L.control({position: 'bottomright'});
 

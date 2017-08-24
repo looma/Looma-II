@@ -11,7 +11,12 @@ Revision: Looma 2.4
 
 'use strict';
 
-window.onload = function ()
-    {
-    };
+window.onload = function () {
+    var a;
+    var b;
+    
+    function b() {
+    
+    }
+};
 

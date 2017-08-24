@@ -98,7 +98,7 @@ Description:
         //called when a CLASS button is pressed
         className = this.getAttribute('id');
         activateClass(className);              //activate this CLASS - highlights the button
-        LOOMA.setStore("class", className, 'local');  //set a COOKIE for CLASS (lifetime = this browser session)
+        LOOMA.setStore("class", className, 'session');  //set a COOKIE for CLASS (lifetime = this browser session)
         displaySubjects(className);              // display SUBJECT buttons for this CLASS
         activateSubject(null);                  // de-activate all SUBJECTS
 
@@ -107,11 +107,11 @@ Description:
     function subjectButtonClicked(){
         //called when a SUBJECT button is pressed
         subjectName = this.getAttribute('id');
-        LOOMA.setStore("subject", subjectName, 'local');  //set a COOKIE for SUBJECT (lifetime = this browser session)
+        LOOMA.setStore("subject", subjectName, 'session');  //set a COOKIE for SUBJECT (lifetime = this browser session)
         //send GET request to chapters.php with CLASS and SUBJECT values
 
         //set scroll position to top of page
-        LOOMA.setStore('scroll', 0), 'session';
+        LOOMA.setStore('libraryScroll', 0), 'session';
 
         window.location = "looma-chapters.php?class=" +
                             encodeURIComponent(className) +
@@ -127,18 +127,18 @@ $(document).ready (function() {
     $("button.subject").click(subjectButtonClicked);
 
     //set scroll position to top of page
-    LOOMA.setStore('scroll', 0, 'local');
+    LOOMA.setStore('libraryScroll', 0, 'session');
 
-    className = LOOMA.readStore('class', 'local');
+    className = LOOMA.readStore('class', 'session');
     if (!className) {
          className = 'class1';
-         LOOMA.setStore('class', className, 'local');  //set a COOKIE for CLASS (lifetime = this browser session)
+         LOOMA.setStore('class', className, 'session');  //set a COOKIE for CLASS (lifetime = this browser session)
     };
 
     activateClass (className);
     displaySubjects(className);
 
-    subjectName = LOOMA.readStore('subject', 'local');
+    subjectName = LOOMA.readStore('subject', 'session');
     if (subjectName) { activateSubject (subjectName); };
 
 }); //end of document.ready

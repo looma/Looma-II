@@ -1,3 +1,14 @@
+<!doctype html>
+<!--
+Filename: looma-maps-pokharaCity.php
+Date: 2017 07
+Description:
+
+Author: Julia, Mohini, Matt, Matthew
+Owner:  VillageTech Solutions (villagetechsolutions.org)
+Looma version 3.0
+File: header.php
+-->
 <html>
 
     <?php $page_title = 'Pokhara City';
@@ -11,11 +22,11 @@
       <h2>Pokhara City<h2>
 
       <div id="main-container-horizontal">
-              <button id="fullscreen-control"></button><br>
+          <div class="viewer" id="fullscreen">
+              <button id="fullscreen-control"></button>
+              <div id="map"></div>
+          </div>
       </div>
-      <div class="viewer" id="fullscreen">
-
-      <div id="map"></div>
       <?php include ('includes/toolbar.php'); ?>
       <?php include ('includes/js-includes.php'); ?>
 

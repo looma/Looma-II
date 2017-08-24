@@ -15,11 +15,11 @@
 function chapterButtonClicked(event){
     //called when a CHAPTER button is pressed
     var button = event.target;
-    LOOMA.setStore('chapter',  button.getAttribute('data-ch'), 'local');  //set a COOKIE for CHAPTER
+    LOOMA.setStore('chapter',  button.getAttribute('data-ch'), 'session');  //set a COOKIE for CHAPTER
     //document.cookie = "chapter=" + button.getAttribute('data-ch');  //set a COOKIE for CHAPTER
 
     //remember scroll position
-    LOOMA.setStore('scroll', $("#main-container-horizontal").scrollTop(), 'session');
+    LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session');
 
     LOOMA.playMedia(button);
 };
@@ -28,14 +28,14 @@ function activityButtonClicked(){
         //called when a ACTIVITY button is pressed
         var chapter_id = this.getAttribute('data-ch');
         var chapter_dn = this.getAttribute('data-chdn');
-        LOOMA.setStore('chapter', chapter_id, 'local');    //set a COOKIE for CHAPTER
+        LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
         //document.cookie = "chapter=" + chapter_id;  //set a COOKIE for CHAPTER
 
         //remember scroll position
-        LOOMA.setStore('scroll', $("#main-container-horizontal").scrollTop(), 'session');
+        LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session');
 
-        var className = LOOMA.readStore("class", 'local');
-        var subject = LOOMA.readStore("subject", 'local');
+        var className = LOOMA.readStore("class", 'session');
+        var subject = LOOMA.readStore("subject", 'session');
         //activities = JSON.stringify(activities);
         //send GET request to chapters.php with CLASS and SUBJECT values
         chapter_id = encodeURIComponent(chapter_id);
@@ -51,14 +51,14 @@ function lessonButtonClicked(){
         //called when a ACTIVITY button is pressed
         var chapter_id = this.getAttribute('data-ch');
         var chapter_dn = this.getAttribute('data-chdn');
-        LOOMA.setStore('chapter', chapter_id, 'local');    //set a COOKIE for CHAPTER
+        LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
         //document.cookie = "chapter=" + chapter_id;  //set a COOKIE for CHAPTER
 
         //remember scroll position
-        LOOMA.setStore('scroll', $("#main-container-horizontal").scrollTop(), 'session');
+        LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session');
 
-        var className = LOOMA.readStore("class", 'local');
-        var subject = LOOMA.readStore("subject", 'local');
+        var className = LOOMA.readStore("class", 'session');
+        var subject = LOOMA.readStore("subject", 'session');
         //activities = JSON.stringify(activities);
         //send GET request to chapters.php with CLASS and SUBJECT values
         chapter_id = encodeURIComponent(chapter_id);
@@ -78,7 +78,7 @@ $(document).ready (function() {
     // check cookies to see if there is an active CHAPTER
     // if so, add class='active' to all the buttons for this CHAPTER (if any)
 
-    var chapterCookie = LOOMA.readStore('chapter', 'local');
+    var chapterCookie = LOOMA.readStore('chapter', 'session');
     if (chapterCookie) {
         $('button.chapter[data-ch="' + chapterCookie + '"]').addClass('active');
         $('button.activities[data-ch="' + chapterCookie + '"]').addClass('active');
@@ -86,6 +86,6 @@ $(document).ready (function() {
     };
 
     //scroll to prior scroll position
-    $("#main-container-horizontal").scrollTop(LOOMA.readStore('scroll', 'session'));
+    $("#main-container-horizontal").scrollTop(LOOMA.readStore('chapterScroll', 'session'));
 
 }); //end of document.ready anonymous function

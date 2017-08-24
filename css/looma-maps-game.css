@@ -7,18 +7,18 @@ h1 {
     color: black;
     width: 100%;
     position: absolute;
-    top: 90%;
+    bottom: 2%;
     left: 0%;
-    font-size: 2em;
+    font-size: 1.75em;
+    text-align:center;
 }
 
-/*
-#myCanvas {
+
+canvas {
     width:1000px;
     height:650px;
 }
-*/
+
 
 #endOutput{
-}
 }

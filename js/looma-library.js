@@ -25,8 +25,8 @@ function playActivity(event) {
 
     //OLD CODE: in case click event has IMG or SPAN contained in the BUTTON, get the BUTTON element
     //if (button.nodeName != 'BUTTON') button = button.parentNode;
-    LOOMA.setStore('scroll', $("#main-container-horizontal").scrollTop(), 'session');
-    console.log($("#main-container-horizontal").scrollTop());
+    LOOMA.setStore('libraryScroll', $("#main-container-horizontal").scrollTop(), 'session');
+    //console.log($("#main-container-horizontal").scrollTop());
     LOOMA.playMedia(button);
 };
 
@@ -36,8 +36,8 @@ var scrollDebounce = 5000; //msec delay to debounce scroll stop
 $(document).ready (function() {
     $("button.play").click(playActivity);
 
-    $("button.zeroScroll").click(function() {LOOMA.setStore('scroll', 0, 'local');});
-    $("#main-container-horizontal").scrollTop(LOOMA.readStore('scroll', 'session'));
+    $("button.zeroScroll").click(function() {LOOMA.setStore('libraryScroll', 0, 'session');});
+    $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
 
 });
 

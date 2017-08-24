@@ -2,7 +2,7 @@
 Author: Sasha Cassidy, Lily Barnett, and Mahir Arora
 Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard.php
 */
- 
+
 #prev, #next {
   width:10%;
   height:20%;
@@ -13,26 +13,26 @@ Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard
   text-align:center;
   vertical-align:middle;
 }
- 
+
 #next img, #prev img {
     height:90%;
     width:90%
 }
- 
+
 #prev{
   position: absolute;
   left:2%;
   top:50%;
   visibility: hidden;
 }
- 
+
 #next{
   position: absolute;
   right:2%;
   top:50%;
   visibility: visible;
 }
- 
+
 #homePage{
     position: absolute;
     width:10%;
@@ -60,9 +60,9 @@ Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard
     }
  
 .front, .back {
- 
+
 }
- 
+
 .flashcard {
     height:100%;
     width:90%;
@@ -75,7 +75,7 @@ Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard
     position: relative;
  
 }
- 
+
 /* hide back of pane during swap */
 .front, .back {
     backface-visibility: hidden;
@@ -93,7 +93,7 @@ Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard
     border-radius: 6px;
     text-align:center;
 }
- 
+
 /* front pane, placed above back */
 .front {
     z-index: 2;
@@ -103,21 +103,21 @@ Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard
         transform-style: preserve-3d;
  
 }
- 
+
 /* back, initially hidden pane */
 .back {
     transform: rotateX(180deg);
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
 }
- 
+
 .front p {
   padding-left: 2px;
   padding-right: 2px;
   margin-top: 8%;
   font-size: 7em;
 }
- 
+
 .back p {
   padding-left: 2px;
   padding-right: 2px;
@@ -125,47 +125,52 @@ Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard
   padding-top: 0;
   margin-top: 2%;
 }
- 
-.back p#smallWordBack {
+
+#definition.smallWord {
   font-size: 2em;
 }
- 
-.back p#mediumWordBack {
+
+#definition.mediumWord {
   font-size: 3em;
 }
- 
-.back p#largeWordBack {
+
+#definition.largeWord {
   font-size: 4em;
   min-height:30%;
 }
- 
+
 p#wordFront {
     font-size: 7em;
     font-weight:bold;
 }
- 
-p#nepaliBack {
-    font-size: 7em;
+
+#nepali {
+    font-size: 3em;
     font-weight:bold;
 }
- 
+
 #rootWord{
     text-align: center;
     font-size: 4em;
     font-weight:bolder;
 }
- 
+
+#definition {
+    font-size:3em;
+}
+#partOfSpeech {
+    font-size: 2em;
+}
 #rwNepali{
     text-align: center;
-    font-size: 4em;
-    font-weight:bolder;
+    font-size: 3em;
 }
-#rwDefinition{
+#rwdef{
     text-align: center;
     font-size: 3em;
     font-weight:bolder;
 }
- 
+
 p.clickToFlip {
     height: 10%;
     margin: 10px 0;

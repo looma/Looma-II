@@ -17,7 +17,7 @@ window.onload = function() {
     submitButton.addEventListener('click', userInput);
 
     var nextButton = document.getElementById("next");
-    next.addEventListener('click', newQuestion);
+    nextButton.addEventListener('click', newQuestion);
 
     var userGuess = document.getElementById("userGuess");
     var txtOutput = document.getElementById("txtOutput");
@@ -46,6 +46,7 @@ window.onload = function() {
         ctx.clearRect(0, 0, c.width, c.height);
         ctx.drawImage(map, 0, 0);
         generateQuestion();
+        return false;
 
     }
 
@@ -100,21 +101,20 @@ window.onload = function() {
                 break;
         };
     };
-
-    function userInput(){
+    
+    function userInput() {
         outputValue = "";
         var guess = userGuess.value;
-
-        if (guess === answers[currentAnswerNum])
-        {
-            outputValue = "Correct! This is ";
+        
+        if (guess === answers[currentAnswerNum]) {
+            outputValue = "<p>Correct!</p><p> It\'s " + answers[currentAnswerNum] + "</p>";
         }
-        else
-        {
-            outputValue = "Incorrect. The right answer was ";
+        else {
+            outputValue = "Incorrect < br> It's  ";
+            outputValue = "<p>Incorrect!</p><p> It\'s " + answers[currentAnswerNum] + "</p>";
         }
-        outputValue = outputValue + answers[currentAnswerNum];
-        txtOutput.value = outputValue;
+        //outputValue = outputValue + answers[currentAnswerNum];
+        txtOutput.innerHTML = outputValue;
         return false;
-    };
+    }
 };

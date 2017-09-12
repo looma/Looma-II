@@ -49,8 +49,7 @@ body {
 	top:0;
 	left:0;
 	margin:auto;
-	/*background-color: #ddd;	*/
-	/*border: 1px solid black;		*/
+    background-color: #091F48;
 }
 
 #toolbar-container {
@@ -180,10 +179,10 @@ h1.title, h2.title, h3.title {
     font-size: 10px;
     line-height: 12px;
 
-    position: absolute;
-    right:3%;
-    bottom:12%;
-    width:25%;
+    position: fixed;
+    right:3vw;
+    bottom:10vh;
+    width:25vw;
 }
 
 div.viewer {
@@ -325,7 +324,7 @@ button.img:hover {
 	transform: scale(1.2,1.2);
 }
 
-button.class:hover {
+button.class:hover,  button.subject:hover {
 	transform: scale(1.05,1.05);
 }
 
@@ -413,6 +412,11 @@ button#back-button {
 	font-size: 2em;
 }
 
+.button-5 img {
+    height: 90%;
+    width: 80%;
+}
+
 .button-6 {
 	width:14%;
 	margin: 1%;
@@ -426,7 +430,7 @@ button#back-button {
 .button-8 {
 	width:11%;
 	height:65%;
-	font-size: 4.5em;
+	font-size: 5vw;
 	overflow: hidden;
 	padding:0 0 5px 0;
 	margin:0;
@@ -490,13 +494,12 @@ button:hover span.tip.yes-show 	{
 #logo-div {
 	display:inline-block;
 	width:15%;
-	height:100%;
+	height:60%;
 	float:right;
 }
 
 span.logo {
 	display:inline-block;
-	height:70%;
 	width:100%;
 }
 
@@ -532,9 +535,9 @@ button.beside-play {
         position:absolute;
         display:none;
         right:0;
-        bottom:10px;
+        bottom:0vh;
         color:red;
-        font-size: 1em;
+        font-size: 0.8em;
 }
 
 span#datetime {
@@ -661,6 +664,31 @@ button.lookup {
   }
 */
 
+#return {
+    color : white;
+    background-color: red;
+    border-color: red;
+    height: 10vh;
+    width: 10vw;
+    background-image: url("../images/back-arrow.png");
+    background-size: 90% 90%;
+    background-repeat: no-repeat;
+}
+#dismiss {
+    color : white;
+    background-color: red;
+    border-color: red;
+    height: 5vh;
+    width: 4vw;
+    background-image: url("../images/back-arrow.png");
+    background-size: 90% 90%;
+    background-repeat: no-repeat;
+    position:absolute;
+    bottom: 19vh;
+    right: 3vw;
+    z-index:2;
+}
+
 button#fullscreen-control {
 	position: absolute;
 	opacity: 0.4;
@@ -751,7 +779,7 @@ button.lesson {
     float:left;
 }
 
-button.activities {
+button.activities, button.lesson {
     width:17vw;
     float:right;
 }

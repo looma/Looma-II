@@ -93,4 +93,5 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
 	</section>
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
+
    	<script src="js/looma-home.js"></script>          <!-- Looma Javascript -->

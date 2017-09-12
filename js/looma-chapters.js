@@ -28,45 +28,35 @@ function activityButtonClicked(){
         //called when a ACTIVITY button is pressed
         var chapter_id = this.getAttribute('data-ch');
         var chapter_dn = this.getAttribute('data-chdn');
+        
         LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
-        //document.cookie = "chapter=" + chapter_id;  //set a COOKIE for CHAPTER
-
         //remember scroll position
         LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session');
 
         var className = LOOMA.readStore("class", 'session');
         var subject = LOOMA.readStore("subject", 'session');
-        //activities = JSON.stringify(activities);
-        //send GET request to chapters.php with CLASS and SUBJECT values
+
+        //send GET request to looma-activities.php with CLASS,SUBJECT, CH_ID values
         chapter_id = encodeURIComponent(chapter_id);
         chapter_dn = encodeURIComponent(chapter_dn);
         window.location = "looma-activities.php?ch=" + chapter_id +
                                                 "&chdn=" + chapter_dn +
                                                 "&class=" + className +
                                                 "&subject=" + subject;
-        // could use jQuery $.get here instead of window.location?
     };  //  end activityButtonClicked()
 
 function lessonButtonClicked(){
-        //called when a ACTIVITY button is pressed
-        var chapter_id = this.getAttribute('data-ch');
-        var chapter_dn = this.getAttribute('data-chdn');
-        LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
-        //document.cookie = "chapter=" + chapter_id;  //set a COOKIE for CHAPTER
-
-        //remember scroll position
-        LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session');
-
-        var className = LOOMA.readStore("class", 'session');
-        var subject = LOOMA.readStore("subject", 'session');
-        //activities = JSON.stringify(activities);
-        //send GET request to chapters.php with CLASS and SUBJECT values
-        chapter_id = encodeURIComponent(chapter_id);
-        chapter_dn = encodeURIComponent(chapter_dn);
-        window.location = "looma-lesson-present.php?ch_id=" + chapter_id;
-        // could use jQuery $.get here instead of window.location?
-    };  //  end lessonButtonClicked()
-
+        //called when a LESSON button is pressed
+    var chapter_id = this.getAttribute('data-ch');
+    var mongo_id =   this.getAttribute('data-id');
+    
+    LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
+    LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session'); //remember scroll position
+    
+    //send GET request to looma-lesson-present.php with mongo_id value
+    mongo_id = encodeURIComponent(mongo_id);
+    window.location = "looma-lesson-present.php?id=" + mongo_id;
+};  //  end lessonButtonClicked()
 
 
 $(document).ready (function() {

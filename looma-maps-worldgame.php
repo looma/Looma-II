@@ -23,31 +23,34 @@ include ('includes/header.php');
 <body>
     <div id="main-container-horizontal">
         <h1>Continents and Oceans Game</h1>
+        <h1 class="credit"> Created by Julia</h1>
+        <div id="fullscreen">
+            <canvas id="myCanvas" width="725" height="380"></canvas>
 
-        <canvas id="myCanvas" width="725" height="380"></canvas>
+            <p id="question">What continent or ocean is this?</p>
+            <form action="">
+                <fieldset id="getInput">
+                    <label id="label">Continent or Ocean:</label>
+                    <select type="String" id="userGuess">
+                        <?php
+                            $continents = array("North America", "South America", "Europe", "Asia", "Africa","Australia", "Antartica", "Pacific Ocean", "Atlantic Ocean", "Indian Ocean", "Arctic Ocean");
+                            for ($i=0; $i<=10; $i++)
+                            {
+                                ?>
+                                    <option value="<?php echo $continents[$i];?>"><?php echo $continents[$i];?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                    <input id="submit" type="button" value="Submit"/>
+                    <input id = "next" type = "button" value ="Next Question"/>
 
-        <p id="question">What continent or ocean is this?</p>
-        <form action="">
-            <fieldset id="getInput">
-                <label id="label">Continent or Ocean:</label>
-                <select type="String" id="userGuess">
-                    <?php
-                    	$continents = array("North America", "South America", "Europe", "Asia", "Africa","Australia", "Antartica", "Pacific Ocean", "Atlantic Ocean", "Indian Ocean", "Arctic Ocean");
-                        for ($i=0; $i<=10; $i++)
-                        {
-                            ?>
-                                <option value="<?php echo $continents[$i];?>"><?php echo $continents[$i];?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
-                <input id="submit" type="button" value="Submit"/>
-                <input id = "next" type = "submit" value ="Next Question"/>
+                </fieldset>
+                <div  id="txtOutput"></div>
 
-            </fieldset>
-            <input type="text" id="txtOutput" />
-
-        </form>
+            </form>
+            <button id="fullscreen-control"></button>
+        </div>
     </div>
 
     <?php
@@ -55,5 +58,6 @@ include ('includes/header.php');
     include ('includes/js-includes.php');
     ?>
 
-        <script src="js/looma-maps-worldgame.js"></script>
+    <script src="js/looma-screenfull.js"></script>
+    <script src="js/looma-maps-worldgame.js"></script>
 </body>

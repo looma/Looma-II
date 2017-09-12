@@ -14,3 +14,5 @@ Xutilities&tests
 Xlooma-library.php
 Xutilities&tests
 Xlooma-pdf-viewer
+*.2
+*.resources

@@ -162,7 +162,7 @@ Description: looma lesson plan presenter
             <button class="control-button" id="forward">
                 <!-- <img src="images/forward-arrow.png"> -->
             </button>
-             <button class='control-button' id='dismiss' >
+             <button class='control-button' id='return' >
                 <!-- <img src="images/delete-icon.png"> -->
             </button>
         </div>

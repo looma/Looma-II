@@ -16,7 +16,8 @@ td {padding:10px}
 
 #display {
        padding-left: 10px;
-       font-size: 6em;
+       font-size: 4em;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
        text-align:right;
        vertical-align: middle;
        background-color: #ffffff ;
@@ -35,6 +36,7 @@ button.calc-button {
     display:inline-block;
     font-size:50px;
     line-height:28px;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
     text-decoration:none;
     text-align:center;
     height: 100%;

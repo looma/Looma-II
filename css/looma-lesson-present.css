@@ -99,7 +99,8 @@ img#fullscreen {width:auto;}
    text-align:right;
    /*margin-right:3vw;*/
    background-color: black;
-   padding: 10px;
+    color:yellow;
+   padding: 5px;
 }
 
 #subtitle {

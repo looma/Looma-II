@@ -25,6 +25,8 @@ include ('includes/header.php');
 <body>
     <div id="main-container-horizontal">
         <h1>Asia Countries Game</h1>
+        <h1 class="credit"> Created by Julia</h1>
+        <div id="fullscreen">
 
         <canvas id="myCanvas" width = "463" height = "400"></canvas>
 
@@ -44,10 +46,12 @@ include ('includes/header.php');
                     ?>
                 </select>
                 <input id="submit" type="button" value="Submit"/>
-                <input id = "next" type = "submit" value ="Next Question"/>
+                <input id = "next" type = "button" value ="Next Question"/>
             </fieldset>
-            <input type="text" id="txtOutput" />
+            <div  id="txtOutput"></div>
         </form>
+            <button id="fullscreen-control"></button>
+        </div>
 
     </div>
 
@@ -57,5 +61,6 @@ include ('includes/header.php');
         ?>
         <script src="js/jquery.min.js"></script>
         <script src="js/looma-utilities.js"></script>
-       <script src="js/looma-maps-asiacountrygame.js"></script>
+    <script src="js/looma-screenfull.js"></script>
+    <script src="js/looma-maps-asiacountrygame.js"></script>
 </body>

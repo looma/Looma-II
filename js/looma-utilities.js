@@ -122,7 +122,9 @@ playMedia : function(button) {
 
         case "map":
             var fn = encodeURIComponent(button.getAttribute('data-fn'));
-            window.location = 'looma-map-' + fn + '.php';
+            var url = encodeURIComponent(button.getAttribute('data-url'));
+            if (url) window.location = url;
+            else     window.location = 'looma-maps-' + fn + '.php';
             break;
 
         case "looma":
@@ -131,7 +133,7 @@ playMedia : function(button) {
             break;
 
         case "epaath":
-        case "EP":
+        case "ep":
             fp = encodeURIComponent(button.getAttribute('data-fp'));
             fn = encodeURIComponent(button.getAttribute('data-fn') +
                 '/start.html');
@@ -229,8 +231,8 @@ thumbnail: function (filename, filepath, filetype) {
                 if (filepath) path = filepath; else path = homedirectory + 'content/html/';
                 imgsrc = path + thumbnail_prefix + "_thumb.jpg";
             }
-            else if (filetype == "EP") {
-                imgsrc = homedirectory + "content/epaath/activities/" + item.fn + "/thumbnail.jpg";
+            else if (filetype == "EP" || filetype == "ep" || filetype == "epaath") {
+                imgsrc = homedirectory + "content/epaath/activities/" + filename + "/thumbnail.jpg";
             }
             else if (filetype == "text") {
                 imgsrc = "images/textfile.png";

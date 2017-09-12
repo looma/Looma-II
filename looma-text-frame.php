@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 LOOMA php code file
-Filename: looma-text-editor.php
+Filename: looma-text-frame.php
 Description: popup php for creating and editing text slides for Looma Lesson Planner/Edited Video/Slideshow
 
 Programmer name: Skip, Connor
@@ -110,7 +110,7 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
           include ('includes/looma-search.php');
 ?>
 
-        <link rel="stylesheet" href="css/looma-text-frame.css">
+        <link rel="stylesheet" href="css/looma-text-editor.css">
 
         <script src="js/looma-text-frame.js">   </script>
 </body>

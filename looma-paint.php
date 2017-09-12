@@ -21,7 +21,7 @@ Description:  for Looma 2
 
 <body>
 	<div id="main-container">
-		      <!--  <h1 class="credit"> Created by Audrey, John and Akshay</h1>  -->
+		      <h1 class="credit"> Created by Audrey, John and Akshay</h1>
 
 		<!--
 			<span class="screensize"> screensize </span>
@@ -108,6 +108,8 @@ Description:  for Looma 2
    			<canvas id="canvas"></canvas>
 		</div>
 	</div>
+    <h1 class = "credit">Created by Audrey, John and Akshay</h1>
+
 </body>
    	<?php include ('includes/js-includes.php'); ?>
 	<script src="js/paper-full.js"></script>

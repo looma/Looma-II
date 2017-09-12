@@ -2,13 +2,17 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+margin: 0 auto;
     height: 100vh;
     background-color: inherit;
     z-index: 2147483648;
     display: none;
 }
 
+#looma-keyboard {
+    padding: 2px;
+    margin: 0 auto;
+}
 .keyboard {
     /*margin: 0 auto;*/
     /*width: 100%;*/
@@ -18,9 +22,11 @@
 .keyboard-button {
     float: left;
     font-family: monospace;
-    margin: 2px;
+    margin: 4px;
     /*padding: 15px;*/
     height: 2em;
+    width: 32%;
+    font-size: 4em;
     /*width: 7.6%;*/
 }
 
@@ -32,9 +38,10 @@
     visibility: hidden;
 }
 
-.key-normal {
+.key-normal, .key-nepali {
     display: block;
-    width: 60px;
+    width: 220px;
+    border-radius: 5px;
 }
 
 .key-shifted {
@@ -44,7 +51,6 @@
 
 .key-nepali {
     display: none;
-    width: 60px;
 }
 
 .key-nepali-shifted {
@@ -77,9 +83,38 @@
 }
 
 #keyboard-language {
-    width: 200px;
+    width: 16vw;
+    margin: 4vh 5vw;
+    background-color: white;
+    background-image: url("../images/native-flag.png");
+    background-size: 75% 90%;
+    background-position:center;
+    background-repeat: no-repeat;
+    
 }
 
+#keyboard-language.nepali {
+    background-image: url("../images/english-flag.png");
+}
+
+#keyboard-backspace {
+    display:inline-block;
+    background-size: 50% 50%;
+    background-image: url(../images/backspace.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: white;
+}
+#keyboard-hide {
+    background-size: 75% 90%;
+    background-image: url(../images/back-arrow.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: white;
+    width:16vw;
+    margin: 4vh 5vw;
+    float: "none";
+}
 #englishButtonText {
     display: none;
 }
@@ -101,9 +136,11 @@ br {
 }
 
 #inputEntry, #textareaEntry {
-    font-size: 2em;
-    margin: 10px;
+    font-size: 4em;
+    width:40vw;
+    margin: 25px;
     color: black;
+    border-radius: 5px;
 }
 
 .show-keyboard-button {

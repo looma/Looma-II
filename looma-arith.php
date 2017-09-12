@@ -20,9 +20,10 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
 
     $masks = getMasks();
 ?>
-    <!-- add CSS files for this page:
-        <link rel="stylesheet" href="css/filename.css"> -->
-    </head>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link href="css/looma-arith.css" type="text/css" rel="stylesheet" />
+
+</head>
 
     <body>
     <div id="main-container-horizontal">
@@ -50,10 +51,10 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
               then show SUBJECT buttons based on data-mask  -->
 
     <div class="button-div" id="row2">
-        <button type="button" class="subject button-5" id="add"   style="visibility: hidden"> <?php keyword('Add') ?>  </button>
-        <button type="button" class="subject button-5" id="sub"   style="visibility: hidden"> <?php keyword('Subtract') ?>  </button>
-        <button type="button" class="subject button-5" id="mult"  style="visibility: hidden"> <?php keyword('Multiply') ?>  </button>
-        <button type="button" class="subject button-5" id="div"   style="visibility: hidden"> <?php keyword('Divide') ?>  </button>
+        <button type="button" class="subject button-5" id="add"   style="visibility: hidden"> </button>
+        <button type="button" class="subject button-5" id="sub"   style="visibility: hidden"> </button>
+        <button type="button" class="subject button-5" id="mult"  style="visibility: hidden"> </button>
+        <button type="button" class="subject button-5" id="div"   style="visibility: hidden"> </button>
     </div>
 
     </div>

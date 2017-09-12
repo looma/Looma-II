@@ -195,7 +195,7 @@ if (isset($_GET["cmd"]))
 		//If not we return all results that match
 		//Ensures that we never send more than $MAX_NUM records
 
-		//DEBUG: echo "random: $random, startChapterId: $startChapterId";
+		//echo "random: $random, startChapterId: $startChapterId"; //DEBUG
 
 		if($random)
 		{
@@ -219,7 +219,10 @@ if (isset($_GET["cmd"]))
 					$query = array('rand' => array('$gt' => $value), 'ch_id' => array('$regex' => new MongoRegex("/^$startChapterId/i")));
 					$newWord = $dictionary_collection -> findOne($query);
 					//A test in case we generate a number that is too high
-					if(!$newWord)
+
+                    //echo "count is " . $count . ", and newword is " . $newWord;
+
+                    if(!$newWord)
 					{
 						$query = array('rand' => array('$lt' => $value), 'ch_id' => array('$regex' => new MongoRegex("/^$startChapterId/i")));
 						$newWord = $dictionary_collection -> findOne($query);

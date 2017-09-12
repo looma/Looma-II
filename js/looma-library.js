@@ -30,14 +30,14 @@ function playActivity(event) {
     LOOMA.playMedia(button);
 };
 
-var scrollTimeout = null;
-var scrollDebounce = 5000; //msec delay to debounce scroll stop
+//var scrollTimeout = null;
+//var scrollDebounce = 5000; //msec delay to debounce scroll stop
 
 $(document).ready (function() {
     $("button.play").click(playActivity);
 
-    $("button.zeroScroll").click(function() {LOOMA.setStore('libraryScroll', 0, 'session');});
-    $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
+    $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});
+    $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll',    'session'));
 
 });
 

@@ -19,7 +19,7 @@ Description:  dictionary look-up UI for Looma 2
 
   		<br><br>
 
-        <h1 class="credit"> Created by Jayden, Grant and Mahir</h1>
+        <h1 class="credit"> Created by Jayden, Grant, Kendall and Mahir</h1>
         <h2 class="title"> <?php keyword("Looma Dictionary"); ?> </h2>
         <div id = "para">
 

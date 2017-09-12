@@ -11,6 +11,43 @@ Revision: Looma 2.0.x
 
 html, body {margin:0;padding:0;height:100%;}
 
+body {
+    box-sizing: border-box;
+    background-color:#e3e3e3;
+    color:black;
+    font-size: 20px;
+}
+p {
+    font-size:18px;
+    line-height:20px;
+    margin-top:0px;
+    margin-bottom:0px;
+}
+
+#main-container-horizontal {
+    overflow-y:hidden;
+    overflow-x:hidden;
+    height:100vh;
+    max-height:100vh;
+    width:100vw;
+    max-width:100vw;
+    background-color:#e3e3e3;
+}
+
+#container {
+    width: 100%;
+    position: relative;
+}
+
+td {
+    padding:0;
+    text-align:left;
+}
+
+td button{
+    margin:0;
+}
+
 /********** navigation bar ************/
 #headerDiv {
 	box-shadow: 0px 0px 25px #C4C4C4;
@@ -44,7 +81,7 @@ div.hint {
     height: 6vh;
 }
 #navbar {
-	background: #D76126;
+	background-color: #dabd1b;
 	padding: 5px;
 	height: 7vh;
 	color:white;
@@ -86,6 +123,7 @@ div.hint {
 	box-shadow: 5px 10px 25px #C4C4C4;
 	z-index: -2;
 	vertical-align:middle;
+    line-height: 0.8em;
 
 }
 
@@ -101,14 +139,15 @@ div.hint {
 }
 
 #searchString {
-	/*margin-left: 3%;*/
-	vertical-align: middle;
+	margin-left: 3%;
+    margin-bottom: 1.5%;
+    
+    vertical-align: middle;
 	width:15vw;
 }
 
 #div_search {
     float: left;
-    padding:0px 0px;
     margin:auto;
     text-align:left;
     position: relative;
@@ -146,7 +185,7 @@ div.hint {
     display: none;
 	float: left;
 	position: relative;
-	width: 8vw;;
+    width: 12vw;;
     padding:2px;
 	line-height: 2px;
 	padding-top: 10px;
@@ -156,11 +195,10 @@ div.hint {
     display: none;
 	float: left;
 	position: relative;
-	width: 17vw ;
+	width: 25vw ;
     padding:2px;
     line-height: 2px;
 	padding-top: 10px;
-
 }
 
 #div_chapter {
@@ -193,6 +231,7 @@ div.hint {
     width:25vw;
     margin:auto;
     text-align:left;
+    font-size: 0.9em;
     padding: 0 0;
 }
 
@@ -217,11 +256,11 @@ input {
 
 #clear_button {
 	height: 55px;
-	/*float: right;*/
+	float: right;
 	position: relative;
 	margin-top: 0px;
 	/*margin-right: 2%;*/
-	width: 80px;
+	/*width: 80px;*/
 }
 
 #select_video {
@@ -643,7 +682,7 @@ h3{
 }
 
 #openNavbar {
-	background: #D76126;
+	background-color: #dabd1b;
 	padding: 5px;
 	height: 75px;
 	color:white;
@@ -820,19 +859,6 @@ h3{
 	display:none !important;
 }
 
-#main-container-horizontal {
-	overflow-y:hidden;
-	overflow-x:hidden;
-	height:100%;
-	max-height:100%;
-	max-width:100%;
-}
-
-#container {
-	width: 100%;
-	position: relative;
-}
-
 a.heading {
     font-size: 0.6em;
 }
@@ -856,8 +882,8 @@ a.heading {
 }*/
 button {
 	display:inline;
-	color:white;
-	background:#2E3192;
+	/*color:white;
+	background:#2E3192;*/
 	border-radius:0.313em;
 	/*width: 90px;*/
 	height: 40px;
@@ -874,19 +900,7 @@ ul {
 	padding-left: 0px;
 
 }
-body {
-    box-sizing: border-box;
-	background-color:#e3e3e3;
-	color:black;
-	font-family: Helvetica;;
-	font-size: 20px;
-}
-p {
-	font-size:18px;
-	line-height:20px;
-	margin-top:0px;
-	margin-bottom:0px;
-}
+
 li:hover {
 	background-color: #e3e3e3;
 /*	padding-top: 20px;*/
@@ -937,3 +951,16 @@ label {
 	opacity: .1;
 }
 
+#padlock {
+    position:absolute;
+    right:1vw;
+    bottom:20vh;
+    height:3vh;
+    width: 3vh;
+    z-index:3;
+}
+
+#login-id {
+    z-index:3;
+    bottom:18px;
+}

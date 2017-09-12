@@ -101,15 +101,12 @@ Comments:
         </div>
 	</div>
 
-        <img id="padlock" draggable="false" src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
-        <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
-
-
 <?php     include ('includes/toolbar.php');
    		  include ('includes/js-includes.php');
 ?>
         <script src="js/jquery.hotkeys.js">           </script>
-        <script src="js/tether.min.js">  </script>
+    <script src="js/tether.min.js">  </script>
+        <!--<script src="js/popper.js">  </script>  -->
         <script src="js/bootstrap.min.js">           </script>
         <script src="js/bootstrap-wysiwyg.min.js">   </script>
 

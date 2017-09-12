@@ -2,23 +2,30 @@
 h1 {
 	text-align: center;
 }
+canvas {
+    width:70vw;
+    height:70vh;
+}
 
 #txtOutput{
     color: black;
-    width: 100%;
+    background-color: white;
+    width: 20vw;
+    height: 10vh;
     position: absolute;
-    bottom: 2%;
-    left: 0%;
-    font-size: 1.75em;
+    bottom: 7.5vh;
+    left: 3vw;
+    font-size: 1em;
     text-align:center;
+    line-height:1em;
 }
 
-
-canvas {
-    width:1000px;
-    height:650px;
+#fullscreen {
+    background-color: #091F48;
 }
 
-
-#endOutput{
+button#fullscreen-control {
+    bottom:9.5vh;
 }
+
+#userGuess {color:black;}

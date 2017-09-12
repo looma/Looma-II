@@ -3,6 +3,10 @@ Author: Sasha Cassidy, Lily Barnett, and Mahir Arora
 Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard.php
 */
 
+#fullscreen {
+    background-color: #091F48;
+}
+
 #prev, #next {
   width:10%;
   height:20%;
@@ -21,15 +25,15 @@ Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard
 
 #prev{
   position: absolute;
-  left:2%;
-  top:50%;
+  left:2vw;
+  top:30vh;
   visibility: hidden;
 }
 
 #next{
   position: absolute;
-  right:2%;
-  top:50%;
+  right:2vw;
+  top:30vh;
   visibility: visible;
 }
 
@@ -127,15 +131,15 @@ Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard
 }
 
 #definition.smallWord {
-  font-size: 2em;
+  font-size: 1.5em;
 }
 
 #definition.mediumWord {
-  font-size: 3em;
+  font-size: 2em;
 }
 
 #definition.largeWord {
-  font-size: 4em;
+  font-size: 3em;
   min-height:30%;
 }
 
@@ -145,7 +149,7 @@ p#wordFront {
 }
 
 #nepali {
-    font-size: 3em;
+    font-size: 2.5em;
     font-weight:bold;
 }
 
@@ -157,6 +161,7 @@ p#wordFront {
 
 #definition {
     font-size:3em;
+    line-height:1em;
 }
 #partOfSpeech {
     font-size: 2em;
@@ -167,7 +172,7 @@ p#wordFront {
 }
 #rwdef{
     text-align: center;
-    font-size: 3em;
+    font-size: 2.5em;
     font-weight:bolder;
 }
 

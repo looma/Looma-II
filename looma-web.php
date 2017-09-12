@@ -26,13 +26,17 @@ Description:
 			<button class="right-control" id="submit"><?php keyword('Go');?></button>
 		</div>
 		<div id="main-container-horizontal">
-			<!-- if internet is accessible, JS will load an external website (e.g. Bing) in the iframe -->
+            <div id="fullscreen">
+            <h1 class="credit"> Created by Akshay</h1>
+            <!-- if internet is accessible, JS will load an external website (e.g. Bing) in the iframe -->
 			<iframe id="frame" allowfullscreen sandbox="allow-scripts allow-same-origin"></iframe>
-		</div>
+            <button id="fullscreen-control"></button>
+		</div></div>
 
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
     <script src="js/looma-keyboard.js">  </script>
+    <script src="js/looma-screenfull.js"></script>
 
    	<script src="js/looma-web.js"></script>
 </body>

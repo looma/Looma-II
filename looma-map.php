@@ -9,6 +9,11 @@ Description:
 
 	<?php  $page_title = 'Looma Maps';
 	include ('includes/header.php');
+	?>
+
+    <link rel="stylesheet" href="css/looma-map.css">
+
+    <?php
 
     $mapDir = "../maps/";
 
@@ -35,13 +40,13 @@ Description:
 		};  //end makeButton()
 	?>
 
-	</head>
+</head>
 
-	<body>
-		<div class="main-container-horizontal" class="scroll">
+<body>
+    <div class="main-container-horizontal" class="scroll">
 
 		<h1 class="title"> <?php keyword("Looma Maps"); ?> </h1>
-		        <h1 class="credit"> Created by Lauren and Lauren</h1>
+        <h1 class="credit"> Created by Lauren and Lauren and Julia, Matt, Mohina and Matthew</h1>
 
 		<h2 class="title"> <?php keyword("Click to select a map"); ?> </h2>
 		<p>
@@ -51,15 +56,15 @@ Description:
 			echo "<td>";
 					makeButton("looma-maps-nepalLayers.php",  $mapDir . "nepalLayers_thumb.png", "Nepal Layer Map");
 			echo "</td><td>";
-					makeButton("looma-map-zoneMap.php",   $mapDir . "zoneMap_thumb.png", "Nepal Zones Map");
+					makeButton("looma-maps-zoneMap.php",   $mapDir . "zoneMap_thumb.png", "Nepal Zones Map");
 			echo "</td><td>";
-					makeButton("looma-map-topoMap.php",   $mapDir . "topoMap_thumb.png", "Nepal Topography Map");
+					makeButton("looma-maps-topoMap.php",   $mapDir . "topoMap_thumb.png", "Nepal Topography Map");
 			echo "</td></tr><tr><td>";
-									makeButton("looma-map-streetMap.php", $mapDir . "streetMap_thumb.png", "Kathmandu Street Map");
+									makeButton("looma-maps-streetMap.php", $mapDir . "streetMap_thumb.png", "Kathmandu Street Map");
 			echo "</td><td>";
 									makeButton("looma-maps-pokharaCity.php",  $mapDir . "pokharaCity_thumb.png", "Pokhara Street Map");
 			echo "</td><td>";
-									makeButton("looma-map-worldMap.php",  $mapDir . "worldMap_thumb.png", "World Map");
+									makeButton("looma-maps-worldMap.php",  $mapDir . "worldMap_thumb.png", "World Map");
 			echo "</td></tr><tr><td>";
 									makeButton("looma-maps-worldCities.php",  $mapDir . "worldCities_thumb.png", "World Cities Map");
 			echo "</td><td>";
@@ -84,7 +89,7 @@ Description:
 			</a>
 			-->
 		<p>
-</div>
+    </div>
 
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>

@@ -31,37 +31,6 @@ The hour hand drag will lag a bit if dragged too fast
 -->
 */
 
-window.onload = function () {
-
-//create the canvas for the clock, add eventListeners for click and drag
-var canvas = document.getElementById("mainClock");
-canvas.addEventListener('mousedown', click);
-canvas.addEventListener('mousemove',mouseMoved);
-canvas.addEventListener('mouseup', exitDrag);
-var mouseIsDown = false;
-var mouseIsDownHour = false;
-var side = 0;
-
-//create event listener for one clock button
-var oneClock = document.getElementById("e");
-oneClock.addEventListener('click', hideOrShowButtons);
-var hidden = false;
-
-//create event listener for digital clock button
-var digitalClock = document.getElementById("b");
-digitalClock.addEventListener('click', toDigital);
-
-var analogClock = document.getElementById("b2");
-analogClock.addEventListener('click', toAnalog);
-
-//switch back to current time button
-var currentTimeSwitch = document.getElementById("toCurrentTime");
-currentTimeSwitch.addEventListener("click", toCurrentTime);
-
-//switch b/w 24-hour and 12-hour time
-var switchTime = document.getElementById("twentyFourHour");
-switchTime.addEventListener("click", switchHour);
-
 //global variables for the time
 var time;
 var hour;
@@ -72,19 +41,11 @@ var twentyFour = false;
 
 //months and weeks for digital clock
 var months = [ "January", "Fabruary", "March", "April", "May", "June",
-	               "July", "August", "September", "November", "December" ];
+    "July", "August", "September", "November", "December" ];
 var weeks = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-	              "Friday", "Saturday" ];
+    "Friday", "Saturday" ];
 
-//graphics of the canvas
-resizeCanvas();
-var ctx = canvas.getContext("2d");
-var radius = canvas.height / 2;
-ctx.translate(radius, radius);
-radius = radius * 0.90;
-window.addEventListener('resize', changeSize);
-
-toCurrentTime();
+$(document).ready (function() {
 
 //ANALOG CLOCK METHODS
 //draws the clock
@@ -103,7 +64,7 @@ function drawNextClock() {
     if (second > 59) {
         second = 0;
         minute = minute + 1;
-
+        
         if (minute > 59) {
             minute = 0;
             hour = hour + 1;
@@ -112,12 +73,12 @@ function drawNextClock() {
             }
         }
     }
-        drawFace();
-        drawNumbers();
-        drawTime(hour, minute, second);
-        drawTicks(radius * 0.02);
-        drawDigitalClock();
-        drawDigitalTime();
+    drawFace();
+    drawNumbers();
+    drawTime(hour, minute, second);
+    drawTicks(radius * 0.02);
+    drawDigitalClock();
+    drawDigitalTime();
 }
 
 //draw the face of the clock
@@ -128,7 +89,7 @@ function drawFace() {
     ctx.fillStyle = 'white';
     ctx.fill();
     grad = ctx.createRadialGradient(0, 0, radius * 0.95, 0, 0,
-            radius * 1.05);
+        radius * 1.05);
     grad.addColorStop(0, '#333');
     grad.addColorStop(0.5, 'white');
     grad.addColorStop(1, '#333');
@@ -148,7 +109,7 @@ function drawNumbers() {
     ctx.font = radius * 0.18 + "px arial";
     ctx.textBaseline = "middle";
     ctx.textAlign = "center";
-
+    
     for (num = 1; num < 13; num++) {
         ang = num * Math.PI / 6;
         ctx.rotate(ang);
@@ -165,7 +126,7 @@ function drawNumbers() {
 function drawTicks(width) {
     var ang;
     var num;
-
+    
     for (num = 1; num < 61; num++) {
         ang = num * Math.PI / 30;
         ctx.beginPath();
@@ -192,19 +153,19 @@ function getCurrentTime() {
 function drawTime(hour, minute, second) {
     var newHour = hour;
     var newMinute = minute;
-
+    
     if (newHour > 12) {
         newHour = newHour - 12;
     }
-
+    
     //hour
     newHour = (newHour * Math.PI / 6) + (minute * Math.PI / (6 * 60));
     drawHand(newHour, radius * 0.5, radius * 0.04);
-
+    
     //minute
     minute = (minute * Math.PI / 30);
     drawHand(minute, radius * 0.8, radius * 0.04);
-
+    
     //second
     if(second >= 0) {
         second = second * Math.PI / 30;
@@ -229,7 +190,7 @@ function drawDigitalClock(){
     var minutePrint = minute;
     var hourPrint = hour;
     //console.log(hour);
-
+    
     if (minute < 10) {
         minutePrint = "0" + minute;
     } else {
@@ -239,11 +200,11 @@ function drawDigitalClock(){
     {
         hourPrint = hourPrint - 12;
     }
-
+    
     if(hour > 24) {
         hour = 1;
     }
-
+    
     document.getElementById("digitalTime").innerHTML = hourPrint + ":" + minutePrint;
     if(hour < 24 && hour >= 12) {
         document.getElementById("amOrPm1").innerHTML = "PM";
@@ -259,12 +220,12 @@ function toCurrentTime() {
     hour = time.getHours();
     minute = time.getMinutes();
     second = time.getSeconds();
-
+    
     if(hour == 0) {
         hour = 24;
     }
     drawInitialClock();
-
+    
     if(!myVar) {
         myVar = setInterval(drawNextClock, 1000);
     }
@@ -337,17 +298,17 @@ function click(event) {
     var minuteClicked = Math.floor(minuteDouble);
     var hourClicked = minuteClicked / 5;
     var hourCheck = hour;
-
+    
     if(hourCheck > 12) {
         hourCheck = hourCheck - 12;
     }
     if(hourClicked < 1) {
         hourClicked +=12;
     }
-
+    
     var distance = Math.sqrt((mouseCoords.x - canvas.height / 2) * (mouseCoords.x - canvas.height / 2) + (mouseCoords.y - canvas.height / 2) * (mouseCoords.y - canvas.height / 2));
     var howFarOff = Math.abs(hourClicked - (hourCheck + minute / 60));
-
+    
     //console.log(hourCheck + minute / 60);
     //console.log(hourClicked);
     if((minuteClicked == minute || minuteClicked == minute - 1) && distance < radius * 0.85) {
@@ -366,33 +327,33 @@ function mouseMoved(event)
     if(mouseIsDown) {
         clearInterval(myVar);
         myVar = false;
-
+        
         var mouseCoords = getMouseCoords(event);
         var minuteDouble = minuteHand(mouseCoords.x, mouseCoords.y);
         minute = Math.floor(minuteDouble);
-
+        
         checkHandLocation(minuteDouble);
-
+        
         drawFace();
         drawNumbers();
         drawTime(hour, minute , -1);
         drawTicks(radius * 0.02);
         drawDigitalClock();
     }
-
+    
     else if(mouseIsDownHour) {
         clearInterval(myVar);
         myVar = false;
-
+        
         var mouseCoords = getMouseCoords(event);
         var hourDouble = hourHand(mouseCoords.x, mouseCoords.y);
         minute = Math.floor((hourDouble - hour) * 60);
-
+        
         minute = minute % 60;
         if(minute < 0) {
             minute = 60 + minute;
         }
-
+        
         checkHandLocation(minute);
         drawFace();
         drawNumbers();
@@ -422,7 +383,7 @@ function checkHandLocation(minuteDouble) {
         }
         side = -1;
     }
-
+    
     else if(minuteDouble < 40 && minuteDouble > 20) {
         side = 0;
     }
@@ -451,8 +412,8 @@ function getMouseCoords(event)
 {
     var rect = canvas.getBoundingClientRect();
     return {
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
     };
 }
 
@@ -461,7 +422,7 @@ function minuteHand(x, y) {
     var diffX = x - canvas.height / 2;
     var diffY = canvas.height / 2 - y;
     var angle = -Math.atan(diffY / diffX) + Math.PI / 2;
-
+    
     if (diffX >= 0) {
         return angle * 30 / Math.PI;
     } else {
@@ -470,11 +431,11 @@ function minuteHand(x, y) {
 }
 
 //returns the exact hour clicked (as a double)
-    function hourHand(x, y) {
+function hourHand(x, y) {
     var diffX = x - canvas.height / 2;
     var diffY = canvas.height / 2 - y;
     var angle = -Math.atan(diffY / diffX) + Math.PI / 2;
-
+    
     if (diffX >= 0) {
         return angle * 6 / Math.PI;
     } else {
@@ -486,89 +447,148 @@ function minuteHand(x, y) {
 
 //actual digital clock page, with time, date, day of week
 function drawDigitalTime() {
-		var hourPrint = hour;
-		var minutePrint = minute;
-		var secondPrint = second;
-
-		if (minute < 10) {
-			minutePrint = "0" + minute;
-		} else {
-			minutePrint = minute;
-		}
-		if (second < 10) {
-			secondPrint = "0" + second;
-		} else {
-			secondPrint = second;
-		}
-
-		if (!twentyFour) {
-			if (hour >= 12 && hour <= 24) {
-                if(hour !=12) {
-                    hourPrint = hourPrint - 12;
-                }
-                if(hour !=24) {
-                    document.getElementById("amOrPm").innerHTML = "PM";
-                }
-			} else {
-				document.getElementById("amOrPm").innerHTML = "AM";
-			}
-		}
-		document.getElementById("time").innerHTML = hourPrint + ":"
-		+ minutePrint;
-		document.getElementById("seconds").innerHTML = secondPrint;
-		document.getElementById("day").innerHTML = weeks[time.getDay()];
-		document.getElementById("date").innerHTML = months[time.getMonth()]
-		+ " " + time.getDate() + ", " + time.getFullYear();
-	}
-
-    //24 <--> 12 hour time
-	function switchHour() {
-		twentyFour = !twentyFour;
-		if(twentyFour){
-			switchTime.innerHTML = "12 Hour Time";
-			document.getElementById("amOrPm").innerHTML = "";
-		}
-		else{
-			switchTime.innerHTML = "24 Hour Time";
-		}
-		drawDigitalTime();
-	}
-
-    //resize canvas, draw clocks with current time
-    function changeSize() {
-        clearInterval(myVar);
-        myVar = false;
-
-        resizeCanvas();
-        ctx.translate(radius, radius);
-        radius = radius * 0.9;
-
-        drawFace();
-        drawNumbers();
-        drawTime(hour, minute, -1);
-        drawTicks(radius * 0.02);
-        drawDigitalClock();
-
-        toCurrentTime();
+    var hourPrint = hour;
+    var minutePrint = minute;
+    var secondPrint = second;
+    
+    if (minute < 10) {
+        minutePrint = "0" + minute;
+    } else {
+        minutePrint = minute;
     }
+    if (second < 10) {
+        secondPrint = "0" + second;
+    } else {
+        secondPrint = second;
+    }
+    
+    if (!twentyFour) {
+        if (hour >= 12 && hour <= 24) {
+            if(hour !=12) {
+                hourPrint = hourPrint - 12;
+            }
+            if(hour !=24) {
+                document.getElementById("amOrPm").innerHTML = "PM";
+            }
+        } else {
+            document.getElementById("amOrPm").innerHTML = "AM";
+        }
+    }
+    document.getElementById("time").innerHTML = hourPrint + ":"
+        + minutePrint;
+    document.getElementById("seconds").innerHTML = secondPrint;
+    document.getElementById("day").innerHTML = weeks[time.getDay()];
+    document.getElementById("date").innerHTML = months[time.getMonth()]
+        + " " + time.getDate() + ", " + time.getFullYear();
+}
 
-    //resizes the canvas using the window.innerWidth and window.innerHeight
+//24 <--> 12 hour time
+function switchHour() {
+    twentyFour = !twentyFour;
+    if(twentyFour){
+        switchTime.innerHTML = "12 Hour Time";
+        document.getElementById("amOrPm").innerHTML = "";
+    }
+    else{
+        switchTime.innerHTML = "24 Hour Time";
+    }
+    drawDigitalTime();
+}
+
+//resize canvas, draw clocks with current time
+function changeSize() {
+    clearInterval(myVar);
+    myVar = false;
+    
+    resizeCanvas();
+    ctx.translate(radius, radius);
+    radius = radius * 0.9;
+    
+    drawFace();
+    drawNumbers();
+    drawTime(hour, minute, -1);
+    drawTicks(radius * 0.02);
+    drawDigitalClock();
+    
+    toCurrentTime();
+}
+
+//resizes the canvas using the window.innerWidth and window.innerHeight
+
+    
+    
     function resizeCanvas() {
         var width = window.innerWidth;
         var height = window.innerHeight;
-
+        
         if(width < height)
         {
             canvas.height = width * 5 / 9;
             canvas.width = width * 5 / 9;
         }
-
+        
         else {
             canvas.height = height * 5 / 9;
             canvas.width = height * 5 / 9;
         }
-
+        
         radius = canvas.height / 2;
     }
+    
+    // SPEAK button will say the time, unless text is selected, in which case, it will speak the selected text
+    $('button.speak').off('click').click(function () {
+        var selectedString = document.getSelection().toString();
+        
+        time = getCurrentTime(); hour = time.getHours();
+        var ampm =        (hour > 12) ? ("P M") : "A M";
+        var hourToSpeak = (hour > 12) ? (hour - 12) : hour;
+        var timeToSpeak = hourToSpeak + ' O clock and ' + time.getMinutes() + ' minutes ' + ampm;
+        var toSpeak = (selectedString ? selectedString : timeToSpeak);
+        console.log('VOCAB: speaking ', toSpeak);
+        LOOMA.speak(toSpeak);
+    }); //end speak button onclick function
 
-};
+//create the canvas for the clock, add eventListeners for click and drag
+canvas = document.getElementById("mainClock");
+canvas.addEventListener('mousedown', click);
+canvas.addEventListener('mousemove',mouseMoved);
+canvas.addEventListener('mouseup', exitDrag);
+var mouseIsDown = false;
+var mouseIsDownHour = false;
+var side = 0;
+
+//create event listener for one clock button
+var oneClock = document.getElementById("e");
+oneClock.addEventListener('click', hideOrShowButtons);
+var hidden = false;
+
+//create event listener for digital clock button
+var digitalClock = document.getElementById("b");
+digitalClock.addEventListener('click', toDigital);
+
+var analogClock = document.getElementById("b2");
+analogClock.addEventListener('click', toAnalog);
+
+//switch back to current time button
+var currentTimeSwitch = document.getElementById("toCurrentTime");
+currentTimeSwitch.addEventListener("click", toCurrentTime);
+
+//switch b/w 24-hour and 12-hour time
+var switchTime = document.getElementById("twentyFourHour");
+switchTime.addEventListener("click", switchHour);
+
+
+//graphics of the canvas
+var canvas;
+    
+    resizeCanvas();
+var ctx = canvas.getContext("2d");
+var radius = canvas.height / 2;
+ctx.translate(radius, radius);
+radius = radius * 0.90;
+window.addEventListener('resize', changeSize);
+
+toCurrentTime();
+
+
+});

@@ -1,5 +1,10 @@
+
+
 .center{
 text-align: center;
+}
+#fullscreen {
+    background-color: #091F48;
 }
 
 #message-correct{
@@ -96,7 +101,7 @@ input#answer{
 	width: 50%;
 	padding: 0 7px 0 0;
 	direction:RTL;
-	font-size: 64px;
+	font-size: 4em;
 	color: black;
 	text-align:right;
 	border:3px solid blue;
@@ -137,6 +142,11 @@ hr#horizontalLineDiv{
     top: 40%;
     border-left:thick black solid;
     height:15%;
+}
+
+button-5.active {
+    background-color:#ffffff;
+    background-image: url("images/times-white.png");
 }
 
 .button-group {

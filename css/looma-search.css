@@ -90,8 +90,10 @@ button.search {
 .result {
     border:2px solid black;
     border-radius:5px;
-        color:white;
-    background:#2E3192;
+    margin: 2px;
+    width:90%;
+    /*color:white;
+    background:#2E3192;*/
 }
 
 .result-data {

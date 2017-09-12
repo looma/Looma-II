@@ -89,7 +89,12 @@ function getDefaultFilePath(filetype, filename) {
         case "pdf": //pdf
             path = homedirectory + "content/pdfs/";
             break;
-
+  
+        case "epaath":
+        case "EP":
+            path = homedirectory + "content/epaath/activities/";
+            break;
+            
         case "html": //html
             path = homedirectory + "content/html/";
             break;
@@ -119,6 +124,7 @@ function makeActivityButton (id, mongoID, appendToDiv) {
                        'data-fp="' + fp + '" ' +
                        'data-ft="' + result.ft + '" ' +
                        'data-dn="' + result.dn + '" ' +
+                       'data-url="' + result.url  + '" ' +
                        'data-id="' + mongoID + '" >'
                   );
 
@@ -230,7 +236,7 @@ function displayActivities(results, table) {
                 row++;
                 $(table).append("<tr id='result-row-" + row + "'></tr>");
             }
-            console.log(value);
+            //console.log(value);
             $('#result-row-' + row).append("<td id='query-result-" + result + "'></td>");
 
             var mongoID = (value['mongoID']) ? value['mongoID']['$id'] : "";
@@ -252,12 +258,28 @@ function displayChapters(results, table) {
         result ++;
     });
 };
+function setCollection(collection) {
+    $("#results-div").empty().hide();
+    $('#collection').val(collection);
+    
+    if (collection == 'activities') {
+        $('.media-filter').show();
+        $('.chapter-filter').hide();
+        $('.chapter-input').prop('disabled', true);
+        $('.media-input').prop('disabled',   false);
+    } else { // collection == 'chapters'
+        $('.media-filter').hide();
+        $('.chapter-filter').show();
+        $('.chapter-input').prop('disabled', false);
+        $('.media-input').prop('disabled',   true);
+    }
+}; //end setCollection
 
 function changeCollection() {
     $("#results-div").empty().hide();
     $('.media-filter').toggle();
     $('.chapter-filter').toggle();
-};
+}; // end changeCollection()
 
 function clearSearch() {
 
@@ -294,10 +316,18 @@ function resetState () {
 };  //end resetState()
 
 function restoreState () {
-    $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
-    LOOMA.restoreForm($('#search'), 'saveForm');  //restore the search settings
     
+    LOOMA.restoreForm($('#search'), 'saveForm');  //restore the search settings
+    if ($('#collection').val() == 'chapters') {
+        setCollection('chapters');
+        //$('.media-input').prop('disabled', true);
+        if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != '')) showChapterDropdown();
+    } else
+        //$('.chapter-input').prop('disabled', false);
+        $('#chapter-div').hide();
+        
     $('#search').submit();  //re-run the search
+    $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
     
 };  //end restoreState()
 
@@ -315,14 +345,12 @@ function refreshPage() {
     if (formSettings) {
         restoreState();
     } else {
-        //start page on media search
-        //NOTE: could use $('#form')[0].reset()  but need to restore #collection, etc afterwards
+        //start page on media search with all form fields cleared
         resetState();
         $('#collection').val('activities');
         $('#ft-media').prop('checked', true);
         $('#ft-chapter').prop('checked', false);
     
-        //the chapter selector keeps popping up
         $('.chapter-filter').hide();
     
         //this is to keep the form from having unwanted inputs
@@ -331,19 +359,38 @@ function refreshPage() {
     
         //clear all search fields
         $('#search-term').val("").focus();
-        $(".flt-chkbx").each(function () {
-            $(this).prop("checked", false);
-        });
-        $("#grade-drop-menu").val("").change();
-        $("#subject-drop-menu").val("").change();
+        $(".flt-chkbx").each(function () {$(this).prop("checked", false);}); //turns off all checkboxes (type and src)
+      
+        $("#grade-drop-menu, #subject-drop-menu, #chapter-drop-menu").val("").change();
+        //$("#subject-drop-menu").val("").change();
     }
+};
+
+function showChapterDropdown() {
+    $('#chapter-div').hide();
+    
+    $('#chapter-drop-menu').empty();
+    if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
+        $.post("looma-database-utilities.php",
+            {cmd: "chapterList",
+                class: $('#grade-drop-menu').val(),
+                subject:   $('#subject-drop-menu').val()},
+            
+            function(response) {
+                //$('#chapter_label').show();
+                $('#chapter-div').show();
+                $('<option/>', {value: "", label: "Select..."}).appendTo('#chapter-drop-menu');
+                
+                $('#chapter-drop-menu').append(response);
+            },
+            'html'
+        );
 };
 
 var scrollTimeout = null;
 var scrollDebounce = 5000; //msec delay to debounce scroll stop
 
 $(document).ready(function() {
-    
     
     $('#search').submit(function( event ) {
         event.preventDefault();
@@ -379,49 +426,27 @@ $(document).ready(function() {
     $('#ft-media').click(function() {
             resetState();
             if ($('#collection').val() == 'chapters'){ //changing from CHAPTERS to ACTIVITIES
-            $('#collection').val('activities');
-            changeCollection();
-            $('.chapter-input').prop('disabled', true);
-            $('.media-input').prop('disabled',   false);
-            $('#chapter-div').hide();
+                setCollection('activities');
+            //$('.chapter-input').prop('disabled', true);
+            //$('.media-input').prop('disabled',   false);
+            //$('#chapter-div').hide();
         }
     });
 
     $('#ft-chapter').click(function() { //changing from ACTIVITIES to CHAPTERS
         resetState();
         if ($('#collection').val() == 'activities') {
-            $('#collection').val('chapters');
-
-            changeCollection();
-            $('.chapter-input').prop('disabled', false);
-            $('.media-input').prop('disabled',   true);
-
-            $('#chapter-div').hide();
+            setCollection('chapters');
+            //$('.chapter-input').prop('disabled', false);
+            //$('.media-input').prop('disabled',   true);
+            
             if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != '') )
                 $('#chapter-div').show();
+            else $('#chapter-div').hide();
         }
     });
 
-    $("#grade-drop-menu, #subject-drop-menu").change( function(){
-        $('#chapter-div').hide();
-
-        $('#chapter-drop-menu').empty();
-        if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
-            $.post("looma-database-utilities.php",
-                {cmd: "chapterList",
-                 class: $('#grade-drop-menu').val(),
-                 subject:   $('#subject-drop-menu').val()},
-
-                 function(response) {
-                     //$('#chapter_label').show();
-                     $('#chapter-div').show();
-                     $('<option/>', {value: "", label: "Select..."}).appendTo('#chapter-drop-menu');
-
-                     $('#chapter-drop-menu').append(response);
-                 },
-                 'html'
-              );
-    });
+    $("#grade-drop-menu, #subject-drop-menu").change(showChapterDropdown);
 
     $('#cancel-search').click(clearSearch);
     

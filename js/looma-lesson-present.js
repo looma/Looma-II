@@ -52,7 +52,7 @@ window.onload = function() {
         if (playing) pause();
         else play($currentItem);
     });
-    $('#dismiss').click(function() {
+    $('#return').click(function() {
         parent.history.back();
     });
 

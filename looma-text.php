@@ -24,10 +24,13 @@ Comments:
 	<div id="main-container-horizontal">
 	    <div id="fullscreen">
           <?php
-                $id = $_REQUEST['id'];
-
-                echo "<div id='the_id' data-id=" . $id . " hidden></div>"
-
+                if (isset($_REQUEST['id'])) {
+                    $id = $_REQUEST['id'];
+                    echo "<div id='the_id' data-id=" . rawurlencode($id) . " hidden></div>";
+                } else if (isset($_REQUEST['dn'])) {
+                    $dn = $_REQUEST['dn'];
+                    echo "<div id='the_dn' data-dn=" . rawurlencode($dn) . " hidden></div>";
+                } else echo "file not found";
            ?>
          <div id="display"></div>
          <button class = "lookup"></button>

@@ -12,14 +12,12 @@ for a textbook (class/subject) for Looma 2
 
 <?php $page_title = 'Looma Chapters';
 	  include ('includes/header.php');
-?>
-	<!-- add CSS files for this page:  <link rel="stylesheet" href="css/filename.css"> -->
-	</head>
-	<body>
-<?php
-	include ('includes/mongo-connect.php');
-?>
+      include ('includes/mongo-connect.php');
 
+?>
+</head>
+
+<body>
 	<div>
 
 	<?php
@@ -79,19 +77,13 @@ for a textbook (class/subject) for Looma 2
 
 			else                echo "<th></th>";
 
-			echo "<th>";
-                echo "<button class='heading  lesson'  disabled>"; keyword('Lesson'); echo "</button>";
-                echo "<button class='heading  activities' id='activitiesTitle' disabled>"; keyword('Activities'); echo "</button>";
-			echo "</th>";
+                echo "<th><button class='heading img activities' disabled>"; keyword('Lesson'); echo "</button></th>";
+                echo "<th><button class='heading img activities' disabled>"; keyword('Activities'); echo "</button></th>";
 
 			echo "</tr>";
 
 			//echo "<br>DEBUG: displayname:  " . $tb_dn . ", file: " . $tb_fn . ", path: " . $tb_fp;
 			//echo "<br>DEBUG: nativedisplayname:  " . $tb_ndn . ", nativefile: " . $tb_nfn . ". path: " . $tb_fp;
-
-			// REMOVED: CHAPTERS collection doesnt have CLASS and SUBJECT , just CH_ID
-			// so need to query by regex matching PREFIX with CH_ID
-			//OLD CODE: $query = array('class' => $class, 'subject' => $subject);
 
             $prefix_as_regex = "^" . $prefix ."\d"; //insert the PREFIX into a REGEX
             // DEBUG  echo "Regex is " . $prefix_as_regex;  //DEBUG
@@ -104,8 +96,9 @@ for a textbook (class/subject) for Looma 2
 							    'ndn' => 1,
 								);
 			$chapters = $chapters_collection -> find($query, $projection);
-			$chapters->sort(array('_id' => 1));
-				//need to SORT
+			$chapters->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mongo cursors
+                                                // this sort is on '_id' which is the "ch_id" of the chapter
+                                                // we must always maintain chapter IDs so that their SORT() order is the natural sort order
 
 			// for each CHAPTER in the CHAPTERS	array,
 			// display buttons for textbook, 2nd language textbook (if any) and
@@ -115,11 +108,16 @@ for a textbook (class/subject) for Looma 2
 			foreach ($chapters as $ch) {
 				echo "<tr>";
 
-				$ch_dn =  array_key_exists('dn', $ch) ? $ch['dn'] : $tb_dn;	//$ch_dn is chapter displayname
-				$ch_ndn = array_key_exists('ndn', $ch) ? $ch['ndn'] : $ch_dn;    //$ch_ndn is native displayname
-				$ch_pn =  array_key_exists('pn', $ch) ? $ch['pn'] : null;		//$ch_pn is chapter page number
-				$ch_npn = array_key_exists('npn', $ch) ? $ch['npn'] : null;	//$ch_npn is chapter native page number
-				$ch_id  = array_key_exists('_id', $ch) ? $ch['_id'] : null;	//$ch_id is chapter ID string
+				$ch_dn =  array_key_exists('dn', $ch) ? $ch['dn'] : $tb_dn;
+				        //$ch_dn is chapter displayname
+				$ch_ndn = array_key_exists('ndn', $ch) ? $ch['ndn'] : $ch_dn;
+				        //$ch_ndn is native displayname
+				$ch_pn =  array_key_exists('pn', $ch) ? $ch['pn'] : null;
+				        //$ch_pn is chapter page number
+				$ch_npn = array_key_exists('npn', $ch) ? $ch['npn'] : null;
+				        //$ch_npn is chapter native page number
+				$ch_id  = array_key_exists('_id', $ch) ? $ch['_id'] : null;
+				        //$ch_id is chapter ID string
 
 				// display chapter button for first [english] textbook, if any
 				if ($tb_fn && $ch_pn) { echo "<td><button class='chapter'
@@ -133,7 +131,7 @@ for a textbook (class/subject) for Looma 2
 					                  </button></td>";
 
 						  }
-				else {echo "<td><button class='chapter' style='visibility: hidden'></button></dt>";}
+				else {echo "<td><button class='chapter' style='visibility: hidden'></button></td>";}
 
 				// display chapter button for 2nd [native] textbook, if any
 				if ($tb_nfn && $ch_npn) { echo "<td><button class='chapter'
@@ -145,31 +143,36 @@ for a textbook (class/subject) for Looma 2
 					                  $ch_ndn
 					                  </button></td>";
 						  }
-				else {echo "<td><button class='chapter' style='visibility: hidden'></button></dt>";}
+				else {echo "<td><button class='chapter' style='visibility: hidden'></button></td>";}
 
 
-                // display a button for the lesson plans for this chapter with data-activity=CHAPTER_ID key value
-                // first check whether there are any activities for this chapter and make the button do not display the button if not
-
-                //get the activities for this chapter
-                $query = array('ch_id' => $ch_id);
-                //returns only these fields of the activity record
+                // display a button for the lesson plans for this chapter
+                $query = array('ch_id' => $ch_id, 'ft' => 'lesson');
                 $projection = array('_id' => 0,
-                                'ch_id' => 1,
+                                'mongoID' => 1,
+                                'dn' => 1
                                 );
 
-                echo "<td>";
-
                 //check in the database to see if there are any LESSON PLANS for this CHAPTER. if so, create a button
-                $lessons = $lessons_collection -> findOne($query, $projection);
+                // NOTE: current code only finds the FIRST lesson for the chapter.
+                // expand in the future to allow multiple lessons per chapter
+                $lesson = $activities_collection -> findOne($query, $projection);
 
-                if ($lessons) {
-                    echo "<button class='lesson'
+                if ($lesson) {
+                    echo "<td><button class='lesson'
                             data-ch='$ch_id'
-                            data-chdn='$ch_dn'>";
+                            data-chdn='" .
+                            $lesson['dn'] .
+                            "' data-ft='lesson'
+                            data-id='" .
+                            $lesson['mongoID'] .
+                            "'>";
                     keyword('Lesson');
-                    echo "</button>";
+                    echo "</button></td>";
                 }
+
+                else {echo "<td><button class='activity' style='visibility: hidden'></button></td>";}
+
 
 
 
@@ -187,21 +190,21 @@ for a textbook (class/subject) for Looma 2
 				$activities = $activities_collection -> findOne($query, $projection);
 
 				if ($activities) {
-					echo "<button class='activities'
+					echo "<td><button class='activities'
 							data-ch='$ch_id'
 							data-chdn='$ch_dn'>";
-					keyword('Activities');
-					echo "</button>";
+                    keyword('Activities');
+                    echo "</button></td>";
 				}
-                echo "</td>";
+                else echo "<td></td>";
 
 				echo "</tr>";
 			}
 			echo "</table>";
-
 	?>
-	</div></div>
+	</div>
 
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
   	<script src="js/looma-chapters.js"></script>          <!-- Looma Javascript -->
+</body>

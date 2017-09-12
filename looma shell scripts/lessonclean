@@ -1,4 +1,4 @@
-// ONE TIME program to 
+// ONE TIME program to
 //    clean out ft=lesson activities that are not also in lessons collection//
 //
 //  run in MONGO SHELL with: load('lessonclean')
@@ -26,15 +26,15 @@ while (activitycursor.hasNext()) {
     lessoncursor = db.lessons.find({'dn':doc.dn});
     if (  ! lessoncursor.hasNext()) {
         print('     found activity wo lesson: ' + doc.dn);
-        //db.activities.remove(doc);
+        db.activities.remove(doc);
         count += 1;
         }
     };
  print('');
  print('found ' + count + ' lesson activities wo lessons');
- print(''); 
+ print('');
 
- 
+
 count = 0;
 //repeat for 'lessons' collection
 print ('*****scanning lessons');
@@ -50,5 +50,4 @@ while (lessoncursor.hasNext()) {
     };
  print('');
  print('found ' + count + ' lessons without activities');
- print(''); 
- 
+ print('');

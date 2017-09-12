@@ -1,3 +1,17 @@
+/*
+LOOMA css file
+Filename: looma-import.css
+Associated code files:
+Programmer name: Skip
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: Apr 2017
+Revision: Looma 2.0.x
+
+Comments:
+*/
+
+.credit {bottom:10vh;}
+
 svg {
 	border:1px solid black;
 }

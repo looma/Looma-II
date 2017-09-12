@@ -30,9 +30,17 @@ function isTextArea() {
 function toggleNepali() {
     if (isNepali()) {
         $("#looma-keyboard").removeClass("nepali");
+        $("#keyboard-language").removeClass("nepali");
     } else {
         $("#looma-keyboard").addClass("nepali");
+        $("#keyboard-language").addClass("nepali");
     }
+}
+
+function backspaceChar() {
+    "use strict";
+    var $input = $('#inputEntry')
+    $input.html($input.html().substr(0,$input.html().length-2));
 }
 
 function addKey(keyboard, i) {
@@ -118,18 +126,22 @@ function createKeyboard() {
     for (var i = 9; i < 11; i++) {
         addKey(keyboard, i);
     }
+    var backspace = $("<button></button>")
+        .attr('id', 'keyboard-backspace')
+        .addClass("keyboard-button keyboard-special")
+        .click(backspaceChar);
+    keyboard.append(backspace);
+    
     keyboard.append($("<br/>"));
 
     var language = $("<button></button>")
         .attr('id', 'keyboard-language')
         .addClass("keyboard-button keyboard-special")
         .click(toggleNepali)
-        .append($("<span></span>").attr('id', 'nepaliButtonText').addClass(
-            "languageButtonText").html(
-            "Nepali"))
-        .append($("<span></span>").attr('id', 'englishButtonText').addClass(
-            "languageButtonText").html(
-            "English"));
+        .append($("<span></span>").attr('id', 'nepaliButtonText')
+        .addClass("languageButtonText").css("background-image","url(images/english-flag.png)"))
+        .append($("<span></span>").attr('id', 'englishButtonText')
+        .addClass("languageButtonText").css("background-image","url(images/native-flag.png)"));
     keyboard.append(language);
 
     /*var spacebar = $('<button></button>')
@@ -142,18 +154,12 @@ function createKeyboard() {
         });
     $(keyboard).append(spacebar);
 */
-    $(keyboard).append("<br/>");
+    //$(keyboard).append("<br/>");
     var hideButton = $('<button></button>')
         .attr('id', 'keyboard-hide')
-        .html("Hide Keyboard")
         .addClass("keyboard-button keyboard-special")
-        .css({
-            margin: "5px auto",
-            float: "none"
-        })
         .click(hideKeyboard);
     $(keyboard).append(hideButton);
-
     $(keyboardContainer).append(keyboard);
     $('body').append(keyboardContainer);
     $('.keyboard-button').click(keyClicked);

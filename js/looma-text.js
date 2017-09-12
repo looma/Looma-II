@@ -12,13 +12,25 @@ Description: JS for looma-xxxx.php
 $(document).ready(function() {
 
 	var div = document.getElementById('the_id');
-	$.post("looma-database-utilities.php",
-			{cmd: "openByID", collection: "text", id: div.getAttribute('data-id')},
-			function(result) {
-				document.querySelector("div#display").innerHTML = result.data;
-			},
-			'json'
-	);
+	if (div)
+        $.post("looma-database-utilities.php",
+                {cmd: "openByID", collection: "text", id: div.getAttribute('data-id')},
+                function(result) {
+                    document.querySelector("div#display").innerHTML = result.data;
+                },
+                'json'
+        );
+	else {
+	    div = document.getElementById('the_dn');
+	    if (div)
+            $.post("looma-database-utilities.php",
+                {cmd: "open", collection: "text", ft: "text", dn: decodeURIComponent(div.getAttribute('data-dn'))},
+                function(result) {
+                    document.querySelector("div#display").innerHTML = result.data;
+                },
+                'json'
+            );
+    }
 
 
 });

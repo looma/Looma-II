@@ -18,17 +18,17 @@ Description: page with links to map games
 	<div id="main-container-horizontal">
 		<h2 class="title"> <?php keyword("Looma Maps Practice Exercises"); ?> </h2>
 		<div class="center">
-			<br><br><br><br>
-		<a href="looma-maps-worldgame.php">
-			<button type="button" class="activity play img navigate" ><?php keyword('World') ?>  </button>
-			</a>
+            <br><br><br><br>
+            <a href="looma-maps-worldgame.php">
+                <button type="button" class="activity play img navigate" ><?php keyword('World') ?>  </button>
+            </a>
 
-		<a href="looma-maps-asiacountrygame.php">
-			<button type="button" class="activity play img navigate"><?php keyword('Asia') ?>  </button>
-		</a>
+            <a href="looma-maps-asiacountrygame.php">
+                <button type="button" class="activity play img navigate"><?php keyword('Asia') ?>  </button>
+            </a>
 
-	</div>
-
+    	</div>
+    </div>
     <?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
 

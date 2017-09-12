@@ -23,7 +23,7 @@ function init(){
     arithClass = LOOMA.readStore('arith-grade', 'session');
     // DEBUG    console.log ('ARITH: arith-grade is ' + arithClass);
 
-    arithClass = arithClass.substr(0, arithClass.length - 1) + ' ' + arithClass.substr(arithClass.length-1);
+    //arithClass = arithClass.substr(0, arithClass.length - 1) + ' ' + arithClass.substr(arithClass.length-1);
     document.getElementById('gradeValue').innerHTML = LOOMA.capitalize(arithClass);
 
     var enterButton = document.getElementById('enter');
@@ -134,6 +134,8 @@ function init(){
     nextGenProb();
 }; //end INIT()
 
+function randomPlusMinus() {return 2 * Math.random() - 1;};
+
 function nextGenProb(){
     var num;
     var count = document.getElementById('countValue');
@@ -153,24 +155,36 @@ function nextGenProb(){
 
     var subject = arithSubject;
 
+    /* difficulty by grade:
+        class   add     sub     mult    div
+        1       1,1     -       -       -
+        2       2,2     1,1     -       -
+        3       3,3     2,2     2,1     -
+        4       4,4     3,3     3,2     -
+        5       5,5     4,4     4,3     1,3
+        6       5,5     4,4     5,3     2,4
+        7       6,6     5,5     6,4     3,5
+        8       6,6     5,5     6,4     3,5
+     */
+    
     if(arithClass == 'class1'){
-        if(subject != 'mult'){
-            randNum1 = (Math.floor(19 * Math.random()) + 1);
-            randNum2 = (Math.floor(19 * Math.random()) + 1);
+        if(subject !== 'add'){
+            randNum1 = (Math.floor(9 * Math.random()) + 1);
+            randNum2 = (Math.floor(9 * Math.random()) + 1);
         }
         else{
             randNum1 = (Math.floor(5 * Math.random()) + 1);
             randNum2 = (Math.floor(5 * Math.random()) + 1);
         }
     } //end of CLASS 1
-    else if(arithClass == 'class2'){
-        if(subject == 'add' || subject == 'sub'){
-            randNum1 = (Math.floor(999 * Math.random()) + 1);
-            randNum2 = (Math.floor(999 * Math.random()) + 1);
+    else if(arithClass === 'class2'){
+        if(subject == 'add'){
+            randNum1 = (Math.floor(99 * Math.random()) + 1);
+            randNum2 = (Math.floor(99 * Math.random()) + 1);
         }
-        else if(subject == 'mult'){
-            randNum1 = (Math.floor(11 * Math.random()) + 1);
-            randNum2 = (Math.floor(11 * Math.random()) + 1);
+        else if(subject == 'sub'){
+            randNum1 = (Math.floor(9 * Math.random()) + 1);
+            randNum2 = (Math.floor(9 * Math.random()) + 1);
         }
         else{
             randNum1 = (Math.floor(8 * Math.random()) + 2);
@@ -179,91 +193,109 @@ function nextGenProb(){
     } //end of CLASS 2
 
     else if(arithClass == 'class3'){
-        if(subject == 'add' || subject == 'sub'){
-            randNum1 = (Math.floor(9999 * Math.random()) + 1);
-            randNum2 = (Math.floor(9999 * Math.random()) + 1);
-        }
-        else if(subject == 'mult'){
+        if(subject == 'add'){
             randNum1 = (Math.floor(999 * Math.random()) + 1);
+            randNum2 = (Math.floor(999 * randomPlusMinus()) + 1);
+        }
+        else if(subject == 'sub'){
+            randNum1 = (Math.floor(99 * Math.random()) + 1);
             randNum2 = (Math.floor(99 * Math.random()) + 1);
         }
-        else{
+        else if(subject == 'mult'){
+            randNum1 = (Math.floor(9 * Math.random()) + 1);
+            randNum2 = (Math.floor(9 * Math.random()) + 1);
+        }
+        else{  //subject === 'div'
             randNum1 = (Math.floor(99 * Math.random()) + 1);
             randNum2 = randNum1 * (Math.floor(10 * Math.random()) + 1);
         }
     } //end of CLASS 3
 
     else if(arithClass == 'class4'){
-        if(subject == 'add' || subject == 'sub'){
-            randNum1 = (Math.floor(99999 * Math.random()) + 1);
-            randNum2 = (Math.floor(99999 * Math.random()) + 1);
-        }
-        else if(subject == 'mult'){
+        if(subject == 'add'){
             randNum1 = (Math.floor(9999 * Math.random()) + 1);
+            randNum2 = (Math.floor(9999 * randomPlusMinus()) + 1);
+        }
+        else if(subject == 'sub'){
+            randNum1 = (Math.floor(999 * Math.random()) + 1);
             randNum2 = (Math.floor(999 * Math.random()) + 1);
         }
-        else{
+        else if(subject == 'mult'){
+            randNum1 = (Math.floor(999 * Math.random()) + 1);
+            randNum2 = (Math.floor(99 * Math.random()) + 1);
+        }
+        else{  //subject === 'div'
             randNum1 = (Math.floor(99 * Math.random()) + 1);
             randNum2 = randNum1 * (Math.floor(9 * Math.random()) + 1);
         }
     } //end of CLASS 4
 
     else if(arithClass == 'class5'){
-        if(subject == 'add' || subject == 'sub'){
-            randNum1 = (Math.floor(99999 * Math.random()) + 1);
-            randNum2 = (Math.floor(99999 * Math.random()) + 1);
+        if(subject == 'add' ){
+            randNum1 = (Math.floor(99999 * randomPlusMinus()) + 1);
+            randNum2 = (Math.floor(99999 * randomPlusMinus()) + 1);
+        }
+        else if(subject == 'sub'){
+            randNum1 = (Math.floor(9999 * Math.random()) + 1);
+            randNum2 = (Math.floor(9999 * Math.random()) + 1);
         }
         else if(subject == 'mult'){
             randNum1 = (Math.floor(9999 * Math.random()) + 1);
             randNum2 = (Math.floor(999 * Math.random()) + 1);
         }
-        else{
-            randNum1 = (Math.floor(99 * Math.random()) + 1);
+        else{  //subject === 'div'
+            randNum1 = (Math.floor(9 * Math.random()) + 1);
             randNum2 = randNum1 * (Math.floor(99 * Math.random()) + 1);
         }
     } //end of CLASS 5
 
     else if(arithClass == 'class6'){
-        if(subject == 'add' || subject == 'sub'){
-            randNum1 = (Math.floor(99999 * Math.random()) + 1);
-            randNum2 = (Math.floor(99999 * Math.random()) + 1);
+        if(subject == 'add'){
+            randNum1 = (Math.floor(99999 * randomPlusMinus()) + 1);
+            randNum2 = (Math.floor(99999 * randomPlusMinus()) + 1);
+        }
+        else if(subject == 'sub'){
+            randNum1 = (Math.floor(9999 * Math.random()) + 1);
+            randNum2 = (Math.floor(9999 * Math.random()) + 1);
         }
         else if(subject == 'mult'){
-            randNum1 = (Math.floor(9999 * Math.random()) + 1);
-            randNum2 = (Math.floor(999 * Math.random()) + 1);
+            randNum1 = (Math.floor(99999 * Math.random()) + 1);
+            randNum2 = (Math.floor(999 * randomPlusMinus()) + 1);
         }
-        else{
-            randNum1 = (Math.floor(999 * Math.random()) + 1);
+        else{  //subject === 'div'
+            randNum1 = (Math.floor(99 * Math.random()) + 1);
             randNum2 = randNum1 * (Math.floor(99 * Math.random()) + 1);
         }
     } //end of CLASS 6
 
     else{  //CLASS 7 or higher
         if(subject == 'add' || subject == 'sub'){
-            randNum1 = (Math.floor(99999 * Math.random()) + 1);
-            randNum2 = (Math.floor(99999 * Math.random()) + 1);
+            randNum1 = (Math.floor(999999 * randomPlusMinus()) + 1);
+            randNum2 = (Math.floor(999999 * randomPlusMinus()) + 1);
         }
         else if(subject == 'mult'){
-            randNum1 = (Math.floor(9999 * Math.random()) + 1);
-            randNum2 = (Math.floor(999 * Math.random()) + 1);
+            randNum1 = (Math.floor(99999 * randomPlusMinus()) + 1);
+            randNum2 = (Math.floor(9999 * randomPlusMinus()) + 1);
         }
-        else{
+        else{  //subject === 'div'
             randNum1 = (Math.floor(999 * Math.random()) + 1);
-            randNum2 = randNum1 * (Math.floor(99 * Math.random()) + 1);
+            randNum2 = randNum1 * (Math.floor(9999 * Math.random()) + 1);
         }
     } //end of CLASS 7 or higher
 
-    oper = document.getElementById('operation').innerHTML;
-    if(oper == "+" || oper == "-" || oper == "*")
-    {
-        if(randNum1 < randNum2)
+    
+    if((arithClass === 'class1' || arithClass === 'class2' || arithClass === 'class3' || arithClass === 'class4') &&
+        (oper === "+" || oper === "-" || oper === "*"))
         {
-            num = randNum2;
-            randNum2 = randNum1;
-            randNum1 = num;
-        }
-    };
-
+            if(randNum1 < randNum2)
+            {
+                num = randNum2;
+                randNum2 = randNum1;
+                randNum1 = num;
+            }
+        };
+ 
+    oper = document.getElementById('operation').innerHTML;
     num1.innerHTML = randNum1;
     num2.innerHTML = randNum2;
 

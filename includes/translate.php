@@ -149,7 +149,8 @@ Description:  functions and translation array for Keywords used in Looma 2
             "Text" => "पाठ",
             "Image" => "छवि",
             "Search Panel" => "सेअर्च पनेल",
-            "Hide Panel"   => "हिडे पनेल"
+            "Hide Panel"   => "हिडे पनेल",
+            "Lesson" => "पाठ"
 	); //end array TKW
 
 function keyword($english) {

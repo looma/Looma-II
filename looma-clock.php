@@ -23,10 +23,7 @@ Comments:
 <?php
 $page_title = 'Looma - Time';
     include ('includes/header.php');
-    include ('includes/toolbar.php');
-    include ('includes/js-includes.php');
 ?>
-<head>
     
 <link rel="Stylesheet" type="text/css" href="css/looma-clock.css">
     
@@ -34,8 +31,9 @@ $page_title = 'Looma - Time';
 
 <body>
 <div id="main-container-horizontal">
-<h1>Looma Clock</h1>
-<h2 class = "credit">Created by Grant and John</h2>
+    <h1>Looma Clock</h1>
+    <div id="fullscreen">
+<h1 class = "credit">Created by Grant and John</h1>
 
 <FORM METHOD="LINK" ACTION="looma-clock-singleclock.php" Id="singleClockButton">
     <button TYPE="submit" class="button-2" id="a">
@@ -62,7 +60,7 @@ $page_title = 'Looma - Time';
 </FORM>
 
 <FORM Id="oneClock">
-    <button TYPE="button" id="e"><img src="images/clock.png" id = "clockImage"></button>
+    <button TYPE="button" id="e"></button>
 </FORM>
 
 <FORM>
@@ -76,10 +74,11 @@ $page_title = 'Looma - Time';
 <canvas id="mainClock">
 </canvas>
 
-<script src="js/jquery.min.js"></script>
-<script src="js/looma-utilities.js"></script>
-<script src="js/looma-clock.js"></script>
+<button id="fullscreen-control"></button>
+<button class="speak"></button>
 
+
+    </div>
 </div>
 
 <p id = "digitalTime"></p>
@@ -92,6 +91,10 @@ $page_title = 'Looma - Time';
 <p id="date"></p>
 <div id="clockBox"></div>
 
-        <button class="speak"></button>
-
+    <?php
+        include ('includes/toolbar.php');
+        include ('includes/js-includes.php');
+    ?>
+    <script src="js/looma-screenfull.js"></script>
+    <script src="js/looma-clock.js"></script>
 </body>

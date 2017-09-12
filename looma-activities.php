@@ -59,7 +59,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
         //create a vocab review button if there are any words from this chapter in the dictionary
         $query = array('ch_id' => $ch_id);
         $words = $dictionary_collection -> find($query);
-        if ($words) {
+        if ($words -> count() > 0) {
             echo "<td>";
             //make a button with <a href="looma-vocab-flashcard.php?ch_id=CH_ID">
 

@@ -8,8 +8,8 @@ Description: one-time conversion to change 'ch_id' in 'activities' collection fr
 
 -->
 	<?php $page_title = 'Looma xxxx ';
-	      include ('includes/header.php');
-	      include ('includes/mongo-connect.php')
+	      include('includes/header.php');
+    include('includes/mongo-connect.php')
 	?>
   </head>
 
@@ -36,6 +36,6 @@ Description: one-time conversion to change 'ch_id' in 'activities' collection fr
 */
     ?>
 
-    <?php include ('includes/js-includes.php'); ?>
+    <?php include('includes/js-includes.php'); ?>
    </body>
 </html>

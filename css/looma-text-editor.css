@@ -27,8 +27,11 @@ body {
 }
 
 .container {
-    margin:0 auto;
-    width:95vw;
+    margin: 0 auto;
+    width: 95vw;
+}
+#main-container-horizontal{
+    background-color: #eeeeee;
 }
 
 button.result {
@@ -38,13 +41,16 @@ button.result {
 
 #title {
     position: absolute;
-    top: 3vh;
+    top: 1vh;
     left:5vw;
-    width:13vw;
-    height: 8vh;
+    width:25vw;
+    height: 7vh;
+    padding-left: 2vw;
+    text-align: left;
     float:left;
-    border:black;
+    border:1px solid black;
     color:black;
+    font-size: 0.8em;
     background-color:white;
     border-radius:2px;
 }
@@ -59,10 +65,10 @@ button.result {
     color:black;
     margin-top: 1vh;
     padding: 0 0;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
+    border: 1px solid black;
 }
 
+/*
 #editor::before {
     content: "";
     width: 2.2vw;
@@ -90,13 +96,13 @@ button.result {
     border-bottom: 1px solid black;
     box-sizing: border-box;
 }
-
+*/
 #editor div {
     white-space: nowrap;
 }
 
 #commands {
-    top: 3vh;
+    top: 1vh;
 }
 
 #editor b {

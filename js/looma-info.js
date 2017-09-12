@@ -21,10 +21,13 @@ $(document).ready(function ()
     function roll()
         {
         $('#credits-wrapper').css('top', '');
-        $('#credits-wrapper').animate({top:"-1200%"}, 45000, roll);
+        $('#credits-wrapper').animate({top:"-1800%"}, 45000, roll);
 
-        //NOTES on adjusting the CREDITS BOX:
-        // ~30 names fit in the 'credit-box'
+        // with 210 names, ' top:"-1800%" ' works
+        // perhaps K = -1800/210 = -9 is the right coefficient. e.g. ' top:"' + -9*count + '%" '
+        //
+        // NOTES on adjusting the CREDITS BOX:
+        // ~30 names show in the 'credit-box'
         // adjust 'top:"-xxx%"}' when adding more names
         // when there are 195 names, "animate({top:"-600%"}" is just right)
         //

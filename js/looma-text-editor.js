@@ -47,7 +47,7 @@
 
   function textclear() {
       setname("");
-      currentid = "";
+      //currentid = "";
       $editor.html("");
       textcheckpoint();
       $editor.focus();
@@ -58,14 +58,13 @@
   };
 
   function textsave(name) {
-      $editor.cleanHtml()
-      savefile(name, currentcollection, currentfiletype, $editor.html(), "false");
+      //$editor.cleanHtml(); wysiwyg.js has no "cleanHTML" function. NOTE: we should probably write our own
+      savefile(name, currentcollection, currentfiletype, $editor.html(), "true");
   }; //end testsave()
 
   function texttemplatesave(name) {
-      $editor.cleanHtml()
-      savefile(name, currentcollection, currentfiletype + '-template', $editor.html(),
-          "false");
+      //$editor.cleanHtml(); wysiwyg.js has no "cleanHTML" function. NOTE: we should probably write our own
+      savefile(name, currentcollection, currentfiletype + '-template', $editor.html(), "false");
   }; //end testsave()
 
   function textshowsearchitems() {
@@ -79,6 +78,8 @@
   };
 
   $(document).ready(function() {
+
+      //$('#dismiss').click( function() { quit();});
 
       $editor = $('#editor'); //the DIV where the HTML is being edited
       $editor.wysiwyg();

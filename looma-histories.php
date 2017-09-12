@@ -7,7 +7,7 @@ Date: July 2016
 Description: Initial "histories" page. Takes the user to the history timelines.
 -->
 
-    <h1 class="credit"> Created by Ellie and Jayden</h1>
+    <h1 class="credit"> Created by Ellie, Jayden, Alexa, Catie and May</h1>
 
 	<?php  $page_title = 'Looma Timeline Histories';
 	include ("includes/header.php");

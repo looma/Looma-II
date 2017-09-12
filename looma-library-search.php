@@ -115,8 +115,9 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 /**************************************/
     echo "<div id='search-bar-div' class='media-filter'>
             <input id='search-term' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
-            <button id='media-submit' class='filesearch black-border' name='search' value='value' type='submit'></button>
             <button id='cancel-search' type='button'>Clear</button>
+                        <button id='media-submit' class = \"filesearch\" name=\"search\" value=\"value\" type=\"submit\">
+                    <i class=\"fa fa-search\"></i></button>
        </div>";
 
 
@@ -127,13 +128,13 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
             <p>Type:</p>";
 
     $types = array(
-        array("pdf", "vid",   "img",   "hist",    "ss",        "map", "evi",          "aud",   "txt"),  //tags used as IDs for checkbox html elements
-        array("pdf", "video", "image", "history", "slideshow", "map", "evi",          "audio", "text"), //the 'ft' values used in the DB
-        array("PDF", "Video", "Image", "History", "Slideshow", "Map", "Edited video", "Audio", "Text"), //human readable versions for labels displayed on checkboxes
+        array("pdf", "vid",   "img",   "hist",    "ss",        "map", "evi",          "aud",   "txt", "lesson"),  //tags used as IDs for checkbox html elements
+        array("pdf", "video", "image", "history", "slideshow", "map", "evi",          "audio", "text", "lesson"), //the 'ft' values used in the DB
+        array("PDF", "Video", "Image", "History", "Slideshow", "Map", "Edited video", "Audio", "Text", "Lesson"), //human readable versions for labels displayed on checkboxes
     );
     for($x = 0; $x < count($types[0]); $x++) {
         echo "<span class='typ-chk' id='" . $types[0][$x] ."-chk'>
-                <input id='" . $types[0][$x] ."' class='media-input flt-chkbx' type='checkbox' name='type[]'' value='" . $types[1][$x] . "'>
+                <input id='" . $types[0][$x] ."' class='media-input flt-chkbx media-filter' type='checkbox' name='type[]'' value='" . $types[1][$x] . "'>
                 <label class='filter-label' for='" . $types[0][$x] . "'>" . $types[2][$x] . "</label>
               </span>";/*if($x == 4){echo "<br>";}*/}
     echo "</div>";
@@ -541,6 +542,7 @@ echo "<table id='dir-table'><tr>";
     //NOTE: end of commented out library code
  */
 ?>
+    <h1 class = "credit">Created by Bo</h1>
 
     </div>
 

@@ -9,7 +9,5 @@ Revision: Looma 2.0.x
 
 Comments:
 */
-p {
-    font-size: 0.75em;
-    line-height: 2em;
-}
+
+#main-container-horizontal {height:90vh;}

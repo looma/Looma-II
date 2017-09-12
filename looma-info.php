@@ -11,7 +11,9 @@ Description:  for Looma 2
 <?php $page_title = 'Looma Information';
 	  include ('includes/header.php');
 ?>
-		<link rel="stylesheet" href="css/looma-info.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/looma-info.css">
+
 	</head>
 
 	<body>
@@ -20,7 +22,7 @@ Description:  for Looma 2
 
 	<h3>Looma 2</h3>
 	<h4>Release 3.0, August 2017</h4>
-	<h4> <span class='glyphicon glyphicon-copyright-mark'></span> VillageTech Solutions</h4>
+	<h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
 	<h4>Contact: info AT villagetechsolutions DOT org</h4>
 	<br>
 
@@ -278,24 +280,20 @@ Description:  for Looma 2
 			<span><img src="images/logos/google-translate.jpg" height="66px"></span>
             <span><img src="images/logos/tilemill.png" height="66px"></span>
             <span><img src="images/logos/mycroft.png" height="33px"></span>
-
+<br>
 			<span><img src="images/logos/jquery-logo.png" height="66px"></span>
 			<span><img src="images/logos/css3-html5-logo.png" height="44px"></span>
             <span><img src="images/logos/mongodb-logo.png" height="66px"></span>
-			<span><img src="images/logos/aptana-logo.png" height="44px"></span>
+            <span><img src="images/logos/aptana-logo.png" height="44px"></span>
+            <span><img src="images/logos/intellij.png" height="44px"></span>
 			<span><img src="images/logos/stackoverflow.png" height="66px"></span>
 
 			<a href="http://www.villagetechsolutions.org"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
 		</div>
 		<br>
 
-		<span><img src="images/logos/LoomaLogoTransparent.png"></span>
+		<span><img src="images/logos/LoomaLogoTransparent.png" class="loomalogo"></span>
 
-
-
-		<!--  no longer using Global Giving
-		    <a href="http://www.globalgiving.org"><img src="images/logos/globalgiving-vetted.png" height="66px"></a>
-		-->
 		<br>
 
     <div id="sizemessages">
@@ -309,9 +307,11 @@ Description:  for Looma 2
 	</footer>
 	</div>
 
-   	<?php include ('includes/toolbar.php'); ?>
-   	<?php include ('includes/js-includes.php'); ?>
-   	<script src="js/looma-info.js"></script></html>
+    <?php include ('includes/toolbar.php');
+   	      include ('includes/js-includes.php');
+    ?>
+
+    <script src="js/looma-info.js"></script>
 
    	    <!--    <h4>- attributions for borrowed content</h4>
         <p>OLE Nepal, Khan academy, Wikipedia, Open Street Maps, ...</p>

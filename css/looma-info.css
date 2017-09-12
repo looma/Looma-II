@@ -7,15 +7,15 @@
 
 #sizemessages {
     position:absolute;
-    left:3em;
-    bottom:5em;
+    left:3vw;
+    bottom:5vh;
 }
 
  .screensize, .bodysize{
 	/*color:black;*/
 	vertical-align:middle;
 	text-align:left;
-	font-size: 0.75em;
+	font-size: 0.5em;
 }
 
  #logos {
@@ -26,10 +26,14 @@
  	max-width:75%;
  }
 
+ img.loomalogo {
+     height:10vh;
+ }
+ 
  #credits-title {
      position:absolute;
      left:80%;
-     top: 3%;
+     top: 1vh;
  }
 
  #credits-box {

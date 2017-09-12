@@ -165,6 +165,10 @@ if ( isset($_REQUEST["cmd"]) ) {
  ////////////////////////
         case "open":
             $query = array('dn' => $_REQUEST['dn'], 'ft' => $_REQUEST['ft']);
+
+            //echo "request is " . $query['dn'];
+            //echo "filetype is " . $query['ft'];
+
            //look up this DN (display name) in this collection (dbCollection)
            $file = $dbCollection -> findOne($query);  // assumes someone is maintaining this collection with unique DNs (index unique)
            if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
@@ -186,8 +190,22 @@ if ( isset($_REQUEST["cmd"]) ) {
            return;
             // end case "openByID"
 
+        ////////////////////////
+        // - - - OpenText - - - //
+        ////////////////////////
+        case "openText":
+            $query = array();
+            //look up this ID (mongoID) in this collection (dbCollection)
+            $cursor = $dbCollection -> find($query) -> skip($_REQUEST['skip']);
+            $cursor->next();
+            $file = $cursor->current();
+            if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
+            else echo json_encode(array("error" =>"File not found in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
+            return;
+        // end case "openByID"
 
- ////////////////////////
+
+        ////////////////////////
  // - - - UpdateByID - - - //
  ////////////////////////
         case "updateByID":  //called with 'collection', 'id', and an update Object
@@ -441,6 +459,11 @@ if ( isset($_REQUEST["cmd"]) ) {
                 //echo '$dbCollection is ' . $dbCollection;
 
             $cursor = $dbCollection->find($query);   //->skip($page)->limit(20);
+
+            //SORT the found items before sending to client-side
+            $cursor->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+
+
 
             $result = array();
             if ($cursor -> count() > 0) { foreach ($cursor as $d) $result[] = $d; };

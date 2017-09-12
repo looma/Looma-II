@@ -10,6 +10,18 @@ h2 {
 	left: 70%;
 }
 
+#fullscreen {
+    background-color: #091F48;
+}
+
+button#fullscreen-control {
+    bottom: 9vh;
+    right: 3vw;
+}
+button.speak {
+    right:18vw;
+    bottom:12vh;
+}
 #a {
     position: absolute;
     top: 20%;
@@ -37,27 +49,38 @@ h2 {
 
 #c {
 	position: absolute;
-    top: 70%;
-    left: 2%;
+    bottom: 25vh;
+    left: 2vw;
     height: 11%;
     font-size: 2.6em;
 }
 
 #d {
 	position: absolute;
-    top: 70%;
-    left: 75%;
+bottom: 25vh;
+right:2vw;
     height: 11%;
     font-size: 2.6em;
 }
 
 #e {
     position: absolute;
-    top: 85%;
-    left: 75%;
-    height: 11%;
-    width: 6%;
+    bottom: 9vh;
     background-position: center;
+    background-size: 100% 100%;
+    background-color:none;
+    
+    
+    opacity: 0.4;
+    right:10.3vw;
+    height: 10vh;
+    width:  10vh;
+    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    background-image: url("../images/clock.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0.3);  /*transparent light gray*/
+    
 }
 
 #clockImage{
@@ -68,30 +91,32 @@ h2 {
     height: auto;
     max-width: 50px;
     max-height: 60px;
+    opacity: 0.4;
+    background-color:rgba(200,200,200,0.3);
 }
 
 #mainClock{
     position: absolute;
-    top: 45%;
+    top: 28vh;
     -webkit-transform: translate(-50%, -50%);
 }
 
 #digitalTime{
     font-family: digitalFont;
     color: lime;
-    font-size: 350%;
+    font-size: 6em;
     position: absolute;
-    top: 68%;
-    left: 45%;
+    bottom:21vh;
+    left: 42vw;
 }
 
 #amOrPm1{
     font-family: digitalFont;
     color: lime;
-    font-size: 350%;
+    font-size: 4em;
     position: absolute;
-    top: 68%;
-    left: 53%;
+    bottom:21vh;
+    left: 53vw;
 }
 #dragHands{
     font-size: 130%;
@@ -101,7 +126,7 @@ h2 {
 }
 #toCurrentTime{
     position: absolute;
-    top: 85%;
+    bottom: 12vh;
     left: 43%;
     height: 10%;
     width: 15%;
@@ -121,7 +146,7 @@ h2 {
 #time {
     font-family: digitalFont;
     color: lime;
-    font-size: 900%;
+    font-size: 6em;
     position: absolute;
     top: 31%;
     left: 36%;
@@ -130,7 +155,7 @@ h2 {
 #amOrPm {
     font-family: digitalFont;
     color: lime;
-    font-size: 500%;
+    font-size: 3em;
     position: absolute;
     top: 32%;
     left: 55%;

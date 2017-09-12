@@ -6,7 +6,7 @@ Date: July 2017
 Description: Creates history timelines with search, scroll, lookup, speech, and popup functions. Information accessed through database.
 -->
 
-  <h1 class="credit"> Created by Alexa, Catie, and May </h1>
+  <h1 class="credit"> Created by Ellie, Jayden, Alexa, Catie, and May </h1>
 
   <?php $page_title = 'Looma - History Timeline';
 
@@ -31,6 +31,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
 <body>
 
     <div id="main-container-horizontal">
+        <h1 class="credit"> Created by Ellie, Jayden, Alexa, Catie, and May</h1>
 
       <label for="keywords">Search:</label><input id="keywords" class="searchBar" size="18" placeholder="enter words to search" >
 
@@ -190,33 +191,23 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
         else
 
         {echo 'no history found';}
-
       ?>
 
-
 </div>
-
 </div>
-
-
-
-    <?php include ('includes/toolbar.php'); ?>
-
-    <?php include ('includes/js-includes.php'); ?>
-
 
     <button class="speak"></button>
-
     <button class = "lookup"></button>
+</body>
 
+    <?php include ('includes/toolbar.php'); ?>
+    <?php include ('includes/js-includes.php'); ?>
     <script src="js/looma-keyboard.js">  </script>
-
     <script src="js/looma-screenfull.js"></script>
-
+    <script src="js/looma-keyboard.js">  </script>
     <script type="text/javascript" src="js/looma-hilitor-utf8.js"></script>
 
     <script type="text/javascript" src="js/looma-history.js"></script>
 
-</body>
 
 </html>

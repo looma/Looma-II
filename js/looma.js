@@ -63,10 +63,8 @@ $(document).ready (function() {
     else                  $('#padlock').attr('src','images/padlock-closed.png');
 
     $('#padlock').hover(
-        function()
-            { if (LOOMA.loggedIn()) $('#login-id').show(); },
-        function()
-            { $('#login-id').hide(); }
+        function() { if (LOOMA.loggedIn()) {$('#login-id').show(); $('#datetime').hide();} },
+        function() {                        $('#login-id').hide(); $('#datetime').show(); }
         );
 
     $('#padlock').click(function(){
@@ -79,10 +77,14 @@ $(document).ready (function() {
                     true);
             }
         });
+    
+    // function quit() {window.history.back();};
+    
+    $('#dismiss').click( function() { quit();});  //uses the QUIT() function from looma-filecommands.js
 
-
-    $('.screensize').text('Window size = ' + window.outerWidth + ' x ' + window.outerHeight);
-    $('.bodysize').text('HTML body size = ' + $('body').outerWidth() + ' x ' + $('body').outerHeight());
+    
+    $('.screensize').text('Window size = ' + Math.round(window.outerWidth) + ' x ' + Math.round(window.outerHeight));
+    $('.bodysize').text('HTML body size = ' + Math.round($('body').outerWidth()) + ' x ' + Math.round($('body').outerHeight()));
 
 
     function updateClock() {

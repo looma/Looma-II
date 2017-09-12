@@ -96,10 +96,14 @@ Description:  for Looma 2
                     <button class="settings-control">Text Editor</button>
                 </a>
 
+                <a href="looma-evi-editor.php">
+                    <button class="settings-control">Video Editor</button>
+                </a>
+                <br>
+
                 <a href="looma-speech-test.php">
                     <button id="speechtest" class="settings-control">Speech Test</button>
                 </a>
-                <br>
 
                 <a href="../auto-gen-dictionary/editor.html">
                     <button class="admin-control">Dictionary Generator</button>
@@ -109,15 +113,8 @@ Description:  for Looma 2
                     <button class="admin-control">Content Navigator</button>
                 </a>
 
-                <a href="#>
-                    <button id="dummy-button"></button>
-                </a>
-
                 <a href="looma-slideshow.php">
                     <button class="admin-control">Slideshow Editor</button>
-                </a>
-                <a href="looma-evi-editor.php">
-                    <button class="settings-control">Video Editor</button>
                 </a>
 
                 <a href="looma-activity-register-to-chapter.php">

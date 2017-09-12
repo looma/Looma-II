@@ -1,5 +1,5 @@
 /*
-* 
+*
 LOOMA js code file
 Filename: looma-time.js
 Description: This program creates eight different clocks on the canvas elements in
@@ -63,7 +63,7 @@ window.onload = function() {
     
     var myVar = setInterval(nextTime, 1000);
     
-    function drawAllClocks() { 
+    function drawAllClocks() {
         drawClock(45, 5, ctx1);
         drawClock(0, 9, ctx2);
         drawClock(0, -4, ctx3);
@@ -192,7 +192,7 @@ window.onload = function() {
     }
 
     function drawName(ctx, name) {
-        ctx.font = "18px Ariel"
+        ctx.font = "18px Comic-Sans"
         ctx.fillStyle = "yellow";
         ctx.fillText(name, 0, -radius - 15);
     }

@@ -112,10 +112,10 @@ $(document).ready (function() {
     //NOTE: this code is overwritten in looma-pdf.js because looma-pdf.php displays the PDF in an <iframe> so the current selection in in the iframe
     //NOTE: this code is also overwritten in looma-dictionary.js so that the entered word can be spoken w/o selecting
     //NOTE: this code is also overwritten in looma-clock.js so that the current time can be spoken w/o selecting
+    //NOTE: this code is also overwritten in looma-vocab-flashcard.js so that the current word or defin can be spoken w/o selecting
     //IMPROTANT NOT: be sure to call .OFF() to turn off this click handler before adding another
     //     e.g. use code like this:  $('button.speak').off('click').click(function(){....
     $('button.speak').click(function(){
-
         var toString = window.getSelection().toString();
         console.log ('selected text to speak: ', toString);
         LOOMA.speak(toString);

@@ -21,7 +21,7 @@ $(document).ready(function() {
     var mapDir = "../maps/";
 
     var worldMap = L.map('worldMap',
-            { center : [20, 15],
+               {center : [27.7, 90],
                 zoom : 3 , minZoom: 2, maxZoom: 9,
                 //maxBounds: L.latLngBounds(L.latLng(24,77.5), L.latLng(32,91.5)),
                 fullscreenControl: true,

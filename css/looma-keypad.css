@@ -1,4 +1,3 @@
-.keyboardContainer {
     position: fixed;
     top: 0;
     left: 0;
@@ -142,6 +141,12 @@ br {
     color: black;
     border-radius: 5px;
 }
+
+#textareaEntry {
+    direction:rtl;
+}
+
+#inputEntry {text-align:right;}
 
 .show-keyboard-button {
     position: absolute;

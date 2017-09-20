@@ -106,6 +106,8 @@ br {
     color: black;
 }
 
+#textareaEntry { text-align: right;}
+
 .show-keyboard-button {
     position: absolute;
     bottom: 5%;

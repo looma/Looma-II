@@ -36,11 +36,7 @@ function Listener(event) {
             def = def.slice(0,n) +  def.slice(n+1, p).italics() + def.slice(p);
             */
         
-        if (def == 'plural of') def = def + ' ' + definition.rw;
-        else if (def == 'past tense of') def = def + ' ' + definition.rw;
-        else if (def == 'past perfect tense of') def = def + ' ' + definition.rw;
-        else if (def == 'progress ive form of') def = def + ' ' + definition.rw;
-        else if (def == 'past and past perfect tense of') def = def + ' ' + definition.rw;
+             if (def == 'past tense of') def = def + ' ' + definition.rw;
         else if (def == 'third person singular of') def = def + ' ' + definition.rw;
         
         //This gets the word itself, turns it to uppercase, and displays it in the HTML
@@ -64,9 +60,10 @@ function Listener(event) {
         }
         
     } //end gotAWord
+    
     function gotARootWord(definition) {
         var def = definition.def;
-        if (def.includes('dictionary.reference.com')) def = 'Definition not found';
+        //if (def.includes('dictionary.reference.com')) def = 'Definition not found';
         //the dictionary defines derivative forms with "plural of", "past tense of", etc. and has an entry "rw" for the root word
         // here we reconstruct the definition by combining the generic phrase with the root word from the dictionary
         //

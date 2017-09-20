@@ -8,7 +8,7 @@
  If you are editing this file, make sure your editor can handle unicode! There should be Nepali characters on lines 12 & 13.
  */
 var keys = "123456789.0";
-var nepaliKeys = "ऽ१२३४५६७८९.०";
+var nepaliKeys = "१२३४५६७८९.०";
 
 var destination = undefined;
 var temporaryDestination = undefined;
@@ -71,17 +71,18 @@ function createKeyboard() {
         .attr('id', 'looma-keyboard-container')
         .addClass('keyboardContainer');
 
-    var textareaEntry = $("<textarea></textarea>");
+ /*   var textareaEntry = $("<textarea></textarea>");
     textareaEntry.attr('id', 'textareaEntry');
     textareaEntry.addClass('nokeyboard keyboard-entry');
     keyboardContainer.append(textareaEntry);
-
-    var inputEntry = $("<input></input>");
-    inputEntry.val('');
-    inputEntry.attr('id', 'inputEntry');
-    inputEntry.addClass('nokeyboard keyboard-entry');
+*/
+        var inputEntry = $("<input></input>");
+        inputEntry.val('');
+        inputEntry.attr('id', 'inputEntry');
+        inputEntry.addClass('nokeyboard keyboard-entry');
     keyboardContainer.append(inputEntry);
 
+    
     var keyboard = $("<div></div>")
         .attr('id', 'looma-keyboard')
         .addClass('keyboard');
@@ -162,6 +163,10 @@ function createKeyboard() {
     $(keyboard).append(hideButton);
     $(keyboardContainer).append(keyboard);
     $('body').append(keyboardContainer);
+    
+    LOOMA.rtl(document.getElementById('inputEntry'));
+    
+    
     $('.keyboard-button').click(keyClicked);
 }  //end createKeyboard()
 
@@ -183,8 +188,8 @@ function sendKey(key) {
     } else {
         temporaryDestination.val(newContent);
     }
-    temporaryDestination[0].selectionStart = startPos + 1;
-    temporaryDestination[0].selectionEnd = startPos + 1;
+    temporaryDestination[0].selectionStart = 0;
+    temporaryDestination[0].selectionEnd = 0;
 }
 
 // Remove the last character from the input/textarea.

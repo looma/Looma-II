@@ -39,10 +39,13 @@ function init() {
     }); //end flashcard onclick function
     
     // SPEAK button will say the word, unless text is selected, in which case, it will speak the selected text
-    $('button.speak').click(function () {
+    $('button.speak').off("click").click(function () {
         var selectedString = document.getSelection().toString();
-        var vocabWord = document.getElementById('wordFront').textContent.toString();
-        var toSpeak = (selectedString ? selectedString : vocabWord);
+        var defaultString;
+        if (frontShowing) defaultString = document.getElementById('wordFront').textContent.toString();
+        else defaultString = document.getElementById('definition').textContent.toString();
+        
+        var toSpeak = (selectedString ? selectedString : defaultString);
         console.log('VOCAB: speaking ', toSpeak);
         LOOMA.speak(toSpeak);
     }); //end speak button onclick function
@@ -253,4 +256,5 @@ function prev() {
     }
 }
 
-window.onload = init;
+//window.onload = init;
+$(document).ready (init);

@@ -11,7 +11,7 @@ Description:
 	include ('includes/header.php'); ?>
     <link rel="stylesheet" href="css/looma-keypad.css">    <!-- Looma keyboard CSS -->
 
-	<link href="css/looma-arithmetic.css" type="text/css" rel="stylesheet" />
+	<link href="css/looma-arith-problems.css" type="text/css" rel="stylesheet" />
 
 	</head>
 	<body>
@@ -45,7 +45,9 @@ Description:
 
                 <div class="button-group">
                     <button id="enter" class="looma-button blue-footer"> <?php keyword("Enter"); ?> </button>
+                    <!--
                     <button id="help"  class="looma-button blue-footer"> <?php keyword("Help"); ?>  </button>
+                    -->
                     <button id="reset" class="looma-button blue-footer"> <?php keyword("Clear"); ?> </button>
                 </div>
 
@@ -90,16 +92,14 @@ Description:
 			</tr>
 			</table>
        	</div>
-	</div>
 
-       	<script src="js/looma-arithmetic.js" type="text/javascript"></script>
-		<script src="js/looma-utilities.js" type="text/javascript"></script>
+ <!--   <script src="js/looma-arithmetic.js"       type="text/javascript"></script> -->
 
 
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
 	<!--Include other JS here -->
-      <script src="js/looma-screenfull.js"></script>
-      <script src="js/looma-keypad.js" type="text/javascript"></script>
-        <script src="js/looma-arith-problems.js" type="text/javascript"></script>
+      <script src="js/looma-screenfull.js"     type="text/javascript"></script>
+      <script src="js/looma-keypad.js"         type="text/javascript"></script>
+      <script src="js/looma-arith-problems.js" type="text/javascript"></script>
 </html>

@@ -6,7 +6,7 @@ h2 {
     padding: 8px;
 }
 p {
-    font-size: 2em;
+    font-size: 1em;
     text-align:center;
 }
 form {
@@ -43,7 +43,7 @@ button#submit {
 }
 #definition{
     text-align: center;
-    font-size: 1.67em;
+    font-size: 2em;
     font-weight:bolder;
 }
 #rootWord{

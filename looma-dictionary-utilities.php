@@ -50,8 +50,18 @@ if (isset($_GET["cmd"]))
 
 			$query = array('en' => new MongoRegex("/^$englishWord$/i"));  //NOTE: using regex to do a case insensitive search for the word
 			$word = $dictionary_collection -> findOne($query);
+
+            if (! $word) {  // if the WORD is not found, see if it is a PLURAL
+                $query = array('plural' => new MongoRegex("/^$englishWord$/i"));  //NOTE: using regex to do a case insensitive search for the word
+                $word = $dictionary_collection -> findOne($query);
+                if ($word) {
+                    $word['part'] = 'Plural of noun: ' . $word['en'];
+                    $word['en'] = $word['plural'];
+                }
+            }
+
 			if($word != null)
-			{   //Add fields with blanks to avoid errors on code that recieves words
+			{   //Add fields with blanks to avoid errors on code that receives words
 				if(!array_key_exists('np', $word))    $word['np'] = '';
 				if(!array_key_exists('en', $word))    $word['en'] = '';
 				if(!array_key_exists('rw', $word))    $word['rw'] = '';

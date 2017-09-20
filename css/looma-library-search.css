@@ -42,6 +42,7 @@ div#search-panel {
     overflow-y:hidden;
     border:2px solid black;
     border-radius:6px;
+    font-size: 1.85em;
 }
 form#search-form *{
     text-align: center;
@@ -107,6 +108,9 @@ div#source-div{
     margin-top: 14px;
     display: none;
 }
+
+.chapter-filter select {color:black;}
+
 span.drop-menu {
     margin-right: 10px;
 }

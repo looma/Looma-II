@@ -114,7 +114,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 /************* Search Bar *************/
 /**************************************/
     echo "<div id='search-bar-div' class='media-filter'>
-            <input id='search-term' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
+            <input id='search-term' type='text' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
             <button id='cancel-search' type='button'>Clear</button>
                         <button id='media-submit' class = \"filesearch\" name=\"search\" value=\"value\" type=\"submit\">
                     <i class=\"fa fa-search\"></i></button>
@@ -125,7 +125,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 /********** File Type Fields **********/
 /**************************************/
     echo "<div id='type-div' class='chkbox-filter media-filter'>
-            <p>Type:</p>";
+            <span>Type:</span>";
 
     $types = array(
         array("pdf", "vid",   "img",   "hist",    "ss",        "map", "evi",          "aud",   "txt", "lesson"),  //tags used as IDs for checkbox html elements
@@ -144,7 +144,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 /********* File Source  Fields ********/
 /**************************************/
     echo "<div id='source-div' class='chkbox-filter media-filter'>
-            <p>Source:</p>";
+            <span>Source:</span>";
 
     $sources = array(
         array("ck12", "phet", "epth", "khan", "w4s"),
@@ -548,6 +548,7 @@ echo "<table id='dir-table'><tr>";
 
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>
+    <script src="js/looma-keyboard.js">  </script>
     <!--<script src="js/jquery-ui.min.js"></script>-->
     <script src="js/looma-library-search.js"></script>
     </body>

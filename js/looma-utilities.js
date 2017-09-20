@@ -421,133 +421,50 @@ lookup : function(word, succeed, fail) {
     return false;
 }, //end LOOKUP
 
-
-/* LOOMA.lookupWord()
-Programmer name: Matt Flower, Maxwell Patterson, Jai Mehra
-Email: matt.flower@menloschool.org , maxwell.patterson@menloschool.org , jai.mehra@menloschool.org
-Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 7/7/2016
-
-    //Gets The JSON Object From dictionary collection in the Database by calling looma-dictionaryutilities.php
-    // displays a popup with the WORD, NP, DEF, etc
-    // NOTE:  this should be re-written to use LOOMA.lookup()
-
-lookupWord : function (text) {   //no longer used
-      var firstWord;
-
-      text = text.trim();
-      if (text.indexOf(' ') !== -1) firstWord = text.substr(0, text.indexOf(' '));
-      else firstWord = text;
-
-      $('#popup').remove();
-
-      var $popup =  $('<div id="popup"/>');
-      var $word =   $('<div id="word"/>');
-      var $nepali = $('<div id="nepali"/>');
-      var $def =    $('<div id="definition"/>');
-      var $pos =    $('<div id="partOfSpeech"/>');
-
-
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-          //Parse JSON
-          var wordJSON = JSON.parse(xmlhttp.responseText);
-
-          //Get All Relevant Information and add it to the POPUP's HTML
-          $word.text(wordJSON.en);
-          $nepali.text(wordJSON.np);
-          if (wordJSON.def =='plural of') wordJSON.def = wordJSON.def + ' ' + wordJSON.rw;
-          $def.text(wordJSON.def);
-          $pos.html('<i>' + wordJSON.part + '</i>');
-
-          $popup.append($word, $nepali, $pos, $def);
-
-          $popup.appendTo('body').hide();
-
-          LOOMA.alert($popup.html(), 15);
-        }
-      };
-      xmlhttp.open("GET", "looma-dictionary-utilities.php?cmd=lookup&word=" + firstWord, true);
-      xmlhttp.send();
-    },   //end lookupWord()
-*/
-
-definitionDiv : function(definition) {
-          var $div =    $('<div />');
-          var $word =   $('<div id="word"/>');
-          var $nepali = $('<div id="nepali"/>');
-          var $pos =    $('<div id="partOfSpeech"/>');
-          var $def =    $('<div id="definition"/>');
-          
-          $word.text(definition.en);
-          $nepali.text(definition.np);
-
-          var def = definition.def.toLowerCase();
-
-           if ((def == 'plural of')
-            || (def == 'past tense of')
-            || (def == 'contraction of')
+defHTML: function (definition, rwdef) {
+        var $div = $('<div />');
+        var $word = $('<div id="word"/>');
+        var $nepali = $('<div id="nepali"/>');
+        var $pos = $('<div id="partOfSpeech"/>');
+        var $def = $('<div id="definition"/>');
+    
+        $word.text(definition.en);
+        $nepali.text(definition.np);
+        $pos.html('<i>' + definition.part + '</i>');
+    
+        var def = definition.def.toLowerCase();
+    
+        if (   (def == 'past tense of')
             || (def == 'comparative form of')
             || (def == 'superlative form of')
             || (def == 'past participle of')
             || (def == 'present participle of')
-            || (def == 'past and past perfect tense of')
+            || (def == 'past tense and past participle of')
             || (def == 'third person singular of'))
-                def += ' ' + definition.rw;
-            
-            $def.text(def);
-            $pos.html('<i>' + definition.part + '</i>');
-
-          return  $div.append($word, $nepali, $pos, $def);
-}, //end LOOMA.definitionDiv()
+            def += ' ' + definition.rw;
     
-        defHTML: function (definition, rwdef) {
-            var $div = $('<div />');
-            var $word = $('<div id="word"/>');
-            var $nepali = $('<div id="nepali"/>');
-            var $pos = $('<div id="partOfSpeech"/>');
-            var $def = $('<div id="definition"/>');
-        
-            $word.text(definition.en);
-            $nepali.text(definition.np);
-            $pos.html('<i>' + definition.part + '</i>');
-        
-            var def = definition.def.toLowerCase();
-        
-            if ((def == 'plural of')
-                || (def == 'past tense of')
-                || (def == 'contraction of')
-                || (def == 'comparative form of')
-                || (def == 'superlative form of')
-                || (def == 'past participle of')
-                || (def == 'present participle of')
-                || (def == 'past and past perfect tense of')
-                || (def == 'third person singular of'))
-                def += ' ' + definition.rw;
-        
-            def = def.replace(/\;/g, ";</p><\p>");
-        
-            $def.html(def);
-        
-            $div.append($word, $nepali, $pos, $def);
-        
-            if (rwdef) {
-                var $rwdef = $('<div id="rwdef"/>');
-                rwdef.def = rwdef.def.replace(/\;/g, "</p><\p>");
-                $rwdef.html(rwdef.def);
-                $div.append($rwdef);
-            }
-        
-            var len = def.length;
-            if (rwdef) len += rwdef.length;
-            if (len < 70) $def.addClass('largeWord');
-            else if (len < 150) $def.addClass('mediumWord');
-            else $def.addClass('smallWord');
-        
-            return $div;
-        }, //end LOOMA.defHTML()
-        
+        def = def.replace(/\;/g, ";</p><\p>");
+    
+        $def.html(def);
+    
+        $div.append($word, $nepali, $pos, $def);
+    
+        if (rwdef) {
+            var $rwdef = $('<div id="rwdef"/>');
+            rwdef.def = rwdef.def.replace(/\;/g, "</p><\p>");
+            $rwdef.html(rwdef.def);
+            $div.append($rwdef);
+        }
+    
+        var len = def.length;
+        if (rwdef) len += rwdef.length;
+        if (len < 70) $def.addClass('largeWord');
+        else if (len < 150) $def.addClass('mediumWord');
+        else $def.addClass('smallWord');
+    
+        return $div;
+    }, //end LOOMA.defHTML()
+    
 // function DEFINE looks up the word and returns HTML containing
 //                 the word, translation, definition, and rootword definition
 define : function(word, succeed, fail) {
@@ -575,7 +492,7 @@ define : function(word, succeed, fail) {
 
 
 //  function POPUPDEFINITION looks up the word and displays its definition in a popup for 'time' seconds
-//
+//          used by LOOKUP button in PDF, history, and looma.js
 popupDefinition : function (word, time) {
 
       function show(html) {
@@ -627,7 +544,7 @@ wordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
 }, //end WORDLIST
 
 
-rtl : function(element) { //enables Right-to-left input for numbers in looma-arith-problems.php
+rtl : function(element) { //enables Right-to-left input for numbers in looma-arith-problems.js
     if (element.setSelectionRange) element.setSelectionRange(0, 0);
 },
 

@@ -26,7 +26,6 @@ function playActivity(event) {
     //OLD CODE: in case click event has IMG or SPAN contained in the BUTTON, get the BUTTON element
     //if (button.nodeName != 'BUTTON') button = button.parentNode;
     LOOMA.setStore('libraryScroll', $("#main-container-horizontal").scrollTop(), 'session');
-    //console.log($("#main-container-horizontal").scrollTop());
     LOOMA.playMedia(button);
 };
 

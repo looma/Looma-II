@@ -16,7 +16,7 @@ File: header.php
       ?>
     <link rel="stylesheet" href="css/looma-map.css">
     <link rel="stylesheet" href="css/leaflet.css">
-    <link rel="stylesheet" href="css/looma-maps-PokharaCity.css" />
+    <link rel="stylesheet" href="css/looma-maps-pokharaCity.css" />
 
     <body>
       <h2>Pokhara City<h2>
@@ -33,7 +33,7 @@ File: header.php
       <script src="js/leaflet.js"></script>
       <script src="js/topojson.js"></script>
       <script src="js/looma-screenfull.js"></script>
-      <script src="js/looma-maps-PokharaCity.js"></script>
+      <script src="js/looma-maps-pokharaCity.js"></script>
 
     </body>
   </html>

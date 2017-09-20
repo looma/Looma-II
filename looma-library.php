@@ -86,7 +86,7 @@ Description:  displays and navigates content folders for Looma
     //////
     foreach (new DirectoryIterator($path) as $fileInfo) {$files[$fileInfo->getFilename()] = $fileInfo; };
 
-    natksort($files);  //PHP key sort, sort on keys [e.g. filenames]
+    $files = natksort($files);  //PHP key sort, sort on keys [e.g. filenames]
 
 /********************************/
 /**********  DIRs  **************/
@@ -171,6 +171,8 @@ Description:  displays and navigates content folders for Looma
         //If the folder being filled is the edited videos it fills it using
         //all of the entries from the edited_videos collection in the database
         $editedVideos = $edited_videos_collection->find();
+        //SORT the found items before sending to client-side
+        $editedVideos->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
          foreach ($editedVideos as $doc) {
                 echo "<td>";
@@ -197,6 +199,9 @@ Description:  displays and navigates content folders for Looma
             $path = $path . "activities/";
             $query = array('ft' => 'EP');
             $epaaths = $activities_collection->find($query);
+            //SORT the found items before sending to client-side
+            $epaaths->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+
             foreach ($epaaths as $doc) {
                 // display an EPAATH play button
                 echo "<td>";
@@ -220,6 +225,8 @@ Description:  displays and navigates content folders for Looma
             //all of the entries from the slideshows collection in the database
 
             $slideshows = $slideshows_collection->find();
+            //SORT the found items before sending to client-side
+            $slideshows->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
              foreach ($slideshows as $slideshow) {
 
@@ -247,6 +254,8 @@ Description:  displays and navigates content folders for Looma
         if($path == "../content/lessons/") {   //populate virtual folder of lesson plans
 
             $lessons = $lessons_collection->find();
+            //SORT the found items before sending to client-side
+            $lessons->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
              foreach ($lessons as $lesson) {
 
@@ -271,6 +280,8 @@ Description:  displays and navigates content folders for Looma
         if($path == "../content/timelines/") {   //populate virtual folder of histories
 
             $histories = $histories_collection->find();
+            //SORT the found items before sending to client-side
+            $histories->sort(array('title' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
              foreach ($histories as $history) {
 
@@ -297,6 +308,8 @@ Description:  displays and navigates content folders for Looma
 
             $query = array('ft' => 'map');
             $maps = $activities_collection->find($query);
+            //SORT the found items before sending to client-side
+            $maps->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
              foreach ($maps as $map) {
 

@@ -33,10 +33,12 @@ function init(){
     resetButton.addEventListener('click', resetAnswer,false);
 
     var answerField = document.getElementById('answer');
-    answerField.addEventListener('keyup',    function(e) {if (arithSubject != 'div') LOOMA.rtl(this);}, false);
-    answerField.addEventListener('keypress', function(e) {if(e.keyCode == enterKey) {checkAnswer();}},false);
+    answerField.addEventListener('keyup',    function(e) {
+        if (arithSubject != 'div') LOOMA.rtl(this);}, false);
+    answerField.addEventListener('keypress', function(e) {
+        if(e.keyCode == enterKey) {checkAnswer();}},false);
 
-/*CALCULATOR initially hidden */
+/*CALCULATOR hidden fall 2017 - use Looma Calculator instead
     document.getElementById('calculator').style.visibility = 'hidden';
     var helpButton = document.getElementById('help');
     helpButton.addEventListener('click', calculator,false);
@@ -96,7 +98,7 @@ function init(){
     var buttonEquals = document.getElementById('=');
     buttonEquals.addEventListener('click', equals,false);
 //end calculator buttons
-
+*/
     var subjectName;
     switch (arithSubject) {
         case 'sub': subjectName = "subtraction"; break;
@@ -195,7 +197,7 @@ function nextGenProb(){
     else if(arithClass == 'class3'){
         if(subject == 'add'){
             randNum1 = (Math.floor(999 * Math.random()) + 1);
-            randNum2 = (Math.floor(999 * randomPlusMinus()) + 1);
+            randNum2 = (Math.floor(999 * Math.random()) + 1);
         }
         else if(subject == 'sub'){
             randNum1 = (Math.floor(99 * Math.random()) + 1);
@@ -214,7 +216,7 @@ function nextGenProb(){
     else if(arithClass == 'class4'){
         if(subject == 'add'){
             randNum1 = (Math.floor(9999 * Math.random()) + 1);
-            randNum2 = (Math.floor(9999 * randomPlusMinus()) + 1);
+            randNum2 = (Math.floor(9999 * Math.random()) + 1);
         }
         else if(subject == 'sub'){
             randNum1 = (Math.floor(999 * Math.random()) + 1);
@@ -232,8 +234,8 @@ function nextGenProb(){
 
     else if(arithClass == 'class5'){
         if(subject == 'add' ){
-            randNum1 = (Math.floor(99999 * randomPlusMinus()) + 1);
-            randNum2 = (Math.floor(99999 * randomPlusMinus()) + 1);
+            randNum1 = (Math.floor(99999 * Math.random()) + 1);
+            randNum2 = (Math.floor(99999 * Math.random()) + 1);
         }
         else if(subject == 'sub'){
             randNum1 = (Math.floor(9999 * Math.random()) + 1);
@@ -251,8 +253,8 @@ function nextGenProb(){
 
     else if(arithClass == 'class6'){
         if(subject == 'add'){
-            randNum1 = (Math.floor(99999 * randomPlusMinus()) + 1);
-            randNum2 = (Math.floor(99999 * randomPlusMinus()) + 1);
+            randNum1 = (Math.floor(99999 * Math.random()) + 1);
+            randNum2 = (Math.floor(99999 * Math.random()) + 1);
         }
         else if(subject == 'sub'){
             randNum1 = (Math.floor(9999 * Math.random()) + 1);
@@ -260,7 +262,7 @@ function nextGenProb(){
         }
         else if(subject == 'mult'){
             randNum1 = (Math.floor(99999 * Math.random()) + 1);
-            randNum2 = (Math.floor(999 * randomPlusMinus()) + 1);
+            randNum2 = (Math.floor(999 * Math.random()) + 1);
         }
         else{  //subject === 'div'
             randNum1 = (Math.floor(99 * Math.random()) + 1);
@@ -270,12 +272,12 @@ function nextGenProb(){
 
     else{  //CLASS 7 or higher
         if(subject == 'add' || subject == 'sub'){
-            randNum1 = (Math.floor(999999 * randomPlusMinus()) + 1);
-            randNum2 = (Math.floor(999999 * randomPlusMinus()) + 1);
+            randNum1 = (Math.floor(999999 * Math.random()) + 1);
+            randNum2 = (Math.floor(999999 * Math.random()) + 1);
         }
         else if(subject == 'mult'){
-            randNum1 = (Math.floor(99999 * randomPlusMinus()) + 1);
-            randNum2 = (Math.floor(9999 * randomPlusMinus()) + 1);
+            randNum1 = (Math.floor(99999 * Math.random()) + 1);
+            randNum2 = (Math.floor(9999 * Math.random()) + 1);
         }
         else{  //subject === 'div'
             randNum1 = (Math.floor(999 * Math.random()) + 1);
@@ -306,7 +308,8 @@ function resetAnswer(){
     var answer = document.getElementById('answer');
     answer.value = '';
     answer.focus();
-};
+    document.getElementById('message-wrong').style.visibility = 'hidden';
+    document.getElementById('message-correct').style.visibility = 'hidden';};
 
 function checkAnswer(){
     var correct, wrong;
@@ -342,7 +345,8 @@ function checkAnswer(){
 
 
 // CALCULATOR for HELP button in arithmetic problems -- need to combine this with the Looma calculator
-function calculator(e){
+// CALCULATOR removed 09 2017 - use looma calculator instead
+/*function calculator(e){
     var calc = document.getElementById('calculator');
     if(calc.style.visibility == 'hidden'){
         calc.style.visibility = 'visible';
@@ -471,5 +475,5 @@ function addToDisp(e){
     prevClicked = e.target.innerHTML;
 }
 //end of CALCULATOR
-
+*/
 window.onload = init;

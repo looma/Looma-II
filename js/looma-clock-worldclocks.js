@@ -192,7 +192,7 @@ window.onload = function() {
     }
 
     function drawName(ctx, name) {
-        ctx.font = "18px Comic-Sans"
+        ctx.font = "18px Comic Sans MS";
         ctx.fillStyle = "yellow";
         ctx.fillText(name, 0, -radius - 15);
     }
@@ -221,7 +221,8 @@ window.onload = function() {
         }
         
         ctx.fillStyle = "yellow";
-        ctx.font = "25px Ariel";
+        ctx.font = "18px Comic Sans MS";
+        //ctx.font = "25px Ariel";
         
         if(printHour >= 12 && printHour < 24) {
             if(printHour != 12) {

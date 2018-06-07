@@ -65,19 +65,23 @@ div#search-bar-div{
     text-align: center;
     margin-top: 14px;
 }
-button#media-submit{
+
+/***************************************/
+/******* Button to switch btwn search mode and folder mode ******/
+/***************************************/
+button#toggle-database{
     position: fixed;
     top:4.5%;
     right:5%;
-    width: 6vw;
-    height: 10vh;
-    padding-bottom: 3.5%;
-    vertical-align: middle;
+    height:10vh;
+    width:6vw;
+    z-index:1000;
     background-image: url("../images/looma-search2.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
     background-color:rgba(200,200,200,0);
 }
+
 input#search-term {
     text-align: left;
     vertical-align: middle;

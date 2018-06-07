@@ -15,7 +15,7 @@ Description:  displays and navigates content folders for Looma
 
         // load: function makeActivityButton
         //params are ($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-        require ('includes/activity-button.php');
+        require('includes/looma-utilities.php');
 ?>
 
     <link rel = "Stylesheet" type = "text/css" href = "css/looma-library.css">
@@ -36,31 +36,6 @@ Description:  displays and navigates content folders for Looma
                 return $new_array;
             }; //end natksort()
 
-            function folderName ($path) {
-                // strip trailing '/' then get the last dir name,
-                // by finding the remaining last '/' and substr'ing
-                 $a = explode("/", $path);
-                 return $a[count($a) - 2];
-            };  //end FOLDERNAME()
-
-            function isEpaath($fp) {
-                if (mb_substr($fp, -7, 7) == "epaath/")
-                     return true;
-                else return false;
-            }; //end function isEpaath
-
-            function isHTML($fp) {
-                if ( $fp != '../content/Khan' && file_exists($fp . "/index.html") && !isEpaath($fp))
-                     return true;
-                else return false;
-            };  //end function isHTML
-
-            function thumb_image ($fp) {  //for directories, look for filename "thumbnail.png" for a thumbnail representing the contents
-                if (file_exists($fp . "/thumbnail.png")) {
-                     return "<img src='$fp/thumbnail.png' >"; }
-                else return "";
-            }; //end function thumbnail
-
  //***********MAIN CODE **********//
 
 // get filepath to use for start of DIR traversal
@@ -70,7 +45,7 @@ Description:  displays and navigates content folders for Looma
 
     echo "<br><h3 class='title'>"; keyword('Looma Library'); echo ":  " . folderName($path) . "</h3>";
 
-    echo "<a href='looma-library-search.php'><button id='media-submit' class='filesearch black-border'></button></a>";
+    echo "<button id='toggle-database' class='filesearch black-border'></button>";
 
 //  first list directories in this directory
     echo "<br><table id='dir-table'><tr>";
@@ -137,7 +112,7 @@ Description:  displays and navigates content folders for Looma
 
                 echo "<td><a href='looma-library.php?fp=" . $path . $file .
                 "/'><button class='activity img zeroScroll'>" .
-                thumb_image($path . $file) . $file . "</button></a></td>";
+                folderThumbnail($path . $file) . $file . "</button></a></td>";
             }
     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 

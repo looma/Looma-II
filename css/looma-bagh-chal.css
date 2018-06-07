@@ -1,0 +1,113 @@
+#main-container-horizontal {
+}
+
+#fullscreen {
+    max-height:100%;
+    max-width:100%;
+    overflow:hidden;
+}
+
+
+#corral {
+    position:absolute;
+    bottom:20vh;
+    left:3vw;
+    height:60vh;
+    width:7vw;
+    float:left;
+    border-radius:1vh;
+    
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    background-color:lightgoldenrodyellow;
+}
+
+#game {
+    position:absolute;
+    left:30vw;
+    top:5vh;
+
+    height:80vh;
+    width:80vh;
+    
+    padding:3vh;
+    border-radius:1vh;
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap:1vh;
+    background-color:lightskyblue;
+}
+
+#board {
+    position:absolute;
+    top:8.5vh;
+    left:8.5vh;
+    width:77%;
+    height:77%;
+    opacity:0.5;
+}
+
+svg {
+    stroke:#ddd;
+}
+
+.spot {
+    height:12vh;
+    width:12vh;
+    margin:auto;
+    background-color:yellow;
+    border-radius:2vh;
+    vertical-align:middle;
+    text-align:center;
+}
+
+.tiger {
+    height:7vh;
+    width:7vh;
+    margin:1.5vh;
+    border-radius:3.5vh;
+    background-color:red;
+    z-index:2;
+}
+
+.goat {
+    height:5vh;
+    width:5vh;
+    margin:auto auto;
+    border-radius:2.5vh;
+    background-color:green;
+    z-index:3;
+}
+
+.legal {border:2px solid red;}
+
+button#newgame{
+    position: absolute;
+    width:12%;
+    height:15%;
+    right: 6vh;
+    top: 10vh;
+    font-size:32px;
+}
+button#info{
+     position: absolute;
+     width:12%;
+     height:15%;
+     right: 6vh;
+     top: 26vh;
+
+    background-position: center;
+    background-color:white;
+    background-image: url("../images/info.png");
+    background-repeat: no-repeat;
+    background-size: 50% 75%;
+ }
+.title {
+    font-size:3em;
+    float:left;
+    margin-left:5vw;
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}

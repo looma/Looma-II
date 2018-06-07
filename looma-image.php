@@ -24,13 +24,12 @@ Description: Video viewer page for Looma 2
 	<div id="main-container-horizontal">
 		<div class="viewer" id="fullscreen">
 			<?php echo	'<img src="' . $filepath . $filename . '">' ?>
-			<button  id="fullscreen-control"></button><br>
+			<button  id="fullscreen-control" class="looma-control-button"></button><br>
 		</div>
 	</div>
 
    	<?php include ('includes/toolbar.php'); ?>
   	<?php include ('includes/js-includes.php'); ?>
-  	<script src="js/looma-screenfull.js"></script>
    <!-- nothing in looma-image.js for now
         <script src="js/looma-image.js"></script>
     -->

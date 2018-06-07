@@ -12,9 +12,7 @@ Description:
 'use strict';
 
 function populateVoiceList() {
-  if(typeof speechSynthesis === 'undefined') {
-    return;
-  }
+  if(typeof speechSynthesis === 'undefined') { return; }
 
   var voices = speechSynthesis.getVoices();
 
@@ -36,8 +34,14 @@ function populateVoiceList() {
 
 
 $(document).ready (function() {
-    $('.theme').change(LOOMA.changeTheme); // change theme when a theme button is clicked
-    $('.theme#' + LOOMA.readStore('theme', 'cookie')).attr('checked', 'checked'); //add checkmark on current theme
+    
+    $('#themes').change(function () {  // change theme when a theme button is clicked
+        var newTheme = encodeURIComponent(this.value);
+        LOOMA.changeTheme(newTheme);
+        //$(this).attr('selected', true);
+});
+    
+    //$('.theme#' + LOOMA.readStore('theme', 'cookie')).attr('checked', 'checked'); //add checkmark on current theme
 
 //new code to display a list of speechSynthesis voices
 /*
@@ -46,14 +50,14 @@ $(document).ready (function() {
                 };
 */
 
-    $('.voice').change(function() {
+    $('#voices').change(function() {
                         var newVoice = encodeURIComponent(this.value);
                         var engine = this.getAttribute('data-engine');
                         LOOMA.changeVoice(newVoice); // change voice when voice button is clicked
                         LOOMA.speak('the voice has been changed', engine, newVoice);
                     });
 
-    $('.voice#' + LOOMA.readStore('voice', 'cookie')).attr('checked', 'checked'); //add checkmark on current voice
+    //$('.voice#' + LOOMA.readStore('voice', 'cookie')).attr('checked', 'checked'); //add checkmark on current voice
 
 
 
@@ -62,14 +66,15 @@ $(document).ready (function() {
 
     if (!LOOMA.loggedIn())  //not logged in
     {   $('#login-status').text('You are not logged in');
-        $('.login').addClass('loggedIn').text('Login for Advanced Settings').click( function(){ window.location = "looma-login.php";});
+        $('.login').addClass('loggedIn').text('Login').click( function(){ window.location = "looma-login.php";});
 
     }
     else //logged in
     {   var loginname = LOOMA.readStore('login', 'cookie');
         $('#login-status').text("You are logged in as '" + loginname + "'");
-        $('.settings-control').show();                       // show the teacher tools
-        if (loginname == 'skip') $('.admin-control').show(); // some tools arent debugged. show them only to'skip'
+        $('.settings-control').css('display', 'inline');                       // show the teacher tools
+        if (loginname == 'skip' || loginname === 'david') $('.admin-control').css('display', 'inline');;
+        if (loginname == 'skip' ) $('.exec-control').css('display', 'inline');;
 
         $('.login').toggleClass('loggedIn').text('Logout').click
             ( function()

@@ -35,7 +35,7 @@ Usage: 	<button  id="testvideo"
 <?php $page_title = 'Looma Video Player';
     include ('includes/header.php');
     include ('includes/mongo-connect.php');
-    include ('includes/activity-button.php');
+    include('includes/looma-utilities.php');
 ?>
 
 <link rel="stylesheet" type="text/css" href="css/looma-video.css">
@@ -50,18 +50,18 @@ Usage: 	<button  id="testvideo"
          if (!file_exists("../content/edited videos/")) { mkdir("../content/edited videos/", 0777, true); };
 
 //*************** new init code - SKIP*******
-       
+
         $id = $_REQUEST['id'];
         $dn = $_REQUEST['dn'];
 
-        
+
         //fetch the JSON descriptor of this edited video from mongo
         $query =      array('_id' => new MongoID($id));
         $projection = array('_id' => 0, 'data' => 1);
         $doc = $edited_videos_collection->findOne($query, $projection);
         $data = $doc['data'];
         $masterVideo = array_splice($data, 0, 1);
-        
+
         $masterVideo = $masterVideo[0];
 
         $vidQuery = array('_id' => new MongoID($masterVideo['id']));
@@ -86,7 +86,9 @@ Usage: 	<button  id="testvideo"
 				<div id="video-player">
 					<div id="video-area">
                         <div id="fullscreen">
-    						<video id="video">
+                            <?php include("includes/looma-control-buttons.php"); ?>
+                            <button id="fullscreen-playpause" class="looma-control-button"></button>
+                            <video id="video">
     							<?php echo 'poster="' . $filepath . thumbnail($vidFN) . '">'; ?>
     								<?php echo '<source src="' . $filepath . $vidFN . '"type="video/mp4">' ?>
     						</video>
@@ -108,7 +110,7 @@ Usage: 	<button  id="testvideo"
                             <h3 id="title"></h3>
                         </div>
 
-                        <!-- BUTTON for OPEN new video to EDIT 
+                        <!-- BUTTON for OPEN new video to EDIT
                         <button type="button" class="media" id="open-videos-folder" style="display:none;">
                             <?php //skeyword('New') ?>
                         </button>-->
@@ -131,17 +133,11 @@ Usage: 	<button  id="testvideo"
 				</div>
 
                 <div id="media-controls">
-                            <br>
-                            <button id="fullscreen-control"></button>
-
-                            <button id="fullscreen-playpause"></button>
-
                             <div id="time" class="title">0:00</div>
-
                             <button type="button" class="media play-pause" id="play-pause">
                                 <?php tooltip('Play/Pause'); ?>
                             </button>
-                            <input type="range" class="video" id="seek-bar" value="0"><br><br>
+                            <input type="range" class="video" id="seek-bar" value="0"><br>
                             <button type="button" class="media mute" id="volume">
                                 <?php tooltip('Volume') ?>
                             </button>
@@ -183,6 +179,5 @@ Usage: 	<button  id="testvideo"
 
             <script src = "js/jquery.min.js">          </script>      <!-- jQuery -->
             <script src = "js/looma-utilities.js"> </script>
-            <script src = "js/looma-screenfull.js"></script>
             <script src = "js/looma-media-controls.js"></script>
             <script src = "js/looma-evi-player.js"></script>

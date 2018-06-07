@@ -1,151 +1,380 @@
 /*
-LOOMA javascript file
-Filename: looma-search.js
-Description: supports includes/looma-search.php
-
-Programmer name: Skip
+author: Skip, Bo
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: Nov 16
-Revision: Looma 2.4
+Date:  2017 07, 2018 03
+Revision: Looma 3.0
 
-Comments:
+filename: looma-search.js
+Description:
  */
 
 'use strict';
 
-/* used by looma-search.php which can be included in any Looma page to give search functionality */
+var $searchResultsDiv;
 
-/* the various search elements can be customized, shown or hidden by the JS of the page using looma-search.php*/
-                   // SHOW the search elements that we want:
-                    // for instance: $('#search-filter, #sort-criteria, #search-criteria, #class-subj-filter').show();
-                    // also SHOW checkboxes in #search-filter that we want
-                    //for instance: $('#txt-chk, #vid-chk').show();
+/////////////////////////////
+/////  setCollection()  /////
+/////////////////////////////
+function setCollection(collection) {
+    clearResults();
+    $('#collection').val(collection);
+    
+    
+        //$("#search").trigger("reset");  //reset the whole form, or not???
+    
+    
+    if (collection == 'activities') {
+        $('.media-filter').show();
+        $('.chapter-filter').hide();
+        $('.chapter-input').prop('disabled', true);
+        $('.media-input').prop('disabled',   false);
+    } else { // collection == 'chapters'
+        $('.media-filter').hide();
+        $('.chapter-filter').show();
+        $('.chapter-input').prop('disabled', false);
+        $('.media-input').prop('disabled',   true);
+        
+        $('#chapter-div').hide();
+        $('#chapter-drop-menu').empty();
+        
+    }
+}; //end setCollection
 
-var activity = false;
-
-//open a file browse/search panel
-function opensearch(isActivity) {
-        //make the main page transparent
-        LOOMA.makeTransparent($('#main-container-horizontal'));
-        LOOMA.makeTransparent($('#commands'));
-        $('#cmd-btn').prop('disabled', true);
-        // show SEARCH panel
-        $('#search-panel').show();
-        $('#search-filter, #search-criteria').show();
-        $('#search-bar input').focus();
-        $('#cancel-search').show();
-
-        //hide all type checkboxes - local code will show() the ones we want
-        $('.typ-chk').attr('checked', false).hide(); //hide all type checkboxes - local code will show() the ones we want
-
-        if(isActivity) {
-          activity = true;
-        }
-
-        callbacks['showsearchitems']();
-}; //end opensearch()
-
-//close the file search panel
-function closesearch() {
-        $('#search-panel').hide();
-        $('#search-results').hide();
-        $('#search-results').off('click', 'button');  //remove ON CLICK handler for #search-results button
-        $('#main-container-horizontal').removeClass('all-transparent');
-        $('#commands'                 ).removeClass('all-transparent');
-        $('#cmd-btn').prop('disabled', false);
-
-        //$('.typ-chk').off('click').attr('checked', false).hide();
-        $('.typ-chk input').off('click');
-        $('.typ-chk input').attr('checked', false);
-        $('.typ-chk').hide();
-
-        $('#search-bar input').val('');
-
-        activity = false;
-};  //end closearch()
-
-function displayFileSearchResults(results)
-    {
-        var $display = $('#search-results').empty().append('<table></table>');
-
-        if (results.length == 0) { //print empty button
-
-            $display.append(
-                     "<tr><td>" +
-                          "<button id='cancel-results'>" +
-                             "<h4> <b> No files found - Cancel</b> </h4>" +
-                          "</button>" +
-                      "</td></tr>"
-                ).show();
-            }
-        else {
-            $.each(results, function(index, value) {
-                $display.append(
-                     "<tr><td>" +
-                         "<button class='result' " +
-                            "data-id='" + value['_id']['$id'] + "' " +
-                            "title='" + value['dn'] + "'>" +
-                                "<h4> <b> " + value['dn'] + " </b> </h4>" +
-                                "<h6> Author: " + value['author'] + " " + value['date'] + "</h6>" +
-                                "<div class='result-data'>" + value['data'] + "</div>" +
-                            "</button>" +
-                     "</td</tr>"
-                ).show();
-           });
-        };
-    }; //end displayFileSearchResults()
-
-    function displayActivitySearchResults(results)
-    {
-        var $display = $('#search-results').empty().append('<table></table>');
-
-        if (results.length == 0) { //print empty button
-
-            $display.append(
-                     "<tr><td>" +
-                          "<button id='cancel-results'>" +
-                             "<h4> <b> No files found - Cancel</b> </h4>" +
-                          "</button>" +
-                      "</td></tr>"
-                ).show();
-            }
-        else {
-            $.each(results, function(index, value) {
-                var imgTag = "<img class='resultsimg' src=" + thumbnail(this) + ">";
-
-                $display.append(
-                     "<tr><td>" +
-                         "<button class='result' " +
-                            "data-id='" + value['_id']['$id'] + "' " +
-                            "title='" + value['dn'] + "'>" +
-                                "<div class='thumbnaildiv'>" + imgTag + "</div>" +
-                                "<h4 class='searchTitle'> <b> " + value['dn'] + " </b> </h4>" +
-                                "<div class='result-data'>" + value['data'] + "</div>" +
-                            "</button>" +
-                     "</td</tr>"
-                ).show();
-           });
-        };
+/////////////////////////////
+/////  isFilterSet()    /////
+/////////////////////////////
+function isFilterSet() {
+    var set = false;
+    
+    if ($('#collection').val() == 'activities') {
+        if ($('#search-term').val()){set = true;}
+        $(".flt-chkbx").each( function() {if (this.checked) {set = true;}} );
+        if ($("#key1-menu").val() != "") {set = true;};
+    } else { //collection=='chapters'
+        
+        if ($("#grade-drop-menu").val() != "") {set = true;}
+        else if ($("#subject-drop-menu").val() != "") {set = true;}
     };
+    
+    return set;
+};  //  end isFilterSet()
 
-    $(document).ready(function ()
-    { 
-          $('#search-form').submit(function( event ) {
-                  event.preventDefault();
-                  console.log($( "#search-form" ).serialize());
-                  $.post( "looma-database-utilities.php",
-                           $( "#search-form" ).serialize(),
-                           function (result) {
-                                if(activity) 
-                                {
-                                  displayActivitySearchResults(result);
-                                }
-                                else
-                                {
-                                  displayFileSearchResults(result);
-                                }
-                                return;
-                            },
-                           'json');
-            });
+/////////////////////////////
+/////  setRootKeyword()    /////
+/////////////////////////////
+function setRootKeyword() {
+    // reset keyword dropdowns to level one
+    $.post("looma-database-utilities.php",
+        {cmd: "keywordRoot"},
+        function(kids) {
+            var dropdown = $('#key1-menu').empty();
+            if (kids) {
+                dropdown.prop('disabled', false);
+                //console.log('response is ' + kids);
+                $('<option value="" label="Select..."/>').prop('selected', true).appendTo(dropdown);
+                kids.forEach(function (kid) {
+                    $('<option data-kids=' + kid.kids["$id"] + ' value="' + kid.name + '" label="' + kid.name + '"/>').appendTo(dropdown);
+                });
+            }
+        },
+        'json'
+    );
+    $('#key1-menu').nextAll().empty().val('').prop('disabled', true).text('');
+    //$('#key2-menu').prop('disabled', true).text('');
+    //$('#key3-menu').prop('disabled', true).text('');
+    //$('#key4-menu').prop('disabled', true).text('');
+}; // end setRootKeyword()
+
+//////////////////////////////////////
+/////  restoreKeywordDropdown()  /////
+//////////////////////////////////////
+function restoreKeywordDropdown(level,keys) {
+
+        //function selectKey(option, name) {option.prop('selected', true);};
+        var $menu, $element;
+        var key = keys[level-1]?keys[level-1]:null;
+        
+        if (key && key !== '') {
+            $menu = $('#key' + level + '-menu'); // get the dropdown option elements for this level
+   
+            if ($menu) {
+
+                // dropdown = $menu[value=key];
+                // dropdown = $menu.find(x => x.value === key);
+                // dropdown = $menu['#'+key];
+                //var item = $( 'option#' + key)[ 0 ];
+                
+                $element = $menu.children('option[value="'+key+'"]');
+                $element.prop('selected', true);
+
+                if (level < 4) {
+                    $.post("looma-database-utilities.php",
+                        {cmd: "keywordList", id: $element.data('kids')},
+                        function(kids) {
+                            var nextLevel = level + 1;
+                            var $next = $('#key' + nextLevel + '-menu').empty().val('').prop('disabled', false).text('');
+                            //var next = $menu.next('select').empty().prop('disabled', false);
+                            if (kids) {
+                                
+                                $('<option value="" label="Select..."/>').prop('selected', true).appendTo($next);
+                                
+                                for (var i=0;i<kids.length;i++){
+                                //kids.forEach(function (kid) {
+                                    $('<option data-kids=' + kids[i].kids["$id"] + ' value="' + kids[i].name + '" label="' + kids[i].name + '"/>').appendTo($next);
+                                };
+                                
+                                restoreKeywordDropdown(nextLevel, keys);
+                            };
+                        },
+                      'json'
+                    );
+                }
+            }
+        }
+    }; //end restoreKeywordDropdown()
+
+///////////////////////////////////
+/////  showKeywordDropdown()  /////
+///////////////////////////////////
+function showKeywordDropdown(event) {
+    var menu  = event.target;
+    var selected = menu.options[menu.selectedIndex];
+    
+    //clear and disable younger brothers
+    $(menu).nextAll().empty().val('').prop('disabled', true).text('');
+    var $val = $(menu).val();
+    
+    if ( $val && $val != '' && ($(menu).data('level') < 4))
+        
+        //console.log('asking for keyword list of ' + $(selected).data('kids'));
+        $.post("looma-database-utilities.php",
+            {cmd: "keywordList",
+             id: $(selected).data('kids')},
+             function(kids) {
+                var next = $(menu).next().empty().prop('disabled', false);
+                if (kids) {
+                    //console.log('response is ' + kids);
+                    $('<option value="" label="Select..."/>').prop('selected', true).appendTo(next);
+                    kids.forEach(function (kid) {
+                        $('<option data-kids=' + kid.kids["$id"] + ' value="' + kid.name + '" label="' + kid.name + '"/>').appendTo(next);
+                    });
+                }
+            },
+            'json'
+        );
+}; //end showKeywordDropdown()
+
+///////////////////////////////////
+/////  showChapterDropdown()  /////
+///////////////////////////////////
+function showChapterDropdown($div, $grades, $subjects, $chapters) {
+    if ($div) $div.hide();
+    
+    $chapters.empty();
+    if ( ($grades.val() != '') && ($subjects.val() != ''))
+        $.post("looma-database-utilities.php",
+            {cmd: "chapterList",
+             class:   $grades.val(),
+             subject: $subjects.val()},
+            
+            function(response) {
+                //$('#chapter_label').show();
+                if ($div) $div.show();
+                $('<option/>', {value: "", label: "Select..."}).appendTo($chapters);
+                
+                $chapters.append(response);
+            },
+            'html'
+        );
+};  //end showChapterDropdown()
+
+/////////////////////////////
+/////  clearSearch()    /////
+/////////////////////////////
+function clearSearch() {
+    
+    var prevCollection = $('#collection').val();
+    $("#search").trigger("reset");
+    setCollection(prevCollection);
+    
+    if ($('#collection').val() == 'activities') {
+        //$('.keyword-filter').val("").change();
+        setRootKeyword();
+    } else {
+        $("#grade-drop-menu").val("").change();
+        $("#subject-drop-menu").val("").change();
+        $('#ft-chapter').prop("checked", true);
+    };
+    $('#chapter-div').hide();
+    
+    //$searchResultsDiv.empty();    //.hide();
+    clearResults();
+    /*
+       //this is to keep the form from having unwanted inputs
+       $('.chapter-input').prop('disabled', true);
+       $('.media-input').prop('disabled', false);
+       
+       //clear all search fields
+       $('#search-term').val("").focus();
+       $(".flt-chkbx").each(function () {$(this).prop("checked", false);}); //turns off all checkboxes (type and src)
+       
+       $("#grade-drop-menu, #subject-drop-menu, #chapter-drop-menu").val("").change();
+    */
+    
+    clearState();
+    
+}; // end clearSearch()
+
+/////////////////////////////
+/////  clearState()     /////
+/////////////////////////////
+function clearState () {
+    LOOMA.clearStore('libraryScroll', 'session');
+    LOOMA.clearStore('searchForm',    'session');
+    
+};  //end clearState()
+
+/////////////////////////////
+/////  restoreState()   /////
+/////////////////////////////
+function restoreState () {
+    
+    var $search = $('#search');
+    $search[0].reset();
+    
+    var savedForm = LOOMA.restoreForm($('#search'), 'searchForm');  //restore the search settings
+    // reset some search form fields not handled by LOOMA.restoreForm() using 'savedForm'
+    //for each element of savedForm that has name=='type[]' and name=='src[]' set the type[value] = selected
+    if (savedForm && savedForm.length > 0) {
+        // get the name, value pairs from formSettings and restore them in 'form'
+        $.each(savedForm, function (i, item) {
+            // restore 'type' and 'scr' selections
+            if (item.name == 'type[]') $search[0][item.value].checked = true;
+            if (item.name == 'src[]')  $search[0][item.value].checked = true;
+        });
+    }
+    
+    //setRootKeyword();  // initialize keyword 1 to 'root' of keyword tree from mongo
+    
+    var keys = [];
+    var key1 = savedForm.find(x => x.name === 'key1'); keys.push(key1?key1.value:null);
+    var key2 = savedForm.find(x => x.name === 'key2'); keys.push(key2?key2.value:null);
+    var key3 = savedForm.find(x => x.name === 'key3'); keys.push(key3?key3.value:null);
+    var key4 = savedForm.find(x => x.name === 'key4'); keys.push(key4?key4.value:null);
+    
+    restoreKeywordDropdown(1,keys);  // restore and select keywords 1,2,3,4 if specified
+    
+    if ($('#collection').val() == 'chapters') {
+        setCollection('chapters');
+        //$('.media-input').prop('disabled', true);
+        if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
+            showChapterDropdown($('#chapter-div'), $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'));
+    } else {
+        $('#chapter-div').hide();
+        
+    };
+    
+    //$('#search').submit();  //re-run the search
+    $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
+    
+};  //end restoreState()
+
+/////////////////////////////
+/////  saveState()      /////
+/////////////////////////////
+function saveState () {
+    // save SCROLL position
+    LOOMA.setStore('libraryScroll', $("#main-container-horizontal").scrollTop(), 'session');
+    // save FROM contents
+    LOOMA.saveForm($('#search'), 'searchForm');
+}; //end saveState()
+
+/////////////////////////////
+/////  refreshPage()    /////
+/////////////////////////////
+function refreshPage() {
+    //  if the FORM contents have been saved, then restore them, else make a clean search page with the form cleared
+    var formSettings = LOOMA.readStore('searchForm', 'session');
+    
+    if (formSettings) {
+        restoreState();
+    } else {
+        //start page on media search with all form fields cleared
+        clearState();
+        clearSearch();
+    }
+};  // end refreshPage()
+
+var scrollTimeout = null;
+var scrollDebounce = 5000; //msec delay to debounce scroll stop
+
+/////////////////////////////
+/////  document.ready()  /////
+/////////////////////////////
+$(document).ready(function() {
+    
+    $searchResultsDiv = $('#results-div');  //where to display the search results - override in page's JS if desired
+    
+    $('#search').submit(function( event ) {
+        event.preventDefault();
+    
+        clearResults();
+        $('#innerResultsDiv').empty().show();
+        
+        if (!isFilterSet()) {
+            $searchResultsDiv.html('please select at least 1 filter option before searching');
+        } else {
+            
+            var loadingmessage = $("<p/>Loading results<span id='ellipsis'>.</span>").appendTo("#results-div");
+            
+            var ellipsisTimer = setInterval(
+                 function () {
+                    $('#ellipsis').text($('#ellipsis').text().length < 10 ? $('#ellipsis').text() + '.' : '');
+                },33 );
+            
+            $.post( "looma-database-utilities.php",
+                $("#search").serialize(),
+                function (result) {
+                    loadingmessage.remove();
+                    clearInterval(ellipsisTimer);
+                    displayResults(result);},  // NOTE: displayResults() function is supplied in the JS of the user looma-search (e.g. looma-lessonplan.xx)
+                'json');
+        }
+        return false;
     });
+    
+    $('#ft-media').click(function() {
+        
+        if ($('#collection').val() == 'chapters'){ //changing from CHAPTERS to ACTIVITIES
+            setCollection('activities');
+        }
+    });
+    
+    $('#ft-chapter').click(function() { //changing from ACTIVITIES to CHAPTERS
+        
+        if ($('#collection').val() == 'activities') {
+            setCollection('chapters');
+            
+            if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != '') )
+                 $('#chapter-div').show();
+            else $('#chapter-div').hide();
+        }
+    });
+    
+    $("#grade-drop-menu, #subject-drop-menu").change(function() {
+        showChapterDropdown($('#chapter-div'), $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'))
+    });
+
+    //$("#keyword-div .keyword-dropdown").change(showKeywordDropdown);
+    $("#keyword-div .keyword-dropdown").change(showKeywordDropdown);
+    
+    $('.clear-search').click(clearSearch);
+    
+    //$("#toggle-database").click(function(){saveState(); window.location = "looma-library.php";});//'fade', {}, 1000
+    
+    $("button.zeroScroll").click(function() {LOOMA.setStore('libraryScroll', 0, 'session');});
+    
+    refreshPage();
+    
+}); // end document.ready
+

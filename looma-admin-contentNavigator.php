@@ -104,7 +104,7 @@ else
     {
       //Since all chapters and activities are associated with a chapter, we let the user select the relevant chapter
       $tb_c = $_POST['class'];
-      $tb_s = $_POST['subject'];      
+      $tb_s = $_POST['subject'];
       $collectionName = $_POST['collection'];
       $query = array('class' => $tb_c, 'subject' => $tb_s);
       $chapters = $chapters_collection -> find($query);
@@ -134,7 +134,7 @@ else
         */
         if ($collectionName == 'chapters')
         {
-          echo "<form action='looma-admin-chapterEditor.php' method = 'post'>";
+          echo "<form action='looma-sample-forms.php' method = 'post'>";
         }
         else if ($collectionName == 'activities')
         {

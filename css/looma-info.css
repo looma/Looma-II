@@ -1,29 +1,30 @@
- /*not using keyframe and webkit animation. replaced with jQuery for browser compativility
+ /*not using keyframe and webkit animation. replaced with jQuery for browser compatibility
 @keyframes credits {
   0%   { top:  100%;}
   100% { top: -500%;} /*adjust this for length of the list
 }
 */
-
-#sizemessages {
-    position:absolute;
-    left:3vw;
-    bottom:5vh;
+#main-container-horizontal {
+    display:grid;
+    grid-template-rows:  1fr 1fr 10fr;
+    grid-template-columns: [left] 3fr [middle] 1fr [right];
 }
 
- .screensize, .bodysize{
-	/*color:black;*/
-	vertical-align:middle;
-	text-align:left;
-	font-size: 0.5em;
+#title {
+     grid-row: 1;
+     grid-column: left / middle;
+ }
+
+#about {
+    grid-row: 2 /-1;
+    grid-column: left / middle;
 }
 
  #logos {
- 	margin: 0 25% 0 5%;
- 	background-color: white;
- 	border-radius:5px;
- 	padding:5px;
- 	max-width:75%;
+     background-color: white;
+     border-radius:5px;
+     padding:5px;
+     margin: 0 3vw;
  }
 
  img.loomalogo {
@@ -31,47 +32,67 @@
  }
  
  #credits-title {
-     position:absolute;
-     left:80%;
-     top: 1vh;
+     grid-row: 1;
+     grid-column: middle;
+     margin-right:5vw;
  }
 
- #credits-box {
- 	position:absolute;
- 	  border-radius:5px;
- 	background: #fff;
- 	top:7%;
- 	left:77%;
- 	height: 90%;
- 	width: 20%;
- 	overflow:hidden;
- 	text-align:center;
- 	margin-right:3em;
- 	border: 1px solid black;
+ #credits {
+     grid-row: 2 / -1;
+     grid-column: 2;
  }
 
-#credits-box h2 {
+ #credits {
+     border-radius:5px;
+     background: #fff;
+     color:black;
+     margin:3px 5px;
+     height:100%;
+     width:75%;
+    
+     overflow:hidden;
+     text-align:center;}
+
+ #credits li {list-style-type: none;}
+ 
+/*
+#credits h2 {
 	color:#0000FF;
 	opacity:45%;
 }
 #credits-container {
     margin:2px;
     overflow:hidden;
+    height:50vh;
 }
 
 #credits-wrapper {
-  		margin: 2vw;
-  		position: absolute;
-  		overflow:hidden;
- 		top: 100%; /*start with the content just off the bottom of the box*/
- 		color: #000;
- 		/*not useing webkit animation. replaced with jQuery for browser compativility
- 		-webkit-animation: 40s credits linear infinite;
- 		*/
+    margin: 2vw;
+    overflow:hidden;
+    position:absolute;
+    right: 3vh;
+    
+    top: 100%;
+    color: #000;
+    background-color: white;
 }
+*/
 
 span {
     margin:auto;
 }
 h5 {text-align:left;
     margin-left: 5vw;}
+
+ #sizemessages {
+     position:absolute;
+     left:3vw;
+     bottom:5vh;
+ }
+
+ .screensize, .bodysize{
+     /*color:black;*/
+     vertical-align:middle;
+     text-align:left;
+     font-size: 0.5em;
+ }

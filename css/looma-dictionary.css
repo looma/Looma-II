@@ -1,3 +1,15 @@
+#main-container-horizontal {
+    margin:0;
+}
+
+button.speak {
+    display:inline-block;
+}
+
+button.show-keyboard {
+    display:inline-block;
+}
+
 h2 {
     text-align:center;
     font-size: 25px;
@@ -19,7 +31,7 @@ form {
     padding-top: 8px;
 }
 
-input#word {
+input#input {
 	border: none;
 	border-radius: 6px;
 	margin: auto 0;
@@ -30,9 +42,9 @@ button#submit {
 	font-size: 1em;
 }
 
-#theword{
+#english{
     text-align: center;
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight:bolder;
 }
 
@@ -41,26 +53,28 @@ button#submit {
     font-size: 1.5em;
     font-weight:bolder;
 }
-#definition{
+#definitionDisplay{
     text-align: center;
-    font-size: 2em;
+    font-size: 3em;
     font-weight:bolder;
 }
 #rootWord{
     text-align: center;
-    font-size: 2em;
+    font-size: 1em;
     font-weight:bolder;
 }
 
 #rwNepali{
     text-align: center;
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight:bolder;
 }
 #rwDefinition{
     text-align: center;
-    font-size: 2em;
+    font-size: 1em;
     font-weight:bolder;
 }
 
-
+.native-keyword {
+    display:inline;
+}

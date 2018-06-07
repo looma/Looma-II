@@ -15,8 +15,10 @@ Description:
 /*defines:
  * LOOMA.playMedia()
  * LOOMA.makeActivityButton()
- * LOOMA.typename()
+ * LOOMA.makeChapterButton()
+ * LOOMA.filepath()
  * LOOMA.thumbnail()
+ * LOOMA.typename()
  * LOOMA.capitalize()
  * LOOMA.setStore()
  * LOOMA.readStore()
@@ -25,15 +27,16 @@ Description:
  * LOOMA.restoreForm()
  * LOOMA.loggedIn()
  * LOOMA.translate()
+ * LOOMA.translatableSpans()
  * LOOMA.lookup()
- * LOOMA.lookupWord()  //no longer used
+ * LOOMA.defHTML()
+ * LOOMA.define()
  * LOOMA.popupDefinition()
  * LOOMA.wordlist()
  * LOOMA.rtl()
  * LOOMA.setTheme()
  * LOOMA.changeTheme()
  * LOOMA.changeVoice()
- * LOOMA.translatableSpans()
  * LOOMA.ch_id()
  * LOOMA.parseCH_ID()
  * LOOMA.getCH_ID()
@@ -44,6 +47,7 @@ Description:
  * LOOMA.alert()
  * LOOMA.confirm()
  * LOOMA.prompt()
+ * LOOMA.$_GET()
  */
 
 var LOOMA = (function() {
@@ -81,6 +85,7 @@ playMedia : function(button) {
 
         case "image":
         case "jpg":
+        case "jpeg":
         case "png":
         case "gif":
             window.location = 'looma-image.php?fn=' + button.getAttribute(
@@ -98,8 +103,8 @@ playMedia : function(button) {
 
         case "pdf":      //PDF
         case "chapter":  //CHAPTER
-            window.location = 'looma-pdf.php?fn=' + button.getAttribute(
-                              'data-fn') +
+            window.location = 'looma-pdf.php?' + '' +
+                              'fn=' + button.getAttribute('data-fn') +
                               '&fp=' + button.getAttribute('data-fp') +
                               '&zoom=' + button.getAttribute('data-zoom') +
                               '&pg=' + button.getAttribute('data-pg');
@@ -171,35 +176,122 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
     // given an ID for an activity in the activities collection in mongo,
     // attach a button [clickable button that launches that activity] to "appendToDiv"
 
+        // NOTE: probably want to attach ALL the attributes of the activity (as data-xxx fields) to the Activity Button
+        // futures uses may be able to use that extra data [e.g. 'src', 'tag1..tag4', 'ch_id', 'cl_lo', 'cl_hi', url]
+    
     //post to looma-database-utilities.php with cmd='openByID' and id=id
     // and result function makes a DIV and calls "succeed(div)"
              $.post("looma-database-utilities.php",
                 {cmd: 'openByID', collection: 'activities', id: id},
                 function(result) {
-                        var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
-                        var $newButton = $(
+  
+                        //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
+                    var fp = (result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
+
+                    var $newButton = $(
                                 '<button class="activity play img" ' +
-                                'data-fn="' + result.fn + '" ' +
-                                fp +
-                                'data-ft="' + result.ft + '" ' +
-                                'data-dn="' + result.dn + '" ' +
-                                'data-id="' + mongoID   + '" >'
+                                'data-fn="' + result.fn   + '" ' +
+                                'data-fp="' + fp + '" ' +
+                                'data-ft="' + result.ft   + '" ' +
+                                'data-dn="' + result.dn   + '" ' +
+                                'data-url="' + result.url + '" ' +
+                                'data-id="' + mongoID     + '" >'
                            );
 
                         $newButton.append($('<img src="' + LOOMA.thumbnail(result.fn, result.fp, result.ft) + '">'));
                         $newButton.append($('<span>').text(result.dn));
                         $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
-
-                        //need to attach clickhandler (LOOMA.playMedia)
-                    },
+                 },
                 'json'
               );
         }, //end makeActivityButton()
+    
+makeChapterButton: function (id, appendToDiv) {
+        $.post("looma-database-utilities.php",
+            {cmd: 'openByID', collection: 'chapters', id: id},
+            function(result) {
+                console.log(result);
+                var chElements = LOOMA.parseCH_ID(id);
+                var subj = chElements['currentSubjectFull'], grade = chElements['currentGradeNumber'];
+                
+                var fn = subj + "-" + grade;
+                var fp = LOOMA.filepath('textbook') + "Class" + grade + "/" + subj + "/";
+                var pn = (result['pn']) ? result['pn'] : result['npn'];
+                
+                var $newButton = $(
+                    '<button class="chapter play img" ' +
+                    'data-fn="' + fn +'.pdf" ' +
+                    'data-fp="' + fp + '" ' +
+                    'data-ft="chapter" ' +
+                    'data-zoom="100" ' +
+                    'data-pg="' + pn + '" >'
+                );
+                
+                var thumbEnd = (result['pn']) ? "_thumb.jpg" : "-Nepali_thumb.jpg";
+                var thumb = fp + fn + thumbEnd;
+                
+                $newButton.append($('<img src="' + thumb + '">'));
+                $newButton.append($('<span>').text(result.dn));
+                $newButton.click(function() {
+                    saveState();
+                    LOOMA.playMedia(this);});
+                $newButton.appendTo(appendToDiv);
+            },
+            'json'
+        );
+    },//end makeChapterButton()
+    
+filepath: function(filetype, filename) {
+        var homedirectory = '../';
+        var path;
+        
+        switch (filetype) {
+            case "mp3": //audio
+                path = homedirectory + "content/audio/";
+                break;
+            
+            case "mp4": //video
+            case "video":
+            case "m4v":
+            case "mov":
+            case "mp5":
+                path = homedirectory + "content/videos/";
+                break;
+            
+            case "jpg": //picture
+            case "jpeg":
+            case "gif":
+            case "png":
+            case "image":
+                path = homedirectory + "content/pictures/";
+                break;
+            
+            case "pdf": //pdf
+                path = homedirectory + "content/pdfs/";
+                break;
+            
+            case "epaath":
+            case "EP":
+                path = homedirectory + "content/epaath/activities/";
+                break;
+            
+            case "html": //html
+                path = homedirectory + "content/html/";
+                break;
+            case "textbook":
+                path = homedirectory + "content/textbooks/";
+                break;
+            
+            default:
+                path = "";
+        }
+        return path;
+}, //end filepath()
 
 
 thumbnail: function (filename, filepath, filetype) {
-            //builds a filepath/filename for the thumbnail of this "filename" based on type
+            //builds a filepath/filename for the thumbnail of this "filename" based on type and source
             var thumbnail_prefix;
             var path;
             var imgsrc;
@@ -207,27 +299,36 @@ thumbnail: function (filename, filepath, filetype) {
 
             imgsrc = "";
 
-            if (filetype == "mp3") {  //audio
+            if (filetype == 'chapter') {
+                imgsrc = homedirectory + "/content/textbooks/" + filepath + filename + "_thumb.jpg";
+            }
+            else if (filepath && filepath.indexOf('/Khan/') >= 0) {
+                imgsrc = homedirectory + '/content/Khan/thumbnail.png';
+            }
+            else if (filepath && filepath.indexOf('/W4S/') >= 0) {
+                imgsrc = homedirectory + '/content/W4S/thumbnail.png';
+            }
+            else if (filetype == "mp3") {  //audio
                 if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
                 imgsrc = path + "thumbnail.png";
             }
             else if (filetype == "mp4" || filetype == "mp5" || filetype == "m4v" || filetype == "mov" || filetype == "video") { //video
-                thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+                thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
                 if (filepath) path = filepath; else path = homedirectory + 'content/videos/';
                 imgsrc = path + thumbnail_prefix + "_thumb.jpg";
             }
-            else if (filetype == "jpg"  || filetype == "gif" || filetype == "png" || filetype == "image" ) { //picture
-                thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+            else if (filetype == "jpg"  || filetype == "jpeg"  || filetype == "gif" || filetype == "png" || filetype == "image" ) { //picture
+                thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
                 if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
                 imgsrc = path + thumbnail_prefix + "_thumb.jpg";
             }
             else if (filetype == "pdf") { //pdf
-                thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+                thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
                 if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
                 imgsrc = path + thumbnail_prefix + "_thumb.jpg";
             }
             else if (filetype == "html") { //html
-                thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+                thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
                 if (filepath) path = filepath; else path = homedirectory + 'content/html/';
                 imgsrc = path + thumbnail_prefix + "_thumb.jpg";
             }
@@ -335,19 +436,26 @@ readCookie : function(name) {
 
 saveForm : function(form, name) {  // save the settings of 'form' sessionStore'
                             // 'form' is a jQuery object representing the form (e.g. $('#formName))
+    var formArray = form.serializeArray();
     LOOMA.setStore( name,
-                    JSON.stringify(form.serializeArray()),
+                    JSON.stringify(formArray),  //NOTE: use JSON.stringify(x.serializeArray() here, not x.serialize()
                     'session');
+    
+    console.log('saving: ' + JSON.stringify(form.serializeArray()));
 }, //end saveForm()
 
 restoreForm : function(form, name) {  // restore the settings of 'form' from sessionStore
-                                // 'form' is a jQuery object representing the form (e.g. $('#formName))
+                                      // 'form' is a jQuery object representing the form (e.g. $('#formName))
     // load FORM values from sessionStore
     var formSettings = JSON.parse(LOOMA.readStore(name, 'session'));
     if (formSettings && formSettings.length > 0) {
         // get the name, value pairs from formSettings and restore them in 'form'
-        $.each(formSettings, function (i, item) {form[item.name] = item.value;});
+        $.each(formSettings, function (i, item) {
+            if (['key1','key2','key3','key4'].indexOf(item.name) === -1 )
+                form[0].elements[item.name].value = item.value;
+        });
     }
+    return formSettings;   //passes the saved form settings back to caller for further processing if neeeded
 },  //end restoreForm()
 
 loggedIn : function() {
@@ -371,11 +479,33 @@ translate : function(language) {
     if (language == 'english') $('#flag').attr('src',
         'images/native-flag.png');
     else /*native*/ $('#flag').attr('src', 'images/english-flag.png');
-
-
-    // DEBUG     console.log("LOOMA.translate: changing language to " + language);
-
+    
 }, // end translate()
+   
+    /**
+     * Generates translatable spans given english and native translations. You will need to know the native translation;
+     * this program doesn't do any translation. For building translatable HTML on client side, e.g. from JS
+     * @param english  - the english phrase
+     * @param native   - the translation of the english phrase
+     * */
+    translatableSpans : function(english, native){
+        var language = LOOMA.readStore('language', 'local');
+    
+        // rewrite to generate the spans once, then set hidden on the correct span
+        if (language == "english") {
+            return "<span class='english-keyword'>" + english +
+                "<span class='xlat'>" + native + "</span>" + "</span>" +
+                "<span class='native-keyword' style='display:none'>" + native +
+                "<span class='xlat'>" + english + "</span>" +
+                "</span>";
+        } else
+            return "<span class='english-keyword' style='display:none'>" + english +
+                "<span class='xlat'>" + native + "</span>" + "</span>" +
+                "<span class='native-keyword'>" + native +
+                "<span class='xlat'>" + english + "</span>" +
+                "</span>";
+    }, //end translatableSpan()
+
 
 //***********  USING THE LOOMA DICTIONARY ***************
 //***********  functions are LOOKUP, POPUPDEFINITION and WORDLIST *****************
@@ -390,7 +520,7 @@ translate : function(language) {
 //                    result.part = part of speech
 //                    result.def = english definition [may be ""]
 //                optional properties:
-//                    result.img = filename for a picture of the word [may be ""]
+//                    result.img = filename for a picture of the word [may be  ""]
 //                    result.phon = phonetic of nepali word [may be ""]
 //                    result.plural = plural of the word
 //                    result.ch_id = code for textbook chapter the word first appears in [may be ""]
@@ -423,12 +553,12 @@ lookup : function(word, succeed, fail) {
 
 defHTML: function (definition, rwdef) {
         var $div = $('<div />');
-        var $word = $('<div id="word"/>');
+        var $english = $('<div id="english"/>');
         var $nepali = $('<div id="nepali"/>');
         var $pos = $('<div id="partOfSpeech"/>');
         var $def = $('<div id="definition"/>');
     
-        $word.text(definition.en);
+        $english.text(definition.en);
         $nepali.text(definition.np);
         $pos.html('<i>' + definition.part + '</i>');
     
@@ -447,7 +577,7 @@ defHTML: function (definition, rwdef) {
     
         $def.html(def);
     
-        $div.append($word, $nepali, $pos, $def);
+        $div.append($english, $nepali, $pos, $def);
     
         if (rwdef) {
             var $rwdef = $('<div id="rwdef"/>');
@@ -564,13 +694,13 @@ setTheme : function() {
     if (!theme) theme = 'looma'; //default THEME is "looma"
 
     $('#theme-stylesheet').attr('href', 'css/looma-theme-' + theme + '.css');
-    location.reload(); //some browsers need RELOAD to show the new THEME [??]
+    //location.reload(); //some browsers need RELOAD to show the new THEME [??]
     // changes the HREF attribute of the LINK with ID 'theme-stylesheet' based on the 'theme' COOKIE value
     return theme;
 }, //end LOOMA.setTheme()
 
-changeTheme : function(e) { //theme change button has been pressed
-    LOOMA.setStore('theme', encodeURIComponent(e.target.value), 'cookie');
+changeTheme : function(newTheme) { //theme change button has been pressed
+    LOOMA.setStore('theme', newTheme, 'cookie');
     LOOMA.setTheme(); //change currently used theme
 }, //end LOOMA.changeTheme()
 
@@ -580,36 +710,11 @@ changeVoice : function(newvoice) { //voice change button has been pressed
 }, //end LOOMA.changeVoice()
 
 
-     /**
-     * Generates translatable spans given english and native translations. You will need to know the native translation;
-     * this program doesn't do any translation. For building translatable HTML on client side, e.g. from JS
-     * @param english  - the english phrase
-     * @param native   - the translation of the english phrase
-     * */
- translatableSpans : function(english, native){
-        var language = LOOMA.readStore('language', 'local');
-
-        // rewrite to generate the spans once, then set hidden on the correct span
-        if (language == "english") {
-            return "<span class='english-keyword'>" + english +
-                "<span class='xlat'>" + native + "</span>" + "</span>" +
-                "<span class='native-keyword' style='display:none'>" + native +
-                "<span class='xlat'>" + english + "</span>" +
-                "</span>";
-        } else
-            return "<span class='english-keyword' style='display:none'>" + english +
-                "<span class='xlat'>" + native + "</span>" + "</span>" +
-                "<span class='native-keyword'>" + native +
-                "<span class='xlat'>" + english + "</span>" +
-                "</span>";
-    }, //end translatableSpan()
-
-
     //utility functions to construct and de-construct CH_IDs
 
     // format for CH_IDs is "1M01" or "9SS02.09", etc  one letter grade in {1..8}, one or two letter subject
     // in {M, EN, S, NP, SS} optional two-digit unit number with ".", required two-digit chapter number
-    // regex: /^[1-8](M|N|S|SS|EN)([0-9][0-9]\.)?[0-9][0-9]$/g
+    // regex: /^[1-8](M|N|S|SS|EN|H|V)([0-9][0-9]\.)?[0-9][0-9]$/g
 
 ch_id   :  function (grade, subject, unit, chapter) {
 
@@ -650,7 +755,7 @@ ch_id   :  function (grade, subject, unit, chapter) {
 
 
     //LOOMA parseCH_ID(s)
-    //  m=s.match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])(\.[0-9][0-9])?$/);
+    //  m=s.match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/);
     //  then if m != null, m[0] is the ch_id,
     //                     m[1] is the class digit,
     //                     m[2] is the subj letter(s),
@@ -671,10 +776,12 @@ ch_id   :  function (grade, subject, unit, chapter) {
             N:  "Nepali",
             M:  "Math",
             S:  "Science",
-            SS: "SocialStudies"};
+            SS: "SocialStudies",
+            H:  "Health",
+            V:  "Vocation"};
 
         if (ch_id) {
-            var pieces = ch_id.toString().match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])(\.[0-9][0-9])?$/);
+            var pieces = ch_id.toString().match(/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/);
 
             if (pieces) {
                 elements['currentGradeNumber'] = pieces[1];
@@ -788,180 +895,200 @@ LOOMA.speak = function(text, engine, voice) {
         //speak the TEXT,
         //using [optional] ENGINE (in {'synthesis', 'mimic'})
         //using [optional] VOICE
-     var playPromise;
-
-    // use speechsynthesis if present
-    if ( !engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) engine = 'synthesis';
-    if ( !engine) engine = 'mimic';  //efault engine is mimic
-    if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_slt'; //get the currently used voice, if any. default VOICE is "slt"
-
-    console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
-
-    var speechButton = document.getElementsByClassName("speak")[0];
-
-    if (LOOMA.speak.animationsInProgress == null) { LOOMA.speak.animationsInProgress = 0; };
-
-    if (LOOMA.speak.speechQueue == null) { LOOMA.speak.speechQueue = []; };
-
-    window.onbeforeunload = function() {
-        console.log("Leaving this page. Stopping Audio");
-        LOOMA.speak.cleanup();
-    };
-
+     if (text != "" ) {
+         var playPromise;
+        
+         // use speechsynthesis if present
+         if (!engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) engine = 'synthesis';
+         if (!engine) engine = 'mimic';  //efault engine is mimic
+         if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_slt'; //get the currently used voice, if any. default VOICE is "slt"
+        
+         console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
+        
+         var speechButton = document.getElementsByClassName("speak")[0];
+        
+         if (LOOMA.speak.animationsInProgress == null) {
+             LOOMA.speak.animationsInProgress = 0;
+         }
+         ;
+        
+         if (LOOMA.speak.speechQueue == null) {
+             LOOMA.speak.speechQueue = [];
+         }
+         ;
+        
+         window.onbeforeunload = function () {
+             console.log("Leaving this page. Stopping Audio");
+             LOOMA.speak.cleanup();
+         };
+        
          /*
          * speak.activate() makes the "Speak" button opqaue and four times as large,
          * to give feedback to the user while the TTS request is waiting.
          * Only called when Mimic is used.
          */
-        LOOMA.speak.activate = function() {
-            if (speechButton) {
-                LOOMA.speak.animationsInProgress += 1;
-                // If no animation is in progress, remember the button size
-                if (LOOMA.speak.animationsInProgress == 1) {
-                    speechButton.oldOpacity = $(speechButton).css("opacity");
-                    speechButton.oldWidth =   $(speechButton).css("width");
-                    speechButton.oldHeight =  $(speechButton).css("height");
-
-                    $(speechButton).animate({
-                        opacity: 1,
-                        width: parseFloat(speechButton.oldWidth) * 2 + "px",
-                        height: parseFloat(speechButton.oldHeight) * 2 + "px",
-                    }, 500);
-                }
-            }
-        }; // end speak.activate()
-
-        /*
-         * speak.disable() makes the "Speak" button translucent and regular sized,
-         * to show the user that the TTS is finished.
-         * Only called when Mimic is used.
-         */
-       LOOMA.speak.disable = function() {
-            if (speechButton) {
-               LOOMA.speak.animationsInProgress -= 1;
-               if (LOOMA.speak.animationsInProgress == 0) {
-                   $(speechButton).animate({
-                        opacity: speechButton.oldOpacity,
-                        width: speechButton.oldWidth,
-                        height: speechButton.oldHeight,
-                    }, 500);}
-            }
-        }; // end speak.disable()
-
-        /*
-         * Resets the TTS and button to their original states (only when Mimic is used).
-         */
-        LOOMA.speak.cleanup = function() {
-            if (speechSynthesis.speaking) speechSynthesis.pause();
-            else
-            {   LOOMA.speak.playingAudio.pause();
-                LOOMA.speak.playingAudio = null;
-                LOOMA.speak.speechQueue = [];
-                LOOMA.speak.disable();
-            }
-        }; // end speak.cleanup
-
-////////////////////////////////
-//start of LOOMA.speak code: ///
-////////////////////////////////
-
-    if ( engine == 'synthesis') {
-            // we use synthesis if the user is running Safari or Chrome.
-            // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
-            // Chromium's speechSynthesis seems to be broken. (re-check this)
-        if (speechSynthesis.speaking) {
-            if (speechSynthesis.paused)
-                speechSynthesis.resume();
-            else speechSynthesis.pause();
-        } else {
-            // speechSynthesis usually accounts for latency itself, so there's no need to queue requests.
-            var speech = new SpeechSynthesisUtterance(text);
-            speechSynthesis.speak(speech);
-        }
-    }
-
-    else { // engine is NOT 'synthesis', therefore call server-side looma-speech.php which uses 'mimic'
-        if (LOOMA.speak.playingAudio != null) {
-            // If speaking, stop the currently playing speech.
-            console.log("Stopping Audio");
-            LOOMA.speak.playingAudio.pause();
-            LOOMA.speak.cleanup();
-        } else {  //else start the new speech
-            console.log("Playing Audio: " + text);
-
-           // To reduce latency before speech starts, split the speech into sentences, and speak each separately.
-           // Splitting over these punctuation marks will usually work.
-            //There are a few cases where it will sound unusual ("Dr.", "Mr.", "Ms.", etc).
-            //It may lag on unusually long sentences without punctuation.
-            var splitSentences = text.split(/[.,?!;:]/);
-            console.log("Speaking " + splitSentences.length + " phrases.");
-
-            var lastAudio = null;
-            var firstAudio = null;
-
-            for (var i = 0; i < splitSentences.length; i++) {
-                var currentText = splitSentences[i];
-                var audioSource;
-                if (voice) {
-                    audioSource = 'looma-mimic.php?text=' +
-                        encodeURIComponent(currentText) +
-                        '&voice=' + encodeURIComponent(voice);
-                } else {
-                    audioSource = 'looma-mimic.php?text=' +
-                        encodeURIComponent(currentText);
-                }
-                // This is like preloading images – all the requests to mimic will execute early, so there won't be lag between phrases.
-                var currentAudio = new Audio(audioSource);
-
-                //this 'onended' handler is attached to each phrase before it is entered into the queue
-                currentAudio.onended = function() {
-                    // When this phrase is over, start the next one, by popping it off the queue
-                    console.log("End of Phrase");
-                    var nextAudio = LOOMA.speak.speechQueue.pop(); // The equivalent of "dequeue". (Pulls from the end of the array.)
-                    if (nextAudio != null) {
-                        LOOMA.speak.playingAudio = nextAudio;
-                        console.log("Playing Next Phrase");
-                        //play the next phrase
-                        playPromise = nextAudio.play();
-                    } else {
-                        // There's nothing else to do, just remove the flag.
-                        console.log("Done with all phrases.");
-                        LOOMA.speak.cleanup();
-                    }
-                };
-
-                if (lastAudio == null) { //for the first phrase, dont put it on the queue, just play it
-                    firstAudio = currentAudio;
-                } else {
-                    //push this phrase onto the queue
-                    LOOMA.speak.speechQueue.unshift(currentAudio); // The equivalent of "enqueue". (Puts it at the beginning of the array.)
-                };
-                lastAudio = currentAudio;
-            }  // end FOR loop which builds the queue of audio phrases to play
-
-            LOOMA.speak.playingAudio = firstAudio;
-            console.log("Playing Phrase");
-            //play the first phrase
-            playPromise = firstAudio.play();
-
-            console.log('promise is ', playPromise);
-
-                    // In browsers that don’t yet support this functionality,
-                    // playPromise won’t be defined.
-                    if (playPromise !== undefined) {
-                      playPromise.then(function() { console.log ('Play started');
-                      }).catch(function(error)    { console.log('Play promise error: ', error);
-                      });
-                    };
-
-            LOOMA.speak.activate();
-            }
-    }  //end of code that calls server-side MIMIC
-}; //end LOOMA.speak()
+         LOOMA.speak.activate = function () {
+             if (speechButton) {
+                 LOOMA.speak.animationsInProgress += 1;
+                 // If no animation is in progress, remember the button size
+                 if (LOOMA.speak.animationsInProgress == 1) {
+                     speechButton.oldOpacity = $(speechButton).css("opacity");
+                     speechButton.oldWidth = $(speechButton).css("width");
+                     speechButton.oldHeight = $(speechButton).css("height");
+                    
+                     $(speechButton).animate({
+                         opacity: 1,
+                         width: parseFloat(speechButton.oldWidth) * 2 + "px",
+                         height: parseFloat(speechButton.oldHeight) * 2 + "px",
+                     }, 500);
+                 }
+             }
+         }; // end speak.activate()
+        
+         /*
+          * speak.disable() makes the "Speak" button translucent and regular sized,
+          * to show the user that the TTS is finished.
+          * Only called when Mimic is used.
+          */
+         LOOMA.speak.disable = function () {
+             if (speechButton) {
+                 LOOMA.speak.animationsInProgress -= 1;
+                 if (LOOMA.speak.animationsInProgress == 0) {
+                     $(speechButton).animate({
+                         opacity: speechButton.oldOpacity,
+                         width: speechButton.oldWidth,
+                         height: speechButton.oldHeight,
+                     }, 500);
+                 }
+             }
+         }; // end speak.disable()
+        
+         /*
+          * Resets the TTS and button to their original states (only when Mimic is used).
+          */
+         LOOMA.speak.cleanup = function () {
+             if (speechSynthesis.speaking) speechSynthesis.pause();
+             else {
+                 LOOMA.speak.playingAudio.pause();
+                 LOOMA.speak.playingAudio = null;
+                 LOOMA.speak.speechQueue = [];
+                 LOOMA.speak.disable();
+             }
+         }; // end speak.cleanup
+    
+    ////////////////////////////////
+    //start of LOOMA.speak code: ///
+    ////////////////////////////////
+        
+         if (engine == 'synthesis') {
+             // we use synthesis if the user is running Safari or Chrome.
+             // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
+             // Chromium's speechSynthesis seems to be broken. (re-check this)
+             if (speechSynthesis.speaking) {
+                 if (speechSynthesis.paused)
+                     speechSynthesis.resume();
+                 else speechSynthesis.pause();
+             } else {
+                 // speechSynthesis usually accounts for latency itself, so there's no need to queue requests.
+                 var speech = new SpeechSynthesisUtterance(text);
+                 speechSynthesis.speak(speech);
+             }
+         }
+        
+         else { // engine is NOT 'synthesis', therefore call server-side looma-speech.php which uses 'mimic'
+             if (LOOMA.speak.playingAudio != null) {
+                 // If speaking, stop the currently playing speech.
+                 console.log("Stopping Audio");
+                 LOOMA.speak.playingAudio.pause();
+                 LOOMA.speak.cleanup();
+             } else {  //else start the new speech
+                 console.log("Playing Audio: " + text);
+                
+                 // To reduce latency before speech starts, split the speech into sentences, and speak each separately.
+                 // Splitting over these punctuation marks will usually work.
+                 //There are a few cases where it will sound unusual ("Dr.", "Mr.", "Ms.", etc).
+                 //It may lag on unusually long sentences without punctuation.
+                 var splitSentences = text.split(/[.,?!;:]/);
+                 console.log("Speaking " + splitSentences.length + " phrases.");
+                
+                 var lastAudio = null;
+                 var firstAudio = null;
+                
+                 for (var i = 0; i < splitSentences.length; i++) {
+                     var currentText = splitSentences[i];
+                     var audioSource;
+                     if (voice) {
+                         audioSource = 'looma-mimic.php?text=' +
+                             encodeURIComponent(currentText) +
+                             '&voice=' + encodeURIComponent(voice);
+                     } else {
+                         audioSource = 'looma-mimic.php?text=' +
+                             encodeURIComponent(currentText);
+                     }
+                     // This is like preloading images – all the requests to mimic will execute early, so there won't be lag between phrases.
+                     var currentAudio = new Audio(audioSource);
+                    
+                     //this 'onended' handler is attached to each phrase before it is entered into the queue
+                     currentAudio.onended = function () {
+                         // When this phrase is over, start the next one, by popping it off the queue
+                         console.log("End of Phrase");
+                         var nextAudio = LOOMA.speak.speechQueue.pop(); // The equivalent of "dequeue". (Pulls from the end of the array.)
+                         if (nextAudio != null) {
+                             LOOMA.speak.playingAudio = nextAudio;
+                             console.log("Playing Next Phrase");
+                             //play the next phrase
+                             playPromise = nextAudio.play();
+                         } else {
+                             // There's nothing else to do, just remove the flag.
+                             console.log("Done with all phrases.");
+                             LOOMA.speak.cleanup();
+                         }
+                     };
+                    
+                     if (lastAudio == null) { //for the first phrase, dont put it on the queue, just play it
+                         firstAudio = currentAudio;
+                     } else {
+                         //push this phrase onto the queue
+                         LOOMA.speak.speechQueue.unshift(currentAudio); // The equivalent of "enqueue". (Puts it at the beginning of the array.)
+                     }
+                     ;
+                     lastAudio = currentAudio;
+                 }  // end FOR loop which builds the queue of audio phrases to play
+                
+                 LOOMA.speak.playingAudio = firstAudio;
+                 console.log("Playing Phrase");
+                 //play the first phrase
+                 playPromise = firstAudio.play();
+                
+                 console.log('promise is ', playPromise);
+                
+                 // In browsers that don’t yet support this functionality,
+                 // playPromise won’t be defined.
+                 if (playPromise !== undefined) {
+                     playPromise.then(function () {
+                         console.log('Play started');
+                     }).catch(function (error) {
+                         console.log('Play promise error: ', error);
+                     });
+                 }
+                 ;
+                
+                 LOOMA.speak.activate();
+             }
+         }  //end of code that calls server-side MIMIC
+     } // end if (text != '')
+ }; //end LOOMA.speak()
 
 //toggle fullscreen display of the element with id="fullscreen"
 LOOMA.toggleFullscreen = function() {
-    if (document.fullscreenElement) document.exitFullscreen(); else document.getElementById('fullscreen').requestFullscreen();
+    if (document.fullscreenElement) document.exitFullscreen();
+    else {
+        
+        var fs =      document.getElementById('video-fullscreen');
+        if (!fs) fs = document.getElementById('fullscreen');
+        
+        fs.requestFullscreen();
+    }
 }; //end LOOMA.toggelFullscreen()
 
 /*

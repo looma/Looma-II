@@ -20,8 +20,8 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
 
     $masks = getMasks();
 ?>
-    <!-- add CSS files for this page:
-        <link rel="stylesheet" href="css/filename.css"> -->
+    <link href="css/looma-games.css" type="text/css" rel="stylesheet" />
+
     </head>
 
     <body>

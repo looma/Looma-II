@@ -17,7 +17,7 @@ Comments:
 	  include ('includes/header.php');
 	  include ('includes/mongo-connect.php');
 
-      if (!loggedin()) header('Location: looma-login.php');
+      if (!loggedin() || loggedin() != 'skip') header('Location: looma-login.php');
 ?>
 
 </head>

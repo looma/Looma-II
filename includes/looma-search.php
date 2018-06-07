@@ -1,116 +1,187 @@
+<!doctype html>
 <!--
-Name: Skip
+Name: Bo, Skip
 Email: skip@stritter.com
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 2016 11
-Revision: Looma 2.4
+Date: 2018 03
+Revision: Looma 2.0.0
 File: includes/looma-search.php
-Description:  popup SEARCH panel for Looma pages
+
+Description:  displays and navigates content folders for Looma 2
 -->
+<!--
     <link rel="stylesheet" href="css/looma-search.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
+-->
 
-    <div id="search-panel">
+<?php
+    require_once ('includes/mongo-connect.php');
 
-        <!--
-            #search-panel has 4 sections. all optional. CSS sets them to display:none. use JS to make them visible
-            the sections are #search-filter, #class-subj-filter, #sort-criteria, and #search-criteria
+/****** creating the search tool ******/
+/**************************************/
+/**************  Search  **************/
+/**************************************/
 
-            in addition, in #search-filter, CSS sets all .typ-chk checkboxes to display:none. JS can turn on/off individual .typ-chk checkboxes.
-        -->
-        <form id="search-form" action="looma-database-utilities.php" method="post">
-            <input type="hidden" id="collection" value="activities" name="collection" />
-            <input type="hidden" id="cmd" value="search" name="cmd" />
+/*
+#search-panel has 5 sections. all optional. CSS sets them to display:none. use JS to make them visible
+the sections are #type-filter, #class-subj-filter, #source-criteria, #keyword-filter and #search-criteria
 
-            <div id="search-filter">
-                <span class="typ-chk"  id="vid-chk">
-                    <input type="checkbox" name="type[]" value="video">   video   </input>
-                </span>
-                <span class="typ-chk"  id="aud-chk">
-                    <input type="checkbox" name="type[]" value="audio">   audio   </input>
-                </span>
-                <span class="typ-chk"  id="img-chk">
-                    <input type="checkbox" name="type[]" value="image">   image   </input>
-                </span>
-                <span class="typ-chk"  id="pdf-chk">
-                    <input type="checkbox" name="type[]" value="pdf">     PDF     </input>
-                <br></span>
-                <span class="typ-chk"  id="txb-chk">
-                    <input type="checkbox" name="type[]" value="textbook">textbook</input>
-                </span>
+in normal use, there is a radio button "media" and "chapter" that switches between showing search/type/keyword/source and showing class-subj-chapter
 
-                <span class="typ-chk"  id="txt-chk">
-                    <input type="checkbox" name="type[]" value="text">    text    </input>
-                </span>
-                <span class="typ-chk"  id="text-template-chk">
-                    <input type="checkbox" name="type[]" value="text-template">text template</input>
-                </span>
+in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. JS can turn on/off individual .typ-chk checkboxes.
+*/
+?>
+<link rel = "Stylesheet" type = "text/css" href = "css/looma-search.css">
 
-                <span class="typ-chk"  id="lesson-chk">
-                    <input type="checkbox" name="type[]" value="lesson">lesson</input>
-                </span>
-                <span class="typ-chk"  id="lesson-template-chk">
-                    <input type="checkbox" name="type[]" value="lesson-template">lesson template</input>
-                </span>
+<div id='search-panel'>
+    <form id='search' name='search'>
+        <input type='hidden' id='collection' value='activities' name='collection'/>
+        <input type='hidden' id='cmd' value='search' name='cmd'/>
 
-                <span class="typ-chk"  id="gam-chk">
-                    <input type="checkbox" name="type[]" value="game">    game    </input>
-                </span>
+  <!--  /**************************************/
+        /********** Media v. Chapter **********/
+        /**************************************/ -->
+        <div id='search-kind'>
+            <input type='radio' name='radio' value='activities' class='filter-radio black-outline' id='ft-media' checked>
+            <label class='filter-label' for='ft-media'>Media</label>
+            <input type='radio' name='radio' value='chapters' class='filter-radio black-outline' id='ft-chapter'>
+            <label class='filter-label' for='ft-chapter'>Chapter</label>
+        </div>
 
-                <span class="typ-chk"  id="ss-chk">
-                    <input type="checkbox" name="type[]" value="slideshow">slideshow</input>
-                </span>
-                <span class="typ-chk"  id="evi-chk">
-                    <input type="checkbox" name="type[]" value="edited video">edited video</input>
-                </span>
-                <hr>
-           </div>
 
-           <div id="class-subj-filter">
-                Class: <select id="class">
-                  <option name="class" value="all" selected>All</option>
-                  <option name="class" value="class1">Class 1</option>
-                  <option name="class" value="class2">Class 2</option>
-                  <option name="class" value="class3">Class 3</option>
-                  <option name="class" value="class4">Class 4</option>
-                  <option name="class" value="class5">Class 5</option>
-                  <option name="class" value="class6">Class 6</option>
-                  <option name="class" value="class7">Class 7</option>
-                  <option name="class" value="class8">Class 8</option>
-                </select>
+<!--    /**************************************/
+        /************* Search Bar *************/
+        /**************************************/  -->
+        <div id='search-bar-div' class='media-filter'>
+            <input id='search-term' type='text' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
+            <button id='media-submit' class = 'filesearch' name='search' value='value' type='submit'>
+            <button class='clear-search' type='button'>Clear</button>
+        </div>
 
-                Subject: <select>
-                  <option name="subj" value="all" selected>All</option>
-                  <option name="subj" value="english">English</option>
-                  <option name="subj" value="nepali">Nepali</option>
-                  <option name="subj" value="math">Math</option>
-                  <option name="subj" value="science">Science</option>
-                  <option name="subj" value="socialstudies">Social Studies</option>
-                </select>
-                <hr>
-            </div>
+<?php
+        /**************************************/
+        /********** File Type Fields **********/
+        /**************************************/
+        echo "<div id='type-div' class='chkbox-filter media-filter'>
+            <span>Type:</span>";
 
-            <div id="sort-criteria">
-                Sort:
-                <input type="radio" name="sort" value="name"> Filename
-                <input type="radio" name="sort" value="type"> Filetype
-                <hr>
-            </div>
+            $types = array(
+            array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "lesson"), //tags used as IDs for checkbox html elements
+            array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "lesson"), //the 'ft' values used in the DB
+            array("PDF", "Video", "Image", "Audio", "History", "HTML", "Slideshow", "Map", "Edited video", "Text", "Lesson"), //human readable versions for labels displayed on checkboxes
+            );
+            for($x = 0; $x < count($types[0]); $x++) {
+                echo "<span class='typ-chk' data-id='" . $types[0][$x] ."-chk'>
+                    <input data-id='" . $types[1][$x] ."' class='media-input flt-chkbx media-filter' type='checkbox' name='type[]' value='" . $types[1][$x] . "'>
+                    <label class='filter-label' for='" . $types[0][$x] . "'>" . $types[2][$x] . "</label>
+                  </span>";
+                //if ($types[1][$x] == "map") echo "<br>";
+            }
+            echo "</div>";
 
-            <div id="search-criteria">
-                <div id="search-bar">Search: &nbsp;
-                    <input type="text" name="search-term" placeholder="enter search term...">&nbsp;
-                <button class = "filesearch" name="search" value="value" type="submit">
-                    <i class="fa fa-search"></i></button>
-                <hr>
-                </div>
-            </div>
-        </form>
 
-        <button id="cancel-search">Cancel</button>
-    </div>
+        /*****************************************/
+        /*********** Keyword Dropdowns  **********/
+        /*****************************************/
+        echo "<div id='keyword-div' class='keyword-filter media-filter'>";
 
-    <div id="search-results">  </div>
-    <div id="search-preview">  </div>
+        // get the ROOT document of the TAGs collection
+        $query = array('name' => 'root', 'level' => 0);
+        $root = $tags_collection -> findOne($query);
 
-    <script src="js/looma-search.js">   </script>
+
+        echo "<span id='keyword-drop-menu'>Keywords:
+                <select name='key1' id='key1-menu' class='media-filter  keyword-filter keyword-dropdown black-border' data-level=1 form='search'>
+                    <option value=''>Select keyword...</option>";
+
+                    for($x = 0; $x < sizeof($root['children']); $x++) {
+                        $y = $root['children'][$x]['name'];
+                        $z = $root['children'][$x]['kids'];
+                        echo "<option value='" . $y . "' data-id='" . $y . "' data-kids='" . $z. "'>" . $y . "</option>";
+                    };
+                echo "</select>";
+
+                echo "<select name='key2' disabled id='key2-menu' class='media-filter keyword-filter keyword-dropdown black-border' data-level=2 form='search'>
+                    <option value='' selected></option>";
+                echo "</select>";
+
+                echo "<select name='key3' disabled id='key3-menu' class='media-filter  keyword-filter keyword-dropdown black-border' data-level=3 form='search'>
+                                <option value='' selected></option>";
+                echo "</select>";
+
+                echo "<select name='key4' disabled id='key4-menu' class='media-filter  keyword-filter keyword-dropdown black-border' data-level=4 form='search'>
+                                <option value='' selected></option>";
+                echo "</select>";
+
+        echo "</span></div>";
+
+
+        /**************************************/
+        /********* File Source  Fields ********/
+        /**************************************/
+        echo "<div id='source-div' class='chkbox-filter media-filter'>
+                    <span>Source:</span>";
+
+        $sources = array(
+            array("ck12", "phet", "epth", "khan", "w4s", "TED"),
+            array("Dr Dann", "PhET", "ePaath", "khan", "wikipedia", "TED"),
+            array("CK-12", "PhET", "ePaath", "Khan", "Wikipedia", "TED"),
+        );
+        for($x = 0; $x < count($sources[0]); $x++){
+            echo "<span class='src-chk' data-id='" . $sources[0][$x] ."-chk'>
+                        <input data-id='" . $sources[1][$x] ."' class='media-input flt-chkbx' type='checkbox' name='src[]'' value='" . $sources[1][$x] . "'>
+                        <label class='filter-label' for='" . $sources[0][$x] . "'>" . $sources[2][$x] . "</label>
+                      </span>";}
+        echo "</div>";
+
+
+        /**************************************/
+        /*********** Grade Dropdown  **********/
+        /**************************************/
+    echo "<div>";
+        echo "<span id='grade-div' class='chapter-filter'>
+                    <span class='drop-menu'>Grade:<select id='grade-drop-menu' class='chapter-input black-border' name='class' form='search'>
+                        <option value='' selected>Select...</option>";
+        for($x = 1; $x <= 10; $x++){echo "<option value='" . $x . "' data-id='" . $x . "'>" . $x . "</option>";}
+
+        echo "</select></span>";
+
+
+        echo "</span>";
+
+
+        /**************************************/
+        /********* Subject Dropdown  **********/
+        /**************************************/
+        echo "<span id='subject-div' class='chapter-filter'>
+          <span class='drop-menu'>Subject:<select id='subject-drop-menu' class='chapter-input black-border' name='subj' form='search'>
+            <option value='' selected>Select...</option>";
+
+        $classInfo = array(
+            array("all", "EN", "N", "M", "S", "SS", "H", "V"),
+            array("All", "English", "Nepali", "Math", "Science", "Social Studies", "Health", "Vocation"),
+        );
+        for($x = 1; $x < count($classInfo[0]); $x++) {
+            echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";}
+
+        echo "</select></span>";
+        echo "</span>";
+
+
+        /**************************************/
+        /********* Chapter Dropdown  **********/
+        /**************************************/
+        echo "<span id='chapter-div' class='chapter-filter'>
+            <span class='drop-menu'>Chapter:<select id='chapter-drop-menu' class='chapter-input black-border' name='chapter' form='search'>
+                    <option value='' selected>Select...</option>
+          </select></span>";
+        echo "</span>";
+
+        echo "<button id='media-submit' class='chapter-filter filesearch black-border' name='search' value='value' type='submit'></button>";
+        echo "<button class='chapter-filter clear-search' type='button'>Clear</button>";
+    echo "</div>";
+
+    echo "</form></div>";
+
+?>
+

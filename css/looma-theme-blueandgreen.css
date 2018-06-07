@@ -20,3 +20,8 @@ button:hover {
   	background-color: #bbb;
   	background-image:none;
   }
+
+button.active {
+    background-color: #0000FF;
+    color:yellow;
+}

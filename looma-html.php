@@ -6,14 +6,13 @@ Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 03
 Revision: Looma 2.0.0
 File: xxxx.php
-Description:  for Looma 2
+Description:  base page for showing HTML content. call with URL=looma.html.php?fp=filepath&fn=filename
 -->
 
 <?php $page_title = 'Looma HTML';
 	  include ('includes/header.php');
 ?>
-	<!-- add CSS files for this page:
-		<link rel="stylesheet" href="css/filename.css"> -->
+    <link rel="stylesheet" href="css/looma-html.css">
 	</head>
 
 	<body>
@@ -21,18 +20,13 @@ Description:  for Looma 2
 		$filename = $_REQUEST['fn'];
 		$filepath = $_REQUEST['fp'];
 	?>
-	<div id="main-container">
 		<div id="main-container-horizontal">
 			<div id="fullscreen">
-				<?php echo "<iframe src='$filepath$filename' allowfullscreen></iframe>"; ?>
-				<button  id="fullscreen-control"></button><br>
-				<button class = "speak"></button>
-                <button class = "lookup"></button>
+                <?php echo "<iframe id='iframe' src='$filepath$filename' allowfullscreen>" ?></iframe>
+                <?php include('includes/looma-control-buttons.php')?>
 			</div>
 		</div>
-	</div>
 
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
-  	<script src="js/looma-screenfull.js"></script>
    	<script src="js/looma-html.js"></script>

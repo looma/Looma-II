@@ -11,19 +11,7 @@ they want to edit a video
 -->
 <?php $page_title = 'Looma Video Player';
 	  include ('includes/header.php');
-      include ('includes/activity-button.php');
-
-	  /*  thumbnail() is included with activity-button.php
-	  function thumbnail ($fn) {
-				//given a CONTENT filename, generate the corresponding THUMBNAIL filename
-				//find the last '.' in the filename, insert '_thumb.jpg' after the dot
-				//returns "" if no '.' found
-				//example: input 'aaa.bbb.mp4' returns 'aaa.bbb_thumb.jpg' - this is the looma standard for naming THUMBNAILS
-		 		$dot = strrpos($fn, ".");
-				if ( ! ($dot === false)) { return substr_replace($fn, "_thumb.jpg", $dot, 10);}
-				else return "";
-      } //end function THUMBNAIL
-    */
+      include('includes/looma-utilities.php');
 ?>
 
     <link rel="stylesheet" type="text/css" href="css/looma-video.css">
@@ -49,58 +37,37 @@ they want to edit a video
 
 			<div id="main-container-horizontal">
 				<div id="video-player">
-					<div id="video-area">
-					    <div id="fullscreen">
-    						<video id="video">
+                    <div id="fullscreen">
+                        <video id="video">
+                            <?php echo 'poster=\"' . $filepath . thumbnail($filename) . '\">';?>
+                            <?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">' ?>
+                        </video>
+                        <div id="fullscreen-buttons">
+                            <?php include ('includes/looma-control-buttons.php');?>
+                            <button id="fullscreen-playpause" class="looma-control-button"></button>
+                        </div>
+                    </div>
+                </div>
 
-    						    <?php echo 'poster=\"' . $filepath . thumbnail($filename) . '\">';?>
-
-    								<?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">' ?>
-    						</video>
-					    </div>
-				   </div>
-				</div>
-                <div id="title-area">
+                <div id="title-area" hidden>
                     <h3 id="title"></h3>
                 </div>
 
 				<div id="media-controls">
 
-					<button id="fullscreen-control"></button>
-					<button id="fullscreen-playpause"></button>
-
                     <div id="time" class="title"></div>
 
 					<button type="button" class="media play-pause"><?php keyword('Play/Pause');?></button>
-					<input type="range" class="video seek-bar" value="0" ><br><br>
+					<input type="range" class="video seek-bar" value="0" ><br>
 					<button type="button" class="media mute"><?php keyword('Volume') ?></button>
 					<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" >
 
-
 				</div>
-
-			<div id="edit-controls">
-
-					<button type="button" class="media hidden_button" id="edit">
-                         <img src="images/edit-icon-below.png" alt="edit-icon">
-                         <?php tooltip("Create Edited Video")?>
-                    </button>
-
- <!--
-                   <div id="login-div">
-                        <button type="button" class="media" id="login" style="display:none;">
-                            <?php keyword('Log In') ?>
-                        </button>
-                    </div>
--->
-
-				</div>
-			</div>
+            </div>
 
         <!--Adds the toolbar to the video player screen-->
         <?php include ('includes/toolbar.php'); ?>
         <?php include ('includes/js-includes.php'); ?>
-        <script src="js/looma-screenfull.js"></script>
         <script src="js/looma-media-controls.js"></script>          <!-- Looma Javascript -->
         <script src="js/looma-video.js"></script>          <!-- Looma Javascript -->
 

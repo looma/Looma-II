@@ -1,0 +1,17 @@
+
+button#fullscreen-control {
+    display:inline-block;
+    right:9vw;
+}
+
+button.speak {
+    display:inline-block;
+    right:9vw;
+    
+}
+
+button.lookup {
+    display:inline-block;
+    right:9vw;
+    
+}

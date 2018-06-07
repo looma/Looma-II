@@ -15,7 +15,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 	require ('includes/mongo-connect.php');
 
     // load: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-    require ('includes/activity-button.php');
+    require('includes/looma-utilities.php');
 	?>
 
 	<!-- add CSS files for this page:  <link rel="stylesheet" href="css/filename.css"> -->
@@ -157,7 +157,8 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
                     break;
 
                 case "image":
-				case "jpg":
+                case "jpg":
+                case "jpeg":
 				case "png":
 				case "gif":
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)

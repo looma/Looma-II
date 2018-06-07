@@ -17,6 +17,11 @@ $(document).ready (function() {
         $('.filter_checkbox').prop('checked', false);
     });
 
+    $('#list').submit (function(){  //submit button clicked
+        // no backend code for this yet
+        event.preventDefault();  //so dont submit the form
+    });
+    
 	$('.theme').change(LOOMA.changeTheme); // change theme when a theme button is clicked
 
 	$('.theme#' + LOOMA.readStore('theme', 'cookie')).attr('checked', 'checked'); //add checkmark on current theme

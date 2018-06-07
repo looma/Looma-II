@@ -1,4 +1,7 @@
- 	<div id="toolbar-container-vertical" class="toolbar">
+
+    <link rel="stylesheet" href="css/looma-toolbar.css">
+
+    <div id="toolbar-container-vertical" class="toolbar">
  		<div class="button-div" id="toolbar-vertical">
 
 			<button id="translate" class="toolbar-button-vertical flag-vertical"><img id="flag" draggable="false" src="images/english-flag.png">
@@ -33,7 +36,7 @@
                 <?php tooltip("Clocks") ?>
             </button>
 
-			<button onclick="parent.location.href = 'looma-map.php';" class="toolbar-button-vertical ">
+			<button onclick="parent.location.href = 'looma-maps.php';" class="toolbar-button-vertical ">
 				<img draggable="false" src="images/maps.png"  height = "70%" >
 				<?php tooltip('Maps');?>
 			</button>
@@ -60,7 +63,7 @@
 
 			<button onclick="parent.location.href = 'looma-settings.php';" class="toolbar-button-vertical ">
 				<img draggable="false" src="images/settings.png"  height = "70%" >
-				<?php tooltip('Settings');?>
+				<?php tooltip('Tools');?>
 			</button>
 
 			<button onclick="parent.location.href = 'looma-info.php';" class="toolbar-button-vertical ">
@@ -72,14 +75,14 @@
 				<img draggable="false" src="images/back-arrow.png" height = "70%"  >
 				<?php tooltip('Back');?>
 			</button>
+        </div>
 
-        <!--  padlock is not formatted correctly for vertical toolbar
-            <img id="padlock" draggable="false" src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
-        -->
-
-			<!--<button  class="toolbar-button-vertical next-prev" onclick="parent.history.forward()">
-				<img draggable="false" src="images/forward-arrow.png" width = "60px" height = "70%" ></button> -->
-
-		</div>
-		<!-- <span class="logo"><img  draggable="false" src="images/logos/LoomaLogoTransparent.png"></span>		 -->
-	</div>
+        <div id="logo-div">
+            <!-- DATETIME ready to turn on. needs to be positioned with CSS-->
+            <span class="logo">
+			    <img  id="logo"   draggable="false" src="images/logos/LoomaLogoTransparent.png" >
+      		</span>
+            <br>
+            <span id="datetime"></span>
+        </div>
+    </div>

@@ -17,6 +17,8 @@ body {
     background-color:#eee;
 }
 
+h1 {background-color:#F0EC1A}
+
 .admin {
     display:none;
 }
@@ -107,4 +109,18 @@ button.result {
 
 #editor b {
     font-weight: bold;
+}
+#dismiss {
+    bottom: 8vh;
+}
+#timelineLeft    {
+    background-size: 100% 100%;
+    background-image: url("../images/carrot-back.png");
+    background-color:white;
+}
+
+#timelineRight {
+    background-size: 100% 100%;
+    background-image: url("../images/carrot-fwd.png");
+    background-color:white;
 }

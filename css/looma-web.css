@@ -1,6 +1,25 @@
 #main-container-horizontal {
-    height: 80vh;
-    top: 10vh;
+    height: 100%;
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}
+#fullscreen {
+    background-color: var(--looma-blue);
+    height:88%;
+}
+
+button.speak {
+    display:inline-block;
+}
+
+button.lookup {
+    display:inline-block;
+}
+
+button.show-keyboard {
+    display:inline-block;
 }
 
 #web-controls * {

@@ -1,7 +1,11 @@
  #media-controls {
-     height:25%;
+     height:20vh;
  }
 
+ #time {
+    height:2vh;
+ }
+ 
 button.play-pause {
     background-image: url("../images/video.png");
     background-size: 100% 100%;
@@ -13,6 +17,7 @@ button.play-pause {
     color: transparent;
     display: inline;
     margin: auto;
+    margin-bottom:3px;
 }
 
 button.mute {

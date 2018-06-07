@@ -2,46 +2,40 @@
     display: none;
 }
 
-div#video-area {
-    height: 100%;
-    position: relative;
-    margin: 0 auto;
-    z-index: 0; /* 1 */
-}
-
-video {
-    height: 100%;
+#video-player {
+    margin:10px auto 0;
 }
 
 button#fullscreen-control {
-	position: absolute;
-	opacity: 0.4;
-	right: 5%;
-    bottom: 15%;
-	height: 10vh;
-	width:  10vh;
-	z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREENf */
-    background-image: url("../images/fullscreen2.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-	background-color:rgba(200,200,200,.5);  /*transparent light gray*/
+    display:inline-block;
 }
 
-.fulldisplay video {width: 100%}
+#fullscreen {
+    height: 75vh;
+    width: 75vw;
+    margin:auto;
+}
+#fullscreen:fullscreen {
+    height: 100vh;
+    width: 100vw;
+}
 
  :-webkit-full-screen {
     background-color: #091F48;
 }
+button#fullscreen-control {
+    position:fixed;
+    bottom:15vh;
+}
 
+#fullscreen-buttons:fullscreen {
+    position:absolute;
+    right:0;
+}
 
 button#fullscreen-playpause {
-	position: absolute;
-    display: none;
-	opacity: 0.4;
-	bottom:27%; /* 5*/
-	right:5%;
-	height: 10vh;
-	width:  10vh;
+    display:none;
+    bottom:26vh;
 	z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
     background-image: url("../images/video.png");
     background-repeat: no-repeat;
@@ -49,10 +43,8 @@ button#fullscreen-playpause {
 	background-color:rgba(200,200,200,1);  /*transparent light gray*/
 }
 
-button#fullscreen-playpause:fullscreen {
-    display:block;
-}
 
+button#fullscreen-playpause:fullscreen,
 button#fullscreen-playpause:-webkit-full-screen {
     display:block;
 }
@@ -228,6 +220,7 @@ div#text-box-area {
     font-weight:bold;
 }
 
+#video-area {margin:auto;}
 
 #added-video-area {
     position: absolute;
@@ -272,10 +265,6 @@ button#rename {
     margin-left: 20px;
     /*margin-right: 2px;
 	left: 5%;*/
-}
-
-#video-player {
-    height: 70%;
 }
 
 /*

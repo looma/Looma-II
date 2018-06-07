@@ -86,6 +86,7 @@ Description:  functions and translation array for Keywords used in Looma 2
 			"Un-mute" => "ध्वनि सुचारुु",
 			"Full screen" => "पूरा पर्दा",
 			"Class" => "कक्षा ",
+			"Grade" => "ग्रेड",
 			"Topic" => "विषय",
 			"Class 1" => "कक्षा १",
 			"Class 2" => "कक्षा २",
@@ -113,7 +114,8 @@ Description:  functions and translation array for Keywords used in Looma 2
 			"Web" => "वेब",
 			"Draw" => "चचित्र कोर",
 			"Info" => "जानकारी",
-			"Settings" => "सेटिङ",
+            "Settings" => "सेटिङ",
+            "Tools" => "सेटिङ",
 			"Games" => "खेलहरु",
 			"अनुवाद" => "Translate",
 			"Activities" => "गतिविधिहरु",
@@ -125,7 +127,7 @@ Description:  functions and translation array for Keywords used in Looma 2
 			"File saved" => "फाइल बचत",
 			"Back to the Paint page" => "फिर्ता रंग पृष्ठमा",
 
-            "To Current Time" => "वर्तमान समय गर्न",
+            "Show Current Time" => "वर्तमान समय गर्न",
             "Digital Clock" => "डिजिटल खेल",
             "World Clocks" => "विश्व घडीहरु",
             "Clock Game" => "घडी खेल",
@@ -150,7 +152,8 @@ Description:  functions and translation array for Keywords used in Looma 2
             "Image" => "छवि",
             "Search Panel" => "सेअर्च पनेल",
             "Hide Panel"   => "हिडे पनेल",
-            "Lesson" => "पाठ"
+            "Lesson" => "पाठ",
+            "Bagh Chal" => "बाघ चाल"
 	); //end array TKW
 
 function keyword($english) {
@@ -164,8 +167,7 @@ function keyword($english) {
 	//
 	// each label has a span with class='tip' to show a tooltip with the translation when hovering over the phrase
 	global $TKW;
-	$native = (array_key_exists($english, $TKW) ? $TKW[$english] : $english); //default if no translation, = 'english'
-
+	$native = (array_key_exists($english, $TKW) ? $TKW[$english] : $english); //default if no translation is the english
 	echo "<span class='english-keyword'>"
 			 . $english .
 			 "<span class='xlat'>" . $native . "</span>" .
@@ -179,7 +181,7 @@ function keyword($english) {
 
 function tooltip($english) {
 		global $TKW;
-		$native = (array_key_exists($english, $TKW) ? $TKW[$english] : $english); //default if no translation, = 'english'
+		$native = (array_key_exists($english, $TKW) ? $TKW[$english] : $english); //default if no translation is the english
 
 		echo "<span class='tip english-tip yes-show'>" . $english . "</span>";
 		echo "<span class='tip native-tip'>" . $native . "</span>";

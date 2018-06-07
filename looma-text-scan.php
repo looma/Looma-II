@@ -26,8 +26,8 @@ include ('includes/mongo-connect.php');
         <div id="display"></div>
         <div id="legend"></div>
         <button class = "lookup"></button>
-        <button class="speak"></button>
-        <button id="fullscreen-control"></button>
+        <button class="speak looma-control-button"></button>
+        <button id="fullscreen-control" class="looma-control-button"></button>
         <button id="next">Next</button>
     </div>
 </div>
@@ -38,6 +38,5 @@ include ('includes/toolbar.php');
 /*include ('includes/toolbar-vertical.php'); */
 include ('includes/js-includes.php');
 ?>
-<script src="js/looma-screenfull.js"></script>
 <script src="js/looma-text-scan.js"></script>
 </body>

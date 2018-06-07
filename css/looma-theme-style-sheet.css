@@ -34,3 +34,9 @@ h1 {font-size: 72pt;}
 h2 {font-size: 48pt;}
 h3 {font-size: 24pt;}
 h4 {font-size: 12pt;}
+
+button.active {
+    background:none;
+    background-color: #080;
+    color:yellow;
+}

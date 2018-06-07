@@ -12,7 +12,7 @@ Description: Initial "histories" page. Takes the user to the history timelines.
 	<?php  $page_title = 'Looma Timeline Histories';
 	include ("includes/header.php");
     require ('includes/mongo-connect.php');
-    require ('includes/activity-button.php');
+    require('includes/looma-utilities.php');
 
 		function makeButton($file, $thumb, $dn) {
 
@@ -36,7 +36,7 @@ Description: Initial "histories" page. Takes the user to the history timelines.
 	?>
 
 	<body>
-	<div id="main-container-horizontal">
+	<div id="main-container-horizontal" class='scroll'>
 		<h2 class="title"> <?php keyword("Looma History Timelines"); ?> </h2>
 		<div class="center">
 			<br>

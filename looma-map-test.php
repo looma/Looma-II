@@ -17,13 +17,13 @@ include ('includes/header.php');
 
 <link rel="stylesheet" href="css/looma-map.css">
 <link rel="stylesheet" href="css/leaflet.css">
-<link rel="stylesheet" href="css/looma-maps-asianCapitals.css" />
+<link rel="stylesheet" href="css/looma-map-asianCapitals.css" />
 
 <body>
-<h2>Asian Capitals</h2>
 <div id="main-container-horizontal">
+    <h2>Asian Capitals</h2>
     <div class="viewer" id="fullscreen">
-        <button id="fullscreen-control"></button>
+        <button id="fullscreen-control" class="looma-control-button"></button>
         <div id="map" style="width: 100%; height: 100%"></div>
 
     </div>
@@ -33,7 +33,6 @@ include ('includes/header.php');
 <!--Include other JS here -->
 <script src="js/leaflet.js"></script>
 <script src="js/topojson.js"></script>
-<script src="js/looma-screenfull.js"></script>
 <script src="js/looma-map-test.js"></script>
 
 </body>

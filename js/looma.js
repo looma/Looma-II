@@ -15,7 +15,9 @@ Description:
         $('#fullscreen-control').off('click').on('click', function (e) {
             e.preventDefault();
             //LOOMA.toggleFullscreen();
-            screenfull.toggle(document.getElementById('fullscreen'));
+            var fs =      document.getElementById('video-fullscreen');
+            if (!fs) fs = document.getElementById('fullscreen');
+            screenfull.toggle(fs);
     }); //end fullscreen
   };
 
@@ -24,7 +26,7 @@ $(document).ready (function() {
     // LOOMA fullscreen display
     // any page can include a button with ID 'fullscreen-control'
     // to allow the user to make the element with id="fullscreen" display in fullscreen
-    // that page must include '<script src="js/looma-screenfull.js"></script>'
+    // that page must include:        <?php include ('includes/js-includes.php'); ?>
 
     restoreFullscreenControl();
 
@@ -38,15 +40,14 @@ $(document).ready (function() {
     var language;
     language = LOOMA.readStore('language', 'local');
     if (!language) {
-        //document.cookie = 'language=english';  //BUG - must set in localstore, not in a cookie
         LOOMA.setStore('language', 'english', 'local');
         language = 'english';
     };
 
     LOOMA.translate(language);
 
-    // when TRANSLATE button is clicked, change the language cookie setting
-    // language cookies values are 'english' or 'native'
+    // when TRANSLATE button is clicked, change the language localStore setting
+    // language localStore values are 'english' or 'native'
     // and re-translate KEYWORDS on the page
     $('#translate').click(function(){
             // toggle the language var ('english' <--> 'native')
@@ -63,8 +64,8 @@ $(document).ready (function() {
     else                  $('#padlock').attr('src','images/padlock-closed.png');
 
     $('#padlock').hover(
-        function() { if (LOOMA.loggedIn()) {$('#login-id').show(); $('#datetime').hide();} },
-        function() {                        $('#login-id').hide(); $('#datetime').show(); }
+        function() { if (LOOMA.loggedIn()) {$('#login-id').show(); } },
+        function() {                        $('#login-id').hide();  }
         );
 
     $('#padlock').click(function(){
@@ -78,10 +79,7 @@ $(document).ready (function() {
             }
         });
     
-    // function quit() {window.history.back();};
-    
-    $('#dismiss').click( function() { quit();});  //uses the QUIT() function from looma-filecommands.js
-
+    $('#dismiss').click( function() { window.history.back();});  //override this in JS if needed
     
     $('.screensize').text('Window size = ' + Math.round(window.outerWidth) + ' x ' + Math.round(window.outerHeight));
     $('.bodysize').text('HTML body size = ' + Math.round($('body').outerWidth()) + ' x ' + Math.round($('body').outerHeight()));
@@ -110,13 +108,20 @@ $(document).ready (function() {
 
     //attach LOOMA.speak() to the '.speak' button
     //NOTE: this code is overwritten in looma-pdf.js because looma-pdf.php displays the PDF in an <iframe> so the current selection in in the iframe
+    //NOTE: this code is overwritten in looma-html.js because looma-html.php displays the PDF in an <iframe> so the current selection in in the iframe
     //NOTE: this code is also overwritten in looma-dictionary.js so that the entered word can be spoken w/o selecting
-    //NOTE: this code is also overwritten in looma-clock.js so that the current time can be spoken w/o selecting
+    //NOTE: this code is also overwritten in Xlooma-c  lockGOOD.js so that the current time can be spoken w/o selecting
     //NOTE: this code is also overwritten in looma-vocab-flashcard.js so that the current word or defin can be spoken w/o selecting
     //IMPROTANT NOT: be sure to call .OFF() to turn off this click handler before adding another
     //     e.g. use code like this:  $('button.speak').off('click').click(function(){....
     $('button.speak').click(function(){
         var toString = window.getSelection().toString();
+    
+        // speak the definition if a lookup popup is showing
+        var $def = $('#definition');
+        if ($def) toString += $def.text();
+    
+    
         console.log ('selected text to speak: ', toString);
         LOOMA.speak(toString);
     });

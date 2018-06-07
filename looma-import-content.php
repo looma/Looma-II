@@ -7,42 +7,29 @@ Revision: Looma 2.0.0
 File: looma-import-content.php
 Description:  navigate content folders and import media files into activities collection in the database
               derived from looma-library.php
+
+      NOTES (2018 03)
+        - navigates in folders in ../content/
+        - allows selecting individual files
+        - allows setting DN and "tags" for those files
+        - backend updates ACTIVITIES collection in Mongo
+
+      CHANGES TO MAKE
+        - use new EDITOR TEMPLATE
+        - change tag inputs to keyword dropdowns
+        - SORT the DIRs and FILEs before displaying
+        - SEARCH not working
+
+        - dont show 'hidden.txt'
+
 -->
 
 <?php   $page_title = 'Looma Import';
         require ('includes/header.php');
         require ('includes/mongo-connect.php');
+        require('includes/looma-utilities.php');
 
         if (!loggedin()) header('Location: looma-login.php');
-
-                function folderName ($path) {
-                    // strip trailing '/' then get the last dir name, by finding the remaining last '/' and substr'ing
-                     $a = explode("/", $path);
-                     return $a[count($a) - 2];
-                };  //end FOLDERNAME()
-
-                function isEpaath($fp) {
-                    //echo "<br>DEBUG: in isEpaath, FP is " . $fp . " Substr is " . mb_substr($fp, -7, 7);
-
-                    if (mb_substr($fp, -7, 7) == "epaath/")
-                         return true;
-                    else return false;
-                }; //end function isEpaath
-
-                function isHTML($fp) {
-
-                    //echo "DEBUG: in isHTML - fp = " . $fp . " and fileexists = " . (file_exists($fp . "/index.html")?"true":"false"). "<br>";
-
-                    if (file_exists($fp . "/index.html") && !isEpaath($fp))
-                         return true;
-                    else return false;
-                };  //end function isHTML
-
-                function thumb_image ($fp) {  //for directories, look for filename "thumbnail.png" for a thumbnail representing the contents
-                    if (file_exists($fp . "/thumbnail.png")) {
-                         return "<img src='$fp/thumbnail.png' >"; }
-                    else return "";
-                }; //end function thumbnail
 
 /////////////////////////
 //////  main code  //////
@@ -77,15 +64,6 @@ Description:  navigate content folders and import media files into activities co
                         <input type="hidden" value="activities" name="collection" />
                         <input type="hidden" id="cmd" value="search" name="cmd" />
                     </form>
-                    <!--  *******************
-
-                    <div id="subfolders">
-                        <button id="showfolders">Change folder</button><br>
-                        <div id="folderlist">
-
-                        </div>
-                    </div>
-                      *******************  -->
 
                  </div>
            </div>
@@ -173,7 +151,8 @@ Description:  navigate content folders and import media files into activities co
         <script src="js/bootstrap.min.js">  </script>
 
 <?php
-        include ('includes/looma-search.php');
+        // ont using SEARCH correctly
+        //include ('includes/looma-search.php');
 ?>
        <script src="js/looma-import-content.js"></script>
 

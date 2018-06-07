@@ -108,17 +108,3 @@ br {
 
 #textareaEntry { text-align: right;}
 
-.show-keyboard-button {
-    position: absolute;
-    bottom: 5%;
-    left: 15%;
-    height: 10%;
-    width: 7.5%;
-    z-index: 1000;
-    opacity: 0.4;
-    background-image: url("../images/keyboard.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 110% 110%;
-    background-color: rgba(200,200,200,0.7);
-}

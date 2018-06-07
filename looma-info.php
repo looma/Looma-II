@@ -18,307 +18,306 @@ Description:  for Looma 2
 
 	<body>
 	<div id="main-container-horizontal">
-		<h2 class="title">Looma Info page</h2>
+        <h2 id="title" class="title">Looma Info page</h2>
 
-	<h3>Looma 2</h3>
-	<h4>Release 3.0, August 2017</h4>
-	<h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
-	<h4>Contact: info AT villagetechsolutions DOT org</h4>
-	<br>
-
-    <h2 id="credits-title">Contributors</h2>
-	<div id="credits-box">
-
-
-		<div id="credits-container"><div id="credits-wrapper">
-		<!-- updated list from DS July '16-->
-
-		<!-- THIS LIST SHOULD BE IN A MONGO COLLECTION -->
-               <p>Akshay Srivatsan</p>
-               <p>Niko Bhatia</p>
-               <p>Alexa Thomases</p>
-               <p>Catie Cassani</p>
-               <p>May Li</p>
-               <p>Vivian Liu</p>
-               <p>Ally Stuart</p>
-               <p>Keeton Martin</p>
-               <p>Mohini Gupta</p>
-               <p>Matthew Phua</p>
-               <p>Julia Wang</p>
-               <p>Mahir Arora</p>
-               <p>Kendall Weingart</p>
-               <p>Taasin Saquib</p>
-               <p>Bo Leschly</p>
-               <p>Aaron Brown</p>
-               <p>Colton Conley</p>
-               <p>Ian Costello</p>
-               <p>Christopher Crouch</p>
-               <p>Charlie Donnelly</p>
-               <p>Ryan Fischbach</p>
-               <p>Matt Flower</p>
-               <p>Connor Kennedy</p>
-               <p>Elysha Kunwar</p>
-               <p>Jai Mehra</p>
-               <p>Anika Padwekar</p>
-               <p>Maxwell Patterson</p>
-               <p>Sam Rosenberg</p>
-               <p>Tinyen Shih</p>
-               <p>Nikhil Singhal</p>
-               <p>John Weingart</p>
-               <p>Thomas Woodside</p>
-               <p>Jane Zafran</p>
-               <p>Alex Manolo</p>
-               <p>Alexander Lee</p>
-               <p>Alexander Vaschenko</p>
-               <p>Alice Eamsherangkoon</p>
-               <p>Alveera Ahsan</p>
-               <p>Aman Kandoi</p>
-               <p>Amanda Reilly</p>
-               <p>Amanda Throckmorton</p>
-               <p>Amy Arsiwala</p>
-               <p>Ana Zamost</p>
-               <p>Andrew Grossnickle</p>
-               <p>Ankit Shah</p>
-               <p>Ankurita Datta</p>
-               <p>Archana Vaidyanathan</p>
-               <p>Arjun Aryal</p>
-               <p>Arsh Saroya</p>
-               <p>Audrey Flower</p>
-               <p>Azwaldo</p>
-               <p>Barbara Butterworth</p>
-               <p>Bibek Pokharel</p>
-               <p>Bijay Niraula</p>
-               <p>Bob Fisher</p>
-               <p>Bob Moore</p>
-               <p>Bobby Basnyat</p>
-               <p>Brahmanand Thakur</p>
-               <p>Brandon Varner</p>
-               <p>Bud Delisle</p>
-               <p>Carol Williams</p>
-               <p>Casey Biemiller</p>
-               <p>Charles Key</p>
-               <p>Chloe Lee</p>
-               <p>Chris Cowdin</p>
-               <p>Chris Strong</p>
-               <p>Chris Urbine</p>
-               <p>Christine Stone</p>
-               <p>Daniel Chan</p>
-               <p>Darren Mans</p>
-               <p>Dave Thompson</p>
-               <p>Dave Young</p>
-               <p>David Kansakar</p>
-               <p>David Sowerwine</p>
-               <p>Deblina Pakhira</p>
-               <p>Dingli Qin</p>
-               <p>Doug Adams</p>
-               <p>Doug Molitor</p>
-               <p>Elis Feci</p>
-               <p>Elise Herrmansfeldt</p>
-               <p>Elise Scher</p>
-               <p>Emile McAnany</p>
-               <p>Emilylou Bice</p>
-               <p>Eryn Ammerman</p>
-               <p>Evan Brown</p>
-               <p>Evan Shapiro</p>
-               <p>Faith Riunga</p>
-               <p>Forrest Miller</p>
-               <p>Gaurav Handa</p>
-               <p>George Kerewicz</p>
-               <p>Grant Dumanian</p>
-               <p>Gretta Sharoyan</p>
-               <p>Griffin Scheinman</p>
-               <p>Gwen Mamanua</p>
-               <p>Haydi Sowerwine</p>
-               <p>Hope Hahn</p>
-               <p>Hope Morton</p>
-               <p>Jared Loving</p>
-               <p>Jaren Herselman</p>
-               <p>Jayden Kunwar</p>
-               <p>Jeannine Thomas</p>
-               <p>Jeremy Kim</p>
-               <p>Jeremy Schwartz</p>
-               <p>Jessica Huang</p>
-               <p>Jim Yurchenko</p>
-               <p>Joe Farnham</p>
-               <p>John D Wilson</p>
-               <p>John McDonnell</p>
-               <p>John Wilson</p>
-               <p>Johnathon Adams</p>
-               <p>Jonathan Luo</p>
-               <p>Joseph Swernofsky</p>
-               <p>Joshua Taylor</p>
-               <p>Justin Cardozo</p>
-               <p>Kamee Vessey</p>
-               <p>Kamila Kaminska-Palarczyk</p>
-               <p>Karin Forssell</p>
-               <p>Kate Lassalle-Klein</p>
-               <p>Kate Lazar</p>
-               <p>Kathy McDevitt</p>
-               <p>Katie Plichta</p>
-               <p>Kevin Shimbo</p>
-               <p>Kielan Crow</p>
-               <p>Lauren Henske</p>
-               <p>Lauren Smith</p>
-               <p>Lee Dennig</p>
-               <p>Lily Barnett</p>
-               <p>Looja Tuladhar</p>
-               <p>Loren Cole</p>
-               <p>Maggie Exton</p>
-               <p>Manika Gartaula</p>
-               <p>Manoj Maharjan</p>
-               <p>Mansi Joshi</p>
-               <p>Marit Knapp</p>
-               <p>Mark Dickson</p>
-               <p>Mark Hunter</p>
-               <p>Matt Gann</p>
-               <p>Matt Whitney</p>
-               <p>Matthew Stern</p>
-               <p>Meera Karki</p>
-               <p>Meili Eubank</p>
-               <p>Melisa Tokmak</p>
-               <p>Mike Wood</p>
-               <p>Milan Lamichane</p>
-               <p>Nabin Acharya</p>
-               <p>Nadim Rabbani</p>
-               <p>Nanda Lal Bhandari</p>
-               <p>Nathan Price</p>
-               <p>Navid Afsarifard</p>
-               <p>Neela Gentile</p>
-               <p>Nihar Wahal</p>
-               <p>Nikhil Bhatia</p>
-               <p>Nirmal Neupane</p>
-               <p>Nitya Subramani</p>
-               <p>Nolan Jimenez</p>
-               <p>Nootan Ghimire</p>
-               <p>Patrick Pollock</p>
-               <p>Paul Michelow</p>
-               <p>Peter Norris</p>
-               <p>Peter Williams</p>
-               <p>Prabhat Adhikari</p>
-               <p>Prakash Karki</p>
-               <p>Rabi Karmacharya</p>
-               <p>Rachelle Morris</p>
-               <p>Raj Gurung</p>
-               <p>Rajan Pangeni</p>
-               <p>Rani Gurung</p>
-               <p>Remy Pieron</p>
-               <p>Rob Grande </p>
-               <p>Roja Nunna</p>
-               <p>Roshan Karki</p>
-               <p>Roshan Ramankutty</p>
-               <p>Roy Stehle</p>
-               <p>Ryan Wareham</p>
-               <p>Sabin Karki</p>
-               <p>Sabu Bista</p>
-               <p>Sam McAlexander</p>
-               <p>Samir Raut</p>
-               <p>Sanjay Amatya</p>
-               <p>Sarah Rood</p>
-               <p>Saraswati Maharjan</p>
-               <p>Saroj Dhakal</p>
-               <p>Sasha Cassidy</p>
-               <p>Saurabh Suryavanshi</p>
-               <p>Shannon Shih</p>
-               <p>Shraddha Shah</p>
-               <p>Shrawan Shrestha</p>
-               <p>Sienna Stritter</p>
-               <p>Silvia Figuera</p>
-               <p>Simon Hall</p>
-               <p>Simon Mwangangi</p>
-               <p>Simran Aurora</p>
-               <p>Sixit Bhatta</p>
-               <p>Skip Stritter</p>
-               <p>Sraddhanjali Acharya</p>
-               <p>Stephanie Claussen</p>
-               <p>Suparna Jasuja</p>
-               <p>Sushil Shrestha</p>
-               <p>Terrie Mui</p>
-               <p>TJ Melanson</p>
-               <p>Tom Faulhaber</p>
-               <p>Topraj Gurung</p>
-               <p>Urja Acharya</p>
-               <p>Veena Singh</p>
-               <p>Vikram Sharma</p>
-               <p>William Hoff</p>
-               <p>Wouter Zwart</p>
-               <p>Zach Jesberger</p>
-
-		</div>
-	  </div>
-	</div>
-
-
-
-		<h4>Tested only in Google Chrome</h4>
-		<h4>Report bugs and suggestions to info AT villagetechsolutions DOT org</h4>
-	<br>
-	<footer>
-		      <!--button showing CC license icon, with link to the license info page -->
-        <span href="looma-info.php">
+        <div id="about">
+            <h3>Looma 2</h3>
+            <h4>Release 3.5, June 2018</h4>
+            <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
+            <h4>Contact:  info AT villagetechsolutions DOT org</h4>
+            <span href="looma-info.php"></span>
             <img src="images/logos/CC-BY-SA.png" height="33px">
 
+                    <!-- copyright notice, with link to vts.org-->
+            <span class='glyphicon glyphicon-copyright-mark'></span>2016
+            <a class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
 
-        <!-- copyright notice, with link to vts.org-->
-        <span class='glyphicon glyphicon-copyright-mark'></span>2016
-        <a class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
-        </span>
+            <br>
+            <h5> Attributions for code and content used in Looma: </h5>
 
-		<br>
-        <h5> Attributions for code and content used in Looma: </h5>
+            <div id="logos">
 
-		<div id="logos">
+                <!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
 
-	<!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
+                <span><img src="images/logos/khan.jpg" height="66px"></span>
+                <span><img src="images/logos/ole-nepal.jpg" height="66px"></span>
+                <span><img src="images/logos/wikipedia.jpg" height="66px"></span>
+                <span><img src="images/logos/PHET.png" height="44px"></span>
 
-		    <span><img src="images/logos/khan.jpg" height="66px"></span>
-			<span><img src="images/logos/ole-nepal.jpg" height="66px"></span>
-            <span><img src="images/logos/wikipedia.jpg" height="66px"></span>
-            <span><img src="images/logos/PHET.png" height="44px"></span>
+                <span><img src="images/logos/leaflet-logo.png" height="66px"></span>
+                <span><img src="images/logos/openstreetmap-logo.png" height="66px"></span>
+                <span><img src="images/logos/google-translate.jpg" height="66px"></span>
+                <span><img src="images/logos/tilemill.png" height="66px"></span>
+                <span><img src="images/logos/mycroft.png" height="33px"></span>
+                <br>
+                <span><img src="images/logos/jquery-logo.png" height="66px"></span>
+                <span><img src="images/logos/css3-html5-logo.png" height="44px"></span>
+                <span><img src="images/logos/mongodb-logo.png" height="66px"></span>
+                <span><img src="images/logos/aptana-logo.png" height="44px"></span>
+                <span><img src="images/logos/intellij.png" height="44px"></span>
+                <span><img src="images/logos/stackoverflow.png" height="66px"></span>
 
-			<span><img src="images/logos/leaflet-logo.png" height="66px"></span>
-			<span><img src="images/logos/openstreetmap-logo.png" height="66px"></span>
-			<span><img src="images/logos/google-translate.jpg" height="66px"></span>
-            <span><img src="images/logos/tilemill.png" height="66px"></span>
-            <span><img src="images/logos/mycroft.png" height="33px"></span>
-<br>
-			<span><img src="images/logos/jquery-logo.png" height="66px"></span>
-			<span><img src="images/logos/css3-html5-logo.png" height="44px"></span>
-            <span><img src="images/logos/mongodb-logo.png" height="66px"></span>
-            <span><img src="images/logos/aptana-logo.png" height="44px"></span>
-            <span><img src="images/logos/intellij.png" height="44px"></span>
-			<span><img src="images/logos/stackoverflow.png" height="66px"></span>
+                <a href="http://www.villagetechsolutions.org"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
+            </div>
+            <br>
 
-			<a href="http://www.villagetechsolutions.org"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
-		</div>
-		<br>
+            <span><img src="images/logos/LoomaLogoTransparent.png" class="loomalogo"></span>
 
-		<span><img src="images/logos/LoomaLogoTransparent.png" class="loomalogo"></span>
+            <h4>Tested only in Google Chrome</h4>
+            <h4>Report bugs and suggestions to:  info AT villagetechsolutions DOT org</h4>
+            <br>
+        </div>
 
-		<br>
+        <h2 id="credits-title">Contributors</h2>
+
+        <div id="credits">
+        <ul>
+        <!-- updated list from DS July '16-->
+
+            <!-- THIS LIST SHOULD BE IN A MONGO COLLECTION -->
+            <!-- or create a text file in includes/ folder and write PHP to read in the text into this 'ul' -->
+            <li> </li><li> </li><li> </li><li> </li><li> </li> <!-- these empty 'li's give a pause at the start -->
+            <li>  - -  </li>
+            <li>Akshay Srivatsan</li>
+            <li>Niko Bhatia</li>
+            <li>Alexa Thomases</li>
+            <li>Catie Cassani</li>
+            <li>May Li</li>
+            <li>Vivian Liu</li>
+            <li>Ally Stuart</li>
+            <li>Keeton Martin</li>
+            <li>Mohini Gupta</li>
+            <li>Matthew Phua</li>
+            <li>Julia Wang</li>
+            <li>Mahir Arora</li>
+            <li>Kendall Weingart</li>
+            <li>Taasin Saquib</li>
+            <li>Bo Leschly</li>
+            <li>Aaron Brown</li>
+            <li>Colton Conley</li>
+            <li>Ian Costello</li>
+            <li>Christopher Crouch</li>
+            <li>Charlie Donnelly</li>
+            <li>Ryan Fischbach</li>
+            <li>Matt Flower</li>
+            <li>Connor Kennedy</li>
+            <li>Elysha Kunwar</li>
+            <li>Jai Mehra</li>
+            <li>Anika Padwekar</li>
+            <li>Maxwell Patterson</li>
+            <li>Sam Rosenberg</li>
+            <li>Tinyen Shih</li>
+            <li>Nikhil Singhal</li>
+            <li>John Weingart</li>
+            <li>Thomas Woodside</li>
+            <li>Jane Zafran</li>
+            <li>Alex Manolo</li>
+            <li>Alexander Lee</li>
+            <li>Alexander Vaschenko</li>
+            <li>Alice Eamsherangkoon</li>
+            <li>Alveera Ahsan</li>
+            <li>Aman Kandoi</li>
+            <li>Amanda Reilly</li>
+            <li>Amanda Throckmorton</li>
+            <li>Amy Arsiwala</li>
+            <li>Ana Zamost</li>
+            <li>Andrew Grossnickle</li>
+            <li>Ankit Shah</li>
+            <li>Ankurita Datta</li>
+            <li>Archana Vaidyanathan</li>
+            <li>Arjun Aryal</li>
+            <li>Arsh Saroya</li>
+            <li>Audrey Flower</li>
+            <li>Azwaldo</li>
+            <li>Barbara Butterworth</li>
+            <li>Bibek Pokharel</li>
+            <li>Bijay Niraula</li>
+            <li>Bob Fisher</li>
+            <li>Bob Moore</li>
+            <li>Bobby Basnyat</li>
+            <li>Brahmanand Thakur</li>
+            <li>Brandon Varner</li>
+            <li>Bud Delisle</li>
+            <li>Carol Williams</li>
+            <li>Casey Biemiller</li>
+            <li>Charles Key</li>
+            <li>Chloe Lee</li>
+            <li>Chris Cowdin</li>
+            <li>Chris Strong</li>
+            <li>Chris Urbine</li>
+            <li>Christine Stone</li>
+            <li>Daniel Chan</li>
+            <li>Darren Mans</li>
+            <li>Dave Thompson</li>
+            <li>Dave Young</li>
+            <li>David Kansakar</li>
+            <li>David Sowerwine</li>
+            <li>Deblina Pakhira</li>
+            <li>Dingli Qin</li>
+            <li>Doug Adams</li>
+            <li>Doug Molitor</li>
+            <li>Elis Feci</li>
+            <li>Elise Herrmansfeldt</li>
+            <li>Elise Scher</li>
+            <li>Emile McAnany</li>
+            <li>Emilylou Bice</li>
+            <li>Eryn Ammerman</li>
+            <li>Evan Brown</li>
+            <li>Evan Shapiro</li>
+            <li>Faith Riunga</li>
+            <li>Forrest Miller</li>
+            <li>Gaurav Handa</li>
+            <li>George Kerewicz</li>
+            <li>Grant Dumanian</li>
+            <li>Gretta Sharoyan</li>
+            <li>Griffin Scheinman</li>
+            <li>Gwen Mamanua</li>
+            <li>Haydi Sowerwine</li>
+            <li>Hope Hahn</li>
+            <li>Hope Morton</li>
+            <li>Jared Loving</li>
+            <li>Jaren Herselman</li>
+            <li>Jayden Kunwar</li>
+            <li>Jeannine Thomas</li>
+            <li>Jeremy Kim</li>
+            <li>Jeremy Schwartz</li>
+            <li>Jessica Huang</li>
+            <li>Jim Yurchenko</li>
+            <li>Joe Farnham</li>
+            <li>John D Wilson</li>
+            <li>John McDonnell</li>
+            <li>John Wilson</li>
+            <li>Johnathon Adams</li>
+            <li>Jonathan Luo</li>
+            <li>Joseph Swernofsky</li>
+            <li>Joshua Taylor</li>
+            <li>Justin Cardozo</li>
+            <li>Kamee Vessey</li>
+            <li>Kamila Kaminska-Palarczyk</li>
+            <li>Karin Forssell</li>
+            <li>Kate Lassalle-Klein</li>
+            <li>Kate Lazar</li>
+            <li>Kathy McDevitt</li>
+            <li>Katie Plichta</li>
+            <li>Kevin Shimbo</li>
+            <li>Kielan Crow</li>
+            <li>Lauren Henske</li>
+            <li>Lauren Smith</li>
+            <li>Lee Dennig</li>
+            <li>Lily Barnett</li>
+            <li>Looja Tuladhar</li>
+            <li>Loren Cole</li>
+            <li>Maggie Exton</li>
+            <li>Manika Gartaula</li>
+            <li>Manoj Maharjan</li>
+            <li>Mansi Joshi</li>
+            <li>Marit Knapp</li>
+            <li>Mark Dickson</li>
+            <li>Mark Hunter</li>
+            <li>Matt Gann</li>
+            <li>Matt Whitney</li>
+            <li>Matthew Stern</li>
+            <li>Meera Karki</li>
+            <li>Meili Eubank</li>
+            <li>Melisa Tokmak</li>
+            <li>Mike Wood</li>
+            <li>Milan Lamichane</li>
+            <li>Nabin Acharya</li>
+            <li>Nadim Rabbani</li>
+            <li>Nanda Lal Bhandari</li>
+            <li>Nathan Price</li>
+            <li>Navid Afsarifard</li>
+            <li>Neela Gentile</li>
+            <li>Nihar Wahal</li>
+            <li>Nikhil Bhatia</li>
+            <li>Nirmal Neupane</li>
+            <li>Nitya Subramani</li>
+            <li>Nolan Jimenez</li>
+            <li>Nootan Ghimire</li>
+            <li>Patrick Pollock</li>
+            <li>Paul Michelow</li>
+            <li>Peter Norris</li>
+            <li>Peter Williams</li>
+            <li>Prabhat Adhikari</li>
+            <li>Prakash Karki</li>
+            <li>Rabi Karmacharya</li>
+            <li>Rachelle Morris</li>
+            <li>Raj Gurung</li>
+            <li>Rajan Pangeni</li>
+            <li>Rani Gurung</li>
+            <li>Remy Pieron</li>
+            <li>Rob Grande </li>
+            <li>Roja Nunna</li>
+            <li>Roshan Karki</li>
+            <li>Roshan Ramankutty</li>
+            <li>Roy Stehle</li>
+            <li>Ryan Wareham</li>
+            <li>Sabin Karki</li>
+            <li>Sabu Bista</li>
+            <li>Sam McAlexander</li>
+            <li>Samir Raut</li>
+            <li>Sanjay Amatya</li>
+            <li>Sarah Rood</li>
+            <li>Saraswati Maharjan</li>
+            <li>Saroj Dhakal</li>
+            <li>Sasha Cassidy</li>
+            <li>Saurabh Suryavanshi</li>
+            <li>Shannon Shih</li>
+            <li>Shraddha Shah</li>
+            <li>Shrawan Shrestha</li>
+            <li>Sienna Stritter</li>
+            <li>Silvia Figuera</li>
+            <li>Simon Hall</li>
+            <li>Simon Mwangangi</li>
+            <li>Simran Aurora</li>
+            <li>Sixit Bhatta</li>
+            <li>Skip Stritter</li>
+            <li>Sraddhanjali Acharya</li>
+            <li>Stephanie Claussen</li>
+            <li>Suparna Jasuja</li>
+            <li>Sushil Shrestha</li>
+            <li>Terrie Mui</li>
+            <li>TJ Melanson</li>
+            <li>Tom Faulhaber</li>
+            <li>Topraj Gurung</li>
+            <li>Urja Acharya</li>
+            <li>Veena Singh</li>
+            <li>Vikram Sharma</li>
+            <li>William Hoff</li>
+            <li>Wouter Zwart</li>
+            <li>Zach Jesberger</li>
+
+        </ul>
+    </div>
+
+
+
+	<div>
+		      <!--button showing CC license icon, with link to the license info page -->
 
     <div id="sizemessages">
-            <p class="screensize"></p>
-            <p class="bodysize"></p>
+            <p class="screensize"></li>
+            <p class="bodysize"></li>
     </div>
 
     	<!-- W3C validator link    new URL=https://validator.w3.org/nu/
    		<a class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->
 
-	</footer>
+	</div>
 	</div>
 
     <?php include ('includes/toolbar.php');
    	      include ('includes/js-includes.php');
     ?>
-
+    <script src="js/jquery.easy-ticker.js"></script>
     <script src="js/looma-info.js"></script>
 
    	    <!--    <h4>- attributions for borrowed content</h4>
-        <p>OLE Nepal, Khan academy, Wikipedia, Open Street Maps, ...</p>
+        <li>OLE Nepal, Khan academy, Wikipedia, Open Street Maps, ...</li>
         <h4>- attribution for open source code used, etc. </h4>
-        <p>jsKeyboard,leaflet.js, paper.js, TileMill, jQuery, jQuery UI, bootstrap, mongodb, modernizer, pico2wave</p>
-            <p>viewer.js, pdf.js, responsiveVoice.js, FullScreen.js topojson.js, google translate</p>
-            <p>xnepali.net/fonts, stackoverflow mimic by MyCroft.ai</p>
+        <li>jsKeyboard,leaflet.js, paper.js, TileMill, jQuery, jQuery UI, bootstrap, mongodb, modernizer, pico2wave</li>
+            <li>viewer.js, pdf.js, responsiveVoice.js, FullScreen.js topojson.js, google translate</li>
+            <li>xnepali.net/fonts, stackoverflow mimic by MyCroft.ai</li>
 
             content:
             5Gear Studios

@@ -11,49 +11,55 @@ Description:
 
 var displayArea;
 
-function Listener(event) {
+function italicize (def) {  //put part-of-speech in italics
+    def = def.replace('pronoun', '<i>pronoun</i>');
+    def = def.replace('preposition', '<i>preposition</i>');
+    def = def.replace('noun', '<i>noun</i>');
+    def = def.replace('verb', '<i>verb</i>');
+    def = def.replace('adj.', '<i>adjective</i>');
+    def = def.replace('adverb', '<i>adverb</i>');
+    def = def.replace('adv.', '<i>adverb</i>');
+    def = def.replace('contraction', '<i>contraction</i>');
+    return def;
+};
+
+function getDefinition(event) {
     event.preventDefault();
-    
+/*
     //This is the "success" code, which reads the word and returns all of its attributes
     function gotAWord(definition) {
         
         //This gets the word's definition and displays it in the HTML
-        //var newElement = document.createElement('div');
-        //newElement.innerHTML = definition;
-        var def = definition.def;
-        def = def.replace('pronoun', '<i>pronoun</i>');
-        def = def.replace('preposition', '<i>preposition</i>');
-        def = def.replace('noun', '<i>noun</i>');
-        def = def.replace('verb', '<i>verb</i>');
-        def = def.replace('adj.', '<i>adjective</i>');
-        def = def.replace('adverb', '<i>adverb</i>');
-        def = def.replace('adv.', '<i>adverb</i>');
-        def = def.replace('contraction', '<i>contraction</i>');
-        /* attempt below to italicize 'part of speech' FAILED so far. detect embedded '&nbsp;' but results from dictionary arent consistent
-            var m = def.indexOf('\xa0', 0);
-            var n = def.indexOf('\xa0', m+1);
-            var p = def.indexOf('\xa0', n+1);
-            def = def.slice(0,n) +  def.slice(n+1, p).italics() + def.slice(p);
-            */
+        
+        var def = italicize(definition.def);
         
              if (def == 'past tense of') def = def + ' ' + definition.rw;
         else if (def == 'third person singular of') def = def + ' ' + definition.rw;
         
         //This gets the word itself, turns it to uppercase, and displays it in the HTML
-        displayArea.innerHTML = '<p>' + def.replace(/;/g, '</p><p>') + '<\p>';
+        //displayArea = document.getElementById("definitionDisplay")
+        //displayArea.innerHTML = '<p>' + def.replace(/;/g, '</p><p>') + '<\p>';
+        $('#definitionDisplay').html('<p>' + def.replace(/;/g, '</p><p>') + '<\p>');
         
-        var displayAreatwo = document.getElementById("theword");
-        var englishWord = document.getElementById("word").value;
-        var upperEnglishWord = englishWord.toUpperCase();
-        displayAreatwo.textContent = upperEnglishWord;
-        var displayAreathree = document.getElementById("nepali");
-        displayAreathree.textContent = definition.np;
-        document.getElementById("word").value = '';
+        //var displayAreatwo = document.getElementById("english");
+        //var englishWord = document.getElementById("input").value;
+        //var upperEnglishWord = englishWord.toUpperCase();
+        //displayAreatwo.textContent = upperEnglishWord;
+      //  $('#english').text( $('#input').val().toUpperCase());
+        
+        //var displayAreathree = document.getElementById("nepali");
+        //displayAreathree.textContent = definition.np;
+      //  $('#nepali').text(definition.np);
+        
+        //document.getElementById("input").value = '';
+        $('#input').val(' ');
+        
         event.preventDefault();
         
-        document.getElementById("rootWord").innerHTML = "";
-        document.getElementById("rwNepali").innerHTML = "";
-        document.getElementById("rwDefinition").innerHTML = "";
+        $('#rootWord, #rwNepali, rwDefinition').empty();
+        //document.getElementById("rootWord").innerHTML = "";
+        //document.getElementById("rwNepali").innerHTML = "";
+        //document.getElementById("rwDefinition").innerHTML = "";
         
         if (definition.rw != '') {
             LOOMA.lookup(definition.rw, gotARootWord, fail);
@@ -77,7 +83,12 @@ function Listener(event) {
         rwdef.textContent = def;
         event.preventDefault();
     }// end of gotARootWord
-    
+*/
+    function OK(html) {
+        $('#definitionDisplay').html(html);
+        if ($('#definition').text().length > 100) $('#definition').css('font-size', '0.75em');
+        if ($('#rwdef').text().length > 100)      $('#rwdef').css('font-size', '0.75em');
+    };
     
     //This is the fail function, used when the Looma database can not find the word
     function fail(jqXHR, textStatus, errorThrown) {
@@ -87,33 +98,34 @@ function Listener(event) {
         window.alert('failed with errorThrown = ' + errorThrown);
     } //end FAIL
     
-    var word = document.getElementById("word").value;
+    var input = document.getElementById("input").value;
     
-    LOOMA.define(word, OK, fail);
+    LOOMA.define(input, OK, fail);
     
-    function OK(html) {
-        $(displayArea).html(html);
-    }
-} //end Listener
+    return false;
+}; //end getDefinition
 
-//This code calls the Listener function when a word is submitted
-function init() {
-    
-    displayArea = document.getElementById("definition")
+$(document).ready (function() {
+ 
     
     var elem = document.getElementById("lookup");
-    elem.addEventListener('submit', Listener);
-    
+    elem.addEventListener('submit', getDefinition);
+ 
     // SPEAK button will say the word, unless text is selected, in which case, it will speak the selected text
     $('button.speak').off('click').click(function () {
-        var selectedString = document.getSelection().toString();
-        var vocabWord = document.getElementById('word').value;
+        var vocabWord, definition, temp, selectedString, toSpeak;
+        selectedString = document.getSelection().toString();
+        vocabWord =      document.getElementById('input').value;
+        temp = document.getElementById('definition');
+        if (temp) definition = temp.innerText;
         if (!vocabWord) vocabWord = document.getElementById('theword').innerText;
-        var toSpeak = (selectedString ? selectedString : vocabWord);
+        if (definition && definition != "") {
+            definition = definition.replace("(v)", " verb ");
+            definition = definition.replace("(n)", " noun ");
+            vocabWord += "     " + definition;
+        };
+        toSpeak = (selectedString ? selectedString : vocabWord);
         console.log('VOCAB: speaking ', toSpeak);
         LOOMA.speak(toSpeak);
     }); //end speak button onclick function
-    
-}
-
-window.onload = init;
+});

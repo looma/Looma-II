@@ -1,6 +1,6 @@
 /*
 LOOMA css file
-Filename: looma-import.css
+Filename: looma-maps.css
 Associated code files:
 Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
@@ -9,6 +9,17 @@ Revision: Looma 2.0.x
 
 Comments:
 */
+#map {
+    width: 100%; height: 100%;
+}
+
+div.viewer img {
+    height: auto;
+}
+
+#main-container-horizontal {
+    margin:0;
+}
 
 .credit {bottom:10vh;}
 
@@ -23,6 +34,7 @@ img#flag, h2{
 svg circle {
 	z-index: 100;
 }
+
 
 .subunit.undefined { fill: #ddc; }
 .subunit.WLS { fill: #cdd; }
@@ -65,4 +77,17 @@ svg circle {
 	color: #00f;
 }
 
+
+button#fullscreen-control {
+    display:inline-block;
+}
+
+button.speak {
+    display:inline-block;
+    z-index:2000;
+}
+
+button.lookup {
+    display:inline-block;
+}
 

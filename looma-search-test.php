@@ -9,6 +9,7 @@ Description: looma PHP template
 -->
 	<?php $page_title = 'Looma Search Test ';
 	      include ('includes/header.php'); ?>
+<link rel = "Stylesheet" type = "text/css" href = "css/looma-search.css">
 
   </head>
 
@@ -24,7 +25,7 @@ Description: looma PHP template
     <?php include ('includes/js-includes.php'); ?>
     <?php include ('includes/looma-search.php'); ?>
 
-    <script src="js/looma-search-test.js">   </script>
+    <script src="js/looma-search.js">   </script>
 
    </body>
 </html>

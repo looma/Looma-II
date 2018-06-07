@@ -22,10 +22,11 @@ Comments:
     <link rel="stylesheet" href="css/bootstrap-wysiwyg.css">
     <link rel="stylesheet" href="css/looma-text-editor.css">
 
+
 </head>
 
 <body>
-	<div id="main-container-horizontal">
+	<div id="main-container">
     <div id="title">Editing: <span class="filename">&lt;none&gt;</span> </div>
 
        <div class="container text-center">
@@ -101,17 +102,19 @@ Comments:
         </div>
 	</div>
 
-<?php     include ('includes/toolbar.php');
+    <button class='control-button' id='dismiss' ></button>
+
+<?php    // include ('includes/toolbar.php');
    		  include ('includes/js-includes.php');
 ?>
         <script src="js/jquery.hotkeys.js">           </script>
-    <script src="js/tether.min.js">  </script>
+        <script src="js/tether.min.js">  </script>
         <!--<script src="js/popper.js">  </script>  -->
         <script src="js/bootstrap.min.js">           </script>
         <script src="js/bootstrap-wysiwyg.min.js">   </script>
 
 <?php     include ('includes/looma-filecommands.php');
-          include ('includes/looma-search.php');
+          //include ('includes/looma-search.php');
 ?>
 
         <script src="js/looma-text-editor.js">   </script>

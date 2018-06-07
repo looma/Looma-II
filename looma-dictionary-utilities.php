@@ -45,7 +45,7 @@ if (isset($_GET["cmd"]))
 
     case "lookup":
 		// lookup $_GET["word"] in the dictionary and return an object describing the word
-		if(isset($_GET["word"]))
+		if(isset($_GET["word"]) && $_GET["word"] != "")
 		{   $englishWord = trim($_GET["word"]);
 
 			$query = array('en' => new MongoRegex("/^$englishWord$/i"));  //NOTE: using regex to do a case insensitive search for the word
@@ -110,10 +110,10 @@ if (isset($_GET["cmd"]))
 				$newdata = array('$set' => array("def" => "$def"));
 				$dictionary_collection->update(array('en' => $en, 'np' => $np), $newdata);
 			}
-			if(isset($_GET["phon"]))
+			if(isset($_GET["part"]))
 			{
-				$phon = $_GET["phon"];
-				$newdata = array('$set' => array("phon" => "$phon"));
+				$part = $_GET["part"];
+				$newdata = array('$set' => array("part" => "$part"));
 				$dictionary_collection->update(array('en' => $en, 'np' => $np), $newdata);
 			}
 			$random = (float)rand()/(float)getrandmax();
@@ -142,8 +142,8 @@ if (isset($_GET["cmd"]))
 
         $maxCount = (isset($_GET["count"]) ? min(max(0,$_GET['count']),$MAX_NUM) : $DEFAULT_NUM);
 
-		$classes = array('class1','class2','class3','class4','class5','class6','class7','class8');
-		$subjects = array('english','math','social studies','science');
+		$classes = array('class1','class2','class3','class4','class5','class6','class7','class8', 'class9', 'class10');
+		$subjects = array('english','math','social studies','science', 'health', 'vocation');
 
 		//Ensure that classes and subjects sent are valid types
 		$hasClass = false;
@@ -159,7 +159,7 @@ if (isset($_GET["cmd"]))
 		if(isset($_GET["ch_id"]))
 		{
 			$ch_id = $_GET["ch_id"];
-			if(preg_match("/^[1-8](EN|S|M|SS|N)[0-9]{2}(\.[0-9]{2})?$/", $ch_id))
+			if(preg_match("/^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/", $ch_id))
 				$hasValidChapterId = true;
 		}
 
@@ -175,7 +175,9 @@ if (isset($_GET["cmd"]))
 			//Generates the Letter Abbreviation for the class and adds it to the number
 			if($subject == "english")      $startChapterId .= "EN";
 			else if($subject == "science") $startChapterId .= "S[0-9]";
-			else if($subject == "math")    $startChapterId .= "M";
+            else if($subject == "math")    $startChapterId .= "M";
+            else if($subject == "health")    $startChapterId .= "H";
+            else if($subject == "vocation")    $startChapterId .= "V";
 			else if($subject == "social studies")	$startChapterId .= "SS";
 		}
 		else if($hasClass)
@@ -192,7 +194,9 @@ if (isset($_GET["cmd"]))
 			     if($subject == "english")  $startChapterId .= "EN";
 			else if($subject == "science")  $startChapterId .= "S[0-9]";
 			else if($subject == "math") 	$startChapterId .= "M";
-			else if($subject == "social studies") $startChapterId .= "SS";
+            else if($subject == "health")    $startChapterId .= "H";
+            else if($subject == "vocation")    $startChapterId .= "V";
+            else if($subject == "social studies") $startChapterId .= "SS";
 		}
 		else
 		{

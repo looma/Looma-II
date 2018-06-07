@@ -3,6 +3,12 @@ LOOMA javascript file
 Filename: looma-text-editor.JS
 Description:
 
+    NOTE: This JS is for looma-text-frame.php - the embedded looma
+            page another editor [e.g. lesson-plan.php
+    NOTE: there is a different JS (looma-text-editor.js)
+            which is a stand-alone looma page for text editing
+            
+           
 Programmer name: skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: nov 2016
@@ -70,10 +76,19 @@ function textshowsearchitems() {               // also SHOW checkboxes in #searc
 function quitframe() {
   $('#main-container-horizontal', window.parent.document).removeClass('all-transparent');
   $('#commands', window.parent.document).removeClass('all-transparent');
-  $('#textdiv', window.parent.document).hide();
+  $('#text-editor', window.parent.document).hide();
 }
 
-$(document).ready(function ()
+  function quittextedit() {
+      console.log("FILE COMMANDS: clicked quit text editor");
+    
+      //$('#main-container-horizontal', '#main-container', window.parent.document).removeClass('all-transparent');
+      //$('#filecommands', window.parent.document).removeClass('all-transparent');
+      $('#textdiv').hide();
+  };
+  //end quittextedit
+
+  $(document).ready(function ()
     {
 
         $('#editor').wysiwyg();
@@ -82,5 +97,7 @@ $(document).ready(function ()
 
         loginname = LOOMA.loggedIn();
         if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
-
-});
+    
+        $('#dismiss').click( quitframe );  //close the text edit iframe and go back to the calling editor
+    
+    });

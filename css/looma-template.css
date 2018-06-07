@@ -1,13 +1,30 @@
 /*
 LOOMA css file
-Filename: looma-import.css
+Filename: looma-template.css
 Associated code files:
 Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: Apr 2017
-Revision: Looma 2.0.x
+Date: Apr 2018
+Revision: Looma 3
 
 Comments:
 */
 
-#main-container-horizontal {height:90vh;}
+#fullscreen {    background-color: var(--looma-blue);
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}
+
+button.speak {
+    display:inline-block;
+}
+
+button.lookup {
+    display:inline-block;
+}
+
+button.show-keyboard {
+    display:inline-block;
+}

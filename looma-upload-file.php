@@ -148,8 +148,8 @@ if (!loggedin()) header('Location: looma-login.php');
                         <option value='' selected>Select...</option>";
 
                 $classInfo = array(
-                    array("all", "EN", "N", "M", "S", "SS"),
-                    array("All", "English", "Nepali", "Math", "Science", "Social Studies"),
+                    array("all", "EN", "N", "M", "S", "SS", "H", "V"),
+                    array("All", "English", "Nepali", "Math", "Science", "Social Studies", "Health", "Vocation"),
                 );
                 for($x = 1; $x < count($classInfo[0]); $x++) {
                     echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";};

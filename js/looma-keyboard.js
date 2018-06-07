@@ -203,7 +203,7 @@ function createKeyboard() {
 function sendKey(key) {
     var startPos = temporaryDestination[0].selectionStart;
     var endPos = temporaryDestination[0].selectionEnd;
-    console.log(startPos, endPos);
+    //console.log(startPos, endPos);
     var oldContent = "";
     if (isTextArea()) {
         oldContent = $(temporaryDestination).html();
@@ -292,6 +292,7 @@ function showKeyboard(event) {
             target = validInputs;
 	    destination = validInputs;
         } else {
+            // ??? handle multiple input elements here. not implemented yet.
             return;
         }
     }
@@ -353,7 +354,7 @@ function elementFocused(event) {
 // This will enable the OSK for every input/textarea. If any of these elements exist, a "show keyboard" button will appear at the bottom-left of the screen.
 $(document).ready(function() {
     var validInputs = $(validInputsString);
-    console.log(validInputs);
+    //console.log(validInputs);
     if (validInputs.length == 0) {
         console.log("No text inputs.");
         return;
@@ -363,9 +364,12 @@ $(document).ready(function() {
     validInputs.click(
         elementFocused);
     var showKeyboardButton = $("<button></button>").addClass(
-        "show-keyboard-button").click(showKeyboard);
+        "show-keyboard looma-control-button").click(showKeyboard);
 
     destination = $(document.activeElement);
-    $("#main-container-horizontal").append(
-        showKeyboardButton);
+    
+    if ( $('#fullscreen').length)
+         $('#fullscreen').append(showKeyboardButton)
+    else $("#main-container-horizontal").append(showKeyboardButton)
+    
 });

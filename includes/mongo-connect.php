@@ -17,17 +17,18 @@
         //$m = new MongoDB\Driver\Manager("mongodb://localhost:27017");
        	$loomaDB = $m -> $dbname;  //connect to the database "looma"
                                    //make query variables for all collections
-    	$activities_collection = $loomaDB -> activities;
-    	$chapters_collection =   $loomaDB -> chapters;
-    	$textbooks_collection =  $loomaDB -> textbooks;
+        $activities_collection = $loomaDB -> activities;
+        $tags_collection       = $loomaDB -> tags;
+    	$chapters_collection   = $loomaDB -> chapters;
+    	$textbooks_collection  = $loomaDB -> textbooks;
         $dictionary_collection = $loomaDB -> dictionary;
-        $logins_collection =     $loomaDB -> logins;
-        $history_collection =    $loomaDB -> histories;
+        $logins_collection     = $loomaDB -> logins;
+        $history_collection    = $loomaDB -> histories;
         $slideshows_collection = $loomaDB -> slideshows;
         $text_files_collection = $loomaDB -> text_files;
-        $lessons_collection =    $loomaDB -> lessons;
-        $histories_collection =  $loomaDB -> histories;
-        $maps_collection =       $loomaDB -> maps;
+        $lessons_collection    = $loomaDB -> lessons;
+        $histories_collection  = $loomaDB -> histories;
+        $maps_collection       = $loomaDB -> maps;
         $edited_videos_collection = $loomaDB -> edited_videos;
 
         //the lines below are commented out for now. some Looma installs have old MONGO versions that dont do 'createIndex'

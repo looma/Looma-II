@@ -7,16 +7,27 @@
     background-color: #091F48;
 }
 
+button#fullscreen-control {
+    display:inline-block;
+}
+
+button.show-keyboard {
+    display:none;
+}
+
+
 #message-correct{
-    color: black;
     position: absolute;
     width:99%;
     font-size: 2em;
+    color: green;
+    font-style:bold;
     margin:auto;
     text-align:center;}
 
 #message-wrong{
-    color: black;
+    color: red;
+    font-style:bold;
     position: absolute;
     width:90%;
     margin:auto;

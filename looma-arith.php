@@ -21,7 +21,7 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
     $masks = getMasks();
 ?>
     <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link href="css/looma-arith.css" type="text/css" rel="stylesheet" />
+    <link href="css/looma-games.css" type="text/css" rel="stylesheet" />
 
 </head>
 
@@ -31,7 +31,7 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
         <!--<img src="images/logos/LoomaLogoTransparent.png" class="looma-logo" width="75%"/> -->
             <br><br>
             <h1 class="title">Looma <?php keyword('Arithmetic Games') ?></h1>
-
+        <br><br><br><br><br><br>
 
         <!--  display CLASS buttons  -->
     <div class="button-div" id="row1">

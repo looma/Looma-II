@@ -113,29 +113,30 @@ $(document).ready(function() {
 //////////////////////////////////////
 /////////FILE COMMANDS setup /////////
 //////////////////////////////////////
-
-loginname = LOOMA.loggedIn();
-$('.template-cmd').hide();
-    //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
-
-//callback functions expected by looma-filecommands.js:
-callbacks ['clear'] = eviNew;
-callbacks ['save']  = eviSave;
-callbacks ['savetemplate']  = eviTemplateSave;
-//callbacks ['open']  = eviOpen;
-callbacks ['display'] = eviDisplay;
-callbacks ['modified'] = eviModified;
-callbacks ['showsearchitems'] = eviShowSearchItemsOpen;
-callbacks ['checkpoint'] = eviCheckpoint;
-callbacks ['undocheckpoint'] = eviUndoCheckpoint;
+    
+    loginname = LOOMA.loggedIn();
+    $('.template-cmd').hide();
+        //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
+    
+    //callback functions expected by looma-filecommands.js:
+    callbacks ['clear'] = eviNew;
+    callbacks ['save']  = eviSave;
+    callbacks ['savetemplate']  = eviTemplateSave;
+    //callbacks ['open']  = eviOpen;
+    callbacks ['display'] = eviDisplay;
+    callbacks ['modified'] = eviModified;
+    callbacks ['showsearchitems'] = eviShowSearchItemsOpen;
+    callbacks ['checkpoint'] = eviCheckpoint;
+    callbacks ['undocheckpoint'] = eviUndoCheckpoint;
+        //callbacks ['quit'] not overridden - use default action from filecommands.js
 
 
 /*  variable assignments expected by looma-filecommands.js:  */
-currentname = "";             //currentname       is defined in looma-filecommands.js and gets set and used there
-currentcollection = 'edited_videos'; //currentcollection is defined in looma-filecommands.js and is used there
-currentfiletype = 'evi';   //currentfiletype   is defined in looma-filecommands.js and is used there
-
-$('#search-form  #collection').val('edited_videos');
+    currentname = "";             //currentname       is defined in looma-filecommands.js and gets set and used there
+    currentcollection = 'edited_videos'; //currentcollection is defined in looma-filecommands.js and is used there
+    currentfiletype = 'evi';   //currentfiletype   is defined in looma-filecommands.js and is used there
+    
+    $('#search-form  #collection').val('edited_videos');
 
 // end FILE COMMANDS stuff
 
@@ -190,6 +191,8 @@ $('#search-form  #collection').val('edited_videos');
     
     eviCheckpoint();
     //eviNew();
+    
+    $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
     
 });  //end document.ready()
 
@@ -517,6 +520,14 @@ var isFilterSet = function() {
 /////////////////////////// SEARCH //////////
 //////////////////////////////////////////////////////
 
+
+function clearResults() {
+    $("#innerResultsMenu").empty();
+    $("#innerResultsDiv" ).empty();
+    $("#previewpanel"    ).empty();
+    
+} //end clearResults()
+
 function displayResults(results) {
       var result_array = [];
       result_array['activities'] = [];  //not searching for dictionary entries
@@ -744,7 +755,7 @@ var thumbnail = function(item) {
 
 
 //rewrote extractItemId() to use REGEX
-//  m=s.match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])\.([0-9][0-9])?$/);
+//  m=s.match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])\.([0-9][0-9])?$/);
 //  then if m != null, m[0] is the ch_id,
 //                     m[1] is the class digit,
 //                     m[2] is the subj letter(s),
@@ -753,7 +764,9 @@ var thumbnail = function(item) {
 /* */
     function extractItemId(item) {
         var ch_id = (item['ft'] == 'chapter')? item['_id'] : item['ch_id'];
-        var elements = {
+        return LOOMA.parseCH_ID(ch_id);
+        
+/*        var elements = {
             currentSection: null,
             currentChapter: null,
             currentSubject: null,
@@ -769,7 +782,7 @@ var thumbnail = function(item) {
             SS: "SocialStudies"};
 
         if (ch_id) {
-            var pieces = ch_id.toString().match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])(\.[0-9][0-9])?$/);
+            var pieces = ch_id.toString().match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/);
 
             //console.log ('ch_id ' + ch_id + '  pieces ' + pieces);
 
@@ -784,6 +797,7 @@ var thumbnail = function(item) {
             };
          };
         return elements;
+  */
     }
 
 

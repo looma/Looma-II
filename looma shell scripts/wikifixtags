@@ -1,0 +1,28 @@
+// ONE TIME program to MERGE collection "wikipedia" back into "activities" after modifying "key" fields to Looma keywords
+// DO NOT run this again
+//
+//  run in MONGO SHELL with:
+//      use looma
+//      load('wikifixtags')
+//
+var count = 0;
+var newdocs = db.wikipedia.find();
+while (newdocs.hasNext()) {
+    var newdoc = newdocs.next();
+    var olddoc = db.activities.findOne({'_id':newdoc._id});
+    if (olddoc) {
+    
+        if (newdoc.key1) olddoc.key1 = newdoc.key1;
+        if (newdoc.key2) olddoc.key2 = newdoc.key2;
+        if (newdoc.key3) olddoc.key3 = newdoc.key3;
+        if (newdoc.key4) olddoc.key4 = newdoc.key4;
+
+        //print('updating ' + olddoc.dn);
+        db.activities.update({_id: olddoc._id}, olddoc);
+        count++;
+    }
+    else {print('   ERROR document not found: ' + newdoc.dn)};
+};
+
+print('');
+print('updated ' + count + ' documents');

@@ -34,6 +34,7 @@ function playActivity(event) {
 
 $(document).ready (function() {
     $("button.play").click(playActivity);
+    $("#toggle-database").click(function(){window.location = "looma-library-search.php";});//'fade', {}, 1000
 
     $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll',    'session'));

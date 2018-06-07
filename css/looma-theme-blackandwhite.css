@@ -27,3 +27,9 @@ button {
 	 * lt blue	f8f
 	 */
 }
+
+button.active {
+    background: none;
+    background-color: #0000FF;
+    color:yellow;
+}

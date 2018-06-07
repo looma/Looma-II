@@ -16,12 +16,29 @@ Comments:
 
 /*define functions here */
 
-$(document).ready(function ()
-    {
-    function roll()
-        {
-        $('#credits-wrapper').css('top', '');
-        $('#credits-wrapper').animate({top:"-1800%"}, 45000, roll);
+$(document).ready(function () {
+        //using jquery.easy-ticker.js
+        $('#credits').easyTicker({
+            direction: 'up',
+            easing: 'swing',
+            speed: '2500',
+            interval: 500,
+            height: '',
+            visible: 0,
+            mousePause: 1,
+            controls: {
+                up: '',
+                down: '',
+                toggle: '',
+                playText: 'Play',
+                stopText: 'Stop'
+            }
+        })});
+  //      });function roll()
+     
+     //   {
+     //   $('#credits-wrapper').css('top', '');
+     //   $('#credits-wrapper').animate({top:"-1800%"}, 45000, roll);
 
         // with 210 names, ' top:"-1800%" ' works
         // perhaps K = -1800/210 = -9 is the right coefficient. e.g. ' top:"' + -9*count + '%" '
@@ -35,8 +52,8 @@ $(document).ready(function ()
         // the time of 30 sec (30000) is pretty fast speed
         // time = 45000 (45 sec) is about right, time = 60000 (60secs) is too slow
         // may want to go faster if we have lots more names
-     };
+     //};
 
-    roll();
-    });
+    //roll();
+ 
 

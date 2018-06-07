@@ -26,7 +26,8 @@ button {
 }
 
 button:hover {
+    background:none;
   	background-color: #bbb;
-  	background-image:none;
+    color:#111;
   }
 

@@ -35,7 +35,7 @@ $page_title = 'Looma - Time';
 </canvas>
 
 <FORM METHOD="LINK" ACTION="" Id="Refresh">
-    <button TYPE="submit" id="b"><?php keyword("New Problem")?></button>
+    <button TYPE="submit" id="singleclock-newproblem"><?php keyword("New Problem")?></button>
 </FORM>
 
 <p id="question">What time is on the clock?</p>

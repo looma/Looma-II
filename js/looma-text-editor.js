@@ -3,6 +3,11 @@
     Filename: looma-text-editor.JS
     Description:
 
+    NOTE: This JS is for looma-text-editor.php - the normal looma page for editing text files
+    NOTE: there is a different JS (looma-text-frame.js)
+            for use in iframes when text editing is called from inside
+            another editor [e.g. lesson-plan.php
+            
     Programmer name: skip
     Owner: VillageTech Solutions (villagetechsolutions.org)
     Date: nov 2016
@@ -27,6 +32,7 @@
   callbacks['showsearchitems'] = textshowsearchitems;
   callbacks['checkpoint'] = textcheckpoint;
   callbacks['undocheckpoint'] = textundocheckpoint;
+  //callbacks ['quit'] not overridden - use default action from filecommands.js
 
   currentname = "";
   currentcollection = 'text';
@@ -34,6 +40,16 @@
 
   $('#collection').val('text');
 
+
+ /*
+  function quit() {
+      if (callbacks['modified']())
+          savework(currentname, currentcollection, currentfiletype);
+      else
+          window.history.back();
+  }
+  */
+  
   function textcheckpoint() {
       savedHTML = $editor.html();
   };
@@ -41,6 +57,7 @@
   function textundocheckpoint() {
       $editor.html(savedHTML);
   }; //not used now??
+  
   function textmodified() {
       return (savedHTML !== $editor.html());
   };
@@ -79,16 +96,17 @@
 
   $(document).ready(function() {
 
-      //$('#dismiss').click( function() { quit();});
+      $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
 
       $editor = $('#editor'); //the DIV where the HTML is being edited
       $editor.wysiwyg();
       textclear();
 
       loginname = LOOMA.loggedIn();
-      if (loginname && (loginname == 'kathy' || loginname == 'david' ||
-              loginname == 'vivian' || loginname == 'skip' || loginname ==
-              'akshay')) $('.admin')
-          .show();
+      
+      if (loginname && (loginname == 'kathy' ||
+                        loginname == 'david' ||
+                        loginname == 'skip' ))
+          $('.admin').show();
 
   });

@@ -150,7 +150,7 @@ function nextGenProb(){
     document.getElementById('message-correct').style.visibility = 'hidden';
     document.getElementById('message-wrong').style.visibility = 'hidden';
 
-    document.getElementById('calculator').style.visibility = 'hidden';
+    //document.getElementById('calculator').style.visibility = 'hidden';
 
     var num1 = document.getElementById('num1');
     var num2 = document.getElementById('num2');
@@ -317,20 +317,11 @@ function checkAnswer(){
     var num2 = Number(document.getElementById('num2').innerHTML);
     var answer = document.getElementById('answer').value;
     op = document.getElementById('operation').innerHTML;
-    if(op == '+'){
-        correct = num1 + num2;
-    }
-    else if(op == '-'){
-        correct = num1 - num2;
-    }
-    else if(op == '*'){
-        correct = num1 * num2;
-    }
-    else{
-        correct = num2 / num1;
-    }
-
-
+    if     (op == '+'){ correct = num1 + num2;}
+    else if(op == '-'){ correct = num1 - num2;}
+    else if(op == '*'){ correct = num1 * num2; }
+    else              { correct = num2 / num1;}
+    
     if(answer == correct){
         document.getElementById('message-wrong').style.visibility = 'hidden';
         document.getElementById('message-correct').style.visibility = 'visible';
@@ -338,7 +329,7 @@ function checkAnswer(){
     else{  //wrong answer given
         document.getElementById('message-wrong').style.visibility = 'visible';
         document.getElementById('message-correct').style.visibility = 'hidden';
-        document.getElementById('answer').value = '';
+        //document.getElementById('answer').value = '';
         document.getElementById('answer').focus();
     }
 }

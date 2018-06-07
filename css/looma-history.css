@@ -3,15 +3,37 @@ Author: Alexa Thomases, May Li, Catie Cassani
 Filename: looma-history.css
 Verion: 2.0
 Date: July 2017
-Description:  
+Description:
 */
 
-/*Framework for the buttons (which generally contain the titles of each event)*/
+ #fullscreen {    background-color: var(--looma-blue);
+ }
+ 
+ button#fullscreen-control {
+     display:inline-block;
+ }
+
+ button.speak {
+     display:inline-block;
+ }
+
+ button.lookup {
+     display:inline-block;
+ }
+
+ button.show-keyboard {
+     display:inline-block;
+ }
+
+
+ /*Framework for the buttons (which generally contain the titles of each event)*/
 button {
   border: none;
-  cursor: pointer;
-  outline: none; 
+  outline: none;
 }
+
+ button.dropbtn  { cursor: pointer;}
+ button.dropdate { cursor: default;}
 
 /* Controls the font size of the header so it doesn't change in different Looma themes */
 h1 {
@@ -22,7 +44,7 @@ h1 {
 /* TIMELINE
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-/*Makes it so that the lines and text of the timeline 
+/*Makes it so that the lines and text of the timeline
   don't stack together and make the timeline look confusing*/
 .timeline {
   white-space: nowrap;
@@ -32,7 +54,7 @@ h1 {
 .timeline ol {
   font-size: 0;
   width: 100vw;
-  padding: 18vh 0; 
+  padding: 18vh 0;
 }
 
 /*The display of the line of the timeline*/
@@ -42,12 +64,12 @@ h1 {
   list-style-type: none;
   left: -20vh;
   width: 30vw;
-  height: 0.5vh; 
-  background: #ff0; 
+  height: 0.5vh;
+  background: #ff0;
 }
 
 
-/*Aligns each white line segment to be in the proper position, 
+/*Aligns each white line segment to be in the proper position,
   relative to the each event point (yellow dot)*/
 .timeline ol li:not(:first-child) {
   /*margin-left: 14px; */
@@ -58,9 +80,9 @@ h1 {
   content: '';
   position: absolute;
   top: 50%;
-  left: calc(100% + 0.5vw); 
+  left: calc(100% + 0.5vw);
   bottom: 0;
-  width: 4vw; 
+  width: 4vw;
   height: 4vh; /* 1vh is about 4px !!!! */
   transform: translateY(-50%);
   border-radius: 50%; /*Determines the "roundness" of each point*/
@@ -68,12 +90,12 @@ h1 {
   display:none;
 }
 
-/*The positioning of the event information 
+/*The positioning of the event information
 (in the div of each list item)*/
 .timeline ol li div {
-  left: calc(100% + 2vw); 
+  left: calc(100% + 2vw);
   width: 35vw;
-  padding: 4vh; 
+  padding: 4vh;
   font-size: 1rem;
   white-space: normal;
   color: black; /*The color of the hover text*/
@@ -88,39 +110,39 @@ h1 {
 }
 
 /*Keeps the timeline within a window*/
-@media screen and (max-width: 90vw) { 
+@media screen and (max-width: 90vw) {
   .timeline ol,
   .timeline ol li {
-    width: auto; 
+    width: auto;
   }
 }
 
-/*Establishes the dimensions and display of 
+/*Establishes the dimensions and display of
   the primary div that contains the timeline*/
 #playground {
     margin: 1vh 2vw;
     padding: 3em 1em;
-    border: 0.1vh solid #ccc; 
+    border: 0.1vh solid #ccc;
     overflow-x: auto;
     overflow-y: hidden;
     max-height: 75%;
     margin-top: 3vh;
 }
 
-::-webkit-scrollbar { 
-  width: 7vw; 
-  height: 6vh; 
+::-webkit-scrollbar {
+  width: 7vw;
+  height: 6vh;
 }
 
 input#keywords {display:inline;}
 
 /*Keeps the timeline event buttons centered above the timeline points*/
 .timeline li .timeline-description {
-  border-radius: 0.2vh; 
+  border-radius: 0.2vh;
   float: left;
-  padding: 2vh; 
+  padding: 2vh;
   width: 42%;
-  left: 0vw; 
+  left: 0vw;
   position:absolute;
   z-index:10;
 }
@@ -134,12 +156,12 @@ input#keywords {display:inline;}
  .dropdown-content {
   display: none;
   /* background-color: #ffffff; */
-  font: 1.5em "Comic Sans MS", serif, bold; 
+  font: 1.5em "Comic Sans MS", serif, bold;
   border-color: white;
   height:inherit;
   width:inherit;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  font: 1.5em; 
+  font: 1.5em;
 
 }
 
@@ -147,7 +169,7 @@ input#keywords {display:inline;}
 /*The display of the timeline event button*/
 .dropbtn {
   padding: 2vh;
-  font: 2.5em "Comic Sans MS", serif, bold; 
+  font: 2.5em "Comic Sans MS", serif, bold;
   cursor: pointer;
   width:100%;
   min-width: 8vw;
@@ -176,7 +198,7 @@ button.dropdate:hover {
   margin: none;
 }
 
-/*Keeps the even timeline event buttons 
+/*Keeps the even timeline event buttons
   properly spaced above the hover texts*/
 .timeline ol li:nth-child(odd) div .dropdate{
   margin-bottom: -8.7vh;
@@ -188,7 +210,7 @@ button.dropdate:hover {
   margin-bottom: 0.5vh;
 }
 
-/*Keeps the odd timeline event buttons 
+/*Keeps the odd timeline event buttons
   properly spaced above the hover texts*/
 .timeline ol li:nth-child(odd) .dropbtn{
   margin-bottom:1vh;
@@ -205,10 +227,10 @@ button img {height:100%;width:100%;}
   right:30vw;
   width: 6vw;
   height: 10.2vh;
-  padding: 2vh; 
+  padding: 2vh;
   cursor: pointer;
-  min-width: 7.5vw; 
-  border-radius: 2vh; 
+  min-width: 7.5vw;
+  border-radius: 2vh;
 }
 
 /*The display of the right-scrolling button*/
@@ -257,19 +279,6 @@ label {
   border-radius: 2vh;
 }
 
-/*The display of the on-screen keyboard button*/
-.show-keyboard-button {
-  top: 13vh;
-  left: 2vw;
-}
-
-/*The display of the full-screen button*/
-button#fullscreen-control {
-  bottom: 9vh;
-  right: 3.5vw;
-}
-
-
 /*The display of the prev button (for searching)*/
 #previous {
  position: fixed;
@@ -314,35 +323,6 @@ button#fullscreen-control {
 /* Display of the scrollbar in the popup*/
 ::-webkit-scrollbar {width:40px;}
 
-button.speak {
-    position: absolute;
-    top: 14vh;
-    right:2%;
-    height:10%;
-    width:7.5%;
-    z-index:1000;
-    opacity: 0.4;
-    background-image: url("../images/speech.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
-    /*  img:src = images/speak.png */
-}
-
-button.lookup {
-    position: absolute;
-    top: 2vh;
-    right:2%;
-    height:10%;
-    width:7.5%;
-    z-index:1000;
-    opacity: 0.4;
-    background-image: url("../images/dictionary.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 75% 75%;
-    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
-}
 
 /* display of media buttons on popup */
 button.img.play, button.img.activity {

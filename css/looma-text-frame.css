@@ -16,6 +16,8 @@ body {
     background-color:#eee;
 }
 
+h1 {background-color:#F0EC1A}
+
 .admin {
     display:none;
 }

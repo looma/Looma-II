@@ -1,3 +1,4 @@
+
 /*
 LOOMA javascript file
 Filename: looma-activity-register-to-chapter.js
@@ -452,7 +453,7 @@ var thumbnail = function(item) {
 }; // end thumbnail()
 
 //rewrote parse_ch_id() to use REGEX
-//  m=s.match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])\.([0-9][0-9])?$/);
+//  m=s.match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])\.([0-9][0-9])?$/);
 //  then if m != null, m[0] is the ch_id,
 //                     m[1] is the class digit,
 //                     m[2] is the subj letter(s),
@@ -477,7 +478,7 @@ var thumbnail = function(item) {
             SS: "SocialStudies"};
 
         if (ch_id) {
-            var pieces = ch_id.toString().match(/^([1-8])(M|N|S|SS|EN)([0-9][0-9])(\.[0-9][0-9])?$/);
+            var pieces = ch_id.toString().match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/);
 
             //console.log ('ch_id ' + ch_id + '  pieces ' + pieces);
 

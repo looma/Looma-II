@@ -10,6 +10,7 @@
 
     <head>
         <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="css/looma-filecommands.css">
         <link rel="stylesheet" type="text/css" href="css/looma-evi-editor.css">
     </head>
 
@@ -61,7 +62,7 @@
             </div>
         </div>
 
-        <div id="textdiv">
+        <div id="text-editor">
             <iframe id="textframe" src="./looma-text-frame.php" allowTransparency="true"> </iframe>
         </div>
 
@@ -82,8 +83,9 @@
 <?php   include ('includes/looma-filecommands.php');
         include ('includes/looma-search.php');
 ?>
-       <script src="js/looma-media-controls.js"></script>
-       <script src="js/looma-evi-editor.js"></script>
+        <!-- need to debug to get keyboard to work <script src="js/looma-keyboard.js">  </script> -->
+        <script src="js/looma-media-controls.js"></script>
+        <script src="js/looma-evi-editor.js"></script>
 
     </body>
 </html>

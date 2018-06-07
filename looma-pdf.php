@@ -20,6 +20,8 @@ Usage: <button id="testpdf" data-fn="Math-2.pdf"
 <?php $page_title = 'Looma PDF Viewer';
 	  include ('includes/header.php');
 ?>
+<link rel="stylesheet" href="css/looma-pdf.css">
+
 </head>
 
 <body>
@@ -27,37 +29,39 @@ Usage: <button id="testpdf" data-fn="Math-2.pdf"
 		$filename = $_REQUEST['fn'];
 		$filepath = $_REQUEST['fp'];
 		$pagenum =  $_REQUEST['pg'];
+		$zoom =  $_REQUEST['zoom'] ? $_REQUEST['zoom'] : 'page-width';
 	?>
 
 	<div id="main-container-vertical" class="scroll">
-		<div class="viewer" id="fullscreen">
+        <div class="viewer">
+            <div id="fullscreen">
 
 			<?php
 				echo "<iframe id='iframe'";
 				// open the PDF in 'viewer.html' from pdf.js in an iframe
-				// looma-viewer.html is viewer.html unchanged except for including looma-viewer.css and loomw-viewer.js
+				// looma-viewer.html is viewer.html unchanged except for including looma-viewer.css and looma-viewer.js
 				echo " src='looma-viewer.html?file=" .
 						$filepath .  $filename .
 						"#page=" . $pagenum .
-						"&zoom=200" .
+						"#zoom=page-width" .
 						"'";
 
 				echo " id='pdf-canvas' >";
-				echo " <p hidden id='parameters' data-fn='$filename' data-fp='$filepath' data-pg='$pagenum'></p>";
+				//echo " <p hidden id='parameters' data-fn='$filename' data-fp='$filepath' data-pg='$pagenum'></p>";
 				echo " </iframe>";
 			?>
+                <button class="lookup looma-control-button"></button>
+                <button class="speak looma-control-button"></button>
+                <button id="fullscreen-control" class="looma-control-button"></button>
+            </div>
+        </div>
 
-		</div>
-	</div>
 
-    <button class="lookup"></button>
-    <button class="speak"></button>
-    <button id="fullscreen-control"></button>
+    </div>
 
    	<?php include ('includes/toolbar-vertical.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
 
-        <script src="js/looma-screenfull.js"></script>
     <script type="text/javascript" src="js/looma-pdf.js"></script>
 
 </body>

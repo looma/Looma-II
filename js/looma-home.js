@@ -11,7 +11,7 @@ Description:
 
 'use strict';
 
-    var className, subjectName;
+    var className, subjectName, gradeName;
 
     /* used when degbugging
      function playActivity(event) {
@@ -29,12 +29,12 @@ Description:
             {
                 $(button).children('img').each( function (j, image)
                 {
-                    if (j == 0)       //first IMG is for english language textbook thumbnail. set SRC and VISIBILITY
+                    if (j == 0)       //left-hand IMG is for english language textbook thumbnail. set SRC and VISIBILITY
                     {    if (mask[2 * i + j] == 1)
                              $(image).attr('src', tb_path + subject_names[i] + '/' + subject_names[i] + '-' + classNumber + '_thumb.jpg').show();
                         else $(image).attr('src', '../Looma/images/book.png').attr('style', 'opacity:0.3;').show();
                     }
-                    else if (j==1)      //second IMG is for english language textbook thumbnail
+                    else if (j==1)      //right-hand IMG is for native language textbook thumbnail
                     {    if (mask[2 * i + j] == 1)
                              $(image).attr('src', tb_path + subject_names[i] + '/' + subject_names[i] + '-' + classNumber + '-Nepali_thumb.jpg').show();
                         else $(image).attr('src', '../Looma/images/book.png').attr('style', 'opacity:0.3;').show();
@@ -97,6 +97,8 @@ Description:
     function classButtonClicked(){
         //called when a CLASS button is pressed
         className = this.getAttribute('id');
+        gradeName = this.getAttribute('data-name');
+    
         activateClass(className);              //activate this CLASS - highlights the button
         LOOMA.setStore("class", className, 'session');  //set a COOKIE for CLASS (lifetime = this browser session)
         displaySubjects(className);              // display SUBJECT buttons for this CLASS
@@ -113,10 +115,9 @@ Description:
         //set scroll position to top of page
         LOOMA.setStore('libraryScroll', 0), 'session';
 
-        window.location = "looma-chapters.php?class=" +
-                            encodeURIComponent(className) +
-                            "&subject=" +
-                            encodeURIComponent(subjectName);
+        window.location = "looma-chapters.php?class=" + encodeURIComponent(className) +
+                                              "&grade=" + encodeURIComponent(className.replace('class','Grade ')) +
+                                              "&subject=" + encodeURIComponent(subjectName);
     };  //  end subjectButtonClicked()
 
 

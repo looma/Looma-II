@@ -110,7 +110,7 @@ $(document).ready (function() {
             document.getElementById('keyboard-hide').addEventListener('click', // we want to listen for a click
             function () {
                 var wordvalue = $('#keywords').val();
-                console.log(wordvalue + " : HERE");
+                //console.log(wordvalue + " : HERE");
                 myHilitor.apply(wordvalue);
                 $('#next').attr("clickcount",-1);
                 searchIndex = parseInt($('#next').attr("clickcount"));

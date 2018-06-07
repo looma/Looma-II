@@ -20,7 +20,7 @@ Description: Looma specific mods to pdf.js ["viewer.js"] for Looma
 // Need this to be present when the rest of it loads.
 var DEFAULT_PREFERENCES = {
   showPreviousViewOnLoad: true,
-  defaultZoomValue: '',
+  defaultZoomValue: 'page-width',
   //
   sidebarViewOnLoad: 2,
   //
@@ -263,6 +263,9 @@ window.onload = function() {
   scale.remove(6);
 };
 
+////////////////////////////////////////////////////
+var DEFAULT_SCALE = 'page-width';  //Looma change - override setting in viewer.js
+////////////////////////////////////////////////////
 
 // makes sure pdf loads to correct page listed in url
 // url format is: www.website.com/stuff.pdf#page=20&...
@@ -272,7 +275,10 @@ var loadCorrectPage =  function (e) {
 
 	// parses page number from URL and sets it to the value of pageNumber
     // (the +5 is to get the string AFTER "page=")
-	pageNumber.value =hash.substring(hash.lastIndexOf("page=")+5, hash.lastIndexOf("&"));
+    //
+    // possible BUG: extracting pagenum depends on 'url?page=xx#...' ['page=xx' MUST be followed by '#'
+    //
+	pageNumber.value =hash.substring(hash.lastIndexOf("page=")+5, hash.lastIndexOf("#"));
 
 	// triggers event to make viewer.js read the value of pageNumber and navigate to the correct page
 	// in other words, it simulates the user submitting the page number

@@ -20,10 +20,10 @@ window.onload = function() {
     var $timeline = $('#timeline');
     // $timeline.sortable({scroll: true, axis:"x"});
 
-    /*                            /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
+                               /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
                         var makesortable = function() {
                             //$('timelineDisplay').sortable( "destroy" ); //remove previous sortable state
-                            $("#timelineDisplay").sortable({
+                            $("#timeline").sortable({
                                 opacity: 0.7,   // makes dragged element transparent
                                 revert: true,   //Animates the drop
                                 axis:   "x",
@@ -31,19 +31,20 @@ window.onload = function() {
                                 handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
                             }).disableSelection();
                         };
-      */
+    
+    makesortable(); //makes the timeline sortable
 
     var playing;
     var $currentItem;
     var $viewer = $('#viewer');
 
     // handlers for 'control panel' buttons
-    $('#back').click(function() {
+    $('#back, #prev-item').click(function() {
         if ($currentItem.prev().is('button')) {
             play($currentItem.prev());
         } else pause();
     });
-    $('#forward').click(function() {
+    $('#forward, #next-item').click(function() {
         if ($currentItem.next().is('button')) {
             play($currentItem.next());
         } else pause();
@@ -161,8 +162,9 @@ window.onload = function() {
 
 
                 $pdfHTML.find('iframe').attr('src',
-                    'looma-viewer.html?file=' + fp + fn + '#page=' + pg +
-                    '&zoom=160');
+                    'looma-viewer.html?file=' + fp + fn + '#page=' + pg
+                 //   + '&zoom=160'
+                );
                 $pdfHTML.appendTo($viewer);
                 break;
 
@@ -256,7 +258,9 @@ window.onload = function() {
                     },
                     function(result2) {
                         $(
-                            '<div id="fullscreen" class="text-display" ;">'
+                            '<div ' +
+                        //    'id="fullscreen" ' +
+                            'class="text-display">'
                         ).append($(result2.data)).appendTo(
                             $viewer);
                         // $('#viewer font[size="4"]').css("fontSize",
@@ -283,7 +287,7 @@ window.onload = function() {
 
     function makeAudioHTML() {
         return (
-            '<div id="fullscreen">' +
+          //  '<div id="fullscreen">' +
             '<div id="audio-viewer"">' +
             '<br><br><br><br>' +
             '<h2>Looma Audio Player (<span id="songname"></span>)</h2>' +
@@ -304,17 +308,16 @@ window.onload = function() {
 
     function makeVideoHTML() {
         return (
+           // '<div id="fullscreen">' +
             '<div id="video-player">' +
             '<div id="video-area">' +
-            '<div id="fullscreen">' +
             '<video id="video">' +
             '<source id="video-source" src="" type="video/mp4">' +
             '</video>' +
             '</div></div></div>' +
-            '<div id="title-area"><h3 id="title"></h3></div>' +
             '<div id="media-controls">' +
 
-            '<button id="fullscreen-playpause"></button>' +
+            '<button id="fullscreen-playpause" class="looma-control-button"></button>' +
             '<div id="time" class="title">0:00</div>' +
             '<button type="button" class="media play-pause"></button>' +
             '<input type="range" class="video seek-bar" value="0" style="display:inline-block"><br>' +

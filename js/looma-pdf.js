@@ -19,6 +19,11 @@ $(document).ready (function() {
         var viewerWindow = document.getElementById('iframe').contentWindow;
         var word = viewerWindow.getSelection().toString();
         //console.log ('In PDF viewer - selected text to speak: ', word);
+        
+        // speak the definition if a lookup popup is showing
+        var $def = $('#definition');
+        if ($def) word += $def.text();
+        
         LOOMA.speak(word);
     });
 

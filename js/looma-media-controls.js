@@ -190,7 +190,7 @@ function attachMediaControls (myMedia) {
          $('#video').on('loadeddata', function () {
             //Sets the video-area to the size of the video by finding the calculated width of the video
             var vidWidth = window.getComputedStyle(video).getPropertyValue("width");
-            var videoArea = document.getElementById("video-area");
+            var videoArea = document.getElementById("video-player");
             videoArea.style.width = parseInt(vidWidth) + "px";
 
             var videoPlayer = document.getElementById("video-player");

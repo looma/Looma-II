@@ -1,8 +1,11 @@
+#main-container-horizontal {
+}
+
 #settings {
-    height:70%;
-    max-height: 70%;
+    height:40vh;
     overflow:hidden;
     position:relative;
+    font-size: 1.2em;
 }
 
 #settings p {
@@ -10,25 +13,35 @@
 }
 
 #tools {
-    height:20%;
-    width:100%;
-    position:absolute;
-    bottom:0;
+    height:50vh;
+    padding: 5vw;
+    font-size: 1.2em;
 }
 
+button {
+     display:inline;
+ }
+
+ #tools button {
+     height:5vh;
+     width:20vw;
+ }
+ 
 div#themelist {
-    width:20vw;
     margin-left:10%;
+    display:inline-block;
     text-align:left;
-    font-size:0.8em;
     float:left;
 }
 
+#themelist select {
+    display:inline;
+}
+
 div#voicelist {
-    width:60vw;
     margin-left:10%;
-    float:right;
-    font-size:0.8em;
+    display:inline-block;
+    float:left;
     text-align:left;
 }
 
@@ -36,7 +49,7 @@ span.themespan img {
 	display:none;
 }
 
-span.themespan:hover img {
+span.theme:hover img {
 	display:inline;
 	position:absolute;
 	left:20%;
@@ -44,15 +57,17 @@ span.themespan:hover img {
 
 span#themes {font-size: 1em}
 
-#themelist input {
-    height:4vh;
+#themelist select {
+    height:5vh;
+    width:15vw;
 }
 
-#voicelist input {
-    height:2vh;
+#voicelist select {
+    height:5vh;
+    width:15vw;
 }
 
-input.theme, input.voice {
+select.theme, select.voice {
     vertical-align:middle;
 }
 
@@ -67,9 +82,8 @@ input.theme, input.voice {
     color:red;
 }
 
-.settings-control, .admin-control {
-    height:10%;
-    width:20%;
+.settings-control, .admin-control, .exec-control {
+ 
     font-size:1em;
     margin:5px 2px;
     display:none;

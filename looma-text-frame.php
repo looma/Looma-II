@@ -98,6 +98,9 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
         </div>
     </div>
 
+<!--
+    <button class='control-button' id='dismiss' ></button>
+-->
 <?php
           include ('includes/js-includes.php');
 ?>
@@ -107,7 +110,7 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
         <script src="js/bootstrap-wysiwyg.min.js">   </script>
 
 <?php     include ('includes/looma-filecommands.php');
-          include ('includes/looma-search.php');
+          //include ('includes/looma-search.php');
 ?>
 
         <link rel="stylesheet" href="css/looma-text-editor.css">

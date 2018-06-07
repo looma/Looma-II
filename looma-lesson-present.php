@@ -9,7 +9,7 @@ Description: looma lesson plan presenter
 	<?php $page_title = 'Looma Lesson Presenter ';
           include ('includes/header.php');
           require ('includes/mongo-connect.php');
-          include ('includes/activity-button.php'); ?>
+          include('includes/looma-utilities.php'); ?>
 
     <link rel="stylesheet" href="css/looma-media-controls.css">
     <link rel="stylesheet" href="css/looma-video.css">
@@ -24,19 +24,23 @@ Description: looma lesson plan presenter
     ?>
 
 
-    <div id="main-container-horizontal">
+        <div id="main-container">
+            <div id="fullscreen">
+            <div id="viewer"></div>
+                <?php include("includes/looma-control-buttons.php"); ?>
+            </div>
+        </div>
+        <div id="media-controls-container"></div>
 
-        <div id="viewer"></div>
         <div id="timeline-container">
-
-        <div id="timeline" >
+            <div id="timeline" >
         <!--
             <span>Timeline: </span><span class="filename"></span>
         -->
         <?php
 
         function prefix ($ch_id) { // extract textbook prefix from ch_id
-            preg_match("/^([1-8](EN|SS|M|S|N))[0-9]/", $ch_id, $matches);
+            preg_match("/^(([1-9]|10)(EN|SS|M|S|N))[0-9]/", $ch_id, $matches);
             return $matches[1];
         };
 
@@ -61,25 +65,10 @@ Description: looma lesson plan presenter
 
             if (isset($lesson['data'])) $data = $lesson['data'];
             else { echo "Lesson has no content"; $data = null;}
-        //
-        // NEED TO SORT DATA
-        //
 
             //should send DN, AUTHOR and DATE in a hidden DIV
 
             if ($data) foreach ($data as $lesson_element) {
-
-                //echo "ID is " . $lesson_element['id'];
-                //echo "coll is " . $lesson_element['collection'];
-
-              /*removed 6/23/17
-                 if (isset($details['thumb']))
-                     $thumbSrc = $details['thumb'];
-                else if (isset($details['fn']) && isset($details['fp']))
-                     $thumbSrc = $details['fp'] . thumbnail($details['fn']);
-                else $thumbSrc = null;
-               */
-
 
                if ($lesson_element['collection'] == 'activities') {
 
@@ -118,12 +107,12 @@ Description: looma lesson plan presenter
 
                     $textbook = $textbooks_collection -> findOne($query);
 
+                    if (isset($textbook['fn']) && isset($textbook['fp']))
+                        $thumbSrc = "../content/" . $textbook['fp'] . thumbnail($textbook['fn']);
+                    else $thumbSrc = null;
+
                     // makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-
-                    if (isset($details['fn']) && isset($details['fp']))
-                             $thumbSrc = $details['fp'] . thumbnail($details['fn']);
-
-                        makeActivityButton('pdf',
+                    makeActivityButton('pdf',
                                            (isset($textbook['fp'])) ? '../content/' . $textbook['fp'] : null,
                                            (isset($textbook['fn'])) ? $textbook['fn'] : null,
                                            (isset($chapter['dn'])) ? $chapter['dn'] : null,
@@ -147,7 +136,6 @@ Description: looma lesson plan presenter
             <span>Looma Lesson:&nbsp; <span class="filename"><?php if ($displayname) echo $displayname ?></span></span>
         </div>
 
-    </div>
 
     <div id="controlpanel">
 
@@ -168,13 +156,24 @@ Description: looma lesson plan presenter
         </div>
     </div>
 
-    <button  id="fullscreen-control"></button>
-
     <?php //include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>
     <script src="js/jquery-ui.min.js">  </script>
-    <script src="js/looma-screenfull.js"></script>
-     <script src="js/looma-media-controls.js"></script>
-     <script src="js/looma-lesson-present.js"></script>
+    <script src="js/jquery.hotkeys.js"> </script>
+    <script src="js/tether.min.js">  </script>
+    <script src="js/bootstrap.min.js">  </script>
+    <script src="js/looma-media-controls.js"></script>
+    <script src="js/looma-lesson-present.js"></script>
+
+
+
+
+
+
+
+
+
+
+
  </body>
 </html>

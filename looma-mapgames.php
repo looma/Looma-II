@@ -19,11 +19,11 @@ Description: page with links to map games
 		<h2 class="title"> <?php keyword("Looma Maps Practice Exercises"); ?> </h2>
 		<div class="center">
             <br><br><br><br>
-            <a href="looma-maps-worldgame.php">
+            <a href="looma-map-worldgame.php">
                 <button type="button" class="activity play img navigate" ><?php keyword('World') ?>  </button>
             </a>
 
-            <a href="looma-maps-asiacountrygame.php">
+            <a href="looma-map-asiacountrygame.php">
                 <button type="button" class="activity play img navigate"><?php keyword('Asia') ?>  </button>
             </a>
 

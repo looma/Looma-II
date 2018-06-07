@@ -17,6 +17,7 @@ Comments:
 	  include ('includes/header.php');
 	  /*OPTIONAL*/ include ('includes/mongo-connect.php');
 ?>
+<link rel="stylesheet" href="css/looma-settings.css">
 
 </head>
 
@@ -68,12 +69,16 @@ function redirect_user($page)
         /*LOOMA.alert('You are now logged out', 3, true);*/
         setTimeout(function(){   console.log('logged out'); window.location = window.history.back();}, 1000 * timeout);</script>";
 ?>
-	</div>
+
+    <button class="login"></button>
+
+    </div>
 
 <?php
    		/*include either, but not both, of toolbar.php or toolbar-vertical.php*/
 	      include ('includes/toolbar.php');
    		/*include ('includes/toolbar-vertical.php'); */
     ?>
+    <script src="js/looma-settings.js"> </script>
 
 </body>

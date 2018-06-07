@@ -86,7 +86,7 @@ function succeed(result) {
 }
 
 function found (def) {
-    $('#wordFront').html($(def).find('#word'));
+    $('#wordFront').html($(def).find('#english').clone().text());
     $('.back').html(def);
 };
 

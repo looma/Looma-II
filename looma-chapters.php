@@ -18,10 +18,8 @@ for a textbook (class/subject) for Looma 2
 </head>
 
 <body>
-	<div>
 
 	<?php
-
 			function thumbnail ($fn) {
 				//given a CONTENT filename, generate the corresponding THUMBNAIL filename
 				//find the last '.' in the filename, insert '_thumb.jpg' after the dot
@@ -33,11 +31,13 @@ for a textbook (class/subject) for Looma 2
 			} //end function THUMBNAIL
 
 
-			$class = trim($_GET['class']);
+            $class = trim($_GET['class']);
+            $grade = trim($_GET['grade']);
 			$subject = trim($_GET['subject']) ;
 
-			echo "	<div id='main-container-horizontal' class='scroll'>";
-			echo "<h2 class='title'>Chapters for " . ucfirst($class) . " " . ucfirst($subject) . "</h2>";
+    echo "<div id='main-container-horizontal' class='scroll'>";
+    echo "<div  class='scroll'>";
+        echo "<h2 class='title'>Chapters for " . ucfirst($grade) . " " . ucfirst($subject) . "</h2>";
 
 			//get a textbook record for this CLASS and SUBJECT
 			$query = array('class' => $class, 'subject' => $subject);
@@ -68,8 +68,8 @@ for a textbook (class/subject) for Looma 2
 			echo "<br><br><table>";
 			echo "<tr>";
 
-			if ($tb_fn != null) echo "<th><button class='heading img' id='englishTitle' disabled> $tb_dn
-									  <img src=" . $tb_fp . thumbnail($tb_fn) . "></button></th>";
+			if ($tb_fn != null) echo "<th><button class='heading img' id='englishTitle' disabled>" . str_replace("Class","Grade",$tb_dn) .
+									  "<img src=" . $tb_fp . thumbnail($tb_fn) . "></button></th>";
 			else                echo "<th></th>";
 
 			if ($tb_nfn != null) echo "<th><button class='heading img' id='nativeTitle' disabled> $tb_ndn
@@ -200,9 +200,9 @@ for a textbook (class/subject) for Looma 2
 
 				echo "</tr>";
 			}
-			echo "</table>";
+			echo "</table></div></div>";
 	?>
-	</div>
+
 
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>

@@ -1,17 +1,17 @@
 /*
 LOOMA javascript file
-Filename: looma-media-controls.js
-Description: supports looma-video.php, looma.audio.php, looma-lesson-present.php, et
+Filename: looma-template.js
+Description: supports looma-xxx.php
 
 Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: Feb 17
-Revision: Looma 2.4
+Date: xxx  2017
+Revision: Looma 3.0
  */
 
 'use strict';
 
-window.onload = function () {
+$(document).ready = function () {
     var a;
     var b;
     

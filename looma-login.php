@@ -187,4 +187,5 @@ else {
     <?php   include ('includes/js-includes.php');
             include ('includes/toolbar.php');
     ?>
+    <script src="js/looma-login.js">  </script>
 </body>

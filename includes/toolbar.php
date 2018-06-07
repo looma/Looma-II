@@ -1,4 +1,7 @@
- 	<div id="toolbar-container" class="toolbar">
+
+    <link rel="stylesheet" href="css/looma-toolbar.css">
+
+    <div id="toolbar-container" class="toolbar">
  		<div class="button-div" id="toolbar">
 
 			<button id="translate" class="toolbar-button flag">
@@ -12,7 +15,7 @@
  			</button>
 
 			<button onclick="LOOMA.setStore('libraryScroll', 0, 'session');
-			                 LOOMA.setStore('saveForm',    0, 'session');
+			                 LOOMA.clearStore('searchForm',     'session');
                              parent.location.href = 'looma-library-search.php?fp=../content/';" class="toolbar-button ">
 				<!-- call looma-library.php with path to starting folder of the Library. -->
 				<img draggable="false" src="images/library.png"  height= "80%" >
@@ -34,7 +37,7 @@
                 <?php tooltip("Clocks") ?>
             </button>
 
-            <button onclick="parent.location.href = 'looma-map.php';" class="toolbar-button ">
+            <button onclick="parent.location.href = 'looma-maps.php';" class="toolbar-button ">
                 <img draggable="false" src="images/maps.png"  height = "80%" >
                 <?php tooltip("Maps") ?>
             </button>
@@ -61,7 +64,7 @@
 
 			<button onclick="parent.location.href = 'looma-settings.php';" class="toolbar-button ">
 				<img draggable="false" src="images/settings.png"  height = "80%" >
-				<?php tooltip("Settings") ?>
+				<?php tooltip("Tools") ?>
 			</button>
 
 			<button onclick="parent.location.href = 'looma-info.php';" class="toolbar-button ">
@@ -76,7 +79,7 @@
 
 			<!-- <button  class="toolbar-button next-prev" onclick="parent.history.forward()">
 				<img draggable="false" src="images/forward-arrow.png" width = "60px" height = "80%" ></button>   -->
-			</div>
+        </div>
 
 		<div id="logo-div">
 			<!-- DATETIME ready to turn on. needs to be positioned with CSS-->
@@ -86,7 +89,13 @@
             <br>
 			<span id="datetime"></span>
 		</div>
-		<img id="padlock" draggable="false" src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
-		<p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
 
-	</div>
+
+
+        <img id="padlock"
+             draggable="false"
+             src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
+
+        <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
+
+    </div>

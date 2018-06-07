@@ -10,11 +10,10 @@ Description:  popup SEARCH panel for Looma pages
 
   <link rel="stylesheet" href="css/looma-filecommands.css">
 
-
-    <div id="commands">
+    <div id="filecommands">
         <div class="btn-group">
           <button type="button" id="cmd-btn" class="btn btn-info" data-toggle="dropdown" aria-expanded="false">
-            &nbsp;File Commands &nbsp;
+            &nbsp;File Commands&nbsp;
             <i class="fa fa-caret-down" aria-hidden="true"></i>
           </button>
           <div class="dropdown-menu">
@@ -30,7 +29,7 @@ Description:  popup SEARCH panel for Looma pages
 
             <div class="dropdown-divider"></div><br>
 
-            <button class="dropdown-item file-cmd template-cmd" id="opentemplate">Open Template</button><br>
+            <button class="dropdown-item file-cmd template-cmd"       id="opentemplate">Open Template</button><br>
             <button class="dropdown-item file-cmd template-cmd admin" id="savetemplate">Save Template</button><br>
             <button class="dropdown-item file-cmd template-cmd admin" id="saveastemplate">Save As Template</button><br>
             <button class="dropdown-item file-cmd template-cmd admin" id="deletetemplate">Delete Template</button><br>
@@ -43,7 +42,42 @@ Description:  popup SEARCH panel for Looma pages
       </div>
 
 
-    <script src="js/looma-filecommands.js">   </script>
-
 <?php
+/**************  Search  *************
+
+Description:  search code for Looma Editors to find lesson-plans, slideshows, etc
+    this is separate from looma-search.php which is for searching for any activity file
+*/
 ?>
+
+
+<div id='filesearch-panel'>
+    <p id='collectionname'></p>
+
+    <form id='filesearch' name='filesearch'>
+        <input type='hidden' id='collection' value='activities' name='collection'/>  <!-- JS must set "currentcollection"  -->
+        <input type='hidden' id='cmd' value='search' name='cmd'/>
+
+        <?php
+        /**************************************/
+        /************* Search Bar *************/
+        /**************************************/
+        echo "<div id='filesearch-bar' class='media-filter'>
+            <input id='filesearch-term' type='text' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
+            <button id='filesearch-submit' class = 'filesearch' name='search' value='value' type='submit'>
+            <button class='clear-filesearch' type='button'>Clear</button>
+        </div>";
+
+
+        /**************************************/
+        /********** File Type Fields **********/
+        /**************************************/
+
+        ?>
+        <button class='cancel-filesearch' type='button'>Cancel</button>
+    </form>
+</div>
+
+<div id="filesearch-results"></div>
+
+    <script src="js/looma-filecommands.js">   </script>

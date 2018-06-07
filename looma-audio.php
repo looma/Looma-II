@@ -19,7 +19,7 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
 <?php $page_title = 'Looma Audio Player';
 	  include ('includes/header.php');
 ?>
-    <!-- NOTE: audio.php shares media controls styling with video.php -->
+    <link rel="stylesheet" type="text/css" href="css/looma-audio.css">
     <link rel="stylesheet" type="text/css" href="css/looma-media-controls.css">
 	</head>
 
@@ -29,7 +29,7 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
         $filepath = $_REQUEST['fp'];
         $displayname = $_REQUEST['dn'];
 	?>
-		<div>
+    <div id="main-container-horizontal">
 		<div id="audio-viewer" class="viewer">
 			<br><br><br><br>
 			<h2>Looma Audio Player ( <?php echo $displayname; ?> )</h2>

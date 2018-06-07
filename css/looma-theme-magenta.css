@@ -8,6 +8,7 @@ body {
 
 #toolbar-container, #toolbar-container-vertical {
 	background-color:  #ff00ff; /*#BD00A5;*/
+    --looma-toolbar:#ff00ff;
 }
 
 button {
@@ -29,8 +30,9 @@ button:hover {
 }
 
 button.active {
-	background-color: #00f;
-	color:yellow;
+    background:none;
+    background-color: #00f;
+    color:yellow;
 }
 	/* COLORS:
 	 * 	lime	59b606

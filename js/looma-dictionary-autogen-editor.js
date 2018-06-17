@@ -39,7 +39,6 @@ var maxPage = 1;
  */
 var words = [];
 
-
 /**
  * The list of official definitions for the currently selected word
  */
@@ -65,14 +64,13 @@ var prevModified = false;
  */
 var prevAccepted = false;
 
-
 /**
  * The word currently selected and displayed in the bottom bar
  */
 var selectedWord = "";
 
 /**
- * If true, official searches and word selections should show overwritten entries, if false,
+ * If true, Permanent Dictionary searches and word selections should show overwritten entries, if false,
  * act as normal
  */
 var showOverwritten = false;
@@ -81,7 +79,6 @@ var showOverwritten = false;
  * The id returned by setInterval while using it to update the progress bar
  */
 var progressTimer;
-
 
 /**
  * Keeps track of the furthest the progress of the upload has reportedly gotten since
@@ -108,7 +105,6 @@ function showUploadDiv() {
     $("#menuArea, #viewArea, #officialViewer").addClass("disableButtons");
 }
 
-
 /**
  * Hides the div that allows users to upload PDFs, and enables the background area
  */
@@ -119,8 +115,6 @@ function hideUploadDiv() {
     }
 }
 
-
-
 function changeAutoGen() {
     if($("#autoChidCheck").prop("checked")) {
         $("#chidInputLabel").text("Chapter prefix: ");
@@ -130,7 +124,6 @@ function changeAutoGen() {
         $("#chapInput").prop("placeholder", "ex. 12, 14, 17, 23");
     }
 }
-
 
 /**
  * processes the PDF selected in the uploadPDFDiv, finding all unique words and sending
@@ -144,11 +137,39 @@ function processPDF() {
     var progress = $("#progressDisplay");
     $("#uploadPDFDiv").addClass("disableButtons");
     
+
+    var prefix = $("#prefixInput").val();
+    var chapterList = $("#chapInput").val();
+    
+    //validate user's upload settings
+    // validate ch_id prefix
+    
+    //  if NO list of starting page numbers is given, then the provided CH_ID prefix is the full ch_id for this chapter
+    //  check if provided prefix is a legal FULL ch_id
+    if (!chapterList || chapterList == '') {
+        if(!prefix.match(/^([0-9]|10)(M|S|EN|N|SS|H|V)([0-9][0-9](\.[0-9][0-9])?)$/)) {
+            progress.text("chapter prefix must be a full CH_ID, like '3M04' or '7SS02.01'");
+            finishProcessingPDF();
+            return;
+            }
+        }
+    else
+    //  if a list of starting page numbers IS given, then the provided CH_ID prefix will have "01", "02" etc added to generate ch_ids
+    //  check if provided prefix is a legal PREFIX ch_id
+        if(!prefix.match(/([0-9]|10)(M|S|EN|N|SS|H|V)([0-9][0-9]\.)?$/)) {
+                progress.text("chapter prefix must be a PREFIX CH_ID, like '3M' or '7SS02.'");
+                finishProcessingPDF();
+                return;
+        };
+    
     // convert file to text
     var file = document.getElementById("pdfInput").files[0];
-    if(file == null || !("name" in file) || !file.name.endsWith(".pdf")) {
-        progress.text("No file selected or invalid format");
-    }
+    
+    if(!file || file == null || !("name" in file) || !file.name.endsWith(".pdf")) {
+        progress.text("No file selected or file is not PDF");
+        finishProcessingPDF();
+        return;
+    };
     progress.text("Converting file to text");
     Pdf2TextClass().convertPDF(file, function(page, total) {}, function(pages) {
         // called when the pdf is fully converted to text. Finds all unique words
@@ -157,15 +178,7 @@ function processPDF() {
         var start = $("#startPageNumber").val();
         var end = $("#endPageNumber").val();
         var auto = $("#autoChidCheck").prop("checked");
-        var prefix = $("#prefixInput").val();
-        
-        // check for bad ch_id prefix
-        if(!prefix.match(/^([1-8]((M|N|S|SS|EN|H|V)([0-9][0-9]\.)?([0-9][0-9])?)?)?$/)) {
-            progress.text("chapter prefix isn't formatted correctly");
-            finishProcessingPDF();
-            return;
-        }
-        
+
         
         var words = findUniqueWordsFromString(pages, auto, $("#chapInput").val(), prefix,
             start, end);
@@ -175,10 +188,7 @@ function processPDF() {
             return;
         }
         
-        
-        
         updateContext(pages, start, end);
-        
         
         progress.text("uploading...");
         
@@ -193,13 +203,13 @@ function processPDF() {
                     // after a non-fatal error
                     progress.text("Failed with error: " + data['status']['value']);
                 } else {
-                    progress.html("Done!<br>Success: " + (data['success'] || "")
-                        + "<br>Fully skipped for unknown reason: " + (data['fullSkip'] || "")
-                        + "<br>Some definitions skipped for unknown reason: " + (data['partSkip'] || "")
-                        + "<br>Some definitions missing vital data: " + (data['partMissing'] || "")
-                        + "<br>Already Existed: " + (data['exists'] || "")
-                        + "<br>Connection error: " + (data["noCon"] || "")
-                        + "<br>Canceled: " + (data['canceled'] || ""));
+                    progress.html("Done!<br>Success: " + (data['success'] || "NONE")
+                        + "<br>Fully skipped for unknown reason: " + (data['fullSkip'] || "NONE")
+                        + "<br>Some definitions skipped for unknown reason: " + (data['partSkip'] || "NONE")
+                        + "<br>Some definitions missing vital data: " + (data['partMissing'] || "NONE")
+                        + "<br>Already Existed: " + (data['exists'] || "NONE")
+                        + "<br>Connection error: " + (data["noCon"] || "NONE")
+                        + "<br>Canceled: " + (data['canceled'] || "NONE"));
                 }
                 
                 // show the first instance of the word in context
@@ -334,7 +344,7 @@ function cssUnescapeString(str) {
 }
 
 /**
- * Creates a table entry for the staging table with all necessary fields in the right format
+ * Creates a table entry for the Staging Dictionary with all necessary fields in the right format
  * @param word The word object to create it for
  * @param i The index of that word object in the stored list
  * @returns the new entry
@@ -396,15 +406,20 @@ function createTableEntry(word, i) {
         + i + ')" class="entryDeleteButton" title="Click to toggle Delete on or off">'
         + (word['stagingData']['deleted']?'re add':'de<wbr>lete')+'</button></td>'));
     row.append(createEditableTd("root", i, word["wordData"]["root"] || ""));
+ 
+    row.append(createEditableTd("plural", i, word["wordData"]["plural"]));
+    
     row.append(createEditableTd("pos", i, word["wordData"]["pos"]));
     row.append(createEditableTd("nep", i, word["wordData"]["nep"]));
     row.append(createEditableTd("def", i, word["wordData"]["def"]));
     row.append(createEditableTd("ch_id", i, word["wordData"]["ch_id"]));
+/*
     row.append($('<td class="primCol"><input type="checkbox" onchange="edit(\'prim\', ' + i +
         ')" id="prim_' + i + '" '
         + (isTrue(word["wordData"]["primary"]) ? 'checked ' : '')
         + ' title="Check to mark as the first/primary definition of the word">'
         + '</td>'));
+ */
     row.append($('<td class="modCol"><p>'
         + (word['wordData']["mod"]) + '</p></td>'));
     row.append($('<td class="dateCol"><p>'
@@ -414,8 +429,7 @@ function createTableEntry(word, i) {
 
 
 /**
- * Asks the user for specific permission and then publishes accepted changes to the official
- * database
+ * Asks the user for specific permission and then publishes accepted changes to the Permanent Dictionary
  */
 function publish() {
     if(confirm("Are you sure you want to publish these changes?")) {
@@ -487,7 +501,7 @@ function edit(type, index) {
     var id_type = (type == 'cancel' || type == 'delete') ? 'stat' : type;
     // get correct element
     var elem = $("#" + id_type + "_" + index);
-    // confirm a cancel, which takes immediate effect in removing a definition from staging
+    // confirm a cancel, which takes immediate effect in removing a definition from Staging Dictionary
     if(type == 'cancel' && !confirm(
             "Are you sure you want to revert all unpublished changes to this entry?")) {
         $("#menuArea, #viewArea, #officialViewer").removeClass("disableButtons");
@@ -535,8 +549,7 @@ function edit(type, index) {
 }
 
 /**
- * Called when a word is selected in the staging table and should be displayed in the official
- * table
+ * Called when a word is selected in the Staging Dictionary and should be displayed in the Permanent Dictionary
  * @param word The word selected as a string
  */
 function selectWord(word) {
@@ -551,7 +564,7 @@ function selectWord(word) {
 }
 
 /**
- * Submits a search for an official (published) word
+ * Submits a search for a word in the Permanent Dictionary
  */
 function submitOfficialSearch() {
     selectWord($("#officialSearchBox").val());
@@ -559,7 +572,7 @@ function submitOfficialSearch() {
 }
 
 /**
- * loads the official table using the selected word (global variable)
+ * loads the Permanent Dictionary table using the selected word (global variable)
  */
 function loadOfficialTable() {
     $.get("looma-dictionary-autogen-backend.php",
@@ -583,16 +596,17 @@ function loadOfficialTable() {
                     var row = $("<tr>");
                     row.append($("<td class='editCol'><button id='edit_" + i
                         + "' onclick='moveOfficial(" + i
-                        + ");' title='Click to copy to the staging database to edit'>"
+                        + ");' title='Click to copy to the Staging Database to edit'>"
                         + "Edit</button></td>"));
                     row.append(createOfficialTd(officialDefs[i], "word"));
                     row.append($("<td class='statCol'><p>unedited</p></td>"));
                     row.append(createOfficialTd(officialDefs[i], "root"));
+                    row.append(createOfficialTd(officialDefs[i], "plural"));
                     row.append(createOfficialTd(officialDefs[i], "pos"));
                     row.append(createOfficialTd(officialDefs[i], "nep"));
                     row.append(createOfficialTd(officialDefs[i], "def"));
                     row.append(createOfficialTd(officialDefs[i], "ch_id"));
-                    row.append(createOfficialTd(officialDefs[i], "primary"));
+                    //row.append(createOfficialTd(officialDefs[i], "primary"));
                     row.append(createOfficialTd(officialDefs[i], "mod"));
                     row.append(createOfficialTd(officialDefs[i], "date"));
                     table.append(row);
@@ -608,7 +622,7 @@ function loadOfficialTable() {
 }
 
 /**
- * moves the word at the given index in the officialDefs array to the staging dictionary
+ * moves the word at the given index in the officialDefs array to the Staging Dictionary
  * with no other changes
  * @param index The index of the word to move
  */
@@ -649,7 +663,7 @@ function isTrue(input) {
 }
 
 /**
- * Checks to confirm the user's intent, and then removes all entries from the staging database
+ * Checks to confirm the user's intent, and then removes all entries from the Staging Database
  */
 function revertStaging() {
     if(confirm("Are you sure you want to revert all staging changes? This cannot be undone.")) {
@@ -679,7 +693,7 @@ function hideAddWordDiv() {
 }
 
 /**
- * Adds a single word to the staging dictionary with only the english word inputted.
+ * Adds a single word to the Staging Dictionary with only the english word inputted.
  * Nothing is autogenerated. Then searches for this exact word by id
  */
 function addSingleWord() {
@@ -830,11 +844,25 @@ function updateContext(pages, start, end) {
 
 
 /**
+ * To be called when closing window. If necessary, will cancel a running upload. Will not
+ * be able to notify the user
+ */
+function checkBeforeUnload() {
+    if(processing) {
+        cancelUpload();
+    }
+}
+
+
+/**
  * To be called on when the page is loaded. Sets up the screen and pulls data from the backend.
  */
 function startup() {
     
     loginname = LOOMA.loggedIn();
+    
+    if (loginname === 'skip' || loginname === 'david')
+        $('.admin').removeClass('admin').prop('disabled', false);
     
     hideUploadDiv();
     hideAddWordDiv();
@@ -857,16 +885,5 @@ function startup() {
         }
     });
 }
-
-/**
- * To be called when closing window. If necessary, will cancel a running upload. Will not
- * be able to notify the user
- */
-function checkBeforeUnload() {
-    if(processing) {
-        cancelUpload();
-    }
-}
-
 
 $(document).ready(startup);

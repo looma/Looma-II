@@ -62,19 +62,21 @@ svg {
 }
 
 .tiger {
-    height:7vh;
-    width:7vh;
-    margin:1.5vh;
-    border-radius:3.5vh;
+    height:70%;
+    width:70%;
+    margin-left:15%;
+    margin-top:15%;
+    border-radius:50%;
     background-color:red;
     z-index:2;
 }
 
 .goat {
-    height:5vh;
-    width:5vh;
-    margin:auto auto;
-    border-radius:2.5vh;
+    height:50%;
+    width:50%;
+    margin-top:25%;
+    margin-left:25%;
+    border-radius:50%;
     background-color:green;
     z-index:3;
 }

@@ -1,0 +1,122 @@
+/*
+Filename: looma-search.css
+Description:
+Associated code files:
+Programmer name: Skip
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date:
+Revision: Looma 2.0.x
+*/
+
+#search-panel {
+    position:absolute;
+    display:none;
+    width:40vw;
+    height:40vh;
+    min-width:40vw;
+    max-width:40vw;
+    top:5vh;
+    left:37vw;
+    padding: 2vw;
+    background-color:white;
+    color:black;
+    z-index:10;
+    overflow-y:hidden;
+    border:2px solid black;
+    border-radius:6px;
+}
+
+input[type=radio] {
+  display:inline;
+}
+
+button.search {
+    border:none;
+    font-size:1em;
+    background:none;
+    color:black;
+}
+
+#cancel-search {
+    display:none;
+    border:none;
+    height: 15%;
+    width: 25%;
+    font-size:1em;
+    color:black;
+    background:none;
+}
+
+#search-criteria {
+  display:none;
+}
+
+#search-bar {
+
+
+}
+
+#sort-criteria {
+    display:none;
+}
+
+#search-filter {
+    display:none;
+}
+
+#search-filter  .typ-chk {
+    display:none;
+}
+#class-subj-filter {
+    display:none;
+}
+
+#search-results {
+    position:absolute;
+    top:2vh;
+    left:3vw;
+    overflow-y:auto;
+    overflow-x:hidden;
+    max-height:95vh;
+    margin:0 3vw;
+    max-width:30vw;
+    background-color:white;
+    color:black;
+    border:2px solid black;
+    border-radius:6px;
+    z-index:10;
+}
+
+.result {
+    border:2px solid black;
+    border-radius:5px;
+    margin: 2px;
+    width:90%;
+    /*color:white;
+    background:#2E3192;*/
+}
+
+.result-data {
+    display:none;
+    position:fixed;
+    left:37vw;
+    top:38vh;
+    width:40vw;
+    max-width:100%;
+    height:40vh;
+    padding:2px 2px 2px;
+    overflow:hidden;
+    font-size:0.50em;
+    z-index:100;
+    background-color:white;
+    border: 2px solid black;
+    border-radius:6px;
+}
+
+.result:hover .result-data {
+    display:block;
+}
+
+#search-preview {
+
+}

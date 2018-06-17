@@ -213,6 +213,7 @@ var clearFilter = function() {
 function clearResults() {
     //$("#innerResultsMenu").empty();
     $("#innerResultsDiv" ).empty();
+    $('#details').empty().hide();
     $('.hint').show();
     //$("#previewpanel"    ).empty();
     
@@ -234,7 +235,7 @@ function displayResults(results) {
     
     $('.hint').hide();
     $('#innerResultsDiv').empty();
-    
+    $('#details').empty().hide();
     displaySearchResults(result_array);
     
     $('.info'           ).hover(

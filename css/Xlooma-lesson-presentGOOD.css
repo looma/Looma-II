@@ -12,52 +12,20 @@ html {
     box-sizing: border-box;
 }
 
-#main-container {
-    display:grid;
-    grid-template-columns: [left] 90vw [middle] 10vw [right];
-    grid-template-rows: [top] 90vh [timeline] 10vh [bottom];
-    
-    height:90vh;
-    margin:0;
-
-    background-color:lightgray;
-    
-    font-family: "Comic Sans MS", cursive, sans-serif;
-    color:black;}
-
-#fullscreen {
-    grid-column: left / right;
-    grid-row: top / timeline;
+#main-container-horizontal {
     height:100%;
-    width:100%;
-    
     margin:0;
-    padding: 0;
 }
 
-#fullscreen:fullscreen {
-    height:100vh;
+#fullscreen {
+    height:90vh;
     margin:auto;
 }
 
-#timeline-container {
-    grid-row: timeline / bottom;
-    grid-column: left / middle;
-    
-    overflow-x: scroll;
-    
-    overflow-y: hidden;
-    
-}
-
-#timeline-container::-webkit-scrollbar {
-    display: none;
-}
-
-#controlpanel {
-    grid-row: timeline / bottom;
-    grid-column: middle / right;
-}
+#fullscreen:fullscreen {
+     height:100vh;
+     margin:auto;
+ }
 
 .popup {
     z-index:2147483647; /* to show on top of fullscreen */
@@ -114,7 +82,7 @@ button#prev-item:-webkit-full-screen {
 span.hint {
     position:absolute;
     top:45%;
-    
+
     padding:10vh 0 0 0;
     color:#888;
     z-index:-1;
@@ -122,8 +90,12 @@ span.hint {
 
 #viewer {
     position:relative;
+    /*top: 3vh;*/
     height: 100%;
     width:100%;
+    /*opacity: 1.0;*/
+    /*background-color: #eee;*/
+    /*color:black;*/
 }
 
 #video-player {height: 83%;}
@@ -135,24 +107,33 @@ span.hint {
 
 img#fullscreen {width:auto;}
 
+#timeline-container {
+  grid-row: toolbar / bottom;
+    grid-column: left / right;
 
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+}
 
 #timeline {
+    /*display:none;*/
+    position:absolute;
     display: inline-flex;
     bottom:0;
     left:0;
     z-index:100;
-    height:100%;
+    height:10vh;
     width:100000px;
-    /*max-width:100%;*/
+    max-width:100%;
     padding:1px;
     background-color:yellow;
     color:black;
     vertical-align:middle;
-    
+
     overflow-x: scroll;
     overflow-y: hidden;
-    
+
 }
 
 
@@ -162,28 +143,32 @@ img#fullscreen {width:auto;}
 
 
 #controlpanel {
-    
-    
-
+    /*position: absolute;*/
     z-index: 1000;
+    position : fixed;
+    /*transform: translate(-50%, -50%);*/
     padding: 5px;
-    background-color:yellow;
-    height:100%;
-    width: 100%;
-  
+    background-color:#FAFCAC;
+    /*height: 7vh;*/
+    height:10vh;
+    width: 20vw;
+    bottom: 0;
+    right: 0;
+    /*background: rgba(256, 256, 256, 0.3)  white background with 30% opacity */
+    display: inline-flex;
     vertical-align:middle;
     border-radius: 3px;
 }
 
 #title {
-    position:absolute;
-    right:0;
-    bottom:11vh;
-    text-align:right;
-    /*margin-right:3vw;*/
-    background-color: black;
+   position:absolute;
+   right:0;
+   bottom:11vh;
+   text-align:right;
+   /*margin-right:3vw;*/
+   background-color: black;
     color:yellow;
-    padding: 5px;
+   padding: 5px;
 }
 
 #subtitle {
@@ -227,10 +212,10 @@ button.lesson-element.playing {
 button.lesson-element span {display:none;}
 
 button.lesson-element img {
-    vertical-align:top;
-    min-height:6vh;
-    max-height:8vh;
-    width:5vw;
+   vertical-align:top;
+   min-height:6vh;
+   max-height:8vh;
+   width:5vw;
 }
 
 
@@ -252,7 +237,6 @@ span#lesson-name {
     margin:auto;
     vertical-align:middle;
 }
-
 
 .control-button {
     position: relative;
@@ -285,7 +269,7 @@ span#lesson-name {
 #dismiss { background-image: url("../images/back-arrow.png"); }
 
 #fullscreen .text-display {
-    height:100%;
+   
     zoom: 250%;
     margin:0 auto;
     overflow: hidden;
@@ -295,3 +279,6 @@ span#lesson-name {
     font-size: 20px;
 }
 
+#viewer {
+    background-color: white;
+}

@@ -73,7 +73,8 @@ $(document).ready (function() {
     {   var loginname = LOOMA.readStore('login', 'cookie');
         $('#login-status').text("You are logged in as '" + loginname + "'");
         $('.settings-control').css('display', 'inline');                       // show the teacher tools
-        if (loginname == 'skip' || loginname === 'david') $('.admin-control').css('display', 'inline');;
+        //if (loginname == 'skip' || loginname === 'david')
+            $('.admin-control').css('display', 'inline');;
         if (loginname == 'skip' ) $('.exec-control').css('display', 'inline');;
 
         $('.login').toggleClass('loggedIn').text('Logout').click
@@ -81,7 +82,7 @@ $(document).ready (function() {
                 {
                 LOOMA.confirm('are you sure you want to log out?',
                     function(){window.location = "looma-logout.php";},
-                    function(){}, true);
+                    function(){}, false);
                 }
             );
 

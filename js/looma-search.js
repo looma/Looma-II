@@ -249,32 +249,34 @@ function restoreState () {
         // get the name, value pairs from formSettings and restore them in 'form'
         $.each(savedForm, function (i, item) {
             // restore 'type' and 'scr' selections
-            if (item.name == 'type[]') $search[0][item.value].checked = true;
-            if (item.name == 'src[]')  $search[0][item.value].checked = true;
+            if (item.name == 'type[]') $("#search input[data-id='" + item.value + "']")[0].checked = true;
+            if (item.name == 'src[]')  $("#search input[data-id='" + item.value + "']")[0].checked = true;
+            //if (item.name == 'src[]')  $('#source-div')[0][item.value].checked = true;
         });
-    }
     
-    //setRootKeyword();  // initialize keyword 1 to 'root' of keyword tree from mongo
-    
-    var keys = [];
-    var key1 = savedForm.find(x => x.name === 'key1'); keys.push(key1?key1.value:null);
-    var key2 = savedForm.find(x => x.name === 'key2'); keys.push(key2?key2.value:null);
-    var key3 = savedForm.find(x => x.name === 'key3'); keys.push(key3?key3.value:null);
-    var key4 = savedForm.find(x => x.name === 'key4'); keys.push(key4?key4.value:null);
-    
-    restoreKeywordDropdown(1,keys);  // restore and select keywords 1,2,3,4 if specified
-    
+        //setRootKeyword();  // initialize keyword 1 to 'root' of keyword tree from mongo
+        
+        var keys = [];
+        var key1 = savedForm.find(x => x.name === 'key1'); keys.push(key1?key1.value:null);
+        var key2 = savedForm.find(x => x.name === 'key2'); keys.push(key2?key2.value:null);
+        var key3 = savedForm.find(x => x.name === 'key3'); keys.push(key3?key3.value:null);
+        var key4 = savedForm.find(x => x.name === 'key4'); keys.push(key4?key4.value:null);
+        
+        restoreKeywordDropdown(1,keys);  // restore and select keywords 1,2,3,4 if specified
+    };
+
     if ($('#collection').val() == 'chapters') {
         setCollection('chapters');
         //$('.media-input').prop('disabled', true);
         if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
             showChapterDropdown($('#chapter-div'), $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'));
     } else {
-        $('#chapter-div').hide();
+        $('#chapter-search').hide();
         
     };
     
-    //$('#search').submit();  //re-run the search
+    $('#search').submit();  //re-run the search
+    
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
     
 };  //end restoreState()
@@ -318,7 +320,9 @@ $(document).ready(function() {
     $('#search').submit(function( event ) {
         event.preventDefault();
     
-        clearResults();
+        clearResults();  // this calls function "clearResults()" provided by the JS of the page which includes search.php
+                         // probably this call should be replaced by "$searchResultsDiv.empty();"
+        
         $('#innerResultsDiv').empty().show();
         
         if (!isFilterSet()) {
@@ -369,8 +373,6 @@ $(document).ready(function() {
     $("#keyword-div .keyword-dropdown").change(showKeywordDropdown);
     
     $('.clear-search').click(clearSearch);
-    
-    //$("#toggle-database").click(function(){saveState(); window.location = "looma-library.php";});//'fade', {}, 1000
     
     $("button.zeroScroll").click(function() {LOOMA.setStore('libraryScroll', 0, 'session');});
     

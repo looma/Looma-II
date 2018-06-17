@@ -97,6 +97,10 @@ Description:  for Looma 2
                  <button id="speechtest" class="admin-control">Speech Test</button>
              </a>
 
+             <a href="looma-dictionary-autogen-editor.php">
+                 <button id="speechtest" class="admin-control" >Dictionary Editor</button>
+             </a>
+
              <a href="looma-register-user.php">
                  <button id="speechtest" class="exec-control" >Users</button>
              </a>

@@ -428,7 +428,7 @@ if ( isset($_REQUEST["cmd"]) ) {
 
         $filetypes = array();       //array of FT filetypes to include in the search
 
-        if (isset($_REQUEST['type'])) foreach ($_POST['type'] as $i) array_push($filetypes, $i);
+        if (isset($_REQUEST['type'])) foreach ($_POST['type'] as $i) if ($i != '') array_push($filetypes, $i);
 
         //echo "types is: "; print_r($filetypes);
 

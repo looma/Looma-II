@@ -6,6 +6,9 @@
  * This file contains two useful functions that help to separate out words from parsed PDF
  * text, determine their ch_ids with help from user input, and return them as an array of
  * objects
+ *
+ * NOTE: JUN 2018 (Skip)  this code doesnt know how to autogenerate Unit numbers, only Chapter numbers
+ *      because it doesnt know where unit breaks are ( e.g. from 4SS01.09 to 4SS02.01)
  */
 
 
@@ -29,14 +32,13 @@ function findUniqueWordsFromString(pages, isChPre, helpString, prefix, start, en
     end = end || pages.length;
     
     var words = [];
-    if(helpString == "") {
-        // no chapters, don't add numbers just use the prefix
+    if(helpString == "") {  // no chapters, don't add numbers just use the prefix
         for(var i = start - 1; i < end; i++) {
             for(var j = 0; j < pages[i].length; j++) {
                 words.push({"word": pages[i][j], "ch_id": prefix});
             }
         }
-    } else if(isChPre) {
+    } else if(isChPre) { //autogenerate ch_id's
         // parse through to find helpstring followed by numbers to find chapter markers
         if(start != 1 || end != pages.length) {
             return false; // fail
@@ -62,8 +64,8 @@ function findUniqueWordsFromString(pages, isChPre, helpString, prefix, start, en
             lastWasPrefix = (words[i] == helpString);
             words[i] = {"word": words[i], "ch_id": prefix + (contents ? "00" : (chapter < 10 ? "0" : "") + chapter)};
         }
-    } else {
-        // switch chapters when the next page number comes up.
+    }  //end autogenerate ch_id's
+    else {   // switch chapters when the next page number comes up.
         var chapter = 0;
         var pageNums = helpString.split(",").map(function(num) {
             return parseInt(num.trim());

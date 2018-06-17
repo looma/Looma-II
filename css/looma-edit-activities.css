@@ -336,7 +336,7 @@ li:hover {
     display:none;
     opacity: 0.8;
     background-color:white;
-    height:42vh;
+    height:60vh;
     width:30vw;
     min-height:30vh;
     min-width:30vw;
@@ -344,7 +344,7 @@ li:hover {
     bottom:4vh;
     left:10vw;
     overflow:hidden;
-    font-size:1.5em;
+    font-size:1.25em;
     text-align:left;
 }
 

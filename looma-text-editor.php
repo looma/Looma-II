@@ -102,6 +102,8 @@ Comments:
         </div>
 	</div>
 
+    <div id="preview">preview to appear here</div>
+
     <button class='control-button' id='dismiss' ></button>
 
 <?php    // include ('includes/toolbar.php');

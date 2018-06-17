@@ -303,8 +303,14 @@ $(document).ready(function ()
                else {
 
                    opensearch();
-
-                    //NOTE: can't attach click handler to 'results' which dont exist yet
+                   
+                   $('#collection').val(currentcollection);
+                   $('#filesearch-ft').val(currentfiletype);
+                   
+                   //if( $('#collection').val() === 'text_files')   $('#collection').val('text');
+                   //$('#filesearch-ft').val('text');
+    
+                   //NOTE: can't attach click handler to 'results' which dont exist yet
                     //      so add the ON handler to the DIV which will contain the result elements
                     $('#filesearch-results').on('click',
                                             'button',
@@ -421,7 +427,7 @@ $(document).ready(function ()
                                               currentcollection,
                                               currentfiletype,
                                               function(deletename, author) {
-                                                  if (author == LOOMA.loggedIn() || LOOMA.loggedIn == 'skip' || LOOMA.loggedIn() == 'vivian') {
+                                                  if (author == LOOMA.loggedIn() || LOOMA.loggedIn() == 'skip') {
                                                      deletefile(deletename, currentcollection, currentfiletype);
                                                      if (currentname == deletename) callbacks['clear']();}
                                                   else LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
@@ -457,7 +463,12 @@ $(document).ready(function ()
                    savework(currentname, currentcollection, currentfiletype);
                else {
                     opensearch();  //do OPENSEARCH first, then hide/show FILTER checkboxes below
-
+    
+    
+                   $('#collection').val(currentcollection);
+                   $('#filesearch-ft').val(currentfiletype + '-template');
+    
+                   
                     $('.typ-chk input').attr('checked', false);
                     $('.typ-chk').hide();
 

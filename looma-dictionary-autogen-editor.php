@@ -4,7 +4,7 @@ Author: Nikhil Singhal
 Date: July 28, 2016
 
 Sets up the editor page so it can be used to display and modify dictionary entries in
-the staging and official dictionaries.
+the staging and Permanent dictionaries.
 
 The main segments are #uploadPDFDiv, a floating popup that asks the user to input pdfs for
 scanning, menuArea, the area with control buttons and the search area, viewArea, the section
@@ -30,10 +30,10 @@ button on the left side of the row and those entries will appear in the footer. 
 published entries in the footer, click on the "edit" button on the left side of the row and
 they will be moved to the staging dictionary where they can be edited. Once you are done
 editing, simply click the "publish" button and say you are sure and all accepted changes will
-be transferred to the official dictionary.
+be transferred to the Permanentdictionary.
 
 The status column shows the current status of a word:
-if the word is in the official looma dictionary database it is considered "published"/"unedited"
+if the word is in the Permanentlooma dictionary database it is considered "published"/"unedited"
 and this is displayed directly in the column in the footer or in the left button in the column
 in the staging table. Clicking this button will have no effect.
 
@@ -44,22 +44,22 @@ the definition will be COMPLETELY REMOVED FROM BOTH DICTIONARIES when published.
 
 if the word is in the staging dictionary (whether modified or not) and not deleted
 and has been accepted, meaning that it is set to be transfered to the
-official dictionary when the page is published, it will say "accepted" in the button on the
+Permanentdictionary when the page is published, it will say "accepted" in the button on the
 left. Clicking this button will toggle it between "accepted" and its previous status (which
 must be "modified" or "added")
 
 if the word is in the staging dictionary and not been deleted or accepted, but has been modified
 from its original state (whether that was its original value after being added or the value
-it had in the official dictionary), the left button will say "modified", and clicking it
+it had in the Permanentdictionary), the left button will say "modified", and clicking it
 will toggle it between "accepted" and "modified".
 
 if the word is in the staging dictionary and has just been added (eg from a pdf, not the
-official database), the left button will say "added", and clicking it will toggle it between
+Permanentdatabase), the left button will say "added", and clicking it will toggle it between
 "accepted" and "added"
 
 if delete is pressed, the status will change to deleted (see above). if the cancel button is
 pressed and the user confirms, the entry selected will IMMEDIATELY be deleted from the STAGING
-dictionary. If it had a previous version in the official dictionary, that version will NOT be
+dictionary. If it had a previous version in the Permanentdictionary, that version will NOT be
 modified or removed.
 
 More features and usage information can be found in the user manual
@@ -90,13 +90,21 @@ More features and usage information can be found in the user manual
 
 <div id="uploadPDFDiv" class="popupDiv">
     <button class="closePopupButton" onclick="hideUploadDiv()"> X </button> <br>
-    <input type="file" id="pdfInput" title="Choose the file containing the words you wish to upload.">
+    <input type="file" id="pdfInput" title="Choose the file containing the words you wish to upload">
     <br>
-    <pre class="inline" title="Type the prefix for the chapter id, which should include the grade level, then subject abbreviation, and possibly the chapter number if you are only loading one chapter">ch_id prefix: <input type="text" id="prefixInput" placeholder="ex. 3EN"></pre>
+    <pre class="inline" title="Type the prefix for the chapter id, which should include the grade level,
+                               then subject abbreviation, and possibly the chapter number if you are only loading one chapter.
+                               If the book doesnt have units, then legal prefixes are '3M', '7SS', etc.
+                               If the book has units, add the unit number and a '.' like '7SS01.' or '8EN03.'">
+                ch_id prefix: <input type="text" id="prefixInput" placeholder="ex. 3EN"></pre>
     <br>
+    <!--
     <pre class="inline" title="Check this box if you want the program to automatically parse where chapters start and end. Make sure you read the user manual to know the limitations of this feature">Autogenerate ch_ids: <input type="checkbox" id="autoChidCheck" onclick="changeAutoGen()"></pre>
     <br>
-    <pre id="chidInputLabel" class="inline" title="If you're loading an entire textbook, type the word (such as 'chapter') that identifies the start of a chapter or type the page numbers (in the pdf) of the start of each chapter. If you're just loading 1 chapter, don't type anything here but include the chapter number in the 'ch_id prefix' field">Page numbers: </pre>
+    -->
+    <pre id="chidInputLabel" class="inline" title="If you're loading an entire textbook, enter the page numbers (in the pdf) of the start of each chapter.
+                                                    If you're just loading 1 chapter, don't type anything here but include the chapter number in the 'ch_id prefix' field">
+                Page numbers: </pre>
     <input type="text" id="chapInput" placeholder="ex. 12, 14, 17, 23">
     <br>
     <pre class="inline" title="Input the page number (in the pdf) you want to start with. If you don't type anything, defaults to page 1">Start: <input type="number" id="startPageNumber" class="quarter"> </pre>
@@ -120,61 +128,55 @@ More features and usage information can be found in the user manual
 
 <div id="menuArea">
 
+    <div id="rightButtons">
+        <button id="uploadPDFButton"
+                class="leftButton admin" disabled
+                onclick="showUploadDiv()" title="Click here to upload a PDF with words for the dictionary">Upload PDF</button>
+        <br>
+        <button id="showWordDivButton"
+                class="leftButton"
+                onclick="showAddWordDiv()" title="Click here to add a single word to the staging database manually">Add Single Word</button>
 
-    <button id="uploadPDFButton" onclick="showUploadDiv()" title="Click here to upload a PDF with words for the dictionary">Upload PDF</button>
+    </div>
 
-    <button id="publishButton" onclick="publish()" class="right" title="Click here to publish accepted/deleted entries from the staging database to the official database">Publish Accepted Changes</button>
-
-    <br>
-
-    <button id="showWordDivButton" onclick="showAddWordDiv()" title="Click here to add a single word to the staging database manually">Add Single Word</button>
-
-    <button id="revertAllButton" onclick="revertStaging()" class="right" title="Click here to remove all entries from the staging database and return to the previous published state">Revert All</button>
-
-    <br class="clearAll">
-
-    <div class="boxedSection partialLeft thirtyW">
+    <div class="boxedSection  thirtyW">
+        <b>Search: </b>
         <input type="text" name="wordPart" id="wordPart" placeholder="Enter Search Term Here" title="Normal Search:
 	Type a part of a word you want to search for, or nothing
 Advanced Search:
 	Type key:value pairs (keys are en, rw, part, np, def, ch_id, mod, date) separated by & or |, where & has a higher operator precedence. Entries will match if they contain the value given.">
         <input type="button" value="Search" id="searchButton" onclick="submitSearch()">
-        <br><br>
         Added: <input type="checkbox" name="added" id="added">
         Modified: <input type="checkbox" name="modified" id="modified">
         Accepted/Deleted: <input type="checkbox" name="accepted" id="accepted">
+        <br>
     </div>
 
-    <div class="boxedSection partialRight thirtyW">
+    <div class="boxedSection  thirtyW">
         <b>Context: </b>
         <input type="file" id="contextInput" onchange="changeContext()">
         <p id="contextText" class="fullWidthBreakText"></p>
-        <input type="button" onclick="moveContext(0);" value="<<">
-        <input type="button" onclick="moveContext(-1);" value="<">
-        <input type="button" onclick="moveContext(1);" value=">">
+        <div id="arrows">
+            <input type="button" onclick="moveContext(0);" value="<<">
+            <input type="button" onclick="moveContext(-1);" value="<">
+            <input type="button" onclick="moveContext(1);" value=">">
+        </div>
     </div>
+
+    <div id="leftButtons">
+        <button id="publishButton"
+                class="rightButton admin" disabled
+                onclick="publish()"  title="Click here to publish accepted/deleted entries from the staging database to the Permanent Dictionary">Publish Accepted Changes</button>
+        <br>
+        <button id="revertAllButton"
+                class="rightButton admin" disabled
+                onclick="revertStaging()" class="right" title="Click here to remove all entries from the staging database and return to the previous published state">Revert All</button>
+    </div>
+
 </div>
 
 
 <div id="viewArea" class="clearAll">
-
-    <div id="resultsArea">
-        <table id="resultsTable">
-            <tr>
-                <th class="selectCol">Selected</th>
-                <th class="wordCol">Word</th>
-                <th class="statCol">Status</th>
-                <th class="rootCol">Root Word</th>
-                <th class="posCol">POS</th>
-                <th class="nepCol">Nepali</th>
-                <th class="defCol">Definition</th>
-                <th class="ch_idCol">ch_id</th>
-                <th class="primCol">Primary</th>
-                <th class="modCol">Modified By</th>
-                <th class="dateCol">Date Modified</th>
-            </tr>
-        </table>
-    </div>
 
     <div id="pageSwitcherSuper">
         <div id="pageSwitcherSub">
@@ -189,11 +191,30 @@ Advanced Search:
         </div>
     </div>
 
+    <div id="resultsArea">
+        <table id="resultsTable">
+            <tr>
+                <th class="selectCol">Selected</th>
+                <th class="wordCol">Word</th>
+                <th class="statCol">Status</th>
+                <th class="rootCol">Root Word</th>
+                <th class="pluralCol">Plural</th>
+                <th class="posCol">Part</th>
+                <th class="nepCol">Nepali</th>
+                <th class="defCol">Definition</th>
+                <th class="ch_idCol">ch_id</th>
+                <th class="modCol">Modified By</th>
+                <th class="dateCol">Date Modified</th>
+            </tr>
+        </table>
+    </div>
+
+
 </div>
 
 <div id="officialViewer">
     <div id="footerLabel">
-        <span>Published Definitions: &nbsp;&nbsp;</span>
+        <span>Permanent Definitions: &nbsp;&nbsp;</span>
         <div id="officialSearchArea">
             <input type="text" name="wordPart" id="officialSearchBox" placeholder="Enter Search Term Here" title="input a search for a specific word in the published dictionary">
             <input type="button" value="Search" id="officialSearchButton" onclick="submitOfficialSearch()" title="Click to search">
@@ -206,11 +227,11 @@ Advanced Search:
             <th class="wordCol">Word</th>
             <th class="statCol">Status</th>
             <th class="rootCol">Root Word</th>
-            <th class="posCol">POS</th>
+            <th class="pluralCol">Plural</th>
+            <th class="posCol">Part</th>
             <th class="nepCol">Nepali</th>
             <th class="defCol">Definition</th>
             <th class="ch_idCol">ch_id</th>
-            <th class="primCol">Primary</th>
             <th class="modCol">Modified By</th>
             <th class="dateCol">Date Modified</th>
         </tr>

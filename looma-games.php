@@ -33,7 +33,7 @@ Description: page with linke to arithmetic and vocabulary games
 		</a>
 		</div>
 
-        <a href="looma-bagh-chal.php" hidden>
+        <a href="looma-bagh-chal.php" id="bagh-chal-href">
             <button id="bagh-chal"class="looma-control-button"></button>
         </a>
 	</div>

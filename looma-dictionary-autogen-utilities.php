@@ -39,6 +39,7 @@
 
 set_time_limit(300); // prevent timeout due to a large file. 5 minutes of direct php ops
 
+date_default_timezone_set('UTC');
 
 //contains the methods to access google translate
 require 'looma-dictionary-autogen-translator.php';
@@ -334,21 +335,20 @@ function createIndividualDefinition($word, $definition, $officialConnection, $st
     $POS = $definition['pos'];
 
     //get the date and time
-    $dateCreated = getDateAndTime("America/Los_Angeles");
+    $dateCreated = gmdate("Y.m.d");  // using greenwich time
 
     //generate random number
     $random = generateRandomNumber(16);
 
     //put everything into a doc
     $doc = array( "wordData" => array(
-        "primary" => false,
         "en" => $definition["word"],
         "ch_id" => $word["ch_id"],
         "rw" => $rw,
         "np" => $np,
         "part" => $POS,
         "def" => $def,
-        "primary" => false,
+        "plural" => $plural,
         "rand" => $random,
         "date_entered" => $dateCreated,
         "mod" => $user),
@@ -376,7 +376,7 @@ function createIndividualDefinition($word, $definition, $officialConnection, $st
  *	Generates a random number given a certain number of digits
  */
 function generateRandomNumber ($numDigits){
-    $multiplier = 10 ** $numDigits;
+    $multiplier = 10 * $numDigits;
     $random = rand(0, $multiplier) / $multiplier;
 
     return $random;
@@ -687,7 +687,7 @@ function compileSimpleWordData ($allWordData){
     return array(
         '_id' => $allWordData['_id'],
         'ch_id' => $allWordData['ch_id'],
-        'primary' => $allWordData['primary'],
+        'plural' => $allWordData['plural'],
         'en' => $allWordData['en'],
         'rw' => $allWordData['rw'],
         'part' => $allWordData['part'],
@@ -811,7 +811,9 @@ function convertFromStagingToLooma($doc, $user)
     return array (
         '_id' => $doc['_id'],
         "ch_id" => $doc['ch_id'],
-        'primary' => $doc['primary'],
+        //'primary' => $doc['primary'],
+        'plural' => $doc['plural'],
+
         "en" => $doc["en"],
         "rw" => $doc["rw"],
         "np" => $doc["np"],
@@ -855,8 +857,9 @@ function updateStaging($new, $connection, $user, $modified) {
  * returns a string with the date and time in the specified format
  */
 function getDateAndTime($timezone) {
-    date_default_timezone_set($timezone);
-    return $dateEntered = date('m-d-Y') . " at " . date('h:i:sa');
+    // now using GMT timezone - set at top of this file
+    //date_default_timezone_set($timezone);
+    return $dateEntered = gmdate("Y.m.d");  // using greenwich time
 }
 
 
@@ -996,7 +999,8 @@ function addSingleWord ($stagingConnection, $word, $user) {
         "np" => '',
         "part" => '',
         "def" => '',
-        'primary' => false,
+        "plural" => '',
+        //'primary' => false,
         "rand" => $random,
         "date_entered" => $dateCreated,
         "mod" => $user),

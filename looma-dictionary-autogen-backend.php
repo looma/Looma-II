@@ -197,7 +197,7 @@ $wordDataConversions = array(array("_id", "id"), array("en", "word"), array("rw"
     array("np", "nep"), array("part", "pos"), array("def", "def"),
     array("rand", "rand"), array("date_entered", "date"),
     array("mod", "mod"), array("ch_id", "ch_id"),
-    array("primary", "primary"));
+    array("plural", "plural"));
 
 
 /**
@@ -309,8 +309,8 @@ function publishWrapper($officialConnection, $stagingConnection, $user) {
  * (string, uses frontend names, which don't always correspond to backend names),
  * new: the new value of the field (string, may not be relevant), deleteToggled: true if
  * 'deleted' should be toggled, in which case all else will be ignored (boolean)}
- * @param connection $officialConnection The connection to the official database
- * @param connection $stagingConnection The connection to the staging database
+ * @param connection $officialConnection The connection to the Permanent Dictionary
+ * @param connection $stagingConnection The connection to the Staging Dictionary
  * @param string $user the user
  * @return false if the update failed, true if successful
  */
@@ -328,11 +328,11 @@ function updateStagingWrapper($change, $officialConnection, $stagingConnection, 
         return true;
     } elseif ($change["field"] == "stat") {
         $former["stagingData"]["accepted"] = !$former["stagingData"]["accepted"];
-    } elseif($change["field"] == "prim") {
-        $former["wordData"]["primary"] = !$former["wordData"]["primary"];
-        $modified = true;
+  //  } elseif($change["field"] == "plural") {
+  //      $former["wordData"]["plural"] = !$former["wordData"]["plural"];
+  //      $modified = true;
     } elseif (in_array($change["field"],
-        array("word", "root", "nep", "pos", "def", "ch_id"))) {
+        array("word", "root", "nep", "pos", "def", "ch_id", "plural"))) {
         if($change["field"] == "word") {
             $change["new"] = strtolower($change["new"]);
         }
@@ -428,7 +428,7 @@ function isLegalValue($field, $value) {
     } else if($field == "pos") {
         return (in_array($value,
                 array("noun","verb","adverb","adjective","preposition","conjunction","pronoun","contraction","article","title","interjection","proper name")));
-    } else if($field == "def" or $field == "nep") {
+    } else if($field == "def" or $field == "nep" or $field == "plural") {
         return true; // all definitions should be valid
     } else if($field == "ch_id") {
         return preg_match('/^(([1-9]|10)((M|N|S|SS|EN|H|V)(([0-9][0-9]\.)?[0-9][0-9])?)?)?$/', $value) === 1;
@@ -508,6 +508,11 @@ if(!isset($_REQUEST['loginInfo'])) { // no login data means not logged in
         }
 
 
+
+        //NOTE: the code below determines what operation to perform based on whether certain known variables are set
+        //      TODO: should change this to the 'cmd' based operations used in looma-database-utilities.php and others
+        //
+        
         // always considered successful, but may skip words
         $response['status'] = array('type' => 'success');
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['searchArgs'])) {

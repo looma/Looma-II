@@ -23,17 +23,71 @@ body {
     max-height: 100%;
 }
 
+button {
+    font-size:1em;
+    border:2px solid blue;
+    border-radius: 5px;
+    background-color:#FFFACD;
+    cursor:pointer;
+}
+
+#showOverwriteButton {
+    font-size: 1em;
+}
+
+
+pre.inline { font-size:1.4em;}
+
+input[type='button'], input[type='file'], input[type='text'] {
+    margin:3px;
+    font-size:1.1em;
+    border:2px solid blue;
+    border-radius: 5px;
+    background-color:#FFFACD;
+}
+
+#rightButtons, #leftButtons {
+    width:17vw;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.rightButton, .leftButton {
+    min-width:100%;
+    margin:3px;
+}
+
+.admin {
+    background-color:lightgray;
+    color:gray;
+    cursor:not-allowed;
+}
+
+.boxedSection {
+    border: 3px solid green;
+    padding: 5px;
+    border-radius:5px;
+    display:inline-block;
+    min-height:100%;
+    max-height:100%;
+    height:100%;
+    vertical-align:middle;
+    
+}
+.thirtyW {
+    width: 30vw;
+}
+
+#arrows {text-align:center;}
+
 .popupDiv {
     border: solid 1px black;
     position: fixed;
+    padding:5px;
     left: 50%;
     top: 50%;
     background-color: white;
     z-index: 100;
-}
-
-#uploadPDFDiv * {
-    margin-top: 4%;
 }
 
 .quarter {
@@ -47,11 +101,12 @@ body {
 
 
 #uploadPDFDiv {
-    height: 300px;
-    margin-top: -125px;
-    
-    width: 300px;
-    margin-left: -150px;
+    padding-top:1vh;
+    position:absolute;
+    top:20vh;
+    left:25vw;
+    height: 70vh;
+    width: 50vw;
     overflow: scroll;
 }
 
@@ -60,7 +115,15 @@ body {
 }
 
 .popupDiv .closePopupButton {
-    float: right;
+    position:absolute;
+    margin-top:0;
+    top: 2%;
+    right: 2%;
+    color:red;
+    font-size:1.3em;
+    font-weight:bold;
+    background-color:white;
+    
 }
 
 #addWordDiv {
@@ -77,13 +140,6 @@ body {
     width: calc(100% - 80px);
 }
 
-
-
-.boxedSection {
-    border: 3px solid green;
-    padding: 18px;
-}
-
 .partialLeft {
     float: left;
     margin-left: 15%;
@@ -94,18 +150,10 @@ body {
     margin-right: 15%;
 }
 
-.thirtyW {
-    width: 30%;
-}
-
 
 #wordPart {
     width: 80%;
     width: calc(90% - 52px);
-}
-
-.right {
-    float: right;
 }
 
 .clearAll {

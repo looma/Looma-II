@@ -1,0 +1,134 @@
+
+/*
+section {
+    display:grid;
+    height:100vh;
+    width:100vw;
+    grid-template-rows: [top] repeat(9,1fr) [toolbar] 1fr [bottom];
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+*/
+
+#main-container-horizontal {
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+    grid-gap: 25px  25px;
+    width: 100vw;
+    overflow:hidden;
+    align-items:center;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+#main-container-horizontal #head {
+    grid-row: 1 / 2;
+    text-align:center;
+    margin: 0 auto;
+}
+
+#main-container-horizontal #classes {
+    grid-row: 2 / 4;
+    
+    position:relative;
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    
+    padding: 2vh 2vh;
+    overflow: hidden;
+}
+
+#main-container-horizontal #subjects {
+    grid-row: 4 / 6;
+    
+    position:relative;
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    
+    padding: 2vh 2vh;
+    overflow: hidden;
+}
+
+img.looma-logo{
+    width:50vw;
+}
+
+button {
+    
+    padding: 1px;
+    border-radius: 5%;
+    
+    vertical-align:middle;
+    text-align:center;
+    border: 2px solid white;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #e5e5e5)); /* webkit */
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.30);
+    
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+button:hover  {
+    transform: scale(1.1,1.1);
+}
+
+#classes button {
+   
+    margin: 1%;
+    padding: 0 10px;
+    color: black;
+    
+    line-height: 1.2;
+    font-size: 5em;
+    font-weight: bold;
+    
+/* trying to get the class and subject buttons to shrink in the flex row. but not working
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+*/
+}
+#classes p.little {font-size:0.5em;}
+
+#classes button.active {
+    color:yellow;
+}
+.classnumber {font-size:4em;}
+
+#subjects button {
+    
+    margin: 0 1%;
+    height: 90%;
+    width: 90%;
+    
+    color: black;
+    font-size: 3.5vh;
+    font-weight: bold;
+
+/* trying to get the class and subject buttons to shrink in the flex row. but not working
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+*/
+}
+
+button.class:hover,  button.subject:hover {
+    transform: scale(1.05,1.05);
+}
+
+#subjects button.active {
+    color:yellow;
+}
+#subjects button img {
+        width: 45%;
+}
+
+

@@ -50,9 +50,29 @@ h1 {background-color:#F0EC1A}
     width:60vw;
     margin:0 auto;
     overflow:hidden;
-    color:black;
-}
+    color:yellow;
+    background-color: #091F48;}
 
 #commands {
     top: 20vh;
+}
+#padlock {
+    position:absolute;
+    right:1vw;
+    bottom:15vh;
+    height:3vh;
+    width: 3vh;
+}
+
+button.speak, button.lookup, button#fullscreen-control {
+    display:none;
+}
+
+#login-id {
+    position:absolute;
+    display:none;
+    right:2vw;
+    bottom:17vh;
+    color:red;
+    font-size: 0.8em;
 }

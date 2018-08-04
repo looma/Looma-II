@@ -135,6 +135,8 @@ button.speak {
   font-size: 7em;
 }
 
+#image {height:20vh;}
+
 .back p {
   padding-left: 2px;
   padding-right: 2px;

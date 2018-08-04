@@ -57,7 +57,8 @@ input[type='button'], input[type='file'], input[type='text'] {
     margin:3px;
 }
 
-.admin {
+.admin, .exec{
+    display:none;
     background-color:lightgray;
     color:gray;
     cursor:not-allowed;
@@ -212,6 +213,8 @@ table, th, td {
 td {
     padding-right: 5px;
 }
+textarea.highlighted {border:3px dashed yellow;}
+
 
 #resultsTable {
     width: 100%;
@@ -236,16 +239,18 @@ table  tr  td  p {
     color: red;
 }
 
-.wordCol, .rootCol, .posCol, .nepCol, .modCol, .dateCol, .selectedCol, .editCol, .ch_idCol, primCol {
+.rootCol, .posCol, .nepCol, .modCol, .selectCol , .dateCol, .editCol, .ch_idCol, .pluralCol {
     width: 6.3%;
 }
+
+.wordCol {width:8%;}
 
 .defCol {
     width: 28%;
 }
 
 .statCol {
-    width: 16%;
+    width: 15%;
 }
 
 .entryDeleteButton {
@@ -254,7 +259,7 @@ table  tr  td  p {
     height: 100%;
     font-size: calc(1.4vw - 30px / 6);
     word-wrap: normal;
-    width: 30%;
+    width: 45%;
 }
 
 .statButton {
@@ -262,10 +267,11 @@ table  tr  td  p {
     background-color: lime;
     font-size: calc(1.4vw - 30px / 8);
     word-wrap: normal;
-    width: 40%;
+    width: 45%;
 }
 
 .cancelButton {
+    display:none;
     height: 100%;
     float: right;
     background-color: orange;
@@ -313,6 +319,7 @@ table  tr  td  p {
 }
 
 .unselectedWord {
+    font-size:0.75em;
     background-color: gray;
 }
 
@@ -365,3 +372,73 @@ table  tr  td  p {
 #showOverwriteButton {
     display: inline;
 }
+#padlock {
+    position:absolute;
+    right:1vw;
+    bottom:6vh;
+    height:3vh;
+    width: 3vh;
+}
+
+#login-id {
+    position:absolute;
+    display:none;
+    right:1vw;
+    bottom:10vh;
+    color:red;
+    font-size: 0.8em;
+}
+
+.popup {
+    position:fixed;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    top:33%;
+    left:25%;
+    margin:auto;
+    padding: 5px;
+    overflow:auto;
+    width:50%;
+    background-color:#fff;
+    color:black;
+    font-size:2.5em;
+    border:2px solid black;
+    border-radius:6px;
+    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+}
+
+.popup input { /*The input inside the popup*/
+    color: black;
+}
+
+.popup-button{ /*Buttons inside popups, for example the "OK" button*/
+    height: 5vh;
+    width: 7vw;
+    float : right;
+    font-size : 1.5vw;
+    position: relative;
+}
+#close-popup { /*Specifically the cancel button of a popup*/
+    float: left;
+}
+
+#dismiss-popup { /* close popup button*/
+    color : white;
+    background: red;
+    width: 3vw;
+}
+
+/*
+.all-transparent { //makes screen transparent
+    opacity: .6;
+}*/
+
+.xlat {display:none;}
+
+#verbFormChoices {
+    position:absolute;
+    font:inherit;
+    top:50vh;
+    left:53vw;
+}
+
+#verbFormChoices select {font-size:1.5em;}

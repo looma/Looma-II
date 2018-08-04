@@ -32,9 +32,7 @@ h1 {background-color:#F0EC1A}
     margin: 0 auto;
     width: 95vw;
 }
-#main-container-horizontal{
-    background-color: #eeeeee;
-}
+
 
 button.result {
     color:white;
@@ -64,43 +62,16 @@ button.result {
     zoom: 200%;
     margin:0 auto;
     overflow:hidden;
-    color:black;
+    color:yellow;
+    background-color: #091F48;
     margin-top: 1vh;
     padding: 0 0;
     border: 1px solid black;
 }
 
-/*
-#editor::before {
-    content: "";
-    width: 2.2vw;
-    height: 35.2vh;
-    background-color: white;
-    left: 4vw;
-    position: absolute;
-    bottom: 0;
-    border-top: 1px solid black;
-    border-left: 1px solid black;
-    border-bottom: 1px solid black;
-    box-sizing: border-box;
-}
-
-#editor::after {
-    content: "";
-    width: 2.2vw;
-    height: 35.2vh;
-    background-color: white;
-    right: 4vw;
-    position: absolute;
-    bottom: 0;
-    border-top: 1px solid black;
-    border-right: 1px solid black;
-    border-bottom: 1px solid black;
-    box-sizing: border-box;
-}
-*/
 #editor div {
     white-space: nowrap;
+    line-height:1.4em;
 }
 
 #commands {
@@ -133,6 +104,12 @@ button.result {
     z-index:10;
     font-size:0.5em;
     border: 1px solid black;
-    opacity:0.5;
-    background-color:lightgray;
+    background-color:#091F48;
 }
+
+
+
+button.speak, button.lookup, button#fullscreen-control {
+    display:none;
+}
+

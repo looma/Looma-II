@@ -42,8 +42,9 @@ button#media-submit{
     background-color:rgba(200,200,200,0);
     border-radius: 4px;
 }
- button.clear-search {display:inline-block;}
- 
+
+button.clear-search {display:inline-block;}
+
 input#search-term {
     text-align: left;
     vertical-align: middle;
@@ -57,9 +58,9 @@ input#search-term {
 /***************************************/
 /******** checkbox filter specs ********/
 /***************************************/
-.flt-chkbx, .filter-radio{
-    zoom:2;
-}
+/*.flt-chkbx, .filter-radio{
+    -webkit-transform: scale(2);}
+*/
 
 span.typ-chk, span.src-chk{
     margin-right: 8px;

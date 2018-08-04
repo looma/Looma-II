@@ -26,6 +26,9 @@ h2, h3.title  {font-size:2em;}
      border-radius:6px;
      font-size: 1.85em;
  }
+ 
+ div#search-kind {display:none;}
+ 
  form#search *{
      font-size:0.97em;
  }

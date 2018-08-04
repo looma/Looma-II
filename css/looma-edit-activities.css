@@ -212,10 +212,6 @@ span.hint {
     z-index:-1;
 }
 
-.popup {
-    width:70%;
-    left:15%;
-}
 
 #dismiss-popup {
     position:absolute;

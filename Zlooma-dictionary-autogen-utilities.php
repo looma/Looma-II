@@ -496,6 +496,8 @@ function readStagingDatabase ($args, $stagingConnection){
         $page = $numPages;
     }
 
+    error_log('search with: ' . $ars, 0)
+
     //$options = array ("skip" => ($page - 1) * $wordsPerPage, "limit" => $wordsPerPage);
 
     //$wordsArray = array_slice($wordsArray, ($page - 1) * $wordsPerPage, $wordsPerPage);
@@ -542,17 +544,17 @@ function findDefinitonsForSingleWordLooma ($word, $loomaConnection, $stagingConn
     global $loomaCollection;
     //get all elements that match the criteria
     //FIX COLLECTION AND DATABASE NAMES
-    /*  ##############  */
+  /*  ##############  */
     //$loomaCursor = $loomaConnection->selectDB($loomaDB)->selectCollection($loomaCollection)->find(array('en' => $word));
 
     //$loomaCursor = $loomaConnection->selectDB($loomaDB)->selectCollection($loomaCollection)->find((object) ['$or' => array('en' => $word, 'plural' => $word) ]);
 
-    $regex = array('$regex' => new MongoRegex("/" . $word . "/is"));
+     $regex = array('$regex' => new MongoRegex("/.*" . $word . ".*/is"));
 
-    $loomaCursor = $loomaConnection->selectDB($loomaDB)->selectCollection($loomaCollection)->find(
-        [ '$or' => [
-            [ 'en' => $regex ],
-            [ 'plural' => $regex ]
+     $loomaCursor = $loomaConnection->selectDB($loomaDB)->selectCollection($loomaCollection)->find(
+         [ '$or' => [
+           [ 'en' => $regex ],
+           [ 'plural' => $regex ]
         ]
         ] );
 
@@ -592,8 +594,8 @@ function removeOverwrittenEntries ($betaArray, $dominantArray){
             //make sure the key for object id is correct
             if (isset($dominantArray[$indexDominant]['wordData'])  &&
                 isset($dominantArray[$indexDominant]['wordData']['_id']) &&
-                isset($betaArray[$indexBeta]['wordData'])  &&
-                isset($betaArray[$indexBeta]['wordData']['_id']))
+                isset($betaArray[$indexDominant]['wordData'])  &&
+                isset($betaArray[$indexDominant]['wordData']['_id']))
             {
                 if ($betaArray[$indexBeta]['wordData']['_id']->{'$id'} == $dominantArray[$indexDominant]['wordData']['_id']->{'$id'}) {
                     unset($betaArray[$indexBeta]);
@@ -641,9 +643,8 @@ function createAdvancedBaseQuery($text) {
     $new = explode(":", $text);
     if(count($new) != 2) {
         error_log("incorrect syntax in search: extra colon and value. Ignoring extras");
-        return array('en' => 1 );
     }
-    return array(trim($new[0]) => array('$regex' => new MongoRegex("/" . trim($new[1]) . "/is")));
+    return array(trim($new[0]) => array('$regex' => new MongoRegex("/.*" . trim($new[1]) . ".*/s")));
 }
 
 /**
@@ -659,10 +660,10 @@ function createAdvancedBaseQuery($text) {
 function stagingCriteriaToMongoQuery($args)
 {
     if (strpos($args["text"], ":") === false) {
-        // regular search
-        //$condition = array("en" => array('$regex' => new MongoRegex("/" . $args["text"] . "/is")));
-        if ( !$args["text"] || $args["text"] == "") $condition = array();
-        else  $condition = array("en" => array('$regex' => new MongoRegex("/" . $args["text"] . "/is")));
+            // regular search
+            //$condition = array("en" => array('$regex' => new MongoRegex("/.*" . $args["text"] . ".*/is")));
+            if ($args["text"] && $args["text"] == "") $condition = array();
+            else                     $condition = array("en" => array('$regex' => new MongoRegex("/.*" . $args["text"] . ".*/is")));
     } else {
         // advanced search
         $condition = createAdvancedTextQuery($args["text"]);
@@ -675,14 +676,14 @@ function stagingCriteriaToMongoQuery($args)
 
     if ($added || $modified || $accepted || $deleted) {
         $list = array();
-        $list[] = array("stagingData.deleted" => $deleted);
         if ($added)    {$list[] = array("stagingData.added" => true);}
         if ($modified) {$list[] = array("stagingData.modified" => true);}
         if ($accepted) {$list[] = array("stagingData.accepted" => true);}
+        if ($deleted)  {$list[] = array("stagingData.deleted" => true);}
 
         if ($condition != array())
-            $condition = array('$and' => array($condition, array('$or' => $list)));
-        else $condition =                                   array('$or' => $list);
+             $condition = array('$and' => array($condition, array('$or' => $list)));
+        else $condition =                 array($condition, array('$or' => $list));
     }
     return $condition;
 }
@@ -749,21 +750,19 @@ function compileSingleLoomaWord($allWordData){
  *  returns the completed array
  */
 function compileSimpleWordData ($allWordData){
-
-    //NOTE: this code could be: unset($allWordData['stagingData']; return $allWordData;
-
     return array(
-        '_id' =>   isset($allWordData['_id']) ?    $allWordData['_id'] : null,
-        'ch_id' => isset($allWordData['ch_id']) ?  $allWordData['ch_id'] : null,
-        'plural'=> isset($allWordData['plural']) ? $allWordData['plural'] : null,
-        'en' =>    isset($allWordData['en']) ?     $allWordData['en'] : null,
-        'rw' =>    isset($allWordData['rw']) ?     $allWordData['rw'] : null,
-        'part' =>  isset($allWordData['part']) ?   $allWordData['part'] : null,
-        'np' =>    isset($allWordData['np']) ?     $allWordData['np'] : null,
-        'def' =>   isset($allWordData['def']) ?    $allWordData['def'] : null,
-        'rand' =>  isset($allWordData['rand']) ?   $allWordData['rand'] : null,
-        'mod' =>   isset($allWordData['mod']) ?    $allWordData['mod'] : null,
-        'date_entered' => isset($allWordData['date_entered']) ? $allWordData['date_entered'] : null
+        '_id' => $allWordData['_id'],
+        'ch_id' => $allWordData['ch_id'],
+        'plural' => $allWordData['plural'],
+        'en' => $allWordData['en'],
+        'rw' => $allWordData['rw'],
+        'part' => $allWordData['part'],
+        'np' => $allWordData['np'],
+        'def' => $allWordData['def'],
+        'mod' => isset($allWordData['mod']) ? $allWordData['mod'] : null,
+        'rand' =>  $allWordData['rand'],
+        'date_entered' => $allWordData['date_entered'],
+
     );
 }
 
@@ -839,7 +838,7 @@ function publish($stagingConnection, $loomaConnection, $user) {
     // $stagingCursor = $stagingConnection->selectDB($stagingDB)->selectCollection($stagingCollection)->find(stagingCriteriaToMongoQuery(array("text" => "", "added" => false, "modified" => false, "accepted" => true, "deleted" => true)));
     // should be:
     $stagingCursor = $stagingConnection->selectDB($stagingDB)->selectCollection($stagingCollection)->find(
-        ['$or' => [ [ "accepted" => true ], [ "deleted" => true ] ] ] );
+            ['$or' => [ [ "accepted" => true ], [ "deleted" => true ] ] ] );
 
 
     foreach($stagingCursor as $doc){
@@ -896,7 +895,7 @@ function convertFromStagingToLooma($doc, $user)
         "part" => $doc["part"],
         "def" => $doc["def"],
         "rand" => $doc["rand"],
-        //     "mod" => $user,   // removed july 2018 [skip] we do not record author in permanent dictionary
+   //     "mod" => $user,   // removed july 2018 [skip] we do not record author in permanent dictionary
         "date_entered" => $dateEntered
     );
 }
@@ -922,9 +921,9 @@ function updateStaging($new, $connection, $user, $modified, $deleteToggle)
         $new['stagingData']['deleted'] = ! $new['stagingData']['deleted'];
 
     } else if($modified) {  //some field of the entry is being modified
-        $new['stagingData']['modified'] = true;
-        $new['stagingData']['accepted'] = false;
-        $new['stagingData']['added']    = false;  //added by Skip
+            $new['stagingData']['modified'] = true;
+            $new['stagingData']['accepted'] = false;
+            $new['stagingData']['added']    = false;  //added by Skip
 
     } else {         // status button was clicked, but no fields are being changed
         if ($new['stagingData']['modified']) {

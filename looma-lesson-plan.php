@@ -24,6 +24,7 @@ Revision: Looma 3
         <div id = "main-container">
 
             <div id="header" class="inner-div">
+                <div id="title">Editing: <span class="filename">&lt;none&gt;</span> </div>
                 <img src="images/logos/LoomaLogoTransparent.png"  height="100%"/>
                 <span>Looma Lesson Plan Editor</span>
             </div>
@@ -67,6 +68,12 @@ Revision: Looma 3
         <div id="text-editor">
             <iframe id="textframe" src="./looma-text-frame.php" allowTransparency="true"> </iframe>
         </div>
+
+        <img id="padlock"
+             draggable="false"
+             src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
+
+        <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
 
         <?php   include('includes/looma-control-buttons.php');?>
         <button class='control-button' id='dismiss' ></button>

@@ -116,10 +116,11 @@ if (!loggedin()) header('Location: looma-login.php');
                                 <span>Source:</span>";
 
             $sources = array(
-                array("ck12", "phet", "epth", "khan", "w4s", "TED"),
+                array("ck12",    "phet", "epth",   "khan", "w4s",       "TED"),
                 array("Dr Dann", "PhET", "ePaath", "khan", "wikipedia", "TED"),
-                array("CK-12", "PhET", "ePaath", "Khan", "Wikipedia", "TED"),
+                array("CK-12",   "PhET", "ePaath", "Khan", "Wikipedia", "TED")
             );
+
             for($x = 0; $x < count($sources[0]); $x++){
                 echo "<span class='src-chng' data-id='" . $sources[0][$x] ."-chng'>
                                     <input data-id='" . $sources[1][$x] ."' class='media-input flt-chkbx source-changes' type='radio' form='changes' name='src' value='" . $sources[1][$x] . "'>
@@ -152,9 +153,10 @@ if (!loggedin()) header('Location: looma-login.php');
                         <option value='' selected>Select...</option>";
 
             $classInfo = array(
-                array("all", "EN", "N", "M", "S", "SS", "H", "V"),
-                array("All", "English", "Nepali", "Math", "Science", "Social Studies", ),"Health", "Vocation"
+                array("all","EN",     "N",     "M",   "S",      "SS",            "H",      "V"),
+                array("All","English","Nepali","Math","Science","Social Studies","Health", "Vocation")
             );
+
             for($x = 1; $x < count($classInfo[0]); $x++) {
                 echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";};
 
@@ -200,7 +202,7 @@ if (!loggedin()) header('Location: looma-login.php');
             </div>
         </div>
 
-        <div id="details" class="popup"></div>
+        <div id="details"></div>
     </div>
 
     <img id="padlock"

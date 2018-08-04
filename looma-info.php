@@ -78,6 +78,32 @@ Description:  for Looma 2
             <!-- or create a text file in includes/ folder and write PHP to read in the text into this 'ul' -->
             <li> </li><li> </li><li> </li><li> </li><li> </li> <!-- these empty 'li's give a pause at the start -->
             <li>  - -  </li>
+
+            <li>Meg Reinstra</li>
+            <li>Sun-Mi Oh</li>
+            <li>Luke Bowsher</li>
+            <li>Sam Fogelberg</li>
+            <li>Caroline Pang</li>
+            <li>Luke Arnold</li>
+            <li>Morgan Wyatt</li>
+            <li>Henry Knoll</li>
+            <li>Sophie Reynolds</li>
+            <li>Peridot Park</li>
+            <li>Kiefer Lord</li>
+            <li>Katie Aufricht</li>
+            <li>Amy Wyatt</li>
+            <li>Maya Julian-Kwong</li>
+            <li>Mitsuka Kiyohara</li>
+            <li>Alix Borton</li>
+            <li>Mallika Tatavarti</li>
+            <li>Ishani Sood</li>
+            <li>Ishi Sood</li>
+            <li>Jack King</li>
+            <li>Kevin Chen</li>
+            <li>Shria Rajbhandari</li>
+            <li>Himanshi Joshi</li>
+            <li>Aakarshan Dhakal</li>
+
             <li>Akshay Srivatsan</li>
             <li>Niko Bhatia</li>
             <li>Alexa Thomases</li>

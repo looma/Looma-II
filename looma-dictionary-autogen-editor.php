@@ -74,6 +74,7 @@ More features and usage information can be found in the user manual
     <title>Looma Dictionary Editor</title>
     <script src="js/jquery.min.js"></script>
     <script src="js/pdf.js"></script>
+    <script src="js/looma.js">           </script>      <!-- Looma common page functions -->
     <script src="js/looma-utilities.js"></script>
     <script src="js/looma-dictionary-autogen-pdfToText.js"></script>
     <script src="js/looma-dictionary-autogen-uniquewords.js"></script>
@@ -83,6 +84,9 @@ More features and usage information can be found in the user manual
     <?php
     function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
     $loggedin = loggedIn(); if (!$loggedin) header('Location: looma-login.php');
+
+    error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+
     ?>
 
 </head>
@@ -140,15 +144,16 @@ More features and usage information can be found in the user manual
     </div>
 
     <div class="boxedSection  thirtyW">
-        <b>Search: </b>
+        <b>Search Staging Dictionary: </b>
         <input type="text" name="wordPart" id="wordPart" placeholder="Enter Search Term Here" title="Normal Search:
 	Type a part of a word you want to search for, or nothing
 Advanced Search:
 	Type key:value pairs (keys are en, rw, part, np, def, ch_id, mod, date) separated by & or |, where & has a higher operator precedence. Entries will match if they contain the value given.">
         <input type="button" value="Search" id="searchButton" onclick="submitSearch()">
-        Added: <input type="checkbox" name="added" id="added">
-        Modified: <input type="checkbox" name="modified" id="modified">
-        Accepted/Deleted: <input type="checkbox" name="accepted" id="accepted">
+        <input type="checkbox" name="added" id="added">Added
+        <input type="checkbox" name="modified" id="modified">Modified
+        <input type="checkbox" name="accepted" id="accepted">Accepted
+        <input type="checkbox" name="deleted" id="deleted">Deleted
         <br>
     </div>
 
@@ -169,7 +174,7 @@ Advanced Search:
                 onclick="publish()"  title="Click here to publish accepted/deleted entries from the staging database to the Permanent Dictionary">Publish Accepted Changes</button>
         <br>
         <button id="revertAllButton"
-                class="rightButton admin" disabled
+                class="rightButton exec" disabled
                 onclick="revertStaging()" class="right" title="Click here to remove all entries from the staging database and return to the previous published state">Revert All</button>
     </div>
 
@@ -203,8 +208,8 @@ Advanced Search:
                 <th class="nepCol">Nepali</th>
                 <th class="defCol">Definition</th>
                 <th class="ch_idCol">ch_id</th>
-                <th class="modCol">Modified By</th>
-                <th class="dateCol">Date Modified</th>
+                <th class="modCol">Editor</th>
+                <th class="dateCol">Date</th>
             </tr>
         </table>
     </div>
@@ -214,7 +219,7 @@ Advanced Search:
 
 <div id="officialViewer">
     <div id="footerLabel">
-        <span>Permanent Definitions: &nbsp;&nbsp;</span>
+        <span><b>Search Permanent Dictionary: </b></span>
         <div id="officialSearchArea">
             <input type="text" name="wordPart" id="officialSearchBox" placeholder="Enter Search Term Here" title="input a search for a specific word in the published dictionary">
             <input type="button" value="Search" id="officialSearchButton" onclick="submitOfficialSearch()" title="Click to search">
@@ -237,6 +242,25 @@ Advanced Search:
         </tr>
     </table>
 </div>
+
+<div id="verbFormChoices" hidden>
+    <select>
+        <option value='none'>(no change)</option>
+        <option value='comparative form of'>comparative form of</option>
+        <option value='superlative form of'>superlative form of</option>
+        <option value='present participle of'>present participle of</option>
+        <option value='past participle of'>past participle of</option>
+        <option value='past tense of'>past tense of</option>
+        <option value='third person singular of'>third person singular of</option>
+        <option value='past tense and past participle of'>past tense and past participle of</option>
+    </select>
+</div>
+
+<img id="padlock"
+     draggable="false"
+     src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
+
+<p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
 
 
 </body>

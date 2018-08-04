@@ -24,46 +24,45 @@ Revision: 1.0
 
 require ('includes/mongo-connect.php');
 
-function name($file) { $f = new SplFileInfo($file);
-                       return $f->getBasename();
-                     };
+    function name($file) { $f = new SplFileInfo($file);
+                           return $f->getBasename();
+                         };
 
-function parent($file) { global $content;
-                         $f = new SplFileInfo($file);
-                         if ($f == $content) return $content;
-                         else return $f->getPath(); };
+    function parent($file) { global $content;
+                             $f = new SplFileInfo($file);
+                             if ($f == $content) return $content;
+                             else return $f->getPath(); };
 
-function isRegistered($name, $dir) {
-             global $activities_collection;
+    function isRegistered($name, $dir) {
+                 global $activities_collection;
 
-             $query = array('fn' => $name,'fp' => $dir . '/');
-             $projection = array('_id' => 0, 'fn' => 1, 'dn' => 1,  'ch_id' => 1);
-             $activity = $activities_collection -> findOne($query, $projection);
+                 $query = array('fn' => $name,'fp' => $dir . '/');
+                 $projection = array('_id' => 0, 'fn' => 1, 'dn' => 1,  'ch_id' => 1);
+                 $activity = $activities_collection -> findOne($query, $projection);
 
-             if (! $activity) {  //some legacy activities dont have 'fp' set, look for these if fp + fn search fails
-                $query = array('fn' => $name,  'fp' => array('$exists'=>false));
-                $activity = $activities_collection -> findOne($query, $projection);
-              }
+                 if (! $activity) {  //some legacy activities dont have 'fp' set, look for these if fp + fn search fails
+                    $query = array('fn' => $name,  'fp' => array('$exists'=>false));
+                    $activity = $activities_collection -> findOne($query, $projection);
+                  }
 
-             if ($activity) return array('reg' => true, 'dn'=>$activity['dn'], 'ch_id'=>$activity['ch_id']);
-             else return array('reg' => false);
-      return ;
-        };
+                 if ($activity) return array('reg' => true, 'dn'=>$activity['dn'], 'ch_id'=>$activity['ch_id']);
+                 else return array('reg' => false);
+          return ;
+            };
 
-function make_activity($item) {
-       global $activities_collection;
+    function make_activity($item) {
+           global $activities_collection;
 
-       $activity = $activities_collection -> insert($item);
-       echo "new activity" . $activity["dn"] . "\n";
-} //end make_activity()
+           $activity = $activities_collection -> insert($item);
+           echo "new activity" . $activity["dn"] . "\n";
+    } //end make_activity()
 
 
 ///////// MAIN CODE ///////////
 
-$content = "../content";
+    $content = "../content";
 
-if ( isset($_REQUEST["cmd"]) ) {
-    $cmd =  $_REQUEST["cmd"];
+    if ( isset($_REQUEST["cmd"]) ) {$cmd =  $_REQUEST["cmd"];
     //accepted commands are "open", "list""  to ADD: "search_folder""
 
     if ( isset($_REQUEST["fp"]) ) $dir = $_REQUEST["fp"]; else $dir = $content;

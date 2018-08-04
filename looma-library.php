@@ -192,35 +192,36 @@ Description:  displays and navigates content folders for Looma
 
      else
 
-        //special case for SLIDESHOW
-        //***************************
-        //make buttons for SLIDESHOW directory -- virtual folder, populated from SLIDESHOWS collection in mongoDB
-        if($path == "../content/slideshows/") {   //populate virtual folder of SLIDESHOWs
-            //If the folder being filled is the slideshow it fills it using
-            //all of the entries from the slideshows collection in the database
+         //special case for SLIDESHOW
+         //***************************
+         //make buttons for SLIDESHOW directory -- virtual folder, populated from SLIDESHOWS collection in mongoDB
+         if($path == "../content/slideshows/") {   //populate virtual folder of SLIDESHOWs
+             //If the folder being filled is the slideshow it fills it using
+             //all of the entries from the slideshows collection in the database
 
-            $slideshows = $slideshows_collection->find();
-            //SORT the found items before sending to client-side
-            $slideshows->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+             $slideshows = $slideshows_collection->find();
+             //SORT the found items before sending to client-side
+             $slideshows->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
              foreach ($slideshows as $slideshow) {
 
-                    echo "<td>";
-                    $dn = $slideshow['dn'];
-                    $fn = $slideshow['fn'];
-                    $fp = $slideshow['fp'];
-                    $thumb = thumbnail($fn);
-                      //NOTE: for now, fp and fn are concatenated in fn
-                    //$path = $slideshow['fp'];
+                 echo "<td>";
+                 $dn = $slideshow['dn'];
+                 //$ft = $slideshow['ft'];
+                 $data = $slideshow['data'];
+                 $author = $slideshow['author'];
+                 $date = $slideshow['date'];
+                 $thumb = $slideshow['thumb'];
+                 //NOTE: for now, fp and fn are concatenated in fn
+                 //$path = $slideshow['fp'];
 
-                    $ft = "slideshow";
-                    $id = $slideshow['_id'];  //mongoID of the descriptor for this slideshow
-                    makeActivityButton($ft, $fp, $fn, $dn, $thumb, "", $id, "", "", "");
-                    echo "</td>";
-                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-            } //end FOREACH slideshow
-        }  //end IF slideshows
-
+                 $ft = "slideshow";
+                 $id = $slideshow['_id'];  //mongoID of the descriptor for this slideshow
+                 makeActivityButton($ft, "", "", $dn, $thumb, $data, $id, "", "", "");
+                 echo "</td>";
+                 $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+             } //end FOREACH slideshow
+         }  //end IF slideshows
     else
 
         //special case for LESSONPLANs

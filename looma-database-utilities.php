@@ -20,21 +20,21 @@ require_once ('includes/mongo-connect.php');
         }; //end SAVE
 
         //SAVETEXT function
-        function saveText($collection, $name, $insert, $activity) {
-              // save a document in $collection with displayname $name inserting $insert fields.
+        function saveText($collection, $name, $type, $insert, $activity) {
+              // save or update a document in $collection with displayname==$name and ft==$type inserting $insert fields.
               // if $activity is TRUE, also save a document in the Activities Collection
 
             global $activities_collection;
 
-            $query =array('dn'=>$name);
-            $options = array("upsert"=>True, "new"=>True);
+            $query =array('dn'=>$name,'ft'=>$type);
+            $options = array("upsert"=>true, "new"=>true);
             $projection = array('_id' => 1, 'dn' => 1);
 
             $result = $collection->findAndModify($query, $insert, $projection, $options);
 
             echo json_encode($result);
 
-        // if $activity param is true, save new document in the activities collection or update 'dn' for existing activities pointing to this file
+        // if $activity param is true, save new document in the activi ties collection or update 'dn' for existing activities pointing to this file
             if ($activity  == "true") {
 
                 $id = $result['_id'];
@@ -119,7 +119,8 @@ require_once ('includes/mongo-connect.php');
 //  uploadFile
 ////////////////////////////////
 date_default_timezone_set ( 'UTC');
-$date = date(Y);
+$date = date("Y.m.d");
+
 
 function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
 $login = loggedin();
@@ -134,15 +135,19 @@ if (isset($_REQUEST["collection"])) {
         //
 
    switch ($collection) {
-       case "activities":   $dbCollection = $activities_collection;  break;
-       case "chapters":     $dbCollection = $chapters_collection;    break;
-       case "slideshows":
-       case "slideshow":    $dbCollection = $slideshows_collection;  break;
+       case "activities":    $dbCollection = $activities_collection;    break;
+       case "chapters":      $dbCollection = $chapters_collection;      break;
+       case "slideshow":
+       case "slideshows":    $dbCollection = $slideshows_collection;    break;
        case "text":
-       case "text_files":   $dbCollection = $text_files_collection;  break;
-       case "lessons":      $dbCollection = $lessons_collection;     break;
-       case "lesson":       $dbCollection = $lessons_collection;     break;
-       case "edited_videos":$dbCollection = $edited_videos_collection; break;
+       case "text_files":    $dbCollection = $text_files_collection;    break;
+       case "lesson":
+       case "lessons":       $dbCollection = $lessons_collection;       break;
+       case "map":
+       case "maps":          $dbCollection = $maps_collection;          break;
+       case "history":
+       case "histories":     $dbCollection = $histories_collection;     break;
+       case "edited_videos": $dbCollection = $edited_videos_collection; break;
 
        default: echo "unknown collection: " . $collection;        return;
        };
@@ -201,18 +206,18 @@ if ( isset($_REQUEST["cmd"]) ) {
         // end case "open"
 
 
-        ////////////////////////
-        // - - - OpenByID - - - //
-        ////////////////////////
-        case "openByID":
-            if ($collection == "chapters") $query = array('_id' => $_REQUEST['id']);
-            else                           $query = array('_id' => new MongoID($_REQUEST['id']));
-            //look up this ID (mongoID) in this collection (dbCollection)
-            $file = $dbCollection->findOne($query);
-            if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
-            else echo json_encode(array("error" => "File not found " . $_REQUEST['id'] . " in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
-            return;
-        // end case "openByID"
+////////////////////////
+// - - - OpenByID - - - //
+////////////////////////
+    case "openByID":
+        if ($collection == "chapters") $query = array('_id' => $_REQUEST['id']);
+        else                           $query = array('_id' => new MongoID($_REQUEST['id']));
+        //look up this ID (mongoID) in this collection (dbCollection)
+        $file = $dbCollection->findOne($query);
+        if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
+        else echo json_encode(array("error" => "File not found " . $_REQUEST['id'] . " in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
+        return;
+    // end case "openByID"
 
 ////////////////////////
 // - - - OpenText - - - //
@@ -226,7 +231,7 @@ if ( isset($_REQUEST["cmd"]) ) {
         if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
         else echo json_encode(array("error" => "File not found in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
         return;
-    // end case "openByID"
+    // end case "OpenText"
 
 
 ////////////////////////
@@ -280,8 +285,8 @@ if ( isset($_REQUEST["cmd"]) ) {
                 "date" => gmdate("Y.m.d"),  //using greenwich time
                 "data" => $_REQUEST["data"]
             );
-            saveText($dbCollection, $_REQUEST['dn'], $insert, $_REQUEST['activity']);
-        } else if ($collection == "edited_videos") {
+            saveText($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+        } else if (($collection == "edited_videos")  || ($collection == "slideshows")) {
             $thumb = isset($_REQUEST['thumb']) ? $_REQUEST['thumb'] : "";
             $insert = array(
                 "dn" => $_REQUEST["dn"],
@@ -291,7 +296,7 @@ if ( isset($_REQUEST["cmd"]) ) {
                 "data" => $_REQUEST["data"],
                 "thumb" => $thumb
             );
-            saveText($dbCollection, $_REQUEST['dn'], $insert, $_REQUEST['activity']);
+            saveText($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         } else if ($collection == "activities") {
             $insert = $_REQUEST['data'];
             $insert["date"] = gmdate("Y.m.d");  //using greenwich time
@@ -306,7 +311,7 @@ if ( isset($_REQUEST["cmd"]) ) {
 
 
     ////////////////////////
-    // - - - RENAMME - - - //
+    // - - - RENAME - - - //
     ////////////////////////
     case "rename":
         changename($dbCollection, $_REQUEST['dn'], $_REQUEST['newname'], true);
@@ -336,7 +341,7 @@ if ( isset($_REQUEST["cmd"]) ) {
         $file = $dbCollection->findOne($query);
         if ($file) {
             $dbCollection->remove($query, array("justOne" => true));
-            echo array('deleted' => $dn);
+            echo 'Looma-database-utilities.php, deleted file: ' .  $_REQUEST['dn'] . ' of type: ' . $_REQUEST['ft'];
 
             // delete any references to the file from Activities collection
             $removequery = array('mongoID' => $file['_id']);
@@ -431,7 +436,6 @@ if ( isset($_REQUEST["cmd"]) ) {
         if (isset($_REQUEST['type'])) foreach ($_POST['type'] as $i) if ($i != '') array_push($filetypes, $i);
 
         //echo "types is: "; print_r($filetypes);
-
         $sources = array();       //array of sources to include in the search
 
         if (isset($_REQUEST['src'])) foreach ($_POST['src'] as $i) array_push($sources, $i);
@@ -442,50 +446,35 @@ if ( isset($_REQUEST["cmd"]) ) {
         // build $extensions[] array by pushing filetype names into the array
         foreach ($filetypes as $type)
             switch ($type) {
-                case 'pdf':
-                    array_push($extensions, "pdf");
-                    break;
+
                 case 'video':
                     array_push($extensions, "mp4", "video", "mov", "m4v");
                     break;
                 case 'image':
                     array_push($extensions, "image", "jpg", "png", "gif");
                     break;
-                case 'history':
-                    array_push($extensions, "history");
-                    break;
-                case 'slideshow':
-                    array_push($extensions, "slideshow");
-                    break;
-                case 'map':
-                    array_push($extensions, "map");
-                    break;
-                case 'evi':
-                    array_push($extensions, "evi");
-                    break;
                 case 'audio':
                     array_push($extensions, "mp3", "audio");
                     break;
-                case 'text':
-                    array_push($extensions, "text");
-                    break;
-
-                // the rest {html, templates, lesson and looma are not activities for now
                 case 'html':
                     array_push($extensions, "EP", "html", "htm", "php", "asp");
                     break;
+                case 'pdf':
+                    array_push($extensions, "pdf", "document");
+                    break;
+                case 'history':
+                case 'slideshow':
+                case 'map':
+                case 'evi':
+                case 'text':
                 case 'text-template':
-                    array_push($extensions, "text-template");
-                    break;
                 case 'lesson-template':
-                    array_push($extensions, "lesson-template");
-                    break;
                 case 'lesson':
-                    array_push($extensions, "lesson");
-                    break;
+                case 'game':
                 case 'looma':
-                    array_push($extensions, "looma");
+                    array_push($extensions, $type);
                     break;
+                default: {echo json_encode("ERROR: unknown file type"); return;}
             };
 
         $areaRegex = null;
@@ -528,19 +517,19 @@ if ( isset($_REQUEST["cmd"]) ) {
         if ($nameRegex) $query['dn'] = $nameRegex;
         if ($classSubjRegex) $query['_id'] = $classSubjRegex;
 
-        if (isset($_REQUEST['key1']) && $_POST['key1'] != '') {
-            $query['key1'] = $_REQUEST[key1];
+        // using REGEX with "/i" to get case insensitive search for keywords
+        if (isset($_REQUEST['key1']) && $_REQUEST['key1'] != '') {
+            $query['key1'] = $_REQUEST['key1'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key1'].'/i');
         };
-        if (isset($_REQUEST['key2']) && $_POST['key2'] != '') {
-            $query['key2'] = $_REQUEST[key2];
+        if (isset($_REQUEST['key2']) && $_REQUEST['key2'] != '') {
+            $query['key2'] = $_REQUEST['key2'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key2'].'/i');
         };
-        if (isset($_REQUEST['key3']) && $_POST['key3'] != '') {
-            $query['key3'] = $_REQUEST[key3];
+        if (isset($_REQUEST['key3']) && $_REQUEST['key3'] != '') {
+            $query['key3'] = $_REQUEST['key3'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key3'].'/i');
         };
-        if (isset($_REQUEST['key4']) && $_POST['key4'] != '') {
-            $query['key4'] = $_REQUEST[key4];
+        if (isset($_REQUEST['key4']) && $_REQUEST['key4'] != '') {
+            $query['key4'] = $_REQUEST['key4'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key4'].'/i');
         };
-
 
         //echo "Query is: "; print_r($query);
         //echo '$dbCollection is ' . $dbCollection;

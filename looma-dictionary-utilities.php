@@ -35,6 +35,8 @@ $MAX_NUM = 250;
 
 if (isset($_GET["cmd"]))
 {
+    // accepted CMDs are 'lookup', 'add', 'list'
+
 	$cmd = $_GET["cmd"];
 	switch ($cmd)
 	{
@@ -56,11 +58,15 @@ if (isset($_GET["cmd"]))
                 $word = $dictionary_collection -> findOne($query);
                 if ($word) {
                     $word['part'] = 'Plural of noun: ' . $word['en'];
+                    //$word['img'] = $word['en'];
                     $word['en'] = $word['plural'];
                 }
             }
 
-			if($word != null)
+            if (file_exists('../content/dictionaryImages/' . $word['en'] . '.jpg')) $word['img'] = $word['en'];
+
+
+            if($word != null)
 			{   //Add fields with blanks to avoid errors on code that receives words
 				if(!array_key_exists('np', $word))    $word['np'] = '';
 				if(!array_key_exists('en', $word))    $word['en'] = '';
@@ -68,7 +74,7 @@ if (isset($_GET["cmd"]))
 				if(!array_key_exists('part', $word))  $word['part'] = '';
 				if(!array_key_exists('def', $word))   $word['def'] = '';
 				if(!array_key_exists('phon', $word))  $word['phon'] = '';
-				if(!array_key_exists('img', $word))   $word['img'] = '';
+				//if(!array_key_exists('img', $word))   $word['img'] = '';
 				if(!array_key_exists('ch_id', $word)) $word['ch_id'] = '';
 				$word = json_encode($word);
 				echo $word . "\n";
@@ -173,7 +179,7 @@ if (isset($_GET["cmd"]))
 			//Gets the Class Number from the Class parameter
 			$startChapterId = substr($class, 5);
 			//Generates the Letter Abbreviation for the class and adds it to the number
-			if($subject == "english")      $startChapterId .= "EN";
+                 if($subject == "english")      $startChapterId .= "EN";
 			else if($subject == "science") $startChapterId .= "S[0-9]";
             else if($subject == "math")    $startChapterId .= "M";
             else if($subject == "health")    $startChapterId .= "H";

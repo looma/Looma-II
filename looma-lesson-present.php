@@ -92,7 +92,7 @@ Description: looma lesson plan presenter
                                             $thumbSrc,
 
                                            "", //(isset($details['ch_id'])) ? $details['ch_id'] : null,
-                                           $lesson_element['id'],
+                                           (isset($details['mongoID'])) ? $details['mongoID'] : null,
                                            (isset($details['url'])) ? $details['url'] : null,
                                            null,
                                            null);

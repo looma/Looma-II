@@ -9,7 +9,8 @@ Owner: VillageTech Solutions (villagetechsolutions.org)
 Date:Oct 2016
 Revision: Looma 2.4
 
-Comments:
+Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in lesson plans, edited videos, etc]
+          Opens in an iFrame within another editor, like looma-lesson-plan.php
 -->
 
 <?php $page_title = 'Looma - text editor';
@@ -46,8 +47,8 @@ Comments:
                     <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Text Highlight Color"><i class="fa fa-2x fa-paint-brush"></i>&nbsp;<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <p>&nbsp;&nbsp;&nbsp;Text Highlight Color:</p>
-                        <li><a data-edit="backColor #FFFFFF">none</a></li>
-                        <li><a data-edit="backColor #00FFFF">Blue</a></li>
+                        <li><a data-edit="backColor #091F48">Looma Blue</a></li>
+                        <li><a data-edit="backColor #FFFFFF">White</a></li>
                         <li><a data-edit="backColor #00FF00">Green</a></li>
                         <li><a data-edit="backColor #FF7F00">Orange</a></li>
                         <li><a data-edit="backColor #FF0000">Red</a></li>
@@ -58,12 +59,13 @@ Comments:
                     <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Font Color"><i class="fa fa-2x fa-font"></i>&nbsp;<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <p>&nbsp;&nbsp;&nbsp;Font Color:</p>
-                        <li><a data-edit="foreColor #000000">Black</a></li>
+                        <li><a data-edit="foreColor #FFFFFF">White</a></li>
                         <li><a data-edit="foreColor #0000FF">Blue</a></li>
                         <li><a data-edit="foreColor #30AD23">Green</a></li>
                         <li><a data-edit="foreColor #FF7F00">Orange</a></li>
                         <li><a data-edit="foreColor #FF0000">Red</a></li>
                         <li><a data-edit="foreColor #FFFF00">Yellow</a></li>
+                        <li><a data-edit="foreColor #000000">Black</a></li>
                     </ul>
                 </div>
                 <div class="btn-group">
@@ -100,23 +102,27 @@ Comments:
            <div id="editor" class="lead" contenteditable="true">
            </div>
         </div>
-	</div>
+    </div>
+        <img id="padlock"
+             draggable="false"
+             src="  <?php echo loggedIn() ? "images/padlock-open.png" : "images/padlock-closed.png"; ?>" >
 
-    <div id="preview">preview to appear here</div>
+        <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
+
+        <div id="preview">preview to appear here</div>
+
 
     <button class='control-button' id='dismiss' ></button>
 
-<?php    // include ('includes/toolbar.php');
-   		  include ('includes/js-includes.php');
+<?php   include ('includes/js-includes.php');
 ?>
+
         <script src="js/jquery.hotkeys.js">           </script>
         <script src="js/tether.min.js">  </script>
-        <!--<script src="js/popper.js">  </script>  -->
         <script src="js/bootstrap.min.js">           </script>
         <script src="js/bootstrap-wysiwyg.min.js">   </script>
 
 <?php     include ('includes/looma-filecommands.php');
-          //include ('includes/looma-search.php');
 ?>
 
         <script src="js/looma-text-editor.js">   </script>

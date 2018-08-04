@@ -668,23 +668,70 @@ function stagingCriteriaToMongoQuery($args)
         $condition = createAdvancedTextQuery($args["text"]);
     }
 
-    $added =    isset($args['added'])    ? checkTrue($args['added']) :    false;
-    $modified = isset($args['modified']) ? checkTrue($args['modified']) : false;
-    $accepted = isset($args['accepted']) ? checkTrue($args['accepted']) : false;
-    $deleted =  isset($args['deleted'])  ? checkTrue($args['deleted']) :  false;
+    //$added =    isset($args['added'])    ? checkTrue($args['added']) :    false;
+    //$modified = isset($args['modified']) ? checkTrue($args['modified']) : false;
+    //$accepted = isset($args['accepted']) ? checkTrue($args['accepted']) : false;
+    //$deleted =  isset($args['deleted'])  ? checkTrue($args['deleted']) :  false;
 
-    if ($added || $modified || $accepted || $deleted) {
+    $added    = $args['added'];
+    $modified = $args['modified'];
+    $accepted = $args['accepted'];
+    $deleted  = $args['deleted'];
+
+    //if ($added || $modified || $accepted) {
         $list = array();
-        $list[] = array("stagingData.deleted" => $deleted);
+
         if ($added)    {$list[] = array("stagingData.added" => true);}
         if ($modified) {$list[] = array("stagingData.modified" => true);}
         if ($accepted) {$list[] = array("stagingData.accepted" => true);}
 
+    echo '$list: ';
+    print_r($list);
+    echo '$condition: ';
+    print_r($condition);
+
+        if ($condition != array()) {
+            if ($list !=  array()) {
+                $result = array('$and' =>
+                                array($condition,
+                                    array("stagingData.deleted" => $deleted),
+                                    array('$or' => $list)));
+            } else {  // no $list
+                $result = array('$and' =>
+                             array($condition,
+                                   array("stagingData.deleted" => $deleted)));
+            }
+        } else {// no $condition
+            if ($list != array()) {
+                $result = array('$and' =>
+                            array(
+                                array("stagingData.deleted" => $deleted),
+                                array('$or' => $list)));
+            } else {  // no $list
+                $result = array("stagingData.deleted" => $deleted);
+
+            }
+        };
+
+
+
+      /*
         if ($condition != array())
-            $condition = array('$and' => array($condition, array('$or' => $list)));
-        else $condition =                                   array('$or' => $list);
-    }
-    return $condition;
+             $condition = array('$and' =>
+                             array($condition,
+                                array("stagingData.deleted" => $deleted),
+                                array('$or' => $list)));
+        else $condition = array('$and' =>
+                             array(
+                                array("stagingData.deleted" => $deleted),
+                                array('$or' => $list)));
+    //}
+      */
+
+    echo '$result: ';
+    print_r($result);
+
+    return $result;
 }
 
 

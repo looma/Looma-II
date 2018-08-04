@@ -187,7 +187,6 @@ set_time_limit(300); // prevent timeout due to a large file. 5 minutes of direct
 
 require "looma-dictionary-autogen-utilities.php";
 
-
 /**
  * list of fields in wordData that need to be converted from backend to front.
  * in the form array(backend, frontend). If a field isn't in the list, it will not be
@@ -198,7 +197,6 @@ $wordDataConversions = array(array("_id", "id"), array("en", "word"), array("rw"
     array("rand", "rand"), array("date_entered", "date"),
     array("mod", "mod"), array("ch_id", "ch_id"),
     array("plural", "plural"));
-
 
 /**
  * Converts the word either to or from front/back end versions
@@ -320,19 +318,31 @@ function updateStagingWrapper($change, $officialConnection, $stagingConnection, 
     $former = convertWord($former, false);
 
     $modified = false;
+    $deleteToggle = false;
 
     if($change["deleteToggled"] == "true") {
-        $former["stagingData"]["deleted"] = !$former["stagingData"]["deleted"];
-    } elseif($change["field"] == "cancel") {
-        removeStaging($change["wordId"], $stagingConnection);
-        return true;
+
+        $deleteToggle = true;
+
+        //$former["stagingData"]["deleted"] = !$former["stagingData"]["deleted"];
+
+        /* code for REVERT a word REMOVED here
+       } elseif($change["field"] == "cancel") {
+           removeStaging($change["wordId"], $stagingConnection);
+           return true;
+        */
+
     } elseif ($change["field"] == "stat") {
-        $former["stagingData"]["accepted"] = !$former["stagingData"]["accepted"];
-  //  } elseif($change["field"] == "plural") {
-  //      $former["wordData"]["plural"] = !$former["wordData"]["plural"];
-  //      $modified = true;
+        // next code line removed july 2018 by Skip - new code in Utilities.php adjusts the
+        // stagingData flags between 'added', 'modified', and 'accepted'
+        //$former["stagingData"]["accepted"] = !$former["stagingData"]["accepted"];
+
+
+        //  } elseif($change["field"] == "plural") {
+        //      $former["wordData"]["plural"] = !$former["wordData"]["plural"];
+        //      $modified = true;
     } elseif (in_array($change["field"],
-        array("word", "root", "nep", "pos", "def", "ch_id", "plural"))) {
+        array("word", "root", "plural", "pos", "nep", "def", "ch_id"))) {
         if($change["field"] == "word") {
             $change["new"] = strtolower($change["new"]);
         }
@@ -354,7 +364,7 @@ function updateStagingWrapper($change, $officialConnection, $stagingConnection, 
     $out = convertWord($former, true);
     // assumes that updateStaging will take care of changing the modifier, date modified,
     // and all staging data, since these are general tasks.
-    return updateStaging($out, $stagingConnection, $user, $modified);
+    return updateStaging($out, $stagingConnection, $user, $modified, $deleteToggle);
 }
 
 /**
@@ -397,7 +407,8 @@ function closeUploadProgressWrapper($appConnection, $user) {
  * @return True if successful, false if failed
  */
 function revertAllStagingWrapper($stagingConnection) {
-    return clearStagingDatabase($stagingConnection);
+    //return clearStagingDatabase($stagingConnection); //REMOVED FOR INTERNS SUMMER 2018
+    return false;
 }
 
 /**
@@ -427,17 +438,20 @@ function isLegalValue($field, $value) {
         return strpos($value, ' ') === false; // only fails if multiple words
     } else if($field == "pos") {
         return (in_array($value,
-                array("noun","verb","adverb","adjective","preposition","conjunction","pronoun","contraction","article","title","interjection","proper name")));
+            array("noun","verb","adverb","adjective","preposition","conjunction","pronoun","contraction","article","title","interjection","proper name")));
     } else if($field == "def" or $field == "nep" or $field == "plural") {
         return true; // all definitions should be valid
     } else if($field == "ch_id") {
-        return preg_match('/^(([1-9]|10)((M|N|S|SS|EN|H|V)(([0-9][0-9]\.)?[0-9][0-9])?)?)?$/', $value) === 1;
+        return preg_match('/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/', $value) === 1;
     }
 }
 
 $officialConnection;
 $stagingConnection;
 $appConnection;
+
+
+/////////////    CODE STARTS HERE    //////////////////
 
 if(!isset($_REQUEST['loginInfo'])) { // no login data means not logged in
     $response['status'] = array( 'type' => 'error', 'value' => 'Not logged in');
@@ -450,6 +464,14 @@ if(!isset($_REQUEST['loginInfo'])) { // no login data means not logged in
     if($officialConnection == null or $stagingConnection == null) {
         $response['status'] = array('type' => 'error', 'value' => 'Can\'t open database');
 
+
+//NOTE: the code below determines what operation to perform based on whether certain known variables are set
+//      TODO: should change this to the 'cmd' based operations used in looma-database-utilities.php and others
+//
+
+        ///
+        ///  backend function: WORDLIST  (adds a list of words to Staging Dictionary)  ///
+        ///
     } else if ($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_REQUEST['wordList'])) {
         // adds all definitions for all words in 'wordsList' to the staging dictionary
 
@@ -508,23 +530,24 @@ if(!isset($_REQUEST['loginInfo'])) { // no login data means not logged in
         }
 
 
-
-        //NOTE: the code below determines what operation to perform based on whether certain known variables are set
-        //      TODO: should change this to the 'cmd' based operations used in looma-database-utilities.php and others
-        //
-        
         // always considered successful, but may skip words
         $response['status'] = array('type' => 'success');
-    } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['searchArgs'])) {
+    }
+    ///
+    ///  backend function: SEARCHARGS  (searches for a word in Staging or Permanent Dictionary  ///
+    ///
+    elseif ($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['searchArgs'])) {
         // searches for the definitions specified by the 'searchArgs' and returns results
         if ($_REQUEST['staging'] == "true") {
-            $response['data'] = readStagingWrapper($_REQUEST['searchArgs'],
-                $stagingConnection);
+            $response['data'] = readStagingWrapper($_REQUEST['searchArgs'], $stagingConnection);
         } else {
-            $response['data'] = readOfficialWrapper($_REQUEST['searchArgs'],
-                $officialConnection, $stagingConnection);
+            $response['data'] = readOfficialWrapper($_REQUEST['searchArgs'], $officialConnection, $stagingConnection);
         }
-    } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['publish'])) {
+    }
+    ///
+    ///  backend function: PUBLISH  (publishes words in the Staging Dictionary to the Permanent Dictionary ///
+    ///
+    elseif ($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['publish'])) {
         // publishes accepted changes to the official database
         $success = publishWrapper($officialConnection, $stagingConnection,
             $_REQUEST['loginInfo']['user']);
@@ -533,7 +556,11 @@ if(!isset($_REQUEST['loginInfo'])) { // no login data means not logged in
         } else {
             $response['status'] = array('type' => 'error', 'value' => 'publishing failed');
         }
-    } elseif($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_REQUEST['mod'])) {
+    }
+    ///
+    ///  backend function: MOD  (edits an entry in the Staging Dictionary)  ///
+    ///
+    elseif($_SERVER['REQUEST_METHOD'] == 'POST' and isset($_REQUEST['mod'])) {
         // modifies the definition in the way specified by the 'mod'
         $success = updateStagingWrapper($_REQUEST['mod'], $officialConnection,
             $stagingConnection, $_REQUEST['loginInfo']['user']);
@@ -546,7 +573,11 @@ if(!isset($_REQUEST['loginInfo'])) { // no login data means not logged in
             $response['status'] = array('type' => 'error',
                 'value' => 'modifying failed');
         }
-    } elseif($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['moveId'])) {
+    }
+    ///
+    ///  backend function: MOVEID  (move a word from Permanent Dictionary to Staging Dictionary  ///
+    ///
+    elseif($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['moveId'])) {
         $success = moveToStagingWrapper($_REQUEST['moveId'], $officialConnection,
             $stagingConnection, $_REQUEST['loginInfo']['user']);
         if($success) {
@@ -554,19 +585,34 @@ if(!isset($_REQUEST['loginInfo'])) { // no login data means not logged in
         } else {
             $response['status'] = array('type' => 'error', 'value' => 'moving failed');
         }
-    } elseif($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['progress'])) {
+    }
+    ///
+    ///  backend function: PROGRESS  (reports progress on lookup and translation of wordlist)  ///
+    ///
+    elseif($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['progress'])) {
         $response['progress'] = getProgressWrapper($appConnection, $_REQUEST['loginInfo']['user']);
-    } elseif($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['revertAll'])) {
+    }
+    ///
+    ///  backend function: REVERTALL  (erases the Staging Dictionary)  ///
+    ///
+    elseif($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['revertAll'])) {
         $response['status'] = array('type' =>
-            revertAllStagingWrapper($stagingConnection) ? 'success' : 'error');
-    } elseif($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['newWord'])) {
+            readofficialAllStagingWrapper($stagingConnection) ? 'success' : 'error');
+    }
+    ///
+    ///  backend function: NEWWORD  (adds a single word to Staging Dictionary)  ///
+    ///
+    elseif($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['newWord'])) {
         $response['status'] = array('type' =>
             addSingleWordWrapper($_REQUEST['newWord'], $stagingConnection,
                 $_REQUEST['loginInfo']['user']) ? 'success' : 'error');
-    } elseif($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['cancelUpload'])) {
+    }
+    ///
+    ///  backend function: CANCELUPLOAD  (cancels PDF upload)  ///
+    ///
+    elseif($_SERVER['REQUEST_METHOD'] == 'GET' and isset($_REQUEST['cancelUpload'])) {
         closeUploadProgressWrapper($appConnection, $_REQUEST['loginInfo']['user']);
-    } else {
-        // the arguments didn't match any acceptable requests
+    } else { // the arguments didn't match any acceptable requests
         $response['status'] = array('type' => 'error', 'value' => 'invalid request',
             'request' => json_encode($_REQUEST));
     }

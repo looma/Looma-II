@@ -66,9 +66,9 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
             <span>Type:</span>";
 
             $types = array(
-            array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "lesson"), //tags used as IDs for checkbox html elements
-            array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "lesson"), //the 'ft' values used in the DB
-            array("PDF", "Video", "Image", "Audio", "History", "HTML", "Slideshow", "Map", "Edited video", "Text", "Lesson"), //human readable versions for labels displayed on checkboxes
+            array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "lesson", "looma", "game"), //tags used as IDs for checkbox html elements
+            array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "lesson", "looma", "game"), //the 'ft' values used in the DB
+            array("PDF", "Video", "Image", "Audio", "History", "HTML", "Slideshow", "Map", "Edited video", "Text", "Lesson", "Looma Page", "Game"), //human readable versions for labels displayed on checkboxes
             );
             for($x = 0; $x < count($types[0]); $x++) {
                 echo "<span class='typ-chk' data-id='" . $types[0][$x] ."-chk'>
@@ -138,10 +138,10 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         /**************************************/
         /*********** Grade Dropdown  **********/
         /**************************************/
-    echo "<div>";
+    echo "<div id='chapter-search'>";
         echo "<span id='grade-div' class='chapter-filter'>
                     <span class='drop-menu'>Grade:<select id='grade-drop-menu' class='chapter-input black-border' name='class' form='search'>
-                        <option value='' selected>Select...</option>";
+                        <option value='' selected>(any)...</option>";
         for($x = 1; $x <= 10; $x++){echo "<option value='" . $x . "' data-id='" . $x . "'>" . $x . "</option>";}
 
         echo "</select></span>";
@@ -155,7 +155,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         /**************************************/
         echo "<span id='subject-div' class='chapter-filter'>
           <span class='drop-menu'>Subject:<select id='subject-drop-menu' class='chapter-input black-border' name='subj' form='search'>
-            <option value='' selected>Select...</option>";
+            <option value='' selected>(any)...</option>";
 
         $classInfo = array(
             array("all", "EN", "N", "M", "S", "SS", "H", "V"),
@@ -173,7 +173,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         /**************************************/
         echo "<span id='chapter-div' class='chapter-filter'>
             <span class='drop-menu'>Chapter:<select id='chapter-drop-menu' class='chapter-input black-border' name='chapter' form='search'>
-                    <option value='' selected>Select...</option>
+                    <option value='' selected>(any)...</option>
           </select></span>";
         echo "</span>";
 

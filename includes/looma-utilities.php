@@ -113,6 +113,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url,
 
             case "VOC":       //vocabulary reviews
             case "lesson":    //lesson plan
+            case "map":       //map
+            case "game  ":    //game
             case "text":      //text
             case "looma":     //looma
             case "chapter":   //chapter
@@ -142,9 +144,9 @@ function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url,
         if ($fp)          echo "data-fp='" .  $fp . "' ";
         if ($ft)          echo "data-ft='" .  $ft . "' ";
         if ($dn)          echo "data-dn='" .  $dn . "' ";
-        if ($mongo_id)    echo "data-id='" .  $mongo_id . "' ";
+        if ($mongo_id)    echo "data-mongoid='" .  $mongo_id . "' ";
         if ($ch_id)       echo "data-ch='" .  $ch_id . "' ";
-        if ($url)         echo "data-url='" .  $url . "' ";
+        if ($url)         echo "data-url='" . $url . "' ";
 
         if ($ft == 'pdf' || $ft == 'chapter') {echo "data-pg='" . ($pg?$pg:1) . "' ";     //maybe should set pg=1 if pg not specified??
                           echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto

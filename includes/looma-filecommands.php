@@ -25,7 +25,7 @@ Description:  popup SEARCH panel for Looma pages
             <button class="dropdown-item file-cmd" id="delete">Delete</button><br>
             <!-- added New Text File button to launch text card editor in iFrame.
                  this button initially hidden by css -->
-            <button class="dropdown-item file-cmd" id="show_text">New Text File</button><br>
+            <button class="dropdown-item file-cmd" id="show_text">Edit a Text File</button><br>
 
             <div class="dropdown-divider"></div><br>
 
@@ -52,11 +52,12 @@ Description:  search code for Looma Editors to find lesson-plans, slideshows, et
 
 
 <div id='filesearch-panel'>
-    <p id='collectionname'></p>
+    <p class='filesearch-collectionname'></p>
 
     <form id='filesearch' name='filesearch'>
-        <input type='hidden' id='collection' value='activities' name='collection'/>  <!-- JS must set "currentcollection"  -->
-        <input type='hidden' id='cmd' value='search' name='cmd'/>
+        <input type='hidden' id='filesearch-collection' value='activities' name='collection'/>  <!-- JS must set "currentcollection"  -->
+        <input type='hidden' id='filesearch-cmd' value='search' name='cmd'/>
+        <input type='hidden' id='filesearch-ft' value='' name='type[]'/>
 
         <?php
         /**************************************/

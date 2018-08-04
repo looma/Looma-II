@@ -50,18 +50,11 @@
           window.history.back();
   }
   */
-  
-  function textcheckpoint() {
-      savedHTML = $editor.html();
-  };
 
-  function textundocheckpoint() {
-      $editor.html(savedHTML);
-  }; //not used now??
-  
-  function textmodified() {
-      return (savedHTML !== $editor.html());
-  };
+  function textcheckpoint() {         savedHTML =   $editor.html(); };
+  function textundocheckpoint() {     $editor.html( savedHTML);     };  //not used now??
+  function textmodified()   { return (savedHTML !== $editor.html());};
+
 
   function textclear() {
       setname("");
@@ -103,7 +96,7 @@
           function(response) {
               $('#preview').html(response['data']).show();
           },
-      'json'
+         'json'
       );
 };
   

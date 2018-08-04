@@ -110,7 +110,7 @@ function findUniqueWordsFromString(pages, isChPre, helpString, prefix, start, en
  * @param string The string to extract from
  * @returns The list of words, all lowercase, from the string.
  */
-function extractWordsFromString(string) {
+function extractWordsFromString(string) {   // NOTE: change to [a-z,A-Z] or \w format for regex used here
     return (string.match(/[qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789]+/g) || [])
         .map(function(word) { return word.toLowerCase()});
 }

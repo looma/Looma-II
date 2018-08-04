@@ -15,8 +15,10 @@ $(document).ready = function () {
     var a;
     var b;
     
-    function b() {
+    function c() {
     
     }
+    console.log('template')
+    
 };
 

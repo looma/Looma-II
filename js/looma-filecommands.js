@@ -261,7 +261,7 @@ function closesearch() {
 function isFilesearchSet() {
     var set = false;
     
-    if ($('#collection').val() == 'activities') {
+    if ($('#filesearch-collection').val() == 'activities') {
         if ($('#filesearch-term').val()) set = true;
         $("#filesearch-type .flt-chkbx").each( function() {
             if (this.checked) set = true;
@@ -304,7 +304,7 @@ $(document).ready(function ()
 
                    opensearch();
                    
-                   $('#collection').val(currentcollection);
+                   $('#filesearch-collection').val(currentcollection);
                    $('#filesearch-ft').val(currentfiletype);
                    
                    //if( $('#collection').val() === 'text_files')   $('#collection').val('text');
@@ -465,12 +465,12 @@ $(document).ready(function ()
                     opensearch();  //do OPENSEARCH first, then hide/show FILTER checkboxes below
     
     
-                   $('#collection').val(currentcollection);
+                   $('#filesearch-collection').val(currentcollection);
                    $('#filesearch-ft').val(currentfiletype + '-template');
     
                    
-                    $('.typ-chk input').attr('checked', false);
-                    $('.typ-chk').hide();
+                    //$('.typ-chk input').attr('checked', false);
+                    //$('.typ-chk').hide();
 
                     if (currentfiletype == 'text') {
                         $('#text-template-chk').show();
@@ -645,7 +645,7 @@ $(document).ready(function ()
                         $('#ellipsis').text($('#ellipsis').text().length < 10 ? $('#ellipsis').text() + '.' : '');
                     },33 );
             
-                $('#filesearch #collection').val(currentcollection);
+                $('#filesearch-collection').val(currentcollection);
                 $.post( "looma-database-utilities.php",
                     $("#filesearch").serialize(),
                     function (result) {

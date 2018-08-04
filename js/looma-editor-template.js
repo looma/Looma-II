@@ -731,7 +731,7 @@ $(document).ready(function() {
         //currentcollection = "text_files";
         //currentcollection = "edited_videos";
     
-    $('#collectionname').text('Slide Shows');
+    $('.filesearch-collectionname').text('Slide Shows');
         //$('#collectionname').text('Lesson Plans');
         //$('#collectionname').text('Text Files');
         //$('#collectionname').text('Edited Videos');

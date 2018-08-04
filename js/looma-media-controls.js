@@ -37,7 +37,7 @@ function attachMediaControls (myMedia) {
 
             media = (audio)?audio:video;
           }
-          
+          //DEBUG
           console.log(media);
 
           // Buttons

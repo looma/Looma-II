@@ -285,6 +285,8 @@ function nextGenProb(){
         }
     } //end of CLASS 7 or higher
 
+    if (subject == 'sub' & randNum2 > randNum1) {var x=randNum1;randNum1=randNum2;randNum2=x;};
+    // TEMP fix until NUMPAD includes a '-' key
     
     if((arithClass === 'class1' || arithClass === 'class2' || arithClass === 'class3' || arithClass === 'class4') &&
         (oper === "+" || oper === "-" || oper === "*"))

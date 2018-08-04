@@ -11,6 +11,9 @@ Description:
 
 'use strict';
 
+var list = [];
+var responses = [];
+var counter=0;
 function lookup(e) {
 
     var word = $('#word')[0].value;
@@ -35,12 +38,12 @@ function lookup(e) {
               //console.log('img is ' + result.img);
 
             //window.alert(result);
-            $('#nepali-output').text(result.np);
-            $('#defn-output').text(result.def);
+        $('#wordlist-output').html(result.def);
+        $('#defn-output').text(result.def);
             $('#img-output').html('<img src="' + result.img + '>');
     };
 
-    LOOMA.lookup(word, succeed, fail);
+   LOOMA.lookup(word, succeed, fail);
             /*
             $.ajax(        //"looma-dictionary-utilities.php",
                    "http://192.168.1.107/Looma/looma-dictionary-utilities.php",
@@ -53,20 +56,17 @@ function lookup(e) {
               success: succeed
              });
             */
-    return false;
 }; //end LOOKUP
-
-
 
  function wordlist(e) {
     //PARAMS are: class, subj, count, random
 
     e.preventDefault();
 
-    var grade =  $('#class').val();
-    var subj =   $('#subj').val();
-    var count =  $('#count').val();
-    var random = $('input[name=random]:checked').val();
+    //var grade =  $('#class').val();
+    //var subj =   $('#subj').val();
+    //var count =  $('#count').val();
+    //var random = $('input[name=random]:checked').val();
     var response;
 
 
@@ -84,14 +84,15 @@ function lookup(e) {
             for (var i=0; i < result.length; i++) {
                   console.log('list is ' + result[i]);
                   output += result[i] + '<br>';
+                  list.push(result[i]);
             //window.alert(result);
             }
-
+            
             $('#wordlist-output').html(output);
 
     };
 
-    LOOMA.wordlist(grade, subj, count.toString(), random, succeed, fail);
+    LOOMA.wordlist('class1', 'english', "1EN01", $('#count').val(), true, succeed, fail);
 
             /*
             $.ajax(
@@ -114,21 +115,34 @@ function lookup(e) {
     return false;
 };; //end WORDLIST
 
-
-/*
- function addword(e) {
-    var word = $('#word')[0].value;
-    console.log('word is ' + word);
-    var result = LOOMA.addword(word);
-    console.log('result is ' + result);
-    $('#addword-output')[0].text = result;
-};
- */
-
+function listdef(e) {
+    
+    console.log(list);
+    
+    $.ajax({
+        url:'looma-dictionary-utilities.php',
+        async: true,
+        type: 'GET',
+        cache: false,
+        crossDomain: true,
+        data: "cmd=lookup&word=" + encodeURIComponent(list[counter]),
+        dataType: 'json',
+        success:function(data){
+            console.log('success of ajax response');
+            responses.push(data);
+            counter++;
+            if (counter < list.length) listdef();},
+        error: console.log("lookup fail")
+    });
+    $('#wordlist-output').html(responses);
+    
+    console.log("responses: " + responses);
+}
 
 $(document).ready(function(){
     $('#lookup-button').click(lookup);
 //    $('#addword-button').click(addword);
     $('#wordlist-button').click(wordlist);
-
+    $('#worddef-button').click(listdef);
+    
 });

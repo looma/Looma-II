@@ -137,117 +137,6 @@ function lessontemplatesave(name) {
 
 // end FILE COMMANDS stuff
 
-/////////////////////////// ONLOAD FUNCTION ///////////////////////////
-window.onload = function () {
-    
-    
-    loginname = LOOMA.loggedIn();
-    if (loginname && ( loginname== 'skip')) $('.admin').show();
-    
-    //show the "New Text File" button in filecommands.js to allow text-frame editor to be called in an iFrame
-    $('#show_text').show();
-
-    $searchResultsDiv = $('#outerResultsDiv');  //sets a global variable used by looma-search.js
-    $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
-
-    loginname = LOOMA.loggedIn();
-    if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
-    
-    $('#clear_button').click(clearFilter);
-
-    $('.filter_radio').change(changeCollection);
-
-    $('.chapterFilter').prop('disabled', true);
-    $('.mediaFilter').prop('disabled',   false);
-
-
-    $("#dropdown_grade, #dropdown_subject").change( function(){
-        $('#div_chapter').hide();
-
-        $('#dropdown_chapter').empty();
-        if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
-            $.post("looma-database-utilities.php",
-                {cmd: "chapterList",
-                 class: $('#dropdown_grade').val(),
-                 subject:   $('#dropdown_subject').val()},
-
-                 function(response) {
-                     //console.log(response);
-                     //$('#chapter_label').show();
-                     $('#div_chapter').show();
-                     $('<option/>', {value: "", label: "<select a chapter>"}).appendTo('#dropdown_chapter');
-
-                     $('#dropdown_chapter').append(response);
-                 },
-                 'html'
-              );
-    });
-
-///////////////////////////////
-// click handlers for '.add', '.preview' buttons
-///////////////////////////////
-
-    //$(elementlist).on(event, selector, handler).
-    $('#innerResultsDiv'           ).on('click', '.add',        function() {
-            insertTimelineElement($(this).closest('.activityDiv'));return false;});
-    $('                  #timeline').on('click', '.remove',     function() {
-            removeTimelineElement(this);return false;});
-    $('#innerResultsDiv, #timeline').on('click', '.preview',    function() {
-            preview_result($(this).closest('.activityDiv'));return false;});
-    $('#innerResultsDiv, #timeline').on('click', '.resultsimg', function() {
-            preview_result($(this).closest('.activityDiv'));return false;});
-
-
-
-//////////////////////////////////////
-/////////FILE COMMANDS setup /////////
-//////////////////////////////////////
-    
-    /*  callback functions expected by looma-filecommands.js:  */
-    callbacks ['clear'] =           lessonclear;
-    callbacks ['save']  =           lessonsave;
-    callbacks ['savetemplate']  =   lessontemplatesave;
-    //callbacks ['open']  = lessonopen;
-    callbacks ['display'] =         lessondisplay;
-    callbacks ['modified'] =        lessonmodified;
-    callbacks ['showsearchitems'] = lessonshowsearchitems;
-    callbacks ['checkpoint'] =      lessoncheckpoint;
-    //callbacks ['undocheckpoint'] =  lessonundocheckpoint;
-    //callbacks ['quit'] not overridden - use default action from filecommands.js
-    
-    /*  variable assignments expected by looma-filecommands.js:  */
-    currentname = "";                    //currentcollection is defined in looma-filecommands.js and is used there
-    currentcollection = 'lesson';        //currentcollection is defined in looma-filecommands.js and is used there
-    currentfiletype =   'lesson';        //currentfiletype   is defined in looma-filecommands.js and is used there
-    
-    // set file search box title
-    $('#collectionname').text('Lesson Plans');
-    // set collection in filesearch form
-    $('#filesearch  #collection').val('lesson');
-    
-    lessonclear();
-
-  
-
-    
- 
-  // $( "#timelineDisplay" ).sortable({disabled: true});
-  //
-        makesortable(); //makes the timeline sortable
-
-// from connor
-$('#timelineLeft').on('click', function(){
-        $('#timeline').animate({scrollLeft: '-=200px'}, 700);
-});
-$('#timelineRight').on('click', function(){
-        $('#timeline').animate({scrollLeft: '+=200px'}, 700);
-});
-// from connor
-
-    $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
-
-};  //end window.onload()
-
 function changeCollection (){
     $('#div_grade').toggle();
     $('#div_subject').toggle();
@@ -448,6 +337,8 @@ function filetype(ft) { return LOOMA.typename(ft);};
 
 function thumbnail (item) {
 
+//NOTE: this code should be merged and rationalized with LOOMA.thumbnail() in looma-utilities.js
+    
     //builds a filepath/filename for the thumbnail of this "item" based on type
     //SOME HARD-CODING HERE to be fixed
     var collection;
@@ -501,9 +392,14 @@ function thumbnail (item) {
             if (filepath) path = filepath; else path = homedirectory + 'content/html/';
             imgsrc = path + thumbnail_prefix + "_thumb.jpg";
         }
-		else if (item.ft == "EP") {
-			imgsrc = homedirectory + "content/epaath/activities/" + item.fn + "/thumbnail.jpg";
-		}
+        
+        else if (item.ft == "map") {
+            imgsrc = "../maps/" + item.fn + "_thumb.png";
+        }
+        
+        else if (item.ft == "EP") {
+            imgsrc = homedirectory + "content/epaath/activities/" + item.fn + "/thumbnail.jpg";
+        }
 		else if (item.ft == "text") {
             imgsrc = "images/textfile.png";
         }
@@ -594,6 +490,9 @@ function createActivityDiv (activity) {
 
                 $(activityDiv).attr("data-collection", (item.ft == 'chapter') ? 'chapters' : 'activities');
                 $(activityDiv).attr("data-id",         (item.ft == 'chapter') ? item['_id'] : item['_id']['$id']);
+  
+        $(activityDiv).attr("data-mongoID",         (item.ft == 'chapter') ? '' : item['mongoID']['$id']);
+  
                 $(activityDiv).attr("data-type", item['ft']);
 
                 item.collection = (item.ft == 'chapter')?'chapters':'activities';
@@ -615,7 +514,7 @@ function createActivityDiv (activity) {
                 $(textdiv).appendTo(activityDiv);
 
                 // Display Name
-                if (item.dn) var dn = item.dn.substring(0, 20); //else dn = item.ndn.substring(0,20);
+                if (item.dn) var dn = item.dn;    //.substring(0, 20); //else dn = item.ndn.substring(0,20);
                 $("<p/>", {
                     class : "result_dn",
                     html : "<b>" + dn + "</b>"
@@ -693,7 +592,10 @@ function createActivityDiv (activity) {
 
 // When you click the preview button
 function preview_result (item) {
-
+    
+    $('.resultsimg').removeClass('playing');
+    $(item).find('.resultsimg').addClass('playing');
+    
     $('#previewpanel').empty().append($("<p/>", {html : "Loading preview..."}));
 
     var collection = $(item).attr('data-collection');
@@ -793,7 +695,13 @@ function preview_result (item) {
 		else if (filetype=="looma")
             document.querySelector("div#previewpanel").innerHTML = '<img src="images/looma-screenshots/' +
             $(item).data('mongo').dn + '.png" id="displayImage">';
-
+        
+        else if (filetype=="map")
+            document.querySelector("div#previewpanel").innerHTML = '<img src="../maps/' + $(item).find('.resultsimg').attr('src') + '" id="displayImage">';
+            
+        else if (filetype == "history")
+            document.querySelector("div#previewpanel").innerHTML = '<img src="../content/timelines/' + $(item).find('.result_dn').text() + '_thumb.jpg" id="displayImage">';
+        
         else if (filetype=="slideshow") {
             //use the mongoID of the slideshow to query text_files collection and retrieve the first image for this slideshow
 
@@ -815,7 +723,8 @@ function preview_result (item) {
 	         $.post("looma-database-utilities.php",
                 {cmd: "openByID", collection: "text", id: $(item).data('mongo').mongoID.$id},
                 function(result) {
-                    document.querySelector("div#previewpanel").innerHTML = result.data;
+                    $('#previewpanel').empty().append($('<div class="textpreview"></div>').html(result.data));
+                    //document.querySelector("div#previewpanel").innerHTML = result.data;
                 },
                 'json'
               );
@@ -872,6 +781,8 @@ function makesortable (){
         opacity: 0.7,   // makes dragged element transparent
         revert: true,   //Animates the drop
         axis:   "x",
+        //containment: "#timeline",
+        //helper: "clone",
         scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
         handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
     }).disableSelection();
@@ -893,8 +804,7 @@ function makedraggable() {
         connectToSortable: "#timelineDisplay",
         //opacity: 0.7,
         addClasses: false,
-      
-         cursorAt: 0,
+        cursorAt: 0,
   
         helper: "clone",
         //containment: "#timelineDisplay",
@@ -917,5 +827,112 @@ function makedraggable() {
 }; //end makedraggable()
 
 
+
+/////////////////////////// ONLOAD FUNCTION ///////////////////////////
+window.onload = function () {
+    
+    
+    loginname = LOOMA.loggedIn();
+    if (loginname && ( loginname== 'skip')) $('.admin').show();
+    
+    //show the "New Text File" button in filecommands.js to allow text-frame editor to be called in an iFrame
+    $('#show_text').show();
+    
+    $searchResultsDiv = $('#outerResultsDiv');  //sets a global variable used by looma-search.js
+    $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
+    
+    loginname = LOOMA.loggedIn();
+    if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname== 'skip')) $('.admin').show();
+    
+    $('#clear_button').click(clearFilter);
+    
+    $('.filter_radio').change(changeCollection);
+    
+    $('.chapterFilter').prop('disabled', true);
+    $('.mediaFilter').prop('disabled',   false);
+    
+    
+    $("#dropdown_grade, #dropdown_subject").change( function(){
+        $('#div_chapter').hide();
+        
+        $('#dropdown_chapter').empty();
+        if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
+            $.post("looma-database-utilities.php",
+                {cmd: "chapterList",
+                    class: $('#dropdown_grade').val(),
+                    subject:   $('#dropdown_subject').val()},
+                
+                function(response) {
+                    //console.log(response);
+                    //$('#chapter_label').show();
+                    $('#div_chapter').show();
+                    $('<option/>', {value: "", label: "<select a chapter>"}).appendTo('#dropdown_chapter');
+                    
+                    $('#dropdown_chapter').append(response);
+                },
+                'html'
+            );
+    });
+
+///////////////////////////////
+// click handlers for '.add', '.preview' buttons
+///////////////////////////////
+    
+    //$(elementlist).on(event, selector, handler).
+    $('#innerResultsDiv'           ).on('click', '.add',        function() {
+        insertTimelineElement($(this).closest('.activityDiv'));return false;});
+    $('                  #timeline').on('click', '.remove',     function() {
+        removeTimelineElement(this);return false;});
+    $('#innerResultsDiv, #timeline').on('click', '.preview',    function() {
+        preview_result($(this).closest('.activityDiv'));return false;});
+    $('#innerResultsDiv, #timeline').on('click', '.resultsimg', function() {
+        preview_result($(this).closest('.activityDiv'));return false;});
+
+
+
+//////////////////////////////////////
+/////////FILE COMMANDS setup /////////
+//////////////////////////////////////
+    
+    /*  callback functions expected by looma-filecommands.js:  */
+    callbacks ['clear'] =           lessonclear;
+    callbacks ['save']  =           lessonsave;
+    callbacks ['savetemplate']  =   lessontemplatesave;
+    //callbacks ['open']  = lessonopen;
+    callbacks ['display'] =         lessondisplay;
+    callbacks ['modified'] =        lessonmodified;
+    callbacks ['showsearchitems'] = lessonshowsearchitems;
+    callbacks ['checkpoint'] =      lessoncheckpoint;
+    //callbacks ['undocheckpoint'] =  lessonundocheckpoint;
+    //callbacks ['quit'] not overridden - use default action from filecommands.js
+    
+    /*  variable assignments expected by looma-filecommands.js:  */
+    currentname = "";                    //currentcollection is defined in looma-filecommands.js and is used there
+    currentcollection = 'lesson';        //currentcollection is defined in looma-filecommands.js and is used there
+    currentfiletype =   'lesson';        //currentfiletype   is defined in looma-filecommands.js and is used there
+    
+    // set file search box title
+    $('.filesearch-collectionname').text('Lesson Plans');
+    // set collection in filesearch form
+    $('#filesearch  #collection').val('lesson');
+    
+    lessonclear();
+    
+    // $( "#timelineDisplay" ).sortable({disabled: true});
+    //
+    makesortable(); //makes the timeline sortable
+
+// from connor
+    $('#timelineLeft').on('click', function(){
+        $('#timeline').animate({scrollLeft: '-=200px'}, 700);
+    });
+    $('#timelineRight').on('click', function(){
+        $('#timeline').animate({scrollLeft: '+=200px'}, 700);
+    });
+// from connor
+    
+    $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
+    
+};  //end window.onload()
 
 

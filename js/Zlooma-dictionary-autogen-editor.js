@@ -1,4 +1,5 @@
 /*
+/*
  * File: looma-dictionary-autogen-editor.js
  * Author: Nikhil Singhal
  * Date: July 28, 2016
@@ -147,7 +148,7 @@ function processPDF() {
     var progress = $("#progressDisplay");
     $("#uploadPDFDiv").addClass("disableButtons");
     
-    
+
     var prefix = $("#prefixInput").val();
     var chapterList = $("#chapInput").val();
     
@@ -161,16 +162,16 @@ function processPDF() {
             progress.text("chapter prefix must be a full CH_ID, like '3M04' or '7SS02.01'");
             finishProcessingPDF();
             return;
+            }
         }
-    }
     else
     //  if a list of starting page numbers IS given, then the provided CH_ID prefix will have "01", "02" etc added to generate ch_ids
     //  check if provided prefix is a legal PREFIX ch_id
-    if(!prefix.match(/([0-9]|10)(M|S|EN|N|SS|H|V)([0-9][0-9]\.)?$/)) {
-        progress.text("chapter prefix must be a PREFIX CH_ID, like '3M' or '7SS02.'");
-        finishProcessingPDF();
-        return;
-    };
+        if(!prefix.match(/([0-9]|10)(M|S|EN|N|SS|H|V)([0-9][0-9]\.)?$/)) {
+                progress.text("chapter prefix must be a PREFIX CH_ID, like '3M' or '7SS02.'");
+                finishProcessingPDF();
+                return;
+        };
     
     // convert file to text
     var file = document.getElementById("pdfInput").files[0];
@@ -188,7 +189,7 @@ function processPDF() {
         var start = $("#startPageNumber").val();
         var end = $("#endPageNumber").val();
         var auto = $("#autoChidCheck").prop("checked");
-        
+
         
         var words = findUniqueWordsFromString(pages, auto, $("#chapInput").val(), prefix,
             start, end);
@@ -279,26 +280,20 @@ function finishProcessingPDF() {
 function submitSearch(oldSearch) {
     // send request to server
     if(!oldSearch) {
-        prevText =     $("#wordPart").val();
-        prevAdded =    $("#added").prop("checked")
+        prevText = $("#wordPart").val();
+        prevAdded = $("#added").prop("checked")
         prevModified = $("#modified").prop("checked");
         prevAccepted = $("#accepted").prop("checked");
-        prevDeleted =  $("#deleted").prop("checked");
+        prevDeleted = $("#deleted").prop("checked");
     }
-    
-    var searchArgs = {};
-    searchArgs['text'] = prevText;
-    searchArgs['page'] = oldSearch?$("#pageInput").val():1;
-    
-    searchArgs['deleted']  = prevDeleted;
-     
-        if (prevAccepted ) searchArgs['accepted'] = true;
-        if (prevModified ) searchArgs['modified'] = true;
-        if (prevAdded )    searchArgs['added']    = true;
-    
     $.get("looma-dictionary-autogen-backend.php",
         {'loginInfo': {"allowed": true, 'user': loginname},
-            'searchArgs': searchArgs,
+            'searchArgs': {'text': prevText,
+                'added': prevAdded,
+                'modified': prevModified,
+                'accepted': prevAccepted,
+                'deleted': prevDeleted,
+                'page': oldSearch?$("#pageInput").val():1},
             'staging': true},
         function(data, status, jqXHR) {
             // called when server responds
@@ -339,7 +334,7 @@ function submitSearch(oldSearch) {
                 table.append(row);
             };
             $('.ch_idCol').dblclick(function(event) {loadContext(event);})
-            
+    
             // reload officialTable
             //      **************** ????????????? ***********
             //loadOfficialTable();
@@ -402,17 +397,15 @@ function createTableEntry(word, i) {
         function posDropdown (select) {
             
             var forms = ['noun','verb','adjective','adverb','preposition',
-                'conjunction','pronoun','contraction','interjection',
-                'article','proper name','title'];
-            
+                         'conjunction','pronoun','contraction','interjection',
+                         'article','proper name','title'];
             var dropdown = '';
-            if (!select || select == "") dropdown = '<option value="" selected="selected">none</option>option>\n';
-            
+    
             for (let form of forms) {
                 if (form == select) dropdown = dropdown + '<option value="' + form + '" selected="selected">' + form + '</option>option>\n';
                 else                dropdown = dropdown + '<option value="' + form + '">'                     + form + '</option>option>\n';
             };
-            
+          
             return dropdown;
         }
         
@@ -466,14 +459,14 @@ function createTableEntry(word, i) {
         + i + ')" class="entryDeleteButton" title="Click to toggle Delete on or off">'
         + (word['stagingData']['deleted']?'un-<wbr>delete':'de<wbr>lete')+'</button></td>'));
     row.append(createEditableTd("root", i, word["wordData"]["root"] || ""));
-    
+ 
     row.append(createEditableTd("plural", i, word["wordData"]["plural"]));
     
     row.append(createEditableTdDropdown("pos", i, word["wordData"]["pos"]));
     row.append(createEditableTd("nep", i, word["wordData"]["nep"]));
     row.append(createEditableTd("def", i, word["wordData"]["def"]));
     row.append(createEditableTd("ch_id", i, word["wordData"]["ch_id"]));
-    
+
     row.append($('<td class="modCol"><p>'
         + (word['wordData']["mod"]) + '</p></td>'));
     row.append($('<td class="dateCol"><p>'
@@ -481,20 +474,20 @@ function createTableEntry(word, i) {
     
     // mark NOUN entries as requiring PLURAL
     if  ($(row).find('td.posCol').text() === 'noun')
-        $(row).find('td.pluralCol textarea').addClass('highlighted')
+         $(row).find('td.pluralCol textarea').addClass('highlighted')
     else $(row).find('td.pluralCol textarea').removeClass('highlighted');
-    
+
     var verbforms = ['comparative form of',
-        'superlative form of',
-        'present participle of',
-        'past participle of',
-        'past tense of',
-        'third person singular of',
-        'past tense and past participle of'];
+                    'superlative form of',
+                    'present participle of',
+                    'past participle of',
+                    'past tense of',
+                    'third person singular of',
+                    'past tense and past participle of'];
     
     // mark VERB FORM entries as requiring ROOT WORD
     if  (verbforms.includes($(row).find('td.defCol').text().trim().toLowerCase()))
-        $(row).find('td.rootCol textarea').addClass('highlighted')
+         $(row).find('td.rootCol textarea').addClass('highlighted')
     else $(row).find('td.rootCol textarea').removeClass('highlighted');
     
     return row;
@@ -602,26 +595,26 @@ function edit(type, index) {
     }
     
     //validate EDITs here before commiting them to STAGING dictionary
-    // valid ch_id  with regex   '/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/'
-    if ((type=='ch_id') && !elem.val().match(/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/)) {
-        LOOMA.alert('invalid Chapter ID (ch_id)');
-        $("#menuArea, #viewArea, #officialViewer").removeClass("disableButtons");
-        return;
-    }
-    // noun has plural
+        // valid ch_id  with regex   '/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/'
+        if ((type=='ch_id') && !elem.val().match(/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/)) {
+            LOOMA.alert('invalid Chapter ID (ch_id)');
+            $("#menuArea, #viewArea, #officialViewer").removeClass("disableButtons");
+            return;
+        }
+        // noun has plural
     if (false) {
         LOOMA.alert('');
         $("#menuArea, #viewArea, #officialViewer").removeClass("disableButtons");
         return;
     }
-    // verb form has rw
+        // verb form has rw
     
     // end validation
     
     // request change
     $.post('looma-dictionary-autogen-backend.php',
         {'loginInfo': {'allowed': true, 'user': loginname},
-            'mod': {'wordId': words[index]['wordData']['id'],
+         'mod': {'wordId': words[index]['wordData']['id'],
                 'field': type, 'new': elem.val(),
                 'deleteToggled': (words[index]['stagingData']['deleted']
                     && type == "stat") || type == 'delete'}},
@@ -682,53 +675,51 @@ function submitOfficialSearch() {
  */
 function loadOfficialTable() {
     
-    if (!selectedWord || selectedWord == '')
-         { $("#officialTable").find("tr:gt(0)").remove(); }  //dont do a search on '' [too long], just clear the official search results
-    else {
-        $.get("looma-dictionary-autogen-backend.php",
-            {'loginInfo': {"allowed": true, 'user': loginname},
-                'searchArgs': {'word': selectedWord, 'overwritten': showOverwritten},
-                'staging': false},
-            function(data, status, jqXHR) {
-                if(data != null) {
-                    officialDefs = data['data'];
-                    function createOfficialTd(word, field) {
-                        var special = false;
-                        if(field == "primary") {
-                            special = word['wordData']['primary'] + "";
-                        }
-                        return $("<td class='" + field + "Col'> <p>"
-                            + (special || word['wordData'][field] || "") + "</p></td>");
+    if (selectedWord) {
+    $.get("looma-dictionary-autogen-backend.php",
+        {'loginInfo': {"allowed": true, 'user': loginname},
+            'searchArgs': {'word': selectedWord, 'overwritten': showOverwritten},
+            'staging': false},
+        function(data, status, jqXHR) {
+            if(data != null) {
+                officialDefs = data['data'];
+                function createOfficialTd(word, field) {
+                    var special = false;
+                    if(field == "primary") {
+                        special = word['wordData']['primary'] + "";
                     }
-                    var table = $("#officialTable");
-                    table.find("tr:gt(0)").remove();
-                    for(var i = 0; i < officialDefs.length; i++) {
-                        var row = $("<tr>");
-                        row.append($("<td class='editCol'><button id='edit_" + i
-                            + "' onclick='moveOfficial(" + i
-                            + ");' title='Click to copy to the Staging Database to edit'>"
-                            + "Edit</button></td>"));
-                        row.append(createOfficialTd(officialDefs[i], "word"));
-                        row.append($("<td class='statCol'><p>unedited</p></td>"));
-                        row.append(createOfficialTd(officialDefs[i], "root"));
-                        row.append(createOfficialTd(officialDefs[i], "plural"));
-                        row.append(createOfficialTd(officialDefs[i], "pos"));
-                        row.append(createOfficialTd(officialDefs[i], "nep"));
-                        row.append(createOfficialTd(officialDefs[i], "def"));
-                        row.append(createOfficialTd(officialDefs[i], "ch_id"));
-                        //row.append(createOfficialTd(officialDefs[i], "primary"));
-                        row.append(createOfficialTd(officialDefs[i], "mod"));
-                        row.append(createOfficialTd(officialDefs[i], "date"));
-                        table.append(row);
-                    }
-                    
-                    // update margin-bottom of resultsTable
-                    $("#viewArea").css("margin-bottom",
-                        $("#officialViewer").height() + "px");
-                } else {
-                    LOOMA.alert("loading from permanent database failed");
+                    return $("<td class='" + field + "Col'> <p>"
+                        + (special || word['wordData'][field] || "") + "</p></td>");
                 }
-            }, 'json');
+                var table = $("#officialTable");
+                table.find("tr:gt(0)").remove();
+                for(var i = 0; i < officialDefs.length; i++) {
+                    var row = $("<tr>");
+                    row.append($("<td class='editCol'><button id='edit_" + i
+                        + "' onclick='moveOfficial(" + i
+                        + ");' title='Click to copy to the Staging Database to edit'>"
+                        + "Edit</button></td>"));
+                    row.append(createOfficialTd(officialDefs[i], "word"));
+                    row.append($("<td class='statCol'><p>unedited</p></td>"));
+                    row.append(createOfficialTd(officialDefs[i], "root"));
+                    row.append(createOfficialTd(officialDefs[i], "plural"));
+                    row.append(createOfficialTd(officialDefs[i], "pos"));
+                    row.append(createOfficialTd(officialDefs[i], "nep"));
+                    row.append(createOfficialTd(officialDefs[i], "def"));
+                    row.append(createOfficialTd(officialDefs[i], "ch_id"));
+                    //row.append(createOfficialTd(officialDefs[i], "primary"));
+                    row.append(createOfficialTd(officialDefs[i], "mod"));
+                    row.append(createOfficialTd(officialDefs[i], "date"));
+                    table.append(row);
+                }
+                
+                // update margin-bottom of resultsTable
+                $("#viewArea").css("margin-bottom",
+                    $("#officialViewer").height() + "px");
+            } else {
+                LOOMA.alert("loading from permanent database failed");
+            }
+        }, 'json');
     }
 }
 
@@ -946,17 +937,17 @@ function loadContext (event) {  //called when a CH_ID is clicked to open the tex
             //var blobPDF = new Blob(pdf);
             //var filePDF = new File(pdf, 'pdf.txt');
             Pdf2TextClass().convertPDF(
-                pdf,
-                // blobPDF,
-                // filePDF,
-                function(page, total) {},
-                function(pages) {
-                    updateContext(pages);
-                    moveContext(0);
-                });
+                      pdf,
+                    // blobPDF,
+                    // filePDF,
+                    function(page, total) {},
+                    function(pages) {
+                        updateContext(pages);
+                        moveContext(0);
+            });
         }
-    });
-}
+     });
+ }
 
 /**
  * Updates the context string to the given pages of text from a pdf
@@ -990,17 +981,12 @@ function verbFormSelect(event) {
     
     if ($(event.target).parent().siblings(".posCol").find('select')[0].value == 'verb') {
         $(event.target).css('background-color', '#FFFFE0')
-        
-        var $verb = $('#verbFormChoices').show().prop('selectedIndex',0);
-        
-        //$verb.select(function(){$verb.trigger('change')});
-        
+    
+        var $verb = $('#verbFormChoices').show();
         $verb.change(function (innerevent) {
             //innerevent.preventDefault;
-            if ($("#verbFormChoices option:selected").val() != 'none'  ||
-                event.target.value == $("#verbFormChoices option:selected").val())
-                    event.target.value = $("#verbFormChoices option:selected").val();
-            
+            if ($("#verbFormChoices option:selected").val() != 'none')
+                event.target.value = $("#verbFormChoices option:selected").val();
             $(event.target).css('background-color', 'inherit')
             $(event.target).trigger('change');
             $verb.prop('selectedIndex',0).hide();
@@ -1040,7 +1026,7 @@ function startup() {
     });
     
     $('#resultsTable').on("dblclick", 'td.defCol textarea',verbFormSelect);
-    
+   
     //this is not working
     $('#verbFormChoices').blur(function() {
         $('#verbFormChoices').hide();

@@ -75,6 +75,8 @@ function setRootKeyword() {
                 kids.forEach(function (kid) {
                     $('<option data-kids=' + kid.kids["$id"] + ' value="' + kid.name + '" label="' + kid.name + '"/>').appendTo(dropdown);
                 });
+                $('<option value="none" label="(none)"/>').appendTo(dropdown);
+    
             }
         },
         'json'
@@ -116,13 +118,14 @@ function restoreKeywordDropdown(level,keys) {
                             //var next = $menu.next('select').empty().prop('disabled', false);
                             if (kids) {
                                 
-                                $('<option value="" label="Select..."/>').prop('selected', true).appendTo($next);
+                                $('<option value="" label="(any)..."/>').prop('selected', true).appendTo($next);
                                 
                                 for (var i=0;i<kids.length;i++){
                                 //kids.forEach(function (kid) {
                                     $('<option data-kids=' + kids[i].kids["$id"] + ' value="' + kids[i].name + '" label="' + kids[i].name + '"/>').appendTo($next);
                                 };
-                                
+                                $('<option value="none" label="(none)"/>').appendTo($next);
+    
                                 restoreKeywordDropdown(nextLevel, keys);
                             };
                         },
@@ -154,10 +157,12 @@ function showKeywordDropdown(event) {
                 var next = $(menu).next().empty().prop('disabled', false);
                 if (kids) {
                     //console.log('response is ' + kids);
-                    $('<option value="" label="Select..."/>').prop('selected', true).appendTo(next);
+                    $('<option value="" label="(any)..."/>').prop('selected', true).appendTo(next);
                     kids.forEach(function (kid) {
                         $('<option data-kids=' + kid.kids["$id"] + ' value="' + kid.name + '" label="' + kid.name + '"/>').appendTo(next);
                     });
+                    $('<option value="none" label="(none)"/>').appendTo(next);
+    
                 }
             },
             'json'
@@ -180,7 +185,7 @@ function showChapterDropdown($div, $grades, $subjects, $chapters) {
             function(response) {
                 //$('#chapter_label').show();
                 if ($div) $div.show();
-                $('<option/>', {value: "", label: "Select..."}).appendTo($chapters);
+                $('<option/>', {value: "", label: "(any)..."}).appendTo($chapters);
                 
                 $chapters.append(response);
             },

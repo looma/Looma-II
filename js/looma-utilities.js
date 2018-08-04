@@ -110,10 +110,6 @@ playMedia : function(button) {
                               '&pg=' + button.getAttribute('data-pg');
             break;
 
-        case "slideshow":      // SLIDESHOW activity type from Thomas
-            window.location = 'looma-slideshow.php?id=' + button.getAttribute("data-id");
-            break;
-
         case "text":
             var id = encodeURIComponent(button.getAttribute('data-id'));
             window.location = 'looma-text.php?id=' + id;
@@ -123,13 +119,6 @@ playMedia : function(button) {
             var fp = encodeURIComponent(button.getAttribute('data-fp'));
             var fn = encodeURIComponent(button.getAttribute('data-fn'));
             window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
-            break;
-
-        case "map":
-            var fn = encodeURIComponent(button.getAttribute('data-fn'));
-            var url = encodeURIComponent(button.getAttribute('data-url'));
-            if (url) window.location = url;
-            else     window.location = 'looma-maps-' + fn + '.php';
             break;
 
         case "looma":
@@ -143,20 +132,35 @@ playMedia : function(button) {
             fn = encodeURIComponent(button.getAttribute('data-fn') +
                 '/start.html');
             window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
-
-            /*window.location = button.getAttribute('data-fp') +
-                              button.getAttribute('data-fn') +
-                              "/start.html";
-            */
-            /*'looma-epaath.php?fn=' + button.getAttribute('data-fn') +
-                               '&fp=' + button.getAttribute('data-fp');
-                               */
             break;
 
         case "lesson":
             window.location = 'looma-lesson-present.php?id=' + button.getAttribute('data-id');
             break;
-        
+    
+        case "game":
+            window.location = 'looma-game.php?id=' + button.getAttribute('data-id');
+            break;
+    
+        case "map":
+            window.location = 'looma-map.php?id=' + button.getAttribute('data-id');
+            break;
+   
+            /*
+            
+        case "map":
+            var fn = encodeURIComponent(button.getAttribute('data-fn'));
+            var url = encodeURIComponent(button.getAttribute('data-url'));
+            if (url) window.location = url;
+            else     window.location = 'looma-maps-' + fn + '.php';
+            break;
+
+             */
+    
+        case "slideshow":
+            window.location = 'looma-slideshow-present.php?id=' + button.getAttribute("data-id");
+            break;
+    
         case "history":
             window.location = 'looma-history.php?id=' + button.getAttribute("data-id");
             break;
@@ -177,7 +181,6 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
     // attach a button [clickable button that launches that activity] to "appendToDiv"
 
         // NOTE: probably want to attach ALL the attributes of the activity (as data-xxx fields) to the Activity Button
-        // futures uses may be able to use that extra data [e.g. 'src', 'tag1..tag4', 'ch_id', 'cl_lo', 'cl_hi', url]
     
     //post to looma-database-utilities.php with cmd='openByID' and id=id
     // and result function makes a DIV and calls "succeed(div)"
@@ -196,6 +199,9 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                                 'data-dn="' + result.dn   + '" ' +
                                 'data-url="' + result.url + '" ' +
                                 'data-id="' + mongoID     + '" >'
+                        
+                                // add key1, key2, key3, key4, thumb, src, mondoID, url and ch_id data-fields  ???
+                                //
                            );
 
                         $newButton.append($('<img src="' + LOOMA.thumbnail(result.fn, result.fp, result.ft) + '">'));
@@ -298,61 +304,65 @@ thumbnail: function (filename, filepath, filetype) {
             var homedirectory = '../';
 
             imgsrc = "";
-
-            if (filetype == 'chapter') {
-                imgsrc = homedirectory + "/content/textbooks/" + filepath + filename + "_thumb.jpg";
+            if (filetype) {
+                
+                filetype = filetype.toLowerCase();
+            
+                if (filetype == 'chapter') {
+                    imgsrc = homedirectory + "/content/textbooks/" + filepath + filename + "_thumb.jpg";
+                }
+                else if (filepath && filepath.indexOf('/Khan/') >= 0) {
+                    imgsrc = homedirectory + '/content/Khan/thumbnail.png';
+                }
+                else if (filepath && filepath.indexOf('/W4S/') >= 0) {
+                    imgsrc = homedirectory + '/content/W4S/thumbnail.png';
+                }
+                else if (filetype == "mp3") {  //audio
+                    if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
+                    imgsrc = path + "thumbnail.png";
+                }
+                else if (filetype == "mp4" || filetype == "mp5" || filetype == "m4v" || filetype == "mov" || filetype == "video") { //video
+                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                    if (filepath) path = filepath; else path = homedirectory + 'content/videos/';
+                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+                }
+                else if (filetype == "jpg"  || filetype == "jpeg"  || filetype == "gif" || filetype == "png" || filetype == "image" ) { //picture
+                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                    if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
+                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+                }
+                else if (filetype == "pdf") { //pdf
+                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                    if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
+                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+                }
+                else if (filetype == "html") { //html
+                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                    if (filepath) path = filepath; else path = homedirectory + 'content/html/';
+                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+                }
+                else if (filetype == "EP" || filetype == "ep" || filetype == "epaath") {
+                    imgsrc = homedirectory + "content/epaath/activities/" + filename + "/thumbnail.jpg";
+                }
+                else if (filetype == "text") {
+                    imgsrc = "images/textfile.png";
+                }
+                /*fix by looking up DN in mongo*/         else if (filetype == "evi") {
+                    imgsrc = "images/video.png";
+                }
+                /*fix by looking up DN in mongo*/        else if (filetype == "history") {
+                    imgsrc = "images/history.png";
+                }
+                /*fix by looking up DN in mongo*/          else if (filetype == "map") {
+                    imgsrc = "images/maps.png";
+                }
+                else if (filetype == "slideshow") {
+                    imgsrc = "images/play-slideshow-icon.png";
+                }
+                else if (filetype == "looma") {
+                    imgsrc = "images/LoomaLogo_small.png";
+                }
             }
-            else if (filepath && filepath.indexOf('/Khan/') >= 0) {
-                imgsrc = homedirectory + '/content/Khan/thumbnail.png';
-            }
-            else if (filepath && filepath.indexOf('/W4S/') >= 0) {
-                imgsrc = homedirectory + '/content/W4S/thumbnail.png';
-            }
-            else if (filetype == "mp3") {  //audio
-                if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
-                imgsrc = path + "thumbnail.png";
-            }
-            else if (filetype == "mp4" || filetype == "mp5" || filetype == "m4v" || filetype == "mov" || filetype == "video") { //video
-                thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
-                if (filepath) path = filepath; else path = homedirectory + 'content/videos/';
-                imgsrc = path + thumbnail_prefix + "_thumb.jpg";
-            }
-            else if (filetype == "jpg"  || filetype == "jpeg"  || filetype == "gif" || filetype == "png" || filetype == "image" ) { //picture
-                thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
-                if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
-                imgsrc = path + thumbnail_prefix + "_thumb.jpg";
-            }
-            else if (filetype == "pdf") { //pdf
-                thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
-                if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
-                imgsrc = path + thumbnail_prefix + "_thumb.jpg";
-            }
-            else if (filetype == "html") { //html
-                thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
-                if (filepath) path = filepath; else path = homedirectory + 'content/html/';
-                imgsrc = path + thumbnail_prefix + "_thumb.jpg";
-            }
-            else if (filetype == "EP" || filetype == "ep" || filetype == "epaath") {
-                imgsrc = homedirectory + "content/epaath/activities/" + filename + "/thumbnail.jpg";
-            }
-            else if (filetype == "text") {
-                imgsrc = "images/textfile.png";
-            }
-            /*fix by looking up DN in mongo*/         else if (filetype == "evi") {
-                imgsrc = "images/video.png";
-            }
-            /*fix by looking up DN in mongo*/        else if (filetype == "history") {
-                imgsrc = "images/history.png";
-            }
-            /*fix by looking up DN in mongo*/          else if (filetype == "map") {
-                imgsrc = "images/maps.png";
-            }
-            else if (filetype == "slideshow") {
-                imgsrc = "images/play-slideshow-icon.png";
-            }
-            else if (filetype == "looma") {
-                imgsrc = item.thumb;
-            };
 
             return imgsrc;
         }, //end thumbnail()
@@ -577,7 +587,13 @@ defHTML: function (definition, rwdef) {
     
         $def.html(def);
     
-        $div.append($english, $nepali, $pos, $def);
+    
+    if (definition.img) {
+        var imgName = definition.img + ".jpg";
+        var $img = $('<img id="image" src="../content/dictionaryImages/' + imgName + '"/>');
+    }
+    
+        $div.append($english, $nepali, $pos, $def, $img);
     
         if (rwdef) {
             var $rwdef = $('<div id="rwdef"/>');
@@ -720,11 +736,13 @@ ch_id   :  function (grade, subject, unit, chapter) {
 
         //UNTESTED
 
-        var subjects = { 'math' : 'M',
+        var subjects = { 'math'    : 'M',
                          'science' : 'S',
                          'english' : 'EN',
                          'nepali'  : 'NP',
-                         'socialstudies' : 'SS' };
+                         'socialstudies' : 'SS',
+                         'vocation': 'V',
+                         'health'  : 'H'};
 
         ch_id = '';
         if (grade >= 1 && grade <= 8)         ch_id = grade;
@@ -753,7 +771,17 @@ ch_id   :  function (grade, subject, unit, chapter) {
     unit    :  function (ch_id) {},
     chapter :  function (ch_id) {},
 
-
+    // LOOMA ch_idFilepath
+    //
+ch_idFilepath : function(ch_id) {
+          var parts = LOOMA.parseCH_ID(ch_id);
+          return '../content/textbooks/Class' +
+                  parts['currentGradeNumber'] + '/' +
+                  parts['currentSubjectFull'] + '/' +
+                  parts['currentSubjectFull'] + '-' +
+                  parts['currentGradeNumber'] + '.pdf';
+    },
+    
     //LOOMA parseCH_ID(s)
     //  m=s.match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/);
     //  then if m != null, m[0] is the ch_id,
@@ -1092,7 +1120,6 @@ LOOMA.toggleFullscreen = function() {
 }; //end LOOMA.toggelFullscreen()
 
 /*
- from looma-alerts.js in the slideshow team code
  Description: Creates a styled translatable popup interface.
  NOTES: All methods support prompts/alerts in either text or html. If using either, any text can be converted into
  Looma's translatable spans using the provided LOOMA.translatableSpans().
@@ -1150,6 +1177,7 @@ LOOMA.alert = function(msg, time, notTransparent){
     $(document.body).append("<div class= 'popup'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>"+ msg +
         "<button id ='close-popup' class ='popup-button'>" +
+        //"<img src='images/alert.jpg' class='alert-icon'" +
         LOOMA.translatableSpans("OK", "ठिक छ") + "</button></div>").hide().fadeIn(1000);
 
     $('#close-popup, #dismiss-popup').click(function() {

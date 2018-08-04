@@ -86,6 +86,24 @@ function getDefinition(event) {
 */
     function OK(html) {
         $('#definitionDisplay').html(html);
+
+
+//The MODAL - opens window of image when clicked
+var modal = document.getElementById('myModal');
+// Get the image and insert it inside the modal
+var img = document.getElementById('image');
+var modalImg = document.getElementById("img01");
+img.onclick = function(){
+    modal.style.display = "block";
+    modalImg.src = this.src;
+}
+// Get the <span> element (x) that closes the modal
+var span = document.getElementsByClassName("close")[0];
+span.onclick = function() {
+    modal.style.display = "none";
+}
+    
+    
         if ($('#definition').text().length > 100) $('#definition').css('font-size', '0.75em');
         if ($('#rwdef').text().length > 100)      $('#rwdef').css('font-size', '0.75em');
     };

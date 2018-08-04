@@ -73,147 +73,10 @@ function submitChanges (event) {  //check the form entries and submit to backend
     }
 };  //  end submitChanges()
 
-/*
-    $.post("looma-database-utilities.php",
-        {cmd: "keywordRoot"},
-        function(kids) {
-            var dropdown = $('#key1-menu').empty();
-            if (kids) {
-                dropdown.prop('disabled', false);
-                //console.log('response is ' + kids);
-                $('<option value="" label="Select..."/>').prop('selected', true).appendTo(dropdown);
-                kids.forEach(function (kid) {
-                    $('<option data-kids=' + kid.kids["$id"] + ' value="' + kid.name + '" label="' + kid.name + '"/>').appendTo(dropdown);
-                });
-            }
-        },
-        'json'
-    );
- */
-/*
-///////// editor_checkpoint /////////
-function editor_checkpoint()       {savedSignature = signature($timeline);};
-//function editor_undocheckpoint() {}; //cant undo changes with signatures
-
-///////// editor_modified /////////
-function editor_modified() {return (
-    signature($timeline) !== savedSignature);};
-
-///////// signature  /////////
-function signature(elem) { //param is jQ object of the timeline ($timeline)
-    var sig = '';
-    elem.find('.activityDiv').each(function(index, x){
-        
-        //possible BUG: 'each' may not happen in the same order every time
-        
-        sig += $(x).data('id');});
-    
-    return sig;
-};
-
-///////// editor_pack  /////////
-function editor_pack (html) { // pack the timeline into an array of collection/id pairs for storage
-    var packitem;
-    var packarray = [];
-    
-    
-    $(html).each(function() {
-        packitem = {};  //make a new object, unlinking the references already pushed into packarray
-        packitem.collection = $(this).data('collection');
-        packitem.id         = $(this).data('id');
-        packarray.push(packitem);
-    });
-    
-    return packarray;
-}; //end editor_pack()
-
-///////// unpack /////////
-function unpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
-    
-    //var newDiv = null;  //reset newDiv so previous references to it are broken
-    
-    //for each element in data, call createActivityDiv, and attach the resturn value to #timelinediv
-    // also set filename, [and collection??]
-    
-    //$('#timelineDisplay').empty();
-    editor_clear();
-    
-    setname(response.dn);
-    
-    // need to record ID of newly opened LP so that later SAVEs can overwrite it
-    
-    var posts = [];  //we will push all the $.post() deferreds in the foreach below into posts[]
-    
-    $(response.order).each(function(index) {
-        // retrieve each timeline element from mongo and add it to the current timeline
-        //var newDiv = null;  //reset newDiv so previous references to it are broken
-        posts.push($.post("looma-database-utilities.php",
-            {cmd: "openByName", collection: 'activities', ft: 'image', fn:this.fn,fp:this.fp},
-            function(result) {
-                var newDiv = createActivityDiv(result);
-                //add data-index to timeline element for later sorting
-                //    (because the elements are delivered async, they may be out of order)
-                $(newDiv.firstChild).attr('data-index', index);
-                console.log('adding file :' + result.fn);
-                insertTimelineElement(newDiv.firstChild);
-            },
-            'json'
-        ));
-    });
-    
-    //  when all the $.post are complete, then re-order the timeline to account for out-of-order elements from asynch $.post calls
-    $.when.apply(null, posts).then(function(){orderTimeline();editor_checkpoint();});
-    
-    makesortable();
-    
-}; //end unpack()
-
-///////// editor_display  /////////
-function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); editor_checkpoint();};
-
-/////////  editor_save  /////////
-function editor_save(name) {
-    savefile(name, currentcollection, currentfiletype, editor_pack($timeline.html()), "true");
-    //note, the final param to 'savefile()' [to make an activity] set to 'true'
-    //because lessons are recorded as  activities [for use in library-search, for instance]
-}; //end editor_save()
-
-///////// editor_templatesave /////////
-function editor_templatesave(name) {
-    savefile(name, currentcollection, currentfiletype + '-template', editor_pack($timeline.html()), "false");
-    //note, the final param to 'savefile()' [to make an activity] set to 'false'
-    //because lessons templates are not recorded as  activities
-}; //end editor_templatesave()
-
-// end FILE COMMANDS stuff
-
-*/
-/*
-var clearFilter = function() {
-    console.log('clearFilter');
-    
-    if ($('#collection').val() == 'activities') {
-        $('#searchString').val("");
-        $(".filter_dropdown").each(function() { this.selectedIndex = 0; });
-        $(".filter_checkbox").each(function() { $(this).prop("checked", false); });
-    } else //collection=='chapters'
-    {
-        $("#dropdown_grade").val("").change();
-        $("#dropdown_subject").val("").change();
-    };
-    
-    //$("#innerResultsMenu").empty();
-    $("#innerResultsDiv").empty();
-    $('.hint').show();
-    
-    //$("#previewpanel").empty();
-}; //end clearFilter()
-*/
-
 function clearResults() {
     //$("#innerResultsMenu").empty();
     $("#innerResultsDiv" ).empty();
-    $('#details').empty().hide();
+    $('#details').hide();
     $('.hint').show();
     //$("#previewpanel"    ).empty();
     
@@ -235,7 +98,7 @@ function displayResults(results) {
     
     $('.hint').hide();
     $('#innerResultsDiv').empty();
-    $('#details').empty().hide();
+    $('#details').hide();
     displaySearchResults(result_array);
     
     $('.info'           ).hover(
@@ -372,34 +235,6 @@ function thumbnail (item) {
 function extractItemId(item) {
     var ch_id = (item['ft'] == 'chapter')? item['_id'] : item['ch_id'];
     return LOOMA.parseCH_ID(ch_id);
-    
-/*    var elements = {
-        currentSection: null,
-        currentChapter: null,
-        currentSubject: null,
-        currentGradeNumber: null,
-        currentGradeFolder: null,
-        currentSubjectFull: null,
-        chprefix: null};
-    var names = {
-        EN: "English", N:  "Nepali", M:  "Math", S:  "Science", SS: "SocialStudies"};
-    
-    if (ch_id) {
-        var pieces = ch_id.toString().match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/);
-        //console.log ('ch_id ' + ch_id + '  pieces ' + pieces);
-        
-        if (pieces) {
-            elements['currentGradeNumber'] = pieces[1];
-            elements['currentSubject']     = pieces[2];
-            elements['currentSection']     = pieces[4] ? pieces[3] : null;
-            elements['currentChapter']     = pieces[4] ? pieces[4].substr(1) : pieces[3];
-            elements['currentGradeFolder'] = 'Class' + pieces[1];
-            elements['currentSubjectFull'] = names[pieces[2]];
-            elements['chprefix']           = pieces[1] + pieces[2];
-        };
-    };
-    return elements;
-*/
     }
 
 
@@ -506,14 +341,14 @@ function createActivityDiv (activity) {
     return div;
 };  // end createActivityDiv()
 
-
 $(document).ready(function() {
     
     loginname = LOOMA.loggedIn();
     
     $('#details').draggable();
     
-    $("#keyword-changes .keyword-dropdown").change(showKeywordDropdown);
+    //$("#keyword-div .keyword-dropdown, .keyword-changes").off('change').change(showKeywordDropdown);
+    $(".keyword-changes").change(showKeywordDropdown);
     
     $("#grade-chng-menu, #subject-chng-menu").change(function() {
         showChapterDropdown(null, $('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
@@ -528,7 +363,7 @@ $(document).ready(function() {
     $('#textbook-clear').click( function(e) {
         e.preventDefault(); $('.chapter-changes').val(""); });
     
-    $('#submit-changes').click( submitChanges);
+    $('#submit-changes').click( submitChanges );
     
     $('#dismiss').off('click').click( function() {
         LOOMA.confirm('Leave Activity Editor Page?',

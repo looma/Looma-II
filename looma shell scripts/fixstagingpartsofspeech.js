@@ -1,0 +1,68 @@
+var std = ["noun","verb","adjective","adverb","preposition","conjunction","pronoun","contraction","interjection","article","proper name","title",""];
+var map = {"verb": "verb",
+    "adverb": "adverb",
+    "noun": "noun",
+    "<TODO>adverb": "adverb",
+    "<TODO>noun": "noun",
+    "<TODO>adjective": "adjective",
+    "": "",
+    "<TODO>verb": "verb",
+    "adjective" : "adjective",
+    "<TODO>": "",
+    "<TODO>preposition": "preposition",
+    "preposition": "preposition",
+    "plural noun": "noun",
+    " pronoun": "pronoun",
+    "<TODO>adjective, adverb": "adjective",
+    "pronoun": "pronoun",
+    "modal verb": "verb",
+    "<TODO> verb": "verb",
+    "<TODO>pronoun": "pronoun",
+    "adverb, noun": "noun",
+    "number": "noun",
+    "preposition, adverb": "preposition",
+    "<TODO>number, adverb, adjective": "noun",
+    "<TODO>plural noun": "noun",
+    "adjective, noun": "adjective",
+    "<TODO>determiner": "article",
+    "determiner": "article",
+    "<TODO>conjunction": "conjunction",
+    "conjunction": "conjunction",
+    "<TODO>preposition, adverb": "preposition",
+    "<TODO>modal verb": "verb",
+    "adjective, adverb": "adjective",
+    "<TODO>adverb, noun": "adverb",
+    "adverb, adjective": "adjective",
+    "adverb, preposition": "adverb",
+    "<TODO>adverb, adjective": "adjective",
+    "<TODO>adjective, noun": "adjective",
+    "number, adverb, adjective": "adjective",
+    " adjective, adverb": "adjective",
+    "<TODO>number": "noun",
+    "<TODO>adverb, preposition": "adverb",
+    " verb": "verb",
+    "<TODO>adjective, adverb, pronoun": "adjective",
+    "<TODO> noun": "noun",
+    " noun": "noun",
+    "<TODO>adjective formal": "adjective",
+    "adjective formal": "adjective",
+    "noun ": "noun",
+    "<TODO>noun, adjective": "noun",
+    "title": "title",
+    "noun, adjective": "noun",
+    "number, pronoun": "noun",
+    "adjective, adverb, noun": "noun",
+    "proper name": "proper name",
+    "<TODO>adjective, adverb, noun": "noun",
+    "<TODO>preposition, adverb, conjunction": "preposition",
+    "preposition, adverb, conjunction": "preposition"
+};
+
+var cursor = db['staging'].find();
+
+while (cursor.hasNext()) {
+    var doc = cursor.next();
+    var pos = doc['part'];
+    doc['part'] = map[pos];
+    db['staging'].update({_id:doc._id},doc);
+}

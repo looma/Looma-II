@@ -1,0 +1,35 @@
+// ONE TIME program to
+//    register documents in looma maps collection as activities
+//
+//  run in MONGO SHELL with: load('registermapss')
+//
+//TO SET UP:
+//then:           'use looma'
+//this sets db to the 'looma'  database
+
+var loomacursor;
+
+print('*****  db is ' + db);
+print('');
+
+var count = 0;
+//repeat for 'maps' collection
+print ('***** scanning looma "maps" collection');
+loomacursor = db.maps.find();
+while (loomacursor.hasNext()) {
+    var doc = loomacursor.next();
+    print ('checking: ' + doc.dn);
+    var act ={};
+    act.ft = 'map';
+    act.dn = doc.title;
+    act.mongoID = doc._id;
+    act.thumb = doc.thumb;
+    print ('ft ' + act.ft + ' dn ' + act.dn + ' ID ' + act.mongoID + ' thumb ' + act.thumb);
+    
+    db.activities.insert(act);
+    count += 1;
+};
+print('');
+print('***** found ' + count + ' maps and made activities for them');
+print('');
+

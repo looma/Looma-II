@@ -43,7 +43,7 @@ Comments:
         else
         {
             $name = addslashes($id);
-        };
+        }
 
         //Validate the password and add error if neccesary
         if (empty($pass))
@@ -54,7 +54,7 @@ Comments:
         {
             $p = addslashes($pass);
             $p = SHA1($p);
-        };
+        }
 
         //Checks if username and password match the database or add error to array
         // need connection to database
@@ -65,7 +65,7 @@ Comments:
             $query = array('name' => $name, 'pw' => $p);
             $r  = $logins_collection->findOne($query);
 
-            if($r != null)
+            if ($r != null)
             {
                 //login succesfull
                 return array(true, $name);
@@ -75,7 +75,7 @@ Comments:
                 $errors[] = "The username and password entered do not match those on file.";
             }
 
-        };
+        }
         error_log("end check login");
         return array(false, $errors);
     };//end check_login

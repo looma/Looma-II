@@ -290,11 +290,15 @@ function submitSearch(oldSearch) {
     searchArgs['text'] = prevText;
     searchArgs['page'] = oldSearch?$("#pageInput").val():1;
     
+    searchArgs['added']    = prevAdded;
+    searchArgs['modified'] = prevModified;
+    searchArgs['accepted'] = prevAccepted;
     searchArgs['deleted']  = prevDeleted;
-     
-        if (prevAccepted ) searchArgs['accepted'] = true;
-        if (prevModified ) searchArgs['modified'] = true;
-        if (prevAdded )    searchArgs['added']    = true;
+    
+    /* if (prevAccepted ) searchArgs['accepted'] = true;
+     if (prevModified ) searchArgs['modified'] = true;
+     if (prevAdded )    searchArgs['added']    = true;
+ */
     
     $.get("looma-dictionary-autogen-backend.php",
         {'loginInfo': {"allowed": true, 'user': loginname},

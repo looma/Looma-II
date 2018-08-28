@@ -200,7 +200,11 @@ function openfile(openname, collection, filetype) { //filetype must be given as 
                     //currentid = response['_id'];
                     //currentauthor = response['author'];
                     if ('author' in response)
-                        owner = (response['author'] == LOOMA.loggedIn()  || LOOMA.loggedIn() == 'skip');
+                        owner = (author == LOOMA.loggedIn()
+                            || LOOMA.loggedIn() == 'skip'
+                            || LOOMA.loggedIn() == 'david'
+                            || LOOMA.loggedIn() == 'kathy'
+                        );
                     else owner = false;
 
                     callbacks['display'](response);   //need to return the full 'response' from the db
@@ -427,7 +431,11 @@ $(document).ready(function ()
                                               currentcollection,
                                               currentfiletype,
                                               function(deletename, author) {
-                                                  if (author == LOOMA.loggedIn() || LOOMA.loggedIn() == 'skip') {
+                                                  if (author == LOOMA.loggedIn()
+                                                      || LOOMA.loggedIn() == 'skip'
+                                                      || LOOMA.loggedIn() == 'david'
+                                                      || LOOMA.loggedIn() == 'kathy'
+                                                     ){
                                                      deletefile(deletename, currentcollection, currentfiletype);
                                                      if (currentname == deletename) callbacks['clear']();}
                                                   else LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);

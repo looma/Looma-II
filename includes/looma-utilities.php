@@ -123,8 +123,20 @@ function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url,
                 break;  //map
 
 		   default:
-			     echo "unknown filetype " . $ft;
-			     return;
+			    // echo "unknown filetype " . $ft;
+
+
+               echo "<button class='activity  img' ";
+               echo "data-dn='Unknown' data-ft='none' ";
+               echo ">";
+               echo '<img src="' . 'images/alert.jpg' . '">';
+               echo "<span>" . "Unknown" . "</span></button>";
+
+
+
+
+
+               return;
 		};  //end SWITCH
 
              if ($thumb) $thumbSrc = $thumb;
@@ -144,7 +156,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url,
         if ($fp)          echo "data-fp='" .  $fp . "' ";
         if ($ft)          echo "data-ft='" .  $ft . "' ";
         if ($dn)          echo "data-dn='" .  $dn . "' ";
-        if ($mongo_id)    echo "data-mongoid='" .  $mongo_id . "' ";
+        if ($mongo_id)    echo "data-id='" .  $mongo_id . "' ";
         if ($ch_id)       echo "data-ch='" .  $ch_id . "' ";
         if ($url)         echo "data-url='" . $url . "' ";
 

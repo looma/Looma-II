@@ -10,7 +10,6 @@ Revision: Looma 3
  */
 
 'use strict';
-
 var $timeline;
 var savedSignature;   //savedSignature is checkpoint of timeline for checking for modification
 var loginname;
@@ -137,27 +136,26 @@ function lessontemplatesave(name) {
 
 // end FILE COMMANDS stuff
 
-function changeCollection (){
+function changeCollection (){   //NOTE: no longer used? looma-search.js setCollection() does all this
     $('#div_grade').toggle();
     $('#div_subject').toggle();
     $('#div_filetypes').toggle();
     $('#div_sources').toggle();
     $('#div_categories').toggle();
-
-
+    
 
     if ($('#collection').val() == 'activities') { //changing from ACTIVITIES to CHAPTERS
         $('#collection').val('chapters');
 
-    if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
-    $('#div_chapter').show();
+        if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
+          $('#div_chapter').show();
 
         $('.chapterFilter').prop('disabled', false);
         $('.mediaFilter').prop('disabled',   true);
-    } else { //changing from CHAPTERS to ACTIVITIES
+    } else {                                     //changing from CHAPTERS to ACTIVITIES
         $('#collection').val('activities');
 
-    $('#div_chapter').hide();
+        $('#div_chapter').hide();
 
         $('.chapterFilter').prop('disabled', true);
         $('.mediaFilter').prop('disabled',   false);
@@ -394,11 +392,11 @@ function thumbnail (item) {
         }
         
         else if (item.ft == "map") {
-            imgsrc = "../maps/" + item.fn + "_thumb.png";
+            imgsrc = "../2018maps/mapThumbs/" + item.fn + "_thumb.png";
         }
         
         else if (item.ft == "EP") {
-            imgsrc = homedirectory + "content/epaath/activities/" + item.fn + "/thumbnail.jpg";
+            imgsrc = homedirectory + "content/epaath/activities/" + item.thumb;
         }
 		else if (item.ft == "text") {
             imgsrc = "images/textfile.png";
@@ -491,7 +489,7 @@ function createActivityDiv (activity) {
                 $(activityDiv).attr("data-collection", (item.ft == 'chapter') ? 'chapters' : 'activities');
                 $(activityDiv).attr("data-id",         (item.ft == 'chapter') ? item['_id'] : item['_id']['$id']);
   
-        $(activityDiv).attr("data-mongoID",         (item.ft == 'chapter') ? '' : item['mongoID']['$id']);
+                if ('mongoID' in item) $(activityDiv).attr("data-mongoID",    (item.ft == 'chapter') ? '' : item['mongoID']['$id']);
   
                 $(activityDiv).attr("data-type", item['ft']);
 
@@ -711,8 +709,7 @@ function preview_result (item) {
                     //document.querySelector("div#previewpanel").innerHTML = result.data;
 
                     document.querySelector("div#previewpanel").innerHTML = '<img src="' +
-                                 result.fp +
-                                 result.fn + '"id="displayImage">';
+                                 result.thumb + '"id="displayImage">';
                 },
                 'json'
               );
@@ -831,10 +828,6 @@ function makedraggable() {
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 window.onload = function () {
     
-    
-    loginname = LOOMA.loggedIn();
-    if (loginname && ( loginname== 'skip')) $('.admin').show();
-    
     //show the "New Text File" button in filecommands.js to allow text-frame editor to be called in an iFrame
     $('#show_text').show();
     
@@ -846,7 +839,8 @@ window.onload = function () {
     
     $('#clear_button').click(clearFilter);
     
-    $('.filter_radio').change(changeCollection);
+    //NOTE: this code not used. looma-search.js handles this
+    // $('.filter_radio').change(changeCollection);
     
     $('.chapterFilter').prop('disabled', true);
     $('.mediaFilter').prop('disabled',   false);

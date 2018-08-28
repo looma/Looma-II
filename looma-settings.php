@@ -89,10 +89,6 @@ Description:  for Looma 2
                  <button class="settings-control">Video Editor</button>
              </a>
 
-      <!--       <a href="looma-upload-file.php">
-                 <button class="settings-control">Upload Files</button>
-             </a>
-    -->
              <a href="looma-edit-activities.php">
                  <button class="settings-control">Activity Editor</button>
              </a>
@@ -113,22 +109,6 @@ Description:  for Looma 2
                  <button id="speechtest" class="exec-control" >Import Content</button>
              </a>
 
- <!--           <a href="../auto-gen-dictionary/editor.html">
-                    <button class="admin-control">Dictionary Generator</button>
-                </a>
-
-                <a href="../Looma-contentNav/looma-contentNav.php">
-                    <button class="admin-control">Content Navigator</button>
-                </a>
-
-                <a href="looma-slideshow.php">
-                    <button class="admin-control">Slideshow Editor</button>
-                </a>
-
-                <a href="looma-activity-register-to-chapter.php">
-                    <button id="register" class="admin-control">Register Activities</button>
-                </a>
--->
              <br><br><br><br>
              <span id="login-status"></span>
              <button class="login"></button>

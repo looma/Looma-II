@@ -22,7 +22,7 @@ Description:  for Looma 2
 
         <div id="about">
             <h3>Looma 2</h3>
-            <h4>Release 3.5, June 2018</h4>
+            <h4>Release 4.1, August 2018</h4>
             <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
             <h4>Contact:  info AT villagetechsolutions DOT org</h4>
             <span href="looma-info.php"></span>
@@ -79,6 +79,15 @@ Description:  for Looma 2
             <li> </li><li> </li><li> </li><li> </li><li> </li> <!-- these empty 'li's give a pause at the start -->
             <li>  - -  </li>
 
+            <li>Aish Raj Dahal</li>
+            <li>Ram Hari Dahal</li>
+            <li>Aakarshan Dhakal</li>
+            <li>Himanshu Bala Joshi</li>
+            <li>Sumnima Joshi</li>
+            <li>Shreeya Khadka</li>
+            <li>Shreyasha Paudel</li>
+            <li>Paurakh Rajbhandary</li>
+            <li>Pragya Tripathi</li>
             <li>Meg Reinstra</li>
             <li>Sun-Mi Oh</li>
             <li>Luke Bowsher</li>

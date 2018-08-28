@@ -1,3 +1,11 @@
+<?php
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+
+// NOTE: this code sending "header" must be before ANY data is sent to client=side
+$loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
+error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+?>
+
 <!doctype html>
 <!--
 Filename: looma-upload-file.php
@@ -13,7 +21,6 @@ Revision: Looma 3.0
 require_once ('includes/header.php');
 require_once ('includes/mongo-connect.php');
 
-if (!loggedin()) header('Location: looma-login.php');
 ?>
 
 <link rel = "Stylesheet" type = "text/css" href = "css/looma-upload-file.css">

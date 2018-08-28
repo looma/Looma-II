@@ -4,7 +4,6 @@
           include ('includes/header.php');
           //include ('includes/mongo-connect.php');
 
-          if (!loggedin()) header('Location: looma-login.php');
     ?>
 
         <link rel="stylesheet" href="css/font-awesome.min.css">

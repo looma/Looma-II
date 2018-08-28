@@ -4,7 +4,7 @@ Author: Skip
 Email: skip@stritter.com
 Filename: yyy.html
 Date:Fall 2015
-Description: page with linke to arithmetic and vocabulary games
+Description: page with link to arithmetic and vocabulary games
 
 -->
 
@@ -19,7 +19,22 @@ Description: page with linke to arithmetic and vocabulary games
         <br>
         <h2 class="title"> <?php keyword("Looma Practice Exercises"); ?> </h2>
 		<div class="center">
-			<br><br><br><br>
+			<br>
+		<a href="looma-game-list.php?type=mc">
+			<button type="button" class=" activity play img navigate" ><?php keyword('Multiple Choice Games') ?>  </button>
+	   </a>
+	   <a href="looma-game-list.php?type=matching">
+			<button type="button" class=" activity play img navigate" ><?php keyword('Matching Games') ?>  </button>
+	   </a>
+	   <a href="looma-game-list.php?type=concentration">
+			<button type="button" class=" activity play img navigate" ><?php keyword('Concentration Games') ?>  </button>
+	   </a>
+	   <a href="looma-game-list.php?type=timeline">
+			<button type="button" class=" activity play img navigate" ><?php keyword('Timeline Games') ?>  </button>
+	   </a>
+	   <a href="looma-game-list.php?type=map">
+			<button type="button" class=" activity play img navigate" ><?php keyword('New Map Games') ?>  </button>
+	   </a>
 		<a href="looma-vocab.php">
 			<button type="button" class=" activity play img navigate" ><?php keyword('Vocabulary Games') ?>  </button>
 	   </a>
@@ -43,3 +58,4 @@ Description: page with linke to arithmetic and vocabulary games
 
   </body>
 </html>
+

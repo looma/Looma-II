@@ -40,6 +40,7 @@ require_once ('includes/mongo-connect.php');
                 $id = $result['_id'];
                 //echo "ID is " . $id;
 
+
                 $id = new MongoID($id); // mongoID of document we just saved
                 $query = array("ft" => $insert['ft'], "mongoID" => $id);
                 $toinsertToActivities = array(
@@ -47,7 +48,9 @@ require_once ('includes/mongo-connect.php');
                     "mongoID" => $id,
                     "dn"      => $insert['dn']
                      );
-                $options = array("upsert" => True, "multi" => True);
+                    if (isset($insert['thumb']))  $toinsertToActivities['thumb'] = $insert['thumb'];
+
+                    $options = array("upsert" => True, "multi" => True);
 
                 //DEBIUG echo 'updating activities with ' . $id . ' and ' . $_REQUEST['dn'];
 
@@ -147,6 +150,7 @@ if (isset($_REQUEST["collection"])) {
        case "maps":          $dbCollection = $maps_collection;          break;
        case "history":
        case "histories":     $dbCollection = $histories_collection;     break;
+       case "game":          $dbCollection = $games_collection;         break;
        case "edited_videos": $dbCollection = $edited_videos_collection; break;
 
        default: echo "unknown collection: " . $collection;        return;
@@ -302,6 +306,8 @@ if ( isset($_REQUEST["cmd"]) ) {
             $insert["date"] = gmdate("Y.m.d");  //using greenwich time
             $insert["author"] = $_COOKIE['login'];
 
+            if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
+
             save($dbCollection, $insert, false);
 
         };
@@ -349,6 +355,23 @@ if ( isset($_REQUEST["cmd"]) ) {
         };
         return;
     // end case "delete"
+
+
+        ////////////////////////
+        // - - - bookList - - - //
+        ////////////////////////
+        case "bookList":
+            // inputs is class
+            //    query textbooks collection to get list of textbooks for this class
+            //    return a array of JSON documents from textbooks collection
+
+            $query = array('class' => $_REQUEST['class']);
+            $books = $textbooks_collection->find($query);
+            $response = [];
+            foreach ($books as $book) $response[] = $book;
+
+            echo json_encode($response);
+            return;
 
 
     ////////////////////////

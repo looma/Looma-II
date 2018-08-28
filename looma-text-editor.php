@@ -1,3 +1,11 @@
+<?php
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+
+// NOTE: this code sending "header" must be before ANY data is sent to client=side
+$loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
+error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+?>
+
 <!doctype html>
 <!--
 LOOMA php code file
@@ -15,9 +23,6 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
 
 <?php $page_title = 'Looma - text editor';
 	  include ('includes/header.php');
-
-      if (!loggedin()) header('Location: looma-login.php');
-
 ?>
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap-wysiwyg.css">

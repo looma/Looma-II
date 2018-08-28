@@ -85,8 +85,10 @@ for a textbook (class/subject) for Looma 2
 			//echo "<br>DEBUG: displayname:  " . $tb_dn . ", file: " . $tb_fn . ", path: " . $tb_fp;
 			//echo "<br>DEBUG: nativedisplayname:  " . $tb_ndn . ", nativefile: " . $tb_nfn . ". path: " . $tb_fp;
 
-            $prefix_as_regex = "^" . $prefix ."\d"; //insert the PREFIX into a REGEX
-            // DEBUG  echo "Regex is " . $prefix_as_regex;  //DEBUG
+            $prefix_as_regex = "^" . $prefix . "\d"; //insert the PREFIX into a REGEX
+
+    // DEBUG  echo "Prefix is " . $prefix . " and Regex is " . $prefix_as_regex;  //DEBUG
+
             $query = array('_id' => array('$regex' => $prefix_as_regex));
 
 			$projection = array('_id' => 1,
@@ -106,7 +108,7 @@ for a textbook (class/subject) for Looma 2
 			// that holds the MongoDB ObjectId for this chapter (for looking up the activities list when needed)
 
 			foreach ($chapters as $ch) {
-				echo "<tr>";
+		        echo "<tr>";
 
 				$ch_dn =  array_key_exists('dn', $ch) ? $ch['dn'] : $tb_dn;
 				        //$ch_dn is chapter displayname

@@ -658,33 +658,80 @@ function createAdvancedBaseQuery($text) {
  */
 function stagingCriteriaToMongoQuery($args)
 {
-    if (strpos($args["text"], ":") === false) {
-        // regular search
-        //$condition = array("en" => array('$regex' => new MongoRegex("/" . $args["text"] . "/is")));
-        if ( !$args["text"] || $args["text"] == "") $condition = array();
+    if (strpos($args["text"], ":") === false) {// regular search
+        if ( !$args["text"] || $args["text"] == "") //$condition = array();
+              $condition = array("en" => array('$regex' => new MongoRegex("/.*/")));
         else  $condition = array("en" => array('$regex' => new MongoRegex("/" . $args["text"] . "/is")));
     } else {
         // advanced search
         $condition = createAdvancedTextQuery($args["text"]);
     }
-
+/*
     $added =    isset($args['added'])    ? checkTrue($args['added']) :    false;
     $modified = isset($args['modified']) ? checkTrue($args['modified']) : false;
     $accepted = isset($args['accepted']) ? checkTrue($args['accepted']) : false;
     $deleted =  isset($args['deleted'])  ? checkTrue($args['deleted']) :  false;
 
     if ($added || $modified || $accepted || $deleted) {
-        $list = array();
-        $list[] = array("stagingData.deleted" => $deleted);
-        if ($added)    {$list[] = array("stagingData.added" => true);}
-        if ($modified) {$list[] = array("stagingData.modified" => true);}
-        if ($accepted) {$list[] = array("stagingData.accepted" => true);}
+        $tags = array();
+        $tags[] = array("stagingData.deleted" => $deleted);
+        if ($added) {
+            $tags[] = array("stagingData.added" => true);
+        }
+        if ($modified) {
+            $tags[] = array("stagingData.modified" => true);
+        }
+        if ($accepted) {
+            $tags[] = array("stagingData.accepted" => true);
+        }
+    }*/
 
-        if ($condition != array())
-            $condition = array('$and' => array($condition, array('$or' => $list)));
-        else $condition =                                   array('$or' => $list);
+    if (checkTrue($args['deleted']) ||
+        checkTrue($args['added']) ||
+        checkTrue($args['modified']) ||
+        checkTrue($args['accepted']))
+    {
+
+      // echo "deleted is: " . $args['deleted'] . "\r\n";
+       // echo "added is: " . $args['added'] . "\r\n";
+       // echo "modified is: " . $args['modified'] . "\r\n";
+       // echo "accepted is: " . $args['accepted'] . "\r\n";
+
+       /* if (isset($args['deleted']) && $args['deleted'] === 'true')
+             $del = array("stagingData.deleted" => true);
+        else $del = array("stagingData.deleted" => false);
+       */
+
+        $del = array("stagingData.deleted" => checkTrue($args['deleted'])?true:false);
+
+        $tags = array();
+
+        if (checkTrue($args['accepted'])) $tags[] = array("stagingData.accepted" => true);
+        if (checkTrue($args['modified'])) $tags[] = array("stagingData.modified" => true);
+        if (checkTrue($args['added'])) $tags[] = array("stagingData.added" => true);
+        // if (checkTrue($args['modified'])) $tags["stagingData.modified"] = true;
+        //if (checkTrue($args['added']))    $tags[] = array("stagingData.added"    => true);
+//        if (isset($args['modified']) && $args['modified'] === 'true') $tags = array("stagingData.modified" => true);
+//        if (isset($args['added']) && $args['added'] === 'true') $tags = array("stagingData.added" => true);
+
+        if ($tags == array()) $filter = $del;
+        else {
+            if (checkTrue($args['deleted'])) {
+                $tags[] = ["stagingData.deleted" => true];
+                $filter = ['$or'  => $tags];
+            }
+            else
+                $filter = ['$and' => [$del, ['$or'  => $tags]]];
+                // $filter = array('$and' => array($del, array('$or'  => $tags)));
+        }
+
+        $result = ['$and' => [$condition, $filter]];
     }
-    return $condition;
+    else $result = $condition;
+
+    //print_r($result);
+
+    return $result;
 }
 
 

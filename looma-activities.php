@@ -101,6 +101,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 			$dn = $activity['dn'];
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
             $fn = (isset($activity['fn']) ? $activity['fn'] : "");
+            $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
             $url = (isset($activity['url']) ? $activity['url'] : "");
 
             if (isset($activity['thumb']))
@@ -193,7 +194,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
                  case "lesson";  //open a lesson in lesson player
                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $url, "", $dn, $thumb, $ch_id, "", "", "", "");
+                    makeActivityButton($ft, "", "", $dn, $thumb, $ch_id, $id, "", "", "");
                    break;
 
                 case "EP":

@@ -1,3 +1,11 @@
+<?php
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+
+// NOTE: this code sending "header" must be before ANY data is sent to client=side
+$loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
+error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+?>
+
 <!doctype html>
 <!--
 Name: Skip
@@ -34,18 +42,11 @@ Description:  navigate content folders and import media files into activities co
     <?php   $page_title = 'Looma Import Content';?>
     <title> <?php print $page_title; ?> </title>
 
- <?php       require ('includes/mongo-connect.php');
+ <?php  require ('includes/mongo-connect.php');
         require('includes/looma-utilities.php');
-
-        //returns login ID if user is logged in, else returns NULL
-        function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
-
-        if (!loggedin()) header('Location: looma-login.php');
 
 /////////////////////////
 //////  main code  //////
-
-    if (!loggedin()) header('Location: looma-login.php');
 
     $path = "../content";
     $parent  = "../content";

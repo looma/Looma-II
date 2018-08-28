@@ -54,7 +54,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         /**************************************/  -->
         <div id='search-bar-div' class='media-filter'>
             <input id='search-term' type='text' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
-            <button id='media-submit' class = 'filesearch' name='search' value='value' type='submit'>
+            <button id='media-submit' class = 'filesearch' name='search' value='media' type='submit'>
             <button class='clear-search' type='button'>Clear</button>
         </div>
 
@@ -177,7 +177,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
           </select></span>";
         echo "</span>";
 
-        echo "<button id='media-submit' class='chapter-filter filesearch black-border' name='search' value='value' type='submit'></button>";
+        echo "<button id='chapter-submit' class='chapter-filter filesearch black-border' name='search' value='chapter' type='submit'></button>";
         echo "<button class='chapter-filter clear-search' type='button'>Clear</button>";
     echo "</div>";
 

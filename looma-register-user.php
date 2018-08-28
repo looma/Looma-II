@@ -1,3 +1,11 @@
+<?php
+function XloggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+
+// NOTE: this code sending "header" must be before ANY data is sent to client=side
+$loggedin = XloggedIn(); if (!$loggedin) header('Location: looma-login.php');
+error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+?>
+
 <!doctype html>
 <!--
 LOOMA php code file
@@ -16,8 +24,6 @@ Comments:
 <?php $page_title = 'Looma - Login';
 	  include ('includes/header.php');
 	  include ('includes/mongo-connect.php');
-
-      if (!loggedin() || loggedin() != 'skip') header('Location: looma-login.php');
 ?>
 
 </head>

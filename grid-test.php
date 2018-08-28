@@ -65,7 +65,7 @@ define ("CLASSES", 8);
         <div id="header" class="inner-div">header</div>
         <div id="search-bar" class="inner-div">search-bar</div>
         <div id="results-div" class="inner-div">results-div</div>
-        <div id="preview-panel" class="inner-div">preview-p[anel</div>
+        <div id="preview-panel" class="inner-div">preview-panel</div>
         <div id="timeline" class="inner-div">timeline</div>
     </div>
 </section>

@@ -1,4 +1,5 @@
-<!--
+<?php
+/*<!--
 File: editor.html
 Author: Nikhil Singhal
 Date: July 28, 2016
@@ -65,7 +66,15 @@ modified or removed.
 More features and usage information can be found in the user manual
 
  -->
+*/
 
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+
+// NOTE: this code sending "header" must be before ANY data is sent to client=side
+$loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
+
+error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+?>
 
 <!DOCTYPE html>
 <html>
@@ -81,13 +90,7 @@ More features and usage information can be found in the user manual
     <script src="js/looma-dictionary-autogen-editor.js"></script>
     <link rel="stylesheet" href="css/looma-dictionary-autogen-editor.css">
 
-    <?php
-    function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
-    $loggedin = loggedIn(); if (!$loggedin) header('Location: looma-login.php');
 
-    error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
-
-    ?>
 
 </head>
 <body>

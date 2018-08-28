@@ -1,95 +1,80 @@
-<!doctype html>
+ <!doctype html>
 <!--
-Author: lauren henze, lauren smith
+Author: Sophie, Henry, Morgan, Kendall
 Email:
-Filename: looma-map-php.html
-Date: Aug 2015
-Description:
+Filename: looma-histories.php
+Date: July 2016
+Description: Initial "maps" page. Takes the user to the different maps.
 -->
 
+    <h1 class="credit"> Created by Sophie, Morgan, Henry, Knedall</h1>
+
 	<?php  $page_title = 'Looma Maps';
-	include ('includes/header.php');
-	?>
+	include ("includes/header.php");
+    require ('includes/mongo-connect.php');
+    require('includes/looma-utilities.php');
 
-    <?php
-
-    $mapDir = "../maps/";
+    $mapDir = "../maps2018/mapThumbs/";
+    $urlBegin = "looma-map.php?id=";
 
 		function makeButton($file, $thumb, $dn) {
+                    echo "<a href='" . $file . "'>";
 
-				//DEBUG   echo "making button with path= $path  file= $file   ext= $ext"; //DEBUG
-
-				echo "<a href='" . $file . "'>";
-
-				echo "<button class='map  img'>";
-				//text and tooltip for BUTTON
-				echo "<span class='displayname'
-							class='btn btn-default'
-							data-toggle='tooltip'
-							data-placement='top'
-							title='" . $file . "'>" .
-						    "<img src='" . $thumb . "'>" .
-
-							$dn . "</span>";
-
-				//finish BUTTON
-				echo "</button></a>";
-
-		};  //end makeButton()
+                    echo "<button class='map  img'>";
+                    //text and tooltip for BUTTON
+                    echo "<span class='displayname'
+                             class='btn btn-default'
+                             data-toggle='tooltip'
+                             data-placement='top'
+                             title='" . $file . "'>" .
+                              "<img src='" . $thumb . "'>" .
+                             $dn . "</span>";
+                    //finish BUTTON
+                    echo "</button></a>";
+              };  //end makeButton()
 	?>
 
-</head>
+	<body>
+	<div id="main-container-horizontal" class='scroll'>
+		<h2 class="title"> <?php keyword("Looma Maps"); ?> </h2>
+		<div class="center">
+			<br>
+     <?php
+       //modifications for maps
+        //***************************
+        //make buttons for maps directory -- virtual folder, populated from maps collection in mongoDB
+            $buttons = 1;
+            $maxButtons = 3;
 
-<body>
-    <div id="main-container-horizontal" class="scroll">
+            echo "<table><tr>";
 
-		<h1 class="title"> <?php keyword("Looma Maps"); ?> </h1>
-        <h1 class="credit"> Created by Lauren and Lauren and Julia, Matt, Mohini and Matthew</h1>
+            $maps = $maps_collection->find();
 
-		<h2 class="title"> <?php keyword("Click to select a map"); ?> </h2>
-		<p>
-			<?php
+             foreach ($maps as $map) {
+                    echo "<td>";
+                    if (isset($map['title'])) $dn = $map['title']; else $dn = "Map";
+                    if (isset($map['thumb'])) $thumb = $mapDir . $map['thumb']; else $thumb = 'images/maps.png';
+                    $id = $map['_id'];  //mongoID of the descriptor for this lesson
+                    $link = $urlBegin.$id;
+                    makeButton($link, $thumb, $dn);
+                    echo "</td>";
+                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
-			echo "<br><table id='file-table'><tr>";
-			echo "<td>";
-                makeButton("looma-map-nepalLayers.php",  $mapDir . "nepalLayers_thumb.png", "Nepal Layer Map");
-			echo "</td><td>";
-                makeButton("looma-map-zoneMap.php",   $mapDir . "zoneMap_thumb.png", "Nepal Zones Map");
-			echo "</td><td>";
-                makeButton("looma-map-topoMap.php",   $mapDir . "topoMap_thumb.png", "Nepal Topography Map");
-			echo "</td></tr><tr><td>";
-			    makeButton("looma-map-kathmanduCity.php", $mapDir . "streetMap_thumb.png", "Kathmandu Street Map");
-			echo "</td><td>";
-                makeButton("looma-map-pokharaCity.php",  $mapDir . "pokharaCity_thumb.png", "Pokhara Street Map");
-			echo "</td><td>";
-                makeButton("looma-map-worldMap.php",  $mapDir . "worldMap_thumb.png", "World Map");
-			echo "</td></tr><tr><td>";
-                makeButton("looma-map-worldCities.php",  $mapDir . "worldCities_thumb.png", "World Cities Map");
-			echo "</td><td>";
-                makeButton("looma-map-asianCapitals.php",  $mapDir . "asianCapitals_thumb.png", "Asian Capitals");
+            } //end FOREACH history
+             echo "</tr></table>";
+        ?>
+<!--
+		<a href="looma-history.php?chapterToLoad=1EN03">
+			<button type="button" class="navigate"><?php keyword('Sports') ?>  </button>
+		</a>
+-->
 
-			echo "</tr></table>";
-			?>
+		</div>
+	</div>
 
-			<!--
-			<a href="looma-map-basicMap.php">
-				<img src="../content/maps/basicMap_thumb.png" alt="Go to the basic map!" width="400" height="250" border="1.5">
-			</a>
-			<a href="looma-map-zoneMap.php">
-				<img src="../content/maps/zoneMap_thumb.png" alt="Go to the zone map!" width="400" height="250" border="1.5">
-			</a> <br>
-			<a href="looma-map-topoMap.php">
-				<img src="../content/maps/topoMap_thumb.png" alt="Go to the topographical map!" width="400" height="250" border="1.5">
-			</a>
-			<a href="looma-map-streetMap.php">
-				<img src="../content/maps/streetMap_thumb.png" alt="Go to the map of Kathmandu!" width="400" height="250" border="1.5">
-			</a>
-			-->
-		<p>
-    </div>
-
-   	<?php include ('includes/toolbar.php'); ?>
+	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
-	<!--Include other JS here -->
-</body>
+    <script src="js/looma-histories.js"></script>          <!-- Looma Javascript -->
+
+  </body>
 </html>

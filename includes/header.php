@@ -40,7 +40,6 @@ File: header.php
         if(isset($_COOKIE["theme"])) $theme = $_COOKIE["theme"]; else $theme = "looma";
         echo "<link rel='stylesheet' href='css/looma-theme-" . $theme . ".css' id='theme-stylesheet'>";
 
-        //returns login ID if user is logged in, else returns NULL
         function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
     ?>
 

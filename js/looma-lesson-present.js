@@ -118,7 +118,7 @@ $('#pause').css('background-image',
         //$timeline.fadeOut(500);  //this hides the timeline when playing media - decided to not hide the timeline [usability]
 
         playActivity($item.data('ft'), $item.data('fn'), $item.data('fp'),
-            $item.data('dn'), $item.data('mongoid'), "", $item.data('pg'));
+            $item.data('dn'), $item.data('id'), "", $item.data('pg'));
     }; //end play()
 
     function playActivity(ft, fn, fp, dn, id, ch, pg) { //play the activity of type FT, named FN, in path FP, display-name DN
@@ -263,7 +263,7 @@ $('#pause').css('background-image',
         $.post("looma-database-utilities.php", {
                 cmd: "openByID",
                 collection: collection,
-                id: item.data('mongoid')
+                id: item.data('id')
                 },
                 function(result) {
                     window.location =  url + '?id=' + result['_id'].$id;
@@ -273,16 +273,11 @@ $('#pause').css('background-image',
         };
 
     function textHTML(id) {
-        $.post("looma-database-utilities.php", {
-                cmd: "openByID",
-                collection: 'activities',
-                id: id
-            },
-            function(result1) {
+        
                 $.post("looma-database-utilities.php", {
                         cmd: "openByID",
                         collection: 'text',
-                        id: result1.mongoID.$id
+                        id: id
                     },
                     function(result2) {
                         var $div = $('<div ' +
@@ -299,10 +294,7 @@ $('#pause').css('background-image',
                     },
                     'json'
                 );
-            },
-            'json'
-        );
-    };
+             };
 
     function makeHtmlHTML() {
         return (

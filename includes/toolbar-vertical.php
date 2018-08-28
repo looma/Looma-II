@@ -8,7 +8,7 @@
 				<?php tooltip('अनुवाद');?>
 			</button>
 
-			<button onclick="parent.location.href = 'index.php';" class="toolbar-button-vertical next-prev">
+			<button onclick="parent.location.href = 'looma-home.php';" class="toolbar-button-vertical next-prev">
  				<img draggable="false" src="images/home.png"  height = "70%" >
  				<?php tooltip('Home');?>
  			</button>

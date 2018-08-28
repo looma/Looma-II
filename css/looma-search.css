@@ -31,7 +31,7 @@ form#search *{
 div#search-bar-div{
     text-align: center;
 }
-button#media-submit{
+button#media-submit, button#chapter-submit{
     display: inline-block;
     width: 7vh;
     height: 7vh;
@@ -42,6 +42,12 @@ button#media-submit{
     background-color:rgba(200,200,200,0);
     border-radius: 4px;
 }
+
+button#media-submit:disabled {
+    opacity:0.5;
+}
+
+#ellipsis {min-width:10vw;}
 
 button.clear-search {display:inline-block;}
 
@@ -54,6 +60,7 @@ input#search-term {
     width:40%;
 }
 
+input[type='checkbox'] {zoom:2.0;}
 
 /***************************************/
 /******** checkbox filter specs ********/
@@ -111,15 +118,5 @@ button.cancel-search {
     font-size: 1.5em;
     background: #2e3192;
     color: white;
-    
 }
 
-
-
-button#chapter-submit {
-    margin: 14px 15px;
-    width: auto;
-    font-size: 1.5em;
-    font-weight: normal;
-    text-align: center;
-}

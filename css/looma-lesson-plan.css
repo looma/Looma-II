@@ -131,7 +131,7 @@ button {
     margin-top: 3px;
 }
 
-button#media-submit {
+button#media-submit, button#chapter-submit {
     width: 5vh;
     height: 5vh;
     border: 2px solid black;

@@ -49,13 +49,13 @@ Description: looma lesson plan presenter
         //for each ACTIVITY in the DATA field of the lesson, create an 'activity button' in the timeline
 
          if ($lesson_id) {   //get the mongo document for this lesson
-            $query = array('_id' => new MongoID($lesson_id));
+            $query = array('_id' => new MongoId($lesson_id));
             //returns only these fields of the activity record
             $projection = array('_id' => 0,
                                 'dn' => 1,
                                 'author' => 1,
                                 'date' => 1,
-                                'thumb' => 1,
+                               // 'thumb' => 1,  //no THUMB stored with lessons in mongo
                                 'data' => 1
                                 );
 
@@ -72,7 +72,7 @@ Description: looma lesson plan presenter
 
                if ($lesson_element['collection'] == 'activities') {
 
-                    $query = array('_id' => new MongoID($lesson_element['id']));
+                    $query = array('_id' => new MongoId($lesson_element['id']));
 
                     $details = $activities_collection -> findOne($query);
 

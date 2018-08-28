@@ -11,6 +11,7 @@ Description:
 'use strict';
 
 var $searchResultsDiv;
+var $ajaxRequest;
 
 /////////////////////////////
 /////  setCollection()  /////
@@ -198,6 +199,9 @@ function showChapterDropdown($div, $grades, $subjects, $chapters) {
 /////////////////////////////
 function clearSearch() {
     
+    if ($ajaxRequest) $ajaxRequest.abort();
+    $('#media-submit').prop("disabled",false);
+    
     var prevCollection = $('#collection').val();
     $("#search").trigger("reset");
     setCollection(prevCollection);
@@ -327,8 +331,8 @@ $(document).ready(function() {
     
         clearResults();  // this calls function "clearResults()" provided by the JS of the page which includes search.php
                          // probably this call should be replaced by "$searchResultsDiv.empty();"
-        
-        $('#innerResultsDiv').empty().show();
+    
+        $searchResultsDiv.empty().show();
         
         if (!isFilterSet()) {
             $searchResultsDiv.html('please select at least 1 filter option before searching');
@@ -341,12 +345,16 @@ $(document).ready(function() {
                     $('#ellipsis').text($('#ellipsis').text().length < 10 ? $('#ellipsis').text() + '.' : '');
                 },33 );
             
-            $.post( "looma-database-utilities.php",
+            $('#media-submit').prop("disabled",true);
+    
+            $ajaxRequest = $.post( "looma-database-utilities.php",
                 $("#search").serialize(),
                 function (result) {
                     loadingmessage.remove();
                     clearInterval(ellipsisTimer);
-                    displayResults(result);},  // NOTE: displayResults() function is supplied in the JS of the user looma-search (e.g. looma-lessonplan.xx)
+                    displayResults(result);
+                    $('#media-submit').prop("disabled",false);
+                },  // NOTE: displayResults() function is supplied in the JS of the user looma-search (e.g. looma-lessonplan.xx)
                 'json');
         }
         return false;

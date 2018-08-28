@@ -1,3 +1,11 @@
+<?php
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+
+// NOTE: this code sending "header" must be before ANY data is sent to client=side
+$loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
+error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+?>
+
 <!doctype html>
 <!--
 Filename: looma-lesson-plan.php
@@ -12,7 +20,6 @@ Revision: Looma 3
     <?php $page_title = 'Looma - Lesson Plan Editor';
           include ('includes/header.php');
           //include ('includes/mongo-connect.php');
-          if (!loggedin()) header('Location: looma-login.php');
     ?>
 
         <link rel="stylesheet" href="css/font-awesome.min.css">

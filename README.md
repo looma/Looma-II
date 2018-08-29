@@ -1,7 +1,7 @@
 # Looma-II
 Looma II source code
 
-    This GITHUB repository does not include the Looma "content" which is 15+GB, and growing, of media files used in Looma.
+    This GITHUB repository does not include the Looma "content" which is 64+GB, and growing, of media files used in Looma.
     For access to the content send requests to info at villagetechsolutions dot org.
 
 This is the Looma code developed by VillageTech Solutions (villagetechsolutions dot org).

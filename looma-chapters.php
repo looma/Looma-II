@@ -31,13 +31,14 @@ for a textbook (class/subject) for Looma 2
 			} //end function THUMBNAIL
 
 
-            $class = trim($_GET['class']);
-            $grade = trim($_GET['grade']);
+            $class = trim($_GET['class']);  //from MONGO - format is "class1", "class2", etc
+            $grade = trim($_GET['grade']);  // display name of $class - format is "Grade 1", etc
 			$subject = trim($_GET['subject']) ;
 
     echo "<div id='main-container-horizontal' class='scroll'>";
     echo "<div  class='scroll'>";
-        echo "<h2 class='title'>Chapters for " . ucfirst($grade) . " " . ucfirst($subject) . "</h2>";
+        if ($subject === "social studies") $caps = "Social Studies"; else $caps = ucfirst($subject);
+        echo "<h2 class='title'>Chapters for " . $grade . " " . $caps . "</h2>";
 
 			//get a textbook record for this CLASS and SUBJECT
 			$query = array('class' => $class, 'subject' => $subject);
@@ -68,9 +69,13 @@ for a textbook (class/subject) for Looma 2
 			echo "<br><br><table>";
 			echo "<tr>";
 
-			if ($tb_fn != null) echo "<th><button class='heading img' id='englishTitle' disabled>" . str_replace("Class","Grade",$tb_dn) .
-									  "<img src=" . $tb_fp . thumbnail($tb_fn) . "></button></th>";
-			else                echo "<th></th>";
+			if ($tb_fn != null)
+			    echo "<th><button class='heading img' id='englishTitle' disabled>" .
+                       // str_replace("Class","Grade ",$tb_dn) .
+                       $grade .
+                      "<img src=" . $tb_fp . thumbnail($tb_fn) . "></button></th>";
+			else
+			    echo "<th></th>";
 
 			if ($tb_nfn != null) echo "<th><button class='heading img' id='nativeTitle' disabled> $tb_ndn
 									  <img src=" . $tb_fp . thumbnail($tb_nfn) . "></button></th>";
@@ -82,12 +87,7 @@ for a textbook (class/subject) for Looma 2
 
 			echo "</tr>";
 
-			//echo "<br>DEBUG: displayname:  " . $tb_dn . ", file: " . $tb_fn . ", path: " . $tb_fp;
-			//echo "<br>DEBUG: nativedisplayname:  " . $tb_ndn . ", nativefile: " . $tb_nfn . ". path: " . $tb_fp;
-
             $prefix_as_regex = "^" . $prefix . "\d"; //insert the PREFIX into a REGEX
-
-    // DEBUG  echo "Prefix is " . $prefix . " and Regex is " . $prefix_as_regex;  //DEBUG
 
             $query = array('_id' => array('$regex' => $prefix_as_regex));
 

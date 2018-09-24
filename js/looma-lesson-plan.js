@@ -831,7 +831,7 @@ window.onload = function () {
     //show the "New Text File" button in filecommands.js to allow text-frame editor to be called in an iFrame
     $('#show_text').show();
     
-    $searchResultsDiv = $('#outerResultsDiv');  //sets a global variable used by looma-search.js
+    $searchResultsDiv = $('#innerResultsDiv');  //sets a global variable used by looma-search.js
     $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
     
     loginname = LOOMA.loggedIn();

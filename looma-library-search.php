@@ -13,6 +13,7 @@ Description:  searches Looma library for Looma 2
         require_once ('includes/header.php');
         require_once ('includes/mongo-connect.php');
         require_once ('includes/looma-utilities.php');
+        include("includes/looma-control-buttons.php");
 ?>
 
     <link rel = "Stylesheet" type = "text/css" href = "css/looma-search.css">
@@ -36,6 +37,7 @@ Description:  searches Looma library for Looma 2
 
     <?php include ('includes/toolbar.php');
           include ('includes/js-includes.php'); ?>
+
      <!--<script src="js/jquery-ui.min.js"></script>-->
     <script src="js/looma-search.js"></script>
     <script src="js/looma-library-search.js"></script>

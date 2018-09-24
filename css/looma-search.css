@@ -120,3 +120,7 @@ button.cancel-search {
     color: white;
 }
 
+
+form#search span.typ-chk:hover, form#search span.src-chk:hover {
+    font-size:1.2em;
+}

@@ -17,6 +17,7 @@ Attribution: slightly borrowed from Matt West (blog.teamtreehouse.com)
 
    //var fullscreenPlayPauseButton;
 
+/*
     function playVideo(vid)
     { vid.play();
         //playButton.style.backgroundImage = 'url("images/pause.png")';
@@ -26,12 +27,12 @@ Attribution: slightly borrowed from Matt West (blog.teamtreehouse.com)
     { vid.pause();
         //playButton.style.backgroundImage = 'url("images/video.png")';
     }
-
+*/
 
 $(document).ready(function () {
 
     attachMediaControls();  //looma-media-controls.js adds eventlisteners to play/pause/volume/slider controls
-    attachFullscreenPlayPauseControl();
+    //attachFullscreenPlayPauseControl();
     modifyFullscreenControl();
     //fullscreenPlayPauseButton = document.getElementById("fullscreen-playpause");
 

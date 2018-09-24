@@ -41,7 +41,7 @@ function activityButtonClicked(){
         chapter_dn = encodeURIComponent(chapter_dn);
         window.location = "looma-activities.php?ch=" + chapter_id +
                                                 "&chdn=" + chapter_dn +
-                                                "&class=" + className +
+                                                "&grade=" + className +
                                                 "&subject=" + subject;
     };  //  end activityButtonClicked()
 

@@ -258,8 +258,8 @@ function restoreState () {
         // get the name, value pairs from formSettings and restore them in 'form'
         $.each(savedForm, function (i, item) {
             // restore 'type' and 'scr' selections
-            if (item.name == 'type[]') $("#search input[data-id='" + item.value + "']")[0].checked = true;
-            if (item.name == 'src[]')  $("#search input[data-id='" + item.value + "']")[0].checked = true;
+            if (item.name == 'type[]') $("#search #" + item.value + "-checkbox")[0].checked = true;
+            if (item.name == 'src[]')  $("#search #" + item.value + "-checkbox")[0].checked = true;
             //if (item.name == 'src[]')  $('#source-div')[0][item.value].checked = true;
         });
     

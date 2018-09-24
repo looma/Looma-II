@@ -11,87 +11,57 @@ Revision: Looma 2.4
 
 'use strict';
 
-    var audio, video, media, $play, $mute;
+    var audio, video, media;
+    var $play, $mute, $seekbar, $volumebar, $time;
 
-    function playVideo(vid)
-    { vid.play();
-        //playButton.style.backgroundImage = 'url("images/pause.png")';
-    };  //end playVideo()
-
-    function pauseVideo(vid)
-    { vid.pause();
-        //playButton.style.backgroundImage = 'url("images/video.png")';
-    }; //end pauseVideo()
-
-
+function mediaPlayPause () {
+    if (media.paused) {
+        media.play();
+        $('.play-pause').css('background-image', 'url("images/pause.png")');
+    } else {
+        media.pause();
+        $('.play-pause').css('background-image', 'url("images/video.png")');
+    }
+}; //end mediaPlayPause()
 
 function attachMediaControls (myMedia) {
 
-          if(myMedia) {
-            media = myMedia;
-          }
+          if(myMedia) {media = myMedia;}
           else {
-            // media
             audio = document.getElementById("audio");
             video = document.getElementById("video");
 
-            media = (audio)?audio:video;
+            media = (video)?video:audio;
           }
-          //DEBUG
-          console.log(media);
+          //DEBUG   console.log("In media-controls.js: media is " + media);
 
           // Buttons
           $play = $('.play-pause');
           $mute = $('.mute');
-          var $seekbar = $('.seek-bar');
-          var $volumebar = $('.volume-bar');
-          var $time = $('#time');  $time.text('0:00');
-
-          //var playButton = document.getElementById("play-pause");
-          //var muteButton = document.getElementById("mute");
-
-          // Sliders
-          //var seekBar = document.getElementById("seek-bar");
-          //var volumeBar = document.getElementById("volume-bar");
-
-
+          $seekbar = $('.seek-bar');
+          $volumebar = $('.volume-bar');
+          $time = $('#time');  $time.text('0:00');
 
         // Event listener for the play/pause button
-        //playButton.addEventListener("click", function() {
-        $play.on('click', function() {
-          if (media.paused) {
-              media.play();
-              $play.attr('style', 'background-image: url("images/pause.png")');
-              //playButton.innerHTML = "Pause";
-          } else {
-              media.pause();
-              $play.attr('style', 'background-image: url("images/video.png")');
-             //playButton.innerHTML = "Play";
-          }
-        });
+        $play.off('click').on('click', mediaPlayPause);
 
         // Event listener for the mute button
-        //muteButton.addEventListener("click", function() {
         $mute.on('click', function() {
           if (!media.muted) {
               media.muted = true;
               $mute.attr('style', 'background-image: url("images/mute.png")');
-              //muteButton.innerHTML = "Unmute";
           } else {
               media.muted = false;
               $mute.attr('style', 'background-image: url("images/audio.png")');
-            //muteButton.innerHTML = "Mute";
           }
         });
 
         // Event listener for the volume bar
         $volumebar.on('change', function() {
-          // Update the media volume
-          media.volume = $volumebar.val();
+          media.volume = $volumebar.val(); // Update the media volume
         });
 
         // Event listener for the seek bar
-        //seekBar.addEventListener("change", function() {
         $seekbar.on('change', function() {         // Calculate the new time
           var time = media.duration * ($seekbar.val() / 100);
           media.currentTime = time;
@@ -99,23 +69,17 @@ function attachMediaControls (myMedia) {
 
         // Update the seek bar as the media plays
         if (media) media.addEventListener("timeupdate", function() {
-          // Calculate the slider value
-          var value = (100 / media.duration) * media.currentTime;
-          // Update the slider value
-          $seekbar.val(value);
+              var value = (100 / media.duration) * media.currentTime;  // Calculate the slider value
+              $seekbar.val(value);   // Update the slider value
 
-          $time.text(minuteSecondTime(media.currentTime));
+            $time.text(minuteSecondTime(media.currentTime));
         });
 
         // Pause the media when the slider handle is being dragged
-        $seekbar.on("mousedown", function() {
-          media.pause();
-        });
+        $seekbar.on("mousedown", function() { media.pause(); });
 
         // Play the media when the slider handle is dropped
-        $seekbar.on("mouseup", function() {
-          media.play();
-        });
+        $seekbar.on("mouseup", function() { media.play(); });
 
         function minuteSecondTime (time)
         {
@@ -131,24 +95,16 @@ function attachMediaControls (myMedia) {
             return minutes + ":" + seconds;
         };
 
-    };
+    }; // end attachMediaControls()
 
+/*
    function attachFullscreenPlayPauseControl() {
-
-        $('#fullscreen-playpause').on('click', function() {
-                if (video.paused)
-                     { playVideo(video);
-                       $(this).css('backgroundImage', 'url("images/pause.png")');
-                }
-                else { pauseVideo(video);
-                       $(this).css('backgroundImage', 'url("images/video.png")');
-                }
-        });
-    };
-
+        $('#fullscreen-playpause').on('click', mediaPlayPause);
+   }; //end attachFullScreenPlayPause()
+*/
 
     function modifyFullscreenControl() {
-        var videoArea = document.getElementById("video-area");
+        var videoArea = document.getElementById("video-player");
 
         var isFullscreen = false;
 
@@ -157,32 +113,33 @@ function attachMediaControls (myMedia) {
 
             var $fsppbutton = $('#fullscreen-playpause');
 
-            if(!isFullscreen)
-            {
-                //If it is not fullscreen make it fullscreen
-                screenfull.toggle(document.getElementById('fullscreen'));
+            if(!isFullscreen)  //If it is not fullscreen make it fullscreen
+            {screenfull.toggle(document.getElementById('fullscreen'));
                 isFullscreen = true;
                 $fsppbutton.css('display', 'block');
 
                     videoArea.className = "fulldisplay";
-                    videoArea.style.width = "100%";
-
-
+                    videoArea.style.height = "100%";
+                    
+            /*
                 if (video.paused == true)
                 { $fsppbutton.css('backgroundImage', 'url("images/video.png")'); }
                 else
                 { $fsppbutton.css('backgroundImage', 'url("images/pause.png")'); }
+            */
+            
             }
-            else
-            {
-                //Otherwise un-fullscreen it
-                screenfull.toggle(document.getElementById('fullscreen'));
+            else  //Otherwise un-fullscreen it
+            {screenfull.toggle(document.getElementById('fullscreen'));
                 isFullscreen = false;
                 $fsppbutton.css('display', 'none');
 
-                if (media.paused) $play.attr('style', 'background-image: url("images/video.png")');
-                else              $play.attr('style', 'background-image: url("images/pause.png")');
-
+                /*
+                    if (media.paused) $play.attr('style', 'background-image: url("images/video.png")');
+                    else              $play.attr('style', 'background-image: url("images/pause.png")');
+                */
+    
+                videoArea.style.height = "53%";
                 videoArea.className = "";
             }
         });
@@ -190,15 +147,64 @@ function attachMediaControls (myMedia) {
          $('#video').on('loadeddata', function () {
             //Sets the video-area to the size of the video by finding the calculated width of the video
             var vidWidth = window.getComputedStyle(video).getPropertyValue("width");
-            var videoArea = document.getElementById("video-player");
-            videoArea.style.width = parseInt(vidWidth) + "px";
-
             var videoPlayer = document.getElementById("video-player");
-            var titleArea = document.getElementById("title-area");
+             videoPlayer.style.width = parseInt(vidWidth) + "px";
+
+            //var videoPlayer = document.getElementById("video-player");
+           
+            
+            // var titleArea = document.getElementById("title-area");
 
             //Makes the title area fill the space to the right of the video
-            titleArea.style.width = ((videoPlayer.offsetWidth / 2) - (video.offsetWidth / 2)) + "px";
-            titleArea.style.height = video.offsetHeight + "px";
+            //titleArea.style.width = ((videoPlayer.offsetWidth / 2) - (video.offsetWidth / 2)) + "px";
+            //titleArea.style.height = video.offsetHeight + "px";
         });
 
-    };
+    }; //end modifyFullscreenControl()
+
+
+function modifyFullscreenAudio() {
+    //var videoArea = document.getElementById("video-area");
+    
+    var isFullscreen = false;
+    
+    $('#fullscreen-control').off('click').on('click', function (e) {
+        e.preventDefault();
+        
+        var $fsppbutton = $('#fullscreen-playpause');
+        
+        if(!isFullscreen)
+        {
+            //If it is not fullscreen make it fullscreen
+            screenfull.toggle(document.getElementById('fullscreen'));
+            isFullscreen = true;
+            $fsppbutton.css('display', 'block');
+            
+            //videoArea.className = "fulldisplay";
+            //videoArea.style.width = "100%";
+            
+            /*
+                if (video.paused == true)
+                { $fsppbutton.css('backgroundImage', 'url("images/video.png")'); }
+                else
+                { $fsppbutton.css('backgroundImage', 'url("images/pause.png")'); }
+            */
+            
+        }
+        else
+        {
+            //Otherwise un-fullscreen it
+            screenfull.toggle(document.getElementById('fullscreen'));
+            isFullscreen = false;
+            $fsppbutton.css('display', 'none');
+            
+            /*
+                if (media.paused) $play.attr('style', 'background-image: url("images/video.png")');
+                else              $play.attr('style', 'background-image: url("images/pause.png")');
+            */
+            
+            //videoArea.className = "";
+        }
+    });
+    
+}; //end modifyFullscreenAudio()

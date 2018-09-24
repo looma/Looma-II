@@ -299,7 +299,8 @@ function showKeyboard(event) {
     // Ignore invalid inputs, if they were somehow assigned to "destination".
     if ($(target).hasClass("nokeyboard")) return;
     if ($(target).attr("readonly") != null) return;
-
+    
+    
     $('.keyboard-entry').css({
         display: "none"
     });
@@ -324,7 +325,8 @@ function showKeyboard(event) {
     temporaryDestination.css({
         display: ""
     });
-
+    
+    LOOMA.makeTransparent( $('#main-container-horizontal') );
     $("#looma-keyboard-container").css({
         display: "block"
     });
@@ -341,6 +343,7 @@ function hideKeyboard() {
 
     $('#textareaEntry').html();
     $('#inputEntry').val('');
+    LOOMA.undoTransparent( $('#main-container-horizontal') );
     $("#looma-keyboard-container").css({
         display: "none"
     });

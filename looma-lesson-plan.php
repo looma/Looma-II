@@ -11,10 +11,10 @@ error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
 Filename: looma-lesson-plan.php
 Description: version 1 [SCU, Spring 2016]
              version 2 [skip, Fall 2016]
-Programmer name: SCU
+Programmer name: SCU, skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: version 1:spring 2016, version 2: Nov 16  version 3: spring 2018
-Revision: Looma 3
+Revision: Looma 4
  -->
 <html>
     <?php $page_title = 'Looma - Lesson Plan Editor';
@@ -23,7 +23,9 @@ Revision: Looma 3
     ?>
 
         <link rel="stylesheet" href="css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" href="css/looma-lesson-plan.css">
+    <link rel="stylesheet" type="text/css" href="css/looma-filecommands.css">
+    <link rel="stylesheet" type="text/css" href="css/looma-search.css">
+    <link rel="stylesheet" type="text/css" href="css/looma-lesson-plan.css">
     </head>
 
     <body>
@@ -94,7 +96,6 @@ Revision: Looma 3
 
         <?php include ('includes/looma-filecommands.php'); ?>
 
-        <script src="js/looma-media-controls.js"></script>
         <script src="js/looma-search.js"></script>
         <script src="js/looma-lesson-plan.js"></script>
 

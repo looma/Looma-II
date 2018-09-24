@@ -1,5 +1,5 @@
 /*
- * Name: Skip
+Name: Skip
 Email: skip@stritter.com
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 03

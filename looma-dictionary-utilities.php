@@ -63,7 +63,7 @@ if (isset($_GET["cmd"]))
                 }
             }
 
-            if (file_exists('../content/dictionaryImages/' . $word['en'] . '.jpg')) $word['img'] = $word['en'];
+            if (file_exists('../content/dictionary images/' . $word['en'] . '.jpg')) $word['img'] = $word['en'];
 
 
             if($word != null)

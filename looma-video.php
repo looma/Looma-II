@@ -36,7 +36,8 @@ they want to edit a video
 			</script>
 
 			<div id="main-container-horizontal">
-				<div id="video-player">
+                <div id="video-area">
+                    <div id="video-player">
                     <div id="fullscreen">
                         <video id="video">
                             <?php echo 'poster=\"' . $filepath . thumbnail($filename) . '\">';?>
@@ -44,8 +45,8 @@ they want to edit a video
                         </video>
                         <div id="fullscreen-buttons">
                             <?php include ('includes/looma-control-buttons.php');?>
-                            <button id="fullscreen-playpause" class="looma-control-button"></button>
                         </div>
+                    </div>
                     </div>
                 </div>
 
@@ -57,7 +58,7 @@ they want to edit a video
 
                     <div id="time" class="title"></div>
 
-					<button type="button" class="media play-pause"><?php keyword('Play/Pause');?></button>
+					<button type="button" id="video-playpause" class="media play-pause"><?php keyword('Play/Pause');?></button>
 					<input type="range" class="video seek-bar" value="0" ><br>
 					<button type="button" class="media mute"><?php keyword('Volume') ?></button>
 					<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" >

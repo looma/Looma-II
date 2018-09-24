@@ -37,6 +37,7 @@ window.onload = function() {
     var playing;
     var $currentItem;
     var $viewer = $('#viewer');
+    var $fullscreen = $('#fullscreen');
 
     // handlers for 'control panel' buttons
     $('#back, #prev-item').click(function() {
@@ -71,6 +72,8 @@ window.onload = function() {
             $('#subtitle').text('');
         }
     );
+    
+    $(makeMediaControls()).appendTo($('#media-controls-container'));  // play/pause, etc for audio and video
 
     // create HTML for various players for filetypes
 
@@ -103,18 +106,13 @@ window.onload = function() {
 
     function play($item) {
         
-        $viewer.empty();
+        //$(video).empty();
         $currentItem = $item;
         playing = true;
         $('#timeline button').removeClass('playing');
         $item.addClass('playing');
         scrollTimeline($item);
-        
-/* this code not used? the ID doesnt exist?
-$('#pause').css('background-image',
-    'url(" images/pause-button.png")');
-*/
-    
+
         //$timeline.fadeOut(500);  //this hides the timeline when playing media - decided to not hide the timeline [usability]
 
         playActivity($item.data('ft'), $item.data('fn'), $item.data('fp'),
@@ -123,15 +121,14 @@ $('#pause').css('background-image',
 
     function playActivity(ft, fn, fp, dn, id, ch, pg) { //play the activity of type FT, named FN, in path FP, display-name DN
         // depending on FT, may use ID, CH (a ch_id) or pg (for PDFs)
-        //NOTE: playActivity() should move to looma-utilities.js (??)
 
         // plays the selected (onClick) timeline element (activity) in the $viewer div
-
-//DEBUG
-// add media.stop(), or media.clear() HERE?
+        //NOTE: playActivity() should move to looma-utilities.js (??)
         
         restoreFullscreenControl(); //reset fullscreen operation in case video, which overrides normal fullscreen operation, has run
-
+        $('#media-controls-container').hide();  // hide media controls
+        $viewer.empty();
+        
         switch (ft) {
             case "image":
             case "jpg":
@@ -139,28 +136,29 @@ $('#pause').css('background-image',
             case "gif":
 
                 //  $(imageHTML(fp, fn)).appendTo($viewer);
+                $('.speak, .lookup').hide();
                 $imageHTML.attr('src', fp + fn);
                 $imageHTML.appendTo($viewer);  //NOTE: $viewer should be a parameter to playActivity() [so it can have any name]
                 break;
+                
             case "video":
             case "mp4":
             case "mp5":
             case "m4v":
             case "mov":
-    
-                $('.play-pause').attr('style', 'background-image: url("images/video.png")');
-    
-                //$(videoHTML(fp, fn, dn)).appendTo($viewer);
+                
                 $videoHTML.find('source').attr('src', fp + fn);
                 $videoHTML.find('video').attr('poster', fp + fn.substr(0,
                     fn.indexOf('.')) + '_thumb.jpg');
                 $videoHTML.appendTo($viewer);
-                $('#video')[0].load();  //unloads any previous video being played and loads this video from <source>
+                $('.speak, .lookup').hide();
+                $('#video')[0].load();  //unloads any previous video being played and loads this video since we just changed <source>
+                $('.play-pause').css('background-image', 'url("images/video.png")');
+                $('#media-controls-container').show();  // show media controls
                 attachMediaControls(); //hook up event listeners to the audio and video HTML
-                attachFullscreenPlayPauseControl();
                 modifyFullscreenControl();
-
                 break;
+                
             case "audio":
             case "mp3":
 
@@ -168,12 +166,17 @@ $('#pause').css('background-image',
                 $audioHTML.find('source').attr('src', fp + fn);
                 $audioHTML.find('#songname').text(dn);
                 $audioHTML.appendTo($viewer);
+                $('.speak, .lookup').hide();
+                $('.play-pause').css('background-image', 'url("images/video.png")');
+                $('#media-controls-container').show();  // show media controls
                 attachMediaControls(); //hook up event listeners to the audio and video HTML
+                modifyFullscreenAudio();
                 break;
+                
             case 'pdf':
             case 'chapter':
-
-
+    
+                $('.speak, .lookup').show();
                 $pdfHTML.find('iframe').attr('src',
                     'looma-viewer.html?file=' + fp + fn + '#page=' + pg
                  //   + '&zoom=160'
@@ -182,16 +185,16 @@ $('#pause').css('background-image',
                 break;
 
             case 'text':
-
+    
+                $('.speak, .lookup').show();
                 textHTML(id);
-
                 break;
 
             case 'html':
             case 'EP':
             case 'epaath':
 
-                //$(htmlHTML(fp,fn, dn)).appendTo($viewer);
+                $('.speak, .lookup').show();
                 $htmlHTML.find('embed').attr('src', fp + fn);
                 $htmlHTML.appendTo($viewer);
                 break;
@@ -246,7 +249,7 @@ $('#pause').css('background-image',
     }; //end playActivity()
 
     function makeImageHTML() {
-        return ('<img id="fullscreen" src="">');
+        return ('<img src="">');
     };
 
     // function makePdfHTML() {return('<embed id="fullscreen" src="" height=100% width=100%>');};
@@ -306,44 +309,39 @@ $('#pause').css('background-image',
 
     function makeAudioHTML() {
         return (
-          //  '<div id="fullscreen">' +
             '<div id="audio-viewer"">' +
-            '<br><br><br><br>' +
-            '<h2>Looma Audio Player (<span id="songname"></span>)</h2>' +
-            '<br><br><br><br>' +
-            '<audio id="audio"><source src="" type="audio/mpeg">' +
-            'Your browser does not support the audio element.' +
-            '</audio>' +
+                '<br><br><br><br>' +
+                '<h2>Looma Audio Player (<span id="songname"></span>)</h2>' +
+                '<br><br><br><br>' +
+                '<audio id="audio"><source src="" type="audio/mpeg">' +
+                'Your browser does not support the audio element.' +
+                '</audio>' +
             '</div>' +
-            '<div id="media-controls">' +
-            '<div id="time" class="title">0:00</div>' +
-            '<br><button type="button" class="media play-pause"></button>' +
-            '<input type="range"       class="video seek-bar" value="0" style="display:inline-block">' +
-            '<br><button type="button" class="media mute">Volume</button>' +
-            '<input type="range"       class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">' +
-            '</div>' +
-            '</div>');
+        '</div>');
     }; //end audioHTML
 
     function makeVideoHTML() {
         return (
-           // '<div id="fullscreen">' +
             '<div id="video-player">' +
-            '<div id="video-area">' +
-            '<video id="video">' +
-            '<source id="video-source" src="" type="video/mp4">' +
-            '</video>' +
-            '</div></div></div>' +
-            '<div id="media-controls">' +
-
-            '<button id="fullscreen-playpause" class="looma-control-button"></button>' +
-            '<div id="time" class="title">0:00</div>' +
-            '<button type="button" class="media play-pause"></button>' +
-            '<input type="range" class="video seek-bar" value="0" style="display:inline-block"><br>' +
-            '<button type="button" class="media mute">Volume</button>' +
-            '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
+                    '<div id="video-area">' +
+                        '<video id="video">' +
+                          '<source id="video-source" src="" type="video/mp4">' +
+                        '</video>' +
+                    '</div>' +
+                '</div>' +
             '</div>'
 
         );
     }; //end videoHTML
+    
+    function makeMediaControls() {
+       return( '<div id="media-controls">' +
+            '<div id="time" class="title">0:00</div>' +
+            '<button type="button" class="media play-pause" id="video-playpause" ></button>' +
+            '<input  type="range"  class="video seek-bar"   value="0" style="display:inline-block"><br>' +
+            '<button type="button" class="media mute">Volume</button>' +
+            '<input  type="range"  class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
+        '</div>')
+    };  // end makeMediaControls()
+    
 }; //end window.onload

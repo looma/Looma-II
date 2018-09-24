@@ -22,7 +22,7 @@ Description:  for Looma 2
 
         <div id="about">
             <h3>Looma 2</h3>
-            <h4>Release 4.1, August 2018</h4>
+            <h4>Release 4.2, Sept 2018</h4>
             <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
             <h4>Contact:  info AT villagetechsolutions DOT org</h4>
             <span href="looma-info.php"></span>
@@ -39,24 +39,21 @@ Description:  for Looma 2
 
                 <!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
 
-                <span><img src="images/logos/khan.jpg" height="66px"></span>
-                <span><img src="images/logos/ole-nepal.jpg" height="66px"></span>
-                <span><img src="images/logos/wikipedia.jpg" height="66px"></span>
-                <span><img src="images/logos/PHET.png" height="44px"></span>
-
-                <span><img src="images/logos/leaflet-logo.png" height="66px"></span>
-                <span><img src="images/logos/openstreetmap-logo.png" height="66px"></span>
-                <span><img src="images/logos/google-translate.jpg" height="66px"></span>
-                <span><img src="images/logos/tilemill.png" height="66px"></span>
-                <span><img src="images/logos/mycroft.png" height="33px"></span>
+                <a href="http://www.khanacademy.org"><img src="images/logos/khan.jpg" height="66px"></a>
+                <a href="http://www.olenepal.org"><img src="images/logos/ole-nepal.jpg" height="66px"></a>
+                <a href="https://www.wikipedia.org"><img src="images/logos/wikipedia.jpg" height="66px"></a>
+                <a href="https://phet.colorado.edu"><img src="images/logos/PHET.png" height="44px"></a>
+                <a href="https://leafletjs.com"><img src="images/logos/leaflet-logo.png" height="66px"></a>
+                <a href="https://www.openstreetmap.org"><img src="images/logos/openstreetmap-logo.png" height="66px"></a>
+                <a href="https://translate.google.com"><img src="images/logos/google-translate.jpg" height="66px"></a>
+                <a href="https://www.mapbox.com"><img src="images/logos/tilemill.png" height="66px"></a>
+                <a href="https://mycroft.ai"><img src="images/logos/mycroft.png" height="33px"></a>
                 <br>
-                <span><img src="images/logos/jquery-logo.png" height="66px"></span>
+                <a href="https://jquery.com"><img src="images/logos/jquery-logo.png" height="66px"></a>
                 <span><img src="images/logos/css3-html5-logo.png" height="44px"></span>
-                <span><img src="images/logos/mongodb-logo.png" height="66px"></span>
-                <span><img src="images/logos/aptana-logo.png" height="44px"></span>
-                <span><img src="images/logos/intellij.png" height="44px"></span>
-                <span><img src="images/logos/stackoverflow.png" height="66px"></span>
-
+                <a href="https://www.mongodb.com"><img src="images/logos/mongodb-logo.png" height="66px"></a>
+                <a href="https://www.jetbrains.com/idea/"><img src="images/logos/intellij.png" height="44px"></a>
+                <a href="https://www.stackoverflow.org"><img src="images/logos/stackoverflow.png" height="66px"></a>
                 <a href="http://www.villagetechsolutions.org"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
             </div>
             <br>

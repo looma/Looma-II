@@ -3,10 +3,10 @@ LOOMA css file
 Filename: looma-lesson-plan.css
 Description:
 Associated code files:
-Programmer name: skip
+Programmer name: skip, keifer
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: winter 2018
-Revision: Looma 3
+Date: aug 2018
+Revision: Looma 4
 */
 body {
     box-sizing: border-box;
@@ -33,7 +33,6 @@ body {
     grid-row: 1;
     vertical-align:middle;
     background-color: #F2C01B;
-    
 }
 
 #title {
@@ -50,7 +49,6 @@ body {
     grid-row: 2;
     position-relative;
     background-color: white;
-    
 }
 
 .all-transparent { /*makes screen transparent*/
@@ -66,13 +64,16 @@ div#search-panel {
 #grade-div, #subject-div, #chapter-div {display:inline-block;}
 
 .typ-chk[data-id='lesson-chk'] {display:none;}
+
 #search input {
     font:inherit;
 }
+
 #outerResultsDiv {
     grid-column: 1;
     grid-row: 3;
 }
+
 #previewpanel {
     grid-column: 2/-1;
     grid-row: 3;
@@ -255,16 +256,6 @@ span.hint {
     font-style:normal;
 }
 
-/*#resultsDiv {
-    background:gray;
-    color:white;
-    border:none;
-    overflow-x:hidden;
-    overflow-y:auto;
-    height:450px;
-    font-size: 15px;
-}*/
-
 li:hover {
     background-color: #fff;
     color: black;
@@ -272,7 +263,6 @@ li:hover {
     padding:0px;
 }
 
-/* .resultitem is the class of the divs that show up in results */
 .resultitem {
     padding:3px;
     border-bottom:1px solid #000;
@@ -297,15 +287,6 @@ li:hover {
 }
 
 .buttondiv button {float:right;}
-
-/*
-#displayAndTimeline {
-    margin-top: 30px;
-    right:2%;
-    vertical-align:top;
-    z-index: 1;
-}
-*/
 
 /************* Preview module ***************/
 
@@ -384,15 +365,6 @@ li:hover {
 
 .timelineScroll {
     height: 90%;
-}
-/*
-#results {
-    width: 80%;
-    min-height: 300px;
-}
-*/
-
-#timelineDisplay {
 }
 
 #timelineDisplay .activityDiv {

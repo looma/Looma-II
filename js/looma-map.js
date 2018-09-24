@@ -9,6 +9,8 @@ Date: 2018 07
 Revision: Looma 3.0
  */
 
+"use strict";
+
 // Create the layers for the map and the arrays that hold them
 var baseLayers; // Array storing the base layers
 var addOnLayers; // Array storing add-on layers
@@ -18,7 +20,7 @@ var currentBase; //represents the current selected base layer (the number of it)
 var addOnData; // The add on layers in the database
 var priorityOn; // If layers are brought to the front by priorities in database
 var infoBoxOn; //If the infoBox is on
-
+var map, southWest, northEast;
 
 window.onload = function () {
 
@@ -43,11 +45,11 @@ window.onload = function () {
             //Sets title of map
             if (data.title)
             {
-                document.getElementById('title').innerHTML = data.title;
+                //document.getElementById('title').innerHTML = data.title;
             }
             else
             {
-                document.getElementById('title').innerHTML = "Map";
+                //document.getElementById('title').innerHTML = "Map";
             }
 
             //Base layers
@@ -69,7 +71,8 @@ window.onload = function () {
                 }
                 else
                 {
-                    priorityOn = false;
+                    //priorityOn = false;
+                    priorityOn = true;
                 }
             }
 
@@ -179,8 +182,7 @@ window.onload = function () {
             {
                 loadLegend(data.legend);
             }
-
-
+            
         }, // end of data function
         'json'
     );
@@ -192,6 +194,7 @@ window.onload = function () {
 // Creates the Layers //
 ////////////////////////
 
+////////////////////////
 // If baselayers exist (which at least one definitely should), add them to map
 function loadBaseLayers (layerData) {
     var currentStyle = 0;
@@ -316,8 +319,9 @@ function loadBaseLayers (layerData) {
         });
 
     }
-}
+} // end loadBaseLayers()
 
+////////////////////////
 // Loads the add-on layers onto the map by reading geojson in if they exist
 function loadAddOnLayers (layerData, information) {
     var arrIndex = 0; // a counter for the array
@@ -409,7 +413,8 @@ function loadAddOnLayers (layerData, information) {
 
 
                     marker
-                        .bindPopup(popText)
+                        .bindPopup(popText,{className:'capital-popup', keepInView:true, width:600, minWidth:600, maxWidth:600})
+                    /*  //NOTE: following code (popupopen and popupclose not needed with option keepInView
                         .on('popupopen', function(popup) {
                             //if the popup will go off the screen, extend the max bounds so that we can see the popup
                             if(information.mapBounds) {
@@ -417,7 +422,7 @@ function loadAddOnLayers (layerData, information) {
                                 var southWest = L.latLng(information.mapBounds.SWLat, information.mapBounds.SWLong);
                                 var northEast = L.latLng(information.mapBounds.NELat, information.mapBounds.NELong);
                                 if (coords.lng > information.mapBounds.NELong - 25) {
-                                    console.log("IN IF");
+                                    //console.log("IN IF");
                                     northEast = L.latLng(information.mapBounds.NELat, information.mapBounds.NELong + 25);
                                 }
                                 else if (coords.lng < information.mapBounds.SWLong + 25) {
@@ -438,7 +443,10 @@ function loadAddOnLayers (layerData, information) {
                             var bounds = L.latLngBounds(southWest, northEast);
                             map.setMaxBounds(bounds);
                         }
-                    });
+                    }
+                    
+                    )*/
+                    ;
                     return marker;
                 }
             });
@@ -446,14 +454,13 @@ function loadAddOnLayers (layerData, information) {
             arrIndex ++;
         });
     }
-}
-
-
+} // end loadAddOnLayers()
 
 ///////////////////////////////////////////////////
 // Creating Toggle Buttons, Info Box, and Legend //
 ///////////////////////////////////////////////////
 
+////////////////////////
 // Creates the checkboxes to toggle add-on layers on and off if add-on layers exist
 function addOnButtons (layerData)
 {
@@ -497,8 +504,9 @@ function addOnButtons (layerData)
         return div;
     }
     layers.addTo(map);
-}
+} // end addOnButtons()
 
+////////////////////////
 // Creates the buttons to toggle between alternate base layers if there are multiple bases
 function baseLayerButtons (layerData)
 {
@@ -546,8 +554,9 @@ function baseLayerButtons (layerData)
         return div;
     }
     choice.addTo(map);
-}
+} // end baseLayerButtons()
 
+////////////////////////
 // Creates the legend for the map
 function loadLegend (legendData)
 {
@@ -562,8 +571,9 @@ function loadLegend (legendData)
         return div;
     };
     legend.addTo(map);
-}
+} // end loadLegend()
 
+////////////////////////
 // Creates the information control box in the top right
 function loadInfoBox(data)
 {
@@ -654,13 +664,14 @@ function loadInfoBox(data)
 
     }; // Used to update the control based on feature properties passed
     info.addTo(map);
-}
+} // end loadInfoBox()
 
 
 //////////////////////////////
 // Layer and Info Functions //
 //////////////////////////////
 
+////////////////////////
 //Loops through all addOnLayers and their priorities starting with the lowest priority to highest, and brings them to the front
 function featureLayers()
 {
@@ -686,8 +697,9 @@ function featureLayers()
             }
         }
     }
-}
+} // end featureLayers()
 
+////////////////////////
 //Finds the correct layer that has the given priority, if none matching returns value
 function findPriority(value)
 {
@@ -700,12 +712,14 @@ function findPriority(value)
         }
     }
     return value;
-}
+} // end findPriority()
+
+////////////////////////
 // Gets the flag link based on the country (photo link is (country id).png)
 function getPhotoLink(iso, extension)
 {
     return ('../maps2018/photos/' + iso + "." + extension).toString();
-}
+} // end getPhotoLink()
 
 
 //////////////////////
@@ -741,7 +755,7 @@ function toCommas(numRaw)
         num += numRaw;
         return num;
     }
-}
+} // end toCommas()
 
 // Instead of displaying full number, prints out "billion" or "million" for readability
 function toWords(numRaw)
@@ -755,7 +769,7 @@ function toWords(numRaw)
     else if (numRaw >= 1000)
         return (numRaw / 1000 + ' thousand');
     return numRaw;
-}
+} // end toWords()
 
 //Turns a number into date form with BCE/CE
 function toDate(dateRaw)
@@ -769,13 +783,13 @@ function toDate(dateRaw)
         return dateRaw + ' CE';
     }
     return dateRaw;
-}
+} // end toDate()
 
 //Correctly capitalizes a word by capitalizing first letter
 function capitalize(wordRaw)
 {
     return wordRaw.charAt(0).toUpperCase() + wordRaw.substring(1);
-}
+} // end capitalize()
 
 //turns spaces into underscores for the names of images (so that we can use more generic names to  call the image)
 function spaceToUnderscore(wordRaw)
@@ -794,4 +808,4 @@ function spaceToUnderscore(wordRaw)
     }
     return toReturn;
 
-}
+} // end spaceToUnderscore()

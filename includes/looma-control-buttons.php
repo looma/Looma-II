@@ -7,8 +7,9 @@
         - add code in JS to 'display:inline-block' those buttons that will show
     -->
 
-    <button class = "speak                   looma-control-button"></button>
-    <button class = "lookup                  looma-control-button"></button>
-    <button id = "fullscreen-control" class="looma-control-button"></button>
-    <button id = "next-item"          class="looma-control-button"></button>
-    <button id = "prev-item"          class="looma-control-button"></button>
+    <button class = "speak                     looma-control-button"></button>
+    <button class = "lookup                    looma-control-button"></button>
+    <button id = "fullscreen-control"   class="looma-control-button"></button>
+    <button id = "fullscreen-playpause" class="looma-control-button play-pause"></button>
+    <button id = "next-item"            class="looma-control-button"></button>
+    <button id = "prev-item"            class="looma-control-button"></button>

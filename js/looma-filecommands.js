@@ -200,7 +200,7 @@ function openfile(openname, collection, filetype) { //filetype must be given as 
                     //currentid = response['_id'];
                     //currentauthor = response['author'];
                     if ('author' in response)
-                        owner = (author == LOOMA.loggedIn()
+                        owner = (response['author'] == LOOMA.loggedIn()
                             || LOOMA.loggedIn() == 'skip'
                             || LOOMA.loggedIn() == 'david'
                             || LOOMA.loggedIn() == 'kathy'

@@ -1,9 +1,16 @@
 #map {
+    position:relative;
+    bottom:0;
     width: 100%; height: 100%;
 }
 
+h1 {margin:10px 0 10px 0}
+
+div.viewer {
+    max-height:100%;
+}
+
 div.viewer img {
-    height: auto;
 }
 
 /* All of the info boxes in the map */
@@ -32,23 +39,35 @@ div.viewer img {
     opacity: 0.7;
 }
 
-/* Images in the info box for the map */
+/* Images in the info box for the map  [where the nations' FLAGs are shown*/
 img.info-image{
-    width: 120px;
-    height: 80px;
+    width: 300px;
+    height: 200px;
 }
 
-/*Images in the popup box for the map*/
-img.pop-image{
-    width: 275px;
-    height: 183px;
+.leaflet-popup-pane {}
+
+
+.capital-popup {height:50vh;width:33vw;}
+
+.leaflet-popop-content-wrapper {
+    height: 20vh !important;
+    width:33vw !important;
+    z-index:20;
 }
 
 /* Pop-ups */
 .leaflet-popup-content{
     font-size: 20px;
     color: #555555;
-    height: auto;
+    height: 20vh !important;
+    width:auto !important; }
+
+ .leaflet-popup-tip-container {display:none;}
+
+/*Images in the popup box for the map*/
+img.pop-image{
+    width:auto;
 }
 
 /* Some websites say that this way to style the boxes is sketchy, but it works for our purposes */
@@ -57,4 +76,9 @@ input[type="checkbox"]{
 }
 input[type="radio"]{
     transform:scale(1.4, 1.4);
+}
+
+button#fullscreen-control {
+    display:inline-block;
+    right:1vw;
 }

@@ -19,14 +19,12 @@ Description: looma lesson plan presenter
 
   <body>
     <?php
-        //Gets the filename, filepath, and the thumbnail location
         if (isset($_REQUEST['id'])) $lesson_id = $_REQUEST['id']; else $lesson_id = null;
     ?>
 
-
-        <div id="main-container">
+        <div id="main-container-horizontal">
             <div id="fullscreen">
-            <div id="viewer"></div>
+                <div id="viewer"></div>
                 <?php include("includes/looma-control-buttons.php"); ?>
             </div>
         </div>
@@ -34,9 +32,7 @@ Description: looma lesson plan presenter
 
         <div id="timeline-container">
             <div id="timeline" >
-        <!--
-            <span>Timeline: </span><span class="filename"></span>
-        -->
+
         <?php
 
         function prefix ($ch_id) { // extract textbook prefix from ch_id
@@ -128,13 +124,13 @@ Description: looma lesson plan presenter
             else {echo "<h1>No lesson plan selected</h1>";
                   $displayname = "<none>";};
            ?>
-        </div>
+           </div>
         </div>
 
          <div id="title">
              <span id="subtitle"></span>
             <span>Looma Lesson:&nbsp; <span class="filename"><?php if ($displayname) echo $displayname ?></span></span>
-        </div>
+         </div>
 
 
     <div id="controlpanel">
@@ -164,16 +160,6 @@ Description: looma lesson plan presenter
     <script src="js/bootstrap.min.js">  </script>
     <script src="js/looma-media-controls.js"></script>
     <script src="js/looma-lesson-present.js"></script>
-
-
-
-
-
-
-
-
-
-
 
  </body>
 </html>

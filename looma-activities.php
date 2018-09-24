@@ -17,18 +17,16 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
     // load: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
     require('includes/looma-utilities.php');
 	?>
+</head>
 
-	<!-- add CSS files for this page:  <link rel="stylesheet" href="css/filename.css"> -->
-	</head>
-
-	<body>
+<body>
 
 <?php
 
     /*
      * NOTE: should validate these parameters, esp. using "isset"
      */
-        $class = trim($_GET['class']);
+        $grade = trim($_GET['grade']);
 		$subject = trim($_GET['subject']) ;
 		$ch_id = trim($_GET['ch']);
 		$ch_dn = trim($_GET['chdn']);
@@ -36,7 +34,9 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
 		echo "<br>";
 
-		echo "<h2 class='title'>Activities for " . ucfirst($class) . " " . ucfirst($subject) . ": \"" . $ch_dn . "\"</h2>";
+		if ($subject === "social studies") $caps = "Social Studies"; else $caps = ucfirst($subject);
+		$grade = str_replace("class", "Grade ", $grade);
+		echo "<h2 class='title'>Activities for " . ucfirst($grade) . " " . $caps . ": \"" . $ch_dn . "\"</h2>";
 
 ?>
 	<div>

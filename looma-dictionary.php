@@ -29,15 +29,13 @@ Description:  dictionary look-up UI for Looma 2
             <button type="submit" id="submit" value="submit"> <?php keyword("Submit"); ?> </button>
         </form>
 
-        <!-- These lines are where the information about the word is placed -->
-
-        <div id="definitionDisplay">   </div>
+        <!-- where the information about the word is placed -->
+        <div id="definitionDisplay"></div>
 
             <!-- The Modal [jack king code to add images] -->
-            <div id="myModal" class="modal">
+            <div id="definitionImage" class="modal">
                 <span class="close">×</span>
                 <img class="modal-content" id="img01">
-                <div id="caption"></div>
             </div>
 
         </div>

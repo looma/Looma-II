@@ -17,6 +17,13 @@ Comments:
 /*define functions here */
 
 $(document).ready(function () {
+    
+    //  the attribution logos on looma-info page are live links to websites
+    //  check if online before following these links to avoid 404 or network timeout
+    $('a').click(function(event){
+            if (!navigator.onLine) event.preventDefault();
+        });
+        
         //using jquery.easy-ticker.js
         $('#credits').easyTicker({
             direction: 'up',

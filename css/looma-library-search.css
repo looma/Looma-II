@@ -74,3 +74,7 @@ button#toggle-database{
     border-radius:6px;
 }
 
+
+ button.show-keyboard {
+     display:inline-block;
+ }

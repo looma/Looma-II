@@ -31,9 +31,10 @@ body {
 
  body {
      display:grid;
-     grid-template-rows: [top] repeat(9,1fr) [toolbar] 1fr [bottom];
-     grid-template-columns: [left] repeat(17,1fr) [toolbar] 1fr [right];
+     grid-template-rows:    [top]  repeat(9, 1fr) [toolbar] 1fr [bottom];
+     grid-template-columns: [left] repeat(16, 1fr)[toolbar] 1fr [right];
  }
+ 
 #fullscreen {
     background-color: var(--looma-blue);
 }
@@ -501,7 +502,7 @@ button#bagh-chal {
 
 .popup {
     position:fixed;
-    top:33%;
+    top:10%;
     left:25%;
     margin:auto;
     padding: 5px;
@@ -513,6 +514,10 @@ button#bagh-chal {
     border:2px solid black;
     border-radius:6px;
     z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+}
+
+.popup img#image {
+    height:10%;
 }
 
 .popup input { /*The input inside the popup*/

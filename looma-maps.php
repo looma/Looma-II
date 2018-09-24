@@ -74,7 +74,6 @@ Description: Initial "maps" page. Takes the user to the different maps.
 
 	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
-    <script src="js/looma-histories.js"></script>          <!-- Looma Javascript -->
 
   </body>
 </html>

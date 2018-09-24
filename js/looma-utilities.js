@@ -122,8 +122,8 @@ playMedia : function(button) {
             break;
 
         case "looma":
-            var fp = encodeURIComponent(button.getAttribute('data-fp'));
-            window.location = fp;
+            var url = encodeURIComponent(button.getAttribute('data-url'));
+            window.location = url;
             break;
 
         case "epaath":
@@ -204,7 +204,8 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                                 //
                            );
 
-                        $newButton.append($('<img src="' + LOOMA.thumbnail(result.fn, result.fp, result.ft) + '">'));
+                        if (result.thumb) $newButton.append($('<img src="' + result.thumb + '">'));
+                        else $newButton.append($('<img src="' + LOOMA.thumbnail(result.fn, result.fp, result.ft) + '">'));
                         $newButton.append($('<span>').text(result.dn));
                         $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
@@ -358,6 +359,12 @@ thumbnail: function (filename, filepath, filetype) {
                 }
                 else if (filetype == "slideshow") {
                     imgsrc = "images/play-slideshow-icon.png";
+                }
+                else if (filetype == "lesson") {
+                    imgsrc = "images/lesson.png";
+                }
+                else if (filetype == "game") {
+                    imgsrc = "images/games.png";
                 }
                 else if (filetype == "looma") {
                     imgsrc = "images/LoomaLogo_small.png";
@@ -590,7 +597,7 @@ defHTML: function (definition, rwdef) {
     
     if (definition.img) {
         var imgName = definition.img + ".jpg";
-        var $img = $('<img id="image" src="../content/dictionaryImages/' + imgName + '"/>');
+        var $img = $('<img id="definitionThumb" src="../content/dictionary\ images/' + imgName + '"/>');
     }
     
         $div.append($english, $nepali, $pos, $def, $img);
@@ -928,7 +935,7 @@ LOOMA.speak = function(text, engine, voice) {
         
          // use speechsynthesis if present
          if (!engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) engine = 'synthesis';
-         if (!engine) engine = 'mimic';  //efault engine is mimic
+         if (!engine) engine = 'mimic';  //default engine is mimic
          if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_slt'; //get the currently used voice, if any. default VOICE is "slt"
         
          console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
@@ -1009,9 +1016,12 @@ LOOMA.speak = function(text, engine, voice) {
     ////////////////////////////////
         
          if (engine == 'synthesis') {
+             
+             //add code to use the currently set VOICE from COOKIE [set by looma-settings.php]
+             
              // we use synthesis if the user is running Safari or Chrome.
              // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
-             // Chromium's speechSynthesis seems to be broken. (re-check this)
+             // Chromium's speechSynthesis is present, but speechSysthesis.getVoices() show no voices loaded
              if (speechSynthesis.speaking) {
                  if (speechSynthesis.paused)
                      speechSynthesis.resume();
@@ -1147,7 +1157,13 @@ LOOMA.makeTransparent = function($container) {
     });//end ESC listener
 
 };  // End of makeTransparent
-
+ 
+ //undo makeTransparent()
+ 
+ LOOMA.undoTransparent = function($container) {
+     if (!$container) $container  = $('body > div');
+     $container.removeClass('all-transparent');
+ };  // End of undoTransparent
 
 /** Removes any popups on the page */
 LOOMA.closePopup = function() {
@@ -1174,7 +1190,10 @@ LOOMA.closePopup = function() {
 LOOMA.alert = function(msg, time, notTransparent){
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
-    $(document.body).append("<div class= 'popup'>" +
+    
+    if ($('#fullscreen').length) var attachPoint = $('#fullscreen'); else attachPoint = $(document.body);
+    
+    attachPoint.append("<div class= 'popup'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>"+ msg +
         "<button id ='close-popup' class ='popup-button'>" +
         //"<img src='images/alert.jpg' class='alert-icon'" +
@@ -1203,7 +1222,7 @@ LOOMA.alert = function(msg, time, notTransparent){
             timeLeft -= 1;
             popupButton.html(LOOMA.translatableSpans("OK (" + Math.round(timeLeft + 1) + ")",
                 "ठिक छ(" + Math.round(timeLeft + 1) + ")"));
-        },1000);
+        }, 1000);
     };
 };  //end alert()
 
@@ -1216,7 +1235,10 @@ LOOMA.alert = function(msg, time, notTransparent){
 LOOMA.confirm = function(msg, confirmed, canceled, notTransparent) {
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
-    $(document.body).append("<div class='popup confirmation'>" +
+    
+    if ($('#fullscreen').length) var attachPoint = $('#fullscreen'); else attachPoint = $(document.body);
+   
+    attachPoint.append("<div class='popup confirmation'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button> " + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<button id='confirm-popup' class='popup-button'>"+
@@ -1245,7 +1267,10 @@ LOOMA.confirm = function(msg, confirmed, canceled, notTransparent) {
 LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
-    $(document.body).append("<div class='popup textEntry'>" +
+    
+    if ($('#fullscreen').length) var attachPoint = $('#fullscreen'); else attachPoint = $(document.body);
+    
+    attachPoint.append("<div class='popup textEntry'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<input id='popup-input' autofocus></input>" +

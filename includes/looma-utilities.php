@@ -122,9 +122,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url,
             case "map":
                 break;  //map
 
-		   default:
-			    // echo "unknown filetype " . $ft;
-
+		   default:  // unknown filetype
 
                echo "<button class='activity  img' ";
                echo "data-dn='Unknown' data-ft='none' ";
@@ -132,16 +130,13 @@ function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url,
                echo '<img src="' . 'images/alert.jpg' . '">';
                echo "<span>" . "Unknown" . "</span></button>";
 
-
-
-
-
                return;
 		};  //end SWITCH
 
-             if ($thumb) $thumbSrc = $thumb;
+             if ($thumb && $thumb != "") $thumbSrc = $thumb;
         else if ($ft == 'EP' || $ft == 'epaath') $thumbSrc = $fp . $fn . "/thumbnail.jpg";
         else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
+        else if ($ft == 'slideshow')  $thumbSrc = "images/play-slideshow-icon.png";
         else if ($ft == 'looma') $thumbSrc = "images/LoomaLogo.png";
         else                     $thumbSrc = $fp . thumbnail($fn);
 

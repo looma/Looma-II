@@ -71,10 +71,11 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
             array("PDF", "Video", "Image", "Audio", "History", "HTML", "Slideshow", "Map", "Edited video", "Text", "Lesson", "Looma Page", "Game"), //human readable versions for labels displayed on checkboxes
             );
             for($x = 0; $x < count($types[0]); $x++) {
-                echo "<span class='typ-chk' data-id='" . $types[0][$x] ."-chk'>
-                    <input data-id='" . $types[1][$x] ."' class='media-input flt-chkbx media-filter' type='checkbox' name='type[]' value='" . $types[1][$x] . "'>
-                    <label class='filter-label' for='" . $types[0][$x] . "'>" . $types[2][$x] . "</label>
-                  </span>";
+                 echo "<span  class='typ-chk' data-id='"  . $types[0][$x] . "-chk'>";
+                 echo "<label class='filter-label' for='" . $types[1][$x] . "-checkbox'>";
+                 echo "<input id='" . $types[1][$x] . "-checkbox' class='media-input flt-chkbx media-filter' type='checkbox' name='type[]' value='" . $types[1][$x] . "'>";
+                 echo  $types[2][$x];
+                 echo "</label></span>";
                 //if ($types[1][$x] == "map") echo "<br>";
             }
             echo "</div>";
@@ -123,15 +124,25 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
                     <span>Source:</span>";
 
         $sources = array(
-            array("ck12", "phet", "epth", "khan", "w4s", "TED"),
+            array("ck12",    "phet", "epth",   "khan", "w4s",       "TED"),
             array("Dr Dann", "PhET", "ePaath", "khan", "wikipedia", "TED"),
-            array("CK-12", "PhET", "ePaath", "Khan", "Wikipedia", "TED"),
+            array("CK-12",   "PhET", "ePaath", "Khan", "Wikipedia", "TED"),
         );
-        for($x = 0; $x < count($sources[0]); $x++){
-            echo "<span class='src-chk' data-id='" . $sources[0][$x] ."-chk'>
-                        <input data-id='" . $sources[1][$x] ."' class='media-input flt-chkbx' type='checkbox' name='src[]'' value='" . $sources[1][$x] . "'>
-                        <label class='filter-label' for='" . $sources[0][$x] . "'>" . $sources[2][$x] . "</label>
-                      </span>";}
+
+      for($x = 0; $x < count($sources[0]); $x++) {
+          /*           echo "<span class='src-chk' data-id='" . $sources[0][$x] ."-chk'>
+                               <input data-id='" . $sources[1][$x] ."' class='media-input flt-chkbx' type='checkbox' name='src[]'' value='" . $sources[1][$x] . "'>
+                               <label class='filter-label' for='" . $sources[0][$x] . "'>" . $sources[2][$x] . "</label>
+                             </span>";}
+       */
+
+          echo "<span  class='src-chk' data-id='" . $sources[0][$x] . "-chk'>";
+          echo "<label class='filter-label' for='" . $sources[1][$x] . "-checkbox'>";
+          echo "<input id='" . $sources[1][$x] . "-checkbox' class='media-input flt-chkbx media-filter' type='checkbox' name='src[]' value='" . $sources[1][$x] . "'>";
+          echo $sources[2][$x];
+          echo "</label></span>";
+      }
+
         echo "</div>";
 
 

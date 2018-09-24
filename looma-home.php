@@ -21,6 +21,7 @@ define ("CLASSES", 8);
 
 <body>
 <div id="main-container-horizontal">
+
     <div id="head">
         <img src="images/logos/LoomaLogoTransparent.png" class="looma-logo"/>
     </div>
@@ -35,7 +36,7 @@ define ("CLASSES", 8);
         $i = 1;
 
         foreach ($classes as $class) {
-            echo "<button type='button' class='class' id=$class data-class=$class>";
+            echo "<button type='button' class='class' id=$class>";
             echo "<span class='little'>Grade</span><br>";
             echo keyword((string) $i);
             echo "</button>";

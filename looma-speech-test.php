@@ -6,33 +6,28 @@ $loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
 error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
 ?>
 
-<!doctype html>
-<!--
-Author:
-Email: skip@stritter.com
-Filename: yyy.html
-Date: x/x/2015
-Description:
--->
 
-<head>
+<?php $page_title = 'Looma Speech Test Page';
+require_once ('includes/header.php');
+define ("CLASSES", 8);
+?>
+
+<link rel="stylesheet" href="css/looma.css">
+<link rel="stylesheet" href="css/looma-speech-test.css">
 
 </head>
 
 <body>
-	<br><br>
-	Enter a phrase to speak:  <input type="text" id="text" size="250" value="Hello this is Looma"> </input><br><br>
-    <button id="mimic">Speak with mimic [looma default]</button><br><br>
-    <button id="synthesis">Speak with speechSynthesis</button><br><br>
-	<!--<button id="responsive">Speak with responsiveVoice</button><br><br> -->
-	</br>
-	<!--<button id="pico">Speak with pico2wave</button><br><br> -->
-	<!--<button id="other">Speak with other</button><br><br> -->
+    <div id="main-container-horizontal">
+        <p id="prompt">Enter a phrase to speak:  </p>
+        <input type="text" id="text" size="250" value="Hello this is Looma"> </input>
+        <button id="mimic">Speak with mimic [looma default]</button>
+        <button id="synthesis">Speak with speechSynthesis</button>
+    </div>
+    <?php include ('includes/toolbar.php'); ?>
+    <?php include ('includes/js-includes.php'); ?>
+
+    <script src="js/looma-speech-test.js"></script>
 </body>
-
-<?php include ('includes/js-includes.php'); ?>
-            <!--<script src="js/responsiveVoice.js"></script> -->
-      <script src="js/looma-speech-test.js"></script>
-
 
 </html>

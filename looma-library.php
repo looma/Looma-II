@@ -61,7 +61,9 @@ Description:  displays and navigates content folders for Looma
     //////
     foreach (new DirectoryIterator($path) as $fileInfo) {$files[$fileInfo->getFilename()] = $fileInfo; };
 
+    //NOTE: this sorts on FILENAME - really should sort on DISPLAYNAME
     $files = natksort($files);  //PHP key sort, sort on keys [e.g. filenames]
+
 
 /********************************/
 /**********  DIRs  **************/
@@ -211,13 +213,13 @@ Description:  displays and navigates content folders for Looma
                  $data = $slideshow['data'];
                  $author = $slideshow['author'];
                  $date = $slideshow['date'];
-                 $thumb = $slideshow['thumb'];
+                 $thumb = $slideshow['thumb'] ? $slideshow['thumb'] : "";
                  //NOTE: for now, fp and fn are concatenated in fn
                  //$path = $slideshow['fp'];
 
                  $ft = "slideshow";
                  $id = $slideshow['_id'];  //mongoID of the descriptor for this slideshow
-                 makeActivityButton($ft, "", "", $dn, $thumb, $data, $id, "", "", "");
+                 makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
                  echo "</td>";
                  $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
              } //end FOREACH slideshow

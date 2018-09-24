@@ -1,9 +1,22 @@
+/*
 .keyboardContainer {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
+    background-color: inherit;
+    z-index: 2147483648;
+    display: none;
+}
+*/
+
+.keyboardContainer {
+    position: fixed;
+    top: 15vh;
+    left: 11vw;
+    width: 85vw;
+    height: 85vh;
     background-color: inherit;
     z-index: 2147483648;
     display: none;

@@ -1,36 +1,48 @@
 /*
 LOOMA css file
 Filename: looma-lesson-present.css
-Programmer name: SCU [rev 1], Skip [rev 2]
+Programmer name: SCU [rev 1], Skip [rev 2,3]
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: Rev 1 - Spring 2016, Rev 2 - 2017 01 29
-Revision: 2.0
-
-Comments:
+Revision: 3.0
 */
+
 html {
     box-sizing: border-box;
 }
 
-#main-container {
+body {
     display:grid;
-    grid-template-columns: [left] 90vw [middle] 10vw [right];
-    grid-template-rows: [top] 90vh [timeline] 10vh [bottom];
-    
+    grid-template-rows:   [top]  repeat(9, 1fr)  [timeline] 1fr            [bottom];
+    grid-template-columns:[left] repeat(17, 1fr) [middle]   repeat(4, 1fr) [right];
+}
+
+#main-container-horizontal {
+    grid-row: top / timeline;
+    grid-column: left / right;
+    display:grid;
     height:90vh;
     margin:0;
-
     background-color:lightgray;
-    
     font-family: "Comic Sans MS", cursive, sans-serif;
-    color:black;}
+    color:black;
+}
+
+#timeline-container {
+    grid-row: timeline / bottom;
+    grid-column: left / middle;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+#controlpanel {
+    grid-row: timeline / bottom;
+    grid-column: middle / right;
+}
 
 #fullscreen {
-    grid-column: left / right;
-    grid-row: top / timeline;
     height:100%;
     width:100%;
-    
     margin:0;
     padding: 0;
 }
@@ -40,23 +52,21 @@ html {
     margin:auto;
 }
 
-#timeline-container {
-    grid-row: timeline / bottom;
-    grid-column: left / middle;
-    
-    overflow-x: scroll;
-    
-    overflow-y: hidden;
-    
+#media-controls-container {
+    position:absolute;
+    height:14vh;
+    width:80vw;
+    top:75vh;
+    left:10vw;
+    margin: 10px auto;
 }
 
 #timeline-container::-webkit-scrollbar {
     display: none;
 }
 
-#controlpanel {
-    grid-row: timeline / bottom;
-    grid-column: middle / right;
+#timeline::-webkit-scrollbar {
+    display: none;
 }
 
 .popup {
@@ -126,16 +136,15 @@ span.hint {
     width:100%;
 }
 
-#video-player {height: 83%;}
 #video-area    {height:100%;}
-#video-fullscreen {
-    height:100%;
-}
+#video-fullscreen {height:100%;}
 #video {width:100%}
 
-img#fullscreen {width:auto;}
+#video-player {height: 53%;}
+#video-player:fullscreen, #video-player:-webkit-full-screen {height:100%;}
 
-
+#viewer img {height:100%;}
+#viewer img:fullscreen, #viewer img:-webkit-full-screen {height:100%;}
 
 #timeline {
     display: inline-flex;
@@ -152,12 +161,6 @@ img#fullscreen {width:auto;}
     
     overflow-x: scroll;
     overflow-y: hidden;
-    
-}
-
-
-#timeline::-webkit-scrollbar {
-    display: none;
 }
 
 
@@ -190,7 +193,6 @@ img#fullscreen {width:auto;}
     border-radius:5px;}
 
 button.activity {display:none;}
-
 
 button.lesson-element {
     position: relative;
@@ -229,8 +231,6 @@ button.lesson-element img {
     width:5vw;
 }
 
-
-
 span .filename {
     text-align:center;
     float:none;
@@ -239,6 +239,7 @@ span .filename {
 span#lesson-name {
     color:black;
 }
+
 #button-box {
     position:relative;
     display: inline-flex;
@@ -248,7 +249,6 @@ span#lesson-name {
     margin:auto;
     vertical-align:middle;
 }
-
 
 .control-button {
     position: relative;
@@ -292,3 +292,4 @@ span#lesson-name {
     font-size: 20px;
 }
 
+#audio-viewer h2 {color:white;}

@@ -206,7 +206,8 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
 
                         if (result.thumb) $newButton.append($('<img src="' + result.thumb + '">'));
                         else $newButton.append($('<img src="' + LOOMA.thumbnail(result.fn, result.fp, result.ft) + '">'));
-                        $newButton.append($('<span>').text(result.dn));
+                    $newButton.append($('<span>').text(result.dn));
+                    $newButton.append($('<span class="tip yes-show big-show">').text(result.dn));
                         $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
                  },

@@ -20,8 +20,6 @@ body {
 #main-container-horizontal {
     grid-row: top / timeline;
     grid-column: left / right;
-    display:grid;
-    height:90vh;
     margin:0;
     background-color:lightgray;
     font-family: "Comic Sans MS", cursive, sans-serif;
@@ -35,11 +33,6 @@ body {
     overflow-y: hidden;
 }
 
-#controlpanel {
-    grid-row: timeline / bottom;
-    grid-column: middle / right;
-}
-
 #fullscreen {
     height:100%;
     width:100%;
@@ -50,6 +43,17 @@ body {
 #fullscreen:fullscreen {
     height:100vh;
     margin:auto;
+}
+
+#viewer {
+    position:relative;
+    height: 100%;
+    width:100%;
+}
+
+#controlpanel {
+    grid-row: timeline / bottom;
+    grid-column: middle / right;
 }
 
 #media-controls-container {
@@ -128,12 +132,6 @@ span.hint {
     padding:10vh 0 0 0;
     color:#888;
     z-index:-1;
-}
-
-#viewer {
-    position:relative;
-    height: 100%;
-    width:100%;
 }
 
 #video-area    {height:100%;}

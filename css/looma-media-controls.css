@@ -6,7 +6,7 @@
     height:2vh;
  }
  
-button#video-playpause {
+button.play-pause {
     background-image: url("../images/video.png");
     background-size: 100% 100%;
     background-color:rgba(255,255,255,1);

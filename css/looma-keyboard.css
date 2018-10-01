@@ -16,7 +16,9 @@
     top: 15vh;
     left: 11vw;
     width: 85vw;
-    height: 85vh;
+    height: 72vh;
+    max-height:85vh;
+    max-width:85vw;
     background-color: inherit;
     z-index: 2147483648;
     display: none;
@@ -24,21 +26,41 @@
 
 .keyboard {
     /*margin: 0 auto;*/
-    /*width: 100%;*/
+    max-width: 100%;
+    max-height:100%;
     display: inline-block;
 }
 
+.keyboard-row {
+    height:12vh;
+    width:100%;
+    text-align:center;
+}
+
 .keyboard-button {
-    float: left;
-    font-family: monospace;
-    margin: 2px;
+    //float: left;
+    margin: 3px;
     /*padding: 15px;*/
-    height: 2em;
     /*width: 7.6%;*/
 }
 
+#keyboard-backspace { width: 6vw;}
+#keyboard-backspace img { height:75%;}
+
 .key-normal .key-shifted {
     width: 6%;
+}
+
+#keyboard-space {
+    width:65%;
+    margin:6px 10px 0 0;
+    float:none;
+}
+
+#keyboard-hide {
+    width:24vw;
+    
+    float:right;
 }
 
 .keyboard-space {
@@ -114,7 +136,10 @@ br {
 }
 
 #inputEntry, #textareaEntry {
-    font-size: 2em;
+    border-radius: 8px;
+    font:inherit;
+    font-size: 3.5em;
+    width:33vw;
     margin: 10px;
     color: black;
 }

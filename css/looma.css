@@ -431,6 +431,13 @@ span:hover .xlat {
 
 span.tip { display:none;}
 
+button:hover span.tip.yes-show.big-show {
+    font-size:0.5em;
+    margin-left:2px;
+    padding:0 auto;
+    width:95%;
+}
+
 button:hover span.tip.yes-show 	{
     display:block;
     position:absolute;
@@ -705,4 +712,11 @@ div.center {
 .error {
     color:pink;
     font-weight:bold;
+}
+
+.display-name {
+    display:block;
+    font-size:2em;
+    color:red;
+    background-color:yellow;
 }

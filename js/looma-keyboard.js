@@ -51,10 +51,10 @@ function toggleNepali() {
     }
 }
 
-function addKey(keyboard, i) {
+function addKey(keyboardRow, i) {
+    var key = $("<button></button>").addClass("keyboard-button");
+    
     // There are four things each button could represent: the normal English key, the shifted English key, the normal Nepali key, and the shifted Nepali key.
-    var key = $("<button></button>")
-        .addClass("keyboard-button");
     var keySpan = $("<span></span>");
     keySpan.addClass("key-normal");
     keySpan.html(keys[i]);
@@ -74,11 +74,12 @@ function addKey(keyboard, i) {
     nepaliShifted.addClass("key-nepali-shifted");
     nepaliShifted.html(nepaliShiftedKeys[i]);
     key.append(nepaliShifted);
-    keyboard.append(key);
+    
+    keyboardRow.append(key);
 }
 
 /*
- * This whole function just generates the DOM elements for the keyboard – since it must be on every page, it's generated dynamically.
+ * This  function generates the DOM elements for the keyboard – since it must be on every page, it's generated dynamically.
  * Each row is generated in a loop, then any special characters are added to the end of that row and the beginning of the next.
  */
 function createKeyboard() {
@@ -102,61 +103,74 @@ function createKeyboard() {
         .attr('id', 'looma-keyboard')
         .addClass('keyboard');
 
-    keyboardContainer.append($("<br/>"));
-
+    ///keyboardContainer.append($("<br/>"));
+ 
     // First Row
+    var keyboardRow = ($('<div class="keyboard-row">'));
+    keyboard.append(keyboardRow);
+    
     for (var i = 0; i < 13; i++) {
-        addKey(keyboard, i);
+        addKey(keyboardRow, i);
     }
     var bksp = $("<button></button>")
         .attr('id', 'keyboard-backspace')
         .addClass("keyboard-button keyboard-special")
-        .html("&#9249;"); // This looks like "␡".
-    keyboard.append(bksp);
+        .html("<img src='images/backspace.png'>"); // This looks like "␡".
+    keyboardRow.append(bksp);
 
-    keyboard.append($("<br/>"));
+    ///keyboard.append($("<br/>"));
 
     // This isn't actually a button, but using a button element will make sure everything lines up. The visibility is set to "hidden" in the CSS.
     var row2Space = $("<button></button>")
         .addClass("keyboard-button keyboard-space");
     row2Space.html("&nbsp;");
-    keyboard.append(row2Space);
+    keyboardRow.append(row2Space);
 
     // Second Row
+    var keyboardRow = ($('<div class="keyboard-row">'));
+    keyboard.append(keyboardRow);
+    
     for (var i = 13; i < 26; i++) {
-        addKey(keyboard, i);
+        addKey(keyboardRow, i);
     }
 
-    keyboard.append($("<br/>"));
+    ///keyboard.append($("<br/>"));
 
     var row3Space = $("<button></button>")
         .addClass("keyboard-button keyboard-space");
     row3Space.html("&nbsp;");
-    keyboard.append(row3Space);
+    keyboardRow.append(row3Space);
 
     // Third Row
+    var keyboardRow = ($('<div class="keyboard-row">'));
+    keyboard.append(keyboardRow);
+    
     for (var i = 26; i < 37; i++) {
-        addKey(keyboard, i);
+        addKey(keyboardRow, i);
     }
 
+    /*
     var enter = $("<button></button>")
         .attr('id', 'keyboard-enter')
         .addClass("keyboard-button keyboard-special")
         .html("&nbsp;&#9166;");
-    keyboard.append(enter);
-
-    keyboard.append($("<br/>"));
-
+    keyboardRow.append(enter);
+    */
+    ///keyboard.append($("<br/>"));
+    
+    // Fourth Row
+    var keyboardRow = ($('<div class="keyboard-row">'));
+    keyboard.append(keyboardRow);
+    
     var shift = $("<button></button>")
         .attr('id', 'keyboard-shift')
         .addClass("keyboard-button keyboard-special")
         .html("Shift")
         .click(toggleShift);
-    keyboard.append(shift);
+    keyboardRow.append(shift);
 
-    // Fourth Row
     for (var i = 37; i < 47; i++) {
-        addKey(keyboard, i);
+        addKey(keyboardRow, i);
     }
 
     var language = $("<button></button>")
@@ -165,34 +179,27 @@ function createKeyboard() {
         .click(toggleNepali)
         .append($("<span></span>").attr('id', 'nepaliButtonText').addClass(
             "languageButtonText").html(
-            "Nepali"))
+            $('<img src="images/native-flag.png">')))
         .append($("<span></span>").attr('id', 'englishButtonText').addClass(
             "languageButtonText").html(
-            "English"));
-    keyboard.append(language);
+            $('<img src="images/english-flag.png">')));
+    keyboardRow.append(language);
 
-    $(keyboard).append("<br/>");
+    //$(keyboard).append("<br/>");
     var spacebar = $('<button></button>')
         .attr('id', 'keyboard-space')
         .html("&nbsp;&nbsp;&nbsp;&nbsp;Space&nbsp;&nbsp;&nbsp;&nbsp;")
-        .addClass("keyboard-button keyboard-special")
-        .css({
-            margin: "5px auto",
-            float: "none"
-        });
-    $(keyboard).append(spacebar);
+        .addClass("keyboard-button keyboard-special");
+    
+    $(keyboardRow).append(spacebar);
 
-    $(keyboard).append("<br/>");
+    //$(keyboard).append("<br/>");
     var hideButton = $('<button></button>')
         .attr('id', 'keyboard-hide')
         .html("Hide Keyboard")
         .addClass("keyboard-button keyboard-special")
-        .css({
-            margin: "5px auto",
-            float: "none"
-        })
         .click(hideKeyboard);
-    $(keyboard).append(hideButton);
+    $(keyboardRow).append(hideButton);
 
     $(keyboardContainer).append(keyboard);
     $('body').append(keyboardContainer);

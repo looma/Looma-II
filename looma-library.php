@@ -114,7 +114,9 @@ Description:  displays and navigates content folders for Looma
 
                 echo "<td><a href='looma-library.php?fp=" . $path . $file .
                 "/'><button class='activity img zeroScroll'>" .
-                folderThumbnail($path . $file) . $file . "</button></a></td>";
+                folderThumbnail($path . $file) . $file .
+                "<span class='tip yes-show big-show' >" . $file . "</span>" .
+                "</button></a></td>";
             }
     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 

@@ -62,6 +62,19 @@ $(document).ready (function() {
     //NOTE: might be better to change the CLASS of #padlock, and use #padlock.classname in CSS to change the image src
     if (LOOMA.loggedIn()) $('#padlock').attr('src','images/padlock-open.png');
     else                  $('#padlock').attr('src','images/padlock-closed.png');
+    
+/* replaced with class="tip show-yes"
+    function showDn (displayName, location) { $('#dn').html( '<p>' + displayName + '</p>').appendTo(location).show(); };
+    
+    $('#main-container-horizontal').on('mouseenter', '.activity',
+        function(e) { $(e.currentTarget).find('.display-name').show();}
+    );
+    
+    $('#main-container-horizontal').on('mouseleave', '.activity',
+        function(e) { $(e.currentTarget).find('.display-name').hide();}
+    );
+*/
+    
 
     $('#padlock').hover(
         function() { if (LOOMA.loggedIn()) {$('#login-id').show(); } },

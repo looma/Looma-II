@@ -19,8 +19,8 @@ $voice = $_REQUEST["voice"];
 
 
 if (empty($voice))
-    {   // Good Voices: cmu_us_bdl (male), cmu_us_jmk (male), cmu_us_ljm (female), cmu_us_slt (female), mycroft_voice_4.0 (male)
-        $voice = "mycroft_voice_4.0";
+    {   // Good Voices: cmu_us_bdl (male), cmu_us_jmk (male), cmu_us_ljm (female), cmu_us_aup (male), mycroft_voice_4.0 (male)
+        $voice = "cmu_us_aup";
     }
 
 if (preg_match('/[^\\p{Common}\\p{Latin}]/u', $text))

@@ -76,6 +76,7 @@ Description:  for Looma 2
             <li> </li><li> </li><li> </li><li> </li><li> </li> <!-- these empty 'li's give a pause at the start -->
             <li>  - -  </li>
 
+            <li>Brandon Clore</li>
             <li>Aish Raj Dahal</li>
             <li>Ram Hari Dahal</li>
             <li>Aakarshan Dhakal</li>

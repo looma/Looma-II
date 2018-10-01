@@ -160,7 +160,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url,
 
                           echo ">";
                           echo '<img src="' . $thumbSrc . '">';
-                          echo "<span>" . $dn . "</span></button>";
+                          echo "<span>" . $dn . "</span>";
+                          echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
 
 	}; //end makeActivityButton()
 	?>

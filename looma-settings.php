@@ -108,13 +108,21 @@ Description:  for Looma 2
              <a href="looma-import-content.php">
                  <button id="speechtest" class="exec-control" >Import Content</button>
              </a>
-
+             <br>
+             <button id="exit-kiosk" class="looma-control-button">
+                 <!-- <span class="xlat">To exit Kiosk mode type Alt-F4 on a keyboard</span> -->
+             </button>
+             <button id="shutdown" class="looma-control-button">
+                 <!-- <span class="xlat">To shutdown Looma type Crtl-W on a keyboard</span> -->
+             </button>
              <br><br><br><br>
              <span id="login-status"></span>
              <button class="login"></button>
 
          </div>
-	</div>
+
+
+    </div>
 
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>

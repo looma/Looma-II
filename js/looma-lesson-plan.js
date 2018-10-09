@@ -111,7 +111,10 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
     });
     
     //  when all the $.post are complete, then re-order the timeline to account for out-of-order elements from asynch $.post calls
-    $.when.apply(null, posts).then(function(){orderTimeline();lessoncheckpoint();});
+    $.when.apply(null, posts).then(function(){
+        orderTimeline();
+        lessoncheckpoint();
+    });
     
     makesortable();
     
@@ -766,8 +769,9 @@ function orderTimeline (){  // the timeline is populated with items that arrive 
     var $timeline = $('#timelineDisplay');
 
     $timeline.find('.activityDiv').sort(function(a, b) {
-        return +a.dataset.index - +b.dataset.index;
-        })
+        //return +a.dataset.index - +b.dataset.index;
+        return $(a).data('index') - $(b).data('index');
+    })
     .appendTo($timeline);
 }; // end orderTimeline()
 

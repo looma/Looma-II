@@ -162,14 +162,17 @@ Description:  functions and translation array for Keywords used in Looma 2
 function keyword($english) {
 
 	// this function generates the span (for 'english') label
-	// and a hidden span (for 'native) label.
+	// and a hidden span (for 'native') label.
 	// JS function LOOMA.translate(), will toggle the two spans' hidden state
 	// so it shows the label in the right language
 	// the HTML generated for each KEYWORD label has a class="english-keyword" initially visible button
-	// and a class="native" initially hidden button
+	// and a class="native-keyword" initially hidden button
 	//
-	// each label has a span with class='tip' to show a tooltip with the translation when hovering over the phrase
 	global $TKW;
+
+	//NOTE: should make this case insensitive
+
+
 	$native = (array_key_exists($english, $TKW) ? $TKW[$english] : $english); //default if no translation is the english
 	echo "<span class='english-keyword'>"
 			 . $english .
@@ -183,6 +186,7 @@ function keyword($english) {
 }; 	//end function KEYWORD()
 
 function tooltip($english) {
+        // each label has a span with class='tip' to show a tooltip with the translation when hovering over the phrase
 		global $TKW;
 		$native = (array_key_exists($english, $TKW) ? $TKW[$english] : $english); //default if no translation is the english
 

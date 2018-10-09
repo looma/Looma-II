@@ -431,24 +431,25 @@ span:hover .xlat {
 
 span.tip { display:none;}
 
-button:hover span.tip.yes-show.big-show {
-    font-size:0.5em;
-    margin-left:2px;
-    padding:0 auto;
-    width:95%;
-}
 
 button:hover span.tip.yes-show 	{
     display:block;
     position:absolute;
     top:10px;
-margin:auto;
+    margin:auto;
     font-size: 0.3em;
     z-index: 100;
     border: 1px solid #000000;
     border-radius: 3px;
     background-color: #C4E9F5;
     color:#000000;}
+
+button:hover span.tip.yes-show.big-show {
+    font-size:0.5em;
+    margin-left:2px;
+    padding:0 auto;
+    width:95%;
+}
 
 /*****************
  * buttons of class 'speak' and 'lookup' and 'show-keyboard' and id "fullscreen-control" can be placed on any page
@@ -551,6 +552,7 @@ button#bagh-chal {
 .all-transparent { /*makes screen transparent*/
     opacity: .6;
 }
+
 #dictionary-popup {
     max-height:50%;
     overflow:hidden;

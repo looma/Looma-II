@@ -21,7 +21,12 @@ $(document).ready(function () {
     //  the attribution logos on looma-info page are live links to websites
     //  check if online before following these links to avoid 404 or network timeout
     $('a').click(function(event){
-            if (!navigator.onLine) event.preventDefault();
+            if (navigator.onLine) {
+                var target = event.currentTarget.href;
+                window.open(target,'popup','width=540, height=400, top=200, left=270');
+            }
+    
+        event.preventDefault();
         });
         
         //using jquery.easy-ticker.js

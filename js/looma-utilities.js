@@ -494,9 +494,8 @@ translate : function(language) {
         $('.native-tip').removeClass('yes-show');
     }
     //change toolbar TRANSLATE icon to the flag of the OTHER language (not being currently shown)
-    if (language == 'english') $('#flag').attr('src',
-        'images/native-flag.png');
-    else /*native*/ $('#flag').attr('src', 'images/english-flag.png');
+    if (language == 'english') $('#flag').attr('src', 'images/native-flag.png');
+    else /*native*/            $('#flag').attr('src', 'images/english-flag.png');
     
 }, // end translate()
    
@@ -1160,7 +1159,6 @@ LOOMA.makeTransparent = function($container) {
 };  // End of makeTransparent
  
  //undo makeTransparent()
- 
  LOOMA.undoTransparent = function($container) {
      if (!$container) $container  = $('body > div');
      $container.removeClass('all-transparent');

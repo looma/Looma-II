@@ -39,26 +39,27 @@ Description:  for Looma 2
 
                 <!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
 
-                <a href="http://www.khanacademy.org"><img src="images/logos/khan.jpg" height="66px"></a>
-                <a href="http://www.olenepal.org"><img src="images/logos/ole-nepal.jpg" height="66px"></a>
-                <a href="https://www.wikipedia.org"><img src="images/logos/wikipedia.jpg" height="66px"></a>
-                <a href="https://phet.colorado.edu"><img src="images/logos/PHET.png" height="44px"></a>
-                <a href="https://leafletjs.com"><img src="images/logos/leaflet-logo.png" height="66px"></a>
-                <a href="https://www.openstreetmap.org"><img src="images/logos/openstreetmap-logo.png" height="66px"></a>
-                <a href="https://translate.google.com"><img src="images/logos/google-translate.jpg" height="66px"></a>
-                <a href="https://www.mapbox.com"><img src="images/logos/tilemill.png" height="66px"></a>
-                <a href="https://mycroft.ai"><img src="images/logos/mycroft.png" height="33px"></a>
+                <a class="attribution" href="http://www.khanacademy.org" target="_blank"><img src="images/logos/khan.jpg" height="66px"></a>
+                <a class="attribution" href="http://www.olenepal.org" target="_blank"><img src="images/logos/ole-nepal.jpg" height="66px"></a>
+                <a class="attribution" href="https://www.wikipedia.org" target="_blank"><img src="images/logos/wikipedia.jpg" height="66px"></a>
+                <a class="attribution" href="https://phet.colorado.edu" target="_blank"><img src="images/logos/PHET.png" height="44px"></a>
+                <a class="attribution" href="https://leafletjs.com" target="_blank"><img src="images/logos/leaflet-logo.png" height="66px"></a>
+                <a class="attribution" href="https://www.openstreetmap.org" target="_blank"><img src="images/logos/openstreetmap-logo.png" height="66px"></a>
+                <a class="attribution" href="https://translate.google.com" target="_blank"><img src="images/logos/google-translate.jpg" height="66px"></a>
+                <a class="attribution" href="https://www.mapbox.com" target="_blank"><img src="images/logos/tilemill.png" height="66px"></a>
+                <a class="attribution" href="https://mycroft.ai" target="_blank"><img src="images/logos/mycroft.png" height="33px"></a>
                 <br>
-                <a href="https://jquery.com"><img src="images/logos/jquery-logo.png" height="66px"></a>
+                <a class="attribution" href="https://jquery.com" target="_blank"><img src="images/logos/jquery-logo.png" height="66px"></a>
                 <span><img src="images/logos/css3-html5-logo.png" height="44px"></span>
-                <a href="https://www.mongodb.com"><img src="images/logos/mongodb-logo.png" height="66px"></a>
-                <a href="https://www.jetbrains.com/idea/"><img src="images/logos/intellij.png" height="44px"></a>
-                <a href="https://www.stackoverflow.org"><img src="images/logos/stackoverflow.png" height="66px"></a>
-                <a href="http://www.villagetechsolutions.org"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
+                <a class="attribution" href="https://www.mongodb.com" target="_blank"><img src="images/logos/mongodb-logo.png" height="66px"></a>
+                <a class="attribution" href="https://www.jetbrains.com/idea/" target="_blank"><img src="images/logos/intellij.png" height="44px"></a>
+                <a class="attribution" href="https://www.stackoverflow.org" target="_blank"><img src="images/logos/stackoverflow.png" height="66px"></a>
+                <a class="attribution" href="http://www.villagetechsolutions.org" target="_blank"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
             </div>
             <br>
 
             <span><img src="images/logos/LoomaLogoTransparent.png" class="loomalogo"></span>
+            <img src="images/trademark4.png" id="trademark" height="33px">
 
             <h4>Tested only in Google Chrome</h4>
             <h4>Report bugs and suggestions to:  info AT villagetechsolutions DOT org</h4>
@@ -329,10 +330,15 @@ Description:  for Looma 2
 		      <!--button showing CC license icon, with link to the license info page -->
 
     <div id="sizemessages">
-            <p class="screensize"></li>
-            <p class="bodysize"></li>
-    </div>
+        <p class="screensize"></p>
+        <p class="bodysize"></p>
 
+
+        <?php //want to display IP address for remote access, until we have zeroconf
+              //NOTE: want the external IP for this LOOMA, but 127.0.0.1 "localhost" will show on projected page
+              //echo "<p class=\"ip\">IP Address: " . gethostbyname('localhost') . "</p>"; ?>
+
+    </div>
     	<!-- W3C validator link    new URL=https://validator.w3.org/nu/
    		<a class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->
 

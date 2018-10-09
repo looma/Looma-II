@@ -1,5 +1,6 @@
-
-document.getElementById("back").onclick = function() {window.location = parent.history.back();};
+window.onload = function () {
+    
+    document.getElementById("back").onclick = function() {parent.history.back();};
 
 var previews = document.getElementById("previews");
 var count = 0;
@@ -51,3 +52,4 @@ if (count == 0) {
   previews.innerHTML = "You don't have any old drawings." +
   " Click on the button to go back to the whiteboard.";
 }
+};

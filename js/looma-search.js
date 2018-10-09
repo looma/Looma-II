@@ -128,11 +128,11 @@ function restoreKeywordDropdown(level,keys) {
                                 $('<option value="none" label="(none)"/>').appendTo($next);
     
                                 restoreKeywordDropdown(nextLevel, keys);
-                            };
+                            }   $('#search').submit();  //re-run the search
                         },
                       'json'
                     );
-                }
+                } else         $('#search').submit();  //re-run the search
             }
         }
     }; //end restoreKeywordDropdown()
@@ -252,39 +252,42 @@ function restoreState () {
     $search[0].reset();
     
     var savedForm = LOOMA.restoreForm($('#search'), 'searchForm');  //restore the search settings
-    // reset some search form fields not handled by LOOMA.restoreForm() using 'savedForm'
-    //for each element of savedForm that has name=='type[]' and name=='src[]' set the type[value] = selected
-    if (savedForm && savedForm.length > 0) {
-        // get the name, value pairs from formSettings and restore them in 'form'
-        $.each(savedForm, function (i, item) {
-            // restore 'type' and 'scr' selections
-            if (item.name == 'type[]') $("#search #" + item.value + "-checkbox")[0].checked = true;
-            if (item.name == 'src[]')  $("#search #" + item.value + "-checkbox")[0].checked = true;
-            //if (item.name == 'src[]')  $('#source-div')[0][item.value].checked = true;
-        });
     
-        //setRootKeyword();  // initialize keyword 1 to 'root' of keyword tree from mongo
-        
-        var keys = [];
-        var key1 = savedForm.find(x => x.name === 'key1'); keys.push(key1?key1.value:null);
-        var key2 = savedForm.find(x => x.name === 'key2'); keys.push(key2?key2.value:null);
-        var key3 = savedForm.find(x => x.name === 'key3'); keys.push(key3?key3.value:null);
-        var key4 = savedForm.find(x => x.name === 'key4'); keys.push(key4?key4.value:null);
-        
-        restoreKeywordDropdown(1,keys);  // restore and select keywords 1,2,3,4 if specified
-    };
-
+    
     if ($('#collection').val() == 'chapters') {
         setCollection('chapters');
         //$('.media-input').prop('disabled', true);
         if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
             showChapterDropdown($('#chapter-div'), $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'));
+            
+        $('#search').submit();  //re-run the search
+    
     } else {
         $('#chapter-search').hide();
         
+        // reset some search form fields not handled by LOOMA.restoreForm() using 'savedForm'
+        //for each element of savedForm that has name=='type[]' and name=='src[]' set the type[value] = selected
+        if (savedForm && savedForm.length > 0) {
+            // get the name, value pairs from formSettings and restore them in 'form'
+            $.each(savedForm, function (i, item) {
+                // restore 'type' and 'scr' selections
+                if (item.name == 'type[]') $("#search #" + item.value + "-checkbox")[0].checked = true;
+                if (item.name == 'src[]')  $("#search #" + item.value + "-checkbox")[0].checked = true;
+                //if (item.name == 'src[]')  $('#source-div')[0][item.value].checked = true;
+            });
+        
+            //setRootKeyword();  // initialize keyword 1 to 'root' of keyword tree from mongo
+            
+            var keys = [];
+            var key1 = savedForm.find(x => x.name === 'key1'); keys.push(key1?key1.value:null);
+            var key2 = savedForm.find(x => x.name === 'key2'); keys.push(key2?key2.value:null);
+            var key3 = savedForm.find(x => x.name === 'key3'); keys.push(key3?key3.value:null);
+            var key4 = savedForm.find(x => x.name === 'key4'); keys.push(key4?key4.value:null);
+            
+            restoreKeywordDropdown(1,keys);  // restore and select keywords 1,2,3,4 if specified
+        };
     };
-    
-    $('#search').submit();  //re-run the search
+    //$('#search').submit();  //re-run the search
     
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
     

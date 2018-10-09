@@ -90,9 +90,15 @@ h5 {text-align:left;
      bottom:5vh;
  }
 
- .screensize, .bodysize{
+ .screensize, .bodysize, .ip{
      /*color:black;*/
      vertical-align:middle;
      text-align:left;
      font-size: 0.5em;
+ }
+
+ #trademark {
+     position:relative;
+     left:-120px;
+     top:-20px;
  }

@@ -362,7 +362,10 @@ function showOpenMenu() {
 //BUG - should detect if the user has made any changes to the current drawing. if not, dont ask to SAVE
 //
 
-     LOOMA.confirm("Save current drawing?", function (){saveFile();window.location = ("looma-paint-openfile.php");}, function(){window.location = ("looma-paint-openfile.php");});
+     LOOMA.confirm("Save current drawing?",
+                function (){saveFile();window.location = ("looma-paint-openfile.php");},
+                function (){window.location = ("looma-paint-openfile.php");}
+            );
      //window.location = ("looma-paint-openfile.php");
 }
 

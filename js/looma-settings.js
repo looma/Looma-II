@@ -58,8 +58,10 @@ $(document).ready (function() {
                     });
 
     //$('.voice#' + LOOMA.readStore('voice', 'cookie')).attr('checked', 'checked'); //add checkmark on current voice
-
-
+    
+   $('#exit-kiosk').click(function() {LOOMA.alert("To exit Kiosk mode type Crtl-W on a keyboard", 10);});
+   $('#shutdown').click(  function() {LOOMA.alert("To shutdown Looma press and hold the top button on the wand", 10);});
+    //$('#shutdown').click(  function() {window.location = 'looma-shutdown.php';});
 
     console.log('reading cookie: ' + LOOMA.readStore('voice', 'cookie'));
     console.log('setting CHECKED on: ', '.voice#' + LOOMA.readStore('voice', 'cookie'));

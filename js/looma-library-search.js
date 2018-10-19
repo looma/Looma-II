@@ -99,7 +99,7 @@ function playActivity(event) {
     // something like $("button.play").on('click', playActivity, true);
     // and, event.stopPropogation(); in the playActivity() function
     
-    saveState();  // saves scroll position and search form settings
+    saveSearchState();  // saves scroll position and search form settings
     LOOMA.playMedia(button);
 };
 
@@ -111,7 +111,7 @@ $(document).ready (function() {
     //$("button.play").click().off().click(playActivity);
     $('#results-div').on('click', "button.play", playActivity);
     
-    $("#toggle-database").click(function(){saveState(); window.location = "looma-library.php";});//'fade', {}, 1000
+    $("#toggle-database").click(function(){saveSearchState(); window.location = "looma-library.php";});//'fade', {}, 1000
     
     $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll',    'session'));

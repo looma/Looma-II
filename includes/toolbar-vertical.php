@@ -46,7 +46,7 @@
                 <?php tooltip("History") ?>
             </button>
 
-			<button onclick="parent.location.href = 'looma-games.php';" class="toolbar-button-vertical ">
+			<button onclick="parent.location.href = 'looma-gamesNEW.php';" class="toolbar-button-vertical ">
 				<img draggable="false" src="images/games.png"  height = "70%" >
 				<?php tooltip('Games');?>
 			</button>

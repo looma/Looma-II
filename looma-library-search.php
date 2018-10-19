@@ -28,8 +28,10 @@ Description:  searches Looma library for Looma 2
 
         /*********** Search Results ***********/
         echo "<div id='results-div'></div>";
-        echo "<button id='toggle-database' class='toggle black-border'></button>";
-    ?>
+
+        echo "<button id='toggle-database' class='toggle black-border'>";
+        tooltip("Folders");
+        echo "</button>"; ?>
 
     <h1 class = "credit">Created by Bo</h1>
 

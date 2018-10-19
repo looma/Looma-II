@@ -122,8 +122,8 @@ playMedia : function(button) {
             break;
 
         case "looma":
-            var url = encodeURIComponent(button.getAttribute('data-url'));
-            window.location = url;
+            var fp = encodeURIComponent(button.getAttribute('data-fp'));
+            window.location = fp;
             break;
 
         case "epaath":
@@ -139,7 +139,7 @@ playMedia : function(button) {
             break;
     
         case "game":
-            window.location = 'looma-game.php?id=' + button.getAttribute('data-id');
+            window.location = 'looma-lesson-game.php?id=' + button.getAttribute('data-id');
             break;
     
         case "map":
@@ -156,9 +156,8 @@ playMedia : function(button) {
             break;
 
              */
-    
         case "slideshow":
-            window.location = 'looma-slideshow-present.php?id=' + button.getAttribute("data-id");
+            window.location = 'looma-slideshow.php?id=' + button.getAttribute("data-id");
             break;
     
         case "history":
@@ -204,10 +203,8 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                                 //
                            );
 
-                        if (result.thumb) $newButton.append($('<img src="' + result.thumb + '">'));
-                        else $newButton.append($('<img src="' + LOOMA.thumbnail(result.fn, result.fp, result.ft) + '">'));
-                    $newButton.append($('<span>').text(result.dn));
-                    $newButton.append($('<span class="tip yes-show big-show">').text(result.dn));
+                        $newButton.append($('<img src="' + LOOMA.thumbnail(result.fn, result.fp, result.ft) + '">'));
+                        $newButton.append($('<span>').text(result.dn));
                         $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
                  },
@@ -361,12 +358,6 @@ thumbnail: function (filename, filepath, filetype) {
                 else if (filetype == "slideshow") {
                     imgsrc = "images/play-slideshow-icon.png";
                 }
-                else if (filetype == "lesson") {
-                    imgsrc = "images/lesson.png";
-                }
-                else if (filetype == "game") {
-                    imgsrc = "images/games.png";
-                }
                 else if (filetype == "looma") {
                     imgsrc = "images/LoomaLogo_small.png";
                 }
@@ -494,8 +485,9 @@ translate : function(language) {
         $('.native-tip').removeClass('yes-show');
     }
     //change toolbar TRANSLATE icon to the flag of the OTHER language (not being currently shown)
-    if (language == 'english') $('#flag').attr('src', 'images/native-flag.png');
-    else /*native*/            $('#flag').attr('src', 'images/english-flag.png');
+    if (language == 'english') $('#flag').attr('src',
+        'images/native-flag.png');
+    else /*native*/ $('#flag').attr('src', 'images/english-flag.png');
     
 }, // end translate()
    
@@ -594,13 +586,7 @@ defHTML: function (definition, rwdef) {
     
         $def.html(def);
     
-    
-    if (definition.img) {
-        var imgName = definition.img + ".jpg";
-        var $img = $('<img id="definitionThumb" src="../content/dictionary\ images/' + imgName + '"/>');
-    }
-    
-        $div.append($english, $nepali, $pos, $def, $img);
+        $div.append($english, $nepali, $pos, $def);
     
         if (rwdef) {
             var $rwdef = $('<div id="rwdef"/>');
@@ -624,16 +610,54 @@ define : function(word, succeed, fail) {
     LOOMA.lookup(word, found, notfound);
     
     function found(def) {
+        console.log(def['en'] + " DEFINED")
+        // succeed("<div>" + def['en'] + ": " + def['def'] + "</div>")
         if (def.rw) {
-            LOOMA.lookup(def.rw, rwfound, rwnotfound);
             function rwfound(rwdef) {
-                succeed (LOOMA.defHTML(def, rwdef));
+                succeed(LOOMA.defHTML(def, rwdef));
             };
             function rwnotfound() {
-                succeed (LOOMA.defHTML(def));
+                succeed(LOOMA.defHTML(def));
             };
+            LOOMA.lookup(def.rw, rwfound, rwnotfound);
         } else {
             succeed(LOOMA.defHTML(def));
+        }
+    };
+    
+    function notfound() {
+        fail();
+    };
+    
+}, //end LOOMA.define()
+
+// function DEFINE looks up the word and returns HTML containing
+//                 the word, translation, definition, and rootword definition
+sienna_define : function(word, succeed, fail) {
+    LOOMA.lookup(word, found, notfound);
+    function found(definition) {
+        if (definition.rw) {
+            function rwfound(rwdef) {
+                if (   (definition.def == 'past tense of')
+                    || (definition.def == 'comparative form of')
+                    || (definition.def == 'superlative form of')
+                    || (definition.def == 'past participle of')
+                    || (definition.def == 'present participle of')
+                    || (definition.def == 'past tense and past participle of')
+                    || (definition.def == 'third person singular of')) {
+                    succeed(definition['def'] +' '+definition['rw'])
+                } else {
+                    succeed(definition['def']);
+
+                }       
+            };
+            function rwnotfound() {
+                succeed(definition['def']);
+            };
+            LOOMA.lookup(definition.rw, rwfound, rwnotfound);
+        } else {
+            // succeed(LOOMA.defHTML(def));
+            succeed(definition['def']);
         }
     };
     
@@ -680,7 +704,7 @@ wordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
             if (ch_id) parameters  += "&ch_id="   + encodeURIComponent(ch_id);
             if (count) parameters  += "&count="  + count.toString();
             if (random) parameters += "&random=" + encodeURIComponent(random);
-
+    console.log(parameters);
     $.ajax(
         "looma-dictionary-utilities.php",
         {
@@ -935,7 +959,7 @@ LOOMA.speak = function(text, engine, voice) {
         
          // use speechsynthesis if present
          if (!engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) engine = 'synthesis';
-         if (!engine) engine = 'mimic';  //default engine is mimic
+         if (!engine) engine = 'mimic';  //efault engine is mimic
          if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_slt'; //get the currently used voice, if any. default VOICE is "slt"
         
          console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
@@ -1016,12 +1040,9 @@ LOOMA.speak = function(text, engine, voice) {
     ////////////////////////////////
         
          if (engine == 'synthesis') {
-             
-             //add code to use the currently set VOICE from COOKIE [set by looma-settings.php]
-             
              // we use synthesis if the user is running Safari or Chrome.
              // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
-             // Chromium's speechSynthesis is present, but speechSysthesis.getVoices() show no voices loaded
+             // Chromium's speechSynthesis seems to be broken. (re-check this)
              if (speechSynthesis.speaking) {
                  if (speechSynthesis.paused)
                      speechSynthesis.resume();
@@ -1130,6 +1151,7 @@ LOOMA.toggleFullscreen = function() {
 }; //end LOOMA.toggelFullscreen()
 
 /*
+ from looma-alerts.js in the slideshow team code
  Description: Creates a styled translatable popup interface.
  NOTES: All methods support prompts/alerts in either text or html. If using either, any text can be converted into
  Looma's translatable spans using the provided LOOMA.translatableSpans().
@@ -1157,12 +1179,7 @@ LOOMA.makeTransparent = function($container) {
     });//end ESC listener
 
 };  // End of makeTransparent
- 
- //undo makeTransparent()
- LOOMA.undoTransparent = function($container) {
-     if (!$container) $container  = $('body > div');
-     $container.removeClass('all-transparent');
- };  // End of undoTransparent
+
 
 /** Removes any popups on the page */
 LOOMA.closePopup = function() {
@@ -1186,13 +1203,10 @@ LOOMA.closePopup = function() {
  * @param time (optional)- a delay in seconds after which the popup is automatically closed
  * */
 //var popupInterval;
-LOOMA.alert = function(msg, time, notTransparent){
+LOOMA.alert = function(msg, time, notTransparent, next){
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
-    
-    if ($('#fullscreen').length) var attachPoint = $('#fullscreen'); else attachPoint = $(document.body);
-    
-    attachPoint.append("<div class= 'popup'>" +
+    $(document.body).append("<div class= 'popup'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>"+ msg +
         "<button id ='close-popup' class ='popup-button'>" +
         //"<img src='images/alert.jpg' class='alert-icon'" +
@@ -1201,6 +1215,9 @@ LOOMA.alert = function(msg, time, notTransparent){
     $('#close-popup, #dismiss-popup').click(function() {
        // $("#close-popup").off('click');
         //$("#dismiss-popup").off('click');
+        if (next) {
+            next();
+        }
         LOOMA.closePopup();
     });
  /*   $('#dismiss-popup').click(function() {
@@ -1216,12 +1233,15 @@ LOOMA.alert = function(msg, time, notTransparent){
         var popupInterval = setInterval(function() {
             if (timeLeft <= 0) {
                 clearInterval(popupInterval);
+                if (next) {
+                    next();
+                }
                 LOOMA.closePopup();
             }
             timeLeft -= 1;
             popupButton.html(LOOMA.translatableSpans("OK (" + Math.round(timeLeft + 1) + ")",
                 "ठिक छ(" + Math.round(timeLeft + 1) + ")"));
-        }, 1000);
+        },1000);
     };
 };  //end alert()
 
@@ -1234,10 +1254,7 @@ LOOMA.alert = function(msg, time, notTransparent){
 LOOMA.confirm = function(msg, confirmed, canceled, notTransparent) {
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
-    
-    if ($('#fullscreen').length) var attachPoint = $('#fullscreen'); else attachPoint = $(document.body);
-   
-    attachPoint.append("<div class='popup confirmation'>" +
+    $(document.body).append("<div class='popup confirmation'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button> " + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<button id='confirm-popup' class='popup-button'>"+
@@ -1266,10 +1283,7 @@ LOOMA.confirm = function(msg, confirmed, canceled, notTransparent) {
 LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
-    
-    if ($('#fullscreen').length) var attachPoint = $('#fullscreen'); else attachPoint = $(document.body);
-    
-    attachPoint.append("<div class='popup textEntry'>" +
+    $(document.body).append("<div class='popup textEntry'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<input id='popup-input' autofocus></input>" +

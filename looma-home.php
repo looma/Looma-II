@@ -37,9 +37,9 @@ define ("CLASSES", 8);
 
         foreach ($classes as $class) {
             echo "<button type='button' class='class' id=$class>";
-            echo "<span class='little'>Grade</span><br>";
+            echo "<div class='little'>"; keyword("Grade"); echo "  </div><div>";
             echo keyword((string) $i);
-            echo "</button>";
+            echo "</div></button>";
             $i++;
         }
 

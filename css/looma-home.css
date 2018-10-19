@@ -75,9 +75,10 @@ button:hover  {
     margin: 3px;
     padding: 0 3px;
     color: black;
+    min-width:9vw;
     
     line-height: 1.0;
-    font-size: 5em;
+    font-size: 8em;
     font-weight: bold;
     
     /* trying to get the class and subject buttons to shrink in the flex row. but not working
@@ -92,6 +93,8 @@ button:hover  {
     color:yellow;
 }
 .classnumber {font-size:4em;}
+
+.classes .native-keyword {font-size:1.4em;}
 
 #subjects {position:relative;}
 

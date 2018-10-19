@@ -14,6 +14,7 @@ Description: Initial "histories" page. Takes the user to the history timelines.
     require ('includes/mongo-connect.php');
     require('includes/looma-utilities.php');
 
+    /*
 		function makeButton($file, $thumb, $dn) {
 
 				//DEBUG   echo "making button with path= $path  file= $file   ext= $ext"; //DEBUG
@@ -33,6 +34,7 @@ Description: Initial "histories" page. Takes the user to the history timelines.
 				echo "</button></a>";
 
 		};  //end makeButton()
+    */
 	?>
 
 	<body>
@@ -64,7 +66,7 @@ Description: Initial "histories" page. Takes the user to the history timelines.
                     $thumb = "../content/timelines/" . $dn . "_thumb.jpg";
                     //$thumb = $path . "/thumbnail.png";
                     $id = $history['_id'];  //mongoID of the descriptor for this lesson
-                    makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
+                    makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "");
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 

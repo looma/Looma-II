@@ -62,6 +62,8 @@ window.onload = function() {
         play($(this));
     });
 
+    $('.tip').removeClass('yes-show');  // dont show normal hover popup
+    
     $('.lesson-element img').hover(
         function() { //handlerIn
             var $btn = $(this).closest('button');

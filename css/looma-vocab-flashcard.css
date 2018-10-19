@@ -199,3 +199,13 @@ p.clickToFlip {
     font-size: 20px;
     color:inherit;
 }
+
+#definitionThumb {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    max-height: 100px;
+    top: 100px;
+}

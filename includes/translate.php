@@ -9,155 +9,7 @@ Description:  functions and translation array for Keywords used in Looma 2
 -->
 
 <?php
-	// array $TKW (TranslateKeyWords) has the english to native translations for all Looma
-	// KEYWORD and TOOLTIP buttons. To change languages, say from nepali to swahili, just change this array
-	$TKW = array (
-
-	// translate array UPDATED Jan 2016 from latest spreadsheet from SABU //
-
-			"Documents" => "कागजातहरु",
-			"Power-off" => "बन्द गर्ने",
-			"Exit" => "निकास",
-			"Volume" => "मात्रा",
-			"Pen" => "कलम",
-			"Paintbrush" => "रङ्ग ब्रश",
-			"Eraser" => "रबड",
-			"Erase" => "मेटाउन",
-			"Clear" => "स्पष्ट",
-			"Enter" => "प्रविष्ट",
-			"Help" => "मदत",
-			"Undo" => "अन्डु",
-			"Black" => "कालो",
-			"Red" => "रातो",
-			"Orange" => "सुन्तला रङ्ग",
-			"Yellow" => "पहेलो",
-			"Green" => "हरियो",
-			"Blue" => "नीलो",
-			"Indigo" => "इन्डिगो",
-			"Violet" => "बैंगनी",
-			"Gray" => "खैरो",
-			"Quit" => "छोड्ने",
-			"Teacher handbooks" => "शशिक्षक हैंड बुक",
-			"Looma" => "लुमा",
-			"Audio" => "अडियोे",
-			"Video" => "भिडियोे",
-			"ePaath" => "ई–पाटी",
-			"Pictures" => "तस्बीर",
-			"Internet" => "इन्टरनेट",
-			"Settings" => "सेटिङ्स",
-			"Information" => "जानकारी",
-			"Textbooks" => "पाठ्यपुस्तक",
-			"Handbooks" => "हैंड बुक्स",
-			"PDFs" => "पिडिएफहरु",
-			"Looma Dictionary" => "लुमा शब्दकोश",
-			"Dictionary" => "शब्दकोश",
-			"Looma Calculator" => "लुमा क्याल्कुलेटर",
-			"Calculator" => "क्याल्कुलेटर",
-			"Looma Library" => "लुमा पुस्तकालय",
-			"Library" => "पुस्तकालय",
-			"Looma Maps" => "लुमा नक्सा",
-			"Maps"  => "नक्सा",
-			"Enter English word here" => "यहाँ अंग्रेजी शब्द प्रविष्ट गर्नुहोस्",
-			"Submit" => "प्रस्तुत",
-			"Paint" => "रङ लगाउनुहोस्",
-			"Menu" => "मेनु",
-			"New Problem" => "नयाँ समस्या",
-			"Correct problems" => "सही समस्या",
-			"File" => "फाइल",
-			"Save file" => "सेभ फाइल",
-			"Open file" => "फाइल खोल्नुहोस्",
-			"Looma Practice Exercises" => "लुमा अभ्यास व्यायाम",
-			"Vocabulary Games" => "शब्दावली खेल",
-			"Arithmetic Games" => "अङ्क गणित खेल",
-			"Click flashcard for definition" => "च्लिच्क कार्ड फोर देफिनिशन",
-			"Click to select a map" => "नक्सा चयन गर्न क्लिक गर्नुहोस््",
-			"Click to select a game" => "खेल खेल्न क्लिक गर्नुहोस््",
-			"Click to select a drawing" => "एक रेखाचित्र चयन गर्न क्लिक गर्नुहोस््",
-			"Click to change theme" => "थेम परिवर्तन गर्न क्लिक गर्नुहोस्",
-			"Back" => "फिर्ता",
-			"Home" => "घर",
-			"Next" => "अगाडी",
-			"First" => "पहिलो",
-			"Last" => "अन्तिम",
-			"Zoom-in" => "भित्र जूम",
-			"Zoom-out" => "बाहिर जूम",
-			"Play" => "खेल",
-			"Mute" => "ध्वनि बन्द्द",
-			"Un-mute" => "ध्वनि सुचारुु",
-			"Full screen" => "पूरा पर्दा",
-			"Class" => "कक्षा ",
-			"Grade" => "ग्रेड",
-			"Topic" => "विषय",
-			"Class 1" => "कक्षा १",
-			"Class 2" => "कक्षा २",
-			"Class 3" => "कक्षा ३",
-			"Class 4" => "कक्षा ४",
-			"Class 5" => "कक्षा ५",
-			"Class 6" => "कक्षा ६",
-			"Class 7" => "कक्षा ७",
-            "Class 8" => "कक्षा ८",
-            "Class 9" => "कक्षा ९",
-            "Class 10" => "कक्षा १०",
-			"0" => "०",
-			"1" => "१",
-			"2" => "२",
-			"3" => "३",
-			"4" => "४",
-			"5" => "५",
-			"6" => "६",
-			"7" => "७",
-			"8" => "८",
-			"9" => "९",
-            "10" => "१०",
-            "Nepali" => "नेपाली",
-			"English" => "अंग्रेजी",
-			"Math" => "गणित",
-			"Science" => "विज्ञान",
-			"Social Studies" => "सामाजिक अध्ययन",
-			"Web" => "वेब",
-			"Draw" => "चचित्र कोर",
-			"Info" => "जानकारी",
-            "Settings" => "सेटिङ",
-            "Tools" => "सेटिङ",
-			"Games" => "खेलहरु",
-			"अनुवाद" => "Translate",
-			"Activities" => "गतिविधिहरु",
-			"Add" => "जोड",
-			"Subtract" => "घटाऊ",
-			"Multiply" => "गुणन",
-			"Divide" => "भाग",
-			"Pick an old drawing:" => "पुरानो रेखाचित्र छान्नुहोस्",
-			"File saved" => "फाइल बचत",
-			"Back to the Paint page" => "फिर्ता रंग पृष्ठमा",
-
-            "Show Current Time" => "वर्तमान समय गर्न",
-            "Digital Clock" => "डिजिटल खेल",
-            "World Clocks" => "विश्व घडीहरु",
-            "Clock Game" => "घडी खेल",
-            "24 Hour Time" => "२४ घण्टा समय",
-            "12 Hour Time" => "१२ घण्टा समय",
-            "Time" => "समय",
-            "Analog Clock" => "एनालग घडी",
-
-            "Next Frame" => "अर्को फ्रेम",
-            "Play/Pause" => "प्ले / पज",
-            "Create Edited Video" => "सम्पादित भिडियो सिर्जना",
-            "Log In" => "लग - इन",
-            "Previous Frame" => "अघिल्लो फ्रेम",
-            "Set Start Time" => "समय सुरु सेट",
-            "Set Stop Time" => "स्टप समय सेट",
-            "Default" => "पूर्वनिर्धारित",
-            "Cancel" => "रद्द",
-            "Delete" => "मेटाउन",
-            "Edit" => "सम्पादन",
-            "Rename" => "पुन: नामकरण",
-            "Text" => "पाठ",
-            "Image" => "छवि",
-            "Search Panel" => "सेअर्च पनेल",
-            "Hide Panel"   => "हिडे पनेल",
-            "Lesson" => "पाठ",
-            "Bagh Chal" => "बाघ चाल"
-	); //end array TKW
+include_once ('includes/translations.php');
 
 function keyword($english) {
 
@@ -171,7 +23,6 @@ function keyword($english) {
 	global $TKW;
 
 	//NOTE: should make this case insensitive
-
 
 	$native = (array_key_exists($english, $TKW) ? $TKW[$english] : $english); //default if no translation is the english
 	echo "<span class='english-keyword'>"
@@ -191,7 +42,7 @@ function tooltip($english) {
 		$native = (array_key_exists($english, $TKW) ? $TKW[$english] : $english); //default if no translation is the english
 
 		echo "<span class='tip english-tip yes-show'>" . $english . "</span>";
-		echo "<span class='tip native-tip'>" . $native . "</span>";
+		echo "<span class='tip native-tip'>"           . $native  . "</span>";
 
 }  //end function TOOLTIP()
 ?>

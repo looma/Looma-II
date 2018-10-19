@@ -78,20 +78,21 @@ Description: looma lesson plan presenter
                      $thumbSrc = $details['fp'] . thumbnail($details['fn']);
                 else $thumbSrc = null;
 
-                    //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
 
+                        makeActivityButton(
+                             $details['ft'],
+                            (isset($details['fp'])) ? $details['fp'] : null,
+                            (isset($details['fn'])) ? $details['fn'] : null,
+                            (isset($details['dn'])) ? $details['dn'] : null,
+                             null,
+                            $thumbSrc,
 
-                        makeActivityButton($details['ft'],
-                                           (isset($details['fp'])) ? $details['fp'] : null,
-                                           (isset($details['fn'])) ? $details['fn'] : null,
-                                           (isset($details['dn'])) ? $details['dn'] : null,
-                                            $thumbSrc,
-
-                                           "", //(isset($details['ch_id'])) ? $details['ch_id'] : null,
-                                           (isset($details['mongoID'])) ? $details['mongoID'] : null,
-                                           (isset($details['url'])) ? $details['url'] : null,
-                                           null,
-                                           null);
+                            "", //(isset($details['ch_id'])) ? $details['ch_id'] : null,
+                            (isset($details['mongoID'])) ? $details['mongoID'] : null,
+                            (isset($details['url'])) ? $details['url'] : null,
+                            null,
+                            null);
                 } else
 
                 if ($lesson_element['collection'] == 'chapters') {
@@ -107,17 +108,18 @@ Description: looma lesson plan presenter
                         $thumbSrc = "../content/" . $textbook['fp'] . thumbnail($textbook['fn']);
                     else $thumbSrc = null;
 
-                    // makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    // makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
                     makeActivityButton('pdf',
-                                           (isset($textbook['fp'])) ? '../content/' . $textbook['fp'] : null,
-                                           (isset($textbook['fn'])) ? $textbook['fn'] : null,
-                                           (isset($chapter['dn'])) ? $chapter['dn'] : null,
-                                           $thumbSrc,
-                                           $chapter['_id'],
-                                           null,
-                                           null,
-                                           (isset($chapter['pn']) ? $chapter['pn'] : 1),
-                                           160);
+                       (isset($textbook['fp'])) ? '../content/' . $textbook['fp'] : null,
+                        (isset($textbook['fn'])) ? $textbook['fn'] : null,
+                        (isset($textbook['dn'])) ? $textbook['dn'] : null,
+                        null,
+                       $thumbSrc,
+                       $chapter['_id'],
+                       null,
+                       null,
+                       (isset($chapter['pn']) ? $chapter['pn'] : 1),
+                       160);
                 };
              };
              }

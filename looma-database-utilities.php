@@ -151,6 +151,7 @@ if (isset($_REQUEST["collection"])) {
        case "history":
        case "histories":     $dbCollection = $histories_collection;     break;
        case "game":          $dbCollection = $games_collection;         break;
+       case "games":         $dbCollection = $games_collection;         break;
        case "edited_videos": $dbCollection = $edited_videos_collection; break;
 
        default: echo "unknown collection: " . $collection;        return;
@@ -760,6 +761,17 @@ if ( isset($_REQUEST["cmd"]) ) {
         return;
         // end case "uploadFile"
 
+        case "getGame":
+            $id = new MongoID($_REQUEST["gameId"]);
+
+            $query = array('_id' => $id);
+            $cursor = $dbCollection->find($query);
+            foreach ($cursor as $doc)
+            {
+                $game = $doc;
+            }
+            echo json_encode($game);
+            break;
 
     ///////////////////////////////////////////
     // nothing  (null command for debugging) //

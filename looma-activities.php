@@ -14,7 +14,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 	require ('includes/header.php');
 	require ('includes/mongo-connect.php');
 
-    // load: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+    // load: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
     require('includes/looma-utilities.php');
 	?>
 </head>
@@ -123,8 +123,8 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 				case "mp4":
                 case "mov":
                 case "m4v":
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, "", "", "", "");
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "");
 					break;
 
                 case "slideshow":
@@ -135,20 +135,20 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
                     //$imagesrc = $split[0];
                     //$mongoid  = $split[1];
                     //$fp = urlencode('../content/slideshows/');
-                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $id, "", "", "", "");
+                     // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "");
                     break;
 
                 case "lesson":
 
                     $thumb = "images/lesson.png";
-                    makeActivityButton($ft, "", "", $dn, $thumb, "", $id, "", "", "");
+                    makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "");
 
                     break;
                 case "evi":      //edited videos
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
                     //echo "making button: " . $fn . ".";
-                    makeActivityButton($ft, $fp, $fn . ".mp4", $dn, $thumb, $ch_id, $id, "", "", "");
+                    makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $thumb, $ch_id, $id, "", "", "");
                     break;
 
                 case "VOC":     //vocabulary reviews
@@ -162,52 +162,52 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
                 case "jpeg":
 				case "png":
 				case "gif":
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, "", "", "", "");
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "", "");
 					break;
 
 				case "audio":
 				case "mp3":
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, "", "", "", "");
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "", "");
                     break;
 
 				case "pdf":
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, "", "", "1", "auto");
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "1", "auto");
                     break;
 
                 case "text":
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, $thumb, $ch_id, $id, "", "", "");
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, $id, "", "", "");
                     break;
 
                 case "map";
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $fp, $fn, $dn, "/" . $fn . "_thumb.png", $ch_id, "", "", "", "");
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, "", "", "", "");
                    break;
 
                  case "looma";  //open a Looma page (e.g. calculator or paint)
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $url, "", $dn, "", $ch_id, "", "", "", "");
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "");
                    break;
 
                  case "lesson";  //open a lesson in lesson player
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", "", $dn, $thumb, $ch_id, $id, "", "", "");
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, "", "", $dn, "", $thumb, $ch_id, $id, "", "", "");
                    break;
 
                 case "EP":
                 case "epaath":
                     $thumb = $fn . "/thumbnail.jpg";
-                   // USE: function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, "", $ch_id, "", "", "", "");
+                   // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, "", $fn, $dn, "", "", $ch_id, "", "", "", "");
 					break;
 
                 case "html":
                 case "HTML":
                     // make a HTML button
-                    makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, "", "", "", "");
+                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "");
                     break;
 
 				default:

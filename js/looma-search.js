@@ -13,16 +13,115 @@ Description:
 var $searchResultsDiv;
 var $ajaxRequest;
 
+//var scrollTimeout = null;
+//var scrollDebounce = 5000; //msec delay to debounce scroll stop
+
+/////////////////////////////
+/////  clearSearch()    /////
+/////////////////////////////
+function clearSearch() {
+    
+    if ($ajaxRequest) $ajaxRequest.abort();
+    $('#media-submit').prop("disabled",false);
+    
+    var prevCollection = $('#collection').val();
+    $("#search").trigger("reset");
+    setCollection(prevCollection);
+    
+    if ($('#collection').val() == 'activities') {
+        //$('.keyword-filter').val("").change();
+        setRootKeyword();
+    } else {
+        $("#grade-drop-menu").val("").change();
+        $("#subject-drop-menu").val("").change();
+        $('#ft-chapter').prop("checked", true);
+    };
+    $('#chapter-div').hide();
+    
+    //clearResults();  //provided by calling .JS file
+    clearSearchState();
+    
+}; // end clearSearch()
+
+/////////////////////////////
+/////  clearSearchState()     /////
+/////////////////////////////
+function clearSearchState () {
+    LOOMA.clearStore('libraryScroll', 'session');
+    LOOMA.clearStore('searchForm',    'session');
+    
+};  //end clearSearchState()
+
+/////////////////////////////
+/////  restoreSearchState()   /////
+/////////////////////////////
+function restoreSearchState () {
+    
+    var $search = $('#search');
+    $search[0].reset();
+    
+    var savedForm = LOOMA.restoreForm($('#search'), 'searchForm');  //restore the search settings
+    
+    
+    if ($('#collection').val() == 'chapters') {
+        setCollection('chapters');
+        //$('.media-input').prop('disabled', true);
+        if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
+            showChapterDropdown($('#chapter-div'), $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'));
+        
+        $('#search').submit();  //re-run the search
+        
+    } else {
+        $('#chapter-search').hide();
+        
+        // reset some search form fields not handled by LOOMA.restoreForm() using 'savedForm'
+        //for each element of savedForm that has name=='type[]' and name=='src[]' set the type[value] = selected
+        if (savedForm && savedForm.length > 0) {
+            // get the name, value pairs from formSettings and restore them in 'form'
+            $.each(savedForm, function (i, item) {
+                // restore 'type' and 'scr' selections
+                if (item.name == 'type[]') $("#search #" + item.value + "-checkbox")[0].checked = true;
+                if (item.name == 'src[]')  $("#search #" + item.value + "-checkbox")[0].checked = true;
+                //if (item.name == 'src[]')  $('#source-div')[0][item.value].checked = true;
+            });
+            
+            //setRootKeyword();  // initialize keyword 1 to 'root' of keyword tree from mongo
+            
+            var keys = [];
+            var key1 = savedForm.find(x => x.name === 'key1'); keys[1] = (key1?key1.value:null);
+            var key2 = savedForm.find(x => x.name === 'key2'); keys[2]=  (key2?key2.value:null);
+            var key3 = savedForm.find(x => x.name === 'key3'); keys[3] = (key3?key3.value:null);
+            var key4 = savedForm.find(x => x.name === 'key4'); keys[4] = (key4?key4.value:null);
+            keys[5] = null;
+            // add more elements to KEYS[] if there are more levels of keywords
+            
+            restoreKeywordDropdown(1,keys);  // restore and select keywords 1,2,3,4 if specified
+        };
+    };
+    
+    //note: restorekeywordropdown calls search.submut, so DONT do it here
+    // $('#search').submit();  //re-run the search
+    
+    $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
+    
+};  //end restoreSearchState()
+
+/////////////////////////////
+/////  saveSearchState()      /////
+/////////////////////////////
+function saveSearchState () {
+    // save SCROLL position
+    LOOMA.setStore('libraryScroll', $("#main-container-horizontal").scrollTop(), 'session');
+    // save FROM contents
+    LOOMA.saveForm($('#search'), 'searchForm');
+}; //end saveSearchState()
+
 /////////////////////////////
 /////  setCollection()  /////
 /////////////////////////////
 function setCollection(collection) {
-    clearResults();
+    clearResults();  //provided by calling .JS file
     $('#collection').val(collection);
-    
-    
-        //$("#search").trigger("reset");  //reset the whole form, or not???
-    
     
     if (collection == 'activities') {
         $('.media-filter').show();
@@ -93,49 +192,44 @@ function setRootKeyword() {
 //////////////////////////////////////
 function restoreKeywordDropdown(level,keys) {
 
-        //function selectKey(option, name) {option.prop('selected', true);};
-        var $menu, $element;
-        var key = keys[level-1]?keys[level-1]:null;
-        
-        if (key && key !== '') {
-            $menu = $('#key' + level + '-menu'); // get the dropdown option elements for this level
-   
-            if ($menu) {
-
-                // dropdown = $menu[value=key];
-                // dropdown = $menu.find(x => x.value === key);
-                // dropdown = $menu['#'+key];
-                //var item = $( 'option#' + key)[ 0 ];
-                
-                $element = $menu.children('option[value="'+key+'"]');
-                $element.prop('selected', true);
-
-                if (level < 4) {
-                    $.post("looma-database-utilities.php",
-                        {cmd: "keywordList", id: $element.data('kids')},
-                        function(kids) {
-                            var nextLevel = level + 1;
-                            var $next = $('#key' + nextLevel + '-menu').empty().val('').prop('disabled', false).text('');
-                            //var next = $menu.next('select').empty().prop('disabled', false);
-                            if (kids) {
-                                
-                                $('<option value="" label="(any)..."/>').prop('selected', true).appendTo($next);
-                                
-                                for (var i=0;i<kids.length;i++){
-                                //kids.forEach(function (kid) {
-                                    $('<option data-kids=' + kids[i].kids["$id"] + ' value="' + kids[i].name + '" label="' + kids[i].name + '"/>').appendTo($next);
-                                };
-                                $('<option value="none" label="(none)"/>').appendTo($next);
+    var $menu, $element;
+    var key = keys[level]?keys[level]:null;
     
-                                restoreKeywordDropdown(nextLevel, keys);
-                            }   $('#search').submit();  //re-run the search
-                        },
-                      'json'
-                    );
-                } else         $('#search').submit();  //re-run the search
-            }
-        }
-    }; //end restoreKeywordDropdown()
+    if (key && key !== '') {
+        
+        //mark this key as SELECTED in this level's dropdown menu
+        $menu = $('#key' + level + '-menu'); // get the dropdown option elements for this level
+        if ($menu) {
+            $element = $menu.children('option[value="' + key + '"]');
+            $element.prop('selected', true);
+        };
+
+         if ($element.data('kids') !== 'undefined') {  //the MONGO document for KEYWORDS returns KIDS as 'undefined' if there are no kids
+            console.log('calling server with level = ' + level + ' and keys: ' + keys[1] + ', '+ keys[2] + ', '+ keys[3] + ', '+ keys[4] );
+            
+            $.post("looma-database-utilities.php",
+                {cmd: "keywordList", id: $element.data('kids')},
+                function(kids) {
+                    var nextLevel = level + 1;
+                    var $next = $('#key' + nextLevel + '-menu').empty().val('').prop('disabled', false).text('');
+                    if (kids) {
+                        $('<option value="" label="(any)..."/>').prop('selected', true).appendTo($next);
+                        
+                        for (var i=0;i<kids.length;i++){
+                            $('<option data-kids=' + kids[i].kids["$id"] + ' value="' + kids[i].name + '" label="' + kids[i].name + '"/>').appendTo($next);
+                        };
+                        
+                        $('<option value="none" label="(none)"/>').appendTo($next);
+                    };
+                    restoreKeywordDropdown(nextLevel, keys);
+                },
+              'json'
+            );
+        } // end if (kids)
+         else $('#search').submit();  //re-run the search
+    }  //end if(key)
+    else $('#search').submit();  //re-run the search
+}; //end restoreKeywordDropdown()
 
 ///////////////////////////////////
 /////  showKeywordDropdown()  /////
@@ -194,114 +288,6 @@ function showChapterDropdown($div, $grades, $subjects, $chapters) {
         );
 };  //end showChapterDropdown()
 
-/////////////////////////////
-/////  clearSearch()    /////
-/////////////////////////////
-function clearSearch() {
-    
-    if ($ajaxRequest) $ajaxRequest.abort();
-    $('#media-submit').prop("disabled",false);
-    
-    var prevCollection = $('#collection').val();
-    $("#search").trigger("reset");
-    setCollection(prevCollection);
-    
-    if ($('#collection').val() == 'activities') {
-        //$('.keyword-filter').val("").change();
-        setRootKeyword();
-    } else {
-        $("#grade-drop-menu").val("").change();
-        $("#subject-drop-menu").val("").change();
-        $('#ft-chapter').prop("checked", true);
-    };
-    $('#chapter-div').hide();
-    
-    //$searchResultsDiv.empty();    //.hide();
-    clearResults();
-    /*
-       //this is to keep the form from having unwanted inputs
-       $('.chapter-input').prop('disabled', true);
-       $('.media-input').prop('disabled', false);
-       
-       //clear all search fields
-       $('#search-term').val("").focus();
-       $(".flt-chkbx").each(function () {$(this).prop("checked", false);}); //turns off all checkboxes (type and src)
-       
-       $("#grade-drop-menu, #subject-drop-menu, #chapter-drop-menu").val("").change();
-    */
-    
-    clearState();
-    
-}; // end clearSearch()
-
-/////////////////////////////
-/////  clearState()     /////
-/////////////////////////////
-function clearState () {
-    LOOMA.clearStore('libraryScroll', 'session');
-    LOOMA.clearStore('searchForm',    'session');
-    
-};  //end clearState()
-
-/////////////////////////////
-/////  restoreState()   /////
-/////////////////////////////
-function restoreState () {
-    
-    var $search = $('#search');
-    $search[0].reset();
-    
-    var savedForm = LOOMA.restoreForm($('#search'), 'searchForm');  //restore the search settings
-    
-    
-    if ($('#collection').val() == 'chapters') {
-        setCollection('chapters');
-        //$('.media-input').prop('disabled', true);
-        if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
-            showChapterDropdown($('#chapter-div'), $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'));
-            
-        $('#search').submit();  //re-run the search
-    
-    } else {
-        $('#chapter-search').hide();
-        
-        // reset some search form fields not handled by LOOMA.restoreForm() using 'savedForm'
-        //for each element of savedForm that has name=='type[]' and name=='src[]' set the type[value] = selected
-        if (savedForm && savedForm.length > 0) {
-            // get the name, value pairs from formSettings and restore them in 'form'
-            $.each(savedForm, function (i, item) {
-                // restore 'type' and 'scr' selections
-                if (item.name == 'type[]') $("#search #" + item.value + "-checkbox")[0].checked = true;
-                if (item.name == 'src[]')  $("#search #" + item.value + "-checkbox")[0].checked = true;
-                //if (item.name == 'src[]')  $('#source-div')[0][item.value].checked = true;
-            });
-        
-            //setRootKeyword();  // initialize keyword 1 to 'root' of keyword tree from mongo
-            
-            var keys = [];
-            var key1 = savedForm.find(x => x.name === 'key1'); keys.push(key1?key1.value:null);
-            var key2 = savedForm.find(x => x.name === 'key2'); keys.push(key2?key2.value:null);
-            var key3 = savedForm.find(x => x.name === 'key3'); keys.push(key3?key3.value:null);
-            var key4 = savedForm.find(x => x.name === 'key4'); keys.push(key4?key4.value:null);
-            
-            restoreKeywordDropdown(1,keys);  // restore and select keywords 1,2,3,4 if specified
-        };
-    };
-    //$('#search').submit();  //re-run the search
-    
-    $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
-    
-};  //end restoreState()
-
-/////////////////////////////
-/////  saveState()      /////
-/////////////////////////////
-function saveState () {
-    // save SCROLL position
-    LOOMA.setStore('libraryScroll', $("#main-container-horizontal").scrollTop(), 'session');
-    // save FROM contents
-    LOOMA.saveForm($('#search'), 'searchForm');
-}; //end saveState()
 
 /////////////////////////////
 /////  refreshPage()    /////
@@ -311,16 +297,13 @@ function refreshPage() {
     var formSettings = LOOMA.readStore('searchForm', 'session');
     
     if (formSettings) {
-        restoreState();
+        restoreSearchState();
     } else {
         //start page on media search with all form fields cleared
-        clearState();
+        //clearSearchState();
         clearSearch();
     }
 };  // end refreshPage()
-
-var scrollTimeout = null;
-var scrollDebounce = 5000; //msec delay to debounce scroll stop
 
 /////////////////////////////
 /////  document.ready()  /////
@@ -332,13 +315,15 @@ $(document).ready(function() {
     $('#search').submit(function( event ) {
         event.preventDefault();
     
-        clearResults();  // this calls function "clearResults()" provided by the JS of the page which includes search.php
-                         // probably this call should be replaced by "$searchResultsDiv.empty();"
+        console.log('search submitted');
+        
+        clearResults();  // "clearResults()" provided by the JS of the page which includes search.php
+                         // probably this call could be replaced by "$searchResultsDiv.empty();"
     
         $searchResultsDiv.empty().show();
         
         if (!isFilterSet()) {
-            $searchResultsDiv.html('please select at least 1 filter option before searching');
+            $searchResultsDiv.html('Please select at least 1 filter option before searching');
         } else {
             
             var loadingmessage = $("<p/>Loading results<span id='ellipsis'>.</span>").appendTo("#results-div");
@@ -361,14 +346,14 @@ $(document).ready(function() {
                 'json');
         }
         return false;
-    });
+    }); //end search.submit
     
     $('#ft-media').click(function() {
         
         if ($('#collection').val() == 'chapters'){ //changing from CHAPTERS to ACTIVITIES
             setCollection('activities');
         }
-    });
+    }); //end ft-media.click()
     
     $('#ft-chapter').click(function() { //changing from ACTIVITIES to CHAPTERS
         
@@ -379,18 +364,15 @@ $(document).ready(function() {
                  $('#chapter-div').show();
             else $('#chapter-div').hide();
         }
-    });
+    });  //end ft-chapter.click()
     
     $("#grade-drop-menu, #subject-drop-menu").change(function() {
         showChapterDropdown($('#chapter-div'), $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'))
-    });
+    });  //end drop-menu.change()
 
-    //$("#keyword-div .keyword-dropdown").change(showKeywordDropdown);
     $("#keyword-div .keyword-dropdown").change(showKeywordDropdown);
     
     $('.clear-search').click(clearSearch);
-    
-    $("button.zeroScroll").click(function() {LOOMA.setStore('libraryScroll', 0, 'session');});
     
     refreshPage();
     

@@ -203,6 +203,10 @@ button.lesson-element {
     vertical-align:top;
 }
 
+button.lesson-element .name{
+    display:none;
+}
+
 button.lesson-element.playing {
     border:4px solid blue;}
 

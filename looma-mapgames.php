@@ -10,8 +10,7 @@ Description: page with links to map games
 
 	<?php $page_title = 'Looma Map Games ';
 	      include ('includes/header.php'); ?>
-	<!-- add CSS files for this page:
-		<link rel="stylesheet" href="css/filename.css"> -->
+		<link rel="stylesheet" href="css/looma-games.css">
 	</head>
 
 <body>

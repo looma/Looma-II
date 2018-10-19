@@ -61,11 +61,25 @@ function folderThumbnail ($fp) {  //for directories, look for filename "thumbnai
     else return "";
 }; //end function thumbnail
 
+function displayName($name, $dn, $ndn) {
+    if ($dn && $ndn) {
+        echo "<span class='english-keyword'>"
+            . $dn .
+            "<span class='xlat'>" . $ndn . "</span>" .
+            "</span>";
+        echo "<span class='native-keyword' >"
+            . $ndn .
+            "<span class='xlat'>" . $dn . "</span>" .
+            "</span>";
+    } else if ($dn) echo "<span class='name'>" . $dn . "</span>";
+      else echo "<span class='name'>" . $name . "</span>";
+};  //end displayName()
+
 
 /*********************************/
 /******** makeActivityButton *****/
 /*********************************/
-function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom) {
+function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom) {
 	    // makes an ACTIVITY button (for looma-library, looma-activities, etc)
 	    // some parameters are optional for some filetypes
 	    //    $ft - filetype, $fp - path to file, $fn - filename, $dn - display name,
@@ -160,7 +174,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url,
 
                           echo ">";
                           echo '<img src="' . $thumbSrc . '">';
-                          echo "<span>" . $dn . "</span>";
+                          //echo "<span>" . $dn . "</span>";
+                          displayName($fn, $dn, $ndn);
                           echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
 
 	}; //end makeActivityButton()

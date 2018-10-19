@@ -24,13 +24,17 @@
         $dictionary_collection = $loomaDB -> dictionary;
         $logins_collection     = $loomaDB -> logins;
         $history_collection    = $loomaDB -> histories;
+        $histories_collection  = $loomaDB -> histories;
         $slideshows_collection = $loomaDB -> slideshows;
         $text_files_collection = $loomaDB -> text_files;
         $lessons_collection    = $loomaDB -> lessons;
-        $histories_collection  = $loomaDB -> histories;
         $maps_collection       = $loomaDB -> maps;
         $games_collection      = $loomaDB -> games;
+        $folders_collection    = $loomaDB -> folders;
         $edited_videos_collection = $loomaDB -> edited_videos;
+
+        //$sienna_collection    = $loomaDB -> sienna;
+
 
         //the lines below are commented out for now. some Looma installs have old MONGO versions that dont do 'createIndex'
         //$activities_collection->createIndex(array('ch_id' => 1));

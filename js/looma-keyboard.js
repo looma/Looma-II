@@ -9,7 +9,7 @@
  */
 var keys = "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./";
 var shiftedKeys = "~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?";
-var nepaliKeys = "ऽ१२३४५६७८९०-=टौेरतयुिोपइएॐासदउगहजकल;'षडछवबनम,।्";
+var nepaliKeys = "ऽ१२३४५६७८९0-=टौेरतयुिोपइएॐासदउगहजकल;'षडछवबनम,।्";
 var nepaliShiftedKeys = "़!@#$%^&*()॰॒ठऔैृथञूीओफईऐःआशधऊघअझखळ:\"ऋढचँभणंङ॥?"
 
 var destination = undefined;
@@ -375,7 +375,10 @@ $(document).ready(function() {
         elementFocused);
     var showKeyboardButton = $("<button></button>").addClass(
         "show-keyboard looma-control-button").click(showKeyboard);
-
+    
+    showKeyboardButton.append($('<span class="tip english-tip yes-show">Keyboard</span>'))
+    showKeyboardButton.append($('<span class="tip native-tip">Keyboard</span>'))
+    
     destination = $(document.activeElement);
     
     if ( $('#fullscreen').length)

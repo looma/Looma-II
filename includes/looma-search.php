@@ -37,6 +37,8 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
     <form id='search' name='search'>
         <input type='hidden' id='collection' value='activities' name='collection'/>
         <input type='hidden' id='cmd' value='search' name='cmd'/>
+        <input type='hidden' id='pageno' value='1' name='pageno'/>
+        <input type='hidden' id='pagesz' value='500' name='pagesz'/>
 
   <!--  /**************************************/
         /********** Media v. Chapter **********/

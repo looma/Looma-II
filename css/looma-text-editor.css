@@ -22,8 +22,8 @@ h1 {background-color:#F0EC1A}
 .admin {
     display:none;
 }
-.btn-toolbar {
-    text-align:center;
+.btn-toolbar {.
+text-align:center;
     display:inline-block;
     color:black;
 }
@@ -59,6 +59,7 @@ button.result {
 #editor {
     height: 35vh;
     width: 35vw;
+    font-size: 1em;
     zoom: 200%;
     margin:0 auto;
     overflow:hidden;

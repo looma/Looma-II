@@ -9,12 +9,12 @@ Description:
  */
 
 'use strict';
-
 var $searchResultsDiv;
 var $ajaxRequest;
 
-//var scrollTimeout = null;
-//var scrollDebounce = 5000; //msec delay to debounce scroll stop
+var pagesz = 500;  //default search results 'page size' (number of results returned form each search)
+                    // can be over-ridden by calling code (e.g looma-library.js)
+var pageno;
 
 /////////////////////////////
 /////  clearSearch()    /////
@@ -38,6 +38,8 @@ function clearSearch() {
     };
     $('#chapter-div').hide();
     
+    pageno = 1;
+    
     //clearResults();  //provided by calling .JS file
     clearSearchState();
     
@@ -47,6 +49,7 @@ function clearSearch() {
 /////  clearSearchState()     /////
 /////////////////////////////
 function clearSearchState () {
+    $("#top").hide;
     LOOMA.clearStore('libraryScroll', 'session');
     LOOMA.clearStore('searchForm',    'session');
     
@@ -58,10 +61,10 @@ function clearSearchState () {
 function restoreSearchState () {
     
     var $search = $('#search');
-    $search[0].reset();
+    //$search[0].reset();
     
     var savedForm = LOOMA.restoreForm($('#search'), 'searchForm');  //restore the search settings
-    
+    pagesz = $search.find("#pagesz").val();
     
     if ($('#collection').val() == 'chapters') {
         setCollection('chapters');
@@ -305,6 +308,35 @@ function refreshPage() {
     }
 };  // end refreshPage()
 
+
+
+/////////////////////////////
+/////  sendSearchRequest()    /////
+/////////////////////////////
+function sendSearchRequest(searchForm, callBack) {
+    searchForm.find("#pagesz").val(pagesz);
+    searchForm.find("#pageno").val(pageno);
+    
+    var loadingmessage = $("<p/>Loading results<span id='ellipsis'>.</span>").appendTo("#results-div");
+    
+    var ellipsisTimer = setInterval(
+        function () {
+            $('#ellipsis').text($('#ellipsis').text().length < 10 ? $('#ellipsis').text() + '.' : '');
+        },33 );
+    
+    $ajaxRequest = $.post( "looma-database-utilities.php",
+        searchForm.serialize(),
+        function (result) {
+            loadingmessage.remove();
+            clearInterval(ellipsisTimer);
+            pageno++;
+            callBack(result);
+            $('#media-submit').prop("disabled",false);
+        },  // NOTE: displayResults() function is supplied in the JS of the user looma-search (e.g. looma-lessonplan.xx)
+        'json');
+}; //end sendSearchRequest()
+
+
 /////////////////////////////
 /////  document.ready()  /////
 /////////////////////////////
@@ -318,23 +350,20 @@ $(document).ready(function() {
         console.log('search submitted');
         
         clearResults();  // "clearResults()" provided by the JS of the page which includes search.php
-                         // probably this call could be replaced by "$searchResultsDiv.empty();"
     
         $searchResultsDiv.empty().show();
+        pageno = 1;
         
         if (!isFilterSet()) {
             $searchResultsDiv.html('Please select at least 1 filter option before searching');
         } else {
             
-            var loadingmessage = $("<p/>Loading results<span id='ellipsis'>.</span>").appendTo("#results-div");
-            
-            var ellipsisTimer = setInterval(
-                 function () {
-                    $('#ellipsis').text($('#ellipsis').text().length < 10 ? $('#ellipsis').text() + '.' : '');
-                },33 );
-            
+  
             $('#media-submit').prop("disabled",true);
-    
+
+        sendSearchRequest ($("#search"), displayResults);
+        
+        /*  //following code replaced with call to sendSearchRequest() call above //
             $ajaxRequest = $.post( "looma-database-utilities.php",
                 $("#search").serialize(),
                 function (result) {
@@ -344,6 +373,7 @@ $(document).ready(function() {
                     $('#media-submit').prop("disabled",false);
                 },  // NOTE: displayResults() function is supplied in the JS of the user looma-search (e.g. looma-lessonplan.xx)
                 'json');
+        */
         }
         return false;
     }); //end search.submit

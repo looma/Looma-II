@@ -10,12 +10,15 @@ Description:
 
 'use strict';
 
+var result = 1, row = 0, maxButtons = 3;
 
 ////////////////////////////////
 /////  clearResults()    /////
 ////////////////////////////////
 function clearResults(results) {
     $('#results-div').empty();
+    $("#top").hide();
+    $("#more").hide();
 }; //end clearResults()
 
 ////////////////////////////////
@@ -33,10 +36,13 @@ function clearResults(results) {
             else                      result_array['activities'].push(e);
     });
 
+    $("#top").show();
+    if (result_array.length % pagesz === 0) $("#more").show();
+    
     var chapResults = result_array['chapters'].length;
     var actResults = result_array['activities'].length;
 
-    $display.append("<p>Chapters(" + chapResults + ")  Activities(" + actResults + ")</p>");
+    $display.append("<p> Activities(<span id='count'>" + actResults + "</span>)</p>");
     
     $display.append('<table id="results-table"></table>');
 
@@ -47,15 +53,48 @@ function clearResults(results) {
 
     $display.show();
     
-    $('#results-div').on('click', "button.play", playActivity);
+   // $('#results-div').off('click','button.play').on('click', "button.play", playActivity);
     
-}; //end displayFileSearchResults()
+}; //end displayResults()
+
+////////////////////////////////
+/////  displayMoreResults()    /////
+////////////////////////////////
+function displayMoreResults(results) {
+    
+    var result_array = [];
+    result_array['activities'] = [];
+    result_array['chapters']  = [];
+    
+    results.forEach(function(e) {
+        if (e['ft'] == 'chapter') result_array['chapters'].push(e);
+        else                      result_array['activities'].push(e);
+    });
+    
+    $("#top").show();
+    if (result_array['activities'].length % pagesz === 0) $("#more").show();
+    
+    //var chapResults = result_array['chapters'].length;
+    //var actResults = result_array['activities'].length;
+    
+    //$display.append("<p> Activities(<span id='count'>" + actResults + ")</span></p>");
+    $('#results-div').find('#count').text(parseInt($('#results-div').find('#count').text()) + result_array['activities'].length);
+    
+    if(result_array['activities'].length > 0)
+        displayActivities(result_array['activities'], '#results-table');
+    /*
+    if(chapResults != 0)
+        displayChapters(result_array['chapters'], '#results-table');
+    */
+    
+    
+    
+}; //end displayMoreResults()
 
 ///////////////////////////////////
 /////  displayActivities()    /////
 ///////////////////////////////////
 function displayActivities(results, table) {
-    var result = 1, row = 0, maxButtons = 3;
     $.each(results, function(index, value) {
             if(result % maxButtons == 1){
                 row++;
@@ -105,6 +144,10 @@ function playActivity(event) {
 
 $(document).ready (function() {
     
+    pagesz = 24;
+    $("#search").find("#pagesz").val(pagesz);
+    //$("#search").find("#pageno").val(pageno);
+    
     // format the TYPES ckeckboxes by inserting a <br>
     $("#type-div > span:nth-child(7)").after("<br/>");
     
@@ -112,6 +155,19 @@ $(document).ready (function() {
     $('#results-div').on('click', "button.play", playActivity);
     
     $("#toggle-database").click(function(){saveSearchState(); window.location = "looma-library.php";});//'fade', {}, 1000
+    
+    $("#top").hide();
+    $("#more").hide();
+    
+    $("#top").click(function(){
+        $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});
+        $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll',    'session'));
+    });
+    
+    $("#more").click(function(){
+        pagesz = 24;
+        sendSearchRequest ($("#search"), displayMoreResults);
+    });
     
     $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll',    'session'));

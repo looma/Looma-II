@@ -13,8 +13,10 @@ Description: custom 404 page for looma browser if no internet present
 
   <body>
   	<br><br><br><br><br><br><br><br><br><br>
-	<h2>This Looma is not connected to the internet</h2>
     <span><img src="images/logos/LoomaLogoTransparent.png" height="100px"></span>
+    <h2>Looma page not found</h2>
 
-   </body>
-</html>
+    <?php   include('includes/looma-control-buttons.php');?>
+    <button class='control-button' id='dismiss' ></button>
+  </body>
+<?php include ('includes/js-includes.php'); ?></html>

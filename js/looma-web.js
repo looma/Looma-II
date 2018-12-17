@@ -57,7 +57,7 @@ $(document).ready(function() {
 
     } else {
         console.log('WEB: No internet connection');
-        $('#frame').attr('src', 'looma-404.php');
+        $('#frame').attr('src', 'looma-503.php');
     };
 
     addressBar.addEventListener("keydown", function(e) {

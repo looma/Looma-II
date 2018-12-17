@@ -1,4 +1,4 @@
-<?php
+  <?php
 /*
  *
 Filename: looma-databse-utilities.php
@@ -562,6 +562,11 @@ if ( isset($_REQUEST["cmd"]) ) {
 
         //SORT the found items before sending to client-side
         $cursor->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+
+        if (isset($_REQUEST['pagesz']))  {
+            if (isset($_REQUEST['pageno'])) $cursor->skip(($_REQUEST['pageno'] - 1 ) * $_REQUEST['pagesz']);
+            $cursor->limit($_REQUEST['pagesz']);
+        }
 
         $result = array();
         if ($cursor->count() > 0) {

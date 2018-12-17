@@ -157,7 +157,7 @@ playMedia : function(button) {
 
              */
         case "slideshow":
-            window.location = 'looma-slideshow.php?id=' + button.getAttribute("data-id");
+            window.location = 'looma-slideshow-present.php?id=' + button.getAttribute("data-id");
             break;
     
         case "history":
@@ -586,7 +586,18 @@ defHTML: function (definition, rwdef) {
     
         $def.html(def);
     
-        $div.append($english, $nepali, $pos, $def);
+    
+    
+    if (definition.img) {
+        var imgName = definition.img + ".jpg";
+        var $img = $('<img id="definitionThumb" src="../content/dictionary\ images/' + imgName + '"/>');
+    }
+    
+    $div.append($english, $nepali, $pos, $def, $img);
+    
+    
+    
+    //$div.append($english, $nepali, $pos, $def);
     
         if (rwdef) {
             var $rwdef = $('<div id="rwdef"/>');
@@ -960,8 +971,16 @@ LOOMA.speak = function(text, engine, voice) {
          // use speechsynthesis if present
          if (!engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) engine = 'synthesis';
          if (!engine) engine = 'mimic';  //efault engine is mimic
-         if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_slt'; //get the currently used voice, if any. default VOICE is "slt"
+         if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_bdl'; //get the currently used voice, if any. default VOICE is "slt"
         
+                    /* current default voice = cmu_us_bdl
+                    Note from David: The three that seem about equal in clarity,
+                    lack of low frequency rumble, lack of piercing high frequency … are
+                        Scottish male	awb (has a bit of the trilled ‘r’)
+                        US male 		bdl   (Haydi say maybe the best)
+                        US male		rms
+                     */
+         
          console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
         
          var speechButton = document.getElementsByClassName("speak")[0];
@@ -1180,6 +1199,11 @@ LOOMA.makeTransparent = function($container) {
 
 };  // End of makeTransparent
 
+ // undo makeTransparent()
+ LOOMA.makeOpaque = function($container) {
+     if (!$container) $container = $('body > div');
+     $container.removeClass('all-transparent');
+ };  // End of makeOpaque
 
 /** Removes any popups on the page */
 LOOMA.closePopup = function() {

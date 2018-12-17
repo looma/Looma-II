@@ -12,13 +12,12 @@ Revision: Looma 2.4
 Comments:
 */
 #fullscreen {
-    height: 75vh;
+    height: 100%;
     font-size: 1.5em;
-    width: 75vw;
+    width: 100%;
     background-color: #091F48;
     color: yellow;
-    padding: 5%;
-    margin: 10vh auto;
+    padding: 5px;
     overflow: hidden;
 }
 
@@ -27,9 +26,7 @@ Comments:
     height:95vh;
 }
 
-#display {
-    zoom:200%;
-}
+
 
 button#fullscreen-control {
     display:inline-block;

@@ -16,7 +16,7 @@ var destination = undefined;
 var temporaryDestination = undefined;
 
 var validInputsString =
-    'input:not([type]):not(.nokeyboard):not([readonly]), input[type=text]:not(.nokeyboard):not([readonly]), textarea:not(.nokeyboard):not([readonly])'
+    'input:not([type]):not(.nokeyboard):not([readonly]), input[type=text]:not(.nokeyboard):not([readonly]), input[type=password]:not(.nokeyboard):not([readonly]), textarea:not(.nokeyboard):not([readonly])';
 
 // Check if the "shift" key is down.
 function isShifted() {
@@ -299,6 +299,8 @@ function showKeyboard(event) {
             target = validInputs;
 	    destination = validInputs;
         } else {
+            target = $(':focus');
+            destination = $(':focus');
             // ??? handle multiple input elements here. not implemented yet.
             return;
         }
@@ -350,7 +352,7 @@ function hideKeyboard() {
 
     $('#textareaEntry').html();
     $('#inputEntry').val('');
-    LOOMA.undoTransparent( $('#main-container-horizontal') );
+    LOOMA.makeOpaque( $('#main-container-horizontal') );
     $("#looma-keyboard-container").css({
         display: "none"
     });

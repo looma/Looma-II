@@ -22,7 +22,7 @@ Description:  for Looma 2
 
         <div id="about">
             <h3>Looma 2</h3>
-            <h4>Release 4.2, Sept 2018</h4>
+            <h4>Release 4.2.5, Dec 2018</h4>
             <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
             <h4>Contact:  info AT villagetechsolutions DOT org</h4>
             <span href="looma-info.php"></span>

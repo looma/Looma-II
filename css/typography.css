@@ -1,0 +1,16 @@
+body {font-size:2vw;}
+
+#left, #right {
+    background-color:white;
+    color:blue;
+    height:50vh;
+    width: 40vw;
+    border: 1px solid black;
+    float:left;
+    margin:25px 25px;
+}
+
+
+button#fullscreen-control {
+    display:inline-block;
+}

@@ -123,6 +123,7 @@ Description:  navigate content folders and import media files into activities co
                     <option value='Dr Dann'>Dr Dann</option>
                 </select>
             </div>
+            <button class='control-button' id='dismiss' ></button>
 
             </div>
 

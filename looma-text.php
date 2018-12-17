@@ -17,29 +17,36 @@ Comments:
 	  include ('includes/header.php');
 	  include ('includes/mongo-connect.php');
 ?>
+    <link rel="stylesheet" href="css/looma-text-display.css">
     <link rel="stylesheet" href="css/looma-text.css">
 </head>
 
 <body>
 	<div id="main-container-horizontal">
-	    <div id="fullscreen">
-            <?php include ('includes/looma-control-buttons.php');?>
+    <?php
+	    if (!isset($_REQUEST['id']) && !isset($_REQUEST['dn']))
+            {
+            echo "<div><img src='images/logos/LoomaLogoTransparent.png'/></div>";
+            echo "<h2>file not found</h2>";
+            }
+        else {
+            echo "<div id='fullscreen'>";
+            include ('includes/looma-control-buttons.php');
 
-            <?php
                 if (isset($_REQUEST['id'])) {
                     $id = $_REQUEST['id'];
                     echo "<div id='the_id' data-id=" . rawurlencode($id) . " hidden></div>";
                 } else if (isset($_REQUEST['dn'])) {
                     $dn = $_REQUEST['dn'];
                     echo "<div id='the_dn' data-dn=" . rawurlencode($dn) . " hidden></div>";
-                } else echo "file not found";
-           ?>
-         <div id="display"></div>
+                };
+            echo "<div id='text-display' class='text-display'></div></div>";
+            }
+    ?>
 
-	    </div>
 	</div>
 
-<?php
+    <?php
 	      include ('includes/toolbar.php');
    		  include ('includes/js-includes.php');
     ?>

@@ -8,6 +8,11 @@ author:
 Description: JS for looma-xxxx.php
  */
 
+function displayText(result) {
+    if (!result.error) $('#text-display').html(result.data);
+    else $('#text-display').html('<h2>File not found</h2>');
+}; //end displayText()
+
 'use strict';
 $(document).ready(function() {
 
@@ -15,9 +20,7 @@ $(document).ready(function() {
 	if (div)
         $.post("looma-database-utilities.php",
                 {cmd: "openByID", collection: "text", id: div.getAttribute('data-id')},
-                function(result) {
-                    document.querySelector("div#display").innerHTML = result.data;
-                },
+                displayText,
                 'json'
         );
 	else {
@@ -25,12 +28,11 @@ $(document).ready(function() {
 	    if (div)
             $.post("looma-database-utilities.php",
                 {cmd: "open", collection: "text", ft: "text", dn: decodeURIComponent(div.getAttribute('data-dn'))},
-                function(result) {
-                    document.querySelector("div#display").innerHTML = result.data;
-                },
+                displayText,
                 'json'
             );
-    }
+    };
+    
 
 
 });

@@ -148,6 +148,13 @@ window.onload = function () {
     
     $('#register').click (function() {make_activities();});
     $('#cancel').click (function() {$('#filelist').empty();});
+    
+    $('#dismiss').off('click').click( function() {
+        LOOMA.confirm('Leave Import Content Page?',
+            function() {window.history.back();},
+            function() {return;});
+    });
+    
 };  //end window.onload()
 
 

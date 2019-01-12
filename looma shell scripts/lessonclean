@@ -22,7 +22,7 @@ print ('*****scanning activities for ft=lesson');
 activitycursor = db.activities.find({'ft':'lesson'});
 while (activitycursor.hasNext()) {
     var doc = activitycursor.next();
-    print ('checking: ' + doc.dn);
+    //print ('checking: ' + doc.dn);
     lessoncursor = db.lessons.find({'dn':doc.dn});
     if (  ! lessoncursor.hasNext()) {
         print('     found activity wo lesson: ' + doc.dn);
@@ -40,11 +40,21 @@ count = 0;
 print ('*****scanning lessons');
 lessoncursor = db.lessons.find();
 while (lessoncursor.hasNext()) {
+    var insert = {};
     var doc = lessoncursor.next();
-    print ('checking: ' + doc.dn);
+    //print ('checking: ' + doc.dn);
     activitycursor = db.activities.find({'dn':doc.dn, 'ft':'lesson'});
     if (  ! activitycursor.hasNext()) {
         print('     found lesson wo activity: ' + doc.dn);
+
+        insert.mongoID = doc._id;
+        insert.ft = 'lesson';
+        insert.dn = doc.dn;
+        insert.ch_id = doc.ch_id;
+
+        print ('inserting: ' + insert.dn + ', type: ' + insert.ft  + ', mongoID: ' + insert.mongoID);
+
+        db.activities.insert(insert);
         count += 1;
         }
     };

@@ -181,26 +181,32 @@ for a textbook (class/subject) for Looma 2
 				// finally, display a button for the activities of this chapter with data-activity=CHAPTER_ID key value
 				// first check whether there are any activities for this chapter and make the button invisible if not
 
-				//get the activities for this chapter
-				$query = array('ch_id' => $ch_id);
-				//returns only these fields of the activity record
-				$projection = array('_id' => 0,
-								'ch_id' => 1,
-								);
+                /* change DEC 18: always show Activities button
 
-				//check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create a button
-				$activities = $activities_collection -> findOne($query, $projection);
+                    //get the activities for this chapter
+                    $query = array('ch_id' => $ch_id);
+                    //returns only these fields of the activity record
+                    $projection = array('_id' => 0,
+                                    'ch_id' => 1,
+                                    );
 
-				if ($activities) {
+                    //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create a button
+                    $activities = $activities_collection -> findOne($query, $projection);
+
+                    if ($activities)
+
+                    { */
 					echo "<td><button class='activities'
 							data-ch='$ch_id'
 							data-chdn='$ch_dn'>";
                     keyword('Activities');
                     echo "</button></td>";
-				}
-                else echo "<td></td>";
+                    /*
 
-				echo "</tr>";
+                    } else echo "<td></td>";
+
+                    echo "</tr>";
+                    */
 			}
 			echo "</table></div></div>";
 	?>

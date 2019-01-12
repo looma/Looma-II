@@ -9,74 +9,75 @@ File: looma-info.php
 Description:  for Looma 2
 -->
 <?php $page_title = 'Looma Information';
-	  include ('includes/header.php');
+include ('includes/header.php');
 ?>
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/looma-info.css">
+<link rel="stylesheet" href="css/font-awesome.min.css">
+<link rel="stylesheet" href="css/looma-info.css">
 
-	</head>
+</head>
 
-	<body>
-	<div id="main-container-horizontal">
-        <h2 id="title" class="title">Looma Info page</h2>
+<body>
+<div id="main-container-horizontal">
+    <h2 id="title" class="title">Looma Info page</h2>
 
-        <div id="about">
-            <h3>Looma 2</h3>
-            <h4>Release 4.2.5, Dec 2018</h4>
-            <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
-            <h4>Contact:  info AT villagetechsolutions DOT org</h4>
-            <span href="looma-info.php"></span>
-            <img src="images/logos/CC-BY-SA.png" height="33px">
+    <div id="about">
+        <h3>Looma 2</h3>
+        <h4>Release 4.2.6, Jan 2018</h4>
+        <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
+        <h4>Contact:  info AT villagetechsolutions DOT org</h4>
+        <span href="looma-info.php"></span>
+        <img src="images/logos/CC-BY-SA.png" height="33px">
 
-                    <!-- copyright notice, with link to vts.org-->
-            <span class='glyphicon glyphicon-copyright-mark'></span>2016
-            <a class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
+        <!-- copyright notice, with link to vts.org-->
+        <span class='glyphicon glyphicon-copyright-mark'></span>2016
+        <a class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
 
+        <br>
+        <h5> Attributions for code and content used in Looma: </h5>
+
+        <div id="logos">
+
+            <!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
+
+            <a class="attribution" href="http://www.khanacademy.org" target="_blank"><img src="images/logos/khan.jpg" height="66px"></a>
+            <a class="attribution" href="http://www.olenepal.org" target="_blank"><img src="images/logos/ole-nepal.jpg" height="66px"></a>
+            <a class="attribution" href="https://www.wikipedia.org" target="_blank"><img src="images/logos/wikipedia.jpg" height="66px"></a>
+            <a class="attribution" href="https://phet.colorado.edu" target="_blank"><img src="images/logos/PHET.png" height="44px"></a>
+            <a class="attribution" href="https://leafletjs.com" target="_blank"><img src="images/logos/leaflet-logo.png" height="66px"></a>
+            <a class="attribution" href="https://www.openstreetmap.org" target="_blank"><img src="images/logos/openstreetmap-logo.png" height="66px"></a>
+            <a class="attribution" href="https://translate.google.com" target="_blank"><img src="images/logos/google-translate.jpg" height="66px"></a>
+            <a class="attribution" href="https://www.mapbox.com" target="_blank"><img src="images/logos/tilemill.png" height="66px"></a>
+            <a class="attribution" href="https://mycroft.ai" target="_blank"><img src="images/logos/mycroft.png" height="33px"></a>
             <br>
-            <h5> Attributions for code and content used in Looma: </h5>
-
-            <div id="logos">
-
-                <!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
-
-                <a class="attribution" href="http://www.khanacademy.org" target="_blank"><img src="images/logos/khan.jpg" height="66px"></a>
-                <a class="attribution" href="http://www.olenepal.org" target="_blank"><img src="images/logos/ole-nepal.jpg" height="66px"></a>
-                <a class="attribution" href="https://www.wikipedia.org" target="_blank"><img src="images/logos/wikipedia.jpg" height="66px"></a>
-                <a class="attribution" href="https://phet.colorado.edu" target="_blank"><img src="images/logos/PHET.png" height="44px"></a>
-                <a class="attribution" href="https://leafletjs.com" target="_blank"><img src="images/logos/leaflet-logo.png" height="66px"></a>
-                <a class="attribution" href="https://www.openstreetmap.org" target="_blank"><img src="images/logos/openstreetmap-logo.png" height="66px"></a>
-                <a class="attribution" href="https://translate.google.com" target="_blank"><img src="images/logos/google-translate.jpg" height="66px"></a>
-                <a class="attribution" href="https://www.mapbox.com" target="_blank"><img src="images/logos/tilemill.png" height="66px"></a>
-                <a class="attribution" href="https://mycroft.ai" target="_blank"><img src="images/logos/mycroft.png" height="33px"></a>
-                <br>
-                <a class="attribution" href="https://jquery.com" target="_blank"><img src="images/logos/jquery-logo.png" height="66px"></a>
-                <span><img src="images/logos/css3-html5-logo.png" height="44px"></span>
-                <a class="attribution" href="https://www.mongodb.com" target="_blank"><img src="images/logos/mongodb-logo.png" height="66px"></a>
-                <a class="attribution" href="https://www.jetbrains.com/idea/" target="_blank"><img src="images/logos/intellij.png" height="44px"></a>
-                <a class="attribution" href="https://www.stackoverflow.org" target="_blank"><img src="images/logos/stackoverflow.png" height="66px"></a>
-                <a class="attribution" href="http://www.villagetechsolutions.org" target="_blank"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
-            </div>
-            <br>
-
-            <span><img src="images/logos/LoomaLogoTransparent.png" class="loomalogo"></span>
-            <img src="images/trademark4.png" id="trademark" height="33px">
-
-            <h4>Tested only in Google Chrome</h4>
-            <h4>Report bugs and suggestions to:  info AT villagetechsolutions DOT org</h4>
-            <br>
+            <a class="attribution" href="https://jquery.com" target="_blank"><img src="images/logos/jquery-logo.png" height="66px"></a>
+            <span><img src="images/logos/css3-html5-logo.png" height="44px"></span>
+            <a class="attribution" href="https://www.mongodb.com" target="_blank"><img src="images/logos/mongodb-logo.png" height="66px"></a>
+            <a class="attribution" href="https://www.jetbrains.com/idea/" target="_blank"><img src="images/logos/intellij.png" height="44px"></a>
+            <a class="attribution" href="https://www.stackoverflow.org" target="_blank"><img src="images/logos/stackoverflow.png" height="66px"></a>
+            <a class="attribution" href="http://www.villagetechsolutions.org" target="_blank"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
         </div>
+        <br>
 
-        <h2 id="credits-title">Contributors</h2>
+        <span><img src="images/logos/LoomaLogoTransparent.png" class="loomalogo"></span>
+        <img src="images/trademark4.png" id="trademark" height="33px">
 
-        <div id="credits">
+        <h4>Tested only in Google Chrome</h4>
+        <h4>Report bugs and suggestions to:  info AT villagetechsolutions DOT org</h4>
+        <br>
+    </div>
+
+    <h2 id="credits-title">Contributors</h2>
+
+    <div id="credits">
         <ul>
-        <!-- updated list from DS July '16-->
+            <!-- updated list from DS July '16-->
 
             <!-- THIS LIST SHOULD BE IN A MONGO COLLECTION -->
             <!-- or create a text file in includes/ folder and write PHP to read in the text into this 'ul' -->
             <li> </li><li> </li><li> </li><li> </li><li> </li> <!-- these empty 'li's give a pause at the start -->
             <li>  - -  </li>
 
+            <li>Sophie Reynolds</li>
             <li>Brandon Clore</li>
             <li>Aish Raj Dahal</li>
             <li>Ram Hari Dahal</li>
@@ -95,7 +96,6 @@ Description:  for Looma 2
             <li>Luke Arnold</li>
             <li>Morgan Wyatt</li>
             <li>Henry Knoll</li>
-            <li>Sophie Reynolds</li>
             <li>Peridot Park</li>
             <li>Kiefer Lord</li>
             <li>Katie Aufricht</li>
@@ -326,108 +326,108 @@ Description:  for Looma 2
 
 
 
-	<div>
-		      <!--button showing CC license icon, with link to the license info page -->
+    <div>
+        <!--button showing CC license icon, with link to the license info page -->
 
-    <div id="sizemessages">
-        <p class="screensize"></p>
-        <p class="bodysize"></p>
+        <div id="sizemessages">
+            <p class="screensize"></p>
+            <p class="bodysize"></p>
 
 
-        <?php //want to display IP address for remote access, until we have zeroconf
-              //NOTE: want the external IP for this LOOMA, but 127.0.0.1 "localhost" will show on projected page
-              //echo "<p class=\"ip\">IP Address: " . gethostbyname('localhost') . "</p>"; ?>
+            <?php //want to display IP address for remote access, until we have zeroconf
+            //NOTE: want the external IP for this LOOMA, but 127.0.0.1 "localhost" will show on projected page
+            //echo "<p class=\"ip\">IP Address: " . gethostbyname('localhost') . "</p>"; ?>
+
+        </div>
+        <!-- W3C validator link    new URL=https://validator.w3.org/nu/
+           <a class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->
 
     </div>
-    	<!-- W3C validator link    new URL=https://validator.w3.org/nu/
-   		<a class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->
+</div>
 
-	</div>
-	</div>
+<?php include ('includes/toolbar.php');
+include ('includes/js-includes.php');
+?>
+<script src="js/jquery.easy-ticker.js"></script>
+<script src="js/looma-info.js"></script>
 
-    <?php include ('includes/toolbar.php');
-   	      include ('includes/js-includes.php');
-    ?>
-    <script src="js/jquery.easy-ticker.js"></script>
-    <script src="js/looma-info.js"></script>
+<!--    <h4>- attributions for borrowed content</h4>
+<li>OLE Nepal, Khan academy, Wikipedia, Open Street Maps, ...</li>
+<h4>- attribution for open source code used, etc. </h4>
+<li>jsKeyboard,leaflet.js, paper.js, TileMill, jQuery, jQuery UI, bootstrap, mongodb, modernizer, pico2wave</li>
+ <li>viewer.js, pdf.js, responsiveVoice.js, FullScreen.js topojson.js, google translate</li>
+ <li>xnepali.net/fonts, stackoverflow mimic by MyCroft.ai</li>
 
-   	    <!--    <h4>- attributions for borrowed content</h4>
-        <li>OLE Nepal, Khan academy, Wikipedia, Open Street Maps, ...</li>
-        <h4>- attribution for open source code used, etc. </h4>
-        <li>jsKeyboard,leaflet.js, paper.js, TileMill, jQuery, jQuery UI, bootstrap, mongodb, modernizer, pico2wave</li>
-            <li>viewer.js, pdf.js, responsiveVoice.js, FullScreen.js topojson.js, google translate</li>
-            <li>xnepali.net/fonts, stackoverflow mimic by MyCroft.ai</li>
+ content:
+ 5Gear Studios
+ Ales Kladnik
+ Antonio Palma
+ BBC
+ Bodhaguru
+ Bozeman Science
+ California Academy
+ Chuchu TV Kids Songs
+ Crash Course
+ Earth Island Institute
+ Emily Dassel
+ ETH Zurich
+ Fit Factor Kids Exercize
+ Frank Gregorio
+ Global Help Videos
+ Healthfirst NY
+ Hesperian Foundation
+ IPPF/FPAN
+ Jonathan Bergmann
+ Joshua Manley
+ KALite
+ Khan
+ Laurent Schwebel
+ Make Me Genius
+ Mitja Cvetko
+ NASA
+ NatGeo
+ Nellie and Ed
+ OLE Nepal
+ Orin Zebest
+ Patakiskola
+ Peter Bohacek
+ Peter Erb
+ Playsongs
+ Sarah Christenson
+ SciShow
+ Strength Project
+ The Happy Scientist
+ The Tokin Tube
+ Think Pictures
+ Tiger Productions
+ Transpower NZ
+ Wikipedia
+ WorldPossible
 
-            content:
-            5Gear Studios
-            Ales Kladnik
-            Antonio Palma
-            BBC
-            Bodhaguru
-            Bozeman Science
-            California Academy
-            Chuchu TV Kids Songs
-            Crash Course
-            Earth Island Institute
-            Emily Dassel
-            ETH Zurich
-            Fit Factor Kids Exercize
-            Frank Gregorio
-            Global Help Videos
-            Healthfirst NY
-            Hesperian Foundation
-            IPPF/FPAN
-            Jonathan Bergmann
-            Joshua Manley
-            KALite
-            Khan
-            Laurent Schwebel
-            Make Me Genius
-            Mitja Cvetko
-            NASA
-            NatGeo
-            Nellie and Ed
-            OLE Nepal
-            Orin Zebest
-            Patakiskola
-            Peter Bohacek
-            Peter Erb
-            Playsongs
-            Sarah Christenson
-            SciShow
-            Strength Project
-            The Happy Scientist
-            The Tokin Tube
-            Think Pictures
-            Tiger Productions
-            Transpower NZ
-            Wikipedia
-            WorldPossible
+ NGO
+ KISC EQUIP
+ Lew/Ntungi
+ Museum of Science Boston
+ Nepal Youth Foundation
+ UMN (United Mission to Nepal)
 
-            NGO
-            KISC EQUIP
-            Lew/Ntungi
-            Museum of Science Boston
-            Nepal Youth Foundation
-            UMN (United Mission to Nepal)
+ Corporate
+ Inquiring Systems Inc.
+ Perkins Coie
+ Pocobor
+ Three60
 
-            Corporate
-            Inquiring Systems Inc.
-            Perkins Coie
-            Pocobor
-            Three60
+ Employed software
+ Bootstrap
+ Flipper.css
+ Google translate
+ Leaflet
+ Miro Video Converter
+ ThumbsUp
+ TileMill, MapBox
+ WordNet, EasyDefine
+ OSM, geoFabrik, others?
+     -->
 
-            Employed software
-            Bootstrap
-            Flipper.css
-            Google translate
-            Leaflet
-            Miro Video Converter
-            ThumbsUp
-            TileMill, MapBox
-            WordNet, EasyDefine
-            OSM, geoFabrik, others?
-                -->
-
-   </body>
+</body>
 </html>

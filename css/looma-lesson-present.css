@@ -285,13 +285,13 @@ span#lesson-name {
 
 #fullscreen .text-display {
     height:100%;
-    zoom: 250%;
+    /*zoom: 250%;*/
+    font-size:2.7em;
     margin:0 auto;
     overflow: hidden;
-    font-weight: normal;
     background-color: #091F48;
     color: yellow;
-    font-size: 20px;
+    /*font-size: 20px;*/
 }
 
 #audio-viewer h2 {color:white;}

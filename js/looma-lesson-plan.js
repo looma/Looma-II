@@ -723,7 +723,7 @@ function preview_result (item) {
 	         $.post("looma-database-utilities.php",
                 {cmd: "openByID", collection: "text", id: $(item).data('mongo').mongoID.$id},
                 function(result) {
-                    $('#previewpanel').empty().append($('<div class="textpreview"></div>').html(result.data));
+                    $('#previewpanel').empty().append($('<div class="textpreview text-display"></div>').html(result.data));
                     //document.querySelector("div#previewpanel").innerHTML = result.data;
                 },
                 'json'

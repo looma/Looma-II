@@ -1,0 +1,28 @@
+// ONE TIME program to change BLUE and BLACK font to WHITE in TEXT FILES
+// DO NOT run this again - - saved as example of mongo terminal (JS) scripting
+//
+// changing blue/black fonts to white becuz default background is now blue
+//
+//  run in MONGO SHELL with: load('textfile_blue_to_white')
+//
+var count = 0;
+var blue = "0000ff";
+var black = "000000";
+var whitefromblue = "fffffe"
+var whitefromblack = "fffffd";
+
+var cursor = db.text_files.find();
+while (cursor.hasNext()) {
+	var doc = cursor.next();
+
+	// change all "#ff0000" to "#ffffff" in "data" field
+	doc.data = doc.data.replace('font color="#' + blue,  'font color="#' + whitefromblue);
+	doc.data = doc.data.replace('font color="#' + black, 'font color="#' + whitefromblack);
+
+print("#" + count + ": " + doc.data);
+
+	//db.text_files.update({_id:doc._id}, doc);
+	count++;
+	}
+print; print("processed " + count); print;
+

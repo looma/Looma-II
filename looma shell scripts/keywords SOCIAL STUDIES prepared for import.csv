@@ -1,0 +1,414 @@
+﻿1SS01.01,Social Studies,Community,Psychology,Self
+1SS01.02,Social Studies,Community,Everyday Life,Family
+1SS01.03,Social Studies,Community,Everyday Life,Possessions
+1SS01.04,Social Studies,Community,Psychology,Friendships
+1SS02.01,Social Studies,Community,Psychology,Respect
+1SS02.02,Social Studies,Community,Psychology,Love
+1SS02.03,Social Studies,Community,Everyday Life,Clothing
+1SS02.04,Social Studies,Economy,Occupations,Domestic
+1SS02.05,Social Studies,Economy,Occupations,Rural
+1SS03.01,Social Studies,Community,Social Organization,Mutual Help
+1SS03.02,Social Studies,Community,Social Organization,Mutual Help
+1SS04.01,Social Studies,Community,Social Organization,Mutual Help
+1SS04.02,Social Studies,Community,Social Organization,Mutual Help
+1SS04.03,Social Studies,Community,Everyday Life,Furnishings
+1SS04.04,Social Studies,Community,Education,Schools
+1SS04.05,Social Studies,Economy,Occupations,Domestic
+1SS04.06,Social Studies,Community,Education,Other Education
+1SS05.01,Social Studies,Community,Social Organization,Neighborhood
+1SS05.02,Social Studies,Community,Social Organization,Neighborhood
+1SS05.03,Social Studies,Community,Social Organization,Home
+1SS05.04,Social Studies,Community,Social Organization,Schools
+1SS05.05,Social Studies,Community,Social Organization,Schools
+1SS06.01,Social Studies,Community,Everyday Life,Celebrations
+1SS06.02,Social Studies,Community,Everyday Life,Family
+1SS06.03,Social Studies,Community,Everyday Life,Family
+1SS06.04,Social Studies,Community,Social Organization,Home
+1SS07.01,Social Studies,Community,Social Organization,Mutual Help
+1SS07.02,Social Studies,Community,Everyday Life,Possessions
+1SS07.03,Social Studies,Community,Everyday Life,Food
+1SS07.04,Social Studies,Community,Everyday Life,Customs
+1SS08.01,Social Studies,Arts,Visual Art,Drawing
+1SS08.02,Social Studies,Arts,Visual Art,Color
+1SS08.03,Social Studies,Arts,Visual Art,Printing
+1SS08.04,Social Studies,Arts,Visual Art,Collage
+1SS08.05,Social Studies,Arts,Visual Art,Pottery
+1SS09.01,Social Studies,Arts,Dance,Folk Dance
+1SS09.02,Social Studies,Arts,Dance,Folk Dance
+1SS09.03,Social Studies,Arts,Dance,Folk Dance
+1SS09.04,Social Studies,Arts,Music,Vocal Music
+1SS09.05,Social Studies,Arts,Drama,Other Drama
+2SS01.01,Social Studies,Economy,Occupations,Domestic
+2SS01.02,Social Studies,Economy,Occupations,Rural
+2SS01.03,Social Studies,Community,EVeryday Life,Possessions
+2SS02.01,Social Studies,Community,Psychology,Respect
+2SS02.02,Social Studies,Community,Everyday Life,Diversity
+2SS02.03,Social Studies,Community,Everyday Life,Celebrations
+2SS02.04,Social Studies,Community,Social Organization,Neighborhood
+2SS03.01,Social Studies,Community,Social Organization,Mutual Help
+2SS03.02,Social Studies,Community,Social Organization,Mutual Help
+2SS04.01,Social Studies,Community,Social Organization,Mutual Help
+2SS04.02,Social Studies,Community,Everyday Life,Customs
+2SS04.03,Social Studies,Community,Everyday Life,Customs
+2SS04.04,Social Studies,Community,Psychology,Respect
+2SS05.01,Social Studies,Community,Social Organization,Neighborhood
+2SS05.02,Social Studies,Community,Social Organization,Neighborhood
+2SS05.03,Social Studies,Community,Social Organization,Neighborhood
+2SS05.04,Social Studies,Community,Social Organization,Neighborhood
+2SS06.01,Social Studies,Community,Everyday Life,Celebrations
+2SS06.02,Social Studies,Community,Everyday Life,Other Everyday Life
+2SS06.03,Social Studies,Community,Everyday Life,Customs
+2SS07.01,Social Studies,Economy,Occupations,
+2SS07.02,Social Studies,Community,Everyday Life,Possessions
+2SS07.03,Social Studies,Economy,Other Economy,Local Products
+2SS07.04,Social Studies,Economy,Other Economy,Local Products
+2SS08.01,Social Studies,Arts,Visual Art,Drawing
+2SS08.02,Social Studies,Arts,Visual Art,Drawing
+2SS08.03,Social Studies,Arts,Visual Art,Color
+2SS08.04,Social Studies,Arts,Visual Art,Color
+2SS08.05,Social Studies,Arts,Visual Art,Drawing
+2SS08.06,Social Studies,Arts,Visual Art,Printing
+2SS08.07,Social Studies,Arts,Visual Art,Collage
+2SS08.08,Social Studies,Arts,Visual Art,Collage
+2SS08.09,Social Studies,Arts,Visual Art,Collage
+2SS08.10,Social Studies,Arts,Visual Art,Pottery
+2SS08.11,Social Studies,Arts,Visual Art,Pottery
+2SS08.12,Social Studies,Arts,Visual Art,Pottery
+2SS08.13,Social Studies,Arts,Visual Art,Paper
+2SS09.14,Social Studies,Arts,Dance,Folk Dance
+2SS09.15,Social Studies,Arts,Music,Instrumental Music
+2SS09.16,Social Studies,Arts,Music,Vocal Music
+2SS09.17,Social Studies,Arts,Music,Vocal Music
+2SS09.18,Social Studies,Arts,Music,Vocal Music
+2SS09.19,Social Studies,Arts,Dance,Folk Dance
+2SS09.20,Social Studies,Arts,Dance,Folk Dance
+2SS09.21,Social Studies,Arts,Drama,Acting
+3SS01.01,Social Studies,Community,Everyday Life,Family
+3SS01.02,Social Studies,Economy,Occupations,Domestic
+3SS01.03,Social Studies,Community,Everyday Life,Possessions
+3SS01.04,Social Studies,Community,Social Organization,Mutual Help
+3SS02.01,Social Studies,Community,Psychology,Respect
+3SS02.02,Social Studies,Community,Everyday Life,Diversity
+3SS02.03,Social Studies,Community,Everyday Life,Celebrations
+3SS02.04,Social Studies,Community,Social Organization,Neighborhood
+3SS03.01,Social Studies,Community,Social Organization,Mutual Help
+3SS03.02,Social Studies,Community,Social Organization,Mutual Help
+3SS03.03,Social Studies,Issues,Human Rights,Caste
+3SS03.04,Social Studies,Beliefs,Myths,Superstitions
+3SS04.01,Social Studies,Community,Social Organization,Mutual Help
+3SS04.02,Social Studies,Community,Psychology,Behavior
+3SS04.03,Social Studies,Earth,Other Earth,Natural Resources
+3SS04.04,Social Studies,Community,Social Organization,Citizenship
+3SS04.05,Social Studies,Community,Government,Local
+3SS05.01,Social Studies,Community,Social Organization,Neighborhood
+3SS05.02,Social Studies,Community,Social Organization,Neighborhood
+3SS05.03,Social Studies,Community,Social Organization,Neighborhood
+3SS05.04,Social Studies,Community,Social Organization,Neighborhood
+3SS06.01,Social Studies,Community,Social Organization,Neighborhood
+3SS06.02,Social Studies,Community,Social Organization,Work
+3SS06.03,Social Studies,History,Nepal,Famous Persons
+3SS06.04,Social Studies,History,Nepal,Rights & Duties
+3SS07.01,Social Studies,Community,Social Organization,Work
+3SS07.02,Social Studies,Community,Social Organization,Work
+3SS07.03,Social Studies,Economy,Other Economy,Local Products
+3SS07.04,Social Studies,Economy,Other Economy,Local Products
+3SS08.01,Social Studies,Arts,Visual Art,Drawing
+3SS08.02,Social Studies,Arts,Visual Art,Color
+3SS08.03,Social Studies,Arts,Visual Art,Printing
+3SS08.04,Social Studies,Arts,Visual Art,Collage
+3SS08.05,Social Studies,Arts,Visual Art,Pottery
+3SS08.06,Social Studies,Arts,Visual Art,Paper
+3SS08.07,Social Studies,Arts,Visual Art,Other Visual Art
+3SS09.01,Social Studies,Community,Social Organization,Citizenship
+3SS09.02,Language,Nepali,Song,
+3SS09.03,Language,Nepali,Song,
+3SS09.04,Social Studies,Arts,Musical Instruments,Other Musical Instruments
+3SS09.05,Social Studies,Arts,Dance,Folk Dance
+3SS09.06,Social Studies,Arts,Dance,Folk Dance
+3SS09.07,Social Studies,Arts,Drama,Acting
+4SS01.01,Social Studies,Community,Social Organization,Neighborhood
+4SS01.02,Social Studies,Economy,Occupations,Farming
+4SS01.03,Social Studies,Economy,Other Economy,Maintenance & Repair
+4SS01.04,Social Studies,Community,Social Organization,Mutual Help
+4SS02.01,Social Studies,Community,Social Organization,Family
+4SS02.02,Social Studies,Community,Everyday Life,Diversity
+4SS02.03,Social Studies,Community,Everyday Life,Celebrations
+4SS02.04,Social Studies,Community,Social Organization,Citizenship
+4SS02.05,Social Studies,Community,Social Organization,Citizenship
+4SS02.06,Social Studies,Community,Social Organization,Leaders
+4SS03.01,Social Studies,Community,Social Organization,Mutual Help
+4SS03.02,Social Studies,Community,Social Organization,Solutions
+4SS03.03,Social Studies,Community,Social Organization,Problems
+4SS03.04,Social Studies,Community,Social Organization,Solutions
+4SS03.05,Social Studies,Community,Social Organization,Solutions
+4SS03.06,Social Studies,Community,Social Organization,Other Social Organization
+4SS03.07,Social Studies,Community,Social Organization,Other Social Organization
+4SS04.01,Social Studies,Community,Social Organization,Citizenship
+4SS04.02,Social Studies,Community,Social Organization,Mutual Help
+4SS04.03,Social Studies,Earth,Other Earth,Environment
+4SS04.04,Social Studies,Community,Everyday Life,Customs
+4SS04.05,Science,Earth,Human Impact,Waste & Recycling
+4SS04.06,Social Studies,Community,Everyday Life,Other Everyday Life
+4SS04.07,Social Studies,Community,Government,Local
+4SS04.08,Social Studies,Community,Government,Local
+4SS04.09,Social Studies,Community,Everyday Life,Other Everyday Life
+4SS05.01,Social Studies,Community,Government,Local
+4SS05.02,Social Studies,Geography,Asia,Nepal
+4SS05.03,Science,Astronomy,Solar System,Earth
+4SS05.04,Science,Earth,Other Earth,About
+4SS05.05,Social Studies,Geography,Asia,India
+4SS05.06,Social Studies,Geography,Asia,China
+4SS06.01,Social Studies,History,Nepal,History
+4SS06.02,Social Studies,History,Nepal,History
+4SS06.03,Social Studies,History,Nepal,History
+4SS06.04,Social Studies,History,Nepal,Famous Persons
+4SS06.05,Social Studies,History,Nepal,Famous Persons
+4SS07.01,Social Studies,Community,Psychology,Behavior
+4SS07.02,Social Studies,Community,Psychology,Respect
+4SS07.03,Social Studies,Community,Psychology,Other Psychology
+4SS07.04,Social Studies,Economy,Other Economy,Local Products
+4SS07.05,Social Studies,Economy,Occupations,Other Occupations
+4SS08.01,Social Studies,Arts,Visual Art,Painting
+4SS08.02,Social Studies,Arts,Visual Art,Drawing
+4SS08.03,Social Studies,Arts,Visual Art,Drawing
+4SS08.04,Social Studies,Arts,Visual Art,Color
+4SS08.05,Social Studies,Arts,Visual Art,Painting
+4SS08.06,Social Studies,Arts,Visual Art,Painting
+4SS08.07,Social Studies,Arts,Visual Art,Painting
+4SS08.08,Social Studies,Arts,Visual Art,Printing
+4SS08.09,Social Studies,Arts,Visual Art,Printing
+4SS08.10,Social Studies,ARts,Visual Art,Collage
+4SS08.11,Social Studies,ARts,Visual Art,Collage
+4SS08.12,Social Studies,Arts,Visual Art,Collage
+4SS08.13,Social Studies,Arts,Visual Art,Pottery
+4SS08.14,Social Studies,Arts,Visual Art,Pottery
+4SS08.15,Social Studies,Arts,Visual Art,Paper
+4SS08.16,Social Studies,Arts,Visual Art,Sculpture
+4SS08.17,Social Studies,Arts,Visual Art,Other Visual Art
+4SS08.18,Social Studies,Arts,Visual Art,Other Visual Art
+4SS08.19,Social Studies,Arts,Visual Art,Other Visual Art
+4SS08.20,Social Studies,Arts,Visual Art,Weaving
+4SS09.01,Social Studies,Arts,Music,Vocal Music
+4SS09.02,Social Studies,Arts,Music,Instrumental Music
+4SS09.03,Social Studies,Arts,Music,Vocal Music
+4SS09.04,Social Studies,Arts,Music,Vocal Music
+4SS09.05,Social Studies,Arts,Music,Vocal Music
+4SS09.06,Social Studies,Arts,Music,Vocal Music
+4SS09.07,Social Studies,Arts,Music,Vocal Music
+4SS09.08,Social Studies,Arts,Dance ,Folk Dance
+4SS09.09,Social Studies,Arts,Dance ,Folk Dance
+4SS09.10,Social Studies,Arts,Dance ,Folk Dance
+4SS09.11,Social Studies,Arts,Drama,Acting
+5SS01.01,Social Studies,Economy,Occupations,
+5SS01.02,Social Studies,Community,Everyday Life,Other Everyday Life
+5SS01.03,Social Studies,Community,Social Organization,Mutual Help
+5SS01.04,Social Studies,Community,Social Organization,Problems
+5SS01.05,Social Studies,Community,Social Organization,Mutual Help
+5SS02.01,Social Studies,Community,Everyday Life,Customs
+5SS02.02,Social Studies,Community,Everyday Life,Other Everyday Life
+5SS02.03,Social Studies,Community,Everyday Life,Celebrations
+5SS02.04,Social Studies,Community,Social Organization,Other Social Organization
+5SS02.05,Social Studies,Community,Everyday Life,People
+5SS03.01,Social Studies,Community,Social Organization,Mutual Help
+5SS03.02,Social Studies,Community,Social Organization,Laws
+5SS03.03,Social Studies,Community,Everyday Life,Customs
+5SS03.04,Social Studies,Community,Peace,Nobel Prize
+5SS03.05,Social Studies,Medicine,Healthy Living,
+5SS03.06,Social Studies,History,Nepal,Government
+5SS04.01,Social Studies,History,Nepal,Rights & Duties
+5SS04.02,Social Studies,History,Nepal,Rights & Duties
+5SS04.03,Social Studies,History,Nepal,History
+5SS04.04,Social Studies,Community,Everyday Life,Customs
+5SS04.05,Social Studies,History,Nepal,Government
+5SS04.06,Social Studies,History,Nepal,Government
+5SS04.07,Social Studies,Community,Everyday Life,Tolerance
+5SS05.01,Social Studies,Geography,Asia,Nepal
+5SS05.02,Science,Earth,Climate,
+5SS05.03,Science,Biology,Plants,
+5SS05.04,Science,Earth,Human Impact,Soils
+5SS05.05,Social Studies,Geography,Maps,
+5SS05.06,Social Studies,Geography,Maps,
+5SS05.07,Social Studies,Geography,Maps,
+5SS05.08,Social Studies,Geography,Asia,
+5SS05.09,Social Studies,Geography,Asia,
+5SS06.01,Social Studies,History,Nepal,
+5SS06.02,Social Studies,History,People,
+5SS06.03,Social Studies,History,People,History
+5SS06.04,Social Studies,History,Nepal,People
+5SS06.05,Social Studies,History,Nepal,People
+5SS06.06,Social Studies,History,Nepal,People
+5SS06.07,Social Studies,History,Nepal,People
+5SS07.01,Social Studies,Economy,Occupations,
+5SS07.02,Social Studies,Community,Education,Schools
+5SS07.03,Social Studies,Economy,Agriculture,
+5SS07.04,Social Studies,Economy,,
+5SS07.05,Social Studies,Economy,,
+5SS08.01,Social Studies,Arts,Visual Art,Painting
+5SS08.02,Social Studies,Arts,Visual Art,Drawing
+5SS08.03,Social Studies,Arts,Visual Art,Drawing
+5SS08.04,Social Studies,Arts,Visual Art,Drawing
+5SS08.05,Social Studies,Arts,Visual Art,Painting
+5SS08.06,Social Studies,Arts,Visual Art,Painting
+5SS08.07,Social Studies,Arts,Visual Art,Painting
+5SS08.08,Social Studies,Arts,Visual Art,Painting
+5SS08.09,Social Studies,Arts,Visual Art,Painting
+5SS08.10,Social Studies,Arts,Visual Art,Paper
+5SS08.11,Social Studies,Arts,Visual Art,Paper
+5SS08.12,Social Studies,Arts,Visual Art,Paper
+5SS08.13,Social Studies,Arts,Visual Art,Paper
+5SS08.14,Social Studies,Arts,Visual Art,Sculpture
+5SS08.15,Social Studies,Arts,Visual Art,Sculpture
+5SS08.16,Social Studies,Arts,Visual Art,Sculpture
+5SS08.17,Social Studies,Arts,Visual Art,Paper
+5SS08.18,Social Studies,Arts,Visual Art,Paper
+5SS08.19,Social Studies,Arts,Visual Art,Paper
+5SS08.20,Social Studies,Arts,Visual Art,Paper
+5SS08.21,Social Studies,Arts,Visual Art,Sculpture
+5SS08.22,Social Studies,Arts,Visual Art,Sculpture
+5SS08.23,Social Studies,Arts,Visual Art,Sculpture
+5SS08.24,Social Studies,Arts,Visual Art,Sculpture
+5SS08.25,Social Studies,Arts,Visual Art,Paper
+5SS08.26,Social Studies,Arts,Visual Art,Paper
+5SS08.27,Social Studies,Arts,Visual Art,Weaving
+5SS08.28,Social Studies,Arts,Visual Art,Weaving
+5SS09.01,Social Studies,Arts,Music,Vocal Music
+5SS09.02,Social Studies,Arts,Music,Vocal Music
+5SS09.03,Social Studies,Arts,Music,Vocal Music
+5SS09.04,Social Studies,Arts,Music,Vocal Music
+5SS09.05,Social Studies,Arts,Music,Vocal Music
+5SS09.06,Social Studies,Arts,Music,Vocal Music
+5SS09.07,Social Studies,Arts,Dance,Folk Dance
+5SS09.08,Social Studies,Arts,Dance,Folk Dance
+5SS09.09,Social Studies,Arts,Dance,Folk Dance
+5SS09.10,Social Studies,Arts,Dance,Folk Dance
+5SS09.11,Social Studies,Arts,Dance,Folk Dance
+5SS09.12,Social Studies,Arts,Dance,Folk Dance
+5SS09.13,Social Studies,Arts,Drama,Acting
+6SS01.01,Social Studies,Community,Other Community,
+6SS01.02,Social Studies,Community,Social Organization,Other Social Organization
+6SS01.03,Social Studies,Community,Social Organization,Neighborhood
+6SS01.04,Social Studies,Community,Government,Local
+6SS01.05,Social Studies,Community,Government,Local
+6SS01.06,Social Studies,Community,Education,Other Education
+6SS01.07,Science,Medicine,Othr Medicine,
+6SS02.01,Social Studies,Community,Everyday Life,Celebrations
+6SS02.02,Social Studies,Community,Social Organization,Citizenship
+6SS02.03,Social Studies,Community,Everyday Life,Diversity
+6SS02.04,Social Studies,Community,Everyday Life,Customs
+6SS02.05,Social Studies,Beliefs,Religions,
+6SS02.06,Social Studies,History,Nepal,Famous Persons
+6SS03.01,Social Studies,Issues,Human Rights,Caste
+6SS03.02,Social Studies,Issues,Human Rights,Girls & Women
+6SS03.03,Social Studies,Issues,Other Issues,Addiction
+6SS03.04,Social Studies,Community,Social Organization,Solutions
+6SS03.05,Social Studies,Community,Social Organization,Mutual Help
+6SS03.06,Social Studies,Community,Psychology,Respect
+6SS04.01,Social Studies,Community,Government,National
+6SS04.02,Social Studies,Community,Social Organization,Citizenship
+6SS04.03,Social Studies,Community,Social Organization,Citizenship
+6SS04.04,Social Studies,Community,Social Organization,Citizenship
+6SS04.05,Social Studies,Community,Social Organization,Laws
+6SS04.06,Social Studies,Community,Government,National
+6SS04.07,Social Studies,Community,Government,National
+6SS05.01,Science,Earth,Other Earth,About
+6SS05.02,Social Studies,Geography,Maps,
+6SS05.03,Social Studies,Geography,Asia,Nepal
+6SS05.04,Social Studies,Geography,Asia,Nepal
+6SS05.05,Social Studies,Community,Everyday Life,Other Everyday Life
+6SS05.06,Social Studies,Geography,Maps,Country
+6SS05.07,Social Studies,Geography,Maps,Continents
+6SS05.08,Science,Earth,Climate,Climate Change
+6SS05.09,Social Studies,Community,Social Organization,Solutions
+6SS06.01,Social Studies,History,Nepal,Geography
+6SS06.02,Social Studies,History,Nepal,Geography
+6SS06.03,Social Studies,History,Nepal,Politics
+6SS06.04,Social Studies,History,Nepal,Other Nepal
+6SS06.05,Social Studies,History,Nepal,Other Nepal
+6SS06.06,Social Studies,History,Other Countries,
+6SS06.07,Social Studies,History,Other Countries,
+6SS07.01,Social Studies,Economy,Other Economy,Sustainable Development
+6SS07.02,Social Studies,Economy,Agriculture,Farming
+6SS07.03,Social Studies,Economy,Agriculture,Farming
+6SS07.04,Social Studies,Economy,Occupations,Service
+6SS07.05,Social Studies,Economy,Occupations,Service
+6SS08.01,Social Studies,Community,Government,National
+6SS08.02,Social Studies,History,Nepal,International Relations
+6SS08.03,Social Studies,History,Nepal,International Relations
+6SS08.04,Social Studies,History,Nepal,International Relations
+6SS08.05,Social Studies,History,Nepal,International Relations
+6SS09.01,Social Studies,Economy,Other Economy,Population
+6SS09.02,Social Studies,Economy,Other Economy,Population
+6SS09.03,Social Studies,Economy,Other Economy,Population
+6SS09.04,Social Studies,Economy,Other Economy,Population
+6SS09.05,Social Studies,Economy,Other Economy,Population
+6SS10.01,Social Studies,Economy,Other Economy,Population
+6SS10.02,Social Studies,Economy,Other Economy,Population
+6SS10.03,Social Studies,Economy,Other Economy,Population
+6SS10.04,Social Studies,Economy,Other Economy,Population
+6SS10.05,Social Studies,Economy,Other Economy,Population
+7SS01.01,Social Studies,Community,Government,Local
+7SS01.02,Social Studies,Community,Government,Local
+7SS01.03,Social Studies,Community,Government,Local
+7SS01.04,Social Studies,Community,Government,Local
+7SS01.05,Social Studies,Economy,Other Economy,Sustainable Development
+7SS01.06,Social Studies,,,
+7SS01.07,Social Studies,,,
+7SS02.01,Social Studies,Community,Education,Other Education
+7SS02.02,Science,Medicine,Specialties,Public Health
+7SS02.03,Social Studies,Transportation,Other Transportation,
+7SS02.04,Social Studies,Issues,Communication,
+7SS02.05,Social Studies,Issues,Other Issues,Electric Power
+7SS02.06,Science,Earth,Oceans & Water,Fresh Water
+7SS02.07,Social Studies,,,
+7SS02.08,Social Studies,,,
+7SS03.01,Social Studies,Community,Everyday Life,Diversity
+7SS03.02,Social Studies,Community,Everyday Life,Celebrations
+7SS03.03,Social Studies,Community,Social Organization,Citizenship
+7SS03.04,Social Studies,Community,Government,National
+7SS03.05,Social Studies,History,Nepal,Famous Persons
+7SS03.06,Social Studies,Community,Social Organization,Leaders
+7SS03.07,Social Studies,,,
+7SS03.08,Social Studies,,,
+7SS04.01,Social Studies,Community,Everyday Life,Diversity
+7SS04.02,Social Studies,Community,Social Organization,Mutual Help
+7SS04.03,Social Studies,Issues,Human Rights,Girls & Women
+7SS04.04,Social Studies,Beliefs,Myths,Superstitions
+7SS04.05,Social Studies,Community,Social Organization,Solutions
+7SS04.06,Social Studies,,,
+7SS04.07,Social Studies,,,
+7SS04.08,Social Studies,,,
+7SS04.09,Social Studies,,,
+7SS05.01,Social Studies,Community,Social Organization,Citizenship
+7SS05.02,Social Studies,Community,Social Organization,Citizenship
+7SS05.03,Social Studies,Community,Social Organization,Citizenship
+7SS05.04,Social Studies,Community,Social Organization,Citizenship
+7SS05.05,Social Studies,Community,Social Organization,Citizenship
+7SS05.06,Social Studies,,,
+7SS05.07,Social Studies,,,
+7SS05.08,Social Studies,,,
+7SS05.09,Social Studies,,,
+7SS05.10,Social Studies,,,
+7SS05.11,Social Studies,,,
+7SS06.01,Science,Earth,Other Earth,About
+7SS06.02,Social Studies,Geography,Europe,
+7SS06.03,Social Studies,Geography,Oceania,
+7SS06.04,Social Studies,Geography,Maps,
+7SS06.05,Social Studies,Economy,Other Economy,Sustainable Development
+7SS06.06,Social Studies,Economy,Other Economy,Sustainable Development
+7SS06.07,Social Studies,Economy,Other Economy,Sustainable Development
+7SS07.01,Social Studies,History,Nepal,History
+7SS07.02,Social Studies,History,Nepal,Politics
+7SS07.03,Social Studies,History,Nepal,Other Nepal
+7SS07.04,Social Studies,History,Ancient,China
+7SS07.05,Social Studies,History,Ancient,Mideast
+7SS07.06,Social Studies,History,Ancient,Greece
+7SS08.01,Social Studies,Earth,Other Earth,Natural Resources
+7SS08.02,Social Studies,Economy,Agriculture,
+7SS08.03,Social Studies,Economy,Business,
+7SS08.04,Social Studies,Economy,Law,International Trade
+7SS08.05,Social Studies,Economy,Occupations,Service
+7SS09.01,Social Studies, History,Nepal,International Relations
+7SS09.02,Social Studies, History,Nepal,International Relations
+7SS09.03,Social Studies,History,Nepal,Geography
+7SS09.04,Social Studies,History,Nepal,Conflicts
+7SS09.05,Social Studies,History,Nepal,International Relations

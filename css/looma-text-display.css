@@ -1,20 +1,26 @@
 .text-display{
     height: 100%;
     width: 100%;
+    padding:2vh 2vw;
+    
     overflow:hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
+    
     color:yellow;
     background-color: #091F48;
 
-    padding:1vh 1vw;
-    
-   /* font-size:1em;
-    line-height:0.8em;
-    */
-    zoom:175%;
+    vertical-align:middle;
+    /*zoom:200%;*/
+    font-size:inherit;
 }
 
-.text-display:fullscreen {
-    zoom:400%;
+
+.text-display * {
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:inherit;
 }
+
+:-webkit-full-screen.text-display, :fullscreen.text-display {transform:scale(2,2);
+    background-color:pink;}

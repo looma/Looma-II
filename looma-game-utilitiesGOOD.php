@@ -10,6 +10,7 @@ Description: fills in the actual content for each of the games as specified by t
 
 <?php
 $doc;
+//TODO: generate random game case
 if (!isset($_REQUEST["id"]))
 {
     $doc = $_POST;
@@ -18,63 +19,66 @@ else
 {
     $_id = new MongoID($_REQUEST['id']);
 
-    if (isset($_REQUEST["class"])) $class = $_REQUEST["class"];
+    //TODO
+    $scoring = 'horse';
+    $teams = '1';
 
-    if (isset($_REQUEST["scoring"])) $scoring = $_REQUEST["scoring"];
+    // if (isset($_REQUEST["class"])) $class = $_REQUEST["class"];
 
-    if (isset($game)) $query = array("chapter" => $game);
+    // if (isset($_REQUEST["scoring"])) $scoring = $_REQUEST["scoring"];
 
-    else $query = array('_id' => $_id);
+    // if (isset($game)) $query = array("chapter" => $game);
 
-    $cursor =  $games_collection->find($query, array("title"=>1, "presentation_type" => 1, "timeLimit" =>1, "pointsToWin" =>1, "pointsCorrect" =>1, "pointsWrong" =>1, "prompts"=>1, "responses"=>1, "geojson"=>1, "key"=>1, "startLat"=>1, "startLong"=>1, "startZoom"=>1));
+    $query = array('_id' => $_id);
+    $cursor = $games_collection->find($query);
+    //$cursor =  $sienna_collection->find($query, array("title"=>1, "presentation_type" => 1, "timeLimit" =>1, "pointsToWin" =>1, "pointsCorrect" =>1, "pointsWrong" =>1, "prompts"=>1, "responses"=>1, "geojson"=>1, "key"=>1, "startLat"=>1, "startLong"=>1, "startZoom"=>1));
 
-    //Load Game
-
-    foreach ($cursor as $theQuestion)
+    foreach ($cursor as $game)
     {
-        $doc = $theQuestion;
+        $doc = $game;
     }
 }
 
-$title = array_key_exists('title', $doc) ? $doc['title'] : null;
-$game_type = array_key_exists('presentation_type', $doc) ? $doc['presentation_type'] : null;
-$time_limit = array_key_exists('timeLimit', $doc) ? $doc['timeLimit'] : null;
+// $title = array_key_exists('name', $doc) ? $doc['name'] : null;
+// $game_type = array_key_exists('presentation_type', $doc) ? $doc['presentation_type'] : null;
+// $time_limit = array_key_exists('timeLimit', $doc) ? $doc['timeLimit'] : null;
 
-$num_teams = 1;
-$currentTeam = 1;
-if (isset($_REQUEST["teams"]))
-{
-    $temp_num_teams = $_REQUEST["teams"];
-    if ($temp_num_teams > 1)
-    {
-        $num_teams = $temp_num_teams;
-    }
-}
-$numberOfQuestions = sizeOf($doc['prompts']);
+// $num_teams = 1;
+// $currentTeam = 1;
+// if (isset($_REQUEST["teams"]))
+// {
+//     $temp_num_teams = $_REQUEST["teams"];
+//     if ($temp_num_teams > 1)
+//     {
+//         $num_teams = $temp_num_teams;
+//     }
+// }
+// $numberOfQuestions = sizeOf($doc['prompts']);
+// $numQuest = 1;
+// $scores = array_fill(0, $num_teams, 0);
 $numQuest = 1;
-$scores = array_fill(0, $num_teams, 0);
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST["id"]))
-{
-    $numQuest = $_POST['question'];
-    if ($numQuest <= $numberOfQuestions)
-    {
-        global $currentTeam;
-        $scores = $_POST['score'];
-        $currentTeam = $_POST['team'];
-        if ($game_type == "multiple choice")
-        {
-            callDisplayCQ();
-        }
-        else if ($game_type == "map")
-        {
-            callDisplayMap();
-        }
-    }
-    else
-    {
-        echo '<h1>GAME OVER</h1>';
-    }
-}
+// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_REQUEST["id"]))
+// {
+//     $numQuest = $_POST['question'];
+//     if ($numQuest <= $numberOfQuestions)
+//     {
+//         global $currentTeam;
+//         $scores = $_POST['score'];
+//         $currentTeam = $_POST['team'];
+//         if ($game_type == "multiple choice")
+//         {
+//             callDisplayCQ();
+//         }
+//         else if ($game_type == "map")
+//         {
+//             callDisplayMap();
+//         }
+//     }
+//     else
+//     {
+//         echo '<h1>GAME OVER</h1>';
+//     }
+// }
 
 //display the intermediate page
 function displayIntermediate()
@@ -120,30 +124,37 @@ function displayIntermediate()
 }
 
 /*********************************MULTIPLE CHOICE****************************/
-
-//params - $doc, $time_limit, $score
-function callDisplayCQ()
-{
-    global $numQuest;
-    global $doc;
-    global $num_teams;
-    global $currentTeam;
+function displayMCQ($numTeams, $numQuest, $prompt){
     echo '<section id="gameframe" class="game">';
-    if ($num_teams > 1)
-    {
-        $promptDisplay = "Question Number {$numQuest}, Team {$currentTeam}";
-    }
-    else
-    {
-        $promptDisplay = "Question Number {$numQuest}";
-    }
-    echo '<h2 id="top" data-numteams='.$num_teams.'>'.$promptDisplay.'</h2>';
-    $thePrompt = $doc['prompts'][$numQuest - 1];
-    displayContentQuestion($thePrompt);
+    $numQuest++;
+    $promptDisplay = "Question Number {$numQuest}";
+    echo '<h2 id="top" data-numteams='.$numTeams.'>'.$promptDisplay.'</h2>';
+    displayContentQuestion($prompt);
     echo '</section>';
-    displayIntermediate();
-    $numQuest ++;
 }
+//params - $doc, $time_limit, $score
+// function callDisplayCQ()
+// {
+//     global $numQuest;
+//     global $doc;
+//     global $num_teams;
+//     global $currentTeam;
+//     echo '<section id="gameframe" class="game">';
+//     if ($num_teams > 1)
+//     {
+//         $promptDisplay = "Question Number {$numQuest}, Team {$currentTeam}";
+//     }
+//     else
+//     {
+//         $promptDisplay = "Question Number {$numQuest}";
+//     }
+//     echo '<h2 id="top" data-numteams='.$num_teams.'>'.$promptDisplay.'</h2>';
+//     $thePrompt = $doc['prompts'][$numQuest - 1];
+//     displayContentQuestion($thePrompt);
+//     echo '</section>';
+//     displayIntermediate();
+//     $numQuest ++;
+// }
 
 //display content question
 function displayContentQuestion($prompt)
@@ -230,11 +241,11 @@ function displayMatchingQuestion($prompts, $responses)
         {
             if(isset($prompts[$num]))
             {
-                array_push($promptList,'<button class = "prompt ' .  $num . '" draggable="true">' . $prompts[$num] . '</button>');
+                array_push($promptList,'<button id="prompt-' .  $num . '" class = "prompt ' .  $num . '" draggable="true">' . $prompts[$num] . '</button>');
             }
             if(isset($responses[$num]))
             {
-                array_push($responseList,'<button class = "response ' .  $num . '">' .$responses[$num]. '</button>');
+                array_push($responseList,'<button id="response-' .  $num . '"class = "response ' .  $num . '">' .$responses[$num]. '</button>');
             }
         }
 
@@ -418,8 +429,8 @@ function displayTimeline($prompts)
 
                 //order of the buttons matters -- how it's displayed in the timeline
 
-                echo '<button class="timelineEvent" id= '.$i.' style = "visibility: hidden" disabled = true > '. $events[$i] . ' </button>'; //event button in the timeline that is hidden at first, but becomes visible when the event is matched with the correct date
-                echo '<button class = "date" id = '.$i.'>' .$prompts[$i]['date']. '</button>'; //date "button" on the timeline
+                echo '<button class="timelineEvent" data-index='.$i.' id= "event-'.$i.'-space" style = "visibility: hidden" disabled = true > '. $events[$i] . ' </button>'; //event button in the timeline that is hidden at first, but becomes visible when the event is matched with the correct date
+                echo '<button class = "date" data-index='.$i.' id = "date-'.$i.'">' .$prompts[$i]['date']. '</button>'; //date "button" on the timeline
                 echo '<button class = "empty"></button>'; //empty butotn that's always hidden in the timeline -- just for styling
 
                 '</li>';
@@ -429,8 +440,8 @@ function displayTimeline($prompts)
                 echo '<li>';
 
                 echo '<button class = "empty" ></button>';
-                echo '<button class = "date" id = '.$i.'>' .$prompts[$i]['date']. '</button>';
-                echo '<button class="timelineEvent" id= '.$i.' style = "visibility: hidden" disabled = true > '. $events[$i] . ' </button>';
+                echo '<button class = "date" data-index='.$i.' id = "date-'.$i.'">' .$prompts[$i]['date']. '</button>';
+                echo '<button class="timelineEvent" data-index='.$i.' id= "event-'.$i.'-space" style = "visibility: hidden" disabled = true > '. $events[$i] . ' </button>';
 
                 '</li>';
             }
@@ -451,7 +462,7 @@ function displayTimeline($prompts)
     for ($i = 0; $i < $num; $i++)
     {
         $j = $random[$i];
-        echo '<button class="event" draggable="true" id= '.$j.'>' . $events[$j] . '</button>';
+        echo '<button class="event" draggable="true" data-index='.$j.' id= "event-'.$j.'">' . $events[$j] . '</button>';
     }
     echo '</div>';//end events
 

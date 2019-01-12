@@ -114,7 +114,8 @@ function attachMediaControls (myMedia) {
             var $fsppbutton = $('#fullscreen-playpause');
 
             if(!isFullscreen)  //If it is not fullscreen make it fullscreen
-            {screenfull.toggle(document.getElementById('fullscreen'));
+            {//screenfull.toggle(document.getElementById('fullscreen'));
+                LOOMA.toggleFullscreen();
                 isFullscreen = true;
                 $fsppbutton.css('display', 'block');
 
@@ -130,7 +131,8 @@ function attachMediaControls (myMedia) {
             
             }
             else  //Otherwise un-fullscreen it
-            {screenfull.toggle(document.getElementById('fullscreen'));
+            {  //screenfull.toggle(document.getElementById('fullscreen'));
+                LOOMA.toggleFullscreen();
                 isFullscreen = false;
                 $fsppbutton.css('display', 'none');
 

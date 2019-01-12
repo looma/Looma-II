@@ -93,11 +93,11 @@ window.onload = function() {
         play($('#timeline').find('button:first')); // automatically "play" the first item
 
     function scrollTimeline($btn) {
-        $('#timeline').animate({
+        $('#timeline-container').animate({
             scrollLeft: $btn.outerWidth(true) * ($btn.index() - 2)
-        }, 100);
+        }, 700);
     };
-
+    
     function pause() {
         // $viewer.empty();
         //if ($('#video')) $('#video').each(this.pause()); //pause video if there it is playing

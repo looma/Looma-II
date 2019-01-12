@@ -1,0 +1,273 @@
+﻿1S01.01,Science,Biology,Animals,
+1S01.02,Science,Biology,Animals,
+1S01.03,Science,Biology,Animals,
+1S01.04,Science,Biology,Animals,
+1S01.05,Science,Biology,Plants,
+1S01.06,Science,Technology,Design,
+1S01.07,Science,Biology,,
+1S01.08,Science,Biology,Organs Animal,
+1S01.09,Science,Biology,Ecology,
+1S01.10,Science,Biology,Animals,
+1S01.11,Science,Biology,Animals,
+1S01.12,Science,Biology,Birds,
+1S01.13,Science,Biology,Plants,
+1S01.14,Science,Biology,Organs Plant,
+1S01.15,Social Studies,Economy,Agriculture,
+1S01.16,Science,Economy,Agriculture,
+1S01.17,Science,Earth,Human Impact,Conservation
+1S01.18,Science,Earth,Human Impact,Waste & Recycling
+1S01.19,Science,Earth,Oceans & Water,Fresh Water
+1S01.20,Mathematics,Geometry,Shapes,
+1S01.21,Science,Astronomy,Solar System,Sun
+1S01.22,Science,Earth,Natural Disasters,Fire
+1S01.23,Science,Earth,Climate,Cloud
+1S01.24,Science,Earth,Climate,Rain
+1S01.25,Science,Earth,Climate,Wind
+1S02.01,Science,Medicine,Healthy Living,Personal Hygiene
+1S02.02,Science,Medicine,Specialties,Public Health
+1S02.03,Science,Biology,Plants,
+1S02.04,Science,Biology,Plants,
+1S02.05,Science,Medicine,Healthy Living,Nutrition
+1S02.06,Science,Medicine,Healthy Living,
+1S02.07,Science,Medicine,Specialties,General Practice
+1S03.01,Social Studies,Community,Sports,Track
+1S03.02,Social Studies,Community,Sports,Yoga
+1S03.03,Social Studies,Community,Sports,Exercise
+1S03.04,Social Studies,Community,Sports,Exercise
+1S03.05,Social Studies,Community,Everyday Life,Games
+1S03.06,Social Studies,Community,Everyday Life,Games
+1S03.07,Social Studies,Community,Sports,Other Sports
+1S03.08,Social Studies,Community,Sports,Gymnastics
+1S03.09,Social Studies,Arts,Drama,Playacting
+2S01.01,Science,Biology,Ecology,Biodiversity
+2S01.02,Science,Biology,Animals,Mammals
+2S01.03,Science,Biology,Animals,Habitat
+2S01.04,Science,Biology,Animals,
+2S01.05,Science,Biology,Ecology,
+2S01.06,Science,Biology,Animals,
+2S01.07,Science,Biology,Plants,
+2S01.08,Science,Biology,Organs Plant,
+2S01.09,Science,Biology,Plants,
+2S01.10,Science,Earth,Human Impact,Waste & Recycling
+2S01.11,Mathematics,Geometry,Shapes,
+2S01.12,Science,Physics,Electromagnetism,Light
+2S01.13,Science,Physics,Materials,Matter
+2S01.14,Science,Physics,Electromagnetism,Heat
+2S01.15,Social Studies,Economy,Other Economy,
+2S01.16,Science,Earth,Climate,Weather
+2S01.17,Science,Earth,Climate,Other Climate
+2S01.18,Science,Earth,Other Earth,About
+2S01.19,Science,Astronomy,Solar System,Earth
+2S01.20,Science,Physics,Electromagnetism,Light
+2S02.01,Science,Medicine,Healthy Living,Personal Hygiene
+2S02.02,Science,Medicine,Healthy Living,Fitness
+2S02.03,Social Studies,Issues,Other Issues,Sanitation
+2S02.04,Social Studies,Issues,Other Issues,Sanitation
+2S02.05,Social Studies,Community,Everyday Life,Food
+2S02.06,Science,Earth,Oceans & Water,Fresh Water
+2S02.07,Science,Medicine,Disease & Injury,Communicable
+2S02.08,Science,Medicine,Disease & Injury,Safety
+2S02.09,Science,Medicine,Healthy Living,Health Care
+2S03.01,Social Studies,Community,Sports,Exercise
+2S03.02,Social Studies,Community,Sports,Gymnastics
+2S03.03,Social Studies,Community,Sports,Exercise
+2S03.04,Social Studies,Community,Sports,Other Sports
+2S03.05,Social Studies,Community,Everyday Life,Games
+2S03.06,Social Studies,Community,Everyday Life,Games
+2S03.07,Social Studies,Community,Everyday Life,Games
+2S03.08,Social Studies,Community,Everyday Life,Games
+2S03.09,Social Studies,Community,Everyday Life,Games
+2S03.10,Social Studies,Community,Sports,Gymnastics
+2S03.11,Social Studies,Community,Sports,Gymnastics
+3S01.01,Science,Biology,Ecology,Biodiversity
+3S01.02,Science,Biology,Ecology,Biodiversity
+3S01.03,Science,Biology,Ecology,Habitat
+3S01.04,Science,Biology,Ecology,Carnivore
+3S01.05,Science,Biology,Ecology,Biodiversity
+3S01.06,Science,Biology,Plants,Other Plants
+3S01.07,Social Studies,Economy,Agriculture,
+3S01.08,Science,Earth,Human Impact,Pollution
+3S01.09,Science,Physics,Materials,
+3S01.10,Science,Technology,Energy Sources,
+3S01.11,Science,Earth,Climate,Wind
+3S01.12,Science,Earth,Climate,Season
+3S01.13,Science,Earth,Climate,Cloud
+3S01.14,Science,Earth,Geology,Soils
+3S01.15,Science,IT,Hardware,Radio
+3S01.16,Science,Biology,Ecology,Biosphere
+3S02.01,Science,Medicine,Healthy Living,Personal Hygiene
+3S02.02,Science,Medicine,Healthy Living,Personal Hygiene
+3S02.03,Science,Earth,Human Impact,Waste & Recycling
+3S02.04,Social Studies,Community,Everyday Life,Food
+3S02.05,Science,Medicine,Healthy Living,Nutrition
+3S02.06,Science,Medicine,Disease & Injury,
+3S02.07,Science,Medicine,Specialties,Public Health
+3S02.08,Science,Medicine,Disease & Injury,Safety
+3S02.09,Science,Medicine,Specialties,Public Health
+3S02.10,Science,Medicine,Disease & Injury,Smoking
+3S03.01,Social Studies,Community,Sports,Exercise
+3S03.02,Social Studies,Community,Sports,Exercise
+3S03.03,Social Studies,Community,Sports,Drill
+3S03.04,Social Studies,Community,Sports,Exercise
+3S03.05,Social Studies,Community,Everyday Life,Games
+3S03.06,Social Studies,Community,Everyday Life,Games
+3S03.07,Social Studies,Community,Everyday Life,Games
+3S03.08,Social Studies,Community,Everyday Life,Games
+3S03.09,Social Studies,Community,Sports,Soccer
+3S03.10,Social Studies,Community,Sports,Gymnastics
+3S03.11,Social Studies,Community,Sports,Gymnastics
+4S01.01,Science,Biology,Zoology,Vertebrates
+4S01.02,Science,Biology,Zoology,Oviparous
+4S01.03,Science,Biology,Zoology,Terrestrial
+4S01.04,Science,Biology,Zoology,Aquatic
+4S01.05,Science,Biology,Other Biology,Life Processes
+4S01.06,Science,Biology,Other Biology,Life Processes
+4S01.07,Science,Biology,Plants,Terrestrial
+4S01.08,Science,Biology,Plants,Aquatic
+4S01.09,Science,Biology,Ecology,Biosphere
+4S01.10,Science,Earth,Natural Disasters,
+4S01.11,Science,Physics,Materials,Matter
+4S01.12,Science,Physics,Forces,Work & Energy & Power
+4S01.13,Science, Earth,Climate,Weather
+4S01.14,Science,Earth,Climate,Season
+4S01.15,Science,Earth,Other Earth,About
+4S01.16,Science,Astronomy,Solar System,
+4S01.17,Science,IT,Hardware,
+4S01.18,Science,Technology,Design,Water Mill
+4S02.01,Science,Medicine,Healthy Living,Personal Hygiene
+4S02.02,Science,Medicine,Healthy Living,Personal Hygiene
+4S02.03,Science,Earth,Human Impact,Waste & Recycling
+4S02.04,Science,Earth,Human Impact,Waste & Recycling
+4S02.05,Science,Medicine,Healthy Living,Nutrition
+4S02.06,Science,Medicine,Healthy Living,Nutrition
+4S02.07,Science,Medicine,Disease & Injury,
+4S02.08,Science,Medicine,Disease & Injury,Communicable
+4S02.09,Science,Medicine,Disease & Injury,Other Disease
+4S02.10,Science,Medicine,Disease & Injury,Safety
+4S02.11,Science,Medicine,Specialties,First Aid
+4S02.12,Science,Medicine,Specialties,Public Health
+4S02.13,Science,Medicine,Disease & Injury,Smoking
+4S03.01,Social Studies,Community,Sports,Exercise
+4S03.02,Social Studies,Community,Sports,Exercise
+4S03.03,Social Studies,Community,Sports,Exercise
+4S03.04,Social Studies,Community,Sports,Exercise
+4S03.05,Social Studies,Community,Sports,Exercise
+4S03.06,Social Studies,Community,Sports,Drill
+4S03.07,Social Studies,Community,Sports,Exercise
+4S03.08,Social Studies,Community,Everyday Life,Games
+4S03.09,Social Studies,Community,Everyday Life,Games
+4S03.10,Social Studies,Community,Everyday Life,Games
+4S03.11,Social Studies,Community,Sports,Soccer
+4S03.12,Social Studies,Community,Sports,Soccer
+4S03.13,Social Studies,Community,Sports,Gymnastics
+4S03.14,Social Studies,Community,Sports,Gymnastics
+5S01.01,Science,Biology,Animals,
+5S01.02,Science,Biology,Cells,
+5S01.03,Science,Biology,Insects,Butterflies
+5S01.04,Science,Biology,Plants,
+5S01.05,Science,Biology,Animals,
+5S01.06,Science,Earth,Human Impact,Pollution
+5S01.07,Science,Earth,Human Impact,Conservation
+5S01.08,Science,Physics,Materials,Matter
+5S01.09,Science,Technology,Energy Sources,
+5S01.10,Science,Earth,Climate,Weather
+5S01.11,Science,Earth,Climate,Cloud
+5S01.12,Science,Astronomy,Solar System,
+5S01.13,Science,Earth,,
+5S01.14,Science,IT,Information,
+5S01.15,Science,Technology,Mechanical,
+5S02.01,Science,Medicine,Healthy Living,Personal Hygiene
+5S02.02,Science,Medicine,Healthy Living,
+5S02.03,Science,Medicine,Specialties,
+5S02.04,Science,Medicine,Specialties,Public Health
+5S02.05,Science,Medicine,Healthy Living,Nutrition
+5S02.06,Science,Medicine,Healthy Living,Nutrition
+5S02.07,Science,Medicine,Disease & Injury,
+5S02.08,Science,Medicine,Disease & Injury,AIDS
+5S02.09,Science,Medicine,Healthy Living,
+5S02.10,Science,Medicine,Specialties,Public Health
+5S02.11,Science,Medicine,Specialties,General Practice
+5S02.12,Science,Medicine,Specialties,General Practice
+5S02.13,Science,Medicine,Disease & Injury,Tobacco
+5S02.14,Science,Medicine,Disease & Injury,Alcohol & Drugs
+5S03.01,Science,Medicine,Healthy Living,Sports
+5S03.02,Science,Medicine,Healthy Living,Sports
+5S03.03,Science,Medicine,Healthy Living,Sports
+5S03.04,Science,Medicine,Healthy Living,Sports
+5S03.05,Science,Medicine,Healthy Living,Sports
+5S03.06,Science,Medicine,Healthy Living,Sports
+5S03.07,Science,Medicine,Healthy Living,Sports
+5S03.08,Science,Medicine,Healthy Living,Sports
+5S03.09,Science,Medicine,Healthy Living,Sports
+5S03.10,Science,Medicine,Healthy Living,Sports
+5S03.11,Science,Medicine,Healthy Living,Sports
+5S03.12,Science,Medicine,Healthy Living,Sports
+5S03.13,Science,Medicine,Healthy Living,Sports
+6S01.01,Mathematics,Measurement,,
+6S01.02,Science,Physics,Forces,
+6S01.03,Science,Technology,Mechanical,Machines
+6S01.04,Science,Physics,Electromagnetism,Heat
+6S01.05,Science,Physics,Other Physics,Fire
+6S01.06,Science,Physics,Other Physics,Sound
+6S01.07,Science,Physics,Forces,Magnetism
+6S01.08,Science,Physics,Electricity & Electronics,Electricity
+6S02.01,Science,Physics,Materials,Matter
+6S02.02,Science,Physics,Materials,Mixture
+6S02.03,Science,Medicine,Healthy Living,Nutrition
+6S02.04,Science,Earth,Climate,Atmosphere
+6S03.01,Science,Physics,Materials,Metallurgy
+6S03.02,Science,Biology,Other Biology,Life Processes
+6S03.03,Science,Biology,Cells,
+6S03.04,Science,Biology,Cells,
+6S04.01,Science,Earth,Other Earth,About
+6S04.02,Science,Earth,Climate,Weather
+6S04.03,Science,Astronomy,Solar System,
+6S04.04,Science,Earth,Other Earth,Environment
+6S04.05,Science,Earth,Human Impact,
+6S04.06,Social Studies,Economy,Other Economy,Sustainable Development
+7S01.01,Science,Physics,Forces,
+7S01.02,Science,Technology,Mechanical,Machines
+7S01.03,Science,Physics,Forces,
+7S01.04,Science,Physics,Electromagnetism,Heat
+7S01.05,Science,Physics,Electromagnetism,Light
+7S01.06,Science,Physics,Other Physics,Sound
+7S01.07,Science,Physics,Forces,Magnetism
+7S02.01,Science,Physics,Materials,Matter
+7S02.02,Science,Physics,Materials,Mixture
+7S02.03,Science,Physics,Materials,Solutions
+7S02.04,Science,Earth,Oceans & Water,
+7S03.01,Science,Biology,Other Biology,Life Processes
+7S03.02,Science,Biology,Cells,
+7S03.03,Science,Biology,Other Biology,Life Processes
+7S03.04,Science,Biology,Plants,Seed
+7S04.01,Science,Earth,Other Earth,About
+7S04.02,Science,Earth,Geology,Soils
+7S04.03,Science,Earth,Oceans & Water,
+7S04.04,Science,Earth,Other Earth,About
+7S04.05,Science,,,
+7S04.06,Science,,,
+7S04.07,Science,,,
+7S04.08,Science,,,
+8S01.01,Mathematics,Measurement,,
+8S01.02,Science,Physics,Motion,
+8S01.03,Science,Technology,Mechanical,Machines
+8S01.04,Science,Physics,Forces,
+8S01.05,Science,Physics,Forces,Work & Energy & Power
+8S01.06,Science,Physics,Electromagnetism,Heat
+8S01.07,Science,Physics,Electromagnetism,Light
+8S01.08,Science,Physics,Other Physics,Sound
+8S01.09,Science,Physics,Forces,Magnetism
+8S01.10,Science,Physics,Materials,Matter
+8S01.11,Science,Technology,Other Engineering,Separation of Mixtures
+8S01.12,Science,Chemistry,Other Chemistry,"Acid, Base & Salt"
+8S01.13,Science,Earth,Climate,Atmosphere
+8S01.14,Science,Biology,Ecology,Biodiversity
+8S01.15,Science,Biology,Cells,
+8S01.16,Science,Biology,Organs Animal,
+8S01.17,Science,Biology,Other Biology,Metabolism
+8S01.18,Science,Earth,Geology,
+8S01.19,Science,Earth,Climate,Atmosphere
+8S01.20,Science,Astronomy,,
+,,,,
+,,,,
+,,,,

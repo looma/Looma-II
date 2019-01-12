@@ -12,7 +12,8 @@ Description: looma lesson plan presenter
           include('includes/looma-utilities.php'); ?>
 
     <link rel="stylesheet" href="css/looma-media-controls.css">
-    <link rel="stylesheet" href="css/looma-video.css">
+<link rel="stylesheet" href="css/looma-video.css">
+<link rel="stylesheet" href="css/looma-text-display.css">
     <link rel="stylesheet" href="css/looma-lesson-present.css">
 
   </head>

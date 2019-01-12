@@ -107,26 +107,15 @@
       //show #preview area when hover over a filesearch-results button  [NOT WORKING YET]
       $('#filesearch-results').on('mouseover', 'button', function(){openPreview(this)});
       $('#filesearch-results').on('mouseout',  'button', function(){$('#preview').hide();});
-      // add PREVIEW on HOVER on RESULT items
-            // $('.result').hover ( function() { $('#popup).html(this.html).show();},       //'in' function
-            //                      function() { S('#popup).hide();});                      //'out' function
-      
-      /*
-      
-      
-      $.post(looma-database-utilities.php,
-      {cmd:'openByID',
-         id: this.id},
-      function() { $('#popup).html(this.html).show();}
-      );
-      */
-      //
-      
-      
+
       $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
 
       $editor = $('#editor'); //the DIV where the HTML is being edited
       $editor.wysiwyg();
+      document.execCommand('styleWithCSS', false, true);
+      document.execCommand('fontSize', false, 5);
+      document.execCommand('justifyCenter', false, true);
+      
       textclear();
 
       loginname = LOOMA.loggedIn();

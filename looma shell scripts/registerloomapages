@@ -1,0 +1,36 @@
+// ONE TIME program to
+//    register documents in looma pages collection as activities
+//
+//  run in MONGO SHELL with: load('registerloomapages')
+//
+//TO SET UP:
+//then:           'use looma'
+//this sets db to the 'looma'  database
+
+var loomacursor;
+
+print('*****  db is ' + db);
+print('');
+
+var count = 0;
+//repeat for 'pages' collection
+print ('***** scanning looma "pages" collection');
+loomacursor = db.pages.find();
+while (loomacursor.hasNext()) {
+    var doc = loomacursor.next();
+    print ('checking: ' + doc.dn);
+    var act ={};
+    act.ft = 'looma';
+    act.dn = doc.dn;
+    act.url = doc.url;
+    act.mongoID = doc._id;
+    act.thumb = doc.thumb;
+    print ('ft ' + act.ft + ' dn ' + act.dn + ' ID ' + act.mongoID + ' thumb ' + act.thumb);
+
+    db.activities.insert(act);
+    count += 1;
+};
+print('');
+print('***** found ' + count + ' Looma pages and made activities for them');
+print('');
+

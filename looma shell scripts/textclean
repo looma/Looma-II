@@ -37,11 +37,11 @@ while (activitycursor.hasNext()) {
 
  
 count = 0;
-var insert = {};
 //repeat for 'texts' collection
 print ('*****scanning texts');
 textcursor = db.text_files.find();
 while (textcursor.hasNext()) {
+    var insert = {};
     var doc = textcursor.next();
     //print ('checking: ' + doc.dn);
     activitycursor = db.activities.find({'dn':doc.dn, 'ft':'text'});
@@ -61,4 +61,3 @@ while (textcursor.hasNext()) {
  print('');
  print('added activities for ' + count + ' texts without activities');
  print(''); 
- 

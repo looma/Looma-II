@@ -51,7 +51,10 @@ $(document).ready(function () {
 		if(!isFullscreen)
 		{
             //If it is not fullscreen make it fullscreen
-            screenfull.toggle(videoArea);
+            //screenfull.toggle(videoArea);
+            
+            LOOMA.toggleFullscreen();
+            
             isFullscreen = true;
             fullscreenPlayPauseButton.style.display = "block";
             videoArea.className = "fullscreen";
@@ -69,7 +72,10 @@ $(document).ready(function () {
 		else
 		{
             //Otherwise un-fullscreen it
-            screenfull.toggle(videoArea);
+            //screenfull.toggle(videoArea);
+            
+            LOOMA.toggleFullscreen();
+            
             isFullscreen = false;
             fullscreenPlayPauseButton.style.display = "none";
             videoArea.className = "";

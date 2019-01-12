@@ -9,8 +9,8 @@ Description: JS for looma-xxxx.php
  */
 
 function displayText(result) {
-    if (!result.error) $('#text-display').html(result.data);
-    else $('#text-display').html('<h2>File not found</h2>');
+    if (!result.error) $('.text-display').html(result.data);
+    else $('.text-display').html('<h2>File not found</h2>');
 }; //end displayText()
 
 'use strict';

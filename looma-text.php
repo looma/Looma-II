@@ -31,16 +31,17 @@ Comments:
             }
         else {
             echo "<div id='fullscreen'>";
-            include ('includes/looma-control-buttons.php');
+                include ('includes/looma-control-buttons.php');
 
-                if (isset($_REQUEST['id'])) {
-                    $id = $_REQUEST['id'];
-                    echo "<div id='the_id' data-id=" . rawurlencode($id) . " hidden></div>";
-                } else if (isset($_REQUEST['dn'])) {
-                    $dn = $_REQUEST['dn'];
-                    echo "<div id='the_dn' data-dn=" . rawurlencode($dn) . " hidden></div>";
-                };
-            echo "<div id='text-display' class='text-display'></div></div>";
+                    if (isset($_REQUEST['id'])) {
+                        $id = $_REQUEST['id'];
+                        echo "<div id='the_id' data-id=" . rawurlencode($id) . " hidden></div>";
+                    } else if (isset($_REQUEST['dn'])) {
+                        $dn = $_REQUEST['dn'];
+                        echo "<div id='the_dn' data-dn=" . rawurlencode($dn) . " hidden></div>";
+                    };
+                echo "<div class='text-display'></div>";
+            echo "</div>";
             }
     ?>
 

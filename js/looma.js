@@ -11,15 +11,25 @@ Description:
 
 'use strict';
 
-    function restoreFullscreenControl () {
-        $('#fullscreen-control').off('click').on('click', function (e) {
-            e.preventDefault();
-            //LOOMA.toggleFullscreen();
-            var fs =      document.getElementById('video-fullscreen');
-            if (!fs) fs = document.getElementById('fullscreen');
-            screenfull.toggle(fs);
+/*  //removed use of screenfull.js JAN 2019 because it fails in Chrome rel 71
+function restoreFullscreenControlOLD () {
+    $('#fullscreen-control').off('click').on('click', function (e) {
+        e.preventDefault();
+        //LOOMA.toggleFullscreen();
+        var fs =      document.getElementById('video-fullscreen');
+        if (!fs) fs = document.getElementById('fullscreen');
+        screenfull.toggle(fs);
     }); //end fullscreen
-  };
+};
+*/
+
+function restoreFullscreenControl () {
+    $('#fullscreen-control').off('click').on('click', function (e) {
+        e.preventDefault();
+        LOOMA.toggleFullscreen();
+    }); //end fullscreen
+};
+
 
 $(document).ready (function() {
 

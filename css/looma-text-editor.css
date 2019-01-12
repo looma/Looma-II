@@ -55,24 +55,29 @@ button.result {
     border-radius:2px;
 }
 
+#text-editor-container {
+    font-size: 2vw;
+}
 
 #editor {
-    height: 35vh;
-    width: 35vw;
-    font-size: 1em;
-    zoom: 200%;
+    height: 70vh;
+    width: 78vw;
+    /*zoom: 200%; */
     margin:0 auto;
     overflow:hidden;
+    font-size:1.3em;
+    white-space:nowrap;
     color:yellow;
     background-color: #091F48;
     margin-top: 1vh;
-    padding: 0 0;
+    padding: 0 1vw;
     border: 1px solid black;
+    vertical-align: center;
 }
 
 #editor div {
     white-space: nowrap;
-    line-height:1.4em;
+    /*line-height:1.4em;*/
 }
 
 #commands {
@@ -85,30 +90,20 @@ button.result {
 #dismiss {
     bottom: 8vh;
 }
-#timelineLeft    {
-    background-size: 100% 100%;
-    background-image: url("../images/carrot-back.png");
-    background-color:white;
-}
 
-#timelineRight {
-    background-size: 100% 100%;
-    background-image: url("../images/carrot-fwd.png");
-    background-color:white;
-}
 #preview {
-    position:absolute;
-    bottom:20vh;
-    left:40vw;
-    height:33vh;
-    width:33vw;
+    position:fixed;
+    bottom:17vh;
+    left:18vw;
+    height:18vh;
+    width:18vw;
     z-index:10;
     font-size:0.5em;
     border: 1px solid black;
     background-color:#091F48;
+    zoom:200%;
+    overflow:hidden;
 }
-
-
 
 button.speak, button.lookup, button#fullscreen-control {
     display:none;

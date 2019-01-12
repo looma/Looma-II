@@ -125,9 +125,10 @@ window.onload = function() {
 	//insertCaption($('#timeline').find('button:first'));
 
 	function scrollTimeline($btn) {
-		$('#timeline').animate({
-			scrollLeft: $btn.outerWidth(true) * ($btn.index() - 2)
-		}, 100);
+		$('#timeline-container').animate({scrollLeft: $btn.outerWidth(true) * ($btn.index() - 2)}, 700);
+
+        //$('#timeline-container').scrollLeft($btn.outerWidth(true) * ($btn.index() - 2));
+        
 	};
 
 	function pause() {

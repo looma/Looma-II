@@ -8,3 +8,8 @@ Comments:
 */
 /* following code fixes image display being stretched */
 img {max-height:100%; width:auto}
+
+
+button#fullscreen-control {
+    display:inline-block;
+}

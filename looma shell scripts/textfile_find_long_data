@@ -1,0 +1,20 @@
+// program to print large DATA fields in TEXT FILES
+//
+// changing blue/black fonts to white becuz default background is now blue
+//
+//  run in MONGO SHELL with: load('textfile_find_long_data')
+//
+var count = 0;
+var max = 1024;
+
+var cursor = db.text_files.find();
+while (cursor.hasNext()) {
+	var doc = cursor.next();
+
+    if (doc.data.length > max) {
+        print("^^^ " + doc.dn + ":  type= " + doc.ft + "  len=" + doc.data.length);
+
+	    count++;
+	 };}
+print; print("found " + count); print;
+

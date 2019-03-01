@@ -18,6 +18,8 @@ var homedirectory = "../";
 var $timeline;
 var currentlyPreviewedActivity;
 
+var searchName = 'slideshow-editor-search';
+
 ////////////////////////////////////////////
 //////   functions used by filecommands/////
 ////////////////////////////////////////////

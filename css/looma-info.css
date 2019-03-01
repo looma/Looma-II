@@ -1,9 +1,4 @@
- /*not using keyframe and webkit animation. replaced with jQuery for browser compatibility
-@keyframes credits {
-  0%   { top:  100%;}
-  100% { top: -500%;} /*adjust this for length of the list
-}
-*/
+
 #main-container-horizontal {
     display:grid;
     grid-template-rows:  1fr 1fr 10fr;
@@ -36,13 +31,10 @@
      grid-column: middle;
      margin-right:5vw;
  }
-
+ 
  #credits {
      grid-row: 2 / -1;
      grid-column: 2;
- }
-
- #credits {
      border-radius:5px;
      background: #fff;
      color:black;
@@ -51,51 +43,34 @@
      width:75%;
     
      overflow:hidden;
-     text-align:center;}
+     text-align:center;
+ }
 
- #credits li {list-style-type: none;}
- 
-/*
-#credits h2 {
-	color:#0000FF;
-	opacity:45%;
-}
-#credits-container {
-    margin:2px;
-    overflow:hidden;
-    height:50vh;
-}
-
-#credits-wrapper {
-    margin: 2vw;
-    overflow:hidden;
-    position:absolute;
-    right: 3vh;
-    
-    top: 100%;
-    color: #000;
-    background-color: white;
-}
-*/
+#credits li {list-style-type: none;}
 
 span {
     margin:auto;
 }
-h5 {text-align:left;
-    margin-left: 5vw;}
+
+h5 {
+    text-align:left;
+    margin-left: 5vw;
+}
 
  #sizemessages {
      position:absolute;
      left:3vw;
      bottom:5vh;
  }
-
+ 
  .screensize, .bodysize, .ip{
      /*color:black;*/
      vertical-align:middle;
      text-align:left;
      font-size: 0.5em;
  }
+ 
+ .ip {font-size:1em;}
 
  #trademark {
      position:relative;

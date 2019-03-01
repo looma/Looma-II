@@ -11,6 +11,7 @@ Description:
 'use strict';
 
 var result = 1, row = 0, maxButtons = 3;
+var searchName = 'library-search';
 
 ////////////////////////////////
 /////  clearResults()    /////
@@ -27,6 +28,8 @@ function clearResults(results) {
     function displayResults(results) {
     var $display = $('#results-div').empty().append('<h2 style="margin-bottom: 0;">Search Results:</h2>');
 
+    result = 1;
+    
     var result_array = [];
         result_array['activities'] = [];
         result_array['chapters']  = [];
@@ -42,6 +45,8 @@ function clearResults(results) {
     var chapResults = result_array['chapters'].length;
     var actResults = result_array['activities'].length;
 
+    //NOTE TODO: should use mongo find().count() to get the total number of results and report it right away
+    
     $display.append("<p> Activities(<span id='count'>" + actResults + "</span>)</p>");
     
     $display.append('<table id="results-table"></table>');

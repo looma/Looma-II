@@ -10,3 +10,5 @@ button.speak {
 button.lookup {
     display:inline-block;
 }
+
+iframe {background-color:white;}

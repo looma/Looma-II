@@ -234,9 +234,12 @@ function opensearch() {
     //make the main page transparent
     LOOMA.makeTransparent($('#main-container'));
     LOOMA.makeTransparent($('#commands'));
+   
     $('#cmd-btn').prop('disabled', true);
     // show SEARCH panel
+   
     $('#filesearch-panel').show();
+    $('#filesearch-bar').show();
     $('#filesearch-bar input').focus();
     $('#cancel-search').show();
     
@@ -623,12 +626,27 @@ $(document).ready(function ()
            else window.history.back();
          });
 
-   /*    $(window).on("beforeunload", function() {
+     function askToSave() {
+         console.log("askToSave");
+         if (callbacks['modified']()) savework(currentname, currentcollection, currentfiletype);
+         };
+         
+       window.onbeforeunload = function() {
+           event.preventDefault();
+           // Chrome requires returnValue to be set.
+           event.returnValue = '';
+    
+           console.log("FILE COMMANDS: toolbar 'beforeunload' event");
+          
+           //setTimeout ( askToSave,0);  //
+           if (callbacks['modified']()) savework(currentname, currentcollection, currentfiletype);
+    
+    
            //note Chrome doesnt use the custom message provided
            //note could check callbacks['modified']() but I couldnt get that to work in chrome
-            return "Do you really want to close?";
-        });
-   */
+           // return "Do you really want to close?";
+        };
+   
 
 
 ///////////////////////////////
@@ -717,6 +735,9 @@ $(document).ready(function ()
     $('.clear-filesearch').click(function() {
         $("#filesearch").trigger("reset");
         $('#filesearch-results').empty().hide();
+        
+        $('#filesearch-term').focus();
+        
     }); // end clearFilesearch()
     
 ///////////////////////////////

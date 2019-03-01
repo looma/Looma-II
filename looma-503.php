@@ -7,7 +7,7 @@ Date: 6/2015
 Description: custom 404 page for looma browser if no internet present
 
 -->
-<?php $page_title = 'Looma Games ';
+<?php $page_title = 'Looma 503 ';
 include ('includes/header.php'); ?>
 </head>
 

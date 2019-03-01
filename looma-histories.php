@@ -66,7 +66,8 @@ Description: Initial "histories" page. Takes the user to the history timelines.
                     $thumb = "../content/timelines/" . $dn . "_thumb.jpg";
                     //$thumb = $path . "/thumbnail.png";
                     $id = $history['_id'];  //mongoID of the descriptor for this lesson
-                    makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "");
+                 //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                    makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 

@@ -128,10 +128,16 @@ playMedia : function(button) {
 
         case "epaath":
         case "ep":
-            fp = encodeURIComponent(button.getAttribute('data-fp'));
-            fn = encodeURIComponent(button.getAttribute('data-fn') +
-                '/start.html');
-            window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
+            if (button.getAttribute("data-epversion") == 2015) {
+                fp = encodeURIComponent(button.getAttribute('data-fp'));
+                fn = encodeURIComponent(button.getAttribute('data-fn') +
+                    '/start.html');
+                window.location = 'looma-epaath.php?epversion=2015&fp=' + fp + '&fn=' + fn;
+            } else {
+                window.location = 'looma-epaath.php?epversion=2019' +
+                '&ole=' + button.getAttribute("data-ole") +
+                '&grade=' + button.getAttribute("data-grade").substr(5,);
+            }
             break;
 
         case "lesson":
@@ -139,7 +145,7 @@ playMedia : function(button) {
             break;
     
         case "game":
-            window.location = 'looma-lesson-game.php?id=' + button.getAttribute('data-id');
+            window.location = 'looma-gameNEW.php?id=' + button.getAttribute('data-id');
             break;
     
         case "map":
@@ -186,7 +192,7 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
              $.post("looma-database-utilities.php",
                 {cmd: 'openByID', collection: 'activities', id: id},
                 function(result) {
-  
+                    var thumbfile;
                         //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
                     var fp = (result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
 
@@ -197,13 +203,19 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                                 'data-ft="' + result.ft   + '" ' +
                                 'data-dn="' + result.dn   + '" ' +
                                 'data-url="' + result.url + '" ' +
-                                'data-id="' + mongoID     + '" >'
+                                'data-grade="' + result.grade + '" ' +
+                                'data-epversion="' + result.version + '" ' +
+                                'data-ole="' + result.oleID + '" ' +
+                                'data-id="'  + mongoID     + '" >'
                         
                                 // add key1, key2, key3, key4, thumb, src, mondoID, url and ch_id data-fields  ???
                                 //
                            );
 
-                        $newButton.append($('<img src="' + LOOMA.thumbnail(result.fn, result.fp, result.ft) + '">'));
+                        if (result.ft == 'EP' && result.thumb)  thumbfile = '../ePaath/' + result.thumb;
+                        else thumbfile = LOOMA.thumbnail(result.fn, result.fp, result.ft);
+                    
+                        $newButton.append($('<img src="' + thumbfile + '">'));
                         $newButton.append($('<span>').text(result.dn));
                         $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
@@ -346,14 +358,20 @@ thumbnail: function (filename, filepath, filetype) {
                 else if (filetype == "text") {
                     imgsrc = "images/textfile.png";
                 }
+                else if (filetype == "lesson") {
+                    imgsrc = "images/lesson2.png";
+                }
                 /*fix by looking up DN in mongo*/         else if (filetype == "evi") {
                     imgsrc = "images/video.png";
                 }
-                /*fix by looking up DN in mongo*/        else if (filetype == "history") {
+                else if (filetype == "history") {
                     imgsrc = "images/history.png";
                 }
-                /*fix by looking up DN in mongo*/          else if (filetype == "map") {
+                else if (filetype == "map") {
                     imgsrc = "images/maps.png";
+                }
+                else if (filetype == "game") {
+                    imgsrc = "images/games.png";
                 }
                 else if (filetype == "slideshow") {
                     imgsrc = "images/play-slideshow-icon.png";
@@ -806,24 +824,6 @@ ch_id   :  function (grade, subject, unit, chapter) {
         return ch_id;
     },
 
-
-    //these functions not used. to implement them, call parseCH_ID()
-    grade   :  function (ch_id) {},
-    subject :  function (ch_id) {},
-    unit    :  function (ch_id) {},
-    chapter :  function (ch_id) {},
-
-    // LOOMA ch_idFilepath
-    //
-ch_idFilepath : function(ch_id) {
-          var parts = LOOMA.parseCH_ID(ch_id);
-          return '../content/textbooks/Class' +
-                  parts['currentGradeNumber'] + '/' +
-                  parts['currentSubjectFull'] + '/' +
-                  parts['currentSubjectFull'] + '-' +
-                  parts['currentGradeNumber'] + '.pdf';
-    },
-    
     //LOOMA parseCH_ID(s)
     //  m=s.match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/);
     //  then if m != null, m[0] is the ch_id,
@@ -864,8 +864,27 @@ ch_idFilepath : function(ch_id) {
             };
          };
         return elements;
-    }    //end parseCH_ID
-
+    },    //end parseCH_ID
+        
+        //these functions not used. to implement them, call parseCH_ID()
+        ch_idGrade   :  function (ch_id) {},
+        ch_idSubject :  function (ch_id) {},
+        ch_idUnit    :  function (ch_id) {},
+        ch_idChapter :  function (ch_id) {},
+    
+    // LOOMA ch_idFilepath
+    //
+        ch_idFilepath : function(ch_id) {
+            var parts = LOOMA.parseCH_ID(ch_id);
+            return '../content/textbooks/Class' +
+                parts['currentGradeNumber'] + '/' +
+                parts['currentSubjectFull'] + '/' +
+                parts['currentSubjectFull'] + '-' +
+                parts['currentGradeNumber'] + '.pdf';
+        },
+    
+    
+    
     };  //end RETURN public functions
 }()); //IIEF immediately instantianted function expression
 
@@ -1225,6 +1244,7 @@ LOOMA.closePopup = function() {
  * This function creates a popup message box that can be dismissed by the user.
  * @param msg - The message the user is presented.
  * @param time (optional)- a delay in seconds after which the popup is automatically closed
+ * @param next - function to call when the popup is dismissed or times out
  * */
 //var popupInterval;
 LOOMA.alert = function(msg, time, notTransparent, next){

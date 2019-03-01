@@ -76,7 +76,7 @@ Description: looma slideshow presenter
                      $thumbSrc = $details['fp'] . thumbnail($details['fn']);
                 else $thumbSrc = null;
  
-                //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+                //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
 
                 $caption = isset($slideshow_element['caption']) ? $slideshow_element['caption']: "";
 
@@ -91,7 +91,8 @@ Description: looma slideshow presenter
                        $slideshow_element['id'],
                        $caption,
                        null,
-                       null);
+                       null,
+                       null, null, null);
              };
              }
             else {echo "<h1>No slideshow selected</h1>";

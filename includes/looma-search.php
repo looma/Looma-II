@@ -37,6 +37,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
     <form id='search' name='search'>
         <input type='hidden' id='collection' value='activities' name='collection'/>
         <input type='hidden' id='cmd' value='search' name='cmd'/>
+        <input type='hidden' id='includeLesson' value=true name='includeLesson'/>
         <input type='hidden' id='pageno' value='1' name='pageno'/>
         <input type='hidden' id='pagesz' value='500' name='pagesz'/>
 
@@ -130,9 +131,9 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         echo "<div id='source-div' class='chkbox-filter media-filter'>";
         echo "Source: "; //keyword("Source:");
         $sources = array(
-            array("ck12",    "phet", "epth",   "khan", "w4s",       "TED"),
-            array("Dr Dann", "PhET", "ePaath", "khan", "wikipedia", "TED"),
-            array("CK-12",   "PhET", "ePaath", "Khan", "Wikipedia", "TED"),
+            array("ck12",  "phet", "epth",   "khan", "w4s",       "TED"), // not used
+            array("CK-12", "PhET", "OLE",    "khan", "wikipedia", "TED"), //internal names for IDs  #xxx-chk and #xxx-checkbox
+            array("CK-12", "PhET", "ePaath", "Khan", "Wikipedia", "TED"), //the displayed name for source values
         );
 
       for($x = 0; $x < count($sources[0]); $x++) {
@@ -142,10 +143,10 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
                              </span>";}
        */
 
-          echo "<span  class='src-chk' data-id='" . $sources[0][$x] . "-chk'>";
+          echo "<span  class='src-chk' data-id='" .  $sources[1][$x] . "-chk'>";
           echo "<label class='filter-label' for='" . $sources[1][$x] . "-checkbox'>";
           echo "<input id='" . $sources[1][$x] . "-checkbox' class='media-input flt-chkbx media-filter' type='checkbox' name='src[]' value='" . $sources[1][$x] . "'>";
-          echo $sources[2][$x]; //keyword($sources[2][$x]);
+          echo keyword($sources[2][$x]);
           echo "</label></span>";
       }
 

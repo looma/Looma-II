@@ -118,10 +118,12 @@ window.onload = function() {
         //$timeline.fadeOut(500);  //this hides the timeline when playing media - decided to not hide the timeline [usability]
 
         playActivity($item.data('ft'), $item.data('fn'), $item.data('fp'),
-            $item.data('dn'), $item.data('id'), "", $item.data('pg'));
+            $item.data('dn'), $item.data('id'), "", $item.data('pg'),
+            $item.data('epversion'), $item.data('ole'), $item.data('grade')
+            );
     }; //end play()
 
-    function playActivity(ft, fn, fp, dn, id, ch, pg) { //play the activity of type FT, named FN, in path FP, display-name DN
+    function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade) { //play the activity of type FT, named FN, in path FP, display-name DN
         // depending on FT, may use ID, CH (a ch_id) or pg (for PDFs)
 
         // plays the selected (onClick) timeline element (activity) in the $viewer div
@@ -151,7 +153,7 @@ window.onload = function() {
                 
                 $videoHTML.find('source').attr('src', fp + fn);
                 $videoHTML.find('video').attr('poster', fp + fn.substr(0,
-                    fn.indexOf('.')) + '_thumb.jpg');
+                    fn.lastIndexOf('.')) + '_thumb.jpg');
                 $videoHTML.appendTo($viewer);
                 $('.speak, .lookup').hide();
                 $('#video')[0].load();  //unloads any previous video being played and loads this video since we just changed <source>
@@ -197,7 +199,14 @@ window.onload = function() {
             case 'epaath':
 
                 $('.speak, .lookup').show();
-                $htmlHTML.find('embed').attr('src', fp + fn);
+                if (ft=="EP" && version==2019) {
+                    var prefix = '../ePaath/';
+                    if (grade=='grade7' || grade == 'grade8') prefix += 'EPaath7-8/';
+                    $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=en&grade=' + grade.substring(5));
+                }
+                else
+                    $htmlHTML.find('embed').attr('src', '../content/epaath/activities/'+ fn + '/start.html');
+                
                 $htmlHTML.appendTo($viewer);
                 break;
 
@@ -230,6 +239,7 @@ window.onload = function() {
             //NOTE, cannot "play" ft == 'lesson' with a lesson
             
             default:
+                $viewer.html('<div class="text-display">File not found</div>');
                 console.log("ERROR: in playActivity(), unknown type: " + ft);
                 break;
         }; //end SWITCH(ft)

@@ -7,7 +7,7 @@ Date: July 2016
 Description: Initial "maps" page. Takes the user to the different maps.
 -->
 
-    <h1 class="credit"> Created by Sophie, Morgan, Henry, Knedall</h1>
+    <h1 class="credit"> Created by Sophie, Morgan, Henry, Kendall</h1>
 
 	<?php  $page_title = 'Looma Maps';
 	include ("includes/header.php");

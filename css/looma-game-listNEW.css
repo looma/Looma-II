@@ -1,4 +1,4 @@
-/******************************
+ /******************************
 Author: Luke Bowsher, Catie Cassani, Sun-Mi Oh, Meg Reinstra, Alexa Thomases
 Filename: looma-game-list.css
 Date: June 2018
@@ -67,3 +67,4 @@ button[title="buttons"]
 }
 
 .subject, .quiz, .random-class, .random-subj {display:none;}
+

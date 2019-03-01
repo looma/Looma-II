@@ -12,6 +12,31 @@ Revision: 1.0
 
 require_once ('includes/mongo-connect.php');
 
+
+
+  /////////////////////////////////
+  // commands supported:
+  //
+  //       many of these functions are specialized. they should be re-used and generalized when possible
+  //
+  //  search
+  //  open
+  //  openByID
+  //  updateByID
+  //  save
+  //  rename
+  //  exists
+  //  delete
+  //  deleteField
+  //  chapterList
+  //  keywordList
+  //  addChapterID
+  //  removeChapterID
+  //  editActivity
+  //  uploadFile
+  ////////////////////////////////
+
+
         // SAVE function
 
         function save($collection, $insert) {
@@ -34,7 +59,7 @@ require_once ('includes/mongo-connect.php');
 
             echo json_encode($result);
 
-        // if $activity param is true, save new document in the activi ties collection or update 'dn' for existing activities pointing to this file
+        // if $activity param is true, save new document in the activities collection or update 'dn' for existing activities pointing to this file
             if ($activity  == "true") {
 
                 $id = $result['_id'];
@@ -43,16 +68,18 @@ require_once ('includes/mongo-connect.php');
 
                 $id = new MongoID($id); // mongoID of document we just saved
                 $query = array("ft" => $insert['ft'], "mongoID" => $id);
-                $toinsertToActivities = array(
+                $toinsert = array(
                     "ft"      => $insert['ft'],
                     "mongoID" => $id,
                     "dn"      => $insert['dn']
                      );
-                    if (isset($insert['thumb']))  $toinsertToActivities['thumb'] = $insert['thumb'];
+                if (isset($insert['thumb']))  $toinsert['thumb'] = $insert['thumb'];
+
+                $toinsertToActivities = array('$set' => $toinsert);
 
                     $options = array("upsert" => True, "multi" => True);
 
-                //DEBIUG echo 'updating activities with ' . $id . ' and ' . $_REQUEST['dn'];
+                //DEBUG echo 'updating activities with ' . $id . ' and ' . $_REQUEST['dn'];
 
             try {
                     $result1 = $activities_collection->update($query, $toinsertToActivities, $options);
@@ -67,10 +94,10 @@ require_once ('includes/mongo-connect.php');
             };
         };  //end SAVETEXT()
 
-        function changename($collection, $oldname, $newname, $activity) {
+        function changename($collection, $oldname, $newname, $ft, $activity) {
                 global $activities_collection;
 
-                $query = array('dn' => $oldname, 'ft' => $_REQUEST['ft']);
+                $query = array('dn' => $oldname, 'ft' => $ft);
                 $update = array('$set' => array('dn' => $newname));
                 $projection = array('_id' => 1, 'dn' => 1);
                 $options = array('new' => True);
@@ -83,7 +110,7 @@ require_once ('includes/mongo-connect.php');
                 $id = $result['_id'];
 
                 $id = new MongoID($id); // mongoID of the text we just saved
-                $query =   array("ft" => $_REQUEST['ft'], "mongoID" => $id);
+                $query =   array("ft" => $ft, "mongoID" => $id);
                 $update =  array('$set' => array('dn' => $newname));
                 $options = array('multiple' => true);
 
@@ -100,27 +127,6 @@ require_once ('includes/mongo-connect.php');
 /*****************************/
 
 
-/////////////////////////////////
-// commands supported:
-//
-//       many of these functions are specialized. they should be re-used and generalized when possible
-//
-//  search
-//  open
-//  openByID
-//  updateByID
-//  save
-//  rename
-//  exists
-//  delete
-//  deleteField
-//  chapterList
-//  keywordList
-//  addChapterID
-//  removeChapterID
-//  editActivity
-//  uploadFile
-////////////////////////////////
 date_default_timezone_set ( 'UTC');
 $date = date("Y.m.d");
 
@@ -154,7 +160,7 @@ if (isset($_REQUEST["collection"])) {
        case "games":         $dbCollection = $games_collection;         break;
        case "edited_videos": $dbCollection = $edited_videos_collection; break;
 
-       default: echo "unknown collection: " . $collection;        return;
+       default: echo "unknown collection: " . $collection;        return;   //TODO: return error here
        };
 
    /* NOTE: mongoDB collections list:
@@ -220,7 +226,10 @@ if ( isset($_REQUEST["cmd"]) ) {
         //look up this ID (mongoID) in this collection (dbCollection)
         $file = $dbCollection->findOne($query);
         if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
-        else echo json_encode(array("error" => "File not found " . $_REQUEST['id'] . " in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
+        //else echo json_encode(array("error" => "File not found " . $_REQUEST['id'] . " in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
+
+        else echo json_encode(array("dn" => "File not found ", "ft" => "none", "thumb"=>"images/alert.jpg"));  // in not found, return an error object {'error': errormessage}
+
         return;
     // end case "openByID"
 
@@ -321,7 +330,7 @@ if ( isset($_REQUEST["cmd"]) ) {
     // - - - RENAME - - - //
     ////////////////////////
     case "rename":
-        changename($dbCollection, $_REQUEST['dn'], $_REQUEST['newname'], true);
+        changename($dbCollection, $_REQUEST['dn'], $_REQUEST['newname'], $_REQUEST['ft'], true);
         return;
     // end case "rename"
 
@@ -351,7 +360,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             echo 'Looma-database-utilities.php, deleted file: ' .  $_REQUEST['dn'] . ' of type: ' . $_REQUEST['ft'];
 
             // delete any references to the file from Activities collection
-            $removequery = array('mongoID' => $file['_id']);
+            $removequery = array('mongoID' => new MongoId($file['_id']));
             $activities_collection->remove($removequery);  //by default, removes multiple instances
         };
         return;
@@ -466,6 +475,8 @@ if ( isset($_REQUEST["cmd"]) ) {
 
         //echo "sources is: "; print_r($sources);
 
+        $returnLessons = false;
+
         $extensions = array();
         // build $extensions[] array by pushing filetype names into the array
         foreach ($filetypes as $type)
@@ -486,6 +497,10 @@ if ( isset($_REQUEST["cmd"]) ) {
                 case 'pdf':
                     array_push($extensions, "pdf", "document");
                     break;
+                case 'lesson':
+                    array_push($extensions, "lesson");
+                    $returnLessons = true;
+                    break;
                 case 'history':
                 case 'slideshow':
                 case 'map':
@@ -493,7 +508,6 @@ if ( isset($_REQUEST["cmd"]) ) {
                 case 'text':
                 case 'text-template':
                 case 'lesson-template':
-                case 'lesson':
                 case 'game':
                 case 'looma':
                     array_push($extensions, $type);
@@ -535,7 +549,13 @@ if ( isset($_REQUEST["cmd"]) ) {
         */
 
         $query = array();
-        if (sizeof($extensions) > 0) $query['ft'] = array('$in' => $extensions);
+        if (sizeof($extensions) > 0) $query['ft'] = array('$in' => $extensions);  //if filetypes given, search only for them
+
+        else
+        //if (!$returnLessons) $query['ft'] = array('$nin' => ['lesson']);
+
+        if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson']);
+
         if (sizeof($sources) > 0) $query['src'] = array('$in' => $sources);
         if ($areaRegex) $query['area'] = $areaRegex;
         if ($nameRegex) $query['dn'] = $nameRegex;
@@ -555,7 +575,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             $query['key4'] = $_REQUEST['key4'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key4'].'/i');
         };
 
-        //echo "Query is: "; print_r($query);
+       // echo "Query is: "; print_r($query);
         //echo '$dbCollection is ' . $dbCollection;
 
         $cursor = $dbCollection->find($query);   //->skip($page)->limit(20);
@@ -639,23 +659,30 @@ if ( isset($_REQUEST["cmd"]) ) {
     case 'editActivity':
 
         //print_r  ($_REQUEST['activities']);
-        $arr = explode(',', $_REQUEST['activities'][0]);
+        //$arr = explode(',', $_REQUEST['activities']);
 
-        foreach ($arr as $activity) {
+
+        $arr = $_REQUEST['activities'];
+
+        foreach ($arr as $activity)
+            if($activity) {
+
+    //echo '$activity is: ' . $activity;    //getting only one $activity
+
 
             $query = array('_id' => new MongoID($activity));
             //print_r ($query);
 
             $changes = []; $unsets = [];
-            if ($_REQUEST['dn'])  $changes['dn'] =  $_REQUEST['dn'];
-            if ($_REQUEST['src']) $changes['src'] = $_REQUEST['src'];
+            if (isset($_REQUEST['dn'])  && $_REQUEST['dn'])  $changes['dn'] =  $_REQUEST['dn'];
+            if (isset($_REQUEST['src']) && $_REQUEST['src']) $changes['src'] = $_REQUEST['src'];
 
             // if key1 is specified, then set key1 and either set or reset keys 2,3,4
-            if ($_REQUEST['key1']) {
-                                       $changes['key1'] = $_REQUEST['key1'];
-                if ($_REQUEST['key2']) $changes['key2'] = $_REQUEST['key2']; else $unsets['key2'] = "";
-                if ($_REQUEST['key3']) $changes['key3'] = $_REQUEST['key3']; else $unsets['key3'] = "";
-                if ($_REQUEST['key4']) $changes['key4'] = $_REQUEST['key4']; else $unsets['key4'] = "";
+            if (isset($_REQUEST['key1']) && $_REQUEST['key1']) {
+                                                                   $changes['key1'] = $_REQUEST['key1'];
+                if (isset($_REQUEST['key2']) && $_REQUEST['key2']) $changes['key2'] = $_REQUEST['key2']; else $unsets['key2'] = "";
+                if (isset($_REQUEST['key3']) && $_REQUEST['key3']) $changes['key3'] = $_REQUEST['key3']; else $unsets['key3'] = "";
+                if (isset($_REQUEST['key4']) && $_REQUEST['key4']) $changes['key4'] = $_REQUEST['key4']; else $unsets['key4'] = "";
             }
             //print_r ($changes);
             //print_r ($unsets);
@@ -663,13 +690,15 @@ if ( isset($_REQUEST["cmd"]) ) {
             if (count($changes) > 0) $update ['$set'] =   $changes;
             if (count($unsets)  > 0) $update ['$unset'] = $unsets;
 
-            if ($_REQUEST['chapter']) $update['$addToSet'] = array('ch_id' => $_REQUEST['chapter']);
+            if (isset($_REQUEST['chapter']) && $_REQUEST['chapter']) $update['$addToSet'] = array('ch_id' => $_REQUEST['chapter']);
             //print_r ($update);
 
-             $result = $dbCollection->update($query, $update);
+            $result = $dbCollection->update($query, $update);
 
             echo json_encode($result);
+
         };  // end foreach()
+
         return;
     // end case "editActivity"
 
@@ -702,15 +731,15 @@ if ( isset($_REQUEST["cmd"]) ) {
                 // insert ACTIVITY in mongoDB
 
               $insert = [];
-              if ($_REQUEST['dn'])  $insert['dn'] =  $_REQUEST['dn'];
-              if ($_REQUEST['src']) $insert['src'] = $_REQUEST['src'];
+              if (isset($_REQUEST['dn']))  $insert['dn'] =  $_REQUEST['dn'];
+              if (isset($_REQUEST['src'])) $insert['src'] = $_REQUEST['src'];
 
-              if ($_REQUEST['chapter']) $insert['ch_id'] = '[' . $_REQUEST['chapter'] . ']';
+              if (isset($_REQUEST['chapter'])) $insert['ch_id'] = '[' . $_REQUEST['chapter'] . ']';
 
-              if ($_REQUEST['key1']) $insert['key1'] = $_REQUEST['key1'];
-              if ($_REQUEST['key2']) $insert['key2'] = $_REQUEST['key2'];
-              if ($_REQUEST['key3']) $insert['key3'] = $_REQUEST['key3'];
-              if ($_REQUEST['key4']) $insert['key4'] = $_REQUEST['key4'];
+              if (isset($_REQUEST['key1'])) $insert['key1'] = $_REQUEST['key1'];
+              if (isset($_REQUEST['key2'])) $insert['key2'] = $_REQUEST['key2'];
+              if (isset($_REQUEST['key3'])) $insert['key3'] = $_REQUEST['key3'];
+              if (isset($_REQUEST['key4'])) $insert['key4'] = $_REQUEST['key4'];
 
               //print_r ($insert);
 

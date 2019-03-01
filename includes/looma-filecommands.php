@@ -64,7 +64,7 @@ Description:  search code for Looma Editors to find lesson-plans, slideshows, et
         /************* Search Bar *************/
         /**************************************/
         echo "<div id='filesearch-bar' class='media-filter'>
-            <input id='filesearch-term' type='text' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
+            <input id='filesearch-term' type='text' class=' black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
             <button id='filesearch-submit' class = 'filesearch' name='search' value='value' type='submit'>
             <button class='clear-filesearch' type='button'>Clear</button>
         </div>";

@@ -12,54 +12,64 @@ Revision: Looma 3
 
 <?php $page_title = 'Looma Game List';
     require_once ('includes/header.php');
+    require_once ('includes/looma-utilities.php');
     require_once ("includes/mongo-connect.php");
-    define ("CLASSES", 8);
 ?>
 
 <link rel="stylesheet" href="css/looma-game-listNEW.css">
 
-<?php 
-        if (!isset($_REQUEST["type"])) {
-            //redirect back to looma-games.php
-            ob_start();
-            header('Location: ' . 'looma-games.php');
-            ob_end_flush();
-            exit();
-        }
+<?php
+
+    if (!isset($_REQUEST["type"])) { //redirect back to looma-games.php
+        ob_start();
+        header('Location: ' . 'looma-games.php');
+        ob_end_flush();
+        exit();
+    };
 
     $game_type = $_REQUEST["type"];
 
-//TODO: complete this list
+        $subject_key = array("M"=>"Math",    "S"=>"Science",         "N"=>"Nepali",
+                             "EN"=>"English", "SS"=>"Social Studies", "V"=>"Vocational", "H"=>"Health");
 
-        //TODO: list of subjects not correct
-        $subject_key = array("M"=>"Math", "S"=>"Science", "H"=>"History", "N"=>"Nepali", "E"=>"English");
-        $titles = array("mc"           =>"Multiple Choice",
-                        "concentration"=>"Concentration",
-                        "matching"     =>"Matching",
-                        "map"          =>"Map",
-                        "timeline"     =>"Timeline");
+        $titles = array("multiple choice"             =>"Multiple Choice",
+                        "concentration"  =>"Concentration",
+                        "matching"       =>"Matching",
+                        "map"            =>"Map",
+                        "timeline"       =>"History");
         $mc = array();
         $match = array();
         $conc = array();
-        $timelines = array();
-        $maps = array();
+        //$timelines = array();
+        //$maps = array();
 
-        $cursor =  $games_collection->find(array());
+        $cursor =  $games_collection->find(array('presentation_type'=>$game_type))->sort(array('ch_id'=>1));
         foreach ($cursor as $game)
         {
             $id = $game['_id'];
-            $type =  isset($game['presentation_type']) ? $game['presentation_type'] : null;
-            $ch_id = isset($game['ch_id']) ? $game['ch_id'] : null;
             $name =  isset($game['title']) ? $game['title'] : null;
 
-            //TODO: extraction of class not correct for 10 and 11
-            $class = isset($game['ch_id']) ? $ch_id{0} : null;
+            if (isset($game['ch_id'])) {
+                $ch_id = $game['ch_id'];
 
-            //TODO: extraction of subject not correct
-            $subj  = (isset($game['ch_id']) && isset($subject_key[$ch_id{1}])) ? $subject_key[$ch_id{1}] : null;
+                //echo "subject of " . $ch_id . " is " . ch_idSubject($ch_id);
 
-            //TODO: clean up and handle default
-            switch ($type) {
+                $class = ch_idClass($ch_id)   ? ch_idClass($ch_id) : '1';
+                $subj =  ch_idSubject($ch_id) ? $subject_key[ch_idSubject($ch_id)] : 'EN';
+            } else {  // no ch_id for this game, use default class1, english
+                $class = "1";
+                $subj =  "EN";
+            };
+
+    //////
+    ///// NOTE: case statement below gathers a data structure of game options (sienna's code)
+    //////
+
+            switch ($game_type) {
+
+    ////////////////////////////////////
+    /////////// MULTIPLE CHOICE ////////
+    ////////////////////////////////////
                 case "multiple choice":
                     if (array_key_exists($class,$mc)) {
                         if (array_key_exists($subj, $mc[$class])) {
@@ -79,6 +89,10 @@ Revision: Looma 3
                         $mc[$class] = $subjArr;
                     }
                     break;
+
+    ////////////////////////////////////
+    /////////// MATCHING        ////////
+    ////////////////////////////////////
                 case "matching":
                     if (array_key_exists($class,$match)) {
                         if (array_key_exists($subj, $match[$class])) {
@@ -98,7 +112,11 @@ Revision: Looma 3
                         $match[$class] = $subjArr;
                     }
                     break;
-                case "concentration":
+
+    ////////////////////////////////////
+    /////////// CONCENTRATION   ////////
+    ////////////////////////////////////
+               case "concentration":
                     if (array_key_exists($class,$conc)) {
                         if (array_key_exists($subj, $conc[$class])) {
                             $temp = array($name,$id);
@@ -122,34 +140,8 @@ Revision: Looma 3
             }
         }
 
-        $settings_tree = array("mc"=>$mc, "matching"=>$match, "concentration"=>$conc);
-
-        // switch ($game_type) {
-        //     case "concentration":
-        //         echo "<h1>Concentration Game Options</h1>";
-        //         // $unique_game_types[$game["presentation_type"]] = "Concentration Games";
-        //         break;
-        //     case "mc":
-        //         echo "<h1>Multiple Choice Game Options</h1>";
-        //         // $unique_game_types["mc"] = "Multiple Choice Games";
-        //         break;
-        //     case "matching":
-        //         echo "<h1>Matching Game Options</h1>";
-        //         // $unique_game_types[$game["presentation_type"]] = "Matching Games";
-        //         break;
-        //     // case "timeline":
-        //     //     $unique_game_types[$game["presentation_type"]] = "Timeline Games";
-        //     //     break;
-        //     // case "map":
-        //     //     $unique_game_types[$game["presentation_type"]] = "New Map Games";
-        //     //     break;
-        //     default: //redirect back to looma-games.php 
-        //         ob_start();
-        //         header('Location: ' . 'looma-games.php');
-        //         ob_end_flush();
-        //         exit();
-        // }
-?>
+        $settings_tree = array("multiple choice"=>$mc, "matching"=>$match, "concentration"=>$conc);
+    ?>
 
 </head>
 
@@ -158,27 +150,36 @@ Revision: Looma 3
         <div id="fullscreen">
 
           <?php             
-           echo "<h1>". $titles[$game_type] . " Game Options</h1>";
 
+            //// history and map games selection
            if ($game_type == "timeline" || $game_type == "map"){
-             echo '<div id="middle>">';
-             $timelines = $games_collection->find(array('presentation_type'=>$game_type));
-             if ($timelines) {
-                 foreach ($timelines as $timeline) {
+               echo "<h1>". $titles[$game_type] . " Game Selection</h1>";
+               echo '<div id="middle>">';
 
-                     echo '<a href="looma-game.php?id=' . $timeline['_id'] . '">';
+             //TODO: the find() below is the 2nd time we have retrieved the games from Mongo
+
+             $games = $games_collection->find(array('presentation_type'=>$game_type));
+             if ($games) {
+                 foreach ($games as $game) {
+
+                     echo '<a href="looma-gameNEW.php?id=' . $game['_id'] . '">';
                      echo '<button title="buttons" data-id="' .
-                           $timeline['_id'] . '" class="timeline-buttons">' .
-                           $timeline['title'] . '</button></a>';
+                         $game['_id'] . '" class="activity play img">' .
+                         $game['title'] . '</button></a>';
                  }
-             } else echo "<h1>There are no timeline games yet>/h1>";
+             } else echo "<h1>There are no $game_type games yet</h1>";
              echo '</div>';
+           }
 
-           } else {
+           //// concentration, and matching games selection
+           else if ($game_type == "concentration" || $game_type == "multiple choice") {
                // class options
+               echo "<h1>". $titles[$game_type] . " Game Selection</h1>";
                echo '<div class="game-button-div" id="row1">';
                foreach ($settings_tree[$game_type] as $classNum => $subjList) {
-                   echo '<button type="button" class="class button-8" id="class' . $classNum . '">';
+
+                   echo '<button type="button" class="class button-8 " data-class="' . $classNum . '">';
+
                    echo '<p class="little">';
                    keyword("Class");
                    echo '</p>';
@@ -191,7 +192,11 @@ Revision: Looma 3
                echo '<div class="game-button-div" id="row2">';
                foreach ($settings_tree[$game_type] as $classNum => $subjList) {
                    foreach ($subjList as $subj => $quizzes) {
-                       echo '<button type="button" class="subject class-' . $classNum . '" id="subj-' . $subj . '">';
+
+                       echo '<button type="button" class="subject button-8" data-subj="' . $subj . '" data-class="' . $classNum . '">';
+
+
+                       //echo '<button type="button" class="subject class-' . $classNum . '" id="subj-' . $subj . '">';
                        echo '<p class="little">';
                        keyword($subj);
                        echo '</p>';
@@ -205,7 +210,79 @@ Revision: Looma 3
                foreach ($settings_tree[$game_type] as $classNum => $subjList) {
                    foreach ($subjList as $subj => $quizzes) {
                        foreach ($quizzes as $quiz) {
-                           echo '<button id="' . $quiz[1] . '" type="button" class="quiz class-' . $classNum . ' subj-' . $subj . '">';
+
+                           echo '<button type="button"  class="quiz" data-id="' . $quiz[1] . '" data-class="' . $classNum . '" data-subj="' . $subj . '">';
+
+
+                           //echo '<button id="' . $quiz[1] . '" type="button" class="quiz class-' . $classNum . ' subj-' . $subj . '">';
+                           echo '<p class="little">';
+                           keyword($quiz[0]);
+                           echo '</p>';
+                           echo ' </button>';
+                       }
+                   }
+               }
+               echo '</div>';
+           }
+
+           //// matching games selection
+           else if ($game_type == "matching") {
+               // ROW 1 - class options
+               echo "<h1>". $titles[$game_type] . " Game Selection</h1>";
+               echo '<div class="game-button-div" id="row1">';
+               for ($i = 1; $i <= 10; $i++) {
+                   echo '<button type="button" class="class button-8" data-class="' . $i . '">';
+                   echo '<p class="little">';
+                   keyword("Class");
+                   echo '</p>';
+                   keyword($i);
+                   echo ' </button>';
+               }
+               echo '</div>';
+
+               // ROW 2- subject options
+               echo '<div class="game-button-div" id="row2">';
+
+               //always an English subject button (for vocab)
+                for ($i = 1; $i <= 10; $i++) {
+                        echo '<button type="button" class="subject button-8"    data-subj="English"      data-class="' . $i . '">';
+                   echo '<p class="little">';
+                   keyword('English');
+                   echo '</p>';
+                   echo ' </button>';
+                }
+
+               foreach ($settings_tree[$game_type] as $classNum => $subjList) {
+                   foreach ($subjList as $subj => $quizzes) {
+                       if ($subj != 'EN') {
+                           echo '<button type="button" class="subject button-8" data-subj="' . $subj . '" data-class="' . $classNum . '">';
+                       echo '<p class="little">';
+                       keyword($subj);
+                       echo '</p>';
+                       echo ' </button>';
+                   }}
+               }
+               echo '</div>';
+
+               // ROW 3 - quiz options
+               echo '<div class="game-button-div" id="row3">';
+
+               // every class - english has a 'word game' button
+                   for ($i = 1; $i <= 10; $i++) {
+                       echo '<button type="button"       class="quiz" data-id="random"        data-class="' . $i . '"        data-subj="English">';
+                       echo '<p class="little">';
+                       keyword("Word Game");
+                       echo '</p>';
+                       echo ' </button>';
+                   };
+
+               foreach ($settings_tree[$game_type] as $classNum => $subjList) {
+                   foreach ($subjList as $subj => $quizzes) {
+                       foreach ($quizzes as $quiz) {
+
+           // next line should be "data-dn=" instead of "id="
+
+                           echo '<button type="button"  class="quiz" data-id="' . $quiz[1] . '" data-class="' . $classNum . '" data-subj="' . $subj . '">';
                            echo '<p class="little">';
                            keyword($quiz[0]);
                            echo '</p>';
@@ -215,8 +292,8 @@ Revision: Looma 3
                }
                echo '</div>';
 
-               // matching random
-               if ($game_type === "matching") {
+        /*
+              // matching random
                    echo '<div class="game-button-div" id="row4">';
                    echo '<button id="random">Random Game</button>';
                    echo '</div><br/>';
@@ -226,15 +303,17 @@ Revision: Looma 3
                    }
                    echo '</div><br/>';
 
-                   // for now, only use ENGLISH. later, replace $english_only_subject_key with $subject_key
+                   // for now, only use ENGLISH.
+                   // when LOOMA has dictionary for other subjects, replace $english_only_subject_key with $subject_key
                    echo '<div class="game-button-div" id="row6">';
                    $english_only_subject_key = array("E" => "English");
                    foreach ($english_only_subject_key as $key => $sub) {
                        echo '<button class="random-subj" id="random-subj-' . $sub . '"><p class="little">' . $sub . '</p></button>';
                    }
                    echo '</div>';
-               }
+        */
            }
+           else echo "<h1>Unknown game type</h1>";
             ?> 
 
             <?php include ('includes/looma-control-buttons.php');?>
@@ -243,7 +322,6 @@ Revision: Looma 3
 
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>
-
 
     <script src="js/looma-game-listNEW.js"></script>          <!--  Javascript for this page-->
 </body>

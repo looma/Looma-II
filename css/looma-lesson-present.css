@@ -289,8 +289,8 @@ span#lesson-name {
     font-size:2.7em;
     margin:0 auto;
     overflow: hidden;
-    background-color: #091F48;
-    color: yellow;
+    /*background-color: #091F48;  */
+    /*color: yellow;  */
     /*font-size: 20px;*/
 }
 

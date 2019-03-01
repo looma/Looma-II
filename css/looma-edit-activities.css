@@ -1,4 +1,5 @@
 /*
+/*
 LOOMA css file
 Filename: looma-editor-template.css
 Description:
@@ -331,8 +332,11 @@ li:hover {
 #details {
     display:none;
     opacity: 0.8;
-    background-color:white;
-    height:60vh;
+    background-color:lightgray;
+    padding: 3px;
+    border-radius:3px;
+    border: 2px solid black;
+    height:50vh;
     width:30vw;
     min-height:30vh;
     min-width:30vw;

@@ -51,7 +51,7 @@ function clearSearch() {
 function clearSearchState () {
     $("#top").hide;
     LOOMA.clearStore('libraryScroll', 'session');
-    LOOMA.clearStore('searchForm',    'session');
+    LOOMA.clearStore(searchName,      'session');
     
 };  //end clearSearchState()
 
@@ -63,7 +63,7 @@ function restoreSearchState () {
     var $search = $('#search');
     //$search[0].reset();
     
-    var savedForm = LOOMA.restoreForm($('#search'), 'searchForm');  //restore the search settings
+    var savedForm = LOOMA.restoreForm($('#search'), searchName);  //restore the search settings
     pagesz = $search.find("#pagesz").val();
     
     if ($('#collection').val() == 'chapters') {
@@ -99,6 +99,10 @@ function restoreSearchState () {
             // add more elements to KEYS[] if there are more levels of keywords
             
             restoreKeywordDropdown(1,keys);  // restore and select keywords 1,2,3,4 if specified
+    
+            //$('#search').submit();  //re-run the search
+    
+    
         };
     };
     
@@ -116,7 +120,7 @@ function saveSearchState () {
     // save SCROLL position
     LOOMA.setStore('libraryScroll', $("#main-container-horizontal").scrollTop(), 'session');
     // save FROM contents
-    LOOMA.saveForm($('#search'), 'searchForm');
+    LOOMA.saveForm($('#search'), searchName);
 }; //end saveSearchState()
 
 /////////////////////////////
@@ -208,7 +212,7 @@ function restoreKeywordDropdown(level,keys) {
         };
 
          if ($element.data('kids') !== 'undefined') {  //the MONGO document for KEYWORDS returns KIDS as 'undefined' if there are no kids
-            console.log('calling server with level = ' + level + ' and keys: ' + keys[1] + ', '+ keys[2] + ', '+ keys[3] + ', '+ keys[4] );
+            console.log('calling server wi th level = ' + level + ' and keys: ' + keys[1] + ', '+ keys[2] + ', '+ keys[3] + ', '+ keys[4] );
             
             $.post("looma-database-utilities.php",
                 {cmd: "keywordList", id: $element.data('kids')},
@@ -297,7 +301,7 @@ function showChapterDropdown($div, $grades, $subjects, $chapters) {
 /////////////////////////////
 function refreshPage() {
     //  if the FORM contents have been saved, then restore them, else make a clean search page with the form cleared
-    var formSettings = LOOMA.readStore('searchForm', 'session');
+    var formSettings = LOOMA.readStore(searchName, 'session');
     
     if (formSettings) {
         restoreSearchState();

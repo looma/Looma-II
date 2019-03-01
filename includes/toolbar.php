@@ -15,7 +15,7 @@
  			</button>
 
 			<button onclick="LOOMA.setStore('libraryScroll', 0, 'session');
-			                 LOOMA.clearStore('searchForm',     'session');
+			                 LOOMA.clearStore('library-search',     'session');
                              parent.location.href = 'looma-library-search.php?fp=../content/';" class="toolbar-button ">
 				<!-- call looma-library.php with path to starting folder of the Library. -->
 				<img draggable="false" src="images/library.png"  height= "80%" >

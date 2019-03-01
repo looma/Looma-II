@@ -1,11 +1,11 @@
 // ONE TIME program to
-//    clean out ft=lesson activities that are not also in lessons collection
-//    create activities for lessons that are not also in activities collection
+//    find ft=lesson activities that are not also in lessons collection
+//    find lessons that are not also in activities collection
 //
 //    and to report any lesson timeline items that are not found in activities collection
 //              and so will show "File not found"
 //
-//  run in MONGO SHELL with: load('lessonclean')
+//  run in MONGO SHELL with: load('lessonscan')
 //
 // THINK before running this - - first get a mongodump from AWS and mongorestore it into --db loomaAWS
 //                               or, db.databaseCopy('looma','loomaAWS')

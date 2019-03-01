@@ -1,0 +1,25 @@
+// ONE TIME program to
+//    scan through specified documents in activities collection
+//    and look for duplicates (based on same 'fn' and 'fp')
+//    and then merge the duplicates into the first document
+//    and remove the duplicate document(s)
+//
+//  run in MONGO SHELL with: load('removeduplicates')
+//
+// THINK before running this - - first get a mongodump or db.copyDatabase('looma', 'loomaBAK')
+//
+
+var docs, doc, deletes, deleted, fn, count;
+count=0;
+
+docs = db.activities.find({'src':'wikipedia','thumb':/content\/W4S\/wp\/index\/subject\.Countries\.htm\.thumb\.jpg/});
+while (docs.hasNext()) {
+        doc = docs.next();
+        fn = doc['fn'];
+        deletes = db.activities.find({'src':'wikipedia','fn': fn, 'thumb': /content\/W4S\/wp\/index\/subject\.Geography/});
+        while (deletes.hasNext()) { deleted = deletes.next();print (deleted.fn);count++}
+        db.activities.remove(deleted);
+	}
+	print()
+	print('count is ' + count);
+

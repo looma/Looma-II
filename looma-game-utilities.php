@@ -486,7 +486,7 @@ function callDisplayMap()
     {
         $promptDisplay = "Question Number {$numQuest}";
     }
-    echo '<h2 id="top" data-numteams='.$num_teams.'>'.$promptDisplay.'</h2>';
+    echo '<h4 id="top" data-numteams='.$num_teams.'>'.$promptDisplay.'</h4>';
     displayMapQuestion($thePrompt);
     $numQuest ++;
 }
@@ -496,7 +496,7 @@ function displayMapQuestion($prompt)
 {
     global $doc;
     echo '<div class="thegame" id="game">';
-    echo '<h4 data-geo='.$doc['geojson'].' data-info='.$doc['key'].' data-lat='.$doc['startLat'].' data-long='.$doc['startLong'].' data-zoom='.$doc['startZoom'].' id="question">Click On '.$prompt.'</h4>';
+    echo '<h2 data-geo='.$doc['geojson'].' data-info='.$doc['key'].' data-lat='.$doc['startLat'].' data-long='.$doc['startLong'].' data-zoom='.$doc['startZoom'].' id="question">Click On '.$prompt.'</h2>';
     echo '<div id="map">';
     echo '</div>';
     echo '<button id="theSender">Next Question</button>';

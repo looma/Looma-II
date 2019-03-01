@@ -77,12 +77,12 @@ div#search-panel {
 #previewpanel {
     grid-column: 2/-1;
     grid-row: 3;
-    color:yellow;
+    /*color:yellow;*/
 }
 
 .textpreview {
     height:100%;
-    background-color: #091F48;
+    /*background-color: #091F48;*/
 }
 
 #timeline {

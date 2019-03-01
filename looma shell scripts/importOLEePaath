@@ -1,0 +1,68 @@
+// mongo terminal program to read a file containing OLE ePaath 2019 JSON descriptors
+//
+// read the input files 'configmath.json', 'configscience.json', and 'configenglish.json'
+//
+// parse the JSON and create a JSON object representing each ePaath file
+//      output format: {dn:nd, ndn:ndn, grade:grade, subj:subj, thumb:thumb}
+//                  and added fields: {ft:'EP', scr:'OLE2019', id:<oleID>}
+//
+//      oleID is a string, 1st 3 chars are subj ('sci','mat','eng'), next 3 are ID, then '01'
+//
+//  in terminal: "mongo looma --quiet importOLEePaath > ole.csv"
+//
+//  stores a CSV file in the same directory named OLEimport.csv
+//
+"use strict";
+
+//NOTE: files are relative to ...www/ePaath/
+var configs = { science:   'config/configscience.json',
+                science78: 'EPaath7-8/config/configscience.json',
+                math:      'config/configmath.json',
+                math78:    'EPaath7-8/config/configmath.json',
+                english:   'config/configenglish.json',
+                english78: 'EPaath7-8/config/configenglish.json'};
+
+var gvalue, evalue, prefix;
+
+print('dn, ndn, grade, subject, ft, version, id, OLE ID, subId, type, thumb');
+
+for (var config in configs) {
+
+//print();
+//print('******************');
+
+//print ('Importing keywords from ' + config);
+var file = cat(configs[config]);  // read  the file (for now, specifying a path doesnt work)
+    prefix = config.substring(0,3);
+
+var subject = JSON.parse(file);
+
+//print(JSON.stringify(subject, null, 4));
+
+for (var grade in subject) {
+    gvalue = subject[grade];
+    //print('    GRADE: ' + grade)
+    //print(':   ' + JSON.stringify(gvalue, null, 4));
+
+   for (var epaath in gvalue) {
+           evalue = gvalue[epaath];
+           //print('         EPAATH: ' + epaath);
+           var subID = (evalue["subId"] ? evalue["subId"] : evalue["subID"]);
+           print(
+               evalue["en"].replace(/\,/g, " ") + ',' +
+               evalue["np"].replace(/\,/g, " ") + ',' +
+               grade + ',' +
+               config + ',' +
+               'EP' + ',' +
+               '2019' + ',' +
+               evalue["id"] + ',' +
+               prefix + evalue["id"] + '01' + ',' +
+               subID + ',' +
+               evalue["type"] + ',' +
+               '../ePaath/' + evalue["image"]
+            );
+
+    }; // end for in grade
+};  // end for in json
+}
+print('');

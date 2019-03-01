@@ -106,8 +106,8 @@ foreach (new DirectoryIterator($path) as $fileInfo)
 
             case "pdf":
 
-             //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-              makeActivityButton($ext, $path, $file, $dn, "",$base . "_thumb.jpg", "", "", "", "", "") ;
+             //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+              makeActivityButton($ext, $path, $file, $dn, "",$base . "_thumb.jpg", "", "", "", "", "", "", "", "") ;
               //makeButton($file, $path, $ext, $base, $dn, $path . $base . "_thumb.jpg");
             break;
 

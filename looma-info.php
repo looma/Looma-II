@@ -22,14 +22,14 @@ include ('includes/header.php');
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>Release 4.2.6, Jan 2018</h4>
+        <h4>Release 4.3.0, Feb 2019</h4>
         <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
         <h4>Contact:  info AT villagetechsolutions DOT org</h4>
         <span href="looma-info.php"></span>
         <img src="images/logos/CC-BY-SA.png" height="33px">
 
         <!-- copyright notice, with link to vts.org-->
-        <span class='glyphicon glyphicon-copyright-mark'></span>2016
+        <span class='glyphicon glyphicon-copyright-mark'></span>2019
         <a class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
 
         <br>
@@ -334,9 +334,13 @@ include ('includes/header.php');
             <p class="bodysize"></p>
 
 
-            <?php //want to display IP address for remote access, until we have zeroconf
+            <?php
+            //want to display IP address for remote access, until we have zeroconf
             //NOTE: want the external IP for this LOOMA, but 127.0.0.1 "localhost" will show on projected page
-            //echo "<p class=\"ip\">IP Address: " . gethostbyname('localhost') . "</p>"; ?>
+            //echo "<p class=\"ip\">IP Address: " . gethostbyname('localhost') . "</p>";
+            $ip = shell_exec('/usr/local/bin/loomaIP');
+            echo '<p class="ip">IP Address: ' . $ip . '</p>';
+            ?>
 
         </div>
         <!-- W3C validator link    new URL=https://validator.w3.org/nu/

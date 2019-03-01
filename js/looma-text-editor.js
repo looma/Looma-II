@@ -106,7 +106,7 @@
       
       //show #preview area when hover over a filesearch-results button  [NOT WORKING YET]
       $('#filesearch-results').on('mouseover', 'button', function(){openPreview(this)});
-      $('#filesearch-results').on('mouseout',  'button', function(){$('#preview').hide();});
+      $('#filesearch-results').on('mouseout blur',  'button', function(){$('#preview').empty().hide();});
 
       $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
 
@@ -125,4 +125,10 @@
                         loginname == 'skip' ))
           $('.admin').show();
 
+      
+      //$('#main-container').disable();
+      //LOOMA.makeTransparent($('#main-container'));
+      
+      $('#filecommands').trigger('click');
+      
   });

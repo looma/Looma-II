@@ -3,8 +3,8 @@
 Name: Skip
 Email: skip@stritter.com
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 2015 10
-Revision: Looma 2.0.0
+Date: 2015 10, 2019 02
+Revision: Looma 4.0.0
 File: looma-activities.php
 Description:  displays a list of activities for a chapter (class/subject/chapter) for Looma 2
 -->
@@ -14,7 +14,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 	require ('includes/header.php');
 	require ('includes/mongo-connect.php');
 
-    // load: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+// load: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
     require('includes/looma-utilities.php');
 	?>
 </head>
@@ -23,131 +23,142 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
 <?php
 
+$shown = array();
+$foundActicvity;
 
     function makeButton($activity) {
         //depending on the filetype of the activity, display the appropriate button
-        global $buttons, $maxButtons, $ch_id, $foundActivity;
+        global $buttons, $maxButtons, $ch_id, $foundActivity, $shown ;
 
+        $id = $activity['_id'];
 
-        $ft = $activity['ft'];
-        $dn = $activity['dn'];
-        $fp = (isset($activity['fp']) ? $activity['fp'] : "");
-        $fn = (isset($activity['fn']) ? $activity['fn'] : "");
-        $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
-        $url = (isset($activity['url']) ? $activity['url'] : "");
+        if ( ! in_array($id, $shown)) {  //check if this Activity has already been shown
+            array_push($shown,$id);  //add to 'shown' array, so it wont be shown again
 
-        if (isset($activity['thumb']))
-            $thumb = $activity['thumb'];
-        else if (isset($activity['fn']) && isset($activity['fp']))
-            $thumb = $activity['fp'] . thumbnail($activity['fn']);
-        else $thumb = null;
+            $ft = $activity['ft'];
+            $dn =  $activity['dn'];
+            $fp = (isset($activity['fp']) ? $activity['fp'] : "");
+            $fn = (isset($activity['fn']) ? $activity['fn'] : "");
+            $thumb = (isset($activity['thumb']) ? $activity['thumb'] : "");
+            $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
+            $oleID = (isset($activity['oleID']) ? $activity['oleID'] : "");
+            $epversion = (isset($activity['version']) ? $activity['version'] : "");
+            $grade = (isset($activity['grade']) ? $activity['grade'] : "");
+            $url = (isset($activity['url']) ? $activity['url'] : "");
 
-        //$thumb = (isset($activity['thumb']) ? $activity['thumb'] : thumbnail($fn));
+            if (isset($activity['thumb'])) $thumb = $activity['thumb'];
+            else if (isset($activity['fn']) && isset($activity['fp']))
+                $thumb = $activity['fp'] . thumbnail($activity['fn']);
+            else $thumb = null;
 
-        //DEBUG print_r($activity);
+            //$thumb = (isset($activity['thumb']) ? $activity['thumb'] : thumbnail($fn));
 
-        if ( ! ( $ft == 'lesson' || $ft == 'text' )) {
+            //DEBUG print_r($activity);
 
-            echo "<td>";
+            if ( ! ( $ft == 'text' )) {
 
-            if ($ft == 'slideshow' ||  $ft == 'evi') $id = new MongoID($activity['mongoID']);
+                echo "<td>";
 
-            //if ($ft != 'looma') $thumb = thumbnail($fn);
+                if ($ft == 'slideshow' ||  $ft == 'evi') $id = new MongoID($activity['mongoID']);
 
-            switch ($ft) {
-                case "video":
-                case "mp4":
-                case "mov":
-                case "m4v":
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "");
-                    break;
+                //if ($ft != 'looma') $thumb = thumbnail($fn);
 
-                case "slideshow":
-                    // in mongodb [for now] 'fn' contains the filename AND the mongoID (concatenated, separated by a space)
-                    // 'fn' => 1,      // format: "path/to/image.png mongoid"
-                    //      'dn' => 1, // format: "Slideshow Name"
-                    //$split = explode(" ", $fn);
-                    //$imagesrc = $split[0];
-                    //$mongoid  = $split[1];
-                    //$fp = urlencode('../content/slideshows/');
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "");
-                    break;
+                switch ($ft) {
+                    case "video":
+                    case "mp4":
+                    case "mov":
+                    case "m4v":
+                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "");
+                        break;
 
-                case "lesson":
-                    $thumb = "images/lesson.png";
-                    //makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "");
-                    break;
+                    case "slideshow":
+                        // in mongodb [for now] 'fn' contains the filename AND the mongoID (concatenated, separated by a space)
+                        // 'fn' => 1,      // format: "path/to/image.png mongoid"
+                        //      'dn' => 1, // format: "Slideshow Name"
+                        //$split = explode(" ", $fn);
+                        //$imagesrc = $split[0];
+                        //$mongoid  = $split[1];
+                        //$fp = urlencode('../content/slideshows/');
+                        // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "", "");
+                        break;
 
-                case "evi":      //edited videos
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    //echo "making button: " . $fn . ".";
-                    makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $thumb, $ch_id, $id, "", "", "");
-                    break;
+                    case "lesson":
+                        $thumb = "images/lesson.png";
+                        // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                        makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
+                        break;
 
-                case "VOC":     //vocabulary reviews
-                    break;
+                    case "evi":      //edited videos
+                        // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                        //echo "making button: " . $fn . ".";
+                        makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "");
+                        break;
 
-                case "LP";      //lesson plan
-                    break;
+                    case "VOC":     //vocabulary reviews
+                        break;
 
-                case "image":
-                case "jpg":
-                case "jpeg":
-                case "png":
-                case "gif":
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "", "");
-                    break;
+                    case "LP";      //lesson plan
+                        break;
 
-                case "audio":
-                case "mp3":
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "", "");
-                    break;
+                    case "image":
+                    case "jpg":
+                    case "jpeg":
+                    case "png":
+                    case "gif":
+                        // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                        makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "");
+                        break;
 
-                case "pdf":
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "1", "auto");
-                    break;
+                    case "audio":
+                    case "mp3":
+                        // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                        makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "");
+                        break;
 
-                case "text":
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    //makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, $id, "", "", "");
-                    break;
+                    case "pdf":
+                        // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                        makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "");
+                        break;
 
-                case "map";
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, "", "", "", "");
-                    break;
+                    case "text":
+                        // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, , $ole_id$url, $pg, $zoom)
+                        //makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "");
+                        break;
 
-                case "looma";  //open a Looma page (e.g. calculator or paint)
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "");
-                    break;
+                    case "map";
+                        // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                        makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, "", "", "", "", "", "", "");
+                        break;
 
-                case "EP":
-                case "epaath":
-                    $thumb = $fn . "/thumbnail.jpg";
-                    // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
-                    makeActivityButton($ft, "", $fn, $dn, "", "", $ch_id, "", "", "", "");
-                    break;
+                    case "looma";  //open a Looma page (e.g. calculator or paint)
+                        // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                        makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "");
+                        break;
 
-                case "html":
-                case "HTML":
-                    // make a HTML button
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "");
-                    break;
+                    case "EP":
+                    case "epaath":
+                        // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                        makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion);
+                        break;
 
-                default:
-                    echo "unknown filetype " . $ft . "in activities.php";
-                    break;
+                    case "html":
+                    case "HTML":
+                        // make a HTML button
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "");
+                        break;
 
-            };  //end SWITCH
-            echo "</td>";
-            $foundActivity = true;
-            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+                    default:
+                        echo "unknown filetype " . $ft . "in activities.php";
+                        break;
+
+                };  //end SWITCH
+                echo "</td>";
+                $foundActivity = true;
+                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+
+            };
         };
     }; //end makeButton()
 
@@ -205,7 +216,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
         //get all the activities registered for this chapter
         $query = array('ch_id' => $ch_id);
 		//returns only these fields of the activity record
-		$projection = array('_id' => 0,
+		$projection = array('_id' => 1,
 							'ft' => 1,
 							'fn' => 1,
 							'fp' => 1,
@@ -215,7 +226,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 							'mongoID' => 1
 							);
 
-		$activities = $activities_collection -> find($query, $projection);
+		$activities = $activities_collection -> find($query);
 		foreach ($activities as $activity)  makeButton($activity);
 
         //get all the activities that match this chapter's keywords
@@ -224,7 +235,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
             '_id' => 0,
             'key1' => 1, 'key2' => 1, 'key3' => 1, 'key4' => 1);
 
-        $chapter = $chapters_collection -> findOne($query, $projection);
+        $chapter = $chapters_collection -> findOne($query);
 
         if ($chapter && isset($chapter['key4'])) {
             $query = array('key1' => $chapter['key1'],
@@ -236,7 +247,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
                            'key2' => $chapter['key2'],
                            'key3' => $chapter['key3']);
         }
-        $projection = array('_id' => 0,
+        $projection = array('_id' => 1,
             'ft' => 1,
             'fn' => 1,
             'fp' => 1,
@@ -245,7 +256,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
             'thumb' => 1,
             'mongoID' => 1
             );
-        $activities = $activities_collection->find($query, $projection);
+        $activities = $activities_collection->find($query);
         foreach ($activities as $activity) makeButton($activity);
         //};
 
@@ -258,3 +269,4 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
    	<?php include ('includes/toolbar.php'); ?>
 	<?php include ('includes/js-includes.php'); ?>
    	<script src="js/looma-activities.js"></script>          <!-- Looma Javascript -->
+</body>

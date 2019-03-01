@@ -1,3 +1,5 @@
+"use strict";
+
 var theHeights = {};
 var theLefts = {};
 function increaseBigScore(numToWin, teamNum) // moves big scoreboard marker forward

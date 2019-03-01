@@ -3,7 +3,7 @@ function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : n
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
 $loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
-error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+error_log("Starting Activity Edit session. logged in as: " . $loggedin);
 ?>
 
 <!doctype html>

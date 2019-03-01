@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+#  filename: loomaIP
+#       author: skip
+#       date:   Jan 2019
+#
+#  outputs the IPv4 addresses of the host computer if any
+#
+#   callable from PHP with:    $result = shell_exec('looma\ shell\ scripts/loomaIP')
+#       (or save it in /usr/local/bin with 766 permissions and call with shell_exec('loomaIP')
+#
+#   must be chmod 766 to execute
+#
+ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'

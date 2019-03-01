@@ -17,6 +17,7 @@ var loginname;
 var homedirectory = "../";
 var $details;
 
+var searchName = 'lesson-editor-search';
 
 //////////////   functions used by filecommands/////////////////
 
@@ -34,7 +35,9 @@ function lessonclear() {
 function lessonshowsearchitems() {
     $('#lesson-chk').show();
     // for TEXT EDIT, only show "text", clicked and disabled
+    
     $('#lesson-chk input').attr('checked', true).css('opacity', 0.5);
+    
     //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
     $('#lesson-chk input').click(function() {return false;});
     
@@ -374,22 +377,22 @@ function thumbnail (item) {
 			imgsrc = path + "thumbnail.png";
 		}
 		else if (item.ft == "mp4" || item.ft == "mp5" || item.ft == "m4v" || item.ft == "mov" || item.ft == "video") { //video
-			thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+			thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
             if (filepath) path = filepath; else path = homedirectory + 'content/videos/';
 			imgsrc = path + thumbnail_prefix + "_thumb.jpg";
 		}
 		else if (item.ft == "jpg"  || item.ft == "gif" || item.ft == "png" || item.ft == "image" ) { //picture
-			thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+			thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
             if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
 			imgsrc = path + thumbnail_prefix + "_thumb.jpg";
 		}
 		else if (item.ft == "pdf") { //pdf
-            thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+            thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
             if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
             imgsrc = path + thumbnail_prefix + "_thumb.jpg";
         }
         else if (item.ft == "html") { //html
-            thumbnail_prefix = filename.substr(0, filename.indexOf('.'));
+            thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
             if (filepath) path = filepath; else path = homedirectory + 'content/html/';
             imgsrc = path + thumbnail_prefix + "_thumb.jpg";
         }
@@ -399,7 +402,7 @@ function thumbnail (item) {
         }
         
         else if (item.ft == "EP") {
-            imgsrc = homedirectory + "content/epaath/activities/" + item.thumb;
+            imgsrc = homedirectory + "content/epaath/activities/" + item.fn + "/thumbnail.jpg";
         }
 		else if (item.ft == "text") {
             imgsrc = "images/textfile.png";
@@ -490,7 +493,8 @@ function createActivityDiv (activity) {
                 activityDiv.className = "activityDiv";
 
                 $(activityDiv).attr("data-collection", (item.ft == 'chapter') ? 'chapters' : 'activities');
-                $(activityDiv).attr("data-id",         (item.ft == 'chapter') ? item['_id'] : item['_id']['$id']);
+                
+                if ('_id' in item)$(activityDiv).attr("data-id",         (item.ft == 'chapter') ? item['_id'] : item['_id']['$id']);
   
                 if ('mongoID' in item) $(activityDiv).attr("data-mongoID",    (item.ft == 'chapter') ? '' : item['mongoID']['$id']);
   
@@ -557,7 +561,7 @@ function createActivityDiv (activity) {
                buttondiv.appendChild(addButton);
 
                 // "Delete" button
-                var removeButton = $("<button/>", {class: "remove", html:"Delete"});
+                var removeButton = $("<button/>", {class: "remove", html:"Remove"});
                 $(buttondiv).append(removeButton);
 
                 // "Preview" button
@@ -635,6 +639,7 @@ function preview_result (item) {
 
 	          // '<div id="video-player">' +
                     '<div id="video-area">' +
+                    '<div id="video-area">' +
                         '<div id="fullscreen">' +
                             '<video id="video">' +
                                 '<source id="video-source" src="' +
@@ -677,7 +682,7 @@ function preview_result (item) {
 
 		}
 		// Pictures
-		else if(filetype=="jpg" || filetype=="gif" || filetype=="png" || filetype=="image") {
+		else if (filetype=="jpg" || filetype=="gif" || filetype=="png" || filetype=="image") {
             if (!filepath) filepath = '../content/pictures/';
 			document.querySelector("div#previewpanel").innerHTML = '<img src="' +
 			                     filepath +
@@ -689,9 +694,11 @@ function preview_result (item) {
             filename  + '" style="height:60vh;width:60vw;"> </object>';
         }
         else if (filetype=="EP") {
-		document.querySelector("div#previewpanel").innerHTML =
-		  '<object type="text/html" data="' + homedirectory + 'content/epaath/activities/' +
-		    filename  + '/index.html" style="height:60vh;width:60vw;"> </object>';
+		document.querySelector("div#previewpanel").innerHTML = '<img src="' +
+                 $(item).find('img').prop('src') +   '" id=displayImage style="height:100%">';
+            
+		  //'<object type="text/html" data="' + homedirectory + 'content/epaath/activities/' +
+		  //  filename  + '/index.html" style="height:60vh;width:60vw;"> </object>';
 		}
 		else if (filetype=="looma")
             document.querySelector("div#previewpanel").innerHTML = '<img src="images/looma-screenshots/' +
@@ -699,8 +706,11 @@ function preview_result (item) {
         
         else if (filetype=="map")
             document.querySelector("div#previewpanel").innerHTML = '<img src="../maps/' + $(item).find('.resultsimg').attr('src') + '" id="displayImage">';
-            
-        else if (filetype == "history")
+        
+        else if (filetype=="game")
+            document.querySelector("div#previewpanel").innerHTML = '<img src="images/games.png" id="displayImage">';
+        
+        else if (filetype=="history")
             document.querySelector("div#previewpanel").innerHTML = '<img src="../content/timelines/' + $(item).find('.result_dn').text() + '_thumb.jpg" id="displayImage">';
         
         else if (filetype=="slideshow") {
@@ -728,6 +738,9 @@ function preview_result (item) {
                 },
                 'json'
               );
+        }
+		else {
+            document.querySelector("div#previewpanel").innerHTML = '<div class="text-display"> File not found</div>';
         }
 	}
 
@@ -848,9 +861,11 @@ window.onload = function () {
     
     $('.chapterFilter').prop('disabled', true);
     $('.mediaFilter').prop('disabled',   false);
-    
-    
-    $("#dropdown_grade, #dropdown_subject").change( function(){
+
+    $('#lesson-checkbox').prop('disabled' , true).hide();
+    $('#includeLesson').val(false);
+        
+        $("#dropdown_grade, #dropdown_subject").change( function(){
         $('#div_chapter').hide();
         
         $('#dropdown_chapter').empty();
@@ -931,6 +946,11 @@ window.onload = function () {
     
     $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
     
+    //LOOMA.makeTransparent($('#search-panel'));
+    //$('#search-panel').hide();
+    //$('#cmd-button').focus();
+    
+    // hide or disable #search-panel, focus on #cmd-button, put hints in preview panel "open a file, new file or template to work on"
 };  //end window.onload()
 
 

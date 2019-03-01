@@ -3,7 +3,7 @@ function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : n
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
 $loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
-error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+error_log("Starting Lesson Plan Edit session. logged in as: " . $loggedin);
 ?>
 
 <!doctype html>
@@ -26,6 +26,7 @@ Revision: Looma 4
     <link rel="stylesheet" type="text/css" href="css/looma-filecommands.css">
     <link rel="stylesheet" type="text/css" href="css/looma-search.css">
     <link rel="stylesheet" type="text/css" href="css/looma-lesson-plan.css">
+    <link rel="stylesheet" href="css/looma-text-display.css">
     </head>
 
     <body>
@@ -98,6 +99,7 @@ Revision: Looma 4
 
         <script src="js/looma-search.js"></script>
         <script src="js/looma-lesson-plan.js"></script>
+        <script src="js/looma-media-controls.js"></script>
 
     </body>
 </html>

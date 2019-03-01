@@ -43,7 +43,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
               callDisplayCQ();
               echo '</div>';
               echo '<div class="timer">';
-              echo '<h2 id="time message">Time Left</h2>';
+              echo '<h2 id="timer-message">Time Left</h2>';
               echo '<h3 id="timer" title="ticking">'.$time_limit.'</h3>';
               echo '</div>';
               echo '<div class="scoreboard">';
@@ -83,7 +83,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
             displayMatchingQuestion($doc['prompts'], $doc['responses']);
             echo '</div>';
             echo '<div class="timer">';
-            echo '<h2 id="time message">Time Left</h2>';
+            echo '<h2 id="timer-message">Time Left</h2>';
             echo '<h3 id="timer" title="ticking">'.$time_limit.'</h3>';
             echo '</div>';
             echo '<div class="scoreboard">';
@@ -117,7 +117,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
             displayConcentrationGame($doc['prompts'], $doc['responses']);
             echo '</div>';
             echo '<div class="timer">';
-            echo '<h2 id="time message">Time Left</h2>';
+            echo '<h2 id="timer-message">Time Left</h2>';
             echo '<h3 id="timer" title="ticking">'.$time_limit.'</h3>';
             echo '</div>';
             echo '<div class="scoreboard">';
@@ -151,7 +151,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
             echo '</div>';
 
             echo '<div class="timer">';
-            echo '<h2 id="time message">Time Left</h2>';
+            echo '<h2 id="timer-message">Time Left</h2>';
             echo '<h3 id="timer" title="ticking">'.$time_limit.'</h3>';
             echo '</div>';
             echo '<div class="scoreboard">';
@@ -185,7 +185,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
               callDisplayMap();
               echo '</div>';
               echo '<div class="timer">';
-              echo '<h2 id="time message">Time Left</h2>';
+              echo '<h2 id="timer-message">Time Left</h2>';
               echo '<h3 id="timer" title="ticking">'.$time_limit.'</h3>';
               echo '</div>';
               echo '<div class="scoreboard">';

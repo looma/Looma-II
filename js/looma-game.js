@@ -5,6 +5,7 @@ Date: August 2018
 Description: Creates a game with a scoreboard, timer, and prompts.
 Information accessed through database.
 ***************************/
+    'use strict';
 
     var delayInMilliseconds = 1000; //1 second
     var currentPrompt;

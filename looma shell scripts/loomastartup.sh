@@ -1,4 +1,3 @@
-#!/bin/bash
 #
 #  on Looma system startup, wait until apache is running before launching Looma
 #       tries every 5 seconds for 1 minute
@@ -8,6 +7,9 @@
 #       sudo chmod 755 /usr/local/bin/loomastartup.sh
 #       in System > Preferences > Personal > Startup Applications:
 #           edit the "Looma" startup entry to contain Command: /usr/local/bin/loomastartup.sh
+#
+# first try to reset Chromium 'exited cleanly' setting to 'true'
+sed -i 's/exited_cleanly\":\ false/exited_cleanly\":\ true/g' ~/.config/chromium/Default/Preferences
 #
 wait=2
 tries=30
@@ -20,7 +22,7 @@ do
 	if [ $? -eq 0 ]
 	then
 		echo "launching Looma"
-		chromium-browser --kiosk --noerrordisplay http://localhost/Looma/index.php	&
+		chromium-browser --kiosk --noerrdisplay --disable-infobars http://localhost/Looma/index.php	&
 		exit
 	else
 		echo "waiting for webserver..."

@@ -22,7 +22,8 @@ Description:  base page for showing HTML content. call with URL=looma.html.php?f
 	?>
 		<div id="main-container-horizontal">
 			<div id="fullscreen">
-                <?php echo "<iframe id='iframe' src='$filepath$filename' allowfullscreen>" ?></iframe>
+                <!-- NOTE the iframe below has name='looma-frame', and wikipedia articles in looma have <a xxx.htm target="looma-frame" -->
+                <?php echo "<iframe id='iframe' name='looma-frame' src='$filepath$filename' allowfullscreen>" ?></iframe>
                 <?php include('includes/looma-control-buttons.php')?>
 			</div>
 		</div>

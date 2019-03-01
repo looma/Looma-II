@@ -27,14 +27,17 @@ Description: page with link to arithmetic and vocabulary games
 				    case "concentration":
 				        $unique_game_types[$game["presentation_type"]] = "Concentration Games";
 				        break;
-				    case "multiple choice":
-				    	$unique_game_types["mc"] = "Multiple Choice Games";
-				        break;
+                    //case "mc":
+                      //  $unique_game_types["mc"] = "Multiple Choice Games";
+                        //break;
+                    case "multiple choice":
+                        $unique_game_types["multiple choice"] = "Multiple Choice Games";
+                    break;
 				    case "matching":
 				    	$unique_game_types[$game["presentation_type"]] = "Matching Games";
 				        break;
 				    case "timeline":
-				    	$unique_game_types[$game["presentation_type"]] = "Timeline Games";
+				    	$unique_game_types[$game["presentation_type"]] = "History Games";
 				        break;
 				    case "map":
 				    	$unique_game_types[$game["presentation_type"]] = "Map Games";
@@ -52,18 +55,21 @@ Description: page with link to arithmetic and vocabulary games
 <body>
 	<div id="main-container-horizontal">
         <br>
-        <h2 class="title"> <?php keyword("Looma Practice Exercises"); ?> </h2>
+        <h2 class="title"> <?php keyword("Looma Games"); ?> </h2>
 		<div class="center">
 			<br>
 		
 		<?php 
 			foreach ($unique_game_types as $game_type=>$game_label) {
-			    $val = "<a href='looma-game-listNEW.php?type=" . $game_type . "'>";
-			    $val = $val . "<button type='button' class='activity play img navigate' >";
-			    echo $val;
-			    keyword($game_label);
-			    echo "</button></a>";
-			}
+
+                if ($game_type !== "timeline") {
+                    $val = "<a href='looma-game-listNEW.php?type=" . $game_type . "'>";
+                    $val = $val . "<button type='button' class='activity play img navigate' >";
+                    echo $val;
+                    keyword($game_label);
+                    echo "</button></a>";
+                }
+            }
 		?>
 		
 		<a href="looma-vocab.php">

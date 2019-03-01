@@ -17,6 +17,8 @@ var loginname;
 //var homedirectory = "../";
 //var $timeline;
 
+var searchName = 'edit-activities-search';
+
 function submitChanges (event) {  //check the form entries and submit to backend
     var n, str, len, arr, $checked, errors;
     event.preventDefault();
@@ -50,6 +52,12 @@ function submitChanges (event) {  //check the form entries and submit to backend
         $('#changes-activities').val(arr);
  */
         $checked = $('#innerResultsDiv .filter-checkbox:checked');
+    
+        len = $('.changes-activities').length;
+        for (var i=0 ; i< len && i < 10; i++) {
+            $($('.changes-activities')[i]).val(null);
+        };
+        
         len = $checked.length;
         for (var i=0 ; i< len && i < 10; i++) {
             var val = $($checked[i]).parent().data('mongo')['_id']['$id'];
@@ -63,8 +71,10 @@ function submitChanges (event) {  //check the form entries and submit to backend
             LOOMA.confirm('Do you really want to modify ' + str,
                     function() {
                         $.post("looma-database-utilities.php",
-                            $("#changes").serialize(),
-                            function (result) {LOOMA.alert('Changes successful',4,true);},
+                            $("#changes").serialize(),   //NOTE: sends cmd=editActivity, and collection=activities to database-utilities.php
+                            function (result) {LOOMA.alert('Changes successful',4, true);},
+                            //function (result) {LOOMA.alert('Changes FAILED',    7, true);},  //NOTE: 'fail' function not allowed
+                            //  NOTE: should return any ERROR in 'result' and process it here
                             "json"
                         );
                     },
@@ -360,8 +370,7 @@ $(document).ready(function() {
     $('#dn-clear').click(       function(e) {e.preventDefault(); $('#dn-changes').val(""); });
     $('#keyword-clear').click(  function(e) {e.preventDefault(); $('.keyword-changes').val(""); });
     $('#source-clear').click(   function(e) {e.preventDefault(); $('.source-changes').prop('checked', false); });
-    $('#textbook-clear').click( function(e) {
-        e.preventDefault(); $('.chapter-changes').val(""); });
+    $('#textbook-clear').click( function(e) {e.preventDefault(); $('.chapter-changes').val(""); });
     
     $('#submit-changes').click( submitChanges );
     
@@ -371,4 +380,10 @@ $(document).ready(function() {
                         function() {return;});
     });
     
+    window.onbeforeunload = function() {
+        event.preventDefault();
+        // Chrome requires returnValue to be set.
+        event.returnValue = '';
+        console.log("activity editor 'beforeunload' event");
+    };
 });

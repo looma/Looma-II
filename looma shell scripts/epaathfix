@@ -1,12 +1,14 @@
 // ONE TIME program to ADD 'src':'ePaath' to ePaath activities
 // DO NOT run this again - - saved as example of mongo terminal (JS) scripting
 //
-//  run in MONGO SHELL with: load('scriptname')
+//  run in MONGO SHELL with: load('epaathfix')
 //
-var cursor = db.activities.find({'ft':'EP'});
+var cursor = db.activities.find({'src':'OLE Nepal'});
 while (cursor.hasNext()) {
 	var doc = cursor.next();
-	doc['src'] = 'ePaath';
+	if (doc['src'] == 'OLE Nepal') {
+	    doc['src'] = 'OLE';
+	print(doc['src']);
 	db.activities.update({_id:doc._id}, doc);
 	}
-
+}

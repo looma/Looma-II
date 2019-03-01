@@ -2,6 +2,8 @@
 
 ///////////////////
 /// functions defined:
+/// ch_idClass    [php version of LOOMA.ch_idClass() in looma-utilities.js]
+/// ch_idSubject  [php version of LOOMA.ch_idClass() in looma-utilities.js]
 /// isHTML
 /// isEpaath
 /// folderName
@@ -10,14 +12,33 @@
 /// makeActivityButton
 /// //////////////////
 
+/****************************/
+/*****  ch_idClass   ********/
+/****************************/
+function ch_idClass($ch_id) {
+     if (($ch_id) && preg_match ( "/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches ))
+            return $matches[1];
+     else return null;
+};  //end function ch_idSubject
+
+/****************************/
+/*****  ch_idSubject   ******/
+/****************************/
+function ch_idSubject($ch_id) {
+    if (($ch_id) && preg_match ( "/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches ))
+        return $matches[2];
+    else return null;
+};  //end function ch_idSubject
+
+
 /**********************/
 /*****  isHTML   ******/
 /**********************/
-    function isHTML($fp) {
-        if ( $fp != '../content/Khan' && file_exists($fp . "/index.html") && !isEpaath($fp))
-            return true;
-        else return false;
-    };  //end function isHTML
+function isHTML($fp) {
+    if ( $fp != '../content/Khan' && file_exists($fp . "/index.html") && !isEpaath($fp))
+        return true;
+    else return false;
+};  //end function isHTML
 
 
 /**********************/
@@ -79,7 +100,11 @@ function displayName($name, $dn, $ndn) {
 /*********************************/
 /******** makeActivityButton *****/
 /*********************************/
-function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom) {
+
+
+// NOTE: instead of this long list of args, the fn should take one psaram - an assoc array/object with all the activity's attributes
+
+function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion) {
 	    // makes an ACTIVITY button (for looma-library, looma-activities, etc)
 	    // some parameters are optional for some filetypes
 	    //    $ft - filetype, $fp - path to file, $fn - filename, $dn - display name,
@@ -123,7 +148,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
             case "HTML": $fp = '../content/html/'; break;
 
    		    case "EP":
-            case "epaath": $fp = '../content/epaath/activities/'; break;
+            case "epaath":
+                break;
 
             case "VOC":       //vocabulary reviews
             case "lesson":    //lesson plan
@@ -133,8 +159,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
             case "looma":     //looma
             case "chapter":   //chapter
             case "history":   //$fp = '../content/histories/';
-            case "map":
-                break;  //map
+                break;
 
 		   default:  // unknown filetype
 
@@ -148,7 +173,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 		};  //end SWITCH
 
              if ($thumb && $thumb != "") $thumbSrc = $thumb;
-        else if ($ft == 'EP' || $ft == 'epaath') $thumbSrc = $fp . $fn . "/thumbnail.jpg";
+        //else if ($ft == 'EP' || $ft == 'epaath') $thumbSrc = $fp . $fn . "/thumbnail.jpg";
         else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
         else if ($ft == 'slideshow')  $thumbSrc = "images/play-slideshow-icon.png";
         else if ($ft == 'looma') $thumbSrc = "images/LoomaLogo.png";
@@ -163,6 +188,11 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
                           echo "<button class='activity play img' ";
         if ($fn)          echo 'data-fn="' .  $fn . '" ';
         if ($fp)          echo "data-fp='" .  $fp . "' ";
+
+        if ($ole_id)      echo "data-ole='" .  $ole_id . "' ";
+        if ($grade)       echo "data-grade='" .  $grade . "' ";
+        if ($epversion)   echo "data-epversion='" .  $epversion . "' ";
+
         if ($ft)          echo "data-ft='" .  $ft . "' ";
         if ($dn)          echo "data-dn='" .  $dn . "' ";
         if ($mongo_id)    echo "data-id='" .  $mongo_id . "' ";

@@ -9,8 +9,8 @@ Description: formatting and styling for the game page
 .container 
 {
   display: grid;
-  grid-template-columns: 75% 25%;
-  grid-template-rows: 10% 40% 40% 10%;
+  grid-template-columns: 85% 15%;
+  grid-template-rows: 8% 8%  22% 12% 40% 10%;
   height: 100vh;
   width: 100vw;
     padding:0;
@@ -22,147 +22,205 @@ Description: formatting and styling for the game page
 {
   grid-column: 1 / 3;
   grid-row: 1 / 2;
-  background-color: #091f48;
-  /*border: 1px solid yellow;*/
 }
 
-.toolbar
+#top {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+}
+
+#thegameframe
 {
-  grid-column: 1 / 3;
-  grid-row: 4 / 5;
+    grid-column: 1 / 2;
+    grid-row: 2 / 6;
+    border: 1px solid yellow;
+    overflow: hidden;
+    
+    position:relative;
+}
+
+.toolbar {
+    grid-column: 1 / 3;
+    grid-row: 6 / 7;
     height:100%;
 }
 
-.thegameframe
-{
-  grid-column: 1 / 2;
-  grid-row: 2 / 4;
-  background-color: #091f48;
-  border: 1px solid yellow;
-  overflow-y: auto;
-  
-  position:relative;
+#timer {
+    grid-column: 2 / 3;
+    grid-row: 2 / 4;
+    border: 1px solid yellow;
 }
 
-.timer 
+#scoreboard
 {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  background-color: #091f48;
-  border: 1px solid yellow;
+    grid-column: 2 / 3;
+    grid-row: 4 / 6;
+    border: 1px solid yellow;
+    font-size:1em;
 }
 
-.scoreboard
-{
-  grid-column: 2 / 3;
-  grid-row: 3 / 4;
-  background-color: #091f48;
-  border: 1px solid yellow;
+.teamnumber {
+    margin:5vh;
+    color:blue;
+    background-color:white;
 }
 
-.bigscore
-{
+.teamnumber:hover {
+    transform: scale(1.2,1.2);
+    color:blue;
+}
+
+.teamnumber.active {
+    color:white;
+    background-color:blue;
+}
+
+
+#gameframe {
+    height:100%;
+    width: 100%;
+}
+
+#gameOverFrame {padding-top:20vh}
+
+#top {
+    font-size:1.5em;
+    height:7%;
+}
+#game {
+    height:93%;
+    width: 100%;
+}
+
+
+#optionsframe {
+    grid-column: 1/3;
+     grid-row:2/5;
+     margin-top:25vh;
+ }
+
+.bigscore {
   max-height: 15%;
   max-width: 8%;
 }
 #scoreList h5{font-size:3em;}
 
-
-#prompts
-{
+#prompts {
+    display:inline-block;
   float: left;
-  margin-left: 5vw;
-  margin-top: 4vh;
+  margin-left: 3vw;
+  margin-right: 10vw;
   max-width: 30vw;
 }
 
-#responses
-{
-  float: right;
-  margin-top: 4vh;
-  margin-right: 5vw;
-  max-width: 30vw;
+#responses {
+    display:inline-block;
+    float:left;
+  margin-right: 3vw;
+  max-width: 35vw;
 }
 
 .prompt{
   display: block;
   min-height: 9vh;
   margin: 10px;
-  max-width: 40vw;
+  max-width: 25vw;
+    min-width:25vw;
     font-size:1.5em;
 }
 
 .response{
-  display: block;
-  min-height: 9vh;
-  margin: 10px;
-  max-width: 40vw;
+    display: block;
+    min-height: 9vh;
+    margin: 10px;
+    width:40vw;
+    max-width: 40vw;
     font-size:1.5em;
 }
 
-#end
-{
+.prompt.clicked, .response.clicked {
+    color:orange;
+}
+
+.prompt.matched, .response.matched {
+    color:green;
+    background-color:white;
+    font-style:italic;
+}
+
+.prompt.mismatched, .response.mismatched {
+    color:red;
+    background-color:white;
+    font-style:italic;
+}
+
+.prompt.done, .response.done {
+    color:black;
+    background-color:white;
+    opacity:0.5;
+}
+
+
+#end {
   max-height: 15%;
   position: absolute;
   top: 20%;
   left: 34%;
 }
 
-#marker
-{
+#marker {
   max-height: 10%;
   position: absolute;
   left: 36.5%;
   top: 55%;
 }
 
-#start
-{
+#start {
   max-height: 15%;
   position: absolute;
   left: 34%;
   top: 55%;
 }
 
-#timer
-{
+#timer-count {
   font-size: 15vmin;
 }
 
-#scoreboard
-{
-  font-size: 15vmin;
+#scoreboard {
+  font-size: 4vmin;
 }
 
-#progress 
-{
+#scoreboard p {margin:0;}
+
+.progress-bar {
     width: 100%;
-    background-color: grey;
+    height:3vh;
+    background-color: lightgray;
 }
 
-#progress-bar 
-{
+.sienna-progress {
     width: 0.00001%;
-    height: 10vh;
-    background-color: DeepSkyBlue;
+    height: 100%;
+    background-color: red;
     position: relative;
 }
 
-#score-message
-{
-    top: -9%;
+#progress h4 {position:relative;
+    top:-35px;
+}
+
+#score-message {
+    top: -5%;
     position: relative;
 }
 
-.scoreboard-scores
-{
+.scoreboard-scores {
   font-size: 6.5vmin;
   position: relative;
   top: -16%;
 }
 
-#high2
-{
+#high2 {
   position: absolute;
   left: 34%;
   top: 20%;
@@ -350,9 +408,10 @@ Description: formatting and styling for the game page
     width: 25vw;
     height: 6vw;
 }
-.button:hover 
+button:hover, .button:hover
 {
     border: 8px solid yellow;
+    color:blue;
 }
 /***************** CONCENTRATION GAME ******************/
 
@@ -374,13 +433,14 @@ Description: formatting and styling for the game page
     background-position: center;
     background-size: 150%;
 }
+.concButton span {display:none;}
 
-.concButton.flipped {background:white;}
+.concButton.flipped {background:white; color:blue;}
+.concButton.flipped span {display:inline;}
 
-/* style="float:left; min-height:100px; min-width:100px */
+.concButton.correct {color:green;}
+.concButton.wrong   {color:red;}
 
-/*.concText {visibility:hidden;}*/
-.concText {display:none;}
 
 /***************** TIMELINE GAME ******************/
  
@@ -487,11 +547,65 @@ Description: formatting and styling for the game page
 /********************* MAP GAME ***********************/
 #map 
 {
-    width: 70vw;
-    height: 53vh;
-    margin-left: 1.5vw;
+    width: 100%;
+    height: 100%;
 
 }
 
+/********************* YesNo GAME ***********************/
 
+.yesno {
+    margin:5vw;
+    width:10vw;
+    height:10vh;
+}
+.yesno:hover {color:blue;}
 
+a button:hover {color:blue;}
+
+.red {color:red;}
+
+/********************* Multi-choice GAME ***********************/
+
+#current-team {
+    margin-right:4vw;
+}
+
+#question-number {
+    margin-right:4vw;
+}
+
+#question {
+}
+#answers {
+}
+
+#answers button {
+    margin:2vh 2vw;
+    min-width:50vw;
+    max-width:80vw;
+}
+
+.good, .good:hover {
+    color:green;
+    font-style:italic;
+}
+.bad, .bad:hover {
+    color:red;
+    font-style:italic;
+}
+
+/********************* Map GAME ***********************/
+
+#next {
+    display:none;
+    position:absolute;
+    width:13vw;
+    height:5vh;
+    font-size:1em;
+    top:3px;
+    right:1vw;
+    margin:0 5px;
+}
+
+#next:hover {border:none;}

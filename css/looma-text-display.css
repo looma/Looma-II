@@ -7,8 +7,10 @@
     white-space:nowrap;
     text-overflow:ellipsis;
     
-    color:yellow;
-    background-color: #091F48;
+    color:blue;
+    /*background-color: #091F48;*/
+    background-color:white;
+    font-style:bold;
 
     vertical-align:middle;
     /*zoom:200%;*/

@@ -1,13 +1,11 @@
 // ONE TIME program to 
-//    clean out ft=text activities that are not also in text_files collection
-//    and add activities for any text cards that dont have associated activities
-//
-// run looma shell script "textscan" first to see what needs to be fixed
+//    scan for ft=text activities that are not also in text_files collection
+//    and for text cards that dont have associated activities
 //
 //TO SET UP:
 //           'use looma'
 //this sets db to the 'looma'  database 
-//then:  run in MONGO SHELL with: load('textclean')
+//then:  run in MONGO SHELL with: load('textscan')
 //
 
 // THINK before running this - - first get a mongodump from AWS and mongorestore it into --db loomaAWS
@@ -28,16 +26,16 @@ while (activitycursor.hasNext()) {
     //print ('checking: ' + doc.dn);
     textcursor = db.text_files.find({'dn':doc.dn,'ft':'text'});
     if (  ! textcursor.hasNext()) {
-        print('     removing activity wo text: ' + doc.dn);
-        db.activities.remove(doc);
+        print('     found activity wo text: ' + doc.dn);
+        //db.activities.remove(doc);
         count += 1;
         }
     };
  print('');
- print('removed ' + count + ' text activities wo texts');
- print(''); 
+ print('found ' + count + ' text activities wo texts');
+ print('');
 
- 
+
 count = 0;
 //repeat for 'texts' collection
 print ('*****scanning texts');
@@ -48,12 +46,12 @@ while (textcursor.hasNext()) {
     //print ('checking: ' + doc.dn);
     activitycursor = db.activities.find({'dn':doc.dn, 'ft':'text'});
     if (  ! activitycursor.hasNext()) {
-         print('     removing text wo activity: ' + doc.dn);
+         print('     found text wo activity: ' + doc.dn);
 
-        db.text_files.remove(doc);
+        //db.text_files.remove(doc);
         count += 1;
         }
     };
  print('');
- print('removed activities for ' + count + ' texts without activities');
+ print('found ' + count + ' texts without activities');
  print(''); 

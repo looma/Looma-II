@@ -11,6 +11,7 @@ Revision: 1.0
 */
 
 require_once ('includes/mongo-connect.php');
+require_once('includes/looma-utilities.php');
 
 
 
@@ -20,15 +21,18 @@ require_once ('includes/mongo-connect.php');
   //       many of these functions are specialized. they should be re-used and generalized when possible
   //
   //  search
+  //  searchChapters
   //  open
   //  openByID
+  //  deleteField
   //  updateByID
   //  save
   //  rename
   //  exists
   //  delete
-  //  deleteField
+  //  bookList
   //  chapterList
+  //  subjectList
   //  keywordList
   //  addChapterID
   //  removeChapterID
@@ -36,9 +40,7 @@ require_once ('includes/mongo-connect.php');
   //  uploadFile
   ////////////////////////////////
 
-
         // SAVE function
-
         function save($collection, $insert) {
                 $result = $collection->insert($insert);
                 echo json_encode($result);
@@ -384,45 +386,76 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
 
 
-    ////////////////////////
-    // - - - chapterList - - - //
-    ////////////////////////
-    case "chapterList":
-        //echo "<option>One</option><option>Two</option>";
+        /////////////////////////////
+        // - - - subjectList - - - //
+        /////////////////////////////
+        case "subjectList":
+            // input is class
+            //    query textbooks collection to get subjects available for this grade/class
+            //    return a HTML string containing OPTION elements for a SELECT element
 
-        // inputs are class and subject
-        //    query textbooks collection to get prefix ( class, subject )
-        //    query chapters collection to get all chapters whose ch_id matches the prefix
-        //    return a HTML string containing OPTION elements for a SELECT element
+            $subjects = array(
+                'S' => 'science',
+                'M' => 'math',
+                'EN' => 'english',
+                'N' => 'nepali',
+                'SS' => 'social studies',
+                'H'  => 'health',
+                'V'  => 'vocation',
+                'SSa' => 'social studies optional',
+                'Ma' => 'math optional');
 
-        $subjects = array(
-            'S' => 'science',
-            'M' => 'math',
-            'EN' => 'english',
-            'N' => 'nepali',
-            'SS' => 'social studies',
-            'H'  => 'health',
-            'V'  => 'vocation');
+            $query = array('class' => 'class' . $_REQUEST['class']);
+            //print_r($query);
 
-        //echo 'class is ' . $_REQUEST['class'] . '/n subject is ' . $_REQUEST['subject'] . '/n lookup of subject is '. $subjects[$_REQUEST['subject']] . '/n';
+            $projection = array('_id' => 0, 'subject' => 1);
+            $subjects = $textbooks_collection->find($query, $projection);
+            foreach ($subjects as $subj) echo "<option value='" . $subj['subject'] . "'>"  . $subj['subject'] . "</option>";
+            return;  // end subjectList()
 
-        $query = array('class' => 'class' . $_REQUEST['class'], 'subject' => $subjects[$_REQUEST['subject']]);
-        //print_r($query);
 
-        $projection = array('_id' => 0, 'prefix' => 1);
-        $prefix = $textbooks_collection->findOne($query, $projection);
-        //echo "mongo result is "; print_r($prefix);
+        /////////////////////////////
+        // - - - chapterList - - - //
+        /////////////////////////////
+        case "chapterList":
+            //echo "<option>One</option><option>Two</option>";
 
-        if($prefix) {
-            $regex = "^" . $prefix['prefix']. "\d";
+            // inputs are class and subject
+            //    query textbooks collection to get prefix ( class, subject )
+            //    query chapters collection to get all chapters whose ch_id matches the prefix
+            //    return a HTML string containing OPTION elements for a SELECT element
 
-            //echo "Prefix is $regex"; exit;
+            /*
+            $subjects = array(
+                'S' => 'science',
+                'M' => 'math',
+                'EN' => 'english',
+                'N' => 'nepali',
+                'SS' => 'social studies',
+                'H'  => 'health',
+                'V'  => 'vocation',
+                'SSa' => 'social studies optional',
+                'Ma' => 'math optional');
+            */
+            //echo 'class is ' . $_REQUEST['class'] . '/n subject is ' . $_REQUEST['subject'] . '/n lookup of subject is '. $subjects[$_REQUEST['subject']] . '/n';
 
-            $query = array('_id' => array('$regex' => $regex));
-            $chapters = $chapters_collection->find($query);
-            foreach ($chapters as $ch) echo "<option value='" . $ch['_id'] . "'>" . $ch['dn'] . "(" . $ch['_id'] . ")</option>";
-        }
-        return;
+            $query = array('class' => 'class' . $_REQUEST['class'], 'subject' => $_REQUEST['subject']);
+            //print_r($query);
+
+            $projection = array('_id' => 0, 'prefix' => 1);
+            $prefix = $textbooks_collection->findOne($query, $projection);
+            //echo "mongo result is "; print_r($prefix);
+
+            if($prefix) {
+                $regex = "^" . $prefix['prefix']. "\d";
+
+                //echo "Prefix is $regex"; exit;
+
+                $query = array('_id' => array('$regex' => $regex));
+                $chapters = $chapters_collection->find($query);
+                foreach ($chapters as $ch) echo "<option value='" . $ch['_id'] . "'>" . $ch['dn'] . "(" . $ch['_id'] . ")</option>";
+            }
+            return;  // end chapterList()
 
 
 /////////////////////////////
@@ -457,7 +490,7 @@ if ( isset($_REQUEST["cmd"]) ) {
     ////////////////////////
     case "search":
         // called (from Xlooma-search2017.js, from lesson-plan.js, etc) using POST with FORMDATA serialized by jquery
-        // $_POST[] can have these entries: collection, class, subj, category, sort, search-term,
+        // $_POST[] can have these entries: cmd, collection, class, subj, category, sort, search-term,
         // src[] (array of checked items) and type[] (array of checked types)
 
         //Get filetype Parameters
@@ -536,7 +569,9 @@ if ( isset($_REQUEST["cmd"]) ) {
             if (isset($_POST['class']) && $_POST['class'] != '') $classSubjRegex .= '^' . $_POST['class'];
             //echo 'classSubjRegex is ' . $classSubjRegex;
             if (isset($_POST['subj']) && $_POST['subj'] != '') $classSubjRegex .= $_POST['subj'] . '\d';
+
             //echo 'classSubjRegex is ' . $classSubjRegex;
+
             $classSubjRegex = new MongoRegex($classSubjRegex . '/');
         };
 
@@ -583,6 +618,11 @@ if ( isset($_REQUEST["cmd"]) ) {
         //SORT the found items before sending to client-side
         $cursor->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
+//
+//NOTE: we use an older version of MONGO that doesnt support COLLATION order.
+//  this code should get all the cursor elements into a PHP array and do NATKSORT ( like looma-library.php does)
+//
+
         if (isset($_REQUEST['pagesz']))  {
             if (isset($_REQUEST['pageno'])) $cursor->skip(($_REQUEST['pageno'] - 1 ) * $_REQUEST['pagesz']);
             $cursor->limit($_REQUEST['pagesz']);
@@ -628,7 +668,72 @@ if ( isset($_REQUEST["cmd"]) ) {
     // end case "search"
 
 
-    ////////////////////////
+        ////////////////////////////////
+        // - - - SEARCHCHAPTERS - - - //
+        ////////////////////////////////
+        case "searchChapters":
+            // called (from lesson-search.js, etc) using POST with FORMDATA serialized by jquery
+            // $_POST[] can have these entries: cmd, collection, class, subj, chapter
+            // src[] (array of checked sources) and type[] (array of checked types)
+
+            $subjectcodes = array(
+                'science' => 'S',
+                'math' => 'M',
+                'english' => 'EN',
+                'nepali' => 'N',
+                'social studies' => 'SS',
+                'health' => 'H',
+                'vocation' => 'V',
+                'social studies optional' => 'SSa',
+                'science optional' => 'Sa',
+                'math optional' => 'Ma');
+
+            $classSubjRegex = null;
+
+            if (isset($_POST['chapter']) && $_POST['chapter'] != '') {
+                $classSubjRegex .= $_POST['chapter'];
+            } elseif ((isset($_POST['class']) && $_POST['class'] != '') || (isset($_POST['subj']) && $_POST['subj'] != '')) {
+                $classSubjRegex = "/";
+                //echo 'classSubjRegex is ' . $classSubjRegex;
+                if (isset($_POST['class']) && $_POST['class'] != '') $classSubjRegex .= '^' . $_POST['class'];
+                //echo 'classSubjRegex is ' . $classSubjRegex;
+                if (isset($_POST['subj']) && $_POST['subj'] != '') $classSubjRegex .= $subjectcodes[$_POST['subj']] . '\d';
+
+                    //echo 'classSubjRegex is ' . $classSubjRegex;
+                    //return;
+
+                $classSubjRegex = new MongoRegex($classSubjRegex . '/');
+            };
+
+            $query = array('_id' =>  $classSubjRegex);
+            $cursor = $chapters_collection->find($query);
+
+            //SORT the found items before sending to client-side
+            $cursor->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+
+                //NOTE: we use an older version of MONGO that doesnt support COLLATION order.
+                //  this code should get all the cursor elements into a PHP array and do NATKSORT ( like looma-library.php does)
+
+            if (isset($_REQUEST['pagesz']))  {
+                if (isset($_REQUEST['pageno'])) $cursor->skip(($_REQUEST['pageno'] - 1 ) * $_REQUEST['pagesz']);
+                $cursor->limit($_REQUEST['pagesz']);
+            }
+
+            $result = array();
+            if ($cursor->count() > 0) {
+                foreach ($cursor as $d)  {
+                    $query =  array("prefix" => prefix( $d['_id']));
+                    $textbook = $textbooks_collection->findOne($query);
+                    $d['fn'] = $textbook['fn'] ? $textbook['fn'] : $textbook['nfn'];
+                    $d['fp'] = $textbook['fp'];
+                    $result[] = $d;
+                }};
+       echo json_encode($result);
+            return;
+        // end case "searchChapters"
+
+
+        ////////////////////////
     // - - - addChapterID - - - //
     ////////////////////////
     case 'addChapterID':

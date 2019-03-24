@@ -25,6 +25,7 @@ Comments:
 	  include ('includes/header.php');
 	  include ('includes/mongo-connect.php');
 ?>
+<link rel="stylesheet" href="css/looma-register-user.css">
 
 </head>
 
@@ -44,6 +45,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
             foreach ($logins as $login) {
                 echo "user name: " . $login['name'] . "<br>";
             }
+        } else if (isset($_POST['deletename'])) {
+            $name = $_POST['deletename'];
+            if ($name == 'skip' || $name == 'kabin') {
+                echo "<h1>User NOT deleted</h1>
+                <p>Cannot delete administrator user <em>$name</em></p>";
+            }
+            else {
+                $query = array('name' => $name);
+                $logins = $logins_collection -> remove($query);
+
+                echo "<h1>User deleted</h1>
+                <p>User <em>$name</em>, was deleted</p>";
+                }
         } else
         {
 
@@ -63,15 +77,23 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
         <h1>Register a new user</h1>
         <form method="post" autocomplete="off">
             <p> Username: <input type="text" autocomplete="off" placeholder="enter user name"
-            name="id" size="20" maxlength="60" />
+                                 name="id" size="20" maxlength="60" />
             </p>
             <p>Password: <input type="password"  placeholder="password"
-            name="pass" size="20" maxlength="20" />
+                                name="pass" size="20" maxlength="20" />
             </p>
             <p><button type = "submit">Submit</button>
         </form>
 
-        <br><br><br><br><br>
+        <h1>Delete a user</h1>
+        <form method="post" autocomplete="off">
+            <p> Username: <input type="text" autocomplete="off" placeholder="enter user name"
+                                 name="deletename" size="20" maxlength="60" />
+            </p>
+            <p><button type = "submit">Submit</button>
+        </form>
+
+        <br><br><br>
 
         <form method="post">
             <input type="text" hidden name="show-users" value="show-users">

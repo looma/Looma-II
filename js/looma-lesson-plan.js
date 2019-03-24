@@ -244,7 +244,8 @@ function displaySearchResults(filterdata_object) {
     	collectionTitle.id = "activityTitle";
 
     	var activitiesarraylength = filterdata_object.activities.length;
-    	if (activitiesarraylength == 0) {
+   
+/* 	if (activitiesarraylength == 0) {
             collectionTitle.innerHTML = "<a class='heading' name='activities'>Activities (0 Results)</a>";        }
     	else if (activitiesarraylength == 1) {
     		collectionTitle.innerHTML = "<a class='heading' name='activities'>Activities (1 Result)</a>";
@@ -253,8 +254,8 @@ function displaySearchResults(filterdata_object) {
     		collectionTitle.innerHTML = "<a class='heading' name='activities'>Activities (" + activitiesarraylength + " Results)</a>";
     	}
 	actResultDiv.appendChild(collectionTitle);
-
-	for(var i=0; i<filterdata_object.activities.length; i++) {
+*/
+	for(var i=0; i<activitiesarraylength; i++) {
 		var rElement = createActivityDiv(filterdata_object.activities[i]);  //BUG: array[i-1] not defined when i==0
 
             actResultDiv.appendChild(rElement);
@@ -268,19 +269,21 @@ function displaySearchResults(filterdata_object) {
 //***********************
 
 	    var chaptersarraylength = filterdata_object.chapters.length;
-        if (chaptersarraylength > 0) {
-            collectionTitle = document.createElement("h1");
-            collectionTitle.id = "chapterTitle";
+      if (chaptersarraylength > 0) {
+      /*
+         collectionTitle = document.createElement("h1");
+           collectionTitle.id = "chapterTitle";
 
-            if (chaptersarraylength == 1) {
-                collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (1 Result)</a>";
-            }
-            else {
-                collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (" + chaptersarraylength + " Results)</a>";
-            };
-            actResultDiv.appendChild(collectionTitle);
+          if (chaptersarraylength == 1) {
+               collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (1 Result)</a>";
+           }
+           else {
+               collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (" + chaptersarraylength + " Results)</a>";
+           };
+           actResultDiv.appendChild(collectionTitle);
+   */
 
-            for(i=0; i<filterdata_object.chapters.length; i++) {
+            for(i=0; i<chaptersarraylength; i++) {
                 rElement = createActivityDiv(filterdata_object.chapters[i]);
 
                 actResultDiv.appendChild(rElement);
@@ -366,9 +369,15 @@ function thumbnail (item) {
     imgsrc = "";
 
 	if (collection == "chapters" || item.pn != null) {
-	    //NOTE: in the next statement, sometimes get error "Uncaught TypeError: Cannot read property 'concat' of undefined"
-		thumbnail_prefix = idExtractArray["currentSubjectFull"].concat("-", idExtractArray["currentGradeNumber"]);
-		imgsrc = homedirectory + "content/textbooks/" + idExtractArray["currentGradeFolder"] + "/" + idExtractArray["currentSubjectFull"] + "/" + thumbnail_prefix + "_thumb.jpg";
+        if ($(item).attr('fp') && ($(item).attr('fn') || $(item).attr('nfn'))) {
+            var name = $(item).attr('fn') ? $(item).attr('fn') : $(item).attr('nfn');
+            thumbnail_prefix = name.substr(0, name.lastIndexOf('.'));
+            imgsrc = homedirectory + "content/" + $(item).attr('fp') + thumbnail_prefix + "_thumb.jpg";
+        } else {
+            //NOTE: in the next statement, sometimes get error "Uncaught TypeError: Cannot read property 'concat' of undefined"
+            thumbnail_prefix = idExtractArray["currentSubjectFull"].concat("-", idExtractArray["currentGradeNumber"]);
+            imgsrc = homedirectory + "content/textbooks/" + idExtractArray["currentGradeFolder"] + "/" + idExtractArray["currentSubjectFull"] + "/" + thumbnail_prefix + "_thumb.jpg";
+        }
 	}
 
 	else if (collection == "activities" || item.ft != null) {
@@ -497,8 +506,11 @@ function createActivityDiv (activity) {
                 if ('_id' in item)$(activityDiv).attr("data-id",         (item.ft == 'chapter') ? item['_id'] : item['_id']['$id']);
   
                 if ('mongoID' in item) $(activityDiv).attr("data-mongoID",    (item.ft == 'chapter') ? '' : item['mongoID']['$id']);
-  
-                $(activityDiv).attr("data-type", item['ft']);
+    
+        $(activityDiv).attr("data-type", item['ft']);
+        $(activityDiv).attr("data-fp", item['fp']);
+        $(activityDiv).attr("data-fn", item['fn'] ? item['fn'] : item['nfn']);
+        $(activityDiv).attr("data-pn", item['pn'] ? item['pn'] : item['npn']);
 
                 item.collection = (item.ft == 'chapter')?'chapters':'activities';
                 $.data(activityDiv, 'mongo', item);  //save the whole mongo document ("item") in the DOM element
@@ -519,7 +531,7 @@ function createActivityDiv (activity) {
                 $(textdiv).appendTo(activityDiv);
 
                 // Display Name
-                if (item.dn) var dn = item.dn;    //.substring(0, 20); //else dn = item.ndn.substring(0,20);
+                if (item.dn) var dn = item.dn.substring(0, 20); else dn = item.ndn.substring(0,20);
                 $("<p/>", {
                     class : "result_dn",
                     html : "<b>" + dn + "</b>"
@@ -580,7 +592,7 @@ function createActivityDiv (activity) {
 
 
     var idExtractArray = extractItemId(activity);
-
+    
     var div = document.createElement("div");
     div.className = "resultitem";
 
@@ -615,9 +627,13 @@ function preview_result (item) {
 	var idExtractArray = extractItemId($(item).data('mongo'));
 
 	if (collection == "chapters") {
-        var pagenum = $(item).data('mongo').pn;
+	    
+        var pagenum = $(item).data('pn') ? $(item).data('pn') : $(item).data('npn');
 
-		document.querySelector("div#previewpanel").innerHTML = '<embed src="' +
+        var previewSrc = homedirectory + 'content/' + filepath + filename + '#page=' + pagenum + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"';
+        document.querySelector("div#previewpanel").innerHTML = '<embed src="' + previewSrc + '>';
+	
+	/*	document.querySelector("div#previewpanel").innerHTML = '<embed src="' +
 		                        //encodeURI(
 		                           homedirectory + 'content/textbooks/' +
 		                           idExtractArray["currentGradeFolder"] + '/' +
@@ -625,6 +641,8 @@ function preview_result (item) {
 		                           idExtractArray["currentSubjectFull"] + '-' +
 		                           idExtractArray["currentGradeNumber"] +
 		                            '.pdf#page=' + pagenum + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"' + '>';
+	*/
+	
 	}
 
 	else if (collection == "activities") {
@@ -865,27 +883,28 @@ window.onload = function () {
     $('#lesson-checkbox').prop('disabled' , true).hide();
     $('#includeLesson').val(false);
         
-        $("#dropdown_grade, #dropdown_subject").change( function(){
-        $('#div_chapter').hide();
-        
-        $('#dropdown_chapter').empty();
-        if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
-            $.post("looma-database-utilities.php",
-                {cmd: "chapterList",
-                    class: $('#dropdown_grade').val(),
-                    subject:   $('#dropdown_subject').val()},
-                
-                function(response) {
-                    //console.log(response);
-                    //$('#chapter_label').show();
-                    $('#div_chapter').show();
-                    $('<option/>', {value: "", label: "<select a chapter>"}).appendTo('#dropdown_chapter');
+ /*       $("#dropdown_grade, #dropdown_subject").change( function(){
+            $('#div_chapter').hide();
+            
+            $('#dropdown_chapter').empty();
+            if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
+                $.post("looma-database-utilities.php",
+                    {cmd: "chapterList",
+                        class: $('#dropdown_grade').val(),
+                        subject:   $('#dropdown_subject').val()},
                     
-                    $('#dropdown_chapter').append(response);
-                },
-                'html'
-            );
+                    function(response) {
+                        //console.log(response);
+                        //$('#chapter_label').show();
+                        $('#div_chapter').show();
+                        $('<option/>', {value: "", label: "<select a chapter>"}).appendTo('#dropdown_chapter');
+                        
+                        $('#dropdown_chapter').append(response);
+                    },
+                    'html'
+                );
     });
+*/
 
 ///////////////////////////////
 // click handlers for '.add', '.preview' buttons

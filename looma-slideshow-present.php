@@ -36,12 +36,7 @@ Description: looma slideshow presenter
             <div id="timeline">
 
         <?php
- 
-        function prefix ($ch_id) { // extract textbook prefix from ch_id
-            preg_match("/^(([1-9]|10)(EN|SS|M|S|N))[0-9]/", $ch_id, $matches);
-            return $matches[1];
-        };
- 
+
         //look up the slideshow in mongo slideshows collection
         //send DN, AUTHOR and DATE in a hidden DIV
         //for each ACTIVITY in the DATA field of the slideshow, create an 'activity button' in the timeline

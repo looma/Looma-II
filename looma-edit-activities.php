@@ -144,7 +144,7 @@ include ('includes/header.php');
             echo "<span id='grade-changes' >
                                 <span class='drop-menu'>Grade:<select id='grade-chng-menu' class='chapter-changes black-border'  form='changes' name='class'>
                                     <option value='' selected>Select...</option>";
-            for($x = 1; $x <= 8; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";};
+            for($x = 1; $x <= 10; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";};
 
             echo "</select></span>";
 
@@ -160,8 +160,8 @@ include ('includes/header.php');
                         <option value='' selected>Select...</option>";
 
             $classInfo = array(
-                array("all","EN",     "N",     "M",   "S",      "SS",            "H",      "V"),
-                array("All","English","Nepali","Math","Science","Social Studies","Health", "Vocation")
+                array("all","EN",     "N",     "M",   "Ma", "S", "Sa",     "SS",  "SSa",          "H",      "V"),
+                array("All","English","Nepali","Math","Math Optional", "Science","Science Optional","Social Studies","Social Studies Optional","Health", "Vocation")
             );
 
             for($x = 1; $x < count($classInfo[0]); $x++) {

@@ -24,23 +24,23 @@ Description:  for Looma 2
             <div id="themelist">
                 <span>Change theme of Looma's pages:  </span>
                 <select id="themes">
-                    <option class="theme" id="looma"         value="looma">Looma Classic
+                    <option class="theme" id="looma"         value="looma">         Looma Classic
                             <img class="thumb" src="images/theme-looma.png" ></option>
                     <option class="theme" id="style-sheet"   value="style-sheet">   Style Sheet
                             <img class="thumb" src="images/theme-stylesheet.png" > </option>
-                    <option class="theme" id="white"         value="white">      White
+                    <option class="theme" id="white"         value="white">         White
                             <img class="thumb" src="images/theme-white.png" > </option>
-                    <option class="theme" id="green"         value="green">      Eco Green
+                    <option class="theme" id="green"         value="green">         Eco Green
                             <img class="thumb" src="images/theme-ecogreen.png" > </option>
-                    <option class="theme" id="blackandwhite" value="blackandwhite">  Black & White
+                    <option class="theme" id="blackandwhite" value="blackandwhite"> Black & White
                             <img class="thumb" src="images/theme-black-and-white.png" > </option>
-                    <option class="theme" id="redandblack"   value="redandblack">    Red and Black
+                    <option class="theme" id="redandblack"   value="redandblack">   Red and Black
                             <img class="thumb" src="images/theme-red-and-black.png" > </option>
-                    <option class="theme" id="kate"          value="kate">       Summer
+                    <option class="theme" id="kate"          value="kate">          Summer
                             <img class="thumb" src="images/theme-summer.png" > </option>
-                    <option class="theme" id="magenta"       value="magenta">    Magenta
+                    <option class="theme" id="magenta"       value="magenta">       Magenta
                             <img class="thumb" src="images/theme-magenta.png" > </option>
-                    <option class="theme" id="blueandgreen"  value="blueandgreen">    Blue-Green
+                    <option class="theme" id="blueandgreen"  value="blueandgreen">  Blue-Green
                             <img class="thumb" src="images/theme-blue-green.png" > </option>
                 </select>
             </div>
@@ -85,29 +85,29 @@ Description:  for Looma 2
                  <button class="settings-control">Slideshow Editor</button>
              </a>
 
-             <a href="looma-evi-editor.php">
-                 <button class="settings-control">Video Editor</button>
-             </a>
-
              <a href="looma-edit-activities.php">
                  <button class="settings-control">Activity Editor</button>
              </a>
 
-             <a href="looma-dictionary-autogen-editor.php">
-                 <button id="speechtest" class="admin-control" >Dictionary Editor</button>
-             </a>
-
              <a href="looma-speech-test.php">
-                 <button id="speechtest" class="exec-control">Speech Test</button>
+                 <button id="speechtest" class="admin-control">Speech Test</button>
              </a>
 
              <a href="looma-register-user.php">
-                 <button id="speechtest" class="exec-control" >Users</button>
+                 <button id="registeruser" class="admin-control" >Users</button>
              </a>
 
              <a href="looma-import-content.php">
-                 <button id="speechtest" class="exec-control" >Import Content</button>
+                 <button id="importcontent" class="admin-control" >Import Content</button>
              </a>
+
+             <a href="looma-evi-editor.php">
+                 <button class="exec-control">Video Editor</button>
+             </a>
+             <a href="looma-dictionary-autogen-editor.php">
+                 <button id="speechtest" class="exec-control" >Dictionary Editor</button>
+             </a>
+
              <br>
              <button id="exit-kiosk" class="looma-control-button">
                  <!-- <span class="xlat">To exit Kiosk mode type Alt-F4 on a keyboard</span> -->

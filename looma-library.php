@@ -38,13 +38,6 @@ Description:  displays and navigates content folders for Looma
             }  else echo $folder;
         }  //end folderDisplayName()
 
-        function natksort($array) {
-            // Like ksort but uses natural sort instead
-            $keys = array_keys($array);
-            natcasesort($keys);
-            foreach ($keys as $k) $new_array[$k] = $array[$k];
-            return $new_array;
-        }; //end natksort()
 ?>
 
     <link rel = "Stylesheet" type = "text/css" href = "css/looma-library.css">
@@ -138,6 +131,22 @@ Description:  displays and navigates content folders for Looma
                 echo "</td>";
                 //$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
         }  //end IF Khan
+
+
+    //special case for Khan Academy
+    //make a button that launches Khan index.html -- virtual folder
+    else if($path . $file == "../content/epaath") {   //create a virtual folder for ePaath
+
+        echo "<td>";
+        $dn = "ePaath";
+        //$ndn = "खान";
+        $ft = "html";
+        $thumb = "../content/epaath/thumbnail.png";
+        //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+        makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "");
+        echo "</td>";
+        //$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+    }  //end IF Khan
 
     // regular case
     else {  //make a regular directory button

@@ -52,15 +52,16 @@ Description:
 
 var LOOMA = (function() {
 
+    //the LOOMA object defines a namespace "LOOMA" that allows us to define LOOMA.playMedia()
+    // [and other LOOMA functions] that won't cause name conflicts
+
     // local VARs here
 
     // local FUNCTIONS here
 
     return {
 
-
-//this allows us to define LOOMA.playMedia() [and other LOOMA functions] that won't cause name conflicts
-
+    
 playMedia : function(button) {
     switch (button.getAttribute("data-ft").toLowerCase()) {
         case "video":
@@ -103,9 +104,10 @@ playMedia : function(button) {
 
         case "pdf":      //PDF
         case "chapter":  //CHAPTER
+        case "document":  //DOCUMENT (some PDFs)
             window.location = 'looma-pdf.php?' + '' +
-                              'fn=' + button.getAttribute('data-fn') +
-                              '&fp=' + button.getAttribute('data-fp') +
+                              'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
+                              '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
                               '&zoom=' + button.getAttribute('data-zoom') +
                               '&pg=' + button.getAttribute('data-pg');
             break;
@@ -770,7 +772,7 @@ setTheme : function() {
     if (!theme) theme = 'looma'; //default THEME is "looma"
 
     $('#theme-stylesheet').attr('href', 'css/looma-theme-' + theme + '.css');
-    //location.reload(); //some browsers need RELOAD to show the new THEME [??]
+    location.reload(); //some browsers need RELOAD to show the new THEME [??]
     // changes the HREF attribute of the LINK with ID 'theme-stylesheet' based on the 'theme' COOKIE value
     return theme;
 }, //end LOOMA.setTheme()
@@ -841,17 +843,20 @@ ch_id   :  function (grade, subject, unit, chapter) {
             currentGradeFolder: null,
             currentSubjectFull: null,
             chprefix: null};
-        var names = {
+        var folderNames = {
             EN: "English",
             N:  "Nepali",
             M:  "Math",
+            Ma:  "Math",
             S:  "Science",
+            Sa:  "Science",
             SS: "SocialStudies",
+            SSa: "SocialStudies",
             H:  "Health",
             V:  "Vocation"};
 
         if (ch_id) {
-            var pieces = ch_id.toString().match(/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/);
+            var pieces = ch_id.toString().match(/^([1-9]|10)(Ma|M|N|Sa|S|SSa|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/);
 
             if (pieces) {
                 elements['currentGradeNumber'] = pieces[1];
@@ -859,7 +864,7 @@ ch_id   :  function (grade, subject, unit, chapter) {
                 elements['currentSection']     = pieces[4] ? pieces[3] : null;
                 elements['currentChapter']     = pieces[4] ? pieces[4].substr(1) : pieces[3];
                 elements['currentGradeFolder'] = 'Class' + pieces[1];
-                elements['currentSubjectFull'] = names[pieces[2]];
+                elements['currentSubjectFull'] = folderNames[pieces[2]];
                 elements['chprefix']           = pieces[1] + pieces[2];
             };
          };

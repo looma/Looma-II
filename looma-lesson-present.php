@@ -36,11 +36,6 @@ Description: looma lesson plan presenter
 
         <?php
 
-        function prefix ($ch_id) { // extract textbook prefix from ch_id
-            preg_match("/^(([1-9]|10)(EN|SS|M|S|N))[0-9]/", $ch_id, $matches);
-            return $matches[1];
-        };
-
         //look up the lesson plan in mongo lessons collection
         //send DN, AUTHOR and DATE in a hidden DIV
         //for each ACTIVITY in the DATA field of the lesson, create an 'activity button' in the timeline
@@ -67,7 +62,7 @@ Description: looma lesson plan presenter
 
             if ($data) foreach ($data as $lesson_element) {
 
-               if ($lesson_element['collection'] == 'activities') {
+               if ($lesson_element['collection'] == 'activities') {  //timeline element is from ACTIVITIES
 
                     $query = array('_id' => new MongoId($lesson_element['id']));
 
@@ -104,33 +99,40 @@ Description: looma lesson plan presenter
                         );
                 } else
 
-                if ($lesson_element['collection'] == 'chapters') {
+                if ($lesson_element['collection'] == 'chapters') {  //timeline element is from CHAPTERS
 
                     $query = array('_id' => $lesson_element['id']);
                     $chapter = $chapters_collection -> findOne($query);
 
                     $query = array('prefix' => prefix($chapter['_id']));
-
                     $textbook = $textbooks_collection -> findOne($query);
+//echo $textbook['fn'] . '   ' . $textbook['nfn'];
+                    $filename = (isset($textbook['fn']) && $textbook['fn'] != "") ? $textbook['fn'] : ((isset($textbook['nfn'])) ? $textbook['nfn'] : null);
+//echo '   ' . $filename; return;
+                    $filepath = (isset($textbook['fp']) && $textbook['fp'] != "") ? $textbook['fp'] : null;
 
-                    if (isset($textbook['fn']) && isset($textbook['fp']))
-                        $thumbSrc = "../content/" . $textbook['fp'] . thumbnail($textbook['fn']);
+                    $displayname = (isset($chapter['dn']) && $chapter['dn'] != "") ? $chapter['dn'] : ((isset($chapter['ndn'])) ? $chapter['ndn'] : null);
+                    $pagenumber  = (isset($chapter['pn']) && $chapter['pn'] != "") ? $chapter['pn'] : ((isset($chapter['npn'])) ? $chapter['npn'] : null);
+
+                    if ($filename && $filepath)
+                        $thumbSrc = "../content/" . $filepath . thumbnail($filename);
                     else $thumbSrc = null;
-
+                    //echo "filename is " . $filename;
                     // makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
                     makeActivityButton('pdf',
-                       (isset($textbook['fp'])) ? '../content/' . $textbook['fp'] : null,
-                        (isset($textbook['fn'])) ? $textbook['fn'] : null,
-                        (isset($textbook['dn'])) ? $textbook['dn'] : null,
+                        '../content/' . $filepath,
+                        $filename,
+                        $displayname,
                         null,
                        $thumbSrc,
                        $chapter['_id'],
                        null,
                        null,
                        null,
-                       (isset($chapter['pn']) ? $chapter['pn'] : 1),
+                       $pagenumber,
                        160,
-                        null, null);
+                        null,
+                        null);
                 };
              };
              }

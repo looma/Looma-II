@@ -2,6 +2,7 @@
 
 ///////////////////
 /// functions defined:
+/// prefix(ch_id)
 /// ch_idClass    [php version of LOOMA.ch_idClass() in looma-utilities.js]
 /// ch_idSubject  [php version of LOOMA.ch_idClass() in looma-utilities.js]
 /// isHTML
@@ -12,11 +13,21 @@
 /// makeActivityButton
 /// //////////////////
 
+
+
+/****************************/
+/*****  prefix   ********/
+/****************************/
+function prefix ($ch_id) { // extract textbook prefix from ch_id
+    preg_match("/^(([1-9]|10)(EN|SSa|SS|Ma|M|Sa|S|N))[0-9]/", $ch_id, $matches);
+    return (isset($matches[1]) && $matches[1]) ? $matches[1] : null;
+};
+
 /****************************/
 /*****  ch_idClass   ********/
 /****************************/
 function ch_idClass($ch_id) {
-     if (($ch_id) && preg_match ( "/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches ))
+     if (($ch_id) && preg_match ( "/^([1-9]|10)(Ma|M|N|Sa|S|SSa|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches ))
             return $matches[1];
      else return null;
 };  //end function ch_idSubject
@@ -25,7 +36,7 @@ function ch_idClass($ch_id) {
 /*****  ch_idSubject   ******/
 /****************************/
 function ch_idSubject($ch_id) {
-    if (($ch_id) && preg_match ( "/^([1-9]|10)(M|N|S|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches ))
+    if (($ch_id) && preg_match ( "/^([1-9]|10)(Ma|M|N|Sa|S|SSa|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches ))
         return $matches[2];
     else return null;
 };  //end function ch_idSubject
@@ -96,6 +107,14 @@ function displayName($name, $dn, $ndn) {
       else echo "<span class='name'>" . $name . "</span>";
 };  //end displayName()
 
+
+function natksort($array) {
+    // Like ksort but uses natural sort instead
+    $keys = array_keys($array);
+    natcasesort($keys);
+    foreach ($keys as $k) $new_array[$k] = $array[$k];
+    return $new_array;
+}; //end natksort()
 
 /*********************************/
 /******** makeActivityButton *****/

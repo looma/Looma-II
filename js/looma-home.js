@@ -11,7 +11,7 @@ Description:
 
 'use strict';
 
-var className, subjectName, gradeName;
+var className, subjectName, gradeName, prefix;
 
 function displaySubjects (className) {
     
@@ -21,17 +21,17 @@ function displaySubjects (className) {
         function(books) {
             books.forEach (function(book) {
                 var tb_path = '../content/' + book['fp'];
-                var $newButton =  $('<button type="button" class="subject" id="' + book["subject"] + '">');
+                var $newButton =  $('<button type="button" class="subject" id="' + book["subject"] + '" data-prefix="' + book['prefix'] + '">');
                  $newButton.append($('<p>' + book["dn"] +'</p>'));
 
                 var imgEn = (book['fn']) ?
-                                tb_path + book['fn'].substr(0,book['fn'].length-4) + '_thumb.jpg' :
+                                tb_path + encodeURIComponent(book['fn'].substr(0,book['fn'].length-4)) + '_thumb.jpg' :
                                 'images/book_gray.png';
     
                 var imgNp = (book['nfn']) ?
-                               tb_path + book['nfn'].substr(0,book['nfn'].length-4) + '_thumb.jpg' :
+                               tb_path + encodeURIComponent(book['nfn'].substr(0,book['nfn'].length-4)) + '_thumb.jpg' :
                                'images/book_gray.png';
-               
+                
                 $newButton.append($('<img src="' + imgEn+ '" />' ));
                 $newButton.append($('<img src="' + imgNp+ '" />' ));
                 $('#subjects').append($newButton);
@@ -77,15 +77,19 @@ function classButtonClicked(){
 
 function subjectButtonClicked(){
     subjectName = this.getAttribute('id');
+    prefix = $(this).data('prefix');
+    
     LOOMA.setStore("subject", subjectName, 'session');  //set a COOKIE for SUBJECT (lifetime = this browser session)
     
     //set scroll position to top of page
-    LOOMA.setStore('libraryScroll', 0), 'session';
+    //LOOMA.setStore('libraryScroll', 0), 'session';
+    LOOMA.setStore('chapterScroll', 0), 'session';
     
     //send GET request to chapters.php with CLASS and SUBJECT values
     window.location = "looma-chapters.php?class=" + encodeURIComponent(className) +
         "&grade=" + encodeURIComponent(className.replace('class','Grade ')) +
-        "&subject=" + encodeURIComponent(subjectName);
+        "&subject=" + encodeURIComponent(subjectName) +
+        "&prefix=" + encodeURIComponent(prefix);
 };  //  end subjectButtonClicked()
 
 
@@ -96,7 +100,7 @@ $(document).ready (function() {
     $("button.subject").click(subjectButtonClicked);
     
     //set scroll position to top of page
-    LOOMA.setStore('libraryScroll', 0, 'session');
+    LOOMA.setStore('chapterScroll', 0, 'session');
     
     className = LOOMA.readStore('class', 'session');
     if (!className) {

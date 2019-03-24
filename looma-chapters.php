@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <!--
 Name: Skip
 Email: skip@stritter.com
@@ -33,7 +33,8 @@ for a textbook (class/subject) for Looma 2
 
             $class = trim($_GET['class']);  //from MONGO - format is "class1", "class2", etc
             $grade = trim($_GET['grade']);  // display name of $class - format is "Grade 1", etc
-			$subject = trim($_GET['subject']) ;
+            $subject = trim($_GET['subject']) ;
+            $prefix = trim($_GET['prefix']) ;
 
     echo "<div id='main-container-horizontal' class='scroll'>";
     echo "<div  class='scroll'>";
@@ -41,7 +42,7 @@ for a textbook (class/subject) for Looma 2
         echo "<h2 class='title'>Chapters for " . $grade . " " . $caps . "</h2>";
 
 			//get a textbook record for this CLASS and SUBJECT
-			$query = array('class' => $class, 'subject' => $subject);
+			$query = array('class' => $class, 'subject' => $subject, 'prefix' => $prefix);
 			//returns only these fields of the textbook record
 			$projection = array('_id' => 0,
 								'prefix' => 1,

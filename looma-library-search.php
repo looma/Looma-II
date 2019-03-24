@@ -16,7 +16,7 @@ Description:  searches Looma library for Looma 2
         include("includes/looma-control-buttons.php");
 ?>
 
-    <link rel = "Stylesheet" type = "text/css" href = "css/looma-search.css">
+    <!--<link rel = "Stylesheet" type = "text/css" href = "css/looma-search.css">--->
     <link rel = "Stylesheet" type = "text/css" href = "css/looma-library-search.css">
 </head>
 

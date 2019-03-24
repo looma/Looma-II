@@ -38,10 +38,11 @@ $(document).ready (function() {
     $('#themes').change(function () {  // change theme when a theme button is clicked
         var newTheme = encodeURIComponent(this.value);
         LOOMA.changeTheme(newTheme);
-        //$(this).attr('selected', true);
+        $(this).find('option#' + newTheme).attr('selected', true);
+        //$(this).val(newTheme);
 });
     
-    //$('.theme#' + LOOMA.readStore('theme', 'cookie')).attr('checked', 'checked'); //add checkmark on current theme
+    $('.theme#' + LOOMA.readStore('theme', 'cookie')).attr('selected', true); //add checkmark on current theme
 
 //new code to display a list of speechSynthesis voices
 /*
@@ -75,9 +76,9 @@ $(document).ready (function() {
     {   var loginname = LOOMA.readStore('login', 'cookie');
         $('#login-status').text("You are logged in as '" + loginname + "'");
         $('.settings-control').css('display', 'inline');                       // show the teacher tools
-        //if (loginname == 'skip' || loginname === 'david')
+        if (loginname == 'skip' || loginname === 'david' || loginname == 'kabin')
             $('.admin-control').css('display', 'inline');;
-        if (loginname == 'skip' ) $('.exec-control').css('display', 'inline');;
+        if (loginname == 'skip') $('.exec-control').css('display', 'inline');;
 
         $('.login').toggleClass('loggedIn').text('Logout').click
             ( function()

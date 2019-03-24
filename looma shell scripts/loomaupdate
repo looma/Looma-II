@@ -1,0 +1,85 @@
+#!/bin/bash
+#
+#  filename: loomaupdate.sh
+#       author: skip
+#       date:   Jan 2019
+#
+#  used to update a pre-installed Looma by installing new code, database & content
+#
+#   files to be updated are assumed to be on a USB stick at /media/odroid/LOOMA/loomaupdate
+#   files expected on the USB:
+#
+#      loomaupdate.sh       (this file)
+#       Looma/               (full set of new Looma code. always updates the full code base)
+#       Looma/mongo-dump/dump/looma/   (mongodump of the new database content)
+#       content/*   (folders with new content)
+#                   (these are usually NEW folders,
+#                      but this can be used to overwrite existing content folders)
+#    possibly other content folders, like
+#       maps2018/*
+#       ePaath/*
+#    or other content folders
+#
+#   steps performed:
+#       copy old Looma code to LoomaBAK
+#       install new Looma code
+#       copy mongodb --db looma to loomaBAK
+#       install new mongodb --db looma
+#       copy new content files into "content" directory
+#
+echo "******************************************"
+echo "START LOOMA UPDATE: updating Looma code, database and content"
+echo "    you must insert a USB memory stick which is named LOOMA"
+echo "    the USB stick must have files to be uploaded contained in a top-level folder named 'loomaupdate' "
+echo
+echo "this a DANGEROUS operation and can wipe out a Looma. Be sure you have read the instructions"
+echo "******************************************"
+echo
+cd /media/odroid/LOOMA/loomaupdate
+echo "- changed directory to ";pwd
+
+#       copy current Looma code to LoomaBAK
+echo "- preparing to backup current Looma code to LoomaBAK"
+echo "- - continue [y/n]?"; read input; if [[ $input == "y" ]]; then
+    if [ -d /var/www/html/LoomaBAK ]; then rm -r /var/www/html/LoomaBAK; fi
+    mv    /var/www/html/Looma   /var/www/html/LoomaBAk
+else
+    echo" - - - backing up Looma code SKIPPED"
+fi
+
+#       install new Looma code
+echo  "- preparing to install new Looma code"
+echo "- - continue [y/n]?"; read input; if [[ $input == "y" ]]; then
+    cp -r Looma /var/www/html
+else
+    echo" - - - installing new Looma code SKIPPED"
+fi
+
+#       install new Looma database
+echo "- preparing to install new Looma database"
+echo "- - continue [y/n]?"; read input; if [[ $input == "y" ]]; then
+    if [ -d Looma/mongo-dump/dump/looma ]; then
+        mongo loomaBAK  --eval "db.dropDatabase()"               # remove old BAK
+        mongo looma --eval "db.copyDatabase('looma','loomaBAK')" # backup current db
+        mongo looma --eval "db.dropDatabase()"                   # remove current db
+        mongorestore --db looma Looma/mongo-dump/dump/looma/     # install new db
+    fi
+else
+    echo" - - - installing new Looma database SKIPPED"
+fi
+
+#       copy new files into "content" directory
+echo "- preparing to copy new files into content directory"
+echo "- - continue [y/n]?"; read input; if [[ $input == "y" ]]; then
+    echo "- updating the following CONTENT files:" ; ls -l content/
+    if [ -d "content" ];  then rsync -r content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
+    if [ -d "maps2018" ]; then rsync -r maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/destination"
+    if [ -d "ePaath" ];   then rsync -r ePaath/   /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/destination"
+else
+    echo" - - - installing new Looma content SKIPPED"
+fi
+
+echo "******************************************"
+echo "DONE LOOMA UPDATE: updating Looma code, database and content"
+echo "******************************************"
+

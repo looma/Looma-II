@@ -360,9 +360,21 @@ $(document).ready(function() {
     //$("#keyword-div .keyword-dropdown, .keyword-changes").off('change').change(showKeywordDropdown);
     $(".keyword-changes").change(showKeywordDropdown);
     
-    $("#grade-chng-menu, #subject-chng-menu").change(function() {
-        showChapterDropdown(null, $('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
-    });
+   // $("#grade-chng-menu, #subject-chng-menu").change(function() {
+   //     showChapterDropdown(null, $('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
+   // });
+    
+    
+            
+            $("#grade-chng-menu").change(function() {
+                showSubjectDropdown($('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
+            });  //end drop-menu.change()
+            
+            $("#subject-chng-menu").change(function() {
+                showChapterDropdown($('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
+            });  //end drop-menu.change()
+            
+            
     
     $('#check-all'  ).click( function() { $('.filter-checkbox').prop('checked', true);});
     $('#uncheck-all').click( function() { $('.filter-checkbox').prop('checked', false);});

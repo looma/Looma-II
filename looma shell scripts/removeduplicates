@@ -12,14 +12,17 @@
 var docs, doc, deletes, deleted, fn, count;
 count=0;
 
-docs = db.activities.find({'src':'wikipedia','thumb':/content\/W4S\/wp\/index\/subject\.Countries\.htm\.thumb\.jpg/});
+docs = db.activities.find({'ft':'image','fp':/dictionary\ images\//});
 while (docs.hasNext()) {
         doc = docs.next();
         fn = doc['fn'];
-        deletes = db.activities.find({'src':'wikipedia','fn': fn, 'thumb': /content\/W4S\/wp\/index\/subject\.Geography/});
-        while (deletes.hasNext()) { deleted = deletes.next();print (deleted.fn);count++}
-        db.activities.remove(deleted);
-	}
-	print()
+        //print ('***  ' + fn);
+
+        deletes = db.activities.find({'fn': fn, 'fp':/dictionary\ images\//});
+        if (deletes.count() > 1) {count++; print ('     dup found for: ' + fn);};
+        //while (deletes.hasNext()) { deleted = deletes.next();print (deleted.fn);count++}
+        //db.activities.remove(deleted);
+	};
+	print();
 	print('count is ' + count);
 

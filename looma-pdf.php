@@ -26,8 +26,8 @@ Usage: <button id="testpdf" data-fn="Math-2.pdf"
 
 <body>
 	<?php
-		$filename = $_REQUEST['fn'];
-		$filepath = $_REQUEST['fp'];
+		$filename = urldecode($_REQUEST['fn']);
+		$filepath = urldecode($_REQUEST['fp']);
 		$pagenum =  $_REQUEST['pg'];
 		$zoom =  $_REQUEST['zoom'] ? $_REQUEST['zoom'] : 'page-width';
 	?>

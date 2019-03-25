@@ -1181,18 +1181,66 @@ LOOMA.speak = function(text, engine, voice) {
      } // end if (text != '')
  }; //end LOOMA.speak()
 
+ LOOMA.toggleFullscreen = function() {
+     var fs =      document.getElementById('video-fullscreen');
+     if (!fs) fs = document.getElementById('fullscreen');
+     
+     if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement) {
+        leaveFS(fs);
+    } else {
+        enterFS(fs);
+    }
+ }; //end toggleFullscreen()
+ 
+ /*
 //toggle fullscreen display of the element with id="fullscreen"
 LOOMA.toggleFullscreen = function() {
-    if (document.fullscreenElement) document.exitFullscreen();
-    else {
-        
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { //chrome, safare
+        document.webkitExitFullscreen();
+    } else if (document.mozExitFullScreen) { // firefox
+        document.mozExitFullScreen();
+    } else if (document.msExitFullScreen) { // IE/Edge
+        document.msExitFullScreen();
+    }
+    //if (window.fullScreen) document.exitFullscreen();
+    else
+    {
         var fs =      document.getElementById('video-fullscreen');
         if (!fs) fs = document.getElementById('fullscreen');
-        
-        fs.requestFullscreen();
+       // if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement)
+       //    leaveFS(fs);
+     //  else
+        //fs.requestFullscreen();
+            enterFS(fs);
     }
 }; //end LOOMA.toggelFullscreen()
-
+*/
+ 
+ function enterFS(elem) {
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+     } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                elem.webkitRequestFullscreen();
+     } else if (elem.mozRequestFullScreen) { /* Firefox */
+                elem.mozRequestFullScreen();
+     } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                elem.msRequestFullscreen();
+     }
+ }
+ function leaveFS(elem) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+     } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                document.webkitExitFullscreen();
+     } else if (document.mozExitFullScreen) { /* Firefox */
+                document.mozExitFullScreen();
+     } else if (document.msExitFullScreen) { /* IE/Edge */
+                document.msExitFullScreen();
+     }
+ }
+ 
 /*
  from looma-alerts.js in the slideshow team code
  Description: Creates a styled translatable popup interface.

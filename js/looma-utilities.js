@@ -217,7 +217,7 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                         if (result.ft == 'EP' && result.thumb)  thumbfile = '../ePaath/' + result.thumb;
                         else thumbfile = LOOMA.thumbnail(result.fn, result.fp, result.ft);
                     
-                        $newButton.append($('<img src="' + thumbfile + '">'));
+                        $newButton.append($('<img draggable="false" src="' + thumbfile + '">'));
                         $newButton.append($('<span>').text(result.dn));
                         $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
@@ -250,7 +250,7 @@ makeChapterButton: function (id, appendToDiv) {
                 var thumbEnd = (result['pn']) ? "_thumb.jpg" : "-Nepali_thumb.jpg";
                 var thumb = fp + fn + thumbEnd;
                 
-                $newButton.append($('<img src="' + thumb + '">'));
+                $newButton.append($('<img draggable="false" src="' + thumb + '">'));
                 $newButton.append($('<span>').text(result.dn));
                 $newButton.click(function() {
                     saveState();

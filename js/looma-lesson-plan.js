@@ -837,7 +837,8 @@ function makedraggable() {
         //opacity: 0.7,
         addClasses: false,
         cursorAt: 0,
-  
+         
+         containment:"timeline",
         helper: "clone",
         //containment: "#timelineDisplay",
         start: function(event, ui) {

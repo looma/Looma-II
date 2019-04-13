@@ -85,9 +85,10 @@ button.class:hover,  button.subject:hover {
     margin:0;
 }
 
+
 button#bagh-chal {
     display:inline-block;
-    opacity:0;
     bottom: 17vh;
-    
+    /*opacity:0;*/
 }
+

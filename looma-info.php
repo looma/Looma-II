@@ -22,15 +22,15 @@ include ('includes/header.php');
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>Release 5.0.0, Apr 2019</h4>
+        <h4>Release 5.0.2, Apr 2019</h4>
         <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
         <h4>Contact:  info AT villagetechsolutions DOT org</h4>
         <span href="looma-info.php"></span>
-        <img src="images/logos/CC-BY-SA.png" height="33px">
+        <img draggable="false" src="images/logos/CC-BY-SA.png" height="33px">
 
         <!-- copyright notice, with link to vts.org-->
         <span class='glyphicon glyphicon-copyright-mark'></span>2019
-        <a class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
+        <a draggable="false"  class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
 
         <br>
         <h5> Attributions for code and content used in Looma: </h5>
@@ -39,26 +39,40 @@ include ('includes/header.php');
 
             <!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
 
-            <a class="attribution" href="http://www.khanacademy.org" target="_blank"><img src="images/logos/khan.jpg" height="66px"></a>
-            <a class="attribution" href="http://www.olenepal.org" target="_blank"><img src="images/logos/ole-nepal.jpg" height="66px"></a>
-            <a class="attribution" href="https://www.wikipedia.org" target="_blank"><img src="images/logos/wikipedia.jpg" height="66px"></a>
-            <a class="attribution" href="https://phet.colorado.edu" target="_blank"><img src="images/logos/PHET.png" height="44px"></a>
-            <a class="attribution" href="https://leafletjs.com" target="_blank"><img src="images/logos/leaflet-logo.png" height="66px"></a>
-            <a class="attribution" href="https://www.openstreetmap.org" target="_blank"><img src="images/logos/openstreetmap-logo.png" height="66px"></a>
-            <a class="attribution" href="https://translate.google.com" target="_blank"><img src="images/logos/google-translate.jpg" height="66px"></a>
-            <a class="attribution" href="https://www.mapbox.com" target="_blank"><img src="images/logos/tilemill.png" height="66px"></a>
-            <a class="attribution" href="https://mycroft.ai" target="_blank"><img src="images/logos/mycroft.png" height="33px"></a>
+            <a draggable="false"  draggable="false" class="attribution" href="http://www.khanacademy.org" target="_blank">
+                <img draggable="false" src="images/logos/khan.jpg" height="66px"></a>
+            <a draggable="false"  class="attribution" href="http://www.olenepal.org" target="_blank">
+                <img draggable="false" src="images/logos/ole-nepal.jpg" height="66px"></a>
+            <a draggable="false"  class="attribution" href="https://www.wikipedia.org" target="_blank">
+                <img draggable="false" src="images/logos/wikipedia.jpg" height="66px"></a>
+            <a draggable="false"  class="attribution" href="https://phet.colorado.edu" target="_blank">
+                <img draggable="false" src="images/logos/PHET.png" height="44px"></a>
+            <a draggable="false"  class="attribution" href="https://leafletjs.com" target="_blank">
+                <img draggable="false" src="images/logos/leaflet-logo.png" height="66px"></a>
+            <a draggable="false"  class="attribution" href="https://www.openstreetmap.org" target="_blank">
+                <img draggable="false" src="images/logos/openstreetmap-logo.png" height="66px"></a>
+            <a draggable="false"  class="attribution" href="https://translate.google.com" target="_blank">
+                <img draggable="false" src="images/logos/google-translate.jpg" height="66px"></a>
+            <a draggable="false"  class="attribution" href="https://www.mapbox.com" target="_blank">
+                <img draggable="false" src="images/logos/tilemill.png" height="66px"></a>
+            <a draggable="false"  class="attribution" href="https://mycroft.ai" target="_blank">
+                <img draggable="false" src="images/logos/mycroft.png" height="33px"></a>
             <br>
-            <a class="attribution" href="https://jquery.com" target="_blank"><img src="images/logos/jquery-logo.png" height="66px"></a>
-            <span><img src="images/logos/css3-html5-logo.png" height="44px"></span>
-            <a class="attribution" href="https://www.mongodb.com" target="_blank"><img src="images/logos/mongodb-logo.png" height="66px"></a>
-            <a class="attribution" href="https://www.jetbrains.com/idea/" target="_blank"><img src="images/logos/intellij.png" height="44px"></a>
-            <a class="attribution" href="https://www.stackoverflow.org" target="_blank"><img src="images/logos/stackoverflow.png" height="66px"></a>
-            <a class="attribution" href="http://www.villagetechsolutions.org" target="_blank"><img src="images/logos/VTSLogo.jpg" height="66px"></a>
+            <a draggable="false"  class="attribution" href="https://jquery.com" target="_blank">
+                <img draggable="false" src="images/logos/jquery-logo.png" height="66px"></a>
+            <span><img draggable="false" src="images/logos/css3-html5-logo.png" height="44px"></span>
+            <a draggable="false"  class="attribution" href="https://www.mongodb.com" target="_blank">
+                <img draggable="false" src="images/logos/mongodb-logo.png" height="66px"></a>
+            <a draggable="false"  class="attribution" href="https://www.jetbrains.com/idea/" target="_blank">
+                <img draggable="false" src="images/logos/intellij.png" height="44px"></a>
+            <a draggable="false"  class="attribution" href="https://www.stackoverflow.org" target="_blank">
+                <img draggable="false" src="images/logos/stackoverflow.png" height="66px"></a>
+            <a draggable="false"  class="attribution" href="http://www.villagetechsolutions.org" target="_blank">
+                <img draggable="false" src="images/logos/VTSLogo.jpg" height="66px"></a>
         </div>
         <br>
 
-        <span><img src="images/logos/LoomaLogoTransparent.png" class="loomalogo"></span>
+        <span><img draggable="false" src="images/logos/LoomaLogoTransparent.png" class="loomalogo"></span>
         <img src="images/trademark4.png" id="trademark" height="33px">
 
         <h4>Tested only in Google Chrome</h4>
@@ -345,7 +359,7 @@ include ('includes/header.php');
 
         </div>
         <!-- W3C validator link    new URL=https://validator.w3.org/nu/
-           <a class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->
+           <a draggable="false"  class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->
 
     </div>
 </div>

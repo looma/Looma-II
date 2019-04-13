@@ -23,7 +23,7 @@ Description: Video viewer page for Looma 2
 	?>
 	<div id="main-container-horizontal">
 		<div class="viewer" id="fullscreen">
-			<?php echo	'<img src="' . $filepath . $filename . '">' ?>
+			<?php echo	'<img draggable="false" src="' . $filepath . $filename . '">' ?>
             <div id="fullscreen-buttons">
                 <?php include ('includes/looma-control-buttons.php');?>
             </div>

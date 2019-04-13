@@ -1,67 +1,58 @@
-/*
-.keyboardContainer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: inherit;
-    z-index: 2147483648;
-    display: none;
-}
-*/
 
 .keyboardContainer {
     position: fixed;
-    top: 15vh;
-    left: 11vw;
-    width: 85vw;
-    height: 72vh;
-    max-height:85vh;
-    max-width:85vw;
+    top: 14vh;
+    left: 5vw;
+    width: 90vw;
     background-color: inherit;
     z-index: 2147483648;
     display: none;
+    border-radius:5px;
+    border:2px solid white;
+    max-height:80vh;
+    font-size:2.3vh;
 }
 
-.keyboard {
-    /*margin: 0 auto;*/
+#looma-keyboard {
     max-width: 100%;
     max-height:100%;
-    display: inline-block;
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
 }
 
 .keyboard-row {
     height:12vh;
-    width:100%;
-    text-align:center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 .keyboard-button {
-    //float: left;
-    margin: 3px;
-    /*padding: 15px;*/
-    /*width: 7.6%;*/
+    margin:4px;
+    min-width:5.2vw;
+    text-align:center;
+    vertical-align:middle;
 }
 
-#keyboard-backspace { width: 6vw;}
+.keyboard-button:hover {
+    background-color: lightyellow;
+    border: 2px solid blue;
+}
+
+#keyboard-backspace { max-width:7vw;}
+
 #keyboard-backspace img { height:75%;}
 
-.key-normal .key-shifted {
-    width: 6%;
-}
+#keyboard-space {flex: 7;}
 
-#keyboard-space {
-    width:65%;
-    margin:6px 10px 0 0;
-    float:none;
-}
+#keyboard-hide {flex:2;}
 
-#keyboard-hide {
-    width:24vw;
-    
-    float:right;
-}
+#keyboard-language {flex:2;}
+
+span.languageButtonText img {vertical-align:top;}
 
 .keyboard-space {
     visibility: hidden;
@@ -69,22 +60,18 @@
 
 .key-normal {
     display: block;
-    width: 60px;
 }
 
 .key-shifted {
     display: none;
-    width: 60px;
 }
 
 .key-nepali {
     display: none;
-    width: 60px;
 }
 
 .key-nepali-shifted {
     display: none;
-    width: 60px;
 }
 
 .shifted .key-normal {
@@ -111,10 +98,6 @@
     display: block;
 }
 
-#keyboard-language {
-    width: 200px;
-}
-
 #englishButtonText {
     display: none;
 }
@@ -131,15 +114,12 @@
     color: green;
 }
 
-br {
-    clear: both;
-}
-
 #inputEntry, #textareaEntry {
     border-radius: 8px;
     font:inherit;
     font-size: 3.5em;
-    width:33vw;
+    text-align:center;
+    width:55vw;
     margin: 10px;
     color: black;
 }

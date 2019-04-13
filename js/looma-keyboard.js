@@ -7,6 +7,7 @@
  This file adds an on-screen keyboard to Looma pages.
  If you are editing this file, make sure your editor can handle unicode! There should be Nepali characters on lines 12 & 13.
  */
+'use strict';
 var keys = "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./";
 var shiftedKeys = "~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?";
 var nepaliKeys = "ऽ१२३४५६७८९0-=टौेरतयुिोपइएॐासदउगहजकल;'षडछवबनम,।्";
@@ -100,8 +101,8 @@ function createKeyboard() {
     keyboardContainer.append(inputEntry);
 
     var keyboard = $("<div></div>")
-        .attr('id', 'looma-keyboard')
-        .addClass('keyboard');
+        .attr('id', 'looma-keyboard');
+        //.addClass('keyboard');
 
     ///keyboardContainer.append($("<br/>"));
  
@@ -120,12 +121,12 @@ function createKeyboard() {
 
     ///keyboard.append($("<br/>"));
 
-    // This isn't actually a button, but using a button element will make sure everything lines up. The visibility is set to "hidden" in the CSS.
+/*    // This isn't actually a button, but using a button element will make sure everything lines up. The visibility is set to "hidden" in the CSS.
     var row2Space = $("<button></button>")
         .addClass("keyboard-button keyboard-space");
     row2Space.html("&nbsp;");
     keyboardRow.append(row2Space);
-
+*/
     // Second Row
     var keyboardRow = ($('<div class="keyboard-row">'));
     keyboard.append(keyboardRow);
@@ -136,15 +137,15 @@ function createKeyboard() {
 
     ///keyboard.append($("<br/>"));
 
-    var row3Space = $("<button></button>")
+/*    var row3Space = $("<button></button>")
         .addClass("keyboard-button keyboard-space");
     row3Space.html("&nbsp;");
     keyboardRow.append(row3Space);
-
+*/
     // Third Row
     var keyboardRow = ($('<div class="keyboard-row">'));
     keyboard.append(keyboardRow);
-    
+
     for (var i = 26; i < 37; i++) {
         addKey(keyboardRow, i);
     }
@@ -172,7 +173,11 @@ function createKeyboard() {
     for (var i = 37; i < 47; i++) {
         addKey(keyboardRow, i);
     }
-
+    
+    // Fifth Row
+    var keyboardRow = ($('<div class="keyboard-row">'));
+    keyboard.append(keyboardRow);
+    
     var language = $("<button></button>")
         .attr('id', 'keyboard-language')
         .addClass("keyboard-button keyboard-special")
@@ -185,12 +190,11 @@ function createKeyboard() {
             $('<img src="images/english-flag.png">')));
     keyboardRow.append(language);
 
-    //$(keyboard).append("<br/>");
     var spacebar = $('<button></button>')
         .attr('id', 'keyboard-space')
         .html("&nbsp;&nbsp;&nbsp;&nbsp;Space&nbsp;&nbsp;&nbsp;&nbsp;")
         .addClass("keyboard-button keyboard-special");
-    
+
     $(keyboardRow).append(spacebar);
 
     //$(keyboard).append("<br/>");

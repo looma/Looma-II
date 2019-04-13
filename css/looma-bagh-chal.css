@@ -7,82 +7,102 @@
     overflow:hidden;
 }
 
-
 #corral {
     position:absolute;
-    bottom:20vh;
     left:3vw;
-    height:60vh;
-    width:7vw;
+    top:2.5vh;
+    height:87vh;
+    width:20vh;
     float:left;
     border-radius:1vh;
     
     display:grid;
     grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(10, 1fr);
     background-color:lightgoldenrodyellow;
 }
 
 #game {
     position:absolute;
     left:30vw;
-    top:5vh;
+    top:3vh;
 
-    height:80vh;
-    width:80vh;
+    height:85vh;
+    width:85vh;
     
     padding:3vh;
-    border-radius:1vh;
+    border-radius:2vh;
     display:grid;
     grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
     grid-gap:1vh;
     background-color:lightskyblue;
 }
 
-#board {
+#alquerque {
     position:absolute;
-    top:8.5vh;
-    left:8.5vh;
-    width:77%;
-    height:77%;
+    z-index:2;
+    top:9.5vh;
+    left:10vh;
+    width:76%;
+    height:78%;
     opacity:0.5;
+    user-drag:none;
+    user-select:none;
+    -webkit-user-drag:none;
+    -webkit-user-select:none;
+    -moz-user-drag:none;
+    -moz-user-select:none;
 }
 
 svg {
     stroke:#ddd;
 }
 
-.spot {
-    height:12vh;
-    width:12vh;
-    margin:auto;
+.spot {position:relative;
+    
+    height:100%;
+    width:100%;
+    padding:3vh;
     background-color:yellow;
     border-radius:2vh;
     vertical-align:middle;
     text-align:center;
 }
 
-.tiger {
-    height:70%;
-    width:70%;
-    margin-left:15%;
-    margin-top:15%;
+.spot .tiger {
+    position:relative;
+    height:9vh;
+    width:9vh;
+  
     border-radius:50%;
     background-color:red;
-    z-index:2;
+    z-index:3;
 }
 
-.goat {
-    height:50%;
-    width:50%;
-    margin-top:25%;
-    margin-left:25%;
+.tiger.ui-draggable-dragging,
+.goat.ui-draggable-dragging {
+    opacity:0.5;
+}
+
+.spot .goat, #corral .goat {
+    height:6vh;
+    width:6vh;
+    margin-top:15%;
+    margin-left:2vh;
     border-radius:50%;
     background-color:green;
     z-index:3;
 }
 
-.legal {border:2px solid red;}
+@keyframes blink {
+    50% { border-color: #ff0000; }
+}
 
+.legal{ /*or other element you want*/
+    border:6px solid red;
+    /*animation: blink .5s step-end infinite alternate;*/
+}
 button#newgame{
     position: absolute;
     width:12%;
@@ -104,10 +124,18 @@ button#info{
     background-repeat: no-repeat;
     background-size: 50% 75%;
  }
+
+#sign {
+    position:absolute;
+    bottom:40vh;
+    right:2vw;
+    font-size: 2em;
+}
+
 .title {
     font-size:3em;
-    float:left;
-    margin-left:5vw;
+    float:right;
+    margin-right:3vw;
 }
 
 button#fullscreen-control {

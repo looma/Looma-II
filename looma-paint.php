@@ -33,57 +33,57 @@ Description:  for Looma 2
 			<div class="dropdown">
     			<button class="drop-button" id="color"><img id="colorButton">
         			<div class="drop-content">
-        				<img src="images/reddot.png"    name="color" value="red">
-        				<img src="images/orangedot.png" name="color" value="orange">
-        				<img src="images/yellowdot.png" name="color" value="yellow">
-        				<img src="images/greendot.png"  name="color" value="green">
-        				<img src="images/bluedot.png"   name="color" value="blue">
-        				<img src="images/indigodot.png" name="color" value="indigo">
-        				<img src="images/violetdot.png" name="color" value="violet">
-        				<img src="images/greydot.png"   name="color" value="grey">
-        				<img src="images/blackdot.png"  name="color" value="black">
+        				<img draggable="false" src="images/reddot.png"    name="color" value="red">
+        				<img draggable="false" src="images/orangedot.png" name="color" value="orange">
+        				<img draggable="false" src="images/yellowdot.png" name="color" value="yellow">
+        				<img draggable="false" src="images/greendot.png"  name="color" value="green">
+        				<img draggable="false" src="images/bluedot.png"   name="color" value="blue">
+        				<img draggable="false" src="images/indigodot.png" name="color" value="indigo">
+        				<img draggable="false" src="images/violetdot.png" name="color" value="violet">
+        				<img draggable="false" src="images/greydot.png"   name="color" value="grey">
+        				<img draggable="false" src="images/blackdot.png"  name="color" value="black">
         			</div>
     			</button>
 			</div>
 
             <div class="dropdown">
-		      <button class="drop-button" id="size"><img src="images/medium.png">
+		      <button class="drop-button" id="size"><img draggable="false" src="images/medium.png">
         			<div class="drop-content">
-        				<img src="images/extrathin.png"  name="size" value="2">
-        				<img src="images/thin.png"       name="size" value="5">
-        				<img src="images/medium.png"     name="size" value="10">
-        				<img src="images/thick.png"      name="size" value="20">
-        				<img src="images/extrathick.png" name="size" value="30">
+        				<img draggable="false" src="images/extrathin.png"  name="size" value="2">
+        				<img draggable="false" src="images/thin.png"       name="size" value="5">
+        				<img draggable="false" src="images/medium.png"     name="size" value="10">
+        				<img draggable="false" src="images/thick.png"      name="size" value="20">
+        				<img draggable="false" src="images/extrathick.png" name="size" value="30">
         			</div>
                 </button>
             </div>
 
             <div class="dropdown">
-    			<button class="drop-button" id="shape"><img src="images/scribble.png">
+    			<button class="drop-button" id="shape"><img draggable="false" src="images/scribble.png">
         			<div class="drop-content" >
-        				<img src="images/scribble.png"  name="shape" value="scribble">
-        				<img src="images/line.png"      name="shape" value="line">
-        				<img src="images/rectangle.png" name="shape" value="rectangle">
-        				<img src="images/circle.png"    name="shape" value="oval">
-        				<img src="images/heart.png"     name="shape" value="heart">
+        				<img draggable="false" src="images/scribble.png"  name="shape" value="scribble">
+        				<img draggable="false" src="images/line.png"      name="shape" value="line">
+        				<img draggable="false" src="images/rectangle.png" name="shape" value="rectangle">
+        				<img draggable="false" src="images/circle.png"    name="shape" value="oval">
+        				<img draggable="false" src="images/heart.png"     name="shape" value="heart">
         			</div>
                 </button>
             </div>
 
             <div class="dropdown">
-    			<button class="drop-button" id="pencil"><img src="images/draw.png">
+    			<button class="drop-button" id="pencil"><img draggable="false" src="images/draw.png">
         			<div class="drop-content" >
-        				<img src="images/draw.png"  name="pencil" value="draw">
-        				<img src="images/erase.png" name="pencil" value="erase">
+        				<img draggable="false" src="images/draw.png"  name="pencil" value="draw">
+        				<img draggable="false" src="images/erase.png" name="pencil" value="erase">
         			</div>
                 </button>
             </div>
 
             <div class="dropdown">
-    			<button class="drop-button"><img src="images/undo.png">
+    			<button class="drop-button"><img draggable="false" src="images/undo.png">
         			<div class="drop-content" >
-        				<img src="images/undo.png"  id="undo">
-        				<img src="images/clear.png" id="clear">
+        				<img draggable="false" src="images/undo.png"  id="undo">
+        				<img draggable="false" src="images/clear.png" id="clear">
         			</div>
                 </button>
             </div>
@@ -98,7 +98,7 @@ Description:  for Looma 2
             </div>
 
 			<div class="dropdown">
-		    	<button class="drop-button" id="back"><img src="images/back-arrow.png"></button>
+		    	<button class="drop-button" id="back"><img draggable="false" src="images/back-arrow.png"></button>
             </div>
 
 		</div>

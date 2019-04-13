@@ -32,8 +32,8 @@ function displaySubjects (className) {
                                tb_path + encodeURIComponent(book['nfn'].substr(0,book['nfn'].length-4)) + '_thumb.jpg' :
                                'images/book_gray.png';
                 
-                $newButton.append($('<img src="' + imgEn+ '" />' ));
-                $newButton.append($('<img src="' + imgNp+ '" />' ));
+                $newButton.append($('<img draggable="false" src="' + imgEn+ '" />' ));
+                $newButton.append($('<img draggable="false" src="' + imgNp+ '" />' ));
                 $('#subjects').append($newButton);
             });
             $("button.subject").click(subjectButtonClicked);

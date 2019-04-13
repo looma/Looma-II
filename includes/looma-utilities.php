@@ -222,7 +222,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
                           echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
 
                           echo ">";
-                          echo '<img src="' . $thumbSrc . '">';
+                          echo '<img draggable="false" src="' . $thumbSrc . '">';
                           //echo "<span>" . $dn . "</span>";
                           displayName($fn, $dn, $ndn);
                           echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";

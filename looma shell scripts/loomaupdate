@@ -30,12 +30,18 @@
 echo "******************************************"
 echo "START LOOMA UPDATE: updating Looma code, database and content"
 echo "    you must insert a USB memory stick which is named LOOMA"
-echo "    the USB stick must have files to be uploaded contained in a top-level folder named 'loomaupdate' "
+echo "    the USB stick must have files to be uploaded in a top-level folder named 'loomaupdate' "
 echo
 echo "this a DANGEROUS operation and can wipe out a Looma. Be sure you have read the instructions"
 echo "******************************************"
 echo
 cd /media/odroid/LOOMA/loomaupdate
+
+if [ "$?" != "0" ]; then
+	echo "couldnt find LOOMA/loomaupdate directory!"
+	exit 1
+fi
+
 echo "- changed directory to ";pwd
 
 #       copy current Looma code to LoomaBAK
@@ -50,19 +56,22 @@ fi
 #       install new Looma code
 echo  "- preparing to install new Looma code"
 echo "- - continue [y/n]?"; read input; if [[ $input == "y" ]]; then
-    cp -r Looma /var/www/html
+    rsync -r Looma/ /var/www/html/Looma   #NOTE: slash after "Looma/" and no slash after "/var/www/html/Looma"
 else
     echo" - - - installing new Looma code SKIPPED"
 fi
 
 #       install new Looma database
 echo "- preparing to install new Looma database"
-echo "- - continue [y/n]?"; read input; if [[ $input == "y" ]]; then
+echo "- - continue [y/n]?"; read input;
+if [[ $input == "y" ]];
+then
     if [ -d Looma/mongo-dump/dump/looma ]; then
-        mongo loomaBAK  --eval "db.dropDatabase()"               # remove old BAK
-        mongo looma --eval "db.copyDatabase('looma','loomaBAK')" # backup current db
-        mongo looma --eval "db.dropDatabase()"                   # remove current db
-        mongorestore --db looma Looma/mongo-dump/dump/looma/     # install new db
+        # mongo loomaBAK  --eval "db.dropDatabase()"               # remove old BAK
+        # mongo looma --eval "db.copyDatabase('looma','loomaBAK')" # backup current db
+        # mongo looma --eval "db.dropDatabase()"                   # remove current db
+        mongorestore --db looma Looma/mongo-dump/dump/looma/       # install new db changes into existing db
+    else echo "no source dir (LOOMA/looma/mongo-dump/dump/looma) for mongo restore
     fi
 else
     echo" - - - installing new Looma database SKIPPED"
@@ -72,9 +81,15 @@ fi
 echo "- preparing to copy new files into content directory"
 echo "- - continue [y/n]?"; read input; if [[ $input == "y" ]]; then
     echo "- updating the following CONTENT files:" ; ls -l content/
-    if [ -d "content" ];  then rsync -r content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
-    if [ -d "maps2018" ]; then rsync -r maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/destination"
-    if [ -d "ePaath" ];   then rsync -r ePaath/   /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/destination"
+    if [ -d "content" ];
+        then rsync -r content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
+    fi
+    if [ -d "maps2018" ];
+        then rsync -r maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
+    fi
+    if [ -d "ePaath" ];
+        then rsync -r ePaath/   /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
+    fi
 else
     echo" - - - installing new Looma content SKIPPED"
 fi

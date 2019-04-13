@@ -94,7 +94,7 @@ window.onload = function() {
 
     function scrollTimeline($btn) {
         $('#timeline-container').animate({
-            scrollLeft: $btn.outerWidth(true) * ($btn.index() - 2)
+            scrollLeft: $btn.outerWidth(true) * ($btn.index() - 9)
         }, 700);
     };
     
@@ -195,6 +195,11 @@ window.onload = function() {
                 break;
 
             case 'html':
+                $htmlHTML.find('embed').attr('src', fp + fn);
+    
+                $htmlHTML.appendTo($viewer);
+                break;
+                
             case 'EP':
             case 'epaath':
 

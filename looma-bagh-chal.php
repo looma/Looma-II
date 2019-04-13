@@ -18,26 +18,27 @@ require_once ($prefix . 'includes/header.php');
 </head>
 
 <body>
-<div id="main-container-horizontal">
-    <div id="fullscreen">
-    <span class="title"><?php keyword('Bagh Chal') ?></span>
-        <div id="corral"></div>
-        <div id="game">
-            <img src="images/alquerque_board.png" id="board">
-       <!--     <?php include ('images/alquerque-svg.txt'); ?>  -->
+    <div id="main-container-horizontal">
+        <div id="fullscreen">
+        <span class="title"><?php keyword('Bagh Chal') ?></span>
+            <div id="corral"></div>
+
+            <div id="game">
+                <img src="images/alquerque_board.png" id="alquerque">
+            </div>
+
+            <?php include ('includes/looma-control-buttons.php');?>
+            <button id="info"></button>
+            <button id="newgame">New Game</button>
+
+            <p id="sign">Next move: <span id="next"></span></p>
         </div>
-        <?php include ('includes/looma-control-buttons.php');?>
-        <button id="info"></button>
-        <button id="newgame">New Game</button>
-
     </div>
-</div>
 
-<?php include ($prefix . 'includes/toolbar.php'); ?>
+    <?php include ($prefix . 'includes/toolbar.php'); ?>
+    <?php include ($prefix . 'includes/js-includes.php'); ?>
 
-<?php include ($prefix . 'includes/js-includes.php'); ?>
-<script src="js/jquery-ui.min.js">  </script>
-
-<script src="js/looma-bagh-chal.js"></script>
+    <script src="js/jquery-ui.min.js">  </script>
+    <script src="js/looma-bagh-chal.js"></script>
 </body>
 </html>

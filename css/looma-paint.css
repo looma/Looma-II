@@ -6,7 +6,7 @@
 	height: 90%;
 	width: 100%;
 	bottom: 0;
-	border: 1px solid blue;
+    border-radius:1vh;
 }
 
 canvas {
@@ -15,8 +15,6 @@ canvas {
     position: absolute;
     background-color: transparent;
     /*z-index:1;*/
-    border:3px solid blue;
-    border-radius: 8px;
 	bottom: 0;
 	left:0;
 	/*top: 15%; */
@@ -105,4 +103,9 @@ div#notice {
 	color:black;
 	font-size: 3em;
 	z-index: 20;
+}
+
+.credit {
+    top:4vh;
+    right:0;
 }

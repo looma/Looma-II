@@ -19,11 +19,10 @@ body {
 
 h1 {background-color:#F0EC1A}
 
-.admin {
-    display:none;
-}
-.btn-toolbar {.
-text-align:center;
+.admin {display:none;}
+
+.btn-toolbar {
+    text-align:center;
     display:inline-block;
     color:black;
 }
@@ -32,7 +31,6 @@ text-align:center;
     margin: 0 auto;
     width: 95vw;
 }
-
 
 button.result {
     color:white;
@@ -56,7 +54,7 @@ button.result {
 }
 
 #text-editor-container {
-    font-size: 2vw;
+    font-size: 1.57vw;
 }
 
 #editor {
@@ -66,6 +64,8 @@ button.result {
     margin:0 auto;
     overflow:hidden;
     font-size:1.3em;
+    color:#091F48;
+    font-weight:bold;
     white-space:nowrap;
     /*color:yellow;
     background-color: #091F48;
@@ -94,10 +94,11 @@ button.result {
 #preview {
     position:fixed;
     display:none;
+    padding:2px;
     bottom:17vh;
     left:18vw;
     height:18vh;
-    width:30vw;
+    width:21vw;
     z-index:10;
     font-size:0.5em;
     border: 2px solid black;

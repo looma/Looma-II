@@ -25,6 +25,10 @@ Description: looma lesson plan presenter
 
         <div id="main-container-horizontal">
             <div id="fullscreen">
+
+                <button class="control-button-fullscreen" id="back-fullscreen"></button>
+                <button class="control-button-fullscreen" id="forward-fullscreen"></button>
+
                 <div id="viewer"></div>
                 <?php include("includes/looma-control-buttons.php"); ?>
             </div>
@@ -108,9 +112,10 @@ Description: looma lesson plan presenter
                     $textbook = $textbooks_collection -> findOne($query);
 //echo $textbook['fn'] . '   ' . $textbook['nfn'];
                     $filename = (isset($textbook['fn']) && $textbook['fn'] != "") ? $textbook['fn'] : ((isset($textbook['nfn'])) ? $textbook['nfn'] : null);
-//echo '   ' . $filename; return;
+//echo 'filename is   ' . $filename;
                     $filepath = (isset($textbook['fp']) && $textbook['fp'] != "") ? $textbook['fp'] : null;
 
+//echo '   filepath is   ' . $filepath; return;
                     $displayname = (isset($chapter['dn']) && $chapter['dn'] != "") ? $chapter['dn'] : ((isset($chapter['ndn'])) ? $chapter['ndn'] : null);
                     $pagenumber  = (isset($chapter['pn']) && $chapter['pn'] != "") ? $chapter['pn'] : ((isset($chapter['npn'])) ? $chapter['npn'] : null);
 

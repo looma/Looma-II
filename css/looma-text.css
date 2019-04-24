@@ -15,7 +15,7 @@ Comments:
     height: 100%;
     width: 100%;
     
-    font-size: 2.5vw; /*this makes enclosed text responsive to viewport width*/
+    /*font-size: 2.5vw; this makes enclosed text responsive to viewport width*/
     
     /* tried to get auto-scaling on both VERT and HORIZ axes, but it doesnt work:
     font-size: calc( ( 2vh + 2vh ) / 2);
@@ -43,4 +43,4 @@ button.lookup {
     display:inline-block;
 }
 
-.text-display {font-size:1.3em;}
+/*.text-display {font-size:1.3em;}*/

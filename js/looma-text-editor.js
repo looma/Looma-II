@@ -113,13 +113,16 @@
       $editor = $('#editor'); //the DIV where the HTML is being edited
       $editor.wysiwyg();
       document.execCommand('styleWithCSS', false, true);
-      document.execCommand('fontSize', false, 5);
-      document.execCommand('justifyCenter', false, true);
+      document.execCommand('fontSize',     false, 5);
+      document.execCommand('justifyCenter',false, true);
       
       textclear();
+      document.execCommand('bold',         false, true); //has to be AFTER the TESTCLEAR() call
+      document.execCommand('foreColor',    false, '#091F48');
+      $editor.focus();
 
       loginname = LOOMA.loggedIn();
-      
+    
       if (loginname && (loginname == 'kathy' ||
                         loginname == 'david' ||
                         loginname == 'skip' ))
@@ -131,4 +134,5 @@
       
       $('#filecommands').trigger('click');
       
+      if ($('#text_file_name').attr('data-dn')) openfile( decodeURIComponent($('#text_file_name').attr('data-dn')),'text_files', 'text');
   });

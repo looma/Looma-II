@@ -132,7 +132,7 @@ $(document).ready (function() {
                     if (!notTransparent) {
                         LOOMA.makeTransparent();
                     };
-                    $(document.body).append("<div class= 'popup'>" +
+                    $('#fullscreen').append("<div class= 'popup'>" +
                     "<button class='popup-button' id='dismiss-popup'><b>X</b></button>"+ "<div style='text-decoration: underline'>" + msgtitle + "</div>" + msg + "</button></div>").hide().fadeIn(1000);
                     var id1 = $(target).attr("data-id1");
                     var id2 = $(target).attr("data-id2");

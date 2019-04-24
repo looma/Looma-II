@@ -9,27 +9,45 @@ author: skip
 
 var sequence = 1;
 
+function fetch(seq) {
+    $.post("looma-database-utilities.php",
+        {cmd: "openText", collection: "text", skip: seq},
+        function(result) {
+            document.querySelector("div#display").innerHTML = result.data;
+            $('#dn').html(result.dn);
+            $('#edit').attr('data-dn',result.dn);
+        },
+        'json'
+    );
+};
+
 'use strict';
 $(document).ready(function() {
     
-    $.post("looma-database-utilities.php",
-        {cmd: "openText", collection: "text", skip: sequence},
-        function(result) {
-            document.querySelector("div#display").innerHTML = result.data;
-            $('#legend').html(result.dn);
-        },
-        'json'
-    );
-
+    fetch();
+    
+    
     $('#next').click(function() {
         sequence++;
-        $.post("looma-database-utilities.php",
-            {cmd: "openText", collection: "text", skip: sequence},
-        function(result) {
-            document.querySelector("div#display").innerHTML = result.data;
-            $('#legend').html(result.dn);
-        },
-        'json'
-    );
-    })
+        fetch(sequence);
+    });
+    
+    $('#prev').click(function() {
+        sequence--;
+        fetch(sequence);
+    });
+    
+    $('#plus10').click(function() {
+        sequence += 10;
+        fetch(sequence);
+    });
+    
+    $('#minus10').click(function() {
+        sequence -= 10;
+        fetch(sequence);
+    });
+    
+    $('#edit').click(function() {
+      if (sequence >= 0) window.open('looma-text-editor.php?dn=' + encodeURIComponent($(this).attr('data-dn')));
+    });
 });

@@ -1,8 +1,10 @@
+//'use strict';
+
 window.onload = function () {
     
     document.getElementById("back").onclick = function() {parent.history.back();};
 
-var previews = document.getElementById("previews");
+var $previews = $('#previews');
 var count = 0;
 for (var i = 0; i < localStorage.length; i++) {
   var key = localStorage.key(i);
@@ -12,8 +14,8 @@ for (var i = 0; i < localStorage.length; i++) {
     link.href = "looma-paint.php#" + key;
     var img = new Image();
     img.src = 'data:image/svg+xml;base64,' + btoa(localStorage.getItem(key));
-    img.width = 200;
-    img.height = 200;
+    //img.width = 200;
+    //img.height = 200;
     var button = document.createElement("button");
 
        button.innerHTML =
@@ -42,7 +44,7 @@ for (var i = 0; i < localStorage.length; i++) {
     }
     link.appendChild(button);
     link.appendChild(img);
-    previews.appendChild(link);
+    $previews.append(link);
   }
   else {
     console.log("Rejected: " + key);

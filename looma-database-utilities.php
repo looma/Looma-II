@@ -227,6 +227,16 @@ if ( isset($_REQUEST["cmd"]) ) {
         else                           $query = array('_id' => new MongoID($_REQUEST['id']));
         //look up this ID (mongoID) in this collection (dbCollection)
         $file = $dbCollection->findOne($query);
+
+        //////////////
+        if ($collection == "chapters") {
+            $query = array('prefix' => prefix($file['_id']));
+            $textbook = $textbooks_collection->findOne($query);
+            $file['fp'] = $textbook['fp'];
+            $file['fn'] = $textbook['fn'];
+        }
+        //////////////
+
         if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
         //else echo json_encode(array("error" => "File not found " . $_REQUEST['id'] . " in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
 

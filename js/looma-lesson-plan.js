@@ -617,11 +617,11 @@ function preview_result (item) {
 
     var collection = $(item).attr('data-collection');
     var filetype = $(item).data('type');
-    var filename = $(item).data('mongo').fn;
+         //    var filename = $(item).data('mongo').fn;
+    var filename = $(item).data('fn');
     var $mongo = $(item).data('mongo');
-    var filepath;
-    if ('fp' in $mongo) filepath = $mongo.fp;
-
+        // if ('fp' in $mongo) var filepath = $mongo.fp;
+    var filepath = $(item).data('fp');
         //console.log ("collection is " + collection + " filename is " + filename + " and filetype is " + filetype);
 
 	var idExtractArray = extractItemId($(item).data('mongo'));

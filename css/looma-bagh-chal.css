@@ -63,7 +63,7 @@ svg {
     
     height:100%;
     width:100%;
-    padding:3vh;
+    padding:2vh;
     background-color:yellow;
     border-radius:2vh;
     vertical-align:middle;
@@ -72,11 +72,12 @@ svg {
 
 .spot .tiger {
     position:relative;
-    height:9vh;
-    width:9vh;
-  
+    height:11vh;
+    width:11vh;
     border-radius:50%;
-    background-color:red;
+    /*background-color:red;*/
+    background:url("../images/tiger transparent.png");
+    background-size:100%;
     z-index:3;
 }
 
@@ -85,13 +86,26 @@ svg {
     opacity:0.5;
 }
 
-.spot .goat, #corral .goat {
+.spot .goat {
+    height:10vh;
+    width:10vh;
+
+    border-radius:50%;
+    /*background-color:green;*/
+    background:url("../images/goat transparent.png");
+    background-size:100%;
+    z-index:3;
+}
+
+#corral .goat {
     height:6vh;
     width:6vh;
     margin-top:15%;
     margin-left:2vh;
     border-radius:50%;
-    background-color:green;
+    /*background-color:green;*/
+    background:url("../images/goat transparent.png");
+    background-size:100%;
     z-index:3;
 }
 
@@ -127,10 +141,14 @@ button#info{
 
 #sign {
     position:absolute;
-    bottom:40vh;
-    right:2vw;
+    width:12%;
+    height:32%;
+    right: 6vh;
+    top: 42vh;
+    
     font-size: 2em;
 }
+#next {height:75%;}
 
 .title {
     font-size:3em;

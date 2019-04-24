@@ -182,7 +182,7 @@ function deletefile(deletename, collection, filetype)  { //filetype must be give
 ///////////////////////////////
 //////     OPENFILE       /////
 ///////////////////////////////
-function openfile(openname, collection, filetype) { //filetype must be given as 'text' or 'text-template'
+function openfile(openname, collection, filetype) { //filetype must be given e.g. 'text' or 'text-template'
 
         //OPEN from MONGO
         $.post("looma-database-utilities.php",

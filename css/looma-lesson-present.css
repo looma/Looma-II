@@ -49,6 +49,7 @@ body {
     position:relative;
     height: 100%;
     width:100%;
+    font-size:0.9vw;
 }
 
 #controlpanel {
@@ -262,7 +263,22 @@ span#lesson-name {
     height:100%;
 }
 
-.control-button img {
+.control-button-fullscreen {
+    position: absolute;
+    
+    display:none;
+    
+    opacity:0.4;
+    background: white;
+    background-position: left top;
+    background-size: 100% 100%;
+    margin: 0 0.5vw 0 0.5vw;
+    width:10vh;
+    height:10vh;
+    z-index:2;
+}
+
+.control-button img, .control-button-fullscreen img {
     margin: 0;
     padding: 0;
     height: 70%;
@@ -278,10 +294,26 @@ span#lesson-name {
 }
 #return {height:100%;}
 
-#back    { background-image: url("../images/carrot-back.png"); }
-#pause   { background-image: url("../images/play-button.png"); }
-#forward { background-image: url("../images/carrot-fwd.png"); }
-#dismiss { background-image: url("../images/back-arrow.png"); }
+#back,    #back-fullscreen    { background-image: url("../images/carrot-back.png"); }
+#forward, #forward-fullscreen { background-image: url("../images/carrot-fwd.png"); }
+#dismiss                      { background-image: url("../images/back-arrow.png"); }
+#pause                        { background-image: url("../images/play-button.png"); }
+
+#forward-fullscreen {
+    position:absolute;
+    top:35vh;
+    right:5vw;
+}
+
+#back-fullscreen    {
+    position:absolute;
+    top:46vh;
+    right:5vw;
+}
+
+#fullscreen:fullscreen .control-button-fullscreen {
+    display:block;
+}
 
 #fullscreen .text-display {
     height:100%;

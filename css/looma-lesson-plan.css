@@ -324,7 +324,10 @@ li:hover {
     margin-top:10px;
     margin-left:10px;
 }
-#previewpanel .textpreview {zoom:155%;}
+#previewpanel .textpreview {
+    /*zoom:155%;*/
+    font-size:1.5vw;
+}
 
 #displayImage {
     max-height:60vh;

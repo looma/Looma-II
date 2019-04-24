@@ -31,7 +31,7 @@ require_once ($prefix . 'includes/header.php');
             <button id="info"></button>
             <button id="newgame">New Game</button>
 
-            <p id="sign">Next move: <span id="next"></span></p>
+            <button id="sign" disabled>Next turn: <img id="next"></img></button>
         </div>
     </div>
 

@@ -1303,7 +1303,9 @@ LOOMA.closePopup = function() {
 LOOMA.alert = function(msg, time, notTransparent, next){
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
-    $(document.body).append("<div class= 'popup'>" +
+    //$(document.body).append("<div class= 'popup'>" +
+    var $attachpoint = ($('#fullscreen').length > 0) ? $('#fullscreen') : $(document.body);
+    $attachpoint.append("<div class= 'popup'>" +
         "<button class='popup-button' id='dismiss-popup'><b>X</b></button>"+ msg +
         "<button id ='close-popup' class ='popup-button'>" +
         //"<img src='images/alert.jpg' class='alert-icon'" +

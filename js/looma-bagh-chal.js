@@ -30,6 +30,15 @@ var numberOfGoats = 20;
 var newGoats;
 var currentAnimal;
 
+var gameRules = "Alternate turns. Goats play first.<br>";
+gameRules += "Goat's turn: move a goat onto the board.<br>";
+gameRules += "When all the goats are on the board,<br>";
+gameRules += "then move one goat one space.<br>";
+gameRules += "Tiger's turn: move one tiger one space<br>";
+gameRules += "or jump a goat to capture it.<br>";
+gameRules += "Game over: 5 goats captured,<br>";
+gameRules += "or tigers can't move";
+
 // clear any animal from this spot
 function clearSpot(spot) {
     if (spot.attr('id') != 'corral') spot.empty().removeClass('tiger').removeClass('goat').addClass('empty');//.attr('data-animal','none');
@@ -108,13 +117,15 @@ function dragStop() {$('.spot').removeClass('legal')};
 
 function tigersCanMove() {
     var any = false;
-    $('.spot.tiger').each(function() {if ($('.empty').legal(this)) any=true;});
+    $('.spot.tiger').each(function() {if ($('.empty').legal(this).length > 0) any=true;});
     return any;
 };
 
 function gameOver () {return (numberOfGoats === 15 || ! tigersCanMove());};
 
-function displayTurn() {$('#next').text(currentAnimal);};
+function displayTurn() {
+    $('#next').attr('src',currentAnimal=='tiger'?'images/tiger\ transparent.png ' : 'images/goat\ transparent.png');
+};
 
 function nextPlayer() {
     if (gameOver()) winner(currentAnimal);
@@ -129,7 +140,7 @@ function nextPlayer() {
     }
 }
 
-function winner(animal){LOOMA.alert(animal=='goat' ? "Goat" : "Tiger" + ' wins!', null, false, newGame)};
+function winner(animal){LOOMA.alert((animal === 'goat' ? "Goat" : "Tiger") + ' wins!', null, false, newGame)};
 
 function newGame() {
     LOOMA.confirm('Quit this game?',
@@ -189,5 +200,5 @@ $(document).ready  (function () {
     newGoats = numberOfGoats;
     
     $('#newgame').click(newGame);
-    $('#info').click(function () {LOOMA.alert('summary of game rules here');});
+    $('#info').click(function () {LOOMA.alert(gameRules);});
 }); // end document.ready()

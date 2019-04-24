@@ -10,18 +10,20 @@
     color:blue;
     /*background-color: #091F48;*/
     background-color:white;
-    font-style:bold;
+    font-style:bold !important;
 
     vertical-align:middle;
     /*zoom:200%;*/
-    font-size:inherit;
+  /*  font-size:inherit !important; */
+    font-size: 2.5vw;
 }
 
 
 .text-display * {
     text-overflow:ellipsis;
     white-space:nowrap;
-    font-size:inherit;
+    font-size:inherit !important;
+    font-weight:bold !important;
 }
 
 :-webkit-full-screen.text-display, :fullscreen.text-display {transform:scale(2,2);

@@ -40,12 +40,12 @@ window.onload = function() {
     var $fullscreen = $('#fullscreen');
 
     // handlers for 'control panel' buttons
-    $('#back, #prev-item').click(function() {
+    $('#back, #prev-item, #back-fullscreen').click(function() {
         if ($currentItem.prev().is('button')) {
             play($currentItem.prev());
         } else pause();
     });
-    $('#forward, #next-item').click(function() {
+    $('#forward, #next-item, #forward-fullscreen').click(function() {
         if ($currentItem.next().is('button')) {
             play($currentItem.next());
         } else pause();

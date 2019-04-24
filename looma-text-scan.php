@@ -18,17 +18,24 @@ include ('includes/header.php');
 include ('includes/mongo-connect.php');
 ?>
 <link rel="stylesheet" href="css/looma-text-scan.css">
+<link rel="stylesheet" href="css/looma-text-display.css">
 </head>
 
 <body>
 <div id="main-container-horizontal">
     <div id="fullscreen">
-        <div id="display"></div>
-        <div id="legend"></div>
+        <div id="display" class="text-display"></div>
+        <div id="legend">
+            <span id="dn"></span>
+            <button id="edit">Edit</button>
+        </div>
         <button class = "lookup"></button>
         <button class="speak looma-control-button"></button>
         <button id="fullscreen-control" class="looma-control-button"></button>
         <button id="next">Next</button>
+        <button id="prev">Prev</button>
+        <button id="plus10">+10</button>
+        <button id="minus10">-10</button>
     </div>
 </div>
 

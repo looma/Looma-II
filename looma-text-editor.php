@@ -73,7 +73,7 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
                         <li><a data-edit="foreColor #FF7F00">Orange</a></li>
                         <li><a data-edit="foreColor #FF0000">Red</a></li>
                         <li><a data-edit="foreColor #30AD23">Green</a></li>
-                        <li><a data-edit="foreColor #091F48">Blue</a></li>
+                        <li><a data-edit="foreColor #091F48">Blue</a></li>  <!-- 091F48 -->
                         <!-- <li><a data-edit="foreColor #000000">Black</a></li> -->
                     </ul>
                 </div>
@@ -108,6 +108,13 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
                     <a class="btn btn-default" data-edit="redo" title="Redo"><i class="fa fa-2x fa-repeat"></i></a>
                  </div>
            </div>
+
+        <?php
+           if (isset($_REQUEST['dn'])) {
+               $dn = $_REQUEST['dn'];
+               echo "<div id='text_file_name' data-dn=" . rawurlencode($dn) . " hidden></div>";
+           };
+        ?>
 
            <div id="text-editor-container">
                <div id="editor" class="lead text-display" contenteditable="true"></div>

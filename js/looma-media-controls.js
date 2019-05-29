@@ -14,7 +14,7 @@ Revision: Looma 2.4
     var audio, video, media;
     var $play, $mute, $seekbar, $volumebar, $time;
 
-function mediaPlayPause () {
+function mediaPlayPause () { // play or pause the currently playing MEDIA - stored in global var media
     if (media.paused) {
         media.play();
         $('.play-pause').css('background-image', 'url("images/pause.png")');
@@ -24,23 +24,32 @@ function mediaPlayPause () {
     }
 }; //end mediaPlayPause()
 
+
+function minuteSecondTime (time) {  // convert the [current media] time from seconds to mm:ss
+    var timeAsString = "" + time;
+    var seconds = timeAsString.substring(0, timeAsString.indexOf("."));
+    var minutes = Math.floor(Number(seconds) / 60);
+    seconds = Number(seconds) % 60;
+    if (seconds < 10) seconds = "0" + seconds;
+    return minutes + ":" + seconds;
+}; // end minuteSecondTime()
+
+
 function attachMediaControls (myMedia) {
 
           if(myMedia) {media = myMedia;}
-          else {
-            audio = document.getElementById("audio");
-            video = document.getElementById("video");
+          else {       audio = document.getElementById("audio");
+                       video = document.getElementById("video");
 
-            media = (video)?video:audio;
+                       media = (video)?video:audio;
           }
-          //DEBUG   console.log("In media-controls.js: media is " + media);
 
           // Buttons
-          $play = $('.play-pause');
-          $mute = $('.mute');
+          $play =    $('.play-pause');
+          $mute =    $('.mute');
           $seekbar = $('.seek-bar');
           $volumebar = $('.volume-bar');
-          $time = $('#time');  $time.text('0:00');
+          $time =    $('.time');  $time.text('0:00');
 
         // Event listener for the play/pause button
         $play.off('click').on('click', mediaPlayPause);
@@ -81,21 +90,7 @@ function attachMediaControls (myMedia) {
         // Play the media when the slider handle is dropped
         $seekbar.on("mouseup", function() { media.play(); });
 
-        function minuteSecondTime (time)
-        {
-            //Converts all time to minutes:seconds
-            var timeAsString = "" + time;
-            var seconds = timeAsString.substring(0, timeAsString.indexOf("."));
-            var minutes = Math.floor(Number(seconds) / 60);
-            seconds = Number(seconds) % 60;
-            if (seconds < 10)
-            {
-                seconds = "0" + seconds;
-            }
-            return minutes + ":" + seconds;
-        };
-
-    }; // end attachMediaControls()
+}; // end attachMediaControls()
 
 /*
    function attachFullscreenPlayPauseControl() {
@@ -113,60 +108,24 @@ function attachMediaControls (myMedia) {
 
             var $fsppbutton = $('#fullscreen-playpause');
 
-            if(!isFullscreen)  //If it is not fullscreen make it fullscreen
-            {//screenfull.toggle(document.getElementById('fullscreen'));
+            if(!isFullscreen)  { //If it is not fullscreen make it fullscreen
                 LOOMA.toggleFullscreen();
                 isFullscreen = true;
                 $fsppbutton.css('display', 'block');
-
-                    videoArea.className = "fulldisplay";
-                    videoArea.style.height = "100%";
-                    
-            /*
-                if (video.paused == true)
-                { $fsppbutton.css('backgroundImage', 'url("images/video.png")'); }
-                else
-                { $fsppbutton.css('backgroundImage', 'url("images/pause.png")'); }
-            */
-            
+                
+                videoArea.className = "fulldisplay";
             }
-            else  //Otherwise un-fullscreen it
-            {  //screenfull.toggle(document.getElementById('fullscreen'));
+            else  {  //Otherwise un-fullscreen it
                 LOOMA.toggleFullscreen();
                 isFullscreen = false;
                 $fsppbutton.css('display', 'none');
-
-                /*
-                    if (media.paused) $play.attr('style', 'background-image: url("images/video.png")');
-                    else              $play.attr('style', 'background-image: url("images/pause.png")');
-                */
-    
-                videoArea.style.height = "53%";
                 videoArea.className = "";
             }
         });
-
-         $('#video').on('loadeddata', function () {
-            //Sets the video-area to the size of the video by finding the calculated width of the video
-            var vidWidth = window.getComputedStyle(video).getPropertyValue("width");
-            var videoPlayer = document.getElementById("video-player");
-             videoPlayer.style.width = parseInt(vidWidth) + "px";
-
-            //var videoPlayer = document.getElementById("video-player");
-           
-            
-            // var titleArea = document.getElementById("title-area");
-
-            //Makes the title area fill the space to the right of the video
-            //titleArea.style.width = ((videoPlayer.offsetWidth / 2) - (video.offsetWidth / 2)) + "px";
-            //titleArea.style.height = video.offsetHeight + "px";
-        });
-
     }; //end modifyFullscreenControl()
 
 
 function modifyFullscreenAudio() {
-    //var videoArea = document.getElementById("video-area");
     
     var isFullscreen = false;
     
@@ -175,38 +134,16 @@ function modifyFullscreenAudio() {
         
         var $fsppbutton = $('#fullscreen-playpause');
         
-        if(!isFullscreen)
-        {
+        if(!isFullscreen) {
             //If it is not fullscreen make it fullscreen
             screenfull.toggle(document.getElementById('fullscreen'));
             isFullscreen = true;
             $fsppbutton.css('display', 'block');
-            
-            //videoArea.className = "fulldisplay";
-            //videoArea.style.width = "100%";
-            
-            /*
-                if (video.paused == true)
-                { $fsppbutton.css('backgroundImage', 'url("images/video.png")'); }
-                else
-                { $fsppbutton.css('backgroundImage', 'url("images/pause.png")'); }
-            */
-            
-        }
-        else
-        {
+        } else {
             //Otherwise un-fullscreen it
             screenfull.toggle(document.getElementById('fullscreen'));
             isFullscreen = false;
             $fsppbutton.css('display', 'none');
-            
-            /*
-                if (media.paused) $play.attr('style', 'background-image: url("images/video.png")');
-                else              $play.attr('style', 'background-image: url("images/pause.png")');
-            */
-            
-            //videoArea.className = "";
         }
     });
-    
 }; //end modifyFullscreenAudio()

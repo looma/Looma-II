@@ -13,9 +13,8 @@ Revision: Looma 3
 var $timeline;
 var savedSignature;   //savedSignature is checkpoint of timeline for checking for modification
 var loginname;
-
 var homedirectory = "../";
-var $details;
+//var $details;
 
 var searchName = 'lesson-editor-search';
 
@@ -128,14 +127,14 @@ function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(re
 
 /////////  lessonsave  /////////
 function lessonsave(name) {
-    savefile(name, currentcollection, currentfiletype, lessonpack($timeline.html()), "true");
+    savefile(name, 'lessons', 'lesson', lessonpack($timeline.html()), "true");
     //note, the final param to 'savefile()' [to make an activity] set to 'true'
     //because lessons are recorded as  activities [for use in library-search, for instance]
 }; //end lessonsave()
 
 ///////// lessontemplatesave /////////
 function lessontemplatesave(name) {
-    savefile(name, currentcollection, currentfiletype + '-template', lessonpack($timeline.html()), "false");
+    savefile(name, 'lessons', 'lesson-template', lessonpack($timeline.html()), "false");
     //note, the final param to 'savefile()' [to make an activity] set to 'false'
     //because lessons templates are not recorded as  activities
 }; //end lessontemplatesave()
@@ -173,7 +172,7 @@ function changeCollection (){   //NOTE: no longer used? looma-search.js setColle
 //////////////////////////////////////////////////////////////////////
 
 function clearFilter () {
-	 console.log('clearFilter');
+	 //console.log('clearFilter');
 
    if ($('#collection').val() == 'activities') {
          $('#searchString').val("");
@@ -531,7 +530,10 @@ function createActivityDiv (activity) {
                 $(textdiv).appendTo(activityDiv);
 
                 // Display Name
-                if (item.dn) var dn = item.dn.substring(0, 20); else dn = item.ndn.substring(0,20);
+                if      ('dn' in  item) var dn = item.dn.substring(0, 20);
+                else if ('ndn' in item)     dn = item.ndn.substring(0,20);
+                else dn = "";
+               
                 $("<p/>", {
                     class : "result_dn",
                     html : "<b>" + dn + "</b>"
@@ -941,7 +943,7 @@ window.onload = function () {
     
     /*  variable assignments expected by looma-filecommands.js:  */
     currentname = "";                    //currentcollection is defined in looma-filecommands.js and is used there
-    currentcollection = 'lesson';        //currentcollection is defined in looma-filecommands.js and is used there
+    currentcollection = 'lessons';       //currentcollection is defined in looma-filecommands.js and is used there
     currentfiletype =   'lesson';        //currentfiletype   is defined in looma-filecommands.js and is used there
     
     // set file search box title

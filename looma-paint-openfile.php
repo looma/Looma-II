@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+<!-- skip comment -->
 <head>
   <title>Open a Drawing</title>
   <meta charset="utf-8"/>

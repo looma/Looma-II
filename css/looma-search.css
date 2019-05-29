@@ -23,6 +23,11 @@ form#search *{
     margin-bottom: 0;
 }
 
+#search-kind {
+    float:left;
+    margin-left:2vw;
+ }
+ 
 form#search select {
     width:18vw
 }
@@ -63,6 +68,7 @@ input#search-term {
     /*font-size: 1.4em; */
     width:40%;
 }
+#search span {font-weight:bold;}
 
 input[type='checkbox'] {zoom:2.0;}
 
@@ -124,6 +130,14 @@ button.cancel-search {
     color: white;
 }
 
+#search span.typ-chk {display:none;}
+/* the above line turns OFF all the TYPE checkboxes
+    to turn some or all ON, use CSS, like this
+    
+#search span.typ-chk[data-id="image-chk"] {display:inline-block;}
+#search span.typ-chk[data-id="text-chk"] {display:inline-block;}
+
+ */
 
 form#search span.typ-chk:hover, form#search span.src-chk:hover {
     font-size:1.2em;

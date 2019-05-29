@@ -1,12 +1,11 @@
 <?php
-function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
-$loggedin = loggedIn(); if (!$loggedin) header('Location: looma-login.php');
-error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+$loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
+error_log("Starting Lesson Plan Edit session. logged in as: " . $loggedin);
 ?>
 
-<!doctype html>
 <!--
 Filename: looma-editor-template.php
 Description: template for Looma editor tools, like Lesson Plan Editor, Slideshow Editor, etc

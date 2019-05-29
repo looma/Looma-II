@@ -15,34 +15,10 @@ Attribution: slightly borrowed from Matt West (blog.teamtreehouse.com)
 
 //NOTE: fileName, filePath , displayName, and thumbPath are set with JS injected by the PHP
 
-   //var fullscreenPlayPauseButton;
-
-/*
-    function playVideo(vid)
-    { vid.play();
-        //playButton.style.backgroundImage = 'url("images/pause.png")';
-    };
-
-    function pauseVideo(vid)
-    { vid.pause();
-        //playButton.style.backgroundImage = 'url("images/video.png")';
-    }
-*/
-
 $(document).ready(function () {
 
     attachMediaControls();  //looma-media-controls.js adds eventlisteners to play/pause/volume/slider controls
     //attachFullscreenPlayPauseControl();
     modifyFullscreenControl();
-    //fullscreenPlayPauseButton = document.getElementById("fullscreen-playpause");
-
-    // Video
-	//var video = document.getElementById("video");
-
-	//var fullscreenButton = document.getElementById("fullscreen-control");
-
-    //var editButton = document.getElementById("edit");
-    //var loginButton = document.getElementById("login");
-
 
 });

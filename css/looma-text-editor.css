@@ -112,3 +112,9 @@ button.speak, button.lookup, button#fullscreen-control {
     display:none;
 }
 
+#preview {
+    display: none;
+}
+#filesearch-result button:hover #preview{
+    display: block;
+}

@@ -15,7 +15,14 @@ canvas {
 }
 
 
-button.speak {
+button.speak{
+    display:inline-block;
+    bottom:36vh;
+    right:7vw;
+}
+
+
+button#fullscreen-control {
     display:inline-block;
     bottom:14vh;
     right:7vw;
@@ -40,7 +47,7 @@ h2 {
 }
 
 #title {
-    grid-column:3;
+    grid-column:1;
     grid-row:1;
     width:90%;
     max-width:100%;
@@ -54,8 +61,9 @@ h2 {
     margin:auto 2vw;
 }
 #digitalClockButton {
+    margin:2vh 0 0 0;
     grid-column:3;
-    grid-row:2;
+    grid-row:1;
 }
 
 #singleClockButton {
@@ -84,7 +92,7 @@ h2 {
 
 #toCurrent {
     grid-column:3;
-    grid-row:3;
+    grid-row:2;
 }
 
 #twentyFourHour {
@@ -146,6 +154,11 @@ h2 {
 #mainClock{
     height:70vh;
     width:70vh;
+}
+
+#mainClock:fullscreen{
+    height:90vh;
+    width:90vh;
 }
 
 #digitalDisplay{

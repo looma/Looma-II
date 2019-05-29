@@ -16,17 +16,15 @@ Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: version 1:spring 2016, version 2: Nov 16  version 3: spring 2018
 Revision: Looma 4
  -->
-<html>
     <?php $page_title = 'Looma - Lesson Plan Editor';
           include ('includes/header.php');
           //include ('includes/mongo-connect.php');
     ?>
 
         <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="css/looma-filecommands.css">
-    <link rel="stylesheet" type="text/css" href="css/looma-search.css">
-    <link rel="stylesheet" type="text/css" href="css/looma-lesson-plan.css">
-    <link rel="stylesheet" href="css/looma-text-display.css">
+        <link rel="stylesheet" type="text/css" href="css/looma-filecommands.css">
+        <link rel="stylesheet" type="text/css" href="css/looma-lesson-plan.css">
+        <link rel="stylesheet" href="css/looma-text-display.css">
     </head>
 
     <body>
@@ -40,7 +38,9 @@ Revision: Looma 4
             </div>
 
             <div id="search-bar" class="inner-div">
+
                 <?php require_once ('includes/looma-search.php');?>
+
             </div>
 
             <div id="outerResultsDiv">
@@ -88,18 +88,19 @@ Revision: Looma 4
         <?php   include('includes/looma-control-buttons.php');?>
         <button class='control-button' id='dismiss' ></button>
     </section>
-        <?php include ('includes/js-includes.php'); ?>
+
+    <?php
+        include ('includes/js-includes.php');
+        include ('includes/looma-filecommands.php');
+    ?>
 
         <script src="js/jquery-ui.min.js">  </script>
         <script src="js/jquery.hotkeys.js"> </script>
         <script src="js/tether.min.js">  </script>
         <script src="js/bootstrap.min.js">  </script>
-
-        <?php include ('includes/looma-filecommands.php'); ?>
-
         <script src="js/looma-search.js"></script>
-        <script src="js/looma-lesson-plan.js"></script>
         <script src="js/looma-media-controls.js"></script>
+        <script src="js/looma-lesson-plan.js"></script>
 
     </body>
 </html>

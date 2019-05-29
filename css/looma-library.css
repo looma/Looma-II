@@ -107,6 +107,8 @@ div#source-div{
     margin-top: 14px;
 }
 
+.typ-chk[data-id='lesson-chk'], .typ-chk[data-id='evi-chk'] {display:none;}
+
 /***************************************/
 /***************************************/
 

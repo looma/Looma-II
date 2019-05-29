@@ -49,6 +49,7 @@ body {
     grid-row: 2;
     position-relative;
     background-color: white;
+    font-size:2vh;
 }
 
 .all-transparent { /*makes screen transparent*/
@@ -59,7 +60,8 @@ div#search-panel {
     height:100%;
 }
 
-#search span {font-weight:bold;}
+#search span.typ-chk {display:inline-block !important;}
+#search span.typ-chk[data-id="lesson-chk"] {display:none !important;}
 
 #grade-div, #subject-div, #chapter-div {display:inline-block;}
 
@@ -77,7 +79,9 @@ div#search-panel {
 #previewpanel {
     grid-column: 2/-1;
     grid-row: 3;
-    /*color:yellow;*/
+    overflow-y:hidden;
+    overflow-x:hidden;
+    background-color:white;
 }
 
 .textpreview {
@@ -289,11 +293,6 @@ li:hover {
 .buttondiv button {float:right;}
 
 /************* Preview module ***************/
-
-#previewpanel {
-    overflow-y:hidden;
-    overflow-x:hidden;
-}
 
 #previewpanel #video-area {
     height:45vh;

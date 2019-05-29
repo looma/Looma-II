@@ -183,14 +183,20 @@ if ( isset($_REQUEST["cmd"]) ) {
     $cmd =  $_REQUEST["cmd"];
     //accepted commands are "open", "save", "rename", "exists", "delete"
 
+    //DEBUG echo "database-utilities.php, cmd = " . $cmd . ", dn = " . $_REQUEST['dn'] . ", collection = " . $collection;
+
     switch ($cmd) {
 
         ////////////////////////
         // - - - OPEN   - - - //
         ////////////////////////
         case "open":
-            $query = array('dn' => $_REQUEST['dn'], 'ft' => $_REQUEST['ft']);
-
+            $query = array('dn' => $_REQUEST['dn']);
+            if ($_REQUEST['ft']) {
+                $ft = $_REQUEST['ft'];
+                if ($ft ==='video') $query['ft'] = array('$in' => ['video','mp4','mov']);
+                else $query['ft'] = $_REQUEST['ft'];
+            }
             //echo "request is " . $query['dn'];
             //echo "filetype is " . $query['ft'];
 
@@ -302,8 +308,21 @@ if ( isset($_REQUEST["cmd"]) ) {
     // - - - SAVE - - - //
     ////////////////////////
     case "save":
-        if (($collection == "text") || ($collection == "lesson")) {
+        if (($collection == "text") || ($collection == "lesson") || ($collection == "lessons")) {
+            //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THSI SHOULD BE CLEANED UP sometime
 
+            echo "in database-utilities.php, saving: " . $_REQUEST['dn'];
+
+            $insert = array(
+                "dn" => $_REQUEST["dn"],
+                "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template', 'lesson' or 'lesson-template'
+                "author" => $_COOKIE['login'],
+                "date" => gmdate("Y.m.d"),  //using greenwich time
+                "data" => $_REQUEST["data"]
+            );
+            saveText($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+        } else if (($collection == "edited_videos")  || ($collection == "slideshows")) {
+            //$thumb = isset($_REQUEST['thumb']) ? $_REQUEST['thumb'] : "";
             $insert = array(
                 "dn" => $_REQUEST["dn"],
                 "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template'
@@ -311,23 +330,12 @@ if ( isset($_REQUEST["cmd"]) ) {
                 "date" => gmdate("Y.m.d"),  //using greenwich time
                 "data" => $_REQUEST["data"]
             );
-            saveText($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
-        } else if (($collection == "edited_videos")  || ($collection == "slideshows")) {
-            $thumb = isset($_REQUEST['thumb']) ? $_REQUEST['thumb'] : "";
-            $insert = array(
-                "dn" => $_REQUEST["dn"],
-                "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template'
-                "author" => $_COOKIE['login'],
-                "date" => gmdate("Y.m.d"),  //using greenwich time
-                "data" => $_REQUEST["data"],
-                "thumb" => $thumb
-            );
+            if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
             saveText($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         } else if ($collection == "activities") {
             $insert = $_REQUEST['data'];
             $insert["date"] = gmdate("Y.m.d");  //using greenwich time
             $insert["author"] = $_COOKIE['login'];
-
             if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
 
             save($dbCollection, $insert, false);
@@ -351,11 +359,14 @@ if ( isset($_REQUEST["cmd"]) ) {
     // - - - EXISTS - - - //
     ////////////////////////
     case "exists": //find "dn" in the collection and return its ID if it exsits or NULL if doesnt exist
+
+   // echo "in 'exists', dn = " . $_REQUEST['dn']. "ft = " . $_REQUEST['ft']. "collection = " . $_REQUEST['collection'];
+
         $query = array('dn' => $_REQUEST['dn'], 'ft' => $_REQUEST['ft']);
         $projection = array("_id" => 1, "author" => 1);
         $result = $dbCollection->findOne($query, $projection);
         if ($result) echo json_encode(array("_id" => $result["_id"],
-            "author" => (isset($result["author"]) ? $result["author"] : null)));
+                                            "author" => (isset($result["author"]) ? $result["author"] : null)));
         else         echo json_encode(array("_id" => ""));
         return;
     // end case "exists"

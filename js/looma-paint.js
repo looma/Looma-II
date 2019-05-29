@@ -8,6 +8,31 @@
  * Libraries used: paper-full.js
  */
 
+
+/******************************************************
+ suggested changes for future version
+ 1. Use FILECOMMANDS, e.g. add NEW command and use SAVE, DELETE, etc buttons
+ 
+ 2. Permanent SAVE
+ savePaint and openPaint functions which call looma-database-utilities.php SAVE, openBy ID, etc
+ save the SVG.asSTring in mondo [date, author, sag, dn?]
+ 
+ 3. Policies for SAVE (??)
+ limit number per author
+ only author or admin can erase?
+ anyone can open anyone else’s pictures
+ how to show all previews on OPEN? Need SEARCH before OPEN like in FILECOMMANDS?
+ 
+ 3a.  - should Paint Pictures be activities?
+ 
+ 4. show Looma toolbar and fullscreen button?
+4a. move PAINT toolbar to Looma std location?
+ 
+ 5. Only ask to SAVE if changes have been made
+ 5a. Ask to SAVE when leaving page
+ ******************************************************/
+
+
 "use strict";
 
 var canvas;
@@ -371,7 +396,17 @@ function showOpenMenu() {
 
 function back() {window.location = 'index.php';}   //currently goes to index.php, the homepage. should this just be history.back()?
 
-function saveFile() {
+function savePaint() {
+    /*
+    Save the file in mongoDB. tagged with size, author, date. 'svg' field contains a string representing the svg
+    Counter is incremented to ensure each file gets a unique id.
+    Return the file's id.
+    */
+    savefile('', paint_collection, 'paint', paper.project.exportSVG({asString: true}), "false");
+    LOOMA.alert('Drawing saved', 10);
+} //savePaint()
+
+function saveFile() {  //original  version. saves files to user's localStorage. not permanent or accessible by others
   /*
   Save the file in localStorage.
   Counter is incremented to ensure each file gets a unique id.
@@ -389,12 +424,26 @@ function saveFile() {
   return "LOOMA_" + (counter + 1).toString();
 }
 
+function openPaint(fileID) {
+    /*
+    Actually open a file by name/id.
+    Before loading it, clear everything.
+    If the file doesn't exist, it clears the project but doesn't load anything.
+    */
+    paper.project.clear();
+    historyStack = [];
+    openfile('fileiD', paint_collection, 'paint', paper.project.exportSVG({asString: true}), "false");
+    
+    paper.project.importSVG(localStorage.getItem(fileName));
+    paper.view.draw();
+}
+
 function openFile(fileName) {
-  /*
-  Actually open a file by name/id.
-  Before loading it, clear everything.
-  If the file doesn't exist, it clears the project but doesn't load anything.
-  */
+    /*
+    Actually open a file by name/id.
+    Before loading it, clear everything.
+    If the file doesn't exist, it clears the project but doesn't load anything.
+    */
     paper.project.clear();
     historyStack = [];
     paper.project.importSVG(localStorage.getItem(fileName));

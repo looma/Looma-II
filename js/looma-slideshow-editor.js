@@ -169,6 +169,12 @@ function unpack (response) {
 function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); /*editor_checkpoint();*/};
 
 /////////  editor_save  /////////
+
+
+//
+// this 'editor_save() should be replace with a call to [filecommands.js] savefile()
+//
+
 function editor_save(name) {
     console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + currentfiletype );
          $.post("looma-database-utilities.php",
@@ -770,7 +776,7 @@ function quit() {
 
 
 $(document).ready(function() {
-    editor_showsearchitems();
+   // editor_showsearchitems();
     
     $('#present-link').click(presentSlideshow);
     $('#timeline').on('dblclick', '.activityDiv', saveThumbnailToTimeline);
@@ -812,7 +818,7 @@ $(document).ready(function() {
     callbacks ['savetemplate']  =   editor_templatesave;
     callbacks ['display'] =         editor_display;
     callbacks ['modified'] =        editor_modified;
-    callbacks ['showsearchitems'] = editor_showsearchitems;
+    //callbacks ['showsearchitems'] = editor_showsearchitems;
     callbacks ['checkpoint'] =      editor_checkpoint;
   
   

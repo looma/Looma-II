@@ -49,7 +49,7 @@ function clearSearch() {
 /////  clearSearchState()     /////
 /////////////////////////////
 function clearSearchState () {
-    $("#top").hide;
+   // $("#top").hide;
     LOOMA.clearStore('libraryScroll', 'session');
     LOOMA.clearStore(searchName,      'session');
     
@@ -67,6 +67,7 @@ function restoreSearchState () {
     pagesz = $search.find("#pagesz").val();
     
     if ($('#collection').val() == 'chapters') {
+        //$('#media-search').hide();
         setCollection('chapters');
         //$('.media-input').prop('disabled', true);
         if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
@@ -75,8 +76,9 @@ function restoreSearchState () {
         $('#search').submit();  //re-run the search
         
     } else {
-        $('#chapter-search').hide();
-        
+        //$('#chapter-search').hide();
+        setCollection('activities');
+    
         // reset some search form fields not handled by LOOMA.restoreForm() using 'savedForm'
         //for each element of savedForm that has name=='type[]' and name=='src[]' set the type[value] = selected
         if (savedForm && savedForm.length > 0) {
@@ -131,13 +133,13 @@ function setCollection(collection) {
     $('#collection').val(collection);
     
     if (collection == 'activities') {
-        $('.media-filter').show();
-        $('.chapter-filter').hide();
+        $('#media-search').show();
+        $('#chapter-search').hide();
         $('.chapter-input').prop('disabled', true);
         $('.media-input').prop('disabled',   false);
     } else { // collection == 'chapters'
-        $('.media-filter').hide();
-        $('.chapter-filter').show();
+        $('#media-search').hide();
+        $('#chapter-search').show();
         $('.chapter-input').prop('disabled', false);
         $('.media-input').prop('disabled',   true);
         
@@ -381,12 +383,10 @@ function sendSearchRequest(searchForm, callBack) {
 }; //end sendSearchRequest()
 
 
-/////////////////////////////
+//////////////////////////////
 /////  document.ready()  /////
-/////////////////////////////
+//////////////////////////////
 $(document).ready(function() {
-    
-    $searchResultsDiv = $('#results-div');  //where to display the search results - override in page's JS if desired
     
     $('#search').submit(function( event ) {
         event.preventDefault();
@@ -420,7 +420,7 @@ $(document).ready(function() {
         }
         return false;
     }); //end search.submit
-    
+ 
     $('#ft-media').click(function() {
         
         if ($('#collection').val() == 'chapters'){ //changing from CHAPTERS to ACTIVITIES
@@ -451,6 +451,8 @@ $(document).ready(function() {
     
     $('.clear-search').click(clearSearch);
     
+    $searchResultsDiv = $('#results-div');  //where to display the search results - override in page's JS if desired
+    setCollection('activities');
     refreshPage();
     
 }); // end document.ready

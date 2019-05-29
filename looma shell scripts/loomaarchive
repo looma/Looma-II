@@ -1,0 +1,41 @@
+#!/bin/bash
+#
+#  filename: loomaarchive
+#       author: skip
+#       date:   Apr 2019
+#
+#  used to update the 'archive' version of Looma on AWS S3, including new code, database & content
+#
+# using AWS CLI command “sync” updates all changed files
+# from the development computer to Amazon S3
+# requires AWS CLI package of commands
+# sudo apt-get install awscli
+echo "************************************"
+echo "backing up mongodump 'dump' to 'dumpBAK'"
+echo "creating new mongodump 'dump'"
+echo "************************************"
+echo
+
+cd /Applications/AMPPS/www/Looma/mongo-dump
+if [ -d dumpBAK ]
+        then
+            echo "- deleting old mongoBAK directory"
+            sudo rm -r dumpBAK
+        fi
+mv dump dumpBAK
+mongodump --db looma
+
+echo "************************************"
+echo "archiving Looma (code) to s3"
+echo "************************************"
+echo
+cd   /Applications/AMPPS/www/Looma		# cd to Looma/ (on a MAC)
+# sync code to AWS S3  [excluding "." files like .git/]
+aws s3 sync  --exclude "*.*/*"  .  s3://villagetech.looma/Looma
+
+echo "************************************"
+echo "archiving content to s3"
+echo "************************************"
+echo
+cd /Applications/AMPPS/www/content		        # cd to content/
+aws s3 sync . s3://villagetech.looma/content  	# sync content to AWS S3:

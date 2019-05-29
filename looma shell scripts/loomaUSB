@@ -1,0 +1,75 @@
+#!/bin/bash
+#
+#  filename: loomaUSB
+#       author: skip
+#       date:   Apr 2019
+#
+#  used to update a USB memory stick frm the 'archive' version of Looma on AWS S3, including new code, database & content
+#
+# using AWS CLI command “sync” updates all changed files
+# from Amazon S3 to the USB
+# requires AWS CLI package of commands
+# sudo apt-get install awscli
+# prerequisite: AWS CLI installed on the receiving computer (with the USB stick)
+
+#        sudo apt-get install awscli
+
+# using AWS CLI command “sync” downloads all changed or more recent files
+# from Amazon S3 to a USB stick
+
+
+NOT TESTED
+
+echo "********************************"
+echo " Looma - update a USB memory stick"
+echo "********************************"
+echo
+
+echo "********************************"
+echo "********************************"
+echo " - - be sure that the current directory is the memory stick"
+echo "********************************"
+echo "********************************"
+echo "  current directory is `pwd`"
+echo
+echo -n  "- - continue using this directory [y/n]?"; read input;
+    if [[ $input != "y" ]]
+    then
+        exit 1
+    fi
+if [[ ! -d loomaupdate ]]
+then
+    echo "- - making directory 'loomaupdate'"; mkdir loomaupdate
+    echo "- - making directory 'loomaupdate/Looma'"; mkdir loomaupdate/Looma
+fi
+cd loomaupdate/Looma
+
+echo
+echo "- preparing to update Looma code on the USB memory"
+echo -n  "- - continue [y/n]?"; read input;
+
+if [[ $input = "y" ]]
+then
+    aws s3 sync --no-sign-request --no-verify-ssl s3://villagetech.looma/Looma .    # note the “.” Is important
+fi
+
+
+if [[ ! -d loomaupdate/content ]]
+then
+    echo "- - making directory 'loomaupdate/content'"; mkdir loomaupdate/Looma
+fi
+cd ../content
+echo
+echo "- preparing to update Looma content on the USB memory"
+echo -n  "- - continue [y/n]?"; read input;
+
+if [[ $input = "y" ]]
+then
+    aws s3 sync --no-sign-request s3://villagetech.looma/content .   # note the “.” Is important
+fi
+
+echo
+echo "****************************************************************"
+echo "DONE LOOMA UPDATE: updating USB memory with Looma code, database and content"
+echo "****************************************************************"
+echo

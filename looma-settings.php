@@ -85,6 +85,10 @@ Description:  for Looma 2
                  <button class="settings-control">Slideshow Editor</button>
              </a>
 
+             <a href="looma-evi-editor.php">
+                 <button class="settings-control">Video Editor</button>
+             </a>
+
              <a href="looma-edit-activities.php">
                  <button class="settings-control">Activity Editor</button>
              </a>
@@ -101,9 +105,6 @@ Description:  for Looma 2
                  <button id="importcontent" class="admin-control" >Import Content</button>
              </a>
 
-             <a href="looma-evi-editor.php">
-                 <button class="exec-control">Video Editor</button>
-             </a>
              <a href="looma-dictionary-autogen-editor.php">
                  <button id="speechtest" class="exec-control" >Dictionary Editor</button>
              </a>

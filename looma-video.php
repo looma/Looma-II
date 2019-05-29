@@ -10,8 +10,8 @@ Description: Can play an unedited video reroutes the user to looma-edited-video.
 they want to edit a video
 -->
 <?php $page_title = 'Looma Video Player';
-	  include ('includes/header.php');
-      include('includes/looma-utilities.php');
+	  require_once ('includes/header.php');
+      require_once('includes/looma-utilities.php');
 ?>
 
     <link rel="stylesheet" type="text/css" href="css/looma-video.css">
@@ -38,15 +38,15 @@ they want to edit a video
 			<div id="main-container-horizontal">
                 <div id="video-area">
                     <div id="video-player">
-                    <div id="fullscreen">
-                        <video id="video">
-                            <?php echo 'poster=\"' . $filepath . thumbnail($filename) . '\">';?>
-                            <?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">' ?>
-                        </video>
-                        <div id="fullscreen-buttons">
-                            <?php include ('includes/looma-control-buttons.php');?>
+                        <div id="fullscreen">
+                            <video id="video">
+                                <?php echo 'poster=\"' . $filepath . thumbnail($filename) . '\">';?>
+                                <?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">' ?>
+                            </video>
+                            <div id="fullscreen-buttons">
+                                <?php include ('includes/looma-control-buttons.php');?>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
 
@@ -54,16 +54,7 @@ they want to edit a video
                     <h3 id="title"></h3>
                 </div>
 
-				<div id="media-controls">
-
-                    <div id="time" class="title"></div>
-
-					<button type="button" id="video-playpause" class="media play-pause"><?php keyword('Play/Pause');?></button>
-					<input type="range" class="video seek-bar" value="0" ><br>
-					<button type="button" class="media mute"><?php keyword('Volume') ?></button>
-					<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" >
-
-				</div>
+            <?php require_once("includes/looma-media-controls.php");?>
             </div>
 
         <!--Adds the toolbar to the video player screen-->

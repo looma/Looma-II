@@ -19,7 +19,7 @@ body {
     display:grid;
     grid-gap:1vh;
     grid-template-columns: 30vw 58vw 5vw 5vw;
-    grid-template-rows: 5vh 22vh 53vh 15vh;
+    grid-template-rows: 4vh 23vh 53vh 15vh;
     background-color:lightgray;
     
     font-family: "Comic Sans MS", cursive, sans-serif;
@@ -43,7 +43,6 @@ body {
     grid-row: 2;
     position-relative;
     background-color: white;
-    
 }
 
 .all-transparent { /*makes screen transparent*/
@@ -51,7 +50,8 @@ body {
 }
 
 div#search-panel {
-    height:100%;
+   font-size:2vh;
+    scroll:auto;
 }
 
 #search span {font-weight:bold;}

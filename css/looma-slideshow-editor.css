@@ -68,6 +68,9 @@ div#search-panel {
     font:inherit;
 }
 
+#search span.typ-chk[data-id="image-chk"] {display:inline-block;}
+#search span.typ-chk[data-id="text-chk"] {display:inline-block;}
+
 #outerResultsDiv {
     grid-column: 1;
     grid-row: 3;

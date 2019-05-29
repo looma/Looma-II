@@ -12,7 +12,7 @@ Description:  popup SEARCH panel for Looma pages
 
     <div id="filecommands">
         <div class="btn-group">
-          <button type="button" id="cmd-btn" class="btn btn-info" data-toggle="dropdown" aria-expanded="false">
+          <button type="button" id="cmd-btn" class="btn" data-toggle="dropdown" aria-expanded="false">
             &nbsp;File Commands&nbsp;
             <i class="fa fa-caret-down" aria-hidden="true"></i>
           </button>

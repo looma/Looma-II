@@ -33,6 +33,8 @@ var currentname;       //set by calling program - name of file being edited
 var currentfiletype;   //set by calling program - to 'text', 'lesson', etc
 var currentcollection; //set by calling program - to 'lessons', 'slideshows', etc
 
+var editingVideo = false;
+
 var owner;             //TRUE if current logged in user is the author of the currrent file
 var template = false;  //if TRUE the file currently being edited is a template; else FALSE
 
@@ -42,6 +44,7 @@ var callbacks = {      //re-set by calling program - to custom handler for each 
     clear:           doNothing,
     save:            doNothing,
     savetemplate:    doNothing,
+    new:             doNothing,
     open:            doNothing,
     display:         doNothing,     // function to display a file OPEN file process
     modified:        doNothing,
@@ -126,26 +129,32 @@ function savework(name, collection, filetype) {  // filetype is base type (not t
 ///////////////////////////////
 function savefile(name, collection, filetype, data, activityFlag) {  //filetype must be given as (e.g.) 'text' or 'text-template'
 
-         console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + filetype + 'and with data: ' + data);
-         $.post("looma-database-utilities.php",
-                {cmd: "save",
-                 collection: collection,
-                 dn: escapeHTML(name),
-                 ft: filetype,
-                 data: data,
-                 activity:activityFlag}, // NOTE: this is a STRING, either "false" or "true"
-
-                 function(response) {
-                    callbacks['checkpoint']();
-                    if (response['_id']) {
-                       console.log("SAVE: upserted ID = ", response['_id']['$id']);
-                    }
-                    else {
-                      console.log("SAVE: didn't work?");
-                    }
-                 },
-                 'json'
-              );
+        if (name.length > 0) {
+            if (data) {
+                console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + filetype + 'and with data: ' + data);
+                $.post("looma-database-utilities.php",
+                    {
+                        cmd: "save",
+                        collection: collection,
+                        dn: escapeHTML(name),
+                        ft: filetype,
+                        data: data,
+                        activity: activityFlag
+                    }, // NOTE: this is a STRING, either "false" or "true"
+            
+                    function (response) {
+                        callbacks['checkpoint']();
+                        if (response['_id']) {
+                            console.log("SAVE: upserted ID = ", response['_id']['$id']);
+                        } else {
+                            console.log("SAVE: didn't work?");
+                        }
+                    },
+                    'json'
+                );
+            } else LOOMA.alert('No file contents - file not saved', 10);
+        } else LOOMA.alert('Please specify a non-blank filenanme - file not saved',10);
+        
 }; //end SAVEFILE()
 
 ///////////////////////////////
@@ -231,10 +240,11 @@ function  quit() {
 ///////////////////////////////
 //open a file browse/search panel
 function opensearch() {
-    //make the main page transparent
+    //make the main page transparentclear_button
     LOOMA.makeTransparent($('#main-container'));
     LOOMA.makeTransparent($('#commands'));
-   
+    LOOMA.closePopup();
+    
     $('#cmd-btn').prop('disabled', true);
     // show SEARCH panel
    
@@ -246,11 +256,55 @@ function opensearch() {
     callbacks['showsearchitems']();
 }; //end opensearch()
 
+
+///////////////////////////////
+//////   performSearch       /////
+///////////////////////////////
+function performSearch(collection, ft) {
+    opensearch();
+    
+    // override file search FORM fields 'collection' and 'ft'
+    $('#filesearch-collection').val(collection);
+    $('#filesearch-ft').val(ft);
+    
+    //if( $('#collection').val() === 'text_files')   $('#collection').val('text');
+    //$('#filesearch-ft').val('text');
+    
+    //NOTE: can't attach click handler to 'results' which dont exist yet
+    //      so add the ON handler to the DIV which will contain the result elements
+    $('#filesearch-results').on('click',
+        'button',
+        function() {
+            console.log('FILE COMMANDS: clicked on SEARCH result');
+    
+            //event.preventDefault();
+    
+            closesearch();
+            if ($(this).attr('class') !== 'cancel-results') //if file not found, dont call OPEN()
+            {
+                openfile($(this).prop('title'), collection, ft);  ///******** should use $*this)to get collection and ft ***
+                template = false;
+            }
+        });
+    
+    $('#cancel-search').on('click',
+        function() {
+            console.log ('FILE COMMANDS: canceled out of SEARCH');
+            closesearch();
+        }
+    );
+    
+}; // end performSearch()
+
+
 ///////////////////////////////
 //////     closesearch     /////
 ///////////////////////////////
 //close the file search panel
 function closesearch() {
+    //restore file search FORM fields 'collection' and 'ft'
+    $('#filesearch-collection').val(currentcollection);
+    $('#filesearch-ft').val(currentfiletype);
     $('#filesearch-panel').hide();
     $('#filesearch-results').hide();
     $('#filesearch-results').off('click', 'button');  //remove ON CLICK handler for #search-results button
@@ -296,6 +350,7 @@ $(document).ready(function ()
                    callbacks['clear']();
                    template = false;
                    owner = true;
+                   callbacks['new']();
                };
            });
     
@@ -307,41 +362,9 @@ $(document).ready(function ()
            console.log("FILE COMMANDS: clicked open");
                if (callbacks['modified']())
                    savework(currentname, currentcollection, currentfiletype);
-               else {
-
-                   opensearch();
+               else
+                   performSearch(currentcollection, currentfiletype);
                    
-                   $('#filesearch-collection').val(currentcollection);
-                   $('#filesearch-ft').val(currentfiletype);
-                   
-                   //if( $('#collection').val() === 'text_files')   $('#collection').val('text');
-                   //$('#filesearch-ft').val('text');
-    
-                   //NOTE: can't attach click handler to 'results' which dont exist yet
-                    //      so add the ON handler to the DIV which will contain the result elements
-                    $('#filesearch-results').on('click',
-                                            'button',
-                                            function(){
-                                                console.log ('FILE COMMANDS: clicked on SEARCH result');
-
-                                                //event.preventDefault();
-
-                                                closesearch();
-                                                if ($(this).attr('class') !== 'cancel-results') //if file not found, dont call OPEN()
-                                                    {openfile($(this).prop('title'), currentcollection, currentfiletype);
-                                                     template = false;
-                                                 }
-                                            }
-                    );
-
-                    $('#cancel-search').on('click',
-                                           function() {
-                                                console.log ('FILE COMMANDS: canceled out of SEARCH');
-                                                closesearch();
-                                           }
-                                       );
-
-                };
        });
 
 ///////////////////////////////
@@ -671,14 +694,13 @@ $(document).ready(function ()
                         $('#ellipsis').text($('#ellipsis').text().length < 10 ? $('#ellipsis').text() + '.' : '');
                     },33 );
             
-                $('#filesearch-collection').val(currentcollection);
+               ////////// $('#filesearch-collection').val(currentcollection);
                 $.post( "looma-database-utilities.php",
                     $("#filesearch").serialize(),
                     function (result) {
                         loadingmessage.remove();
                         clearInterval(ellipsisTimer);
                         displayFileSearchResults(result)
-                        //$('#filesearch-results').html(result)
                         ;},
                     'json');
             }
@@ -716,6 +738,7 @@ $(document).ready(function ()
                         "<tr><td>" +
                         "<button class='result' " +
                         "data-id='" + value['_id']['$id'] + "' " +
+                        //"data-mongo='" + value + "' " +
                         "title='" + value['dn'] + "' " +
                         "<h4> <b> " + value['dn'] + " </b> </h4>" +
                         "<h6>" + author + date + "</h6>" +

@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+#  filename: clearChromiumCache
+#       author: skip
+#       date:   Apr 2019
+#
+#  ~/.config/chromium holds the user profile - we dont need to delete this
+#
+# ~/.cache/chromium holds the chromium cache - pages visited in Default/Cache, media loaded in Default/MediaCache
+#  we delete these cache items when loading a new Looma image so the old cached items arent used
+mkdir -p ~/.google/chromium/backup
+#   $ mv ~/.config/chromium/Default/ ~/.google/chromium/backup
+mv ~/.cache/chromium ~/.google/chromium/backup
+
+#   $ rm ~/.config/chromium/Default/
+rm ~/.cache/chromium

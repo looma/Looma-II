@@ -31,11 +31,11 @@ echo "************************************"
 echo
 cd   /Applications/AMPPS/www/Looma		# cd to Looma/ (on a MAC)
 # sync code to AWS S3  [excluding "." files like .git/]
-aws s3 sync  --exclude "*.*/*"  .  s3://villagetech.looma/Looma
+aws s3 sync  --exact-timestamps --exclude "*.*/*"  .  s3://villagetech.looma/Looma
 
 echo "************************************"
 echo "archiving content to s3"
 echo "************************************"
 echo
 cd /Applications/AMPPS/www/content		        # cd to content/
-aws s3 sync . s3://villagetech.looma/content  	# sync content to AWS S3:
+aws s3 sync --exact-timestamps . s3://villagetech.looma/content  	# sync content to AWS S3:

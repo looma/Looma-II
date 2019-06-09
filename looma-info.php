@@ -23,7 +23,7 @@ include ('includes/header.php');
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>Release 5.1.0, May 2019</h4>
+        <h4>Release 5.1.1, June 2019</h4>
         <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
         <h4>Contact:  info AT villagetechsolutions DOT org</h4>
         <span href="looma-info.php"></span>

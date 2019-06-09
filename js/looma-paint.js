@@ -394,7 +394,7 @@ function showOpenMenu() {
      //window.location = ("looma-paint-openfile.php");
 }
 
-function back() {window.location = 'index.php';}   //currently goes to index.php, the homepage. should this just be history.back()?
+function back() {  window.history.back();}   //currently goes to index.php, the homepage. should this just be history.back()?
 
 function savePaint() {
     /*

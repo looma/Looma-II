@@ -12,7 +12,6 @@
 #
 #   file structure expected if on the USB:
 #
-#      loomaupdate.sh       (this file)
 #       Looma/               (full set of new Looma code)
 #       Looma/mongo-dump/dump/looma/   (latest mongodump of the new database content)
 #       content/*   (folders with new content)
@@ -25,7 +24,7 @@
 #
 #   steps performed:
 #       sync new code files into existing Looma code [or backup existing Looma code to LoomaBAK and replace fully with new code
-#       copy mongodb --db looma to loomaBAK
+#       copy mongodb --db looma to --db loomaBAK
 #       mongorestore new mongodb --db looma
 #       sync new content files into "content" directory
 
@@ -75,7 +74,7 @@ then
     fi
 
     echo
-    echo -n  "- using this directory to get new files ";pwd
+    echo -n  "- using this directory to get new files: ";pwd
     echo
 
     #       copy current Looma code to LoomaBAK
@@ -102,6 +101,8 @@ then
         #rsync --dry-run -r Looma/ /var/www/html/Looma   #NOTE: slash after "Looma/" and no slash after "/var/www/html/Looma"
         rsync            -r Looma/ /var/www/html/Looma   #NOTE: slash after "Looma/" and no slash after "/var/www/html/Looma"
          result $?
+
+        source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"   #clears browswer cache so the new files will be used
    else
         echo " - - - SKIPPED: installing new Looma code"
     fi
@@ -208,8 +209,10 @@ then
     then
        # sync Looma (code)
       #aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/Looma /var/www/html/Looma
-      aws s3 sync            --no-sign-request --no-verify-ssl --exclude "*.git/*" s3://villagetech.looma/Looma /var/www/html/Looma
+      aws s3 sync            --exact-timestamps --no-sign-request --no-verify-ssl --exclude "*.git/*" s3://villagetech.looma/Looma /var/www/html/Looma
       result $?
+
+      source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"   #clears browswer cache so the new files will be used
     else
         echo " - - - SKIPPED: installing new Looma code"
     fi
@@ -243,7 +246,7 @@ then
         #echo "- updating the following CONTENT files:" ; ls -l content/; ls -l maps2018/; ls -l ePaath/;
 
         #aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/content /var/www/html/content
-        aws s3 sync            --no-sign-request --no-verify-ssl s3://villagetech.looma/content /var/www/html/content
+        aws s3 sync            --exact-timestamps --no-sign-request --no-verify-ssl s3://villagetech.looma/content /var/www/html/content
 
         #aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/maps2018 /var/www/html/maps2018
         #aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/ePaath /var/www/html/ePaath
@@ -264,6 +267,6 @@ fi
 
 echo
 echo "****************************************************************"
-echo "DONE LOOMA UPDATE: updating Looma code, database and content"
+echo "DONE - LOOMA UPDATE: updating Looma code, database and content"
 echo "****************************************************************"
 echo

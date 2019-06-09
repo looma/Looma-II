@@ -76,8 +76,10 @@ Description: looma lesson plan presenter
 
                    if (isset($details['thumb']) && $details['thumb'] != "")
                       $thumbSrc = $details['thumb'];
-                else if (isset($details['ft']) && $details['ft'] == 'EP'  && isset($details['version']) && $details['version'] == 2015)
-                     $thumbSrc = '../content/epaath/activities/' . $details["fn"] . '/thumbnail.jpg';
+                   else if (isset($details['ft']) && $details['ft'] == 'EP'  && isset($details['version']) && $details['version'] == 2015)
+                       $thumbSrc = '../content/epaath/activities/' . $details["fn"] . '/thumbnail.jpg';
+                   else if (isset($details['ft']) && $details['ft'] == 'evi')
+                       $thumbSrc = 'images/video.png';
                 else if (isset($details['fn']) && isset($details['fp']))
                      $thumbSrc = $details['fp'] . thumbnail($details['fn']);
                 else $thumbSrc = null;

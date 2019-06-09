@@ -17,32 +17,27 @@
 # using AWS CLI command “sync” downloads all changed or more recent files
 # from Amazon S3 to a USB stick
 
-
-NOT TESTED
-
 echo "********************************"
 echo " Looma - update a USB memory stick"
+echo "    copies new or modified files from Amazon S3 to a USB"
 echo "********************************"
 echo
 
-echo "********************************"
-echo "********************************"
-echo " - - be sure that the current directory is the memory stick"
-echo "********************************"
-echo "********************************"
-echo "  current directory is `pwd`"
-echo
-echo -n  "- - continue using this directory [y/n]?"; read input;
-    if [[ $input != "y" ]]
+cd /media/odroid/LOOMA
+if [[ `pwd` != "media/odroid/LOOMA ]]
     then
+        echo
+        echo "***********ERROR***********"
+        echo "  Didnt find USB memory at /media/odroid/LOOMA"
+        echo "  Be sure the USB is inserted and its name is 'LOOMA'"
+        echo "***************************"
         exit 1
     fi
-if [[ ! -d loomaupdate ]]
-then
-    echo "- - making directory 'loomaupdate'"; mkdir loomaupdate
-    echo "- - making directory 'loomaupdate/Looma'"; mkdir loomaupdate/Looma
-fi
-cd loomaupdate/Looma
+
+echo "- - making directory 'loomaupdate/Looma'";   mkdir -p loomaupdate/Looma
+echo "- - making directory 'loomaupdate/content'"; mkdir -p loomaupdate/content
+
+cd loomaupdate
 
 echo
 echo "- preparing to update Looma code on the USB memory"
@@ -50,24 +45,18 @@ echo -n  "- - continue [y/n]?"; read input;
 
 if [[ $input = "y" ]]
 then
-    aws s3 sync --no-sign-request --no-verify-ssl s3://villagetech.looma/Looma .    # note the “.” Is important
+    aws s3 sync --exact-timestamps --no-sign-request --no-verify-ssl s3://villagetech.looma/Looma Looma   # note, no "/" after content
 fi
 
 
-if [[ ! -d loomaupdate/content ]]
-then
-    echo "- - making directory 'loomaupdate/content'"; mkdir loomaupdate/Looma
-fi
-cd ../content
 echo
 echo "- preparing to update Looma content on the USB memory"
 echo -n  "- - continue [y/n]?"; read input;
 
 if [[ $input = "y" ]]
 then
-    aws s3 sync --no-sign-request s3://villagetech.looma/content .   # note the “.” Is important
+    aws s3 sync --exact-timestamps --no-sign-request s3://villagetech.looma/content content   # note, no "/" after content
 fi
-
 echo
 echo "****************************************************************"
 echo "DONE LOOMA UPDATE: updating USB memory with Looma code, database and content"

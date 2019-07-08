@@ -415,6 +415,8 @@ button.navigate {
  * 'xlat' and 'tip' classes are tooltip popups
  ********************/
 .xlat {display:none;}
+
+span.english-keyword, span.native-keyword {display:inline-block;}
 .native-keyword {display:none;}
 
 span:hover .xlat {

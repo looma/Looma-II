@@ -2,10 +2,6 @@
     display: none;
 }
 
-#video-player {
-    margin:10px auto 0;
-}
-
 button#fullscreen-control {
     display:inline-block;
 }

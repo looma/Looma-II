@@ -314,7 +314,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             echo "in database-utilities.php, saving: " . $_REQUEST['dn'];
 
             $insert = array(
-                "dn" => $_REQUEST["dn"],
+                "dn" => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES),
                 "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template', 'lesson' or 'lesson-template'
                 "author" => $_COOKIE['login'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
@@ -324,7 +324,7 @@ if ( isset($_REQUEST["cmd"]) ) {
         } else if (($collection == "edited_videos")  || ($collection == "slideshows")) {
             //$thumb = isset($_REQUEST['thumb']) ? $_REQUEST['thumb'] : "";
             $insert = array(
-                "dn" => $_REQUEST["dn"],
+                "dn" => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES),
                 "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template'
                 "author" => $_COOKIE['login'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
@@ -350,7 +350,7 @@ if ( isset($_REQUEST["cmd"]) ) {
     // - - - RENAME - - - //
     ////////////////////////
     case "rename":
-        changename($dbCollection, $_REQUEST['dn'], $_REQUEST['newname'], $_REQUEST['ft'], true);
+        changename($dbCollection, htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), $_REQUEST['newname'], $_REQUEST['ft'], true);
         return;
     // end case "rename"
 
@@ -412,9 +412,10 @@ if ( isset($_REQUEST["cmd"]) ) {
         /////////////////////////////
         case "subjectList":
             // input is class
-            //    query textbooks collection to get subjects available for this grade/class
+            //    query textbooks collection to get subjects available for this class
             //    return a HTML string containing OPTION elements for a SELECT element
 
+        /*
             $subjects = array(
                 'S' => 'science',
                 'M' => 'math',
@@ -423,9 +424,9 @@ if ( isset($_REQUEST["cmd"]) ) {
                 'SS' => 'social studies',
                 'H'  => 'health',
                 'V'  => 'vocation',
-                'SSa' => 'social studies optional',
+                'SSa' => 'social studies optional', //now used for "Moral Education"
                 'Ma' => 'math optional');
-
+        */
             $query = array('class' => 'class' . $_REQUEST['class']);
             //print_r($query);
 
@@ -439,7 +440,6 @@ if ( isset($_REQUEST["cmd"]) ) {
         // - - - chapterList - - - //
         /////////////////////////////
         case "chapterList":
-            //echo "<option>One</option><option>Two</option>";
 
             // inputs are class and subject
             //    query textbooks collection to get prefix ( class, subject )
@@ -455,7 +455,7 @@ if ( isset($_REQUEST["cmd"]) ) {
                 'SS' => 'social studies',
                 'H'  => 'health',
                 'V'  => 'vocation',
-                'SSa' => 'social studies optional',
+                'SSa' => 'social studies optional', //now used for "Moral Education"
                 'Ma' => 'math optional');
             */
             //echo 'class is ' . $_REQUEST['class'] . '/n subject is ' . $_REQUEST['subject'] . '/n lookup of subject is '. $subjects[$_REQUEST['subject']] . '/n';
@@ -471,6 +471,9 @@ if ( isset($_REQUEST["cmd"]) ) {
                 $regex = "^" . $prefix['prefix']. "\d";
 
                 //echo "Prefix is $regex"; exit;
+
+        // db.collection.find({"lastname" : {"$exists" : true, "$ne" : ""}})
+
 
                 $query = array('_id' => array('$regex' => $regex));
                 $chapters = $chapters_collection->find($query);
@@ -694,8 +697,7 @@ if ( isset($_REQUEST["cmd"]) ) {
         ////////////////////////////////
         case "searchChapters":
             // called (from lesson-search.js, etc) using POST with FORMDATA serialized by jquery
-            // $_POST[] can have these entries: cmd, collection, class, subj, chapter
-            // src[] (array of checked sources) and type[] (array of checked types)
+            // $_POST[] can have these entries: cmd, collection, class, subj, lang, chapter
 
             $subjectcodes = array(
                 'science' => 'S',
@@ -705,7 +707,7 @@ if ( isset($_REQUEST["cmd"]) ) {
                 'social studies' => 'SS',
                 'health' => 'H',
                 'vocation' => 'V',
-                'social studies optional' => 'SSa',
+                'moral education' => 'SSa',  //now used for "Moral Education" textbooks
                 'science optional' => 'Sa',
                 'math optional' => 'Ma');
 
@@ -754,9 +756,9 @@ if ( isset($_REQUEST["cmd"]) ) {
         // end case "searchChapters"
 
 
-        ////////////////////////
+    //////////////////////////////
     // - - - addChapterID - - - //
-    ////////////////////////
+    //////////////////////////////
     case 'addChapterID':
         $query = array('_id' => new MongoID($_REQUEST['id']));
         $update = array('$addToSet' => array('ch_id' => $_REQUEST['data']));

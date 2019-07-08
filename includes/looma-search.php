@@ -61,11 +61,11 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
                 /************* Search Bar *************/
                 /**************************************/  -->
             <div id='search-bar-div' class='media-filter'>
-                <input id='search-term' type='text' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...'>&nbsp;
+                <input id='search-term' type='text' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...') >&nbsp;
                 <button id='media-submit' class = 'filesearch' name='search' value='media' type='submit'>
-                    <?php tooltip("Search")?>
+
                 </button>
-                <button class='clear-search' type='button'>Clear</button>
+                <button class='clear-search' type='button'><?php keyword("Clear")?></button>
             </div>
 
         <?php
@@ -73,7 +73,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         /********** File Type Fields **********/
         /**************************************/
             echo "<div id='type-div' class='chkbox-filter media-filter'>";
-                echo "<span>Type: </span>"; //keyword("Type: ");
+                echo keyword("Type: ");
 
                 $types = array(
                 array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "lesson", "looma", "game"), //tags used as IDs for checkbox html elements
@@ -84,7 +84,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
                      echo "<span  class='typ-chk' data-id='"  . $types[0][$x] . "-chk'>";
                      echo "<label class='filter-label' for='" . $types[1][$x] . "-checkbox'>";
                      echo "<input id='" . $types[1][$x] . "-checkbox' class='media-input flt-chkbx media-filter' type='checkbox' name='type[]' value='" . $types[1][$x] . "'>";
-                     echo $types[2][$x];  //keyword($types[2][$x]);
+                     echo keyword($types[2][$x]);  //keyword($types[2][$x]);
                      echo "</label></span>";
                     //if ($types[1][$x] == "map") echo "<br>";
                 }
@@ -102,9 +102,9 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
 
             echo "<span id='keyword-drop-menu'>";
-              echo "<span>Keywords: </span>"; //keyword("Keywords:");
+              echo  keyword("Keywords:");
                     echo "<select name='key1' id='key1-menu' class='media-filter  keyword-filter keyword-dropdown black-border' data-level=1 form='search'>
-                        <option value=''>Select keyword...</option>";
+                        <option value=''>Select...</option>";
 
                         for($x = 0; $x < sizeof($root['children']); $x++) {
                             $y = $root['children'][$x]['name'];
@@ -134,7 +134,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
             /********* File Source  Fields ********/
             /**************************************/
             echo "<div id='source-div' class='chkbox-filter media-filter'>";
-            echo "<span>Source: </span>"; //keyword("Source:");
+            echo keyword("Source:");
             $sources = array(
                 array("ck12",  "phet", "epth",   "khan", "w4s",       "TED"), // not used
                 array("CK-12", "PhET", "OLE",    "khan", "wikipedia", "TED"), //internal names for IDs  #xxx-chk and #xxx-checkbox
@@ -150,7 +150,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
               echo "<span  class='src-chk' data-id='" .  $sources[1][$x] . "-chk'>";
               echo "<label class='filter-label' for='" . $sources[1][$x] . "-checkbox'>";
-              echo "<input id='" . $sources[1][$x] . "-checkbox' class='media-input flt-chkbx media-filter' type='checkbox' name='src[]' value='" . $sources[1][$x] . "'>";
+              echo "<input id='"  .$sources[1][$x] . "-checkbox' class='media-input flt-chkbx media-filter' type='checkbox' name='src[]' value='" . $sources[1][$x] . "'>";
               echo keyword($sources[2][$x]);
               echo "</label></span>";
           }
@@ -212,4 +212,3 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
     echo "</form></div>";
 
 ?>
-

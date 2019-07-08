@@ -58,8 +58,8 @@ Description: page with link to arithmetic and vocabulary games
         <h2 class="title"> <?php keyword("Looma Games"); ?> </h2>
 		<div class="center">
 			<br>
-		
-		<?php 
+
+		<?php
 			foreach ($unique_game_types as $game_type=>$game_label) {
 
                 if ($game_type !== "timeline") {
@@ -71,7 +71,7 @@ Description: page with link to arithmetic and vocabulary games
                 }
             }
 		?>
-		
+
 		<a href="looma-vocab.php">
 			<button type="button" class=" activity play img navigate" ><?php keyword('Vocabulary Games') ?>  </button>
 	   </a>
@@ -98,4 +98,3 @@ Description: page with link to arithmetic and vocabulary games
 
   </body>
 </html>
-

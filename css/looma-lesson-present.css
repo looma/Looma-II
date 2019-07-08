@@ -33,6 +33,8 @@ body {
     overflow-y: hidden;
 }
 
+#video-player {height:100%;}
+
 #fullscreen {
     height:100%;
     width:100%;
@@ -46,25 +48,68 @@ body {
 }
 
 #viewer {
-    position:relative;
-    height: 100%;
+    height:100%;
     width:100%;
-    font-size:0.9vw;
 }
+/*
+#video {
+    position:relative;
+    font-size:0.9vw;
+    height: 75vh;
+    width: 75vw;
+    margin:auto;
+}
+
+#video:fullscreen {
+    height: 100vh;
+    width: 100vw;
+}
+*/
+
+#viewer video {
+    height: 75vh;
+    width: 75vw;
+    max-height:75vh;
+    max-width:75vw;
+}
+#media-controls {
+    height:14vh;
+    width:100%;
+    position:absolute;
+    bottom:0;
+}
+
+.time {color:yellow;}
+/*
+#fullscreen:fullscreen #viewer {
+    height:100%;
+    width:100%;
+}
+*/
+#fullscreen:fullscreen #viewer video, #fullscreen:-webkit-full-screen #viewer video {
+    height:100%;
+    width:100%;
+    max-height:100%;
+    max-width:100%;}
+
+
+
+
 
 #controlpanel {
     grid-row: timeline / bottom;
     grid-column: middle / right;
 }
-
+/*
 #media-controls-container {
     position:absolute;
     height:14vh;
     width:80vw;
     top:75vh;
     left:10vw;
-    margin: 10px auto;
+    margin: 0 auto;
 }
+*/
 
 #timeline-container::-webkit-scrollbar {
     display: none;
@@ -92,7 +137,10 @@ button.lookup {
 }
 
 button#fullscreen-playpause {
+    display:none;
     bottom:66vh;
+    height:10vh;
+    width:10vh;
 }
 
 #fullscreen-buttons:fullscreen {
@@ -134,16 +182,40 @@ span.hint {
     color:#888;
     z-index:-1;
 }
-
+/*
 #video-area    {height:100%;}
-#video-fullscreen {height:100%;}
-#video {width:100%}
-
-#video-player {height: 53%;}
+#video {height:84%;}
+#video:fullscreen {width:100%;
+    height:100%;
+    max-width:100%;
+    max-height:100%;
+}
+*/
+/*
+#video-player {height: 84%;}
 #video-player:fullscreen, #video-player:-webkit-full-screen {height:100%;}
+*/
 
-#viewer img {height:100%;}
-#viewer img:fullscreen, #viewer img:-webkit-full-screen {height:100%;}
+
+
+/*
+#viewer video {height:100%; max-height:100%; max-width:100%;}
+#viewer video:fullscreen {     height:100%;
+    max-height:100%;
+    max-width:100%;}
+
+*/
+
+#viewer img {
+    height:100%;
+    max-height:100%;
+    max-width:100%;
+}
+
+#viewer img:fullscreen, #viewer img:-webkit-full-screen {
+    height:100%;
+    max-height:100%;
+    max-width:100%;}
 
 #timeline {
     display: inline-flex;
@@ -203,13 +275,14 @@ button.lesson-element {
     float:left;
     vertical-align:top;
 }
-
+button.lesson-element.playing, button.lesson-element:focus {
+    border:3px solid blue;
+ }
+ 
 button.lesson-element .name{
     display:none;
 }
 
-button.lesson-element.playing {
-    border:4px solid blue;}
 
 .pop {
     position:absolute;

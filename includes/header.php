@@ -24,7 +24,7 @@ File: header.php
 		error_reporting(E_ALL);
 		ini_set('display_errors', 1);
 
-		include ('includes/translate.php');
+		require_once ('includes/looma-translate.php');
 
 		define ("CONTENT_PATH", "../content");
 	?>

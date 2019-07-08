@@ -69,30 +69,18 @@ Usage: 	<button  id="testvideo"
         if (isset($vid['fp'])) $filepath = $vid['fp']; else $filepath = "../content/videos/";
         $thumbFile = $filepath . thumbnail($vidFN);
 ?>
-<!--
-    <script>
-        var commands =    <?php print json_encode($data);?>;
-        var displayName = "<?php echo addslashes($dn);  ?>";
-        var videoPath =   "<?php echo $filepath;        ?>";
-        var vn =          "<?php echo $vidFN;        ?>";
-        var thumbFile =   <?php echo json_encode($thumbFile); ?>;
-        var fn =          "<?php echo $dn;              ?>";
-        console.log('video editor opening - ' + fn);
-    </script>
- -->
+
     <?php
         echo '<div hidden id="args" ';
-        echo "data-commands='" . json_encode($data) . "' ";
-        echo 'data-dn      ="' . addslashes($dn) . '" ';
-        echo 'data-vp      ="' . $filepath . '" ';
-        echo 'data-vn      ="' . $vidFN . '" ';
-        //echo 'data-thumb   ="' . json_encode($thumbFile) . '" ';
-        //echo 'data-fn      ="' . $dn . '" ';
-        echo '></div>';
+            echo "data-commands='" . json_encode($data) . "' ";
+            echo 'data-dn      ="' . addslashes($dn) . '" ';
+            echo 'data-vp      ="' . $filepath . '" ';
+            echo 'data-vn      ="' . $vidFN . '" ';
+            echo '>';
+        echo '</div>';
     ?>
 			<div id="main-container-horizontal">
 				<div id="video-player">
-					<div id="video-area">
                         <div id="fullscreen">
                             <?php include("includes/looma-control-buttons.php"); ?>
                             <video id="video" class="displayArea">
@@ -104,7 +92,6 @@ Usage: 	<button  id="testvideo"
                             <div id = "pdf-area"          class="displayArea"></div>
                             <div id = "added-video-area"  class="displayArea"></div>
                         </div>
-					</div>
 
                     <?php include("includes/looma-media-controls.php"); ?>
 

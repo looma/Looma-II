@@ -29,7 +29,7 @@ Comments:
 
 <body>
     <div id="main-container-horizontal">
-        <h1 id="title">Looma Clock</h1>
+        <h1 id="title"> <?php keyword("Looma Clock")?></h1>
             <h1 class="credit">Created by Grant and John</h1>
 
             <FORM METHOD="LINK" ACTION="looma-clock-singleclock.php" id="singleClockButton">
@@ -79,7 +79,7 @@ Comments:
         <div id="digitalDisplay">
             <span id = "digitalTime"></span>
             <span id = "amOrPm1" ></span>
-            <p id = "dragHands">Drag and drop the hour or minute hand!</p>
+            <p id = "dragHands"> <?php keyword("Drag and drop the hour or minute hand!") ?></p>
         </div>
 
         <div id="clockBox">

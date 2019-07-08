@@ -68,8 +68,10 @@ input#search-term {
     /*font-size: 1.4em; */
     width:40%;
 }
-#search span {font-weight:bold;}
+#search span {font-weight:bold;
+    display:inline;}
 
+#search span.xlat {display:none;}
 input[type='checkbox'] {zoom:2.0;}
 
 /***************************************/

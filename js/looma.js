@@ -23,6 +23,8 @@ function restoreFullscreenControlOLD () {
 };
 */
 
+var language;
+
 function restoreFullscreenControl () {
     $('#fullscreen-control').off('click').on('click', function (e) {
         e.preventDefault();
@@ -47,7 +49,7 @@ $(document).ready (function() {
     // if stored value doesnt exist, create a stored value with language='english'
     // then use the value to set KEYWORDs and TOOLTIPs on the page to 'english' [default]
     // or 'native' [change class="english-keyword" to hidden and class="native-keyword" to visible]
-    var language;
+    //var language;
     language = LOOMA.readStore('language', 'local');
     if (!language) {
         LOOMA.setStore('language', 'english', 'local');

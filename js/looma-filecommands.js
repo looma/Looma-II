@@ -408,7 +408,8 @@ $(document).ready(function ()
       $('#saveas').click(function()   {
            console.log("FILE COMMANDS: clicked save as");
            LOOMA.prompt('Enter a file name: ',
-                    function(savename) { fileexists(savename,
+                    function(savename) { //var savename = encodeURI(inputname);  //encodeURI or encodeURIComponent NOT needed
+                                        fileexists(savename,
                                         currentcollection,
                                         currentfiletype,
                                         function(savename) {LOOMA.alert('File already exists: ' + savename);},

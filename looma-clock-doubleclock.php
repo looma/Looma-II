@@ -30,7 +30,7 @@ $page_title = 'Looma - Time';
 
 <body>
     <div id="main-container-horizontal">
-        <h1>Looma Clock</h1>
+        <h1> <?php keyword("Looma Clock") ?> </h1>
 
         <canvas id="doubleClock">
         </canvas>
@@ -39,10 +39,10 @@ $page_title = 'Looma - Time';
             <button TYPE="submit" id="singleclock-newproblem"><?php keyword("New Problem")?></button>
         </FORM>
 
-        <p id="question">How much time has passed?</p>
+        <p id="question"><?php keyword("How much time has passed?") ?></p>
         <form action="">
             <fieldset id="getInput">
-                <label id="label">Hours:</label>
+                <label id="label"> <?php keyword("Hours:") ?></label>
                 <select type="int" id="userHour">
                     <?php
                         for ($i=0; $i<=11; $i++)
@@ -54,7 +54,7 @@ $page_title = 'Looma - Time';
                     ?>
                 </select>
 
-                <label id="label">Minutes:</label>
+                <label id="label"> <?php keyword("Minutes:") ?></label>
 
                 <select  type="int" id="userMin">
                     <option value=0>00</option>

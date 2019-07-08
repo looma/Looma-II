@@ -1,14 +1,15 @@
 #!/bin/bash
 #
 #  filename: loomaupdate
+#  VERSION 2.0
 #       author: skip
-#       date:   Jan-Apr 2019
+#       date:   Jan-jun 2019
 #
 #  used to update a pre-installed Looma by installing new code, database & content
 #
 #   files to be updated may
-#    - be on a USB stick at /media/odroid/LOOMA/loomaupdate
-#    - or, on Amazon S3
+#    - be on a USB stick at /media/odroid/LOOMA/loomaupdate (the "U" option)
+#    - or, on Amazon S3 (the "I" option)
 #
 #   file structure expected if on the USB:
 #
@@ -23,9 +24,9 @@
 #    or other content folders
 #
 #   steps performed:
-#       sync new code files into existing Looma code [or backup existing Looma code to LoomaBAK and replace fully with new code
-#       copy mongodb --db looma to --db loomaBAK
-#       mongorestore new mongodb --db looma
+#       sync new code files into existing Looma code
+#          [or backup existing Looma code to LoomaBAK and replace fully with new code
+#       use mongorestore to load new data into the existing mongo database
 #       sync new content files into "content" directory
 
 result () {
@@ -45,13 +46,14 @@ echo
 echo "****************************************************************"
 echo "START LOOMA UPDATE: updating Looma code, database and content"
 echo "****************************************************************"
-echo "this a DANGEROUS operation and can disable a Looma. Be sure you have read the instructions"
+echo "this a DANGEROUS operation and can disable a Looma"
+echo "Be sure you have read the instructions"
 echo "****************************************************************"
 echo
 
 echo "****************************************************************"
 echo "- Update using Internet connection or USB memory?"
-echo -n  "- -enter I for internet, U for USB [I/U]?"; read input
+echo -n  "- -enter  U for USB, I for internet [I/U]?"; read input
 
 if [[ $input = "U" ]]
 then
@@ -79,7 +81,8 @@ then
 
     #       copy current Looma code to LoomaBAK
     echo "- preparing to backup current Looma code to LoomaBAK"
-    echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
+    echo "-   *** usually it is OK to skip this step to save time"
+    echo -n  "- - continue ('n' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
         if [ -d /var/www/html/LoomaBAK ]
@@ -98,30 +101,41 @@ then
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
-        #rsync --dry-run -r Looma/ /var/www/html/Looma   #NOTE: slash after "Looma/" and no slash after "/var/www/html/Looma"
-        rsync            -r Looma/ /var/www/html/Looma   #NOTE: slash after "Looma/" and no slash after "/var/www/html/Looma"
-         result $?
+        #*************RSYNC*********************
+        #NOTE: slash after "Looma/" and no slash after "/var/www/html/Looma"
+        if [[ $1 = "dryrun" ]]
+        then
+            rsync   --dry-run --recursive --verbose --times --stats --progress Looma/ /var/www/html/Looma
+            result $?
+        else
+            rsync             --recursive --verbose --times --stats --progress Looma/ /var/www/html/Looma
+            result $?
+        fi
 
-        source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"   #clears browswer cache so the new files will be used
-   else
+        #clear browser cache so the new code files will be used
+        source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"
+    else
         echo " - - - SKIPPED: installing new Looma code"
     fi
 
     #       install new Looma database
     echo
-    echo "- preparing to install new Looma database"
+    echo "****************************************************************"
+    echo "- preparing to update Looma database"
+    echo "-   ***note: this will not erase any lesson plans installed in the database"
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
 
     if [[ $input = "y" ]]
     then
-        if [[ -d /var/www/html/Looma/mongo-dump/dump/looma ]]
+        if [[ -d /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma ]]
         then
-            # mongo loomaBAK  --eval "db.dropDatabase()"               # remove old BAK
-            # mongo looma --eval "db.copyDatabase('looma','loomaBAK')" # backup current db
-            # mongo looma --eval "db.dropDatabase()"                   # remove current db
-            mongorestore --quiet --db looma /var/www/html/Looma/mongo-dump/dump/looma/       # install new db changes into existing db
+
+        ####ADD code here to db.version_number  .drop() so that version # will be updated in mongo
+
+            # install new db changes into existing db
+            mongorestore --quiet --db looma /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma/
             result $?
-        else echo "ERROR: no source dir (/var/www/html/LOOMA/looma/mongo-dump/dump/looma) for mongo restore"
+        else echo "ERROR: no source dir (/media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma) for mongo restore"
         fi
     else
         echo " - - - SKIPPED: installing new Looma database"
@@ -133,22 +147,41 @@ then
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
-        #echo "- updating the following CONTENT files:" ; ls -l content/; ls -l maps2018/; ls -l ePaath/;
         if [ -d "content" ]
         then
-            #rsync  --dry-run -r --stats content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
-            rsync             -r --stats content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
-            result $?
+             if [[ $1 = "dryrun" ]]
+            then
+                rsync  --dry-run -r --stats content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
+                result $?
+            else
+                rsync             -r --stats content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
+                result $?
+            fi
         fi
+
         if [ -d "maps2018" ]
         then
-            #rsync --dry-run -r maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
-            rsync            -r maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
+            if [[ $1 = "dryrun" ]]
+            then
+                rsync --dry-run -r maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
+                result $?
+            else
+                rsync            -r maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
+                result $?
+            fi
         fi
         if [ -d "ePaath" ]
         then
-            #rsync --dry-run -r ePaath/   /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
-            rsync            -r ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
+
+            if [[ $1 = "dryrun" ]]
+                then
+                    rsync --dry-run -r ePaath/   /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
+                    result $?
+                else
+                    rsync            -r ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
+                    result $?
+                fi
+
         fi
     else
         echo " - - - SKIPPED: installing new Looma content"
@@ -168,11 +201,12 @@ then
     echo "************************************"
     echo
     t=$(date +%s)
-    sudo wget http://speedtest.tele2.net/10MB.zip -O /dev/null
+    sudo wget ftp://speedtest.tele2.net/10MB.zip -O /dev/null
+    r=$?
     s=$(date +%s)
-    if [[ $? -eq 4 ]]
+    if [[ $r -ne 0 ]]
     then
-        echo "no internet connection found";exit 1;
+        echo "no internet connection found";exit $r;
     else
         echo "****************************************************************"
         echo -n "Internet speed is MB/s: ";expr 8 \* 10 / $(($s - $t))
@@ -186,6 +220,7 @@ then
     #       copy current Looma code to LoomaBAK
     echo
     echo "- preparing to backup current Looma code to LoomaBAK"
+    echo "-   *** usually it is OK to skip this step to save time"
     echo -n  "- - continue ('n' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
@@ -208,34 +243,44 @@ then
     if [[ $input = "y" ]]
     then
        # sync Looma (code)
-      #aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/Looma /var/www/html/Looma
-      aws s3 sync            --exact-timestamps --no-sign-request --no-verify-ssl --exclude "*.git/*" s3://villagetech.looma/Looma /var/www/html/Looma
-      result $?
 
-      source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"   #clears browswer cache so the new files will be used
+        if [[ $1 = "dryrun" ]]
+        then
+            aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/Looma /var/www/html/Looma
+            result $?
+        else
+            aws s3 sync            --exact-timestamps --no-sign-request --no-verify-ssl --exclude "*.git/*" s3://villagetech.looma/Looma /var/www/html/Looma
+            result $?
+        fi
+
+        #clear browser cache so the new files will be used
+        source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"
+
+        #       install new Looma database
+        echo
+        echo "- preparing to update Looma database"
+        echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
+
+        if [[ $input = "y" ]]
+        then
+            if [[ -d /var/www/html/Looma/mongo-dump/dump/looma ]]
+            then
+                # mongo loomaBAK  --eval "db.dropDatabase()"               # remove old BAK
+                # mongo looma --eval "db.copyDatabase('looma','loomaBAK')" # backup current db
+                # mongo looma --eval "db.dropDatabase()"                   # remove current db
+                mongorestore --quiet --db looma /var/www/html/Looma/mongo-dump/dump/looma/       # install new db changes into existing db
+                result $?
+            else echo "ERROR: no source dir (/var/www/html/Looma/mongo-dump/dump/looma) for mongo restore"
+            fi
+        else
+            echo " - - - SKIPPED: update Looma database"
+        fi
+
+
     else
         echo " - - - SKIPPED: installing new Looma code"
     fi
 
-    #       install new Looma database
-    echo
-    echo "- preparing to update Looma database"
-    echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
-
-    if [[ $input = "y" ]]
-    then
-        if [[ -d /var/www/html/Looma/mongo-dump/dump/looma ]]
-        then
-            # mongo loomaBAK  --eval "db.dropDatabase()"               # remove old BAK
-            # mongo looma --eval "db.copyDatabase('looma','loomaBAK')" # backup current db
-            # mongo looma --eval "db.dropDatabase()"                   # remove current db
-            mongorestore --quiet --db looma /var/www/html/Looma/mongo-dump/dump/looma/       # install new db changes into existing db
-            result $?
-        else echo "ERROR: no source dir (/var/www/html/Looma/mongo-dump/dump/looma) for mongo restore"
-        fi
-    else
-        echo " - - - SKIPPED: update Looma database"
-    fi
 
     #       copy new files into "content" directory
     echo
@@ -243,19 +288,20 @@ then
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
-        #echo "- updating the following CONTENT files:" ; ls -l content/; ls -l maps2018/; ls -l ePaath/;
-
-        #aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/content /var/www/html/content
-        aws s3 sync            --exact-timestamps --no-sign-request --no-verify-ssl s3://villagetech.looma/content /var/www/html/content
+        if [[ $1 = "dryrun" ]]
+            then
+                aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/content /var/www/html/content
+                result $?
+            else
+                aws s3 sync            --exact-timestamps --no-sign-request --no-verify-ssl s3://villagetech.looma/content /var/www/html/content
+                result $?
+            fi
 
         #aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/maps2018 /var/www/html/maps2018
         #aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/ePaath /var/www/html/ePaath
-        result $?
     else
         echo " - - - SKIPPED: installing new Looma content"
     fi
-
-
 
 # end of Internet section
 else
@@ -267,6 +313,14 @@ fi
 
 echo
 echo "****************************************************************"
-echo "DONE - LOOMA UPDATE: updating Looma code, database and content"
+ if [[ $1 = "dryrun" ]]
+ then
+    echo "DONE - LOOMA UPDATE DRY RUN:  no files were changed"
+ else
+    echo "DONE - LOOMA UPDATE: updating Looma code, database and content"
+ fi
 echo "****************************************************************"
 echo
+echo
+echo
+

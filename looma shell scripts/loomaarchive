@@ -8,21 +8,40 @@
 #
 # using AWS CLI command “sync” updates all changed files
 # from the development computer to Amazon S3
+#
+#   set up to run on a MAC [other computer types would require changes to this script
+#
 # requires AWS CLI package of commands
 # sudo apt-get install awscli
+
+result () {
+    if [[ $1 -ne 0 ]]
+    then
+        echo "****************************************************************"
+        echo "ERROR: previous operation returned $1"
+    else
+        echo "****************************************************************"
+        echo "operation successful"
+    fi
+}
+echo "************************************"
+echo " - - setting database version to today's date"
+echo "************************************"
+mongo looma < "/Applications/AMPPS/www/Looma/looma shell scripts/loomaMongoSetDate"
 echo "************************************"
 echo "backing up mongodump 'dump' to 'dumpBAK'"
 echo "creating new mongodump 'dump'"
 echo "************************************"
 echo
 
-cd /Applications/AMPPS/www/Looma/mongo-dump
-if [ -d dumpBAK ]
+cd /Applications/AMPPS/www/Looma/mongo-dump  # cd to mongo dumps folder (on a MAC)
+if [ -d dump ]
         then
-            echo "- deleting old mongoBAK directory"
-            sudo rm -r dumpBAK
+            echo "- moving old mongo dump to ~/Desktop/LoomaMongoDumps/"
+            now=$(date +"%m_%d_%Y")
+            mv dump  ~/Desktop/LoomaMongoDumps/dump_$now
         fi
-mv dump dumpBAK
+
 mongodump --db looma
 
 echo "************************************"
@@ -30,12 +49,29 @@ echo "archiving Looma (code) to s3"
 echo "************************************"
 echo
 cd   /Applications/AMPPS/www/Looma		# cd to Looma/ (on a MAC)
+
 # sync code to AWS S3  [excluding "." files like .git/]
-aws s3 sync  --exact-timestamps --exclude "*.*/*"  .  s3://villagetech.looma/Looma
+if [[ $1 = "dryrun" ]]
+then
+  aws s3 sync --dryrun  --exact-timestamps --exclude "*.*/*" . s3://villagetech.looma/Looma
+else
+  aws s3 sync           --exact-timestamps --exclude "*.*/*" . s3://villagetech.looma/Looma
+fi
 
 echo "************************************"
 echo "archiving content to s3"
 echo "************************************"
 echo
-cd /Applications/AMPPS/www/content		        # cd to content/
-aws s3 sync --exact-timestamps . s3://villagetech.looma/content  	# sync content to AWS S3:
+cd /Applications/AMPPS/www/content		        # cd to content/ (on a MAC)
+
+if [[ $1 = "dryrun" ]]
+then
+    aws s3 sync --dryrun --exact-timestamps . s3://villagetech.looma/content  	# sync content to AWS S3:
+else
+    aws s3 sync          --exact-timestamps . s3://villagetech.looma/content  	# sync content to AWS S3:
+fi
+result $?
+
+echo "*********************************************"
+echo " - - DONE updating Looma archive on Amazon S3"
+echo "*********************************************"

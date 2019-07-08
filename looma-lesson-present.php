@@ -12,7 +12,7 @@ Description: looma lesson plan presenter
           include('includes/looma-utilities.php'); ?>
 
     <link rel="stylesheet" href="css/looma-media-controls.css">
-    <link rel="stylesheet" href="css/looma-video.css">
+    <!-- <link rel="stylesheet" href="css/looma-video.css"> -->
     <link rel="stylesheet" href="css/looma-text-display.css">
     <link rel="stylesheet" href="css/looma-lesson-present.css">
 
@@ -26,14 +26,18 @@ Description: looma lesson plan presenter
         <div id="main-container-horizontal">
             <div id="fullscreen">
 
+                <div id="viewer"></div>
+
+                <?php include("includes/looma-control-buttons.php"); ?>
+                <!--
+
                 <button class="control-button-fullscreen" id="back-fullscreen"></button>
                 <button class="control-button-fullscreen" id="forward-fullscreen"></button>
-
-                <div id="viewer"></div>
-                <?php include("includes/looma-control-buttons.php"); ?>
+                -->
             </div>
+
+            <?php include("includes/looma-media-controls.php"); ?>
         </div>
-        <div id="media-controls-container"></div>
 
         <div id="timeline-container">
             <div id="timeline" >
@@ -57,7 +61,7 @@ Description: looma lesson plan presenter
 
             $lesson = $lessons_collection -> findOne($query);
 
-            $displayname = $lesson['dn'];
+            $lessonname = $lesson['dn'];
 
             if (isset($lesson['data'])) $data = $lesson['data'];
             else { echo "Lesson has no content"; $data = null;}
@@ -72,7 +76,7 @@ Description: looma lesson plan presenter
 
                     $details = $activities_collection -> findOne($query);
 
-                   //echo ('  ft: ' . $details['ft'] . '  version: ' . $details['version']);
+                   //echo ('  ft: ' . $details['ft']);
 
                    if (isset($details['thumb']) && $details['thumb'] != "")
                       $thumbSrc = $details['thumb'];
@@ -80,11 +84,11 @@ Description: looma lesson plan presenter
                        $thumbSrc = '../content/epaath/activities/' . $details["fn"] . '/thumbnail.jpg';
                    else if (isset($details['ft']) && $details['ft'] == 'evi')
                        $thumbSrc = 'images/video.png';
-                else if (isset($details['fn']) && isset($details['fp']))
+                   else if (isset($details['fn']) && isset($details['fp']))
                      $thumbSrc = $details['fp'] . thumbnail($details['fn']);
-                else $thumbSrc = null;
+                   else $thumbSrc = null;
 
-                    //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                   //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
 
                         makeActivityButton(
                              $details['ft'],
@@ -151,7 +155,7 @@ Description: looma lesson plan presenter
 
          <div id="title">
              <span id="subtitle"></span>
-            <span>Looma Lesson:&nbsp; <span class="filename"><?php if ($displayname) echo $displayname ?></span></span>
+            <span>Looma Lesson:&nbsp; <span class="filename"><?php if ($lessonname) echo $lessonname ?></span></span>
          </div>
 
 

@@ -1,4 +1,4 @@
- <!doctype html>
+<!doctype html>
 <!--
 Name: Bo, Skip
 Email: skip@stritter.com
@@ -10,41 +10,45 @@ Description:  searches Looma library for Looma 2
 -->
 
 <?php $page_title = 'Looma Library';
-        require_once ('includes/header.php');
-        require_once ('includes/mongo-connect.php');
-        require_once ('includes/looma-utilities.php');
-        include("includes/looma-control-buttons.php");
+require_once ('includes/header.php');
+require_once ('includes/mongo-connect.php');
+require_once ('includes/looma-utilities.php');
+include("includes/looma-control-buttons.php");
 ?>
 
-    <!--<link rel = "Stylesheet" type = "text/css" href = "css/looma-search.css">--->
-    <link rel = "Stylesheet" type = "text/css" href = "css/looma-library-search.css">
+<!--<link rel = "Stylesheet" type = "text/css" href = "css/looma-search.css">--->
+<link rel = "Stylesheet" type = "text/css" href = "css/looma-library-search.css">
 </head>
 
 <body>
-    <div id="main-container-horizontal" class="scroll">
+<div id="main-container-horizontal" class="scroll">
 
     <?php
-        require_once ('includes/looma-search.php');
+    require_once ('includes/looma-search.php');
 
-        /*********** Search Results ***********/
-        echo "<div id='results-div'></div>";
+    /*********** Search Results ***********/
+    echo "<div id='results-div'></div>";
 
-    echo "<button id='more'>More results</button>";
-    echo "<button id='top'>^Top</button>";
+    echo "<button id='more'>";
+    keyword("More results");
+    echo "</button>";
+    echo "<button id='top'>";
+    keyword("^Top");
+    echo "</button>";
 
-        echo "<button id='toggle-database' class='toggle black-border'>";
-        tooltip("Folders");
-        echo "</button>"; ?>
+    echo "<button id='toggle-database' class='toggle black-border'>";
+    tooltip("Folders");
+    echo "</button>"; ?>
 
     <h1 class = "credit">Created by Bo</h1>
 
-    </div>
+</div>
 
-    <?php include ('includes/toolbar.php');
-          include ('includes/js-includes.php'); ?>
+<?php include ('includes/toolbar.php');
+include ('includes/js-includes.php'); ?>
 
-     <!--<script src="js/jquery-ui.min.js"></script>-->
-    <script src="js/looma-search.js"></script>
-    <script src="js/looma-library-search.js"></script>
+<!--<script src="js/jquery-ui.min.js"></script>-->
+<script src="js/looma-search.js"></script>
+<script src="js/looma-library-search.js"></script>
 
 </body>

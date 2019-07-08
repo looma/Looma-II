@@ -23,7 +23,7 @@ include ('includes/header.php');
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>Release 5.1.1, June 2019</h4>
+        <h4>Release 5.2.0, JUL 2019</h4>
         <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
         <h4>Contact:  info AT villagetechsolutions DOT org</h4>
         <span href="looma-info.php"></span>
@@ -92,6 +92,25 @@ include ('includes/header.php');
             <li> </li><li> </li><li> </li><li> </li><li> </li> <!-- these empty 'li's give a pause at the start -->
             <li>  - -  </li>
 
+            <li>Karuna Paneru</li>
+            <li>Katie Aufricht</li>
+            <li>Charlotte Lee</li>
+            <li>Shaunak Acharya</li>
+            <li>Siraj Bell</li>
+            <li>Marisa Castagna</li>
+            <li>Siena Gavin</li>
+            <li>Amay Goel</li>
+            <li>Reena Kagan</li>
+            <li>Mitsuka Kiyohara</li>
+            <li>Sidney Pena</li>
+            <li>Annika Porteous</li>
+            <li>Maddie Sanders</li>
+            <li>Micah Shulman</li>
+            <li>Amy Wyatt</li>
+            <li>Peridot Park</li>
+            <li>Ishani Sood</li>
+            <li>Ishi Sood</li>
+
             <li>Sophie Reynolds</li>
             <li>Ryan Karle</li>
             <li>Brandon Clore</li>
@@ -112,22 +131,15 @@ include ('includes/header.php');
             <li>Luke Arnold</li>
             <li>Morgan Wyatt</li>
             <li>Henry Knoll</li>
-            <li>Peridot Park</li>
             <li>Kiefer Lord</li>
-            <li>Katie Aufricht</li>
-            <li>Amy Wyatt</li>
             <li>Maya Julian-Kwong</li>
-            <li>Mitsuka Kiyohara</li>
             <li>Alix Borton</li>
             <li>Mallika Tatavarti</li>
-            <li>Ishani Sood</li>
-            <li>Ishi Sood</li>
             <li>Jack King</li>
             <li>Kevin Chen</li>
             <li>Shria Rajbhandari</li>
             <li>Himanshi Joshi</li>
             <li>Aakarshan Dhakal</li>
-
             <li>Akshay Srivatsan</li>
             <li>Niko Bhatia</li>
             <li>Alexa Thomases</li>

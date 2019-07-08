@@ -105,7 +105,7 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
                 //add data-index to timeline element for later sorting
                 //    (because the elements are delivered async, they may be out of order)
                 $(newDiv.firstChild).attr('data-index', index);
-                console.log('adding ID :' + result._id);
+                //console.log('adding ID :' + result._id);
                 insertTimelineElement(newDiv.firstChild);
             },
             'json'
@@ -255,7 +255,7 @@ function displaySearchResults(filterdata_object) {
 	actResultDiv.appendChild(collectionTitle);
 */
 	for(var i=0; i<activitiesarraylength; i++) {
-		var rElement = createActivityDiv(filterdata_object.activities[i]);  //BUG: array[i-1] not defined when i==0
+		var rElement = createActivityDiv(filterdata_object.activities[i]);  //BUG: array[i-1] not defined when i==0  FIXED
 
             actResultDiv.appendChild(rElement);
 
@@ -629,12 +629,22 @@ function preview_result (item) {
 	var idExtractArray = extractItemId($(item).data('mongo'));
 
 	if (collection == "chapters") {
+        
+        
+                    $.post("looma-database-utilities.php",
+                        {cmd: "openByID", collection: "chapters", id: $(item).data('id')},
+                        function(result) {
+                            var pagenum  = result.pn ? result.pn : result.npn;
+                            var filename = result.fn;
+                            var filepath = result.fp;
+    
+                            var previewSrc = homedirectory + 'content/' + filepath + filename + '#page=' + pagenum + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"';
+                            document.querySelector("div#previewpanel").innerHTML = '<embed src="' + previewSrc + '>';
+                        },
+                        'json'
+                    );
 	    
-        var pagenum = $(item).data('pn') ? $(item).data('pn') : $(item).data('npn');
-
-        var previewSrc = homedirectory + 'content/' + filepath + filename + '#page=' + pagenum + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"';
-        document.querySelector("div#previewpanel").innerHTML = '<embed src="' + previewSrc + '>';
-	
+ 
 	/*	document.querySelector("div#previewpanel").innerHTML = '<embed src="' +
 		                        //encodeURI(
 		                           homedirectory + 'content/textbooks/' +
@@ -708,7 +718,7 @@ function preview_result (item) {
 			                     filepath +
 			                     filename + '"id="displayImage">';
 		}
-        else if (filetype == "html") {
+        else if (filetype == "html" || filetype == "HTML") {
         document.querySelector("div#previewpanel").innerHTML =
           '<object type="text/html" data="' + $(item).data('mongo').fp +
             filename  + '" style="height:60vh;width:60vw;"> </object>';

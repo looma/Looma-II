@@ -1,64 +1,17 @@
 #!/bin/bash
 #
 #  filename: loomaUSB
+#   VERSION: 2.0
+#       put this file in /usr/local/bin on each looma
+#       with chmod +x to make it executable
+#
+#       this file just calls /var/www/html/Looma/looma schell scripts/loomaUSBer
+#       this allows us to 'update' the USB script using the normal sync from S3
+#
 #       author: skip
-#       date:   Apr 2019
-#
-#  used to update a USB memory stick frm the 'archive' version of Looma on AWS S3, including new code, database & content
-#
-# using AWS CLI command “sync” updates all changed files
-# from Amazon S3 to the USB
-# requires AWS CLI package of commands
-# sudo apt-get install awscli
-# prerequisite: AWS CLI installed on the receiving computer (with the USB stick)
-
-#        sudo apt-get install awscli
-
-# using AWS CLI command “sync” downloads all changed or more recent files
-# from Amazon S3 to a USB stick
-
-echo "********************************"
-echo " Looma - update a USB memory stick"
-echo "    copies new or modified files from Amazon S3 to a USB"
-echo "********************************"
-echo
-
-cd /media/odroid/LOOMA
-if [[ `pwd` != "media/odroid/LOOMA ]]
-    then
-        echo
-        echo "***********ERROR***********"
-        echo "  Didnt find USB memory at /media/odroid/LOOMA"
-        echo "  Be sure the USB is inserted and its name is 'LOOMA'"
-        echo "***************************"
-        exit 1
-    fi
-
-echo "- - making directory 'loomaupdate/Looma'";   mkdir -p loomaupdate/Looma
-echo "- - making directory 'loomaupdate/content'"; mkdir -p loomaupdate/content
-
-cd loomaupdate
-
-echo
-echo "- preparing to update Looma code on the USB memory"
-echo -n  "- - continue [y/n]?"; read input;
-
-if [[ $input = "y" ]]
-then
-    aws s3 sync --exact-timestamps --no-sign-request --no-verify-ssl s3://villagetech.looma/Looma Looma   # note, no "/" after content
-fi
-
-
-echo
-echo "- preparing to update Looma content on the USB memory"
-echo -n  "- - continue [y/n]?"; read input;
-
-if [[ $input = "y" ]]
-then
-    aws s3 sync --exact-timestamps --no-sign-request s3://villagetech.looma/content content   # note, no "/" after content
-fi
-echo
-echo "****************************************************************"
-echo "DONE LOOMA UPDATE: updating USB memory with Looma code, database and content"
-echo "****************************************************************"
-echo
+#       date:   Jun 2019
+echo "*****************************************************"
+echo " - - - UPDATING a USB memory stick from Amazon - - - "
+echo "*****************************************************"
+source "/var/www/html/Looma/looma shell scripts/loomaUSBer"
+echo "*****************************************************"

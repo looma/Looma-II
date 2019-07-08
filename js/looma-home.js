@@ -22,7 +22,11 @@ function displaySubjects (className) {
             books.forEach (function(book) {
                 var tb_path = '../content/' + book['fp'];
                 var $newButton =  $('<button type="button" class="subject" id="' + book["subject"] + '" data-prefix="' + book['prefix'] + '">');
-                 $newButton.append($('<p>' + book["dn"] +'</p>'));
+              
+               	$newButton.append($("<p class='english-keyword'>"+ book['dn'] + "<p class='xlat'>"+ book['ndn'] + "</p></p>"));
+               	$newButton.append($("<p class='native-keyword'>"+ book['ndn'] + "<p class='xlat'>"+ book['dn'] + "</p></p>"));
+               
+                 //$newButton.append($('<p>' + book["dn"] +'</p>'));
 
                 var imgEn = (book['fn']) ?
                                 tb_path + encodeURIComponent(book['fn'].substr(0,book['fn'].length-4)) + '_thumb.jpg' :
@@ -40,6 +44,15 @@ function displaySubjects (className) {
     
             subjectName = LOOMA.readStore('subject', 'session');
             activateSubject(subjectName);
+    
+            var language;
+            language = LOOMA.readStore('language', 'local');
+            if (!language) {
+                LOOMA.setStore('language', 'english', 'local');
+                language = 'english';
+            };
+            LOOMA.translate(language);
+    
         },
         'json'
     );

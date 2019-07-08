@@ -39,6 +39,7 @@ $foundActicvity;
             $dn =  $activity['dn'];
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
             $fn = (isset($activity['fn']) ? $activity['fn'] : "");
+            $fn = urlencode($fn);
             $thumb = (isset($activity['thumb']) ? $activity['thumb'] : "");
             $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
             $oleID = (isset($activity['oleID']) ? $activity['oleID'] : "");
@@ -87,7 +88,7 @@ $foundActicvity;
                     case "lesson":
                         $thumb = "images/lesson.png";
                         // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                        makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
+                        makeActivityButton($ft, $fp, "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
                         break;
 
                     case "evi":      //edited videos
@@ -108,23 +109,23 @@ $foundActicvity;
                     case "png":
                     case "gif":
                         // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                        makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "");
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "");
                         break;
 
                     case "audio":
                     case "mp3":
                         // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                        makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "");
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "");
                         break;
 
                     case "pdf":
                         // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                        makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "");
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "");
                         break;
 
                     case "text":
                         // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, , $ole_id$url, $pg, $zoom)
-                        //makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "");
+                        //makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "");
                         break;
 
                     case "map";
@@ -140,7 +141,7 @@ $foundActicvity;
                     case "EP":
                     case "epaath":
                         // USE: function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                        makeActivityButton($ft, "", $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion);
                         break;
 
                     case "html":

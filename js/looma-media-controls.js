@@ -55,7 +55,7 @@ function attachMediaControls (myMedia) {
         $play.off('click').on('click', mediaPlayPause);
 
         // Event listener for the mute button
-        $mute.on('click', function() {
+        $mute.off('click').on('click', function() {
           if (!media.muted) {
               media.muted = true;
               $mute.attr('style', 'background-image: url("images/audio.png")');
@@ -111,7 +111,7 @@ function attachMediaControls (myMedia) {
             if(!isFullscreen)  { //If it is not fullscreen make it fullscreen
                 LOOMA.toggleFullscreen();
                 isFullscreen = true;
-                $fsppbutton.css('display', 'block');
+                $fsppbutton.css('display', 'inline-block');
                 
                 videoArea.className = "fulldisplay";
             }
@@ -138,7 +138,7 @@ function modifyFullscreenAudio() {
             //If it is not fullscreen make it fullscreen
             screenfull.toggle(document.getElementById('fullscreen'));
             isFullscreen = true;
-            $fsppbutton.css('display', 'block');
+            $fsppbutton.css('display', 'inline-block');
         } else {
             //Otherwise un-fullscreen it
             screenfull.toggle(document.getElementById('fullscreen'));

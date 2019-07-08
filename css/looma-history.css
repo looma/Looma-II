@@ -349,3 +349,6 @@ button.img:hover {
     background: red;
     width: 3vw;
 }
+
+span.english-keyword {    word-break: break-word;
+}

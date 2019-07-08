@@ -4,12 +4,12 @@ Email: skip@stritter.com
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 03
 Revision: Looma 2.0.0
-File: includes/translate.php
+File: includes/looma-translate.php
 Description:  functions and translation array for Keywords used in Looma 2
 -->
 
 <?php
-include_once ('includes/translations.php');
+include_once ('includes/looma-translations.php');
 
 function keyword($english) {
 

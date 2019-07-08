@@ -28,8 +28,8 @@ $page_title = 'Looma - Time';
 <body>
     <div id="main-container-horizontal">
 
-        <h1>Looma Clock</h1>
-        <h2 class = "credit">Clocks Around the World</h2>
+        <h1> <?php keyword("Looma Clock") ?></h1>
+        <h2 class = "credit"> <?php keyword("Clocks Around the World") ?></h2>
 
 
         <canvas id="nepal" width="220" height="220">

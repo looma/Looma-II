@@ -37,7 +37,10 @@ window.onload = function() {
 
     var allCanvases = [nepal, melbourne, newYork, paris, london, sanFrancisco, moscow, cairo];
     var allCanvasContexts = [ctx1, ctx2, ctx3, ctx4, ctx5, ctx6, ctx7, ctx8];
-    var names = ["Kathmandu, Nepal", "Tokyo, Japan", "New York City, United States", "Paris, France", "London, England", "San Francisco, United States", "Moscow, Russia", "Cairo, Egypt"];
+    var names =       ["Kathmandu, Nepal", "Tokyo, Japan", "New York City, United States",
+                       "Paris, France", "London, England", "San Francisco, United States", "Moscow, Russia", "Cairo, Egypt"];
+    var nativeNames = ["काठमॉनडु, नेपाल",     "टोक्यो, जापान",   "न्यूयोर्क शहर, संयुक्त राज्य अमेरिका",
+                       "पेरिस, फ्रान्स",     "लन्डन, इङ्गल्याण्ड",   "सैन फ्रान्सिस्को, संयुक्त राज्य अमेरिका",  "मास्को, रूस",       "कायरो, इजीपट"];
     
     var num;
     var fullRadius;
@@ -75,10 +78,15 @@ window.onload = function() {
     }
     
     function drawAllNames() {
-        for(num = 0; num < names.length; num ++) {
-            drawName(allCanvasContexts[num], names[num]);
+        if (language === 'english')
+            for (num = 0; num < names.length; num++) {
+                drawName(allCanvasContexts[num], names[num]);
+            }
+        else for (num = 0; num < nativeNames.length; num++) {
+            drawName(allCanvasContexts[num], nativeNames[num]);
         }
-    }
+    };
+    
     function drawClock(distanceM, distanceH, ctx) {
         drawFace(ctx);
         drawNumbers(ctx);

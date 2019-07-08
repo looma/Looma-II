@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 #  filename: loomaupdate
+#   VERSION: 2.0
 #       put this file in /usr/local/bin on each looma
 #       with chmod +x to make it executable
 #
@@ -8,9 +9,9 @@
 #       this allows us to 'update' the updater script using the normal sync from S3
 #
 #       author: skip
-#       date:   May 2019
+#       date:   JUN 2019
 echo "******************************"
 echo " - - - UPDATING LOOMA - - - "
 echo "******************************"
 source "/var/www/html/Looma/looma shell scripts/loomaupdater"
-echo "*************DONE****** *******"
+echo "*************DONE*************"

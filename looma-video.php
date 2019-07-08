@@ -36,7 +36,6 @@ they want to edit a video
 			</script>
 
 			<div id="main-container-horizontal">
-                <div id="video-area">
                     <div id="video-player">
                         <div id="fullscreen">
                             <video id="video">
@@ -48,7 +47,6 @@ they want to edit a video
                             </div>
                         </div>
                     </div>
-                </div>
 
                 <div id="title-area" hidden>
                     <h3 id="title"></h3>

@@ -166,7 +166,10 @@ function createKeyboard() {
     var shift = $("<button></button>")
         .attr('id', 'keyboard-shift')
         .addClass("keyboard-button keyboard-special")
-        .html("Shift")
+        //.html("Shift")
+        //.html(LOOMA.translatableSpans('Shift','पालो'))
+        .html('<span class="key-normal">Shift</span><span class="key-nepali">पालो</span>' +
+              '<span class="key-shifted">Shift</span><span class="key-nepali-shifted">पालो</span>')
         .click(toggleShift);
     keyboardRow.append(shift);
 
@@ -192,7 +195,10 @@ function createKeyboard() {
 
     var spacebar = $('<button></button>')
         .attr('id', 'keyboard-space')
-        .html("&nbsp;&nbsp;&nbsp;&nbsp;Space&nbsp;&nbsp;&nbsp;&nbsp;")
+      //  .html("&nbsp;&nbsp;&nbsp;&nbsp;Space&nbsp;&nbsp;&nbsp;&nbsp;")
+      //  .html(LOOMA.translatableSpans('Space','अन्तरिक्ष'))
+        .html('<span class="key-normal">Space</span><span class="key-nepali">अन्तरिक्ष</span>' +
+              '<span class="key-shifted">Space</span><span class="key-nepali-shifted">अन्तरिक्ष</span>')
         .addClass("keyboard-button keyboard-special");
 
     $(keyboardRow).append(spacebar);
@@ -200,7 +206,10 @@ function createKeyboard() {
     //$(keyboard).append("<br/>");
     var hideButton = $('<button></button>')
         .attr('id', 'keyboard-hide')
-        .html("Hide Keyboard")
+        //.html("Hide Keyboard")
+        //.html(LOOMA.translatableSpans('Hide','लुकाउनु'))
+        .html('<span class="key-normal">Hide</span><span class="key-nepali">लुकाउनु</span>' +
+              '<span class="key-shifted">Hide</span><span class="key-nepali-shifted">लुकाउनु</span>')
         .addClass("keyboard-button keyboard-special")
         .click(hideKeyboard);
     $(keyboardRow).append(hideButton);
@@ -344,7 +353,11 @@ function showKeyboard(event) {
         display: "block"
     });
     temporaryDestination.focus();
-}
+    
+    var lang = LOOMA.readStore('language', 'local');
+    if  (lang === 'native' && !isNepali() || lang === 'english' && isNepali()) toggleNepali();
+    
+}  // end showKeyboard()
 
 // Dismiss the keyboard, resetting everything to normal. The current text will be inserted into the text field.
 function hideKeyboard() {
@@ -376,7 +389,7 @@ $(document).ready(function() {
         return;
     }
     createKeyboard();
-
+    
     validInputs.click(
         elementFocused);
     var showKeyboardButton = $("<button></button>").addClass(

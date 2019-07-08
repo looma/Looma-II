@@ -96,6 +96,7 @@ playMedia : function(button) {
 
         case "audio":
         case "mp3":
+        case "m4a":
             window.location = 'looma-audio.php?fn=' + button.getAttribute(
                     'data-fn') +
                 '&fp=' + button.getAttribute('data-fp') +
@@ -124,7 +125,7 @@ playMedia : function(button) {
             break;
 
         case "looma":
-            var fp = encodeURIComponent(button.getAttribute('data-fp'));
+            var fp = encodeURIComponent(button.getAttribute('data-url'));
             window.location = fp;
             break;
 
@@ -143,6 +144,7 @@ playMedia : function(button) {
             break;
 
         case "lesson":
+            LOOMA.clearStore('lesson-plan-index', 'session');
             window.location = 'looma-lesson-present.php?id=' + button.getAttribute('data-id');
             break;
     
@@ -267,6 +269,7 @@ filepath: function(filetype, filename) {
         
         switch (filetype) {
             case "mp3": //audio
+            case "m4a": //audio
                 path = homedirectory + "content/audio/";
                 break;
             
@@ -330,7 +333,7 @@ thumbnail: function (filename, filepath, filetype) {
                 else if (filepath && filepath.indexOf('/W4S/') >= 0) {
                     imgsrc = homedirectory + '/content/W4S/thumbnail.png';
                 }
-                else if (filetype == "mp3") {  //audio
+                else if (filetype == "mp3" || filetype == "m4a") {  //audio
                     if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
                     imgsrc = path + "thumbnail.png";
                 }
@@ -399,6 +402,7 @@ typename: function(ft) {
         JPG: 'image',
         pdf: 'Document',
         mp3: 'audio',
+        m4a: 'audio',
         EP:  'ePaath',
         html:'HTML',
         looma:'Looma Page',
@@ -419,7 +423,7 @@ capitalize : function(string) {
  * COOKIES: theme, voice, login
  * LOCAL: language
  * SESSION: libararyScroll, chapterScroll, historyScroll, class, subject, chapter, arith-grade, arith-subject,
- * vocab-grade, vocab-subject, vocab-count, vocab-random
+ * vocab-grade, vocab-subject, vocab-count, vocab-random, lesson-plan-index
  */
 setStore : function(name, value, type) {
     if (type == 'local') localStorage.setItem(name, value);

@@ -167,6 +167,7 @@ function eviPack (html) { // pack the timeline into an array of collection/id pa
     packitem = {};
     packitem.collection = $('#master-video').data('collection');
     packitem.id =         $('#master-video').data('id');
+    mainThumbSrc =         $('#master-video').data('thumb');
     packarray.push(packitem);
     
     //change below pack code to add an ordering INDEX
@@ -703,6 +704,7 @@ function displayMasterVideo(item) {
     
             $('#master-video').attr('data-collection', collection);
             $('#master-video').attr('data-id', $(item).attr('data-id'));
+            $('#master-video').attr('data-thumb', LOOMA.thumbnail(filename, filepath, filetype));
         } else console.log('displayMasterVideo tried to open a non-video file');
         
     $('.filesearch-collectionname').text('Edited Videos');  // set file search box title

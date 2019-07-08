@@ -399,7 +399,7 @@ $(document).ready(function() {
         pageno = 1;
         
         if (!isFilterSet()) {
-            $searchResultsDiv.html('Please select at least 1 filter option before searching');
+            $searchResultsDiv.html(LOOMA.translatableSpans('Please select at least 1 filter option before searching','nepali here'));
         } else {
             
             $('#media-submit').prop("disabled",true);
@@ -452,6 +452,25 @@ $(document).ready(function() {
     $('.clear-search').click(clearSearch);
     
     $searchResultsDiv = $('#results-div');  //where to display the search results - override in page's JS if desired
+    
+    var language = LOOMA.readStore('language', 'local');
+    if (!language) {
+        LOOMA.setStore('language', 'english', 'local');
+        language = 'english';
+    };
+    if (language === 'native') $('#search-term').attr('placeholder','खोज टर्म प्रविष्ट गर्नुहोस्');
+    
+    $('#translate').click(function() {
+        language = LOOMA.readStore('language', 'local');
+        if (language === 'native') {
+            $('#key1-menu option:first').attr('label','चुन्नु');
+            $('#search-term').attr('placeholder', 'खोज टर्म प्रविष्ट गर्नुहोस्');
+        } else {
+            $('#key1-menu option:first').attr('label', 'Select keyword...');
+            $('#search-term').attr('placeholder', 'Enter search term');
+        }
+    });
+    
     setCollection('activities');
     refreshPage();
     

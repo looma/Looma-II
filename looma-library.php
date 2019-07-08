@@ -53,7 +53,9 @@ Description:  displays and navigates content folders for Looma
 
                 // DEBUG echo "at path " . $path . "folderName is " . folderName($path);
 
-    echo "<br><h3 class='title'>"; keyword('Looma Library'); echo ":  " . folderName($path) . "</h3>";
+    echo "<br><h3 class='title'>"; keyword('Looma Library'); echo ":  ";
+    folderDisplayName(folderName($path));
+    echo "</h3>";
 
     echo "<button id='toggle-database' class='filesearch black-border'>";
     tooltip("Search");
@@ -408,6 +410,7 @@ Description:  displays and navigates content folders for Looma
 
                     case "audio":
                     case "mp3":
+                    case "m4a":
 
                     case "pdf":
                     case "html":

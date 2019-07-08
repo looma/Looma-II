@@ -19,7 +19,7 @@
 /*****  prefix   ********/
 /****************************/
 function prefix ($ch_id) { // extract textbook prefix from ch_id
-    preg_match("/^(([1-9]|10)(EN|SSa|SS|Ma|M|Sa|S|N))[0-9]/", $ch_id, $matches);
+    preg_match("/^(([1-9]|10)(Ma|M|N|Sa|S|SSa|SS|EN|H|V))[0-9]/", $ch_id, $matches);
     return (isset($matches[1]) && $matches[1]) ? $matches[1] : null;
 };
 
@@ -93,7 +93,7 @@ function folderThumbnail ($fp) {  //for directories, look for filename "thumbnai
     else return "";
 }; //end function thumbnail
 
-function displayName($name, $dn, $ndn) {
+function displayName($filename, $dn, $ndn) {
     if ($dn && $ndn) {
         echo "<span class='english-keyword'>"
             . $dn .
@@ -104,7 +104,7 @@ function displayName($name, $dn, $ndn) {
             "<span class='xlat'>" . $dn . "</span>" .
             "</span>";
     } else if ($dn) echo "<span class='name'>" . $dn . "</span>";
-      else echo "<span class='name'>" . $name . "</span>";
+      else echo "<span class='name'>" . $filename . "</span>";
 };  //end displayName()
 
 
@@ -154,7 +154,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
             case "png":
             case "gif": $fp = '../content/pictures/';	break;
 
-			case "audio":
+            case "audio":
+            case "m4a":
 			case "mp3": $fp = '../content/audio/'; break;
 
 			case "pdf":	$fp = '../content/pdfs/'; break;
@@ -173,7 +174,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
             case "VOC":       //vocabulary reviews
             case "lesson":    //lesson plan
             case "map":       //map
-            case "game  ":    //game
+            case "game":    //game
             case "text":      //text
             case "looma":     //looma
             case "chapter":   //chapter
@@ -193,7 +194,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 
              if ($thumb && $thumb != "") $thumbSrc = $thumb;
         //else if ($ft == 'EP' || $ft == 'epaath') $thumbSrc = $fp . $fn . "/thumbnail.jpg";
-        else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
+         else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
+         else if ($ft == 'game')  $thumbSrc = "images/game.png";
         else if ($ft == 'slideshow')  $thumbSrc = "images/play-slideshow-icon.png";
         else if ($ft == 'looma') $thumbSrc = "images/LoomaLogo.png";
         else                     $thumbSrc = $fp . thumbnail($fn);

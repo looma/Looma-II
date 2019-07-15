@@ -1,0 +1,49 @@
+// ONE TIME program to
+//    find how many lessons contain a given filetype (e.g. ePaath)
+//
+//  file: lessonscanforfiletype
+//  run in MONGO SHELL with: load('lessonscanforfiletype')
+//       or in BASH with :mongo looma lessonscanforfiletype
+//
+
+var activitycursor, lessoncursor;
+
+var count = 0;
+var ecount = 0;
+const filetype = ['EP'];
+
+print ('*****scanning  lessons for ePaath');
+lessoncursor = db.lessons.find();
+while (lessoncursor.hasNext()) {
+    var doc = lessoncursor.next();
+    
+   // print (doc.dn + ' ***  '+ doc.data);
+    
+    var epaaths = [];
+     if (! doc.data) print ("lesson without data - " + doc.dn)
+    else {
+        doc.data.forEach ( function(data) {
+            //print ('id is ' + data['id']);
+            if (data.collection === 'activities') {
+                activitycursor = db.activities.findOne({'_id':ObjectId(data['id'])});
+                //print('cursor is ' + activitycursor);
+                if (activitycursor &&
+                    //activitycursor.ft === filetype)
+                    filetype.indexOf(activitycursor.ft) !== -1)
+                {
+                    epaaths.push(activitycursor.dn);
+                    ecount++;
+                }
+            }
+        });
+    }
+    if (epaaths.length > 0) {
+        count++;
+        print(doc.dn + '  - - -  ' + epaaths);
+    }
+        //count += 1;
+};
+print('');
+print(count + ' lessons have ' + ecount + ' ' + filetype + ' elements');
+
+

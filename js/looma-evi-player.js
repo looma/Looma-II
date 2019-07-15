@@ -140,8 +140,22 @@ function checkTime() {
                             $.post("looma-database-utilities.php",
                                 {cmd: "openByID", collection: "text", id: result.mongoID.$id},
                                 function(newResult) {
-                                    newResult = JSON.parse(newResult);
-                                    $(textArea).empty().html(newResult.data);
+                                    var result2 = JSON.parse(newResult);
+    
+    
+                                    var $div = $('<div ' +
+                                        'class="text-display">');
+    
+                                    var native = (result2.nepali) ? result2.nepali : result2.data;
+                                    var html = '<div class="english">' + result2.data + '</div><div class="native" style="display:none;">' + native + '</div>';
+                                    $(textArea).empty().html($div).html(html);
+    
+                                    LOOMA.translate(language);
+                                    
+                                    
+                                    
+                                    
+                                    
                                     show_text();
                                 });
                         }  // end TEXT

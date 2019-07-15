@@ -11,10 +11,9 @@ Revision: Looma 4.0
  
 'use strict';
 
-//var savedcheckpoint;   //savedTimeline is checkpoint of timeline for checking for modification
 var savedSignature ="";   //savedSignature is checkpoint of timeline for checking for modification
 var loginname;
-var homedirectory = "../";
+//var homedirectory = "../";
 var $timeline;
 var currentlyPreviewedActivity;
 
@@ -36,7 +35,7 @@ function editor_clear() {
 };
 
 ///////  editor_showsearchitems  /////////
-function editor_showsearchitems() {
+function editor_showsearchitems() {    //NOTE: this should all be done with CSS
   
     // Remove the ability of the user to check unwanted boxes
     var pdf = document.querySelector('span[data-id="pdf-chk"]');
@@ -97,7 +96,6 @@ function editor_pack (activityDivs) { // pack the timeline into an array of coll
     var packitem;
     var packarray = [];
     
-    
     $(activityDivs).each(function() {
         packitem = {};  //make a new object, unlinking the references already pushed into packarray
         packitem.collection = $(this).data('collection');
@@ -157,7 +155,7 @@ function unpack (response) {
         $timeline.data('thumb', response.thumb);
         var thumb = response.thumb;
        // outlineThumbnail( $(".inTimeline[data-thumb='" + response.thumb + "']") );
-        outlineThumbnail( $(".inTimeline").find("img[src='" + thumb + "']" ).parents('.activityDiv') );
+        outlineThumbnail( $(".inTimeline").find("img[src='" + thumb + "']" ).parents('.activityDiv') ); //also should be CSS
         
     } else
         $timeline.data('thumb', 'images/play-slideshow-icon.png');
@@ -169,8 +167,6 @@ function unpack (response) {
 function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); /*editor_checkpoint();*/};
 
 /////////  editor_save  /////////
-
-
 //
 // this 'editor_save() should be replace with a call to [filecommands.js] savefile()
 //
@@ -233,8 +229,8 @@ var clearFilter = function() {
 
 function clearResults() {
     $("#innerResultsDiv").empty();
-    document.getElementById('image-checkbox').checked = true;
-    document.getElementById('text-checkbox').checked = false;
+    //document.getElementById('image-checkbox').checked = true;
+    //document.getElementById('text-checkbox').checked = false;
 } //end clearResults()
 
 //////////////////////////////////
@@ -253,7 +249,6 @@ function displayResults(results) {
     $('#innerResultsMenu, #innerResultsDiv').empty();
     
     displaySearchResults(result_array);
-    
     
     makedraggable();  //not working for now
     
@@ -295,9 +290,7 @@ function displaySearchResults (filterdata_object) {
     
     for(var i=0; i<filterdata_object.activities.length; i++) {
         var rElement = createActivityDiv(filterdata_object.activities[i]);  //BUG: array[i-1] not defined when i==0
-        
         actResultDiv.appendChild(rElement);
-        
     }
 // end Print Activities Array
 
@@ -349,22 +342,12 @@ function displaySearchResults (filterdata_object) {
 }; //end displaySearchResults()
 
 
-
 function thumbnail (item) {
     
     //builds a filepath/filename for the thumbnail of this "item" based on type
     var collection, filetype, filename, filepath;
     var thumbnail_prefix, path, imgsrc, idExtractArray;
- 
-    /*
-        if ($(item).data('thumb')) return $(item).data('thumb');  //some activities have explicit thumbnail set
     
-    collection = $(item).data('collection');
-    filetype = $(item).data('ft');
-    if ($(item).data('fn')) filename = $(item).data('fn');
-    if ($(item).data('fp')) filepath = $(item).data('fp');
-    
-     */
     if (item.thumb) return item.thumb;  //some activities have explicit thumbnail set
     
     if (item.ft) filetype = item.ft;
@@ -376,14 +359,6 @@ function thumbnail (item) {
     return imgsrc;
 }; // end thumbnail()
 
-//rewrote extractItemId() to use REGEX
-//  m=s.match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])\.([0-9][0-9])?$/);
-//  then if m != null, m[0] is the ch_id,
-//                     m[1] is the class digit,
-//                     m[2] is the subj letter(s),
-//                     m[3] is the chapter/unit, and m[4] is null or chapter#
-//       e.g. "8N01.04".match(regex) is ["8N01.04", "8", "N", "01", "04"]
-/* */
 function extractItemId(item) {
     var ch_id = (item['ft'] == 'chapter')? item['_id'] : item['ch_id'];
     return LOOMA.parseCH_ID(ch_id);
@@ -591,53 +566,6 @@ function deleteCaption() {
     $('.deleteCaption').hide();
 };  //end deleteCaption()
 
-/*
-function showCaptionForm() {
-    $('.captionForm').html('<input id="captionBox" oninput="onChangeForCaptionForm()" placeholder="Enter a caption...">');
-    $('#displayImage').css('max-height', '47vh')
-    var caption = getCorrectCaption();
-    document.getElementById("captionBox").value = caption;
-    $('.captionForm').show();
-}
-
-function getCorrectCaption() {
-    var $activityDiv = $(getCorrectActivityDiv());
-    var caption = $activityDiv.data("caption");
-    return caption;
-}
-
-function deleteCaptionForm() {
-    $('.captionForm').hide();
-    getCorrectActivityDiv().data('caption', '');
-    $('#displayImage').css('max-height', '55vh');
-    dealWithCaptionButtons();
-}
-
-function onChangeForCaptionForm() {
-    copyCaptionToActivityDiv();
-    dealWithCaptionButtons();
-}
-
-function copyCaptionToActivityDiv(){
-    var captionOfPreviewedImage = document.getElementById("captionBox").value;
-    getCorrectActivityDiv().data("caption", captionOfPreviewedImage);
-}
-
-function dealWithCaptionButtons()
-{
-    var caption = getCorrectCaption()
-    
-    if (caption && caption.length > 0) {
-        $('.addCaption').text("Edit Caption");
-        $('.deleteCaption').show();
-    }
-    else {
-        $('.deleteCaption').hide();
-        $('.addCaption').text("Add Caption");
-    }
-}
-*/
-
 function getCorrectActivityDiv() {
     var idOfPreviewedImage = document.getElementById("displayImage").dataset.id;
     var activityDivs = $('#timeline .activityDiv');
@@ -658,7 +586,6 @@ function saveThumbnailToTimeline(e) {
 function outlineThumbnail(item) {
     $('#timeline .activityDiv').css({"border-style":"none"});
     $(item).css({"border": "3px solid green"});
-    
 }
 
 function presentSlideshow() {
@@ -782,14 +709,14 @@ $(document).ready(function() {
     $('#timeline').on('dblclick', '.activityDiv', saveThumbnailToTimeline);
     
     var image = document.getElementById('image-checkbox');
-    var text =  document.getElementById('text-checkbox');
+    //var text =  document.getElementById('text-checkbox');
     // Set the 'image' box to checked by default
     image.checked = true;
     
     // Ensure that a file type is always selected.
     // If none is selected, automatically select the 'image' box
-    image.onchange = function(){if (!image.checked && !text.checked){image.checked = true;}};
-    text.onchange = function() {if (!image.checked && !text.checked){image.checked = true;}};
+  //  image.onchange = function(){if (!image.checked && !text.checked){image.checked = true;}};
+  //  text.onchange = function() {if (!image.checked && !text.checked){image.checked = true;}};
     
     $('#timeline').show();
     $('#source-div').empty();
@@ -806,11 +733,12 @@ $(document).ready(function() {
     currentfiletype = "slideshow";
     
     $('#collectionname').text('Slideshows');
+    $('#includeLesson').val(false);
     
     //callback functions expected by looma-filecommands.js:
     callbacks ['savetemplate']  =   function(){console.log ('filecommand: savetemplate called');};
     callbacks ['open']  =           function(){console.log ('filecommand: open called');};
-    callbacks ['undocheckpoint'] =  function(){console.log ('filecommand: undocheckpoint called');};
+    //callbacks ['undocheckpoint'] =  function(){console.log ('filecommand: undocheckpoint called');};
     //callbacks ['quit'] not overridden - use default action from filecommands.js
   
     callbacks ['clear'] =           editor_clear;

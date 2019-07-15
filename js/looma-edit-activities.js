@@ -11,12 +11,7 @@ Revision: Looma 3.0
 
 'use strict';
 
-//var savedcheckpoint;   //savedTimeline is checkpoint of timeline for checking for modification
-//var savedSignature ='';   //savedSignature is checkpoint of timeline for checking for modification
 var loginname;
-//var homedirectory = "../";
-//var $timeline;
-
 var searchName = 'edit-activities-search';
 
 function submitChanges (event) {  //check the form entries and submit to backend
@@ -44,13 +39,7 @@ function submitChanges (event) {  //check the form entries and submit to backend
     } else {
         n = $('#innerResultsDiv .filter-checkbox:checked').length;
         str = (n==1 ? ' 1 activity?' : n + ' activities?');
-  
-    /*    arr = [];
-        $('#innerResultsDiv  .filter-checkbox:checked').each(function() {
-            arr.push( $(this).parent().data('mongo')['_id']['$id']);
-        });
-        $('#changes-activities').val(arr);
- */
+        
         $checked = $('#innerResultsDiv .filter-checkbox:checked');
     
         len = $('.changes-activities').length;
@@ -63,13 +52,9 @@ function submitChanges (event) {  //check the form entries and submit to backend
             var val = $($checked[i]).parent().data('mongo')['_id']['$id'];
             $($('.changes-activities')[i]).val(val);
         };
-        
-        /*  for (var i=len ; i< len && i < 10; i++) {
-            $($('.changes-activities')[i]).prop('disabled', true);
-        }; */
-        
+
             LOOMA.confirm('Do you really want to modify ' + str,
-                    function() {
+                    function() {  //NOTE: 'cmd' is pre-set by the PHP to 'editActivity'
                         $.post("looma-database-utilities.php",
                             $("#changes").serialize(),   //NOTE: sends cmd=editActivity, and collection=activities to database-utilities.php
                             function (result) {LOOMA.alert('Changes successful',4, true);},

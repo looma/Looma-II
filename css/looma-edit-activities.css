@@ -180,8 +180,8 @@ button#media-submit {
 }
 
 button.clear-search {
-    height: 5vh;
-    width: 5vw;
+    height: 7vh;
+    width: 7vw;
     font:inherit;
     font-size:1.5em;
     border-radius:3px;

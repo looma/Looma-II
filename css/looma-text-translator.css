@@ -1,0 +1,50 @@
+
+#title {
+    position:absolute;
+    top:5vh;
+    left:2vw;
+    height:10vh;
+    width:35vw;
+    max-height:10vh;
+    max-width:35vw;
+    
+    text-align:center;
+    font-size:0.9em;
+}
+
+#english {
+    position:absolute;
+    top:18vh;
+    left:2vw;
+    height:35vh;
+    width:35vw;
+    max-height:35vh;
+    max-width:35vw;
+    
+    border:1px solid black;
+    background-color:white;
+    text-align:center;
+    font-size:0.9em !important;
+}
+
+#english * {font-size:0.9em !important;}
+
+.file-cmd:disabled {font-color:red;}
+
+.btn-toolbar {
+    text-align:center;
+    margin-left:33vw;
+    color:black;
+}
+
+
+
+#editor {
+    margin-left:35vw;
+    height:65vh;
+    width:58vw;
+}
+
+#editor div {
+   font-size:0.8em !important;
+}

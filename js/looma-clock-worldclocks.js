@@ -64,6 +64,10 @@ window.onload = function() {
     drawAllClocks();
     drawAllNames();
     
+    $('#translate').click(function() {
+       location.reload();
+    });
+    
     var myVar = setInterval(nextTime, 1000);
     
     function drawAllClocks() {

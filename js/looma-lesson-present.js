@@ -25,8 +25,10 @@ var first_ft;
 var playing;
 var $currentItem;
 var $viewer;
-var $fullscreen
-;
+var $fullscreen;
+
+//var language;
+
 function scrollTimeline($btn) {
     $('#timeline-container').animate({
         scrollLeft: $btn.outerWidth(true) * ($btn.index() - 9)
@@ -254,16 +256,19 @@ function textHTML(id) {
         },
         function(result2) {
             var $div = $('<div ' +
-                //    'id="fullscreen" ' +
                 'class="text-display">');
-            $div.html(result2.data).appendTo($viewer);
             
-            // $('#viewer font[size="4"]').css("fontSize",
-            //     "1.7em");
-            // $('#viewer font[size="6"]').css("fontSize",
-            //     "3em");
-            // $('#viewer font[size="7"]').css("fontSize",
-            //     "4.5em");
+                var native = (result2.nepali) ? result2.nepali : result2.data;
+                var html = '<div class="english">' + result2.data + '</div><div class="native" style="display:none;">' + native + '</div>';
+                
+            $div.html(html).appendTo($viewer);
+            LOOMA.translate(language);
+    
+    
+    
+    
+    
+    
         },
         'json'
     );
@@ -371,6 +376,9 @@ window.onload = function() {
     if (index) {
         $currentItem = $('#timeline').find('button:nth-child(' + (parseInt(index) + 1) + ')');
         $currentItem.focus();// put focus on timeline[index]
+        $viewer.empty();
+        $('#media-controls').hide();  // hide media controls
+    
     } else {
         first_ft = $('#timeline').find('button:first').data('ft');
         if (first_ft != 'history' && first_ft != 'map' &&

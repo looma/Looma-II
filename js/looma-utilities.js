@@ -498,20 +498,19 @@ loggedIn : function() {
 translate : function(language) {
     // based on the value of LANGUAGE, hide or show all KEYWORDs and TIPs
     if (language == 'native') {
-        $('.english-keyword').hide();
-        $('.native-keyword').show();
+        $('.english-keyword, .english').hide();
+        $('.native-keyword,  .native').show();
         $('.english-tip').removeClass('yes-show');
         $('.native-tip').addClass('yes-show');
     } else /*english*/ {
-        $('.english-keyword').show();
-        $('.native-keyword').hide();
+        $('.english-keyword, .english').show();
+        $('.native-keyword,  .native').hide();
         $('.english-tip').addClass('yes-show');
         $('.native-tip').removeClass('yes-show');
     }
     //change toolbar TRANSLATE icon to the flag of the OTHER language (not being currently shown)
-    if (language == 'english') $('#flag').attr('src',
-        'images/native-flag.png');
-    else /*native*/ $('#flag').attr('src', 'images/english-flag.png');
+    if (language == 'english') $('#flag').attr('src', 'images/native-flag.png');
+    else /*native*/            $('#flag').attr('src', 'images/english-flag.png');
     
 }, // end translate()
    

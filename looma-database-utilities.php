@@ -13,8 +13,6 @@ Revision: 1.0
 require_once ('includes/mongo-connect.php');
 require_once('includes/looma-utilities.php');
 
-
-
   /////////////////////////////////
   // commands supported:
   //
@@ -41,13 +39,13 @@ require_once('includes/looma-utilities.php');
   ////////////////////////////////
 
         // SAVE function
-        function save($collection, $insert) {
+        function saveActivity($collection, $insert) {
                 $result = $collection->insert($insert);
                 echo json_encode($result);
         }; //end SAVE
 
-        //SAVETEXT function
-        function saveText($collection, $name, $type, $insert, $activity) {
+        //saveToMongo function
+        function saveToMongo($collection, $name, $type, $insert, $activity) {
               // save or update a document in $collection with displayname==$name and ft==$type inserting $insert fields.
               // if $activity is TRUE, also save a document in the Activities Collection
 
@@ -55,37 +53,41 @@ require_once('includes/looma-utilities.php');
 
             $query =array('dn'=>$name,'ft'=>$type);
             $options = array("upsert"=>true, "new"=>true);
+            //$options = array("upsert"=>true);
             $projection = array('_id' => 1, 'dn' => 1);
 
-            $result = $collection->findAndModify($query, $insert, $projection, $options);
+            // NOTE - - IMPORTANT
+            //NOTE: using findAndModify here so that we get the _id of the updated document to use in following activity save
+            //
+            $result = $collection->findAndModify($query, array('$set' => $insert), $projection, $options);
 
             echo json_encode($result);
 
         // if $activity param is true, save new document in the activities collection or update 'dn' for existing activities pointing to this file
             if ($activity  == "true") {
 
-                $id = $result['_id'];
-                //echo "ID is " . $id;
+                $resultId = $result['_id'];
+                
+                $mongoID = new MongoID($resultId); // mongoID of document we just saved
+                $query = array("ft" => $insert['ft'], "mongoID" => $mongoID);
 
+                echo "upserting: ft = ". $insert['ft'] . "   id = " . $resultId;
+                //return;
 
-                $id = new MongoID($id); // mongoID of document we just saved
-                $query = array("ft" => $insert['ft'], "mongoID" => $id);
                 $toinsert = array(
                     "ft"      => $insert['ft'],
-                    "mongoID" => $id,
+                    "mongoID" => $mongoID,
                     "dn"      => $insert['dn']
                      );
                 if (isset($insert['thumb']))  $toinsert['thumb'] = $insert['thumb'];
 
                 $toinsertToActivities = array('$set' => $toinsert);
 
-                    $options = array("upsert" => True, "multi" => True);
-
-                //DEBUG echo 'updating activities with ' . $id . ' and ' . $_REQUEST['dn'];
+                  $options = array("upsert" => True, "multi" => True);
 
             try {
                     $result1 = $activities_collection->update($query, $toinsertToActivities, $options);
-                    //echo json_encode($result1);
+                    echo json_encode($result1);
                 }
             catch(MongoConnectionException $e)
                 {
@@ -94,7 +96,7 @@ require_once('includes/looma-utilities.php');
                 };
 
             };
-        };  //end SAVETEXT()
+        };  //end saveToMongo()
 
         function changename($collection, $oldname, $newname, $ft, $activity) {
                 global $activities_collection;
@@ -305,13 +307,33 @@ if ( isset($_REQUEST["cmd"]) ) {
 
 
     ////////////////////////
-    // - - - SAVE - - - //
-    ////////////////////////
-    case "save":
-        if (($collection == "text") || ($collection == "lesson") || ($collection == "lessons")) {
-            //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THSI SHOULD BE CLEANED UP sometime
+    // - - - SAVE - - - ////
+    ///////////////////////
+        //NOTE: historical artifact, some JS may set collection to 'lesson' or 'text'
+        // some to 'lessons' or 'text_files' - THIS SHOULD BE CLEANED UP sometime
 
-            echo "in database-utilities.php, saving: " . $_REQUEST['dn'];
+    case "save":
+        if ( ($collection == "text") || ($collection == "text_files")) {
+            //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
+
+              $insert = array(
+                "dn" => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES),
+                "ft" => $_REQUEST["ft"],
+                "date" => gmdate("Y.m.d"),  //using greenwich time
+            );
+
+            if (isset($_REQUEST['translator']))
+                 $insert['translator'] = $_REQUEST['translator'];
+            else $insert['author']     = $login;
+
+            if (isset($_REQUEST['nepali']))
+                 $insert['nepali'] = $_REQUEST['nepali'];
+            else $insert['data']   = $_REQUEST['data'];
+
+            saveToMongo($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+        }
+        else if ( ($collection == "lesson") || ($collection == "lessons")) {
+            //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
 
             $insert = array(
                 "dn" => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES),
@@ -320,8 +342,9 @@ if ( isset($_REQUEST["cmd"]) ) {
                 "date" => gmdate("Y.m.d"),  //using greenwich time
                 "data" => $_REQUEST["data"]
             );
-            saveText($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
-        } else if (($collection == "edited_videos")  || ($collection == "slideshows")) {
+            saveToMongo($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+        }
+        else if (($collection == "edited_videos")  || ($collection == "slideshows")) {
             //$thumb = isset($_REQUEST['thumb']) ? $_REQUEST['thumb'] : "";
             $insert = array(
                 "dn" => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES),
@@ -331,15 +354,16 @@ if ( isset($_REQUEST["cmd"]) ) {
                 "data" => $_REQUEST["data"]
             );
             if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
-            saveText($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
-        } else if ($collection == "activities") {
+
+            saveToMongo($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+        }
+        else if ($collection == "activities") {
             $insert = $_REQUEST['data'];
             $insert["date"] = gmdate("Y.m.d");  //using greenwich time
             $insert["author"] = $_COOKIE['login'];
             if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
 
-            save($dbCollection, $insert, false);
-
+            saveActivity($dbCollection, $insert);
         };
         // else handle other collections' specific save requirements
         return;

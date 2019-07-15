@@ -399,24 +399,11 @@ $(document).ready(function() {
         pageno = 1;
         
         if (!isFilterSet()) {
-            $searchResultsDiv.html(LOOMA.translatableSpans('Please select at least 1 filter option before searching','nepali here'));
+            $searchResultsDiv.html(LOOMA.translatableSpans('Please select at least 1 filter option before searching',
+                                                           'खोजी गर्नु अघि कम्तिमा १ फिल्टर विकल्प छान्नुहोस्'));
         } else {
-            
             $('#media-submit').prop("disabled",true);
-
-        sendSearchRequest ($("#search"), displayResults);
-        
-        /*  //following code replaced with call to sendSearchRequest() call above //
-            $ajaxRequest = $.post( "looma-database-utilities.php",
-                $("#search").serialize(),
-                function (result) {
-                    loadingmessage.remove();
-                    clearInterval(ellipsisTimer);
-                    displayResults(result);
-                    $('#media-submit').prop("disabled",false);
-                },  // NOTE: displayResults() function is supplied in the JS of the user looma-search (e.g. looma-lessonplan.xx)
-                'json');
-        */
+            sendSearchRequest ($("#search"), displayResults);
         }
         return false;
     }); //end search.submit

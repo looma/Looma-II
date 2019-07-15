@@ -77,9 +77,9 @@ Description:  for Looma 2
                 <button class="settings-control">Lesson Plan Editor</button>
             </a>
 
-            <a href="looma-text-editor.php">
-                <button class="settings-control">Text Editor</button>
-            </a>
+             <a href="looma-text-editor.php">
+                 <button class="settings-control">Text Editor</button>
+             </a>
 
              <a href="looma-slideshow-editor.php">
                  <button class="settings-control">Slideshow Editor</button>
@@ -91,6 +91,10 @@ Description:  for Looma 2
 
              <a href="looma-edit-activities.php">
                  <button class="settings-control">Activity Editor</button>
+             </a>
+
+             <a href="looma-text-translator.php">
+                 <button class="admin-control">Text Translator</button>
              </a>
 
              <a href="looma-speech-test.php">

@@ -240,8 +240,6 @@ function eviUnPack (response) {  //unpack the array of collection/id pairs into 
     $('#clear_button').show();
     $('#search_label').html("Name:");
     $('<br>').insertAfter('#searchString');
-
-    //eviCheckpoint();
     
 }; //end eviUnPack()
 
@@ -262,7 +260,7 @@ function saveEviFile(name, collection, filetype, data, thumb, activityFlag) {
         {cmd: "save",
             collection: collection,
             dn: escapeHTML(name),
-            ft: filetype,
+             ft: filetype,
             data: data,
             thumb: thumb,
             activity:activityFlag}, //need to use escapeHtml() with POST??

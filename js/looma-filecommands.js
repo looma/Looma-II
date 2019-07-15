@@ -25,7 +25,6 @@ Revision: Looma 2.4
 //          display: display the results of a file OPEN
 //          modified: boolean function that indicates if changes have been made to the current file
 //          checkpoint: record a checkpoint of the current contents [so that modified() will be FALSE until another change is made]
-//          undocheckpoint: undo a checkpoint
 //          showsearchitems:  hide/show the search elements appropriate for this context
 //
 //
@@ -50,7 +49,6 @@ var callbacks = {      //re-set by calling program - to custom handler for each 
     modified:        doNothing,
     checkpoint:      doNothing,
     showsearchitems: doNothing,     // function to hide or show OPEN search form items
-    //undocheckpoint:  doNothing,
     quit:            quit           // default QUIT action is save work and the editor page. override in page's JS if needed
 };
 
@@ -105,7 +103,7 @@ function savework(name, collection, filetype) {  // filetype is base type (not t
                                     setname(savename);
                                     },
                 function(){
-                    //callbacks['clear']();
+                    //this checkpoint call should not be used if quit worked correctly
                     callbacks['checkpoint']();
                   return;},
                 false);
@@ -115,7 +113,10 @@ function savework(name, collection, filetype) {  // filetype is base type (not t
                              else          callbacks['save'](name);
                              },
                 function () {
+                
+         //this checkpoint call should not be used if quit worked correctly
                     callbacks['checkpoint']();
+         
                     return;},
                 false);
      else {  //NOT owner
@@ -128,34 +129,68 @@ function savework(name, collection, filetype) {  // filetype is base type (not t
 //////   SAVEFILE         /////
 ///////////////////////////////
 function savefile(name, collection, filetype, data, activityFlag) {  //filetype must be given as (e.g.) 'text' or 'text-template'
-
-        if (name.length > 0) {
-            if (data) {
-                console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + filetype + 'and with data: ' + data);
-                $.post("looma-database-utilities.php",
-                    {
-                        cmd: "save",
-                        collection: collection,
-                        dn: escapeHTML(name),
-                        ft: filetype,
-                        data: data,
-                        activity: activityFlag
-                    }, // NOTE: this is a STRING, either "false" or "true"
-            
-                    function (response) {
-                        callbacks['checkpoint']();
-                        if (response['_id']) {
-                            console.log("SAVE: upserted ID = ", response['_id']['$id']);
-                        } else {
-                            console.log("SAVE: didn't work?");
-                        }
-                    },
-                    'json'
-                );
-            } else LOOMA.alert('No file contents - file not saved', 10);
-        } else LOOMA.alert('Please specify a non-blank filenanme - file not saved',10);
-        
+    
+    if (name.length > 0) {
+        if (data) {
+            console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + filetype + 'and with data: ' + data);
+            $.post("looma-database-utilities.php",
+                {
+                    cmd: "save",
+                    collection: collection,
+                    dn: escapeHTML(name),
+                    ft: filetype,
+                    data: data,
+                    activity: activityFlag      // NOTE: this is a STRING, either "false" or "true"
+                },
+                
+                function (response) {
+                    callbacks['checkpoint']();
+                    if (response['_id']) {
+                        console.log("SAVE: upserted ID = ", response['_id']['$id']);
+                    } else {
+                        console.log("SAVE: didn't work?");
+                    }
+                },
+                'json'
+            );
+        } else LOOMA.alert('No file contents - file not saved', 10);
+    } else LOOMA.alert('Please specify a non-blank filenanme - file not saved',10);
+    
 }; //end SAVEFILE()
+
+//////////////////////////////////////////
+//////   saveTextTranslation         /////
+//////////////////////////////////////////
+function saveTextTranslation(name, nepali) {
+    
+    if (name.length > 0) {
+        if (nepali) {
+            console.log('FILE COMMANDS: saving text translation (' + name + ')  and with nepali: ' + nepali);
+            $.post("looma-database-utilities.php",
+                {
+                    cmd: 'save',
+                    collection: 'text_files',
+                    dn: escapeHTML(name),
+                    ft: 'text',
+                    translator: LOOMA.loggedIn(),
+                    nepali: nepali,
+                    activity: 'false'      // NOTE: this is a STRING, either "false" or "true"
+                },
+                
+                function (response) {
+                    callbacks['checkpoint']();
+                    if (response['_id']) {
+                        console.log("SAVE: upserted ID = ", response['_id']['$id']);
+                    } else {
+                        console.log("SAVE: didn't work?");
+                    }
+                },
+                'json'
+            );
+        } else LOOMA.alert('No file contents - file not saved', 10);
+    } else LOOMA.alert('Please specify a non-blank filenanme - file not saved',10);
+    
+}; //end saveTextTranslation()
 
 ///////////////////////////////
 //////     RENAMEFILE    /////

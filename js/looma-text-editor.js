@@ -54,18 +54,20 @@
   function textcheckpoint() {         savedHTML =   $editor.html(); };
   function textundocheckpoint() {     $editor.html( savedHTML);     };  //not used now??
   function textmodified()   { return (savedHTML !== $editor.html());};
-
+  
 
   function textclear() {
       setname("");
       //currentid = "";
       $editor.html("");
+      $('#preview').empty().hide();
       textcheckpoint();
       $editor.focus();
   };
-
+  
   function textdisplay(response) {
       $editor.html(response.data);
+      textcheckpoint();
   };
 
   function textsave(name) {

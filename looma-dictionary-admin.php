@@ -33,13 +33,17 @@ include ('includes/mongo-connect.php');
 		$d_en = array_key_exists('en', $d) ? $d['en'] : null;
 		$d_np = array_key_exists('np', $d) ? $d['np'] : null;
 		$d_r = array_key_exists('rand', $d) ? $d['rand'] : null;
-		echo "<p>Dictionary entry: <b>$d_en</b> [nepali: $d_np] assigned random index: $d_r</p>";
+		//echo "<p>Dictionary entry: <b>$d_en</b> [nepali: $d_np] assigned random index: $d_r</p>";
 	}
-	echo "<h3>Processed $count dictionary entries</h3>";
-	echo "<h3>Ensuring database index on RAND runs asynchronously - may not complete for a while after this page terminates</h3>";
-	$dictionary_collection->createIndex(array('rand' => 1));	//index DICTIONARY for random search	
-	$dictionary_collection->createIndex(array('ch_id' => 1));	//index DICTIONARY for search on CH_ID
-	$dictionary_collection->createIndex(array('en' => 1));	    //index DICTIONARY for search on EN (english word) "lookup"
-	 ?>
+    echo "<h3>Processed $count dictionary entries</h3>";
+
+    /*
+     *
+    echo "<h3>Ensuring database index on RAND runs asynchronously - may not complete for a while after this page terminates</h3>";
+    $dictionary_collection->createIndex(array('rand' => 1));	//index DICTIONARY for random search
+    $dictionary_collection->createIndex(array('ch_id' => 1));	//index DICTIONARY for search on CH_ID
+    $dictionary_collection->createIndex(array('en' => 1));	    //index DICTIONARY for search on EN (english word) "lookup"
+     */
+	?>
 </body>
 </html>

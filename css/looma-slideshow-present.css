@@ -318,7 +318,7 @@ span#slideshow-name {
     zoom: 250%;
     margin:0 auto;
     overflow: hidden;
-    font-weight: normal;
+    font-weight: bold;
     background-color: white;
     color: black;
     font-size: 20px;

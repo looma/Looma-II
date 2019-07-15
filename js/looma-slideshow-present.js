@@ -196,8 +196,21 @@ window.onload = function() {
 				id: result1.mongoID.$id
 			},
 			function(result2) {
-				$('<div class="text-display">').append($(result2.data)).appendTo($mediaContainer);
-			},
+                
+                
+                var $div = $('<div ' +
+                    'class="text-display">');
+                
+                var native = (result2.nepali) ? result2.nepali : result2.data;
+                var html = '<div class="english">' + result2.data + '</div><div class="native" style="display:none;">' + native + '</div>';
+                
+                $div.html(html).appendTo($mediaContainer);
+                LOOMA.translate(language);
+			    
+			    
+			// // //     $('<div class="text-display">').append($(result2.data)).appendTo($mediaContainer);
+			
+				},
 			'json'
 			);
 		},

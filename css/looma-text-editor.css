@@ -58,12 +58,12 @@ button.result {
 }
 
 #editor {
-    height: 70vh;
+    height: 44vw;
     width: 78vw;
     /*zoom: 200%; */
     margin:0 auto;
     overflow:hidden;
-    font-size:1.3em;
+    font-size:1.5em;
     color:#091F48;
     font-weight:bold;
     white-space:nowrap;
@@ -95,15 +95,18 @@ button.result {
     position:fixed;
     display:none;
     padding:2px;
-    bottom:17vh;
+    bottom:12vh;
     left:18vw;
-    height:18vh;
-    width:21vw;
+    height:15vw;
+    max-height:15vw;
+    width:25vw;
+    max-width:25vw;
     z-index:10;
-    font-size:0.5em;
+    font-size:0.7vw !important;
+    font-weight:bold;
     border: 2px solid black;
     border-radius:3px;
-   /* background-color:#091F48;*/
+    background-color:lightgray;
     zoom:200%;
     overflow:hidden;
 }

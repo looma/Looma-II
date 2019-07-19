@@ -193,7 +193,9 @@ if ( isset($_REQUEST["cmd"]) ) {
         // - - - OPEN   - - - //
         ////////////////////////
         case "open":
-            $query = array('dn' => $_REQUEST['dn']);
+
+            $query = array("dn" => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
+
             if ($_REQUEST['ft']) {
                 $ft = $_REQUEST['ft'];
                 if ($ft ==='video') $query['ft'] = array('$in' => ['video','mp4','mov']);

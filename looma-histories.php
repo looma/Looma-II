@@ -18,7 +18,7 @@ function makeButton($id, $thumb, $dn) {
 
     //DEBUG   echo "making button with path= $path  file= $file   ext= $ext"; //DEBUG
 
-    echo "<button class='history play activity img' data-ft=history data-id='" . (string)$id . "'>";
+    echo "<button class=' play activity img' data-ft=history data-id='" . (string)$id . "'>";
     echo "<img src='" . $thumb . "'>";
     echo keyword($dn);
 
@@ -64,8 +64,8 @@ function makeButton($id, $thumb, $dn) {
             //$thumb = $path . "/thumbnail.png";
             $id = $history['_id'];  //mongoID of the descriptor for this lesson
             //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-            //makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
-            makeButton($id, $thumb, $dn);
+            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
+            //makeButton($id, $thumb, $dn);
             echo "</td>";
             $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 

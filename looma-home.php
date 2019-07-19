@@ -37,11 +37,16 @@ define ("CLASSES", 8);
 
         foreach ($classes as $class) {
             echo "<button type='button' class='class' id=$class>";
-            echo "<div class='little'>"; keyword("Grade"); echo "  </div><div>";
-            echo keyword((string) $i);
-            echo "</div></button>";
+                echo "<div class='little'>"; keyword("Grade"); echo "</div>";
+                echo "<div>";                keyword((string) $i);     echo "</div>";
+            echo "</button>";
             $i++;
         }
+
+     /*
+            //echo "<p class='english-keyword little'>"+ "Grade" + "</p>";
+            //echo "<p class='native-keyword little'>"+ $TKW["Grade"] + "</p>";
+     */
 
     ?>
     </div>

@@ -66,8 +66,9 @@
   };
   
   function textdisplay(response) {
+      textclear();
+      setname(response['dn']);
       $editor.html(response.data);
-      textcheckpoint();
   };
 
   function textsave(name) {

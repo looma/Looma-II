@@ -23,13 +23,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
 
         <?php include ('includes/looma-control-buttons.php');?>
 
-        <label for="keywords">Search:</label><input id="keywords" class="searchBar" size="18" placeholder="enter words to search" >
 
-        <button id= "previous"> <span class="english-keyword"> Prev </span>               </button>
-        <button id= "next" clickcount = "-1"> <span class="english-keyword"> Next </span> </button>
-        <button class="scrollButtonLeft">   <img src="images/back-arrow.png">             </button>
-        <button class="scrollButtonRight">  <img src="images/forward-arrow.png">          </button>
-        <button class="returnToLeftmost">   <img src="images/reverse-double-arrow.png">   </button><br>
 
       <?php
 
@@ -51,8 +45,20 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
         foreach ($cursor as $doc) {
 
             $title = array_key_exists('title', $doc) ? $doc['title'] : null;
+            ?>
+            <label for="keywords">Search:</label><input id="keywords" class="searchBar" size="18" placeholder="enter words to search" >
 
-            echo "<h1> History: $title </h1>";
+        <button id= "previous"> <span class="english-keyword"> Prev </span>               </button>
+        <button id= "next" clickcount = "-1"> <span class="english-keyword"> Next </span> </button>
+        <button class="scrollButtonLeft">   <img src="images/back-arrow.png">             </button>
+        <button class="scrollButtonRight">  <img src="images/forward-arrow.png">          </button>
+
+           <!-- <button id='search-button'></button> -->
+
+        <button class="returnToLeftmost">   <img src="images/reverse-double-arrow.png">   </button>
+
+        <?php
+            echo "<h1> $title </h1>";
             echo '<div id="playground">';
             echo '<section class ="timeline">';
             echo '<ol>';

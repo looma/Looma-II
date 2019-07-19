@@ -10,9 +10,10 @@ Description: looma slideshow presenter
           include ('includes/header.php');
           require ('includes/mongo-connect.php');
           include('includes/looma-utilities.php'); ?>
- 
-    <link rel="stylesheet" href="css/looma-slideshow-present.css">
- 
+
+<link rel="stylesheet" href="css/looma-text-display.css">
+<link rel="stylesheet" href="css/looma-slideshow-present.css">
+
   </head>
  
   <body>

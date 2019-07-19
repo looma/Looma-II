@@ -26,9 +26,10 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
 ?>
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap-looma-wysiwyg.css">
+   <!--
     <link rel="stylesheet" href="css/looma-text-display.css">
-    <link rel="stylesheet" href="css/looma-text-editor.css">
-
+ -->
+<link rel="stylesheet" href="css/looma-text-editor.css">
 
 </head>
 

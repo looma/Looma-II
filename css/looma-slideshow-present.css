@@ -315,12 +315,12 @@ span#slideshow-name {
 
 #fullscreen .text-display {
     height:100%;
-    zoom: 250%;
+    /*zoom: 250%;*/
     margin:0 auto;
     overflow: hidden;
     font-weight: bold;
     background-color: white;
     color: black;
-    font-size: 20px;
+    /*font-size: 20px;*/
 }
 

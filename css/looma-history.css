@@ -38,7 +38,8 @@ button {
 /* Controls the font size of the header so it doesn't change in different Looma themes */
 h1 {
   font-size: 3em;
-  margin-top: 3vh;
+  margin:0 0 0 3vw;
+    text-align:left;
 }
 
 /* TIMELINE
@@ -47,6 +48,7 @@ h1 {
 /*Makes it so that the lines and text of the timeline
   don't stack together and make the timeline look confusing*/
 .timeline {
+    margin-top:10vh;
   white-space: nowrap;
 }
 
@@ -120,12 +122,17 @@ h1 {
 /*Establishes the dimensions and display of
   the primary div that contains the timeline*/
 #playground {
-    margin: 1vh 2vw;
-    padding: 3em 1em;
+    position:absolute;
+    top:20vh;
+    left:2vw;
+
     border: 0.1vh solid #ccc;
     overflow-x: auto;
     overflow-y: hidden;
-    max-height: 75%;
+    height: 72%;
+    max-height: 72%;
+    width:96%;
+    max-width:96%;
     margin-top: 3vh;
 }
 
@@ -218,16 +225,17 @@ button.dropdate:hover {
 
 
 /*Makes the button images visible*/
-button img {height:100%;width:100%;}
+button img {height:100%;width:100%;  white-space: nowrap;
+}
 
 /*The display of the left-scrolling button*/
 .scrollButtonLeft {
   position: fixed;
   top:2vh;
-  right:30vw;
+  right:12vw;
   width: 6vw;
-  height: 10.2vh;
-  padding: 2vh;
+  height: 9.5vh;
+  padding: 1vh;
   cursor: pointer;
   min-width: 7.5vw;
   border-radius: 2vh;
@@ -237,10 +245,10 @@ button img {height:100%;width:100%;}
 .scrollButtonRight {
   position: fixed;
   top:2vh;
-  right:21vw;
+  right:3vw;
   width: 6vw;
-  height: 10.2vh;
-  padding: 2vh;
+  height: 9.5vh;
+  padding: 1vh;
   cursor: pointer;
   min-width: 7.5vw;
   border-radius: 2vh;
@@ -250,7 +258,7 @@ button img {height:100%;width:100%;}
 .returnToLeftmost {
   position: fixed;
   top:2vh;
-  right:12vw;
+  right:21vw;
   width: 7vw;
   height: 10.2vh; /* !!!!! */
   padding: 2vh;
@@ -262,8 +270,10 @@ button img {height:100%;width:100%;}
 
 /*The display of the Search label*/
 label {
+    position:fixed;
+    top:8vh;
+    left:3vw;
     display:inline;
-    float:left;
     font-size:1.5em;
     margin:4vh 0 0 2vw;
 }
@@ -271,22 +281,33 @@ label {
 /*The display of the search bar*/
 .searchBar {
   font: 1.5em "Comic Sans MS", serif, bold;
-  display:inline;
-  float:left;
+    position:fixed;
+    top:8vh;
+    left:10vw;
   margin:3vh 15px;
   width: 23vw;;
   height: 7vh;
   border-radius: 2vh;
 }
 
+#search-button {
+    position:absolute;
+    height:7vh;
+    width:7vh;
+    top:11vh;
+    left:35vw;
+    border-radius: 2vh;
+    background-image: url("../images/looma-search2.png");
+    background-size: 100% 100%;
+}
+
 /*The display of the prev button (for searching)*/
 #previous {
  position: fixed;
-  top:3vh;
-  right:58vw;
+  top:11vh;
+  right:52vw;
   width: 6vw;
   height:7vh;
-  padding: 2vh;
   cursor: pointer;
   min-width: 7.5vw;
   border-radius: 2vh;
@@ -297,11 +318,10 @@ label {
 /*The display of the next button (for searching)*/
 #next {
  position: fixed;
-  top:3vh;
-  right:50vw;
+  top:11vh;
+  right:44vw;
   width: 6vw;
   height:7vh;
-  padding: 2vh;
   cursor: pointer;
   min-width: 7.5vw;
   border-radius: 2vh;
@@ -317,6 +337,7 @@ label {
     overflow-y: visible;
     max-height: 93vh;
     padding: 30px;
+    background-color:white;
 }
 
 /* Display of the scrollbar in the popup*/

@@ -451,7 +451,7 @@ $(document).ready(function() {
         language = LOOMA.readStore('language', 'local');
         if (language === 'native') {
             $('#key1-menu option:first').attr('label','चुन्नु');
-            $('#search-term').attr('placeholder', 'खोज टर्म प्रविष्ट गर्नुहोस्');
+            $('#search-term').attr('placeholder', 'खोज शब्दावली टाइप गर्नुहोस्'  );
         } else {
             $('#key1-menu option:first').attr('label', 'Select keyword...');
             $('#search-term').attr('placeholder', 'Enter search term');

@@ -78,7 +78,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
                 $types = array(
                 array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "lesson", "looma", "game"), //tags used as IDs for checkbox html elements
                 array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "lesson", "looma", "game"), //the 'ft' values used in the DB
-                array("PDF", "Video", "Image", "Audio", "History", "HTML", "Slideshow", "Map", "Edited video", "Text", "Lesson", "Looma Page", "Game"), //human readable versions for labels displayed on checkboxes
+                array("PDF", "Video", "Pictures", "Audio", "History", "HTML", "Slideshow", "Map", "Edited video", "Text", "Lesson", "Looma Page", "Game"), //human readable versions for labels displayed on checkboxes
                 );
                 for($x = 0; $x < count($types[0]); $x++) {
                      echo "<span  class='typ-chk' data-id='"  . $types[0][$x] . "-chk'>";

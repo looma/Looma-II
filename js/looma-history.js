@@ -56,6 +56,9 @@ $(document).ready (function() {
 
     });
 
+    //('#search-button').click(function(){$('#keywords').trigger('change');});
+    
+    
     // Listens for clicks on the previous and next buttons for the search
     document.getElementById('previous').addEventListener('click', function (e) {
             myHilitor.apply($('#keywords').val());
@@ -155,7 +158,7 @@ $(document).ready (function() {
             };  //end history popup function
 
             LOOMA.closePopup();
-            historypopup(descrip, header, false); // Creates a popup for the button
+            historypopup(descrip, header, true); // Creates a popup for the button
 
     }); // end dropbtn is clicked function
 

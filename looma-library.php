@@ -261,7 +261,7 @@ Description:  displays and navigates content folders for Looma
                  $data = $slideshow['data'];
                  $author = $slideshow['author'];
                  $date = $slideshow['date'];
-                 $thumb = $slideshow['thumb'] ? $slideshow['thumb'] : "";
+                 if (isset($slideshow['thumb'])) $thumb = $slideshow['thumb']; else $thumb = "";
                  //NOTE: for now, fp and fn are concatenated in fn
                  //$path = $slideshow['fp'];
 
@@ -344,12 +344,12 @@ Description:  displays and navigates content folders for Looma
 
                     echo "<td>";
                     $dn = $map['dn'];
-                    $url = $map['url'];
+                    //$url = $map['url'];
                     $ft = "map";
-                    $thumb = $path . "/thumbnail.png";
-                    $id = $map['_id'];  //mongoID of the descriptor for this lesson
+                    if (isset($map['thumb'])) $thumb = $map['thumb']; else $thumb = $path . "/thumbnail.png";
+                    $id = $map['mongoID'];  //mongoID of the descriptor for this lesson
                  //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", $url, "", "", "", "");
+                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 

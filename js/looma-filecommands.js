@@ -226,11 +226,11 @@ function deletefile(deletename, collection, filetype)  { //filetype must be give
 ///////////////////////////////
 //////     OPENFILE       /////
 ///////////////////////////////
-function openfile(openname, collection, filetype) { //filetype must be given e.g. 'text' or 'text-template'
+function openfile(openId, collection, filetype) { //filetype must be given e.g. 'text' or 'text-template'
 
         //OPEN from MONGO
         $.post("looma-database-utilities.php",
-               {cmd: "open", collection: collection, dn: escapeHTML(openname), ft: filetype},
+               {cmd: "openByID", collection: collection, id:openId, ft: filetype},
                function(response) {
                 if (response['error'])
                     LOOMA.alert(response['error'] + ': ' + openname, 3, true);  //better if returned an error flag + err msg
@@ -239,7 +239,7 @@ function openfile(openname, collection, filetype) { //filetype must be given e.g
 
                    // if (filetype.includes('-template')) setname('');
                    // else
-                    setname(openname);
+                    setname(response['dn']);
 
                     //currentid = response['_id'];
                     //currentauthor = response['author'];
@@ -317,7 +317,7 @@ function performSearch(collection, ft) {
             closesearch();
             if ($(this).attr('class') !== 'cancel-results') //if file not found, dont call OPEN()
             {
-                openfile($(this).prop('title'), collection, ft);  ///******** should use $*this)to get collection and ft ***
+                openfile($(this).data('id'), collection, ft);  ///******** should use $*this)to get collection and ft ***
                 template = false;
             }
         });
@@ -564,7 +564,7 @@ $(document).ready(function ()
 
                                                 closesearch();
                                                 if ($(this).attr('class') !== 'cancel-results') //if file not found, dont call OPEN()
-                                                    {openfile($(this).prop('title'), currentcollection, currentfiletype + '-template');
+                                                    {openfile($(this).data('id'), currentcollection, currentfiletype + '-template');
                                                      template = true;
                                                  }
                                             }
@@ -770,13 +770,16 @@ $(document).ready(function ()
                 $.each(results, function(index, value) {
                     var author = value['author'] ? ("Author: " + value['author']) : "";
                     var date = value['date'] ? ("  Date: " + value['date']) : "";
+            
+                    var displayname =  $("<div/>").html(value['dn']).text();
+                    
                     $display.append(
                         "<tr><td>" +
                         "<button class='result' " +
                         "data-id='" + value['_id']['$id'] + "' " +
                         //"data-mongo='" + value + "' " +
-                        "title='" + value['dn'] + "' " +
-                        "<h4> <b> " + value['dn'] + " </b> </h4>" +
+                        "title='" + displayname + "' " +
+                        "<h4> <b> " + displayname + " </b> </h4>" +
                         "<h6>" + author + date + "</h6>" +
                         "<div class='result-data'>" + value['data'] + "</div>" +
                         "</button>" +

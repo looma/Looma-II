@@ -10,9 +10,9 @@ var activitycursor, lessoncursor;
 
 var count = 0;
 var ecount = 0;
-const filetype = ['EP'];
+const filetype = ['PhET'];
 
-print ('*****scanning  lessons for ePaath');
+print ('*****scanning  lessons for ' + filetype);
 lessoncursor = db.lessons.find();
 while (lessoncursor.hasNext()) {
     var doc = lessoncursor.next();
@@ -29,7 +29,7 @@ while (lessoncursor.hasNext()) {
                 //print('cursor is ' + activitycursor);
                 if (activitycursor &&
                     //activitycursor.ft === filetype)
-                    filetype.indexOf(activitycursor.ft) !== -1)
+                    filetype.indexOf(activitycursor.src) !== -1)
                 {
                     epaaths.push(activitycursor.dn);
                     ecount++;

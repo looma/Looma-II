@@ -71,8 +71,10 @@ window.onload = function() {
 		 console.log ('selected text to speak: "', toString, '"');
 		 LOOMA.speak(toString);
 	});
-	
-	makesortable(); //makes the timeline sortable
+    
+    
+    makesortable(); //makes the timeline sortable
+
 
 	// handlers for 'control panel' buttons
 	$('#back, #prev-item').click(function(e) {
@@ -89,7 +91,20 @@ window.onload = function() {
 			play($currentItem.next());
 		}// else pause();
 	});
-	$('#pause').click(function() {
+    
+    // enable right and left arrow keys to do forward and back on timeline
+    $('body').keydown(function(e) {
+        if (e.which === 37) {
+            e.preventDefault();
+            if ($currentItem.prev().data('ft')) play($currentItem.prev());
+        }
+        else if (e.which === 39 ) {
+            e.preventDefault();
+            if ($currentItem.next().data('ft')) play($currentItem.next());
+        }
+    });
+    
+    $('#pause').click(function() {
 		if (playing) pause();
 		else play($currentItem);
 	});

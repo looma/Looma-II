@@ -620,9 +620,9 @@ button.img {
 }
 
 button.img img {
-	height:100%;
+	height:90%;
 	float:left;
-	max-width:50%;
+	max-width:35%;
 }
 
 th button.img {
@@ -635,7 +635,7 @@ th button.img:hover {
 th button.img img {
 	height:100%;
 	width:15%;
-	max-width:50%;
+	max-width:35%;
 }
 
 button.img.subject {

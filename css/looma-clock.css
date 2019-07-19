@@ -100,9 +100,7 @@ h2 {
     grid-row:2;
 }
 
-#a {
-
-}
+#a {}
 
 #singleclock-newproblem {
     position:absolute;
@@ -113,17 +111,11 @@ h2 {
     font-size:2em;
 }
 
-#b2 {
+#b2 {}
 
-}
+#c {}
 
-#c {
-
-}
-
-#d {
-
-}
+#d {}
 
 #clock-only {
     bottom:25vh;

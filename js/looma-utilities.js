@@ -80,7 +80,7 @@ playMedia : function(button) {
             //to looma-edited-video.php
             window.location = 'looma-evi-player.php?fn=' + button.getAttribute('data-fn') +
             '&fp=' + button.getAttribute('data-fp') +
-            '&id=' + button.getAttribute('data-id') +
+            '&id=' + button.getAttribute('data-mongoid') +
             '&dn=' + button.getAttribute('data-dn');
             break;
 
@@ -114,7 +114,7 @@ playMedia : function(button) {
             break;
 
         case "text":
-            var id = encodeURIComponent(button.getAttribute('data-id'));
+            var id = encodeURIComponent(button.getAttribute('data-mongoId'));
             window.location = 'looma-text.php?id=' + id;
             break;
 
@@ -145,15 +145,15 @@ playMedia : function(button) {
 
         case "lesson":
             LOOMA.clearStore('lesson-plan-index', 'session');
-            window.location = 'looma-lesson-present.php?id=' + button.getAttribute('data-id');
+            window.location = 'looma-lesson-present.php?id=' + button.getAttribute('data-mongoid');
             break;
     
         case "game":
-            window.location = 'looma-gameNEW.php?id=' + button.getAttribute('data-id');
+            window.location = 'looma-gameNEW.php?id=' + button.getAttribute('data-mongoid');
             break;
     
         case "map":
-            window.location = 'looma-map.php?id=' + button.getAttribute('data-id');
+            window.location = 'looma-map.php?id=' + button.getAttribute('data-mongoid');
             break;
    
             /*
@@ -167,11 +167,11 @@ playMedia : function(button) {
 
              */
         case "slideshow":
-            window.location = 'looma-slideshow-present.php?id=' + button.getAttribute("data-id");
+            window.location = 'looma-slideshow-present.php?id=' + button.getAttribute("data-mongoid");
             break;
     
         case "history":
-            window.location = 'looma-history.php?id=' + button.getAttribute("data-id");
+            window.location = 'looma-history.php?id=' + button.getAttribute("data-mongoid");
             break;
         
             /*case "history":
@@ -202,21 +202,23 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
 
                     var $newButton = $(
                                 '<button class="activity play img" ' +
+                                'data-id="' + id          + '" ' +
                                 'data-fn="' + result.fn   + '" ' +
-                                'data-fp="' + fp + '" ' +
+                                'data-fp="' + fp          + '" ' +
                                 'data-ft="' + result.ft   + '" ' +
                                 'data-dn="' + result.dn   + '" ' +
                                 'data-url="' + result.url + '" ' +
                                 'data-grade="' + result.grade + '" ' +
                                 'data-epversion="' + result.version + '" ' +
                                 'data-ole="' + result.oleID + '" ' +
-                                'data-id="'  + mongoID     + '" >'
+                                'data-mongoID="'  + mongoID     + '" >'
                         
                                 // add key1, key2, key3, key4, thumb, src, mondoID, url and ch_id data-fields  ???
                                 //
                            );
 
-                        if (result.ft == 'EP' && result.thumb)  thumbfile = '../ePaath/' + result.thumb;
+                        if      (result.ft == 'EP'       && result.thumb) thumbfile = '../ePaath/' + result.thumb;
+                        else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft || 'map') && result.thumb) thumbfile = result.thumb;
                         else thumbfile = LOOMA.thumbnail(result.fn, result.fp, result.ft);
                     
                         $newButton.append($('<img draggable="false" src="' + thumbfile + '">'));

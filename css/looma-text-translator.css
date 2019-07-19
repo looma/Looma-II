@@ -1,12 +1,12 @@
 
 #title {
     position:absolute;
-    top:5vh;
+    top:13vh;
     left:2vw;
     height:10vh;
-    width:35vw;
+    width:33vw;
     max-height:10vh;
-    max-width:35vw;
+    max-width:33vw;
     
     text-align:center;
     font-size:0.9em;
@@ -14,20 +14,22 @@
 
 #english {
     position:absolute;
-    top:18vh;
+    top:24vh;
     left:2vw;
-    height:35vh;
-    width:35vw;
-    max-height:35vh;
+    height:17vw;
+    width:33vw;
+    max-height:17vw;
     max-width:35vw;
+    overflow:hidden;
     
     border:1px solid black;
     background-color:white;
     text-align:center;
-    font-size:0.9em !important;
+    font-size:0.9vw !important;
+    font-weight:bold;
 }
 
-#english * {font-size:0.9em !important;}
+#english * {font-size:0.9vw !important;}
 
 .file-cmd:disabled {font-color:red;}
 
@@ -38,13 +40,21 @@
 }
 
 
-
 #editor {
     margin-left:35vw;
-    height:65vh;
+    height:33vw;
+    max-height:33vw;
     width:58vw;
+    max-width:58vw;
+    white-space: nowrap;
+  /*  font-size:1.7vw !important;*/
+    /*line-height:1.4em;*/
+    
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
 }
-
-#editor div {
-   font-size:0.8em !important;
+#editor * {
+    font-size:1.75vw !important;
+    white-space: nowrap;
 }

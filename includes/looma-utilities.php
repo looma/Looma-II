@@ -123,7 +123,13 @@ function natksort($array) {
 
 // NOTE: instead of this long list of args, the fn should take one psaram - an assoc array/object with all the activity's attributes
 
-function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion) {
+function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg) {
+
+
+	//NOTE: would be better to call this with an object with fields ft, fp, fn, etc. smaller arglist and fewer null parameters
+
+
+
 	    // makes an ACTIVITY button (for looma-library, looma-activities, looma-lesson-present,looma-slideshow-present,looma-histories, etc)
 	    // some parameters are optional for some filetypes
 	    //    $ft - filetype, $fp - path to file, $fn - filename, $dn - display name, $ndn - nepali display name, $thumb - thumbnail file name
@@ -199,6 +205,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
         else if ($ft == 'game')  $thumbSrc = "images/game.png";
         else if ($ft == 'slideshow')  $thumbSrc = "images/play-slideshow-icon.png";
+        else if ($ft == 'lesson') $thumbSrc = "images/lesson.png";
         else if ($ft == 'looma') $thumbSrc = "images/LoomaLogo.png";
         else                     $thumbSrc = $fp . thumbnail($fn);
 
@@ -210,8 +217,9 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         //Now make the BUTTON
                   echo "<button class='activity play img' ";
 
-        if ($fn)          echo 'data-fn="' .  $fn . '" ';
         if ($fp)          echo "data-fp='" .  $fp . "' ";
+        if ($fn)          echo 'data-fn="' .  $fn . '" ';
+        if ($nfn)         echo "data-nfn='" .  $nfn . "' ";
 
         if ($ole_id)      echo "data-ole='" .  $ole_id . "' ";
         if ($grade)       echo "data-grade='" .  $grade . "' ";
@@ -225,8 +233,10 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         if ($url)         echo "data-url='" . $url . "' ";
 
         if ($ft == 'pdf' || $ft == 'chapter') {
-                          echo "data-pg='" . ($pg?$pg:1) . "' ";     //maybe should set pg=1 if pg not specified??
-                          echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
+            echo "data-pg='" . ($pg?$pg:1) . "' ";
+            if ($npg) echo "data-npg='" . $npg . "' ";
+
+            echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
 
                   echo ">";
                   echo '<img draggable="false" src="' . $thumbSrc . '">';

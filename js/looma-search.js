@@ -37,7 +37,7 @@ function clearSearch() {
         $('#ft-chapter').prop("checked", true);
     };
     $('#chapter-div').hide();
-    
+    $('#preview').empty();
     pageno = 1;
     
     //clearResults();  //provided by calling .JS file
@@ -440,15 +440,15 @@ $(document).ready(function() {
     
     $searchResultsDiv = $('#results-div');  //where to display the search results - override in page's JS if desired
     
-    var language = LOOMA.readStore('language', 'local');
+    var language = LOOMA.readStore('language', 'cookie');
     if (!language) {
-        LOOMA.setStore('language', 'english', 'local');
+        LOOMA.setStore('language', 'english', 'cookie');
         language = 'english';
     };
     if (language === 'native') $('#search-term').attr('placeholder','खोज टर्म प्रविष्ट गर्नुहोस्');
     
     $('#translate').click(function() {
-        language = LOOMA.readStore('language', 'local');
+        language = LOOMA.readStore('language', 'cookie');
         if (language === 'native') {
             $('#key1-menu option:first').attr('label','चुन्नु');
             $('#search-term').attr('placeholder', 'खोज शब्दावली टाइप गर्नुहोस्'  );

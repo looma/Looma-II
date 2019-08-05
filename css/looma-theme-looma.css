@@ -2,7 +2,8 @@ body {
 	background-color: #091F48;
 			/* medium blue is #1853C1;*/
 			/* "looma" dark blue is #091F48;*/
-	font-family: "Comic Sans MS", cursive, sans-serif;
+    /*font-family: "Comic Sans MS", cursive, sans-serif;*/
+    font-family: "Comic Neue bold", "Comic Sans MS", "Chalkboard", sans-serif;
 	color: yellow;
 }
 

@@ -1,26 +1,45 @@
 #!/bin/bash
 #
 #  filename: loomaUSBer
-#       VERSION 2.0
+#       VERSION 3.0 for rysnc.net
 #       author: skip
-#       date:   JUN 2019
+#       date:   JUL 2019
 #
 #   called from shell script "loomaUSB" which is in /usr/local/bin (must be executable)
 #   that script uses "source" command to load this file
 #
-#  used to update a USB memory stick frm the 'archive' version of Looma on AWS S3, including new code, database & content
+#  used to update a USB memory stick from the 'archive' version of Looma
+#  on RSYNC.NET, including new code, database & content
 #
-#   loomaUSB can be called with a parameter "dryrun" in which case the transfers from AWS are nt performed, but dry run instead
-# using AWS CLI command “sync” updates all changed files
-# from Amazon S3 to the USB
+#   loomaUSB can be called with a parameter "dryrun" in which case the transfers are not performed,
+#   but 'dry run' instead
 
-# prerequisite:
-#        AWS CLI package of S3 commands installed on the receiving computer (with the USB stick)
-#        sudo apt-get install awscli
+# using rsync downloads all changed or more recent files from rsybnc.net to a USB stick
 
-# using AWS CLI command “sync” downloads all changed or more recent files
-# from Amazon S3 to a USB stick
+#configured to be run on a LOOMA (linux)
 
+#RSYNC options used:
+#-a  "archive" equivalent to -rlptgoD
+#   -r  recursive
+#   -l  recreate symlink on the destination
+#   -p  preserve permissions
+#   -t  preserve modification time
+#   -g  preserve group
+#   -o  preserve owner
+#   -D  transfer devices and specials (NA for Looma)
+
+#-v	    verbose
+#-vv	very verbose
+#-z  	use compression
+#--dry-run
+#--delete 	delete files on destination that are not on source
+#--perms (=== -p)
+#--update   skip files if destination  already exists and has a later date
+#--include '.ssh'
+#--exclude '.[!.]*'
+#--progress show transfer progress
+#--stats    print stats at the end
+#
 result () {
     if [[ $1 -ne 0 ]]
     then
@@ -34,7 +53,7 @@ result () {
 
 echo "********************************************************"
 echo " Looma - update a USB memory stick"
-echo "    copies new or modified files from Amazon S3 to a USB"
+echo "    copies new or modified files from rsync.net to a USB"
 echo "*******************************************************"
 echo
 
@@ -82,16 +101,20 @@ echo "**************************************************"
 echo "- preparing to update Looma code on the USB memory"
 echo -n  "- - continue [y/n]?"; read input;
 
+RO="58191@usw-s008.rsync.net"
+
 if [[ $input = "y" ]]
 then
+    SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        aws s3 sync --dryrun --exact-timestamps --no-sign-request --no-verify-ssl s3://villagetech.looma/Looma Looma   # note, no "/" after content
+        rsync -az --dry-run --delete --stats --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
         result $?
     else
-        aws s3 sync          --exact-timestamps --no-sign-request --no-verify-ssl s3://villagetech.looma/Looma Looma   # note, no "/" after content
+        rsync -az           --delete --stats --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
         result $?
     fi
+    echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 fi
 
 echo
@@ -101,14 +124,16 @@ echo -n  "- - continue [y/n]?"; read input;
 
 if [[ $input = "y" ]]
 then
+    SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        aws s3 sync --dryrun --exact-timestamps --no-sign-request s3://villagetech.looma/content content   # note, no "/" after content
+        rsync -az --dry-run --delete --stats --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
         result $?
     else
-        aws s3 sync          --exact-timestamps --no-sign-request s3://villagetech.looma/content content   # note, no "/" after content
+        rsync -az           --delete --stats --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
         result $?
     fi
+    echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 fi
 echo
 echo "****************************************************************************"

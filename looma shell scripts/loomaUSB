@@ -11,7 +11,7 @@
 #       author: skip
 #       date:   Jun 2019
 echo "*****************************************************"
-echo " - - - UPDATING a USB memory stick from Amazon - - - "
+echo " - - - UPDATING a USB memory stick - - - "
 echo "*****************************************************"
 source "/var/www/html/Looma/looma shell scripts/loomaUSBer"
 echo "*****************************************************"

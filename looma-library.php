@@ -14,7 +14,7 @@ Description:  displays and navigates content folders for Looma
         require ('includes/mongo-connect.php');
 
         // load: function makeActivityButton
-        //params are ($ft, $fp, $fn, $dn, $thumb, $ch_id, $mongo_id, $url, $pg, $zoom)
+        //makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg)
         require('includes/looma-utilities.php');
 
         function folderDisplayName($folder) {
@@ -113,8 +113,7 @@ Description:  displays and navigates content folders for Looma
                 $ndn = "विकिपीडिया";
                 $ft = "html";
                 $thumb = "../content/W4S/thumbnail.png";
-             //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-             makeActivityButton($ft, "../content/W4S/", "index.htm", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "");
+             makeActivityButton($ft, "../content/W4S/", "index.htm", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "",null,null);
                 echo "</td>";
                 //$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
         }  //end IF wiki4schools
@@ -128,8 +127,7 @@ Description:  displays and navigates content folders for Looma
                 $ndn = "खान";
                 $ft = "html";
                 $thumb = "../content/Khan/thumbnail.png";
-        //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-        makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "");
+        makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "",null,null);
                 echo "</td>";
                 //$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
         }  //end IF Khan
@@ -144,8 +142,7 @@ Description:  displays and navigates content folders for Looma
         //$ndn = "खान";
         $ft = "html";
         $thumb = "../content/epaath/thumbnail.png";
-        //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-        makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "");
+        makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "",null,null);
         echo "</td>";
         //$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
     }  //end IF Khan
@@ -205,8 +202,7 @@ Description:  displays and navigates content folders for Looma
                 $id = $doc['_id'];
                 //$json = $doc['JSON'];  //NOTE: this passed the full text of the edited script in the URL.
                                        // should just pass the mongo ID and have the player retrieve the script's full text
-             //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
+                makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
 
                 echo "</td>";
                 $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
@@ -230,10 +226,9 @@ Description:  displays and navigates content folders for Looma
                         $file = $doc['fn'];
                         $thumb = "../content/epaath/activities/" . $file . "/thumbnail.jpg";
                         $dn = $doc['dn'];
-                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                        makeActivityButton("EP", $path, $file, $dn, "", $thumb, "", "", "", "", "", "", "",  $doc['version']);
+                        makeActivityButton("EP", $path, $file, $dn, "", $thumb, "", "", "", "", "", "", "",  $doc['version'],null,null);
                     } else {
-                        makeActivityButton("EP", "", "", $doc['dn'], "", $doc['thumb'], "", "", $doc['oleID'], "", "", "", $doc['grade'], $doc['version']);
+                        makeActivityButton("EP", "", "", $doc['dn'], "", $doc['thumb'], "", "", $doc['oleID'], "", "", "", $doc['grade'], $doc['version'],null,null);
                     }
                 echo "</td>";
                 $buttons++; if ($buttons > $maxButtons) { $buttons = 1; echo "</tr><tr>";};
@@ -267,8 +262,7 @@ Description:  displays and navigates content folders for Looma
 
                  $ft = "slideshow";
                  $id = $slideshow['_id'];  //mongoID of the descriptor for this slideshow
-                 //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
+                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
                  echo "</td>";
                  $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
              } //end FOREACH slideshow
@@ -292,8 +286,7 @@ Description:  displays and navigates content folders for Looma
                     $ft = "lesson";
                     $thumb = $path . "/thumbnail.png";
                     $id = $lesson['_id'];  //mongoID of the descriptor for this lesson
-                     //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                     makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
+                     makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
                 }
@@ -320,8 +313,7 @@ Description:  displays and navigates content folders for Looma
                     $thumb = $path . $dn . "_thumb.jpg";
                     //$thumb = $path . "/thumbnail.png";
                     $id = $history['_id'];  //mongoID of the descriptor for this lesson
-                 //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
+                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
@@ -348,8 +340,7 @@ Description:  displays and navigates content folders for Looma
                     $ft = "map";
                     if (isset($map['thumb'])) $thumb = $map['thumb']; else $thumb = $path . "/thumbnail.png";
                     $id = $map['mongoID'];  //mongoID of the descriptor for this lesson
-                 //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
+                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
                     echo "</td>";
                     $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
 
@@ -385,17 +376,21 @@ Description:  displays and navigates content folders for Looma
             $ext = $components["extension"];
             $base = $components["basename"];  //$base is filename w/o the file extension
 
+
+                if ($ext === 'lesson') {
+                    $dn = $components["filename"];
+                    $query = array('dn' => $dn);
+                    $activity = $activities_collection->findOne($query);
+                    if ($activity) $mongoID = strval($activity['mongoID']); else $mongoID = null;
+                }
+                else {
             // look in the database to see if this file has a DISPLAYNAME
-                $query = array('fn' => $file);
+                    $query = array('fn' => $file);
+                    $activity = $activities_collection->findOne($query);
+                    $dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : str_replace($specials, " ", $base);
+                }
 
-                $projection = array('_id' => 0,
-                                    'dn' => 1,
-                                    );
-                $activity = $activities_collection -> findOne($query, $projection);
-
-                $dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : str_replace($specials, " ", $base);
-            //
-            //DEBUG   echo "activity is " . $activity['dn'] . " looked up '" . $file . "' and got '" . $dn . "'";
+                 //echo "extension is " . $ext . " dn is " . $dn . " mongoid is " . (string)$activity['mongoID'] ;
 
                 switch (strtolower($ext)) {
                     case "video":
@@ -415,9 +410,13 @@ Description:  displays and navigates content folders for Looma
                     case "pdf":
                     case "html":
 
-                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                        makeActivityButton ($ext, $path, $file, $dn, "", "", "", "", "", "", "", "", "", "");
-                        //makeButton($file, $path, $ext, $base, $dn, $path . $base . "_thumb.jpg");
+                        makeActivityButton ($ext, $path, $file, $dn, "", "", "", "", "", "", "", "", "", "",null,null);
+                        break;
+
+                    case "lesson":
+
+                        if($mongoID)
+                            makeActivityButton ($ext, $path, $file, $dn, "", "", "", $mongoID, "", "", "", "", "", "",null,null);
                         break;
 
                     default:
@@ -434,8 +433,7 @@ Description:  displays and navigates content folders for Looma
                         echo "<td>";
                         $thumb = $file . "/thumbnail.jpg";
                         $dn = $file;
-                        // use UTILITY function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-                        makeActivityButton("html", $path, $file . "/index.html", $dn, "", $thumb, "", "", "", "", "", "", "", "");
+                        makeActivityButton("html", $path, $file . "/index.html", $dn, "", $thumb, "", "", "", "", "", "", "", "",null,null);
 
                         echo "</td>";
                         $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};

@@ -523,7 +523,7 @@ translate : function(language) {
      * @param native   - the translation of the english phrase
      * */
     translatableSpans : function(english, native){
-        var language = LOOMA.readStore('language', 'local');
+        var language = LOOMA.readStore('language', 'cookie');
     
         // rewrite to generate the spans once, then set hidden on the correct span
         if (language == "english") {
@@ -1324,10 +1324,7 @@ LOOMA.alert = function(msg, time, notTransparent, next){
         }
         LOOMA.closePopup();
     });
- /*   $('#dismiss-popup').click(function() {
-        LOOMA.closePopup();
-    });
-*/
+    
    if (time) {
         var timeLeft = time - 1;
         var popupButton = $('#close-popup');

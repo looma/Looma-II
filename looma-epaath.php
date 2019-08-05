@@ -21,20 +21,23 @@ include ('includes/header.php');
 <?php
 $epversion = $_REQUEST['epversion'];
 
-if ($epversion == '2015') {
+if ($epversion == '2015') {  // old ePaath activities from 2016
         $filename = $_REQUEST['fn'];
         $filepath = $_REQUEST['fp'];
         $src = $filepath . $filename;
     }
-    else {
+    else {  // new ePaath activities from 2018
         $oleID = $_REQUEST['ole'];
         $grade = $_REQUEST['grade'];
         $src = '../ePaath/';
         if ($grade == '7' || $grade == '8') $src .= 'EPaath7-8/';
 
-        $src .= 'start.html?id=' . $oleID . '&lang=en&grade=' . $grade;
+        $language = '&lang=';
+        $language .= ($_COOKIE['language'] === 'english') ? 'en' : 'np';
 
-        //echo $src;
+        $src .= 'start.html?id=' . $oleID;
+        $src .= $language . '&grade=' . $grade;
+        //echo $language;return;
     }
 ?>
 <div id="main-container-horizontal">

@@ -58,13 +58,14 @@ function play($item) {
     
     //$timeline.fadeOut(500);  //this hides the timeline when playing media - decided to not hide the timeline [usability]
     
-    playActivity($item.data('ft'), $item.data('fn'), $item.data('fp'),
-        $item.data('dn'), $item.data('id'), "", $item.data('pg'),
-        $item.data('epversion'), $item.data('ole'), $item.data('grade')
+    playActivity($item.data('ft'),        $item.data('fn'),         $item.data('fp'),
+                 $item.data('dn'),        $item.data('id'), "", $item.data('pg'),
+                 $item.data('epversion'), $item.data('ole'),        $item.data('grade'),
+                 $item.data('nfn'),       $item.data('npg')
     );
 }; //end play()
 
-function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade) { //play the activity of type FT, named FN, in path FP, display-name DN
+function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, npn) { //play the activity of type FT, named FN, in path FP, display-name DN
     // depending on FT, may use ID, CH (a ch_id) or pg (for PDFs)
     
     // plays the selected (onClick) timeline element (activity) in the $viewer div
@@ -123,8 +124,20 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade) { //pla
         case 'chapter':
             
             $('.speak, .lookup').show();
+    
+            var pagenumber;
+            if (language == 'native' && npn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
+                pagenumber = npn;
+            } else pagenumber = pg;
+     
+            var filename;
+            if (language == 'native' && nfn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
+                filename = nfn;
+            } else filename = fn;
+    
+    
             $pdfHTML.find('iframe').attr('src',
-                'looma-viewer.html?file=' + fp + fn + '#page=' + pg
+                'looma-viewer.html?file=' + fp + filename + '#page=' + pagenumber
                 //   + '&zoom=160'
             );
             $pdfHTML.appendTo($viewer);
@@ -147,10 +160,11 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade) { //pla
         case 'epaath':
             
             $('.speak, .lookup').show();
+            var lang = (language==='native') ? 'np' : 'en';
             if (ft=="EP" && version==2019) {
                 var prefix = '../ePaath/';
                 if (grade=='grade7' || grade == 'grade8') prefix += 'EPaath7-8/';
-                $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=en&grade=' + grade.substring(5));
+                $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
             }
             else
                 $htmlHTML.find('embed').attr('src', '../content/epaath/activities/'+ fn + '/start.html');
@@ -385,12 +399,14 @@ window.onload = function() {
     video = $('#video', $videoHTML).get(0); //the video DOM element
     audio = $('#audio', $audioHTML).get(0); //the audio DOM element
 //
+    $('#media-controls').hide();  // hide media controls
+    
     var index = LOOMA.readStore('lesson-plan-index', 'session');
     if (index) {
         $currentItem = $('#timeline').find('button:nth-child(' + (parseInt(index) + 1) + ')');
         $currentItem.focus();// put focus on timeline[index]
         $viewer.empty();
-        $('#media-controls').hide();  // hide media controls
+        //$('#media-controls').hide();  // hide media controls
     
     } else {
         first_ft = $('#timeline').find('button:first').data('ft');

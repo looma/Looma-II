@@ -79,7 +79,7 @@ div#search-panel {
 #previewpanel {
     grid-column: 2/-1;
     grid-row: 3;
-    background-color: #091f48;
+    background-color: white;
 }
 
 #timeline {

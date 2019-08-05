@@ -20,7 +20,7 @@ var convert = {"0":"०", "1":"१", "2":"२", "3":"३", "4":"४",
                "-":"-", ".":"."};
 
 function show(str) { //param is a string
-    if (LOOMA.readStore('language', 'local') == 'english')
+    if (LOOMA.readStore('language', 'cookie') == 'english')
     {    display.value = str; }
     else  //translate before displaying
     {   var trans = "";

@@ -50,9 +50,9 @@ $(document).ready (function() {
     // then use the value to set KEYWORDs and TOOLTIPs on the page to 'english' [default]
     // or 'native' [change class="english-keyword" to hidden and class="native-keyword" to visible]
     //var language;
-    language = LOOMA.readStore('language', 'local');
+    language = LOOMA.readStore('language', 'cookie');
     if (!language) {
-        LOOMA.setStore('language', 'english', 'local');
+        LOOMA.setStore('language', 'english', 'cookie');
         language = 'english';
     };
 
@@ -63,9 +63,9 @@ $(document).ready (function() {
     // and re-translate KEYWORDS on the page
     $('#translate').click(function(){
             // toggle the language var ('english' <--> 'native')
-            language = (LOOMA.readStore('language', 'local') == 'english' ? 'native' : 'english' );
+            language = (LOOMA.readStore('language', 'cookie') == 'english' ? 'native' : 'english' );
             // reset the cookie to the new setting
-            LOOMA.setStore('language', language, 'local');
+            LOOMA.setStore('language', language, 'cookie');
             // change all the keywords on the page to the new setting
             LOOMA.translate(language);
     }); // end anonymous function for translate.click

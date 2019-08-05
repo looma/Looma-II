@@ -1,15 +1,15 @@
 #!/bin/bash
 #
-#  filename: loomaupdate
-#  VERSION 2.0
+#  filename: loomaupdater
+#       VERSION 3.0 for rysnc.net
 #       author: skip
-#       date:   Jan-jun 2019
+#       date:   JUL 2019
 #
 #  used to update a pre-installed Looma by installing new code, database & content
 #
 #   files to be updated may
 #    - be on a USB stick at /media/odroid/LOOMA/loomaupdate (the "U" option)
-#    - or, on Amazon S3 (the "I" option)
+#    - or, on  rsync.net (the "I" option)
 #
 #   file structure expected if on the USB:
 #
@@ -29,6 +29,28 @@
 #       use mongorestore to load new data into the existing mongo database
 #       sync new content files into "content" directory
 
+#RSYNC options used:
+#-a  "archive" equivalent to -rlptgoD
+#   -r  recursive
+#   -l  recreate symlink on the destination
+#   -p  preserve permissions
+#   -t  preserve modification time
+#   -g  preserve group
+#   -o  preserve owner
+#   -D  transfer devices and specials (NA for Looma)
+
+#-v	    verbose
+#-vv	very verbose
+#-z  	use compression
+#--dry-run
+#--delete 	delete files on destination that are not on source
+#--perms (=== -p)
+#--update   skip files if destination  already exists and has a later date
+#--include '.ssh'
+#--exclude '.[!.]*'
+#--progress show transfer progress
+#--stats    print stats at the end
+#
 result () {
     if [[ $1 -ne 0 ]]
     then
@@ -102,15 +124,21 @@ then
     if [[ $input = "y" ]]
     then
         #*************RSYNC*********************
+
+        SECONDS=0
+
+
         #NOTE: slash after "Looma/" and no slash after "/var/www/html/Looma"
         if [[ $1 = "dryrun" ]]
         then
-            rsync   --dry-run --recursive --verbose --times --stats --progress Looma/ /var/www/html/Looma
+            rsync -az --dry-run --delete --update --stats --progress Looma/ /var/www/html/Looma
             result $?
         else
-            rsync             --recursive --verbose --times --stats --progress Looma/ /var/www/html/Looma
+            rsync -az           --delete --update --stats --progress Looma/ /var/www/html/Looma
             result $?
         fi
+
+        echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 
         #clear browser cache so the new code files will be used
         source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"
@@ -122,7 +150,7 @@ then
     echo
     echo "****************************************************************"
     echo "- preparing to update Looma database"
-    echo "-   ***note: this will not erase any lesson plans installed in the database"
+    echo "-   ***note: this will NOT erase any lesson plans already in the database"
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
 
     if [[ $input = "y" ]]
@@ -130,9 +158,25 @@ then
         if [[ -d /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma ]]
         then
 
-        ####ADD code here to db.version_number  .drop() so that version # will be updated in mongo
+            # [normally, mongorestore doesnt update existing documents that have changes]
+            # to fix this, the following procedure:
+            #     temp saves locally created documents (lessons and texts)
+            #     updates all documents to latest version from the looma archive
+            #     then re-loads the locally created documents
+            # mongoexport collections 'lessons' and 'text_files' in temp files
+            # drop db 'looma' so mongorestore from archives will update all documents in the db
+            # mongorestore db looma dump from looma archive on USB
+            # finally, mongoimport the temp files to collectons 'lessons' and 'text_files' to re-instate locally created lessons and texts
 
-            # install new db changes into existing db
+                #1. mongoexport --db looma --collection lessons --out lessonsFromMongo.tmp
+                #1a. mongoexport --db looma --collection text_files --out textsFromMongo.tmp
+                #2. mongo --db looma "db..dropDatabase()"
+                #3. mongorestore --db looma /var/www/html/Looma/mongo...
+                #4. mongoimport --db looma --file lessonsFromMongo.tmp
+                #4a. mongoimport --db looma --file textsFromMongo.tmp
+                #5. rm lessonsFromMongo.tmp
+                #5a. rm textsFromMongo.tmp
+
             mongorestore --quiet --db looma /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma/
             result $?
         else echo "ERROR: no source dir (/media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma) for mongo restore"
@@ -147,14 +191,18 @@ then
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
+
+        SECONDS=0
+
         if [ -d "content" ]
         then
              if [[ $1 = "dryrun" ]]
             then
-                rsync  --dry-run -r --stats content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
+                rsync  -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
+
                 result $?
             else
-                rsync             -r --stats content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
+                rsync -az            --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
                 result $?
             fi
         fi
@@ -163,10 +211,10 @@ then
         then
             if [[ $1 = "dryrun" ]]
             then
-                rsync --dry-run -r maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
+                rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
                 result $?
             else
-                rsync            -r maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
+                rsync -az           --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
                 result $?
             fi
         fi
@@ -175,17 +223,23 @@ then
 
             if [[ $1 = "dryrun" ]]
                 then
-                    rsync --dry-run -r ePaath/   /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
+                    rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
                     result $?
                 else
-                    rsync            -r ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
+                    rsync -az           --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
                     result $?
                 fi
 
         fi
+
+        echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+
     else
         echo " - - - SKIPPED: installing new Looma content"
     fi
+
+    echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+
 # end of USB section
 
 
@@ -240,18 +294,26 @@ then
     echo
     echo "- preparing to install new Looma code"
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
-    if [[ $input = "y" ]]
+
+   RO="58191@usw-s008.rsync.net"
+
+   if [[ $input = "y" ]]
     then
-       # sync Looma (code)
+
+      SECONDS=0
+
+      # sync Looma (code)
 
         if [[ $1 = "dryrun" ]]
         then
-            aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/Looma /var/www/html/Looma
+            rsync -az  --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ /var/www/html/Looma
             result $?
         else
-            aws s3 sync            --exact-timestamps --no-sign-request --no-verify-ssl --exclude "*.git/*" s3://villagetech.looma/Looma /var/www/html/Looma
+            rsync -az            --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ /var/www/html/Looma
             result $?
         fi
+
+        echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 
         #clear browser cache so the new files will be used
         source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"
@@ -288,17 +350,22 @@ then
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
-        if [[ $1 = "dryrun" ]]
+
+       SECONDS=0
+
+       if [[ $1 = "dryrun" ]]
             then
-                aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/content /var/www/html/content
+               rsync -az  --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
                 result $?
             else
-                aws s3 sync            --exact-timestamps --no-sign-request --no-verify-ssl s3://villagetech.looma/content /var/www/html/content
+               rsync -az            --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
                 result $?
             fi
 
-        #aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/maps2018 /var/www/html/maps2018
-        #aws s3 sync --dry-run --no-sign-request s3://villagetech.looma/ePaath /var/www/html/ePaath
+
+       echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+
+         # maps2018/ and ePaath/ are not updated in this script
     else
         echo " - - - SKIPPED: installing new Looma content"
     fi

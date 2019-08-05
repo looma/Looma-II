@@ -88,7 +88,7 @@ Description: looma lesson plan presenter
                      $thumbSrc = $details['fp'] . thumbnail($details['fn']);
                    else $thumbSrc = null;
 
-                   //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                   //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npg)
 
                         makeActivityButton(
                              $details['ft'],
@@ -105,7 +105,9 @@ Description: looma lesson plan presenter
                             null,
                             null,
                             (isset($details['grade'])) ? $details['grade'] : null,
-                            (isset($details['version'])) ? $details['version'] : null
+                            (isset($details['version'])) ? $details['version'] : null,
+                            null,
+                            null
                         );
                 } else
 
@@ -116,20 +118,21 @@ Description: looma lesson plan presenter
 
                     $query = array('prefix' => prefix($chapter['_id']));
                     $textbook = $textbooks_collection -> findOne($query);
-//echo $textbook['fn'] . '   ' . $textbook['nfn'];
+
                     $filename = (isset($textbook['fn']) && $textbook['fn'] != "") ? $textbook['fn'] : ((isset($textbook['nfn'])) ? $textbook['nfn'] : null);
-//echo 'filename is   ' . $filename;
+                    $nfn = (isset($textbook['nfn']) ? $textbook['nfn'] : null);
+
                     $filepath = (isset($textbook['fp']) && $textbook['fp'] != "") ? $textbook['fp'] : null;
 
-//echo '   filepath is   ' . $filepath; return;
                     $displayname = (isset($chapter['dn']) && $chapter['dn'] != "") ? $chapter['dn'] : ((isset($chapter['ndn'])) ? $chapter['ndn'] : null);
                     $pagenumber  = (isset($chapter['pn']) && $chapter['pn'] != "") ? $chapter['pn'] : ((isset($chapter['npn'])) ? $chapter['npn'] : null);
+                    $npn  = (isset($chapter['npn']) ? $chapter['npn'] : null);
 
                     if ($filename && $filepath)
                         $thumbSrc = "../content/" . $filepath . thumbnail($filename);
                     else $thumbSrc = null;
                     //echo "filename is " . $filename;
-                    // makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
+                    // makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npn)
                     makeActivityButton('pdf',
                         '../content/' . $filepath,
                         $filename,
@@ -143,7 +146,9 @@ Description: looma lesson plan presenter
                        $pagenumber,
                        160,
                         null,
-                        null);
+                        null,
+                        $nfn,
+                        $npn);
                 };
              };
              }

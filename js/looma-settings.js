@@ -76,7 +76,11 @@ $(document).ready (function() {
     {   var loginname = LOOMA.readStore('login', 'cookie');
         $('#login-status').text("You are logged in as '" + loginname + "'");
         $('.settings-control').css('display', 'inline');                       // show the teacher tools
-        if (loginname == 'skip' || loginname === 'david' || loginname == 'kabin')
+        if (loginname === 'skip'   ||
+            loginname === 'david'  ||
+            loginname === 'kabin'  ||
+            loginname === 'samarth'||
+            loginname === 'sashwot')
             $('.admin-control').css('display', 'inline');;
         if (loginname == 'skip') $('.exec-control').css('display', 'inline');;
 

@@ -19,7 +19,8 @@ body {
     height:100vh;
     width:100vw;
     
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    /*   font-family: "Comic Sans MS", cursive, sans-serif;*/
+   font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", sans-serif;
     background-color: var(--looma-blue);
         /*background-color: #A1BEF3;*/
 		/* medium blue is #1853C1;*/
@@ -29,7 +30,21 @@ body {
 	text-align: center;
 }
 
- body {
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {}
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: portrait) {
+    html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        width: 100vh;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+}
+
+body {
      display:grid;
      grid-template-rows:    [top]  repeat(9, 1fr) [toolbar] 1fr [bottom];
      grid-template-columns: [left] repeat(16, 1fr)[toolbar] 1fr [right];
@@ -150,6 +165,9 @@ body {
 h1.title, h2.title, h3.title {
 	/*size:90%;*/
 	font-size: 3em;
+    
+    font-weight:bold !important;
+    
 	margin:auto;
 	text-align:center
 }
@@ -498,6 +516,24 @@ button.lookup {
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
 }
 
+button#next-item {
+    bottom:44vh;
+    /*display:none;*/
+    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    background-image: url("../images/carrot-fwd.png");
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
+button#prev-item {
+    bottom:56vh;
+    /*display:none;*/
+    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    background-image: url("../images/carrot-back.png");
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
 button.show-keyboard {
     bottom: 44vh;
     background-image: url("../images/keyboard.png");
@@ -561,7 +597,6 @@ button#bagh-chal {
     max-height:50%;
     overflow:hidden;
 }
-
 
 #return {
     color : white;

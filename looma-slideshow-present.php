@@ -88,7 +88,7 @@ Description: looma slideshow presenter
                        $caption,
                        null,
                        null,
-                       null, null, null);
+                       null, null, null,null,null);
              };
              }
             else {echo "<h1>No slideshow selected</h1>";

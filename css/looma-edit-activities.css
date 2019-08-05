@@ -23,7 +23,7 @@ body {
     grid-template-rows: 5vh 22vh 53vh 15vh;
     background-color:lightgray;
     
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    /*font-family: "Comic Sans MS", cursive, sans-serif;*/
     color:black;
 }
 #main-container > div {
@@ -237,7 +237,7 @@ span.hint {
 }
 
 .btn-group, #cmd-btn {
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    /*font-family: "Comic Sans MS", cursive, sans-serif;*/
     padding:0;
     margin-bottom:1vh;
     width:100%;

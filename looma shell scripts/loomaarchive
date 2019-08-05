@@ -2,18 +2,31 @@
 #
 #  filename: loomaarchive
 #       author: skip
-#       date:   Apr 2019
+#       date:   Aug 2019
 #
-#  used to update the 'archive' version of Looma on AWS S3, including new code, database & content
+#  used to update the 'archive' version of Looma on rsync.net, including new code, database & content
 #
-# using AWS CLI command “sync” updates all changed files
-# from the development computer to Amazon S3
-#
-#   set up to run on a MAC [other computer types would require changes to this script
-#
-# requires AWS CLI package of commands
-# sudo apt-get install awscli
+#   set up to run on a MAC [other computer types would require changes to this script]
 
+#RSYNC options used:
+#-a  "archive" equivalent to -rlptgoD
+#   -r  recursive
+#   -l  recreate symlink on the destination
+#   -p  preserve permissions
+#   -t  preserve modification time
+#   -g  preserve group
+#   -o  preserve owner
+#   -D  transfer devices and specials (NA for Looma)
+
+#-vv	very verbose
+#-z  	use compression
+#--dry-run
+#--delete 	delete files on destination that are not on source
+#--perms (=== -p)
+#--update
+#--include '.ssh'
+#--exclude '.[!.]*'
+#
 result () {
     if [[ $1 -ne 0 ]]
     then
@@ -28,50 +41,58 @@ echo "************************************"
 echo " - - setting database version to today's date"
 echo "************************************"
 mongo looma < "/Applications/AMPPS/www/Looma/looma shell scripts/loomaMongoSetDate"
-echo "************************************"
-echo "backing up mongodump 'dump' to 'dumpBAK'"
-echo "creating new mongodump 'dump'"
-echo "************************************"
-echo
 
 cd /Applications/AMPPS/www/Looma/mongo-dump  # cd to mongo dumps folder (on a MAC)
 if [ -d dump ]
         then
-            echo "- moving old mongo dump to ~/Desktop/LoomaMongoDumps/"
+            echo "- moving previous mongo dump to ~/Desktop/LoomaMongoDumps/"
+            echo "************************************"
             now=$(date +"%m_%d_%Y")
             mv dump  ~/Desktop/LoomaMongoDumps/dump_$now
         fi
 
+echo "creating new mongodump 'dump'"
+echo "************************************"
+echo
+
 mongodump --db looma
 
 echo "************************************"
-echo "archiving Looma (code) to s3"
+echo "archiving Looma (code) to rsync.net"
 echo "************************************"
 echo
 cd   /Applications/AMPPS/www/Looma		# cd to Looma/ (on a MAC)
 
-# sync code to AWS S3  [excluding "." files like .git/]
+RW="58189@usw-s008.rsync.net"
+
+SECONDS=0
+
+# sync code to rsync.net  [excluding "." files like .git/]
 if [[ $1 = "dryrun" ]]
 then
-  aws s3 sync --dryrun  --exact-timestamps --exclude "*.*/*" . s3://villagetech.looma/Looma
+    rsync -avvz  --dry-run --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
 else
-  aws s3 sync           --exact-timestamps --exclude "*.*/*" . s3://villagetech.looma/Looma
+    rsync -avvz            --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
 fi
+result $?
+echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 
 echo "************************************"
-echo "archiving content to s3"
+echo "archiving Looma (content) to rsync.net"
 echo "************************************"
 echo
 cd /Applications/AMPPS/www/content		        # cd to content/ (on a MAC)
+SECONDS=0
 
 if [[ $1 = "dryrun" ]]
 then
-    aws s3 sync --dryrun --exact-timestamps . s3://villagetech.looma/content  	# sync content to AWS S3:
+    rsync -avvz  --dry-run --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
 else
-    aws s3 sync          --exact-timestamps . s3://villagetech.looma/content  	# sync content to AWS S3:
+    rsync -avvz            --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
 fi
 result $?
+echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 
 echo "*********************************************"
-echo " - - DONE updating Looma archive on Amazon S3"
+echo " - - DONE updating Looma archive on rsync.net"
 echo "*********************************************"

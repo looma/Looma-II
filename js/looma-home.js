@@ -46,9 +46,9 @@ function displaySubjects (className) {
             activateSubject(subjectName);
     
             var language;
-            language = LOOMA.readStore('language', 'local');
+            language = LOOMA.readStore('language', 'cookie');
             if (!language) {
-                LOOMA.setStore('language', 'english', 'local');
+                LOOMA.setStore('language', 'english', 'cookie');
                 language = 'english';
             };
             LOOMA.translate(language);

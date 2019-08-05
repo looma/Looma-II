@@ -27,9 +27,11 @@ var searchName = 'slideshow-editor-search';
 function editor_clear() {
     
     setname("");
+    $("#preview").hide();
     $timeline.empty();
     $timeline.data('thumb', 'images/play-slideshow-icon.png');
     clearFilter();
+    
     editor_checkpoint();
     
 };
@@ -223,7 +225,7 @@ var clearFilter = function() {
     
     $("#innerResultsMenu").empty();
     $("#innerResultsDiv").empty();
-    $("#preview").hide();
+    $("#preview").empty();
 }; //end clearFilter()
 
 

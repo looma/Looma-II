@@ -187,7 +187,7 @@ function saveTextTranslation(name, nepali) {
                 },
                 'json'
             );
-        } else LOOMA.alert('No file contents - file not saved', 10);
+        } else LOOMA.alert('No translation contents - file not saved', 10);
     } else LOOMA.alert('Please specify a non-blank filenanme - file not saved',10);
     
 }; //end saveTextTranslation()
@@ -248,6 +248,9 @@ function openfile(openId, collection, filetype) { //filetype must be given e.g. 
                             || LOOMA.loggedIn() == 'skip'
                             || LOOMA.loggedIn() == 'david'
                             || LOOMA.loggedIn() == 'kathy'
+                            || LOOMA.loggedIn() == 'kabin'
+                            || LOOMA.loggedIn() == 'sashwot'
+                            || LOOMA.loggedIn() == 'samarth'
                         );
                     else owner = false;
 

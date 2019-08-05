@@ -63,8 +63,8 @@ function makeButton($id, $thumb, $dn) {
             $thumb = $history['thumb'];
             //$thumb = $path . "/thumbnail.png";
             $id = $history['_id'];  //mongoID of the descriptor for this lesson
-            //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "");
+            //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $nfn, $npg)
+            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null);
             //makeButton($id, $thumb, $dn);
             echo "</td>";
             $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};

@@ -354,7 +354,7 @@ function showKeyboard(event) {
     });
     temporaryDestination.focus();
     
-    var lang = LOOMA.readStore('language', 'local');
+    var lang = LOOMA.readStore('language', 'cookie');
     if  (lang === 'native' && !isNepali() || lang === 'english' && isNepali()) toggleNepali();
     
 }  // end showKeyboard()

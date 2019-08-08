@@ -70,9 +70,9 @@ SECONDS=0
 # sync code to rsync.net  [excluding "." files like .git/]
 if [[ $1 = "dryrun" ]]
 then
-    rsync -avvz  --dry-run --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+    rsync -avvz  --dry-run --delete --perms --chmod=D755,F744 --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
 else
-    rsync -avvz            --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+    rsync -avvz            --delete --perms --chmod=D755,F744 --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -86,9 +86,9 @@ SECONDS=0
 
 if [[ $1 = "dryrun" ]]
 then
-    rsync -avvz  --dry-run --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+    rsync -avvz  --dry-run --delete --perms --chmod=D755,F744 --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
 else
-    rsync -avvz            --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+    rsync -avvz            --delete --perms --chmod=D755,F744 --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."

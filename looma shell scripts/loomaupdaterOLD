@@ -162,7 +162,7 @@ then
             # to fix this, we use the following procedure:
             #     temp save locally created documents (lessons and texts)
             #     update all documents to latest version from the looma archive
-            #     then re-load the locally created documents
+            #     then re-load the locally   read -p "Press [Enter] to continue"created documents
             # mongoexport collections 'lessons' and 'text_files' to temp files
             # drop db 'looma' so mongorestore from archives will update all documents in the db
             # mongorestore db looma dump from looma archive on USB
@@ -173,15 +173,12 @@ then
                 mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
                 # read -p "Press [Enter] to continue"
                 mongo looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
+                # read -p "Press [Enter] to continue"
 
-                # read -p "Press [Enter] to continue"
-                mongorestore --quiet --db looma /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma/
+            mongorestore --quiet --db looma /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma/
 
-                # read -p "Press [Enter] to continue"
-                mongoimport --db looma --file /tmp/lessonsFromMongo.tmp
-                # read -p "Press [Enter] to continue"
-                mongoimport --db looma --file /tmp/textsFromMongo.tmp
-                # read -p "Press [Enter] to continue"
+                mongoimport --db looma --collection lessons --file /tmp/lessonsFromMongo.tmp
+                mongoimport --db looma --collection text_files --file /tmp/textsFromMongo.tmp
                 rm /tmp/lessonsFromMongo.tmp
                 rm /tmp/textsFromMongo.tmp
 

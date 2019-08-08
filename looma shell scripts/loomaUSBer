@@ -101,17 +101,16 @@ echo "**************************************************"
 echo "- preparing to update Looma code on the USB memory"
 echo -n  "- - continue [y/n]?"; read input;
 
-RO="58191@usw-s008.rsync.net"
 
 if [[ $input = "y" ]]
 then
     SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        rsync -az --dry-run --delete --stats --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
+        rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
         result $?
     else
-        rsync -az           --delete --stats --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
+        rsync -az           --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
         result $?
     fi
     echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -127,10 +126,10 @@ then
     SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        rsync -az --dry-run --delete --stats --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
+        rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
         result $?
     else
-        rsync -az           --delete --stats --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
+        rsync -az           --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
         result $?
     fi
     echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."

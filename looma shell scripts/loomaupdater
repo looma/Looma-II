@@ -109,7 +109,9 @@ then
     then
         if [ -d /var/www/html/LoomaBAK ]
         then
-            rm -r /var/www/html/LoomaBAK
+          echo "- deleting old LoomaBAK directory"
+          sudo rm -r /var/www/html/LoomaBAK
+          result $?
         fi
         mv    /var/www/html/Looma   /var/www/html/LoomaBAk
         result $?
@@ -134,7 +136,7 @@ then
             rsync -az --dry-run --delete --progress --update --stats --progress Looma/ /var/www/html/Looma
             result $?
         else
-            rsync -az           --delete --progress   --update --stats --progress Looma/ /var/www/html/Looma
+            rsync -az           --delete --progress --update --stats --progress Looma/ /var/www/html/Looma
             result $?
         fi
 
@@ -168,19 +170,19 @@ then
             # mongorestore db looma dump from looma archive on USB
             # finally, mongoimport the temp files to collectons 'lessons' and 'text_files' to re-instate locally created lessons and texts
 
-                mongoexport --db looma --collection lessons --out /tmp/lessonsFromMongo.tmp
+                mongoexport --db looma --collection lessons    --out /tmp/lessonsFromMongo.tmp
                 # read -p "Press [Enter] to continue"
                 mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
                 # read -p "Press [Enter] to continue"
                 mongo looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
 
-                # read -p "Press [Enter] to continue"
-                mongorestore --quiet --db looma /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma/
+            # read -p "Press [Enter] to continue"
+            mongorestore --quiet --db looma /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma/
 
                 # read -p "Press [Enter] to continue"
-                mongoimport --db looma --file /tmp/lessonsFromMongo.tmp
+                mongoimport --db looma --collection lessons    --file /tmp/lessonsFromMongo.tmp
                 # read -p "Press [Enter] to continue"
-                mongoimport --db looma --file /tmp/textsFromMongo.tmp
+                mongoimport --db looma --collection text_files --file /tmp/textsFromMongo.tmp
                 # read -p "Press [Enter] to continue"
                 rm /tmp/lessonsFromMongo.tmp
                 rm /tmp/textsFromMongo.tmp
@@ -203,7 +205,8 @@ then
 
         if [ -d "content" ]
         then
-             if [[ $1 = "dryrun" ]]
+            find /var/ww/html/content -exec touch {} +
+            if [[ $1 = "dryrun" ]]
             then
                 rsync  -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
 
@@ -216,7 +219,8 @@ then
 
         if [ -d "maps2018" ]
         then
-            if [[ $1 = "dryrun" ]]
+           find /var/ww/html/maps2018 -exec touch {} +
+           if [[ $1 = "dryrun" ]]
             then
                 rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
                 result $?
@@ -227,7 +231,7 @@ then
         fi
         if [ -d "ePaath" ]
         then
-
+            find /var/ww/html/ePaath -exec touch {} +
             if [[ $1 = "dryrun" ]]
                 then
                     rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
@@ -327,18 +331,43 @@ then
 
         #       install new Looma database
         echo
+        echo "****************************************************************"
         echo "- preparing to update Looma database"
+        echo "-   ***note: this will NOT erase any lesson plans already in the database"
         echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
 
         if [[ $input = "y" ]]
         then
             if [[ -d /var/www/html/Looma/mongo-dump/dump/looma ]]
             then
-                # mongo loomaBAK  --eval "db.dropDatabase()"               # remove old BAK
-                # mongo looma --eval "db.copyDatabase('looma','loomaBAK')" # backup current db
-                # mongo looma --eval "db.dropDatabase()"                   # remove current db
-                mongorestore --quiet --db looma /var/www/html/Looma/mongo-dump/dump/looma/       # install new db changes into existing db
-                result $?
+
+            # [mongorestore doesnt update existing documents that have changes]
+            # to fix this, we use the following procedure:
+            #     temp save locally created documents (lessons and texts)
+            #     update all documents to latest version from the looma archive
+            #     then re-load the locally created documents
+            # mongoexport collections 'lessons' and 'text_files' to temp files
+            # drop db 'looma' so mongorestore from archives will update all documents in the db
+            # mongorestore db looma dump from looma archive on USB
+            # finally, mongoimport the temp files to collectons 'lessons' and 'text_files' to re-instate locally created lessons and texts
+
+                mongoexport --db looma --collection lessons    --out /tmp/lessonsFromMongo.tmp
+                # read -p "Press [Enter] to continue"
+                mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
+                # read -p "Press [Enter] to continue"
+                mongo looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
+
+            mongorestore --quiet --db looma /var/www/html/Looma/mongo-dump/dump/looma/       # install new db changes into existing db
+
+                # read -p "Press [Enter] to continue"
+                mongoimport --db looma --collection lessons    --file /tmp/lessonsFromMongo.tmp
+                # read -p "Press [Enter] to continue"
+                mongoimport --db looma --collection text_files --file /tmp/textsFromMongo.tmp
+                # read -p "Press [Enter] to continue"
+                rm /tmp/lessonsFromMongo.tmp
+                rm /tmp/textsFromMongo.tmp
+
+            result $?
             else echo "ERROR: no source dir (/var/www/html/Looma/mongo-dump/dump/looma) for mongo restore"
             fi
         else
@@ -361,6 +390,7 @@ then
        SECONDS=0
 
        if [[ $1 = "dryrun" ]]
+            find /var/ww/html/content -exec touch {} +
             then
                rsync -az  --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
                 result $?

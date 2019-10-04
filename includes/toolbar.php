@@ -72,7 +72,7 @@
 				<?php tooltip("Info") ?>
 			</button>
 
-			<button  class="toolbar-button back-button" onclick="parent.history.back();">
+			<button  class="toolbar-button back-button">
 				<img draggable="false" src="images/back-arrow.png" height = "80%"  >
 				<?php tooltip("Back") ?>
 			</button>
@@ -88,9 +88,11 @@
       		</span>
             <br>
 			<span id="datetime"></span>
+
+            <!-- NOTE: display AMAZON  logo is we can detect that this instance of looma is running on AWS
+            <span id="amazon"><img src="images/logos/amazon.png"></span>
+            -->
 		</div>
-
-
 
         <img id="padlock"
              draggable="false"

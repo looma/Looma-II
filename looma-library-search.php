@@ -50,5 +50,6 @@ include ('includes/js-includes.php'); ?>
 <!--<script src="js/jquery-ui.min.js"></script>-->
 <script src="js/looma-search.js"></script>
 <script src="js/looma-library-search.js"></script>
+<!--<script src="js/bubble_cursor.js"></script>-->
 
 </body>

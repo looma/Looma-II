@@ -43,7 +43,7 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
 
 	     <div id="media-controls">
 
-         <div id="time" class="title">0:00</div>
+         <div id="time" class="time title">0:00</div>
 
               <br><button type="button" class="media play-pause"><?php keyword('Play') ?></button>
               <input type="range"       class="video seek-bar" value="0" style="display:inline-block">

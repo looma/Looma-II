@@ -67,7 +67,7 @@ require_once('includes/looma-utilities.php');
             if ($activity  == "true") {
 
                 $resultId = $result['_id'];
-                
+
                 $mongoID = new MongoID($resultId); // mongoID of document we just saved
                 $query = array("ft" => $insert['ft'], "mongoID" => $mongoID);
 
@@ -332,7 +332,7 @@ if ( isset($_REQUEST["cmd"]) ) {
                  $insert['nepali'] = $_REQUEST['nepali'];
             else $insert['data']   = $_REQUEST['data'];
 
-            saveToMongo($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            saveToMongo($dbCollection, htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if ( ($collection == "lesson") || ($collection == "lessons")) {
             //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
@@ -344,7 +344,7 @@ if ( isset($_REQUEST["cmd"]) ) {
                 "date" => gmdate("Y.m.d"),  //using greenwich time
                 "data" => $_REQUEST["data"]
             );
-            saveToMongo($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            saveToMongo($dbCollection, htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if (($collection == "edited_videos")  || ($collection == "slideshows")) {
             //$thumb = isset($_REQUEST['thumb']) ? $_REQUEST['thumb'] : "";
@@ -357,7 +357,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             );
             if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
 
-            saveToMongo($dbCollection, $_REQUEST['dn'], $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            saveToMongo($dbCollection, htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if ($collection == "activities") {
             $insert = $_REQUEST['data'];
@@ -376,7 +376,10 @@ if ( isset($_REQUEST["cmd"]) ) {
     // - - - RENAME - - - //
     ////////////////////////
     case "rename":
-        changename($dbCollection, htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), $_REQUEST['newname'], $_REQUEST['ft'], true);
+        changename($dbCollection,
+                   htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES),
+                   htmlspecialchars_decode($_REQUEST['newname'],ENT_QUOTES),
+                   $_REQUEST['ft'], true);
         return;
     // end case "rename"
 
@@ -388,7 +391,7 @@ if ( isset($_REQUEST["cmd"]) ) {
 
    // echo "in 'exists', dn = " . $_REQUEST['dn']. "ft = " . $_REQUEST['ft']. "collection = " . $_REQUEST['collection'];
 
-        $query = array('dn' => $_REQUEST['dn'], 'ft' => $_REQUEST['ft']);
+        $query = array('dn' => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), 'ft' => $_REQUEST['ft']);
         $projection = array("_id" => 1, "author" => 1);
         $result = $dbCollection->findOne($query, $projection);
         if ($result) echo json_encode(array("_id" => $result["_id"],
@@ -402,11 +405,11 @@ if ( isset($_REQUEST["cmd"]) ) {
     // - - - DELETE - - - //
     ////////////////////////
     case "delete":
-        $query = array('dn' => $_REQUEST['dn'], 'ft' => $_REQUEST['ft']);
+        $query = array('dn' => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), 'ft' => $_REQUEST['ft']);
         $file = $dbCollection->findOne($query);
         if ($file) {
             $dbCollection->remove($query, array("justOne" => true));
-            echo 'Looma-database-utilities.php, deleted file: ' .  $_REQUEST['dn'] . ' of type: ' . $_REQUEST['ft'];
+            echo 'Looma-database-utilities.php, deleted file: ' .  htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES) . ' of type: ' . $_REQUEST['ft'];
 
             // delete any references to the file from Activities collection
             $removequery = array('mongoID' => new MongoId($file['_id']));
@@ -828,7 +831,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             //print_r ($query);
 
             $changes = []; $unsets = [];
-            if (isset($_REQUEST['dn'])  && $_REQUEST['dn'])  $changes['dn'] =  $_REQUEST['dn'];
+            if (isset($_REQUEST['dn'])  && $_REQUEST['dn'])  $changes['dn'] =  htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES);
             if (isset($_REQUEST['src']) && $_REQUEST['src']) $changes['src'] = $_REQUEST['src'];
 
             // if key1 is specified, then set key1 and either set or reset keys 2,3,4
@@ -885,7 +888,7 @@ if ( isset($_REQUEST["cmd"]) ) {
                 // insert ACTIVITY in mongoDB
 
               $insert = [];
-              if (isset($_REQUEST['dn']))  $insert['dn'] =  $_REQUEST['dn'];
+              if (isset($_REQUEST['dn']))  $insert['dn'] =  htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES);
               if (isset($_REQUEST['src'])) $insert['src'] = $_REQUEST['src'];
 
               if (isset($_REQUEST['chapter'])) $insert['ch_id'] = '[' . $_REQUEST['chapter'] . ']';

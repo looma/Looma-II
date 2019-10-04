@@ -335,7 +335,7 @@ thumbnail: function (filename, filepath, filetype) {
                 else if (filepath && filepath.indexOf('/W4S/') >= 0) {
                     imgsrc = homedirectory + '/content/W4S/thumbnail.png';
                 }
-                else if (filetype == "mp3" || filetype == "m4a") {  //audio
+                else if (filetype == "mp3" || filetype == "m4a" || filetype == "audio") {  //audio
                     if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
                     imgsrc = path + "thumbnail.png";
                 }
@@ -368,7 +368,8 @@ thumbnail: function (filename, filepath, filetype) {
                 else if (filetype == "lesson") {
                     imgsrc = "images/lesson2.png";
                 }
-                /*fix by looking up DN in mongo*/         else if (filetype == "evi") {
+                /*fix by looking up DN in mongo*/
+                else if (filetype == "evi") {
                     imgsrc = "images/video.png";
                 }
                 else if (filetype == "history") {
@@ -685,7 +686,7 @@ sienna_define : function(word, succeed, fail) {
                 } else {
                     succeed(definition['def']);
 
-                }       
+                }
             };
             function rwnotfound() {
                 succeed(definition['def']);

@@ -50,6 +50,11 @@ body {
      grid-template-columns: [left] repeat(16, 1fr)[toolbar] 1fr [right];
  }
  
+body * {
+    -webkit-user-drag:none;
+    -moz-user-drag: none;
+}
+
 #fullscreen {
     background-color: var(--looma-blue);
 }
@@ -184,6 +189,9 @@ h1.title, h2.title, h3.title {
     width:25vw;
 }
 
+#amazon {width:10px;}
+#amazon img {height:4vh;width:5vw;}
+
 div.viewer {
 	width:100%;
 	height:100%;
@@ -280,13 +288,15 @@ button {
 button:hover {
 	color: white;
 	background-color:#091F48;
-	border-color: white;
+	border-color: yellow;
+    border-width:4px;
 	/*transform: scale(1.5,1.5);*/
 }
 
-button.img:hover {
+/*button.img:hover {
     transform: scale(1.2,1.2);
 }
+*/
 
 /* not used??
 button.back {
@@ -442,13 +452,12 @@ span:hover .xlat {
     position:fixed;
     top:20px;
     right:15px;
-    z-index: 100;
+    z-index: 1000;
     border: 1px solid #000000;
     border-radius: 3px;
     background-color:#FAFCAC;
     font-size: 1em;
     color:#000000;}
-
 
 span.tip { display:none;}
 
@@ -726,9 +735,11 @@ button.activities, button.lesson {
     float:right;
 }
 
+/*
 button.chapter:hover, button.activity:hover, button.lesson:hover {
 	transform: scale(1.2,1.2);
 }
+*/
 
 button.footer {
 	height: 50%;

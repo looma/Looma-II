@@ -96,6 +96,8 @@ mkdir -p loomaupdate/content   #in case its not already there
 
 cd loomaupdate
 
+RO="58191@usw-s008.rsync.net"
+
 echo
 echo "**************************************************"
 echo "- preparing to update Looma code on the USB memory"

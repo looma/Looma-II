@@ -23,15 +23,20 @@ include ('includes/header.php');
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>Release 5.3.1, AUG 2019   </h4>
-        <h4> <i class="fa fa fa-copyright"></i> VillageTech Solutions</h4>
-        <h4>Contact:  info AT villagetechsolutions DOT org</h4>
-        <span href="looma-info.php"></span>
-        <img draggable="false" src="images/logos/CC-BY-SA.png" height="33px">
-
+        <h4>Release 5.3.2, AUG 2019   </h4>
         <!-- copyright notice, with link to vts.org-->
         <span class='glyphicon glyphicon-copyright-mark'></span>2019
         <a draggable="false"  class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
+        <h4>Contact:  info AT villagetechsolutions DOT org</h4>
+        <!--<a href="https://creativecommons.org/licenses/by-sa/2.0/">License: CC-BY-SA-NC-2.0</a>-->
+
+       This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
+            Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+
+        <img draggable="false"  alt="Creative Commons License" src="images/logos/CC-BY-NC-SA.png" height="33px">
+
+
 
         <br>
         <h5> Attributions for code and content used in Looma: </h5>
@@ -61,11 +66,13 @@ include ('includes/header.php');
             <br>
             <a draggable="false"  class="attribution" href="https://jquery.com" target="_blank">
                 <img draggable="false" src="images/logos/jquery-logo.png" height="66px"></a>
+            <a draggable="false"  class="attribution" href="https://aws.amazon.com" target="_blank">
+                <img draggable="false" src="images/logos/AWS.png" height="66px"></a>
             <span><img draggable="false" src="images/logos/css3-html5-logo.png" height="44px"></span>
             <a draggable="false"  class="attribution" href="https://www.mongodb.com" target="_blank">
                 <img draggable="false" src="images/logos/mongodb-logo.png" height="66px"></a>
-            <a draggable="false"  class="attribution" href="https://www.jetbrains.com/idea/" target="_blank">
-                <img draggable="false" src="images/logos/intellij.png" height="44px"></a>
+            <a draggable="false"  class="attribution" href="https://www.jetbrains.com/?from=Looma" target="_blank">
+                <img draggable="false" src="images/logos/jetbrains.svg" height="44px"></a>
             <a draggable="false"  class="attribution" href="https://www.stackoverflow.org" target="_blank">
                 <img draggable="false" src="images/logos/stackoverflow.png" height="66px"></a>
             <a draggable="false"  class="attribution" href="http://www.villagetechsolutions.org" target="_blank">

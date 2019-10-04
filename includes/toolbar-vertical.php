@@ -71,7 +71,7 @@
 				<?php tooltip('Info');?>
 			</button>
 
-			<button  class="toolbar-button-vertical" onclick="parent.history.back();">
+			<button  class="toolbar-button-vertical back-button">
 				<img draggable="false" src="images/back-arrow.png" height = "70%"  >
 				<?php tooltip('Back');?>
 			</button>

@@ -11,5 +11,6 @@ Description: adds media controls to looma-audio.php
 
 'use strict';
 $(document).ready(function() {
-    attachMediaControls();  //looma-media-controls.js adds eventlisteners to play/pause/volume/slider controls
+    var audio = document.getElementById("audio");
+    attachMediaControls(audio);  //looma-media-controls.js adds eventlisteners to play/pause/volume/slider controls
 });

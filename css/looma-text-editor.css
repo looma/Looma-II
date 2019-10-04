@@ -107,17 +107,16 @@ button.result {
     border: 2px solid black;
     border-radius:3px;
     background-color:lightgray;
-    zoom:200%;
+    /*zoom:200%;*/
     overflow:hidden;
 }
+#preview * {font-size:0.7vw !important;}
+#preview font {font-size:1em;}
 
 button.speak, button.lookup, button#fullscreen-control {
     display:none;
 }
 
-#preview {
-    display: none;
-}
 #filesearch-result button:hover #preview{
     display: block;
 }

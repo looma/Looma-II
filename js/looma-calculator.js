@@ -101,6 +101,13 @@ function Neg () {
     show(temp.toString() + decimal);
 };
 
+function Back () {
+    if(!FlagNewNum && readout.length > 0) {
+        readout = readout.substring(0, readout.length - 1);
+        show(readout);
+    }
+};
+
 function Percent () {
     var temp =  100 * Number(readout);
     show(temp.toString());

@@ -273,6 +273,55 @@ function  quit() {
     else window.history.back();  //race condition? savework() AJAX may not run??
 };
 
+
+///////////////////////////////
+//////        xQUIT        /////
+///////////////////////////////
+async function  xquit() {
+    if (callbacks['modified']()) var result = await xsavework(currentname, currentcollection, currentfiletype)
+        .then(function(result) {
+            if (result === 'ok') window.history.back()
+            else return; //when result === 'cancel
+        });
+    else window.history.back();
+};
+
+///////////////////////////////
+//////  xSAVEWORK          /////
+///////////////////////////////
+async function xsavework(name, collection, filetype) {  // filetype is base type (not type-template)
+    
+    if (name == "") {
+        await LOOMA.xprompt('Enter a file name to save current work: ')
+            .then(function(result) {
+                if (result !== 'do not save' && result  !== 'cancel') {
+                    if (template) callbacks['savetemplate'](result);
+                    else          callbacks['save'](result);
+                    setname(savename);
+                    return 'ok'
+                } else if (result === 'do not save') {
+                    return 'ok'
+                } else return 'cancel';
+            });
+    }
+    else if (owner) {
+        await LOOMA.xconfirm('Save current work in file: ' + name + '?')
+            .then(function(result) {
+                if (result !== 'do not save' && result  !== 'cancel') {
+                    if (template) callbacks['savetemplate'](name);
+                    else          callbacks['save'](name);
+                } else if (result === 'do not save') {
+                    return 'ok'
+                } else return 'cancel';
+            });
+    }
+    else {  //NOT owner
+        LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
+        //callbacks['checkpoint']();
+        return 'cancel';
+    }
+}; // end xSAVEWORK()
+
 ///////////////////////////////
 //////   opensearch       /////
 ///////////////////////////////

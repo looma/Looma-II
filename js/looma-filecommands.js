@@ -49,7 +49,7 @@ var callbacks = {      //re-set by calling program - to custom handler for each 
     modified:        doNothing,
     checkpoint:      doNothing,
     showsearchitems: doNothing,     // function to hide or show OPEN search form items
-    quit:            quit           // default QUIT action is save work and the editor page. override in page's JS if needed
+    quit:            xquit           // default QUIT action is save work and the editor page. override in page's JS if needed
 };
 
 function doNothing(){return;};  //not actually called
@@ -98,9 +98,9 @@ function savework(name, collection, filetype) {  // filetype is base type (not t
 
     if (name == "") {
            LOOMA.prompt('Enter a file name to save current work: ',
-                function(savename) {if (template) callbacks['savetemplate'](savename);
-                                    else          callbacks['save'](savename);
-                                    setname(savename);
+                function(name) {if (template) callbacks['savetemplate'](name);
+                                    else          callbacks['save'](name);
+                                    setname(name);
                                     },
                 function(){
                     //this checkpoint call should not be used if quit worked correctly
@@ -278,49 +278,137 @@ function  quit() {
 //////        xQUIT        /////
 ///////////////////////////////
 async function  xquit() {
-    if (callbacks['modified']()) var result = await xsavework(currentname, currentcollection, currentfiletype)
+    var result;
+    console.log('starting Xquit');
+    await xsavework(currentname, currentcollection, currentfiletype)
         .then(function(result) {
-            if (result === 'ok') window.history.back()
-            else return; //when result === 'cancel
+            console.log('    exiting Xquit with ' + result);
+            window.history.back();
+        })
+        .catch(function(result) {
+            console.log('    cancelling Xquit with ' + result);
+            return;
         });
-    else window.history.back();
-};
+}; // end quit()
 
 ///////////////////////////////
 //////  xSAVEWORK          /////
 ///////////////////////////////
-async function xsavework(name, collection, filetype) {  // filetype is base type (not type-template)
-    
-    if (name == "") {
-        await LOOMA.xprompt('Enter a file name to save current work: ')
-            .then(function(result) {
-                if (result !== 'do not save' && result  !== 'cancel') {
-                    if (template) callbacks['savetemplate'](result);
-                    else          callbacks['save'](result);
-                    setname(savename);
-                    return 'ok'
-                } else if (result === 'do not save') {
-                    return 'ok'
-                } else return 'cancel';
-            });
-    }
-    else if (owner) {
-        await LOOMA.xconfirm('Save current work in file: ' + name + '?')
-            .then(function(result) {
-                if (result !== 'do not save' && result  !== 'cancel') {
-                    if (template) callbacks['savetemplate'](name);
-                    else          callbacks['save'](name);
-                } else if (result === 'do not save') {
-                    return 'ok'
-                } else return 'cancel';
-            });
-    }
-    else {  //NOT owner
-        LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
-        //callbacks['checkpoint']();
-        return 'cancel';
-    }
+async function xsavework(name, collection, filetype)  {  // filetype is base type (not type-template)
+    return new Promise(async (resolve, reject) => {
+        console.log('starting Xsavework');
+        if      ( !callbacks['modified']() ) resolve('not modified')
+        else if (name == "") {
+           await getName()
+            .then(function(newname) {
+                //if (template) callbacks['savetemplate'](newname);
+                //else          callbacks['save'](newname);
+                console.log('new name is ' + newname);
+                setname(newname);
+                resolve('saved file ' + newname);
+                })
+            .catch(function() {reject('canceled');})
+        } else if (owner) {
+            await confirmSave()
+                .then(function() {
+                   // if (template) callbacks['savetemplate'](name);
+                   // else          callbacks['save'](name);
+                    console.log('confirmed save of ' + newname);
+                    setname(name);
+                    resolve('saved file ' + name);
+                })
+          .catch(function() {reject('canceled');})
+        } else {  //NOT owner
+            LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
+            reject('not owner');
+        }
+    });
 }; // end xSAVEWORK()
+
+///////////////////////////////
+//////  getName           /////
+///////////////////////////////
+async function getName () {
+    //show popup;
+    // cancel buttons onclick - {hidepopup();reject ('canceled');}
+    // OK button onclick - {if (name-entered) {hidepopup();resolve('name is' + name);}
+    //
+    return new Promise((resolve, reject) => {
+        
+        //LOOMA.closePopup();
+        //LOOMA.makeTransparent();
+        var msg = 'Enter a file name: ';
+        $(document.body).append("<div class='popup textEntry'>" +
+            "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
+            "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
+            "<input id='popup-input' autofocus></input>" +
+            "<button id='confirm-popup' class='popup-button'>"+
+            LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>").show();   //.hide().fadeIn(1000) ;
+        
+        $('#popup-input').focus();
+        
+        $('#popup-input').on( 'keydown', function( e ) {
+            if ( e.keyCode === 13 && $('#popup-input').val() != '') {
+                console.log('PROMPT returned ', $('#popup-input').val());
+                resolve($('#popup-input').val());
+                LOOMA.closePopup();
+            };
+        });
+        
+        $('#confirm-popup').click(function() {
+            //$("#confirm-popup").off('click');
+            if ($('#popup-input').val() != '') {
+                console.log('PROMPT returned ', $('#popup-input').val());
+                resolve($('#popup-input').val());
+                LOOMA.closePopup();
+            };
+        });
+        
+        $('#dismiss-popup, #close-popup').click(function() {
+            //$("#close-popup").off('click');
+            //$("#dismiss-popup").off('click');
+            LOOMA.closePopup();
+            reject('canceled');
+        });
+    });
+};  //end getName()
+
+///////////////////////////////
+//////  confirmSave       /////
+///////////////////////////////
+async function confirmSave () {
+    //show popup;
+    // cancel buttons onclick - {hidepopup();reject ('canceled');}
+    // OK button onclick - {resolve('confirmed'}
+    //
+    return new Promise((resolve, reject) => {
+        
+        LOOMA.closePopup();
+        LOOMA.makeTransparent();
+        var msg = 'Save current work in file: ' + name + '?';
+    
+        $(document.body).append("<div class='popup textEntry'>" +
+            "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
+            "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
+            "<button id='confirm-popup' class='popup-button'>"+
+            LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>").show();   //.hide().fadeIn(1000) ;
+        
+        $('#confirm-popup').click(function() {
+            //$("#confirm-popup").off('click');
+            console.log('confirmed save work in current filename');
+            LOOMA.closePopup();
+            resolve('confirmed');
+        });
+        
+        $('#dismiss-popup, #close-popup').click(function() {
+            //$("#close-popup").off('click');
+            //$("#dismiss-popup").off('click');
+            console.log('canceled save work in current filename');
+            LOOMA.closePopup();
+            reject('canceled');
+        });
+    });
+};  //end confirmSave()
 
 ///////////////////////////////
 //////   opensearch       /////

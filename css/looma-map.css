@@ -67,6 +67,7 @@ img.info-image{
 
 /*Images in the popup box for the map*/
 img.pop-image{
+    height:15vh !important;
     width:auto;
 }
 

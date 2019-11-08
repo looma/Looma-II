@@ -32,6 +32,7 @@
         $games_collection      = $loomaDB -> games;
         $folders_collection    = $loomaDB -> folders;
         $edited_videos_collection = $loomaDB -> edited_videos;
+        $volunteers_collection = $loomaDB -> volunteers;
 
         //$sienna_collection    = $loomaDB -> sienna;
 

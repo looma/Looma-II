@@ -444,7 +444,10 @@ button.navigate {
  ********************/
 .xlat {display:none;}
 
-span.english-keyword, span.native-keyword {display:inline-block;}
+span.english-keyword, span.native-keyword {
+    display:inline-block;
+}
+
 .native-keyword {display:none;}
 
 span:hover .xlat {
@@ -463,7 +466,7 @@ span.tip { display:none;}
 
 button:hover span.tip.yes-show 	{
     display:block;
-    position:absolute;
+    position:relative;
     
     bottom:3px;
     

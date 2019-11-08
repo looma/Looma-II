@@ -123,7 +123,7 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
 }; //end lessonunpack()
 
 ///////// lessondisplay  /////////
-function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response)); /*lessoncheckpoint();*/};
+function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response)); /*lessoncheckpoint();  NOT needed. called in lessonunpack*/};
 
 /////////  lessonsave  /////////
 function lessonsave(name) {
@@ -895,7 +895,7 @@ window.onload = function () {
 
     $('#lesson-checkbox').prop('disabled' , true).hide();
     $('#includeLesson').val(false);
-        
+    
  /*       $("#dropdown_grade, #dropdown_subject").change( function(){
             $('#div_chapter').hide();
             

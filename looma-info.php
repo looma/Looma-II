@@ -11,6 +11,7 @@ Description:  for Looma 2
 -->
 <?php $page_title = 'Looma Information';
 include ('includes/header.php');
+require ('includes/mongo-connect.php');
 ?>
 <link rel="stylesheet" href="css/font-awesome.min.css">
 <link rel="stylesheet" href="css/looma-info.css">
@@ -92,6 +93,8 @@ include ('includes/header.php');
 
     <div id="credits">
         <ul>
+
+
             <!-- updated list from DS July '16-->
 
             <!-- THIS LIST SHOULD BE IN A MONGO COLLECTION -->
@@ -99,6 +102,14 @@ include ('includes/header.php');
             <li> </li><li> </li><li> </li><li> </li><li> </li> <!-- these empty 'li's give a pause at the start -->
             <li>  - -  </li>
 
+        <?php
+            $volunteers = $volunteers_collection -> find();      //get volunteer names
+            $volunteerlist = iterator_to_array($volunteers);     //convert to array
+            shuffle($volunteerlist);                      //randomize the order
+            foreach ($volunteerlist as $volunteer) echo "<li>" . $volunteer['name'] . "</li>";
+        ?>
+
+        <!--
             <li>Karuna Paneru</li>
             <li>Katie Aufricht</li>
             <li>Charlotte Lee</li>
@@ -355,7 +366,7 @@ include ('includes/header.php');
             <li>William Hoff</li>
             <li>Wouter Zwart</li>
             <li>Zach Jesberger</li>
-
+        -->
         </ul>
     </div>
 
@@ -375,6 +386,7 @@ include ('includes/header.php');
             //echo "<p class=\"ip\">IP Address: " . gethostbyname('localhost') . "</p>";
             $ip = shell_exec('/usr/local/bin/loomaIP');
             echo '<p class="ip">IP Address: ' . $ip . '</p>';
+            //echo '<p>pid: ' . getmypid() . '</p>';
             ?>
 
         </div>

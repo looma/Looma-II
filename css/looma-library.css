@@ -11,8 +11,10 @@ Revision: Looma 2.0.x
 .filter-radio, .source-chk, .type-chk, .filter-input, .media-input {zoom:3;}
 
 p {margin-bottom: 0px;}
+span.english-keyword, span.native-keyword {display:block;}
 
-h3 span {display:inline-block;}
+h3 span.english-keyword, span.native-keyword {display:inline-block;}
+
 
 .black-border {
     border: 2px solid black;

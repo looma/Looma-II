@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-Filename: looma-shutdown.php
+Filename: looma-halt.php
 Date: Nov 2019
 Description: looma PHP template
 
@@ -9,7 +9,7 @@ Owner:  VillageTech Solutions (villagetechsolutions.org)
 Revision: Looma 5.4
 -->
 
-<?php $page_title = 'Looma Shutdown';
+<?php $page_title = 'Looma Halt';
 require_once ('includes/header.php');
 ?>
 
@@ -21,14 +21,14 @@ require_once ('includes/header.php');
 <div id="main-container-horizontal">
     <div id="fullscreen">
         <span><img src="images/logos/LoomaLogoTransparent.png"></span>
-        <h2>Looma Shutdown Page</h2><br>
-        <h3>This page will shut down Looma and power off the computer</h3>
+        <h2>Looma Halt Page</h2><br>
+        <h3>This page will halt Looma and open the Linux Desktop</h3>
     </div>
 </div>
 
 <?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>
 
-<script src="js/looma-shutdown.js"></script>
+<script src="js/looma-halt.js"></script>
 </body>
 </html>

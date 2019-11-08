@@ -19,7 +19,7 @@ Revision: Looma 3.0
 }
 form#search *{
     text-align: center;
-    vertical-align:middle;
+   /* vertical-align:middle; */
     margin-bottom: 0;
 }
 

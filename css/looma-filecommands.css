@@ -168,3 +168,14 @@ button#filesearch-submit{
     background-color:rgba(200,200,200,0);
     border-radius: 4px;
 }
+
+#modified {
+    background-color:green;
+    position:absolute;
+    bottom:3%;
+    right:4%;
+    width:3vh;
+    height:3vh;
+    border-radius:1.5vh;
+    z-index:2000;
+}

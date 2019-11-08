@@ -166,7 +166,7 @@ function unpack (response) {
 }; //end unpack()
 
 ///////// editor_display  /////////
-function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); /*editor_checkpoint();*/};
+function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); editor_checkpoint();};
 
 /////////  editor_save  /////////
 //
@@ -740,9 +740,6 @@ $(document).ready(function() {
     //callback functions expected by looma-filecommands.js:
     callbacks ['savetemplate']  =   function(){console.log ('filecommand: savetemplate called');};
     callbacks ['open']  =           function(){console.log ('filecommand: open called');};
-    //callbacks ['undocheckpoint'] =  function(){console.log ('filecommand: undocheckpoint called');};
-    //callbacks ['quit'] not overridden - use default action from filecommands.js
-  
     callbacks ['clear'] =           editor_clear;
     callbacks ['save']  =           editor_save;
     callbacks ['savetemplate']  =   editor_templatesave;
@@ -750,8 +747,9 @@ $(document).ready(function() {
     callbacks ['modified'] =        editor_modified;
     //callbacks ['showsearchitems'] = editor_showsearchitems;
     callbacks ['checkpoint'] =      editor_checkpoint;
-  
-  
+    //callbacks ['undocheckpoint'] =  function(){console.log ('filecommand: undocheckpoint called');};
+    //callbacks ['quit'] not overridden - use default action from filecommands.js
+
 ///////////////////////////////
 // click handlers for '.add', '.preview' buttons
 ///////////////////////////////

@@ -1,4 +1,4 @@
- <!doctype html>
+<!doctype html>
 <!--
 Name: Skip
 Email: skip@stritter.com
@@ -12,33 +12,11 @@ Description:  displays and navigates content folders for Looma
 <?php $page_title = 'Looma Library';
         require ('includes/header.php');
         require ('includes/mongo-connect.php');
-
         // load: function makeActivityButton
-        //makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg)
-        require('includes/looma-utilities.php');
-
-        function folderDisplayName($folder) {
-            global $folders_collection;
-            // look in the database to see if this folder has a DISPLAYNAME
-            $query = array('fn' => $folder);
-            $projection = array('_id' => 0, 'dn' => 1, 'ndn' => 1);
-            $folderMongo = $folders_collection -> findOne($query, $projection);
-
-            if ($folderMongo) {
-                if (array_key_exists('dn', $folderMongo) && array_key_exists('ndn', $folderMongo)) {
-                    echo "<span class='english-keyword'>"
-                        . $folderMongo['dn'] .
-                        "<span class='xlat'>" . $folderMongo['ndn'] . "</span>" .
-                        "</span>";
-                    echo "<span class='native-keyword' >"
-                        . $folderMongo['ndn'] .
-                        "<span class='xlat'>" . $folderMongo['dn'] . "</span>" .
-                        "</span>";
-                } else if (array_key_exists('dn', $folderMongo)) echo $folderMongo['dn'];
-            }  else echo $folder;
-        }  //end folderDisplayName()
-
-?>
+        //usage: makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
+        //                          $mongo_id, $ole_id, $url, $pg, $zoom,
+        //                          $grade, $epversion, $nfn, $npg)
+        require('includes/looma-utilities.php');?>
 
     <link rel = "Stylesheet" type = "text/css" href = "css/looma-library.css">
 </head>
@@ -46,12 +24,37 @@ Description:  displays and navigates content folders for Looma
 <body>
     <div id="main-container-horizontal" class="scroll">
 
-<?php //***********MAIN CODE **********//
+<?php
 
-    // get filepath to use for start of DIR traversal
+    function folderDisplayName($folder) {
+        global $folders_collection;
+        // look in the database to see if this folder has a DISPLAYNAME
+        $query = array('fn' => $folder);
+        $projection = array('_id' => 0, 'dn' => 1, 'ndn' => 1);
+        $folderMongo = $folders_collection -> findOne($query, $projection);
+
+        if ($folderMongo) {
+            if (array_key_exists('dn', $folderMongo) && array_key_exists('ndn', $folderMongo)) {
+                echo "<span class='english-keyword'>"
+                    . $folderMongo['dn'] .
+                    "<span class='xlat'>" . $folderMongo['ndn'] . "</span>" .
+                    "</span>";
+                echo "<span class='native-keyword' >"
+                    . $folderMongo['ndn'] .
+                    "<span class='xlat'>" . $folderMongo['dn'] . "</span>" .
+                    "</span>";
+            } else if (array_key_exists('dn', $folderMongo)) echo $folderMongo['dn'];
+        }  else echo $folder;
+    }  //end folderDisplayName()
+
+    function nextButton() {
+        global $buttons, $maxButtons;
+        $buttons++;
+        if ($buttons > $maxButtons) { $buttons = 1; echo "</tr><tr>";};
+    };
+
+// get filepath to use for start of DIR traversal
     if (isset($_GET['fp'])) $path = $_GET['fp']; else $path = "../content/";
-
-                // DEBUG echo "at path " . $path . "folderName is " . folderName($path);
 
     echo "<br><h3 class='title'>"; keyword('Looma Library'); echo ":  ";
     folderDisplayName(folderName($path));
@@ -62,119 +65,159 @@ Description:  displays and navigates content folders for Looma
     echo "</button>";
 
 //  first list directories in this directory
-    echo "<br><table id='dir-table'><tr>";
+    echo "<table id='dir-table'><tr>";
+    $dircount = 0;
     $buttons = 1;
     $maxButtons = 3;
 
     $files = [];
 
-    if ( ! isEpaath($path) ) {
-
     //////
-    //gather all the files at this directory into $files[] and sort by filename
+    //gather all the files at this directory into $files[]
     //////
-    foreach (new DirectoryIterator($path) as $fileInfo) {$files[$fileInfo->getFilename()] = $fileInfo; };
+    foreach (new DirectoryIterator($path) as $fileInfo) {
+        $files[$fileInfo->getFilename()] = $fileInfo;
+    };
 
     //NOTE: this sorts on FILENAME - really should sort on DISPLAYNAME
-    $files = natksort($files);  //PHP key sort, sort on keys [e.g. filenames]
+
+////////$files = natksort($files);  //PHP key sort, sort on keys [e.g. filenames]
 
     //if at the top level folder "../content", then move Wikipedia, ePaath and Khan to the top so they are presented first
 
     if ($path == "../content/") {
-        $tmp = $files['Khan'];    unset($files['Khan']);   $files = array('Khan' => $tmp) +   $files;
-        $tmp = $files['epaath'];  unset($files['epaath']); $files = array('epaath' => $tmp) + $files;
-        $tmp = $files['W4S'];     unset($files['W4S']);    $files = array('W4S' => $tmp) +    $files;
+        $tmp = $files['Khan'];
+        unset($files['Khan']);
+        $files = array('Khan' => $tmp) + $files;
+
+        $tmp = $files['epaath'];
+        unset($files['epaath']);
+        $files = array('epaath' => $tmp) + $files;
+
+        $tmp = $files['W4S'];
+        unset($files['W4S']);
+        $files = array('W4S' => $tmp) + $files;
     };
 
-/********************************/
-/**********  DIRs  **************/
-/********************************/
-/*************** iterate through the files in this DIR and make buttons for the DIRs ******************/
+    /********************************************************************************************/
+    /**********  DIRs  **************************************************************************/
+    /********************************************************************************************/
+    /*************** iterate through the files in this DIR and make buttons for the DIRs ********/
+
+    $dirlist = array();
 
     foreach ($files as $file => $dirInfo) {
 
-        //echo "filename is " . $path . $file;
-        //echo "   and isDir is " . (is_dir($path . $file) ? "true" : "false");
-        //echo "   and isFile is " . (is_file($path . $file)?"true":"false");
-        //echo "<br>";
+        //skips ".", "..", and any ".filename", and any directory containing a file named "hidden.txt"
+        if ((is_dir($path . $file)) &&
+            !isHTML($path . $file) &&
+            $file[0] !== "." &&
+            (!file_exists($path . $file . "/hidden.txt"))) {
+            $dircount++;
 
-    //skips ".", "..", and any ".filename", and any directory containing a file named "hidden.txt"
-    if ((is_dir($path . $file)) &&
-        !isHTML($path . $file) &&
-        $file[0] !== "." &&
-        ( ! file_exists($path . $file . "/hidden.txt")))
-    {
-
-    //special case for Wikipedia for Schools
-    //make a button that launches W4S index.htm -- virtual folder
-         if($path . $file == "../content/W4S") {   //create a virtual folder for W4S
+            //special case for Wikipedia for Schools
+            //make a button that launches W4S index.htm -- virtual folder
+            if ($path . $file == "../content/W4S") {   //create a virtual folder for W4S
                 echo "<td>";
                 $dn = "Wikipedia";
                 $ndn = "विकिपीडिया";
                 $ft = "html";
                 $thumb = "../content/W4S/thumbnail.png";
-             makeActivityButton($ft, "../content/W4S/", "index.htm", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "",null,null);
+                makeActivityButton($ft, "../content/W4S/", "index.htm", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null);
                 echo "</td>";
-                //$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-        }  //end IF wiki4schools
+                nextButton();
+            }  //end IF wiki4schools
 
-    //special case for Khan Academy
-    //make a button that launches Khan index.html -- virtual folder
-    else if($path . $file == "../content/Khan") {   //create a virtual folder for Khan
+            //special case for Khan Academy
+            //make a button that launches Khan index.html -- virtual folder
+            else if ($path . $file == "../content/Khan") {   //create a virtual folder for Khan
 
                 echo "<td>";
                 $dn = "Khan Academy";
                 $ndn = "खान";
                 $ft = "html";
                 $thumb = "../content/Khan/thumbnail.png";
-        makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "",null,null);
+                makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null);
                 echo "</td>";
-                //$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-        }  //end IF Khan
+                nextButton();
+            }  //end IF Khan
 
 
-    //special case for Khan Academy
-    //make a button that launches Khan index.html -- virtual folder
-    else if($path . $file == "../content/epaath") {   //create a virtual folder for ePaath
+            //special case for Khan Academy
+            //make a button that launches Khan index.html -- virtual folder
+            else if ($path . $file == "../content/epaath") {   //create a virtual folder for ePaath
 
-        echo "<td>";
-        $dn = "ePaath";
-        //$ndn = "खान";
-        $ft = "html";
-        $thumb = "../content/epaath/thumbnail.png";
-        makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "",null,null);
-        echo "</td>";
-        //$buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-    }  //end IF Khan
+                echo "<td>";
+                $dn = "ePaath";
+                //$ndn = "खान";
+                $ft = "html";
+                $thumb = "../content/epaath/thumbnail.png";
+                makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null);
+                echo "</td>";
+                nextButton();
+            }  //end IF Khan
 
-    // regular case
-    else {  //make a regular directory button
+            // regular case
+            else {  //make a regular directory button
 
-                echo "<td><a href='looma-library.php?fp=" . $path . $file .
-                "/'><button class='activity img zeroScroll'>" .
-                folderThumbnail($path . $file);
-                folderDisplayName($file);
-                echo "<span class='tip yes-show big-show' >" . $file . "</span>" .
-                "</button></a></td>";
-            }
-    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+                // look in the database to see if this folder has a DISPLAYNAME
+                $query = array('fn' => $file);
+                $projection = array('_id' => 0, 'dn' => 1, 'ndn' => 1);
+                $folderMongo = $folders_collection->findOne($query, $projection);
 
+                if ($folderMongo) {
+                    if (array_key_exists('dn', $folderMongo)) $dirDn = $folderMongo['dn'];
+                    if (array_key_exists('ndn', $folderMongo)) $dirnDn = $folderMongo['ndn'];
+
+                } else {
+                    $dirDn = $file;  $dirnDn = "";
+                };
+                $dirlist[] = array('file' => $file, 'path' => $path, 'dn' => $dirDn, 'ndn' => $dirnDn);
+            };
         };
-    }; // ********** end FOREACH directory  **************
-};
+    };// ********** end FOREACH directory  **************
 
-/********************************/
-/********  PSEUDO folders  ******/
-/********************************/
-/*************** make buttons for the "pseudo-folders" in this DIR ******************/
+    if (sizeof($dirlist) > 0) {
+        // sort the list of dirs by DN
+        usort($dirlist, function ($a, $b) {
+            return strcasecmp($a['dn'], $b['dn']) > 0;
+        });
 
+
+        foreach ($dirlist as $dir) {
+            echo "<td><a href='looma-library.php?fp=" . $dir['path'] . $dir['file'] . "/'>" .
+                "<button class='activity img zeroScroll'>" .
+                folderThumbnail($dir['path'] . $dir['file']);
+
+            echo "<span class='english-keyword'>"
+                . $dir['dn'] .
+                "<span class='xlat'>" . $dir['ndn'] . "</span>" .
+                "</span>";
+            echo "<span class='native-keyword' >"
+                . $dir['ndn'] .
+                "<span class='xlat'>" . $dir['dn'] . "</span>" .
+                "</span>";
+
+
+                //folderDisplayName($dir['file']);
+            echo "<span class='tip yes-show big-show' >" . $dir['file'] . "</span>" .
+                "</button></a></td>";
+            nextButton();
+        };
+    };
 
     echo "</tr></table>";
-    echo "<hr>";
+
+    /********************************/
+    /********  PSEUDO folders  ******/
+    /********************************/
+    /*************** make buttons for the "pseudo-folders" in this DIR ******************/
+
+   // if ($dircount > 0) echo "<hr>";
 
     //now list files in this directory
 
-    echo "<br><table id='file-table'><tr>";
+    //echo "<table id='file-table'><tr>";
     $buttons = 1;
     $maxButtons = 3;
     $specials = array("_", "-", ".", "/", "'");
@@ -182,30 +225,32 @@ Description:  displays and navigates content folders for Looma
     //now show buttons for all the "files" in this dir,
     // including pseudo-files like maps, histories, edited-videos, epaath and slideshows
 
-        //special case for EDITED VIDEOS
-        //make buttons for EDITED VIDEOS directory -- virtual folder, populated from edited_videos collection in mongoDB
-        //***************************
-    if($path == "../content/edited videos/") {  //populate virtual folder of EDITED VIDEOs
+    //special case for EDITED VIDEOS
+    //make buttons for EDITED VIDEOS directory -- virtual folder, populated from edited_videos collection in mongoDB
+    //***************************
+    if ($path == "../content/edited videos/") {  //populate virtual folder of EDITED VIDEOs
         //If the folder being filled is the edited videos it fills it using
         //all of the entries from the edited_videos collection in the database
         $editedVideos = $edited_videos_collection->find();
         //SORT the found items before sending to client-side
         $editedVideos->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
-         foreach ($editedVideos as $doc) {
-                echo "<td>";
-                $dn = $doc['dn'];
+        echo "<table id='file-table'><tr>";
+
+        foreach ($editedVideos as $doc) {
+            echo "<td>";
+            $dn = $doc['dn'];
             /*  $fn = $doc['vn'] . ".mp4"; //NOTE: BUG: assumes all videos are .mp4. should save extension with evi collection
                 $fp = $doc['vp'];  */
-                $ft = "evi";
-                $thumb = (isset($doc['thumb'])) ? $doc['thumb'] : "";
-                $id = $doc['_id'];
-                //$json = $doc['JSON'];  //NOTE: this passed the full text of the edited script in the URL.
-                                       // should just pass the mongo ID and have the player retrieve the script's full text
-                makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
+            $ft = "evi";
+            $thumb = (isset($doc['thumb'])) ? $doc['thumb'] : "";
+            $id = $doc['_id'];
+            //$json = $doc['JSON'];  //NOTE: this passed the full text of the edited script in the URL.
+            // should just pass the mongo ID and have the player retrieve the script's full text
+            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null);
 
-                echo "</td>";
-                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+            echo "</td>";
+            nextButton();
         }
     }  //end IF edited videos
 
@@ -219,229 +264,243 @@ Description:  displays and navigates content folders for Looma
             //SORT the found items before sending to client-side
             $epaaths->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
+            echo "<table id='file-table'><tr>";
+
             foreach ($epaaths as $doc) {
                 // display an EPAATH play button
                 echo "<td>";
-                    if ($doc['version'] == 2015) {
-                        $file = $doc['fn'];
-                        $thumb = "../content/epaath/activities/" . $file . "/thumbnail.jpg";
-                        $dn = $doc['dn'];
-                        makeActivityButton("EP", $path, $file, $dn, "", $thumb, "", "", "", "", "", "", "",  $doc['version'],null,null);
-                    } else {
-                        makeActivityButton("EP", "", "", $doc['dn'], "", $doc['thumb'], "", "", $doc['oleID'], "", "", "", $doc['grade'], $doc['version'],null,null);
-                    }
+                if ($doc['version'] == 2015) {
+                    $file = $doc['fn'];
+                    $thumb = "../content/epaath/activities/" . $file . "/thumbnail.jpg";
+                    $dn = $doc['dn'];
+                    makeActivityButton("EP", $path, $file, $dn, "", $thumb, "", "", "", "", "", "", "", $doc['version'], null, null);
+                } else {
+                    makeActivityButton("EP", "", "", $doc['dn'], "", $doc['thumb'], "", "", $doc['oleID'], "", "", "", $doc['grade'], $doc['version'], null, null);
+                }
                 echo "</td>";
-                $buttons++; if ($buttons > $maxButtons) { $buttons = 1; echo "</tr><tr>";};
+               nextButton();
             }
         } //end if EP
 
-     else
+        else
 
-         //special case for SLIDESHOW
-         //***************************
-         //make buttons for SLIDESHOW directory -- virtual folder, populated from SLIDESHOWS collection in mongoDB
-         if($path == "../content/slideshows/") {   //populate virtual folder of SLIDESHOWs
-             //If the folder being filled is the slideshow it fills it using
-             //all of the entries from the slideshows collection in the database
+            //special case for SLIDESHOW
+            //***************************
+            //make buttons for SLIDESHOW directory -- virtual folder, populated from SLIDESHOWS collection in mongoDB
+            if ($path == "../content/slideshows/") {   //populate virtual folder of SLIDESHOWs
+                //If the folder being filled is the slideshow it fills it using
+                //all of the entries from the slideshows collection in the database
 
-             $slideshows = $slideshows_collection->find();
-             //SORT the found items before sending to client-side
-             $slideshows->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+                $slideshows = $slideshows_collection->find();
+                //SORT the found items before sending to client-side
+                $slideshows->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
-             foreach ($slideshows as $slideshow) {
+                echo "<table id='file-table'><tr>";
 
-                 echo "<td>";
-                 $dn = $slideshow['dn'];
-                 //$ft = $slideshow['ft'];
-                 $data = $slideshow['data'];
-                 $author = $slideshow['author'];
-                 $date = $slideshow['date'];
-                 if (isset($slideshow['thumb'])) $thumb = $slideshow['thumb']; else $thumb = "";
-                 //NOTE: for now, fp and fn are concatenated in fn
-                 //$path = $slideshow['fp'];
-
-                 $ft = "slideshow";
-                 $id = $slideshow['_id'];  //mongoID of the descriptor for this slideshow
-                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
-                 echo "</td>";
-                 $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-             } //end FOREACH slideshow
-         }  //end IF slideshows
-    else
-
-        //special case for LESSONPLANs
-        //***************************
-        //make buttons for LESSONPLAN directory -- virtual folder, populated from lessons collection in mongoDB
-        if($path == "../content/lessons/") {   //populate virtual folder of lesson plans
-
-            $lessons = $lessons_collection->find();
-            //SORT the found items before sending to client-side
-            $lessons->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
-
-             foreach ($lessons as $lesson) {
-
-                 if ($lesson['ft'] == "lesson") {  //do not display lesson templates
-                    echo "<td>";
-                    $dn = $lesson['dn'];
-                    $ft = "lesson";
-                    $thumb = $path . "/thumbnail.png";
-                    $id = $lesson['_id'];  //mongoID of the descriptor for this lesson
-                     makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
-                    echo "</td>";
-                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-                }
-            } //end FOREACH lesson
-        }  //end IF lessons
-
-    else
-
-        //special case for History Timelines
-        //***************************
-        //make buttons for timelines directory -- virtual folder, populated from histories collection in mongoDB
-        if($path == "../content/timelines/") {   //populate virtual folder of histories
-
-            $histories = $histories_collection->find();
-            //SORT the found items before sending to client-side
-            $histories->sort(array('title' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
-
-             foreach ($histories as $history) {
-
-                        //echo "DEBUG   found lesson " . $lesson['dn'] . "<br>";
-                    echo "<td>";
-                    $dn = $history['title'];
-                    $ft = "history";
-                    $thumb = $path . $dn . "_thumb.jpg";
-                    //$thumb = $path . "/thumbnail.png";
-                    $id = $history['_id'];  //mongoID of the descriptor for this lesson
-                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
-                    echo "</td>";
-                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-
-            } //end FOREACH history
-        }  //end IF histories
-
-    else
-
-        //special case for MAPS
-        //***************************
-        //make buttons for maps directory -- virtual folder, populated from maps collection in mongoDB
-        if($path == "../content/maps/") {   //populate virtual folder of maps
-
-            $query = array('ft' => 'map');
-            $maps = $activities_collection->find($query);
-            //SORT the found items before sending to client-side
-            $maps->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
-
-             foreach ($maps as $map) {
+                foreach ($slideshows as $slideshow) {
 
                     echo "<td>";
-                    $dn = $map['dn'];
-                    //$url = $map['url'];
-                    $ft = "map";
-                    if (isset($map['thumb'])) $thumb = $map['thumb']; else $thumb = $path . "/thumbnail.png";
-                    $id = $map['mongoID'];  //mongoID of the descriptor for this lesson
-                 makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
+                    $dn = $slideshow['dn'];
+                    //$ft = $slideshow['ft'];
+                    $data = $slideshow['data'];
+                    $author = $slideshow['author'];
+                    $date = $slideshow['date'];
+                    if (isset($slideshow['thumb'])) $thumb = $slideshow['thumb']; else $thumb = "";
+                    //NOTE: for now, fp and fn are concatenated in fn
+                    //$path = $slideshow['fp'];
+
+                    $ft = "slideshow";
+                    $id = $slideshow['_id'];  //mongoID of the descriptor for this slideshow
+                    makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null);
                     echo "</td>";
-                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+                    nextButton();
+                } //end FOREACH slideshow
+            }  //end IF slideshows
+            else
 
-            } //end FOREACH map
-        }  //end IF maps
+                //special case for LESSONPLANs
+                //***************************
+                //make buttons for LESSONPLAN directory -- virtual folder, populated from lessons collection in mongoDB
+                if ($path == "../content/lessons/") {   //populate virtual folder of lesson plans
 
-    else {
+                    $lessons = $lessons_collection->find();
+                    //SORT the found items before sending to client-side
+                    $lessons->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
+                    echo "<table id='file-table'><tr>";
 
-/********************************/
-/**********  FILEs  *************/
-/********************************/
-/*************** iterate through the regular files in this DIR
- *************** and make buttons each of the FILES ******************/
+                    foreach ($lessons as $lesson) {
 
-        foreach ($files as $file => $info) {
+                        if (array_key_exists('ft', $lesson) && ($lesson['ft'] == "lesson")) {  //do not display lesson templates
+                            echo "<td>";
+                            $dn = $lesson['dn'];
+                            $ft = "lesson";
+                            $thumb = $path . "/thumbnail.png";
+                            $id = $lesson['_id'];  //mongoID of the descriptor for this lesson
+                            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null);
+                            echo "</td>";
+                          nextButton();
+                        }
+                    } //end FOREACH lesson
+                }  //end IF lessons
 
-            //skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
-            if (($file[0]  == ".")       ||
-                 strpos($file, "_thumb") ||
-                 $file == "thumbnail.png"||
-                 $file == "images.txt")
-            continue;
+                else
 
+                    //special case for History Timelines
+                    //***************************
+                    //make buttons for timelines directory -- virtual folder, populated from histories collection in mongoDB
+                    if ($path == "../content/timelines/") {   //populate virtual folder of histories
 
-            //echo "file is " . $path . $file . " and is_file is " . (is_file($path . $file) ? "true" : "false") . "<br>";
+                        $histories = $histories_collection->find();
+                        //SORT the found items before sending to client-side
+                        $histories->sort(array('title' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
-            if (is_file($path . $file)) {
+                        echo "<table id='file-table'><tr>";
 
-            //this code is also in looma-activities.php - should be a FUNCTION
-            echo "<td>";
-            $components = pathinfo($path . $file);
-            $ext = $components["extension"];
-            $base = $components["basename"];  //$base is filename w/o the file extension
+                        foreach ($histories as $history) {
 
+                            //echo "DEBUG   found history " . $history['dn'] . "<br>";
+                            echo "<td>";
+                            $dn = $history['title'];
+                            $ft = "history";
+                            $thumb = $path . $dn . "_thumb.jpg";
+                            //$thumb = $path . "/thumbnail.png";
+                            $id = $history['_id'];  //mongoID of the descriptor for this history
+                            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null);
+                            echo "</td>";
+                            nextButton();
 
-                if ($ext === 'lesson') {
-                    $dn = $components["filename"];
-                    $query = array('dn' => $dn);
-                    $activity = $activities_collection->findOne($query);
-                    if ($activity) $mongoID = strval($activity['mongoID']); else $mongoID = null;
-                }
-                else {
-            // look in the database to see if this file has a DISPLAYNAME
-                    $query = array('fn' => $file);
-                    $activity = $activities_collection->findOne($query);
-                    $dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : str_replace($specials, " ", $base);
-                }
+                        } //end FOREACH history
+                    }  //end IF histories
 
-                 //echo "extension is " . $ext . " dn is " . $dn . " mongoid is " . (string)$activity['mongoID'] ;
+                    else
 
-                switch (strtolower($ext)) {
-                    case "video":
-                    case "mp4":
-                    case "m4v":
-                    case "mov":
+                        //special case for MAPS
+                        //***************************
+                        //make buttons for maps directory -- virtual folder, populated from maps collection in mongoDB
+                        if ($path == "../content/maps/") {   //populate virtual folder of maps
 
-                    case "image":
-                    case "jpg":
-                    case "png":
-                    case "gif":
+                            $query = array('ft' => 'map');
+                            $maps = $activities_collection->find($query);
+                            //SORT the found items before sending to client-side
+                            $maps->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
-                    case "audio":
-                    case "mp3":
-                    case "m4a":
+                            echo "<table id='file-table'><tr>";
 
-                    case "pdf":
-                    case "html":
+                            foreach ($maps as $map) {
 
-                        makeActivityButton ($ext, $path, $file, $dn, "", "", "", "", "", "", "", "", "", "",null,null);
-                        break;
+                                echo "<td>";
+                                $dn = $map['dn'];
+                                //$url = $map['url'];
+                                $ft = "map";
+                                if (isset($map['thumb'])) $thumb = $map['thumb']; else $thumb = $path . "/thumbnail.png";
+                                $id = $map['mongoID'];  //mongoID of the descriptor for this map
+                                makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null);
+                                echo "</td>";
+                               nextButton();
 
-                    case "lesson":
+                            } //end FOREACH map
+                        }  //end IF maps
 
-                        if($mongoID)
-                            makeActivityButton ($ext, $path, $file, $dn, "", "", "", $mongoID, "", "", "", "", "", "",null,null);
-                        break;
+                        else {
 
-                    default:
-                        // ignore unknown filetypes
-                        // echo "DEBUG: " . $info -> getFilename() . "unknown filetype in looma-library.php";
-                };  //end SWITCH
-                echo "</td>";
-                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+                        /********************************/
+                        /**********  FILEs  *************/
+                        /********************************/
 
-                }
+                        /*************** iterate through the regular files in this DIR
+                         *************** and make buttons each of the FILES ****************/
+                        /*******get their DNs from mondoDB and sort on DN***********/
+                        /*************before displaying the results ****************/
 
-               else if (isHTML($path . $file)) {
-                        // display an HTML play button
-                        echo "<td>";
-                        $thumb = $file . "/thumbnail.jpg";
-                        $dn = $file;
-                        makeActivityButton("html", $path, $file . "/index.html", $dn, "", $thumb, "", "", "", "", "", "", "", "",null,null);
+                        $list = array();
 
-                        echo "</td>";
-                        $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-                   } // end if HTML
+                            foreach ($files as $file => $info) {
+                            //skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
+                            if (($file[0] == ".") ||
+                                strpos($file, "_thumb") ||
+                                $file == "thumbnail.png" ||
+                                $file == "images.txt")
+                                continue;
 
-              } //end FOREACH file
-            }
-        echo "</tr></table>";
+                            if (is_file($path . $file)) {
+                                $components = pathinfo($path . $file);
+                                if (isset($components['extension'])) $ext = $components["extension"]; else $ext="";
+                                $base = $components["basename"];  //$base is filename w/o the file extension
+                                $mongoID = null;
+
+                                if ($ext === 'lesson') {  //we have some "lessons" that are listed in Teacher Tools directory as pseudo-files
+                                    $dn = $components["filename"];
+                                    $query = array('dn' => $dn);
+                                    $activity = $activities_collection->findOne($query);
+                                    if ($activity) $mongoID = strval($activity['mongoID']);
+                                } else {   // look in the database to see if this file has a DISPLAYNAME
+                                    $query = array('fn' => $file);
+                                    $activity = $activities_collection->findOne($query);
+                                    $dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : str_replace($specials, " ", $base);
+                                }
+
+                                switch (strtolower($ext)) {
+                                    case "video":
+                                    case "mp4":
+                                    case "m4v":
+                                    case "mov":
+                                    case "image":
+                                    case "jpg":
+                                    case "png":
+                                    case "gif":
+                                    case "audio":
+                                    case "mp3":
+                                    case "m4a":
+                                    case "pdf":
+                                    case "html":
+                                    case "lesson": //we have some "lessons" that are listed in Teacher Tools directory as pseudo-files
+                                        $item['ext'] = $ext;
+                                        $item['path'] = $path;
+                                        $item['file'] = $file;
+                                        $item['dn'] = $dn;
+                                        $item['thumb'] = "";
+                                        $item['mongoID'] = $mongoID;
+
+                                        $list[] = $item;
+                                        break;
+                                    default:
+                                        // ignore unknown filetypes
+                                };  //end SWITCH
+                            } else if (isHTML($path . $file)) {
+                                $item['ext'] = "html";
+                                $item['path'] = $path;
+                                $item['file'] = $file . "/index.html";
+                                $item['dn'] = $file;
+                                $item['thumb'] = $file . "/thumbnail.jpg";
+                                $item['mongoID'] = "";
+
+                                $list[] = $item;
+                            } // end if HTML
+
+                        } //end FOREACH file;
+
+                        if (sizeof($list) > 0) {
+                            // sort the list of files by DN
+                            usort($list, function ($a, $b) {
+                                return strcasecmp($a['dn'], $b['dn']) > 0;
+                            });
+
+                            if ($dircount > 0) echo "<hr>";
+                            echo "<table id='file-table'><tr>";
+
+                            foreach ($list as $item) {
+                                echo "<td>";
+                                makeActivityButton($item['ext'], $item['path'], $item['file'], $item['dn'],
+                                    "", $item['thumb'], "",
+                                    $item['mongoID'], "", "", "", "", "", "", null, null);
+                                echo "</td>";
+                                nextButton();
+                            }
+                        }
+                    }
+    echo "</tr></table>";
+//  };  //if (isEpaath())
 ?>
 
     </div>
@@ -449,4 +508,4 @@ Description:  displays and navigates content folders for Looma
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>
     <script src="js/looma-library.js"></script>
-    </body>
+</body>

@@ -542,7 +542,7 @@ if ( isset($_REQUEST["cmd"]) ) {
     // - - - SEARCH - - - //
     ////////////////////////
     case "search":
-        // called (from Xlooma-search2017.js, from lesson-plan.js, etc) using POST with FORMDATA serialized by jquery
+        // called (from looma-search.js, from lesson-plan.js, and other "editors") using POST with FORMDATA serialized by jquery
         // $_POST[] can have these entries: cmd, collection, class, subj, category, sort, search-term,
         // src[] (array of checked items) and type[] (array of checked types)
 
@@ -675,48 +675,27 @@ if ( isset($_REQUEST["cmd"]) ) {
 //NOTE: we use an older version of MONGO that doesnt support COLLATION order.
 //  this code should get all the cursor elements into a PHP array and do NATKSORT ( like looma-library.php does)
 //
-
-        if (isset($_REQUEST['pagesz']))  {
-            if (isset($_REQUEST['pageno'])) $cursor->skip(($_REQUEST['pageno'] - 1 ) * $_REQUEST['pagesz']);
-            $cursor->limit($_REQUEST['pagesz']);
-        }
-
         $result = array();
         if ($cursor->count() > 0) {
             foreach ($cursor as $d) $result[] = $d;
         };
 
-        //echo "    result item " . $d;
+        // removing duplicate results - based on 'fn' and 'fp' being equal
+        // this is a crutch to cover up duplicate entries in 'activities' collection
+        $unique = array();
+        $unique[] = $result[0];
+        for ($i = 1; $i < sizeof($result); $i++)
+            if (   ( $result[$i]['fn'] !== $result[$i-1]['fn'])
+                || (array_key_exists('fp',$result[$i])
+                && (array_key_exists('fp', $result[$i-1])
+                && $result[$i]['fp'] !== $result[$i-1]['fp'])))
 
-        /*           if (in_array('looma', $filetypes)) {
-                       // for Looma Pages activities, dont filter with class/subject
-                       $query = array('ft' => 'looma');
-                       $cursor = $dbCollection->find($query);
-                       if ($cursor -> count() > 0) { foreach ($cursor as $d) $result[] = $d; };
-                   };
-       */
-        // search for CHAPTERS if requested
-        /*            if (in_array('chapter', $filetypes)) {
+                $unique[] = $result[$i];
 
-                        $query = array('ft' => 'chapter');
-                        if ($classSubjRegex) $query['_id'] = $classSubjRegex;
-                        if ($nameRegex)      $query['$or']    = array(
-                                                array("dn" => $nameRegex),
-                                                array("ndn" => $nameRegex)
-                                                      );
+            if (isset($_REQUEST['pagesz']) && isset($_REQUEST['pageno']))
+             $unique = array_slice($unique,($_REQUEST['pageno'] - 1) * $_REQUEST['pagesz'], $_REQUEST['pagesz']);
 
-                        $query =  array("_id" => $classSubjRegex,
-                                        '$or' => array(
-                                              array("dn" => $nameRegex),
-                                              array("ndn" => $nameRegex)
-                                                      )
-                                        );
-
-                        $cursor = $chapters_collection->find($query);
-                        if ($cursor -> count() > 0) { foreach ($cursor as $d) $result[] = $d; };
-                    };
-        */
-        echo json_encode($result);
+        echo json_encode($unique);
         return;
     // end case "search"
 

@@ -40,22 +40,11 @@
 
   $('#collection').val('text');
   $('#filesearch-ft').val('text');
-
-
- /*
-  function quit() {
-      if (callbacks['modified']())
-          savework(currentname, currentcollection, currentfiletype);
-      else
-          window.history.back();
-  }
-  */
-
+  
   function textcheckpoint() {         savedHTML =   $editor.html(); };
   function textundocheckpoint() {     $editor.html( savedHTML);     };  //not used now??
   function textmodified()   { return (savedHTML !== $editor.html());};
   
-
   function textclear() {
       setname("");
       //currentid = "";
@@ -69,6 +58,7 @@
       textclear();
       setname(response['dn']);
       $editor.html(response.data);
+      textcheckpoint();
   };
 
   function textsave(name) {

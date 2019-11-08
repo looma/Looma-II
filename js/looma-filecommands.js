@@ -49,7 +49,7 @@ var callbacks = {      //re-set by calling program - to custom handler for each 
     modified:        doNothing,
     checkpoint:      doNothing,
     showsearchitems: doNothing,     // function to hide or show OPEN search form items
-    quit:            xquit           // default QUIT action is save work and the editor page. override in page's JS if needed
+    quit:            quit   //xquit           // default QUIT action is save work and the editor page. override in page's JS if needed
 };
 
 function doNothing(){return;};  //not actually called
@@ -301,23 +301,25 @@ async function xsavework(name, collection, filetype)  {  // filetype is base typ
         else if (name == "") {
            await getName()
             .then(function(newname) {
-                //if (template) callbacks['savetemplate'](newname);
-                //else          callbacks['save'](newname);
+                if (template) callbacks['savetemplate'](newname);
+                else          callbacks['save'](newname);
                 console.log('new name is ' + newname);
                 setname(newname);
+                callbacks['checkpoint']();
                 resolve('saved file ' + newname);
                 })
             .catch(function() {reject('canceled');})
         } else if (owner) {
             await confirmSave()
                 .then(function() {
-                   // if (template) callbacks['savetemplate'](name);
-                   // else          callbacks['save'](name);
+                    if (template) callbacks['savetemplate'](name);
+                    else          callbacks['save'](name);
                     console.log('confirmed save of ' + newname);
                     setname(name);
+                    callbacks['checkpoint']();
                     resolve('saved file ' + name);
                 })
-          .catch(function() {reject('canceled');})
+             .catch(function() {reject('canceled');})
         } else {  //NOT owner
             LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
             reject('not owner');
@@ -947,4 +949,15 @@ $(document).ready(function ()
 ///////////////////////////////
     $('.cancel-filesearch').click( closesearch ); // end cancelFilesearch()
    
+});
+
+$(document).ready(function() {
+    
+    $(document.body).append("<div id='modified'>")
+    
+    setInterval(function(){
+        if(callbacks['modified']())
+             $('#modified').css('background-color', 'red');
+        else $('#modified').css('background-color', 'green')},
+        500);
 });

@@ -15,6 +15,7 @@
 
 
 
+
 /****************************/
 /*****  prefix   ********/
 /****************************/
@@ -245,4 +246,6 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
                   echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
 
 	}; //end makeActivityButton()
+
+
 	?>

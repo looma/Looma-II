@@ -60,7 +60,6 @@ img.info-image{
 .leaflet-popup-content{
     font-size: 20px;
     color: #555555;
-    height: 20vh !important;
     width:auto !important; }
 
  .leaflet-popup-tip-container {display:none;}

@@ -182,7 +182,7 @@ window.onload = function () {
             {
                 loadLegend(data.legend);
             }
-            
+
         }, // end of data function
         'json'
     );
@@ -410,7 +410,7 @@ function loadAddOnLayers (layerData, information) {
                             console.log("error caught!");
                         }
                     }
-
+                    popText+="Wikipedia : <a href='../content/W4S/wp/1/"+imageData+".htm'>" + imageData +"</a><br>";
 
                     marker
                         .bindPopup(popText,{className:'capital-popup', keepInView:true, width:600, minWidth:600, maxWidth:600})
@@ -444,7 +444,7 @@ function loadAddOnLayers (layerData, information) {
                             map.setMaxBounds(bounds);
                         }
                     }
-                    
+
                     )*/
                     ;
                     return marker;

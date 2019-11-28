@@ -98,7 +98,7 @@ button#top, button#more {
  form#search span.typ-chk:hover, form#search span.src-chk:hover {
      font-size:1em !important;
      color:white;
-     zoom:150%;
+     /*zoom:150%;*/
     
      -moz-border-radius:10px;
      -webkit-border-radius: 10px;

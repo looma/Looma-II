@@ -674,6 +674,7 @@ button.img img {
 
 th button.img {
 	height:75px;
+    width:90%;
 }
 
 th button.img:hover {
@@ -681,7 +682,7 @@ th button.img:hover {
 }
 th button.img img {
 	height:100%;
-	width:15%;
+	/*width:15%;*/
 	max-width:35%;
 }
 
@@ -728,14 +729,14 @@ button.heading:hover {
 	border:none;
 }
 
-button.lesson {O
-    width:10vw;
-    float:left;
+button.lesson {
+    /*width:10vw;
+    float:left;*/
 }
 
 button.activities, button.lesson {
-    width:17vw;
-    float:right;
+   /* width:17vw;
+    float:right;*/
 }
 
 /*

@@ -5,7 +5,7 @@
 #       put this file in /usr/local/bin on each looma
 #       with chmod +x to make it executable
 #
-#       this file just calls /var/www/html/Looma/looma schell scripts/loomaUSBer
+#       this file just calls /var/www/html/Looma/looma shell scripts/loomaUSBer
 #       this allows us to 'update' the USB script using the normal rsync from rsunc.net
 #
 #       author: skip

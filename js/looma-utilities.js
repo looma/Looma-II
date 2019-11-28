@@ -106,7 +106,7 @@ playMedia : function(button) {
         case "pdf":      //PDF
         case "chapter":  //CHAPTER
         case "document":  //DOCUMENT (some PDFs)
-            window.location = 'looma-pdf.php?' + '' +
+            window.location = 'looma-pdf.php?' +
                               'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
                               '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
                               '&zoom=' + button.getAttribute('data-zoom') +

@@ -12,7 +12,7 @@ Description:  displays and navigates content folders for Looma
 <?php $page_title = 'Looma Library';
         require ('includes/header.php');
         require ('includes/mongo-connect.php');
-        // load: function makeActivityButton
+        // using function makeActivityButton from includes/looma-utilities.php
         //usage: makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
         //                          $mongo_id, $ole_id, $url, $pg, $zoom,
         //                          $grade, $epversion, $nfn, $npg)
@@ -157,36 +157,60 @@ Description:  displays and navigates content folders for Looma
                 nextButton();
             }  //end IF Khan
 
+
+    //ADD here for "books" like Hesperian
+            /*
+             if fileexists(this-dir/books.txt)
+            make button with <a href="looma-books.php?fp,fn,>
+            looma-books.php will look for an english book (dir) and a nepali book (dir) (both optional)
+            and  make a table with columns for each language + lessons + activities (like textbooks)
+            and a row for each chapter file under this dir
+             */
+
+
+
             // regular case
             else {  //make a regular directory button
-
+                $ft = ""; $prefix = "";
                 // look in the database to see if this folder has a DISPLAYNAME
-                $query = array('fn' => $file);
-                $projection = array('_id' => 0, 'dn' => 1, 'ndn' => 1);
-                $folderMongo = $folders_collection->findOne($query, $projection);
+                $query = array('fn' => $file, 'fp' => $path);
+                //$projection = array('_id' => 0, 'dn' => 1, 'ndn' => 1);
+                $folderMongo = $folders_collection->findOne($query);
 
                 if ($folderMongo) {
-                    if (array_key_exists('dn', $folderMongo)) $dirDn = $folderMongo['dn'];
+                    if (array_key_exists('dn',  $folderMongo)) $dirDn = $folderMongo['dn'];
                     if (array_key_exists('ndn', $folderMongo)) $dirnDn = $folderMongo['ndn'];
+                    if (array_key_exists('ft',  $folderMongo)) $ft = $folderMongo['ft'];
+                    if (array_key_exists('prefix',  $folderMongo)) $prefix = $folderMongo['prefix'];
+
+                    // DEBUG   echo "dir is " . $dirDn . " ft is " . $ft;
 
                 } else {
                     $dirDn = $file;  $dirnDn = "";
                 };
-                $dirlist[] = array('file' => $file, 'path' => $path, 'dn' => $dirDn, 'ndn' => $dirnDn);
+                $dirlist[] = array('file' => $file, 'path' => $path, 'dn' => $dirDn, 'ndn' => $dirnDn, 'ft' => $ft, 'prefix' => $prefix);
             };
         };
     };// ********** end FOREACH directory  **************
 
     if (sizeof($dirlist) > 0) {
         // sort the list of dirs by DN
-        usort($dirlist, function ($a, $b) {
+        $dirlist = alphabetize_by_dn($dirlist);
+/*        usort($dirlist, function ($a, $b) {
             return strcasecmp($a['dn'], $b['dn']) > 0;
         });
-
+*/
 
         foreach ($dirlist as $dir) {
-            echo "<td><a href='looma-library.php?fp=" . $dir['path'] . $dir['file'] . "/'>" .
-                "<button class='activity img zeroScroll'>" .
+
+            if (isset($dir['ft']) && $dir['ft'] === "book")
+                 echo "<td><a href='looma-book.php?fp=" . $dir['path'] . $dir['file'] .
+                      "/&prefix=" . $dir['prefix'] .
+                      "&dn=" . $dir['dn'] .
+                      "&ndn=" . $dir['ndn'] .
+                      "'>";
+            else echo "<td><a href='looma-library.php?fp=" . $dir['path'] . $dir['file'] . "/'>";
+            echo "<button class='activity img zeroScroll'>" .
                 folderThumbnail($dir['path'] . $dir['file']);
 
             echo "<span class='english-keyword'>"
@@ -197,7 +221,6 @@ Description:  displays and navigates content folders for Looma
                 . $dir['ndn'] .
                 "<span class='xlat'>" . $dir['dn'] . "</span>" .
                 "</span>";
-
 
                 //folderDisplayName($dir['file']);
             echo "<span class='tip yes-show big-show' >" . $dir['file'] . "</span>" .
@@ -482,9 +505,10 @@ Description:  displays and navigates content folders for Looma
 
                         if (sizeof($list) > 0) {
                             // sort the list of files by DN
-                            usort($list, function ($a, $b) {
+                            $list = alphabetize_by_dn($list);
+                            /*usort($list, function ($a, $b) {
                                 return strcasecmp($a['dn'], $b['dn']) > 0;
-                            });
+                            });*/
 
                             if ($dircount > 0) echo "<hr>";
                             echo "<table id='file-table'><tr>";

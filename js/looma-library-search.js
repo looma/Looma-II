@@ -34,7 +34,7 @@ function clearResults(results) {
         result_array['activities'] = [];
         result_array['chapters']  = [];
 
-    results.forEach(function(e) {
+    results['list'].forEach(function(e) {
             if (e['ft'] == 'chapter') result_array['chapters'].push(e);
             else                      result_array['activities'].push(e);
     });
@@ -47,7 +47,7 @@ function clearResults(results) {
 
     //NOTE TODO: should use mongo find().count() to get the total number of results and report it right away
     
-    $display.append("<p> Activities(<span id='count'>" + actResults + "</span>)</p>");
+    $display.append("<p> Activities(<span id='count'>" + results['count'] + "</span>)</p>");
     
     $display.append('<table id="results-table"></table>');
 
@@ -59,7 +59,7 @@ function clearResults(results) {
     $display.show();
     
    // $('#results-div').off('click','button.play').on('click', "button.play", playActivity);
-    
+   
 }; //end displayResults()
 
 ////////////////////////////////
@@ -71,7 +71,7 @@ function displayMoreResults(results) {
     result_array['activities'] = [];
     result_array['chapters']  = [];
     
-    results.forEach(function(e) {
+    results['list'].forEach(function(e) {
         if (e['ft'] == 'chapter') result_array['chapters'].push(e);
         else                      result_array['activities'].push(e);
     });
@@ -83,7 +83,7 @@ function displayMoreResults(results) {
     //var actResults = result_array['activities'].length;
     
     //$display.append("<p> Activities(<span id='count'>" + actResults + ")</span></p>");
-    $('#results-div').find('#count').text(parseInt($('#results-div').find('#count').text()) + result_array['activities'].length);
+    $('#results-div').find('#count').text(parseInt($('#results-div').find('#count').text()) + results['count']);
     
     if(result_array['activities'].length > 0)
         displayActivities(result_array['activities'], '#results-table');

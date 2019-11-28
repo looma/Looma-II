@@ -581,7 +581,7 @@ if ( isset($_REQUEST["cmd"]) ) {
                     array_push($extensions, "EP", "html", "htm", "php", "asp");
                     break;
                 case 'pdf':
-                    array_push($extensions, "pdf", "document");
+                    array_push($extensions, "pdf", "Document");
                     break;
                 case 'lesson':
                     array_push($extensions, "lesson");
@@ -683,19 +683,35 @@ if ( isset($_REQUEST["cmd"]) ) {
         // removing duplicate results - based on 'fn' and 'fp' being equal
         // this is a crutch to cover up duplicate entries in 'activities' collection
         $unique = array();
-        $unique[] = $result[0];
-        for ($i = 1; $i < sizeof($result); $i++)
-            if (   ( $result[$i]['fn'] !== $result[$i-1]['fn'])
-                || (array_key_exists('fp',$result[$i])
-                && (array_key_exists('fp', $result[$i-1])
-                && $result[$i]['fp'] !== $result[$i-1]['fp'])))
 
-                $unique[] = $result[$i];
+        //DEBUG echo sizeof($result) . " results found      \n";
+
+        if (sizeof($result) > 0 ) {
+
+            $result = alphabetize_by_dn($result);
+
+            $unique[] = $result[0];
+            $specials = array('EP', 'text', 'slideshow', 'looma', 'lesson', 'evi', 'history', 'map', 'game');
+            for ($i = 1; $i < sizeof($result); $i++) {
+                //echo "ft is " . $result[$i]['ft'] . "   ";
+                if (in_array($result[$i]['ft'], $specials)) {
+                    if ($result[$i]['dn'] !== $result[$i - 1]['dn']) $unique[] = $result[$i];
+                } else if (($result[$i]['fn'] !== $result[$i - 1]['fn'])
+                    || (array_key_exists('fp', $result[$i])
+                        && (array_key_exists('fp', $result[$i - 1])
+                            && $result[$i]['fp'] !== $result[$i - 1]['fp'])))
+
+                    $unique[] = $result[$i];
+                //DEBUG echo sizeof($unique) . " unique results found      \n";
+            };
+            $numUnique = sizeof($unique);
 
             if (isset($_REQUEST['pagesz']) && isset($_REQUEST['pageno']))
-             $unique = array_slice($unique,($_REQUEST['pageno'] - 1) * $_REQUEST['pagesz'], $_REQUEST['pagesz']);
+                $unique = array_slice($unique, ($_REQUEST['pageno'] - 1) * $_REQUEST['pagesz'], $_REQUEST['pagesz']);
+        } else $numUnique = 0;
 
-        echo json_encode($unique);
+        //echo json_encode($numUnique);
+        echo json_encode(array('count'=> $numUnique, 'list'=>$unique));
         return;
     // end case "search"
 

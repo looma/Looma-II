@@ -130,6 +130,7 @@ $foundActicvity;
 
                     case "EP":
                     case "epaath":
+                        if ($epversion === 2015) $thumb = $fp . $fn . "/thumbnail.jpg";
                         makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion,null,null);
                         break;
 

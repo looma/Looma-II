@@ -893,7 +893,7 @@ $(document).ready(function ()
             $('#filesearch-results').empty().append('<table></table>');
             var $display = $('#filesearch-results table');
             
-            if (results.length == 0) { //print empty button
+            if (results['list'].length == 0) { //print empty button
             
                 $display.append(
                     "<tr><td>" +
@@ -909,7 +909,7 @@ $(document).ready(function ()
                 
             }
             else {
-                $.each(results, function(index, value) {
+                $.each(results['list'], function(index, value) {
                     var author = value['author'] ? ("Author: " + value['author']) : "";
                     var date = value['date'] ? ("  Date: " + value['date']) : "";
             

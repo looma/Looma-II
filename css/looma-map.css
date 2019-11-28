@@ -60,13 +60,14 @@ img.info-image{
 .leaflet-popup-content{
     font-size: 20px;
     color: #555555;
-    height: 20vh !important;
+    
     width:auto !important; }
 
  .leaflet-popup-tip-container {display:none;}
 
 /*Images in the popup box for the map*/
 img.pop-image{
+    height:15vh !important;
     width:auto;
 }
 

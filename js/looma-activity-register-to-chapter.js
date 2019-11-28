@@ -248,9 +248,9 @@ function displayResults(results) {
       result_array['activities'] = [];  //not searching for dictionary entries
       result_array['chapters']  = [];  //not searching for textbooks
 
-     for (var i=0; i < results.length; i++) {
-         if (results[i]['ft'] == 'chapter') result_array['chapters'].push(results[i]);
-         else                               result_array['activities'].push(results[i]);
+     for (var i=0; i < results['list'].length; i++) {
+         if (results[i]['ft'] == 'chapter') result_array['chapters'].push(results['list'][i]);
+         else                               result_array['activities'].push(results['list'][i]);
       };
 
       displaySearchResults(result_array);

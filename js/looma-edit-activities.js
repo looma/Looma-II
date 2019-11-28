@@ -86,9 +86,9 @@ function displayResults(results) {
     result_array['activities'] = [];  //array to store ACTIVITIES returned by SEARCH
     result_array['chapters']  = [];   //array to store CHAPTERS returned by SEARCH
     
-    for (var i=0; i < results.length; i++) {
-        if (results[i]['ft'] == 'chapter') result_array['chapters'].push(results[i]);
-        else                               result_array['activities'].push(results[i]);
+    for (var i=0; i < results['list'].length; i++) {
+        if (results['list'][i]['ft'] == 'chapter') result_array['chapters'].push(results['list'][i]);
+        else                                       result_array['activities'].push(results['list'][i]);
     };
     
     $('.hint').hide();

@@ -24,7 +24,7 @@ require ('includes/mongo-connect.php');
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>Release 5.3.2, AUG 2019   </h4>
+        <h4>Release 5.4, NOV 2019   </h4>
         <!-- copyright notice, with link to vts.org-->
         <span class='glyphicon glyphicon-copyright-mark'></span>2019
         <a draggable="false"  class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
@@ -62,6 +62,8 @@ require ('includes/mongo-connect.php');
                 <img draggable="false" src="images/logos/google-translate.jpg" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://www.mapbox.com" target="_blank">
                 <img draggable="false" src="images/logos/tilemill.png" height="66px"></a>
+            <a draggable="false"  class="attribution" href="https://hesperian.org" target="_blank">
+                <img draggable="false" src="images/logos/hesperian.png" height="33px"></a>
             <a draggable="false"  class="attribution" href="https://mycroft.ai" target="_blank">
                 <img draggable="false" src="images/logos/mycroft.png" height="33px"></a>
             <br>

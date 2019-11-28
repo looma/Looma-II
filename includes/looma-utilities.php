@@ -108,6 +108,11 @@ function displayName($filename, $dn, $ndn) {
       else echo "<span class='name'>" . $filename . "</span>";
 };  //end displayName()
 
+function alphabetize_by_dn ($array) {
+    // sort the list of dirs by DN
+    usort($array, function ($a, $b) { return strcasecmp($a['dn'], $b['dn']) > 0; });
+    return $array;
+};
 
 function natksort($array) {
     // Like ksort but uses natural sort instead

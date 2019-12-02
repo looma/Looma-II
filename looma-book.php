@@ -130,5 +130,5 @@ echo "</table></div></div>";
 
 <?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>
-<script src="js/looma-chapters.js"></script>          <!-- Looma Javascript -->
+<script src="js/looma-book.js"></script>          <!-- Looma Javascript -->
 </body>

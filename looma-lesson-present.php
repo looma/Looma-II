@@ -88,7 +88,7 @@ Description: looma lesson plan presenter
                      $thumbSrc = $details['fp'] . thumbnail($details['fn']);
                    else $thumbSrc = null;
 
-                   //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npg)
+                   //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npg,$prefix)
 
                         makeActivityButton(
                              $details['ft'],
@@ -132,7 +132,7 @@ Description: looma lesson plan presenter
                         $thumbSrc = "../content/" . $filepath . thumbnail($filename);
                     else $thumbSrc = null;
                     //echo "filename is " . $filename;
-                    // makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npn)
+                    // makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npn,$prefix)
                     makeActivityButton('pdf',
                         '../content/' . $filepath,
                         $filename,

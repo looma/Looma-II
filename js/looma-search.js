@@ -71,7 +71,7 @@ function restoreSearchState () {
         setCollection('chapters');
         //$('.media-input').prop('disabled', true);
         if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
-            showChapterDropdown($('#chapter-div'), $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'));
+            showTextChapterDropdown($('#chapter-div'), $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'));
         
         $('#search').submit();  //re-run the search
         
@@ -274,39 +274,40 @@ function showKeywordDropdown(event) {
 }; //end showKeywordDropdown()
 
 ///////////////////////////////////
-/////  showSubjectDropdown()  /////
+/////  showTextSubjectDropdown()  /////
 ///////////////////////////////////
-function showSubjectDropdown($grades, $subjects, $chapters) {
-    $('#chapter-div').hide();
+function showTextSubjectDropdown($grades, $subjects, $chapters) {
+    //$chapters.hide();
     
     //$chapters.hide();
     $subjects.empty();
+    $chapters.empty();
     if ( ($grades.val() != ''))
         $.post("looma-database-utilities.php",
-            {cmd: "subjectList",
-             class:   $grades.val()},
+            {cmd: "textSubjectList",
+                class:   $grades.val()},
             
             function(response) {
                 //if ($div) $div.show();
                 $('<option/>', {value: "", label: "(any)..."}).appendTo($subjects);
-    
+                
                 $subjects.append(response);
             },
             'html'
         );
-};  //end showSubjectDropdown()
+};  //end showTextSubjectDropdown()
 
 
 ///////////////////////////////////
-/////  showChapterDropdown()  /////
+/////  showTextChapterDropdown()  /////
 ///////////////////////////////////
-function showChapterDropdown($grades, $subjects, $chapters) {
+function showTextChapterDropdown($grades, $subjects, $chapters) {
     //if ($div) $div.hide();
     
     $chapters.empty();
     if ( ($grades.val() != '') && ($subjects.val() != ''))
         $.post("looma-database-utilities.php",
-            {cmd: "chapterList",
+            {cmd: "textChapterList",
                 class:   $grades.val(),
                 subject: $subjects.val()},
             
@@ -319,7 +320,51 @@ function showChapterDropdown($grades, $subjects, $chapters) {
             },
             'html'
         );
-};  //end showChapterDropdown()
+};  //end showTextChapterDropdown()
+
+
+///////////////////////////////////
+/////  showBookDropdown()  /////
+///////////////////////////////////
+function showBookDropdown($src, $books, $chapters) {
+    //$chapters.hide();
+    
+    //$chapters.hide();
+    $books.empty();
+    $chapters.empty();
+    if ( ($src.val() != ''))
+        $.post("looma-database-utilities.php",
+            {cmd: "bookList",
+                prefix:   $src.val()},
+            
+            function(response) {
+                $('<option/>', {value: "", label: "(any)..."}).appendTo($books);
+                $books.append(response);
+            },
+            'html'
+        );
+};  //end showBookDropdown()
+
+
+///////////////////////////////////
+/////  showBookChapterDropdown()  /////
+///////////////////////////////////
+function showBookChapterDropdown($src, $books, $chapters) {
+    //if ($div) $div.hide();
+    
+    $chapters.empty().show();
+    if ( ($src.val() != '') && ($books.val() != ''))
+        $.post("looma-database-utilities.php",
+            {cmd: "bookChapterList",
+             book_id: $books.val()},
+            
+            function(response) {
+                $('<option/>', {value: "", label: "(any)..."}).appendTo($chapters);
+                $chapters.append(response);
+            },
+            'html'
+        );
+};  //end showBookChapterDropdown()
 
 
 /////////////////////////////
@@ -427,11 +472,11 @@ $(document).ready(function() {
     });  //end ft-chapter.click()
     
     $("#grade-drop-menu").change(function() {
-        showSubjectDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'))
+        showTextSubjectDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'))
     });  //end drop-menu.change()
     
     $("#subject-drop-menu").change(function() {
-        showChapterDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'))
+        showTextChapterDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'))
     });  //end drop-menu.change()
 
     $("#keyword-div .keyword-dropdown").change(showKeywordDropdown);

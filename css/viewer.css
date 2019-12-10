@@ -11,18 +11,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * ****************************************
- * 
+ *
  * numerous changes made for LOOMA
  * 	- mainly for the toolbar
  * 	- change background coloe of body and tookbar
  * 	- make toolbar elements 64px high
  * 	- remove PDF.js button icons and replace with LOOMA icons
  * 	- move buttons around - wider seperators - fixed borders, etc
- * 
+ *
  * Skip - - 2016-03
- * 
+ *
  * ****************************************
  */
 
@@ -192,6 +192,10 @@ html {
   height: 100%;
   /* Font size is needed to make the activity bar the correct size. */
   font-size: 10px;
+    
+    /*LOOMA*/
+    overflow-x:hidden;
+    
 }
 
 body {
@@ -436,7 +440,7 @@ html[dir='rtl'] #viewerContainer {
   width: 200px;
   height: 64px;
   
-  background-color: #424242; 
+  background-color: #424242;
   background-image: url(images/texture.png),
                     linear-gradient(hsla(0,0%,30%,.99), hsla(0,0%,25%,.95));
 }
@@ -456,7 +460,7 @@ html[dir='rtl'] #toolbarSidebar {
 #toolbarContainer, .findbar, .secondaryToolbar {
   position: relative;
   vertical-align: middle;
-  background-color: #474747; 
+  background-color: #474747;
   background-image: url(images/texture.png),
                     linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));
 }
@@ -683,11 +687,11 @@ html[dir='rtl'] .findbar > * {
 
 html[dir='ltr'] .splitToolbarButton {
   margin: 3px 2px 4px 24px;
-  display: inline-block; 
+  display: inline-block;
 }
 
 .sidebarOpen .splitToolbarButton {
-  visibility:hidden; 
+  visibility:hidden;
 }
 
 html[dir='rtl'] .splitToolbarButton {
@@ -764,7 +768,7 @@ html[dir='rtl'] .splitToolbarButton > .toolbarButton {
 .toolbarButton.textButton:focus {
   
   background-color: hsla(0,0%,0%,.2);
-   
+  
   box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset,
               0 0 1px hsla(0,0%,100%,.15) inset,
               0 0 1px hsla(0,0%,0%,.05);
@@ -1004,7 +1008,7 @@ html[dir='rtl'] #findNext {
   left: 7px;
 }
 
- 
+
 html[dir="ltr"] .secondaryToolbarButton::before {
   left: 4px;
 }

@@ -953,11 +953,20 @@ $(document).ready(function ()
 
 $(document).ready(function() {
     
-    $(document.body).append("<div id='modified'>")
+    $(document.body).append("<div id='modified'><span class='modified'>Modified</span></div>")
+    
+    $('#modified').hover(
+        function() {$('#modified span').show();},
+        function() {$('#modified span').hide();});
     
     setInterval(function(){
-        if(callbacks['modified']())
-             $('#modified').css('background-color', 'red');
-        else $('#modified').css('background-color', 'green')},
+        if(callbacks['modified']()) {
+            $('#modified').css('background-color', 'red');
+            $('#modified span').text('File modified');
+        }
+        else {
+            $('#modified').css('background-color', 'green');
+            $('#modified span').text('File not modified');
+        }},
         500);
 });

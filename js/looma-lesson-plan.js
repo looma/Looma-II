@@ -205,9 +205,9 @@ function displayResults(results) {
       result_array['activities'] = [];  //not searching for dictionary entries
       result_array['chapters']  = [];  //not searching for textbooks
 
-     for (var i=0; i < results.length; i++) {
-         if (results[i]['ft'] == 'chapter') result_array['chapters'].push(results[i]);
-         else                               result_array['activities'].push(results[i]);
+     for (var i=0; i < results.list.length; i++) {
+         if (results.list[i]['ft'] == 'chapter') result_array['chapters'].push(results.list[i]);
+         else                               result_array['activities'].push(results.list[i]);
       };
  
     $("#innerResultsMenu").empty();
@@ -902,7 +902,7 @@ window.onload = function () {
             $('#dropdown_chapter').empty();
             if ( ($('#dropdown_grade').val() != '') && ($('#dropdown_subject').val() != ''))
                 $.post("looma-database-utilities.php",
-                    {cmd: "chapterList",
+                    {cmd: "textChapterList",
                         class: $('#dropdown_grade').val(),
                         subject:   $('#dropdown_subject').val()},
                     

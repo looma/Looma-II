@@ -28,9 +28,11 @@ require_once('includes/looma-utilities.php');
   //  rename
   //  exists
   //  delete
+  //  textBookList
+  //  textChapterList
+  //  textSubjectList
   //  bookList
-  //  chapterList
-  //  subjectList
+  //  bookChapterList
   //  keywordList
   //  addChapterID
   //  removeChapterID
@@ -420,9 +422,12 @@ if ( isset($_REQUEST["cmd"]) ) {
 
 
         ////////////////////////
-        // - - - bookList - - - //
+        // - - - textBookList - - - //
         ////////////////////////
-        case "bookList":
+        case "textBookList":
+
+    //NOTE: not currently used (12/2019)
+
             // inputs is class
             //    query textbooks collection to get list of textbooks for this class
             //    return a array of JSON documents from textbooks collection
@@ -437,9 +442,9 @@ if ( isset($_REQUEST["cmd"]) ) {
 
 
         /////////////////////////////
-        // - - - subjectList - - - //
+        // - - - textSubjectList - - - //
         /////////////////////////////
-        case "subjectList":
+        case "textSubjectList":
             // input is class
             //    query textbooks collection to get subjects available for this class
             //    return a HTML string containing OPTION elements for a SELECT element
@@ -462,13 +467,13 @@ if ( isset($_REQUEST["cmd"]) ) {
             $projection = array('_id' => 0, 'subject' => 1);
             $subjects = $textbooks_collection->find($query, $projection);
             foreach ($subjects as $subj) echo "<option value='" . $subj['subject'] . "'>"  . $subj['subject'] . "</option>";
-            return;  // end subjectList()
+            return;  // end textSubjectList()
 
 
         /////////////////////////////
-        // - - - chapterList - - - //
+        // - - - textChapterList - - - //
         /////////////////////////////
-        case "chapterList":
+        case "textChapterList":
 
             // inputs are class and subject
             //    query textbooks collection to get prefix ( class, subject )
@@ -508,8 +513,38 @@ if ( isset($_REQUEST["cmd"]) ) {
                 $chapters = $chapters_collection->find($query);
                 foreach ($chapters as $ch) echo "<option value='" . $ch['_id'] . "'>" . $ch['dn'] . "(" . $ch['_id'] . ")</option>";
             }
-            return;  // end chapterList()
+            return;  // end textChapterList()
 
+    ////////////////////////
+    // - - - bookList - - - //
+    ////////////////////////
+        case "bookList":
+            // inputs is class
+            //    query textbooks collection to get list of textbooks for this class
+            //    return a array of JSON documents from textbooks collection
+
+            $regex = "^" . $_REQUEST['prefix'] . "-";
+            $query = array('prefix' => array('$regex' => $regex), 'ft' => 'book');
+            $books = $activities_collection->find($query);
+
+            foreach ($books as $book) echo "<option value='" . $book['prefix'] . "'>"  . $book['dn'] . "</option>";
+
+            return;
+        // end bookList()
+
+
+    /////////////////////////////
+    // - - - bookChapterList - - - //
+    /////////////////////////////
+        case "bookChapterList":
+            $regex = "^" . $_REQUEST['book_id'] . "-";
+            $query = array('book_id' => array('$regex' => $regex), 'ft' => 'pdf');
+
+            $chapters = $activities_collection->find($query);
+            $chapters->sort(array('book_id' => 1));
+            foreach ($chapters as $ch) echo "<option value='" . $ch['book_id'] . "'>" . $ch['dn'] . "(" . $ch['book_id'] . ")</option>";
+
+            return;  // end bookChapterList()
 
 /////////////////////////////
 // - - - KEYWORDROOT - - - //
@@ -694,6 +729,13 @@ if ( isset($_REQUEST["cmd"]) ) {
             $specials = array('EP', 'text', 'slideshow', 'looma', 'lesson', 'evi', 'history', 'map', 'game');
             for ($i = 1; $i < sizeof($result); $i++) {
                 //echo "ft is " . $result[$i]['ft'] . "   ";
+
+               /* CODE for case where there is no English version of a book (Hesperian) - DOESNT WORK
+               if (!$result[$i]['dn']) {
+                    $result[$i]['dn'] = $result[$i]['ndn'];
+                    $result[$i]['fn'] = $result[$i]['nfn'];
+                }*/
+
                 if (in_array($result[$i]['ft'], $specials)) {
                     if ($result[$i]['dn'] !== $result[$i - 1]['dn']) $unique[] = $result[$i];
                 } else if (($result[$i]['fn'] !== $result[$i - 1]['fn'])
@@ -842,7 +884,8 @@ if ( isset($_REQUEST["cmd"]) ) {
             if (count($changes) > 0) $update ['$set'] =   $changes;
             if (count($unsets)  > 0) $update ['$unset'] = $unsets;
 
-            if (isset($_REQUEST['chapter']) && $_REQUEST['chapter']) $update['$addToSet'] = array('ch_id' => $_REQUEST['chapter']);
+                if (isset($_REQUEST['chapter']) && $_REQUEST['chapter']) $update['$addToSet'] = array('ch_id' => $_REQUEST['chapter']);
+                if (isset($_REQUEST['book-chapter']) && $_REQUEST['book-chapter']) $update['$addToSet'] = array('ch_id' => $_REQUEST['book-chapter']);
             //print_r ($update);
 
             $result = $dbCollection->update($query, $update);

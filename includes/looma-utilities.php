@@ -127,9 +127,10 @@ function natksort($array) {
 /*********************************/
 
 
+
 // NOTE: instead of this long list of args, the fn should take one psaram - an assoc array/object with all the activity's attributes
 
-function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg) {
+function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix) {
 
 
 	//NOTE: would be better to call this with an object with fields ft, fp, fn, etc. smaller arglist and fewer null parameters
@@ -233,6 +234,10 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 
         if ($ft)          echo "data-ft='" .  $ft . "' ";
         if ($dn)          echo "data-dn='" .  $dn . "' ";
+
+        if ($ndn)         echo "data-ndn='" .  $ndn . "' ";
+        if ($prefix)      echo "data-prefix='" .  $prefix . "' ";
+
         if ($mongo_id)    echo "data-id='" .  $mongo_id . "' ";
         if ($mongo_id)    echo "data-mongoid='" .  $mongo_id . "' ";
         if ($ch_id)       echo "data-ch='" .  $ch_id . "' ";

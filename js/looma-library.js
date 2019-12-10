@@ -35,7 +35,13 @@ function playActivity(event) {
 $(document).ready (function() {
     $("button.play").click(playActivity);
     $("#toggle-database").click(function(){window.location = "looma-library-search.php";});//'fade', {}, 1000
-
+    
+    
+    $('a.book').click(function(){
+        LOOMA.setStore('chapterScroll', 0, 'session');
+        LOOMA.setStore('chapter', 0, 'session');
+    });
+    
     $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll',    'session'));
 

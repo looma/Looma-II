@@ -1,0 +1,12 @@
+// ONE TIME program to change to add thumbnails to Hesperian activities
+// DO NOT run this again - - saved as example of mongo terminal (JS) scripting
+//
+//  run in MONGO SHELL with: load('hesperianfix')
+//
+var cursor = db.activities.find({'src':'hesperian'});
+while (cursor.hasNext()) {
+	var doc = cursor.next();
+	if (doc['fp']) doc['thumb'] = doc['fp'] + 'thumbnail.png';
+	else doc['thump'] = doc['nfp'] + 'thumbnail.png';
+	db.activities.update({_id:doc._id}, doc);
+	}

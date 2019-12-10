@@ -71,7 +71,7 @@ $tb_nfn = array_key_exists('nfn', $tb) ? $tb['nfn'] : null;	//nfn is textbook na
 $tb_ndn = array_key_exists('ndn', $tb) ? $tb['ndn'] : null;		//dn is textbook displayname
 $prefix = array_key_exists('prefix', $tb) ? $tb['prefix'] : null; //prefix is the chapter-id starting characters, e.g. "2EN"
 
-echo "<br><br><table>";
+echo "<br><br><table class='ch-table'>";
 echo "<tr>";
 
 if ($tb_fn != null)

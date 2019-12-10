@@ -55,7 +55,7 @@ include ('includes/header.php');
             <div id="innerResultsDiv">
             </div>
         </div>
-        <div id="previewpanel" class="inner-div">
+        <div id="formpanel" >
             <form id='changes' name='changes'>
                 <input type='hidden'                         value='activities'   name='collection'/>
                 <input type='hidden' id='changes-cmd'        value='editActivity' name='cmd'/>
@@ -119,8 +119,7 @@ include ('includes/header.php');
             /**************************************/
             /********* File Source  Fields ********/
             /**************************************/
-            echo "<div id='source-changes' class='chkbox-filter media-filter'>
-                                <span>Source:</span>";
+            echo "<div id='source-changes' class='chkbox-filter media-filter'>Source:";
 
             $sources = array(
                 array("ck12",    "phet", "epth",   "khan", "w4s",       "TED"),
@@ -136,54 +135,146 @@ include ('includes/header.php');
             echo "<button class='chng-clear' id='source-clear'>X</button>";
             echo "</div>";
 
+        /**************************************/
+        /********* Book type selector ********/
+        /**************************************/
+        echo "<div id='book-type'>
+            <span>Attach to:  </span>";
+
+        echo "<span class='chapter-type'>" .
+            "<input class='media-input flt-chkbx source-changes' type='radio' checked form='changes' name='src' value='textbooks'>" .
+            "<label class='filter-label' for=''>  Textbooks </label>" .
+            "</span>";
+
+        echo "<span class='chapter-type'>" .
+            "<input class='media-input flt-chkbx source-changes' type='radio' form='changes' name='src' value='other'>" .
+            "<label class='filter-label' for=''>  Other books: </label>" .
+            "</span>";
+        echo "</div>";
+
+
+        /*******************************************************/
+        /****** TEXT BOOKS  ************************************/
+        /*******************************************************/
+
+
+        echo "<div id='textbooks'>";
+            /**************************************/
+            /*********** TEXTBOOKS Grade Dropdown  **********/
+            /**************************************/
+            //echo "<div id='textbook-changes'>";
+            echo "<div id='grade-changes' >
+                <label class='drop-menu'>Grade:</label>
+                    <select id='grade-chng-menu' class='book-changes black-border'  form='changes' name='class'>
+                       <option value='' selected>Select...</option>";
+                       for($x = 1; $x <= 10; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";};
+                    echo "</select>";
+                //echo "</span>";
+            echo "</div><br>";
+
 
             /**************************************/
-            /*********** Grade Dropdown  **********/
+            /********* TEXTBOOKS Subject Dropdown  **********/
             /**************************************/
-            echo "<div id='textbook-changes'>";
-            echo "<span id='grade-changes' >
-                                <span class='drop-menu'>Grade:<select id='grade-chng-menu' class='chapter-changes black-border'  form='changes' name='class'>
-                                    <option value='' selected>Select...</option>";
-            for($x = 1; $x <= 10; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";};
-
-            echo "</select></span>";
-
-
-            echo "</span>";
-
-
-            /**************************************/
-            /********* Subject Dropdown  **********/
-            /**************************************/
-            echo "<span id='subject-changes' >
-                      <span class='drop-menu'>Subject:<select id='subject-chng-menu' class='chapter-changes black-border' name='subj' form='changes'>
+            echo "<div id='subject-changes' >
+                <label class='drop-menu'>Subject:</label>
+                    <select id='subject-chng-menu' class='book-changes black-border' name='subj' form='changes'>
                         <option value='' selected>Select...</option>";
 
-            $classInfo = array(
-                array("all","EN",     "N",     "M",   "Ma", "S", "Sa",     "SS",  "SSa",          "H",      "V"),
-                array("All","English","Nepali","Math","Math Optional", "Science","Science Optional","Social Studies","Social Studies Optional","Health", "Vocation")
-            );
-
-            for($x = 1; $x < count($classInfo[0]); $x++) {
-                echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";};
-
-            echo "</select></span>";
-            echo "</span>";
+                        $classInfo = array(
+                            array("all","EN",     "N",     "M",   "Ma", "S", "Sa",     "SS",  "SSa",          "H",      "V"),
+                            array("All","English","Nepali","Math","Math Optional", "Science","Science Optional","Social Studies","Social Studies Optional","Health", "Vocation")
+                        );
+                        for($x = 1; $x < count($classInfo[0]); $x++) {
+                            echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";};
+                    echo "</select>";
+               // echo "</span>";
+            echo "</div><br>";
 
 
             /**************************************/
-            /********* Chapter Dropdown  **********/
+            /********* TEXTBOOKS Chapter Dropdown  **********/
             /**************************************/
-            echo "<span id='chapter-changes' >
-                        <span class='drop-menu'>Chapter:<select id='chapter-chng-menu' class='chapter-changes black-border' name='chapter' form='changes'>
-                                <option value='' selected>Select...</option>
-                      </select></span>";
-            echo "</span>";
-
-            echo "<button class='chng-clear' id='textbook-clear'>X</button>";
+            echo "<div id='chapter-changes' >
+                <label class='drop-menu'>Chapter:</label>
+                    <select id='chapter-chng-menu' class='book-changes black-border' name='chapter' form='changes'>
+                        <option value='' selected>Select...</option>
+                    </select>";
+                //</label>";
             echo "</div>";
 
-            echo "</form>";
+            //echo "</div>";
+        echo "</div>";
+        //echo "<button class='chng-clear' id='textbook-clear'>X</button>";
+
+    /*******************************************************/
+    /****** OTHER BOOK TYPES (e.g. Hesperian) **************/
+    /*******************************************************/
+
+        echo "<div id='otherbooks'>";
+            /**************************************/
+            /*********** OTHER BOOK source Dropdown  **********/
+            /**************************************/
+            //echo "<div id='otherbook-src'>";
+            echo "<div id='otherbook-src' >
+                <label for='src-chng-menu' class='drop-menu'>Book source: </label>
+                    <select id='src-chng-menu' class='book-changes black-border'  form='changes' name='book-source'>
+                        <option value='' selected>Select...</option>";
+                        echo "<option value='" . "hesp" . "' id='" . "hesperian" . "'>" . "Hesperian" . "</option>";
+                    echo "</select>";
+               // echo" </span>";
+            echo "</div><br>";
+
+            /**************************************/
+            /********* OTHER BOOK Book Dropdown  **********/
+            /**************************************/
+            echo "<div id='otherbook-book' >
+                <label for='book-chng-menu' class='drop-menu'>Title:</label>
+                    <select id='book-chng-menu' class='book-changes black-border' name='book-name' form='changes'>
+                        <option value='' selected>Select...</option>";
+
+            /*
+                        $bookInfo = array(
+                            array('hesp-midw','hesp-cgeh','hesp-wwd','hesp-dvc',
+                                  'hesp-haw','hesp-hcwb','hesp-hcwd','hesp-hhwl',
+                                  'hesp-nwtnd','hesp-dent','hesp-wtnd','hesp-wwhnd'),
+                            array("A Book for Midwives",
+                                "Environmental Health",
+                                "Women with Disabilities",
+                                "Disabled village children",
+                                "Health Actions for Women",
+                                "Helping Children Who Are Blind",
+                                "Helping Children Who Are Deaf",
+                                "Helping Health Workers Learn",
+                                "New Where There Is No Doctor",
+                                "Where There Is No Dentist",
+                                "Where There Is No Doctor",
+                                "Where Women Have No Doctor"));
+                        for($x = 1; $x < count($bookInfo[0]); $x++) {
+                            echo "<option name='subj' value='" . $bookInfo[0][$x] . "'>" . $bookInfo[1][$x] . "</option>";};
+            */
+                echo "</select>";
+                //echo "</span>";
+            echo "</div><br>";
+
+
+            /**************************************/
+            /********* OTHER BOOK Chapter Dropdown  **********/
+            /**************************************/
+            echo "<div id='otherbook-chapter' >
+                <label for='book-chapter-menu' class='drop-menu'>Chapter:</label>
+                    <select id='book-chapter-menu' class='book-changes black-border' name='book-chapter' form='changes'>
+                        <option value='' selected>Select...</option>
+                    </select>";
+               //echo "</span>";
+            echo "</div>";
+
+            //echo "</div>";
+        echo "</div>";
+        echo "<br><br><button class='chng-clear' id='otherbook-clear'>X</brbutton>";
+
+
+        echo "</form>";
             ?>
 
             <button id="check-all"      class="edit-control">Check All</button>

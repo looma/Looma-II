@@ -87,9 +87,6 @@ button.result {
 #editor b {
     font-weight: bold;
 }
-#dismiss {
-    bottom: 8vh;
-}
 
 #preview {
     position:fixed;

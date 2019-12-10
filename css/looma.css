@@ -666,12 +666,16 @@ button.img {
 	text-align:center;
 }
 
-button.img img {
+button.img img, button.img object {
 	height:90%;
 	float:left;
 	max-width:35%;
 }
-
+button.img object img {
+    float:left;
+    max-height: 100%;
+    max-width:100%;
+}
 th button.img {
 	height:75px;
     width:90%;
@@ -682,9 +686,12 @@ th button.img:hover {
 }
 th button.img img {
 	height:100%;
+    float:left;
 	/*width:15%;*/
 	max-width:35%;
 }
+
+.ch-table tr th:nth-child(3), .ch-table tr th:nth-child(4), .ch-table tr td:nth-child(3), .ch-table tr td:nth-child(4) {width:15%;}
 
 button.img.subject {
 	font-size: 1.5em;

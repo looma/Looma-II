@@ -74,8 +74,9 @@ $(document).ready (function() {
         $('button.activities[data-ch="' + chapterCookie + '"]').addClass('active');
         $('button.lesson[data-ch="' + chapterCookie + '"]').addClass('active');
     };
+  
     
     //scroll to prior scroll position
-    //$("#main-container-horizontal").scrollTop(LOOMA.readStore('chapterScroll', 'session'));
+    $("#main-container-horizontal").scrollTop(LOOMA.readStore('chapterScroll', 'session'));
     
 }); //end of document.ready anonymous function

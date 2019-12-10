@@ -13,6 +13,7 @@ Revision: Looma 3.0
 
 var loginname;
 var searchName = 'edit-activities-search';
+var textbook = true;
 
 function submitChanges (event) {  //check the form entries and submit to backend
     var n, str, len, arr, $checked, errors;
@@ -28,7 +29,8 @@ function submitChanges (event) {  //check the form entries and submit to backend
     else if ($('#innerResultsDiv .filter-checkbox:checked').length > 1 && $('#dn-change').val())
         errors = 'Can\'t change display name for more than 1 activity at a time.<br>';
 
-    else if ($('#grade-chng-menu').val() && $('#subject-chng-menu').val() && !$('#chapter-chng-menu').val() )
+    else if (textbook && $('#grade-chng-menu').val() && $('#subject-chng-menu').val() && !$('#chapter-chng-menu').val()
+         || !textbook && !$('#book-chapter-menu').val())
         errors = 'Must specify a specific chapter to set.<br>';
     
     
@@ -190,10 +192,7 @@ function displaySearchResults (filterdata_object) {
 
 // end Print Chapters Array
 
-
 }; //end displaySearchResults()
-
-
 
 function thumbnail (item) {
     
@@ -219,20 +218,11 @@ function thumbnail (item) {
     return imgsrc;
 }; // end thumbnail()
 
-//rewrote extractItemId() to use REGEX
-//  m=s.match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])\.([0-9][0-9])?$/);
-//  then if m != null, m[0] is the ch_id,
-//                     m[1] is the class digit,
-//                     m[2] is the subj letter(s),
-//                     m[3] is the chapter/unit, and m[4] is null or chapter#
-//       e.g. "8N01.04".match(regex) is ["8N01.04", "8", "N", "01", "04"]
-/* */
 function extractItemId(item) {
     var ch_id = (item['ft'] == 'chapter')? item['_id'] : item['ch_id'];
     return LOOMA.parseCH_ID(ch_id);
-    }
-
-
+    };
+    
 ////////////////////////////////////////
 ///////  createActivityDiv  //////////
 ////////////////////////////////////////
@@ -349,16 +339,23 @@ $(document).ready(function() {
    //     showChapterDropdown(null, $('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
    // });
     
-    
-            
+    // text books
             $("#grade-chng-menu").change(function() {
-                showSubjectDropdown($('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
+                showTextSubjectDropdown($('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
             });  //end drop-menu.change()
             
             $("#subject-chng-menu").change(function() {
-                showChapterDropdown($('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
+                showTextChapterDropdown($('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
+            });  //end drop-menu.change()
+    
+    //Other books
+            $("#src-chng-menu").change(function() {
+                showBookDropdown($('#src-chng-menu'), $('#book-chng-menu'), $('#book-chapter-menu'))
             });  //end drop-menu.change()
             
+            $("#book-chng-menu").change(function() {
+                showBookChapterDropdown($('#src-chng-menu'), $('#book-chng-menu'), $('#book-chapter-menu'))
+            });  //end drop-menu.change()
             
     
     $('#check-all'  ).click( function() { $('.filter-checkbox').prop('checked', true);});
@@ -368,6 +365,14 @@ $(document).ready(function() {
     $('#keyword-clear').click(  function(e) {e.preventDefault(); $('.keyword-changes').val(""); });
     $('#source-clear').click(   function(e) {e.preventDefault(); $('.source-changes').prop('checked', false); });
     $('#textbook-clear').click( function(e) {e.preventDefault(); $('.chapter-changes').val(""); });
+    $('#otherbook-clear').click( function(e) {e.preventDefault(); $('.book-changes').val(""); });
+    
+    $('#otherbooks').hide();
+    
+    $('input[type=radio][name=src]').change(function() {
+        if (this.value == 'other') {textbook = true;  $('#textbooks').hide(); $('#textbook-clear').trigger('click');  $('#otherbooks').show();}
+        else                       {textbook = false; $('#textbooks').show(); $('#otherbook-clear').trigger('click'); $('#otherbooks').hide();}
+    });
     
     $('#submit-changes').click( submitChanges );
     
@@ -377,7 +382,7 @@ $(document).ready(function() {
                         function() {return;});
     });
     
-    window.onbeforeunload = function() {
+    window.onbeforeunload = function(event) {
         event.preventDefault();
         // Chrome requires returnValue to be set.
         event.returnValue = '';

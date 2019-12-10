@@ -172,10 +172,16 @@ button#filesearch-submit{
 #modified {
     background-color:green;
     position:absolute;
-    bottom:3%;
-    right:4%;
+    bottom:20%;
+    right:0.5%;
     width:3vh;
     height:3vh;
     border-radius:1.5vh;
     z-index:2000;
+}
+#modified span {
+    position:relative;
+    left:-3vw;
+    top:-7vh;
+    display:none;
 }

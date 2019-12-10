@@ -127,7 +127,7 @@ function showChapterDropdown($div, $grades, $subjects, $chapters) {
     $chapters.empty();
     if ( ($grades.val() != '') && ($subjects.val() != ''))
         $.post("looma-database-utilities.php",
-            {cmd: "chapterList",
+            {cmd: "textChapterList",
                 class:   $grades.val(),
                 subject: $subjects.val()},
             

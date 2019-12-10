@@ -117,11 +117,19 @@ playMedia : function(button) {
             var id = encodeURIComponent(button.getAttribute('data-mongoId'));
             window.location = 'looma-text.php?id=' + id;
             break;
-
+    
         case "html":
             var fp = encodeURIComponent(button.getAttribute('data-fp'));
             var fn = encodeURIComponent(button.getAttribute('data-fn'));
             window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
+            break;
+    
+        case "book":
+            var fp = encodeURIComponent(button.getAttribute('data-fp'));
+            var dn = button.getAttribute('data-dn');
+            var ndn = button.getAttribute('data-ndn');
+            var prefix = button.getAttribute('data-prefix');
+            window.location = 'looma-book.php?fp=' + fp + '&prefix=' + prefix + '&dn=' + dn + '&ndn=' + ndn;
             break;
 
         case "looma":
@@ -206,7 +214,11 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                                 'data-fn="' + result.fn   + '" ' +
                                 'data-fp="' + fp          + '" ' +
                                 'data-ft="' + result.ft   + '" ' +
+                     
                                 'data-dn="' + result.dn   + '" ' +
+                                'data-ndn="' + result.ndn   + '" ' +
+                                'data-prefix="' + result.prefix   + '" ' +
+                     
                                 'data-url="' + result.url + '" ' +
                                 'data-grade="' + result.grade + '" ' +
                                 'data-epversion="' + result.version + '" ' +
@@ -217,11 +229,27 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                                 //
                            );
 
-                        if      (result.ft == 'EP'       && result.thumb) thumbfile = '../ePaath/' + result.thumb;
-                        else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft || 'map') && result.thumb) thumbfile = result.thumb;
-                        else thumbfile = LOOMA.thumbnail(result.fn, result.fp, result.ft);
+                        if      (result.ft == 'EP'       && result.thumb)
+                                               thumbfile = '../ePaath/' + result.thumb;
+                        else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft || 'map') && result.thumb)
+                                               thumbfile = result.thumb;
+                        else if (result.thumb) thumbfile = result.fp + result.thumb ;
+                        else                   thumbfile = LOOMA.thumbnail(result.fn, result.fp, result.ft);
+    
+                     $newButton.append($('<img draggable="false" src="' + thumbfile + '">'));
                     
-                        $newButton.append($('<img draggable="false" src="' + thumbfile + '">'));
+                    //$newButton.append($('<img draggable="false" src="' + thumbfile + '"' +
+                       //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));
+        
+        
+                    /*this idea is from: https://stackoverflow.com/questions/980855/inputting-a-default-image-in-case-the-src-attribute-of-an-html-img-is-not-vali
+                           $newButton.append($('<object draggable="false" data="' + thumbfile + '" type="image/png">' +
+                                                '<img src="' + result.fp + 'thumbnail.png">' +
+                                                '</object>'));
+                     */
+                    
+                    
+                    
                         $newButton.append($('<span>').text(result.dn));
                         $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
@@ -949,7 +977,7 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
         $('#chapterSelect').empty();
         if ( ($('#classSelect').val() != '') && ($('#subjectSelect').val() != ''))
             $.post("looma-database-utilities.php",
-                {cmd: "chapterList",
+                {cmd: "textChapterList",
                  class: $('#classSelect').val(),
                  subject:   $('#subjectSelect').val()},
 

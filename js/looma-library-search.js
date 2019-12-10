@@ -83,7 +83,7 @@ function displayMoreResults(results) {
     //var actResults = result_array['activities'].length;
     
     //$display.append("<p> Activities(<span id='count'>" + actResults + ")</span></p>");
-    $('#results-div').find('#count').text(parseInt($('#results-div').find('#count').text()) + results['count']);
+   // $('#results-div').find('#count').text(parseInt($('#results-div').find('#count').text()) + results['count']);
     
     if(result_array['activities'].length > 0)
         displayActivities(result_array['activities'], '#results-table');
@@ -172,6 +172,10 @@ $(document).ready (function() {
     $("#more").click(function(){
         pagesz = 24;
         sendSearchRequest ($("#search"), displayMoreResults);
+    });
+    
+    $('#results-div').on('error', 'button.img img', function() {
+        this.src = this.data['fp'] + 'thumbnail.png';
     });
     
     $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});

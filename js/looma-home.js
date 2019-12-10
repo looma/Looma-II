@@ -16,7 +16,7 @@ var className, subjectName, gradeName, prefix;
 function displaySubjects (className) {
     
     $.post("looma-database-utilities.php",
-        {cmd: "bookList",
+        {cmd: "textBookList",
             class: className},
         function(books) {
             books.forEach (function(book) {

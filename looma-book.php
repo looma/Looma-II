@@ -17,7 +17,7 @@ Pass in URL parameters "fp" the path to the folder containing EN and NP folders 
 <?php $page_title = 'Looma Book';
     require ('includes/header.php');
     require ('includes/mongo-connect.php');
-    require('includes/looma-utilities.php');?>
+    require ('includes/looma-utilities.php');?>
 ?>
 </head>
 
@@ -37,10 +37,26 @@ echo keyword('Chapters for') . " ";
     displayName("", $dn, $ndn);
 echo "</h3>";
 
-echo "<br><br><table>";
+echo "<br><br><table class='ch-table'>";
 echo "<tr>";
-    echo "<th><button class='heading img activities' disabled>"; keyword('English'); echo "</button></th>";
-    echo "<th><button class='heading img activities' disabled>"; keyword('Nepali'); echo "</button></th>";
+    //echo "<th><button class='heading img activities' disabled>"; keyword('English'); echo "</button></th>";
+    //echo "<th><button class='heading img activities' disabled>"; keyword('Nepali'); echo "</button></th>";
+
+
+if ($dn != null)
+    echo "<th><button class='heading img' id='englishTitle' disabled>" .
+        "<img src='" . addslashes($fp) . "thumbnail.png'>" .
+        $dn . "</button></th>";
+else
+    echo "<th></th>";
+
+if ($ndn != null) echo "<th><button class='heading img' id='nativeTitle' disabled>" .
+    "<img src='" . addslashes($fp) . "thumbnail.png'>" .
+    $ndn . "</button></th>";
+
+else                echo "<th></th>";
+
+
     echo "<th><button class='heading img activities' disabled>"; keyword('Lesson'); echo "</button></th>";
     echo "<th><button class='heading img activities' disabled>"; keyword('Activities'); echo "</button></th>";
 echo "</tr>";
@@ -70,6 +86,7 @@ foreach ($chapters as $ch) {
     $ch_fp =  array_key_exists('fp', $ch) ? $ch['fp'] :   null;
     $ch_nfp = array_key_exists('nfp', $ch) ? $ch['nfp'] : null;
 
+///////   ENGLISH   ///////
 // display chapter button for english chapters of the book, if any
     if ($ch_fn) { echo "<td><button class='chapter'
                    data-fn='$ch_fn'
@@ -83,6 +100,7 @@ foreach ($chapters as $ch) {
     }
     else {echo "<td><button class='chapter' style='visibility: hidden'></button></td>";}
 
+///////   NEPALI   ///////
 // display chapter button for nepali chapters of the book, if any
     if ($ch_nfn) { echo "<td><button class='chapter'
                    data-fn='$ch_nfn'
@@ -95,7 +113,7 @@ foreach ($chapters as $ch) {
     }
     else {echo "<td><button class='chapter' style='visibility: hidden'></button></td>";}
 
-
+///////   LESSON   ///////
 // display a button for the lesson plans for this chapter
     $query = array('ch_id' => $ch_id, 'ft' => 'lesson');
     $projection = array('_id' => 0,
@@ -116,14 +134,35 @@ foreach ($chapters as $ch) {
               keyword('Lesson');
         echo "</button></td>";
     }
-    else {echo "<td><button class='activity' style='visibility: hidden'></button></td>";}
+    else {echo "<td><button class='activities' style='visibility: hidden'></button></td>";}
 
+///////   ACTIVITIES   ///////
 // display a button for the activities for this chapter
+    $query = array('ch_id' => $ch_id);
+    $projection = array('_id' => 0,
+        'mongoID' => 1,
+        'dn' => 1
+    );
+
+    //check in the database to see if there are any ACTIVITIES  or this CHAPTER. if so, create a button
+    $activity = $activities_collection -> findOne($query, $projection);
+
+    if ($activity) {
+        echo "<td><button class='activities'" .
+            "data-ch='$ch_id'" .
+            " data-chdn='" . $activity['dn'] . "'" ."'>";
+        keyword('Activities');
+        echo "</button></td>";
+    }
+    else {echo "<td><button class='activities' style='visibility: hidden'></button></td>";}
+
+    /*
     echo "<td><button class='activities'
              data-ch='$ch_id'
              data-chdn='$ch_dn'>";
              keyword('Activities');
     echo "</button></td></tr>";
+    */
 }
 echo "</table></div></div>";
 ?>

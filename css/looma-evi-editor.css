@@ -924,7 +924,7 @@ li:hover {
 #padlock {
     position:absolute;
     right:1vw;
-    bottom:20vh;
+    bottom:12vh;
     height:3vh;
     width: 3vh;
     z-index:3;

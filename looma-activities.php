@@ -14,7 +14,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 	require ('includes/header.php');
 	require ('includes/mongo-connect.php');
 
-//use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg)
+//use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix)
     require('includes/looma-utilities.php');
 	?>
 </head>
@@ -69,7 +69,7 @@ $foundActicvity;
                     case "mp4":
                     case "mov":
                     case "m4v":
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null);
                         break;
 
                     case "slideshow":
@@ -85,11 +85,11 @@ $foundActicvity;
 
                     case "lesson":
                         $thumb = "images/lesson.png";
-                        makeActivityButton($ft, $fp, "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null);
+                        makeActivityButton($ft, $fp, "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null,null);
                         break;
 
                     case "evi":      //edited videos
-                        makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null);
+                        makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null);
                         break;
 
                     case "VOC":     //vocabulary reviews
@@ -103,41 +103,41 @@ $foundActicvity;
                     case "jpeg":
                     case "png":
                     case "gif":
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null);
                         break;
 
                     case "audio":
                     case "mp3":
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null);
                         break;
 
                     case "pdf":
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null);
                         break;
 
                     case "text":
                         //NOTE: dont show indivudual text files in Activities page for a chapter
-                        //makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null);
+                        //makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null);
                         break;
 
                     case "map";
-                        makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, "", "", "", "", "", "", "",null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, "", "", "", "", "", "", "",null,null,null);
                         break;
 
                     case "looma";  //open a Looma page (e.g. calculator or paint)
-                        makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "",null,null);
+                        makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "",null,null,null);
                         break;
 
                     case "EP":
                     case "epaath":
                         if ($epversion === 2015) $thumb = $fp . $fn . "/thumbnail.jpg";
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion,null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion,null,null,null);
                         break;
 
                     case "html":
                     case "HTML":
                         // make a HTML button
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null);
+                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null);
                         break;
 
                     default:

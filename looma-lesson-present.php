@@ -107,6 +107,7 @@ Description: looma lesson plan presenter
                             (isset($details['grade'])) ? $details['grade'] : null,
                             (isset($details['version'])) ? $details['version'] : null,
                             null,
+                            null,
                             null
                         );
                 } else
@@ -148,7 +149,9 @@ Description: looma lesson plan presenter
                         null,
                         null,
                         $nfn,
-                        $npn);
+                        $npn,
+                        null
+                    );
                 };
              };
              }

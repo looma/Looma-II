@@ -81,6 +81,8 @@ $(document).ready (function() {
             loginname === 'david'  ||
             loginname === 'kabin'  ||
             loginname === 'samarth'||
+            loginname === 'sharmila'||
+            loginname === 'tara'||
             loginname === 'sashwot')
             $('.admin-control').css('display', 'inline');;
         if (loginname == 'skip') $('.exec-control').css('display', 'inline');;

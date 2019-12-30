@@ -421,9 +421,19 @@ span.logo-vertical {
 }
 
 span.logo img {
-	height:80%;
-	width:100%;
-	padding-top:5%;
+    height:7vh;
+    margin:auto;
+    padding-top:3%;
+}
+span.logo img,vertical {
+	height:3.5vh;
+    width:4vw;
+    margin:auto;
+    padding-top:3%;
+}
+span.logo img.looma-logo {
+    height:20vh;
+    width:33vw;
 }
 
 button.toolbar {

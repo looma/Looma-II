@@ -23,8 +23,10 @@ define ("CLASSES", 8);
 <div id="main-container-horizontal">
 
     <div id="head">
-        <img src="images/logos/LoomaLogoTransparent.png" class="looma-logo"/>
-    </div>
+	<span class="logo">
+			    <img  id="logo"   class="looma-logo english-keyword" draggable="false" src="images/logos/Looma-english-amanda 2x1 crop transparent.png" >
+			    <img  id="logo"   class="looma-logo native-keyword" hidden draggable="false" src="images/logos/Looma-nepali-amanda 2x1 crop transparent.png" >
+      		</span>    </div>
 
     <!--  display CLASS buttons  -->
     <div id="classes" class="button-div">

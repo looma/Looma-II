@@ -80,7 +80,8 @@
         <div id="logo-div">
             <!-- DATETIME ready to turn on. needs to be positioned with CSS-->
             <span class="logo">
-			    <img  id="logo"   draggable="false" src="images/logos/LoomaLogoTransparent.png" >
+			    <img  id="logo"   class="vertical english-keyword" draggable="false" src="images/logos/Looma-english-amanda 2x1 crop transparent.png" >
+			    <img  id="logo"   class="vertical native-keyword" hidden draggable="false" src="images/logos/Looma-nepali-amanda 2x1 crop transparent.png" >
       		</span>
             <br>
             <span id="datetime"></span>

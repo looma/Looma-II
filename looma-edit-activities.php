@@ -138,7 +138,7 @@ include ('includes/header.php');
         /**************************************/
         /********* Book type selector ********/
         /**************************************/
-        echo "<div id='book-type'>
+        echo "<br><div id='book-type'>
             <span>Attach to:  </span>";
 
         echo "<span class='chapter-type'>" .

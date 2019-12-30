@@ -9,7 +9,7 @@
 #
 #   files to be updated may
 #    - be on a USB stick at /media/odroid/LOOMA/loomaupdate (the "U" option)
-#    - or, on  rsync.net (the "I" option)
+#    - or, on  the Internet at rsync.net (the "I" option)
 #
 #   file structure expected if on the USB:
 #

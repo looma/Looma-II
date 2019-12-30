@@ -108,10 +108,6 @@ span.logo {
     width:100%;
 }
 
-span.logo img {
-    padding-top: 1vh
-}
-
 span#datetime {
     margin:0 0 5px 0 ;
     display:inline-block;

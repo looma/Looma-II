@@ -250,6 +250,8 @@ function openfile(openId, collection, filetype) { //filetype must be given e.g. 
                             || LOOMA.loggedIn() == 'kathy'
                             || LOOMA.loggedIn() == 'kabin'
                             || LOOMA.loggedIn() == 'sashwot'
+                            || LOOMA.loggedIn() == 'sharmila'
+                            || LOOMA.loggedIn() == 'tara'
                             || LOOMA.loggedIn() == 'samarth'
                         );
                     else owner = false;

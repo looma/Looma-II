@@ -1,0 +1,1171 @@
+1EN02 Sounds and Letters Shapes	1EN02 Sounds & Letter Shapes
+1M07-08 Addition and Subtraction Up to 5	1M07-08 Addition and Subtraction
+1M10 Addition and Subtraction up to 9	1M10 Addition and Subtraction
+1M13-14 Addition and Subtraction of 10	1M13-14 Addition and Subtraction
+1M16 Greater than, Less than and Equal to	1M16 Greater Less & Equal
+1M19 Addition and Subtraction from 11 to 19	1M19 Addition and Subtraction
+1M26-27 Addition and Subtraction of Rupees and Word Problems Based on Money	1M26-27 Add & Subtract
+1M29-30 Greater and Smaller Numbers	1M29-30 Greater & Smaller
+1M33-4 Addition and Subtraction of Two Digit Numbers	1M33-4 Two Digit Numbers
+1M35 Verbal Problems Related to Addition and Subtraction	1M35 Addition and Subtraction
+1M42 Verbal Problems of Multiplication	1M42  Problems of Multiplication
+1M46 Devanagari Number System	1M46 Devanagari Numbers
+1S01.03 Animals Reproduce Babies	1S01.03 Animals Reproduce
+1S01.09 Flesh and Grass Eating Animals 	1S01.09 Carni- & herbivores 
+1S01.11 Animals with Horns and Tails	1S01.11 Animals with Horns & Tails
+1S01.18 Clean and Dirty Environment	1S01.18 Clean & Dirty Environment
+1S03.01 Walking, Running, and Jumping	1S03.01 Walk, Run, and Jump
+1SS03.01-02 Help needy ones and disabled people	1SS03.01-02 Help All Needy People
+1SS04.05-06 My Work at Home and My Duties at School	1SS04.05-06 Homework &  School Duties
+1SS05.03-05 Map of Home, School, and Classroom	1SS05.03-05 School & Home Maps
+1SS06.02-03 My Ancestors/My Head of Family	1SS06.02-03 My Ancestors My Family
+1SS07.03-04 Homemade Food and Homemade Things	1SS07.03-04 Homemade Food & Things
+2M02 Solid Objects and Its Shape in Plane Surface	2M02 Solid Objects & Plane Surface
+2M15 Relation of Multiplication and Division	2M15 Multiplication and Division
+2S01.05 Food and Feeding Habits of Animals	2S01.05 Animals'  Eating
+2S01.09 Food From Plants and Animals	2S01.09 Food From Plants & Animals
+2S01.20 Sunlight Has Different Colors	2S01.20 Sunlight Has Many Colors
+2S02.03-04 Cleaning House and School	2S02.03-04 Clean House & School
+2S03.01-02 Locomotor and Non-locomotor Skills	2S03.01-02 Locomotor Skills
+2S03.02-02 Locomotor and Non-locomotor skills	2S03.02-02 Locomotor Skills
+2SS01.01-02 My Work and My Family's Work	2SS01.01-02 My and My Family's Work
+2SS02.02/04 Living Styles of Neighbors and Good Neighbors	2SS02.02/04 Good Neighbors
+2SS03.01-02 Helpless and Handicaps in Schools and Neighborhoods	2SS03.01-02 Helpless and Handicaps
+2SS07.03-04 Things Made in Village and City	2SS07.03-04  Village & City-made Things
+3M05 and 3M08 Four Digits with Subtraction	3M05 & 3M08 Four Digits 
+3S01.01 Common Characteristics of Living Things	3S01.01 Features of Living Things
+3S01.04 Food of Animals and Their Eating Habits	3S01.04 Animals' Food & Eating
+3S01.05 Animals Seen in Different Times and Seasons	3S01.05 Animals & Seasons
+3S01.07 Advantages of Plants and Animals	3S01.07 Living Things Advantages 
+4M02.04 Prime and Composite Numbers	4M02.04 Prime and Composite
+4M03.01-02 Subtraction and Daily Life Problems	4M03.01-02 Subtraction Examples
+4S01.02 Oviparous and Viviparous Animals	4S01.02 Oviparous Viviparous
+4S01.06 Stages of Development of Plants	4S01.06  Development of Plants
+4S01.07 Terrestrial Plants and Characterisitics	4S01.07 Features of Plants
+4S01.09 Interrelationships Between Living Things and the Environment	4S01.09 Living Things Environment
+4SS05.05 India Neighboring Country	4SS05.05 India Our Neighbor
+5M03 Fundamental Operations in Mathematics	5M03 Fundamental Operations
+5M14 Unitary Method and Simple Interest	5M14 Unitary Method
+5S01.06 Human Effects on the Environment	5S01.06 Humans and Environment
+5S01.08 Change of State of Matter	5S01.08 Change State of Matter
+5S01.14 Information Communication	5S01.14 Information Transfer
+5SS02.01-02 Our Traditions/Our Language and Costumes	5SS02.01-02 Traditions & Language
+5SS05.08 Bangladesh, Pakistan, and Bhutan	5SS05.08 B'desh Bhut'n Pakistan
+6M01.04-05 Finite, Infinite, Equivalent, and Equal Sets	6M01.04-05 Types of Sets
+6M02.01 Whole Numbers and Hindu/Arabic Numeration	6M02.01  Numeration
+6M02.02 Roman Numerals Temp	6M02.02 Roman Numerals
+6M02.04 Simplification Including Brackets	6M02.04 Simplification & Brackets
+6M02.05 Test of Divisor and Divisibility	6M02.05 Divisor and Divisibility
+6M02.07 Prime and Composite Numbers	6M02.07 Prime & Composite
+6M02.11 Perfect Square Numbers and Square Root	6M02.11 Squares & Square Roots
+6M05.01 Length, Weight, Capacity and Time	6M05.01 L, W Time & Capacity
+6M07.02 Simple problems and including profit and loss	6M07.02 Profit & Loss Problems
+7M02.01 Naming Numbers in International System	7M02.01 International Numbers
+7M02.05 Lowest Common Factor	7M02.05 Common Factor
+7M02.06-07 Binary and Quinary Numbers	7M02.06-07 Binary & Quinary
+7M02.10 Adding and Subtracting Integers	7M02.10 Integers Add & Subtract
+7M02.11 Multiplication and Division of Integers	7M02.11 Multiplication & Division
+7M03.01 Introduction (rational numbers)	7M03.01 Rational Numbers
+7M03.02 Rational Number and Decimal Number	7M03.02 Rational &  Decimal #
+7M04.01 Word Problems of Decimal	7M04.01 Decimal Problems
+7M04.02 Terminating, Non-Terminating, and Recurring Decimals	7M04.02 Types of Decimals
+7M04.03 Fraction, Decimal, and Number Line	7M04.03 Fractions & Number Line
+7M04.04 Four Fundamental Operations with Decimals	7M04.04 Fundamental Operations
+7M09.01 Trichotomy Property of Integers	7M09.01 Trichotomy Property
+8M05 Rational and Irrational Numbers	8M05 Rational & Irrational
+8M06 Ratio Proportion and Percentage	8M06 Ratio Proportion & Percentage
+8M12 Equation, Inequality and Graph	8M12 Graph, Equation & Inequality
+8M15 Interior Exterior Angles	8M15 Angles Interior & Exterior
+8M16 Congruent Similar Triangles	8M16 Congruent Triangles
+8M18 Perimeter, Area, and Volume	8M18 Area Perimeter  & Volume
+i as the Principal Root of -1 (a little technical)	i is the Principal Root of -1
+Zero, Negative, and Fractional Exponents	0, Negative, & Fractional Exponents
+Example 1: Solving systems by substitution	1 Solve Systems By Substitution
+Example 1: Using the quadratic formula	1: Using the quadratic formula
+S. A. Andrée's Arctic balloon expedition of 1897	1897 Arctic Balloon Expedition
+Super Yoga Plans- Solving Systems by Elimination	1898 Arctic Balloon Expedition
+Example 2: Factoring difference of squares	2 Factor Difference Of Squares
+Example 2: Factoring difference of squares	2 Factor Difference Of Squares
+Example 2: Graphically Solving Systems	2 Graphically Solving Systems
+Example 2: Solving systems by substitution	2 Solve Systems By Substitution
+Example 2: Using the quadratic formula	2: Using the quadratic formula
+Three Equation Application Problem	3 Equation Application Problem
+LeBron Asks: What are the chances of three free throws versus one three pointer?	3 free throws versus one three pointer?
+Example 3: Graphically Solving Systems	3 Graphically Solving Systems
+Example 3: Solving systems by substitution	3 Solve Systems By Substitution
+Example 3: Using the quadratic formula	3: Using the quadratic formula
+Three Equation Application Problem	4 Equation Application Problem
+Example 5: Using the quadratic formula	5: Using the quadratic formula
+Curriculum 9V-10V Animal Science	9V-10V Animal Science
+Jhamak Kumari: A Flower in the Midst of Thorns	A Flower in the Midst of Thorns
+Another mass composition problem	A Mass Composition Problem
+My share of soap as a mixed number on a number line	A Mixed Number on a Number Line
+Representing a number as a decimal, percent, and fraction	A number as a decimal, %, and fraction
+Representing a number as a decimal, percent, and fraction	A number as a decimal, %, and fraction
+Graphing a parabola using roots and vertex	A Parabola Graph With Roots-Vertex
+A look at a seductive but wrong Gibbs/Spontaneity Proof	A seductive but wrong Gibbs Proof
+Armand Jean du Plessis, Cardinal Richelieu	A. du Plessis, Cardinal Richelieu
+Arthur Wellesley, 1st Duke of Wellington	A. Wellesley, 1st Duke of Wellington
+Arthur Wellesley, 1st Duke of Wellington	A. Wellesley, 1st Duke of Wellington
+Proof: A(log B) = log (B^A), log A - log B = log (A/B)	A(logB) = log (B^A)
+Absolute value equation example	Absolute value equation
+Absolute Value Equation Example 2	Absolute value equation
+Absolute value equation with no solution	Absolute value equation
+Absolute Value Equations Example 1	Absolute value equation
+Absolute value inequalities Example 1	Absolute Value Inequalities 1
+Absolute value inequalities Example 1	Absolute Value Inequalities 1
+Absolute Value Inequalities Example 2	Absolute Value Inequalities 2
+Absolute value inequalities example 3	Absolute Value Inequalities 3
+Absolute value inequalities example 3	Absolute Value Inequalities 3
+Action Potentials in Cardiac Myocytes	Action Pot'ls in Cardiac Myocytes
+Action Potentials in Pacemaker Cells	Action Pot'ls in Pacemaker Cells
+Active contraction vs. passive recoil	Active Contract'n vs. Passive Recoil
+Secondary Active Transport in the Nephron	Active Transport in  Nephron
+Activities With Mothers And Children	Activities for Mothers And Children
+Addition and Subtraction with Significant Figures	Add  Subtract Significant Figures
+Adding & Subtracting negative numbers	Add & Subtract negatives
+Addition and Subtraction of Polynomials	Add and Subtract Polynomials
+Addition and Subtraction of Polynomials	Add and Subtract Polynomials
+Adding fractions with different signs	Add Fractions with Dif. signs
+Adding fractions with unlike denominators word problem	Add fractions with unlike denominators
+Adding Mixed Numbers with Unlike Denominators	Add Mixed Numbers
+Adding and subtracting mixed numbers 0.5 (ex 1)	Add Subtract Mixed Numbers
+Adding and subtracting mixed numbers 0.5 (ex 2)	Add Subtract Mixed Numbers
+Adding and subtracting mixed numbers 1 (ex 1)	Add Subtract Mixed Numbers
+Adding and subtracting mixed numbers 1 (ex 2)	Add Subtract Mixed Numbers
+Adding and Subtracting Rational Expressions	Add Subtract Rational Expressions
+Adding and Subtracting Rational Expressions	Add Subtract Rational Expressions
+Adding and Subtracting Rational Expressions 2	Add Subtract Rational Expressions
+Adding and Subtracting Rational Expressions 2	Add Subtract Rational Expressions
+Adding and Subtracting Rational Expressions 3	Add Subtract Rational Expressions
+Adding and Subtracting Rational Expressions 3	Add Subtract Rational Expressions
+Adding decimals of different signs word problem	Adding decimals of different signs
+Adding decimals of different signs word problem	Adding decimals of different signs
+Example: Adding integers with different signs	Adding integers with different signs
+Adding Mixed Numbers Word Problem	Adding Mixed Numbers
+Example: Adding negative numbers	Adding negative numbers
+Example: Adding two digit numbers (no carrying)	Adding two digit numbers
+More advanced ratio problem--with Algebra (HD version)	Advanced Ratio Problem
+Acceleration of Aircraft Carrier Takeoff	Aircraft Carrier Takeoff
+Aldosterone raises blood pressure and lowers potassium	Aldosterone impacts blood pressure & K
+Aldosterone removes acid from the blood	Aldosterone Removes Acid from Blood
+Example using algebra to find measure of complementary angles	Algebra & Complement-ary angles
+Example using algebra to find measure of supplementary angles	Algebra & Supplement-ary angles
+Using algebra to find the measures of vertical angles	Algebra Quantifies Vertical Angle
+Algebraic midpoint of a segment exercise	Algebraic midpoint of a segment
+Assessing Alignment of the Lateral Cervical Spine (neck) X-Ray	Alignment of the Lateral Cervical Spine
+Figuring out all the angles for congruent triangles example	All Angles For Congruent Triangles
+Changing an Improper Fraction to a Mixed Number	Alter Fraction to  Mixed Number
+Changing a Mixed Number to an Improper Fraction	Alter Mixed Number to  Fraction
+Alternate Solution to Ratio Problem (HD Version)	Alternate Solution to Ratio Problem
+Alternate mental subtraction method	Alternate subtraction method
+Aluminium - The Material That Changed The World	Aluminium Changed The World
+Population history of American indigenous peoples	American Peoples History
+Example: Amplitude and period cosine transformations	Amplitude & Period Trans-formations
+Example: Amplitude and period transformations	Amplitude & Period Transformat'n
+Another Isosceles Example Problem	An Isosceles Example Problem
+Ancient Asian Coins From the Zhou Dynasty	Ancient Coins From the Zhou Dynasty
+Angiotensin 2 raises blood pressure	Angiotensin 2 Lifts Blood Pressure
+Angle Bisector Theorem Examples	Angle Bisector Theorem
+Angle Bisector Theorem Proof	Angle Bisector Theorem
+Relationship between angular velocity and speed	Angular Velocity & Speed
+Animal's food and mode of feeding	Animal's food and feeding
+Animal's food and modes of feeding	Animal's food and feeding
+Animals Found on Land and in Water	Animals on Land and in Water
+Professional Antigen Presenting Cells (APC) and MHC II complexes	Antigen Presenting Cells (APC)
+Example 4: Applying the quadratic formula	Apply the quadratic formula
+Appropriate & Inappropriate Technology	Appropriate- Inappropriate Technology
+Length of an arc that subtends a central angle	Arc that Subtends a Central Angle
+Area Circumradius Formula Proof	Area Circum-radius Proof
+Area of shaded region made from equilateral triangles	Area in equilateral triangles
+Area of a sector given a central angle	Area of a sector given central angle
+Area of Koch Snowflake (part 1) - Advanced	Area of Koch Snowflake Part 1
+Area of Koch Snowflake (part 2) - Advanced	Area of Koch Snowflake Part 2
+Why Distance is Area under Velocity-Time Line	Area Under Veloc.-Time Line: Distance
+CA Geometry: Area, Circumference, Volume	Area, Volume Circum-ference
+List of areas in the National Park System of the United States	Areas in US National Park System
+Arterial Elastance (Ea) and Afterload	Arterial Elastance & Afterload
+Arterial Elastance (Ea) and Preload	Arterial Elastance & Preload
+Getting Ea (Arterial Elastance) from the PV Loop	Arterial Elastance from PV Loop
+Arteries vs. Veins - What's the difference?	Arteries vs. Veins -- the difference?
+Arteries vs. Veins - What's the difference?	Arteries vs. Veins -- the difference?
+Arteriosclerosis, Arteriolosclerosis, and Atherosclerosis	Arterio- Ar-teriolo- & Ath-erosclerosis
+Arteries, Arterioles, Venules, and Veins	Artery Vein Arteriole Venule
+Attention-deficit hyperactivity disorder	Att'n-deficit hyperactivity disorder
+History of the Australian Capital Territory	Australian Capital Territory
+Average Velocity--an Interesting Case	Average Velocity
+Average Velocity for Constant Acceleration	Avg. Velocity for Constant Acceleration
+Aymer de Valence, 2nd Earl of Pembroke	Aymer de Valence
+Baby Circulation Right After Birth	Baby Circulation After Birth
+Why we do the same  thing to both sides basic systems	Balance Basic Systems
+Why we do the same  thing to both sides basic systems	Balance Basic Systems
+Adding and subtracting the same thing from both sides	Balance by equal subtraction
+Adding and subtracting the same thing from both sides	Balance by equal subtraction
+Why we do the same thing to both sides: multi-step equations	Balance Multi-step Equations
+Why we do the same thing to both sides: multi-step equations	Balance Multi-step Equations
+Why we do the same  thing to both sides: simple equations	Balance Simple Equations
+Why we do the same  thing to both sides: simple equations	Balance Simple Equations
+Why we do the same thing to both sides: two-step equations	Balance Two-step Equations
+Why we do the same thing to both sides: two-step equations	Balance Two-step Equations
+Regulation of blood pressure with baroreceptors	BaroreceptorsRegulate Blood Press.
+CA Geometry: Basic Trigonometry	Basic Trigonometry
+Super Yoga Plans- Basic Variables and Equations	Basic Variables and Equations
+Super Yoga Plans- Basic Variables and Equations	Basic Variables and Equations
+Basilica of San Francesco d'Assisi	Basilica San Francesco d'Assisi
+Nepal - Behind Begnash (Pokhara) 3385392372 l	Behind Begnash
+Different Beats Being a Female Tabla Player	Being a Female Tabla Player
+Benford's Law Explanation (Sequel to Mysteries of Benford's Law)	Benford's Law Explanation 
+Benito Mussolini and Adolf Hitler	Benito Mussolini & Adolf Hitler
+Benjamin Disraeli, 1st Earl of Beaconsfield	Benjamin Disraeli
+Benjamin Disraeli, 1st Earl of Beaconsfield	Benjamin Disraeli
+Bhaskara's proof of Pythagorean Theorem	Bhaskara's Pythagorean Theorem
+Bhim Shamsher Jang Bahadur Rana	Bhim S J B Rana
+Binary and Quinary Number System	Binary and Quinary # System
+Blood pressure changes over time	Blood Pressure Changes
+Bodhissatva Statue from Malla Dynasty	Bodhissatva Statue from Malla time
+Body With Mind or Mind With Body	Body With Mind
+Boundary Waters Canoe Area Wilderness	Boundary Waters Canoe Area
+Limit Examples w/ brain malfunction on first prob (part 4)	Brain Malfunction
+Bronze mirror from Six Dynasties Time Period	Bronze Mirror Six Dynasties
+Buddhist spinning prayer wheel in Nepal	Buddhist Spinning Prayer Wheel
+Lens of Time Building a Butterfly Wing	Building a Butterfly Wing
+CA Geometry: Pythagorean Theorem, Area	CA Geometry Pythagorean Theorem
+Advanced: Geometric series sum to figure out mortgage payments	Calculate mortgage payments
+Calculating dot and cross products with unit vector notation	Calculating dot and cross products
+Example: Calculator to evaluate a trig function	Calculator to evaluate a trig function
+Architecture of the California missions	California Mission Architecture
+Whether a Special Quadrilateral Can Exist	Can a Special Quadrilateral Exist?
+Canadian Charter of Rights and Freedoms	Can. Charter of Rights & Freedoms
+List of Canadian provinces and territories by area	Canadian Provinces & Territories
+Reseting Cardiac Concentration Gradients	Cardiac Concentration Gradients
+Carnot Efficiency 2:  Reversing the Cycle	Carnot 2:  Reverse the Cycle
+Carnot Efficiency 3:  Proving that it is the most efficient	Carnot Efficiency 3:  Most efficient
+Carolingian Gospel Book (British Library, MS Add. 11848)	Carolingian Gospel Book
+People carrying aid to shelter Nepal 2015	Carrying Aid to Shelter Nepal 2015
+Calculus proof of centripetal acceleration formula	Centripetal Acceleration Formula
+Visual Understanding of Centripetal Acceleration Formula	Centripetal Acceleration Formula
+Centripetal Force and Acceleration Intuition	Centripetal Force and Acceleration
+Proving that the Centroid is 2-3rds along the Median	Centroid is 2-3rds along the Median
+Cervica+A4488:C4488l Spine Protection in Airway Management (not a substitute for formal training)	Cerv. Spine Protection in Airway Mng't 
+What are the challenges of nuclear power	Challenges of Nuclear Power
+Chandra Shamsher Jang Bahadur Rana	Chandra Shamsher J Bahadur Rana
+Changing the AV Node Delay - Chronotropic Effect	Change AV Node Delay - Chronotropic
+Changing the Heart Rate - Chronotropic Effect	Change Heart Rate Chrono-tropic Effect
+Charles Etienne Brasseur de Bourbourg	Charles E B de Bourbourg
+Chicago and North Western Railway	Chicago and NW Railway
+Chromosomes, Chromatids, Chromatin, etc.	Chromosom-es Chroma-tids, tin
+CA Geometry: Circle Area Chords Tangent	Circle Area Chords Tangent
+Circles: Radius, Diameter and Circumference	Circle Radius Diameter & Circumf'nce
+Circles: Radius, Diameter and Circumference	Circle Radius Diameter & Circumf'nce
+Club Or Flat Feet Bow Legs Knock-knees	Club & Flat Feet Bow Legs
+Example: Combinatorics and probability	Combina-torics & Probability
+Combining like terms and the distributive property	Combine Like Terms
+flag of communist party of nepal	Communist party of Nepal flag
+A Community Guide to Environmental Health	Community Environment Health Guide
+A Community Issue: Health For Women	Community Issue: Health For Women
+Comparing Celsius and Farenheit temperature scales	Compare Celsius and Farenheit
+Comparing improper fractions and mixed numbers	Compare Fractions & Mixed #s
+Comparing linear functions applications 2	Compare linear functions 2
+Comparing linear functions applications 3	Compare linear functions 3
+Comparing features of functions 2 (example 1)	Comparing features of functions 2
+Comparing features of functions 2 (example 2)	Comparing features of functions 2
+Comparing whole number place values	Comparing whole # place values
+CA Geometry: Compass Construction	Compass Construction
+Complementary and supplementary angles	Complement- Supplement- ary Angles
+Example:  Completing perfect square trinomials	Complete Perfect Sq. Trinomials
+Example: Complex roots for a quadratic	Complex roots for a quadratic
+Example: Complex roots for a quadratic	Complex roots for a quadratic
+Example: Complex roots for a quadratic	Complex roots for a quadratic
+Compound Probability of Independent Events	Compound Probability of Events
+Conditional Probability (Bayes Theorem) Visualized	Conditional Probability
+Conditional Probability and Combinations	Conditional Probability & Combinations
+Conditional statements and deductive reasoning	Conditional Statements & Deduction
+Election Symbol for Nepali Congress	Congress Election Symbol  
+CA Geometry: More on congruent and similar triangles	Congruent & Similar Triangles
+Congruent legs and base angles of Isosceles Triangles	Congruent Legs and Base Angles
+Equilateral Triangle Sides and Angles Congruent	Congruent Sides and Angles
+Congruent Triangle Proof Example	Congruent Triangle Proof 
+Conic Sections: Intro to Circles	Conic Section Intro to Circles
+Conic Sections: Intro to Circles	Conic Section Intro to Circles
+Conic Sections: Intro to Ellipses	Conic Sections: Ellipse Intro
+Conic Sections: Intro to Ellipses	Conic Sections: Ellipse Intro
+Consistent and Inconsistent Systems	Consistent- Inconsistent Systems
+Consistent and Inconsistent Systems	Consistent- Inconsistent Systems
+Constructing and interpreting a linear function	Construct & Interpret Linear Funct'n
+Constructing linear equations to solve word problems	Construct Linear Equations
+Constructing linear equations to solve word problems	Construct Linear Equations
+Constructing a linear function word problem	Constructing a linear function 
+Constructing an equation for a proportional relationship	Constructing proportional relationship
+Contractility, Ea, and Preload Effects on PV Boxes	Contractility, Ea, & Preload Effects 
+Convergent and divergent sequences	Convergent- & Divergent Sequences
+CS Conversation Introduce Others	Conversation Introduce Others
+Example: Converting degrees to radians	Convert degrees to radians
+Converting an explicit function to a recursive function	Convert explicit to recursive 
+Converting Fractions to Decimals Example	Convert Fractions to Decimals
+Converting Fractions to Decimals Example	Convert Fractions to Decimals
+Example: Converting radians to degrees	Convert radians to degrees
+Converting a fraction to a repeating decimal	Converting a Fraction to a Decimal
+Converting decimals to fractions 1 (ex 1)	Converting decimals to fractions 1
+Converting decimals to fractions 1 (ex 1)	Converting decimals to fractions 1
+Converting decimals to fractions 1 (ex 2)	Converting decimals to fractions 1
+Converting decimals to fractions 1 (ex 2)	Converting decimals to fractions 1
+Converting decimals to fractions 1 (ex 3)	Converting decimals to fractions 1
+Converting decimals to fractions 1 (ex 3)	Converting decimals to fractions 1
+Converting decimals to fractions 2 (ex 1)	Converting decimals to fractions 2
+Converting decimals to fractions 2 (ex 1)	Converting decimals to fractions 2
+Converting decimals to fractions 2 (ex 2)	Converting decimals to fractions 2
+Converting decimals to fractions 2 (ex 2)	Converting decimals to fractions 2
+Converting decimals to percents (ex 1)	Converting decimals to percents
+Converting decimals to percents (ex 2)	Converting decimals to percents
+Ex: Converting an exponential to logarithmic statement	Converting Exponential / Logarithmic
+Converting fractions to decimals (ex1)	Converting fractions to decimals
+Converting fractions to decimals (ex1)	Converting fractions to decimals
+Converting fractions to decimals (ex2)	Converting fractions to decimals
+Converting fractions to decimals (ex2)	Converting fractions to decimals
+Converting percents to decimals (ex 1)	Converting percents to decimals
+Converting percents to decimals (ex 2)	Converting percents to decimals
+Converting to slope-intercept form	Converting to slope-intercept 
+Converting to slope-intercept form	Converting to slope-intercept 
+Correction to Force of Friction Keeping the Block Stationary	Correction to Force of Friction
+Correction to Sodium and Potassium Pump Video	Correction to Na and K Pump Video
+Proof: cos(a+b) = (cos a)(cos b)-(sin a)(sin b)	cos(a+b) = (cos a)(cos b)-(sin a)(sin b)
+Cosine addition identity example	Cosine Addition Identity
+Cosmic microwave background radiation	Cosmic microwave  radiation
+Example: Probability through counting outcomes	Count Outcomes for Probability
+Covalent Networks, Metallic, and Ionic Crystals	Covalents Metallic, and Ionic Crystals
+Cracked road after Nepal earthquake 2015	Cracked road 2015 Nepal earthquake
+Craters of the Moon National Monument and Preserve	Craters of the Moon
+Cretaceous-Tertiary extinction event	Cretaceous-Tertiary Extinction
+Cretaceous-Tertiary extinction event	Cretaceous-Tertiary Extinction
+The Curious Incident of the Dog in the Night-time	Curious Incident: Dog in Night-time
+Curriculum 9V-10V Computer Engineering	Curriculum 9V-10V Comp. Eng'r
+Curriculum 9V-10V Electrical Engineering	Curriculum 9V-10V Electr. Eng'r
+Dakota, Minnesota and Eastern Railroad	Dakota, Minn. & Eastern RR
+Empires  Dawn of the Modern World	Dawn of the Modern World
+Deafness And Communication	Deafness & Communi-cation
+Compliance - Decreased blood pressure	Decreased Blood Pressure
+CA Geometry: Deducing Angle Measures	Deducing Angle Measures
+CA Geometry: Deducing Angle Measures	Deducing Angle Measures
+CA Geometry: deductive reasoning	Deductive Reasoning
+Defined and undefined matrix operations	Defined and Undefined Matrix
+Culture of the Democratic Republic of the Congo	Democratic Republic of the Congo
+Demographics of the Democratic Republic of the Congo	Democratic Republic of the Congo
+Demographics of the Central African Republic	Demographic Centr. African Republic
+Demographics of Equatorial Guinea	Demographic of Equatorial Guinea
+Demographics of the Republic of the Congo	Demographic of Republic of Congo
+Demographics of São Tomé and Príncipe	Demographic of São Tomé and Príncipe
+Demographics of the Philippines	Demographic of the Philippines
+Depolarization Waves Flowing through the Heart	Depolariza-tion Waves in the Heart
+Destroyed building after Nepal earthquake 2015	Destroyed building after earthquake
+Inverting 3x3 part 2: Determinant and Adjugate of a Matrix	Determinant and Adjugate of a Matrix
+Finding the determinant of a 3x3 matrix method 1	Determinant of 3x3 Matrix M ethod 1
+Finding the determinant of a 3x3 matrix method 2	Determinant of 3x3 Matrix M ethod 2
+Dev Shamsher Jang Bahadur Rana	Dev SJB Rana
+Development & Developmental Delay	Development & Develop-mental Delay
+Stimulation & Development Activities	Development Activities & Stimulation
+Area of Diagonal Generated Triangles of Rectangle are Equal	Diagonal Generated Triangle Area
+Proof - Diagonals of a Parallelogram Bisect Each Other	Diagonals of Parallelogram Bisect Image
+End Diastolic Pressure-Volume Relationship (EDPVR)	Diastolic P-V Relationship (EDPVR)
+Nepali-English Dictionary OLE with page breaks	Dictionary N-E OLE with page breaks
+Difference between Equations and Functions	Difference  Equations vs Functions
+Multiplying binomials to get difference of squares	Difference of Squares from Binomials
+Example:  Different ways to pick officers	Different Ways To Pick Officers
+Recognizing Direct and Inverse Variation	Direct & Inverse Variation
+Discrete and Grouped Data and Mean	Discrete and Grouped Data & Mean
+Deriving Displacement as a Function of Time, Acceleration and Initial Velocity	Displacement = f(Accel'm, Velocity)
+Displacement from Time and Velocity Example	Displacement from Time and Velocity
+Point Line Distance and Angle Bisectors	Distance & Angle Bisectors
+Distance between a point and a line	Distance Between a Point & a Line
+Solving equations with the distributive property 2	Distributive Property & Equations
+Distributive property with rational terms	Distributive property & rational terms
+Dividing multivariable polynomial with monomial	Divide  Polynomial  by Monomial
+Dividing Mixed Numbers and Fractions	Divide Mixed Numbers & Fractions
+Creating a fraction through division of whole numbers	Divide Whole Numbers & Get Fraction
+Dividing a decimal by a power of 10 (part 2)	Dividing a decimal by a power of 10
+Dividing a decimal by a whole number	Dividing a Decimal by a Whole #
+Dividing a whole number by a decimal	Dividing a whole # by a decimal
+Dividing in scientific notation example	Dividing in scientific notation
+Examples of dividing negative fractions	Dividing Negative Fractions
+Dividing polynomials with remainders	Dividing polynomials & remainders
+Dividing polynomials with remainders	Dividing polynomials & remainders
+Dividing Positive and Negative Numbers	Dividing Positive and Negative #s
+Dogs cats and bears in a pet store analytic argument	Dogs Cats & Bears Argument
+Dogs cats and bears in a pet store visual argument	Dogs Cats & Bears in an Argument
+Domain and Range of a Function Given a Formula	Domain and Range of a Function
+Domain and Range of a Function Given a Formula	Domain and Range of a Function
+Doppler effect formula for observed frequency	Doppler Effect Formula
+Doppler effect formula when source is moving away	Doppler Effect Formula
+Double angle formula for cosine example	Double angle formula for cosine
+How to Draw A Stylized Cartoon Character	Draw A Cartoon Character
+Electric Potential Energy (part 2-- involves calculus)	Electric Potential Energy
+Elephants in Chitwan in the morning 15692759602 l	Elephants in Chitwan
+Empirical and Molecular Formulas from Stoichiometry	Empirical and Molecular Formulas
+End Systolic Pressure-Volume Relationship (ESPVR)	End Systolic P-V Relationship
+Environment and sustainable development	Environment & sustainable Development
+Environmental Rights And Justice	Environment Rights And Justice
+Representing a relationship with a simple equation	Equation can show Relationship
+Representing a relationship with a simple equation	Equation can show Relationship
+Constructing the equation of a line given two points	Equation of a Line Given Two Points
+Constructing the equation of a line given two points	Equation of a Line Given Two Points
+Identifying an ellipse from equation	Equation Reveals Ellipse
+Identifying an ellipse from equation	Equation Reveals Ellipse
+Identifying a hyperbola from an equation	Equation Reveals Hyperbola
+Identifying a hyperbola from an equation	Equation Reveals Hyperbola
+Systems of equation to realize you are getting ripped off	Equations Can Reveal Problems
+System of equations for passing trains problem	Equations: Passing Train Problem
+Equilateral and Isosceles Example Problems	Equilateral and Isosceles Problems
+Equivalent fraction word problem example	Equivalent fraction word problem  1
+Equivalent fraction word problem example 2	Equivalent fraction word problem  2
+Equivalent fraction word problem example 3	Equivalent fraction word problem  3
+Radical Equivalent to Rational Exponents	Equivalent to Rational Exponents
+Radical Equivalent to Rational Exponents 2	Equivalent To Rational Exponents 2
+European Comintern Pact Signatories	European Comintern Signatories
+Example: evaluate a formula using substitution	Evaluate a formula, use substitution
+Evaluating expressions with unknown variables 2	Evaluate Expression if (??) Variables 
+Example evaluating expressions in word problems	Evaluate Expressions in Problems
+Example:  Calculator to evaluate inverse trig function	Evaluate Inverse Trig Function
+Evaluating a polynomial at a given value	Evaluating a Polynomial
+Evaluating composite functions example	Evaluating composite functions
+Example: Evaluating expressions with 2 variables	Evaluating expressions 2 variables
+Evaluating expressions where individual variable values are unknown	Evaluating expressions if no values
+Examples of evaluating variable expressions	Evaluating Variable Expressions
+Connection between even and odd numbers and functions	Even & Odd Numbers & Functions
+Nepal - Evening lights at Bhaktapur 3459574190 l	Evening Lights at Bhaktapur
+Introduction to Evolution and Natural Selection	Evolution & Natural Selection
+Example 2: Variables on both sides	Example 2: Variables on both sides
+Example: 1-digit multiplication word problem	Example: 1-Digit multiplication
+Example: 2-digit subtraction (no borrowing)	Example: 2-Digit Subtraction
+Multple examples of multiple constraint problems	Examples of  Multiple Constraints
+Multiple examples multiplying decimals	Examples of multiplying decimals
+Explicit and recursive definitions of sequences	Explicit and Recursive Sequences
+Exponent Properties Involving Quotients	Exponent Properties & Quotients
+Exponent Properties Involving Products	Exponent Properties And Products
+Exponential Decay Formula Proof (can skip, involves Calculus)	Exponential Decay Formula 
+Word Problem Solving- Exponential Growth and Decay	Exponential Growth and Decay
+Terms coefficients and exponents in a polynomial	Exponents & Coefficients in Polynomial
+Terms coefficients and exponents in a polynomial	Exponents & Coefficients in Polynomial
+Example: Expressing division in multiple ways	Expressing division in multiple ways
+Using expressions to understand relationships	Expressions Explain Relationships
+Extraneous Solutions to Radical Equations	Extraneous Solutions to Radical Eq'ns
+Factoring a linear expression with rational terms	Factor a linear expression
+Factor by Grouping and Factoring Completely	Factor by Grouping and Factoring
+Example: Factoring perfect square trinomials	Factor Per- fect Square Trinomials
+Example 1: Factoring trinomials with a common factor	Factor Trinomials
+Example 1: Factoring trinomials with a common factor	Factor Trinomials
+Factoring and the Distributive Property	Factoring & Distributive Property 1
+Factoring and the Distributive Property 2	Factoring & Distributive Property 2
+Factoring and the Distributive Property 3	Factoring & Distributive Property 3
+Example: Factoring a fourth degree expression	Factoring a fourth degree Expression
+Example 1: Factoring difference of squares	Factoring difference of squares
+Example 1: Factoring difference of squares	Factoring difference of squares
+Example 1: Factoring quadratic expressions	Factoring quadratic expressions
+Factoring quadratics with two variables example	Factoring Quadratics
+Factoring quadratics with two variables	Factoring Quadratics Two Variables
+Examples: Factoring simple quadratics	Factoring Simple Quadratics
+Examples: Factoring simple quadratics	Factoring Simple Quadratics
+Example: Factoring special products	Factoring Special Products
+Family Plan: Have Children You Want	Family Plan: Children You Want
+Amplitude, Period, Frequency and Wavelength of Periodic Waves	Features of Periodic Waves
+Fetal Circulation Right Before Birth	Fetal Circulation Before Birth
+Fetal Hemoglobin and Hematocrit	Fetal Hemoglobin & Hematocrit
+Fetal Hemoglobin and Hematocrit	Fetal Hemoglobin & Hematocrit
+Proof (Advanced): Field from infinite plate (part 1)	Field from Infinite Plate 1
+Proof (Advanced): Field from infinite plate (part 2)	Field from Infinite Plate 2
+Example: Figure out the trig function	Figure Out The Trig Function
+Find an Unknown in a Proportion 2	Find an Unknown in a Proportion
+Finding Area Using Similarity and Congruence	Find Area Via Similarity & Congruence
+Calculating Average Velocity or Speed	Find Average Velocity or Speed
+Identifying circles and parabolas from equations	Find Circles & Parabolas in Equations
+Identifying circles and parabolas from equations	Find Circles & Parabolas in Equations
+Factoring to produce difference of squares	Find Squares Difference By Factoring
+Factoring to produce difference of squares	Find Squares Difference By Factoring
+Using a system of equations to find the price of apples and oranges	Find the price of apples and oranges
+Finding the vertex of a parabola example	Find the vertex of a parabola
+Calculate your own Body Mass Index	Find Your Body Mass Index
+Finding the Determinant of a 2x2 matrix	Finding the Determinant of 2x2 matrix
+Formula for finite geometric series	Finite Geometric Series
+First Law of Thermodynamics/ Internal Energy	First Law of Thermo-dynamics
+First Transcontinental Railroad	First Trans-continental Railroad
+Fishtail mountain, Nepal (explored) 7894601444 l	Fishtail mountain, Nepal
+FOIL method for multiplying binomials example 2	FOIL method  Multiply Binomials
+Food, Land And Social Issues Affect Health	Food Land & Social Issues Affect Health
+Foramen Ovale and Ductus Arteriosus	Foramen Ovale
+Force of Friction Keeping the Block Stationary	Force of Friction 1
+Force of Friction Keeping Velocity Constant	Force of Friction 2
+Forensic facial reconstruction	Forensic facial recon-struction
+What fraction of spider eyes are looking at me?	Fraction of Spider Eyes Seeing me?
+Fraction word problems 1 exercise	Fraction word problems 1
+Fractional exponents with numerators other than 1	Fractional exponents other than 1
+International Red Cross and Red Crescent Movement	Fractional exponents other than 2
+Equation of a line from fractional slope and point	Fractional Slope & Point Line Equation
+Adding Fractions with Like Denominators	Fractions with Like Denominators
+Adding Fractions with Unlike Denominators	Fractions with Unlike Denominators
+France in the American Revolutionary War	France in the American Revolution
+Frederick Hamilton-Temple-Blackwood, 1st Marquess of Dufferin and Ava	Frederick H-T-Blackwood, 1st Marquess
+French Southern and Antarctic Lands	French Southern Lands
+Frequency Probability and Unfair Coins	Frequency Probability & Unfair Coins
+Constructing equations in slope-intercept form from graphs	From Graphs Make Equations
+Constructing equations in slope-intercept form from graphs	From Graphs Make Equations
+Viewing g as the value of Earth's Gravitational Field Near the Surface	g is the value of Earth's Gravity
+Converting Gallons to quarts pints and cups	Gallons Quarts Pints & Cups
+Gandhi in Bihar after 1934 earthquake	Gandhi in Bihar after 1934 quake
+Garfield's proof of the Pythagorean Theorem	Garfield's Pythagorean proof
+Genbaku Dome Atomic Bomb Dome	Genbaku Atomic Bomb Dome
+Generalizing with Binomial Coefficients (bit advanced)	Generalize Binomial Coefficients
+Genetics 101 Part 4: What are Phenotypes?	Genetics 101 What are Phenotypes?
+Language and Notation of Basic Geometry	Geometry Language & Notation
+CA Geometry: Exterior Angles	Geometry: Exterior Angles
+CA Geometry: Area, Pythagorean Theorem	Geometry: Pythagorean Theorem
+Dividing completely to get decimal answer example 2	Get Decimal Answer by Dividing
+Getting Ready For Child-care And School	Get Ready For Child-care & School
+Getting Exactly Two Heads (Combinatorics)	Getting Exactly Two Heads
+Example: Getting two questions right on an exam	Getting Two Questions Right
+Giant Horse Conch & Burglar Hermit Crabs	Giant Horse Conch Hermit Crabs
+More rigorous Gibbs Free Energy/ Spontaneity Relationship	Gibbs Free Energy/ Spontaneity
+Wikipedia Text of the GNU Free Documentation License	GNU Free Documentation License
+Goats, Mountains, Clouds 9172530058 l	Goats, Mountains, Clouds
+Gokyo 5th lake 15699020410 l	Gokyo 5th Lake
+Good Meetings From Start To Finish	Good Meeting Start-Finish
+Grand Central Station (Chicago)	Grand Central Station
+Grand Central Station (Chicago)	Grand Central Station
+Graphing Linear Inequalities in Two Variables Example 2	Graph 2 Var'bl Linear Inequalities
+Graphing Linear Inequalities in Two Variables Example 2	Graph 2 Var'bl Linear Inequalities
+Graphing a parabola by finding the roots and vertex	Graph A Parabola
+Graphing a line in slope intercept form	Graph line in slope intercept 
+Graphing a line in slope intercept form	Graph line in slope intercept 
+Graphical Systems Application Problem	Graphical Systems Application
+Examples: Graphing and interpreting quadratics	Graphing & Interpreting Quadratics
+Graphing a parabola  with a table of values	Graphing a parabola value table
+Graphing a parabola  with a table of values	Graphing a parabola value table
+A Third Example of Graphing a Rational Function	Graphing a Rational Function
+A Third Example of Graphing a Rational Function	Graphing a Rational Function
+Graphing linear inequalities in two variables 3	Graphing linear inequalities
+Graphing linear inequalities in two variables 3	Graphing linear inequalities
+Ex 4: Graphing radical functions	Graphing Radical Functions
+Green Monster at Fenway Part 2	Green Monster at Fenway
+Guard Natural Resources For All	Guard Natural Resources
+Gurkha Campaign Sino-Nepalese War	Gurkha Campaign Sino-Nepal
+Hand Generator Demonstration	Hand Gener-ator Demon-stration
+Harmonic Motion Part 3 (no calculus)	Harmonic Motion Part 3
+Heard Island and McDonald Islands	Heard & McDonald Islands
+Hearing And Communication Difficulty	Hearing Com-munication Difficulty
+Helping Health Workers Learn	Help Health Workers Learn
+Helping Health Workers Learn	Help Health Workers Learn
+Work Together To Help Kids Who Are Deaf	Help Kids Who Are Deaf
+Helping Children Who Are Blind	Helping Blind Children
+Hess's Law and Reaction Enthalpy Change	Hess's Law and Reaction Enthalpy
+the Himalayan Kingdom of Nepal 5704610423 l	Himalayan Kingdom of Nepal
+History of merit badges (Boy Scouts of America)	History of BSA  Merit Badges
+History of Cape Colony from 1806 to 1870	History of Cape Colony 1806 to 1870
+History of Cape Colony from 1870 to 1899	History of Cape Colony 1870 to 1899
+Meteorological history of Hurricane Katrina	History of Hurricane Katrina
+A brief history of numerical systems	History of Numerical Systems
+History of Portugal (1777–1834)	History of Portugal 1777–1834
+History of South Africa in the apartheid era	History of South Africa apartheid era
+History of the Grand Canyon area	History of the Grand Canyon
+The Hitchhiker's Guide to the Galaxy	Hitchhiker's Guide to the Galaxy
+Horatio Nelson, 1st Viscount Nelson	Horatio Nelson
+Household income in the United States	Household income in the US
+How does your body know what time it is	How does  body know the time?
+How Does Big Ben Keep Accurate Time	How Does Big Ben Keep Time
+Boiling Point Elevation and Freezing Point Suppression	How to Alter Boiling & Freezing Point
+Dividing completely to get decimal answer	How to get decimal answer
+How to master your sense of smel	How to master  your smell sense
+Everything you need to know to read Homers Odyssey	How to Read Homers Odyssey
+How To Share This Book's Information	How To Share This Information
+How does your body process medicine - Ce_line Valéryo	How Your Body Uses Medicine
+Human Prehistory 101 Part 3: Agriculture Rocks Our World	Human Prehistory Agriculture
+Human Prehistory 101 Part 1: Out of (Eastern) Africa	Human Prehistory Out of Africa
+Effect of Hurricane Katrina on New Orleans	Hurricane Katrina effect- New Orleans
+Hyperbolic Trig Functions and the Unit Hyperbola	Hyperbolic Trig & Hyperbola
+Hypertension symptoms and categories	Hypertension symptoms & categories
+Hypoxic Pulmonary Vasoconstriction	Hypoxic Pul-monary Vaso-constriction
+Ice Accelerating Down an Incline	Ice Accelerating Down a Slope
+Identifying People  Places and Objects	ID People  Places and Objects
+Identifying Percent Amount and Base	ID Percent Amount and Base
+Identifying Parallel and Perpendicular Lines	Identify Parallel & Perpen. Lines
+Identity property of 1 (second example)	Identity property of 1
+What would happen if you didn’t drink water	If You Don’t Drink Water what happens 
+IIT JEE Circle Hyperbola Common Tangent Part 1	IIT JEE Circle Hyperbola 1 Common Part
+IIT JEE Circle Hyperbola Common Tangent Part 2	IIT JEE Circle Hyperbola 2 Common Part
+IIT JEE Circle Hyperbola Common Tangent Part 3	IIT JEE Circle Hyperbola 3 Common Part
+IIT JEE Circle Hyperbola Common Tangent Part 4	IIT JEE Circle Hyperbola 4 Common Part
+IIT JEE Circle Hyperbola Common Tangent Part 5	IIT JEE Circle Hyperbola 5 Common Part
+IIT JEE Complex Numbers (part 1)	IIT JEE Complex Numbers 1
+IIT JEE Complex Numbers (part 2)	IIT JEE Complex Numbers 2
+IIT JEE Complex Numbers (part 3)	IIT JEE Complex Numbers 3
+Object Image and Focal Distance Relationship (Proof of Formula)	Image & Focal Length Relationship
+Object Image Height and Distance Relationship	Image Height & Distance Relationship
+Algebra II: Imaginary and Complex Numbers	Imaginary and Complex Numbers
+Imaginary Roots of Negative Numbers	Imaginary Roots of Negative #s
+Imaginary Roots of Negative Numbers	Imaginary Roots of Negative #s
+Impact Velocity From Given Height	Impact Velocity from Given Height
+The Importance of Being Earnest	Importance of Being Earnest
+England expects that every man will do his duty	In England Every Man Is to Do Duty
+Increasing Ventricular Contractility - Inotropic effect	Increasing Ventricular Contractility
+Independent and Dependent Systems	Independent & Dependent Systems
+Independent and Dependent Systems	Independent & Dependent Systems
+Difference between inductive and deductive reasoning	Inductive & Deductive Reasoning
+Inequalities Using Addition and Subtraction	Inequalities in Addition & Subtraction
+Inequalities Using Multiplication and Division	Inequalities in Division & Multiplication 
+Information and communication technology	Info. & Com-munication Technology
+Area of Inscribed Equilateral Triangle (some basic trig used)	Inscribed Equilateral Triangle
+Insects You Won't Believe Actually Exist	Insects You May Doubt Actually Exist
+International Red Cross and Red Crescent Movement	Int'l Red Cross & Red Crescent
+Interpreting intercepts of linear functions	Intercepts of linear functions
+Convention on the International Trade in Endangered Species of Wild Flora and Fauna	International Endangered Species CITES
+Convention on the International Trade in Endangered Species of Wild Flora and Fauna	International Endangered Species CITES
+Constructing and interpreting absolute value	Interpret Absolute Value
+Interpreting features of linear functions example 2	Interpret Linear Functions
+Example: Intersection of sine and cosine	Intersection of sine and cosine
+Conic Sections: Intro to Hyperbolas	Intro Conic Sections: Hyperbolas
+Conic Sections: Intro to Hyperbolas	Intro Conic Sections: Hyperbolas
+Introduction to Exponential Decay	Intro. to Exponential Decay
+Introduction to lab values and normal ranges	Intro. to lab values & normal range
+Introduction to mechanical advantage	Intro. to mechanical advantage
+Introduction to the Pythagorean Theorem	Intro. to the Pythagorean Theorem
+Introduction to the quadratic equation	Intro. to the quadratic equation
+CS Introducing Other Person Script	Introducing Other Person Script
+CS Introducing Other Person Script 1	Introducing Other Person Script
+Subtraction 3:  Introduction to Borrowing or Regrouping	Introduction to Borrowing or Regrouping
+Electrostatics (part 1): Introduction to Charge and Coulomb's Law	Introduction to Charge & Coulomb Law
+Introduction to i and Imaginary Numbers	Introduction to i and Imaginary #s
+Introduction to i and Imaginary Numbers	Introduction to i and Imaginary #s
+Introduction to logarithm properties (part 2)	Introduction to logarithm properties 2
+Introduction to Ratios (new HD version)	Introduction to Ratios
+Invisible Nature Invasion of the Caterpillars	Invasion of the Caterpillars
+Classic video on inverting a 3x3 matrix part 1	Invert a 3x3 matrix part 1
+Classic video on inverting a 3x3 matrix part 2	Invert a 3x3 matrix part 2
+Inverting 3x3 part 1: Calculating Matrix of Minors and Cofactor Matrix	Inverting 3x3 Calculating Matrix
+Iraq and weapons of mass destruction	Iraq weapons of Mass Destruction
+Example:  Is an event independent or dependent?	Is an event independent or dependent
+Why Half Way Down is Not Half Speed	Is Half Way Down = Half Speed?
+Example involving an isosceles triangle and parallel lines	Isosceles Triangle & Parallel Lines
+Joseph and the Amazing Technicolor Dreamcoat	Joseph & the Amazing Technicolor Dreamcoat
+Juddha Shamsher Jang Bahadur Rana	Juddha SJB Rana
+Keq derivation intuition (can skip; bit mathy)	Keq derivation intuition
+Keq Intuition (mathy and not necessary to progress)	Keq Intuition (mathy & not necessary)
+Khumbu Valley 16196583860 l	Khumbu Valley
+Gallery of the Kings and Queens of England	Kings and Queens of England
+Kirtipur, Nepal 23636628701 l	Kirtipur, Nepal 
+Langtang Valley 15098537514 l	Langtang Valley
+Largest possible number from 4 digits example	Largest number from 4 digits
+Adequacy of the Lateral Cervical Spine X-Ray	Lateral Cervical Spine X-Ray
+Launching and Landing on Different Elevations	Launch-Land on Different Elevations
+LCM and GCF (greatest common factor) word problems	LCM and GCF problems
+Learn To Use Medicines And Equipment	Learn To Use Medicines & Equipment
+Learning And Working With The Community	Learning & Work With Community
+Learning Disabilitites In Normal Kids	Learning Disabilitites Normal Kids
+Least Common Multiple (LCM)	Least Common Multiple
+Least common multiple exercise 2	Least Common Multiple 2
+Left Ventricular Pressure vs. Time	Left Ventricular P vs. T
+Left Ventricular Volume vs. Time	Left Ventricular V vs. T
+Levee failures in Greater New Orleans, 2005	Levee failures in New Orleans, 2005
+Levee failures in Greater New Orleans, 2005	Levee failures in New Orleans, 2006
+levitation nepal 7857978666 l	Levitation Nepal
+Licchavi Dynasty Standing Buddha	Licchavi Age Standing Buddha
+Royal Palace in Kathmandu from Licchavi Dynasty	Licchavi Palace in Kathmandu 
+Limiting Reactant Example Problem 1	Limiting Reactant  Problem 1
+Linear and nonlinear functions (example 1)	Linear And Nonlinear Functions 1
+Linear and nonlinear functions (example 2)	Linear And Nonlinear Functions 2
+Linear and nonlinear functions (example 3)	Linear And Nonlinear Functions 3
+Linear equation from slope and a point	Linear Equation Slope & Point
+Linear equation from slope and a point	Linear Equation Slope & Point
+Linear Equations in Point Slope Form	Linear Equation Slope & Point
+Linear Equations in Point Slope Form	Linear Equation Slope & Point
+Linear Equations in Standard Form	Linear Equations Stan'd Form
+Linear Equations in Standard Form	Linear Equations Stan'd Form
+Linear systems word problem with substitution	Linear Systems Problem
+Lingans i Santon 2374504911 l	Lingans
+List of countries by system of government	List Countries By System Of Government
+List of European Union member states by accession	List of EU member states
+List of European Union member states by accession	List of EU member states
+List of Prime Ministers of the United Kingdom	List of Prime Ministers of the UK
+List of U.S. states by date of statehood	List of U.S. States
+Understanding Local Customs And Beliefs	Local Customs & Beliefs
+Local government in the United Kingdom	Local government in the UK
+Long division with remainder example	Long Division & Remainder
+More long division without and with remainders	Long Division w/o & with Remainders
+Luri gompa, Mustang 1558659764 l	Luri Gompa, Mustang
+How Magellan circumnavigated the globe	Magellan sailed around the globe
+Magnetism 6: Magnetic field due to current	Magnetic Field due to Current
+Magnetism 12: Induced Current in a Wire	Magnetism & Induced Current
+LeBron Asks: What are the chances of making 10 free throws in a row?	Make 10 free throws in a row?
+How To Make A Pinwheel That Spins	Make A Pinwheel That Spins
+Learning to Make, Take & Use Pictures	Make, Take & Use Pictures
+Making banana oat muffins...mmm	Making banana oat muffins
+Making Inferences and Predictions	Making Inferences & Predictions
+Mary's Room  A philosophical thought experiment	Mary's Room A Thought Experiment
+Matrices to solve a system of equations	Matrice Solve  Equation System
+Matrices to solve a vector combination problem	Matrices Solve Vector  Problem
+Matrices: Reduced Row Echelon Form 1	Matrices: Reduced Row Echelon 1
+Matrices: Reduced Row Echelon Form 2	Matrices: Reduced Row Echelon 2
+Matrices: Reduced Row Echelon Form 3	Matrices: Reduced Row Echelon 3
+Mauthausen-Gusen concentration camp	Mauthausen concentration camp
+Mauthausen-Gusen concentration camp	Mauthausen concentration camp
+Median Centroid Right Triangle Example	Median Centroid Right Triangle
+Medians divide into smaller triangles of equal area	Medians subdivide to = triangles
+Mega Millions Jackpot Probability	Mega Million Jackpot Probability
+List of members of the Commonwealth of Nations by date joined	Members of  Commonweal-th of Nations
+List of members of the Commonwealth of Nations by date joined	Members of  Commonweal-th of Nations
+Ionic, Covalent, and Metallic Bonds	Metallic Ionic & Covalent Bonds
+Battles of the Mexican-American War	Mexican-American War Battles
+Mitosis, Meiosis and Sexual Reproduction	Mitosis, Meiosis & Reproduction
+Mixed numbers and improper fractions	Mixed #s & Improper Fractions
+Converting Mixed Numbers to Improper Fractions	Mixed #s to Improper Fractions
+Mohan Shamsher Jang Bahadur Rana	Mohan SJB Rana
+Molarity, Molality, Osmolarity, Osmolality, and Tonicity - What's the difference?	Molarity... What's the difference?
+Molecular and Empirical Forumlas from Percent Composition	Molecular and Empirical Forumlas
+Monarchies in the European Union	Monarchies in the EU
+List of monarchs in the British Isles	Monarchs in the British Isles
+Monocotyledon and dicotyledon	Monocoty-ledon and Dicotyledon
+Monomial Greatest Common Factor	Monomial Greatest Factor
+More Exponential Decay Examples	More Exponential Decay
+More on why SSA is not a postulate	More on why SSA is not a Postulate
+Health Problems From Mosquitoes	Mosquitoes Make Health Problems
+Mount Osmond, South Australia	Mt Osmond, South Australia
+Jyllands-Posten Muhammad cartoons controversy	Muhammad cartoons controversy
+Multi step word problems with whole numbers exercise 1	Multi step problems & whole #s 1
+Multi step word problems with whole numbers exercise 2	Multi step problems & whole #s 2
+Multi step word problems with whole numbers exercise 3	Multi step problems & whole #s 3
+Thinking about multiple solutions to a system of equations	Multiple Solutions to Equations
+Multiplication 7: Old video giving more examples	Multiplication
+Multiplication word problem example 1	Multiplication Word Problem 1
+Multiplying and dividing negative numbers	Multiply & Divide Neg. Numbers
+Multiply and Simplify a Radical Expression 1	Multiply & Simplify Expression 1
+Multiply and Simplify a Radical Expression 2	Multiply & Simplify Expression 2
+Multiplying and Simplifying Rational Expressions	Multiply & Simplify Expressions
+Multiplying and Simplifying Rational Expressions	Multiply & Simplify Expressions
+Example: Multiplying numbers with different signs	Multiply #s with different signs
+Multiplying a matrix by a column vector	Multiply a Matrix by col. Vector
+Multiplying Positive and Negative Numbers	Multiply Pos. & Neg. Numbers
+Multiplying and Dividing with Significant Figures	Multiplying and Dividing
+Multiplying and Dividing Rational Expressions 1	Multiplying and Dividing  Expressions 1
+Multiplying and Dividing Rational Expressions 1	Multiplying and Dividing  Expressions 1
+Multiplying and Dividing Rational Expressions 2	Multiplying and Dividing  Expressions 2
+Multiplying and Dividing Rational Expressions 2	Multiplying and Dividing  Expressions 2
+Multiplying and Dividing Rational Expressions 3	Multiplying and Dividing  Expressions 3
+Multiplying and Dividing Rational Expressions 3	Multiplying and Dividing  Expressions 3
+Multiplying Fractions and Mixed Numbers	Multiplying Fractions & Mixed #s
+Multiplying fractions and whole numbers	Multiplying Fractions & Whole #s
+Multiplying in scientific notation example	Multiplying in Scientific Notation
+Multiplying Monomials by Polynomials	Multiplying Monomials X Polynomials
+Multiplying negative and positive fractions	Multiplying Neg, & Pos. Fractions
+Multistep word problems example 1)	Multistep Word Problems 1
+Multistep word problems example 2)	Multistep Word Problems 2
+Multistep word problems example 3)	Multistep Word Problems 3
+Polish-Muscovite War (1605–1618)	Muscovite-Polish War 1605–1618
+Music of Martinique and Guadeloupe	Music of Martinique & Guadeloupe
+Northern and Southern Dynasties History Video	N & S Dynasties History Video
+Northern and Southern Dynasties Map	N & S Dynasties Map
+Six-party talks concerning North Korea's nuclear program	N Korea's Nuclear Program
+Naming the Flu: H - Something, N - Something	Name the Flu H-Something N-Something
+National parks of England and Wales	Nat'l Parks of England and Wales
+National Flower Rhododendron	National Flower Rho-dodendron
+Natural Logarithm with a Calculator	Natural Logarithm & Calculator
+Natural Selection and the Owl Butterfly	Natural Selection & Owl Butterfly
+Negative fractional exponent examples 2	Negative fractional exponent
+Negative fractional exponent examples	Negative fractional exponents
+Why a Negative Times a Negative Makes Intuitive Sense	Negative X Negative Makes Sense
+Nepal - Boatman (____ ___) (Majhi Dai) 2757514184 m	Nepal - Boatman
+Nepal - Panning Pokhara 2955677360 l	Nepal - Panning Pokhara
+Nepalese Borders Treaty of Sugauli	Nepal Border Treaty of Sugauli
+Nepal‚Äôs Historical Highlights	Nepal Historical Highlights
+Nepal Pokhara 16336349584 l	Nepal Pokhara 
+nepal nepalgunj 6766447293 l	Nepalgunj Nepal 
+Sympathetic Nerves Affect Myosin Activity	Nerves Affect Myosin Activity
+Autonomic Nervous System Effects on the Heart	Nervous System Effect on the Heart
+The neuroscience of imagination	Neuroscience of Imagination
+Different Way to Determine Time in Air	New Way to Determine Time in Air
+Bhaktapur Newars Dance in Patan	Newars Dance in Patan 1
+Bhaktapur Newars Dance in Patan 2	Newars Dance in Patan 2
+Bhaktapur Newars Dance in Patan 3	Newars Dance in Patan 3
+Bhaktapur Newars Dance in Patan 4	Newars Dance in Patan 4
+Newton's First Law of Motion Concepts	Newton's First Law of Motion
+Introduction to Newton's Law of Gravitation	Newton's Gravitation Law Intro.
+History of Northwest Territories capital cities	Northwest Territories Capital Cities
+CA Algebra I: Number Properties and Absolute Value	Number Properties & Absolute Val.
+Numerator and Denominator of a Fraction	Numerator & Denominator of a Fraction
+Nyatapola Temple, Bhaktapur Durbar Square	Nyatapola Temple, Bhaktapur
+Oxygen Movement from Alveoli to Capillaries	O2 Moves from Alveoli to Capillaries
+If Your Hands Could Smell You’d Be an Octopus	Octopus Hands Can Smell
+On the Stairsfrom Nepal 7858469682 l	On the Stairs from Nepal
+One Flew Over the Cuckoo's Nest (novel)	One Flew Over the Cuckoo's Nest
+Examples of one-step equations like Ax=B and x+A = B	One-step Equation Examples
+One-step inequality with multiplication and division example	One-step inequality mult. & div.
+One-Step inequality involving addition	One-Step inequality with addition
+Proof - Opposite Sides of Parallelogram Congruent	Opp. Sides of Parallelogram Congruent
+Optimal angle for a projectile part 1	Optimal Angle for a Projectile 1
+Optimal angle for a projectile part 2 - Hangtime	Optimal Angle for a Projectile 2
+Animation of the orbit of the white dwarf binary star	Orbit of the White Dwarf Binary Star
+More on orbitals and electron configuration	Orbitals & Electron Configuration
+Ordering improper fractions and mixed numbers	Order Fractions & Mixed #s
+Orders of magnitude exercise example 2	Orders of magnitude example 2
+General overview of the RAAS system - Cells and hormones	Overview of RAAS  Cells & hormones
+Oviparous and Viviparous Animals	Oviparous & Viviparous Animals
+Oxidative Phosphorylation and Chemiosmosis	Oxi' Phos-phorylation Chemiosmos'
+Oxidation and Reduction in Cellular Respiration	Oxidation & Reduction in Respiration
+Oxidation and Reduction Review From Biological Point-of-View	Oxidation & Reduction Review
+Oxygens Surprisingly Complex Journey Through Your body	Oxygen's  Journey In Your body
+Padma Shumsher Jang Bahadur Rana	Padma SJB Rana
+Parabola vertex and axis of symmetry	Parabola Vertex & Axis of Symmetry
+Equations of Parallel and Perpendicular Lines	Parallel and Perpendicular Line Eq'ns
+Equations of Parallel and Perpendicular Lines	Parallel and Perpendicular Line Eq'ns
+Proof - Corresponding Angle Equivalence Implies Parallel Lines	Parallel Lines & Angle Equivalence
+Proof - Opposite Angles of Parallelogram Congruent	Parallelogram Angles are Congruent
+Partial Quotient Method of Division 2	Partial Quotient Div'n Method
+How many bags of potato chips do people eat?	People eat how many bags of chips?
+Why do people get so anxious about math	People worry about math-why?
+Flag of the People's Republic of China	People's Republic of China Flag
+Another Percent Word Problem	Percent Word Problem
+Performing arithmetic calculations on units of volume	Performing Arithmetic Calculations
+Perimeter and Area of a Non-Standard Polygon	Perimeter & Area of Non-Std Polygon
+Interesting Perimeter and Area Problems	Perimeter and Area Problems
+Interesting Perimeter and Area Problems	Perimeter and Area Problems
+Periodic Table Trends: Ionization Energy	Periodic Table Ioniz'n Energy
+Permeability and Membrane Potentials	Permeability & Membrane Potentials
+Role of Phagocytes in Innate or Nonspecific Immunity	Phagocytes in  Immunity
+Phewa Lake Sunset - Pokhara, Nepal 5148063265 l	Phewa Lake Sunset - Pokhara
+Photosynthesis: Light Reactions 1	Photosynth-esis: Light Reactions 1
+Photosynthesis:  Light Reactions and Photophosphorylation	Photosynthe-sis & Photop-hosphoryla'n
+Super Yoga Plans- Plotting Points	Plans- Plotting Points
+Super Yoga Plans- Plotting Points	Plans- Plotting Points
+Super Yoga Plans- Solving One-Step Equations	Plans- Solve One-Step Equations
+Super Yoga Plans- Solving One-Step Equations	Plans- Solve One-Step Equations
+Probability with Playing Cards and Venn Diagrams	Playing Cards & Venn Diag. Probability
+Plotting basic fractions on the number line	Plotting Basic Fractions on Number Line
+Plotting inequalities on a number line	Plotting Inequalities on # Line
+Plotting Projectile Displacement, Acceleration, and Velocity	Plotting Projectile Variables
+Converting from point slope to slope intercept form	Point slope to slope intercept
+Interesting Polynomial Coefficient Problem	Polynomial Coefficient Problem
+Example: Adding polynomials with multiple variables	Polynomials with multiple Variables: add
+History of the Portuguese Communist Party	Portuguese Communist Party History
+Potential energy stored in a spring	Potential Energy in a Spring
+How to practice effectively for just about anything	Practice Effectively for Anything
+Pray For Nepal 17086538239 l	Pray For Nepal 
+Prayer Flags Nepal 4347523434 l	Prayer Flags Nepal
+Human Prehistory 101 Part 2: Weathering The Storm	Prehistory: Weathering The Storm
+Preload Stretches out the Heart Cells	Preload Stretches Heart Cells
+Putting it all together: Pressure, flow, and resistance	Pressure, flow, and resistance
+Handbook for Primary English Teachers	Primary English Handbook
+Handbook for Primary Math Teachers	Primary Math Handbook
+Handbook for Primary Nepali Teachers	Primary Nepali Handbook
+Prime Minister of the United Kingdom	Prime Minister of the UK
+Philosophiae Naturalis Principia Mathematica	Principia Mathematica
+Probability and Combinations (part 2)	Probability & Combinations (part 2)
+Example: Probability of rolling doubles	Probability Of Rolling Doubles
+Application problems involving units of weight	Problems involving weight units
+Problems With The Eyes And Seeing	Problems With The Eyes & Seeing
+Solving application problems involving units of volume	Problems with Volume Units
+Deriving Max Projectile Displacement Given Time	Projectile Displacement at Given Time
+Projectile Motion with Ordered Set Notation	Projectile Motion with Ordered Set
+CA Geometry: Proof by Contradiction	Proof by Contradiction
+Part 1 of Proof of Heron's Formula	Proof of Heron's Formula 1
+Part 2 of the Proof of Heron's Formula	Proof of Heron's Formula 2
+Alternate Proof to Induction for Integer Sum	Proof to Induction for Integer Sum
+Proportionality Constant for Direct Variation	Proportional-ity for Direct Variation
+Proof - Sum of Measures of Angles in a Triangle are 180	Prove  Sum of Tri-Angles are 180
+PST Projection and Word Flow	PST Projection & Word Flow
+CA Geometry: Pythagorean Theorem, Compass Constructions	Pythagorean  Compass Construction
+Examples using Pythagorean identities to simplify trigonometric  expressions	Pythagorean IDs simplify trig  formulae
+Pythagorean Theorem Proof Using Similarity	Pythagorean Proof Using Similarity
+Another Pythagorean Theorem Proof	Pythagorean Theorem Proof
+Quadratic Inequalities (Visual Explanation)	Quadratic Inequalities
+Quadratic Inequalities (Visual Explanation)	Quadratic Inequalities
+Quasistatic and Reversible Processes	Quasistatic & Reversible Processes
+Race Cars with Constant Speed Around Curve	Race Cars Same Speed On Curve
+Radian and degree conversion practice	Radian and degree conversion
+Example: Radian measure and arc length	Radian Measure & Arc Length
+Radical Expressions with Higher Roots	Radical Expressions with High Roots
+Calculating i Raised to Arbitrary Exponents	Raise to Arbitrary Exponents
+Calculating i Raised to Arbitrary Exponents	Raise to Arbitrary Exponents
+Raising a number to the 0th and 1st power	Raising # to the 0th and 1st power
+Nepali President Ram Baran Yadav visiting a temple	Ram Baran Yadav visits a temple
+Statuette of Rana Rebel Dasarath Chand	Rana Rebel Dasarath Chand
+Ratio  Percentage and Proportion	Ratio  Percentage & Proportion
+Ratio  Percentage and Proportion	Ratio  Percentage & Proportion
+Ratio problem with basic algebra (new HD)	Ratio problem with basic algebra
+Ratio word problem exercise example 1	Ratio word problem  example 1
+Ratio word problem exercise example 2	Ratio word problem  example 2
+Rational Exponents and Exponent Laws	Rational Exponents & Expo'nt Laws
+More Rational Exponents and Exponent Laws	Rational Exponents & Exponent Law
+Another Rational Function Graph Example	Rational Function Graph 1
+Another Rational Function Graph Example	Rational Function Graph 2
+Rational number word problem example 1	Rational number word problem 1
+Rational number word problem example 2	Rational number word problem 2
+Rational number word problem example 3	Rational number word problem 3
+Rationalizing Denominators of Expressions	Rationalize Expression Denominators
+Ratios as Fractions in Simplest Form	Ratios: Fractions in Simple Form
+Example of Finding Reactant Empirical Formula	Reactant Empirical Formula
+Reading Pie Graphs (Circle Graphs)	Reading Pie Graphs
+Rearrange formulas to isolate specific variables	Rearrange Formulas to See Variables
+Reasoning through inequality expressions	Reasoning inequality expressions
+Recognizing and Matching Shapes	Recognizing & Matching Shapes
+Recognizing features of functions 2 (example 2)	Recognizing Features of Functions 2
+Recognizing features of functions 2 (example 3)	Recognizing Features of Functions 2
+Regrouping (borrowing) twice example	Regrouping (borrowing) twice 
+Regrouping numbers intro various place values	Regrouping #s into place values
+Reimagine the Pressure Volume Relationship	Reimagine the P-V Relationship
+Reimagine the Pressure Volume Relationship	Reimagine the P-V Relationship
+Renewable vs Nonrenewable Energy	Renewable vs Nonrenew-able Energy
+Converting Repeating Decimals to Fractions 1	Repeating Decimals to Fractions 1
+Converting Repeating Decimals to Fractions 2	Repeating Decimals to Fractions 2
+Representing a number as a decimal, percent, and fraction 2	Represent a Number as Decimal & %
+Representing a number as a decimal, percent, and fraction 2	Represent a Number as Decimal & %
+Adding up resistance in series and in parallel	Resistance in Series and in Parallel
+Review of B cells,  CD4+ T cells and CD8+ T cells	Review B, CD4 +T, & CD8 +T cells
+Super Yoga Plans- Solving Systems by Substitution	Review B, CD4 +T, & CD8 +T cells
+Rhino from Nepal 3080551876 m	Rhino from Nepal
+Proof - Rhombus Area Half Product of Diagonal Length	Rhombus Area 
+Proof - Rhombus Diagonals are Perpendicular Bisectors	Rhombus Diagonals are  Bisectors
+Ring Launcher two wires attracting 	Ring Launcher Two Wires
+Robert Baden-Powell, 1st Baron Baden-Powell	Robert Baden-Powell
+Robert Gascoyne-Cecil, 3rd Marquess of Salisbury	Robert Gascoyne-Cecil
+Roller Coaster Loop Rotational Motion	Roller Coaster Loop
+History of the Royal Australian Navy	Royal Australian Navy History
+Royal Grammar School Worcester	Royal Grammar School
+Right Triangles Inscribed in Circles (Proof)	Rt. Triangles Inscribed in Circles
+Russian constitutional crisis of 1993	Russian Constitutional Crisis of 1993
+Proof: S (or Entropy) is a valid state variable	S (entropy) is a valid state variable
+South Georgia and the South Sandwich Islands	S Georgia & S Sandwich Islands
+Similarity example where same side plays different roles	Same Side Plays Different Roles
+Sarangkot Sunrise, Pokhara, Nepal 8266567308 l	Sarangkot Sunrise, Nepal 
+Sarcomere length-tension relationship	Sarcomere Leng.-tension Relationship
+Role of the Sarcoplasmic Reticulum in Muscle Cells	Sarcoplasmic Reticulum in Muscle Cells
+Secant (sec), cosecant (csc) and cotangent (cot) example	Secant Cosecant Cotangent 
+CA Geometry: Secants and Translations	Secants and Translations
+Separation of powers under the United States Constitution	Separation of powers in US Constitution
+Definition of limit of a sequence and sequence convergence	Sequence Limit & Convergence
+SSS to Show a Radius is Perpendicular to a Chord that it Bisects	Show Radius Perpendicular to a Chord
+Sicknesses That Are Often Confused	Sicknesses That Are Confused
+Similar Triangle Example Problems	Similar Triangle Example
+CA Geometry: Similar Triangles 1	Similar Triangles 1
+CA Geometry: Similar Triangles 2	Similar Triangles 2
+Simple Multiplication Word Problems	Simple Multiplication 
+Ex 1: Distributive property to simplify 	Simplify Distributive Property 1
+Ex 2: Distributive property to simplify 	Simplify Distributive Property 2
+Ex 3: Distributive property to simplify 	Simplify Distributive Property 3
+Simplifying First for Subtracting Rational Expressions	Simplify First before Subtracting
+Simplifying Rational Expressions Example 2	Simplify Rational Expressions 2
+Simplifying Expressions with Exponents	Simplifying Expressions- Exponents 1
+Simplifying Expressions with Exponents 2	Simplifying Expressions- Exponents 2
+Simplifying Expressions with Exponents 3	Simplifying Expressions- Exponents 3
+Simplifying Rational Expressions Introduction	Simplifying Rational Expressions
+Simplifying Rational Expressions Introduction	Simplifying Rational Expressions
+Simplifying Square Roots Comment Response	Simplifying Square Roots
+Proof: sin(a+b)  = (cos a)(sin b) + (sin a)(cos b)	sin(a+b) = (cos a)(sin b) +(sin a)(cos b)
+Example: Graph, domain, and range of sine function	Sine Function Graph Range & Domain
+Sino-German cooperation (1911-1941)	Sino-German cooperation 1911-1941
+Edmund Hillary and Tenzing Norgay	Sir Ed Hillary & Tenzing Norgay
+Soils retrogression and degradation	Soils RetrogressionDegradation
+Timeline of discovery of solar system planets and their natural satellites	Solar System Discovery Timeline
+Timeline of discovery of solar system planets and their natural satellites	Solar System Discovery Timeline
+Solutions to Three Variable System	Solutions to 3 Variable System
+Solutions to Three Variable System	Solutions to 3 Variable System
+Solutions to Three Variable System 2	Solutions to 3 Variable System 2
+Solutions to Three Variable System 2	Solutions to 3 Variable System 2
+Number of solutions to linear equations	Solutions to Linear Equations
+Number of solutions to linear equations ex 3	Solutions to Linear Equations
+Extraneous Solutions to Rational Equations	Solutions to Rational Equations
+Extraneous Solutions to Rational Equations	Solutions to Rational Equations
+Constructing solutions to systems of equations	Solutions to Systems of Equations
+Solving and graphing linear inequalities in two variables 1	Solve & Graph Linear Inequalities
+Solving and graphing linear inequalities in two variables 1	Solve & Graph Linear Inequalities
+Solving linear systems by graphing	Solve Linear Systems by Graphing
+Solving linear systems by graphing	Solve Linear Systems by Graphing
+Solving linear systems by substitution	Solve Linear Systems by Substitution
+Constructing and solving one-step inequality	Solve One-step Inequality
+Solving Quadratic Equations by Completing the Square	Solve Quadratic Equations
+Solving Quadratic Equations by Completing the Square	Solve Quadratic Equations
+Solving Quadratic Equations by Square Roots	Solve Quadratic Equations
+Solving Quadratic Equations by Square Roots	Solve Quadratic Equations
+King's Cupcakes:  Solving Systems by Elimination	Solve Systems by Elimination
+King's Cupcakes:  Solving Systems by Elimination	Solve Systems by Elimination
+Example 1: Solving systems by elimination	Solve Systems by elimination 1
+Example 2: Solving systems by elimination	Solve Systems by elimination 2
+Example 3: Solving systems by elimination	Solve Systems by elimination 3
+Super Yoga Plans- Solving Systems by Substitution	Solve Systems by Substitution
+Can you solve the counterfeit coin riddle	Solve the Counterfeit Coin Riddle
+Solving Equations with the Distributive Property	Solve with Distributive Property
+Solving systems of equations by elimination	Solving Equations by Elimination
+Solving systems of equations by multiplication	Solving Equations by Multiplication
+Example: Solving simple quadratic	Solving Simple Quadratic
+Super Yoga Plans- Solving Systems by Elimination	Solving Systems by Elimination
+Somewhere in Nepal 25702795884 l	Somewhere in Nepal
+Acceleration Due to Gravity at the Space Station	Space Station Gravity Acceleration
+Spanish conquest of the Inca Empire	Spanish Conquest of Inca Empire
+Speaker of the British House of Commons	Speaker of the UK House of Commons
+Speaker of the United States House of Representatives	Speaker of US House of Rep-resentatives
+Specific Heat, Heat of Fusion and Vaporization	Specific & Fusion Heat- Vaporization
+Specifying planes in three dimensions	Specify planes in 3 dimensions
+Spectrophotometry Introduction	Spectro- photometry Introduction
+Why Don't Spiders Stick To Their Webs?	Spiders don't Stick To Their Webs-why?
+Spinal Curve And Other Back Deformities	Spinal Curve & Other Back Deformities
+Spring potential energy example (mistake in math)	Spring Pot'l Energy
+Problem involving angle derived from square and circle	Square & Circle Angle Problem 
+Kohlberg's stages of moral development	Stages of Moral development
+Completing the square to write equation in standard form of a circle	Standard Equation of a circle
+Intuition on Static and Kinetic Friction Comparisons	Static and Kinetic Friction
+Static and Kinetic Friction Example	Static and Kinetic Friction
+Learn how a stethoscope can help determine blood pressure	Stethoscope and Blood Pressure
+Stoichiometry: Limiting Reagent	Stoichiometry - Limiting Reagent
+Another Stoichiometry Example in a Solution	Stoichiometry Example in a Solution
+Stored elastic energy in large and middle sized arteries	Stored Elastic Energy in Arteries
+Why Subtracting a Negative Equivalent to Adding a Positive	Subtract a Negative =  Add a Positive
+Subtracting polynomials with multiple variables	Subtract Multi-var'ble Polynomials 
+Subtracting and Simplifying Radicals	Subtracting & Simplifying Radicals
+Subtracting Decimals Word Problem	Subtracting Decimals
+Subtracting fractions with unlike denominators word problem	Subtracting Fractions
+Subtracting Mixed Numbers Word Problem	Subtracting Mixed Numbers
+Subtracting fractions with unlike denominators	Subtracting Unlike Fractions
+Sum of the exterior angles of convex polygon	Sum Exterior   Polygon Angles
+Sum of Interior Angles of a Polygon	Sum Interior Angles of a Polygon
+Sum of arithmetic sequence (arithmetic series)	Sum of Arithmetic Sequence
+Challenge example:  Sum of integers	Sum of Integers
+Sum of Logarithms with Same Base	Sum of Logarithms - Same Base
+sunrise Machhapuchhare  Nepal 22653186702 l	Sunrise Machha-puchhare
+Surkhet temple destroyed in earthquake	Surkhet Temple In Earthquake
+Study tour in Nepal for Sustainable and Resilient Farming Systems 16330048037 l	Sustainable & Resilient Farm Systems
+The waterfall Sweet Sixteen, Sundarijal, Nepal 3729403856 l	Sweet 16 Sundarijal Waterfall
+Why Synthetic Division Works	Synthetic Division Works
+Why Synthetic Division Works	Synthetic Division Works
+Finding intercepts for a linear function from a table	Table Shows Function Intercepts
+Talking bird solves systems with substitution	Talking Bird Solves with Substitution
+Talking bird solves systems with substitution	Talking Bird Solves with Substitution
+Tangent Line Hyperbola Relationship (very optional)	Tangent Line Hyperbola Relationship
+Tension in an accelerating system and pie in the face	Tension in an Accelerating System
+Testing a solution for a system of equations	Test Solution for a System of Equations
+Testing Solutions for a System of Inequalities	Test Solution for a System of Inequalities
+The Championships, Wimbledon	The Champ-ionships, Wimbledon
+The myth behind the Chinese zodiac	The Chinese Zodiac
+The Evil Eye  Nepal 4597115592 l	The Evil Eye  Nepal
+How the food you eat affects your gut	The food you eat affects your gut
+Invisible Nature The Glowing Squid	The Glowing Squid
+Benares- The Golden Temple, India, ca 1915	The Golden Temple, India, ca 1915
+Clearing the Green Monster at Fenway	The Green Monster at Fenway
+Increasing the Heart's Force of Contraction	The Heart's Force of Contraction
+Increasing the Heart's Force of Contraction	The Heart's Force of Contraction
+The exceptional life of Benjamin Banneker	The Life of Benjamin Banneker
+The Lungs and Pulmonary System	The Lungs & Pulmonary System
+The Lungs and Pulmonary System	The Lungs & Pulmonary System
+The mathematics of sidewalk illusions	The Math of Sidewalk Illusions
+The Mole and Avogadro's Number	The Mole & Avogadro's Number
+The Mole and Avogadro's Number	The Mole & Avogadro's Number
+Multiplication 2: The Multiplication Tables	The Multiplication Tables
+Vi and Sal Talk About the Mysteries of Benford's Law	The Mysteries of Benford's Law
+Example: The signs of sine and cosecant	The Signs Of Sine And Cosecant
+Words To The Village Health Worker	The Village Health Worker
+Reconciling Thermodynamic and State Definitions of Entropy	Thermody-namics & Entropy
+Thermodynamic Entropy Definition Clarification	Thermodyna-mic Entropy Definition
+The three different ways mammals give birth	Three ways Mammals Give Birth
+Thrombo-emboli and Thromboembolisms	Thrombo-emboli and embolisms
+Tiananmen Square protests of 1989	Tiananmen Square 1989 Protests
+Tibetan refugee  Nepal  1989 8834943938 l	Tibetan Refugee  Nepal  1989
+Tibetan refugee  Nepal 5705204198 l	Tibetan Refugee  Nepal  1989
+Tibetan woman  Nepal 1989 6071568607 l	Tibetan woman  Nepal 1989
+Correction to Total Final Velocity for Projectile	Total Final Velocity for Projectile
+Total Internal Reflection Blue Laser Demo	Total Internal Reflection Blue Laser
+Total Internal Reflection Demo & Explanation	Total Internal Reflection Explanation
+Trailokya Mohan Narayan Temple	Trailokya M Narayan Temple
+Angles formed between transversals and parallel lines	Transversal & Parallel Line Angles
+Angles Formed by Parallel Lines and Transversals	Transversal & Parallel Line Angles
+Figuring out angles between transversal and parallel lines	Transversal & Parallel Line Angles
+Treating Some Common Problems	Treating Common Problems
+Proof - Triangle Altitudes are Concurrent (Orthocenter)	Triangle Altitudes are Concurrent
+Challenging Triangle Angle Problem	Triangle Angle Problem
+Other Triangle Congruence Postulates	Triangle Congruence Postulates
+Triangle Medians and Centroids (2D Proof)	Triangle Medians and Centroids
+CA Geometry: Triangles and Parallelograms	Triangles and Parallel-ograms
+Similar triangles to prove that the slope is constant for a line	Triangles prove slope is constant
+Example: Trig function values using unit circle definition	Trig Function & Unit Circle Definition
+Trig identies part 3 (part 5 if you watch the proofs)	Trig Identies Part 3
+Trig identities part 2 (part 4 if you watch the proofs)	Trig Identities 
+Example: Trig to solve the sides and angles of a right triangle	Trig Solves Rt Triangle sides & angles
+Determining the equation of a trigonometric function	Trigonometric Function Equation
+Trigonometry word problems (part 1)	Trigonometry word problems 1
+Trigonometry word problems (part 2)	Trigonometry word problems 2
+Tropical Storm Matthew (2004)	Tropical Storm 2004 Matthew
+Tropical Storm Danielle (1992)	Tropical Storm Danielle 1992
+Tropical Storm Franklin (2005)	Tropical Storm Franklin 2005
+Tropomyosin and troponin and their role in regulating muscle contraction	Tropomyosin and troponin and  muscles
+Tsarang Dzong 15960037435 l	Tsarang Dzong 
+Tsarang Gompa 15932092406 l	Tsarang Gompa
+Turkish Republic of Northern Cyprus	Turkish Republic N Cyprus
+Two column proof showing segments are perpendicular	Two column proof of perpendicular
+Two Passing Bicycles Word Problem	Two Passing Bicycles Problem
+Example: Two-step equation  with x/4 term	Two-step equation  with x/4 term
+Types of immune responses: Innate and Adaptive.  Humoral vs. Cell-Mediated	Types of immune responses
+Discriminant for Types of Solutions for a Quadratic	Types of Solutions for a Quadratic
+Discriminant for Types of Solutions for a Quadratic	Types of Solutions for a Quadratic
+U.S. Customary and Metric units	U.S. Customary & Metric units
+U.S. Navy Marine Mammal Program	U.S. Navy & Marine Mammals
+United Kingdom national football team	UK National Football Team
+Umbilical vessels and the Ductus Venosus	Umb. Vessels & Ductus Venosus
+To Understand Disabled Children	Understand Disabled Children
+Understanding Function Notation Example 1)	Understand Function Notation 1
+Understanding Function Notation Example 2)	Understand Function Notation 2
+Understanding Function Notation Example 3)	Understand Function Notation 3
+Understanding multiplication through area models	Understand Multiplication with Models
+Understanding the Pressure-Volume Loop	Understand the Pressure-Volume Loop
+A more formal understanding of functions	Understand-ing of Functions
+Example: Unit circle definition of sin and cos	Unit Circle Definition of Sine and Cos
+Example: Using the unit circle definition of trig functions	Unit Circle Definition of Trig Functions
+Unit Conversion Example: Drug Dosage	Unit Conversion Example
+Unit conversion within the metric system	Unit conversion in metric system
+Unit Vectors and Engineering Notation	Unit Vectors & Engineer'g Notation
+United Malays National Organisation	United Malays Nat'l Organisation
+United States Declaration of Independence	United States Independence Declaration
+Units for common medical lab values	Units for Medical Lab Values
+List of universities in the United Kingdom	Universities in the UK
+Health Problems From Unsafe Water	Unsafe Water Health Problems
+Fourteenth Amendment to the United States Constitution	US Consti-tution14th Amendment
+United States House of Representatives	US House of Represen-tatives
+Using algebra to find measures of angles formed from transversal	Use algebra for angle measures
+To Use Crutch Cane And Wheelchair	Use Crutch Cane And Wheelchair
+Writing a decimal to represent a quantity	Use decimal to represent a quantity
+Using the focus and directrix to find the equation of a parabola	Use Focus & Directrix for Parabola Eq'n
+Using Multiple Logarithm Properties to Simplify	Use Multiple Logarithm Properties
+Multiple examples graphing parabolas using roots and vertices	Use Root & Vertex Graph Parabolas
+Multiple examples of constructing linear equations in slope-intercept form	Use slope intercept for equations 
+Multiple examples of constructing linear equations in slope-intercept form	Use slope intercept for equations 
+Use The Book: Where There Is No Doctor	Use the Book Where There Is No Doctor
+How to use the Quadratic Formula	Use the Quadratic Formula
+How to use the Quadratic Formula	Use the Quadratic Formula
+Example: Using trig to solve for missing information	Use Trig to Solve Problems
+valley of clouds, nepal 8505550945 l	Valley of Clouds, Nepal
+Lens of Time Velvet Worms Secret of the Slime	Velvet Worm Secret of the Slime
+Vertical, adjacent and linearly paired angles	Vert. Adj. & Linearly Paired Angles
+Vertebrate and Invertebrate Animals	Vertebrate & Invertebrate Animals
+Proof-Vertical Angles are Equal	Vertical Angles are Equal
+Visualizing the solution set for a system of inequalities	Visualize the Solution Set of Inequalities
+Visualizing the solution set for a system of inequalities	Visualize the Solution Set of Inequalities
+Proof: Volume Ratios in a Carnot Cycle	Volume Ratios in a Carnot Cycle
+War in Somalia (2006–present)	War in Somalia 2006- Present
+Example: Ways to represent multiplication	Ways to Represent Multiplication
+What happens during a heart attack	What Happens in a Heart Attack?
+When the source and the wave move at the same velocity	When Source & Wave Have = Velocity 
+Where do superstitions come from	Where do superstitions come from?
+Genetics 101 Part 3: Where do your genes come from?	Where do your genes come from?
+Why Zero Divided by Zero is Undefined/Indeterminate	Why 0 /0 Is Undefined-Indeterminate
+Whats so great about the Great Lakes	Why are the Great Lakes Important?
+Why aren't we using the multiplication sign	Why aren't we using the Mult. Sign?
+Why a Negative Times a Negative is a Positive	Why does Neg X Neg=  Positive?
+The Why of the 3 Divisibility Rule	Why of the 3 Divisibility Rule
+The Why of the 9 Divisibility Rule	Why of the 9 Divisibility Rule
+Why the insect brain is so incredible	Why the Insect Brain is Incredible
+Would winning the lottery make you happier	Win Lottery & Become Happy?
+Wine container from Shang Dynasty	Wine Container: Shang Age
+Winter Wonderland, Nepal 14332872957 l	Winter Wonderland, Nepal
+Finding central angle measure given arc length	With Arc Length Find Central Angle
+Finding a linear equation given a point and slope	With Point & Slope Find Equation 
+Finding a linear equation given a point and slope	With Point & Slope Find Equation 
+Women Meet Health Needs By Mobilizing	Women Mobilize for Health Needs
+Woodcut Illustration from Ming Dynasty	Woodcut Illustration: Ming Dynasty
+Working With The Child And Family	Work With The Child & Family
+Would a Brick or Feather Fall Faster	Would Brick or Feather Fall Faster?
+Would you sacrifice one person to save five	Would you sacrifice one to save five?
+Writing expressions 2 exercise example	Writing expressions 2
+X Window System protocols and architecture	X Window Protocols & Architecture
+Finding y intercept given slope and point	Y intercept given slope and point
+Yarralumla, Australian Capital Territory	Yarralumla, Australian Territory
+Yuan and Ming Dynasties History Video	Yuan & Ming Dynasties History Video

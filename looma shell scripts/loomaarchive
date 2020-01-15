@@ -58,7 +58,7 @@ echo
 mongodump --db looma
 
 echo "************************************"
-echo "archiving Looma (code) to rsync.net"
+echo 'archiving Looma (code) to rsync.net'
 echo "************************************"
 echo
 cd   /Applications/AMPPS/www/Looma		# cd to Looma/ (on a MAC)
@@ -70,15 +70,19 @@ SECONDS=0
 # sync code to rsync.net  [excluding "." files like .git/]
 if [[ $1 = "dryrun" ]]
 then
-    rsync -avvz  --dry-run --delete --perms --chmod=D755,F744 --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+    echo "NOTE: dryrun"
+
+     #EXAMPLE chmod: --chmod=Dg+s,ug+w,Fo-w,+X
+    rsync -avvz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+    echo "FINISHED dryrun"
 else
-    rsync -avvz            --delete --perms --chmod=D755,F744 --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+   rsync -avvz            --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 
 echo "************************************"
-echo "archiving Looma (content) to rsync.net"
+echo 'archiving Looma (content) to rsync.net'
 echo "************************************"
 echo
 cd /Applications/AMPPS/www/content		        # cd to content/ (on a MAC)
@@ -86,9 +90,11 @@ SECONDS=0
 
 if [[ $1 = "dryrun" ]]
 then
-    rsync -avvz  --dry-run --delete --perms --chmod=D755,F744 --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+    echo "NOTE: dryrun"
+    rsync -avvz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+    echo "FINISHED dryrun"
 else
-    rsync -avvz            --delete --perms --chmod=D755,F744 --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+    rsync -avvz            --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."

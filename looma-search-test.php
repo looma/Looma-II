@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Author:
-Email: skip@stritter.com
+
 Filename: yyy.html
 Date: 6/2015
 Description: looma PHP template

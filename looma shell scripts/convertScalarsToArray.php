@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Author:
-Email: skip@stritter.com
+
 Filename: convert.php
 Date: 6/2015..2/2019
 Description: one-time conversion to change 'ch_id' in 'activities' collection from scalar to array
@@ -21,9 +21,9 @@ Description: one-time conversion to change 'ch_id' in 'activities' collection fr
 //NOTE: one-time conversion to change 'ch_id' in 'activities' collection from scalar to array
 //  do not run again
 //
-// code commented out so it wont be run inadvertently
+// code should be commented out so it wont be run inadvertently
 
-/**/
+/*
         foreach ($cursor as $item) {
             echo "Item: " . (isset($item['dn']) ? $item['dn'] : "<none>") . "  (" . $item['_id']. ")<br>";
 
@@ -33,7 +33,7 @@ Description: one-time conversion to change 'ch_id' in 'activities' collection fr
             $activities_collection -> update(array('_id' => $id), array('$unset' =>array('ch_id' => 1)));
             $activities_collection -> update(array('_id' => $id), array('$addToSet' => array('ch_id' => $chapter)));
         }
-/**/
+*/
     ?>
 
     <?php include('includes/js-includes.php'); ?>

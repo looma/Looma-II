@@ -28,6 +28,7 @@ body {
 
 	overflow: hidden;
 	text-align: center;
+    word-wrap:break-word;
 }
 
 /* Extra small devices (phones, 600px and down) */
@@ -176,6 +177,8 @@ h1.title, h2.title, h3.title {
 	margin:auto;
 	text-align:center
 }
+
+h1 span {display:inline-block;}
 
 .credit{
     text-align: right;
@@ -369,10 +372,6 @@ button#back-button {
 	margin:0;
 }
 
-/* for settings page */
-.exec-control {color:red;}
-.admin-control {color:blue;}
-
 /* for slideshow  */
 
 button.with-play {
@@ -454,7 +453,8 @@ button.navigate {
  ********************/
 .xlat {display:none;}
 
-span.english-keyword {
+
+h1 span.english-keyword, h1 span.native-keyword {
     display:inline-block;
 }
 

@@ -11,7 +11,7 @@ Revision: Looma 3.0
 
 'use strict';
 
-var loginname;
+var loginname, loginlevel;
 
 /////////////////////////////
 /////  setRootKeyword()    /////

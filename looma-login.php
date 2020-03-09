@@ -69,7 +69,7 @@ Comments:
             if ($r != null)
             {
                 //login succesfull
-                return array(true, $name);
+                return array(true, $name, $r['level']);
             }
             else
             {
@@ -79,7 +79,7 @@ Comments:
         }
         error_log("end check login");
         return array(false, $errors);
-    };//end check_login
+    }  //end check_login
 
 /*
  * Redirects user to the main php file if page is null or page specified
@@ -88,12 +88,7 @@ Comments:
 function redirect_user($page)  {
 
      if (!isset($page) or $page == null)
-     {
-        //$url = 'http://'.$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF']);
-        //$url = rtrim($url, "/\\");
-        //error_log("no page specified");
-
-        $url = $_SERVER["HTTP_REFERER"];
+     {  $url = $_SERVER["HTTP_REFERER"];
         if (isset($_SERVER["HTTP_REFERER"])) {
             header("Location: " . $_SERVER["HTTP_REFERER"]);
         }
@@ -122,12 +117,13 @@ function redirect_user($page)  {
         error_log("received a post login attempt");
 
         //Uses check_login function to return boolean with passing and errors with login
-        list ($check, $data) = check_login($_POST['id'], $_POST['pass']);
+        list ($check, $data, $level) = check_login($_POST['id'], $_POST['pass']);
 
-        //if login succesful set cookie and redirect_user to the PHP file
+        //if login successful set cookie and redirect_user to the PHP file
         if ($check)
         {
             setcookie ("login", $_POST['id']);
+            setcookie ("login-level", $level);
             redirect_user("");
         }
         //Set errors to be displayed next login attempt
@@ -136,7 +132,7 @@ function redirect_user($page)  {
             error_log("not post");
             $errors = $data;
         }// end of if login was found
-    };//end of if POST
+    }  //end of if POST
 
     $page_title = 'Login';
     //include ('include/header.html');
@@ -185,7 +181,7 @@ else {
 
 	</div>
 
-    <?php   include ('includes/toolbar.php');
-    ?>
+    <?php   include ('includes/toolbar.php'); ?>
+
     <script src="js/looma-login.js">  </script>
 </body>

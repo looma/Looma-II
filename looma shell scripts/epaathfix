@@ -1,4 +1,4 @@
-// ONE TIME program to ADD 'src':'ePaath' to ePaath activities
+// ONE TIME program to change 'src':'OLE Nepal' to  'src':'OLE' in ePaath activities
 // DO NOT run this again - - saved as example of mongo terminal (JS) scripting
 //
 //  run in MONGO SHELL with: load('epaathfix')

@@ -1,0 +1,134 @@
+<!doctype html>
+<!--
+Filename: yyy.html
+Date: MAR 2020
+Description: fundraising email
+
+Author: Skip
+Owner:  VillageTech Solutions (villagetechsolutions.org)
+Date:   2020
+-->
+
+<head>
+    <style>
+        body {font-family: sans-serif;
+            /*font-style:italic;*/
+        }
+        a {color:yellow;}
+        .text a {color:black;}
+        .logo {
+            width:50vw;
+            margin:auto;
+        }
+        .logo img {width:100%;}
+        
+        .box {
+            position:relative;
+            margin:10px auto;
+            width:50vw;
+            min-height:25vw;
+            text-align:center;
+            font-size:4vw;
+            border-radius: 3px;
+            padding:5px;
+        }
+        .textbox {margin:10px auto;
+            width:50vw;
+            text-align:center;
+            font-size:4vw;
+            border-radius: 3px;
+            vertical-align:baseline;
+        }
+        
+        .text {
+            color:black;
+            word-wrap: break-word;
+            height:auto;
+        }
+        .number {font-size:11vw;
+            font-family: sans-serif;
+            float:right;
+        }
+        .number.small {font-size:9vw;}
+        
+        .box span {
+            position:absolute;
+            max-width:90%;
+            bottom:10px;
+            left:5vw;
+        }
+        
+        span.small {font-size:3vw;}
+        
+        a span {
+            border:2px solid #091F48;
+            border-radius:8px;
+            padding: 0 10px;
+        }
+        .red {background-color:red;}
+        .blue {background-color:#091F48; color:yellow;}
+        .yellow {background-color:yellow;}
+        .orange {background-color:orange;}
+        .green {background-color:green;}
+        
+    </style>
+</head>
+
+<body>
+<div id="container">
+        <div class="logo">
+            <span><img  src="../images/logos/LoomaLogoTransparent.png"></span>
+        </div>
+    <div class="textbox">
+        <span>Your donations have enabled Looma's success</span>
+    </div>
+    <div class="blue box">
+        <div class="number">13</div>
+        <span>Schools in Nepal using Looma this school year</span>
+    </div>
+    <div class="text box blue">
+        <div class="number">700</div>
+        <span>Kids are using Looma every day</span>
+    </div>
+    <div class="textbox yellow">
+        <span>We are raising $150,000</span>
+        <br>
+        <span class="small">2:1 match by Rotary International</span>
+        <br>
+        <span>to meet these goals:  </span>
+    </div>
+    <div class="blue box">
+            <div class="number">150</div>
+            <span>Loomas in schools in Nepal next year</span>
+        </div>
+        <div class="text box blue">
+            <div class="number small">10,000</div>
+            <span>Kids learning with Looma</span>
+        </div>
+    <div class="textbox yellow">
+        <span>Your $1000 puts Looma in another school</span>
+        <a href="http://looma.education">
+            <span class="orange">Donate</span>
+        </a>
+    </div>
+    <div class="textbox">
+        <br><span>VillageTech Solutions is now Looma Education</span>
+    </div>
+    <div class="textbox yellow">
+        <span>Past projects</span>
+    </div>
+    <div class="text box blue">
+        <div class="number">38</div>
+        <span>Bridges built in Nepal
+    <br>
+    4,000,000 safe river crossings</span>
+    </div>
+    <div class="text box blue">
+        <div class="number">1000</div>
+        <span>Earthquake families supplied with solar lighting</span>
+    </div>
+</div>
+
+
+</body>
+</html>

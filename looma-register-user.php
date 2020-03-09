@@ -1,9 +1,10 @@
 <?php
-function XloggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+function loginLevel() { return $_COOKIE['login-level'];};
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
-$loggedin = XloggedIn(); if (!$loggedin) header('Location: looma-login.php');
-error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+$loggedin = isLoggedIn(); if (!$loggedin || loginLevel() !== 'exec') header('Location: looma-login.php');
+error_log("Starting Register User session. logged in as: " . $loggedin);
 ?>
 
 <!doctype html>

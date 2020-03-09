@@ -1,6 +1,6 @@
 /*
  * Name: Skip
- * Email: skip@stritter.com
+ *
  * Owner: VillageTech Solutions (villagetechsolutions.org)
  * Date: 2015 10
  * Revision: Looma 2.0.0
@@ -28,6 +28,7 @@ function activityButtonClicked(){
         //called when a ACTIVITY button is pressed
         var chapter_id = this.getAttribute('data-ch');
         var chapter_dn = this.getAttribute('data-chdn');
+        var chapter_lang = this.getAttribute('data-lang');
         
         LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
         //remember scroll position
@@ -41,6 +42,7 @@ function activityButtonClicked(){
         chapter_dn = encodeURIComponent(chapter_dn);
         window.location = "looma-activities.php?ch=" + chapter_id +
                                                 "&chdn=" + chapter_dn +
+                                                "&lang=" + chapter_lang +
                                                 "&grade=" + className +
                                                 "&subject=" + subject;
     };  //  end activityButtonClicked()
@@ -49,13 +51,14 @@ function lessonButtonClicked(){
         //called when a LESSON button is pressed
     var chapter_id = this.getAttribute('data-ch');
     var mongo_id =   this.getAttribute('data-id');
+    var chapter_lang = this.getAttribute('data-lang');
     
     LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
     LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session'); //remember scroll position
     LOOMA.clearStore('lesson-plan-index','session');
-    //send GET request to looma-lesson-present.php with mongo_id value
+    //send GET request to looma-play-lesson.php with mongo_id value
     mongo_id = encodeURIComponent(mongo_id);
-    window.location = "looma-lesson-present.php?id=" + mongo_id;
+    window.location = "looma-play-lesson.php?id=" + mongo_id + "&lang=" + chapter_lang;
 };  //  end lessonButtonClicked()
 
 

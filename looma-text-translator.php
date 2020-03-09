@@ -29,7 +29,7 @@ include ('includes/header.php');
 <!--
 <link rel="stylesheet" href="css/looma-text-display.css">
 -->
-<link rel="stylesheet" href="css/looma-text-editor.css">
+<link rel="stylesheet" href="css/looma-edit-text.css">
 <link rel="stylesheet" href="css/looma-text-translator.css">
 
 

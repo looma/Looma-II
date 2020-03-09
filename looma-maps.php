@@ -36,7 +36,7 @@ function makeButton($file, $thumb, $dn) {
 
 <body>
 <div id="main-container-horizontal" class='scroll'>
-    <h2 class="title"> <?php keyword("Looma Maps"); ?> </h2>
+    <h1 class="title"> <?php keyword("Looma Maps"); ?> </h1>
     <div class="center">
         <br>
         <?php

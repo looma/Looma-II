@@ -15,7 +15,7 @@ Description: page with links to map games
 
 <body>
 	<div id="main-container-horizontal">
-		<h2 class="title"> <?php keyword("Looma Maps Practice Exercises"); ?> </h2>
+		<h1 class="title"> <?php keyword("Looma Maps Practice Exercises"); ?> </h1>
 		<div class="center">
             <br><br><br><br>
             <a href="looma-map-worldgame.php">

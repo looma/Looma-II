@@ -1,0 +1,46 @@
+/*
+LOOMA css file
+Filename: looma-play-text.css
+Description:
+Associated code files:looma-play-text.php
+Programmer name:skip
+Email:
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date:Oct 16
+Revision: Looma 2.4
+
+Comments:
+*/
+#fullscreen {
+    height: 100%;
+    width: 100%;
+    
+    /*font-size: 2.5vw; this makes enclosed text responsive to viewport width*/
+    
+    /* tried to get auto-scaling on both VERT and HORIZ axes, but it doesnt work:
+    font-size: calc( ( 2vh + 2vh ) / 2);
+     */
+    
+    background-color: #091F48;
+    color: yellow;
+    padding: 5px;
+    overflow: hidden;
+}
+
+.text-display:fullscreen {
+    transform: scale(5,5);
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}
+
+button.speak {
+    display:inline-block;
+}
+
+button.lookup {
+    display:inline-block;
+}
+
+/*.text-display {font-size:1.3em;}*/

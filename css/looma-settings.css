@@ -1,26 +1,29 @@
-#main-container-horizontal {
-}
+#main-container-horizontal {}
 
-#settings {
-    height:40vh;
+#user-tools {
+    height:28vh;
     overflow:hidden;
     position:relative;
     font-size: 1.2em;
 }
 
-#settings p {
+#user-tools p {
     max-height:7vh;
 }
 
 #tools {
     height:50vh;
-    padding: 5vw;
+    padding: 3vw;
     font-size: 1.2em;
 }
 
-button {
-     display:inline;
- }
+button {display:inline;}
+
+button.img.activity {max-width:50vw;}
+button.img.activity img {
+    max-width:50%;
+    max-height:60%;
+    padding:0 5px 20px 0;}
 
  #tools button {
      height:5vh;
@@ -51,18 +54,14 @@ button {
 
 div#themelist {
     margin-left:10%;
-    display:inline-block;
+   /* display:inline-block;*/
     text-align:left;
     float:left;
 }
 
-#themelist select {
-    display:inline;
-}
-
 div#voicelist {
     margin-left:10%;
-    display:inline-block;
+    /*display:inline-block;*/
     float:left;
     text-align:left;
 }
@@ -110,3 +109,6 @@ select.theme, select.voice {
     margin:5px 2px;
     display:none;
 }
+
+.exec-control  select, button.exec-control  {color:red;}
+.admin-control select, button.admin-control {color:blue;}

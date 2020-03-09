@@ -42,6 +42,7 @@ function clearSearch() {
     
     //clearResults();  //provided by calling .JS file
     clearSearchState();
+    $("#search-term").focus();
     
 }; // end clearSearch()
 
@@ -70,11 +71,12 @@ function restoreSearchState () {
         //$('#media-search').hide();
         setCollection('chapters');
         //$('.media-input').prop('disabled', true);
+       
         if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
-            showTextChapterDropdown($('#chapter-div'), $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'));
+            showTextChapterDropdown( $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'), $("input:radio[name='language']:checked").val());
         
         $('#search').submit();  //re-run the search
-        
+    
     } else {
         //$('#chapter-search').hide();
         setCollection('activities');
@@ -112,6 +114,7 @@ function restoreSearchState () {
     // $('#search').submit();  //re-run the search
     
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
+    $("#search-term").focus();
     
 };  //end restoreSearchState()
 
@@ -146,7 +149,9 @@ function setCollection(collection) {
         $('#chapter-div').hide();
         $('#chapter-drop-menu').empty();
         
-    }
+    };
+    $("#search-term").focus();
+    
 }; //end setCollection
 
 /////////////////////////////
@@ -238,6 +243,7 @@ function restoreKeywordDropdown(level,keys) {
          else $('#search').submit();  //re-run the search
     }  //end if(key)
     else $('#search').submit();  //re-run the search
+    $("#search-term").focus();
 }; //end restoreKeywordDropdown()
 
 ///////////////////////////////////
@@ -271,6 +277,7 @@ function showKeywordDropdown(event) {
             },
             'json'
         );
+    $("#search-term").focus();
 }; //end showKeywordDropdown()
 
 ///////////////////////////////////
@@ -295,13 +302,14 @@ function showTextSubjectDropdown($grades, $subjects, $chapters) {
             },
             'html'
         );
+    $("#search-term").focus();
 };  //end showTextSubjectDropdown()
 
 
 ///////////////////////////////////
 /////  showTextChapterDropdown()  /////
 ///////////////////////////////////
-function showTextChapterDropdown($grades, $subjects, $chapters) {
+function showTextChapterDropdown($grades, $subjects, $chapters, lang) {
     //if ($div) $div.hide();
     
     $chapters.empty();
@@ -309,7 +317,8 @@ function showTextChapterDropdown($grades, $subjects, $chapters) {
         $.post("looma-database-utilities.php",
             {cmd: "textChapterList",
                 class:   $grades.val(),
-                subject: $subjects.val()},
+                subject: $subjects.val(),
+                lang:    lang},
             
             function(response) {
                 //$('#chapter_label').show();
@@ -320,6 +329,7 @@ function showTextChapterDropdown($grades, $subjects, $chapters) {
             },
             'html'
         );
+    $("#search-term").focus();
 };  //end showTextChapterDropdown()
 
 
@@ -343,6 +353,7 @@ function showBookDropdown($src, $books, $chapters) {
             },
             'html'
         );
+    $("#search-term").focus();
 };  //end showBookDropdown()
 
 
@@ -364,6 +375,7 @@ function showBookChapterDropdown($src, $books, $chapters) {
             },
             'html'
         );
+    $("#search-term").focus();
 };  //end showBookChapterDropdown()
 
 
@@ -425,6 +437,8 @@ function sendSearchRequest(searchForm, callBack) {
             },  // NOTE: displayResults() function is supplied in the JS of the user looma-search (e.g. looma-lessonplan.xx)
             'json');
     };
+    //$("#search-term").focus();
+    
 }; //end sendSearchRequest()
 
 
@@ -449,7 +463,9 @@ $(document).ready(function() {
         } else {
             $('#media-submit').prop("disabled",true);
             sendSearchRequest ($("#search"), displayResults);
-        }
+        };
+        $("#search-term").focus();
+    
         return false;
     }); //end search.submit
  
@@ -471,14 +487,21 @@ $(document).ready(function() {
         }
     });  //end ft-chapter.click()
     
+    $(".media-filter").change( function(){$("#search-term").focus();});
+    
     $("#grade-drop-menu").change(function() {
-        showTextSubjectDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'))
+        showTextSubjectDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'),$("input:radio[name='language']:checked").val());
     });  //end drop-menu.change()
     
     $("#subject-drop-menu").change(function() {
-        showTextChapterDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'))
+        showTextChapterDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'), $("input:radio[name='language']:checked").val());
     });  //end drop-menu.change()
-
+    
+    $('input[type=radio][name=language]').change(function() {
+        $('#grade-drop-menu').prop('selectedIndex', 0); // reset grade select field
+        $('#subject-drop-menu').empty(); $('#chapter-drop-menu').empty();
+    });
+    
     $("#keyword-div .keyword-dropdown").change(showKeywordDropdown);
     
     $('.clear-search').click(clearSearch);

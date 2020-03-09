@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Name: Skip
-Email: skip@stritter.com
+
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2019 11
 Revision: Looma 5.2
@@ -32,10 +32,10 @@ $ndn =    trim($_GET['ndn']);
 
 echo "<div id='main-container-horizontal' class='scroll'>";
 echo "<div  class='scroll'>";
-echo "<h3 class='title'>";
+echo "<h1 class='title'>";
 echo keyword('Chapters for') . " ";
     displayName("", $dn, $ndn);
-echo "</h3>";
+echo "</h1>";
 
 echo "<br><br><table class='ch-table'>";
 echo "<tr>";

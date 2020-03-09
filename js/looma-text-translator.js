@@ -5,7 +5,7 @@
 
   NOTE: This JS is for looma-text-translator.php - the  looma page for translating text files to native language
 
-          
+  
   Programmer name: skip
   Owner: VillageTech Solutions (villagetechsolutions.org)
   Date: jul 2019
@@ -20,8 +20,7 @@ var $title;
 var $english;
 var $editor; //the DIV where the HTML is being edited
 var savedHTML; //savedHTML is textcheckpoint of HTML for checking for modification
-var loginname;
-
+var loginname, loginlevel;
 /*  callback functions and assignments expected by looma-filecommands.js:  */
 callbacks['clear'] = textclear;
 callbacks['save'] = textsave;
@@ -125,11 +124,9 @@ $(document).ready(function() {
     $editor.focus();
     
     loginname = LOOMA.loggedIn();
+    loginlevel = LOOMA.readStore('login-level','cookie');
     
-    if (loginname && (loginname == 'kathy' ||
-        loginname == 'david' ||
-        loginname == 'skip' ))
-        $('.admin').show();
+    //if (loginname && loginlevel === 'admin') $('.admin').show();
     
     
     //$('#main-container').disable();

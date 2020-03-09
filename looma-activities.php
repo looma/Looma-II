@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Name: Skip
-Email: skip@stritter.com
+
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 10, 2019 02
 Revision: Looma 4.0.0
@@ -14,7 +14,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 	require ('includes/header.php');
 	require ('includes/mongo-connect.php');
 
-//use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix)
+//use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang)
     require('includes/looma-utilities.php');
 	?>
 </head>
@@ -24,7 +24,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 <?php
 
 $shown = array();
-$foundActicvity;
+$foundActivity;
 
     function makeButton($activity) {
         //depending on the filetype of the activity, display the appropriate button
@@ -37,11 +37,13 @@ $foundActicvity;
 
             $ft = $activity['ft'];
             $dn =  $activity['dn'];
+            $ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
             $fn = (isset($activity['fn']) ? $activity['fn'] : "");
             $fn = urlencode($fn);
             $thumb = (isset($activity['thumb']) ? $activity['thumb'] : "");
             $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
+            $prefix = (isset($activity['prefix']) ? $activity['prefix'] : "");
             $oleID = (isset($activity['oleID']) ? $activity['oleID'] : "");
             $epversion = (isset($activity['version']) ? $activity['version'] : "");
             $grade = (isset($activity['grade']) ? $activity['grade'] : "");
@@ -69,7 +71,7 @@ $foundActicvity;
                     case "mp4":
                     case "mov":
                     case "m4v":
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,null);
                         break;
 
                     case "slideshow":
@@ -80,16 +82,16 @@ $foundActicvity;
                         //$imagesrc = $split[0];
                         //$mongoid  = $split[1];
                         //$fp = urlencode('../content/slideshows/');
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "", "",null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "", "",null,null,null);
                         break;
 
                     case "lesson":
                         $thumb = "images/lesson.png";
-                        makeActivityButton($ft, $fp, "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null,null);
+                        makeActivityButton($ft, $fp, "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null,null,null);
                         break;
 
                     case "evi":      //edited videos
-                        makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null);
+                        makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null,null);
                         break;
 
                     case "VOC":     //vocabulary reviews
@@ -103,45 +105,50 @@ $foundActicvity;
                     case "jpeg":
                     case "png":
                     case "gif":
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                         break;
 
                     case "audio":
                     case "mp3":
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                         break;
 
                     case "pdf":
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,null);
                         break;
 
                     case "text":
                         //NOTE: dont show indivudual text files in Activities page for a chapter
-                        //makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null);
+                        //makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null,null);
                         break;
 
                     case "map";
-                        makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, "", "", "", "", "", "", "",null,null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                         break;
 
                     case "looma";  //open a Looma page (e.g. calculator or paint)
-                        makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "",null,null,null);
+                        makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                         break;
 
                     case "EP":
                     case "epaath":
                         if ($epversion === 2015) $thumb = $fp . $fn . "/thumbnail.jpg";
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion,null,null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion,null,null,null,null);
                         break;
 
                     case "html":
                     case "HTML":
                         // make a HTML button
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null);
+                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,null);
+                        break;
+
+                    case "book":
+                        // make a book button
+                        makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, "", "", "", "", "", "", "",null,null, $prefix,null);
                         break;
 
                     default:
-                        echo "unknown filetype " . $ft . "in activities.php";
+                        echo "unknown filetype \"" . $ft . "\" in activities.php";
                         break;
 
                 };  //end SWITCH
@@ -157,7 +164,9 @@ $foundActicvity;
      * NOTE: should validate these parameters, esp. using "isset"
      */
         $grade = trim($_GET['grade']);
-		$subject = trim($_GET['subject']) ;
+        $gradenumber = str_replace("class", "", $grade);
+        $subject = trim($_GET['subject']) ;
+        $lang = trim($_GET['lang']) ;
 		$ch_id = trim($_GET['ch']);
 		$ch_dn = trim($_GET['chdn']);
 		echo "<div id='main-container-horizontal' class='scroll'>";
@@ -187,7 +196,7 @@ $foundActicvity;
         //create a vocab review button if there are any words from this chapter in the dictionary
         $query = array('ch_id' => $ch_id);
         $words = $dictionary_collection -> find($query);
-        if ($words -> count() > 0) {
+        if ($lang === 'en' & $words -> count() > 0) {
             echo "<td>";
             //make a button with <a href="looma-vocab-flashcard.php?ch_id=CH_ID">
 
@@ -205,26 +214,17 @@ $foundActicvity;
 
 
         //get all the activities registered for this chapter
-        $query = array('ch_id' => $ch_id);
-		//returns only these fields of the activity record
-		$projection = array('_id' => 1,
-							'ft' => 1,
-							'fn' => 1,
-							'fp' => 1,
-							'dn' => 1,
-							'url' => 1,
-							'thumb' => 1,
-							'mongoID' => 1
-							);
+        if ($lang === 'en') $query = array('ch_id' => $ch_id);
+        else                $query = array('nch_id' => $ch_id);
 
 		$activities = $activities_collection -> find($query);
 		foreach ($activities as $activity)  makeButton($activity);
 
+        // REMOVED this keyword matching code JAN 2020. it puts too many activities, esp. in lower grades, that dont match the expertise
+        // RE-INSTATED this keyword matching code FEB 2020. adding a check for cl_lo <= grade <= cl_hi
+
         //get all the activities that match this chapter's keywords
         $query = array('_id' => $ch_id);
-        $projection = array(
-            '_id' => 0,
-            'key1' => 1, 'key2' => 1, 'key3' => 1, 'key4' => 1);
 
         $chapter = $chapters_collection -> findOne($query);
 
@@ -238,18 +238,14 @@ $foundActicvity;
                            'key2' => $chapter['key2'],
                            'key3' => $chapter['key3']);
         }
-        $projection = array('_id' => 1,
-            'ft' => 1,
-            'fn' => 1,
-            'fp' => 1,
-            'dn' => 1,
-            'url' => 1,
-            'thumb' => 1,
-            'mongoID' => 1
-            );
+
         $activities = $activities_collection->find($query);
-        foreach ($activities as $activity) makeButton($activity);
-        //};
+
+        foreach ($activities as $activity) if(isset($activity['cl_lo']) &&
+                                              isset($activity['cl_hi']) &&
+                                             ($activity['cl_lo'] <= $gradenumber) &&
+                                             ($gradenumber <= $activity['cl_hi']))
+                                           makeButton($activity);
 
         echo "</tr></table>";
 

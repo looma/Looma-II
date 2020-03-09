@@ -5,7 +5,7 @@ Description:
 
     NOTE: This JS is for looma-text-frame.php - the embedded looma
             page another editor [e.g. lesson-plan.php
-    NOTE: there is a different JS (looma-text-editor.js)
+    NOTE: there is a different JS (looma-edit-text.js)
             which is a stand-alone looma page for text editing
             
            

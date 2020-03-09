@@ -167,6 +167,7 @@ $(document).ready (function() {
     $("#top").click(function(){
         $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});
         $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll',    'session'));
+        $("#search-term").focus();
     });
     
     $("#more").click(function(){

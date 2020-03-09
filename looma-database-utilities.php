@@ -246,6 +246,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             $textbook = $textbooks_collection->findOne($query);
             $file['fp'] = $textbook['fp'];
             $file['fn'] = $textbook['fn'];
+            $file['nfn'] = $textbook['nfn'];
         }
         //////////////
 
@@ -500,18 +501,29 @@ if ( isset($_REQUEST["cmd"]) ) {
             $projection = array('_id' => 0, 'prefix' => 1);
             $prefix = $textbooks_collection->findOne($query, $projection);
             //echo "mongo result is "; print_r($prefix);
+            //echo "prefix is $prefix";
 
             if($prefix) {
                 $regex = "^" . $prefix['prefix']. "\d";
-
-                //echo "Prefix is $regex"; exit;
+                //echo "regex is $regex";
 
         // db.collection.find({"lastname" : {"$exists" : true, "$ne" : ""}})
 
+                if (isset($_REQUEST['lang'])) $lang = $_REQUEST['lang']; else $lang = 'en';
+
+                //echo "lang is " . $lang;
 
                 $query = array('_id' => array('$regex' => $regex));
                 $chapters = $chapters_collection->find($query);
-                foreach ($chapters as $ch) echo "<option value='" . $ch['_id'] . "'>" . $ch['dn'] . "(" . $ch['_id'] . ")</option>";
+                foreach ($chapters as $ch) {
+
+                    //echo "ch is " . $ch['dn'] . ' and ' . $ch['ndn'];
+
+                    if      ($lang === 'en' && isset($ch['dn'])  && $ch['dn'] !== '')
+                        echo "<option value='" . $ch['_id'] . "'>" . $ch['dn'] . "(" . $ch['_id'] . ") </option>";
+                    else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '')
+                        echo "<option value='" . $ch['_id'] . "'>" . $ch['ndn'] . "(" . $ch['_id'] . ")</option>";
+                }
             }
             return;  // end textChapterList()
 
@@ -778,6 +790,7 @@ if ( isset($_REQUEST["cmd"]) ) {
                 'math optional' => 'Ma');
 
             $classSubjRegex = null;
+            if (isset($_REQUEST['language'])) $lang = $_REQUEST['language']; else $lang = 'en';
 
             if (isset($_POST['chapter']) && $_POST['chapter'] != '') {
                 $classSubjRegex .= $_POST['chapter'];
@@ -813,11 +826,19 @@ if ( isset($_REQUEST["cmd"]) ) {
                 foreach ($cursor as $d)  {
                     $query =  array("prefix" => prefix( $d['_id']));
                     $textbook = $textbooks_collection->findOne($query);
-                    $d['fn'] = $textbook['fn'] ? $textbook['fn'] : $textbook['nfn'];
+                    //$d['fn'] = $lang === 'en' ? $textbook['fn'] : $textbook['nfn'];
+                    $d['fn'] = $textbook['fn'];
+                    $d['nfn'] = $textbook['nfn'];
                     $d['fp'] = $textbook['fp'];
-                    $result[] = $d;
+
+                    // only send back chapters that are in "$lang" language ('en' or 'np')
+                    if      ($lang === 'en' && isset($d['dn'])   && $d['dn'] !== '') $result[] = $d;
+                    else if ($lang === 'np' && isset($d['ndn']) && $d['ndn'] !== '') $result[] = $d;
                 }};
-       echo json_encode($result);
+
+            //echo json_encode($result);
+            echo json_encode(array('count'=> sizeof ($result), 'list'=>$result));
+
             return;
         // end case "searchChapters"
 
@@ -884,8 +905,16 @@ if ( isset($_REQUEST["cmd"]) ) {
             if (count($changes) > 0) $update ['$set'] =   $changes;
             if (count($unsets)  > 0) $update ['$unset'] = $unsets;
 
-                if (isset($_REQUEST['chapter']) && $_REQUEST['chapter']) $update['$addToSet'] = array('ch_id' => $_REQUEST['chapter']);
+                if (isset($_REQUEST['chapter']) && $_REQUEST['chapter'] && isset($_REQUEST['lang']) && $_REQUEST['lang']==='np')
+                    $update['$addToSet'] = array('nch_id' => $_REQUEST['chapter']);
+                else if (isset($_REQUEST['chapter']) && $_REQUEST['chapter'])
+                    $update['$addToSet'] = array('ch_id' => $_REQUEST['chapter']);
+
                 if (isset($_REQUEST['book-chapter']) && $_REQUEST['book-chapter']) $update['$addToSet'] = array('ch_id' => $_REQUEST['book-chapter']);
+            //NOTE: bug in line above
+                // $addToSet FAILS if the field already contains a non-array string
+
+
             //print_r ($update);
 
             $result = $dbCollection->update($query, $update);

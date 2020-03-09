@@ -32,6 +32,8 @@ form#search select {
     width:18vw
 }
 
+#chapter-lang {display:none;}
+
 #chapter-drop-menu {max-width:25vw;}
 
 /***************************************/

@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Author:
-Email: skip@stritter.com
+
 Filename: yyy.html
 Date: 6/2015
 Description: custom 404 page for looma browser if no internet present

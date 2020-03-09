@@ -35,7 +35,7 @@ function makeButton($id, $thumb, $dn) {
 <h1 class="credit"> Created by Ellie, Jayden, Alexa, Catie and May</h1>
 
 <div id="main-container-horizontal" class='scroll'>
-    <h2 class="title"> <?php keyword("Looma History Timelines"); ?> </h2>
+    <h1 class="title"> <?php keyword("Looma History Timelines"); ?> </h1>
     <div class="center">
         <br>
         <!--<a href="looma-history.php?chapterToLoad=7EN01.01">
@@ -63,8 +63,8 @@ function makeButton($id, $thumb, $dn) {
             $thumb = $history['thumb'];
             //$thumb = $path . "/thumbnail.png";
             $id = $history['_id'];  //mongoID of the descriptor for this lesson
-            //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $nfn, $npg,$prefix)
-            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null);
+            //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $nfn, $npg,$prefix,$lang)
+            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
             //makeButton($id, $thumb, $dn);
             echo "</td>";
             $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};

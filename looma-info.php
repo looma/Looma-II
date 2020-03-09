@@ -2,7 +2,7 @@
 <!--
 extra comment
 Name: Skip
-Email: skip@stritter.com
+
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 03
 Revision: Looma 3.0.0
@@ -20,11 +20,11 @@ require ('includes/mongo-connect.php');
 
 <body>
 <div id="main-container-horizontal">
-    <h2 id="title" class="title">Looma Info page</h2>
+    <h1 id="title" class="title">Looma Info page</h1>
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>Release 5.5, JAN 2020   </h4>
+        <h4>Release 5.6  MAR 2020   </h4>
         <!-- copyright notice, with link to vts.org-->
         <span class='glyphicon glyphicon-copyright-mark'></span>2019
         <a draggable="false"  class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>

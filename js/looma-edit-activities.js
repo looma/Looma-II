@@ -11,7 +11,7 @@ Revision: Looma 3.0
 
 'use strict';
 
-var loginname;
+var loginname, loginlevel;
 var searchName = 'edit-activities-search';
 var textbook = true;
 
@@ -98,9 +98,12 @@ function displayResults(results) {
     $('#details').hide();
     displaySearchResults(result_array);
     
-    $('.info'           ).hover(
+    $('.info'           ).mouseover(
         function() {showInfo($(this).closest('.activityDiv'));}
-        //, function() {$('#details').hide();}
+    );
+    
+    $('.info'           ).mouseout(
+        function() {$('#details').hide();}
     );
 
 //
@@ -115,6 +118,7 @@ function showInfo (activity) {
                         + '<p>ft: ' + $.data(activity[0]).mongo.ft + '</p>'
                         + '<p>src: ' + $.data(activity[0]).mongo.src + '</p>'
                         + '<p>ch_id: ' + $.data(activity[0]).mongo.ch_id + '</p>'
+                        + '<p>nch_id: ' + $.data(activity[0]).mongo.nch_id + '</p>'
                         + '<p>key1: ' + $.data(activity[0]).mongo.key1 + '</p>'
                         + '<p>key2: ' + $.data(activity[0]).mongo.key2 + '</p>'
                         + '<p>key3: ' + $.data(activity[0]).mongo.key3 + '</p>'
@@ -341,12 +345,23 @@ $(document).ready(function() {
     
     // text books
             $("#grade-chng-menu").change(function() {
-                showTextSubjectDropdown($('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
+                showTextSubjectDropdown($('#grade-chng-menu'),
+                    $('#subject-chng-menu'),
+                    $('#chapter-chng-menu'),
+                    $("input:radio[name='lang']:checked").val());
             });  //end drop-menu.change()
             
             $("#subject-chng-menu").change(function() {
-                showTextChapterDropdown($('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
+                showTextChapterDropdown($('#grade-chng-menu'),
+                                        $('#subject-chng-menu'),
+                                        $('#chapter-chng-menu'),
+                                        $("input:radio[name='lang']:checked").val());
             });  //end drop-menu.change()
+    
+        $("input[type=radio][name='lang']").change(function() {
+            $('#grade-chng-menu').prop('selectedIndex', 0); // reset grade select field
+            $('#subject-chng-menu').empty(); $('#chapter-chng-menu').empty();
+        });
     
     //Other books
             $("#src-chng-menu").change(function() {

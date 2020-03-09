@@ -20,7 +20,7 @@ Description:  dictionary look-up UI for Looma 2
             <br><br>
 
         <h1 class="credit"> Created by Jayden, Grant, Kendall and Mahir</h1>
-        <h3 class="title"> <?php keyword("Looma Dictionary"); ?> </h3>
+        <h1 class="title"> <?php keyword("Looma Dictionary"); ?> </h1>
 
         <!-- This is where the user inputs a word -->
         <form id="lookup">

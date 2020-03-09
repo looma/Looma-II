@@ -1,6 +1,5 @@
 <!--
 Author: Skip
-Email:  skip@stritter.com
 Owner:  VillageTech Solutions (villagetechsolutions.org)
 Date:   2015 03
 Revision: Looma 2.0.0
@@ -11,10 +10,21 @@ File: header.php
 <html lang="en" class="no-js">
   <head>
 	<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  	<meta name="author"  content="Skip">
-  	<meta name="project" content="Looma">
-  	<meta name="owner"   content="villagetechsolutions.org">
+    <meta name="viewport"  content="width=device-width, initial-scale=1">
+  	<meta name="author"    content="Skip">
+    <meta name="project"   content="Looma">
+    <meta name="url"       content="https://looma.website">
+    <meta name="owner"     content="Looma Education Corporation">
+    <meta name="copyright" content="Looma Education Corporation">
+
+    <meta name="description" content="Looma Education: Nepal.
+    Looma is an affordable and low power-consuming audio-visual education computer
+    that provides reliable access to educational content for an entire classroom--offline.
+    It combines a computer, A/V projection system, webcam, and massive library of media files,
+    teacher tools, dictionary, learning games, educational videos, etc., replacing the Internet.
+    It uses only 55 W, easily provided by solar, replacing electrical grid power.
+    The current version of Looma is configured for grade K-12 education in Nepal. Configurations for other
+    languages and countries are planned.">
 
     <link rel="icon"     type="image/png" href="images/logos/looma favicon yellow on blue.png">
       <!--

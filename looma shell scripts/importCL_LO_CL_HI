@@ -1,0 +1,50 @@
+// mongo terminal program "importCL_LO_CH_HI"
+//      input from a CSV file
+//          each line of which is a DN, FN, CH_LO, CH_HI    (low and high class appropriate for this media file)
+//          inserts all the CH_LO, CH_HI into the activities.ch_ids array of any document(s) corresponding to the DN + FN pair
+//
+//  make sure there is a file 'cl_lo_hi_ToImport' in TAB-SEPARATED format, in the current directory
+//  start MONGO in LOOMA db with: 'mongo looma'
+//  run in MONGO SHELL with: load('mportCL_LO_CH_HI')
+//
+//"use strict";
+
+var requestcount = 0;
+var changecount = 0;
+
+var input = 'cl_lo_hi_ToImport.txt';
+print ('Importing CH_LO and CL_HI from ' + input);
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+
+var docs = file.split(/[\r\n]+/);  // split file into array of lines containing (DN, FN, CH_IDs)
+
+print ('Processing ' + docs.length + ' lines');
+
+docs.forEach( function(doc) {
+    var fields = doc.split(/\t/);  //split the line on TABs
+    if (fields[0] !== "" && fields[1] !== "") {
+        var displayname = fields[0];
+        var filename = fields[1];
+        requestcount++;
+        //print(requestcount + ' - - CHECKING ' + displayname + ' [' + filename + '] adding ' + fields.toString());
+        
+        var activities = db.activities.find({ 'fn': filename});
+        var duplicates = 0;
+        if (!activities.hasNext()) print('ACTIVITY ' + displayname + ' [' + filename + '] NOT FOUND');
+        while (activities.hasNext()) {
+            var activity = activities.next();
+            duplicates++; if (duplicates > 1) print('*************NOTE: duplicate ACTIVITY FOUND, Name = ' + displayname);
+    
+            activity['cl_lo'] = fields[2];
+            activity['cl_hi'] = fields[3];
+            
+            db.activities.update({_id: activity._id}, activity);
+            
+            print(++changecount + ' - - CHANGED CH_LO and CH_HI for ' + displayname + ' TO ' + fields[2] + ' and ' + fields[3]);
+        }
+    } else print('*******    BAD INPUT LINE: ' + doc);
+});  // end foreach doc
+
+print('');
+print('+++++  ' + requestcount + '  lines processed');
+print('+++++  ' + changecount + '  changes made');

@@ -1,6 +1,6 @@
 <!--
 Name: Aaron, Connor, Ryan
-Email: skip@stritter.com
+
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2016 07
 Revision: Looma Video Editor 1.0

@@ -95,6 +95,9 @@ function folderThumbnail ($fp) {  //for directories, look for filename "thumbnai
 }; //end function thumbnail
 
 function displayName($filename, $dn, $ndn) {
+
+  //echo "NDN is " . $ndn . "**";
+
     if ($dn && $ndn) {
         echo "<span class='english-keyword'>"
             . $dn .
@@ -130,14 +133,14 @@ function natksort($array) {
 
 // NOTE: instead of this long list of args, the fn should take one psaram - an assoc array/object with all the activity's attributes
 
-function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix) {
+function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang) {
 
 
 	//NOTE: would be better to call this with an object with fields ft, fp, fn, etc. smaller arglist and fewer null parameters
 
 
 
-	    // makes an ACTIVITY button (for looma-library, looma-activities, looma-lesson-present,looma-slideshow-present,looma-histories, etc)
+	    // makes an ACTIVITY button (for looma-library, looma-activities, looma-lesson-present,looma-play-slideshow,looma-histories, etc)
 	    // some parameters are optional for some filetypes
 	    //    $ft - filetype, $fp - path to file, $fn - filename, $dn - display name, $ndn - nepali display name, $thumb - thumbnail file name
 	    //    $ch_id - chapter ID, $mongo_id - mongoDB id,
@@ -191,6 +194,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
             case "map":       //map
             case "game":    //game
             case "text":      //text
+            case "book":      //book
             case "looma":     //looma
             case "chapter":   //chapter
             case "history":   //$fp = '../content/histories/';
@@ -222,9 +226,11 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         $fn = htmlspecialchars($fn);
 
         //Now make the BUTTON
-                  echo "<button class='activity play img' ";
+      echo "<button class='activity play img' ";
 
         if ($fp)          echo "data-fp='" .  $fp . "' ";
+        if ($lang)          echo "data-lang='" .  $lang . "' ";
+
         if ($fn)          echo 'data-fn="' .  $fn . '" ';
         if ($nfn)         echo "data-nfn='" .  $nfn . "' ";
 
@@ -234,6 +240,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 
         if ($ft)          echo "data-ft='" .  $ft . "' ";
         if ($dn)          echo "data-dn='" .  $dn . "' ";
+
+    if ($ndn === "") $ndn = null;
 
         if ($ndn)         echo "data-ndn='" .  $ndn . "' ";
         if ($prefix)      echo "data-prefix='" .  $prefix . "' ";

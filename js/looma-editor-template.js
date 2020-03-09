@@ -13,7 +13,7 @@ Revision: Looma 3.0
 
 //var savedcheckpoint;   //savedTimeline is checkpoint of timeline for checking for modification
 var savedSignature ='';   //savedSignature is checkpoint of timeline for checking for modification
-var loginname;
+var loginname, loginlevel;
 var homedirectory = "../";
 var $timeline;
 
@@ -578,7 +578,7 @@ function preview_result (item) {
         }
         else if (filetype=="evi") {
             document.querySelector("div#previewpanel").innerHTML =
-                '<iframe src="looma-evi-player.php"?fn=' + filename + '&fp=' + filepath +
+                '<iframe src="looma-play-edited-video.php"?fn=' + filename + '&fp=' + filepath +
                 'style="height:100%;width:100%;zoom:scale(0.9);-webkit-transform: scale(0.9);"> </iframe>';
         }
         else if (filetype=="history") {
@@ -721,7 +721,10 @@ function quit() {
 $(document).ready(function() {
     
     loginname = LOOMA.loggedIn();
-    if (loginname && ( loginname== 'skip')) $('.admin').show();
+    loginlevel = LOOMA.readStore('login-level');
+    
+    if (loginname && loginlevel === 'admin') $('.admin').show();
+
     $('.template-cmd').hide();
     
     // the Editor using this code must set 'currentcollection' to the mongo collection being edited

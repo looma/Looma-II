@@ -142,7 +142,7 @@ include ('includes/header.php');
             <span>Attach to:  </span>";
 
         echo "<span class='chapter-type'>" .
-            "<input class='media-input flt-chkbx source-changes' type='radio' checked form='changes' name='src' value='textbooks'>" .
+            "<input class='media-input flt-chkbx source-changes' type='radio'  form='changes' name='src' value='textbooks' checked>" .
             "<label class='filter-label' for=''>  Textbooks </label>" .
             "</span>";
 
@@ -157,13 +157,29 @@ include ('includes/header.php');
         /****** TEXT BOOKS  ************************************/
         /*******************************************************/
 
+        echo "<p>
+          <label class='drop-menu'>Language:  </label>
+          <input type = 'radio'
+                 form = 'changes'
+                 name = 'lang'
+                 value = 'en'
+                 checked  />
+          <label for = 'en'>English</label>
+          <input type = 'radio'
+                 form = 'changes'
+                 name = 'lang'
+                 value = 'np' />
+          <label for = 'np'>Nepali</label>
+                 </p>";
 
         echo "<div id='textbooks'>";
             /**************************************/
             /*********** TEXTBOOKS Grade Dropdown  **********/
             /**************************************/
             //echo "<div id='textbook-changes'>";
-            echo "<div id='grade-changes' >
+
+
+        echo "<div id='grade-changes' >
                 <label class='drop-menu'>Grade:</label>
                     <select id='grade-chng-menu' class='book-changes black-border'  form='changes' name='class'>
                        <option value='' selected>Select...</option>";
@@ -216,7 +232,9 @@ include ('includes/header.php');
             /*********** OTHER BOOK source Dropdown  **********/
             /**************************************/
             //echo "<div id='otherbook-src'>";
-            echo "<div id='otherbook-src' >
+
+
+        echo "<div id='otherbook-src' >
                 <label for='src-chng-menu' class='drop-menu'>Book source: </label>
                     <select id='src-chng-menu' class='book-changes black-border'  form='changes' name='book-source'>
                         <option value='' selected>Select...</option>";

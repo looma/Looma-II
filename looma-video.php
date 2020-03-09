@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Name: Skip, Aaron, Connor, Ryan
-Email: skip@stritter.com
+
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2016 07
 Revision: Looma Video Editor 1.0
@@ -22,9 +22,9 @@ they want to edit a video
 	<body>
 		<?php
             //Gets the filename, filepath, and the thumbnail location
-            $filename = $_REQUEST['fn'];
-            $filepath = $_REQUEST['fp'];
-            $displayname = $_REQUEST['dn'];
+            $filename = urldecode($_REQUEST['fn']);
+            $filepath = urldecode($_REQUEST['fp']);
+            $displayname = urldecode($_REQUEST['dn']);
             $thumbFile = $filepath . thumbnail($filename);
 	    ?>
 			<script>

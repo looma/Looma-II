@@ -50,7 +50,8 @@ function redirect_user($page)
      {
         // Delete the cookie. it was set with:
         //setcookie ('login', $_POST['id']);
-          setcookie ("login", "", time()-3600); //deletes the cookie
+          setcookie ("login", "", time()-3600);       //deletes the login name cookie
+          setcookie ("login-level", "", time()-3600); //deletes the login level cookie
 
           $name = $_COOKIE['login'];
    } else $name = "";
@@ -65,9 +66,12 @@ function redirect_user($page)
     // Print a  message:
      echo "<br><br><br><h1>Logged Out</h1>";
      echo "<p>You are now logged out" . (($name)? ', ' . $name : '') . "</p>";
-     echo "<script>   var timeout = 4;
+     echo "<script>   var timeout = 5;
         /*LOOMA.alert('You are now logged out', 3, true);*/
-        setTimeout(function(){   console.log('logged out'); window.location = window.history.back();}, 1000 * timeout);</script>";
+            
+            
+        setTimeout(function(){   console.log('logged out'); window.location.replace('looma-home.php');}, 1000 * timeout);</script>";
+
 ?>
 
     <button class="login"></button>

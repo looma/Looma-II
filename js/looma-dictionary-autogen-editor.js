@@ -24,7 +24,7 @@
 
 'use strict';
 
-var loginname;
+var loginname, loginlevel;
 
 /**
  * True if a pdf is being processed and other changes should be prevented, false for normal
@@ -1018,8 +1018,9 @@ function verbFormSelect(event) {
 function startup() {
     
     loginname = LOOMA.loggedIn();
+    loginlevel = LOOMA.readStore('login-level');
     
-    if (loginname === 'skip' || loginname === 'david') $('.admin').removeClass('admin').prop('disabled', false);
+    if (loginname && loginlevel === 'admin') $('.admin').removeClass('admin').prop('disabled', false);
     //if (loginname === 'skip' )                         $('.exec').removeClass('exec').prop('disabled', false);
     
     hideUploadDiv();

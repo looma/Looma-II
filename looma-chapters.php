@@ -1,20 +1,19 @@
 <!doctype html>
 <!--
 Name: Skip
-Email: skip@stritter.com
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 2015 10
+Date: 2015 10, MAR 2020
 Revision: Looma 2.0.0
 File: looma-chapters.php
-Description:  displays a list of chapters (en and np) and an activities button for each chapter
-for a textbook (class/subject) for Looma 2
+Description:  displays for a textbook (class/subject)
+    a list of chapters (en and np) and a lesson button and an activities button for each chapter if it has them
 -->
 
 <?php $page_title = 'Looma Chapters';
 include ('includes/header.php');
 include ('includes/mongo-connect.php');
-
 ?>
+    <link rel="stylesheet" href="css/looma-chapters.css">
 </head>
 
 <body>
@@ -30,79 +29,57 @@ function thumbnail ($fn) {
     else return "";
 } //end function THUMBNAIL
 
-
 $class = trim($_GET['class']);  //from MONGO - format is "class1", "class2", etc
 $grade = trim($_GET['grade']);  // display name of $class - format is "Grade 1", etc
 $subject = trim($_GET['subject']) ;
 $prefix = trim($_GET['prefix']) ;
 
-echo "<div id='main-container-horizontal' class='scroll'>";
-echo "<div  class='scroll'>";
+//show PAGE TITLE = "Chapters for Grade n Subject"
 if ($subject === "social studies") $caps = "Social Studies"; else $caps = ucfirst($subject);
-echo "<h3 class='title'>";
-echo keyword('Chapters for') . " ";
-echo keyword($grade) . " ";
-echo keyword($caps);
-echo "</h3>";
+    echo "<div id='header'><h1 class='title'>";
+    echo keyword('Chapters for') . " ";
+    echo keyword($grade) . " ";
+    echo keyword($caps);
+    echo "</h1></div>";
 
 //get a textbook record for this CLASS and SUBJECT
 $query = array('class' => $class, 'subject' => $subject, 'prefix' => $prefix);
-//returns only these fields of the textbook record
-$projection = array('_id' => 0,
-    'prefix' => 1,
-    'fn' => 1,
-    'fp' => 1,
-    'dn' => 1,
-    'nfn' => 1,
-    'ndn' => 1,
-);
+$tb = $textbooks_collection -> findOne($query);
 
-$tb = $textbooks_collection -> findOne($query, $projection);
+    $tb_dn = array_key_exists('dn', $tb) ? $tb['dn'] : null;		//dn is textbook displayname
+    $tb_fn = array_key_exists('fn', $tb) ? $tb['fn'] : null;		//fn is textbook filename
+    $tb_fp = array_key_exists('fp', $tb) ? $tb['fp'] : null;		//fp is textbook filepath
+    $tb_fp = "../content/" . $tb_fp;
+    $tb_nfn = array_key_exists('nfn', $tb) ? $tb['nfn'] : null;	//nfn is textbook native filename
+    $tb_ndn = array_key_exists('ndn', $tb) ? $tb['ndn'] : null;		//dn is textbook displayname
+    $prefix = array_key_exists('prefix', $tb) ? $tb['prefix'] : null; //prefix is the chapter-id starting characters, e.g. "2EN"
 
-//echo "result of DB query: <br>";
-//print_r($tb);
-//echo "<br><br>";
-
-$tb_dn = array_key_exists('dn', $tb) ? $tb['dn'] : null;		//dn is textbook displayname
-$tb_fn = array_key_exists('fn', $tb) ? $tb['fn'] : null;		//fn is textbook filename
-$tb_fp = array_key_exists('fp', $tb) ? $tb['fp'] : null;		//fp is textbook filepath
-$tb_fp = "../content/" . $tb_fp;
-$tb_nfn = array_key_exists('nfn', $tb) ? $tb['nfn'] : null;	//nfn is textbook native filename
-$tb_ndn = array_key_exists('ndn', $tb) ? $tb['ndn'] : null;		//dn is textbook displayname
-$prefix = array_key_exists('prefix', $tb) ? $tb['prefix'] : null; //prefix is the chapter-id starting characters, e.g. "2EN"
-
-echo "<br><br><table class='ch-table'>";
-echo "<tr>";
-
-if ($tb_fn != null)
-    echo "<th><button class='heading img' id='englishTitle' disabled>" .
+// show Heading for each column (en chapters, en lessons, en activities, np chapters, np lessons, np activities)
+echo "<div id='main-container-horizontal' class='scroll'>";
+if ($tb_fn != null) {
+    echo "<button class='en-chapter heading img' id='englishTitle' disabled>" .
         // str_replace("Class","Grade ",$tb_dn) .
-        $grade .
-        "<img src=" . $tb_fp . thumbnail($tb_fn) . "></button></th>";
-else
-    echo "<th></th>";
+        $grade . " " . $caps .
+        "<img src=" . $tb_fp . thumbnail($tb_fn) . "></button>";
+    echo "<button class='en-lesson heading img activities' disabled>"; echo "Lesson"; echo "</button>";
+    echo "<button class='en-activities heading img activities' disabled>";  echo "Activities"; echo "</button>";
+    }
+    else
+    echo "<div></div><div></div><div></div>";
 
-if ($tb_nfn != null) echo "<th><button class='heading img' id='nativeTitle' disabled> $tb_ndn
-                   <img src=" . $tb_fp . thumbnail($tb_nfn) . "></button></th>";
+    if ($tb_nfn != null) {
+        echo "<button class='np-chapter heading img' id='nativeTitle' disabled> $tb_ndn
+                       <img src=" . $tb_fp . thumbnail($tb_nfn) . "></button>";
+        echo "<button class='np-lesson heading img activities' disabled>"; echo "पाठ"; echo "</button>";
+        echo "<button class='np-activities heading img activities' disabled>"; echo "गतिविधिहरु"; echo "</button>";   }
+    else echo "<div></div><div></div><div></div>";
 
-else                echo "<th></th>";
-
-echo "<th><button class='heading img activities' disabled>"; keyword('Lesson'); echo "</button></th>";
-echo "<th><button class='heading img activities' disabled>"; keyword('Activities'); echo "</button></th>";
-
-echo "</tr>";
-
+// get all the CHAPTERS for this grade/subject
 $prefix_as_regex = "^" . $prefix . "\d"; //insert the PREFIX into a REGEX
 
 $query = array('_id' => array('$regex' => $prefix_as_regex));
 
-$projection = array('_id' => 1,
-    'pn' => 1,
-    'npn' => 1,
-    'dn' => 1,
-    'ndn' => 1,
-);
-$chapters = $chapters_collection -> find($query, $projection);
+$chapters = $chapters_collection -> find($query);
 $chapters->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mongo cursors
 // this sort is on '_id' which is the "ch_id" of the chapter
 // we must always maintain chapter IDs so that their SORT() order is the natural sort order
@@ -113,7 +90,6 @@ $chapters->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mong
 // that holds the MongoDB ObjectId for this chapter (for looking up the activities list when needed)
 
 foreach ($chapters as $ch) {
-    echo "<tr>";
 
     $ch_dn =  array_key_exists('dn', $ch) ? $ch['dn'] : $tb_dn;
     //$ch_dn is chapter displayname
@@ -126,94 +102,126 @@ foreach ($chapters as $ch) {
     $ch_id  = array_key_exists('_id', $ch) ? $ch['_id'] : null;
     //$ch_id is chapter ID string
 
-    // display chapter button for first [english] textbook, if any
-    if ($tb_fn && $ch_pn) { echo "<td><button class='chapter'
-                   data-fn='$tb_fn'
-                   data-fp='$tb_fp'
-                   data-ch='$ch_id'
-                   data-ft='pdf'
-                   data-zm='160'
-                           data-pg='$ch_pn'>
-                           $ch_dn
-                           </button></td>";
+////////// ENGLISH chapter ///////////
+// display chapter button for english textbook, if any
+    if ($tb_fn && $ch_pn) { echo "<button class='chapter en-chapter' data-lang='en' 
+                                      data-fn='$tb_fn' data-fp='$tb_fp' data-ch='$ch_id'  
+                                      data-ft='pdf' data-zm='160'  data-pg='$ch_pn'>
+                                           $ch_dn
+                                 </button>";
 
-    }
-    else {echo "<td><button class='chapter' style='visibility: hidden'></button></td>";}
-
-    // display chapter button for 2nd [native] textbook, if any
-    if ($tb_nfn && $ch_npn) { echo "<td><button class='chapter'
-                   data-fn='$tb_nfn'
-                   data-fp='$tb_fp'
-                   data-ft='pdf'
-                           data-pg='$ch_npn'
-                           data-ch='$ch_id'>
-                           $ch_ndn
-                           </button></td>";
-    }
-    else {echo "<td><button class='chapter' style='visibility: hidden'></button></td>";}
-
-
-    // display a button for the lesson plans for this chapter
+////////// ENGLISH lesson ///////////
+// display a button for the lesson plans for this chapter
     $query = array('ch_id' => $ch_id, 'ft' => 'lesson');
-    $projection = array('_id' => 0,
-        'mongoID' => 1,
-        'dn' => 1
-    );
 
-    //check in the database to see if there are any LESSON PLANS for this CHAPTER. if so, create a button
-    // NOTE: current code only finds the FIRST lesson for the chapter.
-    // expand in the future to allow multiple lessons per chapter
-    $lesson = $activities_collection -> findOne($query, $projection);
+        //check in the database to see if there are any LESSON PLANS for this CHAPTER. if so, create a button
+        // NOTE: current code only finds the FIRST lesson for the chapter.
+        // expand in the future to allow multiple lessons per chapter
+    $lesson = $activities_collection -> findOne($query);
 
     if ($lesson) {
-        echo "<td><button class='lesson'
-                           data-ch='$ch_id'
+        echo "<button class='lesson en-lesson'
+                      data-lang='en'
+                      data-ch='$ch_id'
+                      data-chdn='" .
+                    $lesson['dn'] .
+                   "' data-ft='lesson'
+                      data-id='" .
+                    $lesson['mongoID'] .
+                    "'>" . "Lesson";
+        echo "</button>";
+    }
+
+    else {echo "<button class='activity' style='visibility: hidden'></button>";}
+
+////////// ENGLISH activities ///////////
+    // finally, display a button for the activities of this chapter with data-activity=CHAPTER_ID key value
+    // first check whether there are any activities for this chapter and make the button invisible if not
+
+    $query = array('ch_id' => $ch_id);
+
+    //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create an activity button
+    $activities = $activities_collection -> findOne($query);
+    //check in the database to see if there are any dictionaryt words for this CHAPTER. if so, create an activity button
+    $words = $dictionary_collection -> findOne($query);
+
+    if ($activities || $words) {
+        echo "<button class='activities en-activities'
+                       data-lang='en'
+                   data-ch='$ch_id'
+                     data-chdn='$ch_dn'>" .
+                     "Activities";
+        //keyword('Activities');
+        echo "</button>";
+        }
+    else {echo "<button class='activity' style='visibility: hidden'></button>";}
+
+    } else {echo "<button class='chapter en-chapter' style='visibility: hidden'></button>";
+            echo "</button>";
+            echo "</button>";
+    }  //end of ENGLISH columns
+
+
+////////// NEPALI chapter ///////////
+    // display chapter button for 2nd [native] textbook, if any
+    if ($tb_nfn && $ch_npn) { echo "<button class='chapter np-chapter'
+                                    data-lang='np'
+                                    data-fn='$tb_nfn'
+                                    data-fp='$tb_fp'
+                                    data-ft='pdf'
+                                    data-pg='$ch_npn'
+                                    data-ch='$ch_id'>
+                                    $ch_ndn
+                                    </button>";
+
+
+////////// NEPALI lesson ///////////
+///     //check in the database to see if there are any LESSON PLANS for this CHAPTER. if so, create a button
+    // NOTE: current code only finds the FIRST lesson for the chapter.
+    // expand in the future to allow multiple lessons per chapter
+        $query = array('nch_id' => $ch_id, 'ft' => 'lesson');
+        $lesson = $activities_collection -> findOne($query);
+
+    if ($lesson) {
+        echo "<button class='lesson np-lesson'
+                          data-lang='np'
+                         data-ch='$ch_id'
                            data-chdn='" .
             $lesson['dn'] .
             "' data-ft='lesson'
                            data-id='" .
             $lesson['mongoID'] .
             "'>";
-        keyword('Lesson');
-        echo "</button></td>";
-    }
+        echo "पाठ";
+        echo "</button>";
+    }  // end LESSON NP
 
-    else {echo "<td><button class='activity' style='visibility: hidden'></button></td>";}
-
-
-
-
-    // finally, display a button for the activities of this chapter with data-activity=CHAPTER_ID key value
+    ////////// NEPALI activities ///////////
+    ///    // finally, display a button for the activities of this chapter with data-activity=CHAPTER_ID key value
     // first check whether there are any activities for this chapter and make the button invisible if not
 
-    /* change DEC 18: always show Activities button
+        $query = array('nch_id' => $ch_id);
 
-        //get the activities for this chapter
-        $query = array('ch_id' => $ch_id);
-        //returns only these fields of the activity record
-        $projection = array('_id' => 0,
-                        'ch_id' => 1,
-                        );
+        //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create an activity button
+        $activities = $activities_collection -> findOne($query);
+        //check in the database to see if there are any dictionaryt words for this CHAPTER. if so, create an activity button
+        $words = $dictionary_collection -> findOne($query);
 
-        //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create a button
-        $activities = $activities_collection -> findOne($query, $projection);
+        if ($activities || $words) {
+            echo "<button class='activities np-activities'
+                     data-lang='np'
+                     data-ch='$ch_id'
+                     data-chdn='$ch_dn'>";
+            echo "गतिविधिहरु";
+            echo "</button>";
 
-        if ($activities)
-
-        { */
-    echo "<td><button class='activities'
-             data-ch='$ch_id'
-             data-chdn='$ch_dn'>";
-    keyword('Activities');
-    echo "</button></td>";
-    /*
-
-    } else echo "<td></td>";
-
-    echo "</tr>";
-    */
+        }
+    }  else {echo "<button class='chapter np-chapter' style='visibility: hidden'></button>";
+            echo "</button>";
+            echo "</button>";
+        }   //end of NEPALI columns
 }
-echo "</table></div></div>";
+echo "</div>";
 ?>
 
 

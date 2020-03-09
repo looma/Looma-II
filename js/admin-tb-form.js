@@ -1,6 +1,6 @@
 /*
  * Name: Skip
-Email: skip@stritter.com
+
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 03
 Revision: Looma 2.0.0
@@ -75,7 +75,7 @@ function validateForm(e) {
 	    return false;
     
 	}
-    
+ 
 } // End of validateForm() function.
 
 function addErrorMessage(id, msg) {
@@ -123,14 +123,14 @@ function removeErrorMessage(id) {
 	    span.parentNode.removeChild(span);
 
 	} // End of IF.
-    
+ 
 } // End of removeErrorMessage() function.
 
 // Function called when the terms checkbox changes.
 // Function enables and disables the submit button.
 function toggleSubmit() {
 	'use strict';
-    
+ 
 	// Get a reference to the submit button:
 	var submit = $('submit');
 	
@@ -143,7 +143,7 @@ function toggleSubmit() {
 	
 } // End of toggleSubmit() function.
 
-$(document).ready (function() {		
+$(document).ready (function() {
 		
 	 //U.addEvent(U.$('tb-form'), 'submit', validateForm);
 		

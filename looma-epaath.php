@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Name: Skip
-Email: skip@stritter.com
+
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2019 03
 Revision: Looma 4.2

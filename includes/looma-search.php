@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Name: Bo, Skip
-Email: skip@stritter.com
+
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2018 03
 Revision: Looma 2.0.0
@@ -61,7 +61,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
                 /************* Search Bar *************/
                 /**************************************/  -->
             <div id='search-bar-div' class='media-filter'>
-                <input id='search-term' type='text' class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...') >&nbsp;
+                <input id='search-term' type='text' autofocus class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...') >&nbsp;
                 <button id='media-submit' class = 'filesearch' name='search' value='media' type='submit'>
 
                 </button>
@@ -207,8 +207,22 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
         echo "<button id='chapter-submit' class='chapter-filter filesearch black-border' name='search' value='chapter' type='submit'></button>";
         echo "<button class='chapter-filter clear-search' type='button'>Clear</button>";
-    echo "</div>";
+    echo "</div><br>";
 
+        echo "<p id='chapter-lang'>
+          <label class='drop-menu'>Language:  </label>
+          <input type = 'radio'
+                 name = 'language'
+                 id = 'en'
+                 value = 'en'
+                 checked = 'checked' />
+          <label for = 'en'>English</label>
+          <input type = 'radio'
+                 name = 'language'
+                 id = 'np'
+                 value = 'np' />
+          <label for = 'np'>Nepali</label>
+                 </p>";
     echo "</form></div>";
 
 ?>

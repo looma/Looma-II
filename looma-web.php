@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Author:
-Email: skip@stritter.com
+
 Filename: yyy.html
 Date: x/x/2015
 Description:

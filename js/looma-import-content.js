@@ -1,7 +1,7 @@
 /*
 Filename: looma-import-content.js
 Description: version 1 [skip, Fall 2016]
-Derived from looma-lesson-plan.js
+Derived from looma-edit-lesson.js
 Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
  */

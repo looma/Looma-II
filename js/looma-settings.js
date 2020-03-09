@@ -1,6 +1,6 @@
 /*
  * Name: Skip
-Email: skip@stritter.com
+
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 03
 Revision: Looma 2.0.0
@@ -11,7 +11,9 @@ Description:
 
 'use strict';
 
+/*
 function populateVoiceList() {
+ 
   if(typeof speechSynthesis === 'undefined') { return; }
 
   var voices = speechSynthesis.getVoices();
@@ -31,7 +33,7 @@ function populateVoiceList() {
     document.getElementById("synth-voices").appendChild(option);
   }
 }
-
+*/
 
 $(document).ready (function() {
     
@@ -70,22 +72,16 @@ $(document).ready (function() {
 
     if (!LOOMA.loggedIn())  //not logged in
     {   $('#login-status').text('You are not logged in');
-        $('.login').addClass('loggedIn').text('Login').click( function(){ window.location = "looma-login.php";});
+        $('.login').addClass('loggedIn').text('Login to use Teacher Tools').click( function(){ window.location = "looma-login.php";});
 
     }
     else //logged in
     {   var loginname = LOOMA.readStore('login', 'cookie');
+        var loginlevel = LOOMA.readStore('login-level', 'cookie');
         $('#login-status').text("You are logged in as '" + loginname + "'");
         $('.settings-control').css('display', 'inline');                       // show the teacher tools
-        if (loginname === 'skip'   ||
-            loginname === 'david'  ||
-            loginname === 'kabin'  ||
-            loginname === 'samarth'||
-            loginname === 'sharmila'||
-            loginname === 'tara'||
-            loginname === 'sashwot')
-            $('.admin-control').css('display', 'inline');;
-        if (loginname == 'skip') $('.exec-control').css('display', 'inline');;
+        if (loginlevel === 'admin' || loginlevel === 'exec') $('.admin-control').css('display', 'inline');;
+        if (loginname == 'skip' || loginlevel === 'exec')    $('.exec-control').css('display', 'inline');;
 
         $('.login').toggleClass('loggedIn').text('Logout').click
             ( function()

@@ -1,6 +1,6 @@
 /*
  * Name: Skip
- * Email: skip@stritter.com
+ *
  * Owner: VillageTech Solutions (villagetechsolutions.org)
  * Date: 2015 10
  * Revision: Looma 2.0.0
@@ -53,9 +53,9 @@ function lessonButtonClicked(){
     LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
     LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session'); //remember scroll position
     LOOMA.clearStore('lesson-plan-index','session');
-    //send GET request to looma-lesson-present.php with mongo_id value
+    //send GET request to looma-play-lesson.php with mongo_id value
     mongo_id = encodeURIComponent(mongo_id);
-    window.location = "looma-lesson-present.php?id=" + mongo_id;
+    window.location = "looma-play-lesson.php?id=" + mongo_id;
 };  //  end lessonButtonClicked()
 
 

@@ -1,0 +1,35 @@
+body {
+    display:grid;
+    grid-template-rows:    [top] 1fr [body] repeat(9, 1fr) [toolbar] 1fr [bottom];
+    grid-template-columns: [left] 1fr [right];
+}
+
+#header {
+    grid-row: 1 ;
+    grid-column: left/right;
+}
+
+#main-container-horizontal {
+    grid-row:2/toolbar;
+    position:relative;
+    text-align:center;
+    width:100%;
+    display:grid;
+    grid-template-columns: [left] repeat(2, 3fr 1fr 1fr) [right];
+}
+
+#main {
+    grid-column: left/right;
+}
+
+button {height:9vh;
+    max-height:9vh;
+    margin:10px 12px;
+    font-size: 3.2vh;}
+
+button.en-chapter {grid-column:1;}
+button.en-lesson {grid-column:2;font-size: 2.5vh;}
+button.en-activities {grid-column:3;font-size: 2.5vh;}
+button.np-chapter {grid-column:4;}
+button.np-lesson {grid-column:5;font-size: 2.5vh;}
+button.np-activities {grid-column:6;font-size: 2.5vh;}

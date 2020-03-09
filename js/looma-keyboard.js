@@ -373,6 +373,7 @@ function hideKeyboard() {
     $("#looma-keyboard-container").css({
         display: "none"
     });
+    $("#search-term").focus();
 }
 
 // Called whenever a compatible element is focused.

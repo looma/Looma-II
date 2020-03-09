@@ -1,6 +1,6 @@
  /*
  * Name: Skip
-Email: skip@stritter.com
+
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 03
 Revision: Looma 2.0.0
@@ -63,25 +63,31 @@ var LOOMA = (function() {
 
     
 playMedia : function(button) {
+    
+    var fn = encodeURIComponent(button.getAttribute('data-fn'));
+    var fp = encodeURIComponent(button.getAttribute('data-fp'));
+    var dn = encodeURIComponent(button.getAttribute('data-dn'));
+    var ndn = encodeURIComponent(button.getAttribute('data-ndn'));
+    
     switch (button.getAttribute("data-ft").toLowerCase()) {
         case "video":
         case "mp4":
         case "m4v":
         case "mov":
             window.location = 'looma-video.php?' +
-                 'fn=' + button.getAttribute('data-fn') +
-                '&fp=' + button.getAttribute('data-fp') +
-                '&dn=' + button.getAttribute('data-dn');
+                 'fn=' + fn +
+                '&fp=' + fp +
+                '&dn=' + dn;
             break;
 
         case "evi":
             //evi = edited video indicator
             //If you click on an edited video it sends the filename, location and the information
             //to looma-edited-video.php
-            window.location = 'looma-evi-player.php?fn=' + button.getAttribute('data-fn') +
-            '&fp=' + button.getAttribute('data-fp') +
+            window.location = 'looma-play-edited-video.php?fn=' + fn +
+            '&fp=' + fp +
             '&id=' + button.getAttribute('data-mongoid') +
-            '&dn=' + button.getAttribute('data-dn');
+            '&dn=' + dn;
             break;
 
         case "image":
@@ -89,9 +95,7 @@ playMedia : function(button) {
         case "jpeg":
         case "png":
         case "gif":
-            window.location = 'looma-image.php?fn=' + button.getAttribute(
-                    'data-fn') +
-                '&fp=' + button.getAttribute('data-fp');
+            window.location = 'looma-image.php?fn=' + fn + '&fp=' + fp;
             break;
 
         case "audio":
@@ -115,7 +119,7 @@ playMedia : function(button) {
 
         case "text":
             var id = encodeURIComponent(button.getAttribute('data-mongoId'));
-            window.location = 'looma-text.php?id=' + id;
+            window.location = 'looma-play-text.php?id=' + id;
             break;
     
         case "html":
@@ -153,7 +157,7 @@ playMedia : function(button) {
 
         case "lesson":
             LOOMA.clearStore('lesson-plan-index', 'session');
-            window.location = 'looma-lesson-present.php?id=' + button.getAttribute('data-mongoid');
+            window.location = 'looma-play-lesson.php?id=' + button.getAttribute('data-mongoid');
             break;
     
         case "game":
@@ -175,7 +179,7 @@ playMedia : function(button) {
 
              */
         case "slideshow":
-            window.location = 'looma-slideshow-present.php?id=' + button.getAttribute("data-mongoid");
+            window.location = 'looma-play-slideshow.php?id=' + button.getAttribute("data-mongoid");
             break;
     
         case "history":
@@ -206,7 +210,7 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                 function(result) {
                     var thumbfile;
                         //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
-                    var fp = (result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
+                    if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
 
                     var $newButton = $(
                                 '<button class="activity play img" ' +
@@ -529,13 +533,19 @@ loggedIn : function() {
 translate : function(language) {
     // based on the value of LANGUAGE, hide or show all KEYWORDs and TIPs
     if (language == 'native') {
-        $('.english-keyword, .english').hide();
-        $('.native-keyword,  .native').show();
+        
+        //.css( "color", "red" );
+        //$('.english-keyword, .english').hide();
+        //$('.native-keyword,  .native').show();
+        $('.english-keyword, .english').css('display','none');
+        $('.native-keyword,  .native').css('display','');
         $('.english-tip').removeClass('yes-show');
         $('.native-tip').addClass('yes-show');
     } else /*english*/ {
-        $('.english-keyword, .english').show();
-        $('.native-keyword,  .native').hide();
+        //$('.english-keyword, .english').show();
+        //$('.native-keyword,  .native').hide();
+        $('.english-keyword, .english').css('display','');
+        $('.native-keyword,  .native').css('display','none');
         $('.english-tip').addClass('yes-show');
         $('.native-tip').removeClass('yes-show');
     }

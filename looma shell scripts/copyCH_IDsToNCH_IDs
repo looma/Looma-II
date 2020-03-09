@@ -1,0 +1,36 @@
+// filename: copyCH_IDsToNCH_IDs
+// ONE TIME program to copy activities' CH_IDs to NCH_IDs
+//          [if NEPALI book matches chapters with ENGLISH book]
+//          this regex matches the textbooks whose EN and NP chapters dont match:
+//              /6M|7M|8M|S10|SS8|SS9|SS10|6H/
+// DO NOT run this again
+//
+//  run in MONGO SHELL with: load('copyCH_IDsToNCH_IDs')
+//
+var count = 0;
+var found;
+function npBookExists(id) {
+    //var x = id.match(/6M|7M|8M|S10|SS8|SS9|SS10|6H/);
+    //if (x) print(x);
+    return (!id.match(/6M|7M|8M|S10|SS8|SS9|SS10|6H/));
+    }
+
+var cursor = db.activities.find({'ch_id':{'$exists':true}});
+while (cursor.hasNext()) {
+    var doc = cursor.next();
+    count++;
+    found = false;
+    var ids = [];
+    doc['ch_id'].forEach(function(id){
+            if (id && npBookExists(id)) {ids.push(id); found = true;}
+        });
+        if (found) {
+            doc['nch_id'] = ids;
+            print(' existing ch_id ' + doc['ch_id'] + ' to new nch_id ', doc['nch_id']);
+        }
+        db.activities.update({_id:doc._id}, doc);
+    }
+print('');
+print(' **** PROCESSED ' + count + ' activities');
+print('');
+

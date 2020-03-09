@@ -205,7 +205,7 @@ then
 
         if [ -d "content" ]
         then
-            find /var/ww/html/content -exec touch {} +
+            find /var/www/html/content -exec touch {} +
             if [[ $1 = "dryrun" ]]
             then
                 rsync  -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
@@ -219,7 +219,7 @@ then
 
         if [ -d "maps2018" ]
         then
-           find /var/ww/html/maps2018 -exec touch {} +
+           find /var/www/html/maps2018 -exec touch {} +
            if [[ $1 = "dryrun" ]]
             then
                 rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
@@ -231,7 +231,7 @@ then
         fi
         if [ -d "ePaath" ]
         then
-            find /var/ww/html/ePaath -exec touch {} +
+            find /var/www/html/ePaath -exec touch {} +
             if [[ $1 = "dryrun" ]]
                 then
                     rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
@@ -390,7 +390,7 @@ then
        SECONDS=0
 
        if [[ $1 = "dryrun" ]]
-            find /var/ww/html/content -exec touch {} +
+            find /var/www/html/content -exec touch {} +
             then
                rsync -az  --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
                 result $?

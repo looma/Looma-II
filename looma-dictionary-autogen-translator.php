@@ -43,7 +43,7 @@ function translate($api_key,$text,$target,$source)
  */
 function translateToNepali($word){
 
-    $api_key = 'AIzaSyBnBTplI2nzdU0JmL25D88Zl7Fx1ib0CTA';  //skip@stritter.com API key
+    $api_key = 'AIzaSyBnBTplI2nzdU0JmL25D88Zl7Fx1ib0CTA';  // API key
     //$api_key = 'AIzaSyDl6vZfYbT9z8NumsSJSjdq77wIRqVHy7M';  //colton's API key
     $text = $word;
     $source = "en";

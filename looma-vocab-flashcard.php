@@ -20,7 +20,7 @@ Description:  for Looma 2
 
 <body >
     <div id="main-container-horizontal">
-        <h2 class="title"><?php keyword('Vocabulary Games') ?></h2>
+        <h1 class="title"><?php keyword('Vocabulary Games') ?></h1>
         <p class="clickToFlip"> <?php keyword("Click flashcard for definition");?> </p>
         <span class="credit">Created by Lily, Sasha, and Mahir</span>
         <div id="fullscreen">

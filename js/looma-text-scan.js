@@ -48,6 +48,6 @@ $(document).ready(function() {
     });
     
     $('#edit').click(function() {
-      if (sequence >= 0) window.open('looma-text-editor.php?dn=' + encodeURIComponent($(this).attr('data-dn')));
+      if (sequence >= 0) window.open('looma-edit-text.php?dn=' + encodeURIComponent($(this).attr('data-dn')));
     });
 });

@@ -2,7 +2,7 @@
 LOOMA javascript file
 Filename: looma-activity-editor-template.js
 Description: version 1 [skip, Fall 2016]
-Derived from looma-lesson-plan.js
+Derived from looma-edit-lesson.js
 Programmer name: SCU
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: version 1:spring 2016, version 2: Nov 16
@@ -96,7 +96,6 @@ window.onload = function () {
                         false);
                    });
 
-        //if (loginname && (loginname == 'kathy' || loginname == 'david' || loginname == 'vivian' || loginname== 'skip')) $('.admin').show();
 
 
 function renameActivity($activity) {

@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Author: Skip
-Email: skip@stritter.com
+
 Filename: yyy.html
 Date:Fall 2015
 Description: page with link to arithmetic and vocabulary games
@@ -55,7 +55,7 @@ Description: page with link to arithmetic and vocabulary games
 <body>
 	<div id="main-container-horizontal">
         <br>
-        <h2 class="title"> <?php keyword("Looma Games"); ?> </h2>
+        <h1 class="title"> <?php keyword("Looma Games"); ?> </h1>
 		<div class="center">
 			<br>
 

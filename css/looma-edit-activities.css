@@ -89,7 +89,7 @@ div#search-panel {
 }
 
 #textbooks, #otherbooks {
-    margin-left:5vw;
+   /* margin-left:5vw;*/
     width:95%;
 }
 

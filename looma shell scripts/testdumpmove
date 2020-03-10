@@ -1,0 +1,10 @@
+#!/bin/bash
+cd /Applications/AMPPS/www/Looma/mongo-dump  # cd to mongo dumps folder (on a MAC)
+if [ -d dump ]
+        then
+            echo "- moving old mongo dump to ~/Desktop/LoomaMongoDumps"
+            now=$(date +"%m_%d_%Y")
+            mv dump  ~/Desktop/LoomaMongoDumps/dump_$now
+        fi
+
+mongodump --db looma

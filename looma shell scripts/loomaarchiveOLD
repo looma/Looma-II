@@ -1,0 +1,98 @@
+#!/bin/bash
+#
+#  filename: loomaarchive
+#       author: skip
+#       date:   Aug 2019
+#
+#  used to update the 'archive' version of Looma on rsync.net, including new code, database & content
+#
+#   set up to run on a MAC [other computer types would require changes to this script]
+
+#RSYNC options used:
+#-a  "archive" equivalent to -rlptgoD
+#   -r  recursive
+#   -l  recreate symlink on the destination
+#   -p  preserve permissions
+#   -t  preserve modification time
+#   -g  preserve group
+#   -o  preserve owner
+#   -D  transfer devices and specials (NA for Looma)
+
+#-vv	very verbose
+#-z  	use compression
+#--dry-run
+#--delete 	delete files on destination that are not on source
+#--perms (=== -p)
+#--update
+#--include '.ssh'
+#--exclude '.[!.]*'
+#
+result () {
+    if [[ $1 -ne 0 ]]
+    then
+        echo "****************************************************************"
+        echo "ERROR: previous operation returned $1"
+    else
+        echo "****************************************************************"
+        echo "operation successful"
+    fi
+}
+echo "************************************"
+echo " - - setting database version to today's date"
+echo "************************************"
+mongo looma < "/Applications/AMPPS/www/Looma/looma shell scripts/loomaMongoSetDate"
+echo "************************************"
+echo "moving previous mongodump 'dump' to '~/Desktop/LoomaMongoDumps/'"
+echo "creating new mongodump 'dump'"
+echo "************************************"
+echo
+
+cd /Applications/AMPPS/www/Looma/mongo-dump  # cd to mongo dumps folder (on a MAC)
+if [ -d dump ]
+        then
+            echo "- moving old mongo dump to ~/Desktop/LoomaMongoDumps/"
+            now=$(date +"%m_%d_%Y")
+            mv dump  ~/Desktop/LoomaMongoDumps/dump_$now
+        fi
+
+mongodump --db looma
+
+echo "************************************"
+echo "archiving Looma (code) to rsync.net"
+echo "************************************"
+echo
+cd   /Applications/AMPPS/www/Looma		# cd to Looma/ (on a MAC)
+
+RW="58189@usw-s008.rsync.net"
+
+SECONDS=0
+
+# sync code to rsync.net  [excluding "." files like .git/]
+if [[ $1 = "dryrun" ]]
+then
+    rsync -avvz  --dry-run --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+else
+    rsync -avvz            --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+fi
+result $?
+echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+
+echo "************************************"
+echo "archiving Looma (content) to rsync.net"
+echo "************************************"
+echo
+cd /Applications/AMPPS/www/content		        # cd to content/ (on a MAC)
+SECONDS=0
+
+if [[ $1 = "dryrun" ]]
+then
+    rsync -avvz  --dry-run --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+else
+    rsync -avvz            --delete --perms --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+fi
+result $?
+echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+
+echo "*********************************************"
+echo " - - DONE updating Looma archive on rsync.net"
+echo "*********************************************"

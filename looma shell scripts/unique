@@ -1,0 +1,14 @@
+// ONE TIME program to 
+//
+//
+//  run in bash SHELL with: mongo looma < unique > uniquewords
+//
+load('/Applications/AMPPS/www/Looma/js/jquery.min.js'); //DOESNT WORK
+
+//repeat for 'text_files' collection
+print('');
+var cursor = db.text_files.find();
+//while (cursor.hasNext()) {
+    var doc = cursor.next();
+    print($(cursor.data).text() + '\n');
+//    }

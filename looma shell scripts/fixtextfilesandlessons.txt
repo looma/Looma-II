@@ -1,0 +1,9 @@
+db.lessons.find({dn:/&amp;/}).forEach(function(e,i) {
+    e.dn=e.dn.replace("&amp;","&");
+    db.lessons.save(e);
+});
+
+db.text_files.find({dn:/&amp;/}).forEach(function(e,i) {
+    e.dn=e.dn.replace("&amp;","&");
+    db.text_files.save(e);
+});

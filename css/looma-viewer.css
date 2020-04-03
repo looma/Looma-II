@@ -10,21 +10,9 @@
 
 body {
   height: 100%;
-  /* delete viewer.css background-color. use current looma-theme color instead*/
+  /* delete looma-PDFjs-viewer.css background-color. use current looma-theme color instead*/
   background-color: transparent;
   background-image: none;
-}
-
-button#fullscreen-control {
-    display:inline-block;
-}
-
-button.speak {
-    display:inline-block;
-}
-
-button.lookup {
-    display:inline-block;
 }
 
 #sidebarContainer {
@@ -416,4 +404,50 @@ background: -webkit-linear-gradient(left, #ffffff, #dfdfdf, #cecece);
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     border-radius: 35px;
+}
+
+/* ********   LOOMA    ******** */
+button.looma-control-button {
+    position: fixed;
+    right:5vw;
+    display:none;
+    opacity: 0.4;
+    z-index: 1000;
+    height: 10vh;
+    width:  10vh;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+button#fullscreen-control {
+    bottom:11vh;
+    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    background-image: url("../images/fullscreen2.png");
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0.7);  /*transparent light gray*/
+}
+
+button.speak {
+    bottom:22vh;
+    background-image: url("../images/speech1.png");
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
+button.lookup {
+    bottom:33vh;
+    background-image: url("../images/dictionary.png");
+    background-size: 75% 75%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}
+
+button.speak {
+    display:inline-block;
+}
+
+button.lookup {
+    display:inline-block;
 }

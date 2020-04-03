@@ -1,18 +1,35 @@
-// mongo terminal program "importCH_IDs;
+// mongo terminal program "importCH_IDsForEpaath;
 //      input from a CSV file
 //          each line of which is a DN, FN, followed by a list of CH_IDs
 //          inserts all the ch_ids into the activities.ch_ids array of any document(s) corresponding to the DN + FN pair
 //
 //  make sure there is a file 'ch_idsToImport.csv' in the current directory
 //  start MONGO in LOOMA db with: 'mongo looma'
-//  run in MONGO SHELL with: load('importCH_IDs')
+//  run in MONGO SHELL with: load('importCH_IDsForEpaath')
 //
 //"use strict";
 
+
+/////////////////////////
+//  verification function that check validity of incoming ch_id
+////////////////////////
+
+function legalCH_ID(ch,dn) {
+    var char = ch.replace(/\s/g,'');
+    if (char && char.length>0) {
+        var legal = db.chapters.find({"_id": char});
+        if (legal.length() === 0 && char) {
+            print("************ illegal ch_id:     " + char + " for " + dn);   // + '     for activity ' + act.dn + ' (type: ' + act.ft + ')');
+            illegalcount++;
+            return false;
+        } else return true;
+    }
+}
 var requestcount = 0;
 var changecount = 0;
+var illegalcount = 0;
 
-var input = 'ch_idsToImport4.txt';  // EP
+var input = 'ch_idsToImportforEpaath.txt';  // EP
 print ('Importing CH_IDs from ' + input);
 var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
 
@@ -40,13 +57,17 @@ docs.forEach( function(doc) {
             var oldCH_ID;
             if (Array.isArray(activity['ch_id'])) oldCH_ID = activity['ch_id']; else oldCH_ID = [activity['ch_id']];
             activity['ch_id'] = [];
-            oldCH_ID.forEach (function(x){ if(x && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
-            fields.forEach   (function(x){ if(x && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
-            //activity['ch_id'] = Array.from(ch_ids);
             
+            // next line for when we want to retain exisitng ch_ids, rather that overwriting
+            // oldCH_ID.forEach (function(x){ if(x && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
+    
+            fields.forEach   (function(x){ if(x && legalCH_ID(x,activity['dn']) && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
+    
+            if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
+    
             db.activities.update({_id: activity._id}, activity);
             
-            print(++changecount + ' - - CHANGED CH_IDs ' + displayname + ' [' + oldCH_ID.toString() + '] TO ' + activity['ch_id'].toString());
+            //print(++changecount + ' - - CHANGED CH_IDs ' + displayname + ' [' + oldCH_ID.toString() + '] TO ' + activity['ch_id'].toString());
         }
     } else print('*******    BAD INPUT LINE: ' + doc);
 });  // end foreach doc

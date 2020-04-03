@@ -33,3 +33,14 @@ button.en-activities {grid-column:3;font-size: 2.5vh;}
 button.np-chapter {grid-column:4;}
 button.np-lesson {grid-column:5;font-size: 2.5vh;}
 button.np-activities {grid-column:6;font-size: 2.5vh;}
+
+button.heading {
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1958cc), color-stop(100%,#1c62e3));
+    color: yellow;
+}
+
+button.section {
+    /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4981e9), color-stop(100%,#6091eb));*/
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3371e6), color-stop(100%,#77a1ee));
+    color: yellow;
+}

@@ -4,15 +4,15 @@ Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 6..12, 2016 07
 Revision: Looma 2.2.4
 
-filename: looma-viewer.js
-Description: Looma specific mods to pdf.js ["viewer.js"] for Looma
+filename: looma-looma-PDFjs-viewer.js
+Description: Looma specific mods to pdf.js ["looma-PDFjs-viewer.js"] for Looma
  */
 
 'use strict';/*********************
 * Known bugs:
-* - changes to DEFAULT_PREFERENCES in viewer-looma.js not affecting
+* - changes to DEFAULT_PREFERENCES in looma-PDFjs-viewer-modsXXX.js not affecting
 *   the viewer behavior, because the components that the preferences
-*   influence have already loaded by the time viewer-looma.js is run
+*   influence have already loaded by the time looma-PDFjs-viewer-modsXXX.js is run
 * - canvases in outline view sometimes don't render properly and
 *   only display a blank page
 * - pdf loads more slowly
@@ -142,7 +142,7 @@ function showCanvas(pg, doc, canvas, width, height) {
   // Initial/first page rendering
   renderCanvas(pageNum, canvas, width, height);
   });
-};
+}
 /********* end canvas rendering code **********/
 
 
@@ -261,10 +261,40 @@ window.onload = function() {
   scale.remove(9);
   scale.remove(8);
   scale.remove(6);
+  
+  
+/* ************   LOOMA   ********** */
+    //attach LOOMA.speak() to the '.speak' button
+//NOTE: this code is different from other pages' speak buttons because looma-pdf.php displays the PDF in an <iframe>
+// turn OFF the other CLICK handler, add a new CLICK handler that gets the selection from the iframe
+    $('button.speak').off('click').click(function(){
+        var viewerWindow = document.getElementById('iframe').contentWindow;
+        var word = viewerWindow.getSelection().toString();
+        //console.log ('In PDF viewer - selected text to speak: ', word);
+        
+        // speak the definition if a lookup popup is showing
+        var $def = $('#definition');
+        if ($def) word += $def.text();
+        
+        LOOMA.speak(word);
+    });
+    
+    //attach LOOMA.lookup() to the '.lookup' button
+//NOTE: this code is different from other pages' speak buttons because looma-pdf.php displays the PDF in an <iframe>
+// turn OFF the other CLICK handler, add a new CLICK handler that gets the selection from the iframe
+    $('button.lookup').off('click').click(function(){
+        var viewerWindow = document.getElementById('iframe').contentWindow;
+        var word = viewerWindow.getSelection().toString();
+        console.log ('In PDF viewer - selected text to lookup: "', word, '"');
+        LOOMA.popupDefinition(word, 15);
+    });
+    /* ************   LOOMA   ********** */
+    
+    
 };
 
 ////////////////////////////////////////////////////
-var DEFAULT_SCALE = 'page-width';  //Looma change - override setting in viewer.js
+var DEFAULT_SCALE = 'page-width';  //Looma change - override setting in looma-PDFjs-viewer.js
 ////////////////////////////////////////////////////
 
 // makes sure pdf loads to correct page listed in url
@@ -280,7 +310,7 @@ var loadCorrectPage =  function (e) {
     //
 	pageNumber.value =hash.substring(hash.lastIndexOf("page=")+5, hash.lastIndexOf("#"));
 
-	// triggers event to make viewer.js read the value of pageNumber and navigate to the correct page
+	// triggers event to make looma-PDFjs-viewer.js read the value of pageNumber and navigate to the correct page
 	// in other words, it simulates the user submitting the page number
 	pageNumber.dispatchEvent(new Event('change'));
 };

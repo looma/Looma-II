@@ -29,8 +29,9 @@ function submitChanges (event) {  //check the form entries and submit to backend
     else if ($('#innerResultsDiv .filter-checkbox:checked').length > 1 && $('#dn-change').val())
         errors = 'Can\'t change display name for more than 1 activity at a time.<br>';
 
-    else if (textbook && $('#grade-chng-menu').val() && $('#subject-chng-menu').val() && !$('#chapter-chng-menu').val()
-         || !textbook && !$('#book-chapter-menu').val())
+    else if ((textbook && (($('#grade-chng-menu').val() || $('#subject-chng-menu').val() || $('#chapter-chng-menu').val()) &&
+                           (!$('#grade-chng-menu').val() || !$('#subject-chng-menu').val() || !$('#chapter-chng-menu').val())) ||
+            !textbook && !$('#book-chapter-menu').val()))
         errors = 'Must specify a specific chapter to set.<br>';
     
     
@@ -47,15 +48,13 @@ function submitChanges (event) {  //check the form entries and submit to backend
         len = $('.changes-activities').length;
         for (var i=0 ; i< len && i < 10; i++) {
             $($('.changes-activities')[i]).val(null);
-        };
-        
+        }
         len = $checked.length;
         for (var i=0 ; i< len && i < 10; i++) {
             var val = $($checked[i]).parent().data('mongo')['_id']['$id'];
             $($('.changes-activities')[i]).val(val);
-        };
-
-            LOOMA.confirm('Do you really want to modify ' + str,
+        }
+        LOOMA.confirm('Do you really want to modify ' + str,
                     function() {  //NOTE: 'cmd' is pre-set by the PHP to 'editActivity'
                         $.post("looma-database-utilities.php",
                             $("#changes").serialize(),   //NOTE: sends cmd=editActivity, and collection=activities to database-utilities.php
@@ -68,8 +67,7 @@ function submitChanges (event) {  //check the form entries and submit to backend
                     function(){console.log('Edit Activity submit canceled by user');}
                     );
     }
-};  //  end submitChanges()
-
+}  //  end submitChanges()
 function clearResults() {
     //$("#innerResultsMenu").empty();
     $("#innerResultsDiv" ).empty();
@@ -79,7 +77,13 @@ function clearResults() {
     
 } //end clearResults()
 
-
+function clearSettings() {  // clears all the settings. used after a new SEARCH
+    $('#dn-clear').click();
+    $('#keyword-clear').click();
+    $('#source-clear').click();
+    $('#textbook-clear').click();
+    $('#otherbook-clear').click();
+} // end clearSettings()
 //////////////////////////////////
 ///////  displayResults    ///////
 //////////////////////////////////
@@ -91,10 +95,10 @@ function displayResults(results) {
     for (var i=0; i < results['list'].length; i++) {
         if (results['list'][i]['ft'] == 'chapter') result_array['chapters'].push(results['list'][i]);
         else                                       result_array['activities'].push(results['list'][i]);
-    };
-    
+    }
     $('.hint').hide();
     $('#innerResultsDiv').empty();
+    clearSettings();
     $('#details').hide();
     displaySearchResults(result_array);
     
@@ -107,9 +111,7 @@ function displayResults(results) {
     );
 
 //
-}; //end displayresults()
-
-
+} //end displayresults()
 function showInfo (activity) {
     
     $('#details').html(   '<p>dn: ' + $.data(activity[0]).mongo.dn + '</p>'
@@ -126,8 +128,7 @@ function showInfo (activity) {
                         + '<button class="popup-button" id="dismiss-popup"><b>X</b></button>'
         ).show();
     $('#dismiss-popup').click(function() {$('#details').hide();});
-};
-
+}
 /////////////////////////////////////////////////////////////
 /////////////////  FILL IN SEARCH RESULTS PANE //////////////
 /////////////////////////////////////////////////////////////
@@ -184,20 +185,18 @@ function displaySearchResults (filterdata_object) {
         }
         else {
             collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (" + chaptersarraylength + " Results)</a>";
-        };
+        }
         actResultDiv.appendChild(collectionTitle);
         
         for(i=0; i<filterdata_object.chapters.length; i++) {
             rElement = createActivityDiv(filterdata_object.chapters[i]);
             
             actResultDiv.appendChild(rElement);
-        };
-    };
-
+        }
+    }
 // end Print Chapters Array
 
-}; //end displaySearchResults()
-
+} //end displaySearchResults()
 function thumbnail (item) {
     
     //builds a filepath/filename for the thumbnail of this "item" based on type
@@ -220,13 +219,11 @@ function thumbnail (item) {
     else imgsrc = LOOMA.thumbnail(filename, filepath, filetype);
     
     return imgsrc;
-}; // end thumbnail()
-
+} // end thumbnail()
 function extractItemId(item) {
     var ch_id = (item['ft'] == 'chapter')? item['_id'] : item['ch_id'];
     return LOOMA.parseCH_ID(ch_id);
-    };
-    
+}
 ////////////////////////////////////////
 ///////  createActivityDiv  //////////
 ////////////////////////////////////////
@@ -304,8 +301,7 @@ function createActivityDiv (activity) {
                 class : "result_ID",
                 html : "[" + item.ch_id + "]"
             }).appendTo(textdiv);
-        };
-        
+        }
         // INFO button for each activity - popups detailed info for the activity
         var $info = $('<button class="info">');
         $info.appendTo(activityDiv);
@@ -316,9 +312,7 @@ function createActivityDiv (activity) {
  
         
         return activityDiv;
-    }; //end innerActivityDiv()
-    
-    
+    } //end innerActivityDiv()
     // var idExtractArray = extractItemId(activity);
     
     var div = document.createElement("div");
@@ -328,8 +322,7 @@ function createActivityDiv (activity) {
     $(newDiv).appendTo(div);
     
     return div;
-};  // end createActivityDiv()
-
+}  // end createActivityDiv()
 $(document).ready(function() {
     
     loginname = LOOMA.loggedIn();
@@ -381,12 +374,12 @@ $(document).ready(function() {
     $('#source-clear').click(   function(e) {e.preventDefault(); $('.source-changes').prop('checked', false); });
     $('#textbook-clear').click( function(e) {e.preventDefault(); $('.chapter-changes').val(""); });
     $('#otherbook-clear').click( function(e) {e.preventDefault(); $('.book-changes').val(""); });
-    
+
     $('#otherbooks').hide();
     
     $('input[type=radio][name=src]').change(function() {
-        if (this.value == 'other') {textbook = true;  $('#textbooks').hide(); $('#textbook-clear').trigger('click');  $('#otherbooks').show();}
-        else                       {textbook = false; $('#textbooks').show(); $('#otherbook-clear').trigger('click'); $('#otherbooks').hide();}
+        if (this.value == 'other') {textbook = false;  $('#textbooks').hide(); $('#textbook-clear').trigger('click');  $('#otherbooks').show();}
+        else                       {textbook = true; $('#textbooks').show(); $('#otherbook-clear').trigger('click'); $('#otherbooks').hide();}
     });
     
     $('#submit-changes').click( submitChanges );
@@ -394,7 +387,7 @@ $(document).ready(function() {
     $('#dismiss').off('click').click( function() {
         LOOMA.confirm('Leave Activity Editor Page?',
                         function() {window.history.back();},
-                        function() {return;});
+                        function() {});
     });
     
     window.onbeforeunload = function(event) {

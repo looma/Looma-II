@@ -10,8 +10,8 @@ Author: modified for Looma by skip & shannon
 
 		***********************************************
 		*
-		* generally the LOOMA modifications are done in viewer.css and looma-viewer.css, not here
-		* in this file, the only modification is to include looma-viewer.css and looma-viewer.js
+		* generally the LOOMA modifications are done in looma-PDFjs-viewer.css and looma-looma-PDFjs-viewer.css, not here
+		* in this file, the only modification is to include looma-looma-PDFjs-viewer.css and looma-looma-PDFjs-viewer.js
 		* future improvements:
 		* 	- remove L10n and other libraries [compatibility.js?]
 		*
@@ -45,16 +45,20 @@ http://sourceforge.net/adobe/cmap/wiki/License/
     <meta name="google" content="notranslate">
     <title>PDF.js viewer</title>
 
-    <link rel="stylesheet" href="css/viewer.css"/>          <!--CSS from pdf.js project -->
+    <link rel="stylesheet" href="css/looma-PDFjs-viewer.css"/>          <!--CSS from pdf.js project -->
     
     
-    <!-- ********************LOOMA modification  ********************** -->
-    <link rel="stylesheet" href="css/looma-viewer.css"/>    <!--CSS containing Looma modifications -->
+      <!--   *****************  LOOMA  *******************  -->
+      <!-- ********************LOOMA modification  ********************** -->
+      <!--<link rel="stylesheet" href="css/looma.css"/>    CSS containing Looma modifications -->
+      <link rel="stylesheet" href="css/looma-viewer.css"/>    <!--CSS containing Looma modifications -->
+      <!--   *****************  LOOMA  *******************  -->
 
 	<!-- might not need 'compatibility.js'  ??? -->
     <script src="js/compatibility.js"></script>
-
-    <!-- NOTE: looma uses a reduced size locale.properties, containing only US localization -->
+    
+      <!--   *****************  LOOMA  *******************  -->
+      <!-- NOTE: looma uses a reduced size locale.properties, containing only US localization -->
     <link rel="resource" type="application/l10n" href="locale/locale.properties"/>
     <script src="js/l10n.js"></script>
     <script src="js/pdf.js"></script>
@@ -62,9 +66,14 @@ http://sourceforge.net/adobe/cmap/wiki/License/
     <!-- <script src="js/debugger.js"></script> -->
     <script src="js/viewer.js"></script>
 
-    
-    <!-- looma-viewer.js is SHANNON's code. it overwrites some viewer.js functions, and hides some toobar buttons -->
-    <script src="js/looma-viewer.js"></script>
+    <!--   *****************  LOOMA  *******************  -->
+    <!-- looma-looma-PDFjs-viewer.js is SHANNON's code. it overwrites some looma-PDFjs-viewer.js functions, and hides some toobar buttons -->
+      <script src="js/jquery.min.js">      </script>      <!-- jQuery -->
+      <script src="js/looma-utilities.js"> </script>      <!-- Looma utility functions -->
+      <script src="js/looma.js">           </script>      <!-- Looma common page functions -->
+      <script src="js/looma-screenfull.js"></script>      <!-- implements FULLSCREEN mode  -->
+      <script src="js/looma-viewer.js"></script>
+      <!--   *****************  LOOMA  *******************  -->
 
     <!-- <script src="annotator/jquery.js"></script>  -->
     <!-- <script src="annotator/annotator.min.js"></script> -->
@@ -296,9 +305,16 @@ http://sourceforge.net/adobe/cmap/wiki/License/
           <menuitem id="contextPageRotateCcw" label="Rotate Counter-Clockwise"
                     data-l10n-id="page_rotate_ccw"></menuitem>
         </menu>
-
-        <div id="viewerContainer" tabindex="0">
-          <div id="viewer" class="pdfViewer"></div>
+    
+          <!--   *****************  LOOMA  *******************  -->
+          <div id="fullscreen">
+              <button id="fullscreen-control" class="looma-control-button"></button>
+              <button class="lookup looma-control-button"></button>
+              <button class="speak looma-control-button"></button>
+              <!--   *****************  LOOMA  *******************  -->
+              <div id="viewerContainer" tabindex="0">
+                <div id="viewer" class="pdfViewer"></div>
+           </div>
         </div>
 
         <div id="errorWrapper" hidden='true'>

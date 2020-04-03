@@ -1737,7 +1737,7 @@ PDFJS.verbosity = (PDFJS.verbosity === undefined ?
                    PDFJS.VERBOSITY_LEVELS.warnings : PDFJS.verbosity);
 
 /**
- * The maximum supported canvas size in total pixels e.g. width * height. 
+ * The maximum supported canvas size in total pixels e.g. width * height.
  * The default value is 4096 * 4096. Use -1 for no limit.
  * @var {number}
  */
@@ -6330,7 +6330,7 @@ var FontFaceObject = (function FontFaceObjectClosure() {
       for (var i in data) {
         this[i] = data[i];
       }
-      return;
+      
     }
   }
   FontFaceObject.prototype = {

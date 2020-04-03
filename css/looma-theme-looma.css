@@ -32,7 +32,7 @@ button:hover {
 
 button.active {
 	background: none;
-	background-color: #0000FF;
+	background-color: #14449f;
 	color:yellow;
 }
 	/* COLORS:

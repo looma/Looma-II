@@ -92,8 +92,8 @@ foreach ($chapters as $ch) {
                    data-fn='$ch_fn'
                    data-fp='$ch_fp'
                    data-ch='$ch_id'
-                   data-ft='$ch_ft'
-                   data-zoom='160'>
+                   data-ft='chapter'
+                   data-zoom='2.3'>
                        $ch_dn
                    </button></td>";
 
@@ -106,8 +106,8 @@ foreach ($chapters as $ch) {
                    data-fn='$ch_nfn'
                    data-fp='$ch_nfp'
                    data-ch='$ch_id'
-                   data-ft='$ch_ft'
-                   data-zoom='160'>
+                   data-ft='chapter'
+                   data-zoom='2.3'>
                        $ch_ndn
                    </button></td>";
     }

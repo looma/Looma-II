@@ -108,13 +108,23 @@ playMedia : function(button) {
             break;
 
         case "pdf":      //PDF
-        case "chapter":  //CHAPTER
         case "document":  //DOCUMENT (some PDFs)
+            /*
             window.location = 'looma-pdf.php?' +
                               'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
                               '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
                               '&zoom=' + button.getAttribute('data-zoom') +
+                              '&len=' + button.getAttribute('data-len') +
                               '&pg=' + button.getAttribute('data-pg');
+            break;
+    */
+        case "chapter":  //CHAPTER
+            window.location = 'looma-play-pdf.php?' +
+                              'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
+                              '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
+                              '&zoom=' + button.getAttribute('data-zoom') +
+                              '&len=' + button.getAttribute('data-len') +
+                              '&page=' + button.getAttribute('data-page');
             break;
 
         case "text":
@@ -273,6 +283,7 @@ makeChapterButton: function (id, appendToDiv) {
                 var fn = subj + "-" + grade;
                 var fp = LOOMA.filepath('textbook') + "Class" + grade + "/" + subj + "/";
                 var pn = (result['pn']) ? result['pn'] : result['npn'];
+                var len = (result['len']) ? result['len'] : result['nlen'];
                 
                 var $newButton = $(
                     '<button class="chapter play img" ' +
@@ -280,7 +291,9 @@ makeChapterButton: function (id, appendToDiv) {
                     'data-fp="' + fp + '" ' +
                     'data-ft="chapter" ' +
                     'data-zoom="100" ' +
-                    'data-pg="' + pn + '" >'
+                    'data-page"' + pn + '" ' +
+                    'data-len"'  + len + '" ' +
+                    'data-pg="'  + pn + '" >'
                 );
                 
                 var thumbEnd = (result['pn']) ? "_thumb.jpg" : "-Nepali_thumb.jpg";
@@ -538,7 +551,7 @@ translate : function(language) {
         //$('.english-keyword, .english').hide();
         //$('.native-keyword,  .native').show();
         $('.english-keyword, .english').css('display','none');
-        $('.native-keyword,  .native').css('display','');
+        $('.native-keyword,  .native').css('display','inline-block');
         $('.english-tip').removeClass('yes-show');
         $('.native-tip').addClass('yes-show');
     } else /*english*/ {
@@ -566,7 +579,7 @@ translate : function(language) {
     
         // rewrite to generate the spans once, then set hidden on the correct span
         if (language == "english") {
-            return "<span class='english-keyword'>" + english +
+            return "<span class='english-keyword style='display:inline-block''>" + english +
                 "<span class='xlat'>" + native + "</span>" + "</span>" +
                 "<span class='native-keyword' style='display:none'>" + native +
                 "<span class='xlat'>" + english + "</span>" +
@@ -574,7 +587,7 @@ translate : function(language) {
         } else
             return "<span class='english-keyword' style='display:none'>" + english +
                 "<span class='xlat'>" + native + "</span>" + "</span>" +
-                "<span class='native-keyword'>" + native +
+                "<span class='native-keyword' style='display:inline-block'>" + native +
                 "<span class='xlat'>" + english + "</span>" +
                 "</span>";
     }, //end translatableSpan()
@@ -685,25 +698,23 @@ define : function(word, succeed, fail) {
     LOOMA.lookup(word, found, notfound);
     
     function found(def) {
-        console.log(def['en'] + " DEFINED")
+        console.log(def['en'] + " DEFINED");
         // succeed("<div>" + def['en'] + ": " + def['def'] + "</div>")
         if (def.rw) {
             function rwfound(rwdef) {
                 succeed(LOOMA.defHTML(def, rwdef));
-            };
+            }
             function rwnotfound() {
                 succeed(LOOMA.defHTML(def));
-            };
+            }
             LOOMA.lookup(def.rw, rwfound, rwnotfound);
         } else {
             succeed(LOOMA.defHTML(def));
         }
-    };
-    
+    }
     function notfound() {
         fail();
-    };
-    
+    }
 }, //end LOOMA.define()
 
 // function DEFINE looks up the word and returns HTML containing
@@ -725,21 +736,19 @@ sienna_define : function(word, succeed, fail) {
                     succeed(definition['def']);
 
                 }
-            };
+            }
             function rwnotfound() {
                 succeed(definition['def']);
-            };
+            }
             LOOMA.lookup(definition.rw, rwfound, rwnotfound);
         } else {
             // succeed(LOOMA.defHTML(def));
             succeed(definition['def']);
         }
-    };
-    
+    }
     function notfound() {
         fail();
-    };
-    
+    }
 }, //end LOOMA.define()
 
 
@@ -752,11 +761,10 @@ popupDefinition : function (word, time) {
           var $popup =  $('<div id="popup"/>');
           $popup.append(html);
           LOOMA.alert($popup.html(), time, true);
-          }; //end show()
-
-      function fail() {};
-
-      LOOMA.define(word, show, fail);
+      } //end show()
+    function fail() {
+    }
+    LOOMA.define(word, show, fail);
 
     },   //end popupDefinition()
 
@@ -861,9 +869,8 @@ ch_id   :  function (grade, subject, unit, chapter) {
             if (unit >= 1 && unit <= 9)       ch_id += '0' + unit + '.';
             else if (unit <= 99)              ch_id += unit + '.';
             else return "";
-        };
-
-        if (chapter >= 1 && chapter <= 9)     ch_id += '0' + chapter;
+        }
+    if (chapter >= 1 && chapter <= 9)     ch_id += '0' + chapter;
         else if (chapter <= 99)               ch_id += chapter;
         else return "";
 
@@ -910,9 +917,9 @@ ch_id   :  function (grade, subject, unit, chapter) {
                 elements['currentGradeFolder'] = 'Class' + pieces[1];
                 elements['currentSubjectFull'] = folderNames[pieces[2]];
                 elements['chprefix']           = pieces[1] + pieces[2];
-            };
-         };
-        return elements;
+            }
+        }
+     return elements;
     },    //end parseCH_ID
         
         //these functions not used. to implement them, call parseCH_ID()
@@ -1056,13 +1063,9 @@ LOOMA.speak = function(text, engine, voice) {
          if (LOOMA.speak.animationsInProgress == null) {
              LOOMA.speak.animationsInProgress = 0;
          }
-         ;
-        
          if (LOOMA.speak.speechQueue == null) {
              LOOMA.speak.speechQueue = [];
          }
-         ;
-        
          window.onbeforeunload = function () {
              console.log("Leaving this page. Stopping Audio");
              LOOMA.speak.cleanup();
@@ -1197,7 +1200,6 @@ LOOMA.speak = function(text, engine, voice) {
                          //push this phrase onto the queue
                          LOOMA.speak.speechQueue.unshift(currentAudio); // The equivalent of "enqueue". (Puts it at the beginning of the array.)
                      }
-                     ;
                      lastAudio = currentAudio;
                  }  // end FOR loop which builds the queue of audio phrases to play
                 
@@ -1217,8 +1219,6 @@ LOOMA.speak = function(text, engine, voice) {
                          console.log('Play promise error: ', error);
                      });
                  }
-                 ;
-                
                  LOOMA.speak.activate();
              }
          }  //end of code that calls server-side MIMIC
@@ -1382,7 +1382,7 @@ LOOMA.alert = function(msg, time, notTransparent, next){
             popupButton.html(LOOMA.translatableSpans("OK (" + Math.round(timeLeft + 1) + ")",
                 "ठिक छ(" + Math.round(timeLeft + 1) + ")"));
         },1000);
-    };
+   }
 };  //end alert()
 
 /**    LOOMA.confirm()
@@ -1437,8 +1437,8 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
                     console.log('PROMPT returned ', $('#popup-input').val());
                     confirmed($('#popup-input').val());
                     LOOMA.closePopup();
-                 };
-              });
+                }
+    });
 
     $('#confirm-popup').click(function() {
        //$("#confirm-popup").off('click');
@@ -1473,4 +1473,4 @@ function $_GET(param) {
     );
     if ( param ) { return vars[param] ? vars[param] : null; }
     return vars;
-};
+}

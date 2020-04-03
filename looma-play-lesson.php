@@ -149,7 +149,7 @@ Description: looma lesson plan presenter
                        null,
                        null,
                        $pagenumber,
-                       160,
+                       2.3,
                         null,
                         null,
                         $nfn,

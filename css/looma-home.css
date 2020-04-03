@@ -1,8 +1,8 @@
 
 #main-container-horizontal {
     display: grid;
-    grid-template-rows: repeat(5, 1fr);
-    grid-gap: 25px  25px;
+    grid-template-rows: [begin] 2fr [grades] 3fr [subjects] 3fr [end];
+    /*grid-gap: 25px  25px;*/
     width: 100vw;
     overflow:hidden;
     align-items:center;
@@ -10,13 +10,22 @@
 }
 
 #main-container-horizontal #head {
-    grid-row: 1 / 2;
+    position:relative;
+    grid-row: 1/1;
     text-align:center;
-    margin: 0 auto;
+    
+    max-height:100%;
+    overflow:none;
 }
 
+#head img {
+    height:22vh;
+    margin:0 auto;
+}
+
+
 #main-container-horizontal #classes {
-    grid-row: 2 / 4;
+    grid-row: 2/2;
     
     position:relative;
     
@@ -25,30 +34,30 @@
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
-    
-    padding: 2vh 2vh;
+    padding:10px;
     overflow: hidden;
 }
 
 #main-container-horizontal #subjects {
-    grid-row: 4 / 6;
+    grid-row: 3/3;
     
     position:relative;
-    
+    max-width:100%;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
+    margin:10px auto;
     
     padding: 2vh 2vh;
     overflow: hidden;
 }
 
-img.looma-logo{
+/*img.looma-logo{
     width:50vw;
 }
-
+*/
 button {
     
     padding: 1px;
@@ -80,7 +89,7 @@ button:hover  {
     min-width:9vw;
     
     line-height: 1.0;
-    font-size: 8em;
+    font-size: 8vw;
     font-weight: bold;
     
     /* trying to get the class and subject buttons to shrink in the flex row. but not working

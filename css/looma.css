@@ -72,6 +72,7 @@ body * {
     grid-row:    top / bottom;
     grid-column: left / toolbar;
     overflow:hidden;
+    background-color: var(--looma-blue);
 }
 
 #toolbar-container {
@@ -412,7 +413,7 @@ span#datetime {
 	display:inline-block;
 	color: #000;
 }
-
+/*
 span.logo-vertical {
 	display:inline-block;
 	height: 20%;
@@ -434,6 +435,15 @@ span.logo img.looma-logo {
     height:20vh;
     width:33vw;
 }
+
+img.looma-logo{
+	display: block;
+	margin-left:auto;
+	margin-right:auto;
+}
+*/
+img.looma-logo.native-keyword {display:none;}
+
 
 button.toolbar {
 	width:7%;
@@ -511,6 +521,7 @@ button.looma-control-button {
     width:  10vh;
     background-repeat: no-repeat;
     background-position: center;
+    box-shadow:none;
 }
 
 button#fullscreen-control {
@@ -769,14 +780,6 @@ button.footer {
 	font-size: 75%;
 	background-color: #999999;
 }
-
-img.looma-logo{
-	display: block;
-	margin-left:auto;
-	margin-right:auto;
-}
-
-img.looma-logo.native-keyword {display:none;}
 
 div.center {
 	position:relative;

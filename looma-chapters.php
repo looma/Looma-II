@@ -96,19 +96,30 @@ foreach ($chapters as $ch) {
     $ch_ndn = array_key_exists('ndn', $ch) ? $ch['ndn'] : $ch_dn;
     //$ch_ndn is native displayname
     $ch_pn =  array_key_exists('pn', $ch) ? $ch['pn'] : null;
+    $ch_ft =  array_key_exists('ft', $ch) ? $ch['ft'] : 'chapter';
     //$ch_pn is chapter page number
     $ch_npn = array_key_exists('npn', $ch) ? $ch['npn'] : null;
+    //$ch_pn is chapter page number
+    $ch_len = array_key_exists('len', $ch) ? $ch['len'] : null;
+    //$ch_pn is chapter page number
+    $ch_nlen = array_key_exists('nlen', $ch) ? $ch['nlen'] : null;
     //$ch_npn is chapter native page number
     $ch_id  = array_key_exists('_id', $ch) ? $ch['_id'] : null;
     //$ch_id is chapter ID string
 
 ////////// ENGLISH chapter ///////////
 // display chapter button for english textbook, if any
-    if ($tb_fn && $ch_pn) { echo "<button class='chapter en-chapter' data-lang='en' 
-                                      data-fn='$tb_fn' data-fp='$tb_fp' data-ch='$ch_id'  
-                                      data-ft='pdf' data-zm='160'  data-pg='$ch_pn'>
-                                           $ch_dn
-                                 </button>";
+    if ($tb_fn && $ch_pn) { echo "<button class='$ch_ft en-chapter' 
+                                      data-lang='en' 
+                                      data-fn='$tb_fn' 
+                                      data-fp='$tb_fp' 
+                                      data-ch='$ch_id'  
+                                      data-ft='$ch_ft' 
+                                      data-zoom='2.3'  
+                                      data-len='$ch_len' 
+                                      data-page='$ch_pn'>
+                                           $ch_dn";
+                            echo    "</button>";
 
 ////////// ENGLISH lesson ///////////
 // display a button for the lesson plans for this chapter
@@ -168,8 +179,9 @@ foreach ($chapters as $ch) {
                                     data-lang='np'
                                     data-fn='$tb_nfn'
                                     data-fp='$tb_fp'
-                                    data-ft='pdf'
-                                    data-pg='$ch_npn'
+                                    data-ft='chapter'
+                                    data-page='$ch_npn'
+                                    data-len='$ch_nlen'
                                     data-ch='$ch_id'>
                                     $ch_ndn
                                     </button>";

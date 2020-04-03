@@ -103,6 +103,12 @@ button.flag-vertical {
     text-align:center;
 }
 
+.toolbar-logo {
+    margin:0 auto;
+    height:5vh;
+}
+.toolbar-logo.vertical {height:3vh;}
+
 span.logo {
     display:inline-block;
     width:100%;

@@ -99,6 +99,7 @@ div.filename {
     width:30vw;
     min-width:30vw;
     max-width:30vw;
+    white-space: nowrap;
 }
 
 div.reg {color:lightslategrey;}

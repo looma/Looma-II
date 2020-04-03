@@ -84,8 +84,8 @@
 		<div id="logo-div">
 			<!-- DATETIME ready to turn on. needs to be positioned with CSS-->
 			<span class="logo">
-			    <img  id="logo"   class="english-keyword" draggable="false" src="images/logos/Looma-english-amanda 2x1 crop transparent.png" >
-			    <img  id="logo"   class="native-keyword" hidden draggable="false" src="images/logos/Looma-nepali-amanda 2x1 crop transparent.png" >
+			    <img  class="toolbar-logo english-keyword" draggable="false" src="images/logos/Looma-english-amanda 3x1.png" >
+			    <img  class="toolbar-logo native-keyword" hidden draggable="false" src="images/logos/Looma-nepali-amanda 3x1.png" >
       		</span>
             <br>
 			<span id="datetime"></span>

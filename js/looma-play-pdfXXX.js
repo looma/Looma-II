@@ -5,7 +5,7 @@ Date: 2015 6..12, 2016 07
 Revision: Looma 2.2.4
 
 filename: looma-play-pdfXXX.js
-Description: Looma specific additions and overrides to ["looma-PDFjs-viewer.js"] for Looma
+Description: Looma specific additions and overrides to ["looma-PDFjs-viewerAPR.js"] for Looma
  */
 
 'use strict';
@@ -280,7 +280,7 @@ var loadCorrectPage =  function (e) {
     var x = hash.lastIndexOf("page=")+5;
     pageNumber.value =hash.substring(hash.lastIndexOf("page=")+5, hash.length);
     
-    // triggers event to make looma-PDFjs-viewer.js read the value of pageNumber and navigate to the correct page
+    // triggers event to make looma-PDFjs-viewerAPR.js read the value of pageNumber and navigate to the correct page
     // in other words, it simulates the user submitting the page number
     pageNumber.dispatchEvent(new Event('change'));
 };

@@ -5,6 +5,7 @@
     height:92vh;
     width:100%;
     background-color:val(--looma-blue);
+    margin-right:3px;
 }
 
 /*
@@ -28,7 +29,9 @@ pdf {
 */
 
 /* canvas for drawing PDF */
-.pdf-canvas {position:relative;}
+.pdf-canvas {position:relative;
+    margin-right:6px;
+}
 
 /* text div for showing selectable text for PDF */
 .pdf-text {
@@ -82,7 +85,7 @@ pdf {
 
 #pdf-toolbar .toolbar-button img {
     position:relative;
-    top:-3.5vh;
+    /*top:-3.5vh;*/
     left:0;
     height:100%;
     width:auto;
@@ -100,6 +103,8 @@ pdf {
     font-weight: bold;
     font-size:1.7em;
 }
+
+#pdf-toolbar span.tip.yes-show 	{font-size:0.5em;}
 
 #zoom-menu {
     position: relative;

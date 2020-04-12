@@ -85,7 +85,7 @@ http://sourceforge.net/adobe/cmap/wiki/License/
     <script src="js/looma-utilities.js"> </script>      <!-- Looma utility functions -->
     <script src="js/looma.js">           </script>      <!-- Looma common page functions -->
     <script src="js/looma-screenfull.js"></script>      <!-- implements FULLSCREEN mode  -->
-    <script src="js/looma-PDFjs-viewer.js"></script>
+    <script src="js/looma-PDFjs-viewerAPR.js"></script>
     <script src="js/looma-play-pdfXXX.js"></script>
     <!--   *****************  LOOMA  *******************  -->
 

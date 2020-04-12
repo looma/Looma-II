@@ -486,7 +486,7 @@ span.tip { display:none;}
 
 button:hover span.tip.yes-show 	{
     display:block;
-    position:relative;
+    position:absolute;
     
     bottom:3px;
     

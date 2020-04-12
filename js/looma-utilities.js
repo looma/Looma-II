@@ -11,6 +11,7 @@ Description:
 
 'use strict';
 
+
 // utility JS functions used by many LOOMA pages
 /*defines:
  * LOOMA.playMedia()
@@ -119,12 +120,22 @@ playMedia : function(button) {
             break;
     */
         case "chapter":  //CHAPTER
-            window.location = 'looma-play-pdf.php?' +
-                              'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
-                              '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
-                              '&zoom=' + button.getAttribute('data-zoom') +
-                              '&len=' + button.getAttribute('data-len') +
-                              '&page=' + button.getAttribute('data-page');
+            if ( true /*loginname !== 'skip'*/ ) {
+                    window.location = 'looma-play-pdf.php?' +
+                    'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
+                    '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
+                    '&zoom=' + button.getAttribute('data-zoom') +
+                    '&len=' + button.getAttribute('data-len') +
+                    '&page=' + button.getAttribute('data-page');
+            } else {
+                window.location = 'looma-pdf.php?' +
+                    'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
+                    '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
+                    '&zoom=' + button.getAttribute('data-zoom') +
+                    '&len=' + button.getAttribute('data-len') +
+                    '&page=' + button.getAttribute('data-page');
+                break;
+            }
             break;
 
         case "text":
@@ -1474,3 +1485,5 @@ function $_GET(param) {
     if ( param ) { return vars[param] ? vars[param] : null; }
     return vars;
 }
+
+ var loginname = LOOMA.loggedIn();

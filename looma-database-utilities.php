@@ -710,7 +710,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             $query['key4'] = $_REQUEST['key4'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key4'].'/i');
         };
 
-       // echo "Query is: "; print_r($query);
+        //echo "Query is: "; print_r($query);
         //echo '$dbCollection is ' . $dbCollection;
 
         $cursor = $dbCollection->find($query);   //->skip($page)->limit(20);
@@ -738,7 +738,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             $result = alphabetize_by_dn($result);
 
             $unique[] = $result[0];
-            $specials = array('EP', 'text', 'slideshow', 'looma', 'lesson', 'evi', 'history', 'map', 'game');
+            $specials = array('text', 'slideshow', 'looma', 'lesson', 'evi', 'history', 'map', 'game');
             for ($i = 1; $i < sizeof($result); $i++) {
                 //echo "ft is " . $result[$i]['ft'] . "   ";
 
@@ -748,8 +748,17 @@ if ( isset($_REQUEST["cmd"]) ) {
                     $result[$i]['fn'] = $result[$i]['nfn'];
                 }*/
 
-                if (in_array($result[$i]['ft'], $specials)) {
+               /* add special case for epaath: check dn plus grade plus oleID to determine uniqueness
+               */
+                if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2019') {
+                    if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
+                        $result[$i]['oleID'] !== $result[$i - 1]['oleID'] ||
+                        $result[$i]['grade'] !== $result[$i - 1]['grade'])
+                        $unique[] = $result[$i];
+                /* for other special filetypes (in $specials) just match on displayname to determine uniquess */
+                } else if (in_array($result[$i]['ft'], $specials)) {
                     if ($result[$i]['dn'] !== $result[$i - 1]['dn']) $unique[] = $result[$i];
+                /* for all other filetypes match on filename and fp (if present) to determine uniquess */
                 } else if (($result[$i]['fn'] !== $result[$i - 1]['fn'])
                     || (array_key_exists('fp', $result[$i])
                         && (array_key_exists('fp', $result[$i - 1])

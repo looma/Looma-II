@@ -18,7 +18,7 @@ button {
 	border: 2px solid white;
 	border-radius: 5px;
 	font-weight: bold;
-	font-size: 3em;
+	/*font-size: 3em;*/
 	cursor: pointer;
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
 

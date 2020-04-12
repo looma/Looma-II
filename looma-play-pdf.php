@@ -28,7 +28,7 @@ include ('includes/header.php');
     $filename = (isset($_REQUEST['fn']) ?   urldecode($_REQUEST['fn']) : "");
     $filepath = (isset($_REQUEST['fp']) ?   urldecode($_REQUEST['fp']) : "");
     $pagenum =  (isset($_REQUEST['page']) ? urldecode($_REQUEST['page']) : 1);
-    $len =      (isset($_REQUEST['len']) ?  urldecode($_REQUEST['len']) : 999);
+    $len =      (isset($_REQUEST['len']) ?  urldecode($_REQUEST['len']) : 10);
     $zoom =     (isset($_REQUEST['zoom']) ? urldecode($_REQUEST['zoom']) : "page-width");
 ?>
 
@@ -65,9 +65,9 @@ include ('includes/header.php');
                 <button class="toolbar-button blank"></button>
 
                 <span>Page&nbsp</span>
-                <input id="pagenum"></input>
+                <span id="pagenum">&nbsp&nbsp</span>
                 <span> &nbspof&nbsp</span>
-                <span id="maxpages"></span>
+                <span id="maxpages">&nbsp&nbsp</span>
 
                 <button class="toolbar-button blank"></button>
 
@@ -84,13 +84,13 @@ include ('includes/header.php');
 
         <span id="zoom-label">Zoom:</span>
         <div id="zoom-menu" class="btn-group">
-            <button type="button" id="zoom-btn" class="btn" data-toggle="dropdown" data-zoom="Page width">
+            <button type="button" id="zoom-btn" class="btn toolbar-butto" data-toggle="dropdown" data-zoom="Page width">
             Page width
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
             </button>
             <div id="zoom-dropdown" class="dropdown-menu">
                 <button class="dropdown-item zoom-item" data-level="2.3" data-zoom="Page width">Page width</button><br>
-                <button class="dropdown-item zoom-item" data-level="1.7" data-zoom="Page fit">Page fit  </button><br>
+                <button class="dropdown-item zoom-item" data-level="1.2" data-zoom="Page fit">Page fit  </button><br>
                 <button class="dropdown-item zoom-item" data-level="1.15" data-zoom="50%">50%       </button><br>
                 <button class="dropdown-item zoom-item" data-level="2.3" data-zoom="100%">100%       </button><br>
                 <button class="dropdown-item zoom-item" data-level="4.6" data-zoom="200%">200%       </button><br>

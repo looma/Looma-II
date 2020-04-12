@@ -2,7 +2,7 @@
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2020 03
 Revision: Looma 2.0.0
-
+Author: Skip
 filename: looma-play-pdf.js
 Description: display layer built on pdf.js for showing chapters in PDFs
  */
@@ -15,16 +15,37 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "js/pdfjs/pdf.worker.min.js";
 const initialZoom = 2.3;
 let currentScale = initialZoom;
 
-let filename, filepath, startPage, endPage, length, currentPage, pdfdoc, maxPages;
+let filename, filepath, startPage; //filename, filepath, startPage, initial zoom level and len (number of pages) are passed in by the PHP
+var endPage, maxPages, currentPage, pdfdoc;  //pdfdoc holds the 'doc' object returned by pdf.js
+var lastScrollTop = 0;
+var zooming = false;
+var abortSignal = false;
+var didScroll = false;
 
-function displayPage (doc, pagenum)  {
+function makePageDivs(doc, start, finish) {
+    // allocate a canvas and a text-layer for each of the pages of this DOC from page = START to page = FINISH
+    for (var page = start; page <= finish; page++) {
+        $('<canvas/>', {id:'pdf-canvas'+page, class: 'pdf-canvas'}).appendTo('#pdf');
+        $('<div/>', {id:'pdf-text'+page, class: 'pdf-text textLayer'}).appendTo('#pdf');
+    }
+}  // end makePageDivs
+
+async function drawPage (doc, pagenum)  {
     doc.getPage(pagenum).then (page => {
         const pdf_canvas = document.getElementById('pdf-canvas'+pagenum);
         const pdf_context = pdf_canvas.getContext('2d');
+        
+        // if pagerendering [this page] then render.cancel (this page).then(render)
+        
+        
         $('#pdf-text'+pagenum).empty();
         let viewport = page.getViewport({scale:currentScale});
         pdf_canvas.width = viewport.width;
         pdf_canvas.height = viewport.height;
+        
+        // pagerendering[this page] = true;
+        
+        
         page.render ({canvasContext:pdf_context, viewport:viewport})
             .promise.then(function() {
             // Returns a promise, on resolving it will return text contents of the page
@@ -50,6 +71,9 @@ function displayPage (doc, pagenum)  {
                 viewport: viewport,
                 textDivs: []
             });
+            // .then(pagerendering [ this page ] = false;
+            
+            
             
             // the text layer should render on top of the canvas,
             // but it is being drawn below the canvas
@@ -57,63 +81,116 @@ function displayPage (doc, pagenum)  {
             // and puts the text right on top of the corresponding text in the canvas
             $("#pdf-text"+pagenum).css('top', pdf_canvas.top);
             
-            //$('#pagenum').val(pagenum);
+            //showPageNum(pagenum);
         });
     });
-}  //end displayPage
-function displayMultiplePages(doc, start, finish) {
+}  //end drawPage
+
+async function drawMultiplePages(doc, start, finish) {
     // display the pages of this DOC from page = START to page = FINISH
-    for (var page = start; page <= finish; page++) {
+    for (var page = start; page <= /*start*/ finish; page++) {
         
-        $('<canvas/>', {id:'pdf-canvas'+page, class: 'pdf-canvas'}).appendTo('#pdf');
-        $('<div/>', {id:'pdf-text'+page, class: 'pdf-text textLayer'}).appendTo('#pdf');
+        //$('<canvas/>', {id:'pdf-canvas'+page, class: 'pdf-canvas'}).appendTo('#pdf');
+        //$('<div/>', {id:'pdf-text'+page, class: 'pdf-text textLayer'}).appendTo('#pdf');
     
-        displayPage(pdfdoc, page);
+        await drawPage(pdfdoc, page);
+        //if (abortSignal) {abortSignal = false; return;}
     }
-    jumpToPage(start);
-}  // end displayMultiplePages
+}  // end drawMultiplePages
 
-function jumpToPage(pagenum) {
-    if (startPage <= pagenum && pagenum <= endPage) {
-        $("#pdf").off('scroll');
-    
-        $('#pdf').animate({
-            //scrollTop: $("#pdf-canvas" + pagenum).offset().top
-            scrollTop: $("#pdf-canvas" + pagenum)[0].offsetTop
-        }, 1500).promise()
-            .then (function() {
-            currentPage = pagenum;
-            $('#pagenum').val(currentPage - startPage + 1);
-        
-            $("#pdf").scroll(function () {
-                for (var i = startPage; i <= endPage; i++) {
-                    if (isScrolledIntoView(($('#pdf-canvas' + i)))) {
-                        $('#pagenum').val(i - startPage + 1);
-                        break;
-                    }
-                }
-            });
-        });
-    }
-} // end jumpToPage
-
-// detect SCROLL and reset page# indicator to currently displayed page
-
-function isScrolledIntoView($elem) {
-    let inview = ($elem[0].offsetTop >= $('#pdf').scrollTop()
-         && $elem[0].offsetTop <= $('#pdf').scrollTop() + $('#pdf').height());
-    return inview;
-}  // end isScrolledIntoView
-
-function setZoom(zoom) {
-    currentScale = zoom;
-    $('#pdf').empty();
-    displayMultiplePages(pdfdoc, startPage, endPage);
-} // end setZoom
-
-function percentZoom(change) {
-     return ( currentScale * change ) + '%';
+function abortDrawing() {
+    abortSignal = true;
 }
+function enablePageControls() {
+    
+    $('#next-page').off('click').one('click', function (e) {
+        e.preventDefault();
+        if (currentPage < endPage) showPage(currentPage + 1);
+    });
+    $('#prev-page').off('click').one('click', function (e) {
+        e.preventDefault();
+        if (currentPage > startPage) showPage(currentPage - 1);
+    });
+}
+function showPage(pagenum) {
+    if (startPage <= pagenum && pagenum <= endPage) {
+        console.log('showing page ' + pagenum);
+        currentPage = pagenum;
+    
+        $('#pdf').stop(true,true)
+            .off('scroll')
+            .animate({
+            scrollTop: $("#pdf-canvas" + pagenum)[0].offsetTop
+        }, 1500).on('scroll',function() {didScroll = true;});
+    }
+    showPageNum(pagenum);
+    didScroll = false;
+    enablePageControls();
+} // end showPage
+
+function showPageNum (p) {
+    console.log('called showpagenum with ' + p);
+    $('#pagenum').text(p - startPage + 1);
+}
+
+function getScrolledPage() {
+    for (var i = startPage; i <= endPage; i++) {
+        if (isScrolledIntoView(($('#pdf-canvas' + i)))) {
+            showPageNum(i);
+            currentPage = i;
+            break;
+        }
+    }
+}
+// detect SCROLL and reset page# indicator to currently displayed page
+function isScrolledIntoView($elem){ // or window.addEventListener("scroll"....
+    var inview;
+    var viewTop = $('#pdf').scrollTop();
+    var viewTopThird = viewTop + $('#pdf').height() / 3;
+    var viewBottomThird = viewTop + $('#pdf').height() * 2 / 3;
+    var viewBottom = viewTop + $('#pdf').height();
+    var pageTop = $elem[0].offsetTop;
+    var pageBottom = $elem[0].offsetTop + $elem.height();
+    if (viewTop >= lastScrollTop){  // direction of scroll is 'down'
+        inview = ( viewTop <= pageTop && pageTop <= viewTopThird );
+    } else {                       // direction of scroll is 'up'
+        inview = ( viewBottomThird <= pageBottom && pageBottom <= viewBottom );
+    }
+    lastScrollTop = viewTop <= 0 ? 0 : viewTop; // For Mobile or negative scrolling
+    return inview;
+}
+function turnOffControls() {$('.toolbar-button').prop('disabled', true);}  // end turnOffControls
+
+function turnOnControls()  {$('.toolbar-button').prop('disabled', false);}  // end turnOnControls
+
+function enableZoomControls() {
+    $('#zoom-out').one('click', async function () {
+        $('#zoom-btn').text(Math.round((currentScale * 0.8 / initialZoom) * 100).toString() + '%');
+        await setZoom(currentScale * 0.8);
+    });
+    
+    $('#zoom-in').one('click', async function () {
+        $('#zoom-btn').text(Math.round((currentScale * 1.25 / initialZoom) * 100).toString() + '%');
+        await setZoom(currentScale * 1.25);
+    });
+}
+function disableZoomControls() {
+    $('#zoom-out, #zoom-in').off('click')
+}
+async function setZoom(zoom) {
+    if (zoom !== currentScale && !zooming) {
+        //abortDrawing();
+        currentScale = zoom;
+        //$('#pdf').empty();
+        //turnOffControls();
+        disableZoomControls();
+        zooming = true;
+        await drawMultiplePages(pdfdoc, startPage, endPage);
+        zooming = false;
+        enableZoomControls();
+        //turnOnControls();
+    }
+} // end setZoom
 
 function displayThumb (doc, pagenum)  {
         doc.getPage(pagenum).then (page => {
@@ -125,6 +202,7 @@ function displayThumb (doc, pagenum)  {
         page.render ({canvasContext:thumb_context, viewport:viewport});
         });
 }  //end displayThumb
+
 async function displayMultipleThumbs (doc, start, finish) {
          for (var page = start; page <= finish; page++) {
             
@@ -133,87 +211,91 @@ async function displayMultipleThumbs (doc, start, finish) {
              displayThumb(pdfdoc, page);
          }
 } // end displayMultipleThumbs
-async function showThumbs() {
+
+async function drawThumbs() {
     await displayMultipleThumbs(pdfdoc, startPage, endPage);
     $('#showthumbs').click(function () {$('#thumbs').toggle();});
     $('.thumb-canvas').click(function() {
         $('#thumbs').hide();
-        jumpToPage($(this).attr('data-page'));
+        showPage($(this).attr('data-page'));
     });
     $('#showthumbs').show();
 }
 window.onload = function() {
+
+// *********  PAGE controls ***************
+    
+    enablePageControls();
+    
+// *********  ZOOM controls ***************
+    
+    enableZoomControls();
+
+    $('#zoom-btn').click ( function(){$('#zoom-dropdown').toggle();});
+    
+    $('.zoom-item').click( /*async*/ function() {
+            var zoom = $(this).data('zoom');
+            var level = $(this).data('level');
+        /*await*/ setZoom(level);
+            $('#zoom-btn').text(zoom);
+            $('#zoom-dropdown').hide();
+        });
+
+// *********  FULLSCREEN controls ***************
+    
+    $('#fullscreen-control').click(function () {
+        if (document.fullscreenElement) {
+            currentScale = currentScale * 1 / 1.08;
+            //$('#pdf').css( overflowX, "auto");
+        }
+        else {
+            currentScale = currentScale * 1.08;
+            //$('#pdf').css( overflowX, "none");
+        }
+        LOOMA.toggleFullscreen;
+        drawMultiplePages(pdfdoc, startPage, endPage);
+        return false;
+    });
+    
+    //$("#pdf").scroll(getScrolledPage);
+    
+// *********  SCROLL controls ***************
+
+    $('#pdf').scroll(function() {didScroll = true;});
+    
+    // the SETINTERVAL call de-bounces scroll events, so the handler "getScrolledPage" is only called every "wait" msec
+    setInterval(function() {
+        if ( didScroll ) {getScrolledPage();didScroll = false; }
+        }, 250);
+    
+    $('#find').change(); //FIND operation not implemented this version
+    
+    // get calling PARAMs
     filename = $('#pdf').data('fn');
     filepath = $('#pdf').data('fp');
     startPage = $('#pdf').data('page') ? $('#pdf').data('page') : 1;
     if ($('#pdf').data('len') && $('#pdf').data('len') >0)
-        endPage = startPage + $('#pdf').data('len') - 1; else endPage = 999;
+        endPage = startPage + $('#pdf').data('len') - 1; else endPage = startPage + 999;
     currentScale = $('#pdf').data('zoom') ? $('#pdf').data('zoom') : initialZoom;
     
-    $('#next-page').click(function () {
-        if (currentPage < endPage) jumpToPage(++currentPage)
-    });
-    $('#prev-page').click(function () {
-        if (currentPage > startPage) jumpToPage(--currentPage)
-    });
-    $('#pagenum').change(function () {
-        const newpage = parseInt($('#pagenum').val()) + startPage - 1;
-        if (startPage <= newpage && newpage <= endPage) jumpToPage(newpage);
-        else $('#pagenum').val(currentPage - startPage + 1);
-    });
-    
-    $('#zoom-out').click(function () {
-        $('#zoom-btn').text(Math.round((currentScale * 0.8 / initialZoom) * 100).toString() + '%');
-        setZoom(currentScale * 0.8);
-    });
-    
-    $('#zoom-in').click(function () {
-        $('#zoom-btn').text(Math.round((currentScale * 1.25 / initialZoom) * 100).toString() + '%');
-        setZoom(currentScale * 1.25);
-    });
-    
-    $('#zoom-btn').click ( function(){$('#zoom-dropdown').show();});
-    
-    $('.zoom-item').click( function() {
-            var zoom = $(this).data('zoom');
-            var level = $(this).data('level');
-            setZoom(level);
-            $('#zoom-btn').text(zoom);
-            $('#zoom-dropdown').hide();
-        });
-    
-    $('#fullscreen-control').click(function () {
-        if (document.fullscreenElement) currentScale = currentScale * 1 / 1.1;
-        else currentScale = currentScale * 1.1;
-        LOOMA.toggleFullscreen;
-        displayMultiplePages(pdfdoc, startPage, endPage);
-        return false;
-    });
-    
-    $("#pdf").scroll(function () {
-        for (var i = startPage; i <= endPage; i++) {
-            if (isScrolledIntoView(($('#pdf-canvas' + i))))
-                $('#pagenum').val(i - startPage + 1);
-        }
-    });
-
-
-    // this resize handling is not needed:
-    //$('#pdf').resize(function() {displayMultiplePages(pdfdoc, startPage, endPage);});
-    
-    $('#find').change(); //FIND operation not implemented this version
-    
     // load the PDF file
+    //turnOffControls();
     pdfjsLib.getDocument(filepath + filename).promise.then(
-        doc => {
+        async function(doc) {
             pdfdoc = doc;
             currentPage = startPage;
             maxPages = doc._pdfInfo.numPages || 1;
             if (endPage > maxPages) endPage = maxPages;
             $('#maxpages').text(endPage - startPage + 1);
             console.log('loaded file ' + filepath + filename + ' with ' + maxPages + ' pages');
-            displayMultiplePages(doc, startPage, endPage);
-        }
-    ).then( () =>  {showThumbs();});
+           
+            makePageDivs(doc, startPage, endPage);
+            
+           // displayFirstPage(doc,startPage);
+            
+            await drawMultiplePages(doc, startPage, endPage).promise;
+            showPageNum(startPage);
+            //turnOnControls();
+        }).then( () =>  {drawThumbs();});
     
 };

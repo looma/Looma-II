@@ -1,10 +1,14 @@
 // mongo terminal program "importCH_IDsForEpaath;
-//      input from a CSV file
-//          each line of which is a DN, FN, followed by a list of CH_IDs
-//          inserts all the ch_ids into the activities.ch_ids array of any document(s) corresponding to the DN + FN pair
+//      input from a tab separated file
+//          each line of which is a DN, FN, oleID, version, cl_lo, cl_hi, ch_id, nch_id
+//          inserts all the ch_ids into the activities.ch_ids array of any document(s) corresponding to the DN + FN/oleID pair
+//              note: epaaths with version = 2015 are identified by FN (e.g. 3120102). version 2019 are identified by oldID
+//              note: any of the fields cl_lo, cl_hi, ch_id and nch_id may be blank
+//              note: the ch_id and nch_id fields may contain multiple values, separated by commas
 //
-//  make sure there is a file 'ch_idsToImport.csv' in the current directory
+//  make sure there is a file 'ch_idsToImport.txt' in the current directory
 //  start MONGO in LOOMA db with: 'mongo looma'
+//      enter var param = 'dryrun' to dry run, or var param = 'run' to actually make changes in the database
 //  run in MONGO SHELL with: load('importCH_IDsForEpaath')
 //
 //"use strict";
@@ -19,7 +23,7 @@ function legalCH_ID(ch,dn) {
     if (char && char.length>0) {
         var legal = db.chapters.find({"_id": char});
         if (legal.length() === 0 && char) {
-            print("************ illegal ch_id:     " + char + " for " + dn);   // + '     for activity ' + act.dn + ' (type: ' + act.ft + ')');
+            print("************************** illegal ch_id:     " + char + " for " + dn);   // + '     for activity ' + act.dn + ' (type: ' + act.ft + ')');
             illegalcount++;
             return false;
         } else return true;
@@ -36,38 +40,57 @@ var file = cat(input);  // read  the file (for now, specifying a path doesnt wor
 var docs = file.split(/[\r\n]+/);  // split file into array of lines containing (DN, FN, CH_IDs)
 
 print ('Processing ' + docs.length + ' lines');
+print();
 
 docs.forEach( function(doc) {
+    var cl_lo, cl_hi;
     var fields = doc.split(/\t/);  //split the line on TABs
     if (fields[0] !== "" && fields[1] !== "") {
-        var displayname = fields[0];
-        filename = fields[1];
-        fields.shift();
-        // EP fields.shift();
+        var displayname = fields[0]; var version = fields[1];
+        if (version === '2015') var filename = fields[2];
+        else                    var oleID = fields[3];
+         cl_lo = fields[4];  cl_hi = fields[5];
+        //fields.shift();
+       
         requestcount++;
-        //print(requestcount + ' - - CHECKING ' + displayname + ' [' + filename + '] adding ' + fields.toString());
         
-        var activities = db.activities.find({ 'dn': displayname, 'ft': 'EP'}); // EP
+        //print(requestcount + ' - - CHECKING ' + displayname + ' [' + filename + '] adding ' + fields.toString());
+    
+        var query;
+        if (version == '2015')  query = { 'dn': displayname, 'ft': 'EP', 'fn' : parseInt(filename) };
+        else                   query = { 'dn': displayname, 'ft': 'EP', 'oleID' : oleID };
+        
+        //print('guery is ' + JSON.stringify(query));
+        
+        var activities = db.activities.find(query);
         var duplicates = 0;
         if (!activities.hasNext()) print('ACTIVITY ' + displayname + '[' + filename + '] NOT FOUND');
         while (activities.hasNext()) {
             var activity = activities.next();
-            duplicates++; if (duplicates > 1) print('*************NOTE: duplicate ACTIVITY FOUND, Name = ' + displayname);
+            duplicates++; if (duplicates > 1) print('*************NOTE: duplicate ACTIVITY FOUND, Name = ' + displayname + ' ' + filename + '  or ' + oleID);
             //let ch_ids = new Set();
-            var oldCH_ID;
-            if (Array.isArray(activity['ch_id'])) oldCH_ID = activity['ch_id']; else oldCH_ID = [activity['ch_id']];
-            activity['ch_id'] = [];
+            //var oldCH_ID;
+            //if (Array.isArray(activity['ch_id'])) oldCH_ID = activity['ch_id']; else oldCH_ID = [activity['ch_id']];
+            activity['ch_id'] = []; activity['nch_id'] = [];
             
             // next line for when we want to retain exisitng ch_ids, rather that overwriting
             // oldCH_ID.forEach (function(x){ if(x && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
     
-            fields.forEach   (function(x){ if(x && legalCH_ID(x,activity['dn']) && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
+            var ch_ids = fields[6].split(/\,/);
+            //print('.... ch_ids are ' + ch_ids.toString());
+            ch_ids.forEach   (function(x){ if(x && legalCH_ID(x,activity['dn']) && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
+            var nch_ids = fields[7].split(/\,/);
+            //print('.... nch_ids are ' + nch_ids.toString());//
+            nch_ids.forEach   (function(x){ if(x && legalCH_ID(x,activity['dn']) && activity['nch_id'].indexOf(x) === -1) activity['nch_id'].push(x);});
     
-            if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
-    
-            db.activities.update({_id: activity._id}, activity);
             
-            //print(++changecount + ' - - CHANGED CH_IDs ' + displayname + ' [' + oldCH_ID.toString() + '] TO ' + activity['ch_id'].toString());
+            if (cl_lo) activity['cl_lo'] = cl_lo;
+            if (cl_hi) activity['cl_hi'] = cl_hi;
+            
+            if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
+            
+            print(++changecount + ' - - CHANGing CH_IDs ' + displayname + ' TO(ch_id) ' + activity['ch_id'].toString()+ ' AND (nch_id) ' + activity['nch_id'].toString());
+            print ('----------- cl_lo, cl_hi TO ' + cl_lo + ' and ' + cl_hi);
         }
     } else print('*******    BAD INPUT LINE: ' + doc);
 });  // end foreach doc

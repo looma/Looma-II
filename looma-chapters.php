@@ -134,11 +134,12 @@ foreach ($chapters as $ch) {
         echo "<button class='lesson en-lesson'
                       data-lang='en'
                       data-ch='$ch_id'
+                      data-len='$ch_len'
                       data-chdn='" .
-                    $lesson['dn'] .
+                        $lesson['dn'] .
                    "' data-ft='lesson'
                       data-id='" .
-                    $lesson['mongoID'] .
+                        $lesson['mongoID'] .
                     "'>" . "Lesson";
         echo "</button>";
     }
@@ -175,11 +176,11 @@ foreach ($chapters as $ch) {
 
 ////////// NEPALI chapter ///////////
     // display chapter button for 2nd [native] textbook, if any
-    if ($tb_nfn && $ch_npn) { echo "<button class='chapter np-chapter'
+    if ($tb_nfn && $ch_npn) { echo "<button class='$ch_ft np-chapter'
                                     data-lang='np'
                                     data-fn='$tb_nfn'
                                     data-fp='$tb_fp'
-                                    data-ft='chapter'
+                                    data-ft='$ch_ft' 
                                     data-page='$ch_npn'
                                     data-len='$ch_nlen'
                                     data-ch='$ch_id'>

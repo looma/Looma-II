@@ -1,3 +1,8 @@
+button {
+    font-size:1em;
+    heigth:auto;
+}
+
 #filecommands {
     position: absolute;
     right:5vw;
@@ -39,6 +44,7 @@
 /********** filesearch-panel CSS ******/
 
 #filesearch-panel {
+    display:none;
     position:fixed;
     top:8vh;
     left:38vw;
@@ -46,7 +52,6 @@
     width:33vw;
 
     margin-right:3vw;
-    display:none;
     text-align:center;
     
     padding: 2vh;
@@ -138,6 +143,41 @@ input#filesearch-term {
 
 span.typ-chk {
     margin-right: 8px;
+}
+
+/********** filesave-panel CSS ******/
+
+.save-popup {
+    display:none;
+    position:fixed;
+    top:40vh;
+    left:25vw;
+    height:35vh;
+    width:50vw;
+    
+    text-align:center;
+    
+    padding: 2vh;
+    overflow-y:hidden;
+    font-family:inherit !important;
+    border:1px solid black;
+    background-color:white;
+    border-radius:3px;
+    
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.save-popup button {font-size:1em;
+    height:auto;
+}
+
+.save-popup p      {font-size:1.3em;}
+
+.cancel-popup { /* close popup button*/
+    color : white;
+    background: red;
+    font-size:1em;
 }
 
 /***************************************/

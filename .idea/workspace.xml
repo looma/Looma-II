@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/Looma.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jsLinters/jshint.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.ideaXX/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.ideaXX/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.ideaXX/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.ideaXX/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.metadataXX/.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.metadataXX/.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/css/XXXlooma-game.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/css/images/loading-small.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/css/images/loading-small@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/css/images/texture.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/css/looma-life.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/fullscreen6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/logos/Looma-english-amanda 3x1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda 3x1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/logos/pdfjs.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/XXXlooma-play-pdfGOOD.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/XXXviewer.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/looma-filecommandsOLD.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/looma-life.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/looma-play-pdfGOOD.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/pageRender.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/pdfjs/pdf.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/pdfjs/pdf.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/pdfjs/pdf.worker.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/js/pdfjs/pdf.worker.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/ColorsToTry.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/ch_idsToImportforEpaath.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/chapterLenToImport.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma-life.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma-pdf-viewer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/chapters.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/chapters.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/edited_videos.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/edited_videos.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/folders.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/folders.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/games.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/games.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/histories.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/histories.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/lessons.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/lessons.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/logins.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/logins.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/maps.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/maps.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/pages.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/pages.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/slideshows.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/slideshows.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/system.indexes.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/tags.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/tags.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/text_files.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/text_files.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/textbooks.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/textbooks.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/volunteers.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/volunteers.metadata.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/wikipedia.bson" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/wikipedia.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-PDFjs-viewer.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/XXXlooma-PDFjs-viewer.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-chapters.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-chapters.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-filecommands.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-filecommands.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-game-list.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-game-list.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-game-listNEW.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/XXXlooma-game-list.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-gameNEW.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-game.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-games.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-games.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-gamesNEW.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/XXXlooma-games.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-library.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-library.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-pdf.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/XXXlooma-pdf.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-play-pdf.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-play-pdf.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-play-pdfXXX.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/XXXlooma-play-pdfXXX.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-filecommands.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-filecommands.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-utilities.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/toolbar-vertical.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/toolbar-vertical.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/toolbar.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/toolbar.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-PDFjs-viewerAPR.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXlooma-PDFjs-viewerAPR.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-filecommands.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-filecommands.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-game-list.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXlooma-game-listCATIE.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-game-listCATIE.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-game-listBAD.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-game-listNEW.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-game-list.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-game.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXlooma-game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-gameCATIE.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXlooma-gameCATIE.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-gameNEW.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-pdf.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXlooma-pdf.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-pdfAPR.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXlooma-pdfAPR.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-play-lesson.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-play-lesson.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-play-pdf.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-play-pdf.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-play-pdfXXX.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXlooma-play-pdfXXX.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-utilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-utilities.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-viewer.html" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXlooma-viewer.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-viewer.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXlooma-viewer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-viewerAPR11-2020.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXlooma-viewerAPR11-2020.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/pdf.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXpdf.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/pdf.worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXpdf.worker.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/pdfobjectXXX.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXpdfobjectXXX.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/viewer-looma.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/XXXviewer-looma.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-database-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-database-utilities.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-dictionary-autogen-editor.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-autogen-editor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-edit-lesson.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-edit-lesson.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-game-listNEW.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-game-list.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-gameNEW.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-game.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-gamesNEW.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-games.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-info.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-info.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-library.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-library.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-login.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-login.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-mapgames.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-mapgames.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-pdf-iframe-test.php" beforeDir="false" afterPath="$PROJECT_DIR$/XXXlooma-pdf-iframe-test.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-pdf.php" beforeDir="false" afterPath="$PROJECT_DIR$/XXXlooma-pdf.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-play-lesson.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-play-lesson.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-play-pdf.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-play-pdf.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-play-pdfXXX.php" beforeDir="false" afterPath="$PROJECT_DIR$/XXXlooma-play-pdfXXX.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-viewer.html" beforeDir="false" afterPath="$PROJECT_DIR$/XXXlooma-viewer.html" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution>
+      <executable />
+    </execution>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="skip" />
+      </list>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1Rt4YLufhQcOYseL7vr58x80wh0" />
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/" />
+      <recent name="$PROJECT_DIR$/js" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/css" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="" />
+      <created>1570473104432</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1570473104432</updated>
+    </task>
+    <task id="LOCAL-00001" summary="5.2.3 adding mongoDB contents">
+      <created>1571193627755</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1571193627755</updated>
+    </task>
+    <task id="LOCAL-00002" summary="5.2.3 adding mongoDB contents and some include files">
+      <created>1571193905027</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1571193905027</updated>
+    </task>
+    <task id="LOCAL-00003" summary="5.2.3 adding mongoDB contents and some include files">
+      <created>1571193941428</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1571193941428</updated>
+    </task>
+    <task id="LOCAL-00004" summary="5.2.3 roll back some experimental changes">
+      <created>1571336690288</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1571336690288</updated>
+    </task>
+    <task id="LOCAL-00005" summary="5.6">
+      <created>1583801722218</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1583801722218</updated>
+    </task>
+    <task id="LOCAL-00006" summary="5.7&#10;new PDF viewer (in test)">
+      <created>1585937375546</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1585937375546</updated>
+    </task>
+    <task id="LOCAL-00007" summary="5.8&#10;new PDF viewer release&#10;add 'len' and 'nlen' field for chapters&#10;new textbook fixes&#10;fixed page numbers in textbooks">
+      <created>1586716262868</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1586716262868</updated>
+    </task>
+    <task id="LOCAL-00008" summary="5.8&#10;new PDF viewer release&#10;add 'len' and 'nlen' field for chapters&#10;new textbook fixes&#10;fixed page numbers in textbooks">
+      <created>1586716366737</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1586716366737</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="5.2.3 adding mongoDB contents" />
+    <MESSAGE value="5.2.3 adding mongoDB contents and some include files" />
+    <MESSAGE value="5.2.3 roll back some experimental changes" />
+    <MESSAGE value="5.6" />
+    <MESSAGE value="5.7&#10;new PDF viewer (in test)" />
+    <MESSAGE value="5.8&#10;new PDF viewer release&#10;add 'len' and 'nlen' field for chapters&#10;new textbook fixes&#10;fixed page numbers in textbooks" />
+    <option name="LAST_COMMIT_MESSAGE" value="5.8&#10;new PDF viewer release&#10;add 'len' and 'nlen' field for chapters&#10;new textbook fixes&#10;fixed page numbers in textbooks" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$USER_HOME$/Desktop/pdfjs/pdf.js/web/viewer.js</url>
+          <line>61</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

@@ -28,7 +28,6 @@ Revision: Looma 4
     </head>
 
     <body>
-    <section>
         <div id = "main-container">
 
             <div id="header" class="inner-div">
@@ -87,7 +86,6 @@ Revision: Looma 4
 
         <?php   include('includes/looma-control-buttons.php');?>
         <button class='control-button' id='dismiss' ></button>
-    </section>
 
     <?php
         include ('includes/js-includes.php');

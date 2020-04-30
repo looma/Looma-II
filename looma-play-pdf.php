@@ -1,16 +1,13 @@
 <!doctype html>
 <!--
 LOOMA php code file
-Filename: xxx.php
+Filename: looma-play-pdf.php
 Description:
 
-Programmer name:
-Email:
+Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date:
-Revision: Looma 2.0.x
-
-Comments:
+Date:   APR 2020
+Revision: Looma 5.7
 -->
 
 <?php $page_title = 'Looma - PDF viewer';
@@ -24,13 +21,6 @@ include ('includes/header.php');
 
 <body>
 
-<?php
-    $filename = (isset($_REQUEST['fn']) ?   urldecode($_REQUEST['fn']) : "");
-    $filepath = (isset($_REQUEST['fp']) ?   urldecode($_REQUEST['fp']) : "");
-    $pagenum =  (isset($_REQUEST['page']) ? urldecode($_REQUEST['page']) : 1);
-    $len =      (isset($_REQUEST['len']) ?  urldecode($_REQUEST['len']) : 10);
-    $zoom =     (isset($_REQUEST['zoom']) ? urldecode($_REQUEST['zoom']) : "page-width");
-?>
 
 <div id="main-container-vertical">
 
@@ -54,12 +44,12 @@ include ('includes/header.php');
 
                 <button id="prev-page" class="toolbar-button ">
                     <img draggable="false" src="images/looma-up.png"   >
-                    <?php tooltip("Next") ?>
+                    <?php tooltip("Previous") ?>
                 </button>
 
                 <button id="next-page" class="toolbar-button ">
                     <img draggable="false" src="images/looma-down.png"   >
-                    <?php tooltip("Previous") ?>
+                    <?php tooltip("Next") ?>
                 </button>
 
                 <button class="toolbar-button blank"></button>
@@ -102,26 +92,42 @@ include ('includes/header.php');
 
     </div>
 
-<?php   echo '<div id="fullscreen">';
-        echo '<div id="pdf" class="scroll"'  .
-                 '  data-fn="' .    $filename .
-                 '" data-fp="' .   $filepath .
-                 '" data-page="' . $pagenum .
-                 '" data-len="' . $len .
-                 '" data-zoom="'.  $zoom .'">';
-        echo '</div>';
+<?php
+    include ('includes/js-includes.php');
+?>
 
-        include ('includes/looma-control-buttons.php');
+    <!--
+<script src="js/pdfjs/pdf.min.js"></script>
+<script src="js/looma-play-pdf.js"></script>
+-->
+
+<?php   echo '<div id="fullscreen">';
+
+
+//$filename = (isset($_REQUEST['fn']) ? urldecode($_REQUEST['fn']) : "");
+//$filepath = (isset($_REQUEST['fp']) ? urldecode($_REQUEST['fp']) : "");
+//$pagenum = (isset($_REQUEST['page']) ? urldecode($_REQUEST['page']) : 1);
+//$len = (isset($_REQUEST['len']) ? urldecode($_REQUEST['len']) : 10);
+//$zoom = (isset($_REQUEST['zoom']) ? urldecode($_REQUEST['zoom']) : "page-width");
+
+
+include('looma-pdf-viewer.php');
+//        echo '<div id="pdf" class="scroll"'  .
+//                 '  data-fn="' .    $filename .
+//                 '" data-fp="' .   $filepath .
+//                '" data-page="' . $pagenum .
+//                 '" data-len="' . $len .
+//                 '" data-zoom="'.  $zoom .'">';
+//        echo '</div>';
+
+    include ('includes/looma-control-buttons.php');
 ?>
     </div>
 
-<div id="thumbs"></div>
+    <div id="thumbs"></div>
 </div>
 
 <?php
-    include ('includes/toolbar-vertical.php');
-    include ('includes/js-includes.php');
+include ('includes/toolbar-vertical.php');
 ?>
-<script src="js/pdfjs/pdf.min.js"></script>
-<script src="js/looma-play-pdf.js"></script>
 </body>

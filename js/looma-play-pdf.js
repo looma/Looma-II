@@ -13,14 +13,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "js/pdfjs/pdf.worker.min.js";
 
 //DEBUG  const filename = '../content/textbooks/Class1/Math/Math-1-1051.pdf';
 const initialZoom = 2.3;
-let currentScale = initialZoom;
+var currentScale = initialZoom;
 
-let filename, filepath, startPage; //filename, filepath, startPage, initial zoom level and len (number of pages) are passed in by the PHP
+var filename, filepath, startPage; //filename, filepath, startPage, initial zoom level and len are passed in by the PHP
 var endPage, maxPages, currentPage, pdfdoc;  //pdfdoc holds the 'doc' object returned by pdf.js
 var lastScrollTop = 0;
 var zooming = false;
-var abortSignal = false;
 var didScroll = false;
+var renderPromises = [];
+var renders = 0; var cancels = 0;
 
 function makePageDivs(doc, start, finish) {
     // allocate a canvas and a text-layer for each of the pages of this DOC from page = START to page = FINISH
@@ -32,27 +33,31 @@ function makePageDivs(doc, start, finish) {
 
 async function drawPage (doc, pagenum)  {
     doc.getPage(pagenum).then (page => {
+        
+        /*new*/ var renderTask = null;
+        
+    function renderPage() {
+        if (renderTask !== null) {renderTask.internalRenderTask.cancel();cancels++;return;}
+        // also tried this way to cancel. neither seems to work
+        // if (renderTask !== null) {renderTask.cancel();cancels++;return;}
+    
         const pdf_canvas = document.getElementById('pdf-canvas'+pagenum);
         const pdf_context = pdf_canvas.getContext('2d');
-        
-        // if pagerendering [this page] then render.cancel (this page).then(render)
-        
         
         $('#pdf-text'+pagenum).empty();
         let viewport = page.getViewport({scale:currentScale});
         pdf_canvas.width = viewport.width;
         pdf_canvas.height = viewport.height;
+    
+        renderTask = page.render ({canvasContext:pdf_context, viewport:viewport});
         
-        // pagerendering[this page] = true;
-        
-        
-        page.render ({canvasContext:pdf_context, viewport:viewport})
-            .promise.then(function() {
+        renderTask.promise.then(function() {
+                renderTask = null;
+                renders++;
             // Returns a promise, on resolving it will return text contents of the page
               return page.getTextContent();})
             .then(function(textContent) {
             
-            //var pdf_canvas = $("#pdf-canvas");  // PDF canvas
             var canvas_height = pdf_canvas.height;  // Canvas height
             var canvas_width = pdf_canvas.width;  // Canvas width
             var canvas_top = pdf_canvas.offsetTop;  // Canvas top
@@ -70,10 +75,7 @@ async function drawPage (doc, pagenum)  {
                 container: $("#pdf-text"+pagenum).get(0),
                 viewport: viewport,
                 textDivs: []
-            });
-            // .then(pagerendering [ this page ] = false;
-            
-            
+            }).promise.then(function() {delete renderPromises[pagenum];});
             
             // the text layer should render on top of the canvas,
             // but it is being drawn below the canvas
@@ -81,27 +83,34 @@ async function drawPage (doc, pagenum)  {
             // and puts the text right on top of the corresponding text in the canvas
             $("#pdf-text"+pagenum).css('top', pdf_canvas.top);
             
-            //showPageNum(pagenum);
-        });
-    });
-}  //end drawPage
-
+        })
+                .catch(function(err) {
+                    renderTask = null;
+                    console.log('render catch ' + err);
+                    cancels++;
+                    if (err.name === 'RenderingCancelledException'){
+                        renderPage();
+                        
+                    }
+                });  //  end catch()
+    } // end renderPage()
+        renderPage();
+   // );
+  }); // end getPage();then()
+} //end drawPage
 async function drawMultiplePages(doc, start, finish) {
     // display the pages of this DOC from page = START to page = FINISH
-    for (var page = start; page <= /*start*/ finish; page++) {
-        
-        //$('<canvas/>', {id:'pdf-canvas'+page, class: 'pdf-canvas'}).appendTo('#pdf');
-        //$('<div/>', {id:'pdf-text'+page, class: 'pdf-text textLayer'}).appendTo('#pdf');
+    for (var page = start; page <=  finish; page++) { drawPage(doc, page);}
     
-        await drawPage(pdfdoc, page);
-        //if (abortSignal) {abortSignal = false; return;}
-    }
+    //NOTE: zoomcontrols are getting enabled too soom
+    // probalby need to collect all the page render promises and here do promises.all( () => enableZoomControls(););
+    
+    
 }  // end drawMultiplePages
 
-function abortDrawing() {
-    abortSignal = true;
-}
+
 function enablePageControls() {
+    // using jQuery ".one()" to de-bounce and prevent multiple page-up/page-downs
     
     $('#next-page').off('click').one('click', function (e) {
         e.preventDefault();
@@ -115,23 +124,38 @@ function enablePageControls() {
 function showPage(pagenum) {
     if (startPage <= pagenum && pagenum <= endPage) {
         console.log('showing page ' + pagenum);
+        disableScrollDetect();
         currentPage = pagenum;
     
         $('#pdf').stop(true,true)
-            .off('scroll')
-            .animate({
-            scrollTop: $("#pdf-canvas" + pagenum)[0].offsetTop
-        }, 1500).on('scroll',function() {didScroll = true;});
+           // .off('scroll')
+            .animate({scrollTop: $("#pdf-canvas" + pagenum)[0].offsetTop},
+                 1500,
+                function() { // the 'complete' function, run when animate ends
+                    showPageNum(pagenum);
+                    didScroll = false;
+                    enablePageControls();
+                    enableScrollDetect();}
+            );    //.on('scroll',function() {didScroll = true;});
     }
-    showPageNum(pagenum);
-    didScroll = false;
-    enablePageControls();
+
 } // end showPage
 
 function showPageNum (p) {
     console.log('called showpagenum with ' + p);
     $('#pagenum').text(p - startPage + 1);
 }
+
+function enableScrollDetect() {
+    $('#pdf').scroll(function() {
+        //console.log('scroll event: ' + currentPage);
+        didScroll = true;});
+}
+
+function disableScrollDetect() {
+    $('#pdf').scroll(function() {});
+}
+
 
 function getScrolledPage() {
     for (var i = startPage; i <= endPage; i++) {
@@ -159,9 +183,9 @@ function isScrolledIntoView($elem){ // or window.addEventListener("scroll"....
     lastScrollTop = viewTop <= 0 ? 0 : viewTop; // For Mobile or negative scrolling
     return inview;
 }
-function turnOffControls() {$('.toolbar-button').prop('disabled', true);}  // end turnOffControls
 
-function turnOnControls()  {$('.toolbar-button').prop('disabled', false);}  // end turnOnControls
+//function turnOffControls() {$('.toolbar-button').prop('disabled', true);}  // end turnOffControls
+//function turnOnControls()  {$('.toolbar-button').prop('disabled', false);}  // end turnOnControls
 
 function enableZoomControls() {
     $('#zoom-out').one('click', async function () {
@@ -179,7 +203,6 @@ function disableZoomControls() {
 }
 async function setZoom(zoom) {
     if (zoom !== currentScale && !zooming) {
-        //abortDrawing();
         currentScale = zoom;
         //$('#pdf').empty();
         //turnOffControls();
@@ -193,14 +216,16 @@ async function setZoom(zoom) {
 } // end setZoom
 
 function displayThumb (doc, pagenum)  {
-        doc.getPage(pagenum).then (page => {
-        const thumb_canvas = document.getElementById('thumb-canvas'+pagenum);
-        const thumb_context = thumb_canvas.getContext('2d');
-        let viewport = page.getViewport({scale:0.25});
-        thumb_canvas.width = viewport.width;
-        thumb_canvas.height = viewport.height;
-        page.render ({canvasContext:thumb_context, viewport:viewport});
+    if ($('#thumbs').length){
+        doc.getPage(pagenum).then(page => {
+            const thumb_canvas = document.getElementById('thumb-canvas' + pagenum);
+            const thumb_context = thumb_canvas.getContext('2d');
+            let viewport = page.getViewport({scale: 0.25});
+            thumb_canvas.width = viewport.width;
+            thumb_canvas.height = viewport.height;
+            page.render({canvasContext: thumb_context, viewport: viewport});
         });
+    }
 }  //end displayThumb
 
 async function displayMultipleThumbs (doc, start, finish) {
@@ -213,14 +238,19 @@ async function displayMultipleThumbs (doc, start, finish) {
 } // end displayMultipleThumbs
 
 async function drawThumbs() {
-    await displayMultipleThumbs(pdfdoc, startPage, endPage);
-    $('#showthumbs').click(function () {$('#thumbs').toggle();});
-    $('.thumb-canvas').click(function() {
-        $('#thumbs').hide();
-        showPage($(this).attr('data-page'));
-    });
-    $('#showthumbs').show();
-}
+    if ($('#thumbs').length){
+        
+        await displayMultipleThumbs(pdfdoc, startPage, endPage);
+      
+        $('#showthumbs').click(function () {$('#thumbs').toggle();});
+        $('.thumb-canvas').click(function() {
+            $('#thumbs').hide();
+            showPage($(this).attr('data-page'));
+        });
+        $('#showthumbs').show();
+    }
+}  // end drawThumbs()
+
 window.onload = function() {
 
 // *********  PAGE controls ***************
@@ -245,28 +275,31 @@ window.onload = function() {
     
     $('#fullscreen-control').click(function () {
         if (document.fullscreenElement) {
-            currentScale = currentScale * 1 / 1.08;
+            //currentScale = currentScale * 1 / 1.08;
+            $('#pdf').css("transform","scale(1.00");
             //$('#pdf').css( overflowX, "auto");
         }
         else {
-            currentScale = currentScale * 1.08;
+            //currentScale = currentScale * 1.08;
+            $('#pdf').css("transform","scale(1.25");
             //$('#pdf').css( overflowX, "none");
         }
         LOOMA.toggleFullscreen;
-        drawMultiplePages(pdfdoc, startPage, endPage);
+        
+                //NOTE: maybe dont have to re-draw?? seems to work fine without
+                // drawMultiplePages(pdfdoc, startPage, endPage);
+        
         return false;
     });
     
-    //$("#pdf").scroll(getScrolledPage);
-    
 // *********  SCROLL controls ***************
-
-    $('#pdf').scroll(function() {didScroll = true;});
+    
+    enableScrollDetect();
     
     // the SETINTERVAL call de-bounces scroll events, so the handler "getScrolledPage" is only called every "wait" msec
     setInterval(function() {
         if ( didScroll ) {getScrolledPage();didScroll = false; }
-        }, 250);
+        }, 1000);
     
     $('#find').change(); //FIND operation not implemented this version
     
@@ -276,7 +309,7 @@ window.onload = function() {
     startPage = $('#pdf').data('page') ? $('#pdf').data('page') : 1;
     if ($('#pdf').data('len') && $('#pdf').data('len') >0)
         endPage = startPage + $('#pdf').data('len') - 1; else endPage = startPage + 999;
-    currentScale = $('#pdf').data('zoom') ? $('#pdf').data('zoom') : initialZoom;
+    currentScale = $('#pdf').data('zoom') && isNaN($('#pdf').data('zoom')) ? $('#pdf').data('zoom') : initialZoom;
     
     // load the PDF file
     //turnOffControls();

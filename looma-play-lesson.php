@@ -15,6 +15,7 @@ Description: looma lesson plan presenter
     <!-- <link rel="stylesheet" href="css/looma-video.css"> -->
     <link rel="stylesheet" href="css/looma-text-display.css">
     <link rel="stylesheet" href="css/looma-play-lesson.css">
+    <?php include ('includes/js-includes.php'); ?>
 
   </head>
 
@@ -133,12 +134,14 @@ Description: looma lesson plan presenter
                     $pagenumber  = (isset($chapter['pn']) && $chapter['pn'] != "") ? $chapter['pn'] : ((isset($chapter['npn'])) ? $chapter['npn'] : null);
                     $npn  = (isset($chapter['npn']) ? $chapter['npn'] : null);
 
+                    $len  = (isset($chapter['len']) && $chapter['len'] != "") ? $chapter['len'] : ((isset($chapter['nlen'])) ? $chapter['nlen'] : null);
+                    $nlen  = (isset($chapter['nlen']) ? $chapter['nlen'] : null);
+
                     if ($filename && $filepath)
                         $thumbSrc = "../content/" . $filepath . thumbnail($filename);
                     else $thumbSrc = null;
                     //echo "filename is " . $filename;
-                    // makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npn,$prefix,$lang)
-                    makeActivityButton('pdf',
+                    makeChapterButton('pdf',
                         '../content/' . $filepath,
                         $filename,
                         $displayname,
@@ -149,11 +152,13 @@ Description: looma lesson plan presenter
                        null,
                        null,
                        $pagenumber,
+                       $len,
                        2.3,
                         null,
                         null,
                         $nfn,
                         $npn,
+                        $nlen,
                         null,
                         $lang
                     );
@@ -192,7 +197,6 @@ Description: looma lesson plan presenter
     </div>
 
     <?php //include ('includes/toolbar.php'); ?>
-    <?php include ('includes/js-includes.php'); ?>
     <script src="js/jquery-ui.min.js">  </script>
     <script src="js/jquery.hotkeys.js"> </script>
     <script src="js/tether.min.js">  </script>

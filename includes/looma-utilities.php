@@ -252,7 +252,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         if ($url)         echo "data-url='" . $url . "' ";
 
         if ($ft == 'pdf' || $ft == 'chapter') {
-            echo "data-pg='" . ($pg?$pg:1) . "' ";
+            echo "data-page='" . ($pg?$pg:1) . "' ";
             if ($npg) echo "data-npg='" . $npg . "' ";
 
             echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
@@ -264,6 +264,66 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
                   echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
 
 	}; //end makeActivityButton()
+
+
+/*********************************/
+/******** makeChapterButton *****/
+/*********************************/
+
+
+
+// NOTE: instead of this long list of args, the fn should take one psaram - an assoc array/object with all the activity's attributes
+
+function makeChapterButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $len, $zoom, $grade, $epversion, $nfn, $npg, $nlen, $prefix,$lang) {
+
+
+    if ($thumb && $thumb != "") $thumbSrc = $thumb;
+    $thumbSrc = htmlspecialchars($thumbSrc);
+    if ( !file_exists($thumbSrc)) $thumbSrc = $fp . "thumbnail.png";
+
+    $fn = htmlspecialchars($fn);
+
+    //Now make the BUTTON
+    echo "<button class='activity play img' ";
+
+    if ($fp)          echo "data-fp='" .  $fp . "' ";
+    if ($lang)          echo "data-lang='" .  $lang . "' ";
+
+    if ($fn)          echo 'data-fn="' .  $fn . '" ';
+    if ($nfn)         echo "data-nfn='" .  $nfn . "' ";
+
+    if ($ole_id)      echo "data-ole='" .  $ole_id . "' ";
+    if ($grade)       echo "data-grade='" .  $grade . "' ";
+    if ($epversion)   echo "data-epversion='" .  $epversion . "' ";
+
+    if ($ft)          echo "data-ft='" .  $ft . "' ";
+    if ($dn)          echo "data-dn='" .  $dn . "' ";
+
+    if ($ndn === "") $ndn = null;
+
+    if ($ndn)         echo "data-ndn='" .  $ndn . "' ";
+    if ($prefix)      echo "data-prefix='" .  $prefix . "' ";
+
+    if ($mongo_id)    echo "data-id='" .  $mongo_id . "' ";
+    if ($mongo_id)    echo "data-mongoid='" .  $mongo_id . "' ";
+    if ($ch_id)       echo "data-ch='" .  $ch_id . "' ";
+    if ($url)         echo "data-url='" . $url . "' ";
+
+    echo "data-page='" . ($pg?$pg:1) . "' ";
+    if ($npg) echo "data-npg='" . $npg . "' ";
+
+    echo "data-len='" . ($len?$len:1) . "' ";
+    if ($nlen) echo "data-nlen='" . $nlen . "' ";
+
+        echo "data-zoom='" . $zoom . "' ";  //assumes zoom='' defaults to zoom-auto
+
+    echo ">";
+    echo '<img draggable="false" src="' . $thumbSrc . '">';
+    //echo "<span>" . $dn . "</span>";
+    displayName($fn, $dn, $ndn);
+    echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
+
+}; //end makeChapterButton()
 
 
 	?>

@@ -31,16 +31,14 @@ function scrollTimeline($btn) {
     $('#timeline-container').animate({
         scrollLeft: $btn.outerWidth(true) * ($btn.index() - 9)
     }, 700);
-};
-
+}
 function pause() {
     // $viewer.empty();
     //if ($('#video')) $('#video').each(this.pause()); //pause video if there it is playing
     playing = false;
     //$timeline.fadeIn(500);
     $('#pause').css('background-image', 'url("images/play-button.png")');
-}; //end pause()
-
+} //end pause()
 function play($item) {
     
     //$(video).empty();
@@ -57,13 +55,13 @@ function play($item) {
     //$timeline.fadeOut(500);  //this hides the timeline when playing media - decided to not hide the timeline [usability]
     
     playActivity($item.data('ft'),        $item.data('fn'),         $item.data('fp'),
-                 $item.data('dn'),        $item.data('id'), "", $item.data('pg'),
+                 $item.data('dn'),        $item.data('id'), "", $item.data('page'),
                  $item.data('epversion'), $item.data('ole'),        $item.data('grade'),
-                 $item.data('nfn'),       $item.data('npg'),        $item.data('lang')
+                $item.data('nfn'),       $item.data('npg'),        $item.data('lang'),
+                $item.data('len'),       $item.data('nlen')
     );
-}; //end play()
-
-function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, npn, lang) { //play the activity of type FT, named FN, in path FP, display-name DN
+} //end play()
+function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, npn, lang, len, nlen) { //play the activity of type FT, named FN, in path FP, display-name DN
     // depending on FT, may use ID, CH (a ch_id) or pg (for PDFs)
     
     // plays the selected (onClick) timeline element (activity) in the $viewer div
@@ -124,19 +122,20 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             $('.speak, .lookup').show();
     
             var pagenumber;
+            var filename;
+            var length;
             if (lang == 'np' && npn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
                 pagenumber = npn;
-            } else pagenumber = pg;
-     
-            var filename;
-            if (lang == 'np' && nfn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
                 filename = nfn;
-            } else filename = fn;
-    
-    
+                length = nlen;
+            } else {
+                pagenumber = pg;
+                filename = fn;
+                length = len;
+            }
+     
             $pdfHTML.find('iframe').attr('src',
-                'looma-viewer.html?file=' + fp + filename + '#page=' + pagenumber
-                //   + '&zoom=160'
+            'looma-pdf-viewer.php?fn=' + filename + '&fp=' + fp + '&page=' + pagenumber + '&len=' + length + '&zoom=' + 2.3
             );
             $pdfHTML.appendTo($viewer);
             break;
@@ -202,9 +201,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             $viewer.html('<div class="text-display">File not found</div>');
             console.log("ERROR: in playActivity(), unknown type: " + ft);
             break;
-    }; //end SWITCH(ft)
-    
-    
+    } //end SWITCH(ft)
     /*other file types:
 
     case "evi":
@@ -217,9 +214,8 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
         '&dn=' + button.getAttribute('data-dn');
         break;
      */
-    
-}; //end playActivity()
 
+} //end playActivity()
 /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
 function makesortable() {
     //$('timelineDisplay').sortable( "destroy" ); //remove previous sortable state
@@ -230,22 +226,19 @@ function makesortable() {
         scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
         handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
     }).disableSelection();
-};
-
+}
 function makeImageHTML() {
     return ('<img src="">');
-};
-
+}
 // function makePdfHTML() {return('<embed id="fullscreen" src="" height=100% width=100%>');};
 
 
-function makePdfHTML() // see looma-pdf.php for original code
+function makePdfHTML() // see looma-play-pdf.php for original code
 {
     return ('<div id="fullscreen"><iframe id="iframe"' +
         'id="pdf-canvas" ><p hidden id="parameters" data-fn= data-fp= data-pg=></p>' +
         '</iframe></div>');
-}; //end makePdfHTML()
-
+} //end makePdfHTML()
 function openPage(item, collection, url) {
     $.post("looma-database-utilities.php", {
             cmd: "openByID",
@@ -257,8 +250,7 @@ function openPage(item, collection, url) {
         },
         'json'
     );
-};
-
+}
 function textHTML(id) {
     
     $.post("looma-database-utilities.php", {
@@ -280,14 +272,12 @@ function textHTML(id) {
         },
         'json'
     );
-};
-
+}
 function makeHtmlHTML() {
     return (
         '<div id="fullscreen"><embed src="" height=100% width=100%></div>'
     );
-};
-
+}
 //function makeLoomaHTML() { return('<div id="fullscreen"><embed src="" height=100% width=100%></div>');};
 
 function makeAudioHTML() {
@@ -301,8 +291,7 @@ function makeAudioHTML() {
         '</audio>' +
         '</div>' +
         '</div>');
-}; //end audioHTML
-
+} //end audioHTML
 function makeVideoHTML() {
     return (
         //'<div id="video-player">' +
@@ -315,8 +304,7 @@ function makeVideoHTML() {
         //'</div>'
     
     );
-}; //end videoHTML
-
+} //end videoHTML
 window.onload = function() {
     //$('#controlpanel').draggable(); //makes the control buttons moveable around the screen.
     

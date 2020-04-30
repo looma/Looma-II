@@ -49,6 +49,7 @@ Description:
  * LOOMA.confirm()
  * LOOMA.prompt()
  * LOOMA.$_GET()
+ * LOOMA.escapeHTML()
  */
 
 var LOOMA = (function() {
@@ -405,7 +406,7 @@ thumbnail: function (filename, filepath, filetype) {
                     if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
                     imgsrc = path + thumbnail_prefix + "_thumb.jpg";
                 }
-                else if (filetype == "pdf") { //pdf
+                else if (filetype == "pdf" || filetype === "Document") { //pdf
                     thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
                     if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
                     imgsrc = path + thumbnail_prefix + "_thumb.jpg";
@@ -969,7 +970,7 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
     if (!notTransparent) LOOMA.makeTransparent();
 
     $(document.body).append("<div class='popup textEntry' id='ch_id_popup'>" +
-        "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
+        "<button class='popup-button dismiss-popup'><b>X</b></button>" + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
 
         "<div id='ch_id'>" +
@@ -1025,7 +1026,7 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
        confirmed(ch_id);
     });
 
-    $('#dismiss-popup, #close-popup').click(function() {
+    $('.dismiss-popup, #close-popup').click(function() {
         //$("#close-popup").off('click');
         //$("#dismiss-popup").off('click');
         LOOMA.closePopup();
@@ -1312,12 +1313,11 @@ LOOMA.toggleFullscreen = function() {
 LOOMA.makeTransparent = function($container) {
     if (!$container) $container  = $('body > div');
     $container.addClass('all-transparent');
-    //the following click code doesnt work
-    //$container.click(function(e) { $container.click(); });
-
-    //nor does this one
-    //$(document).click(function(e) {if (e.target !== $('.popup')[0]) LOOMA.closePopup();});
-
+   
+    //NOTE: add .off('click', xxxx) to turn off click response outside the popup
+    $container.css('pointerEvents','none');
+//$container.off('click');
+    
     //also set ESC key to cancel the popup
     $(document).keydown(function (e) {
         const ESC = 27;  // escape key maps to keycode `27`
@@ -1330,6 +1330,9 @@ LOOMA.makeTransparent = function($container) {
  LOOMA.makeOpaque = function($container) {
      if (!$container) $container = $('body > div');
      $container.removeClass('all-transparent');
+     
+     //NOTE: add .on('click', xxxx) to turn off click response outside the popup
+     $container.css('pointerEvents','auto');
  };  // End of makeOpaque
 
 /** Removes any popups on the page */
@@ -1340,7 +1343,10 @@ LOOMA.closePopup = function() {
     $('.popup').fadeOut(1000).remove();
     var $container = $('body > div');
     $container.removeClass('all-transparent');
-    $container.off('click');
+    
+    LOOMA.makeOpaque($container);
+    
+    //$container.off('click');
     $(document).off('keydown');  //stop listening for ESC
     //$(document).off('click');  //stop listening for CLICK
 };  //end closePopup()
@@ -1354,24 +1360,18 @@ LOOMA.closePopup = function() {
  * @param time (optional)- a delay in seconds after which the popup is automatically closed
  * @param next - function to call when the popup is dismissed or times out
  * */
-//var popupInterval;
 LOOMA.alert = function(msg, time, notTransparent, next){
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
-    //$(document.body).append("<div class= 'popup'>" +
     var $attachpoint = ($('#fullscreen').length > 0) ? $('#fullscreen') : $(document.body);
     $attachpoint.append("<div class= 'popup'>" +
-        "<button class='popup-button' id='dismiss-popup'><b>X</b></button>"+ msg +
+        "<button class='popup-button dismiss-popup'><b>X</b></button>"+ msg +
         "<button id ='close-popup' class ='popup-button'>" +
         //"<img src='images/alert.jpg' class='alert-icon'" +
         LOOMA.translatableSpans("OK", "ठिक छ") + "</button></div>").hide().fadeIn(1000);
 
-    $('#close-popup, #dismiss-popup').click(function() {
-       // $("#close-popup").off('click');
-        //$("#dismiss-popup").off('click');
-        if (next) {
-            next();
-        }
+    $('#close-popup, .dismiss-popup').click(function() {
+        if (next) {next();}
         LOOMA.closePopup();
     });
     
@@ -1384,9 +1384,7 @@ LOOMA.alert = function(msg, time, notTransparent, next){
         var popupInterval = setInterval(function() {
             if (timeLeft <= 0) {
                 clearInterval(popupInterval);
-                if (next) {
-                    next();
-                }
+                if (next) {next();}
                 LOOMA.closePopup();
             }
             timeLeft -= 1;
@@ -1406,7 +1404,7 @@ LOOMA.confirm = function(msg, confirmed, canceled, notTransparent) {
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
     $(document.body).append("<div class='popup confirmation'>" +
-        "<button class='popup-button' id='dismiss-popup'><b>X</b></button> " + msg +
+        "<button class='popup-button dismiss-popup'><b>X</b></button> " + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<button id='confirm-popup' class='popup-button'>"+
         LOOMA.translatableSpans("confirm", "निश्चय गर्नुहोस्") +"</button></div>").hide().fadeIn(1000);
@@ -1417,7 +1415,7 @@ LOOMA.confirm = function(msg, confirmed, canceled, notTransparent) {
         confirmed();
     });
 
-    $('#dismiss-popup, #close-popup').click(function() {
+    $('.dismiss-popup, #close-popup').click(function() {
         //$("#close-popup").off('click');
         //$("#dismiss-popup").off('click');
         LOOMA.closePopup();
@@ -1435,7 +1433,7 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
     $(document.body).append("<div class='popup textEntry'>" +
-        "<button class='popup-button' id='dismiss-popup'><b>X</b></button>" + msg +
+        "<button class='popup-button dismiss-popup'><b>X</b></button>" + msg +
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<input id='popup-input' autofocus></input>" +
         "<button id='confirm-popup' class='popup-button'>"+
@@ -1444,7 +1442,7 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
     $('#popup-input').focus();
 
     $('#popup-input').on( 'keydown', function( e ) {
-                if ( e.keyCode === 13 ) {
+                if ( e.keyCode === 13 ) {  // carriage return
                     console.log('PROMPT returned ', $('#popup-input').val());
                     confirmed($('#popup-input').val());
                     LOOMA.closePopup();
@@ -1452,21 +1450,23 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
     });
 
     $('#confirm-popup').click(function() {
-       //$("#confirm-popup").off('click');
        console.log('PROMPT returned ', $('#popup-input').val());
        confirmed($('#popup-input').val());
        LOOMA.closePopup();
     });
 
-    $('#dismiss-popup, #close-popup').click(function() {
-        //$("#close-popup").off('click');
-        //$("#dismiss-popup").off('click');
+    $('.dismiss-popup, #close-popup').click(function() {
         LOOMA.closePopup();
         canceled();
    });
 };  //end prompt()
+ 
+ LOOMA.escapeHTML = function(text) {
+     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+ };  //end escapeHTML()
 
-// from www.creativejuiz.fr  this function mimics server-side(PHP) $_GET[],
+ // from www.creativejuiz.fr  this function mimics server-side(PHP) $_GET[],
 // giving client-side (JS) access to URL search parameters
 function $_GET(param) {
     var vars = {};

@@ -175,7 +175,7 @@ Description:  displays and navigates content folders for Looma
                     if (array_key_exists('ft',  $folderMongo)) $ft = $folderMongo['ft'];
                     if (array_key_exists('prefix',  $folderMongo)) $prefix = $folderMongo['prefix'];
 
-                    // DEBUG   echo "dir is " . $dirDn . " ft is " . $ft;
+                    //   echo "dir is " . $dirDn . " ft is " . $ft;
 
                 } else {
                     $dirDn = $file;  $dirnDn = $file;  // skip bug fix 2020 01
@@ -453,6 +453,7 @@ Description:  displays and navigates content folders for Looma
                                     $query = array('fn' => $file);
                                     $activity = $activities_collection->findOne($query);
                                     $dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : str_replace($specials, " ", $base);
+                            // NOTE: this lookup for DN doesnt work for textbooks, whose DNs are in textbooks collection, not in activities collection
                                 }
 
                                 switch (strtolower($ext)) {
@@ -477,8 +478,12 @@ Description:  displays and navigates content folders for Looma
                                         $item['thumb'] = "";
                                         $item['mongoID'] = $mongoID;
 
+                                            $item['page']  = ($activity && array_key_exists('pn', $activity)) ? $activity['pn'] : 1;
+                                            $item['zoom'] = ($activity && array_key_exists('zoom', $activity)) ? $activity['zoom'] : 2.2;
+
                                         $list[] = $item;
-                                        break;
+
+                                    break;
                                     default:
                                         // ignore unknown filetypes
                                 };  //end SWITCH
@@ -509,7 +514,7 @@ Description:  displays and navigates content folders for Looma
                                 echo "<td>";
                                 makeActivityButton($item['ext'], $item['path'], $item['file'], $item['dn'],
                                     "", $item['thumb'], "",
-                                    $item['mongoID'], "", "", "", "", "", "", null, null,null,null);
+                                    $item['mongoID'], "", "",  $item['page'],  $item['zoom'], "", "", null, null,null,null);
                                 echo "</td>";
                                 nextButton();
                             }

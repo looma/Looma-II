@@ -29,10 +29,10 @@ button {height:9vh;
 
 button.en-chapter {grid-column:1;}
 button.en-lesson {grid-column:2;font-size: 2.5vh;}
-button.en-activities {grid-column:3;font-size: 2.5vh;}
+button.en-activities {grid-column:3;font-size: 2.0vh;}
 button.np-chapter {grid-column:4;}
 button.np-lesson {grid-column:5;font-size: 2.5vh;}
-button.np-activities {grid-column:6;font-size: 2.5vh;}
+button.np-activities {grid-column:6;font-size: 2.0vh;}
 
 button.heading {
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1958cc), color-stop(100%,#1c62e3));

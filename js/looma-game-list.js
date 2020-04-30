@@ -1,312 +1,119 @@
-var prompts = [];
-var responses = [];
-var scoring = "rocket";
-var teamNum = 1;
-var theId = null;
-function runMCList()
-{
-    console.log("in mc");
-    var classButtons = document.getElementsByClassName("classbuttons");
-    for (var i = 0; i < classButtons.length; i++)
-    {
-        classButtons[i].addEventListener('click', function() {sendClass(event)});
-    }
+'use strict';
+var classNum;
+var randClass;
 
-    var subjectButtons = document.getElementsByClassName("subjectbuttons");
-    for (var i = 0; i < subjectButtons.length; i++)
-    {
-        subjectButtons[i].addEventListener('click', function() {sendSubject(event)});
-    }
+function displaySubjects(classNum) {
+    $('.subject').hide();
+    $('.quiz').hide();
+    //classNum = className.substring(5);
+    console.log("clicked class: " + classNum);
+    $(".subject[data-class='" + classNum + "']").show();
+} //end displaySubjects()
 
-    var gameButtons = document.getElementsByClassName("mc-buttons");
-    for (var i = 0; i < gameButtons.length; i++)
-    {
-        gameButtons[i].addEventListener('click', function() {addGame(event)});
-    }
+function displayQuizzes(classNum, subjName) {
+    $('.quiz').hide();
+    // var quizId = className.substring(5);
+    // console.log(subj)
+    $(".quiz[data-class='" + classNum + "'][data-subj='" + subjName + "']").show();
+    //$('.quiz.class-'+classNum+'.'+subjName).show();
+}  // end displayQuizes()
 
-    var scoreButtons = document.getElementsByClassName("scoreButtons");
-    for (var i = 0; i < scoreButtons.length; i++)
-    {
-        scoreButtons[i].addEventListener('click', function() {chooseScore(event)});
-    }
+function activateClass(classNum) {
+        // de-activate all CLASS buttons
+        $('.class').removeClass('active');
+        // activate button for this CLASS
+    $(".class[data-class='" + classNum + "']").addClass('active');
+} //end activateClass()
 
-    var teamButtons = document.getElementsByClassName("teamButtons");
-    for (var i = 0; i < teamButtons.length; i++)
-    {
-        teamButtons[i].addEventListener('click', function() {chooseTeams(event)});
-    }
+function activateSubject(subjectName) {
+         // de-activate all SUBJECT buttons
+        $('.subject').removeClass('active');
+         //  active button for this SUBJECT
+    
+    //BUG: next statement doesnt work sometimes bercuz there are duplicate IDs - e.g. id="#subj-Science"
+       // $('#' + subjectName).addClass('active');
+    $(".subject[data-subj='" + subjectName + "']").addClass('active');
 
-    var playButton = document.getElementById("play");
-    if (playButton != null)
-    {
-        playButton.addEventListener('click', sendMCGame);
-    }
-}
-function addGame(ev)
-{
-    addToUrl("&id=" + ev.target.getAttribute("data-id"));
+}  //end activateSubject
+
+function activateQuiz(quiz) {
+         // de-activate all SUBJECT buttons
+        $('.quiz').removeClass('active');
+         //  active button for this SUBJECT
+        //$('#' + quizName).addClass('active');
+        $(quiz).addClass('active');
+
 }
 
-function sendMCGame(ev)
-{
-    var theInd = window.location.href.indexOf("id=") + 3;
-    var theId = window.location.href.substring(theInd);
-    window.location.href = "looma-game.php?id=" + theId + "&scoring=" + scoring + "&teams=" + teamNum;
+function classButtonClicked(){
+    //called when a CLASS button is pressed
+    //hides or shows the SUBJECT buttons based on data-mask attribute of "this" button
+    var className = $(this).data('class');
+    activateClass(className);              //activate this CLASS - highlights the button
+    displaySubjects(className);            // display SUBJECT buttons for this CLASS
+    activateSubject(null);     // de-activate all SUBJECTS
+    //$("#random").removeClass('active');
+    //$(".random-class").hide();
+    //$(".random-subj").hide();
+
+} // end showSubjectButtons()
+function subjectButtonClicked(){
+    //called when a SUBJECT button is pressed
+    var classNum = $(this).data('class');
+    var subjectName = $(this).data('subj');
+    activateSubject(subjectName);              //activate this SUBJECT - highlights the button
+    displayQuizzes(classNum, subjectName);
+    activateQuiz(null);
+
+}  //  end subjectButtonClicked()
+function quizButtonClicked() {
+    activateQuiz(this);
+    var quizId = $(this).data('id');
+    var quizSubj = $(this).data('subj');
+    var quizClass = $(this).data('class');
+    
+    window.location = "looma-game.php?id=" + quizId + "&subj=" + quizSubj + "&class=" + quizClass;
 }
 
-function sendMapGame(ev)
-{
-    var theInd = window.location.href.indexOf("id=") + 3;
-    var theId = window.location.href.substring(theInd);
-    window.location.href = "looma-game.php?id=" + theId + "&teams=" + teamNum;
+function matchingRandomClicked() {
+    $("#random").addClass('active');
+    $(".class").removeClass('active');
+    $("button.subject").hide();
+    $("button.quiz").hide();
+    $(".random-class").show();
 }
+function matchingRandomClassClicked(){
+    $('.random-class').removeClass('active');
+    $('#' + this.id).addClass('active');
+    randClass = this.id;
+    $(".random-subj").show();
+}
+function matchingRandomSubjectClicked() {
+    var selectedClass = randClass.substring(13);
+    var selectedSubj = (this.id).substring(12);
+    window.location = "looma-game.php?type=randMatching&class=" + selectedClass + "&subj=" + selectedSubj;
+}
+$(document).ready (function() {
+    //add listeners to all CLASS buttons
+    $("button.class").click(classButtonClicked);
 
-function sendClass(ev)
-{
-    addToUrl("&class=" + ev.target.id[5]);
-}
+    // //add listeners to all SUBJECT buttons
+    $("button.subject").click(subjectButtonClicked);
+    
+    $("button.quiz").click(quizButtonClicked);
 
-function sendSubject(ev)
-{
-    addToUrl("&subject=" + ev.target.id);
-}
+    //for random matching game
+    $("#random").click(matchingRandomClicked);
+    $(".random-class").click(matchingRandomClassClicked);
+    $(".random-subj").click(matchingRandomSubjectClicked);
 
-function chooseGame(ev)
-{
-    theId = ev.target.getAttribute("data-id");
-    var theGameButtons = document.getElementsByClassName("mc-buttons");
-    for (var i = 0; i < theGameButtons.length; i++)
-    {
-        if (theGameButtons[i].style.color == "green")
-        {
-            theGameButtons[i].style.color = "black";
-        }
-    }
-    ev.target.style.color = "green";
-}
-
-function chooseScore(ev)
-{
-    scoring = ev.target.id;
-    var theScoreButtons = document.getElementsByClassName("scoreButtons");
-    for (var i = 0; i < theScoreButtons.length; i++)
-    {
-        if (theScoreButtons[i].style.color == "green")
-        {
-            theScoreButtons[i].style.color = "black";
-        }
-    }
-    ev.target.style.color = "green";
-}
-
-function chooseTeams(ev)
-{
-    teamNum = parseInt(ev.target.innerHTML);
-    var theTeamButtons = document.getElementsByClassName("teamButtons");
-    for (var i = 0; i < theTeamButtons.length; i++)
-    {
-        if (theTeamButtons[i].style.color == "green")
-        {
-            theTeamButtons[i].style.color = "black";
-        }
-    }
-    ev.target.style.color = "green";
-}
-
-function sendGame(ev)
-{
-    console.log(ev);
-    window.location.href = "looma-game.php?id=" + ev.target.getAttribute("data-id");
-}
-
-
-function runMatchingList()
-{
-    var vocabOrPremade = document.getElementsByClassName("origins");
-    for (var i = 0; i < vocabOrPremade.length; i ++)
-    {
-        vocabOrPremade[i].addEventListener('click', function() {getOrigin(event)});
-    }
-
-    var vocabClassButtons = document.getElementsByClassName("vocabclass");
-    for (var i = 0; i < vocabClassButtons.length; i++)
-    {
-        vocabClassButtons[i].addEventListener('click', function() {assignVocabClass(event); return false;});
-    }
-
-    var matchingGameButtons = document.getElementsByClassName("matching-buttons");
-    if (matchingGameButtons.length != 0)
-    {
-        for (var i = 0; i < matchingGameButtons.length; i++)
-        {
-            matchingGameButtons[i].addEventListener('click', function() {sendMatchingGame(event)});
-        }
-    }
-}
-function sendMatchingGame(ev)
-{
-    window.location.href = "looma-game.php?id=" + ev.target.getAttribute("data-id");
-}
-function getOrigin(ev)
-{
-    if (ev.target.id == "vocab")
-    {
-        addToUrl("&origin=vocab");
-    }
-    else // ev.target.id == "premade"
-    {
-        addToUrl("&origin=premade");
-    }
-}
-function assignVocabClass(ev)
-{
-    var chosenClass = ev.target.id.substring(5);
-    //console.log(chosenClass);
-    //addToUrl("&class=" + chosenClass);
-    generateVocabGame(ev.target.id, chosenClass);
-    return false;
-}
-function generateVocabGame(className, chosenClass)
-{
-    console.log("generate vocab game")
-    LOOMA.wordlist(className, "", "", 5, true, function(r){console.log("word list succed"); getDef(r,chosenClass)}, function(){console.log("wordlist failed")});
-    // var listWithDef = {"one": ["hello", "greeting"], "two": ["pencil", "writing utensil"], "three": ["clock", "time keeping device"]};
-    // prompts.push(listWithDef.one[0]);
-    // responses.push(listWithDef.one[1]);
-    // prompts.push(listWithDef.two[0]);
-    // responses.push(listWithDef.two[1]);
-    // prompts.push(listWithDef.three[0]);
-    // responses.push(listWithDef.three[1]);
-    // console.log(prompts);
-    // console.log(responses);
-    return false;
-}
-    function getDef(list, chosenClass)
-    {
-        //console.log("GET DEF", list)
-        LOOMA.define(list[counter],
-            function(r)
-            {
-                //console.log("getDEF response: ", r);
-                responses.push(r['def']);
-                counter++;
-                if (counter < list.length)
-                {
-                    getDef(list,chosenClass);
-                }
-                else
-                {
-                    counter = 0;
-                    var classButtons = document.getElementsByClassName("vocabclass");
-                    for (var i = 0; i < classButtons.length; i++)
-                    {
-                        classButtons[i].style.visibility = "hidden";
-                    }
-                   // console.log("SHOULD BE ALL DEFINITIONS", responses);
-                    var info = {"title":"Randomly Generated Vocab Game", "presentation_type":"matching", "ch_id":chosenClass, "ft":"game", "timeLimit":100, "TTS":"no", "prompts":list, "responses":responses};
-                    function s(r) {console.log("successful post");}
-                    function f(r) {console.log("failed post");}
-
-                    $.ajax({
-                        url: "looma-game.php",
-                        type: "POST",
-                        data: info,
-                        success: s,
-                        error: f
-                    });
-                    // addToUrl("&class=" + chosenClass);
-                }
-            },
-            function(r)
-            {
-                console.log("AJAX FAIL");
-            }
-        )
-    };
-function fail(jqXHR, textStatus, errorThrown) {
-    //alert("enter function fail");
-    console.log("fail")
-    console.log(jqXHR)
-    console.log('VOCAB: AJAX call to dictionary-utilities.php FAILed, jqXHR is ' + jqXHR.status);
-    window.alert('failed with textStatus = ' + textStatus + ', and errorThrown = ' + errorThrown);
-}
-
-function addToUrl(stuff)
-{
-    window.location.href += stuff;
-}
-function runTimelineList()
-{
-    var timeButtons = document.getElementsByClassName("timeline-buttons");
-    for (var i = 0; i < timeButtons.length; i++)
-    {
-        timeButtons[i].addEventListener('click', function() {sendGame(event)});
-    }
-}
-function runConcentrationList()
-{
-    var vocabOrPremade = document.getElementsByClassName("origins");
-    for (var i = 0; i < vocabOrPremade.length; i ++)
-    {
-        vocabOrPremade[i].addEventListener('click', function() {getOrigin(event)});
-    }
-
-    var concentrationButtons = document.getElementsByClassName("conc-buttons");
-    for (var i = 0; i < concentrationButtons.length; i++)
-    {
-        concentrationButtons[i].addEventListener('click', function() {sendGame(event)});
-    }
-}
-function runMapList()
-{
-    var mapButtons = document.getElementsByClassName("map-buttons");
-    for (var i = 0; i < mapButtons.length; i++)
-    {
-        mapButtons[i].addEventListener('click', function() {addGame(event)});
-    }
-
-    var teamButtons = document.getElementsByClassName("teamButtons");
-    for (var i = 0; i < teamButtons.length; i++)
-    {
-        teamButtons[i].addEventListener('click', function() {chooseTeams(event)});
-    }
-
-    var playButton = document.getElementById("play");
-    if (playButton != null)
-    {
-        playButton.addEventListener('click', sendMapGame);
-    }
-}
-
-window.onload = function() 
-{
-    var href = window.location.href;
-    var startIndex = href.indexOf("type");
-    var type = href.substring(startIndex + 5)
-    var endIndex = type.indexOf("&");
-    if (endIndex > -1)
-    {
-        type = type.substring(0, endIndex);
-    }
-    console.log(type);
-    if (type == "mc")
-    {
-        runMCList();
-    }
-    else if (type == "matching")
-    {
-        runMatchingList();
-    }
-    else if (type == "timeline")
-    {
-        runTimelineList();
-    }
-    else if (type == "concentration")
-    {
-        runConcentrationList();
-    }
-    else if (type == "map")
-    {
-        runMapList();
-    }
-} 
+    // var classCookie = LOOMA.readStore('arith-grade', 'session');
+    // if (classCookie) {
+    //     activateClass (classCookie);
+    //     displaySubjects(classCookie);
+    //     var subjectCookie = LOOMA.readStore('arith-subject', 'session');
+    //     if (subjectCookie) {
+    //         activateSubject (subjectCookie);
+    //     };
+    // }
+}); //end of document.ready anonymous function

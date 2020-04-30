@@ -78,7 +78,7 @@ Comments:
 
         }
         error_log("end check login");
-        return array(false, $errors);
+        return array(false, $errors, null);
     }  //end check_login
 
 /*

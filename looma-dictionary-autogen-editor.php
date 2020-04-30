@@ -82,7 +82,7 @@ error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
     <meta charset="UTF-8">
     <title>Looma Dictionary Editor</title>
     <script src="js/jquery.min.js"></script>
-    <script src="js/pdf.js"></script>
+    <script src="js/XXXpdf.js"></script>
     <script src="js/looma.js">           </script>      <!-- Looma common page functions -->
     <script src="js/looma-utilities.js"></script>
     <script src="js/looma-dictionary-autogen-pdfToText.js"></script>

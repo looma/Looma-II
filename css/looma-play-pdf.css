@@ -3,6 +3,7 @@
 #pdf {
     position:relative;
     height:92vh;
+    /*  height:100%;*/
     width:100%;
     background-color:val(--looma-blue);
     margin-right:3px;

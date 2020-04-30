@@ -715,6 +715,8 @@ if ( isset($_REQUEST["cmd"]) ) {
 
         $cursor = $dbCollection->find($query);   //->skip($page)->limit(20);
 
+        //echo 'FOUND '.$cursor->count().' items';
+
         //SORT the found items before sending to client-side
         $cursor->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
@@ -735,10 +737,12 @@ if ( isset($_REQUEST["cmd"]) ) {
 
         if (sizeof($result) > 0 ) {
 
+            //echo 'PROCESSING '.sizeof($result).' items';
+
             $result = alphabetize_by_dn($result);
 
             $unique[] = $result[0];
-            $specials = array('text', 'slideshow', 'looma', 'lesson', 'evi', 'history', 'map', 'game');
+            $specials = array('text', 'text-template', 'slideshow', 'looma', 'lesson', 'evi', 'history', 'map', 'game');
             for ($i = 1; $i < sizeof($result); $i++) {
                 //echo "ft is " . $result[$i]['ft'] . "   ";
 

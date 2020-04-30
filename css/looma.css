@@ -460,15 +460,18 @@ button.navigate {
 
 /*****************
  * 'xlat' and 'tip' classes are tooltip popups
+ *
+ * "xlat" on hover shows a translation of the <span> in the upper right (fixed) of the screen
+ *
+ * "tip" on hover shows a small tooltip for a button (like a Looma toolbar button) giving the text name for the button's icon
  ********************/
-.xlat {display:none;}
-
-
 h1 span.english-keyword, h1 span.native-keyword {
     display:inline-block;
 }
 
 .native-keyword {display:none;}
+
+.xlat {display:none;}
 
 span:hover .xlat {
     display:block;
@@ -487,9 +490,8 @@ span.tip { display:none;}
 button:hover span.tip.yes-show 	{
     display:block;
     position:absolute;
-    
-    bottom:3px;
-    
+    bottom:10%;
+    left:15%;
     margin:auto;
     font-size: 0.3em;
     z-index: 100;
@@ -616,7 +618,7 @@ button#bagh-chal {
     float: left;
 }
 
-#dismiss-popup { /* close popup button*/
+.dismiss-popup { /* close popup button*/
     color : white;
     background: red;
     width: 3vw;

@@ -1,9 +1,12 @@
-/******************************
+ /******************************
 Author: Luke Bowsher, Catie Cassani, Sun-Mi Oh, Meg Reinstra, Alexa Thomases
 Filename: looma-game-list.css
 Date: June 2018
 Description: formats the preferences page
 *****************************/
+
+#main-container-horizontal {overflow:hidden;}
+#fullscreen {overflow:hidden;}
 
 #thescreen {
   display: grid;
@@ -38,6 +41,21 @@ Description: formats the preferences page
   float: right;
 }
 
+.game-button-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;}
+
+.game-button-div button {
+    margin:5px;
+    height:15vh;
+    width:15vh;
+}
+
+#row2 {font-size:2em;}
+#row4 {font-size:0.6em;}
+#row5, #row6 {font-size:2em;}
+
 button[title="buttons"]
 {
   position: relative;
@@ -48,3 +66,7 @@ button[title="buttons"]
   font-weight: bold;
 }
 
+.subject, .quiz, .random-class, .random-subj {display:none;}
+
+ .game-button-div button.quiz {width:15vw;}
+ .game-button-div button.quiz .little  span {font-size:4em; line-height: 1.5em;}

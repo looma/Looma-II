@@ -17,6 +17,12 @@ button span.english-keyword, button span.native-keyword {
     display:block;
 }
 
+button:hover span.tip.yes-show.big-show {
+    width:25vw;
+    position:relative;
+    bottom:1vh;
+    left:0;
+ }
 
 .black-border {
     border: 2px solid black;

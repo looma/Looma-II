@@ -26,7 +26,7 @@ require ('includes/mongo-connect.php');
         <h3>Looma 2</h3>
         <h4>Release 5.7  APR 2020   </h4>
         <!-- copyright notice, with link to vts.org-->
-        <span class='glyphicon glyphicon-copyright-mark'></span>2019
+        <span class='glyphicon glyphicon-copyright-mark'></span>2020
         <a draggable="false"  class="footer" href="http://www.villagetechsolutions.org">by VillageTech Solutions</a>
         <h4>Contact:  info AT villagetechsolutions DOT org</h4>
         <!--<a href="https://creativecommons.org/licenses/by-sa/2.0/">License: CC-BY-SA-NC-2.0</a>-->

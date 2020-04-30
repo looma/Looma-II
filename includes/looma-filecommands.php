@@ -81,4 +81,23 @@ Description:  search code for Looma Editors to find lesson-plans, slideshows, et
 
 <div id="filesearch-results"></div>
 
-    <script src="js/looma-filecommands.js">   </script>
+<div id="filesave-panel"  class="save-popup" >
+    <button class='popup-button dismiss dismiss-popup'><b>X</b></button>
+    <p id='filesave-message'>Save work before quiting?</p><br/>
+    <button id='cancel-filesave' class="dismiss cancel-popup" type='button'>Cancel</button>
+    <button id='filesave-nosave' type='button'>Don't Save</button>
+    <button id='filesave-save' type='button'>Save</button>
+
+</div>
+
+
+<div id="filesaveAs-panel" class="save-popup" >
+    <button class='popup-button dismiss dismiss-popup'><b>X</b></button>
+    <p id='filesave-message'>Enter a name for this file:</p><br/>
+    <span>Filename:</span><input id="filename"></input><br/>
+    <button id='cancel-filesaveAs' class="dismiss cancel-popup" type='button'>Cancel</button>
+    <button id='save-filesaveAs' type='button'>Save</button>
+
+</div>
+
+<script src="js/looma-filecommands.js">   </script>

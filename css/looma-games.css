@@ -1,6 +1,9 @@
 #main-container-horizontal {
     margin:0;
 }
+
+button {margin: 3vh;}
+
 .button-div#row1 {
     top:33%;
     left:5%;
@@ -82,8 +85,10 @@ button.class:hover,  button.subject:hover {
     margin:0;
 }
 
+
 button#bagh-chal {
     display:inline-block;
     bottom: 17vh;
     /*opacity:0;*/
 }
+

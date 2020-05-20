@@ -46,8 +46,6 @@ docs.forEach( function(doc) {
     if (fields[0] !== "" && fields[1] !== "") {
         var filename = fields[0];
         var displayname = fields[1];
-        fields.shift();
-        fields.shift();
         requestcount++;
         //print(requestcount + ' - - CHECKING ' + displayname + ' [' + filename + '] adding ' + fields.toString());
     
@@ -65,12 +63,16 @@ docs.forEach( function(doc) {
             // retain OLD ch_ids  ????
             //oldCH_ID.forEach (function(x){ if(x && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
             //
-            
-            fields.forEach   (function(x){ if(x && legalCH_ID(x,activity['dn']) && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
+            var IDs = fields[2].split(/,/);  //list of ch_ids on COMMAs
+    
+            IDs.forEach   (function(x){
+                if(x && legalCH_ID(x,activity['dn']) && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
             
             if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
             
-            print(++changecount + ' - - CHANGED CH_IDs ' + displayname + ' [' + oldCH_ID.toString() + '] TO ' + activity['ch_id'].toString());
+            print(++changecount + ' - - CHANGED CH_IDs '
+                  + displayname + ' [' + oldCH_ID.toString() + '] TO '
+                  + activity.ch_id.toString());
         }
     } else print('*******    BAD INPUT LINE: ' + doc);
 });  // end foreach doc

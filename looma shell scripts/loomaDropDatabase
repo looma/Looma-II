@@ -1,2 +1,0 @@
-use looma
-db.dropDatabase()

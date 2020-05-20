@@ -47,8 +47,6 @@ docs.forEach( function(doc) {
     if (fields[0] !== "" && fields[1] !== "") {
         var filename = fields[0];
         var displayname = fields[1];
-        fields.shift();
-        fields.shift();
         requestcount++;
         //print(requestcount + ' - - CHECKING ' + displayname + ' [' + filename + '] adding ' + fields.toString());
         
@@ -66,9 +64,12 @@ docs.forEach( function(doc) {
             // retain OLD nch_ids  ????
             //oldnCH_ID.forEach (function(x){ if(x && activity['nch_id'].indexOf(x) === -1) activity['nch_id'].push(x);});
             //
-            
-            fields.forEach   (function(x){ if(x && legalCH_ID(x,activity['dn']) && activity['nch_id'].indexOf(x) === -1) activity['nch_id'].push(x);});
-            
+    
+            var IDs = fields[2].split(/,/);  //list of ch_ids on COMMAs
+    
+            IDs.forEach   (function(x){
+                if(x && legalCH_ID(x,activity['dn']) && activity['nch_id'].indexOf(x) === -1) activity['nch_id'].push(x);});
+    
             if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
             
             print(++changecount + ' - - CHANGED nCH_IDs ' + displayname + ' [' + oldnCH_ID.toString() + '] TO ' + activity['nch_id'].toString());

@@ -271,7 +271,7 @@ function openfile(openId, collection, filetype) { //filetype must be given e.g. 
 //////        QUIT        /////
 ///////////////////////////////
 function  quit() {
-    if (callbacks['modified']()) askToSaveWork('save before quit',currentname, currentcollection, currentfiletype)
+    if (callbacks['modified']()) askToSaveWork('Save before quitting?',currentname, currentcollection, currentfiletype)
         .then(function(){window.history.back();})
         .catch(function() {});
     else window.history.back();  //race condition? savework() AJAX may not run??
@@ -432,7 +432,7 @@ $(document).ready(function () {
     
     $('#new').click(function()      {
         console.log("FILE COMMANDS: clicked new");
-            if (callbacks['modified']()) askToSaveWork('save before new',currentname, currentcollection, currentfiletype)
+            if (callbacks['modified']()) askToSaveWork('Save before new?',currentname, currentcollection, currentfiletype)
                 .then (function(msg){
                     callbacks['clear']();
                     template = false;
@@ -455,7 +455,7 @@ $(document).ready(function () {
     
     $('#open').click(function()     {
         console.log("FILE COMMANDS: clicked open");
-            if (callbacks['modified']()) askToSaveWork('save before open',currentname, currentcollection, currentfiletype)
+            if (callbacks['modified']()) askToSaveWork('Save before open?',currentname, currentcollection, currentfiletype)
                 .then (function() {performSearch(currentcollection, currentfiletype);})
                 .catch(function() {});
         else
@@ -598,7 +598,7 @@ $(document).ready(function () {
     
     $('#opentemplate').click(function()     {
         console.log("FILE COMMANDS: clicked open template");
-        if (callbacks['modified']()) askToSaveWork('save before open',currentname, currentcollection, currentfiletype + '-template')
+        if (callbacks['modified']()) askToSaveWork('Save before open?',currentname, currentcollection, currentfiletype + '-template')
             .then (function() {performSearch(currentcollection, currentfiletype + '-template');})
             .catch(function() {});
         else
@@ -713,7 +713,7 @@ $(document).ready(function () {
     $('.back-button').on('click', function()
     {
         console.log("FILE COMMANDS: toolbar BACK ARROW clicked");
-        if (callbacks['modified']()) askToSaveWork('save before leave',currentname, currentcollection, currentfiletype)
+        if (callbacks['modified']()) askToSaveWork('Save before leaving page?',currentname, currentcollection, currentfiletype)
             .then(function(){window.history.back();})
             .catch(function() {});
 
@@ -728,7 +728,7 @@ $(document).ready(function () {
         console.log("FILE COMMANDS: toolbar 'beforeunload' event");
     
         // this beforeunload code doesnt work ??? unload happens first, then our popup flashes but is erased and unloaded
-        if (callbacks['modified']()) askToSaveWork('save before unload',currentname, currentcollection, currentfiletype)
+        if (callbacks['modified']()) askToSaveWork('Save before leaving page?',currentname, currentcollection, currentfiletype)
             .then(function(){window.history.back();})
             .catch(function() {});
     };

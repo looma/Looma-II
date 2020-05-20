@@ -21,10 +21,12 @@ Description:  for Looma 2
         <h1 class="title">Looma Settings Page</h1>
 	    <div id="user-tools">
         <br><br>
-        <?php
-            //makeActivityButton('pdf', $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang)
-            makeActivityButton('pdf','', 'user_manual_en.pdf', 'Looma User Manual', 'User Manual','images/logos/LoomaLogoTransparentTrimmed.png',null,null,null,'',1,null,null,null,'',null,null,null);
-        ?>
+            <a href="looma-library.php?fp=../content/Looma%20User%20Manuals/">
+                <button class="logo">
+                    <img src="images/logos/Looma-english-amanda 2x1 crop transparent.png">
+                    <br> Looma User Manuals
+                </button></a>
+
         </div>
 
          <div id="tools">

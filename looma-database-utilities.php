@@ -44,7 +44,7 @@ require_once('includes/looma-utilities.php');
         function saveActivity($collection, $insert) {
                 $result = $collection->insert($insert);
                 echo json_encode($result);
-        }; //end SAVE
+        } //end SAVE
 
         //saveToMongo function
         function saveToMongo($collection, $name, $type, $insert, $activity) {
@@ -95,10 +95,10 @@ require_once('includes/looma-utilities.php');
                 {
                     //echo "Mongo Error writing to Activities collection";
                     echo json_encode(array('error'=>'Mongo error writing Activities collection'));
-                };
+                }
 
-            };
-        };  //end saveToMongo()
+            }
+        }  //end saveToMongo()
 
         function changename($collection, $oldname, $newname, $ft, $activity) {
                 global $activities_collection;
@@ -125,8 +125,8 @@ require_once('includes/looma-utilities.php');
                 //echo "coll is " . $collection . ", ft is " . $_RESULT['ft'] . ", id is " . $id . ", newname is " . $newname;
 
                 echo json_encode($result1);
-            };
-        }; //end CHANGENAME)
+            }
+        } //end CHANGENAME)
 
 /*****************************/
 /****   main code here    ****/
@@ -137,8 +137,9 @@ date_default_timezone_set ( 'UTC');
 $date = date("Y.m.d");
 
 
-function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
-$login = loggedin();
+function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+
+  $login = loggedin();
 
 if (isset($_REQUEST["collection"])) {
 
@@ -165,25 +166,26 @@ if (isset($_REQUEST["collection"])) {
        case "game":          $dbCollection = $games_collection;         break;
        case "games":         $dbCollection = $games_collection;         break;
        case "edited_videos": $dbCollection = $edited_videos_collection; break;
+       case "new_content":   $dbCollection = $new_content_collection;   break;
 
        default: echo "unknown collection: " . $collection;        return;   //TODO: return error here
-       };
+       }
 
-   /* NOTE: mongoDB collections list:
-    $activities_collection    = $loomaDB -> activities;
-    $chapters_collection      = $loomaDB -> chapters;
-    $textbooks_collection     = $loomaDB -> textbooks;
-    $dictionary_collection    = $loomaDB -> dictionary;
-    $logins_collection        = $loomaDB -> logins;
-    $history_collection       = $loomaDB -> histories;
-    $slideshows_collection    = $loomaDB -> slideshows;
-    $lessons_collection       = $loomaDB -> lessons;
-    $text_files_collection    = $loomaDB -> text_files;
-    $edited_videos_collection = $loomaDB -> edited_videos;
-    */
-    };
+    /* NOTE: mongoDB collections list:
+     $activities_collection    = $loomaDB -> activities;
+     $chapters_collection      = $loomaDB -> chapters;
+     $textbooks_collection     = $loomaDB -> textbooks;
+     $dictionary_collection    = $loomaDB -> dictionary;
+     $logins_collection        = $loomaDB -> logins;
+     $history_collection       = $loomaDB -> histories;
+     $slideshows_collection    = $loomaDB -> slideshows;
+     $lessons_collection       = $loomaDB -> lessons;
+     $text_files_collection    = $loomaDB -> text_files;
+     $edited_videos_collection = $loomaDB -> edited_videos;
+     */
+    }
 
-if ( isset($_REQUEST["cmd"]) ) {
+  if ( isset($_REQUEST["cmd"]) ) {
     $cmd =  $_REQUEST["cmd"];
     //accepted commands are "open", "save", "rename", "exists", "delete"
 
@@ -369,7 +371,16 @@ if ( isset($_REQUEST["cmd"]) ) {
             if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
 
             saveActivity($dbCollection, $insert);
-        };
+        }
+        else if ($collection == "new_content") {
+            $insert = $_REQUEST['data'];
+            $insert["date"] = gmdate("Y.m.d");  //using greenwich time
+            $insert["author"] = $_COOKIE['login'];
+
+            $result = $dbCollection->insert($insert);
+
+            echo json_encode($result);
+        }
         // else handle other collections' specific save requirements
         return;
     // end case "save"
@@ -417,7 +428,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             // delete any references to the file from Activities collection
             $removequery = array('mongoID' => new MongoId($file['_id']));
             $activities_collection->remove($removequery);  //by default, removes multiple instances
-        };
+        }
         return;
     // end case "delete"
 
@@ -646,7 +657,7 @@ if ( isset($_REQUEST["cmd"]) ) {
                     array_push($extensions, $type);
                     break;
                 default: {echo json_encode("ERROR: unknown file type"); return;}
-            };
+            }
 
         $areaRegex = null;
         $nameRegex = null;
@@ -654,7 +665,7 @@ if ( isset($_REQUEST["cmd"]) ) {
 
         if (isset($_POST['category']) && $_POST['category'] != "All") {
             $areaRegex = new MongoRegex ('/' . $_POST['category'] . '/i');
-        };
+        }
 
         //Build Regex to match search term (i is ignore case)
         if (isset($_POST['search-term']) && $_POST['search-term'] |= '')
@@ -673,7 +684,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             //echo 'classSubjRegex is ' . $classSubjRegex;
 
             $classSubjRegex = new MongoRegex($classSubjRegex . '/');
-        };
+        }
 
         /* DEBUG
         echo 'collection is ' . $_POST['collection'];
@@ -699,16 +710,16 @@ if ( isset($_REQUEST["cmd"]) ) {
         // using REGEX with "/i" to get case insensitive search for keywords
         if (isset($_REQUEST['key1']) && $_REQUEST['key1'] != '') {
             $query['key1'] = $_REQUEST['key1'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key1'].'/i');
-        };
+        }
         if (isset($_REQUEST['key2']) && $_REQUEST['key2'] != '') {
             $query['key2'] = $_REQUEST['key2'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key2'].'/i');
-        };
+        }
         if (isset($_REQUEST['key3']) && $_REQUEST['key3'] != '') {
             $query['key3'] = $_REQUEST['key3'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key3'].'/i');
-        };
+        }
         if (isset($_REQUEST['key4']) && $_REQUEST['key4'] != '') {
             $query['key4'] = $_REQUEST['key4'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key4'].'/i');
-        };
+        }
 
         //echo "Query is: "; print_r($query);
         //echo '$dbCollection is ' . $dbCollection;
@@ -727,7 +738,7 @@ if ( isset($_REQUEST["cmd"]) ) {
         $result = array();
         if ($cursor->count() > 0) {
             foreach ($cursor as $d) $result[] = $d;
-        };
+        }
 
         // removing duplicate results - based on 'fn' and 'fp' being equal
         // this is a crutch to cover up duplicate entries in 'activities' collection
@@ -742,7 +753,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             $result = alphabetize_by_dn($result);
 
             $unique[] = $result[0];
-            $specials = array('text', 'text-template', 'slideshow', 'looma', 'lesson', 'evi', 'history', 'map', 'game');
+            $specials = array('text', 'text-template', 'slideshow', 'looma', 'lesson', 'lesson-template', 'evi', 'history', 'map', 'game');
             for ($i = 1; $i < sizeof($result); $i++) {
                 //echo "ft is " . $result[$i]['ft'] . "   ";
 
@@ -770,7 +781,7 @@ if ( isset($_REQUEST["cmd"]) ) {
 
                     $unique[] = $result[$i];
                 //DEBUG echo sizeof($unique) . " unique results found      \n";
-            };
+            }
             $numUnique = sizeof($unique);
 
             if (isset($_REQUEST['pagesz']) && isset($_REQUEST['pageno']))
@@ -782,13 +793,13 @@ if ( isset($_REQUEST["cmd"]) ) {
         return;
     // end case "search"
 
-
+/*
         ////////////////////////////////
-        // - - - SEARCHCHAPTERS - - - //
+        // - - - SEARCHCHAPTERS OLD VERSION- - - //
         ////////////////////////////////
         case "searchChapters":
             // called (from lesson-search.js, etc) using POST with FORMDATA serialized by jquery
-            // $_POST[] can have these entries: cmd, collection, class, subj, lang, chapter
+            // $_POST[] can have these entries: cmd (='searchChapters'), collection (='chapters'), class, subj, lang, chapter, dn, key1..4
 
             $subjectcodes = array(
                 'science' => 'S',
@@ -855,6 +866,89 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
         // end case "searchChapters"
 
+*/
+
+
+    ////////////////////////////////
+    // - - - SEARCHCHAPTERS - - - //
+    ////////////////////////////////
+        case "searchChapters":
+            // called (from lesson-search.js, etc) using POST with FORMDATA serialized by jquery
+            // $_POST[] can have these entries: cmd (='searchChapters'), collection (='chapters'), class, subj, lang, chapter, dn, key1..4
+
+            $subjectcodes = array(
+                'science' => 'S',   'math' => 'M',              'english' => 'EN',
+                'nepali' => 'N',    'social studies' => 'SS',   'health' => 'H',
+                'vocation' => 'V',  'moral education' => 'SSa', 'science optional' => 'Sa',
+                'math optional' => 'Ma');
+
+            if (isset($_REQUEST['search-term'])) $dn = $_REQUEST['search-term']; else $dn = null;
+            if (isset($_REQUEST['language'])) $lang = $_REQUEST['language']; else $lang = 'en';
+            if (isset($_REQUEST['lang'])) $lang = $_REQUEST['lang']; else $lang = 'en';  //may be 'language' or 'lang'. legal values 'any', 'en', 'np'
+            if (isset($_REQUEST['class'])) $class = $_REQUEST['class']; else $class = null;
+            if (isset($_REQUEST['subj'])) $subj = $_REQUEST['subj']; else $subj = null;
+            if (isset($_REQUEST['chapter'])) $chapter = $_REQUEST['chapter']; else $chapter = null;
+            if (isset($_REQUEST['key1'])) $key1 = $_REQUEST['key1']; else $key1 = null;
+            if (isset($_REQUEST['key2'])) $key2 = $_REQUEST['key2']; else $key2 = null;
+            if (isset($_REQUEST['key3'])) $key3 = $_REQUEST['key3']; else $key3 = null;
+            if (isset($_REQUEST['key4'])) $key4 = $_REQUEST['key4']; else $key4 = null;
+
+            $classSubjRegex = null;
+            if (isset($chapter) && $chapter != '') {
+                $classSubjRegex = $chapter;
+            } elseif ((isset($class) && $class != '') || (isset($subj) && $subj != '')) {
+                $classSubjRegex = "/";
+                if (isset($class) && $class != '') $classSubjRegex .= '^' . $class;
+                if (isset($subj)  && $subj  != '') $classSubjRegex .= $subjectcodes[$subj] . '\d';
+                $classSubjRegex .= "/";
+
+                $classSubjRegex = new MongoRegex($classSubjRegex);
+            } else $classSubjRegex = null;
+
+            if ($classSubjRegex) $query = array('_id' =>  $classSubjRegex);
+            //$query['_id'] = $classSubjRegex;
+
+            if ($dn) $query['dn'] =     new MongoRegex('/' . $dn. '/i');
+            if ($key1) $query['key1'] = $key1;
+            if ($key2) $query['key2'] = $key2;
+            if ($key3) $query['key3'] = $key3;
+            if ($key4) $query['key4'] = $key4;
+
+            //echo "query is ";
+            //print_r($query);
+
+            $cursor = $chapters_collection->find($query);
+
+            //SORT the found items before sending to client-side
+            $cursor->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+
+                //NOTE: we use an older version of MONGO that doesnt support COLLATION order.
+                //  this code should get all the cursor elements into a PHP array and do NATKSORT ( like looma-library.php does)
+
+            if (isset($_REQUEST['pagesz']))  {
+                if (isset($_REQUEST['pageno'])) $cursor->skip(($_REQUEST['pageno'] - 1 ) * $_REQUEST['pagesz']);
+                $cursor->limit($_REQUEST['pagesz']);
+            }
+
+            $result = array();
+            if ($cursor->count() > 0) {
+                foreach ($cursor as $d)  {
+                    $query =  array("prefix" => prefix( $d['_id']));
+                    $textbook = $textbooks_collection->findOne($query);
+                    //$d['fn'] = $lang === 'en' ? $textbook['fn'] : $textbook['nfn'];
+                    $d['fn'] = $textbook['fn'];
+                    $d['nfn'] = $textbook['nfn'];
+                    $d['fp'] = $textbook['fp'];
+
+                    // only send back chapters that are in "$lang" language ('en' or 'np')
+                    if      ($lang === 'en' && isset($d['dn'])  && $d['dn'] !== '') $result[] = $d;
+                    else if ($lang === 'np' && isset($d['ndn']) && $d['ndn'] !== '') $result[] = $d;
+                    else if ($lang === 'both') $result[] = $d;
+                }}
+
+            echo json_encode(array('count'=> sizeof ($result), 'list'=>$result));
+            return;
+    // end case "searchChapters"
 
     //////////////////////////////
     // - - - addChapterID - - - //
@@ -934,7 +1028,7 @@ if ( isset($_REQUEST["cmd"]) ) {
 
             echo json_encode($result);
 
-        };  // end foreach()
+        }  // end foreach()
 
         return;
     // end case "editActivity"
@@ -963,7 +1057,7 @@ if ( isset($_REQUEST["cmd"]) ) {
                 if (move_uploaded_file($_FILES['upload']      ['tmp_name'], "../content/$year/$login/{$_FILES['upload']['name']}")
                 && (move_uploaded_file($_FILES['upload-thumb']['tmp_name'], "../content/$year/$login/{$_FILES['upload-thumb']['name']}")))
                 { $result = 'The files have been uploaded'; }
-                else { $result = 'ERROR: File upload failed'; };
+                else { $result = 'ERROR: File upload failed'; }
 
                 // insert ACTIVITY in mongoDB
 
@@ -1052,7 +1146,7 @@ if ( isset($_REQUEST["cmd"]) ) {
             return;
         // end case "nothing"
 
-    }; //end switch "cmd"
+    } //end switch "cmd"
 }
 else return; //no CMD given
 ?>

@@ -384,13 +384,13 @@ thumbnail: function (filename, filepath, filetype) {
                 filetype = filetype.toLowerCase();
             
                 if (filetype == 'chapter') {
-                    imgsrc = homedirectory + "/content/textbooks/" + filepath + filename + "_thumb.jpg";
+                    imgsrc = homedirectory + "content/textbooks/" + filepath + filename + "_thumb.jpg";
                 }
                 else if (filepath && filepath.indexOf('/Khan/') >= 0) {
-                    imgsrc = homedirectory + '/content/Khan/thumbnail.png';
+                    imgsrc = homedirectory + 'content/Khan/thumbnail.png';
                 }
                 else if (filepath && filepath.indexOf('/W4S/') >= 0) {
-                    imgsrc = homedirectory + '/content/W4S/thumbnail.png';
+                    imgsrc = homedirectory + 'content/W4S/thumbnail.png';
                 }
                 else if (filetype == "mp3" || filetype == "m4a" || filetype == "audio") {  //audio
                     if (filepath) path = filepath; else path = homedirectory + 'content/audio/';

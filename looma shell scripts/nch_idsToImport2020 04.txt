@@ -1,0 +1,317 @@
+Physics of a yoyo demo.mp4	Physics of a Yoyo Demo	5S03.03	
+Physics of a yoyo explanation.mp4	Yoyo Physics Explained	5S03.03	
+Efficiency 1.mp4	Efficiency 1	6S01
+Efficiency 2.mp4	Efficiency 2	6S01
+Center of Mass Real.mp4	Center of Mass Real	6S02
+Elastic Collisions.mp4	Elastic Collisions	6S02	
+Electricity Prob12.mp4	Electricity Problem	6S08	
+Fluids Prob 2.mp4	Fluids Problem	6S01	
+Mechanical Advantage.mp4	Mechanical Advantage	6S01	
+Pendulum.mp4	Pendulum	6S01	
+Doppler Asymetry.mp4	Doppler Asymetry	6S06	
+Doppler Moving Observer.mp4	Doppler Moving Observer	6S06	
+Doppler Moving Source.mp4	Doppler Moving Source	6S06	
+Bird on Wire.mp4	Bird on Wire	6S08	
+Hand Generator Demonstration.mp4	Nicoles Tongue	6S08	
+Air Resistance Demo.mp4	Air Resistance Demo	6S02	
+Car Around Turn.mp4	Car Around Turn	6S02	
+Centripetal Motion.mp4	Centripetal Motion	6S02	
+Coeff Friction Example Problem.mp4	Coeff Friction  Problem	6S02	
+Coefficient Kinetic Friction.mp4	Coefficient Kinetic Friction	6S02	
+Collisions.mp4	Collisions	6S02	
+Diving Board.mp4	Diving Board	7S02	
+Elevator Type Problems.mp4	Elevator Type Problems	7S02	
+Energy Force Prob 9.mp4	Energy Force Problem	7S02	
+FBD Incline Plane.mp4	FBD Incline Plane	7S02	
+Free Body Diagrams 2.mp4	Free Body Diagrams 2	7S02	
+Free Body Diagrams.mp4	Free Body Diagrams	7S02	
+Friction.mp4	Friction	7S02	
+Impulse Happy Ball Sad Ball.mp4	Impulse Happy Ball Sad Ball	7S02	
+Impulse.mp4	Impulse	7S02	
+Newton Prob 31.mp4	Newton Prob 31	7S02	
+Newtons 2nd Law Easy.mp4	Newtons 2nd Law Easy	7S02	
+Newtons 2nd Law Problem.mp4	Newtons 2nd Law Problem	7S02	
+Newtons Cradle Demo.mp4	Newtons Cradle Demo	7S02	
+Newtons Cradle Explanation.mp4	Newtons Cradle Explained	7S02	
+Newtons Third Law.mp4	Newtons Third Law	7S02	
+Position and Displacement.mp4	Position and Displacement	7S02	
+Right Hand Rule Explained.mp4	Right Hand Rule Explained	7S02	
+Rotation Prob16.mp4	Rotation Prob16	7S02	
+Torque and Ladder Problems.mp4	Torque and Ladder Problems	7S02	
+Torque.mp4	Torque	7S02	
+Vector Components Pisa.mp4	Vector Components Pisa	7S02	
+Vector Components.mp4	Vector Components	7S02	
+Hydraulic Press.mp4	Hydraulic Press	7S02	
+Pressure Demos.mp4	Pressure Demos	7S02	
+Concave Mirror Explained 2.mp4	Concave Mirror Explained 2	7S07	
+Conservation of Energy v.mp4	Conservation of Energy v	7S05	
+Converging Lens Problems.mp4	Converging Lens Problems	7S07	
+Converging Lens.mp4	Converging Lens	7S07	
+Electron Laser Demo Finished.mp4	Electron Laser Demo	7S07	
+Lightbulbs Part 3.mp4	Light Bulbs Part 3	7S07	
+Mirages.mp4	Mirages	7S07	
+Rainbows.mp4	Rainbows	7S07	
+Total Internal Reflection Blue Laser Demo.mp4	Internal Reflection Blue Laser	7S07	
+Total Internal Reflection Demo & Explanation.mp4	Internal Reflection Demo	7S07	
+Total Internal Reflection Explained.mp4	Internal Reflection Explained	7S07	
+Total Internal Reflection.mp4	Total Internal Reflection	7S07	
+Resonance.mp4	Resonance	7S02	
+Capacitor Energy Same Direction.mp4	Capacity Energy Direction	7S10	
+Capacitor Energy.mp4	Capacitor Energy	7S10	
+Capacitor Problem.mp4	Capacitor Problem	7S10	
+Capacitors in Parallel.mp4	Capacitors in Parallel	7S10	
+Capacitors in Series.mp4	Capacitors in Series	7S10	
+Circuits Prob11.mp4	Circuits Problem	7S10	
+Hand Generator Demonstration.mp4	Hand Generator Demo	7S10	
+How Electricity is Generated.mp4	How to Generate Electricityt	7S10	
+Internal Resistance.mp4	Internal Resistance	7S10	
+Lightbulbs Part 1.mp4	Light Bulbs Part 1	7S07	7S10
+Lightbulbs Part 2.mp4	Light Bulbs Part 2	7S07	7S10
+Oersteds suprise.mp4	Oersted's Surprise	7S09	7S10
+The Insides of a Generator.mp4	The Insides of a Generator	7S09	7S10
+Wire in Magnetic Field.mp4	Wire in Magnetic Field	7S09	7S10
+Uncertainty Principle Energy.mp4	Uncertainty Principle Energy	7S01	
+Uncertainty Principle Position.mp4	Uncertainty Principle Position	7S01	
+What is a Graph.mp4	What is a Graph		
+Derivation of v=rw.mp4	Derivation of v=rw		
+Electrostatic Triangle F13.mp4	Electrostatic Triangle F13		
+Electrostatic Triangle old.mp4	Electrostatic Triangle old		
+Electrostatic Triangle.mp4	Electrostatic Triangle		
+Radiation Carbon Dating.mp4	Radiation Carbon Dating		
+Time Dilation Example Problem.mp4	Time Dilation Problem		
+Time Dilation.mp4	Time Dilation		
+1D Motion Prob 16.mp4	Motion Problem		
+Angular Momentum.mp4	Angular Momentum		
+Ashaan Problem.mp4	Ashaan Problem		
+Average Velocity--an Interesting Case.mp4	Average Velocity--an Interesting Case		
+Ballistic Pendulum Demo NEW.mp4	Ballistic Pendulum Demo		
+Bike Hanging.mp4	Bike Hanging		
+Bike Wheel.mp4	Bike Wheel		
+Displacement.mp4	Displacement		
+Half way down not half speed.mp4	Half way down not half speed		
+Moment of Inertia Demo Rulers.mp4	Moment of Inertia Demo		
+Moment Of inertia.mp4	Moment Of inertia		
+Motion Problems Part 1 real.mp4	Motion Problems Part 1		
+Motion Problems Part 2.mp4	Motion Problems Part 2		
+Physics of Walking.mp4	Physics of Walking		
+Projectile Motion Bird Problem.mp4	Bird Projectile Problem		
+Projectile Motion Overview.mp4	Projectile Motion Overview		
+Relative Velocity.mp4	Relative Velocity		
+Rollercoaster Loop Rotational Motion.mp4	Roller coaster Rotational		
+Rollercoaster Loop.mp4	Roller coaster Loop		
+Rollercoaster Problem.mp4	Roller coaster Problem		
+Rolling Motion.mp4	Rolling Motion		
+SHM Springs.mp4	SHM Springs		
+Spring and Mass.mp4	Spring and Mass		
+Standing Waves Demo.mp4	Standing Waves Demo		
+Standing Waves Explanation.mp4	Standing Waves Explanation		
+The Physics of Walking.mp4	The Physics of Walking		
+Velocity Vectors.mp4	Velocity Vectors		
+Wave Eqn Problem.mp4	Wave Eqn Problem		
+Wave Equation.mp4	Wave Equation		
+Conservation of Energy.mp4	Conservation of Energy		
+Pendulums and Springs v.mp4	Pendulums and Springs		
+Rollercoaster.mp4	Roller coaster		
+Work 2.mp4	Work 2		
+Work.mp4	Work		
+Specific Heat.mp4	Specific Heat		
+Refraction 2.mp4	Refraction 2		
+Refraction.mp4	Refraction		
+Snells Law 2.mp4	Snells Law 2		
+Snells Law.mp4	Snells Law		
+Spectrometer.mp4	Spectrometer		
+Beat Frequency.mp4	Beat Frequency		
+Sound Demo.mp4	Sound Demo		
+Sound in an open Tube Demo.mp4	Sound in an Open Tube Demo		
+Sound in an Open Tube Explained.mp4	Open Tube Sound Explained		
+Sound.mp4	Sound		
+Electrostatics.mp4	Electro statics		
+Faraday Cage.mp4	Faraday Cage		
+Hall Effect.mp4	Hall Effect		
+RC Time Constant.mp4	RC Time Constant		
+Resistors in Parallel.mp4	Resistors in Parallel		
+Resistors in Series.mp4	Resistors in Series		
+Ring Launcher Slo Mo.mp4	Ring Launcher Slo Mo		
+Ring Launcher two wires attracting.mp4	Ring Launcher Two Wires		
+Ring Launcher.mp4	Ring Launcher		
+Radiation Half Life.mp4	Radiation Half Life		
+Radioacitivity Decay Constant.mp4	Radiation Decay Constant		
+Sunset.mp4	Sunset		
+Greenhouse Effect.mp4	Greenhouse Effect		
+Geosynchronous Orbit.mp4	Geosyn chronous Orbit		
+build_a_fraction_guide.pdf	Build A Fraction Guide	1M37	2M18	3M22	4M04.01	5M12
+build_a_fraction.html	Build A Fraction	1M37	2M18	3M22	4M04.01	5M12
+fractions_equality_guide.pdf	Fractions Equality Guide	1M37	2M18	3M22	 	 
+fractions_equality.html	Fractions Equality	1M37	2M18	3M22	 	 
+fractions_intro_guide.pdf	Fractions Intro Guide	1M37	2M18	3M22	 	 
+fractions_intro.html	Fractions Intro	1M37	2M18	3M22	 	 
+fractions_mixed_numbers_guide.pdf	Fractions Mixed Guide	1M37	2M18	3M22	 	 
+fractions_mixed_numbers.html	Fractions Mixed	1M37	2M18	3M22	 	 
+area_model_Introduction_guide.pdf	Area Model Introduction Guide	2M22				
+area_model_introduction.html	Area Model Introduction	2M22				
+area_model_multiplication_guide.pdf	Area Model Multiplica tion Guide	2M22				
+area_model_multiplication.html	Area Model Multiplica tion	2M22				
+arithmetic_guide.pdf	Arithmetic Guide	3M12				
+arithmetic.html	Arithmetic	3M12				
+area_model_decimals_guide.pdf	Area Model Decimals Guide	3M23				
+area_model_decimals.html	Area Model Decimals	3M23				
+unit_rates_guide.pdf	Unit Rates Guide	3M24				
+unit_rates.html	Unit Rates	3M24				
+area_model_algebra_guide.pdf	Area Model Algebra Guide	3M29				
+area_model_algebra.html	Area Model Algebra	3M29				
+make_a_ten_guide.pdf	Make A Ten Guide	4M02.01				
+make_a_ten.html	Make A Ten	4M02.01				
+energy_forms_and_changes_guide.pdf	Energy Forms And Changes Guide	4S01.12	5S01.09	7S05	9S04	
+energy_forms_and_changes.html	Energy Forms And Changes	4S01.12	5S01.09	7S05	9S04	
+trig_tour_guide.pdf	Trig Tour Guide	5M01				
+trig_tour.html	Trig Tour	5M01				
+fraction_matcher_guide.pdf	Fraction Matcher Guide	5M12				
+fraction_matcher.html	Fraction Matcher	5M12				
+expression_exchange_guide.pdf	Expression Exchange Guide					
+expression_exchange.html	Expression Exchange					
+equality_explorer_basics_guide.pdf	Equality Explorer Basics Guide		8M12			
+equality_explorer_basics.html	Equality Explorer Basics		8M12			
+equality_explorer_guide.pdf	Equality Explorer Guide		8M12			
+equality_explorer_two_variables_guide.pdf	Equality Explorer 2X Guide		8M12			
+equality_explorer_two_variables.html	Equality Explorer 2X		8M12			
+equality_explorer.html	Equality Explorer		8M12			
+graphing_lines_guide.pdf	Graphing Lines Guide					
+graphing_lines.html	Graphing Lines					
+area_builder_guide.pdf	Area Builder Guide					
+area_builder.html	Area Builder					
+balancing_act_guide.pdf	Balancing Act Guide	6S01				
+balancing_act.html	Balancing Act	6S01				
+forces_and_motion_basics_guide.pdf	Forces And Motion Basics Guide	6S02				
+forces_and_motion_basics.html	Forces And Motion Basics	6S02				
+pendulum_lab_guide.pdf	Pendulum Lab Guide	6S02				
+pendulum_lab.html	Pendulum Lab	6S02				
+wave_on_a_string_guide.pdf	Wave On A String Guide	6S02				
+wave_on_a_string.html	Wave On A String	6S02				
+faradays_law_guide.pdf	Faraday's Law Guide	6S08				
+faradays_law.html	Faraday's Law	6S08				
+bending_light_guide.pdf	Bending Light Guide	7S01	9S08			
+bending_light.html	Bending Light	7S01	9S08			
+ohms_law_guide.pdf	Ohm's Law Guide	7S01	9S07			
+ohms_law.html	Ohm's Law	7S01	9S07			
+diffusion_guide.pdf	Diffusion Guide	7S02				
+diffusion.html	Diffusion	7S02				
+friction_guide.pdf	Friction Guide	7S02	7S05	7S10		
+friction.html	Friction	7S02	7S05	7S10		
+hookes_law_guide.pdf	Hooke's Law Guide	7S02	9S02			
+hookes_law.html	Hooke's Law	7S02	9S02			
+under_pressure_guide.pdf	Under Pressure Guide	7S04	
+under_pressure.html	Under Pressure	7S04
+blackbody_spectrum_guide.pdf	Blackbody Spectrum Guide	7S07	9S05			
+blackbody_spectrum.html	Blackbody Spectrum	7S07	9S05			
+color_vision_guide.pdf	Color Vision Guide	7S07	9S19			
+color_vision.html	Color Vision	7S07	9S19			
+resistance_in_a_wire_guide.pdf	Resistance In A Wire Guide	7S10	9S07			
+resistance_in_a_wire.html	Resistance In A Wire	7S10	9S07			
+atomic_isotopes_guide.pdf	Atomic Isotopes Guide	7S11	9S08			
+atomic_isotopes.html	Atomic Isotopes	7S11	9S08			
+reactants_products_and_leftovers_guide.pdf	Reactants Results Guide	7S11	9S08			
+reactants_products_and_leftovers.html	Reactants Results	7S11	9S08			
+concentration_guide.pdf	Concentration Guide	7S12	9S09			
+concentration.html	Concentration	7S12	9S09			
+molarity_guide.pdf	Molarity Guide	7S12				
+molarity.html	Molarity	7S12				
+neuron_guide.pdf	Neuron Guide	7S16				
+neuron.html	Neuron	7S16				
+energy_skate_park_basics_guide.pdf	Energy Skate Park Basics Guide	7S17	9S04			
+energy_skate_park_basics.html	Energy Skate Park Basics	7S17	9S04			
+curve_fitting_guide.pdf	Curve Fitting Guide		9M11			
+curve_fitting.html	Curve Fitting		9M11			
+beers_law_lab_guide.pdf	Beer's Law Lab Guide		9S08			
+beers_law_lab.html	Beer's Law Lab		9S08			
+gravity_and_orbits_guide.pdf	Gravity And Orbits Guide		9S04			
+gravity_and_orbits.html	Gravity And Orbits		9S04			
+gravity_force_lab_basics_guide.pdf	Gravity Force Lab Basics Guide		9S04			
+gravity_force_lab_basics.html	Gravity Force Lab Basics		9S04			
+molecules_and_light_guide.pdf	Molecules And Light Guide					
+molecules_and_light.html	Molecules And Light					
+projectile_motion_guide.pdf	Projectile Motion Guide					
+projectile_motion.html	Projectile Motion					
+balloons_and_static_electricity_guide.pdf	Static Electricity Guide		9S07			
+balloons_and_static_electricity.html	Static Electricity		9S07			
+charges_and_fields_guide.pdf	Charges and Fields Guide		9S07			
+charges_and_fields.html	Charges and Fields		9S07			
+circuit_construction_kit_dc_guide.pdf	Circuit Construction Kit DC Guide		9S07			
+circuit_construction_kit_dc_virtual_lab_guide.pdf	Circuit Kit DC Virtual Lab Guide		9S07			
+circuit_construction_kit_dc_virtual_lab.html	Circuit Kit DC Virtual Lab		9S07			
+circuit_construction_kit_dc.html	Circuit Construction Kit DC		9S07			
+john_travoltage_guide.pdf	John Travoltage Guide		9S07			
+john_travoltage.html	John Travoltage		9S07			
+acid_base_solutions_guide.pdf	Acid Base Solutions Guide		9S09			
+acid_base_solutions.html	Acid Base Solutions		9S09			
+atomic_interactions_guide.pdf	Atomic Interactions Guide		9S08			
+atomic_interactions.html	Atomic Interactions		9S08			
+balance_chemical_equations_guide.pdf	Balance Ch. Equations Guide		9S09			
+balance_chemical_equations.html	Balance Ch. Equations		9S09			
+build_an_atom_guide.pdf	Build An Atom Guide		9S08			
+build_an_atom.html	Build An Atom		9S08			
+molecule_shapes_basics_guide.pdf	Molecule Shapes Basics Guide		9S09	9S13		
+molecule_shapes_basics.html	Molecule Shapes Basics		9S09	9S13		
+molecule_shapes_guide.pdf	Molecule Shapes Guide		9S09	9S13		
+molecule_shapes.html	Molecule Shapes		9S09	9S13		
+ph_scale_basics_guide.pdf	pH Scale Basics Guide		9S09			
+ph_scale_basics.html	pH Scale Basics		9S09			
+ph_scale_guide.pdf	pH Scale Guide		9S09			
+ph_scale.html	pH Scale		9S09			
+proportion_playground_guide.pdf	Proportion Playground Guide	9M09	9S01	9S02		
+proportion_playground.html	Proportion Playground	9M09	9S01	9S02		
+plinko_probability_guide.pdf	Plinko Probability Guide	9M19			
+plinko_probability.html	Plinko Probability	9M19				
+Should_You_Walk_or_Run_When_Its_Cold.mp4	Walk or Run When It's Cold	7S06	8S06	10S04			
+Solve_the_egg_drop_riddle.mp4	Egg Drop Riddle	8M10					
+Finding_Cube_Roots.mp4	Finding Cube Roots	8M03					
+Interest_2.mp4	Interest 2	8M09					
+Irrational_Numbers.mp4	Irrational Numbers	8M05					
+The mathematics of sidewalk illusions.mp4	The Math Of Sidewalk Illusions	8M21					
+What_Are_Cube_Roots.mp4	What Are Cube Roots	8M03					
+How small are we in the scale of the universe.mp4	How Small Are We	7S20					
+Are_We_Really_99_Chimp.mp4	Are We Really 99% Chimp	5S01.01	8S18	10S19			
+Building_a_Butterfly_Wing.mp4	Building a Butterfly Wing	4S01.05	5S01.03				
+Dear_Future_Generations_Sorry.mp4	Future Generations SORRY!	4SS05.04	10S22	9S23	9S22	7S22	
+Electromagnetic_spectrum.png	Electromagnetic spectrum	6S05	9S05				
+How_Deep_Is_The_Ocean.mp4	How Deep Is The Ocean	8S04	7S03	9S02	10S02		
+How_long_will_human_impacts_last.mp4	How Long Will Human Impacts Last	8S19					
+How_your_digestive_system_works.mp4How Your Digestion Works	How Your Digestion Works	4S01.05					
+Invasion_Of_The_Earthworms!.mp4	Invasion Of The Earthworms	4S01.03	5S01.01	6S14	7S15		
+Moon_Wobble.mp4	Moon Wobble	7S20	7S02				
+The_ferocious_predatory_dinosaurs_of_Cretaceous_Sahara.mp4	Dinosaurs of the Sahara		5S01.01				
+The_genius_of_Marie_Curie.mp4	The genius of Marie Curie	6S05	10H07				
+What_can_you_learn_from_ancient_skeletons.mp4	Learn From Ancient Skeletons	6S14	9S16				
+What_Happens_During_A_Stroke.mp4	What Happens During A Stroke	5S02.02	10H07				
+When_Is_Water_Safe_To_Drink.mp4	When Is Water Safe To Drink	8H01.04	10H02				
+Why_Do_Bats_Transmit_So_Many_Diseases_Like_Ebola.mp4	Why Do Bats Transmit Ebola	5S02.07	7H01.04	8H01.07	10H07		
+Why_Is_It_Hot_Underground.mp4	Why Is It Hot Underground	6S04	9SS02.01	10S03			
+Why_is_it_so_hard_to_cure_cancer.mp4	Why Is It So Hard To Cure Cancer	4S02.09	10S19				
+Why_perpetual_motion_machines_never_work.mp4	Perpetual Motion Machines	7S03	7S02				
+Why_So_Many_Meteorites_Come_From_The_Same_Place.mp4	Where Do Meteorites Come From	5S01.12	7S20	9S24			
+Will_The_Ocean_Ever_Run_Out_Of_Fish.mp4	Will The Ocean Run Out Of Fish	5S02.05	6S21				
+Glaciers.mp4	Glaciers	7S19					
+Peninsula_Watershed.mp4	Peninsula Watersheds	7S21					
+Phobos_From_Mars_Express.pdf	Phobos From Mars Express						
+Pillars_Of_Creation.pdf	Pillars Of Creation						
+Seagull_Nebula.pdf	Seagull Nebula						
+Shaping_NGC_6188.pdf	Shaping NGC 6188						
+Sombrero_Galaxy_2.pdf	Sombrero Galaxy 2						
+Sombrero_Galaxy.pdf	Sombrero Galaxy						
+Spiral_Galaxies_In_Collision.pdf	Spiral Galaxies Collision						
+Spiral_Galaxy_In_Collision.pdf	Spiral Galaxy Collision						
+Star_Birth_In_Cepheus.pdf	Star Birth In Cepheus						
+Star_Clusters.pdf	Star Clusters						
+Starburst.pdf	Starburst						
+Stars_And_Dust.pdf	Stars And Dust						
+Stars_Of_Andromeda.pdf	Stars Of Andromeda						
+Stephans_Quintet.pdf	Stephans Quintet						
+The_surprising_and_invisible_signatures_of_sea_creatures.mp4	Invisible Sea Creatures	7S19	7S15				
+Tychos_Supernova.pdf	Tychos Supernova						
+Why is Mount Everest so tall.mp4	Why Is Everest So Tall	6S17					
+Why_Do_India_And_China_Have_So_Many_People.mp4	Many People In India And China		6S22	8H01.05			
+End_Child_Marriage_and_Dowry.mp4	End Child Marriage and Dowry	6SS03.03	4SS03.03	8SSa03.03			
+Kathmandu_Valley.mp4	Ancient Kathmandu Photos 2	5SS06.01					
+Meena_Say_No_To_Dowry.mp4	Meena Say No To Dowry	6SS03.03	4SS03.03	8SSa03.03			
+Nepali_National_Anthem.mp4	Nepali National Anthem	3SS09.01					
+Pictures_of_Ancient_Kathmandu.mp4	Ancient Kathmandu Photos 1	4SS06.02					
+The_Power_Of-Creative_Constraints.mp4	The Power Of Creative Constraints	7SS02.01					

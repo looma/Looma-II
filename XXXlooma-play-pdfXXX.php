@@ -69,12 +69,12 @@ http://sourceforge.net/adobe/cmap/wiki/License/
       <!--   *****************  LOOMA  *******************  -->
 
     <!-- might not need 'compatibility.js'  ??? -->
-    <script src="js/compatibility.js"></script>
+    <script src="js/XXXcompatibility.js"></script>
 
     <!--   *****************  LOOMA  *******************  -->
     <!-- NOTE: looma uses a reduced size locale.properties, containing only US localization -->
     <link rel="resource" type="application/l10n" href="locale/locale.properties"/>
-    <script src="js/l10n.js"></script>
+    <script src="js/XXXl10n.js"></script>
 
     <script src="js/XXXpdf.js"></script>
 

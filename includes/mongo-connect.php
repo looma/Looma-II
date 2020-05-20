@@ -33,6 +33,7 @@
         $folders_collection    = $loomaDB -> folders;
         $edited_videos_collection = $loomaDB -> edited_videos;
         $volunteers_collection = $loomaDB -> volunteers;
+        $new_content_collection = $loomaDB -> new_content;
 
         //the lines below are commented out for now. some Looma installs have old MONGO versions that dont do 'createIndex'
         //$activities_collection->createIndex(array('ch_id' => 1));
@@ -44,5 +45,5 @@
     {
         echo "MongoConnectError connecting to MongoDB. Make sure MongoDB is running";
         exit();
-    };
+    }
 ?>

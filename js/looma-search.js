@@ -15,6 +15,10 @@ var $ajaxRequest;
 var pagesz = 500;  //default search results 'page size' (number of results returned form each search)
                     // can be over-ridden by calling code (e.g looma-library.js)
 var pageno;
+var searchName = 'generic';
+
+// function clearResults() is provided by the calling JS file
+function clearResults() {}
 
 /////////////////////////////
 /////  clearSearch()    /////
@@ -35,7 +39,7 @@ function clearSearch() {
         $("#grade-drop-menu").val("").change();
         $("#subject-drop-menu").val("").change();
         $('#ft-chapter').prop("checked", true);
-    };
+    }
     $('#chapter-div').hide();
     $('#preview').empty();
     pageno = 1;
@@ -44,7 +48,7 @@ function clearSearch() {
     clearSearchState();
     $("#search-term").focus();
     
-}; // end clearSearch()
+} // end clearSearch()
 
 /////////////////////////////
 /////  clearSearchState()     /////
@@ -54,7 +58,7 @@ function clearSearchState () {
     LOOMA.clearStore('libraryScroll', 'session');
     LOOMA.clearStore(searchName,      'session');
     
-};  //end clearSearchState()
+}  //end clearSearchState()
 
 /////////////////////////////
 /////  restoreSearchState()   /////
@@ -107,8 +111,8 @@ function restoreSearchState () {
             //$('#search').submit();  //re-run the search
     
     
-        };
-    };
+        }
+    }
     
     //note: restorekeywordropdown calls search.submut, so DONT do it here
     // $('#search').submit();  //re-run the search
@@ -116,7 +120,7 @@ function restoreSearchState () {
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
     $("#search-term").focus();
     
-};  //end restoreSearchState()
+}  //end restoreSearchState()
 
 /////////////////////////////
 /////  saveSearchState()      /////
@@ -126,7 +130,7 @@ function saveSearchState () {
     LOOMA.setStore('libraryScroll', $("#main-container-horizontal").scrollTop(), 'session');
     // save FROM contents
     LOOMA.saveForm($('#search'), searchName);
-}; //end saveSearchState()
+} //end saveSearchState()
 
 /////////////////////////////
 /////  setCollection()  /////
@@ -149,10 +153,10 @@ function setCollection(collection) {
         $('#chapter-div').hide();
         $('#chapter-drop-menu').empty();
         
-    };
+    }
     $("#search-term").focus();
     
-}; //end setCollection
+} //end setCollection
 
 /////////////////////////////
 /////  isFilterSet()    /////
@@ -163,15 +167,15 @@ function isFilterSet() {
     if ($('#collection').val() == 'activities') {
         if ($('#search-term').val()){set = true;}
         $(".flt-chkbx").each( function() {if (this.checked) {set = true;}} );
-        if ($("#key1-menu").val() != "") {set = true;};
+        if ($("#key1-menu").val() != "") {set = true;}
     } else { //collection=='chapters'
         
         if ($("#grade-drop-menu").val() != "") {set = true;}
         else if ($("#subject-drop-menu").val() != "") {set = true;}
-    };
+    }
     
     return set;
-};  //  end isFilterSet()
+}  //  end isFilterSet()
 
 /////////////////////////////
 /////  setRootKeyword()    /////
@@ -199,7 +203,7 @@ function setRootKeyword() {
     //$('#key2-menu').prop('disabled', true).text('');
     //$('#key3-menu').prop('disabled', true).text('');
     //$('#key4-menu').prop('disabled', true).text('');
-}; // end setRootKeyword()
+} // end setRootKeyword()
 
 //////////////////////////////////////
 /////  restoreKeywordDropdown()  /////
@@ -216,7 +220,7 @@ function restoreKeywordDropdown(level,keys) {
         if ($menu) {
             $element = $menu.children('option[value="' + key + '"]');
             $element.prop('selected', true);
-        };
+        }
 
          if ($element.data('kids') !== 'undefined') {  //the MONGO document for KEYWORDS returns KIDS as 'undefined' if there are no kids
             console.log('calling server wi th level = ' + level + ' and keys: ' + keys[1] + ', '+ keys[2] + ', '+ keys[3] + ', '+ keys[4] );
@@ -231,10 +235,10 @@ function restoreKeywordDropdown(level,keys) {
                         
                         for (var i=0;i<kids.length;i++){
                             $('<option data-kids=' + kids[i].kids["$id"] + ' value="' + kids[i].name + '" label="' + kids[i].name + '"/>').appendTo($next);
-                        };
+                        }
                         
                         $('<option value="none" label="(none)"/>').appendTo($next);
-                    };
+                    }
                     restoreKeywordDropdown(nextLevel, keys);
                 },
               'json'
@@ -244,7 +248,7 @@ function restoreKeywordDropdown(level,keys) {
     }  //end if(key)
     else $('#search').submit();  //re-run the search
     $("#search-term").focus();
-}; //end restoreKeywordDropdown()
+} //end restoreKeywordDropdown()
 
 ///////////////////////////////////
 /////  showKeywordDropdown()  /////
@@ -278,14 +282,12 @@ function showKeywordDropdown(event) {
             'json'
         );
     $("#search-term").focus();
-}; //end showKeywordDropdown()
+} //end showKeywordDropdown()
 
 ///////////////////////////////////
 /////  showTextSubjectDropdown()  /////
 ///////////////////////////////////
 function showTextSubjectDropdown($grades, $subjects, $chapters) {
-    //$chapters.hide();
-    
     //$chapters.hide();
     $subjects.empty();
     $chapters.empty();
@@ -303,7 +305,7 @@ function showTextSubjectDropdown($grades, $subjects, $chapters) {
             'html'
         );
     $("#search-term").focus();
-};  //end showTextSubjectDropdown()
+}  //end showTextSubjectDropdown()
 
 
 ///////////////////////////////////
@@ -330,7 +332,7 @@ function showTextChapterDropdown($grades, $subjects, $chapters, lang) {
             'html'
         );
     $("#search-term").focus();
-};  //end showTextChapterDropdown()
+}  //end showTextChapterDropdown()
 
 
 ///////////////////////////////////
@@ -354,7 +356,7 @@ function showBookDropdown($src, $books, $chapters) {
             'html'
         );
     $("#search-term").focus();
-};  //end showBookDropdown()
+}  //end showBookDropdown()
 
 
 ///////////////////////////////////
@@ -376,7 +378,7 @@ function showBookChapterDropdown($src, $books, $chapters) {
             'html'
         );
     $("#search-term").focus();
-};  //end showBookChapterDropdown()
+}  //end showBookChapterDropdown()
 
 
 /////////////////////////////
@@ -393,7 +395,7 @@ function refreshPage() {
         //clearSearchState();
         clearSearch();
     }
-};  // end refreshPage()
+}  // end refreshPage()
 
 
 
@@ -436,10 +438,10 @@ function sendSearchRequest(searchForm, callBack) {
                 $('#media-submit').prop("disabled", false);
             },  // NOTE: displayResults() function is supplied in the JS of the user looma-search (e.g. looma-lessonplan.xx)
             'json');
-    };
+    }
     //$("#search-term").focus();
     
-}; //end sendSearchRequest()
+} //end sendSearchRequest()
 
 
 //////////////////////////////
@@ -463,7 +465,7 @@ $(document).ready(function() {
         } else {
             $('#media-submit').prop("disabled",true);
             sendSearchRequest ($("#search"), displayResults);
-        };
+        }
         $("#search-term").focus();
     
         return false;
@@ -506,13 +508,13 @@ $(document).ready(function() {
     
     $('.clear-search').click(clearSearch);
     
-    $searchResultsDiv = $('#results-div');  //where to display the search results - override in page's JS if desired
+    $searchResultsDiv = $('#results-div');  //where to display the search x - override in page's JS if desired
     
     var language = LOOMA.readStore('language', 'cookie');
     if (!language) {
         LOOMA.setStore('language', 'english', 'cookie');
         language = 'english';
-    };
+    }
     if (language === 'native') $('#search-term').attr('placeholder','खोज टर्म प्रविष्ट गर्नुहोस्');
     
     $('#translate').click(function() {

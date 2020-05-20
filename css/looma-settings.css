@@ -112,3 +112,14 @@ select.theme, select.voice {
 
 .exec-control  select, button.exec-control  {color:red;}
 .admin-control select, button.admin-control {color:blue;}
+
+a, a:focus, a:hover {text-decoration: none;
+    }
+
+a button.logo {height:20vh;font-size:1.5em;}
+
+button.logo img {
+    height:11vh;
+    margin:auto;
+    padding-top:3%;
+}

@@ -30,11 +30,18 @@ function restoreFullscreenControl () {
         e.preventDefault();
         LOOMA.toggleFullscreen();
     }); //end fullscreen
-};
+}
 
 
 $(document).ready (function() {
-
+    
+    //NOTE: experimental code to change color scheme for all Looma pages
+    // not visible to users
+    var main_color = LOOMA.readStore('main-color','local');
+    var toolbar_color = LOOMA.readStore('toolbar-color','local');
+    document.documentElement.style.setProperty('--looma-blue', main_color);
+    document.documentElement.style.setProperty('--looma-toolbar', toolbar_color);
+    
     // LOOMA fullscreen display
     // any page can include a button with ID 'fullscreen-control'
     // to allow the user to make the element with id="fullscreen" display in fullscreen
@@ -54,7 +61,7 @@ $(document).ready (function() {
     if (!language) {
         LOOMA.setStore('language', 'english', 'cookie');
         language = 'english';
-    };
+    }
 
     LOOMA.translate(language);
 

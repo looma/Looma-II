@@ -77,11 +77,11 @@ $(document).ready (function() {
     }
     else //logged in
     {   var loginname = LOOMA.readStore('login', 'cookie');
-        var loginlevel = LOOMA.readStore('login-level', 'cookie');
+        var loginlevel = LOOMA.readStore('login-level', 'cookie') || null;
         $('#login-status').text("You are logged in as '" + loginname + "'");
         $('.settings-control').css('display', 'inline');                       // show the teacher tools
-        if (loginlevel === 'admin' || loginlevel === 'exec') $('.admin-control').css('display', 'inline');;
-        if (loginname == 'skip' || loginlevel === 'exec')    $('.exec-control').css('display', 'inline');;
+        if (loginlevel === 'admin' || loginlevel === 'exec') $('.admin-control').css('display', 'inline');
+        if (loginname == 'skip' || loginlevel === 'exec')    $('.exec-control').css('display', 'inline');
 
         $('.login').toggleClass('loggedIn').text('Logout').click
             ( function()
@@ -91,7 +91,10 @@ $(document).ready (function() {
                     function(){}, false);
                 }
             );
-
+    
+        $('.change-password').toggleClass('loggedIn').text('Change Password').click
+        ( function() {window.location = "looma-change-password.php";}
+        );
     }
 
 }); //end of document.ready anonymous function

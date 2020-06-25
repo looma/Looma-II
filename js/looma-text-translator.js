@@ -49,9 +49,9 @@ $('#filesearch-ft').val('text');
  }
  */
 
-function textcheckpoint() {         savedHTML =   $editor.html(); };
-function textundocheckpoint() {     $editor.html( savedHTML);     };  //not used now??
-function textmodified()   { return (savedHTML !== $editor.html());};
+function textcheckpoint() {         savedHTML =   $editor.html(); }
+function textundocheckpoint() {     $editor.html( savedHTML);     }  //not used now??
+function textmodified()   { return (savedHTML !== $editor.html());}
 
 
 function textclear() {
@@ -62,21 +62,21 @@ function textclear() {
     $('#preview').empty().hide();
     textcheckpoint();
     $editor.focus();
-};
+}
 
 function textdisplay(response) {
     textclear();
     setname(response['dn']);
     $english.html(response.data);
     $editor.html( response.nepali);
-};
+}
 
 function textsave(name) {
     //$editor.cleanHtml(); wysiwyg.js has no "cleanHTML" function. NOTE: we should probably write our own
-    
+    if (owner || loginlevel === 'translator'|| loginlevel === 'admin' || loginlevel === 'exec')
     saveTextTranslation(name, $editor.html());
     
-}; //end textsave()
+} //end textsave()
 
 function textshowsearchitems() {
     $('#txt-chk').show();
@@ -86,7 +86,7 @@ function textshowsearchitems() {
     $('#txt-chk input').click(function() {
         return false;
     });
-};
+}
 
 
 function openPreview (button) {
@@ -98,7 +98,7 @@ function openPreview (button) {
         },
         'json'
     );
-};
+}
 
 $(document).ready(function() {
     
@@ -133,7 +133,7 @@ $(document).ready(function() {
     //LOOMA.makeTransparent($('#main-container'));
     
     // disable some file commands
-    $('#new, #saveas, #rename, #delete').prop('disabled', true).css('color', 'lightgray');
+    $('#new, #saveas, #rename, #delete, #opentemplate').prop('disabled', true).css('color', 'lightgray');
     
     $('#filecommands').trigger('click');
     

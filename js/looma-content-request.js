@@ -12,6 +12,7 @@ Revision: Looma 5.9
 var loginname, loginlevel;
 var searchName = 'chapter-search';
 var textbook = true;
+var errors = "";
 
 function clearResults() {
     //$("#innerResultsMenu").empty();
@@ -263,8 +264,20 @@ function validateInputs() {
     // is there a check for legal URL?
     // encourage: KEYWORDS
     // checks: cl_lo <= cl_hi
+    var OK = true;
+    errors = "";
     
-    return true;
+    if ( ! $('#dn-setting').val()) {
+        errors += 'Display name required \r\n '; OK = false;}
+    if ( ! ($('#fn-setting').val() || $('#url-setting').val())) {
+        errors += 'Filename or URL required \r\n '; OK = false;}
+    if ($('#lo-setting').val() != null && $('#hi-setting').val() != null && $('#lo-setting').val() > $('#hi-setting').val()) {
+        errors += 'Lowest grade must be less than \r\n or equal to Highest grade \r\n '; OK = false;}
+    if (  $('#lo-setting').val() === null &&  $('#hi-setting').val() !== null ||
+          $('#lo-setting').val() !== null &&  $('#hi-setting').val() === null) {
+        errors += 'Must set both Lowest grade and Highest grade, \r\n or neither'; OK = false;}
+    //if () {errors += 'Display name required'; OK = false;}
+    return OK;
 } // end valiateInputs()
 
 
@@ -302,7 +315,7 @@ function validateInputs() {
     function submitSettings () {
         if (validateInputs()) {
             var settings = {};
-            settings.dn = $('#dn-setting').val();
+            settings.dn = LOOMA.clean($('#dn-setting').val());
             settings.ndn = $('#ndn-setting').val();
             settings.ft = $('#ft-setting').val();
             settings.cl_lo = $('#lo-setting').val();
@@ -326,16 +339,27 @@ function validateInputs() {
                     function (response) {
                         if (response['ok'] && response['ok'] == 1) {
                             console.log("SAVED new content");
-                            LOOMA.alert('Activity ' + settings.dn + ' saved', 5);
+                            LOOMA.alert('Activity ' + settings.dn + ' saved', 0, false, function(){});
                         } else {
                             console.log("SAVE new content didn't work?");
                         }
                     },
                     'json'
                 );
-             
+    
+            $.post("looma-database-utilities.php",
+                {   cmd: 'sendmail',
+                    data: settings
+                },
+        
+                function (response) {
+                   console.log (response);
+                   
+                },
+                'json'
+            );
             console.log('Submitted: ' + settings);
-        } else {}  // show popup with error messages
+        } else {LOOMA.alert('Errors: \r\n' + errors)}  // show popup with error messages
         return false;
     } // end submitSettings()
 

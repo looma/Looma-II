@@ -68,11 +68,12 @@ More features and usage information can be found in the user manual
  -->
 */
 
-function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
-function loginLevel() { return $_COOKIE['login-level'];};
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+
+function loginLevel() { return $_COOKIE['login-level'];}
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
-$loggedin = isLoggedIn(); if (!$loggedin || loginLevel() !== 'exec') header('Location: looma-login.php');
+$loggedin = isLoggedIn(); if (!$loggedin && loginLevel() !== 'exec' && loginLevel() !== 'admin') header('Location: looma-login.php');
 error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
 ?>
 
@@ -82,7 +83,7 @@ error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
     <meta charset="UTF-8">
     <title>Looma Dictionary Editor</title>
     <script src="js/jquery.min.js"></script>
-    <script src="js/XXXpdf.js"></script>
+    <script src="js/pdfjs/pdf.js"></script>
     <script src="js/looma.js">           </script>      <!-- Looma common page functions -->
     <script src="js/looma-utilities.js"></script>
     <script src="js/looma-dictionary-autogen-pdfToText.js"></script>
@@ -137,8 +138,8 @@ error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
 
     <div id="rightButtons">
         <button id="uploadPDFButton"
-                class="leftButton admin" disabled
-                onclick="showUploadDiv()" title="Click here to upload a PDF with words for the dictionary">Upload PDF</button>
+                class="leftButton admin"
+                title="Click here to upload a PDF with words for the dictionary">Upload PDF</button>
         <br>
         <button id="showWordDivButton"
                 class="leftButton"
@@ -173,12 +174,12 @@ Advanced Search:
 
     <div id="leftButtons">
         <button id="publishButton"
-                class="rightButton admin" disabled
-                onclick="publish()"  title="Click here to publish accepted/deleted entries from the staging database to the Permanent Dictionary">Publish Accepted Changes</button>
+                class="rightButton admin"
+                title="Click here to publish accepted/deleted entries from the staging database to the Permanent Dictionary">Publish Accepted Changes</button>
         <br>
         <button id="revertAllButton"
-                class="rightButton exec" disabled
-                onclick="revertStaging()" class="right" title="Click here to remove all entries from the staging database and return to the previous published state">Revert All</button>
+                class="rightButton exec"
+                class="right" title="Click here to remove all entries from the staging database and return to the previous published state">Revert All</button>
     </div>
 
 </div>

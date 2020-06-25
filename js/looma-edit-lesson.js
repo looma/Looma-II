@@ -12,7 +12,7 @@ Revision: Looma 3
 'use strict';
 var $timeline;
 var savedSignature;   //savedSignature is checkpoint of timeline for checking for modification
-var loginname, loginlevel;
+var loginname, loginlevel, loginteam;
 var homedirectory = "../";
 //var $details;
 
@@ -28,7 +28,7 @@ function lessonclear() {
     clearFilter();
     lessoncheckpoint();
     
-};
+}
 
 ///////  lessonshowsearchitems  /////////
 function lessonshowsearchitems() {
@@ -40,16 +40,16 @@ function lessonshowsearchitems() {
     //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
     $('#lesson-chk input').click(function() {return false;});
     
-};
+}
 
 
 ///////// lessoncheckpoint /////////
-function lessoncheckpoint()       {savedSignature = signature($timeline);};
+function lessoncheckpoint()       {savedSignature = signature($timeline);}
 //function lessonundocheckpoint() {}; //cant undo changes with signatures
 
 ///////// lessonmodified /////////
 function lessonmodified() {return (
-    signature($timeline) !== savedSignature);};
+    signature($timeline) !== savedSignature);}
 
 ///////// signature  /////////
 function signature(elem) { //param is jQ object of the timeline ($timeline)
@@ -60,7 +60,7 @@ function signature(elem) { //param is jQ object of the timeline ($timeline)
         //console.log('index is ', index);
         sig += $(x).data('id');});
     return sig;
-};
+}
 
 ///////// lessonpack  /////////
 function lessonpack (html) { // pack the timeline into an array of collection/id pairs for storage
@@ -77,7 +77,7 @@ function lessonpack (html) { // pack the timeline into an array of collection/id
     });
     
     return packarray;
-}; //end lessonpack()
+} //end lessonpack()
 
 ///////// lessonunpack /////////
 function lessonunpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
@@ -121,24 +121,24 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
     
     makesortable();
     
-}; //end lessonunpack()
+} //end lessonunpack()
 
 ///////// lessondisplay  /////////
-function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response)); /*lessoncheckpoint();  NOT needed. called in lessonunpack*/};
+function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response)); /*lessoncheckpoint();  NOT needed. called in lessonunpack*/}
 
 /////////  lessonsave  /////////
 function lessonsave(name) {
     savefile(name, 'lessons', 'lesson', lessonpack($timeline.html()), "true");
     //note, the final param to 'savefile()' [to make an activity] set to 'true'
     //because lessons are recorded as  activities [for use in library-search, for instance]
-}; //end lessonsave()
+} //end lessonsave()
 
 ///////// lessontemplatesave /////////
 function lessontemplatesave(name) {
     savefile(name, 'lessons', 'lesson-template', lessonpack($timeline.html()), "false");
     //note, the final param to 'savefile()' [to make an activity] set to 'false'
     //because lessons templates are not recorded as  activities
-}; //end lessontemplatesave()
+} //end lessontemplatesave()
 
 // end FILE COMMANDS stuff
 
@@ -165,8 +165,8 @@ function changeCollection (){   //NOTE: no longer used? looma-search.js setColle
 
         $('.chapterFilter').prop('disabled', true);
         $('.mediaFilter').prop('disabled',   false);
-    };
-};// end changeCollection
+    }
+}// end changeCollection
 
 ///////////////////////////////////////////////////////////////////////
 /////////////////////////// SEARCH  RESULTS  ///////////////////////////
@@ -183,12 +183,12 @@ function clearFilter () {
     {
          $("#dropdown_grade").val("").change();
          $("#dropdown_subject").val("").change();
-    };
+    }
 
     $("#innerResultsMenu").empty();
     $("#innerResultsDiv").empty();
     $("#previewpanel").empty();
-}; //end clearFilter()
+} //end clearFilter()
 
 //////////////////////////////////////////////////////
 /////////////////////////// SEARCH //////////
@@ -209,7 +209,7 @@ function displayResults(results) {
      for (var i=0; i < results.count; i++) {
          if (results.list[i]['ft'] == 'chapter') result_array['chapters'].push(results.list[i]);
          else                                    result_array['activities'].push(results.list[i]);
-      };
+      }
  
     $("#innerResultsMenu").empty();
     $("#innerResultsDiv" ).empty();
@@ -219,7 +219,7 @@ function displayResults(results) {
 
       makedraggable();  //not working for now
 
-     }; //end displayresults()
+     } //end displayresults()
 
 
 /////////////////////////////////////////////////////////////
@@ -287,8 +287,8 @@ function displaySearchResults(filterdata_object) {
                 rElement = createActivityDiv(filterdata_object.chapters[i]);
 
                 actResultDiv.appendChild(rElement);
-            };
-       };
+            }
+       }
 
 // end Print Chapters Array
 
@@ -326,7 +326,7 @@ function displaySearchResults(filterdata_object) {
 
 
 
-}; //end displaySearchResults()
+} //end displaySearchResults()
 
 /* //////////////////////TO-DO FOR RESULTS
 
@@ -340,7 +340,7 @@ THUMBNAILS
 //////////////////////////END TO-DO */
 //*************************************************************************************start of things we need for presentation **********************************************
 
-function filetype(ft) { return LOOMA.typename(ft);};
+function filetype(ft) { return LOOMA.typename(ft);}
 
 function thumbnail (item) {
 
@@ -425,7 +425,7 @@ function thumbnail (item) {
 	}
 
 	return imgsrc;
-}; // end thumbnail()
+} // end thumbnail()
 
 
 //rewrote extractItemId() to use REGEX
@@ -570,7 +570,7 @@ function createActivityDiv (activity) {
                         class : "result_ID",
                         html : "[" + item._id + "]"
                     }).appendTo(textdiv);
-                };
+                }
 
                 $("<br>").appendTo(textdiv);
 
@@ -602,7 +602,7 @@ function createActivityDiv (activity) {
                buttondiv.appendChild(previewButton);
 
             return activityDiv;
-            }; //end innerActivityDiv()
+            } //end innerActivityDiv()
 
 
     var idExtractArray = extractItemId(activity);
@@ -614,7 +614,7 @@ function createActivityDiv (activity) {
     $(newDiv).appendTo(div);
 
 	return div;
-};  // end createActivityDiv()
+}  // end createActivityDiv()
 
 
 ///////////////////////////////////////////////////////////////
@@ -794,7 +794,7 @@ function preview_result (item) {
         }
 	}
 
-};  // end preview_result()
+}  // end preview_result()
 
 
 function insertTimelineElement(source) {
@@ -813,7 +813,7 @@ function insertTimelineElement(source) {
 
         refreshsortable();  //TIMELINE elements can be drag'n'dropped
 
-}; //end insertTimelineElement()
+} //end insertTimelineElement()
 
 function removeTimelineElement (elem) {
   // Removing list item from timelineHolder
@@ -823,7 +823,7 @@ function removeTimelineElement (elem) {
         $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 4 ) }, 100);
         $(elem).closest('.activityDiv').remove();
 
-};
+}
 
 
 function orderTimeline (){  // the timeline is populated with items that arrive acsynchronously by AJAX from the [mongo] server
@@ -836,7 +836,7 @@ function orderTimeline (){  // the timeline is populated with items that arrive 
         return $(a).data('index') - $(b).data('index');
     })
     .appendTo($timeline);
-}; // end orderTimeline()
+} // end orderTimeline()
 
 /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
 function makesortable (){
@@ -850,7 +850,7 @@ function makesortable (){
         scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
         handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
     }).disableSelection();
-};
+}
 
 function refreshsortable (){
     // the call to sortable ("refresh") below should refresh the sortability of the timeline, but it's not working, so call makesortable() instead
@@ -858,7 +858,7 @@ function refreshsortable (){
 
     makesortable();
 
-    };
+    }
 
 /////////////////////////// DROPPABLE UI ////////  requires jQuery UI  ///////////////////
 //set up Drag'n'Drop  - -  code borrowed from looma-slideshow.js [T. Woodside, summer 2016]
@@ -889,7 +889,7 @@ function makedraggable() {
                 }
               }
         });
-}; //end makedraggable()
+} //end makedraggable()
 
 
 
@@ -904,6 +904,7 @@ window.onload = function () {
     
     loginname = LOOMA.loggedIn();
     var loginlevel = LOOMA.readStore('login-level','cookie')
+    var loginteam  = LOOMA.readStore('login-team','cookie')
     if (loginname && loginlevel === 'admin' ) $('.admin').show();
     if (loginname && loginlevel === 'exec' )  $('.admin').show(); $('.exec').show();
     

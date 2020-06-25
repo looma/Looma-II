@@ -12,7 +12,7 @@ Revision: Looma 4.0
 'use strict';
 
 var savedSignature ="";   //savedSignature is checkpoint of timeline for checking for modification
-var loginname, loginlevel;
+var loginname, loginlevel, loginteam;
 //var homedirectory = "../";
 var $timeline;
 var currentlyPreviewedActivity;
@@ -34,7 +34,7 @@ function editor_clear() {
     
     editor_checkpoint();
     
-};
+}
 
 ///////  editor_showsearchitems  /////////
 function editor_showsearchitems() {    //NOTE: this should all be done with CSS
@@ -72,15 +72,15 @@ function editor_showsearchitems() {    //NOTE: this should all be done with CSS
     
     var looma = document.querySelector('span[data-id="looma-chk"]');
     looma.style.display = "none";
-};
+}
 
 ///////// editor_checkpoint /////////
-function editor_checkpoint()       {savedSignature = signature($timeline);};
+function editor_checkpoint()       {savedSignature = signature($timeline);}
 
 ///////// editor_modified /////////
 function editor_modified() {
     return (signature($timeline) !== savedSignature);
-};
+}
 
 ///////// signature  /////////
 function signature(elem) { //param is jQ object of the timeline ($timeline)
@@ -91,7 +91,7 @@ function signature(elem) { //param is jQ object of the timeline ($timeline)
         //console.log('index is ', index);
         sig += $(x).data('id');});
     return sig;
-};
+}
 
 ///////// editor_pack  /////////
 function editor_pack (activityDivs) { // pack the timeline into an array of collection/id pairs for storage
@@ -111,7 +111,7 @@ function editor_pack (activityDivs) { // pack the timeline into an array of coll
     });
     
     return packarray;
-}; //end editor_pack()
+} //end editor_pack()
 
 ///////// unpack /////////
 function unpack (response) {
@@ -163,10 +163,10 @@ function unpack (response) {
         $timeline.data('thumb', 'images/play-slideshow-icon.png');
     });
     
-}; //end unpack()
+} //end unpack()
 
 ///////// editor_display  /////////
-function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); editor_checkpoint();};
+function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); editor_checkpoint();}
 
 /////////  editor_save  /////////
 //
@@ -196,14 +196,14 @@ function editor_save(name) {
                  },
                  'json'
               );
-}; //end editor_save()
+} //end editor_save()
 
 ///////// editor_templatesave /////////
 function editor_templatesave(name) {
     savefile(name, currentcollection, currentfiletype + '-template', editor_pack($timeline.html()), "false");
     //note, the final param to 'savefile()' [to make an activity] set to 'false'
     //because lessons templates are not recorded as  activities
-}; //end editor_templatesave()
+} //end editor_templatesave()
 
 // end FILE COMMANDS stuff
 
@@ -221,7 +221,7 @@ var clearFilter = function() {
     {
         $("#dropdown_grade").val("").change();
         $("#dropdown_subject").val("").change();
-    };
+    }
     
     $("#innerResultsMenu").empty();
     $("#innerResultsDiv").empty();
@@ -246,7 +246,7 @@ function displayResults(results) {
     for (var i=0; i < results.list.length; i++) {
         if (results.list[i]['ft'] == 'chapter') result_array['chapters'].push(results.list[i]);
         else                               result_array['activities'].push(results.list[i]);
-    };
+    }
     
     $('#innerResultsMenu, #innerResultsDiv').empty();
     
@@ -254,7 +254,7 @@ function displayResults(results) {
     
     makedraggable();  //not working for now
     
-}; //end displayresults()
+} //end displayresults()
 
 
 /////////////////////////////////////////////////////////////
@@ -311,15 +311,15 @@ function displaySearchResults (filterdata_object) {
         }
         else {
             collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (" + chaptersarraylength + " Results)</a>";
-        };
+        }
         actResultDiv.appendChild(collectionTitle);
         
         for(i=0; i<filterdata_object.chapters.length; i++) {
             rElement = createActivityDiv(filterdata_object.chapters[i]);
             
             actResultDiv.appendChild(rElement);
-        };
-    };
+        }
+    }
   
 // end Print Chapters Array
 
@@ -341,7 +341,7 @@ function displaySearchResults (filterdata_object) {
     $('#chaptersScroll').click(function()  {$('#innerResultsDiv').scrollTop($('#chapterTitle').position().top);});
     $('#activitiesScroll').click(function(){$('#innerResultsDiv').scrollTop($('#activityTitle').position().top);});
     
-}; //end displaySearchResults()
+} //end displaySearchResults()
 
 
 function thumbnail (item) {
@@ -359,12 +359,12 @@ function thumbnail (item) {
     imgsrc = LOOMA.thumbnail(filename, filepath, filetype);
     
     return imgsrc;
-}; // end thumbnail()
+} // end thumbnail()
 
 function extractItemId(item) {
     var ch_id = (item['ft'] == 'chapter')? item['_id'] : item['ch_id'];
     return LOOMA.parseCH_ID(ch_id);
-};
+}
 
 
 ////////////////////////////////////////
@@ -445,7 +445,7 @@ function createActivityDiv (activity) {
                 class : "result_ID",
                 html : "[" + item._id + "]"
             }).appendTo(textdiv);
-        };
+        }
         
         $("<br>").appendTo(activityDiv);
         
@@ -475,7 +475,7 @@ function createActivityDiv (activity) {
         buttondiv.appendChild(previewButton);
         
         return activityDiv;
-    }; //end innerActivityDiv()
+    } //end innerActivityDiv()
     
     
    // var idExtractArray = extractItemId(activity);
@@ -487,7 +487,7 @@ function createActivityDiv (activity) {
     $(newDiv).appendTo(div);
     
     return div;
-};  // end createActivityDiv()
+}  // end createActivityDiv()
 
 
 ///////////////////////////////////////////////////////////////
@@ -555,18 +555,18 @@ function preview_result (item) {
         }
 //    $('#timeline .activityDiv').css({"border-style":"none"});
 //    getCorrectActivityDiv().css({"border": "3px solid blue"});
-};  // end preview_result()
+}  // end preview_result()
 
 function newCaption() {
     $(currentlyPreviewedActivity).data('caption', $('#captionForm').val());
     $('.deleteCaption').show();
-}; //end newCaption()
+} //end newCaption()
 
 function deleteCaption() {
     $('#captionForm').val('');
     $(currentlyPreviewedActivity).data('caption', '');
     $('.deleteCaption').hide();
-};  //end deleteCaption()
+}  //end deleteCaption()
 
 function getCorrectActivityDiv() {
     var idOfPreviewedImage = document.getElementById("displayImage").dataset.id;
@@ -621,7 +621,7 @@ function insertTimelineElement(source) {
     
     refreshsortable();  //TIMELINE elements can be drag'n'dropped
     
-}; //end insertTimelineElement()
+} //end insertTimelineElement()
 
 function removeTimelineElement (elem) {
     // Removing list item from timelineHolder
@@ -633,7 +633,7 @@ function removeTimelineElement (elem) {
     $('#preview').hide();
     $('#hints').show();
     $('.hint').show();
-};  //end removeTimelineElement()
+}  //end removeTimelineElement()
 
 
 var orderTimeline = function() {  // the timeline is populated with items that arrive acsynchronously by AJAX from the [mongo] server
@@ -658,7 +658,7 @@ function makesortable () {
         scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
         handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
     }).disableSelection();
-};  // end makesortable()
+}  // end makesortable()
 
 function refreshsortable () {
     // the call to sortable ("refresh") below should refresh the sortability of the timeline, but it's not working, so call makesortable() instead
@@ -666,7 +666,7 @@ function refreshsortable () {
     
     makesortable();
     
-}; // end refreshsortable()
+} // end refreshsortable()
 
 /////////////////////////// DROPPABLE UI ////////  requires jQuery UI  ///////////////////
 //set up Drag'n'Drop  - -  code borrowed from looma-slideshow.js [T. Woodside, summer 2016]
@@ -694,7 +694,7 @@ function makedraggable() {
             }
         }
     });
-}; //end makedraggable()
+} //end makedraggable()
 
 function quit() {
     if (callbacks['modified']())

@@ -1100,7 +1100,7 @@ function gameOver() {
         if (scores[i-1] > 0 && scores[i-1] == Math.max(...scores)) results.append('<span class="red"> WINNER</span>');
         $("#scoreList").append(results);
     }
-    var replayButton = $('<a href="looma-gameNEW.php?id='+ game_id +'"><button> Replay Game </button></a>');
+    var replayButton = $('<a href="looma-game.php?id='+ game_id +'"><button> Replay Game </button></a>');
     var gamesHomeButton = $('<a href="looma-gamesNEW.php"><button> Games Home Page </button></a>');
     
     $("#scoreList").append(replayButton);

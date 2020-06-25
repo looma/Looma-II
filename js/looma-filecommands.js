@@ -246,14 +246,14 @@ function openfile(openId, collection, filetype) { //filetype must be given e.g. 
                 //currentid = response['_id'];
                 //currentauthor = response['author'];
                 if ('author' in response)
-                    owner = (response['author'] == LOOMA.loggedIn()
-                        || LOOMA.loggedIn() == 'skip'
-                        || LOOMA.loggedIn() == 'david'
-                        || LOOMA.loggedIn() == 'kathy'
-                        || LOOMA.loggedIn() == 'kabin'
-                        || LOOMA.loggedIn() == 'sashwot'
-                        || LOOMA.loggedIn() == 'sharmila'
-                        || LOOMA.loggedIn() == 'samarth'
+                    owner = (
+                        (response['author'] === LOOMA.loggedIn())
+                        || ((('team' in response) ? response['team'] : 'not_legal_team_name') === LOOMA.readCookie('login-team'))
+                        || (LOOMA.readCookie('login-level') === 'translator' && filetype === 'text')
+                        || (LOOMA.loggedIn() === 'skip')
+                        || (LOOMA.loggedIn() === 'david')
+                        || (LOOMA.loggedIn() === 'kathy')
+                        || (LOOMA.loggedIn() === 'kabin')
                     );
                 else owner = false;
                 

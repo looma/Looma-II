@@ -13,6 +13,5 @@ Revision: Looma 3.0
 
 document.ready = function () {
 
-
 };
 

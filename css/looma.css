@@ -3,6 +3,7 @@ html {
     
     --looma-blue: #091F48;
     --looma-toolbar:yellow;
+    --looma-font-color:yellow;
 	background-color: gray;
 	height:100vh;
 	width:100vw;
@@ -594,6 +595,7 @@ button#bagh-chal {
     background-color:#fff;
     color:black;
     font-size:2.5em;
+    /*white-space: pre;*/
     border:2px solid black;
     border-radius:6px;
     z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */

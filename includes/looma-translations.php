@@ -288,6 +288,7 @@ $TKW = array (
     "Red" => "रातो",
     "Rename" => "पुन: नामकरण",
     "Residential" => "आवासीय",
+    "Resources" => "स्रोतहरू",
     "Revolution" => "क्रान्ति",
     "River" => "नदी",
     "Roads" => "सडक",

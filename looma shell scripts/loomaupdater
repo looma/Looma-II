@@ -205,7 +205,7 @@ then
 
         if [ -d "content" ]
         then
-            find /var/www/html/content -exec touch {} +
+            find /var/www/html/content -exec touch {} + ';'
             if [[ $1 = "dryrun" ]]
             then
                 rsync  -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
@@ -389,8 +389,8 @@ then
 
        SECONDS=0
 
+       find /var/www/html/content -exec touch {} + ';'
        if [[ $1 = "dryrun" ]]
-            find /var/www/html/content -exec touch {} +
             then
                rsync -az  --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
                 result $?

@@ -20,7 +20,7 @@
 
   var $editor; //the DIV where the HTML is being edited
   var savedHTML; //savedHTML is textcheckpoint of HTML for checking for modification
-  var loginname, loginlevel;
+  var loginname, loginlevel, loginteam;
   
   /*  callback functions and assignments expected by looma-filecommands.js:  */
   callbacks['clear'] = textclear;
@@ -41,9 +41,9 @@
   $('#collection').val('text');
   $('#filesearch-ft').val('text');
   
-  function textcheckpoint() {         savedHTML =   $editor.html(); };
-  function textundocheckpoint() {     $editor.html( savedHTML);     };  //not used now??
-  function textmodified()   { return (savedHTML !== $editor.html());};
+  function textcheckpoint() {         savedHTML =   $editor.html(); }
+  function textundocheckpoint() {     $editor.html( savedHTML);     }  //not used now??
+  function textmodified()   { return (savedHTML !== $editor.html());}
   
   function textclear() {
       setname("");
@@ -52,24 +52,24 @@
       $('#preview').empty().hide();
       textcheckpoint();
       $editor.focus();
-  };
+  }
   
   function textdisplay(response) {
       textclear();
       setname(response['dn']);
       $editor.html(response.data);
       textcheckpoint();
-  };
+  }
 
   function textsave(name) {
       //$editor.cleanHtml(); wysiwyg.js has no "cleanHTML" function. NOTE: we should probably write our own
       savefile(name, currentcollection, currentfiletype, $editor.html(), "true");
-  }; //end testsave()
+  } //end testsave()
 
   function texttemplatesave(name) {
       //$editor.cleanHtml(); wysiwyg.js has no "cleanHTML" function. NOTE: we should probably write our own
       savefile(name, currentcollection, currentfiletype + '-template', $editor.html(), "false");
-  }; //end testsave()
+  } //end testsave()
 
   function textshowsearchitems() {
       $('#txt-chk').show();
@@ -79,7 +79,7 @@
       $('#txt-chk input').click(function() {
           return false;
       });
-  };
+  }
 
   
   function openPreview (button) {
@@ -91,7 +91,7 @@
           },
          'json'
       );
-};
+}
   
   $(document).ready(function() {
 
@@ -115,9 +115,10 @@
       $editor.focus();
 
       loginname = LOOMA.loggedIn();
-      loginlevel = LOOMA.readStore('login-level');
+      loginlevel = LOOMA.readCookie('login-level');
+      loginteam  = LOOMA.readCookie('login-team');
       
-      if (loginname && loginlevel === 'admin') $('.admin').show();
+      if (loginname && (loginlevel === 'admin' || loginlevel === 'exec')) $('.admin').show();
 
       
       //$('#main-container').disable();

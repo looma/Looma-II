@@ -1,6 +1,7 @@
 <?php
-function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
-function loginLevel() { return $_COOKIE['login-level'];};
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+
+function loginLevel() { return $_COOKIE['login-level'];}
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
 $loggedin = isLoggedIn(); if (!$loggedin || loginLevel() !== 'exec') header('Location: looma-login.php');
@@ -22,7 +23,7 @@ Revision: Looma 2.0.x
 Comments:
 -->
 
-<?php $page_title = 'Looma - Login';
+<?php $page_title = 'Looma - Register User';
 	  include ('includes/header.php');
 	  include ('includes/mongo-connect.php');
 ?>
@@ -36,17 +37,19 @@ Comments:
 
 if($_SERVER['REQUEST_METHOD'] == 'POST')
     {
-        if (isset($_POST['show-users'])) {
+        if (isset($_POST['show-users'])) {  // SHOW USERS  - return a list of registered user
             $query = array();
 
-            $projection = array('name' => 1);
+            $projection = array('_id' => 0, 'name' => 1, 'team' => 1);
             $logins = $logins_collection -> find($query, $projection);
-            $logins->sort(array('name' => 1));
+            $logins->sort(array('name' => 1 ));
 
             foreach ($logins as $login) {
-                echo "user name: " . $login['name'] . "<br>";
+                echo "user name: " . $login['name'];
+                if (isset($login['team'])) echo "  (team: " . $login['team'] . ')';
+                echo "<br>";
             }
-        } else if (isset($_POST['deletename'])) {
+        } else if (isset($_POST['deletename'])) { // DELETE USER  - remove a registered user
             $name = $_POST['deletename'];
             if ($name == 'skip' || $name == 'kabin') {
                 echo "<h1>User NOT deleted</h1>
@@ -59,15 +62,17 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
                 echo "<h1>User deleted</h1>
                 <p>User <em>$name</em>, was deleted</p>";
                 }
-        } else
+        } else   // ADD USERS  - register a user
         {
 
         $name =  $_POST['id'];
         $pw = addslashes($_POST['pass']);
+        $team = isset( $_POST['team']) ?  $_POST['team'] : '';
+        $level = isset( $_POST['level']) ?  $_POST['level'] : '';
         $encrypted_pw = SHA1($pw);
 
         $query = array('name' => $name);
-        $insert = array('name' => $name, 'pw' => $encrypted_pw);
+        $insert = array('name' => $name, 'pw' => $encrypted_pw, 'team' => $team, 'level' => $level);
         $logins_collection->update($query, $insert, array('upsert' => true));
 
         echo "<h1>User added</h1>
@@ -83,7 +88,17 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
             <p>Password: <input type="password"  placeholder="password"
                                 name="pass" size="20" maxlength="20" />
             </p>
-            <p><button type = "submit">Submit</button>
+            <p>Team [optional]: <input type="text"  placeholder="enter team name"
+                                       name="team" size="20" maxlength="20" />
+
+            <p><label for="title">Level [optional]:</label>
+                <select id="level" name="level">
+                    <option value="none" selected>(none)</option>
+                    <option value="translator">translator</option>
+                    <option value="admin">admin</option>
+                    <option value="exec">exec</option>
+                </select>
+            </p><p><button type = "submit">Submit</button>
         </form>
 
         <h1>Delete a user</h1>
@@ -103,9 +118,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
 	</div>
 
 <?php
-   		/*include either, but not both, of toolbar.php or toolbar-vertical.php*/
 	      include ('includes/toolbar.php');
-   		/*include ('includes/toolbar-vertical.php'); */
    		  include ('includes/js-includes.php');
     ?>
 </body>

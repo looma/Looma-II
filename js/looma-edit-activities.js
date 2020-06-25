@@ -11,7 +11,7 @@ Revision: Looma 3.0
 
 'use strict';
 
-var loginname, loginlevel;
+var loginname, loginlevel, loginteam;
 var searchName = 'edit-activities-search';
 var textbook = true;
 

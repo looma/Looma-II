@@ -34,7 +34,8 @@ button.img.activity img {
      height:7vh !important;
      width:7vh  !important;
      background-image: url("../images/times.png");
-     display:inline-block;
+     /*display:inline-block; disabled for now. code doesnt work*/
+     display:none;
      bottom: 15vh;
      right:10vw;
      background-size: 90% 90%;
@@ -45,7 +46,8 @@ button.img.activity img {
     height:7vh !important;
     width:7vh  !important;
     background-image: url("../images/on-off.png");
-    display:inline-block;
+    /*display:inline-block; disabled for now. code doesnt work*/
+    display: none;
     bottom: 15vh;
     right:5vw;
     background-size: 90% 90%;

@@ -1,5 +1,5 @@
 <?php
-function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
 $loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
@@ -17,7 +17,7 @@ Date: 04 2018
 Revision: Looma 3.0
  -->
 
-<?php   $page_title = 'Looma Activity Editor';
+<?php   $page_title = 'Looma Resource Editor';
 include ('includes/header.php');
 ?>
 
@@ -32,7 +32,7 @@ include ('includes/header.php');
 
         <div id="header" class="inner-div">
             <img src="images/logos/LoomaLogoTransparent.png"  height="100%"/>
-            <span>Looma Activity Editor</span>
+            <span>Looma Resource Editor</span>
         </div>
 
         <div id="search-bar" class="inner-div">
@@ -43,10 +43,10 @@ include ('includes/header.php');
 
         <div id="outerResultsDiv">
             <div id="innerResultsMenu">
-                <p class="hint">This tool is used to edit Looma Activities</p>
-                <p class="hint">1. Use the search bar at the top to select Activities</p>
-                <p class="hint">2. Check the checkbox of the Activity or Activities to modify</p>
-                <p class="hint">3. Mouse over the INFO button to see details of an Activity</p>
+                <p class="hint">This tool is used to edit Looma Resources</p>
+                <p class="hint">1. Use the search bar at the top to select Resources</p>
+                <p class="hint">2. Check the checkbox of the Resource or Resources to modify</p>
+                <p class="hint">3. Mouse over the INFO button to see details of an Resource</p>
                 <p class="hint">4. Modify the Display Name in place in the search results list</p>
                 <p class="hint">5. Use the entries at the right to specify properties to set</p>
                 <p class="hint">6. Click "Submit" to make the changes</p>
@@ -95,8 +95,8 @@ include ('includes/header.php');
                 $y = $root['children'][$x]['name'];
                 $z = $root['children'][$x]['kids'];
                 echo "<option value='" . $y . "' id='" . $y . "' data-kids='" . $z. "'>" . $y . "</option>";
-            };
-            echo "</select>";
+            }
+        echo "</select>";
 
             echo "<select name='key2' disabled id='key2-changes-menu' class='media-filter keyword-changes keyword-dropdown black-border' data-level=2 form='changes'>
                                 <option value='' selected></option>";
@@ -131,8 +131,8 @@ include ('includes/header.php');
                 echo "<span class='src-chng' data-id='" . $sources[0][$x] ."-chng'>
                                     <input data-id='" . $sources[1][$x] ."' class='media-input flt-chkbx source-changes' type='radio' form='changes' name='src' value='" . $sources[1][$x] . "'>
                                     <label class='filter-label' for='" . $sources[0][$x] . "'>" . $sources[2][$x] . "</label>
-                                  </span>";};
-            echo "<button class='chng-clear' id='source-clear'>X</button>";
+                                  </span>";}
+        echo "<button class='chng-clear' id='source-clear'>X</button>";
             echo "</div>";
 
         /**************************************/
@@ -183,8 +183,8 @@ include ('includes/header.php');
                 <label class='drop-menu'>Grade:</label>
                     <select id='grade-chng-menu' class='book-changes black-border'  form='changes' name='class'>
                        <option value='' selected>Select...</option>";
-                       for($x = 1; $x <= 10; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";};
-                    echo "</select>";
+                       for($x = 1; $x <= 10; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";}
+        echo "</select>";
                 //echo "</span>";
             echo "</div><br>";
 
@@ -202,8 +202,8 @@ include ('includes/header.php');
                             array("All","English","Nepali","Math","Math Optional", "Science","Science Optional","Social Studies","Social Studies Optional","Health", "Vocation")
                         );
                         for($x = 1; $x < count($classInfo[0]); $x++) {
-                            echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";};
-                    echo "</select>";
+                            echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";}
+        echo "</select>";
                // echo "</span>";
             echo "</div><br>";
 

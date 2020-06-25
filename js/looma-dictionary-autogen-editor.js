@@ -170,7 +170,7 @@ function processPDF() {
         progress.text("chapter prefix must be a PREFIX CH_ID, like '3M' or '7SS02.'");
         finishProcessingPDF();
         return;
-    };
+    }
     
     // convert file to text
     var file = document.getElementById("pdfInput").files[0];
@@ -179,7 +179,7 @@ function processPDF() {
         progress.text("No file selected or file is not PDF");
         finishProcessingPDF();
         return;
-    };
+    }
     progress.text("Converting file to text");
     Pdf2TextClass().convertPDF(file, function(page, total) {}, function(pages) {
         // called when the pdf is fully converted to text. Finds all unique words
@@ -341,7 +341,7 @@ function submitSearch(oldSearch) {
                 
                 // adds the new row to the table
                 table.append(row);
-            };
+            }
             $('.ch_idCol').dblclick(function(event) {loadContext(event);})
             
             // reload officialTable
@@ -415,7 +415,7 @@ function createTableEntry(word, i) {
             for (let form of forms) {
                 if (form == select) dropdown = dropdown + '<option value="' + form + '" selected="selected">' + form + '</option>option>\n';
                 else                dropdown = dropdown + '<option value="' + form + '">'                     + form + '</option>option>\n';
-            };
+            }
             
             return dropdown;
         }
@@ -509,8 +509,8 @@ function createTableEntry(word, i) {
  * Asks the user for specific permission and then publishes accepted changes to the Permanent Dictionary
  */
 function publish() {
-    if (!(loginname === 'skip')) LOOMA.alert('Only Skip is authorized to PUBLISH')
-    else if(confirm("Are you sure you want to publish these changes?")) {
+    if (loginname !== 'skip') LOOMA.alert('Only Skip is authorized to PUBLISH')
+    else if(LOOMA.confirm("Are you sure you want to publish these changes?")) {
         // tells server to publish
         $.get("looma-dictionary-autogen-backend.php", {'loginInfo': {'allowed': true, 'user': loginname}, 'publish': true},
             function(data, status, jqXHR) {
@@ -567,7 +567,7 @@ function pageChange() {
 
 function editPos(type, index) {
     edit(type,index);
-};
+}
 
 /**
  * Called when an editable cell in the table is changed and should be transmitted to the server
@@ -781,8 +781,8 @@ function isTrue(input) {
  * Checks to confirm the user's intent, and then removes all entries from the Staging Database
  */
 function revertStaging() {
-    if (!(loginname === 'skip')) LOOMA.alert('Only Skip is authorized to REVERT')
-    else if(confirm("Are you sure you want to revert all staging changes? This cannot be undone.")) {
+    if (loginname !== 'skip') LOOMA.alert('Only Skip is authorized to REVERT')
+    else if(LOOMA.confirm("Are you sure you want to revert all staging changes? This cannot be undone.")) {
         $.get("looma-dictionary-autogen-backend.php", {'loginInfo': {"allowed": true, 'user': loginname}, 'revertAll': true},
             function(data, status, jqXHR) {
                 submitSearch(true);
@@ -1018,10 +1018,15 @@ function verbFormSelect(event) {
 function startup() {
     
     loginname = LOOMA.loggedIn();
-    loginlevel = LOOMA.readStore('login-level');
+    loginlevel = LOOMA.readStore('login-level','cookie');
     
-    if (loginname && loginlevel === 'admin') $('.admin').removeClass('admin').prop('disabled', false);
-    //if (loginname === 'skip' )                         $('.exec').removeClass('exec').prop('disabled', false);
+    if (loginname && (loginlevel === 'admin' || loginlevel === 'exec')) {
+        $('.exec').show();
+        $('#uploadPDFButton').click(showUploadDiv);
+        $('#publishButton').click(publish);
+        $('#revertAllButton').click(revertStaging);
+        $('.admin').show();
+    }
     
     hideUploadDiv();
     hideAddWordDiv();

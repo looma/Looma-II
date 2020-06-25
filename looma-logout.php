@@ -50,8 +50,9 @@ function redirect_user($page)
      {
         // Delete the cookie. it was set with:
         //setcookie ('login', $_POST['id']);
-          setcookie ("login", "", time()-3600);       //deletes the login name cookie
-          setcookie ("login-level", "", time()-3600); //deletes the login level cookie
+          setcookie ("login",      "", time()-3600);       //deletes the login name cookie
+         setcookie ("login-level", "", time()-3600); //deletes the login level cookie
+         setcookie ("login-team",  "", time()-3600); //deletes the login team cookie
 
           $name = $_COOKIE['login'];
    } else $name = "";

@@ -309,7 +309,7 @@ window.onload = function() {
     startPage = $('#pdf').data('page') ? $('#pdf').data('page') : 1;
     if ($('#pdf').data('len') && $('#pdf').data('len') >0)
         endPage = startPage + $('#pdf').data('len') - 1; else endPage = startPage + 999;
-    currentScale = $('#pdf').data('zoom') && isNaN($('#pdf').data('zoom')) ? $('#pdf').data('zoom') : initialZoom;
+    currentScale = $('#pdf').data('zoom') && !isNaN($('#pdf').data('zoom')) ? $('#pdf').data('zoom') : initialZoom;
     
     // load the PDF file
     //turnOffControls();

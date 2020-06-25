@@ -1,0 +1,45 @@
+// mongo terminal program "importUserLogins"
+//      input from a CSV file
+//          each line of which is a name, pw, team, level {(none),translator,admin,exec}
+//          inserts new logins into collection 'logins'
+//
+//  make sure there is a file 'loginsToImport.TXT' in TAB-SEPARATED format, in the current directory
+//  start MONGO in LOOMA db with: 'mongo looma'
+//  run in MONGO SHELL with: load('importUserLogins')
+//
+//"use strict";
+
+var requestcount = 0;
+var changecount = 0;
+
+var input = 'loginsToImport.csv';
+print ('Importing LOGINS from ' + input);
+print ('*****');
+print ('------------ param = ' + param);
+print ('*****');
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+
+var docs = file.split(/[\r\n]+/);  // split file into array of lines containing (DN, FN, CH_LO, cl_HI)
+
+print ('Processing ' + docs.length + ' lines');
+var item;
+docs.forEach( function(doc) {
+    var fields = doc.split(/\t/);  //split the line on TABs
+    if (fields[0] !== "") {
+        if (fields[0]) item['name'] =  fields[0];
+        if (fields[1]) item['pw'] =    fields[1];
+        if (fields[2]) item['team'] =  fields[2];
+        if (fields[3]) item['level'] = fields[3];
+        
+        if (param !== 'dryrun') db.logins.insert(item);
+        
+        print(++changecount + ' - - - added user: ' + item['name']);
+        }
+    } else print('*******    BAD INPUT LINE: ' + doc);
+})  // end foreach doc
+
+print('');
+if (param==='dryrun') print ('------------ param = ' +  param + ', no writes to db');
+else                  print ('------------ param = ' +  param + ': ' + changecount + ' changes were written to db');
+
+print('+++++  ' + changecount + '  changes made');

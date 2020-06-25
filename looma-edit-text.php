@@ -1,5 +1,5 @@
 <?php
-function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
 $loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
@@ -21,7 +21,7 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
           Opens in an iFrame within another editor, like looma-lesson-plan.php
 -->
 
-<?php $page_title = 'Looma - text editor';
+<?php $page_title = 'Looma - Text Editor';
 	  include ('includes/header.php');
 ?>
     <link rel="stylesheet" href="css/font-awesome.min.css">
@@ -114,7 +114,7 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
            if (isset($_REQUEST['dn'])) {
                $dn = $_REQUEST['dn'];
                echo "<div id='text_file_name' data-dn=" . rawurlencode($dn) . " hidden></div>";
-           };
+           }
         ?>
 
            <div id="text-editor-container">
@@ -129,13 +129,10 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
 
         <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
 
-
-
     <button class='control-button' id='dismiss' ></button>
 
 <?php   include ('includes/js-includes.php');
 ?>
-
         <script src="js/jquery.hotkeys.js">           </script>
         <script src="js/tether.min.js">  </script>
         <script src="js/bootstrap.min.js">           </script>

@@ -49,6 +49,7 @@ Description:
  * LOOMA.confirm()
  * LOOMA.prompt()
  * LOOMA.$_GET()
+ * LOOMA.clean()
  * LOOMA.escapeHTML()
  */
 
@@ -121,14 +122,14 @@ playMedia : function(button) {
             break;
     */
         case "chapter":  //CHAPTER
-            if ( true /*loginname !== 'skip'*/ ) {
+            if ( true ) {
                     window.location = 'looma-play-pdf.php?' +
                     'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
                     '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
                     '&zoom=' + button.getAttribute('data-zoom') +
                     '&len=' + button.getAttribute('data-len') +
                     '&page=' + button.getAttribute('data-page');
-            } else {
+            } else {  //old PDF code - note used any more
                 window.location = 'looma-pdf.php?' +
                     'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
                     '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
@@ -183,7 +184,7 @@ playMedia : function(button) {
             break;
     
         case "game":
-            window.location = 'looma-gameNEW.php?id=' + button.getAttribute('data-mongoid');
+            window.location = 'looma-game.php?id=' + button.getAttribute('data-mongoid');
             break;
     
         case "map":
@@ -479,7 +480,7 @@ capitalize : function(string) {
 
 
 //use localStore, type='local' or type='session' instead of cookies when the data doesnt have to be sent to the server
-/*current COOKIES, LOCALstorage adn SESSIONstorage used:
+/*current COOKIES, LOCALstorage and SESSIONstorage used:
  * COOKIES: theme, voice, login
  * LOCAL: language
  * SESSION: libararyScroll, chapterScroll, historyScroll, class, subject, chapter, arith-grade, arith-subject,
@@ -1460,6 +1461,10 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
         canceled();
    });
 };  //end prompt()
+ 
+ LOOMA.clean = function(text) {
+     return text.replace(/[^a-zA-Z0-9 \.\-\_]/g, "").trim();
+ };
  
  LOOMA.escapeHTML = function(text) {
      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")

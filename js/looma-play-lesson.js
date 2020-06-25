@@ -192,7 +192,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             break;
         
         case 'game':
-            openPage($currentItem, 'games', 'looma-gameNEW.php');
+            openPage($currentItem, 'games', 'looma-game.php');
             break;
         
         //NOTE, cannot "play" ft == 'lesson' with a lesson

@@ -11,7 +11,7 @@ Revision: Looma 3.0
 
 'use strict';
 
-$(document).ready = function () {
+$(document).ready( function () {
     var a;
     var b;
     
@@ -20,5 +20,5 @@ $(document).ready = function () {
     }
     console.log('template')
     
-};
+});
 

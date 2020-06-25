@@ -22,7 +22,7 @@
 function prefix ($ch_id) { // extract textbook prefix from ch_id
     preg_match("/^(([1-9]|10)(Ma|M|N|Sa|S|SSa|SS|EN|H|V))[0-9]/", $ch_id, $matches);
     return (isset($matches[1]) && $matches[1]) ? $matches[1] : null;
-};
+}
 
 /****************************/
 /*****  ch_idClass   ********/
@@ -31,7 +31,7 @@ function ch_idClass($ch_id) {
      if (($ch_id) && preg_match ( "/^([1-9]|10)(Ma|M|N|Sa|S|SSa|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches ))
             return $matches[1];
      else return null;
-};  //end function ch_idSubject
+}  //end function ch_idSubject
 
 /****************************/
 /*****  ch_idSubject   ******/
@@ -40,7 +40,7 @@ function ch_idSubject($ch_id) {
     if (($ch_id) && preg_match ( "/^([1-9]|10)(Ma|M|N|Sa|S|SSa|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches ))
         return $matches[2];
     else return null;
-};  //end function ch_idSubject
+}  //end function ch_idSubject
 
 
 /**********************/
@@ -50,7 +50,7 @@ function isHTML($fp) {
     if ( $fp != '../content/Khan' && file_exists($fp . "/index.html") && !isEpaath($fp))
         return true;
     else return false;
-};  //end function isHTML
+}  //end function isHTML
 
 
 /**********************/
@@ -59,7 +59,7 @@ function isHTML($fp) {
 function isEpaath($fp) {
         if (mb_substr($fp, -7, 7) == "epaath/") return true;
         else return false;
-    }; //end function isEpaath
+    } //end function isEpaath
 
 
 /**********************/
@@ -69,7 +69,7 @@ function folderName ($path) {
         // strip trailing '/' then get the last dir name, by finding the remaining last '/' and substring
         $a = explode("/", $path);
         if (count($a) > 1) return $a[count($a) - 2]; else return "";
-    };  //end FOLDERNAME()
+    }  //end FOLDERNAME()
 
 
 /**********************/
@@ -92,7 +92,7 @@ function folderThumbnail ($fp) {  //for directories, look for filename "thumbnai
     if (file_exists($fp . "/thumbnail.png")) {
         return "<img src='$fp/thumbnail.png' >"; }
     else return "";
-}; //end function thumbnail
+} //end function thumbnail
 
 function displayName($filename, $dn, $ndn) {
 
@@ -109,13 +109,13 @@ function displayName($filename, $dn, $ndn) {
             "</span>";
     } else if ($dn) echo "<span class='name'>" . $dn . "</span>";
       else echo "<span class='name'>" . $filename . "</span>";
-};  //end displayName()
+}  //end displayName()
 
 function alphabetize_by_dn ($array) {
     // sort the list of dirs by DN
     usort($array, function ($a, $b) { return strcasecmp($a['dn'], $b['dn']) > 0; });
     return $array;
-};
+}
 
 function natksort($array) {
     // Like ksort but uses natural sort instead
@@ -123,7 +123,7 @@ function natksort($array) {
     natcasesort($keys);
     foreach ($keys as $k) $new_array[$k] = $array[$k];
     return $new_array;
-}; //end natksort()
+} //end natksort()
 
 /*********************************/
 /******** makeActivityButton *****/
@@ -209,7 +209,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
                echo "<span>" . "Unknown" . "</span></button>";
 
                return;
-		};  //end SWITCH
+		}  //end SWITCH
 
              if ($thumb && $thumb != "") $thumbSrc = $thumb;
         //else if ($ft == 'EP' || $ft == 'epaath') $thumbSrc = $fp . $fn . "/thumbnail.jpg";
@@ -263,7 +263,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
                   displayName($fn, $dn, $ndn);
                   echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
 
-	}; //end makeActivityButton()
+	} //end makeActivityButton()
 
 
 /*********************************/
@@ -323,7 +323,5 @@ function makeChapterButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, 
     displayName($fn, $dn, $ndn);
     echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
 
-}; //end makeChapterButton()
-
-
-	?>
+} //end makeChapterButton()
+?>

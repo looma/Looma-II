@@ -10,7 +10,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 -->
 
 
-<?php $page_title = 'Looma Activities';
+<?php $page_title = 'Looma Resources';
 	require ('includes/header.php');
 	require ('includes/mongo-connect.php');
 
@@ -151,14 +151,14 @@ $foundActivity;
                         echo "unknown filetype \"" . $ft . "\" in activities.php";
                         break;
 
-                };  //end SWITCH
+                }  //end SWITCH
                 echo "</td>";
                 $foundActivity = true;
-                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
 
-            };
-        };
-    }; //end makeButton()
+            }
+        }
+    } //end makeButton()
 
     /*
      * NOTE: should validate these parameters, esp. using "isset"
@@ -175,7 +175,9 @@ $foundActivity;
 
 		if ($subject === "social studies") $caps = "Social Studies"; else $caps = ucfirst($subject);
 		$grade = str_replace("class", "Grade ", $grade);
-		echo "<h2 class='title'>Activities for " . ucfirst($grade) . " " . $caps . ": \"" . $ch_dn . "\"</h2>";
+		echo "<h2 class='title'>";
+		echo keyword('Resources');
+		echo " for " . ucfirst($grade) . " " . $caps . ": \"" . $ch_dn . "\"</h2>";
 
 	    echo "<div>";
 
@@ -209,11 +211,11 @@ $foundActivity;
 
             echo "</td>";
             $foundActivity = true;
-            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
-        };
+            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
+        }
 
 
-        //get all the activities registered for this chapter
+//get all the activities registered for this chapter
         if ($lang === 'en') $query = array('ch_id' => $ch_id);
         else                $query = array('nch_id' => $ch_id);
 

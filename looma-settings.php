@@ -31,10 +31,11 @@ Description:  for Looma 2
 
          <div id="tools">
              <span id="login-status"></span>
-             <button class="login"></button><br><br>
+             <button class="login"></button>
+             <button class="change-password settings-control"></button><br><br>
 
             <a href="looma-edit-lesson.php">
-                <button class="settings-control">Lesson Plan Editor</button>
+                <button class="settings-control">Lesson Editor</button>
             </a>
 
              <a href="looma-edit-text.php">
@@ -54,7 +55,11 @@ Description:  for Looma 2
              </a>
 
              <a href="looma-edit-activities.php">
-                 <button class="admin-control">Activity Editor</button>
+                 <button class="admin-control">Resource Editor</button>
+             </a>
+
+             <a href="looma-content-request.php">
+                 <button id="requestcontent" class="admin-control" >Request Resource</button>
              </a>
 
              <br>
@@ -65,6 +70,7 @@ Description:  for Looma 2
              <a href="looma-import-content.php">
                  <button id="importcontent" class="exec-control" >Import Content</button>
              </a>
+
 
              <a href="looma-dictionary-autogen-editor.php">
                  <button id="speechtest" class="exec-control" >Dictionary Editor</button>
@@ -107,7 +113,7 @@ Description:  for Looma 2
                  <button id="speechtest" class="settings-control">Speech Test</button>
              </a>
 
-             <br><div id="themelist" class="admin-control">
+             <br><div id="themelist" class="exec-control">
                  <span>Change theme of Looma's pages:  </span>
                  <select id="themes">
                      <option class="theme" id="looma"         value="looma">         Looma Classic

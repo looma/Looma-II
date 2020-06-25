@@ -38,7 +38,7 @@ var timeline_id = [];
 var id_counter = 0;
 var mainThumbSrc = "";
 //var openClick = false;
-var loginname, loginlevel;
+var loginname, loginlevel, loginteam;
 var $timeline;  //the DIV where the timeline is being edited
 var savedTimeline = "";   //savedTimeline is checkpoint of timeline for checking for modification
 
@@ -83,9 +83,9 @@ function eviShowSearchItemsOpen() {
 };
 */
 
-function eviCheckpoint() {         savedTimeline =   $timeline.html(); };
+function eviCheckpoint() {         savedTimeline =   $timeline.html(); }
 //function eviUndoCheckpoint() {     $timeline.html(   savedTimeline);     };  //not used now??
-function eviModified()   { return ( savedTimeline !== $timeline.html());};
+function eviModified()   { return ( savedTimeline !== $timeline.html());}
 
 function eviSetOwner() {
     $.post("looma-database-utilities.php",
@@ -100,7 +100,7 @@ function eviSetOwner() {
         },
         'json'
     );
-};  // end eviSetOwner()
+}  // end eviSetOwner()
 
 
 function eviClear() {
@@ -124,7 +124,7 @@ function eviClear() {
     $('#innerResultsDiv').empty();
     
     
-}; // end eviClear()
+} // end eviClear()
 
 function eviNew()
 {
@@ -157,7 +157,7 @@ function clearResults() {
         //$('#div_categories').css("width", "60vw")
         //$('.filter_label').css("margin-left", "1vw");
     }*/
-}; //end clearResults()
+} //end clearResults()
 
 function eviPack (html) { // pack the timeline into an array of collection/id pairs for storage
     var packitem;
@@ -181,7 +181,7 @@ function eviPack (html) { // pack the timeline into an array of collection/id pa
     });
     
     return packarray;
-}; //end eviPack()
+} //end eviPack()
 
 function eviUnPack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
     var newDiv;
@@ -242,17 +242,17 @@ function eviUnPack (response) {  //unpack the array of collection/id pairs into 
     $('#search_label').html("Name:");
     $('<br>').insertAfter('#searchString');
     
-}; //end eviUnPack()
+} //end eviUnPack()
 
 function eviDisplay (response) {
     eviClear();
     $timeline.html(eviUnPack(response));
     $('#media-search').show();
-}; //end eviDisplay()
+} //end eviDisplay()
 
 function eviSave(name) {
     saveEviFile(name, 'edited_videos', 'evi', eviPack($timeline.html()), mainThumbSrc, true);
-}; //end eviSave()
+} //end eviSave()
 
 function saveEviFile(name, collection, filetype, data, thumb, activityFlag) {
     
@@ -277,7 +277,7 @@ function saveEviFile(name, collection, filetype, data, thumb, activityFlag) {
         },
         'json'
     );
-}; //end saveEviFile()
+} //end saveEviFile()
 
 ///////////////////////////////////////////////////////////////////////
 /////////////////////////// SEARCH  RESULTS  ///////////////////////////
@@ -301,7 +301,7 @@ function clearFilter() {
          $("#dropdown_subject").val("").change();
     };
 */
-}; //end clearFilter()
+} //end clearFilter()
 
 //////////////////////////////////////////////////////
 /////////////////////////// SEARCH //////////
@@ -315,13 +315,13 @@ function displayResults(results) {
      for (var i=0; i < results.list.length; i++) {
          if (results.list[i]['ft'] == 'chapter') result_array['chapters'].push(results.list[i]);
          else                               result_array['activities'].push(results.list[i]);
-      };
+      }
 
       displaySearchResults(result_array);
 
       //makedraggable();  //not working for now
 
-     }; //end displayresults()
+     } //end displayresults()
 
 
 /////////////////////////////////////////////////////////////
@@ -383,15 +383,15 @@ function displaySearchResults(filterdata_object) {
             }
             else {
                 collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (" + chaptersarraylength + " Results)</a>";
-            };
+            }
             actResultDiv.appendChild(collectionTitle);
 
             for(i=0; i<filterdata_object.chapters.length; i++) {
                 rElement = createActivityDiv(filterdata_object.chapters[i]);
 
                 actResultDiv.appendChild(rElement);
-            };
-       };
+            }
+       }
 
 // end Print Chapters Array
 
@@ -429,7 +429,7 @@ function displaySearchResults(filterdata_object) {
 
 
 
-}; //end displaySearchResults()
+} //end displaySearchResults()
 
 /* //////////////////////TO-DO FOR RESULTS
 
@@ -447,7 +447,7 @@ THUMBNAILS
 //returns an english describing the file type, given a FT
 // could use a key:value array instead
 
-function filetype(ft) { return LOOMA.typename(ft);};
+function filetype(ft) { return LOOMA.typename(ft);}
 
             /*
              //FOR reference: PHP version of thumbnail():
@@ -496,7 +496,7 @@ function thumbnail(item) {
         imgsrc = LOOMA.thumbnail(item.fn, item .fp, item.ft);
     }
     return imgsrc;
-}; // end thumbnail()
+} // end thumbnail()
 
 
 function extractItemId(item) {
@@ -593,7 +593,7 @@ var createActivityDiv = function(activity) {
                         class : "result_ID",
                         html : "[" + item._id + "]"
                     }).appendTo(textdiv);
-                };
+                }
 
                 $("<br>").appendTo(textdiv);
 
@@ -1004,7 +1004,7 @@ function insertTimelineElement(source, open) {  // "open" == T indicates the ele
 
         $('.timelineElement').off().hover(function() {$('.time-popup').show();}, function() {$('.time-popup').hide();})
 
-}; //end insertTimelineElement()
+} //end insertTimelineElement()
 
 var removeTimelineElement = function(elem) {
   // Removing list item from timelineHolder
@@ -1028,7 +1028,7 @@ function minuteSecondFrame (time) {  //not used for now. just showing hh:mm:ss f
     var frames =  Math.floor((time % 1) * 24);
     
     return "" + hours + ":" + minutes + ":" + seconds + ":" + frames;
-};
+}
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 $(document).ready(function() {
     

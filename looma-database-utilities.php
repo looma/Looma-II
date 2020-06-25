@@ -38,6 +38,7 @@ require_once('includes/looma-utilities.php');
   //  removeChapterID
   //  editActivity
   //  uploadFile
+  /// sendMail
   ////////////////////////////////
 
         // SAVE function
@@ -53,7 +54,7 @@ require_once('includes/looma-utilities.php');
 
             global $activities_collection;
 
-            $query =array('dn'=>$name,'ft'=>$type);
+            $query =array('dn'=>trim($name),'ft'=>$type);
             $options = array("upsert"=>true, "new"=>true);
             //$options = array("upsert"=>true);
             $projection = array('_id' => 1, 'dn' => 1);
@@ -198,7 +199,7 @@ if (isset($_REQUEST["collection"])) {
         ////////////////////////
         case "open":
 
-            $query = array("dn" => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
+            $query = array("dn" => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES));
 
             if ($_REQUEST['ft']) {
                 $ft = $_REQUEST['ft'];
@@ -324,37 +325,42 @@ if (isset($_REQUEST["collection"])) {
             //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
 
               $insert = array(
-                "dn" => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES),
+                "dn" => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES),
                 "ft" => $_REQUEST["ft"],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
             );
 
             if (isset($_REQUEST['translator']))
                  $insert['translator'] = $_REQUEST['translator'];
-            else $insert['author']     = $login;
+            else {
+                $insert['author']     = $login;
+                if ($_COOKIE['login-team']) $insert['team'] = $_COOKIE['login-team'];
+            }
 
             if (isset($_REQUEST['nepali']))
                  $insert['nepali'] = $_REQUEST['nepali'];
             else $insert['data']   = $_REQUEST['data'];
 
-            saveToMongo($dbCollection, htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if ( ($collection == "lesson") || ($collection == "lessons")) {
             //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
 
             $insert = array(
-                "dn" => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES),
+                "dn" => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES),
                 "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template', 'lesson' or 'lesson-template'
                 "author" => $_COOKIE['login'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
                 "data" => $_REQUEST["data"]
             );
-            saveToMongo($dbCollection, htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            if ($_COOKIE['login-team']) $insert['team'] = $_COOKIE['login-team'];
+
+            saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if (($collection == "edited_videos")  || ($collection == "slideshows")) {
             //$thumb = isset($_REQUEST['thumb']) ? $_REQUEST['thumb'] : "";
             $insert = array(
-                "dn" => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES),
+                "dn" => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES),
                 "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template'
                 "author" => $_COOKIE['login'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
@@ -362,7 +368,7 @@ if (isset($_REQUEST["collection"])) {
             );
             if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
 
-            saveToMongo($dbCollection, htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if ($collection == "activities") {
             $insert = $_REQUEST['data'];
@@ -391,7 +397,7 @@ if (isset($_REQUEST["collection"])) {
     ////////////////////////
     case "rename":
         changename($dbCollection,
-                   htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES),
+                   trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES),
                    htmlspecialchars_decode($_REQUEST['newname'],ENT_QUOTES),
                    $_REQUEST['ft'], true);
         return;
@@ -405,7 +411,7 @@ if (isset($_REQUEST["collection"])) {
 
    // echo "in 'exists', dn = " . $_REQUEST['dn']. "ft = " . $_REQUEST['ft']. "collection = " . $_REQUEST['collection'];
 
-        $query = array('dn' => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), 'ft' => $_REQUEST['ft']);
+        $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), 'ft' => $_REQUEST['ft']);
         $projection = array("_id" => 1, "author" => 1);
         $result = $dbCollection->findOne($query, $projection);
         if ($result) echo json_encode(array("_id" => $result["_id"],
@@ -419,11 +425,11 @@ if (isset($_REQUEST["collection"])) {
     // - - - DELETE - - - //
     ////////////////////////
     case "delete":
-        $query = array('dn' => htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES), 'ft' => $_REQUEST['ft']);
+        $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), 'ft' => $_REQUEST['ft']);
         $file = $dbCollection->findOne($query);
         if ($file) {
             $dbCollection->remove($query, array("justOne" => true));
-            echo 'Looma-database-utilities.php, deleted file: ' .  htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES) . ' of type: ' . $_REQUEST['ft'];
+            echo 'Looma-database-utilities.php, deleted file: ' .  trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES) . ' of type: ' . $_REQUEST['ft'];
 
             // delete any references to the file from Activities collection
             $removequery = array('mongoID' => new MongoId($file['_id']));
@@ -996,7 +1002,7 @@ if (isset($_REQUEST["collection"])) {
             //print_r ($query);
 
             $changes = []; $unsets = [];
-            if (isset($_REQUEST['dn'])  && $_REQUEST['dn'])  $changes['dn'] =  htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES);
+            if (isset($_REQUEST['dn'])  && $_REQUEST['dn'])  $changes['dn'] =  trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES);
             if (isset($_REQUEST['src']) && $_REQUEST['src']) $changes['src'] = $_REQUEST['src'];
 
             // if key1 is specified, then set key1 and either set or reset keys 2,3,4
@@ -1062,7 +1068,7 @@ if (isset($_REQUEST["collection"])) {
                 // insert ACTIVITY in mongoDB
 
               $insert = [];
-              if (isset($_REQUEST['dn']))  $insert['dn'] =  htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES);
+              if (isset($_REQUEST['dn']))  $insert['dn'] =  trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES);
               if (isset($_REQUEST['src'])) $insert['src'] = $_REQUEST['src'];
 
               if (isset($_REQUEST['chapter'])) $insert['ch_id'] = '[' . $_REQUEST['chapter'] . ']';
@@ -1136,18 +1142,95 @@ if (isset($_REQUEST["collection"])) {
                 $game = $doc;
             }
             echo json_encode($game);
-            break;
-
-    ///////////////////////////////////////////
-    // nothing  (null command for debugging) //
-    ///////////////////////////////////////////
-     case "nothing":
-            echo json_encode(array("received 'nothing' command"));
             return;
-        // end case "nothing"
 
-    } //end switch "cmd"
+
+    ///////////////////////////////////////////
+    ////////////////  sendmail  ///////////////
+    ///////////////////////////////////////////
+        case "sendmail":
+            $msg = json_encode($_REQUEST['data']);
+
+            //echo $msg;
+
+            include_once 'includes/PHPMailer/Exception.php';
+            include_once 'includes/PHPMailer/PHPMailer.php';
+            include_once 'includes/PHPMailer/SMTP.php';
+
+            // from https://github.com/PHPMailer/PHPMailer
+            /*
+             //Server settings
+                    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
+                    $mail->isSMTP();                                            // Send using SMTP
+                    $mail->Host       = 'smtp1.example.com';                    // Set the SMTP server to send through
+                    $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+                    $mail->Username   = 'user@example.com';                     // SMTP username
+                    $mail->Password   = 'secret';                               // SMTP password
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+                    $mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+                    //Recipients
+                    $mail->setFrom('from@example.com', 'Mailer');
+                    $mail->addAddress('joe@example.net', 'Joe User');     // Add a recipient
+                    $mail->addAddress('ellen@example.com');               // Name is optional
+                    $mail->addReplyTo('info@example.com', 'Information');
+                    $mail->addCC('cc@example.com');
+                    $mail->addBCC('bcc@example.com');
+
+                    // Attachments
+                    $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+                    $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+
+                    // Content
+                    $mail->isHTML(true);                                  // Set email format to HTML
+                    $mail->Subject = 'Here is the subject';
+                    $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+                    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+                    $mail->send();
+             */
+            $mail = new PHPMailer\PHPMailer\PHPMailer();
+            //$mail->IsSMTP();
+            $mail->SMTPDebug = PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
+            $mail->Host = 'smtp.gmail.com';  // sets GMAIL as the SMTP server
+            $mail->Port = 587;
+            //Set the encryption system to use - ssl (deprecated) or tls
+            $mail->SMTPSecure = 'tls';
+            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+
+            $mail->SMTPAuth = true;
+            $mail->Username = 'looma.website@gmail.com';// GMAIL username
+            $mail->Password = 'nMjtQkpDi2cGz6cVy2';// GMAIL password
+
+            $mail->From = 'looma.website@gmail.com';
+            $mail->FromName = 'Looma Content Request';
+            //$mail->AddReplyTo('email to reply', 'name to reply');
+            $mail->Subject = 'New content request';
+            $mail->Body = $msg;
+            //$mail->Body = "message here";
+            $mail->IsHTML(false);
+            $mail->AddAddress('skip@stritter.com', 'skip');
+
+            if(!$mail->Send()){ echo 'Error: ' . $mail->ErrorInfo;}
+            else{
+                $mail->ClearAddresses();
+                $mail->ClearAttachments();
+                echo 'Mail sent';
+            }
+
+            return;
+
+      ///////////////////////////////////////////
+      // nothing  (null command for debugging) //
+      ///////////////////////////////////////////
+          case "nothing":
+              echo json_encode(array("received 'nothing' command"));
+              return;
+          // end case "nothing"
+
+      } //end switch "cmd"
 }
+
 else return; //no CMD given
 ?>
 

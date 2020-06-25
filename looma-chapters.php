@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-Name: Skip
+Name: Skipitic
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 10, MAR 2020
 Revision: Looma 2.0.0
@@ -37,7 +37,7 @@ $prefix = trim($_GET['prefix']) ;
 //show PAGE TITLE = "Chapters for Grade n Subject"
 if ($subject === "social studies") $caps = "Social Studies"; else $caps = ucfirst($subject);
     echo "<div id='header'><h1 class='title'>";
-    echo keyword('Chapters for') . " ";
+    //echo keyword('Chapters for') . " ";
     echo keyword($grade) . " ";
     echo keyword($caps);
     echo "</h1></div>";
@@ -59,19 +59,20 @@ echo "<div id='main-container-horizontal' class='scroll'>";
 if ($tb_fn != null) {
     echo "<button class='en-chapter heading img' id='englishTitle' disabled>" .
         // str_replace("Class","Grade ",$tb_dn) .
-        $grade . " " . $caps .
+        //$grade . " " . $caps .
+        "<div>Textbook Chapters</div>" .
         "<img src=" . $tb_fp . thumbnail($tb_fn) . "></button>";
     echo "<button class='en-lesson heading img activities' disabled>"; echo "Lesson"; echo "</button>";
-    echo "<button class='en-activities heading img activities' disabled>";  echo "Activities"; echo "</button>";
+    echo "<button class='en-activities heading img activities' disabled>";  echo "Resources"; echo "</button>";
     }
     else
     echo "<div></div><div></div><div></div>";
 
     if ($tb_nfn != null) {
-        echo "<button class='np-chapter heading img' id='nativeTitle' disabled> $tb_ndn
+        echo "<button class='np-chapter heading img' id='nativeTitle' disabled> <div>पाठ्य पुस्तक अध्यायहरू</div>
                        <img src=" . $tb_fp . thumbnail($tb_nfn) . "></button>";
         echo "<button class='np-lesson heading img activities' disabled>"; echo "पाठ"; echo "</button>";
-        echo "<button class='np-activities heading img activities' disabled>"; echo "गतिविधिहरु"; echo "</button>";   }
+        echo "<button class='np-activities heading img activities' disabled>"; echo "स्रोतहरू"; echo "</button>";   }
     else echo "<div></div><div></div><div></div>";
 
 // get all the CHAPTERS for this grade/subject
@@ -86,7 +87,7 @@ $chapters->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mong
 
 // for each CHAPTER in the CHAPTERS	array,
 // display buttons for textbook, 2nd language textbook (if any) and
-// an ACTIVITIES button that has a data-activity attribute
+// an RESOURCES button that has a data-activity attribute
 // that holds the MongoDB ObjectId for this chapter (for looking up the activities list when needed)
 
 foreach ($chapters as $ch) {
@@ -161,9 +162,8 @@ foreach ($chapters as $ch) {
         echo "<button class='activities en-activities'
                        data-lang='en'
                    data-ch='$ch_id'
-                     data-chdn='$ch_dn'>" .
-                     "Activities";
-        //keyword('Activities');
+                     data-chdn='$ch_dn'>";
+        echo keyword('Resources');
         echo "</button>";
         }
     else {echo "<button class='activity' style='visibility: hidden'></button>";}
@@ -225,7 +225,7 @@ foreach ($chapters as $ch) {
                      data-lang='np'
                      data-ch='$ch_id'
                      data-chdn='$ch_dn'>";
-            echo "गतिविधिहरु";
+            echo "स्रोतहरू";
             echo "</button>";
 
         }

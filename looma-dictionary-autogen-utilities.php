@@ -43,6 +43,7 @@ date_default_timezone_set('UTC');
 
 //contains the methods to access google translate
 require 'looma-dictionary-autogen-translator.php';
+require 'looma-dictionary-autogen-translator.php';
 
 //edit this value to determine how many words will be assigned to each page
 $wordsPerPage = 7;

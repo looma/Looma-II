@@ -1,14 +1,14 @@
 <?php
-function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
 $loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
-error_log("Starting Lesson Plan Edit session. logged in as: " . $loggedin);
+error_log("Starting Lesson Edit session. logged in as: " . $loggedin);
 ?>
 
 <!doctype html>
 <!--
-Filename: looma-lesson-plan.php
+Filename: looma-lesson-edit-lesson.php
 Description: version 1 [SCU, Spring 2016]
              version 2 [skip, Fall 2016]
 Programmer name: SCU, skip
@@ -16,7 +16,7 @@ Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: version 1:spring 2016, version 2: Nov 16  version 3: spring 2018
 Revision: Looma 4
  -->
-    <?php $page_title = 'Looma - Lesson Plan Editor';
+    <?php $page_title = 'Looma - Lesson Editor';
           include ('includes/header.php');
           //include ('includes/mongo-connect.php');
     ?>
@@ -33,7 +33,7 @@ Revision: Looma 4
             <div id="header" class="inner-div">
                 <div id="title">Editing: <span class="filename">&lt;none&gt;</span> </div>
                 <img src="images/logos/LoomaLogoTransparent.png"  height="100%"/>
-                <span>Looma Lesson Plan Editor</span>
+                <span>Looma Lesson Editor</span>
             </div>
 
             <div id="search-bar" class="inner-div">
@@ -72,7 +72,7 @@ Revision: Looma 4
 
         </div>
 
-        <!-- new iFrame June 2017 - used to open the text-editor iFrame when called from in another editor, e.g. lesson plan
+        <!-- new iFrame June 2017 - used to open the text-editor iFrame when called from in another editor, e.g. lesson
             initially hidden by CSS, shown when New Text File button in filecommands.js is clicked  -->
         <div id="text-editor">
             <iframe id="textframe" src="./looma-text-frame.php" allowTransparency="true"> </iframe>

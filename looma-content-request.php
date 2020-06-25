@@ -42,8 +42,8 @@ function info($msg,$id, $type) {  // creates an information popup
         <!-- DIV for SETTINGS input -->
         <div id="settingsDiv">
             <form id='settingsForm' name='settings'>
-                Display name:
-                <?php info("Enter a display name for this item","q-dn", "settings"); ?>
+                Display name * :
+                <?php info("[Enter a display name for this item","q-dn", "settings"); ?>
                 <input id='dn-setting' class='settings-filter black-border' name='dn' type='text'></input>
 
                 Nepali display name:
@@ -55,7 +55,7 @@ function info($msg,$id, $type) {  // creates an information popup
             /*********** Keyword Dropdowns  **********/
             /*****************************************/ -->
             <div id='keyword-setting' class='keyword-filter settings-filter'>
-            <span id='keyword-setting-menu'>Keywords:-set
+            <span id='keyword-setting-menu'>Keywords:
                 <?php info("[Optional] Select keywords for this item", "q-key-set", "settings"); ?>
                 <select name='key1' id='key1-setting-menu' class='settings-filter  keyword-setting keyword-dropdown black-border' data-level=1 form='changes'>
                             <option value=''>Select keyword...</option>
@@ -87,12 +87,12 @@ function info($msg,$id, $type) {  // creates an information popup
 
             <br>
 
-            Filename:
-            <?php info("Paste in the exact file name of this item","q-fn", "settings"); ?>
+            Filename * :
+            <?php info("Paste in the exact file name of this item (or use the URL input)","q-fn", "settings"); ?>
             <input id="fn-setting" class="black-border"></input>
 
-            URL:
-            <?php info("Paste in the URL where this item can be found","q-url", "settings"); ?>
+            URL * :
+            <?php info("Paste in the URL where this item can be found (or use the Filename input)","q-url", "settings"); ?>
             <input id="url-setting" class="black-border"></input>
 
             Lowest grade:

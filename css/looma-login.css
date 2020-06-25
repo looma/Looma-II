@@ -1,3 +1,6 @@
 button.show-keyboard {
     display:inline-block;
 }
+form {
+    font-size:2em;
+}

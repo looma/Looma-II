@@ -60,8 +60,6 @@ input[type='button'], input[type='file'], input[type='text'] {
 .admin, .exec{
     display:none;
     background-color:lightgray;
-    color:gray;
-    cursor:not-allowed;
 }
 
 .boxedSection {

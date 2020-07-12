@@ -71,6 +71,7 @@ playMedia : function(button) {
     var fp = encodeURIComponent(button.getAttribute('data-fp'));
     var dn = encodeURIComponent(button.getAttribute('data-dn'));
     var ndn = encodeURIComponent(button.getAttribute('data-ndn'));
+    var language = LOOMA.readStore('language', 'cookie');
     
     switch (button.getAttribute("data-ft").toLowerCase()) {
         case "video":
@@ -142,7 +143,7 @@ playMedia : function(button) {
 
         case "text":
             var id = encodeURIComponent(button.getAttribute('data-mongoId'));
-            window.location = 'looma-play-text.php?id=' + id;
+            window.location = 'looma-play-text.php?id=' + id + '&lang=' + ((language==='native') ? 'np' : 'en');
             break;
     
         case "html":
@@ -180,7 +181,7 @@ playMedia : function(button) {
 
         case "lesson":
             LOOMA.clearStore('lesson-plan-index', 'session');
-            window.location = 'looma-play-lesson.php?id=' + button.getAttribute('data-mongoid');
+            window.location = 'looma-play-lesson.php?id=' + button.getAttribute('data-mongoid')+ '&lang=' + ((language==='native') ? 'np' : 'en');
             break;
     
         case "game":

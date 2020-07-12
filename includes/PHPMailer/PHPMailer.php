@@ -1087,12 +1087,12 @@ class PHPMailer
         // Enqueue addresses with IDN until we know the PHPMailer::$CharSet.
         if (static::idnSupported() && $this->has8bitChars(substr($address, ++$pos))) {
             if ('Reply-To' !== $kind) {
-                if (!array_key_exists($address, $this->RecipientsQueue)) {
+                if (!isset($this->RecipientsQueue[$address])) {
                     $this->RecipientsQueue[$address] = $params;
 
                     return true;
                 }
-            } elseif (!array_key_exists($address, $this->ReplyToQueue)) {
+            } elseif (!isset($this->ReplyToQueue[$address])) {
                 $this->ReplyToQueue[$address] = $params;
 
                 return true;
@@ -1149,13 +1149,13 @@ class PHPMailer
             return false;
         }
         if ('Reply-To' !== $kind) {
-            if (!array_key_exists(strtolower($address), $this->all_recipients)) {
+            if (!isset( $this->all_recipients[strtolower($address)])) {
                 $this->{$kind}[] = [$address, $name];
                 $this->all_recipients[strtolower($address)] = true;
 
                 return true;
             }
-        } elseif (!array_key_exists(strtolower($address), $this->ReplyTo)) {
+        } elseif (!isset( $this->ReplyTo[strtolower($address)])) {
             $this->ReplyTo[strtolower($address)] = [$address, $name];
 
             return true;
@@ -2002,7 +2002,7 @@ class PHPMailer
             }
             $host = $hostinfo[2];
             $port = $this->Port;
-            if (array_key_exists(3, $hostinfo) && is_numeric($hostinfo[3]) && $hostinfo[3] > 0 && $hostinfo[3] < 65536) {
+            if (isset($hostinfo[3]) && is_numeric($hostinfo[3]) && $hostinfo[3] > 0 && $hostinfo[3] < 65536) {
                 $port = (int) $hostinfo[3];
             }
             if ($this->smtp->connect($prefix . $host, $port, $this->Timeout, $options)) {
@@ -3057,7 +3057,7 @@ class PHPMailer
                 $type = $attachment[4];
                 $disposition = $attachment[6];
                 $cid = $attachment[7];
-                if ('inline' === $disposition && array_key_exists($cid, $cidUniq)) {
+                if ('inline' === $disposition && isset( $cidUniq[$cid])) {
                     continue;
                 }
                 $cidUniq[$cid] = true;
@@ -3849,7 +3849,7 @@ class PHPMailer
         $result = '';
         if (!empty($this->Hostname)) {
             $result = $this->Hostname;
-        } elseif (isset($_SERVER) && array_key_exists('SERVER_NAME', $_SERVER)) {
+        } elseif (isset($_SERVER) && isset( $_SERVER['SERVER_NAME'])) {
             $result = $_SERVER['SERVER_NAME'];
         } elseif (function_exists('gethostname') && gethostname() !== false) {
             $result = gethostname();
@@ -3912,7 +3912,7 @@ class PHPMailer
             $this->setLanguage(); // set the default language
         }
 
-        if (array_key_exists($key, $this->language)) {
+        if (isset( $this->language[$key])) {
             if ('smtp_connect_failed' === $key) {
                 //Include a link to troubleshooting docs on SMTP connection failure
                 //this is by far the biggest cause of support questions
@@ -4001,7 +4001,7 @@ class PHPMailer
     public function msgHTML($message, $basedir = '', $advanced = false)
     {
         preg_match_all('/(?<!-)(src|background)=["\'](.*)["\']/Ui', $message, $images);
-        if (array_key_exists(2, $images)) {
+        if (isset( $images[2])) {
             if (strlen($basedir) > 1 && '/' !== substr($basedir, -1)) {
                 // Ensure $basedir has a trailing /
                 $basedir .= '/';
@@ -4249,7 +4249,7 @@ class PHPMailer
             'mkv' => 'video/x-matroska',
         ];
         $ext = strtolower($ext);
-        if (array_key_exists($ext, $mimes)) {
+        if (isset( $mimes[$ext])) {
             return $mimes[$ext];
         }
 
@@ -4293,16 +4293,16 @@ class PHPMailer
         $ret = ['dirname' => '', 'basename' => '', 'extension' => '', 'filename' => ''];
         $pathinfo = [];
         if (preg_match('#^(.*?)[\\\\/]*(([^/\\\\]*?)(\.([^.\\\\/]+?)|))[\\\\/.]*$#m', $path, $pathinfo)) {
-            if (array_key_exists(1, $pathinfo)) {
+            if (isset($pathinfo[1])) {
                 $ret['dirname'] = $pathinfo[1];
             }
-            if (array_key_exists(2, $pathinfo)) {
+            if (isset($pathinfo[2])) {
                 $ret['basename'] = $pathinfo[2];
             }
-            if (array_key_exists(5, $pathinfo)) {
+            if (isset($pathinfo[5])) {
                 $ret['extension'] = $pathinfo[5];
             }
-            if (array_key_exists(3, $pathinfo)) {
+            if (isset($pathinfo[3])) {
                 $ret['filename'] = $pathinfo[3];
             }
         }

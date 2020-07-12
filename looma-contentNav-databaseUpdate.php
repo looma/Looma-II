@@ -14,7 +14,7 @@
 
     if ($isDuplicate == "false") {
       //Create Query For Activity
-      $toFind = array('_id' => new MongoId($db_id));
+      $toFind = array('_id' => mongoId($db_id));
 
       //Fields To Update
       $updatedField = array(
@@ -31,7 +31,7 @@
       );
     } else {
       //Create Query For Activity
-      $toFind = array('_id' => new MongoId($db_id));
+      $toFind = array('_id' => mongoId($db_id));
       $projection =  array("_id" => false);
 
       //Get Activity

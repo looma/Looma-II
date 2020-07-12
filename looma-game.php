@@ -37,10 +37,10 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         //   $doc = $game;
         // }
 
-        // $title = array_key_exists('name', $doc) ? $doc['name'] : null;
-        // $game_type = array_key_exists('presentation_type', $doc) ? $doc['presentation_type'] : null;
-        // $time_limit = array_key_exists('timeLimit', $doc) ? $doc['timeLimit'] : null;
-        // $prompts = array_key_exists('prompts', $doc) ? $doc['prompts'] : null;
+        // $title = keyIsSet('name', $doc) ? $doc['name'] : null;
+        // $game_type = keyIsSet('presentation_type', $doc) ? $doc['presentation_type'] : null;
+        // $time_limit = keyIsSet('timeLimit', $doc) ? $doc['timeLimit'] : null;
+        // $prompts = keyIsSet('prompts', $doc) ? $doc['prompts'] : null;
 
         // $numQuestions = sizeOf($prompts);
         // $currQuestion = 0;
@@ -106,8 +106,8 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
           echo '<div id="teamoptions">';
           for ($i = 1; $i <= 4; $i++) {
               echo '<button class="teamnumber button-8" data-team="' . $i . '">' . $i . '</button>';
-          };
-          echo '</div>';
+          }
+      echo '</div>';
       echo '</section>';
       ?>
 

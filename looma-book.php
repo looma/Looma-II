@@ -65,8 +65,8 @@ $prefix_as_regex = "^" . $prefix; //insert the PREFIX into a REGEX
 
 $query = array('book_id' => array('$regex' => $prefix_as_regex));
 
-$chapters = $activities_collection -> find($query);
-$chapters->sort(array('book_id' => 1)); //NOTE: this is MONGO sort() method for mongo cursors
+$chapters = mongoFind($activities_collection, $query, 'book_id', null, null);
+//$chapters->sort(array('book_id' => 1)); //NOTE: this is MONGO sort() method for mongo cursors
 // this sort is on 'book_id' which is the "ch_id" of the chapter
 // format for book_id is "<book prefix>-0n"  for n = 1..number of chapters
 // we maintain book IDs so that their SORT() order is the natural sort order
@@ -74,17 +74,17 @@ $chapters->sort(array('book_id' => 1)); //NOTE: this is MONGO sort() method for 
 foreach ($chapters as $ch) {
 
     echo "<tr>";
-    $ch_id  = array_key_exists('book_id', $ch) ? $ch['book_id'] : null;
-    $ch_ft =  array_key_exists('ft', $ch) ? $ch['ft'] :   'pdf';
+    $ch_id  = keyIsSet('book_id', $ch) ? $ch['book_id'] : null;
+    $ch_ft =  keyIsSet('ft', $ch) ? $ch['ft'] :   'pdf';
 
-    $ch_dn =  array_key_exists('dn', $ch) ? $ch['dn'] :   null;
-    $ch_ndn = array_key_exists('ndn', $ch) ? $ch['ndn'] : null;
+    $ch_dn =  keyIsSet('dn', $ch) ? $ch['dn'] :   null;
+    $ch_ndn = keyIsSet('ndn', $ch) ? $ch['ndn'] : null;
 
-    $ch_fn =  array_key_exists('fn', $ch) ? $ch['fn'] :   null;
-    $ch_nfn = array_key_exists('nfn', $ch) ? $ch['nfn'] : null;
+    $ch_fn =  keyIsSet('fn', $ch) ? $ch['fn'] :   null;
+    $ch_nfn = keyIsSet('nfn', $ch) ? $ch['nfn'] : null;
 
-    $ch_fp =  array_key_exists('fp', $ch) ? $ch['fp'] :   null;
-    $ch_nfp = array_key_exists('nfp', $ch) ? $ch['nfp'] : null;
+    $ch_fp =  keyIsSet('fp', $ch) ? $ch['fp'] :   null;
+    $ch_nfp = keyIsSet('nfp', $ch) ? $ch['nfp'] : null;
 
 ///////   ENGLISH   ///////
 // display chapter button for english chapters of the book, if any
@@ -124,7 +124,7 @@ foreach ($chapters as $ch) {
     //check in the database to see if there are any LESSON PLANS for this CHAPTER. if so, create a button
     // NOTE: current code only finds the FIRST lesson for the chapter.
     // expand in the future to allow multiple lessons per chapter
-    $lesson = $activities_collection -> findOne($query, $projection);
+    $lesson = mongoFindOne($activities_collection, $query);
 
     if ($lesson) {
         echo "<td><button class='lesson' data-ch='$ch_id'" .
@@ -145,7 +145,8 @@ foreach ($chapters as $ch) {
     );
 
     //check in the database to see if there are any ACTIVITIES  or this CHAPTER. if so, create a button
-    $activity = $activities_collection -> findOne($query, $projection);
+    //$activity = $activities_collection -> findOne($query, $projection);
+    $activity = mongoFindOne($activities_collection, $query);
 
     if ($activity) {
         echo "<td><button class='activities'" .

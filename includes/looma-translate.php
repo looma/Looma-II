@@ -24,7 +24,7 @@ function keyword($english) {
 
 	//NOTE: should make this case insensitive
 
-	$native = (array_key_exists($english, $TKW) ? $TKW[$english] : $english); //default if no translation is the english
+	$native = (isset($TKW[$english]) ? $TKW[$english] : $english); //default if no translation is the english
 	echo "<span class='english-keyword'>"
 			 . $english .
 			 "<span class='xlat'>" . $native . "</span>" .
@@ -34,12 +34,12 @@ function keyword($english) {
 	    	"<span class='xlat'>" . $english . "</span>" .
 		 "</span>";
 
-}; 	//end function KEYWORD()
+}    //end function KEYWORD()
 
 function tooltip($english) {
         // each label has a span with class='tip' to show a tooltip with the translation when hovering over the phrase
 		global $TKW;
-		$native = (array_key_exists($english, $TKW) ? $TKW[$english] : $english); //default if no translation is the english
+		$native = (isset($TKW[$english]) ? $TKW[$english] : $english); //default if no translation is the english
 
 		echo "<span class='tip english-tip yes-show'>" . $english . "</span>";
 		echo "<span class='tip native-tip'>"           . $native  . "</span>";

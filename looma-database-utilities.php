@@ -43,7 +43,7 @@ require_once('includes/looma-utilities.php');
 
         // SAVE function
         function saveActivity($collection, $insert) {
-                $result = $collection->insert($insert);
+                $result = mongoInsert($collection, $insert);
                 echo json_encode($result);
         } //end SAVE
 
@@ -55,27 +55,22 @@ require_once('includes/looma-utilities.php');
             global $activities_collection;
 
             $query =array('dn'=>trim($name),'ft'=>$type);
-            $options = array("upsert"=>true, "new"=>true);
+            //$options = array("upsert"=>true, "new"=>true);
             //$options = array("upsert"=>true);
-            $projection = array('_id' => 1, 'dn' => 1);
+            //$projection = array('_id' => 1, 'dn' => 1);
 
             // NOTE - - IMPORTANT
             //NOTE: using findAndModify here so that we get the _id of the updated document to use in following activity save
             //
-            $result = $collection->findAndModify($query, array('$set' => $insert), $projection, $options);
+            $result = mongoFindAndModify($collection, $query, array('$set' => $insert));
 
             echo json_encode($result);
 
         // if $activity param is true, save new document in the activities collection or update 'dn' for existing activities pointing to this file
-            if ($activity  == "true") {
-
+            if ($activity) {
                 $resultId = $result['_id'];
-
-                $mongoID = new MongoID($resultId); // mongoID of document we just saved
+                $mongoID = mongoId($resultId); // mongoID of document we just saved
                 $query = array("ft" => $insert['ft'], "mongoID" => $mongoID);
-
-                echo "upserting: ft = ". $insert['ft'] . "   id = " . $resultId;
-                //return;
 
                 $toinsert = array(
                     "ft"      => $insert['ft'],
@@ -86,18 +81,8 @@ require_once('includes/looma-utilities.php');
 
                 $toinsertToActivities = array('$set' => $toinsert);
 
-                  $options = array("upsert" => True, "multi" => True);
-
-            try {
-                    $result1 = $activities_collection->update($query, $toinsertToActivities, $options);
-                    echo json_encode($result1);
-                }
-            catch(MongoConnectionException $e)
-                {
-                    //echo "Mongo Error writing to Activities collection";
-                    echo json_encode(array('error'=>'Mongo error writing Activities collection'));
-                }
-
+            $result1 = mongoUpdateMany($activities_collection, $query, $toinsertToActivities);
+            //echo json_encode($result1);
             }
         }  //end saveToMongo()
 
@@ -106,24 +91,21 @@ require_once('includes/looma-utilities.php');
 
                 $query = array('dn' => $oldname, 'ft' => $ft);
                 $update = array('$set' => array('dn' => $newname));
-                $projection = array('_id' => 1, 'dn' => 1);
-                $options = array('new' => True);
-                $result = $collection->findAndModify($query, $update, $projection, $options);
+                //$projection = array('_id' => 1, 'dn' => 1);
+                //$options = array('new' => True);
+                $result = mongoFindAndModify($collection, $query, $update);
 
                 echo json_encode($result);
 
         //  AND update 'dn' for existing activities pointing to this text file
             if ($activity) {
                 $id = $result['_id'];
-
-                $id = new MongoID($id); // mongoID of the text we just saved
+                $id = mongoId($id); // mongoID of the text we just saved
                 $query =   array("ft" => $ft, "mongoID" => $id);
                 $update =  array('$set' => array('dn' => $newname));
-                $options = array('multiple' => true);
+                //$options = array('multiple' => true);
 
-                $result1 = $activities_collection->update($query, $update, $options);
-
-                //echo "coll is " . $collection . ", ft is " . $_RESULT['ft'] . ", id is " . $id . ", newname is " . $newname;
+                $result1 = mongoUpdateMany($activities_collection, $query, $update);
 
                 echo json_encode($result1);
             }
@@ -143,13 +125,7 @@ function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : nul
   $login = loggedin();
 
 if (isset($_REQUEST["collection"])) {
-
    $collection =  $_REQUEST["collection"];
-
-        //DEBUG
-        //echo "cmd is " . $cmd . ", collection is " . $collection . ", ";
-        //echo "dn is " . $_POST['dn'] . ", ft is " .  $_POST['ft'];
-        //
 
    switch ($collection) {
        case "activities":    $dbCollection = $activities_collection;    break;
@@ -188,12 +164,12 @@ if (isset($_REQUEST["collection"])) {
 
   if ( isset($_REQUEST["cmd"]) ) {
     $cmd =  $_REQUEST["cmd"];
-    //accepted commands are "open", "save", "rename", "exists", "delete"
+    //accepted commands are "open", "openByName", "openByID","openText","save","updateByID","rename", "exists", "delete","deleteField",
+      // "textBookList","textSubjectList","textChapterList","bookList","bookChapterList","keywordRoot","keywordList","search","searchChapters",
+      // "addChapterID","removeChapterID","editActivity","uploadFile", "sendMail"
 
-    //DEBUG echo "database-utilities.php, cmd = " . $cmd . ", dn = " . $_REQUEST['dn'] . ", collection = " . $collection;
 
-    switch ($cmd) {
-
+      switch ($cmd) {
         ////////////////////////
         // - - - OPEN   - - - //
         ////////////////////////
@@ -210,7 +186,7 @@ if (isset($_REQUEST["collection"])) {
             //echo "filetype is " . $query['ft'];
 
             //look up this DN (display name) in this collection (dbCollection)
-            $file = $dbCollection->findOne($query);  // assumes someone is maintaining this collection with unique DNs (index unique)
+            $file = mongoFindOne($dbCollection, $query);  // assumes someone is maintaining this collection with unique DNs (index unique)
             if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
             else echo json_encode(array("error" => "File not found"));  // if not found, return an error object {'error': errormessage}
             return;
@@ -227,7 +203,7 @@ if (isset($_REQUEST["collection"])) {
             //echo "filetype is " . $query['ft'];
 
             //look up this DN (display name) in this collection (dbCollection)
-            $file = $dbCollection->findOne($query);  // assumes someone is maintaining this collection with unique DNs (index unique)
+            $file = mongoFindOne($dbCollection, $query);  // assumes someone is maintaining this collection with unique DNs (index unique)
             if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
             else echo json_encode(array("error" => "File not found"));  // in not found, return an error object {'error': errormessage}
             return;
@@ -239,14 +215,14 @@ if (isset($_REQUEST["collection"])) {
 ////////////////////////
     case "openByID":
         if ($collection == "chapters") $query = array('_id' => $_REQUEST['id']);
-        else                           $query = array('_id' => new MongoID($_REQUEST['id']));
+        else                           $query = array('_id' => mongoId($_REQUEST['id']));
         //look up this ID (mongoID) in this collection (dbCollection)
-        $file = $dbCollection->findOne($query);
+        $file = mongoFindOne($dbCollection, $query);
 
         //////////////
         if ($collection == "chapters") {
             $query = array('prefix' => prefix($file['_id']));
-            $textbook = $textbooks_collection->findOne($query);
+            $textbook = mongoFindOne($textbooks_collection, $query);
             $file['fp'] = $textbook['fp'];
             $file['fn'] = $textbook['fn'];
             $file['nfn'] = $textbook['nfn'];
@@ -267,7 +243,7 @@ if (isset($_REQUEST["collection"])) {
     case "openText":
         $query = array();
         //look up this ID (mongoID) in this collection (dbCollection)
-        $cursor = $dbCollection->find($query)->skip($_REQUEST['skip']);
+        $cursor = mongoFind($dbCollection, $query, null, $_REQUEST['skip'], 1);
         $cursor->next();
         $file = $cursor->current();
         if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
@@ -281,12 +257,12 @@ if (isset($_REQUEST["collection"])) {
     ////////////////////////
     case "updateByID":  //called with 'collection', 'id', and an update Object
 
-        $query = array('_id' => new MongoID($_REQUEST['id']));
+        $query = array('_id' => mongoId($_REQUEST['id']));
         //update this ID (mongoID) in this collection (dbCollection)
 
         $update = array('$set' => json_decode($_REQUEST["data"]));
 
-        $result = $dbCollection->update($query, $update);
+        $result = mongoUpdate($dbCollection, $query, $update);
 
         if ($result) echo json_encode($result);
         else echo json_encode(array("error" => "File not found " . $_REQUEST['id'] . " in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
@@ -300,12 +276,12 @@ if (isset($_REQUEST["collection"])) {
     ////////////////////////
     case "deleteField":
 
-        $query = array('_id' => new MongoID($_REQUEST['id']));
+        $query = array('_id' => mongoId($_REQUEST['id']));
         //update this ID (mongoID) in this collection (dbCollection)
 
         $update = array('$unset' => json_decode($_REQUEST["data"]));
 
-        $result = $dbCollection->update($query, $update);
+        $result = mongoUpdate($dbCollection, $query, $update);
 
         if ($result) echo json_encode($result);
         else echo json_encode(array("error" => "File not found " . $_REQUEST['id'] . " in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
@@ -323,15 +299,19 @@ if (isset($_REQUEST["collection"])) {
     case "save":
         if ( ($collection == "text") || ($collection == "text_files")) {
             //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
-
-              $insert = array(
-                "dn" => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES),
+              $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
+            //echo "DEBUG: $_REQUEST['dn'] is " . $_REQUEST['dn'];
+            //echo "DEBUG: html spec char is " . htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES);
+            //echo "DEBUG: dn is " . $save_dn;
+            $insert = array(
+                "dn" => $save_dn,
                 "ft" => $_REQUEST["ft"],
-                "date" => gmdate("Y.m.d"),  //using greenwich time
+                "date" => gmdate("Y.m.d")  //using greenwich time
             );
 
-            if (isset($_REQUEST['translator']))
+            if (isset($_REQUEST['translator'])) {
                  $insert['translator'] = $_REQUEST['translator'];
+            }
             else {
                 $insert['author']     = $login;
                 if ($_COOKIE['login-team']) $insert['team'] = $_COOKIE['login-team'];
@@ -341,7 +321,7 @@ if (isset($_REQUEST["collection"])) {
                  $insert['nepali'] = $_REQUEST['nepali'];
             else $insert['data']   = $_REQUEST['data'];
 
-            saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            saveToMongo($dbCollection, $save_dn, $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if ( ($collection == "lesson") || ($collection == "lessons")) {
             //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
@@ -383,7 +363,7 @@ if (isset($_REQUEST["collection"])) {
             $insert["date"] = gmdate("Y.m.d");  //using greenwich time
             $insert["author"] = $_COOKIE['login'];
 
-            $result = $dbCollection->insert($insert);
+            $result = mongoInsert($dbCollection, $insert);
 
             echo json_encode($result);
         }
@@ -413,7 +393,7 @@ if (isset($_REQUEST["collection"])) {
 
         $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), 'ft' => $_REQUEST['ft']);
         $projection = array("_id" => 1, "author" => 1);
-        $result = $dbCollection->findOne($query, $projection);
+        $result = mongoFindOne($dbCollection, $query);
         if ($result) echo json_encode(array("_id" => $result["_id"],
                                             "author" => (isset($result["author"]) ? $result["author"] : null)));
         else         echo json_encode(array("_id" => ""));
@@ -426,14 +406,14 @@ if (isset($_REQUEST["collection"])) {
     ////////////////////////
     case "delete":
         $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), 'ft' => $_REQUEST['ft']);
-        $file = $dbCollection->findOne($query);
+        $file = mongoFindOne($dbCollection, $query);
         if ($file) {
-            $dbCollection->remove($query, array("justOne" => true));
+            mongoDeleteOne($dbCollection ,$query);  //, array("justOne" => true));
             echo 'Looma-database-utilities.php, deleted file: ' .  trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES) . ' of type: ' . $_REQUEST['ft'];
 
             // delete any references to the file from Activities collection
-            $removequery = array('mongoID' => new MongoId($file['_id']));
-            $activities_collection->remove($removequery);  //by default, removes multiple instances
+            $removequery = array('mongoID' => mongoId($file['_id']));
+            mongoDeleteMany($activities_collection, $removequery);  //by default, removes multiple instances
         }
         return;
     // end case "delete"
@@ -451,7 +431,7 @@ if (isset($_REQUEST["collection"])) {
             //    return a array of JSON documents from textbooks collection
 
             $query = array('class' => $_REQUEST['class']);
-            $books = $textbooks_collection->find($query);
+            $books = mongoFind($textbooks_collection, $query, null, null, null);
             $response = [];
             foreach ($books as $book) $response[] = $book;
 
@@ -483,7 +463,7 @@ if (isset($_REQUEST["collection"])) {
             //print_r($query);
 
             $projection = array('_id' => 0, 'subject' => 1);
-            $subjects = $textbooks_collection->find($query, $projection);
+            $subjects = mongoFind($textbooks_collection, $query, null, null, null);
             foreach ($subjects as $subj) echo "<option value='" . $subj['subject'] . "'>"  . $subj['subject'] . "</option>";
             return;  // end textSubjectList()
 
@@ -516,7 +496,7 @@ if (isset($_REQUEST["collection"])) {
             //print_r($query);
 
             $projection = array('_id' => 0, 'prefix' => 1);
-            $prefix = $textbooks_collection->findOne($query, $projection);
+            $prefix = mongoFindOne($textbooks_collection, $query);
             //echo "mongo result is "; print_r($prefix);
             //echo "prefix is $prefix";
 
@@ -531,7 +511,7 @@ if (isset($_REQUEST["collection"])) {
                 //echo "lang is " . $lang;
 
                 $query = array('_id' => array('$regex' => $regex));
-                $chapters = $chapters_collection->find($query);
+                $chapters = mongoFind($chapters_collection, $query, null, null, null);
                 foreach ($chapters as $ch) {
 
                     //echo "ch is " . $ch['dn'] . ' and ' . $ch['ndn'];
@@ -554,7 +534,7 @@ if (isset($_REQUEST["collection"])) {
 
             $regex = "^" . $_REQUEST['prefix'] . "-";
             $query = array('prefix' => array('$regex' => $regex), 'ft' => 'book');
-            $books = $activities_collection->find($query);
+            $books = mongoFind($activities_collection, $query, null, null, null);
 
             foreach ($books as $book) echo "<option value='" . $book['prefix'] . "'>"  . $book['dn'] . "</option>";
 
@@ -569,7 +549,7 @@ if (isset($_REQUEST["collection"])) {
             $regex = "^" . $_REQUEST['book_id'] . "-";
             $query = array('book_id' => array('$regex' => $regex), 'ft' => 'pdf');
 
-            $chapters = $activities_collection->find($query);
+            $chapters = mongoFind($activities_collection, $query, null, null, null);
             $chapters->sort(array('book_id' => 1));
             foreach ($chapters as $ch) echo "<option value='" . $ch['book_id'] . "'>" . $ch['dn'] . "(" . $ch['book_id'] . ")</option>";
 
@@ -583,7 +563,7 @@ if (isset($_REQUEST["collection"])) {
         // format of result is [{name:name, id:id}, ...]  (id will == null if this keyword has no children)
 
         $query = array('name' => 'root');
-        $root = $tags_collection->findOne($query);
+        $root = mongoFindOne($tags_collection, $query);
         echo json_encode($root['children']);
         return;
 // end case "keywordRoot"
@@ -595,8 +575,8 @@ if (isset($_REQUEST["collection"])) {
         // called with a mongoID. lookup that id in tags collection and return an array of children keywords of that keyword
         // format of result is [{name:name, id:id}, ...]  (id will == null if this keyword has no children)
 
-        $query = array('_id' => new MongoId($_POST['id']));
-        $child = $tags_collection->findOne($query);
+        $query = array('_id' => mongoId($_POST['id']));
+        $child = mongoFindOne($tags_collection, $query);
         echo json_encode($child['children']);
         return;
 // end case "keywordList"
@@ -670,12 +650,12 @@ if (isset($_REQUEST["collection"])) {
         $classSubjRegex = null;
 
         if (isset($_POST['category']) && $_POST['category'] != "All") {
-            $areaRegex = new MongoRegex ('/' . $_POST['category'] . '/i');
+            $areaRegex = mongoRegex ('/' . $_POST['category'] . '/i');
         }
 
         //Build Regex to match search term (i is ignore case)
         if (isset($_POST['search-term']) && $_POST['search-term'] |= '')
-            $nameRegex = new MongoRegex('/' . $_POST["search-term"] . '/i');
+            $nameRegex = mongoRegexOptions($_POST["search-term"], 'i');
 
         //if 'class' or 'subj' are specified, build another regex to match class/subj in ch_id
         if (isset($_POST['chapter']) && $_POST['chapter'] != '') {
@@ -689,7 +669,7 @@ if (isset($_REQUEST["collection"])) {
 
             //echo 'classSubjRegex is ' . $classSubjRegex;
 
-            $classSubjRegex = new MongoRegex($classSubjRegex . '/');
+            $classSubjRegex = mongoRegex($classSubjRegex . '/');
         }
 
         /* DEBUG
@@ -715,36 +695,36 @@ if (isset($_REQUEST["collection"])) {
 
         // using REGEX with "/i" to get case insensitive search for keywords
         if (isset($_REQUEST['key1']) && $_REQUEST['key1'] != '') {
-            $query['key1'] = $_REQUEST['key1'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key1'].'/i');
+            $query['key1'] = $_REQUEST['key1'] === 'none'? null : mongoRegex('/'.$_REQUEST['key1'].'/i');
         }
         if (isset($_REQUEST['key2']) && $_REQUEST['key2'] != '') {
-            $query['key2'] = $_REQUEST['key2'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key2'].'/i');
+            $query['key2'] = $_REQUEST['key2'] === 'none'? null : mongoRegex('/'.$_REQUEST['key2'].'/i');
         }
         if (isset($_REQUEST['key3']) && $_REQUEST['key3'] != '') {
-            $query['key3'] = $_REQUEST['key3'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key3'].'/i');
+            $query['key3'] = $_REQUEST['key3'] === 'none'? null : mongoRegex('/'.$_REQUEST['key3'].'/i');
         }
         if (isset($_REQUEST['key4']) && $_REQUEST['key4'] != '') {
-            $query['key4'] = $_REQUEST['key4'] === 'none'? null : new MongoRegex('/'.$_REQUEST['key4'].'/i');
+            $query['key4'] = $_REQUEST['key4'] === 'none'? null : mongoRegex('/'.$_REQUEST['key4'].'/i');
         }
 
         //echo "Query is: "; print_r($query);
         //echo '$dbCollection is ' . $dbCollection;
 
-        $cursor = $dbCollection->find($query);   //->skip($page)->limit(20);
+        $cursor = mongoFind($dbCollection, $query, 'dn', null, null);   //->skip($page)->limit(20);
 
         //echo 'FOUND '.$cursor->count().' items';
 
         //SORT the found items before sending to client-side
-        $cursor->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+        //$cursor->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
 //
 //NOTE: we use an older version of MONGO that doesnt support COLLATION order.
 //  this code should get all the cursor elements into a PHP array and do NATKSORT ( like looma-library.php does)
 //
         $result = array();
-        if ($cursor->count() > 0) {
+        //if ($cursor->count() > 0) {
             foreach ($cursor as $d) $result[] = $d;
-        }
+       // }
 
         // removing duplicate results - based on 'fn' and 'fp' being equal
         // this is a crutch to cover up duplicate entries in 'activities' collection
@@ -781,8 +761,8 @@ if (isset($_REQUEST["collection"])) {
                     if ($result[$i]['dn'] !== $result[$i - 1]['dn']) $unique[] = $result[$i];
                 /* for all other filetypes match on filename and fp (if present) to determine uniquess */
                 } else if (($result[$i]['fn'] !== $result[$i - 1]['fn'])
-                    || (array_key_exists('fp', $result[$i])
-                        && (array_key_exists('fp', $result[$i - 1])
+                    || (isset($result[$i]['fp'])
+                        && (isset($result[$i - 1]['fp'])
                             && $result[$i]['fp'] !== $result[$i - 1]['fp'])))
 
                     $unique[] = $result[$i];
@@ -798,82 +778,6 @@ if (isset($_REQUEST["collection"])) {
         echo json_encode(array('count'=> $numUnique, 'list'=>$unique));
         return;
     // end case "search"
-
-/*
-        ////////////////////////////////
-        // - - - SEARCHCHAPTERS OLD VERSION- - - //
-        ////////////////////////////////
-        case "searchChapters":
-            // called (from lesson-search.js, etc) using POST with FORMDATA serialized by jquery
-            // $_POST[] can have these entries: cmd (='searchChapters'), collection (='chapters'), class, subj, lang, chapter, dn, key1..4
-
-            $subjectcodes = array(
-                'science' => 'S',
-                'math' => 'M',
-                'english' => 'EN',
-                'nepali' => 'N',
-                'social studies' => 'SS',
-                'health' => 'H',
-                'vocation' => 'V',
-                'moral education' => 'SSa',  //now used for "Moral Education" textbooks
-                'science optional' => 'Sa',
-                'math optional' => 'Ma');
-
-            $classSubjRegex = null;
-            if (isset($_REQUEST['language'])) $lang = $_REQUEST['language']; else $lang = 'en';
-
-            if (isset($_POST['chapter']) && $_POST['chapter'] != '') {
-                $classSubjRegex .= $_POST['chapter'];
-            } elseif ((isset($_POST['class']) && $_POST['class'] != '') || (isset($_POST['subj']) && $_POST['subj'] != '')) {
-                $classSubjRegex = "/";
-                //echo 'classSubjRegex is ' . $classSubjRegex;
-                if (isset($_POST['class']) && $_POST['class'] != '') $classSubjRegex .= '^' . $_POST['class'];
-                //echo 'classSubjRegex is ' . $classSubjRegex;
-                if (isset($_POST['subj']) && $_POST['subj'] != '') $classSubjRegex .= $subjectcodes[$_POST['subj']] . '\d';
-
-                    //echo 'classSubjRegex is ' . $classSubjRegex;
-                    //return;
-
-                $classSubjRegex = new MongoRegex($classSubjRegex . '/');
-            };
-
-            $query = array('_id' =>  $classSubjRegex);
-            $cursor = $chapters_collection->find($query);
-
-            //SORT the found items before sending to client-side
-            $cursor->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
-
-                //NOTE: we use an older version of MONGO that doesnt support COLLATION order.
-                //  this code should get all the cursor elements into a PHP array and do NATKSORT ( like looma-library.php does)
-
-            if (isset($_REQUEST['pagesz']))  {
-                if (isset($_REQUEST['pageno'])) $cursor->skip(($_REQUEST['pageno'] - 1 ) * $_REQUEST['pagesz']);
-                $cursor->limit($_REQUEST['pagesz']);
-            }
-
-            $result = array();
-            if ($cursor->count() > 0) {
-                foreach ($cursor as $d)  {
-                    $query =  array("prefix" => prefix( $d['_id']));
-                    $textbook = $textbooks_collection->findOne($query);
-                    //$d['fn'] = $lang === 'en' ? $textbook['fn'] : $textbook['nfn'];
-                    $d['fn'] = $textbook['fn'];
-                    $d['nfn'] = $textbook['nfn'];
-                    $d['fp'] = $textbook['fp'];
-
-                    // only send back chapters that are in "$lang" language ('en' or 'np')
-                    if      ($lang === 'en' && isset($d['dn'])   && $d['dn'] !== '') $result[] = $d;
-                    else if ($lang === 'np' && isset($d['ndn']) && $d['ndn'] !== '') $result[] = $d;
-                }};
-
-            //echo json_encode($result);
-            echo json_encode(array('count'=> sizeof ($result), 'list'=>$result));
-
-            return;
-        // end case "searchChapters"
-
-*/
-
 
     ////////////////////////////////
     // - - - SEARCHCHAPTERS - - - //
@@ -908,13 +812,13 @@ if (isset($_REQUEST["collection"])) {
                 if (isset($subj)  && $subj  != '') $classSubjRegex .= $subjectcodes[$subj] . '\d';
                 $classSubjRegex .= "/";
 
-                $classSubjRegex = new MongoRegex($classSubjRegex);
+                $classSubjRegex = mongoRegex($classSubjRegex);
             } else $classSubjRegex = null;
 
             if ($classSubjRegex) $query = array('_id' =>  $classSubjRegex);
             //$query['_id'] = $classSubjRegex;
 
-            if ($dn) $query['dn'] =     new MongoRegex('/' . $dn. '/i');
+            if ($dn) $query['dn'] =     mongoRegex('/' . $dn. '/i');
             if ($key1) $query['key1'] = $key1;
             if ($key2) $query['key2'] = $key2;
             if ($key3) $query['key3'] = $key3;
@@ -923,7 +827,7 @@ if (isset($_REQUEST["collection"])) {
             //echo "query is ";
             //print_r($query);
 
-            $cursor = $chapters_collection->find($query);
+            $cursor = mongoFind($chapters_collection, $query, null, null, null);
 
             //SORT the found items before sending to client-side
             $cursor->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
@@ -937,10 +841,10 @@ if (isset($_REQUEST["collection"])) {
             }
 
             $result = array();
-            if ($cursor->count() > 0) {
+           // if ($cursor->count() > 0) {
                 foreach ($cursor as $d)  {
                     $query =  array("prefix" => prefix( $d['_id']));
-                    $textbook = $textbooks_collection->findOne($query);
+                    $textbook = mongoFindOne($textbooks_collection, $query);
                     //$d['fn'] = $lang === 'en' ? $textbook['fn'] : $textbook['nfn'];
                     $d['fn'] = $textbook['fn'];
                     $d['nfn'] = $textbook['nfn'];
@@ -950,7 +854,8 @@ if (isset($_REQUEST["collection"])) {
                     if      ($lang === 'en' && isset($d['dn'])  && $d['dn'] !== '') $result[] = $d;
                     else if ($lang === 'np' && isset($d['ndn']) && $d['ndn'] !== '') $result[] = $d;
                     else if ($lang === 'both') $result[] = $d;
-                }}
+                }
+           // }
 
             echo json_encode(array('count'=> sizeof ($result), 'list'=>$result));
             return;
@@ -960,10 +865,10 @@ if (isset($_REQUEST["collection"])) {
     // - - - addChapterID - - - //
     //////////////////////////////
     case 'addChapterID':
-        $query = array('_id' => new MongoID($_REQUEST['id']));
+        $query = array('_id' => mongoId($_REQUEST['id']));
         $update = array('$addToSet' => array('ch_id' => $_REQUEST['data']));
 
-        $result = $dbCollection->update($query, $update);
+        $result = mongoUpdate($dbCollection, $query, $update);
 
         echo json_encode($result);
         return;
@@ -973,9 +878,9 @@ if (isset($_REQUEST["collection"])) {
     // -  removeChapterID  - //
     ////////////////////////
     case 'removeChapterID':
-        $query = array('_id' => new MongoID($_REQUEST['id']));
+        $query = array('_id' => mongoId($_REQUEST['id']));
         $update = array('$pull' => array('ch_id' => $_REQUEST['data']));
-        $result = $dbCollection->update($query, $update);
+        $result = mongoUpdate($dbCollection, $query, $update);
 
         echo json_encode($result);
         return;
@@ -998,7 +903,7 @@ if (isset($_REQUEST["collection"])) {
     //echo '$activity is: ' . $activity;    //getting only one $activity
 
 
-            $query = array('_id' => new MongoID($activity));
+            $query = array('_id' => mongoId($activity));
             //print_r ($query);
 
             $changes = []; $unsets = [];
@@ -1030,7 +935,7 @@ if (isset($_REQUEST["collection"])) {
 
             //print_r ($update);
 
-            $result = $dbCollection->update($query, $update);
+            $result = mongoUpdate($dbCollection, $query, $update);
 
             echo json_encode($result);
 
@@ -1087,7 +992,7 @@ if (isset($_REQUEST["collection"])) {
                $insert["date"] = gmdate("Y.m.d");  // using greenwich time
                $insert["author"] = $_COOKIE['login'];     // set 'author' to currently logged-in user
 
-               $temp = $activities_collection->insert($insert);  //$temp not used for now
+               $temp = mongoInsert($activities_collection, $insert);  //$temp not used for now
             }
 
         } else {  $result = 'ERROR: Didnt get file and thumbnail'; }
@@ -1133,10 +1038,10 @@ if (isset($_REQUEST["collection"])) {
         // end case "uploadFile"
 
         case "getGame":
-            $id = new MongoID($_REQUEST["gameId"]);
+            $id = mongoId($_REQUEST["gameId"]);
 
             $query = array('_id' => $id);
-            $cursor = $dbCollection->find($query);
+            $cursor = mongoFind($dbCollection, $query, null, null, null);
             foreach ($cursor as $doc)
             {
                 $game = $doc;

@@ -56,7 +56,7 @@ function check_login($id, $pass) {
         error_log ("Looma-login: check login id + pw in mongoDB");
 
         $query = array('name' => $name, 'pw' => $p);
-        $r  = $logins_collection->findOne($query);
+        $r  = mongoFindOne($logins_collection, $query);
 
         if ($r != null)
         {

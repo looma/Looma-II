@@ -17,8 +17,8 @@ Description: page with link to arithmetic and vocabulary games
 
 	<?php
 		// get list of types of games
-	    $cursor =  $games_collection->find(array(), array("_id"=>0, "presentation_type" => 1));
-
+	    //$cursor =  $games_collection->find(array(), array("_id"=>0, "presentation_type" => 1));
+        $cursor = mongoFind($games_collection, [], null, null, null);
 	    $unique_game_types = array();
 	    foreach ($cursor as $game)
 	    {

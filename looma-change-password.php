@@ -46,7 +46,7 @@ function change_password($id, $old, $new1, $new2) {
         $update = array('$set' => array('pw' => $newSHA));
 
        // echo 'name is ' . $id . ' old is ' . $old . ' new is ' . $new1 . ' [$oldSHA is ' . $oldSHA . ' $newSHA is ' . $newSHA;
-       $r  = $logins_collection->update($query, $update);
+       $r  = mongoUpdate($logins_collection, $query, $update);
 
        //DEBUG nprint_r ($r);
 

@@ -169,6 +169,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 
             case "image":
             case "jpg":
+            case "jpeg":
             case "png":
             case "gif": $fp = '../content/pictures/';	break;
 

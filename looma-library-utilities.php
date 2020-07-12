@@ -26,34 +26,33 @@ require ('includes/mongo-connect.php');
 
     function name($file) { $f = new SplFileInfo($file);
                            return $f->getBasename();
-                         };
+                         }
 
-    function parent($file) { global $content;
+function parent($file) { global $content;
                              $f = new SplFileInfo($file);
                              if ($f == $content) return $content;
-                             else return $f->getPath(); };
+                             else return $f->getPath(); }
 
-    function isRegistered($name, $dir) {
+function isRegistered($name, $dir) {
                  global $activities_collection;
 
                  $query = array('fn' => $name,'fp' => $dir . '/');
                  $projection = array('_id' => 0, 'fn' => 1, 'dn' => 1,  'ch_id' => 1);
-                 $activity = $activities_collection -> findOne($query, $projection);
+                 $activity = mongoFindOne($activities_collection, $query);
 
                  if (! $activity) {  //some legacy activities dont have 'fp' set, look for these if fp + fn search fails
                     $query = array('fn' => $name,  'fp' => array('$exists'=>false));
-                    $activity = $activities_collection -> findOne($query, $projection);
+                    $activity = mongoFindOne($activities_collection, $query);
                   }
 
                  if ($activity) return array('reg' => true, 'dn'=>$activity['dn'], 'ch_id'=>$activity['ch_id']);
                  else return array('reg' => false);
           return ;
-            };
+            }
 
-    function make_activity($item) {
+function make_activity($item) {
            global $activities_collection;
-
-           $activity = $activities_collection -> insert($item);
+           $activity = mongoInsert($activities_collection, $item);
            echo "new activity" . $activity["dn"] . "\n";
     } //end make_activity()
 
@@ -81,8 +80,8 @@ require ('includes/mongo-connect.php');
                 if (($fileInfo -> isDir()) &&  $file[0] !== "." && ( ! file_exists($dir . $file . "/hidden.txt")))
                     //skips ".", "..", and any ".filename" (more thorough that isDot() )
                     //skips any directory with a file named "hidden.txt"
-                {array_push($list,$file); };
-            };
+                {array_push($list,$file); }
+            }
             $parent = parent($dir);
             $parentname = name($parent);
             echo json_encode(array('dir'=>$dir,'parent'=>$parentname, 'parentpath'=>$parent, 'list'=>$list));
@@ -107,8 +106,8 @@ require ('includes/mongo-connect.php');
                 if ($fileInfo -> isFile()) {
                     $item = array('fn'=>$file, 'reg' => isRegistered($file, $dir));
                     array_push($list,$item);
-                };
-            }; //end foreach
+                }
+            } //end foreach
 
             echo json_encode($list);
             return;
@@ -133,7 +132,7 @@ require ('includes/mongo-connect.php');
 
             make_activity($item);
 
-            };
+            }
             return;
         // end case "khanimport"
 
@@ -149,8 +148,8 @@ require ('includes/mongo-connect.php');
 
             //make_activity($item);
 
-            };
-            return;
+            }
+           return;
         // end case "w4simport"
 
 
@@ -190,7 +189,7 @@ require ('includes/mongo-connect.php');
             echo "looma illegal command";
             exit(); //end ILLEGAL CMD
 
-    }; //end switch "cmd"
+    } //end switch "cmd"
 }
 else return; //no CMD given
 ?>

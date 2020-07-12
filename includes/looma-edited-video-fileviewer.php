@@ -87,7 +87,7 @@ foreach (new DirectoryIterator($path) as $fileInfo)
             );
             $activity = $activities_collection -> findOne($query, $projection);
 
-            $dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : $base;
+            $dn = ($activity && isset($activity['dn'])) ? $activity['dn'] : $base;
         }
 
         switch (strtolower($ext))
@@ -119,7 +119,7 @@ foreach (new DirectoryIterator($path) as $fileInfo)
             default:
                 // ignore unknown filetypes
                 // echo "DEBUG: " . $fileInfo -> getFilename() . "unkown filetype in looma-library.php";
-            };  //end SWITCH
+            }  //end SWITCH
     }
 }
 

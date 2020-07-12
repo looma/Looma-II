@@ -31,7 +31,7 @@ function makeButton($file, $thumb, $dn) {
         keyword($dn) . "</span>";
     //finish BUTTON
     echo "</button></a>";
-};  //end makeButton()
+}  //end makeButton()
 ?>
 
 <body>
@@ -48,7 +48,8 @@ function makeButton($file, $thumb, $dn) {
 
         echo "<table><tr>";
 
-        $maps = $maps_collection->find();
+        //$maps = $maps_collection->find();
+        $maps = mongoFind($maps_collection, [], null, null, null);
 
         foreach ($maps as $map) {
             echo "<td>";
@@ -58,7 +59,7 @@ function makeButton($file, $thumb, $dn) {
             $link = $urlBegin.$id;
             makeButton($link, $thumb, $dn);
             echo "</td>";
-            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
 
         } //end FOREACH history
         echo "</tr></table>";

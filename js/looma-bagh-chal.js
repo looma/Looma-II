@@ -90,10 +90,10 @@ function doJump(a,b) {
             clearSpot($('.spot[data-x=' + m + '][data-y=' + n + ']'));
             numberOfGoats--;
         }
-};
+}
 
 //  check whether there is a 'goat' at position x,y
-function goatAt(x,y) { return (getAnimal($('.spot[data-x=' + x + '][data-y=' + y + ']')) === 'goat');};
+function goatAt(x,y) { return (getAnimal($('.spot[data-x=' + x + '][data-y=' + y + ']')) === 'goat');}
 
 //  check whether the 'spot' hovered over is a legal drop spot for the currently dragged animal
 function legalMove(a,b, animal) {
@@ -109,23 +109,23 @@ $.fn.legal = function (from) { return this.filter(function(i,to) {return legalMo
 function dragStart(from) {
     $( ".spot" ).droppable( "disable" ).removeClass('legal');
     $( ".spot" ).legal($(from.helper[0]).parent()).droppable( "enable" ).addClass('legal');
-};
+}
 
-function newGoatDragStart() { $( ".spot.empty" ).droppable( "enable" ).addClass('legal');};
+function newGoatDragStart() { $( ".spot.empty" ).droppable( "enable" ).addClass('legal');}
 
-function dragStop() {$('.spot').removeClass('legal')};
+function dragStop() {$('.spot').removeClass('legal')}
 
 function tigersCanMove() {
     var any = false;
     $('.spot.tiger').each(function() {if ($('.empty').legal(this).length > 0) any=true;});
     return any;
-};
+}
 
-function gameOver () {return (numberOfGoats === 15 || ! tigersCanMove());};
+function gameOver () {return (numberOfGoats === 15 || ! tigersCanMove());}
 
 function displayTurn() {
     $('#next').attr('src',currentAnimal=='tiger'?'images/tiger\ transparent.png ' : 'images/goat\ transparent.png');
-};
+}
 
 function nextPlayer() {
     if (gameOver()) winner(currentAnimal);
@@ -140,14 +140,14 @@ function nextPlayer() {
     }
 }
 
-function winner(animal){LOOMA.alert((animal === 'goat' ? "Goat" : "Tiger") + ' wins!', null, false, newGame)};
+function winner(animal){LOOMA.alert((animal === 'goat' ? "Goat" : "Tiger") + ' wins!', null, false, newGame)}
 
 function newGame() {
     LOOMA.confirm('Quit this game?',
         function () {parent.location.href = 'looma-bagh-chal.php';},
         function () {},
         true);
-};
+}
 
 $(document).ready  (function () {
 
@@ -176,7 +176,7 @@ $(document).ready  (function () {
             });
             $('#game').append(spot);
         }
-    };
+    }
 
     // draw the tigers in the corner board spots
     $('#game  .corner').each(function () {fillSpot(this, 'tiger');});
@@ -191,7 +191,7 @@ $(document).ready  (function () {
             stop: dragStop
         });
         $('#corral').append(goat);
-    };
+    }
     
     currentAnimal = 'goat';
     $('.animal.tiger').draggable('disable');
@@ -200,5 +200,5 @@ $(document).ready  (function () {
     newGoats = numberOfGoats;
     
     $('#newgame').click(newGame);
-    $('#info').click(function () {LOOMA.alert(gameRules);});
+    $('#info').click(function () {LOOMA.alert(gameRules, 0, true);});
 }); // end document.ready()

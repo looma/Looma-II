@@ -50,7 +50,7 @@ Description: looma slideshow presenter
                                 'data' => 1
                                 );
 
-            $slideshow = $slideshows_collection -> findOne($query, $projection);
+            $slideshow = mongoFindOne($slideshows_collection, $query);
 
             $displayname = $slideshow['dn'];
 
@@ -64,7 +64,7 @@ Description: looma slideshow presenter
 
                 $query = array('_id' => new MongoID($slideshow_element['id']));
 
-                $details = $activities_collection -> findOne($query);
+                $details = mongoFindOne($activities_collection, $query);
 
                 if (isset($details['thumb']))
                      $thumbSrc = $details['thumb'];
@@ -91,11 +91,11 @@ Description: looma slideshow presenter
                        null,
                        null,
                        null, null, null,null,null,null,null);
-             };
              }
+         }
             else {echo "<h1>No slideshow selected</h1>";
-                  $displayname = "<none>";};
-           ?>
+                  $displayname = "<none>";}
+        ?>
             </div>
         </div>
 

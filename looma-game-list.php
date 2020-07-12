@@ -25,9 +25,9 @@ Revision: Looma 3
         header('Location: ' . 'looma-games.php');
         ob_end_flush();
         exit();
-    };
+    }
 
-    $game_type = $_REQUEST["type"];
+$game_type = $_REQUEST["type"];
 
         $subject_key = array("M"=>"Math",    "S"=>"Science",         "N"=>"Nepali",
                              "EN"=>"English", "SS"=>"Social Studies", "V"=>"Vocational", "H"=>"Health");
@@ -43,7 +43,8 @@ Revision: Looma 3
         //$timelines = array();
         //$maps = array();
 
-        $cursor =  $games_collection->find(array('presentation_type'=>$game_type))->sort(array('ch_id'=>1));
+        //$cursor =  $games_collection->find(array('presentation_type'=>$game_type))->sort(array('ch_id'=>1));
+        $cursor =  mongoFind($games_collection, array('presentation_type'=>$game_type),'ch_id', null, null);
         foreach ($cursor as $game)
         {
             $id = $game['_id'];
@@ -59,9 +60,9 @@ Revision: Looma 3
             } else {  // no ch_id for this game, use default class1, english
                 $class = "1";
                 $subj =  "EN";
-            };
+            }
 
-    //////
+            //////
     ///// NOTE: case statement below gathers a data structure of game options (sienna's code)
     //////
 
@@ -71,8 +72,8 @@ Revision: Looma 3
     /////////// MULTIPLE CHOICE ////////
     ////////////////////////////////////
                 case "multiple choice":
-                    if (array_key_exists($class,$mc)) {
-                        if (array_key_exists($subj, $mc[$class])) {
+                    if (keyIsSet($class,$mc)) {
+                        if (keyIsSet($subj, $mc[$class])) {
                             $temp = array($name,$id);
                             array_push($mc[$class][$subj], $temp);
                             // $mc[$class][$subj] = array($name,$id);
@@ -94,8 +95,8 @@ Revision: Looma 3
     /////////// MATCHING        ////////
     ////////////////////////////////////
                 case "matching":
-                    if (array_key_exists($class,$match)) {
-                        if (array_key_exists($subj, $match[$class])) {
+                    if (keyIsSet($class,$match)) {
+                        if (keyIsSet($subj, $match[$class])) {
                             $temp = array($name,$id);
                             array_push($match[$class][$subj], $temp);
                             // $match[$class][$subj] = array($name,$id);
@@ -117,8 +118,8 @@ Revision: Looma 3
     /////////// CONCENTRATION   ////////
     ////////////////////////////////////
                case "concentration":
-                    if (array_key_exists($class,$conc)) {
-                        if (array_key_exists($subj, $conc[$class])) {
+                    if (keyIsSet($class,$conc)) {
+                        if (keyIsSet($subj, $conc[$class])) {
                             $temp = array($name,$id);
                             array_push($conc[$class][$subj], $temp);
                             // $conc[$class][$subj] = array($name,$id);
@@ -158,7 +159,8 @@ Revision: Looma 3
 
              //TODO: the find() below is the 2nd time we have retrieved the games from Mongo
 
-             $games = $games_collection->find(array('presentation_type'=>$game_type));
+               //$games = $games_collection->find(array('presentation_type'=>$game_type));
+               $games =  mongoFind($games_collection, array('presentation_type'=>$game_type),'ch_id', null, null);
              if ($games) {
                  foreach ($games as $game) {
 
@@ -274,7 +276,7 @@ Revision: Looma 3
                        keyword("Word Game");
                        echo '</p>';
                        echo ' </button>';
-                   };
+                   }
 
                foreach ($settings_tree[$game_type] as $classNum => $subjList) {
                    foreach ($subjList as $subj => $quizzes) {

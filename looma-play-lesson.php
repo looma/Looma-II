@@ -51,7 +51,7 @@ Description: looma lesson plan presenter
         //for each ACTIVITY in the DATA field of the lesson, create an 'activity button' in the timeline
 
          if ($lesson_id) {   //get the mongo document for this lesson
-            $query = array('_id' => new MongoId($lesson_id));
+            $query = array('_id' => mongoId($lesson_id));
             //returns only these fields of the activity record
             $projection = array('_id' => 0,
                                 'dn' => 1,
@@ -61,7 +61,7 @@ Description: looma lesson plan presenter
                                 'data' => 1
                                 );
 
-            $lesson = $lessons_collection -> findOne($query);
+            $lesson = mongoFindOne($lessons_collection, $query);
 
             $lessonname = $lesson['dn'];
 
@@ -74,9 +74,9 @@ Description: looma lesson plan presenter
 
                if ($lesson_element['collection'] == 'activities') {  //timeline element is from ACTIVITIES
 
-                    $query = array('_id' => new MongoId($lesson_element['id']));
+                    $query = array('_id' => mongoId($lesson_element['id']));
 
-                    $details = $activities_collection -> findOne($query);
+                    $details = mongoFindOne($activities_collection, $query);
 
                    //echo ('  ft: ' . $details['ft']);
 
@@ -120,10 +120,10 @@ Description: looma lesson plan presenter
                     $lang = (isset($lesson_element['lang']) ? $lesson_element['lang'] : null);
 
                     $query = array('_id' => $lesson_element['id']);
-                    $chapter = $chapters_collection -> findOne($query);
+                    $chapter = mongoFindOne($chapters_collection, $query);
 
                     $query = array('prefix' => prefix($chapter['_id']));
-                    $textbook = $textbooks_collection -> findOne($query);
+                    $textbook = mongoFindOne($textbooks_collection, $query);
 
                     $filename = (isset($textbook['fn']) && $textbook['fn'] != "") ? $textbook['fn'] : ((isset($textbook['nfn'])) ? $textbook['nfn'] : null);
                     $nfn = (isset($textbook['nfn']) ? $textbook['nfn'] : null);
@@ -162,12 +162,12 @@ Description: looma lesson plan presenter
                         null,
                         $lang
                     );
-                };
-             };
-             }
+                }
+            }
+         }
             else {echo "<h1>No lesson plan selected</h1>";
-                  $displayname = "<none>";};
-           ?>
+                  $displayname = "<none>";}
+        ?>
            </div>
         </div>
 

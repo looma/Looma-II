@@ -20,6 +20,7 @@ Editing
 
 Other:
 
+
 1. Separate ‘base video’ out of ‘data’ array [Instead of being the first array element]
 2. Change parameter passing via <script> to <div hidden>
 
@@ -260,7 +261,7 @@ function saveEviFile(name, collection, filetype, data, thumb, activityFlag) {
     $.post("looma-database-utilities.php",
         {cmd: "save",
             collection: collection,
-            dn: escapeHTML(name),
+            dn: LOOMA.escapeHTML(name),
              ft: filetype,
             data: data,
             thumb: thumb,

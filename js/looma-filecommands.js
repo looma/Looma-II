@@ -146,17 +146,18 @@ function savefile(name, collection, filetype, data, activityFlag) {  //filetype 
                     data: data,
                     activity: activityFlag      // NOTE: this is a STRING, either "false" or "true"
                 },
-                
+                'json'
+            ).then(
                 function (response) {
-                    if (response['_id']) {
+                    if (JSON.parse(response)['_id']) {
                         callbacks['checkpoint']();
-                        console.log("SAVE: upserted ID = ", response['_id']['$id']);
+                        LOOMA.alert('File ' + name + ' saved', 5);
+                        console.log("SAVE: upserted ID = ", JSON.parse(response)['_id']['$id']);
                     } else {
+                        LOOMA.alert('File ' + name + ' save failed', 5);
                         console.log("SAVE: didn't work?");
                     }
-                },
-                'json'
-            ).then(LOOMA.alert('File ' + name + ' saved', 5));
+            });
         } else LOOMA.alert('No file contents - file not saved', 10);
     } else LOOMA.alert('Please specify a non-blank filename - file not saved',10);
 

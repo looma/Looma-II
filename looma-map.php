@@ -12,7 +12,7 @@ File: header.php
 
 <?php $page_title = 'Looma Maps';
 include ('includes/header.php');
-include ("includes/mongo-connect.php");
+//include ("includes/mongo-connect.php");
 ?>
   <link rel="stylesheet" href="css/leaflet.css">
 <link rel="stylesheet" href="css/looma-map.css" />

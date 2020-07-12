@@ -11,6 +11,8 @@ Description:  Interacts with Mongo to let the user select a collection to edit
 
 <?php
 include ('includes/mongo-connect.php');
+function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shiv for php 5.x "keyIsSet()"
+
 ?>
 
 <html lang="en">
@@ -22,17 +24,17 @@ include ('includes/mongo-connect.php');
 	<?php
 	echo "<h3>Adding random fields and ensuring indexing on randomization</h3>";
 	$count = 0;
-	$dictionary = $dictionary_collection -> find();
+	$dictionary = mongoFind($dictionary_collection, [], null, null, null;
 	foreach ($dictionary as $d)
 	{
 		$count += 1;
-		$d_id = array_key_exists('_id', $d) ? $d['_id'] : null;
+		$d_id = keyIsSet('_id', $d) ? $d['_id'] : null;
 		$random = (float)rand()/(float)getrandmax();
 		$newdata = array('$set' => array("rand" => $random));
-		$dictionary_collection->update(array("_id" => new MongoId("$d_id")), $newdata);
-		$d_en = array_key_exists('en', $d) ? $d['en'] : null;
-		$d_np = array_key_exists('np', $d) ? $d['np'] : null;
-		$d_r = array_key_exists('rand', $d) ? $d['rand'] : null;
+		mongoUpdate($dictionary_collection, (array("_id" => mongoId("$d_id")), $newdata);
+		$d_en = keyIsSet('en', $d) ? $d['en'] : null;
+		$d_np = keyIsSet('np', $d) ? $d['np'] : null;
+		$d_r = keyIsSet('rand', $d) ? $d['rand'] : null;
 		//echo "<p>Dictionary entry: <b>$d_en</b> [nepali: $d_np] assigned random index: $d_r</p>";
 	}
     echo "<h3>Processed $count dictionary entries</h3>";

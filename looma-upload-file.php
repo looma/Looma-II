@@ -1,5 +1,5 @@
 <?php
-function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
 $loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
@@ -80,7 +80,7 @@ require_once ('includes/mongo-connect.php');
 
                 // get the ROOT document of the TAGs collection
                 $query = array('name' => 'root', 'level' => 0);
-                $root = $tags_collection -> findOne($query);
+                $root = mongoFindOne($tags_collection, $query);
 
 
                 echo "<span id='keyword-changes-menu'>Keywords:
@@ -91,7 +91,7 @@ require_once ('includes/mongo-connect.php');
                     $y = $root['children'][$x]['name'];
                     $z = $root['children'][$x]['kids'];
                     echo "<option value='" . $y . "' id='" . $y . "' data-kids='" . $z. "'>" . $y . "</option>";
-                };
+                }
                 echo "</select>";
 
                 echo "<select name='key2' disabled id='key2-changes-menu' class='   keyword-changes keyword-dropdown black-border' data-level=2 form='changes'>
@@ -127,7 +127,7 @@ require_once ('includes/mongo-connect.php');
                     echo "<span class='src-chng' data-id='" . $sources[0][$x] ."-chng'>
                                     <input data-id='" . $sources[1][$x] ."' class='media-input flt-chkbx source-changes' type='radio' form='changes' name='src' value='" . $sources[1][$x] . "'>
                                     <label class='filter-label' for='" . $sources[0][$x] . "'>" . $sources[2][$x] . "</label>
-                                  </span>";};
+                                  </span>";}
                 echo "<button class='chng-clear' id='source-clear'>X</button>";
                 echo "</div>";
 
@@ -139,7 +139,7 @@ require_once ('includes/mongo-connect.php');
                 echo "<span id='grade-changes' >
                                 <span class='drop-menu'>Grade:<select id='grade-chng-menu' class='chapter-changes black-border'  form='changes' name='class'>
                                     <option value='' selected>Select...</option>";
-                for($x = 1; $x <= 8; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";};
+                for($x = 1; $x <= 8; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";}
 
                 echo "</select></span>";
 
@@ -159,7 +159,7 @@ require_once ('includes/mongo-connect.php');
                     array("All", "English", "Nepali", "Math", "Science", "Social Studies", "Health", "Vocation"),
                 );
                 for($x = 1; $x < count($classInfo[0]); $x++) {
-                    echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";};
+                    echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";}
 
                 echo "</select></span>";
                 echo "</span>";

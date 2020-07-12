@@ -31,10 +31,10 @@ Description:  displays and navigates content folders for Looma
         // look in the database to see if this folder has a DISPLAYNAME
         $query = array('fn' => $folder);
         $projection = array('_id' => 0, 'dn' => 1, 'ndn' => 1);
-        $folderMongo = $folders_collection -> findOne($query, $projection);
+        $folderMongo = mongoFindOne($folders_collection, $query);
 
         if ($folderMongo) {
-            if (array_key_exists('dn', $folderMongo) && array_key_exists('ndn', $folderMongo)) {
+            if (keyIsSet('dn', $folderMongo) && keyIsSet('ndn', $folderMongo)) {
 
                 if ($folderMongo['ndn'] === "") $folderMongo['ndn'] = $folderMongo['dn'];
 
@@ -46,15 +46,15 @@ Description:  displays and navigates content folders for Looma
                     . $folderMongo['ndn'] .
                     "<span class='xlat'>" . $folderMongo['dn'] . "</span>" .
                     "</span>";
-            } else if (array_key_exists('dn', $folderMongo)) echo $folderMongo['dn'];
+            } else if (keyIsSet('dn', $folderMongo)) echo $folderMongo['dn'];
         }  else echo $folder;
     }  //end folderDisplayName()
 
     function nextButton() {
         global $buttons, $maxButtons;
         $buttons++;
-        if ($buttons > $maxButtons) { $buttons = 1; echo "</tr><tr>";};
-    };
+        if ($buttons > $maxButtons) { $buttons = 1; echo "</tr><tr>";}
+    }
 
 // get filepath to use for start of DIR traversal
     if (isset($_GET['fp'])) $path = $_GET['fp']; else $path = "../content/";
@@ -80,9 +80,9 @@ Description:  displays and navigates content folders for Looma
     //////
     foreach (new DirectoryIterator($path) as $fileInfo) {
         $files[$fileInfo->getFilename()] = $fileInfo;
-    };
+    }
 
-    //NOTE: this sorts on FILENAME - really should sort on DISPLAYNAME
+//NOTE: this sorts on FILENAME - really should sort on DISPLAYNAME
 
 ////////$files = natksort($files);  //PHP key sort, sort on keys [e.g. filenames]
 
@@ -100,9 +100,9 @@ Description:  displays and navigates content folders for Looma
         $tmp = $files['W4S'];
         unset($files['W4S']);
         $files = array('W4S' => $tmp) + $files;
-    };
+    }
 
-    /********************************************************************************************/
+/********************************************************************************************/
     /**********  DIRs  **************************************************************************/
     /********************************************************************************************/
     /*************** iterate through the files in this DIR and make buttons for the DIRs ********/
@@ -166,24 +166,24 @@ Description:  displays and navigates content folders for Looma
                 // look in the database to see if this folder has a DISPLAYNAME
                 $query = array('fn' => $file, 'fp' => $path);
                 //$projection = array('_id' => 0, 'dn' => 1, 'ndn' => 1);
-                $folderMongo = $folders_collection->findOne($query);
+                $folderMongo = mongoFindOne($folders_collection, $query);
 
                 $dirnDn = null;
                 if ($folderMongo) {
-                    if (array_key_exists('dn',  $folderMongo)) $dirDn = $folderMongo['dn'];
-                    if (array_key_exists('ndn', $folderMongo) && $folderMongo['ndn'] !=="") $dirnDn = $folderMongo['ndn'];
-                    if (array_key_exists('ft',  $folderMongo)) $ft = $folderMongo['ft'];
-                    if (array_key_exists('prefix',  $folderMongo)) $prefix = $folderMongo['prefix'];
+                    if (keyIsSet('dn',  $folderMongo)) $dirDn = $folderMongo['dn'];
+                    if (keyIsSet('ndn', $folderMongo) && $folderMongo['ndn'] !=="") $dirnDn = $folderMongo['ndn'];
+                    if (keyIsSet('ft',  $folderMongo)) $ft = $folderMongo['ft'];
+                    if (keyIsSet('prefix',  $folderMongo)) $prefix = $folderMongo['prefix'];
 
                     //   echo "dir is " . $dirDn . " ft is " . $ft;
 
                 } else {
                     $dirDn = $file;  $dirnDn = $file;  // skip bug fix 2020 01
-                };
+                }
                 $dirlist[] = array('file' => $file, 'path' => $path, 'dn' => $dirDn, 'ndn' => $dirnDn, 'ft' => $ft, 'prefix' => $prefix);
-            };
-        };
-    };// ********** end FOREACH directory  **************
+            }
+        }
+    }// ********** end FOREACH directory  **************
 
     if (sizeof($dirlist) > 0) {
         // sort the list of dirs by DN
@@ -218,10 +218,10 @@ Description:  displays and navigates content folders for Looma
             echo "<span class='tip yes-show big-show' >" . $dir['file'] . "</span>" .
                 "</button></a></td>";
             nextButton();
-        };
-    };
+        }
+    }
 
-    echo "</tr></table>";
+echo "</tr></table>";
 
     /********************************/
     /********  PSEUDO folders  ******/
@@ -246,9 +246,9 @@ Description:  displays and navigates content folders for Looma
     if ($path == "../content/edited videos/") {  //populate virtual folder of EDITED VIDEOs
         //If the folder being filled is the edited videos it fills it using
         //all of the entries from the edited_videos collection in the database
-        $editedVideos = $edited_videos_collection->find();
+        $editedVideos = mongoFind($edited_videos_collection, [], 'dn', null, null);
         //SORT the found items before sending to client-side
-        $editedVideos->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+        //$editedVideos->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
         echo "<table id='file-table'><tr>";
 
@@ -275,9 +275,9 @@ Description:  displays and navigates content folders for Looma
         if ($path == "../content/epaath/") {
             $path = $path . "activities/";
             $query = array('ft' => 'EP');
-            $epaaths = $activities_collection->find($query);
+            $epaaths = mongoFind($activities_collection, $query, 'dn', null, null);
             //SORT the found items before sending to client-side
-            $epaaths->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+            //$epaaths->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
             echo "<table id='file-table'><tr>";
 
@@ -306,9 +306,9 @@ Description:  displays and navigates content folders for Looma
                 //If the folder being filled is the slideshow it fills it using
                 //all of the entries from the slideshows collection in the database
 
-                $slideshows = $slideshows_collection->find();
+                $slideshows = mongoFind($slideshows_collection, [], 'dn', null, null);
                 //SORT the found items before sending to client-side
-                $slideshows->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+                //$slideshows->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
                 echo "<table id='file-table'><tr>";
 
@@ -338,15 +338,15 @@ Description:  displays and navigates content folders for Looma
                 //make buttons for LESSONPLAN directory -- virtual folder, populated from lessons collection in mongoDB
                 if ($path == "../content/lessons/") {   //populate virtual folder of lesson plans
 
-                    $lessons = $lessons_collection->find();
+                    $lessons = mongoFind($lessons_collection, [], 'dn', null, null);
                     //SORT the found items before sending to client-side
-                    $lessons->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+                    //$lessons->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
                     echo "<table id='file-table'><tr>";
 
                     foreach ($lessons as $lesson) {
 
-                        if (array_key_exists('ft', $lesson) && ($lesson['ft'] == "lesson")) {  //do not display lesson templates
+                        if (keyIsSet('ft', $lesson) && ($lesson['ft'] == "lesson")) {  //do not display lesson templates
                             echo "<td>";
                             $dn = $lesson['dn'];
                             $ft = "lesson";
@@ -366,9 +366,9 @@ Description:  displays and navigates content folders for Looma
                     //make buttons for timelines directory -- virtual folder, populated from histories collection in mongoDB
                     if ($path == "../content/timelines/") {   //populate virtual folder of histories
 
-                        $histories = $histories_collection->find();
+                        $histories = mongoFind($histories_collection, [], 'title', null, null);
                         //SORT the found items before sending to client-side
-                        $histories->sort(array('title' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+                        //$histories->sort(array('title' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
                         echo "<table id='file-table'><tr>";
 
@@ -396,9 +396,9 @@ Description:  displays and navigates content folders for Looma
                         if ($path == "../content/maps/") {   //populate virtual folder of maps
 
                             $query = array('ft' => 'map');
-                            $maps = $activities_collection->find($query);
+                            $maps = mongoFind($activities_collection, $query, 'dn', null, null);
                             //SORT the found items before sending to client-side
-                            $maps->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
+                            //$maps->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
 
                             echo "<table id='file-table'><tr>";
 
@@ -447,12 +447,12 @@ Description:  displays and navigates content folders for Looma
                                 if ($ext === 'lesson') {  //we have some "lessons" that are listed in Teacher Tools directory as pseudo-files
                                     $dn = $components["filename"];
                                     $query = array('dn' => $dn);
-                                    $activity = $activities_collection->findOne($query);
+                                    $activity = mongoFindOne($activities_collection, $query);
                                     if ($activity) $mongoID = strval($activity['mongoID']);
                                 } else {   // look in the database to see if this file has a DISPLAYNAME
                                     $query = array('fn' => $file);
-                                    $activity = $activities_collection->findOne($query);
-                                    $dn = ($activity && array_key_exists('dn', $activity)) ? $activity['dn'] : str_replace($specials, " ", $base);
+                                    $activity = mongoFindOne($activities_collection, $query);
+                                    $dn = ($activity && keyIsSet('dn', $activity)) ? $activity['dn'] : str_replace($specials, " ", $base);
                             // NOTE: this lookup for DN doesnt work for textbooks, whose DNs are in textbooks collection, not in activities collection
                                 }
 
@@ -478,15 +478,15 @@ Description:  displays and navigates content folders for Looma
                                         $item['thumb'] = "";
                                         $item['mongoID'] = $mongoID;
 
-                                            $item['page']  = ($activity && array_key_exists('pn', $activity)) ? $activity['pn'] : 1;
-                                            $item['zoom'] = ($activity && array_key_exists('zoom', $activity)) ? $activity['zoom'] : 2.2;
+                                            $item['page']  = ($activity && keyIsSet('pn', $activity)) ? $activity['pn'] : 1;
+                                            $item['zoom'] = ($activity && keyIsSet('zoom', $activity)) ? $activity['zoom'] : 2.2;
 
                                         $list[] = $item;
 
                                     break;
                                     default:
                                         // ignore unknown filetypes
-                                };  //end SWITCH
+                                }  //end SWITCH
                             } else if (isHTML($path . $file)) {
                                 $item['ext'] = "html";
                                 $item['path'] = $path;

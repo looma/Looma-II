@@ -25,7 +25,7 @@ function makeButton($id, $thumb, $dn) {
     //finish BUTTON
     echo "</button>";
 
-};  //end makeButton()
+}  //end makeButton()
 
 ?>
 
@@ -51,7 +51,7 @@ function makeButton($id, $thumb, $dn) {
 
         echo "<table><tr>";
 
-        $histories = $histories_collection->find();
+        $histories = mongoFind($histories_collection, [], null, null, null);
 
         foreach ($histories as $history) {
 
@@ -67,7 +67,7 @@ function makeButton($id, $thumb, $dn) {
             makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
             //makeButton($id, $thumb, $dn);
             echo "</td>";
-            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";};
+            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
 
         } //end FOREACH history
         echo "</tr></table>";

@@ -2,69 +2,59 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/colors.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/css/looma-colors.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/goat transparent.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/tiger transparent.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/tiger4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/includes/PHPMailer/Exception.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/includes/PHPMailer/PHPMailer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/includes/PHPMailer/SMTP.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/js/looma-colors.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/importUserLogins" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma-change-password.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma-colors.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma-loginOLD.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/fixDisplayNamesTrim" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongotest.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-bagh-chal.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-bagh-chal.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-chapters.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-chapters.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-dictionary-autogen-editor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-dictionary-autogen-editor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-keyboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-keyboard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-login.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-login.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-settings.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-settings.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-looma.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-looma.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/tiger4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/PHPMailer/PHPMailer.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/PHPMailer/PHPMailer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/header.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/header.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-edited-video-fileviewer.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-edited-video-fileviewer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-search.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-search.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-translate.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-translate.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/includes/looma-translations.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-translations.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/includes/looma-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-utilities.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-content-request.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-content-request.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-dictionary-autogen-editor.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-dictionary-autogen-editor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-edit-activities.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-activities.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/mongo-connect.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/mongo-connect.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-bagh-chal.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-bagh-chal.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/looma-edit-lesson.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-lesson.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/looma-edit-slideshow.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-slideshow.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-edit-text.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-text.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/looma-edit-video.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-video.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/looma-filecommands.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-filecommands.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-game.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-login.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-play-lesson.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-play-lesson.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-play-pdf.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-play-pdf.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-settings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-template.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-template.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-text-translator.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-text-translator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-library-search.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-library-search.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/looma-utilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-utilities.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaupdater" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaupdater" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/importCH_IDs" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importCH_IDs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/importNCH_IDs" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importNCH_IDs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-activities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-activities.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-admin-activityEditor.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-admin-activityEditor.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-book.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-book.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-change-password.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-change-password.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-chapters.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-chapters.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-content-request.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-content-request.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-contentNav-databaseUpdate.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-contentNav-databaseUpdate.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-database-admin.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-database-admin.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-database-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-database-utilities.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-dictionary-autogen-editor.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-autogen-editor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-dictionary-autogen-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-autogen-utilities.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-edit-activities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-edit-activities.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-edit-lesson.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-edit-lesson.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-edit-text.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-edit-text.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-dictionary-admin.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-admin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-dictionary-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-utilities.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-game-list.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-game-list.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-game-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-game-utilities.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-game.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-game.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-games.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-games.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-histories.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-histories.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-history.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-history.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-home.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-home.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-info.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-info.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-library-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-library-utilities.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-library.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-library.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-login.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-login.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-logout.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-logout.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-map.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-map.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-maps.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-maps.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-play-edited-video.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-play-edited-video.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-play-lesson.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-play-lesson.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-play-slideshow.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-play-slideshow.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-register-user.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-register-user.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-settings.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-settings.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/folders.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/folders.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/lessons.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/lessons.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/new_content.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/new_content.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-sample-forms.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-sample-forms.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-text-scan.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-text-scan.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-upload-file.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-upload-file.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +72,7 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="PhpDebugGeneral" listening_started="true" />
   <component name="ProjectId" id="1Rt4YLufhQcOYseL7vr58x80wh0" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -198,7 +189,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589935209474</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="5.9.9&#10;added Change Password feature&#10;other bug fixes">
+      <created>1593102926112</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1593102926112</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -229,33 +227,39 @@
     <MESSAGE value="5.8&#10;new PDF viewer release&#10;add 'len' and 'nlen' field for chapters&#10;new textbook fixes&#10;fixed page numbers in textbooks" />
     <MESSAGE value="5.9&#10;rewrote File Save handlers in filecommands.js to use promises" />
     <MESSAGE value="5.9a&#10;added looma-content-request (js, php, css) feature&#10;imported new content, including health/AIDS and pictures/Plant Content/Fungi" />
-    <option name="LAST_COMMIT_MESSAGE" value="5.9a&#10;added looma-content-request (js, php, css) feature&#10;imported new content, including health/AIDS and pictures/Plant Content/Fungi" />
+    <MESSAGE value="5.9.9&#10;added Change Password feature&#10;other bug fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="5.9.9&#10;added Change Password feature&#10;other bug fixes" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="404" y="270" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1592778838757">
-      <screen x="0" y="23" width="1406" height="877" />
+    <state x="404" y="270" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1593382722678">
+      <screen x="0" y="23" width="1407" height="877" />
     </state>
     <state x="404" y="270" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1406.877@0.23.1406.877" timestamp="1592778838757" />
+    <state x="404" y="270" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1407.877@0.23.1407.877" timestamp="1593382722678" />
     <state x="0" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1588959599418">
       <screen x="0" y="23" width="1406" height="877" />
     </state>
     <state x="0" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.23.1405.877@0.23.1405.877" timestamp="1588893783786" />
     <state x="0" y="23" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.23.1406.877@0.23.1406.877" timestamp="1588959599418" />
-    <state x="201" y="114" key="CommitChangelistDialog2" timestamp="1589935207894">
-      <screen x="0" y="23" width="1405" height="877" />
+    <state x="201" y="114" key="CommitChangelistDialog2" timestamp="1593102925252">
+      <screen x="0" y="23" width="1406" height="877" />
     </state>
     <state x="201" y="114" key="CommitChangelistDialog2/0.23.1405.877@0.23.1405.877" timestamp="1589935207894" />
-    <state x="294" y="189" key="Vcs.Push.Dialog.v2" timestamp="1589935223747">
-      <screen x="0" y="23" width="1405" height="877" />
+    <state x="201" y="114" key="CommitChangelistDialog2/0.23.1406.877@0.23.1406.877" timestamp="1593102925252" />
+    <state x="294" y="189" key="Vcs.Push.Dialog.v2" timestamp="1593102937811">
+      <screen x="0" y="23" width="1406" height="877" />
     </state>
     <state x="294" y="189" key="Vcs.Push.Dialog.v2/0.23.1405.877@0.23.1405.877" timestamp="1589935223747" />
-    <state x="186" y="96" width="1076" height="616" key="find.popup" timestamp="1593049476346">
-      <screen x="0" y="23" width="1406" height="877" />
+    <state x="294" y="189" key="Vcs.Push.Dialog.v2/0.23.1406.877@0.23.1406.877" timestamp="1593102937811" />
+    <state x="183" y="109" width="1082" height="616" key="find.popup" timestamp="1594515140652">
+      <screen x="0" y="23" width="1412" height="877" />
     </state>
     <state x="186" y="96" width="1075" height="616" key="find.popup/0.23.1405.877@0.23.1405.877" timestamp="1588893430922" />
     <state x="186" y="96" width="1076" height="616" key="find.popup/0.23.1406.877@0.23.1406.877" timestamp="1593049476346" />
-    <state x="186" y="96" width="1077" height="616" key="find.popup/0.23.1407.877@0.23.1407.877" timestamp="1592109330024" />
-    <state x="186" y="96" width="1080" height="616" key="find.popup/0.23.1410.877@0.23.1410.877" timestamp="1591639578945" />
+    <state x="186" y="96" width="1077" height="616" key="find.popup/0.23.1407.877@0.23.1407.877" timestamp="1593374968054" />
+    <state x="186" y="96" width="1080" height="616" key="find.popup/0.23.1410.877@0.23.1410.877" timestamp="1593975748540" />
+    <state x="183" y="109" width="1082" height="616" key="find.popup/0.23.1412.877@0.23.1412.877" timestamp="1594515140652" />
+    <state x="183" y="109" width="1083" height="730" key="find.popup/0.23.1413.877@0.23.1413.877" timestamp="1594311398583" />
     <state x="359" y="207" width="671" height="676" key="search.everywhere.popup" timestamp="1590712040752">
       <screen x="0" y="23" width="1407" height="877" />
     </state>

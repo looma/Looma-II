@@ -178,7 +178,7 @@ function editor_save(name) {
          $.post("looma-database-utilities.php",
                 {cmd: "save",
                  collection: currentcollection,
-                 dn: escapeHTML(name),
+                 dn: LOOMA.escapeHTML(name),
                  ft: currentfiletype,
                  data: editor_pack($('#timelineDisplay .activityDiv')),
                  thumb: $timeline.data('thumb'),

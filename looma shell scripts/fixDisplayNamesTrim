@@ -1,0 +1,31 @@
+// ONE TIME program to trim leading and trailing blanks from activities' display names
+//
+//  run in MONGO SHELL with: load('fixDisplayNamesTrim')
+//
+var cursor, count, doc;
+
+cursor = db.activities.find({'dn':/\s$/});
+count = 0;
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+    print('...' + doc['dn'] + '...changed to...' + doc['dn'].trim() + '...');
+    doc['dn'] = doc['dn'].trim();
+    //db.activities.update({_id:doc._id}, doc);
+}
+print('_______________');
+print(' + + + changed ' + count + ' activities');
+print('_______________');
+
+cursor = db.text_files.find({'dn':/\s$/});
+count = 0;
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+    print('...' + doc['dn'] + '...changed to...' + doc['dn'].trim() + '...');
+    doc['dn'] = doc['dn'].trim();
+    //db.text_files.update({_id:doc._id}, doc);
+}
+print('_______________');
+print(' + + + changed ' + count + ' text_files');
+print('_______________');

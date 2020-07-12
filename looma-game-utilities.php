@@ -26,8 +26,8 @@ else
 
     else $query = array('_id' => $_id);
 
-    $cursor =  $games_collection->find($query, array("title"=>1, "presentation_type" => 1, "timeLimit" =>1, "pointsToWin" =>1, "pointsCorrect" =>1, "pointsWrong" =>1, "prompts"=>1, "responses"=>1, "geojson"=>1, "key"=>1, "startLat"=>1, "startLong"=>1, "startZoom"=>1));
-
+    //$cursor =  $games_collection->find($query, array("title"=>1, "presentation_type" => 1, "timeLimit" =>1, "pointsToWin" =>1, "pointsCorrect" =>1, "pointsWrong" =>1, "prompts"=>1, "responses"=>1, "geojson"=>1, "key"=>1, "startLat"=>1, "startLong"=>1, "startZoom"=>1));
+    $cursor = mongoFind($games_collection, $query, null, null, null);
     //Load Game
 
     foreach ($cursor as $theQuestion)
@@ -36,9 +36,9 @@ else
     }
 }
 
-$title = array_key_exists('title', $doc) ? $doc['title'] : null;
-$game_type = array_key_exists('presentation_type', $doc) ? $doc['presentation_type'] : null;
-$time_limit = array_key_exists('timeLimit', $doc) ? $doc['timeLimit'] : null;
+$title = isset( $doc['title']) ? $doc['title'] : null;
+$game_type = isset( $doc['presentation_type']) ? $doc['presentation_type'] : null;
+$time_limit = isset( $doc['timeLimit']) ? $doc['timeLimit'] : null;
 
 $num_teams = 1;
 $currentTeam = 1;

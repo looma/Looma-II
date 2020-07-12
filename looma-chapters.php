@@ -19,6 +19,7 @@ include ('includes/mongo-connect.php');
 <body>
 
 <?php
+
 function thumbnail ($fn) {
     //given a CONTENT filename, generate the corresponding THUMBNAIL filename
     //find the last '.' in the filename, insert '_thumb.jpg' after the dot
@@ -44,15 +45,16 @@ if ($subject === "social studies") $caps = "Social Studies"; else $caps = ucfirs
 
 //get a textbook record for this CLASS and SUBJECT
 $query = array('class' => $class, 'subject' => $subject, 'prefix' => $prefix);
-$tb = $textbooks_collection -> findOne($query);
+//$tb = $textbooks_collection -> findOne($query);
+$tb = mongoFindOne($textbooks_collection, $query);
 
-    $tb_dn = array_key_exists('dn', $tb) ? $tb['dn'] : null;		//dn is textbook displayname
-    $tb_fn = array_key_exists('fn', $tb) ? $tb['fn'] : null;		//fn is textbook filename
-    $tb_fp = array_key_exists('fp', $tb) ? $tb['fp'] : null;		//fp is textbook filepath
+    $tb_dn = keyIsSet('dn', $tb) ? $tb['dn'] : null;		//dn is textbook displayname
+    $tb_fn = keyIsSet('fn', $tb) ? $tb['fn'] : null;		//fn is textbook filename
+    $tb_fp = keyIsSet('fp', $tb) ? $tb['fp'] : null;		//fp is textbook filepath
     $tb_fp = "../content/" . $tb_fp;
-    $tb_nfn = array_key_exists('nfn', $tb) ? $tb['nfn'] : null;	//nfn is textbook native filename
-    $tb_ndn = array_key_exists('ndn', $tb) ? $tb['ndn'] : null;		//dn is textbook displayname
-    $prefix = array_key_exists('prefix', $tb) ? $tb['prefix'] : null; //prefix is the chapter-id starting characters, e.g. "2EN"
+    $tb_nfn = keyIsSet('nfn', $tb) ? $tb['nfn'] : null;	//nfn is textbook native filename
+    $tb_ndn = keyIsSet('ndn', $tb) ? $tb['ndn'] : null;		//dn is textbook displayname
+    $prefix = keyIsSet('prefix', $tb) ? $tb['prefix'] : null; //prefix is the chapter-id starting characters, e.g. "2EN"
 
 // show Heading for each column (en chapters, en lessons, en activities, np chapters, np lessons, np activities)
 echo "<div id='main-container-horizontal' class='scroll'>";
@@ -80,8 +82,9 @@ $prefix_as_regex = "^" . $prefix . "\d"; //insert the PREFIX into a REGEX
 
 $query = array('_id' => array('$regex' => $prefix_as_regex));
 
-$chapters = $chapters_collection -> find($query);
-$chapters->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mongo cursors
+//$chapters = $chapters_collection -> find($query);
+$chapters = mongoFind($chapters_collection, $query, '_id', null, null);
+//$chapters->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mongo cursors
 // this sort is on '_id' which is the "ch_id" of the chapter
 // we must always maintain chapter IDs so that their SORT() order is the natural sort order
 
@@ -92,20 +95,20 @@ $chapters->sort(array('_id' => 1)); //NOTE: this is MONGO sort() method for mong
 
 foreach ($chapters as $ch) {
 
-    $ch_dn =  array_key_exists('dn', $ch) ? $ch['dn'] : $tb_dn;
+    $ch_dn =  keyIsSet('dn', $ch) ? $ch['dn'] : $tb_dn;
     //$ch_dn is chapter displayname
-    $ch_ndn = array_key_exists('ndn', $ch) ? $ch['ndn'] : $ch_dn;
+    $ch_ndn = keyIsSet('ndn', $ch) ? $ch['ndn'] : $ch_dn;
     //$ch_ndn is native displayname
-    $ch_pn =  array_key_exists('pn', $ch) ? $ch['pn'] : null;
-    $ch_ft =  array_key_exists('ft', $ch) ? $ch['ft'] : 'chapter';
+    $ch_pn =  keyIsSet('pn', $ch) ? $ch['pn'] : null;
+    $ch_ft =  keyIsSet('ft', $ch) ? $ch['ft'] : 'chapter';
     //$ch_pn is chapter page number
-    $ch_npn = array_key_exists('npn', $ch) ? $ch['npn'] : null;
+    $ch_npn = keyIsSet('npn', $ch) ? $ch['npn'] : null;
     //$ch_pn is chapter page number
-    $ch_len = array_key_exists('len', $ch) ? $ch['len'] : null;
+    $ch_len = keyIsSet('len', $ch) ? $ch['len'] : null;
     //$ch_pn is chapter page number
-    $ch_nlen = array_key_exists('nlen', $ch) ? $ch['nlen'] : null;
+    $ch_nlen = keyIsSet('nlen', $ch) ? $ch['nlen'] : null;
     //$ch_npn is chapter native page number
-    $ch_id  = array_key_exists('_id', $ch) ? $ch['_id'] : null;
+    $ch_id  = keyIsSet('_id', $ch) ? $ch['_id'] : null;
     //$ch_id is chapter ID string
 
 ////////// ENGLISH chapter ///////////
@@ -129,7 +132,8 @@ foreach ($chapters as $ch) {
         //check in the database to see if there are any LESSON PLANS for this CHAPTER. if so, create a button
         // NOTE: current code only finds the FIRST lesson for the chapter.
         // expand in the future to allow multiple lessons per chapter
-    $lesson = $activities_collection -> findOne($query);
+    //$lesson = $activities_collection -> findOne($query);
+        $lesson = mongoFindOne($activities_collection, $query);
 
     if ($lesson) {
         echo "<button class='lesson en-lesson'
@@ -154,10 +158,12 @@ foreach ($chapters as $ch) {
     $query = array('ch_id' => $ch_id);
 
     //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create an activity button
-    $activities = $activities_collection -> findOne($query);
-    //check in the database to see if there are any dictionaryt words for this CHAPTER. if so, create an activity button
-    $words = $dictionary_collection -> findOne($query);
+    //$activities = $activities_collection -> findOne($query);
+        $activities = mongoFindOne($activities_collection, $query);
 
+        //check in the database to see if there are any dictionary words for this CHAPTER. if so, create an activity button
+    //$words = $dictionary_collection -> findOne($query);
+    $words = mongoFindOne($dictionary_collection, $query);
     if ($activities || $words) {
         echo "<button class='activities en-activities'
                        data-lang='en'
@@ -193,8 +199,8 @@ foreach ($chapters as $ch) {
     // NOTE: current code only finds the FIRST lesson for the chapter.
     // expand in the future to allow multiple lessons per chapter
         $query = array('nch_id' => $ch_id, 'ft' => 'lesson');
-        $lesson = $activities_collection -> findOne($query);
-
+        //$lesson = $activities_collection -> findOne($query);
+        $lesson = mongoFindOne($activities_collection, $query);
     if ($lesson) {
         echo "<button class='lesson np-lesson'
                           data-lang='np'
@@ -216,9 +222,11 @@ foreach ($chapters as $ch) {
         $query = array('nch_id' => $ch_id);
 
         //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create an activity button
-        $activities = $activities_collection -> findOne($query);
+        //$activities = $activities_collection -> findOne($query);
+        $activities = mongoFindOne($activities_collection, $query);
         //check in the database to see if there are any dictionaryt words for this CHAPTER. if so, create an activity button
-        $words = $dictionary_collection -> findOne($query);
+        //$words = $dictionary_collection -> findOne($query);
+        $words = mongoFindOne($dictionary_collection, $query);
 
         if ($activities || $words) {
             echo "<button class='activities np-activities'

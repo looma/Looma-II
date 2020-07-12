@@ -41,7 +41,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
             $query = array();
 
             $projection = array('_id' => 0, 'name' => 1, 'team' => 1);
-            $logins = $logins_collection -> find($query, $projection);
+            $logins = mongoFind($logins_collection, $query, null, null, null);
             $logins->sort(array('name' => 1 ));
 
             foreach ($logins as $login) {
@@ -57,7 +57,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
             }
             else {
                 $query = array('name' => $name);
-                $logins = $logins_collection -> remove($query);
+                $logins = mongoDeleteOne($logins_collection, $query);
 
                 echo "<h1>User deleted</h1>
                 <p>User <em>$name</em>, was deleted</p>";
@@ -73,7 +73,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
 
         $query = array('name' => $name);
         $insert = array('name' => $name, 'pw' => $encrypted_pw, 'team' => $team, 'level' => $level);
-        $logins_collection->update($query, $insert, array('upsert' => true));
+        mongoUpsert($logins_collection, $query, $insert);
 
         echo "<h1>User added</h1>
         <p>A new user, <em>$name</em>, was added</p>";

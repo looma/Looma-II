@@ -29,6 +29,7 @@ $page_title = 'Looma';
 *				length=count and randomized if boolean=true
 */
 include ('includes/mongo-connect.php');
+function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shiv for php 5.x "keyIsSet()"
 
 $DEFAULT_NUM = 25;
 $MAX_NUM = 250;
@@ -50,32 +51,33 @@ if (isset($_GET["cmd"]))
 		if(isset($_GET["word"]) && $_GET["word"] != "")
 		{   $englishWord = trim($_GET["word"]);
 
-			$query = array('en' => new MongoRegex("/^$englishWord$/i"));  //NOTE: using regex to do a case insensitive search for the word
-			$word = $dictionary_collection -> findOne($query);
+			$query = array('en' => mongoRegexOptions("^$englishWord$",'i'));  //NOTE: using regex to do a case insensitive search for the word
+			//$word = $dictionary_collection -> findOne($query);
+			$word = mongoFindOne($dictionary_collection, $query);
 
             if (! $word) {  // if the WORD is not found, see if it is a PLURAL
-                $query = array('plural' => new MongoRegex("/^$englishWord$/i"));  //NOTE: using regex to do a case insensitive search for the word
-                $word = $dictionary_collection -> findOne($query);
+                $query = array('plural' => mongoRegexOptions("^$englishWord$",'i'));  //NOTE: using regex to do a case insensitive search for the word
+				$word = mongoFindOne($dictionary_collection, $query);
                 if ($word) {
                     $word['part'] = 'Plural of noun: ' . $word['en'];
                     //$word['img'] = $word['en'];
                     $word['en'] = $word['plural'];
                 }
             }
-
-            if (file_exists('../content/dictionary images/' . $word['en'] . '.jpg')) $word['img'] = $word['en'];
-
-
-            if($word != null)
+			if($word != null)
 			{   //Add fields with blanks to avoid errors on code that receives words
-				if(!array_key_exists('np', $word))    $word['np'] = '';
-				if(!array_key_exists('en', $word))    $word['en'] = '';
-				if(!array_key_exists('rw', $word))    $word['rw'] = '';
-				if(!array_key_exists('part', $word))  $word['part'] = '';
-				if(!array_key_exists('def', $word))   $word['def'] = '';
-				if(!array_key_exists('phon', $word))  $word['phon'] = '';
-				//if(!array_key_exists('img', $word))   $word['img'] = '';
-				if(!array_key_exists('ch_id', $word)) $word['ch_id'] = '';
+
+            	if (file_exists('../content/dictionary images/' . $word['en'] . '.jpg')) $word['img'] = $word['en'];
+
+
+				if(!keyIsSet('np', $word))    $word['np'] = '';
+				if(!keyIsSet('en', $word))    $word['en'] = '';
+				if(!keyIsSet('rw', $word))    $word['rw'] = '';
+				if(!keyIsSet('part', $word))  $word['part'] = '';
+				if(!keyIsSet('def', $word))   $word['def'] = '';
+				if(!keyIsSet('phon', $word))  $word['phon'] = '';
+				//if(!keyIsSet('img', $word))   $word['img'] = '';
+				if(!keyIsSet('ch_id', $word)) $word['ch_id'] = '';
 				$word = json_encode($word);
 				echo $word . "\n";
 			}
@@ -103,30 +105,36 @@ if (isset($_GET["cmd"]))
 		{
 			$en = $_GET["en"];
 			$np = $_GET["np"];
-			$dictionary_collection -> insert(array('en' => $en, 'np' => $np));
+			//$dictionary_collection -> insert(array('en' => $en, 'np' => $np));
+			mongoInsert($dictionary_collection, array('en' => $en, 'np' => $np));
 			if(isset($_GET["ch_id"]))
 			{
 				$ch_id = $_GET["ch_id"];
 				$newdata = array('$set' => array("ch_id" => "$ch_id"));
-				$dictionary_collection->update(array('en' => $en, 'np' => $np), $newdata);
+				//$dictionary_collection->update(array('en' => $en, 'np' => $np), $newdata);
+				mongoUpdate($dictionary_collection, array('en' => $en, 'np' => $np), $newdata);
 			}
 			if(isset($_GET["def"]))
 			{
 				$def = $_GET["def"];
 				$newdata = array('$set' => array("def" => "$def"));
-				$dictionary_collection->update(array('en' => $en, 'np' => $np), $newdata);
+				//$dictionary_collection->update(array('en' => $en, 'np' => $np), $newdata);
+				mongoUpdate($dictionary_collection, array('en' => $en, 'np' => $np), $newdata);
 			}
 			if(isset($_GET["part"]))
 			{
 				$part = $_GET["part"];
 				$newdata = array('$set' => array("part" => "$part"));
-				$dictionary_collection->update(array('en' => $en, 'np' => $np), $newdata);
+				//$dictionary_collection->update(array('en' => $en, 'np' => $np), $newdata);
+				mongoUpdate($dictionary_collection, array('en' => $en, 'np' => $np), $newdata);
 			}
 			$random = (float)rand()/(float)getrandmax();
 			$newdata = array('$set' => array("rand" => $random));
-			$dictionary_collection->update(array('en' => $en, 'np' => $np), $newdata);
+			//$dictionary_collection->update(array('en' => $en, 'np' => $np), $newdata);
+			mongoUpdate($dictionary_collection, array('en' => $en, 'np' => $np), $newdata);
 
-			$word = $dictionary_collection->findOne(array('en' => $en, 'np' => $np));
+			//$word = $dictionary_collection->findOne(array('en' => $en, 'np' => $np));
+			$word = mongoFindOne($dictionary_collection, array('en' => $en, 'np' => $np));
 			echo "true";
 			exit();
 		}
@@ -134,7 +142,7 @@ if (isset($_GET["cmd"]))
 		{
 			echo "false";
 			exit();
-		};  // end ADD cmd
+		}  // end ADD cmd
 
     ////////////////////////////
 	////// command LIST   //////
@@ -236,32 +244,36 @@ if (isset($_GET["cmd"]))
 				//Manages searches to work with randomization
 			if($hasChapterId)
 				{
-					$query = array('rand' => array('$gt' => $value), 'ch_id' => array('$regex' => new MongoRegex("/^$startChapterId/i")));
-					$newWord = $dictionary_collection -> findOne($query);
+					$query = array('rand' => array('$gt' => $value), 'ch_id' => array('$regex' => mongoRegexOptions("^$startChapterId", "i")));
+					//$newWord = $dictionary_collection -> findOne($query);
+					$newWord = mongoFindOne($dictionary_collection, $query);
 					//A test in case we generate a number that is too high
 
                     //echo "count is " . $count . ", and newword is " . $newWord;
 
                     if(!$newWord)
 					{
-						$query = array('rand' => array('$lt' => $value), 'ch_id' => array('$regex' => new MongoRegex("/^$startChapterId/i")));
-						$newWord = $dictionary_collection -> findOne($query);
+						$query = array('rand' => array('$lt' => $value), 'ch_id' => array('$regex' => mongoRegexOptions("^$startChapterId", "i")));
+						//$newWord = $dictionary_collection -> findOne($query);
+						$newWord = mongoFindOne($dictionary_collection, $query);
 					}
 				}
 				else
 				{
 					$query = array('rand' => array('$gt' => $value));
-					$newWord = $dictionary_collection -> findOne($query);
+					//$newWord = $dictionary_collection -> findOne($query);
+					$newWord = mongoFindOne($dictionary_collection, $query);
 					//A test in case we generate a number that is too high
 					if(!$newWord)
 					{
 						$query = array('rand' => array('$lt' => $value));
-						$newWord = $dictionary_collection -> findOne($query);
+						//$newWord = $dictionary_collection -> findOne($query);
+						$newWord = mongoFindOne($dictionary_collection, $query);
 					}
 				}
 
 				if (($newWord) &&
-				    array_key_exists('en', $newWord) &&
+				    keyIsSet('en', $newWord) &&
 				    ! in_array($newWord['en'], $list))
 				    {
 				        $count += 1;
@@ -279,17 +291,19 @@ if (isset($_GET["cmd"]))
 			$list = array();
 			if($hasChapterId)
 			{
-				$query = array('ch_id' => array('$regex' => new MongoRegex("/^$startChapterId/i")));
-				$words = $dictionary_collection -> find($query);
+				$query = array('ch_id' => array('$regex' => mongoRegexOptions("^$startChapterId", "i")));
+				//$words = $dictionary_collection -> find($query);
+				$words = mongoFindOne($dictionary_collection, $query);
 			}
 			else
 			{
-				$words = $dictionary_collection -> find();
+				//$words = $dictionary_collection -> find();
+				$words = mongoFind($dictionary_collection, [], null, null, $maxCount);
 			}
-			$words->limit($maxCount);
+			//$words->limit($maxCount);
 			$words = iterator_to_array($words);
 			foreach ($words as $newWord)
-			    if (array_key_exists('en', $newWord)) array_push($list, $newWord['en']);
+			    if (keyIsSet('en', $newWord)) array_push($list, $newWord['en']);
 		}
 		$list = json_encode($list) . "\n";
 		echo $list;

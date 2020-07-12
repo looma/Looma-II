@@ -1,18 +1,168 @@
 <?php
 	//Name: Skip
 	//
-	//Owner: VillageTech Solutions (villagetechsolutions.org)
-	//Date: 2015 03
-	//Revision: Looma 2.0.0
+	//Owner: Looma Education Company
+	//Date: 2015 03, 2020 07
+	//Revision: Looma 6.0.0
 	//File: includes/mongo-connect.php
-	//Description:  for Looma 2
+	//Description:  for Looma v6
 
-	$dbhost = 'localhost';
+function mongoRegex ($pattern) { // $pattern is a string, like '^\d[a-z]'
+    global $mongo_level;
+    if ($mongo_level >= 4)
+         return new MongoDB\BSON\Regex($pattern);
+    else return new MongoRegex($pattern);
+}
+
+function mongoRegexOptions($pattern, $options) {
+        global $mongo_level;
+    if ($mongo_level >= 4)
+         return new MongoDB\BSON\Regex($pattern,$options);
+    else return new MongoRegex($pattern . '/' . $options);
+}
+
+function mongoId ($id) {  //$id is a string
+    global $mongo_level;
+    if ($mongo_level >= 4)
+         return new MongoDB\BSON\ObjectId($id);
+    else return new MongoId($id);
+}
+
+function mongoFind($collection, $filter, $sort, $skip, $limit) {
+
+    // $auery, $sort, $skip, and $limit may be null
+    global $mongo_level;
+    if ($mongo_level >= 4) {
+        $options = [];
+        if ($sort) $options['sort'] = [ $sort => 1 ];
+        if ($skip) $options['skip'] = $skip;
+        if ($limit) $options['limit'] = $limit;
+        $cursor = $collection->find( $filter, $options );
+    } else {  // old mongoDB
+        $cursor = $collection->find( $filter );
+        if ($sort) $cursor->sort([ $sort => 1 ]);
+        if ($skip) $cursor->skip($skip);
+        if ($limit) $cursor->limit($limit);
+        //$cursor->sort(array($sort => 1))->skip($skip)->limit($limit);
+    }
+    return $cursor;
+}
+
+function mongoFindOne($collection, $filter) {
+    global $mongo_level;
+    $doc = $collection->findOne( $filter );
+    return $doc;
+}
+
+function mongoDistinct($collection, $key) {
+    global $mongo_level;
+    $array = $collection->distinct( $key );
+    return $array;
+}
+
+function mongoFindAndModify($collection, $filter, $set) {
+    global $mongo_level;
+    if ($mongo_level >= 4 ) {
+        $options = array("upsert"=>true, "returnDocument"=>RETURN_DOCUMENT_AFTER);
+        $doc = $collection->findOneAndUpdate( $filter, $set, $options);
+    }
+    else {
+        $options = array("upsert"=>true, "new"=>true);
+        $doc = $collection->findAndModify($filter, $set, [], $options);
+    }
+    return $doc;
+}
+
+function mongoInsert($collection, $doc) {
+    global $mongo_level;
+    if ($mongo_level >= 4 ) $doc = $collection->insertOne( $doc);
+    else                    $doc = $collection->insert($doc);
+    return $doc;
+}
+
+function mongoUpsert($collection, $filter, $insert) {
+    global $mongo_level;
+    if ($mongo_level >= 4 ) $doc = $collection->updateOne($filter, $insert, array('upsert' => true));
+    else                    $doc = $collection->update($filter, $insert, array('upsert' => true));
+    return $doc;
+}
+
+function mongoUpdateMany($collection, $filter, $set) {
+    global $mongo_level;
+    if ($mongo_level >= 4 ) {
+        $options = array("upsert" => true);
+        $result = $collection->updateMany($filter, $set, $options);
+    }
+    else {
+        $options = array("upsert" => true, "multiple" => true);
+        $result = $collection->update($filter, $set, $options);
+    }
+    return $result;
+}
+
+function mongoUpdate($collection, $filter, $set) {
+    global $mongo_level;
+    if ($mongo_level >= 4 ) $result = $collection->updateOne( $filter, $set);
+    else                    $result = $collection->update($filter, $set);
+    return $result;
+}
+
+function mongoDeleteOne($collection, $filter) {
+    global $mongo_level;
+    if ($mongo_level >= 4 ) $result = $collection->deleteOne( $filter);
+    else                    $result = $collection->remove($filter, array('justone'=> true));
+    return $result;
+}
+
+function mongoDeleteMany($collection, $filter) {
+    global $mongo_level;
+    if ($mongo_level >= 4 )  $result = $collection->deleteMany($filter);
+    else                     $result = $collection->remove($filter, array('justone'=> false));
+    return $result;
+}
+
+function mongoCreateIndex($collection, $key) {
+    global $mongo_level;
+    $doc = $collection->createIndex($collection, $key);
+    return $doc;
+}
+
+function mongoCreateUniqueIndex($collection, $key) {
+    global $mongo_level;
+    $doc = $collection->createIndex($collection, $key, array('unique'=>true));
+    return $doc;
+}
+
+exec('export PATH="/usr/local/bin/";mongo --version',$mongo_version);
+if ($mongo_version) {
+    preg_match('/\d\.\d\.\d/', $mongo_version[0], $matches);
+    $mongo_version = $matches[0];
+    $mongo_level = intval($mongo_version[0]);
+} else {
+    $mongo_version = '2.0.0';
+    $mongo_level = 2;
+}
+//echo 'mongo_version is ' . $mongo_version . '  $mongo_level = '. $mongo_level;
+
+$dbhost = 'localhost';
+$dbname = 'looma';
+
+try {
+    if ($mongo_level >= 4) {
+        require_once('vendor/autoload.php');
+        $m = new MongoDB\Client("mongodb://localhost:27017");
+    } else {  //old mongo is running
+        $m = new MongoClient("mongodb://localhost:27017");    //make a new mongo client object
+    }
+}
+catch(MongoConnectionException $e) {
+    echo "MongoConnectError connecting to MongoDB. Make sure MongoDB is running";
+    exit();
+}
+
+$dbhost = 'localhost';
 	$dbname = 'looma';
 
-    try {
-    //	$m = new MongoClient("mongodb://$dbhost");
-    	$m = new MongoClient();    //make a new mongo client object
         //use below FORMAT for PHP later than 5.5??
         //$m = new MongoDB\Driver\Manager("mongodb://localhost:27017");
        	$loomaDB = $m -> $dbname;  //connect to the database "looma"
@@ -40,10 +190,4 @@
         //$activities_collection->createIndex(array('fn' => 1));
         //$text_files_collection->createIndex(array('dn' => 1), array('unique' => True));
 
-    }
-    catch(MongoConnectionException $e)
-    {
-        echo "MongoConnectError connecting to MongoDB. Make sure MongoDB is running";
-        exit();
-    }
 ?>

@@ -197,8 +197,10 @@ $foundActivity;
 
         //create a vocab review button if there are any words from this chapter in the dictionary
         $query = array('ch_id' => $ch_id);
-        $words = $dictionary_collection -> find($query);
-        if ($lang === 'en' & $words -> count() > 0) {
+        //$words = $dictionary_collection -> find($query);
+        $words = mongoFind($dictionary_collection, $query, null, null, null);
+// ($lang === 'en' & $words -> count() > 0) {
+        if ($lang === 'en' && $words->hasNext()) {
             echo "<td>";
             //make a button with <a href="looma-vocab-flashcard.php?ch_id=CH_ID">
 
@@ -219,7 +221,8 @@ $foundActivity;
         if ($lang === 'en') $query = array('ch_id' => $ch_id);
         else                $query = array('nch_id' => $ch_id);
 
-		$activities = $activities_collection -> find($query);
+        //$activities = $activities_collection -> find($query);
+        $activities = mongoFind($activities_collection, $query, null, null, null);
 		foreach ($activities as $activity)  makeButton($activity);
 
         // REMOVED this keyword matching code JAN 2020. it puts too many activities, esp. in lower grades, that dont match the expertise
@@ -228,7 +231,8 @@ $foundActivity;
         //get all the activities that match this chapter's keywords
         $query = array('_id' => $ch_id);
 
-        $chapter = $chapters_collection -> findOne($query);
+        //$chapter = $chapters_collection -> findOne($query);
+        $chapter = mongoFindOne($chapters_collection, $query);
 
         if ($chapter && isset($chapter['key4'])) {
             $query = array('key1' => $chapter['key1'],
@@ -241,8 +245,8 @@ $foundActivity;
                            'key3' => $chapter['key3']);
         }
 
-        $activities = $activities_collection->find($query);
-
+        //$activities = $activities_collection->find($query);
+        $activities = mongoFind($activities_collection, $query, null, null, null);
         foreach ($activities as $activity) if(isset($activity['cl_lo']) &&
                                               isset($activity['cl_hi']) &&
                                              ($activity['cl_lo'] <= $gradenumber) &&

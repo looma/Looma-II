@@ -62,7 +62,7 @@ function info($msg,$id, $type) {  // creates an information popup
   <?php
             // get the ROOT document of the TAGs collection
                     $query = array('name' => 'root', 'level' => 0);
-                    $root = $tags_collection -> findOne($query);
+                    $root = mongoFindOne($tags_collection, $query);
                     for($x = 0; $x < sizeof($root['children']); $x++) {
                         $y = $root['children'][$x]['name'];
                         $z = $root['children'][$x]['kids'];
@@ -171,7 +171,7 @@ function info($msg,$id, $type) {  // creates an information popup
 
                         // get the ROOT document of the TAGs collection
                         $query = array('name' => 'root', 'level' => 0);
-                        $root = $tags_collection -> findOne($query);
+                        $root = mongoFindOne($tags_collection, $query);
 
                         echo "<span id='keyword-drop-menu'>";
                         echo  keyword("Keywords:");

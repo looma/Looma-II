@@ -98,7 +98,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
             // get the ROOT document of the TAGs collection
             $query = array('name' => 'root', 'level' => 0);
-            $root = $tags_collection -> findOne($query);
+            $root = mongoFindOne($tags_collection, $query);
 
 
             echo "<span id='keyword-drop-menu'>";
@@ -112,8 +112,8 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
                             echo "<option value='" . $y . "' data-id='" . $y . "' data-kids='" . $z. "'>";
                             echo $y;  //    keyword($y);
                             echo "</option>";
-                        };
-                    echo "</select>";
+                        }
+        echo "</select>";
 
                     echo "<select name='key2' disabled id='key2-menu' class='media-filter keyword-filter keyword-dropdown black-border' data-level=2 form='search'>
                         <option value='' selected></option>";

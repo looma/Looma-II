@@ -15,7 +15,7 @@ Comments: internal use page for sequencing through and examining text files
 
 <?php $page_title = 'Looma - Text Scan';
 include ('includes/header.php');
-include ('includes/mongo-connect.php');
+//include ('includes/mongo-connect.php');
 ?>
 <link rel="stylesheet" href="css/looma-text-scan.css">
 <link rel="stylesheet" href="css/looma-text-display.css">

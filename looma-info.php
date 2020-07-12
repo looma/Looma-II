@@ -105,7 +105,8 @@ require ('includes/mongo-connect.php');
             <li>  - -  </li>
 
         <?php
-            $volunteers = $volunteers_collection -> find();      //get volunteer names
+            //$volunteers = $volunteers_collection -> find();      //get volunteer names
+            $volunteers = mongoFind($volunteers_collection, [], null, null, null);      //get volunteer names
             $volunteerlist = iterator_to_array($volunteers);     //convert to array
             shuffle($volunteerlist);                      //randomize the order
             foreach ($volunteerlist as $volunteer) echo "<li>" . $volunteer['name'] . "</li>";

@@ -33,10 +33,17 @@ define ("CLASSES", 8);
 
 
     <?php
-        $classes = $textbooks_collection->distinct("class");
+        //$classes = $textbooks_collection->distinct("class");
+        $classes = mongoDistinct($textbooks_collection, "class");
 
-        $i = 1;
-
+        for ($i = 1; $i <= sizeOf($classes); $i++) {
+            echo "<button type='button' class='class' id=class$i>";
+            echo "<div class='little'>"; keyword("Grade"); echo "</div>";
+            echo "<div>";                keyword((string) $i);     echo "</div>";
+            echo "</button>";
+        }
+        //print_r ($classes); return;
+    /*    $i = 1;
         foreach ($classes as $class) {
             echo "<button type='button' class='class' id=$class>";
                 echo "<div class='little'>"; keyword("Grade"); echo "</div>";
@@ -44,7 +51,7 @@ define ("CLASSES", 8);
             echo "</button>";
             $i++;
         }
-
+*/
      /*
             //echo "<p class='english-keyword little'>"+ "Grade" + "</p>";
             //echo "<p class='native-keyword little'>"+ $TKW["Grade"] + "</p>";

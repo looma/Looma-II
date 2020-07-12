@@ -64,7 +64,9 @@ File: header.php
         if(isset($_COOKIE["theme"])) $theme = $_COOKIE["theme"]; else $theme = "looma";
         echo "<link rel='stylesheet' href='css/looma-theme-" . $theme . ".css' id='theme-stylesheet'>";
 
-        function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
+        function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+
+    function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shiv for php 5.x "array_key_exists()"
     ?>
 
 

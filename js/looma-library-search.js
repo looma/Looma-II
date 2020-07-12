@@ -20,7 +20,7 @@ function clearResults(results) {
     $('#results-div').empty();
     $("#top").hide();
     $("#more").hide();
-}; //end clearResults()
+} //end clearResults()
 
 ////////////////////////////////
 /////  displayResults()    /////
@@ -60,7 +60,7 @@ function clearResults(results) {
     
    // $('#results-div').off('click','button.play').on('click', "button.play", playActivity);
    
-}; //end displayResults()
+} //end displayResults()
 
 ////////////////////////////////
 /////  displayMoreResults()    /////
@@ -94,7 +94,7 @@ function displayMoreResults(results) {
     
     
     
-}; //end displayMoreResults()
+} //end displayMoreResults()
 
 ///////////////////////////////////
 /////  displayActivities()    /////
@@ -108,11 +108,13 @@ function displayActivities(results, table) {
             //console.log(value);
             $('#result-row-' + row).append("<td id='query-result-" + result + "'></td>");
 
-            var mongoID = (value['mongoID']) ? value['mongoID']['$id'] : "";
-            LOOMA.makeActivityButton(value['_id']['$id'], mongoID, '#query-result-' + result);
+        var mongoID = (value['mongoID']) ? (value['mongoID']['$id'] || value['mongoID']['$oid']) : "";
+       // var mongoID = value['mongoID']['$id'] || value['mongoID']['$oid'];
+            LOOMA.makeActivityButton(value['_id']['$id'] || value['_id']['$oid'],
+                                      mongoID, '#query-result-' + result);
             result ++;
            });
-}; //end displayActivities()
+} //end displayActivities()
 
 /////////////////////////////////
 /////  displayChapters()    /////
@@ -129,7 +131,7 @@ function displayChapters(results, table) {
         LOOMA.makeChapterButton(value['_id'], '#query-result-' + result);
         result ++;
     });
-}; //end displayChapters()
+} //end displayChapters()
 
 
 function playActivity(event) {
@@ -145,7 +147,7 @@ function playActivity(event) {
     
     saveSearchState();  // saves scroll position and search form settings
     LOOMA.playMedia(button);
-};
+}
 
 $(document).ready (function() {
     

@@ -1,97 +1,47 @@
-Natures_Dance.jpg	Natures Dance	5SS08.24, 4SS08.12, 3SS08.04
-Guy_Catches_Adorable_Groundhog.mp4	Guy Catches Adorable Groundhog	1S01.02, 2S01.05, 3S01.04
-Starlings_Flying_Starling_Murmuration.mp4	Starlings Flying Murmuration	4SS08.03,  5S01.01, 5SS08.03, 6EN01
-Transatlantic_Slave_Trade.jpg	Transatlantic Slave Trade	10EN08
-flex.pdf	Looma Quick User Manual (Ne)	
-flex_en.pdf	Looma Quick User Manual (En)	
-Zayed_Prize_We_Care_Solar.mp4	We Care Solar Suitcase in Nepal	6H01.08, 6V01.08, 7H01.09, 7V01.01, 8H01.09
-Surprise_Opera_in_a_School.mp4	Surprise Opera In A School	4SS02.03, 4SS09.05, 5SS09.01
-Open_Balinese_Temple_Card.mp4	Open Balinese Temple Card	5SS08.25, 7V12.01
-Balinese_Temple_Paper.jpg	Balinese Paper Temple 	5SS08.25, 7V12.01
-en_hclhiv_2019_fm.pdf	Help Children Live with HIV	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_01.pdf	HIV Is No Longer A Death Sentence	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_02.pdf	Children Need Help To Live With HIV	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_03.pdf	How Young Children Develop	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_04.pdf	Communicate With Children	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_05.pdf	Talk With Children About HIV	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_06.pdf	Help Children Through Death & Grief	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_07.pdf	Prevent HIV in Children & Mothers	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_08.pdf	How To Know If Your Child Has HIV	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_09.pdf	Breastfeeding & HIV	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_10.pdf	How To Keep Children Healthy	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_11.pdf	ART: Medicines For HIV	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_12.pdf	Common Health Problems	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_13.pdf	Help Children With Pain	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_14.pdf	Prevent & Address Abuse Of Children	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-en_hclhiv_2019_15.pdf	Community Support For Children	6H01.04, 6H01.05, 7H01.04, 8H01.04, 8H01.09
-Slovenian_folkdance.mp4	Slovenian Folkdance	4SS09.08, 5SS09.11
-Maria.mp4	Maria and Man A Love Story	5EN11, 5SS02.05, 8SSa04.01
-Mariah_Bell_Free_Skate.mp4	Maria Bell Free Skate	5S03.12, 6H02.03, 7H02.03, 8H02.03
-Pulley_Wheel_Lever_&_More_Machines.mp4	Pulley Wheel Lever & More Machines	6S03, 7S03, 8S03, 9S03
-Science_Simple_Machines_Wedges_and_Screws.mp4	Wedges & Screws	6S03, 7S03, 8S03, 9S03
-Simple_Machines.mp4	Simple Machines	6S03, 7S03, 8S03, 9S03
-Extreme_Skiing_In_Alaska.mp4	Extreme Skiing in Alaska	5S03.12, 6H02.03, 7H02.03, 8H02.03
-Super_Simple_Machines_Levers.mp4	Super Simple Machines Levers	6S03, 7S03, 8S03, 9S03
-Starlings_Swarm_Flocking_Behavior.pdf	Flocking Behavior Starlings	4SS08.03,  5S01.01, 5SS08.03, 6EN01
-What_Is_Consciousness_Michael_S_A_Graziano.mp4	What Is Consciousness	7H01.04, 8H01.04, 10S18
-Work_Energy_&_Power_Crash_Course.mp4	Work Energy & Power	10S01
-The_Accident_That_Changed_The_World.mp4	The Accident That Changed The World	9S17, 6V11.02, 7V11.02, 10S18
-The_Legend_Of_Annapurna.mp4	The Legend Of Annapurna	5SS05.01
-One_of_the_most_epic_engineering_feats_in_history.mp4	An Epic Engineering Feat	6S13, 7S23, 9Sa12
-Should_We_Eat_Bugs_Emma_Bryce.mp4	Should We Eat Bugs	5S01.05, 7S17, 9Sa15
-What_Is_A_Smartphone_Made_Of_Kim_Preshoff.mp4	What Is A Smartphone Made Of	8S13, 9S12, 9Sa07, 10S08
-What_is_Dust_Made_Of_Michael_Marder.mp4	The Universe In A Grain Of Dust	6H01.07, 7H01.07
-A_Guide_To_The_Energy_Of_The_Earth_Joshua_M_Sneideman.mp4	A Guide To The Energy Of The Earth	7H01.03, 8H01.07, 9M04, 9S04, 9Sa03
-Fabulous_Fungi_Photographs_01.jpg	Fabulous Fungi 01	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_02.jpg	Fabulous Fungi 02	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_03.jpg	Fabulous Fungi 03	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_04.jpg	Fabulous Fungi 04	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_05.jpg	Fabulous Fungi 05	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_06.jpg	Fabulous Fungi 06	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_07.jpg	Fabulous Fungi 07	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_08.jpg	Fabulous Fungi 08	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_09.jpg	Fabulous Fungi 09	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_10.jpg	Fabulous Fungi 10	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_11.jpg	Fabulous Fungi 11	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_12.jpg	Fabulous Fungi 12	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_13.jpg	Fabulous Fungi 13	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_14.jpg	Fabulous Fungi 14	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_15.jpg	Fabulous Fungi 15	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_16.jpg	Fabulous Fungi 16	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_17.jpg	Fabulous Fungi 17	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_18.jpg	Fabulous Fungi 18	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_19.jpg	Fabulous Fungi 19	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_20.jpg	Fabulous Fungi 20	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_21.jpg	Fabulous Fungi 21	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_22.jpg	Fabulous Fungi 22	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_23.jpg	Fabulous Fungi 23	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_24.jpg	Fabulous Fungi 24	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_25.jpg	Fabulous Fungi 25	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_26.jpg	Fabulous Fungi 26	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_27.jpg	Fabulous Fungi 27	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_28.jpg	Fabulous Fungi 28	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_29.jpg	Fabulous Fungi 29	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_30.jpg	Fabulous Fungi 30	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_31.jpg	Fabulous Fungi 31	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_32.jpg	Fabulous Fungi 32	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_33.jpg	Fabulous Fungi 33	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_34.jpg	Fabulous Fungi 34	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_35.jpg	Fabulous Fungi 35	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_36.jpg	Fabulous Fungi 36	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_37.jpg	Fabulous Fungi 37	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_38.jpg	Fabulous Fungi 38	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_39.jpg	Fabulous Fungi 39	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_40.jpg	Fabulous Fungi 40	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_41.jpg	Fabulous Fungi 41	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_42.jpg	Fabulous Fungi 42	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_43.jpg	Fabulous Fungi 43	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_44.jpg	Fabulous Fungi 44	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_45.jpg	Fabulous Fungi 45	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_46.jpg	Fabulous Fungi 46	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_47.jpg	Fabulous Fungi 47	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_48.jpg	Fabulous Fungi 48	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_49.jpg	Fabulous Fungi 49	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_50.jpg	Fabulous Fungi 50	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_51.jpg	Fabulous Fungi 51	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_52.jpg	Fabulous Fungi 52	5SS08.02, 7S15
-Fabulous_Fungi_Photographs_53.jpg	Fabulous Fungi 53	5SS08.02, 7S15
+Ticket_Without_A_Seat.mp4	Ticket Without A Seat	7SSa02.01,7SSa05.01
+Booklet_Corona.pdf	Booklet about Corona (Nepali)	6H01.04,7H01.04,8S16
+What_It_Means_To_Buy_A_Company’s_Stock.mp4	What it means to buy a company's stock (stocks and bonds)	9M03
+Map_of_Nepal_with_77_Districts.jpeg	Map of Nepal with Labeled Districts	7SS01.01
+Pashupatinath_Temple_Nepal_IMG_7933_2018_15.jpg	Picture of Pashupatinath Temple	5SS02.04
+Multiplying_And_Dviding_Decimals_By_10.mp4	Multiplying and Dividing Decimals by 10	6M04.07
+Percent_From_Fraction_Models.mp4	Percents from Fraction Models	6M06.01
+Subsets.pdf	Subsets	7M01.02
+Nepal_Districts_Statistics.pdf	Districts of Nepal Statistics	7SS01.01
+Former_Administrative_Units_Of_Nepal.pdf	Former Administrative Units of Nepal	7SS01.01
+Zones_Of_Nepal.pdf	Zones of Nepal	7SS01.02
+How_To_Draw_Map_Of_Nepal_Step_By_Step_Map_Of_Nepal.mp4	How to Draw a Map of Nepal	7SS01.02
+Fewa_Lake_Map.jpg	Fewa Lake Map	6EN09
+Fewa_Lake.jpg	Fewa Lake	6EN09
+6EN09.m4a	Chant Dialogue	6EN09
+Parts_Of_A_Circle.png	Parts of a Circle	7M11.07
+Circle_Vocabulary_Demonstration.jpg	Circle Vocabulary Demonstration	7M11.07
+Participatory_Village_Development_Planning_6_638.jpg	How Districts Are Structured	7SS01.03
+Federal_Provincial_And_Local_Government_Of_Nepal.mp4	Government Structure in Nepal	7SS01.03
+Alternative_Transport_Systems_Such_As_Gravity_Goods_Ropeways_Tuins_And_Bicycle_Trailers.mp4	Alternative Transportation in Nepal	7SS02.03
+Gravity_Ropeway.mp4	Transportation in Nepal's Mountains	7SS02.03
+Nepa_Kathmandu_Transports.mp4	Transportation in Kathmandu	7SS02.03
+Notes_On_Needs_And_Importance_Of_Transport_And_Development_Of_Road_In_Nepal.pdf	Importance of Roads in Nepal	7SS02.03
+Crime_In_Nepal_Data_Map.png	Crime Rate in Nepal Map	5SS03.02
+George_Stephensons_Locomotion.mp4	George Stephenson's Locomotion	6EN12
+How_To_Convert_Rupee_To_Paise_And_Paise_To_Rupee.mp4	Converting Currency	6M05.02
+The_Power_of_Role_Models_Ayla_at_TEDxYouth@IsaacDickson.mp4	The Power of Role Models	5SS02.05
+Community_Healthcare_in_Nepal.mp4	Community Healthcare in Nepal	5S02.11
+What_Are_Terms_Factors_And_Coefficients.mp4	Terms,Factors,and Coefficients	6M11.05
+Example_2_Multiplying_Two_Monomials_With_Two_Variables_Algebra_I_Khan_Academy.mp4	Multiplying Monomials for Area	6M11.05
+Intro_To_Profit_And_Loss_Comparing_Quantities_Class 7_(India)_Math_Khan_Academy.mp4	Intro to Profit and Loss	9M02
+Bhanubhakta_Acharya_Biography_5_Amazing_Stories_Sagar_Dumre.mp4	Bhanubhakta Acharya Biography	6EN08
+Relative_Clauses_Syntax_Khan_Academy.mp4	Relative Clauses	6EN11
+Girl_Using_ATM.jpg	Girl Using ATM	6EN11
+Introduction_To_Singular_And_Plural_Nouns_Grammar_Khan_Academy.mp4	Singular and Plural Nouns	4EN03
+Girl_Who_Dared_to_Challeng_A_Social_Evil.mp4	Girl Who Challenged a Social Evil	7SS04.04
+Maiti_Nepal_New_Year_2017.mp4	Maiti Nepal Helps Save Trafficked Girls	7SS04.04
+Natgeo_Lithosphere_26822302.jpg	The Layers of the Earth	4S01.15
+TETRIS_Theme_(Rhythmic_Juggler_Meets_Marimba_Madman).mp4	Marimba and Juggler	4SS08.16,5S01.09,5SS09.02
+Teaching_Laws_Rights_And_Responsibilities_To_Kids_Freedom_Of_Speech_Kids_Academy.mp4	Laws,Rights,and Responsibilities	5SS04.01,5SS04.02
+Whar_Are_The_Universal_Human_Rights_Benedetta_Berti.mp4	What Are the Universal Human Rights	5SS04.01,5SS04.02
+Blank_Venn_Diagram.jpg	Blank Venn Diagram	5SS04.01,5SS04.02
+Quad_Stretch.mp4	Quad Stretch	5S03.05
+Scale_Balance.mp4	Scale Balance	5S03.05
+Toe_Touch.mp4	Toe Touch	5S03.05
+6EN01.07_Convo_1.mp4	Lion Conversation	6EN07
+6EN01.07_Convo_2.mp4	Conversation About Vase	6EN07

@@ -38,13 +38,14 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
 
         else if (isset($ch_id)) $query = array("ch_id" => $ch_id);
 
-        else $query = array('_id' => new MongoID($_REQUEST['id']));
+        else $query = array('_id' => mongoID($_REQUEST['id']));
 
-        $cursor =  $history_collection->find($query, array("title"=>1, "events"=>1)); //should be findOne()  ??
+        //$cursor =  $history_collection->find($query, array("title"=>1, "events"=>1)); //should be findOne()  ??
+        $cursor =  mongoFind($history_collection, $query, null, null, null); //should be findOne()  ??
 
         foreach ($cursor as $doc) {
 
-            $title = array_key_exists('title', $doc) ? $doc['title'] : null;
+            $title = isset($doc['title']) ? $doc['title'] : null;
             ?>
             <label for="keywords">Search:</label><input id="keywords" class="searchBar" size="18" placeholder="enter words to search" >
 

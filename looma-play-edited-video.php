@@ -44,9 +44,9 @@ Usage: 	<button  id="testvideo"
     <?php
 
         // Create "edited videos" pseudo-folder if it doesnt exist
-         if (!file_exists("../content/edited videos/")) { mkdir("../content/edited videos/", 0777, true); };
+         if (!file_exists("../content/edited videos/")) { mkdir("../content/edited videos/", 0777, true); }
 
-//*************** new init code - SKIP*******
+    //*************** new init code - SKIP*******
 
         $id = $_REQUEST['id'];
         $dn = $_REQUEST['dn'];
@@ -55,14 +55,15 @@ Usage: 	<button  id="testvideo"
         //fetch the JSON descriptor of this edited video from mongo
         $query =      array('_id' => new MongoID($id));
         $projection = array('_id' => 0, 'data' => 1);
-        $doc = $edited_videos_collection->findOne($query, $projection);
+        //$doc = $edited_videos_collection->findOne($query, $projection);
+        $doc = mongoFindOne($edited_videos_collection, $query);
 
         $data = $doc['data'];
         $masterVideo = array_splice($data, 0, 1);
         $masterVideo = $masterVideo[0];
 
         $vidQuery = array('_id' => new MongoID($masterVideo['id']));
-        $vid = $activities_collection->findOne($vidQuery);
+        $vid = mongoFindOne($activities_collection, $vidQuery);
 
         $vidFN = $vid['fn'];
 

@@ -381,7 +381,7 @@ function thumbnail (item) {
 	}
 
 	else if (collection == "activities" || item.ft != null) {
-		if (item.ft == "mp3") {	 //audio
+		if (item.ft === "mp3" || item.ft === 'm4a' || item.ft === 'audio') {	 //audio
             if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
 			imgsrc = path + "thumbnail.png";
 		}

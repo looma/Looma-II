@@ -124,7 +124,7 @@ function unpack (response) {
     setname(response.dn);
     $timeline.data('slideshow-id', response['_id']['$id']);
     
-    // need to record ID of newly opened LP so that later SAVEs can save to it
+    // need to record ID of newly opened slideshow so that later SAVEs can save to it
     
     var posts = [];  //we will push all the $.post() deferreds in the foreach below into posts[]
     
@@ -169,11 +169,12 @@ function unpack (response) {
 function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); editor_checkpoint();}
 
 /////////  editor_save  /////////
-//
-// this 'editor_save() should be replace with a call to [filecommands.js] savefile()
-//
 
 function editor_save(name) {
+    savefile(LOOMA.escapeHTML(name), 'slideshows', 'slideshow', editor_pack($('#timelineDisplay .activityDiv')), "true");
+} //end editor_save()
+
+/*function XXXeditor_save(name) {
     console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + currentfiletype );
          $.post("looma-database-utilities.php",
                 {cmd: "save",
@@ -197,6 +198,7 @@ function editor_save(name) {
                  'json'
               );
 } //end editor_save()
+*/
 
 ///////// editor_templatesave /////////
 function editor_templatesave(name) {

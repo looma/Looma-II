@@ -30,7 +30,7 @@ function editor_clear() {
     clearFilter();
     editor_checkpoint();
     
-};
+}
 
 ///////  editor_showsearchitems  /////////
 function editor_showsearchitems() {
@@ -40,16 +40,16 @@ function editor_showsearchitems() {
     //$('#txt-chk input').prop('readonly'); //cant make 'readonly' work
     $('#lesson-chk input').click(function() {return false;});
     
-};
+}
 
 
 ///////// editor_checkpoint /////////
-function editor_checkpoint()       {savedSignature = signature($timeline);};
+function editor_checkpoint()       {savedSignature = signature($timeline);}
 //function editor_undocheckpoint() {}; //cant undo changes with signatures
 
 ///////// editor_modified /////////
 function editor_modified() {return (
-    signature($timeline) !== savedSignature);};
+    signature($timeline) !== savedSignature);}
 
 ///////// signature  /////////
 function signature(elem) { //param is jQ object of the timeline ($timeline)
@@ -61,7 +61,7 @@ function signature(elem) { //param is jQ object of the timeline ($timeline)
         sig += $(x).data('id');});
     
     return sig;
-};
+}
 
 ///////// editor_pack  /////////
 function editor_pack (html) { // pack the timeline into an array of collection/id pairs for storage
@@ -77,7 +77,7 @@ function editor_pack (html) { // pack the timeline into an array of collection/i
     });
     
     return packarray;
-}; //end editor_pack()
+} //end editor_pack()
 
 ///////// unpack /////////
 function unpack (response) {  //unpack the array of collection/id pairs into html to display on the timeline
@@ -118,24 +118,24 @@ function unpack (response) {  //unpack the array of collection/id pairs into htm
     
     makesortable();
     
-}; //end unpack()
+} //end unpack()
 
 ///////// editor_display  /////////
-function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); editor_checkpoint();};
+function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); editor_checkpoint();}
 
 /////////  editor_save  /////////
 function editor_save(name) {
     savefile(name, currentcollection, currentfiletype, editor_pack($timeline.html()), "true");
     //note, the final param to 'savefile()' [to make an activity] set to 'true'
     //because lessons are recorded as  activities [for use in library-search, for instance]
-}; //end editor_save()
+} //end editor_save()
 
 ///////// editor_templatesave /////////
 function editor_templatesave(name) {
     savefile(name, currentcollection, currentfiletype + '-template', editor_pack($timeline.html()), "false");
     //note, the final param to 'savefile()' [to make an activity] set to 'false'
     //because lessons templates are not recorded as  activities
-}; //end editor_templatesave()
+} //end editor_templatesave()
 
 // end FILE COMMANDS stuff
 
@@ -152,7 +152,7 @@ var clearFilter = function() {
     {
         $("#dropdown_grade").val("").change();
         $("#dropdown_subject").val("").change();
-    };
+    }
     
     $("#innerResultsMenu").empty();
     $("#innerResultsDiv").empty();
@@ -178,7 +178,7 @@ function displayResults(results) {
     for (var i=0; i < results.length; i++) {
         if (results[i]['ft'] == 'chapter') result_array['chapters'].push(results[i]);
         else                               result_array['activities'].push(results[i]);
-    };
+    }
     
     $('.hint').hide();
     $('#innerResultsMenu, #innerResultsDiv').empty();
@@ -188,7 +188,7 @@ function displayResults(results) {
     
     makedraggable();  //not working for now
     
-}; //end displayresults()
+} //end displayresults()
 
 
 /////////////////////////////////////////////////////////////
@@ -247,15 +247,15 @@ function displaySearchResults (filterdata_object) {
         }
         else {
             collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (" + chaptersarraylength + " Results)</a>";
-        };
+        }
         actResultDiv.appendChild(collectionTitle);
         
         for(i=0; i<filterdata_object.chapters.length; i++) {
             rElement = createActivityDiv(filterdata_object.chapters[i]);
             
             actResultDiv.appendChild(rElement);
-        };
-    };
+        }
+    }
 
 // end Print Chapters Array
 
@@ -277,7 +277,7 @@ function displaySearchResults (filterdata_object) {
     $('#chaptersScroll').click(function()  {$('#innerResultsDiv').scrollTop($('#chapterTitle').position().top);});
     $('#activitiesScroll').click(function(){$('#innerResultsDiv').scrollTop($('#activityTitle').position().top);});
     
-}; //end displaySearchResults()
+} //end displaySearchResults()
 
 
 
@@ -303,7 +303,7 @@ function thumbnail (item) {
     else imgsrc = LOOMA.thumbnail(filename, filepath, filetype);
   
     return imgsrc;
-}; // end thumbnail()
+} // end thumbnail()
 
 //rewrote extractItemId() to use REGEX
 //  m=s.match(/^([1-8])(M|N|S|SS|EN|H|V)([0-9][0-9])\.([0-9][0-9])?$/);
@@ -423,7 +423,7 @@ function createActivityDiv (activity) {
                 class : "result_ID",
                 html : "[" + item._id + "]"
             }).appendTo(textdiv);
-        };
+        }
         
         $("<br>").appendTo(textdiv);
         
@@ -453,7 +453,7 @@ function createActivityDiv (activity) {
         buttondiv.appendChild(previewButton);
         
         return activityDiv;
-    }; //end innerActivityDiv()
+    } //end innerActivityDiv()
     
     
    // var idExtractArray = extractItemId(activity);
@@ -465,7 +465,7 @@ function createActivityDiv (activity) {
     $(newDiv).appendTo(div);
     
     return div;
-};  // end createActivityDiv()
+}  // end createActivityDiv()
 
 
 ///////////////////////////////////////////////////////////////
@@ -538,7 +538,7 @@ function preview_result (item) {
                 '<iframe src="' + filepath + filename + '"' +
                 ' style="height:60vh;width:60vw;" type="application/pdf">';
         }
-        else if(filetype=="mp3") {
+        else if (filetype=="mp3" || filetype=="m4a" || filetype=="audio") {
             if (!filepath) filepath = '../content/audio/';
             document.querySelector("div#previewpanel").innerHTML = '<br><br><br><audio id="audio-play"> <source src="' +
                 filepath +
@@ -618,7 +618,7 @@ function preview_result (item) {
         }
     }
     
-};  // end preview_result()
+}  // end preview_result()
 
 //////////////////////////////////
 /////  insertTimelineElement  ////
@@ -639,7 +639,7 @@ function insertTimelineElement(source) {
     
     refreshsortable();  //TIMELINE elements can be drag'n'dropped
     
-}; //end insertTimelineElement()
+} //end insertTimelineElement()
 
 function removeTimelineElement (elem) {
     // Removing list item from timelineHolder
@@ -649,7 +649,7 @@ function removeTimelineElement (elem) {
     $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 4 ) }, 100);
     $(elem).closest('.activityDiv').remove();
     $('#previewpanel').empty();
-};  //end removeTimelineElement()
+}  //end removeTimelineElement()
 
 
 var orderTimeline = function() {  // the timeline is populated with items that arrive acsynchronously by AJAX from the [mongo] server
@@ -673,7 +673,7 @@ function makesortable () {
         scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
         handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
     }).disableSelection();
-};  // end makesortable()
+}  // end makesortable()
 
 function refreshsortable () {
     // the call to sortable ("refresh") below should refresh the sortability of the timeline, but it's not working, so call makesortable() instead
@@ -681,7 +681,7 @@ function refreshsortable () {
     
     makesortable();
     
-}; // end refreshsortable()
+} // end refreshsortable()
 
 /////////////////////////// DROPPABLE UI ////////  requires jQuery UI  ///////////////////
 //set up Drag'n'Drop  - -  code borrowed from looma-slideshow.js [T. Woodside, summer 2016]
@@ -709,7 +709,7 @@ function makedraggable() {
             }
         }
     });
-}; //end makedraggable()
+} //end makedraggable()
 
 function quit() {
     if (callbacks['modified']())

@@ -63,8 +63,8 @@ Description:  displays and navigates content folders for Looma
     folderDisplayName(folderName($path));
     echo "</h3>";
 
-    echo "<button id='toggle-database' class='filesearch black-border'>";
-    tooltip("Search");
+    echo "<button id='toggle-database' class='filesearch black-border big-show'>";
+    tooltip("Library Search");
     echo "</button>";
 
 //  first list directories in this directory

@@ -46,6 +46,7 @@ if (file_exists($outputFileName)) // IF we get conflicting filenames, generate a
 //NOTE; mimic must be installed on the server and be in the SPATH for shell commands
 // try "which mimic" in shell to verify that mimic is installed as a shell command
 $command = "mimic -t " .
+           // " --setf duration_stretch=5.0" .
             escapeshellarg($text) .
            " -voice " .
             escapeshellarg($voiceFile) .

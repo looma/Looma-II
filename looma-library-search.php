@@ -36,8 +36,8 @@ include("includes/looma-control-buttons.php");
     keyword("^Top");
     echo "</button>";
 
-    echo "<button id='toggle-database' class='toggle black-border'>";
-    tooltip("Folders");
+    echo "<button id='toggle-database' class='toggle black-border big-show'>";
+    tooltip("Library Folders");
     echo "</button>"; ?>
 
     <h1 class = "credit">Created by Bo</h1>

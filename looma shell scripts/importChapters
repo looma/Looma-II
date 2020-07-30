@@ -1,0 +1,64 @@
+// mongo terminal program "importChapters"
+//      input from a CSV file
+//          each line is: _id, pn, len, npn, nlen, ft, dn, ndn, key1, key2, key3, key4
+//
+//          inserts  the chapter into the chapters collection of mongo
+//
+//  make sure there is a file 'chaptersToImport.txt' in comma-SEPARATED format, in the current directory
+//  start MONGO in LOOMA db with: 'mongo looma'
+//  run in MONGO SHELL with: load('importChapters')
+//
+//"use strict";
+
+var requestcount = 0;
+var changecount = 0;
+
+var input = 'chaptersToImport.csv';
+print ('Importing chapters from ' + input);
+print ('*****');
+print ('------------ param = ' + param);
+print ('*****');
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+
+var docs = file.split(/[\r\n]+/);  // split file into array of lines
+
+print ('Processing ' + docs.length + ' lines');
+
+docs.forEach( function(doc) {
+    var fields = doc.split(/,/);  //split the line on commas
+    if (fields[0] !== "") {
+        var chapterId = fields[0];
+        requestcount++;
+        var chapters = db.chapters.find({ '_id': chapterId});
+        if (chapters.hasNext()) print('CHAPTER ' + chapterId + ' ALREADY EXISTS');
+        else {
+                changecount++;
+                var chapter = {};
+//          each line is: _id, pn, len, npn, nlen, ft, dn, ndn, key1, key2, key3, key4
+                chapter['_id']                 = fields[0];
+                if (fields[1]) chapter['pn']   = fields[1];
+                if (fields[2]) chapter['len']  = fields[2];
+                if (fields[3]) chapter['npn']   = fields[3];
+                if (fields[4]) chapter['nlen']  = fields[4];
+                if (fields[5]) chapter['ft']   = fields[5];
+                if (fields[6]) chapter['dn']   = fields[6];
+                if (fields[7]) chapter['ndn']   = fields[7];
+                if (fields[8]) chapter['key1'] = fields[8];
+                if (fields[9]) chapter['key2'] = fields[9];
+                if (fields[10]) chapter['key3'] = fields[10];
+                if (fields[11]) chapter['key4'] = fields[11];
+        
+                if (param !== 'dryrun') db.chapters.insert( chapter);
+        
+                print(changecount + ' - - INSERTED new chapter ' + chapterId);
+            
+        }
+    } else print('*******    BAD INPUT LINE: ' + doc);
+});  // end foreach doc
+
+print('');
+if (param==='dryrun') print ('------------ param = ' +  param + ', no writes to db');
+else                  print ('------------ param = ' +  param + ', changes were written to db');
+
+print('+++++  ' + requestcount + '  lines processed');
+print('+++++  ' + changecount + '  changes made');

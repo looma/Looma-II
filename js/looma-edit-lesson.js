@@ -503,9 +503,11 @@ function createActivityDiv (activity) {
 
                 $(activityDiv).attr("data-collection", (item.ft == 'chapter') ? 'chapters' : 'activities');
                 
-                if ('_id' in item)$(activityDiv).attr("data-id",         (item.ft == 'chapter') ? item['_id'] : item['_id']['$id']);
+                if ('_id' in item)$(activityDiv).attr("data-id",
+                    (item.ft == 'chapter') ? item['_id'] : item['_id']['$id'] || item['_id']['$oid']);
   
-                if ('mongoID' in item) $(activityDiv).attr("data-mongoID",    (item.ft == 'chapter') ? '' : item['mongoID']['$id']);
+                if ('mongoID' in item) $(activityDiv).attr("data-mongoID",
+                    (item.ft == 'chapter') ? '' : item['mongoID']['$id'] || item['mongoID']['$oid']);
     
         $(activityDiv).attr("data-type", item['ft']);
         $(activityDiv).attr("data-fp", item['fp']);
@@ -716,7 +718,7 @@ function preview_result (item) {
 			     '<iframe src="' + filepath + filename + '"' +
 			     ' style="height:60vh;width:60vw;" type="application/pdf">';
 		}
-		else if(filetype=="mp3") {
+		else if (filetype=="mp3" || filetype=="m4a" || filetype=="audio") {
             if (!filepath) filepath = '../content/audio/';
 		      document.querySelector("div#previewpanel").innerHTML = '<br><br><br><audio id="audio"> <source src="' +
 		                      filepath +
@@ -765,9 +767,9 @@ function preview_result (item) {
         
         else if (filetype=="slideshow") {
             //use the mongoID of the slideshow to query text_files collection and retrieve the first image for this slideshow
-
+            var id = $(item).data('mongo').mongoID.$id || $(item).data('mongo').mongoID.$oid;
              $.post("looma-database-utilities.php",
-                {cmd: "openByID", collection: "slideshow", id: $(item).data('mongo').mongoID.$id},
+                {cmd: "openByID", collection: "slideshow", id: id},
                 function(result) {
                     //document.querySelector("div#previewpanel").innerHTML = result.data;
 
@@ -779,9 +781,10 @@ function preview_result (item) {
         }
 		else if (filetype=="text") {
 		    //use the mongoID of the textfile to query text_files collection and retrieve HTML for this text file
+            id = $(item).data('mongo').mongoID.$id || $(item).data('mongo').mongoID.$oid;
 
 	         $.post("looma-database-utilities.php",
-                {cmd: "openByID", collection: "text", id: $(item).data('mongo').mongoID.$id},
+                {cmd: "openByID", collection: "text", id: id},
                 function(result) {
                     $('#previewpanel').empty().append($('<div class="textpreview text-display"></div>').html(result.data));
                     //document.querySelector("div#previewpanel").innerHTML = result.data;

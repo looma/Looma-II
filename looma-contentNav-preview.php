@@ -65,6 +65,7 @@ Description: Loads a preview of a page given an id
         audio($fp, $ft, "");
         break;
       case "mp3":
+      case "m4a":
         audio($fp, $ft, "");
         break;
       case "pdf":
@@ -119,7 +120,8 @@ Description: Loads a preview of a page given an id
       case "audio":
         audio($fn, $ft, $fileBase . "audio/");
         break;
-      case "mp3":
+        case "mp3":
+        case "m4a":
         audio($fn, $ft, $fileBase . "audio/");
         break;
       case "pdf":

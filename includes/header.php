@@ -66,7 +66,7 @@ File: header.php
 
         function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
 
-    function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shiv for php 5.x "array_key_exists()"
+    function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shim for php 5.x "array_key_exists()"
     ?>
 
 

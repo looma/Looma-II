@@ -1,0 +1,36 @@
+// ONE TIME program to
+//    register documents in games collection as activities
+//
+//  run in MONGO SHELL with: load('registergames')
+//
+
+var gamescursor;
+var count = 0;
+
+print('db is ' + db);
+print('');
+
+print ('*****scanning games collection');
+gamescursor = db.games.find();
+while (gamescursor.hasNext()) {
+    var doc = gamescursor.next();
+    
+    print ('checking: ' + doc.title);
+    var entry = db.activities.findOne({'dn': doc.title, 'ft':'game'});
+    
+    if (!entry) {
+        var act ={};
+        act.ft = 'game';
+        act.dn = doc.title;
+        act.mongoID = doc._id;
+        print ('CREATING ACTIVITY with ft: ' + act.ft + ' dn: ' + act.dn + ' mongoID: ' + act.mongoID);
+    
+        if (param !== 'dryrun') db.activities.insert(act);
+        count += 1;
+    }
+}
+print('');
+if (param==='dryrun') print('DRY RUN - no changes made');
+print('found ' + count + ' games and made activities for them');
+print('');
+

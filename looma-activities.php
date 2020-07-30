@@ -110,6 +110,7 @@ $foundActivity;
 
                     case "audio":
                     case "mp3":
+                    case "m4a":
                         makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                         break;
 

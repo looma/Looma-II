@@ -494,7 +494,7 @@ button:hover span.tip.yes-show 	{
     bottom:10%;
     left:15%;
     margin:auto;
-    font-size: 0.3em;
+    /*font-size: 0.3em;*/
     z-index: 100;
     border: 1px solid #000000;
     border-radius: 3px;

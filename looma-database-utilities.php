@@ -120,9 +120,10 @@ date_default_timezone_set ( 'UTC');
 $date = date("Y.m.d");
 
 
-function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+  $login = (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);
+  $login_team = (isset($_COOKIE['login-team']) ? $_COOKIE['login-team'] : null);
+  $login_level = (isset($_COOKIE['login-level']) ? $_COOKIE['login-level'] : null);
 
-  $login = loggedin();
 
 if (isset($_REQUEST["collection"])) {
    $collection =  $_REQUEST["collection"];
@@ -313,8 +314,10 @@ if (isset($_REQUEST["collection"])) {
                  $insert['translator'] = $_REQUEST['translator'];
             }
             else {
-                $insert['author']     = $login;
-                if ($_COOKIE['login-team']) $insert['team'] = $_COOKIE['login-team'];
+                if (!($login_level==='admin' || $login_level==='exec' || $login_level === 'teacher' || $login_team === 'teacher') ) {
+                    $insert['author'] = $login;
+                    $insert['team'] = $login_team;
+                }
             }
 
             if (isset($_REQUEST['nepali']))
@@ -329,12 +332,15 @@ if (isset($_REQUEST["collection"])) {
             $insert = array(
                 "dn" => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES),
                 "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template', 'lesson' or 'lesson-template'
-                "author" => $_COOKIE['login'],
+               // "author" => $_COOKIE['login'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
                 "data" => $_REQUEST["data"]
             );
-            if ($_COOKIE['login-team']) $insert['team'] = $_COOKIE['login-team'];
-
+           // if (!($login_level==='admin' || $login_level==='exec') ) $insert['team'] = $login_team;
+            if (!($login_level==='admin' || $login_level==='exec' || $login_team === 'teacher') ) {
+                $insert['author'] = $login;
+                $insert['team'] = $login_team;
+            }
             saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if (($collection == "edited_videos")  || ($collection == "slideshows")) {
@@ -619,7 +625,7 @@ if (isset($_REQUEST["collection"])) {
                     array_push($extensions, "image", "jpg", "png", "gif");
                     break;
                 case 'audio':
-                    array_push($extensions, "mp3", "audio");
+                    array_push($extensions, "mp3", "m4a", "audio");
                     break;
                 case 'html':
                     array_push($extensions, "EP", "html", "htm", "php", "asp");

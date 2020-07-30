@@ -246,8 +246,9 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                                 'data-dn="' + result.dn   + '" ' +
                                 'data-ndn="' + result.ndn   + '" ' +
                                 'data-prefix="' + result.prefix   + '" ' +
-                     
-                                'data-url="' + result.url + '" ' +
+    
+                        'data-zoom="' + result.zoom + '" ' +
+                        'data-url="' + result.url + '" ' +
                                 'data-grade="' + result.grade + '" ' +
                                 'data-epversion="' + result.version + '" ' +
                                 'data-ole="' + result.oleID + '" ' +

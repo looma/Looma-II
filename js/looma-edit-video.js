@@ -800,7 +800,7 @@ var preview_result = function(item) {
     
         }
         // AUDIO
-        else if(filetype=="mp3") {
+        else if (filetype=="mp3" || filetype=="m4a" || filetype=="audio") {
             if (!filepath) filepath = '../content/audio/';
               document.querySelector("div#preview-area").innerHTML = '<br><br><br><audio id="inserted-audio"> <source src="' +
                               filepath +

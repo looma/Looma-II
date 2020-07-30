@@ -16,15 +16,16 @@ var isFullScreen = false;
 function insertCaption($item) {
     $('#viewer').css('height', '100%');
 	if ($item.attr('data-ft') === "text") { $('.caption').hide();}
-	else { if ($item.attr('data-url') && $item.attr('data-url') !== "")  //note slideshow editor stores the CAPTION for a slide in 'data-url' of the Activity Button for the slide
-        {   $('.caption').text($item.attr('data-url'));
-            $('#viewer').css('height', '93%');
+	else { if ($item.attr('data-dn') && $item.attr('data-dn') !== "")  //note slideshow editor stores the CAPTION for a slide in 'data-url' of the Activity Button for the slide
+        {   $('.caption').text($item.attr('data-dn'));
+            //$('#viewer').css('height', '93%');
             $('.caption').show();
 		} else {
 			$('.caption').text('');
+			$('.caption').hide();
 		}
 	}
-}; //end insertCaption()
+} //end insertCaption()
 
 /*
 function showControlButtons() {
@@ -50,6 +51,9 @@ window.onload = function() {
     var $timeline = $('#timeline');
     
     var playing;
+    var autotimer;
+    var autoplaying = false;
+    
     var $currentItem;
     var $mediaContainer = $(".media-container");
     
@@ -57,7 +61,27 @@ window.onload = function() {
 	$('#forward-back-div').hide();  //NOT USED
 	$('.activity').removeClass('activity play img').addClass(
 	'slideshow-element');
-
+	
+	var fullscreenPlayPauseButton = document.getElementById("fullscreen-playpause");
+	$('#fullscreen-playpause').click(function(){
+		if (!autoplaying) {
+			autoplaying = true;
+			$('#fullscreen-playpause').css('background-image', 'url("images/pause.png")');
+			autotimer = setInterval(function () {
+				if ($currentItem.next().data('ft'))
+					play($currentItem.next());
+				else {
+				autoplaying = false;
+				$('#fullscreen-playpause').css('background-image', 'url("images/video.png")');
+				clearInterval (autotimer);
+				play($('#timeline').find('button:last'));
+				}}, 3000);
+		} else {
+			autoplaying = false;
+			$('#fullscreen-playpause').css('background-image', 'url("images/video.png")');
+			clearInterval (autotimer);
+		}
+	});
 	
 	$('button#lookup').click(function(){
         var toString = window.getSelection().toString();
@@ -71,11 +95,9 @@ window.onload = function() {
 		 console.log ('selected text to speak: "', toString, '"');
 		 LOOMA.speak(toString);
 	});
-    
-    
+	
     makesortable(); //makes the timeline sortable
-
-
+	
 	// handlers for 'control panel' buttons
 	$('#back, #prev-item').click(function(e) {
 		e.preventDefault();
@@ -104,10 +126,11 @@ window.onload = function() {
         }
     });
     
-    $('#pause').click(function() {
+   /* $('#pause').click(function() {
 		if (playing) pause();
 		else play($currentItem);
-	});
+	});*/
+ 
 	$('#return').click(function() {
 		parent.history.back();
 	});
@@ -117,7 +140,7 @@ window.onload = function() {
 		
 		if ($btn.attr('data-ft')) {
 			play($(this));
-			//insertCaption($btn);
+			insertCaption($btn);
 		}
 	});
     
@@ -147,14 +170,14 @@ window.onload = function() {
 
         //$('#timeline-container').scrollLeft($btn.outerWidth(true) * ($btn.index() - 2));
         
-	};
-
+	}
+/*
 	function pause() {
 		playing = false;
 		//$timeline.fadeIn(500);
 		$('#pause').css('background-image', 'url("images/play-button.png")');
 	}; //end pause()
-
+*/
 	function play($item) {
 		$mediaContainer.empty();
 		$currentItem = $item;
@@ -163,14 +186,13 @@ window.onload = function() {
 		$('#timeline button').removeClass('playing');
 		$item.addClass('playing');
 		scrollTimeline($item);
-		$('#pause').css('background-image',
-		'url(" images/pause-button.png")');
+		//$('#pause').css('background-image', 'url(" images/pause-button.png")');
 		//$timeline.fadeOut(500);  //this hides the timeline when playing media - decided to not hide the timeline [usability]
 
 		playActivity($item.data('ft'), $item.data('fn'), $item.data('fp'),
 				$item.data('dn'), $item.data('id'), "", $item.data('pg'));
 
-	}; //end play()
+	} //end play()
 
 	function playActivity(ft, fn, fp, dn, id, ch, pg) {
 	    //play the activity of type FT, named FP, in path FP, display-name DN
@@ -196,10 +218,10 @@ window.onload = function() {
 		default:
 			console.log("ERROR: in playActivity(), unknown type: " + ft);
 		break;
-		}; //end SWITCH(ft)
-	}; //end playActivity()
+		} //end SWITCH(ft)
+	} //end playActivity()
 
-	function makeImageHTML() { return ('<img src="">'); };
+	function makeImageHTML() { return ('<img src="">'); }
 	
 	function textHTML(id) {
 		$.post("looma-database-utilities.php", {
@@ -234,5 +256,5 @@ window.onload = function() {
 		},
 		'json'
 		);
-	};
+	}
 }; //end window.onload

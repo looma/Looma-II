@@ -56,7 +56,7 @@ body {
 }
 
 .caption {
-    position:relative;
+    position:absolute;
     display: block;
     height: 7%;
     overflow: hidden;
@@ -118,9 +118,6 @@ button.lookup {
     bottom: 45vh;
     opacity: 0.4;
 }
-
-button#fullscreen-playpause {
-    display:none;}
 
 #back, #forward, #return {
 	opacity: 0.8;
@@ -321,4 +318,19 @@ span#slideshow-name {
     color: black;
     /*font-size: 20px;*/
 }
-
+#fullscreen-playpause {
+    display:inline;
+    background-image: url("../images/video.png");
+    background-color:rgba(200,200,200,0.7);  /*transparent light gray*/
+    background-size:contain;
+    position: fixed;
+    right:5vw;
+    top:12vh;
+    opacity: 0.4;
+    z-index: 1000;
+    height: 10vh;
+    width:  10vh;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+#media-controls {display:none;}

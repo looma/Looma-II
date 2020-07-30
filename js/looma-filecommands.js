@@ -152,7 +152,7 @@ function savefile(name, collection, filetype, data, activityFlag) {  //filetype 
                     if (JSON.parse(response)['_id']) {
                         callbacks['checkpoint']();
                         LOOMA.alert('File ' + name + ' saved', 5);
-                        console.log("SAVE: upserted ID = ", JSON.parse(response)['_id']['$id']);
+                        console.log("SAVE: upserted ID = ", JSON.parse(response['_id']['$id'] || response['_id']['$oid']));
                     } else {
                         LOOMA.alert('File ' + name + ' save failed', 5);
                         console.log("SAVE: didn't work?");
@@ -184,7 +184,7 @@ function saveTextTranslation(name, nepali) {
                 function (response) {
                     if (response['_id']) {
                         callbacks['checkpoint']();
-                        console.log("SAVE: upserted ID = ", response['_id']['$id']);
+                        console.log("SAVE: upserted ID = ", (response['_id']['$id'] || response['_id']['$oid']));
                     } else {
                         console.log("SAVE: didn't work?");
                     }
@@ -249,8 +249,9 @@ function openfile(openId, collection, filetype) { //filetype must be given e.g. 
                 if ('author' in response)
                     owner = (
                         (response['author'] === LOOMA.loggedIn())
-                        || ((('team' in response) ? response['team'] : 'not_legal_team_name') === LOOMA.readCookie('login-team'))
                         || (LOOMA.readCookie('login-level') === 'translator' && filetype === 'text')
+                        || (LOOMA.readCookie('login-team') === 'teacher' && (filetype === 'text' || filetype === 'lesson'))
+                        || ((('team' in response) ? response['team'] : 'not_legal_team_name') === LOOMA.readCookie('login-team'))
                         || (LOOMA.loggedIn() === 'skip')
                         || (LOOMA.loggedIn() === 'david')
                         || (LOOMA.loggedIn() === 'kathy')
@@ -410,7 +411,7 @@ function displayFileSearchResults(results)
             $display.append(
                 "<tr><td>" +
                 "<button class='result' " +
-                "data-id='" + value['_id']['$id'] + "' " +
+                "data-id='" + (value['_id']['$id'] || value['_id']['$oid']) + "' " +
                 //"data-mongo='" + value + "' " +
                 "title='" + displayname + "' " +
                 "<h4> <b> " + displayname + " </b> </h4>" +

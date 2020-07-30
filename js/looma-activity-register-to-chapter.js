@@ -82,7 +82,7 @@ window.onload = function () {
                                 removeChapterID($selectedActivity, ch_id);
                                 $('#search').submit(); //redo the search to show the new ch_id
                                 },
-                            function () {return;},
+                            function () {},
                             false);
                    });
 
@@ -93,7 +93,7 @@ window.onload = function () {
                             addChapterID($selectedActivity, ch_id);
                             $('#search').submit(); //redo the search to show the new ch_id
                             },
-                        function () {return;},
+                        function () {},
                         false);
                    });
 
@@ -113,7 +113,7 @@ function renameActivity($activity) {
                  },
                  'json'
               );
-}; //end renameActivity()
+} //end renameActivity()
 
 function removeChapterID($activity, ch_id) {
 
@@ -130,7 +130,7 @@ function removeChapterID($activity, ch_id) {
                  },
                  'json'
               );
-}; //end clearCH_ID()
+} //end clearCH_ID()
 
 
 function addChapterID($activity, ch_id) {
@@ -157,7 +157,7 @@ function addChapterID($activity, ch_id) {
                  },
                  'json'
               );
-    }; //end addChapterID()
+    } //end addChapterID()
 
 
 // search for ACTIVITIES to register (attach to chapters)
@@ -191,9 +191,9 @@ function addChapterID($activity, ch_id) {
                                function (result) {
                                     loadingmessage.remove();
                                     clearInterval(ellipsisTimer);
-                                    displayResults(result);return;},
+                                    displayResults(result);},
                                'json');
-                  };
+                  }
            });
   //
   // $( "#timelineDisplay" ).sortable({disabled: true});
@@ -248,13 +248,13 @@ function displayResults(results) {
      for (var i=0; i < results['list'].length; i++) {
          if (results[i]['ft'] == 'chapter') result_array['chapters'].push(results['list'][i]);
          else                               result_array['activities'].push(results['list'][i]);
-      };
+      }
 
       displaySearchResults(result_array);
 
       makedraggable();  //not working for now
 
-     }; //end displayresults()
+     } //end displayresults()
 
 
 /////////////////////////////////////////////////////////////
@@ -313,15 +313,15 @@ var displaySearchResults = function(filterdata_object) {
             }
             else {
                 collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (" + chaptersarraylength + " Results)</a>";
-            };
+            }
             actResultDiv.appendChild(collectionTitle);
 
             for(i=0; i<filterdata_object.chapters.length; i++) {
                 rElement = createActivityDiv(filterdata_object.chapters[i]);
 
                 actResultDiv.appendChild(rElement);
-            };
-       };
+            }
+       }
 
 // end Print Chapters Array
 
@@ -408,7 +408,7 @@ var thumbnail = function(item) {
     }
 
     else if (collection == "activities" || item.ft != null) {
-        if (item.ft == "mp3") {  //audio
+        if (item.ft == "mp3" || item.ft=="m4a" || item.ft=="audio") {  //audio
             if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
             imgsrc = path + "thumbnail.png";
         }
@@ -487,8 +487,8 @@ var thumbnail = function(item) {
                 elements['currentGradeFolder'] = 'Class' + pieces[1];
                 elements['currentSubjectFull'] = names[pieces[2]];
                 elements['chprefix']           = pieces[1] + pieces[2];
-            };
-         };
+            }
+         }
         return elements;
     }  //end parse_ch_id()
 
@@ -567,7 +567,7 @@ var createActivityDiv = function(activity) {
                         class : "result_ID",
                         html : "[" + item._id + "]"
                     }).appendTo(textdiv);
-                };
+                }
 
                 $("<br>").appendTo(textdiv);
 
@@ -694,7 +694,7 @@ var preview_result = function(item) {
 			     '<iframe src="' + homedirectory + 'content/pdfs/' + filename + '"' +
 			     ' style="height:60vh;width:60vw;" type="application/pdf">';
 		}
-		else if(filetype=="mp3") {
+		else if(filetype=="mp3" || filetype=="m4a" || filetype=="audio") {
 		      document.querySelector("div#previewpanel").innerHTML = '<br><br><br><audio id="audio"> <source src="' +
 		                      homedirectory + 'content/audio/' +
 		                      filename + '" type="audio/mpeg"></audio>' +
@@ -812,7 +812,7 @@ function insertTimelineElement(source) {
         $rememberActivity = $(source);
         $selectedActivity = $dest;
         $('p.filename').text($dest.data('mongo').dn);
-}; //end insertTimelineElement()
+} //end insertTimelineElement()
 
 var removeTimelineElement = function() {
   // Removing list item from timelineHolder
@@ -873,7 +873,7 @@ function makedraggable() {
                 }
               }
         });
-}; //end makedraggable()
+} //end makedraggable()
 
 var initializeDOM = function() {
 

@@ -18,7 +18,7 @@ function mongoRegexOptions($pattern, $options) {
         global $mongo_level;
     if ($mongo_level >= 4)
          return new MongoDB\BSON\Regex($pattern,$options);
-    else return new MongoRegex($pattern . '/' . $options);
+    else return new MongoRegex('/' . $pattern . '/' . $options);
 }
 
 function mongoId ($id) {  //$id is a string
@@ -63,7 +63,7 @@ function mongoDistinct($collection, $key) {
 function mongoFindAndModify($collection, $filter, $set) {
     global $mongo_level;
     if ($mongo_level >= 4 ) {
-        $options = array("upsert"=>true, "returnDocument"=>RETURN_DOCUMENT_AFTER);
+        $options = array("upsert"=>true, "returnDocument"=>MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER);
         $doc = $collection->findOneAndUpdate( $filter, $set, $options);
     }
     else {

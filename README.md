@@ -1,4 +1,9 @@
 # Looma-II
+Developer profile:
+    Created and maintained by Skip [skip@looma.education]
+    For Looma Education Company, Menlo Park CA
+
+README:
 Looma II source code
 
     This GITHUB repository does not include the Looma "content" which is 64+GB, and growing, of media files used in Looma.

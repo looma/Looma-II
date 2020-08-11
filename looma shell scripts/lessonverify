@@ -1,0 +1,92 @@
+// ONE TIME program to
+//      verify lessons and ch_ids used in lesson names
+//
+//
+//   run in MONGO SHELL with: load('lessonverify')
+//
+
+function legalCH_ID(ch) {
+    var chapter = ch.replace(/\s/g,''); //removes 'whitespace'
+    if (chapter && chapter.length>0) {
+        var legal = db.chapters.find({"_id": chapter});
+        if (legal.length() === 0) {
+            //print("************ illegal ch_id:     " + chapter );
+            illegalcount++;
+            return false;
+        } else return true;
+    }
+}
+
+function checkMatch(elementDN, lessonID) {
+    if (! elementDN.match(lessonID)) print ('        TEXT FILE: "' + elementDN + '" NAME DOESNT MATCH LESSON: ' + lessonID);
+}
+var category = {'mp4':'video','mov':'video','video':'video',
+                  'jpg':'image','png':'image','gif':'image','image':'image',
+                  'text':'text','html':'html','EP':'ePaath','pdf':'pdf',
+                  'map':'map','history':'history','game':'game','PhET':'PhET',
+                  'mp3':'audio','m4a':'audio','audio':'audio'};
+var lessoncursor;
+var count = 0;
+var illegalcount = 0;
+var typecount = {};
+//typecount.text=0;
+var CH_regex = '/([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\\.[0-9]{2})?/';
+print('db is ' + db);
+print('');
+
+
+lessoncursor = db.lessons.find();
+while (lessoncursor.hasNext()) {
+    count++;
+    var lesson = lessoncursor.next();
+    
+    // extract a CH_ID from the lesson name and verify it
+    var lessonID = lesson['dn'].match(/([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/);
+    if (lessonID) {
+        print('');
+        print('lesson "' + lesson['dn'] + '"       has ch_id ' + lessonID[0]);
+        if (!legalCH_ID(lessonID[0])) print('        NO MATCHING CHAPTER FOR: ' + lessonID[0]);
+        
+        
+        // check for duplicate lessons (with same ch_id in their name)
+        var duplicates = db.lessons.find({dn: {$regex: lessonID[0]}}); //might want to use "{$regex:lessonID[0] + '\ '}"
+        if (duplicates.count() > 1) print('        DUPLICATE LESSONS FOUND; ' + lessonID[0]);
+        
+    } else {
+        print();
+        print('lesson "' + lesson['dn'] + '" NO LEGAL CH_ID IN NAME ');
+    };
+    // check elements of the lesson. 1. elements exists, 2. each element is in activities collection 3. accumulate ft counts
+    var elements = lesson['data'];
+    if (!elements || elements.length === 0)
+        print('        lesson ' + lesson['dn'] + ' HAS NO ELEMENTS');
+    else for (var i = 0; i < elements.length; i++) {
+         var element = elements[i];
+         // look up element in activities
+        if (element.collection === 'chapters'){
+            if (!db.chapters.findOne({_id:element.id})) print('        chapter element ' + element.id + '  NOT FOUND in database');
+        } else if (element.id) {
+            var element_detail = db.activities.findOne({_id:ObjectId(element.id)});
+            if (!element_detail) print('        NOT FOUND IN DB for ' + lesson['dn'] + ' - activity element ' + element.id);
+            else {
+                if (typecount[category[element_detail.ft]]) typecount[category[element_detail.ft]]++; else typecount[category[element_detail.ft]]=1;
+                if ( lessonID && lessonID[0] && element_detail.ft === 'text') {
+                    checkMatch(element_detail.dn, lessonID[0]);
+                }
+            }
+        };
+        
+            // check that its name included the ch_id of the lesson
+            // accumulate count of filetypes of elements
+        };
+ 
+};
+print('COUNT of TYPES used:');
+// should SORT by frequency and AGGREGRATE types into video = {mov, mp4, video}, image = {png,gif, jpeg} etc
+for (var t in typecount) { print(t + ': ' +  typecount[t]);};
+print('');
+print('found ' + count + ' lessons');
+//if (param === 'dryrun') print('DRY RUN - no changes made');
+//else                    print(' and made ACTIVITIES for them');
+print('');
+

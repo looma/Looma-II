@@ -1,0 +1,1872 @@
+
+lesson "3S01.02 Living and Nonliving"       has ch_id 3S01.02
+
+lesson "5S01.01 Types of Animals"       has ch_id 5S01.01
+        TEXT FILE: "5S01 Title" NAME DOESNT MATCH LESSON: 5S01.01
+        TEXT FILE: "5S01 1" NAME DOESNT MATCH LESSON: 5S01.01
+        TEXT FILE: "5S01 Slide 2" NAME DOESNT MATCH LESSON: 5S01.01
+        TEXT FILE: "5S01 3" NAME DOESNT MATCH LESSON: 5S01.01
+        TEXT FILE: "5S01 Activity" NAME DOESNT MATCH LESSON: 5S01.01
+
+lesson "6S01 Measure ment"       has ch_id 6S01
+        NO MATCHING CHAPTER FOR: 6S01
+        chapter element 6S01  NOT FOUND in database
+
+lesson "4S01.12 Energy"       has ch_id 4S01.12
+
+lesson "7EN03 Getting Info"       has ch_id 7EN03
+
+lesson "2M03-05 Place Value"       has ch_id 2M03
+        TEXT FILE: "2M02-06 Introduction" NAME DOESNT MATCH LESSON: 2M03
+
+lesson "3M02 Angles"       has ch_id 3M02
+
+lesson "2S01.03 Animals Habitat"       has ch_id 2S01.03
+
+lesson "1S01.07 Animals and Plants"       has ch_id 1S01.07
+
+lesson "1S01.01 Animal Movement"       has ch_id 1S01.01
+
+lesson "2EN01 School and Classroom"       has ch_id 2EN01
+        NOT FOUND IN DB - activity element 5723cdfa3bfb5a7a58a57733
+
+lesson "5SS09.05-06 Singing And Music"       has ch_id 5SS09.05
+        TEXT FILE: "5SS09.06 Music Dance Intro" NAME DOESNT MATCH LESSON: 5SS09.05
+        TEXT FILE: "5SS09.06 Sing Activity1" NAME DOESNT MATCH LESSON: 5SS09.05
+        TEXT FILE: "5SS09.06 Sing Activity 2" NAME DOESNT MATCH LESSON: 5SS09.05
+        TEXT FILE: "5SS09.06 Music Dance Final" NAME DOESNT MATCH LESSON: 5SS09.05
+        TEXT FILE: "5SS09.06 Songs Final2" NAME DOESNT MATCH LESSON: 5SS09.05
+
+lesson "7EN01.1-2 Starting New Year"       has ch_id 7EN01
+        DUPLICATE LESSONS FOUND; 7EN01
+        TEXT FILE: "7EN1.1 Intro Conversation" NAME DOESNT MATCH LESSON: 7EN01
+        TEXT FILE: "7EN Videos" NAME DOESNT MATCH LESSON: 7EN01
+
+lesson "Population Management" NO LEGAL CH_ID IN NAME 
+        NOT FOUND IN DB - activity element 5723cdfa3bfb5a7a58a579af
+
+lesson "5SS01.01 Jobs in Community"       has ch_id 5SS01.01
+
+lesson "1S01.02 Animals Take Food"       has ch_id 1S01.02
+
+lesson "1S01.12 Animals Wings"       has ch_id 1S01.12
+
+lesson "1S02.02 Clean House and School"       has ch_id 1S02.02
+
+lesson "1S01.05 Plants"       has ch_id 1S01.05
+        NOT FOUND IN DB - activity element 5723cdfa3bfb5a7a58a578a8
+
+lesson "1S01.04 Animals Grow"       has ch_id 1S01.04
+
+lesson "1S01.14 Plants Parts"       has ch_id 1S01.14
+
+lesson "1S01.15 Care of Animals"       has ch_id 1S01.15
+
+lesson "1S01.11 Animals with Horns & Tails"       has ch_id 1S01.11
+
+lesson "1S01.20 Shapes Sizes Objects"       has ch_id 1S01.20
+
+lesson "1S01.10 Babies of Animals"       has ch_id 1S01.10
+
+lesson "6S05 Light"       has ch_id 6S05
+        NOT FOUND IN DB - activity element 58825959b5fc6557f312727d
+
+lesson "1S02.05 Health Care"       has ch_id 1S02.05
+
+lesson "1S01.06 Non-Living Things"       has ch_id 1S01.06
+
+lesson "4M01.3-6 Angles"       has ch_id 4M01
+        NO MATCHING CHAPTER FOR: 4M01
+        DUPLICATE LESSONS FOUND; 4M01
+
+lesson "1S01.16 Care for Plants"       has ch_id 1S01.16
+
+lesson "1S01.13 Types of Plants"       has ch_id 1S01.13
+
+lesson "5S01.11 Clouds"       has ch_id 5S01.11
+
+lesson "5S01.08 Change State of Matter"       has ch_id 5S01.08
+
+lesson "5S02.01 Personal Hygiene"       has ch_id 5S02.01
+
+lesson "5S02.02 Exercise and Sleep"       has ch_id 5S02.02
+
+lesson "1S01.18 Clean & Dirty Environment"       has ch_id 1S01.18
+
+lesson "Mesopotamia" NO LEGAL CH_ID IN NAME 
+
+lesson "1S01.19 Water"       has ch_id 1S01.19
+        NOT FOUND IN DB - activity element 5954132b020614abbf2c0410
+
+lesson "5S01.02 Cells"       has ch_id 5S01.02
+
+lesson "5S01.06 Humans and Environment"       has ch_id 5S01.06
+
+lesson "1S01.09 Carni- & herbivores"       has ch_id 1S01.09
+
+lesson "5S01.14 Information Transfer"       has ch_id 5S01.14
+
+lesson "5S01.13 Earth"       has ch_id 5S01.13
+
+lesson "1S01.17 Local Environ"       has ch_id 1S01.17
+
+lesson "Europe" NO LEGAL CH_ID IN NAME 
+
+lesson "5SS05.09  SriL, Mal, Afg"       has ch_id 5SS05.09
+
+lesson "5SS05.07 Use of Globe and Map"       has ch_id 5SS05.07
+
+lesson "5S01.07 Conserve Environment"       has ch_id 5S01.07
+
+lesson "5S01.12 Solar System"       has ch_id 5S01.12
+
+lesson "5S01.03 Life Cycle of a Butterfly"       has ch_id 5S01.03
+
+lesson "5S01.05 General Life Processes"       has ch_id 5S01.05
+        NOT FOUND IN DB - activity element 5723cdfa3bfb5a7a58a5782c
+
+lesson "5S01.04 Plant Parts"       has ch_id 5S01.04
+
+lesson "5S01.15 Technology"       has ch_id 5S01.15
+
+lesson "8EN19 Jajarkot Story"       has ch_id 8EN19
+
+lesson "5S02.04 Solid Wastes"       has ch_id 5S02.04
+
+lesson "5S02.05 Balanced Diet"       has ch_id 5S02.05
+
+lesson "5S02.03 Sanitation"       has ch_id 5S02.03
+        NOT FOUND IN DB - activity element 5723cdfa3bfb5a7a58a578fe
+
+lesson "1S01.21 Sun"       has ch_id 1S01.21
+
+lesson "1S01.22 Fire"       has ch_id 1S01.22
+
+lesson "5S02.06 Mal nutrition"       has ch_id 5S02.06
+
+lesson "5S02.07 Diseases Contagious"       has ch_id 5S02.07
+
+lesson "8M19 Circle"       has ch_id 8M19
+
+lesson "Hwang Ho Valley Civilization" NO LEGAL CH_ID IN NAME 
+
+lesson "4S01.02 Oviparous Viviparous"       has ch_id 4S01.02
+
+lesson "4SS01.02-03 Tools Occupational"       has ch_id 4SS01.02
+
+lesson "Nile River" NO LEGAL CH_ID IN NAME 
+
+lesson "Australia" NO LEGAL CH_ID IN NAME 
+
+lesson "8M03 Square root and cube root"       has ch_id 8M03
+
+lesson "8M01 Sets"       has ch_id 8M01
+
+lesson "8M09 Simple Interest"       has ch_id 8M09
+
+lesson "Indus Valley Civilization" NO LEGAL CH_ID IN NAME 
+
+lesson "8M06 Ratio Proportion & Percentage"       has ch_id 8M06
+
+lesson "4SS05.05 India Our Neighbor"       has ch_id 4SS05.05
+
+lesson "4SS05.06 China"       has ch_id 4SS05.06
+
+lesson "5SS05.08 B'desh Bhut'n Pakistan"       has ch_id 5SS05.08
+
+lesson "5S02.08 HIV and AIDS"       has ch_id 5S02.08
+
+lesson "5S02.09 Let's Save from Accident"       has ch_id 5S02.09
+
+lesson "Greek Civilization" NO LEGAL CH_ID IN NAME 
+
+lesson "5S02.10 Safety and First-Aid"       has ch_id 5S02.10
+
+lesson "8M13 Angles and Parallel Lines"       has ch_id 8M13
+
+lesson "8M15 Angles Interior & Exterior"       has ch_id 8M15
+
+lesson "8M10 Statistics"       has ch_id 8M10
+
+lesson "8M11 Algebraic Expression"       has ch_id 8M11
+        NOT FOUND IN DB - activity element 5723cdfa3bfb5a7a58a577f5
+        NOT FOUND IN DB - activity element 5723cdfa3bfb5a7a58a577f7
+
+lesson "8M05 Rational & Irrational"       has ch_id 8M05
+
+lesson "4S01.03 Terrestrial Animals"       has ch_id 4S01.03
+
+lesson "4S01.04 Aquatic Animals"       has ch_id 4S01.04
+
+lesson "8M17 Solids"       has ch_id 8M17
+
+lesson "8M14 Triangles"       has ch_id 8M14
+
+lesson "8M04 Rational ization"       has ch_id 8M04
+
+lesson "2SS02.03 Festivals"       has ch_id 2SS02.03
+        NOT FOUND IN DB - activity element 5b65de56f04efe27468b457a
+        NOT FOUND IN DB - activity element 5b65de56f04efe27468b457b
+
+lesson "8M08 Unitary method"       has ch_id 8M08
+
+lesson "8M21 Bearing and Scale Drawing"       has ch_id 8M21
+
+lesson "7H01.09 Health Family"       has ch_id 7H01.09
+        TEXT FILE: "7SS02.02 Intro" NAME DOESNT MATCH LESSON: 7H01.09
+        TEXT FILE: "7SS02.02 Activity 1" NAME DOESNT MATCH LESSON: 7H01.09
+        TEXT FILE: "7SS02.02 Activity 2" NAME DOESNT MATCH LESSON: 7H01.09
+        TEXT FILE: "7SS02.02 Reflection" NAME DOESNT MATCH LESSON: 7H01.09
+
+lesson "7S02 Force and Motion"       has ch_id 7S02
+
+lesson "8S21 Earth Space"       has ch_id 8S21
+
+lesson "4M01.1-2 Solid Shapes"       has ch_id 4M01
+        NO MATCHING CHAPTER FOR: 4M01
+        DUPLICATE LESSONS FOUND; 4M01
+
+lesson "5SS01.02-03 Friends and Community"       has ch_id 5SS01.02
+        TEXT FILE: "5SS01.2-3 Intro Friends Comm" NAME DOESNT MATCH LESSON: 5SS01.02
+        TEXT FILE: "5SS01.2-3 Before Video 1" NAME DOESNT MATCH LESSON: 5SS01.02
+        TEXT FILE: "5SS01.2-3 After Video1 Activity" NAME DOESNT MATCH LESSON: 5SS01.02
+        TEXT FILE: "5SS01.2-3 Before Video 2 Activity" NAME DOESNT MATCH LESSON: 5SS01.02
+        TEXT FILE: "5SS01.2-3 Community After Video" NAME DOESNT MATCH LESSON: 5SS01.02
+        TEXT FILE: "5SS01.2-3 Final Questions" NAME DOESNT MATCH LESSON: 5SS01.02
+        TEXT FILE: "5SS01.2-3 Helping Community Final Activity" NAME DOESNT MATCH LESSON: 5SS01.02
+
+lesson "3SS03.01-02 Help Disabled Helpless"       has ch_id 3SS03.01
+
+lesson "2M01.01 Geometrical Shapes"       has ch_id 2M01.01
+        NO MATCHING CHAPTER FOR: 2M01.01
+
+lesson "5S01.09 Sources of Energy"       has ch_id 5S01.09
+
+lesson "3SS05.01-04 Place Where I Live"       has ch_id 3SS05.01
+
+lesson "3S01.08 Our Environment"       has ch_id 3S01.08
+
+lesson "3S01.06 Plants"       has ch_id 3S01.06
+
+lesson "8M16 Congruent Triangles"       has ch_id 8M16
+
+lesson "2S01.07-08 Plants"       has ch_id 2S01.07
+        NOT FOUND IN DB - activity element 5723cdfa3bfb5a7a58a578a8
+
+lesson "2SS05.01-04 Place Live"       has ch_id 2SS05.01
+        TEXT FILE: "3SS05.01-04 Pictures" NAME DOESNT MATCH LESSON: 2SS05.01
+        TEXT FILE: "3SS05.01-04 Map Art" NAME DOESNT MATCH LESSON: 2SS05.01
+
+lesson "5M01.01 Angles"       has ch_id 5M01.01
+        NO MATCHING CHAPTER FOR: 5M01.01
+        TEXT FILE: "4M01.3-6 Before Video 1" NAME DOESNT MATCH LESSON: 5M01.01
+        TEXT FILE: "4M01.3-6 Final" NAME DOESNT MATCH LESSON: 5M01.01
+
+lesson "1M03 Numbers 1-5"       has ch_id 1M03
+
+lesson "1M09 Count 6-10"       has ch_id 1M09
+
+lesson "3EN02 What do you like?"       has ch_id 3EN02
+
+lesson "5M07 Perimeter"       has ch_id 5M07
+
+lesson "5M08 Area"       has ch_id 5M08
+
+lesson "7M02.04 Common Factors"       has ch_id 7M02.04
+
+lesson "6S02 Force Motion"       has ch_id 6S02
+
+lesson "3M12 Multiplication"       has ch_id 3M12
+
+lesson "2M06 Order Of Numbers"       has ch_id 2M06
+
+lesson "3S01.03 Animal Habitat"       has ch_id 3S01.03
+
+lesson "5SS09.01-02 Singing And Music"       has ch_id 5SS09.01
+
+lesson "4SS09.01-02 Music"       has ch_id 4SS09.01
+
+lesson "7M02.02-03 Square Roots"       has ch_id 7M02.02
+
+lesson "3SS05 Movement Foot Heel"       has ch_id 3SS05
+        NO MATCHING CHAPTER FOR: 3SS05
+        DUPLICATE LESSONS FOUND; 3SS05
+
+lesson "3M11 Even and Odd Numbers"       has ch_id 3M11
+
+lesson "4SS09.08-09 Dance"       has ch_id 4SS09.08
+        TEXT FILE: "4SS09 Intro Dance" NAME DOESNT MATCH LESSON: 4SS09.08
+
+lesson "6M02.08 Prime Factorization"       has ch_id 6M02.08
+
+lesson "6M12.06 Coordinates"       has ch_id 6M12.06
+
+lesson "1EN04 Talking Together"       has ch_id 1EN04
+        NO MATCHING CHAPTER FOR: 1EN04
+        chapter element 1EN04  NOT FOUND in database
+
+lesson "5EN02 Expressing Reasons"       has ch_id 5EN02
+
+lesson "8EN09 Moral Stories"       has ch_id 8EN09
+
+lesson "4EN09 Blind men and elephant"       has ch_id 4EN09
+
+lesson "1SS05.01-02 Land around home"       has ch_id 1SS05.01
+        TEXT FILE: "3SS05.01-04 Pictures" NAME DOESNT MATCH LESSON: 1SS05.01
+
+lesson "1SS09.01-04 Music and Dance"       has ch_id 1SS09.01
+        TEXT FILE: "1SS09.02 Simon Says" NAME DOESNT MATCH LESSON: 1SS09.01
+        TEXT FILE: "1SS09 Nepali Pictures" NAME DOESNT MATCH LESSON: 1SS09.01
+        TEXT FILE: "1SS09 Activity" NAME DOESNT MATCH LESSON: 1SS09.01
+
+lesson "7S22 Environ Degradation"       has ch_id 7S22
+
+lesson "8S23 Environment Degradation"       has ch_id 8S23
+
+lesson "6EN10 Kites and Peace"       has ch_id 6EN10
+
+lesson "7EN02 Meeting People"       has ch_id 7EN02
+
+lesson "1EN07 Numbers Colours"       has ch_id 1EN07
+        NO MATCHING CHAPTER FOR: 1EN07
+        chapter element 1EN07  NOT FOUND in database
+
+lesson "8S24 Environ Sustainable Devel"       has ch_id 8S24
+
+lesson "5EN05 Describing People"       has ch_id 5EN05
+
+lesson "3EN07 Hello"       has ch_id 3EN07
+
+lesson "6EN06 Earth and Us"       has ch_id 6EN06
+
+lesson "2EN04 Commands"       has ch_id 2EN04
+
+lesson "2S01.04: Domestic and Wild Animals"       has ch_id 2S01.04
+
+lesson "6EN04 Field Trip"       has ch_id 6EN04
+
+lesson "10M01 Sets"       has ch_id 10M01
+
+lesson "7S01 Measurement"       has ch_id 7S01
+
+lesson "8S01 Measurement"       has ch_id 8S01
+        TEXT FILE: "8s01 txtbook intro" NAME DOESNT MATCH LESSON: 8S01
+        NOT FOUND IN DB - activity element 5c7472d6cd55f229e3ac584b
+        TEXT FILE: "8s01 m/w answers" NAME DOESNT MATCH LESSON: 8S01
+        TEXT FILE: "8s01 reflection" NAME DOESNT MATCH LESSON: 8S01
+        TEXT FILE: "8s01 credits" NAME DOESNT MATCH LESSON: 8S01
+
+lesson "Sounds and Letter Shapes" NO LEGAL CH_ID IN NAME 
+        chapter element 1EN02  NOT FOUND in database
+        NOT FOUND IN DB - activity element 5d0017725c9304f25c30df35
+
+lesson "6M17.01 Perimeter"       has ch_id 6M17.01
+
+lesson "1EN01 Starting School"       has ch_id 1EN01
+        NO MATCHING CHAPTER FOR: 1EN01
+        chapter element 1EN01  NOT FOUND in database
+
+lesson "1EN02 Sounds & Letter Shapes"       has ch_id 1EN02
+        NO MATCHING CHAPTER FOR: 1EN02
+        chapter element 1EN02  NOT FOUND in database
+
+lesson "8S02 Velocity and Acceleration"       has ch_id 8S02
+        TEXT FILE: "8s02 before epaath" NAME DOESNT MATCH LESSON: 8S02
+        TEXT FILE: "8s02 equations intro" NAME DOESNT MATCH LESSON: 8S02
+        TEXT FILE: "8s02 Equation 1" NAME DOESNT MATCH LESSON: 8S02
+        TEXT FILE: "8s02 prac intro" NAME DOESNT MATCH LESSON: 8S02
+        TEXT FILE: "8s02 q1 answer" NAME DOESNT MATCH LESSON: 8S02
+        TEXT FILE: "8s02 q2" NAME DOESNT MATCH LESSON: 8S02
+        TEXT FILE: "8s02 q2 answer" NAME DOESNT MATCH LESSON: 8S02
+        TEXT FILE: "8s02 q4" NAME DOESNT MATCH LESSON: 8S02
+        TEXT FILE: "8s02 q4 answer" NAME DOESNT MATCH LESSON: 8S02
+
+lesson "6M17.02 Area"       has ch_id 6M17.02
+        NOT FOUND IN DB - activity element 58825959b5fc6557f3127278
+
+lesson "3S01.01 Features of Living Things"       has ch_id 3S01.01
+
+lesson "1S01.23-25 Types of Days"       has ch_id 1S01.23
+
+lesson "3M01: Line Segment"       has ch_id 3M01
+
+lesson "5M04 Time"       has ch_id 5M04
+        TEXT FILE: "10M01 Author" NAME DOESNT MATCH LESSON: 5M04
+
+lesson "4M02.01 Origin of Numbers"       has ch_id 4M02.01
+        TEXT FILE: "Created by: Annika and Amy" NAME DOESNT MATCH LESSON: 4M02.01
+
+lesson "9M11 Quadratic Equations"       has ch_id 9M11
+
+lesson "7M01.01 Review of Set"       has ch_id 7M01.01
+        NOT FOUND IN DB - activity element 5c7472d6cd55f229e3ac57c6
+
+lesson "8M02 Whole Number"       has ch_id 8M02
+
+lesson "5M06 Distance"       has ch_id 5M06
+
+lesson "4M02.03 Rounding Numbers"       has ch_id 4M02.03
+
+lesson "10S01 Force"       has ch_id 10S01
+
+lesson "9M18 Statistics"       has ch_id 9M18
+
+lesson "4M03.01-02 Subtraction Examples"       has ch_id 4M03.01
+
+lesson "6S04 Heat"       has ch_id 6S04
+
+lesson "4M02.02 Numbers up to Crore"       has ch_id 4M02.02
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 4M02.02
+
+lesson "6H01.01 Human Body"       has ch_id 6H01.01
+        NO MATCHING CHAPTER FOR: 6H01.01
+        chapter element 6H01.01  NOT FOUND in database
+
+lesson "8S03 Simple Machine"       has ch_id 8S03
+        TEXT FILE: "Created by Amy" NAME DOESNT MATCH LESSON: 8S03
+
+lesson "1M01 Straight and Curved Lines"       has ch_id 1M01
+
+lesson "6S11 Some Useful Chemicals"       has ch_id 6S11
+
+lesson "8H01.02 Personal Health"       has ch_id 8H01.02
+
+lesson "5M02 Concept of Numbers"       has ch_id 5M02
+
+lesson "8S04 Pressure"       has ch_id 8S04
+
+lesson "1M02 Circle"       has ch_id 1M02
+
+lesson "1S03.04 Drill"       has ch_id 1S03.04
+
+lesson "5M03 Fundamental Operations"       has ch_id 5M03
+
+lesson "5M17 Set"       has ch_id 5M17
+
+lesson "1SS01.01-04 Me and my surroundings"       has ch_id 1SS01.01
+        TEXT FILE: "1SS01.04 Friend intro" NAME DOESNT MATCH LESSON: 1SS01.01
+        TEXT FILE: "1SS01.04 Friend after" NAME DOESNT MATCH LESSON: 1SS01.01
+        TEXT FILE: "1SS01.04 Conclusion" NAME DOESNT MATCH LESSON: 1SS01.01
+        TEXT FILE: "1SS01.04 Made By" NAME DOESNT MATCH LESSON: 1SS01.01
+
+lesson "5SS01.05 Understand Others"       has ch_id 5SS01.05
+        TEXT FILE: "Peridot Siraj Credits 6/18" NAME DOESNT MATCH LESSON: 5SS01.05
+
+lesson "6S03 Simple Machine"       has ch_id 6S03
+        TEXT FILE: "Created by Amy" NAME DOESNT MATCH LESSON: 6S03
+
+lesson "1M04 Four-Sided & 1M05 3-Sided"       has ch_id 1M04
+
+lesson "3EN01 Lilu Diary"       has ch_id 3EN01
+
+lesson "5M18 algebra"       has ch_id 5M18
+
+lesson "5SS01.04 Equal Treatment"       has ch_id 5SS01.04
+        TEXT FILE: "Peridot Siraj Credits 6/18" NAME DOESNT MATCH LESSON: 5SS01.04
+
+lesson "2S01.05 Animals'  Eating"       has ch_id 2S01.05
+
+lesson "5SS02.01-02 Traditions & Language"       has ch_id 5SS02.01
+
+lesson "1S02.06 I am careful"       has ch_id 1S02.06
+
+lesson "5EN12 Talking about picnic"       has ch_id 5EN12
+
+lesson "7S03 Simple Machine"       has ch_id 7S03
+        TEXT FILE: "Created by Amy" NAME DOESNT MATCH LESSON: 7S03
+
+lesson "1SS09.05 Acting"       has ch_id 1SS09.05
+
+lesson "4S01.01 In/Vertebrate Animals"       has ch_id 4S01.01
+
+lesson "6M02.01  Numeration"       has ch_id 6M02.01
+
+lesson "5EN07 describing quantities"       has ch_id 5EN07
+
+lesson "5EN03 Describing Locations"       has ch_id 5EN03
+
+lesson "2S01.01-02 Living Things"       has ch_id 2S01.01
+
+lesson "6M02.02 Roman Numerals"       has ch_id 6M02.02
+
+lesson "3M24 Unitary Method"       has ch_id 3M24
+        TEXT FILE: "Created by Amy" NAME DOESNT MATCH LESSON: 3M24
+
+lesson "2S01.11-13 Objects"       has ch_id 2S01.11
+
+lesson "4S01.16 Solar System"       has ch_id 4S01.16
+
+lesson "6M02.09 HCF and LCM"       has ch_id 6M02.09
+        TEXT FILE: "PS Credits 6/20" NAME DOESNT MATCH LESSON: 6M02.09
+
+lesson "2S01.20 Sunlight Has Many Colors"       has ch_id 2S01.20
+
+lesson "8S07 Light"       has ch_id 8S07
+        TEXT FILE: "8s07 intro discussion" NAME DOESNT MATCH LESSON: 8S07
+        TEXT FILE: "8s07 txtbook" NAME DOESNT MATCH LESSON: 8S07
+        TEXT FILE: "8s07 before epaath" NAME DOESNT MATCH LESSON: 8S07
+        TEXT FILE: "8s07 after epaath 1" NAME DOESNT MATCH LESSON: 8S07
+        TEXT FILE: "8s07 after epaath 1 answers" NAME DOESNT MATCH LESSON: 8S07
+        TEXT FILE: "8s07 before ray" NAME DOESNT MATCH LESSON: 8S07
+        TEXT FILE: "8s07 concave mirror vid" NAME DOESNT MATCH LESSON: 8S07
+        TEXT FILE: "8s07 concave mirror review" NAME DOESNT MATCH LESSON: 8S07
+
+lesson "10M02 Tax and Money"       has ch_id 10M02
+        TEXT FILE: "PS Credits 6/20" NAME DOESNT MATCH LESSON: 10M02
+
+lesson "2S01.14-15 Heat and Light"       has ch_id 2S01.14
+
+lesson "1EN03 Giving Commands"       has ch_id 1EN03
+        NO MATCHING CHAPTER FOR: 1EN03
+        chapter element 1EN03  NOT FOUND in database
+
+lesson "2S01.06 Movement of Animals"       has ch_id 2S01.06
+
+lesson "2M02 Solid Objects & Plane Surface"       has ch_id 2M02
+
+lesson "2S01.09 Food From Plants & Animals"       has ch_id 2S01.09
+
+lesson "7M02.06-07 Binary & Quinary"       has ch_id 7M02.06
+
+lesson "3EN03 Where Is My Pencil?"       has ch_id 3EN03
+
+lesson "4EN01 Be Careful!"       has ch_id 4EN01
+
+lesson "2S01.10 Our Environment"       has ch_id 2S01.10
+
+lesson "1EN06 Where Things Are"       has ch_id 1EN06
+        NO MATCHING CHAPTER FOR: 1EN06
+        chapter element 1EN06  NOT FOUND in database
+
+lesson "4S01.08 Aquatic Plants"       has ch_id 4S01.08
+
+lesson "6SS01.01 Good People"       has ch_id 6SS01.01
+
+lesson "1EN05 One and Many"       has ch_id 1EN05
+        NO MATCHING CHAPTER FOR: 1EN05
+        chapter element 1EN05  NOT FOUND in database
+
+lesson "7M02.08 Cubes and Cubed Roots"       has ch_id 7M02.08
+
+lesson "5M09 Capacity"       has ch_id 5M09
+
+lesson "2S01.16-17 Sunny Days and Shadows"       has ch_id 2S01.16
+
+lesson "7M02.09 Integers"       has ch_id 7M02.09
+
+lesson "5M10 volume"       has ch_id 5M10
+
+lesson "4EN02 Me and My Habits"       has ch_id 4EN02
+        TEXT FILE: "4S01.08 credit" NAME DOESNT MATCH LESSON: 4EN02
+
+lesson "7M01.04 Venn Diagrams"       has ch_id 7M01.04
+
+lesson "1EN08 Doing Things"       has ch_id 1EN08
+        NO MATCHING CHAPTER FOR: 1EN08
+        chapter element 1EN08  NOT FOUND in database
+
+lesson "2S01.19 Day and Night"       has ch_id 2S01.19
+
+lesson "2S01.18 Our Earth"       has ch_id 2S01.18
+
+lesson "7M02.05 Common Factor"       has ch_id 7M02.05
+
+lesson "3S01.04 Animals' Food & Eating"       has ch_id 3S01.04
+        TEXT FILE: "Created by Mitsuka and Amy" NAME DOESNT MATCH LESSON: 3S01.04
+
+lesson "2S02.01 Keeping Our Body Clean"       has ch_id 2S02.01
+
+lesson "1S02.01 Cleanliness of My Body"       has ch_id 1S02.01
+
+lesson "1S02.03 Our Food"       has ch_id 1S02.03
+
+lesson "7M05.01 Percentage"       has ch_id 7M05.01
+
+lesson "1M17 Ordinal Numbers"       has ch_id 1M17
+
+lesson "6M01.04-05 Types of Sets"       has ch_id 6M01.04
+
+lesson "4M02.04 Prime and Composite"       has ch_id 4M02.04
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 4M02.04
+
+lesson "5M11 Weight"       has ch_id 5M11
+
+lesson "1EN09 Age and Days"       has ch_id 1EN09
+        NO MATCHING CHAPTER FOR: 1EN09
+        chapter element 1EN09  NOT FOUND in database
+
+lesson "7M09.01 Trichotomy Property"       has ch_id 7M09.01
+
+lesson "2S02.02 Good Habits"       has ch_id 2S02.02
+        NOT FOUND IN DB - activity element 5c7472d6cd55f229e3ac5821
+
+lesson "4M02.05 Prime Factors"       has ch_id 4M02.05
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 4M02.05
+
+lesson "2S02.03-04 Clean House & School"       has ch_id 2S02.03
+
+lesson "1EN10 My Family and Things"       has ch_id 1EN10
+        NO MATCHING CHAPTER FOR: 1EN10
+        chapter element 1EN10  NOT FOUND in database
+
+lesson "2S02.05-06 My Food and Water"       has ch_id 2S02.05
+        TEXT FILE: "2S02.01 made by" NAME DOESNT MATCH LESSON: 2S02.05
+
+lesson "9M01 Sets"       has ch_id 9M01
+        NOT FOUND IN DB - activity element 5840bcc035249bb06f16e95f
+
+lesson "2S02.07, 2S02.09 Sickness"       has ch_id 2S02.07
+
+lesson "3S01.11-12 A Windy Day/A Cold Day"       has ch_id 3S01.11
+        TEXT FILE: "3S01.12 title slide" NAME DOESNT MATCH LESSON: 3S01.11
+        TEXT FILE: "3S01.12 Review" NAME DOESNT MATCH LESSON: 3S01.11
+        TEXT FILE: "3S01.12 when it snows" NAME DOESNT MATCH LESSON: 3S01.11
+        TEXT FILE: "3S01.12 in the forest" NAME DOESNT MATCH LESSON: 3S01.11
+        TEXT FILE: "3S01.12 seasons video" NAME DOESNT MATCH LESSON: 3S01.11
+        TEXT FILE: "3S01.12 seasons ePaath" NAME DOESNT MATCH LESSON: 3S01.11
+        TEXT FILE: "3S01.12 conclusion" NAME DOESNT MATCH LESSON: 3S01.11
+
+lesson "8S08 Sound"       has ch_id 8S08
+
+lesson "5M12 Fraction and Decimal"       has ch_id 5M12
+
+lesson "1S01.03 Animals Reproduce"       has ch_id 1S01.03
+
+lesson "1M07-08 Addition and Subtraction"       has ch_id 1M07
+
+lesson "6M01.01-03 Sets"       has ch_id 6M01.01
+
+lesson "2S03.02-02 Locomotor Skills"       has ch_id 2S03.02
+        TEXT FILE: "2S03.01-02 opening" NAME DOESNT MATCH LESSON: 2S03.02
+        TEXT FILE: "2S03.01-02 video opening" NAME DOESNT MATCH LESSON: 2S03.02
+        TEXT FILE: "2S03.01-02 ans" NAME DOESNT MATCH LESSON: 2S03.02
+        TEXT FILE: "2S03.01-02 pic intro" NAME DOESNT MATCH LESSON: 2S03.02
+        TEXT FILE: "2S03.01-02 end" NAME DOESNT MATCH LESSON: 2S03.02
+        TEXT FILE: "2S03.01-02 made by" NAME DOESNT MATCH LESSON: 2S03.02
+
+lesson "4M03.03-4 Multiplication"       has ch_id 4M03.03
+        NOT FOUND IN DB - activity element 58825959b5fc6557f3127272
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 4M03.03
+
+lesson "2S02.08 Let's Avoid Accidents"       has ch_id 2S02.08
+
+lesson "4S01.05 Life Process"       has ch_id 4S01.05
+        TEXT FILE: "Created by Mitsuka and Amy" NAME DOESNT MATCH LESSON: 4S01.05
+
+lesson "2S03.01-02 Locomotor Skills"       has ch_id 2S03.01
+
+lesson "2EN02 What am I?"       has ch_id 2EN02
+
+lesson "2S03.04 Drill"       has ch_id 2S03.04
+
+lesson "6M02.06 Multiples and Factors"       has ch_id 6M02.06
+
+lesson "2S03.05-08 Games"       has ch_id 2S03.05
+
+lesson "2S03.03 Physical Exercise"       has ch_id 2S03.03
+        TEXT FILE: "2S02.08 madeby" NAME DOESNT MATCH LESSON: 2S03.03
+
+lesson "6M02.07 Prime & Composite"       has ch_id 6M02.07
+
+lesson "3EN08 Birthday"       has ch_id 3EN08
+
+lesson "2S03.10-11 Gymnastics and Balancing"       has ch_id 2S03.10
+        TEXT FILE: "2S02.08 madeby" NAME DOESNT MATCH LESSON: 2S03.10
+
+lesson "2S03.09 Ball: Throwing and Catching"       has ch_id 2S03.09
+
+lesson "6M02.04 Simplification & Brackets"       has ch_id 6M02.04
+
+lesson "1M06 Sets"       has ch_id 1M06
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1M06
+
+lesson "1M10 Addition and Subtraction"       has ch_id 1M10
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1M10
+
+lesson "6M02.05 Divisor and Divisibility"       has ch_id 6M02.05
+
+lesson "2EN03 Numbers (of Things)"       has ch_id 2EN03
+
+lesson "1M11 Zero"       has ch_id 1M11
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1M11
+
+lesson "4S01.06  Development of Plants"       has ch_id 4S01.06
+        NOT FOUND IN DB - activity element 5723cdfa3bfb5a7a58a578a8
+        TEXT FILE: "Created by Mitsuka and Amy" NAME DOESNT MATCH LESSON: 4S01.06
+
+lesson "2SS02.01 Respect to Neighbors"       has ch_id 2SS02.01
+
+lesson "2SS01.03 Habit of Caring Good"       has ch_id 2SS01.03
+
+lesson "1S03.02 Body Stretching and Bending"       has ch_id 1S03.02
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1S03.02
+
+lesson "6M04.09 Rounding off"       has ch_id 6M04.09
+
+lesson "1S03.08 Gymnastics and Balancing"       has ch_id 1S03.08
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1S03.08
+
+lesson "4S01.07 Features of Plants"       has ch_id 4S01.07
+
+lesson "2SS02.02/04 Good Neighbors"       has ch_id 2SS02.02
+
+lesson "1M12 Number 10"       has ch_id 1M12
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1M12
+
+lesson "6M02.11 Squares & Square Roots"       has ch_id 6M02.11
+
+lesson "1M13-14 Addition and Subtraction"       has ch_id 1M13
+        NOT FOUND IN DB - activity element 59127ae8086d9a0b02d63af1
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1M13
+
+lesson "4S01.09 Living Things Environment"       has ch_id 4S01.09
+        NOT FOUND IN DB - activity element 5d3a1bb35c9304f25c311861
+
+lesson "2EN05 What Have You Got?"       has ch_id 2EN05
+
+lesson "2SS04.01 Mutual Help"       has ch_id 2SS04.01
+
+lesson "5M13 Percentages"       has ch_id 5M13
+        NOT FOUND IN DB - activity element 5c7472d6cd55f229e3ac57a8
+
+lesson "2M07 Comparison of Numbers"       has ch_id 2M07
+
+lesson "2SS03.01-02 Helpless and Handicaps"       has ch_id 2SS03.01
+
+lesson "1M15 Order of Numbers"       has ch_id 1M15
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1M15
+
+lesson "1M16 Greater Less & Equal"       has ch_id 1M16
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1M16
+
+lesson "6M15.02 Polygon"       has ch_id 6M15.02
+
+lesson "2M08 Roman Numerals"       has ch_id 2M08
+
+lesson "5M16 Statistics"       has ch_id 5M16
+
+lesson "2EN06 What Someone Is Doing"       has ch_id 2EN06
+
+lesson "1M21 Days of a Week"       has ch_id 1M21
+
+lesson "2M09 Sets"       has ch_id 2M09
+        TEXT FILE: "2M08 credit" NAME DOESNT MATCH LESSON: 2M09
+
+lesson "5M15 Bill and Budget"       has ch_id 5M15
+        NOT FOUND IN DB - activity element 5c7472d6cd55f229e3ac57ab
+
+lesson "2EN07 Where Things Are"       has ch_id 2EN07
+
+lesson "5M14 Unitary Method"       has ch_id 5M14
+
+lesson "1M18 Numbers from 11 to 20"       has ch_id 1M18
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1M18
+
+lesson "1M19 Addition and Subtraction"       has ch_id 1M19
+        NOT FOUND IN DB - activity element 59127ae8086d9a0b02d63af1
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1M19
+
+lesson "1M20 Time"       has ch_id 1M20
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1M20
+
+lesson "6M02.03 Place Values and Commas"       has ch_id 6M02.03
+
+lesson "6M04.01 Review"       has ch_id 6M04.01
+
+lesson "1M30 Greater and Smaller Numbers"       has ch_id 1M30
+
+lesson "1S03.09 Story and Role Play"       has ch_id 1S03.09
+
+lesson "1M24 Numbers From 1 to 100"       has ch_id 1M24
+        TEXT FILE: "1S01.03 Lesson Made By" NAME DOESNT MATCH LESSON: 1M24
+
+lesson "2EN08 People and Things"       has ch_id 2EN08
+
+lesson "1S03.03 Physical Training"       has ch_id 1S03.03
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1S03.03
+
+lesson "2EN09 Describing People"       has ch_id 2EN09
+
+lesson "1SS02.03 Clothes"       has ch_id 1SS02.03
+
+lesson "1SS02.04 Household Work"       has ch_id 1SS02.04
+        TEXT FILE: "1SS02.03 Credits" NAME DOESNT MATCH LESSON: 1SS02.04
+
+lesson "3M03-04 Triangle and Quadrilateral"       has ch_id 3M03
+        TEXT FILE: "1SS02.03 Credits" NAME DOESNT MATCH LESSON: 3M03
+
+lesson "1SS02.02 Love Junior Ones"       has ch_id 1SS02.02
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1SS02.02
+
+lesson "1M39-40 Multiplication"       has ch_id 1M39
+
+lesson "3M13 Division"       has ch_id 3M13
+
+lesson "7M02.12 Order of Operations"       has ch_id 7M02.12
+
+lesson "2M10-11 Addition and Subtraction"       has ch_id 2M10
+
+lesson "2M12 Distance"       has ch_id 2M12
+        TEXT FILE: "2M10-11 credit" NAME DOESNT MATCH LESSON: 2M12
+
+lesson "1M23 Numbers from 21 to 30"       has ch_id 1M23
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1M23
+
+lesson "2EN10 Time and Days"       has ch_id 2EN10
+        TEXT FILE: "2En10 Final" NAME DOESNT MATCH LESSON: 2EN10
+
+lesson "2M13-14 Multiplication and Division"       has ch_id 2M13
+        TEXT FILE: "2M10-11 credit" NAME DOESNT MATCH LESSON: 2M13
+
+lesson "7M02.10 Integers Add & Subtract"       has ch_id 7M02.10
+
+lesson "2EN11 Past Action"       has ch_id 2EN11
+
+lesson "2EN12 Good Friends"       has ch_id 2EN12
+        TEXT FILE: "1EN02 Final Activity" NAME DOESNT MATCH LESSON: 2EN12
+
+lesson "8M18 Area Perimeter  & Volume"       has ch_id 8M18
+        NOT FOUND IN DB - activity element 5c7472d6cd55f229e3ac57d6
+
+lesson "1M31 Order of Numbers"       has ch_id 1M31
+
+lesson "1S03.05-07 Games"       has ch_id 1S03.05
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1S03.05
+
+lesson "8M07 Profit and Loss"       has ch_id 8M07
+
+lesson "1M22 Tens up to 100"       has ch_id 1M22
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1M22
+
+lesson "2M15 Multiplication and Division"       has ch_id 2M15
+        TEXT FILE: "Created by Mitsuka and Amy" NAME DOESNT MATCH LESSON: 2M15
+
+lesson "1M36 Capacity"       has ch_id 1M36
+
+lesson "8M20 Transformations"       has ch_id 8M20
+
+lesson "2M16 Verbal Problems of Division"       has ch_id 2M16
+        TEXT FILE: "Created by Amy" NAME DOESNT MATCH LESSON: 2M16
+
+lesson "8M12 Graph, Equation & Inequality"       has ch_id 8M12
+        NOT FOUND IN DB - activity element 58825959b5fc6557f3127287
+        TEXT FILE: "9M11 Factoring 1" NAME DOESNT MATCH LESSON: 8M12
+        TEXT FILE: "9M11 Factoring 2" NAME DOESNT MATCH LESSON: 8M12
+        TEXT FILE: "9M11 Factor 3" NAME DOESNT MATCH LESSON: 8M12
+        TEXT FILE: "9M11 Factoring 4" NAME DOESNT MATCH LESSON: 8M12
+
+lesson "1M37 Fractions"       has ch_id 1M37
+
+lesson "4M05.04 Perimeter of a rectangle"       has ch_id 4M05.04
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 4M05.04
+
+lesson "7M03.01 Rational Numbers"       has ch_id 7M03.01
+
+lesson "7M02.11 Multiplication & Division"       has ch_id 7M02.11
+
+lesson "PS Presentation Skills" NO LEGAL CH_ID IN NAME 
+
+lesson "1M25 Coins and Notes"       has ch_id 1M25
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1M25
+
+lesson "5S10 Weather"       has ch_id 5S10
+        NO MATCHING CHAPTER FOR: 5S10
+        TEXT FILE: "5s10 cloud review" NAME DOESNT MATCH LESSON: 5S10
+        TEXT FILE: "5s10 review pt2" NAME DOESNT MATCH LESSON: 5S10
+        TEXT FILE: "5s10 weather activity" NAME DOESNT MATCH LESSON: 5S10
+
+lesson "7M04.01 Decimal Problems"       has ch_id 7M04.01
+
+lesson "5S02.13 Smoking"       has ch_id 5S02.13
+        TEXT FILE: "5s02.13 intro" NAME DOESNT MATCH LESSON: 5S02.13
+        TEXT FILE: "5s02.13 txtbook intro" NAME DOESNT MATCH LESSON: 5S02.13
+        TEXT FILE: "5s02.13 smoke prompt" NAME DOESNT MATCH LESSON: 5S02.13
+        TEXT FILE: "5s02.13 solutions" NAME DOESNT MATCH LESSON: 5S02.13
+        TEXT FILE: "5s02.13 interview" NAME DOESNT MATCH LESSON: 5S02.13
+        TEXT FILE: "5s02.13 activity" NAME DOESNT MATCH LESSON: 5S02.13
+
+lesson "1M26-27 Add & Subtract"       has ch_id 1M26
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1M26
+
+lesson "AS Acting Skills" NO LEGAL CH_ID IN NAME 
+
+lesson "2M18 Fraction"       has ch_id 2M18
+
+lesson "1M41 Knowledge of Table"       has ch_id 1M41
+
+lesson "1M32 Long, Short, Tall, and Short"       has ch_id 1M32
+
+lesson "7S14 Some Useful Chemicals"       has ch_id 7S14
+        TEXT FILE: "7s14 intro" NAME DOESNT MATCH LESSON: 7S14
+        TEXT FILE: "7s14 discussion" NAME DOESNT MATCH LESSON: 7S14
+        TEXT FILE: "7s14 epaath intro" NAME DOESNT MATCH LESSON: 7S14
+        TEXT FILE: "7s14 epaath reflection" NAME DOESNT MATCH LESSON: 7S14
+        TEXT FILE: "7s14 reflection answers" NAME DOESNT MATCH LESSON: 7S14
+        TEXT FILE: "6S11 vinegar" NAME DOESNT MATCH LESSON: 7S14
+        TEXT FILE: "6S11 ghee" NAME DOESNT MATCH LESSON: 7S14
+        TEXT FILE: "7s14 credit" NAME DOESNT MATCH LESSON: 7S14
+
+lesson "1M33-4 Two Digit Numbers"       has ch_id 1M33
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1M33
+
+lesson "2M20 Money"       has ch_id 2M20
+        TEXT FILE: "2M18 credit" NAME DOESNT MATCH LESSON: 2M20
+
+lesson "7M03.02 Rational &  Decimal #"       has ch_id 7M03.02
+
+lesson "LS Listening Skills" NO LEGAL CH_ID IN NAME 
+
+lesson "7M04.03 Fractions & Number Line"       has ch_id 7M04.03
+        TEXT FILE: "7M03.02 Credit" NAME DOESNT MATCH LESSON: 7M04.03
+
+lesson "1M42  Problems of Multiplication"       has ch_id 1M42
+
+lesson "2M23 Weight"       has ch_id 2M23
+        TEXT FILE: "2M18 credit" NAME DOESNT MATCH LESSON: 2M23
+
+lesson "2M17 Histogram"       has ch_id 2M17
+
+lesson "1M43 Pictographs"       has ch_id 1M43
+
+lesson "CS Conversation Skills" NO LEGAL CH_ID IN NAME 
+
+lesson "1M44 Division"       has ch_id 1M44
+
+lesson "1M28 Place Value"       has ch_id 1M28
+
+lesson "7M04.02 Types of Decimals"       has ch_id 7M04.02
+        TEXT FILE: "Micah Peridot Credits 7/12" NAME DOESNT MATCH LESSON: 7M04.02
+
+lesson "1M45 Months"       has ch_id 1M45
+
+lesson "1M38 Heavy and Light"       has ch_id 1M38
+
+lesson "1M35 Addition and Subtraction"       has ch_id 1M35
+
+lesson "1M46 Devanagari Numbers"       has ch_id 1M46
+
+lesson "PST Teacher Guide Student Skills" NO LEGAL CH_ID IN NAME 
+
+lesson "7M04.04 Fundamental Operations"       has ch_id 7M04.04
+
+lesson "1SS04.05-06 Homework &  School Duties"       has ch_id 1SS04.05
+
+lesson "2SS08.02-03 Colours"       has ch_id 2SS08.02
+        TEXT FILE: "2Ss08.02-03 madeby" NAME DOESNT MATCH LESSON: 2SS08.02
+
+lesson "3M17 Distance"       has ch_id 3M17
+
+lesson "1S02.04 Raw edible food item"       has ch_id 1S02.04
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 1S02.04
+
+lesson "3S01.05 Animals & Seasons"       has ch_id 3S01.05
+        TEXT FILE: "3s01.05 credit" NAME DOESNT MATCH LESSON: 3S01.05
+
+lesson "1SS06.02-03 My Ancestors My Family"       has ch_id 1SS06.02
+
+lesson "3M06 Numbers of Five Digits"       has ch_id 3M06
+        TEXT FILE: "7M04.04 Credit" NAME DOESNT MATCH LESSON: 3M06
+
+lesson "2SS04.02-03 Common Property"       has ch_id 2SS04.02
+
+lesson "1SS07.02 Take Care of Things"       has ch_id 1SS07.02
+
+lesson "2SS07.03-04  Village & City-made Things"       has ch_id 2SS07.03
+
+lesson "3S01.07 Living Things Advantages"       has ch_id 3S01.07
+        TEXT FILE: "3s01.07 epaath beforew" NAME DOESNT MATCH LESSON: 3S01.07
+        TEXT FILE: "3s01.07 epaath after" NAME DOESNT MATCH LESSON: 3S01.07
+        TEXT FILE: "3s01.07 adv game" NAME DOESNT MATCH LESSON: 3S01.07
+        TEXT FILE: "3s01.07 apple" NAME DOESNT MATCH LESSON: 3S01.07
+        TEXT FILE: "3s01.07 cow" NAME DOESNT MATCH LESSON: 3S01.07
+        TEXT FILE: "3s01.07 chicken" NAME DOESNT MATCH LESSON: 3S01.07
+        TEXT FILE: "3s01.07 dog" NAME DOESNT MATCH LESSON: 3S01.07
+        TEXT FILE: "3s01.07 wheat" NAME DOESNT MATCH LESSON: 3S01.07
+        TEXT FILE: "3s01.07 sheep" NAME DOESNT MATCH LESSON: 3S01.07
+        TEXT FILE: "3s01.07 credit" NAME DOESNT MATCH LESSON: 3S01.07
+
+lesson "1SS04.04 Things in School"       has ch_id 1SS04.04
+
+lesson "3M09 Six Digit Numbers"       has ch_id 3M09
+
+lesson "2SS09.15 Madal"       has ch_id 2SS09.15
+
+lesson "2SS06.01-02 My Friend"       has ch_id 2SS06.01
+
+lesson "3M19 Capacity"       has ch_id 3M19
+
+lesson "2SS08.01,04 Drawing"       has ch_id 2SS08.01
+
+lesson "2SS08.08 Lets Work with Paper"       has ch_id 2SS08.08
+
+lesson "2SS08.05-06 Print & Collage"       has ch_id 2SS08.05
+        DUPLICATE LESSONS FOUND; 2SS08.05
+
+lesson "2SS08.07 Lets Work With Clay"       has ch_id 2SS08.07
+        TEXT FILE: "2SS06.01-02 madeby" NAME DOESNT MATCH LESSON: 2SS08.07
+
+lesson "2SS07.02 The Proper Use of Things"       has ch_id 2SS07.02
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 2SS07.02
+
+lesson "3M05 & 3M08 Four Digits"       has ch_id 3M05
+
+lesson "2SS08.05-06 Print and Collage"       has ch_id 2SS08.05
+        DUPLICATE LESSONS FOUND; 2SS08.05
+
+lesson "1SS03.01-02 Help All Needy People"       has ch_id 1SS03.01
+
+lesson "3M18 Area"       has ch_id 3M18
+        TEXT FILE: "3M17 Credits" NAME DOESNT MATCH LESSON: 3M18
+
+lesson "3M10 Rounding Off Numbers"       has ch_id 3M10
+
+lesson "3M28 Bill and Budget"       has ch_id 3M28
+
+lesson "7S04 Pressure"       has ch_id 7S04
+
+lesson "3M20 Volume"       has ch_id 3M20
+
+lesson "1S02.07 Health Centers"       has ch_id 1S02.07
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1S02.07
+
+lesson "3M16 Money"       has ch_id 3M16
+
+lesson "3S02.05 Safe Foods"       has ch_id 3S02.05
+
+lesson "3S02.04 Sources of Food"       has ch_id 3S02.04
+
+lesson "1SS07.03-04 Homemade Food & Things"       has ch_id 1SS07.03
+
+lesson "1S03.01 Walk, Run, and Jump"       has ch_id 1S03.01
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1S03.01
+
+lesson "1SS04.01-02 Take help and Give help"       has ch_id 1SS04.01
+
+lesson "2SS07.01 Respect Our Work"       has ch_id 2SS07.01
+
+lesson "3S02.06-07 Disease"       has ch_id 3S02.06
+
+lesson "1SS08.01-02 Drawing and Colouring"       has ch_id 1SS08.01
+
+lesson "3S02.10 Smoking"       has ch_id 3S02.10
+        TEXT FILE: "5S02.13 smoking effects" NAME DOESNT MATCH LESSON: 3S02.10
+
+lesson "3M23 Decimal Number"       has ch_id 3M23
+        TEXT FILE: "MP 7/18 Credit" NAME DOESNT MATCH LESSON: 3M23
+
+lesson "1SS08.03 Print Work"       has ch_id 1SS08.03
+
+lesson "3M25 Bar Graph"       has ch_id 3M25
+
+lesson "3EN09 A Village Girl"       has ch_id 3EN09
+
+lesson "2M19 Time"       has ch_id 2M19
+
+lesson "2SS04.04 Habit of waiting in line"       has ch_id 2SS04.04
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 2SS04.04
+
+lesson "3EN05 Can You?"       has ch_id 3EN05
+
+lesson "1SS02.05 Work in Neighborhood"       has ch_id 1SS02.05
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 1SS02.05
+
+lesson "3S01.09 Types of Matter"       has ch_id 3S01.09
+
+lesson "1SS08.04 Collage"       has ch_id 1SS08.04
+
+lesson "1SS02.01 Respect Our Seniors"       has ch_id 1SS02.01
+
+lesson "3EN04 Why are you late?"       has ch_id 3EN04
+
+lesson "1SS08.05 Clay Work"       has ch_id 1SS08.05
+
+lesson "4M03.05-06 Division"       has ch_id 4M03.05
+        NOT FOUND IN DB - activity element 58825959b5fc6557f3127272
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 4M03.05
+
+lesson "3S01.10 Use of Wind and Water"       has ch_id 3S01.10
+
+lesson "7M02.01 International Numbers"       has ch_id 7M02.01
+        TEXT FILE: "MP 7/18 Credit" NAME DOESNT MATCH LESSON: 7M02.01
+
+lesson "3M15 Time"       has ch_id 3M15
+        TEXT FILE: "MP 7/18 Credit" NAME DOESNT MATCH LESSON: 3M15
+
+lesson "3S01.13 Cloud and Rain"       has ch_id 3S01.13
+
+lesson "7S05 Energy, Work and Power"       has ch_id 7S05
+
+lesson "2SS09.14 Clapping in rhythm"       has ch_id 2SS09.14
+
+lesson "1SS06.01 Birthday"       has ch_id 1SS06.01
+
+lesson "4M03.07 Simplification"       has ch_id 4M03.07
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 4M03.07
+
+lesson "4M04.01 Fraction"       has ch_id 4M04.01
+        NOT FOUND IN DB - activity element 58825959b5fc6557f3127282
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 4M04.01
+
+lesson "3EN06 A Picnic"       has ch_id 3EN06
+        TEXT FILE: "3EN04 Why are you late - credits" NAME DOESNT MATCH LESSON: 3EN06
+
+lesson "1SS05.03-05 School & Home Maps"       has ch_id 1SS05.03
+
+lesson "3S02.01 Lets Keep Our Body Clean"       has ch_id 3S02.01
+
+lesson "3S02.09 Health services"       has ch_id 3S02.09
+
+lesson "2SS06.03 Our National Symbols"       has ch_id 2SS06.03
+
+lesson "2M22 Area"       has ch_id 2M22
+
+lesson "3M27 Set"       has ch_id 3M27
+        TEXT FILE: "3M25 Credits" NAME DOESNT MATCH LESSON: 3M27
+
+lesson "6S10 Mixture"       has ch_id 6S10
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 6S10
+
+lesson "6M07.01 Introduction"       has ch_id 6M07.01
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 6M07.01
+
+lesson "6M07.02 Profit & Loss Problems"       has ch_id 6M07.02
+        TEXT FILE: "6M07.01 5" NAME DOESNT MATCH LESSON: 6M07.02
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 6M07.02
+
+lesson "2SS09.17-18 Movement"       has ch_id 2SS09.17
+
+lesson "6S06 Electricity"       has ch_id 6S06
+        TEXT FILE: "6M06 Before Circuits ePaath" NAME DOESNT MATCH LESSON: 6S06
+        TEXT FILE: "6M06 After Circuits ePaath" NAME DOESNT MATCH LESSON: 6S06
+
+lesson "5EN01 Expressing Wants"       has ch_id 5EN01
+        DUPLICATE LESSONS FOUND; 5EN01
+
+lesson "6M10.02 Bar Graph"       has ch_id 6M10.02
+        NOT FOUND IN DB - activity element 59127b01086d9a1703d63af1
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 6M10.02
+
+lesson "6S12 Air"       has ch_id 6S12
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 6S12
+
+lesson "6S16 Life Process"       has ch_id 6S16
+
+lesson "6M12.03 Equation"       has ch_id 6M12.03
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 6M12.03
+
+lesson "3EN10 A Sports Day"       has ch_id 3EN10
+
+lesson "2SS09.16 Vocal Practice"       has ch_id 2SS09.16
+        TEXT FILE: "2SS09.17-18 credits" NAME DOESNT MATCH LESSON: 2SS09.16
+
+lesson "2M21 Capacity"       has ch_id 2M21
+        TEXT FILE: "2M22 credits" NAME DOESNT MATCH LESSON: 2M21
+
+lesson "2M24 Algebra"       has ch_id 2M24
+
+lesson "6M06.02 Ratio and Proportion"       has ch_id 6M06.02
+
+lesson "6M09.01 Simple Interest"       has ch_id 6M09.01
+
+lesson "6S15 Cell Structure"       has ch_id 6S15
+        TEXT FILE: "4M02.01 Created by Annika" NAME DOESNT MATCH LESSON: 6S15
+
+lesson "6M05.01 L, W Time & Capacity"       has ch_id 6M05.01
+        TEXT FILE: "MP Credit 7/26" NAME DOESNT MATCH LESSON: 6M05.01
+
+lesson "6EN01 Some Birds and Animals"       has ch_id 6EN01
+        DUPLICATE LESSONS FOUND; 6EN01
+
+lesson "6EN02 A Brave Female Pilot"       has ch_id 6EN02
+
+lesson "6S14 Living Beings"       has ch_id 6S14
+        TEXT FILE: "1M07-08 Lesson Made By" NAME DOESNT MATCH LESSON: 6S14
+
+lesson "4s01.11 Matter" NO LEGAL CH_ID IN NAME 
+
+lesson "6M02.10 sequence and pattern"       has ch_id 6M02.10
+        TEXT FILE: "6m02.10 before text" NAME DOESNT MATCH LESSON: 6M02.10
+        TEXT FILE: "6m02.10 Exploration Slide" NAME DOESNT MATCH LESSON: 6M02.10
+        TEXT FILE: "6m02.10 Assessment" NAME DOESNT MATCH LESSON: 6M02.10
+        TEXT FILE: "6m02.10 Reflection" NAME DOESNT MATCH LESSON: 6M02.10
+        TEXT FILE: "6m02.10 credits" NAME DOESNT MATCH LESSON: 6M02.10
+
+lesson "9M14 Construction"       has ch_id 9M14
+
+lesson "6M04.0"       has ch_id 6M04
+        NO MATCHING CHAPTER FOR: 6M04
+        DUPLICATE LESSONS FOUND; 6M04
+
+lesson "6M04.02"       has ch_id 6M04.02
+        TEXT FILE: "6m04.02 exploration new" NAME DOESNT MATCH LESSON: 6M04.02
+
+lesson "9M03 Commission and Taxation"       has ch_id 9M03
+
+lesson "6EN01.03 Wit"       has ch_id 6EN01.03
+        NO MATCHING CHAPTER FOR: 6EN01.03
+
+lesson "6M04.03 practice"       has ch_id 6M04.03
+        DUPLICATE LESSONS FOUND; 6M04.03
+
+lesson "6M04.03 Fractions"       has ch_id 6M04.03
+        DUPLICATE LESSONS FOUND; 6M04.03
+
+lesson "6M04.06 Decimals"       has ch_id 6M04.06
+        DUPLICATE LESSONS FOUND; 6M04.06
+
+lesson "4M04.03 Percentages"       has ch_id 4M04.03
+
+lesson "6M03.01 introduction to integers"       has ch_id 6M03.01
+
+lesson "6EN01.04 Field Trip"       has ch_id 6EN01.04
+        NO MATCHING CHAPTER FOR: 6EN01.04
+
+lesson "7M11.07 Circles"       has ch_id 7M11.07
+
+lesson "6m04.04 simplification of fractions" NO LEGAL CH_ID IN NAME 
+
+lesson "6M04.05 conversion of fractions"       has ch_id 6M04.05
+        TEXT FILE: "6m04.05 opener" NAME DOESNT MATCH LESSON: 6M04.05
+
+lesson "6EN01.05 A Real Hero"       has ch_id 6EN01.05
+        NO MATCHING CHAPTER FOR: 6EN01.05
+        TEXT FILE: "6en01.05 S1 Intro" NAME DOESNT MATCH LESSON: 6EN01.05
+        TEXT FILE: "6en01.05 S9 Opener" NAME DOESNT MATCH LESSON: 6EN01.05
+
+lesson "5SS0504.02"       has ch_id 5SS05
+        NO MATCHING CHAPTER FOR: 5SS05
+        DUPLICATE LESSONS FOUND; 5SS05
+        TEXT FILE: "5SS02.04 Objectives" NAME DOESNT MATCH LESSON: 5SS05
+
+lesson "4S01.13 Weather"       has ch_id 4S01.13
+
+lesson "4S01.17 Means of Communication and Their Importance"       has ch_id 4S01.17
+
+lesson "6M04.07"       has ch_id 6M04.07
+
+lesson "9M02 Profit and Loss"       has ch_id 9M02
+        TEXT FILE: "9m02 Assessment answers" NAME DOESNT MATCH LESSON: 9M02
+        TEXT FILE: "9m02 assessment answers 2" NAME DOESNT MATCH LESSON: 9M02
+
+lesson "6M04.04 Simplification of Fractions"       has ch_id 6M04.04
+        TEXT FILE: "6m04.04 intro" NAME DOESNT MATCH LESSON: 6M04.04
+        TEXT FILE: "6m04.04 objectives" NAME DOESNT MATCH LESSON: 6M04.04
+        TEXT FILE: "6m04.04 opener" NAME DOESNT MATCH LESSON: 6M04.04
+        TEXT FILE: "6m04.04 before text" NAME DOESNT MATCH LESSON: 6M04.04
+        TEXT FILE: "6m04.04 after text" NAME DOESNT MATCH LESSON: 6M04.04
+        TEXT FILE: "6m04.04 assessment cont" NAME DOESNT MATCH LESSON: 6M04.04
+        TEXT FILE: "6m04.04 credits" NAME DOESNT MATCH LESSON: 6M04.04
+
+lesson "6M04.08 multiplying and dividing decimal"       has ch_id 6M04.08
+        TEXT FILE: "6m04.08 before text" NAME DOESNT MATCH LESSON: 6M04.08
+        TEXT FILE: "6m04.08 after text" NAME DOESNT MATCH LESSON: 6M04.08
+
+lesson "5SS02.04"       has ch_id 5SS02.04
+        DUPLICATE LESSONS FOUND; 5SS02.04
+
+lesson "5SS02.04 Lesson"       has ch_id 5SS02.04
+        DUPLICATE LESSONS FOUND; 5SS02.04
+
+lesson "7SS01.01 Lesson"       has ch_id 7SS01.01
+        DUPLICATE LESSONS FOUND; 7SS01.01
+        TEXT FILE: "7SS.01.01-Objectives" NAME DOESNT MATCH LESSON: 7SS01.01
+
+lesson "6EN07 The World Cup"       has ch_id 6EN07
+
+lesson "5S03.05 Non Locomotor Skills"       has ch_id 5S03.05
+        TEXT FILE: "5s03.05 pre-videos" NAME DOESNT MATCH LESSON: 5S03.05
+        TEXT FILE: "5s03.05 after videos" NAME DOESNT MATCH LESSON: 5S03.05
+        TEXT FILE: "5s03.05 create skill" NAME DOESNT MATCH LESSON: 5S03.05
+
+lesson "GameTestLesson" NO LEGAL CH_ID IN NAME 
+
+lesson "4EN0" NO LEGAL CH_ID IN NAME 
+
+lesson "6M06.01"       has ch_id 6M06.01
+
+lesson "7SS02.01 Education"       has ch_id 7SS02.01
+
+lesson "7M01.03 Universal Set"       has ch_id 7M01.03
+        TEXT FILE: "7M01.02" NAME DOESNT MATCH LESSON: 7M01.03
+
+lesson "6m08.01 finding unit cost and total cost" NO LEGAL CH_ID IN NAME 
+
+lesson "4S03.14 Earth"       has ch_id 4S03.14
+        lesson 4S03.14 Earth HAS NO ELEMENTS
+
+lesson "4S01.14 Earth"       has ch_id 4S01.14
+        DUPLICATE LESSONS FOUND; 4S01.14
+        TEXT FILE: "4S01.15 Teacher Intro" NAME DOESNT MATCH LESSON: 4S01.14
+        TEXT FILE: "4S01.15 Objectives Vocabulary" NAME DOESNT MATCH LESSON: 4S01.14
+        TEXT FILE: "4S01.15 Opener" NAME DOESNT MATCH LESSON: 4S01.14
+        TEXT FILE: "4S01.15 Instruction Vocabulary" NAME DOESNT MATCH LESSON: 4S01.14
+        TEXT FILE: "4S01.15 Before Resource" NAME DOESNT MATCH LESSON: 4S01.14
+        TEXT FILE: "4S01.15 After Resource" NAME DOESNT MATCH LESSON: 4S01.14
+        TEXT FILE: "4S01.15 Exploration" NAME DOESNT MATCH LESSON: 4S01.14
+        TEXT FILE: "4S01.15 Assessment" NAME DOESNT MATCH LESSON: 4S01.14
+        TEXT FILE: "4S01.15 Reflection" NAME DOESNT MATCH LESSON: 4S01.14
+        TEXT FILE: "4S01.15 Answers" NAME DOESNT MATCH LESSON: 4S01.14
+        TEXT FILE: "4S01.15 Lesson Credits" NAME DOESNT MATCH LESSON: 4S01.14
+
+lesson "7M11.04 Area of Triangles and Quadrilaterals"       has ch_id 7M11.04
+        DUPLICATE LESSONS FOUND; 7M11.04
+
+lesson "6M11.01 Variables and Constants"       has ch_id 6M11.01
+
+lesson "6m05.02 measurement of currency" NO LEGAL CH_ID IN NAME 
+
+lesson "4SS01.04 Mutual Help with Neighbors"       has ch_id 4SS01.04
+
+lesson "7SS02.06 drinking water"       has ch_id 7SS02.06
+        DUPLICATE LESSONS FOUND; 7SS02.06
+
+lesson "6EN09 Fewa Lake"       has ch_id 6EN09
+
+lesson "5S1.10 Weather" NO LEGAL CH_ID IN NAME 
+        lesson 5S1.10 Weather HAS NO ELEMENTS
+
+lesson "6EN08 A Lesson from a grass cutter"       has ch_id 6EN08
+
+lesson "7m06.01 Direct Variation" NO LEGAL CH_ID IN NAME 
+
+lesson "" NO LEGAL CH_ID IN NAME 
+
+lesson "7SS02.06 Drinking Water"       has ch_id 7SS02.06
+        DUPLICATE LESSONS FOUND; 7SS02.06
+
+lesson "7SS01.02 Introduction of the Zone"       has ch_id 7SS01.02
+
+lesson "5SS03.02"       has ch_id 5SS03.02
+        DUPLICATE LESSONS FOUND; 5SS03.02
+
+lesson "7M06.01 Direct Variation"       has ch_id 7M06.01
+        DUPLICATE LESSONS FOUND; 7M06.01
+
+lesson "7SS01.03 Constitution"       has ch_id 7SS01.03
+
+lesson "7M06.01 direct variation"       has ch_id 7M06.01
+        DUPLICATE LESSONS FOUND; 7M06.01
+        TEXT FILE: "7M06 assessment" NAME DOESNT MATCH LESSON: 7M06.01
+
+lesson "7SS02.03"       has ch_id 7SS02.03
+        DUPLICATE LESSONS FOUND; 7SS02.03
+
+lesson "7SS02.03 Transportation"       has ch_id 7SS02.03
+        DUPLICATE LESSONS FOUND; 7SS02.03
+
+lesson "5SS03.02 lesson"       has ch_id 5SS03.02
+        DUPLICATE LESSONS FOUND; 5SS03.02
+
+lesson "5SS03.01 Save Yourself and Others From Bad Habits"       has ch_id 5SS03.01
+        DUPLICATE LESSONS FOUND; 5SS03.01
+        TEXT FILE: "#X# 0.5 Intro to Lesson" NAME DOESNT MATCH LESSON: 5SS03.01
+
+lesson "4EN03 The Elephant and the Tortoise"       has ch_id 4EN03
+        TEXT FILE: "4en03 Story Exploration" NAME DOESNT MATCH LESSON: 4EN03
+
+lesson "6M11.02 Algebraic Expressions"       has ch_id 6M11.02
+
+lesson "5S01.10 Weather"       has ch_id 5S01.10
+
+lesson "6EN11 Automated Teller Machine"       has ch_id 6EN11
+
+lesson "4SS02.04 Importance of Birthplace"       has ch_id 4SS02.04
+
+lesson "natural disasters" NO LEGAL CH_ID IN NAME 
+        lesson natural disasters HAS NO ELEMENTS
+
+lesson "5SS02.05 Lesson"       has ch_id 5SS02.05
+
+lesson "6m08.02 problem based on direct variation" NO LEGAL CH_ID IN NAME 
+
+lesson "6EN12 George Stephenson"       has ch_id 6EN12
+        TEXT FILE: "6EN01.12 teacher intro" NAME DOESNT MATCH LESSON: 6EN12
+        TEXT FILE: "6EN01.12 S2 Objectives" NAME DOESNT MATCH LESSON: 6EN12
+        TEXT FILE: "6EN01.12 S3 Vocabulary" NAME DOESNT MATCH LESSON: 6EN12
+        TEXT FILE: "6EN01.12 S4 Opener" NAME DOESNT MATCH LESSON: 6EN12
+        TEXT FILE: "6EN01.12 video intro" NAME DOESNT MATCH LESSON: 6EN12
+        TEXT FILE: "6EN01.12 textbook comp" NAME DOESNT MATCH LESSON: 6EN12
+        TEXT FILE: "6EN01.12 S14 Grammar Resource" NAME DOESNT MATCH LESSON: 6EN12
+        TEXT FILE: "6EN01.12 S17 Final Activity" NAME DOESNT MATCH LESSON: 6EN12
+        TEXT FILE: "6EN01.12 S19 Credits" NAME DOESNT MATCH LESSON: 6EN12
+
+lesson "7M08.01 powers and exponents"       has ch_id 7M08.01
+
+lesson "6M11.05 Multiplying Expressions"       has ch_id 6M11.05
+
+lesson "7M01.02 sub-sets"       has ch_id 7M01.02
+
+lesson "4SS01.01 My Neighbourhood"       has ch_id 4SS01.01
+        DUPLICATE LESSONS FOUND; 4SS01.01
+        TEXT FILE: "Neighbours" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "neighbours" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "neighbourhoods" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "instructions" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "happy neighbours" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "unhappy neighbours" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "clean neighbourhood" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "dirty neighbourhood" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "review" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "made by alea" NAME DOESNT MATCH LESSON: 4SS01.01
+
+lesson "4SS02.01 Our Seniors"       has ch_id 4SS02.01
+        TEXT FILE: "Our seniors" NAME DOESNT MATCH LESSON: 4SS02.01
+
+lesson "My Neighbourhood" NO LEGAL CH_ID IN NAME 
+
+lesson "6M08.02 problem based on direct variation"       has ch_id 6M08.02
+        TEXT FILE: "6m08.02 intro" NAME DOESNT MATCH LESSON: 6M08.02
+        TEXT FILE: "6m08.02 objectives" NAME DOESNT MATCH LESSON: 6M08.02
+        TEXT FILE: "6m08.02 opener" NAME DOESNT MATCH LESSON: 6M08.02
+        TEXT FILE: "6m08.02 exploration" NAME DOESNT MATCH LESSON: 6M08.02
+
+lesson "1S01.08 Animal and Plant Organs"       has ch_id 1S01.08
+        TEXT FILE: "1s01.08 vertebrates" NAME DOESNT MATCH LESSON: 1S01.08
+
+lesson "7M01.06 Intersection of Sets"       has ch_id 7M01.06
+
+lesson "7M01.05 union of sets"       has ch_id 7M01.05
+
+lesson "5SS04.01-02 Lesson"       has ch_id 5SS04.01
+
+lesson "4S01.15 Earth"       has ch_id 4S01.15
+
+lesson "7SS04.04 Ways to Avoid Social Evils"       has ch_id 7SS04.04
+
+lesson "5SS03.01"       has ch_id 5SS03.01
+        DUPLICATE LESSONS FOUND; 5SS03.01
+
+lesson "4S02.02 Cleaning Body Parts"       has ch_id 4S02.02
+
+lesson "4SS03.06 Service Providing Institutions"       has ch_id 4SS03.06
+
+lesson "7M08"       has ch_id 7M08
+        NO MATCHING CHAPTER FOR: 7M08
+        DUPLICATE LESSONS FOUND; 7M08
+        lesson 7M08 HAS NO ELEMENTS
+
+lesson "7M05.02 Ratios"       has ch_id 7M05.02
+
+lesson "5SS03.06 lesson"       has ch_id 5SS03.06
+
+lesson "5SS04.04 lesson"       has ch_id 5SS04.04
+
+lesson "4S01.18 - Local Technology"       has ch_id 4S01.18
+
+lesson "6M11.06 multiplying monomials and binomials "       has ch_id 6M11.06
+        DUPLICATE LESSONS FOUND; 6M11.06
+
+lesson "5s02.11 Health Service and Community Health" NO LEGAL CH_ID IN NAME 
+
+lesson "7M05.03 Profit and loss"       has ch_id 7M05.03
+
+lesson "5SS04.03 Lesson"       has ch_id 5SS04.03
+
+lesson "7M08.02 Laws of Indices"       has ch_id 7M08.02
+
+lesson "7SS06.01 Formation of Earth"       has ch_id 7SS06.01
+
+lesson "9M07 Algebraic Expressions"       has ch_id 9M07
+        TEXT FILE: "9m07 Objectives and Vocab" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 vocab" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 Opener" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 videos intro" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 after videos" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 textbook before" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 after textbook" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 exploration 1" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 exploration 2" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 assessment 1" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 assessment 2" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 assessment solution 1" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 assessment solutions 2" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 reflection" NAME DOESNT MATCH LESSON: 9M07
+        TEXT FILE: "9m07 credits" NAME DOESNT MATCH LESSON: 9M07
+
+lesson "5S02.11 Health Service and Community Health"       has ch_id 5S02.11
+        TEXT FILE: "5S01.11 Teacher HSCH" NAME DOESNT MATCH LESSON: 5S02.11
+
+lesson "7M08.03 Addition and Subtraction of Algebraic Expressions"       has ch_id 7M08.03
+
+lesson "7SS03.02 Religious Tradition and Festival"       has ch_id 7SS03.02
+
+lesson "7SS04.05"       has ch_id 7SS04.05
+
+lesson "5EN01.04 Talking About Future"       has ch_id 5EN01.04
+        NO MATCHING CHAPTER FOR: 5EN01.04
+
+lesson "6M12.01 Mathematical Statements"       has ch_id 6M12.01
+
+lesson "4EN05"       has ch_id 4EN05
+        TEXT FILE: "4EN post Open" NAME DOESNT MATCH LESSON: 4EN05
+
+lesson "4S02.01 Our Body"       has ch_id 4S02.01
+
+lesson "7M05.04 Simple interest"       has ch_id 7M05.04
+
+lesson "5S02.14 Drinking and Drugs"       has ch_id 5S02.14
+        TEXT FILE: "5S02.11 Teacher D&D" NAME DOESNT MATCH LESSON: 5S02.14
+
+lesson "4S01.10 natural disasters"       has ch_id 4S01.10
+        DUPLICATE LESSONS FOUND; 4S01.10
+
+lesson "5S02.12"       has ch_id 5S02.12
+
+lesson "6m11.03 value of the algebraic expressions" NO LEGAL CH_ID IN NAME 
+
+lesson "5s03.02 Jumping Lesson" NO LEGAL CH_ID IN NAME 
+
+lesson "7SS03.01 Race, Caste, Ethnicity, Language and Culture"       has ch_id 7SS03.01
+
+lesson "5SS03.03 "       has ch_id 5SS03.03
+
+lesson "6M12.04 axioms "       has ch_id 6M12.04
+
+lesson "5SS04.07 Lesson"       has ch_id 5SS04.07
+
+lesson "9M04 Home Arithmetic"       has ch_id 9M04
+
+lesson "4SS03.02 Let Us Avoid Bad Habits"       has ch_id 4SS03.02
+
+lesson "M06 Numbers of Five Digits" NO LEGAL CH_ID IN NAME 
+
+lesson "5SS04.05-06 lesson"       has ch_id 5SS04.05
+
+lesson "4SS01.01 My Neighborhood"       has ch_id 4SS01.01
+        DUPLICATE LESSONS FOUND; 4SS01.01
+        TEXT FILE: "My Neighborhood" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "My Neighborhood Objectives and Vocabulary" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "My Neighborhood Opener" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "My Neighbors before inclusion video" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "My Neighbors After Inclusion Video" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "My Neighbors video about relationships" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "After relationships video" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "Exploration" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "my neighbors assessment" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "my neighbors reflection" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "my neighbors lesson credits" NAME DOESNT MATCH LESSON: 4SS01.01
+
+lesson "4SS01.01 My Neighbors"       has ch_id 4SS01.01
+        DUPLICATE LESSONS FOUND; 4SS01.01
+        TEXT FILE: "My Neighborhood" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "objectives #3" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "objectives #2" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "My Neighbors before inclusion video" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "after inclusion video #2" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "relationships video #2" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "after relationships video #2" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "Exploration" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "Neighbor Assessment" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "my neighbors reflection" NAME DOESNT MATCH LESSON: 4SS01.01
+        TEXT FILE: "my neighbors lesson credits" NAME DOESNT MATCH LESSON: 4SS01.01
+
+lesson "7M06.2 indirect variation"       has ch_id 7M06
+        NO MATCHING CHAPTER FOR: 7M06
+        DUPLICATE LESSONS FOUND; 7M06
+
+lesson "5S03.09 Local Games"       has ch_id 5S03.09
+        TEXT FILE: "5s03.09 reflection" NAME DOESNT MATCH LESSON: 5S03.09
+        TEXT FILE: "5s03.09 lesson credits" NAME DOESNT MATCH LESSON: 5S03.09
+
+lesson "5S03.01 Locomotion"       has ch_id 5S03.01
+        TEXT FILE: "5s03.01 teacher slide" NAME DOESNT MATCH LESSON: 5S03.01
+        TEXT FILE: "5s03.01 objectives" NAME DOESNT MATCH LESSON: 5S03.01
+        TEXT FILE: "5s03.01 opener" NAME DOESNT MATCH LESSON: 5S03.01
+        TEXT FILE: "5s03.01 vocab" NAME DOESNT MATCH LESSON: 5S03.01
+        TEXT FILE: "5s03.01 vocab activities" NAME DOESNT MATCH LESSON: 5S03.01
+        TEXT FILE: "5s03.01 pre-chapter" NAME DOESNT MATCH LESSON: 5S03.01
+        TEXT FILE: "5s03.01 preresource" NAME DOESNT MATCH LESSON: 5S03.01
+        TEXT FILE: "5s03.01 after resource" NAME DOESNT MATCH LESSON: 5S03.01
+        TEXT FILE: "5s03.01 assessment" NAME DOESNT MATCH LESSON: 5S03.01
+        TEXT FILE: "5s03.01 reflection" NAME DOESNT MATCH LESSON: 5S03.01
+        TEXT FILE: "5s03.01 credits" NAME DOESNT MATCH LESSON: 5S03.01
+
+lesson "7M07.01 bar diagram"       has ch_id 7M07.01
+
+lesson "4S02.06 Nutritious Food"       has ch_id 4S02.06
+        TEXT FILE: "4s02.06 after food ident." NAME DOESNT MATCH LESSON: 4S02.06
+        TEXT FILE: "4s02.06 After Text." NAME DOESNT MATCH LESSON: 4S02.06
+        TEXT FILE: "4s02.06 before ePaath" NAME DOESNT MATCH LESSON: 4S02.06
+        TEXT FILE: "4s02.06 Assessment" NAME DOESNT MATCH LESSON: 4S02.06
+
+lesson "4S01.10 Natural Disasters 2"       has ch_id 4S01.10
+        DUPLICATE LESSONS FOUND; 4S01.10
+
+lesson "4S01.10 Natural Disasters"       has ch_id 4S01.10
+        DUPLICATE LESSONS FOUND; 4S01.10
+
+lesson "6M13.01 Measurement"       has ch_id 6M13.01
+
+lesson "4SS02.03 Our Rituals and Festivals"       has ch_id 4SS02.03
+        TEXT FILE: "Opener Our Rituals and Festivals" NAME DOESNT MATCH LESSON: 4SS02.03
+        TEXT FILE: "objectives & vocabulary #2" NAME DOESNT MATCH LESSON: 4SS02.03
+        TEXT FILE: "opener rituals #2" NAME DOESNT MATCH LESSON: 4SS02.03
+        TEXT FILE: "Before Italian Opera Video" NAME DOESNT MATCH LESSON: 4SS02.03
+        TEXT FILE: "after italian opera #2" NAME DOESNT MATCH LESSON: 4SS02.03
+        TEXT FILE: "make your own song" NAME DOESNT MATCH LESSON: 4SS02.03
+        TEXT FILE: "Exploration Our Rituals and Festivals" NAME DOESNT MATCH LESSON: 4SS02.03
+        TEXT FILE: "assessment #2" NAME DOESNT MATCH LESSON: 4SS02.03
+        TEXT FILE: "Reflection our rituals and festivals" NAME DOESNT MATCH LESSON: 4SS02.03
+        TEXT FILE: "lesson credits.02" NAME DOESNT MATCH LESSON: 4SS02.03
+
+lesson "5EN01.08 Describing Possessions"       has ch_id 5EN01.08
+        NO MATCHING CHAPTER FOR: 5EN01.08
+
+lesson "4S02.07 Diseases"       has ch_id 4S02.07
+
+lesson "4S01.14 seasons"       has ch_id 4S01.14
+        DUPLICATE LESSONS FOUND; 4S01.14
+
+lesson "6M12.02 "       has ch_id 6M12.02
+
+lesson "4SS03.01 Let Us Help"       has ch_id 4SS03.01
+        TEXT FILE: "let us help 1" NAME DOESNT MATCH LESSON: 4SS03.01
+        TEXT FILE: "Let Us Help Objectives & Vocabulary" NAME DOESNT MATCH LESSON: 4SS03.01
+        TEXT FILE: "Let Us Help Opener" NAME DOESNT MATCH LESSON: 4SS03.01
+        TEXT FILE: "let us help 4" NAME DOESNT MATCH LESSON: 4SS03.01
+        TEXT FILE: "after service dog video #2" NAME DOESNT MATCH LESSON: 4SS03.01
+        TEXT FILE: "let us help 6" NAME DOESNT MATCH LESSON: 4SS03.01
+        TEXT FILE: "after meena story" NAME DOESNT MATCH LESSON: 4SS03.01
+        TEXT FILE: "let us help 8" NAME DOESNT MATCH LESSON: 4SS03.01
+        TEXT FILE: "let us help assessment" NAME DOESNT MATCH LESSON: 4SS03.01
+        TEXT FILE: "let us help 10" NAME DOESNT MATCH LESSON: 4SS03.01
+        TEXT FILE: "let us help 11" NAME DOESNT MATCH LESSON: 4SS03.01
+
+lesson "Binod Shahi The Sir of the Himalaya" NO LEGAL CH_ID IN NAME 
+
+lesson "5S03.10 Creative Games"       has ch_id 5S03.10
+        TEXT FILE: "5s03.10 teacher" NAME DOESNT MATCH LESSON: 5S03.10
+        TEXT FILE: "5s03.10 after video" NAME DOESNT MATCH LESSON: 5S03.10
+        TEXT FILE: "5s03.10 assessment slide" NAME DOESNT MATCH LESSON: 5S03.10
+
+lesson "5SS03.04 "       has ch_id 5SS03.04
+
+lesson "4SS03.05 Ways to Eliminate Social Evils"       has ch_id 4SS03.05
+        TEXT FILE: "eliminating social evils 1" NAME DOESNT MATCH LESSON: 4SS03.05
+
+lesson "5EN01.09 Checking and Confirming"       has ch_id 5EN01.09
+        NO MATCHING CHAPTER FOR: 5EN01.09
+
+lesson "5SS03.05"       has ch_id 5SS03.05
+
+lesson "4S02.08 Communicable Diseases"       has ch_id 4S02.08
+
+lesson "6M12.05 Laws of Trichotomy"       has ch_id 6M12.05
+
+lesson "5SS05.05-06 Lesson"       has ch_id 5SS05.05
+
+lesson "5S03.07"       has ch_id 5S03.07
+
+lesson "9M05 Area"       has ch_id 9M05
+
+lesson "5SS05.04 lesson"       has ch_id 5SS05.04
+
+lesson "5EN01.10 Talking about months and seasons"       has ch_id 5EN01.10
+        NO MATCHING CHAPTER FOR: 5EN01.10
+
+lesson "5SS05.01"       has ch_id 5SS05.01
+
+lesson "6M13.02 Lines"       has ch_id 6M13.02
+
+lesson "4SS04.02 Participation of Children"       has ch_id 4SS04.02
+
+lesson "7M08.04 Multiplication of Algebraic Expressions"       has ch_id 7M08.04
+
+lesson "7M08.05 Division of Algebraic Expressions"       has ch_id 7M08.05
+
+lesson "9M1" NO LEGAL CH_ID IN NAME 
+
+lesson "7SS04.02"       has ch_id 7SS04.02
+
+lesson "7M07.02 To Find the Mean of Discrete Series"       has ch_id 7M07.02
+
+lesson "4SS03.03 Ways to Eliminate Social Evils"       has ch_id 4SS03.03
+        TEXT FILE: "eliminate social evils 1" NAME DOESNT MATCH LESSON: 4SS03.03
+        TEXT FILE: "Objectives.02" NAME DOESNT MATCH LESSON: 4SS03.03
+        TEXT FILE: "eliminate social evils 3" NAME DOESNT MATCH LESSON: 4SS03.03
+        TEXT FILE: "girls returned 1" NAME DOESNT MATCH LESSON: 4SS03.03
+        TEXT FILE: "girls returned 2" NAME DOESNT MATCH LESSON: 4SS03.03
+        TEXT FILE: "eliminate social evils exploration" NAME DOESNT MATCH LESSON: 4SS03.03
+        TEXT FILE: "girls returned assessment" NAME DOESNT MATCH LESSON: 4SS03.03
+        TEXT FILE: "girls returned reflection" NAME DOESNT MATCH LESSON: 4SS03.03
+        TEXT FILE: "eliminate social evils 9" NAME DOESNT MATCH LESSON: 4SS03.03
+
+lesson "7SS03.03 "       has ch_id 7SS03.03
+
+lesson "7SS04.03 The Causes of Social Problems"       has ch_id 7SS04.03
+        TEXT FILE: "7ss04.03 objectives and vocabulary" NAME DOESNT MATCH LESSON: 7SS04.03
+        TEXT FILE: "7ss04.03 After R2" NAME DOESNT MATCH LESSON: 7SS04.03
+
+lesson "4EN11"       has ch_id 4EN11
+
+lesson "4EN08 Updated"       has ch_id 4EN08
+
+lesson "4S02.12 Health Services and Facilities"       has ch_id 4S02.12
+
+lesson "9M13 Parallelograms"       has ch_id 9M13
+
+lesson "7SS02.05"       has ch_id 7SS02.05
+
+lesson "5EN01.06 Describing Time"       has ch_id 5EN01.06
+        NO MATCHING CHAPTER FOR: 5EN01.06
+
+lesson "5EN01.11 Narrating Events"       has ch_id 5EN01.11
+        NO MATCHING CHAPTER FOR: 5EN01.11
+
+lesson "4S02.03 Environment"       has ch_id 4S02.03
+
+lesson "9m19  probability" NO LEGAL CH_ID IN NAME 
+
+lesson "5S03.06 Drill"       has ch_id 5S03.06
+        TEXT FILE: "5s03.06 teacher" NAME DOESNT MATCH LESSON: 5S03.06
+        TEXT FILE: "5s03.06 objectives" NAME DOESNT MATCH LESSON: 5S03.06
+        TEXT FILE: "5s03.06 opener" NAME DOESNT MATCH LESSON: 5S03.06
+        TEXT FILE: "5s03.06 vocab" NAME DOESNT MATCH LESSON: 5S03.06
+        TEXT FILE: "5s03.06 after resource" NAME DOESNT MATCH LESSON: 5S03.06
+        TEXT FILE: "5s03.06 assessment" NAME DOESNT MATCH LESSON: 5S03.06
+        TEXT FILE: "5s03.06 reflection" NAME DOESNT MATCH LESSON: 5S03.06
+        TEXT FILE: "5s03.06 credits" NAME DOESNT MATCH LESSON: 5S03.06
+
+lesson "4EN04 A Brave Woman"       has ch_id 4EN04
+
+lesson "7EN01.02 - Travel Excitement"       has ch_id 7EN01.02
+        NO MATCHING CHAPTER FOR: 7EN01.02
+
+lesson "7EN01.01 Places to Visit"       has ch_id 7EN01.01
+        NO MATCHING CHAPTER FOR: 7EN01.01
+
+lesson "5SS05.03 lesson"       has ch_id 5SS05.03
+
+lesson "7M11.04 area of triangles and quadrilaterals"       has ch_id 7M11.04
+        DUPLICATE LESSONS FOUND; 7M11.04
+        lesson 7M11.04 area of triangles and quadrilaterals HAS NO ELEMENTS
+
+lesson "7M09.02 formation of linear equation of one variable and problem"       has ch_id 7M09.02
+
+lesson "9M16 Circles"       has ch_id 9M16
+
+lesson "5s03.11 Ball Games" NO LEGAL CH_ID IN NAME 
+
+lesson "4S02.09 Non-communicable Diseases"       has ch_id 4S02.09
+
+lesson "4S02.13 Smoking, Alcohol, and Drugs"       has ch_id 4S02.13
+        TEXT FILE: "4s02.13 Exploration alcohol" NAME DOESNT MATCH LESSON: 4S02.13
+        TEXT FILE: "4s02.13 Reflection" NAME DOESNT MATCH LESSON: 4S02.13
+        TEXT FILE: "4S03.01 credits" NAME DOESNT MATCH LESSON: 4S02.13
+
+lesson "4S02.11 First Aid"       has ch_id 4S02.11
+
+lesson "4SS04.06 Traffic Rules"       has ch_id 4SS04.06
+        TEXT FILE: "traffic rules 1.0" NAME DOESNT MATCH LESSON: 4SS04.06
+        TEXT FILE: "traffic rules 2" NAME DOESNT MATCH LESSON: 4SS04.06
+        TEXT FILE: "traffic rules 3" NAME DOESNT MATCH LESSON: 4SS04.06
+        TEXT FILE: "traffic rules 4" NAME DOESNT MATCH LESSON: 4SS04.06
+        TEXT FILE: "traffic rules 5" NAME DOESNT MATCH LESSON: 4SS04.06
+        TEXT FILE: "traffic rules 6" NAME DOESNT MATCH LESSON: 4SS04.06
+        TEXT FILE: "traffic rules 7" NAME DOESNT MATCH LESSON: 4SS04.06
+        TEXT FILE: "traffic rules 8" NAME DOESNT MATCH LESSON: 4SS04.06
+        TEXT FILE: "traffic rules 9" NAME DOESNT MATCH LESSON: 4SS04.06
+        TEXT FILE: "traffic rules 10" NAME DOESNT MATCH LESSON: 4SS04.06
+
+lesson "9M10 Linear Equations"       has ch_id 9M10
+        TEXT FILE: "9m10 Objectives" NAME DOESNT MATCH LESSON: 9M10
+        TEXT FILE: "9m10 vocab" NAME DOESNT MATCH LESSON: 9M10
+
+lesson "5s03.13 Tumbling Work" NO LEGAL CH_ID IN NAME 
+
+lesson "4SS02.05"       has ch_id 4SS02.05
+
+lesson "7SS01.01"       has ch_id 7SS01.01
+        DUPLICATE LESSONS FOUND; 7SS01.01
+        TEXT FILE: "7SS.01.01-Objectives" NAME DOESNT MATCH LESSON: 7SS01.01
+
+lesson "5S03.03 Throwing"       has ch_id 5S03.03
+
+lesson "6M05.02 measurement of currency"       has ch_id 6M05.02
+        TEXT FILE: "6m05.02 objectives" NAME DOESNT MATCH LESSON: 6M05.02
+        TEXT FILE: "6m05.02 exploration" NAME DOESNT MATCH LESSON: 6M05.02
+        TEXT FILE: "6M05.01 Reflection" NAME DOESNT MATCH LESSON: 6M05.02
+
+lesson "4S03.01 Locomotor skills"       has ch_id 4S03.01
+
+lesson "5S03.04"       has ch_id 5S03.04
+
+lesson "5S03.02 Jumping"       has ch_id 5S03.02
+
+lesson "6M04.06 add/subtract decimals"       has ch_id 6M04.06
+        DUPLICATE LESSONS FOUND; 6M04.06
+
+lesson "new by maddie" NO LEGAL CH_ID IN NAME 
+
+lesson "7SS02.04 Communication"       has ch_id 7SS02.04
+
+lesson "7EN01.04 Famous Monuments"       has ch_id 7EN01.04
+        NO MATCHING CHAPTER FOR: 7EN01.04
+
+lesson "7EN01.03 Locations and Positions"       has ch_id 7EN01.03
+        NO MATCHING CHAPTER FOR: 7EN01.03
+
+lesson "6M11.06 multiplying monomials and binomials. "       has ch_id 6M11.06
+        DUPLICATE LESSONS FOUND; 6M11.06
+
+lesson "nun." NO LEGAL CH_ID IN NAME 
+
+lesson "7SS01 Review"       has ch_id 7SS01
+        NO MATCHING CHAPTER FOR: 7SS01
+        DUPLICATE LESSONS FOUND; 7SS01
+
+lesson "4S02.04 Safe Environment and Health Life"       has ch_id 4S02.04
+
+lesson "4S03.04 Throwing"       has ch_id 4S03.04
+
+lesson "7EN01.05 Wishes and Choices"       has ch_id 7EN01.05
+        NO MATCHING CHAPTER FOR: 7EN01.05
+
+lesson "4SS02.02*"       has ch_id 4SS02.02
+
+lesson "4SS04.04"       has ch_id 4SS04.04
+
+lesson "5SS06.02 lesson"       has ch_id 5SS06.02
+
+lesson "5SS06.01 Lesson"       has ch_id 5SS06.01
+
+lesson "7M08.06 Simplification"       has ch_id 7M08.06
+
+lesson "7EN01.06 Famous People"       has ch_id 7EN01.06
+        NO MATCHING CHAPTER FOR: 7EN01.06
+        TEXT FILE: "7en01.06 textbook intro act 1" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 textbook intro act 2" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 Ram Baran Yadav photos intro" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 act 3 comp" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 act 4 intro" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 act 5 audio intro" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 act 5 audio placeholder" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 ePaath intro" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 act 7 intro" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 placeholder" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 placeholder" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 act 8 intro" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 diary ePaath" NAME DOESNT MATCH LESSON: 7EN01.06
+        TEXT FILE: "7en01.06 act 9 intro" NAME DOESNT MATCH LESSON: 7EN01.06
+
+lesson "4S03.02 Running"       has ch_id 4S03.02
+        TEXT FILE: "4s03.02 slide 0" NAME DOESNT MATCH LESSON: 4S03.02
+        TEXT FILE: "4s03.02 obj. + vocab" NAME DOESNT MATCH LESSON: 4S03.02
+        TEXT FILE: "4s03.02 before text.'" NAME DOESNT MATCH LESSON: 4S03.02
+        TEXT FILE: "4s03.02 after text" NAME DOESNT MATCH LESSON: 4S03.02
+        TEXT FILE: "4s03.02 relay races" NAME DOESNT MATCH LESSON: 4S03.02
+        TEXT FILE: "4s03.02 reflection" NAME DOESNT MATCH LESSON: 4S03.02
+        TEXT FILE: "4S03.01 credits" NAME DOESNT MATCH LESSON: 4S03.02
+
+lesson "4SS04.03 Natural Resources"       has ch_id 4SS04.03
+
+lesson "4S03.10 Story-based Games"       has ch_id 4S03.10
+
+lesson "6M10.01 Collection of Data"       has ch_id 6M10.01
+
+lesson "5S03.12 balance work"       has ch_id 5S03.12
+
+lesson "New Lesson Template" NO LEGAL CH_ID IN NAME 
+        lesson New Lesson Template HAS NO ELEMENTS
+
+found 671 lessons

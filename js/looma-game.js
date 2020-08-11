@@ -210,9 +210,10 @@ function wrongDraggingOutput(eventID, dateID)
 function runTimeline()
 {
     $('<div class="timeline"><ol>').appendTo($('#game'));
+  
+   // $('<button class="event">').appendTo($('#game'));
+  
     /* old PHP code to set up game
-    
-   
 //display the timeline
 function displayTimeline($prompts)
 {

@@ -62,7 +62,8 @@ Description: page with link to arithmetic and vocabulary games
 		<?php
 			foreach ($unique_game_types as $game_type=>$game_label) {
 
-                if ($game_type !== "timeline") {
+               // if ($game_type !== "timeline")
+                {
                     $val = "<a href='looma-game-list.php?type=" . $game_type . "'>";
                     $val = $val . "<button type='button' class='activity play img navigate' >";
                     echo $val;

@@ -201,7 +201,7 @@ span.hint {
     width:100000px;
     /*max-width:100%;*/
     padding:1px;
-    background-color:yellow;
+    background-color:var(--looma-toolbar);
     color:black;
     vertical-align:middle;
     
@@ -212,7 +212,7 @@ span.hint {
 
 #controlpanel {
     z-index: 1000;
-    background-color:yellow;
+    background-color:var(--looma-toolbar);
     height:100%;
     width: 100%;
   

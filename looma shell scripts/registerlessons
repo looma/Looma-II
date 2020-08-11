@@ -1,17 +1,17 @@
 // ONE TIME program to
-//    register specified documents in lessons collection as activities
+//    register lessons to chapters
 //
-//    reads a file in current directory names 'lessonsToRegister.txt'
-//    which has CH_IDs of lessons to find and register as Activities
+//    reads a file in current directory namesd 'lessonsToRegister.txt'
+//    which has CH_IDs of lessons to find in activities and register to the specified chapter
 //
-//  run in MONGO SHELL with: load('registerlessons')
+//   run in MONGO SHELL with: load('registerlessons')
 //
 
 function legalCH_ID(ch) {
     var chapter = ch.replace(/\s/g,''); //removes 'whitespace'
     if (chapter && chapter.length>0) {
         var legal = db.chapters.find({"_id": chapter});
-        if (legal.length() === 0 && chapter) {
+        if (legal.length() === 0) {
             print("************ illegal ch_id:     " + chapter );
             illegalcount++;
             return false;
@@ -29,27 +29,28 @@ print('');
 var input = 'lessonsToRegister.txt';
 print ('Importing lesson CH_IDs from ' + input);
 var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
-var candidates = file.split(/[\r\n]+/);  // split file into array of lines containing (DN, FN, CH_IDs)
+var candidates = file.split(/[\r\n]+/);  // split file into array of lines each containing a single CH_ID
 print ('Processing ' + candidates.length + ' lines');
 
-candidates.forEach( function(lesson) {
-    var lessonID = lesson.replace(/\s/g,'');
+candidates.forEach( function(candidate) {
+    var lessonID = candidate.replace(/\s/g,'');
     if (legalCH_ID(lessonID)) {
-        lessoncursor = db.lessons.find({dn: {$regex:lessonID}});
-        if (lessoncursor.hasNext()) {
-            var lesson = lessoncursor.next();
+        lesson = db.lessons.findOne({dn: {$regex:lessonID}});
+        if (lesson) {
             var chapter = db.chapters.findOne({'_id': lessonID});
     
-            print('checking: ' + lesson.dn + ' for existing ACTIVITY');
+            //print('checking: ' + lesson.dn + ' for existing ACTIVITY');
             var entry = db.activities.findOne({'dn': lesson.dn, 'ft': 'lesson'});
         
             if (entry) {
                 var act = entry;
-                act['ch_id'] = [chapter._id];
-                if (chapter.key1) act.key1 = chapter.key1;
-                if (chapter.key2) act.key2 = chapter.key2;
-                if (chapter.key3) act.key3 = chapter.key3;
-                if (chapter.key4) act.key4 = lesson.key4;
+                act['ch_id'] = [lessonID];
+                if (chapter) {
+                    if (chapter.key1) act.key1 = chapter.key1;
+                    if (chapter.key2) act.key2 = chapter.key2;
+                    if (chapter.key3) act.key3 = chapter.key3;
+                    if (chapter.key4) act.key4 = chapter.key4;
+                }
                 print('updating ACTIVITY with ft: ' + act.ft + ' dn: ' + act.dn + ' ch_id: ' + act.ch_id);
             
                 if (param !== 'dryrun') db.activities.update({'dn': lesson.dn, 'ft': 'lesson'}, act);

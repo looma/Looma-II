@@ -431,7 +431,7 @@ button:hover, .button:hover
     background-image: url("../images/logos/LoomaLogoTransparent.png");
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 150%;
+    background-size:75%;
 }
 .concButton span {display:none;}
 
@@ -581,6 +581,8 @@ a button:hover {color:blue;}
 }
 
 #answers button {
+    height:10vh;
+    font-size:2em;
     margin:2vh 2vw;
     min-width:50vw;
     max-width:80vw;

@@ -176,7 +176,7 @@ if (isset($_REQUEST["collection"])) {
         ////////////////////////
         case "open":
 
-            $query = array("dn" => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES));
+            $query = array("dn" => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)));
 
             if ($_REQUEST['ft']) {
                 $ft = $_REQUEST['ft'];
@@ -299,7 +299,7 @@ if (isset($_REQUEST["collection"])) {
 
     case "save":
         if ( ($collection == "text") || ($collection == "text_files")) {
-            //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
+            //NOTE: historical aritfact, some JS may set collection to 'text', some to 'text_files'  - THIS SHOULD BE CLEANED UP sometime
               $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
             //echo "DEBUG: $_REQUEST['dn'] is " . $_REQUEST['dn'];
             //echo "DEBUG: html spec char is " . htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES);
@@ -314,8 +314,8 @@ if (isset($_REQUEST["collection"])) {
                  $insert['translator'] = $_REQUEST['translator'];
             }
             else {
+                $insert['author'] = $login;
                 if (!($login_level==='admin' || $login_level==='exec' || $login_level === 'teacher' || $login_team === 'teacher') ) {
-                    $insert['author'] = $login;
                     $insert['team'] = $login_team;
                 }
             }
@@ -327,26 +327,32 @@ if (isset($_REQUEST["collection"])) {
             saveToMongo($dbCollection, $save_dn, $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if ( ($collection == "lesson") || ($collection == "lessons")) {
-            //NOTE: historical aritfact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
+            //NOTE: historical artifact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
+
+                // earlier code had wrong parameters to 'trim()' causing occassional bad SAVEs
+                //echo "REQUEST[dn] is:**" . $_REQUEST['dn'] . "***";
+                //echo "htmlspecialchars_decode is:**" . htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES) . "***";
+                //echo "trim(htmlspecialchars_decode) is:**" . trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)) . "***";
+                //return;
 
             $insert = array(
-                "dn" => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES),
+                "dn" => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)),
                 "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template', 'lesson' or 'lesson-template'
                // "author" => $_COOKIE['login'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
                 "data" => $_REQUEST["data"]
             );
-           // if (!($login_level==='admin' || $login_level==='exec') ) $insert['team'] = $login_team;
+            $insert['author'] = $login;
+            // if (!($login_level==='admin' || $login_level==='exec') ) $insert['team'] = $login_team;
             if (!($login_level==='admin' || $login_level==='exec' || $login_team === 'teacher') ) {
-                $insert['author'] = $login;
                 $insert['team'] = $login_team;
             }
-            saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if (($collection == "edited_videos")  || ($collection == "slideshows")) {
             //$thumb = isset($_REQUEST['thumb']) ? $_REQUEST['thumb'] : "";
             $insert = array(
-                "dn" => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES),
+                "dn" => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)),
                 "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template'
                 "author" => $_COOKIE['login'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
@@ -354,7 +360,7 @@ if (isset($_REQUEST["collection"])) {
             );
             if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
 
-            saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
         }
         else if ($collection == "activities") {
             $insert = $_REQUEST['data'];
@@ -383,8 +389,8 @@ if (isset($_REQUEST["collection"])) {
     ////////////////////////
     case "rename":
         changename($dbCollection,
-                   trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES),
-                   htmlspecialchars_decode($_REQUEST['newname'],ENT_QUOTES),
+                   trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)),
+                   trim(htmlspecialchars_decode($_REQUEST['newname'],ENT_QUOTES)),
                    $_REQUEST['ft'], true);
         return;
     // end case "rename"
@@ -397,7 +403,7 @@ if (isset($_REQUEST["collection"])) {
 
    // echo "in 'exists', dn = " . $_REQUEST['dn']. "ft = " . $_REQUEST['ft']. "collection = " . $_REQUEST['collection'];
 
-        $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), 'ft' => $_REQUEST['ft']);
+        $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), 'ft' => $_REQUEST['ft']);
         $projection = array("_id" => 1, "author" => 1);
         $result = mongoFindOne($dbCollection, $query);
         if ($result) echo json_encode(array("_id" => $result["_id"],
@@ -411,11 +417,11 @@ if (isset($_REQUEST["collection"])) {
     // - - - DELETE - - - //
     ////////////////////////
     case "delete":
-        $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES), 'ft' => $_REQUEST['ft']);
+        $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), 'ft' => $_REQUEST['ft']);
         $file = mongoFindOne($dbCollection, $query);
         if ($file) {
             mongoDeleteOne($dbCollection ,$query);  //, array("justOne" => true));
-            echo 'Looma-database-utilities.php, deleted file: ' .  trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES) . ' of type: ' . $_REQUEST['ft'];
+            echo 'Looma-database-utilities.php, deleted file: ' .  trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)) . ' of type: ' . $_REQUEST['ft'];
 
             // delete any references to the file from Activities collection
             $removequery = array('mongoID' => mongoId($file['_id']));
@@ -913,7 +919,7 @@ if (isset($_REQUEST["collection"])) {
             //print_r ($query);
 
             $changes = []; $unsets = [];
-            if (isset($_REQUEST['dn'])  && $_REQUEST['dn'])  $changes['dn'] =  trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES);
+            if (isset($_REQUEST['dn'])  && $_REQUEST['dn'])  $changes['dn'] =  trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
             if (isset($_REQUEST['src']) && $_REQUEST['src']) $changes['src'] = $_REQUEST['src'];
 
             // if key1 is specified, then set key1 and either set or reset keys 2,3,4
@@ -979,7 +985,7 @@ if (isset($_REQUEST["collection"])) {
                 // insert ACTIVITY in mongoDB
 
               $insert = [];
-              if (isset($_REQUEST['dn']))  $insert['dn'] =  trim(htmlspecialchars_decode($_REQUEST['dn']),ENT_QUOTES);
+              if (isset($_REQUEST['dn']))  $insert['dn'] =  trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
               if (isset($_REQUEST['src'])) $insert['src'] = $_REQUEST['src'];
 
               if (isset($_REQUEST['chapter'])) $insert['ch_id'] = '[' . $_REQUEST['chapter'] . ']';

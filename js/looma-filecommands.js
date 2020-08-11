@@ -257,7 +257,7 @@ function openfile(openId, collection, filetype) { //filetype must be given e.g. 
                         || (LOOMA.loggedIn() === 'kathy')
                         || (LOOMA.loggedIn() === 'kabin')
                     );
-                else owner = false;
+                else owner = true; //was FALSE, but if there is no owner, OK to edit the file
                 
                 callbacks['display'](response);   //need to return the full 'response' from the db
                 //$('#cancel-result').on('click', closesearch);

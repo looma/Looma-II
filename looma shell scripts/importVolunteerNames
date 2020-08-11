@@ -1,0 +1,33 @@
+// mongo terminal program "importVolunteerNames"
+//      input from a txt file
+//          each line of which is a name
+//
+//  make sure there is a file 'volunteersToImport.txt'
+//
+//"use strict";
+
+var requestcount = 0;
+var changecount = 0;
+
+var input = 'volunteersToImport.txt';
+print ('Importing volunteer names from ' + input);
+print ('*****');
+print ('------------ param = ' + param);
+print ('*****');
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+
+var docs = file.split(/[\r\n]+/);  // split file into array of lines containing (DN, FN, CH_LO, cl_HI)
+
+print ('Processing ' + docs.length + ' lines');
+docs.forEach( function(doc) {
+        if (doc) {
+                if (param !== 'dryrun') db.volunteers.insert({'name':doc});
+                print(++changecount + ' - - - added volunteer: ' + doc);
+        }
+}) ; // end foreach doc
+
+print('');
+if (param==='dryrun') print ('------------ param = ' +  param + ', no writes to db');
+else                  print ('------------ param = ' +  param + ': ' + changecount + ' changes were written to db');
+
+print('+++++  ' + changecount + '  changes made');

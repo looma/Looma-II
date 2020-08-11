@@ -1,0 +1,80 @@
+// ONE TIME program to
+//      verify text files and ch_ids used in text files names
+//
+//
+//   run in MONGO SHELL with: load('textfileverify')
+//
+
+function legalCH_ID(ch) {
+    var chapter = ch.replace(/\s/g,''); //removes 'whitespace'
+    if (chapter && chapter.length>0) {
+        var legal = db.chapters.find({"_id": chapter});
+        if (legal.length() === 0) {
+            //print("************ illegal ch_id:     " + chapter );
+            illegalcount++;
+            return false;
+        } else return true;
+    }
+}
+
+function checkMatch(elementDN, textID) {
+    if (! elementDN.match(textID)) print ('        TEXT FILE: "' + elementDN + '" NAME DOESNT MATCH LESSON: ' + textID);
+}
+var category = {'mp4':'video','mov':'video','video':'video',
+    'jpg':'image','png':'image','gif':'image','image':'image',
+    'text':'text','html':'html','EP':'ePaath','pdf':'pdf',
+    'map':'map','history':'history','game':'game','PhET':'PhET',
+    'mp3':'audio','m4a':'audio','audio':'audio'};
+
+var textcursor;
+var count = 0;
+var count1 = 0;
+var count2 = 0;
+var count3 = 0;
+
+var illegalcount = 0;
+var typecount = {};
+//typecount.text=0;
+var CH_regex = '/([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\\.[0-9]{2})?/';
+print('db is ' + db);
+print('');
+
+textcursor = db.text_files.find();
+while (textcursor.hasNext()) {
+    count++;
+    var text = textcursor.next();
+    
+    // extract a CH_ID from the text's name and verify it
+    var textID = text['dn'].match(/([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/);
+    if (textID) {
+        //print('text "' + text['dn'] + '"       has ch_id ' + textID[0]);
+        if (!legalCH_ID(textID[0])) {
+            print('text "' + text['dn'] + '"       has ch_id ' + textID[0]);
+            print('        NO MATCHING CHAPTER FOR: ' + textID[0]);
+            count1++;
+        }
+        
+        
+        // check for duplicate text (with same ch_id in their name)
+        var duplicates = db.text_files.find({dn: text['dn']}); //might want to use "{$regex:textID[0] + '\ '}"
+        if (duplicates.count() > 1) {
+            print('        DUPLICATE text FOUND; ' + text['dn']);
+            count2++;
+        }
+        
+    } else {
+        print('text "' + text['dn'] + '" NO LEGAL CH_ID IN NAME ');
+        count3++;
+    };
+};
+
+print('COUNT of TYPES used:');
+// should SORT by frequency and AGGREGRATE types into video = {mov, mp4, video}, image = {png,gif, jpeg} etc
+for (var t in typecount) { print(t + ': ' +  typecount[t]);};
+print('');
+print('found ' + count + ' text files');
+print('found ' + count3 + ' no legal ch_id in name');
+print('found ' + count1 + ' have legal ch_id, but there exists no matching chapter');
+print('found ' + count2 + ' duplicate text files found');
+print('');
+

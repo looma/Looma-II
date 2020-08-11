@@ -86,9 +86,11 @@ Description: looma lesson plan presenter
                        $thumbSrc = '../content/epaath/activities/' . $details["fn"] . '/thumbnail.jpg';
                    else if (isset($details['ft']) && $details['ft'] == 'evi')
                        $thumbSrc = 'images/video.png';
+                   else if (isset($details['ft']) && $details['ft'] == 'game')
+                       $thumbSrc = 'images/games.png';
                    else if (isset($details['fn']) && isset($details['fp']))
                      $thumbSrc = $details['fp'] . thumbnail($details['fn']);
-                   else $thumbSrc = null;
+                   else $thumbSrc = 'images/LoomaLogo_small.png';
 
                    //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npg,$prefix,$lang)
 

@@ -10,7 +10,7 @@ var activitycursor, lessoncursor;
 
 var count = 0;
 var ecount = 0;
-const filetype = ['PhET'];
+//const filetype = ['PhET'];
 
 print ('*****scanning  lessons for ' + filetype);
 lessoncursor = db.lessons.find();

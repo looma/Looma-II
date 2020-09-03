@@ -3,11 +3,13 @@
 var $timer;
 var $scoreboard;
 
-var game_id;
 var game_data = {};
 var time_limit;
 var score_method;
-
+var game_type;
+var game_id;
+var game_class;
+var game_subject;
 var num_teams;
 var curr_team = 1;
 
@@ -15,7 +17,7 @@ var num_questions;
 var curr_question = 1;
 
 var scores;
-
+var clickedEventID;
 
 /////////////////////////////////////////////////////////////
 ////////  TIMELINE GAME   ///////////////////////////
@@ -155,8 +157,6 @@ function rightDraggingOutput(eventID)
         }
     }, 4000);
     correctAnswer();
-    
-    //runTimeline(numMatched);
 }
 
 // responds appropriately when user incorrectly matches an event to a date
@@ -187,102 +187,119 @@ function wrongDraggingOutput(eventID, dateID)
         for (i = 0; i < eventButtons.length; i++)
         {
             if ($(eventButtons[i]).data("index") == eventID)
-            {
                 eventButtons[i].removeAttribute("style");
-            }
-        }
+        };
         for (i = 0; i < dateButtons.length; i++)
         {
             if ($(dateButtons[i]).data("index") == dateID)
-            {
                 dateButtons[i].removeAttribute("style");
-            }
         }
     }, 4000);
-   
     wrongAnswer();
-    //runTimeline(numMatched);
 }
 
 
+function runTimeline(){
+   /*
+    var data = $.ajax(
+        "looma-database-utilities.php",
+        {
+            type: 'GET',
+            dataType: "json",
+            data: "collection=histories&cmd=getHistory&historyId=5963ff0f43fbce217a9bc5b7",
+        });
+    console.log(game_data);
+    
+    var timeline_data = data[""];
+    
+    // var id = "5963ff0f43fbce217a9bc5b7";
+    var prompts = timeline_data['events'];
+    var num = prompts.length;
+    
+    var events = [];
+    var dates = [];
+    
+    var eventButtons = [];
+    var dateButtons = [];
+    
+    for (var i = 0; i < num; i++){
+        
+        if(prompts[i]['title'] !== 'undefined'){
+            events[i] = prompts[i]['title'];
+        }
+        if(prompts[i]['date'] !== 'undefined'){
+            //keeps track of odd/even events for styling
+            dates[i] = prompts[i]['date'];
+        }
+    }
+    
+    $('#game').append('<div id="timeline">');
+    
+    $('#timeline').append('<div id="evenEvents">');
+    $('#timeline').append('<div id="dates">');
+    $('#timeline').append('<div id="oddEvents">');
+    
+    for (var i = 0; i < num; i++){
+        var dateButton = $('<button class = "date" data-pair="' + i.toString() + '" id="'+i.toString()+'">' + prompts[i]['date'] + '</button>');
+        var eventButton = $('<button class="event" data-pair="' + i.toString() + '" id="'+i.toString()+'">' + events[i] + '</button>');
+        
+        eventButtons.push(eventButton);
+        dateButtons.push(dateButton);
+        
+        $('#dates').append(dateButton);
+    }
+    
+    var count = 0;
+    for (var i = 0; i < num; i++){
+        if (count%2 == 0) //EVEN BUTTONS
+        {
+            var timelineEventButton = $('<button class="timelineEvent even" data-pair="' + i.toString() + '" id="'+i.toString()+'">' + events[i] + '</button>');
+            var empty = $('<button class="empty">'); //empty button for styling
+            $('#evenEvents').append(timelineEventButton);
+            $('#evenEvents').append(empty);
+        }
+        else //ODD BUTTONS
+        {
+            var empty = $('<button class="empty">'); //empty button for styling
+            var timelineEventButton = $('<button class="timelineEvent odd" data-pair="' + i.toString() + '" id="'+i.toString()+'">' + events[i] + '</button>');
+            $('#oddEvents').append(empty);
+            $('#oddEvents').append(timelineEventButton);
+        }
+        count++;
+    }
+    
+    $('#dates').append('<div class="line">');
+    
+    $('#game').append('<span id="question">');
+    $('#question').html('How to play: Click each event to match to the corresponding date in the timeline.');
+    
+    $('<div class="events">').appendTo($('#game'));
+    
+    //randomize events
+    eventButtons.sort(function(a, b){return 0.5 - Math.random()});
+    
+    eventButtons.forEach(function(eventButton){
+        $('.events').append(eventButton);
+    });
+    
+    startTimer(time_limit);
+    
+    for (var i = 0; i < eventButtons.length ; i++)
+    {
+        eventButtons[i].click(timelineEventClick);
+        dateButtons[i].click(timelineDateClick);
+    }
+    
+    // $('.event').click(timelineDateClick);
+    // $('.date').click(timelineDateClick);
+ */
+} //end runTimeline()
 
 // wrapper function for timeline game -- analogous to runMCGame()
-function runTimeline()
+function runTimelineOLD()
 {
     $('<div class="timeline"><ol>').appendTo($('#game'));
   
-   // $('<button class="event">').appendTo($('#game'));
-  
-    /* old PHP code to set up game
-//display the timeline
-function displayTimeline($prompts)
-{
-    echo '<div class ="timeline">'; //div that holds the timeline
-    echo '<ol>';
-
-    global $doc;
-    $num = sizeOf($doc['prompts']);
-    $events = []; //array to hold all of the events so they can later be randomized and displayed
-
-    $count = 0;
-    //reads in the events and dates from a json file
-    for ($i = 0; $i < $num; $i++)
-    {
-        if(isset($prompts[$i]['event']))
-        {
-            $events[] = $prompts[$i]['event'];
-        }
-        if(isset($prompts[$i]['date']))
-        {
-            //keeps track of odd/even events for styling
-            if ($count%2 == 0) //even
-            {
-                echo '<li>';
-
-                //order of the buttons matters -- how it's displayed in the timeline
-
-                echo '<button class="timelineEvent" id= '.$i.' style = "visibility: hidden" disabled = true > '. $events[$i] . ' </button>'; //event button in the timeline that is hidden at first, but becomes visible when the event is matched with the correct date
-                echo '<button class = "date" id = '.$i.'>' .$prompts[$i]['date']. '</button>'; //date "button" on the timeline
-                echo '<button class = "empty"></button>'; //empty butotn that's always hidden in the timeline -- just for styling
-
-                '</li>';
-            }
-            else //odd
-            {
-                echo '<li>';
-
-                echo '<button class = "empty" ></button>';
-                echo '<button class = "date" id = '.$i.'>' .$prompts[$i]['date']. '</button>';
-                echo '<button class="timelineEvent" id= '.$i.' style = "visibility: hidden" disabled = true > '. $events[$i] . ' </button>';
-
-                '</li>';
-            }
-            $count += 1;
-        }
-    }
-    echo '</ol>';
-    echo '</div>';
-
-    echo '<div class = "endMessage" id = "endMessage">'; //div that displays the directions and the end message
-    echo 'How to play: Click or drag each event to the corresponding date in the timeline.';
-    echo '</div>';
-
-    echo '<div class ="events">'; //div that holds the bank of events
-    //randomizes events
-    $random = range(0, $num - 1);
-    shuffle($random);
-    for ($i = 0; $i < $num; $i++)
-    {
-        $j = $random[$i];
-        echo '<button class="event" draggable="true" id= '.$j.'>' . $events[$j] . '</button>';
-    }
-    echo '</div>';//end events
-
-} //end of displayTimeline
-
-   
-    */
-    
     numMatched = 0;
     curr_question = 1;
     startTimer(time_limit);
@@ -311,7 +328,7 @@ function displayTimeline($prompts)
         }
     }
     
-}
+}; //end runTimelineOLD()
 
 
 /////////////////////////////////////////////////////////////
@@ -394,6 +411,8 @@ function matchPromptClick(event) {
     selected_prompt = $(event.currentTarget).data()['pair'];
     $('.prompt.not-done[data-pair=' + selected_prompt + ']').addClass('clicked');
     
+    if ($(event.currentTarget).data()['word']) LOOMA.speak($(event.currentTarget).data()['word']);
+
     if (previousClick === 'response') {checkMatch();
     } else {
         previousClick = 'prompt'
@@ -422,7 +441,18 @@ function matchResponseClick(event) {
     }
 } //end matchResponse()
 
+// * CP NEW (1) * //
+/* BUG: Matching game sometimes eliminating non-matching pairs
+ * CHANGES: (1) Added variables r, p at the top to store the matching pair
+ * indices and replace selected_resp and selected_prompt in the setTimeout()
+ * functions. (2) Set selected_resp, selected_prompt, and previousClick to
+ * null outside of the setTimeout() functions.
+*/
+
 function checkMatch() {
+    var r = selected_resp;
+    var p = selected_prompt;
+    
     if (selected_resp === selected_prompt) {  //correct!
         matches_made++;
         //scores[curr_team-1]++;
@@ -431,14 +461,16 @@ function checkMatch() {
         //$('.'+selected_resp).css('color','green');
         $('.response[data-pair=' + selected_resp + ']').addClass('matched');
         $('.prompt[data-pair=' + selected_prompt + ']').addClass('matched');
-    
+  
+        selected_resp = null;
+        selected_prompt = null;
+        previousClick = null;
+   
         setTimeout(function() {
             //$('.'+selected_resp).hide();
-            $('.response[data-pair=' + selected_resp + ']').removeClass('matched not-done clicked').addClass('done').off('click');
-            $('.prompt[data-pair=' + selected_prompt + ']').removeClass('matched not-done clicked').addClass('done').off('click');
-            selected_resp = null;
-            selected_prompt = null;
-            previousClick = null;
+            $('.response[data-pair=' + r + ']').removeClass('matched not-done clicked').addClass('done').off('click');
+            $('.prompt[data-pair=' + p + ']').removeClass('matched not-done clicked').addClass('done').off('click');
+         
     
             correctAnswer();
             //showTeam();
@@ -453,15 +485,16 @@ function checkMatch() {
     
         //remove prompt onclick
         //$('.prompt').off('click');
+        selected_resp = null;
+        selected_prompt = null;
+        previousClick = null;
         
         setTimeout(function() {
             //$('.response.'+selected_resp).css('color','black');
             //$('.prompt.'+selected_resp).css('color','black');
-            $('.response[data-pair=' + selected_resp + ']').removeClass('mismatched');
-            $('.prompt[data-pair=' + selected_prompt + ']').removeClass('mismatched');
-            selected_resp = null;
-            selected_prompt = null;
-            previousClick = null;
+            $('.response[data-pair=' + r + ']').removeClass('mismatched');
+            $('.prompt[data-pair=' + p + ']').removeClass('mismatched');
+          
             wrongAnswer();
         },1000);
         
@@ -516,7 +549,90 @@ function runMatch() {
     });
     startTimer(time_limit);
 } // end runMatch()
+
+
+// * CP NEW (2) * //
+function getPictureWords(grade, subj, id, count, random){
+    LOOMA.picturewordlist(grade, subj, id, count, random, succeed, fail);
+}
+
+function succeed(result){
+    console.log(`Success, found ${result.length} words: ${result}`);
+    runPictureHelper(result)
+}
+
+function fail(jqXHR, textStatus, errorThrown){
+    console.log('PICTURE: AJAX call to dictionary-utilities.php FAILed, jqXHR is ' + jqXHR.status);
+    window.alert('failed with textStatus = ' + textStatus + ', and errorThrown = ' + errorThrown);
+}
+
+function runPictureHelper(words){
+    var promptButtons = [];
+    var responseButtons = [];
+    
+    words.forEach(function(word, i){
+        var buttonPicture = $(`<button class="prompt not-done picture" data-word=${word} data-pair="${i.toString()}" id="prompt-${i.toString()}">\
+        <img src="../content/dictionary images/${word}.jpg" /></button>`);
+        var buttonWord = $(`<button class="response not-done" data-pair="${i.toString()}" id="response-${i.toString()}">${word}</button>`);
+        buttonPicture.click(matchPromptClick);
+        buttonWord.click(matchResponseClick);
+        promptButtons.push(buttonPicture);
+        responseButtons.push(buttonWord);
+    });
+    
+    //https://www.w3schools.com/js/js_array_sort.asp
+    promptButtons.sort  (function(a, b){return 0.5 - Math.random()});
+    responseButtons.sort(function(a, b){return 0.5 - Math.random()});
+    
+    promptButtons.forEach(function(promptButton){
+        $('#prompts').append(promptButton);
+        $('#prompts').append('<br/>');
+    });
+    responseButtons.forEach(function(responseButton){
+        $('#responses').append(responseButton);
+        $('#responses').append('<br/>');
+    });
+    startTimer(time_limit);
+}
+
+function runPicture(grade, subject) {
+    showTeam();
+    matches_made = 0;
+    $('#game').append('<div id="prompts"></div>');
+    $('#game').append('<div id="responses"></div>');
+    $('#question').html('Click left and right items to find a match.');
+    
+    // SAMPLE INPUT
+    //var grade = "class1";
+    //var subj = 'english';
+    //var id = null;
+    var count = 5;
+    var random = true;
+    
+    //getPictureWords(grade, subject, null, count, random);
+    getPictureWords(null, 'english', null, count, random);
+    time_limit = 15;
+    startTimer(time_limit);
+    
+}
+// * END CP NEW (2) * //
+
 //////////////////////////////
+///////// runVocab  /////////
+//////////////////////////////
+function runVocab() {
+    console.log('starting vocab drill');
+}; //end runVocab()
+
+
+//////////////////////////////
+///////// runArith  /////////
+//////////////////////////////
+function runArith() {
+    console.log('starting arithmetic drill');
+}; //end runArith()
+
+
 ///////// runRandom  /////////
 //////////////////////////////    NOTE: 'random' game generates a randomly selected set of words from a textbook chapter
 //////////////////////////////           and presents a 'matching' game to match words with their definitions
@@ -542,10 +658,13 @@ function runRandom () {
     
     function get_wordlist_succeed(words) {
         // console.log("success",words)
-        $(words).each(function (index, word) { game_data['prompts'].push(word);});
-        
+        $(words).each(function (index, word) {
+            game_data['prompts'].push(word);
+        });
+    
         // get definitions of the words in 'prompts[]' from Looma dictionary
         var wordcount = 0;
+    
         function word_define_succeed(res) {
             game_data['responses'].push(res);
             wordcount++;
@@ -554,11 +673,12 @@ function runRandom () {
             else runMatch();
         }
         
-function word_define_fail(r) {
+    function word_define_fail(r) {
             console.log("fail", r);
         }
         LOOMA.sienna_define(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
     }
+    
     function get_wordlist_fail(r) {console.log("get wordlist failed: ", r);}
     
     LOOMA.wordlist("class" + randClass.toString(),
@@ -1022,6 +1142,11 @@ function nextQuestion() {
                 $('#game').append('<div id="responses"></div>');
                 //runMatch();
                 break;
+            // * CP NEW (3)) * //
+            case 'picture':
+                $('#game').append('<div id="prompts"></div>');
+                $('#game').append('<div id="responses"></div>');
+                // * END CP NEW (3) * //
             case 'concentration':
                 //$('#game').append('<div id="buttons"></div>');
                 //runConc();
@@ -1122,10 +1247,9 @@ function gameOver() {
         /////////////////////////////
         // /////// succeed  /////////
         // //////////////////////////
-        function get_game_succeed(r) {
-            game_data = r;
-            //console.log("got game: " + r);
-            //curr_question = 1;
+        function get_game_succeed(result) {
+            game_data = result;
+            
             time_limit = ( game_data['timeLimit']) ? game_data['timeLimit'] : 30;
             setTimer(time_limit);
             $("#gameTitle").html("Game: " + game_data['title']);
@@ -1139,6 +1263,11 @@ function gameOver() {
                 case 'matching':
                     runMatch();
                     break;
+                // * CP NEW (4) * //
+                case 'picture':
+                    runPicture(game_class, game_subject);
+                    break;
+                    // * END CP NEW (4) * //
                 case 'multiple choice':
                     runMC();
                     break;
@@ -1179,8 +1308,11 @@ $(document).ready (function() {
     
     //first visible screen asks user to choose the number of teams that will be playing
     $('.teamnumber').click(function () {
-        
-        game_id = $('#thegameframe').data('gameid');
+    
+        game_type =    $('#thegameframe').data('gametype');
+        game_id =      $('#thegameframe').data('gameid');
+        game_class =   $('#thegameframe').data('class');
+        game_subject = $('#thegameframe').data('subject');
 
         num_teams = $(this).data('team');
         initScores(num_teams);
@@ -1194,9 +1326,13 @@ $(document).ready (function() {
         $('#timer').show();
         $scoreboard.show();
         
-        if      (game_id == 'yesno')   runYesNo();
-        else if (game_id == 'random')  runRandom();
-        else                           runGame(game_id);
+        if      (game_type == 'yesno')    runYesNo();
+        else if (game_type == 'random')   runRandom();
+        //else if (game_type == 'timeline') runtimeline(game_id); //add Catie's new code here
+        else if (game_type == 'vocab')    runVocab(game_class, game_subject);
+        else if (game_type == 'arith')    runArith(game_class, game_subject);
+        else if (game_type == 'picture')    runPicture(game_class, game_subject);
+        else                              runGame(game_id);
         
     })
 });

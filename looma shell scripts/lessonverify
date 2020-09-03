@@ -5,6 +5,24 @@
 //   run in MONGO SHELL with: load('lessonverify')
 //
 
+/*
+        makes these checks:
+      
+        - lesson name includes a legal CH_ID
+            LESSON: <lesson name> NO LEGAL CH_ID IN NAME
+        - lesson name includes the CH_ID of an existing chapter
+            NO MATCHING CHAPTER FOR: <lesson name>
+        - duplicate lesson names
+            DUPLICATE LESSONS FOUND <lesson name>
+        - empty lessons
+            <lesson name> HAS NO ELEMENTS
+        - all lesson elements exist on Looma (in mongoDB)
+            NOT FOUND IN DB for <lesson name> - activity/chapter element <element.id
+        - lesson elements' name that are text files include the same CH_ID as the lesson name
+            TEXT FILE xxx NAME DOESNT MATCH LESSON yyy
+        - prints summary counts of element types [video, chapter, audio, epaath, pdf, html, image]
+*/
+
 function legalCH_ID(ch) {
     var chapter = ch.replace(/\s/g,''); //removes 'whitespace'
     if (chapter && chapter.length>0) {
@@ -17,9 +35,11 @@ function legalCH_ID(ch) {
     }
 }
 
-function checkMatch(elementDN, lessonID) {
-    if (! elementDN.match(lessonID)) print ('        TEXT FILE: "' + elementDN + '" NAME DOESNT MATCH LESSON: ' + lessonID);
+function checkMatch(elementDN, ID) {
+    if (! elementDN.match(ID))
+        print ('        TEXT FILE: "' + elementDN + '" NAME DOESNT MATCH LESSON: "' + lesson.dn + '"');
 }
+
 var category = {'mp4':'video','mov':'video','video':'video',
                   'jpg':'image','png':'image','gif':'image','image':'image',
                   'text':'text','html':'html','EP':'ePaath','pdf':'pdf',
@@ -40,7 +60,7 @@ while (lessoncursor.hasNext()) {
     count++;
     var lesson = lessoncursor.next();
     
-    // extract a CH_ID from the lesson name and verify it
+    // NO MATCHING CHAPTER extract a CH_ID from the lesson name and verify it
     var lessonID = lesson['dn'].match(/([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/);
     if (lessonID) {
         print('');
@@ -48,23 +68,24 @@ while (lessoncursor.hasNext()) {
         if (!legalCH_ID(lessonID[0])) print('        NO MATCHING CHAPTER FOR: ' + lessonID[0]);
         
         
-        // check for duplicate lessons (with same ch_id in their name)
+        // DUPLICATE LESSONS FOUND check for duplicate lessons (with same ch_id in their name)
         var duplicates = db.lessons.find({dn: {$regex: lessonID[0]}}); //might want to use "{$regex:lessonID[0] + '\ '}"
-        if (duplicates.count() > 1) print('        DUPLICATE LESSONS FOUND; ' + lessonID[0]);
+        if (duplicates.count() > 1) print('        DUPLICATE LESSONS FOUND: ' + lessonID[0]);
         
     } else {
         print();
         print('lesson "' + lesson['dn'] + '" NO LEGAL CH_ID IN NAME ');
     };
+    
     // check elements of the lesson. 1. elements exists, 2. each element is in activities collection 3. accumulate ft counts
     var elements = lesson['data'];
     if (!elements || elements.length === 0)
-        print('        lesson ' + lesson['dn'] + ' HAS NO ELEMENTS');
+       print('        lesson ' + lesson['dn'] + ' HAS NO ELEMENTS');
     else for (var i = 0; i < elements.length; i++) {
          var element = elements[i];
          // look up element in activities
         if (element.collection === 'chapters'){
-            if (!db.chapters.findOne({_id:element.id})) print('        chapter element ' + element.id + '  NOT FOUND in database');
+            if (!db.chapters.findOne({_id:element.id})) print('       NOT FOUND IN DB for ' + lesson['dn'] + ' - chapter element ' + element.id);
         } else if (element.id) {
             var element_detail = db.activities.findOne({_id:ObjectId(element.id)});
             if (!element_detail) print('        NOT FOUND IN DB for ' + lesson['dn'] + ' - activity element ' + element.id);
@@ -72,8 +93,9 @@ while (lessoncursor.hasNext()) {
                 if (typecount[category[element_detail.ft]]) typecount[category[element_detail.ft]]++; else typecount[category[element_detail.ft]]=1;
                 if ( lessonID && lessonID[0] && element_detail.ft === 'text') {
                     checkMatch(element_detail.dn, lessonID[0]);
-                }
-            }
+                };
+            };
+            
         };
         
             // check that its name included the ch_id of the lesson

@@ -51,17 +51,21 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         // $title = "TITLE";
         // $time_limit = 100;
         // $scores = [0];
-        $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
-        $type = isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
+        $id =    isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
+        $type =  isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
         $class = isset($_REQUEST['class']) ? $_REQUEST['class'] : null;
-        $subj = isset($_REQUEST['subj']) ? $_REQUEST['subj'] : null;
+        $subj =  isset($_REQUEST['subject']) ? $_REQUEST['subject'] : null;
 
         echo '<div class="header">';
         echo '<h1 id="gameTitle"</h1>';
         echo '</div>';
 
-        echo '<div hidden class="thegameframe" id="thegameframe" data-gameid="' . $id .'" data-gametype="'.$type.'" data-randclass="'.$class.'" data-randsubj="'.$subj.'">';
-            echo '<div id="top">';
+        echo '<div hidden class="thegameframe" id="thegameframe"' .
+                    'data-gameid="'     . $id .
+                    '" data-gametype="' . $type .
+                    '" data-class="'    . $class .
+                    '" data-subject="'  . $subj . '">';
+                echo '<div id="top">';
                 echo '<span id="current-team"></span>';
                 echo '<span id="question-number"></span>';
                 echo '<span id="question"></span>';

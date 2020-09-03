@@ -155,18 +155,18 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
         
         case 'EP':
         case 'epaath':
+                
+                    $('.speak, .lookup').show();
+                    if (version==2019) {
+                        var prefix = '../ePaath/';
+                        if (grade=='grade7' || grade == 'grade8') prefix += 'EPaath7-8/';
+                        $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
+                    }
+                    else
+                        $htmlHTML.find('embed').attr('src', '../content/epaath/activities/'+ fn + '/start.html');
+    
+                    $htmlHTML.appendTo($viewer);
             
-            $('.speak, .lookup').show();
-            var lang = (language==='native') ? 'np' : 'en';
-            if (ft=="EP" && version==2019) {
-                var prefix = '../ePaath/';
-                if (grade=='grade7' || grade == 'grade8') prefix += 'EPaath7-8/';
-                $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
-            }
-            else
-                $htmlHTML.find('embed').attr('src', '../content/epaath/activities/'+ fn + '/start.html');
-            
-            $htmlHTML.appendTo($viewer);
             break;
         
         case 'looma':
@@ -238,10 +238,11 @@ function makePdfHTML() // see looma-play-pdf.php for original code
     return ('<div id="fullscreen"><iframe id="iframe"' +
         'id="pdf-canvas" ><p hidden id="parameters" data-fn= data-fp= data-pg=></p>' +
         '</iframe></div>');
-} //end makePdfHTML()
+};
+
 function openPage(item, collection, url) {
     $.post("looma-database-utilities.php", {
-            cmd: "openByID",
+            cmd: "openByID", //end makePdfHTML()
             collection: collection,
             id: item.data('id')
         },

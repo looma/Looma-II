@@ -42,9 +42,9 @@ if (isset($_GET["cmd"]))
 	switch ($cmd)
 	{
 
-    ////////////////////////////
-    ////// command LOOKUP   ////
-    ////////////////////////////
+////////////////////////////
+////// command LOOKUP   ////
+////////////////////////////
 
     case "lookup":
 		// lookup $_GET["word"] in the dictionary and return an object describing the word
@@ -94,9 +94,9 @@ if (isset($_GET["cmd"]))
 		}
 		exit(); //end LOOKUP cmd
 
-    ////////////////////////////
-    ////// command ADD   //////
-    ////////////////////////////
+////////////////////////////
+////// command ADD   //////
+////////////////////////////
 
     case "add":
 		// add a word to the dictionary using the object passed in, return T/F for success
@@ -144,44 +144,38 @@ if (isset($_GET["cmd"]))
 			exit();
 		}  // end ADD cmd
 
-    ////////////////////////////
-	////// command LIST   //////
-	////////////////////////////
+////////////////////////////
+////// command LIST   //////
+////////////////////////////
 
 	case "list":
 		// given "class", "subj" OR "ch_id" and [optionally] "count" and "random" (boolean),
 		// return an array of 'count' words that match class&subj or ch_id
 
-		$random =   (isset($_GET["random"])? ($_GET["random"] == "true") : true);
+		$random =       (isset($_GET["random"])?       ($_GET["random"]       == "true") : false);
+		$picturesonly = (isset($_GET["picturesonly"])? ($_GET["picturesonly"] == "true") : false);
 
-        $maxCount = (isset($_GET["count"]) ? min(max(0,$_GET['count']),$MAX_NUM) : $DEFAULT_NUM);
+		$maxCount = (isset($_GET["count"]) ? min(max(0,$_GET['count']),$MAX_NUM) : $DEFAULT_NUM);
 
 		$classes = array('class1','class2','class3','class4','class5','class6','class7','class8', 'class9', 'class10');
 		$subjects = array('english','math','social studies','science', 'health', 'vocation');
 
 		//Ensure that classes and subjects sent are valid types
-		$hasClass = false;
-		if(isset($_GET["class"]))
-			if($_GET["class"] != ""   && in_array($_GET["class"],   $classes)) $hasClass = true;
-
-		$hasSubject = false;
-		if(isset($_GET["subject"]))
-			if($_GET["subject"] != "" && in_array($_GET["subject"], $subjects)) $hasSubject = true;
+		$hasClass =   isset($_GET["class"])   && in_array($_GET["class"],   $classes);
+		$hasSubject = isset($_GET["subject"]) && in_array($_GET["subject"], $subjects);
 
 		//Tests to see if the parameter ch_id has been set, if it has been set and is valid it will override class and subject parameters
-		$hasValidChapterId = false;
-		if(isset($_GET["ch_id"]))
-		{
+
+		if(isset($_GET["ch_id"])) {
 			$ch_id = $_GET["ch_id"];
-			if(preg_match("/^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/", $ch_id))
-				$hasValidChapterId = true;
-		}
+			$hasValidChapterId =(preg_match("/^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/", $ch_id));
+		} else $hasValidChapterId = false;
 
 		//Queries on chapter id if present, then either class or subject if necessary, else just give random words
-		$hasChapterId = true;
 		if($hasValidChapterId) 	$startChapterId = $_GET["ch_id"];
 		else if($hasClass && $hasSubject)
 		{
+			$hasChapterId = true;
 			$class = $_GET["class"];
 			$subject = $_GET["subject"];
 			//Gets the Class Number from the Class parameter
@@ -195,14 +189,14 @@ if (isset($_GET["cmd"]))
 			else if($subject == "social studies")	$startChapterId .= "SS";
 		}
 		else if($hasClass)
-		{
-			//Handles providing words if only a class is provided
+		{  //Handles providing words if only a class is provided
+			$hasChapterId = true;
 			$class = $_GET["class"];
 			$startChapterId = substr($class, 5);
 		}
 		else if($hasSubject)
-		{
-			//Handles providing words if only a subject is provided
+		{  //Handles providing words if only a subject is provided
+			$hasChapterId = true;
 			$startChapterId = "[1-8]";
 			$subject = $_GET["subject"];
 			     if($subject == "english")  $startChapterId .= "EN";
@@ -213,104 +207,56 @@ if (isset($_GET["cmd"]))
             else if($subject == "social studies") $startChapterId .= "SS";
 		}
 		else
-		{
-			//Handles providing words if neither a class or subject is provided
+		{  //Handles providing words if neither a class or subject is provided
 			$startChapterId = "";
 			$hasChapterId = false;
 		}
 
-		//If count is set then they have specified they want a certain number of words
-		//If not we return all results that match
-		//Ensures that we never send more than $MAX_NUM records
+		$list = array();
 
-		//echo "random: $random, startChapterId: $startChapterId"; //DEBUG
-
-		if($random)
-		{
-            // Should rewrite this to use $sample [mongo3.2 and later]
-
-			// Uses fields within the dictionary called rand to get a random document
-			$list = array();
-            $count = 0;
-			$tries = 0;
-			while ($count < $maxCount && $tries < 2 * $maxCount)
-			//don't increment $count when a duplicate is found (and discarded), but count $tries to be sure the WHILE terminates
-			{
-				//$newWord = null;
-				$value = (float)rand()/(float)getrandmax();
-
-                //echo 'random value is: ' . $value;
-
-				//Manages searches to work with randomization
-			if($hasChapterId)
-				{
-					$query = array('rand' => array('$gt' => $value), 'ch_id' => array('$regex' => mongoRegexOptions("^$startChapterId", "i")));
-					//$newWord = $dictionary_collection -> findOne($query);
-					$newWord = mongoFindOne($dictionary_collection, $query);
-					//A test in case we generate a number that is too high
-
-                    //echo "count is " . $count . ", and newword is " . $newWord;
-
-                    if(!$newWord)
-					{
-						$query = array('rand' => array('$lt' => $value), 'ch_id' => array('$regex' => mongoRegexOptions("^$startChapterId", "i")));
-						//$newWord = $dictionary_collection -> findOne($query);
-						$newWord = mongoFindOne($dictionary_collection, $query);
-					}
+		if($random) {
+			if($hasChapterId) {
+				//$regex = mongoRegexOptions("^$startChapterId", "i");
+				$query = array('ch_id' => mongoRegexOptions("^$startChapterId",'i'));
+				//$regex = "^" . $startChapterId . "/i";
+					//$query = array('ch_id' => $regex);
+				} else { $query = array();
 				}
-				else
-				{
-					$query = array('rand' => array('$gt' => $value));
-					//$newWord = $dictionary_collection -> findOne($query);
-					$newWord = mongoFindOne($dictionary_collection, $query);
-					//A test in case we generate a number that is too high
-					if(!$newWord)
-					{
-						$query = array('rand' => array('$lt' => $value));
-						//$newWord = $dictionary_collection -> findOne($query);
-						$newWord = mongoFindOne($dictionary_collection, $query);
-					}
+			$words = mongoFindRandom($dictionary_collection, $query, 100 * $maxCount);
+				$count = 0;
+				foreach ($words as $newWord) {
+					//echo '  ++ ' . $newWord;
+					if (!$picturesonly || file_exists("../content/dictionary images/" . $newWord . ".jpg")) {
+						array_push($list, $newWord);
+						$count++;
+						if ($count >= $maxCount) break;
+						}
 				}
-
-				if (($newWord) &&
-				    keyIsSet('en', $newWord) &&
-				    ! in_array($newWord['en'], $list))
-				    {
-				        $count += 1;
-				        array_push($list, $newWord['en']);
-				    }
-                $tries += 1;
 			}
-
-//echo "count: $count, maxCount: $maxCount, list:";
-//for ($i=0;$i<count($list);$i++) echo $list[$i];
-		}
-		else  //not RANDOM list
-		{
+		else
+	/////////////////////// not RANDOM /////////////
+		{  // not RANDOM
 			//Just return the list in the order they appear in the database
-			$list = array();
 			if($hasChapterId)
 			{
-				$query = array('ch_id' => array('$regex' => mongoRegexOptions("^$startChapterId", "i")));
-				//$words = $dictionary_collection -> find($query);
-				$words = mongoFindOne($dictionary_collection, $query);
+				$regex = mongoRegexOptions("^$startChapterId", "i");
+				$query = array('ch_id' => array('$regex' => $regex));			}
+			else { $query = array();
 			}
-			else
-			{
-				//$words = $dictionary_collection -> find();
-				$words = mongoFind($dictionary_collection, [], null, null, $maxCount);
-			}
-			//$words->limit($maxCount);
-			$words = iterator_to_array($words);
-			foreach ($words as $newWord)
-			    if (keyIsSet('en', $newWord)) array_push($list, $newWord['en']);
-		}
-		$list = json_encode($list) . "\n";
+			$words = mongoFind($dictionary_collection, $query, null, null, $maxCount);
+
+		foreach ($words as $newWord)
+			if ((!$picturesonly || file_exists("../content/dictionary images/" . $newWord['en'] . ".jpg")) &&
+				keyIsSet('en', $newWord)) array_push($list, $newWord['en']);
+		} //end not random
+
+		$list = json_encode($list);
 		echo $list;
 		exit(); //end LIST cmd
+
 	default:
 		echo "looma illegal command";
 		exit(); //end ILLEGAL CMD
-	} //end CASE
-} //end ISSET
+	} //end CASE LIST
+}
 ?>

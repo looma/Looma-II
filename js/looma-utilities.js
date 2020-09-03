@@ -34,6 +34,7 @@ Description:
  * LOOMA.define()
  * LOOMA.popupDefinition()
  * LOOMA.wordlist()
+ * LOOMA.picturewordlist()
  * LOOMA.rtl()
  * LOOMA.setTheme()
  * LOOMA.changeTheme()
@@ -112,16 +113,7 @@ playMedia : function(button) {
             break;
 
         case "pdf":      //PDF
-        case "document":  //DOCUMENT (some PDFs)
-            /*
-            window.location = 'looma-pdf.php?' +
-                              'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
-                              '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
-                              '&zoom=' + button.getAttribute('data-zoom') +
-                              '&len=' + button.getAttribute('data-len') +
-                              '&pg=' + button.getAttribute('data-pg');
-            break;
-    */
+        case "document": //DOCUMENT (some PDFs)
         case "chapter":  //CHAPTER
             if ( true ) {
                     window.location = 'looma-play-pdf.php?' +
@@ -174,7 +166,8 @@ playMedia : function(button) {
                 window.location = 'looma-epaath.php?epversion=2015&fp=' + fp + '&fn=' + fn;
             } else {
                 window.location = 'looma-epaath.php?epversion=2019' +
-                '&ole=' + button.getAttribute("data-ole") +
+                    '&ole=' + button.getAttribute("data-ole") +
+                    '&lang=' + button.getAttribute("data-lang") +
                 '&grade=' + button.getAttribute("data-grade").substr(5,);
             }
             break;
@@ -185,7 +178,10 @@ playMedia : function(button) {
             break;
     
         case "game":
-            window.location = 'looma-game.php?id=' + button.getAttribute('data-mongoid');
+            window.location = 'looma-game.php?id=' + button.getAttribute('data-mongoid') +
+                '&class=' + button.getAttribute('data-class') +
+                '&subject=' + button.getAttribute('data-subject') +
+                '&type=' + button.getAttribute('data-type');
             break;
     
         case "map":
@@ -235,21 +231,26 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                     var thumbfile;
                         //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
                     if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
-
+                    var lang = (result.ft==="EP" && result.subject === "nepali")? "np": "en";
                     var $newButton = $(
                                 '<button class="activity play img" ' +
                                 'data-id="' + id          + '" ' +
                                 'data-fn="' + result.fn   + '" ' +
                                 'data-fp="' + fp          + '" ' +
                                 'data-ft="' + result.ft   + '" ' +
-                     
+                                'data-lang="' +  lang     + '" ' +
                                 'data-dn="' + result.dn   + '" ' +
                                 'data-ndn="' + result.ndn   + '" ' +
                                 'data-prefix="' + result.prefix   + '" ' +
     
-                        'data-zoom="' + result.zoom + '" ' +
-                        'data-url="' + result.url + '" ' +
+                                'data-zoom="' + result.zoom + '" ' +
+                                'data-url="' + result.url + '" ' +
+                       
                                 'data-grade="' + result.grade + '" ' +
+                                'data-class="' + result.class + '" ' +
+                                'data-subject="' + result.subject + '" ' +
+                                'data-type="' + result.presentation_type + '" ' +
+                                
                                 'data-epversion="' + result.version + '" ' +
                                 'data-ole="' + result.oleID + '" ' +
                                 'data-mongoID="'  + mongoID     + '" >'
@@ -332,6 +333,7 @@ filepath: function(filetype, filename) {
         switch (filetype) {
             case "mp3": //audio
             case "m4a": //audio
+            case "audio": //audio
                 path = homedirectory + "content/audio/";
                 break;
             
@@ -817,7 +819,30 @@ wordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
 
     return false;
 }, //end WORDLIST
-
+    
+        picturewordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
+        
+            var parameters = "cmd=list&picturesonly=true";
+            if (grade) parameters  += "&class="  + encodeURIComponent(grade);
+            if (subj) parameters   += "&subject="   + encodeURIComponent(subj);
+            if (ch_id) parameters  += "&ch_id="   + encodeURIComponent(ch_id);
+            if (count) parameters  += "&count="  + count.toString();
+            if (random) parameters += "&random=" + encodeURIComponent(random);
+            console.log(parameters);
+            $.ajax(
+                "looma-dictionary-utilities.php",
+                {
+                    type: 'GET',
+                    cache: false,
+                    crossDomain: true,
+                    dataType: "json", //jQ will convert the response back into JS, dont need parseJSON()
+                    data: parameters,
+                    error: fail,
+                    success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
+                });
+        
+            return false;
+        }, //end PICTUREWORDLIST
 
 rtl : function(element) { //enables Right-to-left input for numbers in looma-arith-problems.js
     if (element.setSelectionRange) element.setSelectionRange(0, 0);

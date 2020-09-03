@@ -1,0 +1,16 @@
+// file: fixhistoriesandgamesch_ids
+// one time script to move all ch_id's from GAMES and from HISTORIES to their ACTIVITIES documents in mongo
+//
+//  run in mongo, with load('fixhistoriesandgamesch_ids'//
+//
+db.games.find({}).forEach(function(game,i) {
+    var act = db.activities.findOne({mongoID:game._id});
+    if (act) {
+        act.ch_id = [game.ch_id];
+        print ('game.ch_id is ' + game.ch_id + '     - -     act.ch_id is ' + act.ch_id);
+        delete game.ch_id;
+        db.games.save(game);
+        db.activities.save(act);
+    }
+});
+

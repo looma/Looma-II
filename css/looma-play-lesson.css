@@ -373,6 +373,11 @@ span#lesson-name {
     /*background-color: #091F48;  */
     /*color: yellow;  */
     /*font-size: 20px;*/
+    
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    
 }
 
 .text-display:fullscreen {

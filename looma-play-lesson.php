@@ -86,13 +86,18 @@ Description: looma lesson plan presenter
                        $thumbSrc = '../content/epaath/activities/' . $details["fn"] . '/thumbnail.jpg';
                    else if (isset($details['ft']) && $details['ft'] == 'evi')
                        $thumbSrc = 'images/video.png';
+                   else if (isset($details['ft']) && $details['ft'] == 'text')
+                       $thumbSrc = 'images/textfile6.png';
                    else if (isset($details['ft']) && $details['ft'] == 'game')
                        $thumbSrc = 'images/games.png';
                    else if (isset($details['fn']) && isset($details['fp']))
                      $thumbSrc = $details['fp'] . thumbnail($details['fn']);
                    else $thumbSrc = 'images/LoomaLogo_small.png';
 
+                   if (isset($details['ft']) && $details['ft'] == 'EP'  && $details['subject'] === 'nepali') $playLang = 'np'; else $playLang = 'en';
                    //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npg,$prefix,$lang)
+
+                   //echo "$playLang is " . $playLang;
 
                         makeActivityButton(
                              $details['ft'],
@@ -113,7 +118,7 @@ Description: looma lesson plan presenter
                             (isset($details['nfn'])) ? $details['nfn'] : null,
                             (isset($details['npn'])) ? $details['npn'] : null,
                             null,
-                            null
+                            $playLang
                         );
                 } else
 

@@ -1,0 +1,23 @@
+// mongo terminal program 'checkPicturesExist';
+
+//  start MONGO in LOOMA db with: 'mongo looma'
+//  run in MONGO SHELL with: load('importCH_IDs')
+//
+//"use strict";
+var count = 0;
+var words = db.dictionary.find();
+while (words.hasNext()) {
+    word = words.next();
+    var imagefile = '../../content/dictionary images/' + word.en + '.jpg';
+    try   {
+        var contents = cat(imagefile);
+            count++;
+            print('word ' + word.en + ' has an image file, and CH_ID      ' + word.ch_id);
+    }
+    catch (e) { //print('file not found for ' + imagefile)
+    }
+}
+
+print('');
+print('+++++  ' + count + '  words with pictures found');
+pring ('');

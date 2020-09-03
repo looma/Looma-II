@@ -416,7 +416,11 @@ function displayFileSearchResults(results)
                 "title='" + displayname + "' " +
                 "<h4> <b> " + displayname + " </b> </h4>" +
                 "<h6>" + author + date + "</h6>" +
-                "<div class='result-data'>" + value['data'] + "</div>" +
+              
+               // NOTE: next line deleted 2020 08. this data is not used, and causes problems when large text file
+                // html (usually from copy-paste from Word) is in the [text file] search result
+                // "<div class='result-data'>" + value['data'] + "</div>" +
+              
                 "</button>" +
                 "</td</tr>"
             ).show();
@@ -564,10 +568,7 @@ $(document).ready(function () {
             function(deletename) {
                 fileexists(deletename, currentcollection, currentfiletype)
                 .then( function({name, author}) {
-                    if (author == LOOMA.loggedIn()
-                        || LOOMA.loggedIn() == 'skip'
-                        || LOOMA.loggedIn() == 'david'
-                        || LOOMA.loggedIn() == 'kathy')
+                    if (owner)
                             {deletefile(name, currentcollection, currentfiletype);
                              if (currentname == name) callbacks['clear']();}
                     else LOOMA.alert('Delete failed. You are not the owner of this file.', 5, true);// called if file exists

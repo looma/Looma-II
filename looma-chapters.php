@@ -157,7 +157,7 @@ foreach ($chapters as $ch) {
 
     $query = array('ch_id' => $ch_id);
 
-    //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create an activity button
+    //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create a "Resources" button
     //$activities = $activities_collection -> findOne($query);
         $activities = mongoFindOne($activities_collection, $query);
 
@@ -167,7 +167,7 @@ foreach ($chapters as $ch) {
     if ($activities || $words) {
         echo "<button class='activities en-activities'
                        data-lang='en'
-                   data-ch='$ch_id'
+                    data-ch='$ch_id'
                      data-chdn='$ch_dn'>";
         echo keyword('Resources');
         echo "</button>";

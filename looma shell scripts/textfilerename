@@ -1,0 +1,55 @@
+// ONE TIME program to
+//    rename textfiles that have mal-formed ch_id's in their name
+//
+//    reads a file in current ch_id and the new ch_id:  'textfilesToRename.txt'
+//
+//   run in MONGO SHELL with: load('textfilerename')
+//
+
+function legalCH_ID(ch) {
+    var chapter = ch.replace(/\s/g,''); //removes 'whitespace'
+    if (chapter && chapter.length>0) {
+        var legal = db.chapters.find({"_id": chapter});
+        if (legal.length() === 0) {
+            print("************ illegal ch_id:     " + chapter );
+            illegalcount++;
+            return false;
+        } else return true;
+    }
+}
+
+var textfilecursor;
+var count = 0;
+var illegalcount = 0;
+var old, new;
+
+print('db is ' + db);
+print('');
+
+var input = 'textfilesToRename.txt';
+print ('Importing CH_IDs to rename from ' + input);
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+var candidates = file.split(/[\r\n]+/);  // split file into array of lines each containing a single CH_ID
+print ('Processing ' + candidates.length + ' lines');
+
+candidates.forEach( function(candidate) {
+    [old, new] = candidate.split(/\,/);
+    // trim old and new
+    if (legalCH_ID(new)) {
+        //look up text file with /old/ in its name
+        // update $set dn with dn.replace(old, new)
+        // same with activity for this text file
+            text = db.text_files.findOne({dn: {$regex:old}});
+            if (text) {db.text_files.update({dn: {$regex:old}},{$set:{dn:text.dn.replace(old, new)}});};
+    
+            act = db.activities.findOne({dn: {$regex:old},ft:'text'});
+            if (act) {db.activities.update({dn: {$regex:old},ft:'text'},{$set:{dn:text.dn.replace(old, new)}});};
+        } else print ('ILLEGAL CH_ID: ' + new);
+    };
+);
+print('');
+print('found ' + count + ' textfiles');
+if (param === 'dryrun') print('DRY RUN - no changes made');
+else                    print(' and made renamed them');
+print('');
+

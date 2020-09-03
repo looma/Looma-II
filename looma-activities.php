@@ -40,7 +40,7 @@ $foundActivity;
             $ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
             $fn = (isset($activity['fn']) ? $activity['fn'] : "");
-            $fn = urlencode($fn);
+            //$fn = urlencode($fn);
             $thumb = (isset($activity['thumb']) ? $activity['thumb'] : "");
             $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
             $prefix = (isset($activity['prefix']) ? $activity['prefix'] : "");
@@ -52,6 +52,7 @@ $foundActivity;
             if (isset($activity['thumb'])) $thumb = $activity['thumb'];
             else if (isset($activity['fn']) && isset($activity['fp']))
                 $thumb = $activity['fp'] . thumbnail($activity['fn']);
+            else if ($ft === 'game') $thumb = 'images/games.png';
             else $thumb = null;
 
             //$thumb = (isset($activity['thumb']) ? $activity['thumb'] : thumbnail($fn));
@@ -63,8 +64,6 @@ $foundActivity;
                 echo "<td>";
 
                 if ($ft == 'slideshow' ||  $ft == 'evi') $id = new MongoID($activity['mongoID']);
-
-                //if ($ft != 'looma') $thumb = thumbnail($fn);
 
                 switch ($ft) {
                     case "video":
@@ -118,8 +117,12 @@ $foundActivity;
                         makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,null);
                         break;
 
+                    case "game":
+                        makeActivityButton($ft, null, null, $dn, "", $thumb, $ch_id, $id, "", "", "1", "auto", $grade, "",null,null,null,null);
+                        break;
+
                     case "text":
-                        //NOTE: dont show indivudual text files in Activities page for a chapter
+                        //NOTE: dont show individual text files in Activities page for a chapter
                         //makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null,null);
                         break;
 
@@ -199,9 +202,9 @@ $foundActivity;
         //create a vocab review button if there are any words from this chapter in the dictionary
         $query = array('ch_id' => $ch_id);
         //$words = $dictionary_collection -> find($query);
-        $words = mongoFind($dictionary_collection, $query, null, null, null);
+        $words = mongoFindOne($dictionary_collection, $query, null, null, null);
 // ($lang === 'en' & $words -> count() > 0) {
-        if ($lang === 'en' && $words->hasNext()) {
+        if ($lang === 'en' && $words) {
             echo "<td>";
             //make a button with <a href="looma-vocab-flashcard.php?ch_id=CH_ID">
 
@@ -215,7 +218,30 @@ $foundActivity;
             echo "</td>";
             $foundActivity = true;
             $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
-        }
+
+            if (intval($gradenumber) <= 4) { //button for vocabulary picture matching game
+                echo "<td>";
+                echo "<a href='looma-game.php?type=picture&class=class" . $gradenumber . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
+                echo "  <button class='activity play img'>";
+                echo "    <img src='images/games.png'>";
+                echo "    <span>Visual Vocabulary</span>";
+                echo "  </button>";
+                echo "</a>";
+
+                echo "</td>";
+            } else {  // change to SPEAK game when implemented
+                echo "<td>";
+                echo "<a href='looma-game.php?type=picture&class=" . $grade . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
+                echo "  <button class='activity play img'>";
+                echo "    <img src='images/dictionary.png'>";
+                echo "    <span>Visual Vocabulary</span>";
+                echo "  </button>";
+                echo "</a>";
+
+                echo "</td>";
+            }
+
+    }
 
 
 //get all the activities registered for this chapter

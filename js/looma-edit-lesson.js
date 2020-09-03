@@ -25,7 +25,7 @@ function lessonclear() {
     
     setname("");
     $timeline.empty();
-    clearFilter();
+    //clearFilter();
     lessoncheckpoint();
     
 }
@@ -124,7 +124,9 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
 } //end lessonunpack()
 
 ///////// lessondisplay  /////////
-function lessondisplay (response) {clearFilter(); $timeline.html(lessonunpack(response)); /*lessoncheckpoint();  NOT needed. called in lessonunpack*/}
+function lessondisplay (response) {
+    //clearFilter();
+    $timeline.html(lessonunpack(response)); /*lessoncheckpoint();  NOT needed. called in lessonunpack*/}
 
 /////////  lessonsave  /////////
 function lessonsave(name) {
@@ -681,7 +683,11 @@ function preview_result (item) {
 
 	else if (collection == "activities") {
 
-		if(filetype == "mp4" || filetype == "video" || filetype == "mov" || filetype == "m4v" || filetype == "mp5") {
+		if(  filetype == "video" ||
+            filetype == "mov" ||
+            filetype == "m4v" ||
+            filetype == "mp4" ||
+            filetype == "mp5") {
 		    if (!filepath) filepath = '../content/videos/';
 			document.querySelector("#previewpanel").innerHTML =
 
@@ -719,6 +725,7 @@ function preview_result (item) {
 			     ' style="height:60vh;width:60vw;" type="application/pdf">';
 		}
 		else if (filetype=="mp3" || filetype=="m4a" || filetype=="audio") {
+		    
             if (!filepath) filepath = '../content/audio/';
 		      document.querySelector("div#previewpanel").innerHTML = '<br><br><br><audio id="audio"> <source src="' +
 		                      filepath +
@@ -993,7 +1000,7 @@ window.onload = function () {
     //
     makesortable(); //makes the timeline sortable
 
-        $('#chapter-lang').show();
+      //  $('#chapter-lang').show();
         
 // from connor
     $('#timelineLeft').on('click', function(){

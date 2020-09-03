@@ -24,7 +24,7 @@ require ('includes/mongo-connect.php');
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>Release 5.9.5  JUN 2020   </h4>
+        <h4>Release 5.9.6  SEP 2020   </h4>
         <!-- copyright notice, with link to vts.org-->
         <span class='glyphicon glyphicon-copyright-mark'></span>2020
         <a draggable="false"  class="footer" href="http://looma.education">by Looma Education Company</a>

@@ -1,0 +1,52 @@
+dn,ndn,ft,version,grade,subject,oleID,cl_lo,cl_hi,id,key1,key2,key3,src,thumb
+क-ङ चिन,क-ङ चिन,EP,2019,grade1,nepali,nepknc01,1,2,knc,Language,Nepali,Alphabets,OLE,../ePaath/images/thumb/nepali/ka_nga_gr101.png
+च-ञ चिन,च-ञ चिन,EP,2019,grade1,nepali,nepntc01,1,2,ntc,Language,Nepali,Alphabets,OLE,../ePaath/images/thumb/nepali/cha_yu_gr101.png
+ट-ण चिन,ट-ण चिन,EP,2019,grade1,nepali,nepddc01,1,2,ddc,Language,Nepali,Alphabets,OLE,../ePaath/images/thumb/nepali/ta_aanda_gr101.png
+त-न चिन,त-न चिन,EP,2019,grade1,nepali,nepnrc01,1,2,nrc,Language,Nepali,Alphabets,OLE,../ePaath/images/thumb/nepali/ta_nna_gr101.png
+प-म चिन,प-म चिन,EP,2019,grade1,nepali,nepsgc01,1,2,sgc,Language,Nepali,Alphabets,OLE,../ePaath/images/thumb/nepali/pa_maa_gr101.png
+य-व चिन,य-व चिन,EP,2019,grade1,nepali,nepygc01,1,2,ygc,Language,Nepali,Alphabets,OLE,../ePaath/images/thumb/nepali/ja_sha_gr101.png
+श-ज्ञ चिन,श-ज्ञ चिन,EP,2019,grade1,nepali,nepsgy01,1,2,sgy,Language,Nepali,Alphabets,OLE,../ePaath/images/thumb/nepali/sa_gya_gr101.png
+मेरो घर आँगन,मेरो घर आँगन,EP,2019,grade1,nepali,nepmga01,1,2,mga,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/mero_ghar_aagan_gr101.png
+आधा अक्षर,आधा अक्षर,EP,2019,grade1,nepali,nepaar01,1,2,aar,Language,Nepali,Alphabets,OLE,../ePaath/images/thumb/nepali/aadha_aachar_gr101.png
+छुकछुके रेल,छुकछुके रेल,EP,2019,grade1,nepali,nepppg01,1,2,ppg,Language,Nepali,Grammar,OLE,../ePaath/images/thumb/nepali/purna_biram_gr101.png
+टालाटुली बटुली,टालाटुली बटुली,EP,2019,grade1,nepali,neptat01,1,2,tat,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/talatuli-batuli-Gr-101.png
+उल्टो उमेश,उल्टो उमेश,EP,2019,grade1,nepali,nepuum01,1,2,uum,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/ulto_umesh_gr101.png
+विद्यालयको पहिलो दिन,विद्यालयको पहिलो दिन,EP,2019,grade1,nepali,nepbpd01,1,2,bpd,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/vidhyala_ko_pahilo_din_gr1_01.png
+सीताको घर,सीताको घर,EP,2019,grade1,nepali,nepskg01,1,2,skg,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/sita_ko_ghar_gr101.png
+मेरो काम,मेरो काम,EP,2019,grade1,nepali,nepmka01,1,2,mka,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/mero_kaam_gr101.png
+कुराकानी,कुराकानी,EP,2019,grade1,nepali,nepkur01,1,2,kur,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/kurakani-Gr101.png
+एक अनेक,एक अनेक,EP,2019,grade2,nepali,nepeka01,2,3,eka,Language,Nepali,Grammar,OLE,../ePaath/images/thumb/nepali/eaak_aanak_gr201.png
+नाच्यो जुरेली,नाच्यो जुरेली,EP,2019,grade2,nepali,nepnaj01,2,3,naj,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/Naachyo-jureli-Gr-2-01.png
+"अघि अघि रोटो, पछि पछि केटो","अघि अघि रोटो, पछि पछि केटो",EP,2019,grade2,nepali,neparp01,2,3,arp,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/aaghi_aaghi_roto_pachi_pachi_keto-Gr201.png
+सिंह र मुसो,सिंह र मुसो,EP,2019,grade2,nepali,nepsrm01,2,3,srm,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/Singa-ra-musa-Gr-2-01.png
+पुलिङ्ग र स्त्रीलिङ्ग,पुलिङ्ग र स्त्रीलिङ्ग,EP,2019,grade2,nepali,neppre01,2,3,pre,Language,Nepali,Grammar,OLE,../ePaath/images/thumb/nepali/strilinga-pulinga-Gr-201.png
+घाँघरीको पोल्टो,घाँघरीको पोल्टो,EP,2019,grade2,nepali,nepgrp01,2,3,grp,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/Ghagari-ko-Polto--Gr-2-01.png
+कछुवा र खरायो,कछुवा र खरायो,EP,2019,grade2,nepali,nepkra01,2,3,kra,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/kachuwa_ra_kharayo-Gr-201.png
+घुमफिर,घुमफिर,EP,2019,grade2,nepali,nepghm01,2,3,ghm,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/ghum_phir_gr201.png
+दुई दाउरे,दुई दाउरे,EP,2019,grade2,nepali,nepddr01,2,3,ddr,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/Dui-Daure-Gr-2-01.png
+झूटो नबोल,झूटो नबोल,EP,2019,grade2,nepali,nepjnb01,2,3,jnb,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/jhoto_na_bola-Gr-201.png
+आज्ञाकारी बनौँ,आज्ञाकारी बनौँ,EP,2019,grade2,nepali,nepagy01,2,3,agy,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/aagyakaari_banauu_gr201.png
+पैसाको पीर,पैसाको पीर,EP,2019,grade2,nepali,nepppr01,2,3,ppr,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/paisa-ko-pir-gr-201.png
+घडी,घडी,EP,2019,grade3,nepali,nepgad01,3,4,gad,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/Ghadi-Gr-3-01.png
+म र मेरो परिवार,म र मेरो परिवार,EP,2019,grade3,nepali,nepmmp01,3,4,mmp,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/Ma-ra-mero-pariwar-Gr-3-01.png
+अचम्मका साथी,अचम्मका साथी,EP,2019,grade3,nepali,nepaks01,3,4,aks,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/achamba_ka_saathi-Gr-301.png
+हाम्रो हाटबजार,हाम्रो हाटबजार,EP,2019,grade3,nepali,nephhb01,3,4,hhb,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/Hamro-haat-bazaar-Gr-3-01.png
+हजुरबाको अर्ती,हजुरबाको अर्ती,EP,2019,grade3,nepali,nephup01,3,4,hup,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/hajur-ba-ko-aarti-Gr-301.png
+राम्रो बानी बसालौँ,राम्रो बानी बसालौँ,EP,2019,grade3,nepali,neprbb01,3,4,rbb,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/ramro_baani_basaalauu_gr301.png
+खेतीवाल,खेतीवाल,EP,2019,grade3,nepali,nepkht01,3,4,kht,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/Khetiwal-Gr-3-01.png
+असल साथी,असल साथी,EP,2019,grade3,nepali,nepass01,3,4,ass,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/aasal-saathi-Gr-3-01.png
+घोडा मेरो छँदै छ,घोडा मेरो छँदै छ,EP,2019,grade3,nepali,nepgmc01,3,4,gmc,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/ghoda-mero-chadai-xa-gr3_01.png
+धो-ताराप उपत्यका,धो-ताराप उपत्यका,EP,2019,grade3,nepali,nepght01,3,4,ght,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/dho_tarap_gr301.png
+गाउँखाने कथा,गाउँखाने कथा,EP,2019,grade3,nepali,nepgkk01,3,4,gkk,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/Gau-Khane-Katha-Gr-3-01.png
+नामको अर्थ,नामको अर्थ,EP,2019,grade3,nepali,nepkku01,3,4,kku,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/Kale-Kumale-Gr-3-01.png
+एकवचन र बहुवचन,एकवचन र बहुवचन,EP,2019,grade4,nepali,nepeyb01,4,5,eyb,Language,Nepali,Grammar,OLE,../ePaath/images/thumb/nepali/eakbachan_bahubachan_gr401.png
+पुलिङ्ग र स्त्रीलिङ्ग,पुलिङ्ग र स्त्रीलिङ्ग,EP,2019,grade4,nepali,neppre01,4,5,pre,Language,Nepali,Grammar,OLE,../ePaath/images/thumb/nepali/strilinga-pulinga-Gr-401.png
+पाप लाग्छ,पाप लाग्छ,EP,2019,grade4,nepali,neppap01,4,5,pap,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/paap_laagcha_gr401.png
+पढ्ने बानी,पढ्ने बानी,EP,2019,grade4,nepali,neppad01,4,5,pad,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/padha_ne-baani_gr401.png
+भाइ आयो? भाइ आयो।,भाइ आयो? भाइ आयो।,EP,2019,grade4,nepali,nepbay01,4,5,bay,Language,Nepali,Grammar,OLE,../ePaath/images/thumb/nepali/bhai_aayo_gr401.png
+गाईजात्रा,गाईजात्रा,EP,2019,grade4,nepali,nepgjt01,4,5,gjt,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/gaijatra_gr401.png
+चिह्,चिह्,EP,2019,grade4,nepali,neppun01,4,5,pun,Language,Nepali,Grammar,OLE,../ePaath/images/thumb/nepali/china-ko-parayog-Gr-401.png
+चिठी लेखन,चिठी लेखन,EP,2019,grade4,nepali,nepltr01,4,5,ltr,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/chithi-lekhan-Gr-401.png
+मकैको रोटी,मकैको रोटी,EP,2019,grade4,nepali,nepchs01,4,5,chs,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/chushke_ra_choshke-Gr401.png
+पोस्टर र भित्,पोस्टर र भित्,EP,2019,grade4,nepali,nepprv01,4,5,prv,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/poster_and_bhite_patro_gr401.png
+जैविक खेती,जैविक खेती,EP,2019,grade4,nepali,nepjkt01,4,5,jkt,Language,Nepali,Contexts,OLE,../ePaath/images/thumb/nepali/javik_khati_gr401.png

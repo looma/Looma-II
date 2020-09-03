@@ -129,6 +129,16 @@ Description: formatting and styling for the game page
     font-size:1.5em;
 }
 
+/* CP NEW (1) */
+.prompt.picture{
+    width: 25vw;
+    height: 12vh;
+    margin:0;
+}
+
+.prompt.picture img {
+    height:100%;
+}
 .response{
     display: block;
     min-height: 9vh;
@@ -136,6 +146,11 @@ Description: formatting and styling for the game page
     width:40vw;
     max-width: 40vw;
     font-size:1.5em;
+}
+
+.response.picture {
+    margin:0;
+    height:12vh;
 }
 
 .prompt.clicked, .response.clicked {
@@ -408,6 +423,17 @@ Description: formatting and styling for the game page
     width: 25vw;
     height: 6vw;
 }
+
+.button.picture{
+    height: 9vh;
+    width: 10vw;
+}
+
+/* CP NEW (2) */
+button img{
+    height: 9vh;
+    width:10vw;
+}
 button:hover, .button:hover
 {
     border: 8px solid yellow;
@@ -576,6 +602,7 @@ a button:hover {color:blue;}
 }
 
 #question {
+    font-size: 1.5em;
 }
 #answers {
 }

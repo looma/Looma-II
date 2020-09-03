@@ -324,7 +324,11 @@ li:hover {
 }
 #previewpanel .textpreview {
     /*zoom:155%;*/
-    font-size:1.5vw;
+    font-size:1.7vw;
+    
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
 }
 
 #displayImage {

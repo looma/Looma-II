@@ -85,6 +85,10 @@ button.class:hover,  button.subject:hover {
     margin:0;
 }
 
+#subjects button.game {
+    height:25vh;
+    margin: 1vw;
+}
 
 button#bagh-chal {
     display:inline-block;
@@ -92,3 +96,8 @@ button#bagh-chal {
     /*opacity:0;*/
 }
 
+.title h1{
+    font-size:4em;
+    margin-top:3vh;
+    margin-bottom:5vh;
+}

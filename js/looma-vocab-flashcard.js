@@ -30,12 +30,7 @@ function init() {
     
     $('.stage').on('click', function () {
         $('.stage').toggleClass('flipped');
-        if (frontShowing) {
-            frontShowing = false;
-        }
-        else {
-            frontShowing = true;
-        }
+        frontShowing = !frontShowing;
     }); //end flashcard onclick function
     
     // SPEAK button will say the word, unless text is selected, in which case, it will speak the selected text
@@ -56,7 +51,7 @@ function init() {
     // vocabRandom =  LOOMA.readStore("vocab-random",  'session'); if (!vocabRandom) vocabRandom = "true";
     // vocabCh_id = '';
     
-    LOOMA.wordlist(vocabGrade, vocabSubject, vocabCh_id, vocabCount, vocabRandom, succeed, fail);
+        LOOMA.wordlist(vocabGrade, vocabSubject, vocabCh_id, vocabCount, vocabRandom, succeed, fail);
 }
 
 //If it fails, it alerts the user and describes the failure
@@ -73,15 +68,17 @@ function succeed(result) {
     //$('#nepali-output').text(result.np);
     //$('#defn-output').text(result.def);
     //if (result.img) $('#img-output').html('<img src="' + result.img + '>');
-    list = result;
-    count = list.length;
-    console.log('got ' + count + ' words');
+    if (result) {
+        list = result;
+        count = list.length;
+        console.log('got ' + count + ' words');
     
-    if (count > 0 ) {
-        word = list[index];
-        console.log('VOCAB: looking up ' + word);
-        show (word);
+        if (count > 0) {
+            word = list[index];
+            console.log('VOCAB: looking up ' + word);
+            show(word);
         }
+    }
     //LOOMA.lookup(word, gotAWord, fail);
 }
 

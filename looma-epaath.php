@@ -32,8 +32,7 @@ if ($epversion == '2015') {  // old ePaath activities from 2016
         $src = '../ePaath/';
         if ($grade == '7' || $grade == '8') $src .= 'EPaath7-8/';
 
-        $language = '&lang=';
-        $language .= ($_COOKIE['language'] === 'english') ? 'en' : 'np';
+        $language = '&lang=' . $_REQUEST['lang'];
 
         $src .= 'start.html?id=' . $oleID;
         $src .= $language . '&grade=' . $grade;

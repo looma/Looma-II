@@ -6,7 +6,7 @@ Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 06
 Revision: Looma 2.0.0
 File: contentNavigator.php
-Description:  Interacts with Mongo to let the user select a collection to edit
+Description:  updates all dictionary entries with random value in "rand" field
 -->
 
 <?php
@@ -24,18 +24,18 @@ function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility s
 	<?php
 	echo "<h3>Adding random fields and ensuring indexing on randomization</h3>";
 	$count = 0;
-	$dictionary = mongoFind($dictionary_collection, [], null, null, null;
+	$dictionary = mongoFind($dictionary_collection, [], null, null, null);
 	foreach ($dictionary as $d)
 	{
 		$count += 1;
 		$d_id = keyIsSet('_id', $d) ? $d['_id'] : null;
 		$random = (float)rand()/(float)getrandmax();
 		$newdata = array('$set' => array("rand" => $random));
-		mongoUpdate($dictionary_collection, (array("_id" => mongoId("$d_id")), $newdata);
-		$d_en = keyIsSet('en', $d) ? $d['en'] : null;
-		$d_np = keyIsSet('np', $d) ? $d['np'] : null;
-		$d_r = keyIsSet('rand', $d) ? $d['rand'] : null;
-		//echo "<p>Dictionary entry: <b>$d_en</b> [nepali: $d_np] assigned random index: $d_r</p>";
+		mongoUpdate($dictionary_collection, array("_id" => $d_id), $newdata);
+
+		echo "<p>Dictionary entry: <b>" . $d['en'] .
+             "</b> [nepali: " . $d['np'] .
+              " assigned random index: " . $d['rand'] . "</p>";
 	}
     echo "<h3>Processed $count dictionary entries</h3>";
 

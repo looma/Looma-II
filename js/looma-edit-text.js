@@ -21,6 +21,7 @@
   var $editor; //the DIV where the HTML is being edited
   var savedHTML; //savedHTML is textcheckpoint of HTML for checking for modification
   var loginname, loginlevel, loginteam;
+  var hovertimer;
   
   /*  callback functions and assignments expected by looma-filecommands.js:  */
   callbacks['clear'] = textclear;
@@ -91,20 +92,32 @@
           },
          'json'
       );
-}
+};
+  
+  function closePreview() {
+        $('#preview').hide();
+  };
   
   $(document).ready(function() {
 
       $('#preview').hide();   // hide the preview window
       
       //show #preview area when hover over a filesearch-results button  [NOT WORKING YET]
-      $('#filesearch-results').on('mouseover', 'button', function(){openPreview(this)});
-      $('#filesearch-results').on('mouseout blur',  'button', function(){$('#preview').empty().hide();});
-
+      $('#filesearch-results').on('mouseover', 'button', function(){
+          closePreview(); openPreview(this);
+          //hovertimer = setTimeout(function(){ closePreview(); }, 3000);
+      });
+      $('#filesearch-results').on('mouseout blur',  'button', function(){hovertimer = null; closePreview();});
+      $('.cancel-filesearch').click( closePreview ); // end cancelFilesearch()
+      $('#filesearch-results').on('click', 'button', closePreview);
+      
       $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
 
       $editor = $('#editor'); //the DIV where the HTML is being edited
       $editor.wysiwyg();
+      
+      $editor.on('paste',function(){return false;});
+      
       document.execCommand('styleWithCSS', false, true);
       document.execCommand('fontSize',     false, 5);
       document.execCommand('justifyCenter',false, true);
@@ -114,7 +127,7 @@
       document.execCommand('foreColor',    false, '#091F48');
       $editor.focus();
 
-      loginname = LOOMA.loggedIn();
+      loginname  = LOOMA.loggedIn();
       loginlevel = LOOMA.readCookie('login-level');
       loginteam  = LOOMA.readCookie('login-team');
       

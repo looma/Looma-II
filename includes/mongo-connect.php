@@ -54,6 +54,36 @@ function mongoFindOne($collection, $filter) {
     return $doc;
 }
 
+function mongoFindRandom($collection, $filter, $count) {
+    // for use by looma-dictionary.php CMD = LIST
+    //returns a randomized set, size $count, of english words from the dictionary
+    global $mongo_level;
+    if ($mongo_level >= 4) {
+         $cursor = $collection.aggregate([
+            array($match =>  $filter),
+            array($sample => array( 'size' => $count))]);
+    } else {  // old mongoDB, mongo_level 2 or 3
+        $cursor = $collection->find( $filter );
+    };
+
+    $cursorArray = iterator_to_array($cursor);
+
+    // create a list of words
+    $temp = [];
+    foreach ($cursorArray as $key => $word) $temp[]=$word['en'];
+
+    if ($mongo_level >= 4) //already randomly sampled by mongo
+        return $temp;
+    else {                 //extract a random sample
+        $list = [];
+        $number = sizeof($cursorArray);
+        if ($number >= 1) for ($i = 0;$i < $count; $i++) {
+            array_push($list,$temp[mt_rand(0,$number-1)]);
+        };
+        return $list;
+    }
+}
+
 function mongoDistinct($collection, $key) {
     global $mongo_level;
     $array = $collection->distinct( $key );
@@ -139,8 +169,8 @@ if ($mongo_version) {
     $mongo_version = $matches[0];
     $mongo_level = intval($mongo_version[0]);
 } else {
-    $mongo_version = '4.0.0';
-    $mongo_level = 4;
+    $mongo_version = '2.0.0';
+    $mongo_level = 2;
 }
 //echo 'mongo_version is ' . $mongo_version . '  $mongo_level = '. $mongo_level;
 

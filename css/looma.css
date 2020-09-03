@@ -802,3 +802,7 @@ div.center {
     color:red;
     background-color:yellow;
 }
+
+.caps {
+    text-transform: capitalize;
+}

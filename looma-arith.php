@@ -9,7 +9,7 @@ File: looma-class-subject.php   [Class & Subject selection page for Looma]
 Description: displays all the classes and on-click, all the subjects, plus toolbar for other pages
 -->
 
-<?php $page_title = 'Looma Arithmetic Review';
+<?php $page_title = 'Looma Arithmetic Drills';
       include ('includes/header.php');
 
       define ("CLASSES", 8);
@@ -27,10 +27,12 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
 
     <body>
     <div id="main-container-horizontal">
-
+        <?php
+            echo '<div id="params" data-class="' . $_REQUEST['class'] . '" hidden></div>';
+        ?>
         <!--<img src="images/logos/LoomaLogoTransparent.png" class="looma-logo" width="75%"/> -->
             <br><br>
-            <h1 class="title">Looma <?php keyword('Arithmetic Games') ?></h1>
+            <h1 class="title">Looma <?php keyword('Arithmetic Practice') ?></h1>
         <br><br><br><br><br><br>
 
         <!--  display CLASS buttons  -->

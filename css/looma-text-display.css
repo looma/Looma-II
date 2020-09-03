@@ -22,6 +22,7 @@
 
 .text-display * {
     text-overflow:ellipsis;
+    overflow:hidden;
     white-space:nowrap;
     font-size:inherit !important;
     font-weight:bold !important;

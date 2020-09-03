@@ -142,11 +142,13 @@ function setCollection(collection) {
     if (collection == 'activities') {
         $('#media-search').show();
         $('#chapter-search').hide();
+        $('#chapter-lang').hide();
         $('.chapter-input').prop('disabled', true);
         $('.media-input').prop('disabled',   false);
     } else { // collection == 'chapters'
         $('#media-search').hide();
         $('#chapter-search').show();
+        $('#chapter-lang').show();
         $('.chapter-input').prop('disabled', false);
         $('.media-input').prop('disabled',   true);
         

@@ -31,6 +31,7 @@ require_once('includes/looma-utilities.php');
   //  textBookList
   //  textChapterList
   //  textSubjectList
+  //  gameSubjectList
   //  bookList
   //  bookChapterList
   //  keywordList
@@ -128,6 +129,9 @@ $date = date("Y.m.d");
 if (isset($_REQUEST["collection"])) {
    $collection =  $_REQUEST["collection"];
 
+   //this following code should be in includes/mongo-connect.php
+    // it should build an array of {<collection name> : <$xxx_collection> } for lookup here and elsewhere
+
    switch ($collection) {
        case "activities":    $dbCollection = $activities_collection;    break;
        case "chapters":      $dbCollection = $chapters_collection;      break;
@@ -220,7 +224,7 @@ if (isset($_REQUEST["collection"])) {
         //look up this ID (mongoID) in this collection (dbCollection)
         $file = mongoFindOne($dbCollection, $query);
 
-        //////////////
+        ////////////// for chapter, add in some information from the textbook collection
         if ($collection == "chapters") {
             $query = array('prefix' => prefix($file['_id']));
             $textbook = mongoFindOne($textbooks_collection, $query);
@@ -480,6 +484,46 @@ if (isset($_REQUEST["collection"])) {
             return;  // end textSubjectList()
 
 
+          /////////////////////////////
+          // - - - gameSubjectList - - - //
+          /////////////////////////////
+          case "gameSubjectList":
+              // input is class
+              //    query games and histories collections to get subjects available for this class
+              /* $subjects = array(
+                      'S' => 'science',
+                      'M' => 'math',
+                      'EN' => 'english',
+                      'N' => 'nepali',
+                      'SS' => 'social studies',
+                      'H'  => 'health',
+                      'V'  => 'vocation',
+                      'SSa' => 'social studies optional', //now used for "Moral Education"
+                      'Ma' => 'math optional');
+              */
+              $subjectList = [];
+              $query = [];
+              $query['cl_lo'] = array('$lte' => (int)substr($_REQUEST['class'],5));
+              $query['cl_hi'] = array('$gte' => (int)substr($_REQUEST['class'],5));
+            //  $query = array('cl_lo' => array('$lte' => substr($_REQUEST['class'],5)),
+              //               'cl_hi' => array('$gte' => substr($_REQUEST['class'],5)));
+
+              $games = mongoFind($games_collection, $query, null, null, null);
+              foreach ($games as $game) {
+                  //echo "game[subject][index] is " . $game['subject'][$index];
+                  foreach ($game['subject'] as $index => $subj) $subjectList[] = $game['subject'][$index];
+              }
+
+              $histories = mongoFind($history_collection, $query, null, null, null);
+              foreach ($histories as $history)
+                  foreach ($history['subject'] as $index => $subj) $subjectList[] = $history['subject'][$index];
+
+              $subjectList[] = 'math';
+              $subjectList[] = 'english';
+
+              echo json_encode(array_unique($subjectList));
+              return;  // end gameSubjectList()
+
         /////////////////////////////
         // - - - textChapterList - - - //
         /////////////////////////////
@@ -523,7 +567,7 @@ if (isset($_REQUEST["collection"])) {
                 //echo "lang is " . $lang;
 
                 $query = array('_id' => array('$regex' => $regex));
-                $chapters = mongoFind($chapters_collection, $query, null, null, null);
+                $chapters = mongoFind($chapters_collection, $query, '_id', null, null);
                 foreach ($chapters as $ch) {
 
                     //echo "ch is " . $ch['dn'] . ' and ' . $ch['ndn'];
@@ -566,6 +610,9 @@ if (isset($_REQUEST["collection"])) {
             foreach ($chapters as $ch) echo "<option value='" . $ch['book_id'] . "'>" . $ch['dn'] . "(" . $ch['book_id'] . ")</option>";
 
             return;  // end bookChapterList()
+
+
+
 
 /////////////////////////////
 // - - - KEYWORDROOT - - - //
@@ -1052,15 +1099,38 @@ if (isset($_REQUEST["collection"])) {
         case "getGame":
             $id = mongoId($_REQUEST["gameId"]);
 
+    // calls to this code should be replaced by openById(collection, id)
+
             $query = array('_id' => $id);
-            $cursor = mongoFind($dbCollection, $query, null, null, null);
+            //$cursor = mongoFind($dbCollection, $query, null, null, null);
+            $game = mongoFindOne($dbCollection, $query, null, null, null);
+           /*
             foreach ($cursor as $doc)
             {
                 $game = $doc;
             }
+           */
             echo json_encode($game);
             return;
 
+
+          case "getHistory":  //catie cassani
+
+      // calls to this code should be replaced by openById(collection, id)
+
+              $id = mongoId($_REQUEST["id"]);
+
+              $query = array('_id' => $id);
+              //$cursor = mongoFind($dbCollection, $query, null, null, null);
+              $history = mongoFindOne($dbCollection, $query, null, null, null);
+             /*
+              foreach ($cursor as $doc)
+              {
+                  $history = $doc;
+              }
+             */
+              echo json_encode($history);
+              return;
 
     ///////////////////////////////////////////
     ////////////////  sendmail  ///////////////

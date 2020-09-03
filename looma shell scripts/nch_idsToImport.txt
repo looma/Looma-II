@@ -1,47 +1,52 @@
-Ticket_Without_A_Seat.mp4	Ticket Without A Seat	
-Booklet_Corona.pdf	Booklet about Corona (Nepali)	
-What_It_Means_To_Buy_A_Company’s_Stock.mp4	What it means to buy a company's stock (stocks and bonds)	9M03
-Map_of_Nepal_with_77_Districts.jpeg	Map of Nepal with Labeled Districts	
-Pashupatinath_Temple_Nepal_IMG_7933_2018_15.jpg	Picture of Pashupatinath Temple	5SS02.04
-Multiplying_And_Dviding_Decimals_By_10.mp4	Multiplying and Dividing Decimals by 10	
-Percent_From_Fraction_Models.mp4	Percents from Fraction Models	
-Subsets.pdf	Subsets	
-Nepal_Districts_Statistics.pdf	Districts of Nepal Statistics	
-Former_Administrative_Units_Of_Nepal.pdf	Former Administrative Units of Nepal	
-Zones_Of_Nepal.pdf	Zones of Nepal	
-How_To_Draw_Map_Of_Nepal_Step_By_Step_Map_Of_Nepal.mp4	How to Draw a Map of Nepal	
-Fewa_Lake_Map.jpg	Fewa Lake Map	
-Fewa_Lake.jpg	Fewa Lake	
-6EN09.m4a	Chant Dialogue	
-Parts_Of_A_Circle.png	Parts of a Circle	
-Circle_Vocabulary_Demonstration.jpg	Circle Vocabulary Demonstration	
-Participatory_Village_Development_Planning_6_638.jpg	How Districts Are Structured	
-Federal_Provincial_And_Local_Government_Of_Nepal.mp4	Government Structure in Nepal	
-Alternative_Transport_Systems_Such_As_Gravity_Goods_Ropeways_Tuins_And_Bicycle_Trailers.mp4	Alternative Transportation in Nepal	
-Gravity_Ropeway.mp4	Transportation in Nepal's Mountains	
-Nepa_Kathmandu_Transports.mp4	Transportation in Kathmandu	
-Notes_On_Needs_And_Importance_Of_Transport_And_Development_Of_Road_In_Nepal.pdf	Importance of Roads in Nepal	
-Crime_In_Nepal_Data_Map.png	Crime Rate in Nepal Map	5SS03.02
-George_Stephensons_Locomotion.mp4	George Stephenson's Locomotion	
-How_To_Convert_Rupee_To_Paise_And_Paise_To_Rupee.mp4	Converting Currency	
-The_Power_of_Role_Models_Ayla_at_TEDxYouth@IsaacDickson.mp4	The Power of Role Models	5SS02.05
-Community_Healthcare_in_Nepal.mp4	Community Healthcare in Nepal	5S02.11
-What_Are_Terms_Factors_And_Coefficients.mp4	Terms,Factors,and Coefficients	
-Example_2_Multiplying_Two_Monomials_With_Two_Variables_Algebra_I_Khan_Academy.mp4	Multiplying Monomials for Area	
-Intro_To_Profit_And_Loss_Comparing_Quantities_Class 7_(India)_Math_Khan_Academy.mp4	Intro to Profit and Loss	9M02
-Bhanubhakta_Acharya_Biography_5_Amazing_Stories_Sagar_Dumre.mp4	Bhanubhakta Acharya Biography	
-Relative_Clauses_Syntax_Khan_Academy.mp4	Relative Clauses	
-Girl_Using_ATM.jpg	Girl Using ATM	
-Introduction_To_Singular_And_Plural_Nouns_Grammar_Khan_Academy.mp4	Singular and Plural Nouns	
-Girl_Who_Dared_to_Challeng_A_Social_Evil.mp4	Girl Who Challenged a Social Evil	
-Maiti_Nepal_New_Year_2017.mp4	Maiti Nepal Helps Save Trafficked Girls	
-Natgeo_Lithosphere_26822302.jpg	The Layers of the Earth	4S01.15
-TETRIS_Theme_(Rhythmic_Juggler_Meets_Marimba_Madman).mp4	Marimba and Juggler	4SS08.16,5S01.09,5SS09.02
-Teaching_Laws_Rights_And_Responsibilities_To_Kids_Freedom_Of_Speech_Kids_Academy.mp4	Laws,Rights,and Responsibilities	5SS04.01,5SS04.02
-Whar_Are_The_Universal_Human_Rights_Benedetta_Berti.mp4	What Are the Universal Human Rights	5SS04.01,5SS04.02
-Blank_Venn_Diagram.jpg	Blank Venn Diagram	5SS04.01,5SS04.02
-Quad_Stretch.mp4	Quad Stretch	5S03.05
-Scale_Balance.mp4	Scale Balance	5S03.05
-Toe_Touch.mp4	Toe Touch	5S03.05
-6EN01.07_Convo_1.mp4	Lion Conversation	
-6EN01.07_Convo_2.mp4	Conversation About Vase	
+oleID	nch_id																																																																																																																																																																																																																																																													
+nepknc01	"   1N05 ,  1N06 ,  1N07   "																																																																																																																																																																																																																																																													
+nepntc01	   1N07   																																																																																																																																																																																																																																																													
+nepddc01	   1N08   																																																																																																																																																																																																																																																													
+nepnrc01	"   1N08 ,  1N09   "																																																																																																																																																																																																																																																													
+nepsgc01	   1N09   																																																																																																																																																																																																																																																													
+nepygc01	"   1N09 ,  1N10   "																																																																																																																																																																																																																																																													
+nepsgy01	   1N10   																																																																																																																																																																																																																																																													
+nepmga01	"   1N01 ,  1N02   "																																																																																																																																																																																																																																																													
+nepaar01	   1N11   																																																																																																																																																																																																																																																													
+nepppg01	   1N01   																																																																																																																																																																																																																																																													
+neptat01	   1N02   																																																																																																																																																																																																																																																													
+nepuum01	   1N03   																																																																																																																																																																																																																																																													
+nepbpd01	   1N04   																																																																																																																																																																																																																																																													
+nepskg01	   1N01   																																																																																																																																																																																																																																																													
+nepmka01	   1N02   																																																																																																																																																																																																																																																													
+nepkur01	   1N03   																																																																																																																																																																																																																																																													
+nepeka01	   2N14   																																																																																																																																																																																																																																																													
+nepnaj01	"2N11 ,  2N13   "																																																																																																																																																																																																																																																													
+neparp01	   2N19   																																																																																																																																																																																																																																																													
+nepsrm01	"   2N02 ,  2N06 ,  2N10 ,  2N16 ,  2N15   "																																																																																																																																																																																																																																																													
+neppre01	   2N08   																																																																																																																																																																																																																																																													
+nepgrp01	"   2N01 ,  2N05 ,  2N09 ,  2N18   "																																																																																																																																																																																																																																																													
+nepkra01	"   2N02 ,  2N03 ,  2N07 ,  2N12 ,  2N15   "																																																																																																																																																																																																																																																													
+nepghm01	"   2N04 ,  2N08 ,  2N14   "																																																																																																																																																																																																																																																													
+nepddr01	"2N07 ,  2N10 ,  2N12   "																																																																																																																																																																																																																																																													
+nepjnb01	"2N10 ,  2N12   "																																																																																																																																																																																																																																																													
+nepagy01	   2N04   																																																																																																																																																																																																																																																													
+nepppr01	   2N10   																																																																																																																																																																																																																																																													
+nepgad01	"   3N04 ,  3N13 ,  3N11   "																																																																																																																																																																																																																																																													
+nepmmp01	   3N03   																																																																																																																																																																																																																																																													
+nepaks01	"   3N12 ,  3N05   "																																																																																																																																																																																																																																																													
+nephhb01	   3N06   																																																																																																																																																																																																																																																													
+nephup01	"   3N04 ,  3N13 ,  3N16   "																																																																																																																																																																																																																																																													
+neprbb01	"   3N09 ,  3N17   "																																																																																																																																																																																																																																																													
+nepkht01	"   3N01 ,  3N07 ,  3N10 ,  3N13   "																																																																																																																																																																																																																																																													
+nepass01	   3N12   																																																																																																																																																																																																																																																													
+nepgmc01	   3N07   																																																																																																																																																																																																																																																													
+nepght01	"   3N01 ,  3N10 ,  3N15   "																																																																																																																																																																																																																																																													
+nepgkk01	   3N02   																																																																																																																																																																																																																																																													
+nepkku01	"   3N08 ,  3N14 ,  3N18   "																																																																																																																																																																																																																																																													
+nepeyb01	   4N14   																																																																																																																																																																																																																																																													
+neppre01	   4N18   																																																																																																																																																																																																																																																													
+neppap01	"   4N01 ,  4N04,  4N11 ,  4N16 ,  4N19   "																																																																																																																																																																																																																																																													
+neppad01	"   4N18 ,  4N03   "																																																																																																																																																																																																																																																													
+nepbay01	   4N06   																																																																																																																																																																																																																																																													
+nepgjt01	   4N07   																																																																																																																																																																																																																																																													
+neppun01	   4N13   																																																																																																																																																																																																																																																													
+nepltr01	"   4N15 ,  4N21 ,  4N10   "																																																																																																																																																																																																																																																													
+nepchs01	"   4N02 ,  4N05 ,  4N08 ,  4N12 ,  4N17 ,  4N20   "																																																																																																																																																																																																																																																													
+nepprv01	"   4N15 ,  4N21 ,  4N10   "																																																																																																																																																																																																																																																													
+nepjkt01	"   4N16 ,  4N09   "																																																																																																																																																																																																																																																													

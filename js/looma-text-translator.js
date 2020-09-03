@@ -113,7 +113,10 @@ $(document).ready(function() {
     $title = $('#title'); //the DIV where the original (english) version is shown
     $english = $('#english'); //the DIV where the original (english) version is shown
     $editor = $('#editor'); //the DIV where the native (nepali) version is being edited
+    
     $editor.wysiwyg();
+    $editor.on('paste',function(){return false;}); //disable 'paste' into the edit window
+    
     document.execCommand('styleWithCSS', false, true);
     document.execCommand('fontSize',     false, 5);
     document.execCommand('justifyCenter',false, true);

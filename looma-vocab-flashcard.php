@@ -12,7 +12,7 @@ File: looma-vocab-flashcard.php
 Description:  for Looma 2
 -->
 
-<?php $page_title = 'Looma Flashcards';
+<?php $page_title = 'Looma Vocabulary Drill';
       include ('includes/header.php');
 ?>
     <link rel="stylesheet" href="css/looma-vocab-flashcard.css">
@@ -20,7 +20,7 @@ Description:  for Looma 2
 
 <body >
     <div id="main-container-horizontal">
-        <h1 class="title"><?php keyword('Vocabulary Games') ?></h1>
+        <h1 class="title"><?php keyword('Vocabulary Practice') ?></h1>
         <p class="clickToFlip"> <?php keyword("Click flashcard for definition");?> </p>
         <span class="credit">Created by Lily, Sasha, and Mahir</span>
         <div id="fullscreen">

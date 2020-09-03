@@ -83,7 +83,8 @@ $(document).ready (function() {
     //add listeners to all SUBJECT buttons
     $("button.subject").click(subjectButtonClicked);
 
-    var classCookie = LOOMA.readStore('arith-grade', 'session');
+    
+    var classCookie = $('#params').data('class') || LOOMA.readStore('arith-grade', 'session');
     if (classCookie) {
         activateClass (classCookie);
         displaySubjects(classCookie);

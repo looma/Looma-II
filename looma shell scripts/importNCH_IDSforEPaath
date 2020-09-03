@@ -1,0 +1,81 @@
+// mongo terminal program "importNCH_IDs;
+//      input from a tab-seperated file
+//          each line of which is a FN, DN, followed by a list of nCH_IDs
+//          inserts all the ch_ids into the activities.ch_ids array of any document(s) corresponding to the FN + DN pair
+//
+//    to DRYRUN this script, enter "param='dryrun'  before entering the load statement
+//
+//  make sure there is a file 'nch_idsToImport.csv' in the current directory
+//  start MONGO in LOOMA db with: 'mongo looma'
+//  run in MONGO SHELL with: load('importNCH_IDs')
+//
+//"use strict";
+
+
+
+////////////////////////
+/////////////////////////
+////////////////////////
+////////////////////////
+
+function legalCH_ID(ch,dn) {
+    var char = ch.replace(/\s/g,'');
+    if (char && char.length>0) {
+        var legal = db.chapters.find({"_id": char});
+        if (legal.length() === 0 && char) {
+            print("************ illegal nch_id:     " + char + " for " + dn);   // + '     for activity ' + act.dn + ' (type: ' + act.ft + ')');
+            illegalcount++;
+            return false;
+        } else return true;
+    }
+}
+var requestcount = 0;
+var changecount = 0;
+var illegalcount = 0;
+
+var input = 'epaathch_idsToImport.tsv';
+print ('Importing nCH_IDs from ' + input);
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+
+var docs = file.split(/[\r\n]+/);  // split file into array of lines containing (DN, FN, nCH_IDs)
+
+print ('Processing ' + docs.length + ' lines');
+
+docs.forEach( function(doc) {
+    var fields = doc.split(/\t/);  //split the line on TABs
+    if (fields[0] !== "" && fields[1] !== "") {
+        var oleID = fields[0];
+        requestcount++;
+        //print(requestcount + ' - - CHECKING ' + displayname + ' [' + filename + '] adding ' + fields.toString());
+        
+        var activities = db.activities.find({ 'ft':'EP','oleID': oleID});
+        var duplicates = 0;
+        if (!activities.hasNext()) print('ACTIVITY ' + oleID + ' NOT FOUND');
+        while (activities.hasNext()) {
+            var activity = activities.next();
+            duplicates++; if (duplicates > 1) print('*************NOTE: duplicate ACTIVITY FOUND, Name = ' + oleID);
+            //let nch_ids = new Set();
+            var oldnCH_ID;
+            if (Array.isArray(activity['nch_id'])) oldnCH_ID = activity['nch_id']; else oldnCH_ID = [activity['nch_id']];
+            activity['nch_id'] = [];
+            
+            // retain OLD nch_ids  ????
+            //oldnCH_ID.forEach (function(x){ if(x && activity['nch_id'].indexOf(x) === -1) activity['nch_id'].push(x);});
+            //
+            
+            var IDs = fields[1].split(/,/);  //list of ch_ids on COMMAs
+            
+            IDs.forEach   (function(x){
+                if(x && legalCH_ID(x,activity['dn']) && activity['nch_id'].indexOf(x) === -1) activity['nch_id'].push(x);});
+            
+            if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
+            
+            print(++changecount + ' - - CHANGED nCH_IDs ' + oleID + ' [' + oldnCH_ID.toString() + '] TO ' + activity['nch_id'].toString());
+        }
+    } else print('*******    BAD INPUT LINE: ' + doc);
+});  // end foreach doc
+
+print('');
+print('+++++  ' + requestcount + '  lines processed');
+print('+++++  ' + changecount + '  changes made');
+print('+++++  ' + illegalcount + '  illegal nch_ids found');

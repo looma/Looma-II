@@ -28,7 +28,7 @@ $foundActivity;
 
     function makeButton($activity) {
         //depending on the filetype of the activity, display the appropriate button
-        global $buttons, $maxButtons, $ch_id, $foundActivity, $shown ;
+        global $buttons, $maxButtons, $ch_id, $foundActivity, $shown, $lang ;
 
         $id = $activity['_id'];
 
@@ -137,7 +137,8 @@ $foundActivity;
                     case "EP":
                     case "epaath":
                         if ($epversion === 2015) $thumb = $fp . $fn . "/thumbnail.jpg";
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion,null,null,null,null);
+                        if ( substr($oleID, 0, 3) === 'nep') $lang = 'np';
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion,null,null,null,$lang);
                         break;
 
                     case "html":
@@ -231,17 +232,28 @@ $foundActivity;
                 echo "</td>";
             } else {  // change to SPEAK game when implemented
                 echo "<td>";
-                echo "<a href='looma-game.php?type=picture&class=" . $grade . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
+                echo "<a href='looma-game.php?type=speak&class=" . $grade . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
                 echo "  <button class='activity play img'>";
-                echo "    <img src='images/dictionary.png'>";
-                echo "    <span>Visual Vocabulary</span>";
+                echo "    <img src='images/speech1.png'>";
+                echo "    <span>Spoken Vocabulary</span>";
                 echo "  </button>";
                 echo "</a>";
 
                 echo "</td>";
             }
 
-    }
+    } else  if ($subject === 'math') {
+            echo "<td>";
+            echo "<a href='looma-game.php?type=arith&class=class" . $gradenumber . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
+            //echo "<a href='looma-arith.php?class=class" . $gradenumber . "'>";
+            echo "  <button class='activity play img'>";
+            echo "    <img src='images/games.png'>";
+            echo "    <span>Arithmetic Practice</span>";
+            echo "  </button>";
+            echo "</a>";
+
+            echo "</td>";
+        }
 
 
 //get all the activities registered for this chapter

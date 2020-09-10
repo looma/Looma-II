@@ -29,7 +29,7 @@ function init(){
     var enterButton = document.getElementById('enter');
     enterButton.addEventListener('click', checkAnswer,false);
 
-    var resetButton = document.getElementById('reset');
+    var resetButton = document.getElementById('clear');
     resetButton.addEventListener('click', resetAnswer,false);
 
     var answerField = document.getElementById('answer');
@@ -122,10 +122,10 @@ function init(){
         document.getElementById('division-symbol').style.visibility = 'hidden';
         document.getElementById('answerLine').style.visibility = 'visible';
         op = document.getElementById('operation');
-        if(arithSubject == 'add'){
+        if(arithSubject === 'add'){
             op.innerHTML = '+';
         }
-        else if(arithSubject == 'sub'){
+        else if(arithSubject === 'sub'){
             op.innerHTML = '-';
         }
         else{
@@ -319,12 +319,12 @@ function checkAnswer(){
     var num2 = Number(document.getElementById('num2').innerHTML);
     var answer = document.getElementById('answer').value;
     op = document.getElementById('operation').innerHTML;
-    if     (op == '+'){ correct = num1 + num2;}
-    else if(op == '-'){ correct = num1 - num2;}
-    else if(op == '*'){ correct = num1 * num2; }
+    if     (op === '+'){ correct = num1 + num2;}
+    else if(op === '-'){ correct = num1 - num2;}
+    else if(op === '*'){ correct = num1 * num2; }
     else              { correct = num2 / num1;}
     
-    if(answer == correct){
+    if(parseInt(answer) === correct){
         document.getElementById('message-wrong').style.visibility = 'hidden';
         document.getElementById('message-correct').style.visibility = 'visible';
     }

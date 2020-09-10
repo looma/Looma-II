@@ -35,13 +35,11 @@ function timelineDrag(ev)
         oldEvent.removeAttribute("style");
     }
     currentEventID = ev.target.id;
-    
 }
 
 /*executes rightDraggingOutput or wrongDraggingOutput
 based on where the user drops the event*/
-function timelineDrop(ev)
-{
+function timelineDrop(ev) {
     numGuesses++;
     var dateID = ev.target.id;
     var eventID = currentEventID;
@@ -57,8 +55,7 @@ function timelineDrop(ev)
 }
 
 //finds the date that's clicked
-function timelineFindDate(ev)
-{
+function timelineFindDate(ev) {
     numGuesses++;
     if (clickedEventID != undefined) {
         var oldEvent = document.getElementById(clickedEventID);
@@ -75,8 +72,7 @@ function timelineFindDate(ev)
 }
 
 // checks to see if the user matched the event to the correct date by clicking
-function checkTimelineMatch(ev)
-{
+function checkTimelineMatch(ev) {
     var dateID = ev.target.id;
     
     var dateButtons = document.getElementsByClassName("date");
@@ -96,8 +92,7 @@ function checkTimelineMatch(ev)
 }
 
 // responds appropriately when user correctly matches an event to a date
-function rightDraggingOutput(eventID)
-{
+function rightDraggingOutput(eventID) {
     //must rest to undefined otherwise when we remove style attribute we remove visibility:hidden
     clickedEventID = undefined;
     
@@ -130,30 +125,22 @@ function rightDraggingOutput(eventID)
     makes the event button in the timeline div visible*/
     setTimeout(function()
     {
-        for (i = 0; i < eventButtons.length; i++)
-        {
+        for (i = 0; i < eventButtons.length; i++) {
             if ($(eventButtons[i]).data("index") == eventID)
-            {
                 eventButtons[i].style.visibility = "hidden";
-            }
         }
         
-        for (i = 0; i < dateButtons.length; i++)
-        {
+        for (i = 0; i < dateButtons.length; i++) {
             if ($(dateButtons[i]).data("index") == eventID)
-            {
-                dateButtons[i].removeAttribute("style");
-                dateButtons[i].disabled = true;
+            { dateButtons[i].removeAttribute("style");
+              dateButtons[i].disabled = true;
             }
         }
         
         var timelineEventButtons = document.getElementsByClassName("timelineEvent");
-        for (i = 0; i < timelineEventButtons.length; i++)
-        {
+        for (i = 0; i < timelineEventButtons.length; i++) {
             if (i == eventID)
-            {
                 timelineEventButtons[i].style.visibility = "visible";
-            }
         }
     }, 4000);
     correctAnswer();
@@ -200,99 +187,7 @@ function wrongDraggingOutput(eventID, dateID)
 
 
 function runTimeline(){
-   /*
-    var data = $.ajax(
-        "looma-database-utilities.php",
-        {
-            type: 'GET',
-            dataType: "json",
-            data: "collection=histories&cmd=getHistory&historyId=5963ff0f43fbce217a9bc5b7",
-        });
-    console.log(game_data);
-    
-    var timeline_data = data[""];
-    
-    // var id = "5963ff0f43fbce217a9bc5b7";
-    var prompts = timeline_data['events'];
-    var num = prompts.length;
-    
-    var events = [];
-    var dates = [];
-    
-    var eventButtons = [];
-    var dateButtons = [];
-    
-    for (var i = 0; i < num; i++){
-        
-        if(prompts[i]['title'] !== 'undefined'){
-            events[i] = prompts[i]['title'];
-        }
-        if(prompts[i]['date'] !== 'undefined'){
-            //keeps track of odd/even events for styling
-            dates[i] = prompts[i]['date'];
-        }
-    }
-    
-    $('#game').append('<div id="timeline">');
-    
-    $('#timeline').append('<div id="evenEvents">');
-    $('#timeline').append('<div id="dates">');
-    $('#timeline').append('<div id="oddEvents">');
-    
-    for (var i = 0; i < num; i++){
-        var dateButton = $('<button class = "date" data-pair="' + i.toString() + '" id="'+i.toString()+'">' + prompts[i]['date'] + '</button>');
-        var eventButton = $('<button class="event" data-pair="' + i.toString() + '" id="'+i.toString()+'">' + events[i] + '</button>');
-        
-        eventButtons.push(eventButton);
-        dateButtons.push(dateButton);
-        
-        $('#dates').append(dateButton);
-    }
-    
-    var count = 0;
-    for (var i = 0; i < num; i++){
-        if (count%2 == 0) //EVEN BUTTONS
-        {
-            var timelineEventButton = $('<button class="timelineEvent even" data-pair="' + i.toString() + '" id="'+i.toString()+'">' + events[i] + '</button>');
-            var empty = $('<button class="empty">'); //empty button for styling
-            $('#evenEvents').append(timelineEventButton);
-            $('#evenEvents').append(empty);
-        }
-        else //ODD BUTTONS
-        {
-            var empty = $('<button class="empty">'); //empty button for styling
-            var timelineEventButton = $('<button class="timelineEvent odd" data-pair="' + i.toString() + '" id="'+i.toString()+'">' + events[i] + '</button>');
-            $('#oddEvents').append(empty);
-            $('#oddEvents').append(timelineEventButton);
-        }
-        count++;
-    }
-    
-    $('#dates').append('<div class="line">');
-    
-    $('#game').append('<span id="question">');
-    $('#question').html('How to play: Click each event to match to the corresponding date in the timeline.');
-    
-    $('<div class="events">').appendTo($('#game'));
-    
-    //randomize events
-    eventButtons.sort(function(a, b){return 0.5 - Math.random()});
-    
-    eventButtons.forEach(function(eventButton){
-        $('.events').append(eventButton);
-    });
-    
-    startTimer(time_limit);
-    
-    for (var i = 0; i < eventButtons.length ; i++)
-    {
-        eventButtons[i].click(timelineEventClick);
-        dateButtons[i].click(timelineDateClick);
-    }
-    
-    // $('.event').click(timelineDateClick);
-    // $('.date').click(timelineDateClick);
- */
+
 } //end runTimeline()
 
 // wrapper function for timeline game -- analogous to runMCGame()
@@ -376,7 +271,6 @@ function mcWrongAnswer(event) {
     //});
 }
 
-
 ///////////////////////////////////////////////////////
 // /////// runMC  multiple-choice questions ///////////
 // ////////////////////////////////////////////////////
@@ -391,7 +285,6 @@ function runMC() {
     curr_question = 1;
     nextQuestion();
 } //end runMC()
-
 
 /////////////////////////////////////////////////////
 ////////  MATCHING GAME   ///////////////////////////
@@ -441,8 +334,8 @@ function matchResponseClick(event) {
     }
 } //end matchResponse()
 
-// * CP NEW (1) * //
-/* BUG: Matching game sometimes eliminating non-matching pairs
+// * Caroline 2020 09 * //
+/* BUG FIXED: Matching game sometimes eliminating non-matching pairs
  * CHANGES: (1) Added variables r, p at the top to store the matching pair
  * indices and replace selected_resp and selected_prompt in the setTimeout()
  * functions. (2) Set selected_resp, selected_prompt, and previousClick to
@@ -470,11 +363,11 @@ function checkMatch() {
             //$('.'+selected_resp).hide();
             $('.response[data-pair=' + r + ']').removeClass('matched not-done clicked').addClass('done').off('click');
             $('.prompt[data-pair=' + p + ']').removeClass('matched not-done clicked').addClass('done').off('click');
-         
-    
+            
             correctAnswer();
             //showTeam();
-            if (matches_made === game_data['prompts'].length) gameOver();
+            //if (matches_made === game_data['prompts'].length) gameOver();
+            if (matches_made === num_questions) gameOver();
         }, 1000);
         
     } else {  //incorrect!
@@ -497,20 +390,17 @@ function checkMatch() {
           
             wrongAnswer();
         },1000);
-        
     }
-    //var num_pairs = game_data['prompts'].length;
-    //for (var i = 0; i < num_pairs; i++) {
-        //$('#response-'+i.toString()).off("click");}
 }  // end matchResponseClick()
 
 //////////////////////////////
-// /////// runMatch  /////////
+///////// runMatch  /////////
 //////////////////////////////  NOTE: runs a 'matching' game using 'prompts[]' and 'responses[]'
-// ///////////////////////////
+/////////////////////////////
 function runMatch() {
     showTeam();
     matches_made = 0;
+    num_questions = 5;
     
     //$('#game').append('<h4 class="question" id="question-number">Match the prompts on the left to the corresponding responses on the right.</h4>');
     $('#game').append('<div id="prompts"></div>');
@@ -551,19 +441,22 @@ function runMatch() {
 } // end runMatch()
 
 
-// * CP NEW (2) * //
+//////////////////////////////
+///////// runPicture  /////////
+//////////////////////////////
+
 function getPictureWords(grade, subj, id, count, random){
-    LOOMA.picturewordlist(grade, subj, id, count, random, succeed, fail);
+    LOOMA.picturewordlist(grade, subj, id, count, random, pictureListSucceed, pictureListFail);
 }
 
-function succeed(result){
+function pictureListSucceed(result){
     console.log(`Success, found ${result.length} words: ${result}`);
     runPictureHelper(result)
 }
 
-function fail(jqXHR, textStatus, errorThrown){
+function pictureListFail(jqXHR, textStatus, errorThrown){
     console.log('PICTURE: AJAX call to dictionary-utilities.php FAILed, jqXHR is ' + jqXHR.status);
-    window.alert('failed with textStatus = ' + textStatus + ', and errorThrown = ' + errorThrown);
+    LOOMA.alert("Game not found");
 }
 
 function runPictureHelper(words){
@@ -573,7 +466,7 @@ function runPictureHelper(words){
     words.forEach(function(word, i){
         var buttonPicture = $(`<button class="prompt not-done picture" data-word=${word} data-pair="${i.toString()}" id="prompt-${i.toString()}">\
         <img src="../content/dictionary images/${word}.jpg" /></button>`);
-        var buttonWord = $(`<button class="response not-done" data-pair="${i.toString()}" id="response-${i.toString()}">${word}</button>`);
+        var buttonWord = $(`<button class="response not-done picture" data-pair="${i.toString()}" id="response-${i.toString()}">${word}</button>`);
         buttonPicture.click(matchPromptClick);
         buttonWord.click(matchResponseClick);
         promptButtons.push(buttonPicture);
@@ -601,27 +494,85 @@ function runPicture(grade, subject) {
     $('#game').append('<div id="prompts"></div>');
     $('#game').append('<div id="responses"></div>');
     $('#question').html('Click left and right items to find a match.');
-    
-    // SAMPLE INPUT
-    //var grade = "class1";
-    //var subj = 'english';
-    //var id = null;
-    var count = 5;
+
+    num_questions = 5;
     var random = true;
     
-    //getPictureWords(grade, subject, null, count, random);
-    getPictureWords(null, 'english', null, count, random);
+    getPictureWords(null, 'english', null, num_questions, random);
     time_limit = 15;
     startTimer(time_limit);
     
+}  // END runPicture() //
+
+
+//////////////////////////////
+///////// runSpeak  /////////
+//////////////////////////////
+
+function getSpeakWords(grade, subj, id, count, random){
+    LOOMA.wordlist(grade, subj, id, count, random, speakListSucceed, speakListFail);
 }
-// * END CP NEW (2) * //
+
+function speakListSucceed(result){
+    console.log(`Success, found ${result.length} words: ${result}`);
+    runSpeakHelper(result)
+}
+
+function speakListFail(jqXHR, textStatus, errorThrown){
+    console.log('SPREAK: AJAX call to dictionary-utilities.php FAILed, jqXHR is ' + jqXHR.status);
+    LOOMA.alert("Game not found");
+}
+
+function runSpeakHelper(words){
+    var promptButtons = [];
+    var responseButtons = [];
+    
+    words.forEach(function(word, i){
+        var buttonPicture = $(`<button class="prompt not-done picture" data-word=${word} data-pair="${i.toString()}" id="prompt-${i.toString()}">\
+        <img src="images/speech1.png" /></button>`);
+        var buttonWord = $(`<button class="response not-done picture" data-pair="${i.toString()}" id="response-${i.toString()}">${word}</button>`);
+        buttonPicture.click(matchPromptClick);
+        buttonWord.click(matchResponseClick);
+        promptButtons.push(buttonPicture);
+        responseButtons.push(buttonWord);
+    });
+    
+    //https://www.w3schools.com/js/js_array_sort.asp
+    promptButtons.sort  (function(a, b){return 0.5 - Math.random()});
+    responseButtons.sort(function(a, b){return 0.5 - Math.random()});
+    
+    promptButtons.forEach(function(promptButton){
+        $('#prompts').append(promptButton);
+        $('#prompts').append('<br/>');
+    });
+    responseButtons.forEach(function(responseButton){
+        $('#responses').append(responseButton);
+        $('#responses').append('<br/>');
+    });
+    startTimer(time_limit);
+}
+
+function runSpeak(grade, subject) {
+    showTeam();
+    matches_made = 0;
+    $('#game').append('<div id="prompts"></div>');
+    $('#game').append('<div id="responses"></div>');
+    $('#question').html('Click left and right items to find a match.');
+    
+    num_questions = 5;
+    var random = true;
+    
+    getSpeakWords(null, 'english', null, num_questions, random);
+    time_limit = 15;
+    startTimer(time_limit);
+    
+}  // END runPicture() //
 
 //////////////////////////////
 ///////// runVocab  /////////
 //////////////////////////////
 function runVocab() {
-    console.log('starting vocab drill');
+    //console.log('starting vocab drill');
 }; //end runVocab()
 
 
@@ -629,7 +580,7 @@ function runVocab() {
 ///////// runArith  /////////
 //////////////////////////////
 function runArith() {
-    console.log('starting arithmetic drill');
+    //console.log('starting arithmetic drill');
 }; //end runArith()
 
 
@@ -673,9 +624,8 @@ function runRandom () {
             else runMatch();
         }
         
-    function word_define_fail(r) {
-            console.log("fail", r);
-        }
+        function word_define_fail(r) {console.log("word define fail", r);}
+    
         LOOMA.sienna_define(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
     }
     
@@ -689,6 +639,7 @@ function runRandom () {
         get_wordlist_succeed,
         get_wordlist_fail);
 } //end runRandom()
+
 //////////////////////////////////
 ////////  CONCENTRATION GAME   ///
 //////////////////////////////////
@@ -751,10 +702,7 @@ function concCorrectAnswer() {
     
     $concFirstClicked.toggleClass ('correct');
     $concSecondClicked.toggleClass('correct');
-    
-    //$("#"+visible_text_id_1).css('color','green');
-    //$("#"+visible_text_id_2).css('color','green');
-    
+
     setTimeout(function() {
        $concFirstClicked.css( "visibility","hidden");
        $concSecondClicked.css("visibility","hidden");
@@ -776,17 +724,11 @@ function concWrongAnswer() {
     
     $concFirstClicked.toggleClass ('wrong');
     $concSecondClicked.toggleClass('wrong');
-    //$("#"+visible_text_id_1).css('color','red');
-    //$("#"+visible_text_id_2).css('color','red');
-    
+ 
     setTimeout(function() {
         $concFirstClicked.toggleClass ('wrong').toggleClass('flipped');
         $concSecondClicked.toggleClass('wrong').toggleClass('flipped');
-       // $("#"+visible_text_id_1).css('color','black');
-       // $("#"+visible_text_id_1).hide().parent().toggleClass('flipped');
-        //$("#"+visible_text_id_2).css('color','black');
-        //$("#"+visible_text_id_2).hide().parent().toggleClass('flipped');
-        
+
         $('.concButton').click(handleConcFirstClick);
         nextTeam();
     },2000);
@@ -801,8 +743,9 @@ function concFlipCard(card) {
 }
 
 /////////////////////////////
-// /////// handleConcFirstClick  /////////
-// //////////////////////////
+///////// handleConcFirstClick  /////////
+////////////////////////////
+
 function handleConcFirstClick(event) {
     //var pair = event.target.classList[1];
     //selected_pair = $(event.target).data['pair'];
@@ -819,8 +762,9 @@ function handleConcFirstClick(event) {
 }
 
 /////////////////////////////
-// /////// handleConcSecondClick  /////////
-// //////////////////////////
+///////// handleConcSecondClick  /////////
+////////////////////////////
+
 function handleConcSecondClick(event) {
     // console.log("SECOND CLICK")
     $concSecondClicked = $(event.currentTarget);
@@ -846,10 +790,10 @@ function handleConcSecondClick(event) {
         else concWrongAnswer();
     }
 }
+
 /////////////////////////////////////////////////////
 ////////  MAP GAME   ////////////////////////////////
 /////////////////////////////////////////////////////
-
 
 var alreadyRight = false;
 var rightAnswer;
@@ -857,7 +801,6 @@ var clickedWrong = false;
 var map, baseLayer, mapJSON;
 
 function runMap() {
-    
     num_questions = game_data['prompts'].length;
     curr_question = 1;
     
@@ -911,11 +854,8 @@ function runMap() {
                 redrawMap(mapJSON);
             });
             
-         //setTimer(time_limit);
          startTimer(time_limit);
 }  //end runMap()
-
-
 
 function mapClick(e)
 {
@@ -957,14 +897,14 @@ function highlightMapFeature(e)
 }   //End of highlight function
 
 // Makes sure that once the country is deselected the gray is gone
-function resetMapHighlight(e)
-{
+function resetMapHighlight(e) {
     var layer = e.target;
     layer.setStyle({
         weight: 1,
         color: 'black'
     });
 }
+
 function mapStyle(feature)  {
     return {
         fillColor: 'white',
@@ -975,12 +915,12 @@ function mapStyle(feature)  {
     }
 }
 
-function mapOnEachFeature(feature, layer)
-{ layer.on({
+function mapOnEachFeature(feature, layer) {
+    layer.on({
     mouseover: highlightMapFeature,
     mouseout: resetMapHighlight,
     click: mapClick
-});
+    });
 }
 
 function redrawMap(mapJson) {
@@ -992,13 +932,12 @@ function redrawMap(mapJson) {
 }
 
     //gets the new map question
-    function getNewMapQuestion()
-    {
+    function getNewMapQuestion() {
         curr_question++;
         nextTeam();
         nextQuestion();
-    
 }
+
 /////////////////////////////
 ///////// runYesNo  /////////
 ////////////////////////////  NOTE: 'yesno' is a trivial game, included here as a template for how to code a new game type
@@ -1016,6 +955,7 @@ function runYesNo() {
     
     startTimer(time_limit);
 } //end runYesNo()
+
 // /////// nextTeam  /////////
 function nextTeam() {
     if (curr_team < num_teams) curr_team++;
@@ -1026,9 +966,10 @@ function nextTeam() {
 function showTeam() {
     if (num_teams > 1) { $("#current-team").html('Team ' + curr_team.toString()); }
 }
+
 /////////////////////////////
-// /////// clearScreen  /////////
-// //////////////////////////
+///////// clearScreen  /////////
+////////////////////////////
 function clearScreen() {
     $("#question-number").empty();
     $("#question").empty();
@@ -1063,16 +1004,16 @@ function updateScores() {
 }
 
 /////////////////////////////
-// /////// updateProgress  /////////
-// //////////////////////////
+///////// updateProgress  /////////
+////////////////////////////
 function updateProgress(team, score, maxScore) {
     var percentage = ((score/maxScore)*100);
     $('#progress-' + team + ' .sienna-progress').width(percentage + '%');
 }
 
 //////////////////////////////////
-// /////// nextQuestion  /////////
-// ///////////////////////////////
+///////// nextQuestion  /////////
+/////////////////////////////////
 function nextQuestion() {
     
     if (curr_question > num_questions) gameOver();
@@ -1226,7 +1167,13 @@ function gameOver() {
         if (scores[i-1] > 0 && scores[i-1] == Math.max(...scores)) results.append('<span class="red"> WINNER</span>');
         $("#scoreList").append(results);
     }
-    var replayButton = $('<a href="looma-game.php?id='+ game_id +'"><button> Replay Game </button></a>');
+    var replayButton = $('<a href="looma-game.php' +
+                        '?id='+ game_id +
+                        '&class='+ game_class +
+                        '&subject='+ game_subject +
+                        '&type='+ game_type +
+                        '"><button> Replay Game </button></a>');
+    
     var gamesHomeButton = $('<a href="looma-gamesNEW.php"><button> Games Home Page </button></a>');
     
     $("#scoreList").append(replayButton);
@@ -1234,19 +1181,16 @@ function gameOver() {
     $("#scoreList").append(gamesHomeButton);
 }
 
-
-//////////////////////////////////
-////////  GAME FROM MONGO DB   ///
-//////////////////////////////////
-
-        /////////////////////////////
-        // /////// fail  /////////
-        // //////////////////////////
-        function get_game_fail(r) { console.log("failed to find game"); }
+    /////////////////////////////
+    ///////// fail  /////////
+    ////////////////////////////
+        function get_game_fail(r) {
+            LOOMA.alert("Game not found");
+            console.log("failed to find game"); }
         
-        /////////////////////////////
-        // /////// succeed  /////////
-        // //////////////////////////
+    /////////////////////////////
+    ///////// succeed  /////////
+    ////////////////////////////
         function get_game_succeed(result) {
             game_data = result;
             
@@ -1263,11 +1207,12 @@ function gameOver() {
                 case 'matching':
                     runMatch();
                     break;
-                // * CP NEW (4) * //
                 case 'picture':
                     runPicture(game_class, game_subject);
                     break;
-                    // * END CP NEW (4) * //
+                case 'speak':
+                    runSpeak(game_class, game_subject);
+                    break;
                 case 'multiple choice':
                     runMC();
                     break;
@@ -1282,9 +1227,11 @@ function gameOver() {
                     break;
             }
 }
+
 /////////////////////////////
-// /////// runGame  /////////  NOTE: gets a game from Mongo by "id" and runs it
-// //////////////////////////
+///////// runGame  /////////  NOTE: gets a game from Mongo by "id" and runs it
+////////////////////////////
+
 function runGame (id) {
     $.ajax(
         "looma-database-utilities.php",
@@ -1298,13 +1245,13 @@ function runGame (id) {
 } //  end runGame()
 
 ///////////////////////////////////////
-// /////// DOCUMENT READY  ////////////
-// ////////////////////////////////////
+///////// DOCUMENT READY  ////////////
+//////////////////////////////////////
+
 $(document).ready (function() {
     
     $timer = $('#timer-count');
     $scoreboard = $('#scoreboard');
-    //$('#bext').hide();
     
     //first visible screen asks user to choose the number of teams that will be playing
     $('.teamnumber').click(function () {
@@ -1331,7 +1278,8 @@ $(document).ready (function() {
         //else if (game_type == 'timeline') runtimeline(game_id); //add Catie's new code here
         else if (game_type == 'vocab')    runVocab(game_class, game_subject);
         else if (game_type == 'arith')    runArith(game_class, game_subject);
-        else if (game_type == 'picture')    runPicture(game_class, game_subject);
+        else if (game_type == 'picture')  runPicture(game_class, game_subject);
+        else if (game_type == 'speak')    runSpeak(game_class, game_subject);
         else                              runGame(game_id);
         
     })

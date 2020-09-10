@@ -76,18 +76,22 @@ require_once ("includes/mongo-connect.php");
                     '" data-type="vocab"' .
                     '"> ' . $game_class . ' ' . $game_subject . '</p><p class="small"> (vocabulary drill)</p></button>';
 
-                // add picture vocab game
-                echo "<td>";
-                echo "<a href='looma-game.php?type=picture&class=class" . $game_class . "&subject=" . $game_subject . "'>";
+                if ((int)substr($game_class,5) <= 4) {// add picture vocab game
+                    echo "<a href='looma-game.php?type=picture&class=" . $game_class . "&subject=" . $game_subject . "'>";
+                    echo "  <button class='activity game img'>";
+                    echo "    <img src='images/games.png'>";
+                    echo "    <span>Visual Vocabulary</span>";
+                    echo "  </button>";
+                    echo "</a>";
+
+                } else {  // add speak vocab game
+                echo "<a href='looma-game.php?type=speak&class=" . $game_class . "&subject=" . $game_subject . "'>";
                 echo "  <button class='activity game img'>";
-                echo "    <img src='images/games.png'>";
-                echo "    <span>Visual Vocabulary</span>";
+                echo "    <img src='images/speech1.png'>";
+                echo "    <span>Spoken Vocabulary</span>";
                 echo "  </button>";
                 echo "</a>";
-
-                echo "</td>";
-
-
+                }
             };
 
             if ($game_subject === 'math') {

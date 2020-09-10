@@ -24,7 +24,7 @@ require ('includes/mongo-connect.php');
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>Release 5.9.6  SEP 2020   </h4>
+        <h4>Release 5.9.7  SEP 2020   </h4>
         <!-- copyright notice, with link to vts.org-->
         <span class='glyphicon glyphicon-copyright-mark'></span>2020
         <a draggable="false"  class="footer" href="http://looma.education">by Looma Education Company</a>
@@ -78,7 +78,7 @@ require ('includes/mongo-connect.php');
                 <img draggable="false" src="images/logos/jetbrains.svg" height="44px"></a>
             <a draggable="false"  class="attribution" href="https://www.stackoverflow.org" target="_blank">
                 <img draggable="false" src="images/logos/stackoverflow.png" height="66px"></a>
-            <a draggable="false"  class="attribution" href="http://www.villagetechsolutions.org" target="_blank">
+            <a draggable="false"  class="attribution" href="http://looma.education" target="_blank">
                 <img draggable="false" src="images/logos/VTSLogo.jpg" height="66px"></a>
         </div>
         <br>
@@ -87,7 +87,7 @@ require ('includes/mongo-connect.php');
         <img src="images/trademark4.png" id="trademark" height="33px">
 
         <h4>Tested only in Google Chrome</h4>
-        <h4>Report bugs and suggestions to:  info AT villagetechsolutions DOT org</h4>
+        <h4>Report bugs and suggestions to:  info AT looma DOT education</h4>
         <br>
     </div>
 

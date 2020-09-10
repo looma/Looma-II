@@ -251,13 +251,12 @@ function hidenumpad() {
     $('#textareaEntry').html();
     $('#inputEntry').val('');
     
-    $("#main-container-horizontal").removeClass('all-transparent');
+    //$("#main-container-horizontal").removeClass('all-transparent');
+    LOOMA.makeOpaque($("#main-container-horizontal"));
     
-    checkAnswer();
+    //checkAnswer();
     
-    $("#looma-numpad-container").css({
-        display: "none"
-    });
+    $("#looma-numpad-container").hide();
 }
 
 // Called whenever a compatible element is focused.

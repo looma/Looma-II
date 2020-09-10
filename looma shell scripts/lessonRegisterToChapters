@@ -1,0 +1,61 @@
+// ONE TIME program to
+//      scan through lessons and register the to chapters
+//      using ch_id embedded in lesson name, if available
+//
+//   run in MONGO SHELL with: load('lessonRegisterToChapters')
+//
+
+
+function legalCH_ID(ch) {
+    var chapter = ch.replace(/\s/g,''); //removes 'whitespace'
+    if (chapter && chapter.length>0) {
+        var legal = db.chapters.find({"_id": chapter});
+        if (legal.length() === 0) {
+            //print("************ illegal ch_id:     " + chapter );
+            return false;
+        } else return true;
+    }
+}
+
+var lessoncursor;
+var count = 0;
+var foundcount = 0;
+var CH_regex = '/([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\\.[0-9]{2})?/';
+
+print('db is ' + db);
+print('');
+
+lessoncursor = db.lessons.find();
+while (lessoncursor.hasNext()) {
+    count++;
+    var lesson = lessoncursor.next();
+    
+    var lessonID = lesson['dn'].match(/([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/);
+    if (lessonID && legalCH_ID(lessonID[0])) {
+        foundcount++;
+        print('    @@@@@@@    lesson "' + lesson['dn'] + '"       has ch_id ' + lessonID[0]);
+        var act = db.activities.findOne({'ft':'lesson','dn':lesson['dn']});
+        if (act) {
+            //print ('lesson activity is ' + act['dn']);
+            if(act['ch_id'] && act['ch_id'].indexOf(lessonID[0]) == -1) act['ch_id'].push(lessonID[0]);
+            else act['ch_id'] = [lessonID[0]];
+            if(act['nch_id'] && act['nch_id'].indexOf(lessonID[0]) == -1) act['nch_id'].push(lessonID[0]);
+            else act['nch_id'] = [lessonID[0]];
+            
+            if (param === 'run') db.activities.update({'ft':'lesson','dn':lesson['dn']},act);
+        
+        }
+        else print (lesson['dn'] + '     ^^^^^^^     activity not found' + act);
+    } else {
+        print('   ******    lesson "' + lesson['dn'] + '" NO EXISTING CH_ID IN NAME ');
+    };
+};
+
+print('');
+print('found ' + count + ' lessons');
+
+if (param === 'dryrun') print('DRY RUN - no changes made');
+else                    print(' and added CH_IDs for ' + foundcount + ' of them');
+
+print('');
+

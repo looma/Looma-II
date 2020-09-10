@@ -32,24 +32,24 @@ Description:
 
             <div id="work-area">
 
-                <img id="division-symbol" src="images/long-division.png" style="visibility:hidden">
              <!-- for division only - hidden for other operators-->
 
                 <div name="num1"  id="num1"  ></div>
                 <div name="num2"  id="num2"  ></div>
+                <div id="operation" >  </div>
+                <img id="division-symbol" src="images/long-division.png" style="visibility:hidden">
 
                 <!--enter digits into the answer line rigth-to-left for '+', '-', '*'. but, left-to-right for '/'   -->
                 <input type="text" id="answer" class="nokeyboard" name="answer" >
 
                 <hr   id='answerLine' style="visibility:hidden">
-                <div id="operation" >  </div>
 
                 <div class="button-group">
                     <button id="enter" class="looma-button blue-footer"> <?php keyword("Enter"); ?> </button>
                     <!--
                     <button id="help"  class="looma-button blue-footer"> <?php keyword("Help"); ?>  </button>
                     -->
-                    <button id="reset" class="looma-button blue-footer"> <?php keyword("Clear"); ?> </button>
+                    <button id="clear" class="looma-button blue-footer"> <?php keyword("Clear"); ?> </button>
                 </div>
 
                 <h2 id="message-correct" style="visibility: hidden">CORRECT - Click 'New Problem' to generate a new problem</h2>

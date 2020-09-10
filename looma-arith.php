@@ -28,7 +28,8 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
     <body>
     <div id="main-container-horizontal">
         <?php
-            echo '<div id="params" data-class="' . $_REQUEST['class'] . '" hidden></div>';
+            $class = isset($_REQUEST['class']) ? $_REQUEST['class'] : 'class1';
+            echo '<div id="params" data-class="' . $class    . '" hidden></div>';
         ?>
         <!--<img src="images/logos/LoomaLogoTransparent.png" class="looma-logo" width="75%"/> -->
             <br><br>
@@ -37,14 +38,14 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
 
         <!--  display CLASS buttons  -->
     <div class="button-div" id="row1">
-        <button type="button" class="class button-8" id="class1" data-mask="<?php echo $masks[0];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('1') ?> </button>
-        <button type="button" class="class button-8" id="class2" data-mask="<?php echo $masks[1];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('2') ?> </button>
-        <button type="button" class="class button-8" id="class3" data-mask="<?php echo $masks[2];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('3') ?> </button>
-        <button type="button" class="class button-8" id="class4" data-mask="<?php echo $masks[3];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('4') ?> </button>
-        <button type="button" class="class button-8" id="class5" data-mask="<?php echo $masks[4];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('5') ?> </button>
-        <button type="button" class="class button-8" id="class6" data-mask="<?php echo $masks[5];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('6') ?> </button>
-        <button type="button" class="class button-8" id="class7" data-mask="<?php echo $masks[6];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('7') ?> </button>
-        <button type="button" class="class button-8" id="class8" data-mask="<?php echo $masks[7];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('8') ?> </button>
+        <button type="button" class="class " id="class1" data-mask="<?php echo $masks[0];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('1') ?> </button>
+        <button type="button" class="class " id="class2" data-mask="<?php echo $masks[1];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('2') ?> </button>
+        <button type="button" class="class " id="class3" data-mask="<?php echo $masks[2];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('3') ?> </button>
+        <button type="button" class="class " id="class4" data-mask="<?php echo $masks[3];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('4') ?> </button>
+        <button type="button" class="class " id="class5" data-mask="<?php echo $masks[4];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('5') ?> </button>
+        <button type="button" class="class " id="class6" data-mask="<?php echo $masks[5];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('6') ?> </button>
+        <button type="button" class="class " id="class7" data-mask="<?php echo $masks[6];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('7') ?> </button>
+        <button type="button" class="class " id="class8" data-mask="<?php echo $masks[7];?>"><p class="little"><?php keyword('Grade') ?></p><?php keyword('8') ?> </button>
     </div>
         <br><br><br>
 

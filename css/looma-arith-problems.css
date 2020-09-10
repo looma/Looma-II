@@ -69,38 +69,41 @@ div#work-area{
 
 #num1{
     position: absolute;
-    font-size: 64px;
+    font-size: 4em;
     right:30%;
     top:20%;
-    width:25%;
+    width:50%;
     color: black;
     text-align:right;
 }
 
 #num1.div{
-    left:20%;
+    width:10vw;
+    left:23%;
     top: 40%;
 }
 
 #num2{
     position: absolute;
-    font-size: 64px;
+    font-size: 4em;
     right: 30%;
     top: 40%;
-    width:25%;
+    width:50%;
     color:black;
     text-align:right;
 }
 
 #num2.div{
-    left: 50%;
+    width:20vw;
+    text-align:left;
+    left: 52%;
     top: 40%;
 }
 
 #operation{
     position: absolute;
-    font-size: 60px;
-    right: 60%;
+    font-size: 4em;
+    right: 70%;
     top: 40%;
     color:black;
 }
@@ -174,7 +177,7 @@ button-5.active {
     position:absolute;
     height:80%;
     width:30%;
-    font-size:36px;
+    font-size:2.5em;
 }
 
 button#enter{
@@ -191,7 +194,7 @@ button#help{
     overflow:hidden;
 }
 
-button#reset{
+button#clear{
     height:100%;
     position: absolute;
     left: 60%;
@@ -204,7 +207,7 @@ button#next{
     height:15%;
     right: 10%;
     top: 50%;
-    font-size:32px;
+    font-size:2em;
 }
 
 button#homePage{
@@ -213,8 +216,10 @@ button#homePage{
     height:10%;
     left: 10%;
     top: 50%;
-    font-size:36px;
+    font-size:2em;
 }
+
+h2, h3 {font-size:3em;}
 
 /* styling for HELP calculator */
 
@@ -235,7 +240,7 @@ button#homePage{
     border-radius: 5px;
     font-family: Arial;
     font-weight: bold;
-    font-size: 30px;
+    font-size: 2em;
     color: black;
     margin: 5px;
     background-color:#ff33cc;
@@ -253,7 +258,7 @@ button#homePage{
     background-color: #8FBC8F;
     font-family: Arial;
     font-weight: bold;
-    font-size: 30px;
+    font-size: 3em;
 }
 
 #calcTable{
@@ -277,7 +282,7 @@ button#homePage{
     background-color: #cc66ff;
     font-family: Arial;
     font-weight: bold;
-    font-size: 30px;
+    font-size: 2em;
     color: black;
     margin: 5px;
     
@@ -287,7 +292,7 @@ button#homePage{
     background-color: #cc66ff;
     font-family: Arial;
     font-weight: bold;
-    font-size: 30px;
+    font-size: 2em;
     color: black;
     margin: 5px;
 }

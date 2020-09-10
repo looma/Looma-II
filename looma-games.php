@@ -26,8 +26,6 @@ define ("CLASSES", 10);
     </div>
     <!--  display CLASS buttons  -->
     <div id="classes" class="button-div">
-
-
         <?php
         //$classes = $textbooks_collection->distinct("class");
         $classes = mongoDistinct($textbooks_collection, "class");
@@ -55,8 +53,12 @@ define ("CLASSES", 10);
 
         ?>
     </div>
-
     <div id="subjects" class="button-div"></div>
+
+
+    <a href="looma-bagh-chal.php" id="bagh-chal-href">
+        <button id="bagh-chal"class="looma-control-button"></button>
+    </a>
 
 </div>
 <?php include ('includes/toolbar.php'); ?>

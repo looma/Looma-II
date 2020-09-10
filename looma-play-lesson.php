@@ -50,6 +50,67 @@ Description: looma lesson plan presenter
         //send DN, AUTHOR and DATE in a hidden DIV
         //for each ACTIVITY in the DATA field of the lesson, create an 'activity button' in the timeline
 
+        function thumbPrefix($ft) {   // this should be in includes/looma-utilities.php
+            $fp =   "";
+		switch ($ft) { //if $fp is not specified, use the default content folder for this $ft
+
+            case "video":
+            case "mp4":
+            case "mp5":
+            case "m4v":
+            case "mov":
+                $fp = '../content/videos/';
+                break;
+
+            case "image":
+            case "jpg":
+            case "jpeg":
+            case "png":
+            case "gif":
+                $fp = '../content/pictures/';
+                break;
+
+            case "audio":
+            case "m4a":
+            case "mp3":
+                $fp = '../content/audio/';
+                break;
+
+            case "pdf":
+                $fp = '../content/pdfs/';
+                break;
+
+            case "slideshow":
+                $fp = urlencode('../content/slideshows/');
+                break;
+
+            case "evi":
+                $fp = '../content/videos/';
+                break;
+
+            case "html":
+            case "HTML":
+                $fp = '../content/html/';
+                break;
+
+            case "EP":
+            case "epaath":
+                break;
+
+            case "VOC":       //vocabulary reviews
+            case "lesson":    //lesson plan
+            case "map":       //map
+            case "game":    //game
+            case "text":      //text
+            case "book":      //book
+            case "looma":     //looma
+            case "chapter":   //chapter
+            case "history":   //$fp = '../content/histories/';
+                break;
+        };
+        return $fp;
+        } ;
+
          if ($lesson_id) {   //get the mongo document for this lesson
             $query = array('_id' => mongoId($lesson_id));
             //returns only these fields of the activity record
@@ -87,11 +148,13 @@ Description: looma lesson plan presenter
                    else if (isset($details['ft']) && $details['ft'] == 'evi')
                        $thumbSrc = 'images/video.png';
                    else if (isset($details['ft']) && $details['ft'] == 'text')
-                       $thumbSrc = 'images/textfile6.png';
+                       $thumbSrc = 'images/textfile.png';
                    else if (isset($details['ft']) && $details['ft'] == 'game')
                        $thumbSrc = 'images/games.png';
                    else if (isset($details['fn']) && isset($details['fp']))
                      $thumbSrc = $details['fp'] . thumbnail($details['fn']);
+                   else if ( isset($details['fn']))
+                       $thumbSrc = thumbPrefix($details['ft']) . thumbnail($details['fn']);
                    else $thumbSrc = 'images/LoomaLogo_small.png';
 
                    if (isset($details['ft']) && $details['ft'] == 'EP'  && $details['subject'] === 'nepali') $playLang = 'np'; else $playLang = 'en';

@@ -42,6 +42,7 @@ Description:
         var className = this.getAttribute('id');
         activateClass(className);              //activate this CLASS - highlights the button
         LOOMA.setStore("arith-grade", className, 'session');         //set a COOKIE for CLASS (lifetime = this browser session)
+        //LOOMA.setStore("arith-subject", subjectName, 'session');         //set a COOKIE for CLASS (lifetime = this browser session)
         displaySubjects(className);              // display SUBJECT buttons for this CLASS
         activateSubject(null);                  // de-activate all SUBJECTS
 

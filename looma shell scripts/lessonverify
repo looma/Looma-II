@@ -20,6 +20,9 @@
             NOT FOUND IN DB for <lesson name> - activity/chapter element <element.id
         - lesson elements' name that are text files include the same CH_ID as the lesson name
             TEXT FILE xxx NAME DOESNT MATCH LESSON yyy
+            
+            - if corresponding activity ch_id doesnt include the CH_ID from lesson name, ask to update DB
+            
         - prints summary counts of element types [video, chapter, audio, epaath, pdf, html, image]
 */
 

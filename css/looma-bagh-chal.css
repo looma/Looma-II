@@ -74,7 +74,7 @@ svg {
     position:relative;
     height:11vh;
     width:11vh;
-    border-radius:50%;
+    /*border-radius:50%*/
     /*background-color:red;*/
     background:url("../images/tiger transparent.png");
     background-repeat: no-repeat;

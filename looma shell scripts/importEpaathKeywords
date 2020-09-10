@@ -1,0 +1,49 @@
+// mongo terminal program "importEpaathKeywords"
+//      input from a CSV file
+//          each line is: oleID, key3, key4
+//
+//          inserts  the keys into the entry for <oleID> in activities collection of mongo
+//
+//  make sure there is a file 'epaathKeysToImport.csv' in comma-SEPARATED format, in the current directory
+//  start MONGO in LOOMA db with: 'mongo looma'
+//  run in MONGO SHELL with: load('importEpaathKeywords')
+//
+//"use strict";
+
+var requestcount = 0;
+var changecount = 0;
+
+var input = 'new keywords for nepali epaaths.csv';
+print ('Importing chapters from ' + input);
+print ('*****');
+print ('------------ param = ' + param);
+print ('*****');
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+
+var docs = file.split(/[\r\n]+/);  // split file into array of lines
+
+print ('Processing ' + docs.length + ' lines');
+
+docs.forEach( function(doc) {
+    var fields = doc.split(/,/);  //split the line on commas
+    if (fields[0] !== "") {
+        var oleID = fields[0];
+        requestcount++;
+        var epaath = db.activities.findOne({ 'oleID': oleID});
+        if (epaath) {
+            changecount++;
+            if (fields[1]) epaath['key3'] = fields[1];
+            if (fields[2]) epaath['key4'] = fields[2];
+    
+            if (param !== 'dryrun') db.activities.update({ oleID: oleID},epaath);
+            print(changecount + ' - - UPDATED ' + oleID + 'with key3=' + fields[1] + ' and key4=' + fields[2]);
+        }  else print('******    NOT FOUND oleID: ' + oleID);
+    } else print('*******    EMPTY INPUT LINE: ' + doc);
+});  // end foreach doc
+
+print('');
+if (param==='dryrun') print ('------------ param = ' +  param + ', no writes to db');
+else                  print ('------------ param = ' +  param + ', changes were written to db');
+
+print('+++++  ' + requestcount + '  lines processed');
+print('+++++  ' + changecount + '  changes');

@@ -1062,6 +1062,12 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
    });
 };  //end getCH_ID()
 
+ //LOOMA.sound
+ // param is HTML 'embed' element with src=wav file
+ // in the HTML have
+ //    <embed src="xxx.wav" autostart="false" width='0" height="0" id="sound_object" enablejavascript="true">
+ // call with LOOMA.sound( $('#sound_object")[0] )
+ LOOMA.sound = function(sound) { sound.Play();}
 
 /* LOOMA.speak()
  * Author: Akshay Srivatsan

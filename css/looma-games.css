@@ -76,15 +76,24 @@ button.class:hover,  button.subject:hover {
     height: 90%;
     width: 80%;
 }
-.button-8 {
-    width:11%;
-    height:65%;
-    font-size: 5vw;
-    overflow: hidden;
-    padding:0 0 5px 0;
-    margin:0;
+
+button.class {
+    
+    margin: 3px;
+    padding: 0 3px;
+    color: black;
+    min-width:9vw;
+    height:23vh;
+    line-height: 1.0;
+    font-size: 8vw;
+    font-weight: bold;
+   
 }
 
+button.class.active {
+    background-color:blue;
+    color:yellow;
+}
 #subjects button.game {
     height:25vh;
     margin: 1vw;
@@ -93,6 +102,7 @@ button.class:hover,  button.subject:hover {
 button#bagh-chal {
     display:inline-block;
     bottom: 17vh;
+    right:1.5vw;
     /*opacity:0;*/
 }
 

@@ -75,8 +75,8 @@ function succeed(result) {
     
         if (count > 0) {
             word = list[index];
-            console.log('VOCAB: looking up ' + word);
-            show(word);
+            console.log('VOCAB: looking up ' + word['en']);
+            show(word['en']);
         }
     }
     //LOOMA.lookup(word, gotAWord, fail);
@@ -213,7 +213,7 @@ function next() {
     if (index < count - 1) {
         index++;
         word = list[index];
-        show (word);
+        show (word['en']);
         //LOOMA.lookup(word, gotAWord, fail);
     }
     document.getElementById("prev").style.visibility = 'visible';
@@ -236,7 +236,7 @@ function prev() {
     if (index > 0) {
         index--;
         word = list[index];
-        show (word);
+        show (word['en']);
         //LOOMA.lookup(word, gotAWord, fail);
     }
     if (index == 0) {

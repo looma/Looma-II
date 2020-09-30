@@ -13,8 +13,11 @@ var game_subject;
 var num_teams;
 var curr_team = 1;
 
+var index;
+
 var num_questions;
 var curr_question = 1;
+var promptButtons, responseButtons;
 
 var scores;
 var clickedEventID;
@@ -412,10 +415,10 @@ function runMatch() {
     var responses = game_data['responses'];
     //console.log(prompts)
     //console.log(responses)
-    var promptButtons = [];
-    var responseButtons = [];
+     promptButtons = [];
+     responseButtons = [];
     prompts.forEach(function(prompt, i){
-        var button = $('<button class="prompt not-done"   data-pair="' + i.toString() + '" id="prompt-'+i.toString()+'">' + prompt + '</button>');
+        var button = $('<button class="prompt not-done"  data-word="' + prompt +  '" data-pair="' + i.toString() + '" id="prompt-'+i.toString()+'">' + prompt + '</button>');
         button.click(matchPromptClick);
         promptButtons.push(button);
     });
@@ -449,24 +452,20 @@ function getPictureWords(grade, subj, id, count, random){
     LOOMA.picturewordlist(grade, subj, id, count, random, pictureListSucceed, pictureListFail);
 }
 
-function pictureListSucceed(result){
-    console.log(`Success, found ${result.length} words: ${result}`);
-    runPictureHelper(result)
-}
-
-function pictureListFail(jqXHR, textStatus, errorThrown){
-    console.log('PICTURE: AJAX call to dictionary-utilities.php FAILed, jqXHR is ' + jqXHR.status);
-    LOOMA.alert("Game not found");
-}
-
-function runPictureHelper(words){
-    var promptButtons = [];
-    var responseButtons = [];
+function pictureListSucceed(words){
+    //console.log('Success, found ${result.length} words: ${result}');
+    promptButtons = [];
+    responseButtons = [];
     
     words.forEach(function(word, i){
-        var buttonPicture = $(`<button class="prompt not-done picture" data-word=${word} data-pair="${i.toString()}" id="prompt-${i.toString()}">\
-        <img src="../content/dictionary images/${word}.jpg" /></button>`);
-        var buttonWord = $(`<button class="response not-done picture" data-pair="${i.toString()}" id="response-${i.toString()}">${word}</button>`);
+        var buttonPicture =
+            $('<button class="prompt not-done picture" data-word=' + word['en'] +
+                ' data-pair="' + i.toString() +
+                '" id="prompt-' + i.toString() + '">' +
+                '<img src="../content/dictionary images/' + word['en'] + '.jpg" ></button>');
+        var buttonWord =
+            $('<button class="response not-done picture" ' +
+                'data-pair="' + i.toString() + '" id="response-' + i.toString() + '">' + word['en'] + '</button>');
         buttonPicture.click(matchPromptClick);
         buttonWord.click(matchResponseClick);
         promptButtons.push(buttonPicture);
@@ -485,7 +484,11 @@ function runPictureHelper(words){
         $('#responses').append(responseButton);
         $('#responses').append('<br/>');
     });
-    startTimer(time_limit);
+    startTimer(time_limit);}
+
+function pictureListFail(jqXHR, textStatus, errorThrown){
+    console.log('PICTURE: AJAX call to dictionary-utilities.php FAILed, jqXHR is ' + jqXHR.status);
+    LOOMA.alert("Game not found");
 }
 
 function runPicture(grade, subject) {
@@ -498,8 +501,9 @@ function runPicture(grade, subject) {
     num_questions = 5;
     var random = true;
     
-    getPictureWords(null, 'english', null, num_questions, random);
-    time_limit = 15;
+    LOOMA.picturewordlist(grade, subject    , null, num_questions, random, pictureListSucceed, pictureListFail);
+    //getPictureWords(grade, subject, null, num_questions, random);
+    time_limit = 45;
     startTimer(time_limit);
     
 }  // END runPicture() //
@@ -514,7 +518,7 @@ function getSpeakWords(grade, subj, id, count, random){
 }
 
 function speakListSucceed(result){
-    console.log(`Success, found ${result.length} words: ${result}`);
+    console.log('Success, found ${result.length} words: ${result}');
     runSpeakHelper(result)
 }
 
@@ -524,20 +528,24 @@ function speakListFail(jqXHR, textStatus, errorThrown){
 }
 
 function runSpeakHelper(words){
-    var promptButtons = [];
-    var responseButtons = [];
+     promptButtons = [];
+     responseButtons = [];
     
     words.forEach(function(word, i){
-        var buttonPicture = $(`<button class="prompt not-done picture" data-word=${word} data-pair="${i.toString()}" id="prompt-${i.toString()}">\
-        <img src="images/speech1.png" /></button>`);
-        var buttonWord = $(`<button class="response not-done picture" data-pair="${i.toString()}" id="response-${i.toString()}">${word}</button>`);
-        buttonPicture.click(matchPromptClick);
-        buttonWord.click(matchResponseClick);
+        var buttonPicture = $('<button class="prompt not-done picture" ' +
+            'data-word=' + word['en'] + ' data-pair="' + i.toString() + '" id="prompt-' + i.toString() + '">' +
+            '<img src="images/speech1.png" /></button>');
+        //var buttonWord = $('<button class="response not-done picture" data-pair="${i.toString()}" id="response-${i.toString()}">${word['en']}</button>');
+    
+        var buttonWord =
+            $('<button class="response not-done picture" ' +
+                'data-pair="' + i.toString() +
+                '" id="response-"' + i.toString() + '">' + word['en']  + '</button>');
+       
         promptButtons.push(buttonPicture);
         responseButtons.push(buttonWord);
     });
     
-    //https://www.w3schools.com/js/js_array_sort.asp
     promptButtons.sort  (function(a, b){return 0.5 - Math.random()});
     responseButtons.sort(function(a, b){return 0.5 - Math.random()});
     
@@ -549,6 +557,8 @@ function runSpeakHelper(words){
         $('#responses').append(responseButton);
         $('#responses').append('<br/>');
     });
+    $('.prompt').click(matchPromptClick);
+    $('.response').click(matchResponseClick);
     startTimer(time_limit);
 }
 
@@ -561,12 +571,73 @@ function runSpeak(grade, subject) {
     
     num_questions = 5;
     var random = true;
-    
-    getSpeakWords(null, 'english', null, num_questions, random);
     time_limit = 15;
-    startTimer(time_limit);
     
-}  // END runPicture() //
+    getSpeakWords(grade, subject, null, num_questions, random);
+}  // END runSpeak() //
+
+
+//////////////////////////////
+///////// runtranslate  //////
+//////////////////////////////
+
+function getTranslateWords(grade, subj, id, count, random){
+    LOOMA.wordlist(grade, subj, id, count, random, translateListSucceed, translateFail);
+}
+
+function translateFail(jqXHR, textStatus, errorThrown){
+    //console.log('TRANSLATE: AJAX call to dictionary-utilities.php FAILed, jqXHR is ' + jqXHR.status);
+    LOOMA.alert("No words found");
+}
+
+function translateListSucceed(words){
+    //console.log('Success, found ${words.length} words: ${words}');
+    words.forEach(function(word, i){
+        var english = word['en'];
+        var buttonWord =
+            $('<button class="prompt not-done picture" data-word="' + english +
+                '" data-pair="' + i.toString() +
+                '" id="prompt-' + i.toString() + '">' + english + '</button>');
+        promptButtons.push(buttonWord);
+       
+        var nepali = word['np'];
+        var buttonResponse =
+            $('<button class="response not-done picture" ' +
+                'data-pair="' + i.toString() +
+                '" id="response-"' + i.toString() + '">' + nepali  + '</button>');
+        responseButtons.push(buttonResponse); });
+    
+    promptButtons.sort  (function(a, b){return 0.5 - Math.random()});
+    responseButtons.sort(function(a, b){return 0.5 - Math.random()});
+    
+    promptButtons.forEach(function(promptButton){
+        $('#prompts').append(promptButton);
+        $('#prompts').append('<br/>');
+    });
+    responseButtons.forEach(function(responseButton){
+        $('#responses').append(responseButton);
+        $('#responses').append('<br/>');
+    });
+    $('.prompt').click(matchPromptClick);
+    $('.response').click(matchResponseClick);
+    startTimer(time_limit);
+};
+
+function runTranslate(grade, subject) {
+    showTeam();
+    matches_made = 0;
+    $('#game').append('<div id="prompts"></div>');
+    $('#game').append('<div id="responses"></div>');
+    promptButtons = [];
+    responseButtons = [];
+    $('#question').html('Click left and right items to find a match.');
+    
+    num_questions = 5;
+    var random = true;
+    time_limit = 45;
+    
+    getTranslateWords(grade, subject, null, num_questions, random);
+}  // END runtranslate() //
 
 //////////////////////////////
 ///////// runVocab  /////////
@@ -610,7 +681,7 @@ function runRandom () {
     function get_wordlist_succeed(words) {
         // console.log("success",words)
         $(words).each(function (index, word) {
-            game_data['prompts'].push(word);
+            game_data['prompts'].push(word['en']);
         });
     
         // get definitions of the words in 'prompts[]' from Looma dictionary
@@ -1174,7 +1245,7 @@ function gameOver() {
                         '&type='+ game_type +
                         '"><button> Replay Game </button></a>');
     
-    var gamesHomeButton = $('<a href="looma-gamesNEW.php"><button> Games Home Page </button></a>');
+    var gamesHomeButton = $('<a href="looma-games.php"><button> Games Home Page </button></a>');
     
     $("#scoreList").append(replayButton);
     $("#scoreList").append("<br/><br/>");
@@ -1212,6 +1283,9 @@ function gameOver() {
                     break;
                 case 'speak':
                     runSpeak(game_class, game_subject);
+                    break;
+                case 'translate':
+                    runTranslate(game_class, game_subject);
                     break;
                 case 'multiple choice':
                     runMC();
@@ -1273,14 +1347,15 @@ $(document).ready (function() {
         $('#timer').show();
         $scoreboard.show();
         
-        if      (game_type == 'yesno')    runYesNo();
-        else if (game_type == 'random')   runRandom();
+        if      (game_type == 'yesno')      runYesNo();
+        else if (game_type == 'random')     runRandom();
         //else if (game_type == 'timeline') runtimeline(game_id); //add Catie's new code here
-        else if (game_type == 'vocab')    runVocab(game_class, game_subject);
-        else if (game_type == 'arith')    runArith(game_class, game_subject);
-        else if (game_type == 'picture')  runPicture(game_class, game_subject);
-        else if (game_type == 'speak')    runSpeak(game_class, game_subject);
-        else                              runGame(game_id);
+        else if (game_type == 'vocab')      runVocab(game_class, game_subject);
+        else if (game_type == 'arith')      runArith(game_class, game_subject);
+        else if (game_type == 'picture')    runPicture(game_class, game_subject);
+        else if (game_type == 'speak')      runSpeak(game_class, game_subject);
+        else if (game_type == 'translate')  runTranslate(game_class, game_subject);
+        else                                runGame(game_id);
         
     })
 });

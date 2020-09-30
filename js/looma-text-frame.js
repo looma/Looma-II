@@ -29,5 +29,8 @@ Revision: Looma 2.4
     
     $(document).ready(function ()
     {
+        
+        
+        
         $('#dismiss').off('click').click( quitframe );  //close the text edit iframe and go back to the calling editor
     });

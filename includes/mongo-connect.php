@@ -66,20 +66,19 @@ function mongoFindRandom($collection, $filter, $count) {
         $cursor = $collection->find( $filter );
     };
 
-    $cursorArray = iterator_to_array($cursor);
-
-    // create a list of words
     $temp = [];
-    foreach ($cursorArray as $key => $word) $temp[]=$word['en'];
+    $cursorArray = iterator_to_array($cursor);
+    foreach ($cursorArray as $key => $doc) $temp[]=$doc;
 
     if ($mongo_level >= 4) //already randomly sampled by mongo
         return $temp;
     else {                 //extract a random sample
         $list = [];
         $number = sizeof($cursorArray);
-        if ($number >= 1) for ($i = 0;$i < $count; $i++) {
+        if ($number >= 1) for ($i = 0;$i < min($count,$number); $i++) {
             array_push($list,$temp[mt_rand(0,$number-1)]);
         };
+        //echo '$number is ' . $number . ', and $list size is ' . sizeof($list);
         return $list;
     }
 }
@@ -169,8 +168,8 @@ if ($mongo_version) {
     $mongo_version = $matches[0];
     $mongo_level = intval($mongo_version[0]);
 } else {
-    $mongo_version = '2.0.0';
-    $mongo_level = 2;
+    $mongo_version = '4.4.0';
+    $mongo_level = 4;
 }
 //echo 'mongo_version is ' . $mongo_version . '  $mongo_level = '. $mongo_level;
 

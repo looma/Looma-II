@@ -55,9 +55,12 @@ File: header.php
 
   	<title> <?php print $page_title; ?> </title>
 
+    <!--
+    -->
     <link rel="stylesheet" href="css/tether.min.css">        <!-- needed by bootstrap.css -->
     <link rel="stylesheet" href="css/bootstrap.min.css">     <!-- Bootstrap CSS still needed ?? yes, for glyphicons-->
-    <link rel="stylesheet" href="css/looma.css">             <!-- Looma CSS -->
+
+      <link rel="stylesheet" href="css/looma.css">             <!-- Looma CSS -->
     <link rel="stylesheet" href="css/looma-keyboard.css">    <!-- Looma keyboard CSS -->
 
     <?php  /*retrieve 'theme' cookie from $_COOKIE and use it to load the correct 'css/looma-theme-xxxxxx.css' stylesheet*/

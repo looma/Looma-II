@@ -58,13 +58,14 @@ function makeButton($id, $thumb, $dn) {
             //echo "DEBUG   found lesson " . $lesson['dn'] . "<br>";
             echo "<td>";
             $dn = $history['title'];
+            $ndn = isset($history['ndn']) ?  $history['ndn'] : "";
             $ft = "history";
             //$thumb = "../content/timelines/" . $dn . "_thumb.jpg";
             $thumb = $history['thumb'];
             //$thumb = $path . "/thumbnail.png";
             $id = $history['_id'];  //mongoID of the descriptor for this lesson
             //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $nfn, $npg,$prefix,$lang)
-            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+            makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
             //makeButton($id, $thumb, $dn);
             echo "</td>";
             $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}

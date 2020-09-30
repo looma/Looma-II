@@ -723,7 +723,7 @@ $(document).ready(function () {
         else window.history.back();
     });
     
-    window.onbeforeunload = function(event) {
+ /*   window.onbeforeunload = function(event) {
         event.preventDefault();
         // Chrome requires returnValue to be set.
         event.returnValue = '';
@@ -735,7 +735,7 @@ $(document).ready(function () {
             .then(function(){window.history.back();})
             .catch(function() {});
     };
-
+*/
 
 
 ///////////////////////////////

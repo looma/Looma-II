@@ -138,6 +138,7 @@
       //LOOMA.makeTransparent($('#main-container'));
       
       $('#filecommands').trigger('click');
-      
+    
       if ($('#text_file_name').attr('data-dn')) openfile( decodeURIComponent($('#text_file_name').attr('data-dn')),'text_files', 'text');
+      if ($('#text_file_id').attr('data-id')) openfile( decodeURIComponent($('#text_file_id').attr('data-id')),'text_files', 'text');
   });

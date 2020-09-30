@@ -14,6 +14,7 @@ h2 {
     text-align:center;
     font-size: 25px;
     background-color: aquamarine;
+    background-color: var(--looma-toolbar);
     color:black;
     padding: 10px;
 }
@@ -26,7 +27,7 @@ form {
     height: 9.5%;
     vertical-align:middle;
     font-size : 2em;
-    background-color:deepskyblue;
+    background-color:var(--looma-toolbar);
     color:black;
     padding-top: 8px;
 }

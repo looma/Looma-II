@@ -219,27 +219,29 @@ if (isset($_REQUEST["collection"])) {
 // - - - OpenByID - - - //
 ////////////////////////
     case "openByID":
-        if ($collection == "chapters") $query = array('_id' => $_REQUEST['id']);
-        else                           $query = array('_id' => mongoId($_REQUEST['id']));
-        //look up this ID (mongoID) in this collection (dbCollection)
-        $file = mongoFindOne($dbCollection, $query);
+        if ($_REQUEST['id']) {
+                if ($collection == "chapters") $query = array('_id' => $_REQUEST['id']);
+                else                           $query = array('_id' => mongoId($_REQUEST['id']));
+                //look up this ID (mongoID) in this collection (dbCollection)
+                $file = mongoFindOne($dbCollection, $query);
 
-        ////////////// for chapter, add in some information from the textbook collection
-        if ($collection == "chapters") {
-            $query = array('prefix' => prefix($file['_id']));
-            $textbook = mongoFindOne($textbooks_collection, $query);
-            $file['fp'] = $textbook['fp'];
-            $file['fn'] = $textbook['fn'];
-            $file['nfn'] = $textbook['nfn'];
-        }
-        //////////////
+                ////////////// for chapter, add in some information from the textbook collection
+                if ($collection == "chapters") {
+                    $query = array('prefix' => prefix($file['_id']));
+                    $textbook = mongoFindOne($textbooks_collection, $query);
+                    $file['fp'] = $textbook['fp'];
+                    $file['fn'] = $textbook['fn'];
+                    $file['nfn'] = $textbook['nfn'];
+                }
+                //////////////
 
-        if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
-        //else echo json_encode(array("error" => "File not found " . $_REQUEST['id'] . " in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
+                if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
+                //else echo json_encode(array("error" => "File not found " . $_REQUEST['id'] . " in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
 
-        else echo json_encode(array("dn" => "File not found ", "ft" => "none", "thumb"=>"images/alert.jpg"));  // in not found, return an error object {'error': errormessage}
+                else echo json_encode(array("dn" => "File not found ", "ft" => "none", "thumb" => "images/alert.jpg"));  // in not found, return an error object {'error': errormessage}
+            }
+            return;
 
-        return;
     // end case "openByID"
 
 ////////////////////////
@@ -247,7 +249,10 @@ if (isset($_REQUEST["collection"])) {
 ////////////////////////
     case "openText":
         $query = array();
+        if (isset($_REQUEST['filter']) && $_REQUEST['filter'] != "")
+            $query = array(dn => mongoRegexOptions($_REQUEST['filter'],'i'));
         //look up this ID (mongoID) in this collection (dbCollection)
+            //print_r($query);
         $cursor = mongoFind($dbCollection, $query, null, $_REQUEST['skip'], 1);
         $cursor->next();
         $file = $cursor->current();
@@ -439,8 +444,6 @@ if (isset($_REQUEST["collection"])) {
         // - - - textBookList - - - //
         ////////////////////////
         case "textBookList":
-
-    //NOTE: not currently used (12/2019)
 
             // inputs is class
             //    query textbooks collection to get list of textbooks for this class

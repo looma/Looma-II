@@ -12,8 +12,7 @@ Revision: Looma 2.4, 3.0
 Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in lesson plans, edited videos, etc]
           Opens in an iFrame within another editor, like looma-lesson-plan.php
 -->
-
-    <?php require_once('looma-edit-text.php') ?>
+    <?php require_once('looma-edit-text.php'); ?>
 
     <script src="js/looma-text-frame.js">   </script>
 

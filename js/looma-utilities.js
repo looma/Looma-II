@@ -479,7 +479,8 @@ typename: function(ft) {
 },
 
 capitalize : function(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    if (string) return string.charAt(0).toUpperCase() + string.slice(1);
+    else return string;
 }, //end capitalize()
 
 
@@ -567,15 +568,21 @@ translate : function(language) {
         //.css( "color", "red" );
         //$('.english-keyword, .english').hide();
         //$('.native-keyword,  .native').show();
-        $('.english-keyword, .english').css('display','none');
-        $('.native-keyword,  .native').css('display','inline-block');
+       
+       // $('.english-keyword, .english').css('display','none');
+       // $('.native-keyword,  .native').css('display','');
+        $('.english-keyword, .english').hide();
+        $('.native-keyword,  .native').show();
         $('.english-tip').removeClass('yes-show');
         $('.native-tip').addClass('yes-show');
     } else /*english*/ {
         //$('.english-keyword, .english').show();
         //$('.native-keyword,  .native').hide();
-        $('.english-keyword, .english').css('display','');
-        $('.native-keyword,  .native').css('display','none');
+        
+        //$('.english-keyword, .english').css('display','');
+        //$('.native-keyword,  .native').css('display','none');
+        $('.english-keyword, .english').show();
+        $('.native-keyword,  .native').hide();
         $('.english-tip').addClass('yes-show');
         $('.native-tip').removeClass('yes-show');
     }
@@ -820,7 +827,7 @@ wordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
     return false;
 }, //end WORDLIST
     
-        picturewordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
+picturewordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
         
             var parameters = "cmd=list&picturesonly=true";
             if (grade) parameters  += "&class="  + encodeURIComponent(grade);

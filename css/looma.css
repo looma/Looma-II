@@ -489,7 +489,7 @@ span:hover .xlat {
 span.tip { display:none;}
 
 button:hover span.tip.yes-show 	{
-    display:block;
+    display:none;  /*turned off for now 2020 09*/
     position:absolute;
     bottom:10%;
     left:15%;

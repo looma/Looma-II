@@ -1,6 +1,6 @@
 /* Main clock page */
 #main-container-horizontal {
-    background-color: #091F48;
+    background-color: var(--looma-blue;);
     display:grid;
     grid-template-rows: [top] repeat(4,1fr) [bottom];
     grid-template-columns: [left] 1fr 3fr 1fr [right];

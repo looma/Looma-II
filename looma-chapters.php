@@ -1,6 +1,5 @@
 <!doctype html>
 <!--
-Name: Skipitic
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2015 10, MAR 2020
 Revision: Looma 2.0.0

@@ -9,6 +9,10 @@ body {
 	color: var(--looma-font-color);
 }
 
+#main-container-horizontal {
+	background-color: var(--looma-blue;);
+}
+
 #toolbar-container, #toolbar-container-vertical {
 	background-color: var(--looma-toolbar);
 }

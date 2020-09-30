@@ -115,6 +115,10 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
                $dn = $_REQUEST['dn'];
                echo "<div id='text_file_name' data-dn=" . rawurlencode($dn) . " hidden></div>";
            }
+        if (isset($_REQUEST['id'])) {
+            $id = $_REQUEST['id'];
+            echo "<div id='text_file_id' data-id=" . rawurlencode($id) . " hidden></div>";
+        }
         ?>
 
            <div id="text-editor-container">

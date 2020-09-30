@@ -92,6 +92,14 @@ require_once ("includes/mongo-connect.php");
                 echo "  </button>";
                 echo "</a>";
                 }
+                {  // add vocab translation game
+                    echo "<a href='looma-game.php?type=translate&class=" . $game_class . "&subject=" . $game_subject . "'>";
+                    echo "  <button class='activity game img'>";
+                    echo "    <img src='images/games.png'>";
+                    echo "    <span>Vocabulary Translation</span>";
+                    echo "  </button>";
+                    echo "</a>";
+                }
             };
 
             if ($game_subject === 'math') {

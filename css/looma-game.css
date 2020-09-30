@@ -6,7 +6,7 @@ Description: formatting and styling for the game page
 ***********************/
 
 /************MAIN FRAME*************/
-.container 
+.container
 {
   display: grid;
   grid-template-columns: 85% 15%;
@@ -18,8 +18,7 @@ Description: formatting and styling for the game page
   background-color: #091f48;
 }
 
-.header
-{
+.header {
   grid-column: 1 / 3;
   grid-row: 1 / 2;
 }
@@ -29,13 +28,11 @@ Description: formatting and styling for the game page
     grid-row: 2 / 3;
 }
 
-#thegameframe
-{
+#thegameframe {
     grid-column: 1 / 2;
     grid-row: 2 / 6;
     border: 1px solid yellow;
     overflow: hidden;
-    
     position:relative;
 }
 
@@ -51,8 +48,7 @@ Description: formatting and styling for the game page
     border: 1px solid yellow;
 }
 
-#scoreboard
-{
+#scoreboard {
     grid-column: 2 / 3;
     grid-row: 4 / 6;
     border: 1px solid yellow;
@@ -75,9 +71,13 @@ Description: formatting and styling for the game page
     background-color:blue;
 }
 
-
 #gameframe {
     height:100%;
+    width: 100%;
+}
+
+#game {
+    height:93%;
     width: 100%;
 }
 
@@ -87,46 +87,44 @@ Description: formatting and styling for the game page
     font-size:1.5em;
     height:7%;
 }
-#game {
-    height:93%;
-    width: 100%;
-}
 
 
 #optionsframe {
     grid-column: 1/3;
-     grid-row:2/5;
-     margin-top:25vh;
+    grid-row:2/5;
+    margin-top:25vh;
  }
 
 .bigscore {
   max-height: 15%;
   max-width: 8%;
 }
-#scoreList h5{font-size:3em;}
+
+#scoreList h5 {font-size:3em;}
 
 #prompts {
     display:inline-block;
-  float: left;
-  margin-left: 3vw;
-  margin-right: 10vw;
-  max-width: 30vw;
+    float: left;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    width:20vw;
+    max-width: 35vw;
 }
 
 #responses {
     display:inline-block;
     float:left;
-  margin-right: 3vw;
-  max-width: 35vw;
+    width:54vw;
+    max-width: 54vw;
 }
 
 .prompt{
-  display: block;
-  min-height: 9vh;
-  margin: 10px;
-  max-width: 25vw;
-    min-width:25vw;
-    font-size:1.5em;
+     display: block;
+     min-height: 9vh;
+     margin: 10px;
+     max-width: 25vw;
+     min-width:25vw;
+     font-size:2em;
 }
 
 /* CP NEW (1) */
@@ -134,7 +132,7 @@ Description: formatting and styling for the game page
     width: 11vw;
     min-width:11vw;
     height: 12vh;
-    margin:0;
+    margin:auto;
 }
 
 .prompt.picture img {
@@ -144,8 +142,8 @@ Description: formatting and styling for the game page
     display: block;
     min-height: 9vh;
     margin: 10px;
-    width:40vw;
-    max-width: 40vw;
+    width:100%;
+    font-size:2em;
 }
 
 .response.picture {
@@ -175,7 +173,6 @@ Description: formatting and styling for the game page
     background-color:white;
     opacity:0.5;
 }
-
 
 #end {
   max-height: 15%;
@@ -242,105 +239,100 @@ Description: formatting and styling for the game page
   top: 20%;
 }
 
-#vert-marker2
-{
+#vert-marker2 {
   max-height: 10%;
   position: absolute;
   left: 36.5%;
   top: 55%;
 }
-#low2
-{
+
+#low2 {
   position: absolute;
   left: 34%;
   top: 55%;
 }
 
-#high3
-{
+#high3 {
   position: absolute;
   left: 45%;
   top: 20%;
 }
-#vert-marker3
-{
+
+#vert-marker3 {
   max-height: 10%;
   position: absolute;
   left: 47.5%;
   top: 55%;
 }
-#low3
-{
+
+#low3 {
   position: absolute;
   left: 45%;
   top: 55%;
 }
 
-#high1
-{
+#high1 {
   position: absolute;
   left: 22%;
   top: 20%;
 }
-#vert-marker1
-{
+
+#vert-marker1 {
   max-height: 10%;
   position: absolute;
   left: 24.5%;
   top: 55%;
 }
-#low1
-{
+
+#low1 {
   position: absolute;
   left: 22%;
   top: 55%;
 }
 
-#high4
-{
+#high4 {
   position: absolute;
   left: 56%;
   top: 20%;
 }
-#vert-marker4
-{
+
+#vert-marker4 {
   max-height: 10%;
   position: absolute;
   left: 58.5%;
   top: 55%;
 }
-#low4
-{
+
+#low4 {
   position: absolute;
   left: 56%;
   top: 55%;
 }
 
-#wide-left2
-{
+#wide-left2 {
   position: absolute;
   left: 5%;
   top: 35%;
 }
-#hori-marker2
-{
+
+#hori-marker2 {
   position: absolute;
   top: 35%;
   left: 5%;
 }
-#wide-right2
-{
+
+#wide-right2 {
   position: absolute;
   top: 35%;
   left: 55%;
 }
 
-#wide-left3
-{
+#wide-left3 {
   position: absolute;
   left: 5%;
   top: 47%;
 }
+
 #hori-marker3
 {
   position: absolute;
@@ -408,15 +400,15 @@ Description: formatting and styling for the game page
   max-height: 15%;
   max-width: 15%;
 }
-.button 
+.button
 {
     border: none;
     color: black;
     padding: 1vw 4vw;
     text-align: center;
     text-decoration: none;
-    /* This font size was chosen to accomodate large 
-    definitions, but if they are too long, they will 
+    /* This font size was chosen to accomodate large
+    definitions, but if they are too long, they will
     still not fit and this may need to be adjusted */
     font-size: 2.2vmin;
     display: inline-block;
@@ -496,7 +488,7 @@ button:hover, .button:hover
 }
 
 /*timeline div class*/
-.timeline 
+.timeline
 {
   position: relative;
   margin: 0 auto;
@@ -572,7 +564,7 @@ button:hover, .button:hover
 }
 
 /********************* MAP GAME ***********************/
-#map 
+#map
 {
     width: 100%;
     height: 100%;

@@ -25,10 +25,15 @@ include ('includes/header.php');
 <div id="main-container-horizontal">
     <div id="fullscreen">
         <div id="display" class="text-display"></div>
+        <div id="filterdiv">
+            <input id="filterterm" placeholder="enter a chapter ID"></input>
+            <button id="filter">Filter</button>
+        </div>
         <div id="legend">
             <span id="dn"></span>
             <button id="edit">Edit</button>
         </div>
+        <div id="text-display"></div>
         <button class = "lookup"></button>
         <button class="speak looma-control-button"></button>
         <button id="fullscreen-control" class="looma-control-button"></button>

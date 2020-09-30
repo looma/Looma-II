@@ -14,9 +14,12 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 	require ('includes/header.php');
 	require ('includes/mongo-connect.php');
 
-//use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang)
+    //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
+    //                       $mongo_id, $ole_id, $url, $pg, $zoom, $grade,
+    //                       $epversion, $nfn, $npg, $prefix,$lang)
+
     require('includes/looma-utilities.php');
-	?>
+?>
 </head>
 
 <body>
@@ -32,8 +35,10 @@ $foundActivity;
 
         $id = $activity['_id'];
 
-        if ( ! in_array($id, $shown)) {  //check if this Activity has already been shown
-            array_push($shown,$id);  //add to 'shown' array, so it wont be shown again
+        //check if this Activity has already been shown
+        //add to 'shown' array, so it wont be shown again
+        if ( ! in_array($id, $shown)) {
+            array_push($shown,$id);
 
             $ft = $activity['ft'];
             $dn =  $activity['dn'];
@@ -230,7 +235,10 @@ $foundActivity;
                 echo "</a>";
 
                 echo "</td>";
-            } else {  // change to SPEAK game when implemented
+                $foundActivity = true;
+                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
+
+            } else {
                 echo "<td>";
                 echo "<a href='looma-game.php?type=speak&class=" . $grade . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
                 echo "  <button class='activity play img'>";
@@ -240,11 +248,25 @@ $foundActivity;
                 echo "</a>";
 
                 echo "</td>";
+                $foundActivity = true;
+                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
             }
+            {  // change to TRANSLATIOM
+                echo "<td>";
+                echo "<a href='looma-game.php?type=translate&class=" . $grade . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
+                echo "  <button class='activity play img'>";
+                echo "    <img src='images/games.png'>";
+                echo "    <span> Vocabulary Translation</span>";
+                echo "  </button>";
+                echo "</a>";
 
+                echo "</td>";
+                $foundActivity = true;
+                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
+            }
     } else  if ($subject === 'math') {
             echo "<td>";
-            echo "<a href='looma-game.php?type=arith&class=class" . $gradenumber . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
+            echo "<a href='looma-arith.php?type=arith&class=class" . $gradenumber . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
             //echo "<a href='looma-arith.php?class=class" . $gradenumber . "'>";
             echo "  <button class='activity play img'>";
             echo "    <img src='images/games.png'>";
@@ -253,12 +275,15 @@ $foundActivity;
             echo "</a>";
 
             echo "</td>";
+            $foundActivity = true;
+            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
+
         }
 
 
 //get all the activities registered for this chapter
-        if ($lang === 'en') $query = array('ch_id' => $ch_id);
-        else                $query = array('nch_id' => $ch_id);
+        if ($lang === 'en') $query = array('ch_id' => mongoRegex('/'.$ch_id.'/'));
+        else                $query = array('nch_id' => mongoRegex('/'.$ch_id.'/'));
 
         //$activities = $activities_collection -> find($query);
         $activities = mongoFind($activities_collection, $query, null, null, null);

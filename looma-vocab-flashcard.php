@@ -58,7 +58,7 @@ Description:  for Looma 2
       </div>
     </div>
         <!-- buttons to go to the next or previous word, back to MENU and to SPEAK the word -->
-        <a href="looma-vocab.php"> <button class="navigate" id="homePage"><?php keyword('Menu') ?></button> </a>
+        <a href="looma-vocab.php"> <button hidden class="navigate" id="homePage"><?php keyword('Menu') ?></button> </a>
 
 
     <?php include ('includes/toolbar.php'); ?>

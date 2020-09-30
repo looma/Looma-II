@@ -71,6 +71,9 @@ Description:  for Looma 2
                  <button id="importcontent" class="exec-control" >Import Content</button>
              </a>
 
+             <a href="looma-text-scan.php">
+                 <button id="textscan" class="admin-control" >Scan Text Files</button>
+             </a>
 
              <a href="looma-dictionary-autogen-editor.php">
                  <button id="speechtest" class="exec-control" >Dictionary Editor</button>

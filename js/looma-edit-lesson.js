@@ -793,7 +793,7 @@ function preview_result (item) {
 	         $.post("looma-database-utilities.php",
                 {cmd: "openByID", collection: "text", id: id},
                 function(result) {
-                    $('#previewpanel').empty().append($('<div class="textpreview text-display"></div>').html(result.data));
+                    $('#previewpanel').empty().append($('<div class="textpreview text-display" data-id="' + id + '"></div>').html(result.data));
                     //document.querySelector("div#previewpanel").innerHTML = result.data;
                 },
                 'json'
@@ -901,6 +901,19 @@ function makedraggable() {
         });
 } //end makedraggable()
 
+
+function openTextEditor (e) {
+    if ($(e.target).closest('.textpreview')) {
+        var textfile = $(e.target).closest('.textpreview').data('id');
+        
+        window.open('./looma-edit-text.php?id=' + textfile );
+        //$('#text-editor iframe').attr('src','./looma-text-frame.php?id=' + textfile);
+        //$('#text-editor').show().focus();
+        
+        //LOOMA.alert('right clicked text file with id: ' + textfile,0,false,function(){return;});
+        return false;
+    }
+} // end openTextEditor()
 
 
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
@@ -1018,6 +1031,11 @@ window.onload = function () {
     //$('#cmd-button').focus();
     
     // hide or disable #search-panel, focus on #cmd-button, put hints in preview panel "open a file, new file or template to work on"
-};  //end window.onload()
+
+    // enable right-click on text files to open Text Editor
+    
+    $('#previewpanel').on('contextmenu', '.textpreview', openTextEditor);
+    
+    };  //end window.onload()
 
 

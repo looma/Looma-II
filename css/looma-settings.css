@@ -81,11 +81,13 @@ span.theme:hover img {
 span#themes {font-size: 1em}
 
 #themelist select {
+    border-radius:5px;
     height:5vh;
     width:15vw;
 }
 
 #voicelist select {
+    border-radius:5px;
     height:5vh;
     width:15vw;
 }

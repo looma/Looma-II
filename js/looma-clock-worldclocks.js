@@ -65,11 +65,20 @@ window.onload = function() {
     drawAllNames();
     
     $('#translate').click(function() {
-       location.reload();
+        //   location.reload();
+        drawAllNames();
     });
     
     var myVar = setInterval(nextTime, 1000);
     
+    function drawClock(distanceM, distanceH, ctx) {
+        drawFace(ctx);
+        drawNumbers(ctx);
+        drawTicks(ctx, radius * 0.02);
+        drawTime(ctx, hour + distanceH, minute + distanceM, second);
+        drawDigitalTime(hour + distanceH, minute + distanceM, ctx);
+    }
+
     function drawAllClocks() {
         drawClock(45, 5, ctx1);
         drawClock(0, 9, ctx2);
@@ -81,24 +90,31 @@ window.onload = function() {
         drawClock(0, 2, ctx8);
     }
     
+    function eraseName(ctx, name) {
+        ctx.font = "18px Chalkboard";
+        ctx.fillStyle = "#091F48";
+        ctx.fillText(name, 0, -radius - 15);
+    }
+    
+    function drawName(ctx, name) {
+        ctx.font = "18px Chalkboard";
+        ctx.fillStyle = "yellow";
+        ctx.fillText(name, 0, -radius - 15);
+    }
+    
     function drawAllNames() {
         if (language === 'english')
             for (num = 0; num < names.length; num++) {
+                eraseName(allCanvasContexts[num], nativeNames[num]);
                 drawName(allCanvasContexts[num], names[num]);
             }
         else for (num = 0; num < nativeNames.length; num++) {
+            eraseName(allCanvasContexts[num], names[num]);
             drawName(allCanvasContexts[num], nativeNames[num]);
         }
     };
     
-    function drawClock(distanceM, distanceH, ctx) {
-        drawFace(ctx);
-        drawNumbers(ctx);
-        drawTicks(ctx, radius * 0.02);
-        drawTime(ctx, hour + distanceH, minute + distanceM, second);
-        drawDigitalTime(hour + distanceH, minute + distanceM, ctx);
-    }
-
+  
     function nextTime() {
         incrementSecond();
         drawAllClocks();
@@ -202,15 +218,9 @@ window.onload = function() {
         ctx.stroke();
         ctx.rotate(-pos);
     }
-
-    function drawName(ctx, name) {
-        ctx.font = "18px Chalkboard";
-        ctx.fillStyle = "yellow";
-        ctx.fillText(name, 0, -radius - 15);
-    }
     
     function drawDigitalTime(hours, minutes, ctx) {
-        ctx.clearRect(-radius * 2 / 3, radius, radius * 1.5, radius / 2);
+        var digitalTime, nepaliTime;
         var printHour = hours;
         var printMinute = minutes;
         if(printMinute < 0) {
@@ -231,28 +241,88 @@ window.onload = function() {
         if(printHour > 24) {
             printHour = printHour - 24;
         }
-        
-        ctx.fillStyle = "yellow";
-        ctx.font = "18px Chalkboard";
-        //ctx.font = "25px Ariel";
-        
+        /*NOTE: Nepali am/pm equivalents:
+       5:00 AM — 11:59 AM - बिहानको HH:MM
+       12:00 PM — 4:59 PM - दिउसोको HH:MM
+       5:00 PM — 7:59 PM - बेलुकाको HH:MM
+       8:00 PM  — 4:59 AM - रातीको HH:MM
+     */
         if(printHour >= 12 && printHour < 24) {
             if(printHour != 12) {
-                ctx.fillText((printHour - 12) + ":" + printMinute + " PM", 0, radius + 12);
+                digitalTime = (printHour - 12) + ":" + printMinute + " PM";
+                     if (printHour < 17)      nepaliTime = (printHour - 12) + ":" + printMinute + " दिउसोको";
+                     else if (printHour < 20) nepaliTime = (printHour - 12) + ":" + printMinute + " रातीको";
+                     else                     nepaliTime = (printHour - 12) + ":" + printMinute + " रातीको";
             }
             else {
-                ctx.fillText(printHour + ":" + printMinute + " PM", 0, radius + 12);
+                digitalTime = printHour + ":" + printMinute + " PM";
+                nepaliTime = printHour + ":" + printMinute + " दिउसोको";
             }
         }
         else {
             if(printHour == 24) {
-                ctx.fillText("12:" + printMinute + " AM", 0, radius + 12);
+                digitalTime = "12:" + printMinute + " AM";
+                nepaliTime = "12:" + printMinute + " रातीको";
             }
             else {
-                ctx.fillText(printHour + ":" + printMinute + " AM", 0, radius + 12);
+                digitalTime = printHour + ":" + printMinute + " AM";
+                if (printHour < 5)  nepaliTime = (printHour) + ":" + printMinute + " रातीको";
+                else                nepaliTime = (printHour) + ":" + printMinute + " बिहानको";
             }
         }
-    }
+    
+        ctx.fillStyle = "yellow";
+        ctx.font = "18px Chalkboard";
+        //ctx.font = "25px Ariel";
+        ctx.clearRect(-radius * 2 / 3, radius, radius * 1.5, radius / 2);
+        ctx.fillText((language==='english' ? digitalTime : nepaliTime), 0, radius + 12);
+    } // end drawDigitalTime()
+                            
+                            /*    function drawDigitalTime(hours, minutes, ctx) {
+                                    ctx.clearRect(-radius * 2 / 3, radius, radius * 1.5, radius / 2);
+                                    var printHour = hours;
+                                    var printMinute = minutes;
+                                    if(printMinute < 0) {
+                                        printMinute = 60 + printMinute;
+                                        printHour --;
+                                    }
+                                    else if(printMinute > 59) {
+                                        printMinute = printMinute - 60;
+                                        printHour ++;
+                                    }
+                                    
+                                    if(printMinute < 10) {
+                                        printMinute = "0" + printMinute;
+                                    }
+                                    if(printHour <= 0) {
+                                        printHour += 24;
+                                    }
+                                    if(printHour > 24) {
+                                        printHour = printHour - 24;
+                                    }
+                                    
+                                    ctx.fillStyle = "yellow";
+                                    ctx.font = "18px Chalkboard";
+                                    //ctx.font = "25px Ariel";
+                                    
+                                    if(printHour >= 12 && printHour < 24) {
+                                        if(printHour != 12) {
+                                            ctx.fillText((printHour - 12) + ":" + printMinute + " PM", 0, radius + 12);
+                                        }
+                                        else {
+                                            ctx.fillText(printHour + ":" + printMinute + " PM", 0, radius + 12);
+                                        }
+                                    }
+                                    else {
+                                        if(printHour == 24) {
+                                            ctx.fillText("12:" + printMinute + " AM", 0, radius + 12);
+                                        }
+                                        else {
+                                            ctx.fillText(printHour + ":" + printMinute + " AM", 0, radius + 12);
+                                        }
+                                    }
+                                }
+                              */
     
     function changeSize() {
         var num;

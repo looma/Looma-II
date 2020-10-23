@@ -24,7 +24,7 @@ require ('includes/mongo-connect.php');
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>Release 5.9.7  SEP 2020   </h4>
+        <h4>Release 6.0  OCT 2020   </h4>
         <!-- copyright notice, with link to vts.org-->
         <span class='glyphicon glyphicon-copyright-mark'></span>2020
         <a draggable="false"  class="footer" href="http://looma.education">by Looma Education Company</a>
@@ -34,12 +34,9 @@ require ('includes/mongo-connect.php');
        This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
             Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
 
-
         <img draggable="false"  alt="Creative Commons License" src="images/logos/CC-BY-NC-SA.png" height="33px">
-
-
-
         <br>
+
         <h5> Attributions for code and content used in Looma: </h5>
 
         <div id="logos">

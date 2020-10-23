@@ -168,7 +168,7 @@ foreach ($chapters as $ch) {
                        data-lang='en'
                     data-ch='$ch_id'
                      data-chdn='$ch_dn'>";
-        echo keyword('Resources');
+        echo 'Resources';
         echo "</button>";
         }
     else {echo "<button class='activity' style='visibility: hidden'></button>";}

@@ -57,9 +57,16 @@ var displayArea;
     } //end FAIL
 
 function getDefinition(event) {
+    var input;
     event.preventDefault();
-    var input = document.getElementById("input").value;
-    LOOMA.define(input, OK, fail);
+    if (language === 'english') {
+         input = document.getElementById("input").value;
+        LOOMA.define(input, OK, fail);
+    }
+    else                  {
+         input = document.getElementById("input").value;
+        LOOMA.reversedefine(input, OK, fail);
+    }
     return false;
 }; //end getDefinition()
 
@@ -67,6 +74,11 @@ $(document).ready (function() {
     
     var elem = document.getElementById("lookup");
     elem.addEventListener('submit', getDefinition);
+    
+    $('#input').focus(
+        function(){$('#npinput').val('')});
+    $('#npinput').focus(
+        function(){$('#input').val('')});
  
     // SPEAK button will say the word, unless text is selected, in which case, it will speak the selected text
     $('button.speak').off('click').click(function () {

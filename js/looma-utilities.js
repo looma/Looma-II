@@ -32,6 +32,7 @@ Description:
  * LOOMA.lookup()
  * LOOMA.defHTML()
  * LOOMA.define()
+ * LOOMA.npdefine()
  * LOOMA.popupDefinition()
  * LOOMA.wordlist()
  * LOOMA.picturewordlist()
@@ -270,17 +271,15 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                     
                     //$newButton.append($('<img draggable="false" src="' + thumbfile + '"' +
                        //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));
-        
-        
+                    
                     /*this idea is from: https://stackoverflow.com/questions/980855/inputting-a-default-image-in-case-the-src-attribute-of-an-html-img-is-not-vali
                            $newButton.append($('<object draggable="false" data="' + thumbfile + '" type="image/png">' +
                                                 '<img src="' + result.fp + 'thumbnail.png">' +
                                                 '</object>'));
                      */
                     
-                    
-                    
-                        $newButton.append($('<span>').text(result.dn));
+                        var displayname = (language === 'native' && result.ndn) ? result.ndn : result.dn;
+                        $newButton.append($('<span class="dn">').text(displayname));
                         $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
                  },
@@ -659,7 +658,27 @@ lookup : function(word, succeed, fail) {
         });
 
     return false;
-}, //end LOOKUP
+}, //end lookup
+
+reverselookup : function(nepali, succeed, fail) {
+
+    console.log('LOOMA.reverselookup: dictionary lookup - word is "' + nepali + '"');
+
+    //returns OBJECT result == {en:english, np:nepali, phon:phonetic, def:definition, img:picture, ch_id:chapter}
+    $.ajax(
+        "looma-dictionary-utilities.php", //Looma Odroid
+        {
+            type: 'GET',
+            cache: false,
+            crossDomain: true,
+            dataType: "json",
+            data: "cmd=reverselookup&word=" + encodeURIComponent(nepali.toLowerCase()),
+            error: fail,
+            success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
+        });
+
+    return false;
+}, //end REVERSELOOKUP
 
 defHTML: function (definition, rwdef) {
         var $div = $('<div />');
@@ -741,9 +760,23 @@ define : function(word, succeed, fail) {
     }
 }, //end LOOMA.define()
 
+// function reverseDEFINE looks up the word and returns HTML containing
+//                 the word, translation, definition, and rootword definition
+        reversedefine : function(word, succeed, fail) {
+            LOOMA.reverselookup(word, found, notfound);
+        
+            function found(def) {
+                console.log(def['np'] + " DEFINED");
+                    succeed(LOOMA.defHTML(def));
+             }
+            function notfound() {
+                fail();
+            }
+        }, //end LOOMA.reversedefine()
+
 // function DEFINE looks up the word and returns HTML containing
 //                 the word, translation, definition, and rootword definition
-sienna_define : function(word, succeed, fail) {
+definition_only : function(word, succeed, fail) {
     LOOMA.lookup(word, found, notfound);
     function found(definition) {
         if (definition.rw) {

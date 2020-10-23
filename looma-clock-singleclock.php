@@ -34,12 +34,10 @@ $page_title = 'Looma - Time';
 <canvas id="mainClock">
 </canvas>
 
-<FORM METHOD="LINK" ACTION="" Id="Refresh">
-    <button TYPE="submit" id="singleclock-newproblem"><?php keyword("New Problem")?></button>
-</FORM>
+    <button id="newproblem"><?php keyword("New Problem")?></button>
 
-<p id="question"> <?php keyword("What time is on the clock?") ?></p>
-<form action="">
+    <p id="question"> <?php keyword("What time is on the clock?") ?></p>
+
     <fieldset id="getInput">
         <label id="label"> <?php keyword("Hour:") ?></label>
         <select type="int" id="userHour">
@@ -67,11 +65,11 @@ $page_title = 'Looma - Time';
         <?php
     }
 ?>
-</select>
-            <input id="submit" type="button" value= "Submit"/>
+
+        </select>
+            <button id="submit"> <?php keyword("Submit"); ?> </button>
 		</fieldset>
-        <input type="text" id="txtOutput" />
-	</form>
+        <div id="txtOutput" />
 
 
         <script src="js/looma-clock-singleclock.js"></script>

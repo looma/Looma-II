@@ -8,7 +8,7 @@ Description: This file uses a canvas to draw two random clocks, and uses
 use to enter the difference in times of the two clocks.  It also creates a
 “New Problem” button which refreshes the page to generate two new clocks.
 
-Programmer name: John Weingart and Grant Dumanian
+Programmer name: John  and Grant
 Email:
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date:
@@ -35,12 +35,9 @@ $page_title = 'Looma - Time';
         <canvas id="doubleClock">
         </canvas>
 
-        <FORM METHOD="LINK" ACTION="" Id="Refresh">
-            <button TYPE="submit" id="singleclock-newproblem"><?php keyword("New Problem")?></button>
-        </FORM>
+        <button id="newproblem"><?php keyword("New Problem")?></button>
 
         <p id="question"><?php keyword("How much time has passed?") ?></p>
-        <form action="">
             <fieldset id="getInput">
                 <label id="label"> <?php keyword("Hours:") ?></label>
                 <select type="int" id="userHour">
@@ -68,14 +65,12 @@ $page_title = 'Looma - Time';
                             <?php
                         }
                     ?>
-                </select>
-                <input id="submit" type="button" value="Submit"/>
+            </select>
+                <button id="submit"> <?php keyword("Submit"); ?> </button>
             </fieldset>
-            <input type="text" id="txtOutput" />
-        </form>
+            <div id="txtOutput" />
 
         <script src="js/looma-clock-doubleclock.js"></script>
-        <script src="js/jquery.min.js"></script>
-        <script src="js/looma-utilities.js"></script>
+
     </div>
 </body>

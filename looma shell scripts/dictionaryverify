@@ -1,0 +1,48 @@
+// filename: dictionaryverify
+// author: skip
+// Oct 2020
+//
+// ONE TIME program to
+//      verify dictionary entries
+//          checks for duplicate entries
+//          checks that all ROOT WORDS are also in dictionary
+//
+//   run in MONGO SHELL with: load('dictionaryverify')
+
+var dictionarycursor;
+var count = 0;
+var duplicatecount = 0;
+var norootwordcount = 0;
+var typecount = {};
+
+print('db is ' + db);
+print('');
+
+dictionarycursor = db.dictionary.find();
+while (dictionarycursor.hasNext()) {
+    count++;
+    var word = dictionarycursor.next();
+    
+    var duplicates = db.dictionary.find({en: word['en']});
+    if (duplicates.count() > 1) {
+        //print('DUPLICATE entries FOUND: ');
+        duplicatecount++;
+        while (duplicates.hasNext()) {
+            var dup = duplicates.next();
+            print ('DUPLICATE      word is ' + dup['en'] + ' **** part is ' + dup['part'] + '  ****** definiiton is ' + dup['def']);
+        }
+        print();
+    };
+    
+    if (word['rw']) {
+        var root = db.dictionary.find({en:word['rw']});
+        if (!root) print ('++++  root word ' + word['rw'] + ' not found in dictionary');
+    }
+};
+//for (var t in typecount) { print(t + ': ' +  typecount[t]);};
+print('');
+print('found ' + count + ' dictionary entries');
+print('found ' + duplicatecount + ' duplicate dictionary entries');
+print('found ' + norootwordcount + ' root words that lack dictionary entry');
+print('');
+

@@ -59,6 +59,7 @@ pdf {
     min-height:8vh;
     width:100%;
     background-color:yellow;
+    background-color: var(--looma-toolbar);
     color:black;
     font-size: 1.3em;
 }

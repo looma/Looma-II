@@ -40,6 +40,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         <input type='hidden' id='includeLesson' value=true name='includeLesson'/>
         <input type='hidden' id='pageno' value='1' name='pageno'/>
         <input type='hidden' id='pagesz' value='500' name='pagesz'/>
+        <input type='hidden' id='language' value='english' name='language'/>
 
 
   <!--  /**************************************/
@@ -63,7 +64,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
             <div id='search-bar-div' class='media-filter'>
                 <input id='search-term' type='text' autofocus class='media-input black-border' type='search' name='search-term' placeholder='Enter Search Term...') >&nbsp;
                 <button id='media-submit' class = 'filesearch' name='search' value='media' type='submit'>
-
+                    <img draggable="false" src="images/looma-search2.png">
                 </button>
                 <button class='clear-search' type='button'><?php keyword("Clear")?></button>
             </div>
@@ -103,14 +104,14 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
             echo "<span id='keyword-drop-menu'>";
               echo  keyword("Keywords:");
-                    echo "<select name='key1' id='key1-menu' class='media-filter  keyword-filter keyword-dropdown black-border' data-level=1 form='search'>
-                        <option value=''>Select...</option>";
+                    echo "<select name='key1' id='key1-menu' class='media-filter  keyword-filter keyword-dropdown black-border' data-level=1 form='search'>";
+                        echo "<option value='' data-dn='(any)' data-ndn='(कुनै)'>Select...</option>";
 
                         for($x = 0; $x < sizeof($root['children']); $x++) {
                             $y = $root['children'][$x]['name'];
                             $z = $root['children'][$x]['kids'];
                             echo "<option value='" . $y . "' data-id='" . $y . "' data-kids='" . $z. "'>";
-                            echo $y;  //    keyword($y);
+                            echo     keyword($y);
                             echo "</option>";
                         }
         echo "</select>";
@@ -136,12 +137,12 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
             echo "<div id='source-div' class='chkbox-filter media-filter'>";
             echo keyword("Source:");
             $sources = array(
-                array("ck12",  "phet", "epth",   "khan", "w4s",       "TED", 'hesperian'), // not used
+                array("ck12",  "phet", "epaath",   "khan", "w4s",       "TED", 'hesperian'), // not used
                 array("Dr Dann", "PhET", "OLE",    "khan", "wikipedia", "TED", "hesperian"), //internal names for IDs  #xxx-chk and #xxx-checkbox
                 array("CK-12", "PhET", "ePaath", "Khan", "Wikipedia", "TED", "Hesperian"), //the displayed name for source values
             );
 
-          for($x = 0; $x < count($sources[0]); $x++) {
+          for($x = 0; $x < count($sources[1]); $x++) {
               /*           echo "<span class='src-chk' data-id='" . $sources[0][$x] ."-chk'>
                                    <input data-id='" . $sources[1][$x] ."' class='media-input flt-chkbx' type='checkbox' name='src[]'' value='" . $sources[1][$x] . "'>
                                    <label class='filter-label' for='" . $sources[0][$x] . "'>" . $sources[2][$x] . "</label>
@@ -212,13 +213,13 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         echo "<p id='chapter-lang'>
           <label class='drop-menu'>Language:  </label>
           <input type = 'radio'
-                 name = 'language'
+                 name = 'chapter-language'
                  id = 'en'
                  value = 'en'
                  checked = 'checked' />
           <label for = 'en'>English</label>
           <input type = 'radio'
-                 name = 'language'
+                 name = 'chapter-language'
                  id = 'np'
                  value = 'np' />
           <label for = 'np'>Nepali</label>

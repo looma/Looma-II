@@ -17,15 +17,15 @@ Description:  dictionary look-up UI for Looma 2
       <div id="main-container-horizontal">
         <div id="fullscreen">
             <?php include ('includes/looma-control-buttons.php');?>
-            <br><br>
+            <br>
 
         <h1 class="credit"> Created by Jayden, Grant, Kendall and Mahir</h1>
         <h1 class="title"> <?php keyword("Looma Dictionary"); ?> </h1>
 
         <!-- This is where the user inputs a word -->
         <form id="lookup">
-            <?php keyword("Enter English word here"); ?>
-            <input type="text"  id="input" autofocus autocomplete="off">
+            <?php keyword("Enter word to look up"); ?>
+                 <input type="text"  id="input" autofocus autocomplete="off">
             <button type="submit" id="submit" value="submit"> <?php keyword("Submit"); ?> </button>
         </form>
 

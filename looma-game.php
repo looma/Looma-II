@@ -30,34 +30,16 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         ?>
 
       <?php
-        // $query = array('_id' => $_id);
-        // $cursor = $sienna_collection->find($query);
-        // foreach ($cursor as $game)
-        // {
-        //   $doc = $game;
-        // }
 
-        // $title = keyIsSet('name', $doc) ? $doc['name'] : null;
-        // $game_type = keyIsSet('presentation_type', $doc) ? $doc['presentation_type'] : null;
-        // $time_limit = keyIsSet('timeLimit', $doc) ? $doc['timeLimit'] : null;
-        // $prompts = keyIsSet('prompts', $doc) ? $doc['prompts'] : null;
-
-        // $numQuestions = sizeOf($prompts);
-        // $currQuestion = 0;
-        // $num_teams = 1;
-        // $scores = array_fill(0, $num_teams, 0);
-
-        // $numQuestions = 2;
-        // $title = "TITLE";
-        // $time_limit = 100;
-        // $scores = [0];
         $id =    isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
         $type =  isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
         $class = isset($_REQUEST['class']) ? $_REQUEST['class'] : null;
         $subj =  isset($_REQUEST['subject']) ? $_REQUEST['subject'] : null;
 
         echo '<div class="header">';
-        echo '<h1 id="gameTitle"</h1>';
+        echo '<h1 id="gameTitle">';
+            keyword("Game");
+        echo '</h1>';
         echo '</div>';
 
         echo '<div hidden class="thegameframe" id="thegameframe"' .
@@ -77,39 +59,39 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         echo '</div>';
 
         echo '<div id="timer" hidden>';
-            echo '<h2 id="timer-message">Timer</h2>';
+            echo '<h2 id="timer-message">'; keyword("Timer"); echo '</h2>';
             echo '<h3 id="timer-count" title="ticking"></h3>';
         echo '</div>';
 
         echo '<div id="scoreboard" hidden>';
-            echo '<h2 id="score-message">Score Board:</h2>';
+            echo '<h2 id="score-message">'; keyword("Score Board"); echo '</h2>';
 
             echo '<div id="teamscore-1" hidden>';
-                echo '<p>Team 1: <span  class="teamscore"></span></p>';
-                echo '<div id="progress-1" class="progress-bar"><div class="sienna-progress"></div></div>';
+                echo '<p>'; keyword("Team 1");  echo ':  <span  class="teamscore"></span></p>';
+                echo '<div id="progress-1" class="progress-bar"><div class="inner-progress"></div></div>';
             echo '</div>';
 
-              echo '<div id="teamscore-2" hidden>';
-                  echo '<p>Team 2: <span  class="teamscore"></span></p>';
-                  echo '<div  id="progress-2" class="progress-bar"><div class="sienna-progress"></div></div>';
-              echo '</div>';
+            echo '<div id="teamscore-2" hidden>';
+                echo '<p>'; keyword("Team 2"); echo ':  <span  class="teamscore"></span></p>';
+                echo '<div  id="progress-2" class="progress-bar"><div class="inner-progress"></div></div>';
+            echo '</div>';
 
               echo '<div id="teamscore-3" hidden>';
-                  echo '<p>Team 3: <span  class="teamscore"></span></p>';
-                  echo '<div  id="progress-3" class="progress-bar"><div class="sienna-progress"></div></div>';
+                  echo '<p>'; keyword("Team 3");  echo ':  <span  class="teamscore"></span></p>';
+                  echo '<div  id="progress-3" class="progress-bar"><div class="inner-progress"></div></div>';
               echo '</div>';
 
               echo '<div id="teamscore-4" hidden>';
-                  echo '<p>Team 4: <span  class="teamscore"></span></p>';
-                  echo '<div id="progress-4" class="progress-bar"><div class="sienna-progress"></div></div>';
+                  echo '<p>'; keyword("Team 4");  echo ':  <span  class="teamscore"></span></p>';
+                  echo '<div id="progress-4" class="progress-bar"><div class="inner-progress"></div></div>';
              echo '</div>';
         echo '</div>';
 
       echo '<section id="optionsframe">';
-          echo '<h2 id="numTeamsHeader"> Select Number of Teams</h2>';
+          echo '<h2 id="numTeamsHeader">'; keyword('Select number of teams'); echo '</h2>';
           echo '<div id="teamoptions">';
           for ($i = 1; $i <= 4; $i++) {
-              echo '<button class="teamnumber button-8" data-team="' . $i . '">' . $i . '</button>';
+              echo '<button class="teamnumber button-8" data-team="' . $i . '">'; keyword($i); echo '</button>';
           }
       echo '</div>';
       echo '</section>';

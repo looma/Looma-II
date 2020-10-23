@@ -28,6 +28,8 @@ button#fullscreen-control {
     right:7vw;
 }
 
+#toCurrentTime {display:none;}
+
 h1 {
 	text-align: center;
     float:left;
@@ -58,7 +60,7 @@ h2 {
 
 .clock-button {
     font-size: 2.6em;
-    margin:auto 2vw;
+    margin:2vh 2vw;
 }
 #digitalClockButton {
     margin:2vh 0 0 0;
@@ -72,7 +74,7 @@ h2 {
 }
 #analogClockButton {
     grid-column:3;
-    grid-row:2;
+    grid-row:1;
     display:none;
 }
 #doubleClockButton {
@@ -102,7 +104,7 @@ h2 {
 
 #a {}
 
-#singleclock-newproblem {
+#newproblem {
     position:absolute;
     top:10vh;
     right:5vw;
@@ -272,10 +274,15 @@ h2 {
 
 #txtOutput{
     color: black;
+    background-color:white;
     width: 100%;
+    border-radius:5px;
     position: absolute;
+    height:7vh;
+    width:90vw;
+    margin:auto;
     top: 90%;
-    left: 0%;
+    left: 5vw;
     font-size: 2em;
 }
 

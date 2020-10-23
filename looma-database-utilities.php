@@ -338,7 +338,7 @@ if (isset($_REQUEST["collection"])) {
         else if ( ($collection == "lesson") || ($collection == "lessons")) {
             //NOTE: historical artifact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
 
-                // earlier code had wrong parameters to 'trim()' causing occassional bad SAVEs
+                // earlier code had wrong parameters to 'trim()' causing occasional bad SAVEs
                 //echo "REQUEST[dn] is:**" . $_REQUEST['dn'] . "***";
                 //echo "htmlspecialchars_decode is:**" . htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES) . "***";
                 //echo "trim(htmlspecialchars_decode) is:**" . trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)) . "***";
@@ -656,15 +656,14 @@ if (isset($_REQUEST["collection"])) {
         /* known filetypes are the FT values in Activities collection
          * e.g. 'video', 'audio', 'image', 'pdf', 'textbook', 'text', 'html', 'slideshow', 'lesson', 'looma'*/
 
+        if (isset($_REQUEST['language'])) $language = $_REQUEST['language']; else $language = 'english';
+
         $filetypes = array();       //array of FT filetypes to include in the search
-
         if (isset($_REQUEST['type'])) foreach ($_POST['type'] as $i) if ($i != '') array_push($filetypes, $i);
-
         //echo "types is: "; print_r($filetypes);
+
         $sources = array();       //array of sources to include in the search
-
         if (isset($_REQUEST['src'])) foreach ($_POST['src'] as $i) array_push($sources, $i);
-
         //echo "sources is: "; print_r($sources);
 
         $returnLessons = false;
@@ -711,13 +710,14 @@ if (isset($_REQUEST["collection"])) {
         $nameRegex = null;
         $classSubjRegex = null;
 
+        //NOTE: this code not used? what is 'category'?
         if (isset($_POST['category']) && $_POST['category'] != "All") {
             $areaRegex = mongoRegex ('/' . $_POST['category'] . '/i');
         }
 
-        //Build Regex to match search term (i is ignore case)
+        //Build Regex to match search term (add 'i' to ignore case)
         if (isset($_POST['search-term']) && $_POST['search-term'] |= '')
-            $nameRegex = mongoRegexOptions($_POST["search-term"], 'i');
+            $nameRegex = mongoRegexOptions(trim(htmlspecialchars_decode($_REQUEST['search-term'],ENT_QUOTES)), 'i');
 
         //if 'class' or 'subj' are specified, build another regex to match class/subj in ch_id
         if (isset($_POST['chapter']) && $_POST['chapter'] != '') {
@@ -729,30 +729,36 @@ if (isset($_REQUEST["collection"])) {
             //echo 'classSubjRegex is ' . $classSubjRegex;
             if (isset($_POST['subj']) && $_POST['subj'] != '') $classSubjRegex .= $_POST['subj'] . '\d';
 
-            //echo 'classSubjRegex is ' . $classSubjRegex;
-
             $classSubjRegex = mongoRegex($classSubjRegex . '/');
-        }
+             //echo 'classSubjRegex is ' . $classSubjRegex;
+       }
 
         /* DEBUG
         echo 'collection is ' . $_POST['collection'];
         echo 'filetypes are '; print_r($filetypes);
+        echo 'source is  '; print_r($sources);
         echo 'extensions are '; print_r($extensions);
         echo 'class is ' . $_POST['class'] . ' and subj is ' . $_POST['subj'] . '       ';
         echo '$nameRegex is ' . $nameRegex . '    and $classSubjRegex is ' . $classSubjRegex;
-        */
+        return;
+         */
 
         $query = array();
         if (sizeof($extensions) > 0) $query['ft'] = array('$in' => $extensions);  //if filetypes given, search only for them
 
-        else
+       ////// else  //////
         //if (!$returnLessons) $query['ft'] = array('$nin' => ['lesson']);
 
         if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson']);
 
         if (sizeof($sources) > 0) $query['src'] = array('$in' => $sources);
         if ($areaRegex) $query['area'] = $areaRegex;
-        if ($nameRegex) $query['dn'] = $nameRegex;
+        if ($nameRegex) {
+            if ($language === 'english') $query['dn'] = $nameRegex;
+            else                         $query['ndn'] = $nameRegex;
+        }
+        // echo "language is " . $language . "   and regex is " . $nameRegex;
+
         if ($classSubjRegex) $query['_id'] = $classSubjRegex;
 
         // using REGEX with "/i" to get case insensitive search for keywords
@@ -855,8 +861,8 @@ if (isset($_REQUEST["collection"])) {
                 'math optional' => 'Ma');
 
             if (isset($_REQUEST['search-term'])) $dn = $_REQUEST['search-term']; else $dn = null;
-            if (isset($_REQUEST['language'])) $lang = $_REQUEST['language']; else $lang = 'en';
-            if (isset($_REQUEST['lang'])) $lang = $_REQUEST['lang']; else $lang = 'en';  //may be 'language' or 'lang'. legal values 'any', 'en', 'np'
+            if (isset($_REQUEST['chapter-language'])) $lang = $_REQUEST['chapter-language']; else $lang = 'en';
+            //if (isset($_REQUEST['lang'])) $lang = $_REQUEST['lang']; else $lang = 'en';  //may be 'language' or 'lang'. legal values 'any', 'en', 'np'
             if (isset($_REQUEST['class'])) $class = $_REQUEST['class']; else $class = null;
             if (isset($_REQUEST['subj'])) $subj = $_REQUEST['subj']; else $subj = null;
             if (isset($_REQUEST['chapter'])) $chapter = $_REQUEST['chapter']; else $chapter = null;

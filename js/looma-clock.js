@@ -225,10 +225,8 @@ $(document).ready (function() {
             hour = 24;
         }
         drawInitialClock();
-        
-        if(!myVar) {
-            myVar = setInterval(drawNextClock, 1000);
-        }
+        $("#toCurrentTime").hide();
+        if(!myVar) {myVar = setInterval(drawNextClock, 1000);}
     }
 
 //click the oneClock button (simpler clock), show/hide the buttons
@@ -261,7 +259,10 @@ $(document).ready (function() {
         $('#digitalTime').hide();
         //document.getElementById("digitalTime").style.display = 'none';
         document.getElementById("dragHands").innerHTML = "";
-        document.getElementById("toCurrentTime").style.display = 'none';
+        
+        //$("#toCurrentTime").hide();
+        
+        //document.getElementById("toCurrentTime").style.display = 'none';
         $('#amOrPm1').hide();
         //document.getElementById("amOrPm1").style.display = 'none';
         
@@ -286,7 +287,8 @@ $(document).ready (function() {
         //digital --> analog
         document.getElementById("mainClock").style.display = 'inline-block';
         $('#digitalTime').show();
-        document.getElementById("toCurrentTime").style.display = 'block';
+        //$("#toCurrentTime").show();
+        //document.getElementById("toCurrentTime").style.display = 'block';
         $('#amOrPm1').show();
         //document.getElementById("amOrPm1").style.display = 'block';
         document.getElementById("dragHands").innerHTML = "Drag and drop the hour or minute hand!";
@@ -356,6 +358,8 @@ $(document).ready (function() {
             drawTime(hour, minute , -1);
             drawTicks(radius * 0.02);
             drawDigitalClock();
+            $("#toCurrentTime").show();
+    
         }
         
         else if(mouseIsDownHour) {
@@ -377,7 +381,10 @@ $(document).ready (function() {
             drawTime(hour, minute, -1);
             drawTicks(radius * 0.02);
             drawDigitalClock();
+            $("#toCurrentTime").show();
+    
         }
+        //$("#toCurrentTime").show();
     }
 
 //mouse released

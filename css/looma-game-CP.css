@@ -208,7 +208,7 @@ Description: formatting and styling for the game page
     background-color: lightgray;
 }
 
-.sienna-progress {
+.inner-progress {
     width: 0.00001%;
     height: 100%;
     background-color: red;

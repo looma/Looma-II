@@ -18,7 +18,8 @@
     justify-content: flex-start;
     align-items:center;
     overflow: hidden;
-    background-color: yellow;
+    background-color: var(--looma-toolbar);
+);
 }
 
 #toolbar {
@@ -88,11 +89,13 @@ button.flag-vertical {
     vertical-align: unset;
 }
 
+/*
 #toolbar button img {
     max-height:80%;
     max-width:80%;
     vertical-align:unset;
 }
+*/
 
 #toolbar span img {
     max-width:90%;

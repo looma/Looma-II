@@ -21,17 +21,19 @@ $page_title = 'Looma - Time';
     include ('includes/js-includes.php');
 ?>
 <head>
-<link rel="Stylesheet" type="text/css" href="css/looma-clock.css">
+    <link rel="Stylesheet" type="text/css" href="css/looma-clock.css">
+    <!--<link rel="Stylesheet" type="text/css" href="css/looma-clock-worldclocks.css">-->
 
 </head>
 
 <body>
     <div id="main-container-horizontal">
 
-        <h1> <?php keyword("Looma Clock") ?></h1>
+        <h1 id="header-row"> <?php keyword("Looma Clock") ?></h1><br>
         <h2 class = "credit"> <?php keyword("Clocks Around the World") ?></h2>
 
 
+        <div id="clockrow1" class="clock-row">
         <canvas id="nepal" width="220" height="220">
         </canvas>
         <canvas id="tokyo" width="220" height="220">
@@ -40,7 +42,11 @@ $page_title = 'Looma - Time';
         </canvas>
         <canvas id="paris" width="220" height="220">
         </canvas>
-        <canvas id="london" width="220" height="220">
+        </div>
+        <div id="namerow2" class="name-row">
+
+            <div id="clockrow2" class="clock-row">
+            <canvas id="london" width="220" height="220">
         </canvas>
         <canvas id="sanFrancisco" width="220" height="220">
         </canvas>
@@ -48,6 +54,7 @@ $page_title = 'Looma - Time';
         </canvas>
         <canvas id="cairo" width="220" height="220">
         </canvas>
+            </div>
 
         <script src="js/looma-clock-worldclocks.js"></script>
     </div>

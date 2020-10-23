@@ -168,8 +168,8 @@ if ($mongo_version) {
     $mongo_version = $matches[0];
     $mongo_level = intval($mongo_version[0]);
 } else {
-    $mongo_version = '4.4.0';
-    $mongo_level = 4;
+    $mongo_version = '2.0.0';
+    $mongo_level = 2;
 }
 //echo 'mongo_version is ' . $mongo_version . '  $mongo_level = '. $mongo_level;
 

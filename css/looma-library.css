@@ -29,23 +29,6 @@ button:hover span.tip.yes-show.big-show {
 }
 
 
-/***************************************/
-/******* Hide/Show Folders Button ******/
-/***************************************/
-button#toggle-database{
-	position: fixed;
-    bottom:13%;
-    right:5%;
-	height:10%;
-    width:6%;
-    z-index:1000;
-    background-image: url("../../content/textbooks/thumbnail.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-color:rgba(200,200,200,0);
-}
-
-
 /****************************************/
 /********** search-panel specs **********/
 /****************************************/
@@ -85,11 +68,14 @@ button#toggle-database{
     height:10vh;
     width:6vw;
     z-index:1000;
-    background-image: url("../images/looma-search2.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
     background-color:rgba(200,200,200,0);
 }
+
+button#toggle-database img{
+    height:100%;
+    width:100%;
+}
+
 
 input#search-term {
     text-align: left;

@@ -24,12 +24,16 @@ require_once ("includes/mongo-connect.php");
 
         <?php
 
-            $game_class =   $_REQUEST["class"];
+            $game_class =   $_REQUEST["class"]; $class_name = substr_replace($game_class, ' ', 5, 0);
             $game_subject = $_REQUEST["subject"];
+            if ($game_subject === 'social studies') $subject_name = 'Social Studies'; else $subject_name = $game_subject;
 
-            echo '<div class="title"><h1>Looma Games for ' .
-                  ucfirst($game_class) . ' ' . ucfirst($game_subject) .
-                 '</h1></div>';
+            echo '<div class="title"><h1>';
+                keyword('Looma Games'); echo ' ';
+                keyword('for'); echo ' ';
+                keyword( ucfirst($class_name)); echo ' ';
+                keyword(ucfirst($subject_name));
+             echo'</h1></div>';
 
             $subject_key = array("M"=>"Math", "S"=>"Science", "N"=>"Nepali", "EN"=>"English",
                 "SS"=>"Social Studies", "V"=>"Vocational", "H"=>"Health");

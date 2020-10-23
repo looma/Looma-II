@@ -1,0 +1,462 @@
+Colour Identification	_____ _____ _______ _______ ______ __________	2015	3122231		english	grade2
+Objects	_______ __________ ___ ______ __________	2015	3092208		english	grade2
+Colours	______ ______________ _______ ______ __________	2015	3096211		english	grade4
+Professions	_______ _________ ___ ______ __________	2015	3092210		english	grade2
+Vocab. Domestic Animals	________ __________ ___ ______ __________	2015	3122206		english	grade2
+How Many	______ ____ ________ _____ ___ _______ __________	2015	3096210		english	grade3
+Means Of Transportation	____ _________ ______ ___ ______ __________	2015	3092214		english	grade2
+Fruits	____ __________ ___	2015	3092217		english	grade2
+Spelling Numbers	_______ ________ _________ _____ ___ ______ __________	2015	3122215		english	grade2
+Clothes	____ _________ ___	2015	3122224		english	grade2
+Structures	_______ ________ ______ ______ __________	2015	3092219		english	grade2
+Number Words	__________ _____ _ _____ ______ ______ __________	2015	3122216		english	grade2
+What Someone Is Doing	______ _ _____ ______ _ _____ ____ __ ______ ______ __________	2015	3122225		english	grade2
+Body Parts	______ ____ _________ ___	2015	3122222		english	grade2
+Prepositions	__ ______ _______ __________	2015	3126220		english	grade3
+Plants	___________ ______ ______ _______ __________	2015	3092228		english	grade2
+Objects And Words	_____ _ _______ _____ ____ _______ __________	2015	3092235		english	grade2
+Present Continuous Words	__ ______ _______ __________	2015	3096205		english	grade2
+Sentence Practice	___ _______ ______ ____ _____ _____ ______ __________	2015	3126221		english	grade3
+Food	____ __________ ______	2015	3122227		english	grade2
+Months	_________ _______ ______	2015	3116202		english	grade2
+Alphabetical Order	__________ Alphabetical order __ _____ _______ __________	2015	3116223		english	grade6
+Syllables	_____ _____ _______ _______ ____ ______ __________	2015	3046227		english	grade6
+Present Continuous Sentences	Action verbs __ ______ _______ __________	2015	3126206		english	grade6
+Sentence Practice	___ _______ ______ ____ _____ _____ ______ __________	2015	3126222		english	grade3
+Products And Words	_____ _ _______ _____ _____ ___ _____ ______ __________	2015	3096215		english	grade6
+Counting On	______ ___ ____ _______ __________	2015	3122002		math	grade2
+Adding Small Numbers	________ ___	2015	3122004		math	grade2
+Geometric Shapes And Names	_________ ______ ______	2015	3126008		math	grade6
+Numeric Puzzle	_________ ____	2015	3122000		math	grade2
+Crocodile Eats Fish	________ __________	2015	3052006		math	grade2
+Roman Numerals	____ _______	2015	3086019		math	grade6
+Multiplication	_____ ____	2015	3032019		math	grade2
+Graphing	_____	2015	3122020		math	grade2
+Currency Notes	_______ ______	2015	3092022		math	grade2
+Lines and Line Segments	____ _ ___________	2015	3126013		math	grade6
+Parallel Lines	_________ _______	2015	3126014		math	grade6
+Lines and Triangles	____ _ __________	2015	3096012		math	grade6
+Algebraic Variables	_________ _____	2015	3056015		math	grade6
+Estimating Angles	_____ ___	2015	3126026		math	grade6
+Add And Subtract Variables	_______ ___ _ ____ 	2015	3126016		math	grade6
+Quick Addition	_____ ___	2015	3066000		math	grade6
+Sets	______ _____	2015	3046009		math	grade6
+Set Multiple Choice	____: _______	2015	3126011		math	grade6
+Lowest Common Multiple	_______ __________	2015	3126023		math	grade6
+Money	______	2015	3116007		math	grade6
+Algebra	_______ ___ _ ____	2015	3116017		math	grade6
+Multiplication Memory Game	________ _ ______	2015	3096005		math	grade6
+Animals	____ ______ __________ ___	2015	3093205		english	grade3
+Birds Names	____ ________ ___	2015	3093204		english	grade4
+Birds	____ ________________	2015	3122218		english	grade2
+Animal Identification	____ ______ __________ ___ ______ __________	2015	3092209		english	grade2
+Simple Greetings	Simple greetings	2019		engsgs01	english	grade1
+Colours and Sizes	Describing colours and sizes	2019		engdcs01	english	grade1
+Numbers 1-10	Numbers (1 - 10)	2019		engnum01	english	grade1
+Lines and Curves	Lines and Curves	2019		englac01	english	grade1
+Letters A-H	Identifying Letters (A to H)	2019		engil101	english	grade1
+Letters I-P	Identifying Letters (I to P)	2019		engils01	english	grade1
+Letters Q-Z	Identifying Letters (Q to Z)	2019		engilt01	english	grade1
+Consonant Sounds and Letters B-J	Basic sounds (I)	2019		engbs101	english	grade1
+Consonant Sounds and Letters K-P	Basic sounds (II)	2019		engbs201	english	grade1
+Consonant Sounds and Letters Q-Z	Basic sounds (III)	2019		engbs301	english	grade1
+Short Vowel Sounds	Short Vowel Sounds	2019		engsvs01	english	grade1
+Making Words	Making Words	2019		engmkw01	english	grade1
+Recognizing and Matching Shapes	Recognizing and Matching Shapes	2019		engrms01	english	grade1
+Who is he/she?	Who is he/she?(Professions)	2019		engwih01	english	grade2
+What is someone doing?	What is someone doing?	2019		engwsd01	english	grade2
+Numbers 1-100	Numbers (1 - 100)	2019		engnum01	english	grade2
+Command Sentences	Command sentences	2019		engcss01	english	grade2
+Describing Objects	Describing objects	2019		engdso01	english	grade2
+Where is the elephant?	Where is the elephant?	2019		engprp01	english	grade2
+Days of the Week	Days of the week	2019		engdtw01	english	grade2
+Past Action	Past action	2019		engpac01	english	grade2
+Describing People G2	Describing people	2019		engdep01	english	grade2
+What is this/that?	What is this/that?	2019		engwit01	english	grade2
+Alphabet Puzzle	Alphabet puzzle	2019		engapz01	english	grade2
+ee and ea words	EE and EA words	2019		engeee01	english	grade2
+Punctuations	Punctuations	2019		engpns01	english	grade2
+Describing Animals	Describing animals	2019		engdad01	english	grade2
+Apologizing	Apologizing	2019		engapo01	english	grade3
+Pronouns	Pronouns	2019		engpnn01	english	grade3
+Giving directions	Giving directions	2019		enggid01	english	grade3
+Seasons	Seasons	2019		engsea01	english	grade3
+Numbers 1-1000	Numbers (1 - 1000)	2019		engnum01	english	grade3
+Describing Future	Describing Future	2019		engdft01	english	grade3
+Telephone Conversation	Telephone conversation	2019		engtco01	english	grade3
+Describing Oneself	Describing Oneself	2019		engdos01	english	grade3
+Diphthongs (2 vowels together)	Diphthongs	2019		engdpt01	english	grade3
+Consonant-blends	consonant_blends	2019		engcbs01	english	grade3
+Animals and Insects	Animals and insects	2019		engaai01	english	grade3
+Punctuations ? !	Punctuations	2019		engpns01	english	grade3
+Warning	Warning	2019		engwrn01	english	grade4
+"Habits, Facts, and Time"	Habits  facts and time	2019		enghft01	english	grade4
+Habits and Frequency	Habits and frequency	2019		enghaf01	english	grade4
+Ordinal Numbers	Ordinal numbers	2019		engoln01	english	grade4
+Present and Past	Under Construction	2019		engden01	english	grade4
+Giving Directions	Giving directions	2019		enggid01	english	grade4
+Expressing Knowledge	Expressing Knowledge	2019		engekw01	english	grade4
+How Many/ How Much	How many / How much	2019		englr201	english	grade4
+Conjunction	Conjunction	2019		engcon01	english	grade4
+Expressing Obligations	Expressing Obligations	2019		engeos01	english	grade4
+Mother Teresa	Mother Teresa	2019		engmot01	english	grade4
+Three Little Pigs	Ordinal numbers	2019		engtlp01	english	grade4
+Reading Timetable	Reading Time Tables	2019		engrtt01	english	grade4
+Avani and the Pea Plant	Avani and the Pea Plant	2019		engatp01	english	grade4
+Writing Letters	Writing Letters	2019		engwlt01	english	grade4
+Expressing wants	Expressing wants	2019		engepw01	english	grade5
+Expressing Reasons	Expressing Reasons	2019		engexr01	english	grade5
+Describing locations	Describing locations	2019		engdlc01	english	grade5
+Talking about future	Talking about future	2019		engtaf01	english	grade5
+Describing People	Describing People	2019		engdsp01	english	grade5
+Possessive pronouns	Possessive pronouns	2019		engpip01	english	grade5
+Tag questions	Tag questions	2019		engtqs01	english	grade5
+Seasons and time	Seasons and time	2019		engsat01	english	grade5
+Reading menus	Reading menus	2019		engrdm01	english	grade5
+Little Red Riding Hood : Part I	Little Red Riding Hood	2019		englrh01	english	grade5
+Little Red Riding Hood : Part II	Little Red Riding Hood (Part 2)	2019		englr201	english	grade5
+Reading diagrams	Reading diagrams	2019		engred01	english	grade5
+Gaurika and Mira	Gaurika and Mira	2019		enggsm01	english	grade5
+Filling forms	Filling forms	2019		engfil01	english	grade6
+ID People Places and Objects	Identifying People  Places and Objects	2019		engipo01	english	grade6
+At the airport	At the airport	2019		engatp01	english	grade6
+Making Inferences & Predictions	Making Inferences and Predictions	2019		engmai01	english	grade6
+Superlatives and comparatives	Superlatives and comparatives	2019		engsnc01	english	grade6
+Permissions and Obligations	Permissions and Obligations	2019		engexo01	english	grade6
+Reading Notices	Reading Notices	2019		engrno01	english	grade6
+Following Instructions	Following Instructions	2019		engfin01	english	grade6
+What if ?	What if ?	2019		engwif01	english	grade6
+Narmada	Narmada	2019		engnma01	english	grade6
+The Will	The Will	2019		engtwi01	english	grade6
+Malala Yousafzai	Malala Yousafzai	2019		engmla01	english	grade6
+Introduction of a Visiting Relative	Introduction of a Visiting Relative	2019		eng0l101	english	grade7
+Introduction of a New Student	Introduction of a New Student	2019		eng0l201	english	grade7
+Festival of Machhendranath	Festival of Machhendranath	2019		eng0l301	english	grade7
+Sports - Football	Sports - Football	2019		eng0l401	english	grade7
+Eye camp and Dr. Sanduk Ruit	Eye camp and Dr. Sanduk Ruit	2019		eng0l501	english	grade7
+Gaura Festival	Gaura Festival	2019		eng0l601	english	grade7
+Lakes of Nepal	Lakes of Nepal	2019		eng0l701	english	grade7
+A Visit to the Hospital	A Visit to the Hospital	2019		eng0l801	english	grade7
+Trek to Namche	Trek to Namche	2019		eng1l901	english	grade7
+Writing a diary: Anne Frank	Writing a diary: Anne Frank	2019		eng3l101	english	grade7
+Making Conversations	Making Conversations	2019		eng9l101	english	grade7
+Endangered Animals	Endangered Animals	2019		eng0l901	english	grade7
+Drafting Invitations	Drafting Invitations	2019		eng3l701	english	grade7
+Reported Speech	Reported Speech	2019		eng6l901	english	grade7
+Sentence Construction: Poetry	Sentence Construction: Poetry	2019		eng2l501	english	grade7
+Making a Photo Frame	Making a Photo Frame	2019		eng2l601	english	grade7
+Kite Flying	Kite Flying	2019		eng7l701	english	grade7
+Mahakali Bridge	Mahakali Bridge	2019		eng2l801	english	grade7
+Thakali Restaurant	Thakali Restaurant	2019		eng2l901	english	grade7
+A Flower in the Midst of Thorns	Jhamak Kumari: A Flower in the Midst of Thorns	2019		eng2l101	english	grade7
+Reading a Map	Reading a Map	2019		eng8l101	english	grade8
+Following Directions	Following Directions	2019		eng8l201	english	grade8
+A Visit to the Blind School	A Visit to the Blind School	2019		eng8l301	english	grade8
+Participating in a Fair	Participating in a Fair	2019		eng81901	english	grade8
+A Visit to a National Park	A Visit to a National Park	2019		eng8l501	english	grade8
+Festival of the Tharus	Festival of the Tharus	2019		eng8l801	english	grade8
+Leonardo Da Vinci	leonardo Da vinci	2019		eng80701	english	grade8
+A Day in the Life of a Journalist	A Day in the Life of a Journalist	2019		eng83201	english	grade8
+Indigenous Communities	Indigenous Communities	2019		eng73601	english	grade8
+Climate Change	Climate Change	2019		eng81001	english	grade8
+Ecotourism in Nepal	Ecotourism in Nepal	2019		eng81101	english	grade8
+Marginalized Groups	Marginalized Groups	2019		eng8l001	english	grade8
+Natural Disaster	Natural Disaster	2019		eng81301	english	grade8
+Debate	Debate	2019		eng83801	english	grade8
+Poem	Poem	2019		eng90501	english	grade8
+Our Grandparents	Our Grandparents	2019		eng81601	english	grade8
+Changing Society	Changing Society	2019		eng74301	english	grade8
+Nepali Musical Traditions	Nepali Musical Traditions	2019		eng81801	english	grade8
+Nobel Peace Prize	Nobel Peace Prize Winners	2019		eng51601	english	grade8
+Nepals Historical Highlights	Nepal‚Äôs Historical Highlights	2019		eng68501	english	grade8
+Numbers from 1 to 5	_ ____ _ ______ __________	2019		matnmb01	math	grade1
+Basic Addition	___ ___	2019		matadt01	math	grade1
+Basic Subtraction	___ ____	2019		matbst01	math	grade1
+Measurement	___	2019		matmea01	math	grade1
+Capacity	______	2019		matcpt01	math	grade1
+Fraction	______	2019		matfac01	math	grade1
+Multiplication Table	____ ______	2019		matmut01	math	grade1
+Multiplication	____	2019		matmun01	math	grade1
+Pictograph	__________	2019		matden01	math	grade1
+Basic Division	___ ___	2019		matdiv01	math	grade1
+Geometric shapes	_________ _______	2019		matgeo01	math	grade2
+Place value of three digit numbers	___ _______ _____ ____________ ________	2019		matpvl01	math	grade2
+Order of Numbers	____________ ____	2019		matodn01	math	grade2
+Comparison of numbers	____________ _____	2019		matcon01	math	grade2
+Set	____	2019		matset01	math	grade2
+Addition	___	2019		matadd01	math	grade2
+Subtraction	____	2019		matsub01	math	grade2
+Multiplication Table	____ ______	2019		matmpl01	math	grade2
+Multiplication as Repeated Addition	____ _ _____ _________	2019		matmrl01	math	grade2
+Multiplication by 0 and 10	_ _ __ ______ ____	2019		matmun01	math	grade2
+Multiplication of 2 digit numbers	_ ___ ____ ________ ____	2019		matmlt01	math	grade2
+Simple Multiplication Word Problems	___ ____ ________ _______	2019		matmwp01	math	grade2
+Basic Division	___ ___	2019		matbdv01	math	grade2
+Bar Graph	________ _____	2019		matbgh01	math	grade2
+Fraction	_____	2019		matfra01	math	grade2
+Weight	___	2019		matwtg01	math	grade2
+Algebra	___ ____	2019		matalg01	math	grade2
+Line segment	____ _______	2019		matlsg01	math	grade3
+Angle	___	2019		matang01	math	grade3
+Quadrilaterals	________	2019		matqdl01	math	grade3
+Even and odd number	___ _ _____	2019		matden01	math	grade3
+Multiplication	____	2019		matmli01	math	grade3
+Division	___	2019		matdvi01	math	grade3
+Money	____	2019		matmny01	math	grade3
+Weight	___	2019		matwgt01	math	grade3
+Fractions	______	2019		matfrc01	math	grade3
+Decimal numbers	_____ _______	2019		matdcn01	math	grade3
+Bill and budget	___ _ ____	2019		matbab01	math	grade3
+Algebra	_______	2019		mataba01	math	grade3
+Solid shapes	___ ________	2019		matcub01	math	grade4
+Angles	______	2019		matang01	math	grade4
+Rounding off numbers	____________ _________	2019		matron01	math	grade4
+Prime and composite numbers	___ _ _______ __________	2019		matpac01	math	grade4
+Fraction	______	2019		matfcc01	math	grade4
+Percentage	_______	2019		matpe401	math	grade4
+Bill and budget	___ _ ____	2019		matbab01	math	grade4
+Set	____	2019		matst401	math	grade4
+Algebra: Variable and Constant	_______: __ _ ___	2019		matag101	math	grade4
+Algebra: Terms and Expressions	_______: __ ___ ___________	2019		matate01	math	grade4
+Algebra: Like and Unlike terms	_______: ______ _ _______ _____	2019		matlut01	math	grade4
+Algebra: Equation	_______: (___-_)	2019		matag401	math	grade4
+Area	_________	2019		matare01	math	grade5
+Measurement of angles	________ ___	2019		matmoa01	math	grade5
+Fraction	______	2019		matfrc01	math	grade5
+Percentage	_______	2019		matpe401	math	grade5
+Unitary Method	_____ ____	2019		matumd01	math	grade5
+Simple interest	______ _____	2019		matsis01	math	grade5
+Bill and budget	___ _ ____	2019		matbab01	math	grade5
+Set	____	2019		matst501	math	grade5
+Algebraic Expressions	_____ ____________	2019		mataep01	math	grade5
+Algebraic Equations	_____ ______	2019		matag501	math	grade5
+Applications of equations	_____ ________ ______	2019		mataoe01	math	grade5
+Lines	_______	2019		matlin01	math	grade6
+Triangles Angles and Polygons	"_______, ___ _ _________"	2019		mattqp01	math	grade6
+Coordinates	____________	2019		matcor01	math	grade6
+Perimeter and area	_______ _ _________	2019		matpaa01	math	grade6
+Symmetry	______	2019		matsym01	math	grade6
+Set	____	2019		matst601	math	grade6
+The Number System	_______ _______	2019		mattns01	math	grade6
+Prime Factorization	___ _________	2019		matprf01	math	grade6
+Profit and loss	____ _ _______	2019		matpal01	math	grade6
+Unitary method	_____ ____	2019		matunm01	math	grade6
+Simple Interest	______ _____	2019		matsdb01	math	grade6
+Introduction to Inequality	_________ _____	2019		matinq01	math	grade6
+Properties of Inequality	_________ ________	2019		matpoi01	math	grade6
+Angles	_____ ____	2019		matang01	math	grade7
+Construction of Angles	_____ ____	2019		matanc01	math	grade7
+Quadrilaterals	__________ _____	2019		matqud01	math	grade7
+Simlarity and Congruency	_____ _ ______	2019		matsNc01	math	grade7
+Regular Solid Objects	______ ___ _______	2019		matrso01	math	grade7
+Surface Area and Volume of Cuboid	_________ ___ _________ _	2019		matcub01	math	grade7
+Transformation	"________, ________ _ ________"	2019		mattfn01	math	grade7
+Tesellation	__________ _____	2019		mattes01	math	grade7
+Set	__________ _ _____ _____	2019		matset01	math	grade7
+Bearing and Scale Drawing	____	2019		matbsd01	math	grade7
+Binary and Quinary Number System	____-____ _ ____ ____	2019		matbnq01	math	grade7
+Integer	_________ _______	2019		matint01	math	grade7
+Square Root	_______	2019		matsqt01	math	grade7
+Ratio Percentage & Proportion	"______, _______ _ ________"	2019		matrpp01	math	grade7
+Unitary Method	____ ____	2019		matuni01	math	grade7
+Discrete and Grouped Data & Mean	______ _ _______ ________ _ _____	2019		matdgm01	math	grade7
+Algebraic Expression	_____ __________	2019		mataex01	math	grade7
+Exponents	___ _ _______	2019		matexp01	math	grade7
+Equations and Inequalities	______ _ _______	2019		matequ01	math	grade7
+Function	___	2019		matfun01	math	grade7
+Triangles	_______	2019		mattri01	math	grade8
+Quadrilaterals	__________ _____	2019		matqug01	math	grade8
+Construction of Polygons	________ ____	2019		matpol01	math	grade8
+Circle	_____	2019		matcir01	math	grade8
+Perimeter	_______	2019		matper01	math	grade8
+Area	_________	2019		matare01	math	grade8
+Volume	____	2019		matvol01	math	grade8
+Transformation	___________	2019		matref01	math	grade8
+Bearing and Scale Drawing	__________ _ _____ _____	2019		matbng01	math	grade8
+Set	____	2019		matdif01	math	grade8
+Rational and Irrational	________ _ __________	2019		matrat01	math	grade8
+Ratio  Percentage & Proportion	"______, _______ _ ________"	2019		matrrp01	math	grade8
+"Profit, Loss & Discount"	" ____, _______ _ ___"	2019		matpld01	math	grade8
+Unitary Method	____ ____	2019		matume01	math	grade8
+Simple Interest	______ _____	2019		matsim01	math	grade8
+Statistics	________ _______	2019		matmea01	math	grade8
+Factorization	________	2019		matfct01	math	grade8
+HCF and LCM	_._. _ _._.	2019		mathcf01	math	grade8
+Equation and inequality	______ _ _______	2019		mateni01	math	grade8
+Animal body parts	_______ ______ _______	2019		sciabp01	science	grade1
+Grass and Flesh Eating Animals	_____ ____ _ ____ ____ _____	2019		scigfa01	science	grade1
+Babies of Animals	_______ _________	2019		sciboa01	science	grade1
+Animals with Horns and Tails	___ ___ _______ ____ ________	2019		sciawt01	science	grade1
+Animals with Wings	_____ ____ ________	2019		sciaww01	science	grade1
+Types of plants	________ ________ _________	2019		scitop01	science	grade1
+Parts of a plant	________ ________ ______	2019		scipop01	science	grade1
+Care of Animals and Plants	_____ _ ________ ______	2019		scicap01	science	grade1
+Shapes and Sizes	____ _ ____	2019		sciifs01	science	grade1
+Weather	____	2019		sciwth01	science	grade1
+Characteristics of animals	_______ ______	2019		scianm01	science	grade2
+Living and nonliving things	____ _ _______ ________	2019		scilan01	science	grade2
+Animal's Home	_______ _________	2019		scianh01	science	grade2
+Domestic and wild animals	________ _ ______ _____	2019		scidwa01	science	grade2
+Animal's food and modes of feeding	_______ ____ _ ____ _____	2019		scianf01	science	grade2
+Types of plants	________ _______ _________	2019		scitop01	science	grade2
+Foods from animals and plants	_____ _ _________ _____ ________	2019		scifap01	science	grade2
+Heat and light	___ _ ______	2019		scihal01	science	grade2
+Shadow	____	2019		scishd01	science	grade2
+Day And Night	___ _ ___	2019		scidan01	science	grade2
+Colours of Sunlight	_______ ________ _____	2019		scicos01	science	grade2
+Hand washing	___ ____ _____	2019		scihwa01	science	grade2
+Personal hygiene	______ ____	2019		sciphy01	science	grade2
+Foods I eat	____ ________	2019		scifie01	science	grade2
+Living and Non-living things	____ _ _______ ________	2019		scilnv01	science	grade3
+Animal's home	_______ ________	2019		scianh01	science	grade3
+Animal's food and feeding	__________ ____ _ ____ _____	2019		sciaff01	science	grade3
+Types of Plants	_______ ________ _________	2019		scityp01	science	grade3
+Advantages of plants	_________ _____ _____	2019		sciplt01	science	grade3
+Advantages of animals	________ ____ _____	2019		scianm01	science	grade3
+Clean Environment	___ _______	2019		scicle01	science	grade3
+Types of matter	_______ ________ _________	2019		scitom01	science	grade3
+Clouds and water	____ _ ____	2019		sciwtc01	science	grade3
+Biogas and compost	____ _____ _ ________	2019		scibgc01	science	grade3
+Clean body	___ ____	2019		sciclb01	science	grade3
+Nutritious food	________ ____	2019		sciNfd01	science	grade3
+Vertebrate & Invertebrate Animals	___ ____ _ _____ ________	2019		scivai01	science	grade4
+Oviparous & Viviparous Animals	___ ______ _ _____ ________ ________	2019		sciega01	science	grade4
+Animals Found on Land and in Water	______ _____ _ ______ _____ ________	2019		scialw01	science	grade4
+Life Processes	____ _________	2019		sciafl01	science	grade4
+Different Stages of Plants	________ _______ ______	2019		scistp01	science	grade4
+Plants found on land and in water	____ _ ______ _____ _________	2019		sciplw01	science	grade4
+Matter	______	2019		scimat01	science	grade4
+Energy	_____	2019		scieyy01	science	grade4
+The Earth	______	2019		scitea01	science	grade4
+Solar System	__________	2019		scisos01	science	grade4
+Information and communication technology	_____ _ ______ _______	2019		sciict01	science	grade4
+Local technology	_______ _______	2019		scilte01	science	grade4
+Cleanliness	______ ____	2019		scittt01	science	grade4
+Nutritious food	_______ ____	2019		scintf01	science	grade4
+Classification of vertebrates	___ ____ _______ ________	2019		sciclv01	science	grade5
+Classification of invertebrates	___ _____ _______ ________	2019		scicli01	science	grade5
+Life cycle of a butterfly	_______ ________	2019		scibuf01	science	grade5
+Parts of a plant	________ ________ ______	2019		scipop01	science	grade5
+Parts of a flower	_____ ________ ______	2019		scipof01	science	grade5
+Monocotyledon and dicotyledon	______ _ _______ _________	2019		scimdi01	science	grade5
+Life processes of a plant	________ ____ _________	2019		scilpp01	science	grade5
+Human activities and environment	____ __________ _ _______	2019		scihae01	science	grade5
+Conservation of the Environment	_______ _______	2019		scicoe01	science	grade5
+Weather	____	2019		sciwtr01	science	grade5
+Information and communication	_____ _ ______	2019		sciiac01	science	grade5
+Personal hygiene	______ ____	2019		sciphy01	science	grade5
+Menstruation	_________	2019		scicle01	science	grade5
+Balanced diet	________ ____	2019		scibet01	science	grade5
+Measurement	___	2019		scimmt01	science	grade6
+Force and Motion	__ _ ___	2019		scifnm01	science	grade6
+Simple machine	___ ______	2019		scisim01	science	grade6
+Effects of Heat	_____ ______	2019		sciefh01	science	grade6
+Sources of Heat	_____ ________	2019		scisoh01	science	grade6
+Light	______	2019		scilgt01	science	grade6
+Magnet	______	2019		scimag01	science	grade6
+Conductivity	______	2019		sciepc01	science	grade6
+Electrical Circuit	_____ ______	2019		sciel301	science	grade6
+Sources of Electricity	_________ ________	2019		sciel101	science	grade6
+Mixture	______	2019		scimix01	science	grade6
+Cell	___	2019		scicel01	science	grade6
+Measurement	___	2019		scimes01	science	grade7
+Force	__	2019		scifor01	science	grade7
+Distance and Displacement	____ _ ___________	2019		scidis01	science	grade7
+Simple Machine	___ ______	2019		scispm01	science	grade7
+Utilities of simple machine	___ ________ ______	2019		scismu01	science	grade7
+Pressure	___	2019		scipsr01	science	grade7
+Work Energy Power	"_____,_____ _ ________"	2019		sciwep01	science	grade7
+Heat	___	2019		scihit01	science	grade7
+Heat transmission	___ _______	2019		scihtr01	science	grade7
+Light	______	2019		scilig01	science	grade7
+Sound	_____	2019		scisnd01	science	grade7
+Magnet	______	2019		scimag01	science	grade7
+Electricity	_______	2019		sciele01	science	grade7
+State of Matter	______	2019		scisom01	science	grade7
+Properties of matter	________ ___	2019		scipom01	science	grade7
+Mixture	______	2019		scimxt01	science	grade7
+Metal and Non Metal	____ _ _____	2019		scimtl01	science	grade7
+Some Useful Chemicals	____ ______ ________	2019		sciche01	science	grade7
+Animal Classification	__________ ________	2019		sciani01	science	grade7
+Plant Classification	_________ ________	2019		scipnt01	science	grade7
+Cells and Tissue	___ _ _____	2019		scicel01	science	grade7
+Animal Life Process	__________ ____ _________	2019		scilps01	science	grade7
+Plant Life Process	________ ____ _________	2019		scipps01	science	grade7
+Rocks	______	2019		scisoe01	science	grade7
+Weather and Climate	____ _ ________	2019		sciwcl01	science	grade7
+Atmosphere	_________	2019		sciatm01	science	grade7
+Earth and Universe	______ _ _________	2019		sciert01	science	grade7
+Measurement	___	2019		scimes01	science	grade8
+Velocity and acceleration	___ _ ______	2019		scivna01	science	grade8
+Lever	_______	2019		scilev01	science	grade8
+Pressure	___	2019		sciprs01	science	grade8
+Density	_____	2019		sciden01	science	grade8
+Work Energy Power	"_____,_____ _ ________"	2019		scipwe01	science	grade8
+Light	______	2019		scimir01	science	grade8
+Ray Diagram	____ _____	2019		sciray01	science	grade8
+Sound	_____	2019		scisou01	science	grade8
+Electricity	_______	2019		sciele01	science	grade8
+Microbes	_______ ___	2019		scimic01	science	grade8
+Periodic Table	_________ ____	2019		scipdt01	science	grade8
+Chemical Reaction	________ ___________	2019		scicrx01	science	grade8
+Metal and Non Metal	____ _ _____	2019		scimnm01	science	grade8
+Acid Base and Salt	____ _____ _ ___	2019		sciabs01	science	grade8
+Plant tissue	_______ _____	2019		scipc001	science	grade8
+Animal tissue	_____ _____	2019		sciac001	science	grade8
+Circulatory System	__________ _______	2019		scicsy01	science	grade8
+Reproduction System	______ _______	2019		scirsy01	science	grade8
+Minerals	____	2019		scimnr01	science	grade8
+Soil	____	2019		scisol01	science	grade8
+Environment and sustainable development	_______ _ ____ _____	2019		sciens01	science	grade8
+_-_ ___	_-_ ___	2019		nepknc01	nepali	grade1
+_-_ ___	_-_ ___	2019		nepntc01	nepali	grade1
+_-_ ___	_-_ ___	2019		nepddc01	nepali	grade1
+_-_ ___	_-_ ___	2019		nepnrc01	nepali	grade1
+_-_ ___	_-_ ___	2019		nepsgc01	nepali	grade1
+_-_ ___	_-_ ___	2019		nepygc01	nepali	grade1
+_-___ ___	_-___ ___	2019		nepsgy01	nepali	grade1
+____ __ ____	____ __ ____	2019		nepmga01	nepali	grade1
+___ _____	___ _____	2019		nepaar01	nepali	grade1
+_______ ___	_______ ___	2019		nepppg01	nepali	grade1
+________ _____	________ _____	2019		neptat01	nepali	grade1
+_____ ____	_____ ____	2019		nepuum01	nepali	grade1
+__________ _____ ___	__________ _____ ___	2019		nepbpd01	nepali	grade1
+______ __	______ __	2019		nepskg01	nepali	grade1
+____ ___	____ ___	2019		nepmka01	nepali	grade1
+________	________	2019		nepkur01	nepali	grade1
+__ ____	__ ____	2019		nepeka01	nepali	grade2
+______ ______	______ ______	2019		nepnaj01	nepali	grade2
+"___ ___ ____, ___ ___ ____"	"___ ___ ____, ___ ___ ____"	2019		neparp01	nepali	grade2
+____ _ ____	____ _ ____	2019		nepsrm01	nepali	grade2
+_______ _ ___________	_______ _ ___________	2019		neppre01	nepali	grade2
+________ ______	________ ______	2019		nepgrp01	nepali	grade2
+_____ _ _____	_____ _ _____	2019		nepkra01	nepali	grade2
+______	______	2019		nepghm01	nepali	grade2
+___ _____	___ _____	2019		nepddr01	nepali	grade2
+____ ____	____ ____	2019		nepjnb01	nepali	grade2
+_________ ____	_________ ____	2019		nepagy01	nepali	grade2
+______ ___	______ ___	2019		nepppr01	nepali	grade2
+___	___	2019		nepgad01	nepali	grade3
+_ _ ____ ______	_ _ ____ ______	2019		nepmmp01	nepali	grade3
+_______ ____	_______ ____	2019		nepaks01	nepali	grade3
+______ _______	______ _______	2019		nephhb01	nepali	grade3
+________ _____	________ _____	2019		nephup01	nepali	grade3
+______ ____ ______	______ ____ ______	2019		neprbb01	nepali	grade3
+_______	_______	2019		nepkht01	nepali	grade3
+___ ____	___ ____	2019		nepass01	nepali	grade3
+____ ____ ____ _	____ ____ ____ _	2019		nepgmc01	nepali	grade3
+__-_____ _______	__-_____ _______	2019		nepght01	nepali	grade3
+________ ___	________ ___	2019		nepgkk01	nepali	grade3
+_____ ____	_____ ____	2019		nepkku01	nepali	grade3
+_____ _ ______	_____ _ ______	2019		nepeyb01	nepali	grade4
+_______ _ ___________	_______ _ ___________	2019		neppre01	nepali	grade4
+___ _____	___ _____	2019		neppap01	nepali	grade4
+_____ ____	_____ ____	2019		neppad01	nepali	grade4
+___ ___? ___ ____	___ ___? ___ ____	2019		nepbay01	nepali	grade4
+_________	_________	2019		nepgjt01	nepali	grade4
+____	____	2019		neppun01	nepali	grade4
+____ ____	____ ____	2019		nepltr01	nepali	grade4
+_____ ____	_____ ____	2019		nepchs01	nepali	grade4
+______ _ ____	______ _ ____	2019		nepprv01	nepali	grade4
+_____ ____	_____ ____	2019		nepjkt01	nepali	grade4
+________ ________	________ _______	2019		neppun01	nepali	grade4

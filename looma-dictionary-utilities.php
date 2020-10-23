@@ -75,7 +75,7 @@ if (isset($_GET["cmd"]))
 					if(!keyIsSet('rw', $word))    $word['rw'] = '';
 					if(!keyIsSet('part', $word))  $word['part'] = '';
 					if(!keyIsSet('def', $word))   $word['def'] = '';
-					if(!keyIsSet('phon', $word))  $word['phon'] = '';
+					//if(!keyIsSet('phon', $word))  $word['phon'] = '';
 					//if(!keyIsSet('img', $word))   $word['img'] = '';
 					if(!keyIsSet('ch_id', $word)) $word['ch_id'] = '';
 					$word = json_encode($word);
@@ -94,7 +94,49 @@ if (isset($_GET["cmd"]))
 			}
 			exit(); //end LOOKUP cmd
 
+
 ////////////////////////////
+////// command REVERSELOOKUP   ////
+////////////////////////////
+
+		case "reverselookup":
+			// lookup $_GET["word"] in the dictionary and return an object describing the word
+			if(isset($_GET["word"]) && $_GET["word"] != "")
+			{   $nativeWord = trim($_GET["word"]);
+
+				$query = array('np' => mongoRegexOptions("^$nativeWord$",'i'));  //NOTE: using regex to do a case insensitive search for the word
+				//$word = $dictionary_collection -> findOne($query);
+				$word = mongoFindOne($dictionary_collection, $query);
+
+				if($word != null)
+				{   //Add fields with blanks to avoid errors on code that receives words
+
+					if (file_exists('../content/dictionary images/' . $word['en'] . '.jpg')) $word['img'] = $word['en'];
+
+
+					if(!keyIsSet('np', $word))    $word['np'] = '';
+					if(!keyIsSet('en', $word))    $word['en'] = '';
+					if(!keyIsSet('rw', $word))    $word['rw'] = '';
+					if(!keyIsSet('part', $word))  $word['part'] = '';
+					if(!keyIsSet('def', $word))   $word['def'] = '';
+					if(!keyIsSet('phon', $word))  $word['phon'] = '';
+					//if(!keyIsSet('img', $word))   $word['img'] = '';
+					if(!keyIsSet('ch_id', $word)) $word['ch_id'] = '';
+					$word = json_encode($word);
+					echo $word . "\n";
+				}
+				else
+				{   $failed = array('en' => $englishWord,'np' => '', 'ch_id' => '', 'def' => 'Word not found','phon' => '','img' => '');
+					$failed = json_encode($failed);
+					echo "$failed";
+				}
+			}
+			else
+			{   $failed = array('en' => '','np' => '', 'ch_id' => '', 'def' => 'word not found','phon' => '','img' => '');
+				$failed = json_encode($failed);
+				echo "$failed";
+			}
+			exit(); //end reverseLOOKUP cmd////////////////////////////
 ////// command ADD   //////
 ////////////////////////////
 

@@ -13,6 +13,45 @@ Description:
 
 var className, subjectName, gradeName, prefix;
 
+var subjectnames = {
+    'english' : 'English',
+    'math'    : 'Math',
+    'science' : 'Science',
+    'nepali'  : 'Nepali',
+    'health'  : 'Health',
+    'vocation'  : 'Vocation',
+    'moral education'  : 'Moral',
+    'math optional' : 'Opt. Math',
+    'science optional' : 'Opt. Science',
+    'social studies' : 'Social'
+}
+var nsubjectnames = {
+    'english' : 'अंग्रेजी',
+    'math'    : 'गणित',
+    'science' : 'विज्ञान',
+    'nepali'  : 'नेपाली',
+    'health'  : 'स्वास्थ्य',
+    'vocation'  : 'प्राविधिक',
+    'moral education'  : 'नैतिक',
+    'math optional' : 'ऐ. गणित',
+    'science optional' : 'ऐ. विज्ञान',
+    'social studies' : 'सामाजिक'
+}
+
+/*
+Full title English	Full title Nepali	Short title English	Short title Nepali
+Mathematics	गणित	Math	गणित
+Science	विज्ञान	Science	विज्ञान
+English	अंग्रेजी	English	अंग्रेजी
+Nepali	नेपाली	Nepali	नेपाली
+Social Studies	सामाजिक शिक्षा	Social	सामाजिक
+Vocational Education	प्राविधिक शिक्षा	Vocation	प्राविधिक
+Health	स्वास्थ्य	Health	स्वास्थ्य
+Moral Education	नैतिक शिक्षा	Moral	नैतिक
+Optional Mathematics	ऐच्छिक गणित	Opt. Math	ऐ. गणित
+Optional Science	ऐच्छिक विज्ञान	Opt. Sci.	ऐ. विज्ञान
+ */
+
 function displaySubjects (className) {
     
     $.post("looma-database-utilities.php",
@@ -22,9 +61,11 @@ function displaySubjects (className) {
             books.forEach (function(book) {
                 var tb_path = '../content/' + book['fp'];
                 var $newButton =  $('<button type="button" class="subject" id="' + book["subject"] + '" data-prefix="' + book['prefix'] + '">');
-              
-               	$newButton.append($("<p class='english-keyword'>"+ book['dn'] + "<p class='xlat'>"+ book['ndn'] + "</p></p>"));
-               	$newButton.append($("<p class='native-keyword'>"+ book['ndn'] + "<p class='xlat'>"+ book['dn'] + "</p></p>"));
+    
+                var subjectname = subjectnames[book['subject']];
+                var nsubjectname = nsubjectnames[book['subject']];
+               	$newButton.append($("<p class='english-keyword'>"+ subjectname + "<p class='xlat'>"+ nsubjectname + "</p></p>"));
+               	$newButton.append($("<p class='native-keyword'>"+ nsubjectname + "<p class='xlat'>"+ subjectname + "</p></p>"));
                
                  //$newButton.append($('<p>' + book["dn"] +'</p>'));
 

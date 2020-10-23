@@ -27,6 +27,7 @@ define ("CLASSES", 8);
                       src="images/logos/Looma-english-amanda 3x1.png" >
 			    <img     class=" native-keyword" hidden draggable="false"
                       src="images/logos/Looma-nepali-amanda 3x1.png" >
+        <!-- <p class="select-message">Choose Grade Level</p><br> -->
     </div>
     <!--  display CLASS buttons  -->
     <div id="classes" class="button-div">
@@ -38,7 +39,7 @@ define ("CLASSES", 8);
 
         for ($i = 1; $i <= sizeOf($classes); $i++) {
             echo "<button type='button' class='class' id=class$i>";
-            echo "<div class='little'>"; keyword("Grade"); echo "</div>";
+            //echo "<div class='little'>"; keyword("Grade"); echo "</div>";
             echo "<div>";                keyword((string) $i);     echo "</div>";
             echo "</button>";
         }

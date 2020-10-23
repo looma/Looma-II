@@ -12,6 +12,18 @@ Description:
 
 var className, subjectName, gradeName, prefix;
 
+var nnames = {
+    'science' : 'विज्ञान',
+    'english' : 'अंग्रेजी',
+    'math'    :  'गणित',
+    'social studies' : 'सामाजिक शिक्षा' };
+
+var displaynames = {
+    'science' : 'Science',
+    'english' : 'English',
+    'math'    :  'Math',
+    'social studies' : 'Social' };
+
 function displaySubjects (className) {
     
     $.post("looma-database-utilities.php",
@@ -21,13 +33,15 @@ function displaySubjects (className) {
             for (const index in subjects) {
           //  subjects.forEach (function(index, subject) {
                 var name = subjects[index];
+                var nname = nnames[name];
                 var $newButton =  $('<button type="button" + ' +
                     'data-class="' + className + '"' +
                     'data-subject="' + subjects[index] + '"' +
                     'class="subject game" id="' + name + '">');
                 
-                $newButton.append($("<p class='english-keyword caps'>"+ name + "<p class='xlat'>"+ name + "</p></p>"));
-                $newButton.append($("<p class='native-keyword caps'>"+ name + "<p class='xlat'>"+ name + "</p></p>"));
+                var displayname = displaynames[name];
+                $newButton.append($("<p class='english-keyword caps'>"+ displayname + "<p class='xlat'>"+ nname + "</p></p>"));
+                $newButton.append($("<p class='native-keyword caps'>"+ nname + "<p class='xlat'>"+ displayname + "</p></p>"));
                 
                 $newButton.append($('<img draggable="false" src="images/games.png" />' ));
                 

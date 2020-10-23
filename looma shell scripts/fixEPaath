@@ -1,0 +1,68 @@
+// mongo terminal program "fixEPaath"
+//      input from a tab-seperated file
+//          each line of which has DN, NDN, version, fn, oleID, subject, grade
+//          inserts all the fields into the activities document corresponding to the FN + DN + oleID
+//
+//    to DRYRUN this script, enter "param='dryrun'  before entering the load statement
+//
+//  make sure there is a file 'ePaathToImport.tsv' in the current directory
+//  start MONGO in LOOMA db with: 'mongo looma'
+//  run in MONGO SHELL with: load('fixEPaath')
+//
+//"use strict";
+
+/////////////////////////
+//  verification function that check validity of incoming ch_id
+////////////////////////
+
+var requestcount = 0;
+var changecount = 0;
+var illegalcount = 0;
+var activities;
+
+var input = 'ePaathToImport.tsv';
+print ('Importing ePaath metadata from ' + input);
+print();
+
+if (param === 'dryrun') {
+    print('DRYRUN');
+    print();
+}
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+
+var docs = file.split(/[\r\n]+/);  // split file into array of lines containing (DN, FN, CH_IDs)
+
+print ('Processing ' + docs.length + ' lines');
+
+docs.forEach( function(doc) {
+    var fields = doc.split(/\t/);  //split the line on TABs
+    if (fields[0] !== "" && fields[1] !== "") {
+        var dn = fields[0];
+        var ndn = fields[1];
+        var version = fields[2];
+        var fn = fields[3];
+        var oleID = fields[4];
+        var subject = fields[5];
+        var grade = fields[6];
+        requestcount++;
+    
+        activities = db.activities.find({'ft':'EP', 'src':'OLE', 'version': 2015, 'dn':dn, 'fn':parseInt(fn)});
+        //else activities = db.activities.find({'ft':'EP', 'src':'OLE', 'dn':dn, 'version': 2019, 'oleID':oleID});
+        var duplicates = 0;
+        if (!activities.hasNext()) print('ACTIVITY ' + dn + ' NOT FOUND');
+        while (activities.hasNext()) {
+            var activity = activities.next();
+            //duplicates++; if (duplicates > 1) print('*************NOTE: duplicate ePAATH FOUND, Name = "' + dn + '"');
+            activity['ndn'] = ndn;
+            activity['grade'] = grade;
+            activity['subject'] = subject;
+            
+            if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
+            print('               for EPAATH ' + dn + ' added NDN=' + ndn + ' subj='+ subject + ' grade=' + grade);
+        }
+    } else print('*******    BAD INPUT LINE: ' + doc);
+});  // end foreach doc
+
+if (param === 'dryrun') { print('DRYRUN'); print();};
+print('');
+print('+++++  ' + requestcount + '  lines processed');

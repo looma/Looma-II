@@ -22,7 +22,7 @@ define ("CLASSES", 10);
 <div id="main-container-horizontal">
 
     <div class="title">
-      <h1>Looma Games</h1>
+      <h1><?php keyword('Looma Games');?></h1>
     </div>
     <!--  display CLASS buttons  -->
     <div id="classes" class="button-div">
@@ -32,7 +32,7 @@ define ("CLASSES", 10);
 
         for ($i = 1; $i <= sizeOf($classes); $i++) {
             echo "<button type='button' class='class' id=class$i>";
-            echo "<div class='little'>"; keyword("Grade"); echo "</div>";
+           // echo "<div class='little'>"; keyword("Grade"); echo "</div>";
             echo "<div>";                keyword((string) $i);     echo "</div>";
             echo "</button>";
         }

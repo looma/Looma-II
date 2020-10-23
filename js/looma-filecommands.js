@@ -563,7 +563,7 @@ $(document).ready(function () {
     
     $('#delete').click(function() {
         console.log("FILE COMMANDS: clicked delete");
-        LOOMA.prompt('Enter a file name: ',
+        LOOMA.prompt('Enter the full name of the file to be deleted: ',
             
             function(deletename) {
                 fileexists(deletename, currentcollection, currentfiletype)

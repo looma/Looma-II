@@ -619,14 +619,14 @@ function runRandom () {
             game_data['responses'].push(res);
             wordcount++;
             if (wordcount < game_data['prompts'].length)
-                LOOMA.sienna_define(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
+                LOOMA.definition_only(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
             else runMatch();
         }
         
         function word_define_fail(r) {
             console.log("fail", r);
         }
-        LOOMA.sienna_define(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
+        LOOMA.definition_only(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
     }
     function get_wordlist_fail(r) {console.log("get wordlist failed: ", r);}
     
@@ -995,7 +995,7 @@ function initScores(num_teams) {
         var id = 'teamscore-' + i.toString();
         $('#' + id + ' span.teamscore').html(scores[i-1]);
         $('#' + id).show();
-        $('#progress-' + i + ' .sienna-progress').width(0);
+        $('#progress-' + i + ' .inner-progress').width(0);
         $('#progress-' + i).show();
     }
 }
@@ -1016,7 +1016,7 @@ function updateScores() {
 // //////////////////////////
 function updateProgress(team, score, maxScore) {
     var percentage = ((score/maxScore)*100);
-    $('#progress-' + team + ' .sienna-progress').width(percentage + '%');
+    $('#progress-' + team + ' .inner-progress').width(percentage + '%');
 }
 
 //////////////////////////////////
@@ -1082,7 +1082,7 @@ function nextQuestion() {
                         console.log("fail", r);
                     }
                     
-                    LOOMA.sienna_define(word, word_define_succeed, word_define_fail);
+                    LOOMA.definition_only(word, word_define_succeed, word_define_fail);
                 });
                 break;
             case 'matching':

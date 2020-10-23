@@ -1,6 +1,6 @@
 body {
 	/*background-color: #091F48;*/
-	background-color: var(--looma-blue;);
+	background-color: var(--looma-blue);
 			/* medium blue is #1853C1;*/
 			/* "looma" dark blue is #091F48;*/
     /*font-family: "Comic Sans MS", cursive, sans-serif;*/
@@ -10,7 +10,7 @@ body {
 }
 
 #main-container-horizontal {
-	background-color: var(--looma-blue;);
+	background-color: var(--looma-blue);
 }
 
 #toolbar-container, #toolbar-container-vertical {

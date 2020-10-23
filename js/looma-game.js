@@ -676,7 +676,7 @@ function runRandom () {
         'presentation_type': 'vocabulary'
     };
     
-    $("#gameTitle").html("Game: " + game_data['name']);
+    $("#gameTitle span").html(game_data['name']);
     
     function get_wordlist_succeed(words) {
         // console.log("success",words)
@@ -691,13 +691,13 @@ function runRandom () {
             game_data['responses'].push(res);
             wordcount++;
             if (wordcount < game_data['prompts'].length)
-                LOOMA.sienna_define(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
+                LOOMA.definition_only(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
             else runMatch();
         }
         
         function word_define_fail(r) {console.log("word define fail", r);}
     
-        LOOMA.sienna_define(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
+        LOOMA.definition_only(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
     }
     
     function get_wordlist_fail(r) {console.log("get wordlist failed: ", r);}
@@ -889,7 +889,7 @@ function runMap() {
     
     game_data['prompts'].sort(function(a, b){return 0.5 - Math.random()});
     
-    $('#question-number').text('Question ' + curr_question);
+    $('#question-number').text(LOOMA.translatableSpans('Question','प्रश्न') + ' ' + curr_question);
     $('#question').text('Click on: ' + game_data['prompts'][curr_question-1]);
     $('#game').append('<div id="map">');
     $('#next').text("Next Question").show();
@@ -1035,7 +1035,7 @@ function nextTeam() {
 }
 
 function showTeam() {
-    if (num_teams > 1) { $("#current-team").html('Team ' + curr_team.toString()); }
+    if (num_teams > 1) { $("#current-team").html(LOOMA.translatableSpans('Team','टीम') + ' ' + curr_team.toString()); }
 }
 
 /////////////////////////////
@@ -1058,7 +1058,7 @@ function initScores(num_teams) {
         var id = 'teamscore-' + i.toString();
         $('#' + id + ' span.teamscore').html(scores[i-1]);
         $('#' + id).show();
-        $('#progress-' + i + ' .sienna-progress').width(0);
+        $('#progress-' + i + ' .inner-progress').width(0);
         $('#progress-' + i).show();
     }
 }
@@ -1079,7 +1079,7 @@ function updateScores() {
 ////////////////////////////
 function updateProgress(team, score, maxScore) {
     var percentage = ((score/maxScore)*100);
-    $('#progress-' + team + ' .sienna-progress').width(percentage + '%');
+    $('#progress-' + team + ' .inner-progress').width(percentage + '%');
 }
 
 //////////////////////////////////
@@ -1096,7 +1096,7 @@ function nextQuestion() {
                 //var prompts = game_data['prompts'];
                 if (curr_question <= game_data['prompts'].length) {
                     showTeam();
-                    $("#question-number").html("Question "+(curr_question)+":  ");
+                    $("#question-number").html(LOOMA.translatableSpans('Question','प्रश्न') + " "+(curr_question)+":  ");
                     mcTries = 1;
                     var questionData = game_data['prompts'][curr_question-1];
                     var question = questionData['question'];
@@ -1145,7 +1145,7 @@ function nextQuestion() {
                         console.log("fail", r);
                     }
                     
-                    LOOMA.sienna_define(word, word_define_succeed, word_define_fail);
+                    LOOMA.definition_only(word, word_define_succeed, word_define_fail);
                 });
                 break;
             case 'matching':
@@ -1267,7 +1267,7 @@ function gameOver() {
             
             time_limit = ( game_data['timeLimit']) ? game_data['timeLimit'] : 30;
             setTimer(time_limit);
-            $("#gameTitle").html("Game: " + game_data['title']);
+            $("#gameTitle").html(LOOMA.translatableSpans("Game","खेल") + ": " + game_data['title']);
             
             //nextQuestion();
             

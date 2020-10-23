@@ -58,12 +58,14 @@ button#toggle-database{
 	height:10vh;
     width:6vw;
     z-index:1000;
-    background-image: url("../images/folder.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
     background-color:rgba(200,200,200,0);
 }
 
+ button#toggle-database img{
+     height:100%;
+     width:100%;
+ }
+ 
 /***************************************/
 /****** search-results div specs *******/
 /***************************************/

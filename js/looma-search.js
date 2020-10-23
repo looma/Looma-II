@@ -82,7 +82,6 @@ function restoreSearchState () {
         $('#search').submit();  //re-run the search
     
     } else {
-        //$('#chapter-search').hide();
         setCollection('activities');
     
         // reset some search form fields not handled by LOOMA.restoreForm() using 'savedForm'
@@ -93,7 +92,6 @@ function restoreSearchState () {
                 // restore 'type' and 'scr' selections
                 if (item.name == 'type[]') $("#search #" + item.value + "-checkbox")[0].checked = true;
                 if (item.name == 'src[]')  $("#search #" + item.value + "-checkbox")[0].checked = true;
-                //if (item.name == 'src[]')  $('#source-div')[0][item.value].checked = true;
             });
             
             //setRootKeyword();  // initialize keyword 1 to 'root' of keyword tree from mongo
@@ -104,19 +102,12 @@ function restoreSearchState () {
             var key3 = savedForm.find(x => x.name === 'key3'); keys[3] = (key3?key3.value:null);
             var key4 = savedForm.find(x => x.name === 'key4'); keys[4] = (key4?key4.value:null);
             keys[5] = null;
-            // add more elements to KEYS[] if there are more levels of keywords
             
+            // add more elements to KEYS[] if there are more levels of keywords
             restoreKeywordDropdown(1,keys);  // restore and select keywords 1,2,3,4 if specified
-    
-            //$('#search').submit();  //re-run the search
-    
-    
         }
     }
-    
-    //note: restorekeywordropdown calls search.submut, so DONT do it here
-    // $('#search').submit();  //re-run the search
-    
+ 
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
     $("#search-term").focus();
     
@@ -154,10 +145,8 @@ function setCollection(collection) {
         
         $('#chapter-div').hide();
         $('#chapter-drop-menu').empty();
-        
     }
     $("#search-term").focus();
-    
 } //end setCollection
 
 /////////////////////////////
@@ -175,9 +164,26 @@ function isFilterSet() {
         if ($("#grade-drop-menu").val() != "") {set = true;}
         else if ($("#subject-drop-menu").val() != "") {set = true;}
     }
-    
     return set;
 }  //  end isFilterSet()
+
+////////////////////////////////
+////// makeKeywordDropdown /////
+////////////////////////////////
+
+function makeKeywordDropdown(kids, element) {
+    var any = (language === 'native') ? "(कुनै)" : "(any)";
+    $('<option value="" label="' + any + '" data-dn="(any)" data-ndn="(कुनै)"/>').prop('selected', true).appendTo(element);
+    kids.forEach(function (kid) {
+        var name = (language === 'native' && kid.ndn) ? kid.ndn : kid.name;
+        $('<option data-kids=' + kid.kids["$id"] +
+            ' data-dn="' + kid.name +
+            '" data-ndn="' + kid.ndn +
+            '" value="' + kid.name +
+            '" label="' + name + '"/>').appendTo(element);
+    });
+    //$('<option value="none" label="(none)" data-dn="(none)" data-ndn="(कुनै हैन)"/>').appendTo(element);
+};
 
 /////////////////////////////
 /////  setRootKeyword()    /////
@@ -187,24 +193,15 @@ function setRootKeyword() {
     $.post("looma-database-utilities.php",
         {cmd: "keywordRoot"},
         function(kids) {
-            var dropdown = $('#key1-menu').empty();
+            var $dropdown = $('#key1-menu').empty();
             if (kids) {
-                dropdown.prop('disabled', false);
-                //console.log('response is ' + kids);
-                $('<option value="" label="Select..."/>').prop('selected', true).appendTo(dropdown);
-                kids.forEach(function (kid) {
-                    $('<option data-kids=' + kid.kids["$id"] + ' value="' + kid.name + '" label="' + kid.name + '"/>').appendTo(dropdown);
-                });
-                $('<option value="none" label="(none)"/>').appendTo(dropdown);
-    
+                $dropdown.prop('disabled', false);
+                makeKeywordDropdown (kids, $dropdown);
             }
         },
         'json'
     );
     $('#key1-menu').nextAll().empty().val('').prop('disabled', true).text('');
-    //$('#key2-menu').prop('disabled', true).text('');
-    //$('#key3-menu').prop('disabled', true).text('');
-    //$('#key4-menu').prop('disabled', true).text('');
 } // end setRootKeyword()
 
 //////////////////////////////////////
@@ -225,7 +222,7 @@ function restoreKeywordDropdown(level,keys) {
         }
 
          if ($element.data('kids') !== 'undefined') {  //the MONGO document for KEYWORDS returns KIDS as 'undefined' if there are no kids
-            console.log('calling server wi th level = ' + level + ' and keys: ' + keys[1] + ', '+ keys[2] + ', '+ keys[3] + ', '+ keys[4] );
+            console.log('calling server with level = ' + level + ' and keys: ' + keys[1] + ', '+ keys[2] + ', '+ keys[3] + ', '+ keys[4] );
             
             $.post("looma-database-utilities.php",
                 {cmd: "keywordList", id: $element.data('kids')},
@@ -233,13 +230,7 @@ function restoreKeywordDropdown(level,keys) {
                     var nextLevel = level + 1;
                     var $next = $('#key' + nextLevel + '-menu').empty().val('').prop('disabled', false).text('');
                     if (kids) {
-                        $('<option value="" label="(any)..."/>').prop('selected', true).appendTo($next);
-                        
-                        for (var i=0;i<kids.length;i++){
-                            $('<option data-kids=' + kids[i].kids["$id"] + ' value="' + kids[i].name + '" label="' + kids[i].name + '"/>').appendTo($next);
-                        }
-                        
-                        $('<option value="none" label="(none)"/>').appendTo($next);
+                        makeKeywordDropdown (kids, $next);
                     }
                     restoreKeywordDropdown(nextLevel, keys);
                 },
@@ -270,15 +261,17 @@ function showKeywordDropdown(event) {
             {cmd: "keywordList",
              id: $(selected).data('kids')},
              function(kids) {
-                var next = $(menu).next().empty().prop('disabled', false);
+                var $next = $(menu).next().empty().prop('disabled', false);
                 if (kids) {
-                    //console.log('response is ' + kids);
-                    $('<option value="" label="(any)..."/>').prop('selected', true).appendTo(next);
+
+                makeKeywordDropdown(kids,$next)
+                /*
+                    $('<option value="" label="(any)..."/>').prop('selected', true).appendTo($next);
                     kids.forEach(function (kid) {
-                        $('<option data-kids=' + kid.kids["$id"] + ' value="' + kid.name + '" label="' + kid.name + '"/>').appendTo(next);
+                        $('<option data-kids=' + kid.kids["$id"] + ' value="' + kid.name + '" label="' + kid.name + '"/>').appendTo($next);
                     });
-                    $('<option value="none" label="(none)"/>').appendTo(next);
-    
+                    $('<option value="none" label="(none)"/>').appendTo($next);
+                */
                 }
             },
             'json'
@@ -314,7 +307,6 @@ function showTextSubjectDropdown($grades, $subjects, $chapters) {
 /////  showTextChapterDropdown()  /////
 ///////////////////////////////////
 function showTextChapterDropdown($grades, $subjects, $chapters, lang) {
-    //if ($div) $div.hide();
     
     $chapters.empty();
     if ( ($grades.val() != '') && ($subjects.val() != ''))
@@ -336,14 +328,11 @@ function showTextChapterDropdown($grades, $subjects, $chapters, lang) {
     $("#search-term").focus();
 }  //end showTextChapterDropdown()
 
-
 ///////////////////////////////////
 /////  showBookDropdown()  /////
 ///////////////////////////////////
 function showBookDropdown($src, $books, $chapters) {
-    //$chapters.hide();
-    
-    //$chapters.hide();
+ 
     $books.empty();
     $chapters.empty();
     if ( ($src.val() != ''))
@@ -365,7 +354,6 @@ function showBookDropdown($src, $books, $chapters) {
 /////  showBookChapterDropdown()  /////
 ///////////////////////////////////
 function showBookChapterDropdown($src, $books, $chapters) {
-    //if ($div) $div.hide();
     
     $chapters.empty().show();
     if ( ($src.val() != '') && ($books.val() != ''))
@@ -381,7 +369,6 @@ function showBookChapterDropdown($src, $books, $chapters) {
         );
     $("#search-term").focus();
 }  //end showBookChapterDropdown()
-
 
 /////////////////////////////
 /////  refreshPage()    /////
@@ -399,14 +386,13 @@ function refreshPage() {
     }
 }  // end refreshPage()
 
-
-
 /////////////////////////////
 /////  sendSearchRequest()    /////
 /////////////////////////////
 function sendSearchRequest(searchForm, callBack) {
     searchForm.find("#pagesz").val(pagesz);
     searchForm.find("#pageno").val(pageno);
+    searchForm.find("#language").val(LOOMA.readCookie('language'));
     
     var loadingmessage = $("<p/>Loading results<span id='ellipsis'>.</span>").appendTo("#results-div");
     
@@ -445,12 +431,27 @@ function sendSearchRequest(searchForm, callBack) {
     
 } //end sendSearchRequest()
 
+function translatePage() {
+    language = LOOMA.readStore('language', 'cookie');
+    if (language === 'native') {
+        //$('#key1-menu option:first').attr('label','चुन्नु');
+        $('.keyword-dropdown option').each(function(){$(this).attr('label',$(this).attr('data-ndn'));});
+        $('#search-term').attr('placeholder', 'खोज शब्दावली टाइप गर्नुहोस्'  );
+    } else {
+        //$('#key1-menu option:first').attr('label', 'Select keyword...');
+        $('.keyword-dropdown option').each(function(){$(this).attr('label',$(this).attr('data-dn'));});
+        $('#search-term').attr('placeholder', 'Enter search term');
+    }
+}; //end translatePage()
 
 //////////////////////////////
 /////  document.ready()  /////
 //////////////////////////////
 $(document).ready(function() {
     
+    ///////////////////////////
+    ///////   SUBMIT    ///////
+    ///////////////////////////
     $('#search').submit(function( event ) {
         event.preventDefault();
     
@@ -519,19 +520,10 @@ $(document).ready(function() {
     }
     if (language === 'native') $('#search-term').attr('placeholder','खोज टर्म प्रविष्ट गर्नुहोस्');
     
-    $('#translate').click(function() {
-        language = LOOMA.readStore('language', 'cookie');
-        if (language === 'native') {
-            $('#key1-menu option:first').attr('label','चुन्नु');
-            $('#search-term').attr('placeholder', 'खोज शब्दावली टाइप गर्नुहोस्'  );
-        } else {
-            $('#key1-menu option:first').attr('label', 'Select keyword...');
-            $('#search-term').attr('placeholder', 'Enter search term');
-        }
-    });
+    translatePage();
+    $('#translate').click(translatePage);
     
     setCollection('activities');
     refreshPage();
     
 }); // end document.ready
-

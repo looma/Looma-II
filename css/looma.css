@@ -1,9 +1,11 @@
 
 html {
     
-    --looma-blue: #091F48;
-    --looma-toolbar:yellow;
+    --looma-blue:#091F48;
+    --looma-toolbar:#86c252; /*light green;*/
     --looma-font-color:yellow;
+    --looma-scrollbar-track:#aaaaff;
+    --looma-scrollbar-track:lightgoldenrodyellow;
 	background-color: gray;
 	height:100vh;
 	width:100vw;
@@ -117,7 +119,7 @@ body * {
 #main-container-vertical.scroll   { overflow:auto; }
 
 ::-webkit-scrollbar-track-piece {
-    background: #aaaaff; /*light blue*/
+    background: var(--looma-scrollbar-track); /*light blue*/
 }
 ::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.75);
@@ -405,7 +407,7 @@ button.beside-play {
         display:none;
         right:0;
         bottom:0;
-        color:red;
+        /*color:red;*/
         font-size: 0.8em;
 }
 
@@ -470,7 +472,7 @@ h1 span.english-keyword, h1 span.native-keyword {
     display:inline-block;
 }
 
-.native-keyword {display:none;}
+.native-keyword {display:inline-block;}
 
 .xlat {display:none;}
 
@@ -489,12 +491,14 @@ span:hover .xlat {
 span.tip { display:none;}
 
 button:hover span.tip.yes-show 	{
-    display:none;  /*turned off for now 2020 09*/
     position:absolute;
+    display:block;
     bottom:10%;
     left:15%;
     margin:auto;
-    /*font-size: 0.3em;*/
+    
+    font-size: 0.7em;
+    
     z-index: 100;
     border: 1px solid #000000;
     border-radius: 3px;

@@ -55,10 +55,12 @@ function clearResults(results) {
         displayActivities(result_array['activities'], '#results-table');
     if(chapResults != 0)
         displayChapters(result_array['chapters'], '#results-table');
-
-    $display.show();
+     
     
-   // $('#results-div').off('click','button.play').on('click', "button.play", playActivity);
+    $display.show();
+    //translateSearchResults();  // translate search results to current UI language
+    
+        // $('#results-div').off('click','button.play').on('click', "button.play", playActivity);
    
 } //end displayResults()
 
@@ -114,6 +116,7 @@ function displayActivities(results, table) {
                                       mongoID, '#query-result-' + result);
             result ++;
            });
+    
 } //end displayActivities()
 
 /////////////////////////////////
@@ -131,6 +134,7 @@ function displayChapters(results, table) {
         LOOMA.makeChapterButton(value['_id'], '#query-result-' + result);
         result ++;
     });
+    
 } //end displayChapters()
 
 
@@ -148,6 +152,16 @@ function playActivity(event) {
     saveSearchState();  // saves scroll position and search form settings
     LOOMA.playMedia(button);
 }
+
+function translateSearchResults() {
+    $('button.activity').each(function(){
+        if (language === 'native') {
+            var ndn = ($(this).data('ndn') && $(this).data('ndn') !== 'undefined') ? $(this).data('ndn') : $(this).data('dn');
+            $(this).children('span.dn').text(ndn);
+        }
+        else $(this).children('span.dn').text($(this).data('dn')) ;
+    });
+};
 
 $(document).ready (function() {
     
@@ -183,6 +197,10 @@ $(document).ready (function() {
     
     $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll',    'session'));
+    
+    
+    // when translate flag is clicked - translate search results to new UI language
+    $('#translate').click(translateSearchResults);
     
 });
 

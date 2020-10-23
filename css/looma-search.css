@@ -44,14 +44,16 @@ div#search-bar-div{
 }
 button#media-submit, button#chapter-submit{
     display: inline-block;
-    width: 7vh;
-    height: 7vh;
+    width: 9vh;
+    height: 8vh;
     vertical-align: middle;
-    background-image: url("../images/looma-search2.png");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-color:rgba(200,200,200,0);
+    background-color:white;
     border-radius: 4px;
+}
+
+button#media-submit img, button#chapter-submit img{
+    height:100%;
+    width:100%;
 }
 
 button#media-submit:disabled {

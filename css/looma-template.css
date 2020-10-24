@@ -10,9 +10,6 @@ Revision: Looma 3
 Comments:
 */
 
-#fullscreen {    background-color: var(--looma-blue);
-}
-
 button#fullscreen-control {
     display:inline-block;
 }

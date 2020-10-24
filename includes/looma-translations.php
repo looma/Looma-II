@@ -304,6 +304,7 @@ $TKW = array (
     "River" => "नदी",
     "Roads" => "सडकहरू",
     "Russia" => "रूस",
+    "Sample Button" => "नमूना बटन",
     "San Francisco" => "सान फ्रान्सिस्को",
     "Save file" => "फाइल सुरक्षित गर्नुहोस्",
     "Schools" => "विद्यालयहरू",

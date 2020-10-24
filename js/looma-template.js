@@ -2,23 +2,23 @@
 LOOMA javascript file
 Filename: looma-template.js
 Description: supports looma-xxx.php
+/
 
 Programmer name: Skip
-Owner: VillageTech Solutions (villagetechsolutions.org)
+Owner: Looma Education Company
 Date: xxx  2017
 Revision: Looma 3.0
  */
 
 'use strict';
+ /* declare global variables here */
+ /* declare functions here */
 
 $(document).ready( function () {
-    var a;
-    var b;
+    //initialization code here
     
-    function c() {
-    
-    }
-    console.log('template')
-    
+    $("#sample_button").click(function() {
+        LOOMA.alert("sample alert message", 5, true);
+    });
 });
 

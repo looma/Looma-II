@@ -30,7 +30,7 @@ window.onload = function() {
 
     //map to reference
     var map = new Image();
-    map.src = "../maps2018/backgrounds/worldmap-game.gif";
+    map.src = "../content/backgrounds/worldmap-game.gif";
 
     map.onload = function(){
         ctx.drawImage(map, 0, 0, 725, 380);

@@ -80,14 +80,14 @@ window.onload = function() {
     }
 
     function drawAllClocks() {
-        drawClock(45, 5, ctx1);
-        drawClock(0, 9, ctx2);
-        drawClock(0, -4, ctx3);
-        drawClock(0, 2, ctx4);
-        drawClock(0, 1, ctx5);
-        drawClock(0, -7, ctx6);
-        drawClock(0, 3, ctx7);
-        drawClock(0, 2, ctx8);
+        drawClock(45, 5, ctx1); //kathmandu
+        drawClock(0, 9, ctx2);  //tokyo
+        drawClock(0, -5, ctx3); //new york
+        drawClock(0, 1, ctx4);  //paris
+        drawClock(0, 0, ctx5);  //london
+        drawClock(0, -8, ctx6); //san francisco
+        drawClock(0, 3, ctx7);  //moscow
+        drawClock(0, 2, ctx8);  //cairo
     }
     
     function eraseName(ctx, name) {
@@ -250,24 +250,24 @@ window.onload = function() {
         if(printHour >= 12 && printHour < 24) {
             if(printHour != 12) {
                 digitalTime = (printHour - 12) + ":" + printMinute + " PM";
-                     if (printHour < 17)      nepaliTime = (printHour - 12) + ":" + printMinute + " दिउसोको";
-                     else if (printHour < 20) nepaliTime = (printHour - 12) + ":" + printMinute + " रातीको";
-                     else                     nepaliTime = (printHour - 12) + ":" + printMinute + " रातीको";
+                     if (printHour < 17)      nepaliTime = "दिउसोको " + (printHour - 12) + ":" + printMinute;
+                     else if (printHour < 20) nepaliTime = "रातीको "  + (printHour - 12) + ":" + printMinute;
+                     else                     nepaliTime = "रातीको "   + (printHour - 12) + ":" + printMinute;
             }
             else {
-                digitalTime = printHour + ":" + printMinute + " PM";
-                nepaliTime = printHour + ":" + printMinute + " दिउसोको";
+                digitalTime =           printHour + ":" + printMinute + " PM";
+                nepaliTime = "दिउसोको " + printHour + ":" + printMinute;
             }
         }
         else {
             if(printHour == 24) {
-                digitalTime = "12:" + printMinute + " AM";
-                nepaliTime = "12:" + printMinute + " रातीको";
+                digitalTime =          "12:" + printMinute + " AM";
+                nepaliTime = "रातीको " + "12:" + printMinute;
             }
             else {
-                digitalTime = printHour + ":" + printMinute + " AM";
-                if (printHour < 5)  nepaliTime = (printHour) + ":" + printMinute + " रातीको";
-                else                nepaliTime = (printHour) + ":" + printMinute + " बिहानको";
+                digitalTime =                               printHour + ":" + printMinute + " AM";
+                if (printHour < 5)  nepaliTime = "रातीको "  + printHour + ":" + printMinute;
+                else                nepaliTime = "बिहानको " + printHour + ":" + printMinute;
             }
         }
     

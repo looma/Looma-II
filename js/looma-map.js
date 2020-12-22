@@ -1,510 +1,158 @@
 /*
-LOOMA javascript file
 Filename: looma-map.js
 Description: Reads in data from a mongo document and from geojson documents to create a map
 
 Programmer name: Morgan, Sophie, Henry, Kendall
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 2018 07
+Date: 2018 07, NOV 2020 [skip]
 Revision: Looma 3.0
  */
 
 "use strict";
 
 // Create the layers for the map and the arrays that hold them
-var baseLayers; // Array storing the base layers
+var data;        // the mongo DB description for this map
+var baseLayers;  // Array storing the base layers
+var currentBase =0; //index of the current selected base layer
 var addOnLayers; // Array storing add-on layers
-var popUpsOn; // Array storing true/false values for if each add-on layer is on/off
-var info; // Represents the information box
-var currentBase; //represents the current selected base layer (the number of it)
-var addOnData; // The add on layers in the database
+var popUpShowing; // Array storing true/false values for if each add-on layer is on/off
+var info;       // Represents the information box
+var addOnData;  // data describing the add-on layers from the database
 var priorityOn; // If layers are brought to the front by priorities in database
-var infoBoxOn; //If the infoBox is on
+var infoBoxOn;  //If the infoBox is on
 var map, southWest, northEast;
+var mapTitle;
+////////////////////////
+// Create the Layers //
+////////////////////////
 
-window.onload = function () {
-
-    var mapid = $("#map").data()['id'];
-    var collection = 'maps';
-
-    $.post("looma-database-utilities.php",
-        {cmd: 'openByID', collection: collection, id: mapid},
-        function(data) {
-
-            /*
-                **Note** : The if(data.x) statements evaluate as true if the field exists
-                           and false if nothing exists, so it will skip a function without making any errors
-                           if the mongo has nothing for that field (e.g., has no add-on layers).
-                           When creating a new mongo, try to fill out as many as you can
-                           The most important piece of data is a baselayer
-             */
-
-            L.Circle.prototype._checkIfEmpty = function () { return false; }; //Fixes a Leaflet glitch that the cirlce markers
-            //would disappear on pan or zoom
-
-            //Sets title of map
-            if (data.title)
-            {
-                //document.getElementById('title').innerHTML = data.title;
-            }
-            else
-            {
-                //document.getElementById('title').innerHTML = "Map";
-            }
-
-            //Base layers
-            if (data.baseLayers)
-            {
-                baseLayers = new Array(data.baseLayers.length); // array of feature layers
-            }
-
-            //Add on layers
-            if (data.addOnLayers)
-            {
-                addOnData = data.addOnLayers;
-                addOnLayers = new Array(data.addOnLayers.length);
-                popUpsOn = new Array(data.addOnLayers.length); // array of booleans for if each button is on
-
-                if (addOnData[0].priority)
-                {
-                    priorityOn = true;
-                }
-                else
-                {
-                    //priorityOn = false;
-                    priorityOn = true;
-                }
-            }
-
-            //Starting map view
-            if (data.info.start)
-            {
-                map = L.map('map').setView([data.info.start.startLat, data.info.start.startLong], data.info.start.startZoom);
-            }
-            else
-            {
-                map = L.map('map').setView([20, 60], 3);
-            }
-
-            // If a background color is set in mongo, use it
-            if (data.info.backgroundColor)
-            {
-                var bColor = data.info.backgroundColor;
-                var el = document.getElementsByClassName('leaflet-container');
-                for (var i = 0; i < el.length; i++)
-                {
-                    el[i].style.backgroundColor = bColor;
-                }
-            }
-
-            //Zoom levels
-            var minZoom;
-            var maxZoom;
-            if (data.info.zoom)
-            {
-                minZoom = data.info.zoom.minZoom;
-                maxZoom = data.info.zoom.maxZoom;
-            }
-            else
-            {
-                //Default numbers for if they are not set in mongo
-                minZoom = 2.5;
-                maxZoom = 7;
-            }
-            map.options.minZoom = minZoom;
-            map.options.maxZoom = maxZoom;
-
-            //If the map has tiles, add them as a background for the map
-            if (data.tileLayer && data.tileExtension)
-            {
-                var link = '../maps2018/tiles/' + data.tileLayer + '/{z}/{x}/{y}.' + data.tileExtension;
-                L.tileLayer(link, {
-                    minZoom: minZoom,
-                    maxZoom: maxZoom,
-                }).addTo(map);
-            }
-
-            //Sets boundaries for the distance the user can span in pixels
-            var southWest, northEast;
-            if (data.info.mapBounds)
-            {
-                southWest = L.latLng(data.info.mapBounds.SWLat, data.info.mapBounds.SWLong);
-                northEast = L.latLng(data.info.mapBounds.NELat, data.info.mapBounds.NELong);
-            }
-            else
-            {
-                //Default
-                southWest = L.latLng(-85.0511, -180);
-                northEast = L.latLng(85.0511, 180);
-            }
-            var bounds = L.latLngBounds(southWest, northEast);
-            map.setMaxBounds(bounds);
-            map.on('drag', function () {
-                map.panInsideBounds(bounds, {animate: false});
-            });
-
-
-            // Call the layer-adding functions, if those layers exist
-            if (data.baseLayers)
-            {
-                loadBaseLayers(data.baseLayers);
-            }
-            if (data.addOnLayers)
-            {
-                loadAddOnLayers(data.addOnLayers, data.info);
-            }
-
-            // Creates the checkboxes to toggle add-on layers on and off if add-on layers exist
-            if (data.addOnLayers)
-            {
-                addOnButtons(data.addOnLayers);
-            }
-
-            // Creates the buttons to toggle between alternate base layers if there are multiple bases
-            if (data.baseLayers && data.baseLayers.length > 1)
-            {
-                baseLayerButtons(data.baseLayers);
-            }
-
-            // Creates the info control box that displays information about a location when the user hovers over it
-            if (data.info.hasInfoBox && data.info.hasInfoBox == true)
-            {
-                loadInfoBox(data); //this data.info thing is weird
-                infoBoxOn = true;
-            }
-            else
-            {
-                infoBoxOn = false;
-            }
-
-            // If the mongo has a legend, create one
-            if (data.legend)
-            {
-                loadLegend(data.legend);
-            }
+// Sets the look of each map area
+    function styleLayer(feature)
+    {   var layerData = data.baseLayers;
+        return {
+            fillColor: getColor(feature, layerData[currentBase].style),
+            weight: layerData[currentBase].style.weight,
+            opacity: layerData[currentBase].style.opacity,
+            color: layerData[currentBase].style.color,
+            fillOpacity: layerData[currentBase].style.fillOpacity
+        };
+    }
+    
+    function lookUpColor (feature) {
+        return feature.properties.fillColor || "red";  //default color in case fillColor not specified
+    }  //end lookUpColor
+    
+    // Assigns a color to a country/region/area
+    function getColor(feature, style) {
+        try {
+            if (feature.properties.fillColor) return lookUpColor(feature); //some geoJSON has colors embedded in properties.fillColor
             
-        }, // end of data function
-        'json'
-    );
-
-}; // End of window.onload()
-
+            var random = style.random, cutoffs = style.cutoffs, colors = style.colors;
+            var featureUsedValue = feature.properties[style.colorFeature]; //the numerical feature used to determine the color
+            var index = random?featureUsedValue % (cutoffs.length):featureUsedValue;
+            
+            for (var k = 0; k < colors.length - 1; k++) {
+                if (index < cutoffs[k]) return colors[k];
+            }
+            return colors [colors.length - 1];
+        }
+        catch(err)
+        {  //if any data is missing, just make them all blue so that the map still loads
+            return 'blue';
+        }
+    }
 
 ////////////////////////
-// Creates the Layers //
-////////////////////////
-
-////////////////////////
-// If baselayers exist (which at least one definitely should), add them to map
 function loadBaseLayers (layerData) {
+    
+    
+    
     var currentStyle = 0;
-    var arrayIndex = 0; //a counter for the array
-    currentBase = 0;
-    for (var i = 0; i < layerData.length; i++)     // Loads the base layers onto the map by reading geojson in
-    {
-        var link = '../maps2018/json/' + layerData[i].geojson;
-        var baseLayer = "";
-
-
-        $.getJSON(link, function (result)
-        {
+    //var arrayIndex = 0; //a counter for the array
+    var nextBase = 0;
+    var promises = [];
+    for (var i = 0; i < layerData.length; i++) {    // Loads the base layers onto the map by reading geojson in
+        //var baseLayer;
+        var link = '../content/maps/json/' + layerData[i].geojson;
+        promises[i] = getMapJSON(link, i);
+    }
+    
+    Promise.all(promises).then(function(){
+            console.log('In baselayer, promises has ' + promises.length + ' entries');
+            for (var j=0; j<Math.min(baseLayers.length, 2); j++)  baseLayers[j].addTo(map);
+           // for (var layer of baseLayers) layer.addTo(map);
+            baseLayers[0].bringToFront();
+            currentBase = 0;
+            baseLayerButtons(layerData);}
+        );
+    
+    
+    async function getMapJSON(url, index) {
+        var baseLayer;
+        await $.getJSON(url, null, function(result) {
             baseLayer = L.geoJson(result, {
                 style: styleLayer,
                 onEachFeature: onEachFeature
             });
-            baseLayers[arrayIndex] = baseLayer;
-            arrayIndex ++;
-            currentBase ++;
-            currentBase = currentBase % baseLayers.length; //Will never go over, fixes a glitch
-            baseLayers[0].addTo(map);
-
-            // Sets the look of each country
-            function styleLayer(feature)
-            {
-                return {
-                    fillColor: getColor(feature, layerData[currentBase].style),
-                    weight: layerData[currentBase].style.weight,
-                    opacity: layerData[currentBase].style.opacity,
-                    color: layerData[currentBase].style.color,
-                    fillOpacity: layerData[currentBase].style.fillOpacity
-                };
-            }
-
-            // Assigns a color to a country/region/area
-            function getColor(feature, style)
-            {
-                try
-                {
-                    var index;
-                    var random = style.random, cutoffs = style.cutoffs, colors = style.colors;
-                    var featureUsedValue = feature.properties[style.colorFeature]; //the numerical feature used to determine the color
-                    if (random)
-                    {
-                        index = featureUsedValue % (cutoffs.length);
-                    }
-                    else
-                    {
-                        index = featureUsedValue;
-                    }
-
-                    for (var i = 0; i < colors.length - 1; i++)
-                    {
-                        if (index < cutoffs[i])
-                        {
-                            return colors[i];
-                        }
-                    }
-                    return colors [colors.length - 1];
-                }
-                catch(err)
-                {  //if any data is missing, just make them all blue so that the map still loads
-                    return 'blue';
-                }
-            }
-
-            // Hovering listener. Calls highight/resethighlight functions
-            function onEachFeature(feature, layer)
-            {
-                layer.on({
-                    mouseover: highlightFeature,
-                    mouseout: resetHighlight,
-                });
-            }
-
-            // Highlights the area that the mouse is hovering over in gray
-            function highlightFeature(e)
-            {
-                var style = layerData[currentStyle].style;
-                map.closePopup();
-                var layer = e.target;
-
-                if (style.onHover)
-                {
-                    layer.setStyle({
-                        weight: style.onHover.weight,
-                        color: style.onHover.color,
-                        fillOpacity: style.onHover.fillOpacity
-                    });
-                }
-                else
-                {
-                    //Default
-                    layer.setStyle({
-                        weight: 5,
-                        color: '#666',
-                        fillOpacity: 0.7
-                    });
-                }
-
-                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
-                {
-                    layer.bringToFront();
-                    featureLayers();
-                }
-
-                if (infoBoxOn)
-                {
-                    info.update(layer.feature.properties);
-                }
-            }   //End of highlight function
-
-            // Makes sure that once the country is deselected the gray is gone
-            function resetHighlight(e)
-            {
-                var layer = e.target;
-                baseLayer.resetStyle(e.target);
-                layer.bringToBack(e.target);
-                //info.update(); //Comment this out to avoid glitches when the mouse goes over the info box
-            }
+            baseLayers[index] = baseLayer;
         });
-
     }
-} // end loadBaseLayers()
-
-////////////////////////
-// Loads the add-on layers onto the map by reading geojson in if they exist
-function loadAddOnLayers (layerData, information) {
-    var arrIndex = 0; // a counter for the array
-    for (var i = 0; i < layerData.length; i++)
+    
+    // Hovering listener. Calls highight/resethighlight functions
+    function onEachFeature(feature, layer) {
+        layer.on({
+            mouseover: highlightFeature,
+            mouseout:  resetHighlight
+        });
+    }
+    
+    // Highlights the area that the mouse is hovering over in gray
+    function highlightFeature(e) {
+        var style = layerData[currentBase].style;
+        map.closePopup();
+        var layer = e.target;
+        
+        if (style.onHover)
+        {
+            layer.setStyle({
+                weight: style.onHover.weight,
+                color: style.onHover.color,
+                fillOpacity: style.onHover.fillOpacity
+            });
+        }
+        else
+        {
+            //Default
+            layer.setStyle({
+                weight: 5,
+                color: 'yellow',
+                fillOpacity: 0.3
+            });
+        }
+        
+        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
+        {
+            //layer.bringToFront();
+            featureLayers();
+        }
+        
+        if (infoBoxOn) info.update(layer.feature.properties);
+        
+    }   //End of highlight function
+    
+    // Makes sure that once the country is deselected the gray is gone
+    function resetHighlight(e)
     {
-        var link = '../maps2018/json/' + layerData[i].geojson;
-        var addOnLayer = "";
-        $.getJSON((link), function (data) {
-            addOnLayer = L.geoJson(data, {
-                pointToLayer: function (feature, latlng) {
-                    var marker = L.circleMarker(latlng, {
-                        radius: layerData[arrIndex].style.radius,
-                        color : layerData[arrIndex].style.color,
-                        weight : layerData[arrIndex].style.weight,
-                        opacity : layerData[arrIndex].style.opacity,
-                        fillOpacity : layerData[arrIndex].style.fillOpacity,
-                        fillColor : layerData[arrIndex].style.fillColor,
-                    });
-
-                    var popText = "";
-                    var counter = 0;
-                    var imageKey = "";
-                    var imageData = "";
-                    if(layerData[arrIndex].image)
-                    {
-                        imageKey = layerData[arrIndex].image;
-                    }
-
-
-                    Object.keys(feature.properties).forEach(function(key)
-                    {
-                        if(layerData[arrIndex].inPop)
-                        {
-                            var inPop = layerData[arrIndex].inPop;
-                            if (counter == 0) //the first feature is the name, and we don't need context for that
-                            {
-                                if (inPop.indexOf(key) != -1)
-                                {
-                                    popText += feature.properties[key].bold();
-                                    popText += '<br>';
-                                    counter++;
-                                }
-                            }
-                            else
-                            {
-                                if (inPop.indexOf(key) != -1)
-                                {
-                                    popText += capitalize(key).bold() + ": " + toCommas(feature.properties[key]);
-                                    popText += '<br>';
-                                }
-                            }
-                        }
-                        else //if they have not specified which features to include, include all of them
-                        {
-                            if (counter == 0) //the first feature is the name, and we don't need context for that
-                            {
-                                popText += feature.properties[key].bold();
-                                popText += '<br>';
-                                counter++;
-
-                            }
-                            else
-                            {
-                                popText += capitalize(key).bold() + ": " + toCommas(feature.properties[key]);
-                                popText += '<br>';
-                            }
-                        }
-                        if(imageKey == key)
-                        {
-                            imageData = feature.properties[key];
-                        }
-                    });
-
-                    if(imageData.indexOf(' ') != -1)
-                    {
-                        imageData = spaceToUnderscore(imageData);
-                    }
-
-                    if (layerData[arrIndex].image && information.popExtension)
-                    {
-                        try {
-                            var imageLink = getPhotoLink(imageData, information.popExtension);
-                            popText += "<img class='pop-image' src = " + imageLink + " alt = ''>" + '<br>';
-                        }
-                        catch (err) {
-                            console.log("error caught!");
-                        }
-                    }
-
-
-                    marker
-                        .bindPopup(popText,{className:'capital-popup', keepInView:true, width:600, minWidth:600, maxWidth:600})
-                    /*  //NOTE: following code (popupopen and popupclose not needed with option keepInView
-                        .on('popupopen', function(popup) {
-                            //if the popup will go off the screen, extend the max bounds so that we can see the popup
-                            if(information.mapBounds) {
-                                var coords = marker.getLatLng();
-                                var southWest = L.latLng(information.mapBounds.SWLat, information.mapBounds.SWLong);
-                                var northEast = L.latLng(information.mapBounds.NELat, information.mapBounds.NELong);
-                                if (coords.lng > information.mapBounds.NELong - 25) {
-                                    //console.log("IN IF");
-                                    northEast = L.latLng(information.mapBounds.NELat, information.mapBounds.NELong + 25);
-                                }
-                                else if (coords.lng < information.mapBounds.SWLong + 25) {
-                                    console.log("in if");
-                                    southWest = L.latLng(information.mapBounds.SWLat, information.mapBounds.SWLong - 25);
-                                }
-
-                                var bounds = L.latLngBounds(southWest, northEast);
-                                map.setMaxBounds(bounds);
-                            }
-                        })
-                    .on('popupclose',function(popup)
-                    {
-                        if(information.mapBounds) {
-                            //set the bounds back to normal
-                            southWest = L.latLng(information.mapBounds.SWLat, information.mapBounds.SWLong);
-                            northEast = L.latLng(information.mapBounds.NELat, information.mapBounds.NELong);
-                            var bounds = L.latLngBounds(southWest, northEast);
-                            map.setMaxBounds(bounds);
-                        }
-                    }
-                    
-                    )*/
-                    ;
-                    return marker;
-                }
-            });
-            addOnLayers[arrIndex] = addOnLayer;
-            arrIndex ++;
-        });
+        var layer = e.target;
+        //layer.resetStyle();
+        baseLayers[currentBase].resetStyle(e.target);
+        //baseLayers[currentBase].resetStyle();
+        // layer.bringToBack(e.target);
+        //info.update(); //Comment this out to avoid glitches when the mouse goes over the info box
     }
-} // end loadAddOnLayers()
-
-///////////////////////////////////////////////////
-// Creating Toggle Buttons, Info Box, and Legend //
-///////////////////////////////////////////////////
-
-////////////////////////
-// Creates the checkboxes to toggle add-on layers on and off if add-on layers exist
-function addOnButtons (layerData)
-{
-    var addOns = addOnLayers.length;
-    var layers = L.control({position: 'bottomleft'});
-    layers.onAdd = function(map) {
-        var div = L.DomUtil.create("div", "info");
-        var boxes = new Array(addOnLayers.length);
-        var labels = new Array(addOnLayers.length);
-        for (var i = 0; i < addOns; i++)
-        {
-            boxes[i] = document.createElement('input'); // Create the box
-            boxes[i].type = "checkbox";
-            boxes[i].id = "id" + i;
-
-            labels[i] = document.createElement('text'); // Create the label
-            labels[i].appendChild(document.createTextNode(' ' + layerData[i].name + ' '));
-
-            div.appendChild(boxes[i]); // Add to map
-            div.appendChild(labels[i]);
-
-        }
-        for (var x = 0; x < addOns; x++)
-        {
-            boxes[x].addEventListener('change', function () {
-
-                var numChecked = this.id.charAt(2);
-                if (this.checked)
-                {
-                    popUpsOn[numChecked] = true;
-                    map.addLayer(addOnLayers[numChecked]);
-                }
-                else
-                {
-                    map.removeLayer(addOnLayers[numChecked]);
-                    popUpsOn[numChecked] = false;
-                }
-                featureLayers();
-            });
-        }
-        return div;
-    }
-    layers.addTo(map);
-} // end addOnButtons()
+    
+    
+} // end loadBaseLayers()
 
 ////////////////////////
 // Creates the buttons to toggle between alternate base layers if there are multiple bases
@@ -515,46 +163,244 @@ function baseLayerButtons (layerData)
     choice.onAdd = function(map)
     {
         var div = L.DomUtil.create("div", "info");
-        var baseBoxes = new Array(baseLayers.length);
-        var baseLabels = new Array(baseLayers.length);
+        var baseBoxes = new Array(bases);
+        var baseLabels = new Array(bases);
         for (var i = 0; i < bases; i++)
         {
             baseBoxes[i] = document.createElement('input'); // Create button
             baseBoxes[i].type= "radio";
             baseBoxes[i].name = "choice";
             baseBoxes[i].id = "id" + i;
-
+            
             baseLabels[i] = document.createElement('text');  // Create label
-            baseLabels[i].htmlFor = "id";
+            baseLabels[i].htmlFor = "id";     //   ??? should this be ... = "id" + i;
             baseLabels[i].appendChild(document.createTextNode(' ' + layerData[i].name + ' '));
-
+            
             div.appendChild(baseBoxes[i]);
             div.appendChild(baseLabels[i]);
-
-
+            
+            
             // Brings the base layer to the front if its button is checked
             baseBoxes[i].addEventListener('change', function()
             {
-                var checked = this.id.charAt(2);
-                if(this.checked)
-                {
-
-                    for (var x = 0; x < bases; x++)
-                    {
-                        map.removeLayer(baseLayers[x]);
+                var checked = parseInt(this.id.charAt(2));
+                
+                if (data.title === "Nepal Test Map") {
+                    //special handling for 3-level map (province, district, municipality
+                    if (checked === 0) {
+                        map.removeLayer(baseLayers[2]);
+                        baseLayers[0].bringToFront();
+                        currentBase = 0;
+                    } else if(checked=== 1){
+                        map.addLayer(baseLayers[2]);
+                        baseLayers[2].bringToFront();
+                        baseLayers[1].bringToFront();
+                        currentBase = 1;
+                    } else {
+                        map.addLayer(baseLayers[2]);
+                        baseLayers[2].bringToFront();
+                        currentBase = 2;
                     }
-                    baseLayers[checked].addTo(map);
+                    
+               } else
+                    if(this.checked) {
+                    //for (var x = 0; x < bases; x++) map.removeLayer(baseLayers[x]);
+                    
+                    //baseLayers[checked].addTo(map);
+    
+                    baseLayers[(checked + 1) % bases].bringToFront();
                     baseLayers[checked].bringToFront();
                     currentBase = checked;
-                    featureLayers();
+                   featureLayers();
                 }
             });
         }
-        baseBoxes[0].checked = true; // Makes the box of the layer that is visible at the beginning checked
+        // checks the box of the initial visible layer
+        baseBoxes[0].checked = true;
+        
+        // //baseLayers[0].bringToFront();
         return div;
-    }
+    }; // end choice.onAdd function
+    
     choice.addTo(map);
 } // end baseLayerButtons()
+
+////////////////////////
+// Loads the add-on layers onto the map by reading geojson in if they exist
+function loadAddOnLayers (layerData, information) {
+    var arrIndex = 0; // a counter for the array
+    var promises = [];
+    var marker;
+    //var markers = new L.MarkerClusterGroup();
+    
+    for (var i = 0; i < layerData.length; i++)
+    {
+        var link = '../content/maps/json/' + layerData[i].geojson;
+       // var addOnLayer = "";
+        promises[i] = $.getJSON((link), function (data) {
+            var addOnLayer = L.geoJson(data, {
+                pointToLayer: function (feature, latlng) {
+                //onEachFeature: function (feature, latlng) {
+                
+                    if (mapTitle === "Looma Schools") {
+                        var rand = Math.floor((Math.random() * 10) + 1);
+                        var blinking_circle = L.divIcon({className: 'blinking blinking' + rand})
+                        marker = L.marker(latlng, {icon: blinking_circle});
+                        //marker._icon.style = "animation-duration:5s;";
+                    }
+                    
+                    else marker = L.circleMarker(latlng, {
+                        radius: layerData[arrIndex].style.radius,
+                        color : layerData[arrIndex].style.color,
+                        weight : layerData[arrIndex].style.weight,
+                        opacity : layerData[arrIndex].style.opacity,
+                        fillOpacity : layerData[arrIndex].style.fillOpacity,
+                        fillColor : layerData[arrIndex].style.fillColor
+                    });
+                    
+                    
+                    var popText = "";
+                    var counter = 0;
+                    var imageKey = "";
+                    var imageData = "";
+                    if (layerData[arrIndex].image) imageKey = layerData[arrIndex].image;
+                    
+                    Object.keys(feature.properties).forEach(function(key)
+                    {
+                        if(layerData[arrIndex].inPop) {
+                            var inPop = layerData[arrIndex].inPop;
+                            if (counter == 0) //the first feature is the name, and we don't need context for that
+                            {
+                                if (inPop.indexOf(key) != -1)
+                                {
+                                    popText += feature.properties[key].bold();
+                                    popText += '<br>';
+                                    counter++;
+                                }
+                            } else {
+                                if (inPop.indexOf(key) != -1) {
+                                    popText += capitalize(key).bold() + ": " + toCommas(feature.properties[key]);
+                                    popText += '<br>';
+                                }
+                            }
+                        } else { //if they have not specified which features to include, include all of them
+                            if (counter == 0) { //the first feature is the name, and we don't need context for that
+                                popText += feature.properties[key].bold();
+                                popText += '<br>';
+                                counter++;
+                            } else {
+                                popText += capitalize(key).bold() + ": " + toCommas(feature.properties[key]);
+                                popText += '<br>';
+                            }
+                        }
+                        if(imageKey == key) imageData = feature.properties[key];
+                    });
+
+                    if(imageData.indexOf(' ') !== -1) imageData = spaceToUnderscore(imageData);
+                    
+                    if (layerData[arrIndex].image && information.popExtension) {
+                        try {
+                            var imageLink = getPhotoLink(imageData, information.popExtension);
+                            popText += "<img class='pop-image' src = " + imageLink + " alt = ''>" + '<br>';
+                        }
+                        catch (err) {
+                            console.log("error caught!");
+                        }
+                    }
+                    
+                    marker.bindPopup(popText,{className:'capital-popup', keepInView:true, width:600, minWidth:600, maxWidth:600});
+                    
+           // markers.addLayer(marker);
+                    
+                    return marker;
+                }
+            });
+            addOnLayers[arrIndex] = addOnLayer;
+   // addOnLayers[arrIndex] = markers;
+            arrIndex ++;
+        });
+    }  // end for (i)
+    
+    
+    Promise.all(promises).then(function() {
+        console.log('In addonlayer, promises has ' + promises.length + ' entries');
+        //for (var layer of addOnLayers) layer.addTo(map); //not needed. checking the box will do addTo()
+        if (mapTitle === "Looma Schools") {
+            addOnLayers[0].addTo(map).bringToFront();
+        }
+        addOnButtons(layerData);}
+    );
+} // end loadAddOnLayers()
+
+///////////////////////////////////////////////////
+// Creating Toggle Buttons, Info Box, and Legend //
+///////////////////////////////////////////////////
+
+////////////////////////
+// Creates the checkboxes to toggle add-on layers on and off if add-on layers exist
+function addOnButtons (layerData)
+{
+    var addOnCount = addOnLayers.length;
+    var layers = L.control({position: 'bottomleft'});
+    layers.onAdd = function(map) {
+        var div = L.DomUtil.create("div", "info");
+        var boxes = new Array(addOnLayers.length);
+        var labels = new Array(addOnLayers.length);
+        for (var i = 0; i < addOnCount; i++)
+        {
+            boxes[i] = document.createElement('input'); // Create the box
+            boxes[i].type = "checkbox";
+            boxes[i].id = "id" + i;
+            labels[i] = document.createElement('text'); // Create the label
+            labels[i].appendChild(document.createTextNode(' ' + layerData[i].name + ' '));
+
+            div.appendChild(boxes[i]); // Add to map
+            div.appendChild(labels[i]);
+            
+            boxes[i].addEventListener('change', function () {
+                var numChecked = this.id.charAt(2);
+                if (this.checked) {
+                    popUpShowing[numChecked] = true;
+                    map.addLayer(addOnLayers[numChecked]);
+                } else {
+                    map.removeLayer(addOnLayers[numChecked]);
+                    popUpShowing[numChecked] = false;
+                }
+                featureLayers();
+            });
+        }
+        
+                    /*
+                    for (var x = 0; x < addOnCount; x++)
+                    {
+                        boxes[x].addEventListener('change', function () {
+            
+                            var numChecked = this.id.charAt(2);
+                            if (this.checked)  {
+                                popUpShowing[numChecked] = true;
+                                map.addLayer(addOnLayers[numChecked]);
+                            } else {
+                                map.removeLayer(addOnLayers[numChecked]);
+                                popUpShowing[numChecked] = false;
+                            }
+                            featureLayers();
+                        });
+                    }
+                    */
+    /* */
+        if (layerData[0].pre_check) {
+            $(boxes[0]).prop( "checked", true );
+            popUpShowing[0] = true;
+            //map.addLayer(addOnLayers[0]);
+            addOnLayers[0].bringToFront();
+        }
+    /* */
+        
+        return div;
+    };
+    layers.addTo(map);
+ 
+} // end addOnButtons()
 
 ////////////////////////
 // Creates the legend for the map
@@ -642,8 +488,6 @@ function loadInfoBox(data)
                     { //the name of the image is in the image key, getting it
                         imageData = props[key];
                     }
-
-
                 });
             }
 
@@ -682,7 +526,7 @@ function featureLayers()
             if (priorityOn)
             {
                 var indexOfPriority = findPriority(x); //Index of the layer with the matching priority to x in the array of addOnLayers
-                if (popUpsOn[indexOfPriority] == true)
+                if (popUpShowing[indexOfPriority] == true)
                 {
                     addOnLayers[indexOfPriority].bringToFront();
                 }
@@ -690,7 +534,7 @@ function featureLayers()
             else
             {
                 //For maps with no specified priorities
-                if (popUpsOn[x] == true)
+                if (popUpShowing[x] == true)
                 {
                     addOnLayers[x].bringToFront();
                 }
@@ -701,24 +545,17 @@ function featureLayers()
 
 ////////////////////////
 //Finds the correct layer that has the given priority, if none matching returns value
-function findPriority(value)
-{
+function findPriority(value) {
     var i;
     for (i = 0; i < addOnData.length; i++)
-    {
-        if (addOnData[i].priority == value)
-        {
-            return i;
-        }
-    }
+        if (addOnData[i].priority == value) return i;
     return value;
 } // end findPriority()
 
 ////////////////////////
 // Gets the flag link based on the country (photo link is (country id).png)
-function getPhotoLink(iso, extension)
-{
-    return ('../maps2018/photos/' + iso + "." + extension).toString();
+function getPhotoLink(iso, extension) {
+    return ('../content/maps/photos/' + iso + "." + extension).toString();
 } // end getPhotoLink()
 
 
@@ -726,86 +563,167 @@ function getPhotoLink(iso, extension)
 // Number functions //
 //////////////////////
 
-// Inserts commas to long numbers to improve readability
-function toCommas(numRaw)
-{
-    if(isNaN(numRaw))
-    {
-        //if it's not a number, don't add commas
+    // Inserts commas to long numbers to improve readability
+    function toCommas(numRaw) {
+        if(isNaN(numRaw)) {
+            //if it's not a number, don't add commas
+            return numRaw;
+        } else {
+            var num = "";
+            if (numRaw.length >= 10)
+            { //Adds comma for 1 billion+, so on and so forth. Length of 10+ == billion
+                num += numRaw.substring(0, numRaw.length - 9) + ",";
+                numRaw = numRaw.substring(numRaw.length - 9, numRaw.length);
+            }
+            if (numRaw.length >= 7)
+            {        // length of 7+ == million (1,000,000)
+                num += numRaw.substring(0, numRaw.length - 6) + ",";
+                numRaw = numRaw.substring(numRaw.length - 6, numRaw.length);
+            }
+            if (numRaw.length >= 4)
+            {           // length of 4+ == thousand (1,000)
+                num += numRaw.substring(0, numRaw.length - 3) + ",";
+                numRaw = numRaw.substring(numRaw.length - 3, numRaw.length);
+            }
+            num += numRaw;
+            return num;
+        }
+    } // end toCommas()
+    
+    // Instead of displaying full number, prints out "billion" or "million" for readability
+    function toWords(numRaw) {
+        if (numRaw >= 1000000000000)
+            return (numRaw / 1000000000000 + ' trillion');
+        else if (numRaw >= 1000000000)
+            return (numRaw / 1000000000 + ' billion');
+        else if (numRaw >= 1000000)
+            return (numRaw / 1000000 + ' million');
+        else if (numRaw >= 1000)
+            return (numRaw / 1000 + ' thousand');
         return numRaw;
-    }
-    else
-    {
-        var num = "";
-        if (numRaw.length >= 10)
-        { //Adds comma for 1 billion+, so on and so forth. Length of 10+ == billion
-            num += numRaw.substring(0, numRaw.length - 9) + ",";
-            numRaw = numRaw.substring(numRaw.length - 9, numRaw.length);
-        }
-        if (numRaw.length >= 7)
-        {        // length of 7+ == million (1,000,000)
-            num += numRaw.substring(0, numRaw.length - 6) + ",";
-            numRaw = numRaw.substring(numRaw.length - 6, numRaw.length);
-        }
-        if (numRaw.length >= 4)
-        {           // length of 4+ == thousand (1,000)
-            num += numRaw.substring(0, numRaw.length - 3) + ",";
-            numRaw = numRaw.substring(numRaw.length - 3, numRaw.length);
-        }
-        num += numRaw;
-        return num;
-    }
-} // end toCommas()
-
-// Instead of displaying full number, prints out "billion" or "million" for readability
-function toWords(numRaw)
-{
-    if (numRaw >= 1000000000000)
-        return (numRaw / 1000000000000 + ' trillion');
-    else if (numRaw >= 1000000000)
-        return (numRaw / 1000000000 + ' billion');
-    else if (numRaw >= 1000000)
-        return (numRaw / 1000000 + ' million');
-    else if (numRaw >= 1000)
-        return (numRaw / 1000 + ' thousand');
-    return numRaw;
-} // end toWords()
-
-//Turns a number into date form with BCE/CE
-function toDate(dateRaw)
-{
-    if (dateRaw < 0)
-    {
-        return Math.abs(dateRaw) + ' BCE';
-    }
-    else if (dateRaw < 1000)
-    {
-        return dateRaw + ' CE';
-    }
-    return dateRaw;
-} // end toDate()
-
-//Correctly capitalizes a word by capitalizing first letter
-function capitalize(wordRaw)
-{
+    } // end toWords()
+    
+    //Turns a number into date form with BCE/CE
+    function toDate(dateRaw) {
+        if (dateRaw < 0) return Math.abs(dateRaw) + ' BCE';
+        else if (dateRaw < 1000) return dateRaw + ' CE';
+        return dateRaw;
+    } // end toDate()
+    
+    //Correctly capitalizes a word by capitalizing first letter
+    function capitalize(wordRaw) {
     return wordRaw.charAt(0).toUpperCase() + wordRaw.substring(1);
-} // end capitalize()
-
-//turns spaces into underscores for the names of images (so that we can use more generic names to  call the image)
-function spaceToUnderscore(wordRaw)
-{
-    var toReturn = "";
-    while(true) {
-        toReturn += wordRaw.substring(0, wordRaw.indexOf(' '));
-        toReturn += "_";
-        wordRaw = wordRaw.substring(wordRaw.indexOf(' ') + 1);
-
-        if(wordRaw.indexOf(' ') == -1)
-        {
-            toReturn += wordRaw;
-            return toReturn;
+    } // end capitalize()
+    
+    //turns spaces into underscores for the names of images (so that we can use more generic names to  call the image)
+    function spaceToUnderscore(wordRaw) {
+        var toReturn = "";
+        while(true) {
+            toReturn += wordRaw.substring(0, wordRaw.indexOf(' '));
+            toReturn += "_";
+            wordRaw = wordRaw.substring(wordRaw.indexOf(' ') + 1);
+    
+            if(wordRaw.indexOf(' ') == -1) {
+                toReturn += wordRaw;
+                return toReturn;
+            }
         }
-    }
-    return toReturn;
+        return toReturn;
+    } // end spaceToUnderscore()
 
-} // end spaceToUnderscore()
+//////////////////////////////////////////////
+
+window.onload = function () {
+    
+    var mapid = $("#map").data()['id'];
+    var collection = 'maps';
+    
+    $.post("looma-database-utilities.php",
+        {cmd: 'openByID', collection: collection, id: mapid},
+        function(mapdata) {
+            data = mapdata;
+            L.Circle.prototype._checkIfEmpty = function () { return false; };
+            //Fixes a Leaflet glitch that the circle markers
+            //would disappear on pan or zoom
+            
+            mapTitle = data.title;
+            
+            if (data.baseLayers) baseLayers = new Array(data.baseLayers.length); // array of feature layers
+            
+            if (data.addOnLayers)
+            {
+                addOnData = data.addOnLayers;
+                addOnLayers = new Array(data.addOnLayers.length);
+                popUpShowing = new Array(data.addOnLayers.length);
+                
+                if (addOnData[0].priority) priorityOn = true;
+                else priorityOn = true;  //??? was false?
+            }
+            
+            //Starting map view
+            if (data.info.start)
+                map = L.map('map').setView([data.info.start.startLat,
+                        data.info.start.startLong],
+                    data.info.start.startZoom);
+            else
+                map = L.map('map').setView([27, 85], 3);
+            
+            if (data.info.backgroundColor)
+            {   var bColor = data.info.backgroundColor;
+                var el = document.getElementsByClassName('leaflet-container');
+                for (var i = 0; i < el.length; i++) el[i].style.backgroundColor = bColor;
+            }
+            
+            //Zoom levels
+            if (data.info.zoom) {
+                map.options.minZoom = data.info.zoom.minZoom;
+                map.options.maxZoom = data.info.zoom.maxZoom;
+            } else {   //Default numbers for if they are not set in mongo
+                map.options.minZoom = 2.5;
+                map.options.maxZoom = 7;
+            }
+            
+            //If the map has tiles, add them as a background for the map
+            if (data.tileLayer && data.tileExtension)
+            {
+                var link = '../maps2018/tiles/' + data.tileLayer + '/{z}/{x}/{y}.' + data.tileExtension;
+                L.tileLayer(link, {
+                    minZoom: data.info.zoom.minZoom,
+                    maxZoom: data.info.zoom.maxZoom,
+                }).addTo(map);
+            }
+            
+            //Sets boundaries for the distance the user can span in pixels
+            var southWest, northEast;
+            if (data.info.mapBounds) {
+                southWest = L.latLng(data.info.mapBounds.SWLat, data.info.mapBounds.SWLong);
+                northEast = L.latLng(data.info.mapBounds.NELat, data.info.mapBounds.NELong);
+            }
+            else {  //Default
+                southWest = L.latLng(-85.0511, -180);
+                northEast = L.latLng(85.0511, 180);
+            }
+            var bounds = L.latLngBounds(southWest, northEast);
+            map.setMaxBounds(bounds);
+            
+            map.on('drag', function () {
+                map.panInsideBounds(bounds, {animate: false});
+            });
+            
+            if (data.baseLayers) loadBaseLayers(data.baseLayers);
+            
+            if (data.addOnLayers) loadAddOnLayers(data.addOnLayers, data.info);
+     
+            // Creates the info control box that displays information about a location when the user hovers over it
+            if (data.info.hasInfoBox && data.info.hasInfoBox == true) {
+                loadInfoBox(data);
+                infoBoxOn = true;
+            } else
+                infoBoxOn = false;
+            
+            if (data.legend) loadLegend(data.legend);
+            
+        }, // end of getJSON function
+        'json'
+    );
+}; // End of window.onload()

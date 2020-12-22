@@ -1,0 +1,8 @@
+// MONGO script to drop [DELETE] the "looma" database
+// be very careful about running this. it permanently erases the 'looma' database which is needed by Looma
+// this is used in "loomaupdater" to clear the existing 'looma' database just before restoring 'looma' database from USB stick (or Internet)
+//  run in in terminal with: mongo < loomaDropDatabase
+//
+use looma;  //use the 'looma' database
+print ('dropping old database contents before reloading database from Update files');
+db.dropDatabase();  //erase the 'looma' database

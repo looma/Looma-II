@@ -43,6 +43,7 @@
 #-vv	very verbose
 #-z  	use compression
 #--dry-run
+#--size-only [for Content files]
 #--delete 	delete files on destination that are not on source
 #--perms (=== -p)
 #--update   skip files if destination  already exists and has a later date
@@ -133,10 +134,10 @@ then
         #NOTE: slash after "Looma/" and no slash after "/var/www/html/Looma"
         if [[ $1 = "dryrun" ]]
         then
-            rsync -az --dry-run --delete --progress --update --stats --progress Looma/ /var/www/html/Looma
+            rsync -az --dry-run --delete --perms --progress --update --stats --progress Looma/ /var/www/html/Looma
             result $?
         else
-            rsync -az           --delete --progress --update --stats --progress Looma/ /var/www/html/Looma
+            rsync -az --quiet   --delete --perms --progress --update --stats --progress Looma/ /var/www/html/Looma
             result $?
         fi
 
@@ -174,15 +175,15 @@ then
                 # read -p "Press [Enter] to continue"
                 mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
                 # read -p "Press [Enter] to continue"
-                mongo looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
+                mongo --quiet looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
 
             # read -p "Press [Enter] to continue"
             mongorestore --quiet --db looma /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma/
 
                 # read -p "Press [Enter] to continue"
-                mongoimport --db looma --collection lessons    --file /tmp/lessonsFromMongo.tmp
+                mongoimport --quiet --db looma --collection lessons    --file /tmp/lessonsFromMongo.tmp
                 # read -p "Press [Enter] to continue"
-                mongoimport --db looma --collection text_files --file /tmp/textsFromMongo.tmp
+                mongoimport --quiet --db looma --collection text_files --file /tmp/textsFromMongo.tmp
                 # read -p "Press [Enter] to continue"
                 rm /tmp/lessonsFromMongo.tmp
                 rm /tmp/textsFromMongo.tmp
@@ -208,11 +209,11 @@ then
             find /var/www/html/content -exec touch {} + ';'
             if [[ $1 = "dryrun" ]]
             then
-                rsync  -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
+                rsync  -az --dry-run --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
 
                 result $?
             else
-                rsync -az            --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
+                rsync -az  --quiet   --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
                 result $?
             fi
         fi
@@ -222,10 +223,10 @@ then
            find /var/www/html/maps2018 -exec touch {} +
            if [[ $1 = "dryrun" ]]
             then
-                rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
+                rsync -az --dry-run --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
                 result $?
             else
-                rsync -az           --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
+                rsync -az  --quiet   --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
                 result $?
             fi
         fi
@@ -234,10 +235,10 @@ then
             find /var/www/html/ePaath -exec touch {} +
             if [[ $1 = "dryrun" ]]
                 then
-                    rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
+                    rsync -az --dry-run --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
                     result $?
                 else
-                    rsync -az           --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
+                    rsync -az  --quiet   --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
                     result $?
                 fi
 
@@ -248,6 +249,12 @@ then
     else
         echo " - - - SKIPPED: installing new Looma content"
     fi
+
+
+# set permissions on Looma code and content
+
+  echo "setting permissions on Looma code and content"
+  chmod -R 755 /var/www/html/Looma; chmod -R 755 /var/www/html/content
 
     echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 
@@ -317,10 +324,10 @@ then
 
         if [[ $1 = "dryrun" ]]
         then
-            rsync -az  --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ /var/www/html/Looma
+            rsync -az  --dry-run --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ /var/www/html/Looma
             result $?
         else
-            rsync -az            --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ /var/www/html/Looma
+            rsync -az            --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ /var/www/html/Looma
             result $?
         fi
 
@@ -355,7 +362,7 @@ then
                 # read -p "Press [Enter] to continue"
                 mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
                 # read -p "Press [Enter] to continue"
-                mongo looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
+                mongo --quiet looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
 
             mongorestore --quiet --db looma /var/www/html/Looma/mongo-dump/dump/looma/       # install new db changes into existing db
 
@@ -392,13 +399,16 @@ then
        find /var/www/html/content -exec touch {} + ';'
        if [[ $1 = "dryrun" ]]
             then
-               rsync -az  --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
+               rsync -az  --dry-run --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
                 result $?
             else
-               rsync -az            --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
+               rsync -az  --quiet   --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
                 result $?
             fi
 
+
+  echo "setting permissions on Looma code and content"
+  chmod -R 755 /var/www/html/Looma; chmod -R 755 /var/www/html/content
 
        echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 

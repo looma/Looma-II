@@ -21,8 +21,19 @@ define ("CLASSES", 8);
     <div id="main-container-horizontal">
         <p id="prompt">Enter a phrase to speak:  </p>
         <input type="text" id="text" size="250" value="Hello this is Looma"> </input>
-        <button id="mimic">Speak with mimic [looma default]</button>
-        <button id="synthesis">Speak with speechSynthesis</button>
+        <button id="mimic">Speak with mimic </button>
+        <button id="synthesis">Speak with speechSynthesis [Looma default]</button>
+
+        <div id="rateDiv">
+            <span>Enter speech slowdown here (higher is slower)</span>
+            <select id="rate">
+                <option value="0.50">1/2</option>
+                <option value="0.67">2/3</option>
+                <option value="1" selected>1</option>
+                <option value="1.5">1.5</option>
+                <option value="2">2</option>
+            </select>
+        </div>
     </div>
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>

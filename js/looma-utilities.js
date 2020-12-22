@@ -1130,16 +1130,19 @@ LOOMA.speak = function(text, engine, voice) {
          var playPromise;
         
          // use speechsynthesis if present
-         if (!engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) engine = 'synthesis';
+         if (!engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) {
+             engine = 'synthesis';
+             speechSynthesisUtteranceInstance.rate = 1.5;   // slow down 50%
+         }
          if (!engine) engine = 'mimic';  //efault engine is mimic
-         if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_bdl'; //get the currently used voice, if any. default VOICE is "slt"
+         if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_bdl'; //get the currently used voice, if any. default VOICE
         
                     /* current default voice = cmu_us_bdl
                     Note from David: The three that seem about equal in clarity,
                     lack of low frequency rumble, lack of piercing high frequency … are
                         Scottish male	awb (has a bit of the trilled ‘r’)
                         US male 		bdl   (Haydi say maybe the best)
-                        US male		rms
+                        US male		    rms
                      */
          
          console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
@@ -1563,5 +1566,5 @@ function $_GET(param) {
     if ( param ) { return vars[param] ? vars[param] : null; }
     return vars;
 }
-
+     LOOMA.CH_IDregex = /^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/;
  var loginname = LOOMA.loggedIn();

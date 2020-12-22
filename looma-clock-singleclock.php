@@ -21,10 +21,8 @@ $page_title = 'Looma - Time';
     include ('includes/toolbar.php');
     include ('includes/js-includes.php');
 ?>
-<head>
 
-<link rel="Stylesheet" type="text/css" href="css/looma-clock.css">
-
+    <link rel="Stylesheet" type="text/css" href="css/looma-clock.css">
 </head>
 
 <body>

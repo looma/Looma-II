@@ -27,7 +27,7 @@ window.onload = function () {
     
     //map to reference
     var map = new Image();
-    map.src = "../maps2018/backgrounds/asiacountries-game.png";
+    map.src = "../content/backgrounds/asiacountries-game.png";
     
     map.onload = function () {
         ctx.drawImage(map, 0, 0), 464, 400;

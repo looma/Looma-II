@@ -2,7 +2,9 @@
 #
 #  filename: loomaarchive
 #       author: skip
-#       date:   Aug 2019
+#       date:   Aug 2019,
+#               OCT 2020 - changed to --size-only for CONTENT upload
+#                           to avoid unnecessary updates to modification date stamps for content files, so that download RSYNC will continue to skip them
 #
 #  used to update the 'archive' version of Looma on rsync.net, including new code, database & content
 #
@@ -73,10 +75,10 @@ then
     echo "NOTE: dryrun"
 
      #EXAMPLE chmod: --chmod=Dg+s,ug+w,Fo-w,+X
-    rsync -avvz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
     echo "FINISHED dryrun"
 else
-   rsync -avvz            --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+   rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -91,10 +93,10 @@ SECONDS=0
 if [[ $1 = "dryrun" ]]
 then
     echo "NOTE: dryrun"
-    rsync -avvz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+    rsync -avz  --dry-run --size-only --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
     echo "FINISHED dryrun"
 else
-    rsync -avvz            --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+    rsync -avz            --size-only --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."

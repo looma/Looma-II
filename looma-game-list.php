@@ -71,20 +71,25 @@ require_once ("includes/mongo-connect.php");
                     '" data-id="' . $game['_id']->{'$id'} .
                     '" data-type="' . $game['presentation_type'] . '"' .
                     '"> ';
-                echo '<p>' . $game['title'] . '</p><p class="small">(' . $game['presentation_type'];
-                echo ')</p></button>';
+                echo '<p>';
+                keyword($game['title']);
+                echo '</p><p class="small">';
+                keyword($game['presentation_type'] . ' game');
+                echo '</p></button>';
             }
 
             if ($game_subject === 'english') {
                 echo '<button class="activity game" data-class="' . $game_class . '" data-subject="' . $game_subject .
                     '" data-type="vocab"' .
-                    '"> ' . $game_class . ' ' . $game_subject . '</p><p class="small"> (vocabulary drill)</p></button>';
+                    '"> ' . $game_class . ' ' . $game_subject . '</p><p class="small">';
+                keyword("vocabulary drill");
+                echo '</p></button>';
 
                 if ((int)substr($game_class,5) <= 4) {// add picture vocab game
                     echo "<a href='looma-game.php?type=picture&class=" . $game_class . "&subject=" . $game_subject . "'>";
                     echo "  <button class='activity game img'>";
                     echo "    <img src='images/games.png'>";
-                    echo "    <span>Visual Vocabulary</span>";
+                    keyword("Visual Vocabulary");
                     echo "  </button>";
                     echo "</a>";
 
@@ -92,7 +97,7 @@ require_once ("includes/mongo-connect.php");
                 echo "<a href='looma-game.php?type=speak&class=" . $game_class . "&subject=" . $game_subject . "'>";
                 echo "  <button class='activity game img'>";
                 echo "    <img src='images/speech1.png'>";
-                echo "    <span>Spoken Vocabulary</span>";
+                    keyword("Spoken Vocabulary");
                 echo "  </button>";
                 echo "</a>";
                 }
@@ -100,7 +105,7 @@ require_once ("includes/mongo-connect.php");
                     echo "<a href='looma-game.php?type=translate&class=" . $game_class . "&subject=" . $game_subject . "'>";
                     echo "  <button class='activity game img'>";
                     echo "    <img src='images/games.png'>";
-                    echo "    <span>Vocabulary Translation</span>";
+                    keyword("Vocabulary Translation");
                     echo "  </button>";
                     echo "</a>";
                 }
@@ -110,7 +115,9 @@ require_once ("includes/mongo-connect.php");
                 //makeActivityButton();
                 echo '<button class="activity game" data-class="' . $game_class . '" data-subject="' . $game_subject .
                     '" data-type="arith"' .
-                    '"> ' . $game_class . ' ' . $game_subject . '</p><p class="small"> (arithmetic drill)</p></button>';
+                    '"> ' . $game_class . ' ' . $game_subject . '</p><p class="small">';
+                keyword("arithmetic drill");
+                echo '</p></button>';
             };
 
         ?>

@@ -33,6 +33,7 @@
 #-z  	use compression
 #--dry-run
 #--delete 	delete files on destination that are not on source
+#--size-only  [for Content files, only update if the size has changed, even tho dates may differ]
 #--perms (=== -p)
 #--update   skip files if destination  already exists and has a later date
 #--include '.ssh'
@@ -109,10 +110,10 @@ then
     SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
+        rsync -az --dry-run --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
         result $?
     else
-        rsync -az           --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
+        rsync -az           --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
         result $?
     fi
     echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -128,10 +129,10 @@ then
     SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        rsync -az --dry-run --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
+        rsync -az --dry-run --size-only --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
         result $?
     else
-        rsync -az           --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
+        rsync -az --quiet   --size-only --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
         result $?
     fi
     echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."

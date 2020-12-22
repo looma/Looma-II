@@ -1,0 +1,22 @@
+
+@keyframes blinker {
+    from {height:4vh;
+        width:4vh;
+        background-color:yellow;}
+    to {height:1vh;
+        width:1vh;
+        background-color:white;}
+}
+
+.blinking {
+    height:4vh;
+    width:4vh;
+    background-color:yellow;
+    border-radius:50%;
+    margin:auto;
+    margin-top:25vh;
+    animation-name: blinker;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}

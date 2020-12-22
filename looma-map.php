@@ -15,6 +15,7 @@ include ('includes/header.php');
 //include ("includes/mongo-connect.php");
 ?>
   <link rel="stylesheet" href="css/leaflet.css">
+<link rel="stylesheet" href="css/leaflet-markerCluster.css" />
 <link rel="stylesheet" href="css/looma-map.css" />
 
 
@@ -47,7 +48,8 @@ include ('includes/header.php');
 
 <?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>
-<script src="js/leaflet.js"></script>
+<script src="js/leafletjs/leaflet.0.7.3.js"></script>
+<script src="js/leafletjs/leaflet-markerCluster.min.js"></script>
 <script src="js/looma-map.js"></script>
 
 </body>

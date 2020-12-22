@@ -1,0 +1,43 @@
+// One time mongo terminal program to fix some ch_id's and pagenumbers
+// each line formatted as:   newCH_ID  oldCH_ID    npn   nlen (space separated)
+//
+// create the input file 'pagenumberfixes.txt'
+// and CD to the folder holding that input file
+//
+//  in terminal: "mongo looma"
+//  then run this file in the MONGO SHELL with: load('fixSomePageNumbers')
+//
+"use strict";
+
+var input = 'pagenumberfixes.txt'
+print ('Importing new ch_ids and page numbers from ' + input);
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+var words, chapter, OLDch_id, NEWch_id, npn, nlen;
+
+var lines = file.split(/[\r\n]+/);  // split file into array of lines
+
+lines.forEach( function(line) {
+    
+    if (line != '') {
+        words = line.split(' ');
+        NEWch_id =      words[0];
+        OLDch_id =      words[1];
+        npn = parseInt( words[2]);
+        nlen = parseInt(words[3]);
+        
+        
+        chapter = db.chapters.find({'_id':OLDch_id});
+        if (chapter) {
+            
+            print('changing ch_id: ' + OLDch_id + ' to ' + NEWch_id + ' and page and len to ' + npn + '  ' + nlen) ;  //DEBUG
+            
+            chapter['_id'] = NEWch_id;
+            chapter['npn'] = npn;
+            chapter['nlen'] = nlen;
+            db.chapters.insert(chapter);
+            db.chapters.remove({'_id':OLDch_id})
+        }
+        else print ('chapter ' + OLDch_id + '  NOT FOUND');
+    }
+});  // end for lines
+print('');

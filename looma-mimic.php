@@ -45,12 +45,12 @@ if (file_exists($outputFileName)) // IF we get conflicting filenames, generate a
 
 //NOTE; mimic must be installed on the server and be in the SPATH for shell commands
 // try "which mimic" in shell to verify that mimic is installed as a shell command
-$command = "mimic -t " .
-           // " --setf duration_stretch=5.0" .
+$command = "mimic -t '" .
             escapeshellarg($text) .
-           " -voice " .
-            escapeshellarg($voiceFile) .
-           " -o " . $outputFileName;
+            "' --setf duration_stretch=1.5 " .  // slow down 50%
+            " -voice " . escapeshellarg($voiceFile) .
+            " -o " . $outputFileName;
+;
 
 
 /*$sample = escapeshellarg("sample text to speak 3");
@@ -61,6 +61,6 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: audio/wav");
 //echo $command;
 exec($command);                     // generate the wave file
-readfile($outputFileName);          // play the wave file to the client side
- //unlink($outputFileName);            // delete the wave file
+readfile($outputFileName);           // play the wave file to the client side
+ //unlink($outputFileName);                   // delete the wave file
 ?>

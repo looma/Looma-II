@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"looma.lessons"},{"v":1,"unique":true,"key":{"ft":1,"dn":1},"name":"ft_1_dn_1","ns":"looma.lessons"}]}

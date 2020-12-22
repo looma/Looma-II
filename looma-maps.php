@@ -12,9 +12,12 @@ Description: Initial "maps" page. Takes the user to the different maps.
 <?php  $page_title = 'Looma Maps';
 include ("includes/header.php");
 require ('includes/mongo-connect.php');
-require('includes/looma-utilities.php');
+require('includes/looma-utilities.php');?>
 
-$mapDir = "../maps2018/mapThumbs/";
+<link rel="stylesheet" href="css/looma-maps.css" />
+
+<?php
+$mapDir = "../content/maps/mapThumbs/";
 $urlBegin = "looma-map.php?id=";
 
 function makeButton($file, $thumb, $dn) {
@@ -52,16 +55,39 @@ function makeButton($file, $thumb, $dn) {
         $maps = mongoFind($maps_collection, [], null, null, null);
 
         foreach ($maps as $map) {
-            echo "<td>";
-            if (isset($map['title'])) $dn = $map['title']; else $dn = "Map";
-            if (isset($map['thumb'])) $thumb = $mapDir . $map['thumb']; else $thumb = 'images/maps.png';
-            $id = $map['_id'];  //mongoID of the descriptor for this lesson
-            $link = $urlBegin.$id;
-            makeButton($link, $thumb, $dn);
-            echo "</td>";
-            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
+            if($map['title'] === "Nepal Map" || $map['title'] === "Looma Schools") {
+                echo "<td>";
+                if (isset($map['title'])) $dn = $map['title']; else $dn = "Map";
+                if (isset($map['thumb'])) $thumb = $mapDir . $map['thumb']; else $thumb = 'images/maps.png';
+                $id = $map['_id'];  //mongoID of the descriptor for this lesson
+                $link = $urlBegin . $id;
+                makeButton($link, $thumb, $dn);
+                echo "</td>";
+                $buttons++;
+                if ($buttons > $maxButtons) {
+                    $buttons = 1;
+                    echo "</tr><tr>";
+                }
+            }
+        };
 
-        } //end FOREACH history
+        $maps = mongoFind($maps_collection, [], null, null, null); //mongo 4.4 wont allow re-use of cursor
+        foreach ($maps as $map) {
+            if($map['title'] !== "Nepal Map" && $map['title'] !== "Looma Schools") {
+                echo "<td>";
+                if (isset($map['title'])) $dn = $map['title']; else $dn = "Map";
+                if (isset($map['thumb'])) $thumb = $mapDir . $map['thumb']; else $thumb = 'images/maps.png';
+                $id = $map['_id'];  //mongoID of the descriptor for this lesson
+                $link = $urlBegin . $id;
+                makeButton($link, $thumb, $dn);
+                echo "</td>";
+                $buttons++;
+                if ($buttons > $maxButtons) {
+                    $buttons = 1;
+                    echo "</tr><tr>";
+                }
+          }
+        } //end FOREACH
         echo "</tr></table>";
         ?>
     </div>

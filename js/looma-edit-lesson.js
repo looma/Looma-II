@@ -208,9 +208,9 @@ function displayResults(results) {
       result_array['activities'] = [];  //not searching for dictionary entries
       result_array['chapters']  = [];  //not searching for textbooks
 
-     for (var i=0; i < results.count; i++) {
-         if (results.list[i]['ft'] == 'chapter') result_array['chapters'].push(results.list[i]);
-         else                                    result_array['activities'].push(results.list[i]);
+     for (var i=0; i < results.list.length; i++) {
+         if (results.list[i]['ft'] === 'chapter')      result_array['chapters'].push(results.list[i]);
+         else if (results.list[i]['ft'] !== 'section') result_array['activities'].push(results.list[i]);
       }
  
     $("#innerResultsMenu").empty();
@@ -288,7 +288,7 @@ function displaySearchResults(filterdata_object) {
             for(i=0; i<chaptersarraylength; i++) {
                 rElement = createActivityDiv(filterdata_object.chapters[i]);
 
-                actResultDiv.appendChild(rElement);
+                if (rElement) actResultDiv.appendChild(rElement);
             }
        }
 
@@ -487,6 +487,10 @@ function createActivityDiv (activity) {
             //      <div class="activityDiv" data-collection=collection>
             //                               data-id=_id
             //                               data-type = ft
+            //                               data-fp
+            //                               data-fn and/or data-nfn
+            //                               data-pn or data-npn
+            //                               data-lang = 'en' or 'np'
             //                               jqueryData = {'mongo': wholeMONGOdocument }>
             //          <div class="thumbnaildiv"><img src=   ></div>
             //          <div class="textdiv">
@@ -514,7 +518,7 @@ function createActivityDiv (activity) {
         $(activityDiv).attr("data-type", item['ft']);
         $(activityDiv).attr("data-fp", item['fp']);
         
-        var lang =  $("input:radio[name='language']:checked").val();
+        var lang =  $("input:radio[name='chapter-language']:checked").val();
         $(activityDiv).attr("data-lang", lang);
         $(activityDiv).attr("data-fn", item['fn']);
         $(activityDiv).attr("data-pn", item['pn']);
@@ -611,13 +615,15 @@ function createActivityDiv (activity) {
 
     var idExtractArray = extractItemId(activity);
     
-    var div = document.createElement("div");
-    div.className = "resultitem";
-
-    var newDiv = innerActivityDiv(activity);
-    $(newDiv).appendTo(div);
-
-	return div;
+    if (activity.ft !== 'section') {
+        var div = document.createElement("div");
+        div.className = "resultitem";
+    
+        var newDiv = innerActivityDiv(activity);
+        $(newDiv).appendTo(div);
+    
+        return div;
+    } else return null;
 }  // end createActivityDiv()
 
 
@@ -653,7 +659,7 @@ function preview_result (item) {
             $(item).data('fp') + $(item).data('nfn') +
             '#page=' + $(item).data('npn') + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"';
        
-        document.querySelector("div#previewpanel").innerHTML = '<embed src="' + previewSrc + '>';
+        document.querySelector("div#previewpanel").innerHTML = '<embed src="' + previewSrc + '">';
         /*
                     $.post("looma-database-utilities.php",
                         {cmd: "openByID", collection: "chapters", id: $(item).data('id')},
@@ -932,6 +938,14 @@ window.onload = function () {
     if (loginname && loginlevel === 'exec' )  $('.admin').show(); $('.exec').show();
     
     $('#clear_button').click(clearFilter);
+    
+    $('#search').change(function() {
+        $("#innerResultsMenu").empty();
+        $("#innerResultsDiv").empty();
+        $("#previewpanel").empty();
+    });
+    
+    pagesz=27;
     
     //NOTE: this code not used. looma-search.js handles this
     // $('.filter_radio').change(changeCollection);

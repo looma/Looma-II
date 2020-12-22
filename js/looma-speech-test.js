@@ -19,8 +19,15 @@ Comments:
 
 
     $(document).ready (function() {
-        $('button').click(function(){
+        $('#synthesis').click(function(){
             LOOMA.speak($('input#text').val(), $(this).attr('id'));
+        });
+        $('#mimic').click(function(){
+            LOOMA.speak($('input#text').val(), $(this).attr('id'));
+        });
+        
+        $('#rate').change(function(){
+            speechSynthesis.rate =  $(this).val();
         });
 
     /*  $('button.synthesis').click(function(){speak('hello looma. speech is working');});

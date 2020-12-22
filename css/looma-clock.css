@@ -270,6 +270,7 @@ h2 {
 
 #submit{
     color: black;
+    height:7vh;
 }
 
 #txtOutput{
@@ -289,12 +290,12 @@ h2 {
 #userHour{
     -webkit-appearance: menulist-button;
     color: black;
-    height: 200%;
+    height: 7vh;
 }
 #userMin{
     -webkit-appearance: menulist-button;
     color: black;
-    height: 200%;
+    height: 7vh;
 }
 
 /* World Clocks */

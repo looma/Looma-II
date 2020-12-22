@@ -854,7 +854,7 @@ function runMap() {
     map.setMaxBounds(bounds);
     map.on('drag', function () {map.panInsideBounds(bounds, {animate: false});});
     
-    var link = '../maps2018/json/' + map_json_file;
+    var link = '../content/json/' + map_json_file;
     $.getJSON(link, function (result) {
         mapJSON = result;
         redrawMap(mapJSON);

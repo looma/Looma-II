@@ -116,7 +116,7 @@
       $editor = $('#editor'); //the DIV where the HTML is being edited
       $editor.wysiwyg();
       
-      $editor.on('paste',function(){return false;});
+      //$editor.on('paste',function(){return false;});
       
       document.execCommand('styleWithCSS', false, true);
       document.execCommand('fontSize',     false, 5);

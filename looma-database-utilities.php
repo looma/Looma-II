@@ -36,6 +36,7 @@ require_once('includes/looma-utilities.php');
   //  bookChapterList
   //  keywordList
   //  addChapterID
+  //  chapterExists
   //  removeChapterID
   //  editActivity
   //  uploadFile
@@ -746,10 +747,7 @@ if (isset($_REQUEST["collection"])) {
         $query = array();
         if (sizeof($extensions) > 0) $query['ft'] = array('$in' => $extensions);  //if filetypes given, search only for them
 
-       ////// else  //////
-        //if (!$returnLessons) $query['ft'] = array('$nin' => ['lesson']);
-
-        if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson']);
+         else if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson']);
 
         if (sizeof($sources) > 0) $query['src'] = array('$in' => $sources);
         if ($areaRegex) $query['area'] = $areaRegex;
@@ -942,7 +940,23 @@ if (isset($_REQUEST["collection"])) {
         return;
     // end case "addChapterID"
 
-    ////////////////////////
+
+          ////////////////////////
+          // - - - CHAPTER EXISTS - - - //
+          ////////////////////////
+          case "chapterExists": //find "_id" in the chapters collection and return its ID if it exsits or NULL if doesnt exist
+
+              $query = array('_id' => $_REQUEST['_id']);
+              $projection = array("_id" => 1);
+              $result = mongoFindOne($dbCollection, $query);
+              if ($result) echo json_encode(array("_id" => $result["_id"]));
+              else         echo json_encode(array("_id" => ""));
+              return;
+          // end case "chapterExists"
+
+
+
+          ////////////////////////
     // -  removeChapterID  - //
     ////////////////////////
     case 'removeChapterID':

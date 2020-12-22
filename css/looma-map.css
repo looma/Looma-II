@@ -83,3 +83,43 @@ button#fullscreen-control {
     display:inline-block;
     right:1vw;
 }
+
+@keyframes blinker {
+    from {height:2vh;
+        width:2vh;
+        background-color:yellow;}
+    to {height:0.5vh;
+        width:0.5vh;
+        background-color:white;}
+}
+.blinking {
+    height:100px;
+    width:4100px;
+    border-radius:50%;
+    border: 1px solid #888;
+    background-color:yellow;
+    /*
+    animation-name: blinker;
+    animation-duration: 0.5s;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+     */
+}
+
+.blinking:hover {
+    zoom:200%;
+    background-color:purple;
+}
+/*
+.blinking1 {animation-duration: 0.5s; animation-delay:0s;}
+.blinking2 {animation-duration: 0.5s; animation-delay:0s;}
+.blinking3 {animation-duration: 0.5s; animation-delay:0s;}
+.blinking4 {animation-duration: 0.5s; animation-delay:0.3s;}
+.blinking5 {animation-duration: 0.5s; animation-delay:0.3s;}
+.blinking6 {animation-duration: 0.5s; animation-delay:0.3s;}
+.blinking7 {animation-duration: 0.5s; animation-delay:0.6s;}
+.blinking8 {animation-duration: 0.5s; animation-delay:0.6s;}
+.blinking9 {animation-duration: 0.5s; animation-delay:0.6s;}
+.blinking10{animation-duration: 0.5s; animation-delay:0.9s;}
+*/

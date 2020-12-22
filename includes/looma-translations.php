@@ -451,10 +451,16 @@ $TKW = array (
     "More results" => "अधिक परिणामहरू",
     "^Top" => "^माथि",
     "Hours:" => "घण्टा:",
-    "Minutes:" => "मिनेट:"
-
-
-
+    "Minutes:" => "मिनेट:",
+	"concentration game" => "एकाग्रता खेल",
+	"matching game" => "मिल्दो खेल",
+	"multiple choice game" => "बहु विकल्प खेल",
+	"arithmetic drill" => "अंकगणित कसरत",
+	"map game" => "नक्शा खेल",
+	"timeline game" => "समय रेखा खेल",
+	"vocabulary drill" => "शब्दावली  कसरत",
+	"Visual Vocabulary" => "दृश्य शब्दावली",
+	"Vocabulary Translation" => "शब्दावली अनुवाद"
 
 ); //end array TKW
 ?>

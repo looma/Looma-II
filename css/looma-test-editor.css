@@ -1,0 +1,50 @@
+/*
+LOOMA css file
+Filename: looma-template.css
+Associated code files:
+Programmer name: Skip
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: Apr 2018
+Revision: Looma 3
+
+Comments:
+*/
+
+#editor {
+    width:80vw;
+    height:85vh;
+    margin:auto;
+    background-color:white;
+    font-size:28pt;
+}
+#guide {
+    color:white;
+    margin:0;
+    line-height:4vh;
+    font-size:26pt;
+}
+input.line {
+    width:86%;
+    line-height: 2vh;
+    padding: 0 5% 0 5%;
+    border:2px solid lightgray;
+    margin:0 auto;
+    font-family:  "Comic Sans", "Chalkboard", sans-serif;
+    font-size:22.4pt;
+    color:red;
+}
+button#fullscreen-control {
+    display:inline-block;
+}
+
+button.speak {
+    display:inline-block;
+}
+
+button.lookup {
+    display:inline-block;
+}
+
+button.show-keyboard {
+    display:inline-block;
+}

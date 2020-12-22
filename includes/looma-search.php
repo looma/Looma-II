@@ -206,7 +206,10 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
           </select></span>";
         echo "</span>";
 
-        echo "<button id='chapter-submit' class='chapter-filter filesearch black-border' name='search' value='chapter' type='submit'></button>";
+        echo "<button id='chapter-submit' class='chapter-filter filesearch black-border' name='search' value='chapter' type='submit'>";
+            echo "<img draggable='false' src='images/looma-search2.png'>";
+            echo "</button>";
+            
         echo "<button class='chapter-filter clear-search' type='button'>Clear</button>";
     echo "</div><br>";
 

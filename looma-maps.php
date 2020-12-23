@@ -55,7 +55,7 @@ function makeButton($file, $thumb, $dn) {
         $maps = mongoFind($maps_collection, [], null, null, null);
 
         foreach ($maps as $map) {
-            if($map['title'] === "Nepal Map" || $map['title'] === "Looma Schools") {
+            if($map['title'] === "Nepal Map" || $map['title'] === "Looma Schools Map") {
                 echo "<td>";
                 if (isset($map['title'])) $dn = $map['title']; else $dn = "Map";
                 if (isset($map['thumb'])) $thumb = $mapDir . $map['thumb']; else $thumb = 'images/maps.png';

@@ -31,9 +31,9 @@ var mapTitle;
     {   var layerData = data.baseLayers;
         return {
             fillColor: getColor(feature, layerData[currentBase].style),
-            weight: layerData[currentBase].style.weight,
-            opacity: layerData[currentBase].style.opacity,
-            color: layerData[currentBase].style.color,
+            weight:      layerData[currentBase].style.weight,
+            opacity:     layerData[currentBase].style.opacity,
+            color:       layerData[currentBase].style.color,
             fillOpacity: layerData[currentBase].style.fillOpacity
         };
     }
@@ -64,8 +64,6 @@ var mapTitle;
 
 ////////////////////////
 function loadBaseLayers (layerData) {
-    
-    
     
     var currentStyle = 0;
     //var arrayIndex = 0; //a counter for the array
@@ -185,7 +183,7 @@ function baseLayerButtons (layerData)
             {
                 var checked = parseInt(this.id.charAt(2));
                 
-                if (data.title === "Nepal Test Map") {
+                if (data.info.threeLayer === "true") {
                     //special handling for 3-level map (province, district, municipality
                     if (checked === 0) {
                         map.removeLayer(baseLayers[2]);
@@ -242,7 +240,7 @@ function loadAddOnLayers (layerData, information) {
                 pointToLayer: function (feature, latlng) {
                 //onEachFeature: function (feature, latlng) {
                 
-                    if (mapTitle === "Looma Schools") {
+                    if (mapTitle === "Looma Schools Map") {
                         var rand = Math.floor((Math.random() * 10) + 1);
                         var blinking_circle = L.divIcon({className: 'blinking blinking' + rand})
                         marker = L.marker(latlng, {icon: blinking_circle});
@@ -325,7 +323,9 @@ function loadAddOnLayers (layerData, information) {
     Promise.all(promises).then(function() {
         console.log('In addonlayer, promises has ' + promises.length + ' entries');
         //for (var layer of addOnLayers) layer.addTo(map); //not needed. checking the box will do addTo()
-        if (mapTitle === "Looma Schools") {
+        
+        //if (mapTitle === "Looma Schools") {
+        if (addOnLayers[0].pre_check) {
             addOnLayers[0].addTo(map).bringToFront();
         }
         addOnButtons(layerData);}
@@ -388,10 +388,10 @@ function addOnButtons (layerData)
                     }
                     */
     /* */
-        if (layerData[0].pre_check) {
+        if (addOnCount > 0 && layerData[0].pre_check) {
             $(boxes[0]).prop( "checked", true );
             popUpShowing[0] = true;
-            //map.addLayer(addOnLayers[0]);
+            map.addLayer(addOnLayers[0]);
             addOnLayers[0].bringToFront();
         }
     /* */

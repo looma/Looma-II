@@ -19,20 +19,29 @@ Comments:
 }
 #guide {
     color:white;
-    margin:0;
+    margin-left:5vw;
     line-height:4vh;
     font-size:26pt;
 }
+
 input.line {
-    width:86%;
+    width:75%;
     line-height: 2vh;
-    padding: 0 5% 0 5%;
+    padding: 0 3vw% 0 3vw;
     border:2px solid lightgray;
-    margin:0 auto;
+    margin:0 2vw;
     font-family:  "Comic Sans", "Chalkboard", sans-serif;
     font-size:22.4pt;
     color:red;
 }
+.number {
+    color:white;
+    width:2vw;
+    font-size:18pt;
+    background-color: navy;
+    padding: 0 2vw;
+}
+
 button#fullscreen-control {
     display:inline-block;
 }

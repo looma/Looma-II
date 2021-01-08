@@ -26,13 +26,15 @@ they want to edit a video
             $filepath = urldecode($_REQUEST['fp']);
             $displayname = urldecode($_REQUEST['dn']);
             $thumbFile = $filepath . thumbnail($filename);
+            $fileprefix = substr($filename,0,strrpos($filename, "."));
 	    ?>
 			<script>
 				//Converts thumbFile to js
                 var fileName = "<?php echo $filename ?>";
                 var filePath = "<?php echo $filepath ?>";
-                var displayName = "<?php echo $displayname ?>"
+                var displayName = "<?php echo $displayname ?>";
 				var thumbFile = <?php echo json_encode($thumbFile); ?>;
+				var fileprefix = "<?php echo $filepath . $fileprefix . '.eng.eng.vtt'?>";
 			</script>
 
 			<div id="main-container-horizontal">
@@ -40,7 +42,11 @@ they want to edit a video
                         <div id="fullscreen">
                             <video id="video">
                                 <?php echo 'poster=\"' . $filepath . thumbnail($filename) . '\">';?>
-                                <?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">' ?>
+                                <?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">'; ?>
+                                <?php
+                                    if (file_exists($filepath . $fileprefix . ".eng.eng.vtt"))
+                                        echo '<track default src="' . $filepath . $fileprefix . '.eng.eng.vtt" kind="subtitles" srclang="en" label="English">';
+                                ?>
                             </video>
                             <div id="fullscreen-buttons">
                                 <?php include ('includes/looma-control-buttons.php');?>

@@ -1,11 +1,11 @@
 // mongo terminal program "importCH_IDs;
-//      input from a tab-seperated file
-//          each line of which is a FN, DN, followed by a list of CH_IDs
+//      input from a tab-separated file
+//          each line of which is a FN, DN, followed by a comma-separated list of CH_IDs
 //          inserts all the ch_ids into the activities.ch_ids array of any document(s) corresponding to the FN + DN pair
 //
 //    to DRYRUN this script, enter "param='dryrun'  before entering the load statement
 //
-//  make sure there is a file 'ch_idsToImport.csv' in the current directory
+//  make sure there is a file 'ch_idsToImport.txt' in the current directory
 //  start MONGO in LOOMA db with: 'mongo looma'
 //  run in MONGO SHELL with: load('importCH_IDs')
 //

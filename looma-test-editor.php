@@ -23,24 +23,23 @@ require_once ('includes/header.php');
     <div id="fullscreen">
         <p id="guide"><----+----+----+----+----+----+----+----+----+----+----+----></p>
         <div id="editor">
-            <input id="1" class="line">
-            <input id="2" class="line">
-            <input id="1" class="line">
-            <input id="3" class="line">
-            <input id="5" class="line">
-            <input id="6" class="line">
-            <input id="7" class="line">
-            <input id="8" class="line">
-            <input id="9" class="line">
-            <input id="10" class="line">
-            <input id="11" class="line">
-            <input id="12" class="line">
-            <input id="13" class="line">
+            <span class="number">1</span><input id="1" class="line"><br>
+            <span class="number">2</span><input id="2" class="line"><br>
+            <span class="number">3</span><input id="1" class="line"><br>
+            <span class="number">4</span><input id="3" class="line"><br>
+            <span class="number">5</span><input id="5" class="line"><br>
+            <span class="number">6</span><input id="6" class="line"><br>
+            <span class="number">7</span><input id="7" class="line"><br>
+            <span class="number">8</span><input id="8" class="line"><br>
+            <span class="number">9</span><input id="9" class="line"><br>
+            <span class="number">10</span><input id="10" class="line"><br>
+            <span class="number">11</span><input id="11" class="line"><br>
+            <span class="number">12</span><input id="12" class="line"><br>
+            <span class="number">13</span><input id="13" class="line">
         </div>
     </div>
 </div>
 
-<?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>      <!-- js-includes.php imports JS: looma.js, looma-utilities.js, looma-screenfull.js,
                                                             looma-keyboard.js, jQuery -->
 

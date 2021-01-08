@@ -26,8 +26,13 @@
   <component name="ChangeListManager">
     <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-map.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-map.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-maps.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-maps.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-test-editor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-test-editor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/importCH_IDs" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importCH_IDs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/importNCH_IDs" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importNCH_IDs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-test-editor.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-test-editor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-video.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-video.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -280,7 +285,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608595764826</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="&#10;6.0.1i (new maps, SAARC and Nepal Municipalities)&#10;6.0.1h (polishing maps)">
+      <created>1608693563896</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1608693563896</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -326,7 +338,8 @@
     <MESSAGE value="6.0.1h  various Nepali UI translations, improved games and clock" />
     <MESSAGE value="6.0.1h  various Nepali UI translations, improved games and clock&#10;6.0.1g  updated looma-templates (php, js, css)" />
     <MESSAGE value="&#10;6.0.1i (new maps, SAARC and Nepal Municipalities)" />
-    <option name="LAST_COMMIT_MESSAGE" value="&#10;6.0.1i (new maps, SAARC and Nepal Municipalities)" />
+    <MESSAGE value="&#10;6.0.1i (new maps, SAARC and Nepal Municipalities)&#10;6.0.1h (polishing maps)" />
+    <option name="LAST_COMMIT_MESSAGE" value="&#10;6.0.1i (new maps, SAARC and Nepal Municipalities)&#10;6.0.1h (polishing maps)" />
   </component>
   <component name="WindowStateProjectService">
     <state x="665" y="235" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1604105595714">
@@ -335,29 +348,26 @@
     <state x="665" y="235" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1410.877@0.23.1410.877" timestamp="1604105595714" />
     <state x="405" y="270" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1413.877@0.23.1413.877" timestamp="1602704298008" />
     <state x="667" y="235" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1414.877@0.23.1414.877" timestamp="1603155474901" />
-    <state x="391" y="204" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1600318038732">
-      <screen x="0" y="23" width="1414" height="877" />
-    </state>
-    <state x="391" y="204" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1414.877@0.23.1414.877" timestamp="1600318038732" />
-    <state x="153" y="23" key="CommitChangelistDialog2" timestamp="1608595761657">
+    <state x="390" y="204" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1608693611091">
       <screen x="0" y="23" width="1412" height="877" />
     </state>
-    <state x="153" y="23" key="CommitChangelistDialog2/0.23.1412.877@0.23.1412.877" timestamp="1608595761657" />
+    <state x="390" y="204" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1412.877@0.23.1412.877" timestamp="1608693611091" />
+    <state x="153" y="23" key="CommitChangelistDialog2" timestamp="1608693563481">
+      <screen x="0" y="23" width="1412" height="877" />
+    </state>
+    <state x="153" y="23" key="CommitChangelistDialog2/0.23.1412.877@0.23.1412.877" timestamp="1608693563481" />
     <state x="153" y="23" key="CommitChangelistDialog2/0.23.1413.877@0.23.1413.877" timestamp="1603566500556" />
-    <state x="202" y="23" key="CommitChangelistDialog2/0.23.1415.877@0.23.1415.877" timestamp="1600969115902" />
     <state x="168" y="23" width="1195" height="877" key="SettingsEditor" timestamp="1603142024493">
       <screen x="0" y="23" width="1414" height="877" />
     </state>
     <state x="171" y="3" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1603049045573" />
     <state x="197" y="23" width="1216" height="877" key="SettingsEditor/0.23.1413.877@0.23.1413.877" timestamp="1602291505032" />
     <state x="168" y="23" width="1195" height="877" key="SettingsEditor/0.23.1414.877@0.23.1414.877" timestamp="1603142024493" />
-    <state x="168" y="23" key="SettingsEditor/0.23.1415.877@0.23.1415.877" timestamp="1600969041811" />
-    <state x="295" y="189" key="Vcs.Push.Dialog.v2" timestamp="1608595778405">
+    <state x="295" y="189" key="Vcs.Push.Dialog.v2" timestamp="1608693584336">
       <screen x="0" y="23" width="1412" height="877" />
     </state>
-    <state x="295" y="189" key="Vcs.Push.Dialog.v2/0.23.1412.877@0.23.1412.877" timestamp="1608595778405" />
+    <state x="295" y="189" key="Vcs.Push.Dialog.v2/0.23.1412.877@0.23.1412.877" timestamp="1608693584336" />
     <state x="295" y="189" key="Vcs.Push.Dialog.v2/0.23.1413.877@0.23.1413.877" timestamp="1603566510186" />
-    <state x="295" y="189" key="Vcs.Push.Dialog.v2/0.23.1415.877@0.23.1415.877" timestamp="1600969139148" />
     <state x="424" y="268" key="cloudConfig.PluginsDialog" timestamp="1603049160942">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
@@ -366,12 +376,12 @@
       <screen x="0" y="23" width="1414" height="877" />
     </state>
     <state x="470" y="364" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1414.877@0.23.1414.877" timestamp="1603332451209" />
-    <state x="111" y="109" width="1150" height="706" key="find.popup" timestamp="1606941326290">
-      <screen x="0" y="23" width="1407" height="877" />
+    <state x="111" y="109" width="1154" height="706" key="find.popup" timestamp="1609703799374">
+      <screen x="0" y="23" width="1412" height="877" />
     </state>
     <state x="111" y="109" width="1150" height="706" key="find.popup/0.23.1407.877@0.23.1407.877" timestamp="1606941326290" />
     <state x="246" y="52" width="1081" height="730" key="find.popup/0.23.1410.877@0.23.1410.877" timestamp="1604683363435" />
-    <state x="111" y="109" width="1154" height="706" key="find.popup/0.23.1412.877@0.23.1412.877" timestamp="1605556158289" />
+    <state x="111" y="109" width="1154" height="706" key="find.popup/0.23.1412.877@0.23.1412.877" timestamp="1609703799374" />
     <state x="247" y="52" width="1083" height="730" key="find.popup/0.23.1413.877@0.23.1413.877" timestamp="1603564674147" />
     <state x="111" y="109" width="1156" height="706" key="find.popup/0.23.1414.877@0.23.1414.877" timestamp="1602371125814" />
     <state x="274" y="23" width="841" height="1032" key="search.everywhere.popup" timestamp="1605060636110">
@@ -379,7 +389,6 @@
     </state>
     <state x="274" y="23" width="840" height="1032" key="search.everywhere.popup/0.23.1410.877@0.23.1410.877" timestamp="1603837159892" />
     <state x="274" y="23" width="841" height="1032" key="search.everywhere.popup/0.23.1411.877@0.23.1411.877" timestamp="1605060636110" />
-    <state x="275" y="23" width="838" height="1032" key="search.everywhere.popup/0.23.1414.877@0.23.1414.877" timestamp="1600564336548" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

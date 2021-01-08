@@ -1,47 +1,10 @@
-Ticket_Without_A_Seat.mp4	Ticket Without A Seat	7SSa02.01,7SSa05.01
-Booklet_Corona.pdf	Booklet about Corona (Nepali)	6H01.04,7H01.04,8S16
-What_It_Means_To_Buy_A_Company’s_Stock.mp4	What it means to buy a company's stock (stocks and bonds)	9M03
-Map_of_Nepal_with_77_Districts.jpeg	Map of Nepal with Labeled Districts	7SS01.01
-Pashupatinath_Temple_Nepal_IMG_7933_2018_15.jpg	Picture of Pashupatinath Temple	5SS02.04
-Multiplying_And_Dviding_Decimals_By_10.mp4	Multiplying and Dividing Decimals by 10	6M04.07
-Percent_From_Fraction_Models.mp4	Percents from Fraction Models	6M06.01
-Subsets.pdf	Subsets	7M01.02
-Nepal_Districts_Statistics.pdf	Districts of Nepal Statistics	7SS01.01
-Former_Administrative_Units_Of_Nepal.pdf	Former Administrative Units of Nepal	7SS01.01
-Zones_Of_Nepal.pdf	Zones of Nepal	7SS01.02
-How_To_Draw_Map_Of_Nepal_Step_By_Step_Map_Of_Nepal.mp4	How to Draw a Map of Nepal	7SS01.02
-Fewa_Lake_Map.jpg	Fewa Lake Map	6EN09
-Fewa_Lake.jpg	Fewa Lake	6EN09
-6EN09.m4a	Chant Dialogue	6EN09
-Parts_Of_A_Circle.png	Parts of a Circle	7M11.07
-Circle_Vocabulary_Demonstration.jpg	Circle Vocabulary Demonstration	7M11.07
-Participatory_Village_Development_Planning_6_638.jpg	How Districts Are Structured	7SS01.03
-Federal_Provincial_And_Local_Government_Of_Nepal.mp4	Government Structure in Nepal	7SS01.03
-Alternative_Transport_Systems_Such_As_Gravity_Goods_Ropeways_Tuins_And_Bicycle_Trailers.mp4	Alternative Transportation in Nepal	7SS02.03
-Gravity_Ropeway.mp4	Transportation in Nepal's Mountains	7SS02.03
-Nepa_Kathmandu_Transports.mp4	Transportation in Kathmandu	7SS02.03
-Notes_On_Needs_And_Importance_Of_Transport_And_Development_Of_Road_In_Nepal.pdf	Importance of Roads in Nepal	7SS02.03
-Crime_In_Nepal_Data_Map.png	Crime Rate in Nepal Map	5SS03.02
-George_Stephensons_Locomotion.mp4	George Stephenson's Locomotion	6EN12
-How_To_Convert_Rupee_To_Paise_And_Paise_To_Rupee.mp4	Converting Currency	6M05.02
-The_Power_of_Role_Models_Ayla_at_TEDxYouth@IsaacDickson.mp4	The Power of Role Models	5SS02.05
-Community_Healthcare_in_Nepal.mp4	Community Healthcare in Nepal	5S02.11
-What_Are_Terms_Factors_And_Coefficients.mp4	Terms,Factors,and Coefficients	6M11.05
-Example_2_Multiplying_Two_Monomials_With_Two_Variables_Algebra_I_Khan_Academy.mp4	Multiplying Monomials for Area	6M11.05
-Intro_To_Profit_And_Loss_Comparing_Quantities_Class 7_(India)_Math_Khan_Academy.mp4	Intro to Profit and Loss	9M02
-Bhanubhakta_Acharya_Biography_5_Amazing_Stories_Sagar_Dumre.mp4	Bhanubhakta Acharya Biography	6EN08
-Relative_Clauses_Syntax_Khan_Academy.mp4	Relative Clauses	6EN11
-Girl_Using_ATM.jpg	Girl Using ATM	6EN11
-Introduction_To_Singular_And_Plural_Nouns_Grammar_Khan_Academy.mp4	Singular and Plural Nouns	4EN03
-Girl_Who_Dared_to_Challeng_A_Social_Evil.mp4	Girl Who Challenged a Social Evil	7SS04.04
-Maiti_Nepal_New_Year_2017.mp4	Maiti Nepal Helps Save Trafficked Girls	7SS04.04
-Natgeo_Lithosphere_26822302.jpg	The Layers of the Earth	4S01.15
-TETRIS_Theme_(Rhythmic_Juggler_Meets_Marimba_Madman).mp4	Marimba and Juggler	4SS08.16,5S01.09,5SS09.02
-Teaching_Laws_Rights_And_Responsibilities_To_Kids_Freedom_Of_Speech_Kids_Academy.mp4	Laws,Rights,and Responsibilities	5SS04.01,5SS04.02
-Whar_Are_The_Universal_Human_Rights_Benedetta_Berti.mp4	What Are the Universal Human Rights	5SS04.01,5SS04.02
-Blank_Venn_Diagram.jpg	Blank Venn Diagram	5SS04.01,5SS04.02
-Quad_Stretch.mp4	Quad Stretch	5S03.05
-Scale_Balance.mp4	Scale Balance	5S03.05
-Toe_Touch.mp4	Toe Touch	5S03.05
-6EN01.07_Convo_1.mp4	Lion Conversation	6EN07
-6EN01.07_Convo_2.mp4	Conversation About Vase	6EN07
+The_story_of_HimalayaTM.mp4	The Story of Himalaya	5SS01.01, 7V12.03
+Memnon_Uzan.mp4	Vibration Patterns	7S05, 8S08, 9S06
+The_Worlds_Population.pdf	The World's Population	7S21
+Nepals_National_Bird.jpg	Danfe is Nepals National Bird	9Sa18, 2SS06.03
+Ring_in_the_Holidsays.mp4	Ring in the Holidays	5SS09.02, 4SS09.02
+ziggurat_drawing.jpg	Ziggurat drawing	7SS06.07
+ziggurat_ruin.jpg	Ziggurat ruin	7SS06.07
+Do_You_Love_Me.mp4	Do You Love Me	5EN01, 8EN10, 5SS09.07, 7V01.03
+Arctic_Refuge_Meditations.mp4	Arctic Refuge Meditations	6S20, 8S22, 9EN11
+BIRDS_can_DANCE.mp4	Birds Can Dance	5SS09.07, 5SS09.11

@@ -86,6 +86,9 @@ function mongoFindRandom($collection, $filter, $count) {
 function mongoDistinct($collection, $key) {
     global $mongo_level;
     $array = $collection->distinct( $key );
+
+    //print_r($array);
+
     return $array;
 }
 
@@ -171,6 +174,7 @@ if ($mongo_version) {
     $mongo_version = '2.0';
     $mongo_level = 2;
 }
+
 //echo 'mongo_version is ' . $mongo_version . '  $mongo_level = '. $mongo_level;
 
 $dbhost = 'localhost';

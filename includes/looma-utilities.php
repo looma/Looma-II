@@ -113,7 +113,8 @@ function displayName($filename, $dn, $ndn) {
 
 function alphabetize_by_dn ($array) {
     // sort the list of dirs by DN
-    usort($array, function ($a, $b) { return strcasecmp($a['dn'], $b['dn']) > 0; });
+   // usort($array, function ($a, $b) { return strcasecmp($a['dn'], $b['dn']) > 0; });
+    usort($array, function ($a, $b) { return strcasecmp($a['dn'], $b['dn']); });
     return $array;
 }
 

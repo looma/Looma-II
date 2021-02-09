@@ -57,3 +57,5 @@ button.lookup {
 button.show-keyboard {
     display:inline-block;
 }
+
+#editor scan {font-size:inherit !important;}

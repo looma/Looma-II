@@ -26,9 +26,7 @@
 #--delete 	delete files on destination that are not on source
 #--perms (=== -p)
 #--update
-#--include '.ssh'
-#--exclude '.[!.]*'
-#
+# --include ".ssh/"  --exclude ".[!.]*" --delete-excluded
 result () {
     if [[ $1 -ne 0 ]]
     then
@@ -42,9 +40,9 @@ result () {
 echo "************************************"
 echo " - - setting database version to today's date"
 echo "************************************"
-mongo looma < "/Applications/AMPPS/www/Looma/looma shell scripts/loomaMongoSetDate"
+mongo looma < "/usr/local/var/www/Looma/looma shell scripts/loomaMongoSetDate"
 
-cd /Applications/AMPPS/www/Looma/mongo-dump  # cd to mongo dumps folder (on a MAC)
+cd /usr/local/var/www/Looma/mongo-dump  # cd to mongo dumps folder (on a MAC)
 if [ -d dump ]
         then
             echo "- moving previous mongo dump to ~/Desktop/LoomaMongoDumps/"
@@ -63,7 +61,7 @@ echo "************************************"
 echo 'archiving Looma (code) to rsync.net'
 echo "************************************"
 echo
-cd   /Applications/AMPPS/www/Looma		# cd to Looma/ (on a MAC)
+cd   /usr/local/var/www/Looma		# cd to Looma/ (on a MAC)
 
 RW="58189@usw-s008.rsync.net"
 
@@ -75,10 +73,12 @@ then
     echo "NOTE: dryrun"
 
      #EXAMPLE chmod: --chmod=Dg+s,ug+w,Fo-w,+X
-    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+
+     //removed "--include '.ssh'"
+    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update  --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
     echo "FINISHED dryrun"
 else
-   rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/Looma  $RW:
+   rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update   --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -87,16 +87,16 @@ echo "************************************"
 echo 'archiving Looma (content) to rsync.net'
 echo "************************************"
 echo
-cd /Applications/AMPPS/www/content		        # cd to content/ (on a MAC)
+cd /usr/local/var/www/content		        # cd to content/ (on a MAC)
 SECONDS=0
 
 if [[ $1 = "dryrun" ]]
 then
     echo "NOTE: dryrun"
-    rsync -avz  --dry-run --size-only --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+    rsync -avz  --dry-run --size-only --delete --perms --chmod=u+rwx,go+rx --update    --exclude ".[!.]*" --delete-excluded  -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
     echo "FINISHED dryrun"
 else
-    rsync -avz            --size-only --delete --perms --chmod=u+rwx,go+rx --update --include '.ssh' --exclude '.[!.]*' -e "ssh -i ~/.ssh/id_rsa" /Applications/AMPPS/www/content  $RW:
+    rsync -avz            --size-only --delete --perms --chmod=u+rwx,go+rx --update   --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."

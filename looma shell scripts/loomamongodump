@@ -1,0 +1,6 @@
+#runs in cron on looma.website (AWS) to make a database backup every day
+# example crontab -l is "30 6 * * * /usr/local/bin/loomamongodump"
+cd ~/htdocs/Looma/mongo-dump
+now=`date +"%Y-%m-%d"`
+mv dump "dump$now"
+sudo mongodump --db looma --host=127.0.0.1

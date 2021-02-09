@@ -1132,7 +1132,7 @@ LOOMA.speak = function(text, engine, voice) {
          // use speechsynthesis if present
          if (!engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) {
              engine = 'synthesis';
-             speechSynthesisUtteranceInstance.rate = 1.5;   // slow down 50%
+             //speechSynthesisUtteranceInstance.rate = 1.5;   // slow down 50%
          }
          if (!engine) engine = 'mimic';  //efault engine is mimic
          if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_bdl'; //get the currently used voice, if any. default VOICE

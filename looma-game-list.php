@@ -68,7 +68,7 @@ require_once ("includes/mongo-connect.php");
 
                 //makeActivityButton();
                 echo '<button class="activity game" data-class="' . $game_class . '" data-subject="' . $game_subject .
-                    '" data-id="' . $game['_id']->{'$id'} .
+                    '" data-id="' . (string) $game['_id'] .
                     '" data-type="' . $game['presentation_type'] . '"' .
                     '"> ';
                 echo '<p>';

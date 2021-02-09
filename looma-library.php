@@ -438,6 +438,7 @@ echo "</tr></table>";
                                     $query = array('dn' => $dn);
                                     $activity = mongoFindOne($activities_collection, $query);
                                     if ($activity) $mongoID = strval($activity['mongoID']);
+                                    $ndn = ($activity && keyIsSet('ndn', $activity)) ? $activity['ndn'] : str_replace($specials, " ", $dn);
                                 } else {   // look in the database to see if this file has a DISPLAYNAME
                                     $query = array('fn' => $file);
                                     $activity = mongoFindOne($activities_collection, $query);

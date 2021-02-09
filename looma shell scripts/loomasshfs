@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+#  filename: loomasshfs
+#       author: skip
+#       date:   Jan 2021
+
+#    used to mount RSYNC.NET filesystem directly on Mac [for access in Finder]
+
+echo "at first 'password' prompt, enter PW for this computer"
+echo "at second 'password' prompt, enter PW for RSYNC"
+sudo rmdir /Volumes/sshfs
+sudo mkdir /Volumes/sshfs  # in case not already present
+sudo sshfs 58189@usw-s008.rsync.net: /Volumes/sshfs -o IdentityFile=/Users/skip/.ssh/rsa -oauto_cache,reconnect,local,volname=rsync.net,allow_other,defer_permissions,noappledouble
+

@@ -1,9 +1,9 @@
 #!/bin/bash
 #
 #  filename: loomaupdater
-#       VERSION 3.0 for rysnc.net
+#       VERSION 4.0 for rysnc.net
 #       author: skip
-#       date:   JUL 2019
+#       date:   FEB 2021
 #
 #  used to update a pre-installed Looma by installing new code, database & content
 #
@@ -51,7 +51,8 @@
 #--exclude '.[!.]*'
 #--progress show transfer progress
 #--stats    print stats at the end
-#
+
+# display result of previous  command
 result () {
     if [[ $1 -ne 0 ]]
     then
@@ -61,6 +62,55 @@ result () {
         echo "****************************************************************"
         echo "operation successful"
     fi
+}
+
+pause() {
+   read -p "Paused, press [Enter] to continue"
+
+}
+
+checknetworkspeed () {
+  # test internet presence and speed
+    echo "************************************"
+    echo "Testing network connection and speed"
+    echo "************************************"
+    echo
+    t=$(date +%s)
+    sudo wget ftp://speedtest.tele2.net/10MB.zip -O /dev/null
+    r=$?
+    s=$(date +%s)
+    if [[ $r -ne 0 ]]
+    then
+        echo "****************************************************************"
+        echo "no internet connection found";exit $r;
+    else
+        echo "****************************************************************"
+       # echo -n "Internet speed is MB/s: ";expr 8 \* 10 / $(($s - $t))
+        echo -n  "- - continue at this speed [y/n]?"; read input;
+        if [[ $input != "y" ]]
+        then
+            exit 1
+        fi
+    fi
+}
+
+#function to exec the rsync. global var $DRYRUNMODE is either "--dry-run" or ""
+dosync () {
+    FROM=$1
+    TO=$2
+
+    echo; echo "doing RSYNC from $FROM to $TO with parameter $DRYRUNMODE"
+    echo; echo "  *** *** if prompted for \"password:\" enter \"looma\"  *** ***"
+    echo ""
+
+    #NOTE: slash after FROM dir "Looma/" and no slash after TO "/var/www/html/Looma"
+    rsync -az  $DRYRUNMODE --size-only  \
+        --stats  --progress   \
+        --perms  --chmod=D755,F644 --chown=odroid:looma \
+        --exclude '.[!.]*' --delete --delete-excluded   \
+        -e "ssh"   \
+       $FROM  $TO
+
 }
 
 #
@@ -74,35 +124,80 @@ echo "Be sure you have read the instructions"
 echo "****************************************************************"
 echo
 
-echo "****************************************************************"
+# set up user 'looma' and 'looma-admin' and group 'looma' in case not already present
+groupadd looma
+useradd -g looma looma
+useradd -g looma looma-admin
+
+if [[ $1 = "dryrun" ]]
+  then
+    DRYRUNMODE="--dry-run"
+  else
+    DRYRUNMODE=""
+fi
+
+CUMULATIVE=0
+
+#####################
+##################### user input - choose update from USB stick or from Internet
+#####################
+echo; echo "****************************************************************"
 echo "- Update using Internet connection or USB memory?"
-echo -n  "- -enter  U for USB, I for internet [I/U]?"; read input
+echo -n  "- -enter  U for USB, I for internet [I/U]?"; read source
 
-if [[ $input = "U" ]]
+if [[ $source = "U" ]]
 then
-##########################
-# start of USB section
-##########################
 
-    echo "****************************************************************"
-    echo "    you must insert a USB memory stick which is named LOOMA"
-    echo "    be sure the USB filesystem format is FAT32    [*** not NTFS ***]"
-    echo "    the USB stick must have the files to be uploaded stored in a top-level folder named 'loomaupdate' "
-    echo "****************************************************************"
+###########################  USB settings  #############
 
-    cd /media/odroid/LOOMA/loomaupdate # for Linux (different for MAC)
+  TODIR="/var/www/html"
+  FROMDIR="/media/odroid/LOOMA/loomaupdate/"
 
-    if [ "$?" -ne 0 ]
+      echo; echo "****************************************************************"
+      echo "    you must insert a USB memory stick which is named LOOMA"
+      echo "    be sure the USB filesystem format is FAT32 or exFAT    [*** not NTFS ***]"
+      echo "    the USB stick must have the files to be uploaded stored in a top-level folder named 'loomaupdate' "
+      echo "****************************************************************"
+
+      cd /media/odroid/LOOMA/loomaupdate # for Linux (different for MAC)
+
+      if [ "$?" -ne 0 ]
+      then
+          echo; echo "ERROR: couldn't find LOOMA/loomaupdate directory on USB"
+          exit 1
+      fi
+
+      echo
+      echo -n  "- using this directory to get new files: ";pwd
+      echo
+
+###########################  Internet settings ###############
+
+  elif [[ $source = "I" ]]
+  then
+      TODIR="/var/www/html"
+      FROMDIR="58191@usw-s008.rsync.net:../"
+
+    echo; echo "****************************************************************"
+    echo "-   *** you can check network speed before proceeding"
+    echo -n  "- - check and report network speed [y/n]?"; read input;
+    if [[ $input = "y" ]]
     then
-        echo "ERROR: couldn't find LOOMA/loomaupdate directory on USB"
-        exit 1
+      checknetworkspeed
     fi
+    echo; echo "if prompted for \"password for odroid\" enter \"odroid\"  "
+  else
+      echo; echo "****************************************************************"
+      echo 'ERROR: input must be "U" or "I"'
+      echo "****************************************************************"
+      exit 1
+  fi
 
-    echo
-    echo -n  "- using this directory to get new files: ";pwd
-    echo
+###########################  do the transfers ###############
 
-    #       copy current Looma code to LoomaBAK
+#       copy current Looma code to LoomaBAK
+    echo
+    echo "****************************************************************"
     echo "- preparing to backup current Looma code to LoomaBAK"
     echo "-   *** usually it is OK to skip this step to save time"
     echo -n  "- - continue ('n' recommended) [y/n]?"; read input;
@@ -122,6 +217,7 @@ then
 
     #       install new Looma code
     echo
+    echo "****************************************************************"
     echo "- preparing to install new Looma code"
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
@@ -130,18 +226,11 @@ then
 
         SECONDS=0
 
-
-        #NOTE: slash after "Looma/" and no slash after "/var/www/html/Looma"
-        if [[ $1 = "dryrun" ]]
-        then
-            rsync -az --dry-run --delete --perms --progress --update --stats --progress Looma/ /var/www/html/Looma
-            result $?
-        else
-            rsync -az --quiet   --delete --perms --progress --update --stats --progress Looma/ /var/www/html/Looma
-            result $?
-        fi
+        #NOTE: slash after FROM dir "Looma/" and no slash after TO "/var/www/html/Looma"
+        dosync "${FROMDIR}Looma/"  "${TODIR}/Looma"
 
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+        CUMULATIVE=$SECONDS
 
         #clear browser cache so the new code files will be used
         source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"
@@ -169,24 +258,21 @@ then
             # mongoexport collections 'lessons' and 'text_files' to temp files
             # drop db 'looma' so mongorestore from archives will update all documents in the db
             # mongorestore db looma dump from looma archive on USB
-            # finally, mongoimport the temp files to collectons 'lessons' and 'text_files' to re-instate locally created lessons and texts
+            # finally, mongoimport the temp files to collectons 'lessons' and 'text_files'
+            #      to re-instate locally created lessons and texts
 
-                mongoexport --db looma --collection lessons    --out /tmp/lessonsFromMongo.tmp
-                # read -p "Press [Enter] to continue"
-                mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
-                # read -p "Press [Enter] to continue"
-                mongo --quiet looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
+            mongoexport --db looma --collection lessons --out /tmp/lessonsFromMongo.tmp
+            mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
 
-            # read -p "Press [Enter] to continue"
+            mongo --quiet looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
+
             mongorestore --quiet --db looma /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma/
 
-                # read -p "Press [Enter] to continue"
-                mongoimport --quiet --db looma --collection lessons    --file /tmp/lessonsFromMongo.tmp
-                # read -p "Press [Enter] to continue"
-                mongoimport --quiet --db looma --collection text_files --file /tmp/textsFromMongo.tmp
-                # read -p "Press [Enter] to continue"
-                rm /tmp/lessonsFromMongo.tmp
-                rm /tmp/textsFromMongo.tmp
+            mongoimport --quiet --db looma --collection lessons --file /tmp/lessonsFromMongo.tmp
+            mongoimport --quiet --db looma --collection text_files --file /tmp/textsFromMongo.tmp
+
+            rm /tmp/lessonsFromMongo.tmp
+            rm /tmp/textsFromMongo.tmp
 
             result $?
         else echo "ERROR: no source dir (/media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma) for mongo restore"
@@ -197,52 +283,18 @@ then
 
     #       copy new files into "content" directory
     echo
+    echo "****************************************************************"
     echo "- preparing to copy new files into content directory"
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
+       SECONDS=0
 
-        SECONDS=0
+        #NOTE: slash after FROM dir "Looma/" and no slash after TO "/var/www/html/Looma"
+        dosync "${FROMDIR}content/"   "${TODIR}/content"
 
-        if [ -d "content" ]
-        then
-            find /var/www/html/content -exec touch {} + ';'
-            if [[ $1 = "dryrun" ]]
-            then
-                rsync  -az --dry-run --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
-
-                result $?
-            else
-                rsync -az  --quiet   --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' content/  /var/www/html/content   #NOTE: slash after "content/" and no slash after "/var/www/html/content"
-                result $?
-            fi
-        fi
-
-        if [ -d "maps2018" ]
-        then
-           find /var/www/html/maps2018 -exec touch {} +
-           if [[ $1 = "dryrun" ]]
-            then
-                rsync -az --dry-run --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
-                result $?
-            else
-                rsync -az  --quiet   --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' maps2018/ /var/www/html/maps2018  #NOTE: slash after "source/" and no slash after "/var/www/html/maps2018"
-                result $?
-            fi
-        fi
-        if [ -d "ePaath" ]
-        then
-            find /var/www/html/ePaath -exec touch {} +
-            if [[ $1 = "dryrun" ]]
-                then
-                    rsync -az --dry-run --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
-                    result $?
-                else
-                    rsync -az  --quiet   --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' ePaath/   /var/www/html/ePaath  #NOTE: slash after "source/" and no slash after "/var/www/html/ePaath"
-                    result $?
-                fi
-
-        fi
+        #dosync "${FROMDIR}maps2018/"  "${TODIR}/maps2018"
+        #dosync "${FROMDIR}ePaath/"    "${TODIR}/ePaath"
 
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 
@@ -250,182 +302,16 @@ then
         echo " - - - SKIPPED: installing new Looma content"
     fi
 
+  echo "Total $(( ($SECONDS + $CUMULATIVE) / 60)) minutes and $(( ($SECONDS + $CUMULATIVE)  % 60)) seconds elapsed."
 
 # set permissions on Looma code and content
 
+  echo; echo "****************************************************************"
   echo "setting permissions on Looma code and content"
   chmod -R 755 /var/www/html/Looma; chmod -R 755 /var/www/html/content
-
-    echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
-
-# end of USB section
-
-
-##########################
-# start Internet section
-##########################
-
-elif [[ $input = "I" ]]
-then
-    # test internet presence and speed
-    echo "************************************"
-    echo "Testing network connection and speed"
-    echo "************************************"
-    echo
-    t=$(date +%s)
-    sudo wget ftp://speedtest.tele2.net/10MB.zip -O /dev/null
-    r=$?
-    s=$(date +%s)
-    if [[ $r -ne 0 ]]
-    then
-        echo "no internet connection found";exit $r;
-    else
-        echo "****************************************************************"
-        echo -n "Internet speed is MB/s: ";expr 8 \* 10 / $(($s - $t))
-        echo -n  "- - continue at this speed [y/n]?"; read input;
-        if [[ $input != "y" ]]
-        then
-            exit 1
-        fi
-    fi
-
-    #       copy current Looma code to LoomaBAK
-    echo
-    echo "- preparing to backup current Looma code to LoomaBAK"
-    echo "-   *** usually it is OK to skip this step to save time"
-    echo -n  "- - continue ('n' recommended) [y/n]?"; read input;
-    if [[ $input = "y" ]]
-    then
-        if [ -d /var/www/html/LoomaBAK ]
-        then
-            echo "- deleting old LoomaBAK directory"
-            sudo rm -r /var/www/html/LoomaBAK
-            result $?
-        fi
-        sudo mv    /var/www/html/Looma   /var/www/html/LoomaBAK
-        result $?
-    else
-        echo " - - - SKIPPED: backing up Looma code "
-    fi
-
-    #       install new Looma code
-    echo
-    echo "- preparing to install new Looma code"
-    echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
-
-   RO="58191@usw-s008.rsync.net"
-
-   if [[ $input = "y" ]]
-    then
-
-      SECONDS=0
-
-      # sync Looma (code)
-
-        if [[ $1 = "dryrun" ]]
-        then
-            rsync -az  --dry-run --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ /var/www/html/Looma
-            result $?
-        else
-            rsync -az            --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ /var/www/html/Looma
-            result $?
-        fi
-
-        echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
-
-        #clear browser cache so the new files will be used
-        source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"
-
-        #       install new Looma database
-        echo
-        echo "****************************************************************"
-        echo "- preparing to update Looma database"
-        echo "-   ***note: this will NOT erase any lesson plans already in the database"
-        echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
-
-        if [[ $input = "y" ]]
-        then
-            if [[ -d /var/www/html/Looma/mongo-dump/dump/looma ]]
-            then
-
-            # [mongorestore doesnt update existing documents that have changes]
-            # to fix this, we use the following procedure:
-            #     temp save locally created documents (lessons and texts)
-            #     update all documents to latest version from the looma archive
-            #     then re-load the locally created documents
-            # mongoexport collections 'lessons' and 'text_files' to temp files
-            # drop db 'looma' so mongorestore from archives will update all documents in the db
-            # mongorestore db looma dump from looma archive on USB
-            # finally, mongoimport the temp files to collectons 'lessons' and 'text_files' to re-instate locally created lessons and texts
-
-                mongoexport --db looma --collection lessons    --out /tmp/lessonsFromMongo.tmp
-                # read -p "Press [Enter] to continue"
-                mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
-                # read -p "Press [Enter] to continue"
-                mongo --quiet looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
-
-            mongorestore --quiet --db looma /var/www/html/Looma/mongo-dump/dump/looma/       # install new db changes into existing db
-
-                # read -p "Press [Enter] to continue"
-                mongoimport --db looma --collection lessons    --file /tmp/lessonsFromMongo.tmp
-                # read -p "Press [Enter] to continue"
-                mongoimport --db looma --collection text_files --file /tmp/textsFromMongo.tmp
-                # read -p "Press [Enter] to continue"
-                rm /tmp/lessonsFromMongo.tmp
-                rm /tmp/textsFromMongo.tmp
-
-            result $?
-            else echo "ERROR: no source dir (/var/www/html/Looma/mongo-dump/dump/looma) for mongo restore"
-            fi
-        else
-            echo " - - - SKIPPED: update Looma database"
-        fi
-
-
-    else
-        echo " - - - SKIPPED: installing new Looma code"
-    fi
-
-
-    #       copy new files into "content" directory
-    echo
-    echo "- preparing to copy new files into content directory"
-    echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
-    if [[ $input = "y" ]]
-    then
-
-       SECONDS=0
-
-       find /var/www/html/content -exec touch {} + ';'
-       if [[ $1 = "dryrun" ]]
-            then
-               rsync -az  --dry-run --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
-                result $?
-            else
-               rsync -az  --quiet   --size-only --perms --delete --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ /var/www/html/content
-                result $?
-            fi
-
-
-  echo "setting permissions on Looma code and content"
-  chmod -R 755 /var/www/html/Looma; chmod -R 755 /var/www/html/content
-
-       echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
-
-         # maps2018/ and ePaath/ are not updated in this script
-    else
-        echo " - - - SKIPPED: installing new Looma content"
-    fi
-
-# end of Internet section
-else
-    echo "****************************************************************"
-    echo 'ERROR: input must be "U" or "I"'
-    echo "****************************************************************"
-    exit 1
-fi
 
 echo
+echo "****************************************************************"
 echo "****************************************************************"
  if [[ $1 = "dryrun" ]]
  then
@@ -434,7 +320,7 @@ echo "****************************************************************"
     echo "DONE - LOOMA UPDATE: updating Looma code, database and content"
  fi
 echo "****************************************************************"
-echo
+echo "****************************************************************"
 echo
 echo
 

@@ -809,15 +809,20 @@ if (isset($_REQUEST["collection"])) {
             for ($i = 1; $i < sizeof($result); $i++) {
                 //echo "ft is " . $result[$i]['ft'] . "   ";
 
+               // if ( ! isset($result[$i]['fn']) && $result[$i]['ft'] != 'text') {echo "result is "; print_r($result[$i]); echo  "   \n\r";}
+
                /* CODE for case where there is no English version of a book (Hesperian) - DOESNT WORK
                if (!$result[$i]['dn']) {
                     $result[$i]['dn'] = $result[$i]['ndn'];
                     $result[$i]['fn'] = $result[$i]['nfn'];
                 }*/
 
-               /* add special case for epaath: check dn plus grade plus oleID to determine uniqueness
+                    //if( ! in_array($result[$i]['ft'], $specials)) echo "type is " . $result[$i]['ft'];
+
+                    /* add special case for epaath: check dn plus grade plus oleID to determine uniqueness
                */
-                if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2019') {
+                if ($result[$i]['ft'] !== $result[$i-1]['ft']) $unique[] = $result[$i];
+                else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2019') {
                     if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
                         $result[$i]['oleID'] !== $result[$i - 1]['oleID'] ||
                         $result[$i]['grade'] !== $result[$i - 1]['grade'])
@@ -826,11 +831,12 @@ if (isset($_REQUEST["collection"])) {
                 } else if (in_array($result[$i]['ft'], $specials)) {
                     if ($result[$i]['dn'] !== $result[$i - 1]['dn']) $unique[] = $result[$i];
                 /* for all other filetypes match on filename and fp (if present) to determine uniquess */
-                } else if (($result[$i]['fn'] !== $result[$i - 1]['fn'])
+                } else if ((isset($result[$i]['fn'])
+                    && isset($result[$i-1]['fn'])
+                        && $result[$i]['fn'] !== $result[$i - 1]['fn'])
                     || (isset($result[$i]['fp'])
-                        && (isset($result[$i - 1]['fp'])
-                            && $result[$i]['fp'] !== $result[$i - 1]['fp'])))
-
+                        && isset($result[$i - 1]['fp'])
+                            && $result[$i]['fp'] !== $result[$i - 1]['fp']))
                     $unique[] = $result[$i];
                 //DEBUG echo sizeof($unique) . " unique results found      \n";
             }

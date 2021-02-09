@@ -162,16 +162,17 @@ function mongoCreateUniqueIndex($collection, $key) {
     return $doc;
 }
 
-exec('export PATH="/usr/local/bin/";mongo --version',$mongo_version);
+preg_match('/(\d\.\d\.\d)/',shell_exec('mongo --version'), $match);
+$mongo_version = $match[1];
+
 if ($mongo_version) {
-    preg_match('/\d\.\d\.\d/', $mongo_version[0], $matches);
-    $mongo_version = $matches[0];
-    $mongo_level = intval($mongo_version[0]);
+    $mongo_level = intval(substr($mongo_version,0,1));
 } else {
     $mongo_version = '2.0';
-    $mongo_level = 2;
+    $mongo_level = 4;
 }
-//echo 'mongo_version is ' . $mongo_version . '  $mongo_level = '. $mongo_level;
+
+//echo '$mongo_version is ' . $mongo_version . '     $mongo_level is '. $mongo_level;
 
 $dbhost = 'localhost';
 $dbname = 'looma';

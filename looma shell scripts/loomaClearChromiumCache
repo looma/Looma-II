@@ -12,4 +12,7 @@
 #   $ mv ~/.config/chromium/Default/ ~/.google/chromium/backup
 #####mv ~/.cache/chromium ~/.google/chromium/backup
 
-rm -r ~/.cache/chromium/Default/Cache
+if [ -d ~/.cache/chromium/Default ]
+  then
+          rm -r ~/.cache/chromium/Default
+  fi

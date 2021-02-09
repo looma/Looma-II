@@ -35,8 +35,9 @@ final class Versions
     const VERSIONS          = array (
   'composer/package-versions-deprecated' => '1.11.99@c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855',
   'jean85/pretty-package-versions' => '1.5.1@a917488320c20057da87f67d0d40543dd9427f7a',
-  'mongodb/mongodb' => '1.7.0@cdeff1d45e4da6c6f70fc495e8e8a628b026b6d7',
-  '__root__' => 'dev-master@f5ae3654a95d8bf5c17e73c4076c9792216910f0',
+  'mongodb/mongodb' => '1.8.0@953dbc19443aa9314c44b7217a16873347e6840d',
+  'symfony/polyfill-php80' => 'v1.22.0@dc3063ba22c2a1fd2f45ed856374d79114998f91',
+  '__root__' => 'dev-master@6143f3c85dc6b68217a9c750786b99b8a75c08a3',
 );
 
     private function __construct()

@@ -912,9 +912,12 @@ function openTextEditor (e) {
     if ($(e.target).closest('.textpreview')) {
         var textfile = $(e.target).closest('.textpreview').data('id');
         
-        window.open('./looma-edit-text.php?id=' + textfile );
-        //$('#text-editor iframe').attr('src','./looma-text-frame.php?id=' + textfile);
-        //$('#text-editor').show().focus();
+        //  to open in a new tab
+        //window.open('./looma-edit-text.php?id=' + textfile );
+        
+        // to open in the same tab
+        $('#text-editor iframe').attr('src','./looma-text-frame.php?id=' + textfile);
+        $('#text-editor').show().focus();
         
         //LOOMA.alert('right clicked text file with id: ' + textfile,0,false,function(){return;});
         return false;

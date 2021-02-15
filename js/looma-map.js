@@ -305,7 +305,10 @@ function loadAddOnLayers (layerData, information) {
                             console.log("error caught!");
                         }
                     }
-                    
+    
+               //DIKSHA       popText+="Wikipedia : <a href='../content/W4S/wp/1/"+imageData+".htm'>" + imageData +"</a><br>";
+    
+    
                     marker.bindPopup(popText,{className:'capital-popup', keepInView:true, width:600, minWidth:600, maxWidth:600});
                     
            // markers.addLayer(marker);

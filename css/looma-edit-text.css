@@ -63,8 +63,9 @@ button.result {
     /*zoom: 200%; */
     margin:0 auto;
     font-size:1.5em;
+    font-size:3.29vh;
     color:#091F48;
-    font-weight:bold;
+    font-weight:bold !important;
     overflow:hidden;
     white-space:nowrap;
     text-overflow: ellipsis;
@@ -74,6 +75,10 @@ button.result {
     padding: 0 1vw;
     border: 1px solid black;
     vertical-align: center;
+}
+#editor span {
+    font-weight:bold !important;
+    font-size:  inherit !important;
 }
 
 #editor div {

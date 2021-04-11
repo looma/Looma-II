@@ -37,9 +37,6 @@ define ("CLASSES", 8);
         //$classes = $textbooks_collection->distinct("class");
         $classes = mongoDistinct($textbooks_collection, "class");
 
-        //print_r($classes);
-        //echo sizeof($classes) . " Classes ";
-
         for ($i = 1; $i <= sizeOf($classes); $i++) {
             echo "<button type='button' class='class' id=class$i>";
             //echo "<div class='little'>"; keyword("Grade"); echo "</div>";

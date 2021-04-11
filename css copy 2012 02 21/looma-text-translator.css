@@ -1,0 +1,60 @@
+
+#title {
+    position:absolute;
+    top:13vh;
+    left:2vw;
+    height:10vh;
+    width:33vw;
+    max-height:10vh;
+    max-width:33vw;
+    
+    text-align:center;
+    font-size:0.9em;
+}
+
+#english {
+    position:absolute;
+    top:24vh;
+    left:2vw;
+    height:17vw;
+    width:33vw;
+    max-height:17vw;
+    max-width:35vw;
+    overflow:hidden;
+    
+    border:1px solid black;
+    background-color:white;
+    text-align:center;
+    font-size:0.9vw !important;
+    font-weight:bold;
+}
+
+#english * {font-size:0.9vw !important;}
+
+.file-cmd:disabled {font-color:red;}
+
+.btn-toolbar {
+    text-align:center;
+    margin-left:33vw;
+    color:black;
+}
+
+
+#editor {
+    margin-left:35vw;
+    height:33vw;
+    max-height:33vw;
+    width:58vw;
+    max-width:58vw;
+    white-space: nowrap;
+  /*  font-size:1.7vw !important;*/
+    /*line-height:1.4em;*/
+    
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+}
+#editor * {
+    font-size:1.75vw !important;
+    white-space: nowrap;
+}

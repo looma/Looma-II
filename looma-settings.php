@@ -76,7 +76,7 @@ Description:  for Looma 2
              </a>
 
              <a href="looma-dictionary-autogen-editor.php">
-                 <button id="speechtest" class="exec-control" >Dictionary Editor</button>
+                 <button id="dictionaryeditor" class="exec-control" >Dictionary Editor</button>
              </a>
 
              <br>
@@ -86,35 +86,6 @@ Description:  for Looma 2
              <button id="shutdown" class="looma-control-button">
                  <!-- <span class="xlat">To shutdown Looma type Crtl-W on a keyboard</span> -->
              </button>
-            <br><br>
-
-
-             <div id="voicelist" class="settings-control">
-                 <span>Change voice of Looma speaking:  </span>
-                 <select id="voices">
-                     <option data-engine="mimic" class="voice" id="cmu_us_aup"  value="cmu_us_aup">   Indian male (aup) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_awb"  value="cmu_us_awb">   Scottish male (awb) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_bdl"  value="cmu_us_bdl">   US male (bdl) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_clb"  value="cmu_us_clb">   US female (clb) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_aew"  value="cmu_us_aew">   US male (aew) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_ahw"  value="cmu_us_ahw">   German male (ahw) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_axb"  value="cmu_us_axb">   Indian female (axb) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_eey"  value="cmu_us_eey">   US female (eey) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_fem"  value="cmu_us_fem">   German male (fem) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_gka"  value="cmu_us_gka">   Indian male (gka) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_jmk"  value="cmu_us_jmk">   US male (jmk) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_ksp"  value="cmu_us_ksp">   Indian male (ksp) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_ljm"  value="cmu_us_ljm">   US female (ljm) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_rms"  value="cmu_us_rms">   US male (rms) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_rxr"  value="cmu_us_rxr">   US male (rxr) </option>
-                     <option data-engine="mimic" class="voice" id="cmu_us_slt"  value="cmu_us_slt">   US female (slt) </option>
-                     <option data-engine="mimic" class="voice" id="mycroft_voice_4.0"  value="mycroft_voice_4.0">   English male (mycroft) </option>
-                 </select>
-             </div>
-
-             <a href="looma-speech-test.php">
-                 <button id="speechtest" class="settings-control">Speech Test</button>
-             </a>
 
              <br><div id="themelist" class="exec-control">
                  <span>Change theme of Looma's pages:  </span>
@@ -139,6 +110,23 @@ Description:  for Looma 2
                          <img class="thumb" src="images/theme-blue-green.png" > </option>
                  </select>
              </div>
+             <br><br>
+             <div >
+                 <div id="voicegender">
+                     <span>Female or male voice</span>
+                     <input type='radio' name='gender' value='cmu_us_axb' class='gender filter-radio black-outline' id='female' checked>
+                     <label class='filter-label' for='gender'>Female</label>
+                     <input type='radio' name='gender' value='cmu_us_aup' class='gender filter-radio black-outline' id='male'>
+                     <label class='filter-label' for='gender'>Male</label>
+                 </div>
+                 <div id="speechtestdiv">
+                     <a href="looma-speech-test.php">
+                        <button id="speechtest" class="settings-control exec-control">Speech Test</button>
+                    </a>
+                 </div>
+             </div>
+
+
          </div>
 
 

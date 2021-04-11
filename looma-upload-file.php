@@ -1,9 +1,9 @@
 <?php
 function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
-
+function loginLevel() { return $_COOKIE['login-level'];}
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
-$loggedin = isLoggedIn(); if (!$loggedin) header('Location: looma-login.php');
-error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+$loggedin = isLoggedIn(); if (!$loggedin && loginLevel() !== 'exec' && loginLevel() !== 'admin') header('Location: looma-login.php');
+error_log("Starting Content Import session. logged in as: " . $loggedin . " at login level: " . loginLevel());
 ?>
 
 <!doctype html>
@@ -38,9 +38,9 @@ require_once ('includes/mongo-connect.php');
 
         <div id="search-bar" class="inner-div">
             <p class="hint">This tool is used to import media files into Looma</p>
-            <p class="hint">1. Enter filename and thumbnail filename to upload</p>
-            <p class="hint">2. Enter display name, keywords, etc for the file in right hand panel</p>
-            <p class="hint">3. Click "Submit" to make the changes</p>
+            <p class="hint">&nbsp;&nbsp;&nbsp;1. Enter filename and thumbnail filename to upload</p>
+            <p class="hint">&nbsp;&nbsp;&nbsp;2. Enter display name, keywords, etc for the file in right hand panel</p>
+            <p class="hint">&nbsp;&nbsp;&nbsp;3. Click "Submit" to import and register the new media file</p>
         </div>
 
         <div id="outerResultsDiv"></div>
@@ -52,13 +52,11 @@ require_once ('includes/mongo-connect.php');
                     <label>Click to Select New File :
                         <span id="filename"></span>
                         <input type="file" name="upload"       id="upload"       form="changes">
-
                     </label>
                     <br><br><br>
                     <label>Click to Select Thumbnail:
                         <span id="thumbname"></span>
                         <input type="file" name="upload-thumb" id="upload-thumb" form="changes">
-
                     </label>
                 </div>
 
@@ -115,7 +113,7 @@ require_once ('includes/mongo-connect.php');
                 /**************************************/
                 /********* File Source  Fields ********/
                 /**************************************/
-                echo "<div id='source-changes' class='chkbox-filter   '>
+                echo "<br><div id='source-changes' class='chkbox-filter   '>
                                 <span>Source:</span>";
 
                 $sources = array(
@@ -135,23 +133,21 @@ require_once ('includes/mongo-connect.php');
                 /**************************************/
                 /*********** Grade Dropdown  **********/
                 /**************************************/
-                echo "<div id='textbook-changes'>";
+                echo "<br><div id='textbook-changes'>";
                 echo "<span id='grade-changes' >
-                                <span class='drop-menu'>Grade:<select id='grade-chng-menu' class='chapter-changes black-border'  form='changes' name='class'>
+                                <span class='drop-menu'><label>Grade:</label><select id='grade-drop-menu' class='chapter-changes black-border'  form='changes' name='class'>
                                     <option value='' selected>Select...</option>";
                 for($x = 1; $x <= 8; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";}
 
                 echo "</select></span>";
-
-
                 echo "</span>";
 
 
                 /**************************************/
                 /********* Subject Dropdown  **********/
                 /**************************************/
-                echo "<span id='subject-changes' >
-                      <span class='drop-menu'>Subject:<select id='subject-chng-menu' class='chapter-changes black-border' name='subj' form='changes'>
+                echo "<br><span id='subject-changes' >
+                      <span class='drop-menu'><label>Subject:</label><select id='subject-drop-menu' class='chapter-changes black-border' name='subj' form='changes'>
                         <option value='' selected>Select...</option>";
 
                 $classInfo = array(
@@ -168,20 +164,18 @@ require_once ('includes/mongo-connect.php');
                 /**************************************/
                 /********* Chapter Dropdown  **********/
                 /**************************************/
-                echo "<span id='chapter-changes' >
-                        <span class='drop-menu'>Chapter:<select id='chapter-chng-menu' class='chapter-changes black-border' name='chapter' form='changes'>
+                echo "<br><span id='chapter-changes' >
+                        <span class='drop-menu'><label>Chapter:</label><select id='chapter-drop-menu' class='chapter-changes black-border' name='chapter' form='changes'>
                                 <option value='' selected>Select...</option>
                       </select></span>";
                 echo "</span>";
 
                 echo "<button class='chng-clear' id='textbook-clear'>X</button>";
                 echo "</div>";
-
                 ?>
 
-                <button id="submit-changes" class="edit-control" form='changes'>Submit</button>
+               <br> <button id="submit-changes" class="edit-control" form='changes'>Submit</button>
             </form>
-
         </div>
 
         <div id="details" class="popup"></div>
@@ -193,7 +187,6 @@ require_once ('includes/mongo-connect.php');
 
     <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
 
-
     <?php   include('includes/looma-control-buttons.php');?>
     <button class='control-button' id='dismiss' ></button>
 
@@ -204,6 +197,7 @@ require_once ('includes/mongo-connect.php');
 <script src="js/tether.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 
-<script src="js/looma-upload-file.js"></script>
+    <script src="js/looma-search.js"></script>
+    <script src="js/looma-upload-file.js"></script>
 
 </body>

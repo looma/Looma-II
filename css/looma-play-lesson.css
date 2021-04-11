@@ -42,8 +42,6 @@ body {
     padding: 0;
 }
 
-
-
 #fullscreen:fullscreen {
     height:100vh;
     margin:auto;
@@ -93,9 +91,6 @@ body {
     width:100%;
     max-height:100%;
     max-width:100%;}
-
-
-
 
 
 #controlpanel {
@@ -238,6 +233,7 @@ span.hint {
     border:2px solid black;
     border-radius:5px;}
 
+
 button.activity {display:none;}
 
 button.lesson-element {
@@ -363,11 +359,18 @@ span#lesson-name {
     display:block;
 }
 
-#fullscreen .text-display {
+#editor {
     height:100%;
+    width:82%;
+    margin:0 auto;
+    font-size:2.5vw;
+}
+
+.text-display {
+    height:100%;
+    width:90vw;
     /*zoom: 250%;*/
-    /*font-size:2.4em;*/
-    font-size:2.4vw;
+    font-size:2.75vw;
     margin:0 auto;
     overflow: hidden;
     /*background-color: #091F48;  */
@@ -375,9 +378,15 @@ span#lesson-name {
     /*font-size: 20px;*/
     
     overflow:hidden;
-    white-space:nowrap;
+    white-space:nowrap !important;
     text-overflow:ellipsis;
     
+}
+
+.text-display p,
+.text-display span{
+    margin:0 !important;
+    padding:0 !important
 }
 
 .text-display:fullscreen {

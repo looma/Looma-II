@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"b205abac27144e37a060cda58b7daeaa","collectionName":"dictionary20201011"}
+{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"looma.dictionary20201011"}]}

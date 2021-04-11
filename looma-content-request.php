@@ -43,7 +43,7 @@ function info($msg,$id, $type) {  // creates an information popup
         <div id="settingsDiv">
             <form id='settingsForm' name='settings'>
                 Display name * :
-                <?php info("[Enter a display name for this item","q-dn", "settings"); ?>
+                <?php info("Enter a display name for this item","q-dn", "settings"); ?>
                 <input id='dn-setting' class='settings-filter black-border' name='dn' type='text'></input>
 
                 Nepali display name:

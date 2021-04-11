@@ -1,0 +1,300 @@
+
+
+.center{
+    text-align: center;
+}
+#fullscreen {
+    background-color: #091F48;
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}
+
+button.show-keyboard {
+    display:none;
+}
+
+
+#message-correct{
+    position: absolute;
+    width:99%;
+    font-size: 2em;
+    color: green;
+    font-style:bold;
+    margin:auto;
+    text-align:center;}
+
+#message-wrong{
+    color: red;
+    font-style:bold;
+    position: absolute;
+    width:90%;
+    margin:auto;
+    text-align:center;
+}
+
+#grade {
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    padding:5px;
+}
+
+#topic {
+    position: absolute;
+    left:45%;
+    top: 5%;
+    padding:5px;
+}
+
+#problem-count {
+    text-align:center;
+    position:absolute;
+    top:5%;
+    right:5%;
+    padding:5px;
+}
+
+div#work-area{
+    position: absolute;
+    background-color: white;
+    border:solid black 1px;
+    border-radius: 4px;
+    left: 25%;
+    top: 20%;
+    height: 75%;
+    width: 50%;
+}
+
+#num1{
+    position: absolute;
+    font-size: 4em;
+    right:30%;
+    top:20%;
+    width:50%;
+    color: black;
+    text-align:right;
+}
+
+#num1.div{
+    width:10vw;
+    left:23%;
+    top: 40%;
+}
+
+#num2{
+    position: absolute;
+    font-size: 4em;
+    right: 30%;
+    top: 40%;
+    width:50%;
+    color:black;
+    text-align:right;
+}
+
+#num2.div{
+    width:20vw;
+    text-align:left;
+    left: 52%;
+    top: 40%;
+}
+
+#operation{
+    position: absolute;
+    font-size: 4em;
+    right: 70%;
+    top: 40%;
+    color:black;
+}
+
+input#answer{
+    position: absolute;
+    right: 28%;
+    top: 60%;
+    width: 50%;
+    padding: 0 7px 0 0;
+    /*direction:RTL;*/
+    font-size: 4em;
+    color: black;
+    text-align:right;
+    border:3px solid blue;
+    border-radius: 3px;
+}
+
+
+hr {
+    border: 0;
+    height: 6px;
+    background: black;
+    color:black;
+}
+
+hr#answerLine{
+    position: absolute;
+    width:35%;
+    left: 37%;
+    top: 53%;
+}
+
+#division-symbol {
+    position:absolute;
+    left: 45%;
+    top: 38%;
+    width: 25%;
+}
+
+hr#horizontalLineDiv{
+    position: absolute;
+    left: 50%;
+    top: 36%;
+    width:25%;
+}
+
+#verticalLineDiv{
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    border-left:thick black solid;
+    height:15%;
+}
+
+button-5.active {
+    background-color:#ffffff;
+    background-image: url("images/times-white.png");
+}
+
+.button-group {
+    width:90%;
+    height:10%;
+    position:absolute;
+    bottom: 5%;
+    margin:auto;
+    text-align:center;
+}
+
+.button-group button {
+    position:absolute;
+    height:80%;
+    width:30%;
+    font-size:2.5em;
+}
+
+button#enter{
+    height:100%;
+    position: absolute;
+    left: 25%;
+    overflow:hidden;
+}
+
+button#help{
+    height:80%;
+    position: absolute;
+    left: 5%;
+    overflow:hidden;
+}
+
+button#clear{
+    height:100%;
+    position: absolute;
+    left: 60%;
+    overflow:hidden;
+}
+
+button#next{
+    position: absolute;
+    width:12%;
+    height:15%;
+    right: 10%;
+    top: 50%;
+    font-size:2em;
+}
+
+button#homePage{
+    position: absolute;
+    width:12%;
+    height:10%;
+    left: 10%;
+    top: 50%;
+    font-size:2em;
+}
+
+h2, h3 {font-size:3em;}
+
+/* styling for HELP calculator */
+
+#calculator{
+    position: absolute;
+    visibility:hidden;
+    z-index: 1;
+    background-color: #778899;
+    left: 5%;
+    top: 30%;
+    height: 40%;
+    width: 25%;
+    margin:1%;
+}
+
+.numButton{
+    border: solid white 2px;
+    border-radius: 5px;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 2em;
+    color: black;
+    margin: 5px;
+    background-color:#ff33cc;
+}
+
+.opButton, #ButtonEquals{
+    background-color: #ff66ff;
+}
+
+#calcDisplay{
+    height: 15%;
+    width: 90%;
+    margin:5px auto;
+    padding: 5px;
+    background-color: #8FBC8F;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 3em;
+}
+
+#calcTable{
+    width:90%;
+    height:80%;
+    margin:auto;
+    padding:5px;
+    text-align:center;
+    border-spacing: 15px;
+}
+
+#calcTable td {
+    margin:15px;
+    border-spacing: 10px;
+    border-radius: 7px;
+    border:solid #FFFF00 2px;
+    border-collapse:separate;
+}
+
+#clrBtn{
+    background-color: #cc66ff;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 2em;
+    color: black;
+    margin: 5px;
+    
+}
+
+#pmBtn{
+    background-color: #cc66ff;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 2em;
+    color: black;
+    margin: 5px;
+}
+
+

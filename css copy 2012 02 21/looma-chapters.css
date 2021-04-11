@@ -1,0 +1,59 @@
+body {
+    display:grid;
+    grid-template-rows:    [top] 1fr [body] repeat(9, 1fr) [toolbar] 1fr [bottom];
+    grid-template-columns: [left] 1fr [right];
+}
+
+#header {
+    grid-row: 1 ;
+    grid-column: left/right;
+}
+ h1.title {
+     font-size:4em;
+     margin-top:2vh;
+ }
+#main-container-horizontal {
+    grid-row:2/toolbar;
+    position:relative;
+    text-align:center;
+    width:100%;
+    display:grid;
+    grid-template-columns: [left] repeat(2, 3fr 1fr 1fr) [right];
+}
+
+#main {
+    grid-column: left/right;
+}
+
+button {height:9vh;
+    max-height:9vh;
+    margin:10px 12px;
+    font-size: 3.2vh;}
+
+button.en-chapter {grid-column:1;}
+button.en-lesson {grid-column:2;font-size: 2.5vh;}
+button.en-activities {grid-column:3;font-size: 2.0vh;}
+button.np-chapter {grid-column:4;}
+button.np-lesson {grid-column:5;font-size: 2.5vh;}
+button.np-activities {grid-column:6;font-size: 2.0vh;}
+
+button.heading {
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1958cc), color-stop(100%,#1c62e3));
+    color: yellow;
+    font-size: 3.0vh;
+}
+
+button.heading.en-chapter div, button.heading.np-chapter div
+{
+    float:right;
+    padding-right:3vw;
+    padding-top:1.35vh;
+
+}
+button.heading.en-activities {font-size:2.2vh;}
+
+button.section {
+    /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4981e9), color-stop(100%,#6091eb));*/
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3371e6), color-stop(100%,#77a1ee));
+    color: yellow;
+}

@@ -82,6 +82,14 @@
 				<?php tooltip("Web") ?>
 			</button>
 
+
+            <!-- EDIT MADE  on line 20 to include video recorder button on the toolbar w/ image -->
+            <!--VIDEO RECORDER-->
+            <button hidden onclick="parent.location.href = 'looma-video-recorder.php';" class="toolbar-button">
+                <img draggable="false" src="images/video_record.png"  height = "80%" >
+                <?php tooltip("Home") ?>
+            </button>
+
             <!--SETTINGS-->
 			<button onclick="parent.location.href = 'looma-settings.php';" class="toolbar-button ">
 				<img draggable="false" src="images/settings.png"  height = "80%" >

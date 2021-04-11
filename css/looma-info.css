@@ -63,11 +63,10 @@ h5 {
      bottom:5vh;
  }
  
- .screensize, .bodysize, .ip{
-     /*color:black;*/
+ .screensize, .bodysize, .ip, .system, .mongo-version{
      vertical-align:middle;
      text-align:left;
-     font-size: 0.5em;
+     font-size: 0.8em;
  }
  
  .ip {font-size:1em;}

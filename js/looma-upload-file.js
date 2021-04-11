@@ -12,7 +12,7 @@ Revision: Looma 3.0
 'use strict';
 
 var loginname, loginlevel;
-
+/*
 /////////////////////////////
 /////  setRootKeyword()    /////
 /////////////////////////////
@@ -141,7 +141,7 @@ function showChapterDropdown($div, $grades, $subjects, $chapters) {
             'html'
         );
 };  //end showChapterDropdown()
-
+*/
 
 function legalThumb (file, thumb) {
     if (!file || !thumb) return false;
@@ -224,11 +224,11 @@ $(document).ready(function() {
         $('#filename').text( $(this).val().replace('C:\\fakepath\\',''));
     });
     
-    
     $("#upload-thumb").on('change', function() {
         $('#thumbname').text( $(this).val().replace('C:\\fakepath\\',''));
     });
     
+    // NOTE: add onchange (grade-chng-menu) -> clear subject and chapter
     $("#grade-chng-menu, #subject-chng-menu").change(function() {
         showChapterDropdown(null, $('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
     });
@@ -236,13 +236,12 @@ $(document).ready(function() {
     $('#dn-clear').click(       function(e) {e.preventDefault(); $('#dn-changes').val(""); });
     $('#keyword-clear').click(  function(e) {e.preventDefault(); $('.keyword-changes').val(""); });
     $('#source-clear').click(   function(e) {e.preventDefault(); $('.source-changes').prop('checked', false); });
-    $('#textbook-clear').click( function(e) {
-        e.preventDefault(); $('.chapter-changes').val(""); });
+    $('#textbook-clear').click( function(e) {e.preventDefault(); $('.chapter-changes').val(""); });
     
     $('#submit-changes').click( submitChanges );
     
     $('#dismiss').off('click').click( function() {
-        LOOMA.confirm('Leave Activity Editor Page?',
+        LOOMA.confirm('Leave Import Content Page?',
             function() {window.history.back();},
             function() {return;});
     });

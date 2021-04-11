@@ -1,0 +1,42 @@
+/* based on Hope Hahn's proposed style sheet - Feb 2016
+ */
+
+ body {
+	background-color: #ffffff;
+	color:#fdd008;
+}
+
+button {
+	background-color: #d76126;
+	color:#f9f8f7;
+	border: 2px solid black;
+	border-radius: 5px;
+	font: bold 3em Helvetica;
+	cursor: pointer;
+    background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.2) 51%, rgba(255, 255, 255, 0.3) 100%); /* Chrome10+,Safari5.1+ */
+    box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+button:hover {
+	background-color:#dec5b8;
+	color: #939597;
+}
+
+.toolbar-button {background-color: #fdd008;}
+
+.toolbar-button:hover, .toolbar-button-vertical:hover {
+	transform: scale(1.2,1.2);
+	color:#939597;
+	border: 2px solid white;
+}
+
+h1 {font-size: 72pt;}
+h2 {font-size: 48pt;}
+h3 {font-size: 24pt;}
+h4 {font-size: 12pt;}
+
+button.active {
+    background:none;
+    background-color: #080;
+    color:yellow;
+}

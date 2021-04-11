@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"9bcf3861fafc4719a4554dfb460aff4a","collectionName":"gamesOLD"}
+{"options":{},"indexes":[{"ns":"looma.gamesOLD","v":1,"key":{"_id":1},"name":"_id_"}]}

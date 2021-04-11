@@ -1,0 +1,1004 @@
+/*
+LOOMA css file
+Filename: looma-edit-lesson.css
+Description:
+Associated code files:
+Programmer name: SCU
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date:
+Revision: Looma 2.0.x
+*/
+
+html, body {margin:0;padding:0;height:100%;}
+
+body {
+    box-sizing: border-box;
+    background-color:#e3e3e3;
+    color:black;
+    font-size: 20px;
+}
+p {
+    font-size:18px;
+    line-height:20px;
+    margin-top:0px;
+    margin-bottom:0px;
+}
+#main-container{
+    padding:1vh 1vh 1vh 1vh;
+    display:grid;
+    grid-gap:1vh;
+    grid-template-columns: 30vw 58vw 5vw 5vw;
+    grid-template-rows: 5vh 22vh 53vh 15vh;
+    background-color:lightgray;
+    
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    color:black;
+}
+#main-container > div {
+    border-radius:4px;
+}
+#container {
+    width: 100%;
+    position: relative;
+}
+#header {
+    grid-column: 1/-1;
+    grid-row: 1;
+    vertical-align:middle;
+    background-color: #F2C01B;
+}
+#header span {margin-bottom: 6px;
+    float:left;
+}
+
+#header img {float:left;}
+
+#title {
+    float:left;
+    padding-left:3vw;
+}
+
+#logo {height:5vh;}
+
+
+td {
+    padding:0;
+    text-align:left;
+}
+
+td button{
+    margin:0;
+}
+
+
+span.hint {
+    float:left;
+    margin:5vh 0 0 10vh;
+    color:#aaa;
+    font-size:2em;
+    z-index:-1;
+}
+
+div.hint {
+    padding:10vh;
+    color: #FF0000;
+    font-weight:bold;
+    font-size:2em;
+}
+
+.admin, .template-cmd{
+    display:none;
+}
+#cmd-btn {
+    visibility: visible;
+    background-color: #fff;
+    /*padding: 10px;*/
+    color: #000;
+    width: 100%;
+    height: 6vh;
+}
+#navbar {
+	background-color: #dabd1b;
+	padding: 5px;
+	height: 7vh;
+	color:white;
+	padding-right:20px;
+}
+#titleString {
+	position:relative;
+	float: left;
+	padding-left: 100px;
+	font-size: 24pt;
+}
+
+#logo {
+	position: relative;
+	float: left;
+	width: 10vw;
+	height:100%;
+	margin-left: 2%;
+}
+
+.navbutton {
+	float:right;
+	margin-right:1%;
+	z-index:100;
+}
+
+#activityName {
+	width: inherit;
+}
+
+#search-bar {
+    grid-column: 1/-1;
+    grid-row: 2;
+    position-relative;
+    background-color: white;
+    font-size:2vh;
+}
+
+.all-transparent { /*makes screen transparent*/
+    opacity: .3;
+}
+
+#search input {
+    font:inherit;
+}
+
+/********** Query Bar (search, filter, results) ************/
+
+/*
+.textBox {
+	font-family: Helvetica;
+	font-size: 0.75em;
+	width: 10vw;;
+	padding: 3px;
+	border-radius:0.313em;
+	display:inline-block;
+}
+
+#searchString {
+	margin-left: 3%;
+    margin-bottom: 1.5%;
+    
+    vertical-align: middle;
+	width:15vw;
+}
+
+#div_search {
+    float: left;
+    margin:auto;
+    text-align:left;
+    position: relative;
+    padding:0px 2px 2px 16px;
+    line-height: 2px;
+
+	width: 12vw;
+	display:inline;
+}
+
+#search_label {
+	display: inline-block;
+}
+
+#dropdown_grade {
+	font-size: 20px;
+	display:inline;
+}
+
+#dropdown_subject {
+	font-size: 20px;
+}
+
+#dropdown_chapter {
+	font-size: 20px;
+	width: 30vw;
+	max-width; 30vw;
+}
+
+#dropdown_section {
+	font-size: 20px;
+}
+
+#div_grade {
+    display: none;
+	float: left;
+	position: relative;
+    width: 12vw;;
+    padding:2px;
+	line-height: 2px;
+	padding-top: 10px;
+}
+
+#div_subject {
+    display: none;
+	float: left;
+	position: relative;
+	width: 25vw ;
+    padding:2px;
+    line-height: 2px;
+	padding-top: 10px;
+}
+
+#div_chapter {
+    display:none;
+	float: left;
+    position: relative;
+    padding:2px;
+
+	line-height: 2px;
+	padding-top: 10px;
+}
+
+#dropdown_chapter {
+    display:none;
+    float:right;
+}
+
+#div_filetypes {
+    width: 50vw;;
+    float: left;
+    padding:0px 0px 0px 0px;
+    margin:auto;
+    text-align:left;
+}
+
+#div_categories {
+    float:left;
+    width:25vw;
+    margin:auto;
+    text-align:left;
+    font-size: 0.9em;
+    padding: 0 0;
+}
+
+#search select {
+    display:inline;
+    vertical-align: middle;
+}
+*/
+
+#search span.typ-chk[data-id="image-chk"] {display:inline-block !important;}
+#search span.typ-chk[data-id="video-chk"] {display:inline-block !important;}
+#search span.typ-chk[data-id="pdf-chk"]   {display:inline-block !important;}
+#search span.typ-chk[data-id="text-chk"]  {display:inline-block !important;}
+
+input {
+    background-color:#f8f8f8;
+    border:1.75px solid #666;}
+
+#submit_button {
+	height: 55px;
+	float: right;
+	width:60px;
+	font-size:2em;
+	position: relative;
+	margin-top: 0px;
+	margin-right: 1%;
+}
+
+#clear_button {
+	height: 55px;
+	float: right;
+	position: relative;
+	margin-top: 0px;
+	/*margin-right: 2%;*/
+	/*width: 80px;*/
+}
+
+#select_video {
+	position: relative;
+	margin: 0 auto;
+}
+
+.filter_label p, .filter_label {
+	font-size:1.2em;
+	text-align:left;
+	padding-right: 6px;
+	vertical-align: middle;
+	margin-left: 1vw;
+	/*line-height:6px;*/
+}
+
+.filter_checkbox, .filter_radio{
+    zoom:1.5;
+}
+
+.textdiv {
+/*	min-width:250px;
+*/	float:left;
+}
+
+.buttondiv {
+    float:left;
+    padding-left: 2vw;
+	/*max-width:100px;*/
+}
+
+.add {
+    float:right;
+}
+
+.preview {
+    float:right;
+}
+
+.textpreview {
+    height:100%;
+    /*background-color: #091F48;*/
+}
+
+#del_video {
+	margin-left: 1vw;
+	vertical-align: middle;
+}
+
+#del_label {
+	margin: .25vw;
+	vertical-align: middle;
+}
+
+#del_div {
+	vertical-align: middle;
+	font-size: xx-large;
+}
+
+
+/*************** Search Results Module ***********************/
+#outerResultsDiv {
+    grid-column: 1;
+    grid-row: 3;
+    background-color: white;
+	vertical-align:top;
+	overflow:hidden;
+}
+
+#innerResultsMenu {
+    height:10%;
+    z-index:1;
+	display:block;
+	padding:5px;
+}
+#innerResultsMenu a {
+	color:#000;
+	text-decoration:none;
+	text-align:center;
+	margin-left:10px;
+	margin-right:10px;
+    font-size:1.4em;
+}
+
+#innerResultsMenu a:hover {
+	color:#2E3192;
+	font-weight:bold;
+}
+
+#innerResultsDiv {
+	overflow-y:auto;
+	height:90%;
+}
+
+.result_ft, .result_ID {
+    font-size:0.7em;
+    font-style:normal;
+}
+
+
+/*#outerResultsDiv {
+  /*min-height:120px;
+  width:90px;
+  float: left;
+  display:inline-block;
+  margin: auto;
+  padding: 20px;
+  width: 30%;
+  height:500px;
+  background: gray;
+  overflow-y:auto;
+  border-radius: 5px;
+}*/
+
+#resultsDiv {
+	background:gray;
+	color:white;
+	border:none;
+
+	overflow-x:hidden;
+	overflow-y:auto;
+	height:450px;
+	font-size: 15px;
+
+}
+
+li:hover {
+	background-color: #fff;
+	color: black;
+	/*border-radius: 0.313em;*/
+	padding:0px;
+}
+
+/* .resultitem is the class of the divs that show up in results */
+.resultitem {
+	padding:3px;
+	border-bottom:1px solid #000;
+	line-height:11px;
+	overflow:auto;
+}
+
+.resultitem .remove {display:none;}
+
+.textdiv p {
+    min-width:10vw;
+    margin:0 auto;
+	/*margin-left:5px;*/ /*activity DN goes here*/
+}
+
+.resultsimg {
+	float:left;
+	width:7vw;
+	min-height:9vh;
+	max-height:9vh;
+	/*margin-right:10px;*/
+}
+
+#collectionTitle {
+/*	line-height:10px;
+*/}
+
+#displayAndTimeline {
+	margin-top: 30px;
+	right:2%;
+	vertical-align:top;
+    /* z-index: 1;*/
+}
+
+/*.add, .preview, .remove {
+	height:30px;
+	width:30px;
+}*/
+
+.result_activity_section {
+	overflow:hidden;
+	margin-top:30px;
+	margin-bottom:10px;
+}
+
+.result_chapter_section {
+	margin-top:30px;
+	margin-bottom:10px;
+	margin-left:100px;
+}
+
+/*.result_chapter_section:hover {
+	background-color:green;
+}*/
+
+.searchTitle {
+	font-size: 1rem;
+}
+
+/************* Preview module ***************/
+
+#previewpanel {
+    overflow-y:hidden;
+    overflow-x:hidden;
+    background: #fff;
+    vertical-align:top;
+    grid-column: 2/-1;
+    grid-row: 3;
+}
+
+#previewpanel #video-area {
+    height: 100%;
+    max-height: 100%;
+}
+
+#video-area #video-screen {height:85%;}
+
+.time{
+    position:absolute;
+    left:33vw;
+    padding:2px;
+    min-height:3vh;
+    min-width:5vw;
+    background-color:yellow;
+    border:2px solid black;
+    border-radius: 2px;
+    color:black;
+}
+#previewpanel #inserted-video {
+    height:85%;
+    max-height:85%;
+}
+
+#previewpanel .media-controls {
+    height:15%;
+    max-height:15%;
+}
+
+#previewpanel .mute, #previewpanel .play-pause {
+    width:3vh;
+    height:3vh;
+    margin-right:2vw;
+    background-color:white;
+    background-size: 100% 100%;
+}
+
+#preview-area {
+    overflow-y: hidden;
+    overflow-x: hidden;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    float: right;
+    /*position: relative;
+    float: right;*/
+    /*border-radius:15px;*/
+    vertical-align: top;
+    /* z-index: 1;*/
+    margin: 0 1vh 1vh 0;
+}
+
+$preview-area #preview-screen {height:100%;}
+
+.play-pause { background-image: url("../images/play-button.png"); }
+.mute       { background-image: url("../images/mute.png");}
+
+#preview-area object {
+    height:100%;
+}
+
+#preview-area p {
+    margin-top:10px;
+    margin-left:10px;
+}
+
+#displayImage {
+    max-height:60vh;
+}
+
+#clearPreview {
+	display: none;
+    position: absolute;
+    bottom: 25vh;
+    right: 1vw;
+    z-index: 2;
+}
+
+/************* Timeline module ***************/
+
+
+#timeline {
+    grid-column: 1/-1;
+    grid-row: 4;
+    background-color:white;
+    overflow-y:hidden;
+}
+
+#timelineDisplay {
+	width:100000px;
+	height:100%;
+    display:flex;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+}
+
+#results {
+	width: 80%;
+	min-height: 300px;
+}
+
+#timeline {
+	clear:both;
+}
+
+#timeline .activityDiv {
+    width:15vw;
+    overflow:hidden;
+    max-height: 100%;
+    float:left;
+    position: relative;
+}
+
+#timeline .textdiv{
+    height:50%;
+    width:45%;
+    float:left;
+    padding-left:3px;
+    display:block;
+    overflow:hidden;
+}
+
+#timeline .textdiv p {
+    font-size: 1em;
+    max-width:100%;
+}
+
+#timeline .textdiv .result_ID {
+    display:none;
+    font-size:0.75em;
+}
+
+#timeline .buttondiv {
+    float:left;
+}
+
+#timeline .buttondiv .add{
+    display:none;
+}
+
+#timeline .thumbnaildiv {
+    height:50%;
+    width:50%;
+    float:left;
+}
+
+
+
+.timelineTextDiv {
+	height:50%;
+	display:block;
+	overflow:hidden;
+}
+
+.timelineButtonDiv {
+}
+
+.timelineimg {
+	width:40px;
+	/*max-height:45px;*/
+	float:left;
+	margin-right:10px;
+}
+
+.time-popup {
+	display: none;
+	height: 4vh;
+	width: 8vw;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,.2);
+	font: 20px "Comic Sans MS",serif,bold;
+	background-color: mintcream;
+	position: absolute;
+}
+
+/* ************************ OPEN! ********************/
+
+#openLogo {
+	position: relative;
+	float: left;
+	width: 120px;
+	padding-left: 10px;
+	padding-top: 5px;
+}
+
+ul {
+	padding-left: 1.5%;
+}
+
+h3{
+	font-size: 30px;
+	margin-top:5px;
+}
+
+#openNavbar {
+	background-color: #dabd1b;
+	padding: 5px;
+	height: 75px;
+	color:white;
+	padding-right:20px;
+}
+
+#navbar p {
+	margin: auto;
+/*	padding-left: 15%;
+	padding-top: 5px;*/
+	font-size: 30px;
+	margin-left:200px;
+	font-weight:bold;
+	vertical-align:center;
+	margin-top:11px;
+	width: 600px;
+	margin-right: 0px;
+}
+
+#openForm {
+	text-align: center;
+}
+
+#btnSearch {
+	position: relative;
+	left:500px;
+}
+#btnNewLesson {
+	float:right;
+	width: 180px;
+	height: 40px;
+	margin-right: 2%;
+	margin-top: -28px;
+	white-space: normal;
+}
+
+#lessonDiv {
+	background-color:white;
+	color:black;
+	padding:2px;
+	margin:auto;
+	/*width:94%;*/
+	border:solid;
+	border-color: white;
+	border-width:3px;
+	/*border-radius: 10px;*/
+	overflow-y:scroll;
+	height: 70%;
+}
+.btnOpenTimeline {
+	margin-right: 15px;
+	margin-left: 15px;
+}
+.lessonEntry {
+	height: 50px;
+}
+
+/*.editPresent0, .editPresent1, .editPresent2 {
+	float: right;
+}*/
+/* ************************ PRESENT! ********************/
+#presentNavbar {
+	background: #D76126;
+	padding: 5px;
+	height: 45px;
+	color:white;
+	padding-right:20px;
+	margin-bottom: 0px;
+}
+
+#presentdisplaybox {
+	width: 100%;
+	height: 640px;
+	background: gray;
+	margin: 20 auto;
+	/*border-radius:10px;*/
+	margin-bottom: 0px;
+	margin-top: 0px;
+	/*margin-top: 28px;
+	margin-right: 25px;*/
+}
+#presentwrapper {
+
+	  /*min-height:50px; min-width:100px;
+	  display:inline-block;*/
+	  padding: 15px;
+	  width: 100%;
+	  margin: 0px auto;
+	  height:150px;
+	  /*margin-right: 25px;
+	  margin-top: 25px;*/
+	  overflow-x:scroll;
+	  overflow-y:hidden;
+	  background: darkgray;
+	  /*border-radius:0.313em;*/
+	  position:relative;
+}
+
+#presentTitle {
+	width: 25%;
+	padding-left: 3%;
+	display: inline-block;
+	margin-top: .8%;
+
+
+}
+
+#btnEdit {
+	float: right;
+	margin-right: 1%;
+	margin-top: -35px;
+}
+
+#btnOpen {
+	float: right;
+	margin-right: 1%;
+	margin-top: -35px;
+}
+
+/* ************************ INDEX && OPEN! ********************/
+#string {
+	font-family: Arial;
+	font-size: 20px;
+	height: 50px;
+	width: 250px;
+	margin-right: 30px;
+	background:white;
+	padding:10px;
+	/*border-radius:0.313em;*/
+}
+/* ************************ INDEX && PRESENT! ********************/
+.timelinediv {
+  min-height:100%;
+  width:10vw;
+  display:inline-block;
+  margin:2px 2px 0 0;
+  padding: 3px;
+  float: left;
+/*  font-size: 12px;*/
+  background: white;
+  border-radius: 5px;
+
+  /*max-height:90px;*/
+  /*border:1px solid #000;*/
+  background-color:#E8E8E8;
+}
+
+.timelinediv p {
+	font-size:12px;
+	line-height:14px;
+}
+.timeline{
+	width: 1500px;
+	height:100px;
+	position: absolute;
+}
+
+
+/* ************************ ALL! ********************/
+
+.hidden {
+	display:none !important;
+}
+
+a.heading {
+    font-size: 0.6em;
+}
+
+#titleDiv {
+	/*margin-top:-15px;
+	margin-bottom:-25px;
+	*/
+	height: 4vh;
+	text-align:right;
+	padding-right: 7vw;
+	vertical-align:middle;
+}
+
+#titleDiv p {
+	display:inline-block;
+}
+
+/*img {
+	width: 60px;
+}*/
+button {
+	display:inline;
+	/*color:white;
+	background:#2E3192;*/
+	border-radius:0.313em;
+	/*width: 90px;*/
+	height: 40px;
+	white-space: nowrap;
+	font-size: 20px;
+	margin-top: 3px;
+}
+li {
+	list-style-type:none;
+/*	padding-top: 20px;*/
+	padding-left: 10px;
+}
+ul {
+	padding-left: 0px;
+
+}
+
+li:hover {
+	background-color: #e3e3e3;
+/*	padding-top: 20px;*/
+	padding-left: 10px;
+
+	/*border-radius: 0.313em;*/
+/*	padding-top: 1.75%;
+*/}
+
+#commands {
+    top: 0vh;
+    vertical-align:middle;
+}
+
+/*************** Text Display ***************/
+#text-editor {
+	display: none;
+	z-index: 10;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+    top:0;
+    left:0;
+}
+
+#textframe {
+	background-color: transparent;
+}
+
+.all-transparent {
+	opacity: .1;
+}
+
+#padlock {
+    position:absolute;
+    right:1vw;
+    bottom:12vh;
+    height:3vh;
+    width: 3vh;
+    z-index:3;
+}
+
+#login-id {
+    z-index:3;
+    bottom:18px;
+}
+
+#filecommands {
+    right:3vw;
+}
+
+#media-controls #time {
+    float:left;
+    height:5vh;
+}
+
+
+#timelineDisplay .activityDiv {
+    width:15vw;
+    height:100%;
+    float:left;
+}
+
+#timelineDisplay .textdiv{
+    height:50%;
+    width:45%;
+    float:left;
+    padding-left:3px;
+    display:block;
+    overflow:hidden;
+}
+
+#timelineDisplay .textdiv p {
+    font-size: 1em;
+    max-width:100%;
+}
+
+#timelineDisplay .textdiv .result_ID {
+    display:none;
+    font-size:0.75em;
+}
+
+#timelineDisplay .buttondiv {
+    float:left;
+}
+
+#timelineDisplay .buttondiv .add{
+    display:none;
+}
+
+#timelineDisplay .thumbnaildiv {
+    height:8vh;
+    width:50%;
+    float:left;
+}
+
+#adjust {
+    position:absolute;
+    bottom:27vh;
+    right:3vw;
+    padding:4px;
+    background-color:yellow;
+    border:1px solid red;
+}
+
+#adjust span{
+    font-size:0.5em;
+}
+.adjust {
+    border:1px solid black;
+    border-radius:2px;
+    height:3vh;
+    font-size:0.5em;
+}

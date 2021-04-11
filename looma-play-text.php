@@ -17,8 +17,10 @@ Comments:
 	  include ('includes/header.php');
 	  include ('includes/mongo-connect.php');
 ?>
-    <link rel="stylesheet" href="css/looma-text-display.css">
+
     <link rel="stylesheet" href="css/looma-play-text.css">
+    <link rel="stylesheet" href="css/looma-text-display.css">
+
 </head>
 
 <body>
@@ -40,7 +42,10 @@ Comments:
                         $dn = $_REQUEST['dn'];
                         echo "<div id='the_dn' data-dn=" . rawurlencode($dn) . " hidden></div>";
                     };
-                echo "<div class='text-display'></div>";
+                echo "<div id='editor'>";
+                    echo "<div class='text-display'>";
+                    echo "</div>";
+                echo "</div>";
             echo "</div>";
             }
     ?>

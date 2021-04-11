@@ -96,7 +96,7 @@ $(document).ready (function() {
         rwdef = document.getElementById('rwdef'); if (rwdef) word += ', ' + rwdef.innerText;
     
         toSpeak = (selection ? selection : word);
-        console.log('VOCAB: speaking ', toSpeak);
+        console.log('Dictionary: speaking "' + toSpeak + '"');
         LOOMA.speak(toSpeak);
         
     }); //end speak button onclick function

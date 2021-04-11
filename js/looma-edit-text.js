@@ -21,8 +21,8 @@
   var $editor; //the DIV where the HTML is being edited
   var savedHTML; //savedHTML is textcheckpoint of HTML for checking for modification
   var loginname, loginlevel, loginteam;
-  var hovertimer;
-  
+  var previewtimer;
+
   /*  callback functions and assignments expected by looma-filecommands.js:  */
   callbacks['clear'] = textclear;
   callbacks['save'] = textsave;
@@ -47,7 +47,7 @@
   function textmodified()   { return (savedHTML !== $editor.html());}
   
   function textclear() {
-      setname("");
+      setname("", "");
       //currentid = "";
       $editor.html("");
       $('#preview').empty().hide();
@@ -57,7 +57,7 @@
   
   function textdisplay(response) {
       textclear();
-      setname(response['dn']);
+      setname(response['dn'], response['author']);
       $editor.html(response.data);
       textcheckpoint();
   }
@@ -80,15 +80,23 @@
       $('#txt-chk input').click(function() {
           return false;
       });
-  }
+      
+      // special case: if user wants OPEN TEMPLATE, do the search right away
+      //    returns ALL the text templates
+      if (currentcollection === 'text' && template) {
+          $('#filesearch #filesearch-ft').val('text-template');
+          $('#filesearch-collection').val(currentcollection);
+          $('#filesearch-submit').trigger('click');
+      };
+  }  // end textshowsearchitems()
 
   
   function openPreview (button) {
       $.post("looma-database-utilities.php",
-      
           {cmd: "openByID", collection: currentcollection, id:$(button).data('id'), ft: 'text'},
           function(response) {
               $('#preview').html(response['data']).show();
+              previewtimer = setTimeout(function(){ closePreview(); }, 15000);
           },
          'json'
       );
@@ -96,27 +104,30 @@
   
   function closePreview() {
         $('#preview').hide();
+        previewtimer = null;
   };
   
   $(document).ready(function() {
 
       $('#preview').hide();   // hide the preview window
       
-      //show #preview area when hover over a filesearch-results button  [NOT WORKING YET]
+      //show #preview area when hover over a filesearch-results button
       $('#filesearch-results').on('mouseover', 'button', function(){
           closePreview(); openPreview(this);
-          //hovertimer = setTimeout(function(){ closePreview(); }, 3000);
+         // hovertimer = setTimeout(function(){ closePreview(); }, 15000);
       });
-      $('#filesearch-results').on('mouseout blur',  'button', function(){hovertimer = null; closePreview();});
+      $('#filesearch-results').on('mouseout ',  'button', function(){
+          //hovertimer = null;
+          closePreview();
+      });
       $('.cancel-filesearch').click( closePreview ); // end cancelFilesearch()
       $('#filesearch-results').on('click', 'button', closePreview);
       
       $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
 
-      $editor = $('#editor'); //the DIV where the HTML is being edited
+      $editor = $('#editor .text-display'); //the DIV where the HTML is being edited
       $editor.wysiwyg();
       
-      $editor.on('paste',function(){return false;});
       
       document.execCommand('styleWithCSS', false, true);
       document.execCommand('fontSize',     false, 5);
@@ -132,6 +143,7 @@
       loginteam  = LOOMA.readCookie('login-team');
       
       if (loginname && (loginlevel === 'admin' || loginlevel === 'exec')) $('.admin').show();
+      if (loginteam !== 'exec') $editor.on('paste',function(){ if (loginteam !== 'management') return false;});
 
       
       //$('#main-container').disable();

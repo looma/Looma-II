@@ -53,9 +53,9 @@ $(document).ready (function() {
                 };
 */
 
-    $('#voices').change(function() {
+    $('.gender').change(function() {
                         var newVoice = encodeURIComponent(this.value);
-                        var engine = this.getAttribute('data-engine');
+                        var engine = 'mimic';
                         LOOMA.changeVoice(newVoice); // change voice when voice button is clicked
                         LOOMA.speak('the voice has been changed', engine, newVoice);
                     });

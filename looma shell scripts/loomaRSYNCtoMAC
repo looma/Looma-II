@@ -1,0 +1,183 @@
+#!/bin/bash
+#
+#  filename: loomaRSYNCtoMAC
+#       VERSION 4.0 for rysnc.net
+#       author: skip
+#       date:   FEB 2021
+#
+#  used to install or update a Looma code, database & content on a MAC
+#
+
+#   steps performed:
+#       sync new code files into existing Looma code
+#       use mongorestore to load new data into the existing mongo database
+#       sync new content files into "content" directory
+
+# display result of previous  command
+result () {
+    if [[ $1 -ne 0 ]]
+    then
+        echo "****************************************************************"
+        echo "ERROR: previous operation returned $1"
+    else
+        echo "****************************************************************"
+        echo "operation successful"
+    fi
+}
+
+pause() {
+   read -p "Paused, press [Enter] to continue"
+}
+
+#function to exec the rsync. global var $DRYRUNMODE is either "--dry-run" or ""
+dosync () {
+    FROM=$1
+    TO=$2
+
+    echo; echo "doing RSYNC from $FROM to $TO with parameter $DRYRUNMODE"
+    echo; echo "  *** *** if prompted for \"password:\" enter \"looma\"  *** ***"
+    echo ""
+
+    #NOTE: slash after FROM dir "Looma/" and no slash after TO "/var/www/html/Looma"
+    rsync -az  $DRYRUNMODE --size-only  \
+        --stats  --progress   \
+        --perms  --chmod=D755,F644 --chown=odroid:looma \
+        --exclude '.[!.]*' --delete --delete-excluded   \
+        -e "ssh"   \
+       $FROM  $TO
+
+}
+
+#
+echo
+echo
+echo "****************************************************************"
+echo "START LOOMA UPDATE: updating Looma code, database and content"
+echo "****************************************************************"
+echo "****************************************************************"
+echo
+
+if [[ $1 = "dryrun" ]]
+  then
+    DRYRUNMODE="--dry-run"
+  else
+    DRYRUNMODE=""
+fi
+
+CUMULATIVE=0
+
+#####################
+
+  echo "the Looma material will be installed at /var/www/html"
+      TODIR="/var/www/html"
+      FROMDIR="58191@usw-s008.rsync.net:../"
+
+###########################  do the transfers ###############
+
+
+    #       install new Looma code
+    echo
+    echo "****************************************************************"
+    echo "- preparing to install or update Looma code"
+    echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
+    if [[ $input = "y" ]]
+    then
+        #*************RSYNC*********************
+
+        SECONDS=0
+
+        #NOTE: slash after FROM dir "Looma/" and no slash after TO "/var/www/html/Looma"
+        dosync "${FROMDIR}Looma/"  "${TODIR}/Looma"
+
+        echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+        CUMULATIVE=$SECONDS
+
+        #clear browser cache so the new code files will be used
+        source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"
+    else
+        echo " - - - SKIPPED: installing new Looma code"
+    fi
+
+    #       install new Looma database
+    echo
+    echo "****************************************************************"
+    echo "- preparing to update Looma database"
+    echo "-   ***note: this will NOT erase any lesson plans already in the database"
+    echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
+
+    if [[ $input = "y" ]]
+    then
+
+            # [mongorestore doesnt update existing documents that have changes]
+            # to fix this, we use the following procedure:
+            #     temp save locally created documents (lessons and texts)
+            #     update all documents to latest version from the looma archive
+            #     then re-load the locally created documents
+            # mongoexport collections 'lessons' and 'text_files' to temp files
+            # drop db 'looma' so mongorestore from archives will update all documents in the db
+            # mongorestore db looma dump from looma archive on USB
+            # finally, mongoimport the temp files to collectons 'lessons' and 'text_files'
+            #      to re-instate locally created lessons and texts
+
+            mongoexport --db looma --collection lessons --out /tmp/lessonsFromMongo.tmp
+            mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
+
+            mongo --quiet looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
+
+            mongorestore --quiet --db looma /var/www/html/Looma/mongo-dump/dump/looma/
+
+            mongoimport --quiet --db looma --collection lessons --file /tmp/lessonsFromMongo.tmp
+            mongoimport --quiet --db looma --collection text_files --file /tmp/textsFromMongo.tmp
+
+            rm /tmp/lessonsFromMongo.tmp
+            rm /tmp/textsFromMongo.tmp
+
+            result $?
+
+    else
+        echo " - - - SKIPPED: installing new Looma database"
+    fi
+
+    #       copy new files into "content" directory
+    echo
+    echo "****************************************************************"
+    echo "- preparing to copy new files into content directory"
+    echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
+    if [[ $input = "y" ]]
+    then
+       SECONDS=0
+
+        #NOTE: slash after FROM dir "Looma/" and no slash after TO "/var/www/html/Looma"
+        dosync "${FROMDIR}content/"   "${TODIR}/content"
+
+        #dosync "${FROMDIR}maps2018/"  "${TODIR}/maps2018"
+        #dosync "${FROMDIR}ePaath/"    "${TODIR}/ePaath"
+
+        echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+
+    else
+        echo " - - - SKIPPED: installing new Looma content"
+    fi
+
+  echo "Total $(( ($SECONDS + $CUMULATIVE) / 60)) minutes and $(( ($SECONDS + $CUMULATIVE)  % 60)) seconds elapsed."
+
+# set permissions on Looma code and content
+
+  echo; echo "****************************************************************"
+  echo "setting permissions on Looma code and content"
+  chmod -R 755 /var/www/html/Looma; chmod -R 755 /var/www/html/content
+
+echo
+echo "****************************************************************"
+echo "****************************************************************"
+ if [[ $1 = "dryrun" ]]
+ then
+    echo "DONE - LOOMA UPDATE DRY RUN:  no files were changed"
+ else
+    echo "DONE - LOOMA UPDATE: updating Looma code, database and content"
+ fi
+echo "****************************************************************"
+echo "****************************************************************"
+echo
+echo
+

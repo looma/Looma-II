@@ -1,0 +1,636 @@
+/**********************
+Author: Luke Bowsher, Catie Cassani, Sun-Mi Oh, Meg Reinstra, Alexa Thomases
+Filename: looma-game.css
+Date: June 2018
+Description: formatting and styling for the game page
+***********************/
+
+/************MAIN FRAME*************/
+.container
+{
+  display: grid;
+  grid-template-columns: 85% 15%;
+  grid-template-rows: 8% 8%  22% 12% 40% 10%;
+  height: 100vh;
+  width: 100vw;
+    padding:0;
+    margin:0;
+  background-color: #091f48;
+}
+
+.header {
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+}
+
+#top {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+}
+
+#thegameframe {
+    grid-column: 1 / 2;
+    grid-row: 2 / 6;
+    border: 1px solid yellow;
+    overflow: hidden;
+    position:relative;
+}
+
+.toolbar {
+    grid-column: 1 / 3;
+    grid-row: 6 / 7;
+    height:100%;
+}
+
+#timer {
+    grid-column: 2 / 3;
+    grid-row: 2 / 4;
+    border: 1px solid yellow;
+}
+
+#scoreboard {
+    grid-column: 2 / 3;
+    grid-row: 4 / 6;
+    border: 1px solid yellow;
+    font-size:1em;
+}
+
+.teamnumber {
+    margin:5vh;
+    color:blue;
+    background-color:white;
+}
+
+.teamnumber:hover {
+    transform: scale(1.2,1.2);
+    color:blue;
+}
+
+.teamnumber.active {
+    color:white;
+    background-color:blue;
+}
+
+#gameframe {
+    height:100%;
+    width: 100%;
+}
+
+#game {
+    height:93%;
+    width: 100%;
+}
+
+#gameOverFrame {padding-top:20vh}
+
+#top {
+    font-size:1.5em;
+    height:7%;
+}
+
+
+#optionsframe {
+    grid-column: 1/3;
+    grid-row:2/5;
+    margin-top:25vh;
+ }
+
+.bigscore {
+  max-height: 15%;
+  max-width: 8%;
+}
+
+#scoreList h5 {font-size:3em;}
+
+#prompts {
+    display:inline-block;
+    float: left;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    width:20vw;
+    max-width: 35vw;
+}
+
+#responses {
+    display:inline-block;
+    float:left;
+    width:50vw;
+    max-width: 50vw;
+    margin: 2vh 2vw;
+}
+
+.prompt{
+     display: block;
+     min-height: 9vh;
+     margin: 10px;
+     max-width: 25vw;
+     min-width:25vw;
+     font-size:2em;
+}
+
+/* CP NEW (1) */
+.prompt.picture{
+    width: 11vw;
+    min-width:11vw;
+    height: 12vh;
+    margin:auto;
+}
+
+.prompt.picture img {
+    height:100%;
+}
+.response{
+    display: block;
+    min-height: 9vh;
+    margin: 10px;
+    width:100%;
+    font-size:2em;
+}
+
+.response.picture {
+    margin:0;
+    height:12vh;
+    font-size:3em;
+}
+
+.prompt.clicked, .response.clicked {
+    color:orange;
+}
+
+.prompt.matched, .response.matched {
+    color:green;
+    background-color:white;
+    font-style:italic;
+}
+
+.prompt.mismatched, .response.mismatched {
+    color:red;
+    background-color:white;
+    font-style:italic;
+}
+
+.prompt.done, .response.done {
+    color:black;
+    background-color:white;
+    opacity:0.5;
+}
+
+#end {
+  max-height: 15%;
+  position: absolute;
+  top: 20%;
+  left: 34%;
+}
+
+#marker {
+  max-height: 10%;
+  position: absolute;
+  left: 36.5%;
+  top: 55%;
+}
+
+#start {
+  max-height: 15%;
+  position: absolute;
+  left: 34%;
+  top: 55%;
+}
+
+#timer-count {
+  font-size: 15vmin;
+}
+
+#scoreboard {
+  font-size: 4vmin;
+}
+
+#scoreboard p {margin:0;}
+
+#scoreboard scan {display:inline-block;}
+
+.progress-bar {
+    width: 100%;
+    height:3vh;
+    background-color: lightgray;
+}
+
+.inner-progress {
+    width: 0.00001%;
+    height: 100%;
+    background-color: red;
+    position: relative;
+}
+
+#progress h4 {position:relative;
+    top:-35px;
+}
+
+#score-message {
+    top: -5%;
+    position: relative;
+}
+
+.scoreboard-scores {
+  font-size: 6.5vmin;
+  position: relative;
+  top: -16%;
+}
+
+#high2 {
+  position: absolute;
+  left: 34%;
+  top: 20%;
+}
+
+#vert-marker2 {
+  max-height: 10%;
+  position: absolute;
+  left: 36.5%;
+  top: 55%;
+}
+
+#low2 {
+  position: absolute;
+  left: 34%;
+  top: 55%;
+}
+
+#high3 {
+  position: absolute;
+  left: 45%;
+  top: 20%;
+}
+
+#vert-marker3 {
+  max-height: 10%;
+  position: absolute;
+  left: 47.5%;
+  top: 55%;
+}
+
+#low3 {
+  position: absolute;
+  left: 45%;
+  top: 55%;
+}
+
+#high1 {
+  position: absolute;
+  left: 22%;
+  top: 20%;
+}
+
+#vert-marker1 {
+  max-height: 10%;
+  position: absolute;
+  left: 24.5%;
+  top: 55%;
+}
+
+#low1 {
+  position: absolute;
+  left: 22%;
+  top: 55%;
+}
+
+#high4 {
+  position: absolute;
+  left: 56%;
+  top: 20%;
+}
+
+#vert-marker4 {
+  max-height: 10%;
+  position: absolute;
+  left: 58.5%;
+  top: 55%;
+}
+
+#low4 {
+  position: absolute;
+  left: 56%;
+  top: 55%;
+}
+
+#wide-left2 {
+  position: absolute;
+  left: 5%;
+  top: 35%;
+}
+
+#hori-marker2 {
+  position: absolute;
+  top: 35%;
+  left: 5%;
+}
+
+#wide-right2 {
+  position: absolute;
+  top: 35%;
+  left: 55%;
+}
+
+#wide-left3 {
+  position: absolute;
+  left: 5%;
+  top: 47%;
+}
+
+#hori-marker3
+{
+  position: absolute;
+  top: 47%;
+  left: 5%;
+}
+#wide-right3
+{
+  position: absolute;
+  top: 47%;
+  left: 55%;
+}
+
+#wide-left4
+{
+  position: absolute;
+  left: 5%;
+  top: 58%;
+}
+#hori-marker4
+{
+  position: absolute;
+  top: 58%;
+  left: 5%;
+}
+#wide-right4
+{
+  position: absolute;
+  top: 58%;
+  left: 55%;
+}
+
+#wide-left1
+{
+  position: absolute;
+  left: 5%;
+  top: 24%;
+}
+#hori-marker1
+{
+  position: absolute;
+  top: 24%;
+  left: 5%;
+}
+#wide-right1
+{
+  position: absolute;
+  top: 24%;
+  left: 55%;
+}
+
+#sender
+{
+  position:relative;
+  margin-top: 36%;
+}
+
+.bighoriscore
+{
+  max-height: 12%;
+  max-width: 15%;
+}
+.bigvertiscore
+{
+  max-height: 15%;
+  max-width: 15%;
+}
+.button
+{
+    border: none;
+    color: black;
+    padding: 1vw 4vw;
+    text-align: center;
+    text-decoration: none;
+    /* This font size was chosen to accomodate large
+    definitions, but if they are too long, they will
+    still not fit and this may need to be adjusted */
+    font-size: 2.2vmin;
+    display: inline-block;
+    margin: .5vw 1vw;
+    width: 25vw;
+    height: 6vw;
+}
+
+.button.picture{
+    height: 9vh;
+    width: 10vw;
+}
+
+/* CP NEW (2)
+button img{
+    height: 9vh;
+    width:10vw;
+}*/
+button:hover, .button:hover
+{
+    border: 8px solid yellow;
+    color:blue;
+}
+/***************** CONCENTRATION GAME ******************/
+
+#buttons {
+    position:relative;
+}
+
+.concButton {
+    display:inline-block;
+    width:23%;
+    min-height:16vh;
+    margin:10px;
+    height:20%;
+    float:left;
+    font-size:2em;
+    background-color:white;
+    background-image: url("../images/logos/LoomaLogoTransparent.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size:75%;
+}
+.concButton span {display:none;}
+
+.concButton.flipped {background:white; color:blue;}
+.concButton.flipped span {display:inline;}
+
+.concButton.correct {color:green;}
+.concButton.wrong   {color:red;}
+
+
+/***************** TIMELINE GAME ******************/
+ 
+ /*empty (and hidden) button in the timeline that's just used to position/style the dates and events*/
+.empty
+{
+  color: black;
+  margin: 4px 2px;
+  padding: 21px;
+  visibility: hidden;
+}
+
+/*creates the yellow timeline line*/
+.timeline ol::before
+{
+  content: '';
+  position: absolute;
+  height: 5px;
+  width: 110%;
+  background-color: yellow;
+  top: 50%;
+  bottom: 0;
+  left: 0;
+  right:0;
+  z-index: -10;
+}
+
+/*timeline div class*/
+.timeline
+{
+  position: relative;
+  margin: 0 auto;
+  overflow-y: auto;
+  min-height: 50%;
+  text-align: justify;
+  white-space: nowrap;
+}
+
+/*holds all timeline buttons*/
+.timeline ol
+{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/*keeps all events in a horizontal line*/
+.timeline ol li
+{
+  display: inline-block;
+}
+
+/*keeps events above and below dates*/
+.timeline ol li button
+{
+  display: block;
+}
+
+/*styling for the event buttons in the timeline and the event buttons in the events div*/
+/*their dimensions need to be the same for styling!*/
+.timelineEvent, .event
+{
+  width:50vh;
+  white-space: normal;
+  font-size: 1.5em;
+}
+
+/*makes the height of the event buttons in the events div shorter*/
+.event
+{
+  height: inherit;
+    margin:5px;
+}
+
+/*styling for the date "buttons" on the timeline*/
+.date
+{
+  font-size: 2em;
+  margin-right: 10vw;
+  z-index: 10; /*keeps the dates in front of the timeline line*/
+  margin-top: 1vw;
+  margin-bottom: 1vw;
+  margin-left: 8vw;
+}
+
+/*div that holds the event buttons*/
+.events
+{
+  height: 41.9%;
+  overflow-y: auto;
+  white-space: normal;
+  text-align: center;
+  z-index: -100;
+}
+
+/*div that displays the instructions and the end message*/
+.endMessage
+{
+  min-height: 8%;
+  font-size: 1.5em;
+  overflow: hidden;
+}
+
+/********************* MAP GAME ***********************/
+#map
+{
+    width: 100%;
+    height: 100%;
+
+}
+
+/********************* YesNo GAME ***********************/
+
+.yesno {
+    margin:5vw;
+    width:10vw;
+    height:10vh;
+}
+.yesno:hover {color:blue;}
+
+a button:hover {color:blue;}
+
+.red {color:red;}
+
+/********************* Multi-choice GAME ***********************/
+
+#current-team {
+    margin-right:4vw;
+}
+
+#question-number {
+    margin-right:4vw;
+}
+
+#question {
+    font-size: 1.5em;
+}
+#answers {
+}
+
+#answers button {
+    height:10vh;
+    font-size:2em;
+    margin:2vh 2vw;
+    min-width:50vw;
+    max-width:80vw;
+}
+
+.good, .good:hover {
+    color:green;
+    font-style:italic;
+}
+.bad, .bad:hover {
+    color:red;
+    font-style:italic;
+}
+
+/********************* Map GAME ***********************/
+
+#next {
+    display:none;
+    position:absolute;
+    width:13vw;
+    height:5vh;
+    font-size:1em;
+    top:3px;
+    right:1vw;
+    margin:0 5px;
+}
+
+#next:hover {border:none;}

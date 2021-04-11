@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"unique":true,"key":{"ft":{"$numberInt":"1"},"dn":{"$numberInt":"1"}},"name":"ft_1_dn_1"}],"uuid":"55c662fc3e4a4a7bb7ece53546454977","collectionName":"lessons"}
+{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"looma.lessons"},{"v":1,"unique":true,"key":{"ft":1,"dn":1},"name":"ft_1_dn_1","ns":"looma.lessons"}]}

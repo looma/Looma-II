@@ -18,7 +18,7 @@ body {
     padding:1vh 1vh 1vh 1vh;
     display:grid;
     grid-gap:1vh;
-    grid-template-columns: 25vw 25vw 25vw 25vw;
+    grid-template-columns: 22vw 22vw 28vw 28vw;
     grid-template-rows: 5vh 22vh 53vh 15vh;
     background-color:lightgray;
     
@@ -81,7 +81,9 @@ div#search-panel {
 }
 
 .chng-clear {
-    margin:1vw;
+    margin:1vh 0 1vh 1vw;
+    font-size:1em;
+    font-weight:bold;
 }
 
 #grade-div, #subject-div, #chapter-div {display:inline-block;}
@@ -93,9 +95,6 @@ div#search-panel {
 }
 #grade-changes, #subject-changes, #chapter-changes {}
 
-#chapter-chng-menu {
-    max-width:25%;
-}
 
 #changes  .keyword-filter {
     display:inline;
@@ -104,13 +103,14 @@ div#search-panel {
 
 .keyword-changes {
     margin-left: 2px;
-    width:9vw;
+    width:9.5vw;
 }
 
 div.upload {
     position:absolute;
     top:35vh;
     left:3vw;
+    border-radius:7px;
 }
 
 div.upload input[type=file] { display:none;
@@ -118,6 +118,7 @@ div.upload input[type=file] { display:none;
 
 div.upload label{
     border:2px solid black;
+    border-radius:7px;
     min-width:40vw;
 }
 
@@ -132,15 +133,25 @@ input[type=file] {
     display:inline;
     width:37vw;
     max-width:37vw;
-    border-radius:3px;
     border: 2px solid black;
+    color:red;
 }
 
-input#dn-changes {
-    width:25vw;
-    max-width:25vw;
-    border-radius:3px;
+input, select {
+    border-radius:7px;
     border: 2px solid black;
+    width:30vw;
+}
+
+.src-chng input {width:1vw;}
+
+input#dn-changes {
+    width:32vw;
+    max-width:32vw;
+}
+
+.chapter-changes {
+    min-width:15vw;
 }
 button.speak, button.lookup, button#fullscreen-control {
     display:none;
@@ -153,6 +164,7 @@ button.speak, button.lookup, button#fullscreen-control {
 #submit-changes {
     color:white;
     background:#2E3192;
+    height:120%;
 }
 
 #submit-changes:hover {
@@ -271,6 +283,8 @@ span.hint {
     z-index:1;
 }
 
+#textbook-changes label {min-width:10vw;}
+
 .dropdown-item {
     font-size: 1.2em;
     margin-top: 2px;
@@ -350,6 +364,10 @@ li:hover {
 #previewpanel {
     overflow-y:hidden;
     overflow-x:hidden;
+    font-size:1.5em;
+    font-weight:bold;
+    
+    
 }
 
 #details {

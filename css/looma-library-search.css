@@ -28,6 +28,7 @@ h2, h3.title  {font-size:2em;}
  }
 
  #search span.typ-chk {display:inline-block !important;}
+ #search span.typ-chk[data-id="text-template-chk"] {display:none  !important;}
 
  div#search-kind {display:none;}
  

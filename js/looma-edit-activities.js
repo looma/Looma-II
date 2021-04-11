@@ -323,6 +323,10 @@ function createActivityDiv (activity) {
     
     return div;
 }  // end createActivityDiv()
+
+
+/////////////////////////////////
+//////////// ONLOAD /////////////
 $(document).ready(function() {
     
     loginname = LOOMA.loggedIn();

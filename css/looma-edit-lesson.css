@@ -17,9 +17,9 @@ body {
 #main-container{
     padding:1vh 1vh 1vh 1vh;
     display:grid;
-    grid-gap:1vh;
+    grid-gap: 0.5vh;
     grid-template-columns: 30vw 58vw 5vw 5vw;
-    grid-template-rows: 5vh 22vh 53vh 15vh;
+    grid-template-rows: 5vh 22vh 52vh 18vh;
     background-color:lightgray;
     
     /*font-family: "Comic Sans MS", cursive, sans-serif;*/
@@ -32,7 +32,8 @@ body {
     grid-column: 1/-1;
     grid-row: 1;
     vertical-align:middle;
-    background-color: #F2C01B;
+    /*background-color: #F2C01B;*/
+    background-color: #F44336;
 }
 
 #title {
@@ -84,14 +85,23 @@ div#search-panel {
     background-color:white;
 }
 
-.textpreview {
-    height:100%;
-    /*background-color: #091F48;*/
+#edit-text-file {
+    position:absolute;
+    right:2vw;
+    top: 60vh;
+    display:none;
 }
 
 #timeline {
     grid-column: 1/-3;
     grid-row: 4;
+}
+
+#timeline .options {
+    z-index:2;
+    min-height:5vh;
+    min-width:5vw;
+    background-color:red;
 }
 
 #timelineLeft {
@@ -177,6 +187,7 @@ span.hint {
 /* FILECOMMANDS*/
 #filecommands {
     position: absolute;
+    z-index:2;
     width:15vw;
     right:5vw;
     top:0.5vh;
@@ -197,8 +208,8 @@ span.hint {
     background-size: 90% 90%;
     background-repeat: no-repeat;
     position:absolute;
-    bottom: 19vh;
-    right: 3vw;
+    bottom: 26vh;
+    right: 5vw;
     z-index:2;
 }
 
@@ -275,6 +286,7 @@ li:hover {
 }
 
 .resultitem .remove {display:none;}
+.resultitem .copy {display:none;}
 
 .textdiv p {
     margin:0 auto;
@@ -289,7 +301,9 @@ li:hover {
     /*margin-right:10px;*/
 }
 
-.buttondiv button {float:right;}
+.buttondiv button {float:right;
+    font-size:1em;
+}
 
 /************* Preview module ***************/
 
@@ -317,19 +331,79 @@ li:hover {
 #previewpanel object {
     height:100%;
 }
+#previewpanel {
+    font-size:1.45vw;
+}
 
 #previewpanel p {
     margin-top:10px;
     margin-left:10px;
-}
-#previewpanel .textpreview {
-    /*zoom:155%;*/
-    font-size:1.7vw;
     
+}
+#previewpanel .textpreview,
+.setup-panel {
+    /*zoom:155%;*/
+    width:49.5vw;
+    margin:0 auto;
     overflow:hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
 }
+
+.setup-panel {
+   position:absolute;
+    font-size:2em;
+    font-weight:bold;
+    height:75vh;
+    top:12vh;
+    width:75vw;
+    left:12vw;
+    margin:auto;
+    overflow-y:hidden;
+    overflow-x:hidden;
+    z-index:2;
+    display:none;
+    border:2px solid blue;
+    border-radius:4px;
+    background-color:lightyellow;
+}
+
+#setup-panel-1, #setup-panel-2 {padding:15vh;}
+
+.setup-panel button {
+    height:10vh;
+    padding: 0 3vw;
+}
+
+.setup-panel button.cancel {
+    position:absolute;
+    bottom:3vh;
+    right:3vh;
+}
+
+.setup-panel button.select {
+    position:absolute;
+    bottom:3vh;
+    left:3vh;
+}
+
+button[disabled] {
+    color:lightgray;
+}
+
+.book-changes {
+    min-width: 33vw;
+}
+
+#chapter-chng-menu {
+   max-width:62vw;
+}
+
+#filesearch-panel {z-index:3;}
+
+/*#setup-panel-2 #search-kind {display:none;}
+#setup-panel-3 #search-kind {display:none;}
+*/
 
 #displayImage {
     max-height:60vh;
@@ -344,16 +418,17 @@ li:hover {
     
     overflow-y:hidden;
     background: #fff;
-    height:16vh;
+   /* height:16vh;
     min-height:16vh;
-    margin-bottom:2px;
+    margin-bottom:2px;*/
     overflow-x:auto;
     box-shadow: 0px 0px 25px #C4C4C4;
 }
 
 .timelineCenter{
     width:100000px;
-    min-height:20vh;
+   /* min-height:20vh;*/
+    min-height:100%;
     display:flex;
     flex-wrap:nowrap;
 }
@@ -370,15 +445,14 @@ li:hover {
     background-color:white;}
 
 .timelineScroll {
-    height: 90%;
+    height: 50%;
+    margin:auto 0;
 }
 
 #timelineDisplay .activityDiv {
     width:15vw;
-    height:100%;
+    /*max-height:100%;*/
     float:left;
-}
-.activityDiv {
 }
 
 .playing {
@@ -387,7 +461,7 @@ li:hover {
 
 .thumbnaildiv, .textdiv {
     padding: 0.5vw;
-    min-height: 100%;
+ /*   min-height: 100%; */
     display:inline-block;
     float:left;
 }
@@ -396,7 +470,7 @@ li:hover {
     max-width:10vw;
 }
 
-#timelineDisplay .textdiv{
+#timelineDisplay .activityDiv .textdiv{
     height:50%;
     width:45%;
     float:left;
@@ -405,26 +479,27 @@ li:hover {
     overflow:hidden;
 }
 
-#timelineDisplay .textdiv p {
+#timelineDisplay .activityDiv .textdiv p {
     font-size: 1em;
     max-width:100%;
 }
 
-#timelineDisplay .textdiv .result_ID {
+#timelineDisplay .activityDiv .textdiv .result_ID {
     display:none;
     font-size:0.75em;
 }
 
-#timelineDisplay .buttondiv {
+#timelineDisplay .activityDiv .buttondiv {
     float:left;
 }
 
-#timelineDisplay .buttondiv .add{
+#timelineDisplay .activityDiv .buttondiv .add{
     display:none;
 }
 
-#timelineDisplay .thumbnaildiv {
-    height:10vh;
+#timelineDisplay .activityDiv .thumbnaildiv {
+    /* height:10vh; */
+    /* max-height:50%; */
     width:50%;
     float:left;
 }
@@ -458,4 +533,29 @@ li:hover {
 
 #textframe {
     background-color: transparent;
+}
+
+#lesson-title {
+    position:absolute;
+    right:0;
+    bottom:19vh;
+    text-align:right;
+    /*margin-right:3vw;*/
+    background-color: black;
+    color:yellow;
+    padding: 5px;
+}
+
+#subtitle {
+    background-color:white;
+    color:black;
+    width:100%;
+    border:2px solid black;
+    border-radius:5px;
+}
+
+
+#modified {
+    bottom:27vh;
+    right:2vw;
 }

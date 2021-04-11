@@ -1,0 +1,135 @@
+/*
+LOOMA css file
+Filename: xxx.css
+Description:
+Associated code files:
+Programmer name:
+Email:
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date:
+Revision: Looma 2.0.x
+
+Comments:
+*/
+
+body {
+    color:black;
+    background-color:#eee;
+}
+
+h1 {background-color:#F0EC1A}
+
+.admin {display:none;}
+
+.btn-toolbar {
+    text-align:center;
+    display:inline-block;
+    color:black;
+}
+
+.container {
+    margin: 0 auto;
+    width: 95vw;
+}
+
+button.result {
+    color:white;
+    background:#2E3192;
+}
+
+#title {
+    position: absolute;
+    top: 1vh;
+    left:5vw;
+    width:25vw;
+    height: 7vh;
+    padding-left: 2vw;
+    text-align: left;
+    float:left;
+    border:1px solid black;
+    color:black;
+    font-size: 0.8em;
+    background-color:white;
+    border-radius:2px;
+}
+
+#text-editor-container {
+     /* font-size: 1.57vw; */
+}
+
+#editor {
+    height: 36vw;
+    width: 77vw;
+    /*zoom: 200%; */
+    margin:0 auto;
+    font-size:2vw;
+    color:#091F48;
+    font-weight:bold !important;
+    overflow:hidden;
+    overflow-y:scroll;
+    white-space:nowrap;
+    text-overflow: ellipsis;
+    /*color:yellow;
+    background-color: #091F48;
+    margin-top: 1vh; */
+    padding: 0 1vw;
+    border: 1px solid black;
+    vertical-align: center;
+}
+#editor span, #editor blockquote {
+    font-weight:bold !important;
+    font-size:  inherit !important;
+}
+
+#editor * {
+    margin: 0 !important;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+/*
+#editor p {
+    margin:0 !important;
+}
+#editor div {
+    white-space: nowrap;
+    /*line-height:1.4em;*/
+}
+*/
+#commands {
+    top: 1vh;
+}
+
+#editor b {
+    font-weight: bold;
+}
+
+#preview {
+    position:fixed;
+    display:none;
+    padding:2px;
+    bottom:12vh;
+    left:18vw;
+    height:15vw;
+    max-height:15vw;
+    width:25vw;
+    max-width:25vw;
+    z-index:10;
+    font-size:0.7vw !important;
+    font-weight:bold;
+    border: 2px solid black;
+    border-radius:3px;
+    background-color:lightgray;
+    /*zoom:200%;*/
+    overflow:hidden;
+}
+#preview * {font-size:0.7vw !important;}
+#preview font {font-size:1em;}
+
+button.speak, button.lookup, button#fullscreen-control {
+    display:none;
+}
+
+#filesearch-result button:hover #preview{
+    display: block;
+}

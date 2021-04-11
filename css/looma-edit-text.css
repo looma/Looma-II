@@ -54,38 +54,46 @@ button.result {
 }
 
 #text-editor-container {
-    font-size: 1.57vw;
 }
 
 #editor {
-    height: 44vw;
-    width: 78vw;
+    height: 43vw;
+    width: 79vw;
     /*zoom: 200%; */
     margin:0 auto;
-    font-size:1.5em;
-    font-size:3.29vh;
+    font-size:2.3vw;
     color:#091F48;
     font-weight:bold !important;
     overflow:hidden;
+    overflow-y:scroll !important;
     white-space:nowrap;
     text-overflow: ellipsis;
     /*color:yellow;
     background-color: #091F48;
     margin-top: 1vh; */
-    padding: 0 1vw;
+    padding: 0 !important;
     border: 1px solid black;
     vertical-align: center;
 }
-#editor span {
+
+#editor * {
     font-weight:bold !important;
     font-size:  inherit !important;
+    font-family: inherit !important;
+    margin: 0 !important;
+    white-space:nowrap;
+    text-overflow:ellipsis !important;
 }
 
+/*
+#editor p {
+    margin:0 !important;
+}
 #editor div {
     white-space: nowrap;
     /*line-height:1.4em;*/
 }
-
+*/
 #commands {
     top: 1vh;
 }
@@ -99,7 +107,7 @@ button.result {
     display:none;
     padding:2px;
     bottom:12vh;
-    left:18vw;
+    left:40vw;
     height:15vw;
     max-height:15vw;
     width:25vw;
@@ -113,7 +121,7 @@ button.result {
     /*zoom:200%;*/
     overflow:hidden;
 }
-#preview * {font-size:0.7vw !important;}
+#preview * {font-size:0.778vw !important;}
 #preview font {font-size:1em;}
 
 button.speak, button.lookup, button#fullscreen-control {

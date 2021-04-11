@@ -1,0 +1,15 @@
+/*
+LOOMA css file
+Filename: looma-image.css
+Date: Apr 2017
+Revision: Looma 2.0.x
+
+Comments:
+*/
+/* following code fixes image display being stretched */
+img {max-height:100%; width:auto}
+
+
+button#fullscreen-control {
+    display:inline-block;
+}

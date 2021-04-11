@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"dba2c4a4a15147cc8113fb01d7b646d9","collectionName":"logins"}
+{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"looma.logins"}]}

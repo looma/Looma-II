@@ -54,17 +54,18 @@ button.img.activity img {
     background-color: rgba(200,200,200,1.0);
 }
 
+#voicegender {float:left;
+    margin-left:28vw;
+}
+
+#speechtest {
+    float:left;
+    margin-left:1vw;
+}
+
 div#themelist {
     margin-left:10%;
    /* display:inline-block;*/
-    text-align:left;
-    float:left;
-}
-
-div#voicelist {
-    margin-left:10%;
-    /*display:inline-block;*/
-    float:left;
     text-align:left;
 }
 
@@ -103,12 +104,12 @@ select.theme, select.voice {
 }
 
 #login-status {
-    font-style:bold;
+    font-weight:bold;
     color:red;
 }
 
 .settings-control, .admin-control, .exec-control {
- 
+    font-weight: bold;
     font-size:1em;
     margin:5px 2px;
     display:none;

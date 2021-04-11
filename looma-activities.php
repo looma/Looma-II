@@ -170,9 +170,11 @@ $foundActivity;
         }
     } //end makeButton()
 
-    /*
-     * NOTE: should validate these parameters, esp. using "isset"
-     */
+    /////////////////////////////////////////////////
+    /////////////  MAIN CODE ////////////////////////
+
+        // NOTE: should validate these parameters, esp. using "isset"
+
         $grade = trim($_GET['grade']);
         $gradenumber = str_replace("class", "", $grade);
         $subject = trim($_GET['subject']) ;
@@ -194,8 +196,8 @@ $foundActivity;
 		$maxButtons = 3;
 		$foundActivity = false;
 
-		// the user has just pressed an ACTIVITIES button on a CHAPTERS page
-		// First: get MongoDB ObjectId for the chapter whose Activities button was pressed
+		// the user has just pressed an RESOURCES button on a CHAPTERS page
+		// First: get MongoDB ObjectId for the chapter whose Resources button was pressed
 		//$ch_id = decodeURIComponent($ch_id);
 		// Then: retrieve the chapter record from mongoDB for this chapter
 
@@ -207,9 +209,8 @@ $foundActivity;
 
         //create a vocab review button if there are any words from this chapter in the dictionary
         $query = array('ch_id' => $ch_id);
-        //$words = $dictionary_collection -> find($query);
         $words = mongoFindOne($dictionary_collection, $query, null, null, null);
-// ($lang === 'en' & $words -> count() > 0) {
+
         if ($lang === 'en' && $words) {
             echo "<td>";
             //make a button with <a href="looma-vocab-flashcard.php?ch_id=CH_ID">
@@ -237,8 +238,7 @@ $foundActivity;
                 echo "</td>";
                 $foundActivity = true;
                 $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
-
-            } else {
+            } else {  // grade > 4
                 echo "<td>";
                 echo "<a href='looma-game.php?type=speak&class=" . $grade . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
                 echo "  <button class='activity play img'>";
@@ -249,9 +249,12 @@ $foundActivity;
 
                 echo "</td>";
                 $foundActivity = true;
-                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
-            }
-            {  // change to TRANSLATIOM
+                $buttons++;
+                if ($buttons > $maxButtons) {
+                    $buttons = 1;
+                    echo "</tr><tr>";
+                }
+
                 echo "<td>";
                 echo "<a href='looma-game.php?type=translate&class=" . $grade . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
                 echo "  <button class='activity play img'>";
@@ -262,9 +265,15 @@ $foundActivity;
 
                 echo "</td>";
                 $foundActivity = true;
-                $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
+                $buttons++;
+                if ($buttons > $maxButtons) {
+                    $buttons = 1;
+                    echo "</tr><tr>";
+                }
             }
-    } else  if ($subject === 'math') {
+        }
+
+        if ($subject === 'math') {
             echo "<td>";
             echo "<a href='looma-arith.php?type=arith&class=class" . $gradenumber . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
             //echo "<a href='looma-arith.php?class=class" . $gradenumber . "'>";
@@ -277,45 +286,51 @@ $foundActivity;
             echo "</td>";
             $foundActivity = true;
             $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
+        }  // end of special cases [vocab for english and arith for math]
 
+
+
+
+////////////////////////////////////////////////////
+//get all the resources registered for this chapter
+////////////////////////////////////////////////////
+
+        if ($lang === 'en') $query = array('ch_id' => $ch_id);
+        else                $query = array('nch_id' => $ch_id);   // ??? should use nch_id  ?????
+
+ $activities = mongoFind($activities_collection, $query, null, null, null);
+		foreach ($activities as $activity)  {
+		    makeButton($activity);
+            $foundActivity = true;
         }
-
-
-//get all the activities registered for this chapter
-        if ($lang === 'en') $query = array('ch_id' => mongoRegex('/'.$ch_id.'/'));
-        else                $query = array('nch_id' => mongoRegex('/'.$ch_id.'/'));
-
-        //$activities = $activities_collection -> find($query);
-        $activities = mongoFind($activities_collection, $query, null, null, null);
-		foreach ($activities as $activity)  makeButton($activity);
 
         // REMOVED this keyword matching code JAN 2020. it puts too many activities, esp. in lower grades, that dont match the expertise
         // RE-INSTATED this keyword matching code FEB 2020. adding a check for cl_lo <= grade <= cl_hi
+//
+//      //get all the activities that match this chapters keywords
+//      $query = array('_id' => $ch_id);
 
-        //get all the activities that match this chapter's keywords
-        $query = array('_id' => $ch_id);
+//      //$chapter = $chapters_collection -> findOne($query);
+//      $chapter = mongoFindOne($chapters_collection, $query);
 
-        //$chapter = $chapters_collection -> findOne($query);
-        $chapter = mongoFindOne($chapters_collection, $query);
-
-        if ($chapter && isset($chapter['key4'])) {
-            $query = array('key1' => $chapter['key1'],
-                           'key2' => $chapter['key2'],
-                           'key3' => $chapter['key3'],
-                           'key4' => $chapter['key4']);
-        } else if ($chapter && isset($chapter['key3'])) {
-            $query = array('key1' => $chapter['key1'],
-                           'key2' => $chapter['key2'],
-                           'key3' => $chapter['key3']);
-        }
+//      if ($chapter && isset($chapter['key4'])) {
+//          $query = array('key1' => $chapter['key1'],
+//                         'key2' => $chapter['key2'],
+//                         'key3' => $chapter['key3'],
+//                         'key4' => $chapter['key4']);
+//      } else if ($chapter && isset($chapter['key3'])) {
+//          $query = array('key1' => $chapter['key1'],
+//                         'key2' => $chapter['key2'],
+//                         'key3' => $chapter['key3']);
+//        }
 
         //$activities = $activities_collection->find($query);
-        $activities = mongoFind($activities_collection, $query, null, null, null);
-        foreach ($activities as $activity) if(isset($activity['cl_lo']) &&
-                                              isset($activity['cl_hi']) &&
-                                             ($activity['cl_lo'] <= $gradenumber) &&
-                                             ($gradenumber <= $activity['cl_hi']))
-                                           makeButton($activity);
+//      $activities = mongoFind($activities_collection, $query, null, null, null);
+//      foreach ($activities as $activity) if(isset($activity['cl_lo']) &&
+//                                            isset($activity['cl_hi']) &&
+//                                           ($activity['cl_lo'] <= $gradenumber) &&
+//                                           ($gradenumber <= $activity['cl_hi']))
+//                                         makeButton($activity);
 
         echo "</tr></table>";
 

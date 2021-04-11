@@ -47,7 +47,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
                     '" data-gametype="' . $type .
                     '" data-class="'    . $class .
                     '" data-subject="'  . $subj . '">';
-                echo '<div id="top">';
+            echo '<div id="top">';
                 echo '<span id="current-team"></span>';
                 echo '<span id="question-number"></span>';
                 echo '<span id="question"></span>';
@@ -55,7 +55,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
             echo '</div>';
             echo '<div id="game"></div>';
             echo '<div id="gameOverFrame" hidden><h2 id="message"></h2><div id="scoreList"></div></div>';
-          echo '</section>';
+          //echo '</section>';
         echo '</div>';
 
         echo '<div id="timer" hidden>';
@@ -109,7 +109,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
     <script type="text/javascript" src="js/looma-game.js"></script>
     <script type="text/javascript" src="js/looma-timer.js"></script>
     <script type="text/javascript" src="js/looma-scoreboard.js"></script>
-    <script type="text/javascript" src="js/leaflet.js"></script>
+    <script src="js/leafletjs/leaflet.0.7.3.js"></script>
 
 
 

@@ -1,0 +1,386 @@
+/*
+/*
+LOOMA css file
+Filename: looma-editor-template.css
+Description:
+Associated code files:
+Programmer name: skip
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: winter 2018
+Revision: Looma 3
+*/
+body {
+    box-sizing: border-box;
+    margin: 0;
+    background-color:#e3e3e3;
+    color:black;
+}
+#main-container{
+    padding:1vh 1vh 1vh 1vh;
+    display:grid;
+    grid-gap:1vh;
+    grid-template-columns: 25vw 25vw 25vw 25vw;
+    grid-template-rows: 5vh 22vh 53vh 15vh;
+    background-color:lightgray;
+    
+    /*font-family: "Comic Sans MS", cursive, sans-serif;*/
+    color:black;
+}
+#main-container > div {
+    border-radius:4px;
+    color:green;
+}
+
+::-webkit-scrollbar { width:2vw;}
+
+#header {
+    grid-column: 1/-1;
+    grid-row: 1;
+    vertical-align:middle;
+    background-color: #F2C01B;
+    
+}
+#header span {
+    font-size:2em;
+    margin-bottom: 6px;
+}
+
+#search-bar {
+    grid-column: 1/-1;
+    grid-row: 2;
+    position-relative;
+    background-color: white;
+}
+
+#outerResultsDiv {
+    grid-column: 1 / 3;
+    grid-row: 3 / 5;
+}
+#formpanel {
+    grid-column: 3 /-1;
+    grid-row: 3 / 5;
+    background-color: white;
+    overflow-y:hidden;
+    overflow-x:hidden;
+}
+
+#search-kind {display:none;}
+#search span.typ-chk {display:inline-block !important;}
+
+.all-transparent { /*makes screen transparent*/
+    opacity: .3;
+}
+
+div#search-panel {
+    height:100%;
+    font-size:1.2em;
+}
+
+#search span {font-weight:bold;}
+
+#changes {
+    text-align:left;
+    padding-left:1vh;
+    padding-top:3vh;
+}
+
+.chng-clear {
+    margin:0.5vw;
+}
+
+#textbooks, #otherbooks {
+   /* margin-left:5vw;*/
+    width:95%;
+}
+
+#textbooks div, #otherbooks div {
+    margin: 2vh 0 2vh 0;
+    width:95%;
+}
+
+#grade-div, #subject-div, #chapter-div {display:inline-block;}
+
+#keyword-changes, #source-changes, #book-type {
+    display:inline-block;
+    margin-top:1vh;
+    text-align:left;
+}
+
+label.drop-menu {
+    text-align: right;
+    float: left;
+    margin-right: 5px;
+    width:15%;
+}
+
+select.book-changes {
+    float: right;
+    width:70%;
+    margin-right:5vw;
+}
+
+#textbooks {
+    margin-top:0;
+    text-align:left;
+}
+#grade-changes, #subject-changes, #chapter-changes {}
+
+#changes  .keyword-filter {
+    display:inline;
+    width:9vw;
+}
+
+.keyword-changes {
+    margin-left: 2px;
+    width:9vw;
+}
+
+input {
+    font:inherit;
+    display:inline;
+}
+
+input[type=file] {
+    display:inline;
+}
+
+input#dn-changes {
+    width:25vw;
+    max-width:25vw;
+    border-radius:3px;
+    border: 2px solid black;
+}
+button.speak, button.lookup, button#fullscreen-control {
+    display:none;
+}
+
+.edit-control {
+    margin:2vh;
+}
+
+#submit-changes {
+    color:white;
+    background:#2E3192;
+}
+
+#submit-changes:hover {
+    border-color:black;
+}
+
+#login-id {
+    position:absolute;
+    display:none;
+    right:2vw;
+    bottom:13vh;
+    color:red;
+    font-size: 0.8em;
+}
+
+#padlock {
+     position:absolute;
+     right:4vw;
+     bottom:11vh;
+     height:3vh;
+     width: 3vh;
+ }
+
+button {
+    display:inline;
+    /*color:white;
+    background:#2E3192;*/
+    border-radius:0.313em;
+    /*width: 90px;*/
+    height: 5vh;
+    white-space: nowrap;
+    font-size: 1.5em;
+    margin-top: 3px;
+}
+
+button#media-submit {
+    width: 5vh;
+    height: 5vh;
+    border: 2px solid black;
+    border-radius: 4px;
+    margin-right: 1vw;
+    display:inline-block;
+}
+
+button.clear-search {
+    height: 7vh;
+    width: 7vw;
+    font:inherit;
+    font-size:1.5em;
+    border-radius:3px;
+    border: 2px solid black;
+    display:inline-block;
+}
+.flt-chkbx, .filter-radio{
+    zoom:1.5;
+}
+.filter-checkbox {
+    zoom:2.5;
+}
+p.hint {
+    text-align:left;
+    
+    position:relative;
+    top:5%;
+    left:5%;
+    width:95%;
+    padding:2px 0 0 0;
+    color:#aaa;
+    font-size:1.5em;
+}
+
+span.hint {
+    float:left;
+    margin:5vh 0 0 10vh;
+    color:#aaa;
+    font-size:2em;
+    z-index:-1;
+}
+
+
+#dismiss-popup {
+    position:absolute;
+    top:1vh;
+    right:1vh;
+}
+
+#dismiss {
+    color : white;
+    background-color: red;
+    border-color: red;
+    height: 5vh;
+    width: 4vw;
+    background-image: url("../images/back-arrow.png");
+    background-size: 90% 90%;
+    background-repeat: no-repeat;
+    position:absolute;
+    bottom: 4vh;
+    right: 3vw;
+    z-index:2;
+}
+
+.btn-group, #cmd-btn {
+    /*font-family: "Comic Sans MS", cursive, sans-serif;*/
+    padding:0;
+    margin-bottom:1vh;
+    width:100%;
+}
+
+.dropdown-menu {
+    padding: 10px;
+    background-color:white;
+    z-index:1;
+}
+
+.dropdown-item {
+    font-size: 1.2em;
+    margin-top: 2px;
+    font:inherit;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
+}
+.dropdown-item:hover {
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#87cefa)); /* webkit */
+    color:white;
+}
+/*************** Search Results Module ***********************/
+#outerResultsDiv {
+    overflow-y:auto;
+    background-color: white;
+}
+
+#innerResultsDiv {
+    overflow-y:auto;
+}
+
+.info {
+    width:3vw;
+    margin:3px 8px;
+    
+    background-image: url("../images/info.png");
+    background-size: 90% 90%;
+    background-repeat: no-repeat;
+}
+
+li:hover {
+    background-color: #fff;
+    color: black;
+    padding:0px;
+}
+
+.thumbnaildiv, .textdiv {
+    padding-left: 0.5vw;
+    min-height: 100%;
+    display:inline-block;
+    float:left;
+}
+
+.textdiv {
+    width:35vw;
+    max-width:35vw;
+    margin-left:15px;
+}
+
+/* .resultitem is the class of the divs that show up in results */
+.resultitem {
+    padding:3px;
+    border-bottom:1px solid #000;
+    line-height:11px;
+    overflow:auto;
+}
+
+.resultitem .remove {display:none;}
+
+.result_dn {
+    width: 35vw;
+    max-width: 35vw;
+    font-size:1.25em;
+}
+
+.result_ft {
+    margin-left:5px;
+}
+
+.resultsimg {
+    width:5vw;
+    height:5vh;
+    box-shadow: 0px 0px 10px #888888;
+}
+
+.buttondiv button {float:right;}
+
+#formpanel {
+
+}
+
+#details {
+    display:none;
+    opacity: 0.8;
+    background-color:lightgray;
+    padding: 3px;
+    border-radius:3px;
+    border: 2px solid black;
+    height:50vh;
+    width:30vw;
+    min-height:30vh;
+    min-width:30vw;
+    position: absolute;
+    bottom:4vh;
+    left:10vw;
+    overflow:hidden;
+    font-size:1.25em;
+    text-align:left;
+}
+
+
+#timeline {
+    display:none;
+}
+#timelineLeft {
+    display:none;
+}
+#timelineRight{
+    display:none;
+}

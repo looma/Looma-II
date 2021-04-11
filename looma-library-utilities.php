@@ -45,7 +45,11 @@ function isRegistered($name, $dir) {
                     $activity = mongoFindOne($activities_collection, $query);
                   }
 
-                 if ($activity) return array('reg' => true, 'dn'=>$activity['dn'], 'ch_id'=>$activity['ch_id']);
+                 if ($activity)  {
+                     $response = array('reg' => true, 'dn'=>$activity['dn']);
+                     if (isset( $activity['ch_id'])) $response['ch_id'] = $activity['ch_id'];
+                    return $response;
+                  }
                  else return array('reg' => false);
           return ;
             }

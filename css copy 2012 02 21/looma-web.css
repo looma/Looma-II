@@ -1,0 +1,46 @@
+#main-container-horizontal {
+    height: 100%;
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}
+#fullscreen {
+    background-color: var(--looma-blue);
+    height:88%;
+}
+
+button.speak {
+    display:inline-block;
+}
+
+button.lookup {
+    display:inline-block;
+}
+
+button.show-keyboard {
+    display:inline-block;
+}
+
+#web-controls * {
+    height: 8vh;
+    margin: 1vh;
+    color: black;
+    font-size: 1.5em;
+}
+
+.left-control {
+    float: left;
+}
+
+.right-control {
+    float: right;
+}
+
+#web-controls button img {
+    height: 75%;
+}
+
+#address-bar {
+    width: 60vw;
+}

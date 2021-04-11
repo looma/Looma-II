@@ -94,7 +94,7 @@ $chapters = mongoFind($chapters_collection, $query, '_id', null, null);
 
 foreach ($chapters as $ch) {
 
-    $ch_dn =  keyIsSet('dn', $ch) ? $ch['dn'] : $tb_dn;
+    $ch_dn =  keyIsSet('dn', $ch) ? ($ch['dn']) : $tb_dn;
     //$ch_dn is chapter displayname
     $ch_ndn = keyIsSet('ndn', $ch) ? $ch['ndn'] : $ch_dn;
     //$ch_ndn is native displayname
@@ -164,10 +164,16 @@ foreach ($chapters as $ch) {
     //$words = $dictionary_collection -> findOne($query);
     $words = mongoFindOne($dictionary_collection, $query);
     if ($activities || $words) {
-        echo "<button class='activities en-activities'
+    /*    echo "<button class='activities en-activities'
                        data-lang='en'
-                    data-ch='$ch_id'
-                     data-chdn='$ch_dn'>";
+                       data-ch='$ch_id'
+                       data-chdn='" . htmlentities($ch_dn) . "'>";
+    */
+        echo '<button class="activities en-activities"
+                       data-lang="en"
+                       data-ch="';
+        echo $ch_id;
+        echo '" data-chdn="' . $ch_dn . '">';
         echo 'Resources';
         echo "</button>";
         }

@@ -39,6 +39,7 @@ function pause() {
     //$timeline.fadeIn(500);
     $('#pause').css('background-image', 'url("images/play-button.png")');
 } //end pause()
+
 function play($item) {
     
     //$(video).empty();
@@ -61,6 +62,7 @@ function play($item) {
                 $item.data('len'),       $item.data('nlen')
     );
 } //end play()
+
 function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, npn, lang, len, nlen) { //play the activity of type FT, named FN, in path FP, display-name DN
     // depending on FT, may use ID, CH (a ch_id) or pg (for PDFs)
     
@@ -124,7 +126,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             var pagenumber;
             var filename;
             var length;
-            if (lang == 'np' && npn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
+            if (language === 'native' && npn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
                 pagenumber = npn;
                 filename = nfn;
                 length = nlen;
@@ -230,8 +232,6 @@ function makesortable() {
 function makeImageHTML() {
     return ('<img src="">');
 }
-// function makePdfHTML() {return('<embed id="fullscreen" src="" height=100% width=100%>');};
-
 
 function makePdfHTML() // see looma-play-pdf.php for original code
 {
@@ -242,7 +242,7 @@ function makePdfHTML() // see looma-play-pdf.php for original code
 
 function openPage(item, collection, url) {
     $.post("looma-database-utilities.php", {
-            cmd: "openByID", //end makePdfHTML()
+            cmd: "openByID",
             collection: collection,
             id: item.data('id')
         },
@@ -260,11 +260,11 @@ function textHTML(id) {
             id: id
         },
         function(result2) {
-            var $div = $('<div ' +
-                'class="text-display">');
+            var $div = $('<div id="editor">');
             
                 var native = (result2.nepali) ? result2.nepali : result2.data;
-                var html = '<div class="english">' + result2.data + '</div><div class="native" style="display:none;">' + native + '</div>';
+                var html = '<div class="text-display">' +
+                    '<div class="english">' + result2.data + '</div><div class="native" style="display:none;">' + native + '</div>';
                 
             $div.html(html).appendTo($viewer);
             if (language === 'native') {$('.english').hide();$('.native').show();}
@@ -274,6 +274,7 @@ function textHTML(id) {
         'json'
     );
 }
+
 function makeHtmlHTML() {
     return (
         '<div id="fullscreen"><embed src="" height=100% width=100%></div>'
@@ -306,6 +307,7 @@ function makeVideoHTML() {
     
     );
 } //end videoHTML
+
 window.onload = function() {
     //$('#controlpanel').draggable(); //makes the control buttons moveable around the screen.
     

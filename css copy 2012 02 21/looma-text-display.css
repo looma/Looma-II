@@ -1,0 +1,32 @@
+.text-display{
+    height: 100%;
+    width:
+        100%;
+    /*padding:2vh 2vw; */
+    
+    overflow:hidden;
+    white-space:nowrap !important;
+    text-overflow:ellipsis;
+    
+    color:#091F48;
+    /*background-color: #091F48;*/
+    background-color:white;
+    font-style:bold !important;
+
+    vertical-align:middle;
+    /*zoom:200%;*/
+  /*  font-size:inherit !important; */
+    font-size: 3vw;
+}
+
+
+.text-display * {
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap !important;
+    font-size:inherit !important;
+    font-weight:bold !important;
+}
+
+:-webkit-full-screen.text-display, :fullscreen.text-display {transform:scale(2,2);
+    background-color:pink;}

@@ -15,21 +15,23 @@ Comments:
     height: 100%;
     width: 100%;
     
-    /*font-size: 2.5vw; this makes enclosed text responsive to viewport width*/
-    
-    /* tried to get auto-scaling on both VERT and HORIZ axes, but it doesnt work:
-    font-size: calc( ( 2vh + 2vh ) / 2);
-     */
-    
     background-color: #091F48;
     color: yellow;
-    padding: 5px;
     overflow: hidden;
 }
+#editor:fullscreen {transform: scale(3.0, 1.5);}
 
-.text-display:fullscreen {
-    transform: scale(5,5);
+#editor {
+    height:100%;
+    width:82%;
+    margin:0 auto;
+    font-size:2.5vw;
 }
+
+
+/*.text-display:fullscreen {
+    transform: scale(5,5);
+}*/
 
 button#fullscreen-control {
     display:inline-block;
@@ -42,5 +44,3 @@ button.speak {
 button.lookup {
     display:inline-block;
 }
-
-/*.text-display {font-size:1.3em;}*/

@@ -22,7 +22,7 @@ button.show-keyboard {
 
 p#prompt {
     grid-row: 2 / 3;
-    grid-column: 1/4;
+    grid-column: 2/5;
     font-size:1.5em;
     position:relative;
     top:3vh;
@@ -30,7 +30,7 @@ p#prompt {
 
 input {
     grid-row: 2 / 3;
-    grid-column: 4 / -2;
+    grid-column: 6 / -2;
     border-radius: 5px;
     font-size:2em;
     color:red;}
@@ -48,7 +48,15 @@ input {
 }
 
 #rateDiv {
-    grid-row: 7/8;
+    grid-row: 7/7;
     grid-column: 3/15;
     font-size:1.5em;
+    text-align:left;
+}
+
+div#voicelist {
+    grid-row:8/9 ;
+    grid-column: 3/15;
+    font-size:1.5em;
+    text-align:left;
 }

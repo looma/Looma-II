@@ -17,20 +17,24 @@ Revision: Looma 2.4
 
 'use strict';
 
-
 // new function June 2017 - used to close the text-editor iFrame when called from in another editor, e.g. lesson plan
     function quitframe(e) {
-      $('#main-container-horizontal', window.parent.document).removeClass('all-transparent');
-      $('#commands', window.parent.document).removeClass('all-transparent');
-      $('#text-editor', window.parent.document).hide();
+        
+            if (callbacks['modified']()) askToSaveWork('Save before quitting?',currentname, currentcollection, currentfiletype)
+                .then(function(){
+                    $('#main-container-horizontal', window.parent.document).removeClass('all-transparent');
+                    $('#commands', window.parent.document).removeClass('all-transparent');
+                    $('#text-editor', window.parent.document).hide();
+                });
+            else {
+                $('#main-container-horizontal', window.parent.document).removeClass('all-transparent');
+                $('#commands', window.parent.document).removeClass('all-transparent');
+                $('#text-editor', window.parent.document).hide();
+            }
     }
 
     callbacks ['quit'] = quitframe;
     
-    $(document).ready(function ()
-    {
-        
-        
-        
+    $(document).ready(function () {
         $('#dismiss').off('click').click( quitframe );  //close the text edit iframe and go back to the calling editor
     });

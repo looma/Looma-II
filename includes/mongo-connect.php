@@ -7,11 +7,27 @@
 	//File: includes/mongo-connect.php
 	//Description:  for Looma v6
 
-function mongoRegex ($pattern) { // $pattern is a string, like '^\d[a-z]'
+function mongoRegex ($pattern) { // $pattern is a string, like '^\d[a-z]'\
+    // NOTE: input $pattern DOSS NOT include '/'s, they are inserted by this function
     global $mongo_level;
     if ($mongo_level >= 4)
          return new MongoDB\BSON\Regex($pattern);
-    else return new MongoRegex($pattern);
+    else return new MongoRegex('/' . $pattern . '/');
+}
+
+function mongoId ($id) {  //$id is a string, RETURN a mongoId object
+    global $mongo_level;
+    if ($mongo_level >= 4)
+        return new MongoDB\BSON\ObjectId($id);
+    else return new MongoId($id);
+}
+
+function mongoGetId ($doc) { // $doc is a document returned by mongoinsert or similar
+                            // return the STRING value of the ID of $doc
+    global $mongo_level;
+    if ($mongo_level >= 4)
+         return (string) $doc->getInsertedId();
+    else return (string) $doc['_id'];
 }
 
 function mongoRegexOptions($pattern, $options) {
@@ -19,13 +35,6 @@ function mongoRegexOptions($pattern, $options) {
     if ($mongo_level >= 4)
          return new MongoDB\BSON\Regex($pattern,$options);
     else return new MongoRegex('/' . $pattern . '/' . $options);
-}
-
-function mongoId ($id) {  //$id is a string
-    global $mongo_level;
-    if ($mongo_level >= 4)
-         return new MongoDB\BSON\ObjectId($id);
-    else return new MongoId($id);
 }
 
 function mongoFind($collection, $filter, $sort, $skip, $limit) {
@@ -111,7 +120,7 @@ function mongoInsert($collection, $doc) {
 
 function mongoUpsert($collection, $filter, $insert) {
     global $mongo_level;
-    if ($mongo_level >= 4 ) $doc = $collection->updateOne($filter, $insert, array('upsert' => true));
+    if ($mongo_level >= 4 ) $doc = $collection->updateOne($filter, array('$set' => $insert), array('upsert' => true));
     else                    $doc = $collection->update($filter, $insert, array('upsert' => true));
     return $doc;
 }
@@ -168,7 +177,7 @@ $mongo_version = $match[1];
 if ($mongo_version) {
     $mongo_level = intval(substr($mongo_version,0,1));
 } else {
-    $mongo_version = '2.0';
+    $mongo_version = '4.4.3';
     $mongo_level = 4;
 }
 
@@ -214,10 +223,25 @@ $dbhost = 'localhost';
         $edited_videos_collection = $loomaDB -> edited_videos;
         $volunteers_collection = $loomaDB -> volunteers;
         $new_content_collection = $loomaDB -> new_content;
+        $recorded_videos_collection = $loomaDB -> recorded_videos;
 
-        //the lines below are commented out for now. some Looma installs have old MONGO versions that dont do 'createIndex'
-        //$activities_collection->createIndex(array('ch_id' => 1));
-        //$activities_collection->createIndex(array('fn' => 1));
-        //$text_files_collection->createIndex(array('dn' => 1), array('unique' => True));
-
+        $collections = array(
+            "activities" =>    $activities_collection,
+            "chapters" =>      $chapters_collection,
+            "slideshow" =>    $slideshows_collection,
+            "slideshows" =>    $slideshows_collection,
+            "text" => $text_files_collection,
+            "text_files" =>    $text_files_collection,
+            "lesson" => $lessons_collection,
+            "lessons" =>       $lessons_collection,
+            "map" =>       $maps_collection,
+            "maps" =>          $maps_collection,
+            "history" =>   $histories_collection,
+            "histories" =>     $histories_collection,
+            "game" =>        $games_collection,
+            "games" =>         $games_collection,
+            "edited_videos" => $edited_videos_collection,
+            "new_content" =>   $new_content_collection,
+            "recorded_videos" => $recorded_videos_collection
+        );
 ?>

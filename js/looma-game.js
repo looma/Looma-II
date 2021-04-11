@@ -889,7 +889,7 @@ function runMap() {
     
     game_data['prompts'].sort(function(a, b){return 0.5 - Math.random()});
     
-    $('#question-number').text(LOOMA.translatableSpans('Question','प्रश्न') + ' ' + curr_question);
+    $('#question-number').html(LOOMA.translatableSpans('Question','प्रश्न') + ' ' + curr_question);
     $('#question').text('Click on: ' + game_data['prompts'][curr_question-1]);
     $('#game').append('<div id="map">');
     $('#next').text("Next Question").show();
@@ -919,7 +919,7 @@ function runMap() {
             map.setMaxBounds(bounds);
             map.on('drag', function () {map.panInsideBounds(bounds, {animate: false});});
             
-            var link = '../content/json/' + map_json_file;
+            var link = '../content/maps/json/' + map_json_file;
             $.getJSON(link, function (result) {
                 mapJSON = result;
                 redrawMap(mapJSON);
@@ -1349,7 +1349,7 @@ $(document).ready (function() {
         
         if      (game_type == 'yesno')      runYesNo();
         else if (game_type == 'random')     runRandom();
-        //else if (game_type == 'timeline') runtimeline(game_id); //add Catie's new code here
+       //  else if (game_type == 'timeline') runTimeline(game_id); //add Catie's new code here
         else if (game_type == 'vocab')      runVocab(game_class, game_subject);
         else if (game_type == 'arith')      runArith(game_class, game_subject);
         else if (game_type == 'picture')    runPicture(game_class, game_subject);

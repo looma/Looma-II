@@ -1,0 +1,812 @@
+
+html {
+    
+    --looma-blue:#091F48;
+    --looma-toolbar:#86c252; /*light green;*/
+    --looma-font-color:yellow;
+    --looma-scrollbar-track:#aaaaff;
+    --looma-scrollbar-track:lightgoldenrodyellow;
+	background-color: gray;
+	height:100vh;
+	width:100vw;
+	position:relative;
+	margin:0;
+    padding:0;
+}
+
+body {
+    box-sizing: border-box;
+    position: relative;
+	margin:0;
+	padding:0;
+    height:100vh;
+    width:100vw;
+    
+    /*   font-family: "Comic Sans MS", cursive, sans-serif;*/
+   font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", sans-serif;
+    background-color: var(--looma-blue);
+        /*background-color: #A1BEF3;*/
+		/* medium blue is #1853C1;*/
+		/* "looma" dark blue is #091F48;*/
+
+	overflow: hidden;
+	text-align: center;
+    word-wrap:break-word;
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {}
+@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: portrait) {
+    html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        width: 100vh;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+}
+
+body {
+     display:grid;
+     grid-template-rows:    [top]  repeat(9, 1fr) [toolbar] 1fr [bottom];
+     grid-template-columns: [left] repeat(16, 1fr)[toolbar] 1fr [right];
+ }
+ 
+body * {
+    -webkit-user-drag:none;
+    -moz-user-drag: none;
+}
+
+#fullscreen {
+    background-color: var(--looma-blue);
+}
+
+#main-container-horizontal {
+    grid-row:    top / toolbar;
+    grid-column: left / right;
+    max-height:100%;
+    overflow:hidden;
+    position:relative;
+}
+
+#main-container-vertical {
+    grid-row:    top / bottom;
+    grid-column: left / toolbar;
+    overflow:hidden;
+    background-color: var(--looma-blue);
+}
+
+#toolbar-container {
+    grid-row:    toolbar / bottom;
+    grid-column: left / right;
+}
+
+#toolbar-container-vertical {
+    grid-row:    top / bottom;
+    grid-column: toolbar / right;
+ }
+
+#main-container {
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	position:absolute;
+	text-align: center;
+	top:0;
+	left:0;
+	margin:auto;
+	/*background-color: #d4d4d4;	*/
+	/*border: 1px solid black;    */
+}
+
+#main-container-horizontal {
+	text-align: center;
+	/*margin:auto;*/
+    margin:0;
+}
+
+#main-container-vertical {
+    text-align: center;
+}
+.scroll {overflow:auto;}
+
+#main-container.scroll            { overflow:auto; }
+
+#main-container-horizontal.scroll { overflow:auto;}
+
+#main-container-vertical.scroll   { overflow:auto; }
+
+::-webkit-scrollbar-track-piece {
+    background: var(--looma-scrollbar-track); /*light blue*/
+}
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.75);
+    -webkit-border-radius: 35px;
+    border-radius: 35px;
+    background: -webkit-linear-gradient(left, #ffffff, #dfdfdf, #cecece);
+}
+::-webkit-scrollbar { width:40px;}
+
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 35px;
+}
+
+/* laptop
+@media only screen
+		and (min-device-height: 900px)
+		and (max-device-width: 1440px)
+		and (orientation : landscape) {
+			body { width: 1280px;
+				background-color:#0b212a}
+		}
+
+/* tablet landscape
+@media only screen
+		and (min-device-height: 481px)
+		and (max-device-width: 1024px)
+		and (orientation : landscape) {
+			body { width: 1024px;
+				height: 480px;
+				background-color:#0b212a}
+		}
+/* tablet portrait
+@media only screen
+		and (min-device-height: 481px)
+		and (max-device-width: 1024px)
+		and (orientation : portrait) {
+			body { width: 720px;
+				height: 960px;
+			background-color:#00FF00}
+		}
+
+/* iphone
+@media only screen
+		and (max-device-width: 480px) {
+			body { width: 480px;
+				height: 568px;
+			background-color:#00FF88}
+		}
+*/
+
+h1.title, h2.title, h3.title {
+	/*size:90%;*/
+	font-size: 3em;
+    
+    font-weight:bold !important;
+    
+	margin:auto;
+	text-align:center
+}
+
+h1 span {display:inline-block;}
+
+.credit{
+    text-align: right;
+    margin-right:5px;
+    font-size: 10px;
+    line-height: 12px;
+
+    position: fixed;
+    right:3vw;
+    bottom:10vh;
+    width:25vw;
+}
+
+#amazon {width:10px;}
+#amazon img {height:4vh;width:5vw;}
+
+div.viewer {
+	width:100%;
+	height:100%;
+	overflow:hidden;
+}
+
+div.viewer img {
+	margin: 0 auto;
+	max-width: 100%;
+	height: 100%;
+}
+
+input, select {
+    color:black;
+    background-color:white;
+}
+
+input[type="range"] {
+	display: inline;
+	width:50%;
+}
+
+/*
+footer {
+
+	width:100%;
+	height: 50px;
+	text-align:center;
+	float:right;
+}
+*/
+
+table {
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    border-collapse: separate;
+    border-spacing: 15px;
+    table-layout: fixed;
+}
+
+table#dir-table {
+    height:0;
+    max-height:30%;
+}
+
+table#file-table {
+    height:0;
+}
+
+th, td {
+    width: 30%;
+    max-width:30%;
+    overflow: hidden;
+    text-align: center;
+    padding: 4px 5px;
+}
+
+th {
+    max-height:50px;
+}
+
+td button, th button {
+    font-size: 1.5em;
+    width:90%;
+    height:100%;
+    margin: 5px;
+    overflow:hidden;
+}
+
+button img#flag {height: 100%;}
+
+/*------------------------*/
+/* BUTTON styling here. "button" defines color, background and font. "button.classname" defines sizes (height, width, font-size, etc)*/
+/*------------------------*/
+
+button {
+	background-color:#ffffff;
+	color:#000000;
+	border-color: #FFFFFF;
+	border: 5px;
+	border-radius: 5px;
+
+	display:inline-block;
+	height:80%;
+
+	overflow: hidden;
+
+	vertical-align:middle;
+	text-align:center;
+
+}
+
+button:hover {
+	color: white;
+	background-color:#091F48;
+	border-color: yellow;
+    border-width:4px;
+	/*transform: scale(1.5,1.5);*/
+}
+
+/*button.img:hover {
+    transform: scale(1.2,1.2);
+}
+*/
+
+/* not used??
+button.back {
+	    background-image: url("../images/back-arrow.png");
+	    background-size: 80% 80%;
+	    background-repeat: no-repeat;
+	    background-color: transparent;
+}
+*/
+
+button#back-button {
+	    background-image: url("../images/back-arrow.png");
+	    background-size: 80% 80%;
+	    background-repeat: no-repeat;
+	    background-color: transparent;
+	    position:absolute;
+	    right:3%;
+	    bottom:12%;
+	    height:8%;
+	    width:7%;
+	    border:none;
+	    box-shadow: none;
+	    z-index:1000;
+	    cursor: pointer;
+}
+/*
+.button-4 {
+	width:20%;
+	margin: 2% 2%;
+	font-size: 3em;
+}
+*/
+
+.button-5 {
+	width:15%;
+	height:80%;
+	margin: 1% 2%;
+	font-size: 2em;
+}
+
+.button-5 img {
+    height: 90%;
+    width: 80%;
+}
+/*
+
+.button-6 {
+	width:14%;
+	margin: 1%;
+	font-size: 2.4em;
+	/*background: linear-gradient(to right, red , blue);
+
+    background: linear-gradient(rgba(191,234,234, 0.4), rgba(168, 206, 206, 0.3));
+	background: linear-gradient(to bottom, rgba(191,234,234, 1) , rgba(168, 206, 206, 1));
+}
+*/
+
+.button-8 {
+	width:11%;
+	height:65%;
+	font-size: 5vw;
+	overflow: hidden;
+	padding:0 0 5px 0;
+	margin:0;
+}
+.little {
+	font-size:0.35em;
+	line-height:1em;
+	padding:0;
+	margin:0;
+}
+
+/* for slideshow  */
+
+button.with-play {
+    float:left;
+    width:20%;
+}
+
+button.with-play.img img {
+    width: 100%;
+    color: red;
+    display: inline;
+}
+
+button.beside-play {
+    display: inline;
+    width:70%;
+}
+
+#padlock {
+    position:absolute;
+    right:1vw;
+    bottom:6vh;
+    height:3vh;
+    width: 3vh;
+}
+
+#login-id {
+        position:absolute;
+        display:none;
+        right:0;
+        bottom:0;
+        /*color:red;*/
+        font-size: 0.8em;
+}
+
+span#datetime {
+	margin:0 0 5px 0 ;
+	display:inline-block;
+	color: #000;
+}
+/*
+span.logo-vertical {
+	display:inline-block;
+	height: 20%;
+	width: 100%;
+}
+
+span.logo img {
+    height:7vh;
+    margin:auto;
+    padding-top:3%;
+}
+span.logo img,vertical {
+	height:3.5vh;
+    width:4vw;
+    margin:auto;
+    padding-top:3%;
+}
+span.logo img.looma-logo {
+    height:20vh;
+    width:33vw;
+}
+
+img.looma-logo{
+	display: block;
+	margin-left:auto;
+	margin-right:auto;
+}
+*/
+img.looma-logo.native-keyword {display:none;}
+
+
+button.toolbar {
+	width:7%;
+	font-size: 1.2em;
+	margin:5px;
+	padding: 5px;
+}
+
+button.navigate {
+	width:25vw;
+	/*height:3em;*/
+	font-size: 4em;
+}
+
+/*****************
+ * 'xlat' and 'tip' classes are tooltip popups
+ *
+ * "xlat" on hover shows a translation of the <span> in the upper right (fixed) of the screen
+ *
+ * "tip" on hover shows a small tooltip for a button (like a Looma toolbar button) giving the text name for the button's icon
+ ********************/
+h1 span.english-keyword, h1 span.native-keyword {
+    display:inline-block;
+}
+
+.native-keyword {display:inline-block;}
+
+.xlat {display:none;}
+
+span:hover .xlat {
+    display:block;
+    position:fixed;
+    top:20px;
+    right:15px;
+    z-index: 1000;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    background-color:#FAFCAC;
+    font-size: 1em;
+    color:#000000;}
+
+span.tip { display:none;}
+
+button:hover span.tip.yes-show 	{
+    position:absolute;
+    display:block;
+    bottom:10%;
+    left:15%;
+    margin:auto;
+    
+    font-size: 0.7em;
+    
+    z-index: 100;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    background-color: #C4E9F5;
+    color:#000000;}
+
+button:hover span.tip.yes-show.big-show {
+    font-size:0.5em;
+    margin-left:2px;
+    padding:0 auto;
+    width:95%;
+}
+
+/*****************
+ * buttons of class 'speak' and 'lookup' and 'show-keyboard' and id "fullscreen-control" can be placed on any page
+ * they are 'fixed' on the page and semi-transparent
+ *
+ * they are all class="looma-control-button" to get their common CSS
+ ********************/
+button.looma-control-button {
+    position: fixed;
+    right:5vw;
+    display:none;
+    opacity: 0.4;
+    z-index: 1000;
+    height: 10vh;
+    width:  10vh;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow:none;
+}
+
+button#fullscreen-control {
+    bottom:11vh;
+    display:none;
+    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    background-image: url("../images/fullscreen2.png");
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0.7);  /*transparent light gray*/
+}
+
+button.speak {
+    bottom:22vh;
+    display:none;
+    background-image: url("../images/speech1.png");
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
+button.lookup {
+    bottom:33vh;
+    display:none;
+    background-image: url("../images/dictionary.png");
+    background-size: 75% 75%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
+button#next-item {
+    bottom:44vh;
+    /*display:none;*/
+    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    background-image: url("../images/carrot-fwd.png");
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
+button#prev-item {
+    bottom:56vh;
+    /*display:none;*/
+    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    background-image: url("../images/carrot-back.png");
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
+button.show-keyboard {
+    bottom: 44vh;
+    background-image: url("../images/keyboard.png");
+    background-size: 110% 110%;
+    background-color: rgba(200,200,200,0.7);
+}
+
+button#bagh-chal {
+    bottom: 44vh;
+    background-image: url("../images/alquerque_board.png");
+    background-size: 80% 80%;
+    background-color: rgba(200,200,200,0.7);
+}
+
+.popup {
+    position:fixed;
+    top:10%;
+    left:25%;
+    margin:auto;
+    padding: 5px;
+    overflow:auto;
+    width:50%;
+    background-color:#fff;
+    color:black;
+    font-size:2.5em;
+    /*white-space: pre;*/
+    border:2px solid black;
+    border-radius:6px;
+    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+}
+
+.popup img#image {
+    height:10%;
+}
+
+.popup input { /*The input inside the popup*/
+    color: black;
+}
+
+.popup-button{ /*Buttons inside popups, for example the "OK" button*/
+    height: 5vh;
+    width: 7vw;
+    float : right;
+    font-size : 1.5vw;
+    position: relative;
+}
+#close-popup { /*Specifically the cancel button of a popup*/
+    float: left;
+}
+
+.dismiss-popup { /* close popup button*/
+    color : white;
+    background: red;
+    width: 3vw;
+}
+
+.all-transparent { /*makes screen transparent*/
+    opacity: .6;
+}
+
+#dictionary-popup {
+    max-height:50%;
+    overflow:hidden;
+}
+
+#return {
+    color : white;
+    background-color: red;
+    border-color: red;
+    height: 10vh;
+    width: 10vw;
+    background-image: url("../images/back-arrow.png");
+    background-size: 90% 90%;
+    background-repeat: no-repeat;
+}
+#dismiss {
+    color : white;
+    background-color: red;
+    border-color: red;
+    height: 5vh;
+    width: 4vw;
+    background-image: url("../images/back-arrow.png");
+    background-size: 90% 90%;
+    background-repeat: no-repeat;
+    position:absolute;
+    bottom: 19vh;
+    right: 3vw;
+    z-index:2;
+}
+
+#fullscreen {
+    position: relative;
+    max-width:100%;
+    width:100%;
+    height:100%; /*trying to find best way to size fullscreen video*/
+}
+
+div.fullframe, iframe {
+    height:100%;
+    width:100%;
+    margin:auto;
+    overflow-y: auto;
+    /*overflow-x: hidden;*/
+}
+/*#fullscreen:-webkit-full-screen {
+    height: 95%;
+    width:  95%;
+  }
+*/
+
+
+video { height: 100% }
+
+video::-webkit-media-controls {display: none !important;}
+
+button.img {
+	height: 150px;
+	vertical-align:middle;
+	text-align:center;
+}
+
+button.img img, button.img object {
+	height:90%;
+	float:left;
+	max-width:35%;
+}
+button.img object img {
+    float:left;
+    max-height: 100%;
+    max-width:100%;
+}
+th button.img {
+	height:75px;
+    width:90%;
+}
+
+th button.img:hover {
+	transform:none;
+}
+th button.img img {
+	height:100%;
+    float:left;
+	/*width:15%;*/
+	max-width:35%;
+}
+
+.ch-table tr th:nth-child(3), .ch-table tr th:nth-child(4), .ch-table tr td:nth-child(3), .ch-table tr td:nth-child(4) {width:15%;}
+
+button.img.subject {
+	font-size: 1.5em;
+}
+
+button.img.subject img {
+     width:45%;
+     height:50%;
+     margin:5px 2px;
+     float:left;
+ }
+
+button.img.play, button.img.activity{
+	font-size: 30px;
+	font-weight:bold;
+    max-width:30vw;
+}
+
+
+button.img p {
+	vertical-align:middle}
+
+button.pdf, button.media{
+	width:10%;
+	height:25%;
+	margin: 2px;
+	font-size:1.5em;
+	background-size: 100% 100%;
+}
+
+button.play-pause {
+        background-image: url("../images/video.png");
+}
+
+button.heading  {
+	transform:none;
+	font-size: 1.5em;
+    /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dddddd), color-stop(100%,#bbbbbb));  webkit */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#aaaaee), color-stop(100%,#bbbbff))}
+
+button.heading:hover {
+	border:none;
+}
+
+button.lesson {
+    /*width:10vw;
+    float:left;*/
+}
+
+button.activities, button.lesson {
+   /* width:17vw;
+    float:right;*/
+}
+
+/*
+button.chapter:hover, button.activity:hover, button.lesson:hover {
+	transform: scale(1.2,1.2);
+}
+*/
+
+button.footer {
+	height: 50%;
+	width:  8%;
+	/* margin: 3px; */
+	font-size: 75%;
+	background-color: #999999;
+}
+
+div.center {
+	position:relative;
+	margin:auto;
+	text-align:center;
+}
+
+.error {
+    color:pink;
+    font-weight:bold;
+}
+
+.display-name {
+    display:block;
+    font-size:2em;
+    color:red;
+    background-color:yellow;
+}
+
+.caps {
+    text-transform: capitalize;
+}

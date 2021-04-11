@@ -34,6 +34,7 @@ var currentfiletype;   //set by calling program - to 'text', 'lesson', etc
 var currentcollection; //set by calling program - to 'lessons', 'slideshows', etc
 
 var owner    = true;   //TRUE if current logged in user is the author of the currrent file. initially 'true' since editor opens with a new file
+var author;
 var template = false;  //if TRUE the file currently being edited is a template; else FALSE
 
 var cmd;  //needed??
@@ -57,9 +58,9 @@ function doNothing() {
 ///////////////////////////////
 //////    setname         /////
 ///////////////////////////////
-function setname(newname) {
+function setname(newname,author) {
     currentname = newname;
-    if (newname) $('.filename').text(newname); else $('.filename').text('<none>');
+    if (newname) $('.filename').text(newname + ' (' + author +')'); else $('.filename').text('<none>');
     if (template) $('.filename').append($('<span> (template) </span>'));
 }
 ///////////////////////////////
@@ -104,7 +105,7 @@ function savework(name, collection, filetype) {  // filetype is base type (not t
                 function (name) {
                     if (template) callbacks['savetemplate'](name);
                     else callbacks['save'](name);
-                    setname(name);
+                    setname(name, author);
                     resolve('User saved-2');
                 },
                 function () {
@@ -124,7 +125,7 @@ function savework(name, collection, filetype) {  // filetype is base type (not t
                 },
             false);
         else {  //NOT owner
-            LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
+            LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy of your own', 5, true);
             reject('not owner-5');
         }
     });
@@ -149,7 +150,7 @@ function savefile(name, collection, filetype, data, activityFlag) {  //filetype 
                 'json'
             ).then(
                 function (response) {
-                    if (JSON.parse(response)['_id']) {
+                    if (JSON.parse(response)['item']) {
                         callbacks['checkpoint']();
                         LOOMA.alert('File ' + name + ' saved', 5);
                         console.log("SAVE: upserted ID = ", JSON.parse(response['_id']['$id'] || response['_id']['$oid']));
@@ -226,6 +227,7 @@ function deletefile(deletename, collection, filetype)  { //filetype must be give
         'json'
     ).then(LOOMA.alert('File ' + deletename + ' deleted', 5));
 }  // end DELETEFILE()
+
 ///////////////////////////////
 //////     OPENFILE       /////
 ///////////////////////////////
@@ -239,24 +241,28 @@ function openfile(openId, collection, filetype) { //filetype must be given e.g. 
                 LOOMA.alert(response['error'] + ': ' + openname, 3, true);  //better if returned an error flag + err msg
             else {
                 console.log("OPEN (ft: ", filetype, "), from ", collection, ' collection. response: ', response);
-                
+    
                 // if (filetype.includes('-template')) setname('');
                 // else
-                setname(response['dn']);
-                
+                setname(response['dn'], response['author']);
+    
                 //currentid = response['_id'];
                 //currentauthor = response['author'];
-                if ('author' in response)
+                if ('author' in response) {
+                    // set 'owner' to T/F based on these rules:
                     owner = (
-                        (response['author'] === LOOMA.loggedIn())
+                        (response['author'] === LOOMA.loggedIn())  //this user is the author
                         || (LOOMA.readCookie('login-level') === 'translator' && filetype === 'text')
                         || (LOOMA.readCookie('login-team') === 'teacher' && (filetype === 'text' || filetype === 'lesson'))
-                        || ((('team' in response) ? response['team'] : 'not_legal_team_name') === LOOMA.readCookie('login-team'))
+                        // next line lets team members edit each others' stuff [useful in summer teams]
+                        //  || ((('team' in response) ? response['team'] : 'not_legal_team_name') === LOOMA.readCookie('login-team'))
                         || (LOOMA.loggedIn() === 'skip')
                         || (LOOMA.loggedIn() === 'david')
                         || (LOOMA.loggedIn() === 'kathy')
                         || (LOOMA.loggedIn() === 'kabin')
                     );
+                    author = response['author'];
+                }
                 else owner = true; //was FALSE, but if there is no owner, OK to edit the file
                 
                 callbacks['display'](response);   //need to return the full 'response' from the db
@@ -302,10 +308,12 @@ function opensearch() {
     
     callbacks['showsearchitems']();
 } //end opensearch()
+
 ///////////////////////////////
 //////   performSearch       /////
 ///////////////////////////////
 function performSearch(collection, ft) {
+    if (ft.includes('-template')) template = true; else template = false;
     opensearch();
     
     // override file search FORM fields 'collection' and 'ft'
@@ -407,10 +415,11 @@ function displayFileSearchResults(results)
             var date = value['date'] ? ("  Date: " + value['date']) : "";
             
             var displayname =  $("<div/>").html(value['dn']).text();
+            var master = value['master'] ? 'master' : '';
             
             $display.append(
                 "<tr><td>" +
-                "<button class='result' " +
+                "<button class='result' " + master +
                 "data-id='" + (value['_id']['$id'] || value['_id']['$oid']) + "' " +
                 //"data-mongo='" + value + "' " +
                 "title='" + displayname + "' " +
@@ -432,6 +441,30 @@ function displayFileSearchResults(results)
 $(document).ready(function () {
     /* file commands NEW OPEN SAVE SAVEAS OPENTEMPLATE SAVETEMPLATE DELETE QUIT*/
 
+
+///////////////////////////////
+//////   FILEEXISTS       /////
+///////////////////////////////
+
+//checks for existing file with this name.
+// if the file exists, reject promise with {_id:_id, name:dn, author:author},
+// if it doesnt exist, resolve promise with (dn)
+    function fileexists(name, collection, filetype) {  //filetype must be given as 'text' or 'text-template'
+        return new Promise(/*async*/ (resolve, reject) => {
+            $.post("looma-database-utilities.php",
+                {cmd: "exists", collection: collection, ft: filetype, dn: LOOMA.escapeHTML(name)},
+                'json')
+                .then( function(result) {
+                    var a = JSON.parse(result);
+                    
+                    console.log('in fileexists: result is ' + a.name + ' and a is ' + a.author);
+                    
+                    if (a['_id'] == "") reject(name);  //file not found
+                    else                resolve(a);    //file found
+                });
+        });
+    } // end FILEEXISTS()
+    
 ///////////////////////////////
 //////   /*   NEW    */      //
 ///////////////////////////////
@@ -479,19 +512,19 @@ $(document).ready(function () {
            // if (currentname == "" || template) { //first save
             LOOMA.prompt('Enter a name for this file: ',
                 function(savename) { fileexists(savename, currentcollection, currentfiletype)
-                    .then(function({savename, owner}) {LOOMA.alert('File already exists: ' + savename + ' owned by ' + owner);})
+                    .then(function(obj) {LOOMA.alert('File with this name exists: ' + obj.name + ' owned by ' + obj.author);})
                     .catch((function(name) {
                         callbacks['save'](name);
                         callbacks['checkpoint']();
                         owner = true;
                         template = false;
-                        setname(name); }))
+                        setname(name, owner); }))
                 },
                 function(){}, //
                 false);
         }
         else if (!owner) {
-            LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, true);
+            LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy of your own', 5, true);
             //callbacks['checkpoint']();
         }
         else if (callbacks['modified']()) {
@@ -501,24 +534,6 @@ $(document).ready(function () {
     });
 
 ///////////////////////////////
-//////   fileexists       /////
-///////////////////////////////
-//checks for existing file with this name.
-// if the file exists, execute yes(),
-// if it doesnt exist, executes no()
-    function fileexists(name, collection, filetype) {  //filetype must be given as 'text' or 'text-template'
-        return new Promise(/*async*/ (resolve, reject) => {
-            $.post("looma-database-utilities.php",
-                {cmd: "exists", collection: collection, ft: filetype, dn: LOOMA.escapeHTML(name)},
-                'json')
-                .then( function(result) {
-                    var a = JSON.parse(result);
-                    if (a['_id'] == "") reject(name);  //file not found
-                    else                resolve({name:name, author:a['author']}); //file found
-                });
-        });
-    } // end FILEEXISTS()
-///////////////////////////////
 ////// /*   SAVE AS    */   /////
 ///////////////////////////////
     
@@ -526,13 +541,14 @@ $(document).ready(function () {
         console.log("FILE COMMANDS: clicked save as");
         LOOMA.prompt('Enter a name for this file: ',
             function(savename) { fileexists(savename, currentcollection, currentfiletype)
-                .then(function({savename, owner}) {LOOMA.alert('File already exists: ' + savename + ' owned by ' + owner);})
+                //.then(function(a) {LOOMA.alert('File with this name exists: ' + a.name);})
+                .then(function(obj) {LOOMA.alert('File with this name exists: ' + obj.name + ' owned by ' + obj.author);})
                 .catch((function(name) {
-                    callbacks['save'](name);
+                    callbacks['save'](savename);
                     callbacks['checkpoint']();
                     owner = true;
                     template = false;
-                    setname(name); }))
+                    setname(savename, author); }))
             },
             function(){}, //
             false);
@@ -544,14 +560,15 @@ $(document).ready(function () {
     
     $('#rename').click(function()   {//only used for base files, not templates (for now)
         console.log("FILE COMMANDS: clicked rename");
-        if (!owner) LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy you own', 5, false);
+        if (!owner) LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy of your own', 5, false);
         else
             LOOMA.prompt('Enter a new file name for: ' + currentname,
                 function(newname) { fileexists(newname, currentcollection, currentfiletype)
-                    .then(function({newname, owner}) {LOOMA.alert('File already exists: ' + newname + ' owned by ' + owner);})
+                    //.then(function(a) {LOOMA.alert('File with this name exists: ' + a.name);})
+                    .then(function(obj) {LOOMA.alert('File with this name exists: ' + obj.name + ' owned by ' + obj.author);})
                     .catch((function(newname) {
                         if (currentname != '') renamefile(newname, currentname, currentcollection, currentfiletype);
-                        setname(newname); }))
+                        setname(newname, author); }))
                 },
                 function(){}, //
                 false);
@@ -567,11 +584,11 @@ $(document).ready(function () {
             
             function(deletename) {
                 fileexists(deletename, currentcollection, currentfiletype)
-                .then( function({name, author}) {
+                .then( function(a) {
                     if (owner)
-                            {deletefile(name, currentcollection, currentfiletype);
-                             if (currentname == name) callbacks['clear']();}
-                    else LOOMA.alert('Delete failed. You are not the owner of this file.', 5, true);// called if file exists
+                            {deletefile(a.name, currentcollection, currentfiletype);
+                             if (currentname == a.name) callbacks['clear']();}
+                    else LOOMA.alert('Delete failed. You are not the owner of this file - owner is ' + a.author, 5, true);// called if file exists
                      })
                 .catch(( function(deletename) {    // called if file does not exist
                     LOOMA.alert('File not found: ' + deletename); }))
@@ -621,19 +638,20 @@ $(document).ready(function () {
             LOOMA.prompt('Enter a template name: ',
                 function(savename) { fileexists(savename, currentcollection,
                     currentfiletype + '-template')
-                    .then(function({savename, owner}) {LOOMA.alert('File already exists: ' + savename + ' owned by ' + owner);})
+                    //.then(function(a) {LOOMA.alert('File with this name exists: ' + a.name);})
+                    .then(function(obj) {LOOMA.alert('File with this name exists: ' + obj.name + ' owned by ' + obj.author);})
                     .catch((function(name) {
                         callbacks['savetemplate'](name);
                         owner = true;
                         template = true;
-                        setname(name); }))
+                        setname(name, author); }))
                 },
                 function(){}, //
                 false);
 }
         
         else if (!owner) {
-            LOOMA.alert('You are not the owner of this template. Use SAVE-AS to make a copy you own', 5, true);
+            LOOMA.alert('You are not the owner of this template. Use SAVE-AS to make a copy of your own', 5, true);
             //callbacks['checkpoint']();
         }
         
@@ -653,12 +671,13 @@ $(document).ready(function () {
         LOOMA.prompt('Enter a template name: ',
     
             function(savename) { fileexists(savename, currentcollection, currentfiletype + '-template')
-                .then(function({savename, owner}) {LOOMA.alert('Template already exists: ' + savename + ' owned by ' + owner);})
+                //.then(function(a) {LOOMA.alert('Template with this name exists: ' + a.name);})
+                .then(function(obj) {LOOMA.alert('File with this name exists: ' + obj.name + ' owned by ' + obj.author);})
                 .catch((function(name) {
                     callbacks['savetemplate'](name);
                     owner = true;
                     template = true;
-                    setname(name); }))
+                    setname(name, author); }))
             },
             function(){},
             false);
@@ -675,13 +694,13 @@ $(document).ready(function () {
     
             function(deletename) {
                 fileexists(deletename, currentcollection, currentfiletype + '-template')
-                    .then( function({name, author}) {
-                        if (author == LOOMA.loggedIn()
+                    .then( function(a) {
+                        if (a.author == LOOMA.loggedIn()
                             || LOOMA.loggedIn() == 'skip'
                             || LOOMA.loggedIn() == 'david'
                             || LOOMA.loggedIn() == 'kathy')
-                        {deletefile(name, currentcollection, currentfiletype + '-template');
-                            if (currentname == name) callbacks['clear']();}
+                        {deletefile(a.name, currentcollection, currentfiletype + '-template');
+                            if (currentname == a.name) callbacks['clear']();}
                         else LOOMA.alert('Delete failed. You are not the owner of this file.', 5, true);// called if file exists
                     })
                     .catch(( function(deletename) {    // called if file does not exist
@@ -794,7 +813,9 @@ $(document).ready(function () {
         $('#modified').hover(
             function() {$('#modified span').show();},
             function() {$('#modified span').hide();});
-        
+     
+        // check for 'mofified' and update the color of the modified dot
+        // for a while this code was commented. why?
         setInterval(function(){
                 if(callbacks['modified']()) {
                     $('#modified').css('background-color', 'red');
@@ -805,4 +826,6 @@ $(document).ready(function () {
                     $('#modified span').text('File not modified');
                 }},
             500);
+            
+      
 });

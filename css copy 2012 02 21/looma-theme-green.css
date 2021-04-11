@@ -1,0 +1,39 @@
+body {
+	background-color: green;
+			/* medium blue is #1853C1;*/
+			/* "looma" dark blue is #091F48;*/
+	font-family: "Copperplate Gothic Light", sans-serif;
+
+	color: yellow;
+}
+
+#toolbar-container {
+	background-color:  #31cb00;
+}
+
+button {
+	background-color: #8dd;
+	border: 2px solid black;
+	border-radius: 5px;
+	color: #fff;
+	font: bold 3em;
+	cursor: pointer;
+    box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+button:hover {
+	background-color: #0e0;
+	color:yellow;
+}
+
+button.active {
+    background:none;
+	background-color: #080;
+	color:yellow;
+}
+	/* COLORS:
+	 * 	lime	59b606
+	 * blue		027bbf
+	 * pink		8ff
+	 * lt blue	f8f
+	 */

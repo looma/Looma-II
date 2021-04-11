@@ -1,0 +1,72 @@
+body {
+    display:block;
+    background-color:white;
+}
+
+#back {
+    position: absolute;
+    right:8vw;
+    top:6vh;
+    height:12vh;
+    width:10vw;
+    margin:10px;
+    font-size:0.75em;
+    border: 2px solid black;
+    background-color:red;
+}
+ #backmessage {
+     position:absolute;
+     right:8vw;
+     top:2vh;
+ }
+ 
+#back:hover { background-color:#ddd;}
+
+#back img {
+	height: 10vh;
+}
+
+
+#previews {
+    position:relative;
+    top:13vh;
+    width:94%;
+    margin:1vh 3vw;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    grid-template-rows:repeat(100, 1fr);
+    grid-gap:0vh;
+    background-color:white;
+    overflow-y:auto;}
+
+.preview {}
+
+div a {
+    border: 1px solid black;
+    border-radius:0.7vh;
+    margin: 9px;
+    float: left;
+}
+
+div a:hover {
+  border: 3px solid blue;
+  margin: 0;
+}
+
+a img {
+  display: block;
+    height:95%;
+    width:95%;
+}
+
+a button {
+  /*width: 50px;
+  height: 50px;*/
+  font-size: 14pt;
+  padding: 10px;
+    height:20%;
+    width:20%;
+  float: right;
+  border:1px solid black;
+  margin: 2px;
+}

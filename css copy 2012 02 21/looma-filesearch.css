@@ -1,0 +1,88 @@
+/*
+Filename: looma-filesearch.css
+Description:
+Associated code files: looma-filesearch.php
+Programmer name: Bo, Skip
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date:  summer 2017, apr 2018
+Revision: Looma 3.0
+*/
+
+
+/****************************************/
+/********** filesearch-panel specs ******/
+/****************************************/
+#filesearch-panel {
+    position:fixed;
+    top:25vh;
+    left:25vw;
+    height:50vh;
+    width:50vw;
+    
+    overflow-y:hidden;
+    font-size: 1em;
+}
+
+form#filesearch *{
+    text-align: center;
+    vertical-align:middle;
+}
+
+#filesearch-bar{
+    text-align: center;
+}
+
+input#filesearch-term {
+    text-align: left;
+    vertical-align: middle;
+    padding-left: 2px;
+    border-radius:4px;
+    font-size: 1.4em;
+    width:40%;
+}
+
+
+/***************************************/
+/******** checkbox filter specs ********/
+/***************************************/
+.flt-chkbx, .filter-radio{
+    zoom:2;
+}
+
+span.typ-chk, span.src-chk{
+    margin-right: 8px;
+}
+
+/***************************************/
+/********* cancel button specs *********/
+/***************************************/
+button.cancel-search {
+    margin: 0 15px;
+    border: 2px solid white;
+    background-color: white;
+    width: auto;
+    font-size: 1.5em;
+    background: #2e3192;
+    color: white;
+    
+}
+
+
+
+button#chapter-submit {
+    margin: 14px 15px;
+    width: auto;
+    font-size: 1.5em;
+    font-weight: normal;
+    text-align: center;
+}
+button#media-submit{
+    width: 7vh;
+    height: 7vh;
+    vertical-align: middle;
+    background-image: url("../images/looma-search2.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,0);
+    border-radius: 4px;
+}

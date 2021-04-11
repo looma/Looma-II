@@ -342,5 +342,4 @@ include ('includes/header.php');
 
 <script src="js/looma-search.js"></script>
 <script src="js/looma-edit-activities.js"></script>
-<!--    <script src="js/looma-lesson-plan.js"></script> -->
 

@@ -46,6 +46,7 @@ Description:
  * LOOMA.speak(text)
  * LOOMA.toggleFullscreen()
  * LOOMA.makeTransparent()
+ * LOOMA.makeOpaque()
  * LOOMA.closePopup()
  * LOOMA.alert()
  * LOOMA.confirm()
@@ -818,9 +819,8 @@ popupDefinition : function (word, time) {
           var $popup =  $('<div id="popup"/>');
           $popup.append(html);
           LOOMA.alert($popup.html(), time, true);
-      } //end show()
-    function fail() {
-    }
+      }; //end show()
+    function fail() {};
     LOOMA.define(word, show, fail);
 
     },   //end popupDefinition()
@@ -1122,19 +1122,32 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
  * Requirements for mimic: Mimic must be installed on the Looma or server that serves
  *   this JS file. The speech synthesis PHP file must be at "/Looma/looma-mimic.php".
  */
-LOOMA.speak = function(text, engine, voice) {
+LOOMA.speak = function(text, engine, voice, rate) {
         //speak the TEXT,
         //using [optional] ENGINE (in {'synthesis', 'mimic'})
         //using [optional] VOICE
+        // [optional] RATE sets the speed of speech. (rate > 1 is FASTER)
+        //      in mimic  --setf duration_stretch=1/rate ( e.g. if rate === 0.5 stretch by 2x (slower))
+        //      in speechSynthesis  SpeachSynthesisUtterance.rate = rate ( e.g. if rate === 0.5 speak slower)
+        //  for Looma in Nepal, use default rate = 2/3
+    
+    const defaultspeed = 2/3;
+    var   speed = rate ? rate : defaultspeed;
+    
+    /* requires a special regex package, like xregexp [https://www.regular-expressions.info/xregexp.html]
+         const devanagari = /p{Devanagari}/u;
+         if (text.match(devanagari)) text = "I cannot speak Nepali";
+    */
+    
      if (text != "" ) {
          var playPromise;
         
          // use speechsynthesis if present
          if (!engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) {
              engine = 'synthesis';
-             //speechSynthesisUtteranceInstance.rate = 1.5;   // slow down 50%
          }
          if (!engine) engine = 'mimic';  //efault engine is mimic
+         
          if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_bdl'; //get the currently used voice, if any. default VOICE
         
                     /* current default voice = cmu_us_bdl
@@ -1144,7 +1157,8 @@ LOOMA.speak = function(text, engine, voice) {
                         US male 		bdl   (Haydi say maybe the best)
                         US male		    rms
                      */
-         
+    
+    
          console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
         
          var speechButton = document.getElementsByClassName("speak")[0];
@@ -1218,7 +1232,7 @@ LOOMA.speak = function(text, engine, voice) {
     //start of LOOMA.speak code: ///
     ////////////////////////////////
         
-         if (engine == 'synthesis') {
+         if (engine === 'synthesis') {
              // we use synthesis if the user is running Safari or Chrome.
              // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
              // Chromium's speechSynthesis seems to be broken. (re-check this)
@@ -1229,6 +1243,7 @@ LOOMA.speak = function(text, engine, voice) {
              } else {
                  // speechSynthesis usually accounts for latency itself, so there's no need to queue requests.
                  var speech = new SpeechSynthesisUtterance(text);
+                 speech.rate = speed;   // e.g. if rate is 2/3, slow down
                  speechSynthesis.speak(speech);
              }
          }
@@ -1237,12 +1252,13 @@ LOOMA.speak = function(text, engine, voice) {
              if (LOOMA.speak.playingAudio != null) {
                  // If speaking, stop the currently playing speech.
                  console.log("Stopping Audio");
-                 LOOMA.speak.playingAudio.pause();
+                 //LOOMA.speak.playingAudio.pause();
                  LOOMA.speak.cleanup();
              } else {  //else start the new speech
                  console.log("Playing Audio: " + text);
                 
                  // To reduce latency before speech starts, split the speech into sentences, and speak each separately.
+                 // separating on: period, comma, question mark, exclamation mark, semicolon, colon   /[.,?!;:]/
                  // Splitting over these punctuation marks will usually work.
                  //There are a few cases where it will sound unusual ("Dr.", "Mr.", "Ms.", etc).
                  //It may lag on unusually long sentences without punctuation.
@@ -1258,7 +1274,8 @@ LOOMA.speak = function(text, engine, voice) {
                      if (voice) {
                          audioSource = 'looma-mimic.php?text=' +
                              encodeURIComponent(currentText) +
-                             '&voice=' + encodeURIComponent(voice);
+                             '&voice=' + encodeURIComponent(voice) +
+                             '&rate=' + encodeURIComponent(speed);
                      } else {
                          audioSource = 'looma-mimic.php?text=' +
                              encodeURIComponent(currentText);
@@ -1295,19 +1312,27 @@ LOOMA.speak = function(text, engine, voice) {
                  LOOMA.speak.playingAudio = firstAudio;
                  console.log("Playing Phrase");
                  //play the first phrase
-                 playPromise = firstAudio.play();
+                 playPromise = firstAudio.play().then(
+                     function () {
+                        console.log('Play started');
+                     }).catch(
+                         function (error) {
+                        console.log('Play promise error: ', error);
+                 });
                 
                  console.log('promise is ', playPromise);
                 
                  // In browsers that don’t yet support this functionality,
                  // playPromise won’t be defined.
-                 if (playPromise !== undefined) {
+               /*  if (playPromise !== undefined) {
                      playPromise.then(function () {
                          console.log('Play started');
                      }).catch(function (error) {
                          console.log('Play promise error: ', error);
                      });
+                
                  }
+               */
                  LOOMA.speak.activate();
              }
          }  //end of code that calls server-side MIMIC
@@ -1566,5 +1591,6 @@ function $_GET(param) {
     if ( param ) { return vars[param] ? vars[param] : null; }
     return vars;
 }
-     LOOMA.CH_IDregex = /^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/;
+    //LOOMA.CH_IDregex = /^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/;
+    LOOMA.CH_IDregex = /([1-9]|10)(EN|Sa|S|Ma|M|SSa|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/;  //removed "^" and "$"
  var loginname = LOOMA.loggedIn();

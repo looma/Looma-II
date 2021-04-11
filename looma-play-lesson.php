@@ -13,8 +13,8 @@ Description: looma lesson plan presenter
 
     <link rel="stylesheet" href="css/looma-media-controls.css">
     <!-- <link rel="stylesheet" href="css/looma-video.css"> -->
-    <link rel="stylesheet" href="css/looma-text-display.css">
     <link rel="stylesheet" href="css/looma-play-lesson.css">
+    <link rel="stylesheet" href="css/looma-text-display.css">
     <?php include ('includes/js-includes.php'); ?>
 
   </head>

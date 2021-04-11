@@ -1,0 +1,54 @@
+body {
+    display:grid;
+    grid-template-rows: [top] repeat(9,1fr) [toolbar] 1fr [bottom];
+    grid-template-columns: [left] repeat(17,1fr) [toolbar] 1fr [right];
+    grid-gap: 8px;
+}
+
+#main-container-horizontal {
+    grid-row: top/toolbar;
+    grid-column: left/right;
+    display:grid;
+    grid-template-rows: repeat(9,1fr);
+    grid-template-columns: repeat(17,1fr);
+}
+
+button {font-size:1.2em;}
+button:hover {color:blue;}
+
+button.show-keyboard {
+    display:inline-block;
+}
+
+p#prompt {
+    grid-row: 2 / 3;
+    grid-column: 1/4;
+    font-size:1.5em;
+    position:relative;
+    top:3vh;
+}
+
+input {
+    grid-row: 2 / 3;
+    grid-column: 4 / -2;
+    border-radius: 5px;
+    font-size:2em;
+    color:red;}
+
+
+
+#mimic {
+    grid-row: 4/6;
+    grid-column:5/8;
+}
+
+#synthesis {
+    grid-row: 4/6;
+    grid-column: 11/14;
+}
+
+#rateDiv {
+    grid-row: 7/8;
+    grid-column: 3/15;
+    font-size:1.5em;
+}

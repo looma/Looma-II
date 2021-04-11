@@ -1,0 +1,110 @@
+ /*
+Filename: looma-library-search.css
+Description:
+Associated code files: looma-library-search.php
+Programmer name: Bo Leschly
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date:
+Revision: Looma 2.0.x
+*/
+
+p{
+    margin-bottom: 0px;
+}
+
+h2, h3.title  {font-size:2em;}
+
+ div#search-panel {
+     margin-top: 3vh;
+     margin-left:3vw;
+     margin-right:3vw;
+     top:5vh;
+     left:37vw;
+     background-color:rgba(27,71,177,.45);
+     z-index:10;
+     overflow-y:hidden;
+     border-radius:6px;
+     font-size: 3em;
+ }
+
+ #search span.typ-chk {display:inline-block !important;}
+
+ div#search-kind {display:none;}
+ 
+ form#search *{
+     font-size:0.94em;
+ }
+ div#search-bar-div{
+     margin-top: 14px;
+ }
+
+ button#media-submit {
+     margin: 14px 15px;
+     /*padding-bottom: 3.5%;*/
+ }
+
+ button#media-submit, button#chapter-submit {
+     width: 10vh;
+     height: 10vh;
+ }
+ 
+/***************************************/
+/******* Button to switch btwn search mode and folder mode ******/
+/***************************************/
+button#toggle-database{
+	position: fixed;
+    top:4.5%;
+    right:5%;
+	height:10vh;
+    width:6vw;
+    z-index:1000;
+    background-color:rgba(200,200,200,0);
+}
+
+ button#toggle-database img{
+     height:100%;
+     width:100%;
+ }
+ 
+/***************************************/
+/****** search-results div specs *******/
+/***************************************/
+#results-div{
+	display: none;
+	margin: 1%;
+
+    top:5vh;
+    left:37vw;
+    background-color:rgba(27,71,177,.45);
+    z-index:10;
+    overflow-y:auto;
+    border:2px solid black;
+    border-radius:6px;
+}
+
+button#top, button#more {
+    height: 5vh;
+    width: 14vw;
+    margin:2px 10px 20px 0px;
+    position:relative;
+    font-size:1.4em;
+    float:right;
+}
+
+
+ button.show-keyboard {
+     display:inline-block;
+ }
+
+
+ form#search span.typ-chk:hover, form#search span.src-chk:hover {
+     font-size:1em !important;
+     color:white;
+     /*zoom:150%;*/
+    
+     -moz-border-radius:10px;
+     -webkit-border-radius: 10px;
+     border-radius:10px;
+     border:3px solid yellow;
+  
+ }

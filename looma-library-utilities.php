@@ -101,8 +101,9 @@ function make_activity($item) {
                 $file =  $fileInfo->getFilename();
 
                 //skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
-                if (($file[0]  == ".")       ||
-                     strpos($file, "_thumb") ||
+                if (($file[0]  == ".")       ||                    // skip hidden files
+                     strpos($file, "_thumb") ||    // skip thumbnail files
+                     strpos($file, '.srt') ||      // skip close caption files
                      $file == "thumbnail.png"||
                      $file == "images.txt")
                 continue;

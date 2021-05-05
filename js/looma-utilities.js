@@ -326,6 +326,10 @@ makeChapterButton: function (id, appendToDiv) {
         );
     },//end makeChapterButton()
     
+extension: function(filename) {
+    return filename.substring(filename.lastIndexOf('.') + 1);
+},
+
 filepath: function(filetype, filename) {
         var homedirectory = '../';
         var path;
@@ -465,7 +469,7 @@ typename: function(ft) {
         png: 'image',
         gif: 'image',
         JPG: 'image',
-        pdf: 'Document',
+        pdf: 'pdf',
         mp3: 'audio',
         m4a: 'audio',
         EP:  'ePaath',

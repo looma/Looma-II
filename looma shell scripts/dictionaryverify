@@ -9,6 +9,14 @@
 //
 //   run in MONGO SHELL with: load('dictionaryverify')
 
+
+
+//////// TO ADD:
+/////////////   check for duplicates
+/////////////   combine duplicates with both definitions
+
+
+
 var dictionarycursor;
 var count = 0;
 var duplicatecount = 0;

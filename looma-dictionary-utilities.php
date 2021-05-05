@@ -302,7 +302,7 @@ if (isset($_GET["cmd"]))
 			exit(); //end LIST cmd
 
 		default:
-			echo "looma illegal command";
+			echo "looma dictinary utilities illegal command";
 			exit(); //end ILLEGAL CMD
 	} //end CASE LIST
 }

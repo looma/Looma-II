@@ -129,16 +129,11 @@ include ('includes/looma-filecommands.php');
 
         <span class="hint">Preview Area</span>
         <div id="hints">
-            <br>
-            <p class="hint">1. Use the Search criteria above to search for Activities </p>
-            <p class="hint">2. Preview and Select an Activity from the search results</p>
-            <p class="hint">3. Add buttons to process the selected activities</p>
         </div>
     </div>
 
     <div id = "timeline">
         <div class="timelineCenter" id="timelineDisplay">
-            <span class="hint">Timeline</span>
         </div>
     </div>
 

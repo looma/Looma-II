@@ -109,6 +109,8 @@ Description:  displays and navigates content folders for Looma
 
     foreach ($files as $file => $dirInfo) {
 
+    $file = (string) $file;
+
     //skips ".", "..", and any ".filename", and any directory containing a file named "hidden.txt"
     if ((is_dir($path . $file)) &&
         !isHTML($path . $file) &&
@@ -420,6 +422,7 @@ echo "</tr></table>";
                         $list = array();
 
                             foreach ($files as $file => $info) {
+                                $file = (string) $file;
                             //skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
                             if (($file[0] == ".") ||
                                 strpos($file, "_thumb") ||

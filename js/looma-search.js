@@ -176,7 +176,8 @@ function makeKeywordDropdown(kids, element) {
     $('<option value="" label="' + any + '" data-dn="(any)" data-ndn="(कुनै)"/>').prop('selected', true).appendTo(element);
     kids.forEach(function (kid) {
         var name = (language === 'native' && kid.ndn) ? kid.ndn : kid.name;
-        $('<option data-kids=' + kid.kids["$id"] +
+        var id = kid.kids["$id"] || kid.kids["$oid"];
+        $('<option data-kids=' + id +
             ' data-dn="' + kid.name +
             '" data-ndn="' + kid.ndn +
             '" value="' + kid.name +

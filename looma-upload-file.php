@@ -65,9 +65,14 @@ require_once ('includes/mongo-connect.php');
                 <input type="hidden" name="cmd"           value="uploadFile">
                 <input type="hidden" name="ft"            value="" id="ft-changes">
 
-                <div>New display name: <input id='dn-changes' class='  ' name='dn' type='text'></input>
+                <div><label class="text-label">New display name: </label><input id='dn-changes' name='dn' type='text'></input>
                     <button class='chng-clear' id='dn-clear'>X</button>
                 </div>
+
+                <div><label class="text-label">Folder: </label><input id='fp-changes' name='fp' type='text'></input>
+                    <button class='chng-clear' id='fp-clear'>X</button>
+                </div>
+
                 <?php
 
                 /*****************************************/
@@ -82,7 +87,7 @@ require_once ('includes/mongo-connect.php');
 
 
                 echo "<span id='keyword-changes-menu'>Keywords:
-                            <select name='key1' id='key1-changes-menu' class='    keyword-changes keyword-dropdown black-border' data-level=1 form='changes'>
+                            <select name='key1' id='key1-menu' class='    keyword-changes keyword-dropdown black-border' data-level=1 form='changes'>
                                 <option value=''>Select keyword...</option>";
 
                 for($x = 0; $x < sizeof($root['children']); $x++) {
@@ -92,15 +97,15 @@ require_once ('includes/mongo-connect.php');
                 }
                 echo "</select>";
 
-                echo "<select name='key2' disabled id='key2-changes-menu' class='   keyword-changes keyword-dropdown black-border' data-level=2 form='changes'>
+                echo "<select name='key2' disabled id='key2-menu' class='   keyword-changes keyword-dropdown black-border' data-level=2 form='changes'>
                                 <option value='' selected></option>";
                 echo "</select>";
 
-                echo "<select name='key3' disabled id='key3-changes-menu' class='    keyword-changes keyword-dropdown black-border' data-level=3 form='changes'>
+                echo "<select name='key3' disabled id='key3-menu' class='    keyword-changes keyword-dropdown black-border' data-level=3 form='changes'>
                                             <option value='' selected></option>";
                 echo "</select>";
 
-                echo "<select name='key4' disabled id='key4-changes-menu' class='    keyword-changes keyword-dropdown black-border' data-level=4 form='changes'>
+                echo "<select name='key4' disabled id='key4-menu' class='    keyword-changes keyword-dropdown black-border' data-level=4 form='changes'>
                                             <option value='' selected></option>";
                 echo "</select>";
 
@@ -110,30 +115,47 @@ require_once ('includes/mongo-connect.php');
                 echo "</div>";
 
 
+
                 /**************************************/
                 /********* File Source  Fields ********/
                 /**************************************/
-                echo "<br><div id='source-changes' class='chkbox-filter   '>
-                                <span>Source:</span>";
-
+                echo "<div id='source-div' class='chkbox-filter media-filter'>";
+                echo keyword("Source:");
                 $sources = array(
-                    array("ck12", "phet", "epth", "khan", "w4s", "TED"),
-                    array("Dr Dann", "PhET", "ePaath", "khan", "wikipedia", "TED"),
-                    array("CK-12", "PhET", "ePaath", "Khan", "Wikipedia", "TED"),
+                    array("ck12",    "phet", "TED"), // not used
+                    array("Dr Dann", "PhET", "TED"), //internal names for IDs  #xxx-chk and #xxx-checkbox
+                    array("CK-12",   "PhET", "TED") //the displayed name for source values
                 );
-                for($x = 0; $x < count($sources[0]); $x++){
-                    echo "<span class='src-chng' data-id='" . $sources[0][$x] ."-chng'>
-                                    <input data-id='" . $sources[1][$x] ."' class='media-input flt-chkbx source-changes' type='radio' form='changes' name='src' value='" . $sources[1][$x] . "'>
-                                    <label class='filter-label' for='" . $sources[0][$x] . "'>" . $sources[2][$x] . "</label>
-                                  </span>";}
+
+                for($x = 0; $x < count($sources[1]); $x++) {
+                    /*           echo "<span class='src-chk' data-id='" . $sources[0][$x] ."-chk'>
+                                         <input data-id='" . $sources[1][$x] ."' class='media-input flt-chkbx' type='checkbox' name='src[]'' value='" . $sources[1][$x] . "'>
+                                         <label class='filter-label' for='" . $sources[0][$x] . "'>" . $sources[2][$x] . "</label>
+                                       </span>";}
+                 */
+
+                    echo "<span  class='src-chk' data-id='" .  $sources[1][$x] . "-chk'>";
+                    echo "<label class='filter-label' for='" . $sources[1][$x] . "-checkbox'>";
+                    echo "<input id='"  .$sources[1][$x] . "-checkbox' class='media-input flt-chkbx media-filter' type='radio' name='src[]' value='" . $sources[1][$x] . "'>";
+                    echo keyword($sources[2][$x]);
+                    echo "</label></span>";
+                }
                 echo "<button class='chng-clear' id='source-clear'>X</button>";
+
                 echo "</div>";
 
+                /**************************************/
+                /*********** Grade Limits  **********/
+                /**************************************/
+                echo "<div id='grade-limits'>";
+                    echo "<label>Low grade</label><input type='number' min='1' max='10'  value='1' id='cl_lo' class='class-limit'></input>";
+                    echo "<label>High grade</label><input type='number' min='1' max='10 'value='10'  id='cl_hi' class='class-limit'></input>";
+                echo "</div>";
 
                 /**************************************/
                 /*********** Grade Dropdown  **********/
                 /**************************************/
-                echo "<br><div id='textbook-changes'>";
+                echo "<div id='textbook-changes'>";
                 echo "<span id='grade-changes' >
                                 <span class='drop-menu'><label>Grade:</label><select id='grade-drop-menu' class='chapter-changes black-border'  form='changes' name='class'>
                                     <option value='' selected>Select...</option>";
@@ -174,11 +196,16 @@ require_once ('includes/mongo-connect.php');
                 echo "</div>";
                 ?>
 
-               <br> <button id="submit-changes" class="edit-control" form='changes'>Submit</button>
+                <br> <button id="submit-changes" class="edit-control" form='changes'>Submit</button>
+                     <button id='clear-changes'  class="edit-control" form='changes'>Clear</button>
             </form>
         </div>
 
-        <div id="details" class="popup"></div>
+        <div id="details">
+            <div id="details-contents"></div>
+            <button id="user-submit">Submit</button>
+            <button id="user-cancel">Cancel</button>
+        </div>
     </div>
 
     <img id="padlock"

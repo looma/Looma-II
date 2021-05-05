@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"looma.activitiesGOOD20201014"}]}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"3b5dbd1a918349c0b45060c37d38b1fe","collectionName":"activitiesGOOD20201014"}

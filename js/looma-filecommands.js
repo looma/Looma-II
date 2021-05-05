@@ -153,7 +153,7 @@ function savefile(name, collection, filetype, data, activityFlag) {  //filetype 
                     if (JSON.parse(response)['item']) {
                         callbacks['checkpoint']();
                         LOOMA.alert('File ' + name + ' saved', 5);
-                        console.log("SAVE: upserted ID = ", JSON.parse(response['_id']['$id'] || response['_id']['$oid']));
+                        //console.log("SAVE: upserted ID = ", JSON.parse(response['_id']['$id'] || response['_id']['$oid']));
                     } else {
                         LOOMA.alert('File ' + name + ' save failed', 5);
                         console.log("SAVE: didn't work?");
@@ -253,7 +253,7 @@ function openfile(openId, collection, filetype) { //filetype must be given e.g. 
                     owner = (
                         (response['author'] === LOOMA.loggedIn())  //this user is the author
                         || (LOOMA.readCookie('login-level') === 'translator' && filetype === 'text')
-                        || (LOOMA.readCookie('login-team') === 'teacher' && (filetype === 'text' || filetype === 'lesson'))
+                        || (LOOMA.readCookie('login-team') === 'teachers' && (filetype === 'text' || filetype === 'lesson'))
                         // next line lets team members edit each others' stuff [useful in summer teams]
                         //  || ((('team' in response) ? response['team'] : 'not_legal_team_name') === LOOMA.readCookie('login-team'))
                         || (LOOMA.loggedIn() === 'skip')
@@ -729,9 +729,21 @@ $(document).ready(function () {
     
     //turn off('click') for looma toolbar BACK arrow
     //$('.back-button').off('click');
-    $(".back-button").removeAttr("onclick"); //special code to remove "onclick" from toolbar back button
+   // $(".back-button").removeAttr("onclick"); //special code to remove "onclick" from toolbar back button
+    window.onbeforeunload = function() {
+        if (callbacks['modified']()) {
+            console.log('modified')
+            return "You have made changes on this page that you have not yet confirmed. If you navigate away from this page you will lose your unsaved changes";
+        }
+        else console.log('NOT modified');
+    };
+  //  $( window ).on( 'beforeunload',  function(){
+    //    console.log('window unloading');
+      //  callbacks['quit']();
+   // });
     
-    
+    $('.back-button').off('click').click( callbacks['quit']);
+    /*
     $('.back-button').on('click', function()
     {
         console.log("FILE COMMANDS: toolbar BACK ARROW clicked");
@@ -741,7 +753,7 @@ $(document).ready(function () {
 
         else window.history.back();
     });
-    
+    */
  /*   window.onbeforeunload = function(event) {
         event.preventDefault();
         // Chrome requires returnValue to be set.

@@ -15,6 +15,13 @@ function mongoRegex ($pattern) { // $pattern is a string, like '^\d[a-z]'\
     else return new MongoRegex('/' . $pattern . '/');
 }
 
+function mongoRegexOptions($pattern, $options) {
+    global $mongo_level;
+    if ($mongo_level >= 4)
+        return new MongoDB\BSON\Regex($pattern,$options);
+    else return new MongoRegex('/' . $pattern . '/' . $options);
+}
+
 function mongoId ($id) {  //$id is a string, RETURN a mongoId object
     global $mongo_level;
     if ($mongo_level >= 4)
@@ -28,13 +35,6 @@ function mongoGetId ($doc) { // $doc is a document returned by mongoinsert or si
     if ($mongo_level >= 4)
          return (string) $doc->getInsertedId();
     else return (string) $doc['_id'];
-}
-
-function mongoRegexOptions($pattern, $options) {
-        global $mongo_level;
-    if ($mongo_level >= 4)
-         return new MongoDB\BSON\Regex($pattern,$options);
-    else return new MongoRegex('/' . $pattern . '/' . $options);
 }
 
 function mongoFind($collection, $filter, $sort, $skip, $limit) {

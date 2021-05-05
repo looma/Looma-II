@@ -2,7 +2,7 @@
 .text-display{
     height: 100%;
     width:  100%;
-    padding:2vh 2vw;
+  /*  padding:2vh 2vw; */
     background-color:white;
     color:#091F48;
     font-weight:bold !important;

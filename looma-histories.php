@@ -12,21 +12,6 @@ Description: Initial "histories" page. Takes the user to the history timelines.
 include ("includes/header.php");
 require ('includes/mongo-connect.php');
 require('includes/looma-utilities.php');
-//require('includes/translate.php');
-
-function makeButton($id, $thumb, $dn) {
-
-    //DEBUG   echo "making button with path= $path  file= $file   ext= $ext"; //DEBUG
-
-    echo "<button class=' play activity img' data-ft=history data-id='" . (string)$id . "'>";
-    echo "<img src='" . $thumb . "'>";
-    echo keyword($dn);
-
-    //finish BUTTON
-    echo "</button>";
-
-}  //end makeButton()
-
 ?>
 
 <body>
@@ -38,13 +23,7 @@ function makeButton($id, $thumb, $dn) {
     <h1 class="title"> <?php keyword("Looma History Timelines"); ?> </h1>
     <div class="center">
         <br>
-        <!--<a href="looma-history.php?chapterToLoad=7EN01.01">
-			<button type="button" class="navigate" ><?php keyword('US Presidents') ?>  </button>
-			</a>
-			-->
         <?php
-        //modifications for History Timelines
-        //***************************
         //make buttons for timelines directory -- virtual folder, populated from histories collection in mongoDB
         $buttons = 1;
         $maxButtons = 3;
@@ -55,36 +34,25 @@ function makeButton($id, $thumb, $dn) {
 
         foreach ($histories as $history) {
 
-            //echo "DEBUG   found lesson " . $lesson['dn'] . "<br>";
             echo "<td>";
             $dn = $history['title'];
             $ndn = isset($history['ndn']) ?  $history['ndn'] : "";
             $ft = "history";
-            //$thumb = "../content/timelines/" . $dn . "_thumb.jpg";
             $thumb = $history['thumb'];
-            //$thumb = $path . "/thumbnail.png";
             $id = $history['_id'];  //mongoID of the descriptor for this lesson
-            //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $nfn, $npg,$prefix,$lang)
             makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
-            //makeButton($id, $thumb, $dn);
             echo "</td>";
             $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
 
         } //end FOREACH history
         echo "</tr></table>";
         ?>
-        <!--
-		<a href="looma-history.php?chapterToLoad=1EN03">
-			<button type="button" class="navigate"><?php keyword('Sports') ?>  </button>
-		</a>
--->
-
     </div>
 </div>
 
 <?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>
-<script src="js/looma-histories.js"></script>          <!-- Looma Javascript -->
+<script src="js/looma-histories.js"></script>
 
 </body>
 </html>

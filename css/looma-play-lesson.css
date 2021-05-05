@@ -26,6 +26,12 @@ body {
     color:black;
 }
 
+iframe {
+    border: none;
+    height: 100%;
+    width: 90%;
+}
+
 #timeline-container {
     grid-row: timeline / bottom;
     grid-column: left / middle;
@@ -371,6 +377,7 @@ span#lesson-name {
     width:90vw;
     /*zoom: 250%;*/
     font-size:2.75vw;
+    padding: 0 !important;
     margin:0 auto;
     overflow: hidden;
     /*background-color: #091F48;  */

@@ -343,7 +343,7 @@ li:hover {
 #previewpanel .textpreview,
 .setup-panel {
     /*zoom:155%;*/
-    width:49.5vw;
+    width:45.5vw;
     margin:0 auto;
     overflow:hidden;
     white-space:nowrap;
@@ -471,7 +471,7 @@ button[disabled] {
 }
 
 #timelineDisplay .activityDiv .textdiv{
-    height:50%;
+    height:58%;
     width:45%;
     float:left;
     padding-left:3px;

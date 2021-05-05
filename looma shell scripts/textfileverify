@@ -57,7 +57,7 @@ while (textcursor.hasNext()) {
     var text = textcursor.next();
     
     // extract a CH_ID from the text's name and verify it
-    var textID = text['dn'].match(/([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/);
+    var textID = text['dn'].match(/([1-9]|10)(EN|S|Sa|M|SS|SSa|N|H|V)[0-9]{2}(\.[0-9]{2})?/);
     if (textID) {
         //print('text "' + text['dn'] + '"       has ch_id ' + textID[0]);
         if (!legalCH_ID(textID[0])) {

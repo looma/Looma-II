@@ -143,6 +143,14 @@ function showChapterDropdown($div, $grades, $subjects, $chapters) {
 };  //end showChapterDropdown()
 */
 
+function defaultfolder(src) {
+    var sources = {
+        "Dr Dann": "../content/Dr Dann",
+        PhET:  "../content/PhET",
+        TED:  "../content/TED"};
+    if (sources[src]) return sources[src]; else return "../content/temp";
+}  // end defaultfolder()
+
 function legalThumb (file, thumb) {
     if (!file || !thumb) return false;
     else return thumb.includes('_thumb.jpg') && (thumb.replace('_thumb.jpg', '') === file.substring(0,file.lastIndexOf('.')));
@@ -150,32 +158,74 @@ function legalThumb (file, thumb) {
 
 var legalTypes = ['image/jpg','image/png','image/gif','image/jpeg','audio/mp3','video/mp4','video/m4v','video/mov','application/pdf'];
 
+
+///////////////////////////////////
+/////      confirmChanges()    /////
+///////////////////////////////////
+function confirmChanges (event) {
+    event.preventDefault();
+    
+    var details = '<h3>&nbsp;&nbsp;&nbsp;&nbsp;<b>Summary of new file to import</b></h3>';
+    details += '<p>File: ' + $('#upload').val().replace('C:\\fakepath\\','') + '</p>';
+    details += '<p>Title: ' + $('#dn-changes').val() + '</p>';
+    details += '<p>Folder: ' + $('#fp-changes').val() + '</p>';
+    details += '<p>Keywords: ' + $('select[name="key1"]').val();
+        if ($('select[name="key2"]').val()) details += ', ' + $('select[name="key2"]').val();
+        if ($('select[name="key3"]').val()) details += ', ' + $('select[name="key3"]').val();
+        if ($('select[name="key4"]').val()) details += ', ' + $('select[name="key4"]').val();
+    details += '</p>';
+    if ($('input[name="src[]"]:checked').val()) details += '<p>Source: ' + $('input[name="src[]"]:checked').val() + '</p>';
+                            //   $('input[name="name_of_your_radiobutton"]:checked').val()   details += '<p>Chapter:</p>';
+    
+    details += '<p>Grades: ' + $('#cl_lo').val() + ', ' + $('#cl_hi').val() + '</p>';
+    
+    if ($('#grade-drop-menu').val() && $('#subject-drop-menu').val() && $('#chapter-drop-menu').val() )
+        details += '<p>Chapter: ' + $('#chapter-drop-menu').val() + '</p>';
+    
+    $('#details #details-contents').html('<p>' + details + '</p>');
+    LOOMA.makeTransparent($('#previewpanel'));
+    $('#details').show();
+} // end confirmChanges()
+
+
+///////////////////////////////////
+/////      cancelChanges()    /////
+///////////////////////////////////
+function cancelChanges (event) {
+    LOOMA.makeOpaque($('#previewpanel'));
+    $('#details').hide();
+} // end cancelChanges()
+
 ///////////////////////////////////
 /////      submitChanges()    /////
 ///////////////////////////////////
 function submitChanges (event) {  //check the form entries and submit to backend
+    LOOMA.makeOpaque($('#previewpanel'));
+    $('#details').hide();
     var n, str, errors, ft;
-    event.preventDefault();
     
     errors = '';
     
     if ($('#upload')[0].files.length === 0 || $('#upload-thumb')[0].files.length === 0)
-        errors = 'Choose both a file and its thumbnail to upload';
+        errors = '<p>Choose both a file and its thumbnail to upload</p>';
 
-    else if ( ! legalThumb($('#upload')[0].files[0].name, $('#upload-thumb')[0].files[0].name))
-        errors = 'Thumbnail name does not match filename';
-
-    else if ( ! legalTypes.includes($('#upload')[0].files[0].type))
-        errors = 'Illegal file type ' + $('#upload')[0].files[0].type;
-
-    else if ( ! $('#dn-changes  ').val())
-        errors = 'Please enter a display name for this file';
+    else if (!legalThumb($('#upload')[0].files[0].name, $('#upload-thumb')[0].files[0].name)) {
+        errors += '<p>Thumbnail name does not match filename</p>';
+        
+        if (!legalTypes.includes($('#upload')[0].files[0].type))
+            errors += '<p>Illegal file type ' + $('#upload')[0].files[0].type + '</p>';
+        }
+    if ( ! $('#dn-changes  ').val())
+        errors += '<p>Please enter a display name for this file</p>';
     
-    else if ($('#grade-chng-menu').val() && $('#subject-chng-menu').val() && !$('#chapter-chng-menu').val() )
-        errors = 'Must specify a specific chapter to set';
+    if ($('#grade-drop-menu').val() || $('#subject-drop-menu').val() && !$('#chapter-drop-menu').val() )
+        errors += '<p>Must specify a specific chapter to set</p>';
+    
+    if ($('#cl_lo').val() > $('#cl_hi').val())
+        errors += '<p> "Low grade" must be less than or equal to  "High grade"</p>';
     
     if (errors) {  //validation here
-        LOOMA.alert(errors + '.<br>Modify  and re-submit');
+        LOOMA.alert(errors + '<p>Modify  and re-submit</p>');
     } else {
     
         str = $('#upload')[0].files[0].type;
@@ -191,8 +241,10 @@ function submitChanges (event) {  //check the form entries and submit to backend
 //
 // ALSO, the server side settings, in php.ini, like file_uploads, post_max_size, and upload_max_filesize, may have to be adjusted
 //
+        
         LOOMA.confirm('Upload file and thumbnail?',
             function() {
+                $('#details').hide();
                 var formData = new FormData($('#changes')[0]);
                     $.ajax("looma-database-utilities.php",
                           {type:'post',
@@ -205,12 +257,11 @@ function submitChanges (event) {  //check the form entries and submit to backend
                           }
                     );
             },
-            function(){console.log('File upload canceled by user');}
+            function(){$('#details').hide(); console.log('File upload canceled by user');}
         );
         
     }
 };  //  end submitChanges()
-
 
 $(document).ready(function() {
     
@@ -221,7 +272,12 @@ $(document).ready(function() {
     $("#keyword-changes .keyword-dropdown").change(showKeywordDropdown);
     
     $("#upload").on('change', function() {
-        $('#filename').text( $(this).val().replace('C:\\fakepath\\',''));
+        var fn = $(this).val().replace('C:\\fakepath\\','');
+        $('#filename').text(fn);
+        var src = $("#source-div input[type='radio']:checked").val();
+        if (src) var fp = defaultfolder(src);
+        else         fp = LOOMA.filepath(LOOMA.extension(fn));
+        $('input[name="fp"]').val(fp);
     });
     
     $("#upload-thumb").on('change', function() {
@@ -233,12 +289,22 @@ $(document).ready(function() {
         showChapterDropdown(null, $('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
     });
     
-    $('#dn-clear').click(       function(e) {e.preventDefault(); $('#dn-changes').val(""); });
-    $('#keyword-clear').click(  function(e) {e.preventDefault(); $('.keyword-changes').val(""); });
-    $('#source-clear').click(   function(e) {e.preventDefault(); $('.source-changes').prop('checked', false); });
-    $('#textbook-clear').click( function(e) {e.preventDefault(); $('.chapter-changes').val(""); });
+    $('#cl_lo').change(function(){if($(this).val() < 1) $(this).val(1);}) //could also change cl_hi to stay > cl_lo
+    $('#cl_hi').change(function(){if($(this).val() >10) $(this).val(10);});  //could also change cl_lo to stay < cl_hi;
+
+    $('#source-div input').attr('disabled', false);
     
-    $('#submit-changes').click( submitChanges );
+    $('#dn-clear').click(       function(e) {e.preventDefault(); $('#dn-changes').val(""); });
+    $('#fp-clear').click(       function(e) {e.preventDefault(); $('#fp-changes').val(""); });
+ 
+    $('#keyword-clear').click(  function(e) {e.preventDefault(); setRootKeyword(); });
+ 
+    $('#source-clear').click(   function(e) {e.preventDefault(); $('input[name="src[]"]').prop('checked', false); });
+    $('#textbook-clear').click( function(e) {e.preventDefault(); $('.chapter-changes').val(""); });
+    $('#clear-changes').click(  function() {$('.chng-clear').click();});
+    $('#submit-changes').click( confirmChanges );
+    $('#user-submit').click(submitChanges);
+    $('#user-cancel').click(cancelChanges);
     
     $('#dismiss').off('click').click( function() {
         LOOMA.confirm('Leave Import Content Page?',

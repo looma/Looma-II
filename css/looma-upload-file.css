@@ -19,7 +19,7 @@ body {
     display:grid;
     grid-gap:1vh;
     grid-template-columns: 22vw 22vw 28vw 28vw;
-    grid-template-rows: 5vh 22vh 53vh 15vh;
+    grid-template-rows: 5vh 18vh 57vh 15vh;
     background-color:lightgray;
     
     font-family: "Comic Sans MS", cursive, sans-serif;
@@ -47,7 +47,8 @@ body {
 #search-bar {
     grid-column: 1/-1;
     grid-row: 2;
-    position-relative;
+    padding-left:15vw;
+    position: relative;
     background-color: white;
 }
 
@@ -69,7 +70,7 @@ body {
 
 div#search-panel {
     height:100%;
-    font-size:1.2em;
+    font-size:1em;
 }
 
 #search span {font-weight:bold;}
@@ -90,7 +91,7 @@ div#search-panel {
 
 #keyword-changes, #source-changes, #textbook-changes {
     display:inline-block;
-    margin-top:5vh;
+    margin-top:3vh;
     text-align:left;
 }
 #grade-changes, #subject-changes, #chapter-changes {}
@@ -108,12 +109,14 @@ div#search-panel {
 
 div.upload {
     position:absolute;
+    max-width:20vw;
     top:35vh;
     left:3vw;
     border-radius:7px;
 }
 
-div.upload input[type=file] { display:none;
+div.upload input[type=file] {
+    display:none;
 }
 
 div.upload label{
@@ -122,7 +125,9 @@ div.upload label{
     min-width:40vw;
 }
 
-span#filename, span#thumbname {color:red;}
+span#filename, span#thumbname {color:red;
+    overflow-wrap:anywhere;
+}
 
 input {
     font:inherit;
@@ -143,15 +148,22 @@ input, select {
     width:30vw;
 }
 
-.src-chng input {width:1vw;}
+#grade-limits label {margin-right:2vw;}
 
-input#dn-changes {
+input.class-limit {width:5vw;
+    margin-right: 1vw;}
+
+.text-label {width: 14vw;}
+
+.src-chk input {width:1vw;}
+
+input#dn-changes, input#fp-changes {
     width:32vw;
     max-width:32vw;
 }
 
 .chapter-changes {
-    min-width:15vw;
+    min-width:35vw;
 }
 button.speak, button.lookup, button#fullscreen-control {
     display:none;
@@ -164,7 +176,6 @@ button.speak, button.lookup, button#fullscreen-control {
 #submit-changes {
     color:white;
     background:#2E3192;
-    height:120%;
 }
 
 #submit-changes:hover {
@@ -193,8 +204,6 @@ button {
     /*color:white;
     background:#2E3192;*/
     border-radius:0.313em;
-    /*width: 90px;*/
-    height: 5vh;
     white-space: nowrap;
     font-size: 1.5em;
     margin-top: 3px;
@@ -203,6 +212,15 @@ button {
 button#media-submit {
     width: 5vh;
     height: 5vh;
+    border: 2px solid black;
+    border-radius: 4px;
+    margin-right: 1vw;
+    display:inline-block;
+}
+
+#details button{
+    width:10vw;
+    height:7vh;
     border: 2px solid black;
     border-radius: 4px;
     margin-right: 1vw;
@@ -231,9 +249,8 @@ p.hint {
     top:5%;
     left:5%;
     width:95%;
-    padding:2px 0 0 0;
     color:#aaa;
-    font-size:1.5em;
+    font-size:1.2em;
 }
 
 span.hint {
@@ -372,17 +389,20 @@ li:hover {
 
 #details {
     display:none;
-    opacity: 0.8;
+    opacity: 0.9;
+    border: 2px solid black;
     background-color:white;
-    height:42vh;
-    width:30vw;
+    height:60vh;
+    width:50vw;
     min-height:30vh;
     min-width:30vw;
     position: absolute;
     bottom:4vh;
     left:10vw;
     overflow:hidden;
+    color:red !important;
     font-size:1.5em;
+    padding-left:5vw;
     text-align:left;
 }
 

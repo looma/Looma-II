@@ -23,6 +23,8 @@
   var loginname, loginlevel, loginteam;
   var previewtimer;
 
+  var thumbrequest;
+  
   /*  callback functions and assignments expected by looma-filecommands.js:  */
   callbacks['clear'] = textclear;
   callbacks['save'] = textsave;
@@ -92,11 +94,12 @@
 
   
   function openPreview (button) {
-      $.post("looma-database-utilities.php",
+      if (thumbrequest) thumbrequest.abort();
+      thumbrequest = $.post("looma-database-utilities.php",
           {cmd: "openByID", collection: currentcollection, id:$(button).data('id'), ft: 'text'},
           function(response) {
               $('#preview').html(response['data']).show();
-              previewtimer = setTimeout(function(){ closePreview(); }, 15000);
+             // previewtimer = setTimeout(function(){ closePreview(); }, 15000);
           },
          'json'
       );
@@ -127,7 +130,6 @@
 
       $editor = $('#editor .text-display'); //the DIV where the HTML is being edited
       $editor.wysiwyg();
-      
       
       document.execCommand('styleWithCSS', false, true);
       document.execCommand('fontSize',     false, 5);

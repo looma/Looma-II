@@ -4,11 +4,32 @@
     position:relative;
     height:92vh;
     /*  height:100%;*/
+    
+   /* padding-left: 3.5vw;  // trying to center PDF textbook page in lesson viewer */
+    
+    
     width:100%;
     background-color:val(--looma-blue);
     margin-right:3px;
 }
 
+@media screen and (min-width: 320px) and (max-width: 812px) and (orientation: landscape) {
+    /*
+    html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        width: 100vh;
+        overflow-x: hidden;
+        position: absolute;
+        top: 100%;
+        left: 0;
+    }
+    */
+    #pdf {
+        height:100%;
+        zoom:0.5;
+    }
+}
 /*
 
 NOTE: tried using GRID. it puts the text over the pdf, but not aligned

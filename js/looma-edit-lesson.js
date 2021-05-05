@@ -79,8 +79,10 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
     $(response.data).each(function(index) {
         // retrieve each timeline element from mongo and add it to the current timeline
         //var newDiv = null;  //reset newDiv so previous references to it are broken
-        posts.push($.post("looma-database-utilities.php",
-            {cmd: "openByID", collection: this.collection, id: this.id},
+       
+       //  /////// if (this.id && this.collection)
+            posts.push($.post("looma-database-utilities.php",
+                {cmd: "openByID", collection: this.collection, id: this.id},
             function(result) {
                 var newDiv = createActivityDiv(result);
                 //add data-index to timeline element for later sorting
@@ -96,7 +98,7 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
     //  when all the $.post are complete, then re-order the timeline to account for out-of-order elements from asynch $.post calls
     $.when.apply(null, posts).then(function(){
         orderTimeline();
-        preview_result($('#timeline .activityDiv')[0]);
+        preview_result($('#timeline .activityDiv')[0], true);
         if (!isnewlesson) lessoncheckpoint();
     });
     
@@ -115,7 +117,7 @@ function lessondisplay (response) {
 function lessonsave(name) {
     isnewlesson = false;
     savefile(name, 'lessons', 'lesson', lessonpack($timeline.html()), "true");
-    //note, the final param to 'savefile()' [to make an activity] set to 'true'
+    //note, the final param to 'savefile()' [to make an activity] set this param to 'true'
     //because lessons are recorded as  activities [for use in library-search, for instance]
 } //end lessonsave()
 
@@ -373,7 +375,7 @@ function createActivityDiv (activity) {
         if ('mongoID' in item) $(activityDiv).attr("data-mongoID",
             (item.ft == 'chapter') ? '' : item['mongoID']['$id'] || item['mongoID']['$oid']);
         
-        var itemtype = item['ft'] === 'text-template' ? 'text' : item['ft'];
+        var itemtype = item['ft'] === 'text-template' ? 'text-template' : item['ft'];
         $(activityDiv).attr("data-type", itemtype);
         $(activityDiv).attr("data-fp", item['fp']);
         
@@ -498,7 +500,7 @@ function preview_next() {
     var current_item = $('.playing')[0];
     var $next_item = $(current_item).parents('.activityDiv').next();
     if ($next_item.length !== 0) {
-        preview_result($next_item);
+        preview_result($next_item,true);
         scroll_to_item($next_item)
     }
 };
@@ -510,7 +512,7 @@ function preview_prev() {
     var current_item = $('.playing')[0];
     var $prev_item = $(current_item).parents('.activityDiv').prev();
     if ($prev_item.length !== 0) {
-        preview_result($prev_item);
+        preview_result($prev_item, true);
         scroll_to_item($prev_item);
     }
 };
@@ -520,7 +522,7 @@ function preview_prev() {
 ///////////////////////////////////////////////////////////////
 
 // When you click the preview button
-function preview_result (item) {
+function preview_result (item, editable) {
     
     $('.resultsimg').removeClass('playing');
     $(item).find('.resultsimg').addClass('playing');
@@ -656,7 +658,7 @@ function preview_result (item) {
                 'json'
             );
         }
-        else if (filetype=="text") {
+        else if (filetype=="text"|| filetype == "text-template") {
             //use the mongoID of the textfile to query text_files collection and retrieve HTML for this text file
            
            // id = $(item).data('mongo').mongoID.$id || $(item).data('mongo').mongoID.$oid;
@@ -667,7 +669,7 @@ function preview_result (item) {
                 function(result) {
                     $('#previewpanel').empty().append($('<div class="textpreview text-display" data-id="' + id + '"></div>').html(result.data));
                     //document.querySelector("div#previewpanel").innerHTML = result.data;
-                  $('#edit-text-file').show();
+                  if (editable) $('#edit-text-file').show();
                 },
                 'json'
             );
@@ -687,43 +689,44 @@ function insertTimelineElement(source, target) {
                                              //NOTE: crucial to "off()" event handlers,
                                              //or the new element will still be linked to the old
     
-    if ($dest.data('type') === 'text-template') $dest= cloneTextfile($dest, target);
+    if ($dest.data('type') === 'text-template') cloneTextfile($dest, target,false);
     else {
         $dest.removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
     
-        $dest.addClass("ui-sortable-handle");  //  ?? this next stmt needed??
+        //$dest.addClass("ui-sortable-handle");  //  ?? this next stmt needed??
     
         if (target) $dest.insertAfter(target);   // insert after target
         else $dest.appendTo("#timelineDisplay");  // or insert at end
     
         // scroll the timeline so that the new element is in the middle - animated to slow scrolling
-        $('#timeline').animate({scrollLeft: $dest.outerWidth(true) * ($dest.index() - 4)}, 100);
+        scroll_to_item($dest);
+        //$('#timeline').animate({scrollLeft: $dest.outerWidth(true) * ($dest.index() - 4)}, 100);
     
-        refreshsortable();  //TIMELINE elements can be drag'n'dropped
+        makesortable();  //TIMELINE elements can be drag'n'dropped
     }
 } //  end insertTimelineElement()
 
 function copyTimelineElement(source) {
 
        if (source.data('type') !== 'text') insertTimelineElement(source,source)
-       else                                cloneTextfile(source, source);
+       else                                cloneTextfile(source, source,false);
     
 }; // end copyTimelineElement()
 
-function cloneTextfile(source,target) {
+function cloneTextfile(source, target, deleteSource) {
     //$(source).find('.resultsimg').removeClass('playing');
     
     var $clone = source.clone(false).off();
+    
     var newname = $clone.data('dn');
-    // NOTE: could scan other text files in timeline and
-    // name this one XXXXX (n+1) if there is XXXX (n)
+    if ($clone.data('type') === 'text-template' && currentname) newname = currentname.match(LOOMA.CH_IDregex)[0] + " " + newname;
     
-            //POST "copy" to looma-database-utilities.php
-            // THEN copy _id and mongoID into the clone
-            //then insert clone into timeline
+            //POST "copytext" to looma-database-utilities.php
+            // THEN copy the new _id and the new mongoID into the clone
+            // THEN insert clone into timeline
     
-    $.post("looma-database-utilities.php",
-        {   cmd: "copy",
+       $.post("looma-database-utilities.php",
+        {   cmd: "copytext",
             collection: 'text_files',
             id: $clone.data('id'),
             dn: LOOMA.escapeHTML(newname),
@@ -731,7 +734,7 @@ function cloneTextfile(source,target) {
         },
         'json'
     ).then(function(result){
-        // result has "_id" of the new ACTIVITY, and "dn"
+        // result has "_id" of the new ACTIVITY, and "dn", and "mongoID"
         
         // Note: When using the .clone() method,
         // you can modify the cloned elements or their contents before (re-)inserting them into the document.
@@ -741,31 +744,41 @@ function cloneTextfile(source,target) {
         $clone.attr('data-dn',     result['dn']);
         $clone.attr('data-type',   'text');
     
-        var $mongo = source.data('mongo');
+   /*     var $mongo = source.data('mongo');
         $mongo['dn'] = result['dn'];
         $mongo['id'] = result['id'];  //????
-        $mongo['mongoID']['$0id'] = result['mongoID'];
+        $mongo['mongoID']['$oid'] = result['mongoID'];
         $mongo['ft'] = 'text';
         $clone.data('mongo', $mongo);
-        
+   */
   /*      $clone.data(mongo.dn,     result['dn']);
         $clone.data(mongo.id,     result['id']['$oid']);
         $clone.data(mongo.mongoid,result['mongoID']['$oid']);
         $clone.data(mongo.ft,     'text');
       */
-        $clone.removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
-        $clone.addClass("ui-sortable-handle");  //  ?? this next stmt needed??
+        $clone.removeClass('ui-draggable-handle')
+              .removeClass("ui-draggable")
+              .removeClass("ui-draggable-disabled")
+              .removeClass("ui-draggable-dragging")
+              .removeClass("ui-sortable-helper");
+        //$clone.addClass("ui-sortable-handle");  //  ?? this next stmt needed??
         
-        if ($clone.find('.result_ft').text() === 'text-template') $clone.find('.result_ft').text('text');
+        if ($clone.find('.result_ft').text().trim() === 'text-template') $clone.find('.result_ft').text('text');
         
         if (target) $clone.insertAfter(target);   // insert after target
         else        $clone.appendTo("#timelineDisplay");  // or insert at end
+      //NOTE - bug somewhere here - clone doesnt get integrated into timeline [has 'position' = 'absolute'] ?????????
+          if ( deleteSource ) source.remove();
         
         // scroll the timeline so that the new element is in the middle - animated to slow scrolling
-        $('#timeline').animate({scrollLeft: $clone.outerWidth(true) * (target.index() - 4)}, 100);
-        
-        refreshsortable();
-        preview_result($clone);
+           scroll_to_item($clone);
+           //var place = target ? target.index() : $('#timelineDisplay').length;
+     //   $('#timeline').animate({scrollLeft: $clone.outerWidth(true) * (place - 4)}, 100);
+ 
+ /*         $clone.css('position','relative', 'important');  */
+    
+           makesortable();
+        preview_result($clone, true);
     });
 }  // end cloneTextfile()
 
@@ -783,7 +796,8 @@ function removeTimelineElement (elem) {
 function orderTimeline (){  // the timeline is populated with items that arrive acsynchronously by AJAX from the [mongo] server
     // a 'data-index' attribute is stored with each timeline item
     // this function [re-]orders the timeline based on those data-index values
-    var $timeline = $('#timelineDisplay');
+   
+    // var $timeline = $('#timelineDisplay');
     
     $timeline.find('.activityDiv').sort(function(a, b) {
         //return +a.dataset.index - +b.dataset.index;
@@ -792,9 +806,22 @@ function orderTimeline (){  // the timeline is populated with items that arrive 
         .appendTo($timeline);
 } // end orderTimeline()
 
+// NOTE: orderNewLesson() may be redundant with orderTimeline() ????
+function orderNewLesson(lessonData) {
+    lessonData.sort(function(a, b) {
+        return a.index - b.index;
+    });
+    return lessonData;
+} // end orderNewLesson
+
 /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
 function makesortable (){
     //$('timelineDisplay').sortable( "destroy" ); //remove previous sortable state
+
+    //NOTE: next line souldnt be needed (??)
+    // it removes 'position:absolute' and other style settings from a cloned text-template -> text element after drag'n'drop
+    $("#timelineDisplay .activityDiv").removeAttr("style");
+
     $("#timelineDisplay").sortable({
         opacity: 0.7,   // makes dragged element transparent
         revert: true,   //Animates the drop
@@ -814,12 +841,13 @@ function refreshsortable (){
     
 }
 
-/////////////////////////// DROPPABLE UI ////////  requires jQuery UI  ///////////////////
+/////////////////////////// DRAGGABLE UI ////////  requires jQuery UI  ///////////////////
 //set up Drag'n'Drop  - -  code borrowed from looma-slideshow.js [T. Woodside, summer 2016]
 function makedraggable() {
     var $clone;
     $('.resultitem  .activityDiv').draggable({
         connectToSortable: "#timelineDisplay",
+        //connectWith: "#timelineDisplay .activityDiv",
         //opacity: 0.7,
         addClasses: false,
         cursorAt: 0,
@@ -830,12 +858,19 @@ function makedraggable() {
         start: function(event, ui) {
             $clone = $(this).clone(true, true).off(); //make a 'deep' clone of this element. preserves jQuery 'data' attributes
                                                       //NOTE: crucial to "off()" event handlers, or the new element will still be linked to the old
+      
+      //COULD ADD AN ID
+      
         },
         stop: function(event, ui) {
             
             if ($('#timelineDisplay').find(ui.helper).length > 0) {  //if the helper was dropped on the timeline...
                 $(ui.helper).data($clone.data());  // insert the data() we copied into $clone back into the new timeline element
-                refreshsortable();
+    
+                $(ui.helper).removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
+    
+                makesortable();
+                if ($(ui.helper).data('type') === 'text-template') cloneTextfile(ui.helper,ui.helper, true);
             }
         }
     });
@@ -877,12 +912,6 @@ function lessonnew () {
     $('#setup-panel-select').prop("disabled",true);
 }  // end lessonnew()
 
-function orderNewLesson(lessonData) {
-    lessonData.sort(function(a, b) {
-        return a.index - b.index;
-    });
-    return lessonData;
-} // end orderNewLesson
 
 //////////////////////////////////////////
 //////     CLONE MASTER LESSON       /////
@@ -1019,7 +1048,17 @@ function hideOptions() {
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 
 window.onload = function () {
-
+    
+    
+    $searchResultsDiv = $('#innerResultsDiv');  //sets a global variable used by looma-search.js
+    $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
+    
+    loginname = LOOMA.loggedIn();
+    var loginlevel = LOOMA.readStore('login-level','cookie')
+    var loginteam  = LOOMA.readStore('login-team','cookie')
+    if (loginname && loginlevel === 'admin' )   $('.admin').show();
+    if (loginname && loginlevel === 'exec' )  { $('.admin').show(); $('.exec').show(); }
+    
     $('#setup-panel .cancel').click(function(){
         $('.setup-panel').hide();
         LOOMA.makeOpaque($('#main-container, #filecommands'));
@@ -1083,16 +1122,7 @@ window.onload = function () {
     
     //show the "New Text File" button in filecommands.js to allow text-frame editor to be called in an iFrame
     $('#show_text').show();
-    
-    $searchResultsDiv = $('#innerResultsDiv');  //sets a global variable used by looma-search.js
-    $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
-    
-    loginname = LOOMA.loggedIn();
-    var loginlevel = LOOMA.readStore('login-level','cookie')
-    var loginteam  = LOOMA.readStore('login-team','cookie')
-    if (loginname && loginlevel === 'admin' )   $('.admin').show();
-    if (loginname && loginlevel === 'exec' )  { $('.admin').show(); $('.exec').show(); }
-    
+  
     $('#clear_button').click(clearFilter);
     
     $('#search').change(function() {
@@ -1119,11 +1149,16 @@ window.onload = function () {
         insertTimelineElement($(this).closest('.activityDiv'));return false;});
     
     //  VIEW
-    $('#innerResultsDiv, #timeline').on('click', '.preview',    function() {
-        preview_result($(this).closest('.activityDiv'));return false;});
-    $('#innerResultsDiv, #timeline').on('click', '.resultsimg', function() {
-        preview_result($(this).closest('.activityDiv'));return false;});
+    $('#innerResultsDiv').on('click', '.preview',    function() {
+        preview_result($(this).closest('.activityDiv'), false);return false;});
+    $('#innerResultsDiv').on('click', '.resultsimg', function() {
+        preview_result($(this).closest('.activityDiv'), false);return false;});
     
+    $('#timeline').on('click', '.preview',    function() {
+        preview_result($(this).closest('.activityDiv'), true);return false;});
+    $('#timeline').on('click', '.resultsimg', function() {
+        preview_result($(this).closest('.activityDiv'), true);return false;});
+   
     //  REMOVE
     $('                  #timeline').on('click', '.remove',     function() {
         removeTimelineElement(this);return false;});
@@ -1134,6 +1169,18 @@ window.onload = function () {
             copyTimelineElement($thiselement);
             return false;
         });
+    
+    /*
+    $('#timelineDisplay').on("dragover", function(event) {
+        event.preventDefault();
+    });
+    $('#timelineDisplay').on('drop', function(e) {
+        e.preventDefault();
+        if ($(e.target).data('type') === 'text-template') cloneTextfile(ui.helper,ui.helper, true);
+    });
+    */
+
+
 //////////////////////////////////////
 /////////FILE COMMANDS setup /////////
 //////////////////////////////////////
@@ -1163,7 +1210,7 @@ window.onload = function () {
     
    // lessonclear();
    
-   // makesortable(); //makes the timeline sortable
+   makesortable(); //makes the timeline sortable
     
     //  $('#chapter-lang').show();
 
@@ -1183,7 +1230,7 @@ window.onload = function () {
     $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
    
     // enable right-click on text files to open Text Editor
-    $('#previewpanel').on('contextmenu', '.textpreview', openTextEditor);
+    //$('#previewpanel').on('contextmenu', '.textpreview', openTextEditor);
     $('#edit-text-file').click(openTextEditor);
     
     // show setup panel, get user input

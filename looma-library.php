@@ -218,6 +218,40 @@ Description:  displays and navigates content folders for Looma
 echo "</tr></table>";
 
     /********************************/
+    /********  Lesson buttons  ******/
+    /*********** if there are Looma Lessons with "folder" field
+             with this folder's name, make buttons for those lessons ******************/
+    $buttons = 1;
+    $maxButtons = 3;
+
+    // lookup collection = 'lessons', with 'folder' = this folder
+
+    $query = array('ft' => 'lesson', 'folder' => folderName($path));
+    $lessons = mongoFind($activities_collection, $query, 'dn', null, null);
+
+    if ($lessons) {
+        echo "<table id='lesson-table'><tr>";
+        $count = 0;
+        foreach ($lessons as $lesson) {
+            echo "<td>";
+            $dn = $lesson['dn'];
+            $ft = "lesson";
+            $thumb = "images/lesson2.png";
+            $id = $lesson['mongoID'];  //mongoID of the descriptor for this lesson
+            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+            echo "</td>";
+            nextButton();
+            $count ++;
+        }
+        echo "</tr></table>";
+        if ($count > 0) echo "<hr>";
+    };
+
+
+
+
+
+    /********************************/
     /********  PSEUDO folders  ******/
     /********************************/
     /*************** make buttons for the "pseudo-folders" in this DIR ******************/

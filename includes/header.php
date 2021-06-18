@@ -58,6 +58,7 @@ File: header.php
     <!--
     -->
       <link rel="stylesheet" href="css/tether.min.css">        <!-- needed by bootstrap.css -->
+
       <link rel="stylesheet" href="css/bootstrap.min.css">     <!-- Bootstrap CSS still needed ?? yes, for glyphicons-->
 
       <link rel="stylesheet" href="css/looma.css">             <!-- Looma CSS -->

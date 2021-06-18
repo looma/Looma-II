@@ -129,16 +129,19 @@ button.looma-control-button { display: inline-block;}
 button#fullscreen-control {
     display:inline-block;
     bottom:16vh;
+    right:5vw;
 }
 
 button.speak {
     display:inline-block;
     bottom:27vh;
+    right:5vw;
 }
 
 button.lookup {
     display:inline-block;
     bottom:38vh;
+    right:5vw;
 }
 
 button#fullscreen-playpause {
@@ -377,7 +380,7 @@ span#lesson-name {
     width:90vw;
     /*zoom: 250%;*/
     font-size:2.75vw;
-    padding: 0 !important;
+    /*padding: 0 !important;*/
     margin:0 auto;
     overflow: hidden;
     /*background-color: #091F48;  */

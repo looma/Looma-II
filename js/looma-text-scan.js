@@ -9,7 +9,10 @@ author: skip
 
 /* FUTURE CENHANCEMENT:
     Use the filter term to look up a lesson in lessons collection
-    and show all the text-files from that lesson
+    and show all the text-files from that lesson - OK we do this by having ch_id in the lesson name
+    
+    another improvement: get a COUNT from mongo [based on the FILTER, if any] and grey out
+    NEXT, PREV, +10 and -10 buttons if they will go beyond the range [0..count]
  */
 var sequence = 1;
 
@@ -27,9 +30,9 @@ function fetch(seq) {
                     $('#edit').attr('data-id', "");
                 } else {
                     $('div#text-display').html(result.data);
-                    document.querySelector("div#text-display").innerHTML = result.data;
+                   // document.querySelector("div#text-display").innerHTML = result.data;
                     $('#dn').html(result.dn);
-                    $('#edit').attr('data-id', result._id.$id);
+                    $('#edit').attr('data-id', result._id.$id || result._id.$oid);
                 }
                 ;
             },
@@ -49,8 +52,10 @@ $(document).ready(function() {
     });
     
     $('#prev').click(function() {
-        sequence--;
-        fetch(sequence);
+        if (sequence > 1) {
+            sequence--;
+            fetch(sequence);
+        }
     });
     
     $('#plus10').click(function() {
@@ -59,7 +64,11 @@ $(document).ready(function() {
     });
     
     $('#minus10').click(function() {
-        sequence -= 10;
+        if (sequence > 10) {
+            sequence -= 10;
+        } else {
+            sequence = 1;
+        }
         fetch(sequence);
     });
     
@@ -69,6 +78,6 @@ $(document).ready(function() {
     });
 
     $('#edit').click(function() {
-      if (sequence >= 0) window.open('looma-edit-text.php?dn=' + encodeURIComponent($('#edit').attr('data-id')));
+      if (sequence >= 0) window.open('looma-edit-text.php?id=' + encodeURIComponent($('#edit').attr('data-id')));
     });
 });

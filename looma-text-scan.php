@@ -4,11 +4,10 @@ LOOMA php code file
 Filename: looma-text-scam.php
 Description:
 
-Programmer name:
-Email:
-Owner: VillageTech Solutions (villagetechsolutions.org)
+Programmer name: skip
+Owner: Looma Education
 Date:
-Revision: Looma 2.0.x
+Revision:
 
 Comments: internal use page for sequencing through and examining text files
 -->
@@ -24,7 +23,6 @@ include ('includes/header.php');
 <body>
 <div id="main-container-horizontal">
     <div id="fullscreen">
-        <div id="display" class="text-display"></div>
         <div id="filterdiv">
             <input id="filterterm" placeholder="enter a chapter ID"></input>
             <button id="filter">Filter</button>
@@ -33,7 +31,9 @@ include ('includes/header.php');
             <span id="dn"></span>
             <button id="edit">Edit</button>
         </div>
-        <div id="text-display"></div>
+        <div id="text">
+            <div id="text-display" class="text-display"></div>
+        </div>
         <button class = "lookup"></button>
         <button class="speak looma-control-button"></button>
         <button id="fullscreen-control" class="looma-control-button"></button>
@@ -45,9 +45,7 @@ include ('includes/header.php');
 </div>
 
 <?php
-/*include either, but not both, of toolbar.php or toolbar-vertical.php*/
 include ('includes/toolbar.php');
-/*include ('includes/toolbar-vertical.php'); */
 include ('includes/js-includes.php');
 ?>
 <script src="js/looma-text-scan.js"></script>

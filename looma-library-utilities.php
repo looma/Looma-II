@@ -142,7 +142,7 @@ function make_activity($item) {
         // end case "khanimport"
 
        case "w4simport":
-            $w4spath = "/Users/skip/bin/w4sfilelist";
+            $w4spath = "/Users/skip/Desktop/w4sfilelist";
             $w4sfile = (file_get_contents($w4spath));
             $w4scontents = json_decode("[" . $w4sfile . "]");
             foreach ($w4scontents as $item) {

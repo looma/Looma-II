@@ -1,49 +1,52 @@
 // ONE TIME program to
-//    find how many lessons contain a given filetype (e.g. ePaath)
+//    find how many lessons contain a given filetype or src(e.g. ePaath, wikipedia, etc.)
 //
 //  file: lessonscanforfiletype
 //  run in MONGO SHELL with: load('lessonscanforfiletype')
-//       or in BASH with :mongo looma lessonscanforfiletype
+//       or in BASH with:    mongo looma < lessonscanforfiletype
 //
 
-var activitycursor, lessoncursor;
+var activitycursor, lessons;
 
 var count = 0;
-var ecount = 0;
-//const filetype = ['PhET'];
+var wcount = 0;
+var filesrc = 'wikipedia';
 
-print ('*****scanning  lessons for ' + filetype);
-lessoncursor = db.lessons.find();
-while (lessoncursor.hasNext()) {
-    var doc = lessoncursor.next();
+print ('*****scanning  lessons for ' + filesrc);
+lessons = db.lessons.find();
+while (lessons.hasNext()) {
+    var lesson = lessons.next();
     
-   // print (doc.dn + ' ***  '+ doc.data);
+   // print (lesson.dn + ' ***  '+ lesson.data);
     
-    var epaaths = [];
-     if (! doc.data) print ("lesson without data - " + doc.dn)
+    var wikis = [];
+    if (! lesson.data) print ("lesson without data - " + lesson.dn)
+        else if (!lesson.data.forEach) print("..... lesson data is not array for " + lesson.dn);
     else {
-        doc.data.forEach ( function(data) {
+        lesson.data.forEach ( function(data) {
             //print ('id is ' + data['id']);
             if (data.collection === 'activities') {
                 activitycursor = db.activities.findOne({'_id':ObjectId(data['id'])});
                 //print('cursor is ' + activitycursor);
                 if (activitycursor &&
-                    //activitycursor.ft === filetype)
-                    filetype.indexOf(activitycursor.src) !== -1)
+                    activitycursor.src === filesrc)
+                   // filetype.indexOf(activitycursor.src) !== -1)
                 {
-                    epaaths.push(activitycursor.dn);
-                    ecount++;
+                    wikis.push(activitycursor.dn);
+                    wcount++;
                 }
             }
         });
     }
-    if (epaaths.length > 0) {
+    if (wikis.length > 0) {
         count++;
-        print(doc.dn + '  - - -  ' + epaaths);
+        print(lesson.dn + ' - - - has these wikipedia articles:');
+        wikis.forEach(function(item) {print('    ' + item)});
+        
     }
         //count += 1;
 };
 print('');
-print(count + ' lessons have ' + ecount + ' ' + filetype + ' elements');
+print(count + ' lessons have ' + wcount + ' ' + filesrc + ' elements');
 
 

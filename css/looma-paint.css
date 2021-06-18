@@ -108,4 +108,6 @@ div#notice {
 .credit {
     top:4vh;
     right:0;
+	height:3vh;
+	width:15vw;
 }

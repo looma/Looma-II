@@ -22,7 +22,6 @@ body {
     height:100vh;
     width:100vw;
     
-    /*   font-family: "Comic Sans MS", cursive, sans-serif;*/
    font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", sans-serif;
     background-color: var(--looma-blue);
         /*background-color: #A1BEF3;*/
@@ -251,7 +250,7 @@ table#dir-table {
     max-height:30%;
 }
 
-table#file-table {
+table#file-table, table#lesson-table {
     height:0;
 }
 
@@ -292,8 +291,8 @@ button {
 	height:80%;
 
 	overflow: hidden;
-
-	vertical-align:middle;
+/*
+	vertical-align:middle;*/
 	text-align:center;
 
 }
@@ -697,7 +696,7 @@ video::-webkit-media-controls {display: none !important;}
 
 button.img {
 	height: 150px;
-	vertical-align:middle;
+	/*vertical-align:middle;*/
 	text-align:center;
 }
 

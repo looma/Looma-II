@@ -1,0 +1,25 @@
+// This program scans through specified documents in dictionary collection
+// 	looks for words with non-empty and non-null rw
+//	searches for the rw in the collection
+//	prints the rw if not found in the collection
+
+var docs, doc, rw, count, found;
+count = 0;
+
+docs = db.dictionary.find();
+while (docs.hasNext()) {
+	doc = docs.next();
+	rw = doc['rw'];
+	if(rw != null && rw !== '' && rw !== ' ' && doc['en'] === 'is') {
+
+		//print('for ' + doc['en'] + ' root is ' + rw);
+
+		found = db.dictionary.find({'en': rw}); 
+		if(!found.hasNext()) {
+			count++;
+			print('Root word "' + rw + '" for "' + doc['en'] + '" not found');
+		};
+
+	};
+};
+print('Number of missing root words: ' + count);

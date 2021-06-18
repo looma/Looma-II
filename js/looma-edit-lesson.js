@@ -98,11 +98,11 @@ function lessonunpack (response) {  //unpack the array of collection/id pairs in
     //  when all the $.post are complete, then re-order the timeline to account for out-of-order elements from asynch $.post calls
     $.when.apply(null, posts).then(function(){
         orderTimeline();
+        makesortable();
         preview_result($('#timeline .activityDiv')[0], true);
         if (!isnewlesson) lessoncheckpoint();
     });
     
-    makesortable();
     
 } //end lessonunpack()
 
@@ -122,7 +122,7 @@ function lessonsave(name) {
 } //end lessonsave()
 
 ///////////////////////////////////////////////////////////////////////
-/////////////////////////// SEARCH  RESULTS  ///////////////////////////
+/////////////////////////// SEARCH   //////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
 function clearFilter () {
@@ -142,10 +142,7 @@ function clearFilter () {
     $("#innerResultsDiv").empty();
     $("#previewpanel").empty();
 } //end clearFilter()
-
-//////////////////////////////////////////////////////
-/////////////////////////// SEARCH //////////
-//////////////////////////////////////////////////////
+/////////////////////////////////////////////////
 
 function clearResults() {
     $("#innerResultsMenu").empty();
@@ -201,7 +198,7 @@ function displaySearchResults(filterdata_object) {
         actResultDiv.appendChild(rElement);
         
     }
-// end Print Activities Array
+// end displaySearchResults()
 
 
 //***********************
@@ -237,10 +234,6 @@ function displaySearchResults(filterdata_object) {
     
 } //end displaySearchResults()
 
-
-//*****************************************************
-// start of things we need for presentation ********
-// **************************************
 
 function filetype(ft) { return LOOMA.typename(ft);}
 
@@ -490,7 +483,7 @@ function createActivityDiv (activity) {
 ///////////  scroll to item  //////////////
 ///////////////////////////////////////////
 function scroll_to_item($item) {
-    $('#timeline').animate( { scrollLeft: $item.outerWidth(true) * ( $item.index() - 4 ) }, 100);
+    $('#timeline').animate( { scrollLeft: $item.outerWidth(true) * ( $item.index() - 3 ) }, 100);
 }  //  end scroll_to_item()
 
 ///////////////////////////////////////////
@@ -668,7 +661,10 @@ function preview_result (item, editable) {
                 {cmd: "openByID", collection: "text", id: id},
                 function(result) {
                     $('#previewpanel').empty().append($('<div class="textpreview text-display" data-id="' + id + '"></div>').html(result.data));
-                    //document.querySelector("div#previewpanel").innerHTML = result.data;
+
+                    // change DN in timeline to result.dn in case it has been RENAMEd
+                    $(item).find('.textdiv .result_dn').text(result.dn);
+
                   if (editable) $('#edit-text-file').show();
                 },
                 'json'
@@ -690,7 +686,8 @@ function insertTimelineElement(source, target) {
                                              //or the new element will still be linked to the old
     
     if ($dest.data('type') === 'text-template') cloneTextfile($dest, target,false);
-    else {
+    else
+        {
         $dest.removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
     
         //$dest.addClass("ui-sortable-handle");  //  ?? this next stmt needed??
@@ -702,7 +699,7 @@ function insertTimelineElement(source, target) {
         scroll_to_item($dest);
         //$('#timeline').animate({scrollLeft: $dest.outerWidth(true) * ($dest.index() - 4)}, 100);
     
-        makesortable();  //TIMELINE elements can be drag'n'dropped
+       makesortable();  //TIMELINE elements can be drag'n'dropped
     }
 } //  end insertTimelineElement()
 
@@ -719,7 +716,8 @@ function cloneTextfile(source, target, deleteSource) {
     var $clone = source.clone(false).off();
     
     var newname = $clone.data('dn');
-    if ($clone.data('type') === 'text-template' && currentname) newname = currentname.match(LOOMA.CH_IDregex)[0] + " " + newname;
+    if ($clone.data('type') === 'text-template' && currentname && currentname.match(LOOMA.CH_IDregex))
+        newname = currentname.match(LOOMA.CH_IDregex)[0] + " " + newname;
     
             //POST "copytext" to looma-database-utilities.php
             // THEN copy the new _id and the new mongoID into the clone
@@ -733,54 +731,101 @@ function cloneTextfile(source, target, deleteSource) {
             ft: 'text'
         },
         'json'
-    ).then(function(result){
-        // result has "_id" of the new ACTIVITY, and "dn", and "mongoID"
-        
-        // Note: When using the .clone() method,
-        // you can modify the cloned elements or their contents before (re-)inserting them into the document.
-        result = JSON.parse(result);
-        $clone.attr('data-id',     result['id']);
-        $clone.attr('data-mongoid',result['mongoID']);
-        $clone.attr('data-dn',     result['dn']);
-        $clone.attr('data-type',   'text');
+    ).then(function(result) {
+           // result has "_id" of the new ACTIVITY, and "dn", and "mongoID"
     
-   /*     var $mongo = source.data('mongo');
-        $mongo['dn'] = result['dn'];
-        $mongo['id'] = result['id'];  //????
-        $mongo['mongoID']['$oid'] = result['mongoID'];
-        $mongo['ft'] = 'text';
-        $clone.data('mongo', $mongo);
-   */
-  /*      $clone.data(mongo.dn,     result['dn']);
-        $clone.data(mongo.id,     result['id']['$oid']);
-        $clone.data(mongo.mongoid,result['mongoID']['$oid']);
-        $clone.data(mongo.ft,     'text');
-      */
-        $clone.removeClass('ui-draggable-handle')
-              .removeClass("ui-draggable")
-              .removeClass("ui-draggable-disabled")
-              .removeClass("ui-draggable-dragging")
-              .removeClass("ui-sortable-helper");
-        //$clone.addClass("ui-sortable-handle");  //  ?? this next stmt needed??
-        
-        if ($clone.find('.result_ft').text().trim() === 'text-template') $clone.find('.result_ft').text('text');
-        
-        if (target) $clone.insertAfter(target);   // insert after target
-        else        $clone.appendTo("#timelineDisplay");  // or insert at end
-      //NOTE - bug somewhere here - clone doesnt get integrated into timeline [has 'position' = 'absolute'] ?????????
-          if ( deleteSource ) source.remove();
-        
-        // scroll the timeline so that the new element is in the middle - animated to slow scrolling
-           scroll_to_item($clone);
-           //var place = target ? target.index() : $('#timelineDisplay').length;
-     //   $('#timeline').animate({scrollLeft: $clone.outerWidth(true) * (place - 4)}, 100);
- 
- /*         $clone.css('position','relative', 'important');  */
+           result = JSON.parse(result);
+           $clone.attr('data-id', result['id']);
+           $clone.attr('data-mongoid', result['mongoID']);
+           $clone.attr('data-dn', result['dn']);
+           $clone.attr('data-type', 'text');
     
-           makesortable();
+           $clone.removeClass('ui-draggable-handle')
+               .removeClass("ui-draggable")
+               .removeClass("ui-draggable-disabled")
+               .removeClass("ui-draggable-dragging");
+    
+           $clone.removeClass("ui-sortable-helper");
+           //$clone.addClass("ui-sortable-handle");  //  ?? this next stmt needed??
+    
+           if ($clone.find('.result_ft').text().trim() === 'text-template') $clone.find('.result_ft').text('text');
+    
+    
+           //NOTE: this seems to be the critical section that causes the clone to appear at the end instead of in place
+           // seems to be timing dependent? as if there is an async process that might not have completed
+           // if (target) target.removeAttr("style");
+       if (target) target.css('position', 'unset');
+           //$clone.removeAttr("style");
+       $clone.css('position', 'unset');
+           //END NOTE
+    
+           //  if (target) $clone.insertAfter(target);   // insert after target
+    
+  
+            if (target) target.after($clone);   // insert after target
+            else $clone.appendTo("#timelineDisplay");  // or insert at end
+            
+            makesortable();
+            
+           // if ( deleteSource ) source.remove();
+        
+        scroll_to_item($clone);
         preview_result($clone, true);
     });
+    
 }  // end cloneTextfile()
+
+
+function convertTextfile(source) {
+    
+    var newname = source.data('dn');
+    if (currentname.match(LOOMA.CH_IDregex)) newname = currentname.match(LOOMA.CH_IDregex)[0] + " " + newname;
+    
+    //POST "copytext" to looma-database-utilities.php
+    // THEN copy the new _id and the new mongoID into the clone
+    // THEN insert clone into timeline
+    
+    $.post("looma-database-utilities.php",
+        {   cmd: "copytext",
+            collection: 'text_files',
+            id: source.data('id'),
+            dn: LOOMA.escapeHTML(newname),
+            ft: 'text'
+        },
+        'json'
+    ).then(function(result) {
+        // result has "_id" of the new ACTIVITY, and "dn", and "mongoID"
+        
+        result = JSON.parse(result);
+        source.attr('data-id', result['id']);
+        source.attr('data-mongoid', result['mongoID']);
+        source.attr('data-dn', result['dn']);
+        source.attr('data-type', 'text');
+        
+        source.removeClass('ui-draggable-handle')
+            .removeClass("ui-draggable")
+            .removeClass("ui-draggable-disabled")
+            .removeClass("ui-draggable-dragging");
+        
+        if (source.find('.result_ft').text().trim() === 'text-template') source.find('.result_ft').text('text');
+        
+        
+        //NOTE: this seems to be the critical section that causes the clone to appear at the end instead of in place
+        // seems to be timing dependent? as if there is an async process that might not have completed
+        // if (target) target.removeAttr("style");
+       // if (target) target.css('position', 'unset');
+        source.removeAttr("style");
+        //$clone.css('position', 'unset');
+        //END NOTE
+      
+        makesortable();
+        
+        scroll_to_item(source);
+        preview_result(source, true);
+    });
+    
+}  // end convertTextfile()
+
 
 function removeTimelineElement (elem) {
     // Removing list item from timelineHolder
@@ -789,9 +834,7 @@ function removeTimelineElement (elem) {
     
     $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 4 ) }, 100);
     $(elem).closest('.activityDiv').remove();
-    
-}
-
+} // end removeTimelineElement()
 
 function orderTimeline (){  // the timeline is populated with items that arrive acsynchronously by AJAX from the [mongo] server
     // a 'data-index' attribute is stored with each timeline item
@@ -820,29 +863,56 @@ function makesortable (){
 
     //NOTE: next line souldnt be needed (??)
     // it removes 'position:absolute' and other style settings from a cloned text-template -> text element after drag'n'drop
-    $("#timelineDisplay .activityDiv").removeAttr("style");
 
     $("#timelineDisplay").sortable({
         opacity: 0.7,   // makes dragged element transparent
         revert: true,   //Animates the drop
         axis:   "x",
-        //containment: "#timeline",
+        containment: "#timelineDisplay",
         //helper: "clone",
         scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
-        handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
+        handle: $(".activityDiv")  //restricts elements that can be clicked to drag to sort
     }).disableSelection();
-}
+    //    });
+    
+        $('#timelineDisplay .activityDiv').addClass('ui-sortable-handle');
+    } // end makesortable()
 
 function refreshsortable (){
-    // the call to sortable ("refresh") below should refresh the sortability of the timeline, but it's not working, so call makesortable() instead
+    // the call to sortable ("refresh") below should refresh the sortability of the timeline,
+    // but it's not working, so call makesortable() instead
     //$("#timelineDisplay").sortable( "refresh" );
-    
     makesortable();
-    
 }
 
 /////////////////////////// DRAGGABLE UI ////////  requires jQuery UI  ///////////////////
 //set up Drag'n'Drop  - -  code borrowed from looma-slideshow.js [T. Woodside, summer 2016]
+
+
+function makedraggable() {
+        $('.resultitem  .activityDiv').draggable({
+            connectToSortable: "#timelineDisplay",
+            //connectWith: "#timelineDisplay .activityDiv",
+           // opacity: 0.5,
+            scope:'activityDivs',
+            helper: "clone",
+            addClasses: false,
+            //cursorAt: 0,
+            //containment:'#timelineDisplay'
+            });
+    }; //end makedraggable()
+
+function makedroppable() {
+    $('#timelineDisplay').droppable ({
+        accept: '.activityDiv',
+        scope:'activityDivs',
+        drop: function(event, ui) {
+        if ($(ui.helper).data('type') === 'text-template') convertTextfile(ui.helper);
+        }
+    });
+}; //end makedroppable()
+
+/*
 function makedraggable() {
     var $clone;
     $('.resultitem  .activityDiv').draggable({
@@ -851,8 +921,6 @@ function makedraggable() {
         //opacity: 0.7,
         addClasses: false,
         cursorAt: 0,
-        
-        containment:"timeline",
         helper: "clone",
         //containment: "#timelineDisplay",
         start: function(event, ui) {
@@ -868,13 +936,14 @@ function makedraggable() {
                 $(ui.helper).data($clone.data());  // insert the data() we copied into $clone back into the new timeline element
     
                 $(ui.helper).removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
-    
                 makesortable();
+    
                 if ($(ui.helper).data('type') === 'text-template') cloneTextfile(ui.helper,ui.helper, true);
             }
         }
     });
 } //end makedraggable()
+ */
 
 
 function openTextEditor (e) {
@@ -882,12 +951,11 @@ function openTextEditor (e) {
     var textfile = $('#previewpanel .textpreview').data('id');
     
     if (textfile) {
-    //if ($(e.target).closest('.textpreview')) {
-       // var textfile = $(e.target).closest('.textpreview').data('id');
         
+        $("#previewpanel").empty();
+    
         //  to open in a new tab
         //window.open('./looma-edit-text.php?id=' + textfile );
-        
         // to open in the same tab
         $('#text-editor iframe').attr('src','./looma-text-frame.php?id=' + textfile);
         $('#text-editor').show().focus();
@@ -1131,7 +1199,7 @@ window.onload = function () {
         $("#previewpanel").empty();
     });
     
-    pagesz=27;
+    pagesz=100;
     
     $('.chapterFilter').prop('disabled', true);
     $('.mediaFilter').prop('disabled',   false);
@@ -1170,17 +1238,6 @@ window.onload = function () {
             return false;
         });
     
-    /*
-    $('#timelineDisplay').on("dragover", function(event) {
-        event.preventDefault();
-    });
-    $('#timelineDisplay').on('drop', function(e) {
-        e.preventDefault();
-        if ($(e.target).data('type') === 'text-template') cloneTextfile(ui.helper,ui.helper, true);
-    });
-    */
-
-
 //////////////////////////////////////
 /////////FILE COMMANDS setup /////////
 //////////////////////////////////////
@@ -1210,7 +1267,8 @@ window.onload = function () {
     
    // lessonclear();
    
-   makesortable(); //makes the timeline sortable
+   makedroppable(); // sets the timeline to accept activityDiv drops
+   makesortable();  // makes the timeline sortable
     
     //  $('#chapter-lang').show();
 
@@ -1229,8 +1287,6 @@ window.onload = function () {
     
     $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
    
-    // enable right-click on text files to open Text Editor
-    //$('#previewpanel').on('contextmenu', '.textpreview', openTextEditor);
     $('#edit-text-file').click(openTextEditor);
     
     // show setup panel, get user input

@@ -24,6 +24,7 @@ var audio; //the audio DOM element
 var first_ft;
 var playing;
 var $currentItem;
+var $displayers;
 var $viewer;
 var $fullscreen;
 
@@ -125,21 +126,100 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
     
             var pagenumber;
             var filename;
+            var filepath;
             var length;
             if (language === 'native' && npn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
                 pagenumber = npn;
                 filename = nfn;
-                length = nlen;
+                filepath = fp;
+                length = nlen || 100;
             } else {
                 pagenumber = pg;
                 filename = fn;
-                length = len;
+                filepath = fp;
+                length = len || 100;
             }
-     
-            $pdfHTML.find('iframe').attr('src',
-            'looma-pdf-viewer.php?fn=' + filename + '&fp=' + fp + '&page=' + pagenumber + '&len=' + length + '&zoom=' + 2.3
-            );
-            $pdfHTML.appendTo($viewer);
+
+
+// *********  PAGE controls ***************
+        
+            enablePageControls();
+
+// *********  ZOOM controls ***************
+        
+            enableZoomControls();
+        
+            $('#zoom-btn').click ( function(){$('#zoom-dropdown').toggle();});
+        
+            $('.zoom-item').click( /*async*/ function() {
+                var zoom = $(this).data('zoom');
+                var level = $(this).data('level');
+                /*await*/ setZoom(level);
+                $('#zoom-btn').text(zoom);
+                $('#zoom-dropdown').hide();
+            });
+
+// *********  FULLSCREEN controls ***************
+        
+            $('#fullscreen-control').click(function () {
+                if (document.fullscreenElement) {
+                    //currentScale = currentScale * 1 / 1.08;
+                    $('#pdf').css("transform","scale(1.00");
+                    //$('#pdf').css( overflowX, "auto");
+                }
+                else {
+                    //currentScale = currentScale * 1.08;
+                    $('#pdf').css("transform","scale(1.25");
+                    //$('#pdf').css( overflowX, "none");
+                }
+                LOOMA.toggleFullscreen;
+            
+                //NOTE: maybe dont have to re-draw?? seems to work fine without
+                // drawMultiplePages(pdfdoc, startPage, endPage);
+            
+                return false;
+            });
+
+// *********  SCROLL controls ***************
+        
+            enableScrollDetect();
+        
+            // the SETINTERVAL call de-bounces scroll events, so the handler "getScrolledPage" is only called every "wait" msec
+            setInterval(function() {
+                if ( didScroll ) {getScrolledPage();didScroll = false; }
+            }, 1000);
+        
+            $('#find').change(); //FIND operation not implemented this version
+        
+        
+            pdfjsLib.getDocument(filepath + filename).promise.then(
+                async function(doc) {
+                    pdfdoc = doc;
+                    startPage = pagenumber;
+                    maxPages = doc._pdfInfo.numPages || 1;
+                    //if (endPage > maxPages) endPage = maxPages;
+                    endPage = startPage + length;
+                    $('#maxpages').text(endPage - startPage + 1);
+                    console.log('loaded file ' + filepath + filename + ' with ' + maxPages + ' pages');
+            
+                    makePageDivs(doc, startPage, endPage);
+            
+                    // displayFirstPage(doc,startPage);
+            
+                    await drawMultiplePages(doc, startPage, endPage).promise;
+                    showPageNum(startPage);
+                    //turnOnControls();
+                }).then( () =>  {drawThumbs();});
+    
+            //$('#pdf').clone().attachTo($viewer);
+            $viewer.empty().append( $('#pdf').clone() );
+            /*
+                $pdfHTML.find('iframe').attr('src',
+                'looma-pdf-viewer.php?fn=' + filename + '&fp=' + fp + '&page=' + pagenumber + '&len=' + length + '&zoom=' + 2.3
+                );
+                $pdfHTML.appendTo($viewer);
+                
+             */
             break;
         
         case 'text':
@@ -227,7 +307,8 @@ function makesortable() {
         axis:   "x",
         scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
         handle: $(".activityDiv")  //restricts elements that can be clicked to drag to .timelinediv's
-    }).disableSelection();
+    });
+    //.disableSelection();
 }
 function makeImageHTML() {
     return ('<img src="">');
@@ -262,11 +343,13 @@ function textHTML(id) {
         function(result2) {
             var $div = $('<div id="editor">');
             
-                var native = (result2.nepali) ? result2.nepali : result2.data;
-                var html = '<div class="text-display">' +
-                    '<div class="english">' + result2.data + '</div><div class="native" style="display:none;">' + native + '</div>';
-                
-            $div.html(html).appendTo($viewer);
+            var native = (result2.nepali) ? result2.nepali : result2.data;
+            var html = '<div class="text-display">' +
+                '<div class="english">' + result2.data + '</div><div class="native" style="display:none;">' + native + '</div>';
+        
+            $(html).appendTo($div);
+            $div.appendTo($viewer);
+            
             if (language === 'native') {$('.english').hide();$('.native').show();}
             else               {$('.english').show();$('.native').hide();}
             //LOOMA.translate(language);
@@ -326,6 +409,8 @@ window.onload = function() {
     $currentItem = null;
     $viewer = $('#viewer');
     $fullscreen = $('#fullscreen');
+   
+    $displayers = $('#displayers');$displayers.hide();
     
     // handlers for 'control panel' buttons
     $('#back, #prev-item, #back-fullscreen').click(function () {
@@ -407,4 +492,8 @@ window.onload = function() {
             $currentItem = $('#timeline').find('button:first').focus();
         }
     }
+    
+    if ($.inArray($currentItem.data('ft'), ['game','map','history','slideshow']) === -1) play($currentItem);
+    else scrollTimeline($currentItem);
+    
 }; //end window.onload

@@ -19,7 +19,11 @@ $page_title = 'Looma';
  *		supports commands: lookup [look up a word in the dictionary]
  *				           add    [add a word and definition to the dict]
  *				           random [return a list of randomly selected words, e.g. for a game]
- *		LOOKUP: returns a JSON object {en:"word", np:"nepaliword", defn:"definition", img: "filename of picture"}
+ *		LOOKUP: looks up $_GET['word'] to match 'en' filed in dictionary and
+ * 				 returns a JSON object {en:"word", np:"nepaliword", defn:"definition", img: "filename of picture"}
+ *				other properties (phonetic, useinsentence, partofspeech, hom, ant, syn) to be added later
+ *		REVERSELOOKUP: looks up $_GET['word'] to match 'np' field in dictionary and
+ * 				returns a JSON object {en:"word", np:"nepaliword", defn:"definition", img: "filename of picture"}
  *				other properties (phonetic, useinsentence, partofspeech, hom, ant, syn) to be added later
  *		ADD:    takes a JSON object {en:"word", np:"nepaliword", defn:"definition", img: "filename of picture"}
  *				validates properties and inserts the word in the database

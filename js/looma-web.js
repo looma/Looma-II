@@ -41,7 +41,7 @@ function navigate() {
     var url = addressBar.value;
     // If "http://" or "https://" isn't added, the iframe will treat it like a relative URL.
     if (!url.indexOf('http') == 0) {
-        url = 'http://' + url;
+        url = 'https://' + url;
     }
     $('#frame').attr('src', url);
     // We can't keep track of the url in the iframe, so it's better not to show it.
@@ -52,7 +52,7 @@ $(document).ready(function() {
     if (navigator.onLine) {
         console.log('WEB:  internet connection is OK');
 
-        $('#frame').attr('src', 'http://www.bing.com');
+        $('#frame').attr('src', 'https://www.bing.com');
         // Google has issues with cross-origin access - a Chrome Plugin should be able to override it
 
     } else {

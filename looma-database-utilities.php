@@ -264,13 +264,14 @@ if (isset($_REQUEST["collection"])) {
     case "openText":
         $query = array();
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] != "")
-            $query = array(dn => mongoRegexOptions($_REQUEST['filter'],'i'));
+            $query = array('dn' => mongoRegexOptions($_REQUEST['filter'],'i'));
+
         //look up this ID (mongoID) in this collection (dbCollection)
-            //print_r($query);
-        $cursor = mongoFind($dbCollection, $query, null, $_REQUEST['skip'], 1);
-        $cursor->next();
-        $file = $cursor->current();
-        if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
+            //print_r($query);return;
+       // function mongoFind($collection, $filter, $sort, $skip, $limit)
+        $texts = mongoFind($dbCollection, $query, null, (integer) $_REQUEST['skip'], 1);
+
+        if ($texts) forEach($texts as $text) echo json_encode($text);        // if found, return the contents of the mongo document
         else echo json_encode(array("error" => "File not found in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
         return;
     // end case "OpenText"

@@ -7,15 +7,15 @@ Description: looma lesson plan presenter
 
 -->
 	<?php $page_title = 'Looma Lesson Presenter ';
-          include ('includes/header.php');
-          require ('includes/mongo-connect.php');
-          include('includes/looma-utilities.php'); ?>
+      include ('includes/header.php');
+      require ('includes/mongo-connect.php');
+      include('includes/looma-utilities.php'); ?>
 
     <link rel="stylesheet" href="css/looma-media-controls.css">
     <!-- <link rel="stylesheet" href="css/looma-video.css"> -->
-    <link rel="stylesheet" href="css/looma-play-lesson.css">
+<link rel="stylesheet" href="css/looma-play-pdf.css">
+<link rel="stylesheet" href="css/looma-play-lesson.css">
     <link rel="stylesheet" href="css/looma-text-display.css">
-    <?php include ('includes/js-includes.php'); ?>
 
   </head>
 
@@ -28,8 +28,15 @@ Description: looma lesson plan presenter
     ?>
             <div id="fullscreen">
 
-                <div id="viewer"></div>
+                <div id="viewer">
 
+                </div>
+
+                <div id="displayers" hidden>
+                    <div id="pdf-canvas">
+                        <div id="pdf" class="scroll" data-fn="" data-fp="" data-page="" data-len="" data-zoom=""></div>';
+                    </div>
+                </div>
                 <?php include("includes/looma-control-buttons.php"); ?>
                 <!--
 
@@ -267,11 +274,14 @@ Description: looma lesson plan presenter
     </div>
 
     <?php //include ('includes/toolbar.php'); ?>
+    <?php include ('includes/js-includes.php'); ?>
     <script src="js/jquery-ui.min.js">  </script>
     <script src="js/jquery.hotkeys.js"> </script>
     <script src="js/tether.min.js">  </script>
     <script src="js/bootstrap.min.js">  </script>
     <script src="js/looma-media-controls.js"></script>
+    <script src="js/pdfjs/pdf.min.js"></script>
+    <script src="js/looma-pdf-utilities.js"></script>
     <script src="js/looma-play-lesson.js"></script>
 
  </body>

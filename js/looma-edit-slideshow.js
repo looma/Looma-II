@@ -663,11 +663,10 @@ function makesortable () {
 }  // end makesortable()
 
 function refreshsortable () {
-    // the call to sortable ("refresh") below should refresh the sortability of the timeline, but it's not working, so call makesortable() instead
+    // the call to sortable ("refresh") below should refresh the sortability of the timeline,
+    // but it's not working, so call makesortable() instead
     //$("#timelineDisplay").sortable( "refresh" );
-    
     makesortable();
-    
 } // end refreshsortable()
 
 /////////////////////////// DROPPABLE UI ////////  requires jQuery UI  ///////////////////

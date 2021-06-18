@@ -24,7 +24,7 @@ require ('includes/mongo-connect.php');
 
     <div id="about">
         <h3>Looma 2</h3>
-        <h4>   Release 6.3  MAY 2021   </h4>
+        <h4>   Release 6.4  JUNE 2021   </h4>
         <!-- copyright notice, with link to vts.org-->
         <span class='glyphicon glyphicon-copyright-mark'></span>2021
         <a draggable="false"  class="footer" href="http://looma.education">by Looma Education Company</a>
@@ -51,6 +51,8 @@ require ('includes/mongo-connect.php');
                 <img draggable="false" src="images/logos/wikipedia.jpg" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://phet.colorado.edu" target="_blank">
                 <img draggable="false" src="images/logos/PHET.png" height="44px"></a>
+            <a draggable="false"  class="attribution" href="https://ed.ted.com" target="_blank">
+                <img draggable="false" src="images/logos/TedEd.jpg" height="44px"></a>
             <a draggable="false"  class="attribution" href="https://leafletjs.com" target="_blank">
                 <img draggable="false" src="images/logos/leaflet-logo.png" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://www.openstreetmap.org" target="_blank">

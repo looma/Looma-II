@@ -268,7 +268,7 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                         else if (result.thumb) thumbfile = result.fp + result.thumb ;
                         else                   thumbfile = LOOMA.thumbnail(result.fn, result.fp, result.ft);
     
-                     $newButton.append($('<img draggable="false" src="' + thumbfile + '">'));
+                     $newButton.append($('<img loading="lazy" draggable="false" src="' + thumbfile + '">'));
                     
                     //$newButton.append($('<img draggable="false" src="' + thumbfile + '"' +
                        //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));

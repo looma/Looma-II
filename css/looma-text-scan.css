@@ -12,19 +12,29 @@ Revision: Looma 2.4
 Comments:
 */
 #fullscreen {
-    /*height:75vh;
-    width:75vw;
-
-    margin:10vh auto;*/
     overflow:hidden;
-    background-color: white;
     padding: 5px;
     background-color: #091F48;
-    
-    /*color:black;*/
 }
 
-/*  #display { zoom:200%; } */
+#text {
+    position: fixed;
+    width:75vw;
+    height:80vh;
+    top: 9vh;
+    width:100%;
+    margin:auto;
+    padding-top:10vh;
+    background-color: #091F48;
+}
+
+#text-display {
+  
+    margin:auto;
+    width:67vw;
+    font-size:2em !important;
+    background-color:white;
+}
 
 button#next {
     position:fixed;
@@ -60,6 +70,7 @@ button#minus10 {
     font-size:1.5em;
 }
 
+/*
 #text-display {
     color:var(--looma-blue);
     position: fixed;
@@ -69,6 +80,8 @@ button#minus10 {
     height:100vh;
     font-size:3em !important;
 }
+*/
+
 #legend {
     position:fixed;
     top: 3vh;
@@ -76,7 +89,6 @@ button#minus10 {
     border: 2px solid black;
     background-color: yellow;
     color:black;
-    opacity:0.7;
     width: 30vw;
     height: 5vh;
 }
@@ -88,7 +100,6 @@ button#minus10 {
     border: 2px solid black;
     background-color: yellow;
     color:black;
-    opacity:0.7;
     width: 30vw;
     height: 5vh;
 }

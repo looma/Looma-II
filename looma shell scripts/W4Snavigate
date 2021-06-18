@@ -1,23 +1,31 @@
 #!/bin/bash
 #processing Wikipedia for Schools HTML files 
-#put W4Snavigate (this file) in /Users/skip/bin, chmod 755, and PATH=$PATH:/Users/skip/bin
+#   first used in 2013 to import Wikipedia for Schools 2007 (from RACHEL)
+#   used again in 2021 to import Wikipedia for Schools 2013 (direct from SOS Childrens Villages www.sos-usa.org)
 #
-# this script creates a file /Users/skip/bin/W4Sfilelist 
+# make this an executable shell script:
+#     put W4Snavigate (this file) in /usr/local/var/www/Looma/looma\ shell\ scripts/W4Snavigate, chmod 755, and PATH=$PATH:/Users/skip/bin
+#
+# this script creates a file /Users/skip/Desktop/W4Sfilelist
 #  that contains looma format entries to create activities for all scanned media files
 #
-#process that W4Sfilelist file by opening looma-library-utilities.php?cmd=w4simport
+#process that W4Sfilelist file by opening looma-library-utilities.php?cmd=w4simport#
+#
+# NOTE: still have to process the new entries to translate Wiki 'subjects' to Looma 'keywords'
+#       and be carefully to retain and update old wiki activities that are in use by Lessons, or have ch_ids
+#
 
-if [ "$#" != 1 -a -f /Users/skip/bin/w4sfilelist ]  #if this is the top level recursion, check whether to delete existing output file
+if [ "$#" != 1 -a -f /Users/skip/Desktop/w4sfilelist ]  #if this is the top level recursion, check whether to delete existing output file
 then
     read -p "create new list file (yes) or append (no)?" answer
     if [ $answer == "yes" ] 
     then
-        rm /Users/skip/bin/w4sfilelist
-        echo "removed /Users/skip/bin/w4sfilelist"
+        rm /Users/skip/Desktop/w4sfilelist
+        echo "removed /Users/skip/Desktop/w4sfilelist"
     fi
 fi
 
-cd "/Users/skip//Desktop/Aptana/content/W4S/wp/index/"
+cd "/usr/local/var/www/content/W4S2013/wp/index/"
 #echo ".................."
 
 if [ "$#" -eq 1 ] 
@@ -26,7 +34,8 @@ then
 else
     file="subject.htm"    
 fi
-#echo '*** Parsing: ' $file
+
+echo '*** Parsing: ' $file
 
 # scan for lines that contain '<div class="categoryname"><table><tr><td><a href="../index/' 
 # and extract the filename [e.g. "subject.Music.htm"]
@@ -40,7 +49,7 @@ while read -r line  ; do
     then 
         nextlevel=${BASH_REMATCH[1]} 
         #echo "+++++++  parsing " $nextlevel
-        /bin/bash ~/Desktop/Aptana/Looma/looma\ shell\ scripts/W4Snavigate $nextlevel
+        /bin/bash /usr/local/var/www/Looma/looma\ shell\ scripts/W4Snavigate $nextlevel
     fi  
 done < $file
 
@@ -50,6 +59,7 @@ done < $file
 
     REGEX1='^subject\.(.*)\.(.*)\.(.*)\.htm$'
     REGEX2='^subject\.(.*)\.(.*)\.htm$'
+    REGEX3='^subject\.(.*)\.htm$'
     if [[ $file =~ $REGEX1 ]]
     then
         area=${BASH_REMATCH[1]}
@@ -58,19 +68,25 @@ done < $file
   #     echo "for ${file}"
   #     echo "- - - area: ${area}, sub: ${subarea}, tag: ${tag}"
         
-    else
-        if [[ $file =~ $REGEX2 ]]
+    elif [[ $file =~ $REGEX2 ]]
         then
             area=${BASH_REMATCH[1]}
             subarea=${BASH_REMATCH[2]}
             tag=""
   #          echo "for ${file}" 
   #          echo "- - - area: ${area}, sub: ${subarea}, tag: ${tag}"
-        fi
-    fi
 
- 
-# scan for lines that contain '/wp/<letter>...' and extract fn, dn, and folder name (first letter of filename) containing the file
+   elif [[ $file =~ $REGEX3 ]]
+        then
+            area=${BASH_REMATCH[1]}
+            subarea=""
+            tag=""
+  #          echo "for ${file}"
+  #          echo "- - - area: ${area}, sub: ${subarea}, tag: ${tag}"
+  fi
+
+# now re-scan the .htm file for lines that contain '/wp/<letter>...'
+#   and extract fn, dn, and folder name (first letter of filename) containing the file
  
 while read -r line
 do   
@@ -84,24 +100,24 @@ do
         #2. GET DN 
         dn=${BASH_REMATCH[3]}
         
-        #3. GET AREA
+        #3. area is $area
         
-        #4. GET SUBAREA
+        #4. subarea is $subarea
         
-        #5. GET TAG (sub-sub-area)
+        #5. tag is $tag
         
         #6. GET FP
         letter=${BASH_REMATCH[1]}
-        fp="../content/W4S/wp/${letter}/"
+        fp="../content/W4S2013/wp/${letter}/"
         
         #7. GET thumbnail path
-        thumb="../content/W4S/wp/index/${file}.thumb.jpg"
+        thumb="../content/W4S2013/wp/index/${file}.thumb.jpg"
         
         #9. SRC is wikipedia
         src="wikipedia"
 
 # construct an Activity item in the output file (w4sfilelist)       
-        echo "{\"fn\": \"$fn\", \"dn\": \"$dn\", \"ft\":\"html\", \"fp\": \"$fp\", \"thumb\": \"$thumb\", \"src\": \"$src\", \"area\": \"$area\", \"subarea\": \"$subarea\", \"tag\": \"$tag\"}," >> /Users/skip/bin/w4sfilelist
+        echo "{\"fn\": \"$fn\", \"dn\": \"$dn\", \"ft\":\"html\", \"fp\": \"$fp\", \"thumb\": \"$thumb\", \"src\": \"$src\", \"area\": \"$area\", \"subarea\": \"$subarea\", \"tag\": \"$tag\"}," >> /Users/skip/Desktop/w4sfilelist
 
     fi  
 done < $file

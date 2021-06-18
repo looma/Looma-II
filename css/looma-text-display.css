@@ -2,7 +2,7 @@
 .text-display{
     height: 100%;
     width:  100%;
-  /*  padding:2vh 2vw; */
+    padding:0 2vw;
     background-color:white;
     color:#091F48;
     font-weight:bold !important;
@@ -26,7 +26,7 @@
     max-width: 100%;
     min-width: 100%;
     
-    padding:0 !important;
+   /* padding:0 !important;*/
     margin: 0 !important;
 }
 

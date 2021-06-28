@@ -73,7 +73,7 @@ body {
 
 div#search-panel {
     height:100%;
-    font-size:1.2em;
+    font-size:1.0em;
 }
 
 #search span {font-weight:bold;}
@@ -205,6 +205,10 @@ button#media-submit {
     display:inline-block;
 }
 
+.grade-filter {
+    border: 2px solid black;
+    border-radius: 4px;
+}
 button.clear-search {
     height: 7vh;
     width: 7vw;

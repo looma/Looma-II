@@ -90,10 +90,11 @@ function redirect_user($page)  {
         $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
         $url .= '/'.$page;
      }
-        error_log("exit $url");
-        header("Location: $url");
-        exit();
-    }//end redirect_user
+
+    error_log("exit $url");
+    header("Location: $url");
+    exit();
+}//end redirect_user
 
 
 // START of executed PHP code

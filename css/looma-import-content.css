@@ -86,6 +86,10 @@ option#parent {
     overflow-y:scroll;
 }
 
+.fileitem.reg {
+    display:none;
+}
+
 input.check {
      margin-left:2vw;
      margin-right:2vw;

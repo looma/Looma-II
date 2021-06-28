@@ -27,6 +27,7 @@ Description:  displays and navigates content folders for Looma
 <?php
 
     function folderDisplayName($folder) {
+        //echo "looking up folder: " . $folder;
         global $folders_collection;
         // look in the database to see if this folder has a DISPLAYNAME
         $query = array('fn' => $folder);
@@ -120,15 +121,14 @@ Description:  displays and navigates content folders for Looma
 
         //special case for Wikipedia for Schools
         //make a button that launches W4S index.htm -- virtual folder
-            if ($path . $file == "../content/W4S") {   //create a virtual folder for W4S
+            if ($path . $file == "../content/W4S2013") {   //create a virtual folder for W4S
                 echo "<td>";
-                $dn = "Wikipedia";
-                $ndn = "विकिपीडिया";
-                $ft = "html";
-                $thumb = "../content/W4S/thumbnail.png";
-                makeActivityButton($ft, "../content/W4S/", "index.htm", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
-                echo "</td>";
-                nextButton();
+                echo '<a href="looma-wikipedia.php">';
+                echo '<button id="wikipedia-index" class="activity img play">';
+                    echo '<img src="images/logos/wikipedia.jpg"/>';
+                   keyword("Wikipedia");
+                echo '</button></td>';
+                nextbutton();
             }  //end IF wiki4schools
 
         //special case for Khan Academy
@@ -137,7 +137,7 @@ Description:  displays and navigates content folders for Looma
 
                 echo "<td>";
                 $dn = "Khan Academy";
-                $ndn = "खान";
+                $ndn = "खान एकेडेमी";  //note should be using mongo folders collection to get dn and ndn
                 $ft = "html";
                 $thumb = "../content/Khan/thumbnail.png";
                 makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
@@ -152,7 +152,7 @@ Description:  displays and navigates content folders for Looma
 
                 echo "<td>";
                 $dn = "ePaath";
-                $ndn = "खान";
+                $ndn = "ई-पाठ";  //note should be using mongo folders collection to get dn and ndn
                 $ft = "html";
                 $thumb = "../content/epaath/thumbnail.png";
                 makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
@@ -175,7 +175,7 @@ Description:  displays and navigates content folders for Looma
                     if (keyIsSet('ft',  $folderMongo)) $ft = $folderMongo['ft'];
                     if (keyIsSet('prefix',  $folderMongo)) $prefix = $folderMongo['prefix'];
 
-                    //   echo "dir is " . $dirDn . " ft is " . $ft;
+                       //echo "dn is " . $dirDn . " ndn is " . $dirnDn . "\r\n";
 
                 } else {
                     $dirDn = $file;  $dirnDn = $file;  // skip bug fix 2020 01

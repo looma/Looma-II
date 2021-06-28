@@ -57,7 +57,7 @@ function isRegistered($name, $dir) {
 function make_activity($item) {
            global $activities_collection;
            $activity = mongoInsert($activities_collection, $item);
-           echo "new activity" . $activity["dn"] . "\n";
+           echo "new activity" . $item -> dn . "\n";
     } //end make_activity()
 
 
@@ -149,9 +149,9 @@ function make_activity($item) {
                 //echo $item -> dn . '<br>'; //debug
 
             //NOTE: following line is commented out to prevent inadvertent use
-            // uncomment it temporarily to do a khan import
+            // uncomment it temporarily to do a wiki import
 
-            //make_activity($item);
+            make_activity($item);
 
             }
            return;

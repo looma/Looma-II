@@ -962,6 +962,8 @@ if (isset($_REQUEST["collection"])) {
             }
             $numUnique = sizeof($unique);
 
+            //echo '   UNIQUE '. $numUnique.' items';
+
             if (isset($_REQUEST['pagesz']) && isset($_REQUEST['pageno']))
                 $unique = array_slice($unique, ($_REQUEST['pageno'] - 1) * $_REQUEST['pagesz'], $_REQUEST['pagesz']);
         } else $numUnique = 0;
@@ -1118,6 +1120,13 @@ if (isset($_REQUEST["collection"])) {
             $changes = []; $unsets = [];
             if (isset($_REQUEST['dn'])  && $_REQUEST['dn'])  $changes['dn'] =  trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
             if (isset($_REQUEST['src']) && $_REQUEST['src']) $changes['src'] = $_REQUEST['src'];
+
+            //set cl_lo and cl_hi if they are given (assumes lo > 0, hi <= 10, lo <= hi)
+            if (isset($_REQUEST['cl_lo']) && $_REQUEST['cl_hi']) {
+                $changes['cl_lo'] = $_REQUEST['cl_lo'];
+                $changes['cl_hi'] = $_REQUEST['cl_hi'];
+            }
+
 
             // if key1 is specified, then set key1 and either set or reset keys 2,3,4
             if (isset($_REQUEST['key1']) && $_REQUEST['key1']) {

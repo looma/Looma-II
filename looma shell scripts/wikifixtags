@@ -1,4 +1,4 @@
-// ONE TIME program to MERGE collection "wikipedia" back into "activities" after modifying "key" fields to Looma keywords
+// ONE TIME program to convert activities with src= "wikipedia" replace wiki keywords with Looma keywords
 // DO NOT run this again
 //
 //  run in MONGO SHELL with:
@@ -6,23 +6,48 @@
 //      load('wikifixtags')
 //
 var count = 0;
-var newdocs = db.wikipedia.find();
+var notfound = 0;
+
+var newdocs = db.activities.find({src:'wikipedia'});
 while (newdocs.hasNext()) {
     var newdoc = newdocs.next();
-    var olddoc = db.activities.findOne({'_id':newdoc._id});
-    if (olddoc) {
+    // be sure a mongo collection named 'temp' exists with the conversions
+    // from area, subarea, tag [wiki tags] to key1,key2,key3,key4 [looma keywords]
+    var query = {};
+    if (newdoc.area && newdoc.area !== '') query['area'] = newdoc.area;
+    if (newdoc.subarea && newdoc.subarea !== '') query['subarea'] = newdoc.subarea;
+    if (newdoc.tag && newdoc.tag !== '')         query['tag'] = newdoc.tag;
     
-        if (newdoc.key1) olddoc.key1 = newdoc.key1;
-        if (newdoc.key2) olddoc.key2 = newdoc.key2;
-        if (newdoc.key3) olddoc.key3 = newdoc.key3;
-        if (newdoc.key4) olddoc.key4 = newdoc.key4;
+    if (query != {}) var conversion = db.temp.findOne(query);
+    
+    if (conversion) {
+    
+        delete newdoc.key1;
+        delete newdoc.key2;
+        delete newdoc.key3;
+        delete newdoc.key4;
+        
+        if (conversion.key1) newdoc.key1 = conversion.key1;
+        if (conversion.key2) newdoc.key2 = conversion.key2;
+        if (conversion.key3) newdoc.key3 = conversion.key3;
+        if (conversion.key4) newdoc.key4 = conversion.key4;
 
-        //print('updating ' + olddoc.dn);
-        db.activities.update({_id: olddoc._id}, olddoc);
+        delete newdoc.area;
+        delete newdoc.subarea;
+        delete newdoc.tag;
+        
+        print('updating ' + newdoc.dn);
+        db.activities.update({_id: newdoc._id}, newdoc);
         count++;
     }
-    else {print('   ERROR document not found: ' + newdoc.dn)};
-};
-
+    else {
+        notfound++;
+        print('   ERROR keyword conversion not found: ' + newdoc.dn +
+            '  area: ' + newdoc.area +
+            '  subarea: ' + newdoc.subarea +
+            '  tag: ' + newdoc.tag);
+    }
+}
 print('');
 print('updated ' + count + ' documents');
+print('not found ' + notfound + ' documents');

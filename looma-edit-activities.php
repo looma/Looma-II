@@ -135,10 +135,19 @@ include ('includes/header.php');
         echo "<button class='chng-clear' id='source-clear'>X</button>";
             echo "</div>";
 
+        /**** chapter low and high  Fields *****/
         /**************************************/
+        /**************************************/
+
+        echo "<div id='gradelevels'>";
+            echo "Lowest Grade:       <input type='number' class='grade-filter' id='cl_lo' name='cl_lo' min='1' max='10' value='1'>";
+            echo "    Highest Grade:  <input type='number' class='grade-filter' id='cl_hi' name='cl_hi' min='1' max='10' value='10'>";
+            echo "<button class='chng-clear' id='grades-clear'>X</button>";
+        echo "</div>";
+
         /********* Book type selector ********/
         /**************************************/
-        echo "<br><div id='book-type'>
+        echo "<div id='book-type'>
             <span>Attach to:  </span>";
 
         echo "<span class='chapter-type'>" .
@@ -148,8 +157,10 @@ include ('includes/header.php');
 
         echo "<span class='chapter-type'>" .
             "<input class='media-input flt-chkbx source-changes' type='radio' form='changes' name='src' value='other'>" .
-            "<label class='filter-label' for=''>  Other books: </label>" .
+            "<label class='filter-label' for=''>  Other books </label>" .
             "</span>";
+        echo "<button class='chng-clear' id='textbook-clear'>X</button>";
+        //echo "<button class='chng-clear' id='otherbook-clear'>X<button>";
         echo "</div>";
 
 
@@ -289,7 +300,6 @@ include ('includes/header.php');
 
             //echo "</div>";
         echo "</div>";
-        echo "<br><br><button class='chng-clear' id='otherbook-clear'>X</brbutton>";
 
 
         echo "</form>";

@@ -83,7 +83,9 @@ function clearSettings() {  // clears all the settings. used after a new SEARCH
     $('#source-clear').click();
     $('#textbook-clear').click();
     $('#otherbook-clear').click();
+    $('#grades-clear').click();
 } // end clearSettings()
+
 //////////////////////////////////
 ///////  displayResults    ///////
 //////////////////////////////////
@@ -340,6 +342,20 @@ $(document).ready(function() {
    //     showChapterDropdown(null, $('#grade-chng-menu'), $('#subject-chng-menu'), $('#chapter-chng-menu'))
    // });
     
+    //class levels
+    
+    $('#cl_lo').change(function(){
+        var lo = parseInt($('#cl_lo').val());  var hi = parseInt($('#cl_hi').val());
+        if (lo > hi) $('#cl_lo').val( $('#cl_hi').val());
+        if (lo < 0)  $('#cl_lo').val(0);
+    });
+    
+    $('#cl_hi').change(function(){
+        var lo = parseInt($('#cl_lo').val());  var hi = parseInt($('#cl_hi').val());
+        if (hi < lo) $('#cl_hi').val( $('#cl_lo').val());
+        if (hi > 10) $('#cl_hi').val(10);
+    });
+
     // text books
             $("#grade-chng-menu").change(function() {
                 showTextSubjectDropdown($('#grade-chng-menu'),
@@ -374,9 +390,10 @@ $(document).ready(function() {
     $('#uncheck-all').click( function() { $('.filter-checkbox').prop('checked', false);});
     
     $('#dn-clear').click(       function(e) {e.preventDefault(); $('#dn-changes').val(""); });
+    $('#grades-clear').click(   function(e) {e.preventDefault(); $('.grade-filter').val(""); });
     $('#keyword-clear').click(  function(e) {e.preventDefault(); $('.keyword-changes').val(""); });
     $('#source-clear').click(   function(e) {e.preventDefault(); $('.source-changes').prop('checked', false); });
-    $('#textbook-clear').click( function(e) {e.preventDefault(); $('.chapter-changes').val(""); });
+    $('#textbook-clear').click( function(e) {e.preventDefault(); $('.book-changes').val(""); });
     $('#otherbook-clear').click( function(e) {e.preventDefault(); $('.book-changes').val(""); });
 
     $('#otherbooks').hide();

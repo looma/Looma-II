@@ -16,10 +16,11 @@
     position:absolute;
     top:24vh;
     left:2vw;
-    height:17vw;
-    width:33vw;
-    max-height:17vw;
-    max-width:35vw;
+    
+    min-height:38vh;
+    width:36vw;
+   /*     max-height:17vw;
+        max-width:35vw; */
     overflow:hidden;
     
     border:1px solid black;
@@ -29,7 +30,10 @@
     font-weight:bold;
 }
 
-#english * {font-size:0.9vw !important;}
+#english * {
+    font-size:0.9vw !important;
+    margin:0 0 0 1vw !important;
+}
 
 .file-cmd:disabled {font-color:red;}
 

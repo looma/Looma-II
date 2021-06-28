@@ -1,0 +1,89 @@
+// ONE TIME program to
+//    find lessons that contain wikipedia elements
+//    for each such element, find the matching new wiki [e.g. w4s2013] version if it exist and merge the two activities
+//
+//      scan all lessons
+//      find any [old] wiki elements
+//      for each [old] wiki element, check if there is a duplicate [new] wiki file
+//      if so, merge the new fields into the old activity and set 'year' = newyear(2013), save the old and delete the new
+//          also, print out the [old] filename FN to be deleted [by another script]
+//      if not, set 'year' = oldyear(2007) in old activity and save it
+//
+//  created when importing wiki 2013 to update wiki 2007
+//
+//  file: wikicorrectlessons
+//  run in MONGO SHELL with: load('wikicorrectlessons')
+//       or in BASH with:    mongo looma < wikicorrectlessons
+//
+
+var activity, newactivity, lessons;
+
+var count = 0;
+var wcount = 0;
+var mergecount = 0;
+var keepcount = 0;
+
+var oldfilesrc = 'wiki2007';  var oldfileyear = '2007';
+var newfilesrc = 'wikipedia'; var newfileyear = '2013';
+
+print ('*****scanning  lessons for wikipedia elements');
+lessons = db.lessons.find();
+while (lessons.hasNext()) {
+    var lesson = lessons.next();
+
+   // print (lesson.dn + ' ***  '+ lesson.data);
+
+    var wikis = [];
+    if      ( ! lesson.data) print ("lesson without data - " + lesson.dn)
+    else if ( ! lesson.data.forEach) print("..... lesson data is not array for " + lesson.dn);
+    else {
+        lesson.data.forEach ( function(data) {
+            //print ('id is ' + data['id']);
+            if (data.collection === 'activities') {
+                activity = db.activities.findOne({'_id':ObjectId(data['id'])});
+                if (activity && activity.src === oldfilesrc && activity.ft === 'html') {
+                    count++;
+
+                    newactivity = db.activities.findOne({'dn':activity.dn,'src':newfilesrc});
+                    if (newactivity) {
+                        // merge old and new activities and save old and delete new
+                        mergecount++;
+                        activity['year'] = newfileyear;
+                        activity['src']  = 'wikipedia';
+                        activity['fn'] = newactivity['fn'];
+                        activity['fp'] = newactivity['fp'];
+                        activity['thumb'] = newactivity['thumb'];
+
+                        print('modify old file ' + activity.dn);
+                        var y = db.activities.update({'_id': activity['_id']}, activity);
+
+                        print('remove new file ' + newactivity.dn);
+                        var z = db.activities.remove({'_id': newactivity['_id']});
+                        wikis.push(activity);
+                    } else {
+                        // no new version. update old one with 'src' and 'year'
+                        keepcount++;
+                        activity['year'] = oldfileyear;
+                        activity['keep'] = true;
+                        activity['src']  = 'wikipedia';
+
+                        print('update old file ' + activity.dn);
+                        var x = db.activities.update({'_id': activity['_id']}, activity);
+                    }
+                }
+            }
+        });
+    }
+
+    if (wikis.length > 0) {
+        print(lesson.dn + ' - - - has ' + wikis.length + ' these wikipedia articles:');
+        wikis.forEach(function(item) {
+            print('REMOVE - - - - '   + item.fp + item.fn);;
+            print('REMOVE - - - - '   + item.thumb);
+        });
+    }
+};
+print('');
+print(count + ' activities corrected; ' + keepcount + ' have no new version, ' + mergecount + ' activities merged');
+
+

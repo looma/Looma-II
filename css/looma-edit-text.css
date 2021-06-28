@@ -121,7 +121,11 @@ button.result {
     /*zoom:200%;*/
     overflow:hidden;
 }
-#preview * {font-size:0.778vw !important;}
+#preview * {
+    font-size:0.778vw !important;
+    margin:0 !important;
+}
+
 #preview font {font-size:1em;}
 
 button.speak, button.lookup, button#fullscreen-control {

@@ -1,0 +1,36 @@
+// ONE TIME program to check for and remove wiki articles that have been replaced with new articles (e.g. 2007->2013)
+// DO NOT run this again
+//
+//  run in MONGO SHELL with:
+//      use looma
+//      load('wikiremoveduplicates')
+//
+var count = 0;
+var duplicatecount = 0;
+
+var olddocs = db.activities.find({src:'wiki2007'});
+while (olddocs.hasNext()) {
+    var olddoc = olddocs.next();
+    count++;
+    var duplicates = db.activities.find({src:'wikipedia',dn:olddoc.dn});
+    if (duplicates.hasNext()) {
+       duplicatecount++;
+       //print('REPLACEMENT                    found for dn: ' + olddoc.dn);
+
+       // remove old version
+       db.activities.remove({'_id': olddoc._id});
+       // print out filename and thumb to delete
+       print('REMOVE - - - ' + olddoc.fp + olddoc.fn);
+       //keep the thumbnail files - tbey are used by multiple articles
+    }
+   else {
+        //change olddoc['src'] to 'wikipedia' and //add olddoc['year'] = '2007'
+        //print('KEEPING  - - - ' + olddoc.dn);
+        olddoc['src'] = 'wikipedia';
+        olddoc['year'] = '2007';
+        db.activities.update({'_id': olddoc._id}, olddoc);
+  }
+}
+print('');
+print('checked ' + count + ' documents');
+print('found ' + duplicatecount + ' duplicates');

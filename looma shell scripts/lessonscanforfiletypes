@@ -10,7 +10,7 @@ var activitycursor, lessons;
 
 var count = 0;
 var wcount = 0;
-var filesrc = 'wikipedia';
+var filesrc = 'wiki2007';
 
 print ('*****scanning  lessons for ' + filesrc);
 lessons = db.lessons.find();

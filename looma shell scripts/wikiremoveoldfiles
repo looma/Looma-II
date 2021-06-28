@@ -1,0 +1,16 @@
+#!/bin/bash
+#  ONE TIME shell script to check for and remove wiki articles that have been replaced with new articles (e.g. 2007->2013)
+#
+#    DO NOT run this again
+#
+
+cd /usr/local/var/www/content
+
+# read removals file
+# each line is a filepath to delete
+
+while read y
+do
+echo "removing: $y "
+rm $y
+done < /usr/local/var/www/Looma/looma\ shell\ scripts/removethesefiles

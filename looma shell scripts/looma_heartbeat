@@ -1,0 +1,13 @@
+# filename: looma_heartbeat
+#
+# run on a looma to keep a record of latest time the computer is running
+#
+cd /Users/skip/Desktop
+pwd
+
+touch heartbeat
+while :
+do
+    echo "Running at `date`" > heartbeat
+    sleep 60
+done

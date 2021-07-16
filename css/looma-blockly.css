@@ -1,0 +1,24 @@
+#blocklyArea {
+    min-height:100%;
+    min-width:100%;
+}
+
+#blocklyDiv {
+    position:absolute;
+}
+
+/*#blocklyDiv {
+    width:100% !important;
+    height:100% !important;
+}
+*/
+.js-control {
+    position: absolute;
+    right: 5vw;
+    top: 10vh;
+    height: 4vh;
+    width:10vw;
+}
+#show-js { top:10vh;}
+
+#run-js { top:15vh;}

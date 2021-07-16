@@ -477,7 +477,7 @@ h1 span.english-keyword, h1 span.native-keyword {
     display:inline-block;
 }
 
-.native-keyword {display:inline-block;}
+/*.native-keyword {display:inline-block;}*/
 
 .xlat {display:none;}
 

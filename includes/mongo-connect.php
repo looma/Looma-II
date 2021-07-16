@@ -68,9 +68,9 @@ function mongoFindRandom($collection, $filter, $count) {
     //returns a randomized set, size $count, of english words from the dictionary
     global $mongo_level;
     if ($mongo_level >= 4) {
-         $cursor = $collection.aggregate([
-            array($match =>  $filter),
-            array($sample => array( 'size' => $count))]);
+         $cursor = $collection->aggregate([
+            array('$match' =>  $filter),
+            array('$sample' => array( 'size' => $count))]);
     } else {  // old mongoDB, mongo_level 2 or 3
         $cursor = $collection->find( $filter );
     };
@@ -223,6 +223,7 @@ $dbhost = 'localhost';
         $edited_videos_collection = $loomaDB -> edited_videos;
         $volunteers_collection = $loomaDB -> volunteers;
         $new_content_collection = $loomaDB -> new_content;
+        $blockly_demos_collection = $loomaDB -> blockly_demos;
         $recorded_videos_collection = $loomaDB -> recorded_videos;
 
         $collections = array(

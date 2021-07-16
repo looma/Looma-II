@@ -2,7 +2,6 @@
 LOOMA javascript file
 Filename: looma-template.js
 Description: supports looma-xxx.php
-/
 
 Programmer name: Skip
 Owner: Looma Education Company
@@ -12,6 +11,7 @@ Revision: Looma 3.0
 
 'use strict';
  /* declare global variables here */
+
  /* declare functions here */
 
 $(document).ready( function () {

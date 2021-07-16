@@ -35,10 +35,7 @@ Description:
  * LOOMA.npdefine()
  * LOOMA.popupDefinition()
  * LOOMA.wordlist()
- * LOOMA.dictionarySearchall()
  * LOOMA.picturewordlist()
- * LOOMA.dictionaryDelete()
- * LOOMA.dictionaryUpdate()
  * LOOMA.rtl()
  * LOOMA.setTheme()
  * LOOMA.changeTheme()
@@ -625,7 +622,7 @@ var LOOMA = (function() {
 
 
 //***********  USING THE LOOMA DICTIONARY ***************
-//***********  functions are LOOKUP, POPUPDEFINITION, SEARCHALL, DELETE, UPDATE and WORDLIST *****************
+//***********  functions are LOOKUP, POPUPDEFINITION and WORDLIST *****************
 //
 //when you need a word looked up in the dictionary, call LOOMA.lookup() with these parameters:
 //            word: the word to look up
@@ -867,63 +864,6 @@ var LOOMA = (function() {
             return false;
         }, //end WORDLIST
         
-        dictionarySearchall : function(word, succeed, fail) {
-            
-            //returns array of objects
-            $.ajax(
-                "looma-dictionary-utilities.php",
-                {
-                    type: 'GET',
-                    cache: false,
-                    crossDomain: true,
-                    dataType: "json",
-                    data: "cmd=searchall&word=" + encodeURIComponent(word.toLowerCase()),
-                    error: fail,
-                    success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
-                });
-            
-            return false;
-        }, //end DICTIONARYSEARCHALL
-        
-        dictionaryDelete : function(word, succeed, fail) {
-            
-            //returns array of objects
-            $.ajax(
-                "looma-dictionary-utilities.php",
-                {
-                    type: 'GET',
-                    cache: false,
-                    crossDomain: true,
-                    dataType: "json",
-                    data: "cmd=delete&wordID=" + encodeURIComponent(word),
-                    error: fail,
-                    success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
-                });
-            
-            return false;
-        }, //end DICTIONARYDELETE
-        
-        dictionaryUpdate : function(word, succeed, fail) {
-            
-            //returns array of objects
-            $.ajax(
-                "looma-dictionary-utilities.php",
-                {
-                    type: 'GET',
-                    cache: false,
-                    crossDomain: true,
-                    dataType: "json",
-                    data: "cmd=update&wordID=" + encodeURIComponent(word[0]) + "&wordEn=" + encodeURIComponent(word[1])
-                        + "&wordNp=" + encodeURIComponent(word[2]) + "&wordPart=" + encodeURIComponent(word[3])
-                        + "&wordPlural=" + encodeURIComponent(word[4]) + "&wordRw=" + encodeURIComponent(word[5])
-                        + "&wordCh_id=" + encodeURIComponent(word[6]) + "&wordDef=" + encodeURIComponent(word[7]),
-                    error: fail,
-                    success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
-                });
-            
-            return false;
-        }, //end DICTIONARYUPDATE
-        
         picturewordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
             
             var parameters = "cmd=list&picturesonly=true";
@@ -947,7 +887,6 @@ var LOOMA = (function() {
             
             return false;
         }, //end PICTUREWORDLIST
-        
         
         rtl : function(element) { //enables Right-to-left input for numbers in looma-arith-problems.js
             if (element.setSelectionRange) element.setSelectionRange(0, 0);
@@ -1224,7 +1163,8 @@ LOOMA.speak = function(text, engine, voice, rate) {
          */
         
         
-        console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
+        console.log('speaking : "' + text + '" using engine: ' + engine);
+        if (engine === 'mimic') console.log( ' with mimic voice: ' + voice);
         
         var speechButton = document.getElementsByClassName("speak")[0];
         
@@ -1286,7 +1226,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
         LOOMA.speak.cleanup = function () {
             if (speechSynthesis.speaking) speechSynthesis.pause();
             else {
-                LOOMA.speak.playingAudio.pause();
+                //  LOOMA.speak.playingAudio.pause();
                 LOOMA.speak.playingAudio = null;
                 LOOMA.speak.speechQueue = [];
                 LOOMA.speak.disable();

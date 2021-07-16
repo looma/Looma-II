@@ -460,7 +460,12 @@ $TKW = array (
 	"timeline game" => "समय रेखा खेल",
 	"vocabulary drill" => "शब्दावली  कसरत",
 	"Visual Vocabulary" => "दृश्य शब्दावली",
-	"Vocabulary Translation" => "शब्दावली अनुवाद"
+	"Vocabulary Translation" => "शब्दावली अनुवाद",
+
+	"Search by Title" => "शीर्षक अनुसार खोजी" ,
+	"Search by Subject" => "विषय अनुसार खोजी",
+	"Portals" => "पोर्टलहरू",
+	"About Wikipedia for Schools" => "िद्यालयका लागि विकिपिडियाका बारेमा"
 
 ); //end array TKW
 ?>

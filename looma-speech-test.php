@@ -27,11 +27,11 @@ define ("CLASSES", 8);
         <div id="rateDiv">
             <span>Enter speech rate here (higher is faster)</span>
             <select id="rate">
-                <option value="0.50">1/2</option>
-                <option value="0.67">2/3</option>
-                <option value="1" selected>1</option>
-                <option value="1.5">1.5</option>
-                <option value="2">2</option>
+                <option value="0.50">         1/2</option>
+                <option value="0.67" selected>2/3</option>
+                <option value="1">            1  </option>
+                <option value="1.5">          1.5</option>
+                <option value="2">            2  </option>
             </select>
         </div>
 
@@ -56,6 +56,7 @@ define ("CLASSES", 8);
                 <option data-engine="mimic" class="voice" id="cmu_us_slt"  value="cmu_us_slt">   US female (slt) </option>
                 <option data-engine="mimic" class="voice" id="mycroft_voice_4.0"  value="mycroft_voice_4.0">   English male (mycroft) </option>
             </select>
+            <p>(voice selection only applies to mimic speech engine)</p>
         </div>
 
     </div>

@@ -16,9 +16,6 @@ $page_title = 'Looma';
  *called by AJAX
  *		sample call (jQuery):
  *			   $.getJSON("looma-dictionary.php", {"cmd":"lookup", "word": word}, function(result) {wordObj = result;});
- *		supports commands: lookup [look up a word in the dictionary]
- *				           add    [add a word and definition to the dict]
- *				           random [return a list of randomly selected words, e.g. for a game]
  *		LOOKUP: looks up $_GET['word'] to match 'en' filed in dictionary and
  * 				 returns a JSON object {en:"word", np:"nepaliword", defn:"definition", img: "filename of picture"}
  *				other properties (phonetic, useinsentence, partofspeech, hom, ant, syn) to be added later
@@ -31,6 +28,11 @@ $page_title = 'Looma';
  *		LIST: takes an object {class, subject, [ch_id], [count], [boolean]} and returns an array of english words
  *				matching the filter criteria,
  *				length=count and randomized if boolean=true
+ *		SEARCHALL: looks up $_GET['word'] to match 'en' filed in dictionary and
+ * 				returns an array of JSON objects
+ * 		DELETE: deletes the document corresponding to the word's ID
+ * 		UPDATE: updates the document corresponding to the word's ID
+ *
  */
 include ('includes/mongo-connect.php');
 function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shiv for php 5.x "keyIsSet()"
@@ -40,7 +42,7 @@ $MAX_NUM = 250;
 
 if (isset($_GET["cmd"]))
 {
-	// accepted CMDs are 'lookup', 'add', 'list'
+	// accepted CMDs are 'lookup', 'add', 'list', 'reverselookup', 'searchall', 'delete', 'update'
 
 	$cmd = $_GET["cmd"];
 	switch ($cmd)
@@ -100,7 +102,7 @@ if (isset($_GET["cmd"]))
 
 
 ////////////////////////////
-////// command REVERSELOOKUP   ////
+/// command REVERSELOOKUP ///
 ////////////////////////////
 
 		case "reverselookup":
@@ -140,7 +142,9 @@ if (isset($_GET["cmd"]))
 				$failed = json_encode($failed);
 				echo "$failed";
 			}
-			exit(); //end reverseLOOKUP cmd////////////////////////////
+			exit(); //end reverseLOOKUP cmd
+
+////////////////////////////
 ////// command ADD   //////
 ////////////////////////////
 
@@ -304,6 +308,131 @@ if (isset($_GET["cmd"]))
 			$list = json_encode($list);
 			echo $list;
 			exit(); //end LIST cmd
+
+////////////////////////////
+//// command SEARCHALL   ///
+////////////////////////////
+
+		case "searchall":
+			if(isset($_GET["word"]) && $_GET["word"] != "")
+			{
+				$englishWord = trim($_GET["word"]);
+
+				$query = array('en' => mongoRegexOptions("^$englishWord$",'i'));
+				$oneWord = mongoFindOne($dictionary_collection, $query);
+
+				if (! $oneWord) {  // if the WORD is not found, see if it is a PLURAL
+					// echo "word is not found";
+					$query = array('plural' => mongoRegexOptions("^$englishWord$",'i'));
+					$words = mongoFind($dictionary_collection, $query, null, null, null); // find the singular versions of the plural
+				}
+				else {
+					$words = mongoFind($dictionary_collection, $query, null, null, null);
+				}
+				$arr = [];
+				foreach ($words as $word) {
+					array_push($arr, $word);
+				}
+				$arr = json_encode($arr);
+				echo $arr;
+			}
+			else
+			{   $failed = array('en' => '','np' => '', 'ch_id' => '', 'def' => 'word not found','phon' => '','img' => '');
+				$failed = json_encode($failed);
+				echo "$failed";
+			}
+			exit();
+
+////////////////////////////
+////// command DELETE   ////
+////////////////////////////
+
+		case "delete":
+			if(isset($_GET["wordID"]))
+			{
+				$id = mongoId($_GET["wordID"]);
+				mongoDeleteOne($dictionary_collection, array('_id' => $id));
+				echo "true";
+				exit();
+			}
+			else
+			{
+				echo "false";
+				exit();
+			}
+
+
+////////////////////////////
+////// command UPDATE   ////
+////////////////////////////
+
+		case "update":
+			if(isset($_GET["wordID"]))
+			{
+				if ($_GET["wordID"] == "placeholder") {
+					$id = "placeholder";
+				}
+				else {
+					$id = mongoId($_GET["wordID"]);
+				}
+
+				$updates = [];
+				$empty = [];
+
+				$updates['en'] = $_GET["wordEn"];
+				$updates['part'] = $_GET["wordPart"];
+				$updates['def'] = $_GET["wordDef"];
+
+				if (isset($_GET["wordNp"]) && $_GET["wordNp"] !== "") {
+					$updates['np'] = $_GET["wordNp"];
+				}
+				else {
+					$empty['np'] = $_GET["wordNp"];
+				}
+
+				if (isset($_GET["wordPlural"]) && $_GET["wordPlural"] !== "") {
+					$updates['plural'] = $_GET["wordPlural"];
+				}
+				else {
+					$empty['plural'] = $_GET["wordPlural"];
+				}
+
+				if (isset($_GET["wordRw"]) && $_GET["wordRw"] !== "") {
+					$updates['rw'] = $_GET["wordRw"];
+				}
+				else {
+					$empty['rw'] = $_GET["wordRw"];
+				}
+
+				if (isset($_GET["wordCh_id"]) && $_GET["wordCh_id"] !== "") {
+					$updates['ch_id'] = $_GET["wordCh_id"];
+				}
+				else {
+					$empty['ch_id'] = $_GET["wordCh_id"];
+				}
+
+
+				if ($id == "placeholder") { // indicating new entry
+					mongoInsert($dictionary_collection, $updates);
+				}
+				else {
+					$filter = ['_id' => $id];
+					mongoUpdate($dictionary_collection, $filter, ['$set' => $updates]);
+					if ($empty !== []) {
+						mongoUpdate($dictionary_collection, $filter, ['$unset' => $empty]);
+					}
+				}
+				// mongoUpsert($dictionary_collection, $filter, $updates);
+
+				echo "true";
+				exit();
+			}
+			else
+			{
+				echo "false";
+				exit();
+			}
+
 
 		default:
 			echo "looma dictinary utilities illegal command";

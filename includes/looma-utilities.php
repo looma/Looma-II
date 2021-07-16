@@ -197,6 +197,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
             case "looma":     //looma
             case "chapter":   //chapter
             case "history":   //$fp = '../content/histories/';
+            case "blockly-demo":
                 break;
 
 		   default:  // unknown filetype

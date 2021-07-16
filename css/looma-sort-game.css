@@ -1,0 +1,42 @@
+#bins {
+    min-width:90vw;
+    height:60vh;
+    padding:5vh;
+    border:1px bold  yellow;
+    border-radius: 5px;
+    display:flex;
+}
+
+.bin {
+    width:30%;
+    height: 75%;
+    margin:auto;
+    background-color:lightyellow;
+    border:1px bold  blue;
+    border-radius: 5px;
+}
+.heading {
+    margin-auto;
+    font-size:3em;
+    width:30%;
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}
+
+button.lookup {
+    display:inline-block;
+    bottom:23vh;
+}
+
+#next_button {
+    position:absolute;
+    right:15vw;
+    height:10vh;
+    width:10vw;
+}
+
+$next_button img {
+    height:80%;
+ }

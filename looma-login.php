@@ -25,7 +25,7 @@ $loggedin = isLoggedIn();
 function check_login($id, $pass) {
     global $logins_collection;
 
-    error_log("start check login");
+    error_log("start check login for ".$id);
     $errors = array();  //array with all login errors
 
     //Validate id and add error if neccesary
@@ -70,7 +70,7 @@ function check_login($id, $pass) {
 
     }
     error_log("end check login");
-    return array(false, $errors, null);
+    return array(false, $errors, null,null);
 }  //end check_login
 
 /*

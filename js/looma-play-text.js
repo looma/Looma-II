@@ -19,10 +19,38 @@ function displayText(result) {
     else $('.text-display').html('<h2>File not found</h2>');
 }; //end displayText()
 
+function removeTags(str) {
+    if ((str===null) || (str===''))
+        return '';
+    else
+        str = str.toString();
+    return str.replace( /(<([^>]+)>)/ig, '');
+}
+
 'use strict';
 $(document).ready(function() {
 
-	var div = document.getElementById('the_id');
+
+// SPEAK button will read the whole slide,
+//     unless text is selected, in which case, it will speak the selected text
+    $('button.speak').off('click').click(function () {
+        var selection, texts, slide, toSpeak;
+        
+        selection = document.getSelection().toString();
+        if (!selection) selection = removeTags($('.english').html());
+        
+        selection = $("<textarea/>").html(selection).text();
+       
+        //texts = [];
+        //$('#editor').find('.english').find('span').each(function() {texts.push($(this).text());});
+        //slide = texts.join(' ');
+       // toSpeak = (selection ? selection : slide);
+        console.log('Text file: speaking "' + selection + '"');
+        LOOMA.speak(selection);
+    }); //end speak button onclick function
+    
+    
+    var div = document.getElementById('the_id');
 	if (div)
         $.post("looma-database-utilities.php",
                 {cmd: "openByID", collection: "text", id: div.getAttribute('data-id')},

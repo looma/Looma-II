@@ -128,6 +128,11 @@ Description: formatting and styling for the game page
      font-size:2em;
 }
 
+.prompt img{
+    height:7vh;
+    width:9vw;
+}
+
 /* CP NEW (1) */
 .prompt.picture{
     width: 11vw;
@@ -456,6 +461,8 @@ button:hover, .button:hover
     background-size:75%;
 }
 .concButton span {display:none;}
+
+.concButton img {height:90%;}
 
 .concButton.flipped {background:white; color:blue;}
 .concButton.flipped span {display:inline;}

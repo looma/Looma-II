@@ -1,11 +1,12 @@
 #!/bin/bash
 #
-#  filename: loomabackup
-#       VERSION 1.0
+#  filename: loomaAWStoMAC
+#       VERSION 1.1
 #       author: skip
-#       date:   JAN 2021
+#       date:   JUN 2021
 #
 #  used to backup looma code, database and content from AWS to Skip's iMac
+#
 #  the target iMac folders are also automatically sync'd with Dropbox > 03 Content Reference > 01 Content > D Finished Content > Content on Looma
 #    can be called with a parameter "dryrun" in which case the transfers are not performed,
 #    configured to be run on a MAC
@@ -66,15 +67,15 @@ then
   exit 1
 fi
 
-#if [[ `pwd` !=  $TARGET ]]
-#   then
-#       echo
-#       echo "***********ERROR***********************************"
-#       echo "  Didnt find target folder on the MAC"
-#       echo "  Be sure this folder exists: $TARGET"
-#       echo "***************************************************"
-#       exit 1
-#    fi
+if [[ `pwd` !=  $TARGET ]]
+   then
+       echo
+       echo "***********ERROR***********************************"
+       echo "  Didnt find target folder on the MAC"
+       echo "  Be sure this folder exists: $TARGET"
+       echo "***************************************************"
+       exit 1
+    fi
 
 mkdir -p Looma     #in case its not already there
 mkdir -p content   #in case its not already there

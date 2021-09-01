@@ -185,7 +185,10 @@ $foundActivity;
 
 		echo "<br>";
 
-		if ($subject === "social studies") $caps = "Social Studies"; else $caps = ucfirst($subject);
+		if ($subject === "social studies") $caps = "Social Studies";
+		else if ($subject === 'math')      $caps = "Maths";
+		else                               $caps = ucfirst($subject);
+
 		$grade = str_replace("class", "Grade ", $grade);
 		echo "<h2 class='title'>";
 		echo keyword('Resources');

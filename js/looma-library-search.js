@@ -11,6 +11,8 @@ Description:
 'use strict';
 
 var result = 1, row = 0, maxButtons = 3;
+var resultsShown = 0;
+var resultsTotal = 0;
 var searchName = 'library-search';
 
 ////////////////////////////////
@@ -20,6 +22,7 @@ function clearResults(results) {
     $('#results-div').empty();
     $("#top").hide();
     $("#more").hide();
+    resultsShown = 0;
 } //end clearResults()
 
 ////////////////////////////////
@@ -27,6 +30,9 @@ function clearResults(results) {
 ////////////////////////////////
     function displayResults(results) {
     var $display = $('#results-div').empty().append('<h2 style="margin-bottom: 0;">Search Results:</h2>');
+    
+    resultsTotal = results['count'];
+    resultsShown = resultsShown + pagesz;
 
     result = 1;
     
@@ -40,7 +46,7 @@ function clearResults(results) {
     });
 
     $("#top").show();
-    if (result_array.length % pagesz === 0) $("#more").show();
+    if (resultsShown < resultsTotal) $("#more").show();
     
     var chapResults = result_array['chapters'].length;
     var actResults = result_array['activities'].length;
@@ -69,6 +75,8 @@ function clearResults(results) {
 ////////////////////////////////
 function displayMoreResults(results) {
     
+    resultsShown = resultsShown + pagesz;
+    
     var result_array = [];
     result_array['activities'] = [];
     result_array['chapters']  = [];
@@ -79,7 +87,7 @@ function displayMoreResults(results) {
     });
     
     $("#top").show();
-    if (result_array['activities'].length % pagesz === 0) $("#more").show();
+    if (resultsShown < resultsTotal) $("#more").show(); else $("#more").hide();
     
     //var chapResults = result_array['chapters'].length;
     //var actResults = result_array['activities'].length;

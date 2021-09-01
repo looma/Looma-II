@@ -44,7 +44,7 @@ $(document).ready (function() {
         //$(this).val(newTheme);
 });
     
-    $('.theme#' + LOOMA.readStore('theme', 'cookie')).attr('selected', true); //add checkmark on current theme
+    $('.theme#' + LOOMA.readStore('theme', 'session-cookie')).attr('selected', true); //add checkmark on current theme
 
 //new code to display a list of speechSynthesis voices
 /*

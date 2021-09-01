@@ -1,0 +1,44 @@
+// ONE TIME program to
+// 	scan through specified documents in dictionary collection
+// 	print words without any of the 4 required fields: 'en', 'np', 'def', 'part'
+//	prints words with illegal 'part'
+//
+//	run in MONGO SHELL with: load('dictionaryVerifyRequired')
+
+var docs, doc, count;
+count = 0;
+var validParts = ['noun', 'verb', 'adjective', 'adverb', 'preposition', 'conjunction', 'pronoun', 'contraction', 'interjection', 'article', 'proper name', 'title', 'symbol', 'letter', 'abbreviation'];
+
+docs = db.dictionary.find();
+while (docs.hasNext()) {
+	doc = docs.next(); 
+	
+	if (doc['en'] == null || doc['en'] == '') {
+		print('Missing en');
+		count++;
+	};
+
+	if (doc['np'] == null || doc['np'].trim() == '') {
+		print(doc['en'] + ' is missing np');
+		count++;
+	};
+
+	if (doc['def'] == null || doc['def'] == '') {
+		print(doc['en'] + ' is missing def');
+		count++;
+	};
+
+	if (doc['part'] == null || doc['part'].trim() == '') {
+		print(doc['en'] + ' is missing part');
+		count++;
+	}
+	else {
+		if (validParts.indexOf(doc['part']) == -1) {
+			print(doc['en'] + ' has an invalid part ' + doc['part']);
+			count++;
+		}
+	};
+	
+};
+print('There are ' + count + ' invalid words');
+

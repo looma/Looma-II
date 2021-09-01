@@ -7,7 +7,18 @@ button.subject {
     background-repeat: no-repeat;
     background-color: #fff;
     background-position:center;
+
+    width:15%;
+    height:80%;
+    margin: 1% 2%;
+    font-size: 2em;
 }
+
+.button-5 img {
+    height: 90%;
+    width: 80%;
+}
+
 button.subject.active {
     background-color: #00f;
     

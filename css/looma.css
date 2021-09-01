@@ -1,19 +1,26 @@
 
 html {
-    
     --looma-blue:#091F48;
-    --looma-toolbar:#86c252; /*light green;*/
+    --looma-background: var(--looma-blue);
+    --looma-toolbar:yellow;
     --looma-font-color:yellow;
-    --looma-scrollbar-track:#aaaaff;
+    --looma-button-background:white;
+    --looma-button-font-color:black;
+    
+    --looma-button-hover-background:white;
+    --looma-button-hover-font-color:black;
+    
+    --looma-button-active-background:var(--looma-background);
+    --looma-button-active-font-color:var(--looma-font-color);
+    
     --looma-scrollbar-track:lightgoldenrodyellow;
-	background-color: gray;
-	height:100vh;
-	width:100vw;
-	position:relative;
-	margin:0;
+    background-color: white;
+    height:100vh;
+    width:100vw;xxx
+    position:relative;
+    margin:0;
     padding:0;
 }
-
 body {
     box-sizing: border-box;
     position: relative;
@@ -22,36 +29,15 @@ body {
     height:100vh;
     width:100vw;
     
-   font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", sans-serif;
-    background-color: var(--looma-blue);
-        /*background-color: #A1BEF3;*/
-		/* medium blue is #1853C1;*/
-		/* "looma" dark blue is #091F48;*/
-
+    font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", sans-serif;
+    
+    background-color: var(--looma-background);
+    color: var(--looma-font-color);
+    
 	overflow: hidden;
 	text-align: center;
     word-wrap:break-word;
 }
-/*
-
-Extra small devices (phones, 600px and down)
-@media only screen and (max-width: 600px) {}
-@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: portrait) {
- {
-    transform: rotate(-90deg);
-    transform-origin: left top;
-    width: 100vh;
-    overflow-x: hidden;
-    position: absolute;
-    top: 100%;
-    left: 0;
-}
-    #pdf {
-        height:100%;
-        zoom:0.5;
-    }
-}
-*/
 
 body {
      display:grid;
@@ -61,11 +47,11 @@ body {
  
 body * {
     -webkit-user-drag:none;
-    -moz-user-drag: none;
+    font-family:inherit;
 }
 
 #fullscreen {
-    background-color: var(--looma-blue);
+    background-color: var(--looma-background);
 }
 
 #main-container-horizontal {
@@ -74,13 +60,14 @@ body * {
     max-height:100%;
     overflow:hidden;
     position:relative;
-}
+    text-align: center;
+    margin:0;}
 
 #main-container-vertical {
     grid-row:    top / bottom;
     grid-column: left / toolbar;
     overflow:hidden;
-    background-color: var(--looma-blue);
+    text-align: center;
 }
 
 #toolbar-container {
@@ -102,25 +89,12 @@ body * {
 	top:0;
 	left:0;
 	margin:auto;
-	/*background-color: #d4d4d4;	*/
-	/*border: 1px solid black;    */
 }
 
-#main-container-horizontal {
-	text-align: center;
-	/*margin:auto;*/
-    margin:0;
-}
-
-#main-container-vertical {
-    text-align: center;
-}
 .scroll {overflow:auto;}
 
 #main-container.scroll            { overflow:auto; }
-
 #main-container-horizontal.scroll { overflow:auto;}
-
 #main-container-vertical.scroll   { overflow:auto; }
 
 ::-webkit-scrollbar-track-piece {
@@ -134,57 +108,24 @@ body * {
 }
 ::-webkit-scrollbar { width:40px;}
 
-
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     border-radius: 35px;
 }
 
-/* laptop
-@media only screen
-		and (min-device-height: 900px)
-		and (max-device-width: 1440px)
-		and (orientation : landscape) {
-			body { width: 1280px;
-				background-color:#0b212a}
-		}
-
-/* tablet landscape
-@media only screen
-		and (min-device-height: 481px)
-		and (max-device-width: 1024px)
-		and (orientation : landscape) {
-			body { width: 1024px;
-				height: 480px;
-				background-color:#0b212a}
-		}
-/* tablet portrait
-@media only screen
-		and (min-device-height: 481px)
-		and (max-device-width: 1024px)
-		and (orientation : portrait) {
-			body { width: 720px;
-				height: 960px;
-			background-color:#00FF00}
-		}
-
-/* iphone
-@media only screen
-		and (max-device-width: 480px) {
-			body { width: 480px;
-				height: 568px;
-			background-color:#00FF88}
-		}
-*/
-
 h1.title, h2.title, h3.title {
-	/*size:90%;*/
-	font-size: 3em;
-    
     font-weight:bold !important;
-    
 	margin:auto;
 	text-align:center
+}
+h1.title {font-size:4em;}
+h2.title {font-size:3em;}
+h3.title {font-size:2em;}
+
+.title h1{
+    font-size:4em;
+    margin-top:3vh;
+    margin-bottom:5vh;
 }
 
 h1 span {display:inline-block;}
@@ -200,9 +141,10 @@ h1 span {display:inline-block;}
     bottom:10vh;
     width:25vw;
 }
-
+/* UNKNOWN
 #amazon {width:10px;}
 #amazon img {height:4vh;width:5vw;}
+*/
 
 div.viewer {
 	width:100%;
@@ -226,15 +168,7 @@ input[type="range"] {
 	width:50%;
 }
 
-/*
-footer {
-
-	width:100%;
-	height: 50px;
-	text-align:center;
-	float:right;
-}
-*/
+/*    the following TABLE styling should probably be in looma-home.css and others (library, histories, games ??) */
 
 table {
     width:100%;
@@ -281,8 +215,8 @@ button img#flag {height: 100%;}
 /*------------------------*/
 
 button {
-	background-color:#ffffff;
-	color:#000000;
+	background-color:var(--looma-button-background);
+	color:var(--looma-button-font-color);
 	border-color: #FFFFFF;
 	border: 5px;
 	border-radius: 5px;
@@ -291,33 +225,23 @@ button {
 	height:80%;
 
 	overflow: hidden;
-/*
-	vertical-align:middle;*/
+    /*vertical-align:middle;*/
 	text-align:center;
-
 }
 
 button:hover {
-	color: white;
-	background-color:#091F48;
+	color: var(--looma-button-hover-font-color);
+	background-color:var(--looma-button-hover-background);
 	border-color: yellow;
     border-width:4px;
 	/*transform: scale(1.5,1.5);*/
 }
 
-/*button.img:hover {
-    transform: scale(1.2,1.2);
+button.active {
+    color:            var(--looma-button-active-font-color);
+    background-color: var(--looma-button-active-background);
+    border:2px solid yellow;
 }
-*/
-
-/* not used??
-button.back {
-	    background-image: url("../images/back-arrow.png");
-	    background-size: 80% 80%;
-	    background-repeat: no-repeat;
-	    background-color: transparent;
-}
-*/
 
 button#back-button {
 	    background-image: url("../images/back-arrow.png");
@@ -334,46 +258,7 @@ button#back-button {
 	    z-index:1000;
 	    cursor: pointer;
 }
-/*
-.button-4 {
-	width:20%;
-	margin: 2% 2%;
-	font-size: 3em;
-}
-*/
 
-.button-5 {
-	width:15%;
-	height:80%;
-	margin: 1% 2%;
-	font-size: 2em;
-}
-
-.button-5 img {
-    height: 90%;
-    width: 80%;
-}
-/*
-
-.button-6 {
-	width:14%;
-	margin: 1%;
-	font-size: 2.4em;
-	/*background: linear-gradient(to right, red , blue);
-
-    background: linear-gradient(rgba(191,234,234, 0.4), rgba(168, 206, 206, 0.3));
-	background: linear-gradient(to bottom, rgba(191,234,234, 1) , rgba(168, 206, 206, 1));
-}
-*/
-
-.button-8 {
-	width:11%;
-	height:65%;
-	font-size: 5vw;
-	overflow: hidden;
-	padding:0 0 5px 0;
-	margin:0;
-}
 .little {
 	font-size:0.35em;
 	line-height:1em;
@@ -381,7 +266,7 @@ button#back-button {
 	margin:0;
 }
 
-/* for slideshow  */
+/* for slideshow
 
 button.with-play {
     float:left;
@@ -398,7 +283,9 @@ button.beside-play {
     display: inline;
     width:70%;
 }
+ */
 
+/* following should be in TOOLBAR.CSS  ????   */
 #padlock {
     position:absolute;
     right:1vw;
@@ -412,7 +299,7 @@ button.beside-play {
         display:none;
         right:0;
         bottom:0;
-        /*color:red;*/
+        color:red;
         font-size: 0.8em;
 }
 
@@ -421,50 +308,16 @@ span#datetime {
 	display:inline-block;
 	color: #000;
 }
-/*
-span.logo-vertical {
-	display:inline-block;
-	height: 20%;
-	width: 100%;
-}
 
-span.logo img {
-    height:7vh;
-    margin:auto;
-    padding-top:3%;
-}
-span.logo img,vertical {
-	height:3.5vh;
-    width:4vw;
-    margin:auto;
-    padding-top:3%;
-}
-span.logo img.looma-logo {
-    height:20vh;
-    width:33vw;
-}
-
-img.looma-logo{
-	display: block;
-	margin-left:auto;
-	margin-right:auto;
-}
-*/
 img.looma-logo.native-keyword {display:none;}
 
 
-button.toolbar {
-	width:7%;
-	font-size: 1.2em;
-	margin:5px;
-	padding: 5px;
-}
-
+/* UNKNOWN
 button.navigate {
 	width:25vw;
-	/*height:3em;*/
 	font-size: 4em;
 }
+*/
 
 /*****************
  * 'xlat' and 'tip' classes are tooltip popups
@@ -476,8 +329,6 @@ button.navigate {
 h1 span.english-keyword, h1 span.native-keyword {
     display:inline-block;
 }
-
-/*.native-keyword {display:inline-block;}*/
 
 .xlat {display:none;}
 
@@ -557,6 +408,14 @@ button.lookup {
     bottom:33vh;
     display:none;
     background-image: url("../images/dictionary.png");
+    background-size: 75% 75%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
+button.download {
+    bottom:55vh;
+    display:none;
+    background-image: url("../images/download.png");
     background-size: 75% 75%;
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
 }
@@ -683,12 +542,6 @@ div.fullframe, iframe {
     overflow-y: auto;
     /*overflow-x: hidden;*/
 }
-/*#fullscreen:-webkit-full-screen {
-    height: 95%;
-    width:  95%;
-  }
-*/
-
 
 video { height: 100% }
 
@@ -744,7 +597,6 @@ button.img.play, button.img.activity{
     max-width:30vw;
 }
 
-
 button.img p {
 	vertical-align:middle}
 
@@ -763,7 +615,6 @@ button.play-pause {
 button.heading  {
 	transform:none;
 	font-size: 1.5em;
-    /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dddddd), color-stop(100%,#bbbbbb));  webkit */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#aaaaee), color-stop(100%,#bbbbff))}
 
 button.heading:hover {
@@ -771,20 +622,12 @@ button.heading:hover {
 }
 
 button.lesson {
-    /*width:10vw;
-    float:left;*/
+
 }
 
 button.activities, button.lesson {
-   /* width:17vw;
-    float:right;*/
-}
 
-/*
-button.chapter:hover, button.activity:hover, button.lesson:hover {
-	transform: scale(1.2,1.2);
 }
-*/
 
 button.footer {
 	height: 50%;
@@ -814,4 +657,20 @@ div.center {
 
 .caps {
     text-transform: capitalize;
+}
+
+.watermark {
+    
+    display:none;  /* turn on with individual page CSS files (e.g. in CEHRD theme CSS file)*/
+    
+    transform: rotate(-30deg);
+    z-index: 9999;
+    opacity:0.3;
+    position: fixed;
+    top:35%;
+    left:3%;
+    font-size:8em;
+    color:black;
+    background-color:transparent;
+    pointer-events:none;
 }

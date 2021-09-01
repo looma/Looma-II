@@ -11,6 +11,7 @@
 /// thumbnail
 /// folderThumbnail
 /// makeActivityButton
+/// downloadButton
 /// //////////////////
 
 
@@ -323,5 +324,13 @@ function makeChapterButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, 
     displayName($fn, $dn, $ndn);
     echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
 
-} //end makeChapterButton()
+}; //end makeChapterButton()
+
+function downloadButton($path,$file) {
+      echo "<button class = 'download looma-control-button'>";
+      echo "<a href=" . $path . $file . " download='downloadedfile'>";
+      echo "<img src='images/download.png'>";
+      tooltip("Download");
+      echo "</a></button>";
+};  // end downloadButton()
 ?>

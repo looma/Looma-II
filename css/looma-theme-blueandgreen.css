@@ -1,9 +1,11 @@
 #main-container, #main-container-horizontal, #main-container-vertical {
- 	background-color:#0c99d5;
+	--looma-background:  #0c99d5;
+	background-color:var(--looma-background);
  	color:yellow;
 }
  #toolbar-container, #toolbar-container-vertical {
- 	background-color:#3adf00;
+	 --looma-toolbar: #3adf00;
+	 background-color:  var(--looma-toolbar);
  }
 button {
 	background-color: #fff;

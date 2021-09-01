@@ -5,11 +5,42 @@
     overflow-x: auto;
 }
 
+body {
+    grid-template-rows: [top]  repeat(9, 1fr) 1fr [bottom];
+}
+
 div::-webkit-scrollbar {
     display: none;
 }
 
-/* search form */
+#modified {
+    background-color: green;
+    position: absolute;
+    bottom: 20vh;
+    right: 0.5vw;
+    width: 3vh;
+    height: 3vh;
+    border-radius: 1.5vh;
+}
+
+
+/* popup info */
+.popup {
+    top: 20%;
+    left: 5%;
+    width: 80vw;
+    font-size: 2em;
+    padding: 20px;
+}
+.dismiss-popup {
+    margin-left: 10px;
+}
+#close-popup {
+    display: none;
+}
+
+
+/* search form and header */
 form {
     text-align: center;
     height: 67px;
@@ -17,10 +48,15 @@ form {
     font-size : 2em;
     color:rgb(255, 255, 255);
     padding-top: 1vh;
+    padding-right: 8vw;
 }
-input#input {
+h1 {
+    padding-right: 8vw;
+}
+
+/* all input fields */
+input {
     border: none;
-    border-radius: 6px;
 }
 
 /* buttons */
@@ -36,14 +72,22 @@ input#input {
 .select {
     border: 4px solid green;
 }
-#addButton {
+#addButton, #suggestionsButton {
     font-size: 1.5em;
     height: 40px;
-    width: 130px;
     border: 4px solid blue;
-    position: absolute;
-    top: 10vh;
+    position: fixed;
+}
+#addButton {
+    width: 130px;
+    top: 5vh;
     right: 7vw;
+}
+#suggestionsButton {
+    width: 200px;
+    top: 12vh;
+    right: 5vw;
+    display: none;
 }
 #saveButton {
     font-size: 1em;
@@ -52,20 +96,36 @@ input#input {
     border: 4px solid blue;
     line-height: 10px;
 }
+#instructions {
+    border-radius: 9vh;
+    background-color: white;
+    position: fixed;
+    bottom: 2vh;
+    right: 2vw;
+    width: 8vh;
+    height: 8vh;
+}
 
 /* general table info */
-#titleTable, #confirmTable {
+table {
     font-size: 1.75em;
     color: white;
-    height: 2vh;
-    width: 50vw;
     table-layout: fixed;
     border-collapse: collapse;
     margin-left: 2vw;
 }
-#confirmTable {
+#titleTable, #confirmTable {
+    height: 2vh;
+    width: 50vw;
+}
+#confirmTable, #definitionTable {
     margin-top: 4vh;
     display: none;
+}
+#definitionTable {
+    color: yellow;
+    height: max-content;
+    width: 90vw;
 }
 
 /* column headers */
@@ -88,6 +148,12 @@ input#input {
 }
 .empty1, .empty2 {
     width: 100px;
+}
+.suggestedPart {
+    width: 200px;
+}
+.suggestedDefinition {
+    width: 1100px;
 }
 
 /* text fields */

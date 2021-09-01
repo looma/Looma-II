@@ -7,7 +7,7 @@ Revision: Looma 2.0.0
 File: looma-games.php [replaces old version]
 -->
 
-<?php $page_title = 'Looma Games Page';
+<?php $page_title = 'Games Page';
 require_once ('includes/header.php');
 require_once ('includes/mongo-connect.php');
 define ("CLASSES", 10);
@@ -21,9 +21,9 @@ define ("CLASSES", 10);
 <body>
 <div id="main-container-horizontal">
 
-    <div class="title">
-      <h1><?php keyword('Looma Games');?></h1>
-    </div>
+    <h1 class="title"> <?php keyword("Games"); ?> </h1>
+
+
     <!--  display CLASS buttons  -->
     <div id="classes" class="button-div">
         <?php

@@ -4,7 +4,8 @@
 
 }
  #toolbar-container, #toolbar-container-vertical {
- 	background-color:#ffff99;
+	 --looma-toolbar: #ffff99;
+	 background-color:  var(--looma-toolbar);
 
  }
 

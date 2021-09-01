@@ -171,13 +171,15 @@ function isFilterSet() {
 ////// makeKeywordDropdown /////
 ////////////////////////////////
 
-function makeKeywordDropdown(kids, element) {
+function makeKeywordDropdown(kids, element, mother_id) {
     var any = (language === 'native') ? "(कुनै)" : "(any)";
+    element.attr('data-mother-id',mother_id);
     $('<option value="" label="' + any + '" data-dn="(any)" data-ndn="(कुनै)"/>').prop('selected', true).appendTo(element);
     kids.forEach(function (kid) {
         var name = (language === 'native' && kid.ndn) ? kid.ndn : kid.name;
         var id = kid.kids["$id"] || kid.kids["$oid"];
         $('<option data-kids=' + id +
+         //   ' data-mother-id="' + mother_id +
             ' data-dn="' + kid.name +
             '" data-ndn="' + kid.ndn +
             '" value="' + kid.name +
@@ -231,7 +233,7 @@ function restoreKeywordDropdown(level,keys) {
                     var nextLevel = level + 1;
                     var $next = $('#key' + nextLevel + '-menu').empty().val('').prop('disabled', false).text('');
                     if (kids) {
-                        makeKeywordDropdown (kids, $next);
+                        makeKeywordDropdown (kids, $next, $element.data('kids'));
                     }
                     restoreKeywordDropdown(nextLevel, keys);
                 },
@@ -265,7 +267,7 @@ function showKeywordDropdown(event) {
                 var $next = $(menu).next().empty().prop('disabled', false);
                 if (kids) {
 
-                makeKeywordDropdown(kids,$next)
+                makeKeywordDropdown(kids,$next,$(selected).data('kids'))
                 /*
                     $('<option value="" label="(any)..."/>').prop('selected', true).appendTo($next);
                     kids.forEach(function (kid) {

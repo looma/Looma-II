@@ -1,11 +1,14 @@
 body {
-	background-color: xxxxx;
+	--looma-background: xxxxx;
+	background-color: var(--looma-background);
+	
 	font-family: "xxxxx", cursive, sans-serif;
 	color: xxxxx;
 }
 
 #toolbar-container, #toolbar-container-vertical {
-	background-color: xxxxx;
+	--looma-toolbar: yyyy;
+	background-color:  var(--looma-toolbar);
 }
 
 button {

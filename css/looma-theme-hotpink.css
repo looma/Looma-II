@@ -1,8 +1,14 @@
 body {
-	background-color: pink;
+	--looma-background:  pink;
+	background-color:var(--looma-background);
 			/* medium blue is #1853C1;*/
 			/* "looma" dark blue is #091F48;*/
 	color:#000;
+}
+
+#toolbar {
+	--looma-toolbar: #bbb;
+	background-color: var(--looma-toolbar);
 }
 
 button {

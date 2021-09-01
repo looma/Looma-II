@@ -54,10 +54,10 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
               then show SUBJECT buttons based on data-mask  -->
 
     <div class="button-div" id="row2">
-        <button type="button" class="subject button-5" id="add"   style="visibility: hidden"> </button>
-        <button type="button" class="subject button-5" id="sub"   style="visibility: hidden"> </button>
-        <button type="button" class="subject button-5" id="mult"  style="visibility: hidden"> </button>
-        <button type="button" class="subject button-5" id="div"   style="visibility: hidden"> </button>
+        <button type="button" class="subject " id="add"   style="visibility: hidden"> </button>
+        <button type="button" class="subject " id="sub"   style="visibility: hidden"> </button>
+        <button type="button" class="subject " id="mult"  style="visibility: hidden"> </button>
+        <button type="button" class="subject " id="div"   style="visibility: hidden"> </button>
     </div>
 
     </div>

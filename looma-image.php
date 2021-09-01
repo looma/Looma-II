@@ -12,6 +12,7 @@ Description: Video viewer page for Looma 2
 
 <?php $page_title = 'Looma Image Player';
 	  include ('includes/header.php');
+    require_once ('includes/looma-utilities.php');
 ?>
 	<link rel="stylesheet" href="css/looma-image.css">
     </head>
@@ -26,6 +27,7 @@ Description: Video viewer page for Looma 2
 			<?php echo	'<img draggable="false" src="' . $filepath . $filename . '">' ?>
             <div id="fullscreen-buttons">
                 <?php include ('includes/looma-control-buttons.php');?>
+                <?php downloadButton($filepath,$filename); ?>
             </div>
         </div>
 	</div>

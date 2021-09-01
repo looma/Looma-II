@@ -9,7 +9,7 @@ Date:   2021
 Revision: Looma 3
 -->
 
-<?php $page_title = 'Looma Page Template';
+<?php $page_title = 'Looma Sort Game';
 require_once ('includes/header.php');
 ?>
 
@@ -22,24 +22,27 @@ require_once ('includes/header.php');
     <div id="fullscreen">
         <h1>Sorting Game</h1>
 
-        <div id="headings">
-            <span class="heading">heading</span>
-            <span class="heading">heading</span>
-            <span class="heading">heading</span>
-            <br>
-        </div>
-        <div id="bins">
-            <div class="bin"></div>
-            <div class="bin"></div>
-            <div class="bin"></div>
-        </div>
-        <button id="word" class="activity img">
-            <?php keyword("word here");?>
-        </button>
-       <button id="next_button" class="activity img">
-           <img src="images/carrot-fwd.png">
-        </button>
 
+        <div id="bins">
+            <div class="bin_holder"><p id="heading1" class="heading"></p><div id="bin1" class="bin"></div></div>
+            <div class="bin_holder"><p id="heading2" class="heading"></p><div id="bin2" class="bin"></div></div>
+            <div class="bin_holder"><p id="heading3" class="heading"></p><div id="bin3" class="bin"></div></div>
+        </div>
+<!--
+        <div id="divstyle">
+            <div id="drag">
+                <p style="font-size: larger; font-weight: bold;">Click here & Drag</p>
+            </div>
+        </div>
+-->
+        <div id="words">
+                <p id="word" class="activity img word"> word </p>
+        </div>
+        <div id="next_button_div">
+            <button id="next_button" class="activity img">
+             Next Word
+             </button>
+        </div>
         <?php include ('includes/looma-control-buttons.php');?>
     </div>
 </div>

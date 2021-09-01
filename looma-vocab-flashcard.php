@@ -40,14 +40,7 @@ Description:  for Looma 2
             <button type="button" id="next"><img src="images/forward-arrow.png"></button>
 
             <?php
-                /* looma-vocab-flashcard.js expects the following parameters to be passed:
-                vocabGrade = $('#params').data('class');
-                vocabSubject = $('#params').data('subj');
-                vocabCh_id = $('#params').data('ch_id');
 
-                they are sent to client-side (looma-vocab-flashcard.js) as "data-" attributes of a hidden element with id="params"
-
-                */
             echo "<div id='params' hidden ";
                 if (isset($_REQUEST['class']))   echo "data-class=" .   $_REQUEST['class']   . " ";
                 if (isset($_REQUEST['subject'])) echo "data-subject=" . $_REQUEST['subject'] . " ";

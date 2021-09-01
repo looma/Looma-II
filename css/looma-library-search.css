@@ -20,7 +20,7 @@ h2, h3.title  {font-size:2em;}
      margin-right:3vw;
      top:5vh;
      left:37vw;
-     background-color:rgba(27,71,177,.45);
+    /* background-color:rgba(27,71,177,.45); */
      z-index:10;
      overflow-y:hidden;
      border-radius:6px;

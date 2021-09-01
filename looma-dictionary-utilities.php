@@ -3,10 +3,10 @@ header("Access-Control-Allow-Origin: *\n");
 $page_title = 'Looma';
 
 /**
- *Name: Justin Cardozo, skip
+ *Name: Justin Cardozo, skip, Charlotte
  *Email: justin.cardozo@menloschool.org
  *Owner: VillageTech Solutions (villagetechsolutions.org)
- *Date: 2015 03, 2017 08
+ *Date: 2015 03, 2017 08, 2021 07
  *Revision: 2.1
  * for Looma 3.0
  *File: looma-dictionary-utilities.php
@@ -32,6 +32,7 @@ $page_title = 'Looma';
  * 				returns an array of JSON objects
  * 		DELETE: deletes the document corresponding to the word's ID
  * 		UPDATE: updates the document corresponding to the word's ID
+ * 		LOOKUPCH_ID: finds the ending 'pn' associated with the ch_id
  *
  */
 include ('includes/mongo-connect.php');
@@ -433,6 +434,49 @@ if (isset($_GET["cmd"]))
 				exit();
 			}
 
+
+////////////////////////////
+/// command LOOKUPCH_ID   ///
+////////////////////////////
+		case "lookupCh_id":
+			if(isset($_GET["ch_id"]))
+			{
+				$ch_id = $_GET["ch_id"];
+				$doc = mongoFindOne($chapters_collection, array('_id' => $ch_id));
+				$pn = $doc['pn'];
+				echo $pn;
+				exit();
+			}
+			else
+			{
+				echo "false";
+				exit();
+			}
+
+////////////////////////////
+//// command ADDCH_ID   ////
+////////////////////////////
+		case "addCh_id":
+			if(isset($_GET["ch_id"]) && isset($_GET["word"]))
+			{
+				$ch_id = $_GET["ch_id"];
+				$word = $_GET["word"];
+
+				$doc = mongoFindOne($chapterIDs_collection, array('word' => $word));
+				if (!$doc) {
+					mongoInsert($chapterIDs_collection, array('word' => $word, 'ch_id' => $ch_id));
+					echo "inserted in collection";
+				}
+				else {
+					echo "already exists in collection";
+				}
+				exit();
+			}
+			else
+			{
+				echo "false";
+				exit();
+			}
 
 		default:
 			echo "looma dictinary utilities illegal command";

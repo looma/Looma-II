@@ -172,7 +172,6 @@ input#keywords {display:inline;}
 
 }
 
-
 /*The display of the timeline event button*/
 .dropbtn {
   padding: 2vh;
@@ -180,13 +179,11 @@ input#keywords {display:inline;}
   cursor: pointer;
   width:100%;
   min-width: 8vw;
-  /* margin-top: 1vh; */
-  /*margin-bottom: 3vh; */
   height: inherit;
-  /* background-color: #FFFFFF; */
-  /* color: black; */
-  /* background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
+   /* background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
 }
+
+.dropbtn:hover {border:3px solid yellow;}
 
 .dropdate {
   font: 2.2em "Comic Sans MS", serif, bold;
@@ -355,6 +352,7 @@ button.img.play, button.img.activity {
 
 /*Keeps media buttons from enlarging when hovered over*/
 button.img:hover {
+    border:3px solid yellow;
   transform: scale(1,1);
 }
 

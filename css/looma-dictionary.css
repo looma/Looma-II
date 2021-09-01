@@ -36,6 +36,7 @@ input#input {
     border: none;
     border-radius: 6px;
     margin: auto 0;
+    font-size:1em;
 }
 
 button#submit {

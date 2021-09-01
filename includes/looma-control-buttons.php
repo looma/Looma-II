@@ -13,6 +13,21 @@
     <button class = "lookup                    looma-control-button">
         <?php tooltip("Lookup") ?>
     </button>
+
+    <?php
+
+    // NOTE: the floating looma download button is NOT implemented here
+    // it is implemented using the downloadButton() function in looma-utilities.php
+    // to use it add this line to the PHP file for a page:     require_once ('includes/looma-utilities.php');
+    // and then add this call:                                 downloadButton($filepath,$filename);
+    //
+        //  echo "<button class = 'download                  looma-control-button'>";
+        //  echo "<a href=" . "../content/pictures/Bug.png" . " download='downloadedfile'>";
+        //  echo "<img src='images/download.png'>";
+        //  tooltip("Download");
+        //  echo "</a></button>";
+    ?>
+
     <button id = "fullscreen-control"   class="looma-control-button">
         <?php tooltip("Full Screen") ?>
     </button>

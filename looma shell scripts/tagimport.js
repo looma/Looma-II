@@ -1,7 +1,7 @@
 // mongo terminal program to read a KEYWORD list file and create the corresponding TAGS collection in mongoDB
 //
 // assumptions: each keyword is described on a separate line of the input file
-//      format of a line is: n.n.n.n keywordname [e.g. '1.2 Mathemetics Algebra', or '1 Science', or '1.2.3.4 Science Physics Force Gravity'
+//      format of a line is: n.n.n.n keywordname(s) [e.g. '1.2 Mathemetics Algebra', or '1 Science', or '1.2.3.4 Science Physics Force Gravity'
 //      keywords must be in index order - index at each depth must be increasing from previous keyword
 //      parent of any new keyword must already exist [no skipping levels]
 //      no TABS in the input file
@@ -20,13 +20,13 @@
 //      the database schema for tags is a document in collection 'tags' for each keyword that has 'children'
 //      the document for a keyword contains its 'name' and an array of children if it has any.
 //      the children in turn, have their own documents if they have children
-//      leaf node children have no document of their own, just are listed in their parent's children array
+//      leaf node children have no document of their own, just are listed in their parent's 'children[]' field
 //
 //              {name:'keywordname' or 'root',
 //               parent: mongoID of parent keyword, or 'null' for 'name'='root',
 //               level: 1..4 level of this keyword, integer from 1 to 4,
 //               children: [{name:'nameofchildkeyword',kids:mongoID of document if this child keyword has children, else null}
-//                          {name:'nextchildname', kids: ...},
+//                          {name:'nextchildsname', kids: ...},
 //                           ...]
 //
 //  (for now) keyword.txt must be in the same DIR as this code
@@ -107,7 +107,7 @@ lines.forEach( function(line) {
         
         if (levels[0] != prev[0]) {
             if (levels[1] != null || levels[2] != null || levels[3] != null)  //also check levels == prev+1 ???
-                {print('ERROR (84) at line: ' + line);}
+                {print('ERROR (110) at line: ' + line);}
             ;
             
             if (documents[0] == null) {
@@ -126,7 +126,7 @@ lines.forEach( function(line) {
         }
         else if (levels[1] != prev[1]) {
             if (levels[2] != null || levels[3] != null)
-                {print('ERROR (99) at line: ' + line);}
+                {print('ERROR (129) at line: ' + line);}
             ;
             
             if (documents[1] == null) {
@@ -144,7 +144,7 @@ lines.forEach( function(line) {
         }
         else if (levels[2] != prev[2]) {
             if (levels[3] != null)
-              {print('ERROR (113) at line: ' + line);}
+              {print('ERROR (147) at line: ' + line);}
             ;
             if (documents[2] == null) {
                 documents[2] = createDocument(names[1], documents[1], 2);
@@ -171,7 +171,7 @@ lines.forEach( function(line) {
             
             prev[3] = levels[3];
         }
-        else {print('ERROR (135) on line: ' + line);}
+        else {print('ERROR (174) on line: ' + line);}
     }
 });  // end for lines
 print('');

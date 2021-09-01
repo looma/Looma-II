@@ -37,7 +37,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         $subj =  isset($_REQUEST['subject']) ? $_REQUEST['subject'] : null;
 
         echo '<div class="header">';
-        echo '<h1 id="gameTitle">';
+        echo '<h1 id="gameTitle" class="title">';
             keyword("Game");
         echo '</h1>';
         echo '</div>';
@@ -55,7 +55,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
             echo '</div>';
             echo '<div id="game"></div>';
             echo '<div id="gameOverFrame" hidden><h2 id="message"></h2><div id="scoreList"></div></div>';
-          //echo '</section>';
+
         echo '</div>';
 
         echo '<div id="timer" hidden>';
@@ -87,14 +87,14 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
              echo '</div>';
         echo '</div>';
 
-      echo '<section id="optionsframe">';
-          echo '<h2 id="numTeamsHeader">'; keyword('Select number of teams'); echo '</h2>';
+      echo '<div id="optionsframe">';
+          echo '<h2 id="numTeamsHeader" class="title">'; keyword('Select number of teams'); echo '</h2>';
           echo '<div id="teamoptions">';
           for ($i = 1; $i <= 4; $i++) {
-              echo '<button class="teamnumber button-8" data-team="' . $i . '">'; keyword($i); echo '</button>';
+              echo '<button class="teamnumber" data-team="' . $i . '">'; keyword($i); echo '</button>';
           }
       echo '</div>';
-      echo '</section>';
+      echo '</div>';
       ?>
 
     <div class = "toolbar">

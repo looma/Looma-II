@@ -2,10 +2,15 @@
  */
 
  body {
-	background-color: #ffffff;
+	 --looma-background:  #ffffff;
+	 background-color:var(--looma-background);
 	color:#fdd008;
 }
 
+#toolbar {
+	--looma-toolbar: #bbb;
+	background-color:  var(--looma-toolbar);
+}
 button {
 	background-color: #d76126;
 	color:#f9f8f7;

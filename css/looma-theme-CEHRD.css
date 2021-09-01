@@ -1,0 +1,74 @@
+body {
+ 
+    --looma-background: white;
+    --looma-toolbar: #5AC5C5;
+    --looma-font-color:#EA3323;
+    --looma-button-background:#DFFEFE;
+    --looma-button-font-color:black;
+    background-color: var(--looma-background);
+    font-family: "Comic Neue bold", "Comic Sans MS", "Chalkboard", sans-serif;
+    
+    color: #EA3323;
+}
+
+.watermark {
+    display:block;
+}
+
+#main-container-horizontal {
+    --looma-background: white;
+    background-color: var(--looma-background);
+}
+
+#toolbar-container, #toolbar-container-vertical {
+    background-color:  var(--looma-toolbar);
+}
+
+.toolbar-button{
+    width:15vh !important;
+}
+
+button {
+    background-color: var(--looma-button-background);
+    color:black;
+    border: 2px solid white;
+    border-radius: 8px;
+    font-weight: bold;
+    /*font-size: 3em;*/
+    cursor: pointer;
+    box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+/*
+#classes button, #subjects button {
+ 
+    background-color:paleturquoise;
+    color:white;
+}
+*/
+
+#classes button:hover, #subjects button:hover {
+    background-color: lightyellow;
+    color:blue;
+}
+
+#classes button.active, #subjects button.active {
+    background-color: #821879;
+    color:white;
+}
+
+#toolbar-clock,
+#toolbar-maps,
+#toolbar-histories,
+#toolbar-library,
+#toolbar-paint,
+#toolbar-web,
+#toolbar-settings,
+#sizemessages{
+    display:none;
+}
+
+div#search-panel {background-color: #33cccc;}
+/*#66ffcc
+#ccffee
+*/

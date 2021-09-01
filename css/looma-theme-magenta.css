@@ -1,5 +1,7 @@
 body {
-	background-color:  #08088a; /*#091F48;*/
+	--looma-background:  #08088a;
+	background-color:var(--looma-background);
+			/* looma blue is #091F48;*/
 			/* medium blue is #1853C1;*/
 			/* "looma" dark blue is #091F48;*/
 	font-family: "Arial Black", Gadget, sans-serif;
@@ -7,8 +9,8 @@ body {
 }
 
 #toolbar-container, #toolbar-container-vertical {
-	background-color:  #ff00ff; /*#BD00A5;*/
-    --looma-toolbar:#ff00ff;
+	--looma-toolbar:#ff00ff;
+	background-color:  var(--looma-toolbar); /*#BD00A5;*/
 }
 
 button {

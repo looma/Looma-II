@@ -1,0 +1,37 @@
+// ONE TIME program to
+//    scan through specified documents in dictionary collection
+//    look for duplicates (based on same 'en')
+//    print the duplicates
+//
+//    run in MONGO SHELL with: load('dictionaryPrintDuplicates')
+//
+//    Charlotte, JUL 2021
+//
+
+var docs, doc, dupl, duplicates, en, count;
+count = 0;
+
+docs = db.dictionary.find();
+while (docs.hasNext()) {
+	doc = docs.next();
+	en = doc['en'];
+    
+     	duplicates = db.dictionary.find({'en': en});
+     	if (duplicates.count() > 1) {
+		print('');
+		dupl = duplicates.next();
+		print('duplicate found for: ' + en);
+		/*
+		while (duplicates.hasNext()) {
+			dupl = duplicates.next();	
+			print('	part 1: ' + doc['part']);
+			print('	part 2: ' + dupl['part']);
+			print('	def 1: ' + doc['def']);
+			print('	def 2: ' + dupl['def']);
+			}
+		*/
+		count++; 
+		};
+	};
+	count = count/2;
+	print('Number of duplicates: ' + count);

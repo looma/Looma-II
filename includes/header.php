@@ -54,12 +54,12 @@ File: header.php
 	?>
 
   	<title> <?php print $page_title; ?> </title>
+      <div class="watermark">Under Construction</div>
 
-    <!--
-    -->
-      <link rel="stylesheet" href="css/tether.min.css">        <!-- needed by bootstrap.css -->
 
-      <link rel="stylesheet" href="css/bootstrap.min.css">     <!-- Bootstrap CSS still needed ?? yes, for glyphicons-->
+      <!-- <link rel="stylesheet" href="css/tether.min.css">  -->       <!-- needed by bootstrap.css -->
+
+      <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->     <!-- Bootstrap CSS still needed ?? yes, for glyphicons-->
 
       <link rel="stylesheet" href="css/looma.css">             <!-- Looma CSS -->
       <link rel="stylesheet" href="css/looma-keyboard.css">    <!-- Looma keyboard CSS -->
@@ -70,7 +70,7 @@ File: header.php
 
         function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
 
-    function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shim for php 5.x "array_key_exists()"
+        function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shim for php 5.x "array_key_exists()"
     ?>
 
 

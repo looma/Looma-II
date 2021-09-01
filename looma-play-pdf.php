@@ -12,6 +12,7 @@ Revision: Looma 5.7
 
 <?php $page_title = 'Looma PDF Viewer';
     include ('includes/header.php');
+    require_once ('includes/looma-utilities.php');
 ?>
 <link rel="stylesheet" href="css/font-awesome.min.css">
 
@@ -89,6 +90,9 @@ Revision: Looma 5.7
     echo '<div id="fullscreen">';
     include('looma-pdf-viewer.php');
     include ('includes/looma-control-buttons.php');
+
+    downloadButton($filepath, $filename);
+
 ?>
     </div>
 

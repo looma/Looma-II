@@ -1,17 +1,17 @@
 <?php
-	//Name: Skip
-	//
-	//Owner: Looma Education Company
-	//Date: 2015 03, 2020 07
-	//Revision: Looma 6.0.0
-	//File: includes/mongo-connect.php
-	//Description:  for Looma v6
+//Name: Skip
+//
+//Owner: Looma Education Company
+//Date: 2015 03, 2020 07
+//Revision: Looma 6.0.0
+//File: includes/mongo-connect.php
+//Description:  for Looma v6
 
 function mongoRegex ($pattern) { // $pattern is a string, like '^\d[a-z]'\
     // NOTE: input $pattern DOSS NOT include '/'s, they are inserted by this function
     global $mongo_level;
     if ($mongo_level >= 4)
-         return new MongoDB\BSON\Regex($pattern);
+        return new MongoDB\BSON\Regex($pattern);
     else return new MongoRegex('/' . $pattern . '/');
 }
 
@@ -30,10 +30,10 @@ function mongoId ($id) {  //$id is a string, RETURN a mongoId object
 }
 
 function mongoGetId ($doc) { // $doc is a document returned by mongoinsert or similar
-                            // return the STRING value of the ID of $doc
+    // return the STRING value of the ID of $doc
     global $mongo_level;
     if ($mongo_level >= 4)
-         return (string) $doc->getInsertedId();
+        return (string) $doc->getInsertedId();
     else return (string) $doc['_id'];
 }
 
@@ -68,9 +68,9 @@ function mongoFindRandom($collection, $filter, $count) {
     //returns a randomized set, size $count, of english words from the dictionary
     global $mongo_level;
     if ($mongo_level >= 4) {
-         $cursor = $collection->aggregate([
-            array('$match' =>  $filter),
-            array('$sample' => array( 'size' => $count))]);
+        $cursor = $collection -> aggregate([
+                array('$match' =>  $filter),
+                array('$sample' => array( 'size' => $count))]);
     } else {  // old mongoDB, mongo_level 2 or 3
         $cursor = $collection->find( $filter );
     };
@@ -200,49 +200,50 @@ catch(MongoConnectionException $e) {
 }
 
 $dbhost = 'localhost';
-	$dbname = 'looma';
+$dbname = 'looma';
 
-        //use below FORMAT for PHP later than 5.5??
-        //$m = new MongoDB\Driver\Manager("mongodb://localhost:27017");
-       	$loomaDB = $m -> $dbname;  //connect to the database "looma"
-                                   //make query variables for all collections
-        $activities_collection = $loomaDB -> activities;
-        $tags_collection       = $loomaDB -> tags;
-    	$chapters_collection   = $loomaDB -> chapters;
-    	$textbooks_collection  = $loomaDB -> textbooks;
-        $dictionary_collection = $loomaDB -> dictionary;
-        $logins_collection     = $loomaDB -> logins;
-        $history_collection    = $loomaDB -> histories;
-        $histories_collection  = $loomaDB -> histories;
-        $slideshows_collection = $loomaDB -> slideshows;
-        $text_files_collection = $loomaDB -> text_files;
-        $lessons_collection    = $loomaDB -> lessons;
-        $maps_collection       = $loomaDB -> maps;
-        $games_collection      = $loomaDB -> games;
-        $folders_collection    = $loomaDB -> folders;
-        $edited_videos_collection = $loomaDB -> edited_videos;
-        $volunteers_collection = $loomaDB -> volunteers;
-        $new_content_collection = $loomaDB -> new_content;
-        $blockly_demos_collection = $loomaDB -> blockly_demos;
-        $recorded_videos_collection = $loomaDB -> recorded_videos;
+//use below FORMAT for PHP later than 5.5??
+//$m = new MongoDB\Driver\Manager("mongodb://localhost:27017");
+$loomaDB = $m -> $dbname;  //connect to the database "looma"
+//make query variables for all collections
+$activities_collection = $loomaDB -> activities;
+$tags_collection       = $loomaDB -> tags;
+$chapters_collection   = $loomaDB -> chapters;
+$textbooks_collection  = $loomaDB -> textbooks;
+$dictionary_collection = $loomaDB -> dictionary;
+$logins_collection     = $loomaDB -> logins;
+$history_collection    = $loomaDB -> histories;
+$histories_collection  = $loomaDB -> histories;
+$slideshows_collection = $loomaDB -> slideshows;
+$text_files_collection = $loomaDB -> text_files;
+$lessons_collection    = $loomaDB -> lessons;
+$maps_collection       = $loomaDB -> maps;
+$games_collection      = $loomaDB -> games;
+$folders_collection    = $loomaDB -> folders;
+$edited_videos_collection = $loomaDB -> edited_videos;
+$volunteers_collection = $loomaDB -> volunteers;
+$new_content_collection = $loomaDB -> new_content;
+$recorded_videos_collection = $loomaDB -> recorded_videos;
+$chapterIDs_collection = $loomaDB -> chapterIDs;
 
-        $collections = array(
-            "activities" =>    $activities_collection,
-            "chapters" =>      $chapters_collection,
-            "slideshow" =>     $slideshows_collection,
-            "slideshows" =>    $slideshows_collection,
-            "text" =>          $text_files_collection,
-            "text_files" =>    $text_files_collection,
-            "lesson" =>        $lessons_collection,
-            "lessons" =>       $lessons_collection,
-            "map" =>           $maps_collection,
-            "maps" =>          $maps_collection,
-            "history" =>       $histories_collection,
-            "histories" =>     $histories_collection,
-            "game" =>          $games_collection,
-            "games" =>         $games_collection,
-            "edited_videos" => $edited_videos_collection,
-            "new_content" =>   $new_content_collection,
-            "recorded_videos" => $recorded_videos_collection
-        );
+$collections = array(
+    "activities" =>    $activities_collection,
+    "chapters" =>      $chapters_collection,
+    "slideshow" =>     $slideshows_collection,
+    "slideshows" =>    $slideshows_collection,
+    "text" =>          $text_files_collection,
+    "text_files" =>    $text_files_collection,
+    "lesson" =>        $lessons_collection,
+    "lessons" =>       $lessons_collection,
+    "map" =>           $maps_collection,
+    "maps" =>          $maps_collection,
+    "history" =>       $histories_collection,
+    "histories" =>     $histories_collection,
+    "game" =>          $games_collection,
+    "games" =>         $games_collection,
+    "edited_videos" => $edited_videos_collection,
+    "new_content" =>   $new_content_collection,
+    "recorded_videos" => $recorded_videos_collection,
+    "chapterIDs" =>    $chapterIDs_collection
+);
 ?>

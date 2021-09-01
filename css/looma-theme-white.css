@@ -1,8 +1,13 @@
 body {
-	background-color: white;
+    --looma-background:  #ffffff;
+    background-color:var(--looma-background);
 	color: #000;
 }
 
+#toolbar {
+    --looma-toolbar: #bbb;
+    background-color:  var(--looma-toolbar);
+}
 /*
 button {
     background-color:#fff;

@@ -17,5 +17,5 @@ $(document).ready(function() {
                 e.preventDefault();
                 screenfull.toggle(this);
             });
-*/
+    */
 });

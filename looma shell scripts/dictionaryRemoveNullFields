@@ -1,0 +1,33 @@
+// ONE TIME program to
+// 	scan through specified documents in dictionary collection
+// 	look for words with empty rw and empty plural fields
+//	delete the empty fields
+//
+//	run in MONGO SHELL with: load('dictionaryRemoveNullFields')
+//
+//  Charlotte, JUL 2021
+//
+
+var docs, doc, rw, plural, count1, count2;
+count1 = 0;
+count2 = 0;
+
+docs = db.dictionary.find();
+while (docs.hasNext()) {
+	doc = docs.next();
+	rw = doc['rw'];
+	if(rw != null && rw.trim() == '') {
+		db.dictionary.update(doc, {$unset: {rw:''}});
+		print(doc['en'] + ' had an empty rw field');
+		count1++;
+	};
+	plural = doc['plural'];
+	if(plural != null && plural.trim() == '') {
+		db.dictionary.update(doc, {$unset: {plural:''}});
+		print(doc['en'] + ' had an empty plural field');
+		count2++;
+	};
+};
+print('');
+print('Deleted ' + count1 + ' empty rw fields');
+print('Deleted ' + count2 + ' empty plural fields');

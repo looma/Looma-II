@@ -27,7 +27,7 @@ lines.forEach( function(line) {
         
         print('english: ' + english + ' || nepali: ' + nepali);  //DEBUG
         
-        db.tags.update({'name':english},{$set:{'ndn':nepali}});
+        db.tags.update({'name':english},{$set:{'ndn':nepali}},{multi:true});
         
     }
 });  // end for lines

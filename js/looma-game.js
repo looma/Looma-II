@@ -1417,6 +1417,7 @@ function gameOver() {
         
     /////////////////////////////
     ///////// succeed  /////////
+    ////      fetched a game from mongoDB   /////
     ////////////////////////////
         function get_game_succeed(result) {
             game_data = result;
@@ -1464,10 +1465,11 @@ function gameOver() {
                     $("#gameTitle").html("Game type not recognized");
                     break;
             }
-}
+};   // end get_game_succeed()
+
 
 /////////////////////////////
-///////// runGame  /////////  NOTE: gets a game from Mongo by "id" and runs it
+///////// runGame  /////////  NOTE: gets a game from mongoDB by "id" and runs it
 ////////////////////////////
 
 function runGame (id) {
@@ -1477,7 +1479,7 @@ function runGame (id) {
             type: 'GET',
             dataType: "json",
             data: "collection=games&cmd=getGame&gameId=" + id,
-            error: get_game_fail,
+            error:   get_game_fail,
             success: get_game_succeed
         });
 } //  end runGame()
@@ -1511,15 +1513,17 @@ $(document).ready (function() {
         $('#timer').show();
         $scoreboard.show();
         
+    // some games dont have an entry in mongoDB 'games' collection, instead they are randomly generated
+    // based on grade and subject and [sometimes] chapter
         if      (game_type === 'yesno')      runYesNo();
         else if (game_type === 'random')     runRandom();
-       //  else if (game_type === 'timeline') runTimeline(game_id); //add Catie's new code here
         else if (game_type === 'vocab')      runVocab(game_class, game_subject);
         else if (game_type === 'arith')      runArith(game_class, game_subject);
         else if (game_type === 'picture')    runPicture(game_class, game_subject);
         else if (game_type === 'speak')      runRandomSpeak(game_class, game_subject);
         else if (game_type === 'translate')  runTranslate(game_class, game_subject);
-        else                                runGame(game_id);
+    // all the other games have mongoDB entries, which runGame() fetches
+        else                                 runGame(game_id);
         
     })
 });

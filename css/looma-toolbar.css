@@ -19,7 +19,6 @@
     align-items:center;
     overflow: hidden;
     background-color: var(--looma-toolbar);
-);
 }
 
 #toolbar {
@@ -50,6 +49,14 @@
     height:3vh;
     width: 3vh;
 }
+button.toolbar {
+    width:7%;
+    font-size: 1.2em;
+    margin:5px;
+    padding: 5px;
+}
+
+button.toolbar#toolbar-record {display:none;}
 
 #toolbar button {
     margin: 0.3vw;

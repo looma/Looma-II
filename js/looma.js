@@ -37,10 +37,10 @@ $(document).ready (function() {
     
     //NOTE: experimental code to change color scheme for all Looma pages
     // not visible to users
-    var main_color = LOOMA.readStore('main-color','local');
-    var toolbar_color = LOOMA.readStore('toolbar-color','local');
-    document.documentElement.style.setProperty('--looma-blue', main_color);
-    document.documentElement.style.setProperty('--looma-toolbar', toolbar_color);
+   var main_color = LOOMA.readStore('main-color','local');
+   var toolbar_color = LOOMA.readStore('toolbar-color','local');
+    //document.documentElement.style.setProperty('--looma-blue', main_color);
+    //document.documentElement.style.setProperty('--looma-toolbar', toolbar_color);
     
     // LOOMA fullscreen display
     // any page can include a button with ID 'fullscreen-control'
@@ -143,9 +143,10 @@ $(document).ready (function() {
     //NOTE: this code is overwritten in looma-pdf.js because looma-pdf.php displays the PDF in an <iframe> so the current selection in in the iframe
     //NOTE: this code is overwritten in looma-html.js because looma-html.php displays the PDF in an <iframe> so the current selection in in the iframe
     //NOTE: this code is also overwritten in looma-dictionary.js so that the entered word can be spoken w/o selecting
-    //NOTE: this code is also overwritten in Xlooma-c  lockGOOD.js so that the current time can be spoken w/o selecting
+    //NOTE: this code is also overwritten in looma-clock.js so that the current time can be spoken w/o selecting
     //NOTE: this code is also overwritten in looma-vocab-flashcard.js so that the current word or defin can be spoken w/o selecting
-    //IMPROTANT NOT: be sure to call .OFF() to turn off this click handler before adding another
+    //NOTE: this code is also overwritten in looma-sort-game.js so that the current word can be spoken w/o selecting
+    //IMPORTANT NOT: be sure to call .OFF() to turn off this click handler before adding another
     //     e.g. use code like this:  $('button.speak').off('click').click(function(){....
     $('button.speak').click(function(){
         var toString = window.getSelection().toString();
@@ -167,4 +168,21 @@ $(document).ready (function() {
        // LOOMA.lookupWord(toString);
         LOOMA.popupDefinition(toString.split(' ')[0], 15);
     });
+    
+/*
+    //attach LOOMA.download() to the '.download' button
+    
+    // NOTE: this didnt work, at least on localhost
+    //       using "<a href=filename download=targetfilename>"
+    //       see looma.js at line
+    
+    
+    $('button.download').click(function(){
+        // name and path need to be set by the JS of the page with download button
+        var name = 'Big_Bee.png';
+        var path = '../content/pictures/';
+        console.log ('selected file to download: "', path + name, '"');
+        LOOMA.download(name, path);
+    });
+ */
 }); //end of document.ready anonymous function

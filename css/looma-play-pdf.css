@@ -9,7 +9,7 @@
     
     
     width:100%;
-    background-color:val(--looma-blue);
+    background-color: var(--looma-background);
     margin-right:3px;
 }
 
@@ -182,7 +182,11 @@ button.lookup {
     display:inline-block;
     right:9vw;
 }
-
+ button.download {
+     display:inline-block;
+     right:9vw;
+     bottom:44vh;
+ }
 
 #thumbs {
     display:none;

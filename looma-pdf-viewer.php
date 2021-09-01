@@ -22,6 +22,8 @@ echo '<div id="pdf" class="scroll"'  .
         '" data-len="' . $len .
         '" data-zoom="'.  $zoom .'">';
     echo '</div>';
+
+
 ?>
 
 <script src="js/pdfjs/pdf.min.js"></script>

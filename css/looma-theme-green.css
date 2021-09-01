@@ -1,5 +1,6 @@
 body {
-	background-color: green;
+	--looma-background: #008000;
+	background-color:var(--looma-background);
 			/* medium blue is #1853C1;*/
 			/* "looma" dark blue is #091F48;*/
 	font-family: "Copperplate Gothic Light", sans-serif;
@@ -8,7 +9,8 @@ body {
 }
 
 #toolbar-container {
-	background-color:  #31cb00;
+	--looma-toolbar: #31cb00;
+	background-color:  var(--looma-toolbar);
 }
 
 button {

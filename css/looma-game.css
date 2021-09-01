@@ -15,7 +15,6 @@ Description: formatting and styling for the game page
   width: 100vw;
     padding:0;
     margin:0;
-  background-color: #091f48;
 }
 
 .header {
@@ -42,33 +41,45 @@ Description: formatting and styling for the game page
     height:100%;
 }
 
+#teamoptions {
+    position:relative;
+    top:5vh;
+}
 #timer {
     grid-column: 2 / 3;
     grid-row: 2 / 4;
-    border: 1px solid yellow;
+    border: 2px solid var(--looma-font-color);
+    border-radius: 5px;
 }
 
 #scoreboard {
     grid-column: 2 / 3;
     grid-row: 4 / 6;
-    border: 1px solid yellow;
+    border: 2px solid var(--looma-font-color);
+    border-radius: 5px;
     font-size:1em;
 }
 
 .teamnumber {
     margin:5vh;
-    color:blue;
-    background-color:white;
+    color:            var(--looma-button-font-color);
+    background-color: var(--looma-button-background);
+    
+    width:11%;
+    height:65%;
+    font-size: 5vw;
+    overflow: hidden;
+    padding:0 0 5px 0;
 }
 
 .teamnumber:hover {
     transform: scale(1.2,1.2);
-    color:blue;
+    color: var(--looma-button-hover-font-color);
 }
 
 .teamnumber.active {
-    color:white;
-    background-color:blue;
+    color:var(--looma-button-active-background);
+    background-color: var(--looma-button-active-font-color);
 }
 
 #gameframe {
@@ -202,6 +213,7 @@ Description: formatting and styling for the game page
 }
 
 #timer-count {
+    margin:0;
   font-size: 15vmin;
 }
 
@@ -425,19 +437,16 @@ Description: formatting and styling for the game page
     height: 6vw;
 }
 
+
+
 .button.picture{
     height: 9vh;
     width: 10vw;
 }
 
-/* CP NEW (2)
-button img{
-    height: 9vh;
-    width:10vw;
-}*/
 button:hover, .button:hover
 {
-    border: 8px solid yellow;
+    border: 4px solid yellow;
     color:blue;
 }
 /***************** CONCENTRATION GAME ******************/

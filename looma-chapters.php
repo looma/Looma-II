@@ -35,7 +35,11 @@ $subject = trim($_GET['subject']) ;
 $prefix = trim($_GET['prefix']) ;
 
 //show PAGE TITLE = "Chapters for Grade n Subject"
-if ($subject === "social studies") $caps = "Social Studies"; else $caps = ucfirst($subject);
+
+if ($subject === "social studies") $caps = "Social Studies";
+else if ($subject === 'math')      $caps = "Maths";
+else                               $caps = ucfirst($subject);
+
     echo "<div id='header'><h1 class='title'>";
     //echo keyword('Chapters for') . " ";
     echo keyword($grade) . " ";
@@ -94,12 +98,15 @@ $chapters = mongoFind($chapters_collection, $query, '_id', null, null);
 
 foreach ($chapters as $ch) {
 
+    //print_r($ch);exit;
+
     $ch_dn =  keyIsSet('dn', $ch) ? ($ch['dn']) : $tb_dn;
     //$ch_dn is chapter displayname
     $ch_ndn = keyIsSet('ndn', $ch) ? $ch['ndn'] : $ch_dn;
     //$ch_ndn is native displayname
     $ch_pn =  keyIsSet('pn', $ch) ? $ch['pn'] : null;
     $ch_ft =  keyIsSet('ft', $ch) ? $ch['ft'] : 'chapter';
+    $nch_ft =  keyIsSet('nft', $ch) ? $ch['nft'] : $ch_ft;
     //$ch_pn is chapter page number
     $ch_npn = keyIsSet('npn', $ch) ? $ch['npn'] : null;
     //$ch_pn is chapter page number
@@ -108,6 +115,7 @@ foreach ($chapters as $ch) {
     $ch_nlen = keyIsSet('nlen', $ch) ? $ch['nlen'] : null;
     //$ch_npn is chapter native page number
     $ch_id  = keyIsSet('_id', $ch) ? $ch['_id'] : null;
+    $nch_id  = keyIsSet('nch_id', $ch) ? $ch['nch_id'] : $ch_id;
     //$ch_id is chapter ID string
 
 ////////// ENGLISH chapter ///////////
@@ -187,14 +195,14 @@ foreach ($chapters as $ch) {
 
 ////////// NEPALI chapter ///////////
     // display chapter button for 2nd [native] textbook, if any
-    if ($tb_nfn && $ch_npn) { echo "<button class='$ch_ft np-chapter'
+    if ($tb_nfn && $ch_npn) { echo "<button class='$nch_ft np-chapter'
                                     data-lang='np'
                                     data-fn='$tb_nfn'
                                     data-fp='$tb_fp'
-                                    data-ft='$ch_ft' 
+                                    data-ft='$nch_ft' 
                                     data-page='$ch_npn'
                                     data-len='$ch_nlen'
-                                    data-ch='$ch_id'>
+                                    data-ch='$nch_id'>
                                     $ch_ndn
                                     </button>";
 
@@ -203,13 +211,13 @@ foreach ($chapters as $ch) {
 ///     //check in the database to see if there are any LESSON PLANS for this CHAPTER. if so, create a button
     // NOTE: current code only finds the FIRST lesson for the chapter.
     // expand in the future to allow multiple lessons per chapter
-        $query = array('nch_id' => $ch_id, 'ft' => 'lesson');
+        $query = array('nch_id' => $nch_id, 'ft' => 'lesson');
         //$lesson = $activities_collection -> findOne($query);
         $lesson = mongoFindOne($activities_collection, $query);
     if ($lesson) {
         echo "<button class='lesson np-lesson'
                           data-lang='np'
-                         data-ch='$ch_id'
+                         data-ch='$nch_id'
                            data-chdn='" .
             $lesson['dn'] .
             "' data-ft='lesson'
@@ -224,7 +232,7 @@ foreach ($chapters as $ch) {
     ///    // finally, display a button for the activities of this chapter with data-activity=CHAPTER_ID key value
     // first check whether there are any activities for this chapter and make the button invisible if not
 
-        $query = array('nch_id' => $ch_id);
+        $query = array('nch_id' => $nch_id);
 
         //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create an activity button
         //$activities = $activities_collection -> findOne($query);
@@ -236,7 +244,7 @@ foreach ($chapters as $ch) {
         if ($activities || $words) {
             echo "<button class='activities np-activities'
                      data-lang='np'
-                     data-ch='$ch_id'
+                     data-ch='$nch_id'
                      data-chdn='$ch_dn'>";
             echo "स्रोतहरू";
             echo "</button>";

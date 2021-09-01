@@ -38,11 +38,13 @@ require_once('includes/looma-utilities.php');
   //  bookList
   //  bookChapterList
   //  keywordList
+  //  keywordAdd
   //  addChapterID
   //  chapterExists
   //  removeChapterID
   //  editActivity
   //  uploadFile
+  //  download
   /// sendMail
   ////////////////////////////////
 
@@ -186,7 +188,7 @@ if (isset($_REQUEST["collection"])) {
     $cmd =  $_REQUEST["cmd"];
     //accepted commands are "open", "openByName", "openByID","openText","save","copytext","updateByID","rename", "exists", "delete","deleteField",
       // "textBookList","textSubjectList","textChapterList","bookList","bookChapterList","keywordRoot","keywordList","search","searchChapters",
-      // "addChapterID","removeChapterID","editActivity","uploadFile", "sendMail"
+      // "keywordAdd", "addChapterID","removeChapterID","editActivity","uploadFile", "download", "sendMail"
 
 
       switch ($cmd) {
@@ -693,8 +695,10 @@ if (isset($_REQUEST["collection"])) {
 
                     if      ($lang === 'en' && isset($ch['dn'])  && $ch['dn'] !== '')
                         echo "<option " . $mark . "value='" . $ch['_id'] . "'>" . "(" . $ch['_id'] . ") " . $ch['dn'] . "</option>";
-                    else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '')
-                        echo "<option " . $mark . "value='" . $ch['_id'] . "'>" . "(" . $ch['_id'] . ") " .$ch['ndn'] . "</option>";
+                    else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '') {
+                        $nch_id = ( isset($ch['nch_id'])) ? $ch['nch_id'] : $ch['_id'];
+                        echo "<option " . $mark . "value='" . $nch_id . "'>" . "(" . $nch_id . ") " . $ch['ndn'] . "</option>";
+                    }
                 }
             }
             return;  // end textChapterList()
@@ -760,7 +764,29 @@ if (isset($_REQUEST["collection"])) {
 // end case "keywordList"
 
 
-    ////////////////////////
+/////////////////////////////
+// - - - KEYWORDADD - - - //
+/////////////////////////////
+          case "keywordAdd":
+              // called with 'level', 'key1','key2','key3', 'newkeyword'
+              $key1 =   isset($_POST['key1'])   ? $_POST['key1'] : null;
+              $key2 =   isset($_POST['key2'])   ? $_POST['key2'] : null;
+              $key3 =   isset($_POST['key3'])   ? $_POST['key3'] : null;
+              $level =  isset($_POST['level'])  ? $_POST['level'] : null;
+              $newkey = isset($_POST['newkey']) ? $_POST['newkey'] : null;
+
+              // if MOTHER has kids [e.g. is not a leaf]
+              // then add newkey as new kid in mother's document
+              // else [mother is a leaf] create new doc for mother, backlink to grandmother, add newkey as kid
+
+              //$query = array('_id' => mongoId($_POST['id']));
+              //$newkeyword = mongoInsert($tags_collection, $query);
+              echo json_encode('added ' . $newkey . ' at level ' . $level);
+              return;
+// end case "keywordAdd"
+
+
+          ////////////////////////
     // - - - SEARCH - - - //
     ////////////////////////
     case "search":
@@ -1259,7 +1285,35 @@ if (isset($_REQUEST["collection"])) {
         return;
         // end case "uploadFile"
 
-        case "getGame":
+
+          ////////////////////////
+          // -  download  - //
+          ////////////////////////
+          case 'download':
+
+              // Check for filename and filepath:
+              if (isset($_GET['name']) ) $name = $_GET['name']; else $name = "";
+              if (isset($_GET['path']) ) $path = $_GET['path']; else $path = "";
+
+              //Check validity
+                if (strpos( $path, "../content/") !== 0 || (!file_exists($path . $name)))
+                     $file = 'images/fileNotFound.png';
+                else $file = $path . $name;
+
+                $info = getimagesize($file); // gets MIME type to use in 'Content-Type'
+                $size = filesize($file);
+
+      //echo 'MIME   ' . $info['mime'] . '    name ' . $name . '    path ' . $path . '    file ' . $file . '    size ' . $size; exit;
+
+                header("Content-Type: {$info['mime']}\n");
+                header("Content-Disposition : attachment; filename=\"$name\"\n");
+                header("Content-Length: $size\n" );
+                readfile($file);
+
+                return;
+          // end case "download"
+
+          case "getGame":
             $id = mongoId($_REQUEST["gameId"]);
 
     // calls to this code should be replaced by openById(collection, id)

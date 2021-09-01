@@ -18,7 +18,6 @@ Revision: Looma 6.4
 
 <?php $page_title = 'Looma Dictionary Editor';
 include ('includes/header.php');
-
 ?>
 <link rel = "Stylesheet" type = "text/css" href = "css/looma-edit-dictionary.css">
 </head>
@@ -30,6 +29,13 @@ include ('includes/header.php');
 
         <h1 class="title"> <?php keyword("Looma Dictionary Editor"); ?> </h1>
 
+        <!-- back button -->
+        <button class='control-button' id='dismiss'></button>
+        <div id="modified"></div>
+
+        <!-- instructions popup -->
+        <button id='instructions'><img src="images/info.png" height="80%"></button>
+
         <!-- where the user inputs a word -->
         <form id="lookup">
             <?php keyword("Enter word"); ?>
@@ -39,6 +45,9 @@ include ('includes/header.php');
 
         <!-- where the user can choose to add a row -->
         <button type="submit" id="addButton">Add Entry</button>
+
+        <!-- where the user can choose to show sugggested definitions -->
+        <button type="submit" id="suggestionsButton">Show Suggestions</button>
 
         <!-- where the information about the word is displayed -->
         <div id="titles">
@@ -57,6 +66,17 @@ include ('includes/header.php');
                 </tr>
             </table>
         </div>
+
+        <!-- where the suggested definitions are displayed -->
+        <div id="definitions">
+            <table id="definitionTable">
+                <tr>
+                    <th class="suggestedPart column">Part</th>
+                    <th class="suggestedDefinition column">Suggested Definiton</th>
+                </tr>
+            </table>
+        </div>
+
 
         <!-- where the word confirmation fields are displayed -->
         <div id="confirm">
@@ -89,7 +109,6 @@ include ('includes/header.php');
     </div>
 </div>
 
-<?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>
 
 <script src="js/jquery-ui.min.js"></script>

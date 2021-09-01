@@ -1,0 +1,26 @@
+// ONE TIME program to
+// 	scan through specified documents in dictionary collection
+// 	look for words with non-empty and non-null rw
+//	search for the rw in the collection
+//	print the rw if not found in the collection
+//
+//	run in MONGO SHELL with: load('dictionaryFindMissingRoots')
+//
+// Charlotte, JUL 2021
+//
+var docs, doc, rw, count, found;
+count = 0;
+
+docs = db.dictionary.find();
+while (docs.hasNext()) {
+	doc = docs.next();
+	rw = doc['rw'];
+	if(rw != null && rw !== '') {
+		found = db.dictionary.find({'en': rw});
+		if(!found.hasNext()) {
+			count++;
+			print('Root word ' + rw + ' for ' + doc['en'] + ' not found');
+		};
+	};
+};
+print('Number of missing root words: ' + count);

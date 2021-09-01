@@ -86,19 +86,24 @@ Description:  displays and navigates content folders for Looma
         $files[$fileInfo->getFilename()] = $fileInfo;
     }
 
-   //if at the top level folder "../content", then move Wikipedia, ePaath and Khan to the top so they are presented first
+   //if at the top level folder "../content", then move CEHRD, Wikipedia, Khan and ePaath to the top so they are presented first
     if ($path == "../content/") {
-        $tmp = $files['Khan'];
-        unset($files['Khan']);
-        $files = array('Khan' => $tmp) + $files;
 
         $tmp = $files['epaath'];
         unset($files['epaath']);
         $files = array('epaath' => $tmp) + $files;
 
+        $tmp = $files['Khan'];
+        unset($files['Khan']);
+        $files = array('Khan' => $tmp) + $files;
+
         $tmp = $files['W4S'];
         unset($files['W4S']);
         $files = array('W4S' => $tmp) + $files;
+
+        $tmp = $files['CEHRD'];
+        unset($files['CEHRD']);
+        $files = array('CEHRD' => $tmp) + $files;
     }
 
     /********************************************************************************************/
@@ -110,6 +115,8 @@ Description:  displays and navigates content folders for Looma
 
     foreach ($files as $file => $dirInfo) {
 
+        //echo $file;
+
     $file = (string) $file;
 
     //skips ".", "..", and any ".filename", and any directory containing a file named "hidden.txt"
@@ -119,9 +126,29 @@ Description:  displays and navigates content folders for Looma
         (!file_exists($path . $file . "/hidden.txt"))) {
             $dircount++;
 
+        //special case for CEHRD
+        //make a button that launches W4S index.htm -- virtual folder
+        if ($path . $file == "../content/CEHRD") {
+            echo "<td><a href='looma-library.php?fp=" . $path . $file . "/'>";
+            echo "<button class='activity img zeroScroll'>" .
+                folderThumbnail($path . $file);
+
+            echo "<span class='english-keyword'>"
+                . "CEHRD Instruction" .
+                "<span class='xlat'>" . "CEHRD Instruction" . "</span>" .
+                "</span>";
+            echo "<span class='native-keyword' >"
+                . "CEHRD Instruction" .
+                "<span class='xlat'>" . "CEHRD Instruction" . "</span>" .
+                "</span>";
+            echo "<span class='tip yes-show big-show' >" . $file . "</span>" .
+                "</button></a></td>";
+            nextbutton();
+        }  //end IF CEHRD
+
         //special case for Wikipedia for Schools
         //make a button that launches W4S index.htm -- virtual folder
-            if ($path . $file == "../content/W4S2013") {   //create a virtual folder for W4S
+            else if ($path . $file == "../content/W4S2013") {   //create a virtual folder for W4S
                 echo "<td>";
                 echo '<a href="looma-wikipedia.php">';
                 echo '<button id="wikipedia-index" class="activity img play">';
@@ -146,8 +173,8 @@ Description:  displays and navigates content folders for Looma
             }  //end IF Khan
 
 
-        //special case for Khan Academy
-        //make a button that launches Khan index.html -- virtual folder
+        //special case for ePaath Academy
+        //make a button that launches ePaath index.html -- virtual folder
             else if ($path . $file == "../content/epaath") {   //create a virtual folder for ePaath
 
                 echo "<td>";
@@ -158,7 +185,7 @@ Description:  displays and navigates content folders for Looma
                 makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
                 echo "</td>";
                 nextButton();
-            }  //end IF Khan
+            }  //end IF ePaath
 
             // regular DIRECTORY case
             else {  //make a regular directory button

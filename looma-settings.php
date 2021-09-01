@@ -58,10 +58,15 @@ Description:  for Looma 2
                  <button class="admin-control">Resource Editor</button>
              </a>
 
+             <a href="looma-edit-dictionary.php">
+                 <button id="requestcontent" class="admin-control" >Dictionary Editor</button>
+             </a>
+
+         <!--
              <a href="looma-content-request.php">
                  <button id="requestcontent" class="admin-control" >Request Resource</button>
              </a>
-
+        -->
              <br>
              <a href="looma-register-user.php">
                  <button id="registeruser" class="exec-control" >Users</button>
@@ -76,7 +81,7 @@ Description:  for Looma 2
              </a>
 
              <a href="looma-dictionary-autogen-editor.php">
-                 <button id="dictionaryeditor" class="exec-control" >Dictionary Editor</button>
+                 <button id="dictionaryeditor" class="exec-control" >Dictionary Autogen</button>
              </a>
 
              <br>
@@ -92,6 +97,8 @@ Description:  for Looma 2
                  <select id="themes">
                      <option class="theme" id="looma"         value="looma">         Looma Classic
                          <img class="thumb" src="images/theme-looma.png" ></option>
+                     <option class="theme" id="CEHRD"         value="CEHRD">         CEHRD
+                         <img class="thumb" src="images/theme-CEHRD.png" ></option>
                      <option class="theme" id="style-sheet"   value="style-sheet">   Style Sheet
                          <img class="thumb" src="images/theme-stylesheet.png" > </option>
                      <option class="theme" id="white"         value="white">         White

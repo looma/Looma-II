@@ -1,0 +1,78 @@
+
+/*
+LOOMA css file
+Filename: looma-word-recognition.css
+
+Programmer name: galen
+Comments:
+*/
+#fullscreen {display:relative;}
+button#fullscreen-control {
+    display:inline-block;
+}
+button.speak {
+    display:inline-block;
+}
+button.lookup {
+    display:inline-block;
+}
+button.show-keyboard {
+    display:inline-block;
+}
+
+button.looma-control-button {
+    right: 1.5vw;
+}
+
+button.word {
+    height:15vh;
+    width:20vw;
+    margin: 0  2vw 2vh 0;
+    font-size: 3em;
+    background:white;
+}
+.control {
+    width: 21vw;
+    height: 8vh;
+    font-size:2em;
+    border: none;
+    color: blue;
+    text-align: center;
+    display: relative;
+    left:33vw;
+    margin: 3vh 3vw;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+.img {
+    width: 20pc;
+    height: 90%;
+    border: none;
+    color: blue;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+.button1 {
+    background-color: white;
+    color: black;
+    border: 2px solid #4CAF50;
+}
+.button1:hover {
+    background-color: #4CAF50;
+    color: red;
+}
+.button2 {
+    background-color: white;
+    color: black;
+    border: 2px solid #008CBA;
+}
+.button2:hover {
+    background-color: #008CBA;
+    color: red;
+}

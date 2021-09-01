@@ -22,11 +22,22 @@ button {margin: 3vh;}
 }
 
 button.subject {
-    background-size: 80% 80%;
     background-repeat: no-repeat;
-    background-color: #fff;
     background-position:center;
+
+    width:15%;
+    height:80%;
+    margin: 1% 2%;
+    font-size: 2em;
 }
+
+button.subject p {margin: 1vh 0;}
+
+.button-5 img {
+    height: 90%;
+    width: 80%;
+}
+
 button.subject.active {
     background-color: #00f;
 }
@@ -78,12 +89,10 @@ button.class:hover,  button.subject:hover {
 }
 
 button.class {
-    
     margin: 3px;
     padding: 0 3px;
     color: black;
     min-width:9vw;
-    height:23vh;
     line-height: 1.0;
     font-size: 8vw;
     font-weight: bold;
@@ -106,7 +115,8 @@ button#bagh-chal {
     /*opacity:0;*/
 }
 
-.title h1{
+h1.title {
+    grid-column:1 / -1;
     font-size:4em;
     margin-top:3vh;
     margin-bottom:5vh;

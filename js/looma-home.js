@@ -15,27 +15,33 @@ var className, subjectName, gradeName, prefix;
 
 var subjectnames = {
     'english' : 'English',
-    'math'    : 'Math',
+    'math'    : 'Maths',
     'science' : 'Science',
+    'computer': 'Computer',
     'nepali'  : 'Nepali',
     'health'  : 'Health',
     'vocation'  : 'Vocation',
     'moral education'  : 'Moral',
-    'math optional' : 'Opt. Math',
+    'math optional' : 'Opt. Maths',
+    'english optional': 'Opt. English',
     'science optional' : 'Opt. Science',
-    'social studies' : 'Social'
+    'social studies' : 'Social',
+    'serofero' : 'Serofero'
 }
 var nsubjectnames = {
     'english' : 'अंग्रेजी',
     'math'    : 'गणित',
     'science' : 'विज्ञान',
+    'computer': 'कम्प्युटर विज्ञान',
     'nepali'  : 'नेपाली',
     'health'  : 'स्वास्थ्य',
     'vocation'  : 'प्राविधिक',
     'moral education'  : 'नैतिक',
+    'english optional': 'Opt. English',
     'math optional' : 'ऐ. गणित',
     'science optional' : 'ऐ. विज्ञान',
-    'social studies' : 'सामाजिक'
+    'social studies' : 'सामाजिक',
+    'serofero' : 'सेरोफेरो'
 }
 
 /*
@@ -61,12 +67,28 @@ function displaySubjects (className) {
             books.forEach (function(book) {
                 var tb_path = '../content/' + book['fp'];
                 var $newButton =  $('<button type="button" class="subject" id="' + book["subject"] + '" data-prefix="' + book['prefix'] + '">');
-    
+                
                 var subjectname = subjectnames[book['subject']];
                 var nsubjectname = nsubjectnames[book['subject']];
-               	$newButton.append($("<p class='english-keyword'>"+ subjectname + "<p class='xlat'>"+ nsubjectname + "</p></p>"));
-               	$newButton.append($("<p class='native-keyword'>"+ nsubjectname + "<p class='xlat'>"+ subjectname + "</p></p>"));
+                
+                //  *********  special temporary code for CEHRD  *************
+                //
                
+               // if(LOOMA.readStore('theme', 'cookie') === 'CEHRD' && subjectname === 'Science') {
+                 //   subjectname = 'Serofero';
+                 //   nsubjectname = 'सेरोफेरो';
+                //};
+                //  ******** end special CEHRD code
+          
+                if (book['subject'] === 'english') {
+                    $newButton.append($("<p>" +  subjectname + "</p>"));
+                } else if (book['subject'] === 'nepali'){
+                    $newButton.append($("<p>" +  nsubjectname + "</p>"));
+    
+                } else {
+                        $newButton.append($("<p class='english-keyword'>" + subjectname + "<p class='xlat'>" + nsubjectname + "</p></p>"));
+                        $newButton.append($("<p class='native-keyword'>" + nsubjectname + "<p class='xlat'>" + subjectname + "</p></p>"));
+                    }
                  //$newButton.append($('<p>' + book["dn"] +'</p>'));
 
                 var imgEn = (book['fn']) ?
@@ -79,7 +101,13 @@ function displaySubjects (className) {
                 
                 $newButton.append($('<img draggable="false" src="' + imgEn+ '" />' ));
                 $newButton.append($('<img draggable="false" src="' + imgNp+ '" />' ));
-                $('#subjects').append($newButton);
+                
+                //  *********  special temporary code for CEHRD  *************
+                //
+               // if(LOOMA.readStore('theme', 'cookie') !== 'CEHRD' || subjectname !== 'Social')
+                    $('#subjects').append($newButton);
+                //  ******** end special CEHRD code
+                
             });
             $("button.subject").click(subjectButtonClicked);
     

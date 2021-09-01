@@ -1,7 +1,4 @@
-div#main-container-horizontal {
-	position:relative;
-	text-align:center;
-}
+
 table {
 	margin:auto;
 	height:60%;
@@ -21,11 +18,11 @@ td {padding:10px}
        text-align:right;
        vertical-align: middle;
        background-color: #ffffff ;
-	   margin: 5% 0 2% 0;
+	   margin: 1% 0 1% 0;
        height:15%;
        width: 75%;
-       border:3px solid blue;
-       border-radius: 3px;
+       border:3px solid red;
+       border-radius: 12px;
        color:black;
 }
 
@@ -41,5 +38,13 @@ button.calc-button {
     text-align:center;
     min-height: 10vh;
     width: 100%;
+}
 
+
+button.calc-button:hover {
+    color: var(--looma-button-hover-font-color);
+    background-color:var(--looma-button-hover-background);
+    border-color: yellow;
+    border-width:4px;
+    /*transform: scale(1.5,1.5);*/
 }

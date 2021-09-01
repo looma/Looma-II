@@ -1,5 +1,6 @@
 body {
-	background-color: black;
+	--looma-background:  black;
+	background-color:var(--looma-background);
 			/*#A1BEF3*/
 			/* medium blue is #1853C1;*/
 			/* "looma" dark blue is #091F48;*/
@@ -12,7 +13,8 @@ body {
 
 }
  #toolbar-container, #toolbar-container-vertical {
- 	background-color:#f3172d;
+	 --looma-toolbar: #f3172d;
+	 background-color:  var(--looma-toolbar);
  }
 button {
 	background-color: #fff;

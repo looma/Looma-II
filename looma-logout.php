@@ -15,7 +15,6 @@ Comments:
 
 <?php $page_title = 'Looma - Logout';
 	  include ('includes/header.php');
-	  /*OPTIONAL*/ include ('includes/mongo-connect.php');
 ?>
 <link rel="stylesheet" href="css/looma-settings.css">
 

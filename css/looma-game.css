@@ -22,10 +22,14 @@ Description: formatting and styling for the game page
   grid-row: 1 / 2;
 }
 
+h1#gameTitle {font-size: 6vh;}
+
 #top {
     grid-column: 1 / 2;
     grid-row: 2 / 3;
+    font-size: 4vh;
 }
+
 
 #thegameframe {
     grid-column: 1 / 2;
@@ -95,7 +99,7 @@ Description: formatting and styling for the game page
 #gameOverFrame {padding-top:20vh}
 
 #top {
-    font-size:1.5em;
+    font-size:4vh;
     height:7%;
 }
 
@@ -613,9 +617,6 @@ a button:hover {color:blue;}
     margin-right:4vw;
 }
 
-#question {
-    font-size: 1.5em;
-}
 #answers {
 }
 

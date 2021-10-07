@@ -349,8 +349,8 @@ span.tip { display:none;}
 button:hover span.tip.yes-show 	{
     position:absolute;
     display:block;
-    bottom:10%;
-    left:15%;
+    bottom: 5vh;
+    right:5vw;
     margin:auto;
     
     font-size: 0.7em;
@@ -363,9 +363,9 @@ button:hover span.tip.yes-show 	{
 
 button:hover span.tip.yes-show.big-show {
     font-size:0.5em;
-    margin-left:2px;
+    left:60vw;
     padding:0 auto;
-    width:95%;
+    width:30vh;
 }
 
 /*****************

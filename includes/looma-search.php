@@ -137,9 +137,9 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
             echo "<div id='source-div' class='chkbox-filter media-filter'>";
             echo keyword("Source:");
             $sources = array(
-                array("ck12",  "phet", "epaath",   "khan", "w4s",       "TED", 'hesperian'), // not used
-                array("Dr Dann", "PhET", "OLE",    "khan", "wikipedia", "TED", "hesperian"), //internal names for IDs  #xxx-chk and #xxx-checkbox
-                array("CK-12", "PhET", "ePaath", "Khan", "Wikipedia", "TED", "Hesperian"), //the displayed name for source values
+                array("CEHRD", "ck12",  "phet", "epaath",   "khan", "w4s",       "TED", 'hesperian'), // not used
+                array("CEHRD", "Dr Dann", "PhET", "OLE",    "khan", "wikipedia", "TED", "hesperian"), //internal names for IDs  #xxx-chk and #xxx-checkbox
+                array("CEHRD", "CK-12", "PhET", "ePaath", "Khan", "Wikipedia", "TED", "Hesperian"), //the displayed name for source values
             );
 
           for($x = 0; $x < count($sources[1]); $x++) {

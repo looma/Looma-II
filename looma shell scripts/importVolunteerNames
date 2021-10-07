@@ -16,7 +16,7 @@ print ('------------ param = ' + param);
 print ('*****');
 var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
 
-var docs = file.split(/[\r\n]+/);  // split file into array of lines containing (DN, FN, CH_LO, cl_HI)
+var docs = file.split(/[\r\n]+/);  // split file into array of lines containing one full name
 
 print ('Processing ' + docs.length + ' lines');
 docs.forEach( function(doc) {

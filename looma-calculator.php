@@ -11,6 +11,7 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
 
 <?php $page_title = 'Looma Calculator';
 	  require_once ('includes/header.php');
+    logPageHit('calculator');
 ?>
 
     <link rel="stylesheet" type="text/css" href="css/looma-calculator.css">

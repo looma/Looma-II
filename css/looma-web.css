@@ -2,6 +2,14 @@
     height: 100%;
 }
 
+h2 {
+    margin: auto;
+    position: relative;
+    left: 40%;
+    top: 25%;
+    font-size: 3em;
+}
+
 button#fullscreen-control {
     display:inline-block;
 }

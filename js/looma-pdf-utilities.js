@@ -208,7 +208,9 @@ async function setZoom(zoom) {
         currentScale = zoom;
         //$('#pdf').empty();
         //turnOffControls();
+        
         disableZoomControls();
+        
         zooming = true;
         await drawMultiplePages(pdfdoc, startPage, endPage);
         zooming = false;

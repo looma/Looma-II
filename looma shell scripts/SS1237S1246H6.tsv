@@ -1,0 +1,143 @@
+_id	npn	nlen	ft	dn	ndn	key1	key2	key3	key4
+6S01.00	7	0	section	Scientific Learning	वैज्ञानिक सिकाइ	Science			
+6S01.01	7	5	chapter	Introduction to scientific learning	वैज्ञानिक सिकाइको परिचय	Science	Other Science		
+6S01.02	12	2	chapter	Measurement & unit	नाप र एकाइ	Math	Measurement	Units	
+6S01.03	14	3	chapter	Local & standard units of measurement	नापका स्थानीय र प्रमाणिक एकाइहरू	Math	Measurement	Units	
+6S01.04	17	10	chapter	Multiple & submultiple units	ठुला तथा साना एकाइहरू	Math	Measurement	Units	
+6S02.00	27	0	section	Information & Communication Technology	सूचना तथा सञ्चार प्रविधि	Science	IT	Hardware	
+6S02.01	27	9	chapter	Technology	प्रविधि	Science	Technology		
+6S02.02	36	25	chapter	Use of mobile phone & computer in our daily life	दैनिक जीवनमा मोबाइलफोन र कम्प्युटरको प्रयोग	Science	IT	Hardware	
+6S03.00	61	0	section	Organisms & their Structure	जीवहरू र तिनीहरूको बनोट	Science	Biology	Other Biology	Scientific Classification
+6S03.01	61	6	chapter	Adaptation of organisms	जीवहरूको अनुकूलता	Science	Biology	Other Biology	Natural Selection
+6S03.02	67	10	chapter	Classification of animals on the basis of food	खानाका आधारमा जनावरको वर्गीकरण	Science	Biology	Other Biology	Scientific Classification
+6S03.03	77	3	chapter	Vertebrates	ढाड भएका जनावरहरू	Science	Biology	Zoology	Vertebrates
+6S03.04	80	12	chapter	Flowering and non-flowering plants	फूल फुल्ने र फूल नफुल्ने बिरुवाहरू	Science	Biology	Plants	
+6S04.00	92	0	section	Biodiversity & Environment	जैविक विविधता र वातावरण	Science	Biology	Ecology	Biodiversity
+6S04.01	92	4	chapter	Environment	वातावरण	Science	Earth	Other Earth	Environment
+6S04.02	96	4	chapter	Environment friendly behavior	वातावरणमैत्री व्यवहार	Science	Earth	Human Impact	
+6S04.03	100	3	chapter	Ecosystem	पारिस्थितिक प्रणाली	Science	Biology	Other Biology	Ecosystem
+6S04.04	103	5	chapter	Interrelationship among plants, animals & microorganisms	बिरुवा, जनावर र सूक्ष्मजीवबिचको अन्तरसम्बन्ध	Science	Biology	Other Biology	Ecosystem
+6S05.00	108	0	section	Life Process	जीवन प्रक्रिया	Science	Biology	Other Biology	Life Processes
+6S05.01	108	4	chapter	Modes of nutrition	पोषण प्रक्रिया	Science	Medicine	Healthy Living	Nutrition
+6S05.02	112	7	chapter	Photosynthesis	प्रकाश संश्लेषण प्रक्रिया	Science	Biology	Plants	Photosynthesis
+6S06.00	119	0	section	Force & Motion	बल र चाल	Science	Physics	Forces	
+6S06.01	119	2	chapter	Motion and its types	चाल र यसका प्रकार	Science	Physics	Forces	
+6S06.02	121	6	chapter	Force	बल	Science	Physics	Forces	
+6S06.03	127	5	chapter	Simple Machine	सरल यन्त्र	Science	Technology	Mechanical	Machines
+6S07.00	132	0	section	Energy in Daily Life	दैनिक जीवनमा शक्ति	Science	Physics	Forces	Work & Energy & Power
+6S07.01	132	7	chapter	Forms of energy	शक्तिका रूपहरू	Science	Physics	Forces	Work & Energy & Power
+6S07.02	139	5	chapter	Heat	ताप	Science	Physics	Electromagnetism	Heat
+6S07.03	144	10	chapter	Light	प्रकाश	Science	Physics	Electromagnetism	Light
+6S07.04	154	8	chapter	Sound	ध्वनि	Science	Physics	Other Physics	Sound
+6S08.00	162	0	section	Electricity & Magnetism	विद्युत् र चुम्बकत्व	Science	Physics	Electromagnetism	
+6S08.01	162	5	chapter	Electricity & Magnetism	विद्युत् र चुम्बकत्व	Science	Physics	Electromagnetism	
+6S08.02	167	10	chapter	Electricity	विद्युत्	Science	Physics	Electricity & Electronics	
+6S09.00	177	0	section	Matter	पदाथ	Science	Physics	Materials	Matter
+6S09.01	177	10	chapter	Mixture	मिश्रण	Science	Physics	Materials	Mixture
+6S09.02	187	6	chapter	Solution, colloid and suspension	घोल, कोलोइड र सस्पेन्सन	Science	Physics	Materials	Solutions
+6S10.00	193	0	section	Materials Used in Daily Life	दैनिक प्रयोगका सामग्रीहरू	Science	Physics	Materials	Other Materials
+6S10.01	193	8	chapter	Some Useful Chemicals	केही उपयोगी रसायनहरू	Science	Chemistry	Other Chemistry	
+6S10.02	201	10	chapter	Introduction to metals & non-metals	धातु र अधातुको परिचय	Science	Chemistry	Metal	
+6S11.00	211	0	section	The Earth & Space	पृथ्वी र अन्तरिक्ष	Science	Earth		
+6S11.01	211	6	chapter	Soil	माटो	Science	Earth	Geology	Soils
+6S11.02	217	8	chapter	The Earth	पृथ्वी	Science	Earth	Other Earth	About
+6S11.03	225	4	chapter	Solar System	सौर्यमण्डल	Science	Astronomy	Solar System	
+6H01	5	13	chapter	Human Body	मानव शरीर	Science	Medicine	Human Body	
+6H02	18	13	chapter	Community Health and Mental Health	सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य	Social Studies	Community	Psychology	
+6H03	31	11	chapter	Nutrition and Food Security	पोषण र खाद्य सुरक्षा	Science	Medicine	Healthy Living	Nutrition
+6H04	42	16	chapter	Disease, Safety and First Aid	रोग, सुरक्षा र प्राथमिक उपचार	Science	Medicine	Specialties	First Aid
+6H05	58	12	chapter	Sexual and Reproductive Health	यौनिक र प्रजनन स्वास्थ्य	Science	Medicine	Specialties	Family Planning
+6H06	70	9	chapter	Physical Exercise and Drill	शारीरिक कसरत र कवाज	Social Studies	Community	Sports	Exercise
+6H07	79	10	chapter	Athletics and Adventures Activities	एथलेटिक्स र साहसिक क्रियाकलाप	Science	Medicine	Everyday Life	Games
+6H08	89	13	chapter	Games	खेलहरू	Social Studies	Community	Sports	
+6H09	102	5	chapter	Yoga	योग	Social Studies	Community	Sports	Yoga
+6H10	107	16	chapter	Introduction to Arts, Line and Colour	कलाको परिचय, रेखाङ्‌कन र रङ	Social Studies	Arts	Visual Art	Drawing
+6H11	123	11	chapter	Printmaking, Clay Works, Collage and Construction	छपाइ, माटाको काम, कोलाज र निर्माण	Social Studies	Arts	Visual Art	Pottery
+6H12	134	24	chapter	Singing and Playing Instrument	गायन र वादन	Social Studies	Arts	Music	
+6H13	158	11	chapter	Dance and Acting	नृत्य र अभिनय	Social Studies	Arts	Dance	
+7SS01.00	10	1	section	We and Our Society	हामी र हाम्रो समाज				
+7SS01.01	11	2	chapter	Origin and Needs of Society	समाजको उत्पत्ति र आवश्यकता	Social Studies	Community	Social Organization	
+7SS01.02	13	2	chapter	The Way Society Develops	समाजको विकास क्रम	Social Studies	Community	Anthropology	
+7SS01.03	15	2	chapter	Cooperation	सामाजिकीकरण	Social Studies	Community	Social Organization	Mutual Help
+7SS01.04	17	2	chapter	Ways to Build Cooperation	सामाजिकीकरणका माध्यम	Social Studies	Community	Social Organization	Mutual Help
+7SS01.05	19	2	chapter	Development Works in the District	जिल्ला समन्वय समिति	Social Studies	Economy	Other Economy	Sustainable Development
+7SS01.06	21	3	chapter	District Development Action	जिल्लाका विकास कार्यहरू	Social Studies	Community	Government	
+7SS02.00	24	1	section	Our Social Values & Beliefs	हाम्रो सामाजिक मुल्य र मान्यता	Social Studies	Economy	Other Economy	Sustainable Development
+7SS02.01	25	2	chapter	Our Religious Customs	हाम्रो धार्मिक संस्कार				
+7SS02.02	27	2	chapter	Our Social Customs	हाम्रो सामाजिक संस्कार	Social Studies	Beliefs	Religions	
+7SS02.03	29	2	chapter	Some Racial Customs	केही जातिगत संस्कार	Social Studies	Community	Psychology	
+7SS02.04	31	2	chapter	Sustaining National Self-respect	राष्ट्रको सम्मान र राष्ट्रियताको जगेर्ना	Social Studies	Community	Other Community	
+7SS02.05	33	2	chapter	Important Aspects of Our System	हाम्रो रीतिरिवाजका केही प्रमुख पक्ष	Social Studies	Issues	Other Issues	
+7SS02.06	35	2	chapter	Our Folk Culture	हाम्रो लोक संस्कृति	Social Studies	Community	Social Organization	
+7SS02.07	37	2	chapter	Gehendrasamir Was Nepal's First ScientistT	नेपालको प्रथम वैज्ञानिक गेहेन्द्रसमसेर	Social Studies	Community	Anthropology	
+7SS02.08	39	3	chapter	Some Historical Personalities	केही ऐतिहासिक व्यक्तित्व	Social Studies	Community	People	
+7SS03.00	42	1	chapter	Social Problems & Solutions	सामाजिक समस्या र समाधान	Social Studies	Community	People	
+7SS03.01	43	2	chapter	Social Problems & Disorderss	सामाजिक समस्या र विकृति	Social Studies	Issues		
+7SS03.02	45	2	chapter	Causes of Social  Problems & Disorders	सामाजिक समस्या र विकृतिका कारण	Social Studies	Issues		
+7SS03.03	47	2	chapter	Human Trafficking	मानव बेचबिखन	Social Studies	Issues		
+7SS03.04	49	2	chapter	Solutions to Social Problems	सामाजिक समस्या समाधानका उपाय	7SS03.04			
+7SS03.05	51	2	chapter	The  Role of the VNA	सामाजिक समस्या समाधानमा विद्‌यालय र राष्ट्रिय सङ्‌घ संस्थाको भूमिका	7SS03.05			
+7SS03.06	53	2	chapter	Conflict Management	द्वन्द्व व्यवस्थापन	Social Studies	Issues	Conflict	
+7SS03.07	56	2	chapter	Miscommunication and its Effects	सञ्चार र त्यसको प्रभाव	Social Studies	Issues	Communication	
+7SS03.08	58	4	chapter	The Need for Peace	शान्ति र यसको आवश्यकता	Social Studies	Community	Peace	
+7SS04.00	62	1	section	Civic Consciousness	नागरिक चेतना	Social Studies	Community	Social Organization	Citizenship
+7SS04.01	63	2	chapter	Basic Parts of the State: Land and People	राज्यका आधारभूत तत्त्व : भूमि र जनसङ्‌ख्या	Social Studies	Community	Government	
+7SS04.02	65	2	chapter	Elements of the State: Government, Independence, Constitution	राज्यका आधारभूत तत्त्व : सरकार, सार्वभौमसत्ता र संविधान	Social Studies	Community	Government	
+7SS04.03	67	2	chapter	Fundamental Rights	मौलिक हक र कर्तव्य	Social Studies	Issues	Civil Rights	
+7SS04.04	69	2	chapter	Rights of the Child	बाल अधिकार	Social Studies	Issues	Human Rights	
+7SS04.05	71	2	chapter	Efforts to Protect Children	बाल अधिकार संरक्षणका प्रयास	Social Studies	Issues	Human Rights	
+7SS04.06	74	2	chapter		राष्ट्रिय सूचना आयोग				
+7SS04.07	76	2	chapter	Democratic Procedures	लोकतान्त्रिक संस्कार	Social Studies	Community	Government	Democracy
+7SS04.08	78	2	chapter	Similar Behavior	समान व्यवहार	Social Studies	Issues	Conflict	
+7SS04.09	80	2	chapter	Social Rules	सामाजिक नियम	Social Studies	Community	Social Organization	Norms
+7SS04.10	82	3	chapter	Effect of  Compliance with Social Norms	सामाजिक नियम पालनाको प्रभाव	Social Studies	Community	Social Organization	Norms
+7SS05.00	85	3	section	Our Earth	हाम्रो पृथ्वी	Science	Earth		
+7SS05.01	86	2	chapter	Latitude  and Longitude	अक्षांश र देशान्तरको परिच	Science	Earth	Other Earth	About
+7SS05.02	88	2	chapter	Look at the Landscape	धरातलीय स्वरूप	Science	Earth	Other Earth	About
+7SS05.03	90	2	chapter	Nepal's Geography	नेपालको भौगोलिक अवस्था	Social Studies	Geography	Asis	Nepal
+7SS05.04	92	2	chapter	Nepal's Diverse Landscape	विविधताको सङ्‌गम नेपाल	Social Studies	Geography	Asis	Nepal
+7SS05.05	94	2	chapter	Using a Map	नक्सा कार्य	Social Studies	Geography	Maps	
+7SS05.06	96	2	chapter	All about Europe	युरोप महादेशको भौतिक, आर्थिक र सामाजिक जनजीवन	Social Studies	Geography	Europe	
+7SS05.07	98	2	chapter	All about Australia	अस्ट्रेलिया महादेशको भौतिक, आर्थिक र सामाजिक जनजीवन	Social Studies	Geography	Oceania	Australia
+7SS05.08	100	2	chapter	Climate Change	जलवायु परिवर्तन	Science	Earth	Climate	Climate Change
+7SS05.09	102	2	chapter	Impact of Climate Change	जलवायु परिवर्तनको प्रभाव	Science	Earth	Climate	Climate Change
+7SS05.10	104	2	chapter	Disaster Management	विपत्‌ व्यवस्थापन	Science	Earth	Natural Disasters	Preparedness
+7SS05.11	106	3	chapter	Disaster Preparedness	विपत्‌ व्यवस्थापनमा पूर्व सावधानीको महत्त्व	Science	Earth	Natural Disasters	Preparedness
+7SS06.00	109	1	section	Our Past	हाम्रो विगत	Social Studies	History	Nepal	
+7SS06.01	110	2	chapter	Intro to Medieval Nepal	मध्यकालीन नेपालको परिचय	Social Studies	History	Nepal	
+7SS06.02	112	2	chapter	The Political Scene of Medieval Nepal	मध्यकालीन नेपालको राजनीतिक अवस्था	Social Studies	History	Nepal	Politics
+7SS06.03	114	2	chapter	Social Conditions in Medieval Nepal	मध्यकालीन नेपालको सामाजिक अवस्था	Social Studies	History	Nepal	Rights & Duties
+7SS06.04	116	2	chapter	The Economy of Medieval Nepal	मध्यकालीन नेपालको आर्थिक अवस्था	Social Studies	History	Nepal	
+7SS06.05	118	2	chapter	Art and Culture of Medieval Nepal	मध्यकालीन नेपालको कला र संस्कृति	Social Studies	History	Nepal	
+7SS06.06	120	2	chapter	Huangzhou Valley Civilization	ह्‌वाङ्‌हो उपत्यकाको सभ्यता	Social Studies	History	Ancient	China
+7SS06.07	122	3	chapter	Mesopotamian Civilization	मेसोपोटामियाको सभ्यता	Social Studies	History	Ancient	Mideast
+7SS07.00	125	1	section	Our Economy	हाम्रो आर्थिक क्रियाकलाप	Social Studies	Economy		
+7SS07.01	126	2	chapter	Nepal's Natural Resources	नेपालका प्राकृतिक स्रोत साधन र तिनको उपयोग	Social Studies	Economy		
+7SS07.02	128	2	chapter	Nepal's Forest and Mineral Resources	प्राकृतिक स्रोत साधनका रूपमा वन र खनिज	Social Studies	Economy	Agriculture	
+7SS07.03	130	2	chapter	Industrial Activity	औद्‌योगिक क्रियाकलाप	Social Studies	Economy	Business	
+7SS07.04	132	2	chapter	Agribusiness	कृषि र उद्‌योगबिच सम्बन्ध	Social Studies	Economy	Agriculture	
+7SS07.05	134	3	chapter	Commerce	व्यापारिक क्रियाकलाप	Social Studies	Economy	Business	
+7SS08.00	137	1	section	International Relations	हाम्रो अन्तर्राष्ट्रिय सम्बन्ध र सहयोग	Social Studies	History	Nepal	International Relations
+7SS08.01	138	2	chapter	SAARC	सार्क गतिविधि	Social Studies	History	Nepal	International Relations
+7SS08.02	140	2	chapter	Nepal's Role in SAARC	सार्कमा नेपालको भूमिका	Social Studies	History	Nepal	International Relations
+7SS08.03	142	2	chapter	Introduction to a Land-locked Country	भूपरिवेष्टित देशको परिचय				
+7SS08.04	144	2	chapter	Geopolitics: a Solution to Problems	भूपरिवेष्टित देशका समस्या तथा समाधानका उपाय	Social Studies	History	Nepal	International Relations
+7SS08.05	146	3	chapter	Current International Activities	विश्वका समसामयिक गतिविधि	Social Studies	History	Nepal	International Relations
+7SS09.00	149	1	section	Intro to Demography	जनसङ्‌ख्या शिक्षाको परिचय र जनसाङ्‌ख्यिक अवस्था	Social Studies	Economy	Other Economy	Population
+7SS09.01	150	2	chapter	Intro to Population Education	जनसङ्‌ख्या शिक्षाको परिचय	Science	Medicine	Specialties	Family Planning
+7SS09.02	152	2	chapter	Population Education	जनसङ्‌ख्या शिक्षाको क्षेत्र	Science	Medicine	Specialties	Family Planning
+7SS09.03	154	2	chapter	Development of Population Education	जनसङ्‌ख्या शिक्षाको विकास क्रम	Science	Medicine	Specialties	Family Planning
+7SS09.04	156	2	chapter	Demographic Data Sources	जनसङ्‌ख्या तथ्याङ्‌कका स्रोत	Social Studies	Economy	Other Economy	Population
+7SS09.05	158	2	chapter	Census Data for Demographic Study	जनसङ्‌ख्या तथ्याङ्‌कका स्रोतका रूपमा पञ्जीकरण	Social Studies	Economy	Other Economy	Population
+7SS09.06	160	2	chapter	Nepal's Population  Growth	नेपालको जनसङ्‌ख्या वृद्धिको प्रवृत्ति	Social Studies	Economy	Other Economy	Population
+7SS09.07	162	2	chapter	Be a Demographer	(नेपालको जनसङ्‌ख्याको बनोट (उमेर, लिङ्‌ग र धर्मअनूसार)	Social Studies	Economy	Other Economy	Population
+7SS09.08	164	2	chapter	Sort the Population by Language, Ethnicity and Profession	(नेपालको जनसङ्‌ख्याको बनोट भाषा, जातजाति अनुसार)	Social Studies	Economy	Other Economy	Population
+7SS09.09	166	3	chapter	Population Growth	भौगालिक क्षेत्रअनुसार नेपालको जनसङ्‌ख्या वितरण	Social Studies	Economy	Other Economy	Population
+7SS10.00	169	1	section	Population Growth	जनसङ्‌ख्या वृद्‌धि र व्यवस्थापन	Social Studies	Economy	Other Economy	Population
+7SS10.01	170	2	chapter	Status of Population Growth	नेपालमा जनसङ्‌ख्या वृद्‌धिको अवस्था	Social Studies	Economy	Other Economy	Population
+7SS10.02	172	2	chapter	Impact of Rapid Growth	तीव्र जनसङ्‌ख्या वृद्‌धिका कारण र असर	Social Studies	Economy	Other Economy	Population
+7SS10.03	174	2	chapter	Population Management and Jobs	जनसङ्‌ख्या व्यवस्थापन र गूणस्तरीय जीवन				
+7SS10.04	176	2	chapter	Population  Interventions	जनसङ्‌ख्या व्यवस्थापनका उपाय	Social Studies	Economy	Other Economy	Population
+7SS10.05	178	2	chapter	Good Life	गूणस्तरीय जीवनका उपाय	Social Studies	Economy	Other Economy	Population
+7SS10.06	180	2	chapter	Family Life Education	पारिवारिक जीवन शिक्षा	Social Studies	Economy	Other Economy	Population
+7SS10.07	182	3	chapter	Population Agencies	जनसङ्‌ख्या व्यवस्थापनमा संलग्न निकायको भूमिका	Social Studies	Economy	Other Economy	Population

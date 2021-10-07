@@ -15,7 +15,6 @@ Comments:
 
 <?php $page_title = 'Looma - popup tester';
 	  include ('includes/header.php');
-	  /*OPTIONAL*/ include ('includes/mongo-connect.php');
 ?>
 <style>
     button {height:30vh;

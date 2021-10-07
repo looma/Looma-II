@@ -269,7 +269,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             break;
         
         case 'map':
-            openPage($currentItem, 'maps', 'looma-map.php');
+            openPage($currentItem, 'maps', 'looma-play-map.php');
             //window.location = 'looma-map.php?id=' + $currentItem.data('id');
             break;
         

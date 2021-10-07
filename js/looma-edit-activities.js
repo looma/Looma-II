@@ -117,7 +117,9 @@ function displayResults(results) {
 function showInfo (activity) {
     
     $('#details').html(   '<p>dn: ' + $.data(activity[0]).mongo.dn + '</p>'
-                        + '<p>fn: ' + $.data(activity[0]).mongo.fn + '</p>'
+                         + '<p>ndn: ' + $.data(activity[0]).mongo.ndn + '</p>'
+                         + '<p>fn: ' + $.data(activity[0]).mongo.fn + '</p>'
+                         + '<p>nfn: ' + $.data(activity[0]).mongo.nfn + '</p>'
                         + '<p>fp: ' + $.data(activity[0]).mongo.fp + '</p>'
                         + '<p>ft: ' + $.data(activity[0]).mongo.ft + '</p>'
                         + '<p>src: ' + $.data(activity[0]).mongo.src + '</p>'
@@ -127,7 +129,6 @@ function showInfo (activity) {
                         + '<p>key2: ' + $.data(activity[0]).mongo.key2 + '</p>'
                         + '<p>key3: ' + $.data(activity[0]).mongo.key3 + '</p>'
                         + '<p>key4: ' + $.data(activity[0]).mongo.key4 + '</p>'
-                        + '<button class="popup-button" id="dismiss-popup"><b>X</b></button>'
         ).show();
     $('#dismiss-popup').click(function() {$('#details').hide();});
 }
@@ -210,6 +211,9 @@ function thumbnail (item) {
     collection = $(item).attr('collection');
     filetype = $(item).attr('ft');
     if ($(item).attr('fn')) filename = $(item).attr('fn');
+    
+    if ($(item).attr('lang') === 'np') filename = $(item).attr('nfn');
+    
     if ($(item).attr('fp')) filepath = $(item).attr('fp');
     
     if (collection == "chapters" || item.pn != null) {
@@ -283,10 +287,10 @@ function createActivityDiv (activity) {
         $(textdiv).appendTo(activityDiv);
         
         // Display Name
-        if (item.dn) var dn = item.dn.substring(0, 40); //else dn = item.ndn.substring(0,20);
+        if (item.dn) var dn = item.dn; else dn = item.ndn;
         $("<input/>", {
             class : "result_dn",
-            value: item.dn
+            value: dn
         }).appendTo(textdiv);
         
         $('<br>').appendTo(textdiv);
@@ -301,7 +305,7 @@ function createActivityDiv (activity) {
         if ('ch_id' in item) {
             $("<span/>", {
                 class : "result_ID",
-                html : "[" + item.ch_id + "]"
+                html : item.ch_id + "  " + item.nch_id
             }).appendTo(textdiv);
         }
         // INFO button for each activity - popups detailed info for the activity

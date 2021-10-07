@@ -1,0 +1,24 @@
+var collection = db.activities;
+var count = 0;
+collection.find( { "ch_id" : { $type : 2 } }  ).forEach(
+  function (x) {
+    if (!Array.isArray(x.ch_id)){
+        x.ch_id = [ x.ch_id  ];
+        collection.save(x);
+        count++;
+    }
+  });
+print (' corrected ' + count + ' ch_ids');
+print ();
+
+count = 0;
+collection.find( { "nch_id" : { $type : 2 } }  ).forEach(
+  function (x) {
+    if (!Array.isArray(x.nch_id)){
+        x.nch_id = [ x.nch_id  ];
+        collection.save(x);
+        count++;
+    }
+  });
+print (' corrected ' + count + ' nch_ids');
+print ();

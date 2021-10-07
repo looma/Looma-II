@@ -12,6 +12,7 @@ Description:  for Looma 2
 <?php $page_title = 'Looma Settings';
       require_once ('includes/header.php');
       require_once ('includes/looma-utilities.php');
+      logPageHit('settings');
 ?>
 	<link rel="stylesheet" href="css/looma-settings.css">
 	</head>

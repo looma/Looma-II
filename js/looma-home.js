@@ -65,49 +65,50 @@ function displaySubjects (className) {
             class: className},
         function(books) {
             books.forEach (function(book) {
-                var tb_path = '../content/' + book['fp'];
-                var $newButton =  $('<button type="button" class="subject" id="' + book["subject"] + '" data-prefix="' + book['prefix'] + '">');
-                
-                var subjectname = subjectnames[book['subject']];
-                var nsubjectname = nsubjectnames[book['subject']];
-                
-                //  *********  special temporary code for CEHRD  *************
-                //
-               
-               // if(LOOMA.readStore('theme', 'cookie') === 'CEHRD' && subjectname === 'Science') {
-                 //   subjectname = 'Serofero';
-                 //   nsubjectname = 'सेरोफेरो';
-                //};
-                //  ******** end special CEHRD code
-          
-                if (book['subject'] === 'english') {
-                    $newButton.append($("<p>" +  subjectname + "</p>"));
-                } else if (book['subject'] === 'nepali'){
-                    $newButton.append($("<p>" +  nsubjectname + "</p>"));
+                if ('fn' in book || 'nfn' in book) {
+                    var tb_path = '../content/' + book['fp'];
+                    var $newButton = $('<button type="button" class="subject" id="' + book["subject"] + '" data-prefix="' + book['prefix'] + '">');
     
-                } else {
+                    var subjectname = subjectnames[book['subject']];
+                    var nsubjectname = nsubjectnames[book['subject']];
+    
+                    //  *********  special temporary code for CEHRD  *************
+                    //
+    
+                    // if(LOOMA.readStore('theme', 'cookie') === 'CEHRD' && subjectname === 'Science') {
+                    //   subjectname = 'Serofero';
+                    //   nsubjectname = 'सेरोफेरो';
+                    //};
+                    //  ******** end special CEHRD code
+    
+                    if (book['subject'] === 'english') {
+                        $newButton.append($("<p>" + subjectname + "</p>"));
+                    } else if (book['subject'] === 'nepali') {
+                        $newButton.append($("<p>" + nsubjectname + "</p>"));
+        
+                    } else {
                         $newButton.append($("<p class='english-keyword'>" + subjectname + "<p class='xlat'>" + nsubjectname + "</p></p>"));
                         $newButton.append($("<p class='native-keyword'>" + nsubjectname + "<p class='xlat'>" + subjectname + "</p></p>"));
                     }
-                 //$newButton.append($('<p>' + book["dn"] +'</p>'));
-
-                var imgEn = (book['fn']) ?
-                                tb_path + encodeURIComponent(book['fn'].substr(0,book['fn'].length-4)) + '_thumb.jpg' :
-                                'images/book_gray.png';
+                    //$newButton.append($('<p>' + book["dn"] +'</p>'));
     
-                var imgNp = (book['nfn']) ?
-                               tb_path + encodeURIComponent(book['nfn'].substr(0,book['nfn'].length-4)) + '_thumb.jpg' :
-                               'images/book_gray.png';
-                
-                $newButton.append($('<img draggable="false" src="' + imgEn+ '" />' ));
-                $newButton.append($('<img draggable="false" src="' + imgNp+ '" />' ));
-                
-                //  *********  special temporary code for CEHRD  *************
-                //
-               // if(LOOMA.readStore('theme', 'cookie') !== 'CEHRD' || subjectname !== 'Social')
+                    var imgEn = (book['fn']) ?
+                        tb_path + encodeURIComponent(book['fn'].substr(0, book['fn'].length - 4)) + '_thumb.jpg' :
+                        'images/book_gray.png';
+    
+                    var imgNp = (book['nfn']) ?
+                        tb_path + encodeURIComponent(book['nfn'].substr(0, book['nfn'].length - 4)) + '_thumb.jpg' :
+                        'images/book_gray.png';
+    
+                    $newButton.append($('<img draggable="false" src="' + imgEn + '" />'));
+                    $newButton.append($('<img draggable="false" src="' + imgNp + '" />'));
+    
+                    //  *********  special temporary code for CEHRD  *************
+                    //
+                    // if(LOOMA.readStore('theme', 'cookie') !== 'CEHRD' || subjectname !== 'Social')
                     $('#subjects').append($newButton);
-                //  ******** end special CEHRD code
-                
+                    //  ******** end special CEHRD code
+                }
             });
             $("button.subject").click(subjectButtonClicked);
     

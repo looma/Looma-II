@@ -25,7 +25,6 @@ Comments:
 
 <?php $page_title = 'Looma - Register User';
 	  include ('includes/header.php');
-	  include ('includes/mongo-connect.php');
 ?>
 <link rel="stylesheet" href="css/looma-register-user.css">
 
@@ -41,7 +40,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
             $query = array();
 
             $projection = array('_id' => 0, 'name' => 1, 'team' => 1);
-            $logins = mongoFind($logins_collection, $query, true, null, null);
+            $logins = mongoFind($logins_collection, $query, 'name', null, null);
            // $logins->sort(array('name' => 1 ));
 
             foreach ($logins as $login) {

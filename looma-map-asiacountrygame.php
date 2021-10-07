@@ -14,6 +14,7 @@ File: header.php
 <?php
 $page_title = 'Looma - Maps';
 include ('includes/header.php');
+logFiletypeHit('map');
 
 ?>
 

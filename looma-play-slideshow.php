@@ -8,8 +8,9 @@ Description: looma slideshow presenter
 -->
     <?php $page_title = 'Looma Slideshow Presenter ';
           include ('includes/header.php');
-          require ('includes/mongo-connect.php');
-          include('includes/looma-utilities.php'); ?>
+          include('includes/looma-utilities.php');
+    logFiletypeHit('slideshow');
+    ?>
 
 <link rel="stylesheet" href="css/looma-text-display.css">
 <link rel="stylesheet" href="css/looma-play-slideshow.css">

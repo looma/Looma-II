@@ -18,7 +18,6 @@ Revision: Looma 4
  -->
 <?php $page_title = 'Looma - Lesson Editor';
 include ('includes/header.php');
-//include ('includes/mongo-connect.php');
 include ('includes/js-includes.php');
 include ('includes/looma-filecommands.php');
 ?>

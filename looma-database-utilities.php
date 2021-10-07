@@ -46,6 +46,7 @@ require_once('includes/looma-utilities.php');
   //  uploadFile
   //  download
   /// sendMail
+  /// getLogData
   ////////////////////////////////
 
         // SAVEACTIVITY function
@@ -123,11 +124,91 @@ require_once('includes/looma-utilities.php');
         } //end CHANGENAME)
 
         function lessonexists($ch_id) {
-                global $activities_collection;
-                $r = mongoRegex((string) $ch_id);
-                $lesson = mongoFindOne($activities_collection,array('ft' => 'lesson', 'dn'=> $r));
-                return $lesson;
-        }
+            global $activities_collection;
+            $r = mongoRegex((string) $ch_id);
+            $lesson = mongoFindOne($activities_collection,array('ft' => 'lesson', 'dn'=> $r));
+            return $lesson;
+        };  // end lessonexists()
+
+      function format($utc,$timeframe) {
+          switch ($timeframe) {
+              case "hours":  $formatted = date("Y:m:W:d:h", $utc);
+              case "days":   $formatted = date("Y:m:W:d",   $utc);
+              case "weeks":  $formatted = date("Y:m:W",     $utc);
+              case "months": $formatted = date("Y:m",       $utc);
+              default:       $formatted = date("Y:m:W:d:h", $utc);
+          };
+
+     // echo ' - - - for '.$timeframe.' this UTC: '.$utc.' formats to: '.$formated;
+
+          return $formatted;
+      } // end format()
+
+        function increment($utc,$timeframe) {
+            // WARNING: UTC values in PHP are in SECONDS, in JS they are in MILLIseconds
+
+//    echo ' - - - - - incrementing '. $utc.' to '.$utc+60*60;
+            switch ($timeframe) {
+                case "hours":  return $utc +           60 * 60;
+                case "days":   return $utc +      24 * 60 * 60;
+                case "weeks":  return $utc +  7 * 24 * 60 * 60;
+                case "months": return $utc + 30 * 24 * 60 * 60;
+                default:       return 0;
+            }
+        } // end increment()
+
+        function fillLogData ($data, $timeframe) {
+
+          //echo 'data count is '. count($data);
+
+            $temp = []; $temp[] = $data[0]; $latestUTC = $data[0]['utc'];
+            $filler = []; $filler['visits'] = 0; $filler['uniques']=0;
+
+/*  for ($i=1; $i< count($data); $i++) {
+    echo 'UTC from DB is '.$data[$i]['utc'].' diff is '.$data[$i]['utc']-$data[$i-1]['utc'].'<br>';
+      }
+*/
+   for ($i=1; $i< count($data); $i++) {
+
+                $UTC = $data[$i]['utc'];
+                $formatted = format($UTC,$timeframe);
+
+                $nextUTC = increment($latestUTC,$timeframe);  // in UTC
+                $nextFormatted = format($nextUTC, $timeframe);
+
+//        echo $timeframe.' - UTC = '.$data[$i]['utc'] .' formatted = '.$formatted.  '  **  next UTC = '.$nextUTC.' next formatted = '.$nextFormatted. '<br>';
+
+                while ($nextFormatted < $formatted) {
+                    $filler = [];
+                    $filler['visits'] = 0;
+                    $filler['uniques']=0;
+
+                    $filler['utc'] = $nextUTC;
+                    $filler['time'] = $nextFormatted;
+
+                    $temp[] =$filler;
+/*
+        if ($temp[count($temp)-1]['utc'] - $temp[count($temp)-2]['utc'] != 3600)
+            echo 'pushing '. $temp[count($temp)-1]['utc'].
+                ' prev was '. $temp[count(Stemp)-2]['utc'] .
+                '  diff is '.$temp[count($temp)-1]['utc'] - $temp[count($temp)-2]['utc']. '<br>';
+*/
+
+                    $nextUTC =    increment($nextUTC, $timeframe);
+                    $nextFormatted = format($nextUTC, $timeframe);
+                };
+                $latestUTC = $data[$i]['utc'];
+                $temp[] = $data[$i];
+
+ /*              if ($temp[count($temp)-1]['utc'] - $temp[count($temp)-2]['utc'] != 3600)
+                   echo 'pushing '. $temp[count($temp)-1]['utc'].
+                       ' prev was '. $temp[count($temp)-2]['utc'] .
+                    '  diff is '.$temp[count($temp)-1]['utc'] - $temp[count($temp)-2]['utc']. '<br>';
+*/
+
+            };
+            return $temp;
+        }  // end fillLogData()
 
 /*****************************/
 /****   main code here    ****/
@@ -938,6 +1019,13 @@ if (isset($_REQUEST["collection"])) {
             foreach ($cursor as $d) $result[] = $d;
        // }
 
+
+//echo "Search result is: ";
+//print_r($result);
+//exit;
+
+
+
         // removing duplicate results - based on 'fn' and 'fp' being equal
         // this is a crutch to cover up duplicate entries in 'activities' collection
         $unique = array();
@@ -970,7 +1058,7 @@ if (isset($_REQUEST["collection"])) {
                 if ($result[$i]['ft'] !== $result[$i-1]['ft']) $unique[] = $result[$i];
                 else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2019') {
                     if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
-                        $result[$i]['oleID'] !== $result[$i - 1]['oleID'] ||
+                      //  $result[$i]['oleID'] !== $result[$i - 1]['oleID'] ||
                         $result[$i]['grade'] !== $result[$i - 1]['grade'])
                         $unique[] = $result[$i];
                 /* for other special filetypes (in $specials) just match on displayname to determine uniquess */
@@ -980,6 +1068,9 @@ if (isset($_REQUEST["collection"])) {
                 } else if ((isset($result[$i]['fn'])
                     && isset($result[$i-1]['fn'])
                         && $result[$i]['fn'] !== $result[$i - 1]['fn'])
+                    || (isset($result[$i]['nfn'])
+                        && isset($result[$i-1]['nfn'])
+                        && $result[$i]['nfn'] !== $result[$i - 1]['nfn'])
                     || (isset($result[$i]['fp'])
                         && isset($result[$i - 1]['fp'])
                             && $result[$i]['fp'] !== $result[$i - 1]['fp']))
@@ -987,6 +1078,12 @@ if (isset($_REQUEST["collection"])) {
                 //DEBUG echo sizeof($unique) . " unique results found      \n";
             }
             $numUnique = sizeof($unique);
+
+
+//echo "Search result is: ";
+//print_r($unique);
+//exit;
+
 
             //echo '   UNIQUE '. $numUnique.' items';
 
@@ -1111,17 +1208,19 @@ if (isset($_REQUEST["collection"])) {
 
 
 
-          ////////////////////////
-    // -  removeChapterID  - //
-    ////////////////////////
-    case 'removeChapterID':
-        $query = array('_id' => mongoId($_REQUEST['id']));
-        $update = array('$pull' => array('ch_id' => $_REQUEST['data']));
-        $result = mongoUpdate($dbCollection, $query, $update);
+      ////////////////////////
+      // -  removeChapterID  - //
+      ////////////////////////
+      case 'removeChapterID':
+          $query = array('_id' => mongoId($_REQUEST['id']));
+          $update = array('$pull' => array('ch_id' => $_REQUEST['data']));
+          $result = mongoUpdate($dbCollection, $query, $update);
 
-        echo json_encode($result);
-        return;
-    // end case "removeChapterID"
+          echo json_encode($result);
+          return;
+      // end case "removeChapterID"
+
+      ////////////////////////
 
     ////////////////////////
     // - - - editActivity - - - //
@@ -1173,7 +1272,7 @@ if (isset($_REQUEST["collection"])) {
                     $update['$addToSet'] = array('ch_id' => $_REQUEST['chapter']);
 
                 if (isset($_REQUEST['book-chapter']) && $_REQUEST['book-chapter']) $update['$addToSet'] = array('ch_id' => $_REQUEST['book-chapter']);
-            //NOTE: bug in line above
+            //NOTE: bug in lines above
                 // $addToSet FAILS if the field already contains a non-array string
 
 
@@ -1423,6 +1522,32 @@ if (isset($_REQUEST["collection"])) {
             }
 
             return;
+
+          ///////////////////////////////////////////
+          // getLogData ('timeframe' in {hours, days, weeks, months},
+          //             'chunk' = number of points to return,
+          //             'prev' = #chunks to skip[from most recent skipping backwards, e.g. "0" means return the latest data points)
+          ///////////////////////////////////////////
+          case "getLogData":
+              global $collections;
+              //$old = ini_set('memory_limit', '512M'); doesnt overcome memory leak somewhere in this code
+              $chunk = (integer) $_REQUEST['chunk'];
+              $prev = (integer)  $_REQUEST['prev'];
+              $timeframe =       $_REQUEST['timeframe'];
+              $collection = $collections[$timeframe];
+
+              $logdata = mongoFind($collection, array(), 'utc', null, null);
+
+              $datatemp = [];
+              foreach ($logdata as $datum) $datatemp[] = $datum;
+
+              if (count($datatemp) > 0) $data = fillLogData($datatemp, $timeframe);
+
+              if (count($data) > $chunk*($prev+1)) $data = array_slice($data,-1*($chunk*($prev + 1)), $chunk);
+              else if (count($data) > $chunk) $data = array_slice($data, -1*$chunk);
+
+              echo json_encode($data);
+              return;
 
       ///////////////////////////////////////////
       // nothing  (null command for debugging) //

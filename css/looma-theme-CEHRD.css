@@ -5,10 +5,10 @@ body {
     --looma-font-color:#EA3323;
     --looma-button-background:#DFFEFE;
     --looma-button-font-color:black;
+    
     background-color: var(--looma-background);
     font-family: "Comic Neue bold", "Comic Sans MS", "Chalkboard", sans-serif;
-    
-    color: #EA3323;
+    color: var( --looma-font-color);
 }
 
 .watermark {
@@ -19,7 +19,15 @@ body {
     --looma-background: white;
     background-color: var(--looma-background);
 }
-
+#logo, #native-logo  {
+    grid-column: 1 / -1 !important;
+    grid-row:1 ;
+    height: 33vh;
+}
+#logo img {height:30vh;}
+#logos {
+    grid-column: left / right !important;
+}
 #toolbar-container, #toolbar-container-vertical {
     background-color:  var(--looma-toolbar);
 }
@@ -60,15 +68,19 @@ button {
 #toolbar-clock,
 #toolbar-maps,
 #toolbar-histories,
-#toolbar-library,
 #toolbar-paint,
 #toolbar-web,
 #toolbar-settings,
-#sizemessages{
+#sizemessages,
+#credits,
+#credits-title,
+#copyright,
+#about {
     display:none;
 }
 
 div#search-panel {background-color: #33cccc;}
+div#results-div  {background-color: #EFF7C2;}
 /*#66ffcc
 #ccffee
 */

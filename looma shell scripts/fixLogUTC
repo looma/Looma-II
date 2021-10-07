@@ -1,0 +1,63 @@
+// ONE TIME program to fix UTC fields
+//  run in MONGO SHELL with: load('fixLogUTC')
+//
+var cursor, count, fixcount, doc, output;
+
+cursor = db.hours.find({});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    if (doc['utc'] && doc['utc'] > 1700000000)
+    {fixcount++;
+        doc['utc'] = doc['utc'] / 1000;
+       print ('...UTC converted to ' + doc['utc']);
+       db.hours.update({_id:doc._id}, doc);
+    };
+};
+print;
+
+cursor = db.days.find({});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    if (doc['utc'] && doc['utc'] > 1700000000)
+    {fixcount++;
+        doc['utc'] = doc['utc'] / 1000;
+       print ('...UTC converted to ' + doc['utc']);
+       db.days.update({_id:doc._id}, doc);
+    };
+};
+print;
+
+cursor = db.weeks.find({});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    if (doc['utc'] && doc['utc'] > 1700000000)
+    {fixcount++;
+        doc['utc'] = doc['utc'] / 1000;
+       print ('...UTC converted to ' + doc['utc']);
+       db.weeks.update({_id:doc._id}, doc);
+    };
+};
+print;
+
+cursor = db.months.find({});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    if (doc['utc'] && doc['utc'] > 1700000000)
+    {fixcount++;
+        doc['utc'] = doc['utc'] / 1000;
+       print ('...UTC converted to ' + doc['utc']);
+       db.months.update({_id:doc._id}, doc);
+    };
+};
+
+print('_______________');
+print(' + + + fixed ' + fixcount + ' times');
+print('_______________');

@@ -17,13 +17,15 @@
     max-height:100%;
     overflow:hidden;
 }
-
-#logo {
-    height:22vh;
-    margin:0 auto;
-}
 #head.cehrd {
     text-align:left;
+}
+
+#logo, #native-logo {
+    height:32vh;
+    margin:0 auto;
+    grid-column: 1 / -1;
+    grid-row:1;
 }
 
  img.logo.cehrd {
@@ -31,10 +33,7 @@
     vertical-align: top;
     padding:3vh 5vw 0 5vw;
 }
-#logo {grid-column: 1;
-    grid-row:1;
-}
-
+ 
  #logo-info {
      grid-column: 2;
      text-align:center;

@@ -11,7 +11,7 @@ Description:  for Looma 2
 -->
 <?php $page_title = 'Looma Information';
 include ('includes/header.php');
-require ('includes/mongo-connect.php');
+//logPageHit('info');
 ?>
 <link rel="stylesheet" href="css/font-awesome.min.css">
 <link rel="stylesheet" href="css/looma-info.css">
@@ -23,8 +23,9 @@ require ('includes/mongo-connect.php');
 
         <div id="logo">
         <?php
-            if(isset($_COOKIE["theme"]) &&  $_COOKIE["theme"] === 'CEHRD') {
-                echo '<img draggable="false" src="images/logos/CEHRD-logo.png" class="cehrd-logo">';
+            if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
+                echo '<img draggable="false" class="english-keyword" src="images/logos/CEHRD-banner-english.jpg" class="cehrd-logo">';
+                echo '<img draggable="false" class="native-keyword" src="images/logos/CEHRD-banner-nepali.jpg" class="cehrd-logo">';
             }  else {
                 echo '<img draggable="false" src="images/logos/LoomaLogoTransparent.png" class="loomalogo">';
                 echo '<img src="images/trademark4.png" id="trademark" height="33px">';
@@ -33,8 +34,8 @@ require ('includes/mongo-connect.php');
         </div>
         <div id="title">
             <?php
-            if(isset($_COOKIE["theme"]) &&  $_COOKIE["theme"] === 'CEHRD') {
-                echo '<h1 id="title" class="title">Learning Portal Information</h1>';
+            if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
+               // echo '<h1 id="title" class="title">Learning Portal Information</h1>';
             }  else {
                 echo '<img src="images/trademark4.png" id="trademark" height="33px">';
                 echo '<h1 id="title" class="title">Looma Information</h1>';
@@ -42,20 +43,21 @@ require ('includes/mongo-connect.php');
             ?>
         </div>
         <div id="about">
-        <h3>Looma 2</h3>
-        <h4>   Release 7.0.2 SEP 2021   </h4>
+            <div id="copyright"><h3>Looma 2</h3>
+                <h4>   Release 7.0.4 OCT 2021   </h4>
+                <img src ='images/copyright.png' class="copyright"></img>2021
+            </div>
 
-        <img src ='images/copyright.png' class="copyright"></img>2021
-        <?php
-        if(isset($_COOKIE["theme"]) &&  $_COOKIE["theme"] === 'CEHRD') {
+    <?php
+        if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
             echo "<a draggable='false'  class='footer' href='https://www.cehrd.gov.np/'>by Center for Education and Human Resources Development</a>";
-            echo "<h4>Contact:  infodoenp AT gmail DOT com</h4>";
-        } else {
+            echo "<h4>Contact:  iemis@cehrd.gov.np</h4>";
+        } else { // source = looma
             echo "<a draggable='false'  class='footer' href='https://looma.education'>by Looma Education Company</a>";
             echo "<h4>Contact:  info AT looma DOT education</h4>";
 
             echo 'This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">';
-            echo 'Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.';
+            echo 'Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>';
             echo '<img draggable="false"  alt="Creative Commons License" src="images/logos/CC-BY-NC-SA.png" height="33px">';
       }
           ?>
@@ -64,8 +66,7 @@ require ('includes/mongo-connect.php');
             <h5> Attributions for code and content used in this portal</h5>
 
             <!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
-            <a draggable="false"  draggable="false" class="attribution" href="https://looma.education" target="_blank">
-                <img draggable="false" src="images/logos/Looma-english-amanda.png" height="66px"></a>
+
             <a draggable="false"  draggable="false" class="attribution" href="https://www.cehrd.gov.np/" target="_blank">
                 <img draggable="false" src="images/logos/CEHRD-logo.png" height="66px"></a>
             <a draggable="false"  draggable="false" class="attribution" href="https://erdcn.org/" target="_blank">
@@ -89,6 +90,8 @@ require ('includes/mongo-connect.php');
             <a draggable="false"  class="attribution" href="https://www.mapbox.com" target="_blank">
                 <img draggable="false" src="images/logos/tilemill.png" height="66px"></a>
             <br>
+            <a draggable="false"  draggable="false" class="attribution" href="https://looma.education" target="_blank">
+                <img draggable="false" src="images/logos/Looma-english-amanda.png" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://hesperian.org" target="_blank">
                 <img draggable="false" src="images/logos/hesperian.png" height="33px"></a>
             <a draggable="false"  class="attribution" href="https://mycroft.ai" target="_blank">
@@ -109,7 +112,7 @@ require ('includes/mongo-connect.php');
         </div>
         <div id="info-panel">
         <?php
-            if(isset($_COOKIE["theme"]) &&  $_COOKIE["theme"] !== 'CEHRD') {
+            if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] !== 'CEHRD') {
                 //echo '<span><img draggable="false" src="images/logos/LoomaLogoTransparent.png" class="loomalogo"></span>';
                 //echo '<img src="images/trademark4.png" id="trademark" height="33px">';
             }
@@ -117,8 +120,8 @@ require ('includes/mongo-connect.php');
         <h4>Tested only in Google Chrome</h4>
 
         <?php
-        if(isset($_COOKIE["theme"]) &&  $_COOKIE["theme"] === 'CEHRD')
-            echo "<h4>Report bugs and suggestions to:  infodoenp AT gmail DOT com</h4>";
+        if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD')
+            echo "<h4>Report bugs and suggestions to:  iemis@cehrd.gov.np</h4>";
         else
             echo "<h4>Report bugs and suggestions to:  info AT looma DOT education</h4>";
         ?>

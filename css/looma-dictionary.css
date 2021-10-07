@@ -24,7 +24,7 @@ p {
 }
 form {
     text-align: center;
-    height: 9.5%;
+    height: 10vh;
     vertical-align:middle;
     font-size : 2em;
     background-color:var(--looma-toolbar);
@@ -41,7 +41,7 @@ input#input {
 
 button#submit {
     margin:auto 0;
-    font-size: 1em;
+    font-size: 4vh;
 }
 
 #english{

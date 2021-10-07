@@ -11,14 +11,15 @@ Description: Initial "maps" page. Takes the user to the different maps.
 
 <?php  $page_title = 'Looma Maps';
 include ("includes/header.php");
-require ('includes/mongo-connect.php');
-require('includes/looma-utilities.php');?>
+require('includes/looma-utilities.php');
+logPageHit('maps');
+?>
 
 <link rel="stylesheet" href="css/looma-maps.css" />
 
 <?php
 $mapDir = "../content/maps/mapThumbs/";
-$urlBegin = "looma-map.php?id=";
+$urlBegin = "looma-play-map.php?id=";
 
 function makeButton($file, $thumb, $dn) {
     echo "<a href='" . $file . "'>";

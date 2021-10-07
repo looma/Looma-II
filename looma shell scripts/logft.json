@@ -1,0 +1,11 @@
+{"_id":{"$oid":"615900ae3689ed5ad83c4014"},"ft":"video","hits":2}
+{"_id":{"$oid":"615900dc3689ed5ad83c4015"},"ft":"audio","hits":0}
+{"_id":{"$oid":"615900e33689ed5ad83c4016"},"ft":"pdf","hits":6}
+{"_id":{"$oid":"615900ea3689ed5ad83c4017"},"ft":"chapter","hits":2}
+{"_id":{"$oid":"615900f13689ed5ad83c4018"},"ft":"lesson","hits":1}
+{"_id":{"$oid":"615901003689ed5ad83c4019"},"ft":"epaath","hits":0}
+{"_id":{"$oid":"615901093689ed5ad83c401a"},"ft":"PhET","hits":1}
+{"_id":{"$oid":"615901273689ed5ad83c401b"},"ft":"image","hits":0}
+{"_id":{"$oid":"615901313689ed5ad83c401c"},"ft":"slideshow","hits":0}
+{"_id":{"$oid":"615901423689ed5ad83c401d"},"ft":"map","hits":1}
+{"_id":{"$oid":"6159015f3689ed5ad83c401e"},"ft":"wikipedia","hits":1}

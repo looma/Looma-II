@@ -102,7 +102,7 @@ var LOOMA = (function() {
                 case "jpeg":
                 case "png":
                 case "gif":
-                    window.location = 'looma-image.php?fn=' + fn + '&fp=' + fp;
+                    window.location = 'looma-play-image.php?fn=' + fn + '&fp=' + fp;
                     break;
                 
                 case "audio":
@@ -187,7 +187,7 @@ var LOOMA = (function() {
                     break;
                 
                 case "map":
-                    window.location = 'looma-map.php?id=' + button.getAttribute('data-mongoid');
+                    window.location = 'looma-play-map.php?id=' + button.getAttribute('data-mongoid');
                     break;
                 
                 /*

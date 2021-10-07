@@ -150,9 +150,7 @@ window.onload = function () {
     $('#cancel').click (function() {$('#filelist').empty();});
     
     $('#dismiss').off('click').click( function() {
-        LOOMA.confirm('Leave Import Content Page?',
-            function() {window.history.back();},
-            function() {return;});
+        window.location = 'looma-settings.php?';
     });
     
 };  //end window.onload()

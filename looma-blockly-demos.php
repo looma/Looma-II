@@ -8,7 +8,6 @@ Description: Initial "demos" page. Takes the user to each demo.
 
 <?php  $page_title = 'Looma Blockly Demos';
     include ("includes/header.php");
-    require ('includes/mongo-connect.php');
     require('includes/looma-utilities.php');
     //require('includes/translate.php');
 ?>

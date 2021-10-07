@@ -146,7 +146,8 @@ pdf {
     width: 100%;
     font-size: 1.2em;
 }
-#zoom-dropdown {display:none;}
+
+#zoom-dropdown {}
 
 #zoom-menu .dropdown-item {
     font-size: 1.2em;

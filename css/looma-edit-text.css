@@ -13,10 +13,11 @@ Comments:
 */
 
 body {
-    color:black;
-    background-color:#eee;
+    color: black;
+    background-color: #eee;
+    
+    font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", sans-serif;
 }
-
 h1 {background-color:#F0EC1A}
 
 .admin {display:none;}

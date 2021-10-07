@@ -1,5 +1,5 @@
 // mongo terminal program "fixEPaath"
-//      input from a tab-seperated file
+//      input from a tab-separated file
 //          each line of which has DN, NDN, version, fn, oleID, subject, grade
 //          inserts all the fields into the activities document corresponding to the FN + DN + oleID
 //

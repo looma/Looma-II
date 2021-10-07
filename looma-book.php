@@ -15,9 +15,8 @@ Pass in URL parameters "fp" the path to the folder containing EN and NP folders 
 -->
 
 <?php $page_title = 'Looma Book';
-    require ('includes/header.php');
-    require ('includes/mongo-connect.php');
-    require ('includes/looma-utilities.php');
+    require_once ('includes/header.php');
+    require_once ('includes/looma-utilities.php');
 ?>
 </head>
 

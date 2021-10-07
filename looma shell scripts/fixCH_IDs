@@ -1,0 +1,48 @@
+// ONE TIME program to trim leading and trailing blanks from activities' ch_id's and nch_id's
+//          also removes null, undefined or "" ch_ids
+//          also removes ch_ids that dont match the CH_IDregex
+//
+//  run in MONGO SHELL with: load('fixCH_IDs')
+//
+var cursor, count, fixcount, doc, output;
+
+
+// need to remove "", null, undefined, and illegal ch_id's (e.g. text like "People")
+var CH_IDregex = /([1-9]|10|11|12)(EN|Ena|Sa|S|SF|Ma|M|SSa|SS|N|H|V|CS)[0-9]{2}(\.[0-9]{2})?/;
+
+cursor = db.activities.find({});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+
+    if (doc['ch_id'])
+    {
+        fixcount++;
+        var ch_set = new Set();
+        for ( var i=0; i<doc['ch_id'].length; i++)
+        {   ch = doc['ch_id'][i];
+            if (ch) {
+               var trim = ch.trim();
+               if (trim.match(CH_IDregex)) ch_set.add(trim);
+               else print ('excluding ' + trim);
+            };
+        };
+
+        if (ch_set.length !== 0)  doc['ch_id'] = [...ch_set]; else delete doc['ch_id'];
+
+        output  = '...' + doc['dn'] + '...ch_ids ...[';
+        for ( var i=0;i<doc['ch_id'].length;i++) { output += doc['ch_id'][i] + ',';}
+        output +=']';
+        print (output);
+
+        if (param === 'run') db.activities.update({_id:doc._id}, doc);
+
+    };
+};
+
+print('_______________');
+print(' + + + checked ' + count + ' activities');
+print(' + + + found ' + fixcount + ' activities with ch_ids');
+print('_______________');

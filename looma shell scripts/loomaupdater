@@ -1,15 +1,16 @@
 #!/bin/bash
 #
 #  filename: loomaupdater
-#       VERSION 4.0 for rysnc.net
+#       VERSION 5.0 for rysnc.net
 #       author: skip
-#       date:   FEB 2021
+#       date:   SEP 2021
 #
-#  used to update a pre-installed Looma by installing new code, database & content
+#  used to update a pre-installed Looma by installing latest code, database & content
+#           only changed or brand new files are transferred
 #
-#   files to be updated may
-#    - be on a USB stick at /media/odroid/LOOMA/loomaupdate (the "U" option)
-#    - or, on  the Internet at rsync.net (the "I" option)
+#   source files to be updated may be
+#    - on a USB stick at /media/odroid/LOOMA/loomaupdate (the "U" option)
+#    - or, on the Internet at rsync.net (the "I" option)
 #
 #   file structure expected if on the USB:
 #
@@ -24,10 +25,10 @@
 #    or other content folders
 #
 #   steps performed:
-#       sync new code files into existing Looma code
-#          [or backup existing Looma code to LoomaBAK and replace fully with new code
+#       sync newer code files into existing Looma code
 #       use mongorestore to load new data into the existing mongo database
-#       sync new content files into "content" directory
+#                  (merging into some collections, like 'lessons' and 'text-files')
+#       sync newer content files into "content" directory
 
 #RSYNC options used:
 #-a  "archive" equivalent to -rlptgoD
@@ -64,9 +65,29 @@ result () {
     fi
 }
 
-pause() {
+pause () {
    read -p "Paused, press [Enter] to continue"
+}
 
+backup () {
+    echo
+    echo "****************************************************************"
+    echo "- preparing to backup current Looma code to LoomaBAK"
+    echo "-   *** usually it is OK to skip this step to save time"
+    echo -n  "- - continue ('n' recommended) [y/n]?"; read input;
+    if [[ $input = "y" ]]
+    then
+        if [ -d "$TODIR/LoomaBAK" ]
+        then
+          echo "- deleting old LoomaBAK directory"
+          sudo rm -r "$TODIR/LoomaBAK"
+          result $?
+        fi
+        mv    "$TODIR/Looma"   "$TODIR/LoomaBAk"
+        result $?
+    else
+        echo " - - - SKIPPED: backing up Looma code "
+    fi
 }
 
 checknetworkspeed () {
@@ -94,7 +115,8 @@ checknetworkspeed () {
     fi
 }
 
-#function to exec the rsync. global var $DRYRUNMODE is either "--dry-run" or ""
+#function DOSYNC() to exec the rsync. global var $DRYRUNMODE is either "--dry-run" or ""
+# call dosync() with $1 = the source directory, $2 = the target directory
 dosync () {
     FROM=$1
     TO=$2
@@ -103,17 +125,18 @@ dosync () {
     echo; echo "  *** *** if prompted for \"password:\" enter \"looma\"  *** ***"
     echo ""
 
-    #NOTE: slash after FROM dir "Looma/" and no slash after TO "/var/www/html/Looma"
+    # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
     rsync -az  $DRYRUNMODE --size-only  \
         --stats  --progress   \
-        --perms  --chmod=D755,F644 --chown=odroid:looma \
+        --perms  --chmod=D777,F777 --chown=looma:looma \
         --exclude '.[!.]*' --delete --delete-excluded   \
         -e "ssh"   \
-       $FROM  $TO
-
+       "$FROM/"  "$TO"
 }
 
-#
+######
+######### start of executed code ##########
+######
 echo
 echo
 echo "****************************************************************"
@@ -148,10 +171,9 @@ echo -n  "- -enter  U for USB, I for internet [I/U]?"; read source
 if [[ $source = "U" ]]
 then
 
-###########################  USB settings  #############
+###########################  sourcing from USB - settings  #############
 
-  TODIR="/var/www/html"
-  FROMDIR="/media/odroid/LOOMA/loomaupdate/"
+  FROMDIR="/media/odroid/LOOMA/loomaupdate"
 
       echo; echo "****************************************************************"
       echo "    you must insert a USB memory stick which is named LOOMA"
@@ -159,7 +181,7 @@ then
       echo "    the USB stick must have the files to be uploaded stored in a top-level folder named 'loomaupdate' "
       echo "****************************************************************"
 
-      cd /media/odroid/LOOMA/loomaupdate # for Linux (different for MAC)
+      cd "$FROMDIR" # for Linux (different for MAC)
 
       if [ "$?" -ne 0 ]
       then
@@ -171,12 +193,11 @@ then
       echo -n  "- using this directory to get new files: ";pwd
       echo
 
-###########################  Internet settings ###############
+###########################  sourcing from the Internet-  settings ###############
 
   elif [[ $source = "I" ]]
   then
-      TODIR="/var/www/html"
-      FROMDIR="58191@usw-s008.rsync.net:../"
+      FROMDIR="58191@usw-s008.rsync.net:.."
 
     echo; echo "****************************************************************"
     echo "-   *** you can check network speed before proceeding"
@@ -193,27 +214,27 @@ then
       exit 1
   fi
 
+########################### set the target directory ###############
+
+  # set DEFAULT target dir to CEHRD target, but ask user to confirm or to enter another dir
+  TODIR="/var/www/html"
+  echo
+  echo "Target directory default is set to $TODIR)"
+  echo
+  echo "if that is OK, enter \"yes\", else enter the desired target directory (without a trailing \/): ";read target;
+    if [[ $target -ne "yes" ]]
+    then
+      TODIR=$target
+    fi
+  echo  "-----------------"
+  echo "using target directory $TODIR"
+  echo  "-----------------"
+
 ###########################  do the transfers ###############
 
 #       copy current Looma code to LoomaBAK
-    echo
-    echo "****************************************************************"
-    echo "- preparing to backup current Looma code to LoomaBAK"
-    echo "-   *** usually it is OK to skip this step to save time"
-    echo -n  "- - continue ('n' recommended) [y/n]?"; read input;
-    if [[ $input = "y" ]]
-    then
-        if [ -d /var/www/html/LoomaBAK ]
-        then
-          echo "- deleting old LoomaBAK directory"
-          sudo rm -r /var/www/html/LoomaBAK
-          result $?
-        fi
-        mv    /var/www/html/Looma   /var/www/html/LoomaBAk
-        result $?
-    else
-        echo " - - - SKIPPED: backing up Looma code "
-    fi
+#       NOTE: call to function DACKUP() commented out for now
+    # backup
 
     #       install new Looma code
     echo
@@ -226,14 +247,13 @@ then
 
         SECONDS=0
 
-        #NOTE: slash after FROM dir "Looma/" and no slash after TO "/var/www/html/Looma"
-        dosync "${FROMDIR}Looma/"  "${TODIR}/Looma"
+        dosync "$FROMDIR/Looma"  "$TODIR/Looma"
 
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
         CUMULATIVE=$SECONDS
 
         #clear browser cache so the new code files will be used
-        source "/var/www/html/Looma/looma shell scripts/loomaClearChromiumCache"
+        source "$TODIR/Looma/looma shell scripts/loomaClearChromiumCache"
     else
         echo " - - - SKIPPED: installing new Looma code"
     fi
@@ -242,15 +262,17 @@ then
     echo
     echo "****************************************************************"
     echo "- preparing to update Looma database"
-    echo "-   ***note: this will NOT erase any lesson plans already in the database"
+    echo "-   ***note: this will NOT erase any lesson plans or text files already in the database"
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
 
     if [[ $input = "y" ]]
     then
-        if [[ -d /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma ]]
+
+if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
+
         then
 
-            # [mongorestore doesnt update existing documents that have changes]
+            # [mongorestore doesnt update existing mongoDB documents that have changes]
             # to fix this, we use the following procedure:
             #     temp save locally created documents (lessons and texts)
             #     update all documents to latest version from the looma archive
@@ -264,9 +286,9 @@ then
             mongoexport --db looma --collection lessons --out /tmp/lessonsFromMongo.tmp
             mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
 
-            mongo --quiet looma < /var/www/html/Looma/looma\ shell\ scripts/loomaDropDatabase
+            mongo --quiet looma < "$TODIR/Looma/looma\ shell\ scripts/loomaDropDatabase"
 
-            mongorestore --quiet --db looma /media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma/
+          mongorestore --quiet --db looma "$TODIR/Looma/mongo-dump/dump/looma/"
 
             mongoimport --quiet --db looma --collection lessons --file /tmp/lessonsFromMongo.tmp
             mongoimport --quiet --db looma --collection text_files --file /tmp/textsFromMongo.tmp
@@ -275,7 +297,7 @@ then
             rm /tmp/textsFromMongo.tmp
 
             result $?
-        else echo "ERROR: no source dir (/media/odroid/LOOMA/loomaupdate/Looma/mongo-dump/dump/looma) for mongo restore"
+        else echo "ERROR: no source dir ($TODIR/Looma/mongo-dump/dump/looma) for mongo restore"
         fi
     else
         echo " - - - SKIPPED: installing new Looma database"
@@ -290,11 +312,13 @@ then
     then
        SECONDS=0
 
-        #NOTE: slash after FROM dir "Looma/" and no slash after TO "/var/www/html/Looma"
-        dosync "${FROMDIR}content/"   "${TODIR}/content"
+        dosync "$FROMDIR/content"   "$TODIR/content"
 
-        #dosync "${FROMDIR}maps2018/"  "${TODIR}/maps2018"
-        #dosync "${FROMDIR}ePaath/"    "${TODIR}/ePaath"
+        # uncomment to sync the maps [usually they dont change]
+        # dosync "$FROMDIR/maps2018/"  "$TODIR/maps2018"
+
+        # uncomment to sync ePaath [usually doesnt change]
+        # dosync "$FROMDIR/ePaath/"    "$TODIR/ePaath"
 
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 
@@ -308,7 +332,8 @@ then
 
   echo; echo "****************************************************************"
   echo "setting permissions on Looma code and content"
-  chmod -R 755 /var/www/html/Looma; chmod -R 755 /var/www/html/content
+  chmod -R 777 "$TODIR/Looma"
+  chmod -R 777 "$TODIR/content"
 
 echo
 echo "****************************************************************"

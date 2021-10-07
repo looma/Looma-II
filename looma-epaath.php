@@ -13,6 +13,8 @@ Description:  base page for showing epaath content=
 
 <?php $page_title = 'Looma ePaath';
 include ('includes/header.php');
+logFiletypeHit('epaath');
+
 ?>
 <link rel="stylesheet" href="css/looma-html.css">
 </head>

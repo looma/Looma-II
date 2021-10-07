@@ -5,7 +5,12 @@
 //
 //    to DRYRUN this script, enter "param='dryrun'  before entering the load statement
 //
-//  make sure there is a file 'nch_idsToImport.txt' in the current directory
+//  make sure there is a file 'nch_idsToImport.tsv' in the current directory
+//
+//  IMPORTANT: be sure to remove any ' or " from the ch_id list
+//  IMPORTANT: be sure to remove any blanks from the ch_id list
+//
+//
 //  start MONGO in LOOMA db with: 'mongo looma'
 //  run in MONGO SHELL with: load('importNCH_IDs')
 //
@@ -33,7 +38,7 @@ var requestcount = 0;
 var changecount = 0;
 var illegalcount = 0;
 
-var input = 'nch_idsToImport.txt';
+var input = 'nch_idsToImport.tsv';
 print ('Importing nCH_IDs from ' + input);
 var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
 
@@ -67,6 +72,7 @@ docs.forEach( function(doc) {
             var IDs = fields[2].split(/,/);  //list of ch_ids on COMMAs
     
             IDs.forEach   (function(x){
+                x = x.trim();
                 if(x && legalCH_ID(x,activity['dn']) && activity['nch_id'].indexOf(x) === -1) activity['nch_id'].push(x);});
     
             if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);

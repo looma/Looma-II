@@ -11,6 +11,8 @@ Description:  base page for showing HTML content. call with URL=looma.html.php?f
 
 <?php $page_title = 'Looma HTML';
 	  include ('includes/header.php');
+logFiletypeHit('html');
+
 ?>
     <link rel="stylesheet" href="css/looma-html.css">
 	</head>
@@ -19,7 +21,13 @@ Description:  base page for showing HTML content. call with URL=looma.html.php?f
 	<?php
 		$filename = $_REQUEST['fn'];
 		$filepath = $_REQUEST['fp'];
-	?>
+
+		if      ( strpos($filepath, 'W4S2013')) logFiletypeHit('wikipedia');
+		else if ( strpos($filepath, 'PhET'))    logFiletypeHit('PhET');
+		// next line commented. counting HTML hits is distorted by Wikipedia navigation
+        //else                                                    logFiletypeHit('html');
+
+    ?>
 		<div id="main-container-horizontal">
 			<div id="fullscreen">
                 <!-- NOTE the iframe below has name='looma-frame', and wikipedia articles in looma have <a xxx.htm target="looma-frame" -->

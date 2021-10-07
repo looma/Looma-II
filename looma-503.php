@@ -9,6 +9,8 @@ Description: custom 404 page for looma browser if no internet present
 -->
 <?php $page_title = 'Looma 503 ';
 include ('includes/header.php'); ?>
+<link rel="stylesheet" href="css/looma-503.css">
+
 </head>
 
 <body>

@@ -87,7 +87,7 @@ playMedia : function(button) {
         case "mp4":
         case "m4v":
         case "mov":
-            window.location = 'looma-video.php?' +
+            window.location = 'looma-play-video.php?' +
                  'fn=' + fn +
                 '&fp=' + fp +
                 '&dn=' + dn;
@@ -108,13 +108,13 @@ playMedia : function(button) {
         case "jpeg":
         case "png":
         case "gif":
-            window.location = 'looma-image.php?fn=' + fn + '&fp=' + fp;
+            window.location = 'looma-play-image.php?fn=' + fn + '&fp=' + fp;
             break;
 
         case "audio":
         case "mp3":
         case "m4a":
-            window.location = 'looma-audio.php?fn=' + button.getAttribute(
+            window.location = 'looma-play-audio.php?fn=' + button.getAttribute(
                     'data-fn') +
                 '&fp=' + button.getAttribute('data-fp') +
                 '&dn=' + button.getAttribute('data-dn');
@@ -123,6 +123,7 @@ playMedia : function(button) {
         case "pdf":      //PDF
         case "document": //DOCUMENT (some PDFs)
         case "chapter":  //CHAPTER
+        case "section":  //textbook SECTIONs are 'played' if len > 0
             if ( true ) {
                     window.location = 'looma-play-pdf.php?' +
                     'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
@@ -193,7 +194,7 @@ playMedia : function(button) {
             break;
     
         case "map":
-            window.location = 'looma-map.php?id=' + button.getAttribute('data-mongoid');
+            window.location = 'looma-play-map.php?id=' + button.getAttribute('data-mongoid');
             break;
    
             /*
@@ -240,10 +241,12 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                         //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
                     if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
                     var lang = (result.ft==="EP" && result.subject === "nepali")? "np": "en";
+                    var fn = (result.fn) ? result.fn : result.nfn;
+                    
                     var $newButton = $(
                                 '<button class="activity play img" ' +
                                 'data-id="' + id          + '" ' +
-                                'data-fn="' + result.fn   + '" ' +
+                                'data-fn="' + fn   + '" ' +
                                 'data-fp="' + fp          + '" ' +
                                 'data-ft="' + result.ft   + '" ' +
                                 'data-lang="' +  lang     + '" ' +
@@ -266,26 +269,38 @@ makeActivityButton: function (id, mongoID, appendToDiv) {
                                 // add key1, key2, key3, key4, thumb, src, mondoID, url and ch_id data-fields  ???
                                 //
                            );
-
+                    
+                        //var fn = (language === 'native') ? result.nfn : result.fn;
+                        var fn;
+                        if ( ! fn in result && nfn in result) fn = result.nfn;
+                        else fn = null;
+                    
                         if      (result.ft == 'EP'       && result.thumb)
                                                thumbfile = '../ePaath/' + result.thumb;
                         else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft || 'map') && result.thumb)
                                                thumbfile = result.thumb;
                         else if (result.thumb) thumbfile = result.fp + result.thumb ;
-                        else                   thumbfile = LOOMA.thumbnail(result.fn, result.fp, result.ft);
+                        else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
+                        else thumbfile = null;
     
-                     $newButton.append($('<img loading="lazy" draggable="false" src="' + thumbfile + '">'));
+                     if (thumbfile) $newButton.append($('<img alt="" loading="lazy" draggable="false" src="' + thumbfile + '">'));
                     
-                    //$newButton.append($('<img draggable="false" src="' + thumbfile + '"' +
+                    //$newButton.append($('<img alt="" draggable="false" src="' + thumbfile + '"' +
                        //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));
                     
                     /*this idea is from: https://stackoverflow.com/questions/980855/inputting-a-default-image-in-case-the-src-attribute-of-an-html-img-is-not-vali
                            $newButton.append($('<object draggable="false" data="' + thumbfile + '" type="image/png">' +
-                                                '<img src="' + result.fp + 'thumbnail.png">' +
+                                                '<img alt="" src="' + result.fp + 'thumbnail.png">' +
                                                 '</object>'));
                      */
                     
-                        var displayname = (language === 'native' && result.ndn) ? result.ndn : result.dn;
+                    
+                    var displayname;
+                    if (language==='english') displayname = ('dn' in result) ? result.dn : result.ndn;
+                    else displayname = ('ndn' in result) ? result.ndn : result.dn;
+                    
+                    
+                        //var displayname = ((language === 'native' || (! 'dn' in result)) && result.ndn )  ? result.ndn : result.dn;
                         $newButton.append($('<span class="dn">').text(displayname));
                         $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
@@ -321,7 +336,7 @@ makeChapterButton: function (id, appendToDiv) {
                 var thumbEnd = (result['pn']) ? "_thumb.jpg" : "-Nepali_thumb.jpg";
                 var thumb = fp + fn + thumbEnd;
                 
-                $newButton.append($('<img draggable="false" src="' + thumb + '">'));
+                $newButton.append($('<img alt="" draggable="false" src="' + thumb + '">'));
                 $newButton.append($('<span>').text(result.dn));
                 $newButton.click(function() {
                     saveState();
@@ -723,7 +738,7 @@ defHTML: function (definition, rwdef) {
     
     if (definition.img) {
         var imgName = definition.img + ".jpg";
-        var $img = $('<img id="definitionThumb" src="../content/dictionary\ images/' + imgName + '"/>');
+        var $img = $('<img id="definitionThumb" alt="" src="../content/dictionary\ images/' + imgName + '"/>');
     }
     
     $div.append($english, $nepali, $pos, $def, $img);
@@ -1712,6 +1727,6 @@ LOOMA.download = function (name, path) {
  
     //LOOMA.CH_IDregex = /^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/;
     //LOOMA.CH_IDregex = /([1-9]|10)(EN|Sa|S|Ma|M|SSa|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/;
-    LOOMA.CH_IDregex = /([1-9]|10|11)(EN|Ena|Sa|S|Ma|M|SSa|SS|N|H|V|CS)[0-9]{2}(\.[0-9]{2})?/;   //removed "^" and "$"
+    LOOMA.CH_IDregex = /([1-9]|10|11|12)(EN|Ena|Sa|S|SF|Ma|M|SSa|SS|N|H|V|CS)[0-9]{2}(\.[0-9]{2})?/;   //removed "^" and "$"
  
  var loginname = LOOMA.loggedIn();

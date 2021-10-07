@@ -10,7 +10,6 @@ Description:  displays for a textbook (class/subject)
 
 <?php $page_title = 'Looma Chapters';
 include ('includes/header.php');
-include ('includes/mongo-connect.php');
 ?>
     <link rel="stylesheet" href="css/looma-chapters.css">
 </head>
@@ -101,6 +100,7 @@ foreach ($chapters as $ch) {
     //print_r($ch);exit;
 
     $ch_dn =  keyIsSet('dn', $ch) ? ($ch['dn']) : $tb_dn;
+    $ch_ndn =  keyIsSet('ndn', $ch) ? ($ch['ndn']) : $tb_dn;
     //$ch_dn is chapter displayname
     $ch_ndn = keyIsSet('ndn', $ch) ? $ch['ndn'] : $ch_dn;
     //$ch_ndn is native displayname
@@ -181,7 +181,8 @@ foreach ($chapters as $ch) {
                        data-lang="en"
                        data-ch="';
         echo $ch_id;
-        echo '" data-chdn="' . $ch_dn . '">';
+        echo '" data-chdn="' . $ch_dn ;
+        echo '" data-chndn="' . $ch_ndn . '">';
         echo 'Resources';
         echo "</button>";
         }
@@ -245,7 +246,8 @@ foreach ($chapters as $ch) {
             echo "<button class='activities np-activities'
                      data-lang='np'
                      data-ch='$nch_id'
-                     data-chdn='$ch_dn'>";
+                     data-chdn='$ch_dn'
+                    data-chndn='$ch_ndn'>";
             echo "स्रोतहरू";
             echo "</button>";
 

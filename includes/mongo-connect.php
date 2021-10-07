@@ -37,6 +37,16 @@ function mongoGetId ($doc) { // $doc is a document returned by mongoinsert or si
     else return (string) $doc['_id'];
 }
 
+function mongoCount($collection) {
+    global $mongo_level;
+    if ($mongo_level >= 4) {
+        $count = $collection->count();
+    } else {  // old mongoDB
+        $count = $collection->count( );
+    }
+    return $count;
+}
+
 function mongoFind($collection, $filter, $sort, $skip, $limit) {
 
     // $auery, $sort, $skip, and $limit may be null
@@ -201,6 +211,7 @@ catch(MongoConnectionException $e) {
 
 $dbhost = 'localhost';
 $dbname = 'looma';
+$logname = 'activitylog';
 
 //use below FORMAT for PHP later than 5.5??
 //$m = new MongoDB\Driver\Manager("mongodb://localhost:27017");
@@ -226,6 +237,16 @@ $new_content_collection = $loomaDB -> new_content;
 $recorded_videos_collection = $loomaDB -> recorded_videos;
 $chapterIDs_collection = $loomaDB -> chapterIDs;
 
+$logDB = $m -> $logname;  //connect to the database "activitylog"
+//make query variables for all collections
+$users_collection      = $logDB -> users;
+$hours_collection      = $logDB -> hours;
+$days_collection       = $logDB -> days;
+$weeks_collection      = $logDB -> weeks;
+$months_collection     = $logDB -> months;
+$pages_collection     = $logDB -> pages;
+$filetypes_collection = $logDB -> filetypes;
+
 $collections = array(
     "activities" =>    $activities_collection,
     "chapters" =>      $chapters_collection,
@@ -244,6 +265,15 @@ $collections = array(
     "edited_videos" => $edited_videos_collection,
     "new_content" =>   $new_content_collection,
     "recorded_videos" => $recorded_videos_collection,
-    "chapterIDs" =>    $chapterIDs_collection
+    "volunteers" =>    $volunteers_collection,
+    "chapterIDs" =>    $chapterIDs_collection,
+
+    "users"  =>      $users_collection,
+    "hours"  =>      $hours_collection,
+    "days"   =>      $days_collection,
+    "weeks"  =>      $weeks_collection,
+    "months" =>      $months_collection,
+    "pages"  =>      $pages_collection,
+    "filetypes" =>   $filetypes_collection
 );
 ?>

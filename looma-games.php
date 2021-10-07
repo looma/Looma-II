@@ -9,7 +9,7 @@ File: looma-games.php [replaces old version]
 
 <?php $page_title = 'Games Page';
 require_once ('includes/header.php');
-require_once ('includes/mongo-connect.php');
+logPageHit('games');
 define ("CLASSES", 10);
 ?>
 

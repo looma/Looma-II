@@ -9,7 +9,6 @@ error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
 <!doctype html>
     <?php $page_title = 'Looma - Video Editor';
           include ('includes/header.php');
-          include ('includes/mongo-connect.php');
     ?>
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="css/looma-filecommands.css">

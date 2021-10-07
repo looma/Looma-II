@@ -1,0 +1,12 @@
+#main-container-horizontal {
+    background-color: palegoldenrod;
+    color: black;
+}
+#fullscreen {
+    height:75vh;
+    width:75vw;
+    margin: 3vh auto;
+    padding: 5vh;
+    background-color: white;
+    color: black;
+}

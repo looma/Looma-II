@@ -11,8 +11,7 @@ Description:  displays a list of activity buttons of wikipedia articles matching
 
 
 <?php $page_title = 'Looma Wikipedia';
-require ('includes/header.php');
-require ('includes/mongo-connect.php');
+require_once ('includes/header.php');
 
 //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang)
 require('includes/looma-utilities.php');

@@ -30,7 +30,6 @@ Usage: 	<button  id="testvideo"
 
 <?php $page_title = 'Looma Edited Video Player';
     include ('includes/header.php');
-    include ('includes/mongo-connect.php');
     include('includes/looma-utilities.php');
 ?>
 

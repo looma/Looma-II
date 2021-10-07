@@ -11,9 +11,11 @@ Description:  searches Looma library for Looma 2
 
 <?php $page_title = 'Looma Library';
 require_once ('includes/header.php');
-require_once ('includes/mongo-connect.php');
 require_once ('includes/looma-utilities.php');
 include("includes/looma-control-buttons.php");
+
+logPageHit('library-search');
+
 ?>
 
 <!--<link rel = "Stylesheet" type = "text/css" href = "css/looma-search.css">--->

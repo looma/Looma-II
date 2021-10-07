@@ -11,8 +11,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
 
 <?php $page_title = 'Looma Resources';
-	require ('includes/header.php');
-	require ('includes/mongo-connect.php');
+	require_once ('includes/header.php');
 
     //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
     //                       $mongo_id, $ole_id, $url, $pg, $zoom, $grade,
@@ -35,16 +34,19 @@ $foundActivity;
 
         $id = $activity['_id'];
 
+        // check for no FT
+        if (!isset($activity['ft'])) return;
+
         //check if this Activity has already been shown
         //add to 'shown' array, so it wont be shown again
         if ( ! in_array($id, $shown)) {
             array_push($shown,$id);
 
-            $ft = $activity['ft'];
-            $dn =  $activity['dn'];
+            $ft = strtolower($activity['ft']);
+            $dn = (isset($activity['dn']) ? $activity['dn'] : (isset($activity['ndn']) ? $activity['ndn'] : ""));
             $ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
-            $fn = (isset($activity['fn']) ? $activity['fn'] : "");
+            $fn = (isset($activity['fn']) ? $activity['fn'] : (isset($activity['nfn'])?$activity['nfn']:""));
             //$fn = urlencode($fn);
             $thumb = (isset($activity['thumb']) ? $activity['thumb'] : "");
             $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
@@ -98,10 +100,10 @@ $foundActivity;
                         makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null,null);
                         break;
 
-                    case "VOC":     //vocabulary reviews
+                    case "voc":     //vocabulary reviews
                         break;
 
-                    case "LP";      //lesson plan
+                    case "lp";      //lesson plan
                         break;
 
                     case "image":
@@ -139,7 +141,7 @@ $foundActivity;
                         makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                         break;
 
-                    case "EP":
+                    case "ep":
                     case "epaath":
                         if ($epversion === 2015) $thumb = $fp . $fn . "/thumbnail.jpg";
                         if ( substr($oleID, 0, 3) === 'nep') $lang = 'np';
@@ -180,9 +182,11 @@ $foundActivity;
         $subject = trim($_GET['subject']) ;
         $lang = trim($_GET['lang']) ;
 		$ch_id = trim($_GET['ch']);
-		$ch_dn = trim($_GET['chdn']);
-		echo "<div id='main-container-horizontal' class='scroll'>";
+        $ch_dn = trim($_GET['chdn']);
 
+        $ch_ndn =  (isset($_GET['chndn'])) ? trim($_GET['chndn']) : $ch_dn;
+
+        echo "<div id='main-container-horizontal' class='scroll'>";
 		echo "<br>";
 
 		if ($subject === "social studies") $caps = "Social Studies";
@@ -192,7 +196,12 @@ $foundActivity;
 		$grade = str_replace("class", "Grade ", $grade);
 		echo "<h2 class='title'>";
 		echo keyword('Resources');
-		echo " for " . ucfirst($grade) . " " . $caps . ": \"" . $ch_dn . "\"</h2>";
+		echo keyword(': ') . " " . keyword(ucfirst($grade)) . keyword(" ") . keyword($caps) . "\"";
+
+echo '<span class="english-keyword">' . $ch_dn .  '</span>';
+echo '<span class="native-keyword">'  . $ch_ndn . '</span>';
+
+        echo "\"</h2>";
 
 	    echo "<div>";
 
@@ -282,7 +291,7 @@ $foundActivity;
             //echo "<a href='looma-arith.php?class=class" . $gradenumber . "'>";
             echo "  <button class='activity play img'>";
             echo "    <img src='images/games.png'>";
-            echo "    <span>Arithmetic Practice</span>";
+            echo "    <span>Mathematical Operations Practice</span>";
             echo "  </button>";
             echo "</a>";
 
@@ -303,6 +312,9 @@ $foundActivity;
 
  $activities = mongoFind($activities_collection, $query, null, null, null);
 		foreach ($activities as $activity)  {
+
+		    //echo $activity['dn'];
+
 		    makeButton($activity);
             $foundActivity = true;
         }

@@ -140,8 +140,8 @@ include ('includes/header.php');
         /**************************************/
 
         echo "<div id='gradelevels'>";
-            echo "Lowest Grade:       <input type='number' class='grade-filter' id='cl_lo' name='cl_lo' min='1' max='10' value='1'>";
-            echo "    Highest Grade:  <input type='number' class='grade-filter' id='cl_hi' name='cl_hi' min='1' max='10' value='10'>";
+            echo "Lowest Grade:       <input type='number' class='grade-filter' id='cl_lo' name='cl_lo' min='1' max='12' value='1'>";
+            echo "    Highest Grade:  <input type='number' class='grade-filter' id='cl_hi' name='cl_hi' min='1' max='12' value='12'>";
             echo "<button class='chng-clear' id='grades-clear'>X</button>";
         echo "</div>";
 

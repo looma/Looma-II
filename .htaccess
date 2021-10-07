@@ -12,3 +12,6 @@ ErrorDocument 404 /Looma/looma-404.php
 #
 # redirect home page to /Looma/looma-home.php
 Redirect 301 /index.php /Looma/looma-home.php
+#
+RewriteEngine On
+#RewriteRule /Looma   /Looma/looma-home.php

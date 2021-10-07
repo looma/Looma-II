@@ -13,10 +13,12 @@ Revision: Looma 5.7
 <?php $page_title = 'Looma PDF Viewer';
     include ('includes/header.php');
     require_once ('includes/looma-utilities.php');
+
+    $filepath = $_REQUEST['fp'];
+    if ( strpos($filepath, 'textbooks')) logFiletypeHit('chapter');
+    else                                                 logFiletypeHit('pdf');
 ?>
 <link rel="stylesheet" href="css/font-awesome.min.css">
-
-
 </head>
 
 <body>

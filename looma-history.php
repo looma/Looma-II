@@ -8,7 +8,6 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
   <?php $page_title = 'Looma History Timeline';
 
     include ("includes/header.php");
-    include ("includes/mongo-connect.php");
   ?>
 
     <link href='css/looma-history.css' rel='stylesheet' type='text/css'>

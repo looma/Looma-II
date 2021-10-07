@@ -8,8 +8,9 @@ Description: looma lesson plan presenter
 -->
 	<?php $page_title = 'Looma Lesson Presenter ';
       include ('includes/header.php');
-      require ('includes/mongo-connect.php');
-      include('includes/looma-utilities.php'); ?>
+      include('includes/looma-utilities.php');
+    logFiletypeHit('lesson');
+    ?>
 
     <link rel="stylesheet" href="css/looma-media-controls.css">
     <!-- <link rel="stylesheet" href="css/looma-video.css"> -->

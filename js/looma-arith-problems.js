@@ -33,72 +33,13 @@ function init(){
     resetButton.addEventListener('click', resetAnswer,false);
 
     var answerField = document.getElementById('answer');
-    answerField.addEventListener('keyup',    function(e) {
-        if (arithSubject != 'div') LOOMA.rtl(this);}, false);
-    answerField.addEventListener('keypress', function(e) {
-        if(e.keyCode == enterKey) {checkAnswer();}},false);
-
-/*CALCULATOR hidden fall 2017 - use Looma Calculator instead
-    document.getElementById('calculator').style.visibility = 'hidden';
-    var helpButton = document.getElementById('help');
-    helpButton.addEventListener('click', calculator,false);
-
-    //calculator buttons
-    var button1 = document.getElementById('1');
-    button1.addEventListener('click', addToDisp,false);
-
-    var button2 = document.getElementById('2');
-    button2.addEventListener('click', addToDisp,false);
-
-    var button3 = document.getElementById('3');
-    button3.addEventListener('click', addToDisp,false);
-
-    var button4 = document.getElementById('4');
-    button4.addEventListener('click', addToDisp,false);
-
-    var button5 = document.getElementById('5');
-    button5.addEventListener('click', addToDisp,false);
-
-    var button6 = document.getElementById('6');
-    button6.addEventListener('click', addToDisp,false);
-
-    var button7 = document.getElementById('7');
-    button7.addEventListener('click', addToDisp,false);
-
-    var button8 = document.getElementById('8');
-    button8.addEventListener('click', addToDisp,false);
-
-    var button9 = document.getElementById('9');
-    button9.addEventListener('click', addToDisp,false);
-
-    var button0 = document.getElementById('0');
-    button0.addEventListener('click', addToDisp,false);
-
-    var buttonDot = document.getElementById('.');
-    buttonDot.addEventListener('click', addToDisp,false);
-
-    var buttonC = document.getElementById('clr');
-    buttonC.addEventListener('click', clearDisp,false);
-
-    var buttonPM = document.getElementById('+-');
-    buttonPM.addEventListener('click', addPM,false);
-
-    var buttonPlus = document.getElementById('+');
-    buttonPlus.addEventListener('click', opNums,false);
-
-    var buttonMinus = document.getElementById('-');
-    buttonMinus.addEventListener('click', opNums,false);
-
-    var buttonTimes = document.getElementById('*');
-    buttonTimes.addEventListener('click', opNums,false);
-
-    var buttonDivide = document.getElementById('/');
-    buttonDivide.addEventListener('click', opNums,false);
-
-    var buttonEquals = document.getElementById('=');
-    buttonEquals.addEventListener('click', equals,false);
-//end calculator buttons
-*/
+   
+    answerField.addEventListener('keyup',
+        function(e) {if (arithSubject != 'div') LOOMA.rtl(this);});
+   
+    answerField.addEventListener('keypress',
+        function(e) {if(e.keyCode == enterKey) checkAnswer();});
+    
     var subjectName;
     switch (arithSubject) {
         case 'sub': subjectName = "subtraction"; break;
@@ -111,16 +52,20 @@ function init(){
     document.getElementById('countValue').innerHTML = problemCount;
 
     if(arithSubject == 'div'){
-        document.getElementById('division-symbol').style.visibility = 'visible';
-        document.getElementById('answerLine').style.visibility = 'hidden';
-        document.getElementById('operation').style.visibility = 'hidden';
-        document.getElementById('num1').className = 'div';
-        document.getElementById('num2').className = 'div';
-
+        //document.getElementById('division-symbol').style.visibility = 'visible';
+        $('#division-symbol').show();
+        $('#answerLine').hide();
+        $('#operation').hide();
+        $('#num1, #num2, #answer, .button-group').addClass('div');
+        //document.getElementById('operation').style.visibility = 'hidden';
+        //document.getElementById('num1').className = 'div';
+        //document.getElementById('num2').className = 'div';
     }
     else{
-        document.getElementById('division-symbol').style.visibility = 'hidden';
-        document.getElementById('answerLine').style.visibility = 'visible';
+      //  document.getElementById('division-symbol').style.visibility = 'hidden';
+        $('#division-symbol').hide();
+        $('#answerLine').show();
+        //document.getElementById('answerLine').style.visibility = 'visible';
         op = document.getElementById('operation');
         if(arithSubject === 'add'){
             op.innerHTML = '+';
@@ -143,12 +88,13 @@ function nextGenProb(){
     var count = document.getElementById('countValue');
     var randNum1, randNum2;
 
-    if(document.getElementById('message-correct').style.visibility == 'visible'){
+    if(document.getElementById('message').style.visibility == 'visible'){
         problemCount += 1;
         count.innerHTML = problemCount;
     }
-    document.getElementById('message-correct').style.visibility = 'hidden';
-    document.getElementById('message-wrong').style.visibility = 'hidden';
+    $('#message').text();
+   // document.getElementById('message-correct').style.visibility = 'hidden';
+   // document.getElementById('message-wrong').style.visibility = 'hidden';
 
     //document.getElementById('calculator').style.visibility = 'hidden';
 
@@ -306,12 +252,14 @@ function nextGenProb(){
     resetAnswer();
 }; //end nextGenProb()
 
-function resetAnswer(){
+function resetAnswer() {
     var answer = document.getElementById('answer');
     answer.value = '';
     answer.focus();
-    document.getElementById('message-wrong').style.visibility = 'hidden';
-    document.getElementById('message-correct').style.visibility = 'hidden';};
+    $('#message').text();
+    //document.getElementById('message-wrong').style.visibility = 'hidden';
+    //document.getElementById('message-correct').style.visibility = 'hidden';};
+};
 
 function checkAnswer(){
     var correct, wrong;
@@ -325,148 +273,17 @@ function checkAnswer(){
     else              { correct = num2 / num1;}
     
     if(parseInt(answer) === correct){
-        document.getElementById('message-wrong').style.visibility = 'hidden';
-        document.getElementById('message-correct').style.visibility = 'visible';
+        $('#message').text('Correct. Try another problem').css('color','green').show();
+        //document.getElementById('message-wrong').style.visibility = 'hidden';
+        //document.getElementById('message-correct').style.visibility = 'visible';
     }
     else{  //wrong answer given
-        document.getElementById('message-wrong').style.visibility = 'visible';
-        document.getElementById('message-correct').style.visibility = 'hidden';
+        $('#message').text('Incorrect: Try again').css('color','red').show();
+        //document.getElementById('message-wrong').style.visibility = 'visible';
+        //document.getElementById('message-correct').style.visibility = 'hidden';
         //document.getElementById('answer').value = '';
         document.getElementById('answer').focus();
     }
 }
 
-
-// CALCULATOR for HELP button in arithmetic problems -- need to combine this with the Looma calculator
-// CALCULATOR removed 09 2017 - use looma calculator instead
-/*function calculator(e){
-    var calc = document.getElementById('calculator');
-    if(calc.style.visibility == 'hidden'){
-        calc.style.visibility = 'visible';
-        document.getElementById('help').innerHTML = 'Hide';
-    }
-    else{
-        calc.style.visibility = 'hidden';
-        document.getElementById('help').innerHTML = 'Help';
-    }
-}
-
-function addPM(e){
-    var dVal = document.getElementById('calcDisplay').value;
-    var dLen = dVal.length;
-    if(dVal[0] === '-'){
-        dVal = dVal.substring(1,dLen);
-        document.getElementById('calcDisplay').value = dVal;
-    }
-    else{
-        document.getElementById('calcDisplay').value = '-' + dVal;
-    }
-}
-
-function equals(e){
-    var answer = 0;
-    var num2 = Number(document.getElementById('calcDisplay').value);
-    if(prevOp.length != 0){
-        if(prevOp == '+'){
-            answer = num1 + num2;
-        }
-        else if(prevOp == '-'){
-            answer = num1 - num2;
-        }
-        else if(prevOp == '*'){
-            answer = num1 * num2;
-        }
-        else{
-            answer = num1 / num2;
-        }
-        document.getElementById('calcDisplay').value = answer;
-        num1 = answer;
-    }
-    //meaning they pressed equals consecutive times
-    else{
-        clearDisp();
-    }
-
-    prevOp = "";
-    prevClicked = "=";
-}
-
-function opNums(e){
-    var answer = 0;
-    if(prevOp.length == 0){
-        if(e.target.innerHTML == '+'){
-            prevOp = "+";
-            prevClicked = "+";
-        }
-        else if(e.target.innerHTML == '-'){
-            prevOp = "-";
-            prevClicked = "-";
-        }
-        else if(e.target.innerHTML == '*'){
-            prevOp = "*";
-            prevClicked = "*";
-        }
-        else{
-            prevOp = "÷";
-            prevClicked = "÷";
-        }
-        num1 = Number(document.getElementById('calcDisplay').value);
-    }
-    else{
-        num2 = Number(document.getElementById('calcDisplay').value);
-        if(prevOp == "+"){
-            answer = num1 + num2;
-        }
-        else if(prevOp == "-"){
-            answer = num1 - num2;
-        }
-        else if(prevOp == "*"){
-            answer = num1 * num2;
-        }
-        else{
-            answer = num1 / num2;
-        }
-        document.getElementById('calcDisplay').value = answer;
-        num1 = answer;
-        prevOp = e.target.innerHTML;
-        prevClicked = e.target.innerHTML;
-    }
-}
-
-function clearDisp(e){
-    document.getElementById('calcDisplay').value = "";
-    prevOp = "";
-    prevClicked = "";
-    num1 = 0;
-}
-
-function addToDisp(e){
-    if(e.target.innerHTML.indexOf('.') > -1){
-        var calcDisp = document.getElementById('calcDisplay').value;
-        if(calcDisp.indexOf('.') >= 0){
-            ;
-        }
-        else{
-            //clear everything if previous button clicked was an operation
-            if(prevClicked == '+' || prevClicked == '-' || prevClicked == '*' || prevClicked == '÷' || prevClicked == '='){
-                document.getElementById('calcDisplay').value = e.target.innerHTML;
-            }
-            else{
-                document.getElementById('calcDisplay').value = document.getElementById('calcDisplay').value + e.target.innerHTML;
-            }
-        }
-    }
-    else{
-        //clear everything if previous button clicked was an operation
-        if(prevClicked == '+' || prevClicked == '-' || prevClicked == '*' || prevClicked == '÷' || prevClicked == '='){
-            document.getElementById('calcDisplay').value = e.target.innerHTML;
-        }
-        else{
-            document.getElementById('calcDisplay').value = document.getElementById('calcDisplay').value + e.target.innerHTML;
-        }
-    }
-    prevClicked = e.target.innerHTML;
-}
-//end of CALCULATOR
-*/
 window.onload = init;

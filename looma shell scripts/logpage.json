@@ -1,0 +1,13 @@
+{"_id":{"$oid":"6158ffaa3689ed5ad83c4005"},"hits":17,"page":"home"}
+{"_id":{"$oid":"6159002a3689ed5ad83c4006"},"hits":1,"page":"library   "}
+{"_id":{"$oid":"615900373689ed5ad83c4007"},"hits":23,"page":"library-search"}
+{"_id":{"$oid":"615900463689ed5ad83c4008"},"hits":5,"page":"dictionary"}
+{"_id":{"$oid":"6159004e3689ed5ad83c4009"},"hits":5,"page":"paint"}
+{"_id":{"$oid":"615900573689ed5ad83c400a"},"hits":1,"page":"clock"}
+{"_id":{"$oid":"6159005e3689ed5ad83c400b"},"hits":5,"page":"maps"}
+{"_id":{"$oid":"615900673689ed5ad83c400c"},"hits":5,"page":"histories"}
+{"_id":{"$oid":"6159006e3689ed5ad83c400d"},"hits":5,"page":"games"}
+{"_id":{"$oid":"615900763689ed5ad83c400e"},"hits":4,"page":"calculator"}
+{"_id":{"$oid":"6159007f3689ed5ad83c400f"},"hits":23,"page":"web"}
+{"_id":{"$oid":"615900873689ed5ad83c4010"},"hits":5,"page":"settings"}
+{"_id":{"$oid":"6159008d3689ed5ad83c4011"},"hits":4,"page":"info"}

@@ -19,7 +19,6 @@ Revision: Looma 3.0
 
 <?php   $page_title = 'Looma Import Content';
 require_once ('includes/header.php');
-require_once ('includes/mongo-connect.php');
 
 ?>
 

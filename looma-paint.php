@@ -11,7 +11,8 @@ Description:  for Looma 2
 
 <?php $page_title = 'Looma Paint';
 	  include ('includes/header.php');
-	  //include ('includes/mongo-connect.php');
+
+    logPageHit('paint');
 
  ?>
   	<!-- Replace .ico & apple-touch-icon.png in the root of your domain and delete these references -->

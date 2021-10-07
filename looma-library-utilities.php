@@ -22,7 +22,7 @@ Revision: 1.0
 //  search_folder [to be implemented]
 ////////////////////////////////
 
-require ('includes/mongo-connect.php');
+require_once ('includes/mongo-connect.php');
 
     function name($file) { $f = new SplFileInfo($file);
                            return $f->getBasename();

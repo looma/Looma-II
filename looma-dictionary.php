@@ -10,6 +10,9 @@ Description:  dictionary look-up UI for Looma 2
 
 <?php $page_title = 'Looma Dictionary';
 	  include ('includes/header.php');
+
+	  logPageHit('dictionary');
+
 ?>
      <link rel = "Stylesheet" type = "text/css" href = "css/looma-dictionary.css">
   </head>

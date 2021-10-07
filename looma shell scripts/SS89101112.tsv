@@ -1,0 +1,431 @@
+_id	npn	nlen	ft	dn	ndn	key1	key2	key3	key4
+8SS01.00	10	1	chapter	We, Our Community & the Nation	हामी, हाम्रो समुदाय र राष्‍ट्र	Social Studies	Community	People	
+8SS01.01	11	2	chapter	Development	विकास	Social Studies	Community	People	
+8SS01.02	13	2	chapter	Federal states and provinces	सङ्‍घीय राज्य र प्रदेश	Social Studies	Community		
+8SS01.03	15	2	chapter	Drinking Water	खाने पानी	Social Studies	Community	Everyday Life	Other Everyday Life
+8SS01.04	17	2	chapter	Energy	ऊर्जा	Social Studies	Economy	Business	Energy
+8SS01.05	19	2	chapter	Manpower	जनशक्ति	Social Studies	Economy	People	
+8SS01.06	21	2	chapter	Development Plrojects in Nepal	नेपालमा विकास आयोजना	Social Studies	Community	Social Organization	Non-Profits
+8SS01.07	23	1	chapter	Review Exercises	पूनरवलोकन अभ्यास	Social Studies			
+8SS02.00	24	1	chapter	Our Social Values & Beliefs	हाम्रो सामाजिक मूल्य र मान्यता	Social Studies			
+8SS02.01	25	2	chapter	Social Traditions and Customs of Nepal	नेपालका सामाजिक परम्परा र प्रचलन	Social Studies	History	Nepal	History
+8SS02.02	27	2	chapter	Religions Prevailing in Nepal	नेपालमा प्रचलित धर्महरू	Social Studies	History	Nepal	History
+8SS02.03	29	2	chapter	Social Harmony	सामाजिक सद्‌भाव	Social Studies	History	Nepal	History
+8SS02.04	31	2	chapter	Beautiful Garden Nepal	सुन्दर फूलबारी नेपाल	Social Studies	History	Nepal	History
+8SS02.05	33	2	chapter	National Heritage	राष्‍ट्रिय सम्पदा	Social Studies	History	Nepal	History
+8SS02.06	35	2	chapter	International Personality	अन्तर्राष्‍ट्रिय व्यक्तित्व	Social Studies	History	Nepal	International Relations
+8SS02.07	37	1	chapter	Review Exercises	पुनरवलोकन अभ्यास	Social Studies			
+8SS03.00	38	1	chapter	Social Problems & Solutions	सामाजिक समस्या र समाधान	Social Studies			
+8SS03.01	39	2	chapter	Social Problems	सामाजिक समस्याहरू	Social Studies	Issues	People	
+8SS03.02	41	2	chapter	Corruption	भ्रष्‍टाचार	Social Studies	Issues	Conflict	Politics
+8SS03.03	43	2	chapter	Drug Abuse	लागु पदार्थ दूर्व्यसन	Social Studies	Issues	People	
+8SS03.04	45	2	chapter	Conflict and its Management	द्वन्द्व र त्यसको व्यवस्थापन	Social Studies	Issues	Conflict	Other Conflict
+8SS03.05	47	2	chapter	Sustainable Development	दिगो विकास	Social Studies	Economy	Other Economy	Sustainable Development
+8SS03.06	49	2	chapter	Good Governance	सुशासन	Social Studies	Community	Government	National
+8SS03.07	51	2	chapter	International Organizations	अन्तर्राष्‍ट्रिय सङ्‌ग संस्थाहरू	Social Studies	Community	Social Organization	Neighborhood
+8SS03.08	53	1	chapter	Review Exercises	पुनरवलोकन अभ्यास	Social Studies			
+8SS04.00	54	1	chapter	Civic Consciousness	नागरिक चेतना	Social Studies			
+8SS04.01	55	2	chapter	Social Rules	सामाजिक नियम	Social Studies	Issues	People	
+8SS04.02	57	2	chapter	Human Rights	मानव अधिकार	Social Studies	Issues	Human Rights	
+8SS04.03	59	2	chapter	Women’s Rights	महिला अधिकार	Social Studies	Issues	Human Rights	Girls & Women
+8SS04.04	61	2	chapter	Relationships	समावेशीकरण	Social Studies	Issues	Human Rights	Other Human Rights
+8SS04.05	63	2	chapter	Regulations Regarding Relationships in Nepal	नेपालमा समावेशीकरण का प्रावधानहरू	Social Studies	Issues	Human Rights	Other Human Rights
+8SS04.06	65	2	chapter	Features of our Constitution	हाम्रो संविधानका विशेषताहरू	Social Studies	Community	Government	Current Affairs
+8SS04.07	67	2	chapter	Social Responsibilities	नागरिक दायित्व	Social Studies	Community	Government	
+8SS04.08	69	2	chapter	Legislature	व्यवस्थापिका	Social Studies	Community	Government	National
+8SS04.09	71	2	chapter	Executive	कार्यपालिका	Social Studies	Community	Government	National
+8SS04.10	73	2	chapter	Judiciary	न्यायपालिका	Social Studies	Community	Government	National
+8SS04.11	75	1	chapter	Review Exercises	पुनरवलोकन अभ्यास	Social Studies			
+8SS05.00	76	1	chapter	Our Earth	हाम्रो पृथ्वी	Social Studies			
+8SS05.01	77	2	chapter	Our Earth	ऋतु परिवर्तन	Social Studies	Geography		
+8SS05.02	79	2	chapter	Weather and Climate	मौसम र हावापानी	Social Studies	Geography	Landforms	
+8SS05.03	81	2	chapter	The Factors that Influence the Temperature of the Surface	धरातलको तापक्रममा प्रभाव पार्ने तत्त्वहरू	Social Studies	Geography	Landforms	
+8SS05.04	83	2	chapter	Climate Change	जलवायु परिवर्तन	Social Studies	Geography	Landforms	
+8SS05.05	85	2	chapter	The Effect of Latitude and Longitude	अक्षांश र देशान्तरको प्रभाव	Social Studies	Geography	Landforms	
+8SS05.06	87	2	chapter	Districts and Zones of Nepal	नेपालका जिल्ला र अञ्‍चल	Social Studies	Geography	Asia	Nepal
+8SS05.07	89	2	chapter	The Use of Distance in Map Studies	नक्सा अध्ययनमा दुरीको प्रयोग	Social Studies	Geography	Maps	Country
+8SS05.08	91	2	chapter	Map of Nepal	नेपालको नक्सा	Social Studies	Geography	Maps	Country
+8SS05.09	93	2	chapter	Earthquake	भूकम्प	Social Studies	Geography	Landforms	
+8SS05.10	95	2	chapter	Storms	हावाहूरी	Social Studies	Geography	Landforms	
+8SS05.11	97	2	chapter	African Continent	अफ्रिका महादेश	Social Studies	Geography	Maps	Continents
+8SS05.12	99	2	chapter	North America	उत्तर अमेरिका	Social Studies	Geography	Maps	Continents
+8SS05.13	101	2	chapter	Travel to South America	दक्षिण अमेरिकाको यात्रा	Social Studies	Geography	Maps	Continents
+8SS05.14	103	1	chapter	Review Exercises	पुनरवलोकन अभ्यास	Social Studies			
+8SS06.00	104	1	chapter	Our Past	हाम्रो विगत	Social Studies			
+8SS06.01	105	2	chapter	Participation of the People in Nepal's Unification Campaign	नेपालको एकीकरण अभियानमा जनताको सहभागिता	Social Studies	History	Nepal	Events
+8SS06.02	107	2	chapter	Integration of Nepal	नेपालको एकीकरण	Social Studies	History	Nepal	History
+8SS06.03	109	2	chapter	Continuity and end of integration	एकीकरणको निरन्तरता र अन्त्य	Social Studies	History	Nepal	History
+8SS06.04	111	2	chapter	The Political Order of the Sugauli Treaty 2	सुगौली सन्धिपछिको राजनीतिक घटना क्रम	Social Studies	History	Nepal	History
+8SS06.05	113	2	chapter	National Political Activities	राणा कालीन राजनीतिक क्रियाकलाप	Social Studies	History	Nepal	Politics
+8SS06.06	115	2	chapter	The Economic and Social Activities of the Nation	राणा कालीन आर्थिक र सामाजिक कार्यहरू	Social Studies	History	Nepal	History
+8SS06.07	117	2	chapter	The Order and Achievements of the Major Political Parties of the year 1946	२००७ सालपछिको प्रमूख राजनीतिक घटना क्रम र उपलब्धि	Social Studies	History	Nepal	History
+8SS06.08	119	2	chapter	Civilization of Greece and Rome	ग्रिस र रोमको सभ्यता	Social Studies	History	Other Countries	
+8SS06.09	121	2	chapter	Renaissance	पुनर्जागरण	Social Studies	History		
+8SS06.10	123	1	chapter	Review Exercises	पुनरवलोकन अभ्यास	Social Studies			
+8SS07.00	124	1	chapter	Our Economic Activity	हाम्रो आर्थिक क्रियाकलाप	Social Studies			
+8SS07.01	125	2	chapter	Tourism Industry	पर्यटन उद्‌योग	Social Studies	Economy	Occupations	Business
+8SS07.02	127	2	chapter	Foreign Trade	वैदेशिक व्यापार	Social Studies	Economy	Business	Market
+8SS07.03	129	2	chapter	Currency	मूद्रा	Social Studies	Economy	Business	Currency & Money
+8SS07.04	131	2	chapter	The Bank	बैङ्‌क	Social Studies	Economy	Business	Currency & Money
+8SS07.05	133	2	chapter	Price Determination and Inflation	वस्तुको मूल्य निर्धारण र मूल्य वृद्धि	Social Studies	Economy	Business	Market
+8SS07.06	135	2	chapter	Capital Establishment and Cooperation	पुँजी निर्माण र सहकारिता	Social Studies	Economy	Business	Companies
+8SS07.07	137	2	chapter	Employment Status in Nepal	नेपालमा रोजगारीको अवस्था	Social Studies	Economy	Occupations	Service
+8SS07.08	139	1	chapter	Review Exercises	पुनरवलोकन अभ्यास	Social Studies			
+8SS08.00	140	1	chapter	Our International Relations & Cooperation	हाम्रो अन्तर्राष्‍ट्रिय सम्बन्ध र सहयोग	Social Studies			
+8SS08.01	141	2	chapter	Friendly Nations	हाम्रा मित्र राष्‍ट्रहरू	Social Studies	History	Nepal	International Relations
+8SS08.02	143	2	chapter	United Nations and its Affiliates	संयुक्त राष्‍ट्र सङ्‌घ र यसका अङ्‌गहरू	Social Studies	History	Nepal	International Relations
+8SS08.03	145	2	chapter	United Nations and Nepal	संयुक्त राष्‍ट्र सङ्‌घ र नेपाल	Social Studies	History	Nepal	International Relations
+8SS08.04	147	2	chapter	Diplomatic Agencies	कूट्नीतिक नियोग	Social Studies	History	Nepal	Government
+8SS08.05	149	2	chapter	Nepal's Participation in the International Arena	अन्तर्राष्‍ट्रिय क्षेत्रमा नेपालको योगदान	Social Studies	History	Nepal	Events
+8SS08.06	151	1	chapter	Review Exercises	पुनरवलोकन अभ्यास	Social Studies			
+8SS09.00	152	1	chapter	Intro to Deomgraphics	जनसङ्ख्याको परिचय र जनसाङ्ख्यिक अवस्था	Social Studies			
+8SS09.01	153	2	chapter	Demographic Concepts	जनसाङ्‌ख्यिकीको अवधारणा	Social Studies	Economy	Other Economy	Population
+8SS09.02	155	2	chapter	Demographic Baseline Survey	जनसाङ्‌ख्यिक आधारभुत मापन	Social Studies	Economy	Other Economy	Population
+8SS09.03	157	2	chapter	Death and Migration	मृत्यु र बसाइँसराइ	Social Studies	Economy	Other Economy	Population
+8SS09.04	159	2	chapter	Determinants of population change	जनसङ्‌ख्या परिवर्तनका निर्धारकहरू	Social Studies	Economy	Other Economy	Population
+8SS09.05	161	2	chapter	Structure of Nepal's Population	नेपालको जनसङ्‌ख्या बनोद	Social Studies	Economy	Other Economy	Population
+8SS09.06	163	2	chapter	Distribution of Population in Nepal	नेपालमा जनसङ्‌ख्या वितरण	Social Studies	History	Nepal	Other Nepal
+8SS09.07	165	2	chapter	Internal and External Migration in Nepal	नेपालमा आन्तरिक र बाह्य बसाइँसराइ	Social Studies	History	Nepal	Other Nepal
+8SS09.08	167	2	chapter	World Population Size and Growth Rate	विश्‍वमा जनसङ्‌ख्याको आकार र वृद्धि दर	Social Studies	Economy	Other Economy	Population
+8SS09.09	169	1	chapter	Review Exercises	पूनरवलोकन अभ्यास	Social Studies			
+8SS10.00	170	1	chapter	Population Growth and Management	जनसङ्ख्या वृद्धि र व्यवस्थापन	Social Studies			
+8SS10.01	171	2	chapter	Population and Quality of Life	जनसङ्‌ख्या र गुणस्तरीय जीवन	Social Studies	Economy	Other Economy	Population
+8SS10.02	173	2	chapter	Ways to Manage the Population	जनसङ्‌ख्या व्यवस्थापन गर्ने उपायहरू	Social Studies	Economy	Other Economy	Population
+8SS10.03	175	2	chapter	Problems of Population Management in Nepal	नेपालमा जनसङ्‌ख्या व्यवस्थापनका समस्याहरू	Social Studies	Economy	Other Economy	Population
+8SS10.04	177	2	chapter	Role of International Organizations	अन्तर्राष्‍ट्रिय सङ्‌घ संस्थाहरूको भूमिका	Social Studies	Community	Social Organization	Work
+8SS10.05	179	1	chapter	Review Exercises	पुनरवलोकन अभ्यास	Social Studies			
+9SS01.00	10	1	section	We and Our Society	हामी र हाम्रो समाज				
+9SS01.01	10	3	chapter	Social Development	समाज विकास	Social Studies	Community	People	
+9SS01.02	13	3	chapter	Types of Society	समाजका प्रकार	Social Studies	Community	People	
+9SS01.03	16	2	chapter	Elements of Good Society	असल समाजका तत्त्वहरू	Social Studies	Community	People	
+9SS01.04	18	2	chapter	Socialist	सामाजिकीकरण	Social Studies	Community	People	
+9SS01.05	20	3	chapter	Our Identity	हाम्रो पहिचान	Social Studies	Community	People	
+9SS01.06	23	5	chapter	National Pride	राष्‍ट्रिय गौरव	Social Studies	Community	People	
+9SS02.00	28	1	section	Growth and Development Infrastructure	विकास र विकासका पूर्वाधार				
+9SS02.01	28	3	chapter	Concept of Development	विकासको अवधारण	Social Studies	Community	Social Organization	Infrastructure
+9SS02.02	31	5	chapter	Development Preconditions	विकासका पूर्वसर्तहरू	Social Studies	Community	Social Organization	Infrastructure
+9SS02.03	36	9	chapter	Prerequisites for Development	विकासका पूर्वाधारहरू	Social Studies	Community	Social Organization	Infrastructure
+9SS02.04	45	2	chapter	Traditional Ideas, Skills and Techniques and their Creative Use	परम्परागत ज्ञान, सिप र प्रविधि तथा तिनको सिर्जनशील प्रयोग	Social Studies	Community	Education	Textbooks
+9SS03.00	47	1	section	Our Traditions, Social Values ​​and Recognition	हाम्रो परम्परा सामाजिक मूल्य र मान्यता				
+9SS03.01	47	5	chapter	Our Traditional Skills	हाम्रा परम्परागत कला	Social Studies	Community	Education	Textbooks
+9SS03.02	52	2	chapter	Nepali Sculpture	नेपाली मूर्तिकला	Social Studies	Arts	Visual Art	Sculpture
+9SS03.03	54	4	chapter	Nepali Architecture	नेपाली वास्तुकला	Social Studies	Arts	Visual Art	Symbols
+9SS03.04	58	3	chapter	Religious Tolerance and Secularism	धार्मिक सहिष्णुता र धर्म निरपेक्षता	Social Studies	Beliefs	Religions	Other Religions
+9SS03.05	61	5	chapter	Contribution by National Personalities and Authorities	राष्‍ट्रिय व्यक्तित्व तथा विभूतिहरूको योगदान	Social Studies	Community	Government	National
+9SS03.06	66	2	chapter	Empathy and Cooperation	समानुभूति र सहयोग	Social Studies	Community	Government	Other Government
+9SS03.07	68	2	chapter	Peace and Culture	शान्ति र संस्कृति	Social Studies	Community	Peace	Other Peace
+9SS04.00	70	1	section	Social Problems and Solutions	सामाजिक समस्याहरू र समाधान				
+9SS04.01	70	3	chapter	Identify and Solve Docial Problems	सामाजिक समस्या पहिचान र समाधान	Social Studies	Issues	People	
+9SS04.02	73	3	chapter	Corruption	भ्रष्‍टाचार	Social Studies	Issues	People	
+9SS04.03	76	3	chapter	Social Problems: Human Trafficing, Misconduct and Abuse	सामाजिक समस्याहरू : देह व्यापार, दुर्व्यसन र दुर्व्यवहार	Social Studies	Issues	Human Rights	Girls & Women
+9SS04.04	79	2	chapter	Contribution of National  and International Agencies to Social Reform	सामाजिक सुधारमा स्थानीय र राष्‍ट्रिय सङ्‌घ संस्थाको योगदान	Social Studies	Community	Social Organization	Non-Profits
+9SS04.05	81	3	chapter	Efforts for Social Reform in Nepal	नेपालमा सामाजिक सुधारका लागि भएका प्रयासहरू	Social Studies	Community	Social Organization	Other Social Organization
+9SS04.06	84	2	chapter	Conflict Cycles and Patterns	द्वन्‍द्व चक्र र निरूपण	Social Studies	History	Nepal	Conflicts
+9SS05.00	86	1	section	Civic Awareness	नागरिक चेतना				
+9SS05.01	86	2	chapter	Introduction to the Constitution	संविधानको परिचय	Social Studies	Community	Government	National
+9SS05.02	88	4	chapter	Nepal's Constitutional Development Order	नेपालको संवैधानिक विकास क्रम	Social Studies	Community	Government	Current Affairs
+9SS05.03	92	2	chapter	Constituent Assembly	संविधान सभा	Social Studies	Community	Government	Current Affairs
+9SS05.04	94	4	chapter	Fundamental Rights	मौलिक हक	Social Studies	Issues	Human Rights	
+9SS05.05	98	4	chapter	Fundamental Rights and Civic Duties	मौलिक हक र नागरिक कर्तव्य	Social Studies	Issues	Human Rights	
+9SS05.06	102	4	chapter	Rights to Information	सूचनाको हक	Social Studies	Issues	Civil Rights	Other Civil Rights
+9SS05.07	106	3	chapter	Good Governance	सुशासन	Social Studies	Community	Government	National
+9SS05.08	109	3	chapter	Legal State	कानुनी राज्य	Social Studies	Community	Government	National
+9SS05.09	112	2	chapter	Democratic Behavior	लोकतान्‍त्रिक आचरण	Social Studies	Community	Government	Democracy
+9SS05.10	114	3	chapter	Civil Society	नागरिक समाज	Social Studies	Issues	Civil Rights	
+9SS05.11	117	3	chapter	Peace and Order	शान्ति सुव्यवस्था	Social Studies	Community	Peace	Other Peace
+9SS05.12	120	2	chapter	Unity in Diversity	विविधतामा एकता	Social Studies	Community	Everyday Life	Diversity
+9SS05.13	122	4	chapter	Issues of Nationality and National Concern	राष्‍ट्रियता र राष्‍ट्रिय सरोकारका विषय	Social Studies	Issues	Civil Rights	Other Civil Rights
+9SS06.00	126	1	section	Our Earth	हाम्रो पृथ्वी				
+9SS06.01	126	4	chapter	Longitude and Time	देशान्तर र समय	Social Studies	Geography	Other Geography	
+9SS06.02	130	4	chapter	The Topography of Nepal	नेपालको धरातलीय स्वरूप	Social Studies	Geography	Landforms	
+9SS06.03	134	3	chapter	The Climate of Nepal	नेपालको हावापानी	Social Studies	Geography	Landforms	
+9SS06.04	137	2	chapter	Nepal's Geographical Diversity and Flora	नेपालको भौगोलिक विविधता र वनस्पति	Social Studies	Geography	Landforms	
+9SS06.05	139	2	chapter	Terrestrial Diversity and Life	धरातलीय विविधता र जनजीवन	Social Studies	Geography	Landforms	
+9SS06.06	141	3	chapter	Status and Use of Nepal's Water Resources	नेपालको जलस्रोतको अवस्था र उपयोग	Social Studies	Geography	Landforms	
+9SS06.07	144	3	chapter	Map Work	नक्सा कार्य	Social Studies	Geography	Maps	
+9SS06.08	147	2	chapter	Understanding Distance	दुरी सम्बन्धी ज्ञान	Social Studies	Geography	Landforms	
+9SS06.09	149	3	chapter	Asia: Geography and Natural Rnvironment	एसिया : भौगोलिक तथा प्राकृतिक वातावरण	Social Studies	Geography	Asia	
+9SS06.10	152	5	chapter	Asia: Economic Activity and Social Life	एसिया : आर्थिक क्रियाकलाप र सामाजिक जीवन	Social Studies	Geography	Asia	
+9SS06.11	157	3	chapter	Europe: Geography and Natural Environment	युरोप : भौगोलिक तथा प्राकृतिक वातावरण	Social Studies	Geography	Europe	
+9SS06.12	160	2	chapter	Europe: Economic Activity and Social Life	युरोप : आर्थिक तथा सामाजिक जीवन	Social Studies	Geography	Europe	
+9SS06.13	162	3	chapter	Geography and Natural Environment of the Continent of Australia	अस्ट्रेलिया महादेशको भौगोलिक तथा प्राकृतिक वातावरण	Social Studies	Geography	Oceania	Australia
+9SS06.14	165	2	chapter	Australia: Economic Activity and Social life	अस्ट्रेलिया : आर्थिक क्रियाकलाप र सामाजिक जनजीवन	Social Studies	Geography	Oceania	Australia
+9SS06.15	167	2	chapter	Asia, Europe, Australia and Nepal	एसिया, युरोप, अस्ट्रेलिया र नेपाल	Social Studies	Geography	Other Geography	
+9SS07.00	169	1	section	Our Past	हाम्रो विगत				
+9SS07.01	169	4	chapter	The Search for-, Study and Preservation of Historic Resources	ऐतिहासिक स्रोतहरूको खोजी, अध्ययन र तिनीहरूको संरक्षण	Social Studies	History	Archaeology	Other Archaeology
+9SS07.02	173	4	chapter	The Royal Family of Kapilavastu, the Birthplace of Buddhism	बुद्‌धको जन्मभूमि कपिलवस्तुको शाक्यवंशीय इतिहास	Social Studies	History	Nepal	Famous Persons
+9SS07.03	177	6	chapter	Prithvi Narayan Shah and Nepal's Unification Campaign	पृथ्वीनारायण शाह र नेपालको एकीकरण अभियान	Social Studies	History	Nepal	Events
+9SS07.04	183	2	chapter	Impact of Nepal's Unification	नेपाल एकीकरणको प्रभाव	Social Studies	History	Nepal	Geography
+9SS07.05	185	4	chapter	The Role of Heroes in the Nepal/British War	नेपाल अङ्‌ग्रेज युद्धमा वीर वीरङ्‌गनाहरूको योगदान	Social Studies	History	Nepal	Conflicts
+9SS07.06	189	3	chapter	The Story of Nepal's English war and Nepalese Heroism	नेपाल अङ्‌ग्रेज यूद्ध र नेपाली वीरताको गाथा	Social Studies	History	Nepal	History
+9SS07.07	192	4	chapter	The Rise and Fall of the Rana Dynasty	राणा शासनको उदय र पतनका कारणहरू	Social Studies	History	Nepal	History
+9SS07.08	196	2	chapter	The Impact of Rana Rule	राणा शासनका प्रभावहरू	Social Studies	History	Nepal	History
+9SS07.09	198	3	chapter	The Industrial Revolution and Its Impact	औद्योगिक क्रान्ति र प्रभाव	Social Studies	History	World	
+9SS07.10	201	3	chapter	Genealogy of the Lucky Nanny	लक्की नानीको वंशावली	Social Studies	History	People	Other People
+9SS07.11	204	2	chapter	Today's View of our Ancestors	हाम्रा पूर्वज : वर्तमानका मार्ग दर्शक	Social Studies	History	People	Other People
+9SS08.00	206	1	section	Economic Activity	आर्थिक क्रियाकलाप				
+9SS08.01	206	2	chapter	Agriculture	कृषि	Social Studies	Economy	Agriculture	
+9SS08.02	208	3	chapter	Modern Agriculture	आधुनिक कृषि प्रणाल	Social Studies	Economy	Agriculture	Other Agriculture
+9SS08.03	211	2	chapter	Agribusiness	कृषिको व्यवसायीकरणा	Social Studies	Economy	Business	Other Business
+9SS08.04	213	4	chapter	Industry	उद्योग	Social Studies	Economy	Business	Companies
+9SS08.05	217	4	chapter	Medium and Large Industry	मझौला तथा ठूला उद्योग	Social Studies	Economy	Business	Companies
+9SS08.06	221	2	chapter	Business	व्यापार	Social Studies	Economy	Business	
+9SS08.07	223	2	chapter	The Framework of Foreign Trade in Nepal	नेपालमा वैदेशिक व्यापारको ढाँचा	Social Studies	Economy	Law	International Trade
+9SS08.08	225	2	chapter	Diversification of Trade in Nepal	नेपालमा व्यापार विविधीकरण	Social Studies	Economy	Law	Other Law
+9SS08.09	227	1	chapter	Business Promotion and Marketing	व्यापार प्रवर्धन र बजारीकरण	Social Studies	Economy	Business	Market
+9SS08.10	228	3	chapter	Relationships among  Agriculture, Industry and Trade	कृषि, उद्‌योग र व्यापारमा आपसी सम्बन्ध	Social Studies	Economy	Business	Economics
+9SS08.11	231	3	chapter	Financial Planning	आर्थिक योजना	Social Studies	Economy	Finance	Interest
+9SS08.12	234	2	chapter	Contribution of Economic Planning to Poverty Alleviation and Employment Promotion	गरिबी निवारण र रोजगार प्रवर्धनमा आर्थिक योजनाको योगदान	Social Studies	Issues	Poverty	
+9SS08.13	236	3	chapter	Enthusiasm	उद्यमशीलता	Social Studies	Community	People	
+9SS08.14	239	2	chapter	Creation and Management of Work	कामको सिर्जना र व्यवस्थापन	Social Studies	Economy		
+9SS08.15	241	3	chapter	Labor	श्रम	Social Studies	Economy	Occupations	Other Occupations
+9SS09.00	244	1	section	Our International Relations and Cooperation	हाम्रो अन्तर्राष्‍ट्रिय सम्बन्ध र सहयोग				
+9SS09.01	244	5	chapter	Donor Nations and Institutions of Nepal	नेपालका दातृ राष्‍ट्र तथा संस्थाहरू	Social Studies	History	Nepal	International Relations
+9SS09.02	249	2	chapter	Nepal in the United Nations	संयुक्त राष्‍ट्र सङ्‌घमा नेपाल	Social Studies	History	Nepal	International Relations
+9SS09.03	251	2	chapter	Nepal's Contribution to the Establishment of International Peace	अन्तर्राष्‍ट्रिय शान्ति स्थापनामा नेपालको योगदान	Social Studies	History	Nepal	International Relations
+9SS09.04	253	2	chapter	Diplomatic Agencies	कुटनीतिक नियोग	Social Studies	History	Nepal	International Relations
+9SS09.05	255	2	chapter	Comprehensive Planning	समसामयिक घटना	Social Studies	History	Nepal	Events
+10SS01.00	8	1	section	We and Our Society	हामी र हाम्रो समाज				
+10SS01.01	8	5	chapter	Human Resource Development	मानव संसाधन विकास	Social Studies	Community	Education	Humanities
+10SS01.02	13	3	chapter	Human Development Index and Nepal	मानव विकास सूचकाङ्‌क र नेपाल	Social Studies	Community	Education	Humanities
+10SS01.03	16	3	chapter	The Basis of Regional Development and Federalism	क्षेत्रीय विकासको अवधारणा र सङ्‌घीयता	Social Studies	Community	Government	Local
+10SS01.04	19	5	chapter	The Provinces of Nepal	नेपालका प्रदेशहरू	Social Studies	Community	Government	Local
+10SS02.00	24	1	section	Development and Its Infrastructure	विकास र विकासका पुर्वाधारहरू				
+10SS02.01	24	3	chapter	Sustainable Development	दिगो विकास	Social Studies	Economy	Other Economy	Sustainable Development
+10SS02.02	27	3	chapter	Development Projects Run in Nepal	नेपालमा सञ्‍चालित विकास आयोजनाहरू	Social Studies	Community	Social Organization	Solutions
+10SS02.03	30	4	chapter	Prerequisites for Development: Skilled Manpower and Employment	विकासका पूर्वाधार : दक्ष जनशक्ति र रोजगार	Social Studies	Community	Social Organization	Work
+10SS02.04	34	4	chapter	Contemporary Development Goals and Nepal	समकालीन विकास लक्ष्य र नेपाल	Social Studies	Community	Social Organization	Work
+10SS02.05	38	3	chapter	Generating Development Proposals at the Local Level	स्थानीय तहमा विकास प्रस्ताव तर्जुमा	Social Studies	Community	Social Organization	Solutions
+10SS03.00	41	1	section	Recognition of Our Social Values	हाम्रा सामाजिक मूल्य मान्यता				
+10SS03.01	41	4	chapter	Our National Heritage	हाम्रा राष्‍ट्रिय सम्पदा	Social Studies	History	Nepal	History
+10SS03.02	45	2	chapter	Folk Songs of Nepal	नेपालका लोकगीत	Social Studies	Arts	Music	Other Music
+10SS03.03	47	4	chapter	Nepalese Musical Instruments	नेपाली लोकबाजा	Social Studies	Arts	Musical Instruments	
+10SS03.04	51	3	chapter	Our Folk and Classical Dance	हाम्रा लोक तथा शास्‍‌त्रीय नृत्य	Social Studies	Arts	Dance	Folk Dance
+10SS03.05	54	2	chapter	Our National Holidays	हाम्रा राष्‍ट्रिय दिवसहरू	Social Studies	History	Nepal	Events
+10SS03.06	56	3	chapter	International Personality	अन्तर्राष्‍ट्रिय व्यक्तित्व	Social Studies	History	Nepal	Famous Persons
+10SS03.07	59	2	chapter	Cosmopolitanism	विश्‍वबधुत्व	Social Studies	Community	People	
+10SS03.08	61	2	chapter	Responsibility for Senior Citizens	ज्येष्‍ठ नागरिकप्रतिको दायित्त्व	Social Studies	Community	People	
+10SS04.00	63	1	section	Social Problems and Solutions	सामाजिक समस्या र समाधान				
+10SS04.01	63	4	chapter	Human Trafficking as a Social Problem	सामाजिक समस्याका रूपमा मानव बेचबिखन	Social Studies	Issues	Human Rights	
+10SS04.02	67	2	chapter	Domestic Violence and Untouchability	घरेलु हिंसा र छुवाछुत	Social Studies	Issues	Human Rights	
+10SS04.03	69	3	chapter	Some Wrong Practices	केही गलत प्रथाहरू	Social Studies	Issues	Other Issues	
+10SS04.04	72	2	chapter	The Role Played by International Organizations in Solving Social Problems	सामाजिक समस्या समाधानमा अन्तर्राष्‍ट्रिय संस्थाहरूले खेलेको भूमिका	Social Studies	History	Nepal	International Relations
+10SS04.05	74	3	chapter	Some Other International Organizations	अन्य केही अन्तर्राष्‍ट्रिय संस्थाहरू	Social Studies	History	Nepal	International Relations
+10SS04.06	77	2	chapter	Social Problem Recognition and Problem Solving Skills	सामाजिक समस्याको पहिचान र समस्या समाधानको सिप	Social Studies	Issues	Solutions	
+10SS05.00	79	1	section	Civic Awareness	नागरिक चेतना				
+10SS05.01	79	3	chapter	Legislature	व्यवस्थापिका	Social Studies	Community	Government	National
+10SS05.02	82	3	chapter	Workforce	कार्य पालिका	Social Studies	Community	Government	Local
+10SS05.03	85	3	chapter	Court of Justice	न्याय पालिका	Social Studies	Community	Government	National
+10SS05.04	88	3	chapter	Constitutional Body	संवैधानिक निकाय	Social Studies	Community	Government	National
+10SS05.05	91	2	chapter	Other Constitutional Commissions	अन्य संवैधानिक आयोगहरू	Social Studies	Community	Government	National
+10SS05.06	93	3	chapter	Political Parties	राजनीतिक दलहरू	Social Studies	Community	Government	Other Government
+10SS05.07	96	2	chapter	Electoral Process	निर्वाचन प्रक्रिया	Social Studies	Community	Government	National
+10SS05.08	98	2	chapter	Citizens' Role in Elections	निर्वाचनमा नागरिकको भुमिका	Social Studies	Community	Government	Local
+10SS05.09	100	4	chapter	Human Rights and National and International Organizations	मानव अधिकार र राष्‍ट्रिय तथा अन्तर्राष्‍ट्रिय निकायहरू	Social Studies	Issues	Human Rights	
+10SS05.10	104	3	chapter	Rights Regarding Women and Tribals	महिला र आदिवासी तथा जनजाति सम्बन्धी अधिकार	Social Studies	Issues	Human Rights	Girls & Women
+10SS05.11	107	3	chapter	Civic Identity and Citizenship	नागरिक पहिचान र नागरिकता	Social Studies	Issues	Civil Rights	Other Civil Rights
+10SS06.00	110	1	section	Our Earth	हाम्रो पृथ्वी	Social Studies			
+10SS06.01	110	4	chapter	The Type of Climate of the World and its Factors	विश्‍वका हावापानीका प्रकार र यसमा प्रभाव पार्ने तत्वहरू	Social Studies	Geography	Other Geography	
+10SS06.02	114	3	chapter	Tropical Region	उष्ण प्रदेश	Social Studies	Geography	Landforms	
+10SS06.03	117	2	chapter	Tropical Regional Life	उष्ण प्रादेशिक जनजीवन	Social Studies	Geography	Landforms	
+10SS06.04	119	2	chapter	Temperate Regions	समशीतोष्ण प्रदेश	Social Studies	Geography	Landforms	
+10SS06.05	121	2	chapter	Temperate Regional Life	समशीतोष्ण प्रादेशिक जनजीवन	Social Studies	Geography	Landforms	
+10SS06.06	123	2	chapter	Cold Territory	शीत प्रदेश	Social Studies	Geography	Other Geography	
+10SS06.07	125	2	chapter	Activities in Cold Regions	शीत प्रदेशका गतिविधिहरू	Social Studies	Community	Everyday Life	Other Everyday Life
+10SS06.08	127	2	chapter	Flora and Fauna in the World	विश्‍वमा वनस्पति र जीवजन्तुहरू	Social Studies	Geography	Other Geography	
+10SS06.09	129	2	chapter	Climate and Terrestrial Diversity:  Impact on People's Lives in the World	हावापानी र धरातलीय विविधताबाट विश्‍वको जन जीवनमा पर्ने प्रभाव	Social Studies	Geography	Landforms	
+10SS06.10	131	3	chapter	North America	उत्तर अमेरिका	Social Studies	Geography	North America	
+10SS06.11	134	2	chapter	Social and Economic Activity of North America	उत्तर अमेरिकाको सामाजिक र आर्थिक क्रियाकलाप	Social Studies	Geography	North America	
+10SS06.12	136	2	chapter	South America	दक्षिण अमेरिका	Social Studies	Geography	South America	
+10SS06.13	138	2	chapter	Social and Economic Activity of the Continental South America	दक्षिण अमेरिका महादेशको सामाजिक तथा आर्थिक क्रियाकलाप	Social Studies	Geography	South America	
+10SS06.14	140	2	chapter	Africa	अफ्रिका	Social Studies	Geography	Africa	
+10SS06.15	142	2	chapter	Social and Economic Activity of the Continent of Africa	अफ्रिका महादेशको सामाजिक र आर्थिक क्रियाकलाप	Social Studies	Geography	Africa	
+10SS06.16	144	2	chapter	North America, South America and Africa and Nepal	उत्तर अमेरिका, दक्षिण अमेरिका तथा अफ्रिका र नेपाल	Social Studies	History	Nepal	International Relations
+10SS06.17	146	3	chapter	Natural Disasters: Earthquakes and Tsunamis	प्राकृतिक प्रकोप : भूकम्प र सूनामी	Social Studies	Geography	Landforms	
+10SS06.18	149	3	chapter	Various Ways of Drawing and Applying Practical Map Techniques	नक्सा उतार्ने विभिन्‍न तरिका र आधुनिक व्यावहारिक नक्सा प्रविधिहरू	Social Studies	Geography	Maps	
+10SS06.19	152	2	chapter	Map Work	नक्सा काय	Social Studies	Geography	Maps	
+10SS07.00	154	1	section	Our Past	हाम्रो विगत	Social Studies			
+10SS07.01	154	4	chapter	The Twentieth Year Revolution and the Delhi Treaty	२००७ सालको क्रान्ति र दिल्ली सम्भौता	Social Studies	History	Other Countries	
+10SS07.02	158	3	chapter	A Decade of Political Bigotry	प्रजातान्त्रिक राजनीतिको एक दशक (२००७-२०१७)	Social Studies	History	Nepal	Events
+10SS07.03	161	3	chapter	The Abduction of Democracy and the Ban on Political Parties	प्रजातन्‍‌त्र को अपहरण र राजनीतिक दलहरूमाथि प्रतिबन्ध	Social Studies	History	Nepal	Conflicts
+10SS07.04	164	3	chapter	PoliticL Events from ?? until Now	वि.सं. २०१७ देखि वि.सं. २०४६ सम्मका राजनीतिक घटनाहरू	Social Studies	History	Nepal	Events
+10SS07.05	167	3	chapter	The Rise and End of the Panchayat System	पञ्‍चायती व्यवस्थाको उदय र अन्त्यका कारणहरू	Social Studies	History	Nepal	History
+10SS07.06	170	3	chapter	Vs. The Political Situation from ?? to ??	वि.सं. २०४६ देखि २०६२ सम्मको राजनीतिक घटना क्रम	Social Studies	History	Nepal	Politics
+10SS07.07	173	5	chapter	Vs. From ??  to the Present Political Order	वि.सं. २०६२/०६३ देखि हालसम्मका राजनीतिक घटना क्रम	Social Studies	History	Nepal	Politics
+10SS07.08	178	2	chapter	The economic and social impact of the Second People's Movement	दोस्रो जन आन्दोलनपछि परेको आर्थिक तथा सामाजिक प्रभाव	Social Studies	History	Nepal	Conflicts
+10SS07.09	180	5	chapter	The Origins of World War I	प्रथम विश्‍वयुद्धका कारणहरू	Social Studies	History	Wars	WWI
+10SS07.10	185	3	chapter	The Results from World War I	प्रथम विश्‍वयुद्धका परिणामहरू	Social Studies	History	Wars	WWI
+10SS07.11	188	4	chapter	The Origins of World War II	दोस्रो विश्‍वयुद्ध र यसका कारणहरू	Social Studies	History	Wars	WWII
+10SS07.12	192	3	chapter	World War II Results and Nepal's Role	द्वितीय विश्‍वयुद्धका परिणामहरू र नेपालको भूमिका	Social Studies	History	Wars	WWII
+10SS07.13	195	3	chapter	Discovery, Identification, and Preservation of Historic Sites and Monuments	ऐतिहासिक स्थल एवम्‌ स्मारकहरूको खोजी, पहिचान, संरक्षण र संवर्धन	Social Studies	History	Archaeology	Other Archaeology
+10SS08.00	198	1	section	Economic Activity	आर्थिक क्रियाकलाप	Social Studies			
+10SS08.01	198	4	chapter	Current Plan	चालु योजना	Social Studies	Economy	Other Economy	Sustainable Development
+10SS08.02	202	4	chapter	Potential and Importance of Tourism	पर्यटन उद्योग, महत्त्व र सम्भावना	Social Studies	Economy	Tourism	
+10SS08.03	206	3	chapter	Water is an Important Source of Energy	ऊर्जाको महत्त्वपुर्ण स्रोत जलस्रोत	Social Studies	Economy	Other Economy	Sustainable Development
+10SS08.04	209	3	chapter	Foreign Employment in Nepal	नेपालमा वैदशिक रोजगारी	Social Studies	Economy	Occupations	Service
+10SS08.05	212	3	chapter	The Cooperative and its Economic Importance	सहकारी र यसको आर्थिक महत्त्व	Social Studies	Economy	Finance	Interest
+10SS08.06	215	4	chapter	Financial Education	वित्तीय शिक्षा	Social Studies	Community	Education	Other Education
+10SS08.07	219	3	chapter	Financial Instruments	वित्तीय उपकरणहरू	Social Studies	Economy	Finance	Interest
+10SS08.08	222	3	chapter	Insurance	बिमा	Social Studies	Economy	Occupations	Service
+10SS08.09	225	3	chapter	Revenue and Tax Liability	राजस्व र कर असुली	Social Studies	Economy	Other Economy	Local Products
+10SS08.10	228	3	chapter	Consumer Rights	उपभोक्ता अधिकार	Social Studies	Economy	Business	Economics
+10SS09.00	231	0	section	Our International Relations and Support	हाम्रो अन्तर्राष्‍ट्रिय सम्बन्ध र सहयोग	Social Studies			
+10SS09.01	231	4	chapter	The United Nations and its Agencies	संयुक्त राष्‍ट्र सङ्‌घ र अङ्‌गहरू	Social Studies	History	Nepal	International Relations
+10SS09.02	235	4	chapter	Specialized Institutions of the United Nations	संयुक्त राष्‍ट्र सङ्‌घका विशिष्‍टीकृत संस्थाहरू	Social Studies	History	Nepal	International Relations
+10SS09.03	239	2	chapter	Nepal's Role in the United Nations	संयुक्त राष्‍ट्र सङ्‌घमा नेपालको भूमिका	Social Studies	History	Nepal	International Relations
+10SS09.04	241	3	chapter	The Activities of the United Nations in Nepal	नेपालमा संयुक्त राष्‍ट्र सङ्‌घका गतिविधिहरू	Social Studies	History	Nepal	International Relations
+10SS09.05	244	3	chapter	Modernization and its Effects	समसामयिक घटना र तिनको प्रभाव	Social Studies	History	Nepal	Events
+10SS09.06	247	3	chapter	Universal Tax and Local tax	विश्‍वव्यापीकरण र स्थानीयकरण	Social Studies	Economy	Other Economy	Local Products
+11SS01.00	5	0	section	The concept of social and life-sustaining education	सामाजिक तथा जीवनोपयोगी शिक्षाको अवधारणा	Social Studies	Community	Education	Other Education
+11SS01.01	5	5	chapter	Social studies and lifelong learning	सामाजिक अध्ययन तथा जीवनोपयोगी शिक्षा	Social Studies	Other Social Studies		
+11SS01.02	10	3	chapter	The interrelationship of social studies, social studies and social sciences	सामाजिक अध्ययन, सामाजिक शिक्षा र सामाजिक विज्ञानको अन्तरसम्बन्ध	Social Studies	Other Social Studies		
+11SS01.03	13	2	chapter	The concept of social studies skills and life skills	सामाजिक अध्ययनका सिप र जीवनोपयोगी सिपको अवधारणा	Social Studies	Other Social Studies		
+11SS02.00	15	0	section	Digital skills and general research skills as vital skills	जीवनोपयोगी सिपका रूपमा डिजिटल सिपहरू तथा सामान्य अनुसन्धान सिपहरू	Social Studies	Community	Education	Other Education
+11SS02.01	15	5	chapter	Digital literacy	डिजिटल साक्षरता	Social Studies	Community	Education	Other Education
+11SS02.02	20	5	chapter	Use of communication applications	सञ्‍चार एप्लिकेसनहरूको प्रयोग	Social Studies	Community	Everyday Life	Communication
+11SS02.03	25	3	chapter	Online payment	अनलाइन भुक्तानी	Social Studies	Economy	Occupations	Service
+11SS02.04	28	2	chapter	Search and use information and study materials from the Internet	इन्टरनेटबाट सूचना तथा अध्ययन सामग्रीको खोजी र प्रयोग	Social Studies	Community	Education	Other Education
+11SS02.05	30	4	chapter	Responsive use of internet and social media	इन्टरनेट र सामाजिक सञ्‍जालको उत्तरदायी प्रयोग	Social Studies	Community	Education	Other Education
+11SS03.00	34	0	section	Vital sip	जीवनोपयोगी सिप	Social Studies	Community	Education	Other Education
+11SS03.01	34	5	chapter	Decision making process	निर्णय प्रक्रिया	Social Studies	Community	People	
+11SS03.02	39	4	chapter	Problem solving	समस्या समाधान	Social Studies	Community	Everyday Life	Communication
+11SS03.03	43	5	chapter	Communication	सञ्‍चार	Social Studies	Community	Everyday Life	Communication
+11SS03.04	48	4	chapter	Stress management	तनाव व्यवस्थापन	Social Studies	Community	Psychology	Self
+11SS03.05	52	7	chapter	Interpersonal skills	अन्तरवैयक्तिक सिपहरू	Social Studies	Community	Education	Testing
+11SS04.00	59	0	section	Emergence and development of human and society	मानव तथा समाजको उद्‌भव र विकास	Social Studies	Community	Education	Humanities
+11SS04.01	59	3	chapter	The biological origin and evolution of human beings	मानवको जैविकीय उत्पत्ति र विकासक्रम	Social Studies	Community	Education	Humanities
+11SS04.02	62	5	chapter	In the evolution of human society	मानव समाजको विकासक्रम	Social Studies	Community	Education	Humanities
+11SS04.03	67	3	chapter	The beginning and development of the agricultural age	कृषि युगको सुरुआत र विकास	Social Studies	Economy	Agriculture	
+11SS04.04	70	3	chapter	The capitalist era and the industrial world	पुँजीवादी युग र औद्योगिक विश्‍व	Social Studies	Economy	Business	Market
+11SS04.05	73	6	chapter	Current world environment and social behavior	वर्तमान विश्‍व परिवेश र सामाजिक व्यवहार	Social Studies	Other Social Studies		
+11SS05.00	79	0	section	Geography and social relations	भूगोल र सामाजिक सम्बन्ध	Social Studies	Geography	Other Geography	
+11SS05.01	79	3	chapter	Nepal in the world	विश्‍वमा नेपाल	Social Studies	Geography	Asia	Nepal
+11SS05.02	82	3	chapter	Human and environment	मानव र वातावरण	Social Studies	Community	Education	Humanities
+11SS05.03	85	8	chapter	The world's geographical diversity and people's lives	विश्‍वका भौगोलिक विविधता र जनजीवन	Social Studies	Geography	People	
+11SS05.04	93	3	chapter	Environmental areas of Nepal	नेपालका पर्यावरणीय क्षेत्रहरू	Social Studies	Geography	Landforms	
+11SS06.00	96	0	section	World history	विश्‍वको इतिहास	Social Studies	History	World	
+11SS06.01	96	3	chapter	Writing and basic trends in world history	विश्‍व इतिहासको लेखन र मूल प्रवृत्ति	Social Studies	History	Ancient	
+11SS06.02	99	4	chapter	The economic rise and contraction of medieval Asia	मध्यकालीन एसियाको आर्थिक उदय र सङ्कुचन	Social Studies	History	Ancient	Other Ancient History
+11SS06.03	103	4	chapter	Industrial development	औद्योगिक क्रान्ति	Social Studies	Economy	Business	Economics
+11SS06.04	107	2	chapter	Democracy	लोकतन्‍‌त्र	Social Studies	Community	Government	Democracy
+11SS07.00	109	0	section	Social identity, diversity and class division	सामाजिक पहिचान, विविधता र वर्ग विभाजन	Social Studies	Community	Everyday Life	Diversity
+11SS07.01	109	3	chapter	Caste system in Nepal	नेपालमा जातप्रथा	Social Studies	Community	Everyday Life	Diversity
+11SS07.02	112	5	chapter	Dalit question	दलित सवाल	Social Studies	Issues	Human Rights	Caste
+11SS07.03	117	2	chapter	Caste, tribe	जाति, जनजाति	Social Studies	Community	Everyday Life	Diversity
+11SS07.04	119	2	chapter	Multiculturalism and social cohesion	बहुसांस्कृतिकता र सामाजिक एकता	Social Studies	Community	Everyday Life	Diversity
+11SS08.00	121	0	section	Constitution and civic awareness	संविधान र नागरिक सचेतना	Social Studies	Issues	Civil Rights	Other Civil Rights
+11SS08.01	121	2	chapter	Nepal's constitution past and present	नेपालको संविधान विगत र वर्तमान	Social Studies	History	Nepal	Politics
+11SS08.02	123	3	chapter	Political, legal, economic and cultural features of the current constitution	वर्तमान संविधानको राजनीतिक, कानुनी, आर्थिक र सांस्कृतिक विशेषता	Social Studies	Community	Government	Current Affairs
+11SS08.03	126	3	chapter	Electoral system in Nepal	नेपालमा निर्वाचन प्रणाली	Social Studies	Economy	People	
+11SS08.04	129	3	chapter	Nation, nationality and national security	राष्‍ट्र, राष्‍ट्रियता र राष्‍ट्रिय सुरक्षा	Social Studies	Community	Government	National
+11SS09.00	132	0	section	Settlement, population and development	बस्ती, जनसङ्ख्या र विकास	Social Studies	Community	People	
+11SS09.01	132	4	chapter	Human settlement	मानव बस्ती	Social Studies	Community	People	
+11SS09.02	136	4	chapter	Settlement development	बस्ती विकास	Social Studies	Community	People	
+11SS09.03	140	4	chapter	Population and development	जनसङ्ख्या र विकास	Social Studies	Economy	Other Economy	Population
+11SS09.04	144	4	chapter	Consolidation of age structure and use of demographic dividend	उमेर संरचनाको सङ्क्रमण र जनसाङ्ख्यिक लाभांशको उपयोग	Social Studies	Economy	Other Economy	Population
+11SS09.05	148	4	chapter	Population management	जनसङ्ख्या व्यवस्थापन	Social Studies	Economy	Other Economy	Population
+11SS10.00	152	0	section	Economy and development	अर्थतन्‍‌त्र र विकास	Social Studies	Economy	People	
+11SS10.01	152	5	chapter	Basics and characteristics of Nepal's economy	नेपालको अर्थतन्‍‌त्रका आधार र विशेषताहरू	Social Studies	Economy	People	
+11SS10.02	157	5	chapter	Public, private and cooperative sectors	सार्वजनिक, निजी तथा सहकारी क्षेत्र	Social Studies	Economy	Business	Studies
+11SS10.03	162	3	chapter	Remittances and the Nepalese economy	विप्रेषण र नेपाली अर्थतन्‍‌त्र	Social Studies	Economy	Occupations	Other Occupations
+11SS10.04	165	3	chapter	Local, formal and informal business	स्थानीय, औपचारिक र अनौपचारिक कारोबार	Social Studies	Economy	Business	Companies
+11SS10.05	168	3	chapter	Agriculture, industry and construction	कृषि, उद्योग र निर्माण	Social Studies	Economy	Agriculture	Other Agriculture
+11SS10.06	171	4	chapter	Labor force, employment and entrepreneurship in Nepal	नेपालमा श्रमशक्ति, रोजगारी र उद्यमशीलता	Social Studies	Economy	Business	Market
+11SS10.07	175	3	chapter	Government finance	सरकारी वित्त	Social Studies	Economy	Finance	
+11SS11.00	178	0	section	Healthcare and social development	स्वास्थ्य सेवा र सामाजिक विकास	Social Studies	Community	Social Organization	Health Care
+11SS11.01	178	3	chapter	Health care in Nepal	नेपालमा स्वास्थ्य सेवा	Social Studies	Community	Social Organization	Health Care
+11SS11.02	181	4	chapter	Modern and traditional health care system	आधुनिक र परम्परागत स्वास्थ्य सेवा पद्धति	Social Studies	Community	Social Organization	Health Care
+11SS11.03	185	4	chapter	Healthy lifestyle and social life	स्वस्थ जीवनशैली र सामाजिक जीवन	Social Studies	Community	Everyday Life	Other Everyday Life
+11SS11.04	189	3	chapter	Adolescence and a healthy lifestyle	किशोरावस्था र स्वास्थ्य जीवनशैली	Social Studies	Community	People	
+11SS11.05	192	9	chapter	Yoga and meditation	योग तथा ध्यान	Social Studies	Community	Sports	Yoga
+11SS11.06	201	4	chapter	Healthy lifestyle and our diary	स्वस्थ जीवनशैली र हाम्रो दैनिकी	Social Studies	Community	People	
+11SS11.07	205	4	chapter	Thrifty lifestyle and financial management	मितव्ययी जीवनशैली र आर्थिक व्यावस्थापन	Social Studies	Economy	Finance	Interest
+12SS01.00	1	0	section	Unit 1: The concept of social and life-sustaining education	एकाइ १: सामाजिक तथा जीवनोपयोगी शिक्षाको अवधारणा				
+12SS01.01	1	4	chapter	The interrelationship between social studies and lifelong learning	सामाजिक अध्ययन तथा जीवनोपयोगी शिक्षाको अन्तरसम्बन्ध	Social Studies	Community	Education	
+12SS01.02	5	5	chapter	Lifelong learning, life skills and healthy lifestyle Interrelationships	जीवनोपयोगी शिक्षा, जीवनोपयोगी सिप र स्वस्थ जीवनशैलीबिचको अन्तरसम्बन्ध	Social Studies	Community	Education	
+12SS02.00	10	0	section	Unit 2: Digital skills and general research skills as vital skills	एकाइ २: जीवनोपयोगी सिपका रूपमा डिजिटल सिपहरू तथा सामान्य अनुसन्धान सिपहरू				
+12SS02.01	10	4	chapter	Digital skills and general research skills as vital skills	जीवनोपयोगी सिपका रूपमा डिजिटल सिपहरू तथा सामान्य अनुसन्धान सिपहरू	Social Studies	Community	People	
+12SS02.02	14	3	chapter	Correlation and causation in social studies: The concept of relationship	सामाजिक अध्ययनमा सहसम्बन्ध तथा कार्यकारण सम्बन्धको अवधारणा	Social Studies	Community	People	
+12SS02.03	17	3	chapter	Structure of the study preamble	अध्ययन प्रस्तावनाको संरचना	Social Studies	Community	People	
+12SS02.04	20	5	chapter	Ethical aspects to consider when using other people's writing in writing	लेखनकार्यमा अरूको लेखरचनाको प्रयोग गर्दा ध्यान दिनुपर्ने नैतिक पक्ष	Social Studies	Community	People	
+12SS02.05	25	4	chapter	Problem building and study method selection for social studies	सामाजिक अध्ययनका लागि समस्या निर्माण र अध्ययन विधि चयन	Social Studies	Community	People	
+12SS02.06	29	4	chapter	Social statistics and information collection methods and 
+Tools	सामाजिक तथ्याङ्क र सूचना सङ्कलनका विधि र 
+साधनहरू	Social Studies	Community	People	
+12SS02.07	33	8	chapter	Analysis and presentation of statistics and information	तथ्याङ्क तथा सूचनाको विश्लेषण र प्रस्तुतीकरण	Social Studies	Community	People	
+12SS02.08	41	5	chapter	Microsoft in data processing and analysis 
+Using Excel	तथ्याङ्क प्रशोधन र विश्लेषणमा माइव्रmोसफ्ट 
+एक्सेलको प्रयोग	Science	IT	Other IT	
+12SS02.09	46	3	chapter	A way to present literal information	शाब्दिक जानकारीलाई प्रस्तुत गर्ने तरिका	Social Studies	Community	People	
+12SS03.00	49	0	section	Unit 3: Living Skills	एकाइ ३: जीवनोपयोगी सिप				
+12SS03.01	49	3	chapter	Historical background, classification and practice of vital skills	जीवनोपयोगी सिपको ऐतिहासिक पृष्ठभूमि, वर्गीकरण र अभ्यास	Social Studies	Community	People	
+12SS03.02	52	6	chapter	Critical thinking	समालोचनात्मक चिन्तन	Social Studies	Community	Psychology	Other Psychology
+12SS03.03	58	4	chapter	Creative thinking	सिर्जनात्मक चिन्तन	Social Studies	Community	Psychology	Other Psychology
+12SS03.04	62	4	chapter	Empathy	समानुभूति	Social Studies	Community	Psychology	Respect
+12SS03.05	66	5	chapter	Self-realization	आत्मबोध	Social Studies	Community	Psychology	Self
+12SS03.06	71	5	chapter	Momentum management	संवेग व्यवस्थापन	Social Studies	Community	Psychology	Self
+12SS04.00	76	0	section	Unit 4: Development and philosophy of society	एकाइ ४: समाजको विकास र दर्शन				
+12SS04.01	76	5	chapter	The social diversity and characteristics of today's world	वर्तमान विश्वका सामाजिक विविधता र विशेषता	Social Studies	Community	Everyday Life	Diversity
+12SS04.02	81	6	chapter	Development of social relations and social interdependence	सामाजिक सम्बन्धहरूको विकास र सामाजिक अन्तर निर्भरता	Social Studies	Community	Everyday Life	Diversity
+12SS04.03	87	7	chapter	Life philosophy, social values ​​and social behavior	जीवन दर्शन, सामाजिक मूल्य मान्यताहरू र सामाजिक व्यवहार	Social Studies	Community	Everyday Life	Diversity
+12SS04.04	94	8	chapter	The usefulness of philosophy in daily life	दैनिक जीवनमा दर्शनको उपयोगिता	Social Studies	Community	Psychology	Other Psychology
+12SS04.05	102	7	chapter	Changes in the community and social transformation	समुदायमा आएका परिवर्तन र सामाजिक रूपान्तरण	Social Studies	Community	Everyday Life	Diversity
+12SS05.00	109	0	section	Unit 5: Geography and Social Life	एकाइ ५: भूगोल र सामाजिक जीवन				
+12SS05.01	109	7	chapter	Administrative provinces of Nepal	नेपालका प्रशासनिक प्रदेश	Social Studies	Geography	Asia	Nepal
+12SS05.02	116	3	chapter	Demographic status and characteristics of the provinces	प्रदेशहरूको जनसाँख्यिक अवस्था र विशेषता	Social Studies	Geography	Asia	Nepal
+12SS05.03	119	6	chapter	Socio-cultural conditions of Nepal's provinces and feature	नेपालका प्रदेशका सामाजिक सांस्कृतिक अवस्था र विशेषता	Social Studies	Geography	Asia	Nepal
+12SS05.04	125	7	chapter	Economic status and characteristics of Nepal's provinces	नेपालका प्रदेशको आर्थिक अवस्था र विशेषता	Social Studies	Economy	Other Economy	Sustainable Development
+12SS05.05	132	4	chapter	Dimensions of inter-regional relations	अन्तरप्रादेशिक सम्बन्धका आयामहरू	Social Studies	Beliefs	Religions	Other Religions
+12SS05.06	136	4	chapter	Disaster in Nepal	नेपालमा विपत	Social Studies	History	Nepal	Geography
+12SS05.07	140	3	chapter	Disaster causes and effects	विपत्का कारण र प्रभाव	Social Studies	Issues	Other Issues	
+12SS05.08	143	4	chapter	Disaster management mechanism and planning in Nepal	नेपालमा विपत् व्यवस्थापन संयन्त्र र योजना निर्माण	Social Studies	Other Social Studies		
+12SS05.09	147	3	chapter	Information technology in geography and social life	भूगोल र सामाजिक जीवनमा सूचना प्रविधि	Social Studies	Geography	Other Geography	
+12SS05.10	150	4	chapter	Use of geo-information system in social maps	सामाजिक नक्साङ्कमा भूसूचना प्रणालीको प्रयोग	Social Studies	Geography	Other Geography	
+12SS06.00	154	0	section	Unit 6: History of Nepal	एकाइ ६: नेपालको इतिहास				
+12SS06.01	154	6	chapter	Ancient history of Nepal	नेपालको प्राचीन इतिहास	Social Studies	History	Nepal	History
+12SS06.02	160	5	chapter	Licchavi period	लिच्छवि काल	Social Studies	History	Nepal	History
+12SS06.03	165	5	chapter	Medieval political situation	मध्यकालीन राजनीतिक अवस्था	Social Studies	History	Nepal	Politics
+12SS06.04	170	6	chapter	Medieval economic, social and cultural state	मध्यकालीन आर्थिक, सामजिक तथा सांस्कृतिक अवस्था	Social Studies	History	Nepal	History
+12SS06.05	176	6	chapter	Rise and fall of the small kingdom in the Middle Ages	मध्यकालमा ससाना राज्यको उदय र अवसान	Social Studies	History	Nepal	Events
+12SS06.06	182	5	chapter	Modern times	आधुनिक काल	Social Studies	History	Nepal	Other Nepal
+12SS06.07	187	7	chapter	State power after unification	एकीकरणपछिको राज्य सत्ता	Social Studies	History	Nepal	History
+12SS06.08	194	5	chapter	Modern economics, law, culture and art	आधुनिक कालकोअर्थतन्त्र, कानुन, संस्कृति र कलाकौशल	Social Studies	History	Nepal	Other Nepal
+12SS07.00	199	0	section	Unit 7: Social Identity and Diversity	एकाइ ७: सामजिक पहिचान र विविधता				
+12SS07.01	199	6	chapter	Class and social transformation	वर्ग र समाजिक रूपान्तरण	Social Studies	Community	Everyday Life	Diversity
+12SS07.02	205	6	chapter	Gender question	लैङ्गिक सवाल	Social Studies	Issues	Civil Rights	Diversity
+12SS07.03	211	7	chapter	Gender inclusion	लैङ्गिक समावेशिता	Social Studies	Issues	Civil Rights	Diversity
+12SS07.04	218	5	chapter	Disability and inclusion	अपाङ्गता र समावेशीकरण	Social Studies	Community	Everyday Life	Diversity
+12SS07.05	223	4	chapter	Religious and regional identities	धार्मिक तथा क्षेत्रीय पहिचान	Social Studies	Community	Everyday Life	Diversity
+12SS07.06	227	5	chapter	Egalitarian society	समतामूलक समाज	Social Studies	Community	Everyday Life	Diversity
+12SS08.00	232	0	section	Unit 8: Constitution and Citizen Awareness	एकाइ ८: संविधान र नागरिक सचेतना				
+12SS08.01	232	5	chapter	Government formation process	सरकारको गठन प्रक्रिया	Social Studies	Community	Government	National
+12SS08.02	237	7	chapter	Government duties and rights	सरकारका काम कर्तव्य र अधिकार	Social Studies	Community	Government	National
+12SS08.03	244	4	chapter	Civil rights and duties	नागरिक अधिकार र कर्तव्य	Social Studies	Issues	Civil Rights	Other Civil Rights
+12SS08.04	248	5	chapter	Adolescent rights and duties	किशोरकिशोरीको अधिकार र कर्तव्य	Social Studies	Issues	Human Rights	Human Rights
+12SS08.05	253	8	chapter	Country Code	मुलुकी संहिता	Social Studies	Geography	Geography	
+12SS08.06	261	4	chapter	Right to Information	सूचनाको हक	Social Studies	Issues	Civil Rights	Other Civil Rights
+12SS08.07	265	7	chapter	Virtue and social accountability	सदाचार र सामाजिक जवाफदेही	Social Studies	Issues	Civil Rights	Other Civil Rights
+12SS09.00	272	0	section	Unit 9: Urbanization and Migration	एकाइ ९: सहरीकरण र बसाइँसराइ				
+12SS09.01	272	4	chapter	The concept of urbanization	सहरीकरणको अवधारणा	Social Studies	Economy	Other Economy	Population
+12SS09.02	276	5	chapter	Urbanization in Nepal	नेपालमा सहरीकरण	Social Studies	History	Nepal	Geography
+12SS09.03	281	3	chapter	Village-city relations	गाउँ सहर सम्बन्ध	Social Studies	History	Nepal	Geography
+12SS09.04	284	4	chapter	Opportunities and challenges of urbanization in Nepal	नेपालमा सहरीकरणका अवसर र चुनौती	Social Studies	History	Nepal	Geography
+12SS09.05	288	5	chapter	Immigration	बसाइँसराइ	Social Studies	Issues	Civil Rights	Immigration
+12SS09.06	293	5	chapter	The tendency to migrate	बसाइँसराइको प्रवृत्ति	Social Studies	Issues	Civil Rights	Immigration
+12SS09.07	298	4	chapter	Safe and dignified immigration	सुरक्षित एवम् मर्यादित आप्रवासन	Social Studies	Issues	Civil Rights	Immigration
+12SS09.08	302	3	chapter	The effect of migration	बसाइँसराइको प्रभाव	Social Studies	Issues	Civil Rights	Immigration
+12SS10.00	305	0	section	Unit 10: Economy and Development	एकाइ १०: अर्थतन्त्र र विकास				
+12SS10.01	305	4	chapter	Nepal's economy and development	नेपालको अर्थतन्त्र र विकास	Social Studies	Economy	People	
+12SS10.02	309	6	chapter	Nepal's foreign policy and Nepal, India and Nepal, China relations	नेपालको विदेश नीति र नेपाल भारत तथा नेपाल चीन सम्बन्ध	Social Studies	History	Nepal	International Relations
+12SS10.03	315	10	chapter	Nepal's international relations	नेपालको अन्तर्राष्ट्रिय सम्बन्ध	Social Studies	History	Nepal	International Relations
+12SS10.04	325	5	chapter	Nepal's foreign trade	नेपालको वैदेशिक व्यापार	Social Studies	Economy	Law	International Trade
+12SS10.05	330	3	chapter	Nepal's foreign employment policy	नेपालको वैदेशिक रोजगार नीति	Social Studies	Economy	Occupations	Service
+12SS10.06	333	7	chapter	Economic growth, human development and sustainable development concept	आर्थिक वृद्धि, मानव विकास तथा दिगो विकास अवधारणा	Social Studies	Economy	Other Economy	Sustainable Development
+12SS10.07	340	5	chapter	Poverty cycle in Nepal and measures to address it	नेपालमा गरिबी चक्र र सम्बोधनका उपायहरू	Social Studies	Issues	Poverty	
+12SS10.08	345	4	chapter	Current events	समसामयिक घटनाहरू	Social Studies	Community	Government	Current Affairs
+12SS11.00	349	0	section	Unit 11: Education and Social Development	एकाइ ११: शिक्षा र सामाजिक विकास				
+12SS11.01	349	4	chapter	Education and social development	शिक्षा र सामाजिक विकास	Social Studies	Community	Education	Humanities
+12SS11.02	353	5	chapter	Access and inclusion in education	शिक्षामा पहुँच र समावेशिता	Social Studies	Community	Education	Other Education
+12SS11.03	358	4	chapter	Education in social and cultural development bringing change and impact	शिक्षाले सामाजिक तथा सांस्कृतिक विकासमा ल्याउने परिवर्तन र प्रभाव	Social Studies	Community	Education	Environment
+12SS11.04	362	4	chapter	Community participation in education	शिक्षामा समुदायको सहभागिता	Social Studies	Community	Education	Other Education
+12SS11.05	366	5	chapter	Education and employment	शिक्षा र रोजगार	Social Studies	Community	Education	Other Education

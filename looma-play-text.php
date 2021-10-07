@@ -15,7 +15,6 @@ Comments:
 
 <?php $page_title = 'Looma - Text File';
 	  include ('includes/header.php');
-	  include ('includes/mongo-connect.php');
 ?>
 
     <link rel="stylesheet" href="css/looma-play-text.css">

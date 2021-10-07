@@ -5,26 +5,21 @@
 button {margin: 3vh;}
 
 .button-div#row1 {
-    top:33%;
-    left:5%;
-    width: 90%;
+   
     height: 25%;
     min-height:25%;
 }
 
 .button-div#row2 {
-    top:55%;
-    left:10%;
-    width: 80%;
+   
     height: 30%;
-    padding: 2%;
     min-height:25%;
 }
 
 button.subject {
     background-repeat: no-repeat;
     background-position:center;
-
+    background-size:67%;
     width:15%;
     height:80%;
     margin: 1% 2%;
@@ -94,7 +89,7 @@ button.class {
     color: black;
     min-width:9vw;
     line-height: 1.0;
-    font-size: 8vw;
+    font-size: 7vw;
     font-weight: bold;
    
 }

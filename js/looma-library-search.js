@@ -165,9 +165,10 @@ function translateSearchResults() {
     $('button.activity').each(function(){
         if (language === 'native') {
             var ndn = ($(this).data('ndn') && $(this).data('ndn') !== 'undefined') ? $(this).data('ndn') : $(this).data('dn');
+            var dn = ($(this).data('dn') && $(this).data('dn') !== 'undefined') ? $(this).data('dn') : $(this).data('ndn');
             $(this).children('span.dn').text(ndn);
         }
-        else $(this).children('span.dn').text($(this).data('dn')) ;
+        else $(this).children('span.dn').text(dn) ;
     });
 };
 

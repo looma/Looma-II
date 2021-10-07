@@ -1,0 +1,694 @@
+cl_lo	cl_hi	ch_id	nch_id	key1	key2	key3	key4	lang	src	ft	fn	nfn	dn	ndn	fp
+2	2	2EN01.01		Language	English	Contexts	Narration	en	CEHRD	mp4	1. Class 2 _ English _ Lesson 1 _ Birendra's Family _ Me and My Family.mp4		C2 U1 L1A Birendra's Family		../content/CEHRD/Class2/English/
+2	2	2EN01.01		Language	English	Contexts	Narration	en	CEHRD	mp4	2. Class 2 _ English _ Lesson 1 _ Birendra's Family  _ Me and My Family.mp4		C2 U1 L1B Birendra's Family		../content/CEHRD/Class2/English/
+2	2	2EN01.01		Language	English	Contexts	Narration	en	CEHRD	mp4	3. Class 2 _ English _ Lesson 1 _ Birendra's Family _ Me and My Family.mp4		C2 U1 L1C Birendra's Family		../content/CEHRD/Class2/English/
+2	2	2EN01.02		Language	English	Contexts	Narration	en	CEHRD	mp4	4. Class 2 _ English _ Lesson 1 _ I Love My Family _ Me and My Family.mp4		C2 U1 L2A I Love My Family		../content/CEHRD/Class2/English/
+2	2	2EN01.02		Language	English	Contexts	Narration	en	CEHRD	mp4	5. Class 2_ English_ Lesson 2_ Topic I Love My Family_   Me and My Family.mp4		C2 U1 L2B I Love My Family		../content/CEHRD/Class2/English/
+2	2	2EN01.02		Language	English	Contexts	Narration	en	CEHRD	mp4	6. Class 2 _ English _ Lesson 2 _ Topic I Love My Family _   Me and My Family.mp4		C2 U1 L2C I Love My Family		../content/CEHRD/Class2/English/
+2	2	2EN01.03		Language	English	Contexts	Narration	en	CEHRD	mp4	7. Class 2_ English_ Me and My Family_ Lesson 3_ Uncle Shiva's Family.mp4		C2 U1 L3A Uncle Shiva's Family		../content/CEHRD/Class2/English/
+2	2	2EN01.03		Language	English	Contexts	Narration	en	CEHRD	mp4	8. Class 2_ English_ Me and My Family_ Lesson 3_ Uncle Shiva's Family.mp4		C2 U1 L3B Uncle Shiva's Family		../content/CEHRD/Class2/English/
+2	2	2EN01.03		Language	English	Contexts	Narration	en	CEHRD	mp4	9. Class 2 _ English _ Me and My Family _ Lesson 3 _ Uncle Shiva's Family.mp4		C2 U1 L3C Uncle Shiva's Family		../content/CEHRD/Class2/English/
+2	2	2EN01.04		Language	English	Contexts	Identity	en	CEHRD	mp4	10. Class 2 _ English _ Me and My Family _ Lesson 4 _ It's Me.mp4		C2 U1 L4A It's Me		../content/CEHRD/Class2/English/
+2	2	2EN01.04		Language	English	Contexts	Identity	en	CEHRD	mp4	11. Class 2 _ English _ Me and My Family _ Lesson 4 _ It's Me.mp4		C2 U1 L4B It's Me		../content/CEHRD/Class2/English/
+2	2	2EN01.04		Language	English	Contexts	Identity	en	CEHRD	mp4	12. Class 2 _ English _ Me and My Family _ Lesson 4 _ It's Me.mp4		C2 U1 L4C It's Me		../content/CEHRD/Class2/English/
+2	2	2EN01.05		Language	English	Contexts	Describing	en	CEHRD	mp4	13. Class 2 _ English _ Me and My Family _ Lesson 5 _ My Body.mp4		C2 U1 L5A My Body		../content/CEHRD/Class2/English/
+2	2	2EN01.06		Language	English	Contexts	Describing	en	CEHRD	mp4	14. Class 2 _ English _ Me and My Family _ Lesson 5 _ My Body.mp4		C2 U1 L5B My Body		../content/CEHRD/Class2/English/
+2	2		2M02.01	Mathematics	Arithmetic	Addition & Subtraction		np	CEHRD	mp4		१. कक्षा २ _ गणित _ मेरो दैनिक जीवन _ पाठ २ _ समय.mp4		क२ ए२ पा२क समय	../content/CEHRD/Class2/Math/
+2	2		2M02.01	Mathematics	Arithmetic	Addition & Subtraction		np	CEHRD	mp4		२. कक्षा २ _ गणित _ मेरो दैनिक जीवन _ पाठ २ _ समय.mp4		क२ ए२ पा२ख समय	../content/CEHRD/Class2/Math/
+2	2		2M03.01	Mathematics	Numbers	Other Numbers		np	CEHRD	mp4		३. कक्षा २ _ गणित _ सङ्ख्याको ज्ञान _ पाठ ३ _ १००० सम्मका सङ्ख्याहरू १ देखि ३० सम्मका सङ्ख्याहरू.mp4		क२ ए३ पा३ १००० सम्मका सङ्ख्याहरू १ देखि ३० सम्मका सङ्ख्याहरू - १ देखि ३० सम्मका सङ्ख्याहरू	../content/CEHRD/Class2/Math/
+2	2		2M03.01	Mathematics	Numbers	Other Numbers		np	CEHRD	mp4		४. कक्षा २ _ गणित सङ्ख्याको ज्ञान _ पाठ ३ _ १००० सम्मका सङ्ख्याहरू ३१ देखि ५० सम्मका सङ्ख्याहरू.mp4		क२ ए३ पा३ १००० सम्मका सङ्ख्याहरू १ देखि ३० सम्मका सङ्ख्याहरू - ३१ देखि ५० सम्मका सङ्ख्याहरू	../content/CEHRD/Class2/Math/
+2	2		2M03.01	Mathematics	Numbers	Other Numbers		np	CEHRD	mp4		६. कक्षा २_ गणित_ सङ्ख्याको ज्ञान_ पाठ ३_ १००० सम्मका सङ्ख्याहरू_ ७६ देखि १०० सम्मका सङ्ख्याहरू.mp4		क२ ए३ पा३ १००० सम्मका सङ्ख्याहरू १ देखि ३० सम्मका सङ्ख्याहरू - ७६ देखि १०० सम्मका सङ्ख्याहरू	../content/CEHRD/Class2/Math/
+2	2		2M03.01	Mathematics	Numbers	Other Numbers		np	CEHRD	mp4		७. कक्षा २_ गणित_ सङ्ख्याको ज्ञान_ पाठ ३_ १ देखि ५० सम्मका हिन्दु अरेबिक संख्याहरू.mp4		क२ ए३ पा३ १००० सम्मका सङ्ख्याहरू १ देखि ३० सम्मका सङ्ख्याहरू - १ देखि ५० सम्मका हिन्दु अरेबिक संख्याहरू	../content/CEHRD/Class2/Math/
+2	2		2M03.01	Mathematics	Numbers	Other Numbers		np	CEHRD	mp4		८. कक्षा २_ गणित सङ्ख्याको ज्ञान_ पाठ ३_ ५१ देखि १०० सम्मका हिन्दु अरेबिक संख्याहरू.mp4		क२ ए३ पा३ १००० सम्मका सङ्ख्याहरू १ देखि ३० सम्मका सङ्ख्याहरू - ५१ देखि १०० सम्मका हिन्दु अरेबिक संख्याहरू	../content/CEHRD/Class2/Math/
+2	2		2M03.01	Mathematics	Numbers	Other Numbers		np	CEHRD	mp4		१०. कक्षा २ _ गणित _ सङ्ख्याको ज्ञान _ पाठ ३ _ ५०१ देखि ९९९ सम्मका देवनागरी सङ्ख्याहरू.mp4		क२ ए३ पा३ १००० सम्मका सङ्ख्याहरू १ देखि ३० सम्मका सङ्ख्याहरू - ५०१ देखि ९९९ सम्मका देवनागरी सङ्ख्याहरू	../content/CEHRD/Class2/Math/
+2	2		2M04.01	Mathematics	Numbers	Significance		np	CEHRD	mp4		१४. कक्षा २ _ गणित _ हाम्रो समुदाय _ पाठ ४ _ सङ्ख्याहरूको तुलना.mp4		क२ ए४ पा४ सङ्ख्याहरूको तुलना	../content/CEHRD/Class2/Math/
+2	2		2N01	Language	Nepali	People		np	CEHRD	mp4		१. कक्षा २ _ नेपाली _ मेरो प्यारो परिवार.mp4		क२ पा१ मेरो प्यारो परिवा	../content/CEHRD/Class2/Nepali/
+2	2		2N01	Language	Nepali	People		np	CEHRD	mp4		२. कक्षा २ _ नेपाली _ मुसो र बिरालो.mp4		क२ पा१ मुसो र बिरालो	../content/CEHRD/Class2/Nepali/
+2	2		2N01	Language	Nepali	People		np	CEHRD	mp4		३. कक्षा २ _ नेपाली_  म र मेरो परिवार _ पाठ २ _ मेरो घर वर छ.mp4		क२ पा२ मेरो घर वर छ	../content/CEHRD/Class2/Nepali/
+2	2		2N01	Language	Nepali	People		np	CEHRD	mp4		४. कक्षा २ _ नेपाली _ म र मेरो परिवार _ पाठ २ _बहिनी कति असल.mp4		क२ पा२ बहिनी कति असल	../content/CEHRD/Class2/Nepali/
+2	2		2N02	Language	Nepali	Contexts	Activities	np	CEHRD	mp4		५. कक्षा २ _ नेपाली _ मेरो दैनिक जीवन _ पाठ ३ _ अगाडी बढ्न थालेँ म.mp4		क२ पा३क अगाडी बढ्न थालेँ म	../content/CEHRD/Class2/Nepali/
+2	2		2N02	Language	Nepali	Contexts	Activities	np	CEHRD	mp4		६. कक्षा २ _ नेपाली _ मेरो दैनिक जीवन _ पाठ ३ _ अगाडी बढ्न थालेँ म.mp4		क२ पा३ख अगाडी बढ्न थालेँ म	../content/CEHRD/Class2/Nepali/
+2	2		2N02	Language	Nepali	Contexts	Activities	np	CEHRD	mp4		७. कक्षा २_ नेपाली _ पाठ ४ _ तराजुमा मुसो.mp4		क२ पा४ तराजुमा मुसो	../content/CEHRD/Class2/Nepali/
+2	2		2N02	Language	Nepali	Contexts	Activities	np	CEHRD	mp4		८. कक्षा २ _ नेपाली _ पाठ ४ _ टिकटिक घडी.mp4		क२ पा४ टिकटिक घडी	../content/CEHRD/Class2/Nepali/
+2	2		2N03	Language	Nepali	People		np	CEHRD	mp4		१०. कक्षा २_ नेपाली _ हाम्रो समुदाय _ पाठ ५ _ चराको जिब्रो.mp4		क२ पा५ चराको जिब्रो	../content/CEHRD/Class2/Nepali/
+2	2		2N03	Language	Nepali	People		np	CEHRD	mp4		११. कक्षा २ _ नेपाली _ हाम्रो समुदाय _ पाठ ५ _ आफ्नै घर आएँ.mp4		क२ पा५ आफ्नै घर आएँ	../content/CEHRD/Class2/Nepali/
+2	2		2N03	Language	Nepali	People		np	CEHRD	mp4		१३. कक्षा २ _ नेपाली _ हाम्रो समुदाय _ पाठ ६ _ बाघले मलाई देखेको भए !.mp4		क२ पा६ बाघले मलाई देखेको भए	../content/CEHRD/Class2/Nepali/
+2	2		2SF01.01	Social Studies	Community	Everyday Life	Family	np	CEHRD	mp4		१. कक्षा २ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ १ _ मेरो परिवार.mp4		क२ ए१ पा१क मेरो परिवार	../content/CEHRD/Class2/Serofero/
+2	2		2SF01.01	Social Studies	Community	Everyday Life	Family	np	CEHRD	mp4		२. कक्षा २ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ १ _ मेरो परिवार.mp4		क२ ए१ पा१ख मेरो परिवार	../content/CEHRD/Class2/Serofero/
+2	2		2SF01.02	Social Studies	Community	People		np	CEHRD	mp4		३. कक्षा २ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ २ _ छरछिमेक.mp4		क२ ए१ पा२क छरछिमेक	../content/CEHRD/Class2/Serofero/
+2	2		2SF01.02	Social Studies	Community	People		np	CEHRD	mp4		४. कक्षा २ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ २ _ छरछिमेक.mp4		क२ ए१ पा२ख छरछिमेक	../content/CEHRD/Class2/Serofero/
+2	2		2SF01.03	Social Studies	Community	People		np	CEHRD	mp4		५. कक्षा २ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ ३ _ सहयोग र हेरचाह.mp4		क२ ए१ पा३ सहयोग र हेरचाह	../content/CEHRD/Class2/Serofero/
+2	2		2SF01.04	Science	Community	Everyday Life	Food	np	CEHRD	mp4		६. कक्षा २ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ ४ _ हाम्रो खानेकुरा.mp4		क२ ए१ पा४क हाम्रो खानेकुरा	../content/CEHRD/Class2/Serofero/
+2	2		2SF01.04	Science	Community	Everyday Life	Food	np	CEHRD	mp4		७. कक्षा २_ हाम्रो सेरोफेरो _ म र मेरो परिवार_ पाठ ४_ हाम्रो खानेकुरा.mp4		क२ ए१ पा४ख हाम्रो खानेकुरा	../content/CEHRD/Class2/Serofero/
+2	2		2SF01.06	Social Studies	Community	Everyday Life	Possessions	np	CEHRD	mp4		८. कक्षा २ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ ६_ हाम्रा उपकरण.mp4		क२ ए१ पा६क हाम्रा उपकरण	../content/CEHRD/Class2/Serofero/
+2	2		2SF01.06	Social Studies	Community	Everyday Life	Possessions	np	CEHRD	mp4		९. कक्षा २ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ ६ _ हाम्रा उपकरण.mp4		क२ ए१ पा६ख हाम्रा उपकरण	../content/CEHRD/Class2/Serofero/
+2	2		2SF02.01	Science	Medicine	Healthy Living		np	CEHRD	mp4		१०. कक्षा २ _ हाम्रो सेरोफेरो _ मेरो दैनिक जीवन _ पाठ १ _ व्यक्तिगत सरसफाइ.mp4		क२ ए२ पा१ व्यक्तिगत सरसफाइ	../content/CEHRD/Class2/Serofero/
+2	2		2SF02.02	Science	Earth	Climate		np	CEHRD	mp4		११. कक्षा २ _ हाम्रो सेरोफेरो _ मेरो दैनिक जीवन _ पाठ २ _ पिउने पानी.mp4		क२ ए२ पा२ पिउने पानी	../content/CEHRD/Class2/Serofero/
+2	2		2SF02.03	Science	Physics	Forces	Magnetism	np	CEHRD	mp4		१२. कक्षा २ _ हाम्रो सेरोफेरो _ मेरो दैनिक जीवन _ पाठ ३ _ विद्युत र चुम्बक.mp4		क२ ए२ पा३ विद्युत र चुम्बक	../content/CEHRD/Class2/Serofero/
+2	2		2SF02.04	Science	Physics	Other Physics	Sound	np	CEHRD	mp4		१४. कक्षा २_ हाम्रो सेरोफेरो _ मेरो दैनिक जीवन _ पाठ ४_ ध्वनि.mp4		क२ ए२ पा४ ध्वनि	../content/CEHRD/Class2/Serofero/
+3	3	3EN01.01		Social Studies	Community	Social Organization	Family	en	CEHRD	mp4	1. Class 3 _ English _ Me and My Family _ Lesson 1 _ My Lovely Family.mp4		C3 U1 L1A My Lovely Family		../content/CEHRD/Class3/English/
+3	3	3EN01.01		Social Studies	Community	Social Organization	Family	en	CEHRD	mp4	2. Class 3 _ English _ Me and My Family _ Lesson 1 _ My Lovely Family _ Vocabulary.mp4		C3 U1 L1 My Lovely Family - Vocabulary		../content/CEHRD/Class3/English/
+3	3	3EN01.01		Social Studies	Community	Social Organization	Family	en	CEHRD	mp4	3. Class 3 _ English _ Me and My Family _ Lesson 1 _ My Lovely Family.mp4		C3 U1 L1B My Lovely Family		../content/CEHRD/Class3/English/
+3	3	3EN01.01		Social Studies	Community	Social Organization	Family	en	CEHRD	mp4	4. Class 3 _ English _ Me and My Family _ Lesson 1 _ My Lovely Family _ Writing.mp4		C3 U1 L1 My Lovely Family -  Writing		../content/CEHRD/Class3/English/
+3	3	3EN01.02		Social Studies	Community	Everyday Life		en	CEHRD	mp4	5. Class 3 _ English _ Me and My Family _ Lesson 2 _ I'm from Nepal.mp4		C3 U1 L2  I'm from Nepal		../content/CEHRD/Class3/English/
+3	3	3EN01.02		Social Studies	Community	Everyday Life		en	CEHRD	mp4	6. Class 3 _ English _ Me and My Family _ Lesson 2 _ I'm from Nepal _ Reading.mp4		C3 U1 L2 I'm from Nepal - Reading		../content/CEHRD/Class3/English/
+3	3	3EN01.02		Social Studies	Community	Everyday Life		en	CEHRD	mp4	7. Class 3_ English_ Me and My Family_ Lesson 2_ I'm From Nepal_ Grammar and Writing.mp4		C3 U1 L2 I'm From Nepal - Grammar and Writing		../content/CEHRD/Class3/English/
+3	3	3EN01.03		Social Studies	Community	Everyday Life	Other Everyday Life	en	CEHRD	mp4	8. Class 3_ English_ Me and My Family_ Lesson 3_ Family Chores_ Speaking and Vocabulary.mp4		C3 U1 L3 Family Chores-Speaking and Vocabulary		../content/CEHRD/Class3/English/
+3	3	3EN01.03		Social Studies	Community	Everyday Life	Other Everyday Life	en	CEHRD	mp4	9. Class 3 _ English _ Me and My Family _ Lesson 3 _ Family Chores.mp4		C3 U1 L3A Family Chores		../content/CEHRD/Class3/English/
+3	3	3EN01.03		Social Studies	Community	Everyday Life	Other Everyday Life	en	CEHRD	mp4	10. Class 3 _ English _ Me and My Family _ Lesson 3 _ Family Chores.mp4		C3 U1 L3B Family Chores		../content/CEHRD/Class3/English/
+3	3	3EN01.04		Social Studies	Community	Everyday Life	Celebrations	en	CEHRD	mp4	11. Class 3 _ English _ Me and My Family _ Lesson 4 _ Mother's Day _ Reading.mp4		C3 U1 L4 Mother's Day - Reading		../content/CEHRD/Class3/English/
+3	3	3EN01.05		Social Studies	Community	Social Organization	Work	en	CEHRD	mp4	13. Class 3 _ English _ Me and My Family _ Lesson 5 _ What do they do.mp4		C3 U1 L5 What do they do		../content/CEHRD/Class3/English/
+3	3	3EN01.05		Social Studies	Community	Social Organization	Work	en	CEHRD	mp4	14. Class 3 _ English _ Me and My Family _ Lesson 5 _ A day in the life of a farmer.mp4		C3 U1 L5 What do they do - A day in the life of a farmer		../content/CEHRD/Class3/English/
+3	3		3M01.01	Mathematics	Measurement	Date & Time		np	CEHRD	mp4		१. कक्षा ३ _ गणित _ मेरो दैनिक जीवन _ पाठ १ _ समय.mp4		क३ ए१ पा१क समय	../content/CEHRD/Class3/Math/
+3	3		3M01.01	Mathematics	Measurement	Date & Time		np	CEHRD	mp4		२. कक्षा ३ _ गणित _ मेरो दैनिक जीवन _ पाठ १ _ समय.mp4		क३ ए१ पा१ख समय	../content/CEHRD/Class3/Math/
+3	3		3M02.01	Mathematics	Numbers	Natural		np	CEHRD	mp4		३. कक्षा ३ _ गणित _ सङ्ख्याहरूको ज्ञान _ पाठ २ _ चार अङ्कसम्मका सङ्ख्याहरू देवनागरी पद्धतिमा.mp4		क३ ए२ पा२ चार अङ्कसम्मका सङ्ख्याहरू देवनागरी पद्धतिमा	../content/CEHRD/Class3/Math/
+3	3		3M02.01	Mathematics	Numbers	Natural		np	CEHRD	mp4		५. कक्षा ३ _ गणित _ सङ्ख्याको ज्ञान _ पाठ २ _ पाँच अङ्कसम्मका सङ्ख्याहरू.mp4		क३ ए२ पा२क पाँच अङ्कसम्मका सङ्ख्याहरू	../content/CEHRD/Class3/Math/
+3	3		3M02.01	Mathematics	Numbers	Natural		np	CEHRD	mp4		६. कक्षा ३ _ गणित _ सङ्ख्याको ज्ञान _ पाठ २ _ पाँच अङ्कसम्मका सङ्ख्याहरू.mp4		क३ ए२ पा२ख पाँच अङ्कसम्मका सङ्ख्याहरू	../content/CEHRD/Class3/Math/
+3	3		3M02.01	Mathematics	Numbers	Natural		np	CEHRD	mp4		७.  कक्षा ३_ गणित_ सङ्ख्याको ज्ञान_ पाठ २_ पाँच अङ्कसम्मका सङ्ख्याहरू.mp4		क३ ए२ पा२ग पाँच अङ्कसम्मका सङ्ख्याहरू	../content/CEHRD/Class3/Math/
+3	3		3M02.01	Mathematics	Numbers	Natural		np	CEHRD	mp4		८. कक्षा ३ _ गणित _ सङ्ख्याको ज्ञान_ पाठ २ _ पाँच अङ्कसम्मका सङ्ख्याहरू.mp4		क३ ए२ पा२घ पाँच अङ्कसम्मका सङ्ख्याहरू	../content/CEHRD/Class3/Math/
+3	3		3M02.02	Mathematics	Numbers	Significance		np	CEHRD	mp4		१०. कक्षा ३ _ गणित _ पाठ ३ _ संख्याहरूको तुलना.mp4		क३ ए२ पा३ संख्याहरूको तुलना	../content/CEHRD/Class3/Math/
+3	3		3M02.03	Mathematics	Numbers	Significance		np	CEHRD	mp4		११. कक्षा ३ _ गणित _ सङ्ख्याको ज्ञान _ पाठ ४ _ सङ्ख्याको ढाँचा.mp4		क३ ए२ पा४क सङ्ख्याको ढाँचा	../content/CEHRD/Class3/Math/
+3	3		3M02.03	Mathematics	Numbers	Significance		np	CEHRD	mp4		१२. कक्षा ३ _ गणित _ सङ्ख्याको ज्ञान _ पाठ ४ _ सङ्ख्याको ढाँचा.mp4		क३ ए२ पा४ख सङ्ख्याको ढाँचा	../content/CEHRD/Class3/Math/
+3	3		3M03.01	Mathematics	Numbers	Ordinal		np	CEHRD	mp4		१४. कक्षा ३ _ गणित _ हाम्रो समुदाय _ पाठ ५ _ संख्याहरूको बढ्दो र घट्दो क्रम.mp4		क३ ए३ पा५ संख्याहरूको बढ्दो र घट्दो क्रम	../content/CEHRD/Class3/Math/
+3	3		3N01	Language	Nepali	People		np	CEHRD	mp4		१. कक्षा ३ _ नेपाली _ म र मेरो परिवार _ पाठ १ _ हाम्रो परिवार.mp4		क३ पा१क  म र मेरो परिवार - हाम्रो परिवार	../content/CEHRD/Class3/Nepali/
+3	3		3N01	Language	Nepali	People		np	CEHRD	mp4		२. कक्षा ३ _ नेपाली _ म र मेरो परिवार _ पाठ १ _ हाम्रो परिवार.mp4		क३ पा१ख  म र मेरो परिवार - हाम्रो परिवार	../content/CEHRD/Class3/Nepali/
+3	3		3N01	Language	Nepali	People		np	CEHRD	mp4		३. कक्षा ३ _ नेपाली _ म र मेरो परिवार _ पाठ २.mp4		क३ पा२  म र मेरो परिवार - सुन साथी सुन	../content/CEHRD/Class3/Nepali/
+3	3		3N01	Language	Nepali	People		np	CEHRD	mp4		४. कक्षा ३ _ नेपाली _ म र मेरो परिवार _ पाठ २ _ सुनको फुल.mp4		क३ पा२  म र मेरो परिवार - सुनको फुल	../content/CEHRD/Class3/Nepali/
+3	3		3N01	Language	Nepali	People		np	CEHRD	mp4		५. कक्षा ३ _ नेपाली _ म र मेरो परिवार _ पाठ २ _ पुस्तक नै राम्रो.mp4		क३ पा२  म र मेरो परिवार - पुस्तक नै राम्रो	../content/CEHRD/Class3/Nepali/
+3	3		3N02	Language	Nepali	Contexts	Activities	np	CEHRD	mp4		६. कक्षा ३ _ नेपाली _ मेरो दैनिक जीवन _ पाठ ३ _ मेरो खाजा.mp4		क३ पा३ मेरो दैनिक जीवन - मेरो खाजा	../content/CEHRD/Class3/Nepali/
+3	3		3N02	Language	Nepali	Contexts	Activities	np	CEHRD	mp4		७. कक्षा ३ _ नेपाली _ मेरो दैनिक जीवन _ पाठ ३.mp4		क३ पा३क  मेरो दैनिक जीवन	../content/CEHRD/Class3/Nepali/
+3	3		3N02	Language	Nepali	Contexts	Activities	np	CEHRD	mp4		८. कक्षा ३ _ नेपाली _ मेरो दैनिक जीवन _ पाठ ३.mp4		क३ पा३ख  मेरो दैनिक जीवन	../content/CEHRD/Class3/Nepali/
+3	3		3N02	Language	Nepali	Contexts	Activities	np	CEHRD	mp4		९. कक्षा ३ _ नेपाली _ मेरो दैनिक जीवन _ पाठ ४ _ गरिदेऊ निसाफ.mp4		क३ पा४ मेरो दैनिक जीवन - गरिदेऊ निसाफ	../content/CEHRD/Class3/Nepali/
+3	3		3N02	Language	Nepali	Contexts	Activities	np	CEHRD	mp4		११. कक्षा ३ _ नेपाली _ मेरो दैनिक जीवन _ पाठ ४.mp4		क३ पा४ मेरो दैनिक जीवन	../content/CEHRD/Class3/Nepali/
+3	3		3N03	Language	Nepali	People		np	CEHRD	mp4		१२. कक्षा ३ _ नेपाली _ हाम्रो समुदाय _ पाठ ५ _ बिरुवा रोप्ने मान्छे.mp4		क३ पा५  हाम्रो समुदाय - बिरुवा रोप्ने मान्छे	../content/CEHRD/Class3/Nepali/
+3	3		3N03	Language	Nepali	People		np	CEHRD	mp4		१३. कक्षा ३ _ नेपाली _ हाम्रो समुदाय _ पाठ ५ _ हामी सबै नेपाली.mp4		क३ पा५   हाम्रो समुदाय - हामी सबै नेपाली	../content/CEHRD/Class3/Nepali/
+3	3		3N03	Language	Nepali	People		np	CEHRD	mp4		१४. कक्षा ३ _ नेपाली _ हाम्रो समुदाय _ पाठ ५ _ हिमालमाथि मङ्गल.mp4		क३ पा५  हाम्रो समुदाय - हिमालमाथि मङ्गल	../content/CEHRD/Class3/Nepali/
+3	3		3SF01.01	Social Studies	Community	Everyday Life		np	CEHRD	mp4		१. कक्षा ३ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ १ _ हाम्रो परिचय.mp4		क३ ए१ पा१क हाम्रो परिचय	../content/CEHRD/Class3/Serofero/
+3	3		3SF01.01	Social Studies	Community	Everyday Life		np	CEHRD	mp4		२. कक्षा ३ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ १ _ हाम्रो परिचय.mp4		क३ ए१ पा१ख हाम्रो परिचय	../content/CEHRD/Class3/Serofero/
+3	3		3SF01.01	Social Studies	Community	Everyday Life		np	CEHRD	mp4		३. कक्षा ३ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ १ _ हाम्रो परिचय.mp4		क३ ए१ पा१ग हाम्रो परिचय	../content/CEHRD/Class3/Serofero/
+3	3		3SF01.02	Science	Community	Everyday Life	Food	np	CEHRD	mp4		४. कक्षा ३ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ २ _ हाम्रो खानेकुरा.mp4		क३ ए१ पा२क हाम्रो खानेकुरा	../content/CEHRD/Class3/Serofero/
+3	3		3SF01.02	Science	Community	Everyday Life	Food	np	CEHRD	mp4		५. कक्षा ३ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ २ _ हाम्रा खानेकुरा.mp4		क३ ए१ पा२ख हाम्रो खानेकुरा	../content/CEHRD/Class3/Serofero/
+3	3		3SF01.04	Social Studies	Community	Everyday Life	Clothing	np	CEHRD	mp4		६. कक्षा ३ _ हाम्रो सेरोफेरो _ म र मेरो परिवार _ पाठ ४ _ नाप्ने उपकरण.mp4		क३ ए१ पा४ नाप्ने उपकरण	../content/CEHRD/Class3/Serofero/
+3	3		3SF02.02	Social Studies	Community	People		np	CEHRD	mp4		७. कक्षा ३ _ हाम्रो सेरोफेरो _ मेरो दैनिक जीवन _ पाठ २ _ राम्रो बानी.mp4		क३ ए२ पा२ राम्रो बानी	../content/CEHRD/Class3/Serofero/
+3	3		3SF02.03	Science	Earth	Other Earth	Environment	np	CEHRD	mp4		८. कक्षा ३ _ हाम्रो सेरोफेरो _ मेरो दैनिक जीवन _ पाठ ३ _ स्वच्छ वातावरण.mp4		क३ ए२ पा३ स्वच्छ वातावरण	../content/CEHRD/Class3/Serofero/
+3	3		3SF02.04	Science	Physics	Forces	Magnetism	np	CEHRD	mp4		९. कक्षा ३_ हाम्रो सेरोफेरो _ मेरो दैनिक जीवन _ पाठ २ _ विद्युत र चुम्बक.mp4		क३ ए२ पा४ विद्युत र चुम्बक	../content/CEHRD/Class3/Serofero/
+3	3		3SF02.05	Science	Physics	Other Physics	Sound	np	CEHRD	mp4		१०. कक्षा ३ _ हाम्रो सेरोफेरो _ मेरो दैनिक जीवन _ पाठ २ _ ध्वनि.mp4		क३ ए२ पा५ ध्वनि	../content/CEHRD/Class3/Serofero/
+3	3		3SF03.01	Social Studies	Community	People		np	CEHRD	mp4		११. कक्षा ३ _ हाम्रो सेरोफेरो _ हाम्रो समुदाय _ पाठ १ _ हाम्रो गाउँघर.mp4		क३ ए३ पा१ हाम्रो गाउँघर	../content/CEHRD/Class3/Serofero/
+3	3		3SF03.02	Social Studies	Community	People		np	CEHRD	mp4		१२. कक्षा ३ _ हाम्रो सेरोफेरो _ हाम्रो समुदाय _ पाठ २ _ असल नागरिक.mp4		क३ ए३ पा२ असल नागरिक	../content/CEHRD/Class3/Serofero/
+3	3		3SF03.03	Science	Biology	Zoology		np	CEHRD	mp4		१३. कक्षा ३ _ हाम्रो सेरोफेरो _ हाम्रो समुदाय _ पाठ ३ _ वरपरका जनावर.mp4		क३ ए३ पा३क वरपरका जनावर	../content/CEHRD/Class3/Serofero/
+3	3		3SF03.03	Science	Biology	Zoology		np	CEHRD	mp4		१४. कक्षा ३ _ हाम्रो सेरोफेरो _ हाम्रो समुदाय _ पाठ ३ _ वरपरका जनावर.mp4		क३ ए३ पा३ख वरपरका जनावर	../content/CEHRD/Class3/Serofero/
+6	6	6EN01						en	CEHRD	mp4	1. Class 6 _ English _ Unit 1 _ Profession and Job.mp4		C6 U1 Getting Started -Profession and Job		../content/CEHRD/Class6/English/
+6	6	6EN01						en	CEHRD	mp4	2. Class 6 _ English _ Unit 1 _ T  S  Eliot _ Reading.mp4		C6 U1  T.S.  Eliot (Reading)		../content/CEHRD/Class6/English/
+6	6	6EN01						en	CEHRD	mp4	3. Class 6 _ English _ Unit 1 _ T  S  Eliot _ Speaking.mp4		C6 U1  T.S.  Eliot (Speaking)		../content/CEHRD/Class6/English/
+6	6	6EN01						en	CEHRD	mp4	5. Class 6। English । Unit 1 । Topic   T S  Eliot Reading and Writing.mp4		C6 U1  T.S.  Eliot (Reading and Writing)		../content/CEHRD/Class6/English/
+6	6	6EN02						en	CEHRD	mp4	7. Class 6_ English_ Unit 2_ Getting Started _  Three Simple Rules Story.mp4		C6 U2 Three Simple Rules Story		../content/CEHRD/Class6/English/
+6	6	6EN02						en	CEHRD	mp4	8. Class 6_ English_ Unit 2_ Three Simple Rules_ Reading.mp4		C6 U2 Three Simple Rules Story (Reading)		../content/CEHRD/Class6/English/
+6	6	6EN02						en	CEHRD	mp4	10. Class 6 _ English _ Unit 2 _ Yes No Questions _ Grammar.mp4		C6 U2 Yes No Questions (Grammar)		../content/CEHRD/Class6/English/
+6	6	6EN03						en	CEHRD	mp4	13. Class 6_ English _ Unit 3 _ Getting Started.mp4		C6 U3 Getting Started		../content/CEHRD/Class6/English/
+6	6	6EN03						en	CEHRD	mp4	14. Class 6 _ English _ Unit 3 _ Reading Beauty and the Beast.mp4		C6 U3 Reading Beauty and the Beast		../content/CEHRD/Class6/English/
+6	6		6H01	Science	Medicine	Human Body		np	CEHRD	mp4		१. कक्षा ६ _ स्वास्थ्य, शारीरिक तथा सिर्जनात्मक कला _  एकाइ १ _ मानव शरीर _ हाम्रा ज्ञानेन्द्रीयहरू.mp4		क६ ए१क  मानव शरीर - हाम्रा ज्ञानेन्द्रीयहरू	../content/CEHRD/Class6/Health/
+6	6		6H01	Science	Medicine	Human Body		np	CEHRD	mp4		२. कक्षा ६ _ स्वास्थ्य शारीरिक तथा सिर्जनात्मक कला _ एकाइ १ _ मानव शरीर _ हाम्रा ज्ञानेन्द्रीयहरू.mp4		क६ ए१ख  मानव शरीर - हाम्रा ज्ञानेन्द्रीयहरू	../content/CEHRD/Class6/Health/
+6	6		6H01	Science	Medicine	Human Body		np	CEHRD	mp4		३. कक्षा ६ _ स्वास्थ्य, शारीरिक _ एकाइ १ _ मानव शरीर _  अस्थिपन्जर प्रणाली.mp4		क६ ए१ मानव शरीर - अस्थिपन्जर प्रणाली	../content/CEHRD/Class6/Health/
+6	6		6H01	Science	Medicine	Human Body		np	CEHRD	mp4		४. कक्षा ६ _ स्वास्थ्य, शारीरिक _ एकाइ १ _ मानव शरीर _  मांसपेशी प्रणाली.mp4		क६ ए१ मानव शरीर - मांसपेशी प्रणाली	../content/CEHRD/Class6/Health/
+6	6		6H01	Science	Medicine	Human Body		np	CEHRD	mp4		५. कक्षा ६ । स्वास्थ्य, शारीरिक । एकाइ १।मानव शरीर। अस्थिपन्जर र मांसपेशी प्रणालीबिचको अन्तरसम्बन्ध.mp4		क६ ए१ मानव शरीर - अस्थिपन्जर र मांसपेशी प्रणालीबिचको अन्तरसम्बन्ध	../content/CEHRD/Class6/Health/
+6	6		6H02	Social Studies	Community	Psychology		np	CEHRD	mp4		६. कक्षा ६_ स्वास्थ्य, शारीरिक_  एकाइ २_ सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य.mp4		क६ ए२क सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य	../content/CEHRD/Class6/Health/
+6	6		6H02	Social Studies	Community	Psychology		np	CEHRD	mp4		७. कक्षा ६_ स्वास्थ्य, शारीरिक_ एकाइ २_ सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य.mp4		क६ ए२ख सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य	../content/CEHRD/Class6/Health/
+6	6		6H02	Social Studies	Community	Psychology		np	CEHRD	mp4		८. कक्षा ६_ स्वास्थ्य, शारीरिक _ एकाइ २_ सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य.mp4		क६ ए२ग सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य	../content/CEHRD/Class6/Health/
+6	6		6H02	Social Studies	Community	Psychology		np	CEHRD	mp4		९. कक्षा ६_ स्वास्थ्य_ एकाइ २_ सामुदायिक तथा मानसिक स्वास्थ्य_  विज्ञापनले स्वास्थ्यमा पार्ने प्रभाव.mp4		क६ ए२ सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य - विज्ञापनले स्वास्थ्यमा पार्ने प्रभाव	../content/CEHRD/Class6/Health/
+6	6		6H02	Social Studies	Community	Psychology		np	CEHRD	mp4		१०.कक्षा ६_ स्वास्थ्य_ एकाइ २_ सामुदायिक, मानसिक स्वास्थ्य_ वातावरण प्रदूषणले स्वास्थमा पर्ने प्रभाव.mp4		क६ ए२ सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य - वातावरण प्रदूषणले स्वास्थमा पर्ने प्रभाव	../content/CEHRD/Class6/Health/
+6	6		6H02	Social Studies	Community	Psychology		np	CEHRD	mp4		११. कक्षा ६_ स्वास्थ्य_ एकाइ २_ सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य_ मानसिक स्वास्थ्य.mp4		क६ ए२ सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य -  मानसिक स्वास्थ्य	../content/CEHRD/Class6/Health/
+6	6		6H03	Science	Medicine	Healthy Living	Nutrition	np	CEHRD	mp4		१२. कक्षा ६ _ स्वास्थ्य _ एकाइ ३ _ पोषण र खाद्य सुरक्षा _ सन्तुलित भोजन.mp4		क६ ए३ पोषण र खाद्य सुरक्षा - सन्तुलित भोजन	../content/CEHRD/Class6/Health/
+6	6		6M01.01	Mathematics	Numbers	Sets		np	CEHRD	mp4	1. Class 6 _ Mathematics _ Unit 1 _ Set _ Lesson 1 _ Set.mp4		C6 U1 L1A Set		../content/CEHRD/Class6/Math/
+6	6		6M01.01	Mathematics	Numbers	Sets		np	CEHRD	mp4	2. Class 6 _ Mathematics _ Unit 1 _ Set _ Lesson 1 _ Set.mp4		C6 U1 L1B Set		../content/CEHRD/Class6/Math/
+6	6		6M02.01	Mathematics	Numbers	Whole		np	CEHRD	mp4	3. Class 6 _ Mathematics _ Unit 2 _ Arithmetic _ Lesson 2 _ Whole Number.mp4		C6 U2 L2A Whole Number		../content/CEHRD/Class6/Math/
+6	6		6M02.01	Mathematics	Numbers	Whole		np	CEHRD	mp4	4. Class 6 _ Mathematics _ Unit 2 _ Arithmetic _ Lesson 2 _ Whole Number.mp4		C6 U2 L2B Whole Number		../content/CEHRD/Class6/Math/
+6	6		6M02.01	Mathematics	Numbers	Whole		np	CEHRD	mp4	5. Class 6_ Mathematics_ Unit 2_ Arithmetic_ Lesson 2 _ Whole NumbesDivisibility Test.mp4		C6 U2 L2 Whole Number Divisibility Test		../content/CEHRD/Class6/Math/
+6	6		6M02.01	Mathematics	Numbers	Whole		np	CEHRD	mp4	7. Class 6_ Mathematics_ Unit 2_ Arithmetic_ Lesson 2_ Whole Number Prime and Composite Numbers.mp4		C6 U2 L2  Whole Number Prime and Composite Numbers		../content/CEHRD/Class6/Math/
+6	6		6M02.01	Mathematics	Numbers	Whole		np	CEHRD	mp4	8. Class 6_ Mathematics_ Unit 2_ Arithmetic_ Lesson 2_ Whole Number Prime factorization.mp4		C6 U2 L2 Whole Number Prime factorization		../content/CEHRD/Class6/Math/
+6	6		6M02.01	Mathematics	Numbers	Whole		np	CEHRD	mp4	9. Class 6 _ Maths _ Unit 2 _ Arithmetic _ Lesson 2 _ Whole Number _ Square number and square root.mp4		C6 U2 L2 Whole Number - Square number and square root		../content/CEHRD/Class6/Math/
+6	6		6M02.01	Mathematics	Numbers	Whole		np	CEHRD	mp4	10. Class 6 _ Maths _ Unit 2 _ Arithmetic _ Lesson 2 _ Whole Number _ Highest common factor.mp4		C6 U2 L2 Whole Number -  Highest common factor		../content/CEHRD/Class6/Math/
+6	6		6M02.01	Mathematics	Numbers	Whole		np	CEHRD	mp4	11. Class 6 _ Maths _ unit 2 _ Arithmetic _ Lesson 2 _ Whole Number _ L C M.mp4		C6 U2 L2 Whole Number - L C M		../content/CEHRD/Class6/Math/
+6	6		6M02.02	Mathematics	Numbers	Integers		np	CEHRD	mp4	12. Class 6 _ Maths _ unit 2 _ Arithmetic _ Lesson 3 _ Integers.mp4		C6 U2 L3 Integers		../content/CEHRD/Class6/Math/
+6	6		6M02.03	Mathematics	Arithmetic	Fractions		np	CEHRD	mp4	13. Class 6 _ Maths _ Unit 2 _ Arithmetic _ Lesson 4 _ FractionEquivalent fractions.mp4		C6 U2 L4 Fraction Equivalent fractions		../content/CEHRD/Class6/Math/
+6	6		6N01	Language	Nepali	Song		np	CEHRD	mp4		१. कक्षा ६ _ नेपाली _ पाठ १ _ मातृभूमिको आवाज.mp4		क६ पा१क मातृभूमिको आवाज	../content/CEHRD/Class6/Nepali/
+6	6		6N01	Language	Nepali	Song		np	CEHRD	mp4		२. कक्षा ६ _ नेपाली _ पाठ १ _ मातृभूमिको आवाज.mp4		क६ पा१ख मातृभूमिको आवाज	../content/CEHRD/Class6/Nepali/
+6	6		6N01	Language	Nepali	Song		np	CEHRD	mp4		३. कक्षा ६ _ नेपाली _ पाठ १ _ मातृभूमिको आवाज.mp4		क६ पा१ग मातृभूमिको आवाज	../content/CEHRD/Class6/Nepali/
+6	6		6N01	Language	Nepali	Song		np	CEHRD	mp4		४. कक्षा ६ _ नेपाली _ पाठ १ _ मातृभूमिको आवाज.mp4		क६ पा१घ मातृभूमिको आवाज	../content/CEHRD/Class6/Nepali/
+6	6		6N01	Language	Nepali	Song		np	CEHRD	mp4		५. कक्षा ६ _ नेपाली _ पाठ १ _ मातृभूमिको आवाज.mp4		क६ पा१ङ मातृभूमिको आवाज	../content/CEHRD/Class6/Nepali/
+6	6		6N02	Language	Nepali	Contexts	Narration	np	CEHRD	mp4		६. कक्षा ६ _ नेपाली _ पाठ २ _ कुमार यवक्रीत.mp4		क६ पा२क कुमार यवक्रीत	../content/CEHRD/Class6/Nepali/
+6	6		6N02	Language	Nepali	Contexts	Narration	np	CEHRD	mp4		७. कक्षा ६ _ नेपाली _ पाठ २ _ कुमार यवक्रीत.mp4		क६ पा२ख कुमार यवक्रीत	../content/CEHRD/Class6/Nepali/
+6	6		6N02	Language	Nepali	Contexts	Narration	np	CEHRD	mp4		८. कक्षा ६ _ नेपाली _ पाठ २ _ कुमार यवक्रीत.mp4		क६ पा२ग कुमार यवक्रीत	../content/CEHRD/Class6/Nepali/
+6	6		6N02	Language	Nepali	Contexts	Narration	np	CEHRD	mp4		९. कक्षा ६ _ नेपाली _ पाठ २ _ कुमार यवक्रीत _ पौराणिक कथा.mp4		क६ पा२क कुमार यवक्रीत - पौराणिक कथा	../content/CEHRD/Class6/Nepali/
+6	6		6N02	Language	Nepali	Contexts	Narration	np	CEHRD	mp4		१०. कक्षा ६ _ नेपाली _ पाठ २ _ कुमार यवक्रीत _ पौराणिक कथा.mp4		क६ पा२ख कुमार यवक्रीत - पौराणिक कथा	../content/CEHRD/Class6/Nepali/
+6	6		6N03	Language	Nepali	Contexts	Possessions	np	CEHRD	mp4		११. कक्षा ६ _ नेपाली _ पाठ ३ _ नेपाली संस्कृति _ निबन्ध.mp4		क६ पा३क  नेपाली संस्कृति	../content/CEHRD/Class6/Nepali/
+6	6		6N03	Language	Nepali	Contexts	Possessions	np	CEHRD	mp4		१२. कक्षा ६ _ नेपाली _ पाठ ३ _ नेपाली संस्कृति _ निबन्ध.mp4		क६ पा३ख  नेपाली संस्कृति	../content/CEHRD/Class6/Nepali/
+6	6		6N03	Language	Nepali	Contexts	Possessions	np	CEHRD	mp4		१३. कक्षा ६ _ नेपाली _ पाठ ३ _ नेपाली संस्कृति _ निबन्ध.mp4		क६ पा३ग  नेपाली संस्कृति	../content/CEHRD/Class6/Nepali/
+6	6		6N03	Language	Nepali	Contexts	Possessions	np	CEHRD	mp4		१४. कक्षा ६ _ नेपाली _ पाठ ३ _ नेपाली संस्कृति _ निबन्ध.mp4		क६ पा३घ  नेपाली संस्कृति	../content/CEHRD/Class6/Nepali/
+6	6		6S01.01	Science	Other Science			np	CEHRD	mp4	1. Class 6 _ Science and Technology _ Unit 1 _ Scientific Learning.mp4		C6 U1 L1  Scientific Learning		../content/CEHRD/Class6/Science/
+6	6		6S01.02	Math	Measurement	Units		np	CEHRD	mp4	2. Class 6 _ Science and Technology _ Unit 1 _ Scientific Learning _ Measurement and Unit.mp4		C6 U1 L2A Measurement and Unit		../content/CEHRD/Class6/Science/
+6	6		6S01.02	Math	Measurement	Units		np	CEHRD	mp4	3. Class 6 _ Science _ Unit 1 _ Scientific Learning _ Measurement and Unit.mp4		C6 U1 L2B Measurement and Unit		../content/CEHRD/Class6/Science/
+6	6		6S01.02	Math	Measurement	Units		np	CEHRD	mp4	4. Class 6 _ Science _ Unit 1 _ Scientific Learning  _ Measurement and Unit.mp4		C6 U1 L2C Measurement and Unit		../content/CEHRD/Class6/Science/
+6	6		6S02.01	Science	Technology			np	CEHRD	mp4	5. Class 6_ Science and Technology _ Unit 2 _ Information and Communication Technology 2 1.mp4		C6 U2 Information and Communication Technology		../content/CEHRD/Class6/Science/
+6	6		6S03.01	Science	Biology	Other Biology	Natural Selection	np	CEHRD	mp4	14. Class 6 _ Science _ Unit 3 _ Organism and Their Structure  _ Adaptation of organisms.mp4		C6 U3 L1A Adaptation of organisms		../content/CEHRD/Class6/Science/
+6	6		6S03.01	Science	Biology	Other Biology	Natural Selection	np	CEHRD	mp4	15. Class 6_ Science_ Unit 3_ Organism and Their Structure_ Adaptation of organisms.mp4		C6 U3 L1B Adaptation of organisms		../content/CEHRD/Class6/Science/
+6	6		6SS01.01	Social Studies	Community	People		np	CEHRD	mp4		१. कक्षा ६ _ सामाजिक अध्ययन _ एकाइ १ _ हामी र हाम्रो समाज _ पाठ १ _ समाज र समुदाय.mp4		क६ ए१ पा१ समाज र समुदाय	../content/CEHRD/Class6/Socialstudies/
+6	6		6SS01.02	Social Studies	Community	Government	Local	np	CEHRD	mp4		२. कक्षा ६ _ सामाजिक अध्ययन _ एकाइ १ _ हामी र हाम्रो समाज _ पाठ २ _ समाज निर्माणका आधारहरू.mp4		क६ ए१ पा२ समाज निर्माणका आधारहरू	../content/CEHRD/Class6/Socialstudies/
+6	6		6SS01.03, 6SS01.04	Social Studies	Community	Social Organization	Laws	np	CEHRD	mp4		३. कक्षा ६ _ सामाजिक अध्ययन _ एकाइ १ _ हामी र हाम्रो समाज _ पाठ ३ र ४.mp4		क६ ए१ पा३ र ४क  समाज निर्माणका आधारहरू	../content/CEHRD/Class6/Socialstudies/
+6	6		6SS01.06	Social Studies	Transportation			np	CEHRD	mp4		५. कक्षा ६_ सामाजिक अध्ययन_ एकाइ १_ हामी र हाम्रो समाज_ पाठ ६_ विकासका पूर्वाधारहरू.mp4		क६ ए१ पा६ विकासका पूर्वाधारहरू	../content/CEHRD/Class6/Socialstudies/
+6	6		6SS02.01	Social Studies	Psychology	Self		np	CEHRD	mp4		६. कक्षा ६_ सामाजिक अध्ययन_ एकाइ २_ हाम्रा मानव मूल्य मान्यता _ पाठ १_ आत्मअनुशासन.mp4		क६ ए२ पा१ आत्मअनुशासन	../content/CEHRD/Class6/Socialstudies/
+6	6		6SS02.02	Social Studies	Psychology	Behavior		np	CEHRD	mp4		७। कक्षा ६_ सामाजिक अध्ययन_ एकाइ २_ हाम्रा मानव मूल्य मान्यता_ पाठ २_ सामाजिक व्यवहार.mp4		क६ ए२ पा२ सामाजिक व्यवहार	../content/CEHRD/Class6/Socialstudies/
+6	6		6SS02.03	Social Studies	Community	Everyday Life	Celebrations	np	CEHRD	mp4		९. कक्षा ६ _ सामाजिक _ एकाइ २ _ हाम्रा मानवमुल्य मान्यता _ पाठ ३ _ हाम्रा चाडपर्वहरू.mp4		क६ ए२ पा३ हाम्रा चाडपर्वहरू	../content/CEHRD/Class6/Socialstudies/
+6	6		6SS02.04	Social Studies	Community	People		np	CEHRD	mp4		१०.  कक्षा ६ _ सामाजिक _ एकाइ २ _ हाम्रा मानवमुल्य मान्यता _ पाठ ४ _ हाम्रो राष्ट्रिय गौरव.mp4		क६ ए२ पा४ हाम्रो राष्ट्रिय गौरव	../content/CEHRD/Class6/Socialstudies/
+6	6		6SS02.05	Social Studies	Community	Everyday Life	Diversity	np	CEHRD	mp4		११. कक्षा ६_ सामाजिक_ एकाइ २_ हाम्रा मानवमूल्य मान्यता_ पाठ ५_ हाम्रा धार्मिक तथा सांस्कृतिक सम्पदा.mp4		क६ ए२ पा५ हाम्रा धार्मिक तथा सांस्कृतिक सम्पदा	../content/CEHRD/Class6/Socialstudies/
+6	6		6SS02.06	Social Studies	Community	Education	Other Education	np	CEHRD	mp4		१२. कक्षा ६ _ सामाजिक _ एकाइ २ _ हाम्रा मानवमूल्य मान्यता _ पाठ ६ _ बालक्लब र स्काउट.mp4		क६ ए२ पा६ बालक्लब र स्काउट	../content/CEHRD/Class6/Socialstudies/
+9	9		9SS02.01	Social Studies	Community	Social Organization	Infrastructure	np	CEHRD	mp3		C9 Social U 2 L1 _.B.mp3		C9 Social U 2 L1  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS02.02	Social Studies	Community	Social Organization	Infrastructure	np	CEHRD	mp3		C9 Social U 2 L2_part 1_.B.mp3		C9 Social U 2 L2 part 1 .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS02.02	Social Studies	Community	Social Organization	Infrastructure	np	CEHRD	mp3		C9 Social U 2 L2_part 2_.B.mp3		C9 Social U 2 L2 part 2 .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS03.01	Social Studies	Community	Education	Textbooks	np	CEHRD	mp3		C9 Social U 3 l 1 Hamra Parmpra Kala    _.B.mp3		C9 Social U 3 L1 Hamra Parmpra Kala     .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS03.03	Social Studies	Arts	Visual Art	Symbols	np	CEHRD	mp3		C9 Social U 3 l 2 Nepali Bastu Kala   _.B.mp3		C9 Social U 3 L2 Nepali Bastu Kala    .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS03.02	Social Studies	Arts	Visual Art	Sculpture	np	CEHRD	mp3		C9 Social U 3 l 2 Nepali Murti Kala   _.B.mp3		C9 Social U 3 L2 Nepali Murti Kala    .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS03.03	Social Studies	Arts	Visual Art	Symbols	np	CEHRD	mp3		C9 Social U 3 l 3    _.B.mp3		C9 Social U 3 L3     .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS03.05	Social Studies	Community	Government	National	np	CEHRD	mp3		C9 Social U 3 l 5 Part 1    _.B.mp3		C9 Social U 3 L5 Part 1     .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS03.05	Social Studies	Community	Government	National	np	CEHRD	mp3		C9 Social U 3 l 5 Part 2    _.B.mp3		C9 Social U 3 L5 Part 2     .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS03.06	Social Studies	Community	Government	Other Government	np	CEHRD	mp3		C9 Social U 3 l 6  _.B.mp3		C9 Social U 3 L6   .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS03.07	Social Studies	Community	Government	Other Government	np	CEHRD	mp3		C9 Social U 3 l 7   Shanti _.B.mp3		C9 Social U 3 L7   Shanti  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.02	Social Studies	Community	Government	Current Affairs	np	CEHRD	mp3		C9 Social U 5 L 2 Neplal ma Sambaidhanik Bikashkaram _.B.mp3		C9 Social U 5 L2 Neplal ma Sambaidhanik Bikashkaram  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.01	Social Studies	Community	Government	National	np	CEHRD	mp3		C9 Social U 5 L1, 2 Sambidhanko Paricahya _.B.mp3		C9 Social U 5 L1, 2 Sambidhanko Paricahya  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.03	Social Studies	Community	Government	Current Affairs	np	CEHRD	mp3		C9 Social U 5 L3 Sambidhan Sabha _.B.mp3		C9 Social U 5 L3 Sambidhan Sabha  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.04	Social Studies	Issues	Human Rights		np	CEHRD	mp3		C9 Social U 5 L4 Maulik Haka 1 _.B.mp3		C9 Social U 5 L4 Maulik Haka 1  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.04	Social Studies	Issues	Human Rights		np	CEHRD	mp3		C9 Social U 5 L4 Maulik Haka 2  2077.07.26 _.B.mp3		C9 Social U 5 L4 Maulik Haka 2  2077.07.26  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.04	Social Studies	Issues	Human Rights		np	CEHRD	mp3		C9 Social U 5 L4 Maulik Haka 2 _.B.mp3		C9 Social U 5 L4 Maulik Haka 2  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.05	Social Studies	Issues	Human Rights		np	CEHRD	mp3		C9 Social U 5 L5 _.B.mp3		C9 Social U 5 L5  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.06	Social Studies	Issues	Civil Rights	Other Civil Rights	np	CEHRD	mp3		C9 Social U 5 L6 _.B.mp3		C9 Social U 5 L6  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.07	Social Studies	Community	Government	National	np	CEHRD	mp3		C9 Social U 5 L7 _.B.mp3		C9 Social U 5 L7  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.08	Social Studies	Community	Government	National	np	CEHRD	mp3		C9 Social U 5 L8 _.B.mp3		C9 Social U 5 L8  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.09	Social Studies	Community	Government	Democracy	np	CEHRD	mp3		C9 Social U 5 L9 _.B.mp3		C9 Social U 5 L9  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.11	Social Studies	Community	Peace	Other Peace	np	CEHRD	mp3		C9 Social U 5 L11 _.B.mp3		C9 Social U 5 L11  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.12	Social Studies	Community	Everyday Life	Diversity	np	CEHRD	mp3		C9 Social U 5 L12 _.B.mp3		C9 Social U 5 L12  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS05.13	Social Studies	Issues	Civil Rights	Other Civil Rights	np	CEHRD	mp3		C9 Social U 5 L13 _.B.mp3		C9 Social U 5 L13  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.02	Social Studies	Geography	Landforms		np	CEHRD	mp3		C9 Social U 6 L 2 _.B.mp3		C9 Social U 6 L 2  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.03	Social Studies	Geography	Landforms		np	CEHRD	mp3		C9 Social U 6 L3 _.B.mp3		C9 Social U 6 L3  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.04	Social Studies	Geography	Landforms		np	CEHRD	mp3		C9 Social U 6 L4_.B.mp3		C9 Social U 6 L4 .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.05	Social Studies	Geography	Landforms		np	CEHRD	mp3		C9 Social U 6 L5_.B.mp3		C9 Social U 6 L5 .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.06	Social Studies	Geography	Landforms		np	CEHRD	mp3		C9 Social U 6 L6_.B.mp3		C9 Social U 6 L6 .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.07	Social Studies	Geography	Maps		np	CEHRD	mp3		C9 Social U 6 L7 na 8_.B.mp3		C9 Social U 6 L7 na 8 .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.09	Social Studies	Geography	Asia		np	CEHRD	mp3		C9 Social U 6 L9 _.B.mp3		C9 Social U 6 L9  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.10	Social Studies	Geography	Asia		np	CEHRD	mp3		C9 Social U 6 L10 _.B.mp3		C9 Social U 6 L10  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.11	Social Studies	Geography	Europe		np	CEHRD	mp3		C9 Social U 6 L11_.B.mp3		C9 Social U 6 L11 .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.12	Social Studies	Geography	Europe		np	CEHRD	mp3		C9 Social U 6 L12_.B.mp3		C9 Social U 6 L12 .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS01.01	Social Studies	Community	People		np	CEHRD	mp3		C9 Social U1 L1 Hami ra Hamro Samaj (Samaj Bikash)_.B.mp3		C9 Social U1 L1 Hami ra Hamro Samaj  Samaj Bikash  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS01.02	Social Studies	Community	People		np	CEHRD	mp3		C9 Social U1 L2 Hami ra Hamro Samaj (Samaj Prakar  2)_.B.mp3		C9 Social U1 L2 Hami ra Hamro Samaj  Samaj Prakar  2  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS01.02	Social Studies	Community	People		np	CEHRD	mp3		C9 Social U1 L2 Hami ra Hamro Samaj (Samaj Prakar)_.B.mp3		C9 Social U1 L2 Hami ra Hamro Samaj  Samaj Prakar  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS01.03	Social Studies	Community	People		np	CEHRD	mp3		C9 Social U1 L3 Hami ra Hamro Samaj (Aashal Samaj )_.B.mp3		C9 Social U1 L3 Hami ra Hamro Samaj  Aashal Samaj   .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS01.04	Social Studies	Community	People		np	CEHRD	mp3		C9 Social U1 L4 Hami ra Hamro Samaj (Samajikarana)_.B.mp3		C9 Social U1 L4 Hami ra Hamro Samaj  Samajikarana  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS01.05	Social Studies	Community	People		np	CEHRD	mp3		C9 Social U1 L5 Hami ra Hamro Samaj (Rastriya Pahichan)_.B.mp3		C9 Social U1 L5 Hami ra Hamro Samaj  Rastriya Pahichan  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS01.06	Social Studies	Community	People		np	CEHRD	mp3		C9 Social U1 L6 Hami ra Hamro Samaj (Rastriya Gauraba -2 )_.B.mp3		C9 Social U1 L6 Hami ra Hamro Samaj  Rastriya Gauraba -2   .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS01.06	Social Studies	Community	People		np	CEHRD	mp3		C9 Social U1 L6 Hami ra Hamro Samaj (Rastriya Gauraba)_.B.mp3		C9 Social U1 L6 Hami ra Hamro Samaj  Rastriya Gauraba  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS02.03	Social Studies	Community	Social Organization	Infrastructure	np	CEHRD	mp3		C9 Social U2 L3 Bikash ra Bikashka Purbadhara (Bikashka Purbadhara.........)_.B.mp3		C9 Social U2 L3 Bikash ra Bikashka Purbadhara  Bikashka Purbadhara.........  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS02.03	Social Studies	Community	Social Organization	Infrastructure	np	CEHRD	mp3		C9 Social U2 L3 Bikash ra Bikashka Purbadhara (Bikashka Purbadhara-2.........)_.B.mp3		C9 Social U2 L3 Bikash ra Bikashka Purbadhara  Bikashka Purbadhara-2.........  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS02.03	Social Studies	Community	Social Organization	Infrastructure	np	CEHRD	mp3		C9 Social U2 L3 Bikash ra Bikashka Purbadhara (Gyan, ship  ra Prabdi.........)_.B.mp3		C9 Social U2 L3 Bikash ra Bikashka Purbadhara  Gyan, ship  ra Prabdi.........  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS04.01	Social Studies	Issues	People		np	CEHRD	mp3		C9 Social U4 L1 )_.B.mp3		C9 Social U4 L1  .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS04.02	Social Studies	Issues	People		np	CEHRD	mp3		C9 Social U4 L2....._.B.mp3		C9 Social U4 L2..... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS04.03	Social Studies	Issues	Human Rights	Girls & Women	np	CEHRD	mp3		C9 Social U4 L3 Deha Byapar ......_.B.mp3		C9 Social U4 L3 Deha Byapar ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS04.04	Social Studies	Community	Social Organization	Non-Profits	np	CEHRD	mp3		C9 Social U4 L4 Samajik sudharma Sthaniya ra..........._.B.mp3		C9 Social U4 L4 Samajik sudharma Sthaniya ra........... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS04.05	Social Studies	Community	Social Organization	Other Social Organization	np	CEHRD	mp3		C9 Social U4 L5 Nepalma samajik sudharko lagi vayko ......_.B.mp3		C9 Social U4 L5 Nepalma samajik sudharko lagi vayko ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS04.06	Social Studies	History	Nepal	Conflicts	np	CEHRD	mp3		C9 Social U4 L6 Dwonda Chakra ra ......_.B.mp3		C9 Social U4 L6 Dwonda Chakra ra ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.01	Social Studies	Geography	Other Geography		np	CEHRD	mp3		C9 Social U6 L1   Hamro Prithivi......_.B.mp3		C9 Social U6 L1   Hamro Prithivi...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS06.14	Social Studies	Geography	Oceania	Australia	np	CEHRD	mp3		C9 Social U6 L14   Hamro Prithivi......_.B.mp3		C9 Social U6 L14   Hamro Prithivi...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS07.01,9SS07.02	Social Studies	History			np	CEHRD	mp3		C9 Social U7 L1 n 2  Hamro Bigat ......_.B.mp3		C9 Social U7 L1 n 2  Hamro Bigat ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS07.03	Social Studies	History	Nepal	Events	np	CEHRD	mp3		C9 Social U7 L3  Hamro Bigat (Prithivi......_.B.mp3		C9 Social U7 L3  Hamro Bigat  Prithivi...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS07.03	Social Studies	History	Nepal	Events	np	CEHRD	mp3		C9 Social U7 L3  Hamro Bigat (Prithivi....2.._.B.mp3		C9 Social U7 L3  Hamro Bigat  Prithivi....2.. .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS07.04	Social Studies	History	Nepal	Geography	np	CEHRD	mp3		C9 Social U7 L4  Hamro Bigat ......_.B.mp3		C9 Social U7 L4  Hamro Bigat ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS07.05	Social Studies	History	Nepal	Conflicts	np	CEHRD	mp3		C9 Social U7 L5  Hamro Bigat ......_.B.mp3		C9 Social U7 L5  Hamro Bigat ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS07.06	Social Studies	History	Nepal	History	np	CEHRD	mp3		C9 Social U7 L6  Hamro Bigat ......_.B.mp3		C9 Social U7 L6  Hamro Bigat ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS07.07	Social Studies	History	Nepal	History	np	CEHRD	mp3		C9 Social U7 L7  Hamro Bigat ......_.B.mp3		C9 Social U7 L7  Hamro Bigat ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS07.08	Social Studies	History	Nepal	History	np	CEHRD	mp3		C9 Social U7 L8  Hamro Bigat ......_.B.mp3		C9 Social U7 L8  Hamro Bigat ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS07.09	Social Studies	History	World		np	CEHRD	mp3		C9 Social U7 L9  Hamro Bigat ......_.B.mp3		C9 Social U7 L9  Hamro Bigat ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS07.10	Social Studies	History	People	Other People	np	CEHRD	mp3		C9 Social U7 L10 n 11  Hamro Bigat ......_.B.mp3		C9 Social U7 L10 n 11  Hamro Bigat ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.01	Social Studies	Economy	Agriculture		np	CEHRD	mp3		C9 Social U8 L1  Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L1  Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.02, 9SS08.03	Social Studies	Economy			np	CEHRD	mp3		C9 Social U8 L2 n 3  Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L2 n 3  Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.04	Social Studies	Economy	Business	Companies	np	CEHRD	mp3		C9 Social U8 L4  Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L4  Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.05	Social Studies	Economy	Business	Companies	np	CEHRD	mp3		C9 Social U8 L5  Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L5  Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.06	Social Studies	Economy	Business		np	CEHRD	mp3		C9 Social U8 L6  Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L6  Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.07, 9SS08.08	Social Studies	Economy	Law		np	CEHRD	mp3		C9 Social U8 L7 n 8 Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L7 n 8 Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.09, 9SS08.10	Social Studies	Economy	Business		np	CEHRD	mp3		C9 Social U8 L9 n 10  Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L9 n 10  Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.11	Social Studies	Economy	Finance	Interest	np	CEHRD	mp3		C9 Social U8 L11  Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L11  Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.12	Social Studies	Issues	Poverty		np	CEHRD	mp3		C9 Social U8 L12  Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L12  Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.13, 9SS08.14	Social Studies	Community	People		np	CEHRD	mp3		C9 Social U8 L13 n 14   Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L13 n 14   Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS08.15	Social Studies	Economy	Occupations	Other Occupations	np	CEHRD	mp3		C9 Social U8 L15 Aarthika Karyakalap ......_.B.mp3		C9 Social U8 L15 Aarthika Karyakalap ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS09.01	Social Studies	History	Nepal	International Relations	np	CEHRD	mp3		C9 Social U9 L1 Hamro Aantrarastiya sambanda ......_.B.mp3		C9 Social U9 L1 Hamro Aantrarastiya sambanda ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS09.02, 9SS09.03	Social Studies	History	Nepal	International Relations	np	CEHRD	mp3		C9 Social U9 L2 n 3 Hamro Aantrarastiya sambanda ......_.B.mp3		C9 Social U9 L2 n 3 Hamro Aantrarastiya sambanda ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS09.04	Social Studies	History	Nepal	International Relations	np	CEHRD	mp3		C9 Social U9 L4 Hamro Aantrarastiya sambanda ......_.B.mp3		C9 Social U9 L4 Hamro Aantrarastiya sambanda ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9SS09.05	Social Studies	History	Nepal	Events	np	CEHRD	mp3		C9 Social U9 L5 Hamro Aantrarastiya sambanda ......_.B.mp3		C9 Social U9 L5 Hamro Aantrarastiya sambanda ...... .B	../content/CEHRD/Class9/SocialStudies/
+9	9		9S06	Science	Physics	Other Physics	Sound	np	CEHRD	mp3		G9_1Sci_U 6_Sound_I_F.mp3		G9 1Sci U 6 Sound I F	../content/CEHRD/Class9/Science/
+9	9		9S06	Science	Physics	Other Physics	Sound	np	CEHRD	mp3		G9_2Sci_U_Sound_II_F.mp3		G9 2Sci U Sound II F	../content/CEHRD/Class9/Science/
+9	9		9S07	Science	Physics	Electricity & Electronics	Electricity	np	CEHRD	mp3		G9_3Sci_U_Elect&Magnet_I_F.mp3		G9 3Sci U Elect&Magnet I F	../content/CEHRD/Class9/Science/
+9	9		9S24	Science	Astronomy	Solar System		np	CEHRD	mp3		G9_4Sci_U_Earth_ in_universe_F.mp3		G9 4Sci U Earth  in universe F	../content/CEHRD/Class9/Science/
+9	9		9S24	Science	Astronomy	Solar System		np	CEHRD	mp3		G9_5Sci_U_Earth_ in_universe_II_F.mp3		G9 5Sci U Earth  in universe II F	../content/CEHRD/Class9/Science/
+9	9		9S24	Science	Astronomy	Solar System		np	CEHRD	mp3		G9_6Sci_U_Earth_ in_universe_III_F.mp3		G9 6Sci U Earth  in universe III F	../content/CEHRD/Class9/Science/
+9	9		9S07	Science	Physics	Electricity & Electronics	Electricity	np	CEHRD	mp3		G9_9Sci_U7 _Electricity_F.mp3		G9 9Sci U7  Electricity F	../content/CEHRD/Class9/Science/
+9	9		9S07	Science	Physics	Electricity & Electronics	Electricity	np	CEHRD	mp3		G9_10Sci_U_ElectricityII_F.mp3		G9 10Sci U ElectricityII F	../content/CEHRD/Class9/Science/
+9	9		9S06	Science	Physics	Other Physics	Sound	np	CEHRD	mp3		G9_11Sci_U_Sound_III_F.mp3		G9 11Sci U Sound III F	../content/CEHRD/Class9/Science/
+9	9		9S06	Science	Physics	Other Physics	Sound	np	CEHRD	mp3		G9_12Sci_U_Sound_IV_F.mp3		G9 12Sci U Sound IV F	../content/CEHRD/Class9/Science/
+9	9		9S18	Science	Biology	Other Biology	Life Processes	np	CEHRD	mp3		G9_13Sci_U_18System_I_F.mp3		G9 13Sci U 18System I F	../content/CEHRD/Class9/Science/
+9	9		9S12	Science	Chemistry	Metal		np	CEHRD	mp3		G9_14Sci_U_12Metal_I_F.mp3		G9 14Sci U 12Metal I F	../content/CEHRD/Class9/Science/
+9	9		9S18	Science	Biology	Other Biology	Life Processes	np	CEHRD	mp3		G9_15Sci_U_18System_II_F.mp3		G9 15Sci U 18System II F	../content/CEHRD/Class9/Science/
+9	9		9S18	Science	Biology	Other Biology	Life Processes	np	CEHRD	mp3		G9_16Sci_U_18Human Body_F.mp3		G9 16Sci U 18Human Body F	../content/CEHRD/Class9/Science/
+9	9		9S18	Science	Biology	Other Biology	Life Processes	np	CEHRD	mp3		G9_17Sci_U_18Excretion_F.mp3		G9 17Sci U 18Excretion F	../content/CEHRD/Class9/Science/
+9	9		9S18	Science	Biology	Other Biology	Life Processes	np	CEHRD	mp3		G9_18Sci_U_18 Nutrition_F.mp3		G9 18Sci U 18 Nutrition F	../content/CEHRD/Class9/Science/
+9	9		9S15	Science	Chemistry	Other Chemistry		np	CEHRD	mp3		G9_19Sci_U_15Fertilizer_I_F.mp3		G9 19Sci U 15Fertilizer I F	../content/CEHRD/Class9/Science/
+9	9		9S15	Science	Chemistry	Other Chemistry		np	CEHRD	mp3		G9_20Sci_U_15Fertilizer_II_F.mp3		G9 20Sci U 15Fertilizer II F	../content/CEHRD/Class9/Science/
+9	9		9S18	Science	Biology	Other Biology	Life Processes	np	CEHRD	mp3		G9_21Sci_U_18RespiratorySystem_F.mp3		G9 21Sci U 18RespiratorySystem F	../content/CEHRD/Class9/Science/
+9	9		9S18	Science	Biology	Other Biology	Life Processes	np	CEHRD	mp3		G9_22Sci_U_18SkeletonSystem_F.mp3		G9 22Sci U 18SkeletonSystem F	../content/CEHRD/Class9/Science/
+9	9		9S19	Science	Biology	Organs Animal		np	CEHRD	mp3		G9_U 19  Ear and Tongue_.B.mp3		G9 U 19  Ear and Tongue .B	../content/CEHRD/Class9/Science/
+9	9		9S19	Science	Biology	Organs Animal		np	CEHRD	mp3		G9_U 19  Eye _.B.mp3		G9 U 19  Eye  .B	../content/CEHRD/Class9/Science/
+9	9		9S21	Science	Earth	Other Earth	Environment	np	CEHRD	mp3		G9_U_21  Factors influencing in the plants and animals _.B.mp3		G9 U 21  Factors influencing in the plants and animals  .B	../content/CEHRD/Class9/Science/
+9	9		9S21	Science	Earth	Other Earth	Environment	np	CEHRD	mp3		G9_U_21  Factors influencing in the plants and animals 2 _.B.mp3		G9 U 21  Factors influencing in the plants and animals 2  .B	../content/CEHRD/Class9/Science/
+9	9		9S21	Science	Earth	Other Earth	Environment	np	CEHRD	mp3		G9_U_21 Ecosystem  _.B.mp3		G9 U 21 Ecosystem   .B	../content/CEHRD/Class9/Science/
+9	9		9S22	Science	Earth	Natural Disasters		np	CEHRD	mp3		G9_U_22 Glacier flood, cyclone_.B.mp3		G9 U 22 Glacier flood, cyclone .B	../content/CEHRD/Class9/Science/
+9	9		9S22	Science	Earth	Natural Disasters		np	CEHRD	mp3		G9_U_22 Natural Hadard _.B.mp3		G9 U 22 Natural Hadard  .B	../content/CEHRD/Class9/Science/
+9	9		9S23	Science	Earth	Climate	Climate Change	np	CEHRD	mp3		G9_U_23 Climate change_.B.mp3		G9 U 23 Climate change .B	../content/CEHRD/Class9/Science/
+9	9		9S23	Science	Earth	Climate	Climate Change	np	CEHRD	mp3		G9_U_23 Green house effect and artificial _.B.mp3		G9 U 23 Green house effect and artificial  .B	../content/CEHRD/Class9/Science/
+9	9		9S01	Science	Measurement			np	CEHRD	mp3		Science C9 U1 Measurement 2076.07.25 _.B.mp3		Science C9 U1 Measurement 2076.07.25  .B	../content/CEHRD/Class9/Science/
+9	9		9S02	Science	Physics	Forces		np	CEHRD	mp3		Science C9 U2 Force 2076.07.24 ( Newton's Laws of Motion.....)_.B.mp3		Science C9 U2 Force 2076.07.24   Newton's Laws of Motion.....  .B	../content/CEHRD/Class9/Science/
+9	9		9S02	Science	Physics	Forces		np	CEHRD	mp3		Science C9 U2 Force I 2076.07.24 ( Speed,motion, velocity.....)_.B.mp3		Science C9 U2 Force I 2076.07.24   Speed,motion, velocity.....  .B	../content/CEHRD/Class9/Science/
+9	9		9S03	Science	Technology	Mechanical	Machines	np	CEHRD	mp3		Science C9 U3 Machine 2076.07.24 (Mechanical Advantage,velocity ration, efficiency....)_.B.mp3		Science C9 U3 Machine 2076.07.24  Mechanical Advantage,velocity ration, efficiency....  .B	../content/CEHRD/Class9/Science/
+9	9		9S03	Science	Technology	Mechanical	Machines	np	CEHRD	mp3		Science C9 U3 Machine 2076.07.24 (Pully,Inclined plane, wheel and axle....)_.B.mp3		Science C9 U3 Machine 2076.07.24  Pully,Inclined plane, wheel and axle....  .B	../content/CEHRD/Class9/Science/
+9	9		9S04	Science	Physics	Forces	Work & Energy & Power	np	CEHRD	mp3		Science C9 U4 Work, Energy and power 2076.07.25 (work against Friction........)_.B.mp3		Science C9 U4 Work, Energy and power 2076.07.25  work against Friction........  .B	../content/CEHRD/Class9/Science/
+9	9		9S04	Science	Physics	Forces	Work & Energy & Power	np	CEHRD	mp3		Science C9 U4 Work, Energy and power 2076.07.25Energy, Potential energy........)_.B.mp3		Science C9 U4 Work, Energy and power 2076.07.25Energy, Potential energy........  .B	../content/CEHRD/Class9/Science/
+9	9		9S05	Science	Physics	Electromagnetism	Light	np	CEHRD	mp3		Science C9 U5 Light   2076.07.25 (Electromagnetic wave, x-ray, ultraviolet ray)_.B.mp3		Science C9 U5 Light   2076.07.25  Electromagnetic wave, x-ray, ultraviolet ray  .B	../content/CEHRD/Class9/Science/
+9	9		9S05	Science	Physics	Electromagnetism	Light	np	CEHRD	mp3		Science C9 U5 Light I  2076.07.26 _.B.mp3		Science C9 U5 Light I  2076.07.26  .B	../content/CEHRD/Class9/Science/
+9	9		9S05	Science	Physics	Electromagnetism	Light	np	CEHRD	mp3		Science C9 U5 Light II  2076.07.26 _.B.mp3		Science C9 U5 Light II  2076.07.26  .B	../content/CEHRD/Class9/Science/
+9	9		9S08	Science	Chemistry	Periodic Table		np	CEHRD	mp3		Science C9 U8 Classification of elements  2076.07.26 (Chemical Bond)_.B.mp3		Science C9 U8 Classification of elements  2076.07.26  Chemical Bond  .B	../content/CEHRD/Class9/Science/
+9	9		9S08	Science	Chemistry	Periodic Table		np	CEHRD	mp3		Science C9 U8 Classification of elements  2076.07.26 (Element and compound,......duplet)_.B.mp3		Science C9 U8 Classification of elements  2076.07.26  Element and compound,......duplet  .B	../content/CEHRD/Class9/Science/
+9	9		9S09	Science	Chemistry	Other Chemistry		np	CEHRD	mp3		Science C9 U9 Chemical Reaction   2076.08.01 _.B.mp3		Science C9 U9 Chemical Reaction   2076.08.01  .B	../content/CEHRD/Class9/Science/
+9	9		9S10	Science	Chemistry	Other Chemistry		np	CEHRD	mp3		Science C9 U10 Solubility Part 1  2076.08.01 _.B.mp3		Science C9 U10 Solubility Part 1  2076.08.01  .B	../content/CEHRD/Class9/Science/
+9	9		9S10	Science	Chemistry	Other Chemistry		np	CEHRD	mp3		Science C9 U10 Solubility Part 2  2076.08.01 _.B.mp3		Science C9 U10 Solubility Part 2  2076.08.01  .B	../content/CEHRD/Class9/Science/
+9	9		9S11	Science	Physics	Materials	Gas	np	CEHRD	mp3		Science C9 U11 Some gases   2076.08.01 (Nitrogen Gas)_.B.mp3		Science C9 U11 Some gases   2076.08.01  Nitrogen Gas  .B	../content/CEHRD/Class9/Science/
+9	9		9S11	Science	Physics	Materials	Gas	np	CEHRD	mp3		Science C9 U11 Some gases   2076.08.03 (Hydrogen Gas)_.B.mp3		Science C9 U11 Some gases   2076.08.03  Hydrogen Gas  .B	../content/CEHRD/Class9/Science/
+9	9		9S11	Science	Physics	Materials	Gas	np	CEHRD	mp3		Science C9 U11 Some gases   2076.08.03 (Oxygen Gas)_.B.mp3		Science C9 U11 Some gases   2076.08.03  Oxygen Gas  .B	../content/CEHRD/Class9/Science/
+9	9		9S12	Science	Chemistry	Metal		np	CEHRD	mp3		Science C9 U12 Metal   2076.08.01 _.B.mp3		Science C9 U12 Metal   2076.08.01  .B	../content/CEHRD/Class9/Science/
+9	9		9S13	Science	Chemistry	Elements	Carbon	np	CEHRD	mp3		Science C9 U13 Carbon and its compounds  2076.08.01(Organic and inorganic compounds) _.B.mp3		Science C9 U13 Carbon and its compounds  2076.08.01 Organic and inorganic compounds   .B	../content/CEHRD/Class9/Science/
+9	9		9S13	Science	Chemistry	Elements	Carbon	np	CEHRD	mp3		Science C9 U13 Carbon and its compounds  2076.08.01(Sources of carbon) _.B.mp3		Science C9 U13 Carbon and its compounds  2076.08.01 Sources of carbon   .B	../content/CEHRD/Class9/Science/
+9	9		9S14	Science	Earth	Oceans & Water	Other Oceans & Water	np	CEHRD	mp3		Science C9 U14 Water   2076.08.01 (Sources of water)_.B.mp3		Science C9 U14 Water   2076.08.01  Sources of water  .B	../content/CEHRD/Class9/Science/
+9	9		9S14	Science	Earth	Oceans & Water	Other Oceans & Water	np	CEHRD	mp3		Science C9 U14 Water   2076.08.03 (Types of water)_.B.mp3		Science C9 U14 Water   2076.08.03  Types of water  .B	../content/CEHRD/Class9/Science/
+9	9		9S16	Science	Biology	Other Biology	Scientific Classification	np	CEHRD	mp3		Science C9 U16 Classification of Plants and animals  2076.07.25 (Five kingdom system)_.B.mp3		Science C9 U16 Classification of Plants and animals  2076.07.25  Five kingdom system  .B	../content/CEHRD/Class9/Science/
+9	9		9S16	Science	Biology	Other Biology	Scientific Classification	np	CEHRD	mp3		Science C9 U16 Classification of Plants and animals  2076.08.09 (flowering plants)_.B.mp3		Science C9 U16 Classification of Plants and animals  2076.08.09  flowering plants  .B	../content/CEHRD/Class9/Science/
+9	9		9S16	Science	Biology	Other Biology	Scientific Classification	np	CEHRD	mp3		Science C9 U16 Classification of Plants and animals  2076.08.09 (Inertebrate animals)_.B.mp3		Science C9 U16 Classification of Plants and animals  2076.08.09  Inertebrate animals  .B	../content/CEHRD/Class9/Science/
+9	9		9S16	Science	Biology	Other Biology	Scientific Classification	np	CEHRD	mp3		Science C9 U16 Classification of Plants and animals  2076.08.09 (Life cycle of Mosquito)_.B.mp3		Science C9 U16 Classification of Plants and animals  2076.08.09  Life cycle of Mosquito  .B	../content/CEHRD/Class9/Science/
+9	9		9S16	Science	Biology	Other Biology	Scientific Classification	np	CEHRD	mp3		Science C9 U16 Classification of Plants and animals  2076.08.09 (Vertebrate animals)_B.mp3		Science C9 U16 Classification of Plants and animals  2076.08.09  Vertebrate animals  B	../content/CEHRD/Class9/Science/
+9	9		9S17	Science	Biology	Other Biology	Natural Selection	np	CEHRD	mp3		Science C9 U17 Adaptation of Organisms   2076.08.03 (Bacteria and Fungi)_.B.mp3		Science C9 U17 Adaptation of Organisms   2076.08.03  Bacteria and Fungi  .B	../content/CEHRD/Class9/Science/
+9	9		9S17	Science	Biology	Other Biology	Natural Selection	np	CEHRD	mp3		Science C9 U17 Adaptation of Organisms   2076.08.03 (Virus)_.B.mp3		Science C9 U17 Adaptation of Organisms   2076.08.03  Virus  .B	../content/CEHRD/Class9/Science/
+9	9		9S17	Science	Biology	Other Biology	Natural Selection	np	CEHRD	mp3		Science C9 U17 Adaptation of Organisms   2076.08.03 _.B.mp3		Science C9 U17 Adaptation of Organisms   2076.08.03  .B	../content/CEHRD/Class9/Science/
+9	9		9S20	Science	Biology	Other Biology	Evolution	np	CEHRD	mp3		Science C9 U20 Evolution - I 2076.08.09_.B.mp3		Science C9 U20 Evolution - I 2076.08.09 .B	../content/CEHRD/Class9/Science/
+9	9		9S20	Science	Biology	Other Biology	Evolution	np	CEHRD	mp3		Science C9 U20 Evolution 2076.07.24 ( Theories of evolution.....Lamark's theory.....)_.B.mp3		Science C9 U20 Evolution 2076.07.24   Theories of evolution.....Lamark's theory.....  .B	../content/CEHRD/Class9/Science/
+9	9		9S20	Science	Biology	Other Biology	Evolution	np	CEHRD	mp3		Science C9 U20 Evolution 2076.07.25 ( Theories of evolution......Darwin's theory.....)_.B.mp3		Science C9 U20 Evolution 2076.07.25   Theories of evolution......Darwin's theory.....  .B	../content/CEHRD/Class9/Science/
+9	9		9N01	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		C9  Nepali U1 Dui Mitiko Katha paragraph 1 to 7_.B.mp3		C9  Nepali U1 Dui Mitiko Katha paragraph 1 to 7 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N01	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		C9  Nepali U1 Dui Mitiko Katha paragraph 8 to 37_.B.MP3		C9  Nepali U1 Dui Mitiko Katha paragraph 8 to 37 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N01	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		C9  Nepali U1 Dui Mitiko Katha paragraph 38 to 51_.B.mp3		C9  Nepali U1 Dui Mitiko Katha paragraph 38 to 51 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N01	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		C9  Nepali U1 Dui Mitiko Katha paragraph Byakaran_.B.mp3		C9  Nepali U1 Dui Mitiko Katha paragraph Byakaran .B	../content/CEHRD/Class9/Nepali/
+9	9		9N02	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		C9  Nepali U2 Yatra Suru Garaun paragrapha  2_.B.mp3		C9  Nepali U2 Yatra Suru Garaun paragrapha  2 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N02	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		C9  Nepali U2 Yatra Suru Garaun paragrapha 1 _.B.mp3		C9  Nepali U2 Yatra Suru Garaun paragrapha 1  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N02	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		C9  Nepali U2 Yatra Suru Garaun paragrapha Byakaran_.B.mp3		C9  Nepali U2 Yatra Suru Garaun paragrapha Byakaran .B	../content/CEHRD/Class9/Nepali/
+9	9		9N02	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		C9  Nepali U2 Yatra Suru Garaun paragrapha3 to 4_.B.mp3		C9  Nepali U2 Yatra Suru Garaun paragrapha3 to 4 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N04	Language	Nepali	Contexts	Identity	np	CEHRD	mp3		C9  Nepali U4 Ma ko Hun paragraph 1  to 4_.B.mp3		C9  Nepali U4 Ma ko Hun paragraph 1  to 4 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N04	Language	Nepali	Contexts	Identity	np	CEHRD	mp3		C9  Nepali U4 Ma ko Hun paragraph 5  to 8_.B.mp3		C9  Nepali U4 Ma ko Hun paragraph 5  to 8 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N04	Language	Nepali	Contexts	Identity	np	CEHRD	mp3		C9  Nepali U4 Ma ko Hun paragraph 9  to 12_.B.mp3		C9  Nepali U4 Ma ko Hun paragraph 9  to 12 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N04	Language	Nepali	Contexts	Identity	np	CEHRD	mp3		C9  Nepali U4 Ma ko Hun paragraph 13  to 14_.B.mp3		C9  Nepali U4 Ma ko Hun paragraph 13  to 14 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N04	Language	Nepali	Contexts	Identity	np	CEHRD	mp3		C9  Nepali U4 Ma ko Hun paragraph Byakaran_.B.mp3		C9  Nepali U4 Ma ko Hun paragraph Byakaran .B	../content/CEHRD/Class9/Nepali/
+9	9		9N05	Language	Nepali	Contexts	Caution	np	CEHRD	mp3		C9  Nepali U5 Manab Bechbikhan Byakaran  wakya _.B.mp3		C9  Nepali U5 Manab Bechbikhan Byakaran  wakya  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N05	Language	Nepali	Contexts	Caution	np	CEHRD	mp3		C9  Nepali U5 Manab Bechbikhan Byakaran Sabdabarga _.B.mp3		C9  Nepali U5 Manab Bechbikhan Byakaran Sabdabarga  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N05	Language	Nepali	Contexts	Caution	np	CEHRD	mp3		C9  Nepali U5 Manab Bechbikhan paragraph 1  to 10 _.B.mp3		C9  Nepali U5 Manab Bechbikhan paragraph 1  to 10  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N05	Language	Nepali	Contexts	Caution	np	CEHRD	mp3		C9  Nepali U5 Manab Bechbikhan paragraph 11  to 21 _.B.mp3		C9  Nepali U5 Manab Bechbikhan paragraph 11  to 21  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N05	Language	Nepali	Contexts	Caution	np	CEHRD	mp3		C9  Nepali U5 Manab Bechbikhan paragraph 22  to 32 _.B.mp3		C9  Nepali U5 Manab Bechbikhan paragraph 22  to 32  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N06	Language	Nepali	Contexts	Conversation	np	CEHRD	mp3		C9  Nepali U6  Bahinilai Chhiti (chhitti Lekhan) _.B.mp3		C9  Nepali U6  Bahinilai Chhiti  chhitti Lekhan   .B	../content/CEHRD/Class9/Nepali/
+9	9		9N06	Language	Nepali	Contexts	Conversation	np	CEHRD	mp3		C9  Nepali U6  Bahinilai Chhiti 1 _.B.mp3		C9  Nepali U6  Bahinilai Chhiti 1  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N06	Language	Nepali	Contexts	Conversation	np	CEHRD	mp3		C9  Nepali U6  Bahinilai Chhiti Byakaran  _.B.mp3		C9  Nepali U6  Bahinilai Chhiti Byakaran   .B	../content/CEHRD/Class9/Nepali/
+9	9		9N07	Language	Nepali	Contexts	Wants	np	CEHRD	mp3		C9  Nepali U7  Nirdrra Byakaran (Kal) _.B.mp3		C9  Nepali U7  Nirdrra Byakaran  Kal   .B	../content/CEHRD/Class9/Nepali/
+9	9		9N07	Language	Nepali	Contexts	Wants	np	CEHRD	mp3		C9  Nepali U7  Nirdrra paragraph 1  to 7 _.B.mp3		C9  Nepali U7  Nirdrra paragraph 1  to 7  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N07	Language	Nepali	Contexts	Wants	np	CEHRD	mp3		C9  Nepali U7  Nirdrra paragraph 8  to 17 _.B.mp3		C9  Nepali U7  Nirdrra paragraph 8  to 17  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N07	Language	Nepali	Contexts	Wants	np	CEHRD	mp3		C9  Nepali U7  Nirdrra paragraph 18  to 27 _.B.mp3		C9  Nepali U7  Nirdrra paragraph 18  to 27  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N11	Language	Nepali	Contexts	Conversation	np	CEHRD	mp3		C9  Nepali U11  Doctor Uncle Byakaran _.B.mp3		C9  Nepali U11  Doctor Uncle Byakaran  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N11	Language	Nepali	Contexts	Conversation	np	CEHRD	mp3		C9  Nepali U11  Doctor Uncle paragraph 1  to 7 _.B.mp3		C9  Nepali U11  Doctor Uncle paragraph 1  to 7  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N11	Language	Nepali	Contexts	Conversation	np	CEHRD	mp3		C9  Nepali U11  Doctor Uncle paragraph 8   to 17 _.B.mp3		C9  Nepali U11  Doctor Uncle paragraph 8   to 17  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N11	Language	Nepali	Contexts	Conversation	np	CEHRD	mp3		C9  Nepali U11  Doctor Uncle paragraph 18   to 30 _.B.mp3		C9  Nepali U11  Doctor Uncle paragraph 18   to 30  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N15	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		C9  Nepali U15  chhatrabas (nebaden lekhan) _.B.mp3		C9  Nepali U15  chhatrabas  nebaden lekhan   .B	../content/CEHRD/Class9/Nepali/
+9	9		9N15	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		C9  Nepali U15  chhatrabas 1 _.B.mp3		C9  Nepali U15  chhatrabas 1  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N15	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		C9  Nepali U15  chhatrabas Byakaran_.B.mp3		C9  Nepali U15  chhatrabas Byakaran .B	../content/CEHRD/Class9/Nepali/
+9	9		9N03	Language	Nepali	Song		np	CEHRD	mp3		C9 Nepali U3 Ramsharan Daranal Byakaran_.B.mp3		C9 Nepali U3 Ramsharan Daranal Byakaran .B	../content/CEHRD/Class9/Nepali/
+9	9		9N03	Language	Nepali	Song		np	CEHRD	mp3		C9 Nepali U3 Ramsharan Daranal paragraph 1 to 4_.B.mp3		C9 Nepali U3 Ramsharan Daranal paragraph 1 to 4 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N03	Language	Nepali	Song		np	CEHRD	mp3		C9 Nepali U3 Ramsharan Daranal paragraph 5 to 8_.B.mp3		C9 Nepali U3 Ramsharan Daranal paragraph 5 to 8 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N03	Language	Nepali	Song		np	CEHRD	mp3		C9 Nepali U3 Ramsharan Daranal paragraph 9 to 11_.B.mp3		C9 Nepali U3 Ramsharan Daranal paragraph 9 to 11 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N03	Language	Nepali	Song		np	CEHRD	mp3		C9 Nepali U3 Ramsharan Daranal paragraph 12  to 14_.B.mp3		C9 Nepali U3 Ramsharan Daranal paragraph 12  to 14 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N08	Language	Nepali	Contexts	Other	np	CEHRD	mp3		U 8  Basanta kokil Byakarna _.B.mp3		U 8  Basanta kokil Byakarna  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N08	Language	Nepali	Contexts	Other	np	CEHRD	mp3		U 8  Basanta kokil Byakarna Sabad Bhandar_.B.mp3		U 8  Basanta kokil Byakarna Sabad Bhandar .B	../content/CEHRD/Class9/Nepali/
+9	9		9N08	Language	Nepali	Contexts	Other	np	CEHRD	mp3		U 8  Basanta kokil Para 1 -3 _.B.mp3		U 8  Basanta kokil Para 1 -3  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N08	Language	Nepali	Contexts	Other	np	CEHRD	mp3		U 8  Basanta kokil Para 4 -7 _.B.mp3		U 8  Basanta kokil Para 4 -7  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N08	Language	Nepali	Contexts	Other	np	CEHRD	mp3		U 8  Basanta kokil Para 8 -9 _.B.mp3		U 8  Basanta kokil Para 8 -9  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N09	Language	Nepali	Contexts	Other	np	CEHRD	mp3		U 9 Jaibiga Khati Paragraph 1-3  _.B.mp3		U 9 Jaibiga Khati Paragraph 1-3   .B	../content/CEHRD/Class9/Nepali/
+9	9		9N09	Language	Nepali	Contexts	Other	np	CEHRD	mp3		U 9 Jaibiga Khati Paragraph 2 _.B.mp3		U 9 Jaibiga Khati Paragraph 2  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N09	Language	Nepali	Contexts	Other	np	CEHRD	mp3		U 9 Jaibiga Khati Paragraph 3 _.B.mp3		U 9 Jaibiga Khati Paragraph 3  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N09	Language	Nepali	Contexts	Other	np	CEHRD	mp3		U 9 Jaibiga Khati Paragraph 4 _.B.mp3		U 9 Jaibiga Khati Paragraph 4  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N10	Language	Nepali	Contexts	Time & Date	np	CEHRD	mp3		U 10 Mangalka in Din  Byakarna _.B.mp3		U 10 Mangalka in Din  Byakarna  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N10	Language	Nepali	Contexts	Time & Date	np	CEHRD	mp3		U 10 Mangalka in Din 1 _.B.mp3		U 10 Mangalka in Din 1  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N10	Language	Nepali	Contexts	Time & Date	np	CEHRD	mp3		U 10 Mangalka in Din 2 _.B.mp3		U 10 Mangalka in Din 2  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N10	Language	Nepali	Contexts	Time & Date	np	CEHRD	mp3		U 10 Mangalka in Din 3 _.B.mp3		U 10 Mangalka in Din 3  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N12	Language	Nepali	Textbooks		np	CEHRD	mp3		U 12 Aung San SuKyi _.B.mp3		U 12 Aung San SuKyi  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N12	Language	Nepali	Textbooks		np	CEHRD	mp3		U 12 Aung San SuKyi 2_.B.mp3		U 12 Aung San SuKyi 2 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N12	Language	Nepali	Textbooks		np	CEHRD	mp3		U 12 Aung San SuKyi 3_.B.mp3		U 12 Aung San SuKyi 3 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N12	Language	Nepali	Textbooks		np	CEHRD	mp3		U 12 Aung San SuKyi 4_.B.mp3		U 12 Aung San SuKyi 4 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N12	Language	Nepali	Textbooks		np	CEHRD	mp3		U 12 Aung San SuKyi 5_.B.mp3		U 12 Aung San SuKyi 5 .B	../content/CEHRD/Class9/Nepali/
+9	9		9N13	Language	Nepali	Contexts	Colors	np	CEHRD	mp3		U 13 Shaya rang inderni - Bibachhana uttar _.B.mp3		U 13 Shaya rang inderni - Bibachhana uttar  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N13	Language	Nepali	Contexts	Colors	np	CEHRD	mp3		U 13 Shaya rang inderni - Wachhya _.B.mp3		U 13 Shaya rang inderni - Wachhya  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N13	Language	Nepali	Contexts	Colors	np	CEHRD	mp3		U 13 Shaya rang inderni -1 _.B.mp3		U 13 Shaya rang inderni -1  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N13	Language	Nepali	Contexts	Colors	np	CEHRD	mp3		U 13 Shaya rang inderni -2 _.B.mp3		U 13 Shaya rang inderni -2  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N13	Language	Nepali	Contexts	Colors	np	CEHRD	mp3		U 13 Shaya rang inderni -3 _.B.mp3		U 13 Shaya rang inderni -3  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N13	Language	Nepali	Contexts	Colors	np	CEHRD	mp3		U 13 Shaya rang inderni -kabita ra jivani lekhan _.B.mp3		U 13 Shaya rang inderni -kabita ra jivani lekhan  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N14	Language	Nepali	Contexts	Caution	np	CEHRD	mp3		U 14 Mahila hinasha _.B.mp3		U 14 Mahila hinasha  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N14	Language	Nepali	Contexts	Caution	np	CEHRD	mp3		U 14 Mahila hinasha 2 _.B.mp3		U 14 Mahila hinasha 2  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N14	Language	Nepali	Contexts	Caution	np	CEHRD	mp3		U 14 Mahila hinasha 3 _.B.mp3		U 14 Mahila hinasha 3  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N16	Language	Nepali	Contexts	Wants	np	CEHRD	mp3		U 16 Bandhan bata mukta 2 _.B.mp3		U 16 Bandhan bata mukta 2  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N16	Language	Nepali	Contexts	Wants	np	CEHRD	mp3		U 16 Bandhan bata mukta 3 _.B.mp3		U 16 Bandhan bata mukta 3  .B	../content/CEHRD/Class9/Nepali/
+9	9		9N16	Language	Nepali	Contexts	Wants	np	CEHRD	mp3		U 16 Bandhan bata mukta 4 _.B.mp3		U 16 Bandhan bata mukta 4  .B	../content/CEHRD/Class9/Nepali/
+9	9		9M01	Mathematics	Numbers	Sets		np	CEHRD	mp3		C9  U1_Sets I    2076.07.03_.B.MP3		C9  U1 Sets I    2076.07.03 .B	../content/CEHRD/Class9/Math/
+9	9		9M02	Mathematics	Measurement	Currency		np	CEHRD	mp3		C9  U2_profit&loss_F.mp3		C9  U2 profit&loss F	../content/CEHRD/Class9/Math/
+9	9		9M05	Mathematics	Measurement	Area		np	CEHRD	mp3		C9  U5_mensuration_F.mp3		C9  U5 mensuration F	../content/CEHRD/Class9/Math/
+9	9		9M08	Mathematics	Applied Math	Statistics		np	CEHRD	mp3		C9  U8_indices_F.mp3		C9  U8 indices F	../content/CEHRD/Class9/Math/
+9	9		9M09	Mathematics	Arithmetic	Rates & Ratios		np	CEHRD	mp3		C9  U9_ratio&porp_F.mp3		C9  U9 ratio&porp F	../content/CEHRD/Class9/Math/
+9	9		9M10, 9M11	Mathematics	Algebra	Equations		np	CEHRD	mp3		C9  U11&12_linear&quadeqn_E1.mp3		C9  U11&12 linear&quadeqn E1	../content/CEHRD/Class9/Math/
+9	9		9M14	Mathematics	Geometry	Construction		np	CEHRD	mp3		C9  U14_construction_FS.mp3		C9  U14 construction FS	../content/CEHRD/Class9/Math/
+9	9		9M15	Mathematics	Geometry	Shapes	Symmetry	np	CEHRD	mp3		C9  U15_similarities_F.mp3		C9  U15 similarities F	../content/CEHRD/Class9/Math/
+9	9		9M12	Mathematics	Geometry	Shapes	Triangle	np	CEHRD	mp3		C9 Triangle_F.mp3		C9 Triangle F	../content/CEHRD/Class9/Math/
+9	9		9M19	Mathematics	Applied Math	Probability Theory		np	CEHRD	mp3		C9 U 19 Probability_.B.mp3		C9 U 19 Probability .B	../content/CEHRD/Class9/Math/
+9	9		9M19	Mathematics	Applied Math	Probability Theory		np	CEHRD	mp3		C9 U19 Probability Exercise_.B.mp3		C9 U19 Probability Exercise .B	../content/CEHRD/Class9/Math/
+9	9		9M18	Mathematics	Applied Math	Statistics		np	CEHRD	mp3		C9_Statistics_.B.mp3		C9 Statistics .B	../content/CEHRD/Class9/Math/
+9	9		9M04	Mathematics	Arithmetic	Addition & Subtraction		np	CEHRD	mp3		G9_u 4 Household express for use of telephone _.B.mp3		G9 u 4 Household express for use of telephone  .B	../content/CEHRD/Class9/Math/
+9	9		9H01	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U2  Bikash Karma 2077.06.21 _.B.mp3		C 9 U2  Bikash Karma 2077.06.21  .B	../content/CEHRD/Class9/Health/
+9	9		9H02	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U2  Demography n Population change (VRS) _.B.mp3		C 9 U2  Demography n Population change  VRS   .B	../content/CEHRD/Class9/Health/
+9	9		9H02	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U2  Demography n Population change 2077.06.15  _.B.mp3		C 9 U2  Demography n Population change 2077.06.15   .B	../content/CEHRD/Class9/Health/
+9	9		9H02	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U2  Factor  affecting of Population Change -1  2077.06.15  _.B.mp3		C 9 U2  Factor  affecting of Population Change -1  2077.06.15   .B	../content/CEHRD/Class9/Health/
+9	9		9H02	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U2 Formal Demography _.B.mp3		C 9 U2 Formal Demography  .B	../content/CEHRD/Class9/Health/
+9	9		9H02	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U2 Viviha_.B.mp3		C 9 U2 Viviha .B	../content/CEHRD/Class9/Health/
+9	9		9H04	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U4   Demography  Sitution of nepal - 2 2077.06.29  _.B.mp3		C 9 U4   Demography  Sitution of nepal - 2 2077.06.29   .B	../content/CEHRD/Class9/Health/
+9	9		9H04	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U4   Demography  Sitution of nepal 2077.06.15  _.B.mp3		C 9 U4   Demography  Sitution of nepal 2077.06.15   .B	../content/CEHRD/Class9/Health/
+9	9		9H04	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U4  impact on orgnzanation on population n environment 2077.06.21 _.B.mp3		C 9 U4  impact on orgnzanation on population n environment 2077.06.21  .B	../content/CEHRD/Class9/Health/
+9	9		9H04	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U4  Janaghanatwo_.B.mp3		C 9 U4  Janaghanatwo .B	../content/CEHRD/Class9/Health/
+9	9		9H04	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		C 9 U4  Population size and growth_.B.mp3		C 9 U4  Population size and growth .B	../content/CEHRD/Class9/Health/
+9	9		9H07	Science	Medicine	Specialties	Public Health	np	CEHRD	mp3		C 9 U7 Environment Pollution_.B.mp3		C 9 U7 Environment Pollution .B	../content/CEHRD/Class9/Health/
+9	9		9H07	Science	Medicine	Specialties	Public Health	np	CEHRD	mp3		C 9 U7 Environment Pollution-2 .077.06.15 _.B.mp3		C 9 U7 Environment Pollution-2 .077.06.15  .B	../content/CEHRD/Class9/Health/
+9	9		9H07	Science	Medicine	Specialties	Public Health	np	CEHRD	mp3		C 9 U7 Environmental health 2077.06.22 _.B.mp3		C 9 U7 Environmental health 2077.06.22  .B	../content/CEHRD/Class9/Health/
+9	9		9H07	Science	Medicine	Specialties	Public Health	np	CEHRD	mp3		C 9 U7 Sewage Dhal nisak ebam Mal Metra 2077.06.29 _.B.mp3		C 9 U7 Sewage Dhal nisak ebam Mal Metra 2077.06.29  .B	../content/CEHRD/Class9/Health/
+9	9		9H09	Science	Medicine	Healthy Living		np	CEHRD	mp3		C 9 U9   Food n Nutrition 2077.06.21 _.B.mp3		C 9 U9   Food n Nutrition 2077.06.21  .B	../content/CEHRD/Class9/Health/
+9	9		9H09	Science	Medicine	Healthy Living		np	CEHRD	mp3		C 9 U9  Consumer  Health -1  2077.06.22 _.B.mp3		C 9 U9  Consumer  Health -1  2077.06.22  .B	../content/CEHRD/Class9/Health/
+9	9		9H09	Science	Medicine	Healthy Living		np	CEHRD	mp3		C 9 U9  Consumer  Health2077.06.22 _.B.mp3		C 9 U9  Consumer  Health2077.06.22  .B	../content/CEHRD/Class9/Health/
+9	9		9H09	Science	Medicine	Healthy Living		np	CEHRD	mp3		C 9 U9  Quality Food 2077.06.21 _.B.mp3		C 9 U9  Quality Food 2077.06.21  .B	../content/CEHRD/Class9/Health/
+9	9		9H01	Science	Medicine	Healthy Living		np	CEHRD	mp3		HPE C9 U1 Bataranvaran ra Bataranvara ko parichaya 2076.09.01 _.B.mp3		HPE C9 U1 Bataranvaran ra Bataranvara ko parichaya 2076.09.01  .B	../content/CEHRD/Class9/Health/
+9	9		9H01	Science	Medicine	Healthy Living		np	CEHRD	mp3		HPE C9 U1 Janasankhya ra janasankhyako parichaya 2076.09.01 _.B.mp3		HPE C9 U1 Janasankhya ra janasankhyako parichaya 2076.09.01  .B	../content/CEHRD/Class9/Health/
+9	9		9H01	Science	Medicine	Healthy Living		np	CEHRD	mp3		HPE C9 U1 Swasthya, Janasankhya ra Bataranvaran Awadharana  2076.09.01 _.B.mp3		HPE C9 U1 Swasthya, Janasankhya ra Bataranvaran Awadharana  2076.09.01  .B	../content/CEHRD/Class9/Health/
+9	9		9H02	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		HPE C9 U2  Janasankhya, Bataranvaran ra bikash  2076.09.01 _.B (Indicatirs of Development).mp3		HPE C9 U2  Janasankhya, Bataranvaran ra bikash  2076.09.01  .B  Indicatirs of Development	../content/CEHRD/Class9/Health/
+9	9		9H02	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		HPE C9 U2  Janasankhya, Bataranvaran ra bikash  2076.09.01 _.B.mp3		HPE C9 U2  Janasankhya, Bataranvaran ra bikash  2076.09.01  .B	../content/CEHRD/Class9/Health/
+9	9		9H05	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		HPE C9 U5  Pariwarik Jiwav shiksha  2076.09.02 _.B.mp3		HPE C9 U5  Pariwarik Jiwav shiksha  2076.09.02  .B	../content/CEHRD/Class9/Health/
+9	9		9H05	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		HPE C9 U5  Pariwarik Jiwav shiksha 2  2076.09.02 _.B.mp3		HPE C9 U5  Pariwarik Jiwav shiksha 2  2076.09.02  .B	../content/CEHRD/Class9/Health/
+9	9		9H05	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		HPE C9 U5  Pariwarik Jiwav shiksha 3  2076.09.02 _.B.mp3		HPE C9 U5  Pariwarik Jiwav shiksha 3  2076.09.02  .B	../content/CEHRD/Class9/Health/
+9	9		9H05	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		HPE C9 U5  Pariwarik Jiwav shiksha 4  2076.09.02 _.B.mp3		HPE C9 U5  Pariwarik Jiwav shiksha 4  2076.09.02  .B	../content/CEHRD/Class9/Health/
+9	9		9H05	Social Studies	Economy	Other Economy	Population	np	CEHRD	mp3		HPE C9 U5  Pariwarik Jiwav shiksha 5  2076.09.02 _.B.mp3		HPE C9 U5  Pariwarik Jiwav shiksha 5  2076.09.02  .B	../content/CEHRD/Class9/Health/
+9	9		9H06	Science	Biology	Ecology	Biodiversity	np	CEHRD	mp3		HPE C9 U6 Prakritik srot ka kisimhro  2076.09.04 _.B.mp3		HPE C9 U6 Prakritik srot ka kisimhro  2076.09.04  .B	../content/CEHRD/Class9/Health/
+9	9		9H06	Science	Biology	Ecology	Biodiversity	np	CEHRD	mp3		HPE C9 U6 Prakritik srot ka kisimhro ra sthiti  2076.09.04 _.B.mp3		HPE C9 U6 Prakritik srot ka kisimhro ra sthiti  2076.09.04  .B	../content/CEHRD/Class9/Health/
+9	9		9H06	Science	Biology	Ecology	Biodiversity	np	CEHRD	mp3		HPE C9 U6 Prakritik srot ka parichaya 2076.09.011 _.B.mp3		HPE C9 U6 Prakritik srot ka parichaya 2076.09.011  .B	../content/CEHRD/Class9/Health/
+9	9		9H06	Science	Biology	Ecology	Biodiversity	np	CEHRD	mp3		HPE C9 U6 Prithivi ko samraksanka karyakram  2076.09.04 _.B.mp3		HPE C9 U6 Prithivi ko samraksanka karyakram  2076.09.04  .B	../content/CEHRD/Class9/Health/
+9	9		9H06	Science	Biology	Ecology	Biodiversity	np	CEHRD	mp3		HPE C9 U6 Prithvi ko syahar  2076.09.04 _.B.mp3		HPE C9 U6 Prithvi ko syahar  2076.09.04  .B	../content/CEHRD/Class9/Health/
+9	9		9H08	Science	Medicine	Specialties	Family Planning	np	CEHRD	mp3		HPE C9 U8  Youna siksha   ra praj part 1 gita mam 2076.09.011 _.B.mp3		HPE C9 U8  Youna siksha   ra praj part 1 gita mam 2076.09.011  .B	../content/CEHRD/Class9/Health/
+9	9		9H08	Science	Medicine	Specialties	Family Planning	np	CEHRD	mp3		HPE C9 U8 Kishworaawastha   2076.09.011 _.B.mp3		HPE C9 U8 Kishworaawastha   2076.09.011  .B	../content/CEHRD/Class9/Health/
+9	9		9H08	Science	Medicine	Specialties	Family Planning	np	CEHRD	mp3		HPE C9 U8 Kishworaawastha Youna siksha  2076.09.011 _.B.mp3		HPE C9 U8 Kishworaawastha Youna siksha  2076.09.011  .B	../content/CEHRD/Class9/Health/
+9	9		9H10	Science	Medicine	Specialties	Public Health	np	CEHRD	mp3		HPE C9 U10 Jokhimko Abadharana, Prakartatha neunikaranko upaayeharu Part 1  2076.09.08 _.B.mp3		HPE C9 U10 Jokhimko Abadharana, Prakartatha neunikaranko upaayeharu Part 1  2076.09.08  .B	../content/CEHRD/Class9/Health/
+9	9		9H10	Science	Medicine	Specialties	Public Health	np	CEHRD	mp3		HPE C9 U10 Jokhimko Abadharana, Prakartatha neunikaranko upaayeharu Part 2  2076.09.08 _B.mp3		HPE C9 U10 Jokhimko Abadharana, Prakartatha neunikaranko upaayeharu Part 2  2076.09.08  B	../content/CEHRD/Class9/Health/
+9	9		9H10	Science	Medicine	Specialties	Public Health	np	CEHRD	mp3		HPE C9 U10 Prathamik swasthya herchaha 1  2076.09.08 _B.mp3		HPE C9 U10 Prathamik swasthya herchaha 1  2076.09.08  B	../content/CEHRD/Class9/Health/
+9	9		9H10	Science	Medicine	Specialties	Public Health	np	CEHRD	mp3		HPE C9 U10 Surakshya sikshyako abhdharana 2076.09.08 _B.mp3		HPE C9 U10 Surakshya sikshyako abhdharana 2076.09.08  B	../content/CEHRD/Class9/Health/
+9	9	9EN01		Language	English	Contexts	Preferences	en	CEHRD	mp3	English C9 U1 Grammar_.B (Concord).mp3		C9 U1 Grammar .B  Concord		../content/CEHRD/Class9/English/
+9	9	9EN01		Language	English	Contexts	Preferences	en	CEHRD	mp3	English C9 U1 Listening_.B.mp3		C9 U1 Listening .B		../content/CEHRD/Class9/English/
+9	9	9EN01		Language	English	Contexts	Preferences	en	CEHRD	mp3	English C9 U1 Poetry_.B (The wind and the leaves).mp3		C9 U1 Poetry .B  The wind and the leaves		../content/CEHRD/Class9/English/
+9	9	9EN01		Language	English	Contexts	Preferences	en	CEHRD	mp3	English C9 U1 Reading_.B.mp3		C9 U1 Reading .B		../content/CEHRD/Class9/English/
+9	9	9EN01		Language	English	Contexts	Preferences	en	CEHRD	mp3	English C9 U1 Speaking_.B.mp3		C9 U1 Speaking .B		../content/CEHRD/Class9/English/
+9	9	9EN01		Language	English	Contexts	Preferences	en	CEHRD	mp3	English C9 U1 writing_.B (Application).mp3		C9 U1 writing .B  Application		../content/CEHRD/Class9/English/
+9	9	9EN02		Language	English	Contexts		en	CEHRD	mp3	English C9 U2  Grammar 2076.08.13_.B.mp3		C9 U2  Grammar 2076.08.13 .B		../content/CEHRD/Class9/English/
+9	9	9EN02		Language	English	Contexts		en	CEHRD	mp3	English C9 U2 Email writing 2076.08.13_.B.mp3		C9 U2 Email writing 2076.08.13 .B		../content/CEHRD/Class9/English/
+9	9	9EN02		Language	English	Contexts		en	CEHRD	mp3	English C9 U2 Listening 2076.08.13_.B.mp3		C9 U2 Listening 2076.08.13 .B		../content/CEHRD/Class9/English/
+9	9	9EN02		Language	English	Contexts		en	CEHRD	mp3	English C9 U2 Reading 2076.08.13_.B.mp3		C9 U2 Reading 2076.08.13 .B		../content/CEHRD/Class9/English/
+9	9	9EN02		Language	English	Contexts		en	CEHRD	mp3	English C9 U2 Speaking 2076.08.13_.B.mp3		C9 U2 Speaking 2076.08.13 .B		../content/CEHRD/Class9/English/
+9	9	9EN03		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U3 Grammar 2076.08.15_.B.mp3		C9 U3 Grammar 2076.08.15 .B		../content/CEHRD/Class9/English/
+9	9	9EN03		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U3 Listening  2076.08.15_.B.mp3		C9 U3 Listening  2076.08.15 .B		../content/CEHRD/Class9/English/
+9	9	9EN03		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U3 Poem 2076.08.15_.B.mp3		C9 U3 Poem 2076.08.15 .B		../content/CEHRD/Class9/English/
+9	9	9EN03		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U3 Reading  2076.08.15_.B.mp3		C9 U3 Reading  2076.08.15 .B		../content/CEHRD/Class9/English/
+9	9	9EN03		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U3 Speaking   2076.08.15_.B.mp3		C9 U3 Speaking   2076.08.15 .B		../content/CEHRD/Class9/English/
+9	9	9EN04		Language	English	Contexts	Other	en	CEHRD	mp3	English C9 U4  Reading I 2076.08.18_.B (Message of condolence).mp3		C9 U4  Reading I 2076.08.18 .B  Message of condolence		../content/CEHRD/Class9/English/
+9	9	9EN04		Language	English	Contexts	Other	en	CEHRD	mp3	English C9 U4  Reading II 2076.08.18_.B (Dissaster).mp3		C9 U4  Reading II 2076.08.18 .B  Dissaster		../content/CEHRD/Class9/English/
+9	9	9EN04		Language	English	Contexts	Other	en	CEHRD	mp3	English C9 U4 Grammar 2076.08.17_.B.mp3		C9 U4 Grammar 2076.08.17 .B		../content/CEHRD/Class9/English/
+9	9	9EN04		Language	English	Contexts	Other	en	CEHRD	mp3	English C9 U4 Listening  2076.08.15_.B.mp3		C9 U4 Listening  2076.08.15 .B		../content/CEHRD/Class9/English/
+9	9	9EN04		Language	English	Contexts	Other	en	CEHRD	mp3	English C9 U4 Speaking 2076.08.17_.B.mp3		C9 U4 Speaking 2076.08.17 .B		../content/CEHRD/Class9/English/
+9	9	9EN05		Language	English	Contexts	Comparing	en	CEHRD	mp3	English C9 U5 Listening  2076.08.17_.B.mp3		C9 U5 Listening  2076.08.17 .B		../content/CEHRD/Class9/English/
+9	9	9EN05		Language	English	Contexts	Comparing	en	CEHRD	mp3	English C9 U5 Poem 2076.08.19_.B.mp3		C9 U5 Poem 2076.08.19 .B		../content/CEHRD/Class9/English/
+9	9	9EN05		Language	English	Contexts	Comparing	en	CEHRD	mp3	English C9 U5 Reading I 2076.08.18_.B.mp3		C9 U5 Reading I 2076.08.18 .B		../content/CEHRD/Class9/English/
+9	9	9EN05		Language	English	Contexts	Comparing	en	CEHRD	mp3	English C9 U5 Reading II 2076.08.19_.B.mp3		C9 U5 Reading II 2076.08.19 .B		../content/CEHRD/Class9/English/
+9	9	9EN05		Language	English	Contexts	Comparing	en	CEHRD	mp3	English C9 U5 Speaking 2076.08.17_.B.mp3		C9 U5 Speaking 2076.08.17 .B		../content/CEHRD/Class9/English/
+9	9	9EN06		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U6  Listening  2076.08.23_.B.mp3		C9 U6  Listening  2076.08.23 .B		../content/CEHRD/Class9/English/
+9	9	9EN06		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U6 Grammar  2076.08.19_.B.mp3		C9 U6 Grammar  2076.08.19 .B		../content/CEHRD/Class9/English/
+9	9	9EN06		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U6 Reading I 2076.08.19_.B.mp3		C9 U6 Reading I 2076.08.19 .B		../content/CEHRD/Class9/English/
+9	9	9EN06		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U6 Writing And Speaking 2076.08.19_.B.mp3		C9 U6 Writing And Speaking 2076.08.19 .B		../content/CEHRD/Class9/English/
+9	9	9EN07		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U7 Grammar  2076.08.22_.B ( Question Tag).mp3		C9 U7 Grammar  2076.08.22 .B   Question Tag		../content/CEHRD/Class9/English/
+9	9	9EN07		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U7 Listening 2076.08.22_.B.mp3		C9 U7 Listening 2076.08.22 .B		../content/CEHRD/Class9/English/
+9	9	9EN07		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U7 Reading  2076.08.22_.B (Email).mp3		C9 U7 Reading  2076.08.22 .B  Email		../content/CEHRD/Class9/English/
+9	9	9EN07		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U7 Reading  2076.08.22_.B (Useful gadgets).mp3		C9 U7 Reading  2076.08.22 .B  Useful gadgets		../content/CEHRD/Class9/English/
+9	9	9EN07		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	English C9 U7 Speaking and writing 2076.08.22_.B.mp3		C9 U7 Speaking and writing 2076.08.22 .B		../content/CEHRD/Class9/English/
+9	9	9EN08		Language	English	Contexts	Narration	en	CEHRD	mp3	English C9 U8  Grammar  2076.08.23_.B.mp3		C9 U8  Grammar  2076.08.23 .B		../content/CEHRD/Class9/English/
+9	9	9EN08		Language	English	Contexts	Narration	en	CEHRD	mp3	English C9 U8  Speaking and writing  2076.08.23_.B.mp3		C9 U8  Speaking and writing  2076.08.23 .B		../content/CEHRD/Class9/English/
+9	9	9EN08		Language	English	Contexts	Narration	en	CEHRD	mp3	English C9 U8 Reading and vocabulary  2076.08.23_.B.mp3		C9 U8 Reading and vocabulary  2076.08.23 .B		../content/CEHRD/Class9/English/
+9	9	9EN09		Language	English	Contexts	Locations	en	CEHRD	mp3	G9_1Eng_U9_Reading_F.mp3		G9 U9 Reading F		../content/CEHRD/Class9/English/
+9	9	9EN09		Language	English	Contexts	Locations	en	CEHRD	mp3	G9_2Eng_U9_Listening_F.mp3		G9 U9 Listening F		../content/CEHRD/Class9/English/
+9	9	9EN09		Language	English	Contexts	Locations	en	CEHRD	mp3	G9_3Eng_U9_Grammar_F.mp3		G9 U9 Grammar F		../content/CEHRD/Class9/English/
+9	9	9EN09		Language	English	Contexts	Locations	en	CEHRD	mp3	G9_4Eng_U9_Writing_F.mp3		G9 U9 Writing F		../content/CEHRD/Class9/English/
+9	9	9EN09		Language	English	Contexts	Locations	en	CEHRD	mp3	G9_5Eng_U9_Speaking_F.mp3		G9 U9 Speaking F		../content/CEHRD/Class9/English/
+9	9	9EN10		Language	English	Contexts	Review	en	CEHRD	mp3	G9_6Eng_U10_Listening_F.mp3		G9 U10 Listening F		../content/CEHRD/Class9/English/
+9	9	9EN10		Language	English	Contexts	Review	en	CEHRD	mp3	G9_7Eng_U10_Grammar_F.mp3		G9 U10 Grammar F		../content/CEHRD/Class9/English/
+9	9	9EN10		Language	English	Contexts	Review	en	CEHRD	mp3	G9_8Eng_U10_Reading_F.mp3		G9 U10 Reading F		../content/CEHRD/Class9/English/
+9	9	9EN11		Language	English	Contexts	Describing	en	CEHRD	mp3	G9_9Eng_U11_Speaking_F.mp3		G9 U11 Speaking F		../content/CEHRD/Class9/English/
+9	9	9EN11		Language	English	Contexts	Describing	en	CEHRD	mp3	G9_10Eng_U11_Grammar_F.mp3		G9 U11 Grammar F		../content/CEHRD/Class9/English/
+9	9	9EN11		Language	English	Contexts	Describing	en	CEHRD	mp3	G9_11Eng_U11_Reading_F.mp3		G9 U11 Reading F		../content/CEHRD/Class9/English/
+9	9	9EN11		Language	English	Contexts	Describing	en	CEHRD	mp3	G9_12Eng_U11_Dumplings_F.mp3		G9 U11 Dumplings F		../content/CEHRD/Class9/English/
+9	9	9EN12		Language	English	Contexts	Ability	en	CEHRD	mp3	G9_13Eng_U12_Reading_F.mp3		G9 U12 Reading F		../content/CEHRD/Class9/English/
+9	9	9EN12		Language	English	Contexts	Ability	en	CEHRD	mp3	G9_14Eng_U12_Vocabulary&Comp_F.mp3		G9 U12 Vocabulary&Comp F		../content/CEHRD/Class9/English/
+9	9	9EN12		Language	English	Contexts	Ability	en	CEHRD	mp3	G9_15Eng_U12_Grammar_F.mp3		G9 U12 Grammar F		../content/CEHRD/Class9/English/
+9	9	9EN12		Language	English	Contexts	Ability	en	CEHRD	mp3	G9_16Eng_U12_Speaking_F.mp3		G9 U12 Speaking F		../content/CEHRD/Class9/English/
+9	9	9EN12		Language	English	Contexts	Ability	en	CEHRD	mp3	G9_17Eng_U12_Writing_F.mp3		G9 U12 Writing F		../content/CEHRD/Class9/English/
+9	9	9EN11		Language	English	Contexts	Describing	en	CEHRD	mp3	G9_18Eng_U11_Listening_F.mp3		G9 U11 Listening F		../content/CEHRD/Class9/English/
+9	9	9EN12		Language	English	Contexts	Ability	en	CEHRD	mp3	G9_19Eng_U12_Listening_F.mp3		G9 U12 Listening F		../content/CEHRD/Class9/English/
+9	9	9EN14		Language	English	Contexts	Other	en	CEHRD	mp3	G9_20Eng_U14_Listening_F.mp3		G9 U14 Listening F		../content/CEHRD/Class9/English/
+9	9	9EN14		Language	English	Contexts	Other	en	CEHRD	mp3	G9_21Eng_U14_Asking for permission_F.mp3		G9 U14 Asking for permission F		../content/CEHRD/Class9/English/
+9	9	9EN14		Language	English	Contexts	Other	en	CEHRD	mp3	G9_22Eng_U14_Writing Notice_F.mp3		G9 U14 Writing Notice F		../content/CEHRD/Class9/English/
+10	10		10SS01.02	Social Studies	Community	Education	Humanities	np	CEHRD	mp3		C10 Social U 1 L 2 _.B.mp3		C10 Social U1 L2  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS01.02	Social Studies	Community	Education	Humanities	np	CEHRD	mp3		C10 Social U 2 L 2 _.B.mp3		C10 Social U2 L2  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS03.06	Social Studies	History	Nepal	Famous Persons	np	CEHRD	mp3		C10 Social U 3 L 6 _.B.mp3		C10 Social U3 L6  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS04.01	Social Studies	Issues	Human Rights		np	CEHRD	mp3		C10 Social U 4 L 1 _.B.mp3		C10 Social U4 L1  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS04.04, 10SS04.05	Social Studies	History	Nepal	International Relations	np	CEHRD	mp3		C10 Social U 4 L 4 n 5  _.B.mp3		C10 Social U4 L4 n 5   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS04.06	Social Studies	Issues	Solutions		np	CEHRD	mp3		C10 Social U 4 L 6  _.B.mp3		C10 Social U4 L6   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.01	Social Studies	Community	Government	National	np	CEHRD	mp3		C10 Social U 5 L 1 _.B.mp3		C10 Social U5 L1  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS06.01	Social Studies	Geography	Other Geography		np	CEHRD	mp3		C10 Social U 6 L 1  _.B.mp3		C10 Social U6 L1   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS06.08	Social Studies	Geography	Other Geography		np	CEHRD	mp3		C10 Social U 6 L 8  _.B.mp3		C10 Social U6 L8   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS06.10, 10SS06.11	Social Studies	Geography	North America		np	CEHRD	mp3		C10 Social U 6 L 10 n 11  _.B.mp3		C10 Social U6 L10 n 11   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS06.14, 10SS06.15	Social Studies	Geography	Africa		np	CEHRD	mp3		C10 Social U 6 L 14 n 15  _.B.mp3		C10 Social U6 L14 n 15   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS06.18, 10SS06.19	Social Studies	Geography	Maps		np	CEHRD	mp3		C10 Social U 6 L 18 n 19  _.B.mp3		C10 Social U6 L18 n 19   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS07.02, 10SS07.03	Social Studies	History	Nepal		np	CEHRD	mp3		C10 Social U 7 L 2 n 3  _.B.mp3		C10 Social U7 L2 n 3   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS07.04, 10SS07.05	Social Studies	History	Nepal		np	CEHRD	mp3		C10 Social U 7 L 4  n 5  _.B.mp3		C10 Social U7 L4  n 5   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS07.06	Social Studies	History	Nepal	Politics	np	CEHRD	mp3		C10 Social U 7 L 6  _.B.mp3		C10 Social U7 L6   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS07.07	Social Studies	History	Nepal	Politics	np	CEHRD	mp3		C10 Social U 7 L 7  _.B.mp3		C10 Social U7 L7   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS07.09	Social Studies	History	Wars	WWI	np	CEHRD	mp3		C10 Social U 7 L 9  _.B.mp3		C10 Social U7 L9   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS07.10	Social Studies	History	Wars	WWI	np	CEHRD	mp3		C10 Social U 7 L 10  _.B.mp3		C10 Social U7 L10   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS07.11	Social Studies	History	Wars	WWII	np	CEHRD	mp3		C10 Social U 7 L 11  _.B.mp3		C10 Social U7 L11   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS07.12	Social Studies	History	Wars	WWII	np	CEHRD	mp3		C10 Social U 7 L 12  _.B.mp3		C10 Social U7 L12   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS07.13	Social Studies	History	Archaeology	Other Archaeology	np	CEHRD	mp3		C10 Social U 7 L 13_.B.mp3		C10 Social U7 L13 .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS08.01	Social Studies	Economy	Other Economy	Sustainable Development	np	CEHRD	mp3		C10 Social U 8 L 1  _.B.mp3		C10 Social U8 L1   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS08.02	Social Studies	Economy	Tourism		np	CEHRD	mp3		C10 Social U 8 L 2 _.B.mp3		C10 Social U8 L2  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS08.03	Social Studies	Economy	Other Economy	Sustainable Development	np	CEHRD	mp3		C10 Social U 8 L 3  _.B.mp3		C10 Social U8 L3   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS08.04	Social Studies	Economy	Occupations	Service	np	CEHRD	mp3		C10 Social U 8 L 4 _.B.mp3		C10 Social U8 L4  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS08.05	Social Studies	Economy	Finance	Interest	np	CEHRD	mp3		C10 Social U 8 L 5 _.B.mp3		C10 Social U8 L5  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS08.08, 10SS08.09	Social Studies	Economy			np	CEHRD	mp3		C10 Social U 8 L 8 n 9  _.B.mp3		C10 Social U8 L8 n 9   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS08.08, 10SS08.10	Social Studies	Economy			np	CEHRD	mp3		C10 Social U 8 L 10  _.B.mp3		C10 Social U8 L10   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS09.02	Social Studies	History	Nepal	International Relations	np	CEHRD	mp3		C10 Social U 9 L 2  _.B.mp3		C10 Social U9 L2   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS09.03	Social Studies	History	Nepal	International Relations	np	CEHRD	mp3		C10 Social U 9 L 3  _.B.mp3		C10 Social U9 L3   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS09.05	Social Studies	History	Nepal	Events	np	CEHRD	mp3		C10 Social U 9 L 5  _.B.mp3		C10 Social U9 L5   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS09.06	Social Studies	Economy	Other Economy	Local Products	np	CEHRD	mp3		C10 Social U 9 L 6  _.B.mp3		C10 Social U9 L6   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS03.07	Social Studies	Community	People		np	CEHRD	mp3		U 3 Bishwobandhuttwa _ B.mp3		U3 Bishwobandhuttwa   B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS03.08	Social Studies	Community	People		np	CEHRD	mp3		U 3 Jestha nagarik pratikodaaitwa _.B.mp3		U3 Jestha nagarik pratikodaaitwa  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS04.02	Social Studies	Issues	Human Rights		np	CEHRD	mp3		U 4 gharelu himsha ra chhuwachhut _.B.mp3		U4 gharelu himsha ra chhuwachhut  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.09	Social Studies	Issues	Human Rights		np	CEHRD	mp3		U 5  manabadhikar ra rastriya tatha antarastriya nikaya_.B.mp3		U5 manabadhikar ra rastriya tatha antarastriya nikaya .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.07	Social Studies	Community	Government	National	np	CEHRD	mp3		U 5  Nirbachan prakriya_.B.mp3		U5 Nirbachan prakriya .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.05	Social Studies	Community	Government	National	np	CEHRD	mp3		U 5 Anyasambaidhanik aayogharu_.B .mp3		U5 Anyasambaidhanik aayogharu .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.02	Social Studies	Community	Government	Local	np	CEHRD	mp3		U 5 Karyapalika _.B.mp3		U5 Karyapalika  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.04	Social Studies	Community	Government	National	np	CEHRD	mp3		U 5 l4 Sambaidhanik nikaya _.B.mp3		U5 l4 Sambaidhanik nikaya  .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.10	Social Studies	Issues	Human Rights	Girls & Women	np	CEHRD	mp3		U 5 Mahila ra aadibasi janajati adhikar _ .B.mp3		U5 Mahila ra aadibasi janajati adhikar   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.11	Social Studies	Issues	Civil Rights	Other Civil Rights	np	CEHRD	mp3		U 5 Nagari Pahichan ra Nagarikata_.B.mp3		U5 Nagari Pahichan ra Nagarikata .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.07, 10SS05.08	Social Studies	Community	Government		np	CEHRD	mp3		U 5 Nirwachan Prakriya ra nagarikko bhumika_.B.mp3		U5 Nirwachan Prakriya ra nagarikko bhumika .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.03	Social Studies	Community	Government	National	np	CEHRD	mp3		U 5 nyayapalika _ .B.mp3		U5 nyayapalika   .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS05.06	Social Studies	Community	Government	Other Government	np	CEHRD	mp3		U 5 Rajnaitik dalharu_.B.mp3		U5 Rajnaitik dalharu .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS06.04, 10SS06.05	Social Studies	Geography	Landforms		np	CEHRD	mp3		U 6 Samasitosna Pradesh ra janajiwan_.B.mp3		U6 Samasitosna Pradesh ra janajiwan .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS06.06, 10SS06.07	Social Studies	Community			np	CEHRD	mp3		U 6 Sitpradesh ra gatibidhiharu_.B.mp3		U6 Sitpradesh ra gatibidhiharu .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS06.12	Social Studies	Geography	South America		np	CEHRD	mp3		U 6 South America_.B.mp3		U6 South America .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS06.02, 10SS06.03	Social Studies	Geography	aaaaaaqwqqaw		np	CEHRD	mp3		U 6 Tropical region and lifestyle_.Bg.mp3		U6 Tropical region and lifestyle .Bg	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS06.17	Social Studies	Geography	Landforms		np	CEHRD	mp3		U 6a Bhukampa_.B.mp3		U6a Bhukampa .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS07.01, 10SS07.02	Social Studies	History			np	CEHRD	mp3		U 7 Saatsalako kranti ra Prajatantrik rajnitiko dashak_.B.mp3		U7 Saatsalako kranti ra Prajatantrik rajnitiko dashak .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS08.06, 10SS08.07	Social Studies	Community	Education		np	CEHRD	mp3		U 8 Bittiya sikchhya ra upakaran_.B.mp3		U8 Bittiya sikchhya ra upakaran .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10SS09.01	Social Studies	History	Nepal	International Relations	np	CEHRD	mp3		U 9 UN and its organ_.B.mp3		U9 UN and its organ .B	../content/CEHRD/Class10/SocialStudies/
+10	10		10S01	Science	Physics	Forces		np	CEHRD	mp3		G10_U1_Gravitation and Gravity_.B.mp3		G10 U1 Gravitation and Gravity .B	../content/CEHRD/Class10/Science/
+10	10		10S02	Science	Physics	Forces	Other Forces	np	CEHRD	mp3		G10_U2_Pressure_Atmospheric and barometer_.B.mp3		G10 U2 Pressure Atmospheric and barometer .B	../content/CEHRD/Class10/Science/
+10	10		10S02	Science	Physics	Forces	Other Forces	np	CEHRD	mp3		G10_U2_Pressure_III_Archimedes_Principle_.B.mp3		G10 U2 Pressure III Archimedes Principle .B	../content/CEHRD/Class10/Science/
+10	10		10S02	Science	Physics	Forces	Other Forces	np	CEHRD	mp3		G10_U2_Pressure_Pascal's Law -1  _.B.mp3		G10 U2 Pressure Pascal's Law -1   .B	../content/CEHRD/Class10/Science/
+10	10		10S02	Science	Physics	Forces	Other Forces	np	CEHRD	mp3		G10_U2_Pressure_Pascal's Law Density of liquid and upthrust  _.B.mp3		G10 U2 Pressure Pascal's Law Density of liquid and upthrust   .B	../content/CEHRD/Class10/Science/
+10	10		10S02	Science	Physics	Forces	Other Forces	np	CEHRD	mp3		G10_U2_Pressure_Syringe and Air pump_.B.mp3		G10 U2 Pressure Syringe and Air pump .B	../content/CEHRD/Class10/Science/
+10	10		10S03	Science	Physics	Forces	Work & Energy & Power	np	CEHRD	mp3		G10_U3 Energy_.B.mp3		G10 U3 Energy .B	../content/CEHRD/Class10/Science/
+10	10		10S04	Science	Physics	Electromagnetism	Heat	np	CEHRD	mp3		G10_U4 Heat _.B.mp3		G10 U4 Heat  .B	../content/CEHRD/Class10/Science/
+10	10		10S04	Science	Physics	Electromagnetism	Heat	np	CEHRD	mp3		G10_U4 Heat 2 _.B.mp3		G10 U4 Heat 2  .B	../content/CEHRD/Class10/Science/
+10	10		10S06	Science	Physics	Electricity & Electronics	Electricity	np	CEHRD	mp3		G10_U6 Current electricity and magnetism_ Generator, Dynamo,electri motor _.B.mp3		G10 U6 Current electricity and magnetism  Generator, Dynamo,electri motor  .B	../content/CEHRD/Class10/Science/
+10	10		10S06	Science	Physics	Electricity & Electronics	Electricity	np	CEHRD	mp3		G10_U6 Current electricity and magnetism_ Heating effect lighting_.B.mp3		G10 U6 Current electricity and magnetism  Heating effect lighting .B	../content/CEHRD/Class10/Science/
+10	10		10S06	Science	Physics	Electricity & Electronics	Electricity	np	CEHRD	mp3		G10_U6 Current electricity and magnetism_ Inverter, charger , transformer _.B.mp3		G10 U6 Current electricity and magnetism  Inverter, charger , transformer  .B	../content/CEHRD/Class10/Science/
+10	10		10S06	Science	Physics	Electricity & Electronics	Electricity	np	CEHRD	mp3		G10_U6 Current electricity and magnetism_ safely measure in using electricity_.B.mp3		G10 U6 Current electricity and magnetism  safely measure in using electricity .B	../content/CEHRD/Class10/Science/
+10	10		10S07	Science	Chemistry	Periodic Table		np	CEHRD	mp3		G10_U7 classification of elements_Reactivity of elements 2_.B.mp3		G10 U7 classification of elements Reactivity of elements 2 .B	../content/CEHRD/Class10/Science/
+10	10		10S09	Science	Chemistry	Other Chemistry	Acid & Base & Salt	np	CEHRD	mp3		G10_U9  introduction of chemial reaction, types and factor  _.B.mp3		G10 U9  introduction of chemial reaction, types and factor   .B	../content/CEHRD/Class10/Science/
+10	10		10S09	Science	Chemistry	Other Chemistry	Acid & Base & Salt	np	CEHRD	mp3		G10_U9 Acid_.B.mp3		G10 U9 Acid .B	../content/CEHRD/Class10/Science/
+10	10		10S12	Science	Chemistry	Organics	Other Organics	np	CEHRD	mp3		G10_U12 Hydrocarbon and its compounds Part 1 _.B.mp3		G10 U12 Hydrocarbon and its compounds Part 1  .B	../content/CEHRD/Class10/Science/
+10	10		10S12	Science	Chemistry	Organics	Other Organics	np	CEHRD	mp3		G10_U12 Hydrocarbon and its compounds Part 2 _.B.mp3		G10 U12 Hydrocarbon and its compounds Part 2  .B	../content/CEHRD/Class10/Science/
+10	10		10S14	Science	Biology	Insects		np	CEHRD	mp3		G10_U14 Invertebrate _.B.mp3		G10 U14 Invertebrate  .B	../content/CEHRD/Class10/Science/
+10	10		10S18b	Social Studies	Economy	Agriculture	Tree Crops	np	CEHRD	mp3		G10_U18 Artificial vegetation propagation in plant _.B.mp3		G10 U18 Artificial vegetation propagation in plant  .B	../content/CEHRD/Class10/Science/
+10	10		10S20	Science	Earth	Human Impact	Pollution	np	CEHRD	mp3		G10_U20 Air pollution _.B.mp3		G10 U20 Air pollution  .B	../content/CEHRD/Class10/Science/
+10	10		10S20	Science	Earth	Human Impact	Pollution	np	CEHRD	mp3		G10_U20 Land, water pollution _.B.mp3		G10 U20 Land, water pollution  .B	../content/CEHRD/Class10/Science/
+10	10		10S22	Science	Earth	Climate	Climate Change	np	CEHRD	mp3		G10_U22 Climate change and atmosphere_.B.mp3		G10 U22 Climate change and atmosphere .B	../content/CEHRD/Class10/Science/
+10	10		10S23	Science	Astronomy	Other Astronomy		np	CEHRD	mp3		G10_U23 The Earth in the universe  1 _.B.mp3		G10 U23 The Earth in the universe  1  .B	../content/CEHRD/Class10/Science/
+10	10		10S23	Science	Astronomy	Other Astronomy		np	CEHRD	mp3		G10_U23 The Earth in the universe  2 _.B.mp3		G10 U23 The Earth in the universe  2  .B	../content/CEHRD/Class10/Science/
+10	10		10S23	Science	Astronomy	Other Astronomy		np	CEHRD	mp3		G10_U23 The Earth in the universe  3 _.B.mp3		G10 U23 The Earth in the universe  3  .B	../content/CEHRD/Class10/Science/
+10	10		10S05	Science	Physics	Electromagnetism	Light	np	CEHRD	mp3		U 5 Light_2.mp3		U5 Light 2	../content/CEHRD/Class10/Science/
+10	10		10S05	Science	Physics	Electromagnetism	Light	np	CEHRD	mp3		U 5 Light_2_.B.mp3		U5 Light 2 .B	../content/CEHRD/Class10/Science/
+10	10		10S11	Science	Chemistry	Metal		np	CEHRD	mp3		U 11 Kehi Dhatuharu_.B.mp3		U11 Kehi Dhatuharu .B	../content/CEHRD/Class10/Science/
+10	10		10S11	Science	Chemistry	Metal		np	CEHRD	mp3		U 11 Metal _ B.mp3		U11 Metal   B	../content/CEHRD/Class10/Science/
+10	10		10S14	Science	Biology	Insects		np	CEHRD	mp3		U 14 Invertebrate Bee life cycle_.B .mp3		U14 Invertebrate Bee life cycle .B	../content/CEHRD/Class10/Science/
+10	10		10S15	Science	Biology	Organs Animal	Other Organs	np	CEHRD	mp3		U 15 Autonomic Nervous and glandular system _.B.mp3		U15 Autonomic Nervous and glandular system  .B	../content/CEHRD/Class10/Science/
+10	10		10S16	Science	Biology	Organs Animal	Other Organs	np	CEHRD	mp3		U 16 Blood Circulatory_.B.mp3		U16 Blood Circulatory .B	../content/CEHRD/Class10/Science/
+10	10		10S16	Science	Biology	Organs Animal	Other Organs	np	CEHRD	mp3		U 16 Blood Circulatory_2_.B.mp3		U16 Blood Circulatory 2 .B	../content/CEHRD/Class10/Science/
+10	10		10S16	Science	Biology	Organs Animal	Other Organs	np	CEHRD	mp3		U 16 Blood Circulatory_3_.B.mp3		U16 Blood Circulatory 3 .B	../content/CEHRD/Class10/Science/
+10	10		10S17	Science	Biology	Cells		np	CEHRD	mp3		U 17 Chromosomal disorder _. B.mp3		U17 Chromosomal disorder  . B	../content/CEHRD/Class10/Science/
+10	10		10S18	Science	Biology	Other Biology	Life Processes	np	CEHRD	mp3		U 18 KA Maithunik ra amaithunik prajanan_1_.B.mp3		U18 KA Maithunik ra amaithunik prajanan 1 .B	../content/CEHRD/Class10/Science/
+10	10		10S18	Science	Biology	Other Biology	Life Processes	np	CEHRD	mp3		U 18 KA Maithunik ra amaithunik prajanan_2_.B.mp3		U18 KA Maithunik ra amaithunik prajanan 2 .B	../content/CEHRD/Class10/Science/
+10	10		10S19	Science	Biology	Other Biology	Evolution	np	CEHRD	mp3		U 19 Bamshanukramm 2_.B.mp3		U19 Bamshanukramm 2 .B	../content/CEHRD/Class10/Science/
+10	10		10S19	Science	Biology	Other Biology	Evolution	np	CEHRD	mp3		U 19 Mendalko niyam _.B.mp3		U19 Mendalko niyam  .B	../content/CEHRD/Class10/Science/
+10	10		10S21	Science	Earth	Earth History		np	CEHRD	mp3		U 21 Prithibiko Itihas_.B.mp3		U21 Prithibiko Itihas .B	../content/CEHRD/Class10/Science/
+10	10		10S21	Science	Earth	Earth History		np	CEHRD	mp3		U 21 Prithibiko Itihas_2_.B.mp3		U21 Prithibiko Itihas 2 .B	../content/CEHRD/Class10/Science/
+10	10		10S22	Science	Earth	Climate	Climate Change	np	CEHRD	mp3		U 22 Baumandlka Tahaharur _.B.mp3		U22 Baumandlka Tahaharur  .B	../content/CEHRD/Class10/Science/
+10	10		10S22	Science	Earth	Climate	Climate Change	np	CEHRD	mp3		U 22 Baumandlka Tahaharur_2 _.B.mp3		U22 Baumandlka Tahaharur 2  .B	../content/CEHRD/Class10/Science/
+10	10		10N01	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		U 1 Janmabhumi_1.mp3		U1 Janmabhumi 1	../content/CEHRD/Class10/Nepali/
+10	10		10N01	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		U 1 Janmabhumi_2.mp3		U1 Janmabhumi 2	../content/CEHRD/Class10/Nepali/
+10	10		10N01	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		U 1 Janmabhumi_3.mp3		U1 Janmabhumi 3	../content/CEHRD/Class10/Nepali/
+10	10		10N01	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		U 1 Janmabhumi_4.mp3		U1 Janmabhumi 4	../content/CEHRD/Class10/Nepali/
+10	10		10N01	Language	Nepali	Contexts	Locations	np	CEHRD	mp3		U 1 Janmabhumi_5.mp3		U1 Janmabhumi 5	../content/CEHRD/Class10/Nepali/
+10	10		10N02	Language	Nepali	Contexts	Preferences	np	CEHRD	mp3		U 2 Santusti -1 _.B.mp3		U2 Santusti -1  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N02	Language	Nepali	Contexts	Preferences	np	CEHRD	mp3		U 2 Santusti -2 Srijana lekhan _.B.mp3		U2 Santusti -2 Srijana lekhan  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N02	Language	Nepali	Contexts	Preferences	np	CEHRD	mp3		U 2 Santusti -Anu lekhan _.B.mp3		U2 Santusti -Anu lekhan  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N02	Language	Nepali	Contexts	Preferences	np	CEHRD	mp3		U 2 Santusti Byakrana 2_.B.mp3		U2 Santusti Byakrana 2 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N02	Language	Nepali	Contexts	Preferences	np	CEHRD	mp3		U 2 Santusti Byakrana kal, linga,bachan_.B.mp3		U2 Santusti Byakrana kal, linga,bachan .B	../content/CEHRD/Class10/Nepali/
+10	10		10N02	Language	Nepali	Contexts	Preferences	np	CEHRD	mp3		U 2_Santusti_1.mp3		U2 Santusti 1	../content/CEHRD/Class10/Nepali/
+10	10		10N03	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		U 3 sanduk ruit 1 _.B.mp3		U3 sanduk ruit 1  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N03	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		U 3 sanduk ruit 2 _.B.mp3		U3 sanduk ruit 2  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N03	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		U 3 sanduk ruit 3 _.B.mp3		U3 sanduk ruit 3  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N03	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		U 3 sanduk ruit 4 _.B.mp3		U3 sanduk ruit 4  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N04	Language	Nepali	Contexts	Possessions	np	CEHRD	mp3		U 4 Thanka Bibechanatmak_.B.mp3		U4 Thanka Bibechanatmak .B	../content/CEHRD/Class10/Nepali/
+10	10		10N04	Language	Nepali	Contexts	Possessions	np	CEHRD	mp3		U 4 Thanka bisheshan ra kriyapad .mp3		U4 Thanka bisheshan ra kriyapad	../content/CEHRD/Class10/Nepali/
+10	10		10N04	Language	Nepali	Contexts	Possessions	np	CEHRD	mp3		U 4 Thanka byakaran naa, sarwanam.mp3		U4 Thanka byakaran naa, sarwanam	../content/CEHRD/Class10/Nepali/
+10	10		10N04	Language	Nepali	Contexts	Possessions	np	CEHRD	mp3		U 4 Thanka_1_.B.mp3		U4 Thanka 1 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N05	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U 5  Ma pani Sakchhu 1 _.B.mp3		U5 Ma pani Sakchhu 1  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N05	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U 5  Ma pani Sakchhu 2 _.B.mp3		U5 Ma pani Sakchhu 2  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N05	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U 5  Ma pani Sakchhu 3 _.B.mp3		U5 Ma pani Sakchhu 3  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N05	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U 5  Ma pani Sakchhu 4 _.B.mp3		U5 Ma pani Sakchhu 4  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N06	Language	Nepali	Contexts	Conversation	np	CEHRD	mp3		U 6 Chhiti _ byakaran_2077.03.12 _.B.mp3		U6 Chhiti   byakaran 2077.03.12  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N06	Language	Nepali	Contexts	Conversation	np	CEHRD	mp3		U 6 Chhiti -2 2077.03.12 _.B.mp3		U6 Chhiti -2 2077.03.12  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N06	Language	Nepali	Contexts	Conversation	np	CEHRD	mp3		U 6 Chhiti 2077.03.12 _.B.mp3		U6 Chhiti 2077.03.12  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N07	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U 7 Byakaran_.B.mp3		U7 Byakaran .B	../content/CEHRD/Class10/Nepali/
+10	10		10N07	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U 7 Pratyagaman 1 _.B.mp3		U7 Pratyagaman 1  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N07	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U 7 Pratyagaman 2 _.B.mp3		U7 Pratyagaman 2  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N07	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U 7 Pratyagaman bolaisip _.B.mp3		U7 Pratyagaman bolaisip  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N07	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U 7 Pratyagaman Byakaran _.B.mp3		U7 Pratyagaman Byakaran  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N08	Language	Nepali	Contexts	Song	np	CEHRD	mp3		U 8 Barsha  1_.B.mp3		U8 Barsha  1 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N08	Language	Nepali	Contexts	Song	np	CEHRD	mp3		U 8 Barsha  2_.B.mp3		U8 Barsha  2 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N08	Language	Nepali	Contexts	Song	np	CEHRD	mp3		U 8 Barsha 1_.B.mp3		U8 Barsha 1 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N08	Language	Nepali	Contexts	Song	np	CEHRD	mp3		U 8 Barsha 2_.B.mp3		U8 Barsha 2 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N08	Language	Nepali	Contexts	Song	np	CEHRD	mp3		U 8 Barsha_byakaran _.B.mp3		U8 Barsha byakaran  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N09	Language	Nepali	Contexts	Possessions	np	CEHRD	mp3		U 9 Hamro Sanskriti  Byakaran _.B.mp3		U9 Hamro Sanskriti  Byakaran  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N09	Language	Nepali	Contexts	Possessions	np	CEHRD	mp3		U 9 Hamro Sanskriti 1_.B.mp3		U9 Hamro Sanskriti 1 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N09	Language	Nepali	Contexts	Possessions	np	CEHRD	mp3		U 9 Hamro Sanskriti 2 _.B.mp3		U9 Hamro Sanskriti 2  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N09	Language	Nepali	Contexts	Possessions	np	CEHRD	mp3		U 9 Hamro Sanskriti 3 _.B.mp3		U9 Hamro Sanskriti 3  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N09	Language	Nepali	Contexts	Possessions	np	CEHRD	mp3		U 9 Hamro Sanskriti 4 _.B.mp3		U9 Hamro Sanskriti 4  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N09	Language	Nepali	Contexts	Possessions	np	CEHRD	mp3		U 9 Hamro Sanskriti 5 _.B.mp3		U9 Hamro Sanskriti 5  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N10	Language	Nepali	Contexts	Comparing	np	CEHRD	mp3		U 10  Part 1 _.B.mp3		U10  Part 1  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N10	Language	Nepali	Contexts	Comparing	np	CEHRD	mp3		U 10  Part 2 _.B.mp3		U10  Part 2  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N10	Language	Nepali	Contexts	Comparing	np	CEHRD	mp3		U 10  Part 3 _.B.mp3		U10  Part 3  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N10	Language	Nepali	Contexts	Comparing	np	CEHRD	mp3		U 10  Part 4 _.B.mp3		U10  Part 4  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N10	Language	Nepali	Contexts	Comparing	np	CEHRD	mp3		U 10  Part 5 _.B.mp3		U10  Part 5  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N11	Language	Nepali	Contexts	Describing	np	CEHRD	mp3		U 11 Laxmi puja 1_.B.mp3		U11 Laxmi puja 1 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N11	Language	Nepali	Contexts	Describing	np	CEHRD	mp3		U 11 Laxmi puja 2_.B.mp3		U11 Laxmi puja 2 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N11	Language	Nepali	Contexts	Describing	np	CEHRD	mp3		U 11 Laxmi puja 3_.B.mp3		U11 Laxmi puja 3 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N11	Language	Nepali	Contexts	Describing	np	CEHRD	mp3		U 11 Laxmipuja 1 _.B.mp3		U11 Laxmipuja 1  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N12	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		U 12 Clara Jetking_.B.mp3		U12 Clara Jetking .B	../content/CEHRD/Class10/Nepali/
+10	10		10N12	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		U 12 Clara Jetking_1_.B.mp3		U12 Clara Jetking 1 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N12	Language	Nepali	Contexts	Narration	np	CEHRD	mp3		U 12 Clara Jetking_3_.B.mp3		U12 Clara Jetking 3 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N13	Language	Nepali	Textbooks		np	CEHRD	mp3		U 13 jaybhudi_1_.B.mp3		U13 jaybhudi 1 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N13	Language	Nepali	Textbooks		np	CEHRD	mp3		U 13 jaybhudi_2_.B.mp3		U13 jaybhudi 2 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N13	Language	Nepali	Textbooks		np	CEHRD	mp3		U 13 jaybhudi_3_.B.mp3		U13 jaybhudi 3 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N13	Language	Nepali	Textbooks		np	CEHRD	mp3		U 13 jaybhudi_4_.B.mp3		U13 jaybhudi 4 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N13	Language	Nepali	Textbooks		np	CEHRD	mp3		U 13 Jaybhudi_5_.B.mp3		U13 Jaybhudi 5 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N14	Language	Nepali	Song		np	CEHRD	mp3		U 14 Ma Sadak Boldaichhu -1_.B.mp3		U14 Ma Sadak Boldaichhu -1 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N14	Language	Nepali	Song		np	CEHRD	mp3		U 14 Ma Sadak Boldaichhu 2 _.B.mp3		U14 Ma Sadak Boldaichhu 2  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N14	Language	Nepali	Song		np	CEHRD	mp3		U 14 Ma Sadak Boldaichhu 3 _.B.mp3		U14 Ma Sadak Boldaichhu 3  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N14	Language	Nepali	Song		np	CEHRD	mp3		U 14 Ma Sadak Boldaichhu 4 _.B.mp3		U14 Ma Sadak Boldaichhu 4  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N15	Language	Nepali	People		np	CEHRD	mp3		U 15 Tika ekanki_ (Byakrana...)_.B.mp3		U15 Tika ekanki   Byakrana...  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N15	Language	Nepali	People		np	CEHRD	mp3		U 15 Tika ekanki_B( Paragraph 25...).mp3		U15 Tika ekanki B  Paragraph 25...	../content/CEHRD/Class10/Nepali/
+10	10		10N15	Language	Nepali	People		np	CEHRD	mp3		U 15 Tuka ekanki_.B.mp3		U15 Tuka ekanki .B	../content/CEHRD/Class10/Nepali/
+10	10		10N16	Language	Nepali	Textbooks		np	CEHRD	mp3		U 16 Maujung sabu 1 _.B.mp3		U16 Maujung sabu 1  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N16	Language	Nepali	Textbooks		np	CEHRD	mp3		U 16 Maujung sabu 2 _.B.mp3		U16 Maujung sabu 2  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N16	Language	Nepali	Textbooks		np	CEHRD	mp3		U 16 Part 1 _.B.mp3		U16 Part 1  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N16	Language	Nepali	Textbooks		np	CEHRD	mp3		U 16 Part 2 _.B.mp3		U16 Part 2  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N16	Language	Nepali	Textbooks		np	CEHRD	mp3		U 16 Part 2a _.B.mp3		U16 Part 2a  .B	../content/CEHRD/Class10/Nepali/
+10	10		10N16	Language	Nepali	Textbooks		np	CEHRD	mp3		U 16 Part 4_.B.mp3		U16 Part 4 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N07	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U7 Pratyagaman 1_.B.mp3		U7 Pratyagaman 1 .B	../content/CEHRD/Class10/Nepali/
+10	10		10N07	Language	Nepali	Contexts	Textbooks	np	CEHRD	mp3		U7 Pratyagaman 2_.B.mp3		U7 Pratyagaman 2 .B	../content/CEHRD/Class10/Nepali/
+10	10		10M01	Mathematics	Numbers	Sets		np	CEHRD	mp3		C 10 U 1 Sets _.B.mp3		C10 U1 Sets  .B	../content/CEHRD/Class10/Math/
+10	10		10M02	Mathematics	Measurement	Currency		np	CEHRD	mp3		C 10 U 2 Tax and Money exchange _.B.mp3		C10 U2 Tax and Money exchange  .B	../content/CEHRD/Class10/Math/
+10	10		10M05	Mathematics	Geometry	Shapes	Other Shapes	np	CEHRD	mp3		C 10 U 5 Area of plane surface _.B.mp3		C10 U5 Area of plane surface  .B	../content/CEHRD/Class10/Math/
+10	10		10M06	Mathematics	Geometry	Shapes	Sphere	np	CEHRD	mp3		C 10 U 6 Cylinder and sphere _.B.mp3		C10 U6 Cylinder and sphere  .B	../content/CEHRD/Class10/Math/
+10	10		10M06	Mathematics	Geometry	Shapes	Sphere	np	CEHRD	mp3		C 10 U 6 Cylinder and sphere 1_.B.mp3		C10 U6 Cylinder and sphere 1 .B	../content/CEHRD/Class10/Math/
+10	10		10M06	Mathematics	Geometry	Shapes	Sphere	np	CEHRD	mp3		C 10 U 6 Cylinder and sphere 3_.B.mp3		C10 U6 Cylinder and sphere 3 .B	../content/CEHRD/Class10/Math/
+10	10		10M10	Mathematics	Other Mathematics	Graphs		np	CEHRD	mp3		C 10 U 10 Indicies _.b.mp3		C10 U10 Indicies  .b	../content/CEHRD/Class10/Math/
+10	10		10M12	Mathematics	Algebra	Equations		np	CEHRD	mp3		C 10 U 12 Equation 2 _.B.mp3		C10 U12 Equation 2  .B	../content/CEHRD/Class10/Math/
+10	10		10M12	Mathematics	Algebra	Equations		np	CEHRD	mp3		C 10 U 12 Equation_.B.mp3		C10 U12 Equation .B	../content/CEHRD/Class10/Math/
+10	10		10M14	Mathematics	Geometry	Construction		np	CEHRD	mp3		C 10 U 14 Contruction _.B.mp3		C10 U14 Contruction  .B	../content/CEHRD/Class10/Math/
+10	10		10M16	Mathematics	Trigonometry			np	CEHRD	mp3		C 10 U 16 Height and distance _.B.mp3		C10 U16 Height and distance  .B	../content/CEHRD/Class10/Math/
+10	10		10M16	Mathematics	Trigonometry			np	CEHRD	mp3		C 10 U 16 Triangle _.B.mp3		C10 U16 Triangle  .B	../content/CEHRD/Class10/Math/
+10	10		10M17	Mathematics	Applied Mathematics	Statistics		np	CEHRD	mp3		C 10 U 17 Statistics problem solution _.B.mp3		C10 U17 Statistics problem solution  .B	../content/CEHRD/Class10/Math/
+10	10	10EN01		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	G10_1Eng_U1_Listening_F.mp3		G10 1Eng U1 Listening F		../content/CEHRD/Class10/English/
+10	10	10EN01		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	G10_2Eng_U1_Reading Comp_F.mp3		G10 2Eng U1 Reading Comp F		../content/CEHRD/Class10/English/
+10	10	10EN01		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	G10_3Eng_U1_Writing an essey_F.mp3		G10 3Eng U1 Writing an essey F		../content/CEHRD/Class10/English/
+10	10	10EN02		Language	English	Contexts	Describing	en	CEHRD	mp3	G10_4Eng_U2_Listening_F.mp3		G10 4Eng U2 Listening F		../content/CEHRD/Class10/English/
+10	10	10EN03		Language	English	Contexts	Describing	en	CEHRD	mp3	G10_6Eng_U3_Grammar (Reporting question)_F.mp3		G10 6Eng U3 Grammar  Reporting question  F		../content/CEHRD/Class10/English/
+10	10	10EN03		Language	English	Contexts	Describing	en	CEHRD	mp3	G10_7Eng_U3_Listening_F.mp3		G10 7Eng U3 Listening F		../content/CEHRD/Class10/English/
+10	10	10EN03		Language	English	Contexts	Describing	en	CEHRD	mp3	G10_8Eng_U3_Reading_F.mp3		G10 8Eng U3 Reading F		../content/CEHRD/Class10/English/
+10	10	10EN03		Language	English	Contexts	Describing	en	CEHRD	mp3	G10_9Eng_U3_Writing_F.mp3		G10 9Eng U3 Writing F		../content/CEHRD/Class10/English/
+10	10	10EN04		Language	English	Contexts	Describing	en	CEHRD	mp3	G10_10Eng_U4_Grammar (Reporting Cmds)_F.mp3		G10 10Eng U4 Grammar  Reporting Cmds  F		../content/CEHRD/Class10/English/
+10	10	10EN04		Language	English	Contexts	Describing	en	CEHRD	mp3	G10_11Eng_U4_Listening_F.mp3		G10 11Eng U4 Listening F		../content/CEHRD/Class10/English/
+10	10	10EN04		Language	English	Contexts	Describing	en	CEHRD	mp3	G10_12Eng_U4_Writing_F.mp3		G10 12Eng U4 Writing F		../content/CEHRD/Class10/English/
+10	10	10EN06		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	G10_13Eng_U6_Reading_F.mp3		G10 13Eng U6 Reading F		../content/CEHRD/Class10/English/
+10	10	10EN06		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	G10_14Eng_U6_Reading (poem)_F.mp3		G10 14Eng U6 Reading  poem  F		../content/CEHRD/Class10/English/
+10	10	10EN07		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	G10_15Eng_U7_Grammar_F.mp3		G10 15Eng U7 Grammar F		../content/CEHRD/Class10/English/
+10	10	10EN07		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	G10_16Eng_U7_Listening_F.mp3		G10 16Eng U7 Listening F		../content/CEHRD/Class10/English/
+10	10	10EN07		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	G10_17Eng_U7_Reading_F.mp3		G10 17Eng U7 Reading F		../content/CEHRD/Class10/English/
+10	10	10EN07		Language	English	Contexts	Requests & Commands	en	CEHRD	mp3	G10_18Eng_U7_Writing_F.mp3		G10 18Eng U7 Writing F		../content/CEHRD/Class10/English/
+10	10	10EN09		Language	English	Contexts	Narration	en	CEHRD	mp3	G10_22Eng_U9_Reading_F.mp3		G10 22Eng U9 Reading F		../content/CEHRD/Class10/English/
+10	10	10EN09		Language	English	Contexts	Narration	en	CEHRD	mp3	G10_23Eng_U9_Reading_The   road not taken_E1.mp3		G10 23Eng U9 Reading The   road not taken E1		../content/CEHRD/Class10/English/
+10	10	10EN08		Language	English	Contexts	Questions & Answers	en	CEHRD	mp3	U 8 Human trafficking Reading _.B.mp3		U8 Human trafficking Reading  .B		../content/CEHRD/Class10/English/
+10	10	10EN08		Language	English	Contexts	Questions & Answers	en	CEHRD	mp3	U 8 writing _ .B.mp3		U8 writing   .B		../content/CEHRD/Class10/English/
+10	10	10EN11		Language	English	Contexts	Preferences	en	CEHRD	mp3	U 11 CV Writing _.B.mp3		U11 CV Writing  .B		../content/CEHRD/Class10/English/
+10	10	10EN13		Language	English	Contexts	Narration	en	CEHRD	mp3	U 13 Writing Nareting past events_.B.mp3		U13 Writing Nareting past events .B		../content/CEHRD/Class10/English/
+10	10	10EN14		Language	English	Contexts	Narration	en	CEHRD	mp3	U 14  biography of er ernaest hemingway _.B.mp3		U14  biography of er ernaest hemingway  .B		../content/CEHRD/Class10/English/

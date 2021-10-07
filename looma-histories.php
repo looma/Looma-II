@@ -10,8 +10,9 @@ Description: Initial "histories" page. Takes the user to the history timelines.
 
 <?php  $page_title = 'Looma Timeline Histories';
 include ("includes/header.php");
-require ('includes/mongo-connect.php');
 require('includes/looma-utilities.php');
+logPageHit('histories');
+
 ?>
 
 <body>

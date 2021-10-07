@@ -18,7 +18,9 @@ window.onload = function() {
 // *********  ZOOM controls ***************
     
     enableZoomControls();
-
+    
+    $('#zoom-dropdown').show();
+    
     $('#zoom-btn').click ( function(){$('#zoom-dropdown').toggle();});
     
     $('.zoom-item').click( /*async*/ function() {

@@ -15,6 +15,7 @@
 function chapterButtonClicked(event){
     //called when a CHAPTER button is pressed
     var button = event.target;
+    if (button.getAttribute('data-ft') === 'section' && button.getAttribute('data-len') == 0) return false;
     LOOMA.setStore('chapter',  button.getAttribute('data-ch'), 'session');  //set a COOKIE for CHAPTER
     //document.cookie = "chapter=" + button.getAttribute('data-ch');  //set a COOKIE for CHAPTER
 
@@ -27,7 +28,8 @@ function chapterButtonClicked(event){
 function activityButtonClicked(){
         //called when a ACTIVITY button is pressed
         var chapter_id = this.getAttribute('data-ch');
-        var chapter_dn = this.getAttribute('data-chdn');
+    var chapter_dn = this.getAttribute('data-chdn');
+    var chapter_ndn = this.getAttribute('data-chndn');
         var chapter_lang = this.getAttribute('data-lang');
         
         LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
@@ -39,9 +41,11 @@ function activityButtonClicked(){
 
         //send GET request to looma-activities.php with CLASS,SUBJECT, CH_ID values
         chapter_id = encodeURIComponent(chapter_id);
-        chapter_dn = encodeURIComponent(chapter_dn);
+    chapter_dn = encodeURIComponent(chapter_dn);
+    chapter_ndn = encodeURIComponent(chapter_ndn);
         window.location = "looma-activities.php?ch=" + chapter_id +
                                                 "&chdn=" + chapter_dn +
+                                                "&chndn=" + chapter_ndn +
                                                 "&lang=" + chapter_lang +
                                                 "&grade=" + className +
                                                 "&subject=" + subject;
@@ -66,7 +70,7 @@ $(document).ready (function() {
     //add listeners to ACTIVITY and CHAPTER buttons
     $("button.activities").click(activityButtonClicked);
     $("button.lesson").click(lessonButtonClicked);
-    $("button.chapter").click(chapterButtonClicked);
+    $("button.chapter, button.section").click(chapterButtonClicked);
 
     // check cookies to see if there is an active CHAPTER
     // if so, add class='active' to all the buttons for this CHAPTER (if any)

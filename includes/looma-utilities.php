@@ -58,7 +58,7 @@ function isHTML($fp) {
 /**** isEpaath   ******/
 /**********************/
 function isEpaath($fp) {
-        if (mb_substr($fp, -7, 7) == "epaath/") return true;
+        if (substr($fp, -7, 7) == "epaath/") return true;
         else return false;
     } //end function isEpaath
 
@@ -91,13 +91,14 @@ function thumbnail ($fn) {
 /**********************/
 function folderThumbnail ($fp) {  //for directories, look for filename "thumbnail.png" for a thumbnail representing the contents
     if (file_exists($fp . "/thumbnail.png")) {
-        return "<img src='$fp/thumbnail.png' >"; }
+        return "<img alt='' src='$fp/thumbnail.png' >"; }
     else return "";
 } //end function thumbnail
 
 function displayName($filename, $dn, $ndn) {
 
-  //echo "NDN is " . $ndn . "**";
+    //echo "DN is " . $dn . "**";
+    //echo "NDN is " . $ndn . "**";
 
     if ($dn && $ndn) {
         echo "<span class='english-keyword'>"
@@ -109,12 +110,16 @@ function displayName($filename, $dn, $ndn) {
             "<span class='xlat'>" . $dn . "</span>" .
             "</span>";
     } else if ($dn) echo "<span class='name'>" . $dn . "</span>";
+      else if ($ndn) echo "<span class='name'>" . $ndn . "</span>";
       else echo "<span class='name'>" . $filename . "</span>";
 }  //end displayName()
 
 function alphabetize_by_dn ($array) {
     // sort the list of dirs by DN
-    usort($array, function ($a, $b) { return strcasecmp($a['dn'], $b['dn']); });
+    usort($array, function ($a, $b) {
+        return strcasecmp(
+            isset($a['dn']) ? $a['dn'] : "",
+            isset($b['dn']) ? $b['dn'] : ""); });
     return $array;
 }
 
@@ -162,6 +167,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 
 			case "video":
             case "mp4":
+            case "MP4":
             case "mp5":
             case "m4v":
 			case "mov": $fp = '../content/videos/'; break;
@@ -185,11 +191,13 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
             case "html":
             case "HTML": $fp = '../content/html/'; break;
 
-   		    case "EP":
+            case "EP":
+            case "ep":
             case "epaath":
                 break;
 
             case "VOC":       //vocabulary reviews
+            case "voc":       //vocabulary reviews
             case "lesson":    //lesson plan
             case "map":       //map
             case "game":    //game
@@ -206,7 +214,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
                echo "<button class='activity  img' ";
                echo "data-dn='Unknown' data-ft='none' ";
                echo ">";
-               echo '<img src="' . 'images/alert.jpg' . '">';
+               echo '<img alt="" src="' . 'images/alert.jpg' . '">';
                echo "<span>" . "Unknown" . "</span></button>";
 
                return;
@@ -259,10 +267,12 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
             echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
 
                   echo ">";
-                  echo '<img loading="lazy" draggable="false" src="' . $thumbSrc . '">';
+                  echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
                   //echo "<span>" . $dn . "</span>";
                   displayName($fn, $dn, $ndn);
-                  echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
+
+    if ($dn) echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
+    else if ($ndn) echo "<span class='tip yes-show big-show' >" . $ndn . "</span></button>";
 
 	} //end makeActivityButton()
 
@@ -319,7 +329,7 @@ function makeChapterButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, 
         echo "data-zoom='" . $zoom . "' ";  //assumes zoom='' defaults to zoom-auto
 
     echo ">";
-    echo '<img draggable="false" src="' . $thumbSrc . '">';
+    echo '<img alt="" draggable="false" src="' . $thumbSrc . '">';
     //echo "<span>" . $dn . "</span>";
     displayName($fn, $dn, $ndn);
     echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";

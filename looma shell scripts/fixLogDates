@@ -1,0 +1,28 @@
+// ONE TIME program to insert UTC fields bsaed on 'time' fields
+//  run in MONGO SHELL with: load('fixLogDates')
+//
+var cursor, count, fixcount, doc, output;
+
+cursor = db.weeks.find({});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+
+    if (!doc['utc'])
+    {
+        fixcount++;
+        var times = doc['time'].split(':');
+        var time = Date.UTC(times[0],times[1],times[2]*7);
+        doc['utc'] = time;
+
+       print ('...' + doc['time'] + ' converts to ' + doc['utc']);
+
+       db.weeks.update({_id:doc._id}, doc);
+    };
+};
+
+print('_______________');
+print(' + + + fixed ' + fixcount + ' times');
+print('_______________');

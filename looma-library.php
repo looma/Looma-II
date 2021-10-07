@@ -10,14 +10,15 @@ Description:  displays and navigates content folders for Looma
 -->
 
 <?php $page_title = 'Looma Library';
-        require ('includes/header.php');
-        require ('includes/mongo-connect.php');
+        require_once ('includes/header.php');
         // using function makeActivityButton from includes/looma-utilities.php
         //usage: makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
         //                          $mongo_id, $ole_id, $url, $pg, $zoom,
         //                          $grade, $epversion, $nfn, $npg,$prefix,$lang)
-        require('includes/looma-utilities.php');?>
+        require('includes/looma-utilities.php');
 
+    logPageHit('library');
+?>
     <link rel = "Stylesheet" type = "text/css" href = "css/looma-library.css">
 </head>
 
@@ -60,7 +61,7 @@ Description:  displays and navigates content folders for Looma
 // get filepath to use for start of DIR traversal
     if (isset($_GET['fp'])) $path = $_GET['fp']; else $path = "../content/";
 
-    echo "<br><h3 class='title'>"; keyword('Looma Library'); echo ":  ";
+    echo "<br><h3 class='title'>"; keyword('Library'); echo ":  ";
     folderDisplayName(folderName($path));
     echo "</h3>";
 
@@ -89,6 +90,7 @@ Description:  displays and navigates content folders for Looma
    //if at the top level folder "../content", then move CEHRD, Wikipedia, Khan and ePaath to the top so they are presented first
     if ($path == "../content/") {
 
+
         $tmp = $files['epaath'];
         unset($files['epaath']);
         $files = array('epaath' => $tmp) + $files;
@@ -101,9 +103,11 @@ Description:  displays and navigates content folders for Looma
         unset($files['W4S']);
         $files = array('W4S' => $tmp) + $files;
 
-        $tmp = $files['CEHRD'];
-        unset($files['CEHRD']);
-        $files = array('CEHRD' => $tmp) + $files;
+        if (isset($files['CEHRD'])) {
+            $tmp = $files['CEHRD'];
+            unset($files['CEHRD']);
+            $files = array('CEHRD' => $tmp) + $files;
+        }
     }
 
     /********************************************************************************************/
@@ -114,8 +118,7 @@ Description:  displays and navigates content folders for Looma
     $dirlist = array();
 
     foreach ($files as $file => $dirInfo) {
-
-        //echo $file;
+        //echo $path . $file;;
 
     $file = (string) $file;
 
@@ -127,7 +130,7 @@ Description:  displays and navigates content folders for Looma
             $dircount++;
 
         //special case for CEHRD
-        //make a button that launches W4S index.htm -- virtual folder
+        // virtual folder
         if ($path . $file == "../content/CEHRD") {
             echo "<td><a href='looma-library.php?fp=" . $path . $file . "/'>";
             echo "<button class='activity img zeroScroll'>" .
@@ -173,9 +176,11 @@ Description:  displays and navigates content folders for Looma
             }  //end IF Khan
 
 
-        //special case for ePaath Academy
+        //special case for ePaath
         //make a button that launches ePaath index.html -- virtual folder
             else if ($path . $file == "../content/epaath") {   //create a virtual folder for ePaath
+
+        //echo $path . $file;exit;
 
                 echo "<td>";
                 $dn = "ePaath";
@@ -189,6 +194,7 @@ Description:  displays and navigates content folders for Looma
 
             // regular DIRECTORY case
             else {  //make a regular directory button
+
                 $ft = ""; $prefix = "";
                 // look in the database to see if this folder has a DISPLAYNAME
                 $query = array('fn' => $file, 'fp' => $path);
@@ -471,14 +477,14 @@ echo "</tr></table>";
 
                         else {
 
-                        /********************************/
-                        /**********  FILEs  *************/
-                        /********************************/
+        /********************************/
+        /**********  FILEs  *************/
+        /********************************/
 
-                        /*************** iterate through the regular files in this DIR
-                         *************** and make buttons each of the FILES ****************/
-                        /*******get their DNs from mondoDB and sort on DN***********/
-                        /*************before displaying the results ****************/
+        /*************** iterate through the regular files in this DIR
+         *************** and make buttons each of the FILES ****************/
+        /*******get their DNs from mondoDB and sort on DN***********/
+        /*************before displaying the results ****************/
 
                         $list = array();
 
@@ -503,10 +509,16 @@ echo "</tr></table>";
                                     $activity = mongoFindOne($activities_collection, $query);
                                     if ($activity) $mongoID = strval($activity['mongoID']);
                                     $ndn = ($activity && keyIsSet('ndn', $activity)) ? $activity['ndn'] : str_replace($specials, " ", $dn);
-                                } else {   // look in the database to see if this file has a DISPLAYNAME
-                                    $query = array('fn' => $file);
+                                } else {   // look in the database to see if this file has a DISPLAYNAM
+
+                                   $query = [
+                                        '$or' => [
+                                            ['fn' => $file],
+                                            ['nfn' => $file]]];
+
                                     $activity = mongoFindOne($activities_collection, $query);
-                                    $dn =  ($activity && keyIsSet('dn', $activity))  ? $activity['dn']  : str_replace($specials, " ", $base);
+                                   // $dn =  ($activity && keyIsSet('dn', $activity))  ? $activity['dn']  : str_replace($specials, " ", $base);
+                                    $dn =  ($activity && keyIsSet('dn', $activity))  ? $activity['dn']  : "";
                                     $ndn = ($activity && keyIsSet('ndn', $activity)) ? $activity['ndn'] : str_replace($specials, " ", $dn);
                                 }
 

@@ -11,7 +11,6 @@ Revision: Looma 3
 <?php $page_title = 'Looma Game List';
 require_once ('includes/header.php');
 require_once ('includes/looma-utilities.php');
-require_once ("includes/mongo-connect.php");
 ?>
 
 <link rel="stylesheet" href="css/looma-game-list.css">
@@ -29,7 +28,7 @@ require_once ("includes/mongo-connect.php");
             if ($game_subject === 'social studies') $subject_name = 'Social Studies'; else $subject_name = $game_subject;
 
             echo '<div class="title"><h1>';
-                keyword('Looma Games'); echo ' ';
+                keyword('Games'); echo ' ';
                 keyword('for'); echo ' ';
                 keyword( ucfirst($class_name)); echo ' ';
                 keyword(ucfirst($subject_name));
@@ -114,10 +113,17 @@ require_once ("includes/mongo-connect.php");
             if ($game_subject === 'math') {
                 //makeActivityButton();
                 echo '<button class="activity game" data-class="' . $game_class . '" data-subject="' . $game_subject .
-                    '" data-type="arith"' .
-                    '"> ' . $game_class . ' ' . $game_subject . '</p><p class="small">';
-                keyword("arithmetic drill");
-                echo '</p></button>';
+                    '" data-type="arith"> ';
+
+                    echo '<p>';
+                         keyword( ucfirst($class_name)); echo ' ';
+                         keyword(ucfirst($subject_name));
+                    echo '</p>';
+
+                    echo '<p class="small">';
+                        keyword("Arithmetic Drill");
+                    echo '</p>';
+                echo '</button>';
             };
 
         ?>

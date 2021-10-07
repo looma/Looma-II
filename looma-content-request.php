@@ -17,7 +17,6 @@ Date: May 2020
 
 <?php   $page_title = 'Looma Content Request Form';
 require_once ('includes/header.php');
-require_once ('includes/mongo-connect.php');
 
 function info($msg,$id, $type) {  // creates an information popup
     echo "<img id='" . $id . "' class='q' src='images/question.jpeg'/>";

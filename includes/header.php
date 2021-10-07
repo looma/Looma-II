@@ -1,4 +1,30 @@
-<!--
+<?php       //NOTE: cookies must be sent before any other data is sent to the client
+
+    if (file_exists('../content/CEHRD')) $source = 'CEHRD';
+    else $source = 'looma';
+
+    if ($_COOKIE['source'] !== $source) {
+        setcookie('source',$source);
+        setcookie('theme', $source);
+        header("Refresh:0");
+    }
+
+
+    if ($_COOKIE['source'] === "CEHRD") {
+     print "<title>Learning Portal</title>";
+      print '<link rel="icon" type="image/png" href="images/logos/CEHRD-logo small.jpg">';
+    } else {  //source default is  'looma'
+      print "<title>{$page_title}</title>";
+      print '<link rel="icon" type="image/png" href="images/logos/looma favicon yellow on blue.png">';
+    }
+
+    //echo 'source is ' . $_COOKIE['source']; exit;
+
+?>
+<html lang="en" class="no-js">
+  <head>
+
+      <!--
 Author: Skip
 Owner:  VillageTech Solutions (villagetechsolutions.org)
 Date:   2015 03
@@ -6,9 +32,6 @@ Revision: Looma 2.0.0
 
 File: header.php
 -->
-
-<html lang="en" class="no-js">
-  <head>
 	<meta charset="utf-8">
     <meta name="viewport"  content="width=device-width, initial-scale=1">
   	<meta name="author"    content="Skip">
@@ -26,10 +49,7 @@ File: header.php
     The current version of Looma is configured for grade K-12 education in Nepal. Configurations for other
     languages and countries are planned.">
 
-    <link rel="icon"     type="image/png" href="images/logos/looma favicon yellow on blue.png">
-      <!--
-  	<link rel="icon"     type="image/png" href="images/favicon-32x32.png">
-  	-->
+
       <!--
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
                   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -41,7 +61,7 @@ File: header.php
 
        -->
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> <!-- uses latest IE rendering engine-->
-    <!--[if lt IE 9]> <script src="js/html5shiv.min.js"></script>  <![endif]-->
+      <!--[if lt IE 9]> <script src="js/html5shiv.min.js"></script>  <![endif]-->
 
 	<?php
   	    // Turn on error reporting
@@ -50,23 +70,26 @@ File: header.php
 
 		require_once ('includes/looma-translate.php');
 
+    require_once ('includes/mongo-connect.php');
+    require_once ('includes/looma-log-user-activity.php');
+
 		define ("CONTENT_PATH", "../content");
 	?>
 
-  	<title> <?php print $page_title; ?> </title>
-      <div class="watermark">Under Construction</div>
-
+      <!-- <div class="watermark">Under Construction</div>  -->
 
       <!-- <link rel="stylesheet" href="css/tether.min.css">  -->       <!-- needed by bootstrap.css -->
-
       <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->     <!-- Bootstrap CSS still needed ?? yes, for glyphicons-->
 
       <link rel="stylesheet" href="css/looma.css">             <!-- Looma CSS -->
       <link rel="stylesheet" href="css/looma-keyboard.css">    <!-- Looma keyboard CSS -->
 
     <?php  /*retrieve 'theme' cookie from $_COOKIE and use it to load the correct 'css/looma-theme-xxxxxx.css' stylesheet*/
-        if(isset($_COOKIE["theme"])) $theme = $_COOKIE["theme"]; else $theme = "looma";
-        echo "<link rel='stylesheet' href='css/looma-theme-" . $theme . ".css' id='theme-stylesheet'>";
+        if(isset($_COOKIE["source"])) $settheme = $_COOKIE['source']; else $settheme = "looma";
+
+//        echo 'loading CSS css/looma-theme-' . $settheme . '.css';exit;
+
+        echo "<link rel='stylesheet' href='css/looma-theme-" . $settheme . ".css' id='theme-stylesheet'>";
 
         function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
 

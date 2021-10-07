@@ -8,7 +8,6 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
   <?php $page_title = 'Looma Team Game';
 
     include ("includes/header.php");
-    include ("includes/mongo-connect.php");
   ?>
 
     <link href='css/looma.css'         rel='stylesheet' type='text/css'>

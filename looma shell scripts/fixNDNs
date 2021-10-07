@@ -1,0 +1,35 @@
+// mongo terminal program to read a file containing tab separated CH ids and their NDN nepali display names
+//      and enter or correct them in db
+// each line formatted as:   ch_id <tab> ndn
+//
+// create the input file 'correctedNDNs.tsv' in 'looma shell scripts' folder
+// and CD to the 'looma shell scripts' folder
+//
+//  in terminal: "mongo looma"
+//  then run this file in the MONGO SHELL with: load('fixNDNs')
+//
+"use strict";
+
+var input = 'correctedNDNs.tsv'
+print ('Importing NDNs from ' + input);
+var file = cat(input);
+var words, ch_id, ndn;
+var count=0;
+
+var lines = file.split(/[\r\n]+/);  // split file into array of lines
+
+lines.forEach( function(line) {
+
+    if (line != '') {
+        words = line.split('\t');
+        ch_id = words[0];
+        ndn =   words[1];
+
+        print('For ch_id: ' + ch_id + '    changing NDN to:     ' + ndn);  //DEBUG
+        count++;
+        db.chapters.update({'_id':ch_id},{$set:{'ndn':ndn}});
+    }
+});  // end for lines
+
+print('');
+print('processed ' + count + ' NDN updates');

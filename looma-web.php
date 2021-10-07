@@ -8,7 +8,9 @@ Description:
 -->
 
 	<?php  $page_title = 'Looma Web Page';
-	include ('includes/header.php'); ?>
+	include ('includes/header.php');
+    logPageHit('web');
+    ?>
 	<link rel="stylesheet" href="css/looma-web.css">
 	</head>
 

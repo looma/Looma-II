@@ -43,7 +43,7 @@ Description:  navigate content folders and import media files into activities co
     <?php   $page_title = 'Looma Import Content';?>
     <title> <?php print $page_title; ?> </title>
 
- <?php  require ('includes/mongo-connect.php');
+ <?php  require_once ('includes/mongo-connect.php');
         require('includes/looma-utilities.php');
 
 /////////////////////////

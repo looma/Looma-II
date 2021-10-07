@@ -87,7 +87,7 @@ function redirect_user($page)  {
 }//end redirect_user
 
 // START of executed PHP code
-include('includes/mongo-connect.php');
+//include('includes/mongo-connect.php');
 
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         error_log("received a post pw change attempt");

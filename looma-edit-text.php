@@ -24,6 +24,10 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
 <?php $page_title = 'Looma - Text Editor';
 	  include ('includes/header.php');
 ?>
+
+    <!-- Text Editor is the only Looma page that still uses bootstrap -->
+    <link rel="stylesheet" href="css/tether.min.css">         <!-- needed by bootstrap.css -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap-looma-wysiwyg.css">
 

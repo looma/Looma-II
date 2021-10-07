@@ -1,0 +1,121 @@
+#!/bin/bash
+#
+#  filename: loomaAWStoMAC
+#       VERSION 1.2
+#       author: skip
+#       date:   JUL 2021
+#
+#  used to backup looma code, database and content from Looma Online on AWS to Skip's iMac
+#
+#  the target iMac folders are also automatically sync'd with
+#    Dropbox > 03 Content Reference > 01 Content > D Finished Content > Content on Looma
+#
+#  can be called with a parameter "dryrun" in which case the transfers are not performed,
+#    configured to be run on a MAC
+
+#RSYNC options used:
+#-a  "archive" equivalent to -rlptgoD
+#   -r  recursive
+#   -l  recreate symlink on the destination
+#   -p  preserve permissions
+#   -t  preserve modification time
+#   -g  preserve group
+#   -o  preserve owner
+#   -D  transfer devices and specials (NA for Looma)
+
+#-v	    verbose
+#-vv	very verbose
+#-z  	use compression
+#--dry-run
+#--delete 	delete files on destination that are not on source
+#--size-only  [for Content files, only update if the size has changed, even tho dates may differ]
+#--perms (=== -p)
+#--update   skip files if destination  already exists and has a later date
+#--include '.ssh'
+#--exclude '.[!.]*'
+#--progress show transfer progress
+#--stats    print stats at the end
+#
+log() {
+	echo "--------$1" >> $logfile
+}
+
+result () {
+    if [[ $1 -ne 0 ]]
+    then
+        log ""
+        log "ERROR: previous operation returned $1"
+    else
+        log ""
+        log "operation successful"
+    fi
+}
+
+logfile="/Users/skip/Desktop/Looma Backup Logs (AWStoMAC)/loomabackuplogfile_$(date +%F-%T)"
+touch $logfile              #create log file if not there
+cp  /dev/null   $logfile    #empty log file
+
+
+log "   "
+log "  - - - - - - running loomaAWStoMAC script - - - - - -"
+log "  - - - - - - this log file is $logfile - - - - - -"
+log "script loomaAWStoMAC: Looma backup from AWS to Mac, last run date: `date`"
+
+HOSTNAME=`hostname`
+log "host is $HOSTNAME"
+
+TARGET="/Users/skip/Dropbox/03 Content reference/01 Content/D Finished Content/Content on Looma"
+
+cd  "$TARGET"
+
+if [[ `pwd` !=  $TARGET ]]
+   then
+       log
+       log " - - - ERROR - - -"
+       log "  Didnt find target folder on the MAC"
+       log "  Be sure this folder exists: $TARGET"
+       exit 1
+    fi
+
+
+mkdir -p Looma     #in case its not already there
+mkdir -p content   #in case its not already there
+
+AWS="ubuntu@ec2-34-210-116-58.us-west-2.compute.amazonaws.com"
+
+log
+log "- backing up Looma code"
+
+SECONDS=0
+    if [[ $1 = "dryrun" ]]
+    then
+        rsync -az --dry-run --delete --perms --stats --update --progress  --exclude '.[!.]*' -e "ssh -i /Users/skip/Desktop/looma.pem"  $AWS:htdocs/Looma/  ./Looma
+        result $?
+    else
+        rsync -aqz           --delete --perms --stats --update --progress  --exclude '.[!.]*' -e "ssh -i /Users/skip/Desktop/looma.pem"   $AWS:htdocs/Looma/  ./Looma >> $logfile
+        result $?
+    fi
+log "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+
+log
+log "- backing up Looma content"
+
+    SECONDS=0
+    if [[ $1 = "dryrun" ]]
+    then
+        rsync -az --dry-run --size-only --delete --perms --stats --update --progress  --exclude '.[!.]*' -e "ssh -i /Users/skip/Desktop/looma.pem"   $AWS:htdocs/content/  ./content
+        result $?
+    else
+        rsync -aqz    --size-only --delete --perms --stats --update --progress  --exclude '.[!.]*' -e "ssh -i /Users/skip/Desktop/looma.pem"   $AWS:htdocs/content/  ./content >> $logfile
+        result $?
+		fi
+log "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+
+log
+    if [[ $1 = "dryrun" ]]
+    then
+      log "DRYRUN LOOMA BACKUP: no files moved"
+    else
+      log "DONE LOOMA BACKUP: sync'ed Looma code, database and content on AWS to this MAC"
+   fi
+log

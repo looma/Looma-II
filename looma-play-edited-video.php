@@ -52,16 +52,16 @@ Usage: 	<button  id="testvideo"
 
 
         //fetch the JSON descriptor of this edited video from mongo
-        $query =      array('_id' => new MongoID($id));
+        $query =      array('_id' => mongoId($id));
         $projection = array('_id' => 0, 'data' => 1);
         //$doc = $edited_videos_collection->findOne($query, $projection);
         $doc = mongoFindOne($edited_videos_collection, $query);
 
-        $data = $doc['data'];
-        $masterVideo = array_splice($data, 0, 1);
+        $data = (array) $doc['data'];
+        $masterVideo = array_splice( $data, 0, 1);
         $masterVideo = $masterVideo[0];
 
-        $vidQuery = array('_id' => new MongoID($masterVideo['id']));
+        $vidQuery = array('_id' =>  mongoId($masterVideo['id']));
         $vid = mongoFindOne($activities_collection, $vidQuery);
 
         $vidFN = $vid['fn'];

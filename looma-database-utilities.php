@@ -131,12 +131,15 @@ require_once('includes/looma-utilities.php');
         };  // end lessonexists()
 
       function format($utc,$timeframe) {
+
+          $utc = max($utc,1633046400);  //looma epoch time is strtotime('October 1,2021')
+
           switch ($timeframe) {
-              case "hours":  $formatted = date("Y:m:W:d:h", $utc);
+              case "hours":  $formatted = date("Y:m:W:d:H", $utc);
               case "days":   $formatted = date("Y:m:W:d",   $utc);
               case "weeks":  $formatted = date("Y:m:W",     $utc);
               case "months": $formatted = date("Y:m",       $utc);
-              default:       $formatted = date("Y:m:W:d:h", $utc);
+              default:       $formatted = date("Y:m:W:d:H", $utc);
           };
 
      // echo ' - - - for '.$timeframe.' this UTC: '.$utc.' formats to: '.$formated;
@@ -146,8 +149,9 @@ require_once('includes/looma-utilities.php');
 
         function increment($utc,$timeframe) {
             // WARNING: UTC values in PHP are in SECONDS, in JS they are in MILLIseconds
+            $utc = max($utc,1633046400);  //looma epoch time is strtotime('October 1,2021')
 
-//    echo ' - - - - - incrementing '. $utc.' to '.$utc+60*60;
+            //    echo ' - - - - - incrementing '. $utc.' to '.$utc+60*60;
             switch ($timeframe) {
                 case "hours":  return $utc +           60 * 60;
                 case "days":   return $utc +      24 * 60 * 60;
@@ -158,55 +162,35 @@ require_once('includes/looma-utilities.php');
         } // end increment()
 
         function fillLogData ($data, $timeframe) {
+            $temp = []; $temp[] = $data[0];
+            $earlierUTC = isset($data[0]['utc']) ? $data[0]['utc'] : 1633046400; // 1633046400 is Oct 1, 2021
 
-          //echo 'data count is '. count($data);
+            for ($i=1; $i< count($data); $i++)
+            if (isset($data[$i]['utc'])) {
 
-            $temp = []; $temp[] = $data[0]; $latestUTC = $data[0]['utc'];
-            $filler = []; $filler['visits'] = 0; $filler['uniques']=0;
-
-/*  for ($i=1; $i< count($data); $i++) {
-    echo 'UTC from DB is '.$data[$i]['utc'].' diff is '.$data[$i]['utc']-$data[$i-1]['utc'].'<br>';
-      }
-*/
-   for ($i=1; $i< count($data); $i++) {
-
-                $UTC = $data[$i]['utc'];
+                $UTC = max($data[$i]['utc'], 1633046400); //looma epoch time is strtotime('October 1,2021')
                 $formatted = format($UTC,$timeframe);
 
-                $nextUTC = increment($latestUTC,$timeframe);  // in UTC
+                $nextUTC = increment($earlierUTC,$timeframe);  // in UTC
                 $nextFormatted = format($nextUTC, $timeframe);
 
-//        echo $timeframe.' - UTC = '.$data[$i]['utc'] .' formatted = '.$formatted.  '  **  next UTC = '.$nextUTC.' next formatted = '.$nextFormatted. '<br>';
-
-                while ($nextFormatted < $formatted) {
+              //  while ($nextFormatted < $formatted) {
+                while ($nextUTC < $UTC && $nextFormatted !== $formatted) {
                     $filler = [];
                     $filler['visits'] = 0;
                     $filler['uniques']=0;
-
                     $filler['utc'] = $nextUTC;
                     $filler['time'] = $nextFormatted;
-
                     $temp[] =$filler;
-/*
-        if ($temp[count($temp)-1]['utc'] - $temp[count($temp)-2]['utc'] != 3600)
-            echo 'pushing '. $temp[count($temp)-1]['utc'].
-                ' prev was '. $temp[count(Stemp)-2]['utc'] .
-                '  diff is '.$temp[count($temp)-1]['utc'] - $temp[count($temp)-2]['utc']. '<br>';
-*/
 
                     $nextUTC =    increment($nextUTC, $timeframe);
                     $nextFormatted = format($nextUTC, $timeframe);
                 };
-                $latestUTC = $data[$i]['utc'];
+                $earlierUTC = $UTC;
                 $temp[] = $data[$i];
-
- /*              if ($temp[count($temp)-1]['utc'] - $temp[count($temp)-2]['utc'] != 3600)
-                   echo 'pushing '. $temp[count($temp)-1]['utc'].
-                       ' prev was '. $temp[count($temp)-2]['utc'] .
-                    '  diff is '.$temp[count($temp)-1]['utc'] - $temp[count($temp)-2]['utc']. '<br>';
-*/
-
             };
+
+            //print_r($data); echo '<br>'; print_r($temp);echo '<br>'; exit;
             return $temp;
         }  // end fillLogData()
 
@@ -354,7 +338,7 @@ if (isset($_REQUEST["collection"])) {
        // function mongoFind($collection, $filter, $sort, $skip, $limit)
         $texts = mongoFind($dbCollection, $query, null, (integer) $_REQUEST['skip'], 1);
 
-        if ($texts) forEach($texts as $text) echo json_encode($text);        // if found, return the contents of the mongo document
+        if ($texts) foreach($texts as $text) echo json_encode($text);        // if found, return the contents of the mongo document
         else echo json_encode(array("error" => "File not found in collection  " . $dbCollection));  // in not found, return an error object {'error': errormessage}
         return;
     // end case "OpenText"
@@ -1530,24 +1514,40 @@ if (isset($_REQUEST["collection"])) {
           ///////////////////////////////////////////
           case "getLogData":
               global $collections;
-              //$old = ini_set('memory_limit', '512M'); doesnt overcome memory leak somewhere in this code
-              $chunk = (integer) $_REQUEST['chunk'];
-              $prev = (integer)  $_REQUEST['prev'];
-              $timeframe =       $_REQUEST['timeframe'];
-              $collection = $collections[$timeframe];
+              if ($_REQUEST['type'] === 'pages' || $_REQUEST['type'] === 'filetypes') {
+                  // get data for Bar Chart of usage of 'type' in {pages, filetypes}
+                  $collection = $collections[$_REQUEST['type']];
+                  $logdata = mongoFind($collection, array(), 'hits', null, null);
 
-              $logdata = mongoFind($collection, array(), 'utc', null, null);
+                  $data = [];
+                  foreach ($logdata as $datum) $data[] = $datum;
+                  echo json_encode($data);
+                  return;
+              } else {    // get data for Line Chart of activity in 'type' in {hours, days, weeks, months}
+                  $chunk = (integer) $_REQUEST['chunk']; // how many results to return
+                  $prev =  (integer) $_REQUEST['prev'];  // how many batches of 'chunk' results to go back in time
+                  $timeframe =       $_REQUEST['type'];
+                  $timeframes = ['hours', 'days', 'weeks', 'months'];
+                  if ( ! in_array($timeframe,$timeframes)) $timeframe = 'hours';  //default to hours
+                  $collection = $collections[$timeframe];
 
-              $datatemp = [];
-              foreach ($logdata as $datum) $datatemp[] = $datum;
+                  $logdata = mongoFind($collection, array(), 'utc', null, null);
 
-              if (count($datatemp) > 0) $data = fillLogData($datatemp, $timeframe);
+                  $datatemp = [];
+                  foreach ($logdata as $datum) $datatemp[] = $datum;
+                        //this code gets all the entries (all the way back in time)
+                        //   then fills in missing time periods with visits=0,uniques=0 ("fillLogData()")
+                        //   then truncates to the chunk/prev requestes
+                        //   there may be a more efficient way to do this
+                  if (count($datatemp) > 0) $data = fillLogData($datatemp, $timeframe);
+                  else $data = [];
 
-              if (count($data) > $chunk*($prev+1)) $data = array_slice($data,-1*($chunk*($prev + 1)), $chunk);
-              else if (count($data) > $chunk) $data = array_slice($data, -1*$chunk);
+                  if (count($data) > $chunk*($prev+1)) $data = array_slice($data,-1*($chunk*($prev + 1)), $chunk);
+                  else if (count($data) > $chunk) $data = array_slice($data, -1*$chunk);
 
-              echo json_encode($data);
-              return;
+                  echo json_encode($data);
+                  return;
+            };
 
       ///////////////////////////////////////////
       // nothing  (null command for debugging) //

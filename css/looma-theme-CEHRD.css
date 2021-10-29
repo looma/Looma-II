@@ -20,14 +20,12 @@ body {
     background-color: var(--looma-background);
 }
 #logo, #native-logo  {
-    grid-column: 1 / -1 !important;
+   /* grid-column: 1 / -1 !important;*/
     grid-row:1 ;
     height: 33vh;
 }
 #logo img {height:30vh;}
-#logos {
-    grid-column: left / right !important;
-}
+
 #toolbar-container, #toolbar-container-vertical {
     background-color:  var(--looma-toolbar);
 }
@@ -72,8 +70,11 @@ button {
 #toolbar-web,
 #toolbar-settings,
 #sizemessages,
-#credits,
-#credits-title,
+
+title,
+
+/*#credits,
+#credits-title,*/
 #copyright,
 #about {
     display:none;

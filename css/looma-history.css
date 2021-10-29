@@ -6,8 +6,7 @@ Date: July 2017
 Description:
 */
 
- #fullscreen {    background-color: var(--looma-blue);
- }
+ 
  
  button#fullscreen-control {
      display:inline-block;
@@ -125,7 +124,7 @@ h1 {
     position:absolute;
     top:20vh;
     left:2vw;
-
+background-color:palegoldenrod;
     border: 0.1vh solid #ccc;
     overflow-x: auto;
     overflow-y: hidden;
@@ -222,7 +221,7 @@ button.dropdate:hover {
 
 
 /*Makes the button images visible*/
-button img {height:100%;width:100%;  white-space: nowrap;
+#fullscreen button img {height:100%;width:100%;  white-space: nowrap;
 }
 
 /*The display of the left-scrolling button*/

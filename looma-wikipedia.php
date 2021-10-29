@@ -22,7 +22,7 @@ require_once ('includes/header.php');
     <table id="dir-table">
      <tr>
          <td>
-          <a href="looma-html.php?fp=../content/W4S2013/wp/index/&fn=alpha.htm">
+          <a href="html?fp=../content/W4S2013/wp/index/&fn=alpha.htm">
                 <button id="wikipedia-titles" class="activity img play">
                     <img src="images/logos/wikipedia.jpg"/>
                     <?php keyword("Search by Title");?>
@@ -30,7 +30,7 @@ require_once ('includes/header.php');
             </a>
          </td>
          <td>
-            <a href="looma-html.php?fp=../content/W4S2013/wp/index/&fn=subject.htm">
+            <a href="html?fp=../content/W4S2013/wp/index/&fn=subject.htm">
                 <button id="wikipedia-subjects" class="activity img play">
                     <img src="images/logos/wikipedia.jpg"/>
                     <?php keyword("Search by Subject");?>
@@ -38,7 +38,7 @@ require_once ('includes/header.php');
             </a>
          </td>
          <td>
-            <a href="looma-html.php?fp=../content/W4S2013/wp/index/&fn=subject.Portals.htm">
+            <a href="html?fp=../content/W4S2013/wp/index/&fn=subject.Portals.htm">
                 <button id="wikipedia-subjects" class="activity img play">
                     <img src="images/logos/wikipedia.jpg"/>
                     <?php keyword("Portals");?>
@@ -46,9 +46,9 @@ require_once ('includes/header.php');
             </a>
         </td>
      </tr><tr>
-        <td><button class=" img " hidden></button></td>
+        <td><button class="img hidden"></button></td>
         <td>
-           <a href="looma-html.php?fp=../content/W4S2013/&fn=index.htm">
+           <a href="html?fp=../content/W4S2013/&fn=index.htm">
                 <button class="activity play img" data-fp="../content/W4S2013/" data-fn="index.htm" data-ft="html"
                 data-dn="Wikipedia" data-ndn="विकिपीडिया">
                     <img loading="lazy" draggable="false" src="images/logos/wikipedia.jpg">

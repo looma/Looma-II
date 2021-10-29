@@ -1,14 +1,25 @@
 <?php       //NOTE: cookies must be sent before any other data is sent to the client
 
-    if (file_exists('../content/CEHRD')) $source = 'CEHRD';
+//chdir('/usr/local/var/www/Looma');
+//echo getcwd() . "\n"; exit;
+
+//if (file_exists('../content/CEHRD')) echo '../content/CEHRD exists'; exit;
+
+//if (file_exists('../content/CEHRD')) $source = 'CEHRD';
+    if ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np'
+        || $_SERVER['SERVER_NAME'] === 'localhost'
+    )
+         $source = 'CEHRD';
     else $source = 'looma';
 
-    if ($_COOKIE['source'] !== $source) {
-        setcookie('source',$source);
-        setcookie('theme', $source);
-        header("Refresh:0");
-    }
+    //echo 'source is '.$source;exit;
 
+    if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $source) {
+        setcookie('source',$source,0,"/");
+        setcookie('theme', $source,0,"/");
+        header("Refresh:0");
+       // exit;
+    }
 
     if ($_COOKIE['source'] === "CEHRD") {
      print "<title>Learning Portal</title>";
@@ -68,9 +79,15 @@ File: header.php
 		error_reporting(E_ALL);
 		ini_set('display_errors', 1);
 
-		require_once ('includes/looma-translate.php');
+    //if (file_exists('includes/looma-translate.php')) echo 'includes/looma-translate.php  exists'; exit;
 
+    require_once ('includes/looma-translate.php');
     require_once ('includes/mongo-connect.php');
+
+ //echo '__dirname__ is ' . dirname(__DIR__) . ' and cwd is '. getcwd() ;exit;
+   ///////////////////////////////////////////////
+//require_once(dirname(__DIR__ ). '/includes/mongo-connect.php');
+
     require_once ('includes/looma-log-user-activity.php');
 
 		define ("CONTENT_PATH", "../content");
@@ -85,7 +102,7 @@ File: header.php
       <link rel="stylesheet" href="css/looma-keyboard.css">    <!-- Looma keyboard CSS -->
 
     <?php  /*retrieve 'theme' cookie from $_COOKIE and use it to load the correct 'css/looma-theme-xxxxxx.css' stylesheet*/
-        if(isset($_COOKIE["source"])) $settheme = $_COOKIE['source']; else $settheme = "looma";
+        if(isset($_COOKIE["source"])) $settheme = $_COOKIE['source']; else $settheme = "CEHRD";
 
 //        echo 'loading CSS css/looma-theme-' . $settheme . '.css';exit;
 

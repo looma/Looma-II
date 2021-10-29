@@ -18,7 +18,7 @@ function gameButtonClicked() {
          window.location = "looma-vocab-flashcard.php?class=" + gameClass + "&subject=" + gameSubject + "&random=true";
     else if (gameType === 'arith')
          window.location = "looma-arith.php?class=" + gameClass;
-    else window.location = "looma-game.php?id="      + gameId +
+    else window.location = "game?id="      + gameId +
                                          "&class="   + gameClass +
                                          "&subject=" + gameSubject +
                                          "&type="    + gameType;

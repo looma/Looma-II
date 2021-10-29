@@ -98,7 +98,7 @@ function redirect_user($page)  {
 
 
 // START of executed PHP code
-include('includes/mongo-connect.php');
+require_once ('includes/mongo-connect.php');
 
    if(!$loggedin) {
     error_log("not logged in");

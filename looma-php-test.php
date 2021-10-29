@@ -60,7 +60,7 @@ function getLatLong ($userIP) {
     } else return array('IP'=>$userIP,'country'=>null,'lat'=>null,'long'=>null);
 }  // end getLatLong()
 
-
+echo 'looma-php-test.php: ' . $_SERVER['SERVER_NAME'] ;
 $ip = userIp();
 echo 'UTC is ' . time() . '<br>';
 echo 'IP is ' . $ip  . '<br>';

@@ -54,6 +54,12 @@ Description: looma lesson plan presenter
 
         <?php
 
+        function makeNotFoundButton() {
+            global $playLang;
+            makeActivityButton('filenotfound', null, null, null, null, null, null, null, null, null,
+                              null, null, null, null, null, null, null, null, null, $playLang);
+        };  // end makeNotFoundButton()
+
         //look up the lesson plan in mongo lessons collection
         //send DN, AUTHOR and DATE in a hidden DIV
         //for each ACTIVITY in the DATA field of the lesson, create an 'activity button' in the timeline
@@ -108,7 +114,7 @@ Description: looma lesson plan presenter
             case "VOC":       //vocabulary reviews
             case "lesson":    //lesson plan
             case "map":       //map
-            case "game":    //game
+            case "game":      //game
             case "text":      //text
             case "book":      //book
             case "looma":     //looma
@@ -117,134 +123,140 @@ Description: looma lesson plan presenter
                 break;
         };
         return $fp;
-        } ;
+        };  //  end thumbPrefix()
 
+    /////////////// MAIN BODY /////////////
          if ($lesson_id) {   //get the mongo document for this lesson
             $query = array('_id' => mongoId($lesson_id));
-            //returns only these fields of the activity record
-            $projection = array('_id' => 0,
-                                'dn' => 1,
-                                'author' => 1,
-                                'date' => 1,
-                               // 'thumb' => 1,  //no THUMB stored with lessons in mongo
-                                'data' => 1
-                                );
-
             $lesson = mongoFindOne($lessons_collection, $query);
 
-            $lessonname = $lesson['dn'];
+            if (!$lesson) {
+                echo "<h1>No lesson plan not found</h1>";
+                $displayname = "<none>";
+            } else {
 
-            if (isset($lesson['data'])) $data = $lesson['data'];
-            else { echo "Lesson has no content"; $data = null;}
+                $lessonname = $lesson['dn'];
 
-            //should send DN, AUTHOR and DATE in a hidden DIV
+                if (isset($lesson['data'])) $data = $lesson['data'];
+                else { echo "<h1>Lesson has no content</h1>"; $data = null;}
 
-            if ($data) foreach ($data as $lesson_element) {
+                //should send DN, AUTHOR and DATE in a hidden DIV
 
-               if ($lesson_element['collection'] == 'activities') {  //timeline element is from ACTIVITIES
+                if ($data) foreach ($data as $lesson_element) {
 
-                    $query = array('_id' => mongoId($lesson_element['id']));
+                    if ($lesson_element['collection'] == 'activities') {  //timeline element is from ACTIVITIES
 
-                    $details = mongoFindOne($activities_collection, $query);
+                        $query = array('_id' => mongoId($lesson_element['id']));
 
-                   //echo ('  ft: ' . $details['ft']);
+                        $details = mongoFindOne($activities_collection, $query);
 
-                   if (isset($details['thumb']) && $details['thumb'] != "")
-                      $thumbSrc = $details['thumb'];
-                   else if (isset($details['ft']) && $details['ft'] == 'EP'  && isset($details['version']) && $details['version'] == 2015)
-                       $thumbSrc = '../content/epaath/activities/' . $details["fn"] . '/thumbnail.jpg';
-                   else if (isset($details['ft']) && $details['ft'] == 'evi')
-                       $thumbSrc = 'images/video.png';
-                   else if (isset($details['ft']) && $details['ft'] == 'text')
-                       $thumbSrc = 'images/textfile.png';
-                   else if (isset($details['ft']) && $details['ft'] == 'game')
-                       $thumbSrc = 'images/games.png';
-                   else if (isset($details['fn']) && isset($details['fp']))
-                     $thumbSrc = $details['fp'] . thumbnail($details['fn']);
-                   else if ( isset($details['fn']))
-                       $thumbSrc = thumbPrefix($details['ft']) . thumbnail($details['fn']);
-                   else $thumbSrc = 'images/LoomaLogo_small.png';
+                        if (!$details) {
+                            makeNotFoundButton();
+                        } else {
+                            if (isset($details['thumb']) && $details['thumb'] != "")
+                                $thumbSrc = $details['thumb'];
+                            else if (isset($details['ft']) && $details['ft'] == 'EP' && isset($details['version']) && $details['version'] == 2015)
+                                $thumbSrc = '../content/epaath/activities/' . $details["fn"] . '/thumbnail.jpg';
+                            else if (isset($details['ft']) && $details['ft'] == 'evi')
+                                $thumbSrc = 'images/video.png';
+                            else if (isset($details['ft']) && $details['ft'] == 'text')
+                                $thumbSrc = 'images/textfile.png';
+                            else if (isset($details['ft']) && $details['ft'] == 'game')
+                                $thumbSrc = 'images/games.png';
+                            else if (isset($details['fn']) && isset($details['fp']))
+                                $thumbSrc = $details['fp'] . thumbnail($details['fn']);
+                            else if (isset($details['fn']))
+                                $thumbSrc = thumbPrefix($details['ft']) . thumbnail($details['fn']);
+                            else $thumbSrc = 'images/LoomaLogo_small.png';
 
-                   if (isset($details['ft']) && $details['ft'] == 'EP'  && $details['subject'] === 'nepali') $playLang = 'np'; else $playLang = 'en';
-                   //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npg,$prefix,$lang)
+                            if (isset($details['ft']) && $details['ft'] == 'EP' && $details['subject'] === 'nepali') $playLang = 'np'; else $playLang = 'en';
+                            //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npg,$prefix,$lang)
 
-                   //echo "$playLang is " . $playLang;
+                            //echo "$playLang is " . $playLang;
 
-                        makeActivityButton(
-                             $details['ft'],
-                            (isset($details['fp'])) ? $details['fp'] : null,
-                            (isset($details['fn'])) ? $details['fn'] : null,
-                            (isset($details['dn'])) ? $details['dn'] : null,
-                             null,
-                            $thumbSrc,
+                            makeActivityButton(
+                                $details['ft'],
+                                (isset($details['fp'])) ? $details['fp'] : null,
+                                (isset($details['fn'])) ? $details['fn'] : null,
+                                (isset($details['dn'])) ? $details['dn'] : null,
+                                null,
+                                $thumbSrc,
 
-                            "", //(isset($details['ch_id'])) ? $details['ch_id'] : null,
-                            (isset($details['mongoID'])) ? $details['mongoID'] : null,
-                            (isset($details['oleID'])) ? $details['oleID'] : null,
-                            (isset($details['url'])) ? $details['url'] : null,
-                            (isset($details['pn'])) ? $details['pn'] : null,
-                            null,
-                            (isset($details['grade'])) ? $details['grade'] : null,
-                            (isset($details['version'])) ? $details['version'] : null,
-                            (isset($details['nfn'])) ? $details['nfn'] : null,
-                            (isset($details['npn'])) ? $details['npn'] : null,
-                            null,
-                            $playLang
-                        );
-                } else
+                                "", //(isset($details['ch_id'])) ? $details['ch_id'] : null,
+                                (isset($details['mongoID'])) ? $details['mongoID'] : null,
+                                (isset($details['oleID'])) ? $details['oleID'] : null,
+                                (isset($details['url'])) ? $details['url'] : null,
+                                (isset($details['pn'])) ? $details['pn'] : null,
+                                null,
+                                (isset($details['grade'])) ? $details['grade'] : null,
+                                (isset($details['version'])) ? $details['version'] : null,
+                                (isset($details['nfn'])) ? $details['nfn'] : null,
+                                (isset($details['npn'])) ? $details['npn'] : null,
+                                null,
+                                $playLang
+                            );
+                        }  // end if (activity exists)
+                    } else
 
-                if ($lesson_element['collection'] == 'chapters') {  //timeline element is from CHAPTERS
+                    if ($lesson_element['collection'] == 'chapters') {  //timeline element is from CHAPTERS
 
-                    $lang = (isset($lesson_element['lang']) ? $lesson_element['lang'] : null);
+                        $lang = (isset($lesson_element['lang']) ? $lesson_element['lang'] : null);
 
-                    $query = array('_id' => $lesson_element['id']);
-                    $chapter = mongoFindOne($chapters_collection, $query);
+                        $query = array('_id' => $lesson_element['id']);
+                        $chapter = mongoFindOne($chapters_collection, $query);
 
-                    $query = array('prefix' => prefix($chapter['_id']));
-                    $textbook = mongoFindOne($textbooks_collection, $query);
+                          if (!$chapter) {
+                            makeNotFoundButton();
+                        } else {
+                              //      $query = array('prefix' => prefix($chapter['_id']));
+                              $query = array('prefix' => prefix($chapter['_id']));
+                              $textbook = mongoFindOne($textbooks_collection, $query);
 
-                    $filename = (isset($textbook['fn']) && $textbook['fn'] != "") ? $textbook['fn'] : ((isset($textbook['nfn'])) ? $textbook['nfn'] : null);
-                    $nfn = (isset($textbook['nfn']) ? $textbook['nfn'] : null);
+                              $filename = (isset($textbook['fn']) && $textbook['fn'] != "") ? $textbook['fn'] : ((isset($textbook['nfn'])) ? $textbook['nfn'] : null);
+                              $nfn = (isset($textbook['nfn']) ? $textbook['nfn'] : null);
 
-                    $filepath = (isset($textbook['fp']) && $textbook['fp'] != "") ? $textbook['fp'] : null;
+                              $filepath = (isset($textbook['fp']) && $textbook['fp'] != "") ? $textbook['fp'] : null;
 
-                    $displayname = (isset($chapter['dn']) && $chapter['dn'] != "") ? $chapter['dn'] : ((isset($chapter['ndn'])) ? $chapter['ndn'] : null);
-                    $pagenumber  = (isset($chapter['pn']) && $chapter['pn'] != "") ? $chapter['pn'] : ((isset($chapter['npn'])) ? $chapter['npn'] : null);
-                    $npn  = (isset($chapter['npn']) ? $chapter['npn'] : null);
+                              $displayname = (isset($chapter['dn']) && $chapter['dn'] != "") ? $chapter['dn'] : ((isset($chapter['ndn'])) ? $chapter['ndn'] : null);
+                              $pagenumber = (isset($chapter['pn']) && $chapter['pn'] != "") ? $chapter['pn'] : ((isset($chapter['npn'])) ? $chapter['npn'] : null);
+                              $npn = (isset($chapter['npn']) ? $chapter['npn'] : null);
 
-                    $len  = (isset($chapter['len']) && $chapter['len'] != "") ? $chapter['len'] : ((isset($chapter['nlen'])) ? $chapter['nlen'] : null);
-                    $nlen  = (isset($chapter['nlen']) ? $chapter['nlen'] : null);
+                              $len = (isset($chapter['len']) && $chapter['len'] != "") ? $chapter['len'] : ((isset($chapter['nlen'])) ? $chapter['nlen'] : null);
+                              $nlen = (isset($chapter['nlen']) ? $chapter['nlen'] : null);
 
-                    if ($filename && $filepath)
-                        $thumbSrc = "../content/" . $filepath . thumbnail($filename);
-                    else $thumbSrc = null;
-                    //echo "filename is " . $filename;
-                    makeChapterButton('pdf',
-                        '../content/' . $filepath,
-                        $filename,
-                        $displayname,
-                        null,
-                       $thumbSrc,
-                       $chapter['_id'],
-                       null,
-                       null,
-                       null,
-                       $pagenumber,
-                       $len,
-                       2.3,
-                        null,
-                        null,
-                        $nfn,
-                        $npn,
-                        $nlen,
-                        null,
-                        $lang
-                    );
-                }
-            }
-         }
-            else {echo "<h1>No lesson plan selected</h1>";
-                  $displayname = "<none>";}
+                              if ($filename && $filepath)
+                                  $thumbSrc = "../content/" . $filepath . thumbnail($filename);
+                              else $thumbSrc = null;
+                              //echo "filename is " . $filename;
+                              makeChapterButton('pdf',
+                                  '../content/' . $filepath,
+                                  $filename,
+                                  $displayname,
+                                  null,
+                                  $thumbSrc,
+                                  $chapter['_id'],
+                                  null,
+                                  null,
+                                  null,
+                                  $pagenumber,
+                                  $len,
+                                  2.3,
+                                  null,
+                                  null,
+                                  $nfn,
+                                  $npn,
+                                  $nlen,
+                                  null,
+                                  $lang
+                              );
+                          }
+                    }
+                }  //  end foreach (lesson element)
+            } // end if ($lesson found in mongo)
+         }  // end if ($lessonid)
+         else { echo "<h1>No lesson plan selected</h1>";
+                $displayname = "<none>";
+              }
         ?>
            </div>
         </div>

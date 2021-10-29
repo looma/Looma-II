@@ -99,7 +99,7 @@ function gameButtonClicked(){
     var className = $(this).data('class');
     
     //LOOMA.setStore("subject", subjectName, 'session');  //set a COOKIE for SUBJECT (lifetime = this browser session)
-    window.location = "looma-game-list.php?class=" + encodeURIComponent(className) +
+    window.location = "game-list?class=" + encodeURIComponent(className) +
                                              "&subject=" + encodeURIComponent(subjectName) ;
 };  //  end gameButtonClicked()
 

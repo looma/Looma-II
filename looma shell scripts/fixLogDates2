@@ -1,0 +1,96 @@
+// ONE TIME program to round UTC fields in db activitylog 'hours', 'days', 'weeks', 'months' collections
+//  run in MONGO SHELL with: load('fixLogDates2')
+//
+var cursor, count, fixcount, doc, output;
+
+cursor = db.hours.find({});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+
+    if (doc['utc'])
+    {
+        var oldutc = doc['utc'];
+        fixcount++;
+        doc['utc'] = doc['utc'] - (doc['utc'] % (60*60));
+
+        print ('...' + oldutc + ' converted to ' + doc['utc']);
+
+        db.hours.update({_id:doc._id}, doc);
+    };
+};
+
+print('_______________');
+print(' + + + fixed ' + fixcount + ' hours');
+print('_______________');
+
+cursor = db.days.find({});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+
+    if (doc['utc'])
+    {
+        var oldutc = doc['utc'];
+        fixcount++;
+        doc['utc'] = doc['utc'] - (doc['utc'] % (60*60));
+
+        print ('...' + oldutc + ' converted to ' + doc['utc']);
+
+        db.days.update({_id:doc._id}, doc);
+    };
+};
+
+print('_______________');
+print(' + + + fixed ' + fixcount + ' days');
+print('_______________');
+
+cursor = db.weeks.find({});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+
+    if (doc['utc'])
+    {
+        var oldutc = doc['utc'];
+        fixcount++;
+        doc['utc'] = doc['utc'] - (doc['utc'] % (60*60));
+
+        print ('...' + oldutc + ' converted to ' + doc['utc']);
+
+        db.weeks.update({_id:doc._id}, doc);
+    };
+};
+
+print('_______________');
+print(' + + + fixed ' + fixcount + ' weeks');
+print('_______________');
+
+cursor = db.months.find({});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+
+    if (doc['utc'])
+    {
+        var oldutc = doc['utc'];
+        fixcount++;
+        doc['utc'] = doc['utc'] - (doc['utc'] % (60*60));
+
+        print ('...' + oldutc + ' converted to ' + doc['utc']);
+
+        db.months.update({_id:doc._id}, doc);
+    };
+};
+
+print('_______________');
+print(' + + + fixed ' + fixcount + ' months');
+print('_______________');

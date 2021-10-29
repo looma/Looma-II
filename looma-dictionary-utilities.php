@@ -215,6 +215,8 @@ if (isset($_GET["cmd"]))
 			$hasClass =   isset($_GET["class"])   && in_array($_GET["class"],   $classes);
 			$hasSubject = isset($_GET["subject"]) && in_array($_GET["subject"], $subjects);
 
+		$hasChapterId = false;
+
 			//Tests to see if the parameter ch_id has been set, if it has been set and is valid it will override class and subject parameters
 
 			if(isset($_GET["ch_id"])) {

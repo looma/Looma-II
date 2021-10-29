@@ -169,7 +169,7 @@ function subjectButtonClicked(){
     LOOMA.setStore('chapterScroll', 0), 'session';
     
     //send GET request to chapters.php with CLASS and SUBJECT values
-    window.location = "looma-chapters.php?class=" + encodeURIComponent(className) +
+    window.location = "chapters?class=" + encodeURIComponent(className) +
         "&grade=" + encodeURIComponent(className.replace('class','Grade ')) +
         "&subject=" + encodeURIComponent(subjectName) +
         "&prefix=" + encodeURIComponent(prefix);

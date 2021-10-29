@@ -2,7 +2,7 @@
 <!--
 Author: Sophie, Henry, Morgan, Kendall
 Email:
-Filename: looma-histories.php
+Filename: looma-maps.php
 Date: July 2016
 Description: Initial "maps" page. Takes the user to the different maps.
 -->
@@ -19,7 +19,7 @@ logPageHit('maps');
 
 <?php
 $mapDir = "../content/maps/mapThumbs/";
-$urlBegin = "looma-play-map.php?id=";
+$urlBegin = "map?id=";
 
 function makeButton($file, $thumb, $dn) {
     echo "<a href='" . $file . "'>";

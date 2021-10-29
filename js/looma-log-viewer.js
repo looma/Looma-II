@@ -7,6 +7,10 @@ Revision: Looma 3.0
  */
 
 'use strict';
+
+var  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var chunksize = {'hours':24, 'days':30, 'weeks':14, 'months': 12 };
+
 /* cURL used by Plausible: db-ip.com
 curl https://db-ip.com/17.253.144.10 | grep latitude
 
@@ -50,21 +54,21 @@ var randomScalingFactor = function() {
     return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
 }
 
-$(document).ready( function () {
-
 var chartColors = {
-    red: 'rgb(255, 99, 132)',
+    red:    'rgb(255, 99, 132)',
     orange: 'rgb(255, 159, 64)',
     yellow: 'rgb(255, 205, 86)',
-    green: 'rgb(75, 192, 192)',
-    blue: 'rgb(54, 162, 235)',
+    green:  'rgb(75, 192, 192)',
+    blue:   'rgb(54, 162, 235)',
     purple: 'rgb(153, 102, 255)',
-    grey: 'rgb(231,233,237)'
+    grey:   'rgb(231,233,237)'
 };
 
-var data;
+var linedata, lineconfig, linechart, linecanvas, linectx;
+var bardata,  barconfig,  barchart, barcanvas, barctx;
+var mapdata,  mapconfig,  mapchart, mapcanvas, mapctx;
 
-data = {
+linedata = {
     labels: [],
     datasets: [{
         label: "Looma user activity",
@@ -83,14 +87,14 @@ data = {
     ]
 }
 
-var config = {
+lineconfig = {
     type: 'line',
-    data: data,
+    data: linedata,
     options: {
         responsive: true,
         title: {
             display: true,
-            text: 'CEHRD Portal Hourly Activity'
+            text: ''
         },
         tooltips: {mode: 'label',},
         hover: {
@@ -120,33 +124,145 @@ var config = {
     }
 };
 
-    var ctx = document.getElementById('chart').getContext('2d');
 
-    function labelFormat(time, timeframe) {
-        var formattedTime;
-        switch (timeframe) {
-            case 'hours': formattedTime = time.substr(-2,2) + ':00'; break;
-            case 'days':formattedTime = time.substr(-2,2); break;
-            case 'weeks':formattedTime = 'week '+ time.substr(-2,2); break;
-            case 'months':formattedTime = time.substr(-2,2); break;
+bardata = {
+    labels: [],
+    datasets: [
+        {
+            label: '',
+            data: [],
+            backgroundColor: ['red','orange','yellow','green','blue','violet','magenta'],
         }
-        return formattedTime;
+    ]
+};
+
+barconfig = {
+    type: 'bar',
+    data: bardata,
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+                text: ''
+            },
+            title: {
+                display: true,
+                text: ''
+            }
+        }
+    },
+};
+function labelFormat(utc, timeframe) {
+    var formattedTime;
+    var time = new Date(utc*1000);
+    switch (timeframe) {
+        case 'hours': formattedTime = time.getHours() + ':00'; break;
+        case 'days':  formattedTime = time.getDate();         break;
+        case 'weeks': formattedTime = time.getWeek();break;
+        case 'months':formattedTime = months[time.getMonth()+1]; break;
     }
+
+    return formattedTime;
+};  // end labelFormat()
+
+function drawLineChart(timeframe, prev) {
+    $('#barchart, #mapchart, #barcontrols, #mapcontrols').hide(); $('#linechart, #linecontrols').show();
     
     $.post("looma-database-utilities.php",
-       // {cmd: "getLogData", timeframe:"hours", chunk: 24, prev: 0},
-        {cmd: "getLogData", timeframe:"hours", chunk: 24, prev: 0},
-                   function(results) {
-                       //returns an array of 'count' visit-count values
-                     
-                     data.data = [];
-                     for (var i=0; i < results.length; i++) {
-                         data.datasets[0].data[i] = results[i]['visits'];
-                         data.datasets[1].data[i] = results[i]['uniques'];
-                         data.labels[i] = labelFormat(results[i]['time'],'hours');
-                     }
-                     var myChart = new Chart(ctx, config);
-                   },
-                   'json'
-               );
+        {cmd: "getLogData", type:timeframe, chunk: chunksize[timeframe], prev: prev},
+        function(results) {
+            //returns an array of 'count' visit-count values
+    
+            linedata.datasets[0].data = [];
+            linedata.datasets[1].data = [];
+            linedata.labels = [];
+            
+            for (var i=0; i < results.length; i++) {
+                linedata.datasets[0].data[i] = results[i]['visits'];
+                linedata.datasets[1].data[i] = results[i]['uniques'];
+                linedata.labels[i] = labelFormat(results[i]['utc'],timeframe);
+            }
+            
+            var titleDate = new Date(results[results.length-1]['utc']*1000);
+            var title =   'Activity for ';
+                if (timeframe !== 'months' && timeframe !== 'weeks') title += months[titleDate.getMonth()] + '  ';
+                if (timeframe === 'hours') title += titleDate.getDate() + ',';
+                title += titleDate.getFullYear();
+            $('h2#title').text( title);
+            if (linechart) linechart.destroy();
+            linechart = new Chart(linectx, lineconfig);
+        },
+        'json'
+    );
+};  // end drawLineChart()
+
+function drawbarChart(bartype) {
+    $('#linechart, #linecontrols, #mapchart, #mapcontrols').hide(); $('#barchart, #barcontrols').show();
+    if(linechart) linechart.destroy();
+    if (barchart) barchart.destroy();
+    
+    $.post("looma-database-utilities.php",
+        {cmd: "getLogData", type:bartype},
+        function(results) {
+    
+            bardata.datasets[0].data = [];
+            bardata.labels = [];
+    
+            for (var i=0; i < results.length; i++) {
+                bardata.datasets[0].data[results.length - i] = results[i]['hits'];
+                if (bartype === 'pages') bardata.labels[results.length - i] = results[i]['page'];
+                else                     bardata.labels[results.length - i] = results[i]['ft'];
+            }
+    
+            bardata.datasets[0]['label'] = LOOMA.capitalize(bartype);
+            var title =   LOOMA.capitalize(bartype) + ' used since October 1, 2021 ';
+            $('h2#title').text( title);
+            
+            if (barchart) barchart.destroy();
+            barchart = new Chart(barctx, barconfig);
+        },
+        'json'
+    );
+}  //  end barchart()
+
+function drawMapChart() {
+    $('#linechart, #barchart').hide(); $('#mapchart').show();
+    if(linechart) linechart.destroy();
+    
+}  //  end mapchart()
+
+$(document).ready( function () {
+
+    $("input[type=radio][name='timeframe']").change(function(e) {
+        tf = $("input[name='timeframe']:checked").val();
+        drawLineChart(tf,0);
+    });
+    
+    $("input[type=radio][name='bartype']").change(function(e) {
+        var bartype = $("input[name='bartype']:checked").val();
+        drawbarChart(bartype);
+    });
+    
+    $('#next').click(function() {
+        if (prev > 0) prev--; drawLineChart(tf,prev);
+    });
+    $('#prev').click(function() {
+        prev++; drawLineChart(tf,prev);
+    });
+    $('#line').click(function() {drawLineChart(tf,prev);});
+    $('#bar').click(function() {drawbarChart('pages');});
+    $('#map').click(function() {drawMapChart();});
+    
+    linecanvas = document.getElementById('linechart');
+    linectx = linecanvas.getContext('2d');
+    linechart = new Chart(linectx, lineconfig);
+ 
+    barcanvas = document.getElementById('barchart');
+    barctx = barcanvas.getContext('2d');
+    barchart = new Chart(barctx, barconfig);
+    
+    var tf = 'hours'; var prev = 0;
+    drawLineChart(tf,prev);
+    
 });

@@ -215,7 +215,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             $viewer.empty().append( $('#pdf').clone() );
             /*
                 $pdfHTML.find('iframe').attr('src',
-                'looma-pdf-viewer.php?fn=' + filename + '&fp=' + fp + '&page=' + pagenumber + '&len=' + length + '&zoom=' + 2.3
+                'pdf?fn=' + filename + '&fp=' + fp + '&page=' + pagenumber + '&len=' + length + '&zoom=' + 2.3
                 );
                 $pdfHTML.appendTo($viewer);
                 
@@ -240,12 +240,12 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
                 
                     $('.speak, .lookup').show();
                     if (version==2019) {
-                        var prefix = '../ePaath/';
+                        var prefix = 'ePaath/';
                         if (grade=='grade7' || grade == 'grade8') prefix += 'EPaath7-8/';
                         $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
                     }
                     else
-                        $htmlHTML.find('embed').attr('src', '../content/epaath/activities/'+ fn + '/start.html');
+                        $htmlHTML.find('embed').attr('src', 'content/epaath/activities/'+ fn + '/start.html');
     
                     $htmlHTML.appendTo($viewer);
             
@@ -260,27 +260,27 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             break;
         
         case 'history':
-            openPage($currentItem, 'histories', 'looma-history.php');
+            openPage($currentItem, 'histories', 'history');
             break;
         
         case 'slideshow':
-            openPage($currentItem, 'slideshows', 'looma-play-slideshow.php');
+            openPage($currentItem, 'slideshows', 'slideshow');
             //window.location = 'looma-play-slideshow.php?id=' + $currentItem.data('id');
             break;
         
         case 'map':
-            openPage($currentItem, 'maps', 'looma-play-map.php');
+            openPage($currentItem, 'maps', 'map');
             //window.location = 'looma-map.php?id=' + $currentItem.data('id');
             break;
         
         case 'game':
-            openPage($currentItem, 'games', 'looma-game.php');
+            openPage($currentItem, 'games', 'game');
             break;
         
         //NOTE, cannot "play" ft == 'lesson' with a lesson
         
         default:
-            $viewer.html('<div class="text-display">File not found</div>');
+            $viewer.html('<div class="error-message">File not found</div>');
             console.log("ERROR: in playActivity(), unknown type: " + ft);
             break;
     } //end SWITCH(ft)

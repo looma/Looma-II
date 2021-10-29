@@ -157,7 +157,6 @@ h2 {
 
 #digitalDisplay{
     display:inline-block;
-    color: yellow;
     font-size: 6em;
     grid-column:2;
     grid-row:4;
@@ -165,7 +164,6 @@ h2 {
 
 #amOrPm1, #digitalTime{
     font-family: digitalFont;
-    color: yellow;
 }
 #dragHands{
     font-size: 0.25em;

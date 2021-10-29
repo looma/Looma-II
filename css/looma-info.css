@@ -12,7 +12,7 @@
 
 #logo {
     grid-row: 2;
-    grid-column: left /middle-left;
+    grid-column: left/middle-right;
 }
 #logo img {
     margin-left:9vw;
@@ -57,8 +57,9 @@ img.cehrd-logo {
     grid-row: 2;
     grid-column: left / middle-left;
 }
+
  #credits-title {
-     grid-row: 1/-1;
+     grid-row: 1;
      grid-column: middle-right /right;
      margin-right:5vw;
  }
@@ -109,5 +110,5 @@ span {
 
 #info-panel {
     grid-row: 4;
-    grid-column: middle-left / middle-right;'
+    grid-column: middle-left / middle-right;
 }

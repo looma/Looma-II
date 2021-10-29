@@ -1,0 +1,89 @@
+// ONE TIME program to
+//  clone 'phonics' lessons to be edited for other letters
+//
+//  file: lessonclone
+//  run in MONGO SHELL with: load('lessonclone')
+//       or in BASH with:    mongo looma < lessonclone
+//
+//      prior to running, set these variables:
+//          var oldlesson = 'Letter Ee Phonics Lesson'  // existing lesson being cloned
+//          var newchapter = '<ch_id>'          // chapter ID for new lesson being created as a clone
+//          var oldletter = 'Ee';               // letter (in format Aa) of  the old lesson
+//          var newletter = '<Xx>';               // letter (in format Aa) for the new lesson
+//          var param = 'dryrun' or 'run'         // dryrun
+
+var lesson, newlesson, chapter, lessonitem, textfile, newtext, activity, newactivity;
+var textfilecount=0;
+
+var now = new Date();
+var dd = today.getDate(); var mm = today.getMonth()+1; var yyyy = today.getFullYear();
+if(dd<10) dd='0'+dd; if(mm<10) mm='0'+mm;
+var today =  (yyyy + ':' + mm + ':' + dd);
+
+lesson = db.lessons.findOne({'dn':oldlesson});
+    print ('Cloning ' + lesson.dn + ' ***  '+ lesson.data + ' to new letter: ' + newletter);
+
+    if (! lesson.data) print ("lesson without data - " + lesson.dn)
+    else
+    { lesson.data.forEach ( function(data)
+        { if (data.collection === 'chapters')
+            {
+                //replace chapter
+                chapter = db.chapters.findOne({_id:newchapter});
+                data._id = chapter['_id'];
+            }
+        else if (data.collection === 'activities')
+        {
+            lessonitem = db.activities.findOne({'_id':ObjectId(data['id'])});
+            if (lessonitem && lessonitem.ft === 'textfile')
+            {
+                textfilecount++;
+
+                // create copy of textfile, rename it and save it
+                textfile = db.text_files.findOne({_id:lessonitem.mongoID);
+                textfile.dn = 'Phonics ' + newletter + ' slide ' + textfilecount;
+                textfile.date = today;
+                textfile.author = 'clone';
+                delete textfile.translator;
+                delete textfile.nepali;
+                newtext = db.text_files.insert(textfile);
+                print ('  - - created new textfile. dn is ' + newtext.dn);
+
+                // CREATE ACtivity for new textfile
+                activity = {};
+                activity.ft = 'text';
+                activity.mongoID = newtext['_id'];
+                activity.dn = 'Phonics ' + newletter + ' slide ' + textfilecount;
+                newactivity = db.activities.insert(activity);
+                print ('  - - created new activity. _id is ' + newactivity._id);
+            }
+        }
+    });
+
+        // save new lesson
+        lesson.dn = 'Letter ' + newletter + ' Phonics Lesson';
+        lesson.ft = 'lesson';
+        lesson.author = 'clone';
+        lesson.date = today;
+        newlesson = db.lessons.insert(lesson);
+        print ('  - - created new lesson. _id is ' + newlesson._id);
+
+        // make activity for new lesson
+        activity = {};
+        activity.ft = 'lesson';
+        activity.mongoID = newlesson['_id'];
+        activity.dn = lesson.dn;
+        activity.ch_id[] = newchapter;
+        activity.key1 = "Language";
+        activity.key2 = "English";
+        activity.key3 = "Grammar";
+        activity.key4 = "Phonics";
+        newactivity = db.activities.insert(activity);
+        print ('created new activity. _id is ' + newactivity._id);
+    };
+
+print('Cloned oldlesson to '  lesson.dn);
+print(' - -  ' + textfilecount + ' textfiles');
+print();
+
+

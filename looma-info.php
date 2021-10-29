@@ -44,14 +44,16 @@ include ('includes/header.php');
         </div>
         <div id="about">
             <div id="copyright"><h3>Looma 2</h3>
-                <h4>   Release 7.0.4 OCT 2021   </h4>
+                <h4>   Release 7.1 OCT 2021   </h4>
                 <img src ='images/copyright.png' class="copyright"></img>2021
             </div>
 
     <?php
         if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
             echo "<a draggable='false'  class='footer' href='https://www.cehrd.gov.np/'>by Center for Education and Human Resources Development</a>";
-            echo "<h4>Contact:  iemis@cehrd.gov.np</h4>";
+            echo "<h4>Contact: ";
+            echo "<a href='mailto:iemis@cehrd.gov.np'>iemis@cehrd.gov.np</a>";
+            echo "</h4>";
         } else { // source = looma
             echo "<a draggable='false'  class='footer' href='https://looma.education'>by Looma Education Company</a>";
             echo "<h4>Contact:  info AT looma DOT education</h4>";
@@ -120,9 +122,11 @@ include ('includes/header.php');
         <h4>Tested only in Google Chrome</h4>
 
         <?php
-        if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD')
-            echo "<h4>Report bugs and suggestions to:  iemis@cehrd.gov.np</h4>";
-        else
+        if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
+            echo "<h4>Report bugs and suggestions to:  ";
+            echo "<a href='mailto:iemis@cehrd.gov.np''>iemis@cehrd.gov.np</a>";
+            echo "</h4>";
+        } else
             echo "<h4>Report bugs and suggestions to:  info AT looma DOT education</h4>";
         ?>
         </div>
@@ -166,6 +170,16 @@ include ('includes/header.php');
         <!-- W3C validator link    new URL=https://validator.w3.org/nu/
            <a draggable="false"  class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->
 </div>
+
+<?php
+if ($source === "CEHRD") {
+    echo "<marquee id='marquee'>";
+    echo "This CEHRD Learning Portal is still under construction. We welcome comments to ";
+    echo "<a href='mailto:iemis@cehrd.gov.np''>iemis@cehrd.gov.np</a>";
+    echo ". Thank you.";
+    echo "</marquee>";
+}
+?>
 
 <?php include ('includes/toolbar.php');
 include ('includes/js-includes.php');

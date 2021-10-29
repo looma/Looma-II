@@ -375,11 +375,13 @@ span#lesson-name {
     font-size:2.5vw;
 }
 
+.error-message {font-size:4em;}
+
 .text-display {
     height:100%;
     width:90vw;
     /*zoom: 250%;*/
-    font-size:2.75vw;
+    font-size:4em;
     /*padding: 0 !important;*/
     margin:0 auto;
     overflow: hidden;

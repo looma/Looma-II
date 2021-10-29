@@ -10,14 +10,20 @@ Description:  for Looma 2
 -->
 
 <?php $page_title = 'Looma Paint';
+
+//chdir('/usr/local/var/www/Looma');
+
+//echo 'current dir is' . getcwd() . "\n"; exit;
+//echo getcwd() . "\n"; exit;
+
 	  include ('includes/header.php');
 
     logPageHit('paint');
 
- ?>
-  	<!-- Replace .ico & apple-touch-icon.png in the root of your domain and delete these references -->
-    <link rel="stylesheet" href="css/looma-paint.css">        	 <!-- Looma CSS -->
+    //if (file_exists('/Looma/css/looma-paint.css')) echo 'css/looma-paint.css exists';
 
+ ?>
+    <link rel="stylesheet" href="/Looma/css/looma-paint.css">        	 <!-- Looma CSS -->
 </head>
 
 <body>
@@ -112,7 +118,5 @@ Description:  for Looma 2
 
 </body>
    	<?php include ('includes/js-includes.php'); ?>
-	<script src="js/paper-full.js"></script>
-	<script src="js/looma-paint.js"></script></html>
-
-   	<!-- JS for this page here:     <script src="js/looma-xxxx.js"></script>       -->
+	<script src="/Looma/js/paper-full.js"></script>
+	<script src="/Looma/js/looma-paint.js"></script></html>

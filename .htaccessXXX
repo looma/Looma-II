@@ -1,0 +1,17 @@
+#
+# this file is ".htaccess" for redirecting errors when running Looma
+#
+# it is filename ".htaccess" (no extension)
+# it is located in www/ (root folder of the web server) the folder where the Looma code folder is saved
+#
+# created by Skip
+# NOV 2018
+#
+# intercept 404 errors
+ErrorDocument 404 /Looma/looma-404.php
+#
+# redirect home page to /Looma/looma-home.php
+Redirect 301 /index.php /Looma/looma-home.php
+#
+RewriteEngine On
+#RewriteRule /Looma   /Looma/looma-home.php

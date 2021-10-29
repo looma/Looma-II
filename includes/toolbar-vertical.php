@@ -11,7 +11,7 @@
             </button>
     
            <!--HOME-->
-           <button onclick="parent.location.href = 'looma-home.php';"   id="toolbar-home" class="toolbar-button-vertical">
+           <button onclick="parent.location.href = 'home';"   id="toolbar-home" class="toolbar-button-vertical">
                 <img draggable="false" src="images/home.png"  height = "70%" >
                 <?php tooltip('Home');?>
             </button>
@@ -19,7 +19,7 @@
             <!--LIBRARY-->
            <button onclick="LOOMA.setStore('libraryScroll', 0, 'session');
                              LOOMA.setStore('library-search',    0, 'session');
-                             parent.location.href = 'looma-library.php?fp=../content/';"
+                             parent.location.href = 'library?fp=../content/';"
                    id="toolbar-library" class="toolbar-button-vertical ">
                 <!-- call looma-library.php with path to starting folder of the Library. -->
                 <img draggable="false" src="images/library.png"  height= "70%" >
@@ -29,7 +29,7 @@
            <!--SEARCH-->
             <button onclick="LOOMA.setStore('libraryScroll', 0, 'session');
                              LOOMA.clearStore('library-search',     'session');
-                             parent.location.href = 'looma-library-search.php?fp=../content/';"
+                             parent.location.href = 'search?fp=../content/';"
                     id="toolbar-search" class="toolbar-button-vertical ">
                 <!-- search looma-library.php with path to starting folder of the Library. -->
 				<img draggable="false" src="images/search.png"  height= "70%" >
@@ -37,56 +37,56 @@
             </button>
     
             <!--DICTIONARY-->
-           <button onclick="parent.location.href = 'looma-dictionary.php';"
+           <button onclick="parent.location.href = 'dictionary';"
                    id="toolbar-dictionary" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/dictionary.png"  height= "70%" >
                 <?php tooltip('Dictionary');?>
             </button>
     
            <!--PAINT-->
-            <button onclick="parent.location.href = 'looma-paint.php?ModPagespeed=off';"
+            <button onclick="parent.location.href = 'paint?ModPagespeed=off';"
                     id="toolbar-paint" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/paint.png" height = "70%"  >
                 <?php tooltip('Paint');?>
             </button>
     
            <!--CLOCK-->
-            <button onclick="parent.location.href = 'looma-clock.php';"
+            <button onclick="parent.location.href = 'clock';"
                     id="toolbar-clock" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/clock.png"  height = "80%" >
                 <?php tooltip("Clocks") ?>
             </button>
     
            <!--MAPS-->
-            <button onclick="parent.location.href = 'looma-maps.php';"
+            <button onclick="parent.location.href = 'maps';"
                     id="toolbar-maps" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/maps.png"  height = "70%" >
                 <?php tooltip('Maps');?>
             </button>
     
             <!--HISTORIES-->
-           <button onclick="parent.location.href = 'looma-library.php?fp=../content/timelines/';"
+           <button onclick="parent.location.href = 'library?fp=../content/timelines/';"
                    id="toolbar-histories" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/history.png"  height = "70%" >
                 <?php tooltip("History") ?>
             </button>
     
            <!--GAMES-->
-            <button onclick="parent.location.href = 'looma-games.php';"
+            <button onclick="parent.location.href = 'games';"
                     id="toolbar-games" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/games.png"  height = "70%" >
                 <?php tooltip('Games');?>
             </button>
     
            <!--CACULATOR-->
-            <button onclick="parent.location.href = 'looma-calculator.php';"
+            <button onclick="parent.location.href = 'calculator';"
                     id="toolbar-calculator" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/calc.png"  height = "70%" >
                 <?php tooltip('Calculator');?>
             </button>
     
            <!--WEB-->
-            <button onclick="parent.location.href = 'looma-web.php';"
+            <button onclick="parent.location.href = 'web';"
                     id="toolbar-web" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/web.png"  height = "70%" >
                 <?php tooltip('Web');?>
@@ -94,7 +94,7 @@
     
             <!--SETTINGS-->
            <!--
-            <button onclick="parent.location.href = 'looma-settings.php';"
+            <button onclick="parent.location.href = 'settings';"
                 id="toolbar-settings" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/settings.png"  height = "70%" >
                 <?php tooltip('Tools');?>
@@ -102,7 +102,7 @@
             -->
     
            <!--INFO-->
-            <button onclick="parent.location.href = 'looma-info.php';"
+            <button onclick="parent.location.href = 'info';"
                     id="toolbar-info" class="toolbar-button-vertical ">
                 <img draggable="false" src="images/info.png"  height = "70%" >
                 <?php tooltip('Info');?>

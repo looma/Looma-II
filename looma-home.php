@@ -16,7 +16,7 @@
 
         <?php
 
-        if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
+        if($source === 'CEHRD') {
             //echo '<div id="head" class="cehrd">';
             echo '<img  id="logo"  class=" english-keyword" src="images/logos/CEHRD-banner-english.jpg" >';
                // echo '<img  id="logo"   src="images/logos/CEHRD-logo.png" >';
@@ -62,6 +62,14 @@
         <div id="subjects" class="button-div"></div>
 
     </div>
+
+    <?php
+        if ($source === "CEHRD") {
+            echo "<marquee id='marquee'>";
+            echo "This CEHRD Learning Portal is still under construction. We welcome comments to iemis@cehrd.gov.np. Thank you.";
+            echo "</marquee>";
+        }
+    ?>
 
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>

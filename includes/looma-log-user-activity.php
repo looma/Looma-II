@@ -2,29 +2,25 @@
 require_once 'includes/mongo-connect.php';
 date_default_timezone_set('UTC');
 
-//notes and future features:
-
-// also add a page-hit counter to each Looma page for pie chart of page usage
-// also add a filetype-hit counter for each filetype [textbook, lesson, video, phet, epaath, pdf] for pie chart of filetype usage
-
-// To be implemented as a Dashboard for admins:
 /*
- Displays
-- Pie charts
-    relative usage of looma pages
-    relative usage of looma filetypes
-
-*** pie chart of countries of origin
-
-- map
-- activity line chart
-    (Radio) time frame (d/w/m/all),
-    (Radio) resolution (h/d/w/m),
-    (Checkbox) uniqs and/or visits,
-    left arrow, right arrow. (moves to next/prev period)
-Later: activity by geography (province or district) if possible
+        activity logs are in mongo db='activitylog'
+        collections 'pages' and 'filetypes' record hits to individual pages or opening of filetypes
+            'pages' collection has documents for {'home', 'library', 'library-search', etc}
+            'filetypes' collections has documents for {'pdf', 'video', 'lesson', etc}
+            a document is {page:'home',hits:<number of hits>}or {ft:'home',hits:<number of hits>}
+        collections 'hours', 'days', 'weeks', and 'months' record visits during those timeframes
+            'hours' documents are:
+                {   "time": "2021:10:06:09",
+                    "utc": 1633554000,
+                    "visits": 3,
+                    "uniques": 1
+                }
+            where 'utc' is rounded to the timeframe (hours, etc)
+            and 'time' is formatted to the timeframe (e.g. Y:m:d:H for hours, Y:m for months, Y:w for weeks)
  */
 
+
+//////////   log page hit   //////////
 function logPageHit($page) {
     global $pages_collection;
     mongoUpdate($pages_collection,
@@ -32,6 +28,7 @@ function logPageHit($page) {
         array('$inc'        => array('hits' => 1)));
 } // end logPageHit()
 
+//////////   log filetype hit   //////////
 function logFiletypeHit($ft) {
     global $filetypes_collection;
     mongoUpdate($filetypes_collection,
@@ -39,26 +36,25 @@ function logFiletypeHit($ft) {
         array('$inc'        => array('hits' => 1)));
 } // end logFiletypeHit()
 
-// call logUser() each time looma-home.php is opened
+//////////   log user access   //////////
 function logUser($utc)
 {   global $users_collection;
     $ip = userIP();
-
     $geo['lat'] = "";$geo['long']="";$geo['country']="";
-
-    $geo = getLatLong($ip);
+    $geo = userLatLong($ip);
 
         // update USERS collection in the LOG database
-                //if IP not in user collection
-                //      insert IP, first-time=<now>, visits=1 to users collection
-                // else save latest-time=<now> and increment visits in user document of users collection
+            //if IP not in user collection
+            //      insert IP, first-time=<now>, visits=1 to users collection
+            // else save latest-time=<now> and increment visits count
+
     $user =   mongoFindOne($users_collection, array('ip' => $ip));
     if ($user) {
         $prevUTC = $user['latest'];
         mongoUpdate($users_collection,
                     $user,
                     array('$inc' => array('visits' => 1),
-                              '$set' => array('latest' => $utc))
+                          '$set' => array('latest' => $utc))
         );
     } else {  // this is a new user
         $prevUTC = null;
@@ -74,95 +70,80 @@ function logUser($utc)
     return $prevUTC;
 } // end logUser()
 
-function logHour($utc, $prevUTC){
+//////////   log hour hit   //////////
+function logHour($utc, $prevUTC) {
     global $hours_collection;
-    $utc = $utc - ($utc % (60*60));
-    $now = date("Y:m:W:d:h", $utc);  //  year-month-day-hour
+    $utchour = $utc - ($utc % (60*60));
+    $prevhour = $prevUTC ? $prevUTC - ($prevUTC % (60*60)) : null;
+    $now = date("Y:m:d:H", $utchour);
 
-  // update HOURS collection in the LOG database
-    //if hour not in activity collection
-    //      insert hour, visits=1 in activity collection
-    //else increment visits in hour document of activity collection
+    // update HOURS collection in the LOG database
+    //      if hour not in activity collection
+    //        insert hour, visits=1 in activity collection
+    //      else increment visits in hour document of activity collection
+
     $hour = mongoFindOne($hours_collection,array('time' => $now));
     if ($hour)  {
         $increments['visits'] = 1;
-        if ( $prevUTC && date("Y:m:W:d:h",$prevUTC) < $hour['time']) $increments['uniques']=1;
+        if ( $prevhour && $prevhour < $hour['utc']) $increments['uniques']=1;
         mongoUpdate($hours_collection,
                     $hour,
                     array('$inc'=>$increments));
-        } else
-            mongoInsert($hours_collection, array('time' => $now, 'utc'=>$utc,'visits' => 1, 'uniques' => 1));
+    } else
+        mongoInsert($hours_collection, array('time' => $now, 'utc'=>$utchour,'visits' => 1, 'uniques' => 1));
 } // end logHour()
 
+//////////   log day hit   //////////
 function logDay($utc, $prevUTC){
     global $days_collection;
-    $utc = $utc - ($utc % (24*60*60));
-    $now = date("Y:m:W:d", $utc);  //  year-month-day
-
-    // update DAYS collection in the LOG database
-    //if hour not in activity collection
-    //      insert hour, visits=1 in activity collection
-    //else increment visits in hour document of activity collection
+    $utcday = $utc - ($utc % (24*60*60));
+    $prevday = $prevUTC - ($prevUTC % (24*60*60));
+    $now = date("Y:m:d", $utc);  //  year-month-day
     $day = mongoFindOne($days_collection,array('time' => $now));
     if ($day)  {
         $increments['visits'] = 1;
-        if ( $prevUTC && date("Y:m:W:d",$prevUTC) < $day['time']) $increments['uniques']=1;
+        if ( $prevday && $prevday < $day['utc']) $increments['uniques']=1;
         mongoUpdate($days_collection,
                     $day,
                     array('$inc'=>$increments));
         } else
-            mongoInsert($days_collection, array('time' => $now, 'utc'=>$utc,'visits' => 1, 'uniques' => 1));
+            mongoInsert($days_collection, array('time' => $now, 'utc'=>$utcday,'visits' => 1, 'uniques' => 1));
 } // end logDay()
 
+//////////   log week hit   //////////
 function logWeek($utc, $prevUTC){
     global $weeks_collection;
-    $utc = $utc - ($utc % (7*24*60*60));
-    $now = date("Y:m:W", $utc); // year-month-year
-
-    // update WEEKS collection in the LOG database
-    //if hour not in activity collection
-    //      insert hour, visits=1 in activity collection
-    //else increment visits in hour document of activity collection
+    $utcweek = $utc - ($utc % (7*24*60*60));
+    $prevweek = $prevUTC ? $prevUTC - ($prevUTC % (7*24*60*60)) : null;
+    $now = date("Y:W", $utc); // year-month-year
     $week = mongoFindOne($weeks_collection,array('time' => $now));
     if ($week)  {
         $increments['visits'] = 1;
-        if ( $prevUTC && date("Y:m:W",$prevUTC) < $week['time']) $increments['uniques']=1;
+        if ( $prevweek && $prevweek < $week['utc']) $increments['uniques']=1;
         mongoUpdate($weeks_collection,
                     $week,
                     array('$inc'=>$increments));
         } else
-            mongoInsert($weeks_collection, array('time' => $now, 'utc'=>$utc, 'visits' => 1, 'uniques' => 1));
+            mongoInsert($weeks_collection, array('time' => $now, 'utc'=>$utcweek, 'visits' => 1, 'uniques' => 1));
 } // end logWeek()
 
+//////////   log month hit   //////////
 function logMonth($utc, $prevUTC){
     global $months_collection;
 
-    /*
-     mktime(
-    int $hour,
-    ?int $minute = null,
-    ?int $second = null,
-    ?int $month = null,
-    ?int $day = null,
-    ?int $year = null
-): int|false
-     */
-    $utc = mktime(0,0,0,(int) date('m',$utc),1, date('Y',$utc)); //round to beginning of month
-    $now = date("Y:m", $utc);  // year-month
-
-    // update MONTHS collection in the LOG database
-    //if hour not in activity collection
-    //      insert hour, visits=1 in activity collection
-    //else increment visits in hour document of activity collection
+    // mktime(int $hour,int $minute = null,int $second = null,int $month = null,int $day = null,int $year = null
+    $utcmonth = mktime(0,0,0,(int) date('m',$utc),1, date('Y',$utc)); //round to beginning of month
+    $prevmonth = mktime(0,0,0,(int) date('m',$prevUTC),1, date('Y',$prevUTC)); //round to beginning of month
+    $now = date("Y:m", $utcmonth);  // year-month
     $month = mongoFindOne($months_collection,array('time' => $now));
     if ($month)  {
         $increments['visits'] = 1;
-        if ( $prevUTC && date("Y:m",$prevUTC) < $month['time']) $increments['uniques']=1;
+        if ( $prevmonth && $prevmonth < $month['utc']) $increments['uniques']=1;
         mongoUpdate($months_collection,
                     $month,
                     array('$inc'=>$increments));
         } else
-            mongoInsert($months_collection, array('time' => $now, 'utc'=>$utc, 'visits' => 1, 'uniques' => 1));
+            mongoInsert($months_collection, array('time' => $now, 'utc'=>$utcmonth, 'visits' => 1, 'uniques' => 1));
 } // end logMonth()
 
 function userIP() {
@@ -172,46 +153,32 @@ function userIP() {
     return $address;
 }  // end userIP()
 
-function getLatLong ($userIP) {
-
+function userLatLong ($userIP) {
     // https://freegeoip.app/json/{IP_or_hostname}
-
-    $apiURL = 'https://freegeoip.app/json/'.$userIP;
-    $ch = curl_init($apiURL);
+    $apiURL = 'https://api.freegeoip.app/json?apikey=a89e3860-28cc-11ec-b614-2981d826f277';
+    $ch = curl_init();
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $apiResponse = curl_exec($ch);
     curl_close($ch);
     $ipData = json_decode($apiResponse, true);
-
-    //echo (string) $ipData;exit;
 
     if(!empty($ipData)){
         $country_code = $ipData['country_code'];
         $country_name = $ipData['country_name'];
         $latitude = $ipData['latitude'];
         $longitude = $ipData['longitude'];
-
-        /*
-        echo 'Continent Name: '.$continent.'<br/>';
-        echo 'Country Name: '.$country_name.'<br/>';
-        echo 'Country Alpha-2 Code: '.$country_code_alpha2.'<br/>';
-        echo 'Country Alpha-3 Code: '.$country_code_alpha3.'<br/>';
-        echo 'Country Numeric Code: '.$country_code_numeric.'<br/>';
-        echo 'Country International Call Prefix Code: '
-            . $international_prefix.'<br/>';
-        echo 'Currency Code: '.$currency_code.'<br/>';
-        echo 'Latitude: '.$latitude.'<br/>';
-        echo 'Longitude: '.$longitude;
-         */
         return array('IP'=>$userIP,'country'=>$country_name,'lat'=>$latitude,'long'=>$longitude);
     } else
         return array('IP'=>$userIP,'country'=>null,'lat'=>null,'long'=>null);
-}  // end getLatLong()
+}  // end userLatLong()
 
 function logUserActivity () {
-    $utc = time(); // this is the UTC linux timestamp
-    // WARNING: UTC values in PHP are in SECONDS, in JS they are in MILLIseconds
-    $prevUTC = logUser($utc);
+    $utc = time(); // this is the UTC linux timestamp - seconds since the epoch (NOT milliseconds)
+                   // WARNING: UTC values in PHP are in SECONDS, in JS they are in MILLIseconds
+    $utc = $utc - $utc % (60 *60);  // round to the hour
+
+    $prevUTC = logUser($utc);  // $prevUTC returns the last time this user accessed the site
+                                    // in UTC seconds since the epoch rounded to hour
     logHour ($utc, $prevUTC);
     logDay  ($utc, $prevUTC);
     logWeek ($utc, $prevUTC);

@@ -44,7 +44,7 @@ Description: looma slideshow presenter
         //for each ACTIVITY in the DATA field of the slideshow, create an 'activity button' in the timeline
 
          if ($slideshow_id) {   //get the mongo document for this slideshow
-            $query = array('_id' => new MongoID($slideshow_id));
+            $query = array('_id' => mongoId($slideshow_id));
             //returns only these fields of the activity record
             $projection = array('_id' => 0,
                                 'dn' => 1,
@@ -63,7 +63,7 @@ Description: looma slideshow presenter
 
             if ($data) foreach ($data as $slideshow_element) {
 
-                $query = array('_id' => new MongoID($slideshow_element['id']));
+                $query = array('_id' =>  mongoId($slideshow_element['id']));
 
                 $details = mongoFindOne($activities_collection, $query);
 

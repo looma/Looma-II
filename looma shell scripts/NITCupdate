@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-#  filename: updateNITC
-#       VERSION .0 for rysnc.net
+#  filename: NITCupdate
+#       VERSION 1.0 for rysnc.net
 #       author: skip
 #       date:   OCT 2021
 #
-#  used to update a pre-installed Looma by installing latest code, database & content
+#  used to update a pre-installed Looma image by installing latest code, database & content
 #           only changed or brand new files are transferred
 #
 #   steps performed:
@@ -113,7 +113,7 @@ dosync () {
     rsync -az  $DRYRUNMODE --size-only  \
         --stats  --progress   \
         --perms  --chmod=D777,F777 --chown=looma:looma \
-        --exclude '.[!.]*' --exclude='CEHRD' --delete --delete-excluded   \
+        --exclude '.[!.]*' --exclude='CEHRD' --delete  \
         -e "ssh"   \
        "$FROM/"  "$TO"
 }
@@ -149,11 +149,11 @@ groupadd looma
 useradd -g looma looma
 useradd -g looma looma-admin
 
-if [[ $1 = "dryrun" ]]
+if [[ $1 = "run" ]]
   then
-    DRYRUNMODE="--dry-run"
-  else
     DRYRUNMODE=""
+  else
+    DRYRUNMODE="--dry-run"
 fi
 
 CUMULATIVE=0
@@ -161,7 +161,7 @@ CUMULATIVE=0
 #####################
 ##################### user input - choose update from USB stick or from Internet
 #####################
-echo; echo "****************************************************************"
+    echo; echo "****************************************************************"
 
     FROMDIR="58191@usw-s008.rsync.net:.."
 
@@ -173,12 +173,6 @@ echo; echo "****************************************************************"
       checknetworkspeed
     fi
     echo; echo "if prompted for \"password for odroid\" enter \"odroid\"  "
-  else
-      echo; echo "****************************************************************"
-      echo 'ERROR: input must be "U" or "I"'
-      echo "****************************************************************"
-      exit 1
-  fi
 
 ########################### set the target directory ###############
 
@@ -198,7 +192,7 @@ echo; echo "****************************************************************"
 
 ###########################  do the transfers ###############
 
-#       copy current Looma code to LoomaBAK
+#       [OPTIONAL] copy current Looma code to LoomaBAK
 #       NOTE: call to function BACKUP() commented out for now
     # backup
 
@@ -217,9 +211,6 @@ echo; echo "****************************************************************"
 
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
         CUMULATIVE=$SECONDS
-
-        #clear browser cache so the new code files will be used
-        source "$TODIR/Looma/looma shell scripts/loomaClearChromiumCache"
     else
         echo " - - - SKIPPED: installing new Looma code"
     fi
@@ -304,11 +295,11 @@ if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
 echo
 echo "****************************************************************"
 echo "****************************************************************"
- if [[ $1 = "dryrun" ]]
+ if [[ $1 = "run" ]]
  then
-    echo "DONE - LOOMA UPDATE DRY RUN:  no files were changed"
- else
     echo "DONE - LOOMA UPDATE: updating Looma code, database and content"
+ else
+    echo "DONE - LOOMA UPDATE DRY RUN:  no files were changed"
  fi
 echo "****************************************************************"
 echo "****************************************************************"

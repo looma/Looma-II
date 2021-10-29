@@ -467,11 +467,11 @@ button:hover, .button:hover
     height:20%;
     float:left;
     font-size:2em;
-    background-color:white;
-    background-image: url("../images/logos/LoomaLogoTransparent.png");
+    background-color:paleblue;
+    background-image: url("../images/nepal-flag.png");
     background-repeat: no-repeat;
     background-position: center;
-    background-size:75%;
+    background-size:45%;
 }
 .concButton span {display:none;}
 

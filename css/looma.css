@@ -1,4 +1,5 @@
 
+
 html {
     --looma-blue:#091F48;
     --looma-background: var(--looma-blue);
@@ -346,11 +347,13 @@ span:hover .xlat {
 
 span.tip { display:none;}
 
+button.hidden {display:none;}  /*used in looma-wikipedia.php*/
+
 button:hover span.tip.yes-show 	{
     position:absolute;
     display:block;
-    bottom: 5vh;
-    right:5vw;
+   bottom: 0vh;
+   /* right:5vw;*/
     margin:auto;
     
     font-size: 0.7em;
@@ -362,6 +365,9 @@ button:hover span.tip.yes-show 	{
     color:#000000;}
 
 button:hover span.tip.yes-show.big-show {
+    
+    display:none;
+    
     font-size:0.5em;
     left:60vw;
     padding:0 auto;
@@ -673,4 +679,13 @@ div.center {
     color:black;
     background-color:transparent;
     pointer-events:none;
+}
+
+#marquee {
+    width: 65vw;
+    position: fixed;
+    top:0.5vh;
+    margin:auto;
+    direction: "left";
+    height: 100px;
 }

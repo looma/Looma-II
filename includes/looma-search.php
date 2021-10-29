@@ -79,7 +79,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
                 $types = array(
                 array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "text-template", "lesson", "looma", "game"), //tags used as IDs for checkbox html elements
                 array("pdf", "video", "image", "audio", "history", "html", "slideshow", "map", "evi",          "text", "text-template", "lesson", "looma", "game"), //the 'ft' values used in the DB
-                array("PDF", "Video", "Pictures", "Audio", "History", "HTML", "Slideshow", "Map", "Edited video", "Text", "Text Template", "Lesson", "Looma Page", "Game"), //human readable versions for labels displayed on checkboxes
+                array("PDF", "Video", "Pictures", "Audio", "History", "HTML", "Slideshow", "Map", "Edited video", "Text", "Text Template", "Lesson", "Page", "Game"), //human readable versions for labels displayed on checkboxes
                 );
                 for($x = 0; $x < count($types[0]); $x++) {
                      echo "<span  class='typ-chk' data-id='"  . $types[0][$x] . "-chk'>";
@@ -207,7 +207,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         echo "</span>";
 
         echo "<button id='chapter-submit' class='chapter-filter filesearch black-border' name='search' value='chapter' type='submit'>";
-            echo "<img draggable='false' src='images/looma-search2.png'>";
+            echo "<img draggable='false' src='/images/looma-search2.png'>";
             echo "</button>";
             
         echo "<button class='chapter-filter clear-search' type='button'>Clear</button>";

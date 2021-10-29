@@ -6,7 +6,44 @@
     height:75vh;
     width:75vw;
     margin: 3vh auto;
-    padding: 5vh;
     background-color: white;
     color: black;
 }
+
+h2 {margin: 0 auto 3vh;}
+
+#workspace {height:90%;}
+
+#linechart, #piechart, #mapchart {
+    height:94%;
+    width:100%;
+    margin-top:5vh;
+    position:absolute;
+    top:0;left:0;
+}
+
+#linecontrols, #barcontrols, #mapcontrols {
+    margin: 2vh auto;
+
+}
+#piecontrols {
+    display:none;
+    margin: 2vh auto;
+}
+
+button#prev, button#next {margin: 0 0 0 3vw;}
+
+#views {
+    position:absolute;
+    top:10vh;
+    right:-9vw;
+}
+
+#views button {
+    height:7vh;
+    width:7vw;
+    background-color: pink;
+    margin:2vh 0;
+}
+
+#views #map { display:none; }

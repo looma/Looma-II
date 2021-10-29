@@ -58,7 +58,10 @@ Description:  displays and navigates content folders for Looma
         if ($buttons > $maxButtons) { $buttons = 1; echo "</tr><tr>";}
     }
 
+//  ************* MAIN CODE here *************
+// ***************************************
 // get filepath to use for start of DIR traversal
+
     if (isset($_GET['fp'])) $path = $_GET['fp']; else $path = "../content/";
 
     echo "<br><h3 class='title'>"; keyword('Library'); echo ":  ";
@@ -85,11 +88,18 @@ Description:  displays and navigates content folders for Looma
 
     foreach (new DirectoryIterator($path) as $fileInfo) {
         $files[$fileInfo->getFilename()] = $fileInfo;
-    }
+    };
+
+    //foreach($files as $key => $value) echo ' filename '. $key . '  value: '. $value . '<br>';
+    //exit;
+
 
    //if at the top level folder "../content", then move CEHRD, Wikipedia, Khan and ePaath to the top so they are presented first
-    if ($path == "../content/") {
+    if ($path == "/content/") {
 
+        //echo '$path is ' . $path; exit;
+
+        //echo '$files[epaath] is ' . $files['epaath'];exit;
 
         $tmp = $files['epaath'];
         unset($files['epaath']);
@@ -110,6 +120,10 @@ Description:  displays and navigates content folders for Looma
         }
     }
 
+    //foreach ($files as $file => $value) echo $file . '<br>'; exit;
+
+
+
     /********************************************************************************************/
     /**********  DIRs  **************************************************************************/
     /********************************************************************************************/
@@ -118,7 +132,7 @@ Description:  displays and navigates content folders for Looma
     $dirlist = array();
 
     foreach ($files as $file => $dirInfo) {
-        //echo $path . $file;;
+      //  echo $path . $file . '<br>';;
 
     $file = (string) $file;
 
@@ -132,17 +146,17 @@ Description:  displays and navigates content folders for Looma
         //special case for CEHRD
         // virtual folder
         if ($path . $file == "../content/CEHRD") {
-            echo "<td><a href='looma-library.php?fp=" . $path . $file . "/'>";
+            echo "<td><a href='library?fp=" . $path . $file . "/'>";
             echo "<button class='activity img zeroScroll'>" .
                 folderThumbnail($path . $file);
 
             echo "<span class='english-keyword'>"
-                . "CEHRD Instruction" .
-                "<span class='xlat'>" . "CEHRD Instruction" . "</span>" .
+                . "CEHRD Productions" .
+                "<span class='xlat'>" . "CEHRD उत्पादन" . "</span>" .
                 "</span>";
             echo "<span class='native-keyword' >"
-                . "CEHRD Instruction" .
-                "<span class='xlat'>" . "CEHRD Instruction" . "</span>" .
+                . "CEHRD उत्पादन" .
+                "<span class='xlat'>" . "CEHRD Productions" . "</span>" .
                 "</span>";
             echo "<span class='tip yes-show big-show' >" . $file . "</span>" .
                 "</button></a></td>";
@@ -153,7 +167,7 @@ Description:  displays and navigates content folders for Looma
         //make a button that launches W4S index.htm -- virtual folder
             else if ($path . $file == "../content/W4S2013") {   //create a virtual folder for W4S
                 echo "<td>";
-                echo '<a href="looma-wikipedia.php">';
+                echo '<a href="wikipedia">';
                 echo '<button id="wikipedia-index" class="activity img play">';
                     echo '<img src="images/logos/wikipedia.jpg"/>';
                    keyword("Wikipedia");
@@ -225,12 +239,12 @@ Description:  displays and navigates content folders for Looma
         foreach ($dirlist as $dir) {
 
             if (isset($dir['ft']) && $dir['ft'] === "book")
-                 echo "<td><a class='book' href='looma-book.php?fp=" . $dir['path'] . $dir['file'] .
+                 echo "<td><a class='book' href='book?fp=" . $dir['path'] . $dir['file'] .
                       "/&prefix=" . $dir['prefix'] .
                       "&dn=" . $dir['dn'] .
                       "&ndn=" . $dir['ndn'] .
                       "'>";
-            else echo "<td><a href='looma-library.php?fp=" . $dir['path'] . $dir['file'] . "/'>";
+            else echo "<td><a href='library?fp=" . $dir['path'] . $dir['file'] . "/'>";
             echo "<button class='activity img zeroScroll'>" .
                 folderThumbnail($dir['path'] . $dir['file']);
 
@@ -269,7 +283,7 @@ echo "</tr></table>";
             echo "<td>";
             $dn = $lesson['dn'];
             $ft = "lesson";
-            $thumb = "images/lesson2.png";
+            $thumb = "/Looma/images/lesson2.png";
             $id = $lesson['mongoID'];  //mongoID of the descriptor for this lesson
             makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
             echo "</td>";
@@ -494,7 +508,7 @@ echo "</tr></table>";
                             if (($file[0] == ".") ||
                                 strpos($file, "_thumb") ||
                                 $file == "thumbnail.png" ||
-                                $file == "images.txt")
+                                $file == "/Looma/images.txt")
                                 continue;
 
                             if (is_file($path . $file)) {

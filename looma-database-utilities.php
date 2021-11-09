@@ -175,7 +175,7 @@ require_once('includes/looma-utilities.php');
                 $nextFormatted = format($nextUTC, $timeframe);
 
               //  while ($nextFormatted < $formatted) {
-                while ($nextUTC < $UTC && $nextFormatted !== $formatted) {
+                if ($timeframe !== 'months') while ($nextUTC < $UTC && $nextFormatted !== $formatted) {
                     $filler = [];
                     $filler['visits'] = 0;
                     $filler['uniques']=0;
@@ -1521,7 +1521,9 @@ if (isset($_REQUEST["collection"])) {
 
                   $data = [];
                   foreach ($logdata as $datum) $data[] = $datum;
-                  echo json_encode($data);
+
+                  $result['data']  = $data;
+                  echo json_encode($result);
                   return;
               } else {    // get data for Line Chart of activity in 'type' in {hours, days, weeks, months}
                   $chunk = (integer) $_REQUEST['chunk']; // how many results to return
@@ -1534,7 +1536,11 @@ if (isset($_REQUEST["collection"])) {
                   $logdata = mongoFind($collection, array(), 'utc', null, null);
 
                   $datatemp = [];
-                  foreach ($logdata as $datum) $datatemp[] = $datum;
+
+                  $datatemp = iterator_to_array($logdata);
+
+                 // foreach ($logdata as $datum) $datatemp[] = $datum;
+                //  for ($i=0;$i<count( (array) $logdata);$i++)  $datatemp[$i] = $logdata[$i];
                         //this code gets all the entries (all the way back in time)
                         //   then fills in missing time periods with visits=0,uniques=0 ("fillLogData()")
                         //   then truncates to the chunk/prev requestes
@@ -1542,10 +1548,29 @@ if (isset($_REQUEST["collection"])) {
                   if (count($datatemp) > 0) $data = fillLogData($datatemp, $timeframe);
                   else $data = [];
 
-                  if (count($data) > $chunk*($prev+1)) $data = array_slice($data,-1*($chunk*($prev + 1)), $chunk);
-                  else if (count($data) > $chunk) $data = array_slice($data, -1*$chunk);
+           //       if (count($data) > $chunk*($prev+1)) $data = array_slice($data,-1*($chunk*($prev + 1)), $chunk);
+           //       else if (count($data) > $chunk) $data = array_slice($data, -1*$chunk);
 
-                  echo json_encode($data);
+          $length = count($data);
+
+          $result['first'] = false; $result['last']  = false;
+
+                   if ($chunk >= $length) {
+                        $result['first']=true;
+                        $result['last']=true;
+                   } else if ($prev === 0) {
+                        $data = array_slice($data, -1 * $chunk, $chunk);
+                        $result['last']  =  true;
+                   } else if ($length < $chunk*($prev+1)) {
+                        $data = array_slice($data,0,$length-1*($chunk*($prev)));
+                        $result['first'] = true;
+                   } else {
+                        $data = array_slice($data,-1*($chunk*($prev + 1)), $chunk);
+                   }
+
+                  $result['data']  = $data;
+
+                  echo json_encode($result);
                   return;
             };
 

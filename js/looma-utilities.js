@@ -415,10 +415,10 @@ playMedia : function(button) {
                            );
                     
                         //var fn = (language === 'native') ? result.nfn : result.fn;
-                        var fn;
-                        if ( ! fn in result && nfn in result) fn = result.nfn;
+                        if ( ! 'fn' in result && 'nfn' in result) fn = result.nfn;
+                        else if ('fn' in result) fn = result.fn;
                         else fn = null;
-                    
+                        
                         if      (result.ft == 'EP'       && result.thumb)
                                                thumbfile = '../ePaath/' + result.thumb;
                         else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft || 'map') && result.thumb)
@@ -663,8 +663,8 @@ capitalize : function(string) {
 setStore : function(name, value, type) {
     if (type == 'local') localStorage.setItem(name, value);
     else if (type == 'session') sessionStorage.setItem(name, value);
-    else if (type == 'cookie') document.cookie = name + '=' + encodeURIComponent(value);
-    else if (type == 'session-cookie') document.cookie = name + '=' + encodeURIComponent(value) + '; expires=0';
+    else if (type == 'cookie') document.cookie = name + '=' + encodeURIComponent(value)+'; path=/';
+    else if (type == 'session-cookie') document.cookie = name + '=' + encodeURIComponent(value)+'; expires=0; path=/';
     else console.log('LOOMA.utilities.setStore: unknown localStore type: ' +
         type);
 },

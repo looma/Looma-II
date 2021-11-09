@@ -1,12 +1,10 @@
-<!doctype html>
 <?php
     $page_title = 'Looma Home Page';
     require_once ('includes/header.php');
 
     logUserActivity();
     logPageHit('home');
-
-    ?>
+?>
 
     <link rel="stylesheet" href="css/looma-home.css">
 </head>
@@ -14,7 +12,7 @@
 <body>
     <div id="main-container-horizontal">
 
-        <?php
+    <?php
 
         if($source === 'CEHRD') {
             //echo '<div id="head" class="cehrd">';
@@ -42,7 +40,7 @@
                 echo 'src="images/logos/Looma-nepali-amanda 3x1.png" >';
           //  echo "</div>";
         }
-        ?>
+    ?>
 
         <!--  display CLASS buttons  -->
         <div id="classes" class="button-div">
@@ -64,12 +62,12 @@
     </div>
 
     <?php
-        if ($source === "CEHRD") {
+    /*    if ($source === "CEHRD") {
             echo "<marquee id='marquee'>";
             echo "This CEHRD Learning Portal is still under construction. We welcome comments to iemis@cehrd.gov.np. Thank you.";
             echo "</marquee>";
         }
-    ?>
+  */  ?>
 
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>

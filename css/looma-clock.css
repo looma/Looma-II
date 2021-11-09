@@ -261,14 +261,19 @@ h2 {
 #getInput{
     position: absolute;
     top: 77%;
-    left: 23%;
+    padding: 1vh;
+    right: 5vw;
     font-size: 2.5em;
-    width: 100%;
+    width: 50vw;
+    border: 2px solid black;
+    border-radius:5px;
+    
 }
 
 #submit{
     color: black;
     height:7vh;
+    font-size: 0.75em;
 }
 
 #txtOutput{
@@ -289,11 +294,15 @@ h2 {
     -webkit-appearance: menulist-button;
     color: black;
     height: 7vh;
+    font-size: 0.75em;
+    
 }
 #userMin{
     -webkit-appearance: menulist-button;
     color: black;
     height: 7vh;
+    font-size: 0.75em;
+    
 }
 
 /* World Clocks */

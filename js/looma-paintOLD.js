@@ -26,7 +26,7 @@
  3a.  - should Paint Pictures be activities?
  
  4. show Looma toolbar and fullscreen button?
- 4a. move PAINT toolbar to Looma std location?
+4a. move PAINT toolbar to Looma std location?
  
  5. Only ask to SAVE if changes have been made
  5a. Ask to SAVE when leaving page
@@ -89,94 +89,94 @@ var previousScale;
 
 
 var ALT_HEART =
-    "M 254.61918,253.64205 C 117.17208,251.17089 -10.019359,466.12329 360.54492,688.98275 ";
-ALT_HEART += "C 360.95119,688.25159 362.51369,688.25159 362.91995,688.98275  ";
-ALT_HEART += "C 745.43794,458.93404 597.58506,237.34257 455.54564,254.5921  ";
-ALT_HEART += "C 400.17294,261.31658 374.04232,292.04855 361.73239,318.48008  ";
-ALT_HEART += "C 349.42256,292.04855 323.29184,261.31658 267.91932,254.5921  ";
-ALT_HEART += "C 263.48052,254.05283 259.053,253.72191 254.61918,253.64205 z";
+       "M 254.61918,253.64205 C 117.17208,251.17089 -10.019359,466.12329 360.54492,688.98275 ";
+       ALT_HEART += "C 360.95119,688.25159 362.51369,688.25159 362.91995,688.98275  ";
+       ALT_HEART += "C 745.43794,458.93404 597.58506,237.34257 455.54564,254.5921  ";
+       ALT_HEART += "C 400.17294,261.31658 374.04232,292.04855 361.73239,318.48008  ";
+       ALT_HEART += "C 349.42256,292.04855 323.29184,261.31658 267.91932,254.5921  ";
+       ALT_HEART += "C 263.48052,254.05283 259.053,253.72191 254.61918,253.64205 z";
 
 
 // big heart shape from internet
 var HEART_STRING = 'M340.8 98.4 c50.7 0 91.9 41.3 91.9 92.3 c0 26.2-10.9 49.8-28.3 66.6 L256 407.1 ';
-HEART_STRING += 'L105 254.6 c-15.8-16.6-25.6-39.1-25.6-63.9 c0-51 41.1-92.3 91.9-92.3 c38.2 0 70.9 23.4 84.8 56.8 ';
-HEART_STRING += 'C269.8 121.9 302.6 98.4 340.8 98.4 M340.8 83 C307 83 276 98.8 256 124.8 c-20-26-51-41.8-84.8-41.8 ';
-HEART_STRING += 'C112.1 83 64 131.3 64 190.7 c0 27.9 10.6 54.4 29.9 74.6 L245.1 418 l10.9 11 l10.9-11 l148.3-149.8 ';
-HEART_STRING += 'c21-20.3 32.8-47.9 32.8-77.5 C448 131.3 399.9 83 340.8 83 L340.8 83 z';
+    HEART_STRING += 'L105 254.6 c-15.8-16.6-25.6-39.1-25.6-63.9 c0-51 41.1-92.3 91.9-92.3 c38.2 0 70.9 23.4 84.8 56.8 ';
+    HEART_STRING += 'C269.8 121.9 302.6 98.4 340.8 98.4 M340.8 83 C307 83 276 98.8 256 124.8 c-20-26-51-41.8-84.8-41.8 ';
+    HEART_STRING += 'C112.1 83 64 131.3 64 190.7 c0 27.9 10.6 54.4 29.9 74.6 L245.1 418 l10.9 11 l10.9-11 l148.3-149.8 ';
+    HEART_STRING += 'c21-20.3 32.8-47.9 32.8-77.5 C448 131.3 399.9 83 340.8 83 L340.8 83 z';
 
-/*
+                /*
 
-"M1 0.5 C1 0 0 0.25 1 1 L1 0.5 C1 0 2 0.25 1 1";
+            "M1 0.5 C1 0 0 0.25 1 1 L1 0.5 C1 0 2 0.25 1 1";
 
-function drawHeart (ctx, x, y, startX, startY) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    var width = x - startX;
-    var height = y - startY;
-    ctx.beginPath();
-    ctx.moveTo(startX + width / 4, startY);
-    ctx.bezierCurveTo(startX, startY, startX, startY + height / 4, startX + width / 2, y);
-    ctx.moveTo(x - width / 4, startY);
-    ctx.bezierCurveTo(x, startY, x, startY + height / 4, startX + width / 2, y);
-    ctx.moveTo(x - width / 4, startY);
-    ctx.quadraticCurveTo(startX + width / 2, startY, startX + width / 2, startY + height / 4);
-    ctx.moveTo(startX + width / 4, startY);
-    ctx.quadraticCurveTo(startX + width / 2, startY, startX + width / 2, startY + height / 4);
-    ctx.stroke();
-}    ; //end drawHeart()
+             function drawHeart (ctx, x, y, startX, startY) {
+                    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                    var width = x - startX;
+                    var height = y - startY;
+                    ctx.beginPath();
+                    ctx.moveTo(startX + width / 4, startY);
+                    ctx.bezierCurveTo(startX, startY, startX, startY + height / 4, startX + width / 2, y);
+                    ctx.moveTo(x - width / 4, startY);
+                    ctx.bezierCurveTo(x, startY, x, startY + height / 4, startX + width / 2, y);
+                    ctx.moveTo(x - width / 4, startY);
+                    ctx.quadraticCurveTo(startX + width / 2, startY, startX + width / 2, startY + height / 4);
+                    ctx.moveTo(startX + width / 4, startY);
+                    ctx.quadraticCurveTo(startX + width / 2, startY, startX + width / 2, startY + height / 4);
+                    ctx.stroke();
+              }    ; //end drawHeart()
 
-*/
+    */
 
 var SMOOTH_AMOUNT = 50;
 
 var COUNTER = "counter";
 
 window.onload = function () {
-    
-    // Initialize all the elements, and set up paper.js to use the canvas.
-    canvas = document.getElementById("canvas");
-    paper.setup(canvas);
-    
-    //canvasWidth = canvas.width;
-    //canvasHeight = canvas.height;
-    
-    canvas.onmousedown = mouseDown;
-    canvas.onmouseup =     mouseUp;
-    canvas.onmousemove = mouseMove;
-    
-    clearElement = document.getElementById("clear");
-    undoElement =    document.getElementById("undo");
-    
-    clearElement.onclick = clear;
-    undoElement.onclick = undo;
-    
-    $('.drop-content img').click(select);  //change currentSettings based on user button press
-    
-    // trying to override PAGESPEED optimization that doesnt change COLOR button image
-    $('#colorButton').attr('src', 'images/reddot.png');
-    
-    
-    saveElement = document.getElementById("save");
-    openElement = document.getElementById("open");
-    backElement = document.getElementById("back");
-    
-    saveElement.onclick = saveFile;
-    openElement.onclick = showOpenMenu;
-    // backElement.onclick = back;
-    
-    // If this is the first run, set the counter to 0.
-    // If not, don't change anything.
-    localStorage.setItem(COUNTER, localStorage.getItem(COUNTER) || "0");
-    
-    // if we are being called from looma-paint-openfile, then the # hash value contains the filename to open
-    if (location.hash != "") {
-        openFile(location.hash.substring(1));
-    }
-    
-    //non-W3C standard CSS "user-select:none" keeps the canvas from being selectable
-    //NOTE: why not put this in the CSS?
-    ["", "-moz-", "-webkit-", "-ms-", "-khtml-"].forEach(function(obj, i){
-        document.body.style[obj + "user-select"] = "none";
-    });
+
+        // Initialize all the elements, and set up paper.js to use the canvas.
+        canvas = document.getElementById("canvas");
+        paper.setup(canvas);
+
+        //canvasWidth = canvas.width;
+        //canvasHeight = canvas.height;
+
+        canvas.onmousedown = mouseDown;
+        canvas.onmouseup =     mouseUp;
+        canvas.onmousemove = mouseMove;
+
+        clearElement = document.getElementById("clear");
+        undoElement =    document.getElementById("undo");
+
+        clearElement.onclick = clear;
+        undoElement.onclick = undo;
+
+        $('.drop-content img').click(select);  //change currentSettings based on user button press
+
+        // trying to override PAGESPEED optimization that doesnt change COLOR button image
+        $('#colorButton').attr('src', 'images/reddot.png');
+
+
+        saveElement = document.getElementById("save");
+        openElement = document.getElementById("open");
+        backElement = document.getElementById("back");
+
+        saveElement.onclick = saveFile;
+        openElement.onclick = showOpenMenu;
+        backElement.onclick = back;
+
+        // If this is the first run, set the counter to 0.
+           // If not, don't change anything.
+        localStorage.setItem(COUNTER, localStorage.getItem(COUNTER) || "0");
+
+        // if we are being called from looma-paint-openfile, then the # hash value contains the filename to open
+        if (location.hash != "") {
+            openFile(location.hash.substring(1));
+        }
+
+        //non-W3C standard CSS "user-select:none" keeps the canvas from being selectable
+        //NOTE: why not put this in the CSS?
+        ["", "-moz-", "-webkit-", "-ms-", "-khtml-"].forEach(function(obj, i){
+          document.body.style[obj + "user-select"] = "none";
+        });
 };
 
 function getColor() {
@@ -186,7 +186,7 @@ function getColor() {
     }
     else {
 //        color = selectedColor.getAttribute("value");
-        color = currentSettings.color;
+          color = currentSettings.color;
     }
     return color;
 }
@@ -196,24 +196,24 @@ mouseDown = function(e) {
     Called when the user clicks on the canvas. This function decides what shape to
     start drawing, and sets its color and initial properties.
     */
-    
+
     //DEBUG
-    //console.log('PAINT: mouseDown');
+      //console.log('PAINT: mouseDown');
     //
-    
+
     x = e.pageX - $('#canvas').offset().left;
     y = e.pageY - $('#canvas').offset().top;
-    
+
     startPoint = new paper.Point(x, y);
     var color = getColor();
-    
+
     if (currentSettings.shape == 'scribble' || currentSettings.pencil == 'erase')
     {
         /*
         The user is either free-drawing or erasing. The only difference between
         these modes is that the eraser doesn't activate smoothing.
         */
-        
+
         currentPath = new paper.Path({
             segments: [new paper.Point(x, y)]
         });
@@ -221,7 +221,7 @@ mouseDown = function(e) {
     else if (currentSettings.shape == 'line')
     {
         currentPath = new paper.Path.Line
-        (new paper.Point(x, y), new paper.Point(x, y));
+            (new paper.Point(x, y), new paper.Point(x, y));
     }
     else if (currentSettings.shape == 'rectangle' || currentSettings.shape == 'oval')
     {
@@ -250,96 +250,96 @@ mouseDown = function(e) {
         previousScale = 100;
         currentPath = p;
     }
-    
-    if (currentPath) {
-        
-        currentPath.strokeColor = color;
-        currentPath.strokeWidth = currentSettings.size;
-        currentPath.strokeCap = 'round';
-    }
-    
+
+        if (currentPath) {
+
+            currentPath.strokeColor = color;
+            currentPath.strokeWidth = currentSettings.size;
+            currentPath.strokeCap = 'round';
+        }
+
     isDrawing = true;
 }; //end mouseDown()
 
 mouseMove = function(e) {
-    if (isDrawing) {
-        /*
-        Alter the drawing to accomodate the new mouse coordinates. This either
-        requires scaling or adding more points to the path.
-        */
-        
-        x = e.pageX - $('#canvas').offset().left;
-        y = e.pageY - $('#canvas').offset().top;
-        
-        if (currentSettings.shape == 'scribble' || currentSettings.pencil == 'erase')
-        {
-            currentPath.add(new paper.Point(x, y));
-        }
-        else if (currentSettings.shape == 'line')
-        {
-            // Remove the last point and add a new endpoint.
-            currentPath.removeSegment(1);
-            currentPath.add(new paper.Point(x, y));
-        }
-        else if (currentSettings.shape == 'rectangle' ||
-            currentSettings.shape == 'oval')
-        {
-            // Rather that scaling the shape, just delete it and make a new one.
-            currentPath.remove();
-            var rect = new paper.Rectangle(startPoint, new paper.Point(x, y));
-            if (currentSettings.shape == 'rectangle') {
-                currentPath = new paper.Path.Rectangle(rect);
+        if (isDrawing) {
+            /*
+            Alter the drawing to accomodate the new mouse coordinates. This either
+            requires scaling or adding more points to the path.
+            */
+
+            x = e.pageX - $('#canvas').offset().left;
+            y = e.pageY - $('#canvas').offset().top;
+
+            if (currentSettings.shape == 'scribble' || currentSettings.pencil == 'erase')
+            {
+                currentPath.add(new paper.Point(x, y));
             }
-            else {
-                currentPath = new paper.Path.Ellipse(rect);
+            else if (currentSettings.shape == 'line')
+            {
+                // Remove the last point and add a new endpoint.
+                currentPath.removeSegment(1);
+                currentPath.add(new paper.Point(x, y));
             }
-            var color = getColor();
-            currentPath.strokeColor = color;
-            currentPath.strokeWidth = currentSettings.size;
-            currentPath.strokeCap = 'round';
-            paper.view.draw();
-        }
-        else if (currentSettings.shape == 'heart')
-        {
-            var p = new paper.Path(HEART_STRING);
-            p.fillColor = color;
-            p.strokeColor = color;
-            p.position = startPoint;
-            currentPath.scale(1/previousScale, startPoint);
-            previousScale = Math.min(
-                Math.abs(startPoint.x-x),
-                Math.abs(startPoint.y-y)
-            );
-            previousScale += 0.00001;
-            previousScale *= 1;
-            currentPath.scale(previousScale, startPoint);
-        }
-    } //end IF (isDrawing)
+            else if (currentSettings.shape == 'rectangle' ||
+        currentSettings.shape == 'oval')
+            {
+                // Rather that scaling the shape, just delete it and make a new one.
+                currentPath.remove();
+                var rect = new paper.Rectangle(startPoint, new paper.Point(x, y));
+                if (currentSettings.shape == 'rectangle') {
+                    currentPath = new paper.Path.Rectangle(rect);
+                }
+                else {
+                    currentPath = new paper.Path.Ellipse(rect);
+                }
+                var color = getColor();
+                currentPath.strokeColor = color;
+                currentPath.strokeWidth = currentSettings.size;
+                currentPath.strokeCap = 'round';
+                paper.view.draw();
+            }
+            else if (currentSettings.shape == 'heart')
+            {
+                var p = new paper.Path(HEART_STRING);
+                p.fillColor = color;
+                p.strokeColor = color;
+                p.position = startPoint;
+                currentPath.scale(1/previousScale, startPoint);
+                previousScale = Math.min(
+                       Math.abs(startPoint.x-x),
+                      Math.abs(startPoint.y-y)
+                       );
+                previousScale += 0.00001;
+                previousScale *= 1;
+                currentPath.scale(previousScale, startPoint);
+            }
+        } //end IF (isDrawing)
 }; //end mouseMove()
 
 mouseUp = function(e) {
-    
+
     /*DEBUG
       console.log('PAINT: mouseUp');
     */
-    
-    if (isDrawing) {
-        if (currentSettings.shape == 'scribble' && currentSettings.pencil != 'erase')
-        {
-            /*
-            Smooth the drawing.
-            This value can be changed to achieve different effects.
-            */
-            currentPath.simplify(SMOOTH_AMOUNT);
+
+        if (isDrawing) {
+            if (currentSettings.shape == 'scribble' && currentSettings.pencil != 'erase')
+            {
+                /*
+                Smooth the drawing.
+                This value can be changed to achieve different effects.
+                */
+                currentPath.simplify(SMOOTH_AMOUNT);
+            }
+
+            // Add the path to our undo stack.
+            historyStack.push(currentPath);
+            //currentPath = null; //NOTE: why did AKSHAY have this?????
         }
-        
-        // Add the path to our undo stack.
-        historyStack.push(currentPath);
-        //currentPath = null; //NOTE: why did AKSHAY have this?????
-    }
-    // Force a repaint.
-    paper.view.draw();
-    isDrawing = false;
+        // Force a repaint.
+        paper.view.draw();
+        isDrawing = false;
 }; //end mouseUp()
 
 clear = function() {
@@ -368,30 +368,30 @@ select = function(e) {
     currentSettings[name] = value;
     // e.target is a .drop-content img. insert its SRC into the img of the parent (.drop-button) of the parent (.drop-content) of e.target
     $(e.target.parentNode.parentNode.children[0]).attr('src', $(e.target).attr('src'));
-    
+
     //set custom cursor if ERASE, else restore regular cursor
     if (name == 'pencil') {
-        
+
         console.log('PAINT: changing cursor: name is ' + name + ' value is '  + value);
-        
+
         if (value == 'erase') $('#canvas').css('cursor', 'no-drop');
         else                  $('#canvas').css('cursor', 'crosshair');
     };
-    
-    
+
+
 }; //end SELECT()
 
 function showOpenMenu() {
-    // Navigate to the "Open" menu.
+  // Navigate to the "Open" menu.
 
 //BUG - should detect if the user has made any changes to the current drawing. if not, dont ask to SAVE
 //
-    
-    LOOMA.confirm("Save current drawing?",
-        function (){saveFile();window.location = ("looma-paint-openfile.php");},
-        function (){window.location = ("looma-paint-openfile.php");}
-    );
-    //window.location = ("looma-paint-openfile.php");
+
+     LOOMA.confirm("Save current drawing?",
+                function (){saveFile();window.location = ("looma-paint-openfile.php");},
+                function (){window.location = ("looma-paint-openfile.php");}
+            );
+     //window.location = ("looma-paint-openfile.php");
 }
 
 function back() {  window.history.back();}   //currently goes to index.php, the homepage. should this just be history.back()?
@@ -407,21 +407,21 @@ function savePaint() {
 } //savePaint()
 
 function saveFile() {  //original  version. saves files to user's localStorage. not permanent or accessible by others
-    /*
-    Save the file in localStorage.
-    Counter is incremented to ensure each file gets a unique id.
-    Return the file's id.
-    */
+  /*
+  Save the file in localStorage.
+  Counter is incremented to ensure each file gets a unique id.
+  Return the file's id.
+  */
     var counter = parseInt(localStorage.getItem(COUNTER));
     localStorage.setItem(
-        "LOOMA_" + (counter + 1).toString(),
-        paper.project.exportSVG({
-            asString: true
-        })
-    );
+    "LOOMA_" + (counter + 1).toString(),
+    paper.project.exportSVG({
+      asString: true
+    })
+  );
     localStorage.setItem(COUNTER, (counter + 1).toString());
-    LOOMA.alert('Drawing saved',5,true);  //shows a hidden div with id='notice' for 5 seconds
-    return "LOOMA_" + (counter + 1).toString();
+    LOOMA.alert('Drawing saved', 10);  //shows a hidden div with id='notice' for 5 seconds
+  return "LOOMA_" + (counter + 1).toString();
 }
 
 function openPaint(fileID) {
@@ -451,9 +451,9 @@ function openFile(fileName) {
 }
 
 function deleteFile(fileName) {
-    /*
-    Remove a file from localStorage.
-    Not used, but included to offer a full "API".
-    */
+  /*
+  Remove a file from localStorage.
+  Not used, but included to offer a full "API".
+  */
     localStorage.removeItem(fileName);
 }

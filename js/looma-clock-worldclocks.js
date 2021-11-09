@@ -98,7 +98,7 @@ window.onload = function() {
     
     function drawName(ctx, name) {
         ctx.font = "18px Chalkboard";
-        ctx.fillStyle = "yellow";
+        ctx.fillStyle = "red";
         ctx.fillText(name, 0, -radius - 15);
     }
     
@@ -271,11 +271,12 @@ window.onload = function() {
             }
         }
     
-        ctx.fillStyle = "yellow";
+        ctx.fillStyle = "black";
         ctx.font = "18px Chalkboard";
         //ctx.font = "25px Ariel";
         ctx.clearRect(-radius * 2 / 3, radius, radius * 1.5, radius / 2);
         ctx.fillText((language==='english' ? digitalTime : nepaliTime), 0, radius + 12);
+       // ctx.fillText(digitalTime, 0, radius + 12);
     } // end drawDigitalTime()
                             
                             /*    function drawDigitalTime(hours, minutes, ctx) {

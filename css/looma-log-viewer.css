@@ -33,6 +33,8 @@ h2 {margin: 0 auto 3vh;}
 
 button#prev, button#next {margin: 0 0 0 3vw;}
 
+button#prev:disabled, button#next:disabled {color:gray;}
+
 #views {
     position:absolute;
     top:10vh;

@@ -7,7 +7,7 @@
 
 //if (file_exists('../content/CEHRD')) $source = 'CEHRD';
     if ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np'
-        || $_SERVER['SERVER_NAME'] === 'localhost'
+  //      || $_SERVER['SERVER_NAME'] === 'localhost'
     )
          $source = 'CEHRD';
     else $source = 'looma';
@@ -16,19 +16,18 @@
 
     if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $source) {
         setcookie('source',$source,0,"/");
-        setcookie('theme', $source,0,"/");
+        if ($source === 'CEHRD') setcookie('theme', 'CEHRD',0,"/");
         header("Refresh:0");
-       // exit;
+        exit;
     }
 
     if ($_COOKIE['source'] === "CEHRD") {
-     print "<title>Learning Portal</title>";
+      print "<title>Learning Portal</title>";
       print '<link rel="icon" type="image/png" href="images/logos/CEHRD-logo small.jpg">';
     } else {  //source default is  'looma'
-      print "<title>{$page_title}</title>";
-      print '<link rel="icon" type="image/png" href="images/logos/looma favicon yellow on blue.png">';
+        print "<title>{$page_title}</title>";
+        print '<link rel="icon" type="image/png" href="images/logos/looma favicon yellow on blue.png">';
     }
-
     //echo 'source is ' . $_COOKIE['source']; exit;
 
 ?>
@@ -95,16 +94,13 @@ File: header.php
 
       <!-- <div class="watermark">Under Construction</div>  -->
 
-      <!-- <link rel="stylesheet" href="css/tether.min.css">  -->       <!-- needed by bootstrap.css -->
-      <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->     <!-- Bootstrap CSS still needed ?? yes, for glyphicons-->
-
       <link rel="stylesheet" href="css/looma.css">             <!-- Looma CSS -->
       <link rel="stylesheet" href="css/looma-keyboard.css">    <!-- Looma keyboard CSS -->
 
     <?php  /*retrieve 'theme' cookie from $_COOKIE and use it to load the correct 'css/looma-theme-xxxxxx.css' stylesheet*/
-        if(isset($_COOKIE["source"])) $settheme = $_COOKIE['source']; else $settheme = "CEHRD";
-
-//        echo 'loading CSS css/looma-theme-' . $settheme . '.css';exit;
+        if ( $source === 'CEHRD' )         $settheme = "CEHRD";
+        else if (isset($_COOKIE['theme'])) $settheme = $_COOKIE['theme'];
+        else                               $settheme = 'looma';
 
         echo "<link rel='stylesheet' href='css/looma-theme-" . $settheme . ".css' id='theme-stylesheet'>";
 

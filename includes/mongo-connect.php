@@ -79,7 +79,7 @@ function mongoFindRandom($collection, $filter, $count) {
     global $mongo_level;
     if ($mongo_level >= 4) {
         $cursor = $collection -> aggregate([
-                array('$match' =>  $filter),
+                array('$match' =>  (object) $filter),
                 array('$sample' => array( 'size' => $count))]);
     } else {  // old mongoDB, mongo_level 2 or 3
         $cursor = $collection->find( $filter );

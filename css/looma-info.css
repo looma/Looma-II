@@ -29,6 +29,7 @@
     margin-right:0.5vw;
 }
 
+a {color:lightgreen;}
  #logos {
      grid-row: 3;
      grid-column: left / middle-right;

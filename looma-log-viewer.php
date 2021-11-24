@@ -26,9 +26,9 @@ require_once ('includes/header.php');
             <canvas id="mapchart"></canvas>
         </div>
         <div id="linecontrols">
-            <input type="radio" id="hours" name="timeframe" value="hours" checked>
+            <input type="radio" id="hours" name="timeframe" value="hours" >
             <label for="hours">By hour</label>
-            <input type="radio" id="days" name="timeframe" value="days">
+            <input type="radio" id="days" name="timeframe" value="days" checked>
             <label for="days">By day</label>
             <input type="radio" id="weeks" name="timeframe" value="weeks">
             <label for="months">By week</label>

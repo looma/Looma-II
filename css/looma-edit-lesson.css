@@ -193,6 +193,8 @@ span.hint {
     top:0.5vh;
 }
 
+#filecommands .template-cmd {display:none;}
+
 .filesearch-collectionname {
     font-weight:bold;
     font-size:1.5em;
@@ -475,9 +477,9 @@ button[disabled] {
 
 #timelineDisplay .activityDiv .textdiv{
     height:50%;
-    width:45%;
-    float:left;
-    padding-left:3px;
+    width:35%;
+   /* float:left;*/
+    padding-left:0.1px;
     display:block;
     overflow:hidden;
 }
@@ -504,7 +506,7 @@ button[disabled] {
     /* height:10vh; */
     /* max-height:50%; */
     width:50%;
-    height:64%;
+    height:60%;
     float:left;
 }
 

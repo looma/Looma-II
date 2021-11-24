@@ -267,7 +267,7 @@ $(document).ready( function () {
     barctx = barcanvas.getContext('2d');
     barchart = new Chart(barctx, barconfig);
     
-    var tf = 'hours'; var prev = 0;
+    var tf = 'days'; var prev = 0;
     drawLineChart(tf,prev);
     
 });

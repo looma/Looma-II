@@ -26,6 +26,7 @@ function lessonclear() {
     setname("", "");
     $timeline.empty();
     lessoncheckpoint();
+    $("#previewpanel").empty();
 }
 
 ///////  lessonshowsearchitems  /////////
@@ -1124,8 +1125,8 @@ window.onload = function () {
     loginname = LOOMA.loggedIn();
     var loginlevel = LOOMA.readStore('login-level','cookie')
     var loginteam  = LOOMA.readStore('login-team','cookie')
-    if (loginname && loginlevel === 'admin' )   $('.admin').show();
-    if (loginname && loginlevel === 'exec' )  { $('.admin').show(); $('.exec').show(); }
+  //  if (loginname && loginlevel === 'admin' )   $('.admin').show();
+  //  if (loginname && loginlevel === 'exec' )  { $('.admin').show(); $('.exec').show(); }
     
     $('#setup-panel .cancel').click(function(){
         $('.setup-panel').hide();

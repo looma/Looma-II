@@ -23,7 +23,8 @@ include ('includes/header.php');
 
         <div id="logo">
         <?php
-            if($_COOKIE['theme'] === 'CEHRD' || isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
+      //      if($_COOKIE['theme'] === 'CEHRD' || isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
+            if($source === 'CEHRD') {
                 echo '<img draggable="false" class="english-keyword" src="images/logos/CEHRD-banner-english.jpg" class="cehrd-logo">';
                 echo '<img draggable="false" class="native-keyword" src="images/logos/CEHRD-banner-nepali.jpg" class="cehrd-logo">';
             }  else {
@@ -34,8 +35,9 @@ include ('includes/header.php');
         </div>
         <div id="title">
             <?php
-            if($_COOKIE['theme'] === 'CEHRD' || isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
-               // echo '<h1 id="title" class="title">Learning Portal Information</h1>';
+            //if($_COOKIE['theme'] === 'CEHRD' || isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
+            if($source === 'CEHRD') {
+                // echo '<h1 id="title" class="title">Learning Portal Information</h1>';
             }  else {
                 echo '<img src="images/trademark4.png" id="trademark" height="33px">';
                 echo '<h1 id="title" class="title">Looma Information</h1>';
@@ -44,7 +46,7 @@ include ('includes/header.php');
         </div>
         <div id="about">
             <div id="copyright"><h3>Looma 2</h3>
-                <h4>   Release 7.1.2 NOV 2021   </h4>
+                <h4>   Release 7.1.3 NOV 2021   </h4>
                 <img src ='images/copyright.png' class="copyright"></img>2021
             </div>
 

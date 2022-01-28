@@ -43,9 +43,9 @@ require_once ('includes/header.php');
             <label for="filetypes">Filetypes Used</label>
         </div>
         <div id="views">
-                <button id="line">Activity</button><br>
-                <button id="bar">Usage</button><br>
-                <button id="map">Map</button>
+                <button id="line"> <?php tooltip("Activity") ?>  </button><br>
+            <button id="bar">      <?php tooltip("Usage") ?>     </button><br>
+            <button id="map">      <?php tooltip("Locations") ?> </button>
         </div>
     </div>
 </div>

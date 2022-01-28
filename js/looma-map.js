@@ -71,7 +71,7 @@ function loadBaseLayers (layerData) {
     var promises = [];
     for (var i = 0; i < layerData.length; i++) {    // Loads the base layers onto the map by reading geojson in
         //var baseLayer;
-        var link = '../content/maps/json/' + layerData[i].geojson;
+        var link = '/content/maps/json/' + layerData[i].geojson;
         promises[i] = getMapJSON(link, i);
     }
     
@@ -223,104 +223,172 @@ function baseLayerButtons (layerData)
     choice.addTo(map);
 } // end baseLayerButtons()
 
+
+function makeGeoJson(data) {
+        var geoJson =
+        {   "type": "FeatureCollection",
+            "features": []
+        };
+        
+        var feature = {"type": "Feature",
+            "properties" : {"ip": "<IP>",
+                "country": "<country>",
+                "province": "<province>",
+                "city":    "<city>",
+                "lat":     "<lat>",
+                "long":    "<long>",
+                "visits":  "<visits>" },
+            "geometry":{"coordinates":[],
+                        "type":"Point"}
+                    };
+        
+        data.forEach(function(datum) {
+            //TO CLONE an OBJECT: let cloneObj = JSON.parse(JSON.stringify(obj));
+            var temp =  JSON.parse(JSON.stringify(feature));
+            temp['properties']['ip'] = datum['ip'];
+            temp['properties']['country'] = "Nepal";
+            temp['properties']['province'] = datum['province'];
+            temp['properties']['city'] = datum['city'];
+            temp['properties']['lat'] = datum['lat'];
+            temp['properties']['long'] = datum['long'];
+            temp['properties']['visits'] = datum['visits'];
+            temp['geometry']['coordinates'].push( datum['long'], datum['lat'] );
+            
+            geoJson['features'].push(temp);
+        });
+        return geoJson;
+};  // end makeGeoJson
+
 ////////////////////////
 // Loads the add-on layers onto the map by reading geojson in if they exist
 function loadAddOnLayers (layerData, information) {
+    
+            ///////////////////
+            function createAddOnLayer (data) {
+                var addOnLayer = L.geoJson(data, {
+                    
+                    //onEachFeature: function (feature, latlng) {};
+                    
+                    pointToLayer: function (feature, latlng) {
+                        
+                       if (mapTitle === "Looma Schools Map" || mapTitle === "Looma User Locations") {
+                            var rand = Math.floor((Math.random() * 10) + 1);
+                            var blinking_circle = L.divIcon({className: 'blinking blinking' + rand})
+                            marker = L.marker(latlng, {icon: blinking_circle});
+                            //marker._icon.style = "animation-duration:5s;";
+                        }
+                        else
+                    
+                        marker = L.circleMarker(latlng, {
+                            radius: layerData[arrIndex].style.radius,
+                            color : layerData[arrIndex].style.color,
+                            weight : layerData[arrIndex].style.weight,
+                            opacity : layerData[arrIndex].style.opacity,
+                            fillOpacity : layerData[arrIndex].style.fillOpacity,
+                            fillColor : layerData[arrIndex].style.fillColor
+                        });
+                 
+                        var popText = "";
+                        var counter = 0;
+                        var imageKey = "";
+                        var imageData = "";
+                        if (layerData[arrIndex].image) imageKey = layerData[arrIndex].image;
+                        
+                        Object.keys(feature.properties).forEach(function(key)
+                        {
+                            if(layerData[arrIndex].inPop) {
+                                var inPop = layerData[arrIndex].inPop;
+                                if (counter == 0) //the first feature is the name, and we don't need context for that
+                                {
+                                    if (inPop.indexOf(key) != -1)
+                                    {
+                                        popText += feature.properties[key].bold();
+                                        popText += '<br>';
+                                        counter++;
+                                    }
+                                } else {
+                                    if (inPop.indexOf(key) != -1) {
+                                        popText += capitalize(key).bold() + ": " + toCommas(feature.properties[key]);
+                                        popText += '<br>';
+                                    }
+                                }
+                            } else { //if they have not specified which features to include, include all of them
+                                if (counter == 0) { //the first feature is the name, and we don't need context for that
+                                    popText += feature.properties[key].bold();
+                                    popText += '<br>';
+                                    counter++;
+                                } else {
+                                    popText += capitalize(key).bold() + ": " + toCommas(feature.properties[key]);
+                                    popText += '<br>';
+                                }
+                            }
+                            if(imageKey == key) imageData = feature.properties[key];
+                        });
+                        
+                        if(imageData.indexOf(' ') !== -1) imageData = imageData.replace(/ /gi, "_")
+                        
+                        if (layerData[arrIndex].image && information.popExtension) {
+                            try {
+                                var imageLink = getPhotoLink(imageData, information.popExtension);
+                                popText += "<img class='pop-image' src = " + imageLink + " alt = ''>" + '<br>';
+                            }
+                            catch (err) {
+                                console.log("error caught!");
+                            }
+                        }
+                        
+                        //DIKSHA       popText+="Wikipedia : <a href='/content/W4S/wp/1/"+imageData+".htm'>" + imageData +"</a><br>";
+                        
+                        
+                        marker.bindPopup(popText,{className:'capital-popup', keepInView:true, width:600, minWidth:600, maxWidth:600});
+                        
+                        // markers.addLayer(marker);
+                        
+                        return marker;
+                    }
+                });
+                addOnLayers[arrIndex++] = addOnLayer;
+                // addOnLayers[arrIndex] = markers;
+                //arrIndex ++;
+            }; // end createAddOnlayer()
+    
+            function createMarkerClusterAddOnLayer(data) {
+                var markers = L.markerClusterGroup();
+                var geojson = L.geoJson(data,
+                    {
+                        onEachFeature:function(feature, layer) {
+                        var popupText = feature.properties.ip + '<br>' + feature.properties.city;
+                        layer.bindPopup(popupText);
+                        }
+                    }
+                );
+                markers.addLayer(geojson);
+                
+                addOnLayers[arrIndex++] = markers;
+            }; // end createMarkerClusterAddOnLayer()
+    
+    //// start of loadAddOnLayers()  ////
     var arrIndex = 0; // a counter for the array
     var promises = [];
     var marker;
     //var markers = new L.MarkerClusterGroup();
     
-    for (var i = 0; i < layerData.length; i++)
-    {
-        var link = '../content/maps/json/' + layerData[i].geojson;
-       // var addOnLayer = "";
-        promises[i] = $.getJSON((link), function (data) {
-            var addOnLayer = L.geoJson(data, {
-                pointToLayer: function (feature, latlng) {
-                //onEachFeature: function (feature, latlng) {
-                
-                    if (mapTitle === "Looma Schools Map") {
-                        var rand = Math.floor((Math.random() * 10) + 1);
-                        var blinking_circle = L.divIcon({className: 'blinking blinking' + rand})
-                        marker = L.marker(latlng, {icon: blinking_circle});
-                        //marker._icon.style = "animation-duration:5s;";
-                    }
-                    
-                    else marker = L.circleMarker(latlng, {
-                        radius: layerData[arrIndex].style.radius,
-                        color : layerData[arrIndex].style.color,
-                        weight : layerData[arrIndex].style.weight,
-                        opacity : layerData[arrIndex].style.opacity,
-                        fillOpacity : layerData[arrIndex].style.fillOpacity,
-                        fillColor : layerData[arrIndex].style.fillColor
-                    });
-                    
-                    
-                    var popText = "";
-                    var counter = 0;
-                    var imageKey = "";
-                    var imageData = "";
-                    if (layerData[arrIndex].image) imageKey = layerData[arrIndex].image;
-                    
-                    Object.keys(feature.properties).forEach(function(key)
-                    {
-                        if(layerData[arrIndex].inPop) {
-                            var inPop = layerData[arrIndex].inPop;
-                            if (counter == 0) //the first feature is the name, and we don't need context for that
-                            {
-                                if (inPop.indexOf(key) != -1)
-                                {
-                                    popText += feature.properties[key].bold();
-                                    popText += '<br>';
-                                    counter++;
-                                }
-                            } else {
-                                if (inPop.indexOf(key) != -1) {
-                                    popText += capitalize(key).bold() + ": " + toCommas(feature.properties[key]);
-                                    popText += '<br>';
-                                }
-                            }
-                        } else { //if they have not specified which features to include, include all of them
-                            if (counter == 0) { //the first feature is the name, and we don't need context for that
-                                popText += feature.properties[key].bold();
-                                popText += '<br>';
-                                counter++;
-                            } else {
-                                popText += capitalize(key).bold() + ": " + toCommas(feature.properties[key]);
-                                popText += '<br>';
-                            }
-                        }
-                        if(imageKey == key) imageData = feature.properties[key];
-                    });
-
-                    if(imageData.indexOf(' ') !== -1) imageData = spaceToUnderscore(imageData);
-                    
-                    if (layerData[arrIndex].image && information.popExtension) {
-                        try {
-                            var imageLink = getPhotoLink(imageData, information.popExtension);
-                            popText += "<img class='pop-image' src = " + imageLink + " alt = ''>" + '<br>';
-                        }
-                        catch (err) {
-                            console.log("error caught!");
-                        }
-                    }
-    
-               //DIKSHA       popText+="Wikipedia : <a href='../content/W4S/wp/1/"+imageData+".htm'>" + imageData +"</a><br>";
-    
-    
-                    marker.bindPopup(popText,{className:'capital-popup', keepInView:true, width:600, minWidth:600, maxWidth:600});
-                    
-           // markers.addLayer(marker);
-                    
-                    return marker;
-                }
-            });
-            addOnLayers[arrIndex] = addOnLayer;
-   // addOnLayers[arrIndex] = markers;
-            arrIndex ++;
-        });
-    }  // end for (i)
+    if (mapTitle === 'Looma User Locations') {
+        promises[0] = $.post("looma-database-utilities.php",
+            {cmd: 'getLogLocations'},
+            function(data) {
+                var geojson = makeGeoJson(JSON.parse(data));
+                createMarkerClusterAddOnLayer(geojson);}
+        ).fail(function(){console.log('getLogLocations failed');});
+    }
+    else for (var i = 0; i < layerData.length; i++)
+        { var link = '/content/maps/json/' + layerData[i].geojson;
+                // var addOnLayer = "";
+                promises[i] = $.getJSON(
+                    link,
+                    function (data) {createAddOnLayer(data);}
+                );
+        }  // end for (i)
     
     
     Promise.all(promises).then(function() {
@@ -558,7 +626,7 @@ function findPriority(value) {
 ////////////////////////
 // Gets the flag link based on the country (photo link is (country id).png)
 function getPhotoLink(iso, extension) {
-    return ('../content/maps/photos/' + iso + "." + extension).toString();
+    return ('/content/maps/photos/' + iso + "." + extension).toString();
 } // end getPhotoLink()
 
 
@@ -689,7 +757,7 @@ window.onload = function () {
             //If the map has tiles, add them as a background for the map
             if (data.tileLayer && data.tileExtension)
             {
-                var link = '../maps2018/tiles/' + data.tileLayer + '/{z}/{x}/{y}.' + data.tileExtension;
+                var link = '/maps2018/tiles/' + data.tileLayer + '/{z}/{x}/{y}.' + data.tileExtension;
                 L.tileLayer(link, {
                     minZoom: data.info.zoom.minZoom,
                     maxZoom: data.info.zoom.maxZoom,
@@ -702,7 +770,7 @@ window.onload = function () {
                 southWest = L.latLng(data.info.mapBounds.SWLat, data.info.mapBounds.SWLong);
                 northEast = L.latLng(data.info.mapBounds.NELat, data.info.mapBounds.NELong);
             }
-            else {  //Default
+            else {  //Default (whole globe, centered on Nepal)
                 southWest = L.latLng(-85.0511, -180);
                 northEast = L.latLng(85.0511, 180);
             }

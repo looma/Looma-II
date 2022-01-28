@@ -5,21 +5,23 @@
 
 //if (file_exists('../content/CEHRD')) echo '../content/CEHRD exists'; exit;
 
-//if (file_exists('../content/CEHRD')) $source = 'CEHRD';
-    if ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np'
-  //      || $_SERVER['SERVER_NAME'] === 'localhost'
-    )
-         $source = 'CEHRD';
-    else $source = 'looma';
+//if (file_exists('../content/CEHRD')) $LOOMA_SERVER = 'CEHRD';
+    if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np')
+         $LOOMA_SERVER = 'CEHRD';
+    else if ($_SERVER['SERVER_NAME'] === '54.214.229.222' || $_SERVER['SERVER_NAME'] === 'looma.website')
+         $LOOMA_SERVER = 'looma';
+    else $LOOMA_SERVER = 'looma local';
 
-    //echo 'source is '.$source;exit;
+    //echo "server[server_name) is " . $_SERVER['SERVER_NAME'];exit;
 
-    if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $source) {
-        setcookie('source',$source,0,"/");
-        if ($source === 'CEHRD') setcookie('theme', 'CEHRD',0,"/");
+    if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER) {
+        setcookie('source',$LOOMA_SERVER,0,"/");
+        if ($LOOMA_SERVER === 'CEHRD') setcookie('theme', 'CEHRD',0,"/");
         header("Refresh:0");
         exit;
     }
+
+    print "<!DOCTYPE html>";
 
     if ($_COOKIE['source'] === "CEHRD") {
       print "<title>Learning Portal</title>";
@@ -31,7 +33,8 @@
     //echo 'source is ' . $_COOKIE['source']; exit;
 
 ?>
-<html lang="en" class="no-js">
+<!--<html lang="en" class="no-js"> -->
+<html lang="en">
   <head>
 
       <!--
@@ -59,35 +62,14 @@ File: header.php
     The current version of Looma is configured for grade K-12 education in Nepal. Configurations for other
     languages and countries are planned.">
 
-
-      <!--
-                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-                  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-                  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-                  <link rel="manifest" href="/site.webmanifest">
-                  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-                  <meta name="msapplication-TileColor" content="#da532c">
-                  <meta name="theme-color" content="#ffffff">
-
-       -->
-      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> <!-- uses latest IE rendering engine-->
-      <!--[if lt IE 9]> <script src="js/html5shiv.min.js"></script>  <![endif]-->
-
 	<?php
   	    // Turn on error reporting
 		error_reporting(E_ALL);
 		ini_set('display_errors', 1);
 
-    //if (file_exists('includes/looma-translate.php')) echo 'includes/looma-translate.php  exists'; exit;
-
-    require_once ('includes/looma-translate.php');
-    require_once ('includes/mongo-connect.php');
-
- //echo '__dirname__ is ' . dirname(__DIR__) . ' and cwd is '. getcwd() ;exit;
-   ///////////////////////////////////////////////
-//require_once(dirname(__DIR__ ). '/includes/mongo-connect.php');
-
-    require_once ('includes/looma-log-user-activity.php');
+        require_once ('includes/looma-translate.php');
+        require_once ('includes/mongo-connect.php');
+        require_once ('includes/looma-log-user-activity.php');
 
 		define ("CONTENT_PATH", "../content");
 	?>
@@ -98,7 +80,7 @@ File: header.php
       <link rel="stylesheet" href="css/looma-keyboard.css">    <!-- Looma keyboard CSS -->
 
     <?php  /*retrieve 'theme' cookie from $_COOKIE and use it to load the correct 'css/looma-theme-xxxxxx.css' stylesheet*/
-        if ( $source === 'CEHRD' )         $settheme = "CEHRD";
+        if ( $LOOMA_SERVER === 'CEHRD' )         $settheme = "CEHRD";
         else if (isset($_COOKIE['theme'])) $settheme = $_COOKIE['theme'];
         else                               $settheme = 'looma';
 

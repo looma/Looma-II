@@ -81,14 +81,14 @@ Comments: Uses wysiwyg.js to create, edit and store "text cards" for Looma [in l
                         <!-- <li><a data-edit="foreColor #000000">Black</a></li> -->
                     </ul>
                 </div>
-         <!--
+
                 <div class="btn-group">
-                    <a class="btn btn-default btn-info" data-edit="bold"   title="Bold"><i class="fa fa-2x fa-bold"></i></a>
+          <!--           <a class="btn btn-default btn-info" data-edit="bold"   title="Bold"><i class="fa fa-2x fa-bold"></i></a>
                     <a class="btn btn-default" data-edit="italic" title="Italic"><i class="fa fa-2x fa-italic"></i></a>
                         <a class="btn btn-default" data-edit="strikethrough" title="Strikethrough"><i class="fa fa-2x fa-strikethrough"></i></a>
-                     <a class="btn btn-default" data-edit="underline" title="Underline"><i class="fa fa-2x fa-underline"></i></a>
+           -->           <a class="btn btn-default" data-edit="underline" title="Underline"><i class="fa fa-2x fa-underline"></i></a>
                 </div>
-        -->
+
         <!--
               <div class="btn-group">
                          <a class="btn btn-default" data-edit="insertunorderedlist" title="Bullet list"><i class="fa fa-2x fa-list-ul"></i></a>

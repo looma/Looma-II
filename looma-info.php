@@ -4,7 +4,7 @@ extra comment
 Name: Skip
 
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 2015 03
+Date: JAN 2022
 Revision: Looma 3.0.0
 File: looma-info.php
 Description:  for Looma 2
@@ -24,10 +24,10 @@ include ('includes/header.php');
         <div id="logo">
         <?php
       //      if($_COOKIE['theme'] === 'CEHRD' || isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
-            if($source === 'CEHRD') {
+            if($LOOMA_SERVER === 'CEHRD') {
                 echo '<img draggable="false" class="english-keyword" src="images/logos/CEHRD-banner-english.jpg" class="cehrd-logo">';
                 echo '<img draggable="false" class="native-keyword" src="images/logos/CEHRD-banner-nepali.jpg" class="cehrd-logo">';
-            }  else {
+            }  else {   // $LOOMA_SERVER is 'looma' or 'looma local'
                 echo '<img draggable="false" src="images/logos/LoomaLogoTransparent.png" class="loomalogo">';
                 echo '<img src="images/trademark4.png" id="trademark" height="33px">';
             }
@@ -36,9 +36,9 @@ include ('includes/header.php');
         <div id="title">
             <?php
             //if($_COOKIE['theme'] === 'CEHRD' || isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
-            if($source === 'CEHRD') {
+            if($LOOMA_SERVER === 'CEHRD') {
                 // echo '<h1 id="title" class="title">Learning Portal Information</h1>';
-            }  else {
+            }  else {   // $LOOMA_SERVER is 'looma' or 'looma local'
                 echo '<img src="images/trademark4.png" id="trademark" height="33px">';
                 echo '<h1 id="title" class="title">Looma Information</h1>';
             }
@@ -46,7 +46,7 @@ include ('includes/header.php');
         </div>
         <div id="about">
             <div id="copyright"><h3>Looma 2</h3>
-                <h4>   Release 7.1.3 NOV 2021   </h4>
+                <h4>   Release 7.1.5 JAN 2022   </h4>
                 <img src ='images/copyright.png' class="copyright"></img>2021
             </div>
 
@@ -114,6 +114,9 @@ include ('includes/header.php');
             <a draggable="false"  class="attribution" href="http://looma.education" target="_blank">
                 <img draggable="false" src="images/logos/VTSLogo.jpg" height="66px"></a>
         </div>
+    <div id="log-viewer">
+        <button id="line"> <?php tooltip("Activity Logs") ?>  </button><br>
+    </div>
         <div id="info-panel">
         <?php
             if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] !== 'CEHRD') {
@@ -174,7 +177,7 @@ include ('includes/header.php');
 </div>
 
 <?php
-/*if ($source === "CEHRD") {
+/*if ($LOOMA_SERVER === "CEHRD") {
     echo "<marquee id='marquee'>";
     echo "This CEHRD Learning Portal is still under construction. We welcome comments to ";
     echo "<a href='mailto:iemis@cehrd.gov.np''>iemis@cehrd.gov.np</a>";
@@ -188,84 +191,6 @@ include ('includes/js-includes.php');
 ?>
 <script src="js/jquery.easy-ticker.js"></script>
 <script src="js/looma-info.js"></script>
-
-<!--    <h4>- attributions for borrowed content</h4>
-<li>OLE Nepal, Khan academy, Wikipedia, Open Street Maps, ...</li>
-<h4>- attribution for open source code used, etc. </h4>
-<li>jsKeyboard,leaflet.js, paper.js, TileMill, jQuery, jQuery UI, bootstrap, mongodb, modernizer, pico2wave</li>
- <li>viewer.js, pdf.js, responsiveVoice.js, FullScreen.js topojson.js, google translate</li>
- <li>xnepali.net/fonts, stackoverflow mimic by MyCroft.ai</li>
-
- content:
- 5Gear Studios
- Ales Kladnik
- Antonio Palma
- BBC
- Bodhaguru
- Bozeman Science
- California Academy
- Chuchu TV Kids Songs
- Crash Course
- Earth Island Institute
- Emily Dassel
- ETH Zurich
- Fit Factor Kids Exercize
- Frank Gregorio
- Global Help Videos
- Healthfirst NY
- Hesperian Foundation
- IPPF/FPAN
- Jonathan Bergmann
- Joshua Manley
- KALite
- Khan
- Laurent Schwebel
- Make Me Genius
- Mitja Cvetko
- NASA
- NatGeo
- Nellie and Ed
- OLE Nepal
- Orin Zebest
- Patakiskola
- Peter Bohacek
- Peter Erb
- Playsongs
- Sarah Christenson
- SciShow
- Strength Project
- The Happy Scientist
- The Tokin Tube
- Think Pictures
- Tiger Productions
- Transpower NZ
- Wikipedia
- WorldPossible
-
- NGO
- KISC EQUIP
- Lew/Ntungi
- Museum of Science Boston
- Nepal Youth Foundation
- UMN (United Mission to Nepal)
-
- Corporate
- Inquiring Systems Inc.
- Perkins Coie
- Pocobor
- Three60
-
- Employed software
- Bootstrap
- Flipper.css
- Google translate
- Leaflet
- Miro Video Converter
- ThumbsUp
- TileMill, MapBox
- WordNet, EasyDefine
- OSM, geoFabrik, others?
-     -->
 
 </body>
 </html>

@@ -8,9 +8,12 @@ Date:  Skip Jun 2020
 
 <?php
 
-function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+//function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
 
-$name = isLoggedIn();
+$page_title = 'Looma - Change Password';
+require_once('includes/header.php');
+
+$name = loggedIn();
 
 /*
  * change_password() validates the inputs (old, new1, new2) and
@@ -45,15 +48,16 @@ function change_password($id, $old, $new1, $new2) {
         $query = array('name' => $id, 'pw' => $oldSHA);
         $update = array('$set' => array('pw' => $newSHA));
 
-       // echo 'name is ' . $id . ' old is ' . $old . ' new is ' . $new1 . ' [$oldSHA is ' . $oldSHA . ' $newSHA is ' . $newSHA;
+       //echo 'name is ' . $id . ' old is ' . $old . ' new is ' . $new1 . ' [$oldSHA is ' . $oldSHA . ' $newSHA is ' . $newSHA;
        $r  = mongoUpdate($logins_collection, $query, $update);
 
-       //DEBUG nprint_r ($r);
+      // DEBUG  print_r ($r);  //exit;
 
-        if ($r['nModified'] === 1)
+        if ($r->getModifiedCount() !== 0)
         {
             //login succesfull
-            return array(true, $name, isset($r['level']) ? $r['level']:'', isset($r['team']) ? $r['team']:'');
+            $r = (array) $r;
+            return array(true, $id, isset($r['level']) ? $r['level']:'', isset($r['team']) ? $r['team']:'');
         }
         else
         {
@@ -61,7 +65,7 @@ function change_password($id, $old, $new1, $new2) {
         }
     }
     //error_log("end check login");
-    return array(false, $errors, null);
+    return array(false, $errors, null, null);
 }  //end change_password
 
 /*
@@ -93,11 +97,14 @@ function redirect_user($page)  {
         error_log("received a post pw change attempt");
 
         //Uses check_login function to return boolean with passing and errors with login
+
+        //echo $name .' '. $_POST['old'] .' '. $_POST['new1'].' '. $_POST['new2']; exit();
+
         list ($check, $data, $level, $team) = change_password($name, $_POST['old'], $_POST['new1'], $_POST['new2']);
 
         //if password change was successful set cookie and redirect_user to the PHP file
         if ($check) {
-            echo $_POST['id'] . '  ' . $level . '  ' . $team;
+            echo $data . '  ' . $level . '  ' . $team;
             //setcookie ("login", $_POST['id']);
             //setcookie ("login-level", $level);
             //setcookie ("login-team", $team);
@@ -110,8 +117,7 @@ function redirect_user($page)  {
         }
     }  //end of if POST
 
-$page_title = 'Looma - Change Password';
-include('includes/header.php');
+
 ?>
 <link rel="stylesheet" href="css/looma-login.css">
 
@@ -160,7 +166,7 @@ include('includes/header.php');
 </div>
 
 <?php   include ('includes/toolbar.php');
-include ('includes/js-includes.php');
+        include ('includes/js-includes.php');
 ?>
 
 </body>

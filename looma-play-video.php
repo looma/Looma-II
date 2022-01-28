@@ -51,6 +51,7 @@ they want to edit a video
                             </video>
                             <div id="fullscreen-buttons">
                                 <?php include ('includes/looma-control-buttons.php');?>
+                                <?php downloadButton($filepath,$filename); ?>
                             </div>
                         </div>
                     </div>

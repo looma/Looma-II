@@ -47,6 +47,7 @@ require_once('includes/looma-utilities.php');
   //  download
   /// sendMail
   /// getLogData
+  /// getLogLocations
   ////////////////////////////////
 
         // SAVEACTIVITY function
@@ -198,8 +199,14 @@ require_once('includes/looma-utilities.php');
 /****   main code here    ****/
 /*****************************/
 
+  if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np')
+       $LOOMA_SERVER = 'CEHRD';
+  else if ($_SERVER['SERVER_NAME'] === '54.214.229.222' || $_SERVER['SERVER_NAME'] === 'looma.website')
+       $LOOMA_SERVER = 'looma';
+  else $LOOMA_SERVER = 'looma local';
 
-date_default_timezone_set ( 'UTC');
+
+  date_default_timezone_set ( 'UTC');
 $date = date("Y.m.d");
 
 
@@ -240,7 +247,7 @@ if (isset($_REQUEST["collection"])) {
      $chapters_collection      = $loomaDB -> chapters;
      $textbooks_collection     = $loomaDB -> textbooks;
      $dictionary_collection    = $loomaDB -> dictionary;
-     $logins_collection        = $loomaDB -> logins;
+     $logins_collection        = $loomausers -> logins;
      $history_collection       = $loomaDB -> histories;
      $slideshows_collection    = $loomaDB -> slideshows;
      $lessons_collection       = $loomaDB -> lessons;
@@ -991,17 +998,17 @@ if (isset($_REQUEST["collection"])) {
 
         //echo 'FOUND '.$cursor->count().' items';
 
-        //SORT the found items before sending to client-side
-        //$cursor->sort(array('dn' => 1)); //NOTE: this is MONGO sort() method for mongo cursors [not a PHP sort]
-
 //
 //NOTE: we use an older version of MONGO that doesnt support COLLATION order.
 //  this code should get all the cursor elements into a PHP array and do NATKSORT ( like looma-library.php does)
 //
         $result = array();
-        //if ($cursor->count() > 0) {
-            foreach ($cursor as $d) $result[] = $d;
-       // }
+        foreach ($cursor as $d)  {
+            //echo ('server is ' . $LOOMA_SERVER . ' and fp is ' . $d['fp']);
+
+          // // //  if ( $LOOMA_SERVER === 'CEHRD' ||  ! (strpos($d['fp'], "../content/CEHRD") === false))
+                $result[] = $d;
+         }
 
 
 //echo "Search result is: ";
@@ -1063,6 +1070,15 @@ if (isset($_REQUEST["collection"])) {
             }
             $numUnique = sizeof($unique);
 
+    /*     //filter out CEHRD content for non-CEHRD servers (looma.website and looma local)
+
+            global $LOOMA_SERVER;
+            //echo ('filepath is  ' . $file['fp'] . ',and server is ' . $LOOMA_SERVER);
+            if ( $LOOMA_SERVER !== 'CEHRD' && strpos($file['fp'], "../content/CEHRD") === 0) {
+                $file = null;
+            };
+
+     */
 
 //echo "Search result is: ";
 //print_r($unique);
@@ -1220,8 +1236,7 @@ if (isset($_REQUEST["collection"])) {
         foreach ($arr as $activity)
             if($activity) {
 
-    //echo '$activity is: ' . $activity;    //getting only one $activity
-
+    //echo '$activity is: ' . $activity;
 
             $query = array('_id' => mongoId($activity));
             //print_r ($query);
@@ -1574,7 +1589,33 @@ if (isset($_REQUEST["collection"])) {
                   return;
             };
 
-      ///////////////////////////////////////////
+
+          ///////////////////////////////////////////
+          // getLogLocations ('timeframe' in {hours, days, weeks, months},
+          //             'chunk' = number of points to return,
+          //             'prev' = #chunks to skip[from most recent skipping backwards, e.g. "0" means return the latest data points)
+          ///////////////////////////////////////////
+          case "getLogLocations":
+              global $collections;
+              //$query =array('country'=>'NP');
+
+              //$query = array('$or' => array( 'country' => 'NP', 'country' => 'Nepal'));
+              $query = [
+                  '$or' => [
+                      ['country' => 'NP'],
+                      ['country' => 'Nepal']]];
+
+              $collection = $collections['users'];
+              $logdata = mongoFind($collection, $query, null, null, null);
+
+              $data = [];
+              foreach ($logdata as $datum) $data[] = $datum;
+
+              $result = $data;
+              echo json_encode($result);
+              return;  // end case getLogLocations
+
+          ///////////////////////////////////////////
       // nothing  (null command for debugging) //
       ///////////////////////////////////////////
           case "nothing":

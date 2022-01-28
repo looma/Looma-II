@@ -66,6 +66,9 @@ button.toolbar#toolbar-record {display:none;}
     background-position: center;
     
 }
+
+#toolbar button img {height:80%;width:80%;}
+
 .toolbar-button-vertical {
     margin: 0.2vw;
     height: 6vh !important;

@@ -328,7 +328,11 @@ function openPage(item, collection, url) {
             id: item.data('id')
         },
         function(result) {
-            window.location =  url + '?id=' + result['_id'].$id;
+            var id;
+            if ('$oid' in result['_id']) id = result['_id'].$oid;
+           else
+            id = result['_id'].$id;
+            window.location =  url + '?id=' + id;
         },
         'json'
     );

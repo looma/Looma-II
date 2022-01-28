@@ -39,9 +39,9 @@ function logFiletypeHit($ft) {
 //////////   log user access   //////////
 function logUser($utc)
 {   global $users_collection;
+    global $LOOMA_SERVER;
+
     $ip = userIP();
-    $geo['lat'] = "";$geo['long']="";$geo['country']="";
-    $geo = userLatLong($ip);
 
         // update USERS collection in the LOG database
             //if IP not in user collection
@@ -58,15 +58,26 @@ function logUser($utc)
         );
     } else {  // this is a new user
         $prevUTC = null;
-        mongoInsert($users_collection,
-                     array('ip'      => $ip,
-                                'first'   => $utc,
-                                'latest'  => $utc,
-                                'lat'     => $geo['lat'],
-                                'long'    => $geo['long'],
-                                'country' => $geo['country'],
-                                'visits'  => 1));
-        };
+        $geo =  array(  'ip'      => $ip,
+                        'first'   => $utc,
+                        'latest'  => $utc,
+                        'lat'     => null,
+                        'long'    => null,
+                        'city'    => null,
+                        'province'=> null,
+                        'country' => null,
+                        'visits'  => 1);
+
+        if ($LOOMA_SERVER !== 'looma local') {
+            $location = userLatLong($ip);
+            $geo['lat']      = $location['lat'];
+            $geo['long']     = $location['long'];
+            $geo['city']     = $location['city'];
+            $geo['province'] = $location['province'];
+            $geo['country']  = $location['country'];
+            }
+        mongoInsert($users_collection, $geo);
+        }; // end new user
     return $prevUTC;
 } // end logUser()
 
@@ -154,34 +165,47 @@ function userIP() {
 }  // end userIP()
 
 function userLatLong ($userIP) {
-    // https://freegeoip.app/json/{IP_or_hostname}
-    $apiURL = 'https://api.freegeoip.app/json?apikey=a89e3860-28cc-11ec-b614-2981d826f277';
-    $ch = curl_init();
+    // using https://freegeoip.app/json/{IP_or_hostname}?apikey=a89e3860-28cc-11ec-b614-2981d826f277
+    /*
+    $apiURL = 'https://api.freegeoip.app/json/' . $userIP . '?apikey=a89e3860-28cc-11ec-b614-2981d826f277';
+    $ch = curl_init($apiURL);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $apiResponse = curl_exec($ch);
     curl_close($ch);
-    $ipData = json_decode($apiResponse, true);
+    */
+
+    // using https://ipinfo.io/{IP_or_hostname}?token=1b16a3c5bbd78e
+    $apiResoonse = file_get_contents( "https://ipinfo.io/$userIP?token=1b16a3c5bbd78e");
+
+    $ipData = json_decode($apiResoonse, true);
 
     if(!empty($ipData)){
-        $country_code = $ipData['country_code'];
-        $country_name = $ipData['country_name'];
-        $latitude = $ipData['latitude'];
-        $longitude = $ipData['longitude'];
-        return array('IP'=>$userIP,'country'=>$country_name,'lat'=>$latitude,'long'=>$longitude);
+       // $country_code = $ipData['country_code'];
+        $country =   $ipData['country'];
+        $province =  $ipData['region'];
+        $city =      $ipData['city'];
+        $location = explode (",", $ipData['loc']);
+        $latitude =  $location[0];
+        $longitude = $location[1];
+        return array('IP'=>$userIP,'country'=>$country,'province'=>$province,'city'=>$city,'lat'=>$latitude,'long'=>$longitude);
     } else
-        return array('IP'=>$userIP,'country'=>null,'lat'=>null,'long'=>null);
+        return array('IP'=>$userIP,'country'=>null,'province'=>null,'city'=>null,'lat'=>null,'long'=>null);
 }  // end userLatLong()
 
 function logUserActivity () {
-    $utc = time(); // this is the UTC linux timestamp - seconds since the epoch (NOT milliseconds)
-                   // WARNING: UTC values in PHP are in SECONDS, in JS they are in MILLIseconds
-    $utc = $utc - $utc % (60 *60);  // round to the hour
+    global $LOOMA_SERVER;
 
-    $prevUTC = logUser($utc);  // $prevUTC returns the last time this user accessed the site
-                                    // in UTC seconds since the epoch rounded to hour
-    logHour ($utc, $prevUTC);
-    logDay  ($utc, $prevUTC);
-    logWeek ($utc, $prevUTC);
-    logMonth($utc, $prevUTC);
+    if ($LOOMA_SERVER !== 'looma local') { // no logging for Looma boxes
+        $utc = time(); // this is the UTC linux timestamp - seconds since the epoch (NOT milliseconds)
+        // WARNING: UTC values in PHP are in SECONDS, in JS they are in MILLIseconds
+        $utc = $utc - $utc % (60 * 60);  // round to the hour
+
+        $prevUTC = logUser($utc);  // $prevUTC returns the last time this user accessed the site
+        // in UTC seconds since the epoch rounded to hour
+        logHour($utc, $prevUTC);
+        logDay($utc, $prevUTC);
+        logWeek($utc, $prevUTC);
+        logMonth($utc, $prevUTC);
+    }
 };
 ?>

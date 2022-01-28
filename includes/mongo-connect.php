@@ -47,10 +47,25 @@ function mongoCount($collection) {
     return $count;
 }
 
+function CEHRDfilter($filter) {
+
+    // NOTE: for the CEHRD Learning Portal, there are files in ../content/CEHRD
+    //       that are not on regular loomas. These files are filtered here so that
+    //       the database of activities can be the same for CEHRD portal and regular Loomas
+
+    global $LOOMA_SERVER;
+    if ($LOOMA_SERVER !== "CEHRD")
+         $filter['fp'] = array('$not' => mongoRegex("\.\.\/content\/CEHRD"));
+    return $filter;
+}
+
 function mongoFind($collection, $filter, $sort, $skip, $limit) {
 
     // $auery, $sort, $skip, and $limit may be null
     global $mongo_level;
+
+    $filter = CEHRDfilter($filter);
+
     if ($mongo_level >= 4) {
         $options = [];
         if ($sort) $options['sort'] = [ $sort => 1 ];
@@ -69,6 +84,9 @@ function mongoFind($collection, $filter, $sort, $skip, $limit) {
 
 function mongoFindOne($collection, $filter) {
     global $mongo_level;
+
+    $filter = CEHRDfilter($filter);
+
     $doc = $collection->findOne( $filter );
     return $doc;
 }
@@ -211,7 +229,6 @@ catch(MongoConnectionException $e) {
 
 $dbhost = 'localhost';
 $dbname = 'looma';
-$logname = 'activitylog';
 
 //use below FORMAT for PHP later than 5.5??
 //$m = new MongoDB\Driver\Manager("mongodb://localhost:27017");
@@ -222,7 +239,6 @@ $tags_collection       = $loomaDB -> tags;
 $chapters_collection   = $loomaDB -> chapters;
 $textbooks_collection  = $loomaDB -> textbooks;
 $dictionary_collection = $loomaDB -> dictionary;
-$logins_collection     = $loomaDB -> logins;
 $history_collection    = $loomaDB -> histories;
 $histories_collection  = $loomaDB -> histories;
 $slideshows_collection = $loomaDB -> slideshows;
@@ -237,6 +253,7 @@ $new_content_collection = $loomaDB -> new_content;
 $recorded_videos_collection = $loomaDB -> recorded_videos;
 $chapterIDs_collection = $loomaDB -> chapterIDs;
 
+$logname = 'activitylog';
 $logDB = $m -> $logname;  //connect to the database "activitylog"
 //make query variables for all collections
 $users_collection      = $logDB -> users;
@@ -246,6 +263,10 @@ $weeks_collection      = $logDB -> weeks;
 $months_collection     = $logDB -> months;
 $pages_collection     = $logDB -> pages;
 $filetypes_collection = $logDB -> filetypes;
+
+$userdbname = 'loomausers';
+$userdbname = $m -> $userdbname;  //connect to the database "loomausers"
+$logins_collection     = $userdbname -> logins;
 
 $collections = array(
     "activities" =>    $activities_collection,

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#
+# three scripts: getLogIPs ->  getLatLongFromIPWithCurl -> fixLatLongFromIP
+#
+
+#    read file userIPs.txt from getLogIPs containing IP address
+#    userIPs.txt is generated with "mongo activitylog < getLogIPs > userIPs.txt"
+
+# curl to lat/long API
+# write each (JSON) result to file userLatLongs.txt
+#
+# THEN run a mongo shell script fixLatLongFromIP" to read each entry, look up the IP in collection=users
+# and extract {country, lat, long, and other params} and update the doc in collection=users
+
+while read line; do echo `curl  "https://api.freegeoip.app/json/$line?apikey=a89e3860-28cc-11ec-b614-2981d826f277"`; done < userIPs.txt > userLatLongs.txt

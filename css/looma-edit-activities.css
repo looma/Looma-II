@@ -155,6 +155,7 @@ button.speak, button.lookup, button#fullscreen-control {
 }
 
 .edit-control {
+    float:left;
     margin:2vh;
 }
 

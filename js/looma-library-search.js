@@ -14,6 +14,7 @@ var result = 1, row = 0, maxButtons = 3;
 var resultsShown = 0;
 var resultsTotal = 0;
 var searchName = 'library-search';
+var searchName = 'library-search';
 
 ////////////////////////////////
 /////  clearResults()    /////

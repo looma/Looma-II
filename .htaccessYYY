@@ -1,0 +1,75 @@
+#
+# this file is ".htaccess" for redirecting  when running Looma
+#
+#file: /usr/local/var/www/Looma/.htaccess
+#
+# it is filename ".htaccess" (no extension)
+# it is located in the root folder of the web server, the folder where the Looma code is saved
+#
+# Looma - created by Skip
+# NOV 2018
+#
+# intercept 404 errors
+ErrorDocument 404 /looma-404.php
+
+#Options  +FollowSymLinks
+#
+
+	#alias not allowed in .htaccess (???) following directive is in httpd.cong
+	#Alias "/content" "/usr/local/var/www/content"
+	#
+# this file is ".htaccess" for redirecting  when running Looma
+#
+#file: /usr/local/var/www/Looma/.htaccess
+#
+# it is filename ".htaccess" (no extension)
+# it is located in the root folder of the web server, the folder where the Looma code is saved
+#
+# Looma - created by Skip
+# NOV 2021, DEC 2021
+#
+# intercept 404 errors
+ErrorDocument 404 /looma-404.php
+
+#Options  +FollowSymLinks
+
+<IfModule rewrite_module>
+
+	#alias not allowed in .htaccess (???) following directive is in httpd.cong
+	#Alias "/content" "/usr/local/var/www/content"
+	
+	RewriteEngine on
+	RewriteRule ^home$         /looma-home.php [NC,L]
+	RewriteRule ^library$        /looma-library.php [NC,L]
+	RewriteRule ^search$        /looma-library-search.php [NC,L]
+	RewriteRule ^chapters$       /looma-chapters.php [NC,L]
+	RewriteRule ^activities$       /looma-activities.php [NC,L]
+	RewriteRule ^dictionary$ /looma-dictionary.php [NC,L]
+	RewriteRule ^video$           /looma-play-video.php [NC,L]
+	RewriteRule ^image$           /looma-play-image.php [NC,L]
+	RewriteRule ^pdf$           /looma-play-pdf.php [NC,L]
+	RewriteRule ^text$           /looma-play-text.php [NC,L]
+	RewriteRule ^html$           /looma-html.php [NC,L]
+	RewriteRule ^epaath$           /looma-epaath.php [NC,L]
+	RewriteRule ^wikipedia$           /looma-wikipedia.php [NC,L]
+	RewriteRule ^lesson$           /looma-play-lesson.php [NC,L]
+	RewriteRule ^game$           /looma-game.php [NC,L]
+	RewriteRule ^histories$   /looma-histories.php [NC,L]
+	RewriteRule ^calculator$ /looma-calculator.php [NC,L]
+	RewriteRule ^audio$           /looma-play-audio.php [NC,L]
+	RewriteRule ^web$           /looma-web.php [NC,L]
+	RewriteRule ^info$    /looma-info.php [NC,L]
+	RewriteRule ^settings$    /looma-settings.php [NC,L]
+	RewriteRule ^book$           /looma-book.php [NC,L]
+	RewriteRule ^slideshow$           /looma-play-slideshow.php [NC,L]
+	RewriteRule ^history$           /looma-history.php [NC,L]
+	RewriteRule ^map$           /looma-play-map.php [NC,L]
+	RewriteRule ^games$       /looma-games.php [NC,L]
+	RewriteRule ^game-list$           /looma-game-list.php [NC,L]
+	RewriteRule ^game$       /looma-game.php [NC,L]
+	RewriteRule ^paint$          /looma-paint.php [NC,L]
+	RewriteRule ^clock$         /looma-clock.php [NC,L]
+	RewriteRule ^maps$         /looma-maps.php [NC,L]
+	RewriteRule ^activity$         /looma-log-viewer.php [NC,L]
+</IfModule>
+	

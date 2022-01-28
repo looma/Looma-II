@@ -1,0 +1,30 @@
+// in ACTIVITYLOG database, for USERS collection
+// fill in geo info from IP address
+//
+// three scripts: getLogIPs ->  getLatLongFromIPWithCurl -> fixLatLongFromIP
+//
+//
+//ONE TIME program to list IP field from db=activitylog collection=users
+//  run in MONGO SHELL with:
+//      mongo activitylog
+//      load('getLogIPs')
+//
+//  or: mongo activitylog < getLogIPs > logIPs.txt
+//
+var cursor, count, fixcount, doc;
+
+count = db.users.count(); print ('total users is ' + count);
+fixcount = 0;
+
+cursor = db.users.find({});
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    if (doc['ip']) {
+        print(doc['ip'] + '\n');
+        fixcount++;
+   }
+};
+
+print('_______________');
+print(' + + + + ' + fixcount + ' users have IP addresses recorded');
+print('_______________');

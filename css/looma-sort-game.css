@@ -47,6 +47,8 @@ button.lookup {
     height:15vh;
     margin:auto;
 }
+#words p {display:inline;}
+
 #word, .ui-draggable-dragging {
     width:20vw;
     margin:auto;

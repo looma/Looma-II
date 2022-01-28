@@ -26,7 +26,7 @@ function getLatLong ($userIP) {
         "metro_code":0}
      */
 
-    $apiURL = 'https://freegeoip.app/json/'.$userIP;
+    $apiURL = 'https://freegeoip.app/json/' . $userIP;
     $ch = curl_init($apiURL);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $apiResponse = curl_exec($ch);

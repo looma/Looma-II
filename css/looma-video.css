@@ -47,3 +47,6 @@ button#fullscreen-playpause:-webkit-full-screen {
     display:block;
 }
 
+button.download {
+    display:inline-block;
+}

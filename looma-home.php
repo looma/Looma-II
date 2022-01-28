@@ -14,7 +14,7 @@
 
     <?php
 
-        if($source === 'CEHRD') {
+        if($LOOMA_SERVER === 'CEHRD') {
             //echo '<div id="head" class="cehrd">';
             echo '<img  id="logo"  class=" english-keyword" src="images/logos/CEHRD-banner-english.jpg" >';
                // echo '<img  id="logo"   src="images/logos/CEHRD-logo.png" >';
@@ -32,7 +32,7 @@
                //     <p class='big'>सिकाइ चौतारी </p>";
                // echo "</div>";
            // echo "</div>";
-        } else {
+        } else {  // $LOOMA_SERVER is 'looma' or 'looma local'
            // echo '<div id="head">';
                 echo '<img  id="logo"        class=" english-keyword" draggable="false"';
                 echo 'src="images/logos/Looma-english-amanda 3x1.png" >';
@@ -62,7 +62,7 @@
     </div>
 
     <?php
-    /*    if ($source === "CEHRD") {
+    /*    if ($LOOMA_SERVER === "CEHRD") {
             echo "<marquee id='marquee'>";
             echo "This CEHRD Learning Portal is still under construction. We welcome comments to iemis@cehrd.gov.np. Thank you.";
             echo "</marquee>";

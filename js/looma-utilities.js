@@ -114,8 +114,7 @@ playMedia : function(button) {
         case "audio":
         case "mp3":
         case "m4a":
-            window.location = 'audio?fn=' + button.getAttribute(
-                    'data-fn') +
+            window.location = 'audio?fn=' + button.getAttribute('data-fn') +
                 '&fp=' + button.getAttribute('data-fp') +
                 '&dn=' + button.getAttribute('data-dn');
             break;
@@ -131,7 +130,8 @@ playMedia : function(button) {
                     '&zoom=' + button.getAttribute('data-zoom') +
                     '&len=' + button.getAttribute('data-len') +
                     '&page=' + button.getAttribute('data-page');
-            } else {  //old PDF code - note used any more
+            }
+            /* else {  //old PDF code - note used any more
                 window.location = 'pdf?' +
                     'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
                     '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
@@ -140,6 +140,8 @@ playMedia : function(button) {
                     '&page=' + button.getAttribute('data-page');
                 break;
             }
+            */
+            
             break;
 
         case "text":
@@ -415,13 +417,13 @@ playMedia : function(button) {
                            );
                     
                         //var fn = (language === 'native') ? result.nfn : result.fn;
-                        if ( ! 'fn' in result && 'nfn' in result) fn = result.nfn;
+                        if ( ! ('fn' in result) && ('nfn' in result)) fn = result.nfn;
                         else if ('fn' in result) fn = result.fn;
                         else fn = null;
                         
                         if      (result.ft == 'EP'       && result.thumb)
                                                thumbfile = '../ePaath/' + result.thumb;
-                        else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft || 'map') && result.thumb)
+                        else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft === 'map') && result.thumb)
                                                thumbfile = result.thumb;
                         else if (result.thumb) thumbfile = result.fp + result.thumb ;
                         else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);

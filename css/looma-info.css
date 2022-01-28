@@ -19,6 +19,26 @@
     vertical-align:middle;
 }
 
+#log-viewer {
+    grid-row: 2;
+    height:33%;
+    width:33%;
+    float:bottom;
+    grid-column: left/middle-left;
+}
+#log-viewer button {
+    height: 100%;
+    width: 66%;
+    margin-top: 100%;
+    margin-left: 30%;
+    background-image: url(../images/activity.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+button:hover span.tip.yes-show {
+    position: relative;
+    font-size:1em;
+}
 #about {
     grid-row: 2;
     grid-column: middle-left / middle-right;

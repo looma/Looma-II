@@ -51,7 +51,7 @@ function submitChanges (event) {  //check the form entries and submit to backend
         }
         len = $checked.length;
         for (var i=0 ; i< len && i < 10; i++) {
-            var val = $($checked[i]).parent().data('mongo')['_id']['$id'];
+            var val = $($checked[i]).parent().data('mongo')['_id']['$oid'];
             $($('.changes-activities')[i]).val(val);
         }
         LOOMA.confirm('Do you really want to modify ' + str,
@@ -123,6 +123,10 @@ function showInfo (activity) {
                         + '<p>fp: ' + $.data(activity[0]).mongo.fp + '</p>'
                         + '<p>ft: ' + $.data(activity[0]).mongo.ft + '</p>'
                         + '<p>src: ' + $.data(activity[0]).mongo.src + '</p>'
+       
+                        + '<p>cl_lo: ' + $.data(activity[0]).mongo.cl_lo + '</p>'
+                        + '<p>cl_hi: ' + $.data(activity[0]).mongo.cl_hi + '</p>'
+
                         + '<p>ch_id: ' + $.data(activity[0]).mongo.ch_id + '</p>'
                         + '<p>nch_id: ' + $.data(activity[0]).mongo.nch_id + '</p>'
                         + '<p>key1: ' + $.data(activity[0]).mongo.key1 + '</p>'
@@ -357,7 +361,7 @@ $(document).ready(function() {
     $('#cl_hi').change(function(){
         var lo = parseInt($('#cl_lo').val());  var hi = parseInt($('#cl_hi').val());
         if (hi < lo) $('#cl_hi').val( $('#cl_lo').val());
-        if (hi > 10) $('#cl_hi').val(10);
+        if (hi > 12) $('#cl_hi').val(12);
     });
 
     // text books

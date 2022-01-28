@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <!--
 Name: Skip
 
@@ -43,10 +43,19 @@ $foundActivity;
             array_push($shown,$id);
 
             $ft = strtolower($activity['ft']);
-            $dn = (isset($activity['dn']) ? $activity['dn'] : (isset($activity['ndn']) ? $activity['ndn'] : ""));
+         //   $dn = (isset($activity['dn']) ? $activity['dn'] : (isset($activity['ndn']) ? $activity['ndn'] : ""));
             $ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
-            $fn = (isset($activity['fn']) ? $activity['fn'] : (isset($activity['nfn'])?$activity['nfn']:""));
+
+    if ($lang === 'np') $dn = (isset($activity['ndn'])? $activity['ndn']:(isset($activity['dn']) ? $activity['dn'] : ""));
+    else                $dn = (isset($activity['dn']) ? $activity['dn'] : "");
+
+    if ($lang === 'np') $fp = (isset($activity['nfp'])? $activity['nfp']:(isset($activity['fp']) ? $activity['fp'] : ""));
+    else                $fp = (isset($activity['fp']) ? $activity['fp'] : "");
+
+    if ($lang === 'np') $fn = (isset($activity['nfn'])? $activity['nfn']:(isset($activity['fn']) ? $activity['fn'] : ""));
+    else                $fn = (isset($activity['fn']) ? $activity['fn'] : "");
+
             //$fn = urlencode($fn);
             $thumb = (isset($activity['thumb']) ? $activity['thumb'] : "");
             $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
@@ -66,7 +75,7 @@ $foundActivity;
 
             //DEBUG print_r($activity);
 
-            if ( ! ( $ft == 'text' )) {
+            if ( $ft !== 'text' ) {
 
                 echo "<td>";
 
@@ -77,7 +86,7 @@ $foundActivity;
                     case "mp4":
                     case "mov":
                     case "m4v":
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,$lang);
                         break;
 
                     case "slideshow":
@@ -88,12 +97,12 @@ $foundActivity;
                         //$imagesrc = $split[0];
                         //$mongoid  = $split[1];
                         //$fp = urlencode('../content/slideshows/');
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "", "",null,null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "", "",null,null,$lang);
                         break;
 
                     case "lesson":
                         $thumb = "images/lesson.png";
-                        makeActivityButton($ft, $fp, "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null,null,null);
+                        makeActivityButton($ft, $fp, "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null,null,$lang);
                         break;
 
                     case "evi":      //edited videos
@@ -101,9 +110,6 @@ $foundActivity;
                         break;
 
                     case "voc":     //vocabulary reviews
-                        break;
-
-                    case "lp";      //lesson plan
                         break;
 
                     case "image":
@@ -121,7 +127,7 @@ $foundActivity;
                         break;
 
                     case "pdf":
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
                         break;
 
                     case "game":
@@ -156,7 +162,7 @@ $foundActivity;
 
                     case "book":
                         // make a book button
-                        makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, "", "", "", "", "", "", "",null,null, $prefix,null);
+                        makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, "", "", "", "", "", "", "",null,null, $prefix,$lang);
                         break;
 
                     default:
@@ -310,7 +316,7 @@ echo '<span class="native-keyword">'  . $ch_ndn . '</span>';
         if ($lang === 'en') $query = array('ch_id' => $ch_id);
         else                $query = array('nch_id' => $ch_id);   // ??? should use nch_id  ?????
 
- $activities = mongoFind($activities_collection, $query, null, null, null);
+        $activities = mongoFind($activities_collection, $query, null, null, null);
 		foreach ($activities as $activity)  {
 
 		    //echo $activity['dn'];

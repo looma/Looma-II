@@ -257,7 +257,8 @@ $(document).ready( function () {
     });
     $('#line').click(function() {drawLineChart(tf,prev);});
     $('#bar').click(function() {drawbarChart('pages');});
-    $('#map').click(function() {drawMapChart();});
+  //  $('#map').click(function() {parent.location.href = 'map?id=61a7e5b3ca614294ff2dee53';});
+    $('#map').click(function() {parent.location.href = 'map?id=61b918f7cea055bc07f6620b';});
     
     linecanvas = document.getElementById('linechart');
     linectx = linecanvas.getContext('2d');

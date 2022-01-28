@@ -1,0 +1,38 @@
+/*
+//   file "fixLatLongFromIP"
+//
+// three scripts: getLogIPs ->  getLatLongFromIPWithCurl -> fixLatLongFromIP
+//
+
+// this script reads file "Looma/looma shell scripts/data files/logGeoFromIPs.txt"
+//         and updates db=activitylog, collection=users with lat/long/country based on IP
+//
+*/
+
+var count = 0;
+var file = 'data files/logGeoFromIPs.txt';
+
+print ('Importing latlongs from ' + file);
+var contents = cat(file);  // read  the file (for now, specifying a path doesnt work)
+
+var latlongs = contents.split(/[\r\n]+/);// split file into array of lines containing JSON for each user
+
+latlongs.forEach (function(latlong) {
+    count++;
+    var parsed =  (JSON.parse(latlong));
+    print (parsed['ip'] + '  from ' + parsed['country']);
+    var coordinates = parsed['loc'].split(',');
+    var contents = { 'country':  parsed['country'],
+                'province': parsed['region'],
+                'city':     parsed['city'],
+                'lat':      coordinates[0],
+                'long':     coordinates[1]};
+    
+    print(' * * city: ' + contents['city'] + '  is at lat/long ' + contents['lat'] + ' : ' + contents['long']);
+    
+    db.users.update({'ip':parsed['ip']}, {$set:contents});
+    
+});
+print();
+print('updated ' + count + ' entries');
+print();

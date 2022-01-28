@@ -143,9 +143,9 @@ h1#gameTitle {font-size: 6vh;}
      font-size:2em;
 }
 
-.prompt img{
-    height:7vh;
-    width:9vw;
+.prompt img, .response img{
+    height:100%;
+    width:20%;
 }
 
 /* CP NEW (1) */
@@ -156,9 +156,6 @@ h1#gameTitle {font-size: 6vh;}
     margin:auto;
 }
 
-.prompt.picture img {
-    height:100%;
-}
 .response{
     display: block;
     min-height: 9vh;

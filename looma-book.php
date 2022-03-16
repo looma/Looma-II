@@ -6,7 +6,8 @@ Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 2019 11
 Revision: Looma 5.2
 File: looma-book.php
-Description:  displays a list of chapters (en and np) and lesson and activities buttons for each chapter
+Description:  Looma file type "book"
+    Displays a list of chapters (en and np) and lesson and activities buttons for each chapter
     Created for hesperian health guides (derived from looma-chapters.php)
 
 Pass in URL parameters "fp" the path to the folder containing EN and NP folders for the book, and
@@ -42,14 +43,15 @@ echo "<tr>";
     //echo "<th><button class='heading img activities' disabled>"; keyword('Nepali'); echo "</button></th>";
 
 
-if ($dn != null)
+if ($dn != 'undefined')
     echo "<th><button class='heading img' id='englishTitle' disabled>" .
         "<img src='" . addslashes($fp) . "thumbnail.png'>" .
         $dn . "</button></th>";
 else
     echo "<th></th>";
 
-if ($ndn != null) echo "<th><button class='heading img' id='nativeTitle' disabled>" .
+if ($ndn != 'undefined')
+    echo "<th><button class='heading img' id='nativeTitle' disabled>" .
     "<img src='" . addslashes($fp) . "thumbnail.png'>" .
     $ndn . "</button></th>";
 
@@ -150,8 +152,8 @@ foreach ($chapters as $ch) {
     if ($activity) {
         echo "<td><button class='activities'" .
             "data-ch='$ch_id'" .
-            " data-chdn='" . $activity['dn'] . "'" ."'>";
-        keyword('Activities');
+            " data-chdn='" . $ch_dn  . "'>";
+        keyword('Resources');
         echo "</button></td>";
     }
     else {echo "<td><button class='activities' style='visibility: hidden'></button></td>";}

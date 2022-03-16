@@ -779,9 +779,9 @@ if (isset($_REQUEST["collection"])) {
     // - - - bookList - - - //
     ////////////////////////
         case "bookList":
-            // inputs is class
-            //    query textbooks collection to get list of textbooks for this class
-            //    return a array of JSON documents from textbooks collection
+            // inputs is book 'prefix'
+            //    query activities collection to get list of books for this class
+            //    return a array of JSON documents from activities collection
 
             $regex = "^" . $_REQUEST['prefix'] . "-";
             $query = array('prefix' => array('$regex' => $regex), 'ft' => 'book');

@@ -331,9 +331,11 @@ if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
 # set permissions on Looma code and content
 
   echo; echo "****************************************************************"
-  echo "setting permissions on Looma code and content"
-  chmod -R 777 "$TODIR/Looma"
-  chmod -R 777 "$TODIR/content"
+
+#following not working ??? 2022 02 05
+#  echo "setting permissions on Looma code and content"
+#  chmod -R 777 "$TODIR/Looma"
+#  chmod -R 777 "$TODIR/content"
 
 echo
 echo "****************************************************************"

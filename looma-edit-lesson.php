@@ -66,7 +66,7 @@ include ('includes/looma-filecommands.php');
                             <option value='' selected>Select...</option>";
                             for($x = 1; $x <= 10; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";}
                         echo "</select>";
-                    echo "</div><br>";
+                    echo "</div>";
 
                     /**************************************/
                     /********* TEXTBOOKS Subject Dropdown  **********/
@@ -83,7 +83,7 @@ include ('includes/looma-filecommands.php');
                             for($x = 1; $x < count($classInfo[0]); $x++) {
                             echo "<option name='subj' value='" . $classInfo[0][$x] . "'>" . $classInfo[1][$x] . "</option>";}
                         echo "</select>";
-                    echo "</div><br>";
+                    echo "</div>";
 
                     /**************************************/
                     /********* TEXTBOOKS Chapter Dropdown  **********/

@@ -11,7 +11,11 @@ Description:  Provides a system for adding activities to the looma system
 <head>
   <title> Looma Content Navigation </title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <?php
+    $page_title = 'Looma - Time';
+    include ('includes/header.php');
+    ?>
 
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/looma-contentNav.css">

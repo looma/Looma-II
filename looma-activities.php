@@ -183,10 +183,10 @@ $foundActivity;
 
         // NOTE: should validate these parameters, esp. using "isset"
 
-        $grade = trim($_GET['grade']);
-        $gradenumber = str_replace("class", "", $grade);
-        $subject = trim($_GET['subject']) ;
-        $lang = trim($_GET['lang']) ;
+        $grade = (isset($_GET['grade'])) ? trim($_GET['grade']) : '';
+        $gradenumber = (isset($_GET['grade'])) ? str_replace("class", "", $grade) : '';
+        $subject = (isset($_GET['subject'])) ? trim($_GET['subject']) : '';
+        $lang = (isset($_GET['lang'])) ? trim($_GET['lang']) : 'en';
 		$ch_id = trim($_GET['ch']);
         $ch_dn = trim($_GET['chdn']);
 

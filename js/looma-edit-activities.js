@@ -384,7 +384,7 @@ $(document).ready(function() {
             $('#subject-chng-menu').empty(); $('#chapter-chng-menu').empty();
         });
     
-    //Other books
+    //Other books (hesperian, india, ...)
             $("#src-chng-menu").change(function() {
                 showBookDropdown($('#src-chng-menu'), $('#book-chng-menu'), $('#book-chapter-menu'))
             });  //end drop-menu.change()

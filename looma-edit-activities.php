@@ -249,7 +249,10 @@ include ('includes/header.php');
                 <label for='src-chng-menu' class='drop-menu'>Book source: </label>
                     <select id='src-chng-menu' class='book-changes black-border'  form='changes' name='book-source'>
                         <option value='' selected>Select...</option>";
-                        echo "<option value='" . "hesp" . "' id='" . "hesperian" . "'>" . "Hesperian" . "</option>";
+
+        echo "<option value='" . "hesp" . "' id='" . "hesperian" . "'>" . "Hesperian" . "</option>";
+        echo "<option value='" . "8S-india" . "' id='" . "8S-india" . "'>" . "India 8S" . "</option>";
+
                     echo "</select>";
                // echo" </span>";
             echo "</div><br>";

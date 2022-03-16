@@ -21,16 +21,18 @@
 
 #log-viewer {
     grid-row: 2;
+    margin-top:15vh;
+    margin-left:3vw;
     height:33%;
     width:33%;
     float:bottom;
     grid-column: left/middle-left;
 }
+
 #log-viewer button {
     height: 100%;
     width: 66%;
-    margin-top: 100%;
-    margin-left: 30%;
+   
     background-image: url(../images/activity.png);
     background-size: 100%;
     background-repeat: no-repeat;

@@ -115,7 +115,7 @@ include ('includes/header.php');
                 <img draggable="false" src="images/logos/VTSLogo.jpg" height="66px"></a>
         </div>
     <div id="log-viewer">
-        <button id="line"> <?php tooltip("Activity Logs") ?>  </button><br>
+        <button id="line"> <?php tooltip("Activity Logs") ?>  </button>
     </div>
         <div id="info-panel">
         <?php

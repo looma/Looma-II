@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"ft":{"$numberInt":"1"},"dn":{"$numberInt":"1"}},"name":"ft_1_dn_1","unique":true}],"uuid":"162490385f8b4be5a8deca283f0858a7","collectionName":"lessons","type":"collection"}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"ft":{"$numberInt":"1"},"dn":{"$numberInt":"1"}},"name":"ft_1_dn_1","unique":true}],"uuid":"329971eb7d484f2c94dfe395ad532453","collectionName":"lessons","type":"collection"}

@@ -166,7 +166,7 @@ function subjectButtonClicked(){
     
     //set scroll position to top of page
     //LOOMA.setStore('libraryScroll', 0), 'session';
-    LOOMA.setStore('chapterScroll', 0), 'session';
+    LOOMA.setStore('chapterScroll', 0, 'session');
     
     //send GET request to chapters.php with CLASS and SUBJECT values
     window.location = "chapters?class=" + encodeURIComponent(className) +

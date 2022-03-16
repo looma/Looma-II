@@ -372,6 +372,7 @@ li:hover {
     background-color:lightyellow;
 }
 
+#setup-panel p {margin:0 auto;}
 #setup-panel-1, #setup-panel-2 {padding:15vh;}
 
 .setup-panel button {

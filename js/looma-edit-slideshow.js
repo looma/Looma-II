@@ -398,7 +398,9 @@ function createActivityDiv (activity) {
         activityDiv.className = "activityDiv";
         
         $(activityDiv).data("collection", (item.ft == 'chapter') ? 'chapters' : 'activities');
-        $(activityDiv).data("id",         (item.ft == 'chapter') ? item['_id'] : item['_id']['$id']);
+     
+        $(activityDiv).data("id",         (item.ft == 'chapter') ? item['_id'] : (item['_id']['$id'] ? item['_id']['id'] :item['_id']['$oid']));
+     
         $(activityDiv).data("type", item['ft']);
         $(activityDiv).data("caption", item.caption);
         

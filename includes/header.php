@@ -63,16 +63,27 @@ File: header.php
     languages and countries are planned.">
 
 	<?php
-  	    // Turn on error reporting
-		error_reporting(E_ALL);
-		ini_set('display_errors', 1);
+  	    // Turn on error reporting - only for localhost debugging, not on produecion server
+    //    if ($LOOMA_SERVER === 'looma local')
+            error_reporting(E_ALL);
+      //  else
+        //    error_reporting(0);
+
+   // ini_set('display_errors', 1);
+    header_remove('X-Powered-By');
+    header_remove('Server');
+    
+    ini_set('open_basedir', "/usr/local/var/www/Looma:/usr/local/var/www/content:/usr/local/var/www/maps2018:/usr/local/var/www/ePaath");
+    // NOTE: probably "ini_set()" cannot set "open_basedir". be sure open_basedir is set in PHP.ini
+    // NOTE: even tho this statement says that it is set:  echo "The open_basedir value is :". ini_get('open_basedir');
 
         require_once ('includes/looma-translate.php');
         require_once ('includes/mongo-connect.php');
         require_once ('includes/looma-log-user-activity.php');
 
-		define ("CONTENT_PATH", "../content");
-	?>
+        $documentroot = str_replace("Looma","",getenv("DOCUMENT_ROOT"));
+        //echo 'DocmumentRoot is ' . $documentroot;
+    ?>
 
       <!-- <div class="watermark">Under Construction</div>  -->
 

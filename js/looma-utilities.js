@@ -60,6 +60,7 @@ Description:
  * LOOMA.download()
  * LOOMA.clean()
  * LOOMA.escapeHTML()
+ * LOOMA.redirect
  */
 
 var LOOMA = (function() {
@@ -1870,10 +1871,31 @@ LOOMA.download = function (name, path) {
             success: function() {}
         });
 }  //end download()
+
+// send the user to a different Looma page, using POST (form SUBMIT) with args = {arg1:'arg1',arg2:'arg2',,,}
+ LOOMA.redirect = function (location, args)
+     {
+         var form = $('<form></form>');
+         form.attr("method", "post");
+         form.attr("action", location);
+         form.attr("target", "_self");
+        
+         $.each( args, function( key, value ) {
+             var field = $('<input></input>');
+            
+             field.attr("type", "hidden");
+             field.attr("name", key);
+             field.attr("value", value);
+            
+             form.append(field);
+         });
+         $(form).appendTo('body').submit().remove();
+     }; //end redirect()
  
-    //LOOMA.CH_IDregex = /^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/;
+ 
+ //LOOMA.CH_IDregex = /^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/;
     //LOOMA.CH_IDregex = /([1-9]|10)(EN|Sa|S|Ma|M|SSa|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/;
-    LOOMA.CH_IDregex = /([1-9]|10|11|12)(EN|Ena|Sa|S|SF|Ma|M|SSa|SS|N|H|V|CS)[0-9]{2}(\.[0-9]{2})?/;   //removed "^" and "$"
+LOOMA.CH_IDregex = /([1-9]|10|11|12)(EN|Ena|Sa|S|SF|Ma|M|SSa|SS|N|H|V|CS)[0-9]{2}(\.[0-9]{2})?/;   //removed "^" and "$"
  
  var loginname = LOOMA.loggedIn();
 

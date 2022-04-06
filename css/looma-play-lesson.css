@@ -375,7 +375,10 @@ span#lesson-name {
     font-size:2.5vw;
 }
 
-.error-message {font-size:4em;}
+.error-message {
+    font-size:4em;
+    color:yellow;
+}
 
 .text-display {
     height:100%;

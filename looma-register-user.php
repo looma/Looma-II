@@ -24,7 +24,9 @@ Comments:
 -->
 
 <?php $page_title = 'Looma - Register User';
-	  include ('includes/header.php');
+    require_once ('includes/header.php');
+    require_once ('includes/looma-utilities.php');
+
 ?>
 <link rel="stylesheet" href="css/looma-register-user.css">
 
@@ -36,7 +38,8 @@ Comments:
 
 if($_SERVER['REQUEST_METHOD'] == 'POST')
     {
-        if (isset($_POST['show-users'])) {  // SHOW USERS  - return a list of registered user
+       //// "show users" function
+       if (isset($_POST['show-users'])) {  // SHOW USERS  - return a list of registered user
             $query = array();
 
             $projection = array('_id' => 0, 'name' => 1, 'team' => 1);
@@ -48,7 +51,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
                 if (isset($login['team'])) echo "  (team: " . $login['team'] . ')';
                 echo "<br>";
             }
-        } else if (isset($_POST['deletename'])) { // DELETE USER  - remove a registered user
+        }        //// "delete user function
+       else if (isset($_POST['deletename'])) { // DELETE USER  - remove a registered user
             $name = $_POST['deletename'];
             if ($name == 'skip' || $name == 'kabin') {
                 echo "<h1>User NOT deleted</h1>
@@ -68,10 +72,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
         $pw = addslashes($_POST['pass']);
         $team = isset( $_POST['team']) ?  $_POST['team'] : '';
         $level = isset( $_POST['level']) ?  $_POST['level'] : '';
-        $encrypted_pw = SHA1($pw);
+        $salt = salt();
+            // echo ('salt is ' . $salt);
+        $encrypted_pw = encrypt($pw,$salt);
 
         $query = array('name' => $name);
-        $insert = array('name' => $name, 'pw' => $encrypted_pw, 'team' => $team, 'level' => $level);
+        $insert = array('name' => $name, 'pw' => $encrypted_pw, 'salt' => $salt, 'team' => $team, 'level' => $level);
         mongoUpsert($logins_collection, $query, $insert);
 
         echo "<h1>User added</h1>

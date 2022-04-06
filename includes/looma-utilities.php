@@ -12,6 +12,10 @@
 /// folderThumbnail
 /// makeActivityButton
 /// downloadButton
+/// salt
+/// encrypt
+/// redirect_user
+/// getFPandFN
 /// //////////////////
 
 
@@ -343,4 +347,60 @@ function downloadButton($path,$file) {
       tooltip("Download");
       echo "</a></button>";
 };  // end downloadButton()
+
+function salt() {
+    return substr(bin2hex(random_bytes(8)),0,32);
+};
+
+function encrypt ($clear, $salt) {
+    return hash ('sha256',$clear . $salt);
+};
+
+/*
+ * Redirects user to the $page specified or main php file if $page is null
+ *
+ */
+function redirect_user($page)  {
+
+    if (!isset($page) or $page == null) {
+        $url = $_SERVER["HTTP_REFERER"];
+        if (isset($_SERVER["HTTP_REFERER"])) {
+            header("Location: $url");
+        }
+    } else {
+        $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+        $url .= '/'.$page;
+    }
+
+    error_log("exit $url");
+    header("Location: $url");
+    exit();
+}  //end redirect_user
+
+function getFPandFN() { //get and verify FP (filepath) and FN (filename) parameters from POST request
+    global $documentroot;
+    $fp =  (isset($_POST['fp'])) ? $_POST['fp'] : null;
+    $fn =  (isset($_POST['fn'])) ? $_POST['fn'] : null;
+
+    // VERIFY fp.fn is legal filepath
+    $pos = strpos(realpath($fp . $fn), $documentroot, 0 );
+    if (!$pos or $pos !== 0) {
+        echo "Access not allowed";
+        exit;
+    }
+    return array($fp,$fn);
+
+}  // end getFP()
+function getFP() { //get and verify FP (filepath) and FN (filename) parameters from POST request
+    global $documentroot;
+    $fp =  (isset($_POST['fp'])) ? $_POST['fp'] : null;
+
+    // VERIFY fp is legal filepath
+    $pos = strpos(realpath($fp), $documentroot, 0 );
+    if (!$pos or $pos !== 0) {
+        echo "Access not allowed";
+        exit;
+    }
+    return $fp;
+}  // end getFP()
 ?>

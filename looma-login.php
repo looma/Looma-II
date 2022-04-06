@@ -4,13 +4,12 @@ Filename: looma-login.php
 Description: login function for Looma admin and teacher tool pages
 
 Programmer Anika:
-Owner: VillageTech Solutions (villagetechsolutions.org)
-Date:  Summer 2016, revised Skip Jun 2020
-
-Comments:
+Owner: Looma Education Company
+Date:  Summer 2016, revised Skip Jun 2020, and Mar 2022 [add seed and use sha256]
 -->
 
 <?php
+require_once ('includes/looma-utilities.php');
 
 function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
 
@@ -46,7 +45,7 @@ function check_login($id, $pass) {
     else
     {
         $p = addslashes($pass);
-        $p = SHA1($p);
+       // $p = SHA1($p);
     }
 
     //Checks if username and password match the database or add error to array
@@ -55,46 +54,23 @@ function check_login($id, $pass) {
     {
         error_log ("Looma-login: check login id + pw in mongoDB");
 
-        $query = array('name' => $name, 'pw' => $p);
+        $query = array('name' => $name); // 'pw' => $p);
         $r  = mongoFindOne($logins_collection, $query);
 
-        if ($r != null)
-        {
-            //login succesfull
-            return array(true, $name, isset($r['level']) ? $r['level']:'', isset($r['team']) ? $r['team']:'');
-        }
-        else
-        {
+        if ($r == null) {
             $errors[] = "The username and password entered do not match those on file.";
         }
+        else {
+            if (encrypt($p,$r['salt']) === $r['pw'])   //login succesfull
+              return array(true, $name, isset($r['level']) ? $r['level']:'', isset($r['team']) ? $r['team']:'');
+        }
+
 
     }
     error_log("end check login");
     return array(false, $errors, null,null);
 }  //end check_login
 
-/*
- * Redirects user to the main php file if page is null or page specified
- *
- */
-function redirect_user($page)  {
-
-     if (!isset($page) or $page == null)
-     {  $url = $_SERVER["HTTP_REFERER"];
-        if (isset($_SERVER["HTTP_REFERER"])) {
-            header("Location: $url");
-        }
-     }
-     else
-     {
-        $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
-        $url .= '/'.$page;
-     }
-
-    error_log("exit $url");
-    header("Location: $url");
-    exit();
-}//end redirect_user
 
 
 // START of executed PHP code
@@ -157,7 +133,7 @@ $page_title = 'Login';
             <p>Password: <input type='password' name='pass' size='20' maxlength='20' >  </p>
             <p>
                 <button type='submit'>Submit</button>
-                <button type='button' onclick= 'window.location = \"index.php\"'>Cancel</button>
+                <button type='button' onclick= 'window.location = \"home\"'>Cancel</button>
             </p>
         </form>";
    }

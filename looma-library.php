@@ -64,6 +64,8 @@ Description:  displays and navigates content folders for Looma
 
     if (isset($_GET['fp'])) $path = $_GET['fp']; else $path = "../content/";
 
+if ( ! is_dir(realpath($path))) {echo "<br><h1>Access not permitted</h1>"; exit;}
+
     echo "<br><h3 class='title'>"; keyword('Library'); echo ":  ";
     folderDisplayName(folderName($path));
     echo "</h3>";
@@ -137,9 +139,10 @@ Description:  displays and navigates content folders for Looma
     $file = (string) $file;
 
     //skips ".", "..", and any ".filename", and any directory containing a file named "hidden.txt"
-    if ((is_dir($path . $file)) &&
+    if ((    $file[0] !== "." &&
+        is_dir($path . $file)) &&
         !isHTML($path . $file) &&
-        $file[0] !== "." &&
+
         (!file_exists($path . $file . "/hidden.txt"))) {
             $dircount++;
 
@@ -283,7 +286,7 @@ echo "</tr></table>";
             echo "<td>";
             $dn = $lesson['dn'];
             $ft = "lesson";
-            $thumb = "/Looma/images/lesson2.png";
+            $thumb = "../content/lessons/thumbnail.png";
             $id = $lesson['mongoID'];  //mongoID of the descriptor for this lesson
             makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
             echo "</td>";
@@ -420,7 +423,7 @@ echo "</tr></table>";
                             echo "<td>";
                             $dn = $lesson['dn'];
                             $ft = "lesson";
-                            $thumb = $path . "/thumbnail.png";
+                            $thumb = $path . "thumbnail.png";
                             $id = $lesson['_id'];  //mongoID of the descriptor for this lesson
                             makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
                             echo "</td>";
@@ -450,7 +453,7 @@ echo "</tr></table>";
                             if (isset($history['ndn'])) $ndn = $history['ndn']; else $ndn = $dn;
                             $ft = "history";
                             $thumb = $path . $dn . "_thumb.jpg";
-                            //$thumb = $path . "/thumbnail.png";
+                            //$thumb = $path . "thumbnail.png";
                             $id = $history['_id'];  //mongoID of the descriptor for this history
                             makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
                             echo "</td>";
@@ -480,7 +483,7 @@ echo "</tr></table>";
                                 $ndn = (isset($map['ndn'])) ? $map['ndn'] : $dn;
                                 //$url = $map['url'];
                                 $ft = "map";
-                                if (isset($map['thumb'])) $thumb = $map['thumb']; else $thumb = $path . "/thumbnail.png";
+                                if (isset($map['thumb'])) $thumb = $map['thumb']; else $thumb = $path . "thumbnail.png";
                                 $id = $map['mongoID'];  //mongoID of the descriptor for this map
                                 makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
                                 echo "</td>";

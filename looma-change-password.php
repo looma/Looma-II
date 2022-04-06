@@ -12,6 +12,7 @@ Date:  Skip Jun 2020
 
 $page_title = 'Looma - Change Password';
 require_once('includes/header.php');
+require_once ('includes/looma-utilities.php');
 
 $name = loggedIn();
 
@@ -35,18 +36,23 @@ function change_password($id, $old, $new1, $new2) {
     //Validate the inputs
     if (empty($old))
         $errors[] = 'Please enter your old password.';
-    else $oldSHA = SHA1(addslashes($old));
+    //else {
+    //    $oldSHA = SHA1(addslashes($old));
+    //}
 
     if (empty($new1) || empty($new2) ||$new1 !== $new2)
         $errors[] = 'New passwords don\'t match.';
-    else $newSHA = SHA1(addslashes($new1));
+    else {
+        $newsalt = salt();
+        $newPW = encrypt(addslashes($new1),$newsalt);
+    }
 
-    //Updates the password if the name + old password are in the database
+    //Updates the password if the name is in the database. NOTE could check old pw also. (not needed if 'name' field has unique index in mongp)
     if (empty($errors)) {
-        //error_log ("Looma-login: check login id + pw in mongoDB");
 
-        $query = array('name' => $id, 'pw' => $oldSHA);
-        $update = array('$set' => array('pw' => $newSHA));
+        //$query = array('name' => $id, 'pw' => $oldSHA);
+        $query = array('name' => $id);
+        $update = array('$set' => array('pw' => $newPW, 'salt' => $newsalt));
 
        //echo 'name is ' . $id . ' old is ' . $old . ' new is ' . $new1 . ' [$oldSHA is ' . $oldSHA . ' $newSHA is ' . $newSHA;
        $r  = mongoUpdate($logins_collection, $query, $update);
@@ -68,27 +74,6 @@ function change_password($id, $old, $new1, $new2) {
     return array(false, $errors, null, null);
 }  //end change_password
 
-/*
- * Redirects user to the main php file if page is null or page specified
- *
- */
-function redirect_user($page)  {
-
-    if (!isset($page) or $page == null)
-    {  $url = $_SERVER["HTTP_REFERER"];
-        if (isset($_SERVER["HTTP_REFERER"])) {
-            header("Location: $url");
-        }
-    }
-    else
-    {
-        $url = 'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
-        $url .= '/'.$page;
-    }
-    error_log("exit $url");
-    header("Location: $url");
-    exit();
-}//end redirect_user
 
 // START of executed PHP code
 //include('includes/mongo-connect.php');

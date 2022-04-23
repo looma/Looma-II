@@ -5,6 +5,7 @@
 // includes/mongo-test.php
 // reports mongoDB version number
 
+require_once ('header.php');
 
 //NOTE: following command doesnt always work. on AWS, the PATH is "/usr/bin". Needs code fix
 exec('export PATH="/usr/local/bin/";mongo --version',$mongo_version);

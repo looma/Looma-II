@@ -72,8 +72,11 @@ File: header.php
    // ini_set('display_errors', 1);
     header_remove('X-Powered-By');
     header_remove('Server');
-    
-    ini_set('open_basedir', "/usr/local/var/www/Looma:/usr/local/var/www/content:/usr/local/var/www/maps2018:/usr/local/var/www/ePaath");
+
+    if ($LOOMA_SERVER === 'looma local')
+        ini_set('open_basedir', "/var/www/html/Looma:/var/www/html/content:/var/www/html/maps2018:/var/www/html/ePaath");
+    else
+        ini_set('open_basedir', "/usr/local/var/www/Looma:/usr/local/var/www/content:/usr/local/var/www/maps2018:/usr/local/var/www/ePaath");
     // NOTE: probably "ini_set()" cannot set "open_basedir". be sure open_basedir is set in PHP.ini
     // NOTE: even tho this statement says that it is set:  echo "The open_basedir value is :". ini_get('open_basedir');
 

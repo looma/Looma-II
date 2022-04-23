@@ -391,7 +391,7 @@ function getFPandFN() { //get and verify FP (filepath) and FN (filename) paramet
     return array($fp,$fn);
 
 }  // end getFP()
-function getFP() { //get and verify FP (filepath) and FN (filename) parameters from POST request
+function getFP() { //get and verify FP (filepath) parameter from POST request
     global $documentroot;
     $fp =  (isset($_POST['fp'])) ? $_POST['fp'] : null;
 

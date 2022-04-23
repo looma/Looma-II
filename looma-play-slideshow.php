@@ -20,7 +20,11 @@ Description: looma slideshow presenter
   <body>
     <?php
         //Gets the filename, filepath, and the thumbnail location
-        if (isset($_REQUEST['id'])) $slideshow_id = $_REQUEST['id']; else $slideshow_id = null;
+        if (isset($_REQUEST['id'])) $slideshow_id = $_REQUEST['id'];
+        else {
+            echo "<h1>File not found</h1>";
+            exit;
+        }
     ?>
 
 
@@ -45,14 +49,13 @@ Description: looma slideshow presenter
 
          if ($slideshow_id) {   //get the mongo document for this slideshow
             $query = array('_id' => mongoId($slideshow_id));
-            //returns only these fields of the activity record
-            $projection = array('_id' => 0,
-                                'dn' => 1,
-                                'data' => 1
-                                );
 
             $slideshow = mongoFindOne($slideshows_collection, $query);
 
+            if (!$slideshow) {
+                echo "<h1>File not found</h1>";
+                exit;
+            }
             $displayname = $slideshow['dn'];
 
             if (isset($slideshow['data'])) $data = $slideshow['data'];

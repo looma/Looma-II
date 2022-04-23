@@ -118,7 +118,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
         echo '</section></div>';
         } //end if isset()
         else
-        {echo 'no history found';}
+        {echo '<h1>No history found<h1>';}
       ?>
 
         </div>

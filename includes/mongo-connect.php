@@ -22,6 +22,7 @@ function mongoRegexOptions($pattern, $options) {
     else return new MongoRegex('/' . $pattern . '/' . $options);
 }
 
+//NOTE: should "try" MongoId() and return null if it fails
 function mongoId ($id) {  //$id is a string, RETURN a mongoId object
     global $mongo_level;
     if ($mongo_level >= 4)

@@ -1,7 +1,7 @@
 /*
 LOOMA javascript file
 Filename: looma-play-slideshow.js
-Description: supports includes/looma-play-slideshow.php
+Description: supports looma-play-slideshow.php
 
 Programmer name: Kiefer
 Owner: VillageTech Solutions (villagetechsolutions.org)

@@ -42,12 +42,17 @@ echo " - - setting database version to today's date"
 echo "************************************"
 mongo looma < "/usr/local/var/www/Looma/looma shell scripts/loomaMongoSetDate"
 
+if [[ ! -d /usr/local/var/www/Looma/mongo-dump ]]
+then
+    mkdir /usr/local/var/www/Looma/mongo-dump
+fi
+
 cd /usr/local/var/www/Looma/mongo-dump  # cd to mongo dumps folder (on a MAC)
 if [ -d dump ]
         then
             echo "- moving previous mongo dump to ~/Desktop/LoomaMongoDumps/"
             echo "************************************"
-            now=$(date +"%m_%d_%Y")
+            now=$(date '+%Y-%m-%d')
             mv dump  ~/Desktop/LoomaMongoDumps/dump_$now
         fi
 

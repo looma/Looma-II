@@ -1,12 +1,13 @@
 <html>
 	<body><h1>this is mongotest.php</h1>
 		<?php
+        require_once ('includes/header.php');
 
         function printout($x) { echo nl2br("<b>" . $x . "</b>\r\n");}
 
         //echo "in mongotest";
         exec("eval '/usr/bin/which mongo'",$which,$returncode);
-        printout("return code is " . $returncode . ", which mongo is " . which[0]);
+        printout("return code is " . $returncode . ", which mongo is " . $which[0]);
         //exec('echo $PATH',$mongo_version,$returncode);
         //printout("return code is " . $returncode . ' output is '. $mongo_version);print_r ($mongo_version);
 

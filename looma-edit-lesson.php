@@ -10,7 +10,7 @@ error_log("Starting Lesson Edit session. logged in as: " . $loggedin);
 <!--
 Filename: looma-lesson-edit-lesson.php
 Description: version 1 [SCU, Spring 2016]
-             version 2 [skip, Fall 2016]
+             version 2 [skip, Fall 2016]x
 Programmer name: SCU, skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: version 1:spring 2016, version 2: Nov 16  version 3: spring 2018
@@ -102,6 +102,7 @@ include ('includes/looma-filecommands.php');
     </div>
 
 <div id = "main-container">
+    <?php   include('includes/looma-control-buttons.php');?>
 
     <div id="header" class="inner-div">
         <div id="title">Editing: <span class="filename">&lt;none&gt;</span> </div>
@@ -124,6 +125,7 @@ include ('includes/looma-filecommands.php');
     </div>
 
     <button type="button" id="edit-text-file">Edit text file</button>
+
     <div id= "previewpanel">
 
         <span class="hint">Preview Area</span>
@@ -159,7 +161,6 @@ include ('includes/looma-filecommands.php');
 
 <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
 
-<?php   include('includes/looma-control-buttons.php');?>
 <button class='control-button' id='dismiss' ></button>
 
 <script src="js/jquery-ui.min.js">  </script>

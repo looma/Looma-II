@@ -62,7 +62,7 @@ Description:  displays and navigates content folders for Looma
 // ***************************************
 // get filepath to use for start of DIR traversal
 
-    if (isset($_GET['fp'])) $path = $_GET['fp']; else $path = "../content/";
+if (isset($_GET['fp'])) $path = $_GET['fp']; else $path = "../content/";
 
 if ( ! is_dir(realpath($path))) {echo "<br><h1>Access not permitted</h1>"; exit;}
 
@@ -72,7 +72,7 @@ if ( ! is_dir(realpath($path))) {echo "<br><h1>Access not permitted</h1>"; exit;
 
     echo "<button id='toggle-database' class='filesearch black-border big-show'>";
          echo "<img draggable='false' src='images/search.png'>";
-   tooltip("Library Search");
+         tooltip("Library Search");
     echo "</button>";
 
 //////////////////////////////////////////////
@@ -84,71 +84,54 @@ if ( ! is_dir(realpath($path))) {echo "<br><h1>Access not permitted</h1>"; exit;
     $buttons = 1;
     $maxButtons = 3;
 
-    $files = [];
 
-    //gather all the files at this directory into $files[]
+    //if at the top level folder "../content", then make buttons for pseudo folders
+    //   for CEHRD, Wikipedia, Khan and ePaath so they are presented first
 
-    foreach (new DirectoryIterator($path) as $fileInfo) {
-        $files[$fileInfo->getFilename()] = $fileInfo;
-    };
+    if ($path == "../content/") {
 
-    //foreach($files as $key => $value) echo ' filename '. $key . '  value: '. $value . '<br>';
-    //exit;
+    //special case for Wikipedia for Schools
+        //make a button that launches W4S index.htm -- virtual folder
+        if (file_exists("../content/W4S2013"))  {   //create a virtual folder for W4S
+            echo "<td>";
+            echo '<a href="wikipedia">';
+            echo '<button id="wikipedia-index" class="activity img">';
+            echo '<img src="images/logos/wikipedia.jpg"/>';
+            keyword("Wikipedia");
+            echo '</button></td>';
+            nextbutton();
+        }  //end IF wiki4schools
 
+        //if (file_exists("../ePaath"))  echo "../content/ePaath FOUND";
+        //if (file_exists("../ePaath/ePaath2022"))  echo "../content/ePaath2022 FOUND";
 
-   //if at the top level folder "../content", then move CEHRD, Wikipedia, Khan and ePaath to the top so they are presented first
-    if ($path == "/content/") {
+        //special case for ePaath
+        //make a button that launches ePaath index.html -- virtual folder
+        if (file_exists("../ePaath"))  {     //create a virtual folder for ePaath
+            echo "<td>";
+            $dn = "ePaath";
+            $ndn = "ई-पाठ";  //note should be using mongo folders collection to get dn and ndn
+            $ft = "html";
+            $thumb = "../content/epaath/thumbnail.png";
+            makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
+            echo "</td>";
+            nextButton();
+        }  //end IF ePaath
 
-        //echo '$path is ' . $path; exit;
-
-        //echo '$files[epaath] is ' . $files['epaath'];exit;
-
-        $tmp = $files['epaath'];
-        unset($files['epaath']);
-        $files = array('epaath' => $tmp) + $files;
-
-        $tmp = $files['Khan'];
-        unset($files['Khan']);
-        $files = array('Khan' => $tmp) + $files;
-
-        $tmp = $files['W4S'];
-        unset($files['W4S']);
-        $files = array('W4S' => $tmp) + $files;
-
-        if (isset($files['CEHRD'])) {
-            $tmp = $files['CEHRD'];
-            unset($files['CEHRD']);
-            $files = array('CEHRD' => $tmp) + $files;
-        }
-    }
-
-    //foreach ($files as $file => $value) echo $file . '<br>'; exit;
-
-
-
-    /********************************************************************************************/
-    /**********  DIRs  **************************************************************************/
-    /********************************************************************************************/
-    /*************** iterate through the files in this DIR and make buttons for the DIRs ********/
-
-    $dirlist = array();
-
-    foreach ($files as $file => $dirInfo) {
-      //  echo $path . $file . '<br>';;
-
-    $file = (string) $file;
-
-    //skips ".", "..", and any ".filename", and any directory containing a file named "hidden.txt"
-    if ((    $file[0] !== "." &&
-        is_dir($path . $file)) &&
-        !isHTML($path . $file) &&
-
-        (!file_exists($path . $file . "/hidden.txt"))) {
-            $dircount++;
+        if (file_exists("../ePaath/ePaath2022"))  {  //create a virtual folder for ePaath
+            echo "<td>";
+            $dn = "ePaath RTI";
+            $ndn = "ई-पाठ";  //note should be using mongo folders collection to get dn and ndn
+            $ft = "html";
+            $thumb = "../content/epaath/thumbnail.png";
+            makeActivityButton($ft, "../ePaath/ePaath2022/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
+            echo "</td>";
+            nextButton();
+        }   // end IF ePaath2022
 
         //special case for CEHRD
         // virtual folder
-        if ($path . $file == "../content/CEHRD") {
+        if (file_exists("../content/CEHRD")) {  // create virtual folder for CEHRD
             echo "<td><a href='library?fp=" . $path . $file . "/'>";
             echo "<button class='activity img zeroScroll'>" .
                 folderThumbnail($path . $file);
@@ -166,72 +149,66 @@ if ( ! is_dir(realpath($path))) {echo "<br><h1>Access not permitted</h1>"; exit;
             nextbutton();
         }  //end IF CEHRD
 
-        //special case for Wikipedia for Schools
-        //make a button that launches W4S index.htm -- virtual folder
-            else if ($path . $file == "../content/W4S2013") {   //create a virtual folder for W4S
-                echo "<td>";
-                echo '<a href="wikipedia">';
-                echo '<button id="wikipedia-index" class="activity img play">';
-                    echo '<img src="images/logos/wikipedia.jpg"/>';
-                   keyword("Wikipedia");
-                echo '</button></td>';
-                nextbutton();
-            }  //end IF wiki4schools
-
         //special case for Khan Academy
         //make a button that launches Khan index.html -- virtual folder
-            else if ($path . $file == "../content/Khan") {   //create a virtual folder for Khan
+        if (file_exists("../content/Khan"))  {   //create a virtual folder for Khan
+            echo "<td>";
+            $dn = "Khan Academy";
+            $ndn = "खान एकेडेमी";  //note should be using mongo folders collection to get dn and ndn
+            $ft = "html";
+            $thumb = "../content/Khan/thumbnail.png";
+            makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
+            echo "</td>";
+            nextButton();
+        }  //end IF Khan
+    }  // end pseudo folders when $path === "../content" (top level)
 
-                echo "<td>";
-                $dn = "Khan Academy";
-                $ndn = "खान एकेडेमी";  //note should be using mongo folders collection to get dn and ndn
-                $ft = "html";
-                $thumb = "../content/Khan/thumbnail.png";
-                makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
-                echo "</td>";
-                nextButton();
-            }  //end IF Khan
+    $files = [];
+    //gather all the files at this directory into $files[]
+    foreach (new DirectoryIterator($path) as $fileInfo) {
+        $files[$fileInfo->getFilename()] = $fileInfo;
+    };
 
+    /********************************************************************************************/
+    /**********  DIRs  **************************************************************************/
+    /********************************************************************************************/
+    /*************** iterate through the files in this DIR and make buttons for the DIRs ********/
 
-        //special case for ePaath
-        //make a button that launches ePaath index.html -- virtual folder
-            else if ($path . $file == "../content/epaath") {   //create a virtual folder for ePaath
+    $dirlist = array();
 
-        //echo $path . $file;exit;
+    foreach ($files as $file => $dirInfo) {
+      //  echo $path . $file . '<br>';;
 
-                echo "<td>";
-                $dn = "ePaath";
-                $ndn = "ई-पाठ";  //note should be using mongo folders collection to get dn and ndn
-                $ft = "html";
-                $thumb = "../content/epaath/thumbnail.png";
-                makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
-                echo "</td>";
-                nextButton();
-            }  //end IF ePaath
+     $file = (string) $file;
 
-            // regular DIRECTORY case
-            else {  //make a regular directory button
+    //skips ".", "..", and any ".filename", and any directory containing a file named "hidden.txt"
+    if ((    $file[0] !== "." &&
+        is_dir($path . $file)) &&
+        !isHTML($path . $file) &&
+        (!file_exists($path . $file . "/hidden.txt"))) {
+            $dircount++;
 
-                $ft = ""; $prefix = "";
-                // look in the database to see if this folder has a DISPLAYNAME
-                $query = array('fn' => $file, 'fp' => $path);
-                //$projection = array('_id' => 0, 'dn' => 1, 'ndn' => 1);
-                $folderMongo = mongoFindOne($folders_collection, $query);
+            //make a regular directory button
 
-                $dirnDn = null;
-                if ($folderMongo) {
-                    if (keyIsSet('dn',  $folderMongo)) $dirDn = $folderMongo['dn'];
-                    if (keyIsSet('ndn', $folderMongo) && $folderMongo['ndn'] !=="") $dirnDn = $folderMongo['ndn'];
-                    if (keyIsSet('ft',  $folderMongo)) $ft = $folderMongo['ft'];
-                    if (keyIsSet('prefix',  $folderMongo)) $prefix = $folderMongo['prefix'];
+            $ft = ""; $prefix = "";
+            // look in the database to see if this folder has a DISPLAYNAME
+            $query = array('fn' => $file, 'fp' => $path);
+            //$projection = array('_id' => 0, 'dn' => 1, 'ndn' => 1);
+            $folderMongo = mongoFindOne($folders_collection, $query);
 
-                       //echo "dn is " . $dirDn . " ndn is " . $dirnDn . "\r\n";
+            $dirnDn = null;
+            if ($folderMongo) {
+                if (keyIsSet('dn',  $folderMongo)) $dirDn = $folderMongo['dn'];
+                if (keyIsSet('ndn', $folderMongo) && $folderMongo['ndn'] !=="") $dirnDn = $folderMongo['ndn'];
+                if (keyIsSet('ft',  $folderMongo)) $ft = $folderMongo['ft'];
+                if (keyIsSet('prefix',  $folderMongo)) $prefix = $folderMongo['prefix'];
 
-                } else {
-                    $dirDn = $file;  $dirnDn = $file;  // skip bug fix 2020 01
-                }
-                $dirlist[] = array('file' => $file, 'path' => $path, 'dn' => $dirDn, 'ndn' => $dirnDn, 'ft' => $ft, 'prefix' => $prefix);
+                   //echo "dn is " . $dirDn . " ndn is " . $dirnDn . "\r\n";
+
+            } else {
+                $dirDn = $file;  $dirnDn = $file;  // skip bug fix 2020 01
             }
+            $dirlist[] = array('file' => $file, 'path' => $path, 'dn' => $dirDn, 'ndn' => $dirnDn, 'ft' => $ft, 'prefix' => $prefix);
         }
     }// ********** end FOREACH directory  **************
 

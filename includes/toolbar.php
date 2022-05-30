@@ -135,7 +135,7 @@
                 <img  class="toolbar-logo english-keyword"  src="images/logos/Looma-english-amanda 3x1.png" >
 			    <img  class="toolbar-logo native-keyword" hidden draggable="false" src="images/logos/Looma-nepali-amanda 3x1.png" >
       		</span>
-            <br>
+
 			<span id="datetime"></span>
 
             <!-- NOTE: display AMAZON  logo is we can detect that this instance of looma is running on AWS

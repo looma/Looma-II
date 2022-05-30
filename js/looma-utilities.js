@@ -190,12 +190,16 @@ playMedia : function(button) {
             break;
     
         case "game":
-            window.location = 'game?id=' + button.getAttribute('data-mongoid') +
-                '&class=' + button.getAttribute('data-class') +
-                '&subject=' + button.getAttribute('data-subject') +
-                '&type=' + button.getAttribute('data-type');
-            break;
-    
+        
+            if (button.getAttribute('data-type') === 'sort') {
+                window.location = "looma-sort-game.php?id=" + button.getAttribute('data-mongoid');
+                break;
+            } else {window.location = 'game?id=' + button.getAttribute('data-mongoid') +
+                    '&class=' + button.getAttribute('data-class') +
+                    '&subject=' + button.getAttribute('data-subject') +
+                    '&type=' + button.getAttribute('data-type');
+            };
+             break;
         case "map":
             window.location = 'map?id=' + button.getAttribute('data-mongoid');
             break;
@@ -1488,8 +1492,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
          LOOMA.speak.cleanup = function () {
              if (speechSynthesis.speaking) speechSynthesis.pause();
              else {
-                 LOOMA.speak.playingAudio.pause();
-                 LOOMA.speak.playingAudio = null;
+                 if (LOOMA.speak.playingAudio) {
+                     LOOMA.speak.playingAudio.pause();
+                     LOOMA.speak.playingAudio = null;
+                 }
                  LOOMA.speak.speechQueue = [];
                  LOOMA.speak.disable();
              }

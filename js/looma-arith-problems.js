@@ -25,9 +25,15 @@ function init(){
 
     //arithClass = arithClass.substr(0, arithClass.length - 1) + ' ' + arithClass.substr(arithClass.length-1);
     document.getElementById('gradeValue').innerHTML = LOOMA.capitalize(arithClass);
-
+    
     var enterButton = document.getElementById('enter');
     enterButton.addEventListener('click', checkAnswer,false);
+    
+    var homeButton = document.getElementById('homePage');
+    homeButton.addEventListener('click', function(){window.location='looma-arith.php';});
+    
+    var nextButton = document.getElementById('next');
+    nextButton.addEventListener('click', nextGenProb,false);
 
     var resetButton = document.getElementById('clear');
     resetButton.addEventListener('click', resetAnswer,false);

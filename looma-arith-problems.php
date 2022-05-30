@@ -24,12 +24,12 @@ Description:
                 <?php keyword("Correct problems"); ?> : <span id="countValue"> </span>
             </div>
             <div id="left">
-                  <button id='homePage' class="navigate" onclick="location.href='looma-arith.php'">
+                  <button id='homePage' class="navigate" >
                       <?php keyword("More Games"); ?>
                   </button>
               </div>
             <div id="right">
-                <button id="next"     class="navigate" onclick="nextGenProb()">
+                <button id="next"     class="navigate">
                   <?php keyword("New Problem"); ?>
                 </button>
             </div>

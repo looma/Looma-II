@@ -341,19 +341,24 @@ function makeChapterButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, 
 }; //end makeChapterButton()
 
 function downloadButton($path,$file) {
-      echo "<button class = 'download looma-control-button'>";
-      echo "<a href=" . $path . $file . " download='downloadedfile'>";
+
+    //echo 'filepath is "' . $path . '" and filename is "' . $file . '"';
+
+    echo "<button class = 'download looma-control-button'>";
+      echo "<a href='" . $path . $file . "' download='downloadedfile'>";
       echo "<img src='images/download.png'>";
       tooltip("Download");
       echo "</a></button>";
 };  // end downloadButton()
 
 function salt() {
-    return substr(bin2hex(random_bytes(8)),0,32);
+    return substr(bin2hex(uniqid(8)),0,32);
+    // NOTE: was using random_bytes() instead of uniqid, but random_bytes is not in php5 used by Looma C2's
 };
 
 function encrypt ($clear, $salt) {
     return hash ('sha256',$clear . $salt);
+    // NOTE: this code should have used PHP function password_hash() but its too late to change now
 };
 
 /*

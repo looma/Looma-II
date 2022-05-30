@@ -29,7 +29,8 @@
  */
 
 html {
-    /*--looma-blue:#063006;  dark green 063006 for test Looma */
+    --looma-green: #063006;  /*green  = 063006 for TEST Looma */
+    --looma-purple:#800080;  /*purple = 800080 for INDIA Looma */
     --looma-blue:#091F48;    /* Looma blue = 091F48 for regular Looma */
     --looma-background: var(--looma-blue);
     --looma-toolbar:yellow;
@@ -578,7 +579,11 @@ div.fullframe, iframe {
     /*overflow-x: hidden;*/
 }
 
-video { height: 100% }
+video {
+    height: 100%;
+    max-height:100%;
+    max-width:100%;
+}
 
 video::-webkit-media-controls {display: none !important;}
 

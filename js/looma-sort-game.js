@@ -1,34 +1,16 @@
 /*
-LOOMA javascript file
 Filename: looma-sort-game.js
-Description: supports looma-sort-game.php
 
 Programmer name: Skip
+Date: May 2022
 Owner: Looma Education Company
  */
 
 'use strict';
 /* declare global variables here */
 
-var gameOver = false;
 var words = [];
-var wordlist = [
-        {key: 'man', value:'a'},
-        {key: 'hat', value:'a'},
-        {key: 'cat', value:'a'},
-        {key: 'black', value:'a'},
-        {key: 'dad', value:'a'},
-        {key: 'bed', value:'e'},
-        {key: 'head', value:'e'},
-        {key: 'ten', value:'e'},
-        {key: 'said', value:'e'},
-        {key: 'set', value:'e'},
-        {key: 'men', value:'e'},
-        {key: 'fox', value:'o'},
-        {key: 'hot', value:'o'},
-        {key: 'spot', value:'o'},
-        {key: 'dog', value:'o'},
-];
+var wordlist;
 /*
 at, man, hat, dad, an, than, cat, black, fat, can
 ten, bed, set, head, when, them, red, said, men, then
@@ -37,22 +19,49 @@ sock, hot, doll, not, want, mom, job, spot, top, pot
 fun, sun, under, run, jump, up, done, one, us, bus, nut
 */
 
-/* declare functions here */
+function setHeadings() {
+        $('#heading1').text('Short "a"');
+        $('#heading2').text('Short "e"');
+        $('#heading3').text('Short "o"');
+}
+function setScopes() {
+        $('#bin1').droppable({scope:'a'});
+        $('#bin2').droppable({scope:'e'});
+        $('#bin3').droppable({scope:'o'});
+}
+function getNewWordList () {
+        var list = [
+                {key: 'man', value:'a'},
+                {key: 'hat', value:'a'},
+                {key: 'cat', value:'a'},
+                {key: 'black', value:'a'},
+                {key: 'dad', value:'a'},
+                {key: 'bed', value:'e'},
+                {key: 'head', value:'e'},
+                {key: 'ten', value:'e'},
+                {key: 'said', value:'e'},
+                {key: 'set', value:'e'},
+                {key: 'men', value:'e'},
+                {key: 'fox', value:'o'},
+                {key: 'hot', value:'o'},
+                {key: 'spot', value:'o'},
+                {key: 'dog', value:'o'},
+        ];
+        list.sort(() => Math.random() - 0.5);
+        return list.slice();
+}
+
+function startGame() {
+        words = getNewWordList();
+        nextWord();
+       $(".bin").empty();
+}
 
 function nextWord() {
         if (words.length === 0) {
-               // $('.bin').empty();
                 $('#words').empty();
-                gameOver = true;
-                words = wordlist.slice();
-                LOOMA.alert('<p>Game over. Good work.</p>Click "Play again" to play again', 10, true);
-                $('#next_button').text('Play again');
+                LOOMA.alert('<p>Game over. Good work.</p>Click "Play Again" to play again', 10, true);
                 return;
-        } else if(gameOver) {
-                $('.bin').empty();
-                $('#next_button').text('Next word');
-                wordlist.sort(() => Math.random() - 0.5);
-                words = wordlist.slice();
         }
         
         var $word = $("<p class='word " + words[0].value + "'>" + (words[0].key) + "</p>");
@@ -62,59 +71,42 @@ function nextWord() {
                     scope:words[0].value,
                     start: function( event, ui ) {ui.helper.css('font-size','1em')}}  //.addClass('word')
             );
-        
         $('#words').empty().append($word);
-        words = words.slice(1);
+        words = words.slice(1); // removes the first word from 'words'
 };
 
 $(document).ready( function () {
         
-        // SPEAK button will say the word, unless text is selected, in which case, it will speak the selected text
         $('button.speak').off('click').click(function () {
-                var selectedString = document.getSelection().toString();
-                var toSpeak = (selectedString ? selectedString : $('#words p.word').text());
-                console.log('VOCAB: speaking ', toSpeak);
-                LOOMA.speak(toSpeak);
+           var selectedString = document.getSelection().toString();
+           var toSpeak = (selectedString ? selectedString : $('#words p.word').text());
+           LOOMA.speak(toSpeak);
         }); //end speak button onclick function
         
         $('button.lookup').off('click').click(function(){
                 var toString = window.getSelection().toString();
                 var toString = (toString ? toString : $('#words p.word').text());
-                console.log ('selected text to lookup: "', toString, '"');
-                // LOOMA.lookupWord(toString);
                 LOOMA.popupDefinition(toString.split(' ')[0], 15);
         });
-        
-        $('#heading1').text('Short "a"');
-        $('#heading2').text('Short "e"');
-        $('#heading3').text('Short "o"');
         
         $(".bin").droppable({
                 accept:".word",
                 drop: function(event, ui) {
-                        //alert('dropped');
-        
-                        var $dest = ui.helper.clone(true).addClass('dragging').off(); // clone(true) to retain all DATA for the element
+                        // clone(true) to retain all DATA for the element
+                        var $dest = ui.helper.clone(true).addClass('dragging').off();
                         //NOTE: crucial to "off()" event handlers,
                         //or the new element will still be linked to the old
                         $dest.removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
                         $dest.removeAttr('style').addClass('dropped');
                         $dest.appendTo(event.target);
                         
-                       // ui['draggable'].draggable( "disable" );
                         nextWord();
                 }
                 });
-        $('#bin1').droppable({scope:'a'});
-        $('#bin2').droppable({scope:'e'});
-        $('#bin3').droppable({scope:'o'});
         
+        $('#next_button').click(startGame);
         
-        
-        $('#next_button').click(nextWord);
-        
-        wordlist.sort(() => Math.random() - 0.5);
-        words = wordlist.slice();
-        nextWord();
+        setHeadings();
+        setScopes();
+        startGame();
 });
-

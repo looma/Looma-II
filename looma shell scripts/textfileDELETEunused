@@ -5,7 +5,7 @@
 //      THESE FILES CANNOT BE RESTORED
 //
 //   run in MONGO SHELL with: load('textfileDELETEunused')
-//
+//   before running this script, enter "var param = 'dryrun' " or "var param = 'run' "
 
 var textcursor;
 var lessonOccurances;
@@ -40,8 +40,8 @@ while (textcursor.hasNext()) {
 
 print('');
 print('SUMMARY: ');
-print('found ' + count + ' text files found');
-if (param === 'run') print('found ' + count1 + ' text files were deleted');
-else                 print('DRYRUN - no files deleted');
+print('found ' + count + ' text files');
+if (param === 'run') print('deleted ' + count1 + ' text files');
+else                 print('DRYRUN - would have deleted ' + count1 + ' text files');
 print('');
 

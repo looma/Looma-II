@@ -6,7 +6,7 @@
 #       with chmod +x to make it executable
 #
 #       this file just calls /var/www/html/Looma/looma shell scripts/loomaUSBer
-#       this allows us to 'update' the USB script using the normal rsync from rsunc.net
+#       this allows us to 'update' the USB script using the normal rsync from rsync.net
 #
 #       author: skip
 #       date:   Jun 2019

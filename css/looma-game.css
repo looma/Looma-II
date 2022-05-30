@@ -120,46 +120,43 @@ h1#gameTitle {font-size: 6vh;}
 #prompts {
     display:inline-block;
     float: left;
-    margin-left: 5vw;
-    margin-right: 5vw;
-    width:20vw;
-    max-width: 35vw;
+    margin-left: 3vw;
+    width:25vw;
+    max-width: 25vw;
 }
 
 #responses {
     display:inline-block;
     float:left;
-    width:50vw;
-    max-width: 50vw;
-    margin: 2vh 2vw;
-}
+    width:52vw;
+    max-width: 52vw;
+    margin-left:2vw;}
 
 .prompt{
      display: block;
-     min-height: 9vh;
-     margin: 10px;
+     min-height: 12vh;
+    max-height:12vh;
      max-width: 25vw;
      min-width:25vw;
      font-size:2em;
 }
 
 .prompt img, .response img{
-    height:100%;
-    width:20%;
+    height:12vh;
+    width:11vw;
 }
 
 /* CP NEW (1) */
 .prompt.picture{
-    width: 11vw;
-    min-width:11vw;
+
     height: 12vh;
     margin:auto;
 }
 
 .response{
     display: block;
-    min-height: 9vh;
-    margin: 10px;
+    min-height: 12vh;
+    max-height:13vh;
     width:100%;
     font-size:2em;
 }
@@ -215,7 +212,7 @@ h1#gameTitle {font-size: 6vh;}
 
 #timer-count {
     margin:0;
-  font-size: 15vmin;
+    font-size: 12vmin;
 }
 
 #scoreboard {

@@ -22,7 +22,7 @@
 }
 
 #toolbar {
-    flex-grow:10;
+    flex-grow:9; /*10*/
     flex-basis:0;
     display:flex;
 }
@@ -32,9 +32,10 @@
     flex-direction:column;
 }
 #logo-div {
-    flex-grow: 2;
+    flex-grow: 3; /*2*/
     flex-basis:0;
     max-height:100%;
+    text-align:center;
 }
 #padlock-div {
     flex-grow:1;
@@ -112,25 +113,24 @@ button.flag-vertical {
     max-height: 90%;
 }
 
-#logo-div {
-    text-align:center;
-}
-
 .toolbar-logo {
     margin:0 auto;
-    height:5vh;
+    height:4vh;
 }
 .toolbar-logo.vertical {height:3vh;}
 
 span.logo {
     display:inline-block;
     width:100%;
+    max-height:50%;
+    color:black;
 }
 
 span#datetime {
     margin:0 0 5px 0 ;
     display:inline-block;
     color: #000;
+    max-height:50%;
 }
 
 span.logo-vertical {

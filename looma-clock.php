@@ -74,21 +74,23 @@ Comments:
             <canvas id="mainClock"></canvas>
             <?php include('includes/looma-control-buttons.php') ?>
 
-        </div>
+
 
         <div id="digitalDisplay">
             <span id = "digitalTime"></span>
             <span id = "amOrPm1" ></span>
-            <p id = "dragHands"> <?php keyword("Drag and drop the hour or minute hand!") ?></p>
         </div>
 
+
         <div id="clockBox">
-            <p id="time"></p>
-            <p id="amOrPm"></p>
-            <p id="seconds"></p>
-            <p id="day"></p>
-            <p id="date"></p>
+            <span id="time"></span>
+            <span id="amOrPm"></span>
+            <span id="seconds"></span>
+            <span id="day"></span>
+            <span id="date"></span>
         </div>
+        </div>
+        <p id = "dragHands"> <?php keyword("Drag the clock hands to change the time") ?></p>
     </div>
 
     <?php

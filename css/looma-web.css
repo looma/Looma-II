@@ -14,7 +14,7 @@ button#fullscreen-control {
     display:inline-block;
 }
 #fullscreen {
-    background-color: var(--looma-blue);
+    background-color: var(--looma-background);
     height:88%;
 }
 

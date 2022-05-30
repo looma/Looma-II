@@ -19,6 +19,7 @@ Comments:
 $(document).ready(function () {
     
     $('#log-viewer').click(function(event){window.open('activity',"_self");});
+    $('#system_info').click(function(event){ $('#advanced_info').toggle();});
     
     //  the attribution logos on looma-info page are live links to websites
     //  check if online before following these links to avoid 404 or network timeout

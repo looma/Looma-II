@@ -108,7 +108,12 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
     <script type="text/javascript" src="js/looma-game.js"></script>
     <script type="text/javascript" src="js/looma-timer.js"></script>
     <script type="text/javascript" src="js/looma-scoreboard.js"></script>
+    <!--
+    NOTE: dont use Leafletjs1.7.1 for map games, stay with 0.7.3
     <script src="js/leafletjs1.7.1/leaflet.js"></script>
+    -->
+    <script src="js/leafletjs0.7.3/leaflet.js"></script>
+
 
 
 

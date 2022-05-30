@@ -1,18 +1,35 @@
+#fullscreen {
+    grid-row: top / toolbar;
+    display:grid;
+    grid-template-rows:    [top] 1fr [main] 5fr [middle] 1fr [bottom];
+    grid-template-columns: [left] 1fr [midleft] 1fr [midright] 1fr [right];
+}
+
+#title {
+    grid-row: top / main;
+    grid-column: left / right;
+    margin:auto;
+}
+
 #bins {
+    grid-row: main / middle;
+    grid-column:left / right;
     min-width:90vw;
     height:60vh;
     border-radius: 5px;
     display:flex;
+    gap:3vw;
     flex-direction: row;
     justify-content: center;
 }
 
+.bin_holder {
+    min-height:100%;
+}
 .bin {
     display:flex;
     flex-direction: column;
-    
-    width:25vw;
-    height: 50vh;
+    min-height:80%;
     margin:auto;
     background-color:white;
     color:green;
@@ -25,27 +42,16 @@
     margin:auto;
 }
 
-button#fullscreen-control {
-    display:inline-block;
-}
-
-button.speak {
-    display:inline-block;
-    bottom:23vh;
-}
-button.lookup {
-    display:inline-block;
-    bottom:35vh;
-}
 #words {
+    grid-row: middle / bottom;
+    grid-column:midleft / midright;
     background-color:white;
     border:4px solid  yellow;
     color:red;
     font-size: 5em;
     border-radius: 5px;
-    width:30vw;
-    height:15vh;
-    margin:auto;
+    width:100%;
+    margin: 1vh auto;
 }
 #words p {display:inline;}
 
@@ -68,16 +74,12 @@ p.dropped {
 }
 
 #next_button {
-    position:absolute;
-    right:15vw;
-    bottom:8vh;
+    grid-row: middle / bottom;
+    grid-column:midright / right;
     height:8vh;
     width:15vw;
+    margin:auto;
 }
-
-$next_button img {
-    height:80%;
- }
 
 #divstyle {
     width: 700px;
@@ -97,4 +99,17 @@ $next_button img {
 
 button.looma-control-button {
     right: 1vw;
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}
+
+button.speak {
+    display:inline-block;
+    bottom:23vh;
+}
+button.lookup {
+    display:inline-block;
+    bottom:35vh;
 }

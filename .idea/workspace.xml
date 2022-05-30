@@ -25,1003 +25,115 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/loomasshfs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/activities.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/activities.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/activitiesGOOD.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/activitiesGOOD.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/activitiesGOOD20201014.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/activitiesGOOD20201014.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/chapters.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/chapters.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/dictionary.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/dictionary.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/dictionary20201011.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/dictionary20201011.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/dictionary20201017.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/dictionary20201017.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/edited_videos.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/edited_videos.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/folders.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/folders.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/games.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/games.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/gamesOLD.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/gamesOLD.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/histories.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/histories.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/lessons.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/lessons.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/logins.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/logins.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/maps.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/maps.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/new_content.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/new_content.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/pages.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/pages.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/slideshows.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/slideshows.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/tags.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/tags.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/text_files.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/text_files.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/textbooks.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/textbooks.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/version_number.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/version_number.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/volunteers.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/volunteers.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/wikipedia.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20210112/looma/wikipedia.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/activities.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/activities.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/activitiesGOOD.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/activitiesGOOD.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/activitiesGOOD20201014.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/activitiesGOOD20201014.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/chapters.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/chapters.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/dictionary.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/dictionary.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/dictionary20201011.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/dictionary20201011.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/dictionary20201017.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/dictionary20201017.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/edited_videos.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/edited_videos.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/folders.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/folders.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/games.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/games.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/gamesOLD.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/gamesOLD.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/histories.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/histories.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/lessons.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/lessons.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/logins.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/logins.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/maps.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/maps.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/new_content.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/new_content.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/pages.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/pages.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/slideshows.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/slideshows.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/system.indexes.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/tags.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/tags.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/text_files.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/text_files.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/textbooks.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/textbooks.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/version_number.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/version_number.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/volunteers.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/volunteers.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/wikipedia.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20210112/looma/wikipedia.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/composer/InstalledVersions.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/composer/installed.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/composer/platform_check.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/jean85/pretty-package-versions/.github/workflows/tests.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/jean85/pretty-package-versions/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/jean85/pretty-package-versions/codecov.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/jean85/pretty-package-versions/composer.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/jean85/pretty-package-versions/src/PrettyVersions.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/jean85/pretty-package-versions/src/Version.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/aws_e2e_assume_role.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/aws_e2e_ec2.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/aws_e2e_ecs.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/aws_e2e_regular_aws.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/lib/aws_assign_instance_profile.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/lib/aws_assume_role.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/lib/aws_e2e_lib.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/lib/container_tester.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/lib/ecs_hosted_test.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/auth_aws/lib/ecs_hosted_test.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/compile-unix.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/compile-windows.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/compile.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/config.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/config/php.ini" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/download-mongodb.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/generate_task_config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/install-dependencies.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/make-docs.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/make-release.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/certs.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/ca.crt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/ca.key" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/ca.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/mock-delegate-revoked.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/mock-delegate-valid.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/mock-revoked.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/mock-valid.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/ocsp-responder.crt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/ocsp-responder.key" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/rename.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/server-mustStaple-singleEndpoint.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/server-mustStaple.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/server-singleEndpoint.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ecdsa/server.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/mock-ocsp-responder-requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/mock_ocsp_responder.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/ocsp_mock.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/ca.crt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/ca.key" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/ca.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/mock-delegate-revoked.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/mock-delegate-valid.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/mock-revoked.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/mock-valid.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/ocsp-responder.crt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/ocsp-responder.key" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/server-mustStaple-singleEndpoint.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/server-mustStaple.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/server-singleEndpoint.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/ocsp/rsa/server.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/orchestration/configs/sharded_clusters/basic.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/orchestration/db/.empty" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/orchestration/lib/client.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/run-atlas-proxy.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/run-orchestration.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/run-tests.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/start-orchestration.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/stop-orchestration.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/82e9b7a6.0" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/altname.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/ca.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/client-private.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/client-public.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/client.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/commonName.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/crl.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/expired.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/password_protected.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/server.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/.evergreen/x509gen/wild.pem" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/phpunit.evergreen.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/GridFS/Exception/StreamException.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/GridFS/UnusableStream.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/PHPUnit/Functions.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/AtlasDataLakeSpecTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/atlas_data_lake/aggregate.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/atlas_data_lake/estimatedDocumentCount.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/atlas_data_lake/find.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/atlas_data_lake/getMore.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/atlas_data_lake/listCollections.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/atlas_data_lake/listDatabases.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/atlas_data_lake/runCommand.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/CollectionData.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/Constraint/IsBsonType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/Constraint/IsBsonTypeTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/Constraint/Matches.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/Constraint/MatchesTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/Context.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/DirtySessionObserver.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/EntityMap.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/EventObserver.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/ExpectedError.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/ExpectedResult.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/FailPointObserver.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/Operation.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/RunOnRequirement.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/UnifiedSpecTest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/Util.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-fail/entity-bucket-database-undefined.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-fail/entity-collection-database-undefined.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-fail/entity-database-client-undefined.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-fail/entity-session-client-undefined.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-fail/returnDocument-enum-invalid.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-fail/schemaVersion-unsupported.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-pass/poc-change-streams.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-pass/poc-command-monitoring.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-pass/poc-crud.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-pass/poc-gridfs.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-pass/poc-retryable-reads.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-pass/poc-retryable-writes.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-pass/poc-sessions.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-pass/poc-transactions-convenient-api.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-pass/poc-transactions-mongos-pin-auto.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/UnifiedSpecTests/valid-pass/poc-transactions.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/symfony/polyfill-php80/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/symfony/polyfill-php80/Php80.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/symfony/polyfill-php80/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/symfony/polyfill-php80/Resources/stubs/Attribute.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/symfony/polyfill-php80/Resources/stubs/Stringable.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/symfony/polyfill-php80/Resources/stubs/ValueError.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/symfony/polyfill-php80/bootstrap.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vendor/symfony/polyfill-php80/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.htaccess" beforeDir="false" afterPath="$PROJECT_DIR$/.htaccess" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Looma.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Looma.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLinters/jshint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLinters/jshint.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ideaXX/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.ideaXX/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ideaXX/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.ideaXX/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ideaXX/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.ideaXX/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ideaXX/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.ideaXX/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.pydevproject" beforeDir="false" afterPath="$PROJECT_DIR$/.pydevproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.pydevproject.bak" beforeDir="false" afterPath="$PROJECT_DIR$/.pydevproject.bak" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ssh/readonly" beforeDir="false" afterPath="$PROJECT_DIR$/.ssh/readonly" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ssh/readonly.pub" beforeDir="false" afterPath="$PROJECT_DIR$/.ssh/readonly.pub" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HTML-editor.php" beforeDir="false" afterPath="$PROJECT_DIR$/HTML-editor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASE NOTES Looma 2.3.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASE NOTES Looma 2.3.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASE NOTES Looma 3.5.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASE NOTES Looma 3.5.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASE NOTES Looma 4.0.1.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASE NOTES Looma 4.0.1.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASE NOTES Looma 4.0.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASE NOTES Looma 4.0.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASE NOTES Looma 4.2.5.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASE NOTES Looma 4.2.5.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASE NOTES Looma 4.3.0.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASE NOTES Looma 4.3.0.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASE NOTES Looma 5.2.0.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASE NOTES Looma 5.2.0.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RELEASE NOTES Looma 5.6.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/RELEASE NOTES Looma 5.6.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/calendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/calendar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chart.html" beforeDir="false" afterPath="$PROJECT_DIR$/chart.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chart.js.test.php" beforeDir="false" afterPath="$PROJECT_DIR$/chart.js.test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/color-test.php" beforeDir="false" afterPath="$PROJECT_DIR$/color-test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/colors.php" beforeDir="false" afterPath="$PROJECT_DIR$/colors.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/copy-paste-textfile.html" beforeDir="false" afterPath="$PROJECT_DIR$/copy-paste-textfile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/bootstrap-looma-wysiwyg.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/bootstrap-looma-wysiwyg.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/color-test.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/color-test.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/font-awesome.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/font-awesome.min.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/images/loading-small@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/css/images/loading-small@2x.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/images/texture.png" beforeDir="false" afterPath="$PROJECT_DIR$/css/images/texture.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/leaflet-markerCluster.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/leaflet-markerCluster.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-activity-register-to-chapter.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-activity-register-to-chapter.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-alerts.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-alerts.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-arith-problems.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-arith-problems.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-arith.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-arith.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-audio.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-audio.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-bagh-chal.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-bagh-chal.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-calculator.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-calculator.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-chapters.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-chapters.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/LICENSE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Looma System Files/looma box/apache2(for looma c2).conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Looma System Files/looma box/httpd for looma box.conf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/CEHRDvideosMetadata.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ColorsToTry.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/Content Metadata.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/Math123678.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/NDNfixes.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/activities.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/cehrd.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ch_idsToImport.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ch_idsToImport2020 04.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ch_idsToImportforEpaath.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/chapterLenToImport-1.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/chapterLenToImport.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/cl_lo_hi_ToImport.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/correctedNDNs.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ePaath ch_ids for Nepali subject.numbers" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ePaath ch_ids for Nepali subject.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ePaath metadata for Nepali subject.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ePaath metadata for Nepali subject.numbers" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ePaathToImport.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/fix-text-sizes.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/nch_idsToImport.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/nch_idsToImport2020 04.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/new keywords for nepali epaaths.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/newdisplaynames.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/userIPs.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/userLatLongs.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/volunteersToImport.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords 2020.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords ALL CHAPTERS prepared for import.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords ENGLISH prepared for import.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords MATH prepared for import.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords SCIENCE prepared for import.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords SOCIAL STUDIES prepared for import.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords perpared for import.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/loomaINITIALIZElogins" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/loomaW4Sfix" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mongo-dump/loomaAWS.archive" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.htaccessXXX" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.htaccessYYY" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/HTML-editor.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apache2(for looma c2).conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/copy-paste-textfile.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/css/looma-clock.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-clock.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-colors.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-colors.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-connect4.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-connect4.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-content-request.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-content-request.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-contentNav.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-contentNav.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-dictionary-autogen-editor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-dictionary-autogen-editor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-dictionary-test.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-dictionary-test.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-dictionary.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-dictionary.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-edit-activities.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-edit-activities.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-edit-lesson.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-edit-lesson.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-edit-text.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-edit-text.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-edit-video.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-edit-video.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-editor-template.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-editor-template.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-filecommands.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-filecommands.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-filesearch.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-filesearch.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-game-CP.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-game-CP.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/looma-game-list.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-game-list.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-history.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-history.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-home.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-home.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-horizontal-test.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-horizontal-test.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-html.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-html.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-image.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-image.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-import-content.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-import-content.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-game.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/looma-info.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-info.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-keyboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-keyboard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-library-search.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-library-search.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-library.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-library.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-life.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-life.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-login.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-login.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-maps.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-maps.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-media-controls.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-media-controls.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-numpad.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-numpad.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-paint-openfile.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-paint-openfile.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-paint.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-paint.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-play-edited-video.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-play-edited-video.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-play-lesson.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-play-lesson.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-play-pdf.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-play-pdf.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-play-text.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-play-text.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-register-user.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-register-user.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-search.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-search.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-settings.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-settings.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-speech-test.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-speech-test.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-template.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-template.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-test-editor.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-test-editor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-text-display.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-text-display.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-text-scan.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-text-scan.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-text-translator.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-text-translator.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-blackandwhite.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-blackandwhite.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-blueandgreen.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-blueandgreen.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-green.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-green.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-hotpink.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-hotpink.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-kate.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-kate.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-looma.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-looma.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-magenta.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-magenta.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-redandblack.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-redandblack.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-style-sheet.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-style-sheet.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-template.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-template.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-white.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-theme-white.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-toolbar.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-toolbar.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-upload-file.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-upload-file.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-video.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-video.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-viewer.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-viewer.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-vocab-flashcard.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-vocab-flashcard.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-web.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-web.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/typography.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/typography.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/AGRA.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/AGRA.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/ARJUN.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/ARJUN.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/Devnew 2.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/Devnew 2.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/Devnew.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/Devnew.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/FontAwesome.otf" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/FontAwesome.otf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/HIMALAYA 2.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/HIMALAYA 2.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/HIMALAYA.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/HIMALAYA.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/HIMALI.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/HIMALI.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/Himali   Bold.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/Himali   Bold.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/Himali NORMAL.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/Himali NORMAL.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/KANCHAN.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/KANCHAN.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/Kantipur Regular.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/Kantipur Regular.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/Nepali.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/Nepali.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/RITU.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/RITU.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/SAGAR.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/SAGAR.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/dev.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/dev.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/fontawesome-webfont.eot" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/fontawesome-webfont.eot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/fontawesome-webfont.svg" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/fontawesome-webfont.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/fontawesome-webfont.woff" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/fontawesome-webfont.woff" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/fontawesome-webfont.woff2" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/fontawesome-webfont.woff2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/ka_____0.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/ka_____0.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/preeti 2.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/preeti 2.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fonts/preeti.TTF" beforeDir="false" afterPath="$PROJECT_DIR$/fonts/preeti.TTF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/grid-test.php" beforeDir="false" afterPath="$PROJECT_DIR$/grid-test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/Looma favicons/looma favicon red.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/Looma favicons/looma favicon red.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/Looma favicons/looma favicon yellow on blue.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/Looma favicons/looma favicon yellow on blue.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/LoomaLogo-np_Page_1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/LoomaLogo-np_Page_1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/LoomaLogo-np_Page_2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/LoomaLogo-np_Page_2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/LoomaLogo.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/LoomaLogo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/LoomaLogo_small.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/LoomaLogo_small.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/activity.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/activity.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/activity.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/activity.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/alert.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/alert.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/alquerque-backup.txt" beforeDir="false" afterPath="$PROJECT_DIR$/images/alquerque-backup.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/alquerque-svg.txt" beforeDir="false" afterPath="$PROJECT_DIR$/images/alquerque-svg.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/alquerque.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/alquerque.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/alquerque.svg" beforeDir="false" afterPath="$PROJECT_DIR$/images/alquerque.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/alquerque_board.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/alquerque_board.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/alquerque_board.svg" beforeDir="false" afterPath="$PROJECT_DIR$/images/alquerque_board.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/answer-lab-whitepaper-tablets.html" beforeDir="false" afterPath="$PROJECT_DIR$/images/answer-lab-whitepaper-tablets.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/audio_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/audio_icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/back-arrow 2.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/back-arrow 2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/backspace.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/backspace.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/bagh chal.svg" beforeDir="false" afterPath="$PROJECT_DIR$/images/bagh chal.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/barbell.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/barbell.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/barbell.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/barbell.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/battery.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/battery.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/battery_charger.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/battery_charger.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/book_gray.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/book_gray.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/carrot-back.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/carrot-back.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/carrot-fwd.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/carrot-fwd.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/chapter_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/chapter_icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/clock.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/clock.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/delete-icon 2.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/delete-icon 2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/delete-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/delete-icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/dictionary_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/dictionary_icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/divide-white.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/divide-white.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/divide.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/divide.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/double-arrow.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/double-arrow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/double-up-arrow.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/double-up-arrow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/edit-icon-below.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/edit-icon-below.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/edit-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/edit-icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/fast-rabbit.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/fast-rabbit.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/fullscreen2.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/fullscreen2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/globe.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/globe.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/goat transparent.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/goat transparent.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/goat.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/goat.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/history.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/history.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/keyboard.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/keyboard.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/keypad.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/keypad.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/lesson.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/lesson.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/lesson.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/lesson.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/lesson2.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/lesson2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/CC-BY-NC-SA.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/CC-BY-NC-SA.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma Nepali logo cs6_cleanvector.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma Nepali logo cs6_cleanvector.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma Nepali logo cs6_shaded.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma Nepali logo cs6_shaded.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-english-amanda 1x1 crop.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-english-amanda 1x1 crop.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-english-amanda 2x1 crop transparent.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-english-amanda 2x1 crop transparent.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-english-amanda 2x1 crop.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-english-amanda 2x1 crop.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-english-amanda 3x1.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-english-amanda 3x1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-english-amanda.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-english-amanda.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-english-amanda.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-english-amanda.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda 2x1 crop transparent.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda 2x1 crop transparent.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda 2x1 crop.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda 2x1 crop.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda 3x1.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda 3x1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Looma-nepali-amanda.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/LoomaLogoNepaliTransparent.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/LoomaLogoNepaliTransparent.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/LoomaLogoTransparent 128px.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/LoomaLogoTransparent 128px.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/LoomaLogoTransparent.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/LoomaLogoTransparent.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/LoomaLogoTransparentTrimmed.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/LoomaLogoTransparentTrimmed.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/Nepal Academy.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/Nepal Academy.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/PHET.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/PHET.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/VTS.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/VTS.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/VTSLogoSmall-final.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/VTSLogoSmall-final.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/amazon.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/amazon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/aptana-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/aptana-logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/aws.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/aws.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/css3-html5-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/css3-html5-logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/globalgiving-vetted.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/globalgiving-vetted.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/google-translate.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/google-translate.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/google.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/google.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/hesperian.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/hesperian.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/html.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/html.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/html5-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/html5-logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/intellij.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/intellij.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/intellij.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/intellij.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/jetbrains.svg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/jetbrains.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/jquery-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/jquery-logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/khan leaf.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/khan leaf.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/khan.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/khan.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/leaflet-logo.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/leaflet-logo.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/leaflet-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/leaflet-logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/looma favicon yellow on blue.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/looma favicon yellow on blue.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/menlo_school_logo.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/menlo_school_logo.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/mongodb-logo.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/mongodb-logo.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/mongodb-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/mongodb-logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/mycroft.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/mycroft.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/olenepal.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/olenepal.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/openstreetmap-logo.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/openstreetmap-logo.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/openstreetmap-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/openstreetmap-logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/pdf.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/pdf.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/pdfjs.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/pdfjs.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/phet-logo-tm.svg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/phet-logo-tm.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/schools-wikipedia-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/schools-wikipedia-logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/stackoverflow.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/stackoverflow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/tilemill.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/tilemill.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/wikipedia.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/wikipedia.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/logos/wiktionary.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/logos/wiktionary.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-screenshots/Looma Calculator.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-screenshots/Looma Calculator.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-screenshots/Looma Clock.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-screenshots/Looma Clock.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-screenshots/Looma Dictionary.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-screenshots/Looma Dictionary.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-screenshots/Looma Library.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-screenshots/Looma Library.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-screenshots/Looma Map.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-screenshots/Looma Map.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-screenshots/Looma Paint.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-screenshots/Looma Paint.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-screenshots/Looma.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-screenshots/Looma.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-screenshots/Vocabulary Drill.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-screenshots/Vocabulary Drill.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-screenshots/Web.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-screenshots/Web.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-viewOutline.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-viewOutline.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/looma-viewThumbnail.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/looma-viewThumbnail.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/minus-white.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/minus-white.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/minus.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/minus.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/minus.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/minus.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/mute.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/mute.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/next-arrow.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/next-arrow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/on-off.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/on-off.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/pause 2.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/pause 2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/pause-button.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/pause-button.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/pause.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/pause.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/play-button.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/play-button.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/play-slideshow-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/play-slideshow-icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/plus-white.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/plus-white.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/plus.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/plus.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/plus.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/plus.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/question.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/question.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/redcross.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/redcross.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/reverse-double-arrow.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/reverse-double-arrow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/save-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/save-icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/secondaryToolbarButton-lastPage.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/secondaryToolbarButton-lastPage.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/sketchy-globe-drawing_23-2147504914.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/sketchy-globe-drawing_23-2147504914.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/slow-turtle.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/slow-turtle.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/solar_charger.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/solar_charger.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/speech1.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/speech1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/teacher.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/teacher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/textfile.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/textfile.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/textfile2.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/textfile2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/textfile3.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/textfile3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/textfile4.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/textfile4.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/textfile5.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/textfile5.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/textfile6.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/textfile6.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/texture.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/texture.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/tiger transparent.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/tiger transparent.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/tiger.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/tiger.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/tiger1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/tiger1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/tiger2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/tiger2.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/tiger3.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/tiger3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/tiger4.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/tiger4.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/times-white.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/times-white.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/times.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/times.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/trademark.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/trademark.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/trademark2.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/images/trademark2.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/trademark3.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/trademark3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/trademark4.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/trademark4.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/trash.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/trash.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/video_record.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/images/video_record.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/PHPMailer/Exception.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/PHPMailer/Exception.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/PHPMailer/PHPMailer.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/PHPMailer/PHPMailer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/PHPMailer/SMTP.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/PHPMailer/SMTP.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/looma-control-buttons.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-control-buttons.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/looma-edited-video-fileviewer.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-edited-video-fileviewer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/looma-filecommands.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-filecommands.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/looma-filesearch.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-filesearch.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/looma-media-controls.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-media-controls.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/looma-search copy.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-search copy.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/looma-search.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-search.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/looma-translations.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-translations.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-theme-cehrdOLD.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/loomaOLD.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/date" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/date.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/httpdLAPTOP20211105.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/httpd for looma box.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-log-user-activitySKIP.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/includes/looma-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-utilities.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/includes/mongo-connect.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/mongo-connect.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/mongo-test.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/mongo-test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/toolbar-vertical.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/toolbar-vertical.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/toolbar.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/toolbar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/bootstrap-wysiwyg.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/bootstrap-wysiwyg.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/bootstrap-wysiwyg.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/bootstrap-wysiwyg.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/bubble_cursor.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/bubble_cursor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/chart.bundle.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/chart.bundle.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/jquery-ui.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/jquery-ui.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/jquery.hotkeys.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/jquery.hotkeys.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/jquery.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/jquery.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/images/layers-2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/images/layers-2x.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/images/layers.png" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/images/layers.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/images/marker-icon-2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/images/marker-icon-2x.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/images/marker-icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/images/marker-icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/images/marker-shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/images/marker-shadow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/leaflet-markerCluster.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/leaflet-markerCluster.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/leaflet-src.esm.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/leaflet-src.esm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/leaflet-src.esm.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/leaflet-src.esm.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/leaflet-src.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/leaflet-src.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/leaflet-src.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/leaflet-src.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/leaflet.1.7.1 DONT USE.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/leaflet.1.7.1 DONT USE.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/leaflet.css" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/leaflet.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/leaflet.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/leaflet.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/leafletjs/leaflet.markercluster.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/js/leafletjs/leaflet.markercluster.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-activity-editor-template.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-activity-editor-template.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-activity-register-to-chapter.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-activity-register-to-chapter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-arith-problems.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-arith-problems.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-arith.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-arith.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-bagh-chal.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-bagh-chal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-book.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-book.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-calculator.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-calculator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-chapterIDs.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-chapterIDs.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-class-subject.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-class-subject.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-clock-doubleclock.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-clock-doubleclock.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-clock-singleclock.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-clock-singleclock.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-clock-worldclocks.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-clock-worldclocks.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/looma-clock.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-clock.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-colors.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-colors.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-connect4.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-connect4.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-content-request.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-content-request.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-contentNav.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-contentNav.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-dictionary-autogen-editor.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-dictionary-autogen-editor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-dictionary-autogen-pdfToText.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-dictionary-autogen-pdfToText.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-dictionary-autogen-uniquewords.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-dictionary-autogen-uniquewords.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-dictionary-handler.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-dictionary-handler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-dictionary.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-dictionary.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-edit-activities.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-activities.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-edit-lesson.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-lesson.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/looma-edit-text.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-text.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-edit-video.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-video.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-editor-template.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-editor-template.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-epaath.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-epaath.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-filecommands.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-filecommands.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-game-CP.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-game-CP.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-game-list.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-game-list.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-games.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-games.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-halt.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-halt.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-hilitor-utf8.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-hilitor-utf8.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-histories.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-histories.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-history.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-history.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-home.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-horizontal-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-horizontal-test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-html.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-html.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-image.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-image.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-import-content.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-import-content.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/looma-info.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-info.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-keyboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-keyboard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-lesson-register-to-chapter.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-lesson-register-to-chapter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-library-search.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-library-search.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-library.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-library.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-life.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-life.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-login.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-logout.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-logout.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-mapGOOD.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-mapGOOD.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-media-controls.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-media-controls.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-numpad.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-numpad.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-paint-openfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-paint-openfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-paint.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-paint.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-play-edited-video.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-play-edited-video.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-play-lesson.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-play-lesson.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-play-pdf.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-play-pdf.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-play-text.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-play-text.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-popup-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-popup-test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-screenfull.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-screenfull.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-search-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-search-test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-search.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-search.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-settings.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-shell-cmd.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-shell-cmd.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-shutdown.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-shutdown.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-speech-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-speech-test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-template.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-template.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-test-editor.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-test-editor.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-text-frame.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-text-frame.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-text-scan.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-text-scan.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-text-translator.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-text-translator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-upload-file.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-upload-file.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-video-player.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-video-player.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-video.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-video.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-vocab-flashcard.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-vocab-flashcard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-vocab.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-vocab.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-web.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-web.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma.map20201205.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma.map20201205.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/paper-full-0.9.23.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/paper-full-0.9.23.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/paper-full.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/paper-full.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/pdfjs/pdf.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pdfjs/pdf.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/pdfjs/pdf.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pdfjs/pdf.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/pdfjs/pdf.worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pdfjs/pdf.worker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/pdfjs/pdf.worker.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pdfjs/pdf.worker.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/pdfjs/text-layer-builder.css" beforeDir="false" afterPath="$PROJECT_DIR$/js/pdfjs/text-layer-builder.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/pdfjs/text-layer-builder.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pdfjs/text-layer-builder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/locale/en-US/viewer.properties" beforeDir="false" afterPath="$PROJECT_DIR$/locale/en-US/viewer.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/locale/locale.properties" beforeDir="false" afterPath="$PROJECT_DIR$/locale/locale.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ColorsToTry.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ColorsToTry.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/Content Metadata.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/Content Metadata.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/Copy of ch_idsToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/Copy of ch_idsToImport.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/W4Sextract" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/W4Sextract" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport2020 04.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport2020 04.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImportforEpaath.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ch_idsToImportforEpaath.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/chapterLenToImport-1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/chapterLenToImport-1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/chapterLenToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/chapterLenToImport.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/checkPicturesExist" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/checkPicturesExist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/cl_lo_hi_ToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/cl_lo_hi_ToImport.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/convertScalarsToArray.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/convertScalarsToArray.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/dictionaryverify" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/dictionaryverify" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/displaynamefixes.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/displaynamefixes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath ch_ids for Nepali subject.tsv" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ePaath ch_ids for Nepali subject.tsv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath metadata for Nepali subject.csv" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ePaath metadata for Nepali subject.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath metadata for Nepali subject.numbers" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ePaath metadata for Nepali subject.numbers" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaathToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ePaathToImport.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/epaathfix" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/epaathfix" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fix-sizes.js copy.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fix-sizes.js copy.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fix-text-sizes.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fix-text-sizes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fixDisplayNamesTrim" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fixDisplayNamesTrim" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fixENpagenumbers.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fixENpagenumbers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fixEPaath" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fixEPaath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fixNPpagenumbers.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fixNPpagenumbers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fixSomePageNumbers" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fixSomePageNumbers" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fixhistoriesandgamesch_ids" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fixhistoriesandgamesch_ids" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fixstagingdata.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fixstagingdata.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fixstagingpartsofspeech.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fixstagingpartsofspeech.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fixtextfilesandlessons.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/fixtextfilesandlessons.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/hesperianfix" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/hesperianfix" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/htaccess" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/htaccess" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importCH_IDs" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importCH_IDs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importCH_IDsForEpaath" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importCH_IDsForEpaath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importCL_LO_CL_HI" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importCL_LO_CL_HI" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importChapterLen" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importChapterLen" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importChapters" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importChapters" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importEpaathKeywords" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importEpaathKeywords" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importNCH_IDSforEPaath" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importNCH_IDSforEPaath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importNCH_IDs" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importNCH_IDs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importNChapters" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importNChapters" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importOLEePaath" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importOLEePaath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importOLEePaathNepali" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importOLEePaathNepali" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importUserLogins" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importUserLogins" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/importVolunteerNames" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importVolunteerNames" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords 2020.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/keywords 2020.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords ALL CHAPTERS prepared for import.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/keywords ALL CHAPTERS prepared for import.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords ENGLISH prepared for import.csv" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/keywords ENGLISH prepared for import.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords MATH prepared for import.csv" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/keywords MATH prepared for import.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords SCIENCE prepared for import.csv" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/keywords SCIENCE prepared for import.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords SOCIAL STUDIES prepared for import.csv" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/keywords SOCIAL STUDIES prepared for import.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords perpared for import.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/keywords perpared for import.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywordtranslations" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/keywordtranslations" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/khanextract" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/khanextract" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/khanfix" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/khanfix" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/khannavigate" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/khannavigate" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/lessonRegisterToChapters" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/lessonRegisterToChapters" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/lessonclean" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/lessonclean" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/lessonplanmerge" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/lessonplanmerge" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/lessonplanrecover" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/lessonplanrecover" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/lessonplanrecover2" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/lessonplanrecover2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/lessonreport.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/lessonreport.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/lessonsToRegister.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/lessonsToRegister.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/lessonscan" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/lessonscan" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/lessonscanforfiletypes" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/lessonscanforfiletypes" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/lessonverify" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/lessonverify" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/listactivities.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/listactivities.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/listlessons.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/listlessons.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/looma.website lesson integrity.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/looma.website lesson integrity.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaDropDatabase" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaDropDatabase" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaMongoSetDate" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaMongoSetDate" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaUSB" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaUSB" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaUSBer.zip" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaUSBer.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaUSBerS3" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaUSBerS3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaarchive" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaarchive" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaarchiveS3" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaarchiveS3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-utilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-utilities.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/CEHRDvideosMetadata.tsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ColorsToTry.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/Content Metadata.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/Copy of ch_idsToImport.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/Math123678.tsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/NDNfixes.tsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/activities.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/cehrd.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.tsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport2020 04.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImportforEpaath.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/chapterLenToImport-1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/chapterLenToImport.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/cl_lo_hi_ToImport.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/correctedNDNs.tsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath ch_ids for Nepali subject.numbers" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath ch_ids for Nepali subject.tsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath metadata for Nepali subject.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath metadata for Nepali subject.numbers" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaathToImport.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/fix-sizes.js copy.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/fix-text-sizes.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords 2020.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords ALL CHAPTERS prepared for import.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords ENGLISH prepared for import.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords MATH prepared for import.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords SCIENCE prepared for import.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords SOCIAL STUDIES prepared for import.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords perpared for import.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaupdater" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaupdater" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaupdaterS3" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaupdaterS3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport2020 04.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport2020 04.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/new keywords for nepali epaaths.csv" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/new keywords for nepali epaaths.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/newdisplaynames.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/newdisplaynames.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/pagenumberfixes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/pagenumberfixes.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/phetfix" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/phetfix" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/registergames" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/registergames" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/registerhistories" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/registerhistories" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/registerlessons" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/registerlessons" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/registerloomapages" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/registerloomapages" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/registermaps" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/registermaps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/removeduplicates" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/removeduplicates" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/tag-translate.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/tag-translate.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/tagchapters.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/tagchapters.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/tagimport.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/tagimport.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/textclean" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/textclean" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/textfileDELETEunused" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/textfileDELETEunused" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/textfile_blue_to_white" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/textfile_blue_to_white" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/textfile_find_long_data" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/textfile_find_long_data" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/textfilerename" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/textfilerename" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/textfileverify" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/textfileverify" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/textfix" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/textfix" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/textscan" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/textscan" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/unique" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/unique" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/volunteersToImport.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/volunteersToImport.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/wikifixtags" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/wikifixtags" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-404.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-404.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-503.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-503.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-activities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-activities.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-activity-editor-template.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-activity-editor-template.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-activity-register-to-chapter.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-activity-register-to-chapter.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-admin-activityEditor.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-admin-activityEditor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-admin-contentNavigator.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-admin-contentNavigator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-arith-problems.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-arith-problems.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-arith.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-arith.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-bagh-chal.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-bagh-chal.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-black.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-black.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-book.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-book.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-calculator.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-calculator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-change-password.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-change-password.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-chapterIDs.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-chapterIDs.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-chapters.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-chapters.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-clock-doubleclock.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-clock-doubleclock.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-clock-singleclock.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-clock-singleclock.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-clock-worldclocks.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-clock-worldclocks.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport.tsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport2020 04.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/new keywords for nepali epaaths.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/newdisplaynames.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/userIPs.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/userLatLongs.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/volunteersToImport.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-clock.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-clock.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-colors.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-colors.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-connect4.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-connect4.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-content-request.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-content-request.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-contentNav-classNav.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-contentNav-classNav.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-contentNav-databaseUpdate.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-contentNav-databaseUpdate.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-contentNav-fileNav.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-contentNav-fileNav.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-contentNav-lessonSelect.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-contentNav-lessonSelect.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-contentNav-preview.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-contentNav-preview.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-contentNav-results.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-contentNav-results.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-contentNav.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-contentNav.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-database-admin.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-database-admin.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-database-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-database-utilities.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-dictionary-autogen-backend.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-autogen-backend.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-dictionary-autogen-editor.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-autogen-editor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-dictionary-autogen-translator.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-autogen-translator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-dictionary-autogen-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-autogen-utilities.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-dictionary-test.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-dictionary-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-utilities.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-dictionary-utilitiesNEW.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary-utilitiesNEW.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-dictionary.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-dictionary.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-edit-activities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-edit-activities.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-edit-lesson.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-edit-lesson.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-edit-text.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-edit-text.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-edit-video.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-edit-video.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-editor-template.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-editor-template.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-epaath.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-epaath.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-game-list.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-game-list.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-games.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-games.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-gamesOLD.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-gamesOLD.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-halt.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-halt.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-histories.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-histories.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-home.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-home.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-horizontal-test.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-horizontal-test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-html.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-html.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-import-content.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-import-content.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-info.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-info.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-lesson-register-to-chapter.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-lesson-register-to-chapter.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-library-search.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-library-search.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-library-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-library-utilities.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-library.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-library.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-life.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-life.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-login.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-login.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-loginOLD.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-loginOLD.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-logout.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-logout.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-maps.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-maps.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-mimic.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-mimic.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-paint-openfile.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-paint-openfile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-paint.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-paint.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-pdf-viewer.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-pdf-viewer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-play-edited-video.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-play-edited-video.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-play-lesson.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-play-lesson.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-play-pdf.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-play-pdf.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-play-text.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-play-text.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-popup-test.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-popup-test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-register-user.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-register-user.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-sample-forms.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-sample-forms.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-search-test.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-search-test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-shell-cmd.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-shell-cmd.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-shutdown.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-shutdown.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-speech-test.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-speech-test.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-speech.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-speech.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-system.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-system.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-template.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-template.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-test-editor.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-test-editor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-text-frame.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-text-frame.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-text-scan.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-text-scan.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-text-translator.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-text-translator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-upload-file.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-upload-file.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-video.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-video.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/looma-vocab-flashcard.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-vocab-flashcard.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-vocab.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-vocab.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-web.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-web.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-wiki.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-wiki.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/activitiesGOOD.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/activitiesGOOD.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/activitiesGOOD20201014.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/activitiesGOOD20201014.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/chapters.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/chapters.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary20201011.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary20201011.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary20201017.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary20201017.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/edited_videos.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/edited_videos.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/folders.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/folders.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/games.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/games.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/gamesOLD.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/gamesOLD.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/histories.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/histories.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/lessons.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/lessons.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/logins.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/logins.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/maps.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/maps.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/new_content.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/new_content.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/pages.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/pages.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/slideshows.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/slideshows.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/system.indexes.bson" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/tags.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/tags.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/text_files.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/text_files.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/textbooks.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/textbooks.metadata.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/volunteers.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/volunteers.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/wikipedia.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/wikipedia.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/activities.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/activities.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/activities.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/activities.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/chapters.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/chapters.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/chapters.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/chapters.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/dictionary.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/dictionary.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/dictionary.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/dictionary.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/dictionaryGOOD.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/dictionaryGOOD.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/dictionaryGOOD.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/dictionaryGOOD.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/edited_videos.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/edited_videos.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/edited_videos.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/edited_videos.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/folders.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/folders.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/folders.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/folders.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/games.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/games.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/games.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/games.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/gamesOLD.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/gamesOLD.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/gamesOLD.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/gamesOLD.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/histories.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/histories.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/histories.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/histories.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/lessons.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/lessons.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/lessons.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/lessons.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/logins.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/logins.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/logins.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/logins.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/maps.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/maps.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/maps.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/maps.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/new_content.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/new_content.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/new_content.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/new_content.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/pages.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/pages.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/pages.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/pages.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/slideshows.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/slideshows.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/slideshows.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/slideshows.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/system.indexes.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/system.indexes.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/tags.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/tags.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/tags.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/tags.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/text_files.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/text_files.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/text_files.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/text_files.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/textbooks.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/textbooks.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/textbooks.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/textbooks.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/version_number.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/version_number.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/version_number.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/version_number.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/volunteers.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/volunteers.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/volunteers.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/volunteers.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/wikipedia.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/wikipedia.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/wikipedia.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump20201023/looma/wikipedia.metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongotest.php" beforeDir="false" afterPath="$PROJECT_DIR$/mongotest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nepali_calendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/nepali_calendar.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/redirect.html" beforeDir="false" afterPath="$PROJECT_DIR$/redirect.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/redirect.php" beforeDir="false" afterPath="$PROJECT_DIR$/redirect.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.html" beforeDir="false" afterPath="$PROJECT_DIR$/test.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/autoload.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/autoload.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/ClassLoader.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/ClassLoader.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_classmap.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_classmap.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_files.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_files.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_namespaces.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_namespaces.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_psr4.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_real.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_real.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/autoload_static.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/autoload_static.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/installed.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/installed.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/CONTRIBUTING.md" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/CONTRIBUTING.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/SECURITY.md" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/SECURITY.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/phpcs.xml.dist" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/phpcs.xml.dist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/src/PackageVersions/FallbackVersions.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/src/PackageVersions/FallbackVersions.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/src/PackageVersions/Installer.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/src/PackageVersions/Installer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/src/PackageVersions/Versions.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/package-versions-deprecated/src/PackageVersions/Versions.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/CONTRIBUTING.md" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/CONTRIBUTING.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/docs/reference/method/MongoDBCollection-aggregate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/docs/reference/method/MongoDBCollection-aggregate.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/docs/reference/method/MongoDBDatabase-aggregate.txt" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/docs/reference/method/MongoDBDatabase-aggregate.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/docs/tutorial/collation.txt" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/docs/tutorial/collation.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/docs/tutorial/custom-types.txt" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/docs/tutorial/custom-types.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/phpcs.xml.dist" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/phpcs.xml.dist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/phpunit.xml.dist" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/phpunit.xml.dist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Exception/InvalidArgumentException.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Exception/InvalidArgumentException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Exception/ResumeTokenException.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Exception/ResumeTokenException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/GridFS/Bucket.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/GridFS/Bucket.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/GridFS/StreamWrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/GridFS/StreamWrapper.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Model/DatabaseInfo.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Model/DatabaseInfo.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Model/IndexInput.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Model/IndexInput.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Operation/CreateIndexes.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Operation/CreateIndexes.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Operation/ModifyCollection.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/src/Operation/ModifyCollection.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Collection/FunctionalTestCase.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Collection/FunctionalTestCase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Compat/PolyfillAssertTrait.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Database/DatabaseFunctionalTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Database/DatabaseFunctionalTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/DocumentationExamplesTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/DocumentationExamplesTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/FunctionalTestCase.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/FunctionalTestCase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/GridFS/BucketFunctionalTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/GridFS/BucketFunctionalTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Model/IndexInfoFunctionalTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Model/IndexInfoFunctionalTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Model/IndexInputTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Model/IndexInputTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/AggregateFunctionalTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/AggregateFunctionalTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/BulkWriteFunctionalTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/BulkWriteFunctionalTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/BulkWriteTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/BulkWriteTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/DeleteFunctionalTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/DeleteFunctionalTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/FunctionalTestCase.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/FunctionalTestCase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/InsertManyFunctionalTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/InsertManyFunctionalTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/InsertManyTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/InsertManyTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/InsertOneFunctionalTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/InsertOneFunctionalTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/UpdateFunctionalTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/UpdateFunctionalTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/UpdateTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/Operation/UpdateTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/ClientSideEncryptionSpecTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/ClientSideEncryptionSpecTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/DocumentsMatchConstraint.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/DocumentsMatchConstraint.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/ErrorExpectation.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/ErrorExpectation.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/FunctionalTestCase.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/FunctionalTestCase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/Operation.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/Operation.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/TransactionsSpecTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/TransactionsSpecTest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/change-streams/change-streams-errors.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/change-streams/change-streams-errors.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/change-streams/change-streams.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/change-streams/change-streams.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/retryable-writes/insertOne-serverErrors.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/SpecTests/retryable-writes/insertOne-serverErrors.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/TestCase.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/mongodb/mongodb/tests/TestCase.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/phptest.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

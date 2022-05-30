@@ -7,7 +7,6 @@ Date: July 2016
 Description: Initial "maps" page. Takes the user to the different maps.
 -->
 
-<h1 class="credit"> Created by Sophie, Morgan, Henry, Kendall</h1>
 
 <?php  $page_title = 'Looma Maps';
 include ("includes/header.php");
@@ -41,6 +40,7 @@ function makeButton($file, $thumb, $dn) {
 <body>
 <div id="main-container-horizontal" class='scroll'>
     <h1 class="title"> <?php keyword("Looma Maps"); ?> </h1>
+    <h1 class="credit"> Created by Sophie, Morgan, Henry, Kendall</h1>
     <div class="center">
         <br>
         <?php

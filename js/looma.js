@@ -39,7 +39,7 @@ $(document).ready (function() {
     // not visible to users
    var main_color = LOOMA.readStore('main-color','local');
    var toolbar_color = LOOMA.readStore('toolbar-color','local');
-    //document.documentElement.style.setProperty('--looma-blue', main_color);
+    //document.documentElement.style.setProperty('--looma-background', main_color);
     //document.documentElement.style.setProperty('--looma-toolbar', toolbar_color);
     
     // LOOMA fullscreen display

@@ -206,7 +206,7 @@ button.lookup {
 .thumb-canvas {
     width:90%;
     margin: 0.2vh 0.2vw;
-    border: 3px solid var(--looma-blue);
+    border: 3px solid var(--looma-background);
 }
  .thumb-canvas:hover {
      border: 3px solid yellow;

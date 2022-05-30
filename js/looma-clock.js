@@ -256,6 +256,7 @@ $(document).ready (function() {
     function toDigital() {
         //analog --> digital
         document.getElementById("mainClock").style.display = 'none';
+        document.getElementById("digitalDisplay").style.display = 'none';
         $('#digitalTime').hide();
         //document.getElementById("digitalTime").style.display = 'none';
         document.getElementById("dragHands").innerHTML = "";
@@ -286,6 +287,7 @@ $(document).ready (function() {
     function toAnalog() {
         //digital --> analog
         document.getElementById("mainClock").style.display = 'inline-block';
+        document.getElementById("digitalDisplay").style.display = 'inline-block';
         $('#digitalTime').show();
         //$("#toCurrentTime").show();
         //document.getElementById("toCurrentTime").style.display = 'block';

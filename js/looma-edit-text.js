@@ -145,7 +145,7 @@
       loginteam  = LOOMA.readCookie('login-team');
       
       if (loginname && (loginlevel === 'admin' || loginlevel === 'exec')) $('.admin').show();
-      if (loginteam !== 'exec') $editor.on('paste',function(){ if (loginteam !== 'management') return false;});
+      if (loginlevel !== 'exec') $editor.on('paste',function(){ if (loginteam !== 'management') return false;});
 
       
       //$('#main-container').disable();

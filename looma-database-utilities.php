@@ -442,6 +442,15 @@ if (isset($_REQUEST["collection"])) {
                 "data" => $_REQUEST["data"]
             );
             $insert['author'] = $login;
+
+// put new code for 'editor' here
+// try mongo UPDATE with editor=login
+//
+//if fails, (document doesnt exist) then
+//
+//	mongo INSERT with author=login, editor=login
+
+
             // if (!($login_level==='admin' || $login_level==='exec') ) $insert['team'] = $login_team;
             if (!($login_level==='admin' || $login_level==='exec' || $login_team === 'teacher') ) {
                 $insert['team'] = $login_team;

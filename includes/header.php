@@ -63,7 +63,7 @@ File: header.php
     languages and countries are planned.">
 
 	<?php
-  	    // Turn on error reporting - only for localhost debugging, not on produecion server
+  	    // Turn on error reporting - only for localhost debugging, not on production server or looma box
     //    if ($LOOMA_SERVER === 'looma local')
             error_reporting(E_ALL);
       //  else

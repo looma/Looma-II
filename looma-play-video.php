@@ -11,7 +11,7 @@ they want to edit a video
 -->
 <?php $page_title = 'Looma Video Player';
 	  require_once ('includes/header.php');
-      require_once('includes/looma-utilities.php');
+      require_once ('includes/looma-utilities.php');
       logFiletypeHit('video');
 ?>
 

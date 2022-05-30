@@ -120,13 +120,21 @@ checknetworkspeed () {
 dosync () {
     FROM=$1
     TO=$2
+    SIZEONLY=$3
 
-    echo; echo "doing RSYNC from $FROM to $TO with parameter $DRYRUNMODE"
-    echo; echo "  *** *** if prompted for \"password:\" enter \"looma\"  *** ***"
-    echo ""
+    echo;
+    if [ $1 = "dryrun" ]
+    then
+      echo "doing RSYNC from $FROM to $TO with --dry-run [no changes will be made]"
+    else
+      echo "doing RSYNC from $FROM to $TO"
+    fi
+    echo
+    echo "  *** *** if prompted for \"password:\" enter \"looma\"  *** ***"
+    echo
 
     # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
-    rsync -az  $DRYRUNMODE --size-only  \
+    rsync -az  $DRYRUNMODE $SIZEONLY  \
         --stats  --progress   \
         --perms  --chmod=D777,F777 --chown=looma:looma \
         --exclude '.[!.]*' --delete --delete-excluded   \
@@ -148,9 +156,8 @@ echo "****************************************************************"
 echo
 
 # set up user 'looma' and 'looma-admin' and group 'looma' in case not already present
-groupadd looma
-useradd -g looma looma
-useradd -g looma looma-admin
+# groupadd looma
+# useradd -g looma looma
 
 if [[ $1 = "dryrun" ]]
   then
@@ -247,7 +254,8 @@ then
 
         SECONDS=0
 
-        dosync "$FROMDIR/Looma"  "$TODIR/Looma"
+        #  for CODE calling dosync() with $3 (size-only) = null
+        dosync    "$FROMDIR/Looma"  "$TODIR/Looma"
 
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
         CUMULATIVE=$SECONDS
@@ -286,7 +294,7 @@ if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
             mongoexport --db looma --collection lessons --out /tmp/lessonsFromMongo.tmp
             mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
 
-            mongo --quiet looma < "$TODIR/Looma/looma\ shell\ scripts/loomaDropDatabase"
+            mongo --quiet looma < "$TODIR/Looma/looma shell scripts/loomaDropDatabase"
 
           mongorestore --quiet --db looma "$TODIR/Looma/mongo-dump/dump/looma/"
 
@@ -312,13 +320,14 @@ if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
     then
        SECONDS=0
 
-        dosync "$FROMDIR/content"   "$TODIR/content"
+        #  for CONTENT calling dosync() with $3 (size-only) = "--size-only"
+        dosync "$FROMDIR/content"   "$TODIR/content" "--size-only"
 
         # uncomment to sync the maps [usually they dont change]
-        # dosync "$FROMDIR/maps2018/"  "$TODIR/maps2018"
+        # dosync "$FROMDIR/maps2018/"  "$TODIR/maps2018" "--size-only"
 
         # uncomment to sync ePaath [usually doesnt change]
-        # dosync "$FROMDIR/ePaath/"    "$TODIR/ePaath"
+        # dosync "$FROMDIR/ePaath/"    "$TODIR/ePaath" "--size-only"
 
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 

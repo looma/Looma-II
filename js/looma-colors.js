@@ -129,7 +129,7 @@ $(document).ready (function () {
     $('.color-choice').click (function() {
         LOOMA.setStore('main-color', $(this).data('main'),'local');
         LOOMA.setStore('toolbar-color', $(this).data('toolbar'),'local');
-        document.documentElement.style.setProperty('--looma-blue', $(this).data('main'));
+        document.documentElement.style.setProperty('--looma-background', $(this).data('main'));
         document.documentElement.style.setProperty('--looma-toolbar', $(this).data('toolbar'));
         //$(document.documentElement.html).css('--looma-toolbar', $(this).data('toolbar'));
     });

@@ -102,6 +102,9 @@ RO="58191@usw-s008.rsync.net"
 echo
 echo "**************************************************"
 echo "- preparing to update Looma code on the USB memory"
+echo
+echo "enter 'looma' is asked for a password"
+echo
 echo -n  "- - continue [y/n]?"; read input;
 
 

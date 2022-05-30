@@ -17,7 +17,8 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
 -->
 
 <?php $page_title = 'Looma Audio Player';
-	  include ('includes/header.php');
+      require_once('includes/header.php');
+      require_once('includes/looma-utilities.php');
 	  logFiletypeHit('audio');
 ?>
     <link rel="stylesheet" type="text/css" href="css/looma-audio.css">
@@ -31,7 +32,8 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
         $displayname = $_REQUEST['dn'];
 	?>
     <div id="main-container-horizontal">
-		<div id="audio-viewer" class="viewer">
+        <?php downloadButton($filepath,$filename); ?>
+        <div id="audio-viewer" class="viewer">
 			<br><br><br><br>
 			<h2>Looma Audio Player ( <?php echo $displayname; ?> )</h2>
 			<br><br><br><br>

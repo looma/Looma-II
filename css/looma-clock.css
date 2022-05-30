@@ -120,7 +120,7 @@ h2 {
 #d {}
 
 #clock-only {
-    bottom:25vh;
+    bottom:23vh;
     display:inline-block;
     background-position: center;
     background-size: 100% 100%;
@@ -166,7 +166,11 @@ h2 {
     font-family: digitalFont;
 }
 #dragHands{
-    font-size: 0.25em;
+    font-size: 2em;
+    position:relative;
+    top:10vh;
+    height:8vh;
+    margin:0;
     
 }
 #toCurrentTime{
@@ -174,11 +178,13 @@ h2 {
 }
 
 #clockBox{
-    border: 5px solid silver;
+   /* border: 5px solid silver;
     border-radius: 6px;
-    margin-top:3vh;
+    margin-top:3vh;*/
     grid-column:2;
     grid-row:1 / 4;
+    height:100%;
+    width:100%;
 
     display: none;
 }
@@ -189,50 +195,72 @@ h2 {
     font-size: 16em;
     position: absolute;
     top: 15%;
-    left: 30%;
-    display: none;
+    left: 6%;
 }
 #amOrPm {
     font-family: digitalFont;
     color: lime;
-    font-size: 6em;
+    font-size: 9em;
     position: absolute;
-    top: 21%;
-    left: 62%;
-    display: none;
+    top: 31%;
+    left: 81%;
 }
 #seconds {
     font-family: digitalFont;
     color: lime;
-    font-size: 10em;
+    font-size: 9em;
     position: absolute;
     top: 30%;
     left: 60%;
-    display: none;
 }
 #day {
     font-family: digitalFont;
     color: lime;
-    font-size: 6em;
+    font-size: 5em;
     position: absolute;
     top: 57%;
-    left: 23%;
-    display: none;
+    left: 9%;
 }
 #date {
     font-family: digitalFont;
     color: lime;
-    font-size: 6em;
+    font-size: 5em;
     position: absolute;
     top: 57%;
-    left: 50%;
-    display: none;
+    left: 45%;
+}
+
+
+#fullscreen:fullscreen #time {
+    font-size: 16em;
+    top: 15%;
+    left: 20%;
+}
+#fullscreen:fullscreen #amOrPm {
+    font-size: 8em;
+    top: 22%;
+    left: 67%;
+}
+#fullscreen:fullscreen #seconds {
+    font-size: 10em;
+    top: 21%;
+    left: 52%;
+}
+#fullscreen:fullscreen #day {
+    font-size: 6em;
+    top: 57%;
+    left: 20%;
+}
+
+#fullscreen:fullscreen #date {
+    font-size: 6em;
+    top: 57%;
+    left: 45%;
 }
 
 #twentyFourHour{
     position: absolute;
-    top: 27vh;
-
+    top: 18vh;
     font-size: 1.2em;
     display: none;
 }

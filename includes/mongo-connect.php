@@ -10,14 +10,14 @@
 function mongoRegex ($pattern) { // $pattern is a string, like '^\d[a-z]'\
     // NOTE: input $pattern DOSS NOT include '/'s, they are inserted by this function
     global $mongo_level;
-    if ($mongo_level >= 4)
+    if ($mongo_level >= 3)
         return new MongoDB\BSON\Regex($pattern);
     else return new MongoRegex('/' . $pattern . '/');
 }
 
 function mongoRegexOptions($pattern, $options) {
     global $mongo_level;
-    if ($mongo_level >= 4)
+    if ($mongo_level >= 3)
         return new MongoDB\BSON\Regex($pattern,$options);
     else return new MongoRegex('/' . $pattern . '/' . $options);
 }
@@ -25,7 +25,7 @@ function mongoRegexOptions($pattern, $options) {
 //NOTE: should "try" MongoId() and return null if it fails
 function mongoId ($id) {  //$id is a string, RETURN a mongoId object
     global $mongo_level;
-    if ($mongo_level >= 4)
+    if ($mongo_level >= 3)
         return new MongoDB\BSON\ObjectId($id);
     else return new MongoId($id);
 }
@@ -33,14 +33,14 @@ function mongoId ($id) {  //$id is a string, RETURN a mongoId object
 function mongoGetId ($doc) { // $doc is a document returned by mongoinsert or similar
     // return the STRING value of the ID of $doc
     global $mongo_level;
-    if ($mongo_level >= 4)
+    if ($mongo_level >= 3)
         return (string) $doc->getInsertedId();
     else return (string) $doc['_id'];
 }
 
 function mongoCount($collection) {
     global $mongo_level;
-    if ($mongo_level >= 4) {
+    if ($mongo_level >= 3) {
         $count = $collection->count();
     } else {  // old mongoDB
         $count = $collection->count( );
@@ -67,7 +67,7 @@ function mongoFind($collection, $filter, $sort, $skip, $limit) {
 
     $filter = CEHRDfilter($filter);
 
-    if ($mongo_level >= 4) {
+    if ($mongo_level >= 3) {
         $options = [];
         if ($sort) $options['sort'] = [ $sort => 1 ];
         if ($skip) $options['skip'] = $skip;
@@ -96,7 +96,7 @@ function mongoFindRandom($collection, $filter, $count) {
     // for use by looma-dictionary.php CMD = LIST
     //returns a randomized set, size $count, of english words from the dictionary
     global $mongo_level;
-    if ($mongo_level >= 4) {
+    if ($mongo_level >= 3) {
         $cursor = $collection -> aggregate([
                 array('$match' =>  (object) $filter),
                 array('$sample' => array( 'size' => $count))]);
@@ -108,7 +108,7 @@ function mongoFindRandom($collection, $filter, $count) {
     $cursorArray = iterator_to_array($cursor);
     foreach ($cursorArray as $key => $doc) $temp[]=$doc;
 
-    if ($mongo_level >= 4) //already randomly sampled by mongo
+    if ($mongo_level >= 3) //already randomly sampled by mongo
         return $temp;
     else {                 //extract a random sample
         $list = [];
@@ -129,7 +129,7 @@ function mongoDistinct($collection, $key) {
 
 function mongoFindAndModify($collection, $filter, $set) {
     global $mongo_level;
-    if ($mongo_level >= 4 ) {
+    if ($mongo_level >= 3 ) {
         $options = array("upsert"=>true, "returnDocument"=>MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER);
         $doc = $collection->findOneAndUpdate( $filter, $set, $options);
     }
@@ -142,21 +142,21 @@ function mongoFindAndModify($collection, $filter, $set) {
 
 function mongoInsert($collection, $doc) {
     global $mongo_level;
-    if ($mongo_level >= 4 ) $doc = $collection->insertOne( $doc);
+    if ($mongo_level >= 3 ) $doc = $collection->insertOne( $doc);
     else                    $doc = $collection->insert($doc);
     return $doc;
 }
 
 function mongoUpsert($collection, $filter, $insert) {
     global $mongo_level;
-    if ($mongo_level >= 4 ) $doc = $collection->updateOne($filter, array('$set' => $insert), array('upsert' => true));
+    if ($mongo_level >= 3 ) $doc = $collection->updateOne($filter, array('$set' => $insert), array('upsert' => true));
     else                    $doc = $collection->update($filter, $insert, array('upsert' => true));
     return $doc;
 }
 
 function mongoUpdateMany($collection, $filter, $set) {
     global $mongo_level;
-    if ($mongo_level >= 4 ) {
+    if ($mongo_level >= 3 ) {
         $options = array("upsert" => true);
         $result = $collection->updateMany($filter, $set, $options);
     }
@@ -169,21 +169,21 @@ function mongoUpdateMany($collection, $filter, $set) {
 
 function mongoUpdate($collection, $filter, $set) {
     global $mongo_level;
-    if ($mongo_level >= 4 ) $result = $collection->updateOne( $filter, $set);
+    if ($mongo_level >= 3 ) $result = $collection->updateOne( $filter, $set);
     else                    $result = $collection->update($filter, $set);
     return $result;
 }
 
 function mongoDeleteOne($collection, $filter) {
     global $mongo_level;
-    if ($mongo_level >= 4 ) $result = $collection->deleteOne( $filter);
+    if ($mongo_level >= 3 ) $result = $collection->deleteOne( $filter);
     else                    $result = $collection->remove($filter, array('justone'=> true));
     return $result;
 }
 
 function mongoDeleteMany($collection, $filter) {
     global $mongo_level;
-    if ($mongo_level >= 4 )  $result = $collection->deleteMany($filter);
+    if ($mongo_level >= 3 )  $result = $collection->deleteMany($filter);
     else                     $result = $collection->remove($filter, array('justone'=> false));
     return $result;
 }
@@ -216,7 +216,7 @@ $dbhost = 'localhost';
 $dbname = 'looma';
 
 try {
-    if ($mongo_level >= 4) {
+    if ($mongo_level >= 3) {
         require_once('vendor/autoload.php');
         $m = new MongoDB\Client("mongodb://localhost:27017");
     } else {  //old mongo is running
@@ -251,11 +251,11 @@ $folders_collection    = $loomaDB -> folders;
 $edited_videos_collection = $loomaDB -> edited_videos;
 $volunteers_collection = $loomaDB -> volunteers;
 $new_content_collection = $loomaDB -> new_content;
-$recorded_videos_collection = $loomaDB -> recorded_videos;
-$chapterIDs_collection = $loomaDB -> chapterIDs;
+$recorded_videos_collection = $loomaDB -> recorded_videos;  // for future webcam recordings
+$chapterIDs_collection = $loomaDB -> chapterIDs;  // for dictionary building
 
 $logname = 'activitylog';
-$logDB = $m -> $logname;  //connect to the database "activitylog"
+$logDB = $m -> $logname;  //connect to the database "activitylog" for logging user activity
 //make query variables for all collections
 $users_collection      = $logDB -> users;
 $hours_collection      = $logDB -> hours;
@@ -266,7 +266,7 @@ $pages_collection     = $logDB -> pages;
 $filetypes_collection = $logDB -> filetypes;
 
 $userdbname = 'loomausers';
-$userdbname = $m -> $userdbname;  //connect to the database "loomausers"
+$userdbname = $m -> $userdbname;  //connect to the database "loomausers" (for storing logins)
 $logins_collection     = $userdbname -> logins;
 
 $collections = array(

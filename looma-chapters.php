@@ -161,7 +161,8 @@ foreach ($chapters as $ch) {
 ////////// ENGLISH activities ///////////
     // finally, display a button for the activities of this chapter with data-activity=CHAPTER_ID key value
     // first check whether there are any activities for this chapter and make the button invisible if not
-
+/*
+ * NOTE: removing check for resources for chapters to improve page load time
     $query = array('ch_id' => $ch_id);
 
     //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create a "Resources" button
@@ -172,11 +173,7 @@ foreach ($chapters as $ch) {
     //$words = $dictionary_collection -> findOne($query);
     $words = mongoFindOne($dictionary_collection, $query);
     if ($activities || $words) {
-    /*    echo "<button class='activities en-activities'
-                       data-lang='en'
-                       data-ch='$ch_id'
-                       data-chdn='" . htmlentities($ch_dn) . "'>";
-    */
+*/
         echo '<button class="activities en-activities"
                        data-lang="en"
                        data-ch="';
@@ -185,13 +182,14 @@ foreach ($chapters as $ch) {
         echo '" data-chndn="' . $ch_ndn . '">';
         echo 'Resources';
         echo "</button>";
-        }
+ /*       }
     else {echo "<button class='activity' style='visibility: hidden'></button>";}
 
     } else {echo "<button class='chapter en-chapter' style='visibility: hidden'></button>";
             echo "</button>";
             echo "</button>";
-    }  //end of ENGLISH columns
+ */
+}  //end of ENGLISH columns
 
 
 ////////// NEPALI chapter ///////////
@@ -233,6 +231,7 @@ foreach ($chapters as $ch) {
     ///    // finally, display a button for the activities of this chapter with data-activity=CHAPTER_ID key value
     // first check whether there are any activities for this chapter and make the button invisible if not
 
+/*
         $query = array('nch_id' => $nch_id);
 
         //check in the database to see if there are any ACTIVITIES for this CHAPTER. if so, create an activity button
@@ -243,6 +242,7 @@ foreach ($chapters as $ch) {
         $words = mongoFindOne($dictionary_collection, $query);
 
         if ($activities || $words) {
+ */
             echo "<button class='activities np-activities'
                      data-lang='np'
                      data-ch='$nch_id'
@@ -250,12 +250,13 @@ foreach ($chapters as $ch) {
                     data-chndn='$ch_ndn'>";
             echo "स्रोतहरू";
             echo "</button>";
-
+/*
         }
     }  else {echo "<button class='chapter np-chapter' style='visibility: hidden'></button>";
             echo "</button>";
             echo "</button>";
-        }   //end of NEPALI columns
+ */
+}   //end of NEPALI columns
 }
 echo "</div>";
 ?>

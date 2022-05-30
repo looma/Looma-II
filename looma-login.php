@@ -10,6 +10,7 @@ Date:  Summer 2016, revised Skip Jun 2020, and Mar 2022 [add seed and use sha256
 
 <?php
 require_once ('includes/looma-utilities.php');
+require_once ('includes/mongo-connect.php');
 
 function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
 
@@ -57,24 +58,19 @@ function check_login($id, $pass) {
         $query = array('name' => $name); // 'pw' => $p);
         $r  = mongoFindOne($logins_collection, $query);
 
-        if ($r == null) {
+        if ($r == null  || encrypt($p,$r['salt']) !== $r['pw']) {
             $errors[] = "The username and password entered do not match those on file.";
         }
-        else {
-            if (encrypt($p,$r['salt']) === $r['pw'])   //login succesfull
-              return array(true, $name, isset($r['level']) ? $r['level']:'', isset($r['team']) ? $r['team']:'');
+        else {   //login succesfull
+             return array(true, $name, isset($r['level']) ? $r['level']:'', isset($r['team']) ? $r['team']:'');
         }
-
-
     }
     error_log("end check login");
     return array(false, $errors, null,null);
 }  //end check_login
 
 
-
 // START of executed PHP code
-require_once ('includes/mongo-connect.php');
 
    if(!$loggedin) {
     error_log("not logged in");
@@ -85,12 +81,18 @@ require_once ('includes/mongo-connect.php');
         //Uses check_login function to return boolean with passing and errors with login
         list ($check, $data, $level, $team) = check_login($_POST['id'], $_POST['pass']);
 
+       // echo "check is " . $check;
+       // echo "level is " . $level;
+       // echo "team is " . $team;
+       // echo "data is " . $data;
+
         //if login successful set cookie and redirect_user to the PHP file
         if ($check) {
             echo $_POST['id'] . '  ' . $level . '  ' . $team;
             setcookie ("login", $_POST['id']);
             setcookie ("login-level", $level);
             setcookie ("login-team", $team);
+
             redirect_user("");
         }
         //Set errors to be displayed next login attempt
@@ -141,9 +143,9 @@ else {
 // Print a  message:
      echo "<br><br><br><h1>Logged In</h1>";
      echo "<p>You are now logged in as '{$_COOKIE['login']}'</p>";
-     echo " <script>   var timeout = ;
-        setTimeout(function(){ window.location = window.history.go(-2);}, 3000 * timeout);
-        </script>";
+     //echo " <script>   var timeout = 1;
+     //    setTimeout(function(){ window.location = window.history.go(-2);}, 3000 * timeout);
+     //   </script>";
 
 }
 ?>

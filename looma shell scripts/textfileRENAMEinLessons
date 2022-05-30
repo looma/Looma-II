@@ -1,0 +1,51 @@
+//      DELETE text files that are not used in any lesson, edited video or slideshow
+//
+//  WARNING: run with "var param = "dryrun" ' first and check the renames are correct
+//      THESE CHANGES CANNOT BE RESTORED
+//
+//   run in MONGO SHELL with: load('textfileRENAMEinLessons')
+//   before running this script, enter "var param = 'dryrun' " or "var param = 'run' "
+
+var textcursor;
+var text;
+var count = 0;
+var count1 = 0;
+var lessonname;
+
+print('');
+print('  This is "textfileRENAMEinLesson" script');
+print('');
+print('db is ' + db);
+print('');
+
+var lesson = db.lessons.find({"dn":lessonname});
+foreach (lesson.data as item) {
+    count++;
+    var id = item.id;
+    var collection = item.collection;
+
+
+
+
+        // check for TEXT FILE is USED in {lesson, slideshow, evi}
+        lessonOccurances = db.lessons.find({ "data": {$elemMatch:{ id:text._id.valueOf()} }});
+        slideshowOccurances = db.slideshows.find({ "data": {$elemMatch:{ id:text._id.valueOf()} }});
+        eviOccurances = db.edited_videos.find({ "data": {$elemMatch:{ id:text._id.valueOf()} }});
+
+        if ( ! (lessonOccurances.hasNext() || slideshowOccurances.hasNext() || eviOccurances.hasNext())) {
+            count1++;
+            print ('TEXT FILE : "' + text.dn + '" is NOT INCLUDED in any LESSON, SLIDESHOW or EVI  - - - BEING DELETED');
+            if (param === 'run') {
+                db.activities.remove({_id:text._id});
+                db.text_files.remove({_id:text.mongoID});
+            }
+        };
+};
+
+print('');
+print('SUMMARY: ');
+print('found ' + count + ' text files in lesson ' + lessoname);
+if (param === 'run') print('renamed ' + count1 + ' text files');
+else                 print('DRYRUN - would have renamed ' + count1 + ' text files');
+print('');
+

@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+#  filename: loomaW4Sfix
+#       VERSION 1.0
+#       author: skip
+#       date:   APR 2022
+#
+#  one time program to convert the phrase ' target="_top" ' to " target="looma-frame" ' in Wikipedia 2013
+#       index files [all the files in ../content/W4S2013/wp/index folder
+#       this makes wiki files open in the iframe inside Looma main container instead of full page
+#
+cd /usr/local/www/content/W4S2013/wp/index
+for i in *.htm 
+   do 
+	echo $i
+        sed  -i ".BAK"  '/target=/ s/_top/looma-frame/g' $i 
+   done

@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+#  filename: loomaINITIALIZElogins
+#       author: skip
+#       date:   apr 2022,
+#
+#  older Loomas, less than 7.1, have logins in the main "looma" database
+#  changing to separate db "loomausers" [collection "logins"] so that the logins are separate for every Looma
+#
+#  this script can be run to initialize the "loomausers" db with "kabindra" login, at "exec", which
+#  is needed before anyone can add users with the Looma interface
+#
+# create a CSV with mongoexport from db=loomausers, collection=logins that contains the login for  'kabindra'
+# then import that login data into --db=loomausers
+echo "name,pw,salt,level,team
+kabindra,b5342849c8c3c5ebab0637844283261beb6e89c77dd143be133b8aca5e8d3b5b,d3c441ebcae98902c,exec,nepal" > /tmp/logins.csv
+mongoimport --db loomausers --collection logins --type=csv   --mode=upsert --upsertFields="name" --headerline --file=/tmp/logins.csv
+rm /tmp/logins.csv

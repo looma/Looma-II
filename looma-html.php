@@ -32,6 +32,13 @@ else if ( strpos($filepath, 'PhET'))    logFiletypeHit('PhET');
 ?>
 <div id="main-container-horizontal">
     <div id="fullscreen">
+
+        <?php
+        /*echo 'FP+FN is ' . $filepath . $filename;
+        exit;
+        */
+        ?>
+
         <!-- NOTE the iframe below has name='looma-frame', and wikipedia articles in looma have <a xxx.htm target="looma-frame" -->
         <?php echo "<iframe id='iframe' name='looma-frame' src='$filepath$filename' allowfullscreen>" ?></iframe>
         <?php include('includes/looma-control-buttons.php')?>

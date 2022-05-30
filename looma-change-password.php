@@ -143,7 +143,7 @@ function change_password($id, $old, $new1, $new2) {
             <p>New password: <input type='password' name='new2' size='20' maxlength='20' >  </p>
             <p>
                 <button type='submit'>Submit</button>
-                <button type='button' onclick= 'window.location = \"index.php\"'>Cancel</button>
+                <button type='button' onclick= 'window.location = \"home\"'>Cancel</button>
             </p>
         </form>";
     ?>

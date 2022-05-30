@@ -122,8 +122,23 @@ div#search-panel {
     width: 3vh;
 }
 
-button.speak, button.lookup, button#fullscreen-control {
-    display:none;
+
+button#fullscreen-control {
+    display:inline-block;
+    bottom: 38vh;
+    right:2vw;
+}
+
+button.speak {
+    display:inline-block;
+    bottom: 49vh;
+    right:2vw;
+}
+
+button.lookup {
+    display:inline-block;
+    bottom: 60vh;
+    right:2vw;
 }
 
 #login-id {
@@ -336,7 +351,7 @@ li:hover {
 }
 #previewpanel {
     font-size:1.45vw;
-    background-color:var(--looma-blue);
+    background-color:var(--looma-background);
 }
 
 #previewpanel p {

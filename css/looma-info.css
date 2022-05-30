@@ -25,15 +25,16 @@
     margin-left:3vw;
     height:33%;
     width:33%;
-    float:bottom;
     grid-column: left/middle-left;
 }
 
 #log-viewer button {
-    height: 100%;
-    width: 66%;
    
-    background-image: url(../images/activity.png);
+    margin-top: 3vh;
+    height: 5vh;
+    float: left;
+    margin-left: 1vw;
+   /* background-image: url(../images/activity.png);*/
     background-size: 100%;
     background-repeat: no-repeat;
 }
@@ -107,11 +108,30 @@ span {
     margin:auto;
 }
 
- #sizemessages {
+ #system_info {
      grid-row: 4;
      grid-column: left / middle-left;
      margin-left:3vw;
  }
+
+#advanced_button {
+    margin-top: 3vh;
+     height: 5vh;
+     float: left;
+     margin-left: 1vw;
+ }
+ 
+#advanced_info {
+    display:none;
+    position:absolute;
+    bottom:2vh;
+    left:13vw;
+    padding:2vh;
+    border:3px solid red;
+    border-radius: 6px;
+    color:blue;
+    background:white;
+}
  
  .screensize, .bodysize, .ip, .system, .mongo-version{
      vertical-align:middle;

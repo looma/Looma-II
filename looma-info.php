@@ -46,7 +46,7 @@ include ('includes/header.php');
         </div>
         <div id="about">
             <div id="copyright"><h3>Looma 2</h3>
-                <h4>   Release 7.1.8 APR 2022   </h4>
+                <h4>   Release 7.1.11 MAY 2022   </h4>
                 <img src ='images/copyright.png' class="copyright"></img>2021
             </div>
 
@@ -115,7 +115,7 @@ include ('includes/header.php');
                 <img draggable="false" src="images/logos/VTSLogo.jpg" height="66px"></a>
         </div>
     <div id="log-viewer">
-        <button id="line"> <?php tooltip("Activity Logs") ?>  </button>
+        <button id="line"> <?php tooltip("Activity Logs") ?> System Usage </button>
     </div>
         <div id="info-panel">
         <?php
@@ -153,24 +153,33 @@ include ('includes/header.php');
             <li>  - -  </li>
         </ul>
     </div>
-        <div id="sizemessages">
-            <p class="screensize"></p>
-            <p class="bodysize"></p>
+        <div id="system_info" >
+            <button id="advanced_button">System Info</button>
+            <div id="advanced_info">
+                <p class="screensize"></p>
+                <p class="bodysize"></p>
 
-            <p class="mongo-version">MongoDB version: <?php global $mongo_version; echo $mongo_version ?> </p>
+                <p class="mongo-version">MongoDB version: <?php global $mongo_version; echo $mongo_version ?> </p>
 
-            <?php
-            $sys = shell_exec('uname -rs');
-            echo '<p class="system">OS:  ' . $sys . '</p>';
+                <?php
 
-            //want to display IP address for remote access, until we have zeroconf
-            //NOTE: want the external IP for this LOOMA, but 127.0.0.1 "localhost" will show on projected page
-            //echo "<p class=\"ip\">IP Address: " . gethostbyname('localhost') . "</p>";
-            $ip = shell_exec('/usr/local/bin/loomaIP');
-            echo '<p class="ip">IP Address: ' . $ip . '</p>';
-            //echo '<p>pid: ' . getmypid() . '</p>';
-            ?>
+                echo '<p class="system">Server: ' . $_SERVER['SERVER_NAME'] . '</p>';
+                echo '<p class="system">Browser: ' . $_SERVER['HTTP_USER_AGENT'] . '</p>';
 
+                $sys = shell_exec('uname -rs');
+                echo '<p class="system">OS:  ' . $sys . '</p>';
+
+                $sys = shell_exec('cat /proc/cpuinfo | grep Hardware');
+                echo '<p class="system">CPU:  ' . $sys . '</p>';
+
+                //want to display IP address for remote access, until we have zeroconf
+                //NOTE: want the external IP for this LOOMA, but 127.0.0.1 "localhost" will show on projected page
+                //echo "<p class=\"ip\">IP Address: " . gethostbyname('localhost') . "</p>";
+                $ip = shell_exec('/usr/local/bin/loomaIP');
+                echo '<p class="ip">IP Address: ' . $ip . '</p>';
+                //echo '<p>pid: ' . getmypid() . '</p>';
+                ?>
+            </div>
         </div>
         <!-- W3C validator link    new URL=https://validator.w3.org/nu/
            <a draggable="false"  class="footer" href="https://validator.w3.org/nu/check?uri=referer">&nbsp &nbsp (V)</a> -->

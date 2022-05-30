@@ -1105,6 +1105,134 @@ function makeNewLesson($chapter) {
     cloneMasterLesson($chapter);
 } //end makeNewLesson()
 
+
+//////////////////////////////////////////
+//////     CLONE Phonics LESSON       /////
+//////////////////////////////////////////
+function clonePhonicsLesson(letter, master, number) {
+    //NOTE: letter is a letter smallCap, like Gg, master is one of Aa or Bb, number is 1 or 2
+    var mastername =  "Letter " + master + " Phonics Lesson" + number;
+    
+    // First, open the "Phonics Master" lesson
+    $.post("looma-database-utilities.php",
+        {cmd: "openByName", dn: master, collection: 'lessons', ft: 'lesson'},
+        function(response) {
+            var newlesson = {};
+            if (response['error'])
+                LOOMA.alert(response['error'] + ': ' + dn, 3, true);
+            else {
+                console.log("Cloning " + master + " for " + letter);
+                owner = true;
+                currentname = "Letter " + letter + " Phonics Lesson " + number;
+                setname(currentname, loginname);
+                
+                newlesson['dn'] = currentname;
+                newlesson['ft'] = 'lesson';
+                newlesson['author'] = 'kathy';
+                newlesson['data'] = [];
+                
+                /* "response" has this structure:
+                    {   "dn": "Master",
+                        "ft": "lesson",
+                        "date": "2021.03.06",
+                        "data": [{
+                            "collection": "activities",
+                            "id": "6043cd605c9304f25c314207"
+                        },  ...
+                           {
+                            "collection": "activities",
+                            "id": "6043cec75c9304f25c31422b"
+                        }],
+                        "author": "skip"
+                    } */
+                
+                var count = 0; var limit = response.data.length;
+                
+                var textclones = [];  //we will push all the $.post() deferreds in the foreach below into textclones[]
+                // then, for each item in the Master timeline, clone a copy for the new lesson
+                response.data.forEach(function(timeline_item, index) {
+                    if (timeline_item.collection === 'chapters') {
+                        timeline_item.id = ch_id;
+                        timeline_item.index = index;
+                        newlesson.data.push(timeline_item);
+                        count++;
+                    } else {
+                        // open the Master timeline activity
+                        $.post("looma-database-utilities.php",
+                            {cmd: "openByID", collection: 'activities', id: timeline_item.id},
+                            function (item_activity) {
+                                
+                                // if the item not a chapter, nor a text file, just copy it into the new lesson timeline
+                                if (item_activity.ft !== 'text') {  //copy any non-text timeline items
+                                    newlesson.data.push(item_activity);
+                                    count++;
+                                }
+                                else {  //lookup the text file and clone it
+                                    // if the item is a text file, open its text_files document from Mongo
+                                    //   NOTE: for mongo 2.6 a mongoID has field $id  *************
+                                    //   NOTE: for mongo 4.0 a mongoID has field $oid  *************
+                                    var item_id = item_activity.mongoID.$oid || item_activity.mongoID.$id;
+                                    $.post("looma-database-utilities.php",
+                                        {cmd: "openByID", collection: 'text_files', id: item_id},
+                                        function (item_textfile) {
+                                            //save the cloned text file
+                                            textclones.push($.post("looma-database-utilities.php",
+                                                {   cmd: "save",
+                                                    collection: 'text_files',
+                                                    dn: LOOMA.escapeHTML(item_textfile.dn.replace(master, letter)),
+                                                    ft: 'text',
+                                                    data: item_textfile.data,
+                                                    activity: "true"      // NOTE: this is a STRING, either "false" or "true"
+                                                },
+                                                function (result) {  // record the id in the activityDiv
+                                                    // add the cloned text file to the new lesson timeline
+                                                    //   NOTE: for mongo 2.6 a mongoID has field $id  *************
+                                                    //   NOTE: for mongo 4.0 a mongoID has field $oid  *************
+                                                    var text_id = result.activity._id.$oid || result.activity._id.$id;
+                                                    newlesson.data.push(
+                                                        {id:text_id,
+                                                            collection:'activities',
+                                                            index: index});
+                                                    count++;
+                                                    
+                                                    if (count === limit) {
+                                                        newlesson.data = orderNewLesson(newlesson.data);
+                                                        isnewlesson = true;
+                                                        lessondisplay(newlesson);
+                                                        savedSignature = null;
+                                                    }
+                                                    
+                                                },
+                                                'json'
+                                            ));
+                                        },
+                                        'json'
+                                    );
+                                }
+                            },
+                            'json'
+                        );
+                    } });
+            }
+        },
+        'json'
+    );
+}  // end clonePhonicsLesson()
+
+function makePhonicsLesson(letter, number) {
+    var master;
+    // build a new lesson using Aa or Bb phonics lesson as a template
+    console.log ('making new phonics lesson ' + number + ' for: ' + letter);
+    $('.setup-panel').hide();
+    LOOMA.makeOpaque($('#main-container, #filecommands'));
+    var capSmall = letter.toUpperCase() + letter;
+    if (['a','e','i','o','u'].includes(letter))
+        master = "Aa";
+    else master = "Bb";
+    //NOTE: first param is a smallCap, like Gg, master is one of Aa or Bb, number is 1 or 2
+    clonePhonicsLesson(capSmall, master, number);
+} //end makePhonicsLesson()
+
 function showOptions (item) {
     item.append($('<div class="options">' + currentname + '</div>'));
 }

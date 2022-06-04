@@ -56,16 +56,16 @@ function CEHRDfilter($filter) {
 
     global $LOOMA_SERVER;
     if ($LOOMA_SERVER !== "CEHRD")
-         $filter['fp'] = array('$not' => mongoRegex("\.\.\/content\/CEHRD"));
+         $filter['fp'] = array('$not' => mongoRegex("^\.\.\/content\/CEHRD"));
     return $filter;
 }
 
 function mongoFind($collection, $filter, $sort, $skip, $limit) {
 
     // $auery, $sort, $skip, and $limit may be null
-    global $mongo_level;
+    global $mongo_level, $activities_collection;
 
-    $filter = CEHRDfilter($filter);
+    if ($collection === $activities_collection) $filter = CEHRDfilter($filter);
 
     if ($mongo_level >= 3) {
         $options = [];
@@ -84,9 +84,9 @@ function mongoFind($collection, $filter, $sort, $skip, $limit) {
 }
 
 function mongoFindOne($collection, $filter) {
-    global $mongo_level;
+    global $mongo_level, $activities_collection;
 
-    $filter = CEHRDfilter($filter);
+    if ($collection === $activities_collection) $filter = CEHRDfilter($filter);
 
     $doc = $collection->findOne( $filter );
     return $doc;

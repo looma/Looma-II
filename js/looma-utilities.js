@@ -176,11 +176,16 @@ playMedia : function(button) {
                 fn = encodeURIComponent(button.getAttribute('data-fn') +
                     '/start.html');
                 window.location = 'epaath?epversion=2015&fp=' + fp + '&fn=' + fn;
-            } else {
+            } else  if (button.getAttribute("data-epversion") == 2019) {
                 window.location = 'epaath?epversion=2019' +
                     '&ole=' + button.getAttribute("data-ole") +
                     '&lang=' + button.getAttribute("data-lang") +
                 '&grade=' + button.getAttribute("data-grade").substr(5,);
+            } else { // version is 2022
+                window.location = 'epaath?epversion=2022' +
+                    '&ole=' + button.getAttribute("data-ole") +
+                    '&lang=' + button.getAttribute("data-lang") +
+                    '&grade=' + button.getAttribute("data-grade").substr(5,);
             }
             break;
 

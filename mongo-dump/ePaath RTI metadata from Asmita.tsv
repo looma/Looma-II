@@ -1,0 +1,103 @@
+cl_lo	cl_hi	ch_id.0	nch_id.0	key1	key2	key3	key4	lang	src	ft	version	dn	ndn	id	grade	subject	oleID	thumb
+1	1		1SF04.00	Social Studies	Community	Education		np	OLE	EP	2022	School Identity	विद्यालयको चिनारी	vci	grade1	science	scivci01	ePaath2022/images/thumb/science/chinari-01.png
+1	1		1SF03.00	Social Studies	Community	People		np	OLE	EP	2022	Obeying the Rules	नियमको पालना	nkp	grade1	science	scinkp01	ePaath2022/images/thumb/science/thumnail_gr1_niyam_ko_palana01.png
+1	1		1SF06.00	Science	Earth	Human Impact	Conservation	np	OLE	EP	2022	The objects around us	हामी वरपरका वस्तु	tao	grade1	science	scitao01	ePaath2022/images/thumb/science/thumnail_gr01_things_around_us01.png
+1	1		1SF04.00	Social Studies	Community	Education		np	OLE	EP	2022	Let's live out the disaster	प्रकोपबाट बचौँ	pra	grade1	science	scipra01	ePaath2022/images/thumb/science/thumnail_gr01_prakop_bata_bachau01.png
+1	1		1SF01.00	Social Studies	Community	Everyday Life	Family	np	OLE	EP	2022	Our Things	हाम्रा समान	smc	grade1	science	scismc01	ePaath2022/images/thumb/english/making-words-gr1-02.png
+1	1		1SF01.01	Social Studies	Community	Everyday Life		np	OLE	EP	2022	Our Identity	हाम्रो पहिचान	oid	grade1	science	scioid01	ePaath2022/images/thumb/english/making-words-gr1-02.png
+1	1		1SF08.00	Social Studies	Community	Everyday Life	Diversity	np	OLE	EP	2022	Our Festival	हाम्रो चाडपर्व	fes	grade1	science	scifes01	ePaath2022/images/thumb/science/festivals.png
+1	1		1SF09.00	Social Studies	Arts	Media	Internet	np	OLE	EP	2022	Transportation Tools	यातायातका साधनहरू	tsp	grade1	science	scitsp01	ePaath2022/images/thumb/english/making-words-gr1-02.png
+1	1		1SF01.01	Social Studies	Community	Everyday Life		np	OLE	EP	2022	Our dress	हाम्रो पहिरन	odr	grade1	science	sciodr01	ePaath2022/images/activity-under-construction.png
+1	1		1SF09.00	Social Studies	Arts	Media	Internet	np	OLE	EP	2022	Conversations and Information	कुराकानी र जानकारी	cmn	grade1	science	scicmn01	ePaath2022/images/thumb/english/making-words-gr1-02.png
+1	1		1SF01.00	Social Studies	Community	Everyday Life	Family	np	OLE	EP	2022	Our Food	हाम्रो खानेकुरा	ofd	grade1	science	sciofd01	ePaath2022/images/thumb/english/short-vowels-gr1-01.png
+1	1		1SF06.00	Science	Earth	Human Impact	Conservation	np	OLE	EP	2022	Our Market	हाम्रो बजार	mar	grade1	science	scimar01	ePaath2022/images/activity-under-construction.png
+1	1		1SF06.00	Science	Earth	Human Impact	Conservation	np	OLE	EP	2022	Attributes of objects	वस्तुका गुणहरू	pot	grade1	science	scipot01	ePaath2022/images/thumb/science/thumnail_gr_1_properties_of_things01.png 
+1	1		1SF10.00	Science	Earth	Earth History		np	OLE	EP	2022	Water	पानी	wte	grade1	science	sciwte01	ePaath2022/images/thumb/english/making-words-gr1-02.png
+1	1		1SF05.00	Science	Biology	Zoology		np	OLE	EP	2022	Living and lifeless	सजीव र निर्जीव 	lnl	grade1	science	scilnl01	ePaath2022/images/thumb/science/thumnail_gr01_living_and_non_living_things01.png
+1	1		1SF06.00	Science	Earth	Human Impact	Conservation	np	OLE	EP	2022	Cleanliness	सरसफाइ	cln	grade1	science	scicln01	ePaath2022/images/thumb/science/cleanliness1.png
+1	1		1SF02.00	Social Studies	Community	Everyday Life	Self	np	OLE	EP	2022	The Voice	आवाज	sud	grade1	science	scisud01	ePaath2022/images/thumb/english/short-vowels-gr1-01.png
+1	2		1N02	Language	Nepali	Contexts	Activities	np	OLE	EP	2022	Identification and reading Nepali letters from 'अ' to 'ई'	अ' देखि 'ई' सम्म चिन र पढ	ate	grade1	nepali	nepate01	ePaath2022/images/thumb/nepali/ate_thumb.png
+1	2		1N02	Language	Nepali	Contexts	Activities	np	OLE	EP	2022	Identification and reading Nepali letters from 'उ' to 'ए'	उ' देखि 'ए' सम्म चिन र पढ	uty	grade1	nepali	neputy01	ePaath2022/images/thumb/nepali/kurakani-Gr102.png
+1	2		1N04	Language	Nepali	Textbooks		np	OLE	EP	2022	Identification and reading Nepali letters from 'ऐ' to 'अः'	ऐ' देखि 'अः' सम्म चिन र पढ	yto	grade1	nepali	nepyto01	ePaath2022/images/thumb/nepali/kurakani-Gr102.png
+1	2		1N06	Language	Nepali	Contexts	Ability	np	OLE	EP	2022	Create word	शब्द बनाऔँ	sbn	grade1	nepali	nepsbn01	ePaath2022/images/activity-under-construction.png
+1	2		1N04	Language	Nepali	Textbooks		np	OLE	EP	2022	Word and Picture	शब्द र चित्	src	grade1	nepali	nepsrc01	ePaath2022/images/thumb/nepali/sabda_ra_chitra.png
+1	1	1EN01.01		Language	English	Contexts	Describing	en	OLE	EP	2022	Sounds and words		saw	grade1	english	engsaw01	ePaath2022/images/activity-under-construction.png
+1	1	1EN08.93		Language	English	Contexts	Describing	en	OLE	EP	2022	Friends and festivals		faf	grade1	english	engfaf01	ePaath2022/images/activity-under-construction.png
+1	1	1EN11.03		Language	English	Contexts	Describing	en	OLE	EP	2022	Can you do it?		cyd	grade1	english	engcyd01	ePaath2022/images/activity-under-construction.png
+1	1	1EN12.00		Language	English	Contexts	Describing	en	OLE	EP	2022	Where is the bird?		pps	grade1	english	engpps01	ePaath2022/images/activity-under-construction.png
+1	3		1SF08.00	Social Studies	Community	Everyday Life	Diversity	np	OLE	EP	2022	Nepali letters from 'ट' to 'न'	 'ट' देखि 'न' सम्म	tdn	grade1	sign language	nsltdn01	ePaath2022/images/thumb/nepali/thumbnail-file-ta-na1.png
+1	3		1SF02.00	Social Studies	Community	Everyday Life	Self	np	OLE	EP	2022	Bar months and weather	बार महिना र मौसम 	bmm	grade1	sign language	nslbmm01	ePaath2022/images/activity-under-construction.png
+1	3		1SF09.00	Social Studies	Arts	Media	Internet	np	OLE	EP	2022	Our Food	हाम्रो खानेकुरा	hkk	grade1	sign language	nslhkk01	ePaath2022/images/activity-under-construction.png
+1	3		1SF01.06	Social Studies	Economy	Occupation	Domestic	np	OLE	EP	2022	Nepali letters from 'श' to 'ज्ञ'	श' देखि 'ज्ञ' सम्म	sdg	grade1	sign language	nslsdg01	ePaath2022/images/activity-under-construction.png
+1	3		1SF09.00	Social Studies	Arts	Media	Internet	np	OLE	EP	2022	Nepali letters from 'प' to 'व'	प' देखि 'व' सम्म	pdw	grade1	sign language	nslpdw01	ePaath2022/images/thumb/nepali/thumbnail-file-pa-to-wa-1.png
+1	3		1SF06.00	Science	Earth	Human Impact	Conservation	np	OLE	EP	2022	How to write 'क' Nepali language	Ka lekhne kasari?	hwk	grade1	dyslexia	dsyhwk01	ePaath2022/images/activity-under-construction.png
+1	3		1SF07.00	Social Studies	Arts			np	OLE	EP	2022	र' and 'ख' Nepali letters	Ra ra kha	rrk	grade1	dyslexia	dsyrrk01	ePaath2022/images/thumb/dyslexia/ra_kha_thumbnail1.png
+1	3		1SF09.00	Social Studies	Arts	Media	Internet	np	OLE	EP	2022	Lets go to temple together	 सँगै मन्दिर जाऔँ	smj	grade1	dyslexia	dsysmj01	ePaath2022/images/activity-under-construction.png
+1	3		1M04	Mathematics	Numbers			np	OLE	EP	2022	Story of 3 wheels and 6 wheels	 ३ पाङ्	tts	grade1	dyslexia	dsytts01	ePaath2022/images/thumb/dyslexia/thumbnail_nepali_tin_ra_chaa_pangre01.png
+1	3		1SF04.00	Social Studies	Community	Education		np	OLE	EP	2022	Half and full nepali letters	 पूरा र आधा	aak	grade1	dyslexia	dsyaak01	ePaath2022/images/activity-under-construction.png
+1	3		1SF09.00	Social Studies	Arts	Media	Internet	np	OLE	EP	2022	घ' and 'ध' Nepali letters	Gha ra Dha	grd	grade1	dyslexia	dsygrd01	ePaath2022/images/activity-under-construction.png
+2	2	2M03.00	2M03.00	Mathematics	Numbers	Other Numbers		en/np	OLE	EP	2022	Numbers from twenty to hundred	बिसदेखि सयसम्म	nth	grade2	math	matnth01	ePaath2022/images/thumb/math/multiplication-(repeated-addition)-gr-202.png
+2	2	2M05.00	2M05.00	Mathematics	Arithmetic	Addition & Subtraction		en/np	OLE	EP	2022	Word problems (Mathematical Basic operations)	शाब्दिक समस्याहरू ( गणितका आधारभूत क्रियाहरू)	wop	grade2	math	matwop01	ePaath2022/images/grade2/maths/Thumbnail_Math_Gr2_Word-problems-of-Basic-operations01.png
+2	2	2M06.02	2M06.02	Mathematics	Measurement	Area		en/np	OLE	EP	2022	Area	क्षेत्रफल	ara	grade2	math	matara01	ePaath2022/images/thumb/math/multiplication-(repeated-addition)-gr-202.png
+2	2	2M06.01	2M06.01	Mathematics	Measurement	Length		en/np	OLE	EP	2022	Length	लम्बाइ	len	grade2	math	matlen01	ePaath2022/images/grade2/maths/length_2.png
+2	2	2M08.02	2M08.02	Mathematics	Measurement	Currency		en/np	OLE	EP	2022	Currency	मुद्रा 	mni	grade2	math	matmni01	ePaath2022/images/thumb/math/Thumbnail_Math_Gr2_Money01.png
+2	2		2SF06.00	Science	Earth	Other Earth	Environment	np	OLE	EP	2022	Our National Signs	हाम्रो राष्	nsb	grade2	science	scinsb01	ePaath2022/images/thumb/science/Thumbnail_Nepal_Hamro-Rastriya-Chinha_gr2_01.png
+2	2		2SF09.00	Social Studies	Arts	Media	Internet	np	OLE	EP	2022	Income and expenses	आम्दानी र खर्च	iae	grade2	science	sciiae01	ePaath2022/images/thumb/science/thumnail_gr_2_income_and_expenditure01.png
+2	2		2SF06.00	Science	Earth	Other Earth	Environment	np	OLE	EP	2022	Public Property	सार्वजनिक सम्पत्ति	oht	grade2	science	scioht01	ePaath2022/images/activity-under-construction.png
+2	2		2SF01.00	Social Studies	Community	Everyday Life	Family	np	OLE	EP	2022	Good habits	राम्रो बानी	gdh	grade2	science	scigdh01	ePaath2022/images/thumb/science/good-habit-1.png
+2	2		2SF01.00	Social Studies	Community	Everyday Life	Family	np	OLE	EP	2022	Attributes of objects	वस्तुका गुणहरू	poo	grade2	science	scipoo01	ePaath2022/images/activity-under-construction.png
+2	2		2SF06.00	Science	Earth	Other Earth	Environment	np	OLE	EP	2022	"Wind, water and soil"	"हावा ,पानी र माटो"	awm	grade2	science	sciawm01	ePaath2022/images/activity-under-construction.png
+2	2		2SF06.00	Science	Earth	Other Earth	Environment	np	OLE	EP	2022	The environment	वातावरण	oen	grade2	science	scioen01	ePaath2022/images/activity-under-construction.png
+2	2		2SF09.00	Social Studies	Arts	Media	Internet	np	OLE	EP	2022	Communication	सञ्	com	grade2	science	scicom01	ePaath2022/images/thumb/science/Communication-Thumbnail-1.png
+2	2		2SF01.00	Social Studies	Community	Everyday Life	Family	np	OLE	EP	2022	Our Work	हाम्रो काम	occ	grade2	science	sciocc01	ePaath2022/images/thumb/science/occupation-file-1.png
+2	2		2SF02.00	Social Studies	Community	Everyday Life		np	OLE	EP	2022	Electricity	विधुत	elc	grade2	science	scielc01	ePaath2022/images/activity-under-construction.png
+2	2		2SF04.00	Social Studies	Community	Education		np	OLE	EP	2022	Primary care	प्राथमिक उपचार	fad	grade2	science	scifad01	ePaath2022/images/activity-under-construction.png
+2	2		2SF04.00	Social Studies	Community	Education		np	OLE	EP	2022	Our Security	हाम्रो सुरक्षा	rti	grade2	science	scirti01	ePaath2022/images/thumb/science/thumnail_gr_2_our_safety01.png
+2	2		2SF01.00	Social Studies	Community	Everyday Life	Family	np	OLE	EP	2022	Our Tools	हाम्रा उपकरण	sma	grade2	science	scisma01	ePaath2022/images/thumb/science/SM_Thumbnail_1.png
+2	2		2SF01.00	Social Studies	Community	Everyday Life	Family	np	OLE	EP	2022	Diseases	रोग	dis	grade2	science	scidis01	ePaath2022/images/activity-under-construction.png
+2	2		2SF02.00	Social Studies	Community	Everyday Life		np	OLE	EP	2022	Magnets	चुम्बक	mag	grade2	science	scimag01	ePaath2022/images/grade2/science/magnet1.png
+2	2	2EN08.02		Language	English	Contexts	Describing	en	OLE	EP	2022	Can you guess		cyg	grade2	english	engcyg01	ePaath2022/images/activity-under-construction.png
+2	2	2EN04.00		Language	English	Contexts	Describing	en	OLE	EP	2022	Rain and bow		rab	grade2	english	engrab01	ePaath2022/images/activity-under-construction.png
+2	2	2EN02.00		Language	English	Contexts	Describing	en	OLE	EP	2022	Faster and Taller		fat	grade2	english	engfat01	ePaath2022/images/activity-under-construction.png
+2	2		2N03	Language	Nepali	People		np	OLE	EP	2022	Let's sing the rhythm	लय हालेर गाऔँ	lhg	grade2	nepali	neplhg01	ePaath2022/images/activity-under-construction.png
+2	2		2N08	Language	Nepali	Contexts	Possessions	np	OLE	EP	2022	Fun Fair	रमाइलो मेला	ram	grade2	nepali	nepram01	ePaath2022/images/thumb/nepali/thumbnail_ramailo_mela.png
+2	2		2N05	Language	Nepali	People		np	OLE	EP	2022	Around Us	हाम्रो वरपर	hwp	grade2	nepali	nephwp01	ePaath2022/images/thumb/nepali/Thumbnailmain.png
+3	3		3N01	Language	Nepali	People		np	OLE	EP	2022	Who are we?	हामी को हौ ? 	hkh	grade3	nepali	nephkh01	ePaath2022/images/activity-under-construction.png
+3	3		3N02	Language	Nepali	Contexts	Activities	np	OLE	EP	2022	Talking	कुराकानी	krk	grade3	nepali	nepkrk01	ePaath2022/images/thumb/nepali/thumbnail_nepali-_3_kurakani02.png
+3	3		3N11	Language	Nepali	People		np	OLE	EP	2022	Preparation for exams	परीक्षाको तयारी	paw	grade3	nepali	neppaw01	ePaath2022/images/activity-under-construction.png
+3	3		3N09	Language	Nepali	Textbooks		np	OLE	EP	2022	Amazing Package	अचम्मको पोको	acp	grade3	nepali	nepacp01	ePaath2022/images/activity-under-construction.png
+3	3		3N01	Language	Nepali	People		np	OLE	EP	2022	Gauri	गौरी	gur	grade3	nepali	nepgur01	ePaath2022/images/activity-under-construction.png
+3	3	3M07.02	3M07.02	Mathematics	Arithmetic	Addition and Subtraction		en/np	OLE	EP	2022	Capacity	क्षमता	cap	grade3	math	matcap01	ePaath2022/images/thumb/math/thumbnail_math_gr03_capacity02.png
+3	3	3M08.00	3M08.00	Mathematics	Measurement			en/np	OLE	EP	2022	Area	क्षेत्रफल	are	grade3	math	matare01	ePaath2022/images/thumb/math/Thumbnail_Math_Gr3_Area01.png
+3	3	3M02.00	3M02.00	Mathematics	Numbers	Natural		en/np	OLE	EP	2022	Place value	स्थानमान	pvs	grade3	math	matpvs01	ePaath2022/images/grade3/maths/line_segment1.png
+3	3	3M07.00	3M07.00	Social Studies	Arts	Media	Internet	en/np	OLE	EP	2022	Pictograph	चित्रग्राफ	pct	grade3	math	matpct01	ePaath2022/images/activity-under-construction.png
+3	3	3M02.00	3M02.00	Mathematics	Numbers	Natural		en/np	OLE	EP	2022	Comparing and Arranging Numbers	सङ्ख्याको तुलना र क्रम	con	grade3	math	matcon01	ePaath2022/images/activity-under-construction.png
+3	3	3M05.00	3M05.00	Mathematics	Arithmetic	"Addition, Subtraction, Multiplication, Division"		en/np	OLE	EP	2022	Subtraction	घटाउ	sub	grade3	math	matsub01	ePaath2022/images/activity-under-construction.png
+3	3	3M05.00	3M05.00	Mathematics	Arithmetic	"Addition, Subtraction, Multiplication, Division"		en/np	OLE	EP	2022	Addition	जोड	add	grade3	math	matadd01	ePaath2022/images/activity-under-construction.png
+3	3	3M01.01	3M01.01	Mathematics	Measurement	Date & Time		en/np	OLE	EP	2022	Time	समय	tim	grade3	math	mattim01	ePaath2022/images/activity-under-construction.png
+3	3		3SF01.00	Social Studies	Community	Everyday Life	Family	np	OLE	EP	2022	My Role	मेरो भूमिका	mbh	grade3	science	scimbh01	ePaath2022/images/activity-under-construction.png
+3	3		3SF10.00	Science	Earth			np	OLE	EP	2022	Water conservation	पानीको संरक्षण	cow	grade3	science	scicow01	ePaath2022/images/thumb/english/making-words-gr1-02.png
+3	3		3SF03.00	Social Studies	Community	People		np	OLE	EP	2022	Smoking and Drinking	धुमपान र मध्यपान	sad	grade3	science	scisad01	ePaath2022/images/thumb/science/thumnail_gr3_smoking_and_drinking01.png
+3	3		3SF07.00	Social Studies	Arts			np	OLE	EP	2022	Soil	माटो	sol	grade3	science	scisol01	ePaath2022/images/thumb/science/soil02.png
+3	3		3SF01.00	Social Studies	Community	Everyday Life	Family	np	OLE	EP	2022	Shape and Size	आकार र आकृति	saf	grade3	science	scisaf01	ePaath2022/images/thumb/science/thumnail_gr3_shapes_and_sizes01.png
+3	3		3SF03.00	Social Studies	Community	People		np	OLE	EP	2022	Our Rights	हाम्रो अधिकार	ort	grade3	science	sciort01	ePaath2022/images/activity-under-construction.png
+3	3		3SF03.00	Social Studies	Community	People		np	OLE	EP	2022	One day of mine	मेरो एक दिन	med	grade3	science	scimed01	ePaath2022/images/thumb/nepali/thumnail_gr03_mero_ek_din01.png
+3	3		3SF03.00	Social Studies	Community	People		np	OLE	EP	2022	A variety of substances	विभिन्न प्रकारका पदार्थहरू	tom	grade3	science	scitom01	ePaath2022/images/grade2/animal_food1.png
+3	3		3SF10.00	Science	Earth			np	OLE	EP	2022	Weather	मौसम	wtr	grade3	science	sciwtr01	ePaath2022/images/activity-under-construction.png
+3	3		3SF09.00	Social Studies	Arts	Media	Internet	np	OLE	EP	2022	Lets Save	बचत गरौँ	sav	grade3	science	scisav01	ePaath2022/images/activity-under-construction.png
+3	3		3SF06.00	Science	Earth	Other Earth	Environment	np	OLE	EP	2022	Degradable and Non-Degradable Waste	कुहिने र नकुहिने  फोहर	dnw	grade3	science	scidnw01	ePaath2022/images/grade3/water_cycle.png
+3	3		3SF05.00	Science	Biology	Ecology	Biosphere	np	OLE	EP	2022	Food Series	खाद्य श्रृङ्खला 	fch	grade3	science	scifch01	ePaath2022/images/thumb/science/thumnail_gr03_food_chain01.png
+3	3		3SF10.03	Science	Earth	Climate	Atmosphere	np	OLE	EP	2022	Earth's Letters	पृथ्वीका पत्रहरू	oeh	grade3	science	scioeh01	ePaath2022/images/thumb/science/thumnail_gr03_our_earth01.png
+3	3		3SF06.00	Science	Earth	Other Earth	Environment	np	OLE	EP	2022	Environmental pollution	वातावरण प्रदूषण	enp	grade3	science	scienp01	ePaath2022/images/activity-under-construction.png
+3	3	3EN03.00		Social Studies	Community	Education		en	OLE	EP	2022	Simple Messages		sms	grade3	english	engsms01	ePaath2022/images/activity-under-construction.png
+3	3	3EN03.00		Social Studies	Community	Education		en	OLE	EP	2022	Permission (May I)		pms	grade3	english	engpms01	ePaath2022/images/activity-under-construction.png
+3	3	3EN10.00		Science	Biology			en	OLE	EP	2022	Animals in my village		aiv	grade3	english	engaiv01	ePaath2022/images/activity-under-construction.png
+3	3	3EN02.00		Social Studies	Community	Everyday Life		en	OLE	EP	2022	Sentence formation		esf	grade3	english	engesf01	ePaath2022/images/activity-under-construction.png
+3	3	3EN07.00		Science	IT			en	OLE	EP	2022	Friends and fruits		frf	grade3	english	engfrf01	ePaath2022/images/activity-under-construction.png
+3	3	3EN01.00		Social Studies	Community	Social Organization	Family	en	OLE	EP	2022	What Raju disliked		raj	grade3	english	engraj01	ePaath2022/images/activity-under-construction.png
+1	1	1M19	1M19	Mathematics	Measurement	Date & Time		en/np	OLE	EP	2022	Time	समय	tme	grade1	math	mattme01	ePaath2022/images/thumb/math/Thumbnail_Math_Gr_1_times_02.png
+1	1	1M03	1M03	Mathematics	Geometry	Shapes		en/np	OLE	EP	2022	Geometric Shapes	ज्यामितीय आकारहरू	gss	grade1	math	matgss01	ePaath2022/images/activity-under-construction.png
+1	1	1M04	1M04	Mathematics	Numbers			en/np	OLE	EP	2022	One to Twenty	एक देखि बिस	ntw	grade1	math	matntw01	ePaath2022/images/activity-under-construction.png
+1	1	1M15	1M15	Mathematics	Numbers Natural			en/np	OLE	EP	2022	50 to 100	५० देखि १००	nhd	grade1	math	matnhd01	ePaath2022/images/activity-under-construction.png
+1	1	1M12	1M12	Mathematics	Numbers	Even & Odd		en/np	OLE	EP	2022	Even and Odd	जोर र बिजोर	one	grade1	math	matone01	ePaath2022/images/thumb/math/Thumbnail_Math_gr1_odd_and_even_02.png
+1	1	1M04	1M04	Mathematics	Numbers			en/np	OLE	EP	2022	1 to 50	१ देखि ५० सम्म	nft	grade1	math	matnft01	ePaath2022/images/activity-under-construction.png

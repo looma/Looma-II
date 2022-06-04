@@ -37,13 +37,12 @@
 <html lang="en">
   <head>
 
-      <!--
-Author: Skip
-Owner:  VillageTech Solutions (villagetechsolutions.org)
-Date:   2015 03
-Revision: Looma 2.0.0
-
-File: header.php
+<!--
+    Author: Skip
+    Owner:  VillageTech Solutions (villagetechsolutions.org)
+    Date:   2015 03
+    Revision: Looma 2.0.0
+    File: header.php
 -->
 	<meta charset="utf-8">
     <meta name="viewport"  content="width=device-width, initial-scale=1">

@@ -13,7 +13,7 @@ Description:  base page for showing HTML content. call with URL=looma.html.php?f
 require_once ('includes/header.php');
 require_once ('includes/looma-utilities.php');
 
-logFiletypeHit('html');
+//logFiletypeHit('html');
 ?>
 <link rel="stylesheet" href="css/looma-html.css">
 </head>
@@ -24,6 +24,7 @@ $filename = $_REQUEST['fn']; //echo 'FN is ' . $filename;
 $filepath = $_REQUEST['fp']; //echo 'FP is ' . $filepath;
 //list($filepath, $filename) = getFPandFN();
 
+//NOTE: the ff should include recording ePaath hits
 if      ( strpos($filepath, 'W4S2013')) logFiletypeHit('wikipedia');
 else if ( strpos($filepath, 'PhET'))    logFiletypeHit('PhET');
 // next line commented. counting HTML hits is distorted by Wikipedia navigation
@@ -32,13 +33,6 @@ else if ( strpos($filepath, 'PhET'))    logFiletypeHit('PhET');
 ?>
 <div id="main-container-horizontal">
     <div id="fullscreen">
-
-        <?php
-        /*echo 'FP+FN is ' . $filepath . $filename;
-        exit;
-        */
-        ?>
-
         <!-- NOTE the iframe below has name='looma-frame', and wikipedia articles in looma have <a xxx.htm target="looma-frame" -->
         <?php echo "<iframe id='iframe' name='looma-frame' src='$filepath$filename' allowfullscreen>" ?></iframe>
         <?php include('includes/looma-control-buttons.php')?>

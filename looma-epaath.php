@@ -11,10 +11,10 @@ Description:  base page for showing epaath content=
             or, call with "...?epversion=2019&oleID=   "
 -->
 
-<?php $page_title = 'Looma ePaath';
-include ('includes/header.php');
-logFiletypeHit('epaath');
-
+<?php
+    $page_title = 'Looma ePaath';
+    include ('includes/header.php');
+    logFiletypeHit('epaath');
 ?>
 <link rel="stylesheet" href="css/looma-html.css">
 </head>
@@ -28,7 +28,7 @@ if ($epversion == '2015') {  // old ePaath activities from 2016
         $filepath = $_REQUEST['fp'];
         $src = $filepath . $filename;
     }
-    else {  // new ePaath activities from 2018
+    else  if ($epversion === '2019') {  // new ePaath activities from 2019
         $oleID = $_REQUEST['ole'];
         $grade = $_REQUEST['grade'];
         $src = '../ePaath/';
@@ -39,6 +39,16 @@ if ($epversion == '2015') {  // old ePaath activities from 2016
         $src .= 'start.html?id=' . $oleID;
         $src .= $language . '&grade=' . $grade;
         //echo $language;return;
+    }
+    else {  // version is 2022
+        $oleID = $_REQUEST['ole'];
+        $grade = $_REQUEST['grade'];
+        $src = '../ePaath/ePaath2022/';
+
+        $language = '&lang=' . $_REQUEST['lang'];
+
+        $src .= 'start.html?id=' . $oleID;
+        $src .= $language . '&grade=' . $grade;
     }
 ?>
 <div id="main-container-horizontal">

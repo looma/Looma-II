@@ -225,7 +225,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 		}  //end SWITCH
 
              if ($thumb && $thumb != "") $thumbSrc = $thumb;
-        //else if ($ft == 'EP' || $ft == 'epaath') $thumbSrc = $fp . $fn . "/thumbnail.jpg";
+        //else if ($ft == 'EP' || $ft === 'ep' || $ft == 'epaath') $thumbSrc = $fp . $fn . "/thumbnail.jpg";
         else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
         else if ($ft == 'game')  $thumbSrc = "images/game.png";
         else if ($ft == 'slideshow')  $thumbSrc = "images/play-slideshow-icon.png";
@@ -254,7 +254,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         if ($ft)          echo "data-ft='" .  $ft . "' ";
         if ($dn)          echo "data-dn='" .  $dn . "' ";
 
-    if ($ndn === "") $ndn = null;
+        if ($ndn === "") $ndn = null;
 
         if ($ndn)         echo "data-ndn='" .  $ndn . "' ";
         if ($prefix)      echo "data-prefix='" .  $prefix . "' ";

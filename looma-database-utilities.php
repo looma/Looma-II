@@ -867,12 +867,12 @@ if (isset($_REQUEST["collection"])) {
 // end case "keywordAdd"
 
 
-          ////////////////////////
+    ////////////////////////
     // - - - SEARCH - - - //
     ////////////////////////
     case "search":
         // called (from looma-search.js, from lesson-plan.js, and other "editors") using POST with FORMDATA serialized by jquery
-        // $_POST[] can have these entries: cmd, collection, class, subj, category, sort, search-term,
+        // $_POST[] can have these entries: cmd, collection, class, subj, category, sort, search-term, (chapter-language)
         // src[] (array of checked items) and type[] (array of checked types)
 
         //Get filetype Parameters
@@ -929,19 +929,11 @@ if (isset($_REQUEST["collection"])) {
                 default: {echo json_encode("ERROR: unknown file type"); return;}
             }
 
-        $areaRegex = null;
-        $nameRegex = null;
-        $classSubjRegex = null;
-
-        //NOTE: this code not used? what is 'category'?
-        /*if (isset($_POST['category']) && $_POST['category'] != "All") {
-            $areaRegex = mongoRegex ('/' . $_POST['category'] . '/i');
-        }
-        */
-
         //Build Regex to match search term (add 'i' to ignore case)
         if (isset($_POST['search-term']) && $_POST['search-term'] |= '')
             $nameRegex = mongoRegexOptions(trim(htmlspecialchars_decode($_REQUEST['search-term'],ENT_QUOTES)), 'i');
+        else
+            $nameRegex = null;
 
         //if 'class' or 'subj' are specified, build another regex to match class/subj in ch_id
         if (isset($_POST['chapter']) && $_POST['chapter'] != '') {
@@ -955,7 +947,9 @@ if (isset($_REQUEST["collection"])) {
 
             $classSubjRegex = mongoRegex($classSubjRegex . '/');
              //echo 'classSubjRegex is ' . $classSubjRegex;
-       }
+       } else
+            $classSubjRegex = null;
+
 
         /* DEBUG
         echo 'collection is ' . $_POST['collection'];
@@ -973,12 +967,19 @@ if (isset($_REQUEST["collection"])) {
          else if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson']);
 
         if (sizeof($sources) > 0) $query['src'] = array('$in' => $sources);
-       // if ($areaRegex) $query['area'] = $areaRegex;
+
         if ($nameRegex) {
-            if ($language === 'english') $query['dn'] = $nameRegex;
-            else                         $query['ndn'] = $nameRegex;
+        //     if ($language === 'english') $query['dn'] = $nameRegex;
+        //     else                         $query['ndn'] = $nameRegex;
+        //echo "language is " . $language . "   and regex is " . $nameRegex;
+
+            if (preg_match('/\p{Devanagari}/u', $_POST['search-term']))
+            // detects Devanagari characters
+            // good tutorial here: https://www.regular-expressions.info/unicode.html
+                $query['ndn'] = $nameRegex;
+            else
+                $query['dn']  = $nameRegex;
         }
-        // echo "language is " . $language . "   and regex is " . $nameRegex;
 
         if ($classSubjRegex) $query['_id'] = $classSubjRegex;
 
@@ -1062,7 +1063,14 @@ if (isset($_REQUEST["collection"])) {
                         $result[$i]['grade'] !== $result[$i - 1]['grade'])
                         $unique[] = $result[$i];
                 /* for other special filetypes (in $specials) just match on displayname to determine uniquess */
-                } else if (in_array($result[$i]['ft'], $specials)) {
+                }
+                else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2022') {
+                    if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
+                        //  $result[$i]['oleID'] !== $result[$i - 1]['oleID'] ||
+                        $result[$i]['grade'] !== $result[$i - 1]['grade'])
+                        $unique[] = $result[$i];
+                    /* for other special filetypes (in $specials) just match on displayname to determine uniquess */
+                }  else if (in_array($result[$i]['ft'], $specials)) {
                     if ($result[$i]['dn'] !== $result[$i - 1]['dn']) $unique[] = $result[$i];
                 /* for all other filetypes match on filename and fp (if present) to determine uniquess */
                 } else if ((isset($result[$i]['fn'])

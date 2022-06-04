@@ -118,23 +118,22 @@ if ( ! is_dir(realpath($path))) {echo "<br><h1>Access not permitted</h1>"; exit;
             nextButton();
         }  //end IF ePaath
 
-        if (file_exists("../ePaath/ePaath2022"))  {  //create a virtual folder for ePaath
+        if (file_exists("../ePaath/ePaath2022"))  {  //create a virtual folder for ePaath2022
             echo "<td>";
-            $dn = "ePaath RTI";
-            $ndn = "ई-पाठ";  //note should be using mongo folders collection to get dn and ndn
+            $dn = "Early Grade Reading contents";
+            $ndn = "प्रारम्भिक शिक्षा पठन सामाग्री";  //note should be using mongo folders collection to get dn and ndn
             $ft = "html";
-            $thumb = "../content/epaath/thumbnail.png";
+            $thumb = "../ePaath/ePaath2022/thumbnail.png";
             makeActivityButton($ft, "../ePaath/ePaath2022/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
             echo "</td>";
             nextButton();
         }   // end IF ePaath2022
 
-        //special case for CEHRD
-        // virtual folder
-        if (file_exists("../content/CEHRD")) {  // create virtual folder for CEHRD
-            echo "<td><a href='library?fp=" . $path . $file . "/'>";
+        //special case for CEHRD - create a folder button near the top of the Library page
+        if (file_exists("../content/CEHRD") && ! file_exists("../content/CEHRD/hidden.txt")) {  // create virtual folder for CEHRD
+            echo "<td><a href='library?fp=../content/CEHRD/'>";
             echo "<button class='activity img zeroScroll'>" .
-                folderThumbnail($path . $file);
+                folderThumbnail("../content/CEHRD/");
 
             echo "<span class='english-keyword'>"
                 . "CEHRD Productions" .
@@ -144,7 +143,7 @@ if ( ! is_dir(realpath($path))) {echo "<br><h1>Access not permitted</h1>"; exit;
                 . "CEHRD उत्पादन" .
                 "<span class='xlat'>" . "CEHRD Productions" . "</span>" .
                 "</span>";
-            echo "<span class='tip yes-show big-show' >" . $file . "</span>" .
+            echo "<span class='tip yes-show big-show' >CEHRD</span>" .
                 "</button></a></td>";
             nextbutton();
         }  //end IF CEHRD
@@ -166,7 +165,8 @@ if ( ! is_dir(realpath($path))) {echo "<br><h1>Access not permitted</h1>"; exit;
     $files = [];
     //gather all the files at this directory into $files[]
     foreach (new DirectoryIterator($path) as $fileInfo) {
-        $files[$fileInfo->getFilename()] = $fileInfo;
+        if ($path . $fileInfo->getFilename() !== "../content/CEHRD")
+            $files[$fileInfo->getFilename()] = $fileInfo;
     };
 
     /********************************************************************************************/

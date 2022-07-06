@@ -225,7 +225,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 		}  //end SWITCH
 
              if ($thumb && $thumb != "") $thumbSrc = $thumb;
-        //else if ($ft == 'EP' || $ft === 'ep' || $ft == 'epaath') $thumbSrc = $fp . $fn . "/thumbnail.jpg";
+        //else if ($ft == 'EP') $thumbSrc = $thumb;
         else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
         else if ($ft == 'game')  $thumbSrc = "images/game.png";
         else if ($ft == 'slideshow')  $thumbSrc = "images/play-slideshow-icon.png";
@@ -238,7 +238,9 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 
         $fn = htmlspecialchars($fn);
 
-        //Now make the BUTTON
+
+
+    //Now make the BUTTON
       echo "<button class='activity play img' ";
 
         if ($fp)          echo "data-fp='" .  $fp . "' ";

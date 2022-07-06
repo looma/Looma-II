@@ -118,7 +118,25 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             attachMediaControls($('#audio')[0]); //hook up event listeners to the audio and video HTML
             modifyFullscreenAudio();
             break;
+    
+        case 'EP':
+        case 'epaath':
         
+            $('.speak, .lookup').show();
+            if (version==2019) {
+                var prefix = 'ePaath/';
+                if (grade=='grade7' || grade == 'grade8') prefix += 'EPaath7-8/';
+                $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
+            } else   if (version==2022) {
+                var prefix = 'ePaath/ePaath2022/';
+                $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
+            }
+            else
+                $htmlHTML.find('embed').attr('src', 'content/epaath/activities/'+ fn + '/start.html');
+        
+            $htmlHTML.appendTo($viewer);
+            break;
+    
         case 'pdf':
         case 'chapter':
             
@@ -235,22 +253,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             $htmlHTML.appendTo($viewer);
             break;
         
-        case 'EP':
-        case 'epaath':
-                
-                    $('.speak, .lookup').show();
-                    if (version==2019) {
-                        var prefix = 'ePaath/';
-                        if (grade=='grade7' || grade == 'grade8') prefix += 'EPaath7-8/';
-                        $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
-                    }
-                    else
-                        $htmlHTML.find('embed').attr('src', 'content/epaath/activities/'+ fn + '/start.html');
-    
-                    $htmlHTML.appendTo($viewer);
-            
-            break;
-        
+
         case 'looma':
             window.location = $currentItem.data('url');
             break;
@@ -316,6 +319,9 @@ function makeImageHTML() {
 
 function makePdfHTML() // see looma-play-pdf.php for original code
 {
+    
+    //NEED to ADD pdf toolbar here
+    
     return ('<div id="fullscreen"><iframe id="iframe"' +
         'id="pdf-canvas" ><p hidden id="parameters" data-fn= data-fp= data-pg=></p>' +
         '</iframe></div>');
@@ -413,8 +419,9 @@ window.onload = function() {
     $currentItem = null;
     $viewer = $('#viewer');
     $fullscreen = $('#fullscreen');
-   
-    $displayers = $('#displayers');$displayers.hide();
+ 
+// NOTE:2022 07 05 [Skip] what is "displayers"? commented out for now
+ //   $displayers = $('#displayers');$displayers.hide();
     
     // handlers for 'control panel' buttons
     $('#back, #prev-item, #back-fullscreen').click(function () {

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "pdfjs": "^2.4.7"
+  }
+}

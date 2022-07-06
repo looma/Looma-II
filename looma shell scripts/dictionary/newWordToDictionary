@@ -1,0 +1,167 @@
+// by SKIP
+// adpating Connor Lee's code to a single utility program
+
+const { exec } = require("child_process");
+const execSync = require('child_process').execSync;
+
+var word;
+var details;
+var translation;
+
+async function lookup(word) {
+    var url = " https://lingua-robot.p.rapidapi.com/language/v1/entries/en/" + word;
+    var header =  " --header 'X-RapidAPI-Host: lingua-robot.p.rapidapi.com'";
+        header += " --header 'X-RapidAPI-Key: 6afb717a2cmshbd7eaf43296d050p12f588jsnbd3fb2fa7359'";
+    var command = "curl -s --request GET";
+    //await exec(command + url + header, (error, stdout, stderr) => {
+      //  details = stdout;
+   // });
+   lookup = JSON.parse(execSync(command + url + header));
+    console.log('looking up ' + word);
+    console.log(lookup.entries[0].interpretations);
+}
+
+
+async function translate(word) {
+    var command = "curl -s  -d --request POST";
+    var url = " --url https://text-translator2.p.rapidapi.com/translate/";
+    var header = " --header 'X-RapidAPI-Host: text-translator2.p.rapidapi.com'";
+    header += " --header 'X-RapidAPI-Key: 6afb717a2cmshbd7eaf43296d050p12f588jsnbd3fb2fa7359'"
+    header += " --header 'content-type: application/x-www-form-urlencoded'";
+    var source = " --data source_language=en";
+    var target = " --data target_language=ne";
+    var query = ' --data \'text="\' + word + \'"\'  ';
+    translation = JSON.parse(execSync(command + query + url + header + source + target));
+
+ //   await exec(command + url + header + source + target, (error, stdout, stderr) => {
+   //         translation = stdout;
+     //   });
+     console.log('translating ' + word);
+    console.log(translation.data.translatedText);
+};
+
+const readline = require("readline");
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+code = execSync('node -v');
+
+
+rl.question("Enter a word: ", async function(word) {
+   await lookup(word);
+   await translate(word);
+});
+
+
+
+
+/*
+// wordDef
+
+const { CURSOR_FLAGS } = require('mongodb');
+
+const MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/test";
+var fs = require('fs');
+const { debuglog } = require('util');
+
+var input = process.argv.slice(2).toString()
+var lingua, translator, word, def, plural, pos, wordNE, root
+
+lingua = JSON.parse(fs.readFileSync('wordDef.txt', {encoding:'utf8', flag:'r'}))
+translator = JSON.parse(fs.readFileSync('translation.txt', {encoding:'utf8', flag:'r'}))
+
+console.log(input)
+if (Object.keys(lingua.entries).length !== 0){
+
+    // Word
+    word = lingua.entries[0].lexemes[0].lemma
+
+    // Definition
+    def = lingua.entries[0].lexemes[0].senses[0].definition
+
+    // Part Of Speech
+    pos = lingua.entries[0].lexemes[0].partOfSpeech
+
+    // Nepali Word
+    wordNE = translator.data.translatedText
+
+    // For Plural
+    if(lingua.entries[0].interpretations[0].grammar != undefined
+        && lingua.entries[0].interpretations[0].grammar[0].number != undefined
+        && lingua.entries[0].interpretations[0].grammar[0].number[0] === "plural"){
+        plural = (lingua.entries[0].entry)
+    }
+
+    // For Root
+
+    var morph = lingua.entries[0].interpretations[0].morphemes
+
+    if(morph != undefined){
+        for(var key in morph){
+            if(morph[key].type === "root"){
+                root = morph[key].entry
+            }
+        }
+    }
+}
+
+var student = {"en":word, "np":wordNE, "part":pos, "def":def, "plural":plural, "root":root}
+
+fs.appendFileSync('words.json', JSON.stringify(student) + "\n")
+
+
+// mongoimport --db testDB --collection test --file words.json
+
+// extractSingleDef
+
+var fs = require('fs');
+
+var input = process.argv.slice(2).toString()
+var lingua, translator, word, def, plural, pos, wordNE, root
+
+lingua = JSON.parse(fs.readFileSync('wordDef.txt', {encoding:'utf8', flag:'r'}))
+translator = JSON.parse(fs.readFileSync('translation.txt', {encoding:'utf8', flag:'r'}))
+
+console.log(input)
+if (Object.keys(lingua.entries).length !== 0){
+
+    // Word
+    word = lingua.entries[0].lexemes[0].lemma
+
+    // Definition
+    def = lingua.entries[0].lexemes[0].senses[0].definition
+
+    // Part Of Speech
+    pos = lingua.entries[0].lexemes[0].partOfSpeech
+
+    // Nepali Word
+    wordNE = translator.data.translatedText
+
+    // For Plural
+    if(lingua.entries[0].interpretations[0].grammar != undefined
+        && lingua.entries[0].interpretations[0].grammar[0].number != undefined
+        && lingua.entries[0].interpretations[0].grammar[0].number[0] === "plural"){
+        plural = (lingua.entries[0].entry)
+    }
+
+    // For Root
+
+    var morph = lingua.entries[0].interpretations[0].morphemes
+
+    if(morph != undefined){
+        for(var key in morph){
+            if(morph[key].type === "root"){
+                root = morph[key].entry
+            }
+        }
+    }
+}
+
+var student = {"en":word, "np":wordNE, "part":pos, "def":def, "plural":plural, "root":root}
+
+fs.appendFileSync('words.json', JSON.stringify(student) + "\n")
+
+*/

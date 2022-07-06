@@ -19,7 +19,7 @@ window.onload = function() {
     
     enableZoomControls();
     
-    $('#zoom-dropdown').show();
+      $('#zoom-dropdown').hide();
     
     $('#zoom-btn').click ( function(){$('#zoom-dropdown').toggle();});
     

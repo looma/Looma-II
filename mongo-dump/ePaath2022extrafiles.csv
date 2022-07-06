@@ -1,0 +1,16 @@
+cl_lo,cl_hi,ch_id.0,nch_id.0,key1,key2,key3,key4,lang,src,version,ft,dn,ndn,id,grade,subject,oleID,thumb
+1,1,,2SF01.00,Social Studies,Community,Everyday Life,Family,np,OLE,2022,EP,,चन्द्र र बिन्दु,cbd,2,nep,nepcbd01,images/thumb/nepali/Thumbnail-1chandrabindu.png
+1,1,,1SF03.00,Social Studies,Community,People,,np,OLE,2022,EP,Nepali letters from 'अ' to ' ऊ',अ देखि ऊ सम्मका शब्दहरू,adu,1,nsl,nsladu01,images/activity-under-construction.png
+1,1,,1SF02.00,Social Studies,Community,Everyday Life,Self,np,OLE,2022,EP,Vowel characters from 'अ' to 'अ:',अ देखि अ: सम्म (स्वर वर्ण),ada,1,nsl,nslada01,images/activity-under-construction.png
+1,1,,1SF04.00,Social Studies,Community,Education,,np,OLE,2022,EP,Nepali letters from 'ऋ' to 'अः',ऋ देखि अः सम्मका शब्दहरू,had,1,nsl,nslhad01,images/activity-under-construction.png
+1,1,,1SF06.00,Science,Earth,Human Impact,Conservation,np,OLE,2022,EP,Consonant characters from 'क' to ' ज्ञ',क देखि ज्ञ सम्म (व्यञ्जन वर्ण),kdg,1,nsl,nslkdg01,images/thumb/nepali/kurakani-Gr102.png
+1,1,,1SF02.00,Social Studies,Community,Everyday Life,Self,np,OLE,2022,EP,Nepali letters from 'क' to 'ञ',क देखि ञ सम्मका शब्दहरू,kdy,1,nsl,nslkdy01,images/activity-under-construction.png
+1,1,,1SF05.00,Science,Biology,Zoology,,np,OLE,2022,EP,Animals and plants,जनावर र बिरुवाहरू,jrb,1,nsl,nsljrb01,images/thumb/nsl/thumbnail-Animals-and-plants-1.png
+1,1,,1SF02.00,Social Studies,Community,Everyday Life,Self,np,OLE,2022,EP,Body parts and their cleanliness,शरीरका अङ्‍गहरू र सरसफाइ,bpt,1,nsl,nslbpt01,images/activity-under-construction.png
+1,1,,1SF04.00,Social Studies,Community,Education,,np,OLE,2022,EP,Work,क्रिया,kri,1,nsl,nslkri01,images/thumb/nsl/thumnail_nsl_action01.png
+1,1,,1SF01.00,Social Studies,Community,Everyday Life,Family,np,OLE,2022,EP,Me and my family,म र मेरो परिवार,mmp,1,nsl,nslmmp01,images/thumb/nepali/thumbnail-file-1.png
+1,1,1EN02.00,,Language,English,Grammar,Alphabet,np,OLE,2022,EP,Color and size,रङ र आकार,rra,1,nsl,nslrra01,images/activity-under-construction.png
+1,1,,1SF06.00,Science,Earth,Human Impact,Conservation,,,2022,,"Nepali letters 'क', 'का', 'कि', 'की'",क का कि की,kak,1,dsy,dsykak01,images/activity-under-construction.png
+1,1,,1SF06.00,Science,Earth,Human Impact,Conservation,,,2022,,Story of Karma and Prabha,कर्म र प्रभा,kap,1,dsy,dsykap01,images/thumb/dyslexia/karma_ra_time_01.png
+1,1,,1SF01.00,Social Studies,Community,Everyday Life,Family,,,2022,,Identification of colors,रङ सिकौँ,rsi,1,dsy,dsyrsi01,images/thumb/dyslexia/thumbnail_rang_sikau01.png
+1,1,1M04,,Mathematics,Numbers,,,,,2022,,Numbers from 1 to 5,१ देखि ५ सम्म,otf,1,dsy,dsyotf01,images/thumb/dyslexia/thumnail_nsl_1_to_5_samma01.png

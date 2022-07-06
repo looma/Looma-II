@@ -1,0 +1,58 @@
+// mongo terminal program "fixEpaathWithNewThumbs"
+//      input from a comma-separated file
+//          each line of which has oleID, thumb
+//          inserts thumb field into the activities document corresponding to the oleID
+//
+//    to DRYRUN this script, enter "param='dryrun'  before entering the load statement
+//    to really run this script, enter "param='run'  before entering the load statement
+//
+//  reads a file 'ePaathThumbsCorrected.csv' in the current directory
+//  start MONGO in LOOMA db with: 'mongo looma'
+//  run in MONGO SHELL with: load('fixEpaathWithNewThumbs')
+//
+//"use strict";
+
+/////////////////////////
+//  verification function that check validity of incoming ch_id
+////////////////////////
+
+var requestcount = 0;
+var changecount = 0;
+var illegalcount = 0;
+var activities;
+
+var input = 'ePaathThumbsCorrected.csv';
+print ('Importing ePaath corrected thumbnails from ' + input);
+print();
+
+if (param === 'dryrun') {
+    print('DRYRUN');
+    print();
+}
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+
+var docs = file.split(/[\r\n]+/);  // split file into array of lines containing (oleID, thumb)
+
+print ('Processing ' + docs.length + ' lines');
+
+docs.forEach( function(doc) {
+    var fields = doc.split(/,/);  //split the line on Commas
+    // fields[0] is the oleID, fields[1] is the new thumbnail file name
+    if (fields[0] !== "") {
+        var oleID = fields[0];
+        var thumb = fields[1];
+        requestcount++;
+
+        activity = db.activities.findOne({'ft':'EP', 'src':'OLE', 'version': 2022, 'oleID':oleID});
+        if (!activity) print('ACTIVITY ' + oleID + ' NOT FOUND');
+         else {
+            activity['thumb'] = '../ePaath/ePaath2022/' + thumb;
+            if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
+            print('               for EPAATH ' + oleID + ' added thumb ' + activity['thumb']);
+         }
+    } else print('*******    BAD INPUT LINE: ' + doc);
+});  // end foreach doc
+
+if (param === 'dryrun') { print('DRYRUN'); print();};
+print('');
+print('+++++  ' + requestcount + '  lines processed');

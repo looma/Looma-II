@@ -82,6 +82,7 @@ if ( ! is_dir(realpath($path))) {echo "<br><h1>Access not permitted</h1>"; exit;
     echo "<table id='dir-table'><tr>";
     $dircount = 0;
     $buttons = 1;
+
     $maxButtons = 3;
 
 
@@ -482,7 +483,10 @@ echo "</tr></table>";
 
                         $list = array();
 
-                            foreach ($files as $file => $info) {
+                        if ($path === "../content/PhET/") $maxButtons = 2;
+                        else $maxButtons = 3;
+
+                                foreach ($files as $file => $info) {
                                 $file = (string) $file;
                             //skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
                             if (($file[0] == ".") ||
@@ -568,6 +572,9 @@ echo "</tr></table>";
 
                             if ($dircount > 0) echo "<hr>";
                             echo "<table id='file-table'><tr>";
+
+                    //echo "fp is " . $path;
+                   // echo "  and maxButtons is: " . $maxButtons;
 
                             foreach ($list as $item) {
 

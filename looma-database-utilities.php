@@ -931,7 +931,7 @@ if (isset($_REQUEST["collection"])) {
 
         //Build Regex to match search term (add 'i' to ignore case)
         if (isset($_POST['search-term']) && $_POST['search-term'] |= '')
-            $nameRegex = mongoRegexOptions(trim(htmlspecialchars_decode($_REQUEST['search-term'],ENT_QUOTES)), 'i');
+            $nameRegex = mongoRegexOptions(trim(preg_quote(htmlspecialchars_decode($_REQUEST['search-term'],ENT_QUOTES))), 'i');
         else
             $nameRegex = null;
 

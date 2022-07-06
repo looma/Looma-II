@@ -1,0 +1,19 @@
+// ONE TIME program to correct ePaath version 2022 thumbnail fields
+//
+//  run in MONGO SHELL with: load('fixEpaathThumbs')
+//
+var cursor, count, doc;
+
+cursor = db.activities.find({'ft':"EP",'version':2022,thumb:/^image/});
+count = 0;
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+    print('...' + doc['dn'] + '...changed thumb to...  ../ePaath/ePaath2022/' + doc['thumb']);
+    doc['thumb'] = '../ePaath/ePaath2022/' + doc['thumb'];
+    if (param === 'run') db.activities.update({_id:doc._id}, doc);
+}
+print('_______________');
+if (param === 'run') print(' + + + changed ' + count + ' activities');
+else                 print(' "dryrun" - would have changed ' + count + ' activities');
+print('_______________');

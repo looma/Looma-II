@@ -195,16 +195,12 @@ playMedia : function(button) {
             break;
     
         case "game":
-        
-            if (button.getAttribute('data-type') === 'sort') {
-                window.location = "looma-sort-game.php?id=" + button.getAttribute('data-mongoid');
-                break;
-            } else {window.location = 'game?id=' + button.getAttribute('data-mongoid') +
+             window.location = 'game?id=' + button.getAttribute('data-mongoid') +
                     '&class=' + button.getAttribute('data-class') +
                     '&subject=' + button.getAttribute('data-subject') +
                     '&type=' + button.getAttribute('data-type');
-            };
              break;
+      
         case "map":
             window.location = 'map?id=' + button.getAttribute('data-mongoid');
             break;
@@ -431,14 +427,15 @@ playMedia : function(button) {
                         else if ('fn' in result) fn = result.fn;
                         else fn = null;
                         
+                        thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft, result.thumb);
+      /*
                         if      (result.ft == 'EP'       && result.thumb)
                                                thumbfile = '../ePaath/' + result.thumb;
-                        else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft === 'map') && result.thumb)
-                                               thumbfile = result.thumb;
+                     
                         else if (result.thumb) thumbfile = result.fp + result.thumb ;
                         else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
-                        else thumbfile = null;
-    
+                      
+    */
                      if (thumbfile) $newButton.append($('<img alt="" loading="lazy" draggable="false" src="' + thumbfile + '">'));
                     
                     //$newButton.append($('<img alt="" draggable="false" src="' + thumbfile + '"' +
@@ -557,14 +554,23 @@ filepath: function(filetype, filename) {
 }, //end filepath()
 
 
-thumbnail: function (filename, filepath, filetype) {
+thumbnail: function (filename, filepath, filetype, thumb) {
             //builds a filepath/filename for the thumbnail of this "filename" based on type and source
-            var thumbnail_prefix;
-            var path;
-            var imgsrc;
+    
+                            /*
+                                if      (result.ft == 'EP'       && result.thumb)
+                                                     thumbfile = '../ePaath/' + result.thumb;
+                                else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft === 'map') && result.thumb)
+                                                     thumbfile = result.thumb;
+                                else if (result.thumb) thumbfile = result.fp + result.thumb ;
+                                else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
+                                else thumbfile = null;
+                             */
+    
+            var thumbnail_prefix, path;
+            var imgsrc = null;
             var homedirectory = '../';
 
-            imgsrc = "";
             if (filetype) {
                 
                 filetype = filetype.toLowerCase();
@@ -577,6 +583,9 @@ thumbnail: function (filename, filepath, filetype) {
                 }
                 else if (filepath && filepath.indexOf('/W4S/') >= 0) {
                     imgsrc = homedirectory + 'content/W4S/thumbnail.png';
+                }
+                else if (filepath && filepath.indexOf('/W4S2013/') >= 0) {
+                    imgsrc = homedirectory + 'content/W4S2013/thumbnail.png';
                 }
                 else if (filetype == "mp3" || filetype == "m4a" || filetype == "audio") {  //audio
                     if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
@@ -592,6 +601,9 @@ thumbnail: function (filename, filepath, filetype) {
                     if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
                     imgsrc = path + thumbnail_prefix + "_thumb.jpg";
                 }
+                else if (filepath && filepath.indexOf('Hesperian') >= 0) { //keep this before filetype===pdf
+                    imgsrc = filepath + "thumbnail.png";
+                }
                 else if (filetype == "pdf" || filetype === "Document") { //pdf
                     thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
                     if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
@@ -603,7 +615,9 @@ thumbnail: function (filename, filepath, filetype) {
                     imgsrc = path + thumbnail_prefix + "_thumb.jpg";
                 }
                 else if (filetype == "EP" || filetype == "ep" || filetype == "epaath") {
-                    imgsrc = homedirectory + "content/epaath/activities/" + filename + "/thumbnail.jpg";
+                    if (filepath === "../content/epaath/activities/")
+                         imgsrc = filepath + filename + "/thumbnail.jpg";
+                    else imgsrc = thumb;
                 }
                 else if (filetype == "text") {
                     imgsrc = "images/textfile.png";
@@ -616,19 +630,19 @@ thumbnail: function (filename, filepath, filetype) {
                     imgsrc = "images/video.png";
                 }
                 else if (filetype == "history") {
-                    imgsrc = "images/history.png";
+                    imgsrc = thumb;
                 }
                 else if (filetype == "map") {
-                    imgsrc = "images/maps.png";
+                    imgsrc = thumb;
                 }
                 else if (filetype == "game") {
                     imgsrc = "images/games.png";
                 }
                 else if (filetype == "slideshow") {
-                    imgsrc = "images/play-slideshow-icon.png";
+                    imgsrc = thumb;
                 }
                 else if (filetype == "looma") {
-                    imgsrc = "images/LoomaLogo_small.png";
+                    imgsrc =  thumb;
                 }
             }
 

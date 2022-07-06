@@ -25,11 +25,13 @@ Revision: Looma 5.7
 
 <div id="main-container-vertical">
 
+        <div id="fullscreen">
+
     <div id="pdf-toolbar" class="pdf-toolbar">
                 <button class="toolbar-button blank"></button>
 
                 <button id="showthumbs" class="toolbar-button">
-                    <img draggable="false" src="images/info.png">
+                    <img draggable="false" src="images/directory.png">
                     <?php tooltip("Show pages") ?>
                 </button>
 
@@ -73,23 +75,23 @@ Revision: Looma 5.7
 
         <span id="zoom-label">Zoom:</span>
         <div id="zoom-menu" class="btn-group">
-            <button type="button" id="zoom-btn" class="btn toolbar-butto" data-toggle="dropdown" data-zoom="Page width">
+            <button type="button" id="zoom-btn" class="btn toolbar-button" data-zoom="Page width">
             Page width
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
             </button>
             <div id="zoom-dropdown" class="dropdown-menu">
-                <button class="dropdown-item zoom-item" data-level="2.3" data-zoom="Page width">Page width</button><br>
-                <button class="dropdown-item zoom-item" data-level="1.2" data-zoom="Page fit">Page fit  </button><br>
-                <button class="dropdown-item zoom-item" data-level="1.15" data-zoom="50%">50%       </button><br>
-                <button class="dropdown-item zoom-item" data-level="2.3" data-zoom="100%">100%       </button><br>
-                <button class="dropdown-item zoom-item" data-level="4.6" data-zoom="200%">200%       </button><br>
-                <button class="dropdown-item zoom-item" data-level="9.2" data-zoom="400%">400%       </button><br>
+                <button class="dropdown-item zoom-item" data-level="2.3" data-zoom="Page width">Page width</button>
+                <button class="dropdown-item zoom-item" data-level="1.2" data-zoom="Page fit">Page fit  </button>
+                <button class="dropdown-item zoom-item" data-level="1.15" data-zoom="50%">50%       </button>
+                <button class="dropdown-item zoom-item" data-level="2.3" data-zoom="100%">100%       </button>
+                <button class="dropdown-item zoom-item" data-level="4.6" data-zoom="200%">200%       </button>
+                <button class="dropdown-item zoom-item" data-level="9.2" data-zoom="400%">400%       </button>
             </div>
         </div>
     </div>
 
 <?php
-    echo '<div id="fullscreen">';
+    //echo '<div id="fullscreen">';
     include('looma-pdf-viewer.php');
     include ('includes/looma-control-buttons.php');
 

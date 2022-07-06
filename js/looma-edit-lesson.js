@@ -373,6 +373,8 @@ function createActivityDiv (activity) {
         $(activityDiv).attr("data-type", itemtype);
         $(activityDiv).attr("data-fp", item['fp']);
         
+        if(itemtype === "EP") $(activityDiv).attr("data-epversion",item['version']);
+        
         var lang =  $("input:radio[name='chapter-language']:checked").val();
         $(activityDiv).attr("data-lang", lang);
         $(activityDiv).attr("data-fn", item['fn']);

@@ -21,15 +21,16 @@ while (docs.hasNext()) {
 		print('');
 		dupl = duplicates.next();
 		print('duplicate found for: ' + en);
-		/*
+
 		while (duplicates.hasNext()) {
-			dupl = duplicates.next();	
-			print('	part 1: ' + doc['part']);
-			print('	part 2: ' + dupl['part']);
+			dupl = duplicates.next();
+			print(count);
+			//print('	part 1: ' + doc['part']);
+			//print('	part 2: ' + dupl['part']);
 			print('	def 1: ' + doc['def']);
 			print('	def 2: ' + dupl['def']);
 			}
-		*/
+
 		count++; 
 		};
 	};

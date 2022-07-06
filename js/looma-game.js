@@ -1,15 +1,14 @@
 'use strict';
 
 var $timer;
-var $scoreboard;
 
-var game_data = {};
+var game;
 var time_limit;
 var score_method;
-var game_type;
+var type, grade, subject;
 var game_id;
-var game_class;
-var game_subject;
+var grade;
+var subject;
 var num_teams;
 var curr_team = 1;
 
@@ -286,7 +285,7 @@ function runMC() {
     $('#game').append('<span id="question">');
     $('#game').append('<div id="answers">');
 
-    num_questions = game_data['prompts'].length;
+    num_questions = game['prompts'].length;
     curr_question = 1;
     nextQuestion();
 } //end runMC()
@@ -315,7 +314,7 @@ function matchPromptClick(event) {
     } else {
         previousClick = 'prompt'
     }
-    //var num_pairs = game_data['prompts'].length;
+    //var num_pairs = game['prompts'].length;
     //for (var i = 0; i < num_pairs; i++) {
         //$('#response-'+i.toString()).click(matchResponseClick);}
 }  // end matchPromptClick()
@@ -371,7 +370,7 @@ function checkMatch() {
             
             correctAnswer();
             //showTeam();
-            //if (matches_made === game_data['prompts'].length) gameOver();
+            //if (matches_made === game['prompts'].length) gameOver();
             if (matches_made === num_questions) gameOver();
         }, 1000);
         
@@ -414,8 +413,8 @@ function runMatch() {
     
     $('#question').html('Click left and right items to find a match');
     
-    var prompts =   game_data['prompts'];
-    var responses = game_data['responses'];
+    var prompts =   game['prompts'];
+    var responses = game['responses'];
     //console.log(prompts)
     //console.log(responses)
     promptButtons = [];
@@ -461,8 +460,8 @@ function runMatchSpeak() {
     
     $('#question').html('Click left and right items to find a match');
     
-    var prompts =   game_data['prompts'];
-    var responses = game_data['responses'];
+    var prompts =   game['prompts'];
+    var responses = game['responses'];
     //console.log(prompts)
     //console.log(responses)
      promptButtons = [];
@@ -509,8 +508,8 @@ function runMatchSpeakToPicture() {
     
     $('#question').html('Click left and right items to find a match');
     
-    var prompts =   game_data['prompts'];
-    var responses = game_data['responses'];
+    var prompts =   game['prompts'];
+    var responses = game['responses'];
     //console.log(prompts)
     //console.log(responses)
     promptButtons = [];
@@ -627,8 +626,8 @@ function runMatchPicture() {
     
     $('#question').html('Click left and right items to find a match');
     
-    var prompts =   game_data['prompts'];
-    var responses = game_data['responses'];
+    var prompts =   game['prompts'];
+    var responses = game['responses'];
     //console.log(prompts)
     //console.log(responses)
     promptButtons = [];
@@ -822,7 +821,7 @@ function runRandom () {
     num_questions = 5;
     time_limit = 15;
     setTimer(time_limit);
-    game_data = {
+    game = {
         'name': 'Word Review Class ' + randClass + ' ' + randSubj,
         'prompts': [],
         'responses': [],
@@ -830,28 +829,28 @@ function runRandom () {
         'presentation_type': 'vocabulary'
     };
     
-    $("#gameTitle span").html(game_data['name']);
+    $("#gameTitle span").html(game['name']);
     
     function get_wordlist_succeed(words) {
         // console.log("success",words)
         $(words).each(function (index, word) {
-            game_data['prompts'].push(word['en']);
+            game['prompts'].push(word['en']);
         });
     
         // get definitions of the words in 'prompts[]' from Looma dictionary
         var wordcount = 0;
     
         function word_define_succeed(res) {
-            game_data['responses'].push(res);
+            game['responses'].push(res);
             wordcount++;
-            if (wordcount < game_data['prompts'].length)
-                LOOMA.definition_only(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
+            if (wordcount < game['prompts'].length)
+                LOOMA.definition_only(game['prompts'][wordcount], word_define_succeed, word_define_fail);
             else runMatch();
         }
         
         function word_define_fail(r) {console.log("word define fail", r);}
     
-        LOOMA.definition_only(game_data['prompts'][wordcount], word_define_succeed, word_define_fail);
+        LOOMA.definition_only(game['prompts'][wordcount], word_define_succeed, word_define_fail);
     }
     
     function get_wordlist_fail(r) {console.log("get wordlist failed: ", r);}
@@ -879,8 +878,8 @@ var $concSecondClicked;
 // //////////////////////////
 function runConc() {
     //showTeam();
-    var prompts =   game_data['prompts'];
-    var responses = game_data['responses'];
+    var prompts =   game['prompts'];
+    var responses = game['responses'];
 
     $('#question').html('Click two cards to find a match');
     
@@ -923,8 +922,8 @@ function runConc() {
 // //////////////////////////
 function runConcSpeak() {
     //showTeam();
-    var prompts =   game_data['prompts'];
-    var responses = game_data['responses'];
+    var prompts =   game['prompts'];
+    var responses = game['responses'];
     
     $('#question').html('Click two cards to find a match');
     
@@ -1077,14 +1076,14 @@ var clickedWrong = false;
 var map, baseLayer, mapJSON;
 
 function runMap() {
-    num_questions = game_data['prompts'].length;
+    num_questions = game['prompts'].length;
     curr_question = 1;
     
-    var map_json_file = game_data['geojson'];
-    var map_info = game_data['key'];
-    var map_lat =  game_data['startLat'];
-    var map_long = game_data['startLong'];
-    var map_zoom = game_data['startZoom'];
+    var map_json_file = game['geojson'];
+    var map_info = game['key'];
+    var map_lat =  game['startLat'];
+    var map_long = game['startLong'];
+    var map_zoom = game['startZoom'];
     $('#game').append('<span id="map-data" ' +
                             '  data-json="' + map_json_file  +
                             '" data-info="' + map_info +
@@ -1092,10 +1091,10 @@ function runMap() {
                             '" data-long="' + map_long +
                             '" data-zoom="' + map_zoom +'" >');
     
-    game_data['prompts'].sort(function(a, b){return 0.5 - Math.random()});
+    game['prompts'].sort(function(a, b){return 0.5 - Math.random()});
     
     $('#question-number').html(LOOMA.translatableSpans('Question','प्रश्न') + ' ' + curr_question);
-    $('#question').text('Click on: ' + game_data['prompts'][curr_question-1]);
+    $('#question').text('Click on: ' + game['prompts'][curr_question-1]);
     $('#game').append('<div id="map">');
     $('#next').text("Next Question").show();
     //$('#next').click(getNewMapQuestion);
@@ -1105,9 +1104,9 @@ function runMap() {
             nextQuestion();
     });
     
-            //var lat = game_data['startLat'];
-            //var long = game_data['startLong'];
-            //var zoom = game_data['startZoom'];
+            //var lat = game['startLat'];
+            //var long = game['startLong'];
+            //var zoom = game['startZoom'];
             
             map = L.map('map').setView([map_lat, map_long], map_zoom);
             map.options.minZoom = 1;
@@ -1139,13 +1138,13 @@ function mapClick(e)
     var layer = e.target;
     //var currentQuestion = document.getElementById("question");
     //if(!alreadyRight) { //prevents it from going red after you have gotten it right
-        rightAnswer = game_data['prompts'][curr_question-1];
+        rightAnswer = game['prompts'][curr_question-1];
     //}
     
     //var infoKey = document.getElementById("question").getAttribute("data-info");
     var infoKey = $('#map-data').data('info');
     var clickedAnswer = layer.feature.properties[infoKey];
-    //var clickedAnswer = game_data['key'];
+    //var clickedAnswer = game['key'];
     if(rightAnswer == clickedAnswer) //they got it right
     {   layer.setStyle({fillColor: 'green'});
         document.getElementById("question").innerHTML = "Correct! That is " + rightAnswer;
@@ -1219,12 +1218,14 @@ function redrawMap(mapJson) {
 ////////////////////////////  NOTE: 'yesno' is a trivial game, included here as a template for how to code a new game type
 ////////////////////////////
 function runYesNo() {
-    // settings
+    $('#thegameframe').show();
+    $('#timer').show();
+    $('#scoreboard').show();
     num_questions = 10;
     time_limit = 8;
     
-    $('#game').append('<button id="yes_button" class="yesno">YES</button>');
-    $('#game').append('<button id="no_button"  class="yesno">NO</button>');
+    $('#game').append('<button id="yes_button" class="yesno">CORRECT</button>');
+    $('#game').append('<button id="no_button"  class="yesno">WRONG</button>');
     
     $('#yes_button').click(correctAnswer);
     $('#no_button').click( wrongAnswer);
@@ -1296,14 +1297,14 @@ function nextQuestion() {
     else {
         startTimer(time_limit);
         
-        switch (game_data['presentation_type']) {
+        switch (game['presentation_type']) {
             case 'multiple choice':
-                //var prompts = game_data['prompts'];
-                if (curr_question <= game_data['prompts'].length) {
+                //var prompts = game['prompts'];
+                if (curr_question <= game['prompts'].length) {
                     showTeam();
                     $("#question-number").html(LOOMA.translatableSpans('Question','प्रश्न') + " "+(curr_question)+":  ");
                     mcTries = 1;
-                    var questionData = game_data['prompts'][curr_question-1];
+                    var questionData = game['prompts'][curr_question-1];
                     var question = questionData['question'];
                     $("#question").html(question);
         
@@ -1339,11 +1340,11 @@ function nextQuestion() {
                 
                 // get definitions of the words in 'prompts[]' from Looma dictionary
                 var wordcount = 1;
-                $(game_data['prompts']).each(function (index, word) {
+                $(game['prompts']).each(function (index, word) {
                     function word_define_succeed(res) {
-                        game_data['responses'].push(res);
+                        game['responses'].push(res);
                         wordcount++;
-                        //if (wordcount > game_data['prompts'].length) runMatch();
+                        //if (wordcount > game['prompts'].length) runMatch();
                     }
                     
                     function word_define_fail(r) {
@@ -1372,15 +1373,13 @@ function nextQuestion() {
                 break;
             case 'map':
                 $('#question-number').text('Question ' + curr_question);
-                $('#question').text('Click on: ' + game_data['prompts'][curr_question-1]);
+                $('#question').text('Click on: ' + game['prompts'][curr_question-1]);
                 baseLayer.clearLayers();
                 redrawMap(mapJSON);
                 alreadyRight = false;
                 //runMap();
                 break;
             case 'yesno':
-                //setTimer(time_limit);
-                //runYesNo();
                 break;
             case 'timeline':
                 //runTimeline();
@@ -1404,8 +1403,8 @@ function correctAnswer () {
     nextTeam();
     curr_question++;
     setTimer(time_limit);
-    if (game_data['presentation_type'] != 'matching' &&
-        game_data['presentation_type'] != 'vocabulary') nextQuestion();
+    if (game['presentation_type'] != 'matching' &&
+        game['presentation_type'] != 'vocabulary') nextQuestion();
     else startTimer();
 }
 
@@ -1418,9 +1417,9 @@ function wrongAnswer () {
     nextTeam();
     curr_question++;
     setTimer(time_limit);
-    if (game_data['presentation_type'] != 'matching' &&
-        //game_data['presentation_type'] != 'multiple choice'       &&
-        game_data['presentation_type'] != 'vocabulary') nextQuestion();
+    if (game['presentation_type'] != 'matching' &&
+        //game['presentation_type'] != 'multiple choice'       &&
+        game['presentation_type'] != 'vocabulary') nextQuestion();
     else startTimer();
 }
 
@@ -1447,9 +1446,9 @@ function gameOver() {
     }
     var replayButton = $('<a href="looma-game.php' +
                         '?id='+ game_id +
-                        '&class='+ game_class +
-                        '&subject='+ game_subject +
-                        '&type='+ game_type +
+                        '&class='+ grade +
+                        '&subject='+ subject +
+                        '&type='+ type +
                         '"><button> Replay Game </button></a>');
     
     var gamesHomeButton = $('<a href="looma-games.php"><button> Games Home Page </button></a>');
@@ -1459,69 +1458,189 @@ function gameOver() {
     $("#scoreList").append(gamesHomeButton);
 }
 
+
+/////////////////////////////
+///////// runSort  /////////
+////////////////////////////
+    function runSort() {
+        $("#optionsframe").hide();
+        $('#thegameframe').hide();
+        $('#timer').hide();
+        $('#scoreboard').hide();
+    
+        $("#sortgame").show();
+        
+        function setBins() {
+            $('.heading').hide();
+            $('.bin').hide();
+    
+            for (var i = 0; i < game['bins'].length; i++) {
+                $('#heading' + i).text(game['bins'][i]['heading']).show();
+                $('#bin' + i).show().droppable({scope:game['bins'][i]['scope']});
+            }
+        }
+        
+        function setWords() {
+            var list = [];
+            for (var i = 0; i < game['words'].length; i++) {
+                list[i] = {'key':game['words'][i]['en'], 'value':game['words'][i]['bin']};
+            }
+            list.sort(() => Math.random() - 0.5);
+            return list.slice();
+        };
+        
+        function startSortGame() {
+            words = setWords();
+            $('#words').show();
+            nextWord();
+            $(".bin").empty();
+        }
+    
+        function nextWord() {
+            if (words.length === 0) {
+                $('#words').empty().hide();
+                LOOMA.alert('<p>Game over. Good work.</p>Click "Play Again" to play again', 10, true);
+                return;
+            }
+        
+            var $word = $("<p class='word " + words[0].value + "'>" + (words[0].key) + "</p>");
+            $word.draggable({revert:'invalid',
+                cursor:'move',
+                helper:'clone',
+                scope:words[0].value,
+                start: function( event, ui ) {ui.helper.css('font-size','1em')}}  //.addClass('word')
+            );
+            $('#words').empty().append($word);
+            words = words.slice(1); // removes the first word from 'words'
+        };
+        
+            $('button.speak').off('click').click(function () {
+                var selectedString = document.getSelection().toString();
+                var toSpeak = (selectedString ? selectedString : $('#words p.word').text());
+                LOOMA.speak(toSpeak);
+            }); //end speak button onclick function
+        
+            $('button.lookup').off('click').click(function(){
+                var toString = window.getSelection().toString();
+                var toString = (toString ? toString : $('#words p.word').text());
+                LOOMA.popupDefinition(toString.split(' ')[0], 15);
+            });
+        
+            $(".bin").droppable({
+                accept:".word",
+                drop: function(event, ui) {
+                    // clone(true) to retain all DATA for the element
+                    var $dest = ui.helper.clone(true).addClass('dragging').off();
+                    //NOTE: crucial to "off()" event handlers,
+                    //or the new element will still be linked to the old
+                    $dest.removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
+                    $dest.removeAttr('style').addClass('dropped');
+                    $dest.appendTo(event.target);
+                
+                    nextWord();
+                }
+            });
+        
+            $('#next_button').click(startSortGame);
+        
+            setBins();
+            startSortGame();
+    };  // end runSort()
+
+
     /////////////////////////////
     ///////// fail  /////////
     ////////////////////////////
-        function get_game_fail(r) {
-            LOOMA.alert("Game not found");
-            console.log("failed to find game"); }
+        function game_not_found(r) {LOOMA.alert("Game not found");};
         
     /////////////////////////////
     ///////// succeed  /////////
     ////      fetched a game from mongoDB   /////
     ////////////////////////////
-        function get_game_succeed(result) {
-            game_data = result;
+        function game_found(result) {
+            game = result;
+            $("#gameTitle").html(LOOMA.translatableSpans("Game", "खेल") + ": " + game['title']);
+            type = game['presentation_type'];
+            subject = ('subject' in game) ? game['subject'][0] : null;
+            grade = ('class' in game) ? game['class'] : null;
             
-            time_limit = ( game_data['timeLimit']) ? game_data['timeLimit'] : 30;
-            setTimer(time_limit);
-            $("#gameTitle").html(LOOMA.translatableSpans("Game","खेल") + ": " + game_data['title']);
-            
-            //nextQuestion();
-            
-            switch (game_data['presentation_type']) {
-                case 'concentration':
-                    runConc();
-                    break;
-                case 'spoken concentration':
-                    runConcSpeak();
-                    break;
-                case 'matching':
-                    runMatch();
-                    break;
-                case 'spoken matching':
-                    runMatchSpeak();
-                    break;
-                case 'spoken to picture':
-                    runMatchSpeakToPicture(game_class, game_subject);
-                    break;
-                case 'picture matching':
-                    runMatchPicture();
-                    break;
-                case 'picture':
-                    runPicture(game_class, game_subject);
-                    break;
-                case 'speak':
-                    runRandomSpeak(game_class, game_subject);
-                    break;
-               
-                case 'translate':
-                    runTranslate(game_class, game_subject);
-                    break;
-                case 'multiple choice':
-                    runMC();
-                    break;
-                case 'map':
-                    runMap();
-                    break;
-                case 'timeline':
-                    runTimeline();
-                    break;
-                default:
-                    $("#gameTitle").html("Game type not recognized");
-                    break;
+            if (type === 'sort') runSort(game);
+    
+            else {
+                $("#optionsframe").show();
+                $('.teamnumber').click(function () {
+                    $("#optionsframe").hide();
+                    num_teams = $(this).data('team');
+                    initScores(num_teams);
+        
+                    curr_team = 1;
+                    showTeam();
+                    curr_question = 1;
+                    
+                    // some games dont have an entry in mongoDB 'games' collection, instead they are randomly generated
+                    // based on grade and subject and [sometimes] chapter
+                    if      (type === 'yesno')     runYesNo();
+                    else if (type === 'random')    runRandom();
+                    else if (type === 'vocab')     runVocab(grade, subject);
+                    else if (type === 'arith')     runArith(grade, subject);
+                    else if (type === 'picture')   runPicture(grade, subject);
+                    else if (type === 'speak')     runRandomSpeak(grade, subject);
+                    else if (type === 'translate') runTranslate(grade, subject);
+                    
+                else {  // regular game
+                    $('#gameOverFrame').hide();
+                    $('#thegameframe').show();
+                    $('#timer').show();
+                    $('#scoreboard').show();
+
+                    time_limit = (game['timeLimit']) ? game['timeLimit'] : 30;
+                    setTimer(time_limit);
+                    
+                    switch (type) {
+                        case 'concentration':
+                            runConc();
+                            break;
+                        case 'spoken concentration':
+                            runConcSpeak();
+                            break;
+                        case 'matching':
+                            runMatch();
+                            break;
+                        case 'spoken matching':
+                            runMatchSpeak();
+                            break;
+                        case 'spoken to picture':
+                            runMatchSpeakToPicture(grade, subject);
+                            break;
+                        case 'picture matching':
+                            runMatchPicture();
+                            break;
+                        case 'picture':
+                            runPicture(grade, subject);
+                            break;
+                        case 'speak':
+                            runRandomSpeak(grade, subject);
+                            break;
+                        case 'translate':
+                            runTranslate(grade, subject);
+                            break;
+                        case 'multiple choice':
+                            runMC();
+                            break;
+                        case 'map':
+                            runMap();
+                            break;
+                        case 'timeline':
+                            runTimeline();
+                            break;
+                        default:
+                            $("#gameTitle").html("Game type not recognized");
+                            break;
+                        }  
+                    }
+                });
             }
-};   // end get_game_succeed()
+};   // end game_found()
 
 
 /////////////////////////////
@@ -1531,12 +1650,11 @@ function gameOver() {
 function runGame (id) {
     $.ajax(
         "looma-database-utilities.php",
-        {
-            type: 'GET',
+        {   type: 'GET',
             dataType: "json",
             data: "collection=games&cmd=getGame&gameId=" + id,
-            error:   get_game_fail,
-            success: get_game_succeed
+            error:   game_not_found,
+            success: game_found
         });
 } //  end runGame()
 
@@ -1547,39 +1665,7 @@ function runGame (id) {
 $(document).ready (function() {
     
     $timer = $('#timer-count');
-    $scoreboard = $('#scoreboard');
-    
-    //first visible screen asks user to choose the number of teams that will be playing
-    $('.teamnumber').click(function () {
-    
-        game_type =    $('#thegameframe').data('gametype');
-        game_id =      $('#thegameframe').data('gameid');
-        game_class =   $('#thegameframe').data('class');
-        game_subject = $('#thegameframe').data('subject');
-
-        num_teams = $(this).data('team');
-        initScores(num_teams);
-        
-        curr_team = 1;
-        showTeam();
-        curr_question = 1;
-        
-        $("#optionsframe").hide();
-        $("#thegameframe").show();
-        $('#timer').show();
-        $scoreboard.show();
-        
-    // some games dont have an entry in mongoDB 'games' collection, instead they are randomly generated
-    // based on grade and subject and [sometimes] chapter
-        if      (game_type === 'yesno')      runYesNo();
-        else if (game_type === 'random')     runRandom();
-        else if (game_type === 'vocab')      runVocab(game_class, game_subject);
-        else if (game_type === 'arith')      runArith(game_class, game_subject);
-        else if (game_type === 'picture')    runPicture(game_class, game_subject);
-        else if (game_type === 'speak')      runRandomSpeak(game_class, game_subject);
-        else if (game_type === 'translate')  runTranslate(game_class, game_subject);
-    // all the other games have mongoDB entries, which runGame() fetches
-        else                                 runGame(game_id);
-        
-    })
+    game_id =      $('#thegameframe').data('gameid');
+  
+    runGame(game_id);
 });

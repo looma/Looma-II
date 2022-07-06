@@ -52,6 +52,7 @@ h1#gameTitle {font-size: 6vh;}
 #timer {
     grid-column: 2 / 3;
     grid-row: 2 / 4;
+    display:none;
     border: 2px solid var(--looma-font-color);
     border-radius: 5px;
 }
@@ -59,6 +60,7 @@ h1#gameTitle {font-size: 6vh;}
 #scoreboard {
     grid-column: 2 / 3;
     grid-row: 4 / 6;
+    display:none;
     border: 2px solid var(--looma-font-color);
     border-radius: 5px;
     font-size:1em;
@@ -87,6 +89,7 @@ h1#gameTitle {font-size: 6vh;}
 }
 
 #gameframe {
+    display:none;
     height:100%;
     width: 100%;
 }
@@ -107,15 +110,25 @@ h1#gameTitle {font-size: 6vh;}
 #optionsframe {
     grid-column: 1/3;
     grid-row:2/5;
+    display:none;
     margin-top:25vh;
- }
+}
+
+#sortgame {
+    display:none;
+    grid-column: 1/3;
+    grid-row:2/5;
+}
 
 .bigscore {
   max-height: 15%;
   max-width: 8%;
 }
 
-#scoreList h5 {font-size:3em;}
+#scoreList h5 {
+    margin:0;
+    font-size:3em;
+}
 
 #prompts {
     display:inline-block;
@@ -241,7 +254,8 @@ h1#gameTitle {font-size: 6vh;}
 }
 
 #score-message {
-    top: -5%;
+    margin: 1vh 0 1vh 0;
+    font-size: 1.25em;
     position: relative;
 }
 
@@ -645,3 +659,116 @@ a button:hover {color:blue;}
 }
 
 #next:hover {border:none;}
+
+/* sort game styles */
+
+#fullscreen {
+    display:grid;
+    grid-template-rows:    [top] 1fr [main] 5fr [middle] 1fr [bottom];
+    grid-template-columns: [left] 1fr [midleft] 1fr [midright] 1fr [right];
+}
+
+#bins {
+    grid-row: main / middle;
+    grid-column:left / right;
+    min-width:90vw;
+    height:60vh;
+    border-radius: 5px;
+    display:flex;
+    gap:3vw;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.bin_holder {
+    min-height:100%;
+}
+.bin {
+    user-select: none;
+    display:flex;
+    flex-direction: column;
+    min-height:80%;
+    margin:auto;
+    background-color:white;
+    color:green;
+    border:4px solid  yellow;
+    border-radius: 5px;
+}
+.heading {
+    user-select: none;
+    font-size:3em;
+    width:30vw;
+    margin:auto;
+}
+
+#words {
+    grid-row: middle / bottom;
+    grid-column:midleft / midright;
+    background-color:white;
+    border:4px solid  yellow;
+    color:red;
+    font-size: 5em;
+    border-radius: 5px;
+    width:100%;
+    margin: 1vh auto;
+}
+#words p {display:inline;}
+
+#word, .ui-draggable-dragging {
+    width:20vw;
+    margin:auto;
+    font-size:4em;
+    color:red;
+}
+
+p.dragging {
+    color:blue;
+    font-size:3em;
+    margin:0;
+}
+p.dropped {
+    color:green;
+    font-size:3em;
+    margin:0;
+}
+
+#next_button {
+    grid-row: middle / bottom;
+    grid-column:midright / right;
+    height:8vh;
+    width:15vw;
+    margin:auto;
+}
+
+#divstyle {
+    width: 700px;
+    height: 300px;
+    padding-top: 20px;
+    padding-left: 5px;
+    text-align: center;
+    background-color: cadetblue;
+}
+#drag {
+    width: 150px;
+    height: 100px;
+    background: #eee;
+    text-align: center;
+    padding-top: 30px;
+}
+
+button.looma-control-button {
+    right: 1vw;
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}
+
+button.speak {
+    display:inline-block;
+    bottom:23vh;
+}
+button.lookup {
+    display:inline-block;
+    bottom:35vh;
+}

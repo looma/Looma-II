@@ -129,6 +129,10 @@ button:hover  {
 #classes button.active {
     color:yellow;
 }
+
+#classes button.empty, #classes button.empty:hover {color: #a0a0a0;
+border:none;}
+
 .classnumber {font-size:4em;}
 
 .classes .native-keyword {font-size:1.4em;}
@@ -145,7 +149,7 @@ button:hover  {
     font-weight: bold;
 }
 
-button.class:hover,  button.subject:hover {
+button.class:hover:enabled,  button.subject:hover {
     border:4px solid yellow;
     
     /*transform: scale(1.05,1.05);  NOTE: the transform changes where the hover appears (CSS bug)*/

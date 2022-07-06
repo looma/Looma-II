@@ -1,6 +1,6 @@
 body {
 	/*background-color: #091F48;*/
-	--looma-background: var(--looma-blue);
+	/*--looma-background: var(--looma-blue);*/
 	background-color: var(--looma-background);
 		
     font-family: "Comic Neue bold", "Comic Sans MS", "Chalkboard", sans-serif;

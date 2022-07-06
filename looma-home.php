@@ -45,14 +45,18 @@
         <!--  display CLASS buttons  -->
         <div id="classes" class="button-div">
             <?php
-                //$classes = $textbooks_collection->distinct("class");
                 $classes = mongoDistinct($textbooks_collection, "class");
-
-                for ($i = 1; $i <= sizeOf($classes); $i++) {
-                    echo "<button type='button' class='class' id=class$i>";
-                    //echo "<div class='little'>"; keyword("Grade"); echo "</div>";
-                    echo "<div>";                keyword((string) $i);     echo "</div>";
-                    echo "</button>";
+                $z = []; foreach ($classes as $y) $z[] = (int) substr($y, 5); //sort($z);
+                for ($i = 1; $i <= 12; $i++) {
+                    if ( in_array($i, $z)) {
+                        echo "<button type='button' class='class' id='class$i'>";
+                        echo "<div>"; keyword((string) $i); echo "</div>";
+                        echo "</button>";
+                } else {
+                        echo "<button disabled type='button' class='class empty' id='class$i'>";
+                        echo "<div>"; keyword((string) $i); echo "</div>";
+                        echo "</button>";
+                    }
                 }
             ?>
         </div>

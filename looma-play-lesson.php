@@ -157,6 +157,10 @@ Description: looma lesson plan presenter
                                 $thumbSrc = $details['thumb'];
                             else if (isset($details['ft']) && $details['ft'] == 'EP' && isset($details['version']) && $details['version'] == 2015)
                                 $thumbSrc = '../content/epaath/activities/' . $details["fn"] . '/thumbnail.jpg';
+                           // else if (isset($details['ft']) && $details['ft'] == 'EP' && isset($details['version']) && $details['version'] == 2019)
+                             //   $thumbSrc = $details['thumb'];
+                           // else if (isset($details['ft']) && $details['ft'] == 'EP' && isset($details['version']) && $details['version'] == 2022)
+                             //   $thumbSrc = '../ePaath/' . $details['thumb'];
                             else if (isset($details['ft']) && $details['ft'] == 'evi')
                                 $thumbSrc = 'images/video.png';
                             else if (isset($details['ft']) && $details['ft'] == 'text')
@@ -170,9 +174,9 @@ Description: looma lesson plan presenter
                             else $thumbSrc = 'images/LoomaLogo_small.png';
 
                             if (isset($details['ft']) && $details['ft'] == 'EP' && $details['subject'] === 'nepali') $playLang = 'np'; else $playLang = 'en';
-                            //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$nfn,$npg,$prefix,$lang)
+                            //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$grade,$epversion,$nfn,$npg,$prefix,$lang)
 
-                            //echo "$playLang is " . $playLang;
+                            //echo "thumb is " . $thumbSrc;
 
                             makeActivityButton(
                                 $details['ft'],

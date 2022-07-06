@@ -26,7 +26,8 @@ var subjectnames = {
     'english optional': 'Opt. English',
     'science optional' : 'Opt. Science',
     'social studies' : 'Social',
-    'serofero' : 'Serofero'
+    'serofero' : 'Serofero',
+    'environment' : 'Environment'
 }
 var nsubjectnames = {
     'english' : 'अंग्रेजी',
@@ -132,7 +133,7 @@ function activateClass(className) {
     // de-activate all CLASS buttons
     $('.class').removeClass('active');
     // activate button for this CLASS
-    $('#' + className).addClass('active');
+    if ($('#' + className).is(':enabled')) $('#' + className).addClass('active');
 }; //end activateClass()
 
 function activateSubject(subjectName) {

@@ -144,6 +144,10 @@ pdf {
     border:none;
 }
 
+#zoom-dropdown.hide {
+    display: none;
+}
+
 #zoom-dropdown {
     display:flex;
     flex-flow:column nowrap;

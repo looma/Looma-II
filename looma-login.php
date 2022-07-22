@@ -55,20 +55,48 @@ function check_login($id, $pass) {
     {
         error_log ("Looma-login: check login id + pw in mongoDB");
 
+/* NOTE, if install APCu (using PECL) then we can limit login attempts with this code
+        $apc_key = "{$_SERVER['SERVER_NAME']}~login:{$_SERVER['REMOTE_ADDR']}";
+        $tries = (int)apc_fetch($apc_key);
+        if ($tries >= 3) {
+            header("HTTP/1.1 429 Too Many Requests");
+            echo "You've exceeded the number of login attempts. We've blocked IP address {$_SERVER['REMOTE_ADDR']} for a few minutes.";
+            exit();
+        };
+*/
         $query = array('name' => $name); // 'pw' => $p);
         $r  = mongoFindOne($logins_collection, $query);
 
         if ($r == null  || encrypt($p,$r['salt']) !== $r['pw']) {
             $errors[] = "The username and password entered do not match those on file.";
+        //    apcu_inc($apc_key, $tries+1, 600);  # store tries for 10 minutes
         }
         else {   //login succesfull
              return array(true, $name, isset($r['level']) ? $r['level']:'', isset($r['team']) ? $r['team']:'');
+        //    apc_delete($apc_key);
         }
     }
     error_log("end check login");
     return array(false, $errors, null,null);
 }  //end check_login
 
+/*
+ <?php
+  $apc_key = "{$_SERVER['SERVER_NAME']}~login:{$_SERVER['REMOTE_ADDR']}";
+  $tries = (int)apc_fetch($apc_key);
+  if ($tries >= 10) {
+    header("HTTP/1.1 429 Too Many Requests");
+    echo "You've exceeded the number of login attempts. We've blocked IP address {$_SERVER['REMOTE_ADDR']} for a few minutes.";
+    exit();
+  }
+
+  $success = login($_POST['username'], $_POST['password']);
+  if (!$success) {
+    apcu_inc($apc_key, $tries+1, 600);  # store tries for 10 minutes
+  } else {
+    apc_delete($apc_key);
+  }
+ */
 
 // START of executed PHP code
 

@@ -392,7 +392,8 @@ playMedia : function(button) {
                     var thumbfile;
                         //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
                     if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
-                    var lang = (result.ft==="EP" && result.subject === "nepali")? "np": "en";
+                    var lang = (result.lang === 'ne' || result.lang === 'np')? "np": "en";
+                    var lang = (result.ft==="EP" && result.subject === "nepali")? "np": lang;
                     var fn = (result.fn) ? result.fn : result.nfn;
                     
                     var $newButton = $(

@@ -11,6 +11,8 @@ Description: display layer built on pdf.js for showing chapters in PDFs
 
 window.onload = function() {
 
+        $('#zoom-dropdown').removeClass('hide');
+        
 // *********  PAGE controls ***************
     
     enablePageControls();

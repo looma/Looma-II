@@ -79,7 +79,7 @@ Revision: Looma 5.7
             Page width
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
             </button>
-            <div id="zoom-dropdown" class="dropdown-menu">
+            <div id="zoom-dropdown" class="dropdown-menu hide">
                 <button class="dropdown-item zoom-item" data-level="2.3" data-zoom="Page width">Page width</button>
                 <button class="dropdown-item zoom-item" data-level="1.2" data-zoom="Page fit">Page fit  </button>
                 <button class="dropdown-item zoom-item" data-level="1.15" data-zoom="50%">50%       </button>

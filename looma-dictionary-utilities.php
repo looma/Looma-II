@@ -208,7 +208,7 @@ if (isset($_GET["cmd"]))
 
 			$maxCount = (isset($_GET["count"]) ? min(max(0,$_GET['count']),$MAX_NUM) : $DEFAULT_NUM);
 
-			$classes = array('class1','class2','class3','class4','class5','class6','class7','class8', 'class9', 'class10');
+			$classes = array('class1','class2','class3','class4','class5','class6','class7','class8', 'class9', 'class10', 'class11', 'class12');
 			$subjects = array('english','math','social studies','science', 'health', 'vocation');
 
 			//Ensure that classes and subjects sent are valid types
@@ -283,7 +283,7 @@ if (isset($_GET["cmd"]))
 				$count = 0;
 				foreach ($words as $newWord) {
 					//echo '  ++ ' . $newWord;
-					if (!$picturesonly || file_exists("../content/dictionary images/" . $newWord[en] . ".jpg")) {
+					if (!$picturesonly || file_exists("../content/dictionary images/" . $newWord['en'] . ".jpg")) {
 						array_push($list, $newWord);
 						$count++;
 						if ($count >= $maxCount) break;

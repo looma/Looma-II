@@ -64,7 +64,10 @@ Description:  displays and navigates content folders for Looma
 
 if (isset($_GET['fp'])) $path = $_GET['fp']; else $path = "../content/";
 
-if ( ! is_dir(realpath($path))) {echo "<br><h1>Access not permitted</h1>"; exit;}
+if  ( ! is_dir(realpath($path)) ||
+    ( ! preg_match("/\/content/",realpath($path))))
+        { echo "realpath " . $path;
+            echo "<br><h1>Access not permitted</h1>"; exit;}
 
     echo "<br><h3 class='title'>"; keyword('Library'); echo ":  ";
     folderDisplayName(folderName($path));

@@ -1,0 +1,1 @@
+This file "hidden.txt" indicates to Looma Library to NOT display this folder in the library folder view

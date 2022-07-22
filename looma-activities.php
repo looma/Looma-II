@@ -231,14 +231,13 @@ echo '<span class="native-keyword">'  . $ch_ndn . '</span>';
 
         if ($lang === 'en' && $words) {
             echo "<td>";
-            //make a button with <a href="looma-vocab-flashcard.php?ch_id=CH_ID">
 
             echo "<a href='looma-vocab-flashcard.php?ch_id=" . $ch_id . "'>";
             echo "  <button class='activity play img'>";
             echo "    <img src='images/dictionary.png'>";
             echo "    <span>Vocabulary</span>";
             echo "  </button>";
-            echo "</a>";
+           // echo "</a>";
 
             echo "</td>";
             $foundActivity = true;
@@ -246,12 +245,20 @@ echo '<span class="native-keyword">'  . $ch_ndn . '</span>';
 
             if (intval($gradenumber) <= 4) { //button for vocabulary picture matching game
                 echo "<td>";
-                echo "<a href='looma-game.php?type=picture&class=class" . $gradenumber . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
-                echo "  <button class='activity play img'>";
+
+                //makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,$lang);
+
+
+                //echo "<a href='looma-game.php?type=picture&class=class" . $gradenumber . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
+                echo "  <button class='activity play img game' data-ft=game data-type='picture'";
+                    echo " data-class='" . $gradenumber . "'";
+                    echo " data-subject='" . $subject . "'";
+                    echo " data-ch_id='" . $ch_id . "'";
+                echo ">";
                 echo "    <img src='images/games.png'>";
                 echo "    <span>Visual Vocabulary</span>";
                 echo "  </button>";
-                echo "</a>";
+               // echo "</a>";
 
                 echo "</td>";
                 $foundActivity = true;

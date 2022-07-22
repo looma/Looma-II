@@ -20,7 +20,10 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         <h1 class="credit"> Created by Luke, Meg, Catie, Alexa and Sun-Mi </h1>
 
         <?php
-            $id =    isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
+        $id =         isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
+        $type =       isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
+        $class =      isset($_REQUEST['class']) ? $_REQUEST['class'] : null;
+        $subject =    isset($_REQUEST['subject']) ? $_REQUEST['subject'] : null;
         ?>
 
         <div class="header">
@@ -68,7 +71,11 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         echo '</div>';
 
         echo '<div hidden class="thegameframe" id="thegameframe"' .
-                    'data-gameid="' . $id . '">';
+                'data-gameid="' .  $id . '" ' .
+                'data-type="' .    $type . '" ' .
+                'data-class="' .   $class . '" ' .
+                'data-subject="' . $subject .
+            '">';
             echo '<div id="top">';
                 echo '<span id="current-team"></span>';
                 echo '<span id="question-number"></span>';

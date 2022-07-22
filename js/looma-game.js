@@ -7,8 +7,7 @@ var time_limit;
 var score_method;
 var type, grade, subject;
 var game_id;
-var grade;
-var subject;
+
 var num_teams;
 var curr_team = 1;
 
@@ -189,7 +188,6 @@ function wrongDraggingOutput(eventID, dateID)
     wrongAnswer();
 }
 
-
 function runTimeline(){
 
 } //end runTimeline()
@@ -278,6 +276,7 @@ function mcWrongAnswer(event) {
 ///////////////////////////////////////////////////////
 // /////// runMC  multiple-choice questions ///////////
 // ////////////////////////////////////////////////////
+
 function runMC() {
     //var questionNumber = curr_question;
     $('#game').empty();
@@ -302,6 +301,7 @@ function runMC() {
 /////////////////////////////////////
 ///////// matchPromptClick  /////////
 /////////////////////////////////////
+
 function matchPromptClick(event) {
     $('.prompt.not-done').removeClass('clicked');
     //selected_pair = event.target.className.split(' ')[1];
@@ -323,11 +323,7 @@ function matchPromptClick(event) {
 // /////// matchResponseClick  /////////
 // //////////////////////////
 function matchResponseClick(event) {
-    //$('.response').css('color','black');
-    //var selected_resp = event.target.className.split(' ')[1];
-    //$('.response.'+selected_resp).css('color','blue');
-    
-    
+  
     $('.response.not-done').removeClass('clicked');
     selected_resp = $(event.currentTarget).data()['pair'];
     $('.response.not-done[data-pair=' + selected_resp + ']').addClass('clicked');
@@ -337,14 +333,6 @@ function matchResponseClick(event) {
         previousClick = 'response'
     }
 } //end matchResponse()
-
-// * Caroline 2020 09 * //
-/* BUG FIXED: Matching game sometimes eliminating non-matching pairs
- * CHANGES: (1) Added variables r, p at the top to store the matching pair
- * indices and replace selected_resp and selected_prompt in the setTimeout()
- * functions. (2) Set selected_resp, selected_prompt, and previousClick to
- * null outside of the setTimeout() functions.
-*/
 
 function checkMatch() {
     var r = selected_resp;
@@ -401,7 +389,7 @@ function checkMatch() {
 //////////////////////////////
 ///////// runMatch  /////////
 //////////////////////////////  NOTE: runs a 'matching' game using 'prompts[]' and 'responses[]'
-/////////////////////////////
+
 function runMatch() {
     showTeam();
     matches_made = 0;
@@ -448,7 +436,7 @@ function runMatch() {
 //////////////////////////////
 ///////// runMatchSpeak  /////////
 //////////////////////////////  NOTE: runs a 'matching' game using 'prompts[]' and 'responses[]'
-/////////////////////////////
+
 function runMatchSpeak() {
     showTeam();
     matches_made = 0;
@@ -496,7 +484,7 @@ function runMatchSpeak() {
 //////////////////////////////
 ///////// runMatchSpeakToPicture  /////////
 //////////////////////////////  NOTE: runs a 'matching' game using 'prompts[]' and 'responses[]'
-/////////////////////////////
+
 function runMatchSpeakToPicture() {
     showTeam();
     matches_made = 0;
@@ -601,11 +589,11 @@ function runPicture(grade, subject) {
 
     num_questions = 5;
     var random = true;
-    
-    LOOMA.picturewordlist(grade, subject    , null, num_questions, random, pictureListSucceed, pictureListFail);
-    //getPictureWords(grade, subject, null, num_questions, random);
     time_limit = 45;
     startTimer(time_limit);
+    LOOMA.picturewordlist(grade, subject    , null, num_questions, random, pictureListSucceed, pictureListFail);
+    //getPictureWords(grade, subject, null, num_questions, random);
+   
     
 }  // END runPicture() //
 
@@ -614,7 +602,7 @@ function runPicture(grade, subject) {
 //////////////////////////////
 ///////// runMatchPicture  /////////
 //////////////////////////////  NOTE: runs a 'matching' game using 'prompts[]' and 'responses[]'
-/////////////////////////////
+
 function runMatchPicture() {
     showTeam();
     matches_made = 0;
@@ -1216,7 +1204,7 @@ function redrawMap(mapJson) {
 /////////////////////////////
 ///////// runYesNo  /////////
 ////////////////////////////  NOTE: 'yesno' is a trivial game, included here as a template for how to code a new game type
-////////////////////////////
+
 function runYesNo() {
     $('#thegameframe').show();
     $('#timer').show();
@@ -1547,7 +1535,13 @@ function gameOver() {
             startSortGame();
     };  // end runSort()
 
-
+    function showGame() {
+        $('#gameOverFrame').hide();
+        $('#thegameframe').show();
+        $('#timer').show();
+        $('#scoreboard').show();
+    };
+    
     /////////////////////////////
     ///////// fail  /////////
     ////////////////////////////
@@ -1570,6 +1564,8 @@ function gameOver() {
                 $("#optionsframe").show();
                 $('.teamnumber').click(function () {
                     $("#optionsframe").hide();
+                    showGame();
+    
                     num_teams = $(this).data('team');
                     initScores(num_teams);
         
@@ -1588,10 +1584,6 @@ function gameOver() {
                     else if (type === 'translate') runTranslate(grade, subject);
                     
                 else {  // regular game
-                    $('#gameOverFrame').hide();
-                    $('#thegameframe').show();
-                    $('#timer').show();
-                    $('#scoreboard').show();
 
                     time_limit = (game['timeLimit']) ? game['timeLimit'] : 30;
                     setTimer(time_limit);
@@ -1663,9 +1655,16 @@ function runGame (id) {
 //////////////////////////////////////
 
 $(document).ready (function() {
-    
-    $timer = $('#timer-count');
-    game_id =      $('#thegameframe').data('gameid');
-  
-    runGame(game_id);
+    var $game = $('#thegameframe');
+    $timer =  $('#timer-count');
+    game_id = $game.data('gameid');
+    if (game_id) runGame(game_id);
+    else {
+        var randomGame = {};
+        randomGame['presentation_type'] = $game.data('type');
+        randomGame['class'] =             $game.data('class');
+        randomGame['subject'] =           [$game.data('subject')];
+        randomGame['title'] = LOOMA.capitalize($game.data('type')) + ' game for ' + $game.data('class') + ' ' + LOOMA.capitalize($game.data('subject'));
+        game_found(randomGame);
+    };
 });

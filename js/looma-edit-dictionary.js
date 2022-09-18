@@ -1,85 +1,91 @@
 /*
-Author: Charlotte, Skip
+Author: Charlotte, Skip, Chris
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: Summer 2021
-Revision: Looma 6.4
+Revision: Looma 7
 
 filename: looma-edit-dictionary.js
 */
 'use strict';
 
-var displayArea;
 var deleteRow;
 var selectRow;
-var generatedId;
-var input = "";
 var modified = false;
 
-// setFields is called to set the text fields
-// words is an array of documents returned by searchall
-function setFields(words) {
+function addDefRow(part, def) { // add a new row with a PART and DEF
+    var newRow = '<div class="def_row"><input class="def_part">' + part + '  <input cladd="def_def">' + def + '</div';
+    $(newRow).appendTo($('#definitions'));
+} // end addDefRow()
+
+function setFields(word) { // fill in the top row with info for this WORD
     modified = false;
     $("#modified").css("background-color", "green");
     
-    $(".row").remove();
-    $("#confirmTable").css("display", "none");
-    $("#definitionTable").css("display", "none");
-    $("#addButton").css("display", "block");
-    $("#suggestionsButton").css("display", "block");
-    if (words.length == 0) {
-        LOOMA.alert(input + " not found", null, true);
-        $("#suggestionsButton").css("display", "none");
-    }
-    else {
-        // create a row for each document
-        // fill in the fields with the corresponding value from the words array
-        for (var i = 1; i < words.length + 1; i++) {
-            var newRow = $('<tr class="row" id="row_' + i + '"></tr>');
-            var idField = $('<td><input type="text" class="hiddenID" id="row' + i + '-id"></td>');
+    $(".row").hide();
+    $("#confirmTable").hide();
+    $("#suggestions").hide();
+    $("#addButton").show();
+    $("#suggestionsButton, #in_chapButton").show();
+    
+    if (word.def === "Word not found") {
+        LOOMA.alert(input + " not found", 5, false);
+        $("#suggestionsButton, #in_chapButton").css("display", "none");
+    } else {  // fill in the fields with the corresponding value from the word
+      
+            var newRow = $('<tr class="row" id="row"></tr>');
+            var idField = $('<td><input type="text" class="hiddenID" id="row-id"></td>');
             $(idField).appendTo(newRow);
-            var enField = $('<td><input type="text" class="en" id="row' + i + '-en"></td>');
+            var enField = $('<td><input type="text" class="en" id="row-en"></td>');
             $(enField).appendTo(newRow);
-            var npField = $('<td><input type="text" class="np" id="row' + i + '-np"></td>');
+            var npField = $('<td><input type="text" class="np" id="row-np"></td>');
             $(npField).appendTo(newRow);
-            var partField = $('<td><select name="part" id="row' + i + '-part"><option value="noun">Noun</option>' +
-                '<option value="verb">Verb</option><option value="adjective">Adjective</option><option value="adverb">Adverb</option>' +
-                '<option value="preposition">Preposition</option><option value="conjunction">Conjunction</option><option value="pronoun">Pronoun</option>' +
-                '<option value="contraction">Contraction</option><option value="interjection">Interjection</option><option value="article">Article</option>' +
-                '<option value="proper name">Proper Name</option><option value="title">Title</option><option value="abbreviation">Abbreviation</option>' +
-                '<option value="letter">Letter</option><option value="symbol">Symbol</option></select></td>');
-            $(partField).appendTo(newRow);
-            var pluralField = $('<td><input type="text" class="plural" id="row' + i + '-plural"></td>');
+            var pluralField = $('<td><input type="text" class="plural" id="row-plural"></td>');
             $(pluralField).appendTo(newRow);
-            var rwField = $('<td><input type="text" class="rw" id="row' + i + '-rw"></td>');
+            var rwField = $('<td><input type="text" class="rw" id="row-rw"></td>');
             $(rwField).appendTo(newRow);
-            var ch_idField = $('<td><input type="text" class="ch_id" id="row' + i + '-ch_id"></td>');
+            var ch_idField = $('<td><input type="text" class="ch_id" id="row-ch_id"></td>');
             $(ch_idField).appendTo(newRow);
-            var defField = $('<td><textarea name="definition" id="row' + i + '-definition" rows="1" cols="27"></textarea></td>');
+ 
+/*       var partField = $('<td><select name="part" id="row-part"><option value="noun">Noun</option>' +
+            '<option value="verb">Verb</option><option value="adjective">Adjective</option><option value="adverb">Adverb</option>' +
+            '<option value="preposition">Preposition</option><option value="conjunction">Conjunction</option><option value="pronoun">Pronoun</option>' +
+            '<option value="contraction">Contraction</option><option value="interjection">Interjection</option><option value="article">Article</option>' +
+            '<option value="proper name">Proper Name</option><option value="title">Title</option><option value="abbreviation">Abbreviation</option>' +
+            '<option value="letter">Letter</option><option value="symbol">Symbol</option></select></td>');
+         $(partField).appendTo(newRow);
+  */
+  
+/*
+        var defField = $('<td><textarea name="definition" id="row-definition" rows="1" cols="27"></textarea></td>');
             $(defField).appendTo(newRow);
-            var selectButton = $('<td><button type="submit" id="select' + i + '" class="select">Select</button></td>');
+*/
+            var selectButton = $('<td><button type="submit" id="select" class="select">Select</button></td>');
             $(selectButton).appendTo(newRow);
-            var deleteButton = $('<td><button type="submit" id="delete' + i + '" class="delete">Delete</button></td>');
+            var deleteButton = $('<td><button type="submit" id="delete" class="delete">Delete</button></td>');
             $(deleteButton).appendTo(newRow);
             
             var table = document.getElementById("titleTable");
             $(newRow).appendTo(table);
+        
+            word.meanings.forEach (function (definition) {addDefRow(definition.part, definition.def);});
+    
+        $("#row").show();
+            $("#row-en").val(word['en']);
+            $("#row-np").val(word['np']);
+            //$("#row-part").val(word['part']);
+            $("#row-plural").val(word['plural']);
+            $("#row-rw").val(word['rw']);
+            $("#row-ch_id").val(word['ch_id']);
+            var ch_id_for_search = word['ch_id']
             
-            $("#row_" + i).css("display", "block");
-            $("#row"+ i + "-en").val(words[i-1]['en']);
-            $("#row"+ i + "-np").val(words[i-1]['np']);
-            $("#row"+ i + "-part").val(words[i-1]['part']);
-            $("#row"+ i + "-plural").val(words[i-1]['plural']);
-            $("#row"+ i + "-rw").val(words[i-1]['rw']);
-            $("#row"+ i + "-ch_id").val(words[i-1]['ch_id']);
-            $("#row"+ i + "-definition").val(words[i-1]['def']).autoResize();
             
-            $("#row"+ i + "-id").val(words[i-1]['_id']['$oid'] || words[i-1]['_id']['$id'] || "placeholder").css("display", "none");
+         //   $("#row-definition").val(word['def']).autoResize();
+            
+            $("#row-id").val(word['_id']['$oid'] || word['_id']['$id'] || "placeholder").css("display", "none");
             
             // set the number of rows in the textarea using the length of the definition
-            var textArea = document.getElementById("row"+ i + "-definition");
+            var textArea = document.getElementById("row-definition");
             textArea.rows = Math.floor(textArea.value.length / 33) + 1;
-        }
-        
     }
 }
 
@@ -91,6 +97,9 @@ function addEntry() {
     setFields(empty);
     $("#addButton").css("display", "none");
 }
+
+//<button type="submit" id="addButton">Add Entry</button>
+
 
 // shows suggested parts and definitions
 function showSuggestions(word) {
@@ -146,7 +155,7 @@ function showSuggestions(word) {
                     }
                 }
             }
-            $("#definitionTable").css("display", "block");
+            $("#suggestions").css("display", "block");
         }
         
     })
@@ -166,7 +175,7 @@ function fillSuggestions(partText, defText, rowNum) {
     $(definition).text(defText);
     $(definition).appendTo(newRow);
     
-    var table = document.getElementById("definitionTable");
+    var table = document.getElementById("suggestions");
     $(newRow).appendTo(table);
 }
 
@@ -181,12 +190,11 @@ function fail(jqXHR, textStatus, errorThrown) {
 // gets the definition of the user's input
 function getDefinition(event) {
     event.preventDefault();
-    input = document.getElementById("input").value;
-    LOOMA.dictionarySearchall(input, setFields, fail);
+    var input = document.getElementById("input").value;
+    LOOMA.lookup(input, setFields, fail);
     return false;
 }
 
-// is called as a success and canceled function for delete and a success function for update
 function doNothing() {}
 
 // deletes the document using the row's id
@@ -262,97 +270,108 @@ function saveEntry() {
     }
 }
 
-function prevPage() {
-    window.history.back();
-}
+
+//Finds and displays the chapter containing the dictionary search
+function open_chapter() {
+    $.post("looma-database-utilities.php",
+        {cmd : "searchChapters", collection : "chapters", chapter : ch_id_for_search},
+        function(result) {
+        
+        // check the following code. stringify,slice,etc needed?
+            var fn = JSON.stringify(result.list[0]["fn"]);
+            var fp = JSON.stringify(result.list[0]["fp"]);
+            var pn = JSON.stringify(result.list[0]["pn"]);
+            var url = fp + fn
+            url = url.slice(1,url.length-1);
+            url = url.replace('""','');
+            url = "../content/" + url;
+            url = url + '#page=' + pn;
+            document.getElementById("chap_iframe").src = url;
+            $("#chap_div").show();
+            },
+        'JSON'
+    );
+} // end open_chapter()
+
+function close_chapter() { $("#chap_div").hide();}
 
 $(document).ready (function() {
+    
+    // In Chapter Button
+    var in_chap = document.getElementById("in_chapButton");
+    in_chap.addEventListener('click', open_chapter);
+    
+    // X button to close PDF iframe
+    var escape_button = document.getElementById("chap_escape_button");
+    escape_button.addEventListener("click", close_chapter);
+    
     var elem = document.getElementById("lookup");
     elem.addEventListener('submit', getDefinition);
     
     // delete buttons
-    $("#titleTable").on("click", ".delete", function(e) {
+    $("#popupTable").on("click", ".delete", function (e) {
         deleteRow = e.target.id.slice(e.target.id.length - 1);
         var en = document.getElementById("row" + deleteRow + "-en").value;
         LOOMA.confirm("Delete this entry for '" + en + "' permanently from the Looma Dictionary?", deleteDocument, doNothing);
-    })
+    });
     
     // select buttons
-    $("#titleTable").on("click", ".select", function(e) {
+    $("#titleTable").on("click", ".select", function (e) {
         selectRow = e.target.id.slice(e.target.id.length - 1);
         fillConfirmTable();
-    })
+    });
     
     // en field is edited (for show suggestion)
-    $("#titleTable").on("input propertychange paste", ".en", function() {
-        $("#suggestionsButton").css("display", "block");
-    })
+    $("#titleTable").on("input propertychange paste", ".en", function () {
+        $("#suggestionsButton, #in_chapButton").css("display", "block");
+    });
     
     // any fields are edited (to check if modified)
-    $("#titleTable").on("input propertychange paste", function() {
+    $("#titleTable").on("input propertychange paste", function () {
         modified = true;
         $("#modified").css("background-color", "red");
-        $("#suggestionsButton").css("display", "block");
-    })
+        $("#suggestionsButton, #in_chapButton").css("display", "block");
+    });
     
-    // back button
-    $('#dismiss').off('click').click( function () {
-        if (modified) {
-            LOOMA.confirm("Leave page? Changes you made may not be saved.", prevPage, doNothing);
-        }
-        else {
-            prevPage();
-        }
-    })
-    
-    // unload window buttons
-    window.onbeforeunload = function(event) {
-        if (modified) {
-            event.preventDefault();
-            event.returnValue = '';
-        }
+    function prevPage() {
+        window.history.back();
     };
     
+    // back button
+    $('#dismiss').off('click').click(function () {
+        if (modified) {
+            LOOMA.confirm("Leave page? Changes you made may not be saved.", prevPage, doNothing);
+        } else prevPage();
+    });
+    
     // instructions button
-    document.getElementById("instructions").onclick = function() {
+    document.getElementById("instructions").onclick = function () {
         LOOMA.alert("SEARCH: displays editable info for the entered word" + "<br>" +
             "ADD ENTRY: creates an empty row for the user to add a new word" + "<br>" +
             "SHOW SUGGESTIONS: displays suggested definitions for the word" + "<br>" +
             "DELETE: permanently deletes this entry for the word from the Looma Dictionary" + "<br>" +
             "SELECT: displays a table to confirm fields before saving" + "<br>" +
             "SAVE: saves the data shown in the confirmation table to the database", null, true);
-    }
+    };
     
     // save button
-    document.getElementById("saveButton").onclick = function() {
+    document.getElementById("saveButton").onclick = function () {
         saveEntry();
-    }
+    };
     
     // add button
-    document.getElementById("addButton").onclick = function() {
+    document.getElementById("addButton").onclick = function () {
         addEntry();
-    }
+    };
     
     // suggestions button
-    document.getElementById("suggestionsButton").onclick = function() {
-        $("#suggestionsButton").css("display", "none");
+    document.getElementById("suggestionsButton").onclick = function () {
         $(".suggestionRow").remove();
-        var filled = false;
-        var rowCount = $("#titleTable tr").length - 1;
-        for (var i = 1; i < rowCount + 1; i++) {
-            var en = document.getElementById("row" + i + "-en").value;
-            if (en !== "") {
-                showSuggestions(en);
-                filled = true;
-                break;
-            }
-        }
-        if (!filled) {
-            LOOMA.alert("'en' field must be filled in", null, true);
-        }
-    }
-    
-})
+        var en = document.getElementById("row-en").value;
+        if (en) showSuggestions(en);
+        else LOOMA.alert("'en' field must be filled in", null, true);
+    };
+});
 
 
 
@@ -361,6 +380,9 @@ $(document).ready (function() {
  * @copyright James Padolsey http://james.padolsey.com
  * @version 1.04
  */
+
+/*
+//used by Charlotte's code to auto size DEF displays. see if needed.
 
 $.fn.autoResize = function(options) {
     
@@ -446,3 +468,4 @@ $.fn.autoResize = function(options) {
     return this;
     
 };
+*/

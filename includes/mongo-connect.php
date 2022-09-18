@@ -7,6 +7,31 @@
 //File: includes/mongo-connect.php
 //Description:  for Looma v6
 
+/*
+ FUNCTIONS
+    mongoRegex
+    mongoRegexOptions
+    mongoId
+    mongoGetId
+    mongoCount
+    CEHRDfilter
+    mongoFind
+    mongoFindOne
+    mongoFindRandom
+    mongoDistinct
+    mongoFindAndModify (protected)
+    mongoInsert (protected)
+    mongoUpsert (protected)
+    mongoUpdateMany (protected)
+    mongoUpdate (protected)
+    mongoDeleteOne (protected)
+    mongoDeleteMany (protected)
+    mongoCreateIndex (protected)
+    mongoCreateUniqueIndex (protected)
+
+ */
+require_once('includes/looma-isloggedin.php');
+
 function mongoRegex ($pattern) { // $pattern is a string, like '^\d[a-z]'\
     // NOTE: input $pattern DOSS NOT include '/'s, they are inserted by this function
     global $mongo_level;
@@ -128,7 +153,8 @@ function mongoDistinct($collection, $key) {
 }
 
 function mongoFindAndModify($collection, $filter, $set) {
-    global $mongo_level;
+    global $mongo_level, $logcollections;
+    if (!loggedIn() && !in_array($collection, $logcollections)  ) return null;
     if ($mongo_level >= 3 ) {
         $options = array("upsert"=>true, "returnDocument"=>MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER);
         $doc = $collection->findOneAndUpdate( $filter, $set, $options);
@@ -141,21 +167,24 @@ function mongoFindAndModify($collection, $filter, $set) {
 }
 
 function mongoInsert($collection, $doc) {
-    global $mongo_level;
+    global $mongo_level, $logcollections;
+    if (!loggedIn() && !in_array($collection, $logcollections)  ) return null;
     if ($mongo_level >= 3 ) $doc = $collection->insertOne( $doc);
-    else                    $doc = $collection->insert($doc);
+        else                $doc = $collection->insert($doc);
     return $doc;
 }
 
 function mongoUpsert($collection, $filter, $insert) {
-    global $mongo_level;
+    global $mongo_level, $logcollections;
+    if (!loggedIn() && !in_array($collection, $logcollections)  ) return null;
     if ($mongo_level >= 3 ) $doc = $collection->updateOne($filter, array('$set' => $insert), array('upsert' => true));
     else                    $doc = $collection->update($filter, $insert, array('upsert' => true));
     return $doc;
 }
 
 function mongoUpdateMany($collection, $filter, $set) {
-    global $mongo_level;
+    global $mongo_level, $logcollections;
+    if (!loggedIn() && !in_array($collection, $logcollections)  ) return null;
     if ($mongo_level >= 3 ) {
         $options = array("upsert" => true);
         $result = $collection->updateMany($filter, $set, $options);
@@ -168,34 +197,39 @@ function mongoUpdateMany($collection, $filter, $set) {
 }
 
 function mongoUpdate($collection, $filter, $set) {
-    global $mongo_level;
+    global $mongo_level, $logcollections;
+    if (!loggedIn() && !in_array($collection, $logcollections)  ) return null;
     if ($mongo_level >= 3 ) $result = $collection->updateOne( $filter, $set);
     else                    $result = $collection->update($filter, $set);
     return $result;
 }
 
 function mongoDeleteOne($collection, $filter) {
-    global $mongo_level;
+    global $mongo_level, $logcollections;
+    if (!loggedIn() && !in_array($collection, $logcollections)  ) return null;
     if ($mongo_level >= 3 ) $result = $collection->deleteOne( $filter);
     else                    $result = $collection->remove($filter, array('justone'=> true));
     return $result;
 }
 
 function mongoDeleteMany($collection, $filter) {
-    global $mongo_level;
+    global $mongo_level, $logcollections;
+    if (!loggedIn() && !in_array($collection, $logcollections)  ) return null;
     if ($mongo_level >= 3 )  $result = $collection->deleteMany($filter);
     else                     $result = $collection->remove($filter, array('justone'=> false));
     return $result;
 }
 
 function mongoCreateIndex($collection, $key) {
-    global $mongo_level;
+    global $mongo_level, $logcollections;
+    if (!loggedIn() && !in_array($collection, $logcollections)  ) return null;
     $doc = $collection->createIndex($collection, $key);
     return $doc;
 }
 
 function mongoCreateUniqueIndex($collection, $key) {
-    global $mongo_level;
+    global $mongo_level, $logcollections;
+    if (!loggedIn() && !in_array($collection, $logcollections)  ) return null;
     $doc = $collection->createIndex($collection, $key, array('unique'=>true));
     return $doc;
 }
@@ -239,7 +273,9 @@ $activities_collection = $loomaDB -> activities;
 $tags_collection       = $loomaDB -> tags;
 $chapters_collection   = $loomaDB -> chapters;
 $textbooks_collection  = $loomaDB -> textbooks;
-$dictionary_collection = $loomaDB -> dictionary;
+
+$dictionary_collection = $loomaDB -> dictionaryV2;
+
 $history_collection    = $loomaDB -> histories;
 $histories_collection  = $loomaDB -> histories;
 $slideshows_collection = $loomaDB -> slideshows;
@@ -288,7 +324,7 @@ $collections = array(
     "new_content" =>   $new_content_collection,
     "recorded_videos" => $recorded_videos_collection,
     "volunteers" =>    $volunteers_collection,
-    "chapterIDs" =>    $chapterIDs_collection,
+ //   "chapterIDs" =>    $chapterIDs_collection,
 
     "users"  =>      $users_collection,
     "hours"  =>      $hours_collection,
@@ -297,5 +333,14 @@ $collections = array(
     "months" =>      $months_collection,
     "pages"  =>      $pages_collection,
     "filetypes" =>   $filetypes_collection
+);
+$logcollections = array(
+    $users_collection,
+    $hours_collection,
+    $days_collection,
+    $weeks_collection,
+    $months_collection,
+    $pages_collection,
+    $filetypes_collection
 );
 ?>

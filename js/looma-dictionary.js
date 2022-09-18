@@ -50,7 +50,7 @@ var displayArea;
     
     //This is the fail function, used when the Looma database can not find the word
     function fail(jqXHR, textStatus, errorThrown) {
-        alert("enter function fail");
+        alert("Dictionary lookup failed");
         console.log('jqXHR is ' + jqXHR.status);
         window.alert('failed with textStatus = ' + textStatus);
         window.alert('failed with errorThrown = ' + errorThrown);
@@ -77,8 +77,8 @@ $(document).ready (function() {
     
     $('#input').focus(
         function(){$('#npinput').val('')});
-    $('#npinput').focus(
-        function(){$('#input').val('')});
+ //   $('#npinput').focus(
+   //     function(){$('#input').val('')});
  
     // SPEAK button will say the word, unless text is selected, in which case, it will speak the selected text
     $('button.speak').off('click').click(function () {

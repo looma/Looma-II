@@ -13,6 +13,16 @@ Revision: 1.0
 require_once ('includes/mongo-connect.php');
 require_once('includes/looma-utilities.php');
 
+
+////////////////////////
+///****************************************
+  /// some of these utility functions should be allowed only for "logged in" users
+  /// need to add that check to deleteField, updateByID, rename, delete, keywordadd,
+  /// addchapterid, removechapterid, editactivities
+  ///
+///****************************************
+  //////////////////////
+
   /////////////////////////////////
   // commands supported:
   //
@@ -711,7 +721,7 @@ if (isset($_REQUEST["collection"])) {
               $games = mongoFind($games_collection, $query, null, null, null);
               foreach ($games as $game) {
                   //echo "game[subject][index] is " . $game['subject'][$index];
-                  foreach ($game['subject'] as $index => $subj) $subjectList[] = $game['subject'][$index];
+                  if (isset($game['subject'])) foreach ($game['subject'] as $index => $subj) $subjectList[] = $game['subject'][$index];
               }
 
               $histories = mongoFind($history_collection, $query, null, null, null);
@@ -872,10 +882,12 @@ if (isset($_REQUEST["collection"])) {
     ////////////////////////
     case "search":
         // called (from looma-search.js, from lesson-plan.js, and other "editors") using POST with FORMDATA serialized by jquery
-        // $_POST[] can have these entries: cmd, collection, class, subj, category, sort, search-term, (chapter-language)
-        // src[] (array of checked items) and type[] (array of checked types)
+        // $_POST[] can have these entries:
+        // cmd = "searchChapters", collection, [class], [subj], [chapter (a ch_id)], sort, search-term,
+        // [chapter-language (in 'en'|'np')],
+        // key1, key2, key3, key4
+        // src[] (array of checked 'sources') and type[] (array of checked 'types')
 
-        //Get filetype Parameters
         /* known filetypes are the FT values in Activities collection
          * e.g. 'video', 'audio', 'image', 'pdf', 'textbook', 'text', 'html', 'slideshow', 'lesson', 'looma'*/
 

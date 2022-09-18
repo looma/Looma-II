@@ -1,0 +1,101 @@
+_id	npn	nlen	ft	dn	ndn	key1	key2	key3	key4
+8V01.00	11	0	section	Vocational education	पेसागत शिक्षा	Social Studies	Community	Education	Vocations
+8V01.01	11	4	chapter	Medium and high level profession	मध्यम र उच्च स्तरीय पेसा	Social Studies	Community	Education	Vocations
+8V01.02	15	1	chapter	Profession and manpower related to engineering sector	इन्जिनियरिङ क्षेत्रसंग सम्बन्धित पेसा र जनशक्ति	Social Studies	Economy	Agriculture	
+8V01.03	16	2	chapter	Occupations and manpower related to the agricultural sector	कृषि क्षेत्रसंग सम्बन्धित पेसा र जनशक्ति	Social Studies	Economy	Occupations	Farming
+8V01.04	18	2	chapter	Profession and manpower related to finance sector	वित्त क्षेत्रसंग सम्बन्धित पेसा र जनशक्ति	Social Studies	Economy	Occupations	Finance
+8V01.05	20	1	chapter	Occupations and manpower related to the tourism sector	पर्यटन क्षेत्रसंग सम्बन्धित पेसा र जनशक्ति	Social Studies	Economy	Tourism	
+8V01.06	21	2	chapter	Professions and manpower related to the teaching sector	शिक्षण क्षेत्रसंग सम्बन्धित पेसा र जनशक्ति	Social Studies	Economy	Occupations	Service
+8V01.07	23	2	chapter	Profession and manpower based on public service	सार्वजनिक सेवामा आधारित पेसा र जनशक्ति	Social Studies	Economy	Occupations	Service
+8V01.08	25	1	chapter	The relationship between profession and education	पेसा र शिक्षाको सम्बन्ध	Social Studies	Community	Education	Other Education
+8V02.00	26	0	section	"Education, training and employment"	"शिक्षा, तालिम र रोजगारी"	Social Studies	Community	Education	Other Education
+8V02.01	26	4	chapter	Institutions providing medium and high level general education	मध्यम तथा उच्च स्तरीय साधारण शिक्षा प्रदायक संस्था	Social Studies	Community	Social Organization	Schools
+8V02.02	30	2	chapter	Institutions providing medium and high level technical education	मध्यम तथा उच्च स्तरीय प्राविधिक शिक्षा प्रदायक संस्था	Social Studies	Community	Social Organization	Schools
+8V02.03	32	2	chapter	Occupation field and selection process	पेसाको क्षेत्र र छनोट प्रक्रिया	Social Studies	Economy	Occupations	Other Occupations
+8V03.00	34	0	section	Employment information	रोजगारी सम्बन्धी सूचना	Social Studies	Economy	Occupations	Service
+8V03.01	34	2	chapter	Source of information on international and foreign employment	अन्तर्राष्‍ट्रिय तथा वैदेशिक रोजगारी सम्बन्धी सूचना प्राप्तिको स्रोत	Social Studies	Economy	Business	Economics
+8V03.02	36	2	chapter	How to get information on foreign employment	वैदेशिक रोजगारीको सूचना प्राप्त गर्ने तरिका	Social Studies	Economy	Business	Economics
+8V03.03	38	2	chapter	Basic information regarding foreign employment	वैदेशिक रोजगारी सम्बन्धी आधारभूत जानकारी	Social Studies	Economy	Business	Economics
+8V03.04	40	2	chapter	International employment	अन्तर्राष्‍ट्रिय रोजगारी	Social Studies	Economy	Business	Economics
+8V03.05	42	1	chapter	Foreign employment opportunities and challenges	वैदेशिक रोजगारीका अवसर र चुनौती	Social Studies	Economy	Occupations	Service
+8V04.00	43	0	section	Life skills	जीवनोपयोगी सिपहरू	Social Studies	Community	Education	Other Education
+8V04.01	43	2	chapter	Decision sip	निर्णय सिप	Social Studies	Community	Education	Other Education
+8V04.02	45	1	chapter	Problem solving skills	समस्या समाधान गर्ने सिप	Social Studies	Community	Education	Other Education
+8V04.03	46	1	chapter	Analysis SIP	विश्लेषण सिप	Social Studies	Community	Education	Other Education
+8V05.00	47	0	section	Business operation	व्यवसाय सञ्‍चालन	Social Studies	Economy	Business	Economics
+8V05.11	47	2	chapter	Selection process	छनोट प्रक्रिया	Social Studies	Economy	Business	Other Business
+8V05.12	49	1	chapter	Entrepreneurial education	उद्यमशील शिक्षा	Social Studies	Economy	Business	Studies
+8V05.13	50	2	chapter	The framework of business operation plan	व्यवसाय सञ्‍चालन योजनाको ढाँचा	Social Studies	Economy	Business	Studies
+8V05.21	52	2	chapter	Locally operated industries	स्थानीय स्तरमा सञ्‍चालित उद्योग	Social Studies	Economy	Business	Companies
+8V06.00	54	0	section	Business Orientation	व्यवसाय अभिमुखीकरण	Social Studies	Economy	Business	Economics
+8V06.01	54	1	chapter	Market management	बजार व्यवस्थापन	Social Studies	Economy	Business	Market
+8V06.02	55	1	chapter	The relationship between market and entrepreneurship	बजार तथा उद्यमशीलताको सम्बन्ध	Social Studies	Economy	Business	Market
+8V06.03	56	3	chapter	Pricing and budget management	मूल्य निर्धारण र आयव्ययको व्यवस्थापन	Social Studies	Economy	Business	Currency & Money
+8V06.04	59	1	chapter	World Trade Organization	विश्‍व व्यापार सङ्‍‌गठन	Social Studies	Economy	Business	Companies
+8V07.00	60	0	section	Vegetable farming	तरकारी खेती	Social Studies	Economy	Agriculture	Farming
+8V07.01	60	3	chapter	Seasonal vegetable farming	बेमौसमी तरकारी खेती	Social Studies	Economy	Agriculture	Farming
+8V07.02	63	1	chapter	Intercropping vegetable farming	अन्तरबाली तरकारी खेती	Social Studies	Economy	Agriculture	Farming
+8V07.03	64	3	chapter	Mushroom farming	च्याउ खेती	Social Studies	Economy	Agriculture	Farming
+8V07.04	67	2	chapter	Vegetable cultivation on the roof or terrace	कौसी वा छतमा तरकारी खेती	Social Studies	Economy	Agriculture	Farming
+8V07.05	69	3	chapter	Organic vegetable farming	अर्गानिक तरकारी खेती	Social Studies	Economy	Agriculture	Farming
+8V07.06	72	2	chapter	Identification of vegetable market	तरकारी बजारको पहिचान	Social Studies	Economy	Agriculture	Farming
+8V07.07	74	2	chapter	Seasonal vegetable storage	मौसमअनुसार तरकारी भण्डारण	Social Studies	Economy	Agriculture	Farming
+8V07.08	76	2	chapter	Vegetable seed production and storage	तरकारीको बिउ उत्पादन र भण्डारण	Social Studies	Economy	Agriculture	Farming
+8V07.09	78	3	chapter	Organic manure	प्राङ्‌गारिक मल	Social Studies	Economy	Agriculture	Farming
+8V07.10	81	2	chapter	Gadula farming	गँड्यौला खेती	Social Studies	Economy	Agriculture	Farming
+8V07.11	83	3	chapter	Modern ways to protect against diseases and pests	रोग र किराबाट संरक्षण गर्ने आधुनिक तरिका	Social Studies	Economy	Agriculture	Farming
+8V08.00	86	0	section	Fruit farming	फलफूल  खेती	Social Studies	Economy	Agriculture	Farming
+8V08.01	86	3	chapter	Fruit seeds and plant breeding	फलफूलको बिउ र वानस्पतिक प्रजनन	Social Studies	Economy	Agriculture	Farming
+8V08.02	89	2	chapter	Fruit seedlings	फलफूलका बिरुवाको काँटछाँट	Social Studies	Economy	Agriculture	Farming
+8V08.03	91	2	chapter	Fruit storage	फलफूल भण्डारण	Social Studies	Economy	Agriculture	Farming
+8V08.04	93	2	chapter	Fruit farming plan	फलफूल खेतीको योजना	Social Studies	Economy	Agriculture	Farming
+8V09.00	95	0	section	"Dried vegetables, fruits and various food items"	"सुक्खा तरकारी, फलफूल तथा विभिन्‍न खाद्य परिकार"	Social Studies	Community	Everyday Life	Food
+8V09.01	95	2	chapter	Processing of dried vegetables and fruits	सुक्खा तरकारी तथा फलफुलको प्रशोधन	Social Studies	Community	Everyday Life	Food
+8V09.02	97	1	chapter	Various food items 1. Silence 2. Dumplings	विभिन्‍न खाद्य परिकार	Social Studies	Community	Everyday Life	Food
+8V10.00	106	0	section	Flower and herb farming	फुल तथा जडीबुटी खेती	Social Studies	Economy	Agriculture	Farming
+8V10.01	106	4	chapter	Phulbari construction	फुलबारी निर्माण	Social Studies	Economy	Agriculture	Farming
+8V10.02	110	4	chapter	Use of herbs	जडीबुटीको प्रयोग	Social Studies	Economy	Agriculture	Processing
+8V11.00	114	0	section	Animal care and care	पशुपक्षी स्याहार र हेरचाह	Social Studies	Community	Everyday Life	Other Everyday Life
+8V11.01	114	3	chapter	Raising of sheep and goats	भेडाबाख्रा तथा च्याङ्ग्रा पालन	Social Studies	Economy	Agriculture	Farming
+8V11.02	117	3	chapter	Cow and goat rearing	गाईभैँसी तथा चौंरी पालन	Social Studies	Economy	Agriculture	Farming
+8V11.03	120	2	chapter	Bangur rearing	बङ्गुर पालन	Social Studies	Economy	Agriculture	Farming
+8V11.04	122	1	chapter	Rabbit rearing	खरायो पालन	Social Studies	Economy	Agriculture	Farming
+8V11.05	123	4	chapter	Fishing	माछा पालन	Social Studies	Economy	Agriculture	Fishing
+8V11.06	127	4	chapter	Poultry and laughter	कुखुरा तथा हाँस पालन	Social Studies	Economy	Agriculture	Poultry Production
+8V11.07	131	3	chapter	Bee keeping	मौरी पालन	Social Studies	Economy	Agriculture	Farming
+8V12.00	134	0	section	Craft	शिल्पकला	Social Studies	Arts	Visual Art	Painting
+8V12.10	134	0	chapter	Manufacture of various materials of paper	कागजका विभिन्‍न सामग्री निर्माण	Social Studies	Arts	Visual Art	Paper
+8V12.11	134	0	chapter	Corrugated cardboard	करोगेटेड कार्डबोर्ड	Social Studies	Arts	Visual Art	Paper
+8V12.12	134	1	chapter	Box construction	बाकस निर्माण	Social Studies	Arts	Visual Art	Paper
+8V12.13	135	0	chapter	Invitation card creation	निमन्‍‌त्रणा कार्ड निर्माण	Social Studies	Arts	Visual Art	Printing
+8V12.14	135	1	chapter	Kite construction	चङ्‌गा निर्माण	Social Studies	Arts	Visual Art	Paper
+8V12.15	136	1	chapter	Detailed distribution	बिक्री वितरण	Social Studies	Arts	Visual Art	Other Visual Art
+8V12.20	137	0	chapter	Manufacture of various household items	विभिन्‍न घरायसी सामग्री निर्माण	Social Studies	Arts	Visual Art	Other Visual Art
+8V12.21	137	2	chapter	Mandro	मान्द्रो	Social Studies	Arts	Visual Art	Weaving
+8V12.22	139	1	chapter	Mandro	मान्द्रो	Social Studies	Arts	Visual Art	Weaving
+8V12.30	140	2	chapter	Reuse of wasted items	खेर गएका वस्तुको पुनः प्रयोग	Social Studies	Arts	Visual Art	Other Visual Art
+8V12.40	142	3	chapter	Kudai on wood and stone	काठ तथा ढुङ्‌गामा कुँदाइ	Social Studies	Arts	Visual Art	Sculpture
+8V12.50	145	2	chapter	Dyeing and shining objects	वस्तु रङ्‌गाउने र टल्काउने	Social Studies	Arts	Visual Art	Painting
+8V13.00	147	0	section	Pottery	माटाको काम	Social Studies	Arts	Visual Art	Pottery
+8V13.01	147	2	chapter	Different shape construction	विभिन्‍न आकृति निर्माण	Social Studies	Arts	Visual Art	Other Visual Art
+8V13.02	149	2	chapter	Ceramics	सेरामिक्स	Social Studies	Arts	Visual Art	Pottery
+8V13.03	151	1	chapter	The use of clay paint	माटाको भाँडामा रङको प्रयोग	Social Studies	Arts	Visual Art	Pottery
+8V13.04	152	2	chapter	Detailed distribution and accounting of the produced clay material	उत्पादित माटाको सामग्रीको बिक्री वितरण र हिसाब किताब	Social Studies	Arts	Visual Art	Pottery
+8V14.00	154	0	section	Sewing knitting	सिलाइ बुनाइ	Social Studies	Arts	Visual Art	Weaving
+8V14.01	154	2	chapter	Introduction to sewing machine	सिलाइ मेसिनको परिचय	Social Studies	Arts	Visual Art	Weaving
+8V14.02	156	2	chapter	Introduction and requirement of body measurement method and drafting	शरीरको नाप लिने तरिका र ड्राफ्टिङको परिचय र आवश्यक्ता	Social Studies	Arts	Visual Art	Weaving
+8V14.03	158	1	chapter	Apron	एप्रोन	Social Studies	Arts	Visual Art	Weaving
+8V14.04	159	1	chapter	How to apply	टाँक लगाउने तरिका	Social Studies	Arts	Visual Art	Weaving
+8V14.05	160	1	chapter	रप्म् फु	रफ्फु	Social Studies	Arts	Visual Art	Weaving
+8V14.06	161	1	chapter	Knitting hats and collars	टोपी र गलबन्दी बुनाइ	Social Studies	Arts	Visual Art	Weaving
+8V15.00	162	0	section	Technology education (local technology)	प्रविधि शिक्षा (स्थानीय प्रविधि)	Social Studies	Community	Education	STEM
+8V15.01	162	2	chapter	Local knowledge and technology	स्थानीय ज्ञान र प्रविधि	Social Studies	Community	Education	STEM
+8V15.02	164	2	chapter	Development of traditional technology	परम्परागत प्रविधिको विकास	Social Studies	Community	Education	STEM
+8V15.03	166	2	chapter	Hello and tractor	हलो र ट्याक्टर	Social Studies	Community	Education	Rural
+8V15.04	168	1	chapter	Improved stove	सुधारिएको चुलो	Social Studies	Community	Education	Rural
+8V15.05	169	2	chapter	Rainwater harvesting	वर्षाको पानी सङ्‌कलन	Social Studies	Community	Education	Rural
+8V16.00	171	0	section	Technology education (modern technology)	प्रविधि शिक्षा (आधुनिक प्रविधि)	Social Studies	Community	Education	STEM
+8V16.01	171	3	chapter	Modern home appliances	घरायसी प्रयोगका आधुनिक उपकरण	Social Studies	Community	Education	STEM
+8V16.02	174	4	chapter	Some modern technology and equipment	केही आधुनिक प्रविधि एवम् उपकरण	Social Studies	Community	Education	STEM
+8V16.03	178	2	chapter	Alternative energy	वैकल्पिक ऊर्जा	Social Studies	Community	Education	STEM
+8V16.04	180	3	chapter	Code of Conduct in Internet Use and Information Technology	इन्टरनेटको प्रयोग तथा सूचना प्रविधिमा आचार संहिता	Social Studies	Arts	Media	Internet

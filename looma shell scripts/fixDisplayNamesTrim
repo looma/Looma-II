@@ -1,31 +1,57 @@
-// ONE TIME program to trim leading and trailing blanks from activities' display names
-//
+// ONE TIME program to trim leading and trailing blanks from chapters' display names
+// also remove leading and trailing double quotes
+//       (sometimes inserted by excel, numbers, or tsv files during metadata import)
 //  run in MONGO SHELL with: load('fixDisplayNamesTrim')
 //
 var cursor, count, doc;
 
-cursor = db.activities.find({'dn':/\s$/});
+cursor = db.chapters.find({'dn':/^\s/});
 count = 0;
 while (cursor.hasNext()) {
     doc = cursor.next();
     count++;
     print('...' + doc['dn'] + '...changed to...' + doc['dn'].trim() + '...');
     doc['dn'] = doc['dn'].trim();
-    //db.activities.update({_id:doc._id}, doc);
+    //db.chapters.update({_id:doc._id}, doc);
 }
 print('_______________');
-print(' + + + changed ' + count + ' activities');
+print(' + + + changed ' + count + ' chapters');
 print('_______________');
 
-cursor = db.text_files.find({'dn':/\s$/});
+cursor = db.chapters.find({'dn':/\s$/});
 count = 0;
 while (cursor.hasNext()) {
     doc = cursor.next();
     count++;
     print('...' + doc['dn'] + '...changed to...' + doc['dn'].trim() + '...');
     doc['dn'] = doc['dn'].trim();
-    //db.text_files.update({_id:doc._id}, doc);
+    //db.chapters.update({_id:doc._id}, doc);
+}
+
+print();print('replacing leading quotes');print();
+
+cursor = db.chapters.find({'dn':/^"/});
+count = 0;
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+    doc['dn'] = doc['dn'].replace(/"/g, '');
+    print('new DN is ' + doc['dn']);
+    db.chapters.update({_id:doc._id}, doc);
+}
+
+print();print('replacing trailing quotes');print();
+
+cursor = db.chapters.find({'dn':/"$/});
+count = 0;
+while (cursor.hasNext()) {
+    doc = cursor.next();
+    count++;
+    doc['dn'] = doc['dn'].replace(/"/g, '');
+    print('new DN is ' + doc['dn']);
+    
+    db.chapters.update({_id:doc._id}, doc);
 }
 print('_______________');
-print(' + + + changed ' + count + ' text_files');
+print(' + + + changed ' + count + ' chapters');
 print('_______________');

@@ -1,0 +1,25 @@
+// filename: gameCH_IDs
+// author: skip
+//
+
+var cursor, game;
+var count = 0;
+
+print('db is ' + db); print('');
+
+cursor = db.activities.find({'ft':'game','dn':/^\'[A-Z]/});
+while (cursor.hasNext()) {
+    game = cursor.next();
+    print ('game is: ' + game['dn']);
+    var ch_id1 = passwordPrompt();
+    var ch_id2 = passwordPrompt();
+    game['ch_id'] = [ch_id1,ch_id2];
+    if (param === 'run') db.activities.update({_id: game._id}, game);
+    else { print(game['ch_id'][0]); print(game['ch_id'][1]); }
+    count++;
+};
+
+print('');
+print('looked at  ' + count + ' entries');
+print('');
+

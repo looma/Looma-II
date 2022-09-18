@@ -12,9 +12,10 @@ Comments:
 
 <?php
 
-function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+//function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+require_once('includes/looma-isloggedin.php');
 
-$loggedin = isLoggedIn();
+$loggedin = loggedIn();
 
 /*
  * check_login() checks login against database entries and returns either true indicating the

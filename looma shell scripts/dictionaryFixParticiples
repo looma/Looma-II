@@ -1,0 +1,34 @@
+// ONE TIME program to
+// 	scan through specified documents in dictionary collection
+// 	definitions like "past participle of"
+//  and add root word to the definiiton
+//
+//	run in MONGO SHELL with: load('dictionaryFixParticiples')
+//
+//
+var docs, doc, def, rw, count, old;
+count = 0;
+
+docs = db.dictionaryV2.find();
+while (docs.hasNext()) {
+	doc = docs.next();
+
+    //print('word ' + doc.en);
+
+	var def = doc.meanings[0].def;
+      if (   (def === 'past tense of')
+                || (def === 'comparative form of')
+                || (def === 'superlative form of')
+                || (def === 'past participle of')
+                || (def === 'present participle of')
+                || (def === 'past tense and past participle of')
+                || (def === 'third person singular of'))
+        {
+            count++;
+            old = db.dictionary.findOne({en:doc.en})
+            doc.meanings[0].def += ' ' + old.rw;
+            print('new definition: ' + doc.meanings[0].def);
+            db.dictionaryV2.update(doc._id,doc);
+        };
+	};
+print('fixed ' + count + ' definitions');

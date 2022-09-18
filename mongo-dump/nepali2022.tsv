@@ -1,0 +1,186 @@
+_id	npn	nlen	ft	dn	ndn	key1	key2	key3	key4
+1N01	8	14	chapter	Me and my family	म र मेरो परिवार	Language	Nepali	People	
+1N02	22	12	chapter	My daily life	मेरो दैनिक जीवन	Language	Nepali	Contexts	Activities
+1N03	34	12	chapter	Our community	हाम्रो समुदाय	Language	Nepali	People	
+1N04	46	10	chapter	My school	मेरो विद्यालय	Language	Nepali	Textbooks	
+1N05	56	16	chapter	Our environment	हाम्रो वातावरण	Language	Nepali	People	
+1N06	72	18	chapter	Our creation	हाम्रो सिर्जना	Language	Nepali	Contexts	Ability
+1N07	90	18	chapter	Interests and habits	रुचि र बानी	Language	Nepali	Contexts	Preferences
+1N08	108	18	chapter	Our culture	हाम्रो संस्कृति	Language	Nepali	Contexts	Possessions
+1N09	126	20	chapter	"Communications, technology and markets"	"सञ्‍चार, प्रविधि र बजार"	Language	Nepali	Textbooks	
+1N10	146	14	chapter	Our Activity	हाम्रो क्रियाकलाप	Language	Nepali	Contexts	Activities
+1N11	160	19	chapter	The world around us	हाम्रो वरपरको संसार	Language	Nepali	People	
+2N01	7	18	chapter	Me and my family	म र मेरो परिवार	Language	Nepali	People	
+2N02	25	18	chapter	My daily life	मेरो दैनिक जीवन	Language	Nepali	Contexts	Activities
+2N03	43	22	chapter	Our community	हाम्रो समुदाय	Language	Nepali	People	
+2N04	65	18	chapter	My school	मेरो विद्यालय	Language	Nepali	Textbooks	
+2N05	83	20	chapter	Our environment	हाम्रो वातावरण	Language	Nepali	People	
+2N06	103	14	chapter	Our creation	मेरो सिर्जना	Language	Nepali	Contexts	Ability
+2N07	117	16	chapter	Interests and habits	रुचि र बानी	Language	Nepali	Contexts	Preferences
+2N08	133	14	chapter	Our culture	हाम्रो संस्कृति	Language	Nepali	Contexts	Possessions
+2N09	147	16	chapter	"Communications, technology and markets"	"सञ्‍चार, प्रविधि र बजार"	Language	Nepali	Textbooks	
+2N10	163	14	chapter	Our Activity	हाम्रो क्रियाकलाप	Language	Nepali	Contexts	Activities
+2N11	177	15	chapter	The world around us	हाम्रो वरपरको संसार	Language	Nepali	People	
+3N01	7	16	chapter	Me and my family	म र मेरो परिवार	Language	Nepali	People	
+3N02	23	20	chapter	My daily life	मेरो दैनिक जीवन	Language	Nepali	Contexts	Activities
+3N03	43	16	chapter	Our community	हाम्रो समुदाय	Language	Nepali	People	
+3N04	59	20	chapter	My school	मेरो विद्यालय	Language	Nepali	Textbooks	
+3N05	79	26	chapter	Our environment	हाम्रो वातावरण	Language	Nepali	People	
+3N06	105	16	chapter	Our creation	मेरो सिर्जना	Language	Nepali	Contexts	Ability
+3N07	121	16	chapter	Interests and habits	रुचि र बानी	Language	Nepali	Contexts	Preferences
+3N08	137	16	chapter	Our culture	हाम्रो संस्कृति	Language	Nepali	Contexts	Possessions
+3N09	153	18	chapter	"Communications, technology and markets"	"सञ्‍चार, प्रविधि र बजार"	Language	Nepali	Textbooks	
+3N10	171	18	chapter	Our Activity	हाम्रो क्रियाकलाप	Language	Nepali	Contexts	Activities
+3N11	189	19	chapter	The world around us	हाम्रो वरपरको संसार	Language	Nepali	People	
+4N01	5	7	chapter	All my teachers	;a} d]/f u'¿	Language	Nepali	Contexts	Other
+4N02	12	12	chapter	Gold statue	";'gsf] d""lt{"	Language	Nepali	Contexts	Describing
+4N03	24	11	chapter	I like books	dnfO{ k':ts dg k5{	Language	Nepali	Contexts	Describing
+4N04	35	8	chapter	Letter to friend	;fyLnfO{ lr7L	Language	Nepali	Contexts	Greeting
+4N05	43	10	chapter	The importance of sports	v]ns'bsf] dxOE	Language	Nepali	Contexts	Activities
+4N06	53	11	chapter	The result of a lie	em'6sf] kl/0ffd	Language	Nepali	Contexts	Suggestions
+4N07	64	12	chapter	Social worker Mahavir again	;dfh;]jL dxfjL/ k'g	Language	Nepali	Contexts	People
+4N08	76	9	chapter	Kurilo farming	s'l/nf] v]tL	Language	Nepali	Contexts	Activities
+4N09	85	11	chapter	The fruit of pride	3dG8sf] kmn	Language	Nepali	Contexts	Review
+4N10	96	8	chapter	Small river	;fgL gbL	Language	Nepali	Contexts	Locations
+4N11	104	11	chapter	Narayanhiti Durbar Museum	gf/fo0flx6L b/af/ ;ª\u|xfno	Language	Nepali	Contexts	Locations
+4N12	115	10	chapter	Fair	lg;fkm	Language	Nepali	Contexts	Other
+4N13	125	11	chapter	Ghale village	3n] ufp“	Language	Nepali	Contexts	Locations
+4N14	135	7	chapter	Touch the star	"h""gtf/f 5'g"	Language	Nepali	Contexts	Other
+4N15	142	14	chapter	Friend	;fyL	Language	Nepali	Contexts	People
+4N16	156	11	chapter	Appendix	kl/lzi6				
+5N01	5	3	chapter	Point of view	नैतिक द‍ृष्‍टान्त	Language	Nepali	Contexts	Preferences
+5N02	8	8	chapter	Faith's fruit	कर्मको फल	Language	Nepali	Textbooks	
+5N03	16	5	chapter	Glory of work	कामको महिमा	Language	Nepali	Contexts	Activities
+5N04	21	4	chapter	Farmer's wishes	किसानको रहर	Language	Nepali	Contexts	Wants
+5N05	25	10	chapter	The light of eyes	आखाँको ज्योति	Language	Nepali	Textbooks	
+5N06	35	9	chapter	Time	समय	Language	Nepali	Contexts	Time & Date
+5N07	44	7	chapter	Children's day	बाल दिवस	Language	Nepali	People	
+5N08	51	6	chapter	Weird question	अनौठो प्रश्‍न	Language	Nepali	Contexts	Questions and Answers
+5N09	57	6	chapter	Our journey	हाम्रो यात्रा	Language	Nepali	Contexts	Narration
+5N10	63	4	chapter	Letter to a friend	साथीलाई चिठी	Language	Nepali	Contexts	Conversation
+5N11	67	4	chapter	River	नदी	Language	Nepali	Textbooks	
+5N12	71	5	chapter	Inspiration	प्रेरणा	Language	Nepali	People	
+5N13	76	8	chapter	Medicine for anger	रिसको औषधी	Language	Nepali	People	
+5N14	84	5	chapter	Things to learn	सिक्नुपर्ने कुरा	Language	Nepali	Contexts	Ability
+5N15	89	4	chapter	Application for sick leave	बिरामी बिदाको निवेदन	Language	Nepali	Contexts	Identify
+5N16	93	4	chapter	Country's mud	देशको माटो	Language	Nepali	Textbook	
+5N17	97	10	chapter	The Greatest Devotee	सबैभन्दा ठुला भक्त	Language	Nepali	People	
+5N18	107	6	chapter	Preparation for exam	परीक्षाको तयारी	Language	Nepali	Contexts	Questions & Answers
+5N19	113	6	chapter	The life of a nurse	नर्सको जीवन	Language	Nepali	Contexts	Describing
+5N20	119	5	chapter	National Pride	राष्‍ट्रिय गौरव	Language	Nepali	Contexts	Possessions
+5N21	124	7	chapter	Regret	पश्‍चात्‍ताप	Language	Nepali	Contexts	Reasons
+5N22	131	7	chapter	How are books made?	किताब कसरी बन्छ?	Language	Nepali	Textbooks	
+6N01	5	8	chapter	Voice of the Motherland (poetry)	मातृभूमिको आवाज (कविता)	Language	Nepali	Song	
+6N02	13	11	chapter	Kumar Yavakrit (story)	कुमार यवक्रीत (कथा)	Language	Nepali	Contexts	Narration
+6N03	24	12	chapter	Nepali culture (essay)	नेपाली संस्कृति (निबन्ध)	Language	Nepali	Contexts	Possessions
+6N04	36	10	chapter	Letter to son (Letter)	छोरालाई चिठी (चिठी)	Language	Nepali	Contexts	Conversation
+6N05	46	13	chapter	Musician Amber Gurung (Biography)	सङ्‍गीतकार अम्बर गुरुङ (जीवनी)	Language	Nepali	Contexts	Narration
+6N06	59	13	chapter	Bright Faces (Story)	चम्किला अनुहारहरू (कथा)	Language	Nepali	Textbooks	
+6N07	72	17	chapter	Health is greater than wealth (Debate)	सम्पत्तिभन्दा स्वास्थ्य ठुलो (वादविवाद)	Language	Nepali	Contexts	Comparing
+6N08	89	11	chapter	My interest (Essay)	मेरा रहर (निबन्ध)	Language	Nepali	Contexts	Describing
+6N09	100	10	chapter	Jaag Jaag (poem)	जाग जाग (कविता)	Language	Nepali	Song	
+6N10	110	17	chapter	Lamp of hope (story)	आशाको दियो (कथा)	Language	Nepali	Textbooks	
+6N11	127	11	chapter	Application for participation (application)	सहभागिताका लागि निवेदन (निवेदन)	Language	Nepali	Contexts	Identity
+6N12	138	13	chapter	Thomas Elva Edison (biography)	थोमस एल्भा एडिसन (जीवनी)	Language	Nepali	Contexts	Narration
+6N13	151	9	chapter	I enjoy it (poetry)	लाग्दछ मलाई रमाइलो (कविता)	Language	Nepali	Song	
+6N14	160	18	chapter	Picnic (dialogue)	वनभोज (संवाद)	Language	Nepali	Contexts	Conversation
+6N15	178	13	chapter	Water Story (Management)	पानीको कथा (प्रबन्ध)	Language	Nepali	Textbooks	
+6N16	191	25	chapter	House of love (story)	मायाको घर (कथा)	Language	Nepali	Textbooks	
+7N01	5	10	chapter	My country	मेरो देश	Social Studies	Geography	Asia	Nepal
+7N02	15	13	chapter	Bitter speech is a true virtue	तितो बोली सच्चा गुण	Social Studies	Beliefs	Other Beliefs	Humanisim
+7N03	28	15	chapter	The importance of self-employment	स्वरोजगारीको महत्त्व	Social Studies	Economy	Occupations	Other Occupations
+7N04	43	10	chapter	Literary writer Bhupi Sherchan	साहित्यकार भूपि शेरचन	Social Studies	History	People	Other People
+7N05	53	13	chapter	Yoga for a healthy life	स्वस्थ जीवनका लागि योग	Social Studies	Community	Sports	Exercise
+7N06	66	10	chapter	Letter to brother	भाइलाई चिठी	Nepali	Contexts	Other	
+7N07	76	12	chapter	Hypothesis	परिकल्पना	Social Studies	Beliefs	Other Beliefs	Humanism
+7N08	88	11	chapter	The bud of creation	सिर्जनाका कोपिला	Nepali	Contexts	People	
+7N09	99	8	chapter	Mother	आमा	Nepali	Contexts	People	
+7N10	107	14	chapter	Take advantage of the opportunity	अवसरको सदुपयोग	Social Studies	Community	Anthropology	Ethics
+7N11	121	12	chapter	Ignorant	अबोध	Nepali	Contexts	Ability	
+7N12	133	11	chapter	Mother Teresa	मदर टेरेसा	Social Studies	History	People	Other People
+7N13	144	14	chapter	Our responsibility towards senior citizens	ज्येष्ठ नागरिकप्रति हाम्रो दायित्व	Social Studies	History	Nepal	Rights & Duties
+7N14	158	16	chapter	The shores of Kali Gandaki	काली गण्डकीको किनारै किनार	Nepali	Contexts	Locations	
+7N15	174	8	chapter	Spring	वसन्त	Science	Earth	Climate	Season
+7N16	182	8	chapter	Respect for the teacher	गुरुको सम्मान	Social Studies	Community	Anthropology	Ethics
+7N17	190	12	chapter	Permanent residence	स्थायी बास	Social Studies	Community	Social Organization	Home
+7N18	202	8	chapter	Appendix	परिशिट				
+8N01	6	5	chapter	Nepal (Poetry)	नेपाल (कविता)	Language	Nepali	Contexts	Locations
+8N02	11	8	chapter	Luck (a story)	भाग्य (कथा)	Language	Nepali	Textbooks	
+8N03	19	9	chapter	Devkumari Thapa (biography)	देवकुमारी थापा (जीवनी)	Language	Nepali	Contexts	Narration
+8N04	28	9	chapter	Bibliography	ग्रन्थचित्र (प्रबन्ध)	Language	Nepali	Textbooks	
+8N05	37	5	chapter	Request	निवेदन (निवेदन)	Language	Nepali	Contexts	Requests & Commands
+8N06	42	10	chapter	Friendship (story)	मित्रता (कथा)	Language	Nepali	People	
+8N07	52	5	chapter	Skill and labor (poetry)	सिप र श्रम (कविता)	Language	Nepali		
+8N08	57	8	chapter	Geographer Hark Gurung (biography)	भूगोलविद् हर्क गुरुङ (जीवनी)	Language	Nepali	Contexts	Narration
+8N09	65	8	chapter	Nature and Luck	प्रकृति र वातावरण (प्रबन्ध)	Language	Nepali	Contexts	Other
+8N10	73	7	chapter	An Incident	एउटा घटना (कथा)	Language	Nepali	Contexts	Describing
+8N11	80	5	chapter	Brother (letter)	दाजुलाई चिठी (चिठी)	Language	Nepali	Contexts	Conversation
+8N12	85	4	chapter	My house (poem)	मेरो घर (कविता)	Language	Nepali	Song	
+8N13	89	11	chapter	Science is not a curse but a boon	विज्ञान अभिशाप नभई वरदान (वाद विवाद)	Language	Nepali	Contexts	Caution
+8N14	100	8	chapter	Writer Rabindranath Thakur (Biography)	साहित्यकार रवीन्द्रनाथ ठाकुर (जीवनी)	Language	Nepali	Contexts	Narration
+8N15	108	6	chapter	Liar got caught (a story)	ठग समातियो (कथा)	Language	Nepali	Textbooks	
+8N16	114	6	chapter	Computer and Internet (management)	कम्प्युटर र इन्टरनेट (प्रबन्ध)	Language	Nepali	Contexts	Other
+8N17	120	7	chapter	We are one	हामी एउटै हौँ (एकाङ्‍की)	Language	Nepali	Textbooks	
+8N18	127	5	chapter	Call or Announcement (a poem)	अह्‍वान (कविता)	Language	Nepali	Contexts	Greeting
+8N19	132	8	chapter	The story of a lion and a fox (poem)	सिंह र स्यालको कथा (कथा)	Language	Nepali	Textbooks	
+8N20	140	8	chapter	Nepali Culture (Management)	नेपाली संस्कृति (प्रबन्ध)	Language	Nepali	Contexts	Possessions
+8N21	148	10	chapter	Sir Isaac Newton (biography)	सर आइज्याक न्युटन (जीवनी)	Language	Nepali	Contexts	Narration
+8N22	158	8	chapter	Pride (story)	स्वाभिमान (कथा)	Language	Nepali	Textbooks	
+9N01	5	9	chapter	Cloud lightning wedding	मेघ बिजुली विवाह	Language	Nepali	Contexts	Song
+9N02	14	15	chapter	The taste	स्वाद	Language	Nepali	Contexts	Narration
+9N03	29	11	chapter	Karesabari	करेसाबारी	Language	Nepali	Contexts	Describing
+9N04	40	10	chapter	Request	निवेदन	Language	Nepali	Contexts	Narration
+9N05	50	12	chapter	Satya Mohan Joshi	सत्यमोहन जोशी	Language	Nepali	Contexts	Describing
+9N06	62	11	chapter	Environmental balance	पर्यावरण सन्तुलन	Language	Nepali	Contexts	Conversation
+9N07	73	13	chapter	The story of the monster of Kaljit and Ajanga	कालजित र अजङ्गको राक्षसको कथा	Language	Nepali	Contexts	Narration
+9N08	86	8	chapter	Country in Sarangi	सारङ्गीमा देश	Language	Nepali	Contexts	Song
+9N09	94	13	chapter	Looking at Kanchenjunga	कञ्चनजङ्घालाई नियाल्दा	Language	Nepali	Contexts	Locations
+9N10	107	14	chapter	The role of school in personality development	व्यक्तित्व विकासमा विद्यालयको भूमिका	Language	Nepali	Contexts	Ability
+9N11	121	14	chapter	Time pain	समय पीडा	Language	Nepali	Contexts	Narration
+9N12	135	10	chapter	Michael Faraday	माइकल फेराडे	Language	Nepali	Contexts	Describing
+9N13	145	8	chapter	Office	कार्यालयीय	Language	Nepali	Contexts	Narration
+9N14	153	10	chapter	Nepali Lokbaja	नेपाली लोकबाजा	Language	Nepali	Contexts	Describing
+9N15	163	9	chapter	Mother's picture	आमाको तस्बिर	Language	Nepali	Contexts	Song
+9N16	172	9	chapter	Future construction	भविष्य निर्माण	Language	Nepali	Contexts	Narration
+9N17	181	12	chapter	Appendix	परिशिष्ट	Language	Nepali	Speech	Sounds
+10N01	###	9	chapter	Homeland (story)	जन्मभूमि (कथा)	Language	Nepali	Contexts	Locations
+10N02	###	5	chapter	Satisfaction (poetry)	सन्तुष्‍टि (कविता)	Language	Nepali	Contexts	Preferences
+10N03	###	13	chapter	Ark Ruit (biography)	सन्दुक रुइत (जीवनी)	Language	Nepali	Contexts	Narration
+10N04	###	9	chapter	Thangka (essay)	थाङ्‌का (निबन्ध)	Language	Nepali	Contexts	Possessions
+10N05	###	7	chapter	I can too (psychoanalysis)	म पनि सक्छु (मनोवाद)	Language	Nepali	Contexts	Textbooks
+10N06	###	9	chapter	Business letter (letter)	व्यापारिक चिठी (चिठी)	Language	Nepali	Contexts	Conversation
+10N07	###	17	chapter	Return (story)	प्रत्यागमन (कथा)	Language	Nepali	Contexts	Textbooks
+10N08	###	10	chapter	Rain (poem)	वर्षा (कविता)	Language	Nepali	Contexts	Song
+10N09	###	9	chapter	Our culture (essay)	हाम्रो संस्कृति (निबन्ध)	Language	Nepali	Contexts	Possessions
+10N10	###	12	chapter	Commercialization base rather than localization (debate)	स्थानीयकरणभन्दा व्यापारीकरण बेस (वाद विवाद)	Language	Nepali	Contexts	Comparing
+10N11	###	15	chapter	Lakshmipuja (story)	लक्ष्मीपूजा (कथा)	Language	Nepali	Contexts	Describing
+10N12	###	9	chapter	Clara Jetkin (biography)	क्लारा जेटकिन (जीवनी)	Language	Nepali	Contexts	Narration
+10N13	###	10	chapter	Jai Bhundi (essay)	जय भुँडी (निबन्ध)	Language	Nepali	Textbooks	
+10N14	###	7	chapter	I'm talking street (poem)	म सडक बोल्दै छु (कविता)	Language	Nepali	Song	
+10N15	###	7	chapter	Comment (singular)	टीका (एकाङ्की)	Language	Nepali	People	
+10N16	###	12	chapter	Maujang Babusaheko Kot (Story)	माउजङ बाबुसाहेको कोट (कथा)	Language	Nepali	Textbooks	
+11N01	8	11	chapter	Veer Purkha (poem)	वीर पुर्खा (कविता)	Language	Nepali	Song	
+11N02	19	18	chapter	Village Love (Social Story)	गाउँको माया (सामाजिक कथा)	Language	Nepali	Contexts	Wants
+11N03	37	15	chapter	New Journey to Culture (Subjective Essay)	संस्कृतिको नयाँ यात्रा (आत्मपरक निबन्ध)	Language	Nepali	Contexts	Identity
+11N04	52	19	chapter	Yogamaya (National Biography)	योगमाया (राष्‍ट्रिय जीवनी)	Language	Nepali	Contexts	Narration
+11N05	71	13	chapter	Letter to a friend	साथीलाई चिठी (चिठी)	Language	Nepali	Contexts	Conversation
+11N06	84	20	chapter	Will she come back? (Psychological story)	त्यो फेरि फर्कला ? (मनोवैज्ञानिक कथा)	Language	Nepali	People	
+11N07	104	14	chapter	Possibilities and dimensions of tourism (objective essay)	पर्यापर्यटनका सम्भावना र आयाम (वस्तुपरक निबन्ध)	Language	Nepali	Contexts	Locations
+11N08	118	16	chapter	Flame came latest news (short drama)	लौ आयो ताजा खबर (लघु नाटक)	Language	Nepali	Textbooks	
+11N09	134	13	chapter	Success Story (Reporting)	सफलताको कथा (रिपोर्ताजमूलक रचना)	Language	Nepali	Contexts	Describing
+11N10	147	13	chapter	A day at the farm (dialogue)	कृषिशालामा एक दिन (संवाद)	Language	Nepali	Contexts	Conversation
+11N11	160	13	chapter	Rara Tour (diary)	रारा भ्रमण (दैनिकी)	Language	Nepali	Contexts	Locations
+11N12	173	18	chapter	Water Resources and Energy (Speech)	जलस्रोत र ऊर्जा (वक्तृता)	Language	Nepali	Contexts	Narration
+12N01	7	13	chapter	Mother's dream	आमाको सपना	Language	Nepali	Song	
+12N02	20	15	chapter	Virhini Damayanti	विरहिणी दमयन्ती	Language	Nepali	Contexts	Narration
+12N03	35	13	chapter	Ugly cut of Ghanaghasya	घनघस्याको उकालो काट्ता	Language	Nepali	Contexts	Locations
+12N04	48	17	chapter	Business letter	व्यावसायिक पत्र	Language	Nepali	Contexts	Conversation
+12N05	65	9	chapter	A tomb	एक चिहान	Language	Nepali	Contexts	Identity
+12N06	74	15	chapter	Stephen William Hawking	स्टिफन विलियम हकिङ	Language	Nepali	Contexts	Identity
+12N07	89	12	chapter	They call us Himachuli	हामीलाई बोलाउँछन् हिमचुली	Language	Nepali	Song	Narration
+12N08	101	18	chapter	Motherhood	मातृत्व	Language	Nepali	Contexts	Narration
+12N09	119	12	chapter	Gorkhe	गोर्खे	Language	Nepali	Contexts	Narration
+12N10	131	13	chapter	Nepali identity	नेपाली पहिचान	Language	Nepali	Contexts	Possessions
+12N11	144	19	chapter	Cooperative	सहकारी	Language	Nepali	Contexts	Suggestions
+12N12	163	18	chapter	Way of life	जीवन मार्ग	Language	Nepali	Contexts	Reasons
+12N13	181	11	chapter	Appendix	परिशिष्‍ट	Language	Nepali	Contexts	

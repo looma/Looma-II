@@ -99,7 +99,7 @@
 
         echo "<link rel='stylesheet' href='css/looma-theme-" . $settheme . ".css' id='theme-stylesheet'>";
 
-        function loggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+      //  require_once('includes/looma-isloggedin.php');
 
         function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shim for php 5.x "array_key_exists()"
     ?>

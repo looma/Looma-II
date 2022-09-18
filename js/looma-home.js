@@ -59,12 +59,38 @@ Optional Mathematics	ऐच्छिक गणित	Opt. Math	ऐ. गणित
 Optional Science	ऐच्छिक विज्ञान	Opt. Sci.	ऐ. विज्ञान
  */
 
+// SORT the books to display in consistent subject order
+function orderSubjects(a, b) {
+    
+        const sortOrder = {
+            "english": 1,
+            "english optional": 2,
+            "nepali": 3,
+            "math": 4,
+            "math optional": 4,
+            "science": 6,
+            "science optional": 7,
+            "computer": 8,
+            "social studies": 9,
+            "serofreo": 10,
+            "moral education": 11,
+            "health": 12,
+            "vocation": 13
+        };
+    
+     if (a['subject'] == b['subject']) { return 0;}
+        return (sortOrder[a['subject']] < sortOrder[b['subject']]) ? -1 : 1;
+    };  // end orderSubjects()
+    
 function displaySubjects (className) {
     
     $.post("looma-database-utilities.php",
         {cmd: "textBookList",
             class: className},
         function(books) {
+            
+            books.sort(orderSubjects);
+    
             books.forEach (function(book) {
                 if ('fn' in book || 'nfn' in book) {
                     var tb_path = '../content/' + book['fp'];

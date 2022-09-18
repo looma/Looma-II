@@ -1,0 +1,36 @@
+//file: dictionaryCheckForLeadingBlankInCH_ID
+
+// one time script to correct for some old dictionary entries have a field named " ch_id" instead of "ch_id"
+// this triggers a bug in Mongo where finds on the values of "ch_id" dont succeed for the " ch_id" entries, but
+// finds on " ch_id" also fail (because mongo trims the leading blank?)
+// this script copies the faulty entries (copied from old dictionary to new dictionary ('V2") and doesnt include the
+// "ch_id" field, which is incorrect anyway because it derives from older versions of the textbooks
+
+var count = db.dictionaryV2.count({'source':'old'});
+var check=0;
+
+var cursor = db.dictionaryV2.find({'source':'old'});
+while (cursor.hasNext()) {
+	var next = cursor.next();
+
+ //print(next['en']);
+
+    var entry = {};
+	entry['en'] = next['en'];
+	entry['np'] = next['np'];
+
+//print(JSON.stringify(next['meanings']));
+	entry['meanings'] = JSON.parse(JSON.stringify(next['meanings']));
+
+	if ('plural' in next) entry['plural'] = next['plural'];
+	if ('rw' in next)     entry['rw'] = next['rw'];
+	entry['source']='revised';
+
+	print ('changing ' + entry['en']);
+    check++;
+	db.dictionaryV2.remove(next);
+	db.dictionaryV2.insert(entry);
+};
+
+print ('there are ' + count + ' entries with {source:"old"}'); print();
+print ('there were ' + check + ' entries changed'); print();

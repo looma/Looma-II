@@ -9,7 +9,7 @@ body {
     grid-column: left/right;
 }
  h1.title {
-     font-size:4em;
+     font-size:3em;
      margin-top:2vh;
  }
 #main-container-horizontal {

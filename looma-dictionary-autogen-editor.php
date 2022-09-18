@@ -68,12 +68,13 @@ More features and usage information can be found in the user manual
  -->
 */
 
-function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+//function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+require_once('includes/looma-isloggedin.php');
 
 function loginLevel() { return $_COOKIE['login-level'];}
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
-$loggedin = isLoggedIn(); if (!$loggedin && loginLevel() !== 'exec' && loginLevel() !== 'admin') header('Location: looma-login.php');
+$loggedin = loggedIn(); if (!$loggedin && loginLevel() !== 'exec' && loginLevel() !== 'admin') header('Location: looma-login.php');
 error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
 ?>
 

@@ -1,0 +1,23 @@
+_id	pn	len	npn	nlen	ft	dn	ndn	key1	key2	key3	key4
+9CS01.01	8	11			chapter	Computer Fundamentals		Science	IT	Hardware	Computer
+9CS01.02	19	10			chapter	Types of Computer		Science	IT	Hardware	Computer
+9CS01.03	29	7			chapter	Basic Architecture of Computer		Science	IT	Hardware	Computer
+9CS01.04	36	28			chapter	Computer Hardware		Science	IT	Hardware	Computer
+9CS01.05	64	20			chapter	Computer Software		Science	IT	Software	
+9CS02.01	84	22			chapter	Computer Graphics		Science	IT	Software	
+9CS03.01	106	14			chapter	Internet Technology		Science	IT	Internet	
+9CS03.02	120	44			chapter	HTML (Hypertext Markup Language)		Science	IT	Software	HTML
+9CS03.03	164	17			chapter	Cascading Style Sheets (CSS)		Science	IT	Software	
+9CS04.01	181	12			chapter	Computer Programming		Science	IT	Software	
+9CS04.02	193	81			chapter	Programming in QBASIC		Science	IT	Software	
+10CS01.01	8	33	6	30	chapter	Networking & Telecommunication	नेटवर्किङ र दूरसञ्‍चार प्रविधि	Science	IT	Information	
+10CS01.02	41	13	36	9	chapter	Ethical & Social Issues in ICT	सूचना तथा सञ्‍चार प्रविधिका नैतिक तथा सामाजिक पक्ष	Social Studies	Community	Social Organization	Problems
+10CS01.03	54	17	45	14	chapter	Computer Security	कम्प्युटरको सुरक्षा	Science	IT	Cryptography	Encryption
+10CS01.04	71	9	59	8	chapter	E-commerce	इ–कमर्स	Social Studies	Economy	Business	
+10CS01.05	80	10	67	12	chapter	Contemporary Technology	समसामायिक प्रविधिहरू	Science	IT	Innovations	
+10CS01.06	90	20	79	16	chapter	Number System	नम्बर प्रणाली	Mathematics	Numbers		
+10CS02.01	110	47	95	49	chapter	Database Management System	डाटाबेस व्यवस्थापन प्रणाली	Science	IT	Software	
+10CS03.01	157	7	144	6	chapter	Programming in QBASIC	क्युबेसिक प्रोग्रामिङको परिचय	Science	IT	Software	
+10CS03.02	164	30	150	32	chapter	Modular Programming	मोड्‍युलर प्रोग्रामिङ	Science	IT	Software	
+10CS03.03	194	22	182	21	chapter	File Handling in QBASIC	QBASIC मा फाइलको प्रयोग	Science	IT	Software	
+10CS04.01	216	42	203	35	chapter	Structured Preogramming in C	स्ट्रक्चर्ड प्रोग्रामिङ– सी	Science	IT	Software	

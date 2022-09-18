@@ -730,6 +730,7 @@ $(document).ready(function () {
     //turn off('click') for looma toolbar BACK arrow
     //$('.back-button').off('click');
    // $(".back-button").removeAttr("onclick"); //special code to remove "onclick" from toolbar back button
+  /*  this code displays the browser's "changes may be lost" alert
     window.onbeforeunload = function() {
         if (callbacks['modified']()) {
             console.log('modified')
@@ -737,6 +738,7 @@ $(document).ready(function () {
         }
         else console.log('NOT modified');
     };
+    */
   //  $( window ).on( 'beforeunload',  function(){
     //    console.log('window unloading');
       //  callbacks['quit']();

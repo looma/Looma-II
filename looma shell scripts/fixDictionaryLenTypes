@@ -1,0 +1,27 @@
+// file: fixDictionaryLenTypes
+// one time script to change $type of "len" field in Looma dictionary from 'string' to 'number'
+//
+// Skip AUG 2022
+//
+
+db.chapters.find({len: {$type: 'string'}}).forEach(function(obj) {
+obj.len = new NumberInt(obj.len);
+db.chapters.save(obj);
+});
+
+
+db.chapters.find({nlen: {$type: 'string'}}).forEach(function(obj) {
+obj.nlen = new NumberInt(obj.nlen);
+db.chapters.save(obj);
+});
+
+
+db.chapters.find({pn: {$type: 'string'}}).forEach(function(obj) {
+obj.pn = new NumberInt(obj.pn);
+db.chapters.save(obj);
+});
+
+db.chapters.find({npn: {$type: 'string'}}).forEach(function(obj) {
+obj.npn = new NumberInt(obj.npn);
+db.chapters.save(obj);
+});

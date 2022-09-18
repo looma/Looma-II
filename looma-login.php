@@ -12,9 +12,10 @@ Date:  Summer 2016, revised Skip Jun 2020, and Mar 2022 [add seed and use sha256
 require_once ('includes/looma-utilities.php');
 require_once ('includes/mongo-connect.php');
 
-function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+//function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);}
+require_once('includes/looma-isloggedin.php');
 
-$loggedin = isLoggedIn();
+$loggedin = loggedIn();
 
     /*
      * check_login() checks login against database entries and returns either true indicating the

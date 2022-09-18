@@ -8,7 +8,7 @@ Revision: Looma 3.0
 
 'use strict';
 
-var  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var  months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December","January"];
 var chunksize = {'hours':24, 'days':30, 'weeks':14, 'months': 12 };
 
 /* cURL used by Plausible: db-ip.com

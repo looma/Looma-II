@@ -2,6 +2,7 @@
 //    register documents in games collection as activities
 //
 //  run in MONGO SHELL with: load('registergames')
+//  set "var param = 'dryrun' " or "var param = 'run' "
 //
 
 var gamescursor;
@@ -25,12 +26,12 @@ while (gamescursor.hasNext()) {
         act.mongoID = doc._id;
         print ('CREATING ACTIVITY with ft: ' + act.ft + ' dn: ' + act.dn + ' mongoID: ' + act.mongoID);
     
-        if (param !== 'dryrun') db.activities.insert(act);
+        if (param === 'run') db.activities.insert(act);
         count += 1;
     }
 }
 print('');
-if (param==='dryrun') print('DRY RUN - no changes made');
+if (param !=='run') print('DRY RUN - no changes made');
 print('found ' + count + ' games and made activities for them');
 print('');
 

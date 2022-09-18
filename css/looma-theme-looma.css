@@ -8,7 +8,7 @@ body {
 }
 
 #main-container-horizontal {
-	background-color: var(--looma-blue);
+	background-color: var(--looma-background);
 }
 
 #toolbar-container, #toolbar-container-vertical {

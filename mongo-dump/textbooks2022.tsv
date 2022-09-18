@@ -1,0 +1,67 @@
+class	subject	prefix	fn	nfn	dn	ndn	fp
+class10	computer	10CS	Computer_10_3667.pdf	Computer_10_Nepali_3739.pdf	Grade 10 Computer	कक्षा १०  कम्प्युटर विज्ञान	textbooks/Class10/Computer/
+class10	english	10EN	English-10-802.pdf		Grade 10 English		textbooks/Class10/English/
+class10	english optional	10ENa	English_10_9828_Optional.pdf		Grade 10 Optional English		textbooks/Class10/English/
+class10	health	10H		Health_10_Nepali_9461.pdf		कक्षा 10 स्वास्थ्य	textbooks/Class10/Health/
+class10	math	10M	Math-10-1093.pdf	Math-10-Nepali-806.pdf	Grade 10 Math	कक्षा 10  गणित	textbooks/Class10/Math/
+class10	math optional	10Ma	Math_10_3883_Optional.pdf		Grade 10 Optional Math		textbooks/Class10/Math/
+class10	nepali	10N		Nepali-10-827.pdf		कक्षा 10 नेपाली	textbooks/Class10/Nepali/
+class10	science	10S	Science-10-3726.pdf	Science-10-Nepali-805.pdf	Grade 10 Science	कक्षा 10 बिज्ञान	textbooks/Class10/Science/
+class10	science optional	10Sa	Science-10-1089-Optional.pdf		Grade 10 Optional Science		textbooks/Class10/Science/
+class10	social studies	10SS		SocialStudies-10-Nepali-804.pdf		कक्षा 10 सामाजिक शिक्षा	textbooks/Class10/SocialStudies/
+class11	english	11EN	English_11_3872.pdf		Grade 11 English		textbooks/Class11/English/
+class11	nepali	11N		Nepali_11_3887.pdf		कक्षा 11 नेपाली	textbooks/Class11/Nepali/
+class11	social studies	11SS		SocialStudies_11_Nepali_5212.pdf		कक्षा 11 सामाजिक शिक्षा	textbooks/Class11/SocialStudies/
+class12	english	12EN	English-12-9688.pdf		Grade 12 English		textbooks/Class12/English/
+class12	nepali	12N		Nepali_12_9689		कक्षा 12 नेपाली	textbooks/Class12/Nepali/
+class12	social studies	12SS		SocialStudies_12_Nepali_9690		कक्षा 12 सामाजिक शिक्षा	textbooks/Class12/SocialStudies/
+class1	english	1EN	English-1-2465.pdf		Grade 1 English		textbooks/Class1/English/
+class1	math	1M		Math-1-Nepali-2463.pdf		कक्षा 1 गणित	textbooks/Class1/Math/
+class1	nepali	1N		Nepali-1-2464.pdf		कक्षा 1 नेपाली	textbooks/Class1/Nepali/
+class1	serofero	1SF		Serofero_1_Nepali_2462.pdf		कक्षा 1 सेरोफेरो	textbooks/Class1/Serofero/
+class2	english	2EN	English_2_9652.pdf		Grade 2 English		textbooks/Class2/English/
+class2	math	2M		Math_2_Nepali_9654.pdf		कक्षा 2 गणित	textbooks/Class2/Math/
+class2	nepali	2N		Nepali_2_9653.pdf		कक्षा 2 नेपाली	textbooks/Class2/Nepali/
+class2	serofero	2SF		Serofero_2_Nepali_5157.pdf		कक्षा 2 सेरोफेरो	textbooks/Class2/Serofero/
+class3	english	3EN	English_3_9642.pdf		Grade 3 English		textbooks/Class3/English/
+class3	math	3M		Math_3_Nepali_9645.pdf		कक्षा 3 गणित	textbooks/Class3/Math/
+class3	nepali	3N		Nepali_3_9644.pdf		कक्षा 3 नेपाली	textbooks/Class3/Nepali/
+class3	serofero	3SF		Serofero_3_Nepali_9643.pdf		कक्षा 3 सेरोफेरो	textbooks/Class3/Serofero/
+class4	english	4EN	English_4_9972.pdf		Grade 4 English		textbooks/Class4/English/
+class4	health	4H		Health_4_Nepali_9990.pdf		कक्षा 4 स्वास्थ्य	textbooks/Class4/Health/
+class4	math	4M	Math-4-1049.pdf	Math_4_Nepali_9973.pdf	Grade 4 Math	कक्षा 4 गणित	textbooks/Class4/Math/
+class4	nepali	4N		Nepali_4_9974.pdf		कक्षा 4 नेपाली	textbooks/Class4/Nepali/
+class4	science	4S	Science-4-1057.pdf	Science_4_Nepali_9975.pdf	Grade 4 Science	कक्षा 4 बिज्ञान	textbooks/Class4/Science/
+class4	social studies	4SS	SocialStudies-4-1050.pdf	Social_4_Nepali_9976.pdf	Grade 4 Social Studies	कक्षा 4 सामाजिक शिक्षा	textbooks/Class4/SocialStudies/
+class5	english	5EN	English-5-592.pdf		Grade 5 English		textbooks/Class5/English/
+class5	math	5M	Math-5-1058.pdf	Math_5_Nepali_593.pdf	Grade 5 Math	कक्षा 5  गणित	textbooks/Class5/Math/
+class5	nepali	5N		Nepali_5_594.pdf		कक्षा 5 नेपाली	textbooks/Class5/Nepali/
+class5	science	5S	Science-5-1059.pdf	Science-5-Nepali-1049.pdf	Grade 5 Science	कक्षा 5 बिज्ञान	textbooks/Class5/Science/
+class5	social studies	5SS	SocialStudies-5-1060.pdf	SocialStudies-5-Nepali-38.pdf	Grade 5 Social Studies	कक्षा 5 सामाजिक शिक्षा	textbooks/Class5/SocialStudies/
+class6	english	6EN	English_6_9577.pdf		Grade 6 English		textbooks/Class6/English/
+class6	health	6H		Health_6_Nepali_9588.pdf		कक्षा 6 स्वास्थ्य	textbooks/Class6/Health/
+class6	math	6M		Math_6_Nepali_9578.pdf		कक्षा 6  गणित	textbooks/Class6/Math/
+class6	nepali	6N		Nepali_6_9579.pdf		कक्षा 6 नेपाली	textbooks/Class6/Nepali/
+class6	science	6S		Science_6_Nepali_9589.pdf		कक्षा 6 बिज्ञान	textbooks/Class6/Science/
+class6	social studies	6SS		SocialStudies_6_Nepali_9590.pdf		कक्षा 6 सामाजिक शिक्षा	textbooks/Class6/SocialStudies/
+class7	english	7EN	English_7_9977.pdf		Grade 7 English		textbooks/Class7/English/
+class7	health	7H	Health-7-1067.pdf	Health_7_Nepali_9978.pdf	Grade 7 Health	कक्षा 7 स्वास्थ्य	textbooks/Class7/Health/
+class7	math	7M		Math_7_Nepali_9979.pdf		कक्षा 7  गणित	textbooks/Class7/Math/
+class7	nepali	7N		Nepali_7_9980.pdf		कक्षा 7 नेपाली	textbooks/Class7/Nepali/
+class7	science	7S	Science-7-1069.pdf	Science_7_Nepali_9981.pdf	Grade 7 Science	कक्षा 7 बिज्ञान	textbooks/Class7/Science/
+class7	social studies	7SS		Social_7_Nepali_9982.pdf		कक्षा 7 सामाजिक शिक्षा	textbooks/Class7/SocialStudies/
+class8	english	8EN	English-8-3650.pdf		Grade 8 English		textbooks/Class8/English/
+class8	health	8H	Health-8-1072.pdf	Health-8-Nepali-3651.pdf	Grade 8 Health	कक्षा 8 स्वास्थ्य	textbooks/Class8/Health/
+class8	math	8M		Math-8-Nepali-3653.pdf		कक्षा 8  गणित	textbooks/Class8/Math/
+class8	nepali	8N		Nepali-8-3647.pdf		कक्षा 8 नेपाली	textbooks/Class8/Nepali/
+class8	science	8S	Science-8-1070.pdf	Science-8-Nepali-3648.pdf	Grade 8 Science	कक्षा 8 बिज्ञान	textbooks/Class8/Science/
+class8	social studies	8SS		SocialStudies-8-Nepali-3649.pdf		कक्षा 8 सामाजिक शिक्षा	textbooks/Class8/SocialStudies/
+class8	moral education	8SSa	MoralEducation-8-1073.pdf	MoralEducation-8-Nepali-3646.pdf	Grade 8 Moral Education	कक्षा 8 सामाजिक शिक्षा	textbooks/Class8/SocialStudies/
+class8	vocation	8V		Vocation-8-Nepali-3652.pdf		कक्षा 8 पेशा	textbooks/Class8/Vocation/
+class9	computer	9CS	Computer_9_3668.pdf		Grade 9 Computer		textbooks/Class9/Computer/
+class9	english	9EN	English_9_9983.pdf		Grade 9 English		textbooks/Class9/English/
+class9	math	9M	Math-9-1074.pdf	Math_9_Nepali_9984.pdf	Grade 9 Math	कक्षा 9  गणित	textbooks/Class9/Math/
+class9	math optional	9Ma	Math-9-10002-Optional.pdf	Math-9-Nepali-10003-Optional.pdf	Grade 9 Optional Math	कक्षा 9  गणित	
+class9	nepali	9N		Nepali_9_9985.pdf		कक्षा 9 नेपाली	textbooks/Class9/Nepali/
+class9	science	9S	Science-9-1075.pdf	Science_9_Nepali_9986.pdf	Grade 9 Science	कक्षा 9 बिज्ञान	textbooks/Class9/Science/
+class9	social studies	9SS		Social_9_Nepali_9987.pdf		कक्षा 9 सामाजिक शिक्षा	textbooks/Class9/SocialStudies/

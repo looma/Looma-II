@@ -1,0 +1,44 @@
+//// later note: this script copies incorrect fields named " ch_id" which arent "findable" by mongo
+//
+//
+// file: copyDictionaryOldToNew
+//one time script to import some words into the new dictionary
+// AUG 2022
+//
+// read a text file with words to copy
+// get the word's entry from db.dictionary
+// reformat the entry
+//  'part' and 'def' => 'meaning' as "(part) def"
+//  retain other fields
+// write the entry to db.dictionaryV2
+
+var count=0;
+var entry, newentry;
+
+var input = 'wordsToTransfer.txt';
+print ('Importing words, to transfer from old dictionary to new dictionary, from ' + input);
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+var words = file.split(/[\r\n]+/);  // split file into array of lines each containing a single word
+print ('Processing ' + words.length + ' lines');
+
+words.forEach( function(word) {
+    if (word) {
+        print ('transferring ' + word);
+        count++;
+        entry = db.dictionary.findOne({'en':word});
+        if (!entry) {print('didnt find '+word);}
+        else {
+        entry['meanings'] = [{'part': entry.part,'def': entry.def}];
+        entry['source'] = 'old';
+        delete entry['part'];
+        delete entry['def'];
+        delete entry['rand'];
+        print ('new entry with part = ' + entry['meanings']['part'] + '  and def = '  + entry['meanings']['def']);
+        if (param = 'run')
+            newentry = db.dictionaryV2.insert(entry);
+        }
+    }
+});
+
+print ('');
+print(' processed ' + count + ' words');print();

@@ -418,11 +418,14 @@ $(document).ready(function() {
                         function() {window.history.back();},
                         function() {});
     });
-    
+  /* this code displays the browser alert "changes may be lost"
     window.onbeforeunload = function(event) {
         event.preventDefault();
         // Chrome requires returnValue to be set.
         event.returnValue = '';
         console.log("activity editor 'beforeunload' event");
+        return null;
     };
+    
+   */
 });

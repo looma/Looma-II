@@ -35,8 +35,9 @@ $prefix = trim($_GET['prefix']) ;
 
 //show PAGE TITLE = "Chapters for Grade n Subject"
 
-if ($subject === "social studies") $caps = "Social Studies";
-else if ($subject === 'math')      $caps = "Maths";
+if ($subject === "social studies") $caps = "Social Studies and Human Value Education";
+else if ($subject === 'math')      $caps = "Mathematics";
+else if ($subject === 'health')      $caps = "Health, Physical and Creative Art";
 else                               $caps = ucfirst($subject);
 
     echo "<div id='header'><h1 class='title'>";
@@ -94,6 +95,7 @@ $chapters = mongoFind($chapters_collection, $query, '_id', null, null);
 // display buttons for textbook, 2nd language textbook (if any) and
 // an RESOURCES button that has a data-activity attribute
 // that holds the MongoDB ObjectId for this chapter (for looking up the activities list when needed)
+
 
 foreach ($chapters as $ch) {
 

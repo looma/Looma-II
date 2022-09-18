@@ -1,0 +1,272 @@
+_id	pn	len	npn	nlen	ft	dn	ndn	key1	key2	key3	key4
+4S01.00	6	1			section	Science					
+4S01.01	6	3	5	17	chapter	Vertebrate and invertebrate animals	j}1flgs l;sfO	Science	Biology	Zoology	Vertebrates
+4S01.02	9	6	22	26	chapter	Oviparous and Viviparous Animals	";""rgf tyf ;~rf/ k|ljlw"	Science	Biology	Zoology	Oviparous
+4S01.03	15	4	48	14	chapter	Terrestrial Animals and their Characteristics	hLj / jftfj/0f	Science	Biology	Zoology	Terrestrial
+4S01.04	19	2	62	23	chapter	Aquatic Animals and their Characteristics	;hLjx¿sf] juL{s/0f	Science	Biology	Zoology	Aquatic
+4S01.05	21	3	85	10	chapter	Life process	hLjg k|lj|mof	Science	Biology	Other Biology	Life Processes
+4S01.06	24	5	95	26	chapter	Stages of Development of Plants	kbfy{	Science	Biology	Other Biology	Life Processes
+4S01.07	29	6	121	22	chapter	Terrestrial Plants and their Characteristics	zlSt	Science	Biology	Plants	Terrestrial
+4S01.08	35	4	143	31	chapter	Aquatic Plants	k[YjL / cGtl/If	Science	Biology	Plants	Aquatic
+4S01.09	39	7			chapter	Interrelationship between Living Things and the Environment		Science	Biology	Ecology	Biosphere
+4S01.10	46	6			chapter	Natural Disaster		Science	Earth	Natural Disasters	
+4S01.11	52	5			chapter	Matter		Science	Physics	Materials	Matter
+4S01.12	57	6			chapter	Energy		Science	Physics	Forces	Work & Energy & Power
+4S01.13	63	4			chapter	Weather		Science	Earth	Climate	Weather
+4S01.14	67	7			chapter	Seasons		Science	Earth	Climate	Season
+4S01.15	74	5			chapter	The Earth		Science	Earth	Other Earth	About
+4S01.16	79	2			chapter	Solar System		Science	Astronomy	Solar System	
+4S01.17	81	5			chapter	Means of Communication and their importance		Science	IT	Hardware	
+4S01.18	86	4			chapter	Some of our local technologies		Science	Technology	Design	Water Mill
+4S02.00	90	1			section	Health Education					
+4S02.01	91	2			chapter	Our body		Science	Medicine	Healthy Living	Personal Hygiene
+4S02.02	93	3			chapter	Cleaning body parts		Science	Medicine	Healthy Living	Personal Hygiene
+4S02.03	96	3			chapter	Environment		Science	Earth	Human Impact	Waste & Recycling
+4S02.04	99	3			chapter	Safe environment and health life		Science	Earth	Human Impact	Waste & Recycling
+4S02.05	102	3			chapter	Our food		Science	Medicine	Healthy Living	Nutrition
+4S02.06	105	2			chapter	Nutritious food		Science	Medicine	Healthy Living	Nutrition
+4S02.07	107	2			chapter	Diseases		Science	Medicine	Disease & Injury	
+4S02.08	109	5			chapter	Communicable diseases		Science	Medicine	Disease & Injury	Communicable
+4S02.09	114	3			chapter	Non-communicable diseases		Science	Medicine	Disease & Injury	Other Disease
+4S02.10	117	2			chapter	Safety against accident		Science	Medicine	Disease & Injury	Safety
+4S02.11	119	3			chapter	First aid		Science	Medicine	Specialties	First Aid
+4S02.12	122	5			chapter	Health service and facilities		Science	Medicine	Specialties	Public Health
+4S02.13	127	3			chapter	"Smoking, alcohol and Drugs"		Science	Medicine	Disease & Injury	Smoking
+4S03.00	130	1			section	Physical Education					
+4S03.01	130	2			chapter	Locomotor Skills		Social Studies	Community	Sports	Exercise
+4S03.02	132	3			chapter	Running		Social Studies	Community	Sports	Exercise
+4S03.03	135	3			chapter	Different types of jumping		Social Studies	Community	Sports	Exercise
+4S03.04	138	1			chapter	Throwing		Social Studies	Community	Sports	Exercise
+4S03.05	139	3			chapter	Non-locomotor skills		Social Studies	Community	Sports	Exercise
+4S03.06	142	4			chapter	Drill		Social Studies	Community	Sports	Drill
+4S03.07	146	5			chapter	Physical training		Social Studies	Community	Sports	Exercise
+4S03.08	151	1			chapter	Fun games		Social Studies	Community	Everyday Life	Games
+4S03.09	152	1			chapter	Our games		Social Studies	Community	Everyday Life	Games
+4S03.10	153	3			chapter	Story-based games		Social Studies	Community	Everyday Life	Games
+4S03.11	156	2			chapter	Trapping and kicking the ball		Social Studies	Community	Sports	Soccer
+4S03.12	158	1			chapter	Dribbling game		Social Studies	Community	Sports	Soccer
+4S03.13	159	1			chapter	Turning upside down		Social Studies	Community	Sports	Gymnastics
+4S03.14	160	2			chapter	Balancing		Social Studies	Community	Sports	Gymnastics
+5S01.00	7	1	8	1	section	Science	विज्ञान				
+5S01.01	7	7	10	8	chapter	Different Kinds of Animals	विभिन्न प्रकारका जनावर	Science	Biology	Animals	
+5S01.02	14	3	18	3	chapter	Cell	कोष	Science	Biology	Cells	
+5S01.03	17	3	21	3	chapter	Life cycle of a Butterfly	पुतलीको जीवनचक्र	Science	Biology	Insects	Butterflies
+5S01.04	20	5	24	6	chapter	Monocot and dicot plants	एक दलीय र दुई दलीय बिरुवाहरू	Science	Biology	Plants	
+5S01.05	25	5	30	6	chapter	General Life Processes of Animals and Plants	जनावर र बिरुवाहरूको सामान्य जीवन प्रक्रिया	Science	Biology	Animals	
+5S01.06	30	7	36	7	chapter	Effects of Human Activities on Environment	मानवीय क्रियाकलापबाट वातावरणमा पर्ने प्रभाव	Science	Earth	Human Impact	Pollution
+5S01.07	37	6	43	6	chapter	Environment Conservation	वातावरण संरक्षण	Science	Earth	Human Impact	Conservation
+5S01.08	43	4	49	4	chapter	Change in State of Matter	पदार्थको अवस्था परिवर्तन	Science	Physics	Materials	Matter
+5S01.09	47	7	53	7	chapter	Sources of Energy	शक्तिको स्रोत	Science	Technology	Energy Sources	
+5S01.10	54	5	60	5	chapter	Weather	मौसम	Science	Earth	Climate	Weather
+5S01.11	59	3	65	3	chapter	Cloud	बादल	Science	Earth	Climate	Cloud
+5S01.12	62	8	68	8	chapter	Solar Family	सौर्य परिवार	Science	Astronomy	Solar System	
+5S01.13	70	6	76	5	chapter	The Earth	पृथ्वी	Science	Earth		
+5S01.14	76	5	81	5	chapter	Information and Communication	सूचना र सञ्चार	Science	IT	Information	
+5S01.15	81	6	86	6	chapter	Some Local Technologies	सामान्य स्थानीय प्रविधिहरू	Science	Technology	Mechanical	
+5S02.00	87	1	92	1	section	Health	स्वास्थ्य शिक्षा				
+5S02.01	87	4	94	4	chapter	Individual Cleanliness	व्यक्तिगत सरसफाइ	Science	Medicine	Healthy Living	Personal Hygiene
+5S02.02	91	3	98	3	chapter	"Physical Exercise, Rest and Sleep"	"व्यायाम, आराम र निद्रा"	Science	Medicine	Healthy Living	
+5S02.03	94	5	101	4	chapter	Need of Environmental Cleanliness	वातावरणीय सरसफाइको आवश्यकता	Science	Medicine	Specialties	Public Health
+5S02.04	99	3	105	3	chapter	Solid Wastes	ठोस फोहोरमैला	Science	Medicine	Specialties	Public Health
+5S02.05	102	3	108	3	chapter	Balanced Diet	सन्तुलित भोजन	Science	Medicine	Healthy Living	Nutrition
+5S02.06	105	4	111	4	chapter	Causes of Malnutrition and Preventative Measures	कुपोषणका कारण र बच्ने उपाय	Science	Medicine	Healthy Living	Nutrition
+5S02.07	109	4	115	4	chapter	Communicable Diseases	सरुवा रोगहरू	Science	Medicine	Disease & Injury	
+5S02.08	113	2	119	2	chapter	HIV and AIDS	एचआईभी र एड्स	Science	Medicine	Disease & Injury	AIDS
+5S02.09	115	2	121	2	chapter	Be Saved from Accidents	दुर्घटनाबाट बचौँ	Science	Medicine	Healthy Living	
+5S02.10	117	2	123	2	chapter	Caution and First Aid	सावधानी तथा प्राथमिक उपचार	Science	Medicine	Specialties	Public Health
+5S02.11	119	3	125	3	chapter	Health Service and Community Health	स्वास्थ्य सेवा तथा सामुदायिक स्वास्थ्य	Science	Medicine	Specialties	General Practice
+5S02.12	122	3	128	2	chapter	Let's Enjoy Health Service and Let's Cooperate	स्वास्थ्य सेवा लिऔँ र सहयोग गरौँ	Science	Medicine	Specialties	General Practice
+5S02.13	125	3	130	3	chapter	Smoking	धूमपान	Science	Medicine	Disease & Injury	Tobacco
+5S02.14	128	4	133	3	chapter	Drinking and Drugs	मद्यपान र लागुपदार्थ	Science	Medicine	Disease & Injury	Alcohol & Drugs
+5S03.00	132	1	136	1	section	Physical Education	शारीरिक शिक्षा				
+5S03.01	132	4	138	4	chapter	Locomotor Skills	गतिशील अवस्थाका सीपहरू	Science	Medicine	Healthy Living	Sports
+5S03.02	136	3	142	3	chapter	Jumping	उफ्राइ	Science	Medicine	Healthy Living	Sports
+5S03.03	139	2	145	3	chapter	Throwing	फ्याँकाइ	Science	Medicine	Healthy Living	Sports
+5S03.04	141	2	148	2	chapter	Relays	रिले खेलहरू	Science	Medicine	Healthy Living	Sports
+5S03.05	143	2	150	2	chapter	Non-locomotor Skills	स्थिर अवस्थाका सीपहरू	Science	Medicine	Healthy Living	Sports
+5S03.06	145	2	152	3	chapter	Drill	कवाज	Science	Medicine	Healthy Living	Sports
+5S03.07	147	4	155	4	chapter	Physical Training (PT)	शारीरिक व्यायाम (पी. टी.)	Science	Medicine	Healthy Living	Sports
+5S03.08	151	2	159	2	chapter	Minor and Local Games	साधारण तथा स्थानीय खेलहरू	Science	Medicine	Healthy Living	Sports
+5S03.09	153	2	161	2	chapter	Local Games	स्थानीय खेलहरू	Science	Medicine	Healthy Living	Sports
+5S03.10	155	2	163	2	chapter	Creative Games	सिर्जनात्मक खेलहरू	Science	Medicine	Healthy Living	Sports
+5S03.11	157	1	165	1	chapter	Ball Games	भकुन्डो खेल	Science	Medicine	Healthy Living	Sports
+5S03.12	158	2	166	2	chapter	Balance Work	सन्तुलन कार्य	Science	Medicine	Healthy Living	Sports
+5S03.13	160	2	168	2	chapter	Tumbling Work	पल्टनबाजी कार्य	Science	Medicine	Healthy Living	Sports
+6S01.00			7	0	section	Scientific Learning	वैज्ञानिक सिकाइ	Science			
+6S01.01			7	5	chapter	Introduction to scientific learning	वैज्ञानिक सिकाइको परिचय	Science	Other Science		
+6S01.02			12	2	chapter	Measurement & unit	नाप र एकाइ	Math	Measurement	Units	
+6S01.03			14	3	chapter	Local & standard units of measurement	नापका स्थानीय र प्रमाणिक एकाइहरू	Math	Measurement	Units	
+6S01.04			17	10	chapter	Multiple & submultiple units	ठुला तथा साना एकाइहरू	Math	Measurement	Units	
+6S02.00			27	0	section	Information & Communication Technology	सूचना तथा सञ्चार प्रविधि	Science	IT	Hardware	
+6S02.01			27	9	chapter	Technology	प्रविधि	Science	Technology		
+6S02.02			36	25	chapter	Use of mobile phone & computer in our daily life	दैनिक जीवनमा मोबाइलफोन र कम्प्युटरको प्रयोग	Science	IT	Hardware	
+6S03.00			61	0	section	Organisms & their Structure	जीवहरू र तिनीहरूको बनोट	Science	Biology	Other Biology	Scientific Classification
+6S03.01			61	12	chapter	Adaptation of organisms	जीवहरूको अनुकूलता	Science	Biology	Other Biology	Natural Selection
+6S03.02			73	4	chapter	Classification of animals on the basis of food	खानाका आधारमा जनावरको वर्गीकरण	Science	Biology	Other Biology	Scientific Classification
+6S03.03			77	3	chapter	Vertebrates	ढाड भएका जनावरहरू	Science	Biology	Zoology	Vertebrates
+6S03.04			80	12	chapter	Flowering and non-flowering plants	फूल फुल्ने र फूल नफुल्ने बिरुवाहरू	Science	Biology	Plants	
+6S04.00			92	0	section	Biodiversity & Environment	जैविक विविधता र वातावरण	Science	Biology	Ecology	Biodiversity
+6S04.01			92	4	chapter	Environment	वातावरण	Science	Earth	Other Earth	Environment
+6S04.02			96	4	chapter	Environment friendly behavior	वातावरणमैत्री व्यवहार	Science	Earth	Human Impact	
+6S04.03			100	4	chapter	Ecosystem	पारिस्थितिक प्रणाली	Science	Biology	Other Biology	Ecosystem
+6S04.04			103	5	chapter	"Interrelationship among plants, animals & microorganisms"	"बिरुवा, जनावर र सूक्ष्मजीवबिचको अन्तरसम्बन्ध"	Science	Biology	Other Biology	Ecosystem
+6S05.00			108	0	section	Life Process	जीवन प्रक्रिया	Science	Biology	Other Biology	Life Processes
+6S05.01			108	4	chapter	Modes of nutrition	पोषण प्रक्रिया	Science	Medicine	Healthy Living	Nutrition
+6S05.02			112	7	chapter	Photosynthesis	प्रकाश संश्लेषण प्रक्रिया	Science	Biology	Plants	Photosynthesis
+6S06.00			119	0	section	Force & Motion	बल र चाल	Science	Physics	Forces	
+6S06.01			119	3	chapter	Motion and its types	चाल र यसका प्रकार	Science	Physics	Forces	
+6S06.02			121	7	chapter	Force	बल	Science	Physics	Forces	
+6S06.03			127	5	chapter	Simple Machine	सरल यन्त्र	Science	Technology	Mechanical	Machines
+6S07.00			132	0	section	Energy in Daily Life	दैनिक जीवनमा शक्ति	Science	Physics	Forces	Work & Energy & Power
+6S07.01			132	7	chapter	Forms of energy	शक्तिका रूपहरू	Science	Physics	Forces	Work & Energy & Power
+6S07.02			139	5	chapter	Heat	ताप	Science	Physics	Electromagnetism	Heat
+6S07.03			144	10	chapter	Light	प्रकाश	Science	Physics	Electromagnetism	Light
+6S07.04			154	8	chapter	Sound	ध्वनि	Science	Physics	Other Physics	Sound
+6S08.00			162	0	section	Electricity & Magnetism	विद्युत् र चुम्बकत्व	Science	Physics	Electromagnetism	
+6S08.01			162	5	chapter	Electricity & Magnetism	विद्युत् र चुम्बकत्व	Science	Physics	Electromagnetism	
+6S08.02			167	10	chapter	Electricity	विद्युत्	Science	Physics	Electricity & Electronics	
+6S09.00			177	0	section	Matter	पदाथ	Science	Physics	Materials	Matter
+6S09.01			177	10	chapter	Mixture	मिश्रण	Science	Physics	Materials	Mixture
+6S09.02			187	6	chapter	"Solution, colloid and suspension"	"घोल, कोलोइड र सस्पेन्सन"	Science	Physics	Materials	Solutions
+6S10.00			193	0	section	Materials Used in Daily Life	दैनिक प्रयोगका सामग्रीहरू	Science	Physics	Materials	Other Materials
+6S10.01			193	8	chapter	Some Useful Chemicals	केही उपयोगी रसायनहरू	Science	Chemistry	Other Chemistry	
+6S10.02			201	10	chapter	Introduction to metals & non-metals	धातु र अधातुको परिचय	Science	Chemistry	Metal	
+6S11.00			211	0	section	The Earth & Space	पृथ्वी र अन्तरिक्ष	Science	Earth		
+6S11.01			211	7	chapter	Soil	माटो	Science	Earth	Geology	Soils
+6S11.02			217	9	chapter	The Earth	पृथ्वी	Science	Earth	Other Earth	About
+6S11.03			225	10	chapter	Solar System	सौर्यमण्डल	Science	Astronomy	Solar System	
+7S01	5	12	5	11	chapter	Measurement	वैज्ञानिक सिकाइ	Science	Measurement		
+7S02	17	10	16	38	chapter	Force and Motion	सूचना तथा सञ्‍चार प्रविधि	Science	Physics	Forces	
+7S03	27	7	54	33	chapter	Simple Machine	जीवहरू र तिनको बनोट	Science	Technology	Mechanical	Machines
+7S04	34	4	87	13	chapter	Pressure	जैविक विविधता र वातावरण	Science	Physics	Forces	Other Forces
+7S05	38	6	100	12	chapter	"Energy, Work and Power"	जीवन प्रक्रिया	Science	Physics	Forces	Work & Energy & Power
+7S06	44	7	112	19	chapter	Heat	बल र चाल	Science	Physics	Electromagnetism	Heat
+7S07	51	6	131	37	chapter	Light	दैनिक जिवनमा शक्ति	Science	Physics	Electromagnetism	Light
+7S08	57	5	168	15	chapter	Sound	विधुत् र चुबकत्व	Science	Physics	Other Physics	Sound
+7S09	62	5	183	24	chapter	Magnet	पदार्थ	Science	Physics	Forces	Magnetism
+7S10	67	9	207	21	chapter	Electricity	दैनिक प्रयोगका पदार्थ	Science	Physics	Electricity & Electronics	Electricity
+7S11	76	6	228	33	chapter	Matter	पृथ्वी र अन्तरिक्ष	Science	Physics	Materials	Matter
+7S12	82	8			chapter	Mixture		Science	Physics	Materials	Mixture
+7S13	90	6			chapter	Metal and Nonmetal		Science	Physics	Materials	Metallurgy
+7S14	96	3			chapter	Some Useful Chemicals		Science	Chemistry	Other Chemistry	
+7S15	99	18			chapter	Living Beings		Science	Biology	Other Biology	Scientific Classification
+7S16	117	8			chapter	Cell and Tissue		Science	Science	Cells	
+7S17	125	7			chapter	Life Process		Science	Biology	Other Biology	Metabolism
+7S18	132	7			chapter	Structure of the Earch		Science	Earth	Other Earth	
+7S19	139	9			chapter	Weather and Climate		Science	Earth	Climate	
+7S20	148	8			chapter	Earth and Space		Science	Astronomy	Solar System	
+7S21	156	13			chapter	Environment and its Balance		Science	Earth	Other Earth	Environment
+7S22	169	15			chapter	Environmental Degradation and its Conservation		Science	Earth	Human Impact	Conservation
+7S23	184	4			chapter	Environment and Sustainable Development		Social Studies	Economy	Other Economy	Sustainable Development
+8S01	5	7	6	8	chapter	Measurement	नाप	Science	Measurement		
+8S02	12	10	14	11	chapter	Velocity and Acceleration	गति र प्रवेग	Science	Physics	Forces	
+8S03	22	6	25	7	chapter	Simple Machine	सरल यन्त्र	Science	Technology	Mechanical	Machines
+8S04	28	10	32	11	chapter	Pressure	चाप	Science	Physics	Forces	Other Forces
+8S05	38	11	43	12	chapter	"Work, Energy and Power"	"शक्ति, कार्य र सामर्थ्य"	Science	Physics	Forces	Work & Energy & Power
+8S06	49	8	55	9	chapter	Heat	ताप	Science	Physics	Electromagnetism	Heat
+8S07	57	14	64	15	chapter	Light	प्रकाश	Science	Physics	Electromagnetism	Light
+8S08	71	6	79	6	chapter	Sound	ध्वनि	Science	Physics	Other Physics	Sound
+8S09	77	5	85	5	chapter	Magnetism	चुम्बकत्व	Science	Physics	Forces	Magnetism
+8S10	82	6	90	6	chapter	Electricity	विद्युत्	Science	Physics	Electricity & Electronics	Electricity
+8S11	88	14	96	14	chapter	Matter	पदार्थ	Science	Physics	Materials	Matter
+8S12	102	5	110	5	chapter	Mixture	मिश्रण	Science	Physics	Materials	Mixture
+8S13	107	6	115	7	chapter	Metal and Nonmetal	धातु र अधातु	Science	Physics	Materials	Metallurgy
+8S14	113	7	122	8	chapter	"Acid, Base and Salt"	"अम्ल, क्षार र लवण"	Science	Chemistry	Other Chemistry	Acid & Base & Salt
+8S15	120	7	130	8	chapter	Some useful chemicals	केही उपयोगी रसायनहरू	Science	Chemistry	Other Chemistry	
+8S16	127	13	138	15	chapter	Living Beings	सजीवहरु	Science	Biology	Other Biology	Scientific Classification
+8S17	140	7	153	9	chapter	Cell and Tissue	कोष र तन्तु	Science	Science	Cells	
+8S18	147	13	162	14	chapter	Life process	जीवन प्रक्रिया	Science	Biology	Other Biology	Metabolism
+8S19	160	7	176	8	chapter	Structure of the Earth	पृथ्वीको बनोट	Science	Earth	Other Earth	
+8S20	167	7	184	7	chapter	Weather and Climate	मौसम र हावापानी	Science	Earth	Climate	
+8S21	174	5	191	5	chapter	The Earth and Universe	पृथ्वी र अन्तरिक्ष	Science	Astronomy	Solar System	
+8S22	179	14	196	17	chapter	Environment and its Balance	वातावरण र यसको सन्तुलन	Science	Earth	Other Earth	Environment
+8S23	193	18	213	21	chapter	Environmental Degradation and Conservation	वातावरणीय ह्रास तथा यसको संरक्षण	Science	Earth	Human Impact	Conservation
+8S24	211	6	234	8	chapter	Environment and Sustainable Development	वातावरण र दिगो विकास	Social Studies	Economy	Other Economy	Sustainable Development
+9S01	5	7	6	16	chapter	Measurement	वैज्ञानिक अध्ययन	Science	Measurement		
+9S02	12	15	22	10	chapter	Force	सजीवहरूको  वर्गीकरण	Science	Physics	Forces	
+9S03	27	14	32	9	chapter	Machine	च्याउ	Science	Technology	Mechanical	Machines
+9S04	41	9	41	13	chapter	"Work, Energy and Power"	कम विकास	Science	Physics	Forces	Work & Energy & Power
+9S05	50	8	54	31	chapter	Light	शारीरिक संरचना र जीवन प्रक्रिया	Science	Physics	Electromagnetism	Light
+9S06	58	16	85	17	chapter	Sound	प्रकृति र वातावरण	Science	Physics	Other Physics	Sound
+9S07	74	11	102	30	chapter	Current Electricity and Magnetism	बल र चाल	Science	Physics	Electricity & Electronics	Electricity
+9S08	85	15	132	14	chapter	Classification of Elements	सरल यन्त्र	Science	Chemistry	Periodic Table	
+9S09	100	9	146	15	chapter	Chemical Reaction	ऊर्जा	Science	Chemistry	Other Chemistry	
+9S10	109	13	161	17	chapter	Solubility	तरङ्ग	Science	Chemistry	Other Chemistry	
+9S11	122	16	178	21	chapter	Some Gases	विद्युत्	Science	Physics	Materials	Gas
+9S12	138	11	199	12	chapter	Metal and Nonmetal	ब्रह्‌माण्ड	Science	Chemistry	Metal	
+9S13	149	8	211	20	chapter	Carbon and its compounds	सूचना तथा सञ्चार प्रविधि	Science	Chemistry	Elements	Carbon
+9S14	157	11	231	21	chapter	Water	पारमाणविक बनावट र रासायनिक बन्धन	Science	Earth	Oceans & Water	Other Oceans & Water
+9S15	168	7	252	10	chapter	Chemical fertilizers used in Agriculoture	रासायनिक प्रतिक्रिया	Science	Chemistry	Other Chemistry	
+9S16	175	21	262	13	chapter	Classification of Plants and Animals	ग्यास	Science	Biology	Other Biology	Scientific Classification
+9S17	196	12	277	11	chapter	Adaptation of Organisms	धातु र अधातु	Science	Biology	Other Biology	Natural Selection
+9S18	208	20	288	9	chapter	System	कार्बन र यसको	Science	Biology	Other Biology	Life Processes
+9S19	228	11	297	11	chapter	Sense Organs	कृषि क्षत्रमा प्रयोग हुने पदार्थहरु	Science	Biology	Organs Animal	
+9S20	239	8			chapter	Evolution		Science	Biology	Other Biology	Evolution
+9S21	247	10			chapter	Nature and Environment		Science	Earth	Other Earth	Environment
+9S22	257	10			chapter	Natural Hazard		Science	Earth	Natural Disasters	
+9S23	267	8			chapter	Green House		Science	Earth	Climate	Climate Change
+9S24	275	9			chapter	The Earth in the Universe		Science	Astronomy	Solar System	
+9Sa01	5	24			chapter	Force		Science	Physics	Forces	
+9Sa02	29	14			chapter	Pressure		Science	Physics	Forces	Other Forces
+9Sa03	43	16			chapter	Energy		Science	Physics	Forces	Work & Energy & Power
+9Sa04	59	20			chapter	Heat		Science	Physics	Electromagnetism	Heat
+9Sa05	79	16			chapter	Light		Science	Physics	Electromagnetism	Light
+9Sa06	95	26			chapter	Current Electricity and Magnetism		Science	Physics	Electricity & Electronics	Electricity
+9Sa07	121	14			chapter	Atomic Structure		Science	Chemistry	Atoms and Molecules	
+9Sa08	135	20			chapter	The Gas Laws		Science	Physics	Materials	Gas
+9Sa09	155	18			chapter	Chemical Reaction		Science	Chemistry	Atoms and Molecules	
+9Sa10	173	18			chapter	Electrochemistry		Science	Chemistry	Other Chemistry	
+9Sa11	191	26			chapter	Organic Chemistry		Science	Chemistry	Organics	
+9Sa12	217	20			chapter	Metallurgy		Science	Chemistry	Metal	
+9Sa13	237	8			chapter	Introduction to Biology		Science	Biology		
+9Sa14	245	16			chapter	Cell Biology		Science	Biology	Cells	
+9Sa15	261	36			chapter	Organism and Life Cycle		Science	Biology	Other Biology	Life Processes
+9Sa16	297	14			chapter	Heredity and Evolution		Science	Biology	Other Biology	Evolution
+9Sa17	311	24			chapter	Ecology		Science	Biology	Ecology	
+9Sa18	335	16			chapter	Behavioral Biology		Science	Biology	Habitat	
+9Sa19	351	16			chapter	The Earth		Social Studies	History	Nepal	Geography
+9Sa20	367	12			chapter	The Universe		Science	Astronomy	Other Astronomy	
+10Sa01	6	15			chapter	Force		Science	Physics	Forces	
+10Sa02	21	12			chapter	Pressure		Science	Physics	Forces	Other Forces
+10Sa03	33	11			chapter	Energy		Science	Physics	Forces	Work & Energy & Power
+10Sa04	44	14			chapter	Heat		Science	Physics	Electromagnetism	Heat
+10Sa05	58	13			chapter	Light		Science	Physics	Electromagnetism	Light
+10Sa06	71	24			chapter	Current Electricity and Magnetism		Science	Physics	Electricity & Electronics	Electricity
+10Sa07	95	16			chapter	Atomic Structure		Science	Chemistry	Atoms and Molecules	
+10Sa08	111	19			chapter	Periodic Table and Periodic Laws		Science	Chemistry	Periodic Table	
+10Sa09	130	16			chapter	Chemical Bonding		Science	Chemistry	Atoms and Molecules	
+10Sa10	146	15			chapter	Electrochemistry		Science	Chemistry	Other Chemistry	
+10Sa11	161	10			chapter	Organic Chemistry		Science	Chemistry	Organics	
+10Sa12	171	12			chapter	Metals and Metallurgy		Science	Chemistry	Metal	
+10Sa13	183	11			chapter	Biomolecules		Science	Chemistry	Organics	
+10Sa14	194	31			chapter	Cell Biology		Science	Biology	Cells	
+10Sa15	225	23			chapter	Life and Life Processes		Science	Biology	Other Biology	Life Processes
+10Sa16	248	15			chapter	Heredity		Science	Biology	Evolution	
+10Sa17	263	13			chapter	Ecology		Science	Biology	Ecology	
+10Sa18	276	14			chapter	Applied Biology		Science	Medicine	Disease and Injury	
+10Sa19	290	12			chapter	The Earth		Social Studies	History	Nepal	Geography
+10Sa20	302	6			chapter	The Universe		Science	Astronomy	Other Astronomy	
+10S01	6	18	8	20	chapter	Force	बल	Science	Physics	Forces	
+10S02	24	14	28	14	chapter	Pressure	चाप	Science	Physics	Forces	Other Forces
+10S03	38	11	42	10	chapter	Energy	ऊर्जा	Science	Physics	Forces	Work & Energy & Power
+10S04	49	13	52	12	chapter	Heat	ताप	Science	Physics	Electromagnetism	Heat
+10S05	62	16	64	15	chapter	Light	प्रकाश	Science	Physics	Electromagnetism	Light
+10S06	78	16	79	15	chapter	"Current, Electricity and Magnetism"	धारा विद्‌युत र चुम्बकत्व	Science	Physics	Electricity & Electronics	Electricity
+10S07	94	14	94	10	chapter	Classification of Elements	तत्तवहरूको वर्गीकरण	Science	Chemistry	Periodic Table	
+10S08	108	11	104	9	chapter	Chemical Reaction	रासायनिक प्रतिक्रिया	Science	Chemistry	Other Chemistry	
+10S09	119	11	113	8	chapter	"Acid, Base and Salt"	"अम्ल, क्षार र लवण"	Science	Chemistry	Other Chemistry	Acid & Base & Salt
+10S10	130	11	121	10	chapter	Some Gases	केही ग्याँसहरू	Science	Physics	Materials	Gas
+10S11	141	9	131	10	chapter	Metals	धातुहरू	Science	Chemistry	Metal	
+10S12	150	13	141	10	chapter	Hydrocarbons and their Compounds	हाइड्रोकार्बन र यसका यौगिकहरू	Science	Chemistry	Organics	Other Organics
+10S13	163	17	151	15	chapter	Materials Used in Daily Life	दैनिक जीवनमा प्रयोग हूने वस्तुहरू	Science	Chemistry	Inorganics	
+10S14	180	10	166	9	chapter	Invertebrates	ढाड नभएका जनावरहरू	Science	Biology	Insects	
+10S15	190	11	175	9	chapter	Human Nervous and Glandular System	मानव स्नायु र ग्रन्थि प्रणाली	Science	Biology	Organs Animal	Other Organs
+10S16	201	13	184	11	chapter	Blood Circulation in the Human Body	मानव शरीरमा रक्त सञ्चार क्रिया	Science	Biology	Organs Animal	Other Organs
+10S17	214	6	195	6	chapter	Chromosomes and Sex Determination	क्रोमोजोम र लिङ्‌ग निर्धारण	Science	Biology	Cells	
+10S18a	220	10	201	9	chapter	Aesexual and Sexual Reproduction	अमैथुनिक र मैथुनिक प्रजनन	Science	Biology	Other Biology	Life Processes
+10S18b	230	5	210	7	chapter	Artificial Vegetative Propagation in Plants	बिरुवामा हुने कृत्रिम प्रजनन	Social Studies	Economy	Agriculture	Tree Crops
+10S19	235	13	217	10	chapter	Heredity	वंशानुक्रम	Science	Biology	Other Biology	Evolution
+10S20	248	8	227	10	chapter	Environmental Pollution and Management	वातावरणीय प्रदूषण र व्यवस्थापन	Science	Earth	Human Impact	Pollution
+10S21	256	9	237	12	chapter	History of the Earth	पृथ्वीको इतिहास	Science	Earth	Earth History	
+10S22	265	11	249	13	chapter	Climate Change and Atmosphere	जलवायु परिवर्तन र वायु मण्डल	Science	Earth	Climate	Climate Change
+10S23	276	16	262	15	chapter	The Earth in the Universe	ब्रह्‌माण्ड	Science	Astronomy	Other Astronomy	

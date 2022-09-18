@@ -30,17 +30,15 @@ Description:
  * LOOMA.translate()
  * LOOMA.translatableSpans()
  * LOOMA.lookup()
- * LOOMA.defHTML()
+ * LOOMA.reverselookup()
+ * LOOMA.defHTML()  // helper function, not called by other JS
  * LOOMA.define()
- * LOOMA.npdefine()
+ * LOOMA.reversedefine()
  * LOOMA.popupDefinition()
  * LOOMA.wordlist()
- * LOOMA.dictionarySearchall()
  * LOOMA.picturewordlist()
  * LOOMA.dictionaryDelete()
  * LOOMA.dictionaryUpdate()
- * LOOMA.dictionaryLookupCh_id
- * LOOMA.dictionaryAddCh_id
  * LOOMA.rtl()
  * LOOMA.setTheme()
  * LOOMA.changeTheme()
@@ -61,6 +59,7 @@ Description:
  * LOOMA.clean()
  * LOOMA.escapeHTML()
  * LOOMA.redirect
+ * LOOMA.date()
  */
 
 var LOOMA = (function() {
@@ -816,7 +815,10 @@ translate : function(language) {
 
 
 //***********  USING THE LOOMA DICTIONARY ***************
-//***********  functions are LOOKUP, POPUPDEFINITION, SEARCHALL, DELETE, UPDATE and WORDLIST *****************
+//***********  functions are LOOKUP, REVERSELOOKUP which return a JSON dictionary entry,
+//                           DEFINE, REVERSEDEFINE, POPUPDEFINITION which a displayable HTML of the dictionary entry
+//                           WORDLIST, PICTUREWORDLIST which generate a filtered list of words or list of words with pictures
+//    and these functions only used by the dictionary editor:  dictionaryDelete, dictionaryUpdate
 //
 //when you need a word looked up in the dictionary, call LOOMA.lookup() with these parameters:
 //            word: the word to look up
@@ -828,8 +830,6 @@ translate : function(language) {
 //                    result.part = part of speech
 //                    result.def = english definition [may be ""]
 //                optional properties:
-//                    result.img = filename for a picture of the word [may be  ""]
-//                    result.phon = phonetic of nepali word [may be ""]
 //                    result.plural = plural of the word
 //                    result.ch_id = code for textbook chapter the word first appears in [may be ""]
 //                typically, succeed() would display the translation (result.np), the definition (result.def) and
@@ -843,11 +843,11 @@ lookup : function(word, succeed, fail) {
 
     console.log('LOOMA.lookup: dictionary lookup - word is "' + word + '"');
 
-    //returns OBJECT result == {en:english, np:nepali, phon:phonetic, def:definition, img:picture, ch_id:chapter}
+    //returns OBJECT result == {en:english, np:nepali, def:definition, ch_id:chapter}
     $.ajax(
         "looma-dictionary-utilities.php", //Looma Odroid
         {
-            type: 'GET',
+            type: 'POST',
             cache: false,
             crossDomain: true,
             dataType: "json",
@@ -855,7 +855,6 @@ lookup : function(word, succeed, fail) {
             error: fail,
             success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
         });
-
     return false;
 }, //end lookup
 
@@ -867,7 +866,7 @@ reverselookup : function(nepali, succeed, fail) {
     $.ajax(
         "looma-dictionary-utilities.php", //Looma Odroid
         {
-            type: 'GET',
+            type: 'POST',
             cache: false,
             crossDomain: true,
             dataType: "json",
@@ -879,7 +878,8 @@ reverselookup : function(nepali, succeed, fail) {
     return false;
 }, //end REVERSELOOKUP
 
-defHTML: function (definition, rwdef) {
+defHTML: function (definition, rwdef) {  // helper function for utilities.js, not called by other JS
+        var def;
         var $div = $('<div />');
         var $english = $('<div id="english"/>');
         var $nepali = $('<div id="nepali"/>');
@@ -888,35 +888,35 @@ defHTML: function (definition, rwdef) {
     
         $english.text(definition.en);
         $nepali.text(definition.np);
-        $pos.html('<i>' + definition.part + '</i>');
+        if ('part' in definition) $pos.html('<i>' + definition.part + '</i>');
     
-        var def = definition.def.toLowerCase();
+        if ('def' in definition && definition.def) def = definition.def.toLowerCase();
+        else {
+            def = '';
+            for (var i=0; i < definition.meanings.length; i++)
+            def += '(' + definition.meanings[i].part + ') ' +  definition.meanings[i].def + '<br>';
+        
+        }
     
-        if (   (def == 'past tense of')
-            || (def == 'comparative form of')
-            || (def == 'superlative form of')
-            || (def == 'past participle of')
-            || (def == 'present participle of')
-            || (def == 'past tense and past participle of')
-            || (def == 'third person singular of'))
+        if (   (def === 'past tense of')
+            || (def === 'comparative form of')
+            || (def === 'superlative form of')
+            || (def === 'past participle of')
+            || (def === 'present participle of')
+            || (def === 'past tense and past participle of')
+            || (def === 'third person singular of'))
             def += ' ' + definition.rw;
     
-        def = def.replace(/\;/g, ";</p><\p>");
+        //def = def.replace(/\;/g, ";</p><\p>");
     
         $def.html(def);
-    
-    
-    
+        
     if (definition.img) {
         var imgName = definition.img + ".jpg";
         var $img = $('<img id="definitionThumb" alt="" src="../content/dictionary\ images/' + imgName + '"/>');
     }
     
     $div.append($english, $nepali, $pos, $def, $img);
-    
-    
-    
-    //$div.append($english, $nepali, $pos, $def);
     
         if (rwdef) {
             var $rwdef = $('<div id="rwdef"/>');
@@ -941,7 +941,6 @@ define : function(word, succeed, fail) {
     
     function found(def) {
         console.log(def['en'] + " DEFINED");
-        // succeed("<div>" + def['en'] + ": " + def['def'] + "</div>")
         if (def.rw) {
             function rwfound(rwdef) {
                 succeed(LOOMA.defHTML(def, rwdef));
@@ -961,7 +960,7 @@ define : function(word, succeed, fail) {
 
 // function reverseDEFINE looks up the word and returns HTML containing
 //                 the word, translation, definition, and rootword definition
-        reversedefine : function(word, succeed, fail) {
+reversedefine : function(word, succeed, fail) {
             LOOMA.reverselookup(word, found, notfound);
         
             function found(def) {
@@ -973,20 +972,22 @@ define : function(word, succeed, fail) {
             }
         }, //end LOOMA.reversedefine()
 
-// function DEFINE looks up the word and returns HTML containing
+/*
+
+// function DEFINITION_ONLY looks up the word and returns HTML containing
 //                 the word, translation, definition, and rootword definition
 definition_only : function(word, succeed, fail) {
     LOOMA.lookup(word, found, notfound);
     function found(definition) {
         if (definition.rw) {
             function rwfound(rwdef) {
-                if (   (definition.def == 'past tense of')
-                    || (definition.def == 'comparative form of')
-                    || (definition.def == 'superlative form of')
-                    || (definition.def == 'past participle of')
-                    || (definition.def == 'present participle of')
-                    || (definition.def == 'past tense and past participle of')
-                    || (definition.def == 'third person singular of')) {
+                if (   (definition.def === 'past tense of')
+                    || (definition.def === 'comparative form of')
+                    || (definition.def === 'superlative form of')
+                    || (definition.def === 'past participle of')
+                    || (definition.def === 'present participle of')
+                    || (definition.def === 'past tense and past participle of')
+                    || (definition.def === 'third person singular of')) {
                     succeed(definition['def'] +' '+definition['rw'])
                 } else {
                     succeed(definition['def']);
@@ -1005,8 +1006,8 @@ definition_only : function(word, succeed, fail) {
     function notfound() {
         fail();
     }
-}, //end LOOMA.define()
-
+}, //end LOOMA.definition_only()
+*/
 
 //  function POPUPDEFINITION looks up the word and displays its definition in a popup for 'time' seconds
 //          used by LOOKUP button in PDF, history, and looma.js
@@ -1058,23 +1059,30 @@ wordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
     return false;
 }, //end WORDLIST
 
-dictionarySearchall : function(word, succeed, fail) {
+picturewordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
 
-    //returns array of objects
+    var parameters = "cmd=list&picturesonly=true";
+    if (grade) parameters  += "&class="  + encodeURIComponent(grade);
+    if (subj) parameters   += "&subject="   + encodeURIComponent(subj);
+    if (ch_id) parameters  += "&ch_id="   + encodeURIComponent(ch_id);
+    if (count) parameters  += "&count="  + count.toString();
+    if (random) parameters += "&random=" + encodeURIComponent(random);
+    console.log(parameters);
     $.ajax(
         "looma-dictionary-utilities.php",
+
         {
             type: 'GET',
             cache: false,
             crossDomain: true,
-            dataType: "json",
-            data: "cmd=searchall&word=" + encodeURIComponent(word.toLowerCase()),
+            dataType: "json", //jQ will convert the response back into JS, dont need parseJSON()
+            data: parameters,
             error: fail,
             success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
         });
 
     return false;
-}, //end DICTIONARYSEARCHALL
+}, //end PICTUREWORDLIST
 
 dictionaryDelete : function(word, succeed, fail) {
 
@@ -1114,70 +1122,11 @@ dictionaryUpdate : function(word, succeed, fail) {
 
     return false;
 }, //end DICTIONARYUPDATE
-    
-picturewordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
         
-            var parameters = "cmd=list&picturesonly=true";
-            if (grade) parameters  += "&class="  + encodeURIComponent(grade);
-            if (subj) parameters   += "&subject="   + encodeURIComponent(subj);
-            if (ch_id) parameters  += "&ch_id="   + encodeURIComponent(ch_id);
-            if (count) parameters  += "&count="  + count.toString();
-            if (random) parameters += "&random=" + encodeURIComponent(random);
-            console.log(parameters);
-            $.ajax(
-                "looma-dictionary-utilities.php",
-                {
-                    type: 'GET',
-                    cache: false,
-                    crossDomain: true,
-                    dataType: "json", //jQ will convert the response back into JS, dont need parseJSON()
-                    data: parameters,
-                    error: fail,
-                    success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
-                });
-        
-            return false;
-        }, //end PICTUREWORDLIST
-// Charlotte
-        dictionaryLookupCh_id : function(ch_id, succeed, fail) {
-            //returns the ch_id associated with the page numbers
-            $.ajax(
-                "looma-dictionary-utilities.php",
-                {
-                    type: 'GET',
-                    cache: false,
-                    crossDomain: true,
-                    dataType: "json",
-                    data: "cmd=lookupCh_id&ch_id=" + encodeURIComponent(ch_id),
-                    error: fail,
-                    success: succeed
-                });
-        
-            return false;
-        }, //end dictionaryLookupCh_id
 
-//Charlotte
-        dictionaryAddCh_id : function(ch_id, word) {
-            //returns the ch_id associated with the page numbers
-            $.ajax(
-                "looma-dictionary-utilities.php",
-                {
-                    type: 'GET',
-                    cache: false,
-                    crossDomain: true,
-                    dataType: "json",
-                    data: "cmd=addCh_id&ch_id=" + encodeURIComponent(ch_id) + "&word=" + encodeURIComponent(word),
-                });
-        
-            return false;
-        }, //end dictionaryLookupCh_id()
-    
-    
-    
-    
-        rtl : function(element) { //enables Right-to-left input for numbers in looma-arith-problems.js
-    if (element.setSelectionRange) element.setSelectionRange(0, 0);
-},
+rtl : function(element) { //enables Right-to-left input for numbers in looma-arith-problems.js
+      if (element.setSelectionRange) element.setSelectionRange(0, 0);
+    },
 
 
 // ************** LOOMA THEME FUNCTIONS *******************
@@ -1919,11 +1868,13 @@ LOOMA.download = function (name, path) {
      }; //end redirect()
  
  
- //LOOMA.CH_IDregex = /^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/;
-    //LOOMA.CH_IDregex = /([1-9]|10)(EN|Sa|S|Ma|M|SSa|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/;
-LOOMA.CH_IDregex = /([1-9]|10|11|12)(EN|Ena|Sa|S|SF|Ma|M|SSa|SS|N|H|V|CS)[0-9]{2}(\.[0-9]{2})?/;   //removed "^" and "$"
- 
- var loginname = LOOMA.loggedIn();
+    //OLD LOOMA.CH_IDregex = /^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/;
+    //OLD LOOMA.CH_IDregex = /([1-9]|10)(EN|Sa|S|Ma|M|SSa|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/;
+LOOMA.CH_IDregex = /([1-9]|10|11|12)(EN|ENa|Sa|S|SF|Ma|M|SSa|SS|N|H|V|CS)[0-9]{2}(\.[0-9]{2})?/;   //removed "^" and "$"
+
+LOOMA.date = function() {return date = new Date().toJSON().slice(0, 10);};
+
+var loginname = LOOMA.loggedIn();
 
  // This script is released to the public domain and may be used, modified and
  // distributed without restrictions. Attribution not necessary but appreciated.

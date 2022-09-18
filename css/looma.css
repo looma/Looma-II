@@ -29,7 +29,7 @@
  */
 
 html {
-    --looma-green: #063006;  /*green  = 063006 for TEST Looma */
+    --looma-green: #29aa29;  /*green  = 063006 for TEST Looma */
     --looma-purple:#800080;  /*purple = 800080 for INDIA Looma */
     --looma-blue:#091F48;    /* Looma blue = 091F48 for regular Looma */
     --looma-background: var(--looma-blue);

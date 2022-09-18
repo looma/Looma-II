@@ -832,13 +832,13 @@ function runRandom () {
             game['responses'].push(res);
             wordcount++;
             if (wordcount < game['prompts'].length)
-                LOOMA.definition_only(game['prompts'][wordcount], word_define_succeed, word_define_fail);
+                LOOMA.define(game['prompts'][wordcount], word_define_succeed, word_define_fail);
             else runMatch();
         }
         
         function word_define_fail(r) {console.log("word define fail", r);}
     
-        LOOMA.definition_only(game['prompts'][wordcount], word_define_succeed, word_define_fail);
+        LOOMA.define(game['prompts'][wordcount], word_define_succeed, word_define_fail);
     }
     
     function get_wordlist_fail(r) {console.log("get wordlist failed: ", r);}
@@ -905,11 +905,12 @@ function runConc() {
 } // end runConc()
 
 
+
 /////////////////////////////
-// /////// runConcSpeak  /////////
+// /////// runConcType  /////////
+// for 'concentration', 'spoken concentration', 'picture concentration', 'spoken picture concentration':
 // //////////////////////////
-function runConcSpeak() {
-    //showTeam();
+function runConcType(type) {
     var prompts =   game['prompts'];
     var responses = game['responses'];
     
@@ -919,34 +920,86 @@ function runConcSpeak() {
     num_questions = prompts.length;
     
     var allButtons = [];
+    
+    // set up 'prompts'
     prompts.forEach(function(prompt, i){
-        var button = $('<button class="concButton spoken"  data-word="' + prompt + '" data-pair="' + i.toString() +
-            '" id="prompt-' + i.toString() +
-            '"><span class="concText" id="prompt-pair-' + i.toString() +
-            '">' + speechbubble + '</span></button>');
-        button.click(handleConcFirstClick);
-        allButtons.push(button);
-    });
-    responses.forEach(function(response,i){
-        var button = $('<button class="concButton"  data-pair="'+i.toString() +
-            '" id="response-'+i.toString() +
-            '"><span class="concText" id="response-pair-' + i.toString() +
-            '">' + response + '</span></button>');
+        
+        switch (type) {
+            case 'concentration':
+                var button = $('<button class="concButton"  data-word="' + prompt + '" data-pair="' + i.toString() +
+                    '" id="prompt-' + i.toString() +
+                    '"><span class="concText" id="prompt-pair-' + i.toString() +
+                    '">' + prompt + '</span></button>');
+                break;
+            case 'spoken concentration':
+                var button = $('<button class="concButton spoken"  data-word="' + prompt + '" data-pair="' + i.toString() +
+                    '" id="prompt-' + i.toString() +
+                    '"><span class="concText" id="prompt-pair-' + i.toString() +
+                    '">' + speechbubble + '</span></button>');
+                break;
+            case'picture concentration':
+                var button = $('<button class="concButton spoken"  data-word="' + prompt + '" data-pair="' + i.toString() +
+                    '" id="prompt-' + i.toString() +
+                    '"><span class="concText" id="prompt-pair-' + i.toString() +
+                    '">' + prompt + '</span></button>');
+                break;
+            case 'spoken picture concentration':
+                var button = $('<button class="concButton spoken"  data-word="' + prompt + '" data-pair="' + i.toString() +
+                    '" id="prompt-' + i.toString() +
+                    '"><span class="concText" id="prompt-pair-' + i.toString() +
+                    '">' + speechbubble + '</span></button>');
+                break;
+        }
+        
         button.click(handleConcFirstClick);
         allButtons.push(button);
     });
     
-    //https://www.w3schools.com/js/js_array_sort.asp
+    // set up 'responses'
+    responses.forEach(function(response,i){
+        
+        switch (type) {
+            case 'concentration':
+                var button = $('<button class="concButton"  data-pair="'+i.toString() +
+                    '" id="response-'+i.toString() +
+                    '"><span class="concText" id="response-pair-' + i.toString() +
+                    '">' + response + '</span></button>');
+                break;
+            case 'spoken concentration':
+                var button = $('<button class="concButton"  data-pair="'+i.toString() +
+                    '" id="response-'+i.toString() +
+                    '"><span class="concText" id="response-pair-' + i.toString() +
+                    '">' + response + '</span></button>');
+                break;
+            case'picture concentration':
+                var button = $('<button class="concButton"  data-pair="'+i.toString() +
+                    '" id="response-'+i.toString() +
+                    '"><span class="concText" id="response-pair-' + i.toString() + '">' +
+                    '<img src="../content/dictionary images/' + response + '.jpg"' +
+                    '</span></button>');
+                break;
+            case 'spoken picture concentration':
+                var button = $('<button class="concButton"  data-pair="'+i.toString() +
+                    '" id="response-'+i.toString() +
+                    '"><span class="concText" id="response-pair-' + i.toString() + '">' +
+                    '<img src="../content/dictionary images/' + response + '.jpg"' +
+                    '</span></button>');
+                break;
+        }
+    
+    
+
+        button.click(handleConcFirstClick);
+        allButtons.push(button);
+    });
+    
     allButtons.sort(function(a, b){return 0.5 - Math.random()});
     allButtons.forEach(function(button){
         $('#game').append(button);
-        //console.log(button[0]['children'][0])
     });
     
     startTimer(time_limit)
-    
-    //$('.concText').hide();
-} // end runConcSpeak()
+} // end runConcType()
 
 
 ///////////////////////////////////////
@@ -1339,7 +1392,7 @@ function nextQuestion() {
                         console.log("fail", r);
                     }
                     
-                    LOOMA.definition_only(word, word_define_succeed, word_define_fail);
+                    LOOMA.define(word, word_define_succeed, word_define_fail);
                 });
                 break;
             case 'matching':
@@ -1590,10 +1643,16 @@ function gameOver() {
                     
                     switch (type) {
                         case 'concentration':
-                            runConc();
+                            runConcType(type);
                             break;
                         case 'spoken concentration':
-                            runConcSpeak();
+                            runConcType(type);
+                            break;
+                        case 'picture concentration':
+                            runConcType(type);
+                            break;
+                        case 'spoken picture concentration':
+                            runConcType(type);
                             break;
                         case 'matching':
                             runMatch();

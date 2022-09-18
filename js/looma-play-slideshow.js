@@ -83,13 +83,6 @@ window.onload = function() {
 		}
 	});
 	
-	$('button#lookup').click(function(){
-        var toString = window.getSelection().toString();
-        console.log ('selected text to lookup: "', toString, '"');
-       // LOOMA.lookupWord(toString);
-        LOOMA.popupDefinition(toString, 15);
-    });
-	
 	$('button#speak').click(function(){
 		var toString = window.getSelection().toString();
 		 console.log ('selected text to speak: "', toString, '"');

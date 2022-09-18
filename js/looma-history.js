@@ -36,15 +36,6 @@ $(document).ready (function() {
         }
     });
 
-    //attach LOOMA.lookup() to the '.lookup' button
-    //NOTE: this code is overwritten in looma-pdf.js because looma-pdf.php displays the PDF in an <iframe> so the current selection in in the iframe
-    $('.lookup').off().click(function(){
-        var toString = window.getSelection().toString();
-        console.log ('selected text to lookup: "', toString, '"');
-        LOOMA.popupDefinition(toString, 0); // “0” means don’t timeout the popup
-    });
-
-
     // When characters are entered into the searchbar, set the clickcount to -1 and set the search value searchIndex to -1 as well
     $('#keywords').on('input', function(){
         $('#next').attr("clickcount",-1);

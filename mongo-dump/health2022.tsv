@@ -1,0 +1,83 @@
+_id	pn	len	npn	nlen	ft	dn	ndn	key1	key2	key3	key4
+4H01			5	9	chapter	Personal Hygiene	व्यक्तिगत स्वच्छता	Science	Medicine	Healthy living	Personal Hygiene
+4H02			14	9	chapter	Environmental Sanitation	वातावरण सरसफाइ	Science	Earth	Human impact	Other Human Impact
+4H03			23	10	chapter	Food and Nutrition	खाना र पोषण	Science	Medicine	Healthy living	Nutrition
+4H04			33	11	chapter	"Disease, Smoking and Drinking"	रोग तथा पदार्थहरूको दुव्र्यसन	Science	Medicine	Disease and inquiry	Alcohol and Drugs
+4H05			44	9	chapter	Safety and First Aid	हाम्रो सुरक्षा	Science	Medicine	Specialities	First Aid
+4H06			53	10	chapter	Drills and Physical Exercise	कवाज र शारीरिक व्यायाम	Social Studies	Community	Sports	Drill
+4H07			63	12	chapter	Athletics and Gymnastic	एथ्लेटिक्स र जिम्नास्टिक	Social Studies	Community	Sports	Exercise
+4H08			75	11	chapter	"Minor, Local and Ball Games"	खेलहरू	Social Studies	Community	Sports	Exercise
+4H09			86	5	chapter	Yoga	योग	Social Studies	Community	Sports	Yoga
+4H10			91	13	chapter	Drawing and Colour	रेखाचित्र र रङ	Social Studies	Arts	Visual Art	Drawing
+4H11			104	15	chapter	Printmaking and Clay works	"छपाइ, माटाको काम, कोलाज र निर्माण"	Social Studies	Arts	Visual Art	Pottery
+4H12			119	12	chapter	Singing and Musical Instruments	गायन र वादन	Social Studies	Arts	Drama	Playacting
+4H13			131	5	chapter	Dance and Acting	नृत्य र अभिनय	Social Studies	Arts	Drama	Acting
+6H01			5	13	chapter	Human Body	मानव शरीर	Science	Medicine	Human Body	
+6H02			18	13	chapter	Community Health and Mental Health	सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य	Social Studies	Community	Psychology	
+6H03			31	11	chapter	Nutrition and Food Security	पोषण र खाद्य सुरक्षा	Science	Medicine	Healthy Living	Nutrition
+6H04			42	16	chapter	"Disease, Safety and First Aid"	"रोग, सुरक्षा र प्राथमिक उपचार"	Science	Medicine	Specialties	First Aid
+6H05			58	12	chapter	Sexual and Reproductive Health	यौनिक र प्रजनन स्वास्थ्य	Science	Medicine	Specialties	Family Planning
+6H06			70	9	chapter	Physical Exercise and Drill	शारीरिक कसरत र कवाज	Social Studies	Community	Sports	Exercise
+6H07			79	10	chapter	Athletics and Adventures Activities	एथलेटिक्स र साहसिक क्रियाकलाप	Science	Medicine	Everyday Life	Games
+6H08			89	13	chapter	Games	खेलहरू	Social Studies	Community	Sports	
+6H09			102	5	chapter	Yoga	योग	Social Studies	Community	Sports	Yoga
+6H10			107	16	chapter	"Introduction to Arts, Line and Colour"	"कलाको परिचय, रेखाङ्‌कन र रङ"	Social Studies	Arts	Visual Art	Drawing
+6H11			123	11	chapter	"Printmaking, Clay Works, Collage and Construction"	"छपाइ, माटाको काम, कोलाज र निर्माण"	Social Studies	Arts	Visual Art	Pottery
+6H12			134	24	chapter	Singing and Playing Instrument	गायन र वादन	Social Studies	Arts	Music	
+6H13			158	11	chapter	Dance and Acting	नृत्य र अभिनय	Social Studies	Arts	Dance	
+7H01.00	5	1	5	15	section	Health Education	मानव शरीर				
+7H01.01	5	13	20	16	chapter	The Human Body	सामुदायिक स्वास्थ्य तथा मानसिक स्वास्थ्य	Science	Medicine	Human Body	
+7H01.02	18	4	36	10	chapter	Personal Health	पोषण र खाद्य सुरक्षा	Science	Medicine	Healthy Living	
+7H01.03	22	8	46	17	chapter	Nutrition	"रोग, सुरक्षा र प्राथमिक उपचार"	Science	Medicine	Healthy Living	Nutrition
+7H01.04	30	9	63	11	chapter	Diseases	यौनिक तथा प्रजनन् स्वास्थ्य	Science	Medicine	Disease & Injury	
+7H01.05	39	5	74	8	chapter	"Adolescence, sex and reproductive health"	शारीरिक कसरत र कवाज	Science	Medicine	Specialties	Family Planning
+7H01.06	44	4	82	8	chapter	"Drugs, Smoking and Alcoholism"	एथलेटिक्स र साहसिक क्रियाकलाप	Science	Medicine	Disease & Injury	Alcohol & Drugs
+7H01.07	48	5	90	14	chapter	Environmental Health	खेल	Science	Earth	Human Impact	
+7H01.08	53	7	104	7	chapter	Safety and First Aid	योग	Science	Medicine	Specialties	First Aid
+7H01.09	60	5	111	14	chapter	Family and Community Health	"कलाको परिचय, रेखाचित्र र रङ"	Science	Medicine	Healthy Living	
+7H02.00	65	1	125	8	section	Physical Education	"छपाइ, माटाको काम, कोलाज र निर्माण"				
+7H02.01	65	5	133	19	chapter	Exercise	गायन र वादन	Social Studies	Community	Sports	Exercise
+7H02.02	70	5	152	8	chapter	Drill	नृत्य र अभिनय	Social Studies	Community	Sports	Drill
+7H02.03	75	7			chapter	Physical Training		Social Studies	Community	Sports	Exercise
+7H02.04	82	4			chapter	Yoga		Social Studies	Community	Sports	Yoga
+7H02.05	86	11			chapter	Games		Social Studies	Community	Sports	
+7H02.06	97	4			chapter	Athletics		Social Studies	Community	Sports	Exercise
+8H01.00	5	1	6	1	section	Health Education	स्वास्थ्य शिक्षा	Science	Medicine	Healthy Living	
+8H01.01	5	14	6	14	chapter	Human Body	मानव शरीर	Science	Medicine	Human Body	
+8H01.02	19	3	20	3	chapter	Personal Health	व्यक्तिगत स्वास्थ्य	Science	Medicine	Healthy Living	
+8H01.03	22	7	23	7	chapter	Nutrition	पोषण	Science	Medicine	Healthy Living	Nutrition
+8H01.04	29	13	30	13	chapter	Disease	रोग	Science	Medicine	Disease & Injury	
+8H01.05	42	10	43	10	chapter	Adolescent's Sexual and Reproductive health	"किशोरावस्था, यौन तथा प्रजनन स्वास्थ्य"	Science	Medicine	Specialties	Family Planning
+8H01.06	52	4	53	4	chapter	"Drugs, Alcohol and Tobacco"	"लागु पदार्थ, धूमपान र मद्‌यपान"	Science	Medicine	Disease & Injury	Alcohol & Drugs
+8H01.07	56	7	57	6	chapter	Environmental Health	वातावरणीय स्वास्थ्य	Science	Earth	Human Impact	
+8H01.08	63	8	63	8	chapter	Safety and First Aid	सुरक्षा तथा प्राथमिक उपचार	Science	Medicine	Specialties	First Aid
+8H01.09	71	3	71	7	chapter	Family and Community Health	पारिवारिक र सामुदायिक स्वास्थ्य	Science	Medicine	Healthy Living	
+8H02.00	74	4	78	0	section	PhysicaL Education	शारीरिक शिक्षा	Social Studies	Community	Sports	Exercise
+8H02.01	78	5	78	5	chapter	Exercise	कसरत	Social Studies	Community	Sports	Exercise
+8H02.02	83	1	83	1	chapter	Drill	कवाज	Social Studies	Community	Sports	Drill
+8H02.03	84	7	84	7	chapter	Physical Training	शारीरिक व्यायाम	Social Studies	Community	Sports	Exercise
+8H02.04	91	7	91	7	chapter	Yoga	योग	Social Studies	Community	Sports	Yoga
+8H02.05	98	20	98	20	chapter	Games	खेल	Social Studies	Community	Sports	
+8H02.06	118	7	117	7	chapter	Athletics	एथलेटिक्स	Social Studies	Community	Sports	Exercise
+9H01			6	12	chapter	"The Concept of Health, Population and Environment Education"	स्वास्थ्य जनसङ्‌ख्या तथा वातावरण शिक्षाको अवधारणा	Science	Medicine	Healthy Living	
+9H02			18	16	chapter	Demographics and Demographic Changes	जन साङ्‌ख्यिकी र जनसङ्‌ख्या परिवर्तन	Social Studies	Economy	Other Economy	Population
+9H03			34	13	chapter	"Population, Environment and Development"	"जनसङ्‌ख्या, वातावरण र विकास"	Social Studies	Economy	Other Economy	Population
+9H04			47	19	chapter	Population and Environmental Status of Nepal	नेपालको जन साङ्‌ख्यिक स्थिति र वातावरण	Social Studies	Economy	Other Economy	Population
+9H05			66	25	chapter	Family Life Education	पारिवारिक जीवन शिक्षा	Social Studies	Community	Everyday Life	Family
+9H06			91	21	chapter	Natural Resources and Biodiversity	प्राकृतिक स्रोत तथा जैविक विविधत	Science	Biology	Ecology	Biodiversity
+9H07			112	19	chapter	Environmental Health	वातावरणीय स्वास्थ्य	Science	Medicine	Specialties	Public Health
+9H08			131	19	chapter	"Adolescence, Sexual and Reproductive Health Education"	"किशोरावस्था, यौन तथा प्रजनन्‌ स्वास्थ्य"	Science	Medicine	Specialties	Family Planning
+9H09			150	20	chapter	Consumer Health	उपभोक्ता स्वास्थ्य	Science	Medicine	Healthy Living	
+9H10			170	17	chapter	Primary Health Care and Precautions and Security on Risk	प्राथमिक स्वास्थ्य हेरचाह र जोखिमप्रति सावधानी तथा सुरक्षा	Science	Medicine	Specialties	Public Health
+10H01			5	9	chapter	Health Promotion and Mental Health	स्वास्थ्य प्रवर्धन र मानसिक स्वास्थ्य	Science	Medicine	Healthy Living	
+10H02			14	41	chapter	Human Body	मानव शरीर	Science	Medicine	Human Body	
+10H03			55	14	chapter	Comprehensive Sexuality Education	बृहत् यौनिकता शिक्षा	Science	Medicine	Specialties	Family Planning
+10H04			69	17	chapter	School Health and Healthful School Environment	विद्यालय स्वास्थ्य र सुरक्षित विद्यालय वातावरण	Social Studies	Community	Social Organization	Schools
+10H05			86	14	chapter	Diseases	रोगहरू	Science	Medicine	Disease & Injury	
+10H06			100	29	chapter	Nutrition	पोषण	Science	Medicine	Healthy Living	Nutrition
+10H07			129	8	chapter	Sport Science	खेल विज्ञान	Science	Medicine	Healthy Living	Sports
+10H08			137	11	chapter	Drill and Physical Training	कवाज तथा शारीरिक व्यायाम	Social Studies	Community	Sports	Exercise
+10H09			148	18	chapter	Athletics	एथलेटिक्स	Social Studies	Community	Sports	Exercise
+10H10			166	25	chapter	Games	खेलहरू	Social Studies	Community	Everyday Life	Games
+10H11			191	20	chapter	Badminton	ब्याडमिन्टन	Social Studies	Community	Sports	Badminton
+10H12			211	8	chapter	Yoga	योगा	Social Studies	Community	Sports	Yoga

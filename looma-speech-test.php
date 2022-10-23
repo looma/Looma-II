@@ -65,6 +65,9 @@ define ("CLASSES", 8);
     <?php include ('includes/js-includes.php'); ?>
 
     <script src="js/looma-speech-test.js"></script>
+
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=r2w8pU3y"></script>
+
 </body>
 
 </html>

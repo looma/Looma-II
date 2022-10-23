@@ -320,7 +320,7 @@ li:hover {
 }
 
 .buttondiv button {float:right;
-    font-size:1em;
+    font-size:1vw;
 }
 
 /************* Preview module ***************/
@@ -426,6 +426,7 @@ button[disabled] {
 */
 
 #displayImage {
+    height:60vh;
     max-height:60vh;
 }
 
@@ -520,9 +521,9 @@ button[disabled] {
 
 #timelineDisplay .activityDiv .thumbnaildiv {
     /* height:10vh; */
-    /* max-height:50%; */
+    max-height:50%;
     width:50%;
-    height:60%;
+    height:50%;
     float:left;
 }
 

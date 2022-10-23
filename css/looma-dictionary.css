@@ -46,13 +46,13 @@ button#submit {
 
 #english{
     text-align: center;
-    font-size: 1.5em;
+    font-size: 11vh;
     font-weight:bolder;
 }
 
 #nepali{
     text-align: center;
-    font-size: 1.5em;
+    font-size: 11vh;
     font-weight:bolder;
 }
 #definitionDisplay{
@@ -60,6 +60,11 @@ button#submit {
     font-size: 3em;
     font-weight:bolder;
 }
+
+#definition.largeWord { font-size:7vh;}
+#definition.largeWord { font-size:7vh;}
+#definition.largeWord { font-size:7vh;}
+
 #rootWord{
     text-align: center;
     font-size: 1em;

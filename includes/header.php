@@ -1,32 +1,55 @@
 <?php       //NOTE: cookies must be sent before any other data is sent to the client
 
-//chdir('/usr/local/var/www/Looma');
-//echo getcwd() . "\n"; exit;
+    //if (file_exists('../content/CEHRD')) echo '../content/CEHRD exists'; exit;
+    //if (file_exists('../content/CEHRD')) $LOOMA_SERVER = 'CEHRD';
 
-//if (file_exists('../content/CEHRD')) echo '../content/CEHRD exists'; exit;
-
-//if (file_exists('../content/CEHRD')) $LOOMA_SERVER = 'CEHRD';
-    if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np')
-         $LOOMA_SERVER = 'CEHRD';
-    else if ($_SERVER['SERVER_NAME'] === '54.214.229.222' || $_SERVER['SERVER_NAME'] === 'looma.website')
-         $LOOMA_SERVER = 'looma';
-    else $LOOMA_SERVER = 'looma local';
+    // set $SERVER_NAME to the web server for this page
+    // Turn on error reporting - only for localhost debugging, not on production server or looma box
+if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
+        $LOOMA_SERVER = 'CEHRD';
+        error_reporting(0);
+    } else if ($_SERVER['SERVER_NAME'] === '54.214.229.222' || $_SERVER['SERVER_NAME'] === 'looma.website') {
+        $LOOMA_SERVER = 'looma';
+        error_reporting(0);
+    } else if ( $_SERVER['SERVER_NAME'] === 'india.looma.website') {
+        $LOOMA_SERVER = 'looma india';
+      //  date_default_timezone_set("Asia/Kolkata")
+        error_reporting(0);
+    } else if ( $_SERVER['SERVER_NAME'] === 'test.looma.website') {
+        $LOOMA_SERVER = 'looma test';
+        error_reporting(E_ALL);
+    } else {
+        $LOOMA_SERVER = 'looma local';
+        error_reporting(E_ALL);
+    }
 
     //echo "server[server_name) is " . $_SERVER['SERVER_NAME'];exit;
+
+/*
+    if ($LOOMA_SERVER === 'looma local')
+        ini_set('open_basedir', "/var/www/html/Looma:/var/www/html/content:/var/www/html/maps2018:/var/www/html/ePaath:/tmp");
+    else
+        ini_set('open_basedir', "/usr/local/var/www/Looma:/usr/local/var/www/content:/usr/local/var/www/maps2018:/usr/local/var/www/ePaath:/tmp");
+    // NOTE: apparently "ini_set()" cannot set "open_basedir" (at least on MAC).
+    // be sure open_basedir is set in PHP.ini or in httpd.conf/apache2.conf
+*/
+     // to check the open_basedir setting, temporarily uncomment this line:
+        //echo "The open_basedir value is ". ini_get('open_basedir');
 
     if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER) {
         setcookie('source',$LOOMA_SERVER,0,"/");
         if ($LOOMA_SERVER === 'CEHRD') setcookie('theme', 'CEHRD',0,"/");
-        header("Refresh:0");
+        if ($LOOMA_SERVER === 'looma india') setcookie('theme', 'INDIA',0,"/");
+        header("Refresh:0");  //reload page to get cookies updated
         exit;
     }
 
     print "<!DOCTYPE html>";
 
-    if ($_COOKIE['source'] === "CEHRD") {
-      print "<title>Learning Portal</title>";
-      print '<link rel="icon" type="image/png" href="images/logos/CEHRD-logo small.jpg">';
-    } else {  //source default is  'looma'
+    if ($LOOMA_SERVER === 'CEHRD') {
+       print "<title>Learning Portal</title>";
+       print '<link rel="icon" type="image/png" href="images/logos/CEHRD-logo small.jpg">';
+    } else {  //server default is  'looma'
         print "<title>{$page_title}</title>";
         print '<link rel="icon" type="image/png" href="images/logos/looma favicon yellow on blue.png">';
     }
@@ -61,23 +84,11 @@
     The current version of Looma is configured for grade K-12 education in Nepal. Configurations for other
     languages and countries are planned.">
 
-	<?php
-  	    // Turn on error reporting - only for localhost debugging, not on production server or looma box
-    //    if ($LOOMA_SERVER === 'looma local')
-            error_reporting(E_ALL);
-      //  else
-        //    error_reporting(0);
-
+<?php
    // ini_set('display_errors', 1);
     header_remove('X-Powered-By');
     header_remove('Server');
 
-    if ($LOOMA_SERVER === 'looma local')
-        ini_set('open_basedir', "/var/www/html/Looma:/var/www/html/content:/var/www/html/maps2018:/var/www/html/ePaath");
-    else
-        ini_set('open_basedir', "/usr/local/var/www/Looma:/usr/local/var/www/content:/usr/local/var/www/maps2018:/usr/local/var/www/ePaath");
-    // NOTE: probably "ini_set()" cannot set "open_basedir". be sure open_basedir is set in PHP.ini
-    // NOTE: even tho this statement says that it is set:  echo "The open_basedir value is :". ini_get('open_basedir');
 
         require_once ('includes/looma-translate.php');
         require_once ('includes/mongo-connect.php');
@@ -85,7 +96,7 @@
 
         $documentroot = str_replace("Looma","",getenv("DOCUMENT_ROOT"));
         //echo 'DocmumentRoot is ' . $documentroot;
-    ?>
+?>
 
       <!-- <div class="watermark">Under Construction</div>  -->
 

@@ -99,6 +99,7 @@ button.class.active {
     color:yellow;
 }
 #subjects button.game {
+    background:white;
     height:25vh;
     margin: 1vw;
 }

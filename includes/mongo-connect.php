@@ -274,7 +274,7 @@ $tags_collection       = $loomaDB -> tags;
 $chapters_collection   = $loomaDB -> chapters;
 $textbooks_collection  = $loomaDB -> textbooks;
 
-$dictionary_collection = $loomaDB -> dictionaryV2;
+$dictionary_collection = $loomaDB -> dictionary;
 
 $history_collection    = $loomaDB -> histories;
 $histories_collection  = $loomaDB -> histories;

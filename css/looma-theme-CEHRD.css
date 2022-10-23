@@ -3,7 +3,7 @@ body {
     --looma-background: white;
     --looma-toolbar: #5AC5C5;
     --looma-font-color:#EA3323;
-    --looma-button-background:#DFFEFE;
+    --looma-button-background: #DFFEFE;
     --looma-button-font-color:black;
     
     background-color: var(--looma-background);

@@ -910,7 +910,8 @@ function makedroppable() {
         accept: '.activityDiv',
         scope:'activityDivs',
         drop: function(event, ui) {
-        if ($(ui.helper).data('type') === 'text-template') convertTextfile(ui.helper);
+            if ($(ui.helper).data('type') === 'text-template') convertTextfile(ui.helper);
+            makesortable();
         }
     });
 }; //end makedroppable()
@@ -1422,8 +1423,8 @@ window.onload = function () {
     
     // show setup panel, get user input
     lessoncheckpoint();
-    lessonnew();
-    
+   // lessonnew(); //NOTE: removed annoying NEW startup panel. use "new" filecommand to get the panel
+    LOOMA.alert('Use File Commands menu  "Open" or "New" buttons to edit a lesson', 5);
 };  //end window.onload()
 
 

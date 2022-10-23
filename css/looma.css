@@ -47,7 +47,7 @@ html {
     --looma-scrollbar-track:lightgoldenrodyellow;
     background-color: white;
     height:100vh;
-    width:100vw;xxx
+    width:100vw;
     position:relative;
     margin:0;
     padding:0;
@@ -128,8 +128,15 @@ body * {
 #main-container-horizontal.scroll { overflow:auto;}
 #main-container-vertical.scroll   { overflow:auto; }
 
+.scroll {
+    scrollbar-width:auto;
+    scrollbar-color:red lightgrey;
+    /* scrollbar-color: lightgrey lightgoldenrodyellow; */
+   ;
+}
+
 ::-webkit-scrollbar-track-piece {
-    background: var(--looma-scrollbar-track); /*light blue*/
+   background: var(--looma-scrollbar-track); /*light blue*/
 }
 ::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.75);

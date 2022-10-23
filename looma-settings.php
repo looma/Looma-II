@@ -86,12 +86,6 @@ Description:  for Looma 2
              </a>
 
              <br>
-             <button id="exit-kiosk" class="looma-control-button">
-                 <!-- <span class="xlat">To exit Kiosk mode type Alt-F4 on a keyboard</span> -->
-             </button>
-             <button id="shutdown" class="looma-control-button">
-                 <!-- <span class="xlat">To shutdown Looma type Crtl-W on a keyboard</span> -->
-             </button>
 
              <br><div id="themelist" class="exec-control">
                  <span>Change theme of Looma's pages:  </span>

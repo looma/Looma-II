@@ -58,13 +58,12 @@ if (file_exists($outputFileName)) // IF we get conflicting filenames, generate a
 //DEBUG  echo shell_exec('which mimic');return;
 //DEBUG  echo "input text is : " . $text . "   ";
 
-$command = "mimic -t " .
+$mimicCommand = exec("which mimic");
+$command = "$mimicCommand -t " .
             escapeshellarg($text) .
             " --setf duration_stretch=" . (string) 1/$rate  .  // to slow down to 2/3 rate, we stretch to 1.5
             "  -voice " . escapeshellarg($voiceFile) .
             " -o " . $outputFileName;
-
-//DEBUG  echo $command; return;
 
 /*DEBUG
     $sample = escapeshellarg("sample text to speak 3");

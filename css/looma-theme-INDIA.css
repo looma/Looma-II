@@ -1,0 +1,90 @@
+body {
+    --looma-background: #138808;
+    --looma-toolbar: #FF9933;
+    --looma-font-color:yellow;
+    --looma-button-background: #DFFEFE;
+    --looma-button-font-color:black;
+    
+    background-color: var(--looma-background);
+    font-family: "Comic Neue bold", "Comic Sans MS", "Chalkboard", sans-serif;
+    color: var( --looma-font-color);
+}
+
+.watermark {
+    display:block;
+}
+
+#main-container-horizontal {
+    background-color: var(--looma-background);
+}
+#logo, #native-logo  {
+    /* grid-column: 1 / -1 !important;*/
+    grid-row:1 ;
+    height: 12vh;
+}
+#logo img {height:12vh;}
+
+#toolbar-container, #toolbar-container-vertical {
+    background-color:  var(--looma-toolbar);
+}
+
+#toolbar-container .button-div {
+    justify-content:center;
+}
+
+.toolbar-button{
+/*    width:15vh !important;*/
+    max-width:5vw;
+}
+
+button {
+    background-color: var(--looma-button-background);
+    color:black;
+    border: 2px solid white;
+    border-radius: 8px;
+    font-weight: bold;
+    /*font-size: 3em;*/
+    cursor: pointer;
+    box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+/*
+#classes button, #subjects button {
+ 
+    background-color:paleturquoise;
+    color:white;
+}
+*/
+
+#classes button:hover, #subjects button:hover {
+    background-color: lightyellow;
+    color:blue;
+}
+
+#classes button.active, #subjects button.active {
+    background-color: #34B3C9FF;
+    color:white;
+}
+
+/*#toolbar-clock,
+#toolbar-maps,
+#toolbar-histories,
+#toolbar-paint,*/
+#toolbar-web,
+#toolbar-settings,
+#sizemessages,
+
+title,
+    
+    /*#credits,
+    #credits-title,*/
+#copyright,
+#about {
+    display:none;
+}
+
+div#search-panel {background-color:rgba(27,71,177,.45);}
+div#results-div  {background-color: #CAFEDB;}
+/* div#results-div  {background-color: #EFF7C2;}*/
+/* div#results-div  {background-color: #66ffcc;}*/
+/* div#results-div  {background-color: #ccffee;}*/

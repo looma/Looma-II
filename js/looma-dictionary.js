@@ -1,7 +1,7 @@
 /*
 Author: Grant Dumanian, Jayden Kunwar, Mahir Arora
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: 2015 07, 20178 07
+Date: 2015 07, 2018 07
 Revision: Looma 3.0
 
 filename: looma-dictionary.js

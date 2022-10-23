@@ -27,7 +27,9 @@ var subjectnames = {
     'science optional' : 'Opt. Science',
     'social studies' : 'Social',
     'serofero' : 'Serofero',
-    'environment' : 'Environment'
+    'environment' : 'Environment',
+    'telugu' : 'Telugu',
+    'biology' : 'Biology'
 }
 var nsubjectnames = {
     'english' : 'अंग्रेजी',
@@ -65,17 +67,20 @@ function orderSubjects(a, b) {
         const sortOrder = {
             "english": 1,
             "english optional": 2,
-            "nepali": 3,
-            "math": 4,
-            "math optional": 4,
-            "science": 6,
-            "science optional": 7,
-            "computer": 8,
-            "social studies": 9,
-            "serofreo": 10,
-            "moral education": 11,
-            "health": 12,
-            "vocation": 13
+            "telugu":3,
+            "nepali": 4,
+            "math": 5,
+            "math optional": 6,
+            "science": 7,
+            "science optional": 8,
+            "biology":9,
+            "computer": 10,
+            "social studies": 11,
+            "serofero": 12,
+            "environment":13,
+            "moral education": 14,
+            "health": 15,
+            "vocation": 16
         };
     
      if (a['subject'] == b['subject']) { return 0;}

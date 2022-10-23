@@ -327,10 +327,10 @@ function performSearch(collection, ft) {
     //      so add the ON handler to the DIV which will contain the result elements
     $('#filesearch-results').on('click',
         'button',
-        function() {
+        function(event) {
             console.log('FILE COMMANDS: clicked on SEARCH result');
             
-            //event.preventDefault();
+            event.preventDefault();  //trying to prevent DOUBLE open that has been observed
             
             closesearch();
             if ($(this).attr('class') !== 'cancel-results') //if file not found, dont call OPEN()
@@ -353,6 +353,9 @@ function performSearch(collection, ft) {
 ///////////////////////////////
 //close the file search panel
 function closesearch() {
+    
+    $('#filesearch-results').off('click'); //trying to prevent DOUBLE open that has been observed
+    
     //restore file search FORM fields 'collection' and 'ft'
     $('#filesearch-collection').val(currentcollection);
     $('#filesearch-ft').val(currentfiletype);

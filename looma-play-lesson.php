@@ -168,9 +168,9 @@ Description: looma lesson plan presenter
                             else if (isset($details['ft']) && $details['ft'] == 'game')
                                 $thumbSrc = 'images/games.png';
                             else if (isset($details['fn']) && isset($details['fp']))
-                                $thumbSrc = $details['fp'] . thumbnail($details['fn']);
+                                $thumbSrc = thumbnail($details['fn'], $details['fp'],$details['ft']);
                             else if (isset($details['fn']))
-                                $thumbSrc = thumbPrefix($details['ft']) . thumbnail($details['fn']);
+                                $thumbSrc = thumbnail($details['fn'], thumbPrefix($details['ft']), $details['ft']);
                             else $thumbSrc = 'images/LoomaLogo_small.png';
 
                             if (isset($details['ft']) && $details['ft'] == 'EP' && $details['subject'] === 'nepali') $playLang = 'np'; else $playLang = 'en';
@@ -229,7 +229,7 @@ Description: looma lesson plan presenter
                               $nlen = (isset($chapter['nlen']) ? $chapter['nlen'] : null);
 
                               if ($filename && $filepath)
-                                  $thumbSrc = "../content/" . $filepath . thumbnail($filename);
+                                  $thumbSrc = "../content/" . $filepath . thumbnail($filename, $filepath,'chapter');
                               else $thumbSrc = null;
                               //echo "filename is " . $filename;
                               makeChapterButton('pdf',

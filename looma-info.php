@@ -46,7 +46,7 @@ include ('includes/header.php');
         </div>
         <div id="about">
             <div id="copyright"><h3>Looma</h3>
-                <h4>   Release 7.5.0 OCT 2022   </h4>
+                <h4>   Release 7.5.2 NOV 2022   </h4>
                 <img src ='images/copyright.png' class="copyright"></img>2022
             </div>
 

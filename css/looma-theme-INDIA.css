@@ -72,19 +72,19 @@ button {
 #toolbar-paint,*/
 #toolbar-web,
 #toolbar-settings,
-#sizemessages,
+/*#sizemessages,
 
 title,
-    
-    /*#credits,
-    #credits-title,*/
+#credits,
+#credits-title,
 #copyright,
-#about {
+#about */
+{
     display:none;
 }
 
 div#search-panel {background-color:rgba(27,71,177,.45);}
-div#results-div  {background-color: #CAFEDB;}
+div#results-div  {background-color: rgba(27,71,177,.45);}
 /* div#results-div  {background-color: #EFF7C2;}*/
 /* div#results-div  {background-color: #66ffcc;}*/
 /* div#results-div  {background-color: #ccffee;}*/

@@ -80,7 +80,8 @@ function folderName ($path) {
 /**********************/
 /***** thumbnail ******/
 /**********************/
-function thumbnail ($fn) {
+/*
+ function thumbnail ($fn) {
             //given a CONTENT filename, generate the corresponding THUMBNAIL filename
             //find the last '.' in the filename, strip off the extension, and append '_thumb.jpg'
             //example: input 'aaa.bbb.mp4' returns 'aaa.bbb_thumb.jpg' - this is the looma standard for naming THUMBNAILS
@@ -88,15 +89,42 @@ function thumbnail ($fn) {
                 if ( $dot ) { return substr($fn, 0, $dot) . "_thumb.jpg";}
                 else return "";
       } //end function THUMBNAIL
+*/
 
+function thumbnail ($file, $path, $type) {
+    $src = "";
+
+    $dot = strrpos($file, ".");  //strrpos finds the LAST occurrence
+    if ( $dot ) { $src = $path . substr($file, 0, $dot) . "_thumb.jpg";}
+
+    // if no specific thumbnail, use folder's thumbnail
+    if (!file_exists($src)) $src = $path . "thumbnail.png";
+
+    // if still no thumbnail, use filetype's thumbnail
+    if (!file_exists($src)) {
+         if ($type == 'text' || $type === 'text-template')    $src = "images/textfile.png";
+    else if ($type == 'game')       $src = "images/game.png";
+    else if ($type == 'pdf')       $src = "images/pdf.png";
+    else if ($type == 'EP')       $src = "images/logos/ole-nepal.jpg";
+    else if (in_array($type, ['mp4','m4v','mp5','mov','video']))  $src = "images/video.png";
+    else if (in_array($type, ['jpg','jpeg','png','gif','image'])) $src = "images/picture.png";
+    else if (in_array($type, ['mp3','m4a','audio']))              $src = "images/audio.png";
+    else if ($type == 'slideshow')  $src = "images/play-slideshow-icon.png";
+    else if ($type == 'lesson')     $src = "images/lesson.png";
+    else if ($type == 'looma')      $src = "images/LoomaLogo.png";
+    else $src = "";
+    };
+
+    return htmlspecialchars($src);
+}  // end thumbnail()
 
 /**********************/
 /**** folderThumbnail   ***/
 /**********************/
 function folderThumbnail ($fp) {  //for directories, look for filename "thumbnail.png" for a thumbnail representing the contents
     if (file_exists($fp . "/thumbnail.png")) {
-        return "<img alt='' src='$fp/thumbnail.png' >"; }
-    else return "";
+        return "<img loading='lazy' alt='' src='$fp/thumbnail.png' >"; }
+    else return "<img loading='lazy' alt='' src='images/folder.png' >";
 } //end function thumbnail
 
 function displayName($filename, $dn, $ndn) {
@@ -224,6 +252,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
                return;
 		}  //end SWITCH
 
+        /*
              if ($thumb && $thumb != "") $thumbSrc = $thumb;
         //else if ($ft == 'EP') $thumbSrc = $thumb;
         else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
@@ -235,6 +264,11 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 
         $thumbSrc = htmlspecialchars($thumbSrc);
         if ( !file_exists($thumbSrc)) $thumbSrc = $fp . "thumbnail.png";
+        */
+
+        /* NEW  thumbnail function*/
+        if ($thumb && $thumb != "") $thumbSrc = $thumb;
+        else $thumbSrc = thumbnail($fn, $fp, $ft);
 
         $fn = htmlspecialchars($fn);
 
@@ -273,7 +307,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
             echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
 
                   echo ">";
-                  echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
+                  if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
                   //echo "<span>" . $dn . "</span>";
                   displayName($fn, $dn, $ndn);
 

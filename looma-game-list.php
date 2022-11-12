@@ -66,10 +66,13 @@ require_once ('includes/looma-utilities.php');
             foreach ($games as $game) {
 
                 //makeActivityButton();
-                echo '<button class="activity game" data-class="' . $game_class . '" data-subject="' . $game_subject .
+                echo '<button class="activity img game" data-class="' . $game_class . '" data-subject="' . $game_subject .
                     '" data-id="' . (string) $game['_id'] .
                     '" data-type="' . $game['presentation_type'] . '"' .
                     '"> ';
+
+                echo '<img loading="lazy" draggable="false" src="images/games.png">';
+
                 echo '<p>';
                 keyword($game['title']);
                 echo '</p><p class="small">';

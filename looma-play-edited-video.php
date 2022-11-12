@@ -29,7 +29,7 @@ Usage: 	<button  id="testvideo"
 -->
 
 <?php $page_title = 'Looma Edited Video Player';
-    include ('includes/header.php');
+    include('includes/header.php');
     include('includes/looma-utilities.php');
 ?>
 

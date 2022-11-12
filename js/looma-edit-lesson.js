@@ -238,7 +238,36 @@ function displaySearchResults(filterdata_object) {
 
 function filetype(ft) { return LOOMA.typename(ft);}
 
+
 function thumbnail (item) {
+    
+    //builds a filepath/filename for the thumbnail of this "item" based on type
+    var collection, filetype, filename, filepath;
+    var thumbnail_prefix, path, imgsrc, idExtractArray;
+    
+    if ($(item).attr('thumb')) return $(item).attr('thumb');  //some activities have explicit thumbnail set
+    
+    collection = $(item).attr('collection');
+    filetype = $(item).attr('ft');
+    if ($(item).attr('fn')) filename = $(item).attr('fn');
+    
+    if ($(item).attr('lang') === 'np') filename = $(item).attr('nfn');
+    
+    if ($(item).attr('fp')) filepath = $(item).attr('fp');
+    
+    if (collection == "chapters" || item.pn != null) {
+        idExtractArray = extractItemId(item);
+        filepath = idExtractArray["currentGradeFolder"] + "/" + idExtractArray["currentSubjectFull"] + "/";
+        filename = idExtractArray["currentSubjectFull"] + "-" + idExtractArray["currentGradeNumber"];
+        imgsrc = LOOMA.thumbnail(filename, filepath, 'chapter');
+    }
+    else imgsrc = LOOMA.thumbnail(filename, filepath, filetype);
+    
+    return imgsrc;
+} // end thumbnail()
+
+
+function thumbnailXXX (item) {
 
 //NOTE: this code should be merged and rationalized with LOOMA.thumbnail() in looma-utilities.js
     
@@ -398,6 +427,7 @@ function createActivityDiv (activity) {
         
         $("<img/>", {
             class : "resultsimg",
+            loading: "lazy",
             src : thumbnail(item, collection)
         }).appendTo(thumbnaildiv);
         
@@ -609,7 +639,7 @@ function preview_result (item, editable) {
             
         }
         // Pictures
-        else if (filetype=="jpg" || filetype=="gif" || filetype=="png" || filetype=="image") {
+        else if (filetype=="jpg" || filetype=="gif" || filetype=="png" || filetype=="image" || filetype=="jpeg") {
             if (!filepath) filepath = '../content/pictures/';
             document.querySelector("div#previewpanel").innerHTML = '<img src="' +
                 filepath +

@@ -123,7 +123,7 @@ dosync () {
     SIZEONLY=$3
 
     echo;
-    if [ $1 = "dryrun" ]
+ if [[ $DRYRUNMODE = "--dry-run" ]]
     then
       echo "doing RSYNC from $FROM to $TO with --dry-run [no changes will be made]"
     else
@@ -159,7 +159,7 @@ echo
 # groupadd looma
 # useradd -g looma looma
 
-if [[ $1 = "dryrun" ]]
+if [[ $2 = "dryrun" ]]
   then
     DRYRUNMODE="--dry-run"
   else
@@ -213,7 +213,6 @@ then
     then
       checknetworkspeed
     fi
-    echo; echo "if prompted for \"password for odroid\" enter \"odroid\"  "
   else
       echo; echo "****************************************************************"
       echo 'ERROR: input must be "U" or "I"'
@@ -221,27 +220,56 @@ then
       exit 1
   fi
 
-########################### set the target directory ###############
+########################### set the target directory ###############E
 
-  # set DEFAULT target dir to CEHRD target, but ask user to confirm or to enter another dir
-  TODIR="/var/www/html"
-  echo
-  echo "Target directory default is set to $TODIR)"
-  echo
-  echo "if that is OK, enter \"yes\", else enter the desired target directory (without a trailing \/): ";read target;
-    if [[ $target -ne "yes" ]]
-    then
-      TODIR=$target
-    fi
-  echo  "-----------------"
-  echo "using target directory $TODIR"
-  echo  "-----------------"
+echo "********************"
+echo "********************"
+#echo "enter 1,2 or 3 to select the target directory for Looma on this system"
+#echo "  - - for Loomas boxes           [directory is /var/www/html) enter '1'"
+#echo "  - - for Loomas on Amazon (AWS) [directory is /opt/bitnami/htdocs) enter '2'"
+#echo "  - - for other situationsLoomas (and to be prompted for the directory)) enter '2'"
+#read
+#if [ $REPLY = '1']
+#  TODIR="/var/www/html"
+#elif [ $REPLY = '2' ]
+#  TODIR="/opt/bitnami/htdocs"
+#else
+#  echo "enter the full path of the Looma directoyr (with no trailing /)"
+#  read
+#  TODIR=$REPLY
+#fi
+
+if [ $# -eq 0 ]
+  then
+   TODIR="/var/www/html"
+  else
+   TODIR=$1
+fi
+   echo
+   echo "Target directory default is set to $TODIR"
+   echo
+   echo "if that is OK, enter \"yes\", OTHERWISE enter the desired target directory (without a trailing /): "
+   read
+   if [ $REPLY != "yes" ]
+   then
+     TODIR=$REPLY
+     echo
+     echo "Target directory default is set to $TODIR"
+     echo "if that is OK, enter \"yes\""
+     read
+     if [ $REPLY != "yes" ]
+     then
+       exit
+     fi
+  fi
 
 ###########################  do the transfers ###############
 
 #       copy current Looma code to LoomaBAK
 #       NOTE: call to function DACKUP() commented out for now
     # backup
+
+    echo; echo "if prompted for \"password for odroid\" enter \"odroid\"  "; echo
 
     #       install new Looma code
     echo
@@ -349,7 +377,7 @@ if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
 echo
 echo "****************************************************************"
 echo "****************************************************************"
- if [[ $1 = "dryrun" ]]
+ if [[ $DRYRUNMODE = "--dry-run" ]]
  then
     echo "DONE - LOOMA UPDATE DRY RUN:  no files were changed"
  else

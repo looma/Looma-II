@@ -1,0 +1,21 @@
+// ONE TIME program to remove quotes from NDN fields
+//  run in MONGO SHELL with: load('fixQuotedNDNs')
+//
+var cursor, count, fixcount, doc, output;
+
+cursor = db.chapters.find({'ndn':/^"/});
+count = 0; fixcount = 0;
+
+while (cursor.hasNext()) {
+      doc = cursor.next();
+      fixcount++;
+      var newNDN = doc['ndn'].replace(/"/g, '');
+
+      print ('...' + doc['ndn'] + ' converts to ' + newNDN);
+      doc['ndn'] = newNDN;
+      db.chapters.update({_id:doc._id}, doc);
+};
+
+print('_______________');
+print(' + + + fixed ' + fixcount + ' items');
+print('_______________');

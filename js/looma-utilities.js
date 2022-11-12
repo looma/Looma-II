@@ -604,7 +604,7 @@ thumbnail: function (filename, filepath, filetype, thumb) {
                 else if (filepath && filepath.indexOf('Hesperian') >= 0) { //keep this before filetype===pdf
                     imgsrc = filepath + "thumbnail.png";
                 }
-                else if (filetype == "pdf" || filetype === "Document") { //pdf
+                else if (filetype == "pdf" || filetype === "Document") { //pdf - we dont use Document type any more
                     thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
                     if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
                     imgsrc = path + thumbnail_prefix + "_thumb.jpg";
@@ -617,9 +617,9 @@ thumbnail: function (filename, filepath, filetype, thumb) {
                 else if (filetype == "EP" || filetype == "ep" || filetype == "epaath") {
                     if (filepath === "../content/epaath/activities/")
                          imgsrc = filepath + filename + "/thumbnail.jpg";
-                    else imgsrc = thumb;
+                    else imgsrc = "images/logos/ole-nepal.jpg";
                 }
-                else if (filetype == "text") {
+                else if (filetype == "text" || filetype == "text-template") {
                     imgsrc = "images/textfile.png";
                 }
                 else if (filetype == "lesson") {
@@ -1389,7 +1389,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
          }
          */
          
-         if (!engine) engine = 'mimic';  //efault engine is mimic
+         if (!engine) engine = 'mimic';  //default engine is mimic
          
          if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_bdl'; //get the currently used voice, if any. default VOICE
         

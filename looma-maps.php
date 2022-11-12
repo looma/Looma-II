@@ -10,7 +10,7 @@ Description: Initial "maps" page. Takes the user to the different maps.
 
 <?php  $page_title = 'Looma Maps';
 include ("includes/header.php");
-require('includes/looma-utilities.php');
+require_once('includes/looma-utilities.php');
 logPageHit('maps');
 ?>
 

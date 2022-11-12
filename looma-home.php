@@ -7,6 +7,9 @@
 ?>
 
     <link rel="stylesheet" href="css/looma-home.css">
+
+    <link rel="prefetch" href="../content/textbooks/Class1/English/English-1-2465.pdf" />
+
 </head>
 
 <body>

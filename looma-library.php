@@ -15,7 +15,7 @@ Description:  displays and navigates content folders for Looma
         //usage: makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
         //                          $mongo_id, $ole_id, $url, $pg, $zoom,
         //                          $grade, $epversion, $nfn, $npg,$prefix,$lang)
-        require('includes/looma-utilities.php');
+        require_once('includes/looma-utilities.php');
 
     logPageHit('library');
 ?>
@@ -374,7 +374,8 @@ echo "</tr></table>";
                     $data = $slideshow['data'];
                     $author = $slideshow['author'];
                     $date = $slideshow['date'];
-                    if (isset($slideshow['thumb'])) $thumb = $slideshow['thumb']; else $thumb = "";
+                    if (isset($slideshow['thumb'])) $thumb = $slideshow['thumb'];
+                    else $thumb = "images/play-slideshow-icon.png";
                     //NOTE: for now, fp and fn are concatenated in fn
                     //$path = $slideshow['fp'];
 

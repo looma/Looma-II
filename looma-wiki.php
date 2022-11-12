@@ -14,7 +14,7 @@ Description:  displays a list of activity buttons of wikipedia articles matching
 require_once ('includes/header.php');
 
 //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang)
-require('includes/looma-utilities.php');
+require_once('includes/looma-utilities.php');
 ?>
 </head>
 
@@ -50,7 +50,7 @@ function makeButton($activity) {
 
         if (isset($activity['thumb'])) $thumb = $activity['thumb'];
         else if (isset($activity['fn']) && isset($activity['fp']))
-            $thumb = $activity['fp'] . thumbnail($activity['fn']);
+            $thumb = $activity['fp'] . thumbnail($fn,$fp,$ft);
         else if ($ft === 'game') $thumb = 'images/games.png';
         else $thumb = null;
 

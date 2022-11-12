@@ -1,17 +1,27 @@
 #!/bin/bash
 #
 #  filename: loomaupdate
-#   VERSION: 2.0
+#   VERSION: 2.2
 #       put this file in /usr/local/bin on each looma
 #       with chmod +x to make it executable
 #
 #       this file just calls /var/www/html/Looma/looma schell scripts/loomaupdater
+#          and passes the Looma master directory as a parameter
+#          change the commented out lines below to specify the correct directory
+#           '/var/www/html' for Looma boxes
+#           '/home/bitnami/htdocs' for AWS Looma images
+#         the 2nd parameter is optional. if it is "dryrun" then the update will be dry run
+#
 #       this allows us to 'update' the updater script using the normal rsync from rsync.net
 #
 #       author: skip
-#       date:   JUN 2019
+#       date:   JUN 2019, OCT 2022
 echo "******************************"
 echo " - - - UPDATING LOOMA - - - "
 echo "******************************"
-source "/var/www/html/Looma/looma shell scripts/loomaupdater"
+# for Looma on AWS:
+#source "/home/bitnami/htdocs/Looma/looma shell scripts/loomaupdater  '/home/bitnami/htdocs'  $1"
+
+# for Looma boxes:
+source "/var/www/html/Looma/looma shell scripts/loomaupdater '/var/www/html' "
 echo "*************DONE*************"

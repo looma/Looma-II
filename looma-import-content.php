@@ -45,7 +45,7 @@ Description:  navigate content folders and import media files into activities co
     <title> <?php print $page_title; ?> </title>
 
  <?php  require_once ('includes/mongo-connect.php');
-        require('includes/looma-utilities.php');
+        require_once('includes/looma-utilities.php');
 
 /////////////////////////
 //////  main code  //////

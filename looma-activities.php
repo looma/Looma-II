@@ -13,7 +13,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 <?php $page_title = 'Looma Resources';
 	require_once ('includes/header.php');
 
-    require('includes/looma-utilities.php');
+    require_once('includes/looma-utilities.php');
     //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
         //                       $mongo_id, $ole_id, $url, $pg, $zoom, $grade,
         //                       $epversion, $nfn, $npg, $prefix,$lang)
@@ -109,7 +109,7 @@ $foundActivity;
 
         if (isset($activity['thumb'])) $thumb = $activity['thumb'];
         else if (isset($activity['fn']) && isset($activity['fp']))
-            $thumb = $activity['fp'] . thumbnail($activity['fn']);
+            $thumb = $activity['fp'] . thumbnail($activity['fn'],$activity['fp'],$activity['ft']);
         else if ($ft === 'game') $thumb = 'images/games.png';
         else $thumb = null;
 

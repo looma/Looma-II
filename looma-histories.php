@@ -10,7 +10,7 @@ Description: Initial "histories" page. Takes the user to the history timelines.
 
 <?php  $page_title = 'Looma Timeline Histories';
 include ("includes/header.php");
-require('includes/looma-utilities.php');
+require_once('includes/looma-utilities.php');
 logPageHit('histories');
 
 ?>

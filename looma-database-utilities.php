@@ -921,7 +921,7 @@ if (isset($_REQUEST["collection"])) {
                     array_push($extensions, "EP", "html", "htm", "php", "asp");
                     break;
                 case 'pdf':
-                    array_push($extensions, "pdf", "Document");
+                    array_push($extensions, "pdf","Document");
                     break;
                 case 'lesson':
                     array_push($extensions, "lesson");

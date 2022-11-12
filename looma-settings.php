@@ -80,11 +80,6 @@ Description:  for Looma 2
              <a href="looma-text-scan.php">
                  <button id="textscan" class="admin-control" >Scan Text Files</button>
              </a>
-
-             <a href="looma-dictionary-autogen-editor.php">
-                 <button id="dictionaryeditor" class="exec-control" >Dictionary Autogen</button>
-             </a>
-
              <br>
 
              <br><div id="themelist" class="exec-control">

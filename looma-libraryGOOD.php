@@ -15,7 +15,7 @@ require_once ('includes/header.php');
 //usage: makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
 //                          $mongo_id, $ole_id, $url, $pg, $zoom,
 //                          $grade, $epversion, $nfn, $npg,$prefix,$lang)
-require('includes/looma-utilities.php');
+require_once('includes/looma-utilities.php');
 
 logPageHit('library');
 ?>

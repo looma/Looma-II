@@ -10,10 +10,10 @@
 //  NOTE: edit the 4 variable settings below for different souce letter and/or target letter
 //
 
-var newchapter =   '1EN02.20';            // chapter ID for new lesson being created as a clone
+var newchapter =   '1EN02.46';            // chapter ID for new lesson being created as a clone
 var lessonnumber = 'Lesson 2';
-var oldletter =          'Bb';            // letter (in format Aa) of  the old lesson
-var newletter =          'Dd';            // letter (in format Aa) for the new lesson
+var oldletter =          'Ee';            // letter (in format Aa) of  the old lesson
+var newletter =          'Oo';            // letter (in format Aa) for the new lesson
 
 var oldlesson = 'Letter ' + oldletter + ' Phonics ' + lessonnumber;
 var newlesson = '(Draft) Letter ' + newletter + ' Phonics ' + lessonnumber;
@@ -26,6 +26,7 @@ var dd = now.getDate(); var mm = now.getMonth()+1; var yyyy = now.getFullYear();
 if(dd<10) dd='0'+dd; if(mm<10) mm='0'+mm;
 var today =  (yyyy + '.' + mm + '.' + dd);
 print(); print('date is ' + today);
+print(); print('old lesson is ' + oldlesson + '    new lesson is ' + newlesson);
 
     lesson = db.lessons.findOne({'dn':oldlesson});
     print(); print ('**** - - Cloning ' + oldlesson + ' ('+ lesson.date + ') to new lesson: ' + newlesson);
@@ -61,7 +62,10 @@ print(); print('date is ' + today);
                 print(' - - opening text file ' + lessonitem.dn);
                 //printjson(textfile);
 
+                var oldDN = textfile.dn;
                 textfile.dn = textfile.dn.replace(oldletter, newletter);
+                if (oldDN === textfile.dn) textfile.dn = newletter + ' ' + lessonnumber + ' ' + textfile.dn;
+
                 textfile.date = today;
                 textfile.author = 'clone';
                 delete textfile._id;

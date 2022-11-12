@@ -204,6 +204,7 @@ function displaySearchResults (filterdata_object) {
 // end Print Chapters Array
 
 } //end displaySearchResults()
+
 function thumbnail (item) {
     
     //builds a filepath/filename for the thumbnail of this "item" based on type
@@ -230,6 +231,7 @@ function thumbnail (item) {
     
     return imgsrc;
 } // end thumbnail()
+
 function extractItemId(item) {
     var ch_id = (item['ft'] == 'chapter')? item['_id'] : item['ch_id'];
     return LOOMA.parseCH_ID(ch_id);

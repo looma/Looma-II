@@ -63,6 +63,7 @@ button {
     color:white;
 }
 
+
 #toolbar-clock,
 #toolbar-maps,
 #toolbar-histories,
@@ -73,10 +74,11 @@ button {
 
 title,
 
-/*#credits,
-#credits-title,*/
+#credits,
+#credits-title
 #copyright,
-#about {
+#about ,
+{
     display:none;
 }
 

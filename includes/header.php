@@ -7,13 +7,12 @@
     // Turn on error reporting - only for localhost debugging, not on production server or looma box
 if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
         $LOOMA_SERVER = 'CEHRD';
-        error_reporting(0);
+    error_reporting(0);
     } else if ($_SERVER['SERVER_NAME'] === '54.214.229.222' || $_SERVER['SERVER_NAME'] === 'looma.website') {
         $LOOMA_SERVER = 'looma';
         error_reporting(0);
     } else if ( $_SERVER['SERVER_NAME'] === 'india.looma.website') {
         $LOOMA_SERVER = 'looma india';
-      //  date_default_timezone_set("Asia/Kolkata")
         error_reporting(0);
     } else if ( $_SERVER['SERVER_NAME'] === 'test.looma.website') {
         $LOOMA_SERVER = 'looma test';
@@ -22,19 +21,6 @@ if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
         $LOOMA_SERVER = 'looma local';
         error_reporting(E_ALL);
     }
-
-    //echo "server[server_name) is " . $_SERVER['SERVER_NAME'];exit;
-
-/*
-    if ($LOOMA_SERVER === 'looma local')
-        ini_set('open_basedir', "/var/www/html/Looma:/var/www/html/content:/var/www/html/maps2018:/var/www/html/ePaath:/tmp");
-    else
-        ini_set('open_basedir', "/usr/local/var/www/Looma:/usr/local/var/www/content:/usr/local/var/www/maps2018:/usr/local/var/www/ePaath:/tmp");
-    // NOTE: apparently "ini_set()" cannot set "open_basedir" (at least on MAC).
-    // be sure open_basedir is set in PHP.ini or in httpd.conf/apache2.conf
-*/
-     // to check the open_basedir setting, temporarily uncomment this line:
-        //echo "The open_basedir value is ". ini_get('open_basedir');
 
     if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER) {
         setcookie('source',$LOOMA_SERVER,0,"/");
@@ -56,7 +42,6 @@ if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
     //echo 'source is ' . $_COOKIE['source']; exit;
 
 ?>
-<!--<html lang="en" class="no-js"> -->
 <html lang="en">
   <head>
 
@@ -113,6 +98,19 @@ if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
       //  require_once('includes/looma-isloggedin.php');
 
         function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shim for php 5.x "array_key_exists()"
+
+    if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
+        date_default_timezone_set("Asia/Kathmandu");
+    } else if ($_SERVER['SERVER_NAME'] === '54.214.229.222' || $_SERVER['SERVER_NAME'] === 'looma.website') {
+        date_default_timezone_set("America/Los_Angeles");
+    } else if ( $_SERVER['SERVER_NAME'] === 'india.looma.website') {
+        date_default_timezone_set("Asia/Kolkata");
+    } else if ( $_SERVER['SERVER_NAME'] === 'test.looma.website') {
+    } else {
+        date_default_timezone_set("America/Los_Angeles");
+    }
+        echo "<div id='timezone' hidden>" . date_default_timezone_get() . "</div>";
+
     ?>
 
 

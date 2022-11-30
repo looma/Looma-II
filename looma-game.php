@@ -24,6 +24,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         $type =       isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
         $class =      isset($_REQUEST['class']) ? $_REQUEST['class'] : null;
         $subject =    isset($_REQUEST['subject']) ? $_REQUEST['subject'] : null;
+        $ch_id =    isset($_REQUEST['ch_id']) ? $_REQUEST['ch_id'] : null;
         ?>
 
         <div class="header">
@@ -74,7 +75,8 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
                 'data-gameid="' .  $id . '" ' .
                 'data-type="' .    $type . '" ' .
                 'data-class="' .   $class . '" ' .
-                'data-subject="' . $subject .
+            'data-subject="' . $subject . '" ' .
+            'data-ch_id="' . $ch_id .
             '">';
             echo '<div id="top">';
                 echo '<span id="current-team"></span>';

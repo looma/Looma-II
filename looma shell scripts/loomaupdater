@@ -25,6 +25,7 @@
 #    or other content folders
 #
 #   steps performed:
+#.      set proper directory to download to
 #       sync newer code files into existing Looma code
 #       use mongorestore to load new data into the existing mongo database
 #                  (merging into some collections, like 'lessons' and 'text-files')

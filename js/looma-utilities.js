@@ -80,6 +80,7 @@ playMedia : function(button) {
     var fp = encodeURIComponent(button.getAttribute('data-fp'));
     var dn = encodeURIComponent(button.getAttribute('data-dn'));
     var ndn = encodeURIComponent(button.getAttribute('data-ndn'));
+    var ch_id = encodeURIComponent(button.getAttribute('data-ch_id'));
     var language = LOOMA.readStore('language', 'cookie');
     
     switch (button.getAttribute("data-ft").toLowerCase()) {
@@ -123,25 +124,16 @@ playMedia : function(button) {
         case "document": //DOCUMENT (some PDFs)
         case "chapter":  //CHAPTER
         case "section":  //textbook SECTIONs are 'played' if len > 0
-            if ( true ) {
+            var pdfZoom =  button.getAttribute('data-zoom');
+            if (pdfZoom === "undefined") pdfZoom = '2.2';
+            var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
+            var pdfLen =  button.getAttribute('data-page') ? button.getAttribute('data-len') : 100;
                     window.location = 'pdf?' +
                     'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
                     '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
-                    '&zoom=' + button.getAttribute('data-zoom') +
-                    '&len=' + button.getAttribute('data-len') +
-                    '&page=' + button.getAttribute('data-page');
-            }
-            /* else {  //old PDF code - note used any more
-                window.location = 'pdf?' +
-                    'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
-                    '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
-                    '&zoom=' + button.getAttribute('data-zoom') +
-                    '&len=' + button.getAttribute('data-len') +
-                    '&page=' + button.getAttribute('data-page');
-                break;
-            }
-            */
-            
+                    '&zoom=' + pdfZoom +
+                    '&len=' + pdfLen +
+                    '&page=' + pdfPage;
             break;
 
         case "text":
@@ -195,9 +187,10 @@ playMedia : function(button) {
     
         case "game":
              window.location = 'game?id=' + button.getAttribute('data-mongoid') +
-                    '&class=' + button.getAttribute('data-class') +
-                    '&subject=' + button.getAttribute('data-subject') +
-                    '&type=' + button.getAttribute('data-type');
+                 '&class=' + button.getAttribute('data-class') +
+                 '&subject=' + button.getAttribute('data-subject') +
+                 '&ch_id=' + button.getAttribute('data-ch_id') +
+                 '&type=' + button.getAttribute('data-type');
              break;
       
         case "map":
@@ -1070,9 +1063,7 @@ picturewordlist : function(grade, subj, ch_id, count, random, succeed, fail) {
     console.log(parameters);
     $.ajax(
         "looma-dictionary-utilities.php",
-
-        {
-            type: 'GET',
+        {   type: 'GET',
             cache: false,
             crossDomain: true,
             dataType: "json", //jQ will convert the response back into JS, dont need parseJSON()
@@ -1710,7 +1701,8 @@ LOOMA.closePopup = function() {
 LOOMA.alert = function(msg, time, notTransparent, next){
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
-    var $attachpoint = ($('#fullscreen').length > 0) ? $('#fullscreen') : $(document.body);
+  //  var $attachpoint = ($('#fullscreen').length > 0) ? $('#fullscreen') : $(document.body);
+    var $attachpoint = $(document.body);
     $attachpoint.append("<div class= 'popup'>" +
         "<button class='popup-button dismiss-popup'><b>X</b></button>"+ msg +
         "<button id ='close-popup' class ='popup-button'>" +

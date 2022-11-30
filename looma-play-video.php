@@ -26,7 +26,7 @@ they want to edit a video
             $filename = urldecode($_REQUEST['fn']);
             $filepath = urldecode($_REQUEST['fp']);
             $displayname = urldecode($_REQUEST['dn']);
-            $thumbFile = $filepath . thumbnail($filename);
+            $thumbFile = thumbnail($filename,$filepath,"mp4");
             $fileprefix = substr($filename,0,strrpos($filename, "."));
 	    ?>
 			<script>
@@ -42,7 +42,7 @@ they want to edit a video
                     <div id="video-player">
                         <div id="fullscreen">
                             <video id="video">
-                                <?php echo 'poster=\"' . $filepath . thumbnail($filename) . '\">';?>
+                                <?php echo 'poster=\"' . thumbnail($filename,$filepath,"mp4") . '\">';?>
                                 <?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">'; ?>
                                 <?php
                                     if (file_exists($filepath . $fileprefix . ".eng.eng.vtt"))

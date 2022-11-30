@@ -109,7 +109,7 @@ $foundActivity;
 
         if (isset($activity['thumb'])) $thumb = $activity['thumb'];
         else if (isset($activity['fn']) && isset($activity['fp']))
-            $thumb = $activity['fp'] . thumbnail($activity['fn'],$activity['fp'],$activity['ft']);
+            $thumb = thumbnail($activity['fn'],$activity['fp'],$activity['ft']);
         else if ($ft === 'game') $thumb = 'images/games.png';
         else $thumb = null;
 
@@ -241,7 +241,7 @@ $foundActivity;
         echo "<td>";
 
         echo "<a href='looma-vocab-flashcard.php?ch_id=" . $ch_id . "'>";
-            echo "  <button class='activity play img'>";
+            echo "  <button class='activity  img'>";
             echo "    <img src='images/dictionary.png'>";
             echo "    <span>Vocabulary</span>";
             echo "  </button>";
@@ -269,6 +269,7 @@ $foundActivity;
             $foundActivity = true;
             nextButton();
         } else {  // grade > 4
+
             echo "<td>";
             echo "<a href='looma-game.php?type=speak&class=" . $grade . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
             echo "  <button class='activity play img'>";

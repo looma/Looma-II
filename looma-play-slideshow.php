@@ -73,7 +73,7 @@ Description: looma slideshow presenter
                 if (isset($details['thumb']))
                      $thumbSrc = $details['thumb'];
                 else if (isset($details['fn']) && isset($details['fp']))
-                     $thumbSrc = $details['fp'] . thumbnail($details['fn'], "", "slideshow");
+                     $thumbSrc = thumbnail($details['fn'], $details['fp'], "slideshow");
                 else $thumbSrc = null;
 
                 //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)

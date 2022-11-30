@@ -5,7 +5,7 @@ var $timer;
 var game;
 var time_limit;
 var score_method;
-var type, grade, subject;
+var type, grade, subject, ch_id;
 var game_id;
 
 var num_teams;
@@ -537,15 +537,15 @@ function runMatchSpeakToPicture() {
 ///////// runPicture  /////////
 //////////////////////////////
 
-function getPictureWords(grade, subj, id, count, random){
-    LOOMA.picturewordlist(grade, subj, id, count, random, pictureListSucceed, pictureListFail);
-}
-
 function pictureListSucceed(words){
     //console.log('Success, found ${result.length} words: ${result}');
     promptButtons = [];
     responseButtons = [];
     
+    if (words.length === 0) {
+        LOOMA.alert("No words found for this chapter",null,true);
+        return;
+    }
     words.forEach(function(word, i){
         var buttonPicture =
             $('<button class="prompt not-done picture" data-word=' + word['en'] +
@@ -580,7 +580,7 @@ function pictureListFail(jqXHR, textStatus, errorThrown){
     LOOMA.alert("Game not found");
 }
 
-function runPicture(grade, subject) {
+function runPicture(grade, subject, ch_id) {
     showTeam();
     matches_made = 0;
     $('#game').append('<div id="prompts"></div>');
@@ -591,10 +591,7 @@ function runPicture(grade, subject) {
     var random = true;
     time_limit = 45;
     startTimer(time_limit);
-    LOOMA.picturewordlist(grade, subject    , null, num_questions, random, pictureListSucceed, pictureListFail);
-    //getPictureWords(grade, subject, null, num_questions, random);
-   
-    
+    LOOMA.picturewordlist(grade, subject    , ch_id, num_questions, random, pictureListSucceed, pictureListFail);
 }  // END runPicture() //
 
 
@@ -660,6 +657,10 @@ function getSpeakWords(grade, subj, id, count, random){
 
 function speakListSucceed(result){
     console.log('Success, found ${result.length} words: ${result}');
+    if (result.length === 0) {
+        LOOMA.alert("No words found for this chapter", null, true);
+        return;
+    };
     runSpeakHelper(result)
 }
 
@@ -733,6 +734,10 @@ function translateFail(jqXHR, textStatus, errorThrown){
 
 function translateListSucceed(words){
     //console.log('Success, found ${words.length} words: ${words}');
+    if (words.length === 0) {
+        LOOMA.alert("No words found for this chapter",null,true);
+        return;
+    }
     words.forEach(function(word, i){
         var english = word['en'];
         var buttonWord =
@@ -777,7 +782,7 @@ function runTranslate(grade, subject) {
     var random = true;
     time_limit = 45;
     
-    getTranslateWords(grade, subject, null, num_questions, random);
+    getTranslateWords(grade, subject, ch_id, num_questions, random);
 }  // END runtranslate() //
 
 //////////////////////////////
@@ -821,6 +826,10 @@ function runRandom () {
     
     function get_wordlist_succeed(words) {
         // console.log("success",words)
+        if (words.length === 0) {
+            LOOMA.alert("No words found for this chapter",null,true);
+            return;
+        }
         $(words).each(function (index, word) {
             game['prompts'].push(word['en']);
         });
@@ -1608,8 +1617,9 @@ function gameOver() {
             game = result;
             $("#gameTitle").html(LOOMA.translatableSpans("Game", "खेल") + ": " + game['title']);
             type = game['presentation_type'];
-            subject = ('subject' in game) ? game['subject'][0] : null;
+            subject = ('subject' in game) ? game['subject'] : null;
             grade = ('class' in game) ? game['class'] : null;
+            ch_id = ('ch_id' in game) ? game['ch_id'] : null;
             
             if (type === 'sort') runSort(game);
     
@@ -1630,11 +1640,11 @@ function gameOver() {
                     // based on grade and subject and [sometimes] chapter
                     if      (type === 'yesno')     runYesNo();
                     else if (type === 'random')    runRandom();
-                    else if (type === 'vocab')     runVocab(grade, subject);
-                    else if (type === 'arith')     runArith(grade, subject);
-                    else if (type === 'picture')   runPicture(grade, subject);
-                    else if (type === 'speak')     runRandomSpeak(grade, subject);
-                    else if (type === 'translate') runTranslate(grade, subject);
+                    else if (type === 'vocab')     runVocab(grade, subject, ch_id);
+                    else if (type === 'arith')     runArith(grade, subject, ch_id);
+                    else if (type === 'picture')   runPicture(grade, subject, ch_id);
+                    else if (type === 'speak')     runRandomSpeak(grade, subject, ch_id);
+                    else if (type === 'translate') runTranslate(grade, subject, ch_id);
                     
                 else {  // regular game
 
@@ -1667,7 +1677,7 @@ function gameOver() {
                             runMatchPicture();
                             break;
                         case 'picture':
-                            runPicture(grade, subject);
+                            runPicture(grade, subject, ch_id);
                             break;
                         case 'speak':
                             runRandomSpeak(grade, subject);
@@ -1722,7 +1732,8 @@ $(document).ready (function() {
         var randomGame = {};
         randomGame['presentation_type'] = $game.data('type');
         randomGame['class'] =             $game.data('class');
-        randomGame['subject'] =           [$game.data('subject')];
+        randomGame['subject'] =           $game.data('subject');
+        randomGame['ch_id'] =             $game.data('ch_id');
         randomGame['title'] = LOOMA.capitalize($game.data('type')) + ' game for ' + $game.data('class') + ' ' + LOOMA.capitalize($game.data('subject'));
         game_found(randomGame);
     };

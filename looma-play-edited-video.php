@@ -67,7 +67,7 @@ Usage: 	<button  id="testvideo"
         $vidFN = $vid['fn'];
 
         if (isset($vid['fp'])) $filepath = $vid['fp']; else $filepath = "../content/videos/";
-        $thumbFile = $filepath . thumbnail($vidFN);
+        $thumbFile = thumbnail($vidFN, $filepath, 'evi');
 ?>
 
     <?php
@@ -84,7 +84,7 @@ Usage: 	<button  id="testvideo"
                         <div id="fullscreen">
                             <?php include("includes/looma-control-buttons.php"); ?>
                             <video id="video" class="displayArea">
-    							<?php echo 'poster="' . $filepath . thumbnail($vidFN) . '">'; ?>
+    							<?php echo 'poster="' . thumbnail($vidFN, $filepath,'evi') . '">'; ?>
                                 <?php echo '<source src="' . $filepath . $vidFN . '"type="video/mp4">' ?>
     						</video>
     						<div id="text-file-area"      class="displayArea text-display"></div>

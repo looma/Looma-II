@@ -1,0 +1,576 @@
+{"_id":"INAP08B03","pn":39,"len":16,"ft":"chapter","dn":"Crop Production and Management","key1":"Social","key2":"Economy","key3":"Agriculture","key4":"irrigation"}
+{"_id":"INAP09B01","pn":11,"len":11,"ft":"chapter","dn":"Cell its structure and flunctions","key1":"Science","key2":"Biology","key3":"Cells","key4":"Membrane"}
+{"_id":"INAP09B02","pn":22,"len":13,"ft":"chapter","dn":"Plant tissues","key1":"Science","key2":"Biology","key3":"Cells","key4":"Stem cell"}
+{"_id":"INAP09B03","pn":35,"len":13,"ft":"chapter","dn":"Animal tissues","key1":"Science","key2":"Biology","key3":"Cells","key4":"Other cell"}
+{"_id":"INAP09B04","pn":48,"len":12,"ft":"chapter","dn":"Plasma membrane","key1":"Science","key2":"Biology","key3":"Cells","key4":"Membrane"}
+{"_id":"INAP09B05","pn":60,"len":25,"ft":"chapter","dn":"Diversity in living organisms","key1":"Science","key2":"Biology","key3":"Ecology","key4":"Biodiversity"}
+{"_id":"INAP08B06","pn":82,"len":13,"ft":"chapter","dn":"Conservation of Plants and Animals","key1":"Science","key2":"Biology","key3":"Ecology","key4":"Biodiversity"}
+{"_id":"INAP09B06","pn":85,"len":19,"ft":"chapter","dn":"Sense organs","key1":"Science","key2":"Biology","key3":"Organ animals","key4":"Eye"}
+{"_id":"INAP09B07","pn":104,"len":11,"ft":"chapter","dn":"Animal behaviour","key1":"Science","key2":"Biology","key3":"Birds","key4":"Other birds"}
+{"_id":"INAP09B09","pn":141,"len":17,"ft":"chapter","dn":"Adaptations in different ecosystems","key1":"Science","key2":"Biology","key3":"Plants","key4":"Aquatic"}
+{"_id":"INAP09B08","pn":115,"len":26,"ft":"chapter","dn":"Challenges in improving agricultural products","key1":"Science","key2":"Biology","key3":"Organ plants","key4":"Roots"}
+{"_id":"INAP08B08","pn":109,"len":4,"ft":"chapter","dn":"Glossary","key1":"Science","key2":"","key3":"","key4":""}
+{"_id":"INAP09B11","pn":180,"len":13,"ft":"chapter","dn":"Bio-geo-chemical cycles","key1":"Science","key2":"Biology","key3":"Plants","key4":"Nitrogen fixation"}
+{"_id":"INAP10B02","pn":34,"len":24,"ft":"chapter","dn":"Respiration","key1":"Science","key2":"Biology","key3":"Life processes","key4":"Respiration"}
+{"_id":"INAP10B01","pn":11,"len":23,"ft":"chapter","dn":"Nutrition","key1":"Science","key2":"Biology","key3":"Life processes","key4":"Nutrition"}
+{"_id":"INAP10B04","pn":84,"len":20,"ft":"chapter","dn":"Excretion","key1":"Science","key2":"Biology","key3":"Life processes","key4":"Excretion"}
+{"_id":"INAP10B05","pn":104,"len":22,"ft":"chapter","dn":"Coordination","key1":"Science","key2":"Biology","key3":"Organs Animal","key4":"Brain"}
+{"_id":"INAP10B06","pn":126,"len":28,"ft":"chapter","dn":"Reproduction","key1":"Science","key2":"Biology","key3":"Life processes","key4":"Reproduction"}
+{"_id":"INAP10B03","pn":58,"len":26,"ft":"chapter","dn":"Transportation","key1":"Science","key2":"Biology","key3":"Life processes","key4":"Circulation"}
+{"_id":"INAP09B10","pn":158,"len":22,"ft":"chapter","dn":"Soil pollution","key1":"Science","key2":"Earth","key3":"Geology","key4":"Soil"}
+{"_id":"INAP08B05","pn":68,"len":14,"ft":"chapter","dn":"Reaching the Age of Adolescence","key1":"Science","key2":"medicine","key3":"Diseases & Injury","key4":""}
+{"_id":"INAP08B01","pn":14,"len":10,"ft":"chapter","dn":"Cell -- Structure and Functions","key1":"Science","key2":"Biology","key3":"Cells","key4":"membranes"}
+{"_id":"INAP08B04","pn":55,"len":13,"ft":"chapter","dn":"Reproduction in Animals","key1":"Science","key2":"Biology","key3":"Life Processes","key4":"Reproduction"}
+{"_id":"INAP08B02","pn":24,"len":15,"ft":"chapter","dn":"Microorganisms: Friend and Foe","key1":"Science","key2":"medicine","key3":"healthy living","key4":"vaccines"}
+{"_id":"INAP08B07","pn":95,"len":14,"ft":"chapter","dn":"Pollution of Air and Water","key1":"Science","key2":"Earth","key3":"Human impact","key4":"Pollution"}
+{"_id":"INAP10B07","pn":154,"len":22,"ft":"chapter","dn":"Coordination in life processes","key1":"Science","key2":"Biology","key3":"Life processes","key4":"Coordination"}
+{"_id":"INAP10B08","pn":176,"len":27,"ft":"chapter","dn":"Heredity","key1":"Science","key2":"Biology","key3":"Cells","key4":"DNA"}
+{"_id":"INAP10B09","pn":203,"len":19,"ft":"chapter","dn":"Our environment","key1":"Science","key2":"Biology","key3":"Ecology","key4":"Biosphere"}
+{"_id":"INAP03EN01","pn":9,"len":12,"ft":"chapter","dn":"Tenali Rama And The Thieves","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP03EN02","pn":21,"len":14,"ft":"chapter","dn":"The Recipe Book","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP10B10","pn":222,"len":19,"ft":"chapter","dn":"Natural resources","key1":"Science","key2":"Biology","key3":"Ecology","key4":"Biodiversity"}
+{"_id":"INAP03EN04","pn":49,"len":12,"ft":"chapter","dn":"Help Me... Please!","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP03EN05","pn":61,"len":10,"ft":"chapter","dn":"The Good Samaritan","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP03EN03","pn":35,"len":14,"ft":"chapter","dn":"The Loyal Mongoose","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP03EN07","pn":81,"len":10,"ft":"chapter","dn":"The Lazy Grasshopper","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP03EN06","pn":71,"len":10,"ft":"chapter","dn":"Do Good And Reap Good","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP04EN02","pn":24,"len":12,"ft":"chapter","dn":"Major Dhyan Chand","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP04EN07","pn":96,"len":14,"ft":"chapter","dn":"Birbal Caught the Thief","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP04EN05","pn":70,"len":13,"ft":"chapter","dn":"The Magic Fish","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP05EN01","pn":9,"len":18,"ft":"chapter","dn":"Mallika Goes to School!","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP04EN06","pn":83,"len":13,"ft":"chapter","dn":"The Seed of Truth","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP04EN08","pn":110,"len":19,"ft":"chapter","dn":"The Tree and the River","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP05EN03","pn":44,"len":15,"ft":"chapter","dn":"The Necklace","key1":"Language","key2":"English","key3":"Form","key4":"Short Story"}
+{"_id":"INAP05EN06","pn":93,"len":93,"ft":"chapter","dn":"The Wise Judgement","key1":"Language","key2":"English","key3":"Form","key4":"Short Story"}
+{"_id":"INAP05EN04","pn":59,"len":19,"ft":"chapter","dn":"Kalam With Children","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversation"}
+{"_id":"INAP05EN02","pn":27,"len":17,"ft":"chapter","dn":"My Sweet Memories","key1":"Language","key2":"English","key3":"Contexts","key4":"Time and date"}
+{"_id":"INAP05EN07","pn":108,"len":16,"ft":"chapter","dn":"Kabaddi..Kabaddi..Kabaddi..","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP05EN08","pn":124,"len":17,"ft":"chapter","dn":"A Birthday Letter","key1":"Language","key2":"English","key3":"Contexts","key4":"Writing"}
+{"_id":"INAP03EN08","pn":91,"len":10,"ft":"chapter","dn":"King Sibi And The Dove","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP04EN04","pn":55,"len":15,"ft":"chapter","dn":"Swami Vivekananda","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP06EN01","pn":9,"len":16,"ft":"chapter","dn":"Clever Tenali Ramakrishna","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversations"}
+{"_id":"INAP04EN01","pn":9,"len":15,"ft":"chapter","dn":"Three Butterflies","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP05EN05","pn":78,"len":15,"ft":"chapter","dn":"The Wondrous Women","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP07EN01.00","pn":6,"len":1,"ft":"section","dn":"Semester - 1","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP06EN08","pn":118,"len":15,"ft":"chapter","dn":"Where there is a Will, there is a Way","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP06EN06","pn":93,"len":13,"ft":"chapter","dn":"A Lesson for All","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversations"}
+{"_id":"INAP06EN07","pn":106,"len":12,"ft":"chapter","dn":"Dr. B. R. Ambedkar","key1":"Language","key2":"English","key3":"Contexts","key4":"Writing"}
+{"_id":"INAP07EN01.01","pn":7,"len":18,"ft":"chapter","dn":"Painted House, Friendly Chicken and Me","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP07EN01.02","pn":25,"len":15,"ft":"chapter","dn":"The Turning Point","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP07EN01.04","pn":56,"len":20,"ft":"chapter","dn":"The Brave Little Bowman","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversation"}
+{"_id":"INAP07EN01.03","pn":40,"len":16,"ft":"chapter","dn":"A Journey Through the Hills and Valleys","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP07EN01.05","pn":76,"len":1,"ft":"chapter","dn":"Vocabulary","key1":"Language","key2":"English","key3":"","key4":""}
+{"_id":"INAP07EN02.00","pn":77,"len":2,"ft":"section","dn":"Semester - 2","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP07EN02.03","pn":113,"len":15,"ft":"chapter","dn":"The Bond of Love","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP07EN02.02","pn":98,"len":15,"ft":"chapter","dn":"The Why - Why Girl","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP04EN03","pn":36,"len":19,"ft":"chapter","dn":"A Trip of Memories","key1":"Language","key2":"English","key3":"Contexts","key4":"Writing"}
+{"_id":"INAP07EN02.05","pn":140,"len":1,"ft":"chapter","dn":"Vocabulary","key1":"Language","key2":"English","key3":"","key4":""}
+{"_id":"INAP07EN02.04","pn":128,"len":12,"ft":"chapter","dn":"Gurajada - The Legend","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP06EN03","pn":45,"len":16,"ft":"chapter","dn":"Little Hearts","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP07EN02.06","pn":141,"len":4,"ft":"chapter","dn":"Learning Outcomes","key1":"Language","key2":"English","key3":"","key4":""}
+{"_id":"INAP08EN01.01","pn":17,"len":12,"ft":"chapter","dn":"The Best Christmas Present in the World","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP06EN02","pn":25,"len":20,"ft":"chapter","dn":"The Snake Catcher","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP08EN01.03","pn":32,"len":10,"ft":"chapter","dn":"The Tsunami","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP08EN01.00","pn":8,"len":9,"ft":"section","dn":"Notes for the Teacher !","key1":"Language","key2":"English","key3":"","key4":""}
+{"_id":"INAP08EN01.04","pn":42,"len":2,"ft":"chapter","dn":"Geography Lesson","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP08EN01.05","pn":44,"len":14,"ft":"chapter","dn":"Glimpses of the Past","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversation"}
+{"_id":"INAP08EN01.06","pn":58,"len":3,"ft":"chapter","dn":"Macavity: the Mystery Cat","key1":"Language","key2":"English","key3":"Contexts","key4":"Poetry"}
+{"_id":"INAP06EN04","pn":61,"len":14,"ft":"chapter","dn":"What Can a Dollar and Eleven Cents do?","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP08EN02.03","pn":83,"len":8,"ft":"chapter","dn":"The Summit Within","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP08EN02.04","pn":91,"len":3,"ft":"chapter","dn":"The School Boy","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP08EN02.02","pn":81,"len":2,"ft":"chapter","dn":"The Last Bargain","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP06EN05","pn":75,"len":18,"ft":"chapter","dn":"At the Vegetable Shop","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversations"}
+{"_id":"INAP08EN01.02","pn":29,"len":3,"ft":"chapter","dn":"The Ant and the Cricket","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP08EN02.07","pn":113,"len":2,"ft":"chapter","dn":"When I set out for Lyonnesse","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP07EN02.01","pn":79,"len":19,"ft":"chapter","dn":"The Art of Weaving","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP08EN02.05","pn":94,"len":10,"ft":"chapter","dn":"This is Jody's Fawn","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP08EN02.00","pn":61,"len":6,"ft":"section","dn":"Notes for the Teacher II","key1":"Language","key2":"English","key3":"","key4":""}
+{"_id":"INAP08EN03.03","pn":128,"len":8,"ft":"chapter","dn":"The Great Stone Face-I","key1":"Language","key2":"English","key3":"Form","key4":"Short Story"}
+{"_id":"INAP08EN03.02","pn":126,"len":2,"ft":"chapter","dn":"On the Grasshopper and Cricket","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP08EN03.01","pn":117,"len":9,"ft":"chapter","dn":"A Short Monsoon Diary","key1":"Language","key2":"English","key3":"Contexts","key4":"Time and date"}
+{"_id":"INAP08EN03.04","pn":136,"len":9,"ft":"chapter","dn":"The Great Stone Face-II","key1":"Language","key2":"English","key3":"Form","key4":"Short Story"}
+{"_id":"INAP08ENa00","pn":4,"len":7,"ft":"section","dn":"Foreword","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP08ENa02","pn":17,"len":10,"ft":"chapter","dn":"Children at work","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP08ENa03","pn":27,"len":8,"ft":"chapter","dn":"The Selfish Gaint","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP08ENa04","pn":35,"len":9,"ft":"chapter","dn":"the treasure within","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversation"}
+{"_id":"INAP08ENa05","pn":44,"len":11,"ft":"chapter","dn":"princess september","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP08ENa06","pn":55,"len":10,"ft":"chapter","dn":"The fight","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP08EN02.06","pn":104,"len":9,"ft":"chapter","dn":"A Visit to Cambridge","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP08EN03.00","pn":115,"len":2,"ft":"section","dn":"Notes for the Teacher III","key1":"Language","key2":"English","key3":"","key4":""}
+{"_id":"INAP08EN02.01","pn":67,"len":14,"ft":"chapter","dn":"Bepin Choudhury's Lapse of Memory","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP08ENa07","pn":65,"len":7,"ft":"chapter","dn":"The open window","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP08ENa10","pn":91,"len":8,"ft":"chapter","dn":"The comet - II","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP09EN01.00","pn":10,"len":1,"ft":"section","dn":"Humor","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP08ENa11","pn":99,"len":9,"ft":"chapter","dn":"Ancient Education System of India","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP08ENa09","pn":83,"len":8,"ft":"chapter","dn":"The comet - I","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP09EN01.01","pn":11,"len":13,"ft":"chapter","dn":"The Snake and the Mirror","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP08ENa08","pn":72,"len":11,"ft":"chapter","dn":"Jalebis","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP09EN01.02","pn":24,"len":4,"ft":"chapter","dn":"The Duck and the Kangaroo","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP09EN02.00","pn":33,"len":2,"ft":"section","dn":"Games and Sports","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP09EN01.03","pn":28,"len":5,"ft":"chapter","dn":"Little Bobby","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP09EN03.02","pn":66,"len":2,"ft":"chapter","dn":"Not Just a Teacher, but a Friend (Poem)","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP09EN03.03","pn":68,"len":5,"ft":"chapter","dn":"Homework","key1":"Language","key2":"English","key3":"Contexts","key4":"Describing"}
+{"_id":"INAP09EN03.01","pn":55,"len":11,"ft":"chapter","dn":"Swami Is Expelled from School","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP09EN04.01","pn":75,"len":11,"ft":"chapter","dn":"What Is Man Without the Beasts?","key1":"Language","key2":"English","key3":"Speech","key4":"Sounds"}
+{"_id":"INAP09EN04.00","pn":73,"len":2,"ft":"section","dn":"Environment","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP09EN04.02","pn":86,"len":3,"ft":"chapter","dn":"The River (Poem)","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP08ENa01","pn":11,"len":6,"ft":"chapter","dn":"How the Camel got his hump","key1":"Language","key2":"English","key3":"Form","key4":"Short Story"}
+{"_id":"INAP09EN05.00","pn":97,"len":2,"ft":"section","dn":"Disasters","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP09EN05.01","pn":99,"len":12,"ft":"chapter","dn":"A Havoc of Flood","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP09EN05.02","pn":111,"len":2,"ft":"chapter","dn":"Grabbing Everything on the Land (Poem)","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP09EN05.03","pn":113,"len":6,"ft":"chapter","dn":"The Ham Radio","key1":"Language","key2":"English","key3":"Form","key4":"Essay"}
+{"_id":"INAP09EN02.03","pn":46,"len":7,"ft":"chapter","dn":"V.V.S. Laxman, Very Very Special","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversation"}
+{"_id":"INAP09EN06.00","pn":119,"len":2,"ft":"section","dn":"Freedom","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP09EN06.01","pn":121,"len":8,"ft":"chapter","dn":"A Long Walk to Freedom","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP09EN03.00","pn":53,"len":2,"ft":"section","dn":"School Life","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP09EN02.01","pn":35,"len":9,"ft":"chapter","dn":"True Height","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP09EN02.02","pn":44,"len":2,"ft":"chapter","dn":"What Is a Player ? (Poem)","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP09EN06.02","pn":129,"len":2,"ft":"chapter","dn":"Freedom (Poem)","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP09EN06.03","pn":131,"len":8,"ft":"chapter","dn":"An Icon of Civil Rights","key1":"Language","key2":"English","key3":"Speech","key4":"Sounds"}
+{"_id":"INAP09EN07.01","pn":139,"len":5,"ft":"chapter","dn":"Appendices: Listening Texts","key1":"Language","key2":"English","key3":"","key4":""}
+{"_id":"INAP10EN01.02","pn":22,"len":9,"ft":"chapter","dn":"B. Every Success Story is also a Story of Great Failures","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP09EN08.01","pn":144,"len":14,"ft":"chapter","dn":"A Note to the Teacher","key1":"Language","key2":"English","key3":"","key4":""}
+{"_id":"INAP10EN01.01","pn":11,"len":11,"ft":"chapter","dn":"A. Attitude is Altitude","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP09EN04.03","pn":89,"len":8,"ft":"chapter","dn":"Can’t Climb Trees Any More","key1":"Language","key2":"English","key3":"Contexts","key4":"Narration"}
+{"_id":"INAP09EN09.01","pn":158,"len":3,"ft":"chapter","dn":"Irregular Verbs","key1":"Language","key2":"English","key3":"Grammar","key4":"Verbs"}
+{"_id":"INAP10EN02.00","pn":43,"len":2,"ft":"section","dn":"2. Wit and Humor","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP10EN01.03","pn":31,"len":12,"ft":"chapter","dn":"C. I will Do It","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP10EN02.01","pn":45,"len":8,"ft":"chapter","dn":"A. The Dear Departed (Part - I)","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversation"}
+{"_id":"INAP10EN01.00","pn":9,"len":2,"ft":"section","dn":"1. Personality Development","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP10EN02.03","pn":78,"len":9,"ft":"chapter","dn":"C. The Brave Potter","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP10EN03.01","pn":89,"len":17,"ft":"chapter","dn":"A. The Journey","key1":"Language","key2":"English","key3":"Form","key4":"Essay"}
+{"_id":"INAP10EN03.02","pn":106,"len":4,"ft":"chapter","dn":"B. Once upon a Time (poem)","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP10EN04.02","pn":138,"len":12,"ft":"chapter","dn":"B. Maya Bazaar","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP10EN02.02","pn":53,"len":25,"ft":"chapter","dn":"B. The Dear Departed (Part - II)","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversation"}
+{"_id":"INAP10EN05.02","pn":174,"len":6,"ft":"chapter","dn":"B. Or will the Dreamer Wake? (poem)","key1":"Language","key2":"English","key3":"Form","key4":"poetry"}
+{"_id":"INAP10EN05.03","pn":180,"len":9,"ft":"chapter","dn":"C. A Tale of Three Villages","key1":"Language","key2":"English","key3":"Form","key4":"Novel"}
+{"_id":"INAP10EN04.03","pn":150,"len":7,"ft":"chapter","dn":"C. A Tribute","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP10EN05.00","pn":157,"len":2,"ft":"section","dn":"5. Social Issues","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP10EN06.01","pn":191,"len":15,"ft":"chapter","dn":"A. My Childhood","key1":"Language","key2":"English","key3":"Form","key4":"Essay"}
+{"_id":"INAP10EN06.00","pn":189,"len":2,"ft":"section","dn":"6. Bio-Diversity","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP10EN03.03","pn":110,"len":11,"ft":"chapter","dn":"C. What Is My Name?","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP10EN06.03","pn":208,"len":9,"ft":"chapter","dn":"C. Unity in Diversity in India","key1":"Social Studies","key2":"Community","key3":"Everyday Life","key4":"Diversity"}
+{"_id":"INAP10EN09.01","pn":217,"len":5,"ft":"chapter","dn":"App-1 Texts for Listening","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP10EN06.02","pn":206,"len":2,"ft":"chapter","dn":"B. A Plea for India (poem)","key1":"Language","key2":"English","key3":"Form","key4":"Poetry"}
+{"_id":"INAP10EN09.02","pn":222,"len":11,"ft":"chapter","dn":"App-2 A Note to the Teacher","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP10EN03.00","pn":87,"len":2,"ft":"section","dn":"3. Human Relations","key1":"Language","key2":"English","key3":"Contexts","key4":"Activities"}
+{"_id":"INAP10EN04.01","pn":123,"len":15,"ft":"chapter","dn":"A Rendevous with Ray","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP10EN04.00","pn":121,"len":2,"ft":"section","dn":"4. Films and Theatre","key1":"Language","key2":"English","key3":"Form","key4":"Short story"}
+{"_id":"INAP03EV04","pn":42,"len":9,"ft":"chapter","dn":"Our Body Parts","key1":"Science","key2":"Medicine","key3":"Human body","key4":"Other human body"}
+{"_id":"INAP03EV07","pn":72,"len":15,"ft":"chapter","dn":"Shelter For All","key1":"Social studies","key2":"Community","key3":"Social organisation","key4":"Home"}
+{"_id":"INAP03EV09","pn":98,"len":6,"ft":"chapter","dn":"Together with everyone","key1":"Social studies","key2":"Community","key3":"Everyday life","key4":"Communication"}
+{"_id":"INAP03EV01","pn":9,"len":12,"ft":"chapter","dn":"Rani's Happy Family","key1":"Social studies","key2":"Community","key3":"Social organisation","key4":"Family"}
+{"_id":"INAP03EV10","pn":104,"len":10,"ft":"chapter","dn":"Games and Recreation","key1":"Science","key2":"Other IT","key3":"Games","key4":""}
+{"_id":"INAP03EV08","pn":87,"len":87,"ft":"chapter","dn":"Let’s Travel Together","key1":"Social studies","key2":"Transportation","key3":"Public","key4":""}
+{"_id":"INAP03EV03","pn":31,"len":11,"ft":"chapter","dn":"Animals Arounds Us","key1":"Science","key2":"Biology","key3":"Zoology","key4":"Terrestrial"}
+{"_id":"INAP10EN05.01","pn":159,"len":15,"ft":"chapter","dn":"A. Environment","key1":"Language","key2":"English","key3":"Contexts","key4":"Conversation"}
+{"_id":"INAP03EV05","pn":51,"len":12,"ft":"chapter","dn":"Food Keep us Fit and Healthy","key1":"Social studies","key2":"Community","key3":"Everyday life","key4":"Food"}
+{"_id":"INAP03EV11","pn":114,"len":10,"ft":"chapter","dn":"This is the Way","key1":"Social studies","key2":"Community","key3":"Social organisation","key4":"Neighborhood"}
+{"_id":"INAP03EV12","pn":124,"len":1,"ft":"chapter","dn":"Glossary","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP03EV06","pn":63,"len":9,"ft":"chapter","dn":"Water- The Gift from Nature","key1":"Science","key2":"Earth","key3":"Oceans and water","key4":"Fresh water"}
+{"_id":"INAP04EV03","pn":28,"len":8,"ft":"chapter","dn":"Animals Around Us","key1":"Science","key2":"Biology","key3":"Zoology","key4":"Mamals"}
+{"_id":"INAP04EV01","pn":9,"len":11,"ft":"chapter","dn":"Family","key1":"Social studies","key2":"Community","key3":"Everyday life","key4":"Family"}
+{"_id":"INAP04EV04","pn":36,"len":12,"ft":"chapter","dn":"Sense Organs","key1":"Science","key2":"Medicine","key3":"Senses","key4":""}
+{"_id":"INAP04EV06","pn":56,"len":8,"ft":"chapter","dn":"Water","key1":"Social studies","key2":"Earth","key3":"Oceans and water","key4":"Fresh water"}
+{"_id":"INAP04EV02","pn":20,"len":8,"ft":"chapter","dn":"Green World","key1":"Science","key2":"Biology","key3":"Plants","key4":"Other plants"}
+{"_id":"INAP04EV07","pn":64,"len":9,"ft":"chapter","dn":"Professions and services","key1":"Social studies","key2":"Economy","key3":"Occupations","key4":"Service"}
+{"_id":"INAP04EV10","pn":85,"len":7,"ft":"chapter","dn":"Let us Visit","key1":"Social studies","key2":"Economy","key3":"Tourism","key4":""}
+{"_id":"INAP04EV09","pn":79,"len":6,"ft":"chapter","dn":"Communication","key1":"Social studies","key2":"Community","key3":"Everyday life","key4":"Communication"}
+{"_id":"INAP04EV11","pn":92,"len":11,"ft":"chapter","dn":"Where are we?","key1":"Social studies","key2":"Geography","key3":"Maps","key4":"Continents"}
+{"_id":"INAP03EV02","pn":21,"len":10,"ft":"chapter","dn":"Plants Around Us","key1":"Science","key2":"Biology","key3":"Plants","key4":"Other plants"}
+{"_id":"INAP04EV08","pn":73,"len":6,"ft":"chapter","dn":"Transportation","key1":"Social studies","key2":"transportation","key3":"Road","key4":"Other Road"}
+{"_id":"INAP04EV05","pn":48,"len":8,"ft":"chapter","dn":"Eat Together","key1":"Social studies","key2":"Community","key3":"Everyday life","key4":"Food"}
+{"_id":"INAP05EV02","pn":19,"len":8,"ft":"chapter","dn":"Climate change","key1":"Chemistry","key2":"Earth","key3":"Climate","key4":"Climate change"}
+{"_id":"INAP04EV12","pn":103,"len":2,"ft":"chapter","dn":"Glossary","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP05EV01","pn":9,"len":10,"ft":"chapter","dn":"Migration of People","key1":"Social studies","key2":"Community","key3":"Everyday life","key4":"Family"}
+{"_id":"INAP05EV04","pn":34,"len":10,"ft":"chapter","dn":"Know our Organ System","key1":"Science","key2":"Biology","key3":"Organ animals","key4":"Muscels"}
+{"_id":"INAP05EV10","pn":92,"len":6,"ft":"chapter","dn":"The Journey of India for Freedom","key1":"Social studies","key2":"History","key3":"People","key4":"Mahatma Gandhi"}
+{"_id":"INAP05EV09","pn":81,"len":11,"ft":"chapter","dn":"Alert Today Alive Tomorrow","key1":"Science","key2":"Medicine","key3":"Specialities","key4":"First Aid"}
+{"_id":"INAP05EV05","pn":44,"len":15,"ft":"chapter","dn":"Agriculture","key1":"Social studies","key2":"Economy","key3":"Agriculture","key4":"Irrigation"}
+{"_id":"INAP05EV12","pn":104,"len":1,"ft":"chapter","dn":"Glossary","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP03M01","pn":9,"len":11,"ft":"chapter","dn":"Let's Recall","key1":"Mathematics","key2":"Numbers","key3":"Other Numbers","key4":""}
+{"_id":"INAP05EV08","pn":75,"len":6,"ft":"chapter","dn":"Let us see an Amazing World","key1":"Social studies","key2":"Community","key3":"Social organisation","key4":"Business"}
+{"_id":"INAP03M03","pn":38,"len":12,"ft":"chapter","dn":"Addition","key1":"Mathematics","key2":"Arithemetic","key3":"Addition & subraction","key4":""}
+{"_id":"INAP03M02","pn":20,"len":18,"ft":"chapter","dn":"Numbers","key1":"Mathematics","key2":"Numbers","key3":"Natural","key4":""}
+{"_id":"INAP03M06","pn":83,"len":14,"ft":"chapter","dn":"Let’s Share","key1":"Mathematics","key2":"Arithemetic","key3":"Multiplication & Division","key4":""}
+{"_id":"INAP03M04","pn":50,"len":15,"ft":"chapter","dn":"Subtraction","key1":"Mathematics","key2":"Arithemetic","key3":"Addition & subraction","key4":""}
+{"_id":"INAP03M05","pn":65,"len":18,"ft":"chapter","dn":"Multiplication","key1":"Mathematics","key2":"Arithemetic","key3":"Multiplication & Division","key4":""}
+{"_id":"INAP03M09","pn":111,"len":14,"ft":"chapter","dn":"Shapes around us","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":""}
+{"_id":"INAP03M08","pn":104,"len":7,"ft":"chapter","dn":"Share Equally","key1":"Mathematics","key2":"Arithemetic","key3":"Fraction","key4":""}
+{"_id":"INAP05EV07","pn":66,"len":9,"ft":"chapter","dn":"Who Serves us?","key1":"Social studies","key2":"Community","key3":"Government","key4":"Local"}
+{"_id":"INAP05EV11","pn":98,"len":6,"ft":"chapter","dn":"Earth to Space","key1":"Science","key2":"Astronomy","key3":"Solar system","key4":"Asteroid"}
+{"_id":"INAP03M10","pn":125,"len":18,"ft":"chapter","dn":"Measurements","key1":"Mathematics","key2":"Measurement","key3":"Weight","key4":""}
+{"_id":"INAP05EV03","pn":27,"len":7,"ft":"chapter","dn":"Clothes we wear","key1":"Chemistry","key2":"Earth","key3":"Climate","key4":"Wind"}
+{"_id":"INAP03M11","pn":143,"len":2,"ft":"chapter","dn":"Glossary","key1":"Mathematics","key2":"","key3":"","key4":""}
+{"_id":"INAP05M01","pn":9,"len":12,"ft":"chapter","dn":"Let's Recall","key1":"Mathematics","key2":"Numbers","key3":"Other Numbers","key4":""}
+{"_id":"INAP05M02","pn":21,"len":17,"ft":"chapter","dn":"My Number World","key1":"Mathematics","key2":"Numbers","key3":"Natural","key4":""}
+{"_id":"INAP05M05","pn":69,"len":25,"ft":"chapter","dn":"Multiples and Factors","key1":"Mathematics","key2":"Arithmetic","key3":"Factors & Multiples","key4":""}
+{"_id":"INAP05EV06","pn":59,"len":7,"ft":"chapter","dn":"Every drop is Precious","key1":"Chemistry","key2":"Earth","key3":"Natural disasters","key4":"Floods and sea rise"}
+{"_id":"INAP05M06","pn":94,"len":31,"ft":"chapter","dn":"Geometry","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Angle"}
+{"_id":"INAP05M04","pn":53,"len":16,"ft":"chapter","dn":"Multiplication and Divisions","key1":"Mathematics","key2":"Arithmetic","key3":"Multiplication & Division","key4":""}
+{"_id":"INAP05M07","pn":125,"len":8,"ft":"chapter","dn":"Data Handling","key1":"Mathematics","key2":"Other Mathematics","key3":"Graphs","key4":""}
+{"_id":"INAP03M07","pn":97,"len":7,"ft":"chapter","dn":"Data Handling","key1":"Mathematics","key2":"Other Mathematics","key3":"Graphs","key4":""}
+{"_id":"INAP05M03","pn":38,"len":15,"ft":"chapter","dn":"Additions and Subtractions","key1":"Mathematics","key2":"Arithmetic","key3":"Addition & Subtraction","key4":""}
+{"_id":"INAP05M09","pn":155,"len":20,"ft":"chapter","dn":"Measurements","key1":"Mathematics","key2":"Measurement","key3":"Weight","key4":""}
+{"_id":"INAP05M10","pn":175,"len":8,"ft":"chapter","dn":"Time","key1":"Mathematics","key2":"Measurement","key3":"Date & Time","key4":""}
+{"_id":"INAP05M08","pn":133,"len":22,"ft":"chapter","dn":"Fractions","key1":"Mathematics","key2":"Arithmetic","key3":"Fractions","key4":""}
+{"_id":"INAP06M02","pn":21,"len":13,"ft":"chapter","dn":"Whole numbers","key1":"Mathematics","key2":"Numbers","key3":"Whole","key4":""}
+{"_id":"INAP06M04","pn":52,"len":11,"ft":"chapter","dn":"Integers","key1":"Mathematics","key2":"Numbers","key3":"Integers","key4":""}
+{"_id":"INAP06M08","pn":117,"len":12,"ft":"chapter","dn":"Basic Geometric Concepts","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Line"}
+{"_id":"INAP05M11","pn":183,"len":2,"ft":"chapter","dn":"Glossary","key1":"Mathematics","key2":"","key3":"","key4":""}
+{"_id":"INAP06M01","pn":7,"len":14,"ft":"chapter","dn":"Numbers all around us","key1":"Mathematics","key2":"Numbers","key3":"Natural","key4":""}
+{"_id":"INAP06M06","pn":88,"len":18,"ft":"chapter","dn":"Basic Arthmetic","key1":"Mathematics","key2":"Arithmetic","key3":"Percent","key4":""}
+{"_id":"INAP06M12","pn":159,"len":10,"ft":"chapter","dn":"Data Handling","key1":"Mathematics","key2":"Other Mathematics","key3":"Graphs","key4":""}
+{"_id":"INAP06M07","pn":106,"len":11,"ft":"chapter","dn":"Introduction to Algebra","key1":"Mathematics","key2":"Algebra","key3":"Equations","key4":""}
+{"_id":"INAP06M11","pn":152,"len":7,"ft":"chapter","dn":"Perimeter and Area","key1":"Mathematics","key2":"Geometry","key3":"Perimeter","key4":""}
+{"_id":"INAP06M10","pn":142,"len":10,"ft":"chapter","dn":"Practical Geometry","key1":"Mathematics","key2":"Geometry","key3":"Construction","key4":""}
+{"_id":"INAP06M13","pn":169,"len":8,"ft":"chapter","dn":"Answers","key1":"Mathematics","key2":"Other Mathematics","key3":"","key4":""}
+{"_id":"INAP06M09","pn":129,"len":13,"ft":"chapter","dn":"2D - 3D Shapes","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Quadrilateral"}
+{"_id":"INAP07Ma02","pn":29,"len":17,"ft":"chapter","dn":"Fractions and Decimals","key1":"Mathematics","key2":"Arithmetic","key3":"Fractions","key4":""}
+{"_id":"INAP07Ma06","pn":111,"len":21,"ft":"chapter","dn":"Data Handling","key1":"Mathematics","key2":"Other Mathematics","key3":"Graphs","key4":""}
+{"_id":"INAP07Ma04","pn":69,"len":26,"ft":"chapter","dn":"Lines and Angles","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Angle"}
+{"_id":"INAP07Ma07","pn":132,"len":12,"ft":"chapter","dn":"Key","key1":"Mathematics","key2":"","key3":"","key4":""}
+{"_id":"INAP06M05","pn":63,"len":25,"ft":"chapter","dn":"Fractions & Decimals","key1":"Mathematics","key2":"Arithmetic","key3":"Fractions","key4":""}
+{"_id":"INAP07Ma01","pn":7,"len":22,"ft":"chapter","dn":"Integers","key1":"Mathematics","key2":"Numbers","key3":"Integers","key4":""}
+{"_id":"INAP07Ma05","pn":95,"len":16,"ft":"chapter","dn":"Triangles","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Triangle"}
+{"_id":"INAP06M03","pn":34,"len":18,"ft":"chapter","dn":"HCF & LCM","key1":"Mathematics","key2":"Numbers","key3":"Prime","key4":""}
+{"_id":"INAP07Mb04","pn":71,"len":12,"ft":"chapter","dn":"Construction of Triangles","key1":"Mathematics","key2":"Geometry","key3":"Construction","key4":""}
+{"_id":"INAP07Mb01","pn":7,"len":25,"ft":"chapter","dn":"Ratio and Proportion","key1":"Mathematics","key2":"Arithmetic","key3":"Rates & Ratio","key4":""}
+{"_id":"INAP07Mb03","pn":52,"len":19,"ft":"chapter","dn":"Algebraic Expressions","key1":"Mathematics","key2":"Algebra","key3":"Expression","key4":""}
+{"_id":"INAP07Ma03","pn":46,"len":23,"ft":"chapter","dn":"Simple Equations","key1":"Mathematics","key2":"Numbers","key3":"Equations","key4":""}
+{"_id":"INAP07Mb02","pn":32,"len":20,"ft":"chapter","dn":"Exponents and Powers","key1":"Mathematics","key2":"Arithmetic","key3":"Exponents","key4":""}
+{"_id":"INAP07Mb05","pn":83,"len":20,"ft":"chapter","dn":"Area of Plane Figures","key1":"Mathematics","key2":"Measurement","key3":"Area","key4":""}
+{"_id":"INAP07Mb06","pn":103,"len":15,"ft":"chapter","dn":"Symmetry","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Symmetry"}
+{"_id":"INAP08M01","pn":14,"len":20,"ft":"chapter","dn":"Rational Numbers","key1":"Mathematics","key2":"Numbers","key3":"Other Numbers","key4":""}
+{"_id":"INAP08M02","pn":34,"len":16,"ft":"chapter","dn":"Linear Equations in One Variable","key1":"Mathematics","key2":"Algebra","key3":"Variable","key4":""}
+{"_id":"INAP08M03","pn":50,"len":20,"ft":"chapter","dn":"Understanding Quadrilaterals","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Quadrilateral"}
+{"_id":"INAP08M04","pn":70,"len":12,"ft":"chapter","dn":"Practical Geometry","key1":"Mathematics","key2":"Geometry","key3":"Other Geometry","key4":""}
+{"_id":"INAP08M06","pn":102,"len":20,"ft":"chapter","dn":"Squares and Square Roots","key1":"Mathematics","key2":"Arithmetic","key3":"Squares & Roots","key4":""}
+{"_id":"INAP08M05","pn":82,"len":20,"ft":"chapter","dn":"Data Handling","key1":"Mathematics","key2":"Other Mathematics","key3":"Graphs","key4":""}
+{"_id":"INAP08M07","pn":122,"len":8,"ft":"chapter","dn":"Cubes and Cube Roots","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Other Shapes"}
+{"_id":"INAP07Mb07","pn":118,"len":10,"ft":"chapter","dn":"Key","key1":"Mathematics","key2":"","key3":"","key4":""}
+{"_id":"INAP08M08","pn":130,"len":20,"ft":"chapter","dn":"Comparing Quantities","key1":"Mathematics","key2":"Arithmetic","key3":"Rates & Ratio","key4":""}
+{"_id":"INAP08M09","pn":150,"len":16,"ft":"chapter","dn":"Algebraic Expressions and Identities","key1":"Mathematics","key2":"Algebra","key3":"Expressions","key4":""}
+{"_id":"INAP08M13","pn":214,"len":16,"ft":"chapter","dn":"Direct and Inverse Proportions","key1":"Mathematics","key2":"Other Mathematics","key3":"","key4":""}
+{"_id":"INAP09M01","pn":11,"len":26,"ft":"chapter","dn":"Real Numbers","key1":"Mathematics","key2":"Numbers","key3":"Real","key4":""}
+{"_id":"INAP08M16","pn":262,"len":12,"ft":"chapter","dn":"Playing with Numbers","key1":"Mathematics","key2":"Numbers","key3":"Other numbers","key4":""}
+{"_id":"INAP08M15","pn":244,"len":18,"ft":"chapter","dn":"Introduction to Graphs","key1":"Mathematics","key2":"Other Mathematics","key3":"Graphs","key4":""}
+{"_id":"INAP09M03","pn":69,"len":12,"ft":"chapter","dn":"The Elements of Geometry","key1":"Mathematics","key2":"Geometry","key3":"People","key4":"Euclid"}
+{"_id":"INAP08M17","pn":274,"len":17,"ft":"chapter","dn":"Answers","key1":"Mathematics","key2":"","key3":"","key4":""}
+{"_id":"INAP09M02","pn":37,"len":32,"ft":"chapter","dn":"Polynomials and Factorisation","key1":"Mathematics","key2":"Algebra","key3":"Other algebra","key4":""}
+{"_id":"INAP09M05","pn":117,"len":17,"ft":"chapter","dn":"Co-Ordinate Geometry","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Co-Ordinate Grids"}
+{"_id":"INAP09M07","pn":158,"len":26,"ft":"chapter","dn":"Triangles","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Triangle"}
+{"_id":"INAP09M04","pn":81,"len":36,"ft":"chapter","dn":"Lines and Angles","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"line"}
+{"_id":"INAP09M06","pn":134,"len":24,"ft":"chapter","dn":"Linear Equation in Two variables","key1":"Mathematics","key2":"Algebra","key3":"Variable","key4":""}
+{"_id":"INAP09M08","pn":184,"len":20,"ft":"chapter","dn":"Quadrilaterals","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Quadrilateral"}
+{"_id":"INAP08M10","pn":166,"len":16,"ft":"chapter","dn":"Visualising Solid Shapes","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Solids"}
+{"_id":"INAP09M09","pn":204,"len":20,"ft":"chapter","dn":"Statistics","key1":"Mathematics","key2":"Applied Mathematics","key3":"Statistics","key4":""}
+{"_id":"INAP08M14","pn":230,"len":14,"ft":"chapter","dn":"Factorisation","key1":"Mathematics","key2":"Arithmetic","key3":"Fractions & Multiples","key4":""}
+{"_id":"INAP08M12","pn":206,"len":8,"ft":"chapter","dn":"Exponents and Powers","key1":"Mathematics","key2":"Arithmetic","key3":"Exponents","key4":""}
+{"_id":"INAP08M11","pn":182,"len":24,"ft":"chapter","dn":"Mensuration","key1":"Mathematics","key2":"Measurement","key3":"Area","key4":""}
+{"_id":"INAP09M11","pn":254,"len":16,"ft":"chapter","dn":"Areas","key1":"Mathematics","key2":"Measurement","key3":"Area","key4":""}
+{"_id":"INAP09M10","pn":224,"len":30,"ft":"chapter","dn":"Surface areas and Volumes","key1":"Mathematics","key2":"Measurement","key3":"Volume","key4":""}
+{"_id":"INAP09M15","pn":320,"len":18,"ft":"chapter","dn":"Proofs in Mathematics","key1":"Mathematics","key2":"Applied Mathematics","key3":"Other Applied Math","key4":""}
+{"_id":"INAP10M03","pn":55,"len":26,"ft":"chapter","dn":"Polynomials","key1":"Mathematics","key2":"Algebra","key3":"Other Algebra","key4":""}
+{"_id":"INAP10M02","pn":33,"len":22,"ft":"chapter","dn":"Sets","key1":"Mathematics","key2":"Numbers","key3":"Sets","key4":""}
+{"_id":"INAP10M04","pn":81,"len":28,"ft":"chapter","dn":"Pair of Linear Equations in Two Variables","key1":"Mathematics","key2":"Algebra","key3":"Variable","key4":""}
+{"_id":"INAP10M01","pn":9,"len":24,"ft":"chapter","dn":"Real Numbers","key1":"Mathematics","key2":"Numbers","key3":"Real","key4":""}
+{"_id":"INAP09M14","pn":302,"len":18,"ft":"chapter","dn":"Probability","key1":"Mathematics","key2":"Applied Mathematics","key3":"Probability Theory","key4":""}
+{"_id":"INAP10M05","pn":109,"len":24,"ft":"chapter","dn":"Quadratic Equations","key1":"Mathematics","key2":"Algebra","key3":"Expressions","key4":""}
+{"_id":"INAP09M13","pn":290,"len":12,"ft":"chapter","dn":"Geometrical Constructions","key1":"Mathematics","key2":"Geometry","key3":"Construction","key4":""}
+{"_id":"INAP09M12","pn":270,"len":20,"ft":"chapter","dn":"Circles","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Circle"}
+{"_id":"INAP10M12","pn":302,"len":11,"ft":"chapter","dn":"Applications of Trigonometry","key1":"Mathematics","key2":"Trigonometry","key3":"Other Trignometry","key4":""}
+{"_id":"INAP09M17","pn":353,"len":8,"ft":"chapter","dn":"Syllabus","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP10M14","pn":331,"len":30,"ft":"chapter","dn":"Statistics","key1":"Mathematics","key2":"Applied Mathematics","key3":"Statistics","key4":""}
+{"_id":"INAP10M09","pn":233,"len":20,"ft":"chapter","dn":"Tangents and Secants to a Circle","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Circle"}
+{"_id":"INAP10M06","pn":133,"len":34,"ft":"chapter","dn":"Progressions","key1":"Mathematics","key2":"Arithmatic","key3":"Order of Operations","key4":""}
+{"_id":"INAP10M13","pn":313,"len":18,"ft":"chapter","dn":"Probability","key1":"Mathematics","key2":"Applied Mathematics","key3":"Probability Theory","key4":""}
+{"_id":"INAP10M10","pn":253,"len":24,"ft":"chapter","dn":"Mensuration","key1":"Mathematics","key2":"Measurement","key3":"Area","key4":""}
+{"_id":"INAP10M17","pn":393,"len":3,"ft":"chapter","dn":"Note to the Teachers","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP10M15","pn":361,"len":13,"ft":"chapter","dn":"App-1 Mathematical Modelling","key1":"Mathematics","key2":"Applied Mathematics","key3":"Other Appllied Math","key4":""}
+{"_id":"INAP10M18","pn":396,"len":3,"ft":"chapter","dn":"Syllabus","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP10M11","pn":277,"len":25,"ft":"chapter","dn":"Trigonometry","key1":"Mathematics","key2":"Trigonometry","key3":"","key4":""}
+{"_id":"INAP10M08","pn":199,"len":34,"ft":"chapter","dn":"Similar Triangles","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Triangle"}
+{"_id":"INAP09M16","pn":338,"len":15,"ft":"chapter","dn":"Answers","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP10M19","pn":399,"len":2,"ft":"chapter","dn":"Academic Standards","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP06S02","pn":20,"len":10,"ft":"chapter","dn":"Knowing about plants","key1":"Science","key2":"Biology","key3":"Plants","key4":"Photosynthesis"}
+{"_id":"INAP06S07","pn":78,"len":13,"ft":"chapter","dn":"Let us Measure","key1":"Science","key2":"Other Science","key3":"","key4":""}
+{"_id":"INAP06S08","pn":91,"len":10,"ft":"chapter","dn":"How Fabrics are Made","key1":"Social Studies","key2":"Arts","key3":"Visual Arts","key4":"Weaving"}
+{"_id":"INAP06S03","pn":30,"len":10,"ft":"chapter","dn":"Animals and Their Food","key1":"Science","key2":"Biology","key3":"Zoology","key4":"Other animals"}
+{"_id":"INAP06S09","pn":101,"len":14,"ft":"chapter","dn":"Organisms and Habitat","key1":"Science","key2":"Biology","key3":"Ecology","key4":"Habitat"}
+{"_id":"INAP06S10","pn":115,"len":9,"ft":"chapter","dn":"Basic Electric Circuits","key1":"Science","key2":"Physics","key3":"Electricity and Electronics","key4":"Electricity"}
+{"_id":"INAP06S12","pn":135,"len":14,"ft":"chapter","dn":"Movement and Locomotion","key1":"Science","key2":"Biology","key3":"Organs Animals","key4":"Muscles"}
+{"_id":"INAP07Sa01","pn":9,"len":17,"ft":"chapter","dn":"Food for Health","key1":"Social studies","key2":"Community","key3":"Everyday Life","key4":"Food"}
+{"_id":"INAP06S11","pn":124,"len":11,"ft":"chapter","dn":"Shadows - Images","key1":"Science","key2":"Physics","key3":"Electromagnetism","key4":"Light"}
+{"_id":"INAP07Sa03","pn":43,"len":16,"ft":"chapter","dn":"Nutrition in Organisms","key1":"Science","key2":"Medicine","key3":"Healthy Living","key4":"Nutrition"}
+{"_id":"INAP06S06","pn":67,"len":11,"ft":"chapter","dn":"Fun with Magnets","key1":"Science","key2":"Physics","key3":"Forces","key4":"Magnetism"}
+{"_id":"INAP07Sa04","pn":59,"len":16,"ft":"chapter","dn":"Respiration and Circulation","key1":"Science","key2":"Biology","key3":"Life Processes","key4":"Respiration"}
+{"_id":"INAP06S05","pn":53,"len":14,"ft":"chapter","dn":"Materials - Separating Methods","key1":"Science","key2":"Other Science","key3":"","key4":""}
+{"_id":"INAP07Sa02","pn":26,"len":17,"ft":"chapter","dn":"Nature of substances","key1":"Science","key2":"Chemistry","key3":"Other Chemistry","key4":"Acid & Base & Salt"}
+{"_id":"INAP06S01","pn":9,"len":11,"ft":"chapter","dn":"The Food we need","key1":"Social Studies","key2":"Community","key3":"Everyday life","key4":"Food"}
+{"_id":"INAP10M16","pn":374,"len":9,"ft":"chapter","dn":"App-2 Answers","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP06S04","pn":40,"len":13,"ft":"chapter","dn":"Water","key1":"Science","key2":"Earth","key3":"Oceans & Water","key4":"Other Oceans & Water"}
+{"_id":"INAP07Sa05","pn":75,"len":15,"ft":"chapter","dn":"Motion and Time","key1":"Science","key2":"Physics","key3":"Motion","key4":"Other Motion"}
+{"_id":"INAP08S01","pn":13,"len":19,"ft":"chapter","dn":"Force and Pressure","key1":"Science","key2":"Physics","key3":"Forces","key4":"Gravity"}
+{"_id":"INAP07Sb03","pn":42,"len":20,"ft":"chapter","dn":"Heat, Temperature and Climate","key1":"Science","key2":"Physics","key3":"Electromagnetism","key4":"Heat"}
+{"_id":"INAP08S02","pn":32,"len":11,"ft":"chapter","dn":"Friction","key1":"Science","key2":"Physics","key3":"Forces","key4":"Other Forces"}
+{"_id":"INAP07Sb05","pn":76,"len":15,"ft":"chapter","dn":"Fibres and Fabrics","key1":"Science","key2":"Other Science","key3":"","key4":""}
+{"_id":"INAP08S03","pn":43,"len":8,"ft":"chapter","dn":"Coal and Petroleum","key1":"Science","key2":"Earth","key3":"Geology","key4":"Fossil Fuels"}
+{"_id":"INAP08S04","pn":51,"len":12,"ft":"chapter","dn":"Synthetic Fibres and Plastics","key1":"Science","key2":"Other Science","key3":"","key4":""}
+{"_id":"INAP07Sb06","pn":91,"len":16,"ft":"chapter","dn":"Soil and Water","key1":"Science","key2":"Earth","key3":"Geology","key4":"Soil"}
+{"_id":"INAP08S06","pn":78,"len":12,"ft":"chapter","dn":"Materials: Metals and Non - Metals","key1":"Science","key2":"Chemistry","key3":"Elements","key4":"Other elements"}
+{"_id":"INAP08S05","pn":63,"len":15,"ft":"chapter","dn":"Sound","key1":"Science","key2":"Physics","key3":"Other Physics","key4":"Sound"}
+{"_id":"INAP08S07","pn":90,"len":16,"ft":"chapter","dn":"Light","key1":"Science","key2":"Physics","key3":"Electromagnetism","key4":"Light"}
+{"_id":"INAP08S08","pn":106,"len":12,"ft":"chapter","dn":"Chemical Effects and Electric Current","key1":"Science","key2":"physics","key3":"Electricity and electronics","key4":"Electric current"}
+{"_id":"INAP07Sb01","pn":9,"len":15,"ft":"chapter","dn":"How do the New Plants Arise","key1":"Science","key2":"Biology","key3":"Life Processes","key4":"Reproduction"}
+{"_id":"INAP07Sb02","pn":24,"len":18,"ft":"chapter","dn":"Wonders of Light","key1":"Science","key2":"Physics","key3":"Electromagnetism","key4":"Light"}
+{"_id":"INAP07Sb04","pn":62,"len":14,"ft":"chapter","dn":"Changes Around Us","key1":"Science","key2":"Other Science","key3":"","key4":""}
+{"_id":"INAP08S09","pn":118,"len":15,"ft":"chapter","dn":"Some Natural Phenomena","key1":"Science","key2":"Physics","key3":"Electrical","key4":"Lightning"}
+{"_id":"INAP08S11","pn":146,"len":24,"ft":"chapter","dn":"Stars and the Solar System","key1":"Science","key2":"Astronomy","key3":"Solar system","key4":"Moons"}
+{"_id":"INAP07Sa06","pn":90,"len":22,"ft":"chapter","dn":"Electricity","key1":"Science","key2":"Physics","key3":"Electricity & Electronics","key4":"Electricity"}
+{"_id":"INAP09S06","pn":99,"len":21,"ft":"chapter","dn":"Chemical Reaction & Equations","key1":"Science","key2":"Technology","key3":"Environmental","key4":"Corrosion"}
+{"_id":"INAP09S03","pn":47,"len":18,"ft":"chapter","dn":"Is Matter Pure","key1":"Science","key2":"Other Science","key3":"","key4":""}
+{"_id":"INAP09S08","pn":135,"len":15,"ft":"chapter","dn":"Gravitation","key1":"Science","key2":"Physics","key3":"Forces","key4":"Gravity"}
+{"_id":"INAP09S09","pn":150,"len":20,"ft":"chapter","dn":"Floating bodies","key1":"Science","key2":"Other Science","key3":"","key4":""}
+{"_id":"INAP09S10","pn":170,"len":23,"ft":"chapter","dn":"Work and energy","key1":"Science","key2":"Physics","key3":"Forces","key4":"Work & Energy & Power"}
+{"_id":"INAP09S11","pn":193,"len":21,"ft":"chapter","dn":"Sound","key1":"Science","key2":"Physics","key3":"other physics","key4":"Sound"}
+{"_id":"INAP09S12","pn":214,"len":18,"ft":"chapter","dn":"Units and Graphs","key1":"Mathematics","key2":"Measurments","key3":"Units","key4":""}
+{"_id":"INAP09S04","pn":65,"len":19,"ft":"chapter","dn":"Atoms and molecules","key1":"Science","key2":"Chemistry","key3":"Atoms &Molecules","key4":""}
+{"_id":"INAP09S05","pn":84,"len":15,"ft":"chapter","dn":"What is inside atom","key1":"Science","key2":"Physics","key3":"Subatomic Particles","key4":"Neutron"}
+{"_id":"INAP10S04","pn":30,"len":24,"ft":"chapter","dn":"Acids, Bases and Salts","key1":"Science","key2":"Chemistry","key3":"Other Chemistry","key4":"Acid & Base & Salt"}
+{"_id":"INAP09S02","pn":29,"len":18,"ft":"chapter","dn":"Laws of motion","key1":"Science","key2":"Physics","key3":"Motion","key4":"Momentum"}
+{"_id":"INAP08S10","pn":133,"len":13,"ft":"chapter","dn":"Combustion and Flame","key1":"Science","key2":"Earth","key3":"Natural disaster","key4":"Fire"}
+{"_id":"INAP10S01","pn":11,"len":19,"ft":"chapter","dn":"Heat","key1":"Science","key2":"Physics","key3":"Electromagnetism","key4":"Heat"}
+{"_id":"INAP09S07","pn":120,"len":15,"ft":"chapter","dn":"Reflection of Light at curved surfaces","key1":"Science","key2":"Physics","key3":"Electromagnetism","key4":"Light"}
+{"_id":"INAP10S05","pn":54,"len":19,"ft":"chapter","dn":"Refraction of Light at Plane Surfaces","key1":"Science","key2":"Physics","key3":"Electromagnetism","key4":"Light"}
+{"_id":"INAP09S01","pn":10,"len":19,"ft":"chapter","dn":"Motion","key1":"Science","key2":"Physics","key3":"Motion","key4":"Other Motion"}
+{"_id":"INAP10S06","pn":73,"len":23,"ft":"chapter","dn":"Refraction of Light at Curved Surfaces","key1":"Science","key2":"Physics","key3":"Electromagnetism","key4":"Light"}
+{"_id":"INAP10S08","pn":121,"len":16,"ft":"chapter","dn":"Structure of Atom","key1":"Science","key2":"Physics","key3":"Subatomic Particles","key4":""}
+{"_id":"INAP10S09","pn":137,"len":26,"ft":"chapter","dn":"Classification of Elements- The Periodic Table","key1":"Science","key2":"Chemistry","key3":"Periodic table","key4":""}
+{"_id":"INAP10S07","pn":96,"len":25,"ft":"chapter","dn":"Human Eye and Colourful World","key1":"Science","key2":"Biology","key3":"Organs Animal","key4":"Eye"}
+{"_id":"INAP10S11","pn":189,"len":31,"ft":"chapter","dn":"Electric Current","key1":"Science","key2":"Physics","key3":"Electricity & Electronics","key4":"Electricity"}
+{"_id":"INAP10S10","pn":163,"len":26,"ft":"chapter","dn":"Chemical Bonding","key1":"Science","key2":"Chemistry","key3":"Other Chemistry","key4":"Bonding"}
+{"_id":"INAP10S12","pn":220,"len":28,"ft":"chapter","dn":"Electromagnetism","key1":"Science","key2":"Physics","key3":"Electromagnetism","key4":""}
+{"_id":"INAP10S13","pn":248,"len":16,"ft":"chapter","dn":"Principles of Metallurgy","key1":"Science","key2":"Physics","key3":"Materials","key4":"Megallurgy"}
+{"_id":"INAP10S15","pn":302,"len":2,"ft":"chapter","dn":"References","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP10S14","pn":264,"len":38,"ft":"chapter","dn":"Carbon and its Compounds","key1":"Science","key2":"Chemistry","key3":"Elements","key4":"Carbon"}
+{"_id":"INAP06SS02","pn":21,"len":13,"ft":"chapter","dn":"Globe - Model of the Earth","key1":"Science","key2":"Astronomy","key3":"Astrophysics","key4":"Eclipse"}
+{"_id":"INAP06SS04","pn":45,"len":14,"ft":"chapter","dn":"Land Forms - Andhra Pradesh","key1":"Social Studies","key2":"Economy","key3":"Geography","key4":"Landforms"}
+{"_id":"INAP06SS01","pn":7,"len":14,"ft":"chapter","dn":"Our Earth in the Solar System","key1":"Science","key2":"Astronomy","key3":"Solar System","key4":"Earth"}
+{"_id":"INAP06SS08","pn":93,"len":12,"ft":"chapter","dn":"Kingdoms and Empires","key1":"Social Studies","key2":"History","key3":"Ancient","key4":"India"}
+{"_id":"INAP06SS09","pn":105,"len":11,"ft":"chapter","dn":"Government","key1":"Social Studies","key2":"Community","key3":"Government","key4":"Democracy"}
+{"_id":"INAP06SS10","pn":116,"len":11,"ft":"chapter","dn":"Local Self Government","key1":"Social Studies","key2":"Community","key3":"Government","key4":"Local"}
+{"_id":"INAP06SS11","pn":127,"len":14,"ft":"chapter","dn":"Indian Culture, Languages and Religions","key1":"Social Studies","key2":"Beliefs","key3":"Religions","key4":""}
+{"_id":"INAP06SS06","pn":69,"len":11,"ft":"chapter","dn":"Early Civilisations","key1":"Social Studies","key2":"History","key3":"Ancient","key4":"India"}
+{"_id":"INAP07SSa01","pn":7,"len":16,"ft":"chapter","dn":"The Universe and The Earth","key1":"Science","key2":"Astronomy","key3":"Solar System","key4":"Earth"}
+{"_id":"INAP07SSa02","pn":23,"len":16,"ft":"chapter","dn":"Forests","key1":"Social Studies","key2":"Economy","key3":"Agriculture","key4":"Forest"}
+{"_id":"INAP06SS12","pn":141,"len":12,"ft":"chapter","dn":"Towards Equality","key1":"Social Studies","key2":"Community","key3":"Everyday Life","key4":"Diversity"}
+{"_id":"INAP07SSa04","pn":54,"len":14,"ft":"chapter","dn":"Delhi Sultanate","key1":"Social Studies","key2":"History","key3":"Ancient","key4":"Other Ancient History"}
+{"_id":"INAP07SSa05","pn":68,"len":14,"ft":"chapter","dn":"Kakatiya Kingdom","key1":"Social Studies","key2":"History","key3":"Ancient","key4":"Other Ancient History"}
+{"_id":"INAP07SSa03","pn":39,"len":15,"ft":"chapter","dn":"Learning through Maps","key1":"Social Studies","key2":"Economy","key3":"Geography","key4":"Maps"}
+{"_id":"INAP06SS07","pn":80,"len":13,"ft":"chapter","dn":"Emergence of Kingdoms and Republics","key1":"Social Studies","key2":"History","key3":"Archaeology","key4":"Other Archeology"}
+{"_id":"INAP06SS05","pn":59,"len":10,"ft":"chapter","dn":"Early Life to Settled Life","key1":"Social Studies","key2":"Arts","key3":"Visual Arts","key4":"Sculpture"}
+{"_id":"INAP07SSb05","pn":68,"len":14,"ft":"chapter","dn":"Road Safety Education","key1":"Social Studies","key2":"Community","key3":"Education","key4":"Other Education"}
+{"_id":"INAP07SSb06","pn":82,"len":13,"ft":"chapter","dn":"Markets Around Us","key1":"Social Studies","key2":"Economy","key3":"Business","key4":"Market"}
+{"_id":"INAP07SSb02","pn":23,"len":16,"ft":"chapter","dn":"Bhakthi - Sufi","key1":"Social Studies","key2":"Beliefs","key3":"Religions","key4":"Hinduism"}
+{"_id":"INAP06SS03","pn":34,"len":11,"ft":"chapter","dn":"Maps","key1":"Social Studies","key2":"Economy","key3":"Geography","key4":"Maps"}
+{"_id":"INAP07SSb03","pn":39,"len":15,"ft":"chapter","dn":"Indian Constitution - an Introduction","key1":"Social Studies","key2":"Community","key3":"Government","key4":"Democracy"}
+{"_id":"INAP08SSa01.00","pn":14,"len":2,"ft":"section","dn":"The Indian Constitution and Secularism","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP07SSa06","pn":82,"len":14,"ft":"chapter","dn":"Vijayanagara Empire","key1":"Social Studies","key2":"History","key3":"Ancient","key4":"Other Ancient History"}
+{"_id":"INAP08SSa01.01","pn":16,"len":14,"ft":"chapter","dn":"The Indian Constitution","key1":"Social Studies","key2":"Community","key3":"Government","key4":"Democracy"}
+{"_id":"INAP08SSa02.00","pn":40,"len":2,"ft":"section","dn":"Parliament and The Making of Law","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP08SSa02.01","pn":42,"len":12,"ft":"chapter","dn":"Why do we need a Parliament?","key1":"Social Studies","key2":"Community","key3":"Government","key4":"National"}
+{"_id":"INAP08SSa03.01","pn":66,"len":12,"ft":"chapter","dn":"Judiciary","key1":"Social Studies","key2":"Issuses","key3":"Civil Rights","key4":""}
+{"_id":"INAP07SSb01","pn":7,"len":16,"ft":"chapter","dn":"Mughal Empire","key1":"Social Studies","key2":"History","key3":"Ancient","key4":"Other Ancient History"}
+{"_id":"INAP08SSa01.02","pn":30,"len":10,"ft":"chapter","dn":"Understanding Secularism","key1":"Social Studies","key2":"Beliefs","key3":"Religions","key4":"Other Religions"}
+{"_id":"INAP08SSa03.00","pn":64,"len":2,"ft":"section","dn":"The Judiciary","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP08SSa04.01","pn":92,"len":14,"ft":"chapter","dn":"Understanding Marginalisation","key1":"Social Studies","key2":"Beliefs","key3":"Religions","key4":"Islam"}
+{"_id":"INAP08SSa02.02","pn":54,"len":10,"ft":"chapter","dn":"Understanding Laws","key1":"Social Studies","key2":"Community","key3":"Social Organization","key4":"Laws"}
+{"_id":"INAP08SSa05.01","pn":118,"len":14,"ft":"chapter","dn":"Public Facilities","key1":"Social Studies","key2":"Transportation","key3":"Public","key4":""}
+{"_id":"INAP08SSa05.00","pn":116,"len":2,"ft":"section","dn":"Economic Presence of the Government","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP08SSa04.02","pn":106,"len":10,"ft":"chapter","dn":"Confronting Marginalisation","key1":"Social Studies","key2":"Issuses","key3":"Human Rights","key4":"Caste"}
+{"_id":"INAP08SSa05.02","pn":132,"len":16,"ft":"chapter","dn":"Law and Social Justice","key1":"Social Studies","key2":"Economy","key3":"Law","key4":"Other Law"}
+{"_id":"INAP08SSa04.00","pn":90,"len":2,"ft":"section","dn":"Social Justice and The Marginalised","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP08SSb01","pn":10,"len":6,"ft":"chapter","dn":"Resources","key1":"Science","key2":"Earth","key3":"Oceans and Water","key4":"Resources"}
+{"_id":"INAP08SSa03.02","pn":78,"len":12,"ft":"chapter","dn":"Understanding Our Criminal Justice System","key1":"Social Studies","key2":"Economy","key3":"Law","key4":"Crime"}
+{"_id":"INAP10M07","pn":167,"len":32,"ft":"chapter","dn":"Coordinate Geometry","key1":"Mathematics","key2":"Other Mathematics","key3":"Graphs","key4":""}
+{"_id":"INAP08SSb03","pn":31,"len":16,"ft":"chapter","dn":"Mineral and Power Resources","key1":"Science","key2":"Earth","key3":"Geology","key4":"Minerals"}
+{"_id":"INAP08SSb04","pn":47,"len":10,"ft":"chapter","dn":"Agriculture","key1":"Social Studies","key2":"Economy","key3":"Agriculture","key4":"Farming"}
+{"_id":"INAP08SSb05","pn":57,"len":14,"ft":"chapter","dn":"Industries","key1":"Science","key2":"Physics","key3":"Materials","key4":"Steel"}
+{"_id":"INAP08SSb06","pn":71,"len":10,"ft":"chapter","dn":"Human Resources","key1":"Social Studies","key2":"Economy","key3":"Other Economy","key4":"Population"}
+{"_id":"INAP08SSc01","pn":12,"len":8,"ft":"chapter","dn":"How, When and Where","key1":"Social Studies","key2":"Other Social Studies","key3":"","key4":""}
+{"_id":"INAP08SSc02","pn":20,"len":17,"ft":"chapter","dn":"From Trade to Territory The Company Establishes Power","key1":"Social Studies","key2":"Economy","key3":"Law","key4":"International Trade"}
+{"_id":"INAP08SSb02","pn":16,"len":15,"ft":"chapter","dn":"Land, Soil, Water, Natural Vegetation and Wildlife Resources","key1":"Science","key2":"Earth","key3":"Geology","key4":"Soils"}
+{"_id":"INAP08SSc04","pn":50,"len":12,"ft":"chapter","dn":"Tribals, Dikus and the Vision of a Golden Age","key1":"Social Studies","key2":"Economy","key3":"Law","key4":"Other Law"}
+{"_id":"INAP08SSc03","pn":37,"len":13,"ft":"chapter","dn":"Ruling the Country Side","key1":"Social Studies","key2":"Economy","key3":"Agriculture","key4":"Farming"}
+{"_id":"INAP07SSb04","pn":54,"len":14,"ft":"chapter","dn":"State Government","key1":"Social Studies","key2":"Community","key3":"Government","key4":"Other Government"}
+{"_id":"INAP08SSc05","pn":62,"len":14,"ft":"chapter","dn":"When People Rebel 1857 and After","key1":"Social Studies","key2":"History","key3":"People","key4":"Other People"}
+{"_id":"INAP08SSc08","pn":105,"len":15,"ft":"chapter","dn":"Women, Caste and Reform","key1":"Social Studies","key2":"Issues","key3":"Human Rights","key4":"Caste"}
+{"_id":"INAP09SS04","pn":48,"len":15,"ft":"chapter","dn":"Atmosphere","key1":"Science","key2":"Earth","key3":"Climate","key4":"Atmosphere"}
+{"_id":"INAP09SS05","pn":63,"len":8,"ft":"chapter","dn":"Biosphere","key1":"Science","key2":"Earth","key3":"Geology","key4":"Fossil fuels"}
+{"_id":"INAP09SS03","pn":39,"len":9,"ft":"chapter","dn":"Hydrosohere","key1":"Science","key2":"Earth","key3":"Oceans and water","key4":"Hydrology"}
+{"_id":"INAP09SS06","pn":71,"len":16,"ft":"chapter","dn":"Agriculture in india","key1":"Social studies","key2":"Economy","key3":"Agriculture","key4":"Farming"}
+{"_id":"INAP09SS07","pn":87,"len":21,"ft":"chapter","dn":"Industries in india","key1":"Social studies","key2":"Economy","key3":"Business","key4":"Other business"}
+{"_id":"INAP09SS09","pn":117,"len":14,"ft":"chapter","dn":"Credit in the financial system","key1":"Social studies","key2":"Economy","key3":"Finance","key4":"Interest"}
+{"_id":"INAP09SS08","pn":108,"len":9,"ft":"chapter","dn":"Service activities in india","key1":"Social studies","key2":"Economy","key3":"Occupations","key4":"Service"}
+{"_id":"INAP09SS10","pn":131,"len":12,"ft":"chapter","dn":"Prices and cost of living","key1":"Social studies","key2":"Economy","key3":"Other Economy","key4":"Maintenance & Repair"}
+{"_id":"INAP08SSc07","pn":92,"len":13,"ft":"chapter","dn":"Civilising the “Native”, Educating the Nation","key1":"Social Studies","key2":"History","key3":"Ancient","key4":"India"}
+{"_id":"INAP09SS13","pn":172,"len":12,"ft":"chapter","dn":"Democratic and Nationalist Revolutions: 17th and 18th Centuries","key1":"Social studies","key2":"Issues","key3":"Conflict","key4":"Other Conflict"}
+{"_id":"INAP09SS12","pn":156,"len":36,"ft":"chapter","dn":"Changing Cultural Traditions in Europe 1300-1800","key1":"Social studies","key2":"History","key3":"Ancient","key4":"Rome"}
+{"_id":"INAP09SS14","pn":184,"len":12,"ft":"chapter","dn":"Democratic and Nationalist Revolutions: 19th Century","key1":"Social studies","key2":"Issues","key3":"Conflict","key4":"Other Conflict"}
+{"_id":"INAP08SSc10","pn":139,"len":15,"ft":"chapter","dn":"India After Independence","key1":"Social Studies","key2":"History","key3":"Ancient","key4":"India"}
+{"_id":"INAP08SSc09","pn":120,"len":19,"ft":"chapter","dn":"The Making of the National Movement: 1870s--1947","key1":"Social Studies","key2":"History","key3":"People","key4":"Mahatma gandhi"}
+{"_id":"INAP09SS01","pn":13,"len":13,"ft":"chapter","dn":"Our Earth","key1":"Science","key2":"Earth","key3":"Earth history","key4":"Other earth history"}
+{"_id":"INAP08SSc06","pn":76,"len":16,"ft":"chapter","dn":"Weavers, Iron Smelters and Factory Owners","key1":"Social Studies","key2":"Arts","key3":"Visual Art","key4":"Weaving"}
+{"_id":"INAP09SS19","pn":246,"len":11,"ft":"chapter","dn":"Expansion of Democracy","key1":"Social studies","key2":"History","key3":"Politics","key4":"Democracy"}
+{"_id":"INAP09SS20","pn":257,"len":11,"ft":"chapter","dn":"Democracy: An Evolving Idea","key1":"Social studies","key2":"Community","key3":"Government","key4":"Democracy"}
+{"_id":"INAP09SS22","pn":281,"len":8,"ft":"chapter","dn":"Women Protection Acts","key1":"Social studies","key2":"Issues","key3":"Human Rights","key4":"Girls & Women"}
+{"_id":"INAP09SS18","pn":232,"len":14,"ft":"chapter","dn":"Impact of Colonialism in India","key1":"Social studies","key2":"History","key3":"Politics","key4":"Other Politics"}
+{"_id":"INAP09SS23","pn":289,"len":9,"ft":"chapter","dn":"Disaster Management","key1":"Science","key2":"Earth","key3":"Natural disasters","key4":"Other Natural Disasters"}
+{"_id":"INAP09SS21","pn":268,"len":13,"ft":"chapter","dn":"Human Rights and Fundamental Rights","key1":"Social studies","key2":"Issues","key3":"Human Rights","key4":"Other Human Rights"}
+{"_id":"INAP10SS01","pn":11,"len":13,"ft":"chapter","dn":"India: Relief Features","key1":"Social","key2":"Geography","key3":"Asia","key4":"India"}
+{"_id":"INAP10SS02","pn":24,"len":14,"ft":"chapter","dn":"Ideas of Development","key1":"Social","key2":"Economy","key3":"Community","key4":"Education"}
+{"_id":"INAP09SS24","pn":298,"len":7,"ft":"chapter","dn":"Traffic Education","key1":"Social studies","key2":"Community","key3":"Education","key4":"Other Education"}
+{"_id":"INAP10SS04","pn":54,"len":14,"ft":"chapter","dn":"Climate of India","key1":"Science","key2":"Earth","key3":"Climate","key4":""}
+{"_id":"INAP09SS16","pn":209,"len":8,"ft":"chapter","dn":"Social Protest Movements","key1":"Social studies","key2":"History","key3":"Politics","key4":"Socialsim"}
+{"_id":"INAP10SS03","pn":38,"len":16,"ft":"chapter","dn":"Production and Employment","key1":"Social","key2":"Economy","key3":"Business","key4":"Other Business"}
+{"_id":"INAP09SS15","pn":196,"len":13,"ft":"chapter","dn":"Industrialisation and Social Change","key1":"Social studies","key2":"Other Social Studies","key3":"","key4":""}
+{"_id":"INAP10SS05","pn":68,"len":13,"ft":"chapter","dn":"Indian Rivers and Water Resources","key1":"Science","key2":"Earth","key3":"Oceans & Water","key4":"River"}
+{"_id":"INAP09SS17","pn":217,"len":15,"ft":"chapter","dn":"Colonialism in Latin America, Asia and Africa","key1":"Social studies","key2":"History","key3":"Politics","key4":"Other Politics"}
+{"_id":"INAP09SS02","pn":26,"len":13,"ft":"chapter","dn":"The natural realms of the earth","key1":"Science","key2":"Earth","key3":"Earth history","key4":"Plate tetronics"}
+{"_id":"INAP09SS11","pn":143,"len":13,"ft":"chapter","dn":"The government budget and taxation","key1":"Social studies","key2":"Community","key3":"Government","key4":"Other Government"}
+{"_id":"INAP10SS06","pn":81,"len":16,"ft":"chapter","dn":"The People","key1":"Social","key2":"Economy","key3":"Other economy","key4":"Population"}
+{"_id":"INAP10SS07","pn":97,"len":14,"ft":"chapter","dn":"People and Settlement","key1":"Social","key2":"Economy","key3":"Occupations","key4":"Rural"}
+{"_id":"INAP10SS08","pn":111,"len":14,"ft":"chapter","dn":"People and Migration","key1":"Social","key2":"Issues","key3":"Civil rights","key4":"Immigration"}
+{"_id":"INAP10SS10","pn":140,"len":15,"ft":"chapter","dn":"Globalisation","key1":"Social","key2":"Economy","key3":"Business","key4":"Companies"}
+{"_id":"INAP10SS12","pn":169,"len":17,"ft":"chapter","dn":"Sustainable Development with Equity","key1":"Social","key2":"Economy","key3":"Other economy","key4":"Sustainable development"}
+{"_id":"INAP10SS13","pn":186,"len":11,"ft":"chapter","dn":"The World Between Wars  1900-1950 Part I","key1":"Social","key2":"History","key3":"Wars","key4":"WWI"}
+{"_id":"INAP10SS14","pn":197,"len":15,"ft":"chapter","dn":"The World Between Wars  1900-1950 Part II","key1":"Social","key2":"History","key3":"Wars","key4":"WWII"}
+{"_id":"INAP10SS16","pn":228,"len":14,"ft":"chapter","dn":"National Movement in India-Partition and Independence","key1":"Social","key2":"History","key3":"People","key4":"Mahatma gandhi"}
+{"_id":"INAP10SS17","pn":242,"len":16,"ft":"chapter","dn":"The Making of Independent India's Constitution","key1":"Social","key2":"Issues","key3":"Civil rights","key4":"Other civil rights"}
+{"_id":"INAP10SS09","pn":125,"len":15,"ft":"chapter","dn":"Rampur: A Village Economy","key1":"Social","key2":"Economy","key3":"Agriculture","key4":"Farming"}
+{"_id":"INAP10SS22","pn":324,"len":13,"ft":"chapter","dn":"Citizens and the Governments","key1":"Social","key2":"Issues","key3":"Human rights","key4":"Other human rights"}
+{"_id":"INAP03TE01","pn":11,"len":6,"ft":"chapter","dn":"తెలుగు తల్లి","key1":"భాష","key2":"తెలుగు","key3":"దేశభక్తి","key4":"గేయం"}
+{"_id":"INAP10SS11","pn":155,"len":14,"ft":"chapter","dn":"Food Security","key1":"Social","key2":"Economy","key3":"Agriculture","key4":"Food Security"}
+{"_id":"INAP03TE03","pn":23,"len":10,"ft":"chapter","dn":"మంచి బాలుడు","key1":"భాష","key2":"తెలుగు","key3":"సహానుభూతి","key4":"గేయకథ"}
+{"_id":"INAP03TE02","pn":17,"len":6,"ft":"chapter","dn":"మర్యాద చేద్దాం","key1":"భాష","key2":"తెలుగు","key3":"హాస్యం","key4":"కథ"}
+{"_id":"INAP10SS21","pn":308,"len":16,"ft":"chapter","dn":"Social Movements in Our Times","key1":"Social","key2":"Issues","key3":"Human rights","key4":"Girls and women"}
+{"_id":"INAP10SS19","pn":274,"len":18,"ft":"chapter","dn":"Emerging Political Trends 1977-2000","key1":"Social","key2":"History","key3":"Politics","key4":"Other politics"}
+{"_id":"INAP03TE08","pn":77,"len":10,"ft":"chapter","dn":"మా వూరి ఏరు","key1":"భాష","key2":"తెలుగు","key3":"ప్రకృతి వర్ణన","key4":"గేయం"}
+{"_id":"INAP03TE06","pn":55,"len":10,"ft":"chapter","dn":"మే మే మేక పిల్ల","key1":"భాష","key2":"తెలుగు","key3":"పరస్పర సహకారం","key4":"కథ"}
+{"_id":"INAP03TE07","pn":65,"len":12,"ft":"chapter","dn":"పద్యరత్నాలు","key1":"భాష","key2":"తెలుగు","key3":"నైతిక విలువలు","key4":"పద్యాలు"}
+{"_id":"INAP10SS15","pn":212,"len":16,"ft":"chapter","dn":"National Liberation Movements in the Colonies","key1":"Social","key2":"History","key3":"Politics","key4":"Democracy"}
+{"_id":"INAP03TE04","pn":33,"len":10,"ft":"chapter","dn":"నా బాల్యం","key1":"భాష","key2":"తెలుగు","key3":"కళలు","key4":"ఆత్మకథ"}
+{"_id":"INAP04TE03","pn":25,"len":12,"ft":"chapter","dn":"దేశమును ప్రేమించమన్నా","key1":"భాష","key2":"తెలుగు","key3":"దేశభక్తి","key4":"గేయం"}
+{"_id":"INAP04TE01","pn":11,"len":6,"ft":"chapter","dn":"గాంధీ మహాత్ముడు","key1":"భాష","key2":"తెలుగు","key3":"మహనీయుల చరిత్ర","key4":"గేయం"}
+{"_id":"INAP10SS18","pn":258,"len":16,"ft":"chapter","dn":"Independent India (The First 30 Years - 1947-77","key1":"Social","key2":"History","key3":"Politics","key4":"Other politics"}
+{"_id":"INAP03TE05","pn":43,"len":12,"ft":"chapter","dn":"పొడుపు - విడుపు","key1":"భాష","key2":"తెలుగు","key3":"భాషాభిరుచి","key4":"సంభాషణ"}
+{"_id":"INAP03TE09","pn":87,"len":10,"ft":"chapter","dn":"తొలిపండుగ","key1":"భాష","key2":"తెలుగు","key3":"సంస్కృతీ సంప్రదాయాలు","key4":"కథనం"}
+{"_id":"INAP10SS20","pn":292,"len":16,"ft":"chapter","dn":"Post-War World and India","key1":"Social","key2":"Issues","key3":"Conflict","key4":"Other conflict"}
+{"_id":"INAP04TE02","pn":17,"len":8,"ft":"chapter","dn":"గోపాల్ తెలివి","key1":"భాష","key2":"తెలుగు","key3":"సమయస్ఫూర్తి","key4":"కథ"}
+{"_id":"INAP04TE04","pn":37,"len":10,"ft":"chapter","dn":"పరివర్తన","key1":"భాష","key2":"తెలుగు","key3":"పిల్లల స్వభావం","key4":"కథ"}
+{"_id":"INAP04TE05","pn":47,"len":12,"ft":"chapter","dn":"సత్యమహిమ","key1":"భాష","key2":"తెలుగు","key3":"నైతిక విలువలు","key4":"గేయకథ"}
+{"_id":"INAP04TE08","pn":81,"len":12,"ft":"chapter","dn":"బారిష్టర్ పార్వతీశం","key1":"భాష","key2":"తెలుగు","key3":"హాస్యం","key4":"కథనం"}
+{"_id":"INAP05TE06","pn":53,"len":8,"ft":"chapter","dn":"పెన్నేటి పాట","key1":"భాష","key2":"తెలుగు","key3":"పర్యావరణం","key4":"పాట"}
+{"_id":"INAP05TE04","pn":33,"len":10,"ft":"chapter","dn":"జయగీతం","key1":"భాష","key2":"తెలుగు","key3":"మహనీయుల చరిత్ర","key4":"పాట"}
+{"_id":"INAP05TE07","pn":61,"len":8,"ft":"chapter","dn":"పద్యరత్నాలు","key1":"భాష","key2":"తెలుగు","key3":"నైతిక విలువలు","key4":"పద్యాలు"}
+{"_id":"INAP05TE03","pn":23,"len":10,"ft":"chapter","dn":"కొండవాగు","key1":"భాష","key2":"తెలుగు","key3":"ప్రకృతి  వర్ణన","key4":"లేఖ"}
+{"_id":"INAP05TE09","pn":79,"len":8,"ft":"chapter","dn":"తరిగొండ వేంగమాంబ","key1":"భాష","key2":"తెలుగు","key3":"స్త్రీ శక్తి","key4":"వ్యాసం"}
+{"_id":"INAP05TE05","pn":43,"len":10,"ft":"chapter","dn":"తోలుబొమ్మలాట - ఒక జానపద కళ","key1":"భాష","key2":"తెలుగు","key3":"కళలు","key4":"వ్యాసం"}
+{"_id":"INAP06TE01","pn":11,"len":8,"ft":"chapter","dn":"అమ్మఒడి","key1":"భాష","key2":"తెలుగు","key3":"తల్లిప్రేమ","key4":"గేయం"}
+{"_id":"INAP05TE10","pn":87,"len":10,"ft":"chapter","dn":"మంచి బహుమతి","key1":"భాష","key2":"తెలుగు","key3":"పఠనాభిలాష","key4":"సంభాషణ"}
+{"_id":"INAP05TE08","pn":69,"len":10,"ft":"chapter","dn":"ఇటీజ్ పండుగ","key1":"భాష","key2":"తెలుగు","key3":"సంస్కృతీ సంప్రదాయాలు","key4":"సంభాషణ"}
+{"_id":"INAP06TE03","pn":29,"len":8,"ft":"chapter","dn":"మాకోద్ధీ తెల్లదొరతనము","key1":"భాష","key2":"తెలుగు","key3":"దేశభక్తి","key4":"గేయం"}
+{"_id":"INAP06TE04","pn":37,"len":10,"ft":"chapter","dn":"సమయస్ఫూర్తి","key1":"భాష","key2":"తెలుగు","key3":"సమయస్పూర్తి","key4":"కథ"}
+{"_id":"INAP06TE05","pn":47,"len":6,"ft":"chapter","dn":"మన మహనీయులు","key1":"భాష","key2":"తెలుగు","key3":"దేశభక్తి","key4":"వ్యాసం"}
+{"_id":"INAP05TE01","pn":11,"len":6,"ft":"chapter","dn":"ఏ దేశమేగినా","key1":"భాష","key2":"తెలుగు","key3":"దేశభక్తి","key4":"గేయం"}
+{"_id":"INAP06TE08","pn":73,"len":8,"ft":"chapter","dn":"మేలుకొలుపు","key1":"భాష","key2":"తెలుగు","key3":"సమానత్వం","key4":"పద్యం"}
+{"_id":"INAP04TE09","pn":93,"len":12,"ft":"chapter","dn":"రాజు  -  కవి","key1":"భాష","key2":"తెలుగు","key3":"సామాజిక అంశం","key4":"పద్యకథ"}
+{"_id":"INAP06TE02","pn":19,"len":10,"ft":"chapter","dn":"తృప్తి","key1":"భాష","key2":"తెలుగు","key3":"మానవ విలువలు","key4":"కథానిక"}
+{"_id":"INAP06TE09","pn":81,"len":8,"ft":"chapter","dn":"ధర్మ నిర్ణయం","key1":"భాష","key2":"తెలుగు","key3":"స్థలపురాణం","key4":"చారిత్రక కథ"}
+{"_id":"INAP06TE07","pn":63,"len":10,"ft":"chapter","dn":"మమకారం","key1":"భాష","key2":"తెలుగు","key3":"భాషాభిరుచి","key4":"కథ"}
+{"_id":"INAP05TE02","pn":17,"len":6,"ft":"chapter","dn":"సాయం","key1":"భాష","key2":"తెలుగు","key3":"పరోపకారం","key4":"కథనం"}
+{"_id":"INAP06TE10","pn":89,"len":8,"ft":"chapter","dn":"త్రిజట స్వప్నం","key1":"భాష","key2":"తెలుగు","key3":"సహానుభూతి","key4":"పద్యం"}
+{"_id":"INAP06TE06","pn":53,"len":10,"ft":"chapter","dn":"సుభాషితాలు","key1":"భాష","key2":"తెలుగు","key3":"నైతిక విలువలు","key4":"శతక పద్యాలు"}
+{"_id":"INAP04TE07","pn":71,"len":10,"ft":"chapter","dn":"పద్యరత్నాలు","key1":"భాష","key2":"తెలుగు","key3":"నైతిక, మానవీయ విలువలు","key4":"పద్యం"}
+{"_id":"INAP06TE12","pn":106,"len":4,"ft":"chapter","dn":"ఎంత మంచివారమ్మ","key1":"భాష","key2":"తెలుగు","key3":"జీవన వైవిధ్యం","key4":"వ్యాసం"}
+{"_id":"INAP07TE01.00","pn":11,"len":0,"ft":"section","dn":"సెమిస్టర్ - 1","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP07TE01.01","pn":11,"len":11,"ft":"chapter","dn":"అక్షరం","key1":"భాష","key2":"తెలుగు","key3":"చదువు విశిష్టత","key4":"వచన కవిత"}
+{"_id":"INAP07TE01.02","pn":22,"len":11,"ft":"chapter","dn":"మాయాకంబళి","key1":"భాష","key2":"తెలుగు","key3":"మానవ స్వభావం","key4":"జానపద కథ"}
+{"_id":"INAP04TE06","pn":59,"len":12,"ft":"chapter","dn":"ముగుల్లో సంక్రాంతి","key1":"భాష","key2":"తెలుగు","key3":"సంస్కృతీ సంప్రదాయాలు","key4":"వ్యాసం"}
+{"_id":"INAP06TE11","pn":97,"len":9,"ft":"chapter","dn":"డూడూ బసవన్న","key1":"భాష","key2":"తెలుగు","key3":"సంస్కృతి","key4":"జీవిత చరిత్ర"}
+{"_id":"INAP07TE01.03","pn":33,"len":11,"ft":"chapter","dn":"చిన్నిశీశువు","key1":"భాష","key2":"తెలుగు","key3":"శైశవ వర్ణన","key4":"పద కవిత"}
+{"_id":"INAP07TE01.04","pn":43,"len":14,"ft":"chapter","dn":"మర్రిచెట్టు","key1":"భాష","key2":"తెలుగు","key3":"సహానుభూతి","key4":"స్వగతం"}
+{"_id":"INAP07TE01.06","pn":71,"len":7,"ft":"chapter","dn":"మన విశిష్ట ఉత్సవాలు","key1":"భాష","key2":"తెలుగు","key3":"సంస్కృతి - సంప్రదాయాలు","key4":"వ్యాసం"}
+{"_id":"INAP07TE01.05","pn":57,"len":14,"ft":"chapter","dn":"పద్య పరిమళం","key1":"భాష","key2":"తెలుగు","key3":"నైతిక విలువలు","key4":"శతకం"}
+{"_id":"INAP07TE01.07","pn":78,"len":3,"ft":"chapter","dn":"పదవిజ్ఞానం","key1":"తెలుగు","key2":"అర్ధాలు","key3":"పర్యాయపదాలు","key4":"విభక్తులు"}
+{"_id":"INAP07TE02.00","pn":81,"len":2,"ft":"section","dn":"సెమిస్టర్ - 2","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP07TE02.03","pn":106,"len":8,"ft":"chapter","dn":"హితోక్తులు","key1":"భాష","key2":"తెలుగు","key3":"నైతిక విలువలు","key4":"అనువాదం"}
+{"_id":"INAP07TE02.05","pn":124,"len":10,"ft":"chapter","dn":"బాలచంద్రుని ప్రతిజ్ఞ","key1":"భాష","key2":"తెలుగు","key3":"శౌర్యపరాక్రమాలు","key4":"ద్విపద"}
+{"_id":"INAP08TE01.02","pn":26,"len":12,"ft":"chapter","dn":"మాతృభూమి","key1":"భాష","key2":"తెలుగు","key3":"దేశభక్తి","key4":"కథానిక"}
+{"_id":"INAP08TE01.00","pn":9,"len":2,"ft":"section","dn":"సెమిస్టర్ - 1","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP06TE13","pn":110,"len":3,"ft":"chapter","dn":"పునశ్చరణ","key1":"తెలుగు","key2":"అర్ధాలు","key3":"పర్యాయపదాలు","key4":"ప్రకృతి - వికృతి"}
+{"_id":"INAP08TE01.04","pn":53,"len":12,"ft":"chapter","dn":"నా యాత్ర","key1":"భాష","key2":"తెలుగు","key3":"జాతీయ సమైక్యత","key4":"యాత్ర రచన"}
+{"_id":"INAP08TE01.03","pn":38,"len":15,"ft":"chapter","dn":"శతక సౌరభం","key1":"భాష","key2":"తెలుగు","key3":"నైతిక విలువలు","key4":"శతకం"}
+{"_id":"INAP08TE01.06","pn":75,"len":14,"ft":"chapter","dn":"పయనం","key1":"భాష","key2":"తెలుగు","key3":"సామాజిక స్పృహ","key4":"మాండలిక కథ"}
+{"_id":"INAP08TE01.05","pn":65,"len":10,"ft":"chapter","dn":"సందేశం","key1":"భాష","key2":"తెలుగు","key3":"కష్టజీవుల శ్రమ","key4":"ఖండ కావ్యం"}
+{"_id":"INAP08TE01.07","pn":89,"len":10,"ft":"chapter","dn":"చైతన్య మూర్తులు","key1":"భాష","key2":"తెలుగు","key3":"స్పూర్తి /  సేవ","key4":"వ్యాసం"}
+{"_id":"INAP07TE02.04","pn":114,"len":10,"ft":"chapter","dn":"ప్రియ మిత్రునికి","key1":"భాష","key2":"తెలుగు","key3":"మానవీయ విలువలు","key4":"లేఖ"}
+{"_id":"INAP08TE02.01","pn":100,"len":12,"ft":"chapter","dn":"మేలిమలుపు","key1":"భాష","key2":"తెలుగు","key3":"ఆత్మస్థైర్యం","key4":"కథ"}
+{"_id":"INAP08TE02.00","pn":99,"len":1,"ft":"section","dn":"సెమిస్టర్ - 2","key1":"","key2":"","key3":"","key4":""}
+{"_id":"INAP08TE02.02","pn":112,"len":10,"ft":"chapter","dn":"చిరమాలిన్యం","key1":"భాష","key2":"తెలుగు","key3":"మానవ విలువలు","key4":"వచన కవిత"}
+{"_id":"INAP07TE02.07","pn":144,"len":9,"ft":"chapter","dn":"పదవిజ్ఞానం","key1":"తెలుగు","key2":"అర్ధాలు","key3":"పర్యాయపదాలు","key4":"విభక్తులు"}
+{"_id":"INAP07TE02.01","pn":83,"len":12,"ft":"chapter","dn":"కప్పతల్లి పెళ్ళీ","key1":"భాష","key2":"తెలుగు","key3":"ఆచారం - సంప్రదాయం","key4":"గేయం"}
+{"_id":"INAP08TE02.03","pn":122,"len":11,"ft":"chapter","dn":"నాటి చదువు","key1":"భాష","key2":"తెలుగు","key3":"వ్యక్తిత్వ వికాసం","key4":"ఆత్మకథ"}
+{"_id":"INAP08TE02.05","pn":143,"len":13,"ft":"chapter","dn":"భువన విజయం","key1":"భాష","key2":"తెలుగు","key3":"భాషాభిరుచి","key4":"సాహితీ రూపకం"}
+{"_id":"INAP08TE02.04","pn":133,"len":10,"ft":"chapter","dn":"సమదృష్టి","key1":"భాష","key2":"తెలుగు","key3":"సమానత్వం","key4":"గజల్"}
+{"_id":"INAP09TE02","pn":21,"len":9,"ft":"chapter","dn":"స్వభాష","key1":"భాష","key2":"తెలుగు","key3":"భాషాభిరుచి","key4":"వ్యాసం"}
+{"_id":"INAP07TE02.02","pn":95,"len":11,"ft":"chapter","dn":"ఎద","key1":"భాష","key2":"తెలుగు","key3":"ఆశావహ దృక్పధం","key4":"కథానిక"}
+{"_id":"INAP07TE02.06","pn":134,"len":10,"ft":"chapter","dn":"స్ఫూర్తిప్రదాతలు","key1":"భాష","key2":"తెలుగు","key3":"స్ఫూర్తి - సామాజికసేవ","key4":"వ్యాసం"}
+{"_id":"INAP09TE03","pn":30,"len":12,"ft":"chapter","dn":"స్వామి వివేకానంద","key1":"భాష","key2":"తెలుగు","key3":"నైతిక విలువలు","key4":"జీవితచరిత్ర"}
+{"_id":"INAP09TE04","pn":42,"len":8,"ft":"chapter","dn":"శివతాండవం","key1":"భాష","key2":"తెలుగు","key3":"ప్రకృతివర్ణన","key4":"గేయం"}
+{"_id":"INAP09TE06","pn":60,"len":7,"ft":"chapter","dn":"నేను సావిత్రీబాయిని","key1":"భాష","key2":"తెలుగు","key3":"మానవత్వపు విలువలు","key4":"ఆత్మకథ"}
+{"_id":"INAP08TE02.06","pn":156,"len":13,"ft":"chapter","dn":"ఆతిథ్యం","key1":"భాష","key2":"తెలుగు","key3":"అతిథి గౌరవం","key4":"ఇతిహాసం"}
+{"_id":"INAP08TE02.07","pn":169,"len":7,"ft":"chapter","dn":"కళా వారసత్వం","key1":"భాష","key2":"తెలుగు","key3":"కళల వైశిష్ట్యం","key4":"వ్యాసం"}
+{"_id":"INAP08TE02.08","pn":176,"len":5,"ft":"chapter","dn":"అకారాది పట్టిక","key1":"తెలుగు","key2":"అర్ధాలు","key3":"పర్యాయపదాలు","key4":"ప్రకృతి - వికృతి"}
+{"_id":"INAP09TE05","pn":50,"len":10,"ft":"chapter","dn":"ప్రేరణ","key1":"భాష","key2":"తెలుగు","key3":"వ్యక్తిత్వవికాసం","key4":"ఆత్మకథ"}
+{"_id":"INAP09TE10","pn":92,"len":12,"ft":"chapter","dn":"ఆడినమాట","key1":"భాష","key2":"తెలుగు","key3":"నైతికవిలువలు","key4":"పద్యకథ"}
+{"_id":"INAP09TE12","pn":112,"len":5,"ft":"chapter","dn":"గిడుగు వేంకటరామమూర్తి","key1":"భాష","key2":"తెలుగు","key3":"భాష - సామాజిక చైతన్యం","key4":"వ్యాసం"}
+{"_id":"INAP09TE08","pn":79,"len":8,"ft":"chapter","dn":"ప్రబోధం","key1":"భాష","key2":"తెలుగు","key3":"స్త్రీ చైతన్యం","key4":"లేఖ"}
+{"_id":"INAP09TE14","pn":125,"len":8,"ft":"chapter","dn":"బతుకుపుస్తకం","key1":"భాష","key2":"తెలుగు","key3":"మానవత్వపు విలువలు","key4":"పుస్తక పరిచయం"}
+{"_id":"INAP09TE11","pn":104,"len":8,"ft":"chapter","dn":"చూడడమనే కళ","key1":"భాష","key2":"తెలుగు","key3":"ప్రకృతి పరిశీలన","key4":"వ్యాసం"}
+{"_id":"INAP09TE15","pn":133,"len":5,"ft":"chapter","dn":"ఆచార్య భద్రిరాజుకృష్ణమూర్తి","key1":"భాష","key2":"తెలుగు","key3":"భాష - సామాజిక చైతన్యం","key4":"వ్యాసం"}
+{"_id":"INAP09TE07","pn":67,"len":12,"ft":"chapter","dn":"పద్యరత్నాలు","key1":"భాష","key2":"తెలుగు","key3":"నైతిక విలువలు","key4":"పద్యం"}
+{"_id":"INAP09TE17","pn":148,"len":6,"ft":"chapter","dn":"ధ్రువతారలు","key1":"భాష","key2":"తెలుగు","key3":"సాంకేతిక విజ్ఞానం","key4":"వ్యాసం"}
+{"_id":"INAP09TE09","pn":87,"len":5,"ft":"chapter","dn":"నేనెరిగిన బూర్గుల","key1":"భాష","key2":"తెలుగు","key3":"స్పూర్తి","key4":"వ్యాసం"}
+{"_id":"INAP09TE13","pn":117,"len":8,"ft":"chapter","dn":"భూమిపుత్రుడు","key1":"భాష","key2":"తెలుగు","key3":"గ్రామీణ జీవితం","key4":"పద్యం"}
+{"_id":"INAP09TE16","pn":138,"len":10,"ft":"chapter","dn":"ధర్మదీక్ష","key1":"భాష","key2":"తెలుగు","key3":"జీవకారుణ్యం","key4":"కథ"}
+{"_id":"INAP09TE18","pn":154,"len":7,"ft":"chapter","dn":"పునశ్చరణ & సామర్ధ్యాలు","key1":"తెలుగు","key2":"అర్ధాలు","key3":"పర్యాయపదాలు","key4":"ప్రకృతి-వికృతి"}
+{"_id":"INAP10TE02","pn":23,"len":10,"ft":"chapter","dn":"అమరావతి","key1":"భాష","key2":"తెలుగు","key3":"సంస్కృతిక వైభవం","key4":"వ్యాసం"}
+{"_id":"INAP10TE03","pn":33,"len":11,"ft":"chapter","dn":"జానపదుని జాబు","key1":"భాష","key2":"తెలుగు","key3":"శ్రమపట్ల గౌరవం","key4":"లేఖ"}
+{"_id":"INAP10TE01","pn":11,"len":12,"ft":"chapter","dn":"మాతృభావన","key1":"భాష","key2":"తెలుగు","key3":"స్త్రీలపట్ల గౌరవం","key4":"పద్యం"}
+{"_id":"INAP10TE06","pn":65,"len":13,"ft":"chapter","dn":"శతక మధురిమ","key1":"భాష","key2":"తెలుగు","key3":"నైతికవిలువలు","key4":"పద్యం"}
+{"_id":"INAP10TE04","pn":44,"len":12,"ft":"chapter","dn":"వెన్నెల","key1":"భాష","key2":"తెలుగు","key3":"ప్రకృతి వర్ణన","key4":"పద్యం"}
+{"_id":"INAP09TE01","pn":11,"len":10,"ft":"chapter","dn":"శాంతికాంక్ష","key1":"భాష","key2":"తెలుగు","key3":"శాంతిస్ధాపన","key4":"పద్యం"}
+{"_id":"INAP10TE11","pn":126,"len":12,"ft":"chapter","dn":"భిక్ష","key1":"భాష","key2":"తెలుగు","key3":"మానవస్వభావం","key4":"పద్యం"}
+{"_id":"INAP10TE09","pn":100,"len":10,"ft":"chapter","dn":"మాణిక్యవీణ","key1":"భాష","key2":"తెలుగు","key3":"సామాజికస్పృహ","key4":"వచనకవిత"}
+{"_id":"INAP10TE14","pn":188,"len":2,"ft":"chapter","dn":"రామాయణ విశ్వరూపం","key1":"భాష","key2":"తెలుగు","key3":"సంస్కృతి, విలువలు","key4":"ఇతిహాస కథ"}
+{"_id":"INAP10TE10","pn":110,"len":16,"ft":"chapter","dn":"గోరంతదీపాలు","key1":"భాష","key2":"తెలుగు","key3":"మానవసంబంధాలు","key4":"కథ"}
+{"_id":"INAP10TE12","pn":138,"len":15,"ft":"chapter","dn":"చిత్రగ్రీవం","key1":"భాష","key2":"తెలుగు","key3":"శాస్త్రియపరిశీలన","key4":"అనువాదకథ"}
+{"_id":"INAP10TE13","pn":153,"len":35,"ft":"chapter","dn":"రామాయణం","key1":"భాష","key2":"తెలుగు","key3":"సంస్కృతి, విలువలు","key4":"ఇతిహాస కథ"}
+{"_id":"INAP10TE15","pn":190,"len":7,"ft":"chapter","dn":"పదవిజ్ఞానం","key1":"తెలుగు","key2":"అర్ధాలు","key3":"పర్యాయపదాలు","key4":"ప్రకృతి-వికృతి"}
+{"_id":"INAP08TE01.01","pn":11,"len":15,"ft":"chapter","dn":"ఆంధ్ర వైభవం","key1":"భాష","key2":"తెలుగు","key3":"రాష్ట్రకీర్తి","key4":"గేయం"}
+{"_id":"INAP10TE05","pn":56,"len":9,"ft":"chapter","dn":"ధన్యుడు","key1":"భాష","key2":"తెలుగు","key3":"విలువలు","key4":"కథ"}
+{"_id":"INAP10TE08","pn":89,"len":11,"ft":"chapter","dn":"సముద్రలంఘనం","key1":"భాష","key2":"తెలుగు","key3":"వర్ణన","key4":"ప్రబంధ పద్యం"}
+{"_id":"INAP10TE07","pn":78,"len":11,"ft":"chapter","dn":"మా ప్రయత్నం","key1":"భాష","key2":"తెలుగు","key3":"స్త్రీ సాధికారిత","key4":"పీఠిక"}
+{"_id":"INAP04M01","pn":"9","len":"13","ft":"chapter","dn":"Lets Recall","key1":"Mathematics","key2":"Numbers","key3":"Other Numbers"}
+{"_id":"INAP04M02","pn":"22","len":"16","ft":"chapter","dn":"Large Numbers","key1":"Mathematics","key2":"Numbers","key3":"Natural"}
+{"_id":"INAP04M03","pn":"38","len":"12","ft":"chapter","dn":"Addition","key1":"Mathematics","key2":"Arithmetic","key3":"Addition & Subraction"}
+{"_id":"INAP04M04","pn":"50","len":"16","ft":"chapter","dn":"Subtraction","key1":"Mathematics","key2":"Arithmetic","key3":"Addition & Subraction"}
+{"_id":"INAP04M05","pn":"66","len":"13","ft":"chapter","dn":"Multiplication","key1":"Mathematics","key2":"Arithmetic","key3":"Multiplication & Division"}
+{"_id":"INAP04M06","pn":"79","len":"13","ft":"chapter","dn":"Division","key1":"Mathematics","key2":"Arithmetic","key3":"Multiplication & Division"}
+{"_id":"INAP04M07","pn":"92","len":"19","ft":"chapter","dn":"Geometry","key1":"Mathematics","key2":"Geometry","key3":"Shapes","key4":"Angle"}
+{"_id":"INAP04M08","pn":"111","len":"12","ft":"chapter","dn":"Data Handling","key1":"Mathematics","key2":"Other Mathematics","key3":"Graphs"}
+{"_id":"INAP04M09","pn":"123","len":"18","ft":"chapter","dn":"Fractions","key1":"Mathematics","key2":"Arithmetic","key3":"Fraction"}
+{"_id":"INAP04M10","pn":"141","len":"30","ft":"chapter","dn":"Measurements","key1":"Mathematics","key2":"Measurement","key3":"Weight"}
+{"_id":"INAP04M11","pn":"171","len":"2","ft":"chapter","dn":"Glossary","key1":"Mathematics"}

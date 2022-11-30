@@ -13,7 +13,7 @@ Used by: looma-play-pdf.js and looma-play-lesson.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = "js/pdfjs/pdf.worker.min.js";
 
 //DEBUG  const filename = '../content/textbooks/Class1/Math/Math-1-1051.pdf';
-const initialZoom = 2.3;
+const initialZoom = 'page-width';
 var currentScale = initialZoom;
 
 var filename, filepath, startPage; //filename, filepath, startPage, initial zoom level and len are passed in by the PHP

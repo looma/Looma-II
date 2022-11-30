@@ -188,6 +188,7 @@ if (isset($_REQUEST["cmd"])) {
 			$query = array("ch_id.$prefix" => mongoRegexOptions('^' . $query_id,'i'));
 
 			//print_r($query);
+
 			//exit();
 //NOTE: to find dictionary entries with a given ch_id:
 //   db.dictionaryV2.find({ch_id:{'EN':'1EN01.01'}},{_id:0,en:1})
@@ -203,10 +204,14 @@ if (isset($_REQUEST["cmd"])) {
 				if ($count >= $maxCount) break;
 			}
 		} else {
-			$words = mongoFindRandom($dictionary_collection, $query, 100 * $maxCount);
+			$words = mongoFindRandom($dictionary_collection, $query, 100 * (int) $maxCount);
+
+		//print_r($words);
+
 			$count = 0;
 			foreach ($words as $newWord) {
-				if (file_exists("../content/dictionary images/" . $newWord['en'] . ".jpg")) {
+				//echo "looking for " . "../content/dictionary images/" . $newWord['en'] . ".jpg";
+					if (file_exists("../content/dictionary images/" . $newWord['en'] . ".jpg")) {
 					array_push($list, $newWord);
 					$count++;
 					if ($count >= $maxCount) break;
@@ -214,7 +219,7 @@ if (isset($_REQUEST["cmd"])) {
 			}
 		};
 
-		$list = json_encode($list);
+ 		$list = json_encode($list);
 		echo $list;
 		exit(); //end LIST cmd
 

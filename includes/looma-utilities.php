@@ -270,7 +270,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         if ($thumb && $thumb != "") $thumbSrc = $thumb;
         else $thumbSrc = thumbnail($fn, $fp, $ft);
 
-        $fn = htmlspecialchars($fn);
+       // $fn = htmlspecialchars($fn ?? "");
 
 
 

@@ -3,35 +3,51 @@
     //if (file_exists('../content/CEHRD')) echo '../content/CEHRD exists'; exit;
     //if (file_exists('../content/CEHRD')) $LOOMA_SERVER = 'CEHRD';
 
-    // set $SERVER_NAME to the web server for this page
-    // Turn on error reporting - only for localhost debugging, not on production server or looma box
-if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
+    // set $LOOMA_SERVER to the web server for this page
+    // $_SERVER['$SERVER_NAME'] values are "learning.cehrd.edu.np:, "looma.website",
+    //      "india.looma.website", "test.looma.website",
+    //      and for looma boxes: "looma", or "india.looma"
+    //
+    // Also, Turn on error reporting - only for localhost debugging, not on production server or looma box
+    if        ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
         $LOOMA_SERVER = 'CEHRD';
-    error_reporting(0);
+        error_reporting(0);
     } else if ($_SERVER['SERVER_NAME'] === '54.214.229.222' || $_SERVER['SERVER_NAME'] === 'looma.website') {
         $LOOMA_SERVER = 'looma';
         error_reporting(0);
     } else if ( $_SERVER['SERVER_NAME'] === 'india.looma.website') {
-        $LOOMA_SERVER = 'looma india';
+        $LOOMA_SERVER = 'INDIA';
         error_reporting(0);
+    } else if ( $_SERVER['SERVER_NAME'] === 'india.looma') {
+         $LOOMA_SERVER = 'INDIA';
+         error_reporting(0);
     } else if ( $_SERVER['SERVER_NAME'] === 'test.looma.website') {
-        $LOOMA_SERVER = 'looma test';
+        $LOOMA_SERVER = 'test';
         error_reporting(E_ALL);
     } else {
-        $LOOMA_SERVER = 'looma local';
+        $LOOMA_SERVER = 'looma';
         error_reporting(E_ALL);
     }
 
-    if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER) {
-        setcookie('source',$LOOMA_SERVER,0,"/");
-        if ($LOOMA_SERVER === 'CEHRD') setcookie('theme', 'CEHRD',0,"/");
-        if ($LOOMA_SERVER === 'looma india') setcookie('theme', 'INDIA',0,"/");
-        header("Refresh:0");  //reload page to get cookies updated
-        exit;
+//echo '$_SERVER is ' . $_SERVER['SERVER_NAME'] . ', $LOOMA_SERVER is ' . $LOOMA_SERVER;
+
+   // set 'source' cookie and 'theme' cookie if needed, and refresh page
+if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER ||
+        !isset($_COOKIE['theme'])  || $_COOKIE['theme']  !== $LOOMA_SERVER) {
+              setcookie('source',$LOOMA_SERVER,0,"/");
+              setcookie('theme', $LOOMA_SERVER,0,"/");
+
+       //     if ($LOOMA_SERVER === 'CEHRD') setcookie('theme', 'CEHRD',0,"/");
+       //     else if ($LOOMA_SERVER === 'looma india') setcookie('theme', 'INDIA',0,"/");
+       //     else setcookie('theme', 'looma',0,"/");
+
+            header("Refresh:0");  //reload page to get cookies updated
+            exit;
     }
 
     print "<!DOCTYPE html>";
 
+    // display Looma or CEHRD logo and title
     if ($LOOMA_SERVER === 'CEHRD') {
        print "<title>Learning Portal</title>";
        print '<link rel="icon" type="image/png" href="images/logos/CEHRD-logo small.jpg">';
@@ -80,7 +96,7 @@ if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
         require_once ('includes/looma-log-user-activity.php');
 
         $documentroot = str_replace("Looma","",getenv("DOCUMENT_ROOT"));
-        //echo 'DocmumentRoot is ' . $documentroot;
+        //$documentroot is used in looma-utilities.php for "realpath" checking
 ?>
 
       <!-- <div class="watermark">Under Construction</div>  -->
@@ -99,6 +115,7 @@ if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
 
         function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shim for php 5.x "array_key_exists()"
 
+    // set correct PHP timezone for this server
     if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
         date_default_timezone_set("Asia/Kathmandu");
     } else if ($_SERVER['SERVER_NAME'] === '54.214.229.222' || $_SERVER['SERVER_NAME'] === 'looma.website') {

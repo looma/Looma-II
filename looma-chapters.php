@@ -10,6 +10,8 @@ Description:  displays for a textbook (class/subject)
 
 <?php $page_title = 'Looma Chapters';
 include ('includes/header.php');
+require_once('includes/looma-utilities.php');
+
 ?>
     <link rel="stylesheet" href="css/looma-chapters.css">
 </head>
@@ -17,16 +19,6 @@ include ('includes/header.php');
 <body>
 
 <?php
-
-function thumbnail ($fn) {
-    //given a CONTENT filename, generate the corresponding THUMBNAIL filename
-    //find the last '.' in the filename, insert '_thumb.jpg' after the dot
-    //returns "" if no '.' found
-    //example: input 'aaa.bbb.mp4' returns 'aaa.bbb_thumb.jpg' - this is the looma standard for naming THUMBNAILS
-    $dot = strrpos($fn, ".");
-    if ( ! ($dot === false)) { return substr_replace($fn, "_thumb.jpg", $dot, 10);}
-    else return "";
-} //end function THUMBNAIL
 
 $class = trim($_GET['class']);  //from MONGO - format is "class1", "class2", etc
 $grade = trim($_GET['grade']);  // display name of $class - format is "Grade 1", etc
@@ -40,11 +32,6 @@ else if ($subject === 'math')      $caps = "Mathematics";
 else if ($subject === 'health')      $caps = "Health, Physical and Creative Art";
 else                               $caps = ucfirst($subject);
 
-    echo "<div id='header'><h1 class='title'>";
-    //echo keyword('Chapters for') . " ";
-    echo keyword($grade) . " ";
-    echo keyword($caps);
-    echo "</h1></div>";
 
 //get a textbook record for this CLASS and SUBJECT
 $query = array('class' => $class, 'subject' => $subject, 'prefix' => $prefix);
@@ -59,14 +46,18 @@ $tb = mongoFindOne($textbooks_collection, $query);
     $tb_ndn = keyIsSet('ndn', $tb) ? $tb['ndn'] : null;		//dn is textbook displayname
     $prefix = keyIsSet('prefix', $tb) ? $tb['prefix'] : null; //prefix is the chapter-id starting characters, e.g. "2EN"
 
+echo "<div id='header'><h1 class='title'>";
+//echo keyword('Chapters for') . " ";
+echo keyword($tb_dn);
+echo "</h1></div>";
+
+
 // show Heading for each column (en chapters, en lessons, en activities, np chapters, np lessons, np activities)
 echo "<div id='main-container-horizontal' class='scroll'>";
 if ($tb_fn != null) {
     echo "<button class='en-chapter heading img' id='englishTitle' disabled>" .
-        // str_replace("Class","Grade ",$tb_dn) .
-        //$grade . " " . $caps .
         "<div>Textbook Chapters</div>" .
-        "<img src=" . $tb_fp . thumbnail($tb_fn) . "></button>";
+        "<img src=" . thumbnail($tb_fn, $tb_fp,"chapter") . "></button>";
     echo "<button class='en-lesson heading img activities' disabled>"; echo "Lesson"; echo "</button>";
     echo "<button class='en-activities heading img activities' disabled>";  echo "Resources"; echo "</button>";
     }
@@ -75,7 +66,7 @@ if ($tb_fn != null) {
 
     if ($tb_nfn != null) {
         echo "<button class='np-chapter heading img' id='nativeTitle' disabled> <div>पाठ्य पुस्तक अध्यायहरू</div>
-                       <img src=" . $tb_fp . thumbnail($tb_nfn) . "></button>";
+                       <img src=" . thumbnail($tb_nfn,$tb_fp,"chapter") . "></button>";
         echo "<button class='np-lesson heading img activities' disabled>"; echo "पाठ"; echo "</button>";
         echo "<button class='np-activities heading img activities' disabled>"; echo "स्रोतहरू"; echo "</button>";   }
     else echo "<div></div><div></div><div></div>";
@@ -128,7 +119,7 @@ foreach ($chapters as $ch) {
                                       data-fp='$tb_fp' 
                                       data-ch='$ch_id'  
                                       data-ft='$ch_ft' 
-                                      data-zoom='2.3'  
+                                      data-zoom='2.1'  
                                       data-len='$ch_len' 
                                       data-page='$ch_pn'>
                                            $ch_dn";

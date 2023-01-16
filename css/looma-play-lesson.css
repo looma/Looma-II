@@ -7,6 +7,10 @@ Date: Rev 1 - Spring 2016, Rev 2 - 2017 01 29
 Revision: 3.0
 */
 
+canvas {aspect-ratio: auto 1270 / 1661;
+    width:100%;
+}
+#pdf {position:absolute;}
 html {
     box-sizing: border-box;
 }
@@ -79,6 +83,7 @@ iframe {
     max-width:75vw;
 }
 #media-controls {
+    display:none;
     height:14vh;
     width:100%;
     position:absolute;

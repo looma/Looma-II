@@ -8,10 +8,9 @@ function userIP() {
     return $address;
 }  // end userIP()
 
+
 function getLatLong ($userIP) {
-
-
-    /*
+/*
  SAMPLE cURL:
 
     curl "https://freegeoip.app/json/8.8.8.8"
@@ -24,7 +23,7 @@ function getLatLong ($userIP) {
         "latitude":37.751,
         "longitude":-97.822,
         "metro_code":0}
-     */
+ */
 
     $apiURL = 'https://freegeoip.app/json/' . $userIP;
     $ch = curl_init($apiURL);
@@ -61,8 +60,19 @@ function getLatLong ($userIP) {
 }  // end getLatLong()
 
 echo 'looma-php-test.php: ' . $_SERVER['SERVER_NAME'] ;
-$ip = userIp();
+
+$ENV_IP = shell_exec("ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'");
+echo $ENV_IP;
+exit;
+
+// for windows:
+//echo ' gethostname ' . getHostName() . '<br>';
+//$ENV_IP = getHostByName(getHostName());
+
+echo 'IP is ' . $ENV_IP . '<br><br>';
 echo 'UTC is ' . time() . '<br>';
+
+$ip = userIp();
 echo 'IP is ' . $ip  . '<br>';
 
 $latlong = getLatLong($ip);

@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"567ef1451d4a474096ee0ade88e16d65","collectionName":"textbooksINDIA","type":"collection"}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"998bc31dce924d9787235655ba608759","collectionName":"textbooksINDIA","type":"collection"}

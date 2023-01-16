@@ -1,19 +1,19 @@
-
-.text-display{
+#editor {overflow:hidden;}
+.text-display {
     height: 100%;
-    width:  100%;
-    padding:0 2vw;
-    background-color:white;
-    color:#091F48;
-    font-weight:bold !important;
-    vertical-align:middle;
-
+    width: 100%;
+    padding: 0 2vw;
+    background-color: white;
+    color: #091F48;
+    font-weight: bold !important;
+    vertical-align: middle;
+    
     font-size: inherit !important;
-    /*overflow:hidden;*/
-    white-space:nowrap !important;
-    text-overflow:ellipsis;
+    white-space: nowrap !important;
+    text-overflow: ellipsis;
+    
+    overflow:hidden;
 }
-
 
 .text-display * {
     text-overflow:ellipsis !important;

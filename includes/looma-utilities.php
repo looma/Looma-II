@@ -92,10 +92,18 @@ function folderName ($path) {
 */
 
 function thumbnail ($file, $path, $type) {
+
+    //echo "file is " . $file . '<br>';
+    //echo "path is " . $path . '<br>';
+    //echo "type is " . $type . '<br>';
+
     $src = "";
 
     $dot = strrpos($file, ".");  //strrpos finds the LAST occurrence
     if ( $dot ) { $src = $path . substr($file, 0, $dot) . "_thumb.jpg";}
+
+    //echo "thumb is " . $src . '<br>';
+    //if (file_exists($src)) echo "file exists"; else echo "file does not exist";
 
     // if no specific thumbnail, use folder's thumbnail
     if (!file_exists($src)) $src = $path . "thumbnail.png";
@@ -115,7 +123,11 @@ function thumbnail ($file, $path, $type) {
     else $src = "";
     };
 
-    return htmlspecialchars($src);
+   // $src = htmlspecialchars($src);
+
+    //echo "returned thumb src is " . $src;
+
+    return $src;
 }  // end thumbnail()
 
 /**********************/
@@ -262,7 +274,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         else if ($ft == 'looma') $thumbSrc = "images/LoomaLogo.png";
         else                     $thumbSrc = $fp . thumbnail($fn);
 
-        $thumbSrc = htmlspecialchars($thumbSrc);
+        //$thumbSrc = htmlspecialchars($thumbSrc);
         if ( !file_exists($thumbSrc)) $thumbSrc = $fp . "thumbnail.png";
         */
 

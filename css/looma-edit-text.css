@@ -66,7 +66,7 @@ button.result {
     color:#091F48;
     font-weight:bold !important;
     overflow:hidden;
-    overflow-y:scroll !important;
+  /*  overflow-y:scroll !important; */
     white-space:nowrap;
     text-overflow: ellipsis;
     /*color:yellow;
@@ -85,6 +85,7 @@ button.result {
     white-space:nowrap;
     text-overflow:ellipsis !important;
 }
+
 
 /*
 #editor p {

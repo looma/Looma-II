@@ -32,3 +32,16 @@ lines.forEach( function(line) {
     }
 });  // end for lines
 print('');
+
+// this program has a BIG bug - it updates 'ndn' but not the 'ndn' of 'children' of 'name'
+/*
+The code needs to have something like this added (given <name> and <ndn>):
+
+db.tags.update({'name':'Agriculture','children.name':/Farming/},{$set:{'children.$.ndn':'XXXXX'}})
+
+     db.tags.update (
+        { "name": "<name>", "children.name": "<childname>" },
+        {  $set: { "children.$.ndn": "<ndn>" }},
+        {multi:true}
+     );
+ */

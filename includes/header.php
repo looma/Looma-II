@@ -8,11 +8,11 @@
     //      "india.looma.website", "test.looma.website",
     //      and for looma boxes: "looma", or "india.looma"
     //
-    // Also, Turn on error reporting - only for localhost debugging, not on production server or looma box
+    // Also, Turn on error reporting - only for localhost & test debugging, not on production server or looma box
     if        ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
         $LOOMA_SERVER = 'CEHRD';
         error_reporting(0);
-    } else if ($_SERVER['SERVER_NAME'] === '54.214.229.222' || $_SERVER['SERVER_NAME'] === 'looma.website') {
+    } else if ($_SERVER['SERVER_NAME'] === 'looma.website') {
         $LOOMA_SERVER = 'looma';
         error_reporting(0);
     } else if ( $_SERVER['SERVER_NAME'] === 'india.looma.website') {
@@ -29,22 +29,33 @@
         error_reporting(E_ALL);
     }
 
-//echo '$_SERVER is ' . $_SERVER['SERVER_NAME'] . ', $LOOMA_SERVER is ' . $LOOMA_SERVER;
-
    // set 'source' cookie and 'theme' cookie if needed, and refresh page
-if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER ||
+    if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER ||
         !isset($_COOKIE['theme'])  || $_COOKIE['theme']  !== $LOOMA_SERVER) {
               setcookie('source',$LOOMA_SERVER,0,"/");
               setcookie('theme', $LOOMA_SERVER,0,"/");
-
-       //     if ($LOOMA_SERVER === 'CEHRD') setcookie('theme', 'CEHRD',0,"/");
-       //     else if ($LOOMA_SERVER === 'looma india') setcookie('theme', 'INDIA',0,"/");
-       //     else setcookie('theme', 'looma',0,"/");
-
-            header("Refresh:0");  //reload page to get cookies updated
-            exit;
+              header("Refresh:0");  //reload page to get cookies updated
+              exit;
     }
 
+// get operating environment of server
+// settng global variables: $ENV_OS, $ENV_WINDOWS, $ENV_IP, $ENV_CPU
+    $ENV_OS = PHP_OS;
+    if ($ENV_OS === 'Darwin') $ENV_OS = 'MacOS';
+    //$ENV_OS = PHP_OS_FAMILY;
+    $ENV_WINDOWS = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'; // boolean - true for Windows
+
+    if ($ENV_WINDOWS) $ENV_CPU = shell_exec("echo %PROCESSOR_ARCHITECTURE%");
+    else              $ENV_CPU = shell_exec('uname -m');
+
+    if ($ENV_WINDOWS)
+        $ENV_IP = getHostByName(getHostName());
+    else
+        $ENV_IP = shell_exec("ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'");
+/*
+    $ENV_IP = $_SERVER['SERVER_ADDR'];
+    if ($ENV_IP === '::1') $ENV_IP = '127.0.0.1';
+*/
     print "<!DOCTYPE html>";
 
     // display Looma or CEHRD logo and title
@@ -86,16 +97,15 @@ if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER ||
     languages and countries are planned.">
 
 <?php
-   // ini_set('display_errors', 1);
     header_remove('X-Powered-By');
     header_remove('Server');
-
 
         require_once ('includes/looma-translate.php');
         require_once ('includes/mongo-connect.php');
         require_once ('includes/looma-log-user-activity.php');
 
         $documentroot = str_replace("Looma","",getenv("DOCUMENT_ROOT"));
+
         //$documentroot is used in looma-utilities.php for "realpath" checking
 ?>
 
@@ -105,15 +115,17 @@ if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER ||
       <link rel="stylesheet" href="css/looma-keyboard.css">    <!-- Looma keyboard CSS -->
 
     <?php  /*retrieve 'theme' cookie from $_COOKIE and use it to load the correct 'css/looma-theme-xxxxxx.css' stylesheet*/
-        if ( $LOOMA_SERVER === 'CEHRD' )         $settheme = "CEHRD";
-        else if (isset($_COOKIE['theme'])) $settheme = $_COOKIE['theme'];
-        else                               $settheme = 'looma';
+            /*        if ( $LOOMA_SERVER === 'CEHRD' )         $settheme = "CEHRD";
+                    else if (isset($_COOKIE['theme'])) $settheme = $_COOKIE['theme'];
+                    else                               $settheme = 'looma';
 
-        echo "<link rel='stylesheet' href='css/looma-theme-" . $settheme . ".css' id='theme-stylesheet'>";
+                    echo "<link rel='stylesheet' href='css/looma-theme-" . $settheme . ".css' id='theme-stylesheet'>";
+            */
+    echo "<link rel='stylesheet' href='css/looma-theme-" .  $_COOKIE['theme'] . ".css' id='theme-stylesheet'>";
 
       //  require_once('includes/looma-isloggedin.php');
 
-        function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shim for php 5.x "array_key_exists()"
+    function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shim for php 5.x "array_key_exists()"
 
     // set correct PHP timezone for this server
     if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
@@ -122,12 +134,10 @@ if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER ||
         date_default_timezone_set("America/Los_Angeles");
     } else if ( $_SERVER['SERVER_NAME'] === 'india.looma.website') {
         date_default_timezone_set("Asia/Kolkata");
-    } else if ( $_SERVER['SERVER_NAME'] === 'test.looma.website') {
     } else {
         date_default_timezone_set("America/Los_Angeles");
     }
         echo "<div id='timezone' hidden>" . date_default_timezone_get() . "</div>";
-
-    ?>
+?>
 
 

@@ -193,6 +193,9 @@ foreach ($chapters as $ch) {
                                     data-fp='$tb_fp'
                                     data-ft='$nch_ft' 
                                     data-page='$ch_npn'
+                                    
+                                    data-zoom='2.1'  
+                                    
                                     data-len='$ch_nlen'
                                     data-ch='$nch_id'>
                                     $ch_ndn

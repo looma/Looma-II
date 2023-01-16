@@ -125,7 +125,7 @@ playMedia : function(button) {
         case "chapter":  //CHAPTER
         case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
-            if (pdfZoom === "undefined") pdfZoom = '2.2';
+            if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.2';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
             var pdfLen =  button.getAttribute('data-page') ? button.getAttribute('data-len') : 100;
                     window.location = 'pdf?' +
@@ -569,7 +569,9 @@ thumbnail: function (filename, filepath, filetype, thumb) {
                 filetype = filetype.toLowerCase();
             
                 if (filetype == 'chapter') {
-                    imgsrc = homedirectory + "content/textbooks/" + filepath + filename + "_thumb.jpg";
+                  //  imgsrc = homedirectory + "content/textbooks/" + filepath + filename + "_thumb.jpg";
+                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                    imgsrc = homedirectory + "content/" + filepath + thumbnail_prefix + "_thumb.jpg";
                 }
                 else if (filepath && filepath.indexOf('/Khan/') >= 0) {
                     imgsrc = homedirectory + 'content/Khan/thumbnail.png';
@@ -1372,19 +1374,17 @@ LOOMA.speak = function(text, engine, voice, rate) {
     
      if (text != "" ) {
          var playPromise;
-        
-         /*
-         // use speechsynthesis if present
-         if (!engine && speechSynthesis && (navigator.userAgent.indexOf("Chromium") == -1)) {
-             engine = 'synthesis';
-         }
-         */
-         
-         if (!engine) engine = 'mimic';  //default engine is mimic
-         
+    
+         if (!engine) {
+            if (speechSynthesis && (speechSynthesis.getVoices().length !== 0))
+                engine = 'synthesis';
+            else
+                engine = 'mimic'; //default engine is mimic
+         };
+     
          if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_bdl'; //get the currently used voice, if any. default VOICE
         
-                    /* current default voice = cmu_us_bdl
+                    /* MIMIC VOICES: current default voice = cmu_us_bdl
                     Note from David: The three that seem about equal in clarity,
                     lack of low frequency rumble, lack of piercing high frequency … are
                         Scottish male	awb (has a bit of the trilled ‘r’)

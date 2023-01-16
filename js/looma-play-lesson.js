@@ -228,9 +228,10 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
                     showPageNum(startPage);
                     //turnOnControls();
                 }).then( () =>  {drawThumbs();});
-    
+        
+            $viewer.empty().append( $('#pdf').clone() );  //  .attr('id', 'pdfnew')
+        
             //$('#pdf').clone().attachTo($viewer);
-            $viewer.empty().append( $('#pdf').clone() );
             /*
                 $pdfHTML.find('iframe').attr('src',
                 'pdf?fn=' + filename + '&fp=' + fp + '&page=' + pagenumber + '&len=' + length + '&zoom=' + 2.3
@@ -402,6 +403,9 @@ function makeVideoHTML() {
 } //end videoHTML
 
 window.onload = function() {
+    
+    $('#media-controls').hide();  // hide media controls
+    
     //$('#controlpanel').draggable(); //makes the control buttons moveable around the screen.
     
     //var language is declared in looma-utilities.js
@@ -483,7 +487,6 @@ window.onload = function() {
     video = $('#video', $videoHTML).get(0); //the video DOM element
     audio = $('#audio', $audioHTML).get(0); //the audio DOM element
 //
-    $('#media-controls').hide();  // hide media controls
     
     var index = LOOMA.readStore('lesson-plan-index', 'session');
     if (index) {

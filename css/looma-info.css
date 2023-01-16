@@ -132,7 +132,7 @@ span {
     background:white;
 }
  
- .screensize, .bodysize, .ip, .system, .mongo-version{
+ .screensize, .bodysize, .ip, .system, .mongo-version, .php-version {
      vertical-align:middle;
      text-align:left;
      font-size: 0.8em;

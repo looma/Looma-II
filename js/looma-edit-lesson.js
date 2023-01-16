@@ -257,8 +257,10 @@ function thumbnail (item) {
     
     if (collection == "chapters" || item.pn != null) {
         idExtractArray = extractItemId(item);
-        filepath = idExtractArray["currentGradeFolder"] + "/" + idExtractArray["currentSubjectFull"] + "/";
-        filename = idExtractArray["currentSubjectFull"] + "-" + idExtractArray["currentGradeNumber"];
+      //  filepath = idExtractArray["currentGradeFolder"] + "/" + idExtractArray["currentSubjectFull"] + "/";
+        filepath = item.fp;
+      //  filename = idExtractArray["currentSubjectFull"] + "-" + idExtractArray["currentGradeNumber"];
+        filename = item.fn;
         imgsrc = LOOMA.thumbnail(filename, filepath, 'chapter');
     }
     else imgsrc = LOOMA.thumbnail(filename, filepath, filetype);

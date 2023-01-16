@@ -2,6 +2,7 @@
 /* main container for PDF display */
 #pdf {
     position:relative;
+    position:absolute;
     height:92vh;
     /*  height:100%;*/
     

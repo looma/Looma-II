@@ -46,7 +46,7 @@ include ('includes/header.php');
         </div>
         <div id="about">
             <div id="copyright"><h3>Looma</h3>
-                <h4>   Release 7.5.3 NOV 2022   </h4>
+                <h4>   Release 7.5.6 JAN 2023   </h4>
                 <img src ='images/copyright.png' class="copyright"></img>2022
             </div>
 
@@ -96,6 +96,8 @@ include ('includes/header.php');
             <br>
             <a draggable="false"  draggable="false" class="attribution" href="https://looma.education" target="_blank">
                 <img draggable="false" src="images/logos/Looma-english-amanda.png" height="66px"></a>
+            <a draggable="false"  draggable="false" class="attribution" href="http://www.menschen-im-dialog.de/" target="_blank">
+                <img draggable="false" src="images/logos/menschen-im-dialog_BLACK.png" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://hesperian.org" target="_blank">
                 <img draggable="false" src="images/logos/hesperian.png" height="33px"></a>
             <a draggable="false"  class="attribution" href="https://mycroft.ai" target="_blank">
@@ -161,23 +163,31 @@ include ('includes/header.php');
 
                 <p class="mongo-version">MongoDB version: <?php global $mongo_version; echo $mongo_version ?> </p>
 
+                <p class="php-version">PHP version: <?php echo phpversion();?></p>
                 <?php
 
+                global $ENV_OS;
+                echo '<p class="system">OS:  ' . $ENV_OS . '</p>';
+
+                global $ENV_CPU;
+                echo '<p class="system">CPU:  ' . $ENV_CPU . '</p>';
+
+                    //$sys = shell_exec('cat /proc/cpuinfo | grep Hardware');
+                    //echo '<p class="system">CPU:  ' . $sys . '</p>';
+
                 echo '<p class="system">Server: ' . $_SERVER['SERVER_NAME'] . '</p>';
-                echo '<p class="system">Browser: ' . $_SERVER['HTTP_USER_AGENT'] . '</p>';
+                    //echo '<p class="system">Browser: ' . $_SERVER['HTTP_USER_AGENT'] . '</p>';
 
-                $sys = shell_exec('uname -rs');
-                echo '<p class="system">OS:  ' . $sys . '</p>';
-
-                $sys = shell_exec('cat /proc/cpuinfo | grep Hardware');
-                echo '<p class="system">CPU:  ' . $sys . '</p>';
-
+                if ($_SERVER['SERVER_NAME'] !== 'looma.website') {
+                    global $ENV_IP;
+                    echo '<p class="system">IP:  ' . $ENV_IP . '</p>';
+                }
                 //want to display IP address for remote access, until we have zeroconf
-                //NOTE: want the external IP for this LOOMA, but 127.0.0.1 "localhost" will show on projected page
-                //echo "<p class=\"ip\">IP Address: " . gethostbyname('localhost') . "</p>";
-                $ip = shell_exec('/usr/local/bin/loomaIP');
-                echo '<p class="ip">IP Address: ' . $ip . '</p>';
-                //echo '<p>pid: ' . getmypid() . '</p>';
+                    //NOTE: want the external IP for this LOOMA, but 127.0.0.1 "localhost" will show on projected page
+                    //echo "<p class=\"ip\">IP Address: " . gethostbyname('localhost') . "</p>";
+                    //$ip = shell_exec('/usr/local/bin/loomaIP');
+                    //echo '<p class="ip">IP Address: ' . $ip . '</p>';
+                    //echo '<p>pid: ' . getmypid() . '</p>';
                 ?>
             </div>
         </div>

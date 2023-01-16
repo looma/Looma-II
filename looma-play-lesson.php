@@ -209,7 +209,7 @@ Description: looma lesson plan presenter
                         $query = array('_id' => $lesson_element['id']);
                         $chapter = mongoFindOne($chapters_collection, $query);
 
-                          if (!$chapter) {
+                        if (!$chapter) {
                             makeNotFoundButton();
                         } else {
                               //      $query = array('prefix' => prefix($chapter['_id']));
@@ -229,10 +229,14 @@ Description: looma lesson plan presenter
                               $nlen = (isset($chapter['nlen']) ? $chapter['nlen'] : null);
 
                               if ($filename && $filepath)
-                                  $thumbSrc = "../content/" . $filepath . thumbnail($filename, $filepath,'chapter');
+                                  $thumbSrc = thumbnail($filename, "../content/" . $filepath,'pdf');
                               else $thumbSrc = null;
-                              //echo "filename is " . $filename;
-                              makeChapterButton('pdf',
+
+                            //echo "thumbSrc is " . $thumbSrc . '<br>';
+                            //echo "filename is " . $filename . '<br>';
+                            //echo "filepath is " . $filepath . '<br>';
+
+                              makeChapterButton('chapter',
                                   '../content/' . $filepath,
                                   $filename,
                                   $displayname,

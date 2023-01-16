@@ -21,15 +21,16 @@ require_once ('includes/looma-utilities.php');
 <body>
 <?php
 
-if (isset($_GET['fp'])) $filepath = $_REQUEST['fp']; else $path = "../content/";
+if (isset($_GET['fp'])) $filepath = $_REQUEST['fp']; else $filepath = "../content/";
 if (isset($_GET['fn'])) $filename = $_REQUEST['fn']; else $filename = null;
 
-if  ( ! is_dir(realpath($filepath)))
-        { echo "<br><h1>Access not permitted</h1>"; exit;}
+     if (!realpath($filepath)) { echo "<br><h1>File not found</h1>"; exit;}
+else if  ( ! is_dir(realpath($filepath)))
+                    { echo "<br><h1>Access not permitted</h1>"; exit;}
 
-if  ( ! preg_match("/\/content/",realpath($filepath)) &&
-      ! preg_match("/\/ePaath/",realpath($filepath)))
-        { echo "<br><h1>Access not permitted</h1>"; exit;}
+if  ( ! preg_match("/content/",realpath($filepath)) &&
+      ! preg_match("/ePaath/",realpath($filepath)))
+                    { echo "<br><h1>Access not permitted</h1>"; exit;}
 
 //NOTE: the ff should include recording ePaath hits
 if      ( strpos($filepath, 'W4S2013')) logFiletypeHit('wikipedia');

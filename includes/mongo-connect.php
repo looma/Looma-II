@@ -32,6 +32,8 @@
  */
 require_once('includes/looma-isloggedin.php');
 
+global $ENV_WINDOWS;
+
 function mongoRegex ($pattern) { // $pattern is a string, like '^\d[a-z]'\
     // NOTE: input $pattern DOSS NOT include '/'s, they are inserted by this function
     global $mongo_level;
@@ -234,17 +236,31 @@ function mongoCreateUniqueIndex($collection, $key) {
     return $doc;
 }
 
-preg_match('/(\d\.\d\.\d)/',shell_exec('mongo --version'), $match);
-$mongo_version = $match[1];
+/*
+if ($ENV_WINDOWS) {
+    preg_match('/(\d\.\d\.\d)/',shell_exec('C:\xampp\bin\mongod --version'), $match);
+} else {
+    preg_match('/(\d\.\d\.\d)/', shell_exec('mongo --version'), $match);
+} */
 
-if ($mongo_version) {
+if ($ENV_WINDOWS) {  // running on windows
+    $try = shell_exec('C:\xampp\bin\mongod --version');
+    if ($try) preg_match('/(\d\.\d\.\d)/',$try, $match);
+    else $match = null;
+} else {  // running on linux
+    $try = shell_exec('mongo --version');
+    if ($try) preg_match('/(\d\.\d\.\d)/', $try, $match);
+    else $match = null;
+}
+
+if ($match) {
+    $mongo_version = $match[1];
     $mongo_level = intval(substr($mongo_version,0,1));
 } else {
     $mongo_version = '4.4.3';
     $mongo_level = 4;
 }
-
-//echo '$mongo_version is ' . $mongo_version . '     $mongo_level is '. $mongo_level;
+//echo 'mongo version is ' . $mongo_version . ' mongo level is ' . $mongo_level;
 
 $dbhost = 'localhost';
 $dbname = 'looma';

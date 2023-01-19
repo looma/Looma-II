@@ -37,6 +37,7 @@
     max-height:100%;
     text-align:center;
 }
+
 #padlock-div {
     flex-grow:1;
     flex-basis:0;
@@ -100,14 +101,6 @@ button.flag-vertical {
     vertical-align: unset;
 }
 
-/*
-#toolbar button img {
-    max-height:80%;
-    max-width:80%;
-    vertical-align:unset;
-}
-*/
-
 #toolbar span img {
     max-width:90%;
     max-height: 90%;
@@ -115,9 +108,17 @@ button.flag-vertical {
 
 .toolbar-logo {
     margin:0 auto;
+    display:inline-block;
     height:4vh;
 }
 .toolbar-logo.vertical {height:3vh;}
+
+#toolbar-logo-CEHRD {
+    display:inline-block;
+    height:4vh;
+}
+
+#toolbar-container-vertical #toolbar-logo-CEHRD {height:3vh;}
 
 span.logo {
     display:inline-block;

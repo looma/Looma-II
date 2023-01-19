@@ -125,7 +125,7 @@ playMedia : function(button) {
         case "chapter":  //CHAPTER
         case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
-            if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.2';
+            if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
             var pdfLen =  button.getAttribute('data-page') ? button.getAttribute('data-len') : 100;
                     window.location = 'pdf?' +

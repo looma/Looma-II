@@ -2,7 +2,7 @@
 #main-container-horizontal {
     display: grid;
     grid-template-rows: [begin] 3fr [grades] 2fr [subjects] 3fr [end];
-    grid-template-columns: [begin] 1fr  3fr ;
+    grid-template-columns: [begin] 1fr  2fr 1fr ;
     /*grid-gap: 25px  25px;*/
     width: 100vw;
     overflow:hidden;
@@ -17,15 +17,43 @@
     max-height:100%;
     overflow:hidden;
 }
-#head.cehrd {
-    text-align:left;
-}
 
 #logo, #native-logo {
     height:32vh;
     margin:0 auto;
     grid-column: 1 / -1;
     grid-row:1;
+}
+
+#CEHRD-logo-div {
+    grid-row:1;
+    grid-column:2;
+    margin: 1vh auto;
+}
+
+#CEHRD-logo {
+    display:block;
+    height:32vh;
+}
+
+#CEHRD-text {
+    margin: 0 auto;
+    font-family: serif;
+    right: 42vw;
+    top: 33vh;
+    font-weight:bold;
+    font-size:2em;
+}
+
+#looma-logo-div {
+    position:absolute;
+    right:3vw;
+    top:26vh;
+    height:12vh
+}
+
+#looma-logo, #looma-native-logo {
+    height:100%;
 }
 
  img.logo.cehrd {
@@ -142,7 +170,7 @@ border:none;}
 #subjects button {
     
     margin: 3px;
-    height: 32vh;
+    height: 30vh;
     width:18vw;
     color: black;
     font-size: 3.5vh;

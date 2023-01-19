@@ -551,7 +551,7 @@ echo "</tr></table>";
                                         $item['mongoID'] = $mongoID;
 
                                             $item['page']  = ($activity && keyIsSet('pn', $activity)) ? $activity['pn'] : 1;
-                                            $item['zoom'] = ($activity && keyIsSet('zoom', $activity)) ? $activity['zoom'] : 2.2;
+                                            $item['zoom'] = ($activity && keyIsSet('zoom', $activity)) ? $activity['zoom'] : 2.3;
 
                                         $list[] = $item;
 

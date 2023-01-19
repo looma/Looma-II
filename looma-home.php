@@ -18,7 +18,6 @@
     <?php
 
         if($LOOMA_SERVER === 'CEHRD') {
-            //echo '<div id="head" class="cehrd">';
             echo '<img  id="logo"  class=" english-keyword" src="images/logos/CEHRD-banner-english.jpg" >';
                // echo '<img  id="logo"   src="images/logos/CEHRD-logo.png" >';
                // echo "<div id='logo-info' class='english-keyword'><br>
@@ -34,14 +33,19 @@
                //     <p>शिक्षा तथा मानव स्रोत विकास केन्द्र</p>
                //     <p class='big'>सिकाइ चौतारी </p>";
                // echo "</div>";
-           // echo "</div>";
         } else {  // $LOOMA_SERVER is 'looma' or 'looma local'
-           // echo '<div id="head">';
-                echo '<img  id="logo"        class=" english-keyword" draggable="false"';
+           echo '<div id="CEHRD-logo-div">';
+            echo '<img  id="CEHRD-logo" draggable="false"';
+            echo ' src="images/logos/CEHRD-logo.png" >';
+            echo '<span id="CEHRD-text">MoEST, CEHRD</span>';
+            echo '<div id="looma-logo-div" >';
+                echo '<img  id="looma-logo"        class=" english-keyword" draggable="false"';
                 echo 'src="images/logos/Looma-english-amanda 3x1.png" >';
-                echo '<img  id="native-logo" class=" native-keyword" hidden draggable="false"';
+                echo '<img  id="looma-native-logo" class=" native-keyword" hidden draggable="false"';
                 echo 'src="images/logos/Looma-nepali-amanda 3x1.png" >';
-          //  echo "</div>";
+            echo '</div>';
+
+            echo "</div>";
         }
     ?>
 

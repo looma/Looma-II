@@ -118,12 +118,13 @@
         <div id="logo-div">
             <!-- DATETIME ready to turn on. needs to be positioned with CSS-->
             <span class="logo">
-			      <span class="english-keyword" draggable="false"> Supported by </span>
-                <span class="native-keyword" draggable="false"> सहयोग कर्ता </span>
+			    <!--  <span class="english-keyword" draggable="false"> Supported by </span>
+                <span class="native-keyword" draggable="false"> सहयोग कर्ता </span>  -->
+                <img id="toolbar-logo-CEHRD" src="images/logos/CEHRD-logo.png">
                 <img  class="toolbar-logo vertical english-keyword" draggable="false" src="images/logos/Looma-english-amanda 3x1.png" >
 			    <img  class="toolbar-logo vertical native-keyword" hidden draggable="false" src="images/logos/Looma-nepali-amanda 3x1.png" >
       		</span>
             <br>
-            <span id="datetime"></span>
+            <!-- <span id="datetime"></span> -->
         </div>
     </div>

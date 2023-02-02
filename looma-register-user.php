@@ -100,6 +100,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
             <p><label for="title">Level [optional]:</label>
                 <select id="level" name="level">
                     <option value="none" selected>(none)</option>
+                    <option value="translator">teacher</option>
+                    <option value="translator">student</option>
+                    <option value="translator">school-admin</option>
                     <option value="translator">translator</option>
                     <option value="admin">admin</option>
                     <option value="exec">exec</option>

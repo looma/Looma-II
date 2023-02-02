@@ -236,13 +236,23 @@ function mongoCreateUniqueIndex($collection, $key) {
     return $doc;
 }
 
-/*
-if ($ENV_WINDOWS) {
-    preg_match('/(\d\.\d\.\d)/',shell_exec('C:\xampp\bin\mongod --version'), $match);
-} else {
-    preg_match('/(\d\.\d\.\d)/', shell_exec('mongo --version'), $match);
-} */
+function loomaUpdateDatabaseStructure() {
+    // if "old" databases "activitylog" or "loomausers" exist
+    //   move their contents to new database "looma-local"
+    //   and delete the old DBs
+    global $m;
+    foreach ($m->listDatabaseNames() as $databaseName) {
+        if ($databaseName === "activitylog") {
 
+        }
+        if ($databaseName === "loomausers") {
+
+        }
+    }
+}
+
+///////////   EXECUTED CODE BEGINS HERE    ////////
+///////////////////////////////////////////////////
 if ($ENV_WINDOWS) {  // running on windows
     $try = shell_exec('C:\xampp\bin\mongod --version');
     if ($try) preg_match('/(\d\.\d\.\d)/',$try, $match);
@@ -278,8 +288,11 @@ catch(MongoConnectionException $e) {
     exit();
 }
 
+loomaUpdateDatabaseStructure();
+
 $dbhost = 'localhost';
 $dbname = 'looma';
+$localdbname = 'looma=local';
 
 //use below FORMAT for PHP later than 5.5??
 //$m = new MongoDB\Driver\Manager("mongodb://localhost:27017");
@@ -314,8 +327,8 @@ $hours_collection      = $logDB -> hours;
 $days_collection       = $logDB -> days;
 $weeks_collection      = $logDB -> weeks;
 $months_collection     = $logDB -> months;
-$pages_collection     = $logDB -> pages;
-$filetypes_collection = $logDB -> filetypes;
+$pages_collection      = $logDB -> pages;
+$filetypes_collection  = $logDB -> filetypes;
 
 $userdbname = 'loomausers';
 $userdbname = $m -> $userdbname;  //connect to the database "loomausers" (for storing logins)

@@ -228,30 +228,12 @@ $date = date("Y.m.d");
 if (isset($_REQUEST["collection"])) {
     $collection =  $_REQUEST["collection"];
     $dbCollection = $collections[$collection];
-    }
-  /*
-   switch ($collection) {
-       case "activities":    $dbCollection = $activities_collection;    break;
-       case "chapters":      $dbCollection = $chapters_collection;      break;
-       case "slideshow":
-       case "slideshows":    $dbCollection = $slideshows_collection;    break;
-       case "text":
-       case "text_files":    $dbCollection = $text_files_collection;    break;
-       case "lesson":
-       case "lessons":       $dbCollection = $lessons_collection;       break;
-       case "map":
-       case "maps":          $dbCollection = $maps_collection;          break;
-       case "history":
-       case "histories":     $dbCollection = $histories_collection;     break;
-       case "game":
-       case "games":         $dbCollection = $games_collection;         break;
-       case "edited_videos": $dbCollection = $edited_videos_collection; break;
-       case "new_content":   $dbCollection = $new_content_collection;   break;
-       case "recorded_videos": $dbCollection = $recorded_videos_collection; break;
 
-       default: echo "unknown collection: " . $collection;        return;   //TODO: return error here
-       }
-    */
+    if ( in_array($collection, ['lessons','text_files','activities','slideshows','evi'])) {
+        $localdbCollection = $localCollections[$collection];
+    } else $localdbCollection = null;
+    }
+
     /* NOTE: mongoDB collections list:
      $activities_collection    = $loomaDB -> activities;
      $chapters_collection      = $loomaDB -> chapters;

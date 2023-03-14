@@ -1,6 +1,9 @@
 <?php       //NOTE: cookies must be sent before any other data is sent to the client
 
-    //if (file_exists('../content/CEHRD')) echo '../content/CEHRD exists'; exit;
+header("Cache-Control: no-cache");
+header("Pragma: no-cache");
+
+//if (file_exists('../content/CEHRD')) echo '../content/CEHRD exists'; exit;
     //if (file_exists('../content/CEHRD')) $LOOMA_SERVER = 'CEHRD';
 
     // set $LOOMA_SERVER to the web server for this page
@@ -101,7 +104,7 @@
     header_remove('Server');
 
         require_once ('includes/looma-translate.php');
-        require_once ('includes/mongo-connect.php');
+    //    require_once ('includes/mongo-connect.php');
         require_once ('includes/looma-log-user-activity.php');
 
         $documentroot = str_replace("Looma","",getenv("DOCUMENT_ROOT"));

@@ -46,8 +46,8 @@ include ('includes/header.php');
         </div>
         <div id="about">
             <div id="copyright"><h3>Looma</h3>
-                <h4>   Release 7.6 FEB 2023   </h4>
-                <img src ='images/copyright.png' class="copyright"></img>2022
+                <h4>   Release 7.9.1 MAR 2023   </h4>
+                <img src ='images/copyright.png' class="copyright"></img>2023
             </div>
 
     <?php
@@ -85,6 +85,7 @@ include ('includes/header.php');
                 <img draggable="false" src="images/logos/PHET.png" height="44px"></a>
             <a draggable="false"  class="attribution" href="https://ed.ted.com" target="_blank">
                 <img draggable="false" src="images/logos/TedEd.jpg" height="44px"></a>
+       <!--
             <a draggable="false"  class="attribution" href="https://leafletjs.com" target="_blank">
                 <img draggable="false" src="images/logos/leaflet-logo.png" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://www.openstreetmap.org" target="_blank">
@@ -94,6 +95,7 @@ include ('includes/header.php');
             <a draggable="false"  class="attribution" href="https://www.mapbox.com" target="_blank">
                 <img draggable="false" src="images/logos/tilemill.png" height="66px"></a>
             <br>
+    -->
             <a draggable="false"  draggable="false" class="attribution" href="https://looma.education" target="_blank">
                 <img draggable="false" src="images/logos/Looma-english-amanda.png" height="66px"></a>
             <a draggable="false"  draggable="false" class="attribution" href="http://www.menschen-im-dialog.de/" target="_blank">
@@ -102,6 +104,7 @@ include ('includes/header.php');
                 <img draggable="false" src="images/logos/hesperian.png" height="33px"></a>
             <a draggable="false"  class="attribution" href="https://mycroft.ai" target="_blank">
                 <img draggable="false" src="images/logos/mycroft.png" height="33px"></a>
+    <!--
             <a draggable="false"  class="attribution" href="https://jquery.com" target="_blank">
                 <img draggable="false" src="images/logos/jquery-logo.png" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://aws.amazon.com" target="_blank">
@@ -113,8 +116,8 @@ include ('includes/header.php');
                 <img draggable="false" src="images/logos/jetbrains.svg" height="44px"></a>
             <a draggable="false"  class="attribution" href="https://www.stackoverflow.org" target="_blank">
                 <img draggable="false" src="images/logos/stackoverflow.png" height="66px"></a>
-            <a draggable="false"  class="attribution" href="http://looma.education" target="_blank">
-                <img draggable="false" src="images/logos/VTSLogo.jpg" height="66px"></a>
+    -->
+
         </div>
     <div id="log-viewer">
         <button id="line"> <?php tooltip("Activity Logs") ?> System Usage </button>
@@ -180,7 +183,10 @@ include ('includes/header.php');
 
                 if ($_SERVER['SERVER_NAME'] !== 'looma.website') {
                     global $ENV_IP;
-                    echo '<p class="system">IP:  ' . $ENV_IP . '</p>';
+                    if (! $ENV_IP || $ENV_IP === '' || $ENV_IP === "127.0.0.1")
+                         $ip = "Not Connected";
+                    else $ip = $ENV_IP;
+                    echo '<p class="system">IP:  ' . $ip . '</p>';
                 }
                 //want to display IP address for remote access, until we have zeroconf
                     //NOTE: want the external IP for this LOOMA, but 127.0.0.1 "localhost" will show on projected page

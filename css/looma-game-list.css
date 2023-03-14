@@ -13,4 +13,7 @@ button.game {
     margin:5px;
     font-size:2em;
 }
-p.small {font-size:0.6em;}
+p.small {
+    margin:2vh;
+    font-size:0.6em;
+}

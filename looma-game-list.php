@@ -81,41 +81,41 @@ require_once ('includes/looma-utilities.php');
             }
 
             if ($game_subject === 'english') {
-                echo '<button class="activity game" data-class="' . $game_class . '" data-subject="' . $game_subject .
+                echo '<button class="activity img game" data-class="' . $game_class . '" data-subject="' . $game_subject .
                     '" data-type="vocab"' .
-                    '"> ' . $game_class . ' ' . $game_subject . '</p><p class="small">';
+                    '"> ' . $game_class . ' ' . $game_subject . '<p class="small">';
                 keyword("vocabulary drill");
                 echo '</p></button>';
 
                 if ((int)substr($game_class,5) <= 4) {// add picture vocab game
-                    echo "<a href='looma-game.php?type=picture&class=" . $game_class . "&subject=" . $game_subject . "'>";
                     echo "  <button class='activity game img'>";
+                    echo "<a href='looma-game.php?type=picture&class=" . $game_class . "&subject=" . $game_subject . "'>";
                     echo "    <img src='images/games.png'>";
                     keyword("Visual Vocabulary");
-                    echo "  </button>";
                     echo "</a>";
+                    echo "  </button>";
 
                 } else {  // add speak vocab game
-                echo "<a href='looma-game.php?type=speak&class=" . $game_class . "&subject=" . $game_subject . "'>";
                 echo "  <button class='activity game img'>";
-                echo "    <img src='images/speech1.png'>";
+                    echo "<a href='looma-game.php?type=speak&class=" . $game_class . "&subject=" . $game_subject . "'>";
+                    echo "    <img src='images/speech1.png'>";
                     keyword("Spoken Vocabulary");
-                echo "  </button>";
-                echo "</a>";
+                    echo "</a>";
+                    echo "  </button>";
                 }
                 {  // add vocab translation game
-                    echo "<a href='looma-game.php?type=translate&class=" . $game_class . "&subject=" . $game_subject . "'>";
                     echo "  <button class='activity game img'>";
+                    echo "<a href='looma-game.php?type=translate&class=" . $game_class . "&subject=" . $game_subject . "'>";
                     echo "    <img src='images/games.png'>";
                     keyword("Vocabulary Translation");
-                    echo "  </button>";
                     echo "</a>";
+                    echo "  </button>";
                 }
             };
 
             if ($game_subject === 'math') {
                 //makeActivityButton();
-                echo '<button class="activity game" data-class="' . $game_class . '" data-subject="' . $game_subject .
+                echo '<button class="activity img game" data-class="' . $game_class . '" data-subject="' . $game_subject .
                     '" data-type="arith"> ';
 
                     echo '<p>';

@@ -7,9 +7,11 @@ use MongoDB\Driver\Exception\CommandException;
 use MongoDB\Driver\Exception\ExecutionTimeoutException;
 use MongoDB\Driver\Exception\RuntimeException;
 use MongoDB\Driver\Exception\ServerException;
+use MongoDB\Tests\UnifiedSpecTests\Constraint\Matches;
 use PHPUnit\Framework\Assert;
 use stdClass;
 use Throwable;
+
 use function get_class;
 use function PHPUnit\Framework\assertArrayHasKey;
 use function PHPUnit\Framework\assertContainsOnly;
@@ -18,12 +20,15 @@ use function PHPUnit\Framework\assertInstanceOf;
 use function PHPUnit\Framework\assertIsArray;
 use function PHPUnit\Framework\assertIsBool;
 use function PHPUnit\Framework\assertIsInt;
+use function PHPUnit\Framework\assertIsObject;
 use function PHPUnit\Framework\assertIsString;
+use function PHPUnit\Framework\assertNotInstanceOf;
 use function PHPUnit\Framework\assertNotNull;
 use function PHPUnit\Framework\assertNull;
 use function PHPUnit\Framework\assertObjectHasAttribute;
 use function PHPUnit\Framework\assertSame;
 use function PHPUnit\Framework\assertStringContainsStringIgnoringCase;
+use function PHPUnit\Framework\assertThat;
 use function PHPUnit\Framework\assertTrue;
 use function property_exists;
 use function sprintf;
@@ -57,6 +62,9 @@ final class ExpectedError
     /** @var string|null */
     private $codeName;
 
+    /** @var Matches|null */
+    private $matchesResultDocument;
+
     /** @var array */
     private $includedLabels = [];
 
@@ -66,7 +74,7 @@ final class ExpectedError
     /** @var ExpectedResult|null */
     private $expectedResult;
 
-    public function __construct(stdClass $o = null, EntityMap $entityMap)
+    public function __construct(?stdClass $o, EntityMap $entityMap)
     {
         if ($o === null) {
             return;
@@ -98,6 +106,11 @@ final class ExpectedError
             $this->codeName = $o->errorCodeName;
         }
 
+        if (isset($o->errorResponse)) {
+            assertIsObject($o->errorResponse);
+            $this->matchesResultDocument = new Matches($o->errorResponse, $entityMap);
+        }
+
         if (isset($o->errorLabelsContain)) {
             assertIsArray($o->errorLabelsContain);
             assertContainsOnly('string', $o->errorLabelsContain);
@@ -120,7 +133,7 @@ final class ExpectedError
      *
      * @param Throwable|null $e Exception (if any) from executing an operation
      */
-    public function assert(Throwable $e = null)
+    public function assert(?Throwable $e = null): void
     {
         if (! $this->isError && $e !== null) {
             Assert::fail(sprintf("Operation threw unexpected %s: %s\n%s", get_class($e), $e->getMessage(), $e->getTraceAsString()));
@@ -134,6 +147,10 @@ final class ExpectedError
 
         assertNotNull($e);
 
+        if (isset($this->isClientError)) {
+            $this->assertIsClientError($e);
+        }
+
         if (isset($this->messageContains)) {
             assertStringContainsStringIgnoringCase($this->messageContains, $e->getMessage());
         }
@@ -146,6 +163,11 @@ final class ExpectedError
         if (isset($this->codeName)) {
             assertInstanceOf(ServerException::class, $e);
             $this->assertCodeName($e);
+        }
+
+        if (isset($this->matchesResultDocument)) {
+            assertInstanceOf(CommandException::class, $e);
+            assertThat($e->getResultDocument(), $this->matchesResultDocument, 'CommandException result document matches');
         }
 
         if (! empty($this->excludedLabels) || ! empty($this->includedLabels)) {
@@ -166,7 +188,22 @@ final class ExpectedError
         }
     }
 
-    private function assertCodeName(ServerException $e)
+    private function assertIsClientError(Throwable $e): void
+    {
+        /* Note: BulkWriteException may proxy a previous exception. Unwrap it
+         * to check the original error. */
+        if ($e instanceof BulkWriteException && $e->getPrevious() !== null) {
+            $e = $e->getPrevious();
+        }
+
+        if ($this->isClientError) {
+            assertNotInstanceOf(ServerException::class, $e);
+        } else {
+            assertInstanceOf(ServerException::class, $e);
+        }
+    }
+
+    private function assertCodeName(ServerException $e): void
     {
         /* BulkWriteException and ExecutionTimeoutException do not expose
          * codeName. Work around this by translating it to a numeric code.

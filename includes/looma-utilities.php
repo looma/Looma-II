@@ -176,6 +176,39 @@ function natksort($array) {
 } //end natksort()
 
 /*********************************/
+/******** NEWmakeActivityButton *****/
+/*********************************/
+
+function NEWmakeActivityButton($activity)
+{
+
+    //NOTE: this function has not been tested
+
+    function check($x) {return isset($x) ? $x : null;};
+
+    makeActivityButton(
+        check($actitivy['ft']),
+        check($actitivy['fp']),
+        check($actitivy['fn']),
+        check($actitivy['dn']),
+        check($actitivy['ndn']),
+        check($actitivy['thumb']),
+        check($actitivy['ch_id']),
+        check($actitivy['mongo_id']),
+        check($actitivy['ole_id']),
+        check($actitivy['furlt']),
+        check($actitivy['pg']),
+        check($actitivy['zoom']),
+        check($actitivy['grade']),
+        check($actitivy['epversion']),
+        check($actitivy['nfn']),
+        check($actitivy['npg']),
+        check($actitivy['prefix']),
+        check($actitivy['lang'])
+    );
+}; //end NEWmakeActivityButton()
+
+/*********************************/
 /******** makeActivityButton *****/
 /*********************************/
 

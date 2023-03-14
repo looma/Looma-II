@@ -117,7 +117,7 @@ Description:  for Looma 2
                      <label class='filter-label' for='gender'>Male</label>
                  </div>
                  <div id="speechtestdiv">
-                     <a href="looma-speech-test.php">
+                     <a href="looma-test-speech.php">
                         <button id="speechtest" class="settings-control exec-control">Speech Test</button>
                     </a>
                  </div>

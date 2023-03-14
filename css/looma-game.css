@@ -8,41 +8,42 @@ Description: formatting and styling for the game page
 /************MAIN FRAME*************/
 .container
 {
+    grid-row: top / toolbar;
+    grid-column: left / right;
   display: grid;
-  grid-template-columns: 85% 15%;
-  grid-template-rows: 8% 8%  22% 12% 40% 10%;
-  height: 100vh;
+  grid-template-columns: [left] 85%  15% [right] ;
+  grid-template-rows: [top] 8% 8%  22% 12% 40% 10% [bottom];
   width: 100vw;
     padding:0;
     margin:0;
 }
 
 .header {
-  grid-column: 1 / 3;
-  grid-row: 1 / 2;
+  grid-column: left / right;
+  grid-row: top / 2;
 }
 
-h1#gameTitle {font-size: 6vh;}
+h1#gameTitle {font-size: 5vh;}
 
 #top {
     grid-column: 1 / 2;
     grid-row: 2 / 3;
-    font-size: 4vh;
+    font-size:4vh;
+    margin: 0.5vh 2vw;
 }
 
 
 #thegameframe {
-    grid-column: 1 / 2;
-    grid-row: 2 / 6;
-    border: 1px solid yellow;
+    grid-column: left / -2;
+    grid-row: 3 / bottom;
+    /* border: 1px solid yellow; */
     overflow: hidden;
     position:relative;
 }
 
 .toolbar {
-    grid-column: 1 / 3;
-    grid-row: 6 / 7;
-    height:100%;
+    grid-column: left / right;
+    grid-row: toolbar / bottom;
 }
 
 #teamoptions {
@@ -59,7 +60,7 @@ h1#gameTitle {font-size: 6vh;}
 
 #scoreboard {
     grid-column: 2 / 3;
-    grid-row: 4 / 6;
+    grid-row: 4 / bottom;
     display:none;
     border: 2px solid var(--looma-font-color);
     border-radius: 5px;
@@ -95,16 +96,12 @@ h1#gameTitle {font-size: 6vh;}
 }
 
 #game {
-    height:93%;
+    height:100%;
     width: 100%;
 }
 
 #gameOverFrame {padding-top:20vh}
 
-#top {
-    font-size:4vh;
-    height:7%;
-}
 
 
 #optionsframe {
@@ -617,12 +614,20 @@ a button:hover {color:blue;}
 
 /********************* Multi-choice GAME ***********************/
 
-#current-team {
-    margin-right:4vw;
+#top #current-team {
+    float:left;
+    padding:-left: 2vw;
 }
 
-#question-number {
-    margin-right:4vw;
+#top #question-number {
+    float:left;
+    padding-left: 2vw;
+}
+
+#top #question {
+    background-color:yellow;
+    color:blue;
+    margin-left: 2vw;
 }
 
 #answers {
@@ -647,18 +652,16 @@ a button:hover {color:blue;}
 
 /********************* Map GAME ***********************/
 
-#next {
+#top #next {
     display:none;
-    position:absolute;
-    width:13vw;
+    float:right;
+    width:20vw;
     height:5vh;
-    font-size:1em;
-    top:3px;
-    right:1vw;
-    margin:0 5px;
+    font-size:0.7em;
+    margin-top: 1vh;
 }
 
-#next:hover {border:none;}
+#top #next:hover {border:none;}
 
 /* sort game styles */
 

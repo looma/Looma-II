@@ -157,13 +157,17 @@ h2 {
 
 #digitalDisplay{
     display:inline-block;
+    position:relative;
+    top:-12vh;
+    right:-24vw;
     font-size: 6em;
     grid-column:2;
     grid-row:4;
 }
 
 #amOrPm1, #digitalTime{
-    font-family: digitalFont;
+/*    font-family: digitalFont; */
+    font-family: "Digital-7 Mono";
 }
 #dragHands{
     font-size: 2em;
@@ -190,15 +194,15 @@ h2 {
 }
 
 #time {
-    font-family: digitalFont;
+    font-family: "Digital-7 Mono";
     color: lime;
-    font-size: 16em;
+    font-size: 13em;
     position: absolute;
-    top: 15%;
-    left: 6%;
+    top: 21%;
+    left: 2%;
 }
 #amOrPm {
-    font-family: digitalFont;
+    font-family: "Digital-7 Mono";
     color: lime;
     font-size: 9em;
     position: absolute;
@@ -206,7 +210,7 @@ h2 {
     left: 81%;
 }
 #seconds {
-    font-family: digitalFont;
+    font-family: "Digital-7 Mono";
     color: lime;
     font-size: 9em;
     position: absolute;
@@ -214,7 +218,7 @@ h2 {
     left: 60%;
 }
 #day {
-    font-family: digitalFont;
+    font-family: "Digital-7 Mono";
     color: lime;
     font-size: 5em;
     position: absolute;
@@ -222,12 +226,12 @@ h2 {
     left: 9%;
 }
 #date {
-    font-family: digitalFont;
+    font-family: "Digital-7 Mono";
     color: lime;
     font-size: 5em;
     position: absolute;
-    top: 57%;
-    left: 45%;
+    top: 72%;
+    left: 9%;
 }
 
 
@@ -266,8 +270,8 @@ h2 {
 }
 
 @font-face {
-    font-family: digitalFont;
-    src: url(../fonts/digital-7.ttf);
+    font-family: "Digital-7 Mono";
+  /*  src: url(../fonts/digital-7.ttf);*/
 }
 
 /* Double Clock and Single Clock Game */

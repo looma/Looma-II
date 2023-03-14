@@ -387,12 +387,14 @@ playMedia : function(button) {
                     var lang = (result.lang === 'ne' || result.lang === 'np')? "np": "en";
                     var lang = (result.ft==="EP" && result.subject === "nepali")? "np": lang;
                     var fn = (result.fn) ? result.fn : result.nfn;
+                    var db = (result.db) ? result.db : null;
                     
                     var $newButton = $(
                                 '<button class="activity play img" ' +
                                 'data-id="' + id          + '" ' +
                                 'data-fn="' + fn   + '" ' +
-                                'data-fp="' + fp          + '" ' +
+                        'data-fp="' + fp          + '" ' +
+                        'data-db="' + db          + '" ' +
                                 'data-ft="' + result.ft   + '" ' +
                                 'data-lang="' +  lang     + '" ' +
                                 'data-dn="' + result.dn   + '" ' +
@@ -1345,21 +1347,22 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
 /* LOOMA.speak()
  * Author: Akshay Srivatsan
  * Date: Summer 2015/2016
- * Description: Put this function in your JavaScript file to use TTS
- * or just import this file from your HTML file.
+ * Description:  to use TTS import this file from your HTML file.
  * If it uses Mimic, the call can specify a Mimic voice.
  *
  * Uses the standard javascript object "speechSynthesis" if present [and browser !== Chromium],
  * otherwise, calls server-side looma-mimic.php, which uses Mimic to generate a wave file
+ *
+ * extended FEB 2023 by Skip to use larynx2 for Nepali TTS
  *
  * Requirements for mimic: Mimic must be installed on the Looma or server that serves
  *   this JS file. The speech synthesis PHP file must be at "/Looma/looma-mimic.php".
  */
 LOOMA.speak = function(text, engine, voice, rate) {
         //speak the TEXT,
-        //using [optional] ENGINE (in {'synthesis', 'mimic'})
+        //using [optional] ENGINE (in {'synthesis', 'mimic', 'larynx'})
         //using [optional] VOICE
-        // [optional] RATE sets the speed of speech. (rate > 1 is FASTER)
+        //using [optional] RATE sets the speed of speech. (rate > 1 is FASTER)
         //      in mimic  --setf duration_stretch=1/rate ( e.g. if rate === 0.5 stretch by 2x (slower))
         //      in speechSynthesis  SpeachSynthesisUtterance.rate = rate ( e.g. if rate === 0.5 speak slower)
         //  for Looma in Nepal, use default rate = 2/3
@@ -1370,13 +1373,16 @@ LOOMA.speak = function(text, engine, voice, rate) {
     /* requires a special regex package, like xregexp [https://www.regular-expressions.info/xregexp.html]
          const devanagari = /p{Devanagari}/u;
          if (text.match(devanagari)) text = "I cannot speak Nepali";
+         
+     so, we use "if (text.match(/[\u0900-\u097F]/g))" instead for detecting devanagri unicode characters
     */
     
      if (text != "" ) {
          var playPromise;
     
          if (!engine) {
-            if (speechSynthesis && (speechSynthesis.getVoices().length !== 0))
+                 if (text.match(/[\u0900-\u097F]/g)) engine = 'larynx'; // use 'larynx' for devanagri text
+            else if (speechSynthesis && (speechSynthesis.getVoices().length !== 0))
                 engine = 'synthesis';
             else
                 engine = 'mimic'; //default engine is mimic
@@ -1409,7 +1415,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
          };
         
          /*
-         * speak.activate() makes the "Speak" button opqaue and four times as large,
+         * speak.activate() makes the "Speak" button opaque and larger,
          * to give feedback to the user while the TTS request is waiting.
          * Only called when Mimic is used.
          */
@@ -1484,7 +1490,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
              }
          }
         
-         else { // engine is NOT 'synthesis', therefore call server-side looma-speech.php which uses 'mimic'
+         else { // engine is NOT 'synthesis', therefore call server-side looma-speech.php which uses 'mimic' or 'larynx'
              if (LOOMA.speak.playingAudio != null) {
                  // If speaking, stop the currently playing speech.
                  console.log("Stopping Audio");
@@ -1507,15 +1513,13 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  for (var i = 0; i < splitSentences.length; i++) {
                      var currentText = splitSentences[i];
                      var audioSource;
-                     if (voice) {
-                         audioSource = 'looma-mimic.php?text=' +
-                             encodeURIComponent(currentText) +
-                             '&voice=' + encodeURIComponent(voice) +
-                             '&rate=' + encodeURIComponent(speed);
-                     } else {
-                         audioSource = 'looma-mimic.php?text=' +
-                             encodeURIComponent(currentText);
-                     }
+                     
+                     audioSource = 'looma-TTS.php?' +
+                         'text='    + encodeURIComponent(currentText) +
+                         '&voice='  + encodeURIComponent(voice) +
+                         '&rate='   + encodeURIComponent(speed) +
+                         '&engine=' + encodeURIComponent(engine);
+    
                      // This is like preloading images – all the requests to mimic will execute early, so there won't be lag between phrases.
                      var currentAudio = new Audio(audioSource);
                     

@@ -1,6 +1,11 @@
 {
   "description": "poc-change-streams",
-  "schemaVersion": "1.0",
+  "schemaVersion": "1.4",
+  "runOnRequirements": [
+    {
+      "serverless": "forbid"
+    }
+  ],
   "createEntities": [
     {
       "client": {
@@ -90,6 +95,42 @@
   ],
   "tests": [
     {
+      "description": "saveResultAsEntity is optional for createChangeStream",
+      "runOnRequirements": [
+        {
+          "minServerVersion": "3.8.0",
+          "topologies": [
+            "replicaset"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "name": "createChangeStream",
+          "object": "client0",
+          "arguments": {
+            "pipeline": []
+          }
+        }
+      ],
+      "expectEvents": [
+        {
+          "client": "client0",
+          "events": [
+            {
+              "commandStartedEvent": {
+                "command": {
+                  "aggregate": 1
+                },
+                "commandName": "aggregate",
+                "databaseName": "admin"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "description": "Executing a watch helper on a MongoClient results in notifications for changes to all collections in all databases in the cluster.",
       "runOnRequirements": [
         {
@@ -103,6 +144,9 @@
         {
           "name": "createChangeStream",
           "object": "client0",
+          "arguments": {
+            "pipeline": []
+          },
           "saveResultAsEntity": "changeStream0"
         },
         {
@@ -246,7 +290,8 @@
           "name": "createChangeStream",
           "object": "collection0",
           "arguments": {
-            "batchSize": 1
+            "batchSize": 1,
+            "pipeline": []
           },
           "saveResultAsEntity": "changeStream0"
         },

@@ -11,6 +11,7 @@ use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Tests\TestCase;
 use stdClass;
 use Throwable;
+
 use function get_class;
 use function is_array;
 use function is_string;
@@ -54,26 +55,6 @@ final class ErrorExpectation
 
     private function __construct()
     {
-    }
-
-    public static function fromChangeStreams(stdClass $result)
-    {
-        $o = new self();
-
-        if (isset($result->error->code)) {
-            $o->code = $result->error->code;
-            $o->isExpected = true;
-        }
-
-        if (isset($result->error->errorLabels)) {
-            if (! self::isArrayOfStrings($result->error->errorLabels)) {
-                throw InvalidArgumentException::invalidType('errorLabels', $result->error->errorLabels, 'string[]');
-            }
-            $o->includedLabels = $result->error->errorLabels;
-            $o->isExpected = true;
-        }
-
-        return $o;
     }
 
     public static function fromClientSideEncryption(stdClass $operation)
@@ -122,6 +103,7 @@ final class ErrorExpectation
             if (! self::isArrayOfStrings($outcome->result->errorLabelsContain)) {
                 throw InvalidArgumentException::invalidType('errorLabelsContain', $outcome->result->errorLabelsContain, 'string[]');
             }
+
             $o->includedLabels = $outcome->result->errorLabelsContain;
         }
 
@@ -129,6 +111,7 @@ final class ErrorExpectation
             if (! self::isArrayOfStrings($outcome->result->errorLabelsOmit)) {
                 throw InvalidArgumentException::invalidType('errorLabelsOmit', $outcome->result->errorLabelsOmit, 'string[]');
             }
+
             $o->excludedLabels = $outcome->result->errorLabelsOmit;
         }
 
@@ -154,12 +137,14 @@ final class ErrorExpectation
      * @param TestCase       $test   Test instance for performing assertions
      * @param Exception|null $actual Exception (if any) from the actual outcome
      */
-    public function assert(TestCase $test, Throwable $actual = null)
+    public function assert(TestCase $test, ?Throwable $actual = null): void
     {
         if (! $this->isExpected) {
             if ($actual !== null) {
                 $test->fail(sprintf("Operation threw unexpected %s: %s\n%s", get_class($actual), $actual->getMessage(), $actual->getTraceAsString()));
             }
+
+            $test->addToAssertionCount(1);
 
             return;
         }
@@ -198,7 +183,7 @@ final class ErrorExpectation
      * @param TestCase       $test   Test instance for performing assertions
      * @param Exception|null $actual Exception (if any) from the actual outcome
      */
-    private function assertCodeName(TestCase $test, Throwable $actual = null)
+    private function assertCodeName(TestCase $test, ?Throwable $actual = null): void
     {
         /* BulkWriteException does not expose codeName for server errors. Work
          * around this be comparing the error code against a map.
@@ -252,6 +237,7 @@ final class ErrorExpectation
             if (! self::isArrayOfStrings($result->errorLabelsContain)) {
                 throw InvalidArgumentException::invalidType('errorLabelsContain', $result->errorLabelsContain, 'string[]');
             }
+
             $o->includedLabels = $result->errorLabelsContain;
             $o->isExpected = true;
         }
@@ -260,6 +246,7 @@ final class ErrorExpectation
             if (! self::isArrayOfStrings($result->errorLabelsOmit)) {
                 throw InvalidArgumentException::invalidType('errorLabelsOmit', $result->errorLabelsOmit, 'string[]');
             }
+
             $o->excludedLabels = $result->errorLabelsOmit;
             $o->isExpected = true;
         }

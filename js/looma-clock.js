@@ -40,7 +40,7 @@ var myVar = false;
 var twentyFour = false;
 
 //months and weeks for digital clock
-var months = [ "January", "Fabruary", "March", "April", "May", "June",
+var months = [ "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December" ];
 var weeks = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
     "Friday", "Saturday" ];

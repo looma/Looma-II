@@ -4,19 +4,20 @@ namespace MongoDB\Tests\UnifiedSpecTests;
 
 use LogicException;
 use MongoDB\Client;
-use MongoDB\Driver\Manager;
-use MongoDB\Driver\ReadPreference;
-use MongoDB\Driver\Server;
+use MongoDB\Driver\ClientEncryption;
+use MongoDB\Driver\ServerApi;
+use MongoDB\Model\BSONArray;
+use MongoDB\Tests\FunctionalTestCase;
+use MongoDB\Tests\SpecTests\ClientSideEncryptionSpecTest;
+use PHPUnit\Framework\Assert;
 use stdClass;
+
 use function array_key_exists;
 use function array_map;
-use function count;
 use function current;
 use function explode;
-use function implode;
-use function in_array;
+use function getenv;
 use function key;
-use function parse_url;
 use function PHPUnit\Framework\assertArrayHasKey;
 use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertIsArray;
@@ -25,13 +26,9 @@ use function PHPUnit\Framework\assertIsInt;
 use function PHPUnit\Framework\assertIsObject;
 use function PHPUnit\Framework\assertIsString;
 use function PHPUnit\Framework\assertNotEmpty;
-use function PHPUnit\Framework\assertNotFalse;
-use function PHPUnit\Framework\assertStringContainsString;
-use function PHPUnit\Framework\assertStringStartsWith;
-use function strlen;
-use function strpos;
-use function substr_replace;
-use const PHP_URL_HOST;
+use function PHPUnit\Framework\assertNotSame;
+use function PHPUnit\Framework\assertSame;
+use function sprintf;
 
 /**
  * Execution context for spec tests.
@@ -44,11 +41,11 @@ final class Context
     /** @var string */
     private $activeClient;
 
-    /** @var string[] */
-    private $dirtySessions = [];
-
     /** @var EntityMap */
     private $entityMap;
+
+    /** @var EventCollector[] */
+    private $eventCollectors = [];
 
     /** @var EventObserver[] */
     private $eventObserversByClient = [];
@@ -56,22 +53,46 @@ final class Context
     /** @var Client */
     private $internalClient;
 
+    /** @var boolean */
+    private $inLoop = false;
+
     /** @var string */
     private $uri;
+
+    /** @var string */
+    private $singleMongosUri;
+
+    /** @var string */
+    private $multiMongosUri;
 
     public function __construct(Client $internalClient, string $uri)
     {
         $this->entityMap = new EntityMap();
         $this->internalClient = $internalClient;
         $this->uri = $uri;
+
+        /* TODO: Consider leaving these unset, although that might require
+         * redundant topology/serverless checks in Context::createClient(). */
+        $this->singleMongosUri = $uri;
+        $this->multiMongosUri = $uri;
+    }
+
+    /**
+     * Set single and multi-mongos URIs for useMultipleMongoses. This should be
+     * called for sharded cluster and non-serverless load balanced topologies.
+     *
+     * @see UnifiedTestRunner::createContext()
+     */
+    public function setUrisForUseMultipleMongoses(string $singleMongosUri, string $multiMongosUri): void
+    {
+        $this->singleMongosUri = $singleMongosUri;
+        $this->multiMongosUri = $multiMongosUri;
     }
 
     /**
      * Create entities for "createEntities".
-     *
-     * @param array $createEntities
      */
-    public function createEntities(array $entities)
+    public function createEntities(array $entities): void
     {
         foreach ($entities as $entity) {
             assertIsObject($entity);
@@ -88,6 +109,10 @@ final class Context
             switch ($type) {
                 case 'client':
                     $this->createClient($id, $def);
+                    break;
+
+                case 'clientEncryption':
+                    $this->createClientEncryption($id, $def);
                     break;
 
                 case 'database':
@@ -112,90 +137,105 @@ final class Context
         }
     }
 
-    public function getEntityMap() : EntityMap
+    public function getEntityMap(): EntityMap
     {
         return $this->entityMap;
     }
 
-    public function getInternalClient() : Client
+    public function getInternalClient(): Client
     {
         return $this->internalClient;
     }
 
-    public function isDirtySession(string $sessionId) : bool
-    {
-        return in_array($sessionId, $this->dirtySessions);
-    }
-
-    public function markDirtySession(string $sessionId)
-    {
-        if ($this->isDirtySession($sessionId)) {
-            return;
-        }
-
-        $this->dirtySessions[] = $sessionId;
-    }
-
-    public function isActiveClient(string $clientId) : bool
+    public function isActiveClient(string $clientId): bool
     {
         return $this->activeClient === $clientId;
     }
 
-    public function setActiveClient(string $clientId = null)
+    public function setActiveClient(?string $clientId = null): void
     {
         $this->activeClient = $clientId;
     }
 
-    public function assertExpectedEventsForClients(array $expectedEventsForClients)
+    public function isInLoop(): bool
+    {
+        return $this->inLoop;
+    }
+
+    public function setInLoop(bool $inLoop): void
+    {
+        $this->inLoop = $inLoop;
+    }
+
+    public function assertExpectedEventsForClients(array $expectedEventsForClients): void
     {
         assertNotEmpty($expectedEventsForClients);
 
         foreach ($expectedEventsForClients as $expectedEventsForClient) {
             assertIsObject($expectedEventsForClient);
-            Util::assertHasOnlyKeys($expectedEventsForClient, ['client', 'events']);
+            Util::assertHasOnlyKeys($expectedEventsForClient, ['client', 'events', 'eventType', 'ignoreExtraEvents']);
 
             $client = $expectedEventsForClient->client ?? null;
+            $eventType = $expectedEventsForClient->eventType ?? 'command';
             $expectedEvents = $expectedEventsForClient->events ?? null;
+            $ignoreExtraEvents = $expectedEventsForClient->ignoreExtraEvents ?? false;
 
             assertIsString($client);
             assertArrayHasKey($client, $this->eventObserversByClient);
+            /* Note: PHPC does not implement CMAP. Any tests expecting CMAP
+             * events should be skipped explicitly. */
+            assertSame('command', $eventType);
             assertIsArray($expectedEvents);
 
-            $this->eventObserversByClient[$client]->assert($expectedEvents);
+            $this->eventObserversByClient[$client]->assert($expectedEvents, $ignoreExtraEvents);
         }
     }
 
-    public function startEventObservers()
+    public function startEventObservers(): void
     {
         foreach ($this->eventObserversByClient as $eventObserver) {
             $eventObserver->start();
         }
     }
 
-    public function stopEventObservers()
+    public function stopEventObservers(): void
     {
         foreach ($this->eventObserversByClient as $eventObserver) {
             $eventObserver->stop();
         }
     }
 
-    public function getEventObserverForClient(string $id) : EventObserver
+    public function getEventObserverForClient(string $id): EventObserver
     {
         assertArrayHasKey($id, $this->eventObserversByClient);
 
         return $this->eventObserversByClient[$id];
     }
 
+    public function startEventCollectors(): void
+    {
+        foreach ($this->eventCollectors as $eventCollector) {
+            $eventCollector->start();
+        }
+    }
+
+    public function stopEventCollectors(): void
+    {
+        foreach ($this->eventCollectors as $eventCollector) {
+            $eventCollector->stop();
+        }
+    }
+
     /** @param string|array $readPreferenceTags */
-    private function convertReadPreferenceTags($readPreferenceTags) : array
+    private function convertReadPreferenceTags($readPreferenceTags): array
     {
         return array_map(
-            static function (string $readPreferenceTagSet) : array {
+            static function (string $readPreferenceTagSet): array {
                 $tags = explode(',', $readPreferenceTagSet);
 
                 return array_map(
-                    static function (string $tag) : array {
-                        list($key, $value) = explode(':', $tag);
+                    static function (string $tag): array {
+                        [$key, $value] = explode(':', $tag);
 
                         return [$key => $value];
                     },
@@ -206,24 +246,32 @@ final class Context
         );
     }
 
-    private function createClient(string $id, stdClass $o)
+    private function createClient(string $id, stdClass $o): void
     {
-        Util::assertHasOnlyKeys($o, ['id', 'uriOptions', 'useMultipleMongoses', 'observeEvents', 'ignoreCommandMonitoringEvents']);
+        Util::assertHasOnlyKeys($o, [
+            'id',
+            'uriOptions',
+            'useMultipleMongoses',
+            'observeEvents',
+            'ignoreCommandMonitoringEvents',
+            'observeSensitiveCommands',
+            'serverApi',
+            'storeEventsAsEntities',
+        ]);
 
         $useMultipleMongoses = $o->useMultipleMongoses ?? null;
         $observeEvents = $o->observeEvents ?? null;
         $ignoreCommandMonitoringEvents = $o->ignoreCommandMonitoringEvents ?? [];
+        $observeSensitiveCommands = $o->observeSensitiveCommands ?? false;
+        $serverApi = $o->serverApi ?? null;
+        $storeEventsAsEntities = $o->storeEventsAsEntities ?? null;
 
         $uri = $this->uri;
 
         if (isset($useMultipleMongoses)) {
             assertIsBool($useMultipleMongoses);
 
-            if ($useMultipleMongoses) {
-                self::requireMultipleMongoses($uri);
-            } else {
-                $uri = self::removeMultipleMongoses($uri);
-            }
+            $uri = $useMultipleMongoses ? $this->multiMongosUri : $this->singleMongosUri;
         }
 
         $uriOptions = [];
@@ -247,19 +295,123 @@ final class Context
         if (isset($observeEvents)) {
             assertIsArray($observeEvents);
             assertIsArray($ignoreCommandMonitoringEvents);
+            assertIsBool($observeSensitiveCommands);
 
-            $this->eventObserversByClient[$id] = new EventObserver($observeEvents, $ignoreCommandMonitoringEvents, $id, $this);
+            $this->eventObserversByClient[$id] = new EventObserver($observeEvents, $ignoreCommandMonitoringEvents, $observeSensitiveCommands, $id, $this);
         }
 
-        /* TODO: Remove this once PHPC-1645 is implemented. Each client needs
-         * its own libmongoc client to facilitate txnNumber assertions. */
-        static $i = 0;
-        $driverOptions = isset($observeEvents) ? ['i' => $i++] : [];
+        if (isset($storeEventsAsEntities)) {
+            assertIsArray($storeEventsAsEntities);
 
-        $this->entityMap->set($id, new Client($uri, $uriOptions, $driverOptions));
+            foreach ($storeEventsAsEntities as $storeEventsAsEntity) {
+                $this->createEntityCollector($id, $storeEventsAsEntity);
+            }
+        }
+
+        // Transaction tests expect a new client for each test so that txnNumber values are deterministic.
+        $driverOptions = isset($observeEvents) ? ['disableClientPersistence' => true] : [];
+
+        if ($serverApi !== null) {
+            assertIsObject($serverApi);
+            $driverOptions['serverApi'] = new ServerApi(
+                $serverApi->version,
+                $serverApi->strict ?? null,
+                $serverApi->deprecationErrors ?? null
+            );
+        }
+
+        $this->entityMap->set($id, FunctionalTestCase::createTestClient($uri, $uriOptions, $driverOptions));
     }
 
-    private function createCollection(string $id, stdClass $o)
+    private function createClientEncryption(string $id, stdClass $o): void
+    {
+        Util::assertHasOnlyKeys($o, [
+            'id',
+            'clientEncryptionOpts',
+        ]);
+
+        $clientEncryptionOpts = [];
+        $clientId = null;
+
+        if (isset($o->clientEncryptionOpts)) {
+            assertIsObject($o->clientEncryptionOpts);
+            $clientEncryptionOpts = (array) $o->clientEncryptionOpts;
+        }
+
+        if (isset($clientEncryptionOpts['keyVaultClient'])) {
+            assertIsString($clientEncryptionOpts['keyVaultClient']);
+            /* Record the keyVaultClient's ID, which we'll later use to track
+             * the parent client in the entity map. */
+            $clientId = $clientEncryptionOpts['keyVaultClient'];
+            $clientEncryptionOpts['keyVaultClient'] = $this->entityMap->getClient($clientId)->getManager();
+        }
+
+        if (isset($clientEncryptionOpts['kmsProviders'])) {
+            assertIsObject($clientEncryptionOpts['kmsProviders']);
+
+            if (isset($clientEncryptionOpts['kmsProviders']->aws->accessKeyId->{'$$placeholder'})) {
+                $clientEncryptionOpts['kmsProviders']->aws->accessKeyId = static::getEnv('AWS_ACCESS_KEY_ID');
+            }
+
+            if (isset($clientEncryptionOpts['kmsProviders']->aws->secretAccessKey->{'$$placeholder'})) {
+                $clientEncryptionOpts['kmsProviders']->aws->secretAccessKey = static::getEnv('AWS_SECRET_ACCESS_KEY');
+            }
+
+            if (isset($clientEncryptionOpts['kmsProviders']->azure->clientId->{'$$placeholder'})) {
+                $clientEncryptionOpts['kmsProviders']->azure->clientId = static::getEnv('AZURE_CLIENT_ID');
+            }
+
+            if (isset($clientEncryptionOpts['kmsProviders']->azure->clientSecret->{'$$placeholder'})) {
+                $clientEncryptionOpts['kmsProviders']->azure->clientSecret = static::getEnv('AZURE_CLIENT_SECRET');
+            }
+
+            if (isset($clientEncryptionOpts['kmsProviders']->azure->tenantId->{'$$placeholder'})) {
+                $clientEncryptionOpts['kmsProviders']->azure->tenantId = static::getEnv('AZURE_TENANT_ID');
+            }
+
+            if (isset($clientEncryptionOpts['kmsProviders']->gcp->email->{'$$placeholder'})) {
+                $clientEncryptionOpts['kmsProviders']->gcp->email = static::getEnv('GCP_EMAIL');
+            }
+
+            if (isset($clientEncryptionOpts['kmsProviders']->gcp->privateKey->{'$$placeholder'})) {
+                $clientEncryptionOpts['kmsProviders']->gcp->privateKey = static::getEnv('GCP_PRIVATE_KEY');
+            }
+
+            if (isset($clientEncryptionOpts['kmsProviders']->kmip->endpoint->{'$$placeholder'})) {
+                $clientEncryptionOpts['kmsProviders']->kmip->endpoint = static::getEnv('KMIP_ENDPOINT');
+            }
+
+            if (isset($clientEncryptionOpts['kmsProviders']->local->key->{'$$placeholder'})) {
+                $clientEncryptionOpts['kmsProviders']->local->key = ClientSideEncryptionSpecTest::LOCAL_MASTERKEY;
+            }
+        }
+
+        if (isset($clientEncryptionOpts['kmsProviders']->kmip->endpoint)) {
+            $clientEncryptionOpts['tlsOptions']['kmip'] = [
+                'tlsCAFile' => static::getEnv('KMS_TLS_CA_FILE'),
+                'tlsCertificateKeyFile' => static::getEnv('KMS_TLS_CERTIFICATE_KEY_FILE'),
+            ];
+        }
+
+        $this->entityMap->set($id, new ClientEncryption($clientEncryptionOpts), $clientId);
+    }
+
+    private function createEntityCollector(string $clientId, stdClass $o): void
+    {
+        Util::assertHasOnlyKeys($o, ['id', 'events']);
+
+        $eventListId = $o->id ?? null;
+        $events = $o->events ?? null;
+
+        assertNotSame($eventListId, $clientId);
+        assertIsArray($events);
+
+        $eventList = new BSONArray();
+        $this->entityMap->set($eventListId, $eventList);
+        $this->eventCollectors[] = new EventCollector($eventList, $events, $clientId, $this);
+    }
+
+    private function createCollection(string $id, stdClass $o): void
     {
         Util::assertHasOnlyKeys($o, ['id', 'database', 'collectionName', 'collectionOptions']);
 
@@ -281,7 +433,7 @@ final class Context
         $this->entityMap->set($id, $database->selectCollection($o->collectionName, $options), $databaseId);
     }
 
-    private function createDatabase(string $id, stdClass $o)
+    private function createDatabase(string $id, stdClass $o): void
     {
         Util::assertHasOnlyKeys($o, ['id', 'client', 'databaseName', 'databaseOptions']);
 
@@ -303,7 +455,7 @@ final class Context
         $this->entityMap->set($id, $client->selectDatabase($databaseName, $options), $clientId);
     }
 
-    private function createSession(string $id, stdClass $o)
+    private function createSession(string $id, stdClass $o): void
     {
         Util::assertHasOnlyKeys($o, ['id', 'client', 'sessionOptions']);
 
@@ -321,7 +473,7 @@ final class Context
         $this->entityMap->set($id, $client->startSession($options), $clientId);
     }
 
-    private function createBucket(string $id, stdClass $o)
+    private function createBucket(string $id, stdClass $o): void
     {
         Util::assertHasOnlyKeys($o, ['id', 'database', 'bucketOptions']);
 
@@ -339,14 +491,25 @@ final class Context
         $this->entityMap->set($id, $database->selectGridFSBucket($options), $databaseId);
     }
 
-    private static function prepareCollectionOrDatabaseOptions(array $options) : array
+    private static function getEnv(string $name): string
+    {
+        $value = getenv($name);
+
+        if ($value === false) {
+            Assert::markTestSkipped(sprintf('Environment variable "%s" is not defined', $name));
+        }
+
+        return $value;
+    }
+
+    private static function prepareCollectionOrDatabaseOptions(array $options): array
     {
         Util::assertHasOnlyKeys($options, ['readConcern', 'readPreference', 'writeConcern']);
 
         return Util::prepareCommonOptions($options);
     }
 
-    private static function prepareBucketOptions(array $options) : array
+    private static function prepareBucketOptions(array $options): array
     {
         Util::assertHasOnlyKeys($options, ['bucketName', 'chunkSizeBytes', 'disableMD5', 'readConcern', 'readPreference', 'writeConcern']);
 
@@ -365,9 +528,9 @@ final class Context
         return Util::prepareCommonOptions($options);
     }
 
-    private static function prepareSessionOptions(array $options) : array
+    private static function prepareSessionOptions(array $options): array
     {
-        Util::assertHasOnlyKeys($options, ['causalConsistency', 'defaultTransactionOptions']);
+        Util::assertHasOnlyKeys($options, ['causalConsistency', 'defaultTransactionOptions', 'snapshot']);
 
         if (array_key_exists('causalConsistency', $options)) {
             assertIsBool($options['causalConsistency']);
@@ -378,10 +541,14 @@ final class Context
             $options['defaultTransactionOptions'] = self::prepareDefaultTransactionOptions((array) $options['defaultTransactionOptions']);
         }
 
+        if (array_key_exists('snapshot', $options)) {
+            assertIsBool($options['snapshot']);
+        }
+
         return $options;
     }
 
-    private static function prepareDefaultTransactionOptions(array $options) : array
+    private static function prepareDefaultTransactionOptions(array $options): array
     {
         Util::assertHasOnlyKeys($options, ['maxCommitTimeMS', 'readConcern', 'readPreference', 'writeConcern']);
 
@@ -390,63 +557,5 @@ final class Context
         }
 
         return Util::prepareCommonOptions($options);
-    }
-
-    /**
-     * Removes mongos hosts beyond the first if the URI refers to a sharded
-     * cluster. Otherwise, the URI is returned as-is.
-     */
-    private static function removeMultipleMongoses(string $uri) : string
-    {
-        assertStringStartsWith('mongodb://', $uri);
-
-        $manager = new Manager($uri);
-
-        // Nothing to do if the URI does not refer to a sharded cluster
-        if ($manager->selectServer(new ReadPreference(ReadPreference::PRIMARY))->getType() !== Server::TYPE_MONGOS) {
-            return $uri;
-        }
-
-        $parts = parse_url($uri);
-
-        assertIsArray($parts);
-
-        $hosts = explode(',', $parts['host']);
-
-        // Nothing to do if the URI already has a single mongos host
-        if (count($hosts) === 1) {
-            return $uri;
-        }
-
-        // Re-append port to last host
-        if (isset($parts['port'])) {
-            $hosts[count($hosts) - 1] .= ':' . $parts['port'];
-        }
-
-        $singleHost = $hosts[0];
-        $multipleHosts = implode(',', $hosts);
-
-        $pos = strpos($uri, $multipleHosts);
-
-        assertNotFalse($pos);
-
-        return substr_replace($uri, $singleHost, $pos, strlen($multipleHosts));
-    }
-
-    /**
-     * Requires multiple mongos hosts if the URI refers to a sharded cluster.
-     */
-    private static function requireMultipleMongoses(string $uri)
-    {
-        assertStringStartsWith('mongodb://', $uri);
-
-        $manager = new Manager($uri);
-
-        // Nothing to do if the URI does not refer to a sharded cluster
-        if ($manager->selectServer(new ReadPreference(ReadPreference::PRIMARY))->getType() !== Server::TYPE_MONGOS) {
-            return;
-        }
-
-        assertStringContainsString(',', parse_url($uri, PHP_URL_HOST));
     }
 }

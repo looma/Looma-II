@@ -2,12 +2,11 @@
 
 namespace MongoDB\Tests\SpecTests;
 
-use MongoDB\Client;
 use MongoDB\Driver\Command;
 use MongoDB\Driver\Cursor;
 use MongoDB\Tests\CommandObserver;
 use stdClass;
-use Symfony\Bridge\PhpUnit\SetUpTearDownTrait;
+
 use function basename;
 use function current;
 use function explode;
@@ -22,9 +21,7 @@ use function parse_url;
  */
 class AtlasDataLakeSpecTest extends FunctionalTestCase
 {
-    use SetUpTearDownTrait;
-
-    private function doSetUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +36,7 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
      * @param stdClass $expected Expected command document
      * @param stdClass $actual   Actual command document
      */
-    public static function assertCommandMatches(stdClass $expected, stdClass $actual)
+    public static function assertCommandMatches(stdClass $expected, stdClass $actual): void
     {
         foreach ($expected as $key => $value) {
             if ($value === null) {
@@ -61,7 +58,7 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
      * @param string   $databaseName   Name of database under test
      * @param string   $collectionName Name of collection under test
      */
-    public function testAtlasDataLake(stdClass $test, array $runOn = null, array $data, $databaseName = null, $collectionName = null)
+    public function testAtlasDataLake(stdClass $test, ?array $runOn, array $data, ?string $databaseName = null, ?string $collectionName = null): void
     {
         if (isset($runOn)) {
             $this->checkServerRequirements($runOn);
@@ -86,7 +83,7 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
         }
 
         if (isset($test->expectations)) {
-            $commandExpectations = CommandExpectations::fromCrud((array) $test->expectations);
+            $commandExpectations = CommandExpectations::fromCrud($context->getClient(), (array) $test->expectations);
             $commandExpectations->startMonitoring();
         }
 
@@ -113,8 +110,10 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
             $group = basename($filename, '.json');
             $runOn = $json->runOn ?? null;
             $data = $json->data ?? [];
+            // phpcs:disable Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
             $databaseName = $json->database_name ?? null;
             $collectionName = $json->collection_name ?? null;
+            // phpcs:enable Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
 
             foreach ($json->tests as $test) {
                 $name = $group . ': ' . $test->description;
@@ -128,17 +127,17 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
     /**
      * Prose test 1: Connect without authentication
      */
-    public function testKillCursors()
+    public function testKillCursors(): void
     {
         $cursorId = null;
         $cursorNamespace = null;
 
         (new CommandObserver())->observe(
-            function () {
-                $client = new Client(static::getUri());
+            function (): void {
+                $client = static::createTestClient();
                 $client->test->driverdata->find([], ['batchSize' => 2, 'limit' => 3]);
             },
-            function (array $event) use (&$cursorId, &$cursorNamespace) {
+            function (array $event) use (&$cursorId, &$cursorNamespace): void {
                 if ($event['started']->getCommandName() === 'find') {
                     $this->assertArrayHasKey('succeeded', $event);
 
@@ -166,7 +165,7 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
                 $this->assertIsInt($cursorId);
                 $this->assertIsString($cursorNamespace);
 
-                list($databaseName, $collectionName) = explode('.', $cursorNamespace, 2);
+                [$databaseName, $collectionName] = explode('.', $cursorNamespace, 2);
                 $command = $event['started']->getCommand();
 
                 /* Assert that the killCursors command uses the namespace and
@@ -194,7 +193,7 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
     /**
      * Prose test 2: Connect without authentication
      */
-    public function testConnectWithoutAuth()
+    public function testConnectWithoutAuth(): void
     {
         /* Parse URI to remove userinfo component. The query string is left
          * as-is and must not include authMechanism or credentials. */
@@ -205,7 +204,7 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
 
         $uri = $parts['scheme'] . '://' . $parts['host'] . $port . $path . $query;
 
-        $client = new Client($uri);
+        $client = static::createTestClient($uri);
         $cursor = $client->selectDatabase($this->getDatabaseName())->command(['ping' => 1]);
 
         $this->assertInstanceOf(Cursor::class, $cursor);
@@ -215,9 +214,9 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
     /**
      * Prose test 3: Connect with SCRAM-SHA-1 authentication
      */
-    public function testConnectwithSCRAMSHA1()
+    public function testConnectwithSCRAMSHA1(): void
     {
-        $client = new Client(static::getUri(), ['authMechanism' => 'SCRAM-SHA-1']);
+        $client = static::createTestClient(null, ['authMechanism' => 'SCRAM-SHA-1']);
         $cursor = $client->selectDatabase($this->getDatabaseName())->command(['ping' => 1]);
 
         $this->assertInstanceOf(Cursor::class, $cursor);
@@ -227,16 +226,16 @@ class AtlasDataLakeSpecTest extends FunctionalTestCase
     /**
      * Prose test 4: Connect with SCRAM-SHA-256 authentication
      */
-    public function testConnectwithSCRAMSHA256()
+    public function testConnectwithSCRAMSHA256(): void
     {
-        $client = new Client(static::getUri(), ['authMechanism' => 'SCRAM-SHA-256']);
+        $client = static::createTestClient(null, ['authMechanism' => 'SCRAM-SHA-256']);
         $cursor = $client->selectDatabase($this->getDatabaseName())->command(['ping' => 1]);
 
         $this->assertInstanceOf(Cursor::class, $cursor);
         $this->assertCommandSucceeded(current($cursor->toArray()));
     }
 
-    private function isAtlasDataLake() : bool
+    private function isAtlasDataLake(): bool
     {
         $cursor = $this->manager->executeCommand(
             $this->getDatabaseName(),

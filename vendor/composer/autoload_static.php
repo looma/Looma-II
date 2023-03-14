@@ -16,10 +16,6 @@ class ComposerStaticInitc7cfe7c20d049aec00333b61c9a4e24b
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
         ),
-        'P' => 
-        array (
-            'PackageVersions\\' => 16,
-        ),
         'M' => 
         array (
             'MongoDB\\' => 8,
@@ -35,10 +31,6 @@ class ComposerStaticInitc7cfe7c20d049aec00333b61c9a4e24b
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
         ),
-        'PackageVersions\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/composer/package-versions-deprecated/src/PackageVersions',
-        ),
         'MongoDB\\' => 
         array (
             0 => __DIR__ . '/..' . '/mongodb/mongodb/src',
@@ -52,6 +44,7 @@ class ComposerStaticInitc7cfe7c20d049aec00333b61c9a4e24b
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',

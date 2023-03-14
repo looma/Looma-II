@@ -1,11 +1,21 @@
+<!--
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="pragma" content="no-cache">
+
+    OR
+
+    header("Cache-Control: no-cache");
+    header("Pragma: no-cache");
+
+-->
 <?php
+   // header('Cache-Control: no-cache');
     $page_title = 'Looma Home Page';
     require_once ('includes/header.php');
 
     logUserActivity();
     logPageHit('home');
 ?>
-
     <link rel="stylesheet" href="css/looma-home.css">
 
     <link rel="prefetch" href="../content/textbooks/Class1/English/English-1-2465.pdf" />
@@ -34,10 +44,19 @@
                //     <p class='big'>सिकाइ चौतारी </p>";
                // echo "</div>";
         } else {  // $LOOMA_SERVER is 'looma' or 'looma local'
+
+            echo '<div id="partner-logo-div">';
+                echo '<img  id="partner-logo" draggable="false"';
+                //echo ' src="images/logos/rotary-reverse.png"';
+                echo '>';
+            echo '</div>';
+
            echo '<div id="CEHRD-logo-div">';
-            echo '<img  id="CEHRD-logo" draggable="false"';
-            echo ' src="images/logos/CEHRD-logo.png" >';
-            echo '<span id="CEHRD-text">MoEST, CEHRD</span>';
+                echo '<img  id="CEHRD-logo" draggable="false"';
+                echo ' src="images/logos/CEHRD-logo.png" >';
+                echo '<span id="CEHRD-text">MoEST, CEHRD</span>';
+            echo '</div>';
+
             echo '<div id="looma-logo-div" >';
                 echo '<img  id="looma-logo"        class=" english-keyword" draggable="false"';
                 echo 'src="images/logos/Looma-english-amanda 3x1.png" >';
@@ -45,7 +64,7 @@
                 echo 'src="images/logos/Looma-nepali-amanda 3x1.png" >';
             echo '</div>';
 
-            echo "</div>";
+           // echo "</div>";
         }
     ?>
 

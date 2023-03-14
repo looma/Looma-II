@@ -2,13 +2,15 @@
 <!--
 Author:
 
-Filename: yyy.html
+Filename: looma-404.php
 Date: 6/2015
 Description: custom 404 page for looma browser if no internet present
 
 -->
-	<?php $page_title = 'Looma 404 ';
-	      include ('includes/header.php'); ?>
+	<?php
+        $page_title = 'Looma 404 ';
+        include ('includes/header.php');
+    ?>
     <link rel="stylesheet" href="css/looma-404.css">
 
   </head>
@@ -22,4 +24,5 @@ Description: custom 404 page for looma browser if no internet present
     <?php   include('includes/looma-control-buttons.php');?>
     <button class='control-button' id='dismiss' ></button>
   </body>
-<?php include ('includes/js-includes.php'); ?></html>
+<?php include ('includes/js-includes.php'); ?>
+</html>

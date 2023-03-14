@@ -8,11 +8,16 @@
 #
 # ~/.cache/chromium holds the chromium cache - pages visited in Default/Cache, media loaded in Default/MediaCache
 #  we delete these cache items when loading a new Looma image so the old cached items arent used
-#####mkdir -p ~/.google/chromium/backup
-#   $ mv ~/.config/chromium/Default/ ~/.google/chromium/backup
-#####mv ~/.cache/chromium ~/.google/chromium/backup
 
 if [ -d ~/.cache/chromium/Default ]
   then
           rm -r ~/.cache/chromium/Default
+  fi
+
+# on newer Loomas, Chromium is installed by SNAP and uses different cache locations
+
+
+if [ -d ~/snap/chromium/common/chromium/Default ]
+  then
+          rm -r ~/snap/chromium/common/chromium/Default/Cache
   fi

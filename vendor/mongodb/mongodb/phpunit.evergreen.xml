@@ -6,12 +6,13 @@
          beStrictAboutOutputDuringTests="true"
          beStrictAboutChangesToGlobalState="true"
          colors="true"
-         bootstrap="tests/bootstrap.php"
+         bootstrap="vendor/autoload.php"
          defaultTestSuite="Default Test Suite"
 >
 
     <php>
         <ini name="error_reporting" value="-1"/>
+        <ini name="memory_limit" value="-1"/>
         <env name="MONGODB_URI" value="mongodb://127.0.0.1:27017/?serverSelectionTimeoutMS=100"/>
         <env name="MONGODB_DATABASE" value="phplib_test"/>
     </php>

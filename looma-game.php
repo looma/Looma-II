@@ -10,7 +10,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
   ?>
 
     <link href='css/looma.css'         rel='stylesheet' type='text/css'>
-    <link href='css/looma-game.css' rel='stylesheet' type='text/css'>
+    <link href='css/looma-game.css'    rel='stylesheet' type='text/css'>
     <link href='css/leaflet.css'       rel='stylesheet' type='text/css'>
 
 </head>
@@ -71,6 +71,13 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
             echo '</div>';
         echo '</div>';
 
+    echo '<div id="top">';
+    echo '<span id="current-team"></span>';
+    echo '<span id="question-number"></span>';
+    echo '<span id="question"></span>';
+    echo '<button id="next"></button>';
+    echo '</div>';
+
         echo '<div hidden class="thegameframe" id="thegameframe"' .
                 'data-gameid="' .  $id . '" ' .
                 'data-type="' .    $type . '" ' .
@@ -78,12 +85,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
             'data-subject="' . $subject . '" ' .
             'data-ch_id="' . $ch_id .
             '">';
-            echo '<div id="top">';
-                echo '<span id="current-team"></span>';
-                echo '<span id="question-number"></span>';
-                echo '<span id="question"></span>';
-                echo '<button id="next"></button>';
-            echo '</div>';
+
 
             echo '<div id="gameOverFrame" >';
                 echo '<h2 id="message"></h2>';
@@ -123,11 +125,11 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
                     echo '</div>';
                 echo '</div>';
         ?>
+    </div>
 
         <div class = "toolbar">
           <?php include ('includes/toolbar.php'); ?>
         </div>
-    </div>
 </body>
 
     <?php include ('includes/js-includes.php'); ?>

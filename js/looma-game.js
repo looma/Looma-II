@@ -280,8 +280,8 @@ function mcWrongAnswer(event) {
 function runMC() {
     //var questionNumber = curr_question;
     $('#game').empty();
-    $('#game').append('<span id="question-number">');
-    $('#game').append('<span id="question">');
+  //  $('#game').append('<span id="question-number">');
+  //  $('#game').append('<span id="question">');
     $('#game').append('<div id="answers">');
 
     num_questions = game['prompts'].length;
@@ -1120,7 +1120,7 @@ function handleConcSecondClick(event) {
 ////////  MAP GAME   ////////////////////////////////
 /////////////////////////////////////////////////////
 
-var alreadyRight = false;
+//var alreadyRight = false;
 var rightAnswer;
 var clickedWrong = false;
 var map, baseLayer, mapJSON;
@@ -1149,9 +1149,13 @@ function runMap() {
     $('#next').text("Next Question").show();
     //$('#next').click(getNewMapQuestion);
     $('#next').click(function () {
-            curr_question++;
+        curr_question++;
+        if (curr_question > num_questions) gameOver();
+        else
+        {
             nextTeam();
             nextQuestion();
+        }
     });
     
             //var lat = game['startLat'];
@@ -1184,7 +1188,6 @@ function runMap() {
 
 function mapClick(e)
 {
-    pauseTimer();
     var layer = e.target;
     //var currentQuestion = document.getElementById("question");
     //if(!alreadyRight) { //prevents it from going red after you have gotten it right
@@ -1196,12 +1199,18 @@ function mapClick(e)
     var clickedAnswer = layer.feature.properties[infoKey];
     //var clickedAnswer = game['key'];
     if(rightAnswer == clickedAnswer) //they got it right
-    {   layer.setStyle({fillColor: 'green'});
+    {   pauseTimer();
+    
+        scores[curr_team-1]++;
+        updateScores();
+        
+        layer.setStyle({fillColor: 'green'});
         document.getElementById("question").innerHTML = "Correct! That is " + rightAnswer;
-        if(!alreadyRight) //&& !clickedWrong)
+  /*      if(!alreadyRight) //&& !clickedWrong)
             { alreadyRight = true;
               LOOMA.alert("Correct! That is " + rightAnswer,4,false,correctAnswer);
             }
+   */
     }
     else
     {   clickedWrong = true;
@@ -1426,7 +1435,7 @@ function nextQuestion() {
                 $('#question').text('Click on: ' + game['prompts'][curr_question-1]);
                 baseLayer.clearLayers();
                 redrawMap(mapJSON);
-                alreadyRight = false;
+                //alreadyRight = false;
                 //runMap();
                 break;
             case 'yesno':
@@ -1489,6 +1498,7 @@ function gameOver() {
     pauseTimer();
     $timer.html('');
     $("#message").html("Game Over");
+    $("#scoreList").empty();
     for (var i = 1; i <= num_teams; i++) {
         var results = $('<h5>Team '+i.toString()+': '+(scores[i-1]).toString()+' correct</h5>');
         if (scores[i-1] > 0 && scores[i-1] == Math.max(...scores)) results.append('<span class="red"> WINNER</span>');

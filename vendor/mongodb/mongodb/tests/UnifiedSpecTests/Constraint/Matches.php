@@ -14,6 +14,7 @@ use RuntimeException;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\Factory;
 use Symfony\Bridge\PhpUnit\ConstraintTrait;
+
 use function array_keys;
 use function count;
 use function get_debug_type;
@@ -23,6 +24,7 @@ use function is_array;
 use function is_float;
 use function is_int;
 use function is_object;
+use function ltrim;
 use function PHPUnit\Framework\assertIsBool;
 use function PHPUnit\Framework\assertIsString;
 use function PHPUnit\Framework\assertMatchesRegularExpression;
@@ -36,6 +38,8 @@ use function PHPUnit\Framework\logicalOr;
 use function range;
 use function sprintf;
 use function strpos;
+use function strrchr;
+
 use const PHP_INT_SIZE;
 
 /**
@@ -64,7 +68,10 @@ class Matches extends Constraint
     /** @var ComparisonFailure|null */
     private $lastFailure;
 
-    public function __construct($value, EntityMap $entityMap = null, $allowExtraRootKeys = true, $allowOperators = true)
+    /** @var Factory */
+    private $comparatorFactory;
+
+    public function __construct($value, ?EntityMap $entityMap = null, $allowExtraRootKeys = true, $allowOperators = true)
     {
         $this->value = self::prepare($value);
         $this->entityMap = $entityMap;
@@ -110,7 +117,7 @@ class Matches extends Constraint
         }
     }
 
-    private function assertEquals($expected, $actual, string $keyPath)
+    private function assertEquals($expected, $actual, string $keyPath): void
     {
         $expectedType = get_debug_type($expected);
         $actualType = get_debug_type($actual);
@@ -131,7 +138,7 @@ class Matches extends Constraint
         }
     }
 
-    private function assertMatches($expected, $actual, string $keyPath = '')
+    private function assertMatches($expected, $actual, string $keyPath = ''): void
     {
         if ($expected instanceof BSONArray) {
             $this->assertMatchesArray($expected, $actual, $keyPath);
@@ -148,7 +155,7 @@ class Matches extends Constraint
         $this->assertEquals($expected, $actual, $keyPath);
     }
 
-    private function assertMatchesArray(BSONArray $expected, $actual, string $keyPath)
+    private function assertMatchesArray(BSONArray $expected, $actual, string $keyPath): void
     {
         if (! $actual instanceof BSONArray) {
             $actualType = get_debug_type($actual);
@@ -168,7 +175,7 @@ class Matches extends Constraint
         }
     }
 
-    private function assertMatchesDocument(BSONDocument $expected, $actual, string $keyPath)
+    private function assertMatchesDocument(BSONDocument $expected, $actual, string $keyPath): void
     {
         if ($this->allowOperators && self::isOperator($expected)) {
             $this->assertMatchesOperator($expected, $actual, $keyPath);
@@ -226,6 +233,7 @@ class Matches extends Constraint
             return;
         }
 
+        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.NotCamelCaps
         foreach ($actual as $key => $_) {
             if (! $expected->offsetExists($key)) {
                 self::failAt(sprintf('$actual has unexpected key "%s"', $key), $keyPath);
@@ -233,9 +241,22 @@ class Matches extends Constraint
         }
     }
 
-    private function assertMatchesOperator(BSONDocument $operator, $actual, string $keyPath)
+    private function assertMatchesOperator(BSONDocument $operator, $actual, string $keyPath): void
     {
         $name = self::getOperatorName($operator);
+
+        if ($name === '$$exists') {
+            assertIsBool($operator['$$exists'], '$$exists requires bool');
+
+            /* If we get to this point, the field itself must already exist so
+             * we need only fail if $$exists is false. */
+            if ($operator['$$exists'] === false) {
+                $key = ltrim(strrchr($keyPath, '.'), '.');
+                self::failAt(sprintf('$actual has unexpected key "%s"', $key), $keyPath);
+            }
+
+            return;
+        }
 
         if ($name === '$$type') {
             assertThat(
@@ -347,15 +368,16 @@ class Matches extends Constraint
         return 'matches ' . $this->exporter()->export($this->value);
     }
 
-    private static function failAt(string $message, string $keyPath)
+    private static function failAt(string $message, string $keyPath): void
     {
         $prefix = empty($keyPath) ? '' : sprintf('Field path "%s": ', $keyPath);
 
         throw new RuntimeException($prefix . $message);
     }
 
-    private static function getOperatorName(BSONDocument $document) : string
+    private static function getOperatorName(BSONDocument $document): string
     {
+        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.NotCamelCaps
         foreach ($document as $key => $_) {
             if (strpos((string) $key, '$$') === 0) {
                 return $key;
@@ -370,12 +392,13 @@ class Matches extends Constraint
         return is_int($value) || is_float($value) || $value instanceof Int64;
     }
 
-    private static function isOperator(BSONDocument $document) : bool
+    private static function isOperator(BSONDocument $document): bool
     {
         if (count($document) !== 1) {
             return false;
         }
 
+        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.NotCamelCaps
         foreach ($document as $key => $_) {
             return strpos((string) $key, '$$') === 0;
         }
@@ -442,7 +465,7 @@ class Matches extends Constraint
         return $bson;
     }
 
-    private static function isArrayEmptyOrIndexed(array $a) : bool
+    private static function isArrayEmptyOrIndexed(array $a): bool
     {
         if (empty($a)) {
             return true;

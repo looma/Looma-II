@@ -215,10 +215,8 @@ require_once('includes/looma-utilities.php');
        $LOOMA_SERVER = 'looma';
   else $LOOMA_SERVER = 'looma local';
 
-
   date_default_timezone_set ( 'UTC');
-$date = date("Y.m.d");
-
+  $date = date("Y.m.d");
 
   $login = (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);
   $login_team = (isset($_COOKIE['login-team']) ? $_COOKIE['login-team'] : null);
@@ -229,9 +227,11 @@ if (isset($_REQUEST["collection"])) {
     $collection =  $_REQUEST["collection"];
     $dbCollection = $collections[$collection];
 
+/* //code for when looma-local database is implemented
     if ( in_array($collection, ['lessons','text_files','activities','slideshows','evi'])) {
         $localdbCollection = $localCollections[$collection];
     } else $localdbCollection = null;
+*/
     }
 
     /* NOTE: mongoDB collections list:
@@ -1008,12 +1008,17 @@ if (isset($_REQUEST["collection"])) {
 //
         $result = array();
         foreach ($cursor as $d)  {
-            //echo ('server is ' . $LOOMA_SERVER . ' and fp is ' . $d['fp']);
-
-          // // //  if ( $LOOMA_SERVER === 'CEHRD' ||  ! (strpos($d['fp'], "../content/CEHRD") === false))
-                $result[] = $d;
+             $result[] = $d;
          }
-
+/* // code for when looma-local datbase is implemented
+        if (in_array($collection, $localCollections)) {
+            $dbCollection = $localCollections[$collection];
+            $cursor = mongoFind($dbCollection, $query, 'dn', null, null);   //->skip($page)->limit(20);
+            foreach ($cursor as $d)  {
+                $result[] = $d;
+            }
+        }
+*/
 
 //echo "Search result is: ";
 //print_r($result);

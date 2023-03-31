@@ -106,20 +106,20 @@ function attachMediaControls (myMedia) {
         $('#fullscreen-control').off('click').on('click', function (e) {
             e.preventDefault();
 
-            var $fsppbutton = $('#fullscreen-playpause');
+            //var $fsppbutton = $('#fullscreen-playpause');
 
             if(!isFullscreen)  { //If it is not fullscreen make it fullscreen
                 LOOMA.toggleFullscreen();
                 isFullscreen = true;
-                $fsppbutton.css('display', 'inline-block');
+                $('#fullscreen-playpause').css('display', 'inline-block');
                 
-                videoArea.className = "fulldisplay";
+                //videoArea.className = "fulldisplay";
             }
             else  {  //Otherwise un-fullscreen it
                 LOOMA.toggleFullscreen();
                 isFullscreen = false;
-                $fsppbutton.css('display', 'none');
-                videoArea.className = "";
+                if ( ! videoArea) $('#fullscreen-playpause').css('display', 'none');
+                //videoArea.className = "";
             }
         });
     }; //end modifyFullscreenControl()

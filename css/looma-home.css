@@ -1,7 +1,7 @@
 
 #main-container-horizontal {
     display: grid;
-    grid-template-rows: [begin] 3fr [grades] 2fr [subjects] 3fr [end];
+    grid-template-rows: [begin] 2fr [grades] 1fr [subjects] 2fr [end];
     grid-template-columns: [begin] 1fr  2fr 1fr ;
     /*grid-gap: 25px  25px;*/
     width: 100vw;
@@ -43,6 +43,18 @@
     top: 33vh;
     font-weight:bold;
     font-size:2em;
+}
+
+#partner-logo-div {
+    grid-row:1;
+    grid-column:1;
+}
+
+#partner-logo {
+    position:absolute;
+    top:25vh;
+    left: 6vw;
+    height: 11vh
 }
 
 #looma-logo-div {
@@ -105,6 +117,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    gap: 0.5vw;
     align-items: center;
     justify-content: center;
     margin:10px auto;

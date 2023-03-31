@@ -20,5 +20,7 @@ $(document).ready(function () {
     attachMediaControls();  //looma-media-controls.js adds eventlisteners to play/pause/volume/slider controls
     //attachFullscreenPlayPauseControl();
     modifyFullscreenControl();
-
+    $('#fullscreen-playpause').show();
+    
+    
 });

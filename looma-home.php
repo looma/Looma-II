@@ -47,7 +47,7 @@
 
             echo '<div id="partner-logo-div">';
                 echo '<img  id="partner-logo" draggable="false"';
-                //echo ' src="images/logos/rotary-reverse.png"';
+                if (file_exists("images/logos/partner-logo.png")) echo 'src="images/logos/partner-logo.png"';
                 echo '>';
             echo '</div>';
 

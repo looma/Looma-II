@@ -1,0 +1,28 @@
+cl_lo,cl_hi,ch_id.0,ch_id.1,ch_id.2,ch_id.3,nch_id,key1,key2,key3,key4,lang,src,ft,fn,dn,fp
+5,12,7EN15,8S20,10S22,12EN01.09,,Science,Earth,Climate,Greenhouse,en,PhET,html,greenhouse_effect_en.html,Greenhouse Effect,../content/PhET/
+,,,,,,,Science,Physics,Electricity & Electronics,Static Electricity,en,PhET,pdf,balloons_and_static_electricity_en_guide.pdf,Balloons & Static Electricity Guide,../content/PhET/
+5,12,7S10,10S11,,,7S01,Science,Physics,Electricity & Electronics,Static Electricity,en,PhET,html,balloons_and_static_electricity_en.html,Balloons & Static Electricity,../content/PhET/
+,,,,,,,Science,Physics,Electricity & Electronics,,en,PhET,pdf,circuit_construction_kit_ac_en_guide.pdf,Circuit Construction Kit AC Guide,../content/PhET/
+7,12,7S10,8S10,10Sa06,,,Science,Physics,Electricity & Electronics,,en,PhET,html,circuit_construction_kit_ac_en.html,Circuit Construction Kit AC,../content/PhET/
+,,,,,,,Science,Physics,Electricity & Electronics,,en,PhET,pdf,circuit_construction_kit_ac_virtual_lab_en_guide.pdf,CC Kit AC Virtual Lab Guide,../content/PhET/
+7,12,7S10,8S10,10Sa06,,,Science,Physics,Electricity & Electronics,,en,PhET,html,circuit_construction_kit_ac_virtual_lab_en.html,CC Kit AC Virtual Lab,../content/PhET/
+,,,,,,,Science,Physics,Motion,Momentum,en,PhET,pdf,collision-lab_en_guide.pdf,Collision Lab Guide,../content/PhET/
+,,,,,,,Science,Physics,Motion,,en,PhET,pdf,energy_skate_park_en_guide.pdf,Energy Skate Park Guide,../content/PhET/
+7,12,10Sa01,,,,,Science,Physics,Motion,,en,PhET,html,energy_skate_park_en.html,Energy Skate Park,../content/PhET/
+,,,,,,,Science,Physics,Electromagnetism,Wave,en,PhET,pdf,fourier_making_waves_en_guide.pdf,Fourier: Making Waves Guide,../content/PhET/
+,,,,,,,Science,Physics,Electromagnetism,Light,en,PhET,pdf,geometric_optics_basics_en_guide.pdf,Geometric Optics Basics Guide,../content/PhET/
+7,12,8S07,10Sa20,,,,Science,Physics,Electromagnetism,Light,en,PhET,html,geometric_optics_basics_en.html,Geometric Optics Basics,../content/PhET/
+,,,,,,,Mathematics,Other Mathematics,Graphs,,en,PhET,pdf,graphing_slope_intercept_en_guide.pdf,Graphing Slope Intercept Guide,../content/PhET/
+7,12,9Ma01,9Ma05,,,,Mathematics,Other Mathematics,Graphs,,en,PhET,html,graphing_slope_intercept_en.html,Graphing Slope Intercept,../content/PhET/
+,,,,,,,Science,Earth,Climate,Greenhouse,en,PhET,pdf,greenhouse_effect_en_guide.pdf,Greenhouse Effect Guide,../content/PhET/
+,,,,,,,Science,Physics,Subatomic Particles,Other Subatomic Particles,en,PhET,pdf,isotopes_and_atomic_mass_en_guide.pdf,Isotopes & Atomic Mass Guide,../content/PhET/
+8,12,9EN08,10S07,10Sa08,,,Science,Physics,Subatomic Particles,Other Subatomic Particles,en,PhET,html,isotopes_and_atomic_mass_en.html,Isotopes & Atomic Mass,../content/PhET/
+,,,,,,,Science,Biology,Other Biology,Natural Selection,en,PhET,pdf,natural_selection_en_guide.pdf,Natural Selection Guide,../content/PhET/
+,,,,,,,Mathematics,Numbers,,,en,PhET,pdf,number_line_integers_en_guide.pdf,Number Line Integers Guide,../content/PhET/
+5,7,5M02,,,,,Mathematics,Numbers,,,en,PhET,html,number_line_integers_en.html,Number Line Integers,../content/PhET/
+,,,,,,,Mathematics,Numbers,,,en,PhET,pdf,number_line_operations_en_guide.pdf,Number Line Operations Guide,../content/PhET/
+5,7,5M02,,,,,Mathematics,Numbers,,,en,PhET,html,number_line_operations_en.html,Number Line Operations,../content/PhET/
+,,,,,,,Mathematics,Arithmetic,Rates & Ratios,,en,PhET,pdf,ratio_and_proportion_en_guide.pdf,Ratio & Proportion Guide,../content/PhET/
+9,12,9Ma01,9M09,10M07,,,Mathematics,Arithmetic,Rates & Ratios,,en,PhET,html,ratio_and_proportion_en.html,Ratio & Proportion,../content/PhET/
+,,,,,,,Science,Chemistry,Other Chemistry,,en,PhET,pdf,reactants_products_and_leftovers_en_guide.pdf,Reactants Products & Leftovers Guide,../content/PhET/
+8,12,10S08,,,,,Science,Chemistry,Other Chemistry,,en,PhET,html,reactants_products_and_leftovers_en.html,Reactants Products & Leftovers,../content/PhET/

@@ -20,6 +20,7 @@ var $htmlHTML;
 
 var video; //the video DOM element
 var audio; //the audio DOM element
+var chapter_language;
 
 var first_ft;
 var playing;
@@ -71,6 +72,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
     //NOTE: playActivity() should move to looma-utilities.js (??)
     
     restoreFullscreenControl(); //reset fullscreen operation in case video, which overrides normal fullscreen operation, has run
+    $('#fullscreen-playpause').hide();
     $('#media-controls').hide();  // hide media controls
     $viewer.empty();
     
@@ -102,6 +104,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             $('#media-controls').show();  // show media controls
             attachMediaControls($('#video')[0]); //hook up event listeners to the audio and video HTML
             modifyFullscreenControl();
+            $('#fullscreen-playpause').show();
             break;
         
         case "audio":
@@ -117,6 +120,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             $('#media-controls').show();  // show media controls
             attachMediaControls($('#audio')[0]); //hook up event listeners to the audio and video HTML
             modifyFullscreenAudio();
+            $('#fullscreen-playpause').show();
             break;
     
         case 'EP':
@@ -146,7 +150,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             var filename;
             var filepath;
             var length;
-            if (language === 'native' && npn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
+            if (chapter_language === 'native' && npn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
                 pagenumber = npn;
                 filename = nfn;
                 filepath = fp;
@@ -408,8 +412,7 @@ window.onload = function() {
     
     //$('#controlpanel').draggable(); //makes the control buttons moveable around the screen.
     
-    //var language is declared in looma-utilities.js
-    language = ($('#main-container-horizontal').data('lang')==='np'?'native':'english');
+    chapter_language = ($('#main-container-horizontal').data('lang')==='np'?'native':'english');
     
     $('.activity').removeClass('activity play img').addClass(
         'lesson-element');

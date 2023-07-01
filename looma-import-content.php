@@ -26,7 +26,7 @@ Description:  navigate content folders and import media files into activities co
 
       CHANGES TO MAKE
         - SORT the DIRs and FILEs before displaying
-        - dont show 'hidden.txt'
+        - reversed this May 2023 - dont show 'hidden.txt'
 
 -->
 

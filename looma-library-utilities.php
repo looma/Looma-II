@@ -81,7 +81,11 @@ function make_activity($item) {
                 $file =  $fileInfo->getFilename();
                 //if ($file{0}  == ".") continue;  //skips ".", "..", and any ".filename" (more thorough than isDot() )
 
-                if ( $file[0] !== "." && ($fileInfo -> isDir()) &&  ( ! file_exists($dir . "/" . $file . "/hidden.txt")))
+                //echo ("showHidden is " . $_REQUEST["showHidden"]);
+
+                if   ( $file[0] !== "." &&
+                     ($fileInfo -> isDir()) &&
+                     (! file_exists($dir . "/" . $file . "/hidden.txt")))
                     //skips ".", "..", and any ".filename" (more thorough that isDot() )
                     //skips any directory with a file named "hidden.txt"
                 {array_push($list,$file); }

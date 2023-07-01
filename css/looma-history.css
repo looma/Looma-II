@@ -370,3 +370,9 @@ button.img:hover {
 
 span.english-keyword {    word-break: break-word;
 }
+
+ /* @media for smartphones */
+
+ @media screen and (max-device-height:800px) {
+    button.img img {display:none;}
+ }

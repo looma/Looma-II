@@ -60,9 +60,9 @@ function lessonButtonClicked(){
     LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
     LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session'); //remember scroll position
     LOOMA.clearStore('lesson-plan-index','session');
-    //send GET request to looma-play-lesson.php with mongo_id value
+    //send GET request to looma-play-lessonNEW.php with mongo_id value
     mongo_id = encodeURIComponent(mongo_id);
-    window.location = "looma-play-lesson.php?id=" + mongo_id + "&lang=" + chapter_lang;
+    window.location = "looma-play-lessonNEW.php?id=" + mongo_id + "&lang=" + chapter_lang;
 };  //  end lessonButtonClicked()
 
 

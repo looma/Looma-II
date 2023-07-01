@@ -1,7 +1,7 @@
 /*
 LOOMA javascript file
-Filename: looma-play-lesson.js
-Description: supports includes/looma-play-lesson.php
+Filename: looma-play-lessonNEW.js
+Description: supports includes/looma-play-lessonNEW.php
 
 Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)

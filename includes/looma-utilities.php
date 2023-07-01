@@ -52,7 +52,10 @@ function ch_idSubject($ch_id) {
 /*****  isHTML   ******/
 /**********************/
 function isHTML($fp) {
-    if ( $fp != '../content/Khan' && file_exists($fp . "/index.html") && !isEpaath($fp))
+    if ( $fp != '../content/Khan' &&
+        file_exists($fp . "/index.html") &&
+        !isEpaath($fp) &&
+        !preg_match('/W3Schools/i', $fp))
         return true;
     else return false;
 }  //end function isHTML
@@ -180,13 +183,26 @@ function natksort($array) {
 /*********************************/
 
 function NEWmakeActivityButton($activity)
-{
+{   global $playLang;
 
-    //NOTE: this function has not been tested
-
+    //NOTE: this function has not been tested"
     function check($x) {return isset($x) ? $x : null;};
 
-    makeActivityButton(
+        if ($activity['ft'] === 'inline') {
+
+            //echo "FT is " . $activity['ft'];
+
+
+            echo "<button class='activity  img' ";
+                echo "data-dn='' data-ft='inline' ";
+                echo "data-html= '"   . htmlentities($activity['html'], ENT_QUOTES) . "' ";
+                echo "data-nepali= '"   . htmlentities($activity['nepali'], ENT_QUOTES) . "' ";
+                echo "data-lang = "  . $playLang ;
+            echo ">";
+            echo '<img alt="" src="' . 'images/textfile.png' . '">';
+            echo "<span>" . "" . "</span></button>";
+
+        } else makeActivityButton(
         check($actitivy['ft']),
         check($actitivy['fp']),
         check($actitivy['fn']),
@@ -336,8 +352,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         if ($dn)          echo "data-dn='" .  $dn . "' ";
 
         if ($ndn === "") $ndn = null;
-
         if ($ndn)         echo "data-ndn='" .  $ndn . "' ";
+
         if ($prefix)      echo "data-prefix='" .  $prefix . "' ";
 
         if ($mongo_id)    echo "data-id='" .  $mongo_id . "' ";

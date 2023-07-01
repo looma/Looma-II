@@ -1300,7 +1300,7 @@ function nextTeam() {
 }
 
 function showTeam() {
-    if (num_teams > 1) { $("#current-team").html(LOOMA.translatableSpans('Team','टीम') + ' ' + curr_team.toString()); }
+    if (num_teams > 1) { $("#current-team").html(LOOMA.translatableSpans('Team ','टीम') + ' ' + curr_team.toString() + '&nbsp'); }
 }
 
 /////////////////////////////
@@ -1361,7 +1361,7 @@ function nextQuestion() {
                 //var prompts = game['prompts'];
                 if (curr_question <= game['prompts'].length) {
                     showTeam();
-                    $("#question-number").html(LOOMA.translatableSpans('Question','प्रश्न') + " "+(curr_question)+":  ");
+                    $("#question-number").html(LOOMA.translatableSpans('Question','प्रश्न') + " "+(curr_question));
                     mcTries = 1;
                     var questionData = game['prompts'][curr_question-1];
                     var question = questionData['question'];
@@ -1431,7 +1431,7 @@ function nextQuestion() {
             case 'spoken concentration':
                 break;
             case 'map':
-                $('#question-number').text('Question ' + curr_question);
+                $('#question-number').text(' Question ' + curr_question);
                 $('#question').text('Click on: ' + game['prompts'][curr_question-1]);
                 baseLayer.clearLayers();
                 redrawMap(mapJSON);

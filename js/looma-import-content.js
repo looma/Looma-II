@@ -47,7 +47,7 @@ function get_file_list(path) {
          $.post("looma-library-utilities.php",
                 {cmd: "list", fp:path},
                 function(filelist) {
-                   if (filelist.length == 0) $('#filelist').empty().append($('<pre>        No files in this folder</pre>'));
+                   if (filelist.length == 0) $('#filelist').empty().append($('<pre>        No unregistered files in this folder</pre>'));
                    else filelist.forEach(function(item) {display_file(item);});
                 },
                 'json'
@@ -57,7 +57,7 @@ function get_file_list(path) {
 
 function get_folder_list(path) {
          $.post("looma-library-utilities.php",
-                {cmd: "open", fp:path},
+                {cmd: "open", fp:path, showHidden:true},
                 function(folderlist) {
                     var element = '<option id="parent">(' + folderlist.parent + ' ^)</option><span>(parent)</span>';
                     $(element).appendTo($('#folders'));
@@ -148,6 +148,8 @@ window.onload = function () {
     
     $('#register').click (function() {make_activities();});
     $('#cancel').click (function() {$('#filelist').empty();});
+ 
+    console.log('import content JS onload');
     
     $('#dismiss').off('click').click( function() {
         window.location = 'looma-settings.php?';

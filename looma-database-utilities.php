@@ -332,6 +332,9 @@ if (isset($_REQUEST["collection"])) {
         if (isset($_REQUEST['filter']) && $_REQUEST['filter'] != "")
             $query = array('dn' => mongoRegexOptions($_REQUEST['filter'],'i'));
 
+        else if (isset($_REQUEST['id']))
+            $query = array('_id'=> mongoId($_REQUEST['id']));
+
         //look up this ID (mongoID) in this collection (dbCollection)
             //print_r($query);return;
        // function mongoFind($collection, $filter, $sort, $skip, $limit)
@@ -912,7 +915,7 @@ if (isset($_REQUEST["collection"])) {
                 case 'history':
                 case 'slideshow':
                 case 'map':
-                case 'evi':
+                case 'quiz':
                 case 'text':
                 case 'text-template':
                 case 'lesson-template':

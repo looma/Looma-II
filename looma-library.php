@@ -72,7 +72,8 @@ else if  ( ! is_dir(realpath($path)) ||
           exit;
         }
 
-    echo "<br><h3 class='title'>"; keyword('Library'); echo ":  ";
+    echo "<br><h3 class='title'>";
+    keyword('Library'); echo ":  ";
     folderDisplayName(folderName($path));
     echo "</h3>";
 
@@ -184,7 +185,6 @@ else if  ( ! is_dir(realpath($path)) ||
     $dirlist = array();
 
     foreach ($files as $file => $dirInfo) {
-      //  echo $path . $file . '<br>';;
 
      $file = (string) $file;
 
@@ -195,7 +195,9 @@ else if  ( ! is_dir(realpath($path)) ||
         (!file_exists($path . $file . "/hidden.txt"))) {
             $dircount++;
 
-            //make a regular directory button
+        // echo $path . $file . '<br>';
+
+        //make a regular directory button
 
             $ft = ""; $prefix = "";
             // look in the database to see if this folder has a DISPLAYNAME

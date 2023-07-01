@@ -1,0 +1,163 @@
+#main-container-horizontal {
+}
+
+#fullscreen {
+    max-height:100%;
+    max-width:100%;
+    overflow:hidden;
+}
+
+#corral {
+    position:absolute;
+    left:3vw;
+    top:2.5vh;
+    height:87vh;
+    width:20vh;
+    float:left;
+    border-radius:1vh;
+    
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    background-color:lightgoldenrodyellow;
+}
+
+#game {
+    position:absolute;
+    left:30vw;
+    top:3vh;
+
+    height:85vh;
+    width:85vh;
+    
+    padding:3vh;
+    border-radius:2vh;
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-gap:1vh;
+    background-color:lightskyblue;
+}
+
+#alquerque {
+    position:absolute;
+    z-index:2;
+    top:9.5vh;
+    left:10vh;
+    width:76%;
+    height:78%;
+    opacity:0.5;
+    user-drag:none;
+    user-select:none;
+    -webkit-user-drag:none;
+    -webkit-user-select:none;
+    -moz-user-drag:none;
+    -moz-user-select:none;
+}
+
+svg {
+    stroke:#ddd;
+}
+
+.spot {position:relative;
+    
+    height:100%;
+    width:100%;
+    padding:2vh;
+    background-color:yellow;
+    border-radius:2vh;
+    vertical-align:middle;
+    text-align:center;
+}
+
+.spot .tiger {
+    position:relative;
+    height:11vh;
+    width:11vh;
+    /*border-radius:50%*/
+    /*background-color:red;*/
+    background:url("../images/tiger transparent.png");
+    background-repeat: no-repeat;
+    background-size:100%;
+    z-index:3;
+}
+
+.tiger.ui-draggable-dragging,
+.goat.ui-draggable-dragging {
+    opacity:0.5;
+}
+
+.spot .goat {
+    height:10vh;
+    width:10vh;
+
+    border-radius:50%;
+    /*background-color:green;*/
+    background:url("../images/goat transparent.png");
+    background-repeat: no-repeat;
+    background-size:100%;
+    z-index:3;
+}
+
+#corral .goat {
+    height:6vh;
+    width:6vh;
+    margin-top:15%;
+    margin-left:2vh;
+    border-radius:50%;
+    /*background-color:green;*/
+    background:url("../images/goat transparent.png");
+    background-size:100%;
+    z-index:3;
+}
+
+@keyframes blink {
+    50% { border-color: #ff0000; }
+}
+
+.legal{ /*or other element you want*/
+    border:6px solid red;
+    /*animation: blink .5s step-end infinite alternate;*/
+}
+button#newgame{
+    position: absolute;
+    width:12%;
+    height:15%;
+    right: 6vh;
+    top: 10vh;
+    font-size:32px;
+}
+button#info{
+     position: absolute;
+     width:12%;
+     height:15%;
+     right: 6vh;
+     top: 26vh;
+
+    background-position: center;
+    background-color:white;
+    background-image: url("../images/info.png");
+    background-repeat: no-repeat;
+    background-size: 50% 75%;
+ }
+
+#sign {
+    position:absolute;
+    width:12%;
+    height:32%;
+    right: 6vh;
+    top: 42vh;
+    
+    font-size: 2em;
+}
+#next {height:75%;}
+
+.title {
+    font-size:3em;
+    float:right;
+    margin-right:3vw;
+}
+
+button#fullscreen-control {
+    display:inline-block;
+}

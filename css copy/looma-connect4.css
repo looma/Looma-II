@@ -1,0 +1,66 @@
+/*
+ CONNECT 4
+ */
+
+#main-container-horizontal {
+    position:relative;
+    margin:auto;
+}
+#fullscreen {
+    /* min-height:100%;
+    min-width:100%; */
+    max-height:100%;
+    max-width:100%;
+    overflow:hidden
+}
+
+#world {
+    position:static;
+    background-color: rgb(10, 125, 225);
+    /* size of board displayed */
+    height: 72vh;
+    width: 84vh;
+    margin:auto;
+    display:grid;
+}
+
+.cell {
+    display:inline;
+    height: 10.5vh;
+    width: 10.5vh;
+    margin:auto;
+    padding:0;
+    background-color:rgb(30, 165, 255);
+}
+.cell.selected{
+    background-color:white;
+}
+.cell.player1 {
+    background-color:red;
+    border-radius:5vh;
+}
+.cell.player2 {background-color:yellow;
+    border-radius:5vh;
+}
+.cell.live {background-color:blue;}
+
+.cell.highlight {background-color: green;}
+
+button#fullscreen-control {
+    display: inline-block;
+    right: 3vw;
+    bottom: 15.5vh;
+}
+
+button#fullscreen-playpause {
+    display: inline-block;
+    bottom:26vh;
+    right:3vw;
+    height:10vh;
+    width:10vh;
+    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    background-image: url("../images/video.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-color:rgba(200,200,200,1);  /*transparent light gray*/
+}

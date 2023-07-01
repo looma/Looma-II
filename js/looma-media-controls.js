@@ -1,7 +1,7 @@
 /*
 LOOMA javascript file
 Filename: looma-media-controls.js
-Description: supports looma-video.php, looma.audio.php, looma-play-lesson.php, et
+Description: supports looma-video.php, looma.audio.php, looma-play-lessonNEW.php, et
 
 Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)

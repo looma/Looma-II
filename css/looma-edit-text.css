@@ -16,6 +16,7 @@ body {
     color: black;
     background-color: #eee;
     
+    /*font-family: "Comic Mono", "Comic Neue", "Comic Sans MS", "Chalkboard", sans-serif;*/
     font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", sans-serif;
 }
 h1 {background-color:#F0EC1A}
@@ -58,7 +59,7 @@ button.result {
 }
 
 #editor {
-    height: 43vw;
+    height: 42vw;
     width: 79vw;
     /*zoom: 200%; */
     margin:0 auto;
@@ -81,7 +82,7 @@ button.result {
     font-weight:bold !important;
     font-size:  inherit !important;
     font-family: inherit !important;
-    margin: 0 !important;
+    /*margin: 0 !important;*/
     white-space:nowrap;
     text-overflow:ellipsis !important;
 }

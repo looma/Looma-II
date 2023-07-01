@@ -337,7 +337,7 @@ playMedia : function(button) {
             
                 case "lesson":
                     LOOMA.clearStore('lesson-plan-index', 'session');
-                    window.location = 'looma-play-lesson.php?id=' + button.getAttribute('data-mongoid')+ '&lang=' + ((language==='native') ? 'np' : 'en');
+                    window.location = 'looma-play-lessonNEW.php?id=' + button.getAttribute('data-mongoid')+ '&lang=' + ((language==='native') ? 'np' : 'en');
                     break;
             
                 case "game":

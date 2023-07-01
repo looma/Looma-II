@@ -1,0 +1,131 @@
+ #media-controls {
+     height:14vh;
+ }
+
+ #time {
+    height:2vh;
+ }
+ 
+button.play-pause {
+    background-image: url("../images/video.png");
+    background-size: 100% 100%;
+    background-color:rgba(255,255,255,1);
+    height: 5vh;
+    width:  5vh;
+    margin-left:20vw;
+    background-repeat: no-repeat;
+    color: transparent;
+    display: inline;
+    margin: auto;
+    margin-bottom:3px;
+}
+
+button.mute {
+    background-image: url("../images/mute.png");
+    background-size: 100% 100%;
+    background-color:rgba(255,255,255,1);
+    height: 5vh;
+    width:  5vh;
+    margin-left:20vw;
+
+    background-repeat: no-repeat;
+    color: transparent;
+    display: inline;
+    margin: auto;
+}
+input.seek-bar, input.volume-bar {
+    display: inline;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    background:yellow;
+    border-radius:5px;
+    height:10px;
+}
+
+ /***********************************/
+ /* from danielstern.ca/range.css/?ref=css-tricks#/   */
+ /***********************************/
+
+ input[type=range] {
+     margin: 6px 0;
+     background-color: transparent;
+     -webkit-appearance: none;
+ }
+ input[type=range]:focus {
+     outline: none;
+ }
+ input[type=range]::-webkit-slider-runnable-track {
+     background: #ffff00;
+     border: 0.4px solid #0101ff;
+     border-radius: 3px;
+     width: 100%;
+     height: 12px;
+     cursor: pointer;
+ }
+ input[type=range]::-webkit-slider-thumb {
+     margin-top: -6.4px;
+     width: 24px;
+     height: 24px;
+     background: #ff0000;
+     border: 2px solid rgba(0, 0, 0, 0);
+     border-radius: 12px;
+     cursor: pointer;
+     -webkit-appearance: none;
+ }
+ input[type=range]:focus::-webkit-slider-runnable-track {
+     background: #ffff05;
+ }
+ input[type=range]::-moz-range-track {
+     background: #ffff00;
+     border: 0.4px solid #0101ff;
+     border-radius: 3px;
+     width: 100%;
+     height: 12px;
+     cursor: pointer;
+ }
+ input[type=range]::-moz-range-thumb {
+     width: 24px;
+     height: 24px;
+     background: #ff0000;
+     border: 2px solid rgba(0, 0, 0, 0);
+     border-radius: 12px;
+     cursor: pointer;
+ }
+ input[type=range]::-ms-track {
+     background: transparent;
+     border-color: transparent;
+     border-width: 6px 0;
+     color: transparent;
+     width: 100%;
+     height: 12px;
+     cursor: pointer;
+ }
+ input[type=range]::-ms-thumb {
+     width: 24px;
+     height: 24px;
+     background: #ff0000;
+     border: 2px solid rgba(0, 0, 0, 0);
+     border-radius: 12px;
+     cursor: pointer;
+     margin-top: 0px;
+     /*Needed to keep the Edge thumb centred*/
+ }
+ /* input[type=range]::-ms-fill-lower {
+     background: #fafa00;
+     border: 0.4px solid #0101ff;
+     border-radius: 6px;
+ }
+ input[type=range]::-ms-fill-upper {
+     background: #ffff00;
+     border: 0.4px solid #0101ff;
+     border-radius: 6px;
+ }*/
+ /*input[type=range]:focus::-ms-fill-lower {
+  */
+     background: #ffff00;
+ }
+ input[type=range]:focus::-ms-fill-upper {
+     background: #ffff05;
+ }*/
+

@@ -259,6 +259,30 @@ Description: looma lesson plan presenter
                               );
                           }
                     }
+                    else {
+                        if ($lesson_element['collection'] == 'inline') {  //timeline element is an inline text slide
+                            makeActivityButton(
+                                'inline',
+                                null,
+                                null,
+                                null,
+                                null,
+                                "images/textfile.png",
+                                "",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                $playLang
+                            );
+                        }
+                    }
                 }  //  end foreach (lesson element)
             } // end if ($lesson found in mongo)
          }  // end if ($lessonid)

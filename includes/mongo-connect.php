@@ -308,6 +308,7 @@ $chapterIDs_collection = $loomaDB -> chapterIDs;  // for dictionary building
 
 $logname = 'activitylog';
 $logDB = $m -> $logname;  //connect to the database "activitylog" for logging user activity
+
 //make query variables for all collections
 $users_collection      = $logDB -> users;
 $hours_collection      = $logDB -> hours;

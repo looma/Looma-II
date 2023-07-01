@@ -709,7 +709,8 @@ function preview_result (item, editable) {
             document.querySelector("div#previewpanel").innerHTML = '<div class="text-display"> File not found</div>';
         }
     }
-    scroll_to_item($(item));
+  
+  //  scroll_to_item($(item));
     
 }  // end preview_result()
 

@@ -68,7 +68,8 @@ function logUser($utc)
                         'country' => null,
                         'visits'  => 1);
 
-        if ($LOOMA_SERVER !== 'looma local') {
+       // if ($LOOMA_SERVER !== 'looma local') {
+        if ($LOOMA_SERVER !== 'looma') {
             $location = userLatLong($ip);
             $geo['lat']      = $location['lat'];
             $geo['long']     = $location['long'];
@@ -178,6 +179,8 @@ function userLatLong ($userIP) {
     $apiResoonse = file_get_contents( "https://ipinfo.io/$userIP?token=1b16a3c5bbd78e");
 
     $ipData = json_decode($apiResoonse, true);
+
+    //print_r ($ipData);
 
     if(!empty($ipData)){
        // $country_code = $ipData['country_code'];

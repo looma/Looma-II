@@ -115,7 +115,7 @@ dosync () {
     rsync -az  $DRYRUNMODE --size-only  \
         --stats  --progress   \
         --perms  --chmod=D777,F777 --chown=looma:looma \
-        --exclude '.[!.]*' --exclude='CEHRD'  \
+        --exclude '.[!.]*' --exclude 'CEHRD/'  \
         -e "ssh"   \
        "$FROM/"  "$TO"
 }
@@ -246,12 +246,16 @@ if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
             mongoexport --db looma --collection lessons --out /tmp/lessonsFromMongo.tmp
             mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
 
+# need to also preserve CEHRD-specific activities
+#  mongoexport --db=looma --collection=activities --query='{"fp":"/CEHRD/"}' --out /tmp/CEHRDactivitiesFromMongo.tmp
+
             mongo --quiet looma < "$TODIR/Looma/looma\ shell\ scripts/loomaDropDatabase"
 
-          mongorestore --quiet --db looma "$TODIR/Looma/mongo-dump/dump/looma/"
+            mongorestore --quiet --db looma "$TODIR/Looma/mongo-dump/dump/looma/"
 
-            mongoimport --quiet --db looma --collection lessons --file /tmp/lessonsFromMongo.tmp
+            mongoimport --quiet --db looma --collection lessons    --file /tmp/lessonsFromMongo.tmp
             mongoimport --quiet --db looma --collection text_files --file /tmp/textsFromMongo.tmp
+#           mongoimport --quiet --db=looma --collection=activities --file /tmp/CEHRDactivitiesFromMongo.tmp
 
             rm /tmp/lessonsFromMongo.tmp
             rm /tmp/textsFromMongo.tmp

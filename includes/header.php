@@ -15,6 +15,12 @@ header("Pragma: no-cache");
     if        ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
         $LOOMA_SERVER = 'CEHRD';
         error_reporting(0);
+    } else if ( $_SERVER['SERVER_NAME'] === 'nepal.looma.website') {
+        $LOOMA_SERVER = 'CEHRD';
+        error_reporting(0);
+    } else if ( $_SERVER['SERVER_NAME'] === '54.213.0.169') {
+        $LOOMA_SERVER = 'CEHRD';
+        error_reporting(0);
     } else if ($_SERVER['SERVER_NAME'] === 'looma.website') {
         $LOOMA_SERVER = 'looma';
         error_reporting(0);

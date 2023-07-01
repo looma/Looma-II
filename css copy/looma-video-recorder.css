@@ -1,0 +1,26 @@
+#record-buttons button{
+	width: 35px;
+	height: 35px;
+	font-size: 0;
+	background-color: red;
+	border: 0;
+	border-radius: 35px;
+	margin: 18px;
+	outline: none;
+}
+
+#uploadDialog {
+	display:none;
+	position:absolute;
+	top:33vh;
+	left:25vw;
+	height:33vh;
+	width:50vw;
+	background-color:lightyellow;
+	text-align:left;
+	font-size:2em;
+}
+
+#uploadDialog input {
+	border-radius:5px;
+}

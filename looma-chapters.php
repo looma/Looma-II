@@ -84,7 +84,7 @@ $chapters = mongoFind($chapters_collection, $query, '_id', null, null);
 
 // for each CHAPTER in the CHAPTERS	array,
 // display buttons for textbook, 2nd language textbook (if any) and
-// an RESOURCES button that has a data-activity attribute
+// a RESOURCES button that has a data-activity attribute
 // that holds the MongoDB ObjectId for this chapter (for looking up the activities list when needed)
 
 

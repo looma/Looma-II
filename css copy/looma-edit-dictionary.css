@@ -1,0 +1,280 @@
+
+#main-container-horizontal {
+    margin:0;
+    overflow-y: auto;
+    overflow-x: auto;
+    grid-row:top / bottom;
+    display:grid;
+    grid-template-rows: [top]  2fr 3fr 3fr 3fr [bottom];
+    
+}
+
+#lookup #title {
+    color:yellow;
+    text-align:left;
+    position:absolute;
+    left: 3vw;
+}
+div::-webkit-scrollbar { display: none;}
+
+#word {
+    display:grid;
+    grid-row:2;
+    grid-template-columns: [left]  repeat(5, 1fr) [right];
+    grid-gap:3px;
+    margin:1vh 2vw;
+    border-radius: 7px;
+    border: 1px solid white;
+}
+
+#definitions, #suggestions {
+    grid-template-columns: [left]  1fr 6fr [right];
+    grid-gap:3px;
+    height:25vh;
+    margin:1vh 2vw;
+    border: 1px solid yellow;
+    border-radius: 7px;
+}
+
+#lookup {
+    grid-row:1;
+}
+#word
+{
+
+    grid-row:2;
+    background-color: #3322ff;
+    color:black;
+}
+#definitions {
+    grid-row:3;
+    background-color: #3388ff;
+    color:black;
+}
+#suggestions {
+
+    grid-row:4;
+    background-color: #33aaff;
+    color:black;
+}
+.row {
+    width:100%;
+    max-height:10vh;
+    display:grid;
+    grid-template-columns: [left]  1fr 4fr [right];
+}
+.titles {
+    color:black;
+    background-color:white;
+    font-size:1.5em;
+}
+
+.def {
+    color:white;
+}
+#chap_div {
+    border: 3px solid rgb(255,255,255);
+    width: 80%;
+    padding: 10px;
+    height: 600px;
+    left: 25%;
+    top: 33%;
+    margin: 0 auto;
+    display: none;
+}
+
+#chap_iframe {
+    display:block;
+    width:60%;
+    height: 100%;
+}
+
+#chap_escape_button {
+    font-size: 1.5em;
+    height: 40px;
+    border: 4px solid blue;
+    width: 100px;
+    margin-top: 1px;
+    margin-right: 2px;
+    position: absolute;
+    top:295px;
+    right:170px;
+}
+
+.popup {
+    top: 20%;
+    left: 5%;
+    width: 80vw;
+    font-size: 2em;
+    padding: 20px;
+}
+
+.dismiss-popup {
+    margin-left: 10px;
+}
+
+/* search form and header */
+form {
+    text-align: center;
+    height: 67px;
+    vertical-align:middle;
+    font-size : 2em;
+    color:rgb(255, 255, 255);
+    padding-top: 1vh;
+    padding-right: 8vw;
+}
+h1 {
+    padding-right: 8vw;
+}
+
+/* all input fields */
+#input {
+    border: none;
+    font-size:0.75em;
+}
+
+td input {font-size: 1em;}
+
+#submit {
+    font-size: 0.75em;
+    height: 5vh;
+}
+
+/* buttons */
+.select, .delete {
+    margin: auto 0;
+    font-size: 0.5em;
+    height: 25px;
+    width: 70px;
+}
+.delete {
+    border: 4px solid red;
+}
+.select {
+    border: 4px solid green;
+}
+
+.editButton {
+    width:18vw;
+    height:6vh;
+    right:5vw;
+    border: 4px solid blue;
+    position: absolute;
+    font-size:0.5em;
+    margin: 1vh 2vw;
+}
+
+#addButton {
+    right:2vw;
+}
+#suggestionsButton {
+    left:36vw;
+}
+
+#in_chapButton {
+    left:54vw;
+}
+
+#saveButton {
+    font-size: 1em;
+    height: 40px;
+    width: 90px;
+    border: 4px solid blue;
+    line-height: 10px;
+}
+
+#dismiss {bottom:12vh;}
+
+#modified {
+    background-color: green;
+    position: absolute;
+    bottom: 13vh;
+    right: 0.5vw;
+    width: 3vh;
+    height: 3vh;
+    border-radius: 1.5vh;
+}
+
+#instructions {
+    background-color: white;
+    position: fixed;
+    bottom: 2vh;
+    right: 2vw;
+    width: 8vh;
+    height: 8vh;
+}
+
+#instructions img {
+    vertical-align:middle;
+    height:80%;
+}
+
+/* general table info */
+table {
+    font-size: 1.75em;
+    color: white;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+#wordTable, #confirmTable {
+}
+
+#confirmTable, #definitionTable {
+    margin-top: 4vh;
+    display: none;
+}
+#definitionTable {
+    color: yellow;
+    height: max-content;
+    width: 90vw;
+}
+
+/* column headers */
+.column {
+    border: 1px solid white;
+}
+.confirmColumn {
+    color: black;
+    background-color: white;
+    border: 4px solid #0c1c4c;
+}
+.rootCol, .posCol, .nepCol, .ch_idCol {
+    width: 130px;
+}
+.enCol, .pluralCol {
+    width: 150px;
+}
+.defCol {
+    width: 400px;
+}
+.empty1, .empty2 {
+    width: 100px;
+}
+.suggestedPart {
+    width: 200px;
+}
+.suggestedDefinition {
+    width: 1100px;
+}
+
+/* text fields */
+.rw, .np, .ch_id {
+    width: 120px;
+}
+.en, .plural {
+    width: 142px;
+}
+select {
+    width: 120px;
+    font-size: 0.7em;
+    height: 38px;
+}
+textarea {
+    color: black;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+.hiddenID {
+    display: none;
+}

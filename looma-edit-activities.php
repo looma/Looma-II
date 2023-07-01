@@ -46,10 +46,10 @@ include ('includes/header.php');
             <div id="innerResultsMenu">
                 <p class="hint">This tool is used to edit Looma Resources</p>
                 <p class="hint">1. Use the search bar at the top to select Resources</p>
-                <p class="hint">2. Check the checkbox of the Resource or Resources to modify</p>
-                <p class="hint">3. Mouse over the INFO button to see details of an Resource</p>
-                <p class="hint">4. Modify the Display Name in place in the search results list</p>
-                <p class="hint">5. Use the entries at the right to specify properties to set</p>
+                <p class="hint">2. Check the checkbox of the Resource or Resources you want to modify</p>
+                <p class="hint">3. Mouse over INFO button to see details of a Resource</p>
+                <p class="hint">4. Modify Display Name at the right to change the name</p>
+                <p class="hint">5. Use the entries at the right to set properties</p>
                 <p class="hint">6. Click "Submit" to make the changes</p>
             </div>
             <div id="results-div"></div>

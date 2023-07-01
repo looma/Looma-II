@@ -72,8 +72,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         echo '</div>';
 
     echo '<div id="top">';
-    echo '<span id="current-team"></span>';
-    echo '<span id="question-number"></span>';
+
     echo '<span id="question"></span>';
     echo '<button id="next"></button>';
     echo '</div>';
@@ -95,6 +94,10 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
             echo '<div id="game">';
             echo '</div>';
         echo '</div>';
+
+            echo '<div id="sidebar">';
+                echo '<span id="current-team"></span>';
+                echo '<span id="question-number"></span>';
 
                 echo '<div id="timer" >';
                     echo '<h2 id="timer-message">'; keyword("Timer"); echo '</h2>';
@@ -124,8 +127,9 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
                           echo '<div id="progress-4" class="progress-bar"><div class="inner-progress"></div></div>';
                     echo '</div>';
                 echo '</div>';
-        ?>
-    </div>
+            echo '</div>';
+         echo '</div>';
+    ?>
 
         <div class = "toolbar">
           <?php include ('includes/toolbar.php'); ?>

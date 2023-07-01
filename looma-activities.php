@@ -181,7 +181,7 @@ $foundActivity;
                     makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, "", "", "", "", "", "", "",null,null, $prefix,$lang);
                     break;
                 default:
-                    echo "unknown filetype \"" . $ft . "\" in activities.php";
+                  //  echo "unknown filetype \"" . $ft . "\" in activities.php";
                     break;
             }  //end SWITCH
             echo "</td>";

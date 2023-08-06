@@ -2,7 +2,7 @@
 LOOMA javascript file
 Filename: looma-activity-register-to-chapter.js
 Description: version 1 [skip, Fall 2016]
-Derived from looma-edit-lesson.js
+Derived from looma-edit-lessonOLD.js
 Programmer name: SCU
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: version 1:spring 2016, version 2: Nov 16

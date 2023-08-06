@@ -236,12 +236,6 @@ function mongoCreateUniqueIndex($collection, $key) {
     return $doc;
 }
 
-/*
-if ($ENV_WINDOWS) {
-    preg_match('/(\d\.\d\.\d)/',shell_exec('C:\xampp\bin\mongod --version'), $match);
-} else {
-    preg_match('/(\d\.\d\.\d)/', shell_exec('mongo --version'), $match);
-} */
 
 if ($ENV_WINDOWS) {  // running on windows
     $try = shell_exec('C:\xampp\bin\mongod --version');
@@ -260,7 +254,6 @@ if ($match) {
     $mongo_version = '4.4.3';
     $mongo_level = 4;
 }
-//echo 'mongo version is ' . $mongo_version . ' mongo level is ' . $mongo_level;
 
 $dbhost = 'localhost';
 $dbname = 'looma';
@@ -268,9 +261,9 @@ $dbname = 'looma';
 try {
     if ($mongo_level >= 3) {
         require_once('vendor/autoload.php');
-        $m = new MongoDB\Client("mongodb://localhost:27017");
+        $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
     } else {  //old mongo is running
-        $m = new MongoClient("mongodb://localhost:27017");    //make a new mongo client object
+        $mongoClient = new MongoClient("mongodb://localhost:27017");    //make a new mongo client object
     }
 }
 catch(MongoConnectionException $e) {
@@ -283,15 +276,13 @@ $dbname = 'looma';
 
 //use below FORMAT for PHP later than 5.5??
 //$m = new MongoDB\Driver\Manager("mongodb://localhost:27017");
-$loomaDB = $m -> $dbname;  //connect to the database "looma"
+$loomaDB = $mongoClient -> $dbname;  //connect to the database "looma"
 //make query variables for all collections
 $activities_collection = $loomaDB -> activities;
 $tags_collection       = $loomaDB -> tags;
 $chapters_collection   = $loomaDB -> chapters;
 $textbooks_collection  = $loomaDB -> textbooks;
-
 $dictionary_collection = $loomaDB -> dictionary;
-
 $history_collection    = $loomaDB -> histories;
 $histories_collection  = $loomaDB -> histories;
 $slideshows_collection = $loomaDB -> slideshows;
@@ -307,7 +298,7 @@ $recorded_videos_collection = $loomaDB -> recorded_videos;  // for future webcam
 $chapterIDs_collection = $loomaDB -> chapterIDs;  // for dictionary building
 
 $logname = 'activitylog';
-$logDB = $m -> $logname;  //connect to the database "activitylog" for logging user activity
+$logDB = $mongoClient -> $logname;  //connect to the database "activitylog" for logging user activity
 
 //make query variables for all collections
 $users_collection      = $logDB -> users;
@@ -315,11 +306,11 @@ $hours_collection      = $logDB -> hours;
 $days_collection       = $logDB -> days;
 $weeks_collection      = $logDB -> weeks;
 $months_collection     = $logDB -> months;
-$pages_collection     = $logDB -> pages;
-$filetypes_collection = $logDB -> filetypes;
+$pages_collection      = $logDB -> pages;
+$filetypes_collection  = $logDB -> filetypes;
 
 $userdbname = 'loomausers';
-$userdbname = $m -> $userdbname;  //connect to the database "loomausers" (for storing logins)
+$userdbname = $mongoClient -> $userdbname;  //connect to the database "loomausers" (for storing logins)
 $logins_collection     = $userdbname -> logins;
 
 $collections = array(
@@ -341,7 +332,9 @@ $collections = array(
     "new_content" =>   $new_content_collection,
     "recorded_videos" => $recorded_videos_collection,
     "volunteers" =>    $volunteers_collection,
- //   "chapterIDs" =>    $chapterIDs_collection,
+
+  //  "local_lessons" => $local_lessons_collection,
+  //  "local_activities" => $local_activities_collection,
 
     "users"  =>      $users_collection,
     "hours"  =>      $hours_collection,
@@ -351,6 +344,21 @@ $collections = array(
     "pages"  =>      $pages_collection,
     "filetypes" =>   $filetypes_collection
 );
+
+$localdbname = 'loomalocal';
+$localdbname = $mongoClient -> $localdbname;  //connect to the database "loomausers" (for storing logins)
+$local_lessons_collection     = $localdbname -> lessons;
+$local_slideshows_collection     = $localdbname -> slideshows;
+$local_textfiles_collection     = $localdbname -> text_files;
+$local_activities_collection  = $localdbname -> activities;
+
+$localcollections = array(
+    "lessons" =>    $local_lessons_collection,
+    "slideshows" =>    $local_slideshows_collection,
+    "text_files" =>    $local_textfiles_collection,
+    "activities" => $local_activities_collection
+);
+
 $logcollections = array(
     $users_collection,
     $hours_collection,

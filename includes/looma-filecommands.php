@@ -12,9 +12,9 @@ Description:  popup SEARCH panel for Looma pages
 
     <div id="filecommands">
         <div class="btn-group">
-          <button type="button" id="cmd-btn" class="btn" data-toggle="dropdown" aria-expanded="false">
+          <button type="button" id="cmd-btn" class="btn" data-toggle="dropdown">
             &nbsp;File Commands&nbsp;
-            <i class="fa fa-caret-down" aria-hidden="true"></i>
+            <i class="fa fa-caret-down"></i>
           </button>
           <div class="dropdown-menu">
             <button class="dropdown-item file-cmd" id="new">New</button><br>
@@ -22,7 +22,8 @@ Description:  popup SEARCH panel for Looma pages
             <button class="dropdown-item file-cmd" id="save">Save</button><br>
             <button class="dropdown-item file-cmd" id="saveas">Save As</button><br>
             <button class="dropdown-item file-cmd" id="rename">Rename</button><br>
-            <button class="dropdown-item file-cmd" id="delete">Delete</button><br>
+              <button class="dropdown-item file-cmd" id="delete">Delete</button><br>
+              <button  class="dropdown-item file-cmd" id="chapter">New Chapter Lesson</button><br>
             <!-- added New Text File button to launch text card editor in iFrame.
                  this button initially hidden by css -->
             <button class="dropdown-item file-cmd" id="show_text">Edit a Text File</button><br>

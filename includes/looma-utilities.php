@@ -102,7 +102,7 @@ function thumbnail ($file, $path, $type) {
 
     $src = "";
 
-    $dot = strrpos($file, ".");  //strrpos finds the LAST occurrence
+    $dot = $file ? strrpos($file, ".") : "";  //strrpos finds the LAST occurrence
     if ( $dot ) { $src = $path . substr($file, 0, $dot) . "_thumb.jpg";}
 
     //echo "thumb is " . $src . '<br>';
@@ -182,46 +182,19 @@ function natksort($array) {
 /******** NEWmakeActivityButton *****/
 /*********************************/
 
-function NEWmakeActivityButton($activity)
+function makeInlineActivityButton($activity)
 {   global $playLang;
 
     //NOTE: this function has not been tested"
-    function check($x) {return isset($x) ? $x : null;};
-
-        if ($activity['ft'] === 'inline') {
-
-            //echo "FT is " . $activity['ft'];
-
-
+    //function check($x) {return isset(($activity['native'])) ? ($activity['native']) : null;};
             echo "<button class='activity  img' ";
                 echo "data-dn='' data-ft='inline' ";
                 echo "data-html= '"   . htmlentities($activity['html'], ENT_QUOTES) . "' ";
-                echo "data-nepali= '"   . htmlentities($activity['nepali'], ENT_QUOTES) . "' ";
+                echo "data-nepali= '"   . htmlentities((isset($activity['native']) ? ($activity['native']) : ""), ENT_QUOTES) . "' ";
                 echo "data-lang = "  . $playLang ;
             echo ">";
             echo '<img alt="" src="' . 'images/textfile.png' . '">';
             echo "<span>" . "" . "</span></button>";
-
-        } else makeActivityButton(
-        check($actitivy['ft']),
-        check($actitivy['fp']),
-        check($actitivy['fn']),
-        check($actitivy['dn']),
-        check($actitivy['ndn']),
-        check($actitivy['thumb']),
-        check($actitivy['ch_id']),
-        check($actitivy['mongo_id']),
-        check($actitivy['ole_id']),
-        check($actitivy['furlt']),
-        check($actitivy['pg']),
-        check($actitivy['zoom']),
-        check($actitivy['grade']),
-        check($actitivy['epversion']),
-        check($actitivy['nfn']),
-        check($actitivy['npg']),
-        check($actitivy['prefix']),
-        check($actitivy['lang'])
-    );
 }; //end NEWmakeActivityButton()
 
 /*********************************/

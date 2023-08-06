@@ -226,7 +226,7 @@ window.onload = function() {
 			$.post("looma-database-utilities.php", {
 				cmd: "openByID",
 				collection: 'text',
-				id: result1.mongoID.$id
+				id: result1.mongoID.$oid
 			},
 			function(result2) {
                 

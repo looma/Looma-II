@@ -118,11 +118,12 @@ function displayActivities(results, table) {
             }
             //console.log(value);
             $('#result-row-' + row).append("<td id='query-result-" + result + "'></td>");
-
+    
         var mongoID = (value['mongoID']) ? (value['mongoID']['$id'] || value['mongoID']['$oid']) : "";
+        var db = value['db'];
        // var mongoID = value['mongoID']['$id'] || value['mongoID']['$oid'];
             LOOMA.makeActivityButton(value['_id']['$id'] || value['_id']['$oid'],
-                                      mongoID, '#query-result-' + result);
+                                      db, mongoID, '#query-result-' + result);
             result ++;
            });
     

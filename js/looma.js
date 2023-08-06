@@ -185,4 +185,14 @@ $(document).ready (function() {
         LOOMA.download(name, path);
     });
  */
+ 
+ /* ////////////////////////////////////////////////////////////////////////
+    try this to remove browser toolbar on smart phones [doesnt work yet 2023 07 27]
+    
+    window.onresize = function() {
+        document.body.height = window.innerHeight;
+    }
+    window.onresize(); // called to initially set the height.
+*/
+
 }); //end of document.ready anonymous function

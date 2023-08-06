@@ -31,7 +31,8 @@ Revision: Looma 5.8
 //
 var currentname;       //set by calling program - name of file being edited
 var currentfiletype;   //set by calling program - to 'text', 'lesson', etc
-var currentcollection; //set by calling program - to 'lessons', 'slideshows', etc
+var currentcollection; //set by calling program - to 'lessons', 'local_lessons', 'slideshows', etc
+var currentDB;         //set by calling program - to 'looma', or 'loomalocal'
 
 var owner    = true;   //TRUE if current logged in user is the author of the currrent file. initially 'true' since editor opens with a new file
 var author;
@@ -133,20 +134,23 @@ function savework(name, collection, filetype) {  // filetype is base type (not t
 ///////////////////////////////
 //////   SAVEFILE         /////
 ///////////////////////////////
-function savefile(name, collection, filetype, data, activityFlag) {  //filetype must be given as (e.g.) 'text' or 'text-template'
+function savefile(name, collection, filetype, data, activityFlag, author) {  //filetype must be given as (e.g.) 'text' or 'text-template'
     
     if (name.length > 0) {
         if (data) {
             console.log('FILE COMMANDS: saving file (' + name + ') with ft: ' + filetype + 'and with data: ' + data);
+            var options =  {
+                cmd: "save",
+                db: currentDB,
+                collection: collection,
+                dn: LOOMA.escapeHTML(name),
+                ft: filetype,
+                data: data,
+                activity: activityFlag      // NOTE: this is a STRING, either "false" or "true"
+            };
+            if (author) options.author = author;
             $.post("looma-database-utilities.php",
-                {
-                    cmd: "save",
-                    collection: collection,
-                    dn: LOOMA.escapeHTML(name),
-                    ft: filetype,
-                    data: data,
-                    activity: activityFlag      // NOTE: this is a STRING, either "false" or "true"
-                },
+                 options,
                 'json'
             ).then(
                 function (response) {
@@ -176,6 +180,7 @@ function saveTextTranslation(name, nepali) {
                     cmd: 'save',
                     collection: 'text_files',
                     dn: LOOMA.escapeHTML(name),
+                    db: currentDB,
                     ft: 'text',
                     translator: LOOMA.loggedIn(),
                     nepali: nepali,
@@ -202,8 +207,12 @@ function saveTextTranslation(name, nepali) {
 function renamefile(newname, oldname, collection, filetype)  {  //only used for base files, not templates (for now)
     
     $.post("looma-database-utilities.php",
-        {cmd: "rename", collection: collection,
-            dn: LOOMA.escapeHTML(oldname), ft: filetype,
+        {cmd: "rename",
+            collection: collection,
+            dn: LOOMA.escapeHTML(oldname),
+            ft: filetype,
+            activity: 'true',
+            "db": currentDB,
             newname: LOOMA.escapeHTML(newname)},
         function(response) {
             console.log('response is ', response);
@@ -218,8 +227,12 @@ function renamefile(newname, oldname, collection, filetype)  {  //only used for 
 function deletefile(deletename, collection, filetype)  { //filetype must be given as 'text' or 'text-template'
     
     $.post("looma-database-utilities.php",
-        {cmd: "delete", collection: collection,
-            dn: LOOMA.escapeHTML(deletename), ft: filetype},
+          {   cmd: "delete",
+              collection: collection,
+              activity:'true',
+              db: currentDB,
+              dn: LOOMA.escapeHTML(deletename),
+              ft: filetype},
         function(response) {
             console.log('response is ', response);
             console.log("DELETED ", deletename);
@@ -231,11 +244,11 @@ function deletefile(deletename, collection, filetype)  { //filetype must be give
 ///////////////////////////////
 //////     OPENFILE       /////
 ///////////////////////////////
-function openfile(openId, collection, filetype) { //filetype must be given e.g. 'text' or 'text-template'
+function openfile(openId, db, collection, filetype) { //filetype must be given e.g. 'text' or 'text-template'
     
     //OPEN from MONGO
     $.post("looma-database-utilities.php",
-        {cmd: "openByID", collection: collection, id:openId, ft: filetype},
+        {cmd: "openByID", db: db, collection: collection, id:openId, ft: filetype},
         function(response) {
             if (response['error'])
                 LOOMA.alert(response['error'] + ': ' + openname, 3, true);  //better if returned an error flag + err msg
@@ -335,7 +348,11 @@ function performSearch(collection, ft) {
             closesearch();
             if ($(this).attr('class') !== 'cancel-results') //if file not found, dont call OPEN()
             {
-                openfile($(this).data('id'), collection, ft);  ///******** should use $*this)to get collection and ft ***
+                //var db;
+                if ($(this).data('db') === 'loomalocal') {
+                    currentDB = $(this).data('db');
+                } else currentDB = 'looma';
+                openfile($(this).data('id'), currentDB, collection, ft);
                 if (ft.includes('-template')) template = true; else template = false;
             }
         });
@@ -424,14 +441,12 @@ function displayFileSearchResults(results)
                 "<tr><td>" +
                 "<button class='result' " + master +
                 "data-id='" + (value['_id']['$id'] || value['_id']['$oid']) + "' " +
+                "data-db='" + value['db'] + "' " +
+                "data-ft='lesson' " +
                 //"data-mongo='" + value + "' " +
                 "title='" + displayname + "' " +
                 "<h4> <b> " + displayname + " </b> </h4>" +
                 "<h6>" + author + date + "</h6>" +
-              
-               // NOTE: next line deleted 2020 08. this data is not used, and causes problems when large text file
-                // html (usually from copy-paste from Word) is in the [text file] search result
-                // "<div class='result-data'>" + value['data'] + "</div>" +
               
                 "</button>" +
                 "</td</tr>"
@@ -439,7 +454,7 @@ function displayFileSearchResults(results)
         });
         $display.append('</table>').show();
     
-}
+    }
 } //end displayFileSearchResults()
 $(document).ready(function () {
     /* file commands NEW OPEN SAVE SAVEAS OPENTEMPLATE SAVETEMPLATE DELETE QUIT*/
@@ -479,6 +494,7 @@ $(document).ready(function () {
                     callbacks['clear']();
                     template = false;
                     owner = true;
+                    currentDB = 'loomalocal';
                     callbacks['new']();
                 })
                 .catch(function() {});
@@ -486,6 +502,7 @@ $(document).ready(function () {
             else {
             callbacks['clear']();
             template = false;
+            currentDB = 'loomalocal';
             owner = true;
             callbacks['new']();
             }

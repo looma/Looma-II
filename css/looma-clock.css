@@ -388,7 +388,7 @@ h2 {
     position: absolute;
 }
 
-@media screen and (max-device-height:800px) {
+@media screen and (max-device-height: 480px) and (orientation:landscape) , screen and (max-device-width:480px) and (orientation:portrait) {
     .clock-button {font-size:initial;}
     #digitalDisplay {
         right:0;

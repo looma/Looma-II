@@ -6,7 +6,7 @@
     ?>
 
         <link rel="stylesheet" href="css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" href="css/looma-edit-lesson.css">
+        <link rel="stylesheet" type="text/css" href="css/looma-edit-lessonOLD.css">
     </head>
 
     <body>

@@ -4,33 +4,27 @@ Author: Skip
 Filename: looma-lesson-present.php
 Date: 02/2017
 Description: looma lesson plan presenter
-
 -->
 	<?php $page_title = 'Looma Lesson Presenter ';
       include ('includes/header.php');
-      include('includes/looma-utilities.php');
-    logFiletypeHit('lesson');
+      include ('includes/looma-utilities.php');
+      logFiletypeHit('lesson');
     ?>
 
     <link rel="stylesheet" href="css/looma-media-controls.css">
     <!-- <link rel="stylesheet" href="css/looma-video.css"> -->
-<link rel="stylesheet" href="css/looma-play-pdf.css">
-<link rel="stylesheet" href="css/looma-play-lesson.css">
+    <link rel="stylesheet" href="css/looma-play-pdf.css">
+    <link rel="stylesheet" href="css/looma-play-lesson.css">
     <link rel="stylesheet" href="css/looma-text-display.css">
-
   </head>
 
   <body>
     <?php
-    if (isset($_REQUEST['id'])) $lesson_id = $_REQUEST['id']; else $lesson_id = null;
-    if (isset($_REQUEST['lang'])) $lang = $_REQUEST['lang']; else $lang = null;
-
-        echo "<div id='main-container-horizontal' data-lang=$lang>";
+    if (isset($_REQUEST['lang'])) $lang = $_REQUEST['lang']; else $lang = 'en';
+    echo "<div id='main-container-horizontal' data-lang=$lang>";
     ?>
             <div id="fullscreen">
-
                 <div id="viewer">
-
                 </div>
 
                 <div id="displayers" hidden>
@@ -39,11 +33,6 @@ Description: looma lesson plan presenter
                     </div>
                 </div>
                 <?php include("includes/looma-control-buttons.php"); ?>
-                <!--
-
-                <button class="control-button-fullscreen" id="back-fullscreen"></button>
-                <button class="control-button-fullscreen" id="forward-fullscreen"></button>
-                -->
             </div>
 
             <?php include("includes/looma-media-controls.php"); ?>
@@ -67,7 +56,6 @@ Description: looma lesson plan presenter
         function thumbPrefix($ft) {   // this should be in includes/looma-utilities.php
             $fp =   "";
 		switch ($ft) { //if $fp is not specified, use the default content folder for this $ft
-
             case "video":
             case "mp4":
             case "mp5":
@@ -75,7 +63,6 @@ Description: looma lesson plan presenter
             case "mov":
                 $fp = '../content/videos/';
                 break;
-
             case "image":
             case "jpg":
             case "jpeg":
@@ -83,34 +70,27 @@ Description: looma lesson plan presenter
             case "gif":
                 $fp = '../content/pictures/';
                 break;
-
             case "audio":
             case "m4a":
             case "mp3":
                 $fp = '../content/audio/';
                 break;
-
             case "pdf":
                 $fp = '../content/pdfs/';
                 break;
-
             case "slideshow":
                 $fp = urlencode('../content/slideshows/');
                 break;
-
             case "evi":
                 $fp = '../content/videos/';
                 break;
-
             case "html":
             case "HTML":
                 $fp = '../content/html/';
                 break;
-
             case "EP":
             case "epaath":
                 break;
-
             case "VOC":       //vocabulary reviews
             case "lesson":    //lesson plan
             case "map":       //map
@@ -126,25 +106,34 @@ Description: looma lesson plan presenter
         };  //  end thumbPrefix()
 
     /////////////// MAIN BODY /////////////
-         if ($lesson_id) {   //get the mongo document for this lesson
+        if (isset($_REQUEST['id'])) $lesson_id = $_REQUEST['id']; else $lesson_id = null;
+        if (isset($_REQUEST['db']) && $_REQUEST['db'] === 'loomalocal') {
+            $db = 'loomalocal';
+            $dbCollection = $localcollections['lessons'];
+        } else {
+            $db = 'looma';
+            $dbCollection = $collections['lessons'];
+        }
+
+        if ($lesson_id) {   //get the mongo document for this lesson
             $query = array('_id' => mongoId($lesson_id));
-            $lesson = mongoFindOne($lessons_collection, $query);
+            $lesson = mongoFindOne($dbCollection, $query);
 
             if (!$lesson) {
-                echo "<h1>No lesson plan not found</h1>";
+                echo "<h1>No lesson plan found</h1>";
                 $displayname = "<none>";
             } else {
-
                 $lessonname = $lesson['dn'];
-
                 if (isset($lesson['data'])) $data = $lesson['data'];
                 else { echo "<h1>Lesson has no content</h1>"; $data = null;}
 
                 //should send DN, AUTHOR and DATE in a hidden DIV
 
                 if ($data) foreach ($data as $lesson_element) {
-
-                    if ($lesson_element['collection'] == 'activities') {  //timeline element is from ACTIVITIES
+                    if (isset($lesson_element['ft']) && $lesson_element['ft'] === 'inline') {  //timeline element is an inline text slide
+                        makeInlineActivityButton($lesson_element);
+                    } else {
+                        if ($lesson_element['collection'] == 'activities') {  //timeline element is from ACTIVITIES
 
                         $query = array('_id' => mongoId($lesson_element['id']));
 
@@ -197,7 +186,8 @@ Description: looma lesson plan presenter
                                 (isset($details['nfn'])) ? $details['nfn'] : null,
                                 (isset($details['npn'])) ? $details['npn'] : null,
                                 null,
-                                $playLang
+                                $playLang,
+                                (isset($details['nfn'])) ? $details['nfn'] : null,
                             );
                         }  // end if (activity exists)
                     } else
@@ -259,29 +249,6 @@ Description: looma lesson plan presenter
                               );
                           }
                     }
-                    else {
-                        if ($lesson_element['collection'] == 'inline') {  //timeline element is an inline text slide
-                            makeActivityButton(
-                                'inline',
-                                null,
-                                null,
-                                null,
-                                null,
-                                "images/textfile.png",
-                                "",
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                $playLang
-                            );
-                        }
                     }
                 }  //  end foreach (lesson element)
             } // end if ($lesson found in mongo)
@@ -295,26 +262,14 @@ Description: looma lesson plan presenter
 
          <div id="title">
              <span id="subtitle"></span>
-            <span>Looma Lesson:&nbsp; <span class="filename"><?php if ($lessonname) echo $lessonname ?></span></span>
+            <span>Looma Lesson:&nbsp; <span class="filename"><?php if (isset($lessonname)) echo $lessonname ?></span></span>
          </div>
 
-
     <div id="controlpanel">
-
         <div id="button-box">
-            <button class="control-button" id="back">
-                <!-- <img src="images/back-arrow.png"> -->
-            </button>
-     <!--
-            <button class="control-button" id="pause">
-            </button>
-     -->
-            <button class="control-button" id="forward">
-                <!-- <img src="images/forward-arrow.png"> -->
-            </button>
-             <button class='control-button' id='return' >
-                <!-- <img src="images/delete-icon.png"> -->
-            </button>
+            <button class="control-button" id="back"></button>
+            <button class="control-button" id="forward"></button>
+            <button class='control-button' id='return' ></button>
         </div>
     </div>
 
@@ -328,6 +283,5 @@ Description: looma lesson plan presenter
     <script src="js/pdfjs/pdf.min.js"></script>
     <script src="js/looma-pdf-utilities.js"></script>
     <script src="js/looma-play-lesson.js"></script>
-
  </body>
 </html>

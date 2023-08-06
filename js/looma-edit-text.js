@@ -22,7 +22,7 @@
   var savedHTML; //savedHTML is textcheckpoint of HTML for checking for modification
   var loginname, loginlevel, loginteam;
   var previewtimer;
-
+  var author;
   var thumbrequest;
   
   /*  callback functions and assignments expected by looma-filecommands.js:  */
@@ -38,9 +38,10 @@
   //callbacks ['quit'] not overridden - use default action from filecommands.js
 
   currentname = "";
-  currentcollection = 'text';
+  currentcollection = 'text_files';
   currentfiletype = 'text';
-
+  currentDB = 'loomalocal';
+  
   $('#collection').val('text');
   $('#filesearch-ft').val('text');
   
@@ -60,18 +61,21 @@
   function textdisplay(response) {
       textclear();
       setname(response['dn'], response['author']);
+      author = response['author'];
       $editor.html(response.data);
+      currentDB = response.db ? response.db : 'looma';
+    
       textcheckpoint();
   }
 
   function textsave(name) {
       //$editor.cleanHtml(); wysiwyg.js has no "cleanHTML" function. NOTE: we should probably write our own
-      savefile(name, currentcollection, currentfiletype, $editor.html(), "true");
+      savefile(name, currentcollection, currentfiletype, $editor.html(), "true",null);
   } //end testsave()
 
   function texttemplatesave(name) {
       //$editor.cleanHtml(); wysiwyg.js has no "cleanHTML" function. NOTE: we should probably write our own
-      savefile(name, currentcollection, currentfiletype + '-template', $editor.html(), "false");
+      savefile(name, currentcollection, currentfiletype + '-template', $editor.html(), "false",null);
   } //end testsave()
 
   function textshowsearchitems() {
@@ -155,4 +159,7 @@
     
       if ($('#text_file_name').attr('data-dn')) openfile( decodeURIComponent($('#text_file_name').attr('data-dn')),'text_files', 'text');
       if ($('#text_file_id').attr('data-id')) openfile( decodeURIComponent($('#text_file_id').attr('data-id')),'text_files', 'text');
+    
+      $('.file-cmd#saveas').click(function(){currentcollection = 'text_files';  currentDB = 'loomalocal'});
+    
   });

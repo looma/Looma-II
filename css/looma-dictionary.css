@@ -179,7 +179,7 @@ button#submit {
     display:inline;
 }
 
-@media screen and (max-device-height:800px) {
+@media screen and (max-device-height: 480px) and (orientation:landscape) , screen and (max-device-width:480px) and (orientation:portrait) {
     h2.title { font-size: 4em; }
     form {font-size:1.4em;}
     #definitionDisplay { font-size: 1.7em;}

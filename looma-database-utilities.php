@@ -13,7 +13,6 @@ Revision: 1.0
 require_once ('includes/mongo-connect.php');
 require_once('includes/looma-utilities.php');
 
-
 ////////////////////////
 ///****************************************
   /// some of these utility functions should be allowed only for "logged in" users
@@ -21,14 +20,13 @@ require_once('includes/looma-utilities.php');
   /// addchapterid, removechapterid, editactivities
   ///
 ///****************************************
-  //////////////////////
 
   /////////////////////////////////
   // commands supported:
   //
   //       many of these functions are specialized. they should be re-used and generalized when possible
   //
-  //  search
+  //  search    ****** needs to access "looma" and "loomalocal" databases
   //  searchChapters
   //  open
   //  openByID
@@ -39,7 +37,7 @@ require_once('includes/looma-utilities.php');
   //  save
   //  copytext
   //  rename
-  //  exists
+  //  exists    ****** needs to access "looma" and "loomalocal" databases
   //  delete
   //  textBookList
   //  textChapterList
@@ -60,32 +58,38 @@ require_once('includes/looma-utilities.php');
   /// getLogLocations
   ////////////////////////////////
 
-        // SAVEACTIVITY function
+    /////////////////////////////////////////////////////////////////////////////////
+    //////  auxiliary functions. not in API for looma-database-utilities.php ////////
+    /////////////////////////////////////////////////////////////////////////////////
+
+    // SAVEACTIVITY function
         function saveActivity($collection, $insert) {
                 $result = mongoInsert($collection, $insert);
                 echo json_encode($result);
         } //end SAVEACTIVITY
 
         //saveToMongo function
-        function saveToMongo($collection, $name, $type, $insert, $activity) {
-              // save or update a document in $collection with displayname==$name and ft==$type inserting $insert fields.
-              // if $activity is TRUE, also save a document in the Activities Collection
+        function saveToMongo($dbcollection, $name, $type, $insert, $activitycollection) {
+              // save or update a document in $db database [$db is either 'looma' or 'loomalocal']
+              // in collection $collections[$type] or $localcollections[$type]
+              // with displayname==$name and ft==$type inserting $insert fields.
+              // if $activitycollection is not NULL it is the db/collection to save corresponding activity document
 
-            global $activities_collection;
+            //global $activities_collection, $local_activities_collection;
+            global $db, $collections, $localcollections;
 
             $query =array('dn'=>trim($name),'ft'=>$type);
-            //$options = array("upsert"=>true, "new"=>true);
-            //$options = array("upsert"=>true);
-            //$projection = array('_id' => 1, 'dn' => 1);
 
-            // NOTE - - IMPORTANT
             //NOTE: using findAndModify here so that we get the _id of the updated document to use in following activity save
-            //
-            $result = mongoFindAndModify($collection, $query, array('$set' => $insert));
+            // later versions of MONGO may have a simpler way to get back the _id
+
+
+            $result = mongoFindAndModify($dbcollection, $query, array('$set' => $insert));
             $result1 = null;
 
-        // if $activity param is true, save new document in the activities collection or update 'dn' for existing activities pointing to this file
-            if ($activity) {
+            if ($activitycollection) {  // if $activity param is true
+                // save new document in the activities collection or
+                // update existing activities pointing to this file
                 $resultId = $result['_id'];
                 $mongoID = mongoId($resultId); // mongoID of document we just saved
                 $query = array("ft" => $insert['ft'], "mongoID" => $mongoID);
@@ -93,15 +97,19 @@ require_once('includes/looma-utilities.php');
                 $toinsert = array(
                     "ft"      => $insert['ft'],
                     "mongoID" => $mongoID,
-                    "dn"      => $insert['dn']
+                    "dn"      => $insert['dn'],
+                    "db"      => $_REQUEST['db']
                      );
                 if (isset($insert['thumb']))  $toinsert['thumb'] = $insert['thumb'];
 
-                $toinsertToActivities = array('$set' => $toinsert);
 
-             //   $result1 = mongoUpdateMany($activities_collection, $query, $toinsertToActivities);
+                if ( $db === 'loomalocal') $collectionForActivity = $localcollections['activities'];
+                else                       $collectionForActivity = $collections['activities'];
 
-                $result1 = mongoFindAndModify($activities_collection, $query, $toinsertToActivities);;
+                //echo "saving activity for lesson " . $name . " in DB/collection " . $collectionForActivity . "   DB is " . $db; exit;
+
+
+                $result1 = mongoFindAndModify($collectionForActivity, $query, array('$set' => $toinsert));;
             }
 
             return(array('item' => $result, 'activity'=> $result1));
@@ -109,8 +117,7 @@ require_once('includes/looma-utilities.php');
         }  //end saveToMongo()
 
 
-        function changename($collection, $oldname, $newname, $ft, $activity) {
-                global $activities_collection;
+        function changename($collection, $activitycollection, $oldname, $newname, $ft, $activity) {
 
                 $query = array('dn' => $oldname, 'ft' => $ft);
                 $update = array('$set' => array('dn' => $newname));
@@ -128,20 +135,25 @@ require_once('includes/looma-utilities.php');
                 $update =  array('$set' => array('dn' => $newname));
                 //$options = array('multiple' => true);
 
-                $result1 = mongoUpdateMany($activities_collection, $query, $update);
+                $result1 = mongoUpdateMany($activitycollection, $query, $update);
 
                 echo json_encode($result1);
             }
         } //end CHANGENAME)
 
-        function lessonexists($ch_id) {
+        function hasLesson($ch_id) {
+
+    ////// needs to be updated to look in 'loomalocal' database in addition to 'looma'
+
             global $activities_collection;
             $r = mongoRegex((string) $ch_id);
-            $lesson = mongoFindOne($activities_collection,array('ft' => 'lesson', 'dn'=> $r));
-            return $lesson;
-        };  // end lessonexists()
+            $lesson = mongoFindOne($activities_collection,array('ft' => 'lesson', 'ch_id'=> $r));
 
-      function format($utc,$timeframe) {
+            if( isset($lesson) && !isset($lesson['db'])) $lesson['db'] = 'looma';
+            return $lesson;
+        };  // end hasLesson()
+
+      function formatDate($utc,$timeframe) {
 
           $utc = max($utc,1633046400);  //looma epoch time is strtotime('October 1,2021')
 
@@ -152,11 +164,8 @@ require_once('includes/looma-utilities.php');
               case "months": $formatted = date("Y:m",       $utc);
               default:       $formatted = date("Y:m:W:d:H", $utc);
           };
-
-     // echo ' - - - for '.$timeframe.' this UTC: '.$utc.' formats to: '.$formated;
-
           return $formatted;
-      } // end format()
+      } // end formatDate()
 
         function increment($utc,$timeframe) {
             // WARNING: UTC values in PHP are in SECONDS, in JS they are in MILLIseconds
@@ -180,10 +189,10 @@ require_once('includes/looma-utilities.php');
             if (isset($data[$i]['utc'])) {
 
                 $UTC = max($data[$i]['utc'], 1633046400); //looma epoch time is strtotime('October 1,2021')
-                $formatted = format($UTC,$timeframe);
+                $formatted = formatDate($UTC,$timeframe);
 
                 $nextUTC = increment($earlierUTC,$timeframe);  // in UTC
-                $nextFormatted = format($nextUTC, $timeframe);
+                $nextFormatted = formatDate($nextUTC, $timeframe);
 
               //  while ($nextFormatted < $formatted) {
                 if ($timeframe !== 'months') while ($nextUTC < $UTC && $nextFormatted !== $formatted) {
@@ -195,7 +204,7 @@ require_once('includes/looma-utilities.php');
                     $temp[] =$filler;
 
                     $nextUTC =    increment($nextUTC, $timeframe);
-                    $nextFormatted = format($nextUTC, $timeframe);
+                    $nextFormatted = formatDate($nextUTC, $timeframe);
                 };
                 $earlierUTC = $UTC;
                 $temp[] = $data[$i];
@@ -210,43 +219,33 @@ require_once('includes/looma-utilities.php');
 /*****************************/
 
   if      ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np')
-       $LOOMA_SERVER = 'CEHRD';
+            $LOOMA_SERVER = 'CEHRD';
   else if ($_SERVER['SERVER_NAME'] === '54.214.229.222' || $_SERVER['SERVER_NAME'] === 'looma.website')
-       $LOOMA_SERVER = 'looma';
-  else $LOOMA_SERVER = 'looma local';
+            $LOOMA_SERVER = 'looma';
+  else      $LOOMA_SERVER = 'looma local';
 
   date_default_timezone_set ( 'UTC');
   $date = date("Y.m.d");
 
-  $login = (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);
-  $login_team = (isset($_COOKIE['login-team']) ? $_COOKIE['login-team'] : null);
+  $login =       (isset($_COOKIE['login']) ?       $_COOKIE['login'] : null);
+  $login_team =  (isset($_COOKIE['login-team']) ?  $_COOKIE['login-team'] : null);
   $login_level = (isset($_COOKIE['login-level']) ? $_COOKIE['login-level'] : null);
 
+  // caller specifies DB ['looma' or 'loomalocal'] and COLLECTION ['activities', 'lessons', 'text_files', etc]
+  if (isset($_REQUEST['db'])) $db = $_REQUEST['db'];
 
-if (isset($_REQUEST["collection"])) {
-    $collection =  $_REQUEST["collection"];
-    $dbCollection = $collections[$collection];
-
-/* //code for when looma-local database is implemented
-    if ( in_array($collection, ['lessons','text_files','activities','slideshows','evi'])) {
-        $localdbCollection = $localCollections[$collection];
-    } else $localdbCollection = null;
-*/
+  if (isset($_REQUEST["collection"])) {  // text name of collection, like "activities", "lessons"
+      $collection =  $_REQUEST["collection"];
+      if ( isset($db) && $db === 'loomalocal') {  // use 'loomalocal' database
+          $dbCollection =       $localcollections[$collection];
+          $activitycollection = (isset($_REQUEST['activity']) && $_REQUEST['activity'] === 'true') ?
+              $localcollections['activities'] : null;
+      } else {  // use 'looma' database [default]
+          $dbCollection =       $collections[$collection];
+          $activitycollection = (isset($_REQUEST['activity']) && $_REQUEST['activity'] === 'true') ?
+              $collections['activities'] : null;
+      }
     }
-
-    /* NOTE: mongoDB collections list:
-     $activities_collection    = $loomaDB -> activities;
-     $chapters_collection      = $loomaDB -> chapters;
-     $textbooks_collection     = $loomaDB -> textbooks;
-     $dictionary_collection    = $loomaDB -> dictionary;
-     $logins_collection        = $loomausers -> logins;
-     $history_collection       = $loomaDB -> histories;
-     $slideshows_collection    = $loomaDB -> slideshows;
-     $lessons_collection       = $loomaDB -> lessons;
-     $text_files_collection    = $loomaDB -> text_files;
-     $edited_videos_collection = $loomaDB -> edited_videos;
-     */
-
 
   if ( isset($_REQUEST["cmd"]) ) {
     $cmd =  $_REQUEST["cmd"];
@@ -268,11 +267,9 @@ if (isset($_REQUEST["collection"])) {
                 if ($ft ==='video') $query['ft'] = array('$in' => ['video','mp4','mov']);
                 else $query['ft'] = $_REQUEST['ft'];
             }
-            //echo "request is " . $query['dn'];
-            //echo "filetype is " . $query['ft'];
 
             //look up this DN (display name) in this collection (dbCollection)
-            $file = mongoFindOne($dbCollection, $query);  // assumes someone is maintaining this collection with unique DNs (index unique)
+            $file = mongoFindOne($dbCollection, $query);  // assumes this collection with unique DNs (index unique)
             if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
             else echo json_encode(array("error" => "File not found"));  // if not found, return an error object {'error': errormessage}
             return;
@@ -289,8 +286,8 @@ if (isset($_REQUEST["collection"])) {
             //echo "filetype is " . $query['ft'];
 
             //look up this DN (display name) in this collection (dbCollection)
-            $file = mongoFindOne($dbCollection, $query);  // assumes someone is maintaining this collection with unique DNs (index unique)
-            if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
+            $file = mongoFindOne($dbCollection, $query);  // assumes someone is maintaining this collection has unique DNs (index unique)
+            if ($file) echo json_encode($file);     // if found, return the contents of the mongo document
             else echo json_encode(array("error" => "File not found"));  // in not found, return an error object {'error': errormessage}
             return;
         // end case "openByName"
@@ -371,8 +368,6 @@ if (isset($_REQUEST["collection"])) {
     case "deleteField":
 
         $query = array('_id' => mongoId($_REQUEST['id']));
-        //update this ID (mongoID) in this collection (dbCollection)
-
         $update = array('$unset' => json_decode($_REQUEST["data"]));
 
         $result = mongoUpdate($dbCollection, $query, $update);
@@ -387,16 +382,10 @@ if (isset($_REQUEST["collection"])) {
     ////////////////////////
     // - - - SAVE - - - ////
     ///////////////////////
-        //NOTE: historical artifact, some JS may set collection to 'lesson' or 'text'
-        // some to 'lessons' or 'text_files' - THIS SHOULD BE CLEANED UP sometime
-
     case "save":
         if ( ($collection == "text") || ($collection == "text_files")) {
-            //NOTE: historical aritfact, some JS may set collection to 'text', some to 'text_files'  - THIS SHOULD BE CLEANED UP sometime
-              $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
-            //echo "DEBUG: $_REQUEST['dn'] is " . $_REQUEST['dn'];
-            //echo "DEBUG: html spec char is " . htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES);
-            //echo "DEBUG: dn is " . $save_dn;
+            $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
+
             $insert = array(
                 "dn" => $save_dn,
                 "ft" => $_REQUEST["ft"],
@@ -417,40 +406,31 @@ if (isset($_REQUEST["collection"])) {
                  $insert['nepali'] = $_REQUEST['nepali'];
             else $insert['data']   = $_REQUEST['data'];
 
-            $result = saveToMongo($dbCollection, $save_dn, $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            $result = saveToMongo($dbCollection, $save_dn, $_REQUEST['ft'], $insert, $activitycollection);
             echo json_encode($result);
         }
         else if ( ($collection == "lesson") || ($collection == "lessons")) {
-            //NOTE: historical artifact, some JS may set collection to 'lesson', some to 'lessons'  - THIS SHOULD BE CLEANED UP sometime
-
-                // earlier code had wrong parameters to 'trim()' causing occasional bad SAVEs
-                //echo "REQUEST[dn] is:**" . $_REQUEST['dn'] . "***";
-                //echo "htmlspecialchars_decode is:**" . htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES) . "***";
-                //echo "trim(htmlspecialchars_decode) is:**" . trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)) . "***";
-                //return;
+            //NOTE: historical artifact, some JS may set collection to 'lesson', some to 'lessons'
+            // THIS SHOULD BE CLEANED UP sometime
+            $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
 
             $insert = array(
-                "dn" => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)),
-                "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template', 'lesson' or 'lesson-template'
-               // "author" => $_COOKIE['login'],
+                "dn" => $save_dn,
+                "ft" => 'lesson',
+                "db" => $_REQUEST['db'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
                 "data" => $_REQUEST["data"]
             );
-            $insert['author'] = $login;
+            if (isset($_REQUEST['author'])) $insert['editor'] = $login;
+            else                            $insert['author'] = $login;
 
-// put new code for 'editor' here
-// try mongo UPDATE with editor=login
-//
-//if fails, (document doesnt exist) then
-//
-//	mongo INSERT with author=login, editor=login
+            if (!($login_level==='admin' ||
+                  $login_level==='exec' ||
+                  $login_team === 'teacher') ) { $insert['team'] = $login_team;};
 
+    //echo "saving lesson " . $save_dn . " in DB/collection " . $dbCollection; exit;
 
-            // if (!($login_level==='admin' || $login_level==='exec') ) $insert['team'] = $login_team;
-            if (!($login_level==='admin' || $login_level==='exec' || $login_team === 'teacher') ) {
-                $insert['team'] = $login_team;
-            }
-            $result = saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            $result = saveToMongo($dbCollection, $save_dn, 'lesson', $insert, true);
 
             echo json_encode($result);
         }
@@ -465,7 +445,7 @@ if (isset($_REQUEST["collection"])) {
             );
             if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
 
-            $result = saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), $_REQUEST['ft'], $insert, $_REQUEST['activity']);
+            $result = saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), $_REQUEST['ft'], $insert, $activitycollection);
             echo json_encode($result);
         }
         else if ($collection == "activities") {
@@ -486,7 +466,6 @@ if (isset($_REQUEST["collection"])) {
             echo json_encode($result);
         }
 
-
         // included handling recordedvideos, still need new collection so that everything saves correctly
         else if ($collection == "recorded_videos"){
             $insert = array(
@@ -502,7 +481,7 @@ if (isset($_REQUEST["collection"])) {
             $result = saveToMongo($dbCollection,
                                      trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), $_REQUEST['ft'],
                                      $insert,
-                                    $_REQUEST['activity']);
+                $activitycollection);
             echo json_encode($result);
 
         }
@@ -525,20 +504,17 @@ if (isset($_REQUEST["collection"])) {
               // save a new activity
               //return response with _id (activity) and [optional] mongoID (file it points to)
         global $mongo_level;
-  //   if ($mongo_level >= 4) {
         $id = $_REQUEST['id'];
- //echo $id;
         $newname = trim(htmlspecialchars_decode($_REQUEST['dn'], ENT_QUOTES));
            //NOTE PHP random_int() not in php 5.6 (not until php 7)
        if (preg_match("/\(\d\d\d\)/", $newname))
             $newname = preg_replace('/\(\d\d\d\)/', '(' . rand(100, 999) . ')', $newname);
         else $newname = $newname . '(' . rand(100, 999) . ')';
 
-//echo $newname;
         $newtype = 'text';
 
         $query = array('_id' => mongoId($id));
-        $activity = mongoFindOne($activities_collection, $query);
+        $activity = mongoFindOne($activitycollection, $query);
 
         $insert = array("dn" => $newname, "ft" => $newtype);
 
@@ -556,9 +532,9 @@ if (isset($_REQUEST["collection"])) {
             $newfile["date"] = gmdate("Y.m.d");  // using greenwich time
 
             if ($mongo_level >= 4) {
-                $result = mongoInsert($text_files_collection, $newfile);
+                $result = mongoInsert($dbCollection, $newfile);
             } else { // for mongodb 2.6
-                $result = mongoFindAndModify($text_files_collection, array('dn' => $newname), $newfile);
+                $result = mongoFindAndModify($dbCollection, array('dn' => $newname), $newfile);
             }
             // now save a new activity for this file
             $newmongoid = mongoGetId($result);  //uses mongo getInsertedId() to get mongoid as string
@@ -566,9 +542,9 @@ if (isset($_REQUEST["collection"])) {
         };
 
         if ($mongo_level >= 4) {
-            $result1 = mongoInsert($activities_collection, $insert);
+            $result1 = mongoInsert($activitycollection, $insert);
         } else { // for mongodb 2.6
-            $result1 = mongoFindAndModify($activities_collection, array('dn' => $newname), $insert);
+            $result1 = mongoFindAndModify($activitycollection, array('dn' => $newname), $insert);
         };
 
         // return id(activity), dn, and mongoID(textfile)
@@ -584,7 +560,7 @@ if (isset($_REQUEST["collection"])) {
     // - - - RENAME - - - //
     ////////////////////////
     case "rename":
-        changename($dbCollection,
+        changename($dbCollection, $activitycollection,
                    trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)),
                    trim(htmlspecialchars_decode($_REQUEST['newname'],ENT_QUOTES)),
                    $_REQUEST['ft'], true);
@@ -597,7 +573,8 @@ if (isset($_REQUEST["collection"])) {
     ////////////////////////
           case "exists":
 
-    //find "dn" in the collection
+    //find "dn" of type "ft"
+    // look in collections[ft] and in localcollections[ft]
     // if found,  return its {_id:id, name:dn, author:author}
     // else return {_id: NULL}
 
@@ -605,31 +582,53 @@ if (isset($_REQUEST["collection"])) {
 
         $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), 'ft' => $_REQUEST['ft']);
         $projection = array("_id" => 1, "author" => 1);
-        $result = mongoFindOne($dbCollection, $query);
-        if ($result) echo json_encode(array("_id" => $result["_id"],
-                                                  "name" => $result["dn"],
-                                                  "author" => (isset($result["author"]) ? $result["author"] : null)));
-        else         echo json_encode(array("_id" => ""));
+
+        //////
+        $result = mongoFindOne($collections[$_REQUEST['collection']], $query);
+        if ($result) {
+            echo json_encode(array("_id" => $result["_id"],
+                "name" => $result["dn"],
+                "author" => (isset($result["author"]) ? $result["author"] : null)));
+            return;
+         };
+
+        $result = mongoFindOne($localcollections[$_REQUEST['collection']], $query);
+        if ($result) {
+            echo json_encode(array("_id" => $result["_id"],
+                "name" => $result["dn"],
+                "author" => (isset($result["author"]) ? $result["author"] : null)));
+            return;
+        };
+
+        echo json_encode(array("_id" => ""));
         return;
     // end case "exists"
 
 
-    ////////////////////////
-    // - - - DELETE - - - //
-    ////////////////////////
-    case "delete":
-        $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), 'ft' => $_REQUEST['ft']);
-        $file = mongoFindOne($dbCollection, $query);
-        if ($file) {
-            mongoDeleteOne($dbCollection ,$query);  //, array("justOne" => true));
-            echo 'Looma-database-utilities.php, deleted file: ' .  trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)) . ' of type: ' . $_REQUEST['ft'];
+        ////////////////////////
+        // - - - DELETE - - - //
+        ////////////////////////
+        case "delete":
+            $query = array('dn' => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), 'ft' => $_REQUEST['ft']);
+            $file = mongoFindOne($dbCollection, $query);
 
-            // delete any references to the file from Activities collection
-            $removequery = array('mongoID' => mongoId($file['_id']));
-            mongoDeleteMany($activities_collection, $removequery);  //by default, removes multiple instances
-        }
-        return;
-    // end case "delete"
+    //echo 'in DELETE, found file ' . $_REQUEST['dn'] . ' as ' . $file['dn']; return;
+
+            if ($file) {
+                mongoDeleteOne($dbCollection, $query);  //, array("justOne" => true));
+                echo 'Looma-database-utilities.php, deleted file: ' .  trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)) . ' of type: ' . $_REQUEST['ft'];
+
+               // echo 'file _id is ' . $file['_id'];
+
+                // delete any references to the file from Activities collection
+                $removequery = array('mongoID' => mongoId($file['_id']));
+
+           // echo 'activitycollection is ' . $activitycollection . ' and removequery is ' . $removequery['mongoID'];
+
+                mongoDeleteMany($activitycollection, $removequery);  //removes multiple instances, in case >1 activities point to this file
+            }
+            return;
+        // end case "delete"
 
 
         ////////////////////////
@@ -746,7 +745,7 @@ if (isset($_REQUEST["collection"])) {
                            'subject' => $_REQUEST['subject']);
                     //print_r($query);
 
-            $projection = array('_id' => 0, 'prefix' => 1);
+            //$projection = array('_id' => 0, 'prefix' => 1);
             $textbook = mongoFindOne($textbooks_collection, $query);
                     //echo "mongo result is "; print_r($textbook);
                     //echo "prefix is $textbook['prefix']";
@@ -766,11 +765,17 @@ if (isset($_REQUEST["collection"])) {
                 foreach ($chapters as $ch) {
 
                     // check if a lesson exists for this chapter
-                    $hasLesson = lessonexists($ch['_id']);
-                    $mark = $hasLesson ? "class='hasLesson' data-mongo='" . $hasLesson['mongoID'] . "' " : "";
+                    $hasLesson = hasLesson($ch['_id']);
+
+                    //if ($hasLesson && !isset($hasLesson['mongoID'])) { echo 'haslesson with no mongoID: ' . $hasLesson['dn'];}
+
+                    $mark = $hasLesson ? "class='hasLesson'" .
+                        "data-mongo='" . $hasLesson['mongoID'] .
+                        "' data-db='" . $hasLesson['db'] .
+                        "' " : "";
 
                     if      ($lang === 'en' && isset($ch['dn'])  && $ch['dn'] !== '')
-                        echo "<option " . $mark . "value='" . $ch['_id'] . "'>" . "(" . $ch['_id'] . ") " . $ch['dn'] . "</option>";
+                        echo "<option " . $mark . " value='" . $ch['_id'] . "'>" . "(" . $ch['_id'] . ") " . $ch['dn'] . "</option>";
                     else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '') {
                         $nch_id = ( isset($ch['nch_id'])) ? $ch['nch_id'] : $ch['_id'];
                         echo "<option " . $mark . "value='" . $nch_id . "'>" . "(" . $nch_id . ") " . $ch['ndn'] . "</option>";
@@ -873,8 +878,10 @@ if (isset($_REQUEST["collection"])) {
         // key1, key2, key3, key4
         // src[] (array of checked 'sources') and type[] (array of checked 'types')
 
-        /* known filetypes are the FT values in Activities collection
-         * e.g. 'video', 'audio', 'image', 'pdf', 'textbook', 'text', 'html', 'slideshow', 'lesson', 'looma'*/
+        // look in collections[ft] and in localcollections[ft]
+
+        // known filetypes are the FT values in Activities collection
+        // e.g. 'video', 'audio', 'image', 'pdf', 'textbook', 'text', 'html', 'slideshow', 'lesson', 'looma'
 
         if (isset($_REQUEST['language'])) $language = $_REQUEST['language']; else $language = 'english';
 
@@ -998,119 +1005,68 @@ if (isset($_REQUEST["collection"])) {
             $query['key4'] = $_REQUEST['key4'] === 'none'? null : mongoRegexOptions($_REQUEST['key4'], 'i');
         }
 
-        //echo "Query is: "; print_r($query);
-        //echo '$dbCollection is ' . $dbCollection;
-
-        $cursor = mongoFind($dbCollection, $query, 'dn', null, null);   //->skip($page)->limit(20);
-
-        //echo 'FOUND '.$cursor->count().' items';
-
-//
-//NOTE: we use an older version of MONGO that doesnt support COLLATION order.
-//  this code should get all the cursor elements into a PHP array and do NATKSORT ( like looma-library.php does)
-//
+        ///// making call to MONGO in 'looma' database //////
+        $cursor = mongoFind($collections[$_REQUEST['collection']], $query, 'dn', null, null);   //->skip($page)->limit(20);
         $result = array();
         foreach ($cursor as $d)  {
-             $result[] = $d;
-         }
-/* // code for when looma-local datbase is implemented
-        if (in_array($collection, $localCollections)) {
-            $dbCollection = $localCollections[$collection];
-            $cursor = mongoFind($dbCollection, $query, 'dn', null, null);   //->skip($page)->limit(20);
-            foreach ($cursor as $d)  {
-                $result[] = $d;
-            }
-        }
-*/
+            $d['db'] = 'looma';
+            $result[] = $d;
+         };
 
-//echo "Search result is: ";
-//print_r($result);
-//exit;
+        ///// making call to MONGO in 'loomalocal' database //////
+        $cursor1 = mongoFind($localcollections[$_REQUEST['collection']], $query, 'dn', null, null);   //->skip($page)->limit(20);
 
-
+        foreach ($cursor1 as $d)  {
+            $d['db'] = 'loomalocal';
+            $result[] = $d;
+        };
 
         // removing duplicate results - based on 'fn' and 'fp' being equal
-        // this is a crutch to cover up duplicate entries in 'activities' collection
-        $unique = array();
+        // this allows for duplicate display names ["dn"] in 'activities' collection
 
-        //DEBUG echo sizeof($result) . " results found      \n";
+        $unique = array();
 
         if (sizeof($result) > 0 ) {
 
-            //echo 'PROCESSING '.sizeof($result).' items';
-
             $result = alphabetize_by_dn($result);
-
+            // after SORT, compare adjacent items for equality and remove duplicates
             $unique[] = $result[0];
             $specials = array('text', 'text-template', 'slideshow', 'looma', 'lesson', 'lesson-template', 'evi', 'history', 'map', 'game');
             for ($i = 1; $i < sizeof($result); $i++) {
-                //echo "ft is " . $result[$i]['ft'] . "   ";
 
-               // if ( ! isset($result[$i]['fn']) && $result[$i]['ft'] != 'text') {echo "result is "; print_r($result[$i]); echo  "   \n\r";}
-
-               /* CODE for case where there is no English version of a book (Hesperian) - DOESNT WORK
-               if (!$result[$i]['dn']) {
-                    $result[$i]['dn'] = $result[$i]['ndn'];
-                    $result[$i]['fn'] = $result[$i]['nfn'];
-                }*/
-
-                    //if( ! in_array($result[$i]['ft'], $specials)) echo "type is " . $result[$i]['ft'];
-
-                /* add special case for epaath: check dn plus grade plus oleID to determine uniqueness
-               */
                 if ($result[$i]['ft'] !== $result[$i-1]['ft']) $unique[] = $result[$i];
+                if ($result[$i]['db'] !== $result[$i-1]['db']) $unique[] = $result[$i];
+
                 else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2019') {
                     if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
-                      //  $result[$i]['oleID'] !== $result[$i - 1]['oleID'] ||
                         $result[$i]['grade'] !== $result[$i - 1]['grade'])
                         $unique[] = $result[$i];
                 }
+
                 else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2022') {
                     if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
-                        //  $result[$i]['oleID'] !== $result[$i - 1]['oleID'] ||
                         $result[$i]['grade'] !== $result[$i - 1]['grade'])
                         $unique[] = $result[$i];
-                /* for  special filetypes (in $specials) just match on displayname to determine uniquess */
-                }  else if (in_array($result[$i]['ft'], $specials)) {
-                    if ($result[$i]['dn'] !== $result[$i - 1]['dn']) $unique[] = $result[$i];
-                /* for all other filetypes match on filename and fp (if present) to determine uniquess */
-                } else if ((isset($result[$i]['fn'])
-                    && isset($result[$i-1]['fn'])
-                        && $result[$i]['fn'] !== $result[$i - 1]['fn'])
-                    || (isset($result[$i]['nfn'])
-                        && isset($result[$i-1]['nfn'])
-                        && $result[$i]['nfn'] !== $result[$i - 1]['nfn'])
-                    || (isset($result[$i]['nfn'])
-                        && isset($result[$i-1]['fn'])
-                        && $result[$i]['nfn'] !== $result[$i - 1]['fn'])
-                    || (isset($result[$i]['fn'])
-                        && isset($result[$i-1]['nfn'])
-                        && $result[$i]['fn'] !== $result[$i - 1]['nfn'])
-                    || (isset($result[$i]['fp'])
-                        && isset($result[$i - 1]['fp'])
-                            && $result[$i]['fp'] !== $result[$i - 1]['fp']))
-                    $unique[] = $result[$i];
+                }
 
-                //DEBUG echo sizeof($unique) . " unique results found      \n";
+                else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2015') {
+                    if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
+                        $result[$i]['grade'] !== $result[$i - 1]['grade'])
+                        $unique[] = $result[$i];
+                }
+                // for  special filetypes (in $specials) just match on displayname to determine uniqueness
+                else if (in_array($result[$i]['ft'], $specials)) {
+                    if ($result[$i]['dn'] !== $result[$i - 1]['dn']) $unique[] = $result[$i];
+                }
+                // for all other filetypes match on filename and fp (if present) to determine uniqueness
+            else if ((isset($result[$i]['fn'])  && isset($result[$i-1]['fn'])  && $result[$i]['fn']  !== $result[$i-1]['fn'])
+                ||   (isset($result[$i]['nfn']) && isset($result[$i-1]['nfn']) && $result[$i]['nfn'] !== $result[$i-1]['nfn'])
+            //  ||   (isset($result[$i]['nfn']) && isset($result[$i-1]['fn'])  && $result[$i]['nfn'] !== $result[$i-1]['fn'])
+            //  ||   (isset($result[$i]['fn'])  && isset($result[$i-1]['nfn']) && $result[$i]['fn']  !== $result[$i-1]['nfn'])
+                ||   (isset($result[$i]['fp'])  && isset($result[$i-1]['fp'])  && $result[$i]['fp']  !== $result[$i-1]['fp']))
+                    $unique[] = $result[$i];
             }
             $numUnique = sizeof($unique);
-
-    /*     //filter out CEHRD content for non-CEHRD servers (looma.website and looma local)
-
-            global $LOOMA_SERVER;
-            //echo ('filepath is  ' . $file['fp'] . ',and server is ' . $LOOMA_SERVER);
-            if ( $LOOMA_SERVER !== 'CEHRD' && strpos($file['fp'], "../content/CEHRD") === 0) {
-                $file = null;
-            };
-
-     */
-
-//echo "Search result is: ";
-//print_r($unique);
-//exit;
-
-
-            //echo '   UNIQUE '. $numUnique.' items';
 
             if (isset($_REQUEST['pagesz']) && isset($_REQUEST['pageno']))
                 $unique = array_slice($unique, ($_REQUEST['pageno'] - 1) * $_REQUEST['pagesz'], $_REQUEST['pagesz']);
@@ -1221,7 +1177,7 @@ if (isset($_REQUEST["collection"])) {
           ////////////////////////
           // - - - CHAPTER EXISTS - - - //
           ////////////////////////
-          case "chapterExists": //find "_id" in the chapters collection and return its ID if it exsits or NULL if doesnt exist
+          case "chapterExists": //find "_id" in the chapters collection and return its ID if it exists or NULL if doesnt exist
 
               $query = array('_id' => $_REQUEST['_id']);
               $projection = array("_id" => 1);

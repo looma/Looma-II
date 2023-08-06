@@ -26,7 +26,7 @@ $(document).ready(function(){
 //////////////////////////////////////////////
 //change by skip 2017 03
 
-            initializeDOM();   //this code from looma-edit-lesson.js [by SCU] that sets up the activity search filters
+            initializeDOM();   //this code from looma-edit-lessonOLD.js [by SCU] that sets up the activity search filters
 
             $('#search').submit(function( event ) {
                   event.preventDefault();

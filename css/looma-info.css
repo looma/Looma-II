@@ -108,7 +108,7 @@ span {
 }
 
  #system_info {
-     grid-row: 4;
+     grid-row: 2;
      grid-column: left / middle-left;
      margin-left:3vw;
  }

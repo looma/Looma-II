@@ -2,7 +2,7 @@
 LOOMA javascript file
 Filename: looma-edited-video.js
 Programmer name: Connor Kennedy, skip
-Adapted From: looma-edit-lesson.js Summer 2017
+Adapted From: looma-edit-lessonOLD.js Summer 2017
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: Summer 2017, May 2019
 Revision: Looma 5

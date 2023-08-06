@@ -23,6 +23,8 @@ button {
     width:100%;
 }
 
+#filecommands .dropdown-item#chapter {display:none;}
+
 #filecommands button {
     background-color:#FFFFFF;
     font-weight:bold;

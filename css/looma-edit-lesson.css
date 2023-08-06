@@ -1,6 +1,6 @@
 /*
 LOOMA css file
-Filename: looma-edit-lesson.css
+Filename: looma-edit-lessonOLD.css
 Description:
 Associated code files:
 Programmer name: skip, keifer
@@ -24,6 +24,9 @@ body {
     
     /*font-family: "Comic Sans MS", cursive, sans-serif;*/
     color:black;
+    
+    user-select:none;
+    
 }
 #main-container > div {
     border-radius:4px;
@@ -53,6 +56,7 @@ body {
     font-size:2vh;
 }
 
+
 .all-transparent { /*makes screen transparent*/
     opacity: .3;
 }
@@ -80,6 +84,7 @@ div#search-panel {
 #previewpanel {
     grid-column: 2/-1;
     grid-row: 3;
+    user-select: contain;
     overflow-y:hidden;
     overflow-x:hidden;
     background-color:white;
@@ -98,7 +103,7 @@ div#search-panel {
 }
 
 #timeline .options {
-    z-index:2;
+    z-index:3;
     min-height:5vh;
     min-width:5vw;
     background-color:red;
@@ -117,14 +122,14 @@ div#search-panel {
 #padlock {
     position:absolute;
     right:1vw;
-    bottom:72vh;
+    bottom:1vh;
     height:3vh;
     width: 3vh;
 }
 
 
 button#fullscreen-control {
-    display:inline-block;
+    display:none;
     bottom: 38vh;
     right:2vw;
 }
@@ -145,14 +150,13 @@ button.lookup {
     position:absolute;
     display:none;
     right:2vw;
-    bottom:74vh;
+    bottom:1.5vh;
     color:red;
     font-size: 0.8em;
 }
 button {
     display:inline;
-    /*color:white;
-    background:#2E3192;*/
+
     border-radius:0.313em;
     /*width: 90px;*/
     height: 5vh;
@@ -230,29 +234,6 @@ span.hint {
     z-index:2;
 }
 
-.btn-group, #cmd-btn {
-    /*font-family: "Comic Sans MS", cursive, sans-serif;*/
-    padding:0;
-    margin-bottom:1vh;
-    width:100%;
-}
-
-.dropdown-menu {
-    padding: 10px;
-    background-color:white;
-    z-index:1;
-}
-
-.dropdown-item {
-    font-size: 1.2em;
-    margin-top: 2px;
-    font:inherit;
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
-}
-.dropdown-item:hover {
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#87cefa)); /* webkit */
-    color:white;
-}
 /*************** Search Results Module ***********************/
 #outerResultsDiv {
     overflow:hidden;
@@ -330,6 +311,11 @@ li:hover {
     max-height:45vh;
 }
 
+
+#previewpanel iframe {
+    width: 77%;
+}
+
 #previewpanel #media-controls {
     height:15vh;
     max-height:15vh;
@@ -359,7 +345,16 @@ li:hover {
     margin-left:10px;
     
 }
-#previewpanel .textpreview,
+#previewpanel .textpreview {
+    /*zoom:155%;*/
+    width:34em;
+    height:20em;
+    margin: 1vh auto;
+    overflow:clip;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
 .setup-panel {
     /*zoom:155%;*/
     width:49.5vw;
@@ -368,6 +363,7 @@ li:hover {
     white-space:nowrap;
     text-overflow:ellipsis;
 }
+
 
 .setup-panel {
    position:absolute;
@@ -420,10 +416,6 @@ button[disabled] {
 }
 
 #filesearch-panel {z-index:3;}
-
-/*#setup-panel-2 #search-kind {display:none;}
-#setup-panel-3 #search-kind {display:none;}
-*/
 
 #displayImage {
     height:60vh;
@@ -479,6 +471,12 @@ button[disabled] {
 
 .playing {
     border:4px solid blue;
+    border-radius: 8px;
+}
+
+.resultitem.search-preview {
+    border:4px solid green;
+    border-radius: 8px;
 }
 
 .thumbnaildiv, .textdiv {
@@ -545,18 +543,73 @@ button[disabled] {
 }
 
 
-/*************** Text Display ***************/
-#text-editor {
-    display: none;
-    z-index: 10;
-    width: 100%;
-    height: 100%;
-    position: absolute;
+/*************** Text Display and EDIT ***************/
+
+#text-editor-buttons {
+    display:none;
+    height:100%;
+    width;100%;
+    user-select:none;
+    grid-column: 1/-1;
+    grid-row: 2;
+    background-color: white;
+    font-size:2vh;
+
+    text-align:center;
+    max-height:100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-#textframe {
-    background-color: transparent;
+.button-group .edit-menu {
+    display:none;
+    position:absolute;
+    z-index:1;
+    padding: 10px;
+    background-color:white;
+    z-index:1;
 }
+
+ button.text-edit {
+     border:3px solid black;
+     border-radius:5px;
+     background:none;
+     background-color: lightyellow;
+     height:8vh;
+     width:10vh;
+     margin: 2vh 1vh;
+     font-size:1.5em;
+     font-weight:bold;
+}
+button.text-edit.wide { width:9vw;}
+
+ button.text-edit.dropdown-edit {
+     height: 6vh;
+     width: 4vw;
+     margin:0;
+     background:none;
+ }
+ 
+button.text-edit.dropdown-edit img {
+    margin:auto;
+    height:100%;}
+/*
+.dropdown-edit {
+    font-size: 1.2em;
+    margin-top: 2px;
+    font:inherit;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5));
+}
+.dropdown-edit:hover {
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#87cefa));
+    color:white;
+}
+*/
+
 
 #lesson-title {
     position:absolute;
@@ -582,3 +635,30 @@ button[disabled] {
     bottom:27vh;
     right:2vw;
 }
+
+
+#previewpopup {
+    position:fixed;
+    display:none;
+    padding:2px;
+    bottom:24vh;
+    left:3vw;
+    height:20em;
+    max-height:15vw;
+    width:25vw;
+    max-width:25vw;
+    z-index:0;
+    font-size:0.7vw !important;
+    font-weight:bold;
+    border: 2px solid black;
+    border-radius:3px;
+    background-color:lightgray;
+    /*zoom:200%;*/
+    overflow:hidden;
+}
+#previewpopup * {
+    font-size:0.778vw !important;
+    margin:0 !important;
+}
+
+#previewpopup font {font-size:1em;}

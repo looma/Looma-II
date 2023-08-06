@@ -166,12 +166,17 @@ function unpack (response) {
 } //end unpack()
 
 ///////// editor_display  /////////
-function editor_display (response) {clearFilter(); $timeline.html(unpack(response)); editor_checkpoint();}
+function editor_display (response) {
+    clearFilter();
+    $timeline.html(unpack(response));
+    currentDB = response.db ? response.db : 'looma';
+    editor_checkpoint();
+}
 
 /////////  editor_save  /////////
 
 function editor_save(name) {
-    savefile(LOOMA.escapeHTML(name), 'slideshows', 'slideshow', editor_pack($('#timelineDisplay .activityDiv')), "true");
+    savefile(LOOMA.escapeHTML(name), 'slideshows', 'slideshow', editor_pack($('#timelineDisplay .activityDiv')), "true",null);
 } //end editor_save()
 
 /*function XXXeditor_save(name) {
@@ -202,7 +207,7 @@ function editor_save(name) {
 
 ///////// editor_templatesave /////////
 function editor_templatesave(name) {
-    savefile(name, currentcollection, currentfiletype + '-template', editor_pack($timeline.html()), "false");
+    savefile(name, currentcollection, currentfiletype + '-template', editor_pack($timeline.html()), "false",null);
     //note, the final param to 'savefile()' [to make an activity] set to 'false'
     //because lessons templates are not recorded as  activities
 } //end editor_templatesave()
@@ -736,7 +741,7 @@ $(document).ready(function() {
     currentname = "";
     currentcollection = "slideshows";
     currentfiletype = "slideshow";
-    
+    currentDB = 'loomalocal';
     $('#collectionname').text('Slideshows');
     $('#includeLesson').val(false);
     
@@ -793,4 +798,7 @@ $(document).ready(function() {
     $('#show_text').show();
     
     $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
+    
+    $('.file-cmd#saveas').click(function(){currentcollection = 'slideshows';  currentDB = 'loomalocal'});
+    
 });

@@ -156,7 +156,6 @@ input#keywords {display:inline;}
 .dropdown {
   width:100%;
   display: inline-block;
-  font-size: 24;
 }
 
  .dropdown-content {
@@ -371,8 +370,18 @@ button.img:hover {
 span.english-keyword {    word-break: break-word;
 }
 
- /* @media for smartphones */
+ /* @media for smartphones
 
  @media screen and (max-device-height:800px) {
     button.img img {display:none;}
+ } */
+ /* @media for smartphones */
+
+ @media screen and (max-device-height: 480px) and (orientation:landscape) , screen and (max-device-width:480px) and (orientation:portrait) {
+    
+     .timeline ol li div {font-size: 0.8vw;}
+     h1{font-size: 4vw;}
+     .searchBar{left: 15vw;}
+     .dropbtn{height: 17vh;}
+     .button.img.play, button.img.activity {font-size: 3vw}
  }

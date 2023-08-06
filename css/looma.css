@@ -29,6 +29,9 @@
  */
 
 html {
+    
+    --looma-phone-width:667;
+    
     --looma-green: #29aa29;  /*green  = 063006 for TEST Looma */
     --looma-purple:#800080;  /*purple = 800080 for INDIA Looma */
     --looma-blue:#091F48;    /* Looma blue = 091F48 for regular Looma */
@@ -733,11 +736,25 @@ div.center {
 
 /* @media for smartphones */
 
-@media screen and (max-device-height:800px) {
+@media all and (device-width: 667px) and (device-height: 322px) and (orientation:landscape) {
+    #main-container-horizontal { height: 1024px; }
+}
+@media screen and (max-device-height: 480px) and (orientation:landscape) , screen and (max-device-width:480px) and (orientation:portrait) {
+    
     body {
         --looma-background: var(--looma-green);
         background-color: var(--looma-background);
         font-family: "Noteworthy";
     }
     h1.title {font-size:2em;}
+    
+    button.img.play, button.img.activity{
+        font-size: 3vw;
+    }
+    
+    button.img {
+        height: 40vh;
+        width: 27vw;
+    }
 }
+

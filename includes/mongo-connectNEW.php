@@ -238,14 +238,14 @@ function mongoCreateUniqueIndex($collection, $key) {
 
 function loomaUpdateDatabaseStructure() {
     // if "old" database named "loomausers" exists, rename it "looma-local"
-    //   move  contents to new database "looma-local"
+    //   move  contents to new database "loomalocal"
     //   and delete the old DB
     global $m, $ENV_WINDOWS;
 
     if ($ENV_WINDOWS) $temp = '%systemdrive%\Windows\Temp\looma.tmp';
     else              $temp = '/tmp/looma.tmp';
 
-    // if DB "loomausers" is present, move its contents to DB "looma-local"
+    // if DB "loomausers" is present, move its contents to DB "loomalocal"
     foreach ($m->listDatabaseNames() as $databaseName) {
         if ($databaseName === "loomausers") {
 
@@ -253,8 +253,8 @@ function loomaUpdateDatabaseStructure() {
           $backupCommand = "mongodump  --db=loomausers --collection=logins --archive=" . $temp;
           shell_exec($backupCommand);
 
-          //echo 'restoring database name ' . $databaseName . ' to looma-local' . '<br>';
-          $restoreCommand = "mongorestore --archive=" . $temp . " --nsFrom='loomausers.*' --nsTo='looma-local.*'";
+          //echo 'restoring database name ' . $databaseName . ' to loomalocal' . '<br>';
+          $restoreCommand = "mongorestore --archive=" . $temp . " --nsFrom='loomausers.*' --nsTo='loomalocal.*'";
           shell_exec($restoreCommand);
 
           //echo 'dropping database name ' . $databaseName . '<br>';
@@ -262,12 +262,12 @@ function loomaUpdateDatabaseStructure() {
         }
     }
 
-    // in case the 'seed' logins are not loaded, load them into DB 'looma-local', collection 'logins'
+    // in case the 'seed' logins are not loaded, load them into DB 'loomalocal', collection 'logins'
     // NOTE - this works in linux, but not in Windows.
     //        so added equivalent cmd to "Looma System Files/Looma PC/upate_database.cmd"
     //
     //        could move it for linux also - to loomaupdate script
-    $seedCommand = "mongoimport --file='mongo-dump/extra/extra.json' --db='looma-local' --collection=logins";
+    $seedCommand = "mongoimport --file='mongo-dump/extra/extra.json' --db='loomalocal' --collection=logins";
     shell_exec($seedCommand);
 }
 
@@ -309,7 +309,7 @@ catch(MongoConnectionException $e) {
     exit();
 }
 
-loomaUpdateDatabaseStructure(); // for pre-7.6 loomas, rename 'loomusers' db to 'looma-local'
+loomaUpdateDatabaseStructure(); // for pre-7.6 loomas, rename 'loomusers' db to 'loomalocal'
                                 // keep same name for 'activitylog' db
 
 //$dbhost = 'localhost';
@@ -376,8 +376,8 @@ $collections = array(
     "filetypes" =>   $filetypes_collection
 );
 
-$localdbname = 'looma-local';
-$loomalocalDB = $m -> $localdbname;  //connect to the database "looma-local"
+$localdbname = 'loomalocal';
+$loomalocalDB = $m -> $localdbname;  //connect to the database "loomalocal"
 
 $logins_collection                = $loomalocalDB -> logins;
 $local_activities_collection      = $loomalocalDB -> activities;

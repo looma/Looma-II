@@ -1,6 +1,6 @@
 /*
 LOOMA css file
-Filename: looma-play-lessonNEW.css
+Filename: looma-play-lesson.css
 Programmer name: SCU [rev 1], Skip [rev 2,3]
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: Rev 1 - Spring 2016, Rev 2 - 2017 01 29
@@ -377,7 +377,7 @@ span#lesson-name {
     height:100%;
     width:82%;
     margin:0 auto;
-    font-size:2.5vw;
+    font-size:2.2vw;
 }
 
 .error-message {

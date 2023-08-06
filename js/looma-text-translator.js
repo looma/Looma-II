@@ -33,9 +33,9 @@ callbacks['undocheckpoint'] = textundocheckpoint;
 //callbacks ['quit'] not overridden - use default action from filecommands.js
 
 currentname = "";
-currentcollection = 'text';
+currentcollection = 'text_files';
 currentfiletype = 'text';
-
+currentDB = 'loomalocal';
 $('#collection').val('text');
 $('#filesearch-ft').val('text');
 

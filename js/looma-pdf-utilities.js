@@ -5,7 +5,7 @@ Revision: Looma 2.0.0
 Author: Skip
 filename: looma-pdf-utilities.js
 Description: functions for displaying PDFs
-Used by: looma-play-pdf.js and looma-play-lessonNEW.js
+Used by: looma-play-pdf.js and looma-play-lesson.js
  */
 
 "use strict";

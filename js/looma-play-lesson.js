@@ -1,7 +1,7 @@
 /*
 LOOMA javascript file
-Filename: looma-play-lessonNEW.js
-Description: supports includes/looma-play-lessonNEW.php
+Filename: looma-play-lesson.js
+Description: supports includes/looma-play-lesson.php
 
 Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
@@ -57,6 +57,31 @@ function play($item) {
     
     //$timeline.fadeOut(500);  //this hides the timeline when playing media - decided to not hide the timeline [usability]
     
+    if ($item.data('ft') === 'inline') {
+                        $('#media-controls').hide();  // hide media controls
+    
+                        var $div = $('<div id="editor">');
+                    
+                        var native = ($item.data('nepali')) ? $item.data('nepali') : $item.data('html');
+                        var html = '<div class="text-display">' +
+                            '<div class="english">' + $item.data('html') + '</div><div class="native" style="display:none;">' + native + '</div>';
+                    
+                        $(html).appendTo($div);
+                        $viewer.empty();
+                        $div.appendTo($viewer);
+                    
+                        if (language === 'native') {$('.english').hide();$('.native').show();}
+                        else               {$('.english').show();$('.native').hide();}
+        
+   /*
+        $viewer.empty();
+        var $div = $('<div id="editor">');
+        var $text_display = $('<div class"text-display">').appendTo($div);
+        if ($item.data('lang') === 'en') $($item.data('html')).appendTo($text_display);
+        else                             $($item.data('nepali')).appendTo($text_display);
+        $div.appendTo($viewer);
+    */
+    } else
     playActivity($item.data('ft'),        $item.data('fn'),         $item.data('fp'),
                  $item.data('dn'),        $item.data('id'), "", $item.data('page'),
                  $item.data('epversion'), $item.data('ole'),        $item.data('grade'),
@@ -77,6 +102,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
     $viewer.empty();
     
     switch (ft) {
+        
         case "image":
         case "jpg":
         case "png":
@@ -244,11 +270,17 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
                 
              */
             break;
-        
+    
         case 'text':
-            
+        
             $('.speak, .lookup').show();
             textHTML(id);
+            break;
+            
+        case 'inline-text':
+            
+            $('.speak, .lookup').show();
+            inlineHTML();  // call with inline 'html' of the activity
             break;
         
         case 'html':
@@ -372,6 +404,8 @@ function textHTML(id) {
         'json'
     );
 }
+
+function inlineHTML() {};
 
 function makeHtmlHTML() {
     return (

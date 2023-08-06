@@ -10,7 +10,8 @@ header("Pragma: no-cache");
     // $_SERVER['$SERVER_NAME'] values are "learning.cehrd.edu.np:, "looma.website",
     //      "india.looma.website", "test.looma.website",
     //      and for looma boxes: "looma", or "india.looma"
-    //
+    //UseCanonicalName On
+//ServerName looma-local
     // Also, Turn on error reporting - only for localhost & test debugging, not on production server or looma box
     if        ($_SERVER['SERVER_NAME'] === 'learning.cehrd.edu.np') {
         $LOOMA_SERVER = 'CEHRD';

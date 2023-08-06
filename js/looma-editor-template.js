@@ -125,14 +125,14 @@ function editor_display (response) {clearFilter(); $timeline.html(unpack(respons
 
 /////////  editor_save  /////////
 function editor_save(name) {
-    savefile(name, currentcollection, currentfiletype, editor_pack($timeline.html()), "true");
+    savefile(name, currentcollection, currentfiletype, editor_pack($timeline.html()), "true",null);
     //note, the final param to 'savefile()' [to make an activity] set to 'true'
     //because lessons are recorded as  activities [for use in library-search, for instance]
 } //end editor_save()
 
 ///////// editor_templatesave /////////
 function editor_templatesave(name) {
-    savefile(name, currentcollection, currentfiletype + '-template', editor_pack($timeline.html()), "false");
+    savefile(name, currentcollection, currentfiletype + '-template', editor_pack($timeline.html()), "false",null);
     //note, the final param to 'savefile()' [to make an activity] set to 'false'
     //because lessons templates are not recorded as  activities
 } //end editor_templatesave()

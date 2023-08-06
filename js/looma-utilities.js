@@ -182,7 +182,9 @@ playMedia : function(button) {
 
         case "lesson":
             LOOMA.clearStore('lesson-plan-index', 'session');
-            window.location = 'lesson?id=' + button.getAttribute('data-mongoid')+ '&lang=' + ((language==='native') ? 'np' : 'en');
+            window.location = 'lesson?id=' + button.getAttribute('data-mongoid') +
+                '&db=' + button.getAttribute('data-db') +
+                '&lang=' + ((language==='native') ? 'np' : 'en');
             break;
     
         case "game":
@@ -337,7 +339,7 @@ playMedia : function(button) {
             
                 case "lesson":
                     LOOMA.clearStore('lesson-plan-index', 'session');
-                    window.location = 'looma-play-lessonNEW.php?id=' + button.getAttribute('data-mongoid')+ '&lang=' + ((language==='native') ? 'np' : 'en');
+                    window.location = 'looma-play-lesson.php?id=' + button.getAttribute('data-mongoid')+ '&lang=' + ((language==='native') ? 'np' : 'en');
                     break;
             
                 case "game":
@@ -370,7 +372,7 @@ playMedia : function(button) {
  */
     
     
-        makeActivityButton: function (id, mongoID, appendToDiv) {
+        makeActivityButton: function (id, db, mongoID, appendToDiv) {
     // given an ID for an activity in the activities collection in mongo,
     // attach a button [clickable button that launches that activity] to "appendToDiv"
 
@@ -379,7 +381,7 @@ playMedia : function(button) {
     //post to looma-database-utilities.php with cmd='openByID' and id=id
     // and result function makes a DIV and calls "succeed(div)"
              $.post("looma-database-utilities.php",
-                {cmd: 'openByID', collection: 'activities', id: id},
+                {cmd: 'openByID', db: db, collection: 'activities', id: id},
                 function(result) {
                     var thumbfile;
                         //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;

@@ -63,6 +63,9 @@ Description:  for Looma 2
                  <button id="requestcontent" class="admin-control" >Dictionary Editor</button>
              </a>
 
+             <a href="looma-text-scan.php">
+                 <button id="textscan" class="admin-control" >Scan Text Files</button>
+             </a>
          <!--
              <a href="looma-content-request.php">
                  <button id="requestcontent" class="admin-control" >Request Resource</button>
@@ -77,9 +80,8 @@ Description:  for Looma 2
                  <button id="importcontent" class="exec-control" >Import Content</button>
              </a>
 
-             <a href="looma-text-scan.php">
-                 <button id="textscan" class="admin-control" >Scan Text Files</button>
-             </a>
+                 <button id="update" class="exec-control" >Update Code and Content</button>
+
              <br>
 
              <br><div id="themelist" class="exec-control">

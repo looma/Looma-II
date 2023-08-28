@@ -1,0 +1,87 @@
+//    filename: removeChapterAttachments
+//    rename ch_id's of TEXTBOOKs being DELETED
+//    from ACTIVITIES
+//
+//    reads a file with list of textbook IDs being deleted
+//
+//   run in MONGO SHELL with: load('removeChapterAttachments')
+//
+
+var activities;
+var count = 0;
+var changecount = 0;
+var changed = false;
+var CH_IDregex = /([1-9]|10|11|12)(EN|ENa|Sa|S|SF|Ma|M|SSa|SS|N|H|V|CS)[0-9]{2}(\.[0-9]{2})?/;
+
+// replace this array with list of textbook prefixes to be deleted
+/*var deletedbooks =
+    ["5EN", "5M`", "5N", "5S", "5SS",
+        "6H", "7S", "8EN", "8H", "8M",
+        "8N", "8S", "8SSa", "8V", "9CS",
+        "9M", "9Ma", "9S", "10CS", "10EN",
+        "10ENa", "10H", "10M", "10Ma ", "10N",
+        "10S", "10Sa", "10SS"];
+*/
+
+function prefix(chapter) {
+    var check = chapter.match(CH_IDregex);
+    //print('prefix of ' + chapter + ' is ' + check[1] + check[2]);
+    return check[1]+check[2];
+
+}; //end prefix()
+
+print('running removeChapterAttachments');
+
+// "input" is a text file with textbook "prefixed" (e.g. "1EN") one per line
+/*
+var input = 'textbooksBeingDeleted.txt';
+print ('Importing textbook IDs of  textbooks to be deleted from ' + input);
+
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+var deletedbooks = file.split(/[\r\n]+/);  // split file into array of lines each containing a single ID
+ */
+print ('Processing ' + deletedbooks.length + ' deleted textbooks');
+
+activities = db.activities.find({});
+
+while (activities.hasNext()) {
+    act = activities.next();
+    changed = false;
+    //look at all the ch_id's and nch_id's for this activity
+    // if the prefix of ch_id is in var deletedbooks,
+    // then change the ch_id by adding a "x" at the beginning of the string
+    count++;
+    if (Array.isArray(act.ch_id)) for (let index in act.ch_id) {
+        //print('ch_id ' + act.ch_id[index] + ' has prefix ' + prefix(act.ch_id[index]));
+        print(' DN is ' + act.dn);
+        if (act.ch_id[index] && deletedbooks.includes(prefix(act.ch_id[index]))) {
+             changed = true;
+             print('changing ' + act.ch_id[index] + ' to x' + act.ch_id[index]);
+             act.ch_id[index] = 'x' + act.ch_id[index];
+           };
+    };
+    
+    if (Array.isArray(act.nch_id)) for (let index in act.nch_id) {
+            //print(' nch_id ' + act.nch_id[index] + ' has prefix ' + prefix(act.nch_id[index]));
+        print('nDN is ' + act.ndn);
+        if (act.nch_id[index] && deletedbooks.includes(prefix(act.nch_id[index]))) {
+                changed = true;
+                print('changing ' + act.nch_id[index] + ' to x' + act.nch_id[index]);
+                act.nch_id[index] = 'x' + act.nch_id[index];
+            };
+    };
+
+    if (changed && param === 'run') {
+        print('updating ' + act.dn);
+        db.activities.replaceOne({_id:act._id}, act);
+            changecount++;
+            changed = false;
+        }
+    };
+
+print('');
+print('found ' + count + ' activities');
+print('changed ' + changecount + ' activities');
+if (param === 'dryrun') print('DRY RUN - no changes made');
+else                    print(' and replaced ch_ids of deleted textbooks with "xID"');
+print('');

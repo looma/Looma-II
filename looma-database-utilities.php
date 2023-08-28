@@ -1035,7 +1035,7 @@ require_once('includes/looma-utilities.php');
             for ($i = 1; $i < sizeof($result); $i++) {
 
                 if ($result[$i]['ft'] !== $result[$i-1]['ft']) $unique[] = $result[$i];
-                if ($result[$i]['db'] !== $result[$i-1]['db']) $unique[] = $result[$i];
+                else if ($result[$i]['db'] !== $result[$i-1]['db']) $unique[] = $result[$i];
 
                 else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2019') {
                     if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
@@ -1213,9 +1213,16 @@ require_once('includes/looma-utilities.php');
 
 
         $arr = $_REQUEST['activities'];
+        $dbs = $_REQUEST['db'];
 
-        foreach ($arr as $activity)
+        foreach ($arr as $index => $activity)
             if($activity) {
+
+                if ($dbs[$index] === 'loomalocal') {
+                    $dbCollection = $localcollections[$collection];
+                } else {
+                    $dbCollection = $collections[$collection];
+                };
 
     //echo '$activity is: ' . $activity;
 
@@ -1256,7 +1263,7 @@ require_once('includes/looma-utilities.php');
                 // $addToSet FAILS if the field already contains a non-array string
 
 
-            //print_r ($update);
+            //print_r ($dbCollection);
 
             $result = mongoUpdate($dbCollection, $query, $update);
 

@@ -35,6 +35,24 @@ function restoreFullscreenControl () {
 
 $(document).ready (function() {
     
+    window.top.scrollTo(0,1); // trying to remove toolbar on safari iPhone DOESNT WORK?
+   // window.screen.orientation.lock('landscape'); // trying to force landscape orientation on iPhone DOESNT WORK?
+    
+    
+    
+        if (screen.orientation.type === 'portrait-primary'
+           //&& (window.innerHeight > window.innerWidth)
+        )
+            LOOMA.alert('Looma should be viewed in Landscape mode. Please rotate your phone', 10, true);
+    
+    screen.orientation.addEventListener("change", function(e) {
+        if (screen.orientation.type === 'portrait-primary')
+            LOOMA.alert('Looma is best viewed in landscape mode. Please rotate your phone', 10, true);
+        else LOOMA.closePopup();
+    });
+    
+    
+    
     //NOTE: experimental code to change color scheme for all Looma pages
     // not visible to users
    var main_color = LOOMA.readStore('main-color','local');

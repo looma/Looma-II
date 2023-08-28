@@ -22,7 +22,7 @@ body {
     grid-row: top / timeline;
     grid-column: left / right;
     margin:0;
-    background-color:lightgray;
+    background-color: var(--looma-background);
     font-family: "Comic Sans MS", cursive, sans-serif;
     color:black;
 }
@@ -53,37 +53,54 @@ body {
     position:relative;
     height:100%;
     width:100%;
+    padding: 3vh;
 }
 
 .caption {
-    position:absolute;
+    left:4vw;
     display: block;
     height: 7%;
+    width:90%;
     overflow: hidden;
     word-wrap: normal;
     font-size: x-large;
-    width:95%;
     background-color: lightblue;
     border: 3px solid black;
     border-radius: 10px;
     text-align: center;
     margin: auto;
-    bottom: 0vh;
 }
 
 .media-container {
-    height:100%;
+    font-size:2.5em;
+    height:90%;
+    margin:auto;
+    overflow:hidden;
+   /* height:100%;*/
 }
 
 .media-container img{
     display: block;
+    object-fit:contain;
     height:100%;
+    min-height:100%;
     max-height: 100%;
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
 
+.text-display {
+    height:100%;
+    width:75%;
+    margin: 3vh auto;
+    padding: 2vh 2vh;
+    overflow: hidden;
+    font-weight: bold;
+    background-color: white;
+    color: black;
+    /*font-size: 20px;*/
+}
 #timeline-container::-webkit-scrollbar {
     display: none;
 }
@@ -308,16 +325,6 @@ span#slideshow-name {
 #forward, #forward-fullscreen { background-image: url("../images/carrot-fwd.png"); }
 #dismiss                      { background-image: url("../images/back-arrow.png"); }
 
-#fullscreen .text-display {
-    height:100%;
-    /*zoom: 250%;*/
-    margin:0 auto;
-    overflow: hidden;
-    font-weight: bold;
-    background-color: white;
-    color: black;
-    /*font-size: 20px;*/
-}
 #fullscreen-playpause {
     display:inline;
     background-image: url("../images/video.png");

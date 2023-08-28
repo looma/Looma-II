@@ -150,11 +150,17 @@ form#search span.typ-chk:hover, form#search span.src-chk:hover {
 }
 
 /* @media for smartphones */
-@media screen and (max-device-height: 480px) and (orientation:landscape) , screen and (max-device-width:480px) and (orientation:portrait) {
+@media screen and (max-device-width:480px) and (orientation:portrait),
+screen and (max-device-width:768px) and (orientation:landscape) {
     input#search-term { font-size: 0.5em; }
     button#toggle-database { right:8.5%; }
     button#media-submit, button#chapter-submit {
         width:unset;
         height:unset;
+    }
+    form#search{font-size: 4vw}
+    button.clear-search{
+        Width: 20vw;
+        Height: 7vw;
     }
 }

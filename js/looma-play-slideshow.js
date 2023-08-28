@@ -14,7 +14,7 @@ Revision: Looma 4.0
 var isFullScreen = false;
 
 function insertCaption($item) {
-    $('#viewer').css('height', '100%');
+   // $('#viewer').css('height', '100%');
 	if ($item.attr('data-ft') === "text") { $('.caption').hide();}
 	else { if ($item.attr('data-dn') && $item.attr('data-dn') !== "")  //note slideshow editor stores the CAPTION for a slide in 'data-url' of the Activity Button for the slide
         {   $('.caption').text($item.attr('data-dn'));

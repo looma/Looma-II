@@ -36,7 +36,7 @@ var time;
 var hour;
 var minute;
 var second;
-var myVar = false;
+var timer = false;
 var twentyFour = false;
 
 //months and weeks for digital clock
@@ -226,7 +226,9 @@ $(document).ready (function() {
         }
         drawInitialClock();
         $("#toCurrentTime").hide();
-        if(!myVar) {myVar = setInterval(drawNextClock, 1000);}
+        //clearInterval(timer);
+        clearTimers();
+        if(!timer) {timer = setInterval(drawNextClock, 1000);}
     }
 
 //click the oneClock button (simpler clock), show/hide the buttons
@@ -346,8 +348,9 @@ $(document).ready (function() {
     function mouseMoved(event)
     {
         if(mouseIsDown) {
-            clearInterval(myVar);
-            myVar = false;
+            //clearInterval(timer);
+            clearTimers();
+            timer = false;
             
             var mouseCoords = getMouseCoords(event);
             var minuteDouble = minuteHand(mouseCoords.x, mouseCoords.y);
@@ -365,8 +368,9 @@ $(document).ready (function() {
         }
         
         else if(mouseIsDownHour) {
-            clearInterval(myVar);
-            myVar = false;
+            //clearInterval(timer);
+            clearTimers();
+            timer = false;
             
             var mouseCoords = getMouseCoords(event);
             var hourDouble = hourHand(mouseCoords.x, mouseCoords.y);
@@ -523,8 +527,9 @@ $(document).ready (function() {
 
 //resize canvas, draw clocks with current time
     function changeSize() {
-        clearInterval(myVar);
-        myVar = false;
+        //clearInterval(timer);
+        clearTimers();
+        timer = false;
         
         resizeCanvas();
         ctx.translate(radius, radius);
@@ -622,6 +627,13 @@ $(document).ready (function() {
     window.addEventListener('resize', changeSize);
     
     toCurrentTime();
+    
+    function clearTimers() {
+        for(var i=0; i < timer; i+=1) {clearInterval(i);}
+        timer = 0;
+    };  // end clearTimers()
+    
+    window.onbeforeunload = clearTimers;
     
     
 });

@@ -12,7 +12,9 @@ Description: looma slideshow presenter
     logFiletypeHit('slideshow');
     ?>
 
+<!--
 <link rel="stylesheet" href="css/looma-text-display.css">
+-->
 <link rel="stylesheet" href="css/looma-play-slideshow.css">
 
   </head>
@@ -29,13 +31,13 @@ Description: looma slideshow presenter
 
 
         <div id="main-container-horizontal">
-            <div id="fullscreen">
+          <div id="fullscreen">
                 <div id="viewer">
                     <div class="media-container"></div>
                      <p class="caption"></p>
                 </div>
                 <?php include("includes/looma-control-buttons.php"); ?>
-            </div>
+          </div>
         </div>
 
         <div id="timeline-container">

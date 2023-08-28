@@ -1,33 +1,31 @@
 /*
 LOOMA javascript file
-Filename: looma-play-lesson.js
-Description: supports includes/looma-play-lesson.php
+Filename:    looma-play-lesson.js
+Description: supports looma-play-lesson.php
 
 Programmer name: Skip
-Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: Jan 2017
-Revision: Looma 2.4
+Owner: Looma Education
+Date: Jan 2017, AUG 2023
+Revision 2023: Looma 3.0 revised AUG '23 for new Lesson Editor, new lesson format for textfiles and
+          to get all types of timeline elements to play in iFrames rather than their own page
 */
 
 'use strict';
-var $timeline;
 
-var $imageHTML;
-var $audioHTML;
-var $videoHTML;
-var $pdfHTML;
-var $htmlHTML;
+var $imageHTML, $audioHTML ,$videoHTML, $htmlHTML;
 
-var video; //the video DOM element
-var audio; //the audio DOM element
+var video, audio;
 var chapter_language;
 
-var first_ft;
+var ft;
 var playing;
+
+var $timeline;
 var $currentItem;
-var $displayers;
 var $viewer;
 var $fullscreen;
+
+//var comeback = false;  // set to TRUE when opening another page, but want to return to this lesson play page
 
 function scrollTimeline($btn) {
     $('#timeline-container').animate({
@@ -42,7 +40,7 @@ function pause() {
     $('#pause').css('background-image', 'url("images/play-button.png")');
 } //end pause()
 
-function play($item) {
+/*function play($item) {
     
     //$(video).empty();
     $currentItem = $item;
@@ -52,11 +50,7 @@ function play($item) {
     $('#timeline button').removeClass('playing');
     $item.addClass('playing');
     scrollTimeline($item);
-    
-    ////// save the current time position in localstore
-    
-    //$timeline.fadeOut(500);  //this hides the timeline when playing media - decided to not hide the timeline [usability]
-    
+ 
     if ($item.data('ft') === 'inline') {
                         $('#media-controls').hide();  // hide media controls
     
@@ -72,36 +66,60 @@ function play($item) {
                     
                         if (language === 'native') {$('.english').hide();$('.native').show();}
                         else               {$('.english').show();$('.native').hide();}
-        
-   /*
-        $viewer.empty();
-        var $div = $('<div id="editor">');
-        var $text_display = $('<div class"text-display">').appendTo($div);
-        if ($item.data('lang') === 'en') $($item.data('html')).appendTo($text_display);
-        else                             $($item.data('nepali')).appendTo($text_display);
-        $div.appendTo($viewer);
-    */
     } else
     playActivity($item.data('ft'),        $item.data('fn'),         $item.data('fp'),
                  $item.data('dn'),        $item.data('id'), "", $item.data('page'),
                  $item.data('epversion'), $item.data('ole'),        $item.data('grade'),
-                $item.data('nfn'),       $item.data('npg'),        $item.data('lang'),
-                $item.data('len'),       $item.data('nlen')
+                 $item.data('nfn'),       $item.data('npg'),        $item.data('lang'),
+                 $item.data('len'),       $item.data('nlen')
     );
 } //end play()
+*/
+function play ($item) {
+    var ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, npn, lang, len, nlen;
+    ft = $item.data('ft');  lang = $item.data('lang');
+    fn = $item.data('fn');  nfn = $item.data('nfn');
+    fp = $item.data('fp');  dn = $item.data('dn');
+    id = $item.data('id');  ch = $item.data('ch');
+    pg = $item.data('page');  npn = $item.data('npn');
+    version = $item.data('epversion'); oleID = $item.data('ole');
+    grade = $item.data('grade');
+    len = $item.data('len'); nlen = $item.data('nlen');
 
-function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, npn, lang, len, nlen) { //play the activity of type FT, named FN, in path FP, display-name DN
     // depending on FT, may use ID, CH (a ch_id) or pg (for PDFs)
     
     // plays the selected (onClick) timeline element (activity) in the $viewer div
     //NOTE: playActivity() should move to looma-utilities.js (??)
+    $currentItem = $item;
+    LOOMA.setStore('lesson-plan-index', $item.index(),'session');
     
+    playing = true;
+    $('#timeline button').removeClass('playing');
+    $item.addClass('playing');
+    scrollTimeline($item);
     restoreFullscreenControl(); //reset fullscreen operation in case video, which overrides normal fullscreen operation, has run
     $('#fullscreen-playpause').hide();
     $('#media-controls').hide();  // hide media controls
     $viewer.empty();
     
     switch (ft) {
+        
+        case "inline":
+                $('#media-controls').hide();  // hide media controls
+        
+                var $div = $('<div id="editor">');
+        
+                var native = ($item.data('nepali')) ? $item.data('nepali') : $item.data('html');
+                var html = '<div class="text-display">' +
+                    '<div class="english">' + $item.data('html') + '</div><div class="native" style="display:none;">' + native + '</div>';
+        
+                $(html).appendTo($div);
+                $viewer.empty();
+                $div.appendTo($viewer);
+        
+                if (language === 'native') {$('.english').hide();$('.native').show();}
+                else               {$('.english').show();$('.native').hide();}
+                break;
         
         case "image":
         case "jpg":
@@ -172,29 +190,26 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             
             $('.speak, .lookup').show();
     
-            var pagenumber;
-            var filename;
-            var filepath;
+            var pagenumber = 1;
+            var filename = fn;
+            var filepath = fp;
             var length;
-            if (chapter_language === 'native' && npn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
-                pagenumber = npn;
-                filename = nfn;
-                filepath = fp;
-                length = nlen || 100;
-            } else {
-                pagenumber = pg;
-                filename = fn;
-                filepath = fp;
-                length = len || 100;
-            }
-
+            if ( ft === 'chapter') {
+                if (chapter_language === 'native' && npn) {  //(used in lesson-present: if language=='native' then show NP chapter if available
+                    pagenumber = npn;
+                    filename = nfn;
+                    filepath = fp;
+                    length = nlen || 100;
+                } else {
+                    pagenumber = pg;
+                    length = len || 100;
+                }
+            } else length = 0;
 
 // *********  PAGE controls ***************
-        
             enablePageControls();
 
 // *********  ZOOM controls ***************
-        
             enableZoomControls();
         
             $('#zoom-btn').click ( function(){$('#zoom-dropdown').toggle();});
@@ -208,7 +223,6 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             });
 
 // *********  FULLSCREEN controls ***************
-        
             $('#fullscreen-control').click(function () {
                 if (document.fullscreenElement) {
                     //currentScale = currentScale * 1 / 1.08;
@@ -229,7 +243,6 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             });
 
 // *********  SCROLL controls ***************
-        
             enableScrollDetect();
         
             // the SETINTERVAL call de-bounces scroll events, so the handler "getScrolledPage" is only called every "wait" msec
@@ -244,9 +257,9 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
                 async function(doc) {
                     pdfdoc = doc;
                     startPage = pagenumber;
-                    maxPages = doc._pdfInfo.numPages || 1;
+                    maxPages = (length > 0) ? length : doc._pdfInfo.numPages;
                     //if (endPage > maxPages) endPage = maxPages;
-                    endPage = startPage + length;
+                    endPage = startPage + maxPages - 1;
                     $('#maxpages').text(endPage - startPage + 1);
                     console.log('loaded file ' + filepath + filename + ' with ' + maxPages + ' pages');
             
@@ -260,15 +273,6 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
                 }).then( () =>  {drawThumbs();});
         
             $viewer.empty().append( $('#pdf').clone() );  //  .attr('id', 'pdfnew')
-        
-            //$('#pdf').clone().attachTo($viewer);
-            /*
-                $pdfHTML.find('iframe').attr('src',
-                'pdf?fn=' + filename + '&fp=' + fp + '&page=' + pagenumber + '&len=' + length + '&zoom=' + 2.3
-                );
-                $pdfHTML.appendTo($viewer);
-                
-             */
             break;
     
         case 'text':
@@ -277,22 +281,21 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
             textHTML(id);
             break;
             
-        case 'inline-text':
-            
-            $('.speak, .lookup').show();
-            inlineHTML();  // call with inline 'html' of the activity
-            break;
-        
         case 'html':
         case 'HTML':
             $htmlHTML.find('embed').attr('src', fp + fn);
             
             $htmlHTML.appendTo($viewer);
             break;
-        
-
+            
         case 'looma':
-            window.location = $currentItem.data('url');
+          //  comeback = true;
+          //  LOOMA.setStore('lesson-plan-index', $currentItem.index()+1,'session');
+         $('<iframe src="' + $currentItem.data('url') + '?toolbar=no" ></iframe>')
+                .appendTo('#viewer');
+            
+          //  $('#viewer').load($currentItem.data('url') + '?toolbar=no');
+           // window.location = $currentItem.data('url');
             break;
         
         case 'evi':
@@ -316,9 +319,7 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
         case 'game':
             openPage($currentItem, 'games', 'game');
             break;
-        
-        //NOTE, cannot "play" ft == 'lesson' with a lesson
-        
+            
         default:
             $viewer.html('<div class="error-message">File not found</div>');
             console.log("ERROR: in playActivity(), unknown type: " + ft);
@@ -338,6 +339,35 @@ function playActivity(ft, fn, fp, dn, id, ch, pg, version, oleID, grade, nfn, np
      */
 
 } //end playActivity()
+
+function openPage(item, collection, url) {
+    $.post("looma-database-utilities.php", {
+            cmd: "openByID",
+            collection: collection,
+            id: item.data('id')
+        },
+        function(result) {
+            var id;
+            if ('$oid' in result['_id']) id = result['_id'].$oid;
+           else                          id = result['_id'].$id;
+           // comeback = true;
+           // LOOMA.setStore('lesson-plan-index', $(item).index()+1,'session');
+  
+    $('#fullcreen-control').show();
+    
+          //  $('#viewer').append($("<iframe id='iframe' src='" + url + "?id=" + id + "&toolbar=no"));
+            if ( url === 'slideshow')
+                $('<iframe src="' + 'slideshow' + '?id=' + id + '" style="height:100%;"></iframe>')
+                    .appendTo('#viewer');
+            else        $('<iframe src="' + url + '?id=' + id + '&toolbar=no" ></iframe>')
+                .appendTo('#viewer');
+         //   $('#viewer').load(url + '?id=' + id + '&toolbar=no');
+           // window.location =  url + '?id=' + id + '&toolbar=no';
+        },
+        'json'
+    );
+} // end openPage()
+
 /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
 function makesortable() {
     //$('timelineDisplay').sortable( "destroy" ); //remove previous sortable state
@@ -354,32 +384,13 @@ function makeImageHTML() {
     return ('<img src="">');
 }
 
-function makePdfHTML() // see looma-play-pdf.php for original code
-{
-    
-    //NEED to ADD pdf toolbar here
-    
+function makePdfHTML() {   // see looma-play-pdf.php for original code
+
     return ('<div id="fullscreen"><iframe id="iframe"' +
         'id="pdf-canvas" ><p hidden id="parameters" data-fn= data-fp= data-pg=></p>' +
         '</iframe></div>');
 };
 
-function openPage(item, collection, url) {
-    $.post("looma-database-utilities.php", {
-            cmd: "openByID",
-            collection: collection,
-            id: item.data('id')
-        },
-        function(result) {
-            var id;
-            if ('$oid' in result['_id']) id = result['_id'].$oid;
-           else
-            id = result['_id'].$id;
-            window.location =  url + '?id=' + id;
-        },
-        'json'
-    );
-}
 function textHTML(id) {
     
     $.post("looma-database-utilities.php", {
@@ -405,14 +416,11 @@ function textHTML(id) {
     );
 }
 
-function inlineHTML() {};
-
 function makeHtmlHTML() {
     return (
         '<div id="fullscreen"><embed src="" height=100% width=100%></div>'
     );
 }
-//function makeLoomaHTML() { return('<div id="fullscreen"><embed src="" height=100% width=100%></div>');};
 
 function makeAudioHTML() {
     return (
@@ -426,6 +434,7 @@ function makeAudioHTML() {
         '</div>' +
         '</div>');
 } //end audioHTML
+
 function makeVideoHTML() {
     return (
         //'<div id="video-player">' +
@@ -441,29 +450,28 @@ function makeVideoHTML() {
 } //end videoHTML
 
 window.onload = function() {
-    
-    $('#media-controls').hide();  // hide media controls
-    
-    //$('#controlpanel').draggable(); //makes the control buttons moveable around the screen.
-    
-    chapter_language = ($('#main-container-horizontal').data('lang')==='np'?'native':'english');
-    
-    $('.activity').removeClass('activity play img').addClass(
-        'lesson-element');
-    
-    $timeline = $('#timeline');
-    // $timeline.sortable({scroll: true, axis:"x"});
-    
-    
-    makesortable(); //makes the timeline sortable
-    
-    $currentItem = null;
+   // $currentItem = null;
     $viewer = $('#viewer');
     $fullscreen = $('#fullscreen');
- 
-// NOTE:2022 07 05 [Skip] what is "displayers"? commented out for now
- //   $displayers = $('#displayers');$displayers.hide();
+    $timeline = $('#timeline');
     
+    $('#media-controls').hide();
+    // create HTML for various players for filetypes
+    
+    $imageHTML = $(makeImageHTML());
+    $audioHTML = $(makeAudioHTML());
+    $videoHTML = $(makeVideoHTML());
+    $htmlHTML  = $(makeHtmlHTML());
+    
+    video = $('#video', $videoHTML).get(0); //the video DOM element
+    audio = $('#audio', $audioHTML).get(0); //the audio DOM element
+    
+    chapter_language = ($('#lesson-container').data('lang')==='np'?'native':'english');
+    
+    $('.activity').removeClass('activity play img').addClass('lesson-element');
+    
+    makesortable(); //makes the timeline sortable
+
     // handlers for 'control panel' buttons
     $('#back, #prev-item, #back-fullscreen').click(function () {
         if ($currentItem.prev().is('button')) {
@@ -492,13 +500,13 @@ window.onload = function() {
         if (playing) pause();
         else play($currentItem);
     });
+    
     $('#return').click(function () {
         parent.history.back();
     });
     
-    $timeline.on('click', 'button', function () {
-        play($(this));
-    });
+    $timeline.off('click', 'button');
+    $timeline.on ('click', 'button', function () { play($(this));});
     
     $('.tip').removeClass('yes-show');  // dont show normal hover popup
     
@@ -513,38 +521,20 @@ window.onload = function() {
         }
     );
     
-    // create HTML for various players for filetypes
-    
-    $imageHTML = $(makeImageHTML());
-    $audioHTML = $(makeAudioHTML());
-    $videoHTML = $(makeVideoHTML());
-    $pdfHTML = $(makePdfHTML());
-    $htmlHTML = $(makeHtmlHTML());
-    
-    video = $('#video', $videoHTML).get(0); //the video DOM element
-    audio = $('#audio', $audioHTML).get(0); //the audio DOM element
-//
+    window.onbeforeunload = function () {
+       // if ( ! comeback )
+            LOOMA.setStore('lesson-plan-index', 0,'session');
+    };
     
     var index = LOOMA.readStore('lesson-plan-index', 'session');
-    if (index) {
-        $currentItem = $('#timeline').find('button:nth-child(' + (parseInt(index) + 1) + ')');
-        $currentItem.focus();// put focus on timeline[index]
-        $viewer.empty();
-        //$('#media-controls').hide();  // hide media controls
+   
+    if (index)  $currentItem = $('#timeline').find('button:nth-child(' + (parseInt(index) + 1) + ')');
+    else        $currentItem = $('#timeline').find('button:first');
     
-    } else {
-        first_ft = $('#timeline').find('button:first').data('ft');
-        if (first_ft != 'history' && first_ft != 'map' &&
-            first_ft != 'game' && first_ft != 'slideshow' &&
-            first_ft != 'looma' && first_ft != 'evi') {
-                play($('#timeline').find('button:first')); // automatically "play" the first item
-        } else // else just focus on the first button
-        {
-            $currentItem = $('#timeline').find('button:first').focus();
-        }
-    }
-    
-    if ($.inArray($currentItem.data('ft'), ['game','map','history','slideshow']) === -1) play($currentItem);
-    else scrollTimeline($currentItem);
+    $viewer.empty();
+    $currentItem.focus();
+    scrollTimeline($currentItem);
+    ft = $currentItem.data('ft');
+    play($currentItem);
     
 }; //end window.onload

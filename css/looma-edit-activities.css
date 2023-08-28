@@ -333,7 +333,7 @@ li:hover {
     padding:3px;
     border-bottom:1px solid #000;
     line-height:11px;
-    overflow:auto;
+    overflow:hidden;
 }
 
 .resultitem .remove {display:none;}

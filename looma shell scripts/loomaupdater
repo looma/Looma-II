@@ -332,6 +332,9 @@ if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
             rm /tmp/lessonsFromMongo.tmp
             rm /tmp/textsFromMongo.tmp
 
+            mongoimport --db loomausers --collection logins --file "$TODIR/Looma/mongo-dump/logins/defaultlogins.json"
+            rm "$TODIR/Looma/mongo-dump/logins/defaultlogins.json"
+
             result $?
         else echo "ERROR: no source dir ($TODIR/Looma/mongo-dump/dump/looma) for mongo restore"
         fi

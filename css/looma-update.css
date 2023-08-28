@@ -1,0 +1,24 @@
+p {font-size:2em;}
+
+p#warning, p#waiting {
+    display:none;
+    width:50vw;
+    margin:auto;
+    color:red;
+    background-color: white;
+}
+fieldset {
+    margin:auto;
+    width:33vw;
+    font-size:1.5em;
+}
+
+#button-div {display:none;}
+
+button {
+    margin: 2vh 1vw;
+    width:15vw;
+    height:8vh;
+    font-size:2em;
+}
+

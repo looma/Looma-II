@@ -33,7 +33,6 @@ form {
 }
 
 input#input {
-    border: none;
     border-radius: 6px;
     margin: auto 0;
     font-size:1em;
@@ -168,12 +167,6 @@ button#submit {
     cursor: pointer;
 }
 
-/* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 700px){
-    .modal-content {
-        width: 100%;
-    }
-}
 
 .native-keyword {
     display:inline;
@@ -190,5 +183,5 @@ button#submit {
     
     button.speak { bottom:32vh; }
     button.show-keyboard {bottom:47vh;}
-    
+    .modal-content {width: 100%;}
 }

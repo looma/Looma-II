@@ -49,12 +49,10 @@ button.calc-button:hover {
     /*transform: scale(1.5,1.5);*/
 }
 
-@media screen and (max-device-height: 480px) and (orientation:landscape) , screen and (max-device-width:480px) and (orientation:portrait) {
-    td { padding: 0; }
-    
+@media screen and (max-device-width:480px) and (orientation:portrait),
+screen and (max-device-width:768px) and (orientation:landscape) {    td { padding: 0; }
     button.calc-button {
-        font-size: initial;
+        font-size: 5vw;
     }
-    
     #display { margin:0;}
 }

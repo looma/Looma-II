@@ -99,5 +99,7 @@ $(document).ready (function() {
         console.log('Dictionary: speaking "' + toSpeak + '"');
         LOOMA.speak(toSpeak);
         
+        $('#input').trigger('focus');
+        
     }); //end speak button onclick function
 });

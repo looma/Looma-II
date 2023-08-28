@@ -21,18 +21,23 @@ Description: looma lesson plan presenter
   <body>
     <?php
     if (isset($_REQUEST['lang'])) $lang = $_REQUEST['lang']; else $lang = 'en';
-    echo "<div id='main-container-horizontal' data-lang=$lang>";
+    echo "<div id='lesson-container' data-lang=$lang>";
     ?>
             <div id="fullscreen">
                 <div id="viewer">
                 </div>
 
-                <div id="displayers" hidden>
+                 <div id="displayers" hidden>
                     <div id="pdf-canvas">
-                        <div id="pdf" class="scroll" data-fn="" data-fp="" data-page="" data-len="" data-zoom=""></div>';
+                        <div id="pdf" class="scroll" data-fn="" data-fp="" data-page="" data-len="" data-zoom="">
+                        </div>
                     </div>
                 </div>
-                <?php include("includes/looma-control-buttons.php"); ?>
+
+                <?php
+                //include("includes/looma-control-buttons.php");
+                // control buttons conflict with lesson timeline items' control buttons
+                ?>
             </div>
 
             <?php include("includes/looma-media-controls.php"); ?>
@@ -260,7 +265,7 @@ Description: looma lesson plan presenter
            </div>
         </div>
 
-         <div id="title">
+         <div id="lessontitle">
              <span id="subtitle"></span>
             <span>Looma Lesson:&nbsp; <span class="filename"><?php if (isset($lessonname)) echo $lessonname ?></span></span>
          </div>

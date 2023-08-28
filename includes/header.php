@@ -97,6 +97,9 @@ header("Pragma: no-cache");
     <meta name="owner"     content="Looma Education Corporation">
     <meta name="copyright" content="Looma Education Corporation">
 
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <meta name="description" content="Looma Education: Nepal.
     Looma is an affordable and low power-consuming audio-visual education computer
     that provides reliable access to educational content for an entire classroom--offline.

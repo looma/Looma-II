@@ -21,19 +21,26 @@ body {
     grid-template-columns:[left] repeat(17, 1fr) [middle]   repeat(4, 1fr) [right];
 }
 
-#main-container-horizontal {
+#lesson-container {
     grid-row: top / timeline;
     grid-column: left / right;
+    overflow:hidden;
+    max-height:90vh;
+    min-width:100vw;
     margin:0;
     background-color:lightgray;
     /*font-family: "Comic Sans MS", cursive, sans-serif;*/
-    color:black;
+   /* color:black;*/
+}
+
+#main-container-horizontal {
+    min-height:100%;
 }
 
 iframe {
     border: none;
-    height: 100%;
-    width: 90%;
+    height: 111%;
+    width: 100%;
 }
 
 #timeline-container {
@@ -50,6 +57,8 @@ iframe {
     width:100%;
     margin:0;
     padding: 0;
+    position:static;
+    
 }
 
 #fullscreen:fullscreen {
@@ -87,7 +96,7 @@ iframe {
     height:14vh;
     width:100%;
     position:absolute;
-    bottom:0;
+    bottom:12vh;
 }
 
 .time {color:yellow;}
@@ -190,7 +199,7 @@ span.hint {
     z-index:-1;
 }
 
-#viewer img {
+#viewer  >img {
     height:100%;
     max-height:100%;
     max-width:100%;
@@ -229,13 +238,12 @@ span.hint {
     border-radius: 3px;
 }
 
-#title {
+#lessontitle {
     position:absolute;
     right:0;
     bottom:11vh;
     text-align:right;
     /*margin-right:3vw;*/
-    background-color: black;
     color:yellow;
     padding: 5px;
 }
@@ -261,7 +269,7 @@ button.lesson-element {
     vertical-align:top;
 }
 button.lesson-element.playing, button.lesson-element:focus {
-    border:3px solid blue;
+    border:5px solid red;
  }
  
 button.lesson-element .name{
@@ -414,5 +422,3 @@ span#lesson-name {
     font-size:2.9vw;*/
     zoom:120%;
 }
-
-#audio-viewer h2 {color:white;}

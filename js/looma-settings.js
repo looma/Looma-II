@@ -88,6 +88,15 @@ $(document).ready (function() {
                 }
             );
     
+        $('#updatecode').click(function() {
+            LOOMA.confirm('This will update the Looma code then reboot the system',
+                function() {window.location = "looma-update.php?cmd='code'";},
+                function(){return false;}
+            );
+        });
+        
+        $('#update').click(function() {window.location = "looma-update.php";});
+        
         $('.change-password').toggleClass('loggedIn').text('Change Password').click
         ( function() {window.location = "looma-change-password.php";}
         );

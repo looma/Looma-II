@@ -1,5 +1,7 @@
 #main-container-horizontal {}
 
+h1.title {font-size:3em;}
+
 #user-tools {
     height:28vh;
     overflow:hidden;

@@ -3,7 +3,7 @@
 //          each line of which is a name, pw, team, level {(none),translator,admin,exec}
 //          inserts new logins into collection 'logins'
 //
-//  make sure there is a file 'loginsToImport.TXT' in TAB-SEPARATED format, in the current directory
+//  make sure there is a file 'loginsToImport.csv' in TAB-SEPARATED format, in the current directory
 //  start MONGO in LOOMA db with: 'mongo looma'
 //  run in MONGO SHELL with: load('importUserLogins')
 //

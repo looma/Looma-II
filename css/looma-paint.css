@@ -7,6 +7,7 @@ button#fullscreen-control {
 }
 
 #canvas-div {
+    min-height:86vh;
     position: absolute;
     background-color: #fff;
     height: 96%;

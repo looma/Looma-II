@@ -125,8 +125,8 @@ button#fullscreen-control {
 */
 
 
-@media screen and (max-device-height: 480px) and (orientation:landscape) , screen and (max-device-width:480px) and (orientation:portrait) {
-    .info {font-size:2vwx;
+@media screen and (max-device-width:480px) and (orientation:portrait),
+screen and (max-device-width:768px) and (orientation:landscape) {    .info {font-size:2vwx;
    padding: 1px 5px;
     }
 }

@@ -48,15 +48,21 @@ function submitChanges (event) {  //check the form entries and submit to backend
         len = $('.changes-activities').length;
         for (var i=0 ; i< len && i < 10; i++) {
             $($('.changes-activities')[i]).val(null);
+            $($('.changes-db')[i]).val(null);
         }
         len = $checked.length;
         for (var i=0 ; i< len && i < 10; i++) {
-            var val = $($checked[i]).parent().data('mongo')['_id']['$oid'];
-            $($('.changes-activities')[i]).val(val);
-        }
+            var id = $($checked[i]).parent().data('mongo')['_id']['$oid'];
+            $($('.changes-activities')[i]).val(id);
+  
+            var db = $($checked[i]).parent().data('mongo')['db'];
+            $($('.changes-db')[i]).val(db);
+        };
+        
         LOOMA.confirm('Do you really want to modify ' + str,
                     function() {  //NOTE: 'cmd' is pre-set by the PHP to 'editActivity'
-                        $.post("looma-database-utilities.php",
+                        $('#changes-db').val();
+                            $.post("looma-database-utilities.php",
                             $("#changes").serialize(),   //NOTE: sends cmd=editActivity, and collection=activities to database-utilities.php
                             function (result) {LOOMA.alert('Changes successful',4, true);},
                             //function (result) {LOOMA.alert('Changes FAILED',    7, true);},  //NOTE: 'fail' function not allowed
@@ -68,6 +74,16 @@ function submitChanges (event) {  //check the form entries and submit to backend
                     );
     }
 }  //  end submitChanges()
+
+function x(){
+    var db = $.data(activity[0]).mongo.db;
+    $.post('looma-database-utilities.php',
+        {cmd:'', db:db, },
+        function (result) {
+            LOOMA.alert('saved',3);
+        }
+    )
+}
 function clearResults() {
     //$("#innerResultsMenu").empty();
     $("#innerResultsDiv" ).empty();
@@ -118,8 +134,9 @@ function showInfo (activity) {
     
     $('#details').html(   '<p>dn: ' + $.data(activity[0]).mongo.dn + '</p>'
                          + '<p>ndn: ' + $.data(activity[0]).mongo.ndn + '</p>'
-                         + '<p>fn: ' + $.data(activity[0]).mongo.fn + '</p>'
-                         + '<p>nfn: ' + $.data(activity[0]).mongo.nfn + '</p>'
+                        + '<p>fn: ' + $.data(activity[0]).mongo.fn + '</p>'
+                        + '<p>db: ' + $.data(activity[0]).mongo.db + '</p>'
+                        + '<p>nfn: ' + $.data(activity[0]).mongo.nfn + '</p>'
                         + '<p>fp: ' + $.data(activity[0]).mongo.fp + '</p>'
                         + '<p>ft: ' + $.data(activity[0]).mongo.ft + '</p>'
                         + '<p>src: ' + $.data(activity[0]).mongo.src + '</p>'

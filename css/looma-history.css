@@ -31,7 +31,8 @@ button {
   outline: none;
 }
 
- button.dropbtn  { cursor: pointer;}
+ button.dropbtn  {
+     cursor: pointer;}
  button.dropdate { cursor: default;}
 
 /* Controls the font size of the header so it doesn't change in different Looma themes */
@@ -111,8 +112,8 @@ h1 {
 }
 
 /*Keeps the timeline within a window*/
-@media screen and (max-width: 90vw) {
-  .timeline ol,
+ @media screen and (max-device-width:480px) and (orientation:portrait),
+ screen and (max-device-width:768px) and (orientation:landscape) {  .timeline ol,
   .timeline ol li {
     width: auto;
   }
@@ -123,7 +124,7 @@ h1 {
 #playground {
     position:absolute;
     top:20vh;
-    left:2vw;
+    padding-left:5vw;
 background-color:palegoldenrod;
     border: 0.1vh solid #ccc;
     overflow-x: auto;

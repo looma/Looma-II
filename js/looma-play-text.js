@@ -7,9 +7,10 @@ filename: looma-image.js
 author:
 Description: JS for looma-xxxx.php
  */
+'use strict';
 
 function displayText(result) {
-    if (!result.error) {
+    if (result.dn !== 'File not found') {
         var native = (result.nepali) ? result.nepali : result.data;
         var html = '<div class="english">' + result.data + '</div><div class="native" hidden>' + native + '</div>';
         $('.text-display').html(html);
@@ -27,7 +28,6 @@ function removeTags(str) {
     return str.replace( /(<([^>]+)>)/ig, '');
 }
 
-'use strict';
 $(document).ready(function() {
 
 
@@ -53,7 +53,9 @@ $(document).ready(function() {
     var div = document.getElementById('the_id');
 	if (div)
         $.post("looma-database-utilities.php",
-                {cmd: "openByID", collection: "text", id: div.getAttribute('data-id')},
+                {cmd: "openByID", collection: "text",
+                    db: div.getAttribute('data-db'),
+                    id: div.getAttribute('data-id')},
                 displayText,
                 'json'
         );
@@ -61,7 +63,9 @@ $(document).ready(function() {
 	    div = document.getElementById('the_dn');
 	    if (div)
             $.post("looma-database-utilities.php",
-                {cmd: "open", collection: "text", ft: "text", dn: decodeURIComponent(div.getAttribute('data-dn'))},
+                {cmd: "open", collection: "text", ft: "text",
+                    db: div.getAttribute('data-db'),
+                    dn: decodeURIComponent(div.getAttribute('data-dn'))},
                 displayText,
                 'json'
             );

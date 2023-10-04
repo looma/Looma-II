@@ -100,7 +100,11 @@
   function openPreview (button) {
       if (thumbrequest) thumbrequest.abort();
       thumbrequest = $.post("looma-database-utilities.php",
-          {cmd: "openByID", collection: currentcollection, id:$(button).data('id'), ft: 'text'},
+          {cmd: "openByID",
+              collection: currentcollection,
+              id:$(button).data('id'),
+              db:$(button).data('db'),
+              ft: 'text'},
           function(response) {
               $('#preview').html(response['data']).show();
              // previewtimer = setTimeout(function(){ closePreview(); }, 15000);

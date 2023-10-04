@@ -138,7 +138,8 @@ playMedia : function(button) {
 
         case "text":
             var id = encodeURIComponent(button.getAttribute('data-mongoId'));
-            window.location = 'text?id=' + id + '&lang=' + ((language==='native') ? 'np' : 'en');
+            var db = button.getAttribute('data-db') === 'loomalocal' ? 'loomalocal' : 'looma';
+            window.location = 'text?id=' + id + '&db=' + db + '&lang=' + ((language==='native') ? 'np' : 'en');
             break;
     
         case "html":
@@ -389,7 +390,7 @@ playMedia : function(button) {
                     var lang = (result.lang === 'ne' || result.lang === 'np')? "np": "en";
                     var lang = (result.ft==="EP" && result.subject === "nepali")? "np": lang;
                     var fn = (result.fn) ? result.fn : result.nfn;
-                    var db = (result.db) ? result.db : null;
+                    var db = (result.db) ? result.db : 'looma';
                     
                     var $newButton = $(
                                 '<button class="activity play img" ' +

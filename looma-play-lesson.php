@@ -35,7 +35,7 @@ Description: looma lesson plan presenter
                 </div>
 
                 <?php
-                //include("includes/looma-control-buttons.php");
+                include("includes/looma-control-buttons.php");
                 // control buttons conflict with lesson timeline items' control buttons
                 ?>
             </div>

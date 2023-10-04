@@ -21,7 +21,8 @@ include ('includes/header.php');
 <body>
 <div id="main-container-horizontal">
 
-        <div id="logo">
+    <div id="title">
+    <div id="logo">
         <?php
       //      if($_COOKIE['theme'] === 'CEHRD' || isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
             if($LOOMA_SERVER === 'CEHRD') {
@@ -33,20 +34,12 @@ include ('includes/header.php');
             }
         ?>
         </div>
-        <div id="title">
-            <?php
-            //if($_COOKIE['theme'] === 'CEHRD' || isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
-            if($LOOMA_SERVER === 'CEHRD') {
-                // echo '<h1 id="title" class="title">Learning Portal Information</h1>';
-            }  else {   // $LOOMA_SERVER is 'looma' or 'looma local'
-                echo '<img src="images/trademark4.png" id="trademark" height="33px">';
-                echo '<h1 id="title" class="title">Looma Information</h1>';
-            }
-            ?>
+
         </div>
         <div id="about">
-            <div id="copyright"><h3>Looma</h3>
-                <h4>   Release 7.9.7 AUG 2023   </h4>
+            <div id="copyright">
+                <!--h3>Looma</h3>-->
+                <h4>   Release 7.9.8 OCT 2023   </h4>
                 <img src ='images/copyright.png' class="copyright"></img>2023
             </div>
 
@@ -63,11 +56,12 @@ include ('includes/header.php');
             echo 'This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">';
             echo 'Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>';
             echo '<img draggable="false"  alt="Creative Commons License" src="images/logos/CC-BY-NC-SA.png" height="33px">';
+            echo '<br>';
       }
           ?>
         </div>
         <div id="logos">
-            <h5> Attributions for code and content used in this portal</h5>
+            <h5> Partners and content providers for Looma</h5>
 
             <!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
 
@@ -102,8 +96,11 @@ include ('includes/header.php');
                 <img draggable="false" src="images/logos/menschen-im-dialog_BLACK.png" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://hesperian.org" target="_blank">
                 <img draggable="false" src="images/logos/hesperian.png" height="33px"></a>
-            <a draggable="false"  class="attribution" href="https://mycroft.ai" target="_blank">
-                <img draggable="false" src="images/logos/mycroft.png" height="33px"></a>
+            <a draggable="false"  class="attribution" href="https://www.edutechnepal.org/" target="_blank">
+                <img draggable="false" src="images/logos/edutech.png" height="66px"></a>
+            <a draggable="false"  class="attribution" href="/https://wesharesolar.org//" target="_blank">
+                <img draggable="false" src="images/logos/WeShareSolar with text.png" height="33px"></a>
+
     <!--
             <a draggable="false"  class="attribution" href="https://jquery.com" target="_blank">
                 <img draggable="false" src="images/logos/jquery-logo.png" height="66px"></a>
@@ -140,7 +137,7 @@ include ('includes/header.php');
             echo "<h4>Report bugs and suggestions to:  info AT looma DOT education</h4>";
         ?>
         </div>
-        <h2 id="credits-title">Contributors</h2>
+        <h4 id="credits-title">Contributors</h4>
         <div id="credits">
         <ul>
 

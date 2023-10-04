@@ -303,6 +303,8 @@ require_once('includes/looma-utilities.php');
                 //look up this ID (mongoID) in this collection (dbCollection)
                 $file = mongoFindOne($dbCollection, $query);
 
+                //echo 'using ' . $dbCollection . ' found ' . $file . '  with ' . $query; exit;
+
                 ////////////// for chapter, add in some information from the textbook collection
                 if ($collection == "chapters") {
                     $query = array('prefix' => prefix($file['_id']));
@@ -313,7 +315,7 @@ require_once('includes/looma-utilities.php');
                 }
 
                 if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
-                else       echo json_encode(array("dn" => "File not found ",
+                else       echo json_encode(array("dn" => "File not found",
                                                         "ft" => "none",
                                                         "thumb" => "images/alert.jpg"));
             }

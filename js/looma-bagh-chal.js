@@ -124,7 +124,7 @@ function tigersCanMove() {
 function gameOver () {return (numberOfGoats === 15 || ! tigersCanMove());}
 
 function displayTurn() {
-    $('#next').attr('src',currentAnimal=='tiger'?'images/tiger\ transparent.png ' : 'images/goat\ transparent.png');
+    $('#next').attr('src',currentAnimal=='tiger'?'images/tiger.png ' : 'images/goat.png');
 }
 
 function nextPlayer() {

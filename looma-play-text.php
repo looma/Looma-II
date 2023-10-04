@@ -33,13 +33,15 @@ Comments:
         else {
             echo "<div id='fullscreen'>";
                 include ('includes/looma-control-buttons.php');
-
+                    $db =isset($_REQUEST['db']) ? $_REQUEST['db'] : 'looma';
                     if (isset($_REQUEST['id'])) {
                         $id = $_REQUEST['id'];
-                        echo "<div id='the_id' data-id=" . rawurlencode($id) . " hidden></div>";
+                        echo "<div id='the_id' data-id=" . rawurlencode($id) .
+                            " data-db=". $db . " hidden></div>";
                     } else if (isset($_REQUEST['dn'])) {
                         $dn = $_REQUEST['dn'];
-                        echo "<div id='the_dn' data-dn=" . rawurlencode($dn) . " hidden></div>";
+                        echo "<div id='the_dn' data-dn=" . rawurlencode($dn) .
+                            "data-db=". $db . " hidden></div>";
                     };
                 echo "<div id='editor'>";
                     echo "<div class='text-display'>";

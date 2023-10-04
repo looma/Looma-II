@@ -356,6 +356,7 @@ $localcollections = array(
     "lessons" =>    $local_lessons_collection,
     "slideshows" =>    $local_slideshows_collection,
     "text_files" =>    $local_textfiles_collection,
+    "text" =>    $local_textfiles_collection,
     "activities" => $local_activities_collection
 );
 

@@ -3,11 +3,14 @@
     display:grid;
     grid-template-rows:  1fr 3fr 3fr 3fr;
     grid-template-columns: [left] 4fr [middle-left] 6fr [middle-right] 3fr [right];
+    
+    /*font-size:1.75em;*/
 }
 
 #title {
      grid-row: 1;
-     grid-column: middle-left / middle-right;
+    padding-top: 2vh;
+     grid-column: left / middle-right;
  }
 
 #logo {
@@ -43,12 +46,13 @@ button:hover span.tip.yes-show {
 }
 #about {
     grid-row: 2;
-    grid-column: middle-left / middle-right;
+    grid-column: left / middle-right;
 }
 
 .copyright {
     height:2vh;
     margin-right:0.5vw;
+    line-height:0.5em;
 }
 
 a {color:lightgreen;}
@@ -59,7 +63,7 @@ a {color:lightgreen;}
      border:3px solid red;
      border-radius:12px;
      padding:5px;
-     margin: 0 3vw;
+     margin: 2vh 3vw;
  }
 
 
@@ -96,11 +100,15 @@ img.cehrd-logo {
      margin:3px 5px;
      height:95%;
      width:75%;
-    
+    padding:0 auto;
+     
+     font-size: 1em;
      overflow:hidden;
      text-align:center;
  }
 
+ #credits ul {padding: 0;}
+ 
 #credits li {list-style-type: none;}
 
 span {
@@ -109,6 +117,7 @@ span {
 
  #system_info {
      grid-row: 2;
+     height:10vh;
      grid-column: left / middle-left;
      margin-left:3vw;
  }
@@ -123,7 +132,7 @@ span {
 #advanced_info {
     display:none;
     position:absolute;
-    bottom:2vh;
+    bottom:39vh;
     left:13vw;
     padding:2vh;
     border:3px solid red;
@@ -152,5 +161,6 @@ span {
 
 #info-panel {
     grid-row: 4;
-    grid-column: middle-left / middle-right;
+    grid-column: left / middle-right;
+    line-height:0.5em;
 }

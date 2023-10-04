@@ -24,10 +24,10 @@
 
 #game {
     position:absolute;
-    left:30vw;
-    top:3vh;
+    left:25vw;
+    top:2vh;
 
-    height:85vh;
+    height:80vh;
     width:85vh;
     
     padding:3vh;
@@ -36,7 +36,9 @@
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
     grid-gap:1vh;
-    background-color:lightskyblue;
+    background-color:yellow;
+    
+    /*background-color:lightskyblue;*/
 }
 
 #alquerque {
@@ -64,7 +66,6 @@ svg {
     height:100%;
     width:100%;
     padding:2vh;
-    background-color:yellow;
     border-radius:2vh;
     vertical-align:middle;
     text-align:center;
@@ -76,7 +77,7 @@ svg {
     width:11vh;
     /*border-radius:50%*/
     /*background-color:red;*/
-    background:url("../images/tiger transparent.png");
+    background:url("../images/tiger.png");
     background-repeat: no-repeat;
     background-size:100%;
     z-index:3;
@@ -93,7 +94,7 @@ svg {
 
     border-radius:50%;
     /*background-color:green;*/
-    background:url("../images/goat transparent.png");
+    background:url("../images/goat.png");
     background-repeat: no-repeat;
     background-size:100%;
     z-index:3;
@@ -106,7 +107,7 @@ svg {
     margin-left:2vh;
     border-radius:50%;
     /*background-color:green;*/
-    background:url("../images/goat transparent.png");
+    background:url("../images/goat.png");
     background-size:100%;
     z-index:3;
 }
@@ -116,7 +117,11 @@ svg {
 }
 
 .legal{ /*or other element you want*/
-    border:6px solid red;
+   /* border:6px solid red;*/
+    background-image:url("../images/reddot.png");
+    background-size:30%;
+    background-repeat: no-repeat;
+    background-position: 35% 35%;
     /*animation: blink .5s step-end infinite alternate;*/
 }
 button#newgame{

@@ -12,8 +12,9 @@ table {
 td {padding:10px}
 
 #display {
-       padding-left: 10px;
-       font-size: 4em;
+       padding: 0 3vw;
+       font-size: 10vh;
+       font-weight: bold;
        font-family: "Comic Sans MS", "Comic Sans", cursive;
        text-align:right;
        vertical-align: middle;
@@ -31,7 +32,8 @@ button.calc-button {
 	margin:0;
     border:1px solid #606060;
     display:inline-block;
-    font-size:50px;
+    font-size:10vh;
+    font-weight: bold;
     line-height:28px;
     font-family: "Comic Sans MS", "Comic Sans", cursive;
     text-decoration:none;

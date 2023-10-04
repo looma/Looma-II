@@ -138,7 +138,7 @@ iframe {
 
 .popup { z-index:2147483647;} /* to show on top of fullscreen */
 
-button.looma-control-button { display: inline-block;}
+button.looma-control-button { display: none;}
 
 button#fullscreen-control {
     display:inline-block;

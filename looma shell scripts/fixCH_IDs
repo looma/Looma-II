@@ -47,8 +47,8 @@ while (cursor.hasNext()) {
         
         if (ch_set.size > 0)  {
             doc['ch_id'] = Array.from(ch_set);
-            output  = '...' + doc['dn'] + '...nch_ids ...[' + doc['nch_id'][0];
-            for ( var i=1;i<doc['nch_id'].length;i++) { output += ', ' + doc['nch_id'][i];}
+            output  = '...' + doc['dn'] + '...ch_ids ...[' + doc['ch_id'][0];
+            for ( var i=1;i<doc['ch_id'].length;i++) { output += ', ' + doc['ch_id'][i];}
             output +=']';
             print(output);
         }

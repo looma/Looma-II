@@ -129,9 +129,19 @@ $(document).ready (function() {
             }
         });
     
-    $('#dismiss').click(     function() { window.history.back();});  //override this in JS if needed
+    //$('#dismiss').click(     function() { window.history.back();});  //override this in JS if needed
+    
     $('.back-button').click( function() { if (parent.history.length > 0) parent.history.back(); else location.replace('looma-home.php')});
-
+    
+ /* this code needs work, but should prevent leaving LOOMA with looma's back button
+    $('.back-button').click( function() {
+        if (parent.history.length > 0 &&
+            (document.referrer.includes('looma') || document.referrer.includes('localhost')))
+            history.back();
+        else location.replace('looma-home.php');
+    });
+   */
+    
     $('.screensize').text('Window size = ' + Math.round(window.outerWidth) + ' x ' + Math.round(window.outerHeight));
     $('.bodysize').text('HTML body size = ' + Math.round($('body').outerWidth()) + ' x ' + Math.round($('body').outerHeight()));
 

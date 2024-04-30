@@ -39,8 +39,8 @@ include ('includes/header.php');
         <div id="about">
             <div id="copyright">
                 <!--h3>Looma</h3>-->
-                <h4>   Release 7.9.8 OCT 2023   </h4>
-                <img src ='images/copyright.png' class="copyright"></img>2023
+                <h4>   Release 7.9.14 APR 2024   </h4>
+                <img src ='images/copyright.png' class="copyright"></img>Looma Education Corporation
             </div>
 
     <?php
@@ -50,7 +50,7 @@ include ('includes/header.php');
             echo "<a href='mailto:iemis@cehrd.gov.np'>iemis@cehrd.gov.np</a>";
             echo "</h4>";
         } else { // source = looma
-            echo "<a draggable='false'  class='footer' href='https://looma.education'>by Looma Education Company</a>";
+           // echo "<a draggable='false'  class='footer' href='https://looma.education'>by Looma Education Company</a>";
             echo "<h4>Contact:  info AT looma DOT education</h4>";
 
             echo 'This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">';
@@ -98,7 +98,7 @@ include ('includes/header.php');
                 <img draggable="false" src="images/logos/hesperian.png" height="33px"></a>
             <a draggable="false"  class="attribution" href="https://www.edutechnepal.org/" target="_blank">
                 <img draggable="false" src="images/logos/edutech.png" height="66px"></a>
-            <a draggable="false"  class="attribution" href="/https://wesharesolar.org//" target="_blank">
+            <a draggable="false"  class="attribution" href="https://wesharesolar.org//" target="_blank">
                 <img draggable="false" src="images/logos/WeShareSolar with text.png" height="33px"></a>
 
     <!--

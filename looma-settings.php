@@ -51,9 +51,10 @@ Description:  for Looma 2
                  <button class="settings-control">Slideshow Editor</button>
              </a>
 
-             <a href="looma-edit-video.php">
+           <!--  <a href="looma-edit-video.php">
                  <button class="settings-control">Video Editor</button>
              </a>
+            -->
 
              <a href="looma-edit-activities.php">
                  <button class="admin-control">Resource Editor</button>
@@ -77,10 +78,16 @@ Description:  for Looma 2
              </a>
 
              <a href="looma-import-content.php">
-                 <button id="importcontent" class="exec-control" >Import Content</button>
+                 <button id="update" class="exec-control" > Import Content </button>
              </a>
 
-                 <button id="update" class="exec-control" >Update Code and Content</button>
+<?php    // enable line below to restrict UPDATE to Looma boxes [$LOOMA_SERVER === 'looma local']
+  //  if ($LOOMA_SERVER === 'looma local') {
+  //      echo "<a href = 'looma-update.php' >";
+  //      echo "   <button id = 'update' class='exec-control' > Update Code and Content </button >";
+  //      echo "</a >";
+  //  };
+?>
 
              <br>
 
@@ -111,14 +118,14 @@ Description:  for Looma 2
              </div>
              <br><br>
              <div >
-                 <div id="voicegender">
+                 <div id="voicegender" class="admin-control">
                      <span>Female or male voice</span>
                      <input type='radio' name='gender' value='cmu_us_axb' class='gender filter-radio black-outline' id='female' checked>
                      <label class='filter-label' for='gender'>Female</label>
                      <input type='radio' name='gender' value='cmu_us_aup' class='gender filter-radio black-outline' id='male'>
                      <label class='filter-label' for='gender'>Male</label>
                  </div>
-                 <div id="speechtestdiv">
+                 <div id="speechtestdiv" class="admin-control">
                      <a href="looma-test-speech.php">
                         <button id="speechtest" class="settings-control exec-control">Speech Test</button>
                     </a>

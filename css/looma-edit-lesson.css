@@ -219,7 +219,7 @@ span.hint {
     font-size:1.5em;
 }
 
-#dismiss {
+#dismiss-editor {
     color : white;
     background-color: red;
     border-color: red;
@@ -264,7 +264,7 @@ span.hint {
     height:90%;
 }
 
-.result_ft, .result_ID {
+.result_ft, .result_ID, .result_index {
     font-size:0.7em;
     font-style:normal;
 }
@@ -500,7 +500,7 @@ button[disabled] {
 }
 
 #timelineDisplay .activityDiv .textdiv p {
-    font-size: 1em;
+    font-size: 0.75em;
     max-width:100%;
 }
 

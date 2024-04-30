@@ -4,6 +4,12 @@
 
 button.speak {
     display:inline-block;
+    bottom:33vh;
+}
+
+button#fullscreen-control {
+    display:inline-block;
+    bottom: 17vh;
 }
 
 button.show-keyboard {
@@ -183,5 +189,6 @@ button#submit {
     
     button.speak { bottom:32vh; }
     button.show-keyboard {bottom:47vh;}
+
     .modal-content {width: 100%;}
 }

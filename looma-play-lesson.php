@@ -36,7 +36,8 @@ Description: looma lesson plan presenter
 
                 <?php
                 include("includes/looma-control-buttons.php");
-                // control buttons conflict with lesson timeline items' control buttons
+                // Some control buttons conflict with lesson timeline items' control buttons, so these buttons
+                // are selectively hidden depending on filetype being displayed
                 ?>
             </div>
 

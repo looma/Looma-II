@@ -172,22 +172,26 @@ button#fullscreen-playpause {
 
 button#next-item {
     bottom:49vh;
+    display: inline-block;
    /* display:none;*/
 }
 
 button#prev-item {
     bottom: 60vh;
+    display: inline-block;
     /*display:none;*/
 }
 
 button#next-item:fullscreen,
 button#next-item:-webkit-full-screen {
     display:inline-block;
+    position:absolute;
 }
 
 button#prev-item:fullscreen,
 button#prev-item:-webkit-full-screen {
     display:inline-block;
+    position:absolute;
 }
 
 span.hint {
@@ -252,8 +256,11 @@ span.hint {
     background-color:white;
     color:black;
     width:100%;
-    border:2px solid black;
-    border-radius:5px;}
+    /*border:2px solid black;
+    border-radius:5px;
+    */
+}
+
 
 
 button.activity {display:none;}
@@ -299,6 +306,8 @@ button.lesson-element img {
     max-height:8vh;
     width:5vw;
 }
+
+button.lesson-element img.icon {display:none};
 
 span .filename {
     text-align:center;

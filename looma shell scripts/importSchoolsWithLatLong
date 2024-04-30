@@ -1,0 +1,9 @@
+# create a .csv named "schools.csv" with headerline:
+#      name, nepali, address, district, lat, long, partner, color,geometry.coordinates.0, geometry.coordinates.1, geometry.type
+#   and rows like this:
+#     Adarsha Saula Yubak Secondary School,आदर्श सौल युवक माध्यमिक विद्यालय,Bungamati,Lalitpur,27.635608,85.305361,VSPL,yellow,27.635608,85.305361,Point
+# NOTE: "partner" is the sponsor NGO, e.g "VSPL", "Menschen", "GNHA"
+# NOTE: "color" is the color to be used for the map point for this school (yellow="VSPL")
+# use the following bash command:
+
+mongoimport --db looma --collection schools --file "schools.csv" --type csv --headerline --useArrayIndexFields

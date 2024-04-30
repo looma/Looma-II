@@ -35,7 +35,7 @@ if ($epversion == '2015') {  // old ePaath activities from 2016
         if ($grade == '7' || $grade == '8') $src .= 'EPaath7-8/';
 
         $language = '&lang=' . $_REQUEST['lang'];
-
+//if $oleID === 'index' then open with index page
         $src .= 'start.html?id=' . $oleID;
         $src .= $language . '&grade=' . $grade;
         //echo $language;return;
@@ -47,6 +47,7 @@ if ($epversion == '2015') {  // old ePaath activities from 2016
 
         $language = '&lang=' . $_REQUEST['lang'];
 
+//if $oleID === 'index' then open with index page
         $src .= 'start.html?id=' . $oleID;
         $src .= $language . '&grade=' . $grade;
     }

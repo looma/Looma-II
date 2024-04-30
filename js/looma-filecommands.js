@@ -148,7 +148,9 @@ function savefile(name, collection, filetype, data, activityFlag, author) {  //f
                 data: data,
                 activity: activityFlag      // NOTE: this is a STRING, either "false" or "true"
             };
-            if (author) options.author = author;
+            options.author = author;
+            if (editor) options.editor = editor;
+            
             $.post("looma-database-utilities.php",
                  options,
                 'json'
@@ -494,6 +496,7 @@ $(document).ready(function () {
                     callbacks['clear']();
                     template = false;
                     owner = true;
+                    author = loginname;
                     currentDB = 'loomalocal';
                     callbacks['new']();
                 })
@@ -504,6 +507,7 @@ $(document).ready(function () {
             template = false;
             currentDB = 'loomalocal';
             owner = true;
+            author = loginname;
             callbacks['new']();
             }
     });
@@ -759,12 +763,16 @@ $(document).ready(function () {
         else console.log('NOT modified');
     };
     */
-  //  $( window ).on( 'beforeunload',  function(){
-    //    console.log('window unloading');
-      //  callbacks['quit']();
-   // });
     
-    $('.back-button').off('click').click( callbacks['quit']);
+    $( window ).on( 'beforeunload',  function(e){
+        console.log('window unloading');
+        //callbacks['quit']();
+        if (callbacks['modified']()) return 'There is unsaved work. Do you want to leave without saving?';
+        else return void (0);
+        //e.preventDefault();
+    });
+    
+    $('.back-button').off('click').on('click', callbacks['quit']);
     /*
     $('.back-button').on('click', function()
     {

@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# set up reverse tunnel from reverseSSH server to this looma
+# run by remote computer
+#
+#   $1 is private key for this computer [in /home/odroid/.ssh]
+#   $2 is user on the reverseSSH server to connect to
+#   $3 is the port that the server will use to ssh back to this computer
+#
+#   So, the call is loomaSSHconnect <key> <user> <port>
+#
+
+# sample: sudo ssh -i /home/odroid/.ssh/looma-skip-reversessh looma-skip@54.213.10.240 -p 22 -R 65456:localhost:22
+
+sudo ssh -i /home/odroid/.ssh/$1 $2@54.213.10.240 -p 22 -R $3:localhost:22

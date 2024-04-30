@@ -1,7 +1,6 @@
 <?php
 //function isLoggedIn() { return (isset($_COOKIE['login']) ? $_COOKIE['login'] : null);};
 require_once('includes/looma-isloggedin.php');
-function loginLevel() { return $_COOKIE['login-level'];};
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
 $loggedin = loggedIn(); if (!$loggedin || loginLevel() !== 'exec') header('Location: looma-login.php');

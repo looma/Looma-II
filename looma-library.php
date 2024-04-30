@@ -106,6 +106,7 @@ else if  ( ! is_dir(realpath($path)) ||
             echo '<button id="wikipedia-index" class="activity img">';
             echo '<img src="images/logos/wikipedia.jpg"/>';
             keyword("Wikipedia");
+            echo "<img class='icon' src='images/logos/wikipedia.jpg'";
             echo '</button></td>';
             nextbutton();
         }  //end IF wiki4schools
@@ -115,24 +116,24 @@ else if  ( ! is_dir(realpath($path)) ||
 
         //special case for ePaath
         //make a button that launches ePaath index.html -- virtual folder
-        if (file_exists("../ePaath"))  {     //create a virtual folder for ePaath
+        if (file_exists("../ePaath"))  {     //create a virtual folder for ePaath 2019
             echo "<td>";
             $dn = "ePaath";
             $ndn = "ई-पाठ";  //note should be using mongo folders collection to get dn and ndn
-            $ft = "html";
+            $ft = "html";   // "html" is correct [not "EP"] to get the ePaath directory
             $thumb = "../content/epaath/thumbnail.png";
-            makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
+            makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "index", "", "", "", "1", "2019", null, null,null,null);
             echo "</td>";
             nextButton();
         }  //end IF ePaath
 
-        if (file_exists("../ePaath/ePaath2022"))  {  //create a virtual folder for ePaath2022
+        if (file_exists("../ePaath/ePaath2022"))  {  //create a virtual folder for ePaath 2022
             echo "<td>";
             $dn = "Early Grade Reading contents";
             $ndn = "प्रारम्भिक शिक्षा पठन सामाग्री";  //note should be using mongo folders collection to get dn and ndn
-            $ft = "html";
+            $ft = "html";   // "html" is correct [not "EP"] to get the ePaath directory
             $thumb = "../ePaath/ePaath2022/thumbnail.png";
-            makeActivityButton($ft, "../ePaath/ePaath2022/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
+            makeActivityButton($ft, "../ePaath/ePaath2022/", "index.html", $dn, $ndn, $thumb, "", "", "index", "", "", "", "1", "2022", null, null,null,null);
             echo "</td>";
             nextButton();
         }   // end IF ePaath2022
@@ -162,7 +163,7 @@ else if  ( ! is_dir(realpath($path)) ||
             echo "<td>";
             $dn = "Khan Academy";
             $ndn = "खान एकेडेमी";  //note should be using mongo folders collection to get dn and ndn
-            $ft = "html";
+            $ft = "khan";
             $thumb = "../content/Khan/thumbnail.png";
             makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
             echo "</td>";
@@ -245,6 +246,9 @@ else if  ( ! is_dir(realpath($path)) ||
                 . $dir['ndn'] .
                 "<span class='xlat'>" . $dir['dn'] . "</span>" .
                 "</span>";
+
+            echo "<img class='icon' src='images/folder.png'>";
+
             echo "<span class='tip yes-show big-show' >" . $dir['file'] . "</span>" .
                 "</button></a></td>";
             nextButton();
@@ -536,6 +540,7 @@ echo "</tr></table>";
                                     case "mov":
                                     case "image":
                                     case "jpg":
+                                    case "jpeg":
                                     case "png":
                                     case "gif":
                                     case "audio":
@@ -599,7 +604,7 @@ echo "</tr></table>";
                         }
                     }
     echo "</tr></table>";
-//  };  //if (isEpaath())
+//  };
 ?>
 
     </div>

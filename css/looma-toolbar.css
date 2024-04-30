@@ -1,6 +1,7 @@
 
 #toolbar-container {
     display: flex;
+    user-select: none;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -13,6 +14,7 @@
 
 #toolbar-container-vertical {
     display:flex;
+    user-select: none;
     flex-direction:column;
     flex-wrap:nowrap;
     justify-content: flex-start;

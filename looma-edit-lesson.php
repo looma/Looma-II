@@ -162,7 +162,7 @@ include ('includes/looma-filecommands.php');
 
 <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
 
-<button class='control-button' id='dismiss' ></button>
+<button class='control-button' id='dismiss-editor' ></button>
 
 
     <div id="setup-panel"  class="setup-panel" >

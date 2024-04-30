@@ -150,7 +150,10 @@ $foundActivity;
                     makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                     break;
                 case "pdf":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
+                    if (isset($activity['type']) && $activity['type'] === "TG")
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], "auto", "", "",null,null,null,$lang);
+                    else
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
                     break;
                 case "game":
                     makeActivityButton($ft, null, null, $dn, "", $thumb, $ch_id, $id, "", "", "1", "auto", $grade, "",null,null,null,null);
@@ -233,6 +236,17 @@ $foundActivity;
 
         echo "<br><table><tr>";
         $buttons = 1;
+    // create a button to the Teacher Guide for this chapter if it exists
+
+        // look up ch_id in collection "teacher_guides" and add a button
+        if ($lang === 'en') $query = array('ch_id' => $ch_id);
+        else                $query = array('ch_id' => $ch_id);   // ??? should use nch_id  ?????
+
+        $teacher_guide = mongoFindOne($teacherguides_collection, $query);
+        if ($teacher_guide) {
+            makeButton($teacher_guide);
+            $foundActivity = true;
+        }
 
     //create a vocab review button if there are any words from this chapter in the dictionary
     $words = wordList($ch_id, false);

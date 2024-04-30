@@ -27,7 +27,11 @@ h2, h3.title  {font-size:2em;}
      font-size: 3em;
  }
 
- #search span.typ-chk {display:inline-block !important;}
+ #search span.typ-chk,  #search span.src-chk{
+     display:inline-block !important;
+     user-select:none;
+ }
+ 
  #search span.typ-chk[data-id="text-template-chk"] {display:none  !important;}
 
  div#search-kind {display:none;}

@@ -8,7 +8,6 @@ each clock every second, and uses window.addEventListener('resize') to allow the
 shrink and grow as the window size changes.
 
 Programmer name: John Weingart and Grant Dumanian
-Email: jrweingart@gmail.com, grant.dumanian@menloschool.org
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 7/12/2016
 Revision: Looma 2.0.x
@@ -60,16 +59,30 @@ window.onload = function() {
     var hour = time.getUTCHours();
     var minute = time.getUTCMinutes();
     var second = time.getUTCSeconds();
-
+    
+    language = LOOMA.readStore('language', 'cookie');
+    if (!language) {
+        LOOMA.setStore('language', 'english', 'cookie');
+        language = 'english';
+    };
+ 
+    
     drawAllClocks();
     drawAllNames();
     
-    $('#translate').click(function() {
+    $('#translate').off().click(function() {
         //   location.reload();
+        language = LOOMA.readStore('language', 'cookie');
+        if (!language) {
+            LOOMA.setStore('language', 'english', 'cookie');
+            language = 'english';
+        };
+        language = language === 'english' ? 'native' : 'english';
+        LOOMA.translate(language);
         drawAllNames();
     });
     
-    var myVar = setInterval(nextTime, 1000);
+    // var secondtimer = setInterval(nextTime, 1000);
     
     function drawClock(distanceM, distanceH, ctx) {
         drawFace(ctx);
@@ -98,7 +111,7 @@ window.onload = function() {
     
     function drawName(ctx, name) {
         ctx.font = "18px Chalkboard";
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "yellow";
         ctx.fillText(name, 0, -radius - 15);
     }
     

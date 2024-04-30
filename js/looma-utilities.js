@@ -62,6 +62,30 @@ Description:
  * LOOMA.date()
  */
 
+ var icons = {
+     "pdf":"images/pdf.png",
+     "jpeg":"images/picture.png",
+     "jpg":"images/picture.png",
+     "png":"images/picture.png",
+     "image":"images/picture.png",
+     "game":"images/games.png",
+     "history":"images/history.png",
+     "lesson":"images/lesson.png",
+     "video":"images/video.png",
+     "mp4":"images/video.png",
+     "mov":"images/video.png",
+     "mp3":"images/audio.png",
+     "audio":"images/audio.png",
+     "book":"images/book.png",
+     "html":"images/html.png",
+     "EP":"images/ole-transparent.png",
+     "map":"images/maps.png",
+     "slideshow":"images/slideshow.png",
+     "text":"images/textfile.png",
+     "textfile":"images/textfile.png",
+     "looma":"images/LoomaLogo_small.png"
+ };
+ 
 var LOOMA = (function() {
 
     //the LOOMA object defines a namespace "LOOMA" that allows us to define LOOMA.playMedia()
@@ -72,7 +96,6 @@ var LOOMA = (function() {
     // local FUNCTIONS here
 
     return {
-
     
 playMedia : function(button) {
     
@@ -171,12 +194,16 @@ playMedia : function(button) {
             } else  if (button.getAttribute("data-epversion") == 2019) {
                 window.location = 'epaath?epversion=2019' +
                     '&ole=' + button.getAttribute("data-ole") +
-                    '&lang=' + button.getAttribute("data-lang") +
+              //      '&lang=' + button.getAttribute("data-lang") +
+                    '&lang=' + language +
+                    '&sub=english' +
                 '&grade=' + button.getAttribute("data-grade").substr(5,);
             } else { // version is 2022
                 window.location = 'epaath?epversion=2022' +
                     '&ole=' + button.getAttribute("data-ole") +
-                    '&lang=' + button.getAttribute("data-lang") +
+                    '&lang=' + language +
+                    '&sub=english' +
+                    //      '&lang=' + button.getAttribute("data-lang") +
                     '&grade=' + button.getAttribute("data-grade").substr(5,);
             }
             break;
@@ -228,151 +255,7 @@ playMedia : function(button) {
                 button.getAttribute("data-ft"));
     } //end SWITCH
 }, //end LOOMA.playMedia()
-    
-    
-/*
-        playMediaBACKUP : function(button) {
-        
-            var fn = encodeURIComponent(button.getAttribute('data-fn'));
-            var fp = encodeURIComponent(button.getAttribute('data-fp'));
-            var dn = encodeURIComponent(button.getAttribute('data-dn'));
-            var ndn = encodeURIComponent(button.getAttribute('data-ndn'));
-            var language = LOOMA.readStore('language', 'cookie');
-        
-            switch (button.getAttribute("data-ft").toLowerCase()) {
-                case "video":
-                case "mp4":
-                case "m4v":
-                case "mov":
-                    window.location = 'looma-play-video.php?' +
-                        'fn=' + fn +
-                        '&fp=' + fp +
-                        '&dn=' + dn;
-                    break;
-            
-                case "evi":
-                    //evi = edited video indicator
-                    //If you click on an edited video it sends the filename, location and the information
-                    //to looma-edited-video.php
-                    window.location = 'looma-play-edited-video.php?fn=' + fn +
-                        '&fp=' + fp +
-                        '&id=' + button.getAttribute('data-mongoid') +
-                        '&dn=' + dn;
-                    break;
-            
-                case "image":
-                case "jpg":
-                case "jpeg":
-                case "png":
-                case "gif":
-                    window.location = 'image?fn=' + fn + '&fp=' + fp;
-                    break;
-            
-                case "audio":
-                case "mp3":
-                case "m4a":
-                    window.location = 'looma-play-audio.php?fn=' + button.getAttribute(
-                        'data-fn') +
-                        '&fp=' + button.getAttribute('data-fp') +
-                        '&dn=' + button.getAttribute('data-dn');
-                    break;
-            
-                case "pdf":      //PDF
-                case "document": //DOCUMENT (some PDFs)
-                case "chapter":  //CHAPTER
-                case "section":  //textbook SECTIONs are 'played' if len > 0
-                    if ( true ) {
-                        window.location = 'looma-play-pdf.php?' +
-                            'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
-                            '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
-                            '&zoom=' + button.getAttribute('data-zoom') +
-                            '&len=' + button.getAttribute('data-len') +
-                            '&page=' + button.getAttribute('data-page');
-                    } else {  //old PDF code - note used any more
-                        window.location = 'looma-pdf.php?' +
-                            'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
-                            '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
-                            '&zoom=' + button.getAttribute('data-zoom') +
-                            '&len=' + button.getAttribute('data-len') +
-                            '&page=' + button.getAttribute('data-page');
-                        break;
-                    }
-                    break;
-            
-                case "text":
-                    var id = encodeURIComponent(button.getAttribute('data-mongoId'));
-                    window.location = 'looma-play-text.php?id=' + id + '&lang=' + ((language==='native') ? 'np' : 'en');
-                    break;
-            
-                case "html":
-                    var fp = encodeURIComponent(button.getAttribute('data-fp'));
-                    var fn = encodeURIComponent(button.getAttribute('data-fn'));
-                    window.location = 'looma-html.php?fp=' + fp + '&fn=' + fn;
-                    break;
-            
-                case "book":
-                    var fp = encodeURIComponent(button.getAttribute('data-fp'));
-                    var dn = button.getAttribute('data-dn');
-                    var ndn = button.getAttribute('data-ndn');
-                    var prefix = button.getAttribute('data-prefix');
-                    window.location = 'looma-book.php?fp=' + fp + '&prefix=' + prefix + '&dn=' + dn + '&ndn=' + ndn;
-                    break;
-            
-                case "looma":
-                    var fp = encodeURIComponent(button.getAttribute('data-url'));
-                    window.location = fp;
-                    break;
-            
-                case "epaath":
-                case "ep":
-                    if (button.getAttribute("data-epversion") == 2015) {
-                        fp = encodeURIComponent(button.getAttribute('data-fp'));
-                        fn = encodeURIComponent(button.getAttribute('data-fn') +
-                            '/start.html');
-                        window.location = 'looma-epaath.php?epversion=2015&fp=' + fp + '&fn=' + fn;
-                    } else {
-                        window.location = 'looma-epaath.php?epversion=2019' +
-                            '&ole=' + button.getAttribute("data-ole") +
-                            '&lang=' + button.getAttribute("data-lang") +
-                            '&grade=' + button.getAttribute("data-grade").substr(5,);
-                    }
-                    break;
-            
-                case "lesson":
-                    LOOMA.clearStore('lesson-plan-index', 'session');
-                    window.location = 'looma-play-lesson.php?id=' + button.getAttribute('data-mongoid')+ '&lang=' + ((language==='native') ? 'np' : 'en');
-                    break;
-            
-                case "game":
-                    window.location = 'looma-game.php?id=' + button.getAttribute('data-mongoid') +
-                        '&class=' + button.getAttribute('data-class') +
-                        '&subject=' + button.getAttribute('data-subject') +
-                        '&type=' + button.getAttribute('data-type');
-                    break;
-            
-                case "map":
-                    window.location = 'looma-play-map.php?id=' + button.getAttribute('data-mongoid');
-                    break;
-            
-              
-                case "slideshow":
-                    window.location = 'looma-play-slideshow.php?id=' + button.getAttribute("data-mongoid");
-                    break;
-            
-                case "history":
-                    window.location = 'looma-history.php?id=' + button.getAttribute("data-mongoid");
-                    break;
-            
-               
-            
-                default:
-                    console.log("ERROR: in LOOMA.playMedia(), unknown type: " +
-                        button.getAttribute("data-ft"));
-            } //end SWITCH
-        }, //end LOOMA.playMedia()
- */
-    
-    
+
         makeActivityButton: function (id, db, mongoID, appendToDiv) {
     // given an ID for an activity in the activities collection in mongo,
     // attach a button [clickable button that launches that activity] to "appendToDiv"
@@ -420,7 +303,9 @@ playMedia : function(button) {
                                 //
                            );
                     
-                        //var fn = (language === 'native') ? result.nfn : result.fn;
+                //    $newButton.append($('<img class="icon" src="images/alert.jpg">'));
+    
+                    //var fn = (language === 'native') ? result.nfn : result.fn;
                         if ( ! ('fn' in result) && ('nfn' in result)) fn = result.nfn;
                         else if ('fn' in result) fn = result.fn;
                         else fn = null;
@@ -436,7 +321,6 @@ playMedia : function(button) {
     */
                      if (thumbfile) $newButton.append($('<img alt="" loading="lazy" draggable="false" src="' + thumbfile + '">'));
                     
-                    //$newButton.append($('<img alt="" draggable="false" src="' + thumbfile + '"' +
                        //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));
                     
                     /*this idea is from: https://stackoverflow.com/questions/980855/inputting-a-default-image-in-case-the-src-attribute-of-an-html-img-is-not-vali
@@ -449,11 +333,15 @@ playMedia : function(button) {
                     var displayname;
                     if (language==='english') displayname = ('dn' in result) ? result.dn : result.ndn;
                     else displayname = ('ndn' in result) ? result.ndn : result.dn;
-                    
-                    
-                        //var displayname = ((language === 'native' || (! 'dn' in result)) && result.ndn )  ? result.ndn : result.dn;
+                   
+    
+    
+                    //var displayname = ((language === 'native' || (! 'dn' in result)) && result.ndn )  ? result.ndn : result.dn;
                         $newButton.append($('<span class="dn">').text(displayname));
-                        $newButton.click(function() {LOOMA.playMedia(this);});
+    
+                    $newButton.append($('<img class="icon" src="' + icons[result.ft] + '">'));
+    
+                    $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
                  },
                 'json'

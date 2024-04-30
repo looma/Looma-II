@@ -1,0 +1,86 @@
+// filename: CH_IDsGeneric
+//
+// ONE TIME program to make CH_IDs generic
+//          use when a textbook is removed
+//          changes ch_id's from specific ["1EN01.02"] to generic ["1EN]"
+//          trims off section and chapter info, but preserves grade and subject
+//          so that we can find these resources and possibly re-assign them to new chapters
+
+//      input from filename "prefixes.txt"
+//      format is one prefix (string) per line, be sure CR at end of last line
+//
+//      loop through all non-lesson activities in db=looma and db=loomalocal
+//      change any ch_id with that prefix to generic ch_id ["1EN"]
+//
+//  run in MONGO SHELL with: load('CH_IDsGeneric')
+//      with db=looma
+//      set "var param = 'dryrun' for a dryrun, or 'run' to put changes into the DB
+//
+var cursor, query, count, changecount, nchangecount, doc, len, generic, matches;
+var ch_set;
+
+var CH_IDregex = /^([1-9]|10|11|12)(EN|Ena|Sa|S|SF|Ma|M|SSa|SS|N|H|V|CS)[0-9]{2}(\.[0-9]{2})?/;
+
+var input = 'prefixes.txt'; print ('Importing CH_IDs from ' + input);
+var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
+
+var prefixes = file.split(/[\r\n]+/);  // split file into array of lines containing prefixes
+
+    print ('Processing ' + prefixes.length + ' lines, from file ' + input);
+    prefixes.forEach(function(prefix){print (' prefix = ' + prefix);});
+
+    // ignore ft='lesson' activities
+    query = {'ft':{'$ne':'lesson'}};
+    
+    cursor = db.activities.find(query);
+    count = 0; changecount = 0; nchangecount = 0;
+    
+    while (cursor.hasNext()) {
+        doc = cursor.next();
+        count++;
+
+        if (doc['ch_id'] && !(Array.isArray(doc['ch_id']))) {
+            print ('converting ' + doc['ch_id']);
+            doc['ch_id'] = [doc['ch_id']];
+        };
+        
+        if (doc['ch_id'] && doc['ch_id'].length > 0) {
+             len = doc['ch_id'].length;
+            for ( var i=0; i<len; i++)
+            {
+                 matches = doc['ch_id'][i].match(CH_IDregex);
+                
+                if (matches && prefixes.includes(matches[1] + matches[2])) {
+                    generic = 'x' + doc['ch_id'][i];
+                    print ('   - - - changing ch_id ' + doc['ch_id'][i] + ' to  ' + generic + '\"');
+                    doc['ch_id'][i] = generic;
+                    changecount++;
+                }
+            }
+        };
+    
+        if (doc['nch_id'] && doc['nch_id'].length > 0) {
+             len = doc['nch_id'].length;
+            for ( var i=0; i<len; i++)
+            {
+                 matches = doc['nch_id'][i].match(CH_IDregex);
+            
+                if (matches && prefixes.includes(matches[1] + matches[2])) {
+                    generic = 'x' + doc['nch_id'][i];
+                    print ('   - - - changing nch_id ' + doc['nch_id'][i] + ' to ' + generic + '\"');
+                    doc['nch_id'][i] = generic;
+                    nchangecount++;
+                }
+            }
+        };
+
+       if (param === 'run') db.activities.replaceOne({_id:doc._id}, doc);
+ 
+};
+    
+    print();
+    print(' + + + checked ' + count +        ' activities');
+    print(' + + + changed ' + changecount +  ' english [ch_id] activities');
+    print(' + + + changed ' + nchangecount + ' nepali [nch_id] activities');
+    print('_______________');
+

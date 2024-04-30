@@ -65,11 +65,17 @@ function lessonButtonClicked(){
     window.location = "looma-play-lesson.php?id=" + mongo_id + "&lang=" + chapter_lang;
 };  //  end lessonButtonClicked()
 
+function lessonsButtonClicked() {
+    var chapter =   this.getAttribute('data-ch');
+    var chapter_lang = this.getAttribute('data-lang');
+    window.location = "looma-lessons.php?ch_id=" + chapter + "&lang=" + chapter_lang;
+};  // end lessonsButtonClicked()
 
 $(document).ready (function() {
     //add listeners to ACTIVITY and CHAPTER buttons
     $("button.activities").click(activityButtonClicked);
     $("button.lesson").click(lessonButtonClicked);
+    $("button.lessons").click(lessonsButtonClicked);
     $("button.chapter, button.section").click(chapterButtonClicked);
 
     // check cookies to see if there is an active CHAPTER

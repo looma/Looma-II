@@ -52,9 +52,21 @@ result () {
     fi
 }
 
+checkforsshpass () {
+if ! command -v sshpass &> /dev/null
+  then
+    echo "*************************"
+    echo "this script (loomaUSB) uses 'sshpass' linux cmd"
+    echo "     install 'sshpass' using this command: 'sudo apt install sshpass'"
+    echo "     then rerun loomaUSB"
+    echo "**************************"
+    exit 1
+  fi
+}  #  end checkforsshpass()
+
 echo "********************************************************"
 echo " Looma - update a USB memory stick"
-echo "    copies new or modified files from rsync.net to a USB"
+echo "    copies new or modified files from rsync.net to a USB memory stick"
 echo "*******************************************************"
 echo
 
@@ -80,6 +92,7 @@ echo
 #        fi
 #    fi
 
+checkforsshpass
 
 cd /media/odroid/LOOMA
 if [[ `pwd` != '/media/odroid/LOOMA' ]]
@@ -87,7 +100,7 @@ if [[ `pwd` != '/media/odroid/LOOMA' ]]
         echo
         echo "***********ERROR***********************************"
         echo "  Didnt find USB memory at /media/odroid/LOOMA"
-        echo "  Be sure the USB is inserted and its name is LOOMA"
+        echo "  Be sure the USB if inserted and its name is LOOMA"
         echo "***************************************************"
         exit 1
     fi
@@ -113,10 +126,10 @@ then
     SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        rsync -az --dry-run --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
+        sshpass -p 'looma' rsync -az --dry-run --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
         result $?
     else
-        rsync -az           --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
+        sshpass -p 'looma' rsync -az           --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
         result $?
     fi
     echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -132,10 +145,10 @@ then
     SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        rsync -az --dry-run --size-only --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
+        sshpass -p 'looma' rsync -az --dry-run --size-only --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
         result $?
     else
-        rsync -az --quiet   --size-only --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
+        sshpass -p 'looma' rsync -az --quiet   --size-only --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
         result $?
     fi
     echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."

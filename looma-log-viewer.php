@@ -7,6 +7,17 @@ Owner:  Looma Education Company
 Revision: Looma 3
 -->
 
+<!--
+
+NOTE: suggested enhancement: show number of unique viewers (IPs)
+        cumulutive since start
+        by year, or L12M, or YTD, etc
+      in an info box on the Looma users map
+
+-->
+
+
+
 <?php $page_title = 'Looma Log Viewer';
 require_once ('includes/header.php');
 /* header.php imports: CSS: looma.css, looma-keyboard.css, bootstrap.css */

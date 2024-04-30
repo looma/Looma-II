@@ -65,12 +65,13 @@ function mongoGetId ($doc) { // $doc is a document returned by mongoinsert or si
     else return (string) $doc['_id'];
 }
 
-function mongoCount($collection) {
+function mongoCount($collection, $query) {
     global $mongo_level;
+    $result = mongoFind($collection,$query, null, null, null);
     if ($mongo_level >= 3) {
-        $count = $collection->count();
+        $count = count( $result->toArray());
     } else {  // old mongoDB
-        $count = $collection->count( );
+        $count = count( $result->toArray());
     }
     return $count;
 }
@@ -242,10 +243,12 @@ if ($ENV_WINDOWS) {  // running on windows
     if ($try) preg_match('/(\d\.\d\.\d)/',$try, $match);
     else $match = null;
 } else {  // running on linux
-    $try = shell_exec('mongo --version');
+    $try = shell_exec('mongod --version');
     if ($try) preg_match('/(\d\.\d\.\d)/', $try, $match);
     else $match = null;
 }
+
+//echo $match[1];exit; // echos the mongodb version # that is running
 
 if ($match) {
     $mongo_version = $match[1];
@@ -282,6 +285,7 @@ $activities_collection = $loomaDB -> activities;
 $tags_collection       = $loomaDB -> tags;
 $chapters_collection   = $loomaDB -> chapters;
 $textbooks_collection  = $loomaDB -> textbooks;
+$teacherguides_collection  = $loomaDB -> teacher_guides;
 $dictionary_collection = $loomaDB -> dictionary;
 $history_collection    = $loomaDB -> histories;
 $histories_collection  = $loomaDB -> histories;

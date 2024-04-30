@@ -34,8 +34,11 @@ header("Pragma: no-cache");
     } else if ( $_SERVER['SERVER_NAME'] === 'test.looma.website') {
         $LOOMA_SERVER = 'test';
         error_reporting(E_ALL);
+    } else if ( $_SERVER['SERVER_NAME'] === 'looma-laptop') {
+        $LOOMA_SERVER = 'looma-laptop';
+        error_reporting(E_ALL);
     } else {
-        $LOOMA_SERVER = 'looma';
+        $LOOMA_SERVER = 'looma local';
         error_reporting(E_ALL);
     }
 

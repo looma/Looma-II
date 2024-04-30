@@ -306,7 +306,7 @@ require_once('includes/looma-utilities.php');
                 //echo 'using ' . $dbCollection . ' found ' . $file . '  with ' . $query; exit;
 
                 ////////////// for chapter, add in some information from the textbook collection
-                if ($collection == "chapters") {
+                if ($file && $collection == "chapters") {
                     $query = array('prefix' => prefix($file['_id']));
                     $textbook = mongoFindOne($textbooks_collection, $query);
                     $file['fp'] = $textbook['fp'];
@@ -318,6 +318,10 @@ require_once('includes/looma-utilities.php');
                 else       echo json_encode(array("dn" => "File not found",
                                                         "ft" => "none",
                                                         "thumb" => "images/alert.jpg"));
+            } else {
+                echo json_encode(array("dn" => "File not found",
+                    "ft" => "none",
+                    "thumb" => "images/alert.jpg"));
             }
             return;
 
@@ -421,10 +425,17 @@ require_once('includes/looma-utilities.php');
                 "ft" => 'lesson',
                 "db" => $_REQUEST['db'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
-                "data" => $_REQUEST["data"]
+                "data" => array_values($_REQUEST["data"])
             );
+
+            if (isset($_REQUEST['author'])) $insert['author'] = $_REQUEST['author'];
+            if (isset($_REQUEST['editor'])) $insert['editor'] = $_REQUEST['editor'];
+
+/*
             if (isset($_REQUEST['author'])) $insert['editor'] = $login;
             else                            $insert['author'] = $login;
+*/
+
 
             if (!($login_level==='admin' ||
                   $login_level==='exec' ||
@@ -893,6 +904,7 @@ require_once('includes/looma-utilities.php');
 
         $sources = array();       //array of sources to include in the search
         if (isset($_REQUEST['src'])) foreach ($_POST['src'] as $i) array_push($sources, $i);
+
         //echo "sources is: "; print_r($sources);
 
         $returnLessons = false;
@@ -924,13 +936,14 @@ require_once('includes/looma-utilities.php');
                 case 'history':
                 case 'slideshow':
                 case 'map':
-                case 'quiz':
                 case 'text':
                 case 'text-template':
                 case 'lesson-template':
                 case 'game':
                 case 'looma':
                     array_push($extensions, $type);
+                    break;
+                case 'quiz': // filetype "quiz" not implemented yet
                     break;
                 default: {echo json_encode("ERROR: unknown file type"); return;}
             }
@@ -1007,6 +1020,9 @@ require_once('includes/looma-utilities.php');
             $query['key4'] = $_REQUEST['key4'] === 'none'? null : mongoRegexOptions($_REQUEST['key4'], 'i');
         }
 
+        //echo "query is: "; print_r($query);
+
+
         ///// making call to MONGO in 'looma' database //////
         $cursor = mongoFind($collections[$_REQUEST['collection']], $query, 'dn', null, null);   //->skip($page)->limit(20);
         $result = array();
@@ -1014,6 +1030,8 @@ require_once('includes/looma-utilities.php');
             $d['db'] = 'looma';
             $result[] = $d;
          };
+
+      //echo "result is ";print_r($result);
 
         ///// making call to MONGO in 'loomalocal' database //////
         $cursor1 = mongoFind($localcollections[$_REQUEST['collection']], $query, 'dn', null, null);   //->skip($page)->limit(20);
@@ -1028,6 +1046,8 @@ require_once('includes/looma-utilities.php');
 
         $unique = array();
 
+        //echo "result is ";print_r($result);
+
         if (sizeof($result) > 0 ) {
 
             $result = alphabetize_by_dn($result);
@@ -1035,38 +1055,33 @@ require_once('includes/looma-utilities.php');
             $unique[] = $result[0];
             $specials = array('text', 'text-template', 'slideshow', 'looma', 'lesson', 'lesson-template', 'evi', 'history', 'map', 'game');
             for ($i = 1; $i < sizeof($result); $i++) {
+                if ($result[$i]['ft'] !== 'quiz') {
+                    if ($result[$i]['ft'] !== $result[$i - 1]['ft']) $unique[] = $result[$i];
+                    else if ($result[$i]['db'] !== $result[$i - 1]['db']) $unique[] = $result[$i];
 
-                if ($result[$i]['ft'] !== $result[$i-1]['ft']) $unique[] = $result[$i];
-                else if ($result[$i]['db'] !== $result[$i-1]['db']) $unique[] = $result[$i];
-
-                else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2019') {
-                    if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
-                        $result[$i]['grade'] !== $result[$i - 1]['grade'])
+                    else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2019') {
+                        if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
+                            $result[$i]['grade'] !== $result[$i - 1]['grade'])
+                            $unique[] = $result[$i];
+                    } else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2022') {
+                        if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
+                            $result[$i]['grade'] !== $result[$i - 1]['grade'])
+                            $unique[] = $result[$i];
+                    } else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2015') {
+                        if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
+                            $result[$i]['grade'] !== $result[$i - 1]['grade'])
+                            $unique[] = $result[$i];
+                    } // for  special filetypes (in $specials) just match on displayname to determine uniqueness
+                    else if (in_array($result[$i]['ft'], $specials)) {
+                        if ($result[$i]['dn'] !== $result[$i - 1]['dn']) $unique[] = $result[$i];
+                    } // for all other filetypes match on filename and fp (if present) to determine uniqueness
+                    else if ((isset($result[$i]['fn']) && isset($result[$i - 1]['fn']) && $result[$i]['fn'] !== $result[$i - 1]['fn'])
+                        || (isset($result[$i]['nfn']) && isset($result[$i - 1]['nfn']) && $result[$i]['nfn'] !== $result[$i - 1]['nfn'])
+                        //  ||   (isset($result[$i]['nfn']) && isset($result[$i-1]['fn'])  && $result[$i]['nfn'] !== $result[$i-1]['fn'])
+                        //  ||   (isset($result[$i]['fn'])  && isset($result[$i-1]['nfn']) && $result[$i]['fn']  !== $result[$i-1]['nfn'])
+                        || (isset($result[$i]['fp']) && isset($result[$i - 1]['fp']) && $result[$i]['fp'] !== $result[$i - 1]['fp']))
                         $unique[] = $result[$i];
                 }
-
-                else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2022') {
-                    if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
-                        $result[$i]['grade'] !== $result[$i - 1]['grade'])
-                        $unique[] = $result[$i];
-                }
-
-                else if ($result[$i]['ft'] === 'EP' && $result[$i]['version'] == '2015') {
-                    if ($result[$i]['dn'] !== $result[$i - 1]['dn'] ||
-                        $result[$i]['grade'] !== $result[$i - 1]['grade'])
-                        $unique[] = $result[$i];
-                }
-                // for  special filetypes (in $specials) just match on displayname to determine uniqueness
-                else if (in_array($result[$i]['ft'], $specials)) {
-                    if ($result[$i]['dn'] !== $result[$i - 1]['dn']) $unique[] = $result[$i];
-                }
-                // for all other filetypes match on filename and fp (if present) to determine uniqueness
-            else if ((isset($result[$i]['fn'])  && isset($result[$i-1]['fn'])  && $result[$i]['fn']  !== $result[$i-1]['fn'])
-                ||   (isset($result[$i]['nfn']) && isset($result[$i-1]['nfn']) && $result[$i]['nfn'] !== $result[$i-1]['nfn'])
-            //  ||   (isset($result[$i]['nfn']) && isset($result[$i-1]['fn'])  && $result[$i]['nfn'] !== $result[$i-1]['fn'])
-            //  ||   (isset($result[$i]['fn'])  && isset($result[$i-1]['nfn']) && $result[$i]['fn']  !== $result[$i-1]['nfn'])
-                ||   (isset($result[$i]['fp'])  && isset($result[$i-1]['fp'])  && $result[$i]['fp']  !== $result[$i-1]['fp']))
-                    $unique[] = $result[$i];
             }
             $numUnique = sizeof($unique);
 

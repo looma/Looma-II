@@ -112,7 +112,8 @@ function displayMoreResults(results) {
 ///////////////////////////////////
 function displayActivities(results, table) {
     $.each(results, function(index, value) {
-            if(result % maxButtons == 1){
+        
+        if(result % maxButtons == 1){
                 row++;
                 $(table).append("<tr id='result-row-" + row + "'></tr>");
             }

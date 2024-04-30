@@ -1,0 +1,138 @@
+#!/bin/bash
+#
+#  filename: loomaupdaterSILENT
+#       VERSION 6.0 for rysnc.net
+#       author: skip
+#       date:   MAR 2024
+#
+#     revised OCT 2023 to check 'archivetimestamp.txt' to see if an update is needed
+#       on both /Looma and /content
+#     MAR 2024  - derived from loomaupdater, with all console interactions removed
+#
+#  used to update a pre-installed Looma by installing latest code, database & content
+#           only changed or brand new files are transferred
+# this version of "loomaupdater" has no user interaction or terminal output.
+# it is used from the Looma UI using looma-update.php [in the tools page for authorized users]
+#
+
+#RSYNC options used:
+#-a  "archive" equivalent to -rlptgoD
+#   -r  recursive
+#   -l  recreate symlink on the destination
+#   -p  preserve permissions
+#   -t  preserve modification time
+#   -g  preserve group
+#   -o  preserve owner
+#   -D  transfer devices and specials (NA for Looma)
+
+#   -O  dont try to update dates of folders
+
+#   -z  	use compression
+#--size-only [for Content files]
+#--delete 	delete files on destination that are not on source
+#--perms (=== -p)
+#--update   skip files if destination  already exists and has a later date
+#--exclude '.[!.]*'
+#--stats    print stats at the end
+
+# not used
+#    -v	    verbose
+#    -vv	  very verbose
+#    --progress [show transfer progress]
+
+
+#   RETURN values: 0 update completed, 1 already up-to-date, 2 update error, 3 'sshpass' not available, 4 no network
+
+# check if the timestamp of current files is same as timestamp of the archive
+# return 1 if timestamps are equal [so no update is needed], return 0 if not equal
+checktimestamp () {
+    if [[ -f $TO/$DIR/archivetimestamp.txt ]]
+    then
+      current=`cat $TO/$DIR/archivetimestamp.txt`
+    else
+      current=""
+    fi
+
+    latest=`sshpass -p looma ssh $FROM cat ../$DIR/archivetimestamp.txt`
+    if [[ $current = $latest ]]
+    then
+      $result="Already updated"
+      return 1  # indicates $TO/$DIR already updated
+    else
+      result="Update needed"
+      return 0  # dates dont match, update needed
+    fi
+}  #  end checktimestamp()
+
+#  function DOSYNC() to exec the rsync.
+#      call dosync() with $1 = the source path, $2 = the target path, $3 = the directory, $4 = "--sizeonly" or null
+dosync () {
+    FROM=$1
+    TO=$2
+    DIR=$3
+    SIZEONLY=$4
+
+    checktimestamp $source $DIR
+
+    if [[ $? = 1 ]]
+      then
+        display "$TO/$DIR is UP TO DATE [No files are being transferred]"
+        return 1
+      fi
+
+      remote=$FROM:..
+
+    # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
+    result=sshpass -p looma rsync -rz  $DRYRUNMODE $SIZEONLY  \
+        --stats  \
+        --perms  --chmod=D777,F777 --chown=looma:looma \
+        --exclude '.[!.]*' --delete --delete-excluded   \
+        -e "ssh"   \
+       "$remote/$DIR/"  "$TO/$DIR"
+
+     return 0
+}  #  end dosync()
+
+    # check for presence of "sshpass"
+    if [[ `which sshpass` != ""]]
+    then
+      result="SSHPASS command not present"
+      return 2 # alert caller if 'sshpass' is not installed
+      # install 'sshpass' with 'sudo apt install sshpass'
+    fi
+
+
+    FROMDIR="58191@usw-s008.rsync.net"
+    TODIR="/var/www/html/"
+
+    #       copy new & changed files into "content" directory
+    #             for CODE we call dosync() with $3 (size-only) = null
+    dosync    "$FROMDIR"  "$TODIR" "Looma"
+
+    # copy mongo database contents
+      #mongoexport --db looma --collection lessons --out /tmp/lessonsFromMongo.tmp
+      #mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
+
+            mongo --eval "db.dropDatabase();" looma
+            mongorestore --quiet --db looma "$TODIR/Looma/mongo-dump/dump/looma/"
+
+            #mongoimport --quiet --db looma --collection lessons --file /tmp/lessonsFromMongo.tmp
+            #mongoimport --quiet --db looma --collection text_files --file /tmp/textsFromMongo.tmp
+
+            #rm /tmp/lessonsFromMongo.tmp
+            #rm /tmp/textsFromMongo.tmp
+
+            mongoimport --db loomausers --collection logins --file "$TODIR/Looma/mongo-dump/logins/defaultlogins.json" > /dev/null
+            rm "$TODIR/Looma/mongo-dump/logins/defaultlogins.json"
+
+    #       copy new & changed files into "content" directory
+    #             for CONTENT calling dosync() with $4 (size-only) = "--size-only"
+    dosync "$FROMDIR"  "$TODIR"  "content"  "--size-only"
+
+    if [[ $result = 0 ]]
+    then
+
+    else
+
+    fi
+

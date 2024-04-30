@@ -22,7 +22,7 @@
   var savedHTML; //savedHTML is textcheckpoint of HTML for checking for modification
   var loginname, loginlevel, loginteam;
   var previewtimer;
-  var author;
+  var author, editor;
   var thumbrequest;
   
   /*  callback functions and assignments expected by looma-filecommands.js:  */
@@ -61,7 +61,13 @@
   function textdisplay(response) {
       textclear();
       setname(response['dn'], response['author']);
-      author = response['author'];
+      if (response['author']) {
+          author = response['author'];
+          editor = loginname;
+      } else {
+          author = loginname;
+          editor = null;
+      }
       $editor.html(response.data);
       currentDB = response.db ? response.db : 'looma';
     
@@ -70,7 +76,7 @@
 
   function textsave(name) {
       //$editor.cleanHtml(); wysiwyg.js has no "cleanHTML" function. NOTE: we should probably write our own
-      savefile(name, currentcollection, currentfiletype, $editor.html(), "true",null);
+      savefile(name, currentcollection, currentfiletype, $editor.html(), "true", author);
   } //end testsave()
 
   function texttemplatesave(name) {

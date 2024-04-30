@@ -154,6 +154,10 @@ body * {
     border-radius: 35px;
 }
 
+h1, h3, h3, button, #looma-logo-div, #partner-logo-div, #CEHRD-logo-div {
+    user-select:none;
+}
+
 h1.title, h2.title, h3.title {
     font-weight:bold !important;
 	margin:auto;
@@ -169,7 +173,10 @@ h3.title {font-size:2em;}
     margin-bottom:5vh;
 }
 
-h1 span {display:inline-block;}
+h1 span, h2 span, h3 span {
+    display:inline-block;
+    user-select: none;
+}
 
 .credit{
     text-align: right;
@@ -261,6 +268,7 @@ button {
 	border-color: #FFFFFF;
 	border: 5px;
 	border-radius: 5px;
+ 
 
 	display:inline-block;
 	height:80%;
@@ -604,10 +612,20 @@ button.img {
 }
 
 button.img img, button.img object {
-	height:90%;
+	position:relative;
+    height:90%;
 	float:left;
 	max-width:35%;
 }
+
+button.img .icon {
+    position:absolute;
+    right:3px;
+    bottom:3px;
+    height:20%;
+    width:8%;
+}
+
 button.img object img {
     float:left;
     max-height: 100%;
@@ -642,6 +660,7 @@ button.img.subject img {
  }
 
 button.img.play, button.img.activity{
+    position:relative;
 	font-size: 30px;
 	font-weight:bold;
     max-width:30vw;
@@ -743,7 +762,7 @@ div.center {
        screen and (max-width:916px) and (orientation:landscape) {
     
     body {
-        --looma-background: var(--looma-green);
+        --looma-background: var(--looma-blue);
         background-color: var(--looma-background);
         font-family: "Noteworthy";
     }

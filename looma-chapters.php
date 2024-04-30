@@ -133,23 +133,34 @@ foreach ($chapters as $ch) {
         // NOTE: current code only finds the FIRST lesson for the chapter.
         // expand in the future to allow multiple lessons per chapter
     //$lesson = $activities_collection -> findOne($query);
-        $lesson = mongoFindOne($activities_collection, $query);
+        $count = mongoCount($activities_collection, $query);
 
-    if ($lesson) {
-        echo "<button class='lesson en-lesson'
-                      data-lang='en'
-                      data-ch='$ch_id'
-                      data-len='$ch_len'
-                      data-chdn='" .
-                        $lesson['dn'] .
-                   "' data-ft='lesson'
-                      data-id='" .
-                        $lesson['mongoID'] .
-                    "'>" . "Lesson";
-        echo "</button>";
-    }
+            if ($count  > 1) {
 
-    else {echo "<button class='activity' style='visibility: hidden'></button>";}
+                // echo "found " . count($lessons->toArray()) . ' lessons';
+
+                echo   '<button class="lessons en-lesson" data-ft="lessons"';
+                echo   'data-lang="en" data-ch="' . $ch_id . '">Lessons</button>';
+
+            } else if ($count === 1) {
+                $lesson = mongoFindOne($activities_collection, $query);
+
+                echo   '<button class="lesson en-lesson" data-lang="en" data-ch="' . $ch_id;
+                echo   '" data-ft="lesson" data-id="' . $lesson['mongoID'] . '">Lesson</button>';
+  /*
+                    echo "<td>";
+                    $dn = $lesson['dn'];
+                    $ndn = isset($lesson['ndn']) ?  $lesson['ndn'] : "";
+                    $ft = "lesson";
+                    $thumb = $lesson['thumb'];
+                    $id = $lesson['mongoID'];  //mongoID of the descriptor for this lesson
+                    makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+                    echo "</td>";
+                    $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
+*/
+            }
+
+
 
 ////////// ENGLISH activities ///////////
     // finally, display a button for the activities of this chapter with data-activity=CHAPTER_ID key value

@@ -80,6 +80,9 @@ pdf {
     height:8vh;
     min-height:8vh;
     width:100%;
+    
+    user-select: none;
+    
     background-color:yellow;
     background-color: var(--looma-toolbar);
     color:black;

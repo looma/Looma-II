@@ -158,8 +158,8 @@ h2 {
 #digitalDisplay{
     display:inline-block;
     position:relative;
-    top:-12vh;
-    right:-24vw;
+    top:-38vh;
+    right:-21vw;
     font-size: 6em;
     grid-column:2;
     grid-row:4;

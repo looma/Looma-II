@@ -1,0 +1,39 @@
+body {
+    /*background-color: #091F48;*/
+    /*--looma-background: var(--looma-blue);*/
+    background-color: var(--looma-background);
+    
+    font-family: "Comic Neue bold", "Comic Sans MS", "Chalkboard", sans-serif;
+    color: var(--looma-font-color);
+}
+
+#main-container-horizontal {
+    background-color: var(--looma-background);
+}
+
+#toolbar-container, #toolbar-container-vertical {
+    background-color: var(--looma-toolbar);
+}
+
+button {
+    
+    background-color:var(--looma-button-background);
+    color:var(--looma-button-font-color);
+    border: 2px solid white;
+    border-radius: 5px;
+    font-weight: bold;
+    /*font-size: 3em;*/
+    cursor: pointer;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
+    
+    box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+
+button.active {
+    background: none;
+    background-color: #14449f;
+    color:yellow;
+}
+
+div#search-panel {background-color: rgba(27,71,177,.45)}

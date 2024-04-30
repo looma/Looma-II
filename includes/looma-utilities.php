@@ -4,7 +4,7 @@
 /// functions defined:
 /// prefix(ch_id)
 /// ch_idClass    [php version of LOOMA.ch_idClass() in looma-utilities.js]
-/// ch_idSubject  [php version of LOOMA.ch_idClass() in looma-utilities.js]
+/// ch_idSubject  [php version of LOOMA.ch_idSubject() in looma-utilities.js]
 /// isHTML
 /// isEpaath
 /// folderName
@@ -19,33 +19,60 @@
 /// //////////////////
 
 
-
+ $icons = array (
+     "pdf" => "images/pdf.png",
+     "jpeg" => "images/picture.png",
+     "jpg" => "images/picture.png",
+     "png" => "images/picture.png",
+     "image" => "images/picture.png",
+     "game" => "images/games.png",
+     "history" => "images/history.png",
+     "lesson" => "images/lesson.png",
+     "video" => "images/video.png",
+     "mp4" => "images/video.png",
+     "mov" => "images/video.png",
+     "mp3" => "images/audio.png",
+     "audio" => "images/audio.png",
+     "book" => "images/book.png",
+     "html" => "images/html.png",
+     "EP" => "images/ole.png",
+     "ep" => "images/ole.png",
+     "epaath" => "images/ole.png",
+     "khan" => "images/logos/khan leaf.jpeg",
+     "map" => "images/maps.png",
+     "slideshow" => "images/slideshow.png",
+     "text" => "images/textfile.png",
+     "textfile" => "images/textfile.png",
+     "looma" => "images/LoomaLogo_small.png"
+ );
 
 /****************************/
 /*****  prefix   ********/
 /****************************/
+
+        /*** BUG? should return $matches[1] . $matches[2]   ***/
 function prefix ($ch_id) { // extract textbook prefix from ch_id
     preg_match("/^(([1-9]|10)(Ma|M|N|Sa|S|SSa|SS|EN|H|V))[0-9]/", $ch_id, $matches);
     return (isset($matches[1]) && $matches[1]) ? $matches[1] : null;
 }
 
 /****************************/
-/*****  ch_idClass   ********/
+/*****  ch_idClass   ********/    //^^^^ Not currently used ^^^^
 /****************************/
 function ch_idClass($ch_id) {
      if (($ch_id) && preg_match ( "/^([1-9]|10)(Ma|M|N|Sa|S|SSa|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches ))
             return $matches[1];
      else return null;
-}  //end function ch_idSubject
+}  //end function ch_idClass()
 
 /****************************/
-/*****  ch_idSubject   ******/
+/*****  ch_idSubject   ******/   //^^^^ Not currently used ^^^^
 /****************************/
 function ch_idSubject($ch_id) {
     if (($ch_id) && preg_match ( "/^([1-9]|10)(Ma|M|N|Sa|S|SSa|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches ))
         return $matches[2];
     else return null;
-}  //end function ch_idSubject
+}  //end function ch_idSubject()
 
 
 /**********************/
@@ -62,7 +89,7 @@ function isHTML($fp) {
 
 
 /**********************/
-/**** isEpaath   ******/
+/**** isEpaath   ******/      //^^^^ Not currently used ^^^^
 /**********************/
 function isEpaath($fp) {
         if (substr($fp, -7, 7) == "epaath/") return true;
@@ -142,7 +169,7 @@ function folderThumbnail ($fp) {  //for directories, look for filename "thumbnai
     else return "<img loading='lazy' alt='' src='images/folder.png' >";
 } //end function thumbnail
 
-function displayName($filename, $dn, $ndn) {
+function displayName($filename, $dn, $ndn, $color) {
 
     //echo "DN is " . $dn . "**";
     //echo "NDN is " . $ndn . "**";
@@ -156,7 +183,7 @@ function displayName($filename, $dn, $ndn) {
             . $ndn .
             "<span class='xlat'>" . $dn . "</span>" .
             "</span>";
-    } else if ($dn) echo "<span class='name'>" . $dn . "</span>";
+    } else if ($dn) echo "<span class='name' style='color:" . $color . "'>" . $dn . "</span>";
       else if ($ndn) echo "<span class='name'>" . $ndn . "</span>";
       else echo "<span class='name'>" . $filename . "</span>";
 }  //end displayName()
@@ -179,7 +206,7 @@ function natksort($array) {
 } //end natksort()
 
 /*********************************/
-/******** NEWmakeActivityButton *****/
+/******** makeInlineActivityButton *****/
 /*********************************/
 
 function makeInlineActivityButton($activity)
@@ -195,26 +222,25 @@ function makeInlineActivityButton($activity)
             echo ">";
             echo '<img alt="" src="' . 'images/textfile.png' . '">';
             echo "<span>" . "" . "</span></button>";
-}; //end NEWmakeActivityButton()
+}; //end makeInlineActivityButton()
 
 /*********************************/
-/******** makeActivityButton *****/
+/******** makeInlineActivityButton *****/
 /*********************************/
 
-// NOTE: instead of this long list of args, the fn should take one psaram - an assoc array/object with all the activity's attributes
+// NOTE: instead of this long list of args, the fn should take one param - an assoc array/object with all the activity's attributes
 
 function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang) {
 
+    global $icons;
 
 	//NOTE: would be better to call this with an object with fields ft, fp, fn, etc. smaller arglist and fewer null parameters
-
-
 
 	    // makes an ACTIVITY button (for looma-library, looma-activities, looma-lesson-present,looma-play-slideshow,looma-histories, etc)
 	    // some parameters are optional for some filetypes
 	    //    $ft - filetype, $fp - path to file, $fn - filename, $dn - display name, $ndn - nepali display name, $thumb - thumbnail file name
 	    //    $ch_id - chapter ID, $mongo_id - mongoDB id,
-        //     for ePAATH: $olde_id, $url, $grade, $epversion
+        //     for ePAATH: $ole_id, $url, $grade, $epversion
         //     for PDF: $pg - page number, $zoom - initial zoom level
 
 	    //parameters used in buttons for various filetypes
@@ -322,6 +348,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         if ($epversion)   echo "data-epversion='" .  $epversion . "' ";
 
         if ($ft)          echo "data-ft='" .  $ft . "' ";
+        if ($ft === 'EP' || $ft === 'ep' || $ft === 'epaath') echo "data-subject='english'";
+
         if ($dn)          echo "data-dn='" .  $dn . "' ";
 
         if ($ndn === "") $ndn = null;
@@ -336,25 +364,32 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 
         if ($ft == 'pdf' || $ft == 'chapter') {
             echo "data-page='" . ($pg?$pg:1) . "' ";
+            echo "data-len='" . ($url?$url:999) . "' ";
             if ($npg) echo "data-npg='" . $npg . "' ";
 
             echo "data-zoom='" . $zoom . "' ";}  //assumes zoom='' defaults to zoom-auto
 
-                  echo ">";
-                  if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
-                  //echo "<span>" . $dn . "</span>";
-                  displayName($fn, $dn, $ndn);
+        echo ">";
+        if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
+      //echo "<span>" . $dn . "</span>";
 
-    if ($dn) echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
-    else if ($ndn) echo "<span class='tip yes-show big-show' >" . $ndn . "</span></button>";
+        if ($url) displayName($fn, 'Teacher\'s Guide', $ndn, 'green');
+        else      displayName($fn, $dn, $ndn, 'black');
+
+       // echo '<img class="icon" src="' . icon($ft) . '">';
+
+        if ($dn) echo "<span class='tip yes-show big-show' >" . $dn . "</span>";
+        else if ($ndn) echo "<span class='tip yes-show big-show' >" . $ndn . "</span>";
+
+    //$newButton.append($('<img class="icon" src="' + icons[result.ft] + '">'));
+    echo "<img class='icon' src='" . $icons[$ft] . "'>";
+    echo "</button>";
 
 	} //end makeActivityButton()
-
 
 /*********************************/
 /******** makeChapterButton *****/
 /*********************************/
-
 
 
 // NOTE: instead of this long list of args, the fn should take one psaram - an assoc array/object with all the activity's attributes
@@ -405,7 +440,7 @@ function makeChapterButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, 
     echo ">";
     echo '<img alt="" draggable="false" src="' . $thumbSrc . '">';
     //echo "<span>" . $dn . "</span>";
-    displayName($fn, $dn, $ndn);
+    displayName($fn, $dn, $ndn, 'black');
     echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
 
 }; //end makeChapterButton()

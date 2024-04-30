@@ -5,10 +5,11 @@
 #       date:   Aug 2019,
 #               OCT 2020 - changed to --size-only for CONTENT upload
 #                           to avoid unnecessary updates to modification date stamps for content files, so that download RSYNC will continue to skip them
+#               OCT 2023 - added 'archivetimestamp.txt' file to archive for use by 'loomaupdate'
 #
 #  used to update the 'archive' version of Looma on rsync.net, including new code, database & content
 #
-#   set up to run on a MAC [other computer types would require changes to this script]
+#  set up to run on a MAC [other computer types would require changes to this script]
 
 #RSYNC options used:
 #-a  "archive" equivalent to -rlptgoD
@@ -32,11 +33,19 @@ result () {
     then
         echo "****************************************************************"
         echo "ERROR: previous operation returned $1"
+        echo "****************************************************************"
+        echo "it is recommended to RETRY loomaarchive"
+        exit
     else
         echo "****************************************************************"
         echo "operation successful"
     fi
-}
+}  #  end result()
+
+timestamp () {  # $1 is the dir to put the timestamp in [content or Looma]
+  date +"%Y%m%d" > {$1}/archivetimestamp.txt
+}  #  end timestamp()
+
 echo "************************************"
 echo " - - setting database version to today's date"
 echo "************************************"
@@ -79,14 +88,27 @@ then
 
      #EXAMPLE chmod: --chmod=Dg+s,ug+w,Fo-w,+X
 
-     //removed "--include '.ssh'"
-    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update  --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
+     #removed "--include '.ssh'"
+    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update --progress  --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
     echo "FINISHED dryrun"
 else
-   rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update   --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
+   timestamp "/usr/local/var/www/Looma"
+
+    echo "new timestamp for code is "
+    cat "/usr/local/var/www/Looma/archivetimestamp.txt"
+
+   rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update --progress   --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
+
+echo "************************************"
+echo -n "archive CONTENT files? [y/n]"
+read userchoice
+if [[ $userchoice = "n" ]]
+  then
+    exit 1
+  fi
 
 echo "************************************"
 echo 'archiving Looma (content) to rsync.net'
@@ -98,10 +120,15 @@ SECONDS=0
 if [[ $1 = "dryrun" ]]
 then
     echo "NOTE: dryrun"
-    rsync -avz  --dry-run --size-only --delete --perms --chmod=u+rwx,go+rx --update    --exclude ".[!.]*" --delete-excluded  -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
+    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update    --exclude ".[!.]*" --delete-excluded  -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
     echo "FINISHED dryrun"
 else
-    rsync -avz            --size-only --delete --perms --chmod=u+rwx,go+rx --update   --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
+    timestamp "/usr/local/var/www/content"
+
+    echo "new timestamp for content is "
+    cat "/usr/local/var/www/content/archivetimestamp.txt"
+
+    rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update   --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."

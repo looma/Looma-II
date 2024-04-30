@@ -4,7 +4,7 @@ Filename: looma-edit-lessonOLD.js
 Description: version 1 [SCU, Spring 2016]
              version 2 [skip, Fall 2016]
              version 3 [skip, MAR 2021, NEW lesson pre-configured from template]
-             version 3 [skip, JUL 2023, text files edited inline]
+             version 3 [skip, JUL 2023, text files edited inline, JAN 2024 bug fixes]
 Programmer name: SCU
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: version 1:spring 2016, version 2: Nov 16, version 3: spring 2018, version 4: JUL 2023
@@ -12,16 +12,17 @@ Date: version 1:spring 2016, version 2: Nov 16, version 3: spring 2018, version 
 
 'use strict';
 var $timeline;        // === $('#timelineDisplay')
-var $previewpanel;
-var $texteditbutton;      // $('#edit-text-file')
-var savedSignature;   //savedSignature is checkpoint of timeline for checking for modification
+var $previewpanel;    // === $('#previewpanel')
+var $texteditbutton;  // === $('#edit-text-file')
+var savedSignature = null;   //savedSignature is checkpoint of timeline for checking for modification
 var loginname, loginlevel;
 var homedirectory = "../";
-var author;
+var author, editor;
 var $current_item;    // jQuery object representing the currently selected timeline item
+var convertedSomeTextFiles;
 
 var searchName = 'lesson-editor-search'; // used by looma-search.js
-var isnewlesson;
+// var isnewlesson;
 var textEditLanguage = 'english';
 
 //////////////   functions used by filecommands/////////////////
@@ -50,7 +51,7 @@ function lessonshowsearchitems() {
 function lessoncheckpoint()       { savedSignature = signature($timeline);}
 
 ///////// lessonmodified /////////
-function lessonmodified() {return ( signature($timeline) !== savedSignature);}
+function lessonmodified() {return ( savedSignature && signature($timeline) !== savedSignature);}
 
 ///////// signature  /////////
 function signature($lesson) { //param is jQ object of the timeline ($timeline)
@@ -62,6 +63,53 @@ function signature($lesson) { //param is jQ object of the timeline ($timeline)
         } else sig += $(x).data('id');
     });
     return sig;
+}
+
+//  Formatted version of a popular md5 implementation
+//  Original copyright (c) Paul Johnston & Greg Holt.
+//  The function itself is now 42 lines long.
+
+function md5(inputString) {
+    var hc="0123456789abcdef";
+    function rh(n) {var j,s="";for(j=0;j<=3;j++) s+=hc.charAt((n>>(j*8+4))&0x0F)+hc.charAt((n>>(j*8))&0x0F);return s;}
+    function ad(x,y) {var l=(x&0xFFFF)+(y&0xFFFF);var m=(x>>16)+(y>>16)+(l>>16);return (m<<16)|(l&0xFFFF);}
+    function rl(n,c)            {return (n<<c)|(n>>>(32-c));}
+    function cm(q,a,b,x,s,t)    {return ad(rl(ad(ad(a,q),ad(x,t)),s),b);}
+    function ff(a,b,c,d,x,s,t)  {return cm((b&c)|((~b)&d),a,b,x,s,t);}
+    function gg(a,b,c,d,x,s,t)  {return cm((b&d)|(c&(~d)),a,b,x,s,t);}
+    function hh(a,b,c,d,x,s,t)  {return cm(b^c^d,a,b,x,s,t);}
+    function ii(a,b,c,d,x,s,t)  {return cm(c^(b|(~d)),a,b,x,s,t);}
+    function sb(x) {
+        var i;var nblk=((x.length+8)>>6)+1;var blks=new Array(nblk*16);for(i=0;i<nblk*16;i++) blks[i]=0;
+        for(i=0;i<x.length;i++) blks[i>>2]|=x.charCodeAt(i)<<((i%4)*8);
+        blks[i>>2]|=0x80<<((i%4)*8);blks[nblk*16-2]=x.length*8;return blks;
+    }
+    var i,x=sb(""+inputString),a=1732584193,b=-271733879,c=-1732584194,d=271733878,olda,oldb,oldc,oldd;
+    for(i=0;i<x.length;i+=16) {olda=a;oldb=b;oldc=c;oldd=d;
+        a=ff(a,b,c,d,x[i+ 0], 7, -680876936);d=ff(d,a,b,c,x[i+ 1],12, -389564586);c=ff(c,d,a,b,x[i+ 2],17,  606105819);
+        b=ff(b,c,d,a,x[i+ 3],22,-1044525330);a=ff(a,b,c,d,x[i+ 4], 7, -176418897);d=ff(d,a,b,c,x[i+ 5],12, 1200080426);
+        c=ff(c,d,a,b,x[i+ 6],17,-1473231341);b=ff(b,c,d,a,x[i+ 7],22,  -45705983);a=ff(a,b,c,d,x[i+ 8], 7, 1770035416);
+        d=ff(d,a,b,c,x[i+ 9],12,-1958414417);c=ff(c,d,a,b,x[i+10],17,     -42063);b=ff(b,c,d,a,x[i+11],22,-1990404162);
+        a=ff(a,b,c,d,x[i+12], 7, 1804603682);d=ff(d,a,b,c,x[i+13],12,  -40341101);c=ff(c,d,a,b,x[i+14],17,-1502002290);
+        b=ff(b,c,d,a,x[i+15],22, 1236535329);a=gg(a,b,c,d,x[i+ 1], 5, -165796510);d=gg(d,a,b,c,x[i+ 6], 9,-1069501632);
+        c=gg(c,d,a,b,x[i+11],14,  643717713);b=gg(b,c,d,a,x[i+ 0],20, -373897302);a=gg(a,b,c,d,x[i+ 5], 5, -701558691);
+        d=gg(d,a,b,c,x[i+10], 9,   38016083);c=gg(c,d,a,b,x[i+15],14, -660478335);b=gg(b,c,d,a,x[i+ 4],20, -405537848);
+        a=gg(a,b,c,d,x[i+ 9], 5,  568446438);d=gg(d,a,b,c,x[i+14], 9,-1019803690);c=gg(c,d,a,b,x[i+ 3],14, -187363961);
+        b=gg(b,c,d,a,x[i+ 8],20, 1163531501);a=gg(a,b,c,d,x[i+13], 5,-1444681467);d=gg(d,a,b,c,x[i+ 2], 9,  -51403784);
+        c=gg(c,d,a,b,x[i+ 7],14, 1735328473);b=gg(b,c,d,a,x[i+12],20,-1926607734);a=hh(a,b,c,d,x[i+ 5], 4,    -378558);
+        d=hh(d,a,b,c,x[i+ 8],11,-2022574463);c=hh(c,d,a,b,x[i+11],16, 1839030562);b=hh(b,c,d,a,x[i+14],23,  -35309556);
+        a=hh(a,b,c,d,x[i+ 1], 4,-1530992060);d=hh(d,a,b,c,x[i+ 4],11, 1272893353);c=hh(c,d,a,b,x[i+ 7],16, -155497632);
+        b=hh(b,c,d,a,x[i+10],23,-1094730640);a=hh(a,b,c,d,x[i+13], 4,  681279174);d=hh(d,a,b,c,x[i+ 0],11, -358537222);
+        c=hh(c,d,a,b,x[i+ 3],16, -722521979);b=hh(b,c,d,a,x[i+ 6],23,   76029189);a=hh(a,b,c,d,x[i+ 9], 4, -640364487);
+        d=hh(d,a,b,c,x[i+12],11, -421815835);c=hh(c,d,a,b,x[i+15],16,  530742520);b=hh(b,c,d,a,x[i+ 2],23, -995338651);
+        a=ii(a,b,c,d,x[i+ 0], 6, -198630844);d=ii(d,a,b,c,x[i+ 7],10, 1126891415);c=ii(c,d,a,b,x[i+14],15,-1416354905);
+        b=ii(b,c,d,a,x[i+ 5],21,  -57434055);a=ii(a,b,c,d,x[i+12], 6, 1700485571);d=ii(d,a,b,c,x[i+ 3],10,-1894986606);
+        c=ii(c,d,a,b,x[i+10],15,   -1051523);b=ii(b,c,d,a,x[i+ 1],21,-2054922799);a=ii(a,b,c,d,x[i+ 8], 6, 1873313359);
+        d=ii(d,a,b,c,x[i+15],10,  -30611744);c=ii(c,d,a,b,x[i+ 6],15,-1560198380);b=ii(b,c,d,a,x[i+13],21, 1309151649);
+        a=ii(a,b,c,d,x[i+ 4], 6, -145523070);d=ii(d,a,b,c,x[i+11],10,-1120210379);c=ii(c,d,a,b,x[i+ 2],15,  718787259);
+        b=ii(b,c,d,a,x[i+ 9],21, -343485551);a=ad(a,olda);b=ad(b,oldb);c=ad(c,oldc);d=ad(d,oldd);
+    }
+    return rh(a)+rh(b)+rh(c)+rh(d);
 }
 
 ///////// lessonpack  /////////
@@ -86,59 +134,78 @@ function lessonpack (lesson) { // pack the timeline into an array of collection/
 } //end lessonpack()
 
 ///////// lessonunpack /////////
-function lessonunpack (lesson) {  //unpack the array of collection/id pairs into html to display on the timeline
+function lessonunpack (lesson) {  //un-pack the array of collection/id pairs into html to display on the timeline
     
     lessonclear();
-    setname(lesson.dn, lesson.author);
-    if (lesson.author) author = lesson.author;
+    if (lesson.author) {
+        author = lesson.author;
+        editor = loginname;
+    } else {
+        author = loginname;
+        editor = null;
+    }
+    setname(lesson.dn, author);
     currentDB = lesson.db ? lesson.db : 'looma';
     
     var posts = [];  //we will push all the $.post() deferreds in the foreach below into posts[]
+    var elements = [];
     
-    $(lesson.data).each(function(index) {  // param "index" is auto-generated by "each()"
+  //  for (var index=0;index<lesson.data.length;index++) {
+   
+    convertedSomeTextFiles = false;
+    $(lesson.data).each(function(index, val) {  // param "index" is auto-generated and incremented by "each()"
         // retrieve each timeline element from mongo and add it to the current timeline
         //var newDiv = null;  //reset newDiv so previous references to it are broken
 
-        if (this.ft === 'inline') {  // inline text file
-            var newDiv = createActivityDiv(this);
+        if (val.ft === 'inline') {  // inline text file
+            var newDiv = createActivityDiv(val);
             //add data-index to timeline element for later sorting
             //    (because the elements are delivered async, they may be out of order)
-            $(newDiv.firstChild).attr('data-index', index);
-            insertTimelineElement(newDiv.firstChild);
+            $(newDiv.firstChild).attr('data-index', parseInt(index));
+            elements.push(newDiv.firstChild);
         }   else
             posts.push($.post("looma-database-utilities.php",
-                {cmd: "openByID", currentDB, collection: this.collection, id: this.id},
-            function(result) {
+                {cmd: "openByID", currentDB, collection: val.collection, id: val.id},
+            async function(result) {
                 var newDiv = createActivityDiv(result);
+                
                 //add data-index to timeline element for later sorting
                 //    (because the elements are delivered async, they may be out of order)
-                $(newDiv.firstChild).attr('data-index', index);
-                //console.log('adding ID :' + result._id);
-                insertTimelineElement(newDiv.firstChild);
+                $(newDiv.firstChild).attr('data-index', parseInt(index));
+    
+                if ( $(newDiv.firstChild).attr('data-type') === 'text')
+                    await convertTextfile( $(newDiv.firstChild) );
+                
+                console.log('adding ID :' + result._id + ' with index = ' + index);
+                elements.push(newDiv.firstChild);
             },
             'json'
         ));
     });
     
     //  when all the $.post's are complete, then re-order the timeline to account for out-of-order elements from asynch $.post calls
-    $.when.apply(null, posts).then(function(){
-        orderTimeline();
+    Promise.all(posts).then (function(){
+        orderTimeline(elements);  // puts the items in elements array into the timeline in order
         makesortable();
-       // reindexTimeline();
-    
+        renumberTimeline();
+        lessoncheckpoint();  // save original contents of the lesson just loaded
+        $('#timelineDisplay').show();
         $current_item = $('#timeline .activityDiv').first();  // select first timeline item
         preview($current_item);
-        if (!isnewlesson) lessoncheckpoint();
+      
+        if (convertedSomeTextFiles) lessonsave(lesson.dn);
+    
     });
 } //end lessonunpack()
+
 
 ///////// lessondisplay  /////////
 function lessondisplay (lesson) { lessonunpack(lesson); }
 
-/////////  lessonsave  /////////
 
+/////////  lessonsave  /////////
 function lessonsave(name) {
-    isnewlesson = false;
+   // isnewlesson = false;
     if (name === 'Master' && loginname !== 'skip')
         LOOMA.alert('Master lesson is Read Only', 5, true);
     else savefile(name, currentcollection, 'lesson', lessonpack($timeline.html()), "true", author);
@@ -401,7 +468,13 @@ function createActivityDiv (activity) {
             class : "result_ft",
             html : filetype(itemtype) + "  "
         }).appendTo(textdiv);
-        
+      
+        // index
+        $("<span/>", {
+            class : "result_index",
+            html:" (1)"
+        }).appendTo(textdiv);
+    
         // ID
         if ('ch_id' in item) {
             $("<span/>", {
@@ -466,11 +539,12 @@ function createActivityDiv (activity) {
 ///////////////////////////////////////////
 function scroll_to_item($item) {
     $('#timeline').animate( { scrollLeft: $item.width() * ( $item.attr('data-index') - 3 ) }, 100);
-    $('.timelineElement').removeClass('playing');
+    $('#timeline .activityDiv').removeClass('playing');
     $('.resultitem').removeClass('search-preview');
     
     $item.addClass('playing');
     $current_item = $item;
+    
 }  //  end scroll_to_item()
 
 ///////////////////////////////////////////
@@ -678,14 +752,6 @@ function preview ($item, do_not_select) {
     }
 }  // end preview()
 
-function reindexTimeline() {
-    var $item = $('#timelineDisplay .activityDiv').first();
-    var i=0;
-    do {
-        $item.attr('data-index',i++);
-        $item = $item.next();
-    } while ($item.length > 0);
-};  // end reindexTimeline()
 
 function insertTimelineElement(source, target) {
                                              // insert a new timeline element, after 'target' element
@@ -707,15 +773,15 @@ function insertTimelineElement(source, target) {
             //$('#timeline').animate({scrollLeft: $dest.outerWidth(true) * ($dest.index() - 4)}, 100);
         }
     $dest.addClass('timelineElement');
-    //reindexTimeline();
     preview($dest);
+   
+    renumberTimeline();
     
     makesortable();  //TIMELINE elements can be drag'n'dropped
 } //  end insertTimelineElement()
 
 function copyTimelineElement(source) {
     insertTimelineElement(source,source);
-    reindexTimeline();
 }; // end copyTimelineElement()
 
 function cloneTextfile(source, target) {
@@ -763,14 +829,15 @@ function cloneTextfile(source, target) {
        if (target) target.after($clone);   // insert after target
        else $clone.appendTo("#timelineDisplay");  // or insert at end
        
-       reindexTimeline();
-       makesortable();
+        renumberTimeline();
+        makesortable();
        preview($clone);
     });
 }  // end cloneTextfile()
 
 
 async function convertTextfile(source) {
+    // "source" parameter is a lesson timeline element of type "text" [as a JS object]
     // convert a text file that has been DROPped into the timeline
     // into an 'inline' text item
     var newname = source.data('dn');
@@ -816,9 +883,10 @@ async function convertTextfile(source) {
         source.removeAttr("style");
         //$clone.css('position', 'unset');
         //END NOTE
-      
+    
+        convertedSomeTextFiles = true;
         makesortable();
-        preview(source);
+        preview($current_item);
     });
     
 }  // end convertTextfile()
@@ -832,27 +900,52 @@ function removeTimelineElement (elem) {
         preview($neighbor);
     else
         preview($timeline.first());
-    reindexTimeline();
-} // end removeTimelineElement()
+    
+    renumberTimeline();
+    
+``} // end removeTimelineElement()
 
-function orderTimeline (){  // the timeline is populated with items that arrive acsynchronously by AJAX from the [mongo] server
-    // a 'data-index' attribute is stored with each timeline item
-    // this function [re-]orders the timeline based on those data-index values
+function getSorted(selector, attrName) {
+    return $($(selector).toArray().sort(function(a, b){
+        var aVal = parseInt(a.getAttribute(attrName)),
+            bVal = parseInt(b.getAttribute(attrName));
+        return aVal - bVal;
+    }));
+}
+
+function orderTimeline (elements){  // "elements" is an array of items that arrived [.activityDiv] acsynchronously by AJAX from the [mongo] server
+    // a 'data-index' attribute is stored with each  item
+    // this function [re-]orders the array based on those data-index values
+    // then inserts them in order into the lesson timeline
     //  $timeline is $('#timelineDisplay');
     
-    $timeline.find('.activityDiv').sort(function(a, b) {
-        return $(a).attr('data-index') - $(b).attr('data-index');
-    })
-        .appendTo($timeline);
+    $('#timelineDisplay').empty();
+    
+    elements.sort(function(a, b) {  // "elements" is an JS array. using JS "sort()" to order it
+        return parseInt($(a).attr('data-index')) - parseInt($(b).attr('data-index'));
+    });
+    
+    $(elements).each(function(index) {  // append each array element to the timeline in sorted order. each() preserves ordering
+        // let number = index + 1;
+        // $(this).find(".result_index").html(' (' + number + ')');
+        $('#timelineDisplay').append($(this));
+        console.log('appending ' + index);
+    });
+    
+    //renumberTimeline();
+    
 } // end orderTimeline()
 
-// NOTE: orderNewLesson() may be redundant with orderTimeline() ????
-function orderNewLesson(lessonData) {
-    lessonData.sort(function(a, b) {
-        return a.index - b.index;
+function renumberTimeline () {
+    $timeline.children().each(function(index, item) {
+        let number = index + 1;
+        $(item).find(".result_index").html(' (' + number + ')');
+    
+        $(item).attr('data-index', index); // FEB 1 2024
+    
     });
-    return lessonData;
-} // end orderNewLesson
+}  // end renumberTimeline()
+
 
 /////////////////////////// SORTABLE UI ////////  requires jQuery UI  ///////////////////
 function makesortable (){
@@ -868,20 +961,22 @@ function makesortable (){
         containment: "#timelineDisplay",
         helper: "clone",
         //stop:   function ( e, ui ) { convertTextfile(ui.helper);}, // the convert is done in the droppable 'drop' fn, not here
-        //update: function( ) {scroll_to_item($(ui.helper)); reindexTimeline();},
         update: function( event, ui ) {
-            //scroll_to_item($(ui.helper));
             console.log('in makesorttable "update" function line 862');
             ui.item.addClass('timelineElement');
+            renumberTimeline();
             scroll_to_item(ui.item);
-            reindexTimeline();},
+        },
         scroll: true,   //Allows page to scroll when dragging. Good for wide pages.
         handle: $(".activityDiv")  //restricts elements that can be clicked to drag to sort
     }).disableSelection();
     //    });
         
         $('#timelineDisplay .activityDiv').addClass('ui-sortable-handle');
-    } // end makesortable()
+    
+        //renumberTimeline();
+    
+} // end makesortable()
 
 /////////////////////////// DRAGGABLE UI ////////  requires jQuery UI  ///////////////////
 //set up Drag'n'Drop  - -  code borrowed from looma-slideshow.js [T. Woodside, summer 2016]
@@ -906,10 +1001,11 @@ function makedroppable() {
         drop: async function(event, ui) {
             console.log('in makedroppable "drop" function line 892');
             $(ui.helper).addClass('timelineElement');
-            scroll_to_item($(ui.helper));
             if ($(ui.helper).data('type') === 'text' ||
                 $(ui.helper).data('type') === 'text-template')
                 await convertTextfile(ui.helper);
+            renumberTimeline();
+            scroll_to_item($(ui.helper));
             preview($(ui.helper));
             makesortable();
         }
@@ -935,6 +1031,13 @@ function openTextEditor () {
     $textpreview.on('input', function() {
         $("#text-edit-save").prop("disabled",false);
         $("#text-edit-translate").prop("disabled",true);
+ 
+        // NOTE: next line set 'modified' for the lesson
+        //       if the inline text element doesnt actually get changed, the modified stays set
+        //       would be better to save the 'inline' contents when opening the text editor
+        //       and checking the current contents against those initial contents when closing the text editor
+        savedSignature = ' ';
+ 
     });
     $textpreview.attr('user-select', 'contain');
     textEditLanguage = 'english';
@@ -954,7 +1057,10 @@ function openTextTranslator (e) {
 
     // disable SAVE button until contents change
     $("#text-edit-save").prop("disabled",true);
-    $textpreview.on('input', function() {$("#text-edit-save").prop("disabled",false);});
+    $textpreview.on('input', function() {
+        $("#text-edit-save").prop("disabled",false);
+      //  savedSignature = ' ';
+    });
     $textpreview.attr('user-select', 'contain');
     textEditLanguage = 'native';
     
@@ -1110,10 +1216,8 @@ function cloneMasterLesson($chapter) {
                 });
                
             }
-    
-            //newlesson.data = orderNewLesson(newlesson.data);
             
-            isnewlesson = true;
+        //    isnewlesson = true;
             lessondisplay(newlesson);
         },
         'json'
@@ -1264,6 +1368,8 @@ window.onload = function () {
     $previewpanel =     $('#previewpanel');
     
     loginname = LOOMA.loggedIn();
+    author = loginname;
+    
     var loginlevel = LOOMA.readStore('login-level','cookie')
     var loginteam  = LOOMA.readStore('login-team','cookie')
   //  if (loginname && loginlevel === 'admin' )   $('.admin').show();
@@ -1354,7 +1460,9 @@ window.onload = function () {
     //$(elementlist).on(event, selector, handler).
     //  ************   ADD   ****************
     $('#innerResultsDiv'           ).on('click', '.add',        function() {
-        insertTimelineElement($(this).closest('.activityDiv')); reindexTimeline(); return false;});
+        insertTimelineElement($(this).closest('.activityDiv'));
+        //renumberTimeline();
+        return false;});
     
     //   ************   PREVIEW   ****************
     $('#innerResultsDiv').on('click', '.preview',    function() {
@@ -1437,9 +1545,9 @@ window.onload = function () {
     $('button.text-edit').click(function () { edit(this);});
     
     // QUIT
-    $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
+    $('#dismiss-editor').on('click', quit );  //disable default DISMISS btn function and substitute QUIT()
     
-    lessoncheckpoint();
+   // lessoncheckpoint();
     
     $('.dropdown-item#chapter').css("display", "block").click(lessonnew);
     

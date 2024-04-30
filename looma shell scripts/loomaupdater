@@ -1,9 +1,12 @@
 #!/bin/bash
 #
 #  filename: loomaupdater
-#       VERSION 5.0 for rysnc.net
+#       VERSION 6.0 for rysnc.net
 #       author: skip
-#       date:   SEP 2021
+#       date:   SEP 2021, FEB 2024
+#
+#     revised OCT 2023 to check 'archivetimestamp.txt' to see if an update is needed
+#       on both /Looma and /content
 #
 #  used to update a pre-installed Looma by installing latest code, database & content
 #           only changed or brand new files are transferred
@@ -19,7 +22,7 @@
 #       content/*   (folders with new content)
 #                   (these are usually NEW folders,
 #                      but this can be used to overwrite existing content folders)
-#    possibly other content folders, like
+#    optionally other content folders by uncommenting code below, like
 #       maps2018/*
 #       ePaath/*
 #    or other content folders
@@ -32,7 +35,7 @@
 #       sync newer content files into "content" directory
 
 #RSYNC options used:
-#-a  "archive" equivalent to -rlptgoD
+#   -a  "archive" equivalent to -rlptgoD
 #   -r  recursive
 #   -l  recreate symlink on the destination
 #   -p  preserve permissions
@@ -40,19 +43,20 @@
 #   -g  preserve group
 #   -o  preserve owner
 #   -D  transfer devices and specials (NA for Looma)
-
-#-v	    verbose
-#-vv	very verbose
-#-z  	use compression
+#   -z  	use compression
 #--dry-run
+#--progress
 #--size-only [for Content files]
 #--delete 	delete files on destination that are not on source
 #--perms (=== -p)
 #--update   skip files if destination  already exists and has a later date
-#--include '.ssh'
 #--exclude '.[!.]*'
-#--progress show transfer progress
 #--stats    print stats at the end
+
+# not used
+#    -v	    verbose
+#    -vv	  very verbose
+#    --progress show transfer progress
 
 # display result of previous  command
 result () {
@@ -64,16 +68,16 @@ result () {
         echo "****************************************************************"
         echo "operation successful"
     fi
-}
+}  #  end result()
 
 pause () {
    read -p "Paused, press [Enter] to continue"
-}
+}  #  end pause()
 
 backup () {
     echo
     echo "****************************************************************"
-    echo "- preparing to backup current Looma code to LoomaBAK"
+    echo "- preparing to backup current LOOMA CODE to LoomaBAK"
     echo "-   *** usually it is OK to skip this step to save time"
     echo -n  "- - continue ('n' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
@@ -89,7 +93,7 @@ backup () {
     else
         echo " - - - SKIPPED: backing up Looma code "
     fi
-}
+}  #  end backup()
 
 checknetworkspeed () {
   # test internet presence and speed
@@ -98,7 +102,7 @@ checknetworkspeed () {
     echo "************************************"
     echo
     t=$(date +%s)
-    sudo wget ftp://speedtest.tele2.net/10MB.zip -O /dev/null
+    wget ftp://speedtest.tele2.net/10MB.zip -O /dev/null > /dev/null
     r=$?
     s=$(date +%s)
     if [[ $r -ne 0 ]]
@@ -107,46 +111,116 @@ checknetworkspeed () {
         echo "no internet connection found";exit $r;
     else
         echo "****************************************************************"
-       # echo -n "Internet speed is MB/s: ";expr 8 \* 10 / $(($s - $t))
+        echo -n "Internet speed is MB/s: ";expr 8 \* 10 / $(($s - $t))
         echo -n  "- - continue at this speed [y/n]?"; read input;
         if [[ $input != "y" ]]
         then
             exit 1
         fi
     fi
-}
+}  #  end checknetworkspeed()
+
+
+# check if the timestamp of current files is same as timestamp of the archive
+# return 1 if timestamps are equal [so no update is needed]
+checktimestamp () {
+  #echo "  *** *** if prompted for \"password:\" enter \"looma\"  *** ***"
+  if [[ $source = "I" ]]
+  then
+    if [[ -f $TO/$DIR/archivetimestamp.txt ]]
+    then
+      current=`cat $TO/$DIR/archivetimestamp.txt`
+    else
+      current=""
+    fi
+
+  # latest=                 `ssh $FROM cat ../$DIR/archivetimestamp.txt`
+    latest=`sshpass -p looma ssh $FROM cat ../$DIR/archivetimestamp.txt`
+
+    if [[ $current = $latest ]] 
+    then
+      echo "current timestamp for $DIR is $current"
+      echo "latest timestamp for archive is $latest"
+      return 1
+    fi
+  else
+    if [[ -f $TO/$DIR/archivetimestamp.txt ]]
+    then
+      current=`cat $TO/$DIR/archivetimestamp.txt`
+    else
+      current=""
+    fi
+
+    latest=`cat $FROM/$DIR/archivetimestamp.txt`
+    if [[ $current = $latest ]] 
+    then
+      echo "current timestamp for $DIR is $current"
+      echo "latest timestamp for archive is $latest"
+      return 1
+    fi
+  fi
+  return 0
+}  #  end checktimestamp()
 
 #function DOSYNC() to exec the rsync. global var $DRYRUNMODE is either "--dry-run" or ""
-# call dosync() with $1 = the source directory, $2 = the target directory
+# call dosync() with $1 = the source , $2 = the target $3 = the directory, $4 = "--sizeonly" or null
 dosync () {
     FROM=$1
     TO=$2
-    SIZEONLY=$3
+    DIR=$3
+    SIZEONLY=$4
 
     echo;
+
+    checktimestamp
+    if [[ $? = 1 ]]
+      then
+        echo "++++++++++++++++++++++++"
+        echo "$TO/$DIR is UP TO DATE [No files are being transferred]"
+        echo "++++++++++++++++++++++++"
+        return 0
+      fi
+
+    if [[ $source = "I" ]]
+    then
+      remote=$FROM:..
+    else
+      remote=$FROM
+    fi
+
+    # avoids manual entry of password for rsync (doesnt work?0
+    # RSYNC_PASSWORD="looma"
+
  if [[ $DRYRUNMODE = "--dry-run" ]]
     then
-      echo "doing RSYNC from $FROM to $TO with --dry-run [no changes will be made]"
+      echo "doing RSYNC from $remote to $TO/$DIR with --dry-run [no changes will be made]"
     else
-      echo "doing RSYNC from $FROM to $TO"
+      echo "doing RSYNC from $remote to $TO/$DIR"
     fi
     echo
-    echo "  *** *** if prompted for \"password:\" enter \"looma\"  *** ***"
-    echo
+    #echo "  *** *** if prompted for \"password:\" enter \"looma\"  *** ***"
 
-    # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
-    rsync -az  $DRYRUNMODE $SIZEONLY  \
-        --stats  --progress   \
+      # NOTE, adding "O" option to avoid errors wioth modified date updates
+    sshpass -p 'looma' rsync -azO  $DRYRUNMODE $SIZEONLY  \
+        --stats  \
         --perms  --chmod=D777,F777 --chown=looma:looma \
         --exclude '.[!.]*' --delete --delete-excluded   \
         -e "ssh"   \
-       "$FROM/"  "$TO"
-}
+       "$remote/$DIR/"  "$TO/$DIR"
+      # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
+
+  if [[ $DRYRUNMODE != "--dry-run" ]]
+     then    echo
+     echo "**************************"
+     echo "setting $TO/$DIR/archivetimestamp.txt to $latest"
+     echo $latest > $TO/$DIR/archivetimestamp.txt
+     echo
+  fi
+}  #  end dosync()
 
 ######
 ######### start of executed code ##########
 ######
-echo
 echo
 echo "****************************************************************"
 echo "START LOOMA UPDATE: updating Looma code, database and content"
@@ -154,11 +228,7 @@ echo "****************************************************************"
 echo "this a DANGEROUS operation and can disable a Looma"
 echo "Be sure you have read the instructions"
 echo "****************************************************************"
-echo
 
-# set up user 'looma' and 'looma-admin' and group 'looma' in case not already present
-# groupadd looma
-# useradd -g looma looma
 
 if [[ $2 = "dryrun" ]]
   then
@@ -205,7 +275,7 @@ then
 
   elif [[ $source = "I" ]]
   then
-      FROMDIR="58191@usw-s008.rsync.net:.."
+      FROMDIR="58191@usw-s008.rsync.net"
 
     echo; echo "****************************************************************"
     echo "-   *** you can check network speed before proceeding"
@@ -224,45 +294,19 @@ then
 ########################### set the target directory ###############E
 
 echo "********************"
-echo "********************"
-#echo "enter 1,2 or 3 to select the target directory for Looma on this system"
-#echo "  - - for Loomas boxes           [directory is /var/www/html) enter '1'"
-#echo "  - - for Loomas on Amazon (AWS) [directory is /opt/bitnami/htdocs) enter '2'"
-#echo "  - - for other situationsLoomas (and to be prompted for the directory)) enter '2'"
-#read
-#if [ $REPLY = '1']
-#  TODIR="/var/www/html"
-#elif [ $REPLY = '2' ]
-#  TODIR="/opt/bitnami/htdocs"
-#else
-#  echo "enter the full path of the Looma directoyr (with no trailing /)"
-#  read
-#  TODIR=$REPLY
-#fi
 
-if [ $# -eq 0 ]
-  then
-   TODIR="/var/www/html"
-  else
-   TODIR=$1
-fi
-   echo
-   echo "Target directory default is set to $TODIR"
-   echo
-   echo "if that is OK, enter \"yes\", OTHERWISE enter the desired target directory (without a trailing /): "
-   read
-   if [ $REPLY != "yes" ]
-   then
-     TODIR=$REPLY
-     echo
-     echo "Target directory default is set to $TODIR"
-     echo "if that is OK, enter \"yes\""
-     read
-     if [ $REPLY != "yes" ]
-     then
-       exit
-     fi
+  if [ $# -eq 0 ]
+    then
+     TODIR="/var/www/html"
+    else
+     TODIR=$1
   fi
+
+   if [ ! -d $TODIR/Looma ];
+     then
+       echo "Target directory does not contain a /Looma folder"
+       exit
+    fi
 
 ###########################  do the transfers ###############
 
@@ -270,43 +314,49 @@ fi
 #       NOTE: call to function DACKUP() commented out for now
     # backup
 
-    echo; echo "if prompted for \"password for odroid\" enter \"odroid\"  "; echo
+    # echo; echo "if prompted for \"password for odroid\" enter \"odroid\"  "
 
     #       install new Looma code
     echo
     echo "****************************************************************"
-    echo "- preparing to install new Looma code"
+    echo "- preparing to update LOOMA CODE"
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
-        #*************RSYNC*********************
 
+        #*************RSYNC*********************
         SECONDS=0
 
-        #  for CODE calling dosync() with $3 (size-only) = null
-        dosync    "$FROMDIR/Looma"  "$TODIR/Looma"
+        #  for CODE we call dosync() with $4 (size-only) = null
+         echo
+         echo "starting to update code files. please wait ..."
+         echo
+
+        dosync    "$FROMDIR"  "$TODIR" "Looma"
 
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
         CUMULATIVE=$SECONDS
 
         #clear browser cache so the new code files will be used
-        source "$TODIR/Looma/looma shell scripts/loomaClearChromiumCache"
+       # if [[  -f "$TODIR/Looma/looma shell scripts/loomaClearChromiumCache" ]]
+        #then
+         # source "$TODIR/Looma/looma shell scripts/loomaClearChromiumCache"
+        #fi
     else
         echo " - - - SKIPPED: installing new Looma code"
     fi
 
     #       install new Looma database
-    echo
-    echo "****************************************************************"
-    echo "- preparing to update Looma database"
-    echo "-   ***note: this will NOT erase any lesson plans or text files already in the database"
-    echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
+#    echo
+#    echo "****************************************************************"
+ #   echo "- preparing to update LOOMA DATABASE"
+ #   echo "-   ***note: this will NOT erase any lesson plans or text files already in the database"
+ #   echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
 
-    if [[ $input = "y" ]]
-    then
+#    if [[ $input = "y" ]]
+#    then
 
-if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
-
+    if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
         then
 
             # [mongorestore doesnt update existing mongoDB documents that have changes]
@@ -320,45 +370,51 @@ if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
             # finally, mongoimport the temp files to collectons 'lessons' and 'text_files'
             #      to re-instate locally created lessons and texts
 
-            mongoexport --db looma --collection lessons --out /tmp/lessonsFromMongo.tmp
-            mongoexport --db looma --collection text_files --out /tmp/textsFromMongo.tmp
+            #mongoexport --quiet --db looma --collection lessons --out /tmp/lessonsFromMongo.tmp
+            #mongoexport --quiet --db looma --collection text_files --out /tmp/textsFromMongo.tmp
 
+            echo
+            echo "starting to update Looma's database. please wait ..."
+            echo
             mongo --eval "db.dropDatabase();" looma
             mongorestore --quiet --db looma "$TODIR/Looma/mongo-dump/dump/looma/"
 
-            mongoimport --quiet --db looma --collection lessons --file /tmp/lessonsFromMongo.tmp
-            mongoimport --quiet --db looma --collection text_files --file /tmp/textsFromMongo.tmp
+            #mongoimport --quiet --db looma --collection lessons --file /tmp/lessonsFromMongo.tmp
+            #mongoimport --quiet --db looma --collection text_files --file /tmp/textsFromMongo.tmp
 
-            rm /tmp/lessonsFromMongo.tmp
-            rm /tmp/textsFromMongo.tmp
+            #rm /tmp/lessonsFromMongo.tmp
+            #rm /tmp/textsFromMongo.tmp
 
-            mongoimport --db loomausers --collection logins --file "$TODIR/Looma/mongo-dump/logins/defaultlogins.json"
+            mongoimport --db loomausers --collection logins  --mode upsert --file "$TODIR/Looma/mongo-dump/logins/defaultlogins.json"
             rm "$TODIR/Looma/mongo-dump/logins/defaultlogins.json"
 
             result $?
         else echo "ERROR: no source dir ($TODIR/Looma/mongo-dump/dump/looma) for mongo restore"
         fi
-    else
-        echo " - - - SKIPPED: installing new Looma database"
-    fi
+ #   else
+ #       echo " - - - SKIPPED: installing new Looma database"
+ #  fi
 
     #       copy new files into "content" directory
     echo
     echo "****************************************************************"
-    echo "- preparing to copy new files into content directory"
+    echo "- preparing to update files in CONTENT directory"
     echo -n  "- - continue ('y' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
        SECONDS=0
 
-        #  for CONTENT calling dosync() with $3 (size-only) = "--size-only"
-        dosync "$FROMDIR/content"   "$TODIR/content" "--size-only"
+        #  for CONTENT calling dosync() with $4 (size-only) = "--size-only"
+        echo
+        echo "starting to update content files. this takes a long time. please wait ..."
+        echo
+        dosync "$FROMDIR"  "$TODIR"  "content" "--size-only"
 
         # uncomment to sync the maps [usually they dont change]
-        # dosync "$FROMDIR/maps2018/"  "$TODIR/maps2018" "--size-only"
+        # dosync "$FROMDIR"  "$TODIR" "maps2018" "--size-only"
 
         # uncomment to sync ePaath [usually doesnt change]
-        # dosync "$FROMDIR/ePaath/"    "$TODIR/ePaath" "--size-only"
+        # dosync "$FROMDIR"    "$TODIR" "ePaath" "--size-only"
 
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 
@@ -367,15 +423,6 @@ if [[ -d "$TODIR/Looma/mongo-dump/dump/looma" ]]
     fi
 
   echo "Total $(( ($SECONDS + $CUMULATIVE) / 60)) minutes and $(( ($SECONDS + $CUMULATIVE)  % 60)) seconds elapsed."
-
-# set permissions on Looma code and content
-
-  echo; echo "****************************************************************"
-
-#following not working ??? 2022 02 05
-#  echo "setting permissions on Looma code and content"
-#  chmod -R 777 "$TODIR/Looma"
-#  chmod -R 777 "$TODIR/content"
 
 echo
 echo "****************************************************************"
@@ -388,6 +435,4 @@ echo "****************************************************************"
  fi
 echo "****************************************************************"
 echo "****************************************************************"
-echo
-echo
 

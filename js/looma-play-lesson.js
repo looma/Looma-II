@@ -98,7 +98,8 @@ function play ($item) {
     $item.addClass('playing');
     scrollTimeline($item);
     restoreFullscreenControl(); //reset fullscreen operation in case video, which overrides normal fullscreen operation, has run
-    $('#fullscreen-playpause').hide();
+    //$('#fullscreen-playpause').hide();
+    $('.looma-control-button').hide();
     $('#media-controls').hide();  // hide media controls
     $viewer.empty();
     
@@ -106,7 +107,8 @@ function play ($item) {
         
         case "inline":
                 $('#media-controls').hide();  // hide media controls
-        
+            $('#fullscreen-control, .speak, .lookup').show();
+         
                 var $div = $('<div id="editor">');
         
                 var native = ($item.data('nepali')) ? $item.data('nepali') : $item.data('html');
@@ -125,9 +127,8 @@ function play ($item) {
         case "jpg":
         case "png":
         case "gif":
-            
-            //  $(imageHTML(fp, fn)).appendTo($viewer);
-            $('.speak, .lookup').hide();
+      
+            $('#fullscreen-control').show();
             $imageHTML.attr('src', fp + fn);
             $imageHTML.appendTo($viewer);  //NOTE: $viewer should be a parameter to playActivity() [so it can have any name]
             break;
@@ -137,7 +138,8 @@ function play ($item) {
         case "mp5":
         case "m4v":
         case "mov":
-            
+            $('#fullscreen-control').show();
+            $('#fullscreen-playpause').show();
             $videoHTML.find('source').attr('src', fp + fn);
             $videoHTML.find('video').attr('poster', fp + fn.substr(0,
                 fn.lastIndexOf('.')) + '_thumb.jpg');
@@ -154,8 +156,9 @@ function play ($item) {
         case "audio":
         case "mp3":
         case "m4a":
-            
-            //$(audioHTML(fp, fn, dn)).appendTo($viewer);
+    
+            $('#fullscreen-control').show();
+            $('#fullscreen-playpause').show();//$(audioHTML(fp, fn, dn)).appendTo($viewer);
             $audioHTML.find('source').attr('src', fp + fn);
             $audioHTML.find('#songname').text(dn);
             $audioHTML.appendTo($viewer);
@@ -170,7 +173,7 @@ function play ($item) {
         case 'EP':
         case 'epaath':
         
-            $('.speak, .lookup').show();
+            $('#fullscreen-control, .speak, .lookup').show();
             if (version==2019) {
                 var prefix = 'ePaath/';
                 if (grade=='grade7' || grade == 'grade8') prefix += 'EPaath7-8/';
@@ -187,8 +190,8 @@ function play ($item) {
     
         case 'pdf':
         case 'chapter':
-            
-            $('.speak, .lookup').show();
+    
+            $('#fullscreen-control, .speak, .lookup').show();
     
             var pagenumber = 1;
             var filename = fn;
@@ -235,7 +238,9 @@ function play ($item) {
                     //$('#pdf').css( overflowX, "none");
                 }
                 LOOMA.toggleFullscreen;
-            
+                $('#next-item, #prev-item').show();
+    
+    
                 //NOTE: maybe dont have to re-draw?? seems to work fine without
                 // drawMultiplePages(pdfdoc, startPage, endPage);
             
@@ -276,13 +281,14 @@ function play ($item) {
             break;
     
         case 'text':
-        
-            $('.speak, .lookup').show();
+    
+            $('#fullscreen-control, .speak, .lookup').show();
             textHTML(id);
             break;
             
         case 'html':
         case 'HTML':
+            $('#fullscreen-control, .speak, .lookup').show();
             $htmlHTML.find('embed').attr('src', fp + fn);
             
             $htmlHTML.appendTo($viewer);
@@ -337,6 +343,8 @@ function play ($item) {
         '&dn=' + button.getAttribute('data-dn');
         break;
      */
+
+    $('#next-item, #prev-item').show();
 
 } //end playActivity()
 

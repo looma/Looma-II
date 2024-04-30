@@ -1,24 +1,37 @@
-p {font-size:2em;}
+p {
+    font-size:1em;
+    color:white;
+}
 
-p#warning, p#waiting {
+#message-box {
+   
+    width: 70vw;
+    height:25vh;
+    max-height:25vh;
+    border-radius: 5px;
     display:none;
-    width:50vw;
     margin:auto;
+    font-size:1em;
     color:red;
     background-color: white;
 }
+
+#warning, #waiting, #ellipsis { color:red }
+
 fieldset {
     margin:auto;
     width:33vw;
+    border-radius: 5px;
     font-size:1.5em;
 }
 
-#button-div {display:none;}
+#button-div {}
 
 button {
     margin: 2vh 1vw;
-    width:15vw;
+    width:30vw;
     height:8vh;
     font-size:2em;
 }
 
+.buttons:disabled { color:grey;}

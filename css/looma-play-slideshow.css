@@ -275,6 +275,17 @@ button.slideshow-element img{
     width:5vw;
 }
 
+button.slideshow-element img.icon{
+    display:none;
+    position:absolute;
+    right:3px;
+    bottom:3px;
+    min-height:0;
+    min-width:0;
+    height:20%;
+    width:8%;
+}
+
 span .filename {
     text-align:center;
     float:none;

@@ -6,7 +6,7 @@
 #
 #  ~/.config/chromium holds the user profile - we dont need to delete this
 #
-# ~/.cache/chromium holds the chromium cache - pages visited in Default/Cache, media loaded in Default/MediaCache
+#  ~/.cache/chromium holds the chromium cache - pages visited in Default/Cache, media loaded in Default/MediaCache
 #  we delete these cache items when loading a new Looma image so the old cached items arent used
 
 if [ -d ~/.cache/chromium/Default ]
@@ -15,9 +15,7 @@ if [ -d ~/.cache/chromium/Default ]
   fi
 
 # on newer Loomas, Chromium is installed by SNAP and uses different cache locations
-
-
 if [ -d ~/snap/chromium/common/chromium/Default ]
   then
-          rm -r ~/snap/chromium/common/chromium/Default/Cache
+          rm -r ~/snap/chromium/common/chromium/Default/*Cache*
   fi

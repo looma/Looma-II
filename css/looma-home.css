@@ -203,8 +203,12 @@ button.class:hover:enabled,  button.subject:hover {
 #subjects button.active {
     color:yellow;
 }
+$subjects button p {
+    margin:0 auto;
+ }
+ 
 #subjects button img {
-    width: 44%;
+    width: 36%;
     margin:4px;
 }
 

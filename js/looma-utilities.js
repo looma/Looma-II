@@ -11,7 +11,6 @@ Description:
 
 'use strict';
 
-
 // utility JS functions used by many LOOMA pages
 /*defines:
  * LOOMA.playMedia()

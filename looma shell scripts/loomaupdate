@@ -5,7 +5,7 @@
 #       put this file in /usr/local/bin on each looma
 #       with chmod +x to make it executable
 #
-#       this file just calls /var/www/html/Looma/looma schell scripts/loomaupdater
+#       this file just calls /var/www/html/Looma/looma schell scripts/loomaupdaterOLD
 #          and passes the Looma master directory as a parameter
 #          change the commented out lines below to specify a different directory
 #           '/var/www/html' for Looma boxes
@@ -20,7 +20,7 @@ echo "******************************"
 echo " - - - UPDATING LOOMA - - - "
 echo "******************************"
 # for Looma on AWS:
-#source "/home/bitnami/htdocs/Looma/looma shell scripts/loomaupdater  '/home/bitnami/htdocs'  $1"
+#source "/home/bitnami/htdocs/Looma/looma shell scripts/loomaupdaterOLD  '/home/bitnami/htdocs'  $1"
 
 # for Looma boxes:
 source "/var/www/html/Looma/looma shell scripts/loomaupdater '/var/www/html' "

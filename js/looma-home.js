@@ -139,8 +139,8 @@ function displaySubjects (className) {
                         $newButton.append($("<p>" + nsubjectname + "</p>"));
         
                     } else {
-                        $newButton.append($("<p class='english-keyword'>" + subjectname + "<p class='xlat'>" + nsubjectname + "</p></p>"));
-                        $newButton.append($("<p class='native-keyword'>" + nsubjectname + "<p class='xlat'>" + subjectname + "</p></p>"));
+                        $newButton.append($("<p class='english-keyword'>" + subjectname + "<p class='xlat'>" + nsubjectname));
+                        $newButton.append($("<p class='native-keyword'>" + nsubjectname + "<p class='xlat'>" + subjectname));
                     }
                     //$newButton.append($('<p>' + book["dn"] +'</p>'));
     

@@ -7,11 +7,11 @@
 #
 #     revised OCT 2023 to check 'archivetimestamp.txt' to see if an update is needed
 #       on both /Looma and /content
-#     MAR 2024  - derived from loomaupdater, with all console interactions removed
+#     MAR 2024  - derived from loomaupdaterOLD, with all console interactions removed
 #
 #  used to update a pre-installed Looma by installing latest code, database & content
 #           only changed or brand new files are transferred
-# this version of "loomaupdater" has no user interaction or terminal output.
+# this version of "loomaupdaterOLD" has no user interaction or terminal output.
 # it is used from the Looma UI using looma-update.php [in the tools page for authorized users]
 #
 

@@ -393,7 +393,7 @@ function checkMatch() {
 function runMatch() {
     showTeam();
     matches_made = 0;
-    num_questions = 5;
+    num_questions = game.prompts.length;
     
     //$('#game').append('<h4 class="question" id="question-number">Match the prompts on the left to the corresponding responses on the right.</h4>');
     $('#game').append('<div id="prompts"></div>');

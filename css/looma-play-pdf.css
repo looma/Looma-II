@@ -1,13 +1,15 @@
 
 /* main container for PDF display */
 #pdf {
-    position:relative;
+    /*position:relative;*/
     position:absolute;
     height:92vh;
     /*  height:100%;*/
     
    /* padding-left: 3.5vw;  // trying to center PDF textbook page in lesson viewer */
     
+    user-select: text;
+    -webkit-user-select: text;
     
     width:100%;
     background-color: var(--looma-background);
@@ -82,6 +84,7 @@ pdf {
     width:100%;
     
     user-select: none;
+    -webkit-user-select: none;
     
     background-color:yellow;
     background-color: var(--looma-toolbar);

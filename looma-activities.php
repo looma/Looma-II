@@ -217,11 +217,12 @@ $foundActivity;
 
 		$grade = str_replace("class", "Grade ", $grade);
 		echo "<h2 class='title'>";
-            echo keyword('Resources');
-            echo keyword(': ') . " " . keyword(ucfirst($grade)) . keyword(" ") . keyword($caps) . "\"";
+            echo keyword('Resources'); echo ': ';
+            echo keyword(ucfirst($grade)); echo ' ';
+            echo keyword($caps) . " \"";
 
-            echo '<span class="english-keyword">' . $ch_dn .  '</span>';
-            echo '<span class="native-keyword">'  . $ch_ndn . '</span>';
+            echo '<span class="english-keyword">' . ' ' . $ch_dn .  '</span>';
+            echo '<span class="native-keyword">'  . ' ' . $ch_ndn . '</span>';
         echo "\"</h2>";
 
 	    echo "<div>";

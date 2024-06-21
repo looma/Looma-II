@@ -61,6 +61,8 @@ include ('includes/header.php');
                 <input type='hidden'                         value='activities'   name='collection'/>
                 <input type='hidden' id='changes-cmd'        value='editActivity' name='cmd'/>
                 <input type='hidden' id='changes-db'                              name='db'/>
+                <input type='hidden' id='editor'             value=''             name='editor'/>
+                <input type='hidden' id='date'               value=''             name='date'/>
 
                 <input type='hidden' class='changes-activities' value=''           name='activities[]'/>
                 <input type='hidden' class='changes-activities' value=''           name='activities[]'/>

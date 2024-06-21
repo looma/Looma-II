@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# "looma" script to be run on reverse SSH server
+# "looma" script to be run on reverse SSH server for accessing remote Loomas
 #     see help() below for paramaters
 
 help () {
@@ -19,8 +19,12 @@ help () {
 
 getID () {
   # look up remoteID for $port
-    #ID=$(netstat -antp | grep "127\.0\.0\.1:$port" | sed -p 's/sshd: \(.*\)/\1/p')
   ID=$(sudo netstat -antp | grep "127\.0\.0\.1:$port" | sed -n 's/.*sshd: \(.*\)/\1/p')
+  if [[  $ID = "" ]]
+  then
+    echo "Port $port has no remote Looma connected"
+    ID="not connected"
+  fi
   echo "ID for port $port is $ID"
 }
 
@@ -28,43 +32,58 @@ getport () {
   # look up port # for $ID
   #port=$(netstat -antp | grep "127\.0\.0\.1.*sshd: $ID" | sed -p 's/127\.0\.0\.1:\([0-9]{5}\)/\1/p')
   port=$(sudo netstat -antp | grep "127\.0\.0\.1.*sshd: $ID" | sed -n 's/.*127\.0\.0\.1:\([0-9][0-9][0-9][0-9][0-9]\).*/\1/p')
+
+  if [[ $port = "" ]]
+  then
+    port="not connected"
+  fi
+
   if [[ ! $2 = "quiet" ]]
   then
      echo "port for remoteID $ID is $port"
   fi
 }
 
-checkID () {
+validID () {
   # verify that $1 is a legal remoteID (format is "rxxxx")
-  regex="r[0-9]{4}"
+  regex="^r[0-9]{4}$"
   if [[ ! $1 =~ $regex ]]
-   then
+  then
      echo "$1 is not a legal remoteID. must be format 'rxxxx'"
      exit
- fi
+  fi
 }
 
 info () {
-  ID=$1
-#  checkID $ID
+  validID $ID
   getport $ID
+  if [[ $port = "not connected" ]]
+  then
+    echo "Remote $ID is not connectd now"
+    exit
+  fi
   echo "retrieving info from remote Looma $ID on port $port"
 
   # get from remote Looma: /var/www/html/info file contents, Looma Version, and archivetimestamps for code and content
 
-  scp -q -P $port -i ~/.ssh/$ID-id_rsa "odroid@127.0.0.1:/var/www/html/info" /dev/stdout
-  echo -n "    Looma version:      "
-  scp -q -P $port -i ~/.ssh/$ID-id_rsa 'odroid@127.0.0.1:/var/www/html/Looma/includes/looma-version'  /dev/stdout
+  scp -q -P $port -i ~/.ssh/$ID-id_rsa "odroid@127.0.0.1:/var/www/html/info"  /tmp/info
+  info=$(cat /tmp/info)
+  echo "    Looma info:   "
+  echo $info
+
+  scp -q -P $port -i ~/.ssh/$ID-id_rsa 'odroid@127.0.0.1:/var/www/html/Looma/includes/looma-version'  /tmp/info
+  info=$(cat /tmp/info)
+  echo "    Looma version:  $info"
 
   scp -q -P $port -i ~/.ssh/$ID-id_rsa 'odroid@127.0.0.1:/var/www/html/Looma/archivetimestamp.txt'    /tmp/timestamp
   timestamp=$(cat /tmp/timestamp)
   echo -n "    Last code update:    "
-  date --date="@$timestamp"   "+%F %T"
+  date -d "@$timestamp"   "+%F %T"
 
   scp -q -P $port -i ~/.ssh/$ID-id_rsa 'odroid@127.0.0.1:/var/www/html/content/archivetimestamp.txt'  /tmp/timestamp
   timestamp=$(cat /tmp/timestamp)
   echo -n "    Last content update: "
-  date --date="@$timestamp"   "+%F %T"
+  date -d "@$timestamp"   "+%F %T"
 }
 
 ports () {
@@ -74,7 +93,7 @@ ports () {
 
 remotes () {
 #  echo "these remote IDs are in use:"
-  cat /etc/passwd | grep ^r[0-9]* | sed -n  's/.*\/home\/\(r[0-9][0-9][0-9][0-9]\).*/\1/p' | while read ID; do getport $ID quiet; echo "$ID:$port"; done
+  cat /etc/passwd | grep ^r[0-9]* | sed -n  's/.*\/home\/\(r[0-9][0-9][0-9][0-9]\).*/\1/p' | while read ID; do getport $ID quiet; echo "$ID:$port"; done | sort
 
 #  cat | grep | sed | while read ID; do getport $ID; echo "$ID:$port"; done
 
@@ -83,26 +102,44 @@ remotes () {
 
 access_by_port () {
   getID $port
+  if [[ $ID = "not connected" ]]
+  then
+    echo "No remote is connected to port $port"
+    exit
+  fi
   ssh -p $port -i ~/.ssh/$ID-id_rsa odroid@127.0.0.1
   exit
 }
 
 access_by_ID () {
-  checkID $ID
+  validID $ID
   getport $ID
+  if [[ $port = "not connected" ]]
+  then
+    echo "Remote $ID is not connected now"
+    exit
+  fi
   ssh -p $port -i ~/.ssh/$ID-id_rsa odroid@127.0.0.1
   exit
 }
 
 addremote () {
-  checkID $ID
-  sudo  reversessh -a $1
+  validID $ID
+  if [[ -f ReverseSSH-$ID-Client.sh ]]
+  then
+    rm ReverseSSH-$ID-Client.sh
+  fi
+  sudo  reversessh -a $ID
   exit
 }
 
 deleteremote () {
-  checkID $ID
-  reversessh -r $1
+  validID $ID
+  if [[ -f ReverseSSH-$ID-Client.sh ]]
+  then
+    rm ReverseSSH-$ID-Client.sh
+  fi
+  sudo reversessh -r $ID
   exit
 }
 
@@ -114,7 +151,7 @@ case $1 in
 
   info)
     ID=$2
-    info $ID
+    info
     ;;
 
   ports)
@@ -127,12 +164,12 @@ case $1 in
 
   addremote)
     ID=$2
-    addremote $ID
+    addremote
     ;;
 
   deleteremote)
     ID=$2
-    deleteremote $ID
+    deleteremote
     ;;
 
   access)

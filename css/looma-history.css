@@ -219,11 +219,6 @@ button.dropdate:hover {
   margin-bottom:1vh;
 }
 
-
-/*Makes the button images visible*/
-#fullscreen button img {height:100%;width:100%;  white-space: nowrap;
-}
-
 /*The display of the left-scrolling button*/
 .scrollButtonLeft {
   position: fixed;
@@ -354,6 +349,13 @@ button.img:hover {
     border:3px solid yellow;
   transform: scale(1,1);
 }
+ button.img .icon {
+     position:absolute;
+     right:3px;
+     bottom:3px;
+     height:20%;
+     width:8%;
+ }
 
 .popup button {
   margin: 3vh;

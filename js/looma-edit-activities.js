@@ -46,6 +46,7 @@ function submitChanges (event) {  //check the form entries and submit to backend
         $checked = $('#innerResultsDiv .filter-checkbox:checked');
     
         len = $('.changes-activities').length;
+        
         for (var i=0 ; i< len && i < 10; i++) {
             $($('.changes-activities')[i]).val(null);
             $($('.changes-db')[i]).val(null);
@@ -58,6 +59,12 @@ function submitChanges (event) {  //check the form entries and submit to backend
             var db = $($checked[i]).parent().data('mongo')['db'];
             $($('.changes-db')[i]).val(db);
         };
+        
+        // set EDITOR and DATE
+        const now = new Date ().toLocaleDateString();
+        //const now = date.toLocaleDateString();
+        $('#date').val(now);
+        $('#editor').val(loginname);
         
         LOOMA.confirm('Do you really want to modify ' + str,
                     function() {  //NOTE: 'cmd' is pre-set by the PHP to 'editActivity'

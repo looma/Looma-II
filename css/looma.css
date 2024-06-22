@@ -80,6 +80,7 @@ body {
  }
  
 body * {
+    user-drag:none;
     -webkit-user-drag:none;
     font-family:inherit;
 }
@@ -156,6 +157,8 @@ body * {
 
 h1, h3, h3, button, #looma-logo-div, #partner-logo-div, #CEHRD-logo-div {
     user-select:none;
+    -webkit-user-select: none;
+    
 }
 
 h1.title, h2.title, h3.title {
@@ -176,6 +179,8 @@ h3.title {font-size:2em;}
 h1 span, h2 span, h3 span {
     display:inline-block;
     user-select: none;
+    -webkit-user-select: none;
+    
 }
 
 .credit{
@@ -184,6 +189,8 @@ h1 span, h2 span, h3 span {
     font-size: 10px;
     line-height: 12px;
     user-select:none;
+    -webkit-user-select: none;
+    
     position: fixed;
     right:3vw;
     bottom:10vh;

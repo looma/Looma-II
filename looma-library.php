@@ -163,7 +163,7 @@ else if  ( ! is_dir(realpath($path)) ||
             echo "<td>";
             $dn = "Khan Academy";
             $ndn = "खान एकेडेमी";  //note should be using mongo folders collection to get dn and ndn
-            $ft = "khan";
+            $ft = "html";
             $thumb = "../content/Khan/thumbnail.png";
             makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
             echo "</td>";

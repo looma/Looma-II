@@ -43,13 +43,15 @@ result () {
 }  #  end result()
 
 timestamp () {  # $1 is the dir to put the timestamp in [content or Looma]
-  date +"%Y%m%d" > {$1}/archivetimestamp.txt
+  date +"%s" > $1/archivetimestamp.txt
+  echo " - - setting "$1/archivetimestamp.txt to $(date +"%s")
+  echo "************************************"
 }  #  end timestamp()
 
 echo "************************************"
 echo " - - setting database version to today's date"
 echo "************************************"
-mongo looma < "/usr/local/var/www/Looma/looma shell scripts/loomaMongoSetDate"
+mongosh looma < "/usr/local/var/www/Looma/looma shell scripts/loomaMongoSetDate" &>/dev/null
 
 if [[ ! -d /usr/local/var/www/Looma/mongo-dump ]]
 then
@@ -59,22 +61,20 @@ fi
 cd /usr/local/var/www/Looma/mongo-dump  # cd to mongo dumps folder (on a MAC)
 if [ -d dump ]
         then
-            echo "- moving previous mongo dump to ~/Desktop/LoomaMongoDumps/"
+            echo " - - moving previous mongo dump to ~/Desktop/LoomaMongoDumps/"
             echo "************************************"
             now=$(date '+%Y-%m-%d')
+            rm -R    ~/Desktop/LoomaMongoDumps/dump_$now 2> /dev/null
             mv dump  ~/Desktop/LoomaMongoDumps/dump_$now
         fi
 
-echo "creating new mongodump 'dump'"
+echo " - - creating new mongodump 'dump'"
 echo "************************************"
-echo
 
-mongodump --db looma
+mongodump --quiet --db looma
 
+echo ' - - archiving Looma (code) to rsync.net'
 echo "************************************"
-echo 'archiving Looma (code) to rsync.net'
-echo "************************************"
-echo
 cd   /usr/local/var/www/Looma		# cd to Looma/ (on a MAC)
 
 RW="58189@usw-s008.rsync.net"
@@ -94,8 +94,8 @@ then
 else
    timestamp "/usr/local/var/www/Looma"
 
-    echo "new timestamp for code is "
-    cat "/usr/local/var/www/Looma/archivetimestamp.txt"
+    echo " - - new timestamp for code is $(cat /usr/local/var/www/Looma/archivetimestamp.txt)"
+    echo "************************************"
 
    rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update --progress   --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
 fi

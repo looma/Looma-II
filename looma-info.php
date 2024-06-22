@@ -39,7 +39,7 @@ include ('includes/header.php');
         <div id="about">
             <div id="copyright">
                 <!--h3>Looma</h3>-->
-                <h4>   Release 7.9.14 APR 2024   </h4>
+                <h4>  <?php  include('includes/looma-version') ?>   </h4>
                 <img src ='images/copyright.png' class="copyright"></img>Looma Education Corporation
             </div>
 

@@ -1256,6 +1256,9 @@ require_once('includes/looma-utilities.php');
                 $changes['cl_hi'] = $_REQUEST['cl_hi'];
             }
 
+            //set date and editor if they are given
+                if (isset($_REQUEST['date']))   $changes['date'] =   $_REQUEST['date'];
+                if (isset($_REQUEST['editor'])) $changes['editor'] = $_REQUEST['editor'];
 
             // if key1 is specified, then set key1 and either set or reset keys 2,3,4
             if (isset($_REQUEST['key1']) && $_REQUEST['key1']) {

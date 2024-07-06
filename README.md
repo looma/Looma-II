@@ -18,7 +18,7 @@ Send comments and suggestions to info at looma dot education.
 
 ## Instructions for running Looma locally:
 
-* Ensure you have an amd64 or arm64 Mac or Linux machine
+* Ensure you are on an amd64 or arm64 Mac or Linux machine
 * Download and install [Docker](https://www.docker.com/products/docker-desktop/)
 * In the project root, run `./looma build` (Could take several minutes the first time)
     * This builds the two Docker images, loomaweb and loomadb

@@ -1,26 +1,7 @@
 #version: '3.9'
 
 networks:
-  loomanet_front:
-    name: loomanet_front
-    external: false
-    driver: bridge
-    driver_opts:
-      com.docker.network.bridge.name: loomanet_front
-  loomanet_inter:
-    name: loomanet_inter
-    driver: bridge
-    internal: true
-    driver_opts:
-      com.docker.network.bridge.name: loomanet_inter
-  loomanet_back:
-    name: loomanet_back
-    driver: bridge
-    driver_opts:
-      com.docker.network.bridge.name: loomanet_back
-    ipam:
-      config:
-        - subnet: 10.1.0.0/16
+  loomanet:
 
 volumes:
   looma_tmp:
@@ -37,14 +18,13 @@ services:
       - .:/looma
       - .:/usr/local/var/www/Looma:ro
     ports:
-      - 8080:8080
+      - 8081:8080
     restart: always
     tty: true
     depends_on:
       - loomadb
     networks:
-      loomanet_front:
-      loomanet_inter:
+      - loomanet
 
   loomadb:
     # image: ghcr.io/looma/loomadb:latest
@@ -54,11 +34,9 @@ services:
       - looma_tmp:/looma_tmp
       - .:/looma
     ports:
-      - 27017:27017
+      - 47017:27017
     restart: always
     tty: true
     networks:
-      loomanet_inter:
-      loomanet_back:
-        ipv4_address: 10.1.0.3
+      - loomanet
 

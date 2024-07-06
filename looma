@@ -48,15 +48,12 @@ Commands are:
 
 build
 		- Build containers needed for looma
-		% loomarun.sh build
 
-bootup
+run
 		- Start the looma system
-		% loomarun.sh bootup
 
 shutdown
 		- Shutdown the looma system
-		% loomarun.sh shutdown
 
 -h, --help	- Show this help screen
 
@@ -77,7 +74,7 @@ case $1 in
 		build "$@"
 		exit 0
 		;;
-	"bootup")
+	"run")
 		shift
 		bootup "$@"
 		exit 0

@@ -16,20 +16,13 @@ The Looma interface can be viewed online at http://looma.website.
 
 Send comments and suggestions to info at looma dot education.
 
-    To create your own full version of Looma, you need:
+## Instructions for running Looma locally:
 
-0. have Apache, PHP, mongoDB [with the mongo PHP driver installed] running on your host (usually 'localhost')
+* Ensure you are on an amd64 or arm64 Mac or Linux machine
+* Download and install [Docker](https://www.docker.com/products/docker-desktop/)
+* In the project root, run `./looma build` (Could take several minutes the first time)
+    * This builds the two Docker images, loomaweb and loomadb
+* In the project root, run `./looma run`
+    * This runs docker-compose
+* Navigate to [localhost:48080](http://localhost:48080) in your browser
 
-1. these code files
-
-2. the Looma media files which should be in ../content relative to the Looma code
-
-3. a loaded mongoDB database called "looma"
-
-3a. open the mongo-dump folder in this repository on your server system
-
-3b. in terminal "cd" to the mongo-dump folder
-
-3c. in terminal "mongorestore --db looma looma"
-
-    Now point your browser to "localhost" and open the "Looma" folder

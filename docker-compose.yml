@@ -14,11 +14,9 @@ services:
     image: loomaweb:latest
     container_name: loomaweb
     volumes:
-      - looma_tmp:/looma_tmp
-      - .:/looma
       - .:/usr/local/var/www/Looma:ro
     ports:
-      - 8081:8080
+      - 48080:8080
     restart: always
     tty: true
     depends_on:
@@ -30,9 +28,6 @@ services:
     # image: ghcr.io/looma/loomadb:latest
     image: loomadb:latest
     container_name: loomadb
-    volumes:
-      - looma_tmp:/looma_tmp
-      - .:/looma
     ports:
       - 47017:27017
     restart: always

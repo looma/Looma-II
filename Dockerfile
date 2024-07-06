@@ -6,4 +6,3 @@ COPY docker_httpd.conf /etc/apache2/apache2.conf
 RUN mkdir -p /usr/local/var/www/Looma
 COPY docker_php.ini /usr/local/etc/php/php.ini
 ENV DOCKER=1
-EXPOSE 8080

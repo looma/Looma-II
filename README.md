@@ -24,5 +24,5 @@ Send comments and suggestions to info at looma dot education.
     * This builds the two Docker images, loomaweb and loomadb
 * In the project root, run `./looma run`
     * This runs docker-compose
-* Navigate to `localhost:48080` in your browser
+* Navigate to [localhost:48080](http://localhost:48080) in your browser
 

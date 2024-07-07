@@ -238,7 +238,9 @@ function drawMapChart() {
 }  //  end mapchart()
 
 $(document).ready( function () {
-
+    
+    toolbar_button_activate("info");
+    
     $("input[type=radio][name='timeframe']").change(function(e) {
         tf = $("input[name='timeframe']:checked").val();
         drawLineChart(tf,0);

@@ -797,4 +797,7 @@ window.onload = function () {
         }, // end of getJSON function
         'json'
     );
+    
+        toolbar_button_activate("maps");
+
 }; // End of window.onload()

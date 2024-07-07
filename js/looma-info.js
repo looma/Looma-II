@@ -18,6 +18,8 @@ Comments:
 
 $(document).ready(function () {
     
+    toolbar_button_activate("info");
+    
     $('#log-viewer').click(function(event){window.open('activity',"_self");});
     $('#system_info').click(function(event){ $('#advanced_info').toggle();});
     

@@ -93,4 +93,6 @@ window.onload = function() {
             //turnOnControls();
         }).then( () =>  {drawThumbs();});
     
+    toolbar_button_activate("library");
+    
 };

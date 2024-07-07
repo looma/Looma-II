@@ -44,6 +44,8 @@ $(document).ready (function() {
     
     $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll',    'session'));
+ 
+    toolbar_button_activate("library");
 
 });
 

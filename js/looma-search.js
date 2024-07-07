@@ -529,4 +529,6 @@ $(document).ready(function() {
     setCollection('activities');
     refreshPage();
     
+    toolbar_button_activate("search");
+    
 }); // end document.ready

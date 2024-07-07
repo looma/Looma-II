@@ -245,8 +245,8 @@ $(document).ready (function() {
     
     activateClass (className);
     displaySubjects(className);
-
     
+    toolbar_button_activate ("home");
 
 
 }); //end of document.ready

@@ -119,6 +119,8 @@ $(document).ready (function() {
         LOOMA.setStore('game-class', className, 'session');  //set a COOKIE for CLASS (lifetime = this browser session)
     };
     
+    toolbar_button_activate("games");
+    
     activateClass (className);
     displaySubjects(className);
     

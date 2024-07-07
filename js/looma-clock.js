@@ -634,6 +634,9 @@ $(document).ready (function() {
     };  // end clearTimers()
     
     window.onbeforeunload = clearTimers;
-    
+  
+    $(document).ready(function() {
+        toolbar_button_activate("clock");
+    });
     
 });

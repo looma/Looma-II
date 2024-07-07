@@ -201,6 +201,7 @@ function newproblem() {   resizeCanvas();
     drawClock(randomTime.randHour, randomTime.randMinute);}
     
 window.onload = function() {
+    toolbar_button_activate("clock");
     var submitButton = document.getElementById("submit");
     submitButton.addEventListener('click', userInput);
     

@@ -90,5 +90,7 @@ $(document).ready (function() {
 
     //scroll to prior scroll position
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('chapterScroll', 'session'));
+    
+    toolbar_button_activate("home");
 
 }); //end of document.ready anonymous function

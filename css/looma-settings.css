@@ -3,8 +3,9 @@
 h1.title {font-size:3em;}
 
 #user-tools {
-    height:28vh;
+    height:28%;
     overflow:hidden;
+    padding-top: 4px;
     position:relative;
     font-size: 1.2em;
 }
@@ -14,8 +15,8 @@ h1.title {font-size:3em;}
 }
 
 #tools {
-    height:50vh;
-    padding: 3vw;
+    height:55%;
+    margin: 0 auto;
     font-size: 1.2em;
 }
 
@@ -101,10 +102,9 @@ select.theme, select.voice {
 a, a:focus, a:hover {text-decoration: none;
     }
 
-a button.logo {height:20vh;font-size:1.5em;}
+a button.logo {height:18vh;font-size:1.5em;}
 
 button.logo img {
-    height:11vh;
+    height:8vh;
     margin:auto;
-    padding-top:3%;
 }

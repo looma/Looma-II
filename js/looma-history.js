@@ -222,3 +222,7 @@ $('.returnToLeftmost').click(function() {      // When arrow is clicked
             scrollLeft : 0                       // Scroll to leftmost position
         }, 1000);
 });
+
+$(document).ready(function() {
+    toolbar_button_activate("histories");
+});

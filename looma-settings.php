@@ -21,7 +21,7 @@ Description:  for Looma 2
 	<div id="main-container-horizontal">
         <h1 class="title">Looma Settings Page</h1>
 	    <div id="user-tools">
-        <br><br>
+
             <a href="looma-library.php?fp=../content/Looma%20User%20Manuals/">
                 <button class="logo">
                     <img src="images/logos/Looma-english-amanda 2x1 crop transparent.png">
@@ -96,8 +96,6 @@ Description:  for Looma 2
                  <select id="themes">
                      <option class="theme" id="looma"         value="looma">         Looma Classic
                          <img class="thumb" src="images/theme-looma.png" ></option>
-                     <option class="theme" id="CEHRD"         value="CEHRD">         CEHRD
-                         <img class="thumb" src="images/theme-CEHRD.png" ></option>
                      <option class="theme" id="style-sheet"   value="style-sheet">   Style Sheet
                          <img class="thumb" src="images/theme-stylesheet.png" > </option>
                      <option class="theme" id="white"         value="white">         White
@@ -120,10 +118,10 @@ Description:  for Looma 2
              <div >
                  <div id="voicegender" class="admin-control">
                      <span>Female or male voice</span>
-                     <input type='radio' name='gender' value='cmu_us_axb' class='gender filter-radio black-outline' id='female' checked>
-                     <label class='filter-label' for='gender'>Female</label>
-                     <input type='radio' name='gender' value='cmu_us_aup' class='gender filter-radio black-outline' id='male'>
-                     <label class='filter-label' for='gender'>Male</label>
+                     <input type='radio' id='female' name='gender' value='cmu_us_axb' class='gender filter-radio black-outline' id='female' checked>
+                     <label class='filter-label' for='female'>Female</label>
+                     <input type='radio' id='male' name='gender' value='cmu_us_aup' class='gender filter-radio black-outline' id='male'>
+                     <label class='filter-label' for='male'>Male</label>
                  </div>
                  <div id="speechtestdiv" class="admin-control">
                      <a href="looma-test-speech.php">

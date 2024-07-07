@@ -199,7 +199,7 @@ dosync () {
         -e "ssh"   \
        "$remote/$DIR/"  "$TO/$DIR"
       # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
-
+    returncode=$?
      # NOTE, adding "O" option to avoid errors with modified date updates
     else
       echo "enter password 'looma' if requested"
@@ -210,14 +210,21 @@ dosync () {
         -e "ssh"   \
        "$remote/$DIR/"  "$TO/$DIR"
       # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
+      returncode=$?
     fi
 
-  if [[ $DRYRUNMODE != "--dry-run" ]]
+  if [[ $DRYRUNMODE != "--dry-run"  && $returncode = 0 ]]
      then    echo
      echo "**************************"
-     echo "setting $TO/$DIR/archivetimestamp.txt to $latest"
+     echo "setting $TO/$DIR/archivetimestamp.txt to $latest (which is `date -d @+$latest`)"
+
+     echo "date is `date +%s` which is `date -d @+1553024528`"
+
      echo $latest > $TO/$DIR/archivetimestamp.txt
      echo
+   else
+     echo "looma update 'rsync' operation with failed with error $returncode. rerun 'loomaupdate' later"
+     exit
   fi
 }  #  end dosync()
 

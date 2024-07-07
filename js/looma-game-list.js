@@ -27,5 +27,7 @@ function gameButtonClicked() {
 }
 
 $(document).ready (function() {
+    toolbar_button_activate("games");
+    
     $("button.game").click(gameButtonClicked);
 });

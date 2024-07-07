@@ -1747,4 +1747,6 @@ $(document).ready (function() {
         randomGame['title'] = LOOMA.capitalize($game.data('type')) + ' game for ' + $game.data('class') + ' ' + LOOMA.capitalize($game.data('subject'));
         game_found(randomGame);
     };
+    toolbar_button_activate("games");
+    
 });

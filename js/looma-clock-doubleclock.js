@@ -270,7 +270,8 @@ function newproblem() {
     drawRandomClocks();
 }
 
-window.onload = function() {  
+window.onload = function() {
+    toolbar_button_activate("clock");
 
     var submitButton = document.getElementById("submit");
     submitButton.addEventListener('click', userInput);

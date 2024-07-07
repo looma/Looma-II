@@ -457,3 +457,7 @@ function deleteFile(fileName) {
     */
     localStorage.removeItem(fileName);
 }
+
+$(document).ready(function() {
+    toolbar_button_activate("paint");
+});

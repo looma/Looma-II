@@ -32,6 +32,10 @@ function restoreFullscreenControl () {
     }); //end fullscreen
 }
 
+function toolbar_button_activate (id) {
+    $('button.toolbar-button').removeClass('active');
+    $('button.toolbar-button#toolbar-' + id).addClass('active');
+}
 
 $(document).ready (function() {
     

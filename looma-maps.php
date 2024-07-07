@@ -94,8 +94,9 @@ function makeButton($file, $thumb, $dn) {
     </div>
 </div>
 
-<?php include ('includes/toolbar.php'); ?>
-<?php include ('includes/js-includes.php'); ?>
+<?php include ('includes/toolbar.php');
+    include ('includes/js-includes.php'); ?>
+<script src="js/looma-maps.js"></script>
 
 </body>
 </html>

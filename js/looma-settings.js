@@ -101,5 +101,6 @@ $(document).ready (function() {
         ( function() {window.location = "looma-change-password.php";}
         );
     }
+    toolbar_button_activate("settings");
 
 }); //end of document.ready anonymous function

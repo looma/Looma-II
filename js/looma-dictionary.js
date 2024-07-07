@@ -102,4 +102,7 @@ $(document).ready (function() {
         $('#input').trigger('focus');
         
     }); //end speak button onclick function
+    
+    toolbar_button_activate("dictionary");
+    
 });

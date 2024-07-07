@@ -112,3 +112,7 @@ function Percent () {
     var temp =  100 * Number(readout);
     show(temp.toString());
 };
+
+$(document).ready(function() {
+    toolbar_button_activate("calculator");
+});

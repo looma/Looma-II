@@ -66,6 +66,8 @@ $(document).ready(function() {
             navigate();
         }
     });
+    
+    toolbar_button_activate ("web");
 
     submitButton.addEventListener("click", navigate);
 

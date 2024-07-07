@@ -74,7 +74,14 @@ button.toolbar#toolbar-record {display:none;}
 
 #toolbar button img {height:80%;width:80%;}
 
-.toolbar-button-vertical {
+.toolbar-button.active {
+    background-color:var(--looma-background);
+}
+
+.toolbar-button.active img {display:none;}
+.toolbar-button.active img.active {display:inline;}
+
+.toolbar-button.vertical{
     margin: 0.2vw;
     height: 6vh !important;
     width: 4vw;
@@ -84,7 +91,7 @@ button.toolbar#toolbar-record {display:none;}
     background-position: center;
 }
 
-.toolbar-button-vertical img{
+.toolbar-button.vertical img{
     height:100%;
 }
 

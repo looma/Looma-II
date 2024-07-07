@@ -27,6 +27,8 @@ function playActivity(event) {
 };
 
 $(document).ready (function() {
+    toolbar_button_activate("histories");
+    
     $("button.play").click(playActivity);
 });
 

@@ -16,6 +16,9 @@ Comments:
 */
 
 window.onload = function() {
+    
+    toolbar_button_activate("clock");
+    
     //canvas set-up
     var nepal = document.getElementById("nepal");
     var ctx1 = nepal.getContext("2d");

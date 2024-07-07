@@ -1,0 +1,100 @@
+#!/bin/bash -eu
+
+#LOOMA_DATA=/looma_data
+LOOMA_DATA=.
+LOOMANET_FRONT=loomanet_front
+LOOMANET_INTER=loomanet_inter
+LOOMANET_BACK=loomanet_back
+LOOMA_TMP=looma_tmp
+
+function shutdown() {
+	docker compose -f docker-compose.yml down --volumes
+}
+
+function bootup() {
+	docker compose -f docker-compose.yml up --no-color --detach
+}
+
+function status() {
+    echo "Containers:"
+	docker compose ps -a
+    echo "Networks:"
+    docker network ls | grep ${LOOMANET_FRONT}
+    docker network ls | grep ${LOOMANET_INTER}
+    docker network ls | grep ${LOOMANET_BACK}
+    echo "Volumes:"
+    docker volume ls | grep ${LOOMA_TMP}
+
+    IPADDRS=`docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' loomadb`
+    echo "Container IPs loomadb" ${IPADDRS}
+    IPADDRS=`docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' loomaweb`
+    echo "Container IPs loomaweb" ${IPADDRS}
+    echo "Binds "
+    BINDS=`docker inspect -f '{{ (.HostConfig.Binds)}}' loomaweb`
+    echo "loomaweb" ${BINDS}
+    BINDS=`docker inspect -f '{{ (.HostConfig.Binds)}}' loomadb`
+    echo "loomadb" ${BINDS}
+}
+
+function build() {
+    make all
+}
+
+usage() {
+cat << EOF
+$UTIL COMMAND
+
+Commands are:
+
+build
+		- Build containers needed for looma
+
+run
+		- Start the looma system
+
+shutdown
+		- Shutdown the looma system
+
+-h, --help	- Show this help screen
+
+EOF
+}
+
+UTIL=$(basename $0)
+
+if [ $# -eq 0 ]; then
+	usage
+	exit 0
+fi
+
+
+case $1 in
+	"build")
+		shift
+		build "$@"
+		exit 0
+		;;
+	"run")
+		shift
+		bootup "$@"
+		exit 0
+		;;
+	"shutdown")
+		shift
+		shutdown "$@"
+		exit 0
+		;;
+	"status")
+		shift
+        status "$@"
+		exit 0
+		;;
+    -h | --help)
+        usage
+        exit 0
+        ;;
+    *)
+		echo $UTIL " : Unknown command :" $1
+        exit 1
+        ;;
+esac

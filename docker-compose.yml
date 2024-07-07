@@ -1,0 +1,37 @@
+#version: '3.9'
+
+networks:
+  loomanet:
+
+volumes:
+  looma_tmp:
+    driver: local
+    name: looma_tmp
+
+services:
+  loomaweb:
+    # image: ghcr.io/looma/loomaweb:latest
+    image: loomaweb:latest
+    container_name: loomaweb
+    volumes:
+      - .:/usr/local/var/www/Looma:ro
+    ports:
+      - 48080:8080
+    restart: always
+    tty: true
+    depends_on:
+      - loomadb
+    networks:
+      - loomanet
+
+  loomadb:
+    # image: ghcr.io/looma/loomadb:latest
+    image: loomadb:latest
+    container_name: loomadb
+    ports:
+      - 47017:27017
+    restart: always
+    tty: true
+    networks:
+      - loomanet
+

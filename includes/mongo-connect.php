@@ -238,35 +238,44 @@ function mongoCreateUniqueIndex($collection, $key) {
 }
 
 
-if ($ENV_WINDOWS) {  // running on windows
-    $try = shell_exec('C:\xampp\bin\mongod --version');
-    if ($try) preg_match('/(\d\.\d\.\d)/',$try, $match);
-    else $match = null;
-} else {  // running on linux
-    $try = shell_exec('mongod --version');
-    if ($try) preg_match('/(\d\.\d\.\d)/', $try, $match);
-    else $match = null;
-}
-
-//echo $match[1];exit; // echos the mongodb version # that is running
-
-if ($match) {
-    $mongo_version = $match[1];
-    $mongo_level = intval(substr($mongo_version,0,1));
-} else {
-    $mongo_version = '4.4.3';
-    $mongo_level = 4;
-}
-
 $dbhost = 'localhost';
 $dbname = 'looma';
 
 try {
-    if ($mongo_level >= 3) {
-        require_once('vendor/autoload.php');
-        $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
-    } else {  //old mongo is running
-        $mongoClient = new MongoClient("mongodb://localhost:27017");    //make a new mongo client object
+    if (getenv("DOCKER")=="1") {
+            require_once('vendor/autoload.php');
+            $mongoClient = new MongoDB\Client("mongodb://loomadb:27017");    //make a new mongo client object
+            // TODO: get the actual version
+            $mongo_version = '4.4.3';
+            $mongo_level = 4;
+    } else {
+        if ($ENV_WINDOWS) {  // running on windows
+            $try = shell_exec('C:\xampp\bin\mongod --version');
+            if ($try) preg_match('/(\d\.\d\.\d)/',$try, $match);
+            else $match = null;
+        } else {  // running on linux
+            $try = shell_exec('mongod --version');
+            if ($try) preg_match('/(\d\.\d\.\d)/', $try, $match);
+            else $match = null;
+        }
+
+        //echo $match[1];exit; // echos the mongodb version # that is running
+
+        if ($match) {
+            $mongo_version = $match[1];
+            $mongo_level = intval(substr($mongo_version,0,1));
+        } else {
+            $mongo_version = '4.4.3';
+            $mongo_level = 4;
+        }
+
+        if ($mongo_level >= 3) {
+            require_once('vendor/autoload.php');
+            $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
+        } else {  //old mongo is running
+            $mongoClient = new MongoClient("mongodb://localhost:27017");    //make a new mongo client object
+            $db = $mongoClient->$dbname;
+        }
     }
 }
 catch(MongoConnectionException $e) {

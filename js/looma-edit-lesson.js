@@ -1075,7 +1075,8 @@ function saveTextEdits() {
         $($current_item).attr('data-native', $('#previewpanel .text-display').html());
     }
     // set lesson MODIFIED flag to TRUE
-    
+    LOOMA.alert("The text file is saved, but the lesson has not been saved. Use File Commands > Save to save the lesson", 10);
+
     cancelEdit();
 };  // end saveTextEdits()
 

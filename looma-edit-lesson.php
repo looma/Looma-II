@@ -68,7 +68,7 @@ include ('includes/looma-filecommands.php');
                         <button class="dropdown-edit text-edit"
                                 data-edit="highlight" data-color="green"><img src="images/greendot.png"></button><br>
                         <button class="dropdown-edit text-edit"
-                                data-edit="highlight" data-color="blue"><img src="images/bluedot.png"></button><br>
+                                data-edit="highlight" data-color="#091F48"><img src="images/loomabluedot.png"></button><br>
                         <button class="dropdown-edit text-edit"
                                 data-edit="highlight" data-color="purple"><img src="images/violetdot.png"></button><br>
                     </div>
@@ -91,7 +91,7 @@ include ('includes/looma-filecommands.php');
                         <button class="dropdown-edit text-edit"
                                 data-edit="color" data-color="green"><img src="images/greendot.png"></button><br>
                         <button class="dropdown-edit text-edit"
-                                data-edit="color" data-color="blue"><img src="images/bluedot.png"></button><br>
+                                data-edit="color" data-color="#091F48"><img src="images/loomabluedot.png"></button><br>
                         <button class="dropdown-edit text-edit"
                                 data-edit="color" data-color="purple"><img src="images/violetdot.png"></button><br>
                     </div>
@@ -114,7 +114,7 @@ include ('includes/looma-filecommands.php');
                 <button class=" text-edit" data-edit="undo" title="Undo"><i class="fa fa-2x fa-undo"></i></button>
                 <button class=" text-edit" data-edit="redo" title="Redo"><i class="fa fa-2x fa-repeat"></i></button>
                 <button class=" text-edit wide" data-edit="translate" id="text-edit-translate">Translate</button>
-                <button class=" text-edit wide" data-edit="save" id="text-edit-save">Save</button>
+                <button class=" text-edit wide" data-edit="save" id="text-edit-save">Done</button>
                 <button class=" text-edit wide" data-edit="cancel">Cancel</button>
     </div>
 

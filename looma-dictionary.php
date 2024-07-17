@@ -28,7 +28,7 @@ Description:  dictionary look-up UI for Looma 2
         <!-- This is where the user inputs a word -->
         <form id="lookup">
             <?php keyword("Enter word to look up"); ?>
-                 <input type="text"  id="input" autofocus autocomplete="off">
+                 <input type="text"  id="input" autofocus autocomplete="off" placeholder=" ....">
             <button type="submit" id="submit" value="submit"> <?php keyword("Submit"); ?> </button>
         </form>
 

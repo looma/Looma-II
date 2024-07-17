@@ -27,7 +27,7 @@ Description:
                     <img src="images/forward-arrow.png"/>
                     <?php tooltip('Forward');?>
                 </button>
-                <input id="address-bar"/>
+                <input id="address-bar" autofocus/>
                 <button class="right-control" id="submit"><?php keyword('Go');?></button>
             </div>
 
@@ -40,5 +40,5 @@ Description:
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
 
-   	<script src="js/looma-web.js"></script>
+    <script src="js/looma-web.js"></script>
 </body>

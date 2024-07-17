@@ -55,6 +55,15 @@ html {
     margin:0;
     padding:0;
 }
+
+::placeholder {color:red;font-style:italic;
+}
+
+a {
+    text-decoration:none;
+    color:blue;
+}
+
 body {
     box-sizing: border-box;
     position: relative;

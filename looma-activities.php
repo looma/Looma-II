@@ -11,7 +11,9 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 
 
 <?php $page_title = 'Looma Resources';
-	require_once ('includes/header.php');
+    require_once ('includes/header.php');
+
+require_once ('includes/mongo-connect.php');
 
     require_once('includes/looma-utilities.php');
     //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
@@ -103,6 +105,7 @@ $foundActivity;
         $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
         $prefix = (isset($activity['prefix']) ? $activity['prefix'] : "");
         $oleID = (isset($activity['oleID']) ? $activity['oleID'] : "");
+            $mongoID = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
         $epversion = (isset($activity['version']) ? $activity['version'] : "");
         $grade = (isset($activity['grade']) ? $activity['grade'] : "");
         $url = (isset($activity['url']) ? $activity['url'] : "");
@@ -116,7 +119,8 @@ $foundActivity;
         if ( $ft !== 'text' ) {
             echo "<td>";
 
-            if ($ft == 'slideshow' ||  $ft == 'evi') $id = new MongoID($activity['mongoID']);
+            if ($ft === 'slideshow' ||  $ft === 'map' || $ft === 'evi' )
+                $id = mongoId ($activity['mongoID']);
 
             switch ($ft) {
                 case "video":
@@ -163,7 +167,8 @@ $foundActivity;
                     //makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null,null);
                     break;
                 case "map";
-                    makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, "", "", "", "", "", "", "",null,null,null,null);
+                 //   makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, $mongoID, "", "", "", "", "", "",null,null,null,null);
+                     makeMapButton($mongoID, $thumb, $dn);
                     break;
                 case "looma";  //open a Looma page (e.g. calculator or paint)
                     makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "",null,null,null,null);

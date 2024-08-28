@@ -16,3 +16,6 @@ Xutilities&tests
 Xlooma-pdf-viewer
 *.2
 *.resources
+
+logins/defaultlogins.json
+

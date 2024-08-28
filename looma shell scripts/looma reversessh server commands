@@ -8,10 +8,12 @@ help () {
   echo "  looma               [same as 'looma help']"
   echo "  looma help          [explains options]"
   echo "  looma ports         [list ports with tunnels to remote Loomas]"
-  echo "  looma remotes       [list connected remote Loomas by ID]"
+  echo "  looma remotes       [list registered remote Loomas by ID]"
+  echo "  looma connected     [list remote Loomas that are currently connected]"
   echo "  looma access port <port-number> [login to a remote looma by port number]"
   echo "  looma access <ID>   [login to a remote looma by ID]"
   echo "  looma info <ID>     [retrieve 'info' file from remote looma]"
+  echo "  looma recover <ID>  [copy 'loomaupdate' script to remote looma]"
   echo "  looma addremote <ID>    [add a new remote looma]"
   echo "  looma deleteremote <ID> [delete a remote looma]"
   exit
@@ -87,17 +89,36 @@ info () {
 }
 
 ports () {
-  sudo netstat -antp | grep 127.0.0.1:[0-9][0-9][0-9][0-9][0-9]
+  sudo netstat -antp | grep LISTEN | grep 127.0.0.1:[0-9][0-9][0-9][0-9][0-9]
   exit
 }
 
 remotes () {
 #  echo "these remote IDs are in use:"
-  cat /etc/passwd | grep ^r[0-9]* | sed -n  's/.*\/home\/\(r[0-9][0-9][0-9][0-9]\).*/\1/p' | while read ID; do getport $ID quiet; echo "$ID:$port"; done | sort
+
+  cat /etc/passwd | grep ^r[0-9]* | sed -n  's/.*\/home\/\(r[0-9][0-9][0-9][0-9]\).*/\1/p' |  \
+    while read ID; do getport $ID quiet; echo "$ID:$port"; done | sort
+
+
 
 #  cat | grep | sed | while read ID; do getport $ID; echo "$ID:$port"; done
 
   exit
+}
+
+connected () {
+#  echo "these remote IDs are currently connected to the SSH server:"
+  cat /etc/passwd | grep ^r[0-9]* | sed -n  's/.*\/home\/\(r[0-9][0-9][0-9][0-9]\).*/\1/p' | \
+    while read ID; do getport $ID quiet; echo "$ID:$port"; done | sort | grep -v "not connected"
+#  cat | grep | sed | while read ID; do getport $ID; echo "$ID:$port"; done
+
+  exit
+}
+
+recover () {
+  # SCP a new copy of 'loomaupdater' script to the remote Looma to recover loomaupdate functionality
+    scp -q -P $port -i ~/.ssh/$ID-id_rsa loomaupdater 'odroid@127.0.0.1:/var/www/html/Looma/looma shell scripts/'
+    echo "copied a new copy of 'loomaupdater' to $ID [result = $?"
 }
 
 access_by_port () {
@@ -160,6 +181,15 @@ case $1 in
 
   remotes)
     remotes
+    ;;
+
+  connected)
+    connected
+    ;;
+
+  recover)
+    ID=$2
+    recover
     ;;
 
   addremote)

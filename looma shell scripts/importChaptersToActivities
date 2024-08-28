@@ -1,0 +1,21 @@
+// ONE TIME program to add all CHAPTERS to ACTIVITIES
+//  run in MONGO SHELL with: load('importChaptersToActivities')
+//
+var cursor, count, chapter, activity;
+
+cursor = db.chapters.find();
+count = 0;
+
+while (cursor.hasNext()) {
+      chapter = cursor.next();
+      count++;
+      print ('...' + chapter['dn'] + ' added to activities collection');
+      chapter['ID'] = chapter['_id'];
+      chapter['ft'] = 'chapter';
+      delete chapter['_id']; delete chapter['pn']; delete chapter['len']; delete chapter['npn']; delete chapter['nlen'];
+      db.activities.insert(chapter);
+};
+
+print('_______________');
+print(' + + + added ' + count + ' items');
+print('_______________');

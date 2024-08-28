@@ -115,7 +115,7 @@ function savework(name, collection, filetype) {  // filetype is base type (not t
                     reject('User canceled-3');
                 },
                 false);
-        } else if (owner) LOOMA.confirm('Save current work in file: ' + name + '?',
+        } else if (true /*owner*/) LOOMA.confirm('Save current work in file: ' + name + '?',
             function () {
                 if (template) callbacks['savetemplate'](name);
                 else callbacks['save'](name);

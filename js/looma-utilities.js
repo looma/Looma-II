@@ -102,6 +102,7 @@ playMedia : function(button) {
     var fp = encodeURIComponent(button.getAttribute('data-fp'));
     var dn = encodeURIComponent(button.getAttribute('data-dn'));
     var ndn = encodeURIComponent(button.getAttribute('data-ndn'));
+    var lang = encodeURIComponent(button.getAttribute('data-lang'));
     var ch_id = encodeURIComponent(button.getAttribute('data-ch_id'));
     var language = LOOMA.readStore('language', 'cookie');
     
@@ -153,6 +154,7 @@ playMedia : function(button) {
                     window.location = 'pdf?' +
                     'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
                     '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
+                    '&lang=' + lang +
                     '&zoom=' + pdfZoom +
                     '&len=' + pdfLen +
                     '&page=' + pdfPage;
@@ -185,6 +187,8 @@ playMedia : function(button) {
 
         case "epaath":
         case "ep":
+            var lang = language==='native'?'np':'en';
+            
             if (button.getAttribute("data-epversion") == 2015) {
                 fp = encodeURIComponent(button.getAttribute('data-fp'));
                 fn = encodeURIComponent(button.getAttribute('data-fn') +
@@ -193,16 +197,12 @@ playMedia : function(button) {
             } else  if (button.getAttribute("data-epversion") == 2019) {
                 window.location = 'epaath?epversion=2019' +
                     '&ole=' + button.getAttribute("data-ole") +
-              //      '&lang=' + button.getAttribute("data-lang") +
-                    '&lang=' + language +
-                    '&sub=english' +
-                '&grade=' + button.getAttribute("data-grade").substr(5,);
+                    '&lang=' + lang +
+                    '&grade=' + button.getAttribute("data-grade").substr(5,);
             } else { // version is 2022
                 window.location = 'epaath?epversion=2022' +
                     '&ole=' + button.getAttribute("data-ole") +
-                    '&lang=' + language +
-                    '&sub=english' +
-                    //      '&lang=' + button.getAttribute("data-lang") +
+                    '&lang=' + lang +
                     '&grade=' + button.getAttribute("data-grade").substr(5,);
             }
             break;
@@ -728,7 +728,7 @@ translate : function(language) {
 
 lookup : function(word, succeed, fail) {
 
-    console.log('LOOMA.lookup: dictionary lookup - word is "' + word + '"');
+    console.log('LOOMA.lookup: looking up "' + word + '"');
 
     //returns OBJECT result == {en:english, np:nepali, def:definition, ch_id:chapter}
     $.ajax(
@@ -747,7 +747,7 @@ lookup : function(word, succeed, fail) {
 
 reverselookup : function(nepali, succeed, fail) {
 
-    console.log('LOOMA.reverselookup: dictionary lookup - word is "' + nepali + '"');
+    console.log('LOOMA.reverselookup: looking up "' + nepali + '"');
 
     //returns OBJECT result == {en:english, np:nepali, phon:phonetic, def:definition, img:picture, ch_id:chapter}
     $.ajax(
@@ -827,7 +827,7 @@ define : function(word, succeed, fail) {
     LOOMA.lookup(word, found, notfound);
     
     function found(def) {
-        console.log(def['en'] + " DEFINED");
+        console.log("lookup of " +  def['en'] + " succeeded [np is " + def['np'] + "]");
         if (def.rw) {
             function rwfound(rwdef) {
                 succeed(LOOMA.defHTML(def, rwdef));
@@ -851,10 +851,11 @@ reversedefine : function(word, succeed, fail) {
             LOOMA.reverselookup(word, found, notfound);
         
             function found(def) {
-                console.log(def['np'] + " DEFINED");
+                console.log("lookup of " +  def['np'] + " succeeded [en is " + def['en'] + "]");
                     succeed(LOOMA.defHTML(def));
              }
             function notfound() {
+                LOOMA.alert("Word not found");
                 fail();
             }
         }, //end LOOMA.reversedefine()
@@ -898,7 +899,7 @@ definition_only : function(word, succeed, fail) {
 
 //  function POPUPDEFINITION looks up the word and displays its definition in a popup for 'time' seconds
 //          used by LOOKUP button in PDF, history, and looma.js
-popupDefinition : function (word, time) {
+popupDefinition : function (word, time, lang) {
 
       function show(html) {
           $('#popup').remove();
@@ -907,7 +908,9 @@ popupDefinition : function (word, time) {
           LOOMA.alert($popup.html(), time, true);
       }; //end show()
     function fail() {};
-    LOOMA.define(word, show, fail);
+    if (lang === 'np')
+         LOOMA.reversedefine(word, show, fail);
+    else LOOMA.define(word, show, fail);
 
     },   //end popupDefinition()
 

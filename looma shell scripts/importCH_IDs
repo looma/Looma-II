@@ -1,7 +1,8 @@
 // mongo terminal program "importCH_IDs;
-//      input from a tab-separated file
-//          each line of which is a FN, DN, followed by a comma-separated list of CH_IDs
-//          inserts all the ch_ids into the activities.ch_ids array of any document(s) corresponding to the FN + DN pair
+//      input from a tab-separated file named 'ch_idsToImport.tsv'
+//          each line of which is a DN <tab> FT <tab> a comma-separated list of CH_IDs
+//          inserts all the ch_ids into the activities.ch_ids array and activities.nch_ids array
+//          of any document(s) corresponding to the FT + DN pair
 //
 //    to DRYRUN this script, enter "param='dryrun'  before entering the load statement
 //
@@ -44,36 +45,41 @@ print ('Processing ' + docs.length + ' lines');
 docs.forEach( function(doc) {
     var fields = doc.split(/\t/);  //split the line on TABs
     if (fields[0] !== "" && fields[1] !== "") {
-        var filename = fields[0];
-        var displayname = fields[1];
+        var displayname = fields[0];
+        var filetype = fields[1];
         requestcount++;
         //print(requestcount + ' - - CHECKING ' + displayname + ' [' + filename + '] adding ' + fields.toString());
     
-        var activities = db.activities.find({ 'fn': filename});
+        var activities = db.activities.find({ 'dn': displayname,'ft':filetype});
         var duplicates = 0;
-        if (!activities.hasNext()) print('ACTIVITY ' + displayname + ' [' + filename + '] NOT FOUND');
+        if (!activities.hasNext()) print('ACTIVITY ' + displayname + ' [' + filetype + '] NOT FOUND');
         while (activities.hasNext()) {
             var activity = activities.next();
-            duplicates++; if (duplicates > 1) print('*************NOTE: duplicate ACTIVITY FOUND, Name = ' + displayname);
+            duplicates++; if (duplicates > 1)
+                print('*************NOTE: duplicate ACTIVITY FOUND, Name = ' + displayname + ' [' + filetype + ']');
             //let ch_ids = new Set();
             var oldCH_ID;
             if (Array.isArray(activity['ch_id'])) oldCH_ID = activity['ch_id']; else oldCH_ID = [activity['ch_id']];
+    
             activity['ch_id'] = [];
- 
-            // retain OLD ch_ids  ????
-            //oldCH_ID.forEach (function(x){ if(x && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
+            activity['nch_id'] = [];
+            // retain OLD ch_ids
+            oldCH_ID.forEach (function(x){ if(x && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
             //
             var IDs = fields[2].split(/,/);  //list of ch_ids on COMMAs
     
             IDs.forEach   (function(x){
                 x = x.trim();
-                if(x && legalCH_ID(x,activity['dn']) && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
+                if(x && legalCH_ID(x,activity['dn']) && activity['ch_id'].indexOf(x) === -1) {
+                    activity['ch_id'].push(x);
+                    activity['nch_id'].push(x);
+                }});
             
             if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
             
             print(++changecount + ' - - CHANGED CH_IDs '
                   + displayname + ' [' + oldCH_ID.toString() + '] TO '
-                  + activity.ch_id.toString());
+                  + ' [' + activity.ch_id.toString()) + ']';
         }
     } else print('*******    BAD INPUT LINE: ' + doc);
 });  // end foreach doc

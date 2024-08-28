@@ -35,6 +35,7 @@ html {
     --looma-green: #29aa29;  /*green  = 063006 for TEST Looma */
     --looma-purple:#800080;  /*purple = 800080 for INDIA Looma */
     --looma-blue:#091F48;    /* Looma blue = 091F48 for regular Looma */
+    /* NOTE: looma-blue in Pantone is "2768 C" */
     --looma-background: var(--looma-blue);
     --looma-toolbar:yellow;
     --looma-font-color:yellow;
@@ -624,6 +625,8 @@ button.img {
 	/*vertical-align:middle;*/
 	text-align:center;
 }
+
+button.map {position:relative;}
 
 button.img img, button.img object {
 	position:relative;

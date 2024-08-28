@@ -10,7 +10,7 @@
 -->
 <?php
    // header('Cache-Control: no-cache');
-    $page_title = 'Looma Home Page';
+    $page_title = 'Looma Online';
     require_once ('includes/header.php');
 
     logUserActivity();

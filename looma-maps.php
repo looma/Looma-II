@@ -17,10 +17,10 @@ logPageHit('maps');
 <link rel="stylesheet" href="css/looma-maps.css" />
 
 <?php
-$mapDir = "../content/maps/mapThumbs/";
-$urlBegin = "map?id=";
-
-function makeButton($file, $thumb, $dn) {
+/*
+ *
+ *   ******* makeMapButton moved to looma-utilities.php  *****
+function makeMapButton($file, $thumb, $dn) {
     echo "<a href='" . $file . "'>";
 
     echo "<button class='map  img'>";
@@ -34,7 +34,8 @@ function makeButton($file, $thumb, $dn) {
         keyword($dn) . "</span>";
     //finish BUTTON
     echo "</button></a>";
-}  //end makeButton()
+}  //end makeMapButton()
+*/
 ?>
 
 <body>
@@ -59,10 +60,10 @@ function makeButton($file, $thumb, $dn) {
             if($map['title'] === "Nepal Map" || $map['title'] === "Looma Schools Map") {
                 echo "<td>";
                 if (isset($map['title'])) $dn = $map['title']; else $dn = "Map";
-                if (isset($map['thumb'])) $thumb = $mapDir . $map['thumb']; else $thumb = 'images/maps.png';
+                if (isset($map['thumb'])) $thumb = "../content/maps/mapThumbs/" . $map['thumb']; else $thumb = 'images/maps.png';
                 $id = $map['_id'];  //mongoID of the descriptor for this lesson
-                $link = $urlBegin . $id;
-                makeButton($link, $thumb, $dn);
+                $link = "map?id=" . $id;
+                makeMapButton($id, $thumb, $dn);
                 echo "</td>";
                 $buttons++;
                 if ($buttons > $maxButtons) {
@@ -77,10 +78,10 @@ function makeButton($file, $thumb, $dn) {
             if($map['title'] !== "Nepal Map" && $map['title'] !== "Looma Schools Map") {
                 echo "<td>";
                 if (isset($map['title'])) $dn = $map['title']; else $dn = "Map";
-                if (isset($map['thumb'])) $thumb = $mapDir . $map['thumb']; else $thumb = 'images/maps.png';
+                if (isset($map['thumb'])) $thumb = "../content/maps/mapThumbs/" . $map['thumb']; else $thumb = 'images/maps.png';
                 $id = $map['_id'];  //mongoID of the descriptor for this lesson
-                $link = $urlBegin . $id;
-                makeButton($link, $thumb, $dn);
+                $link = "map?id=" . $id;
+                makeMapButton($id, $thumb, $dn);
                 echo "</td>";
                 $buttons++;
                 if ($buttons > $maxButtons) {

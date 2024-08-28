@@ -224,6 +224,20 @@ function makeInlineActivityButton($activity)
             echo "<span>" . "" . "</span></button>";
 }; //end makeInlineActivityButton()
 
+function makeMapButton($id, $thumb, $dn) {
+    global $icons;
+
+    echo "<a href='" . "map?id=" . $id . "'>";
+
+    echo "<button class='map  img'>";
+    //text and tooltip for BUTTON
+    echo         "<img src='" . $thumb . "'>";
+    echo "<span class='name'>" . $dn . "</span>";
+    echo "<img class='icon' src='" . $icons['map'] . "'>";
+    //finish BUTTON
+    echo "</button></a>";
+}  //end makeMapButton()
+
 /*********************************/
 /******** makeInlineActivityButton *****/
 /*********************************/
@@ -233,6 +247,7 @@ function makeInlineActivityButton($activity)
 function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang) {
 
     global $icons;
+    $ft = strtolower($ft);
 
 	//NOTE: would be better to call this with an object with fields ft, fp, fn, etc. smaller arglist and fewer null parameters
 
@@ -331,7 +346,6 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         else $thumbSrc = thumbnail($fn, $fp, $ft);
 
        // $fn = htmlspecialchars($fn ?? "");
-
 
 
     //Now make the BUTTON

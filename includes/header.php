@@ -3,6 +3,8 @@
 header("Cache-Control: no-cache");
 header("Pragma: no-cache");
 
+// header("Access-Control-Allow-Origin: *");
+
 //if (file_exists('../content/CEHRD')) echo '../content/CEHRD exists'; exit;
     //if (file_exists('../content/CEHRD')) $LOOMA_SERVER = 'CEHRD';
 
@@ -38,6 +40,7 @@ header("Pragma: no-cache");
         $LOOMA_SERVER = 'looma-laptop';
         error_reporting(E_ALL);
     } else {
+
         $LOOMA_SERVER = 'looma local';
         error_reporting(E_ALL);
     }
@@ -103,14 +106,13 @@ header("Pragma: no-cache");
       <meta name="apple-mobile-web-app-capable" content="yes">
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <meta name="description" content="Looma Education: Nepal.
-    Looma is an affordable and low power-consuming audio-visual education computer
-    that provides reliable access to educational content for an entire classroom--offline.
-    It combines a computer, A/V projection system, webcam, and massive library of media files,
-    teacher tools, dictionary, learning games, educational videos, etc., replacing the Internet.
-    It uses only 55 W, easily provided by solar, replacing electrical grid power.
-    The current version of Looma is configured for grade K-12 education in Nepal. Configurations for other
-    languages and countries are planned.">
+    <meta name="description" content="Looma Education develops affordable technology
+    that brings a modern education with digital access to the world's knowledge to
+    everyone in Nepal, even those without Internet or electricity. Looma Online is
+    the completely online version of Looma which includes the official Nepali textbooks,
+    extensive educational media, and a UI for making lessons. For those without Internet,
+    Looma is delivered as Looma Box, a computer with projector in a small solar-powered box,
+    or Looma Server for school computer labs. ">
 
 <?php
     header_remove('X-Powered-By');

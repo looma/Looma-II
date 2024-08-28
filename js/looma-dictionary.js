@@ -50,10 +50,7 @@ var displayArea;
     
     //This is the fail function, used when the Looma database can not find the word
     function fail(jqXHR, textStatus, errorThrown) {
-        alert("Dictionary lookup failed");
-        console.log('jqXHR is ' + jqXHR.status);
-        window.alert('failed with textStatus = ' + textStatus);
-        window.alert('failed with errorThrown = ' + errorThrown);
+        LOOMA.alert("Word not found");
     } //end FAIL
 
 function getDefinition(event) {

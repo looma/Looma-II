@@ -10,8 +10,34 @@ Description: display layer built on pdf.js for showing chapters in PDFs
 "use strict";
 
 window.onload = function() {
-
-        $('#zoom-dropdown').removeClass('hide');
+  
+  $('button.lookup').off('click').click(function(){
+       // var toString = selection;
+    
+      var toString = window.getSelection().toString();
+    
+    
+      console.log ('selected text to lookup: "', toString, '"');
+        // LOOMA.lookupWord(toString);
+      if ($('#pdf').data('lang') === 'np') {
+          toString = convertPreeti(toString);
+          LOOMA.popupDefinition(toString.split(' ')[0], 15, 'np');
+    
+      } else LOOMA.popupDefinition(toString.split(' ')[0], 15, 'en');
+      return false;
+    });
+  
+ /*
+    document.addEventListener('selectionchange',
+        (e)=>{
+        if ($('#pdf').data('lang') === 'np')
+             selection = convertPreeti(window.getSelection().toString());
+        else selection =               window.getSelection().toString();
+        return false;
+    });
+*/
+    
+    $('#zoom-dropdown').removeClass('hide');
         
 // *********  PAGE controls ***************
     

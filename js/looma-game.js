@@ -1583,7 +1583,7 @@ function gameOver() {
             $('button.lookup').off('click').click(function(){
                 var toString = window.getSelection().toString();
                 var toString = (toString ? toString : $('#words p.word').text());
-                LOOMA.popupDefinition(toString.split(' ')[0], 15);
+                LOOMA.popupDefinition(toString.split(' ')[0], 15, 'en');
             });
         
             $(".bin").droppable({

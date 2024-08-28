@@ -12,9 +12,8 @@ Description:  base page for showing HTML content. call with URL=looma.html.php?f
 <?php $page_title = 'Looma HTML';
 require_once ('includes/header.php');
 require_once ('includes/looma-utilities.php');
-
-//logFiletypeHit('html');
 ?>
+
 <link rel="stylesheet" href="css/looma-html.css">
 </head>
 

@@ -31,7 +31,7 @@ if ($epversion == '2015') {  // old ePaath activities from 2016
     else  if ($epversion === '2019') {  // new ePaath activities from 2019
         $oleID = $_REQUEST['ole'];
         $grade = $_REQUEST['grade'];
-        $src = '../ePaath/';
+        $src = 'ePaath/';
         if ($grade == '7' || $grade == '8') $src .= 'EPaath7-8/';
 
         $language = '&lang=' . $_REQUEST['lang'];
@@ -43,7 +43,7 @@ if ($epversion == '2015') {  // old ePaath activities from 2016
     else {  // version is 2022
         $oleID = $_REQUEST['ole'];
         $grade = $_REQUEST['grade'];
-        $src = '../ePaath/ePaath2022/';
+        $src = 'ePaath/ePaath2022/';
 
         $language = '&lang=' . $_REQUEST['lang'];
 
@@ -53,9 +53,10 @@ if ($epversion == '2015') {  // old ePaath activities from 2016
     }
 ?>
 <div id="main-container-horizontal">
-    <div id="fullscreen">
+    <div id="fullscreen" data-ep="true">
         <!-- NOTE the iframe below has name='looma-frame', and wikipedia articles in looma have <a xxx.htm target="looma-frame" -->
-        <?php echo "<iframe id='iframe' name='looma-frame' src='$src' allowfullscreen>" ?></iframe>
+        <!--  $SRC = http://localhost/epaath?epversion=2019&ole=mataoe01&lang=english&sub=english&grade=5   -->
+        <?php echo "<iframe id='iframe' name='looma-frame' src='" . $src . "' allowfullscreen>" ?></iframe>
         <?php include('includes/looma-control-buttons.php')?>
     </div>
 </div>

@@ -385,7 +385,7 @@ function elementFocused(event) {
 $(document).ready(function() {
     var validInputs = $(validInputsString);
     //console.log(validInputs);
-    if (validInputs.length == 0) {
+    if (validInputs.length == 0 || $('#fullscreen').data('ep')) {
         console.log("No text inputs.");
         return;
     }

@@ -22,5 +22,5 @@
 {"_id":{"$oid":"6408eed0ebcfafcfa700baa9"},"name":"teacher14","level":"translator","pw":"64c433930e9b95ec4baea1b4c113964e00edf4b4285afe2dacc77a55bc071379","salt":"3836346461346134313832306364","team":"teachers"}
 {"_id":{"$oid":"6265aed8a97549779b916242"},"name":"kabindra","level":"exec","pw":"a23df167b4d5c0636c1c7601739cf2747092c38b3d395c005bd1faf5c35f7937","salt":"dfb4b285beda4978","team":"nepal"}
 {"_id":{"$oid":"6466b2ef66e9bdfef26131d1"},"name":"exec","level":"exec","pw":"51a3d6031687ba29c1b73b7365ac38025054c817aa883f9eedd39a4f9f438844","salt":"3836343561393233393136623563"}
-{"_id":{"$oid":"64d4ff73782a73c84545eb97"},"name":"rohit","level":"exec","pw":"913523066caa231e0b0ea4a5d0f3767dcd31e71f5b58f34f5d667174be36faa7","salt":"3836346461343937663834336430","team":"nepal"}
-{"_id":{"$oid":"64da4959782a73c84546bc95"},"name":"diksha","level":"exec","pw":"7e3212c7b6cec20dd35c010596a0e4d65f9bd43c57f72a0423bf3e0e6fed0b04","salt":"3836346461343935396132653061","team":"nepal"}
+{"_id":{"$oid":"64d4ff73782a73c84545eb97"},"name":"rohit","pw":"913523066caa231e0b0ea4a5d0f3767dcd31e71f5b58f34f5d667174be36faa7","salt":"3836346461343937663834336430","team":"nepal"}
+{"_id":{"$oid":"64da4959782a73c84546bc95"},"name":"diksha","pw":"7e3212c7b6cec20dd35c010596a0e4d65f9bd43c57f72a0423bf3e0e6fed0b04","salt":"3836346461343935396132653061","team":"nepal"}

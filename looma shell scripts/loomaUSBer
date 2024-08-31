@@ -92,6 +92,13 @@ echo
 #        fi
 #    fi
 
+
+timestamp () {  # $1 is the dir to put the timestamp in [content or Looma]
+  date +"%s" > $1/archivetimestamp.txt
+  echo " - - setting "$1/archivetimestamp.txt to $(date +"%s")
+  echo "************************************"
+}  #  end timestamp()
+
 checkforsshpass
 
 cd /media/odroid/LOOMA
@@ -131,6 +138,7 @@ then
     else
         sshpass -p 'looma' rsync -az           --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
         result $?
+        timestamp "Looma"
     fi
     echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 fi
@@ -150,6 +158,7 @@ then
     else
         sshpass -p 'looma' rsync -az --quiet   --size-only --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
         result $?
+        timestamp "content"
     fi
     echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 fi

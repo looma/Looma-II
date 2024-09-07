@@ -78,6 +78,8 @@ $(document).ready (function() {
     $("button.lessons").click(lessonsButtonClicked);
     $("button.chapter, button.section").click(chapterButtonClicked);
 
+    //    $("button.chapter, button.section").on('contextmenu',chapterButtonRightClicked);
+
     // check cookies to see if there is an active CHAPTER
     // if so, add class='active' to all the buttons for this CHAPTER (if any)
 

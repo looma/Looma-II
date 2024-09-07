@@ -111,6 +111,10 @@ foreach ($chapters as $ch) {
     $nch_id  = keyIsSet('nch_id', $ch) ? $ch['nch_id'] : $ch_id;
     //$ch_id is chapter ID string
 
+    $class = ucfirst($tb['class']);
+    $subject = ucfirst($tb['subject']);
+    if ($subject === 'Socialstudies') $subject = 'SocialStudies';
+
 ////////// ENGLISH chapter ///////////
 // display chapter button for english textbook, if any
     if ($tb_fn && $ch_pn) { echo "<button class='$ch_ft en-chapter' 
@@ -119,6 +123,8 @@ foreach ($chapters as $ch) {
                                       data-fp='$tb_fp' 
                                       data-ch='$ch_id'  
                                       data-ft='$ch_ft' 
+                                      data-class='$class' 
+                                      data-subject='$subject' 
                                       data-zoom='2.1'  
                                       data-len='$ch_len' 
                                       data-page='$ch_pn'>
@@ -206,7 +212,8 @@ foreach ($chapters as $ch) {
                                     data-page='$ch_npn'
                                     
                                     data-zoom='2.3'  
-                                    
+                                 data-class='$class' 
+                                 data-subject='$subject'        
                                     data-len='$ch_nlen'
                                     data-ch='$nch_id'>
                                     $ch_ndn

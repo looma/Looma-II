@@ -145,7 +145,6 @@ playMedia : function(button) {
 
         case "pdf":      //PDF
         case "document": //DOCUMENT (some PDFs)
-        case "chapter":  //CHAPTER
         case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
@@ -158,6 +157,33 @@ playMedia : function(button) {
                     '&zoom=' + pdfZoom +
                     '&len=' + pdfLen +
                     '&page=' + pdfPage;
+            break;
+    
+        case "chapter":  //CHAPTER
+            var pdfZoom =  button.getAttribute('data-zoom');
+            if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
+            var pdfPage = 1;
+            var pdfLen  = 100;
+            
+            var folder, suffix;
+            if (button.getAttribute('data-lang') === 'np') {
+                folder = 'textbook_chapters_nepali';
+                suffix = '-nepali';
+            }
+            else {
+                folder = 'textbook_chapters';
+                suffix = '';
+            }
+            
+            window.location = 'pdf?' +
+                'fn=' + encodeURIComponent(button.getAttribute('data-ch')) + suffix + '.pdf' +
+//                '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
+        '&fp=' + '../content/chapters/' + button.getAttribute('data-class') + '/' +
+        button.getAttribute('data-subject') + '/' + folder + '/' +
+                '&lang=' + lang +
+                '&zoom=' + pdfZoom +
+                '&len=' + pdfLen +
+                '&page=' + pdfPage;
             break;
 
         case "text":

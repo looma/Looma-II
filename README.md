@@ -7,7 +7,7 @@ README:
 Looma II source code
 
     This GITHUB repository does not include the Looma "content" which is 64+GB, and growing, of media files used in Looma.
-    For access to the content send requests to info at villagetechsolutions dot org.
+    For access to the content send requests to info at looma dot education.
 
 This is the Looma code developed by Looma Education Corporation (looma.education).
 It is copyright Looma Education, but licensed under Creative Commons (CC-BY-NC-SA).

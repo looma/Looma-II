@@ -1058,7 +1058,7 @@ require_once('includes/looma-utilities.php');
 
         if (sizeof($result) > 0 ) {
 
-//             $result = alphabetize_by_dn($result);
+            $result = alphabetize_by_dn($result);
             // after SORT, compare adjacent items for equality and remove duplicates
             $unique[] = $result[0];
             $specials = array('text', 'text-template', 'slideshow', 'looma', 'lesson', 'lesson-template', 'evi', 'history', 'map', 'game');

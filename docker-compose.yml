@@ -15,6 +15,7 @@ services:
     container_name: loomaweb
     volumes:
       - .:/usr/local/var/www/Looma:ro
+      - /usr/local/var/www/content:/usr/local/var/www/content:ro
     ports:
       - 48080:8080
     restart: always

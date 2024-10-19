@@ -987,7 +987,7 @@ require_once('includes/looma-utilities.php');
 
         if (sizeof($sources) > 0) $query['src'] = array('$in' => $sources);
 
-        if ($nameRegex) {
+        if ($nameRegex && !$_REQUEST['semantic']) {
         //     if ($language === 'english') $query['dn'] = $nameRegex;
         //     else                         $query['ndn'] = $nameRegex;
         //echo "language is " . $language . "   and regex is " . $nameRegex;
@@ -1021,7 +1021,15 @@ require_once('includes/looma-utilities.php');
         }
 
         //echo "query is: "; print_r($query);
+        if ($_REQUEST['semantic']) {
+            $raw_result = shell_exec("export TRANSFORMERS_CACHE=/tmp/.cache; python3 search.py " . $_POST['search-term']);
+            $qdrant_results = json_decode($raw_result, true);
+            $ids = array_column($qdrant_results, 'source_id');
+            $qdrant_results_dict = array_combine($ids, $qdrant_results);
 
+            $query["_id"] = array();
+            $query["_id"]['$in'] = array_map(function($d) {return mongoId($d["source_id"]);}, $qdrant_results);
+        }
 
         ///// making call to MONGO in 'looma' database //////
         $cursor = mongoFind($collections[$_REQUEST['collection']], $query, 'dn', null, null);   //->skip($page)->limit(20);
@@ -1088,6 +1096,17 @@ require_once('includes/looma-utilities.php');
             if (isset($_REQUEST['pagesz']) && isset($_REQUEST['pageno']))
                 $unique = array_slice($unique, ($_REQUEST['pageno'] - 1) * $_REQUEST['pagesz'], $_REQUEST['pagesz']);
         } else $numUnique = 0;
+
+        if ($_REQUEST['semantic']) {
+            usort($unique, function($a, $b) use ($qdrant_results_dict) {
+//                 error_log(print_r($a, TRUE));
+//                 error_log(print_r($qdrant_results_dict, TRUE));
+                $indexA = $qdrant_results_dict[(string) $a["_id"]]['score'];
+                $indexB = $qdrant_results_dict[(string) $b["_id"]]['score'];
+                error_log(print_r($indexA < $indexB, TRUE));
+                return $indexA < $indexB;
+            });
+        }
 
         //echo json_encode($numUnique);
         echo json_encode(array('count'=> $numUnique, 'list'=>$unique));

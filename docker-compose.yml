@@ -15,6 +15,10 @@ services:
     container_name: loomaweb
     volumes:
       - .:/usr/local/var/www/Looma:ro
+      - /usr/local/var/www/content:/usr/local/var/www/content:ro
+      - /usr/local/var/www/maps2018:/usr/local/var/www/maps2018:ro
+      - /usr/local/var/www/ePaath:/usr/local/var/www/ePaath:ro
+
     ports:
       - 48080:8080
     restart: always

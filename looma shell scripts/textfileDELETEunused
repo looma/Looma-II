@@ -25,10 +25,13 @@ while (textcursor.hasNext()) {
     
         // check for TEXT FILE is USED in {lesson, slideshow, evi}
         lessonOccurances = db.lessons.find({ "data": {$elemMatch:{ id:text._id.valueOf()} }});
-        slideshowOccurances = db.slideshows.find({ "data": {$elemMatch:{ id:text._id.valueOf()} }});
-        eviOccurances = db.edited_videos.find({ "data": {$elemMatch:{ id:text._id.valueOf()} }});
+     //   slideshowOccurances = db.slideshows.find({ "data": {$elemMatch:{ id:text._id.valueOf()} }});
+     //   eviOccurances = db.edited_videos.find({ "data": {$elemMatch:{ id:text._id.valueOf()} }});
         
-        if ( ! (lessonOccurances.hasNext() || slideshowOccurances.hasNext() || eviOccurances.hasNext())) {
+        if ( ! (lessonOccurances.hasNext()))
+      //      || slideshowOccurances.hasNext()
+      //      || eviOccurances.hasNext()))
+        {
             count1++;
             print ('TEXT FILE : "' + text.dn + '" is NOT INCLUDED in any LESSON, SLIDESHOW or EVI  - - - BEING DELETED');
             if (param === 'run') {

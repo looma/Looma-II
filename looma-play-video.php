@@ -39,9 +39,10 @@ they want to edit a video
 			</script>
 
 			<div id="main-container-horizontal">
+
                     <div id="video-player">
                         <div id="fullscreen">
-                            <video id="video">
+                            <video id="video" class="viewer">
                                 <?php echo 'poster=\"' . thumbnail($filename,$filepath,"mp4") . '\">';?>
                                 <?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">'; ?>
                                 <?php
@@ -56,18 +57,12 @@ they want to edit a video
                         </div>
                     </div>
 
-                <div id="title-area" hidden>
-                    <h3 id="title"></h3>
-                </div>
-
             <?php require_once("includes/looma-media-controls.php");?>
             </div>
 
-        <!--Adds the toolbar to the video player screen-->
         <?php include ('includes/toolbar.php'); ?>
         <?php include ('includes/js-includes.php'); ?>
         <script src="js/looma-media-controls.js"></script>          <!-- Looma Javascript -->
-        <script src="js/looma-video.js"></script>          <!-- Looma Javascript -->
-
+        <script src="js/looma-play-video.js"></script>          <!-- Looma Javascript -->
 
 	</body>

@@ -33,7 +33,9 @@ Description:
 
             <h1 class="credit"> Created by Akshay</h1>
             <!-- if internet is accessible, JS will load an external website (e.g. Bing) in the iframe -->
-            <iframe id="frame" allowfullscreen sandbox="allow-scripts allow-same-origin"></iframe>
+            <iframe id="frame" allowfullscreen sandbox="allow-scripts allow-same-origin allow-cross-origin">
+                <script src="js/looma-web.js"></script>
+            </iframe>
         </div>
     </div>
 

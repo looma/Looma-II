@@ -5,14 +5,14 @@ Description: supports looma-video.php, looma.audio.php, looma-play-lesson.php, e
 
 Programmer name: Skip
 Owner: VillageTech Solutions (villagetechsolutions.org)
-Date: Feb 17
-Revision: Looma 2.4
+Date: Feb 17, Sep 2024
+Revision: Looma 7.x
  */
 
 'use strict';
 
     var audio, video, media;
-    var $play, $mute, $seekbar, $volumebar, $time;
+    var $play, $mute, $seekbar, $volumebar, $elapsedtime, $totaltime;
 
 function mediaPlayPause () { // play or pause the currently playing MEDIA - stored in global var media
     if (media.paused) {
@@ -24,7 +24,6 @@ function mediaPlayPause () { // play or pause the currently playing MEDIA - stor
     }
 }; //end mediaPlayPause()
 
-
 function minuteSecondTime (time) {  // convert the [current media] time from seconds to mm:ss
     var timeAsString = "" + time;
     var seconds = timeAsString.substring(0, timeAsString.indexOf("."));
@@ -34,23 +33,26 @@ function minuteSecondTime (time) {  // convert the [current media] time from sec
     return minutes + ":" + seconds;
 }; // end minuteSecondTime()
 
-
 function attachMediaControls (myMedia) {
-
+    
           if(myMedia) {media = myMedia;}
           else {       audio = document.getElementById("audio");
                        video = document.getElementById("video");
 
                        media = (video)?video:audio;
           }
-
-          // Buttons
+    
+            $(media).click(mediaPlayPause);
+          
+  //  $('#totaltime').text(minuteSecondTime(media.duration));
+    
+    // Buttons
           $play =    $('.play-pause');
           $mute =    $('.mute');
           $seekbar = $('.seek-bar');
           $volumebar = $('.volume-bar');
-          $time =    $('.time');  $time.text('0:00');
-
+          $elapsedtime =    $('#elapsedtime');  $elapsedtime.text('0:00');
+          
         // Event listener for the play/pause button
         $play.off('click').on('click', mediaPlayPause);
 
@@ -81,7 +83,7 @@ function attachMediaControls (myMedia) {
               var value = (100 / media.duration) * media.currentTime;  // Calculate the slider value
               $seekbar.val(value);   // Update the slider value
 
-            $time.text(minuteSecondTime(media.currentTime));
+            $elapsedtime.text(minuteSecondTime(media.currentTime));
         });
 
         // Pause the media when the slider handle is being dragged
@@ -89,14 +91,12 @@ function attachMediaControls (myMedia) {
 
         // Play the media when the slider handle is dropped
         $seekbar.on("mouseup", function() { media.play(); });
-
+    
+    media.addEventListener('loadeddata', function () {
+        $('#totaltime').text(minuteSecondTime(media.duration));
+     });
+    
 }; // end attachMediaControls()
-
-/*
-   function attachFullscreenPlayPauseControl() {
-        $('#fullscreen-playpause').on('click', mediaPlayPause);
-   }; //end attachFullScreenPlayPause()
-*/
 
     function modifyFullscreenControl() {
         var videoArea = document.getElementById("video-player");
@@ -126,7 +126,6 @@ function attachMediaControls (myMedia) {
 
 
 function modifyFullscreenAudio() {
-    
     var isFullscreen = false;
     
     $('#fullscreen-control').off('click').on('click', function (e) {
@@ -147,3 +146,9 @@ function modifyFullscreenAudio() {
         }
     });
 }; //end modifyFullscreenAudio()
+
+
+
+$(document).ready(function () {
+//  $('#totaltime').text(minuteSecondTime($(media).duration));
+});

@@ -22,7 +22,6 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
 	  logFiletypeHit('audio');
 ?>
     <link rel="stylesheet" type="text/css" href="css/looma-audio.css">
-    <link rel="stylesheet" type="text/css" href="css/looma-media-controls.css">
 	</head>
 
 	<body>
@@ -41,32 +40,13 @@ Usage: 	<button id="testaudio" data-fn="sounds.mp3"
 			 	 <?php echo	'<source src="' . $filepath . $filename . '" type="audio/mpeg">' ?>
 				Your browser does not support the audio element.
 			</audio>
-
 		</div>
 
-	     <div id="media-controls">
+        <?php require_once("includes/looma-media-controls.php");?>
 
-         <div id="time" class="time title">0:00</div>
-
-              <br><button type="button" class="media play-pause"><?php keyword('Play') ?></button>
-              <input type="range"       class="video seek-bar" value="0" style="display:inline-block">
-              <br><br>
-              <button type="button" class="media mute">    <?php keyword('Volume') ?></button>
-              <input type="range"       class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block">
- <!--         <br><button type="button"     class="media" id="mute">      <?php keyword('Mute') ?></button>
- -->
-         </div>
-	<!--
-	  <div id="audio-controls">
-   		  <button type="button" class="media" id="play-pause">Play</button>
-  		  <input type="range" id="seek-bar" value="0">
-		  <button type="button" class="media" id="mute">Mute</button>
-    	  <input type="range" id="volume-bar" min="0" max="1" step="0.1" value="1">
- 	 </div>
- 	-->
- 	</div>
+     </div>
 
    	<?php include ('includes/toolbar.php'); ?>
    	<?php include ('includes/js-includes.php'); ?>
-     <script src="js/looma-media-controls.js"></script>          <!-- Looma Javascript -->
-     <script src="js/looma-audio.js"></script>          <!-- Looma Javascript -->
+    <script src="js/looma-media-controls.js"></script>          <!-- Looma Javascript -->
+    <script src="js/looma-play-audio.js"></script>          <!-- Looma Javascript -->

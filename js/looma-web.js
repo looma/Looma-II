@@ -77,4 +77,22 @@ $(document).ready(function() {
     forwardButton.addEventListener("click", function() {
         history.forward();
     });
+    
+    chrome.webRequest.onHeadersReceived.addListener(
+        // Called whenever Chrome makes a request.
+        function(details) {
+            responseHeaders = details.responseHeaders;
+            for (var i = 0; i < responseHeaders.length; i++) {
+                if (responseHeaders[i].name.toLowerCase() == "x-frame-options") {
+                    responseHeaders[i].value = "LOOMA"; // Doesn't actually do anything, but Chrome doesn't care what the value is.
+                }
+            }
+            return {
+                responseHeaders: responseHeaders
+            };
+        }, {
+            urls: ["<all_urls>"]
+        }, ["blocking", "responseHeaders"]
+    );
+    
 });

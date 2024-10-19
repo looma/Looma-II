@@ -166,10 +166,10 @@ function playActivity(event) {
 
 function translateSearchResults() {
     $('button.activity').each(function(){
+        var ndn = ($(this).data('ndn') && $(this).data('ndn') !== 'undefined') ? $(this).data('ndn') : $(this).data('dn');
+        var dn = ($(this).data('dn') && $(this).data('dn') !== 'undefined') ? $(this).data('dn') : $(this).data('ndn');
         if (language === 'native') {
-            var ndn = ($(this).data('ndn') && $(this).data('ndn') !== 'undefined') ? $(this).data('ndn') : $(this).data('dn');
-            var dn = ($(this).data('dn') && $(this).data('dn') !== 'undefined') ? $(this).data('dn') : $(this).data('ndn');
-            $(this).children('span.dn').text(ndn);
+             $(this).children('span.dn').text(ndn);
         }
         else $(this).children('span.dn').text(dn) ;
     });

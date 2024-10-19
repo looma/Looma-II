@@ -144,6 +144,7 @@ playMedia : function(button) {
             break;
 
         case "pdf":      //PDF
+        case "chapter":  //CHAPTER
         case "document": //DOCUMENT (some PDFs)
         case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
@@ -159,7 +160,7 @@ playMedia : function(button) {
                     '&page=' + pdfPage;
             break;
     
-        case "chapter":  //CHAPTER
+ /*       case "chapter":  //CHAPTER
             var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage = 1;
@@ -185,7 +186,7 @@ playMedia : function(button) {
                 '&len=' + pdfLen +
                 '&page=' + pdfPage;
             break;
-
+*/
         case "text":
             var id = encodeURIComponent(button.getAttribute('data-mongoId'));
             var db = button.getAttribute('data-db') === 'loomalocal' ? 'loomalocal' : 'looma';

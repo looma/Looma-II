@@ -103,8 +103,8 @@ header("Pragma: no-cache");
     <meta name="owner"     content="Looma Education Corporation">
     <meta name="copyright" content="Looma Education Corporation">
 
-      <meta name="apple-mobile-web-app-capable" content="yes">
-      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+      <meta name="mobile-web-app-capable" content="yes">
+      <meta name="mobile-web-app-status-bar-style" content="black-translucent">
 
     <meta name="description" content="Looma Education develops affordable technology
     that brings a modern education with digital access to the world's knowledge to

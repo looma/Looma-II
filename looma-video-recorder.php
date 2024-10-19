@@ -53,7 +53,7 @@ File: looma-video-recorder.php
         <?php include ('includes/toolbar.php'); ?>
         <?php include ('includes/js-includes.php'); ?>
         <script src="js/looma-media-controls.js"></script>
-        <script src="js/looma-video.js"></script>
+        <script src="js/looma-play-video.js"></script>
    <!--
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" ></script>

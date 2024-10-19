@@ -896,7 +896,7 @@ require_once('includes/looma-utilities.php');
         // known filetypes are the FT values in Activities collection
         // e.g. 'video', 'audio', 'image', 'pdf', 'textbook', 'text', 'html', 'slideshow', 'lesson', 'looma'
 
-        if (isset($_REQUEST['language'])) $language = $_REQUEST['language']; else $language = 'english'; // 'native' or 'english'
+        if (isset($_REQUEST['language'])) $language = $_REQUEST['language']; else $language = 'english';
 
         $filetypes = array();       //array of FT filetypes to include in the search
         if (isset($_REQUEST['type'])) foreach ($_POST['type'] as $i) if ($i != '') array_push($filetypes, $i);
@@ -983,12 +983,10 @@ require_once('includes/looma-utilities.php');
         $query = array();
         if (sizeof($extensions) > 0) $query['ft'] = array('$in' => $extensions);  //if filetypes given, search only for them
 
-         else if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson','chapter','text']);
-         else $query['ft'] = array('$nin' => ['chapter','text']);
+         else if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson']);
 
         if (sizeof($sources) > 0) $query['src'] = array('$in' => $sources);
 
-/*
         if ($nameRegex) {
         //     if ($language === 'english') $query['dn'] = $nameRegex;
         //     else                         $query['ndn'] = $nameRegex;
@@ -1001,20 +999,6 @@ require_once('includes/looma-utilities.php');
             else
                 $query['dn']  = $nameRegex;
         }
-*/
-
-        // new method for search term matching to DN and NDN
-       // $query['$or'] = "[{'dn':" . $nameRegex . "'},{'ndn':" . $nameRegex . "'}]}";
-       // $query['$or'] = array("{'dn':" . $nameRegex . "'},{'ndn':" . $nameRegex . "'}]}";
-
-        $dnRegex = (object)array('dn' => $nameRegex);
-        $ndnRegex = (object)array('ndn' => $nameRegex);
-
-        $query['$or'] = array($dnRegex,$ndnRegex);
-
-        //echo "query.or is "; print_r($query['$or']);
-
-        //
 
         if ($classSubjRegex) $query['_id'] = $classSubjRegex;
 

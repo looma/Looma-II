@@ -14,8 +14,41 @@ def query(q: str, qdrant: QdrantClient):
         encode_kwargs=encode_kwargs
     )
 
-    docs = qdrant.search(collection_name="activities", query_vector=hf.embed_query(q), limit=24)
-    return docs
+    embeddings = hf.embed_query(q)
+
+    similar_docs = qdrant.query_points(
+        collection_name="activities",
+        prefetch=[
+            # models.Prefetch(
+            #     query=embeddings,
+            #     using="text-title",
+            #     limit=12,
+            #     # filter=models.Filter(
+            #     #     must_not=[
+            #     #         models.FieldCondition(key="ft",
+            #     #                               match=models.MatchValue(
+            #     #                                   value="chapter")),
+            #     #     ]
+            #     # )
+            # ),
+            models.Prefetch(
+                query=embeddings,  # <-- dense vector
+                using="text-body",
+                limit=12,
+                # filter=models.Filter(
+                #     must_not=[
+                #         models.FieldCondition(key="ft",
+                #                               match=models.MatchValue(
+                #                                   value="chapter")),
+                #     ]
+                # )
+            ),
+        ],
+        query=models.FusionQuery(fusion=models.Fusion.RRF),
+        with_payload=True,
+    )
+    return similar_docs
 
 result = query(sys.argv[1], QdrantClient(url='http://host.docker.internal:46333'))
-print(json.dumps([{**e.payload, 'score': e.score} for e in result]))
+# print(str(result))
+print(json.dumps([{**(e.payload), 'score': e.score} for e in result.points]))

@@ -1,20 +1,24 @@
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+from langchain_huggingface import HuggingFaceEmbeddings
 from qdrant_client import QdrantClient, models
-import sys
-import json
+
+model_name = "sentence-transformers/all-mpnet-base-v2"
+model_kwargs = {}
+encode_kwargs = {'normalize_embeddings': False}
+hf = HuggingFaceEmbeddings(
+    model_name=model_name,
+    model_kwargs=model_kwargs,
+    encode_kwargs=encode_kwargs
+)
+
 
 # This is copied from loomaai/appai/common/query.py
 def query(q: str, qdrant: QdrantClient):
-    model_name = "sentence-transformers/all-mpnet-base-v2"
-    model_kwargs = {}
-    encode_kwargs = {'normalize_embeddings': False}
-    hf = HuggingFaceEmbeddings(
-        model_name=model_name,
-        model_kwargs=model_kwargs,
-        encode_kwargs=encode_kwargs
-    )
-
     embeddings = hf.embed_query(q)
+
 
     similar_docs = qdrant.query_points(
         collection_name="activities",
@@ -49,6 +53,17 @@ def query(q: str, qdrant: QdrantClient):
     )
     return similar_docs
 
-result = query(sys.argv[1], QdrantClient(url='http://host.docker.internal:46333'))
-# print(str(result))
-print(json.dumps([{**(e.payload), 'score': e.score} for e in result.points]))
+@app.route('/search', methods=['GET'])
+def search():
+    search_term = request.args.get('q')
+    if not search_term:
+        return jsonify({"error": "Missing search query"}), 400
+
+    try:
+        results = query(search_term, QdrantClient(url='http://host.docker.internal:46333'))
+        return jsonify([{**(e.payload), 'score': e.score} for e in results.points])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)

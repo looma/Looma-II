@@ -1022,7 +1022,9 @@ require_once('includes/looma-utilities.php');
 
         //echo "query is: "; print_r($query);
         if ($_REQUEST['semantic']) {
-            $raw_result = shell_exec("export TRANSFORMERS_CACHE=/tmp/.cache; python3 search.py \"" . $_POST['search-term'] . "\"");
+            error_log("EXECUTING");
+            $raw_result = shell_exec("curl localhost:5000/search?q=" . urlencode(escapeshellarg($_POST['search-term'])));
+            error_log("EXECUTED");
             $qdrant_results = json_decode($raw_result, true);
             $ids = array_column($qdrant_results, 'source_id');
             $qdrant_results_dict = array_combine($ids, $qdrant_results);

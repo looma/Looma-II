@@ -60,7 +60,7 @@ def search():
         return jsonify({"error": "Missing search query"}), 400
 
     try:
-        results = query(search_term, QdrantClient(url='http://host.docker.internal:46333'))
+        results = query(search_term, QdrantClient(url='http://looma-qdrant:6333'))
         return jsonify([{**(e.payload), 'score': e.score} for e in results.points])
     except Exception as e:
         return jsonify({"error": str(e)}), 500

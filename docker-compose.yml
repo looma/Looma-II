@@ -2,6 +2,7 @@
 
 networks:
   loomanet:
+    name: loomanet
 
 volumes:
   looma_tmp:
@@ -9,29 +10,28 @@ volumes:
     name: looma_tmp
 
 services:
-  loomaweb:
+  looma-web:
     # image: ghcr.io/looma/loomaweb:latest
     image: loomaweb:latest
-    container_name: loomaweb
+    container_name: looma-web
     volumes:
       - .:/usr/local/var/www/Looma:ro
       - /usr/local/var/www/content:/usr/local/var/www/content:ro
       - /usr/local/var/www/maps2018:/usr/local/var/www/maps2018:ro
       - /usr/local/var/www/ePaath:/usr/local/var/www/ePaath:ro
-
     ports:
       - 48080:8080
     restart: always
     tty: true
     depends_on:
-      - loomadb
+      - looma-db
     networks:
       - loomanet
 
-  loomadb:
+  looma-db:
     # image: ghcr.io/looma/loomadb:latest
     image: loomadb:latest
-    container_name: loomadb
+    container_name: looma-db
     ports:
       - 47017:27017
     restart: always

@@ -316,6 +316,8 @@ require_once('includes/looma-utilities.php');
 
                 if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
                 else       echo json_encode(array("dn" => "File not found",
+                                                        "collection" => $collection,
+                                                        "id" => $_REQUEST['id'],
                                                         "ft" => "none",
                                                         "thumb" => "images/alert.jpg"));
             } else {
@@ -1028,7 +1030,7 @@ require_once('includes/looma-utilities.php');
         $result = array();
         foreach ($cursor as $d)  {
             $d['db'] = 'looma';
-            $result[] = $d;
+            if (($d['ft'] !== 'quiz') && ($d['ft'] !== 'chapter')) $result[] = $d;
          };
 
       //echo "result is ";print_r($result);
@@ -1038,7 +1040,7 @@ require_once('includes/looma-utilities.php');
 
         foreach ($cursor1 as $d)  {
             $d['db'] = 'loomalocal';
-            $result[] = $d;
+            if ($d['ft'] !== 'quiz') $result[] = $d;
         };
 
         // removing duplicate results - based on 'fn' and 'fp' being equal
@@ -1047,6 +1049,9 @@ require_once('includes/looma-utilities.php');
         $unique = array();
 
         //echo "result is ";print_r($result);
+
+
+        /* OCT 2024, REMOVING THE DE-DUPLICATING CODE BELOW, BECAUSE WE HAVE ELIMINATED MOST OF THE DUPLICATE ACTIVITY RECORDS
 
         if (sizeof($result) > 0 ) {
 
@@ -1088,9 +1093,15 @@ require_once('includes/looma-utilities.php');
             if (isset($_REQUEST['pagesz']) && isset($_REQUEST['pageno']))
                 $unique = array_slice($unique, ($_REQUEST['pageno'] - 1) * $_REQUEST['pagesz'], $_REQUEST['pagesz']);
         } else $numUnique = 0;
+*/
 
-        //echo json_encode($numUnique);
-        echo json_encode(array('count'=> $numUnique, 'list'=>$unique));
+       // $unique = $result;
+        $numUnique = sizeof($result);
+
+          echo json_encode(array('count'=> $numUnique, 'list'=>$result));
+
+        //echo json_encode(array('count'=> sizeof($result), 'list'=>$result));
+
         return;
     // end case "search"
 

@@ -1,0 +1,46 @@
+// ONE TIME program to
+//    scan through specified documents in activities collection
+//    and look for duplicates (based on same 'fn' and 'fp')
+//    and then merge the duplicates into the first document
+//    and remove the duplicate document(s)
+//
+//  run in MONGO SHELL with: load('removeduplicates')
+//
+// THINK before running this - - first get a mongodump or db.copyDatabase('looma', 'loomaBAK')
+//
+
+var docs, doc, deletes, deleted, fn, count, delcount, numberofduplicates;
+count=0;
+delcount = 0;
+
+docs = db.activities.find({'src':'khan','ft':'mp4','fp':/content\/Khan/});
+
+while (docs.hasNext()) {
+        doc = docs.next();
+        
+        deletes = db.activities.find({'src':'khan','ft':'mp4','fn': doc['fn'],'fp':/content\/Khan/});
+
+
+ /*       if ( doc['fp'])
+            deletes = db.activities.find({'src':'khan','ft':'mp4','fn': doc['fn'], 'fp':doc['fp']});
+        else
+            deletes = db.activities.find({'src':'khan','ft':'mp4','fn': doc['fn']});
+*/
+
+
+            count++;
+            var first = deletes.next(); //dont delete the first instance
+            print ('---------- first instance is ' + first.dn);
+            
+            if (! deletes.hasNext()) print ('========== no other instances');
+            while (deletes.hasNext()) {
+                deleted = deletes.next();
+                print ('       deleting:           ' + deleted.fn);
+                delcount++;
+                if (param === 'run') db.activities.deleteOne(deleted);
+            };
+    };
+
+	print();
+	print('deleted  ' + delcount + ' dups of ' + count + ' khan videos');
+

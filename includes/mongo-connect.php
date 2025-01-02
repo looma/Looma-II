@@ -52,8 +52,12 @@ function mongoRegexOptions($pattern, $options) {
 //NOTE: should "try" MongoId() and return null if it fails
 function mongoId ($id) {  //$id is a string, RETURN a mongoId object
     global $mongo_level;
-    if ($mongo_level >= 3)
-        return new MongoDB\BSON\ObjectId($id);
+    if ($mongo_level >= 3) {
+        try {     $ID =  new MongoDB\BSON\ObjectId($id);
+                  return $ID;
+        }
+        catch(e) {return new MongoDB\BSON\ObjectId();}
+    }
     else return new MongoId($id);
 }
 

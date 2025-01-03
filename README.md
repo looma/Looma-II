@@ -23,6 +23,7 @@ Send comments and suggestions to info at looma dot education.
 * `mkdir project-folder`
 * `cd project-folder`
 * `git clone https://github.com/looma/Looma-II`
+* `cd Looma-II`
 
 * In the project root, run `./looma build` (Could take several minutes the first time)
     * This builds the two Docker images, loomaweb and loomadb

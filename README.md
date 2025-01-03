@@ -30,4 +30,6 @@ Send comments and suggestions to info at looma dot education.
 If you get errors about docker authentication, run `docker logout`
     
 * Navigate to [localhost:48080](http://localhost:48080) in your browser to use Looma
+* Navigate to [localhost:47017](localhost:47017) to see that mongoDB is running
 
+[MongoDB Compass (click to download)](https://www.mongodb.com/docs/compass/current/install/) is recommended for viewing the database.

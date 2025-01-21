@@ -53,10 +53,10 @@ function mongoRegexOptions($pattern, $options) {
 function mongoId ($id) {  //$id is a string, RETURN a mongoId object
     global $mongo_level;
     if ($mongo_level >= 3) {
-        try {     $ID =  new MongoDB\BSON\ObjectId($id);
+        {     $ID =  new MongoDB\BSON\ObjectId($id);
                   return $ID;
         }
-        catch(e) {return new MongoDB\BSON\ObjectId();}
+        //catch(e) {return new MongoDB\BSON\ObjectId();}
     }
     else return new MongoId($id);
 }

@@ -789,9 +789,11 @@ require_once('includes/looma-utilities.php');
                         "' data-db='" . $hasLesson['db'] .
                         "' " : "";
 
-                    if      ($lang === 'en' && isset($ch['dn'])  && $ch['dn'] !== '')
+                   // if      ($lang === 'en' && isset($ch['dn'])  && $ch['dn'] !== '')
+                        if      ($lang === 'en')
                         echo "<option " . $mark . " value='" . $ch['_id'] . "'>" . "(" . $ch['_id'] . ") " . $ch['dn'] . "</option>";
-                    else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '') {
+                   // else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '') {
+                    else if ($lang === 'np') {
                         $nch_id = ( isset($ch['nch_id'])) ? $ch['nch_id'] : $ch['_id'];
                         echo "<option " . $mark . "value='" . $nch_id . "'>" . "(" . $nch_id . ") " . $ch['ndn'] . "</option>";
                     }
@@ -1298,9 +1300,9 @@ require_once('includes/looma-utilities.php');
 
             $result = mongoUpdate($dbCollection, $query, $update);
 
-            echo json_encode($result);
 
         }  // end foreach()
+        echo json_encode($result);
 
         return;
     // end case "editActivity"

@@ -259,6 +259,8 @@ button.dropdate:hover {
   display: none;
 }
 
+.returnToLeftmost img, .scrollButtonLeft img, .scrollButtonRight img {height:100%;}
+
 /*The display of the Search label*/
 label {
     position:fixed;

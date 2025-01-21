@@ -144,7 +144,7 @@ playMedia : function(button) {
             break;
 
         case "pdf":      //PDF
-        case "chapter":  //CHAPTER
+     // case "chapter":  //CHAPTER
         case "document": //DOCUMENT (some PDFs)
         case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
@@ -160,9 +160,9 @@ playMedia : function(button) {
                     '&page=' + pdfPage;
             break;
     
- /*       case "chapter":  //CHAPTER
+        case "chapter":  //CHAPTER
        
-        if ( chapters folder not present [check with backend])
+        if ( button.getAttribute('data-source') === 'useTextbooks')
         
        { // load whole textbook PDF and display only this chapter's pages
           var pdfZoom =  button.getAttribute('data-zoom');
@@ -171,14 +171,14 @@ playMedia : function(button) {
             var pdfLen =  button.getAttribute('data-page') ? button.getAttribute('data-len') : 100;
                     window.location = 'pdf?' +
                     'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
-                        '.deskew.ocr.pdf' +
+                      //  '.deskew.ocr.pdf' +
                     '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
                     '&lang=' + lang +
                     '&zoom=' + pdfZoom +
                     '&len=' + pdfLen +
                     '&page=' + pdfPage;
        }
-        else {  // load onlu the chapter PDF
+        else {  // load only the chapter PDF
           var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage = 1;
@@ -187,25 +187,27 @@ playMedia : function(button) {
             var folder, suffix;
             if (button.getAttribute('data-lang') === 'np') {
                 folder = 'np';
-                suffix = '-nepali';
             }
             else {
                 folder = 'en';
-                suffix = '';
             }
+            var chapterFP = '../content/chapters/' + button.getAttribute('data-class') + '/' +
+                button.getAttribute('data-subject') + '/' + folder + '/';
+            
+            var chapterFN = encodeURIComponent(button.getAttribute('data-ch')) +
+                ((folder==='np') ? '-nepali' : '') +
+                '.pdf';
             
             window.location = 'pdf?' +
-                'fn=' + encodeURIComponent(button.getAttribute('data-ch')) + suffix + '.pdf' +
-//                '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
-        '&fp=' + '../content/chapters/' + button.getAttribute('data-class') + '/' +
-                button.getAttribute('data-subject') + '/' + folder + '/' +
-                '&lang=' + lang +
-                '&zoom=' + pdfZoom +
-                '&len=' + pdfLen +
-                '&page=' + pdfPage;
+                'fn='  + chapterFN +
+                '&fp=' + chapterFP +
+                    '&lang=' + lang +
+                    '&zoom=' + pdfZoom +
+                    '&len=' + pdfLen +
+                    '&page=' + pdfPage;
             }
             break;
-*/
+
         case "text":
             var id = encodeURIComponent(button.getAttribute('data-mongoId'));
             var db = button.getAttribute('data-db') === 'loomalocal' ? 'loomalocal' : 'looma';

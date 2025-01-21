@@ -38,11 +38,12 @@ button {
     width: 100%;
 }
 
-#filecommands #show_text {
+/*
+#filecommands #import {
     display: none;
     font-weight:bold;
 }
-
+*/
 #filecommands .admin {
     display:none;
 }

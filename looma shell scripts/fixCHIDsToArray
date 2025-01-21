@@ -1,10 +1,11 @@
 var collection = db.activities;
 var count = 0;
-collection.find( { "ch_id" : { $type : 2 } }  ).forEach(
+collection.find( { "ch_id" : { $exists:'true' } }  ).forEach(
   function (x) {
     if (!Array.isArray(x.ch_id)){
+        print (x.dn + ' has CH_ID ' + x.ch_id);
         x.ch_id = [ x.ch_id  ];
-        collection.save(x);
+        if (param === 'run') collection.updateOne({'_id':x._id},{'$set':{'ch_id':x.ch_id}});
         count++;
     }
   });
@@ -15,8 +16,9 @@ count = 0;
 collection.find( { "nch_id" : { $type : 2 } }  ).forEach(
   function (x) {
     if (!Array.isArray(x.nch_id)){
-        x.nch_id = [ x.nch_id  ];
-        collection.save(x);
+         print (x.dn + ' has NCH_ID ' + x.nch_id);
+       x.nch_id = [ x.nch_id  ];
+         if (param === 'run') collection.updateOne({'_id':x._id},{'$set':{'nch_id':x.nch_id}});
         count++;
     }
   });

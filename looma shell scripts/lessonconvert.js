@@ -1,6 +1,8 @@
 /*
 LOOMA javascript file
-Filename: lessonmerge
+Filename: lessonconvert.js
+
+convert lessons with old format TEXT FILE into new format lessons with INLINE text
 
 Programmer name: Skip
 Date: SEP 2024

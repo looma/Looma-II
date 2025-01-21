@@ -171,7 +171,6 @@ playMedia : function(button) {
             var pdfLen =  button.getAttribute('data-page') ? button.getAttribute('data-len') : 100;
                     window.location = 'pdf?' +
                     'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
-                      //  '.deskew.ocr.pdf' +
                     '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
                     '&lang=' + lang +
                     '&zoom=' + pdfZoom +

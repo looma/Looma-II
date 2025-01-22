@@ -176,6 +176,8 @@ function editor_display (response) {
 /////////  editor_save  /////////
 
 function editor_save(name) {
+    editor = loginname;
+    
     savefile(LOOMA.escapeHTML(name), 'slideshows', 'slideshow', editor_pack($('#timelineDisplay .activityDiv')), "true",null);
 } //end editor_save()
 

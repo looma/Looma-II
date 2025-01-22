@@ -71,6 +71,10 @@ function lessonsButtonClicked() {
     window.location = "looma-lessons.php?ch_id=" + chapter + "&lang=" + chapter_lang;
 };  // end lessonsButtonClicked()
 
+function showSummary() {
+    LOOMA.alert('summary here',5);
+}
+
 $(document).ready (function() {
     //add listeners to ACTIVITY and CHAPTER buttons
     $("button.activities").click(activityButtonClicked);
@@ -92,6 +96,8 @@ $(document).ready (function() {
 
     //scroll to prior scroll position
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('chapterScroll', 'session'));
+    
+    $(".chapter .info").hover(function(){showSummary()});
     
     toolbar_button_activate("home");
 

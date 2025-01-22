@@ -7,7 +7,11 @@ Revision: Looma 2.4
 File: includes/looma-filecommands.php
 Description:  popup SEARCH panel for Looma pages
 -->
-
+<?php
+    $login =       (isset($_COOKIE['login']) ?       $_COOKIE['login'] : null);
+    $login_team =  (isset($_COOKIE['login-team']) ?  $_COOKIE['login-team'] : null);
+    $login_level = (isset($_COOKIE['login-level']) ? $_COOKIE['login-level'] : null);
+?>
   <link rel="stylesheet" href="css/looma-filecommands.css">
 
     <div id="filecommands">
@@ -24,9 +28,15 @@ Description:  popup SEARCH panel for Looma pages
             <button class="dropdown-item file-cmd" id="rename">Rename</button><br>
               <button class="dropdown-item file-cmd" id="delete">Delete</button><br>
               <button  class="dropdown-item file-cmd" id="chapter">New Chapter Lesson</button><br>
-            <!-- added New Text File button to launch text card editor in iFrame.
+            <!-- added New Text File button to import a lesson by JSON
                  this button initially hidden by css -->
-            <button class="dropdown-item file-cmd" id="show_text">Edit a Text File</button><br>
+            <?php
+            if ($login_level === 'exec') {
+                echo '<button class="dropdown-item file-cmd" id="import">Import</button><br>';
+                echo '<div> id="import-instruction" hidden</div>';
+                echo '<textarea id="import-text"    hidden></textarea>';
+            }
+            ?>
 
             <div class="dropdown-divider"></div><br>
 

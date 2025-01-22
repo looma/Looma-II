@@ -79,7 +79,8 @@ include ('includes/header.php');
                 <img draggable="false" src="images/logos/PHET.png" height="44px"></a>
             <a draggable="false"  class="attribution" href="https://ed.ted.com" target="_blank">
                 <img draggable="false" src="images/logos/TedEd.jpg" height="44px"></a>
-       <!--
+
+            <!--
             <a draggable="false"  class="attribution" href="https://leafletjs.com" target="_blank">
                 <img draggable="false" src="images/logos/leaflet-logo.png" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://www.openstreetmap.org" target="_blank">
@@ -92,6 +93,7 @@ include ('includes/header.php');
     -->
             <a draggable="false"  draggable="false" class="attribution" href="https://looma.education" target="_blank">
                 <img draggable="false" src="images/logos/Looma-english-amanda.png" height="66px"></a>
+            <br>
             <a draggable="false"  draggable="false" class="attribution" href="http://www.menschen-im-dialog.de/" target="_blank">
                 <img draggable="false" src="images/logos/menschen-im-dialog_BLACK.png" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://hesperian.org" target="_blank">
@@ -100,7 +102,8 @@ include ('includes/header.php');
                 <img draggable="false" src="images/logos/edutech.png" height="66px"></a>
             <a draggable="false"  class="attribution" href="https://wesharesolar.org//" target="_blank">
                 <img draggable="false" src="images/logos/WeShareSolar with text.png" height="33px"></a>
-
+            <a draggable="false"  class="attribution" href="https://www.projectredwood.org/" target="_blank">
+                <img draggable="false" src="images/logos/project-redwood-small.jpg" height="66px"></a>
     <!--
             <a draggable="false"  class="attribution" href="https://jquery.com" target="_blank">
                 <img draggable="false" src="images/logos/jquery-logo.png" height="66px"></a>

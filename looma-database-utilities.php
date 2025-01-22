@@ -316,6 +316,8 @@ require_once('includes/looma-utilities.php');
 
                 if ($file) echo json_encode($file);        // if found, return the contents of the mongo document
                 else       echo json_encode(array("dn" => "File not found",
+                                                        "collection" => $collection,
+                                                        "id" => $_REQUEST['id'],
                                                         "ft" => "none",
                                                         "thumb" => "images/alert.jpg"));
             } else {
@@ -787,9 +789,11 @@ require_once('includes/looma-utilities.php');
                         "' data-db='" . $hasLesson['db'] .
                         "' " : "";
 
-                    if      ($lang === 'en' && isset($ch['dn'])  && $ch['dn'] !== '')
+                   // if      ($lang === 'en' && isset($ch['dn'])  && $ch['dn'] !== '')
+                        if      ($lang === 'en')
                         echo "<option " . $mark . " value='" . $ch['_id'] . "'>" . "(" . $ch['_id'] . ") " . $ch['dn'] . "</option>";
-                    else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '') {
+                   // else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '') {
+                    else if ($lang === 'np') {
                         $nch_id = ( isset($ch['nch_id'])) ? $ch['nch_id'] : $ch['_id'];
                         echo "<option " . $mark . "value='" . $nch_id . "'>" . "(" . $nch_id . ") " . $ch['ndn'] . "</option>";
                     }
@@ -987,7 +991,7 @@ require_once('includes/looma-utilities.php');
 
         if (sizeof($sources) > 0) $query['src'] = array('$in' => $sources);
 
-        if ($nameRegex && !$_REQUEST['semantic']) {
+        if ($nameRegex) {
         //     if ($language === 'english') $query['dn'] = $nameRegex;
         //     else                         $query['ndn'] = $nameRegex;
         //echo "language is " . $language . "   and regex is " . $nameRegex;
@@ -1021,6 +1025,7 @@ require_once('includes/looma-utilities.php');
         }
 
         //echo "query is: "; print_r($query);
+
         if ($_REQUEST['semantic']) {
             error_log("EXECUTING");
             $raw_result = shell_exec("curl localhost:5000/search?q=" . urlencode(escapeshellarg($_POST['search-term'])));
@@ -1033,12 +1038,13 @@ require_once('includes/looma-utilities.php');
             $query["_id"]['$in'] = array_map(function($d) {return mongoId($d["source_id"]);}, $qdrant_results);
         }
 
+
         ///// making call to MONGO in 'looma' database //////
         $cursor = mongoFind($collections[$_REQUEST['collection']], $query, 'dn', null, null);   //->skip($page)->limit(20);
         $result = array();
         foreach ($cursor as $d)  {
             $d['db'] = 'looma';
-            $result[] = $d;
+            if (($d['ft'] !== 'quiz') && ($d['ft'] !== 'chapter')) $result[] = $d;
          };
 
       //echo "result is ";print_r($result);
@@ -1048,7 +1054,7 @@ require_once('includes/looma-utilities.php');
 
         foreach ($cursor1 as $d)  {
             $d['db'] = 'loomalocal';
-            $result[] = $d;
+            if ($d['ft'] !== 'quiz') $result[] = $d;
         };
 
         // removing duplicate results - based on 'fn' and 'fp' being equal
@@ -1057,6 +1063,9 @@ require_once('includes/looma-utilities.php');
         $unique = array();
 
         //echo "result is ";print_r($result);
+
+
+        /* OCT 2024, REMOVING THE DE-DUPLICATING CODE BELOW, BECAUSE WE HAVE ELIMINATED MOST OF THE DUPLICATE ACTIVITY RECORDS
 
         if (sizeof($result) > 0 ) {
 
@@ -1098,20 +1107,15 @@ require_once('includes/looma-utilities.php');
             if (isset($_REQUEST['pagesz']) && isset($_REQUEST['pageno']))
                 $unique = array_slice($unique, ($_REQUEST['pageno'] - 1) * $_REQUEST['pagesz'], $_REQUEST['pagesz']);
         } else $numUnique = 0;
+*/
 
-        if ($_REQUEST['semantic']) {
-            usort($unique, function($a, $b) use ($qdrant_results_dict) {
-//                 error_log(print_r($a, TRUE));
-//                 error_log(print_r($qdrant_results_dict, TRUE));
-                $indexA = $qdrant_results_dict[(string) $a["_id"]]['score'];
-                $indexB = $qdrant_results_dict[(string) $b["_id"]]['score'];
-                error_log(print_r($indexA < $indexB, TRUE));
-                return $indexA < $indexB;
-            });
-        }
+       // $unique = $result;
+        $numUnique = sizeof($result);
 
-        //echo json_encode($numUnique);
-        echo json_encode(array('count'=> $numUnique, 'list'=>$unique));
+          echo json_encode(array('count'=> $numUnique, 'list'=>$result));
+
+        //echo json_encode(array('count'=> sizeof($result), 'list'=>$result));
+
         return;
     // end case "search"
 
@@ -1308,9 +1312,9 @@ require_once('includes/looma-utilities.php');
 
             $result = mongoUpdate($dbCollection, $query, $update);
 
-            echo json_encode($result);
 
         }  // end foreach()
+        echo json_encode($result);
 
         return;
     // end case "editActivity"

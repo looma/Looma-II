@@ -136,6 +136,12 @@ function lessonpack (lesson) { // pack the timeline into an array of collection/
 ///////// lessonunpack /////////
 function lessonunpack (lesson) {  //un-pack the array of collection/id pairs into html to display on the timeline
     
+        function verify(collection, id) {
+            if ( ! id ) return null;
+            if (collection === 'chapters') return id;
+            return id.match(/^[0-9a-f]{24}$/i) ? id : '000000000000000000000000'
+        }
+    
     lessonclear();
     if (lesson.author) {
         author = lesson.author;
@@ -165,7 +171,7 @@ function lessonunpack (lesson) {  //un-pack the array of collection/id pairs int
             elements.push(newDiv.firstChild);
         }   else
             posts.push($.post("looma-database-utilities.php",
-                {cmd: "openByID", currentDB, collection: val.collection, id: val.id},
+                {cmd: "openByID", currentDB, collection: val.collection, id: verify(val.collection, val.id)},
             async function(result) {
                 var newDiv = createActivityDiv(result);
                 

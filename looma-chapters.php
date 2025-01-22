@@ -87,6 +87,7 @@ $chapters = mongoFind($chapters_collection, $query, '_id', null, null);
 // a RESOURCES button that has a data-activity attribute
 // that holds the MongoDB ObjectId for this chapter (for looking up the activities list when needed)
 
+$source = file_exists('../content/chapters') ? 'useChapters' : 'useTextbooks';
 
 foreach ($chapters as $ch) {
 
@@ -120,16 +121,18 @@ foreach ($chapters as $ch) {
     if ($tb_fn && $ch_pn) { echo "<button class='$ch_ft en-chapter' 
                                       data-lang='en' 
                                       data-fn='$tb_fn' 
-                                      data-fp='$tb_fp' 
+                                      data-fp='$tb_fp'
                                       data-ch='$ch_id'  
                                       data-ft='$ch_ft' 
                                       data-class='$class' 
                                       data-subject='$subject' 
+                                      data-source='$source'
+ 
                                       data-zoom='2.1'  
                                       data-len='$ch_len' 
                                       data-page='$ch_pn'>
-                                           $ch_dn";
-                            echo    "</button>";
+                                      $ch_dn
+                                  </button>";
 
 ////////// ENGLISH lesson ///////////
 // display a button for the lesson plans for this chapter
@@ -208,16 +211,17 @@ foreach ($chapters as $ch) {
                                     data-lang='np'
                                     data-fn='$tb_nfn'
                                     data-fp='$tb_fp'
+                                    data-ch='$nch_id'
                                     data-ft='$nch_ft' 
-                                    data-page='$ch_npn'
-                                    
+                                    data-class='$class' 
+                                    data-subject='$subject'  
+                                    data-source='$source'
+             
                                     data-zoom='2.3'  
-                                 data-class='$class' 
-                                 data-subject='$subject'        
                                     data-len='$ch_nlen'
-                                    data-ch='$nch_id'>
+                                    data-page='$ch_npn'>
                                     $ch_ndn
-                                    </button>";
+                                  </button>";
 
 
 ////////// NEPALI lesson ///////////

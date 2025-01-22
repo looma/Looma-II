@@ -1,7 +1,7 @@
 // ONE TIME program to
 //      DELETE text files that are not used in any lesson, edited video or slideshow
 //
-//  WARNING: run textfileverify first and be very sure you want to DELETE all the textfiles that are listed in that output
+//  WARNING: run with param='dryrun' first and be very sure you want to DELETE all the textfiles that are listed in that output
 //      THESE FILES CANNOT BE RESTORED
 //
 //   run in MONGO SHELL with: load('textfileDELETEunused')
@@ -15,7 +15,6 @@ var eviOccurances;
 var count = 0;
 var count1 = 0;
 
-print('db is ' + db);
 print('');
 
 textcursor = db.activities.find({ft:'text'});
@@ -28,14 +27,18 @@ while (textcursor.hasNext()) {
         slideshowOccurances = db.slideshows.find({ "data": {$elemMatch:{ id:text._id.valueOf()} }});
         eviOccurances = db.edited_videos.find({ "data": {$elemMatch:{ id:text._id.valueOf()} }});
         
-        if ( ! (lessonOccurances.hasNext() || slideshowOccurances.hasNext() || eviOccurances.hasNext())) {
+        if ( !(lessonOccurances.hasNext() || slideshowOccurances.hasNext() || eviOccurances.hasNext() ) )
+        {
             count1++;
-            print ('TEXT FILE : "' + text.dn + '" is NOT INCLUDED in any LESSON, SLIDESHOW or EVI  - - - BEING DELETED');
+          //  print ('TEXT FILE : "' + text.dn + '" is NOT INCLUDED in any LESSON, SLIDESHOW or EVI  - - - BEING DELETED');
             if (param === 'run') {
                 db.activities.remove({_id:text._id});
                 db.text_files.remove({_id:text.mongoID});
             }
-        };
+        }
+        else
+            print ('TEXT FILE : "' + text.dn + '" is  IN USE by ' +  + ' - wont be DELETED');
+    
 };
 
 print('');

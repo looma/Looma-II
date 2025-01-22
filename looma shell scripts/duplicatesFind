@@ -1,0 +1,38 @@
+/*
+LOOMA javascript file
+Filename: lxxxxxxx.js
+Description: supports xxxxxxx.php
+
+Programmer name: 
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: 
+Revision: 
+Looma version 3.0
+ */
+
+'use strict';
+
+// ONE TIME program to
+//    scan through specified documents in activities collection
+//
+//      and print out documents with duplicate DN fields
+//
+//  run in MONGO SHELL with: load('findduplicates')
+//
+//
+
+var docs, doc, duplicates, dn, count;
+count=0;
+
+docs = db.activities.find({'src':'khan','ft':'mp4'});
+while (docs.hasNext()) {
+    doc = docs.next();
+    dn = doc['dn'];
+    //print ('***  ' + fn);
+    
+    duplicates = db.activities.find({'dn': dn, 'src':'khan','ft':'mp4'});
+    if (duplicates.count() > 1) {count++; print ('     dup found for: ' + dn);};
+};
+print();
+print('count is ' + count);
+

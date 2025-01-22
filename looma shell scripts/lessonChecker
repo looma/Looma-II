@@ -1,0 +1,114 @@
+// ONE TIME program to check quality of lessons
+//
+//  filename: lessonChecker
+//    find ft=lesson activities that are not also in lessons collection
+//    find lessons that are not also in activities collection
+//
+//    and to report any lesson timeline items that are not found in activities collection
+//              and so will show "File not found"
+//
+//  run in MONGO SHELL with: load('lessonChecker')
+//
+
+var activitycursor, lessoncursor, doc;
+
+print('db is ' + db);
+print('');
+
+var count = 0;
+
+
+
+//repeat for 'activities' collection
+print ('*****scanning activities for ft=lesson that aren\'t in lessons collection');
+
+activitycursor = db.activities.find({'ft':'lesson'});
+while (activitycursor.hasNext()) {
+    doc = activitycursor.next();
+    lessoncursor = db.lessons.find({'_id':doc['mongoID']});
+    if (  ! lessoncursor.hasNext()) {
+        print('     found activity wo lesson: ' + doc.dn + ', mongoID ' + doc.mongoID);
+        count += 1;
+        }
+    };
+ print('');
+ print('found ' + count + ' lesson activities wo lessons');
+ print('');
+ 
+count = 0;
+
+//repeat for 'lessons' collection
+print ('*****scanning for lessons missing from activities collection');
+
+lessoncursor = db.lessons.find();
+while (lessoncursor.hasNext()) {
+   // var insert = {};
+    doc = lessoncursor.next();
+    activitycursor = db.activities.find({'mongoID':doc['_id']});
+    if (  ! activitycursor.hasNext()) {
+        print('     found lesson wo activity: ' + doc.dn);
+
+   //     insert.mongoID = doc._id;
+   //     insert.ft = 'lesson';
+   //     insert.dn = doc.dn;
+   //     insert.ch_id = doc.ch_id;
+
+        //print ('inserting: ' + insert.dn + ', type: ' + insert.ft  + ', mongoID: ' + insert.mongoID);
+
+        //db.activities.insert(insert);
+        count += 1;
+        }
+    };
+ print('');
+ print('found ' + count + ' lessons without activities');
+ print('');
+
+ 
+ 
+var lessoncount = 0;
+var found;
+var badchapters = 0;
+var badactivities = 0;
+
+//scan lessons for bad or non-existent elements
+print ('*****scanning lesson plans for bad or non-existent elements');
+print();
+
+lessoncursor = db.lessons.find();
+while (lessoncursor.hasNext()) {
+    var lesson = lessoncursor.next();
+    found = false;
+    //print; print (' - - - - checking: ' + lesson.dn);
+    
+    elements = lesson.data;
+    for (var i=0; i<elements.length; i++) {
+        if (elements[i]['ft'] === "inline") {
+            // no checks on inline text elements
+        }
+        else if (elements[i].collection == 'activities') {
+            if (! elements[i]['id'].match(/[a-f0-9]{24}/))
+                
+                print (lesson.dn + '     **** ILLEGAL activity ID ' + elements[i]['id'])
+                else {
+                    activitycursor = db.activities.find({'_id': new ObjectId(elements[i]['id'])});
+                    if (!activitycursor.hasNext()) {
+                        badactivities++;
+                        // print(lesson.dn + '       activity item: ' + i + ' of lesson not in activities');
+            }
+          }
+        }
+        else if (elements[i].collection == 'chapters') {
+            chaptercursor = db.chapters.find({'_id': elements[i]['id']});
+            if (!chaptercursor.hasNext()) {
+               badchapters++;
+                print(lesson.dn + '      chapter item: ' + i + ' of lesson not in chapters');
+            }
+        }
+    };  // END for each element
+   // if (found) lessoncount++;
+}
+ print('');
+print('found ' + badactivities + ' non-existent activities');
+print('found ' + badchapters + ' non-existent chapters');
+ print('');
+ print('');

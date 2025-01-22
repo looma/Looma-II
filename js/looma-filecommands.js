@@ -35,7 +35,7 @@ var currentcollection; //set by calling program - to 'lessons', 'local_lessons',
 var currentDB;         //set by calling program - to 'looma', or 'loomalocal'
 
 var owner    = true;   //TRUE if current logged in user is the author of the currrent file. initially 'true' since editor opens with a new file
-var author;
+var author, editor;
 var template = false;  //if TRUE the file currently being edited is a template; else FALSE
 
 var cmd;  //needed??
@@ -149,7 +149,8 @@ function savefile(name, collection, filetype, data, activityFlag, author) {  //f
                 activity: activityFlag      // NOTE: this is a STRING, either "false" or "true"
             };
             options.author = author;
-            if (editor) options.editor = editor;
+          //  if (editor) options.editor = editor;
+            options.editor = loginname;
             
             $.post("looma-database-utilities.php",
                  options,

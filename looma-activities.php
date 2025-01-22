@@ -160,6 +160,7 @@ $foundActivity;
                         makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
                     break;
                 case "game":
+                case "history":
                     makeActivityButton($ft, null, null, $dn, "", $thumb, $ch_id, $id, "", "", "1", "auto", $grade, "",null,null,null,null);
                     break;
                 case "text":
@@ -335,8 +336,15 @@ $foundActivity;
     //get all the resources registered for this chapter
     ////////////////////////////////////////////////////
 
-        if ($lang === 'en') $query = array('ch_id' => $ch_id);
-        else                $query = array('nch_id' => $ch_id);   // ??? should use nch_id  ?????
+     //   if ($lang === 'en') $query = array('ch_id' => $ch_id);
+     //   else                $query = array('nch_id' => $ch_id);   // ??? should use nch_id  ?????
+
+//$query = array('$or' => array('ch_id' => $ch_id,'nch_id' => $ch_id));
+
+$query= array('$or' => array(
+    array("ch_id" => $ch_id),
+    array("nch_id" => $ch_id)
+));
 
         $activities = mongoFind($activities_collection, $query, null, null, null);
 		foreach ($activities as $activity)  {

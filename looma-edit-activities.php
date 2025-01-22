@@ -86,7 +86,7 @@ include ('includes/header.php');
                 <input type='hidden' class='changes-db' value=''           name='db[]'/>
                 <input type='hidden' class='changes-db' value=''           name='db[]'/>
 
-                <div>New display name: <input id='dn-changes' class='media-filter' name='dn' type='text'></input>
+                <div>New display name: <input id='dn-changes' class='media-filter' name='dn' type='text'>
                     <button class='chng-clear' id='dn-clear'>X</button>
                 </div>
         <?php
@@ -209,7 +209,7 @@ include ('includes/header.php');
                 <label class='drop-menu'>Grade:</label>
                     <select id='grade-chng-menu' class='book-changes black-border'  form='changes' name='class'>
                        <option value='' selected>Select...</option>";
-                       for($x = 1; $x <= 10; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";}
+                       for($x = 1; $x <= 12; $x++){echo "<option value='" . $x . "' id='" . $x . "'>" . $x . "</option>";}
         echo "</select>";
                 //echo "</span>";
             echo "</div><br>";

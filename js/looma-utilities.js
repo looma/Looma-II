@@ -190,8 +190,11 @@ playMedia : function(button) {
             else {
                 folder = 'en';
             }
+            var chapter_subject = button.getAttribute('data-subject');
+            if (chapter_subject === 'Social studies') chapter_subject = 'SocialStudies';
+
             var chapterFP = '../content/chapters/' + button.getAttribute('data-class') + '/' +
-                button.getAttribute('data-subject') + '/' + folder + '/';
+                chapter_subject + '/' + folder + '/';
             
             var chapterFN = encodeURIComponent(button.getAttribute('data-ch')) +
                 ((folder==='np') ? '-nepali' : '') +

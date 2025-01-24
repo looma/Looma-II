@@ -144,6 +144,7 @@ playMedia : function(button) {
             break;
 
         case "pdf":      //PDF
+     // case "chapter":  //CHAPTER
         case "document": //DOCUMENT (some PDFs)
         case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
@@ -160,30 +161,50 @@ playMedia : function(button) {
             break;
     
         case "chapter":  //CHAPTER
-            var pdfZoom =  button.getAttribute('data-zoom');
+       
+        if ( button.getAttribute('data-source') === 'useTextbooks')
+        
+       { // load whole textbook PDF and display only this chapter's pages
+          var pdfZoom =  button.getAttribute('data-zoom');
+            if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
+            var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
+            var pdfLen =  button.getAttribute('data-page') ? button.getAttribute('data-len') : 100;
+                    window.location = 'pdf?' +
+                    'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
+                    '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
+                    '&lang=' + lang +
+                    '&zoom=' + pdfZoom +
+                    '&len=' + pdfLen +
+                    '&page=' + pdfPage;
+       }
+        else {  // load only the chapter PDF
+          var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage = 1;
             var pdfLen  = 100;
             
             var folder, suffix;
             if (button.getAttribute('data-lang') === 'np') {
-                folder = 'textbook_chapters_nepali';
-                suffix = '-nepali';
+                folder = 'np';
             }
             else {
-                folder = 'textbook_chapters';
-                suffix = '';
+                folder = 'en';
             }
+            var chapterFP = '../content/chapters/' + button.getAttribute('data-class') + '/' +
+                button.getAttribute('data-subject') + '/' + folder + '/';
+            
+            var chapterFN = encodeURIComponent(button.getAttribute('data-ch')) +
+                ((folder==='np') ? '-nepali' : '') +
+                '.pdf';
             
             window.location = 'pdf?' +
-                'fn=' + encodeURIComponent(button.getAttribute('data-ch')) + suffix + '.pdf' +
-//                '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
-        '&fp=' + '../content/chapters/' + button.getAttribute('data-class') + '/' +
-        button.getAttribute('data-subject') + '/' + folder + '/' +
-                '&lang=' + lang +
-                '&zoom=' + pdfZoom +
-                '&len=' + pdfLen +
-                '&page=' + pdfPage;
+                'fn='  + chapterFN +
+                '&fp=' + chapterFP +
+                    '&lang=' + lang +
+                    '&zoom=' + pdfZoom +
+                    '&len=' + pdfLen +
+                    '&page=' + pdfPage;
+            }
             break;
 
         case "text":
@@ -213,8 +234,10 @@ playMedia : function(button) {
 
         case "epaath":
         case "ep":
-            var lang = language==='native'?'np':'en';
-            
+          //  var lang = language==='native'?'np':'en';
+           
+            if (! lang) lang =  language==='native'?'np':'en';
+           
             if (button.getAttribute("data-epversion") == 2015) {
                 fp = encodeURIComponent(button.getAttribute('data-fp'));
                 fn = encodeURIComponent(button.getAttribute('data-fn') +
@@ -295,8 +318,14 @@ playMedia : function(button) {
                     var thumbfile;
                         //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
                     if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
-                    var lang = (result.lang === 'ne' || result.lang === 'np')? "np": "en";
-                    var lang = (result.ft==="EP" && result.subject === "nepali")? "np": lang;
+                  
+                    var lang;
+                    if (result.lang) lang = result.lang;
+                    else {
+                        var cookie = LOOMA.readStore('language', 'cookie');
+                        lang = cookie !== 'english' ? 'np' : 'en';
+                    }
+                   
                     var fn = (result.fn) ? result.fn : result.nfn;
                     var db = (result.db) ? result.db : 'looma';
                     

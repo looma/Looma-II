@@ -1,0 +1,1 @@
+mongoexport --db=looma --collection=activities --type=csv --out=activities.csv --fields='cl_lo','cl_hi','ch_id','key1','key2','key3','key4','src','ft','dn','ndn','fn','nfn','fp'

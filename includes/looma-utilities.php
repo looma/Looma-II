@@ -247,7 +247,8 @@ function makeMapButton($id, $thumb, $dn) {
 function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang) {
 
     global $icons;
-    $ft = strtolower($ft);
+    // NOTE: why was this statement used before? commented out 2024 12 08
+    //  $ft = strtolower($ft);
 
 	//NOTE: would be better to call this with an object with fields ft, fp, fn, etc. smaller arglist and fewer null parameters
 

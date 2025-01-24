@@ -49,12 +49,16 @@ if (isset($_REQUEST["cmd"])) {
 
 	    // cmd = 'lookup', param 'word' = word to lookup
 		case "lookup":
+		case "reverselookup":
 			// lookup $_REQUEST["word"] in the dictionary and return the dictionary document for the word
 			if(isset($_REQUEST["word"]) && $_REQUEST["word"] != "")
 			{   $englishWord = trim($_REQUEST["word"]);
 
-				$query = array('en' => mongoRegexOptions("^$englishWord$",'i'));
 				//NOTE: using regex to do a case insensitive search for the word
+			//	$query = array('en' => mongoRegexOptions("^$englishWord$",'i'));
+
+				$query = ['$or' => [['en' => mongoRegexOptions("^$englishWord$",'i')], ['np' => mongoRegexOptions("^$englishWord$",'i')]]];
+
 				$word = mongoFindOne($dictionary_collection, $query);
 
 				if (! $word) {  // if the WORD is not found, see if it is a PLURAL
@@ -93,7 +97,7 @@ if (isset($_REQUEST["cmd"])) {
 			}
 			exit(); //end LOOKUP cmd
 
-
+/*
 ////////////////////////////
 /// command REVERSELOOKUP ///
 ////////////////////////////
@@ -135,6 +139,7 @@ if (isset($_REQUEST["cmd"])) {
 				echo "$failed";
 			}
 			exit(); //end reverseLOOKUP cmd
+*/
 
 ////////////////////////////
 ////// command LIST   //////

@@ -20,10 +20,14 @@ Send comments and suggestions to info at looma dot education.
 
 * Ensure you are on an amd64 or arm64 Mac or Linux machine
 * Download, install and run [Docker](https://www.docker.com/products/docker-desktop/) so the Docker daemon is running
-* If you want to sync content from your host Apache to the docker Apache (usr/local/var/www), follow these instructions and add /usr/local/var/www to the list of shared directories: https://stackoverflow.com/a/71414090 
-* `git clone https://github.com/looma/Looma-II` [this repo]
 
-* In the project root, run `make` (Could take several minutes the first time)
+* `mkdir project-folder`
+* `cd project-folder`
+* `git clone https://github.com/looma/Looma-II`
+* `cd Looma-II`
+
+* In the project root (project-folder/Looma-II), run `./looma build` (Could take several minutes the first time)
+
     * This builds the two Docker images, loomaweb and loomadb
 * In the project root, run `docker-compose up -d`
     * This runs docker-compose, and creates "loomaweb" and "loomadb" containers and runs them

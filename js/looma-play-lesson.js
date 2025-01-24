@@ -171,6 +171,7 @@ function play ($item) {
             break;
     
         case 'EP':
+        case 'ep':
         case 'epaath':
         
             $('#fullscreen-control, .speak, .lookup').show();

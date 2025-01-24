@@ -530,7 +530,7 @@ function runMatchSpeakToPicture() {
         $('#responses').append('<br/>');
     });
     startTimer(time_limit);
-} // end runMatchSpeakrunMatchSpeakToPicture()
+} // end runMatchSpeakToPicture()
 
 
 //////////////////////////////
@@ -1447,7 +1447,7 @@ function nextQuestion() {
                 break;
         }
     }
-}
+}  //  end nextQuestion()
 
 /////////////////////////////
 //////// correctAnswer  /////

@@ -1,0 +1,1 @@
+db.activities.aggregate( { "$match": { "src": "khan"  } }, { "$group": { "_id": "$dn", "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$project": { "dn": "$_id", "_id": 0, "count":1 } } );

@@ -981,13 +981,16 @@ require_once('includes/looma-utilities.php');
          */
 
         $query = array();
+
+        $query_or = array();
+
         if (sizeof($extensions) > 0) $query['ft'] = array('$in' => $extensions);  //if filetypes given, search only for them
 
          else if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson']);
 
         if (sizeof($sources) > 0) $query['src'] = array('$in' => $sources);
 
-        if ($nameRegex && !$_REQUEST['semantic']) {
+        if ($nameRegex) {
         //     if ($language === 'english') $query['dn'] = $nameRegex;
         //     else                         $query['ndn'] = $nameRegex;
         //echo "language is " . $language . "   and regex is " . $nameRegex;
@@ -1022,16 +1025,17 @@ require_once('includes/looma-utilities.php');
 
         //echo "query is: "; print_r($query);
         if ($_REQUEST['semantic']) {
-            error_log("EXECUTING");
             $raw_result = shell_exec("curl localhost:5000/search?q=" . urlencode(escapeshellarg($_POST['search-term'])));
-            error_log("EXECUTED");
             $qdrant_results = json_decode($raw_result, true);
             $ids = array_column($qdrant_results, 'source_id');
             $qdrant_results_dict = array_combine($ids, $qdrant_results);
 
-            $query["_id"] = array();
-            $query["_id"]['$in'] = array_map(function($d) {return mongoId($d["source_id"]);}, $qdrant_results);
+            $query_or = array();
+            $query_or["_id"] = array();
+            $query_or["_id"]['$in'] = array_map(function($d) {return mongoId($d["source_id"]);}, $qdrant_results);
+            $query = array('$or' => array($query, $query_or));
         }
+
 
         ///// making call to MONGO in 'looma' database //////
         $cursor = mongoFind($collections[$_REQUEST['collection']], $query, 'dn', null, null);   //->skip($page)->limit(20);

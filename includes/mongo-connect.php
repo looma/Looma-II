@@ -248,7 +248,7 @@ $dbname = 'looma';
 try {
     if (getenv("DOCKER")=="1") {
             require_once('vendor/autoload.php');
-            $mongoClient = new MongoDB\Client("mongodb://loomadb:27017");    //make a new mongo client object
+            $mongoClient = new MongoDB\Client("mongodb://looma-db:27017");    //make a new mongo client object
             // TODO: get the actual version
             $mongo_version = '4.4.3';
             $mongo_level = 4;

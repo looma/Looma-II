@@ -720,7 +720,7 @@ require_once('includes/looma-utilities.php');
               $games = mongoFind($games_collection, $query, null, null, null);
               foreach ($games as $game) {
                   //echo "game[subject][index] is " . $game['subject'][$index];
-                  if (isset($game['subject'])) foreach ($game['subject'] as $index => $subj) $subjectList[] = $game['subject'][$index];
+                  if (isset($game['subject'])) foreach ($game['subject'] as $index => $subj) $subjectList[] = strtolower($game['subject'][$index]);
               }
 
               $histories = mongoFind($history_collection, $query, null, null, null);
@@ -790,7 +790,7 @@ require_once('includes/looma-utilities.php');
                         "' " : "";
 
                    // if      ($lang === 'en' && isset($ch['dn'])  && $ch['dn'] !== '')
-                        if      ($lang === 'en')
+                        if      ($lang === 'en' || $lang === 'both')
                         echo "<option " . $mark . " value='" . $ch['_id'] . "'>" . "(" . $ch['_id'] . ") " . $ch['dn'] . "</option>";
                    // else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '') {
                     else if ($lang === 'np') {
@@ -996,13 +996,17 @@ require_once('includes/looma-utilities.php');
         //     else                         $query['ndn'] = $nameRegex;
         //echo "language is " . $language . "   and regex is " . $nameRegex;
 
-            if (preg_match('/\p{Devanagari}/u', $_POST['search-term']))
+         ///   if (preg_match('/\p{Devanagari}/u', $_POST['search-term']))
             // detects Devanagari characters
             // good tutorial here: https://www.regular-expressions.info/unicode.html
-                $query['ndn'] = $nameRegex;
-            else
-                $query['dn']  = $nameRegex;
-        }
+        ///        $query['ndn'] = $nameRegex;
+         ///   else
+            ///    $query['dn']  = $nameRegex;
+
+    $query['$or'] = array(array('dn' => $nameRegex),array('ndn' => $nameRegex));
+
+               }
+
 
         if ($classSubjRegex) $query['_id'] = $classSubjRegex;
 
@@ -1273,6 +1277,8 @@ require_once('includes/looma-utilities.php');
                 if (isset($_REQUEST['date']))   $changes['date'] =   $_REQUEST['date'];
                 if (isset($_REQUEST['editor'])) $changes['editor'] = $_REQUEST['editor'];
 
+                if (isset($_REQUEST['lang'])) $changes['lang'] = $_REQUEST['lang'];
+
             // if key1 is specified, then set key1 and either set or reset keys 2,3,4
             if (isset($_REQUEST['key1']) && $_REQUEST['key1']) {
                                                                    $changes['key1'] = $_REQUEST['key1'];
@@ -1286,9 +1292,12 @@ require_once('includes/looma-utilities.php');
             if (count($changes) > 0) $update ['$set'] =   $changes;
             if (count($unsets)  > 0) $update ['$unset'] = $unsets;
 
+                /*
                 if (isset($_REQUEST['chapter']) && $_REQUEST['chapter'] && isset($_REQUEST['lang']) && $_REQUEST['lang']==='np')
                     $update['$addToSet'] = array('nch_id' => $_REQUEST['chapter']);
-                else if (isset($_REQUEST['chapter']) && $_REQUEST['chapter'])
+                else
+                    */
+                if (isset($_REQUEST['chapter']) && $_REQUEST['chapter'])
                     $update['$addToSet'] = array('ch_id' => $_REQUEST['chapter']);
 
                 if (isset($_REQUEST['book-chapter']) && $_REQUEST['book-chapter']) $update['$addToSet'] = array('ch_id' => $_REQUEST['book-chapter']);

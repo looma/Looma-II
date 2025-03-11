@@ -18,6 +18,28 @@
 /// getFPandFN
 /// //////////////////
 
+$ch_idREGEX =  "/^([1-9]|10|11|12)(M|N|S|SF|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/";
+$subjects = array (
+    "M"  => "Math",
+    "EN" => "English",
+    "N"  => "Nepali",
+    "S"  => "Science",
+    "SF" => "Serafero",
+    "SS" => "SocialStudies",
+    "H"  => "Health",
+    "V"  => "Vocation",
+);
+
+function ch_idToClass ($ch_id) {
+    preg_match ( "/^([1-9]|10|11|12)(M|N|S|SF|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches );
+    return $classes("Class" . $matches[1]);
+};
+
+function ch_idToSubject ($ch_id) {
+    global $subjects;
+    preg_match ( "/^([1-9]|10|11|12)(M|N|S|SF|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches );
+    return $subjects( $matches[2] );
+};
 
  $icons = array (
      "pdf" => "images/pdf.png",
@@ -217,7 +239,7 @@ function makeInlineActivityButton($activity)
             echo "<button class='activity  img' ";
                 echo "data-dn='' data-ft='inline' ";
                 echo "data-html= '"   . htmlentities($activity['html'], ENT_QUOTES) . "' ";
-                echo "data-nepali= '"   . htmlentities((isset($activity['native']) ? ($activity['native']) : ""), ENT_QUOTES) . "' ";
+                echo "data-nepali= '"   . htmlentities((isset($activity['nepali']) ? ($activity['nepali']) : ""), ENT_QUOTES) . "' ";
                 echo "data-lang = "  . $playLang ;
             echo ">";
             echo '<img alt="" src="' . 'images/textfile.png' . '">';
@@ -247,12 +269,10 @@ function makeMapButton($id, $thumb, $dn) {
 function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang) {
 
     global $icons;
-    // NOTE: why was this statement used before? commented out 2024 12 08
-    //  $ft = strtolower($ft);
-
 	//NOTE: would be better to call this with an object with fields ft, fp, fn, etc. smaller arglist and fewer null parameters
 
-	    // makes an ACTIVITY button (for looma-library, looma-activities, looma-lesson-present,looma-play-slideshow,looma-histories, etc)
+	    // makes an ACTIVITY button (for looma-library, looma-activities,
+        //          looma-lessons, looma-chapters, looma-wiki, looma-lesson-present,looma-play-slideshow,looma-histories, etc)
 	    // some parameters are optional for some filetypes
 	    //    $ft - filetype, $fp - path to file, $fn - filename, $dn - display name, $ndn - nepali display name, $thumb - thumbnail file name
 	    //    $ch_id - chapter ID, $mongo_id - mongoDB id,
@@ -267,7 +287,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 	    //SLIDESHOW        $ft, $id (or $fp)       [$thumb?]
 	    //EDITED VIDEO     $ft, $fn, $fp, $dn, $id [$thumb?]
 	    //ePAATH           $ft, $fn, $fp, $dn
-	    //HTML
+	    //LOOMA
+        //HTML
 	    //VOCAB
 	    //LESSON PLAN
 
@@ -292,7 +313,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 
 			case "pdf":	$fp = '../content/pdfs/'; break;
 
-            case "slideshow": $fp = urlencode('../content/slideshows/'); break;
+            case "slideshow": $fp = '../content/slideshows/'; break;
 
             case "evi": $fp = '../content/videos/'; break;
 
@@ -328,26 +349,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
                return;
 		}  //end SWITCH
 
-        /*
-             if ($thumb && $thumb != "") $thumbSrc = $thumb;
-        //else if ($ft == 'EP') $thumbSrc = $thumb;
-        else if ($ft == 'text')  $thumbSrc = "images/textfile.png";
-        else if ($ft == 'game')  $thumbSrc = "images/game.png";
-        else if ($ft == 'slideshow')  $thumbSrc = "images/play-slideshow-icon.png";
-        else if ($ft == 'lesson') $thumbSrc = "images/lesson.png";
-        else if ($ft == 'looma') $thumbSrc = "images/LoomaLogo.png";
-        else                     $thumbSrc = $fp . thumbnail($fn);
-
-        //$thumbSrc = htmlspecialchars($thumbSrc);
-        if ( !file_exists($thumbSrc)) $thumbSrc = $fp . "thumbnail.png";
-        */
-
-        /* NEW  thumbnail function*/
         if ($thumb && $thumb != "") $thumbSrc = $thumb;
         else $thumbSrc = thumbnail($fn, $fp, $ft);
-
-       // $fn = htmlspecialchars($fn ?? "");
-
 
     //Now make the BUTTON
       echo "<button class='activity play img' ";
@@ -386,10 +389,11 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
 
         echo ">";
         if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
-      //echo "<span>" . $dn . "</span>";
 
-        if ($url) displayName($fn, 'Teacher\'s Guide', $ndn, 'green');
-        else      displayName($fn, $dn, $ndn, 'black');
+        if (preg_match('/CDC Teacher Guides/',$fp))
+            displayName($fn, 'Teacher\'s Guide', $ndn, 'green');
+        else
+            displayName($fn, $dn, $ndn, 'black');
 
        // echo '<img class="icon" src="' . icon($ft) . '">';
 

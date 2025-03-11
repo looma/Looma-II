@@ -106,7 +106,7 @@ button.class.active {
 
 button#bagh-chal {
     display:inline-block;
-    bottom: 17vh;
+    top: 17vh;
     right:1.5vw;
     /*opacity:0;*/
 }

@@ -21,6 +21,8 @@ var author, editor;
 var $current_item;    // jQuery object representing the currently selected timeline item
 var convertedSomeTextFiles;
 
+var translating = false;  // is TRUE when translating inline text item
+
 var searchName = 'lesson-editor-search'; // used by looma-search.js
 // var isnewlesson;
 var textEditLanguage = 'english';
@@ -59,7 +61,7 @@ function signature($lesson) { //param is jQ object of the timeline ($timeline)
     $lesson.find('.activityDiv').each(function(index, x) {
         if ($(x).data('type') === 'inline') {
             sig += $(x).attr('data-html');
-            if ($(x).attr('data-native')) sig += $(x).attr('data-native');
+            if ($(x).attr('data-nepali')) sig += $(x).attr('data-nepali');
         } else sig += $(x).data('id');
     });
     return sig;
@@ -123,7 +125,7 @@ function lessonpack (lesson) { // pack the timeline into an array of collection/
         if ($(this).data('type') === 'inline') {
             packitem.ft = 'inline';
             packitem.html = $(this).attr('data-html');
-            if ($(this).attr('data-native')) packitem.native = $(this).attr('data-native');
+            if ($(this).attr('data-nepali')) packitem.nepali = $(this).attr('data-nepali');
         }
         packitem.id         = $(this).data('id');
         if (packitem.collection === 'chapters') packitem.lang         = $(this).data('lang');
@@ -426,7 +428,7 @@ function createActivityDiv (activity) {
         
         if (item['ft'] === 'inline') {
             $(activityDiv).attr("data-html", item['html']);
-            $(activityDiv).attr("data-native", item['native']);
+            $(activityDiv).attr("data-nepali", item['nepali']);
         } else {
             $(activityDiv).attr("data-db", item['db']);
             $(activityDiv).attr("data-fn", item['fn']);
@@ -809,7 +811,7 @@ function cloneTextfile(source, target) {
            result = JSON.parse(result);
            $clone.attr('data-id', result['id']);
            $clone.attr('data-html', result['data']);
-           $clone.attr('data-native', result['native']);
+           $clone.attr('data-nepali', result['nepali']);
            $clone.attr('data-dn', 'inline');
            $clone.attr('data-type', 'inline');
            
@@ -868,7 +870,7 @@ async function convertTextfile(source) {
         result = JSON.parse(result);
         source.attr('data-id', result['id']);
         source.attr('data-html', result['data']);
-        source.attr('data-native', result['native']);
+        source.attr('data-nepali', result['nepali']);
         source.attr('data-dn', 'inline');
         source.attr('data-type', 'inline');
         
@@ -1053,12 +1055,13 @@ function openTextEditor () {
 
 function openTextTranslator (e) {
     var $textpreview = $('.textpreview');
+    translating = true;        $('#previewpopup').empty().hide();
     
     $textpreview.attr("contentEditable", "true");
   
-    $('#previewpopup').html($('#textpreview').html()).show();
+    $('#previewpopup').html($('.textpreview').html()).show();
     
-    if ($($current_item).attr('data-native')) $('.textpreview').html($($current_item).attr('data-native'));
+    if ($($current_item).attr('data-nepali')) $('.textpreview').html($($current_item).attr('data-nepali'));
     else $('.textpreview').html('');
 
     // disable SAVE button until contents change
@@ -1078,7 +1081,7 @@ function saveTextEdits() {
     if ( textEditLanguage === 'english') $($current_item).attr('data-html', $('#previewpanel .text-display').html());
     else {
         $($current_item).attr('data-html', $('#previewpopup').html());
-        $($current_item).attr('data-native', $('#previewpanel .text-display').html());
+        $($current_item).attr('data-nepali', $('#previewpanel .text-display').html());
     }
     // set lesson MODIFIED flag to TRUE
     LOOMA.alert("The text file is saved, but the lesson has not been saved. Use File Commands > Save to save the lesson", 10);
@@ -1099,6 +1102,7 @@ function cancelEdit() {
     LOOMA.makeOpaque($('#timeline'));
     
     $textpreview.attr('user-select', 'none');
+    translating = false;
     
     preview($current_item);
     // turn ON clicks on timeline elements
@@ -1530,14 +1534,14 @@ window.onload = function () {
     
     $('#timeline').on('mouseover', '.activityDiv',  function () { //handlerIn
         //var $btn = $(this).closest('button');
-        if ($(this).attr('data-type') === 'inline') openPreview($(this));
+        if ($(this).attr('data-type') === 'inline' && !translating) openPreview($(this));
         else
             $('#subtitle').text($(this).attr('data-dn') + ' (' + LOOMA.typename($(this).attr('data-type')) + ')');
     });
     
    $('#timeline').on('mouseout', '.activityDiv',  function () { //handlerOut
        $('#subtitle').text('');
-       $('#previewpopup').hide();
+       $('#previewpopup').empty().hide();
    });
     
     $('#text-editor-buttons').hide();

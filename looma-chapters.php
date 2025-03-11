@@ -228,7 +228,15 @@ foreach ($chapters as $ch) {
 ///     //check in the database to see if there are any LESSON PLANS for this CHAPTER. if so, create a button
     // NOTE: current code only finds the FIRST lesson for the chapter.
     // expand in the future to allow multiple lessons per chapter
-        $query = array('nch_id' => $nch_id, 'ft' => 'lesson');
+
+        $query = array('ch_id' => $ch_id, 'ft' => 'lesson');
+
+        // $query = array('ch_id' => $nch_id, 'ft' => 'lesson');
+
+        //   $query = array('nch_id' => $nch_id, 'ft' => 'lesson');
+
+     //   '$or':[{'ft':'video'},{'ft':'mp4'},{'ft':'mov'}]
+
         //$lesson = $activities_collection -> findOne($query);
         $lesson = mongoFindOne($activities_collection, $query);
     if ($lesson) {

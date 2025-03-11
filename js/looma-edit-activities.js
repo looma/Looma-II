@@ -146,7 +146,7 @@ function showInfo (activity) {
                         + '<p>nfn: ' + $.data(activity[0]).mongo.nfn + '</p>'
                         + '<p>fp: ' + $.data(activity[0]).mongo.fp + '</p>'
                         + '<p>ft: ' + $.data(activity[0]).mongo.ft + '</p>'
-                        + '<p>src: ' + $.data(activity[0]).mongo.src + '</p>'
+                        + '<p>lang: ' + $.data(activity[0]).mongo.lang + '</p>'
        
                         + '<p>cl_lo: ' + $.data(activity[0]).mongo.cl_lo + '</p>'
                         + '<p>cl_hi: ' + $.data(activity[0]).mongo.cl_hi + '</p>'
@@ -239,9 +239,10 @@ function thumbnail (item) {
     
     collection = $(item).attr('collection');
     filetype = $(item).attr('ft');
-    if ($(item).attr('fn')) filename = $(item).attr('fn');
-    
-    if ($(item).attr('lang') === 'np') filename = $(item).attr('nfn');
+    if      ($(item).attr('fn'))  filename = $(item).attr('fn');
+    else if ($(item).attr('nnf')) filename = $(item).attr('nfn')
+    else                          filename = 'none';
+//    if ($(item).attr('lang') === 'np') filename = $(item).attr('nfn');
     
     if ($(item).attr('fp')) filepath = $(item).attr('fp');
     
@@ -335,7 +336,7 @@ function createActivityDiv (activity) {
         if ('ch_id' in item) {
             $("<span/>", {
                 class : "result_ID",
-                html : item.ch_id + "  " + item.nch_id
+                html : item.ch_id + "  (" + item.lang + ")"
             }).appendTo(textdiv);
         }
         // INFO button for each activity - popups detailed info for the activity

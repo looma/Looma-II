@@ -42,7 +42,7 @@ function activityButtonClicked(){
         //send GET request to looma-activities.php with CLASS,SUBJECT, CH_ID values
         chapter_id = encodeURIComponent(chapter_id);
     chapter_dn = encodeURIComponent(chapter_dn);
-    chapter_ndn = encodeURIComponent(chapter_ndn);
+    //chapter_ndn = encodeURIComponent(chapter_ndn);
         window.location = "activities?ch=" + chapter_id +
                                                 "&chdn=" + chapter_dn +
                                                 "&chndn=" + chapter_ndn +

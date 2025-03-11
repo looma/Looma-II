@@ -34,7 +34,7 @@ $foundActivity;
 
     function wordList ($ch_id, $picturesonly) { // borrowed code from looma-dictionary-utilities.php
         global $dictionary_collection;
-        $maxCount = 25;
+        $maxCount = 50;
         $list = array();
         if (preg_match( '/\d+([a-zA-Z]+)\d/', $ch_id,$matches))
             $prefix = $matches[1];
@@ -102,10 +102,11 @@ $foundActivity;
         else                $fn = (isset($activity['fn']) ? $activity['fn'] : "");
 
         $thumb = (isset($activity['thumb']) ? $activity['thumb'] : "");
+
         $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
         $prefix = (isset($activity['prefix']) ? $activity['prefix'] : "");
         $oleID = (isset($activity['oleID']) ? $activity['oleID'] : "");
-            $mongoID = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
+        $mongoID = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
         $epversion = (isset($activity['version']) ? $activity['version'] : "");
         $grade = (isset($activity['grade']) ? $activity['grade'] : "");
         $url = (isset($activity['url']) ? $activity['url'] : "");
@@ -115,6 +116,8 @@ $foundActivity;
             $thumb = thumbnail($activity['fn'],$activity['fp'],$activity['ft']);
         else if ($ft === 'game') $thumb = 'images/games.png';
         else $thumb = null;
+
+    //$thumb = str_replace('.JPG', '.jpg', $thumb);
 
         if ( $ft !== 'text' ) {
             echo "<td>";
@@ -154,10 +157,7 @@ $foundActivity;
                     makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                     break;
                 case "pdf":
-                    if (isset($activity['type']) && $activity['type'] === "TG")
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], "auto", "", "",null,null,null,$lang);
-                    else
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
+                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
                     break;
                 case "game":
                 case "history":
@@ -172,7 +172,7 @@ $foundActivity;
                      makeMapButton($mongoID, $thumb, $dn);
                     break;
                 case "looma";  //open a Looma page (e.g. calculator or paint)
-                    makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "",null,null,null,null);
+                    makeActivityButton($ft, $fp, "", $dn, "", "", $ch_id, "", "", $url, "", "", "", "",null,null,null,null);
                     break;
                 case "ep":
                 case "epaath":
@@ -199,6 +199,10 @@ $foundActivity;
             }
         }
     } //end makeButton()
+
+function isSection($tg) {
+    return (substr($tg['ch_id'],-2) === '00');
+};
 
     /////////////////////////////////////////////////
     /////////////  MAIN CODE ////////////////////////
@@ -250,7 +254,11 @@ $foundActivity;
         else                $query = array('ch_id' => $ch_id);   // ??? should use nch_id  ?????
 
         $teacher_guide = mongoFindOne($teacherguides_collection, $query);
-        if ($teacher_guide) {
+
+        //   - - - TEACHER GUIDE  (if present) - - -
+        //   - - - NOTE: dont show teacher guide for "sections", only for "chapters"
+        if ($teacher_guide && ! isSection($teacher_guide)) {
+            //echo 'found teacher guide ' . $teacher_guide['dn']; return;
             makeButton($teacher_guide);
             $foundActivity = true;
         }
@@ -258,7 +266,7 @@ $foundActivity;
     //create a vocab review button if there are any words from this chapter in the dictionary
     $words = wordList($ch_id, false);
 
-    if ($lang === 'en' && count($words) >= 5) {
+    if ($lang === 'en' && count($words) >= 3) {
         echo "<td>";
 
         echo "<a href='looma-vocab-flashcard.php?ch_id=" . $ch_id . "'>";
@@ -349,10 +357,16 @@ $query= array('$or' => array(
         $activities = mongoFind($activities_collection, $query, null, null, null);
 		foreach ($activities as $activity)  {
 
-		    //echo $activity['dn'];
 
-		    makeButton($activity);
-            $foundActivity = true;
+		 //   makeButton($activity);  //OLD way - all resources show on EN and on NP resource button
+         //   $foundActivity = true;  //OLD way - all resources show on EN and on NP resource button
+
+            if (($lang === 'en' && $activity['lang'] === 'en') ||
+                ($lang === 'np' && $activity['lang'] === 'np') ||
+                ($lang === 'both')) {
+                makeButton($activity);
+                $foundActivity = true;
+            }
         }
 
         // REMOVED this keyword matching code JAN 2020. it puts too many activities, esp. in lower grades, that dont match the expertise

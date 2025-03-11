@@ -37,15 +37,19 @@ else if ( strpos($filepath, 'PhET'))    logFiletypeHit('PhET');
 // next line commented. counting HTML hits is distorted by Wikipedia navigation
 //else                                                    logFiletypeHit('html');
 
+
+echo "<div id='main-container-horizontal'>";
+    echo "<div id='fullscreen'";
+        if (isset($_GET['ep']) && $_GET['ep'] === 'keyboard') echo " class='keyboard'";
+    echo ">";
+        //<!-- NOTE the iframe below has name='looma-frame', and wikipedia articles in looma have <a xxx.htm target="looma-frame" -->
+        echo "<iframe id='iframe' name='looma-frame' src='$filepath$filename' allowfullscreen> </iframe>";
+        include('includes/looma-control-buttons.php')
 ?>
-<div id="main-container-horizontal">
-    <div id="fullscreen">
-        <!-- NOTE the iframe below has name='looma-frame', and wikipedia articles in looma have <a xxx.htm target="looma-frame" -->
-        <?php echo "<iframe id='iframe' name='looma-frame' src='$filepath$filename' allowfullscreen>" ?></iframe>
-        <?php include('includes/looma-control-buttons.php')?>
     </div>
 </div>
 
 <?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>
 <script src="js/looma-html.js"></script>
+<script src="js/looma-keyboard.js"></script>

@@ -377,9 +377,10 @@ li:hover {
     bottom:4vh;
     left:10vw;
     overflow:hidden;
-    font-size:1.25em;
+/*    font-size:0.75em;*/
     line-height:10px;
     text-align:left;
+    scroll: auto;
 }
 
 

@@ -1,6 +1,6 @@
 //
 //
-// filaname: FindActivitiesWithFileNotFound
+// filaname: FindActivitiesWithFileNotFound.js
 // scan all activities and list those that have associated File Not Found
 //
 // NOTE: run from Looma/ directory
@@ -55,6 +55,7 @@ collection.find( ).forEach(
         var others = ['chapter', 'lesson', 'text', 'text-template','game', 'history', 'slideshow','EP','quiz','map','looma','evi','book'];
         try {
             if ( ! others.includes(x.ft) && x.src !== "CEHRD"  && x.src !== 'wikipedia') {
+           // if ( x.src === 'wikipedia') {
                 var name = (x.fn) ? x.fn : x.nfn;
                 var title = (x.dn) ? x.dn : x.ndn;
                 var path = (x.fp) ? x.fp : x.nfp;
@@ -63,17 +64,17 @@ collection.find( ).forEach(
                 var checksum = md5sumFile(filename);
                // print('* ', -1); //print w/o newline
                 
-                //print( ' * * *  Found: ' + md5sumFile(filename));
+                //print( ' * * *  Found: ' + filename);
                 //process.stdout.write('* ');
                 
                 //var file = cat(filename);
-                // print ('******** found ' + x.fp + x.fn);
+                //print ('******** found ' + filename);
                 found++;
             }
         }
         catch (e){
            print();
-           print (' * * * no file found for ' + title + ' (' + x.ft + ' ' + name + ' ' + path + ') with filename = ' + filename);
+           print (' * * * no file found for ' + title + ' (' + x.ft + ') ' + name + ' ' + path + ') with filename = ' + filename);
            count++;
           }
     });

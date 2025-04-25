@@ -22,6 +22,9 @@ var displaynames = {
     'science' : 'Science',
     'english' : 'English',
     'math'    :  'Math',
+    'health'  :  'Health',
+    'serafero':  'Serafero',
+    'nepali'  :  'Nepali',
     'social studies' : 'Social' };
 
 function displaySubjects (className) {
@@ -39,7 +42,7 @@ function displaySubjects (className) {
                     'data-subject="' + subjects[index] + '"' +
                     'class="subject game" id="' + name + '">');
                 
-                var displayname = displaynames[name];
+                var displayname = displaynames[name.toLowerCase()];
                 $newButton.append($("<p class='english-keyword caps'>"+ displayname + "<p class='xlat'>"+ nname + "</p></p>"));
                 $newButton.append($("<p class='native-keyword caps'>"+ nname + "<p class='xlat'>"+ displayname + "</p></p>"));
                 

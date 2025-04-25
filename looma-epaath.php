@@ -53,7 +53,7 @@ if ($epversion == '2015') {  // old ePaath activities from 2016
     }
 ?>
 <div id="main-container-horizontal">
-    <div id="fullscreen" data-ep="true">
+    <div id="fullscreen" class="keyboard">
         <!-- NOTE the iframe below has name='looma-frame', and wikipedia articles in looma have <a xxx.htm target="looma-frame" -->
         <!--  $SRC = http://localhost/epaath?epversion=2019&ole=mataoe01&lang=english&sub=english&grade=5   -->
         <?php echo "<iframe id='iframe' name='looma-frame' src='" . $src . "' allowfullscreen>" ?></iframe>

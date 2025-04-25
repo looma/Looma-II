@@ -158,7 +158,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
             echo "</div>";
 
-            echo "<label><input type='checkbox' name='semantic' />(Experimental) Semantic Search</label>";
+          //  echo "<label><input type='checkbox' name='semantic' />(Experimental) Semantic Search</label>";
         echo "</div>";
 
 /**************************************/

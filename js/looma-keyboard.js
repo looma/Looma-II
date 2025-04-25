@@ -208,8 +208,8 @@ function createKeyboard() {
         .attr('id', 'keyboard-hide')
         //.html("Hide Keyboard")
         //.html(LOOMA.translatableSpans('Hide','लुकाउनु'))
-        .html('<span class="key-normal">Submit</span><span class="key-nepali">लुकाउनु</span>' +
-              '<span class="key-shifted">Submit</span><span class="key-nepali-shifted">लुकाउनु</span>')
+        .html('<span class="key-normal">Close</span><span class="key-nepali">लुकाउनु</span>' +
+              '<span class="key-shifted">Close</span><span class="key-nepali-shifted">लुकाउनु</span>')
         .addClass("keyboard-button keyboard-special")
         .click(hideKeyboard);
     $(keyboardRow).append(hideButton);
@@ -387,7 +387,7 @@ $(document).ready(function() {
     //console.log(validInputs);
 
 /**/
-    if (validInputs.length == 0 && ! $('#fullscreen').data('ep')) {
+    if (validInputs.length == 0 && ! $('#fullscreen').hasClass('keyboard')) {
         console.log("No text inputs.");
         return;
     }

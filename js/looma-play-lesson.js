@@ -174,18 +174,22 @@ function play ($item) {
         case 'ep':
         case 'epaath':
         
-            $('#fullscreen-control, .speak, .lookup').show();
+            $('#fullscreen-control, .speak, .lookup, .show-keyboard').show();
+    
             if (version==2019) {
                 var prefix = 'ePaath/';
                 if (grade=='grade7' || grade == 'grade8') prefix += 'EPaath7-8/';
-                $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
+              //  $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
+                $htmlHTML.attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
             } else   if (version==2022) {
                 var prefix = 'ePaath/ePaath2022/';
                 $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
             }
             else
                 $htmlHTML.find('embed').attr('src', 'content/epaath/activities/'+ fn + '/start.html');
-        
+            
+            $('#fullscreen').addClass('keyboard');
+            
             $htmlHTML.appendTo($viewer);
             break;
     
@@ -427,7 +431,8 @@ function textHTML(id) {
 
 function makeHtmlHTML() {
     return (
-        '<div id="fullscreen"><embed src="" height=100% width=100%></div>'
+      //  '<div id="fullscreen" class="keyboard"><embed src="" height=100% width=100%></div>'
+    '<embed src="" height=100% width=100%>'
     );
 }
 

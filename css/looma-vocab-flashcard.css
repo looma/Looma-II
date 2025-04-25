@@ -8,7 +8,7 @@ Description: \a-vocab-flashcard.css contains the style for looma-vocab-flashcard
 }
 
 #fullscreen {
-    height:80%;
+    height:77%;
 }
 
 button#fullscreen-control {
@@ -218,6 +218,6 @@ p.clickToFlip {
     padding: 5px;
     cursor: pointer;
     transition: 0.3s;
-    max-height: 20vh;
+    max-height: 18vh;
     max-width: 30vw;
 }

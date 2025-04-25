@@ -146,7 +146,7 @@ playMedia : function(button) {
         case "pdf":      //PDF
      // case "chapter":  //CHAPTER
         case "document": //DOCUMENT (some PDFs)
-        case "section":  //textbook SECTIONs are 'played' if len > 0
+     //   case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
@@ -190,6 +190,9 @@ playMedia : function(button) {
             else {
                 folder = 'en';
             }
+            var chapter_subject = button.getAttribute('data-subject');
+            if (chapter_subject === 'Social studies') chapter_subject = 'SocialStudies';
+
             var chapterFP = '../content/chapters/' + button.getAttribute('data-class') + '/' +
                 button.getAttribute('data-subject') + '/' + folder + '/';
 
@@ -216,7 +219,8 @@ playMedia : function(button) {
         case "html":
             var fp = encodeURIComponent(button.getAttribute('data-fp'));
             var fn = encodeURIComponent(button.getAttribute('data-fn'));
-            window.location = 'html?fp=' + fp + '&fn=' + fn;
+            var kbd = encodeURIComponent(button.getAttribute('data-dn')) === 'ePaath' ? "keyboard" : "";
+            window.location = 'html?fp=' + fp + '&fn=' + fn + '&ep=' + kbd;
             break;
 
         case "book":
@@ -228,7 +232,7 @@ playMedia : function(button) {
             break;
 
         case "looma":
-            var fp = encodeURIComponent(button.getAttribute('data-url'));
+            var fp = encodeURIComponent(button.getAttribute('data-fp'));
             window.location = fp;
             break;
 

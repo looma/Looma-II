@@ -47,6 +47,10 @@ function found (def) {
 
 function show(word) {
     LOOMA.define(word, found, fail);
+    
+    setTimeout(function () {
+        LOOMA.speak(word);
+    }, 750)
 } //end SHOW()
 
 /*

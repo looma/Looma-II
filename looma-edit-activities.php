@@ -195,8 +195,12 @@ include ('includes/header.php');
                  form = 'changes'
                  name = 'lang'
                  value = 'np' />
-          <label for = 'np'>Nepali</label>
-                 </p>";
+          <label for = 'both'>Nepali</label>
+          <input type = 'radio'
+                 form = 'changes'
+                 name = 'lang'
+                 value = 'both' />
+          <label for = 'both'>Both</label>              </p>";
 
         echo "<div id='textbooks'>";
             /**************************************/

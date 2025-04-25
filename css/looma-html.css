@@ -11,6 +11,10 @@ button.lookup {
     display:inline-block;
 }
 
+button.show-keyboard {
+    display:inline-block;
+}
+
 iframe {background-color:white;}
 
 #column-one {display:none !important;}

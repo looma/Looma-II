@@ -23,7 +23,10 @@ Description: looma lesson plan presenter
     if (isset($_REQUEST['lang'])) $lang = $_REQUEST['lang']; else $lang = 'en';
     echo "<div id='lesson-container' data-lang=$lang>";
     ?>
-            <div id="fullscreen">
+            <div id="fullscreen" class="keyboard">
+
+                <input id="force_keyboard" hidden>
+
                 <div id="viewer">
                 </div>
 

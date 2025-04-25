@@ -17,6 +17,12 @@ var num_questions;
 var curr_question = 1;
 var promptButtons, responseButtons;
 
+var prompts, responses;
+
+var matchResponses;
+var activeMatchPrompts;
+var activeMatchResponses;
+
 var scores;
 var clickedEventID;
 
@@ -347,14 +353,21 @@ function checkMatch() {
         $('.response[data-pair=' + selected_resp + ']').addClass('matched');
         $('.prompt[data-pair=' + selected_prompt + ']').addClass('matched');
   
-        selected_resp = null;
-        selected_prompt = null;
+        // selected_prompt = null;
+        // selected_resp = null;
         previousClick = null;
    
         setTimeout(function() {
             //$('.'+selected_resp).hide();
             $('.response[data-pair=' + r + ']').removeClass('matched not-done clicked').addClass('done').off('click');
             $('.prompt[data-pair=' + p + ']').removeClass('matched not-done clicked').addClass('done').off('click');
+            
+            // remove this P/R pair from activeMatch arrays
+            if (['matching','spoken matching','spoken to picture', 'picture matching'].includes(game.presentation_type))
+            {
+                activeMatchPrompts.splice(selected_prompt,1);
+                activeMatchResponses.splice(selected_resp,1);
+            }
             
             correctAnswer();
             //showTeam();
@@ -383,37 +396,76 @@ function checkMatch() {
             wrongAnswer();
         },1000);
     }
-}  // end matchResponseClick()
+}  // end checkMatch()
 
+function matchPromptButton(type,i,prompt) {
+    if (type === 'matching')
+        return $('<button class="prompt not-done"  data-word="' + prompt +  '" data-pair="' + i.toString() + '" id="prompt-'+i.toString()+'">' + prompt + '</button>');
+    if (type === 'spoken matching')
+        return $('<button class="prompt not-done"  data-word="' + prompt +  '" data-pair="' + i.toString() + '" id="prompt-'+i.toString()+'">' + speechbubble + '</button>');
+    if (type === 'picture matching')
+        return $('<button class="response not-done picture" data-word=' + prompt +
+            ' data-pair="' + i.toString() +
+            '" id="response-' + i.toString() + '">' +
+            '<img src="../content/dictionary images/' + prompt + '.jpg" ></button>');
+    if (type === 'spoken to picture')
+        return $('<button class="prompt not-done"  data-word="' + prompt +  '" data-pair="' + i.toString() + '" id="prompt-'+i.toString()+'">' + speechbubble + '</button>');
+}
+
+function matchResponseButton(type,i,response) {
+    if (type === 'matching')
+        return $('<button class="response not-done" data-pair="' + i.toString() + '" id="response-'+i.toString()+'">' + response + '</button>');
+    if (type === 'spoken matching')
+        return $('<button class="response not-done" data-pair="' + i.toString() + '" id="response-'+i.toString()+'">' + response + '</button>');
+    if (type === 'picture matching')
+        return $('<button class="response not-done" data-pair="' + i.toString() + '" id="response-'+i.toString()+'">' + response + '</button>');
+    if (type === 'spoken to picture')
+        return $('<button class="response not-done picture" data-word=' + response +
+            ' data-pair="' + i.toString() +
+            '" id="response-' + i.toString() + '">' +
+            '<img src="../content/dictionary images/' + response + '.jpg" ></button>');
+}
 
 //////////////////////////////
 ///////// runMatch  /////////
 //////////////////////////////  NOTE: runs a 'matching' game using 'prompts[]' and 'responses[]'
 
-function runMatch() {
+function runMatch(type) { //called to start the game or when a question is answered correctly
+  
+    var button;
+    var showQuestions = 5;
     showTeam();
-    matches_made = 0;
-    num_questions = game.prompts.length;
+  //  matches_made = 0;
     
     //$('#game').append('<h4 class="question" id="question-number">Match the prompts on the left to the corresponding responses on the right.</h4>');
-    $('#game').append('<div id="prompts"></div>');
-    $('#game').append('<div id="responses"></div>');
+  
     
-    $('#question').html('Click left and right items to find a match');
+    $('#question').html(' Click left and right items to find a match ');
     
-    var prompts =   game['prompts'];
-    var responses = game['responses'];
-    //console.log(prompts)
-    //console.log(responses)
+    // game prompts and responses are in             game['prompts'] and      game['responses']
+    // currently active prompts and responses are in activeMatchPrompts[] and activeMatchResponses[]
+    
+    
+    while (activeMatchPrompts.length < showQuestions && prompts.length > 0) {
+        var rnd = Math.floor(Math.random() * (prompts.length));
+        
+        activeMatchPrompts.push(prompts.splice(rnd, 1)); //removes the "rnd" element from prompts[] and adds it to activeMatchPrompts[]
+        activeMatchResponses.push(responses.splice(rnd, 1));
+    }
     promptButtons = [];
     responseButtons = [];
-    prompts.forEach(function(prompt, i){
-        var button = $('<button class="prompt not-done"  data-word="' + prompt +  '" data-pair="' + i.toString() + '" id="prompt-'+i.toString()+'">' + prompt + '</button>');
+    $('#prompts').empty();
+    $('#responses').empty();
+    
+    activeMatchPrompts.forEach(function(prompt, i){
+        //button = $('<button class="prompt not-done"  data-word="' + prompt +  '" data-pair="' + i.toString() + '" id="prompt-'+i.toString()+'">' + prompt + '</button>');
+        button = matchPromptButton(type,i,prompt);
         button.click(matchPromptClick);
         promptButtons.push(button);
     });
-    responses.forEach(function(response,i){
-        var button = $('<button class="response not-done" data-pair="' + i.toString() + '" id="response-'+i.toString()+'">' + response + '</button>');
+    activeMatchResponses.forEach(function(response,i){
+        //button = $('<button class="response not-done" data-pair="' + i.toString() + '" id="response-'+i.toString()+'">' + response + '</button>');
+        button = matchResponseButton(type,i,response);
         button.click(matchResponseClick);
         responseButtons.push(button);
     });
@@ -433,6 +485,8 @@ function runMatch() {
     startTimer(time_limit);
 } // end runMatch()
 
+
+/*
 //////////////////////////////
 ///////// runMatchSpeak  /////////
 //////////////////////////////  NOTE: runs a 'matching' game using 'prompts[]' and 'responses[]'
@@ -448,8 +502,8 @@ function runMatchSpeak() {
     
     $('#question').html('Click left and right items to find a match');
     
-    var prompts =   game['prompts'];
-    var responses = game['responses'];
+    var prompts =   game['prompts']; prompts.length = num_questions;
+    var responses = game['responses'];  responses.length = num_questions;
     //console.log(prompts)
     //console.log(responses)
      promptButtons = [];
@@ -531,7 +585,7 @@ function runMatchSpeakToPicture() {
     });
     startTimer(time_limit);
 } // end runMatchSpeakToPicture()
-
+*/
 
 //////////////////////////////
 ///////// runPicture  /////////
@@ -595,7 +649,7 @@ function runPicture(grade, subject, ch_id) {
 }  // END runPicture() //
 
 
-
+/*
 //////////////////////////////
 ///////// runMatchPicture  /////////
 //////////////////////////////  NOTE: runs a 'matching' game using 'prompts[]' and 'responses[]'
@@ -645,7 +699,7 @@ function runMatchPicture() {
     });
     startTimer(time_limit);
 } // end runMatchPicture()
-
+*/
 
 //////////////////////////////
 ///////// runRandomSpeak  /////////
@@ -842,7 +896,7 @@ function runRandom () {
             wordcount++;
             if (wordcount < game['prompts'].length)
                 LOOMA.define(game['prompts'][wordcount], word_define_succeed, word_define_fail);
-            else runMatch();
+            else runMatch(type);
         }
         
         function word_define_fail(r) {console.log("word define fail", r);}
@@ -878,6 +932,9 @@ function runConc() {
     var prompts =   game['prompts'];
     var responses = game['responses'];
 
+    if (prompts.length   > 8) prompts.length = 8;
+    if (responses.length > 8) responses.length = 8;
+    
     $('#question').html('Click two cards to find a match');
     
     curr_question = 1;
@@ -922,6 +979,9 @@ function runConc() {
 function runConcType(type) {
     var prompts =   game['prompts'];
     var responses = game['responses'];
+    
+    if (prompts.length   > 8) prompts.length = 8;
+    if (responses.length > 8) responses.length = 8;
     
     $('#question').html('Click two cards to find a match');
     
@@ -1403,7 +1463,7 @@ function nextQuestion() {
                     function word_define_succeed(res) {
                         game['responses'].push(res);
                         wordcount++;
-                        //if (wordcount > game['prompts'].length) runMatch();
+                        //if (wordcount > game['prompts'].length) runMatch(type);
                     }
                     
                     function word_define_fail(r) {
@@ -1417,7 +1477,7 @@ function nextQuestion() {
                 //$('#game').append('<h4 class="question" id="question-number">Match the prompts on the left to the corresponding responses on the right.</h4>');
                 $('#game').append('<div id="prompts"></div>');
                 $('#game').append('<div id="responses"></div>');
-                //runMatch();
+                //runMatch(type);
                 break;
             // * CP NEW (3)) * //
             case 'picture':
@@ -1462,8 +1522,17 @@ function correctAnswer () {
     nextTeam();
     curr_question++;
     setTimer(time_limit);
-    if (game['presentation_type'] != 'matching' &&
-        game['presentation_type'] != 'vocabulary') nextQuestion();
+    
+    if (game['presentation_type'] === 'matching'||
+             game['presentation_type'] === 'spoken matching' ||
+             game['presentation_type'] === 'spoken to picture' ||
+             game['presentation_type'] === 'picture matching')
+            {
+                // remove P/R pair from activeMatch arrays
+                //nextQuestion();
+                runMatch(type);
+            }
+    else if (game['presentation_type'] != 'vocabulary') nextQuestion();
     else startTimer();
 }
 
@@ -1650,11 +1719,11 @@ function gameOver() {
                     // based on grade and subject and [sometimes] chapter
                     if      (type === 'yesno')     runYesNo();
                     else if (type === 'random')    runRandom();
-                    else if (type === 'vocab')     runVocab(grade, subject, ch_id);
-                    else if (type === 'arith')     runArith(grade, subject, ch_id);
-                    else if (type === 'picture')   runPicture(grade, subject, ch_id);
-                    else if (type === 'speak')     runRandomSpeak(grade, subject, ch_id);
-                    else if (type === 'translate') runTranslate(grade, subject, ch_id);
+              //      else if (type === 'vocab')     runVocab(grade, subject, ch_id);
+              //      else if (type === 'arith')     runArith(grade, subject, ch_id);
+               //     else if (type === 'picture')   runPicture(grade, subject, ch_id);
+               //     else if (type === 'speak')     runRandomSpeak(grade, subject, ch_id);
+               //     else if (type === 'translate') runTranslate(grade, subject, ch_id);
                     
                 else {  // regular game
 
@@ -1663,29 +1732,30 @@ function gameOver() {
                     
                     switch (type) {
                         case 'concentration':
-                            runConcType(type);
-                            break;
                         case 'spoken concentration':
-                            runConcType(type);
-                            break;
                         case 'picture concentration':
-                            runConcType(type);
-                            break;
                         case 'spoken picture concentration':
                             runConcType(type);
                             break;
                         case 'matching':
-                            runMatch();
-                            break;
                         case 'spoken matching':
-                            runMatchSpeak();
-                            break;
                         case 'spoken to picture':
-                            runMatchSpeakToPicture(grade, subject);
-                            break;
                         case 'picture matching':
-                            runMatchPicture();
+    
+                            matches_made = 0;
+                            activeMatchPrompts = [];
+                            activeMatchResponses = [];
+                            num_questions = game['prompts'].length;
+    
+                            prompts =   game['prompts'];
+                            responses = game['responses'];
+                            $('#game').append('<div id="prompts"></div>');
+                            $('#game').append('<div id="responses"></div>');
+                            //console.log(prompts)
+                            //console.log(responses)
+                            runMatch(type);
                             break;
+                            
                         case 'picture':
                             runPicture(grade, subject, ch_id);
                             break;
@@ -1695,6 +1765,7 @@ function gameOver() {
                         case 'translate':
                             runTranslate(grade, subject);
                             break;
+           
                         case 'multiple choice':
                             runMC();
                             break;

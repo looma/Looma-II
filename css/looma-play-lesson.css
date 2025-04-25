@@ -61,6 +61,11 @@ iframe {
     
 }
 
+#fullscreen.keyboard  button.show-keyboard{
+    display:inline;
+    bottom: 71vh;
+}
+
 #fullscreen:fullscreen {
     height:100vh;
     margin:auto;

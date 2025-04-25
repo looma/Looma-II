@@ -81,6 +81,15 @@ RW="58189@usw-s008.rsync.net"
 
 SECONDS=0
 
+### should exclude content/chapters folders for now so that Looma II's in the field wont run out of storage space
+###
+###   this code not tried yet
+###
+###    cd /var/local/var/www
+###    excludes='/content/chapters/'
+###    rsync ... ... --exclude $excludes ... ...
+###
+##############
 # sync code to rsync.net  [excluding "." files like .git/]
 if [[ $1 = "dryrun" ]]
 then

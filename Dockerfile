@@ -20,9 +20,10 @@ RUN chmod +x /bin/launch.sh
 
 # Download and install Piper TTS
 RUN apt-get install -y wget unzip \
-    && wget https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_arm64.tar.gz -O /tmp/piper.tar.gz \
-    && tar -xzf /tmp/piper.tar.gz -C /usr/local/bin \
-    && rm /tmp/piper.tar.gz
+&& ARCH=$(dpkg --print-architecture) \
+&& wget https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_${ARCH}.tar.gz -O /tmp/piper.tar.gz \
+&& tar -xzf /tmp/piper.tar.gz -C /usr/local/bin \
+&& rm /tmp/piper.tar.gz \
 
 # Download Nepali models for Piper
 RUN mkdir -p /usr/share/piper \

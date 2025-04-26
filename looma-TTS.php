@@ -79,8 +79,8 @@ if ($engine === 'mimic') {
 } else if ($engine === 'piper') {
     error_log($outputFileName);
 
-    $command = "echo " . escapeshellarg($text) . " | ../piper/piper " .
-        " --model ../piper/ne_NP-google-medium.onnx --output_file $outputFileName";
+    $command = "echo " . escapeshellarg($text) . " | piper " .
+        " --model /usr/share/piper/ne_NP-google-medium.onnx --output_file $outputFileName";
 } else return;
 
 /*DEBUG

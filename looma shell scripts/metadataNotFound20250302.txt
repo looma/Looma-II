@@ -1,0 +1,128 @@
+1 - - - - - - - -बार महिना र मौसम [EP]        NOT FOUND
+2 - - - - - - - -शरीरका अङ् [EP]        NOT FOUND
+ * * * 3 - - CHANGED fields for - - - जनावर र बिरुवाहरू
+     cl_lo, cl_hi lang 1,3, np*
+     keys Science, Biology, Other Biology,
+ * * * 4 - - CHANGED fields for - - - क्रिया
+     cl_lo, cl_hi lang 1,3, np*
+     keys Language , Nepali, Grammar, Verbs
+5 - - - - - - - -"२वि हावा ,पानी र माटो" [EP]        NOT FOUND
+ * * * 6 - - CHANGED fields for - - - १वि सरसफाइ
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Issues, Other Issues, Sanitation
+ * * * 7 - - CHANGED fields for - - - १वि कुराकानी र जानकारी
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Community, Everyday Life, Communication
+8 - - - - - - - -२वि सञ्चार [EP]        NOT FOUND
+ * * * 9 - - CHANGED fields for - - - ३वि पानीको संरक्षण
+     cl_lo, cl_hi lang 2,4, np*
+     keys Science, Earth, Oceans & Water, Other Oceans & Water
+10 - - - - - - - -2S Diseases [EP]        NOT FOUND
+ * * * 11 - - CHANGED fields for - - - २वि रोग
+     cl_lo, cl_hi lang 2,3, np*
+     keys Science, Medicine, Disease & Injury , Other diseases
+12 - - - - - - - -3S Degradable and Non-Degradable Waste [EP]        NOT FOUND
+ * * * 13 - - CHANGED fields for - - - ३वि कुहिने र नकुहिने  फोहर
+     cl_lo, cl_hi lang 2,4, np*
+     keys Science, Earth, Human Impact, Waste & Recycling
+ * * * 14 - - CHANGED fields for - - - २वि विधुत
+     cl_lo, cl_hi lang 2,3, np*
+     keys Science, Physics, Electricity & Electronics ,
+15 - - - - - - - -3S Environmental pollution [EP]        NOT FOUND
+ * * * 16 - - CHANGED fields for - - - ३वि वातावरण प्रदूषण
+     cl_lo, cl_hi lang 2,4, np*
+     keys Science, Earth, Human Impact, Pollution
+ * * * 17 - - CHANGED fields for - - - २वि प्राथमिक उपचार
+     cl_lo, cl_hi lang 2,3, np*
+     keys Science, Medicine, Specialities, First Aid
+18 - - - - - - - -३वि खाद्य श्रृङ्खला [EP]        NOT FOUND
+ * * * 19 - - CHANGED fields for - - - १वि हाम्रो चाडपर्व
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Community, Everyday Life, Celebrations
+ * * * 20 - - CHANGED fields for - - - २वि राम्रो बानी
+     cl_lo, cl_hi lang 2,3, np*
+     keys Social Studies, Community, Social Organization, Norms
+ * * * 21 - - CHANGED fields for - - - २वि आम्दानी र खर्च
+     cl_lo, cl_hi lang 2,3, np*
+     keys Social Studies, Economy, Finance, Internet
+22 - - - - - - - -१वि सजीव र निर्जीव [EP]        NOT FOUND
+ * * * 23 - - CHANGED fields for - - - २वि चुम्बक
+     cl_lo, cl_hi lang 2,3, np*
+     keys Science, Physics, Electromagnetism,
+ * * * 24 - - CHANGED fields for - - - ३वि मेरो भूमिका
+     cl_lo, cl_hi lang 2,3, np*
+     keys Social Studies, Community, Everyday Life, Cooperation
+ * * * 25 - - CHANGED fields for - - - ३वि मेरो एक दिन
+     cl_lo, cl_hi lang 2,4, np*
+     keys Social Studies, Community, Social Organization, Mutual Help
+ * * * 26 - - CHANGED fields for - - - १वि नियमको पालना
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Community, Other Community,
+27 - - - - - - - -२वि हाम्रो राष्ट्रिय चिह्नहरू [EP]        NOT FOUND
+ * * * 28 - - CHANGED fields for - - - २वि हाम्रो काम
+     cl_lo, cl_hi lang 2,3, np*
+     keys Social Studies, Economy, Occupations, Family
+ * * * 29 - - CHANGED fields for - - - १वि हाम्रो पहिरन
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Community, Everyday Life, Clothing
+ * * * 30 - - CHANGED fields for - - - ३वि पृथ्वीका पत्रहरू
+     cl_lo, cl_hi lang 2,4, np*
+     keys Science, Earth, Climate, Atmosphere
+ * * * 31 - - CHANGED fields for - - - २वि वातावरण
+     cl_lo, cl_hi lang 2,3, np*
+     keys Social Studies, Issues, Other Issues, Sanitation
+ * * * 32 - - CHANGED fields for - - - २वि सार्वजनिक सम्पत्ति
+     cl_lo, cl_hi lang 2,3, np*
+     keys Social Studies, Community, Other Community, Environment
+ * * * 33 - - CHANGED fields for - - - १वि हाम्रो पहिचान
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Community, Everyday Life, Other Everyday Life
+ * * * 34 - - CHANGED fields for - - - ३वि हाम्रो अधिकार
+     cl_lo, cl_hi lang 2,4, np*
+     keys Social Studies, Issues, Human Rights , Other Human Rights
+ * * * 35 - - CHANGED fields for - - - २वि वस्तुका गुणहरू
+     cl_lo, cl_hi lang 2,3, np*
+     keys Social Studies, Community, Education, Environment
+ * * * 36 - - CHANGED fields for - - - १वि वस्तुका गुणहरू
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Community, Education, Environment
+ * * * 37 - - CHANGED fields for - - - १वि प्रकोपबाट बचौँ
+     cl_lo, cl_hi lang 1,3, np*
+     keys Science, Earth, Natural Disasters, Preparedness
+38 - - - - - - - -3S धूमपान र मद्यपान [EP]        NOT FOUND
+ * * * 39 - - CHANGED fields for - - - ३वि धुमपान र मध्यपान
+     cl_lo, cl_hi lang 2,4, np*
+     keys Science, Medicine, Disease & Injury, Smoking
+ * * * 40 - - CHANGED fields for - - - ३वि आकार र आकृति
+     cl_lo, cl_hi lang 2,4, np*
+     keys Mathematics, Geometry, Shapes, Family
+ * * * 41 - - CHANGED fields for - - - ३वि बचत गरौँ
+     cl_lo, cl_hi lang 2,4, np*
+     keys Social Studies, Community, Education, Other Education
+ * * * 42 - - CHANGED fields for - - - २वि हाम्रा उपकरण
+     cl_lo, cl_hi lang 2,3, np*
+     keys Social Studies, Community, Everyday Life, Other Everyday Life
+ * * * 43 - - CHANGED fields for - - - ३वि माटो
+     cl_lo, cl_hi lang 2,4, np*
+     keys Social Studies, Arts, ,
+ * * * 44 - - CHANGED fields for - - - १वि आवाज
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Physics, Other Physics, Sound
+ * * * 45 - - CHANGED fields for - - - १वि हामी वरपरका वस्तु
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Community, Education, Environment
+ * * * 46 - - CHANGED fields for - - - ३वि विभिन्न प्रकारका पदार्थहरू
+     cl_lo, cl_hi lang 2,4, np*
+     keys Social Studies, Community, Education, Environment
+ * * * 47 - - CHANGED fields for - - - १वि यातायातका साधनहरू
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Transportation, Other Transportation, Internet
+ * * * 48 - - CHANGED fields for - - - १वि विद्यालयको चिनारी
+     cl_lo, cl_hi lang 1,3, np*
+     keys Social Studies, Community, Social Organization, Schools
+ * * * 49 - - CHANGED fields for - - - १वि पानी
+     cl_lo, cl_hi lang 1,3, np*
+     keys Science, Earth, Oceans & Water, Resources
+ * * * 50 - - CHANGED fields for - - - ३वि मौसम
+     cl_lo, cl_hi lang 2,4, np*
+     keys Science, Earth, Climate, Season

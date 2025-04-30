@@ -32,13 +32,13 @@ $subjects = array (
 
 function ch_idToClass ($ch_id) {
     preg_match ( "/^([1-9]|10|11|12)(M|N|S|SF|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches );
-    return $classes("Class" . $matches[1]);
+    return "Class" . $matches[1];
 };
 
 function ch_idToSubject ($ch_id) {
     global $subjects;
     preg_match ( "/^([1-9]|10|11|12)(M|N|S|SF|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/" , $ch_id , $matches );
-    return $subjects( $matches[2] );
+    return $subjects[ $matches[2] ];
 };
 
  $icons = array (
@@ -164,8 +164,8 @@ function thumbnail ($file, $path, $type) {
     if (!file_exists($src)) {
          if ($type == 'text' || $type === 'text-template')    $src = "images/textfile.png";
     else if ($type == 'game')       $src = "images/game.png";
-    else if ($type == 'pdf')       $src = "images/pdf.png";
-    else if ($type == 'EP')       $src = "images/logos/ole-nepal.jpg";
+    else if ($type == 'pdf')        $src = "images/pdf.png";
+    else if ($type == 'EP')         $src = "images/logos/ole-nepal.jpg";
     else if (in_array($type, ['mp4','m4v','mp5','mov','video']))  $src = "images/video.png";
     else if (in_array($type, ['jpg','jpeg','png','gif','image'])) $src = "images/picture.png";
     else if (in_array($type, ['mp3','m4a','audio']))              $src = "images/audio.png";
@@ -390,7 +390,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         echo ">";
         if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
 
-        if (preg_match('/CDC Teacher Guides/',$fp))
+        if ( $fp && preg_match('/CDC Teacher Guides/',$fp))
             displayName($fn, 'Teacher\'s Guide', $ndn, 'green');
         else
             displayName($fn, $dn, $ndn, 'black');

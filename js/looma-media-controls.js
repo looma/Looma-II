@@ -15,6 +15,21 @@ Revision: Looma 7.x
     var $play, $mute, $seekbar, $volumebar, $elapsedtime, $totaltime;
 
 function mediaPlayPause () { // play or pause the currently playing MEDIA - stored in global var media
+    
+    if (media.getAttribute('id') === 'video') {
+        var tracks = media.textTracks;
+        
+        if (tracks.length > 0) {
+            if (language === 'native') {
+                tracks[0].mode = "hidden";
+                tracks[1].mode = "showing";
+            } else {
+                tracks[1].mode = "hidden";
+                tracks[0].mode = "showing";
+            }
+        }
+    }
+
     if (media.paused) {
         media.play();
         $('.play-pause').css('background-image', 'url("images/pause.png")');
@@ -42,6 +57,8 @@ function attachMediaControls (myMedia) {
                        media = (video)?video:audio;
           }
     
+          
+          
             $(media).click(mediaPlayPause);
           
   //  $('#totaltime').text(minuteSecondTime(media.duration));

@@ -45,19 +45,18 @@
 #   -D  transfer devices and specials (NA for Looma)
 #   -O  omit-dir-times
 #   -z  	use compression
-#--dry-run
-#--progress
-#--size-only [for Content files]
-#--delete 	delete files on destination that are not on source
-#--perms (=== -p)
-#--update   skip files if destination  already exists and has a later date
-#--exclude '.[!.]*'
-#--stats    print stats at the end
+#    --dry-run
+#    --progress show transfer progress
+#    --size-only [for Content files]
+#    --delete 	delete files on destination that are not on source
+#   --perms (=== -p)
+#   --update   skip files if destination  already exists and has a later date
+#   --exclude '.[!.]*'
+#   --stats    print stats at the end
 
 # not used
 #    -v	    verbose
 #    -vv	  very verbose
-#    --progress show transfer progress
 
 # display result of previous  command
 result () {
@@ -364,7 +363,17 @@ echo "********************"
             echo
             echo "starting to update Looma's database. please wait ..."
             echo
-            mongo --quiet --eval "db.dropDatabase();" looma
+
+              if which mongo
+              then
+                 mongo --quiet --eval "db.dropDatabase();" looma
+              elif which mongosh
+              then
+                 mongosh --quiet --eval "db.dropDatabase();" looma
+              fi
+
+            #mongosh --quiet --eval "db.dropDatabase();" looma
+
             mongorestore --quiet --db looma "$TO/Looma/mongo-dump/dump/looma/"
 
             if [[ -f $TO/Looma/mongo-dump/logins/defaultlogins.json ]]

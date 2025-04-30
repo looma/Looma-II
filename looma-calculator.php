@@ -52,8 +52,8 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
                     <?php keyword('8') ?></button></td>
                 <td><button id="btn9" class="calc-button" value="  9  " 		onclick="NumPressed('9')">
                     <?php keyword('9') ?></button></td>
-                <td><button id="btnmultiply" class="calc-button" value="  *  " 	onclick="Operation('*')">*</button></td>
-                <td><button id="btndivide" class="calc-button" value="   /   " 	onclick="Operation('/')">/</button></td>
+                <td><button id="btnmultiply" class="calc-button" value=" U+00D7   " 	onclick="Operation('*')">&#x00D7</button></td>
+                <td><button id="btndivide" class="calc-button" value="   U+00F7   " 	onclick="Operation('/')">&#x00F7</button></td>
             </tr>
             <tr>
                 <td><button id="btnplusminus" class="calc-button" value=" +/- " onclick="Neg()">+/-</button></td>

@@ -14,36 +14,48 @@ Comments:
 
 <?php $page_title = 'Looma - Teacher Aid';
 include ('includes/header.php');
+include ('includes/looma-utilities.php');
+
 ?>
 
-<link rel="stylesheet" href="css/looma-play-text.css">
-<link rel="stylesheet" href="css/looma-text-display.css">
+<link rel="stylesheet" href="css/looma.css">
+<link rel="stylesheet" href="css/looma-play-teacher-aid.css">
 
 </head>
 
 <body>
 <div id="main-container-horizontal">
     <?php
-    if ( ! isset($_REQUEST['ft']) || ! isset($_REQUEST['ch_id']))
+    if ( ! isset($_REQUEST['type']) || ! isset($_REQUEST['ch_id']))
     {
-        echo "<div><img src='images/logos/LoomaLogoTransparent.png' alt='Looma Logo'/></div>";
+      //  echo "<div><img src='images/logos/looma-english-amanda 3x1.png' alt='Looma Logo'/></div>";
         echo "<h2>file not found</h2>";
     }
     else {
-        $ft = ($_REQUEST['ft']);
+        $type = ($_REQUEST['type']);
         $ch_id = ($_REQUEST['ch_id']);
 
-        echo "<div id='fullscreen'>";
+      //  echo "<div id='fullscreen'>";
+ /*       if ($type === 'keywords') {
 
-            $class =   ch_idToClass  ($ch_id);
+                NOTE: should reformat 'keywords' file from JSON to lines with <fieldname> ":" <tab> <value>
+                like "word:   boy
+                      nepali:
+                      definition:   young male human"
+                then display this in the $contents
+
+        } else {  // other types (summary, outline, plan)
+*/
+            $class = ch_idToClass($ch_id);
             $subject = ch_idToSubject($ch_id);
-            $fp = "../content/chapters/$class/$subject/en/$ch_id/$ft"
-            $contents = file_get_contents($fp . $ft);
+            $fp = "../content/chapters/$class/$subject/en/$ch_id.$type";
+            $contents = file_get_contents($fp);
 
             echo "<div class='text-display'>";
-                echo $contents;
+            echo "<pre>" . $contents . "</pre>";
             echo "</div>";
-        echo "</div>";
+     //   };
+      //  echo "</div>";
     }
     ?>
 
@@ -53,6 +65,8 @@ include ('includes/header.php');
 include ('includes/toolbar.php');
 include ('includes/js-includes.php');
 ?>
+<!--
 <script src="js/looma-play-teacher-aid.js"></script>
+-->
 </body>
 <?php

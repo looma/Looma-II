@@ -13,7 +13,7 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
 <?php $page_title = 'Looma Resources';
     require_once ('includes/header.php');
 
-require_once ('includes/mongo-connect.php');
+    require_once ('includes/mongo-connect.php');
 
     require_once('includes/looma-utilities.php');
     //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
@@ -106,7 +106,7 @@ $foundActivity;
         $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
         $prefix = (isset($activity['prefix']) ? $activity['prefix'] : "");
         $oleID = (isset($activity['oleID']) ? $activity['oleID'] : "");
-        $mongoID = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
+            $mongoID = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
         $epversion = (isset($activity['version']) ? $activity['version'] : "");
         $grade = (isset($activity['grade']) ? $activity['grade'] : "");
         $url = (isset($activity['url']) ? $activity['url'] : "");
@@ -157,7 +157,10 @@ $foundActivity;
                     makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                     break;
                 case "pdf":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
+                    if (isset($activity['type']) && $activity['type'] === "TG")
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], "auto", "", "",null,null,null,$lang);
+                    else
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
                     break;
                 case "game":
                 case "history":
@@ -172,7 +175,7 @@ $foundActivity;
                      makeMapButton($mongoID, $thumb, $dn);
                     break;
                 case "looma";  //open a Looma page (e.g. calculator or paint)
-                    makeActivityButton($ft, $fp, "", $dn, "", "", $ch_id, "", "", $url, "", "", "", "",null,null,null,null);
+                    makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                     break;
                 case "ep":
                 case "epaath":
@@ -199,10 +202,6 @@ $foundActivity;
             }
         }
     } //end makeButton()
-
-function isSection($tg) {
-    return (substr($tg['ch_id'],-2) === '00');
-};
 
     /////////////////////////////////////////////////
     /////////////  MAIN CODE ////////////////////////
@@ -247,6 +246,7 @@ function isSection($tg) {
 
         echo "<br><table><tr>";
         $buttons = 1;
+/*
     // create a button to the Teacher Guide for this chapter if it exists
 
         // look up ch_id in collection "teacher_guides" and add a button
@@ -254,14 +254,50 @@ function isSection($tg) {
         else                $query = array('ch_id' => $ch_id);   // ??? should use nch_id  ?????
 
         $teacher_guide = mongoFindOne($teacherguides_collection, $query);
-
-        //   - - - TEACHER GUIDE  (if present) - - -
-        //   - - - NOTE: dont show teacher guide for "sections", only for "chapters"
-        if ($teacher_guide && ! isSection($teacher_guide)) {
-            //echo 'found teacher guide ' . $teacher_guide['dn']; return;
+        if ($teacher_guide) {
             makeButton($teacher_guide);
             $foundActivity = true;
         }
+*/
+        // make a button for TEACHER AIDS
+
+        echo "<td><button class='activity play img' >";
+        echo "<a href='looma-teacher-aids.php?ch_id=$ch_id&chdn=$ch_dn&grade=$grade&subject=$subject'>";
+      //  echo "img src='" . chapterthumbnail($ch_id) . "'";
+        echo "Teacher Aids";
+ //       echo ": " . keyword(ucfirst($grade)); echo ' ';
+ //       echo keyword($caps) . " \"";
+ //       echo $ch_dn . "\"";
+ //       echo "<span class='tip yes-show big-show' >Chapter " . $ch_id . "</span>";
+        echo "</button></td>";
+        $foundActivity = true;
+        nextButton();
+
+/**/
+
+    //echo "grade is " . $grade . ", subject is " . ucfirst($subject) . ", ch_id is " . $ch_id;
+    $filename = "../content/chapters/Class$gradenumber/" . ucfirst($subject) . "/en/$ch_id.keywords";
+    //echo "filename is " . $filename;
+    if (file_exists($filename)) {
+
+
+        echo "<td>";
+
+        echo "<a href='looma-game.php?type=keywords&class=Class $gradenumber&subject=$subject&ch_id=" . $ch_id . "'>";
+            echo "  <button class='activity  img'>";
+            echo "    <img src='images/dictionary.png'>";
+            echo "    <span>Key Vocabulary</span>";
+            echo "  </button>";
+        echo "</a>";
+
+        echo "</td>";
+        $foundActivity = true;
+        nextButton();
+    } //else echo "keywords file not found";
+
+ /**/
+
+
 
     //create a vocab review button if there are any words from this chapter in the dictionary
     $words = wordList($ch_id, false);
@@ -272,7 +308,7 @@ function isSection($tg) {
         echo "<a href='looma-vocab-flashcard.php?ch_id=" . $ch_id . "'>";
             echo "  <button class='activity  img'>";
             echo "    <img src='images/dictionary.png'>";
-            echo "    <span>Vocabulary</span>";
+            echo "    <span>New Vocabulary</span>";
             echo "  </button>";
         echo "</a>";
 
@@ -357,16 +393,10 @@ $query= array('$or' => array(
         $activities = mongoFind($activities_collection, $query, null, null, null);
 		foreach ($activities as $activity)  {
 
+		    //echo $activity['dn'];
 
-		 //   makeButton($activity);  //OLD way - all resources show on EN and on NP resource button
-         //   $foundActivity = true;  //OLD way - all resources show on EN and on NP resource button
-
-            if (($lang === 'en' && $activity['lang'] === 'en') ||
-                ($lang === 'np' && $activity['lang'] === 'np') ||
-                ($lang === 'both')) {
-                makeButton($activity);
-                $foundActivity = true;
-            }
+		    makeButton($activity);
+            $foundActivity = true;
         }
 
         // REMOVED this keyword matching code JAN 2020. it puts too many activities, esp. in lower grades, that dont match the expertise

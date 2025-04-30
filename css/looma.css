@@ -62,7 +62,8 @@ html {
 
 a {
     text-decoration:none;
-    color:blue;
+    /*color:blue;*/
+    color:black;
 }
 
 body {

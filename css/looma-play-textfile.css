@@ -1,0 +1,11 @@
+
+#textdisplay {
+    background-color: white;
+    color:black;
+    font-size: 2em;
+    height:80vh%;
+    width:75%;
+    margin:auto;
+    overflow: scroll;
+}
+h2 {font-size: 3em;}

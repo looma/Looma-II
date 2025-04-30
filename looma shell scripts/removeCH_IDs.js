@@ -20,7 +20,7 @@ var query;
 function removeCh_id(id, document) {
     id = id.trim();
   //  print('removing ch_id '  + id + ' from document ' + document.dn);
-    if (param === 'run') db.activities.updateOne({_id:document['_id']},{$pull:{ch_id:[id]}})
+    if (param === 'run') db.activities.updateOne({_id:document['_id']},{$pull:{ch_id:id}})
 }
 
 var input = 'ch_idsToRemove.tsv';
@@ -38,7 +38,9 @@ lines.forEach( function(doc) {
     
     var dn = fields[0].trim();
     
-    query = {'dn':  dn};
+//    query = {'dn':  dn};
+    query = { $or: [ { 'dn': dn }, { 'ndn': dn } ] };
+    
     //   if (ft === 'video' || ft === 'mp4' || ft === 'mov')
     //       query = {'dn': dn,'$or':[{'ft':'video'},{'ft':'mp4'},{'ft':'mov'}]};
     //   if (ft === 'audio' || ft === 'mp3' || ft === 'm4a')
@@ -50,13 +52,13 @@ lines.forEach( function(doc) {
     
     if (!activities.hasNext()) print(requestcount + ' - - - - - - - -' + dn + '       NOT FOUND');
     else
-    if (activities.count() > 1) {
-        if (dn) {
-        //    print('*************NOTE: duplicate ACTIVITIES FOUND, DN = ' + dn );
-            duplicates++;
-        }
-    }
-    else {
+ //   if (activities.count() > 1) {
+ //       if (dn) {
+ //           print('*************NOTE: duplicate ACTIVITIES FOUND, DN = ' + dn );
+ //           duplicates++;
+ //       }
+ //   }
+ //   else {
         var activity = activities.next();
         
         if (activity) {
@@ -68,7 +70,7 @@ lines.forEach( function(doc) {
         
             changecount++;
         }
-    }
+//    }
 });  // end foreach doc
 
 print('');

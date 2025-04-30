@@ -46,8 +46,12 @@ they want to edit a video
                                 <?php echo 'poster=\"' . thumbnail($filename,$filepath,"mp4") . '\">';?>
                                 <?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">'; ?>
                                 <?php
-                                    if (file_exists($filepath . $fileprefix . ".eng.eng.vtt"))
-                                        echo '<track default src="' . $filepath . $fileprefix . '.eng.eng.vtt" kind="subtitles" srclang="en" label="English">';
+                                    if (file_exists($filepath . $fileprefix . ".vtt"))
+                                        echo '<track  default class="en" src="' . $filepath . $fileprefix . '.vtt" kind="subtitles" srclang="en" label="English">';
+                                ?>
+                                <?php
+                                if (file_exists($filepath . $fileprefix . "_nepali.vtt"))
+                                    echo '<track  class="np" src="' . $filepath . $fileprefix . '_nepali.vtt" kind="subtitles" srclang="np" label="Nepali">';
                                 ?>
                             </video>
                             <div id="fullscreen-buttons">

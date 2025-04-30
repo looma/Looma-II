@@ -149,6 +149,11 @@ form#search span.typ-chk:hover, form#search span.src-chk:hover {
     font-size:1.2em;
 }
 
+button.activity {
+   /*  content-visibility: auto; */
+ }
+
+}
 /* @media for smartphones */
 @media screen and (max-device-width:480px) and (orientation:portrait),
 screen and (max-device-width:768px) and (orientation:landscape) {

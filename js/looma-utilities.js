@@ -84,7 +84,7 @@ Description:
      "textfile":"images/textfile.png",
      "looma":"images/LoomaLogo_small.png"
  };
- 
+
 var LOOMA = (function() {
 
     //the LOOMA object defines a namespace "LOOMA" that allows us to define LOOMA.playMedia()
@@ -95,9 +95,9 @@ var LOOMA = (function() {
     // local FUNCTIONS here
 
     return {
-    
+
 playMedia : function(button) {
-    
+
     var fn = encodeURIComponent(button.getAttribute('data-fn'));
     var fp = encodeURIComponent(button.getAttribute('data-fp'));
     var dn = encodeURIComponent(button.getAttribute('data-dn'));
@@ -105,7 +105,7 @@ playMedia : function(button) {
     var lang = encodeURIComponent(button.getAttribute('data-lang'));
     var ch_id = encodeURIComponent(button.getAttribute('data-ch_id'));
     var language = LOOMA.readStore('language', 'cookie');
-    
+
     switch (button.getAttribute("data-ft").toLowerCase()) {
         case "video":
         case "mp4":
@@ -159,12 +159,11 @@ playMedia : function(button) {
                     '&len=' + pdfLen +
                     '&page=' + pdfPage;
             break;
-    
+
         case "chapter":  //CHAPTER
-        case "section":  //textbook SECTIONs are 'played' if len > 0
-        
-            if ( button.getAttribute('data-source') === 'useTextbooks')
-        
+
+        if ( button.getAttribute('data-source') === 'useTextbooks')
+
        { // load whole textbook PDF and display only this chapter's pages
           var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
@@ -183,7 +182,7 @@ playMedia : function(button) {
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage = 1;
             var pdfLen  = 100;
-            
+
             var folder, suffix;
             if (button.getAttribute('data-lang') === 'np') {
                 folder = 'np';
@@ -195,12 +194,12 @@ playMedia : function(button) {
             if (chapter_subject === 'Social studies') chapter_subject = 'SocialStudies';
 
             var chapterFP = '../content/chapters/' + button.getAttribute('data-class') + '/' +
-                chapter_subject + '/' + folder + '/';
-            
+                button.getAttribute('data-subject') + '/' + folder + '/';
+
             var chapterFN = encodeURIComponent(button.getAttribute('data-ch')) +
                 ((folder==='np') ? '-nepali' : '') +
                 '.pdf';
-            
+
             window.location = 'pdf?' +
                 'fn='  + chapterFN +
                 '&fp=' + chapterFP +
@@ -216,14 +215,14 @@ playMedia : function(button) {
             var db = button.getAttribute('data-db') === 'loomalocal' ? 'loomalocal' : 'looma';
             window.location = 'text?id=' + id + '&db=' + db + '&lang=' + ((language==='native') ? 'np' : 'en');
             break;
-    
+
         case "html":
             var fp = encodeURIComponent(button.getAttribute('data-fp'));
             var fn = encodeURIComponent(button.getAttribute('data-fn'));
             var kbd = encodeURIComponent(button.getAttribute('data-dn')) === 'ePaath' ? "keyboard" : "";
             window.location = 'html?fp=' + fp + '&fn=' + fn + '&ep=' + kbd;
             break;
-    
+
         case "book":
             var fp = encodeURIComponent(button.getAttribute('data-fp'));
             var dn = button.getAttribute('data-dn');
@@ -239,9 +238,10 @@ playMedia : function(button) {
 
         case "epaath":
         case "ep":
-           
-            if (! lang || lang==='both') lang =  language==='native'?'np':'en';
-           
+          //  var lang = language==='native'?'np':'en';
+
+            if (! lang) lang =  language==='native'?'np':'en';
+
             if (button.getAttribute("data-epversion") == 2015) {
                 fp = encodeURIComponent(button.getAttribute('data-fp'));
                 fn = encodeURIComponent(button.getAttribute('data-fn') +
@@ -266,7 +266,7 @@ playMedia : function(button) {
                 '&db=' + button.getAttribute('data-db') +
                 '&lang=' + ((language==='native') ? 'np' : 'en');
             break;
-    
+
         case "game":
              window.location = 'game?id=' + button.getAttribute('data-mongoid') +
                  '&class=' + button.getAttribute('data-class') +
@@ -274,13 +274,13 @@ playMedia : function(button) {
                  '&ch_id=' + button.getAttribute('data-ch_id') +
                  '&type=' + button.getAttribute('data-type');
              break;
-      
+
         case "map":
             window.location = 'map?id=' + button.getAttribute('data-mongoid');
             break;
-   
+
             /*
-            
+
         case "map":
             var fn = encodeURIComponent(button.getAttribute('data-fn'));
             var url = encodeURIComponent(button.getAttribute('data-url'));
@@ -292,16 +292,16 @@ playMedia : function(button) {
         case "slideshow":
             window.location = 'slideshow?id=' + button.getAttribute("data-mongoid");
             break;
-    
+
         case "history":
             window.location = 'history?id=' + button.getAttribute("data-mongoid");
             break;
-        
+
             /*case "history":
             window.location = 'looma-history.php?title=' + button.getAttribute('data-dn');
             break;
             */
-            
+
         default:
             console.log("ERROR: in LOOMA.playMedia(), unknown type: " +
                 button.getAttribute("data-ft"));
@@ -313,7 +313,7 @@ playMedia : function(button) {
     // attach a button [clickable button that launches that activity] to "appendToDiv"
 
         // NOTE: probably want to attach ALL the attributes of the activity (as data-xxx fields) to the Activity Button
-    
+
     //post to looma-database-utilities.php with cmd='openByID' and id=id
     // and result function makes a DIV and calls "succeed(div)"
              $.post("looma-database-utilities.php",
@@ -322,17 +322,17 @@ playMedia : function(button) {
                     var thumbfile;
                         //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
                     if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
-                  
+
                     var lang;
                     if (result.lang) lang = result.lang;
                     else {
                         var cookie = LOOMA.readStore('language', 'cookie');
                         lang = cookie !== 'english' ? 'np' : 'en';
                     }
-                   
+
                     var fn = (result.fn) ? result.fn : result.nfn;
                     var db = (result.db) ? result.db : 'looma';
-                    
+
                     var $newButton = $(
                                 '<button class="activity play img" ' +
                                 'data-id="' + id          + '" ' +
@@ -344,68 +344,68 @@ playMedia : function(button) {
                                 'data-dn="' + result.dn   + '" ' +
                                 'data-ndn="' + result.ndn   + '" ' +
                                 'data-prefix="' + result.prefix   + '" ' +
-    
+
                                 'data-zoom="' + result.zoom + '" ' +
                                 'data-url="' + result.url + '" ' +
-                       
+
                                 'data-grade="' + result.grade + '" ' +
                                 'data-class="' + result.class + '" ' +
                                 'data-subject="' + result.subject + '" ' +
                                 'data-type="' + result.presentation_type + '" ' +
-                                
+
                                 'data-epversion="' + result.version + '" ' +
                                 'data-ole="' + result.oleID + '" ' +
                                 'data-mongoID="'  + mongoID     + '" >'
-                        
+
                                 // add key1, key2, key3, key4, thumb, src, mondoID, url and ch_id data-fields  ???
                                 //
                            );
-                    
+
                 //    $newButton.append($('<img class="icon" src="images/alert.jpg">'));
-    
+
                     //var fn = (language === 'native') ? result.nfn : result.fn;
                         if ( ! ('fn' in result) && ('nfn' in result)) fn = result.nfn;
                         else if ('fn' in result) fn = result.fn;
                         else fn = null;
-                        
+
                         thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft, result.thumb);
       /*
                         if      (result.ft == 'EP'       && result.thumb)
                                                thumbfile = '../ePaath/' + result.thumb;
-                     
+
                         else if (result.thumb) thumbfile = result.fp + result.thumb ;
                         else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
-                      
+
     */
                      if (thumbfile) $newButton.append($('<img alt="" loading="lazy" draggable="false" src="' + thumbfile + '">'));
-                    
+
                        //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));
-                    
+
                     /*this idea is from: https://stackoverflow.com/questions/980855/inputting-a-default-image-in-case-the-src-attribute-of-an-html-img-is-not-vali
                            $newButton.append($('<object draggable="false" data="' + thumbfile + '" type="image/png">' +
                                                 '<img alt="" src="' + result.fp + 'thumbnail.png">' +
                                                 '</object>'));
                      */
-                    
-                    
+
+
                     var displayname;
                     if (language==='english') displayname = ('dn' in result) ? result.dn : result.ndn;
                     else displayname = ('ndn' in result) ? result.ndn : result.dn;
-                   
-    
-    
+
+
+
                     //var displayname = ((language === 'native' || (! 'dn' in result)) && result.ndn )  ? result.ndn : result.dn;
                         $newButton.append($('<span class="dn">').text(displayname));
-    
+
                     $newButton.append($('<img class="icon" src="' + icons[result.ft] + '">'));
-    
+
                     $newButton.click(function() {LOOMA.playMedia(this);});
                         $newButton.appendTo(appendToDiv);
                  },
                 'json'
               );
         }, //end makeActivityButton()
-    
+
 makeChapterButton: function (id, appendToDiv) {
         $.post("looma-database-utilities.php",
             {cmd: 'openByID', collection: 'chapters', id: id},
@@ -413,12 +413,12 @@ makeChapterButton: function (id, appendToDiv) {
                 console.log(result);
                 var chElements = LOOMA.parseCH_ID(id);
                 var subj = chElements['currentSubjectFull'], grade = chElements['currentGradeNumber'];
-                
+
                 var fn = subj + "-" + grade;
                 var fp = LOOMA.filepath('textbook') + "Class" + grade + "/" + subj + "/";
                 var pn = (result['pn']) ? result['pn'] : result['npn'];
                 var len = (result['len']) ? result['len'] : result['nlen'];
-                
+
                 var $newButton = $(
                     '<button class="chapter play img" ' +
                     'data-fn="' + fn +'.pdf" ' +
@@ -429,10 +429,10 @@ makeChapterButton: function (id, appendToDiv) {
                     'data-len"'  + len + '" ' +
                     'data-pg="'  + pn + '" >'
                 );
-                
+
                 var thumbEnd = (result['pn']) ? "_thumb.jpg" : "-Nepali_thumb.jpg";
                 var thumb = fp + fn + thumbEnd;
-                
+
                 $newButton.append($('<img alt="" draggable="false" src="' + thumb + '">'));
                 $newButton.append($('<span>').text(result.dn));
                 $newButton.click(function() {
@@ -443,7 +443,7 @@ makeChapterButton: function (id, appendToDiv) {
             'json'
         );
     },//end makeChapterButton()
-    
+
 extension: function(filename) {
     return filename.substring(filename.lastIndexOf('.') + 1);
 },
@@ -451,14 +451,14 @@ extension: function(filename) {
 filepath: function(filetype, filename) {
         var homedirectory = '../';
         var path;
-        
+
         switch (filetype) {
             case "mp3": //audio
             case "m4a": //audio
             case "audio": //audio
                 path = homedirectory + "content/audio/";
                 break;
-            
+
             case "mp4": //video
             case "video":
             case "m4v":
@@ -466,7 +466,7 @@ filepath: function(filetype, filename) {
             case "mp5":
                 path = homedirectory + "content/videos/";
                 break;
-            
+
             case "jpg": //picture
             case "jpeg":
             case "gif":
@@ -474,23 +474,23 @@ filepath: function(filetype, filename) {
             case "image":
                 path = homedirectory + "content/pictures/";
                 break;
-            
+
             case "pdf": //pdf
                 path = homedirectory + "content/pdfs/";
                 break;
-            
+
             case "epaath":
             case "EP":
                 path = homedirectory + "content/epaath/activities/";
                 break;
-            
+
             case "html": //html
                 path = homedirectory + "content/html/";
                 break;
             case "textbook":
                 path = homedirectory + "content/textbooks/";
                 break;
-            
+
             default:
                 path = "";
         }
@@ -500,7 +500,7 @@ filepath: function(filetype, filename) {
 
 thumbnail: function (filename, filepath, filetype, thumb) {
             //builds a filepath/filename for the thumbnail of this "filename" based on type and source
-    
+
                             /*
                                 if      (result.ft == 'EP'       && result.thumb)
                                                      thumbfile = '../ePaath/' + result.thumb;
@@ -510,15 +510,15 @@ thumbnail: function (filename, filepath, filetype, thumb) {
                                 else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
                                 else thumbfile = null;
                              */
-    
+
             var thumbnail_prefix, path;
             var imgsrc = null;
             var homedirectory = '../';
 
             if (filetype) {
-                
+
                 filetype = filetype.toLowerCase();
-            
+
                 if (filetype == 'chapter') {
                   //  imgsrc = homedirectory + "content/textbooks/" + filepath + filename + "_thumb.jpg";
                     thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
@@ -682,7 +682,7 @@ saveForm : function(form, name) {  // save the settings of 'form' sessionStore'
     LOOMA.setStore( name,
                     JSON.stringify(formArray),  //NOTE: use JSON.stringify(x.serializeArray() here, not x.serialize()
                     'session');
-    
+
     console.log('saving: ' + JSON.stringify(form.serializeArray()));
 }, //end saveForm()
 
@@ -707,11 +707,11 @@ loggedIn : function() {
 translate : function(language) {
     // based on the value of LANGUAGE, hide or show all KEYWORDs and TIPs
     if (language == 'native') {
-        
+
         //.css( "color", "red" );
         //$('.english-keyword, .english').hide();
         //$('.native-keyword,  .native').show();
-       
+
        // $('.english-keyword, .english').css('display','none');
        // $('.native-keyword,  .native').css('display','');
         $('.english-keyword, .english').hide();
@@ -721,7 +721,7 @@ translate : function(language) {
     } else /*english*/ {
         //$('.english-keyword, .english').show();
         //$('.native-keyword,  .native').hide();
-        
+
         //$('.english-keyword, .english').css('display','');
         //$('.native-keyword,  .native').css('display','none');
         $('.english-keyword, .english').show();
@@ -732,9 +732,9 @@ translate : function(language) {
     //change toolbar TRANSLATE icon to the flag of the OTHER language (not being currently shown)
     if (language == 'english') $('#flag').attr('src', 'images/native-flag.png');
     else /*native*/            $('#flag').attr('src', 'images/english-flag.png');
-    
+
 }, // end translate()
-   
+
     /**
      * Generates translatable spans given english and native translations. You will need to know the native translation;
      * this program doesn't do any translation. For building translatable HTML on client side, e.g. from JS
@@ -743,7 +743,7 @@ translate : function(language) {
      * */
     translatableSpans : function(english, native){
         var language = LOOMA.readStore('language', 'cookie');
-    
+
         // rewrite to generate the spans once, then set hidden on the correct span
         if (language == "english") {
             return "<span class='english-keyword style='display:inline-block''>" + english +
@@ -831,19 +831,19 @@ defHTML: function (definition, rwdef) {  // helper function for utilities.js, no
         var $nepali = $('<div id="nepali"/>');
         var $pos = $('<div id="partOfSpeech"/>');
         var $def = $('<div id="definition"/>');
-    
+
         $english.text(definition.en);
         $nepali.text(definition.np);
         if ('part' in definition) $pos.html('<i>' + definition.part + '</i>');
-    
+
         if ('def' in definition && definition.def) def = definition.def.toLowerCase();
         else {
             def = '';
             for (var i=0; i < definition.meanings.length; i++)
             def += '(' + definition.meanings[i].part + ') ' +  definition.meanings[i].def + '<br>';
-        
+
         }
-    
+
         if (   (def === 'past tense of')
             || (def === 'comparative form of')
             || (def === 'superlative form of')
@@ -852,39 +852,39 @@ defHTML: function (definition, rwdef) {  // helper function for utilities.js, no
             || (def === 'past tense and past participle of')
             || (def === 'third person singular of'))
             def += ' ' + definition.rw;
-    
+
         //def = def.replace(/\;/g, ";</p><\p>");
-    
+
         $def.html(def);
-        
+
     if (definition.img) {
         var imgName = definition.img + ".jpg";
         var $img = $('<img id="definitionThumb" alt="" src="../content/dictionary\ images/' + imgName + '"/>');
     }
-    
+
     $div.append($english, $nepali, $pos, $def, $img);
-    
+
         if (rwdef) {
             var $rwdef = $('<div id="rwdef"/>');
             rwdef.def = rwdef.def.replace(/\;/g, "</p><\p>");
             $rwdef.html(rwdef.def);
             $div.append($rwdef);
         }
-    
+
         var len = def.length;
         if (rwdef) len += rwdef.length;
         if (len < 70) $def.addClass('largeWord');
         else if (len < 150) $def.addClass('mediumWord');
         else $def.addClass('smallWord');
-    
+
         return $div;
     }, //end LOOMA.defHTML()
-    
+
 // function DEFINE looks up the word and returns HTML containing
 //                 the word, translation, definition, and rootword definition
 define : function(word, succeed, fail) {
     LOOMA.lookup(word, found, notfound);
-    
+
     function found(def) {
         console.log("lookup of " +  def['en'] + " succeeded [np is " + def['np'] + "]");
         if (def.rw) {
@@ -908,7 +908,7 @@ define : function(word, succeed, fail) {
 //                 the word, translation, definition, and rootword definition
 reversedefine : function(word, succeed, fail) {
             LOOMA.reverselookup(word, found, notfound);
-        
+
             function found(def) {
                 console.log("lookup of " +  def['np'] + " succeeded [en is " + def['en'] + "]");
                     succeed(LOOMA.defHTML(def));
@@ -1069,7 +1069,7 @@ dictionaryUpdate : function(word, succeed, fail) {
 
     return false;
 }, //end DICTIONARYUPDATE
-        
+
 
 rtl : function(element) { //enables Right-to-left input for numbers in looma-arith-problems.js
       if (element.setSelectionRange) element.setSelectionRange(0, 0);
@@ -1188,13 +1188,13 @@ ch_id   :  function (grade, subject, unit, chapter) {
         }
      return elements;
     },    //end parseCH_ID
-        
+
         //these functions not used. to implement them, call parseCH_ID()
         ch_idGrade   :  function (ch_id) {},
         ch_idSubject :  function (ch_id) {},
         ch_idUnit    :  function (ch_id) {},
         ch_idChapter :  function (ch_id) {},
-    
+
     // LOOMA ch_idFilepath
     //
         ch_idFilepath : function(ch_id) {
@@ -1205,9 +1205,9 @@ ch_id   :  function (grade, subject, unit, chapter) {
                 parts['currentSubjectFull'] + '-' +
                 parts['currentGradeNumber'] + '.pdf';
         },
-    
-    
-    
+
+
+
     };  //end RETURN public functions
 }()); //IIEF immediately instantianted function expression
 
@@ -1318,30 +1318,30 @@ LOOMA.speak = function(text, engine, voice, rate) {
         //      in mimic  --setf duration_stretch=1/rate ( e.g. if rate === 0.5 stretch by 2x (slower))
         //      in speechSynthesis  SpeachSynthesisUtterance.rate = rate ( e.g. if rate === 0.5 speak slower)
         //  for Looma in Nepal, use default rate = 2/3
-    
+
     const defaultspeed = 2/3;
     var   speed = rate ? rate : defaultspeed;
-    
+
     /* requires a special regex package, like xregexp [https://www.regular-expressions.info/xregexp.html]
          const devanagari = /p{Devanagari}/u;
          if (text.match(devanagari)) text = "I cannot speak Nepali";
-         
+
      so, we use "if (text.match(/[\u0900-\u097F]/g))" instead for detecting devanagri unicode characters
     */
-    
+
      if (text != "" ) {
          var playPromise;
-    
+
          if (!engine) {
-                 if (text.match(/[\u0900-\u097F]/g)) engine = 'larynx'; // use 'larynx' for devanagri text
+                 if (text.match(/[\u0900-\u097F]/g)) engine = 'piper'; // use 'larynx' for devanagri text
             else if (speechSynthesis && (speechSynthesis.getVoices().length !== 0))
                 engine = 'synthesis';
             else
                 engine = 'mimic'; //default engine is mimic
          };
-     
+
          if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_bdl'; //get the currently used voice, if any. default VOICE
-        
+
                     /* MIMIC VOICES: current default voice = cmu_us_bdl
                     Note from David: The three that seem about equal in clarity,
                     lack of low frequency rumble, lack of piercing high frequency … are
@@ -1349,12 +1349,12 @@ LOOMA.speak = function(text, engine, voice, rate) {
                         US male 		bdl   (Haydi say maybe the best)
                         US male		    rms
                      */
-    
-    
+
+
          console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
-        
+
          var speechButton = document.getElementsByClassName("speak")[0];
-        
+
          if (LOOMA.speak.animationsInProgress == null) {
              LOOMA.speak.animationsInProgress = 0;
          }
@@ -1365,7 +1365,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
              console.log("Leaving this page. Stopping Audio");
              LOOMA.speak.cleanup();
          };
-        
+
          /*
          * speak.activate() makes the "Speak" button opaque and larger,
          * to give feedback to the user while the TTS request is waiting.
@@ -1379,7 +1379,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      speechButton.oldOpacity = $(speechButton).css("opacity");
                      speechButton.oldWidth = $(speechButton).css("width");
                      speechButton.oldHeight = $(speechButton).css("height");
-                    
+
                      $(speechButton).animate({
                          opacity: 1,
                          width: parseFloat(speechButton.oldWidth) * 2 + "px",
@@ -1388,7 +1388,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  }
              }
          }; // end speak.activate()
-        
+
          /*
           * speak.disable() makes the "Speak" button translucent and regular sized,
           * to show the user that the TTS is finished.
@@ -1406,7 +1406,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  }
              }
          }; // end speak.disable()
-        
+
          /*
           * Resets the TTS and button to their original states (only when Mimic is used).
           */
@@ -1421,11 +1421,11 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  LOOMA.speak.disable();
              }
          }; // end speak.cleanup
-    
+
     ////////////////////////////////
     //start of LOOMA.speak code: ///
     ////////////////////////////////
-        
+
          if (engine === 'synthesis') {
              // we use synthesis if the user is running Safari or Chrome.
              // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
@@ -1441,7 +1441,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  speechSynthesis.speak(speech);
              }
          }
-        
+
          else { // engine is NOT 'synthesis', therefore call server-side looma-speech.php which uses 'mimic' or 'larynx'
              if (LOOMA.speak.playingAudio != null) {
                  // If speaking, stop the currently playing speech.
@@ -1450,7 +1450,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  LOOMA.speak.cleanup();
              } else {  //else start the new speech
                  console.log("Playing Audio: " + text);
-                
+
                  // To reduce latency before speech starts, split the speech into sentences, and speak each separately.
                  // separating on: period, comma, question mark, exclamation mark, semicolon, colon   /[.,?!;:]/
                  // Splitting over these punctuation marks will usually work.
@@ -1458,23 +1458,23 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  //It may lag on unusually long sentences without punctuation.
                  var splitSentences = text.split(/[.,?!;:]/);
                  console.log("Speaking " + splitSentences.length + " phrases.");
-                
+
                  var lastAudio = null;
                  var firstAudio = null;
-                
+
                  for (var i = 0; i < splitSentences.length; i++) {
                      var currentText = splitSentences[i];
                      var audioSource;
-                     
+
                      audioSource = 'looma-TTS.php?' +
                          'text='    + encodeURIComponent(currentText) +
                          '&voice='  + encodeURIComponent(voice) +
                          '&rate='   + encodeURIComponent(speed) +
                          '&engine=' + encodeURIComponent(engine);
-    
+
                      // This is like preloading images – all the requests to mimic will execute early, so there won't be lag between phrases.
                      var currentAudio = new Audio(audioSource);
-                    
+
                      //this 'onended' handler is attached to each phrase before it is entered into the queue
                      currentAudio.onended = function () {
                          // When this phrase is over, start the next one, by popping it off the queue
@@ -1491,7 +1491,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                              LOOMA.speak.cleanup();
                          }
                      };
-                    
+
                      if (lastAudio == null) { //for the first phrase, dont put it on the queue, just play it
                          firstAudio = currentAudio;
                      } else {
@@ -1500,7 +1500,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      }
                      lastAudio = currentAudio;
                  }  // end FOR loop which builds the queue of audio phrases to play
-                
+
                  LOOMA.speak.playingAudio = firstAudio;
                  console.log("Playing Phrase");
                  //play the first phrase
@@ -1511,9 +1511,9 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          function (error) {
                         console.log('Play promise error: ', error);
                  });
-                
+
                  console.log('promise is ', playPromise);
-                
+
                  // In browsers that don’t yet support this functionality,
                  // playPromise won’t be defined.
                /*  if (playPromise !== undefined) {
@@ -1522,7 +1522,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      }).catch(function (error) {
                          console.log('Play promise error: ', error);
                      });
-                
+
                  }
                */
                  LOOMA.speak.activate();
@@ -1534,14 +1534,14 @@ LOOMA.speak = function(text, engine, voice, rate) {
  LOOMA.toggleFullscreen = function() {
      var fs =      document.getElementById('video-fullscreen');
      if (!fs) fs = document.getElementById('fullscreen');
-     
+
      if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement) {
         leaveFS(fs);
     } else {
         enterFS(fs);
     }
  }; //end toggleFullscreen()
- 
+
  /*
 //toggle fullscreen display of the element with id="fullscreen"
 LOOMA.toggleFullscreen = function() {
@@ -1567,7 +1567,7 @@ LOOMA.toggleFullscreen = function() {
     }
 }; //end LOOMA.toggelFullscreen()
 */
- 
+
  function enterFS(elem) {
             if (elem.requestFullscreen) {
                 elem.requestFullscreen();
@@ -1590,7 +1590,7 @@ LOOMA.toggleFullscreen = function() {
                 document.msExitFullScreen();
      }
  }
- 
+
 /*
  from looma-alerts.js in the slideshow team code
  Description: Creates a styled translatable popup interface.
@@ -1607,11 +1607,11 @@ LOOMA.toggleFullscreen = function() {
 LOOMA.makeTransparent = function($container) {
     if (!$container) $container  = $('body > div');
     $container.addClass('all-transparent');
-   
+
     //NOTE: add .off('click', xxxx) to turn off click response outside the popup
     $container.css('pointerEvents','none');
 //$container.off('click');
-    
+
     //also set ESC key to cancel the popup
     $(document).keydown(function (e) {
         const ESC = 27;  // escape key maps to keycode `27`
@@ -1624,7 +1624,7 @@ LOOMA.makeTransparent = function($container) {
  LOOMA.makeOpaque = function($container) {
      if (!$container) $container = $('body > div');
      $container.removeClass('all-transparent');
-     
+
      //NOTE: add .on('click', xxxx) to turn off click response outside the popup
      $container.css('pointerEvents','auto');
  };  // End of makeOpaque
@@ -1637,9 +1637,9 @@ LOOMA.closePopup = function() {
     $('.popup').fadeOut(1000).remove();
     var $container = $('body > div');
     $container.removeClass('all-transparent');
-    
+
     LOOMA.makeOpaque($container);
-    
+
     //$container.off('click');
     $(document).off('keydown');  //stop listening for ESC
     //$(document).off('click');  //stop listening for CLICK
@@ -1669,7 +1669,7 @@ LOOMA.alert = function(msg, time, notTransparent, next){
         if (next) {next();}
         LOOMA.closePopup();
     });
-    
+
    if (time) {
         var timeLeft = time - 1;
         var popupButton = $('#close-popup');
@@ -1755,11 +1755,11 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
         canceled();
    });
 };  //end prompt()
- 
+
  LOOMA.clean = function(text) {
      return text.replace(/[^a-zA-Z0-9 \.\-\_]/g, "").trim();
  };
- 
+
  LOOMA.escapeHTML = function(text) {
      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -1805,20 +1805,20 @@ LOOMA.download = function (name, path) {
          form.attr("method", "post");
          form.attr("action", location);
          form.attr("target", "_self");
-        
+
          $.each( args, function( key, value ) {
              var field = $('<input></input>');
-            
+
              field.attr("type", "hidden");
              field.attr("name", key);
              field.attr("value", value);
-            
+
              form.append(field);
          });
          $(form).appendTo('body').submit().remove();
      }; //end redirect()
- 
- 
+
+
     //OLD LOOMA.CH_IDregex = /^([1-9]|10)(EN|S|M|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?$/;
     //OLD LOOMA.CH_IDregex = /([1-9]|10)(EN|Sa|S|Ma|M|SSa|SS|N|H|V)[0-9]{2}(\.[0-9]{2})?/;
 LOOMA.CH_IDregex = /([1-9]|10|11|12)(EN|ENa|Sa|S|SF|Ma|M|SSa|SS|N|H|V|CS)[0-9]{2}(\.[0-9]{2})?/;   //removed "^" and "$"

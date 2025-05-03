@@ -362,8 +362,8 @@ button.beside-play {
 #login-id {
         position:absolute;
         display:none;
-        right:0;
-        bottom:0;
+        right:1vw;
+        bottom:5vh;
         color:red;
         font-size: 0.8em;
 }

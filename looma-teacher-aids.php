@@ -177,10 +177,18 @@ $foundActivity = false;
 echo "<div id='main-container-horizontal' class='scroll'>";
 echo "<br>";
 
-if ($subject === "social studies") $caps = "Social Studies";
-else if ($subject === 'math')      $caps = "Maths";
-else                               $caps = ucfirst($subject);
-
+if ($subject === "social studies") {
+    $caps = "Social Studies";
+    $subject = "SocialStudies";
+}
+else if ($subject === 'math')      {
+    $caps = "Maths";
+    $subject = "Math";
+}
+else {
+    $caps = ucfirst($subject);
+    $subject = ucfirst($subject);
+}
 $grade = str_replace("class", "Grade ", $grade);
 echo "<h2 class='title'>";
 echo keyword('Teacher Aids'); echo ': ';
@@ -216,13 +224,14 @@ if ($teacher_guide) {
 
 //if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
 
+
 // make buttons for TEACHER AIDS if present
 $aids = ['summary','outline','plan','keywords','quiz'];
 $aidnames = ['Summary','Outline','Plan','Keywords','Quizzes'];
 for ($i=0; $i<sizeof($aids); $i++)  {
     $aid = $aids[$i];
 
-   // echo ("LOOKING FOR ../content/chapters/Class$gradenumber/$subject/$lang/$ch_id.$aid");
+   //echo ("LOOKING FOR ../content/chapters/Class$gradenumber/$subject/$lang/$ch_id.$aid");
 
     if (file_exists("../content/chapters/Class$gradenumber/$subject/$lang/$ch_id.$aid")) {
         echo "<td><a href='looma-play-teacher-aid.php?dn=$aid&type=$aid&ch_id=$ch_id'>";
@@ -244,6 +253,7 @@ if (!$foundActivity) echo "<h2>No Teacher Aids for this chapter</h2>"
 
 <?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>
-<script src="js/looma-activities.js"></script>          <!-- Looma Javascript -->
+<script src="js/looma-activities.js"></script>
+<script src="js/looma-play-teacher-aid.js"></script>
 </body>
 

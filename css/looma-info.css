@@ -120,6 +120,7 @@ span {
      height:10vh;
      grid-column: left / middle-left;
      margin-left:3vw;
+     font-size: 2em;
  }
 
 #advanced_button {

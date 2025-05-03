@@ -10,11 +10,12 @@ Description:
 
 'use strict';
 
-var result = 1, row = 0, maxButtons = 3;
+var resultColumn = 1, row = 0, maxButtons = 3;
 var resultsShown = 0;
 var resultsTotal = 0;
 var searchName = 'library-search';
 var searchName = 'library-search';
+var result_array;
 
 ////////////////////////////////
 /////  clearResults()    /////
@@ -24,20 +25,24 @@ function clearResults(results) {
     $("#top").hide();
     $("#more").hide();
     resultsShown = 0;
+    resultsTotal = 0;
 } //end clearResults()
 
 ////////////////////////////////
 /////  displayResults()    /////
 ////////////////////////////////
     function displayResults(results) {
+    
+    // array 'results' holds a 'count' field with number of results
+    //                   and a 'list' array with the mongoIDs of all the results
+    
     var $display = $('#results-div').empty().append('<h2 style="margin-bottom: 0;">Search Results:</h2>');
     
     resultsTotal = results['count'];
-    resultsShown = resultsShown + pagesz;
 
-    result = 1;
+   resultColumn = 1;
     
-    var result_array = [];
+        result_array = [];
         result_array['activities'] = [];
         result_array['chapters']  = [];
 
@@ -47,19 +52,18 @@ function clearResults(results) {
     });
 
     $("#top").show();
+    resultsShown = Math.min(resultsShown + pagesz, resultsTotal);
     if (resultsShown < resultsTotal) $("#more").show();
     
     var chapResults = result_array['chapters'].length;
     var actResults = result_array['activities'].length;
-
-    //NOTE TODO: should use mongo find().count() to get the total number of results and report it right away
     
     $display.append("<p> Activities(<span id='count'>" + results['count'] + "</span>)</p>");
     
     $display.append('<table id="results-table"></table>');
 
     if(actResults != 0)
-        displayActivities(result_array['activities'], '#results-table');
+        displayActivities(result_array['activities'], '#results-table', 1, pagesz);
     if(chapResults != 0)
         displayChapters(result_array['chapters'], '#results-table');
      
@@ -75,58 +79,35 @@ function clearResults(results) {
 /////  displayMoreResults()    /////
 ////////////////////////////////
 function displayMoreResults(results) {
-    
-    resultsShown = resultsShown + pagesz;
-    
-    var result_array = [];
-    result_array['activities'] = [];
-    result_array['chapters']  = [];
-    
-    results['list'].forEach(function(e) {
-        if (e['ft'] == 'chapter') result_array['chapters'].push(e);
-        else                      result_array['activities'].push(e);
-    });
-    
     $("#top").show();
+    displayActivities(result_array['activities'], '#results-table', resultsShown+1, pagesz);
     if (resultsShown < resultsTotal) $("#more").show(); else $("#more").hide();
-    
-    //var chapResults = result_array['chapters'].length;
-    //var actResults = result_array['activities'].length;
-    
-    //$display.append("<p> Activities(<span id='count'>" + actResults + ")</span></p>");
-   // $('#results-div').find('#count').text(parseInt($('#results-div').find('#count').text()) + results['count']);
-    
-    if(result_array['activities'].length > 0)
-        displayActivities(result_array['activities'], '#results-table');
-    /*
-    if(chapResults != 0)
-        displayChapters(result_array['chapters'], '#results-table');
-    */
-    
-    
-    
 } //end displayMoreResults()
 
 ///////////////////////////////////
 /////  displayActivities()    /////
 ///////////////////////////////////
-function displayActivities(results, table) {
-    $.each(results, function(index, value) {
+function displayActivities(results, table, next, count) {
+    // append items in array 'results' into display div 'table' starting at 'next' and adding 'count' new items
+    
+    var last = Math.min(next+count-1, resultsTotal);
+    for (var i=next-1; i <= last-1; i++) {
         
-        if(result % maxButtons == 1){
+        if(resultColumn % maxButtons == 1){
                 row++;
                 $(table).append("<tr id='result-row-" + row + "'></tr>");
             }
-            //console.log(value);
-            $('#result-row-' + row).append("<td id='query-result-" + result + "'></td>");
+            //console.log(results[i]);
+            $('#result-row-' + row).append("<td id='query-result-" + resultColumn + "'></td>");
     
-        var mongoID = (value['mongoID']) ? (value['mongoID']['$id'] || value['mongoID']['$oid']) : "";
-        var db = value['db'];
-       // var mongoID = value['mongoID']['$id'] || value['mongoID']['$oid'];
-            LOOMA.makeActivityButton(value['_id']['$id'] || value['_id']['$oid'],
-                                      db, mongoID, '#query-result-' + result);
-            result ++;
-           });
+        var mongoID = (results[i]['mongoID']) ? (results[i]['mongoID']['$id'] || results[i]['mongoID']['$oid']) : "";
+        var db = results[i]['db'];
+       // var mongoID = results[i]['mongoID']['$id'] || results[i]['mongoID']['$oid'];
+            LOOMA.makeActivityButton(results[i]['_id']['$id'] || results[i]['_id']['$oid'],
+                                      db, mongoID, '#query-result-' + resultColumn);
+            resultColumn ++;
+           };
+    resultsShown = last;  //careful: can exceed resultsTotal
     
 } //end displayActivities()
 
@@ -177,7 +158,9 @@ function translateSearchResults() {
 
 $(document).ready (function() {
     
-    pagesz = 24;
+    pagesz = 24;    //NOTE (5/2025) pgaesz is ignored by looma-databae-utilities.php cmd=search
+                    // the client code [this file] can decide how and when to paginate
+    
     $("#search").find("#pagesz").val(pagesz);
     //$("#search").find("#pageno").val(pageno);
     
@@ -198,9 +181,15 @@ $(document).ready (function() {
         $("#search-term").focus();
     });
     
-    $("#more").click(function(){
+  /*  $("#more").click(function(){
         pagesz = 24;
         sendSearchRequest ($("#search"), displayMoreResults);
+    });
+ */
+    $("#more").click(function(){  // changed 05 2025 to do client-side pagination of results display
+        //pagesz = 24;
+        //sendSearchRequest ($("#search"), displayMoreResults);
+        displayMoreResults();
     });
     
     $('#results-div').on('error', 'button.img img', function() {

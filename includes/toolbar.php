@@ -146,17 +146,30 @@
 			<span class="logo">
                 <!-- <span class="english-keyword" draggable="false"> Supported by </span>
                 <span class="native-keyword" draggable="false"> सहयोग कर्ता </span> -->
-                <img id="toolbar-logo-CEHRD" src="images/logos/CEHRD-logo.png">
-                <img  class="toolbar-logo english-keyword"  src="images/logos/Looma-english-amanda 3x1.png" >
-			    <img  class="toolbar-logo native-keyword" hidden draggable="false" src="images/logos/Looma-nepali-amanda 3x1.png" >
-      		</span>
+
+                 <?php
+                 if ($_SERVER['SERVER_NAME'] !== 'looma.website') {
+                    global $ENV_IP;
+                    if (! $ENV_IP || $ENV_IP === '' || $ENV_IP === "127.0.0.1")
+                         $ip = "Not Connected";
+                    else $ip = $ENV_IP;
+                    echo  "<span>IP:" . $ip . "</span>";
+;
+                }
+                ?>
+
+
+               <!-- <img id="toolbar-logo-CEHRD" src="images/logos/CEHRD-logo.png"> -->
+        	</span>
 
 			<span id="datetime"></span>
 
-            <!-- NOTE: display AMAZON  logo is we can detect that this instance of looma is running on AWS
+            <!-- NOTE: display AMAZON  logo if we can detect that this instance of looma is running on AWS
             <span id="amazon"><img src="images/logos/amazon.png"></span>
             -->
 		</div>
+        <img  class="toolbar-logo english-keyword"  src="images/logos/Looma-english-amanda 3x1.png" >
+        <img  class="toolbar-logo native-keyword" hidden draggable="false" src="images/logos/Looma-nepali-amanda 3x1.png" >
 
         <img id="padlock"
              draggable="false"

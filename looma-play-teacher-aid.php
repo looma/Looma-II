@@ -51,6 +51,17 @@ include ('includes/looma-utilities.php');
             $fp = "../content/chapters/$class/$subject/en/$ch_id.$type";
             $contents = file_get_contents($fp);
 
+            if ($type = "keywords") {
+                $temp = "";
+                $keywords = json_decode($contents, true);
+                foreach($keywords as $keyword) {
+                    $temp .= "English:    " . $keyword['en'] . "\n";
+                    $temp .= "Nepali:     " . $keyword['np'] . "\n";
+                    $temp .= "Definition: " . $keyword['def'] . "\n\n";
+                    //echo $temp;
+                    };
+                $contents = $temp;
+            };
             echo "<div class='text-display'>";
             echo "<pre>" . $contents . "</pre>";
             echo "</div>";
@@ -65,8 +76,6 @@ include ('includes/looma-utilities.php');
 include ('includes/toolbar.php');
 include ('includes/js-includes.php');
 ?>
-<!--
 <script src="js/looma-play-teacher-aid.js"></script>
--->
 </body>
 <?php

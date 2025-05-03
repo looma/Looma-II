@@ -21,7 +21,7 @@ button.play-pause {
 }
 
 button.mute {
-    background-image: url("../images/mute.png");
+    background-image: url("../images/audio.png");
     background-size: 100% 100%;
     background-color:rgba(255,255,255,1);
     height: 5vh;

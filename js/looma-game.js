@@ -1686,7 +1686,7 @@ function gameOver() {
     /////////////////////////////
     ///////// fail  /////////
     ////////////////////////////
-        function game_not_found(r) {LOOMA.alert("Game not found");};
+        function game_not_found(r) {LOOMA.alert("Game not found",5);};
         
     /////////////////////////////
     ///////// succeed  /////////
@@ -1804,6 +1804,7 @@ function buildKeywordGame(keywordgame) {
     // 'keywordgame is JSON of keywords with fields 'en', 'np', 'def' and 'ndef'
     // build 'game[]' array
     var game = []; game['prompts'] = []; game['responses'] = [];
+    game['title'] = "Key Vocabulary";
     game['presentation_type'] = 'matching';
     game['ch_id'] = "";
     game['subject'] = "";

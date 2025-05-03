@@ -1,0 +1,20 @@
+CHANGE LOG FOR LOOMA
+
+2025 04 30  Version 7.14
+
+- adding Teacher Aids to Chapter Resources
+    AI generated summary, outline, plan, key words and quiz files in content/chapters folder
+    if the files are present, buttons show when Teacher Aids [on the Resources page of a chapter] is clicked
+
+- loaded preliminary set of Teacher Aids to all chapters - needs to be checked
+
+- changes suggested by Bandipur schools and Dinesh
+    show IP adddress on toolbar
+    remove CEHRD logo on toolbar
+    show system info on INFO larger
+
+- changes suggested by Kabindra
+    verbose output from 'loomaupdate'
+    conform audio/mute icon to YouTube style
+    "More Results" button on Library Search display
+    remove CEHRD logo, add IP address to Toolbar

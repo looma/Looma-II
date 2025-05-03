@@ -402,7 +402,7 @@ function sendSearchRequest(searchForm, callBack) {
     var ellipsisTimer = setInterval(
         function () {
             $('#ellipsis').text($('#ellipsis').text().length < 10 ? $('#ellipsis').text() + '.' : '');
-        },33 );
+        },66 );
     
     if  ($('#collection').val() == 'activities') {
         searchForm.find('#cmd').val("search");

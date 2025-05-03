@@ -77,10 +77,10 @@ function attachMediaControls (myMedia) {
         $mute.off('click').on('click', function() {
           if (!media.muted) {
               media.muted = true;
-              $mute.attr('style', 'background-image: url("images/audio.png")');
+              $mute.attr('style', 'background-image: url("images/mute.png")');
           } else {
               media.muted = false;
-              $mute.attr('style', 'background-image: url("images/mute.png")');
+              $mute.attr('style', 'background-image: url("images/audio.png")');
           }
         });
 

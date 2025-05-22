@@ -180,3 +180,10 @@ button#chapter-submit:hover {
 ul {
     list-style-type: none;
 }
+
+#file-list-table {
+    display:grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns, equal width */
+    gap: 20px; /* margin/gap between cells */
+    padding: 20px;
+}

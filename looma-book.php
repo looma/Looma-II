@@ -89,30 +89,30 @@ foreach ($chapters as $ch) {
 
 ///////   ENGLISH   ///////
 // display chapter button for english chapters of the book, if any
-    if ($ch_fn) { echo "<td><button class='chapter'
+    if ($ch_fn) { echo "<td><button class='book-chapter'
                    data-fn='$ch_fn'
                    data-fp='$ch_fp'
                    data-ch='$ch_id'
-                   data-ft='chapter'
+                   data-ft='pdf'
                    data-zoom='2.3'>
                        $ch_dn
                    </button></td>";
 
     }
-    else {echo "<td><button class='chapter' style='visibility: hidden'></button></td>";}
+    else {echo "<td><button class='book-chapter' style='visibility: hidden'></button></td>";}
 
 ///////   NEPALI   ///////
 // display chapter button for nepali chapters of the book, if any
-    if ($ch_nfn) { echo "<td><button class='chapter'
+    if ($ch_nfn) { echo "<td><button class='book-chapter'
                    data-fn='$ch_nfn'
                    data-fp='$ch_nfp'
                    data-ch='$ch_id'
-                   data-ft='chapter'
+                   data-ft='pdf'
                    data-zoom='2.3'>
                        $ch_ndn
                    </button></td>";
     }
-    else {echo "<td><button class='chapter' style='visibility: hidden'></button></td>";}
+    else {echo "<td><button class='book-chapter' style='visibility: hidden'></button></td>";}
 
 ///////   LESSON   ///////
 // display a button for the lesson plans for this chapter

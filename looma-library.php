@@ -19,7 +19,8 @@ Description:  displays and navigates content folders for Looma
 
     logPageHit('library');
 ?>
-    <link rel = "Stylesheet" type = "text/css" href = "css/looma-library.css">
+<link rel = "Stylesheet" type = "text/css" href = "css/looma-library.css">
+<link rel = "Stylesheet" type = "text/css" href = "css/looma-library-search.css">
 </head>
 
 <body>
@@ -485,126 +486,131 @@ echo "</tr></table>";
 
                         else {
 
-        /********************************/
-        /**********  FILEs  *************/
-        /********************************/
+                            /********************************/
+                            /**********  FILEs  *************/
+                            /********************************/
 
-        /*************** iterate through the regular files in this DIR
-         *************** and make buttons each of the FILES ****************/
-        /*******get their DNs from mondoDB and sort on DN***********/
-        /*************before displaying the results ****************/
+                            /************* iterate through the regular files in this DIR ********/
+                            /************* get their DNs from mondoDB and sort on DN  ***********/
+                            /************* send the sorted list to client to display ************/
 
-                        $list = array();
+                            $list = array();
 
-                        if ($path === "../content/PhET/") $maxButtons = 2;
-                        else $maxButtons = 3;
+                            if ($path === "../content/PhET/") $maxButtons = 2;
+                            else $maxButtons = 3;
 
-                                foreach ($files as $file => $info) {
-                                $file = (string) $file;
-                            //skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
-                            if (($file[0] == ".") ||
-                                strpos($file, "_thumb") ||
-                                $file == "thumbnail.png" ||
-                                $file == "/Looma/images.txt")
-                                continue;
+                            foreach ($files as $file => $info) {
+                                $file = (string)$file;
 
-                            if (is_file($path . $file)) {
-                                $components = pathinfo($path . $file);
-                                if (isset($components['extension'])) $ext = $components["extension"]; else $ext="";
-                                $base = $components["basename"];  //$base is filename w/o the file extension
-                                $mongoID = null;
+                                //skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
+                                if (($file[0] === ".") ||
+                                    strpos($file, "_thumb") ||
+                                    $file === "thumbnail.png" ||
+                                    strpos($file,".vtt") ||
+                                    $file === "/Looma/images.txt" ||
+                                    $file === "archivetimestamp.txt") {
+                                        // echo "ignoring " . $file . "<br>";
+                                        continue;
+                                    }
 
-                                if ($ext === 'lesson') {  //we have some "lessons" that are listed in Teacher Tools directory as pseudo-files
-                                    $dn = $components["filename"];
-                                    $query = array('dn' => $dn);
-                                    $activity = mongoFindOne($activities_collection, $query);
-                                    if ($activity) $mongoID = strval($activity['mongoID']);
-                                    $ndn = ($activity && keyIsSet('ndn', $activity)) ? $activity['ndn'] : str_replace($specials, " ", $dn);
-                                } else {   // look in the database to see if this file has a DISPLAYNAM
+                                if (is_file($path . $file)) {
+                                    $components = pathinfo($path . $file);
+                                    if (isset($components['extension'])) $ext = $components["extension"]; else $ext = "";
+                                    $base = $components["basename"];  //$base is filename w/o the file extension
+                                    $mongoID = null;
 
-                                   $query = [
-                                        '$or' => [
-                                            ['fn' => $file],
-                                            ['nfn' => $file]]];
+                                    if ($ext === 'lesson') {  //we have some "lessons" that are listed in Teacher Tools directory as pseudo-files
+                                        $dn = $components["filename"];
+                                        $query = array('dn' => $dn);
+                                        $activity = mongoFindOne($activities_collection, $query);
+                                        if ($activity) $mongoID = strval($activity['mongoID']);
+                                        $ndn = ($activity && keyIsSet('ndn', $activity)) ? $activity['ndn'] : str_replace($specials, " ", $dn);
+                                    } else {   // look in the database to see if this file has a DISPLAYNAME
 
-                                    $activity = mongoFindOne($activities_collection, $query);
-                                   // $dn =  ($activity && keyIsSet('dn', $activity))  ? $activity['dn']  : str_replace($specials, " ", $base);
-                                    $dn =  ($activity && keyIsSet('dn', $activity))  ? $activity['dn']  : "";
-                                    $ndn = ($activity && keyIsSet('ndn', $activity)) ? $activity['ndn'] : str_replace($specials, " ", $dn);
-                                }
+                                        $query = [
+                                            '$or' => [
+                                                ['fn' => $file],
+                                                ['nfn' => $file]
+                                            ]
+                                        ];
 
-                                switch (strtolower($ext)) {
-                                    case "video":
-                                    case "mp4":
-                                    case "m4v":
-                                    case "mov":
-                                    case "image":
-                                    case "jpg":
-                                    case "jpeg":
-                                    case "png":
-                                    case "gif":
-                                    case "audio":
-                                    case "mp3":
-                                    case "m4a":
-                                    case "pdf":
-                                    case "html":
-                                    case "lesson": //we have some "lessons" that are listed in Teacher Tools directory as pseudo-files
-                                        $item['ext'] = $ext;
-                                        $item['path'] = $path;
-                                        $item['file'] = $file;
-                                        $item['dn'] = $dn;
-                                        $item['ndn'] = $ndn;
-                                        $item['thumb'] = "";
-                                        $item['mongoID'] = $mongoID;
+                                        $activity = mongoFindOne($activities_collection, $query);
 
-                                            $item['page']  = ($activity && keyIsSet('pn', $activity)) ? $activity['pn'] : 1;
-                                            $item['zoom'] = ($activity && keyIsSet('zoom', $activity)) ? $activity['zoom'] : 2.3;
+                                        //echo "found " . $activity['dn'];
 
-                                        $list[] = $item;
+                                        $dn = ($activity && keyIsSet('dn', $activity)) ? $activity['dn'] : "";
+                                        $ndn = ($activity && keyIsSet('ndn', $activity)) ? $activity['ndn'] : str_replace($specials, " ", $dn);
+                                    };
+                                    /*
+                                            switch (strtolower($ext)) {
+                                                case "video":
+                                                case "mp4":
+                                                case "m4v":
+                                                case "mov":
+                                                case "image":
+                                                case "jpg":
+                                                case "jpeg":
+                                                case "png":
+                                                case "gif":
+                                                case "audio":
+                                                case "mp3":
+                                                case "m4a":
+                                                case "pdf":
+                                                case "html":
+                                                case "lesson": //we have some "lessons" that are listed in Teacher Tools directory as pseudo-files
+                                                    $item['ext'] = $ext;
+                                                    $item['path'] = $path;
+                                                    $item['file'] = $file;
+                                                    $item['dn'] = $dn;
+                                                    $item['ndn'] = $ndn;
+                                                    $item['thumb'] = "";
+                                                    $item['mongoID'] = $mongoID;
 
-                                    break;
-                                    default:
-                                        // ignore unknown filetypes
-                                }  //end SWITCH
-                            } else if (isHTML($path . $file)) {
-                                $item['ext'] = "html";
-                                $item['path'] = $path;
-                                $item['file'] = $file . "/index.html";
-                                $item['dn'] = $file;
-                                $item['ndn'] = "";
-                                $item['thumb'] = $file . "/thumbnail.jpg";
-                                $item['mongoID'] = "";
+                                                    $item['page'] = ($activity && keyIsSet('pn', $activity)) ? $activity['pn'] : 1;
+                                                    $item['zoom'] = ($activity && keyIsSet('zoom', $activity)) ? $activity['zoom'] : 2.3;
 
-                                $list[] = $item;
-                            } // end if HTML
+                                          //          $list[] = $item;
 
-                        } //end FOREACH file;
+                                                    break;
+                                                default:
+                                                    // ignore unknown filetypes
+                                            }  //end SWITCH
+                                        } else if (isHTML($path . $file)) {
+                                            $item['ext'] = "html";
+                                            $item['path'] = $path;
+                                            $item['file'] = $file . "/index.html";
+                                            $item['dn'] = $file;
+                                            $item['ndn'] = "";
+                                            $item['thumb'] = $file . "/thumbnail.jpg";
+                                            $item['mongoID'] = "";
+                                        } // end if HTML
+                                */
 
-                        if (sizeof($list) > 0) {
-                            // sort the list of files by DN
-                            $list = alphabetize_by_dn($list);
+                                $list[] = $activity;
+                                };
+                            } //end FOREACH file;
 
-                            if ($dircount > 0) echo "<hr>";
-                            echo "<table id='file-table'><tr>";
+                            if (sizeof($list) > 0) {
+                                // sort the list of files by DN
+                                $list = alphabetize_by_dn($list);
 
-                    //echo "fp is " . $path;
-                   // echo "  and maxButtons is: " . $maxButtons;
+                                if ($dircount > 0) echo "<hr>";
 
-                            foreach ($list as $item) {
-
-                            //echo "filemane " . $file . "  dn: " . $item['dn'] . "  ndn: " . $item['ndn'] ;
-
-                                echo "<td>";
-                                makeActivityButton($item['ext'], $item['path'], $item['file'], $item['dn'],
-                                    $item['ndn'], $item['thumb'], "",
-                                    $item['mongoID'], "", "",  $item['page'],  $item['zoom'], "", "", null, null,null,null);
-                                echo "</td>";
-                                nextButton();
-                            }
-                        }
-                    }
+                            echo "<div id='file-list' hidden>";
+                                $numUnique = sizeof($list);
+                                echo json_encode(array('count' => $numUnique, 'list' => $list));
+                            echo "</div>";
+                            echo "<div id='file-list-table'></div>";
+                            };
+                        };
     echo "</tr></table>";
-//  };
+
+    echo "<button id='more'>";
+    keyword("More results");
+    echo "</button>";
+    echo "<button id='top'>";
+    keyword("^Top");
+    echo "</button>";
 ?>
 
     </div>

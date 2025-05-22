@@ -19,7 +19,10 @@ function mediaPlayPause () { // play or pause the currently playing MEDIA - stor
     if (media.getAttribute('id') === 'video') {
         var tracks = media.textTracks;
         
-        if (tracks.length > 0) {
+        if (tracks.length === 1) {
+            tracks[0].mode = 'showing';
+        }
+       else if (tracks.length > 0) {     // needs to be extended to more than 2 tracks when we add another language
             if (language === 'native') {
                 tracks[0].mode = "hidden";
                 tracks[1].mode = "showing";

@@ -48,7 +48,8 @@ function clearResults(results) {
 
     results['list'].forEach(function(e) {
             if (e['ft'] == 'chapter') result_array['chapters'].push(e);
-            else                      result_array['activities'].push(e);
+            else
+                result_array['activities'].push(e);
     });
 
     $("#top").show();
@@ -103,7 +104,7 @@ function displayActivities(results, table, next, count) {
         var mongoID = (results[i]['mongoID']) ? (results[i]['mongoID']['$id'] || results[i]['mongoID']['$oid']) : "";
         var db = results[i]['db'];
        // var mongoID = results[i]['mongoID']['$id'] || results[i]['mongoID']['$oid'];
-            LOOMA.makeActivityButton(results[i]['_id']['$id'] || results[i]['_id']['$oid'],
+            LOOMA.makeActivityButtonFromId(results[i]['_id']['$id'] || results[i]['_id']['$oid'],
                                       db, mongoID, '#query-result-' + resultColumn);
             resultColumn ++;
            };
@@ -158,7 +159,7 @@ function translateSearchResults() {
 
 $(document).ready (function() {
     
-    pagesz = 24;    //NOTE (5/2025) pgaesz is ignored by looma-databae-utilities.php cmd=search
+    var pagesz = 24;    //NOTE (5/2025) pgaesz is ignored by looma-databae-utilities.php cmd=search
                     // the client code [this file] can decide how and when to paginate
     
     $("#search").find("#pagesz").val(pagesz);
@@ -198,7 +199,6 @@ $(document).ready (function() {
     
     $("button.zeroScroll").click(function() { LOOMA.setStore ('libraryScroll', 0, 'session');});
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll',    'session'));
-    
     
     // when translate flag is clicked - translate search results to new UI language
     $('#translate').click(translateSearchResults);

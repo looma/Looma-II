@@ -50,8 +50,8 @@ they want to edit a video
                                         echo '<track  default class="en" src="' . $filepath . $fileprefix . '.vtt" kind="subtitles" srclang="en" label="English">';
                                 ?>
                                 <?php
-                                if (file_exists($filepath . $fileprefix . "_nepali.vtt"))
-                                    echo '<track  class="np" src="' . $filepath . $fileprefix . '_nepali.vtt" kind="subtitles" srclang="np" label="Nepali">';
+                                if (file_exists($filepath . $fileprefix . "_np.vtt"))
+                                    echo '<track  class="np" src="' . $filepath . $fileprefix . '_np.vtt" kind="subtitles" srclang="np" label="Nepali">';
                                 ?>
                             </video>
                             <div id="fullscreen-buttons">

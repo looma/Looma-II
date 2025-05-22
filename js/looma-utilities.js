@@ -194,7 +194,7 @@ playMedia : function(button) {
             if (chapter_subject === 'Social studies') chapter_subject = 'SocialStudies';
 
             var chapterFP = '../content/chapters/' + button.getAttribute('data-class') + '/' +
-                button.getAttribute('data-subject') + '/' + folder + '/';
+                chapter_subject + '/' + folder + '/';
 
             var chapterFN = encodeURIComponent(button.getAttribute('data-ch')) +
                 ((folder==='np') ? '-nepali' : '') +
@@ -307,8 +307,94 @@ playMedia : function(button) {
                 button.getAttribute("data-ft"));
     } //end SWITCH
 }, //end LOOMA.playMedia()
+    
+        makeActivityButton : function(result, id, db, mongoID, appendToDiv) {
+             var thumbfile;
+            //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
+            if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
+        
+            var lang;
+            if (result.lang) lang = result.lang;
+            else {
+                var cookie = LOOMA.readStore('language', 'cookie');
+                lang = cookie !== 'english' ? 'np' : 'en';
+            }
+        
+            var fn = (result.fn) ? result.fn : result.nfn;
+            var db = (result.db) ? result.db : 'looma';
+        
+            var $newButton = $(
+                '<button class="activity play img" ' +
+                'data-id="' + result._id          + '" ' +
+                'data-fn="' + fn   + '" ' +
+                'data-fp="' + fp          + '" ' +
+                'data-db="' + db          + '" ' +
+                'data-ft="' + result.ft   + '" ' +
+                'data-lang="' +  lang     + '" ' +
+                'data-dn="' + result.dn   + '" ' +
+                'data-ndn="' + result.ndn   + '" ' +
+                'data-prefix="' + result.prefix   + '" ' +
+            
+                'data-zoom="' + result.zoom + '" ' +
+                'data-url="' + result.url + '" ' +
+            
+                'data-grade="' + result.grade + '" ' +
+                'data-class="' + result.class + '" ' +
+                'data-subject="' + result.subject + '" ' +
+                'data-type="' + result.presentation_type + '" ' +
+            
+                'data-epversion="' + result.version + '" ' +
+                'data-ole="' + result.oleID + '" ' +
+                'data-mongoID="'  + result.mongoID     + '" >'
+            
+                // add key1, key2, key3, key4, thumb, src, mondoID, url and ch_id data-fields  ???
+                //
+            );
+        
+            //    $newButton.append($('<img class="icon" src="images/alert.jpg">'));
+        
+            //var fn = (language === 'native') ? result.nfn : result.fn;
+            if ( ! ('fn' in result) && ('nfn' in result)) fn = result.nfn;
+            else if ('fn' in result) fn = result.fn;
+            else fn = null;
+        
+            thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft, result.thumb);
+            /*
+                              if      (result.ft == 'EP'       && result.thumb)
+                                                     thumbfile = '../ePaath/' + result.thumb;
+      
+                              else if (result.thumb) thumbfile = result.fp + result.thumb ;
+                              else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
+      
+          */
+            if (thumbfile) $newButton.append($('<img alt="" loading="lazy" draggable="false" src="' + thumbfile + '">'));
+        
+            //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));
+        
+            /*this idea is from: https://stackoverflow.com/questions/980855/inputting-a-default-image-in-case-the-src-attribute-of-an-html-img-is-not-vali
+                   $newButton.append($('<object draggable="false" data="' + thumbfile + '" type="image/png">' +
+                                        '<img alt="" src="' + result.fp + 'thumbnail.png">' +
+                                        '</object>'));
+             */
+        
+        
+            var displayname;
+            if (language==='english') displayname = ('dn' in result) ? result.dn : result.ndn;
+            else displayname = ('ndn' in result) ? result.ndn : result.dn;
+        
+        
+        
+            //var displayname = ((language === 'native' || (! 'dn' in result)) && result.ndn )  ? result.ndn : result.dn;
+            $newButton.append($('<span class="dn">').text(displayname));
+        
+            $newButton.append($('<img class="icon" src="' + icons[result.ft] + '">'));
+        
+            $newButton.click(function() {LOOMA.playMedia(this);});
+            $newButton.appendTo(appendToDiv);
+        }, // end makeActivityButton()
 
-        makeActivityButton: function (id, db, mongoID, appendToDiv) {
+
+        makeActivityButtonFromId: function (id, db, mongoID, appendToDiv) {
     // given an ID for an activity in the activities collection in mongo,
     // attach a button [clickable button that launches that activity] to "appendToDiv"
 
@@ -317,94 +403,16 @@ playMedia : function(button) {
     //post to looma-database-utilities.php with cmd='openByID' and id=id
     // and result function makes a DIV and calls "succeed(div)"
              $.post("looma-database-utilities.php",
-                {cmd: 'openByID', db: db, collection: 'activities', id: id},
-                function(result) {
-                    var thumbfile;
-                        //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
-                    if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
-
-                    var lang;
-                    if (result.lang) lang = result.lang;
-                    else {
-                        var cookie = LOOMA.readStore('language', 'cookie');
-                        lang = cookie !== 'english' ? 'np' : 'en';
-                    }
-
-                    var fn = (result.fn) ? result.fn : result.nfn;
-                    var db = (result.db) ? result.db : 'looma';
-
-                    var $newButton = $(
-                                '<button class="activity play img" ' +
-                                'data-id="' + id          + '" ' +
-                                'data-fn="' + fn   + '" ' +
-                        'data-fp="' + fp          + '" ' +
-                        'data-db="' + db          + '" ' +
-                                'data-ft="' + result.ft   + '" ' +
-                                'data-lang="' +  lang     + '" ' +
-                                'data-dn="' + result.dn   + '" ' +
-                                'data-ndn="' + result.ndn   + '" ' +
-                                'data-prefix="' + result.prefix   + '" ' +
-
-                                'data-zoom="' + result.zoom + '" ' +
-                                'data-url="' + result.url + '" ' +
-
-                                'data-grade="' + result.grade + '" ' +
-                                'data-class="' + result.class + '" ' +
-                                'data-subject="' + result.subject + '" ' +
-                                'data-type="' + result.presentation_type + '" ' +
-
-                                'data-epversion="' + result.version + '" ' +
-                                'data-ole="' + result.oleID + '" ' +
-                                'data-mongoID="'  + mongoID     + '" >'
-
-                                // add key1, key2, key3, key4, thumb, src, mondoID, url and ch_id data-fields  ???
-                                //
-                           );
-
-                //    $newButton.append($('<img class="icon" src="images/alert.jpg">'));
-
-                    //var fn = (language === 'native') ? result.nfn : result.fn;
-                        if ( ! ('fn' in result) && ('nfn' in result)) fn = result.nfn;
-                        else if ('fn' in result) fn = result.fn;
-                        else fn = null;
-
-                        thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft, result.thumb);
-      /*
-                        if      (result.ft == 'EP'       && result.thumb)
-                                               thumbfile = '../ePaath/' + result.thumb;
-
-                        else if (result.thumb) thumbfile = result.fp + result.thumb ;
-                        else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
-
-    */
-                     if (thumbfile) $newButton.append($('<img alt="" loading="lazy" draggable="false" src="' + thumbfile + '">'));
-
-                       //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));
-
-                    /*this idea is from: https://stackoverflow.com/questions/980855/inputting-a-default-image-in-case-the-src-attribute-of-an-html-img-is-not-vali
-                           $newButton.append($('<object draggable="false" data="' + thumbfile + '" type="image/png">' +
-                                                '<img alt="" src="' + result.fp + 'thumbnail.png">' +
-                                                '</object>'));
-                     */
-
-
-                    var displayname;
-                    if (language==='english') displayname = ('dn' in result) ? result.dn : result.ndn;
-                    else displayname = ('ndn' in result) ? result.ndn : result.dn;
-
-
-
-                    //var displayname = ((language === 'native' || (! 'dn' in result)) && result.ndn )  ? result.ndn : result.dn;
-                        $newButton.append($('<span class="dn">').text(displayname));
-
-                    $newButton.append($('<img class="icon" src="' + icons[result.ft] + '">'));
-
-                    $newButton.click(function() {LOOMA.playMedia(this);});
-                        $newButton.appendTo(appendToDiv);
-                 },
+                {cmd: 'openByID',
+                 db: db,
+                 collection: 'activities',
+                 id: id},
+                 function(result) {
+                    LOOMA.makeActivityButton(result, id, db, mongoID, appendToDiv)
+            },
                 'json'
               );
-        }, //end makeActivityButton()
+        }, //end makeActivityButtonFromID()
 
 makeChapterButton: function (id, appendToDiv) {
         $.post("looma-database-utilities.php",

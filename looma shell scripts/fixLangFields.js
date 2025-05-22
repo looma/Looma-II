@@ -1,7 +1,7 @@
 // One time mongo terminal program to fix some lang field settings
 // each line formatted as:   DN
 //
-// create the input file 'dnsToFix.txt'
+// create the input file 'ndnsToFix.txt'
 // and CD to the folder holding that input file
 //
 //  in terminal: "mongo looma"
@@ -9,7 +9,7 @@
 //
 "use strict";
 
-var input = 'dnsToFix.txt'
+var input = 'ndnsToFix.txt'
 var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
 var lang = 'np';
 var count = 0;

@@ -1,0 +1,389 @@
+1EN01.00	7	49	About the Teacher's Book
+1EN01.01	56	5	Listen and say
+1EN01.02	61	4	Listen and practise
+1EN01.03	65	3	Listen and say
+1EN01.04	68	3	Listen and act
+1EN01.05	71	3	Look and say
+1EN01.06	74	4	Look and say
+1EN01.07	78	3	Listen and act
+1EN01.08	81	3	Listen and say
+1EN01.09	84	3	Listen and say
+1EN01.10	87	3	Listen and say
+1EN01.11	90	3	Listen and say
+1EN01.12	93	3	Listen and act
+1EN01.13	96	3	Listen and act
+1EN01.14	99	3	Listen and act
+1EN01.15	102	1	Assess yourself 1
+1EN02.00	103	2	Alphabet
+1EN02.15	105	4	Aa
+1EN02.16	109	4	Aa
+1EN02.17	113	3	Bb
+1EN02.18	116	3	Bb
+1EN02.19	119	3	Cc
+1EN02.20	122	3	Cc
+1EN02.21	125	3	Dd
+1EN02.22	128	3	Dd
+1EN02.23	131	3	Ee
+1EN02.24	134	4	Ee
+1EN02.25	138	3	Aa to Ee
+1EN02.26	141	3	Ff
+1EN02.27	144	3	Ff
+1EN02.28	147	3	Gg
+1EN02.29	150	3	Gg
+1EN02.30	153	3	Hh
+1EN02.31	156	3	Hh
+1EN02.32	159	3	Ii
+1EN02.33	162	3	Ii
+1EN02.34	165	3	Jj
+1EN02.35	168	3	Jj
+1EN02.36	171	3	Ff to Jj
+1EN02.37	174	3	Kk
+1EN02.38	177	3	Kk
+1EN02.39	180	3	Ll
+1EN02.40	183	3	Ll
+1EN02.41	186	3	Mm
+1EN02.42	189	3	Mm
+1EN02.43	192	3	Nn
+1EN02.44	195	3	Nn
+1EN02.45	198	3	Oo
+1EN02.46	201	3	Oo
+1EN02.47	204	3	Kk to Oo
+1EN02.48	207	3	Pp
+1EN02.49	210	3	Pp
+1EN02.50	213	3	Qq
+1EN02.51	216	3	Qq
+1EN02.52	219	3	Rr
+1EN02.53	222	3	Rr
+1EN02.54	225	3	Ss
+1EN02.55	228	3	Ss
+1EN02.56	231	3	Tt
+1EN02.57	234	3	Tt
+1EN02.58	237	4	Pp to Tt
+1EN02.59	241	3	Uu
+1EN02.60	244	3	Uu
+1EN02.61	247	3	Vv
+1EN02.62	250	3	Vv
+1EN02.63	253	3	Ww
+1EN02.64	256	3	Ww
+1EN02.65	259	3	Xx
+1EN02.66	262	3	Xx
+1EN02.67	265	3	Yy
+1EN02.68	268	3	Yy
+1EN02.69	271	3	Zz
+1EN02.70	274	3	Zz
+1EN02.71	277	3	Uu to Zz
+1EN02.72	280	3	Aa to Zz
+1EN02.73	283	2	Assess yourself 2
+1EN03.00	285	0	Me and My Family
+1EN03.73	285	4	Head and Shoulders
+1EN03.74	289	5	I See with My Eyes
+1EN04.00	294	2	My Daily Life
+1EN04.75	296	5	Brush Your Teeth
+1EN04.76	301	5	I Can Jump
+1EN04.77	306	5	I'm Happy
+1EN04.78	311	4	It is Seven Oclock
+1EN04.79	315	4	Seven Days
+1EN04.80	319	2	Assess yourself 3
+1EN05.00	321	2	Our School
+1EN05.80	323	4	Come Here
+1EN05.81	327	5	May I …?
+1EN05.82	332	4	I'm Pawan
+1EN05.83	336	4	Things in the Classroom
+1EN05.84	340	4	Let's Play
+1EN05.85	344	2	Assess yourself 4
+1EN06.00	346	2	Our Environment
+1EN06.85	348	5	On the Table
+1EN06.86	353	3	The Rainbow
+1EN06.87	356	4	Red Rose
+1EN06.88	360	4	This Is a Bag
+1EN06.89	364	0	
+1EN07.00	364	2	My Belongings
+1EN07.89	366	4	In the Bag
+1EN07.90	370	4	Under the Table
+1EN07.91	374	4	Things at Home
+1EN07.92	378	3	Where Are My Socks?
+1EN07.93	381	0	
+1EN08.00	381	2	Our Culture
+1EN08.93	383	5	Dashain
+1EN08.94	388	4	Birthday
+1EN08.95	392	0	
+1EN09.00	392	2	Communication Technology and Market
+1EN09.95	394	4	Ramu is a Farmer
+1EN09.96	398	4	Rice and Curry
+1EN09.97	402	4	Vehicles
+1EN09.98	406	0	
+1EN10.00	406	2	Fruits and Vegetables
+1EN10.01	408	4	Fruits
+1EN10.02	412	5	A  An
+1EN10.03	417	4	Vegetables
+1EN10.04	421	0	
+1EN11.00	421	2	Hobbies and Interests
+1EN11.01	423	5	I Like Fruits
+1EN11.02	428	3	I Don't Like Leaves
+1EN11.03	431	0	
+1EN12.00	431	3	Birds and Animals
+1EN12.01	434	4	The Tiger
+1EN12.02	438	4	The Cock
+1EN12.03	442	4	Birds in the Tree
+1EN12.04	446	4	On  In  Under
+1EN12.05	450	4	Big and Small
+1EN12.06	454	-448	My Pet
+2EN00.03	8	5	Teacher's Guide: English Grade Two
+2EN01.00	13	1	Theme: Me and My Family
+2EN01.01	14	5	1 Birendras Family
+2EN01.02	19	4	2 I Love My Family
+2EN01.03	23	3	3 Uncle Shiva's Family
+2EN01.04	26	4	4 It is I
+2EN01.05	30	3	5 My Body
+2EN01.06	33	4	6 I Take Care of My Body
+2EN01.07	37	2	Assessment 1
+2EN02.00	39	1	My Daily Life
+2EN02.01	40	4	7 Before School
+2EN02.02	44	4	8 At School
+2EN02.03	48	3	9 After School
+2EN02.04	51	3	10 On Saturdays
+2EN02.05	54	3	11 At the Zoo
+2EN02.06	57	3	12 At a Fair
+2EN02.07	60	2	Assessment 2
+2EN03.00	62	1	My School
+2EN03.01	63	3	13 Lunch Box Surprise
+2EN03.02	66	3	14 Dentist at School
+2EN03.03	69	3	15 Homework
+2EN03.04	72	3	16 Durbar High School
+2EN03.05	75	3	17 Unit Test
+2EN03.06	78	3	18 We Are at School
+2EN03.07	81	2	Assessment 3
+2EN04.00	83	1	Our Environment
+2EN04.01	84	4	19 My House
+2EN04.02	88	3	20 My Garden
+2EN04.03	91	3	21 My Village
+2EN04.04	94	3	22 Weather
+2EN04.05	97	4	23 Keeping Clean
+2EN04.06	101	4	24 Using Numbers
+2EN04.07	105	1	Assessment 4
+2EN05.00	106	1	My Belongings
+2EN05.01	107	4	25 Things I Have
+2EN05.02	111	3	26 Colours and Objects
+2EN05.03	114	3	27 My Clothes
+2EN05.04	117	2	Assessment 5
+2EN06.00	119	1	Our Culture
+2EN06.01	120	4	28 Our Festivals
+2EN06.02	124	4	29 Children's Day
+2EN06.03	128	4	30 Months of the Year
+2EN06.04	132	2	Assessment 6
+2EN07.00	134	1	Communication Technology and Market
+2EN07.01	135	3	31 Shopping
+2EN07.02	138	3	32 Talking on the Telephone
+2EN07.03	141	4	33 What is this?
+2EN07.04	145	3	34 Making a List
+2EN07.05	148	2	Assessment 7
+2EN08.00	150	1	Fruits and Vegetables
+2EN08.01	151	3	35 Fruits at the Market
+2EN08.02	154	2	36 Vegetables at the Market
+2EN08.03	156	3	37 Buying Fruits and Vegetables
+2EN08.04	159	1	Assessment 8
+2EN09.00	160	1	Hobbies and Interests
+2EN09.01	161	4	38 I Like...
+2EN09.02	165	4	39 We are on a Holiday
+2EN09.03	169	3	40 Playing Games
+2EN09.04	172	1	Assessment 9
+2EN10.00	173	1	Birds and Animals
+2EN10.01	174	3	41 Chicken Little
+2EN10.02	177	3	42 Helpful Animals
+2EN10.03	180	3	43 Birds and Animals
+2EN10.04	183	3	44 What do Animals Eat?
+2EN10.05	186	2	Assessment 10
+3EN00.00	7	5	Teacher's Guide: Grade Three
+3EN01.00	12	1	Me and My Family
+3EN01.01	13	4	1 My Lovely Family
+3EN01.02	17	6	2 I'm from Nepal
+3EN01.03	23	5	3 Family Chores
+3EN01.04	28	4	4 Mother's Day
+3EN01.05	32	4	5 What Do They Do?
+3EN01.06	36	2	3EN Assessment 1
+3EN02.00	38	1	My Daily Life
+3EN02.01	39	4	6 Pari's Daily Routine
+3EN02.02	43	5	7 My Best Friend
+3EN02.03	48	5	8 My Breakfast
+3EN02.04	53	5	9 Summer Holiday
+3EN02.05	58	5	10 Saturday
+3EN02.06	63	2	3EN Assessment 2
+3EN03.00	65	1	My School
+3EN03.01	66	4	11 Going to School
+3EN03.02	70	5	12 About My School
+3EN03.03	75	3	13 Around My School
+3EN03.04	78	3	14 In the Playground
+3EN03.05	81	3	15 School Rules
+3EN03.06	84	2	3EN Assessment 3
+3EN04.00	86	1	Our Environment
+3EN04.01	87	4	16 The Magic Tree
+3EN04.02	91	4	17 How Do They Look?
+3EN04.03	95	4	18 Seasons
+3EN04.04	99	4	19 Let's Talk About Directions
+3EN04.05	103	4	20 Where Are My Friends?
+3EN04.06	107	1	3EN Assessment 4
+3EN05.00	108	1	My Belongings
+3EN05.01	109	4	21 Nita's Room
+3EN05.02	113	4	22 My Classroom
+3EN05.03	117	5	23 My Clothes
+3EN05.04	122	2	3EN Assessment 5
+3EN06.00	124	1	Our Culture
+3EN06.01	125	4	24 Musical Instruments
+3EN06.02	129	4	25 Our Festivals
+3EN06.03	133	5	26 Special Days
+3EN06.04	138	2	3EN Assessment 6
+3EN07.00	140	1	Communication Technology and Market
+3EN07.01	141	4	27 Making a Call
+3EN07.02	145	4	28 At a Market Place
+3EN07.03	149	4	29 I Love Shopping
+3EN07.04	153	1	3EN Assessment 7
+3EN08.00	154	1	Fruits & Vegetables
+3EN08.01	155	4	30 The Pumpkin in the Jar
+3EN08.02	159	3	31 Fruits & Vegetables
+3EN08.03	162	1	Assessment 8
+3EN09.00	163	2	Hobbies & Interests
+3EN09.01	165	4	32 My Hobbies
+3EN09.02	169	4	33 My Favourite Sport
+3EN09.03	173	1	Assessment 9
+3EN10.00	174	1	Birds & Animals
+3EN10.01	175	5	34 The Penguin
+3EN10.02	180	4	35 The Polar Bear
+3EN10.03	184	1	Assessment 10
+4EN00	5	4	About the Teacher's Guide
+4EN01	9	12	Meeting People
+4EN02	21	12	Personal Belongings
+4EN03	33	13	Rules and Timetables
+4EN04	46	13	Requests
+4EN05	59	11	Talking About Quantity
+4EN06	70	12	Comparison
+4EN07	82	11	Location
+4EN08	93	14	Getting Information
+4EN09	107	12	Directions
+4EN10	119	12	Past Events
+4EN11	131	11	Giving Reasons
+4EN12	142	12	Popular Places and People
+4EN13	154	10	Hobbies and Interests
+4EN14	164	11	Expressing Ability
+4EN15	175	11	Agreeing and Disagreeing
+4EN16	186	9	Future Plans
+4EN17	195	5	Scripts of the Listening Texts
+5EN00	6	4	About the Teacher's Guide
+5EN01	10	12	Meeting People
+5EN02	22	14	Possession
+5EN03	36	14	Getting Information
+5EN04	50	14	Requesting and Apologising
+5EN05	64	16	Thanking and Congratulating
+5EN06	80	12	Talking about Quantity
+5EN07	92	14	Making Comparisions
+5EN08	106	13	Describing Locations
+5EN09	119	13	Facts and Truths
+5EN10	132	11	Instruction and Directions
+5EN11	143	15	Narrating Past Events
+5EN12	158	15	Giving Reasons
+5EN13	173	14	People and Places
+5EN14	187	13	Our Likes and Dislikes
+5EN15	200	13	Expressing Ability
+5EN16	213	12	Agreeing and Disagreeing
+5EN17	225	14	Future Plans
+5EN18	239	5	Audio Transcriptions
+6EN00	5	5	Introduction
+6EN01	10	7	Biography (T.S. Eliot)
+6EN02	17	7	Story (Three Simple Rules)
+6EN03	24	8	Story (Beauty and the Beast)
+6EN04	32	6	Factual text (Festivals of Nepal)
+6EN05	38	8	Story (The Monkeys Go Fasting)
+6EN06	46	7	Drama (Tom Paints the Fence)
+6EN07	53	8	Essay (Human and the Environment)
+6EN08	61	9	Narrative (Gairigaun: Then and Now)
+6EN09	70	6	Descriptive text (Rara Lake)
+6EN10	76	7	Brochure (Rules and Safety Guidelines at Central Zoo)
+6EN11	83	9	Essay (Mobile Phones: Uses and Abuses)
+6EN12	92	8	Story (Forgiveness of the King)
+6EN13	100	6	Story (The Baby Quail)
+6EN14	106	6	Price List
+6EN15	112	7	Story (Musicians of Ilam)
+6EN16	119	9	Story (Umar in Disguise)
+6EN17	128	9	Story (A Palm Reader)
+6EN18	137	8	Chart (Expenditure on Computers and Smartphones)
+6EN19	145	4	Listening Transcripts
+7EN00	5	4	About the Teacher's Guide
+7EN01	9	10	A Job Interview
+7EN02	19	13	The Small Bird’s Wisdom
+7EN03	32	13	Kisa Gotami and the Mustard Seed
+7EN04	45	13	Some Festivals of Nepal
+7EN05	58	13	The Three Merchants
+7EN06	71	12	My Holiday Plan
+7EN07	83	15	Fast Food
+7EN08	98	12	A Trip to a Village
+7EN09	110	13	Smartphone Ownership Chart
+7EN10	123	13	What to do if Someone is Sick in Your Household
+7EN11	136	14	Dr. Sanduk Ruit
+7EN12	150	13	Differences Between People
+7EN13	163	14	A Terrifying Night
+7EN14	177	12	Tall Trees
+7EN15	189	13	Climate Change
+7EN16	202	13	A Lesson from a Son
+7EN17	215	12	Fair Shares
+7EN18	227	11	A Hotel Menu
+7EN19	238	14	Elephants
+7EN20	252	7	Scrips of the Listening Texts
+8EN00	6	4	About the Teacher's Guide
+8EN01	10	12	A Tour to Central Zoo
+8EN02	22	15	A Father's Letter to his Son
+8EN03	37	13	Public Announcements
+8EN04	50	13	A Memoir: A Visit to Mustang
+8EN05	63	13	The Old Woman and the Lime Tree
+8EN06	76	15	Traditional Marriage Customs around the World
+8EN07	91	12	Weather Forecast
+8EN08	103	15	Having Fun
+8EN09	118	16	The Leap between High School and Collage
+8EN10	134	11	Vacancy Announcement
+8EN11	145	17	Sir Isaac Newton
+8EN12	162	15	Nepal's Bird Man
+8EN13	177	11	Nepal is the first country to double its tiger population
+8EN14	188	16	The Magic Mirror
+8EN15	204	13	Conservation of Earth
+8EN16	217	13	Why I Became a Vegan
+8EN17	203	14	Naresh and the Stranger
+8EN18	244	17	Road Accidents in Nepal: Are Poor Roads Solely to Blame
+8EN19	261	13	A Tale of Two Birds
+8EN20	274	10	Audio Transcriptions
+9EN00	6	4	About the Teacher's Guide
+9EN01	10	14	Travel and Holidays
+9EN02	24	14	Health and Hygiene
+9EN03	38	14	Family, Market and Public Places
+9EN04	52	16	Life and Death
+9EN05	68	16	Ethics, Norms and Values
+9EN06	84	16	Custom and Culture
+9EN07	100	17	Ecology and Environment
+9EN08	117	15	Science and Technology
+9EN09	132	17	Work and Leisure
+9EN10	149	13	The Earth and Space
+9EN11	162	16	Gadgets and Instruments
+9EN12	178	16	People and places
+9EN13	194	19	Organisation Profile and Authority
+9EN14	213	15	History and Civilization
+9EN15	228	16	People and Lifestyle
+9EN16	244	13	Games and Sports
+9EN17	257	17	Global Warming and Climate Change
+9EN18	274	19	Transportation and Communication
+10EN00	6	4	About the Teacher's Guide
+10EN01	10	16	Current Affairs and Issues
+10EN02	26	15	Festivals and Celebrations
+10EN03	41	20	Health and Wellness
+10EN04	61	17	Work and Leisure
+10EN05	78	14	Science and Experiment
+10EN06	92	18	Food and Cuisine
+10EN07	110	17	Cyber Security
+10EN08	127	14	Hobbies and Interests
+10EN09	141	17	History and Culture
+10EN10	158	19	Games and Sports
+10EN11	177	14	Ethics and Morality
+10EN12	191	17	Nature and Development
+10EN13	208	16	Population and Migration
+10EN14	224	13	Travel and Adventure
+10EN15	237	15	People and Places
+10EN16	252	19	Success and Celebration
+10EN17	271	12	Countries and Towns
+10EN18	283	15	Media and Entertainment
+10EN19	298	11	Listening Script

@@ -390,12 +390,13 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         echo ">";
         if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
 
-        if ( $fp && preg_match('/CDC Teacher Guides/',$fp))
+    /*    if ( $fp && preg_match('/CDC Teacher Guides/',$fp))
             displayName($fn, 'Teacher\'s Guide', $ndn, 'green');
         else
-            displayName($fn, $dn, $ndn, 'black');
+    */
+    displayName($fn, $dn, $ndn, 'black');
 
-       // echo '<img class="icon" src="' . icon($ft) . '">';
+    // echo '<img class="icon" src="' . icon($ft) . '">';
 
         if ($dn) echo "<span class='tip yes-show big-show' >" . $dn . "</span>";
         else if ($ndn) echo "<span class='tip yes-show big-show' >" . $ndn . "</span>";

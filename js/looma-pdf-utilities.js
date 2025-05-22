@@ -194,12 +194,12 @@ function isScrolledIntoView($elem){ // or window.addEventListener("scroll"....
 function enableZoomControls() {
     $('#zoom-out').one('click', async function () {
         $('#zoom-btn').text(Math.round((currentScale * 0.8 / initialZoom) * 100).toString() + '%');
-        await setZoom(currentScale * 0.8);
+        await setZoom(Math.max(currentScale * 0.8,1));  // restricting min zoom to 35%
     });
     
     $('#zoom-in').one('click', async function () {
         $('#zoom-btn').text(Math.round((currentScale * 1.25 / initialZoom) * 100).toString() + '%');
-        await setZoom(currentScale * 1.25);
+        await setZoom(Math.min(currentScale * 1.25,3.25));  // restricting max zoom to 200%
     });
 }
 function disableZoomControls() {

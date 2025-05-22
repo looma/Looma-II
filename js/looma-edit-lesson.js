@@ -423,8 +423,8 @@ function createActivityDiv (activity) {
              $(activityDiv).attr("data-ole",item['oleID']);
         }
     
-        var lang =  $("input:radio[name='chapter-language']:checked").val();
-        $(activityDiv).attr("data-lang", lang);
+        //var lang =  $("input:radio[name='chapter-language']:checked").val();
+        $(activityDiv).attr("data-lang", item['lang']);
         
         if (item['ft'] === 'inline') {
             $(activityDiv).attr("data-html", item['html']);
@@ -435,6 +435,7 @@ function createActivityDiv (activity) {
             $(activityDiv).attr("data-pn", item['pn']);
             $(activityDiv).attr("data-nfn", item['nfn']);
             $(activityDiv).attr("data-npn", item['npn']);
+            $(activityDiv).attr("data-chapter", item['chapter']);
             //if (lang==='np') {
             //      $(activityDiv).attr("data-fn", item['nfn'] ? item['nfn'] : null);
             //    $(activityDiv).attr("data-pn", item['npn'] ? item['npn'] : 1);
@@ -1222,8 +1223,11 @@ function cloneMasterLesson($chapter) {
                 newlesson['data'].forEach(function(timeline_item, index) {
                     if (timeline_item.collection === 'chapters') {
                         timeline_item.id = ch_id;
-                        $(timeline_item).attr('data-index', index);
-                    }
+                    } else if (timeline_item.type === 'game' &&
+                               timeline_item.dn === "Key Vocabulary") {
+                        timeline_item.chapter = ch_id;
+                    };
+                    $(timeline_item).attr('data-index', index);
                 });
                
             }

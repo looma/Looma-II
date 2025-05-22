@@ -314,7 +314,7 @@ function matchPromptClick(event) {
     selected_prompt = $(event.currentTarget).data()['pair'];
     $('.prompt.not-done[data-pair=' + selected_prompt + ']').addClass('clicked');
     
-    if ($(event.currentTarget).data()['word']) LOOMA.speak($(event.currentTarget).data()['word']);
+    if ($(event.currentTarget).data()['word'] && game.presentation_type !== 'picture matching') LOOMA.speak($(event.currentTarget).data()['word']);
 
     if (previousClick === 'response') {checkMatch();
     } else {

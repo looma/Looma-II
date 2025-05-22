@@ -1,0 +1,119 @@
+1M10	109	10	112	10	103	105	chapter	Addition of Numbers up to the sum of 20	२० सम्मका सङ्ख्याहरुको जोड
+2M01.01	7	10	7	10	1	1	chapter	Lesson 1 Capacity	क्षमता
+2M06.04	181	6	181	6	175	175	chapter	Lesson 12 Fraction	भिन्‍न
+2M08.00	201	0	201	0	195	195	section	Communication Technology and Market	सञ्‍चार प्रविधि र बजार
+2M10.01	255	2	255	2	249	249	chapter	Learning Progression Chart	सिकाइ श‍ृङ्‌खला
+3M02.01	15	18	15	18	9	9	chapter	Five Digit Numbers	पाँच अङ्‌कसम्मका सङ्ख्याहरू
+3M03.02	48	3	48	3	42	42	chapter	Local Numeral System up to 20	स्थानीय सङ्ख्याङ्‌कन पद्धतिमा २० सम्मका सङ्ख्याहरू
+3M03.03	51	11	51	11	45	45	chapter	Fraction	भिन्‍न
+3M07.00	207	0	207	0	201	201	section	Communication Technology and Markets	सञ्‍चार प्रविधि र बजार
+4M01	5	7	7	7	1	1	chapter	Lines and angles	रेखाहरू र कोणहरू
+4M05	45	32	47	32	41	41	chapter	Basic operations of mathematics	गणितका आधारभूत क्रियाहरु
+5M01	5	27	5	27	1	1	chapter	Lines and Angles	रेखा र कोणहरु
+6M02.06	98	5	98	6	92	92	chapter	Profit and Loss	नाफा र नोक्सान
+6M03.02	116	17	117	17	110	111	chapter	Perimeter, Area and Volume	परिमिति, क्षेत्रफल र आयतन
+6M04.03	151	13	152	13	145	146	chapter	Equation, Inequality and Graph	समिकरण, असमानता र लेखाचित्र
+6M05.01	164	27	165	27	158	159	chapter	Lines and Angles	रेखाहरु र कोणहरु
+6M05.02	191	12	192	12	185	186	chapter	Plane Shapes	समतलीय आकृतिहरु
+6M06.00	229	0	230	0	223	224	section	Statistics	तथ्याङ्कशास्त्र
+6M06.01	229	10	230	10	223	224	chapter	Statistics	तथ्याङ्कशास्त्र
+8M02	17	15	17	15	13	13	chapter	Whole Numbers	पूर्ण सङ्ख्या
+8M12	189	14	181	14	185	177	chapter	Equation and Graph	समिकरण र ग्राफ
+8M14	216	37	208	37	212	204	chapter	Plane Figures	समतलीय आकृतिहरु
+8M15	253	19	245	19	249	241	chapter	Congruency and Similarity	अनुरुप तथा समरुप आकृति
+8M17	280	6	272	6	276	268	chapter	Coordinates	निर्देशाङ्‍कहरु
+8M18	286	5	278	5	282	274	chapter	Tessellation	टेसेलेसन
+8M20	302	16	294	16	298	290	chapter	Bearing and Scale Drawing	दिशा स्थिति र स्केल ड्रइङ
+8M21	318	25	310	25	314	306	chapter	Statistics	तथ्याङ्‍कशास्त्र
+9M04	66	28	64	28	60	60	chapter	Household Arithmetic	घरायसी अङ्‍कगणित
+9M10	203	17	201	18	197	197	chapter	Highest Common Factor and Lowest Common Multiple	महत्तम समापवर्तक र लघुत्तम समापर्त्य
+9M12	242	15	241	15	236	237	chapter	Indices	घताङ्‍क
+9M17	310	20	310	20	304	306	chapter	Classification and Presentation of Data	तथ्याङ्‍कको वर्गीकरण र प्रस्तुतीकरण
+10M02	30	21	32	21	26	26	chapter	Compound Interest	चक्रीय ब्याज
+1SF01.00			7	1		1	section	Me and my family	म र मेरो परिवार
+1SF02.04			48	4		42	chapter	Electricity	विद्युत्
+2SF02.03			58	9		51	chapter	Electricity and magnets	विद्युत् र चुम्बक
+2SF04.01			107	4		100	chapter	My classroom	हाम्रो कक्षाकोठा
+2SF08.00			188	1		181	section	Our culture	हाम्रो संस्कृति
+2SF08.02			193	5		186	chapter	National symbols	राष्‍ट्रिय चिह्‍नहरू
+3SF03.00			54	1		53	section	Our community	हाम्रो समुदाय
+3SF03.04			75	6		74	chapter	Plants, animals and humans	बिरुवा, जनावर र मानिस
+4S05	86	11	85	10	82	81	 chapter	Life Process	जीवन प्रक्रिया
+4S08	146	32	143	31	142	139	 chapter	The Earth and Space	पृथ्वी र अन्तरिक्ष
+6S09.00	173	0	177	0	171	171	section	Matter	पदार्थ
+9S09	142	15	146	15	141	141	chapter	Energy	उर्जा
+9S14	226	21	231	21	225	226	chapter	Atomic Structure and Chemical Bond	परमाणु संरचना र रासायनिक बन्ड
+9S16	257	15	262	15	256	257	chapter	Gas	ग्याँस
+9S18	283	9	288	9	282	283	chapter	Carbon and its Compounds	कार्बन र यसका यौगिकहरु
+10S02	19	44	19	44	15	15	chapter	Classification of  Living Beings	जीवहरुको वर्गीकरण
+10S03	63	14	63	14	59	59	chapter	Honey Bee	मौरी
+10S07	171	30	171	30	167	167	chapter	Motion and Force	चाल र बल
+4SS01.00			7	1		1	section	Unity-one: we & our community	एकाइ—एकः हामी र हाम्रो समुदाय
+4SS01.01			8	3		2	chapter	Relations with neighbors	छिमेकीसँगकाे सम्बन्ध
+4SS02.00			27	1		21	section	Unit-Two: Our values	एकाइ—दुईः हाम्रा मूल्य मान्यता
+4SS02.05			40	3		34	chapter	Participation and Tolerance in Festivals	चाडपर्वमा सहभागिता र सहयाेग
+4SS03.00			52	1		46	section	Uinit Three: Civic Awareness	एकाइ—तीनः नागरिक चेतना
+4SS03.04			60	3		54	chapter	Our Natural Resources	हाम्रा प्राकृतिक सम्पदा
+4SS04.00			74	1		68	section	Unit Four: Social Problems and Solutions	एकाइ-चार : सामाजिक समस्या र समाधान
+4SS04.02			79	3		73	chapter	Avoid and Save from Social Problems	सामाजिक समस्याबाट बचौँ र बचाऔँ 
+4SS05.00			90	1		84	section	Unit Five: Our Past	एकाइ—पाँचः हाम्रो विगत
+4SS05.03			95	2		89	chapter	Our Fun Village	मेरो रमाइलो गाउँ
+4SS06.00			101	1		95	section	Unit-Six: Let's Respect Our Economic Activities	एकाइ—छः हाम्रा आर्थिक क्रियाकलाप
+4SS06.01			102	5		96	chapter	Let's Respect each other	कामकाे सम्मान गरौँ
+4SS06.02			107	6		101	chapter	Our Products, Good Products	हाम्रा उत्पादन, राम्रा उत्पादन
+4SS06.04			116	3		110	chapter	Let's Be Thrifty	मितव्ययी बनौँ
+4SS07.00			126	1		120	section	Unit-Seven: Our Earth	एकाइ—सातः हाम्रो पृथ्वी
+4SS07.01			127	3		121	chapter	Our Common Home	पृथ्वी : हाम्रो साझा घर
+4SS07.03			133	3		127	chapter	Introduction to Disasters and Precautions	विपत्को परिचय र सावधानीका उपाय
+4SS07.06			142	5		136	chapter	Location of our Village 	आफ्नाे गाउँ टोलको अवस्थिती
+5SS03.00			52	1		46	section	Civic awareness, duties, & rights	नागरिक चेतना, कर्तव्य र अधिकार
+5SS03.01			53	3		47	chapter	Let's protect the heritage	सम्पदाको संरक्षण गरौँ
+5SS04.04			79	4		73	chapter	In solving social problems	सामाजिक समस्या समाधानमा सङ्घसंस्थाहरु
+5SS07.01			126	5		120	chapter	Solar system, planets & satellites	सौर्यमण्डल, ग्रह र उपग्रह
+6SS03.00			58	1		50	section	Civic consciousness, duties and rights	नागरिक चेतना, कर्तव्य र अधिकार
+6SS06.06			134	3		126	chapter	Our economic resources: forests, minerals and human resources	हाम्रा आर्थिक साधनः वन, खनिज र मानव संसाधन
+6SS07.06			161	3		153	chapter	Rivers, glaciers and lakes	नदी, हिमनदी र तालहरू
+6SS08.02			186	3		178	chapter	Census historicity, introduction and importance	जनगणना ऐतिहासिकता, परिचय र महत्त्व
+6SS08.04			191	3		183	chapter	The state of Nepal's population	नेपालको जनसङ्ख्याकाे अवस्था
+7SS02.07			40	4		35	chapter	Respect for the nation and nationalism	राष्ट्रको सम्मान र राष्ट्रियताको जगेर्ना
+7SS03.00			50	1		45	section	Citizen consciousness, rights and duties	नागरिक चेतना, अधिकार र कर्तव्य
+7SS03.06			68	2		63	chapter	What about the state government?	प्रदेश सरकारका कार्य
+7SS04.02			76	3		71	chapter	Social problems and solutions	सामाजिक विकृति र समस्या समाधान
+7SS05.02			93	3		88	chapter	Medieval Nepal: Twenty-two, twenty-four and Sen states	मध्यकालीन नेपाल : बाइसी, चौबिसी र सेन राज्य
+7SS05.03			96	3		91	chapter	The political, social and economic situation of medieval Nepal	मध्यकालीन नेपालको राजनीतिक, सामाजिक र आर्थिक अवस्था
+7SS06.03			118	2		113	chapter	Relations of agriculture, industry and trade	कृषि, उद्योग र व्यापारको सम्बन्ध
+7SS07.06			142	3		137	chapter	Nepal's topography, climate and economic activities and social life	नेपालको धरातलीय स्वरूप, हावापानी र आर्थिक गतिविधिहरू एवम् सामाजिक रहनसहन 
+7SS07.10			157	3		152	chapter	What is a map?	नक्सा कार्य
+7SS08.06			176	3		171	chapter	Role of various bodies in population management	जनसङ्ख्या व्यवस्थापनमा विभिन्न निकायको भूमिका
+7SS09.03			187	3		182	chapter	Information technology	सूचना प्रविधि
+8SS02.06			41	3		35	chapter	Social harmony, tolerance and unity in Nepal	नेपालमा सामाजिक सद्‍भाव, सहिष्णुता र एकता
+8SS02.08			47	3		41	chapter	International personalities	अन्तर्राष्ट्रिय व्यक्तित्त्वहरु
+8SS08.01			173	6		167	chapter	Determinants of population change	जनसङ्ख्या परिवर्तनका निर्धारक तत्त्वहरु
+9SS01.05			21	3		14	chapter	Basic elements of society	समाजका आधारभूत तत्त्व
+9SS02.00			24	1		17	section	Development and infrastructure of development	विकासका पूर्वाधार
+9SS03.02			47	4		40	chapter	Human value and its honey	मानव मूल्य र यसको महत्त्व
+9SS10.01			243	2		236	chapter	Demographic element	जनसाङ्ख्यिक तत्त्व
+9SS10.02			245	3		238	chapter	Factors influencing population change in Nepal	नेपालमा जनसङ्ख्या परिवर्तनमा प्रभाव पार्ने तत्त्व
+9SS10.06			255	3		248	chapter	Family health and care	पारिवारिक स्वास्थ्य र हेरचाह 
+10SS02.04			41	5		34	chapter	Projects of national interest	राष्ट्रिय गाैरवका आयोजनाहरू
+10SS04.00			78	1		71	section	Social problems and solutions	सामाजिक समस्या र समाधान
+10SS04.02			85	3		78	chapter	No distortions and anomalies	याैन विकृति र विसङ्‍गति
+10SS06.09			166	4		159	chapter		अफ्रिका महादेश
+10SS07.01			181	5		174	chapter		वि.सं. २००७ सालको क्रान्ति र दिल्ली सम्झाैता
+10SS09.05			280	4		273	chapter		सूचना तथा सञ्चार प्रविधि
+11SS01.02			10	3		6	chapter	The interrelationship of social studies, social studies and social sciences	सामाजिक अध्ययन, सामाजिक शिक्षा र सामाजिक विज्ञानको अन्तरसम्बन्ध
+11SS07.00			109	0		105	section	Social identity, diversity and class division	सामाजिक पहिचान, विविधता र वर्ग विभाजन
+11SS07.03			117	2		113	chapter	Caste, tribe	जाति, जनजाति
+11SS08.02			123	3		119	chapter	Political, legal, economic and cultural features of the current constitution	वर्तमान संविधानको राजनीतिक, कानुनी, आर्थिक र सांस्कृतिक विशेषता
+11SS08.04			129	3		125	chapter	Nation, nationality and national security	राष्‍ट्र, राष्‍ट्रियता र राष्‍ट्रिय सुरक्षा
+11SS09.00			132	0		128	section	Settlement, population and development	बस्ती, जनसङ्ख्या र विकास
+11SS10.04			165	3		161	chapter	Local, formal and informal business	स्थानीय, औपचारिक र अनौपचारिक कारोबार
+11SS10.05			168	3		164	chapter	Agriculture, industry and construction	कृषि, उद्योग र निर्माण
+11SS10.06			171	4		167	chapter	Labor force, employment and entrepreneurship in Nepal	नेपालमा श्रमशक्ति, रोजगारी र उद्यमशीलता
+12SS02.00			10	0		10	section	Unit 2: Digital skills and general research skills as vital skills	एकाइ २: जीवनोपयोगी सिपका रूपमा डिजिटल सिपहरू तथा सामान्य अनुसन्धान सिपहरू
+12SS02.06			29	4		29	chapter	"Social statistics and information collection methods and Tools"	सामाजिक तथ्याङ्क र सूचना सङ्कलनका विधि र साधनहरू
+12SS02.08			41	5		41	chapter	"Microsoft in data processing and analysis Using Excel"	तथ्याङ्क प्रशोधन र विश्लेषणमा माइक्रोसफ्ट एक्सेलको प्रयोग
+12SS05.06			136	4		136	chapter	Disaster in Nepal	नेपालमा विपत्
+12SS05.07			140	3		140	chapter	Disaster causes and effects	विपत्का कारण र प्रभाव
+12SS10.08			345	4		345	chapter	Unit 11: Education and Social Development	समसामयिक घटनाहरु
+12SS11.00			349	0		349	section	Unit 11: Education and Social Development	एकाइ ११: शिक्षा र सामाजिक विकास

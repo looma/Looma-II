@@ -51,7 +51,7 @@ include ('includes/looma-utilities.php');
             $fp = "../content/chapters/$class/$subject/en/$ch_id.$type";
             $contents = file_get_contents($fp);
 
-            if ($type = "keywords") {
+            if ($type === "keywords") {
                 $temp = "";
                 $keywords = json_decode($contents, true);
                 foreach($keywords as $keyword) {
@@ -61,7 +61,11 @@ include ('includes/looma-utilities.php');
                     //echo $temp;
                     };
                 $contents = $temp;
-            };
+            }
+            else if ($type === "outline") {}
+            else if ($type === "plan") {}
+            else if ($type === "quiz") {};
+
             echo "<div class='text-display'>";
             echo "<pre>" . $contents . "</pre>";
             echo "</div>";

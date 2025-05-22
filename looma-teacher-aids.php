@@ -114,7 +114,7 @@ function makeButton($activity) {
                     break;
                 case "pdf":
                     if (isset($activity['type']) && $activity['type'] === "TG")
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], "auto", "", "",null,null,null,$lang);
+                        makeActivityButton($ft, $fp, $fn, "(TG) " . $dn, "", $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], "auto", "", "",null,null,null,$lang);
                     else
                         makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
                     break;
@@ -226,8 +226,8 @@ if ($teacher_guide) {
 
 
 // make buttons for TEACHER AIDS if present
-$aids = ['summary','outline','plan','keywords','quiz'];
-$aidnames = ['Summary','Outline','Plan','Keywords','Quizzes'];
+$aids = ['summary','outline','plan','keywords','quiz','objectives'];
+$aidnames = ['Summary','Outline','Plan','Keywords','Quizzes','Objectives'];
 for ($i=0; $i<sizeof($aids); $i++)  {
     $aid = $aids[$i];
 

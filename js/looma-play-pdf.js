@@ -20,7 +20,7 @@ window.onload = function() {
       console.log ('selected text to lookup: "', toString, '"');
         // LOOMA.lookupWord(toString);
       if ($('#pdf').data('lang') === 'np') {
-          toString = convertPreeti(toString);
+        //  toString = convertPreeti(toString);
           LOOMA.popupDefinition(toString.split(' ')[0], 15, 'np');
     
       } else LOOMA.popupDefinition(toString.split(' ')[0], 15, 'en');

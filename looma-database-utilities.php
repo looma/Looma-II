@@ -1050,15 +1050,15 @@ require_once('includes/looma-utilities.php');
         }
 
 
-        ///// making call to MONGO in 'looma' database //////
+////////////////// making call to MONGO in 'looma' database /////////////////
         $cursor = mongoFind($collections[$_REQUEST['collection']], $query, 'dn', null, null);   //->skip($page)->limit(20);
         $result = array();
         foreach ($cursor as $d)  {
             $d['db'] = 'looma';
-            if (($d['ft'] !== 'quiz') && ($d['ft'] !== 'chapter')) $result[] = $d;
+            if (($d['ft'] !== 'quiz')) $result[] = $d;
          };
 
-      //echo "result is ";print_r($result);
+        //echo "result is ";print_r($result);
 
         ///// making call to MONGO in 'loomalocal' database //////
         $cursor1 = mongoFind($localcollections[$_REQUEST['collection']], $query, 'dn', null, null);   //->skip($page)->limit(20);

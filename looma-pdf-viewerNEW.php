@@ -23,12 +23,14 @@ echo '<div id="pdf" class="scroll"'  .
     '" data-len="' . $len .
     '" data-lang="' . $lang .
     '" data-zoom="'.  $zoom .'">';
-echo '</div>';
 
+echo "<iframe src='js/pdfNEW/web/viewer.html'></iframe>";
+
+echo '</div>';
 
 ?>
 
-<script src="js/pdfjsNEW/pdf.js/web/pdf.js"></script>
+<script src="js/pdfjsNEW/build/pdf.js"></script>
 <script src="js/looma-pdf-utilities.js"></script>
 <script src="js/looma-play-pdfNEW.js"></script>
 

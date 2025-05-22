@@ -1,5 +1,14 @@
 CHANGE LOG FOR LOOMA
 
+2025 05 12 Version 7.15
+
+- changes to looma-utilities.js, looma-search.js, looma-library.php, looma-library.js,
+    looma-library.css, looma-history.js, looma-book.php
+    to fix unnecessary extra calls to backend db in search and library when doing makeActivityButton()
+
+- add limits to PDF viewer zoom control (- 35%, + 200%)
+
+++++++++++++++++++++++++++++++++++++++++++++++
 2025 04 30  Version 7.14
 
 - adding Teacher Aids to Chapter Resources
@@ -7,6 +16,8 @@ CHANGE LOG FOR LOOMA
     if the files are present, buttons show when Teacher Aids [on the Resources page of a chapter] is clicked
 
 - loaded preliminary set of Teacher Aids to all chapters - needs to be checked
+
+- all videos have EN and NP captions
 
 - changes suggested by Bandipur schools and Dinesh
     show IP adddress on toolbar
@@ -18,3 +29,14 @@ CHANGE LOG FOR LOOMA
     conform audio/mute icon to YouTube style
     "More Results" button on Library Search display
     remove CEHRD logo, add IP address to Toolbar
+++++++++++++++++++++++++++++++++++++++++++++++
+7.10
+- 500+ RBS resources attached to chapters
+- 75 lessons attached to chapters
+- Paisley (PCV): vocab games for all 4EN chapters
+- Natali (PCV): vocab games for all 7EN chapters, and corrected time limit for all games
+- all textbooks are re-scanned to unicode
+- matching games can have >5 questions (no limit)
+- onscreen keyboard for ePaath
+- dictionary includes ALL words in all chapters
+	- dictionary words tagged with the 1st chapter, by subject, they appear in

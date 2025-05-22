@@ -61,7 +61,7 @@ $(document).ready (function() {
     //add listeners to ACTIVITY and CHAPTER buttons
     $("button.activities").click(activityButtonClicked);
     $("button.lesson").click(lessonButtonClicked);
-    $("button.chapter").click(chapterButtonClicked);
+    $("button.book-chapter").click(chapterButtonClicked);
     
     // check cookies to see if there is an active CHAPTER
     // if so, add class='active' to all the buttons for this CHAPTER (if any)

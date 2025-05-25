@@ -12,7 +12,7 @@ Description:
 var $searchResultsDiv;
 var $ajaxRequest;
 
-var pagesz = 500;  //default search results 'page size' (number of results returned form each search)
+var pagesz = 24;  //default search results 'page size' (number of results returned form each search)
                     // can be over-ridden by calling code (e.g looma-library.js)
 var pageno;
 var searchName = 'generic';

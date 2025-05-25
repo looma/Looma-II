@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"en":{"$numberInt":"1"}},"name":"en","unique":true}],"uuid":"0b4faaf9057d4824973fffd6e2865f8e","collectionName":"dictionary2024","type":"collection"}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"en":{"$numberInt":"1"}},"name":"en","unique":true}],"uuid":"8118a435bac74584b0194c79dcbfec04","collectionName":"dictionary2024","type":"collection"}

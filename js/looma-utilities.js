@@ -146,6 +146,7 @@ playMedia : function(button) {
         case "pdf":      //PDF
      // case "chapter":  //CHAPTER
         case "document": //DOCUMENT (some PDFs)
+        case "textbook":
      //   case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
@@ -310,8 +311,10 @@ playMedia : function(button) {
     
         makeActivityButton : function(result, id, db, mongoID, appendToDiv) {
              var thumbfile;
+             var mongoID;
+             
             //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
-            if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft, result.fn);
+            if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft);
         
             var lang;
             if (result.lang) lang = result.lang;
@@ -322,14 +325,25 @@ playMedia : function(button) {
         
             var fn = (result.fn) ? result.fn : result.nfn;
             var db = (result.db) ? result.db : 'looma';
-        
+            var ft =  result.ft;
+            
+            if (result.ID && result.ft === 'chapter') {
+                fp = LOOMA.filepath('chapter') +
+                     LOOMA.parseCH_ID(result.ID)['currentGradeFolder'] + '/' +
+                     LOOMA.parseCH_ID(result.ID)['currentSubjectFull'] + '/' +
+                    lang + '/';
+                fn = result.ID + '.pdf';
+                ft='pdf';
+            }
+
+            if (result.mongoID) {mongoID = result.mongoID.$oid;}
             var $newButton = $(
                 '<button class="activity play img" ' +
                 'data-id="' + result._id          + '" ' +
                 'data-fn="' + fn   + '" ' +
                 'data-fp="' + fp          + '" ' +
                 'data-db="' + db          + '" ' +
-                'data-ft="' + result.ft   + '" ' +
+                'data-ft="' + ft   + '" ' +
                 'data-lang="' +  lang     + '" ' +
                 'data-dn="' + result.dn   + '" ' +
                 'data-ndn="' + result.ndn   + '" ' +
@@ -345,7 +359,8 @@ playMedia : function(button) {
             
                 'data-epversion="' + result.version + '" ' +
                 'data-ole="' + result.oleID + '" ' +
-                'data-mongoID="'  + result.mongoID     + '" >'
+                'data-ID="' + result.ID + '" ' +
+                'data-mongoID="'  + mongoID    + '" >'
             
                 // add key1, key2, key3, key4, thumb, src, mondoID, url and ch_id data-fields  ???
                 //
@@ -456,7 +471,7 @@ extension: function(filename) {
     return filename.substring(filename.lastIndexOf('.') + 1);
 },
 
-filepath: function(filetype, filename) {
+filepath: function(filetype) {
         var homedirectory = '../';
         var path;
 
@@ -497,6 +512,8 @@ filepath: function(filetype, filename) {
                 break;
             case "textbook":
                 path = homedirectory + "content/textbooks/";
+            case "chapter":
+                path = homedirectory + "content/chapters/";
                 break;
 
             default:
@@ -529,8 +546,8 @@ thumbnail: function (filename, filepath, filetype, thumb) {
 
                 if (filetype == 'chapter') {
                   //  imgsrc = homedirectory + "content/textbooks/" + filepath + filename + "_thumb.jpg";
-                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
-                    imgsrc = homedirectory + "content/" + filepath + thumbnail_prefix + "_thumb.jpg";
+                  //  thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                  //  imgsrc = homedirectory + "content/" + filepath + thumbnail_prefix + "_thumb.jpg";
                 }
                 else if (filepath && filepath.indexOf('/Khan/') >= 0) {
                     imgsrc = homedirectory + 'content/Khan/thumbnail.png';
@@ -558,7 +575,7 @@ thumbnail: function (filename, filepath, filetype, thumb) {
                 else if (filepath && filepath.indexOf('Hesperian') >= 0) { //keep this before filetype===pdf
                     imgsrc = filepath + "thumbnail.png";
                 }
-                else if (filetype == "pdf" || filetype === "Document") { //pdf - we dont use Document type any more
+                else if (filetype == "pdf" || filetype === "textbook") { //pdf - we dont use Document type any more
                     thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
                     if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
                     imgsrc = path + thumbnail_prefix + "_thumb.jpg";

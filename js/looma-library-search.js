@@ -16,6 +16,8 @@ var resultsTotal = 0;
 var searchName = 'library-search';
 var searchName = 'library-search';
 var result_array;
+var chapResults;
+var actResults;
 
 ////////////////////////////////
 /////  clearResults()    /////
@@ -47,8 +49,8 @@ function clearResults(results) {
         result_array['chapters']  = [];
 
     results['list'].forEach(function(e) {
-            if (e['ft'] == 'chapter') result_array['chapters'].push(e);
-            else
+         //   if (e['ft'] == 'chapter') result_array['chapters'].push(e);
+         //   else
                 result_array['activities'].push(e);
     });
 
@@ -56,8 +58,8 @@ function clearResults(results) {
     resultsShown = Math.min(resultsShown + pagesz, resultsTotal);
     if (resultsShown < resultsTotal) $("#more").show();
     
-    var chapResults = result_array['chapters'].length;
-    var actResults = result_array['activities'].length;
+    chapResults = result_array['chapters'].length;
+    actResults = result_array['activities'].length;
     
     $display.append("<p> Activities(<span id='count'>" + results['count'] + "</span>)</p>");
     
@@ -65,8 +67,8 @@ function clearResults(results) {
 
     if(actResults != 0)
         displayActivities(result_array['activities'], '#results-table', 1, pagesz);
-    if(chapResults != 0)
-        displayChapters(result_array['chapters'], '#results-table');
+  //  if(chapResults != 0)
+    //    displayChapters(result_array['chapters'], '#results-table');
      
     
     $display.show();
@@ -91,7 +93,7 @@ function displayMoreResults(results) {
 function displayActivities(results, table, next, count) {
     // append items in array 'results' into display div 'table' starting at 'next' and adding 'count' new items
     
-    var last = Math.min(next+count-1, resultsTotal);
+    var last = Math.min(next+count-1, actResults);
     for (var i=next-1; i <= last-1; i++) {
         
         if(resultColumn % maxButtons == 1){
@@ -104,7 +106,7 @@ function displayActivities(results, table, next, count) {
         var mongoID = (results[i]['mongoID']) ? (results[i]['mongoID']['$id'] || results[i]['mongoID']['$oid']) : "";
         var db = results[i]['db'];
        // var mongoID = results[i]['mongoID']['$id'] || results[i]['mongoID']['$oid'];
-            LOOMA.makeActivityButtonFromId(results[i]['_id']['$id'] || results[i]['_id']['$oid'],
+            LOOMA.makeActivityButton(results[i],results[i]['_id']['$id'] || results[i]['_id']['$oid'],
                                       db, mongoID, '#query-result-' + resultColumn);
             resultColumn ++;
            };

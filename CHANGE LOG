@@ -7,7 +7,7 @@ CHANGE LOG FOR LOOMA
     to fix unnecessary extra calls to backend db in search and library when doing makeActivityButton()
 
     to make chapters appear as looma-search results
-    
+
 - add limits to PDF viewer zoom control (- 35%, + 200%)
 
 ++++++++++++++++++++++++++++++++++++++++++++++

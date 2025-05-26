@@ -1,3 +1,2 @@
-
-db.version_number.update({_id:'revisionDate'},{date:new Date().toString()},{upsert:true})
-db.version_number.update({_id:'milliseconds'},{date:new Date().getTime()},{upsert:true})
+db.version_number.updateOne({_id:'revisionDate'},{$set:{date:new Date().toString()}},{upsert:true})
+db.version_number.updateOne({_id:'milliseconds'},{$set:{date:new Date().getTime()}},{upsert:true})

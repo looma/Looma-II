@@ -151,7 +151,7 @@ playMedia : function(button) {
             var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
-            var pdfLen =  button.getAttribute('data-page') ? button.getAttribute('data-len') : 100;
+            var pdfLen =  button.getAttribute('data-len') ? button.getAttribute('data-len') : 1000;
                     window.location = 'pdf?' +
                     'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
                     '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +

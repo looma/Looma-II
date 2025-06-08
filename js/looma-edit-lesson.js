@@ -600,10 +600,15 @@ function preview ($item, do_not_select) {
     var filepath = $item.attr('data-fp');
     
     var previewSrc;
+    var displayLang;
     
     /////////////////////   chapter   //////////////////////////////////////////
     if (collection == "chapters") {
-        if ($item.attr('data-lang') === 'en')
+        if ($item.attr('data-lang'))        displayLang = $item.attr('data-lang');
+            else if (language === 'native') displayLang = 'np';
+            else                            displayLang = 'en';
+            
+        if (displayLang === 'en')
             previewSrc = homedirectory + 'content/' +
                 $item.attr('data-fp') + $item.attr('data-fn') +
                 '#page=' + $item.attr('data-pn') + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"';
@@ -703,19 +708,22 @@ function preview ($item, do_not_select) {
         ////////////////////   ePaath   ///////////////////////////////
         
         else if (filetype.toLowerCase() === "ep") {
+            var lang = $item.attr('data-lang');
+            if (lang === 'both') lang = language==='native'?'np':'en';
+            
             if ($item.attr('data-epversion') === '2015') {
                 $previewpanel.html("<iframe src='epaath?epversion=2015&fp=" + filepath + "&fn=" + filename + "/start.html'>");
     
             } else if($item.attr('data-epversion') === '2019') {
                 $previewpanel.html("<iframe " +
                     "src='epaath?epversion=2019&ole=" + $item.attr('data-ole') +
-                    "&lang=" +  $item.attr('data-lang') +
+                    "&lang=" +  lang +
                     "&grade=" + $item.attr('data-grade').substring(5,) + "'>");
     
             } else {  // epversion 2022
                 $previewpanel.html("<iframe " +
                     "src='epaath?epversion=2022&ole=" + $item.attr('data-ole') +
-                        "&lang=" +  $item.attr('data-lang') +
+                        "&lang=" +  lang +
                         "&grade=" + $item.attr('data-grade').substring(5,) + "'>");
             }
         }

@@ -1,2 +1,5 @@
-db.version_number.updateOne({_id:'revisionDate'},{$set:{date:new Date().toString()}},{upsert:true})
-db.version_number.updateOne({_id:'milliseconds'},{$set:{date:new Date().getTime()}},{upsert:true})
+db.version_number.updateOne({_id:'revisionDate'}, { $currentDate: { 'date': true } })
+#
+# following cmd doesnt work in new mongo shell
+#db.version_number.updateOne({_id:'milliseconds'},{$set:{date:new Date().getTime()}},{upsert:true})
+

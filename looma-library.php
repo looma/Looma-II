@@ -502,6 +502,8 @@ echo "</tr></table>";
                             foreach ($files as $file => $info) {
                                 $file = (string)$file;
 
+                        //echo "found " . $file;
+
                                 //skip ".", "..", and any ".filename" and any filename with '_thumb' in the name
                                 if (($file[0] === ".") ||
                                     strpos($file, "_thumb") ||
@@ -538,55 +540,11 @@ echo "</tr></table>";
 
                                         //echo "found " . $activity['dn'];
 
-                                        $dn = ($activity && keyIsSet('dn', $activity)) ? $activity['dn'] : "";
-                                        $ndn = ($activity && keyIsSet('ndn', $activity)) ? $activity['ndn'] : str_replace($specials, " ", $dn);
+                                   //     $dn = ($activity && keyIsSet('dn', $activity)) ? $activity['dn'] : "";
+                                   //     $ndn = ($activity && keyIsSet('ndn', $activity)) ? $activity['ndn'] : str_replace($specials, " ", $dn);
                                     };
-                                    /*
-                                            switch (strtolower($ext)) {
-                                                case "video":
-                                                case "mp4":
-                                                case "m4v":
-                                                case "mov":
-                                                case "image":
-                                                case "jpg":
-                                                case "jpeg":
-                                                case "png":
-                                                case "gif":
-                                                case "audio":
-                                                case "mp3":
-                                                case "m4a":
-                                                case "pdf":
-                                                case "html":
-                                                case "lesson": //we have some "lessons" that are listed in Teacher Tools directory as pseudo-files
-                                                    $item['ext'] = $ext;
-                                                    $item['path'] = $path;
-                                                    $item['file'] = $file;
-                                                    $item['dn'] = $dn;
-                                                    $item['ndn'] = $ndn;
-                                                    $item['thumb'] = "";
-                                                    $item['mongoID'] = $mongoID;
 
-                                                    $item['page'] = ($activity && keyIsSet('pn', $activity)) ? $activity['pn'] : 1;
-                                                    $item['zoom'] = ($activity && keyIsSet('zoom', $activity)) ? $activity['zoom'] : 2.3;
-
-                                          //          $list[] = $item;
-
-                                                    break;
-                                                default:
-                                                    // ignore unknown filetypes
-                                            }  //end SWITCH
-                                        } else if (isHTML($path . $file)) {
-                                            $item['ext'] = "html";
-                                            $item['path'] = $path;
-                                            $item['file'] = $file . "/index.html";
-                                            $item['dn'] = $file;
-                                            $item['ndn'] = "";
-                                            $item['thumb'] = $file . "/thumbnail.jpg";
-                                            $item['mongoID'] = "";
-                                        } // end if HTML
-                                */
-
-                                $list[] = $activity;
+                                    if ($activity) $list[] = $activity;
                                 };
                             } //end FOREACH file;
 

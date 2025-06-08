@@ -141,13 +141,15 @@ playMedia : function(button) {
             window.location = 'audio?fn=' + button.getAttribute('data-fn') +
                 '&fp=' + button.getAttribute('data-fp') +
                 '&dn=' + button.getAttribute('data-dn');
+    
+            //window.location = 'audio?fn=' + fn + '&fp=' + fp + '&dn=' + dn;
             break;
 
         case "pdf":      //PDF
      // case "chapter":  //CHAPTER
         case "document": //DOCUMENT (some PDFs)
         case "textbook":
-     //   case "section":  //textbook SECTIONs are 'played' if len > 0
+      //  case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
@@ -162,6 +164,7 @@ playMedia : function(button) {
             break;
 
         case "chapter":  //CHAPTER
+        case "section":  //textbook SECTIONs are 'played' if len > 0
 
         if ( button.getAttribute('data-source') === 'useTextbooks')
 
@@ -241,7 +244,7 @@ playMedia : function(button) {
         case "ep":
           //  var lang = language==='native'?'np':'en';
 
-            if (! lang) lang =  language==='native'?'np':'en';
+            if (! lang || lang === 'both') lang =  language==='native'?'np':'en';
 
             if (button.getAttribute("data-epversion") == 2015) {
                 fp = encodeURIComponent(button.getAttribute('data-fp'));

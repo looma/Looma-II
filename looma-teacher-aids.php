@@ -113,9 +113,9 @@ function makeButton($activity) {
                     makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
                     break;
                 case "pdf":
-                    if (isset($activity['type']) && $activity['type'] === "TG")
-                        makeActivityButton($ft, $fp, $fn, "(TG) " . $dn, "", $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], "auto", "", "",null,null,null,$lang);
-                    else
+                    if (isset($activity['type']) && $activity['type'] === "TG") {
+                        makeActivityButton($ft, $fp, $fn, "(TG) " . $dn, "(TG) " .$ndn, $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], "auto", "", "", null, null, null, $lang);
+                    } else
                         makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
                     break;
                 case "game":
@@ -216,7 +216,7 @@ if ($lang === 'en') $query = array('ch_id' => $ch_id);
 else                $query = array('ch_id' => $ch_id);   // ??? should use nch_id  ?????
 
 // make button for TEACHER GUIDE
-$teacher_guide = mongoFindOne($teacherguides_collection, $query);
+$teacher_guide = mongoFindOne($TG_collection, $query);
 if ($teacher_guide) {
     makeButton($teacher_guide);
     $foundActivity = true;

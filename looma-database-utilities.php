@@ -1202,6 +1202,8 @@ require_once('includes/looma-utilities.php');
                     $d['nfn'] = $textbook['nfn'];
                     $d['fp'] = $textbook['fp'];
 
+                    $d['lang'] = $lang;
+
                     // only send back chapters that are in "$lang" language ('en' or 'np')
                     if      ($lang === 'en' && isset($d['dn'])  && $d['dn'] !== '') $result[] = $d;
                     else if ($lang === 'np' && isset($d['ndn']) && $d['ndn'] !== '') $result[] = $d;

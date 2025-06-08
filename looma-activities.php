@@ -119,7 +119,7 @@ $foundActivity;
 
     //$thumb = str_replace('.JPG', '.jpg', $thumb);
 
-        if ( $ft !== 'text' ) {
+        if ( $ft !== 'text' && $ft !== 'quiz') {
             echo "<td>";
 
             if ($ft === 'slideshow' ||  $ft === 'map' || $ft === 'evi' )
@@ -261,15 +261,16 @@ $foundActivity;
 */
         // make a button for TEACHER AIDS
 
-        echo "<td><button class='activity play img' >";
-        echo "<a href='looma-teacher-aids.php?ch_id=$ch_id&chdn=$ch_dn&grade=$grade&subject=$subject'>";
+        echo "<td><a href='looma-teacher-aids.php?ch_id=$ch_id&chdn=$ch_dn&grade=$grade&subject=$subject'>";
+
+        echo "<button class='activity play img' >";
       //  echo "img src='" . chapterthumbnail($ch_id) . "'";
         echo "Teacher Aids";
  //       echo ": " . keyword(ucfirst($grade)); echo ' ';
  //       echo keyword($caps) . " \"";
  //       echo $ch_dn . "\"";
  //       echo "<span class='tip yes-show big-show' >Chapter " . $ch_id . "</span>";
-        echo "</button></td>";
+        echo "</button></a></td>";
         $foundActivity = true;
         nextButton();
 

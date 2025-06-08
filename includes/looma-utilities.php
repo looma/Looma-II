@@ -191,22 +191,38 @@ function folderThumbnail ($fp) {  //for directories, look for filename "thumbnai
     else return "<img loading='lazy' alt='' src='images/folder.png' >";
 } //end function thumbnail
 
-function displayName($filename, $dn, $ndn, $color) {
+function language() {
+    return $_COOKIE["language"] === 'native' ? 'np' : 'en';
+};
+
+function displayName($filename, $dn, $ndn, $lang, $color) {
 
     //echo "DN is " . $dn . "**";
     //echo "NDN is " . $ndn . "**";
 
+    //echo "lang is " . $lang;
+
+  //  if (!$ndn) $ndn = $dn;
+  //  if (!$dn)  $dn  = $ndn;
+
     if ($dn && $ndn) {
-        echo "<span class='english-keyword'>"
-            . $dn .
-            "<span class='xlat'>" . $ndn . "</span>" .
-            "</span>";
-        echo "<span class='native-keyword' >"
-            . $ndn .
-            "<span class='xlat'>" . $dn . "</span>" .
-            "</span>";
-    } else if ($dn) echo "<span class='name' style='color:" . $color . "'>" . $dn . "</span>";
-      else if ($ndn) echo "<span class='name'>" . $ndn . "</span>";
+
+        if ($lang && $lang === 'np')
+            echo "<span class='name np'>" . $ndn . "</span>";
+        else if ($lang && $lang === 'en')
+            echo "<span class='name en' style='color:" . $color . "'>" . $dn . "</span>";
+        else {
+            echo "<span class='english-keyword'>"
+                . $dn .
+                "<span class='xlat'>" . $ndn . "</span>" .
+                "</span>";
+            echo "<span class='native-keyword' >"
+                . $ndn .
+                "<span class='xlat'>" . $dn . "</span>" .
+                "</span>";
+        }
+    } else if ($dn) echo "<span class='name en' style='color:" . $color . "'>" . $dn . "</span>";
+      else if ($ndn) echo "<span class='name np'>" . $ndn . "</span>";
       else echo "<span class='name'>" . $filename . "</span>";
 }  //end displayName()
 
@@ -390,11 +406,7 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         echo ">";
         if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
 
-    /*    if ( $fp && preg_match('/CDC Teacher Guides/',$fp))
-            displayName($fn, 'Teacher\'s Guide', $ndn, 'green');
-        else
-    */
-    displayName($fn, $dn, $ndn, 'black');
+    displayName($fn, $dn, $ndn, language(), 'black');
 
     // echo '<img class="icon" src="' . icon($ft) . '">';
 
@@ -460,7 +472,7 @@ function makeChapterButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, 
     echo ">";
     echo '<img alt="" draggable="false" src="' . $thumbSrc . '">';
     //echo "<span>" . $dn . "</span>";
-    displayName($fn, $dn, $ndn, 'black');
+    displayName($fn, $dn, $ndn, language(), 'black');
     echo "<span class='tip yes-show big-show' >" . $dn . "</span></button>";
 
 }; //end makeChapterButton()

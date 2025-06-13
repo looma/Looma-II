@@ -80,7 +80,7 @@ if ($engine === 'mimic') {
     error_log($outputFileName);
 
     $command = "echo " . escapeshellarg($text) . " | piper " .
-        " --model /usr/share/piper/ne_NP-google-medium.onnx --output_file $outputFileName";
+        " --model ../piper/ne_NP-google-medium.onnx --output_file $outputFileName";
 } else return;
 
 /*DEBUG

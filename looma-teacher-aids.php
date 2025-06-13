@@ -45,11 +45,13 @@ function makeButton($activity) {
 
         $ft = strtolower($activity['ft']);
         //   $dn = (isset($activity['dn']) ? $activity['dn'] : (isset($activity['ndn']) ? $activity['ndn'] : ""));
-        $ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
+        //$ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
         $fp = (isset($activity['fp']) ? $activity['fp'] : "");
 
-        if ($lang === 'np') $dn = (isset($activity['ndn'])? $activity['ndn']:(isset($activity['dn']) ? $activity['dn'] : ""));
-        else                $dn = (isset($activity['dn']) ? $activity['dn'] : "");
+        if (isset($activity['lang']) && $activity['lang'] === 'np')
+            $displayname = (isset($activity['ndn'])? $activity['ndn']:(isset($activity['dn']) ? $activity['dn'] : ""));
+        else
+            $displayname = (isset($activity['dn'])? $activity['dn']:(isset($activity['ndn']) ? $activity['ndn'] : ""));
 
         if ($lang === 'np') $fp = (isset($activity['nfp'])? $activity['nfp']:(isset($activity['fp']) ? $activity['fp'] : ""));
         else                $fp = (isset($activity['fp']) ? $activity['fp'] : "");
@@ -114,7 +116,7 @@ function makeButton($activity) {
                     break;
                 case "pdf":
                     if (isset($activity['type']) && $activity['type'] === "TG") {
-                        makeActivityButton($ft, $fp, $fn, "(TG) " . $dn, "(TG) " .$ndn, $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], "auto", "", "", null, null, null, $lang);
+                        makeActivityButton($ft, $fp, $fn, "(TG) " . $displayname, "", $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], "auto", "", "", null, null, null, $lang);
                     } else
                         makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
                     break;

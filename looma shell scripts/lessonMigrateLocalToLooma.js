@@ -13,14 +13,17 @@ var lesson, activity;
 var dbName = db.getName();
 
 print('DB is ' + dbName);
-if (dbName !== 'loomalocal') exit;
+if (dbName !== 'loomalocal') {
+    print(' must "use loomalocal" before running this script');
+    exit;
+}
 
 var cursor = db.lessons.find({publish:true});
 
 while (cursor.hasNext()) {
     lesson = cursor.next();
     count++;
-    print('processing local db lesson: ' + lesson.dn);
+    print('processing ' + db + ' lesson: ' + lesson.dn);
     activity = db.activities.findOne({"mongoID":lesson._id});
     if (! activity ) {
         print("activity not found");
@@ -37,7 +40,7 @@ while (cursor.hasNext()) {
         db.activities.deleteOne({_id:activity['_id']});
         
     } else {
-        print('DRYRUN: would have moved ' + lesson.dn + ' and (' + activity.dn + ')');
+        print('DRYRUN: would have moved lesson ' + lesson.dn + ' and activity ' + activity.dn + ' from loomalocal to looma DB');
     }
 }
 

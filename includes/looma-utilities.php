@@ -204,6 +204,7 @@ function displayName($filename, $dn, $ndn, $lang, $color) {
 
   //  if (!$ndn) $ndn = $dn;
   //  if (!$dn)  $dn  = $ndn;
+  //  if (!$dn)  $dn  = $ndn;
 
     if ($dn && $ndn) {
 

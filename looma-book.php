@@ -34,7 +34,7 @@ echo "<div id='main-container-horizontal' class='scroll'>";
 echo "<div  class='scroll'>";
 echo "<h1 class='title'>";
 echo keyword('Chapters for') . " ";
-    displayName("", $dn, $ndn,"black");
+    displayName("", $dn, $ndn,language(), "yellow");
 echo "</h1>";
 
 echo "<br><br><table class='ch-table'>";

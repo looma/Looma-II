@@ -30,6 +30,13 @@ RUN mkdir -p /usr/share/piper \
     && wget https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/ne/ne_NP/google/medium/ne_NP-google-medium.onnx -O /usr/share/piper/ne_NP-google-medium.onnx \
     && wget https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/ne/ne_NP/google/medium/ne_NP-google-medium.onnx.json -O /usr/share/piper/ne_NP-google-medium.onnx.json
 
+RUN wget    https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/amy/medium/en_US-amy-medium.onnx       -O /usr/share/piper/en_US-amy-medium.onnx \
+    && wget https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/amy/medium/en_US-amy-medium.onnx.json  -O /usr/share/piper/en_US-amy-medium.onnx.json
+
+# fill in XXX to load more voices
+# RUN    wget https://huggingface.co/rhasspy/piper-voices/blob/main/en/XXX       -O /usr/share/piper/XXX \
+#     && wget https://huggingface.co/rhasspy/piper-voices/blob/main/en/XXX.json  -O /usr/share/piper/XXX.json
+
 # Add Piper to PATH
 ENV PATH="/usr/local/bin/piper:${PATH}"
 

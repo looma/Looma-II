@@ -1317,6 +1317,7 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
    });
 };  //end getCH_ID()
 
+ 
  //LOOMA.sound
  // param is HTML 'embed' element with src=wav file
  // in the HTML have
@@ -1324,23 +1325,23 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
  // call with LOOMA.sound( $('#sound_object")[0] )
  LOOMA.sound = function(sound) { sound.Play();}
 
+ 
 /* LOOMA.speak()
  * Author: Akshay Srivatsan
  * Date: Summer 2015/2016
+ *      revised JUN 2025 for 'piper' TTS
  * Description:  to use TTS import this file from your HTML file.
- * If it uses Mimic, the call can specify a Mimic voice.
+ * If it uses piper or mimic, the call can specify a  voice.
  *
  * Uses the standard javascript object "speechSynthesis" if present [and browser !== Chromium],
- * otherwise, calls server-side looma-mimic.php, which uses Mimic to generate a wave file
+ * otherwise, calls server-side looma-TTS.php, which uses piper to generate a wave file
  *
  * extended FEB 2023 by Skip to use larynx2 for Nepali TTS
- *
- * Requirements for mimic: Mimic must be installed on the Looma or server that serves
- *   this JS file. The speech synthesis PHP file must be at "/Looma/looma-mimic.php".
+ * extended JUN 2025 by Skip to use piper for Nepali TTS
  */
 LOOMA.speak = function(text, engine, voice, rate) {
         //speak the TEXT,
-        //using [optional] ENGINE (in {'synthesis', 'mimic', 'larynx'})
+        //using [optional] ENGINE (in {'piper', 'synthesis', 'mimic'})
         //using [optional] VOICE
         //using [optional] RATE sets the speed of speech. (rate > 1 is FASTER)
         //      in mimic  --setf duration_stretch=1/rate ( e.g. if rate === 0.5 stretch by 2x (slower))
@@ -1357,28 +1358,19 @@ LOOMA.speak = function(text, engine, voice, rate) {
      so, we use "if (text.match(/[\u0900-\u097F]/g))" instead for detecting devanagri unicode characters
     */
 
-     if (text != "" ) {
+     if ( text !== "" ) {
          var playPromise;
-
-         if (!engine) {
-                 if (text.match(/[\u0900-\u097F]/g)) engine = 'piper'; // use 'larynx' for devanagri text
-            else if (speechSynthesis && (speechSynthesis.getVoices().length !== 0))
-                engine = 'synthesis';
-            else
-                engine = 'mimic'; //default engine is mimic
-         };
-
-         if (!voice) voice = LOOMA.readStore('voice', 'cookie') || 'cmu_us_bdl'; //get the currently used voice, if any. default VOICE
-
-                    /* MIMIC VOICES: current default voice = cmu_us_bdl
-                    Note from David: The three that seem about equal in clarity,
-                    lack of low frequency rumble, lack of piercing high frequency … are
-                        Scottish male	awb (has a bit of the trilled ‘r’)
-                        US male 		bdl   (Haydi say maybe the best)
-                        US male		    rms
-                     */
-
-
+    
+       //  if (text.match(/[\u0900-\u097F]/g)) lang = "np";
+        
+             /* commented out: set default engine and default voice in backend TTS.php
+                     if (!engine) {
+                             engine = 'piper'; //default engine is piper
+                             if (text.match(/[\u0900-\u097F]/g))
+                                  voice = 'ne_NP-google-medium.onnx';
+                             else voice = 'en_US-amy-medium.onnx';
+                     }
+               */
          console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
 
          var speechButton = document.getElementsByClassName("speak")[0];
@@ -1470,7 +1462,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
              }
          }
 
-         else { // engine is NOT 'synthesis', therefore call server-side looma-speech.php which uses 'mimic' or 'larynx'
+         else { // engine is NOT 'synthesis', therefore call server-side looma-TTS.php which uses 'piper' or 'mimic'
              if (LOOMA.speak.playingAudio != null) {
                  // If speaking, stop the currently playing speech.
                  console.log("Stopping Audio");
@@ -1498,6 +1490,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          'text='    + encodeURIComponent(currentText) +
                          '&voice='  + encodeURIComponent(voice) +
                          '&rate='   + encodeURIComponent(speed) +
+                         '&lang='   + encodeURIComponent(language) +
                          '&engine=' + encodeURIComponent(engine);
 
                      // This is like preloading images – all the requests to mimic will execute early, so there won't be lag between phrases.
@@ -1542,17 +1535,6 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
                  console.log('promise is ', playPromise);
 
-                 // In browsers that don’t yet support this functionality,
-                 // playPromise won’t be defined.
-               /*  if (playPromise !== undefined) {
-                     playPromise.then(function () {
-                         console.log('Play started');
-                     }).catch(function (error) {
-                         console.log('Play promise error: ', error);
-                     });
-
-                 }
-               */
                  LOOMA.speak.activate();
              }
          }  //end of code that calls server-side MIMIC

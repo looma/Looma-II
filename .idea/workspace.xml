@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -25,115 +28,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/LICENSE.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Looma System Files/looma box/apache2(for looma c2).conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Looma System Files/looma box/httpd for looma box.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/CEHRDvideosMetadata.tsv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ColorsToTry.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/Content Metadata.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/Math123678.tsv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/NDNfixes.tsv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/activities.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/cehrd.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ch_idsToImport.tsv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ch_idsToImport2020 04.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ch_idsToImportforEpaath.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/chapterLenToImport-1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/chapterLenToImport.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/cl_lo_hi_ToImport.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/correctedNDNs.tsv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ePaath ch_ids for Nepali subject.numbers" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ePaath ch_ids for Nepali subject.tsv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ePaath metadata for Nepali subject.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ePaath metadata for Nepali subject.numbers" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/ePaathToImport.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/fix-text-sizes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/nch_idsToImport.tsv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/nch_idsToImport2020 04.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/new keywords for nepali epaaths.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/newdisplaynames.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/userIPs.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/userLatLongs.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/volunteersToImport.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords 2020.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords ALL CHAPTERS prepared for import.xlsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords ENGLISH prepared for import.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords MATH prepared for import.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords SCIENCE prepared for import.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords SOCIAL STUDIES prepared for import.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/keyword data/keywords perpared for import.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/loomaINITIALIZElogins" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/loomaW4Sfix" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/loomaAWS.archive" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.htaccessXXX" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.htaccessYYY" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/HTML-editor.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apache2(for looma c2).conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/copy-paste-textfile.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-clock.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-clock.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-game-list.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-game-list.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-game.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-info.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-info.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/looma-theme-cehrdOLD.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/loomaOLD.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/date" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/date.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/httpdLAPTOP20211105.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/httpd for looma box.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/looma-log-user-activitySKIP.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/looma-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-utilities.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/mongo-connect.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/mongo-connect.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-clock.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-clock.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-edit-text.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-text.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-info.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-info.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/progress.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/archivetimestamp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/archivetimestamp.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-game.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-game.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/looma-utilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-utilities.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/CEHRDvideosMetadata.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ColorsToTry.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/Content Metadata.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/Copy of ch_idsToImport.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/Math123678.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/NDNfixes.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/activities.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/cehrd.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport2020 04.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImportforEpaath.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/chapterLenToImport-1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/chapterLenToImport.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/cl_lo_hi_ToImport.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/correctedNDNs.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath ch_ids for Nepali subject.numbers" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath ch_ids for Nepali subject.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath metadata for Nepali subject.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaath metadata for Nepali subject.numbers" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ePaathToImport.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fix-sizes.js copy.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/fix-text-sizes.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords 2020.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords ALL CHAPTERS prepared for import.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords ENGLISH prepared for import.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords MATH prepared for import.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords SCIENCE prepared for import.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords SOCIAL STUDIES prepared for import.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/keywords perpared for import.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaupdater" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaupdater" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/nch_idsToImport2020 04.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/new keywords for nepali epaaths.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/newdisplaynames.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/userIPs.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/userLatLongs.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/volunteersToImport.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-clock.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-clock.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-info.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-info.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-library.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-library.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-login.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-login.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-vocab-flashcard.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-vocab-flashcard.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-TTS.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-TTS.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/phptest.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,12 +57,10 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="JsFlowSettings">
-    <service-enabled>true</service-enabled>
-    <exe-path />
-    <other-services-enabled>true</other-services-enabled>
-    <auto-save>true</auto-save>
-  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="PhpDebugGeneral" listening_started="true" />
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 5.6">
     <include_path>
@@ -171,6 +70,9 @@
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php80" />
     </include_path>
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="1Rt4YLufhQcOYseL7vr58x80wh0" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -179,24 +81,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="full.screen.before.presentation.mode" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.path.for.package.eslint" value="project" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.General" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/usr/local/var/www/Looma&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.AIAssistantPromptsLibrary&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/js" />
@@ -206,6 +106,14 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26094.121" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-IU-251.26094.121" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -214,6 +122,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1570473104432</updated>
+      <workItem from="1749957782193" duration="2486000" />
     </task>
     <task id="LOCAL-00001" summary="5.2.3 adding mongoDB contents">
       <created>1571193627755</created>
@@ -416,7 +325,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
@@ -471,5 +379,9 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

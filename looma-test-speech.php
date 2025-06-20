@@ -23,7 +23,8 @@ define ("CLASSES", 8);
         <p id="prompt">Enter a phrase to speak:  </p>
         <input type="text" id="text" size="250" value="Hello this is Looma">
         <button id="mimic">Speak with mimic/larynx </button>
-        <button id="synthesis">Speak with speechSynthesis [Looma default]</button>
+        <button id="piper">Speak with piper </button>
+        <button id="synthesis">Speak with speechSynthesis [using local browser]</button>
 
         <div id="rateDiv">
             <span>Enter speech rate here (higher is faster)</span>

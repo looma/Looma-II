@@ -706,7 +706,7 @@ function runMatchPicture() {
 //////////////////////////////
 
 function getSpeakWords(grade, subj, id, count, random){
-    LOOMA.wordlist(grade, subj, id, count, random, speakListSucceed, speakListFail);
+    LOOMA.wordlist(grade, subj, ch_id, count, random, speakListSucceed, speakListFail);
 }
 
 function speakListSucceed(result){

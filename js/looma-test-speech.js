@@ -16,6 +16,10 @@ Revision: Looma 2.0.x
         $('#mimic').click(function(){
             LOOMA.speak($('input#text').val(), $(this).attr('id'), null, $('#rate').val());
         });
+        
+        $('#piper').click(function(){
+            LOOMA.speak($('input#text').val(), $(this).attr('id'), null, $('#rate').val());
+        });
     
         $('#voices').change(function() {
             var newVoice = encodeURIComponent(this.value);

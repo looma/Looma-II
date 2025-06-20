@@ -39,12 +39,17 @@ input {
 
 #mimic {
     grid-row: 4/6;
-    grid-column:5/8;
+    grid-column:2/6;
+}
+
+#piper {
+    grid-row: 4/6;
+    grid-column: 7/11;
 }
 
 #synthesis {
     grid-row: 4/6;
-    grid-column: 11/14;
+    grid-column: 12/16;
 }
 
 #rateDiv {

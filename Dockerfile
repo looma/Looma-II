@@ -4,7 +4,7 @@ RUN apt-get update
 RUN apt-get install -y net-tools
 RUN apt-get install -y python3
 RUN apt-get install -y python3-pip
-RUN pip3 install langchain_huggingface qdrant_client
+RUN pip3 install langchain_huggingface qdrant_client sentence-transformers
 COPY load_models.py load_models.py
 RUN mkdir -p /tmp/.cache/hf
 RUN export HF_HOME=/tmp/.cache/hf; python3 load_models.py

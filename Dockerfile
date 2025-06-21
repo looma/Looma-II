@@ -4,7 +4,7 @@ RUN apt-get update
 RUN apt-get install -y net-tools
 RUN apt-get install -y python3
 RUN apt-get install -y python3-pip
-RUN pip3 install langchain_huggingface qdrant_client
+RUN pip3 install langchain_huggingface qdrant_client sentence-transformers
 COPY load_models.py load_models.py
 RUN mkdir -p /tmp/.cache/hf
 RUN export HF_HOME=/tmp/.cache/hf; python3 load_models.py
@@ -30,8 +30,8 @@ RUN mkdir -p /usr/share/piper \
     && wget https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/ne/ne_NP/google/medium/ne_NP-google-medium.onnx -O /usr/share/piper/ne_NP-google-medium.onnx \
     && wget https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/ne/ne_NP/google/medium/ne_NP-google-medium.onnx.json -O /usr/share/piper/ne_NP-google-medium.onnx.json
 
-RUN wget    https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/amy/medium/en_US-amy-medium.onnx       -O /usr/share/piper/en_US-amy-medium.onnx \
-    && wget https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/amy/medium/en_US-amy-medium.onnx.json  -O /usr/share/piper/en_US-amy-medium.onnx.json
+RUN wget    https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_US/amy/medium/en_US-amy-medium.onnx       -O /usr/share/piper/en_US-amy-medium.onnx \
+    && wget https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_US/amy/medium/en_US-amy-medium.onnx.json  -O /usr/share/piper/en_US-amy-medium.onnx.json
 
 # fill in XXX to load more voices
 # RUN    wget https://huggingface.co/rhasspy/piper-voices/blob/main/en/XXX       -O /usr/share/piper/XXX \

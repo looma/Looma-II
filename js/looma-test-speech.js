@@ -21,9 +21,9 @@ Revision: Looma 2.0.x
             LOOMA.speak($('input#text').val(), $(this).attr('id'), null, $('#rate').val());
         });
     
-        $('#voices').change(function() {
+        $('#piper-voices').change(function() {
             var newVoice = encodeURIComponent(this.value);
-            var engine = 'mimic';
+            var engine = 'piper';
             LOOMA.changeVoice(newVoice); // change voice when voice button is clicked
             LOOMA.speak('the voice has been changed', engine, newVoice);
         });

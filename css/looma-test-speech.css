@@ -17,6 +17,7 @@ button {font-size:1.2em;}
 button:hover {color:blue;}
 
 button.show-keyboard {
+    bottom:19vh;
     display:inline-block;
 }
 
@@ -59,7 +60,14 @@ input {
     text-align:left;
 }
 
-div#voicelist {
+div#mimic-voicelist {
+    display:none;
+}
+div#piper-voicelist {
+    display:block;
+}
+
+div.voicelist {
     grid-row:8/9 ;
     grid-column: 3/15;
     font-size:1.5em;

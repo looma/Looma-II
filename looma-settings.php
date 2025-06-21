@@ -115,14 +115,7 @@ Description:  for Looma 2
                  </select>
              </div>
              <br><br>
-             <div >
-                 <div id="voicegender" class="admin-control">
-                     <span>Female or male voice</span>
-                     <input type='radio' id='female' name='gender' value='cmu_us_axb' class='gender filter-radio black-outline' id='female' checked>
-                     <label class='filter-label' for='female'>Female</label>
-                     <input type='radio' id='male' name='gender' value='cmu_us_aup' class='gender filter-radio black-outline' id='male'>
-                     <label class='filter-label' for='male'>Male</label>
-                 </div>
+             <div>
                  <div id="speechtestdiv" class="admin-control">
                      <a href="looma-test-speech.php">
                         <button id="speechtest" class="settings-control exec-control">Speech Test</button>

@@ -79,22 +79,27 @@ $(document).ready (function() {
  
     // SPEAK button will say the word, unless text is selected, in which case, it will speak the selected text
     $('button.speak').off('click').click(function () {
-        var selection, word, pos, definition, rwdef, toSpeak;
+        var selection, word, nepali, pos, definition, rwdef, toSpeak;
     
         selection = document.getSelection().toString();
         word =      document.getElementById('input').value;
-        pos =       document.getElementById('partOfSpeech'); if (pos) word += ', ' + pos.innerText;
+        nepali =    document.getElementById('nepali').innerText;
+        pos =       document.getElementById('partOfSpeech').innerText;
         if (document.getElementById('definition')) definition = document.getElementById('definition').innerText;
         if (definition && definition != "") {
             definition = definition.replace("(v)", " verb ");
             definition = definition.replace("(n)", " noun ");
-            word += ', ' + definition;
         };
-        rwdef = document.getElementById('rwdef'); if (rwdef) word += ', ' + rwdef.innerText;
+        rwdef = document.getElementById('rwdef'); if (rwdef) definition += ', ' + rwdef.innerText;
     
-        toSpeak = (selection ? selection : word);
-        console.log('Dictionary: speaking "' + toSpeak + '"');
-        LOOMA.speak(toSpeak);
+        if (selection) {
+            LOOMA.speak(selection);
+        } else {
+            LOOMA.speak(word + '. ' + nepali + '. ' + definition);
+            
+            //LOOMA.speak(nepali);
+            //LOOMA.speak(definition);
+        }
         
         $('#input').trigger('focus');
         

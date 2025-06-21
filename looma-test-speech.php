@@ -24,7 +24,7 @@ define ("CLASSES", 8);
         <input type="text" id="text" size="250" value="Hello this is Looma">
         <button id="mimic">Speak with mimic/larynx </button>
         <button id="piper">Speak with piper </button>
-        <button id="synthesis">Speak with speechSynthesis [using local browser]</button>
+        <button id="synthesis">Speak with speechSynthesis [uses local browser]</button>
 
         <div id="rateDiv">
             <span>Enter speech rate here (higher is faster)</span>
@@ -37,9 +37,20 @@ define ("CLASSES", 8);
             </select>
         </div>
 
-        <div id="voicelist" class="settings-control">
+        <!--
+        NOTE: the voice menus below should be populated by checking what voices are actually loaded
+        -->
+
+        <div id="piper-voicelist" class=" voicelist settings-control">
+            <span>Change voice for piper:  </span>
+            <select id="piper-voices">
+                <option data-engine="piper" class="voice" id="ne_NP-google-medium.onnx"  value="cmu_us_aupne_NP-google-medium.onnx"> Nepali </option>
+                <option data-engine="piper" class="voice" id="en_US-amy-medium.onnx"  value="en_US-amy-medium.onnx"> English (US female) </option>
+            </select>
+        </div>
+        <div id="mimic-voicelist" class="voicelist settings-control" hidden>
             <span>Change voice of Looma speaking:  </span>
-            <select id="voices">
+            <select id="mimic-voices">
                 <option data-engine="mimic" class="voice" id="cmu_us_aup"  value="cmu_us_aup">   Indian male (aup) </option>
                 <option data-engine="mimic" class="voice" id="cmu_us_awb"  value="cmu_us_awb">   Scottish male (awb) </option>
                 <option data-engine="mimic" class="voice" id="cmu_us_bdl"  value="cmu_us_bdl">   US male (bdl) </option>
@@ -58,7 +69,6 @@ define ("CLASSES", 8);
                 <option data-engine="mimic" class="voice" id="cmu_us_slt"  value="cmu_us_slt">   US female (slt) </option>
                 <option data-engine="mimic" class="voice" id="mycroft_voice_4.0"  value="mycroft_voice_4.0">   English male (mycroft) </option>
             </select>
-            <p>(voice selection only applies to mimic speech engine)</p>
         </div>
 
     </div>

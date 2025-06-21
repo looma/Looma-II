@@ -21,11 +21,14 @@
     extended JUN 2025 by Skip - add piper engine for Nepali speech
  */
 
+//echo "line 24 started<br>";return;
+
 $text =   (isset($_REQUEST['text']) && $_REQUEST['text'] != "")   ? htmlentities($_REQUEST["text"]) : null;
 if ($text === null) return;
 
-$voice =   ( isset($_REQUEST['voice'])    && $_REQUEST['voice'] != "")    ? $_REQUEST["voice"] : null;
-$engine = ( isset($_REQUEST['engine']) && $_REQUEST['engine'] != "") ? $_REQUEST["engine"] : 'piper';
+$voice =   ( isset($_REQUEST['voice']) && $_REQUEST['voice'] != "undefined")    ? $_REQUEST["voice"] : null;
+$engine = ( isset($_REQUEST['engine']) && $_REQUEST['engine'] != "undefined") ? $_REQUEST["engine"] : 'piper';
+
 
 //$lang =   isset($_REQUEST['lang'])   ? $_REQUEST['lang'] : null;
 // $_REQUEST['lang'] will be 'english' or 'native'
@@ -35,12 +38,7 @@ $engine = ( isset($_REQUEST['engine']) && $_REQUEST['engine'] != "") ? $_REQUEST
 // RATE parameter sets speaking rate ( rate > 1 means FASTER)
 // default RATE for Looma is 2/3 - speak slower so Nepali
 // students can understand easier
-$rate =  ( isset($_REQUEST['rate']) && $_REQUEST['rate'] != "")   ? $_REQUEST['rate'] : 2/3;
-
-//debug:
-
-//echo "text is $text, voice is $voice, engine is $engine, lang is $lang, rate is $rate";
-//return;
+$rate =  ( isset($_REQUEST['rate']) && $_REQUEST['rate'] != "undefined")   ? $_REQUEST['rate'] : 2/3;
 
 // detecting devanagari is now done in looma-utilities.js LOOMA.speak()
 if (preg_match('/\p{Devanagari}/u', $text))
@@ -50,7 +48,6 @@ if (preg_match('/\p{Devanagari}/u', $text))
     //$text = "I do not know how to speak Nepali.";
     $lang = 'np';
 }
-
 
 date_default_timezone_set("UTC");
 $date = new DateTime();
@@ -64,28 +61,30 @@ $outputFileName = "/tmp/website.looma.tts.speak." . $date->getTimestamp() . "_" 
 if (file_exists($outputFileName)) // IF we get conflicting filenames, generate a different filename
 { $outputFileName = "/tmp/website.looma.tts.speak." . $date->getTimestamp() . "_" . mt_rand() . "_" . mt_rand() . ".wav";}
 
-//echo "line 63 engine is $engine";
 
 if ($engine === 'piper') {
+    if ( ! exec('which piper')) return;
     if ($lang === "np") $voice = "ne_NP-google-medium.onnx";
     else                         $voice = "en_US-amy-medium.onnx";
+    $speed = 1 / $rate;
+    $command = "echo  "  .  escapeshellarg($text)  . " | piper " .
+        " --model /usr/share/piper/$voice " .
+        "--length_scale $speed" .
+        "--output_file $outputFileName";  // move voices to inside ../Looma ???
 
-    $command = "echo " . escapeshellarg($text) . " | piper " .
-        " --model /usr/share/piper/$voice --output_file $outputFileName";  // move voices to inside ../Looma ???
-
-    /**/
-    echo "engine is $engine\r\n";
-    echo "voice is $voice\r\n";
+    //echo "engine is $engine<br>";
+    /*
+    echo "voice is $voice<br>";
 
     if (file_exists( "/usr/share/piper/$voice"))
         echo "voice file exists";
     else echo "voice file NOT FOUND";
 
-    echo "filename is $outputFileName\r\n";
-    echo "piper is " . exec("which piper") . "\r\n";
-    echo "command is $command\r\n";
+    echo "filename is $outputFileName<br>";
+    echo "piper is " . exec("which piper") . "<br>";
+    echo "command is $command<br>";
     return;
-    /**/
+    */
 
 } else if ($engine === 'mimic') {
     if (empty($voice)) {
@@ -113,22 +112,9 @@ if ($engine === 'piper') {
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: audio/wav");
 
-
-//DEBUG
-// echo "output file is $outputFileName";
-///echo "command is $command";
-//return;
-
-
-
 // execute the shell command to convert 'text' to output .wav file
 exec($command);
-
-//echo "exec'd command"; return;
-
-// generate the wave file
 // send the .wav file to the client
 readfile($outputFileName);           // play the wave file to the client side
-
-unlink($outputFileName);             // delete the wave file
+//unlink($outputFileName);             // delete the wave file
 ?>

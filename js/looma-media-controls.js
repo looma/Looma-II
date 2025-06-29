@@ -14,8 +14,11 @@ Revision: Looma 7.x
     var audio, video, media;
     var $play, $mute, $seekbar, $volumebar, $elapsedtime, $totaltime;
 
+    
+
 function mediaPlayPause () { // play or pause the currently playing MEDIA - stored in global var media
     
+ /* NOTE: this code moved to looma.js "onclick" of "#translate" button
     if (media.getAttribute('id') === 'video') {
         var tracks = media.textTracks;
         
@@ -32,7 +35,7 @@ function mediaPlayPause () { // play or pause the currently playing MEDIA - stor
             }
         }
     }
-
+*/
     if (media.paused) {
         media.play();
         $('.play-pause').css('background-image', 'url("images/pause.png")');

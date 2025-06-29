@@ -1,13 +1,18 @@
 CHANGE LOG FOR LOOMA
 
 2025 06 20 Version 7.17
-- added 'piper' TTS 
+- added 'piper' TTS including Nepali TTS
+- added video captions in English and Nepali
+- translated all lessons to Nepali [except EN and N lessons]
+- removed Library > Textbooks folder to save space
+- added Library > Curriculum to include CDC "curriculum" memos
+-     removed old CDC Curricula PDFs as obsolete
 
 ++++++++++++++++++++++++++++++++++++++++++++++
 2025 06 06 Version 7.16
 
 - completed full set of Teacher Guides
-- added Nepali Listening Files
+- added Nepali Listening Files for English chapters
 - re-organized English Listening Files
 
 ++++++++++++++++++++++++++++++++++++++++++++++

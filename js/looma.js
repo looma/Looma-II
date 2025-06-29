@@ -160,6 +160,25 @@ $(document).ready (function() {
             LOOMA.setStore('language', language, 'cookie');
             // change all the keywords on the page to the new setting
             LOOMA.translate(language);
+    
+    
+        var tracks = media.textTracks;
+    
+        if (tracks.length === 1) {
+            tracks[0].mode = 'showing';
+        }
+        else if (tracks.length > 0) {     // needs to be extended to more than 2 tracks when we add another language
+            if (language === 'native') {
+                tracks[0].mode = "hidden";
+                tracks[1].mode = "showing";
+            } else {
+                tracks[1].mode = "hidden";
+                tracks[0].mode = "showing";
+            }
+        }
+    
+        
+        
     }); // end anonymous function for translate.click
 
 

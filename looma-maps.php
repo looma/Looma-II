@@ -75,7 +75,9 @@ function makeMapButton($file, $thumb, $dn) {
 
         $maps = mongoFind($maps_collection, [], null, null, null); //mongo 4.4 wont allow re-use of cursor
         foreach ($maps as $map) {
-            if($map['title'] !== "Nepal Map" && $map['title'] !== "Looma Schools Map") {
+            if($map['title'] !== "Nepal Map"
+                && $map['title'] !== "Looma Schools Map"
+                && ( ! isset($map['hidden'])  || ! $map['hidden'])) {
                 echo "<td>";
                 if (isset($map['title'])) $dn = $map['title']; else $dn = "Map";
                 if (isset($map['thumb'])) $thumb = "../content/maps/mapThumbs/" . $map['thumb']; else $thumb = 'images/maps.png';

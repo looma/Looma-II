@@ -26,9 +26,12 @@
 $text =   (isset($_REQUEST['text']) && $_REQUEST['text'] != "")   ? htmlentities($_REQUEST["text"]) : null;
 if ($text === null) return;
 
-$voice =   ( isset($_REQUEST['voice']) && $_REQUEST['voice'] != "undefined")    ? $_REQUEST["voice"] : null;
-$engine = ( isset($_REQUEST['engine']) && $_REQUEST['engine'] != "undefined") ? $_REQUEST["engine"] : 'piper';
+$voice =   ( isset($_REQUEST['voice'])  && $_REQUEST['voice']  != "undefined") ? $_REQUEST["voice"] : null;
+$engine =  ( isset($_REQUEST['engine']) && $_REQUEST['engine'] != "undefined") ? $_REQUEST["engine"] : null;
 
+if      ( ! $engine && exec('which piper')) $engine = 'piper';
+else if ( ! $engine && exec('which mimic')) $engine = 'mimic';
+else return;
 
 //$lang =   isset($_REQUEST['lang'])   ? $_REQUEST['lang'] : null;
 // $_REQUEST['lang'] will be 'english' or 'native'
@@ -69,21 +72,23 @@ if ($engine === 'piper') {
     $speed = 1 / $rate;
     $command = "echo  "  .  escapeshellarg($text)  . " | piper " .
         " --model /usr/share/piper/$voice " .
-        "--length_scale $speed" .
-        "--output_file $outputFileName";  // move voices to inside ../Looma ???
+        " --length_scale $speed" .
+        " --output_file $outputFileName";  // move voices to inside ../Looma ???
 
     //echo "engine is $engine<br>";
+
     /*
+    echo "engine is $engine<br>";
     echo "voice is $voice<br>";
 
-    if (file_exists( "/usr/share/piper/$voice"))
-        echo "voice file exists";
-    else echo "voice file NOT FOUND";
+     if (file_exists( "/usr/share/piper/$voice"))
+         echo "voice file $voice EXISTS<br>";
+     else echo "voice file NOT FOUND<br>";
 
-    echo "filename is $outputFileName<br>";
-    echo "piper is " . exec("which piper") . "<br>";
-    echo "command is $command<br>";
-    return;
+     echo "filename is $outputFileName<br>";
+     echo "piper is " . exec("which piper") . "<br>";
+     echo "<br>command is $command<br>";
+     return;
     */
 
 } else if ($engine === 'mimic') {

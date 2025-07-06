@@ -1,9 +1,7 @@
 // mongo terminal program "importChapterLen"
 //      input from a CSV file
-//          each line of which is a DN, FN, CH_LO, CH_HI    (low and high class appropriate for this media file)
-//          inserts all the CH_LO, CH_HI into the activities.ch_ids array of any document(s) corresponding to the DN + FN pair
 //
-//  make sure there is a file 'cl_lo_hi_ToImport' in TAB-SEPARATED format, in the current directory
+//  make sure there is a file 'chapterLenToImport.txt' in TAB-SEPARATED format, in the current directory
 //  start MONGO in LOOMA db with: 'mongo looma'
 //  run in MONGO SHELL with: load('importChapterLen')
 //

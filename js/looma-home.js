@@ -12,6 +12,7 @@ Description:
 'use strict';
 
 var className, subjectName, gradeName, prefix;
+var cover;
 
 var subjectnames = {
     'english' : 'English',
@@ -57,20 +58,6 @@ var nsubjectnames = {
     'social studies' : 'सामाजिक',
     'serofero' : 'सेरोफेरो'
 }
-
-/*
-Full title English	Full title Nepali	Short title English	Short title Nepali
-Mathematics	गणित	Math	गणित
-Science	विज्ञान	Science	विज्ञान
-English	अंग्रेजी	English	अंग्रेजी
-Nepali	नेपाली	Nepali	नेपाली
-Social Studies	सामाजिक शिक्षा	Social	सामाजिक
-Vocational Education	प्राविधिक शिक्षा	Vocation	प्राविधिक
-Health	स्वास्थ्य	Health	स्वास्थ्य
-Moral Education	नैतिक शिक्षा	Moral	नैतिक
-Optional Mathematics	ऐच्छिक गणित	Opt. Math	ऐ. गणित
-Optional Science	ऐच्छिक विज्ञान	Opt. Sci.	ऐ. विज्ञान
- */
 
 // SORT the books to display in consistent subject order
 function orderSubjects(a, b) {
@@ -123,16 +110,8 @@ function displaySubjects (className) {
     
                     var subjectname = subjectnames[book['subject']];
                     var nsubjectname = nsubjectnames[book['subject']];
-    
-                    //  *********  special temporary code for CEHRD  *************
-                    //
-    
-                    // if(LOOMA.readStore('theme', 'cookie') === 'CEHRD' && subjectname === 'Science') {
-                    //   subjectname = 'Serofero';
-                    //   nsubjectname = 'सेरोफेरो';
-                    //};
-                    //  ******** end special CEHRD code
-    
+ 
+ /*               // these <p> elements showing the subject name, are hidden by CSS for now
                     if (book['subject'] === 'english') {
                         $newButton.append($("<p>" + subjectname + "</p>"));
                     } else if (book['subject'] === 'nepali') {
@@ -142,39 +121,37 @@ function displaySubjects (className) {
                         $newButton.append($("<p class='english-keyword'>" + subjectname + "<p class='xlat'>" + nsubjectname));
                         $newButton.append($("<p class='native-keyword'>" + nsubjectname + "<p class='xlat'>" + subjectname));
                     }
-                    //$newButton.append($('<p>' + book["dn"] +'</p>'));
+*/
+                // show textbook covers, in correct language, on subject buttons
+                        var coverNP = (book['nfn']) ?
+                            tb_path + encodeURIComponent(book['nfn'].substr(0, book['nfn'].length - 4)) + '_thumb.jpg' :
+                            tb_path + encodeURIComponent(book['fn'].substr(0, book['fn'].length - 4)) + '_thumb.jpg';
+                        
+                        var coverEN = (book['fn']) ?
+                            tb_path + encodeURIComponent(book['fn'].substr(0, book['fn'].length - 4)) + '_thumb.jpg' :
+                            tb_path + encodeURIComponent(book['nfn'].substr(0, book['nfn'].length - 4)) + '_thumb.jpg';
+                    
+                    $newButton.append($('<img class="english" id="imgEN'+subjectname+'" draggable="false" src="' + coverEN + '" />'));
+                    $newButton.append($('<img class="native"  id="imgNP'+subjectname+'" draggable="false" src="' + coverNP + '" />'));
     
-                    var imgEn = (book['fn']) ?
-                        tb_path + encodeURIComponent(book['fn'].substr(0, book['fn'].length - 4)) + '_thumb.jpg' :
-                     //   'images/book_gray.png';
-                        null;
-                    var imgNp = (book['nfn']) ?
-                        tb_path + encodeURIComponent(book['nfn'].substr(0, book['nfn'].length - 4)) + '_thumb.jpg' :
-                     //   'images/book_gray.png';
-                        null;
-                    if (imgEn) $newButton.append($('<img draggable="false" src="' + imgEn + '" />'));
-                    if (imgNp) $newButton.append($('<img draggable="false" src="' + imgNp + '" />'));
-    
-                    //  *********  special temporary code for CEHRD  *************
-                    //
-                    // if(LOOMA.readStore('theme', 'cookie') !== 'CEHRD' || subjectname !== 'Social')
                     $('#subjects').append($newButton);
-                    //  ******** end special CEHRD code
-                }
+    
+                  //  $('button.subject#'+book["subject"]+ 'img').hide();
+                    
+                    if (language === 'native') {
+                        $('button.subject img.native').show();
+                        $('button.subject img.english').hide();
+                    }
+                    else                       {
+                        $('button.subject img.english').show();
+                        $('button.subject img.native').hide();
+                    }
+                };
             });
             $("button.subject").click(subjectButtonClicked);
     
-            subjectName = LOOMA.readStore('subject', 'session');
-            activateSubject(subjectName);
-    
-            var language;
-            language = LOOMA.readStore('language', 'cookie');
-            if (!language) {
-                LOOMA.setStore('language', 'english', 'cookie');
-                language = 'english';
-            };
-            LOOMA.translate(language);
-    
+            //subjectName = LOOMA.readStore('subject', 'session');
+            //activateSubject(subjectName);
         },
         'json'
     );
@@ -233,6 +210,8 @@ $(document).ready (function() {
     
     $("button.class").click(classButtonClicked);
     $("button.subject").click(subjectButtonClicked);
+    
+  //  $('#translate').click(classButtonClicked);
     
     //set scroll position to top of page
     LOOMA.setStore('chapterScroll', 0, 'session');

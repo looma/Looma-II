@@ -158,7 +158,17 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
             echo "</div>";
 
-          //  echo "<label><input type='checkbox' name='semantic' />(Experimental) Semantic Search</label>";
+    // test if Qdrant DB is running on this system. if so, add 'semantic search' to the Search panel
+        $host = '127.0.0.1'; // or 'localhost'
+        $port = 46333;        // Qdrant port
+        $timeout = 1;        // seconds
+
+        $connection = @fsockopen($host, $port, $errno, $errstr, $timeout);
+
+        if ($connection) echo "<label><input type='checkbox' name='semantic' />(Experimental) Semantic Search</label>";
+        else echo "error checking for Qdrant:  " . $errno;
+
+
         echo "</div>";
 
 /**************************************/

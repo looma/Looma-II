@@ -18,7 +18,9 @@
 ?>
     <link rel="stylesheet" href="css/looma-home.css">
 
+<!-- textbooks are no longer kept in ../content
     <link rel="prefetch" href="../content/textbooks/Class1/English/English-1-2465.pdf" />
+-->
 
 </head>
 

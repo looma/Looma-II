@@ -185,7 +185,7 @@ border:none;}
 #subjects {position:relative;}
 
 #subjects button {
-    
+    padding:0;
     margin: 3px;
     height: 30vh;
     width:18vw;
@@ -207,9 +207,10 @@ $subjects button p {
     margin:0 auto;
  }
  
+ #subjects button p {display:none;}
+ 
 #subjects button img {
-    width: 36%;
-    margin:4px;
+    width: 75%;
 }
 
 

@@ -1,11 +1,11 @@
-// mongo terminal program "importCL_LO_CH_HI"
+// mongo terminal program "importCL_LO_CL_HI"
 //      input from a CSV file
-//          each line of which is a DN, FN, CH_LO, CH_HI    (low and high class appropriate for this media file)
-//          inserts all the CH_LO, CH_HI into the activities.ch_ids array of any document(s) corresponding to the DN + FN pair
+//          each line of which is a DN, FN, CL_LO, CL_HI    (low and high class appropriate for this media file)
+//          inserts all the "cl_lo", "cl_hi"" into the activities.ch_ids array of any document(s) corresponding to the DN + FN pair
 //
 //  make sure there is a file 'cl_lo_hi_ToImport' in TAB-SEPARATED format, in the current directory
 //  start MONGO in LOOMA db with: 'mongo looma'
-//  run in MONGO SHELL with: load('mportCL_LO_CH_HI')
+//  run in MONGO SHELL with: load('mportCL_LO_CL_HI')
 //
 //"use strict";
 
@@ -13,10 +13,10 @@ var requestcount = 0;
 var changecount = 0;
 
 var input = 'cl_lo_hi_ToImport.txt';
-print ('Importing CH_LO and CL_HI from ' + input);
+print ('Importing CL_LO and CL_HI from ' + input);
 var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
 
-var docs = file.split(/[\r\n]+/);  // split file into array of lines containing (DN, FN, CH_LO, cl_HI)
+var docs = file.split(/[\r\n]+/);  // split file into array of lines containing (DN, FN, CL_LO, CL_HI)
 
 print ('Processing ' + docs.length + ' lines');
 
@@ -40,7 +40,7 @@ docs.forEach( function(doc) {
             
            if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
            
-           print(++changecount + ' - - CHANGED CH_LO and CH_HI for ' + displayname + ' TO ' + fields[2] + ' and ' + fields[3]);
+           print(++changecount + ' - - CHANGED "cl_lo" and "cl_hi" for ' + displayname + ' TO ' + fields[2] + ' and ' + fields[3]);
         }
     } else print('*******    BAD INPUT LINE: ' + doc);
 });  // end foreach doc

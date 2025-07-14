@@ -119,7 +119,7 @@ function play ($item) {
                 $viewer.empty();
                 $div.appendTo($viewer);
         
-                if (language === 'native') {$('.english').hide();$('.native').show();}
+                if (language === 'native'  && LOOMA.loggedIn()) {$('.english').hide();$('.native').show();}
                 else               {$('.english').show();$('.native').hide();}
                 break;
         

@@ -2,7 +2,7 @@
 //      input from a TSV file
 //          each line of which contains:
 //              fields[0]: dn
-//              fields[1..5]: ch_id.1 ch_id.2	ch_id.3	ch_id.4	ch_id.5
+//              fields[1..5]: ch_id.1 ch_id.2 ch_id.3 ch_id.4 ch_id.5
 //
 //          deletes ch_id's fields from the activity
 //
@@ -19,7 +19,7 @@ var query;
 
 function removeCh_id(id, document) {
     id = id.trim();
-  //  print('removing ch_id '  + id + ' from document ' + document.dn);
+//    print('removing ch_id '  + id + ' from document ' + document.dn);
     if (param === 'run') db.activities.updateOne({_id:document['_id']},{$pull:{ch_id:id}})
 }
 
@@ -50,7 +50,7 @@ lines.forEach( function(doc) {
     
     var activities = db.activities.find(query);
     
-    if (!activities.hasNext()) print(requestcount + ' - - - - - - - -' + dn + '       NOT FOUND');
+    if (!activities.hasNext()) print(' - - - - - - - -' + dn + '       NOT FOUND');
     else
  //   if (activities.count() > 1) {
  //       if (dn) {

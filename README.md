@@ -31,7 +31,7 @@ Send comments and suggestions to info at looma dot education.
     * This builds the two Docker images, loomaweb and loomadb
       
 * In the project root, run
-* `docker-compose up -d`
+* `./looma run`
     * This runs docker-compose, and creates "loomaweb" and "loomadb" containers and runs them
 
 If you get errors about docker authentication, run `docker logout`

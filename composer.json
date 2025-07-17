@@ -1,6 +1,6 @@
 {
     "require": {
-        "mongodb/mongodb": "^1.15",
+        "mongodb/mongodb": "^2.1",
         "phpseclib/phpseclib": "~3.0"
     }
 }

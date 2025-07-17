@@ -228,11 +228,13 @@ $foundActivity;
 		echo "<h2 class='title'>";
             echo keyword('Resources'); echo ': ';
             echo keyword(ucfirst($grade)); echo ' ';
-            echo keyword($caps) . " \"";
+            echo keyword($caps);
+        echo "</h2>";
 
-            echo '<span class="english-keyword">' . ' ' . $ch_dn .  '</span>';
+        echo "<h2 class='title'>";
+            echo  '<span class="english-keyword">' . ' ' . $ch_dn .  '</span>';
             echo '<span class="native-keyword">'  . ' ' . $ch_ndn . '</span>';
-        echo "\"</h2>";
+        echo "</h2>";
 
 	    echo "<div>";
 

@@ -1349,7 +1349,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
         //  for Looma in Nepal, use default rate = 2/3
 
     const defaultspeed = 2/3;
-    var   speed = rate ? rate : defaultspeed;
+    var speed;
+    
+       if (rate <= 0 || rate > 2) rate = defaultspeed;
+       speed = 1/rate;
 
     /* requires a special regex package, like xregexp [https://www.regular-expressions.info/xregexp.html]
          const devanagari = /p{Devanagari}/u;
@@ -1371,7 +1374,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                              else voice = 'en_US-amy-medium.onnx';
                      }
                */
-         console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
+         //console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
 
          var speechButton = document.getElementsByClassName("speak")[0];
 
@@ -1457,7 +1460,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
              } else {
                  // speechSynthesis usually accounts for latency itself, so there's no need to queue requests.
                  var speech = new SpeechSynthesisUtterance(text);
-                 speech.rate = speed;   // e.g. if rate is 2/3, slow down
+                 speech.rate = 1/speed;   // e.g. if rate is 2/3, slow down
                  speechSynthesis.speak(speech);
              }
          }
@@ -1469,14 +1472,14 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  //LOOMA.speak.playingAudio.pause();
                  LOOMA.speak.cleanup();
              } else {  //else start the new speech
-                 console.log("Playing Audio: " + text);
+                 //console("Playing Audio: " + text);
 
                  // To reduce latency before speech starts, split the speech into sentences, and speak each separately.
                  // separating on: period, comma, question mark, exclamation mark, semicolon, colon   /[.,?!;:]/
                  // Splitting over these punctuation marks will usually work.
                  //There are a few cases where it will sound unusual ("Dr.", "Mr.", "Ms.", etc).
                  //It may lag on unusually long sentences without punctuation.
-                 var splitSentences = text.split(/[.,?!;:]/);
+                 var splitSentences = text.split(/[.?!;:]/); //removed ","
                  console.log("Speaking " + splitSentences.length + " phrases.");
 
                  var lastAudio = null;
@@ -1484,26 +1487,27 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
                  for (var i = 0; i < splitSentences.length; i++) {
                      var currentText = splitSentences[i];
-                     var audioSource;
-
+                     if (currentText) {
+                         var audioSource;
+    
                      audioSource = 'looma-TTS.php?' +
-                         'text='    + encodeURIComponent(currentText) +
-                         '&voice='  + encodeURIComponent(voice) +
-                         '&rate='   + encodeURIComponent(speed) +
-                         '&lang='   + encodeURIComponent(language) +
+                         'text=' + encodeURIComponent(currentText) +
+                         '&voice=' + encodeURIComponent(voice) +
+                         '&rate=' + encodeURIComponent(rate) +
+                         '&lang=' + encodeURIComponent(language) +
                          '&engine=' + encodeURIComponent(engine);
-
+    
                      // This is like preloading images – all the requests to mimic will execute early, so there won't be lag between phrases.
                      var currentAudio = new Audio(audioSource);
-
+    
                      //this 'onended' handler is attached to each phrase before it is entered into the queue
                      currentAudio.onended = function () {
                          // When this phrase is over, start the next one, by popping it off the queue
-                         console.log("End of Phrase");
+                         //console.log("End of Phrase");
                          var nextAudio = LOOMA.speak.speechQueue.pop(); // The equivalent of "dequeue". (Pulls from the end of the array.)
-                         if (nextAudio != null) {
+                         if (nextAudio && nextAudio.textContent != null) {
                              LOOMA.speak.playingAudio = nextAudio;
-                             console.log("Playing Next Phrase");
+                             //console.log("Playing Next Phrase");
                              //play the next phrase
                              playPromise = nextAudio.play();
                          } else {
@@ -1512,7 +1516,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                              LOOMA.speak.cleanup();
                          }
                      };
-
+    
                      if (lastAudio == null) { //for the first phrase, dont put it on the queue, just play it
                          firstAudio = currentAudio;
                      } else {
@@ -1520,10 +1524,11 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          LOOMA.speak.speechQueue.unshift(currentAudio); // The equivalent of "enqueue". (Puts it at the beginning of the array.)
                      }
                      lastAudio = currentAudio;
+                 }
                  }  // end FOR loop which builds the queue of audio phrases to play
-
                  LOOMA.speak.playingAudio = firstAudio;
-                 console.log("Playing Phrase");
+                 console.log("Playing '" + currentText + "' with " + voice + " at speed " + speed + " and using " + engine);
+                 
                  //play the first phrase
                  playPromise = firstAudio.play().then(
                      function () {
@@ -1541,6 +1546,8 @@ LOOMA.speak = function(text, engine, voice, rate) {
      } // end if (text != '')
  }; //end LOOMA.speak()
 
+ 
+ 
  LOOMA.toggleFullscreen = function() {
      var fs =      document.getElementById('video-fullscreen');
      if (!fs) fs = document.getElementById('fullscreen');

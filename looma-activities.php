@@ -364,6 +364,7 @@ $foundActivity;
         }
     }
 
+ /*
         if ($subject === 'math') {
             echo "<td>";
             echo "<a href='looma-arith.php?type=arith&class=class" . $gradenumber . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";
@@ -377,7 +378,7 @@ $foundActivity;
             $foundActivity = true;
             nextButton();
         }  // end of special cases [vocab for english and arith for math]
-
+*/
 
     ////////////////////////////////////////////////////
     //get all the resources registered for this chapter

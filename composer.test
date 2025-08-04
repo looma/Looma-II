@@ -1,0 +1,3 @@
+test for loomaarchive
+this file should be SKIPPED when running 'loomaarchive' to update the Looma Update Server (on rsync.net)
+if this file gets copied to rsync.net, the looma update server, then loomarchive script is not correct

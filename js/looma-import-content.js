@@ -22,23 +22,26 @@ function extension(item) {
 };
 
 function display_file (item) {
-    var line;
-    if (item.reg.reg) { //this file is registered as an activity already
-        line = '<div class="fileitem reg">';
-        line += '<input type="checkbox" class="check" disabled >';
-        line += 'File name: <div class="filename">' + item.fn + '</div>';
-        line += 'Display name: <input type="text" disabled class="displayname" value="' + item.reg.dn + '"></div>';
-     } else {
-        line = '<div class="fileitem notreg">';
-        line += '<input type="checkbox" class="check" value="' + item.fn + '">';
-        line += 'File name: <div class="filename">' + item.fn + '</div>';
-        line += 'Type: <span class="filetype">' + LOOMA.typename(extension(item.fn))  + '</span>';
-        line += '&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;';
-        line += 'Display name: ';
-        line += '<input type="text" class="dn" value="' + display_name(item.fn) + '"></div>';
-    };
-
-    $(line).appendTo($('#filelist'));
+    if (extension(item.fn) !== "vtt") {
+        var line;
+        if (item.reg.reg) { //this file is registered as an activity already
+            line = '<div class="fileitem reg">';
+            line += '<input type="checkbox" class="check" disabled >';
+            line += 'File name: <div class="filename">' + item.fn + '</div>';
+            line += 'Display name: <input type="text" disabled class="displayname" value="' + item.reg.dn + '"></div>';
+        } else {
+            line = '<div class="fileitem notreg">';
+            line += '<input type="checkbox" class="check" value="' + item.fn + '">';
+            line += 'File name: <div class="filename">' + item.fn + '</div>';
+            line += 'Type: <span class="filetype">' + LOOMA.typename(extension(item.fn)) + '</span>';
+            line += '&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;';
+            line += 'Display name: ';
+            line += '<input type="text" class="dn" value="' + display_name(item.fn) + '"></div>';
+        }
+        ;
+    
+        $(line).appendTo($('#filelist'));
+    }
 };
 
 function get_file_list(path) {

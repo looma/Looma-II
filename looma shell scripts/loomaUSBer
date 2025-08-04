@@ -52,6 +52,13 @@ result () {
     fi
 }
 
+checksudo() {
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "This script must be run as root. Please run this again using 'sudo loomaUSB'" >&2
+        exit 1
+    fi
+}
+
 checkforsshpass () {
 if ! command -v sshpass &> /dev/null
   then
@@ -99,6 +106,7 @@ timestamp () {  # $1 is the dir to put the timestamp in [content or Looma]
   echo "************************************"
 }  #  end timestamp()
 
+checksudo
 checkforsshpass
 
 cd /media/odroid/LOOMA

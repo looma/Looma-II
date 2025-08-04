@@ -94,5 +94,5 @@ header("Content-Type: audio/wav");
 exec($command);
 // send the .wav file to the client
 readfile($outputFileName);           // play the wave file to the client side
-//unlink($outputFileName);             // delete the wave file
+unlink($outputFileName);             // delete the wave file
 ?>

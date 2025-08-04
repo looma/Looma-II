@@ -165,8 +165,8 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
         $connection = @fsockopen($host, $port, $errno, $errstr, $timeout);
 
-        if ($connection) echo "<label><input type='checkbox' name='semantic' />(Experimental) Semantic Search</label>";
-        else echo "error checking for Qdrant:  " . $errno;
+ //       if ($connection) echo "<label><input type='checkbox' name='semantic' />(Experimental) Semantic Search</label>";
+        //else echo "error checking for Qdrant:  " . $errno;
 
 
         echo "</div>";

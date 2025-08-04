@@ -1,36 +1,48 @@
 // mongo terminal program "removeBADCh_ids.js"
-//      input from a TSV file
-//          each line of which contains:
-//              fields[0]: dn
-//              fields[1..5]: ch_id.1 ch_id.2	ch_id.3	ch_id.4	ch_id.5
 //
-//          deletes ch_id's fields from the activity
+//          deletes illegal ch_id's fields from each activity
 //
-//  make sure there is a file 'ch_idsToRemove.tsv' in TAB-SEPARATED format, in the current directory
 //  start MONGO in LOOMA db with: 'mongo looma'
 //  run in MONGO SHELL with: load('removeBADCh_ids.js')
 //
 //"use strict";
 
-var changecount = 0;
-var limit = 999999;
+/////////////////////////
+//  verification function that check validity of a ch_id
+////////////////////////
 
-var query = {nch_id:/^y/};
-
-if (db.activities.countDocuments(query) > 0) {
-    var activities = db.activities.find(query);
-    
-    while (activities.hasNext() && changecount <= limit) {
-        var activity = activities.next();
-    
-        if (activity) {
-            print('removing "^y" ch_ids  from document ' + activity.dn);
-            if (param === 'run') {
-                db.activities.updateOne({_id: activity['_id']}, {$pull: query});
-                changecount++;
-            } else print (' DRYRUN: no change made');
-        }
+function legalCH_ID(ch,dn) {
+    var char = ch.trim();
+    if (char && char.length>0) {
+        var legal = db.chapters.find({"_id": char});
+        if ( !legal.hasNext() ) {
+            print("************ NO CHAPTER FOUND FOR ch_id:     " + char + " named " + dn);
+            illegalcount++;
+            return false;
+        } else return true;
     }
 }
+
+var changecount = 0;
+var illegalcount = 0;
+
+var activities = db.activities.find();
+while (activities.hasNext()) {
+    var activity = activities.next();
+
+    if (activity && activity['ch_id']) {
+        activity['ch_id'].forEach(function(ch, index) {
+            if ( ! legalCH_ID(ch,activity['dn'])) {
+                changecount++;
+                if (param === 'run')
+                    db.activities.updateOne({_id: activity['_id']}, {$pull: {ch_id:ch}});
+                print (' *** ' +  activity['dn'] + ': removing ' + ch);
+            }
+        });
+    }
+}
+
 print('');
-print('+++++  ' + changecount + '  changes made');
+if (param === 'run') print('+++++  ' + changecount + '  changes made');
+else                 print('+++++  DRYRUN: ' + changecount + '  changes would have been made');
+print (illegalcount + ' illegal ch_id\s');

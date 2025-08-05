@@ -27,21 +27,20 @@ use function current;
 /**
  * Operation for finding a single document with the find command.
  *
+ * @api
  * @see \MongoDB\Collection::findOne()
  * @see https://mongodb.com/docs/manual/tutorial/query-documents/
  * @see https://mongodb.com/docs/manual/reference/operator/query-modifier/
  */
-final class FindOne implements Explainable
+class FindOne implements Executable, Explainable
 {
-    private Find $find;
+    /** @var Find */
+    private $find;
 
     /**
      * Constructs a find command for finding a single document.
      *
      * Supported options:
-     *
-     *  * codec (MongoDB\Codec\DocumentCodec): Codec used to decode documents
-     *    from BSON to PHP objects.
      *
      *  * collation (document): Collation specification.
      *
@@ -55,10 +54,19 @@ final class FindOne implements Explainable
      *
      *  * max (document): The exclusive upper bound for a specific index.
      *
+     *  * maxScan (integer): Maximum number of documents or index keys to scan
+     *    when executing the query.
+     *
+     *    This option has been deprecated since version 1.4.
+     *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
-     *    run.
+     *    run. If "$maxTimeMS" also exists in the modifiers document, this
+     *    option will take precedence.
      *
      *  * min (document): The inclusive upper bound for a specific index.
+     *
+     *  * modifiers (document): Meta-operators modifying the output or behavior
+     *    of a query.
      *
      *  * projection (document): Limits the fields to return for the matching
      *    document.
@@ -78,7 +86,9 @@ final class FindOne implements Explainable
      *
      *  * skip (integer): The number of documents to skip before returning.
      *
-     *  * sort (document): The order in which to return matching documents.
+     *  * sort (document): The order in which to return matching documents. If
+     *    "$orderby" also exists in the modifiers document, this option will
+     *    take precedence.
      *
      *  * let (document): Map of parameter names and values. Values must be
      *    constant or closed expressions that do not reference document fields.
@@ -93,23 +103,25 @@ final class FindOne implements Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, array|object $filter, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, $filter, array $options = [])
     {
         $this->find = new Find(
             $databaseName,
             $collectionName,
             $filter,
-            ['limit' => 1] + $options,
+            ['limit' => 1] + $options
         );
     }
 
     /**
      * Execute the operation.
      *
+     * @see Executable::execute()
+     * @return array|object|null
      * @throws UnsupportedException if collation or read concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server): array|object|null
+    public function execute(Server $server)
     {
         $cursor = $this->find->execute($server);
         $document = current($cursor->toArray());
@@ -121,9 +133,10 @@ final class FindOne implements Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
+     * @return array
      */
-    public function getCommandDocument(): array
+    public function getCommandDocument(Server $server)
     {
-        return $this->find->getCommandDocument();
+        return $this->find->getCommandDocument($server);
     }
 }

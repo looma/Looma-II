@@ -296,10 +296,7 @@ class GMP extends Engine
      */
     public function extendedGCD(GMP $n)
     {
-        $extended = gmp_gcdext($this->value, $n->value);
-        $g = $extended['g'];
-        $s = $extended['s'];
-        $t = $extended['t'];
+        extract(gmp_gcdext($this->value, $n->value));
 
         return [
             'gcd' => $this->normalize(new self($g)),

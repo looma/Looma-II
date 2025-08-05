@@ -19,6 +19,7 @@ namespace MongoDB\Model;
 
 use ArrayAccess;
 use MongoDB\Exception\BadMethodCallException;
+use ReturnTypeWillChange;
 
 use function array_key_exists;
 use function array_search;
@@ -33,82 +34,122 @@ use function array_search;
  * For information on keys and index options, see the referenced
  * db.collection.createIndex() documentation.
  *
+ * @api
  * @see \MongoDB\Collection::listIndexes()
  * @see https://github.com/mongodb/specifications/blob/master/source/enumerate-indexes.rst
  * @see https://mongodb.com/docs/manual/reference/method/db.collection.createIndex/
- * @template-implements ArrayAccess<string, mixed>
  */
 class IndexInfo implements ArrayAccess
 {
-    /** @param array $info Index info */
-    public function __construct(private array $info)
+    /** @var array */
+    private $info;
+
+    /**
+     * @param array $info Index info
+     */
+    public function __construct(array $info)
     {
+        $this->info = $info;
     }
 
     /**
      * Return the collection info as an array.
      *
      * @see https://php.net/oop5.magic#language.oop5.magic.debuginfo
+     * @return array
      */
-    public function __debugInfo(): array
+    public function __debugInfo()
     {
         return $this->info;
     }
 
     /**
      * Return the index name to allow casting IndexInfo to string.
+     *
+     * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return $this->getName();
     }
 
     /**
      * Return the index key.
+     *
+     * @return array
      */
-    public function getKey(): array
+    public function getKey()
     {
         return (array) $this->info['key'];
     }
 
     /**
      * Return the index name.
+     *
+     * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return (string) $this->info['name'];
     }
 
     /**
-     * Return the index version.
+     * Return the index namespace (e.g. "db.collection").
+     *
+     * @return string
      */
-    public function getVersion(): int
+    public function getNamespace()
+    {
+        return (string) $this->info['ns'];
+    }
+
+    /**
+     * Return the index version.
+     *
+     * @return integer
+     */
+    public function getVersion()
     {
         return (integer) $this->info['v'];
     }
 
     /**
      * Return whether or not this index is of type 2dsphere.
+     *
+     * @return boolean
      */
-    public function is2dSphere(): bool
+    public function is2dSphere()
     {
         return array_search('2dsphere', $this->getKey(), true) !== false;
+    }
+
+    /**
+     * Return whether or not this index is of type geoHaystack.
+     *
+     * @return boolean
+     */
+    public function isGeoHaystack()
+    {
+        return array_search('geoHaystack', $this->getKey(), true) !== false;
     }
 
     /**
      * Return whether this is a sparse index.
      *
      * @see https://mongodb.com/docs/manual/core/index-sparse/
+     * @return boolean
      */
-    public function isSparse(): bool
+    public function isSparse()
     {
         return ! empty($this->info['sparse']);
     }
 
     /**
      * Return whether or not this index is of type text.
+     *
+     * @return boolean
      */
-    public function isText(): bool
+    public function isText()
     {
         return array_search('text', $this->getKey(), true) !== false;
     }
@@ -117,8 +158,9 @@ class IndexInfo implements ArrayAccess
      * Return whether this is a TTL index.
      *
      * @see https://mongodb.com/docs/manual/core/index-ttl/
+     * @return boolean
      */
-    public function isTtl(): bool
+    public function isTtl()
     {
         return array_key_exists('expireAfterSeconds', $this->info);
     }
@@ -127,8 +169,9 @@ class IndexInfo implements ArrayAccess
      * Return whether this is a unique index.
      *
      * @see https://mongodb.com/docs/manual/core/index-unique/
+     * @return boolean
      */
-    public function isUnique(): bool
+    public function isUnique()
     {
         return ! empty($this->info['unique']);
     }
@@ -137,11 +180,13 @@ class IndexInfo implements ArrayAccess
      * Check whether a field exists in the index information.
      *
      * @see https://php.net/arrayaccess.offsetexists
-     * @psalm-param array-key $offset
+     * @param mixed $key
+     * @return boolean
      */
-    public function offsetExists(mixed $offset): bool
+    #[ReturnTypeWillChange]
+    public function offsetExists($key)
     {
-        return array_key_exists($offset, $this->info);
+        return array_key_exists($key, $this->info);
     }
 
     /**
@@ -153,20 +198,26 @@ class IndexInfo implements ArrayAccess
      *
      * @see https://php.net/arrayaccess.offsetget
      * @see https://github.com/mongodb/specifications/blob/master/source/enumerate-indexes.rst#getting-full-index-information
-     * @psalm-param array-key $offset
+     * @param mixed $key
+     * @return mixed
      */
-    public function offsetGet(mixed $offset): mixed
+    #[ReturnTypeWillChange]
+    public function offsetGet($key)
     {
-        return $this->info[$offset];
+        return $this->info[$key];
     }
 
     /**
      * Not supported.
      *
      * @see https://php.net/arrayaccess.offsetset
+     * @param mixed $key
+     * @param mixed $value
      * @throws BadMethodCallException
+     * @return void
      */
-    public function offsetSet(mixed $offset, mixed $value): void
+    #[ReturnTypeWillChange]
+    public function offsetSet($key, $value)
     {
         throw BadMethodCallException::classIsImmutable(self::class);
     }
@@ -175,9 +226,12 @@ class IndexInfo implements ArrayAccess
      * Not supported.
      *
      * @see https://php.net/arrayaccess.offsetunset
+     * @param mixed $key
      * @throws BadMethodCallException
+     * @return void
      */
-    public function offsetUnset(mixed $offset): void
+    #[ReturnTypeWillChange]
+    public function offsetUnset($key)
     {
         throw BadMethodCallException::classIsImmutable(self::class);
     }

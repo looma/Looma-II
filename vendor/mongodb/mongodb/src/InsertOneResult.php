@@ -17,16 +17,31 @@
 
 namespace MongoDB;
 
-use MongoDB\Driver\Exception\LogicException;
 use MongoDB\Driver\WriteResult;
+use MongoDB\Exception\BadMethodCallException;
 
 /**
  * Result class for a single-document insert operation.
  */
 class InsertOneResult
 {
-    public function __construct(private WriteResult $writeResult, private mixed $insertedId)
+    /** @var WriteResult */
+    private $writeResult;
+
+    /** @var mixed */
+    private $insertedId;
+
+    /** @var boolean */
+    private $isAcknowledged;
+
+    /**
+     * @param mixed $insertedId
+     */
+    public function __construct(WriteResult $writeResult, $insertedId)
     {
+        $this->writeResult = $writeResult;
+        $this->insertedId = $insertedId;
+        $this->isAcknowledged = $writeResult->isAcknowledged();
     }
 
     /**
@@ -35,11 +50,16 @@ class InsertOneResult
      * This method should only be called if the write was acknowledged.
      *
      * @see InsertOneResult::isAcknowledged()
-     * @throws LogicException if the write result is unacknowledged
+     * @return integer|null
+     * @throws BadMethodCallException is the write result is unacknowledged
      */
-    public function getInsertedCount(): int
+    public function getInsertedCount()
     {
-        return $this->writeResult->getInsertedCount();
+        if ($this->isAcknowledged) {
+            return $this->writeResult->getInsertedCount();
+        }
+
+        throw BadMethodCallException::unacknowledgedWriteResultAccess(__METHOD__);
     }
 
     /**
@@ -48,8 +68,10 @@ class InsertOneResult
      * If the document had an ID prior to inserting (i.e. the driver did not
      * need to generate an ID), this will contain its "_id". Any
      * driver-generated ID will be a MongoDB\BSON\ObjectId instance.
+     *
+     * @return mixed
      */
-    public function getInsertedId(): mixed
+    public function getInsertedId()
     {
         return $this->insertedId;
     }
@@ -63,8 +85,10 @@ class InsertOneResult
      * If the insert was not acknowledged, other fields from the WriteResult
      * (e.g. insertedCount) will be undefined and their getter methods should
      * not be invoked.
+     *
+     * @return boolean
      */
-    public function isAcknowledged(): bool
+    public function isAcknowledged()
     {
         return $this->writeResult->isAcknowledged();
     }

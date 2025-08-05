@@ -28,7 +28,7 @@ final class PrivateKey extends DSA implements Common\PrivateKey
     /**
      * DSA secret exponent x
      *
-     * @var BigInteger
+     * @var \phpseclib3\Math\BigInteger
      */
     protected $x;
 
@@ -88,9 +88,7 @@ final class PrivateKey extends DSA implements Common\PrivateKey
                     return $signature;
                 }
 
-                $loaded = ASN1Signature::load($signature);
-                $r = $loaded['r'];
-                $s = $loaded['s'];
+                extract(ASN1Signature::load($signature));
 
                 return $format::save($r, $s);
             }

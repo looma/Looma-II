@@ -27,10 +27,21 @@ class BadMethodCallException extends BaseBadMethodCallException implements Excep
      * Thrown when a mutable method is invoked on an immutable object.
      *
      * @param string $class Class name
-     * @internal
+     * @return self
      */
-    public static function classIsImmutable(string $class): self
+    public static function classIsImmutable(string $class)
     {
-        return new self(sprintf('%s is immutable', $class));
+        return new static(sprintf('%s is immutable', $class));
+    }
+
+    /**
+     * Thrown when accessing a result field on an unacknowledged write result.
+     *
+     * @param string $method Method name
+     * @return self
+     */
+    public static function unacknowledgedWriteResultAccess(string $method)
+    {
+        return new static(sprintf('%s should not be called for an unacknowledged write result', $method));
     }
 }

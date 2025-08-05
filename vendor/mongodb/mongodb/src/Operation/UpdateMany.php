@@ -23,18 +23,22 @@ use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
 use MongoDB\UpdateResult;
 
+use function is_array;
+use function is_object;
 use function MongoDB\is_first_key_operator;
 use function MongoDB\is_pipeline;
 
 /**
  * Operation for updating multiple documents with the update command.
  *
+ * @api
  * @see \MongoDB\Collection::updateMany()
  * @see https://mongodb.com/docs/manual/reference/command/update/
  */
-final class UpdateMany implements Explainable
+class UpdateMany implements Executable, Explainable
 {
-    private Update $update;
+    /** @var Update */
+    private $update;
 
     /**
      * Constructs an update command.
@@ -79,10 +83,14 @@ final class UpdateMany implements Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, array|object $filter, array|object $update, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, $filter, $update, array $options = [])
     {
+        if (! is_array($update) && ! is_object($update)) {
+            throw InvalidArgumentException::invalidType('$update', $update, 'array or object');
+        }
+
         if (! is_first_key_operator($update) && ! is_pipeline($update)) {
-            throw new InvalidArgumentException('Expected update operator(s) or non-empty pipeline for $update');
+            throw new InvalidArgumentException('Expected an update document with operator as first key or a pipeline');
         }
 
         $this->update = new Update(
@@ -90,17 +98,19 @@ final class UpdateMany implements Explainable
             $collectionName,
             $filter,
             $update,
-            ['multi' => true] + $options,
+            ['multi' => true] + $options
         );
     }
 
     /**
      * Execute the operation.
      *
+     * @see Executable::execute()
+     * @return UpdateResult
      * @throws UnsupportedException if collation is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server): UpdateResult
+    public function execute(Server $server)
     {
         return $this->update->execute($server);
     }
@@ -109,9 +119,10 @@ final class UpdateMany implements Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
+     * @return array
      */
-    public function getCommandDocument(): array
+    public function getCommandDocument(Server $server)
     {
-        return $this->update->getCommandDocument();
+        return $this->update->getCommandDocument($server);
     }
 }

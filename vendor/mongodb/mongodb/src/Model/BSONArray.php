@@ -21,6 +21,7 @@ use ArrayObject;
 use JsonSerializable;
 use MongoDB\BSON\Serializable;
 use MongoDB\BSON\Unserializable;
+use ReturnTypeWillChange;
 
 use function array_values;
 use function MongoDB\recursive_copy;
@@ -31,7 +32,7 @@ use function MongoDB\recursive_copy;
  * The internal data will be filtered through array_values() during BSON
  * serialization to ensure that it becomes a BSON array.
  *
- * @template-extends ArrayObject<int, mixed>
+ * @api
  */
 class BSONArray extends ArrayObject implements JsonSerializable, Serializable, Unserializable
 {
@@ -50,10 +51,11 @@ class BSONArray extends ArrayObject implements JsonSerializable, Serializable, U
      *
      * @see https://php.net/oop5.magic#object.set-state
      * @see https://php.net/var-export
+     * @return self
      */
-    public static function __set_state(array $properties): self
+    public static function __set_state(array $properties)
     {
-        $array = new self();
+        $array = new static();
         $array->exchangeArray($properties);
 
         return $array;
@@ -66,8 +68,10 @@ class BSONArray extends ArrayObject implements JsonSerializable, Serializable, U
      * as a BSON array.
      *
      * @see https://php.net/mongodb-bson-serializable.bsonserialize
+     * @return array
      */
-    public function bsonSerialize(): array
+    #[ReturnTypeWillChange]
+    public function bsonSerialize()
     {
         return array_values($this->getArrayCopy());
     }
@@ -76,11 +80,12 @@ class BSONArray extends ArrayObject implements JsonSerializable, Serializable, U
      * Unserialize the document to BSON.
      *
      * @see https://php.net/mongodb-bson-unserializable.bsonunserialize
-     * @param array<int, mixed> $data Array data
+     * @param array $data Array data
      */
-    public function bsonUnserialize(array $data): void
+    #[ReturnTypeWillChange]
+    public function bsonUnserialize(array $data)
     {
-        parent::__construct($data);
+        self::__construct($data);
     }
 
     /**
@@ -90,8 +95,10 @@ class BSONArray extends ArrayObject implements JsonSerializable, Serializable, U
      * as a JSON array.
      *
      * @see https://php.net/jsonserializable.jsonserialize
+     * @return array
      */
-    public function jsonSerialize(): array
+    #[ReturnTypeWillChange]
+    public function jsonSerialize()
     {
         return array_values($this->getArrayCopy());
     }

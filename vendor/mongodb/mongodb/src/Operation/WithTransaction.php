@@ -10,11 +10,16 @@ use Throwable;
 use function call_user_func;
 use function time;
 
-/** @internal */
-final class WithTransaction
+/**
+ * @internal
+ */
+class WithTransaction
 {
     /** @var callable */
     private $callback;
+
+    /** @var array */
+    private $transactionOptions;
 
     /**
      * @see Session::startTransaction for supported transaction options
@@ -22,9 +27,10 @@ final class WithTransaction
      * @param callable $callback           A callback that will be invoked within the transaction
      * @param array    $transactionOptions Additional options that are passed to Session::startTransaction
      */
-    public function __construct(callable $callback, private array $transactionOptions = [])
+    public function __construct(callable $callback, array $transactionOptions = [])
     {
         $this->callback = $callback;
+        $this->transactionOptions = $transactionOptions;
     }
 
     /**

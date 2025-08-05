@@ -126,9 +126,7 @@ abstract class Strings
                     // 64-bit floats can be used to get larger numbers then 32-bit signed ints would allow
                     // for. sure, you're not gonna get the full precision of 64-bit numbers but just because
                     // you need > 32-bit precision doesn't mean you need the full 64-bit precision
-                    $unpacked = unpack('Nupper/Nlower', self::shift($data, 8));
-                    $upper = $unpacked['upper'];
-                    $lower = $unpacked['lower'];
+                    extract(unpack('Nupper/Nlower', self::shift($data, 8)));
                     $temp = $upper ? 4294967296 * $upper : 0;
                     $temp += $lower < 0 ? ($lower & 0x7FFFFFFFF) + 0x80000000 : $lower;
                     // $temp = hexdec(bin2hex(self::shift($data, 8)));
@@ -475,7 +473,7 @@ abstract class Strings
         // return str_replace(['+', '/'], ['-', '_'], self::base64_encode($data));
 
         return function_exists('sodium_bin2base64') ?
-            sodium_bin2base64($data, SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING) :
+            sodium_bin2base64($data, SODIUM_BASE64_VARIANT_URLSAFE) :
             Base64UrlSafe::encode($data);
     }
 

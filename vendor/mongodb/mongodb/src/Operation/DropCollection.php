@@ -26,16 +26,30 @@ use MongoDB\Driver\WriteConcern;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
 
+use function current;
+use function is_array;
+
 /**
  * Operation for the drop command.
  *
+ * @api
  * @see \MongoDB\Collection::drop()
  * @see \MongoDB\Database::dropCollection()
  * @see https://mongodb.com/docs/manual/reference/command/drop/
  */
-final class DropCollection
+class DropCollection implements Executable
 {
-    private const ERROR_CODE_NAMESPACE_NOT_FOUND = 26;
+    /** @var integer */
+    private static $errorCodeNamespaceNotFound = 26;
+
+    /** @var string */
+    private $databaseName;
+
+    /** @var string */
+    private $collectionName;
+
+    /** @var array */
+    private $options;
 
     /**
      * Constructs a drop command.
@@ -48,6 +62,9 @@ final class DropCollection
      *
      *  * session (MongoDB\Driver\Session): Client session.
      *
+     *  * typeMap (array): Type map for BSON deserialization. This will be used
+     *    for the returned command result document.
+     *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
      * @param string $databaseName   Database name
@@ -55,28 +72,38 @@ final class DropCollection
      * @param array  $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(private string $databaseName, private string $collectionName, private array $options = [])
+    public function __construct(string $databaseName, string $collectionName, array $options = [])
     {
-        if (isset($this->options['session']) && ! $this->options['session'] instanceof Session) {
-            throw InvalidArgumentException::invalidType('"session" option', $this->options['session'], Session::class);
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
         }
 
-        if (isset($this->options['writeConcern']) && ! $this->options['writeConcern'] instanceof WriteConcern) {
-            throw InvalidArgumentException::invalidType('"writeConcern" option', $this->options['writeConcern'], WriteConcern::class);
+        if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
+            throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
         }
 
-        if (isset($this->options['writeConcern']) && $this->options['writeConcern']->isDefault()) {
-            unset($this->options['writeConcern']);
+        if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
+            throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
+
+        if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
+            unset($options['writeConcern']);
+        }
+
+        $this->databaseName = $databaseName;
+        $this->collectionName = $collectionName;
+        $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
+     * @see Executable::execute()
+     * @return array|object Command result document
      * @throws UnsupportedException if write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server): void
+    public function execute(Server $server)
     {
         $inTransaction = isset($this->options['session']) && $this->options['session']->isInTransaction();
         if ($inTransaction && isset($this->options['writeConcern'])) {
@@ -84,16 +111,23 @@ final class DropCollection
         }
 
         try {
-            $server->executeWriteCommand($this->databaseName, $this->createCommand(), $this->createOptions());
+            $cursor = $server->executeWriteCommand($this->databaseName, $this->createCommand(), $this->createOptions());
         } catch (CommandException $e) {
             /* The server may return an error if the collection does not exist.
-             * Ignore the exception to make the drop operation idempotent */
-            if ($e->getCode() === self::ERROR_CODE_NAMESPACE_NOT_FOUND) {
-                return;
+             * Check for an error code and return the command reply instead of
+             * throwing. */
+            if ($e->getCode() === self::$errorCodeNamespaceNotFound) {
+                return $e->getResultDocument();
             }
 
             throw $e;
         }
+
+        if (isset($this->options['typeMap'])) {
+            $cursor->setTypeMap($this->options['typeMap']);
+        }
+
+        return current($cursor->toArray());
     }
 
     /**

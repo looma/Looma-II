@@ -25,20 +25,28 @@ use MongoDB\Driver\WriteConcern;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
 
+use function current;
+use function is_array;
 use function is_bool;
 
 /**
  * Operation for the renameCollection command.
  *
+ * @api
  * @see \MongoDB\Collection::rename()
  * @see \MongoDB\Database::renameCollection()
  * @see https://mongodb.com/docs/manual/reference/command/renameCollection/
  */
-final class RenameCollection
+class RenameCollection implements Executable
 {
-    private string $fromNamespace;
+    /** @var string */
+    private $fromNamespace;
 
-    private string $toNamespace;
+    /** @var string */
+    private $toNamespace;
+
+    /** @var array */
+    private $options;
 
     /**
      * Constructs a renameCollection command.
@@ -50,6 +58,9 @@ final class RenameCollection
      *    This is not supported for servers versions < 4.4.
      *
      *  * session (MongoDB\Driver\Session): Client session.
+     *
+     *  * typeMap (array): Type map for BSON deserialization. This will be used
+     *    for the returned command result document.
      *
      *  * writeConcern (MongoDB\Driver\WriteConcern): Write concern.
      *
@@ -63,42 +74,55 @@ final class RenameCollection
      * @param array  $options            Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $fromDatabaseName, string $fromCollectionName, string $toDatabaseName, string $toCollectionName, private array $options = [])
+    public function __construct(string $fromDatabaseName, string $fromCollectionName, string $toDatabaseName, string $toCollectionName, array $options = [])
     {
-        if (isset($this->options['session']) && ! $this->options['session'] instanceof Session) {
-            throw InvalidArgumentException::invalidType('"session" option', $this->options['session'], Session::class);
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
         }
 
-        if (isset($this->options['writeConcern']) && ! $this->options['writeConcern'] instanceof WriteConcern) {
-            throw InvalidArgumentException::invalidType('"writeConcern" option', $this->options['writeConcern'], WriteConcern::class);
+        if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
+            throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
         }
 
-        if (isset($this->options['writeConcern']) && $this->options['writeConcern']->isDefault()) {
-            unset($this->options['writeConcern']);
+        if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
+            throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
-        if (isset($this->options['dropTarget']) && ! is_bool($this->options['dropTarget'])) {
-            throw InvalidArgumentException::invalidType('"dropTarget" option', $this->options['dropTarget'], 'boolean');
+        if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
+            unset($options['writeConcern']);
+        }
+
+        if (isset($options['dropTarget']) && ! is_bool($options['dropTarget'])) {
+            throw InvalidArgumentException::invalidType('"dropTarget" option', $options['dropTarget'], 'boolean');
         }
 
         $this->fromNamespace = $fromDatabaseName . '.' . $fromCollectionName;
         $this->toNamespace = $toDatabaseName . '.' . $toCollectionName;
+        $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
+     * @see Executable::execute()
+     * @return array|object Command result document
      * @throws UnsupportedException if write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server): void
+    public function execute(Server $server)
     {
         $inTransaction = isset($this->options['session']) && $this->options['session']->isInTransaction();
         if ($inTransaction && isset($this->options['writeConcern'])) {
             throw UnsupportedException::writeConcernNotSupportedInTransaction();
         }
 
-        $server->executeWriteCommand('admin', $this->createCommand(), $this->createOptions());
+        $cursor = $server->executeWriteCommand('admin', $this->createCommand(), $this->createOptions());
+
+        if (isset($this->options['typeMap'])) {
+            $cursor->setTypeMap($this->options['typeMap']);
+        }
+
+        return current($cursor->toArray());
     }
 
     /**

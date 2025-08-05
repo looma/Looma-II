@@ -28,8 +28,8 @@ use MongoDB\UpdateResult;
 
 use function is_array;
 use function is_bool;
+use function is_object;
 use function is_string;
-use function MongoDB\is_document;
 use function MongoDB\is_first_key_operator;
 use function MongoDB\is_pipeline;
 use function MongoDB\is_write_concern_acknowledged;
@@ -44,11 +44,25 @@ use function MongoDB\server_supports_feature;
  * @internal
  * @see https://mongodb.com/docs/manual/reference/command/update/
  */
-final class Update implements Explainable
+class Update implements Executable, Explainable
 {
-    private const WIRE_VERSION_FOR_HINT = 8;
+    /** @var integer */
+    private static $wireVersionForHint = 8;
 
-    private array $options;
+    /** @var string */
+    private $databaseName;
+
+    /** @var string */
+    private $collectionName;
+
+    /** @var array|object */
+    private $filter;
+
+    /** @var array|object */
+    private $update;
+
+    /** @var array */
+    private $options;
 
     /**
      * Constructs a update command.
@@ -98,10 +112,14 @@ final class Update implements Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(private string $databaseName, private string $collectionName, private array|object $filter, private array|object $update, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, $filter, $update, array $options = [])
     {
-        if (! is_document($filter)) {
-            throw InvalidArgumentException::expectedDocumentType('$filter', $filter);
+        if (! is_array($filter) && ! is_object($filter)) {
+            throw InvalidArgumentException::invalidType('$filter', $filter, 'array or object');
+        }
+
+        if (! is_array($update) && ! is_object($update)) {
+            throw InvalidArgumentException::invalidType('$update', $filter, 'array or object');
         }
 
         $options += [
@@ -117,12 +135,12 @@ final class Update implements Explainable
             throw InvalidArgumentException::invalidType('"bypassDocumentValidation" option', $options['bypassDocumentValidation'], 'boolean');
         }
 
-        if (isset($options['collation']) && ! is_document($options['collation'])) {
-            throw InvalidArgumentException::expectedDocumentType('"collation" option', $options['collation']);
+        if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
+            throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
         }
 
-        if (isset($options['hint']) && ! is_string($options['hint']) && ! is_document($options['hint'])) {
-            throw InvalidArgumentException::expectedDocumentOrStringType('"hint" option', $options['hint']);
+        if (isset($options['hint']) && ! is_string($options['hint']) && ! is_array($options['hint']) && ! is_object($options['hint'])) {
+            throw InvalidArgumentException::invalidType('"hint" option', $options['hint'], ['string', 'array', 'object']);
         }
 
         if (! is_bool($options['multi'])) {
@@ -130,7 +148,7 @@ final class Update implements Explainable
         }
 
         if ($options['multi'] && ! is_first_key_operator($update) && ! is_pipeline($update)) {
-            throw new InvalidArgumentException('"multi" option cannot be true unless $update has update operator(s) or non-empty pipeline');
+            throw new InvalidArgumentException('"multi" option cannot be true if $update is a replacement document');
         }
 
         if (isset($options['session']) && ! $options['session'] instanceof Session) {
@@ -145,16 +163,8 @@ final class Update implements Explainable
             throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
-        if (isset($options['let']) && ! is_document($options['let'])) {
-            throw InvalidArgumentException::expectedDocumentType('"let" option', $options['let']);
-        }
-
-        if (isset($options['sort']) && ! is_document($options['sort'])) {
-            throw InvalidArgumentException::expectedDocumentType('"sort" option', $options['sort']);
-        }
-
-        if (isset($options['sort']) && $options['multi']) {
-            throw new InvalidArgumentException('"sort" option cannot be used with multi-document updates');
+        if (isset($options['let']) && ! is_array($options['let']) && ! is_object($options['let'])) {
+            throw InvalidArgumentException::invalidType('"let" option', $options['let'], 'array or object');
         }
 
         if (isset($options['bypassDocumentValidation']) && ! $options['bypassDocumentValidation']) {
@@ -165,22 +175,28 @@ final class Update implements Explainable
             unset($options['writeConcern']);
         }
 
+        $this->databaseName = $databaseName;
+        $this->collectionName = $collectionName;
+        $this->filter = $filter;
+        $this->update = $update;
         $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
+     * @see Executable::execute()
+     * @return UpdateResult
      * @throws UnsupportedException if hint or write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server): UpdateResult
+    public function execute(Server $server)
     {
         /* CRUD spec requires a client-side error when using "hint" with an
          * unacknowledged write concern on an unsupported server. */
         if (
             isset($this->options['writeConcern']) && ! is_write_concern_acknowledged($this->options['writeConcern']) &&
-            isset($this->options['hint']) && ! server_supports_feature($server, self::WIRE_VERSION_FOR_HINT)
+            isset($this->options['hint']) && ! server_supports_feature($server, self::$wireVersionForHint)
         ) {
             throw UnsupportedException::hintNotSupported();
         }
@@ -202,13 +218,18 @@ final class Update implements Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
+     * @return array
      */
-    public function getCommandDocument(): array
+    public function getCommandDocument(Server $server)
     {
         $cmd = ['update' => $this->collectionName, 'updates' => [['q' => $this->filter, 'u' => $this->update] + $this->createUpdateOptions()]];
 
         if (isset($this->options['bypassDocumentValidation'])) {
             $cmd['bypassDocumentValidation'] = $this->options['bypassDocumentValidation'];
+        }
+
+        if (isset($this->options['writeConcern'])) {
+            $cmd['writeConcern'] = $this->options['writeConcern'];
         }
 
         return $cmd;
@@ -275,10 +296,8 @@ final class Update implements Explainable
             }
         }
 
-        foreach (['collation', 'sort'] as $option) {
-            if (isset($this->options[$option])) {
-                $updateOptions[$option] = (object) $this->options[$option];
-            }
+        if (isset($this->options['collation'])) {
+            $updateOptions['collation'] = (object) $this->options['collation'];
         }
 
         return $updateOptions;

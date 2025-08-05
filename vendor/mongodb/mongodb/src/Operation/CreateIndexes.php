@@ -26,7 +26,6 @@ use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\Exception\UnsupportedException;
 use MongoDB\Model\IndexInput;
 
-use function array_is_list;
 use function array_map;
 use function is_array;
 use function is_integer;
@@ -37,16 +36,27 @@ use function sprintf;
 /**
  * Operation for the createIndexes command.
  *
+ * @api
  * @see \MongoDB\Collection::createIndex()
  * @see \MongoDB\Collection::createIndexes()
  * @see https://mongodb.com/docs/manual/reference/command/createIndexes/
  */
-final class CreateIndexes
+class CreateIndexes implements Executable
 {
-    private const WIRE_VERSION_FOR_COMMIT_QUORUM = 9;
+    /** @var integer */
+    private static $wireVersionForCommitQuorum = 9;
 
-    /** @var list<IndexInput> */
-    private array $indexes = [];
+    /** @var string */
+    private $databaseName;
+
+    /** @var string */
+    private $collectionName;
+
+    /** @var array */
+    private $indexes = [];
+
+    /** @var array */
+    private $options = [];
 
     /**
      * Constructs a createIndexes command.
@@ -74,53 +84,62 @@ final class CreateIndexes
      * @param array   $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(private string $databaseName, private string $collectionName, array $indexes, private array $options = [])
+    public function __construct(string $databaseName, string $collectionName, array $indexes, array $options = [])
     {
         if (empty($indexes)) {
             throw new InvalidArgumentException('$indexes is empty');
         }
 
-        if (! array_is_list($indexes)) {
-            throw new InvalidArgumentException('$indexes is not a list');
-        }
+        $expectedIndex = 0;
 
         foreach ($indexes as $i => $index) {
+            if ($i !== $expectedIndex) {
+                throw new InvalidArgumentException(sprintf('$indexes is not a list (unexpected index: "%s")', $i));
+            }
+
             if (! is_array($index)) {
                 throw InvalidArgumentException::invalidType(sprintf('$index[%d]', $i), $index, 'array');
             }
 
             $this->indexes[] = new IndexInput($index);
+
+            $expectedIndex += 1;
         }
 
-        if (isset($this->options['commitQuorum']) && ! is_string($this->options['commitQuorum']) && ! is_integer($this->options['commitQuorum'])) {
-            throw InvalidArgumentException::invalidType('"commitQuorum" option', $this->options['commitQuorum'], ['integer', 'string']);
+        if (isset($options['commitQuorum']) && ! is_string($options['commitQuorum']) && ! is_integer($options['commitQuorum'])) {
+            throw InvalidArgumentException::invalidType('"commitQuorum" option', $options['commitQuorum'], ['integer', 'string']);
         }
 
-        if (isset($this->options['maxTimeMS']) && ! is_integer($this->options['maxTimeMS'])) {
-            throw InvalidArgumentException::invalidType('"maxTimeMS" option', $this->options['maxTimeMS'], 'integer');
+        if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
+            throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
         }
 
-        if (isset($this->options['session']) && ! $this->options['session'] instanceof Session) {
-            throw InvalidArgumentException::invalidType('"session" option', $this->options['session'], Session::class);
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
         }
 
-        if (isset($this->options['writeConcern']) && ! $this->options['writeConcern'] instanceof WriteConcern) {
-            throw InvalidArgumentException::invalidType('"writeConcern" option', $this->options['writeConcern'], WriteConcern::class);
+        if (isset($options['writeConcern']) && ! $options['writeConcern'] instanceof WriteConcern) {
+            throw InvalidArgumentException::invalidType('"writeConcern" option', $options['writeConcern'], WriteConcern::class);
         }
 
-        if (isset($this->options['writeConcern']) && $this->options['writeConcern']->isDefault()) {
-            unset($this->options['writeConcern']);
+        if (isset($options['writeConcern']) && $options['writeConcern']->isDefault()) {
+            unset($options['writeConcern']);
         }
+
+        $this->databaseName = $databaseName;
+        $this->collectionName = $collectionName;
+        $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
+     * @see Executable::execute()
      * @return string[] The names of the created indexes
      * @throws UnsupportedException if write concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server): array
+    public function execute(Server $server)
     {
         $inTransaction = isset($this->options['session']) && $this->options['session']->isInTransaction();
         if ($inTransaction && isset($this->options['writeConcern'])) {
@@ -129,10 +148,9 @@ final class CreateIndexes
 
         $this->executeCommand($server);
 
-        return array_map(
-            'strval',
-            $this->indexes,
-        );
+        return array_map(function (IndexInput $index) {
+            return (string) $index;
+        }, $this->indexes);
     }
 
     /**
@@ -171,7 +189,7 @@ final class CreateIndexes
         if (isset($this->options['commitQuorum'])) {
             /* Drivers MUST manually raise an error if this option is specified
              * when creating an index on a pre 4.4 server. */
-            if (! server_supports_feature($server, self::WIRE_VERSION_FOR_COMMIT_QUORUM)) {
+            if (! server_supports_feature($server, self::$wireVersionForCommitQuorum)) {
                 throw UnsupportedException::commitQuorumNotSupported();
             }
 

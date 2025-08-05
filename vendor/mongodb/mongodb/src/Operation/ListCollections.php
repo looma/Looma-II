@@ -17,24 +17,27 @@
 
 namespace MongoDB\Operation;
 
-use Iterator;
 use MongoDB\Command\ListCollections as ListCollectionsCommand;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
 use MongoDB\Driver\Server;
 use MongoDB\Exception\InvalidArgumentException;
-use MongoDB\Model\CachingIterator;
-use MongoDB\Model\CallbackIterator;
-use MongoDB\Model\CollectionInfo;
+use MongoDB\Model\CollectionInfoCommandIterator;
+use MongoDB\Model\CollectionInfoIterator;
 
 /**
  * Operation for the listCollections command.
  *
+ * @api
  * @see \MongoDB\Database::listCollections()
  * @see https://mongodb.com/docs/manual/reference/command/listCollections/
  */
-final class ListCollections
+class ListCollections implements Executable
 {
-    private ListCollectionsCommand $listCollections;
+    /** @var string */
+    private $databaseName;
+
+    /** @var ListCollectionsCommand */
+    private $listCollections;
 
     /**
      * Constructs a listCollections command.
@@ -63,25 +66,19 @@ final class ListCollections
      */
     public function __construct(string $databaseName, array $options = [])
     {
+        $this->databaseName = $databaseName;
         $this->listCollections = new ListCollectionsCommand($databaseName, ['nameOnly' => false] + $options);
     }
 
     /**
      * Execute the operation.
      *
-     * @return Iterator<int, CollectionInfo>
+     * @see Executable::execute()
+     * @return CollectionInfoIterator
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server): Iterator
+    public function execute(Server $server)
     {
-        /** @var Iterator<int, array> $collections */
-        $collections = $this->listCollections->execute($server);
-
-        return new CachingIterator(
-            new CallbackIterator(
-                $collections,
-                fn (array $collectionInfo, int $key): CollectionInfo => new CollectionInfo($collectionInfo),
-            ),
-        );
+        return new CollectionInfoCommandIterator($this->listCollections->execute($server), $this->databaseName);
     }
 }

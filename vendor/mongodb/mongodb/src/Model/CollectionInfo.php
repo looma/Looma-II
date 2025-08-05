@@ -19,6 +19,7 @@ namespace MongoDB\Model;
 
 use ArrayAccess;
 use MongoDB\Exception\BadMethodCallException;
+use ReturnTypeWillChange;
 
 use function array_key_exists;
 
@@ -29,23 +30,30 @@ use function array_key_exists;
  * command or, for legacy servers, queries on the "system.namespaces"
  * collection. It provides methods to access options for the collection.
  *
+ * @api
  * @see \MongoDB\Database::listCollections()
  * @see https://github.com/mongodb/specifications/blob/master/source/enumerate-collections.rst
- * @template-implements ArrayAccess<string, mixed>
  */
 class CollectionInfo implements ArrayAccess
 {
-    /** @param array $info Collection info */
-    public function __construct(private array $info)
+    /** @var array */
+    private $info;
+
+    /**
+     * @param array $info Collection info
+     */
+    public function __construct(array $info)
     {
+        $this->info = $info;
     }
 
     /**
      * Return the collection info as an array.
      *
      * @see https://php.net/oop5.magic#language.oop5.magic.debuginfo
+     * @return array
      */
-    public function __debugInfo(): array
+    public function __debugInfo()
     {
         return $this->info;
     }
@@ -54,8 +62,10 @@ class CollectionInfo implements ArrayAccess
      * Return the maximum number of documents to keep in the capped collection.
      *
      * @deprecated 1.0 Deprecated in favor of using getOptions
+     *
+     * @return integer|null
      */
-    public function getCappedMax(): ?int
+    public function getCappedMax()
     {
         /* The MongoDB server might return this number as an integer or float */
         return isset($this->info['options']['max']) ? (integer) $this->info['options']['max'] : null;
@@ -65,8 +75,10 @@ class CollectionInfo implements ArrayAccess
      * Return the maximum size (in bytes) of the capped collection.
      *
      * @deprecated 1.0 Deprecated in favor of using getOptions
+     *
+     * @return integer|null
      */
-    public function getCappedSize(): ?int
+    public function getCappedSize()
     {
         /* The MongoDB server might return this number as an integer or float */
         return isset($this->info['options']['size']) ? (integer) $this->info['options']['size'] : null;
@@ -94,8 +106,9 @@ class CollectionInfo implements ArrayAccess
      * Return the collection name.
      *
      * @see https://mongodb.com/docs/manual/reference/command/listCollections/#output
+     * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return (string) $this->info['name'];
     }
@@ -104,8 +117,9 @@ class CollectionInfo implements ArrayAccess
      * Return the collection options.
      *
      * @see https://mongodb.com/docs/manual/reference/command/listCollections/#output
+     * @return array
      */
-    public function getOptions(): array
+    public function getOptions()
     {
         return (array) ($this->info['options'] ?? []);
     }
@@ -124,8 +138,10 @@ class CollectionInfo implements ArrayAccess
      * Return whether the collection is a capped collection.
      *
      * @deprecated 1.0 Deprecated in favor of using getOptions
+     *
+     * @return boolean
      */
-    public function isCapped(): bool
+    public function isCapped()
     {
         return ! empty($this->info['options']['capped']);
     }
@@ -134,31 +150,39 @@ class CollectionInfo implements ArrayAccess
      * Check whether a field exists in the collection information.
      *
      * @see https://php.net/arrayaccess.offsetexists
-     * @psalm-param array-key $offset
+     * @param mixed $key
+     * @return boolean
      */
-    public function offsetExists(mixed $offset): bool
+    #[ReturnTypeWillChange]
+    public function offsetExists($key)
     {
-        return array_key_exists($offset, $this->info);
+        return array_key_exists($key, $this->info);
     }
 
     /**
      * Return the field's value from the collection information.
      *
      * @see https://php.net/arrayaccess.offsetget
-     * @psalm-param array-key $offset
+     * @param mixed $key
+     * @return mixed
      */
-    public function offsetGet(mixed $offset): mixed
+    #[ReturnTypeWillChange]
+    public function offsetGet($key)
     {
-        return $this->info[$offset];
+        return $this->info[$key];
     }
 
     /**
      * Not supported.
      *
      * @see https://php.net/arrayaccess.offsetset
+     * @param mixed $key
+     * @param mixed $value
      * @throws BadMethodCallException
+     * @return void
      */
-    public function offsetSet(mixed $offset, mixed $value): void
+    #[ReturnTypeWillChange]
+    public function offsetSet($key, $value)
     {
         throw BadMethodCallException::classIsImmutable(self::class);
     }
@@ -167,9 +191,12 @@ class CollectionInfo implements ArrayAccess
      * Not supported.
      *
      * @see https://php.net/arrayaccess.offsetunset
+     * @param mixed $key
      * @throws BadMethodCallException
+     * @return void
      */
-    public function offsetUnset(mixed $offset): void
+    #[ReturnTypeWillChange]
+    public function offsetUnset($key)
     {
         throw BadMethodCallException::classIsImmutable(self::class);
     }

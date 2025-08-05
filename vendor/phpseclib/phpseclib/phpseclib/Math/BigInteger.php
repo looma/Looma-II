@@ -143,11 +143,6 @@ class BigInteger implements \JsonSerializable
                 ['PHP64', ['DefaultEngine']],
                 ['PHP32', ['DefaultEngine']]
             ];
-            // per https://phpseclib.com/docs/speed PHP 8.4.0+ _significantly_ sped up BCMath
-            if (version_compare(PHP_VERSION, '8.4.0') >= 0) {
-                $engines[1][0] = 'BCMath';
-                $engines[2][0] = 'PHP64';
-            }
 
             foreach ($engines as $engine) {
                 try {
@@ -167,7 +162,7 @@ class BigInteger implements \JsonSerializable
      * If the second parameter - $base - is negative, then it will be assumed that the number's are encoded using
      * two's compliment.  The sole exception to this is -10, which is treated the same as 10 is.
      *
-     * @param string|int|Engine $x Base-10 number or base-$base number if $base set.
+     * @param string|int|BigInteger\Engines\Engine $x Base-10 number or base-$base number if $base set.
      * @param int $base
      */
     public function __construct($x = 0, $base = 10)
@@ -176,7 +171,7 @@ class BigInteger implements \JsonSerializable
 
         if ($x instanceof self::$mainEngine) {
             $this->value = clone $x;
-        } elseif ($x instanceof Engine) {
+        } elseif ($x instanceof BigInteger\Engines\Engine) {
             $this->value = new static("$x");
             $this->value->setPrecision($x->getPrecision());
         } else {
@@ -338,10 +333,12 @@ class BigInteger implements \JsonSerializable
      */
     public function extendedGCD(BigInteger $n)
     {
-        $extended = $this->value->extendedGCD($n->value);
-        $gcd = $extended['gcd'];
-        $x = $extended['x'];
-        $y = $extended['y'];
+        extract($this->value->extendedGCD($n->value));
+        /**
+         * @var BigInteger $gcd
+         * @var BigInteger $x
+         * @var BigInteger $y
+         */
         return [
             'gcd' => new static($gcd),
             'x' => new static($x),
@@ -620,9 +617,10 @@ class BigInteger implements \JsonSerializable
         self::initialize_static_variables();
 
         $class = self::$mainEngine;
-        $minMax = $class::minMaxBits($bits);
-        $min = $minMax['min'];
-        $max = $minMax['max'];
+        extract($class::minMaxBits($bits));
+        /** @var BigInteger $min
+         * @var BigInteger $max
+         */
         return [
             'min' => new static($min),
             'max' => new static($max)

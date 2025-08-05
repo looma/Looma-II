@@ -31,18 +31,32 @@ use function current;
 use function is_array;
 use function is_integer;
 use function is_object;
-use function is_string;
 use function MongoDB\create_field_path_type_map;
-use function MongoDB\is_document;
 
 /**
  * Operation for the distinct command.
  *
+ * @api
  * @see \MongoDB\Collection::distinct()
  * @see https://mongodb.com/docs/manual/reference/command/distinct/
  */
-final class Distinct implements Explainable
+class Distinct implements Executable, Explainable
 {
+    /** @var string */
+    private $databaseName;
+
+    /** @var string */
+    private $collectionName;
+
+    /** @var string */
+    private $fieldName;
+
+    /** @var array|object */
+    private $filter;
+
+    /** @var array */
+    private $options;
+
     /**
      * Constructs a distinct command.
      *
@@ -52,13 +66,7 @@ final class Distinct implements Explainable
      *
      *  * comment (mixed): BSON value to attach as a comment to this command.
      *
-     *    This is not supported for server versions < 4.4.
-     *
-     *  * hint (string|document): The index to use. Specify either the index
-     *    name as a string or the index key pattern as a document. If specified,
-     *    then the query system will only consider plans using the hinted index.
-     *
-     *    This is not supported for server versions < 7.1.
+     *    This is not supported for servers versions < 4.4.
      *
      *  * maxTimeMS (integer): The maximum amount of time to allow the query to
      *    run.
@@ -78,53 +86,57 @@ final class Distinct implements Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(private string $databaseName, private string $collectionName, private string $fieldName, private array|object $filter = [], private array $options = [])
+    public function __construct(string $databaseName, string $collectionName, string $fieldName, $filter = [], array $options = [])
     {
-        if (! is_document($filter)) {
-            throw InvalidArgumentException::expectedDocumentType('$filter', $filter);
+        if (! is_array($filter) && ! is_object($filter)) {
+            throw InvalidArgumentException::invalidType('$filter', $filter, 'array or object');
         }
 
-        if (isset($this->options['collation']) && ! is_document($this->options['collation'])) {
-            throw InvalidArgumentException::expectedDocumentType('"collation" option', $this->options['collation']);
+        if (isset($options['collation']) && ! is_array($options['collation']) && ! is_object($options['collation'])) {
+            throw InvalidArgumentException::invalidType('"collation" option', $options['collation'], 'array or object');
         }
 
-        if (isset($this->options['hint']) && ! is_string($this->options['hint']) && ! is_document($this->options['hint'])) {
-            throw InvalidArgumentException::expectedDocumentOrStringType('"hint" option', $this->options['hint']);
+        if (isset($options['maxTimeMS']) && ! is_integer($options['maxTimeMS'])) {
+            throw InvalidArgumentException::invalidType('"maxTimeMS" option', $options['maxTimeMS'], 'integer');
         }
 
-        if (isset($this->options['maxTimeMS']) && ! is_integer($this->options['maxTimeMS'])) {
-            throw InvalidArgumentException::invalidType('"maxTimeMS" option', $this->options['maxTimeMS'], 'integer');
+        if (isset($options['readConcern']) && ! $options['readConcern'] instanceof ReadConcern) {
+            throw InvalidArgumentException::invalidType('"readConcern" option', $options['readConcern'], ReadConcern::class);
         }
 
-        if (isset($this->options['readConcern']) && ! $this->options['readConcern'] instanceof ReadConcern) {
-            throw InvalidArgumentException::invalidType('"readConcern" option', $this->options['readConcern'], ReadConcern::class);
+        if (isset($options['readPreference']) && ! $options['readPreference'] instanceof ReadPreference) {
+            throw InvalidArgumentException::invalidType('"readPreference" option', $options['readPreference'], ReadPreference::class);
         }
 
-        if (isset($this->options['readPreference']) && ! $this->options['readPreference'] instanceof ReadPreference) {
-            throw InvalidArgumentException::invalidType('"readPreference" option', $this->options['readPreference'], ReadPreference::class);
+        if (isset($options['session']) && ! $options['session'] instanceof Session) {
+            throw InvalidArgumentException::invalidType('"session" option', $options['session'], Session::class);
         }
 
-        if (isset($this->options['session']) && ! $this->options['session'] instanceof Session) {
-            throw InvalidArgumentException::invalidType('"session" option', $this->options['session'], Session::class);
+        if (isset($options['typeMap']) && ! is_array($options['typeMap'])) {
+            throw InvalidArgumentException::invalidType('"typeMap" option', $options['typeMap'], 'array');
         }
 
-        if (isset($this->options['typeMap']) && ! is_array($this->options['typeMap'])) {
-            throw InvalidArgumentException::invalidType('"typeMap" option', $this->options['typeMap'], 'array');
+        if (isset($options['readConcern']) && $options['readConcern']->isDefault()) {
+            unset($options['readConcern']);
         }
 
-        if (isset($this->options['readConcern']) && $this->options['readConcern']->isDefault()) {
-            unset($this->options['readConcern']);
-        }
+        $this->databaseName = $databaseName;
+        $this->collectionName = $collectionName;
+        $this->fieldName = $fieldName;
+        $this->filter = $filter;
+        $this->options = $options;
     }
 
     /**
      * Execute the operation.
      *
+     * @see Executable::execute()
+     * @return array
      * @throws UnexpectedValueException if the command response was malformed
      * @throws UnsupportedException if read concern is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server): array
+    public function execute(Server $server)
     {
         $inTransaction = isset($this->options['session']) && $this->options['session']->isInTransaction();
         if ($inTransaction && isset($this->options['readConcern'])) {
@@ -150,17 +162,11 @@ final class Distinct implements Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
+     * @return array
      */
-    public function getCommandDocument(): array
+    public function getCommandDocument(Server $server)
     {
-        $cmd = $this->createCommandDocument();
-
-        // Read concern can change the query plan
-        if (isset($this->options['readConcern'])) {
-            $cmd['readConcern'] = $this->options['readConcern'];
-        }
-
-        return $cmd;
+        return $this->createCommandDocument();
     }
 
     /**
@@ -173,17 +179,12 @@ final class Distinct implements Explainable
             'key' => $this->fieldName,
         ];
 
-        if ($this->filter !== []) {
+        if (! empty($this->filter)) {
             $cmd['query'] = (object) $this->filter;
         }
 
         if (isset($this->options['collation'])) {
             $cmd['collation'] = (object) $this->options['collation'];
-        }
-
-        if (isset($this->options['hint'])) {
-            /** @psalm-var string|object */
-            $cmd['hint'] = is_array($this->options['hint']) ? (object) $this->options['hint'] : $this->options['hint'];
         }
 
         foreach (['comment', 'maxTimeMS'] as $option) {

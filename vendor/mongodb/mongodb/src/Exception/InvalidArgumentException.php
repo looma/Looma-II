@@ -20,7 +20,6 @@ namespace MongoDB\Exception;
 use MongoDB\Driver\Exception\InvalidArgumentException as DriverInvalidArgumentException;
 
 use function array_pop;
-use function assert;
 use function count;
 use function get_debug_type;
 use function implode;
@@ -29,65 +28,35 @@ use function sprintf;
 
 class InvalidArgumentException extends DriverInvalidArgumentException implements Exception
 {
-    /** @internal */
-    public static function cannotCombineCodecAndTypeMap(): self
-    {
-        return new self('Cannot provide both "codec" and "typeMap" options');
-    }
-
-    /**
-     * Thrown when an argument or option is expected to be a string or a document.
-     *
-     * @internal
-     *
-     * @param string $name  Name of the argument or option
-     * @param mixed  $value Actual value (used to derive the type)
-     */
-    public static function expectedDocumentOrStringType(string $name, mixed $value): self
-    {
-        return new self(sprintf('Expected %s to have type "string" or "document" (array or object) but found "%s"', $name, get_debug_type($value)));
-    }
-
-    /**
-     * Thrown when an argument or option is expected to be a document.
-     *
-     * @param string $name  Name of the argument or option
-     * @param mixed  $value Actual value (used to derive the type)
-     * @internal
-     */
-    public static function expectedDocumentType(string $name, mixed $value): self
-    {
-        return new self(sprintf('Expected %s to have type "document" (array or object) but found "%s"', $name, get_debug_type($value)));
-    }
-
     /**
      * Thrown when an argument or option has an invalid type.
      *
-     * @param string              $name         Name of the argument or option
-     * @param mixed               $value        Actual value (used to derive the type)
-     * @param string|list<string> $expectedType Expected type as a string or an array containing one or more strings
-     * @internal
+     * @param string          $name         Name of the argument or option
+     * @param mixed           $value        Actual value (used to derive the type)
+     * @param string|string[] $expectedType Expected type
+     * @return self
      */
-    public static function invalidType(string $name, mixed $value, string|array $expectedType): self
+    public static function invalidType(string $name, $value, $expectedType)
     {
         if (is_array($expectedType)) {
-            $expectedType = self::expectedTypesToString($expectedType);
+            switch (count($expectedType)) {
+                case 1:
+                    $typeString = array_pop($expectedType);
+                    break;
+
+                case 2:
+                    $typeString = implode('" or "', $expectedType);
+                    break;
+
+                default:
+                    $lastType = array_pop($expectedType);
+                    $typeString = sprintf('%s", or "%s', implode('", "', $expectedType), $lastType);
+                    break;
+            }
+
+            $expectedType = $typeString;
         }
 
-        return new self(sprintf('Expected %s to have type "%s" but found "%s"', $name, $expectedType, get_debug_type($value)));
-    }
-
-    /** @param list<string> $types */
-    private static function expectedTypesToString(array $types): string
-    {
-        assert(count($types) > 0);
-
-        if (count($types) < 3) {
-            return implode('" or "', $types);
-        }
-
-        $lastType = array_pop($types);
-
-        return sprintf('%s", or "%s', implode('", "', $types), $lastType);
+        return new static(sprintf('Expected %s to have type "%s" but found "%s"', $name, $expectedType, get_debug_type($value)));
     }
 }

@@ -26,12 +26,14 @@ use MongoDB\Exception\UnsupportedException;
 /**
  * Operation for deleting a single document with the delete command.
  *
+ * @api
  * @see \MongoDB\Collection::deleteOne()
  * @see https://mongodb.com/docs/manual/reference/command/delete/
  */
-final class DeleteOne implements Explainable
+class DeleteOne implements Executable, Explainable
 {
-    private Delete $delete;
+    /** @var Delete */
+    private $delete;
 
     /**
      * Constructs a delete command.
@@ -66,7 +68,7 @@ final class DeleteOne implements Explainable
      * @param array        $options        Command options
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function __construct(string $databaseName, string $collectionName, array|object $filter, array $options = [])
+    public function __construct(string $databaseName, string $collectionName, $filter, array $options = [])
     {
         $this->delete = new Delete($databaseName, $collectionName, $filter, 1, $options);
     }
@@ -74,10 +76,12 @@ final class DeleteOne implements Explainable
     /**
      * Execute the operation.
      *
+     * @see Executable::execute()
+     * @return DeleteResult
      * @throws UnsupportedException if collation is used and unsupported
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function execute(Server $server): DeleteResult
+    public function execute(Server $server)
     {
         return $this->delete->execute($server);
     }
@@ -86,9 +90,10 @@ final class DeleteOne implements Explainable
      * Returns the command document for this operation.
      *
      * @see Explainable::getCommandDocument()
+     * @return array
      */
-    public function getCommandDocument(): array
+    public function getCommandDocument(Server $server)
     {
-        return $this->delete->getCommandDocument();
+        return $this->delete->getCommandDocument($server);
     }
 }

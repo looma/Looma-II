@@ -18,7 +18,7 @@
 namespace MongoDB\GridFS;
 
 use MongoDB\BSON\Binary;
-use MongoDB\Driver\CursorInterface;
+use MongoDB\Driver\Cursor;
 use MongoDB\Exception\InvalidArgumentException;
 use MongoDB\GridFS\Exception\CorruptFileException;
 
@@ -37,23 +37,37 @@ use function substr;
  *
  * @internal
  */
-final class ReadableStream
+class ReadableStream
 {
-    private ?string $buffer = null;
+    /** @var string|null */
+    private $buffer;
 
-    private int $bufferOffset = 0;
+    /** @var integer */
+    private $bufferOffset = 0;
 
-    private int $chunkSize;
+    /** @var integer */
+    private $chunkSize;
 
-    private int $chunkOffset = 0;
+    /** @var integer */
+    private $chunkOffset = 0;
 
-    private ?CursorInterface $chunksIterator = null;
+    /** @var Cursor|null */
+    private $chunksIterator;
 
-    private int $expectedLastChunkSize = 0;
+    /** @var CollectionWrapper */
+    private $collectionWrapper;
 
-    private int $length;
+    /** @var integer */
+    private $expectedLastChunkSize = 0;
 
-    private int $numChunks = 0;
+    /** @var object */
+    private $file;
+
+    /** @var integer */
+    private $length;
+
+    /** @var integer */
+    private $numChunks = 0;
 
     /**
      * Constructs a readable GridFS stream.
@@ -62,7 +76,7 @@ final class ReadableStream
      * @param object            $file              GridFS file document
      * @throws CorruptFileException
      */
-    public function __construct(private CollectionWrapper $collectionWrapper, private object $file)
+    public function __construct(CollectionWrapper $collectionWrapper, object $file)
     {
         if (! isset($file->chunkSize) || ! is_integer($file->chunkSize) || $file->chunkSize < 1) {
             throw new CorruptFileException('file.chunkSize is not an integer >= 1');
@@ -76,8 +90,11 @@ final class ReadableStream
             throw new CorruptFileException('file._id does not exist');
         }
 
+        $this->file = $file;
         $this->chunkSize = $file->chunkSize;
         $this->length = $file->length;
+
+        $this->collectionWrapper = $collectionWrapper;
 
         if ($this->length > 0) {
             $this->numChunks = (integer) ceil($this->length / $this->chunkSize);
@@ -89,6 +106,7 @@ final class ReadableStream
      * Return internal properties for debugging purposes.
      *
      * @see https://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
+     * @return array
      */
     public function __debugInfo(): array
     {
@@ -206,7 +224,7 @@ final class ReadableStream
         }
 
         /* If we are seeking to a subsequent chunk, we do not need to
-         * reinitalize the chunk iterator. Instead, we can move forward
+         * reinitalize the chunk iterator. Instead, we can simply move forward
          * to $this->chunkOffset.
          */
         $numChunks = $this->chunkOffset - $lastChunkOffset;

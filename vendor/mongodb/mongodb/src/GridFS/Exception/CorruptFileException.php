@@ -25,23 +25,21 @@ class CorruptFileException extends RuntimeException
 {
     /**
      * Thrown when a chunk doesn't contain valid data.
-     *
-     * @internal
      */
     public static function invalidChunkData(int $chunkIndex): self
     {
-        return new self(sprintf('Invalid data found for index "%d"', $chunkIndex));
+        return new static(sprintf('Invalid data found for index "%d"', $chunkIndex));
     }
 
     /**
      * Thrown when a chunk is not found for an expected index.
      *
      * @param integer $expectedIndex Expected index number
-     * @internal
+     * @return self
      */
-    public static function missingChunk(int $expectedIndex): self
+    public static function missingChunk(int $expectedIndex)
     {
-        return new self(sprintf('Chunk not found for index "%d"', $expectedIndex));
+        return new static(sprintf('Chunk not found for index "%d"', $expectedIndex));
     }
 
     /**
@@ -49,11 +47,11 @@ class CorruptFileException extends RuntimeException
      *
      * @param integer $index         Actual index number (i.e. "n" field)
      * @param integer $expectedIndex Expected index number
-     * @internal
+     * @return self
      */
-    public static function unexpectedIndex(int $index, int $expectedIndex): self
+    public static function unexpectedIndex(int $index, int $expectedIndex)
     {
-        return new self(sprintf('Expected chunk to have index "%d" but found "%d"', $expectedIndex, $index));
+        return new static(sprintf('Expected chunk to have index "%d" but found "%d"', $expectedIndex, $index));
     }
 
     /**
@@ -61,10 +59,10 @@ class CorruptFileException extends RuntimeException
      *
      * @param integer $size         Actual size (i.e. "data" field length)
      * @param integer $expectedSize Expected size
-     * @internal
+     * @return self
      */
-    public static function unexpectedSize(int $size, int $expectedSize): self
+    public static function unexpectedSize(int $size, int $expectedSize)
     {
-        return new self(sprintf('Expected chunk to have size "%d" but found "%d"', $expectedSize, $size));
+        return new static(sprintf('Expected chunk to have size "%d" but found "%d"', $expectedSize, $size));
     }
 }

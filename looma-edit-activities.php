@@ -166,12 +166,12 @@ include ('includes/header.php');
             <span>Attach to:  </span>";
 
         echo "<span class='chapter-type'>" .
-            "<input class='media-input flt-chkbx source-changes' type='radio'  form='changes' name='src' value='textbooks' checked>" .
+            "<input class='media-input flt-chkbx source-changes' type='radio'  checked form='changes' name='booktype' value='textbooks' checked>" .
             "<label class='filter-label' for=''>  Textbooks </label>" .
             "</span>";
 
         echo "<span class='chapter-type'>" .
-            "<input class='media-input flt-chkbx source-changes' type='radio' form='changes' name='src' value='other'>" .
+            "<input class='media-input flt-chkbx source-changes' type='radio' form='changes' name='booktype' value='other'>" .
             "<label class='filter-label' for=''>  Other books </label>" .
             "</span>";
         echo "<button class='chng-clear' id='textbook-clear'>X</button>";

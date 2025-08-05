@@ -46,7 +46,7 @@ they want to edit a video
                                 <?php echo 'poster=\"' . thumbnail($filename,$filepath,"mp4") . '\">';?>
                                 <?php echo '<source id="video-source" src="' . $filepath . $filename . '" type="video/mp4">'; ?>
                                 <?php
-                                    if (file_exists($filepath . $fileprefix . ".vtt"))
+                                    if (loggedIn() && file_exists($filepath . $fileprefix . ".vtt"))
                                         echo '<track  default class="en" src="' . $filepath . $fileprefix . '.vtt" kind="subtitles" srclang="en" label="English">';
                                 ?>
                                 <?php

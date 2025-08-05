@@ -25,7 +25,7 @@ button {
 	/*font-size: 3em;*/
 	cursor: pointer;
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* webkit */
-
+	
     box-shadow:         1px 1px 3px rgba(0, 0, 0, 0.30);
 }
 

@@ -48,15 +48,22 @@
 #    --dry-run
 #    --progress show transfer progress
 #    --size-only [for Content files]
-#    --delete 	delete files on destination that are not on source
 #   --perms (=== -p)
 #   --update   skip files if destination  already exists and has a later date
 #   --exclude '.[!.]*'
 #   --stats    print stats at the end
 
 # not used
+#    --delete 	delete files on destination that are not on source
 #    -v	    verbose
 #    -vv	  very verbose
+
+checksudo() {
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "This script must be run as root. Please run again using 'sudo loomaupdate'" >&2
+        exit 1
+    fi
+}
 
 # display result of previous  command
 result () {
@@ -96,6 +103,10 @@ backup () {
     fi
 }  #  end backup()
 
+
+# ///////////////////////////////////////////////////////////
+# /////////////     checknetworkspeed ()    /////////////////
+# ///////////////////////////////////////////////////////////
 checknetworkspeed () {
   # test internet presence and speed
     echo "************************************"
@@ -121,6 +132,9 @@ checknetworkspeed () {
     fi
 }  #  end checknetworkspeed()
 
+# ///////////////////////////////////////////////////////////
+# /////////////     checktimestamp ()    /////////////////////
+# ///////////////////////////////////////////////////////////
 # return 1 if timestamps are equal [so no update is needed]
 checktimestamp () {         # uses $FROM, $TO, and $DIR ['Looma' | 'content']
 
@@ -149,17 +163,20 @@ checktimestamp () {         # uses $FROM, $TO, and $DIR ['Looma' | 'content']
 #pause "in checktimesamp, current = $current, latest = $latest"
 
 # check if timestamps are equal
-  if [[ $current = $latest ]]
-  then
     echo " - - Current timestamp for $DIR is   $current"
     echo " - - Latest timestamp for archive is $latest"
-    return 1
-  else
-    return 0
-  fi
+    if [[ $current = $latest ]]
+    then
+        return 1
+    else
+        return 0
+    fi
 }  #  end checktimestamp()
 
-#function DOSYNC() to exec the rsync. global var $DRYRUNMODE is either "--dry-run" or ""
+# ///////////////////////////////////////////////////////////
+# /////////////     dosync ()    /////////////////
+# ///////////////////////////////////////////////////////////
+# function DOSYNC() to exec the rsync. global var $DRYRUNMODE is either "--dry-run" or ""
 # call dosync() with $FROM = the source , $TO = the target $2 = the directory "Looma" or "content", $2 = "--sizeonly" or null
 dosync () {
 
@@ -194,7 +211,7 @@ dosync () {
     sshpass -p 'looma' rsync -azO  $DRYRUNMODE $SIZEONLY  \
         --stats  \
         --perms  --chmod=D777,F777 --chown=looma:looma \
-        --exclude '.[!.]*' --delete --delete-excluded   \
+        --exclude '.[!.]*' --delete-excluded   \
         -e "ssh"   \
        "$remote/$DIR/"  "$TO/$DIR"
       # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
@@ -205,7 +222,7 @@ dosync () {
       rsync -azO  $DRYRUNMODE $SIZEONLY  \
         --stats  \
         --perms  --chmod=D777,F777 --chown=looma:looma \
-        --exclude '.[!.]*' --delete --delete-excluded   \
+        --exclude '.[!.]*' --delete-excluded   \
         -e "ssh"   \
        "$remote/$DIR/"  "$TO/$DIR"
       # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
@@ -215,10 +232,7 @@ dosync () {
   if [[ $DRYRUNMODE != "--dry-run"  && $returncode = 0 ]]
      then    echo
      echo "**************************"
-     echo "setting $TO/$DIR/archivetimestamp.txt to $latest (which is `date -d @+$latest`)"
-
-     echo "date is `date +%s` which is `date -d @+1553024528`"
-
+     echo "setting $TO/$DIR/archivetimestamp.txt to $latest"
      echo $latest > $TO/$DIR/archivetimestamp.txt
      echo
    else
@@ -227,9 +241,12 @@ dosync () {
   fi
 }  #  end dosync()
 
-######
-######### start of executed code ##########
-######
+# ///////////////////////////////////////////////////////////
+# /////////////     start of main code      /////////////////
+# ///////////////////////////////////////////////////////////
+
+checksudo
+
 echo
 echo "****************************************************************"
 echo "START LOOMA UPDATE: updating Looma code, database and content"
@@ -323,9 +340,9 @@ echo "********************"
 
     DIR="Looma"
     checktimestamp
-    
+
    #pause "after code timestamp latest is $latest, current is $current"
-    
+
     if [[ $? = 1 ]]
       then
         echo "++++++++++++++++++++++++"

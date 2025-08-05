@@ -1,13 +1,11 @@
 // mongo terminal program "importCH_IDs;
 //      input from a tab-separated file named 'ch_idsToImport.tsv'
-//          each line of which is a DN <tab> FT <tab> a comma-separated list of CH_IDs
-//          inserts all the ch_ids into the activities.ch_ids array and activities.nch_ids array
-//          of any document(s) corresponding to the FT + DN pair
+//          each line of which is a DN <tab> SRC <tab> a comma-separated list of CH_IDs
+//          inserts all the ch_ids into the activities.ch_ids array
+//          of any document(s) corresponding to the SRC + DN pair
 //
 //    to DRYRUN this script, enter "param='dryrun'  before entering the load statement
 //
-//  IMPORTANT: be sure to remove any ' or " from the ch_id list
-//  IMPORTANT: be sure to remove any blanks from the ch_id list
 //
 ////  make sure there is a file 'ch_idsToImport.tsv' in the current directory
 //  start MONGO in LOOMA db with: 'mongo looma'
@@ -20,16 +18,17 @@
 ////////////////////////
 
 function legalCH_ID(ch,dn) {
-    var char = ch.replace(/\s/g,'');
+    var char = ch.trim();
     if (char && char.length>0) {
         var legal = db.chapters.find({"_id": char});
-        if (legal.length() === 0 && char) {
-            print("************ illegal ch_id:     " + char + " for " + dn);   // + '     for activity ' + act.dn + ' (type: ' + act.ft + ')');
+        if ( !legal.hasNext() ) {
+            print("************ NO CHAPTER FOUND FOR ch_id:     " + char + " named " + dn);
             illegalcount++;
             return false;
         } else return true;
     }
 }
+
 var requestcount = 0;
 var changecount = 0;
 var illegalcount = 0;
@@ -46,40 +45,41 @@ docs.forEach( function(doc) {
     var fields = doc.split(/\t/);  //split the line on TABs
     if (fields[0] !== "" && fields[1] !== "") {
         var displayname = fields[0];
-        var filetype = fields[1];
+        var source = fields[1];
         requestcount++;
         //print(requestcount + ' - - CHECKING ' + displayname + ' [' + filename + '] adding ' + fields.toString());
-    
-        var activities = db.activities.find({ 'dn': displayname,'ft':filetype});
+
+        var activities = db.activities.find({ 'dn': displayname,'src':source});
         var duplicates = 0;
-        if (!activities.hasNext()) print('ACTIVITY ' + displayname + ' [' + filetype + '] NOT FOUND');
+        if (!activities.hasNext()) print('ACTIVITY ' + displayname + ' [' + source + '] NOT FOUND');
         while (activities.hasNext()) {
             var activity = activities.next();
-            duplicates++; if (duplicates > 1)
-                print('*************NOTE: duplicate ACTIVITY FOUND, Name = ' + displayname + ' [' + filetype + ']');
+           // duplicates++; if (duplicates > 1)
+           //     print('*************NOTE: duplicate ACTIVITY FOUND, Name = ' + displayname + ' [' + source + ']');
             //let ch_ids = new Set();
             var oldCH_ID;
             if (Array.isArray(activity['ch_id'])) oldCH_ID = activity['ch_id']; else oldCH_ID = [activity['ch_id']];
-    
+
             activity['ch_id'] = [];
-            activity['nch_id'] = [];
             // retain OLD ch_ids
             oldCH_ID.forEach (function(x){ if(x && activity['ch_id'].indexOf(x) === -1) activity['ch_id'].push(x);});
             //
             var IDs = fields[2].split(/,/);  //list of ch_ids on COMMAs
-    
-            IDs.forEach   (function(x){
-                x = x.trim();
-                if(x && legalCH_ID(x,activity['dn']) && activity['ch_id'].indexOf(x) === -1) {
-                    activity['ch_id'].push(x);
-                    activity['nch_id'].push(x);
+
+            IDs.forEach   (function(id){
+                id = id.trim();
+
+                if (!legalCH_ID(id,activity['dn'])) return;
+
+                if(id && activity['ch_id'].indexOf(id) === -1) {
+                    activity['ch_id'].push(id);
                 }});
-            
-            if (param !== 'dryrun') db.activities.update({_id: activity._id}, activity);
-            
-            print(++changecount + ' - - CHANGED CH_IDs '
-                  + displayname + ' [' + oldCH_ID.toString() + '] TO '
-                  + ' [' + activity.ch_id.toString()) + ']';
+
+            if (param !== 'dryrun') db.activities.updateOne({_id: activity._id}, {$set:{ch_id:activity['ch_id']}});
+
+     //       print(++changecount + ' - - CHANGED CH_IDs '
+       //           + displayname + ' [' + oldCH_ID.toString() + '] TO '
+         //         + ' [' + activity.ch_id.toString() + ']');
         }
     } else print('*******    BAD INPUT LINE: ' + doc);
 });  // end foreach doc

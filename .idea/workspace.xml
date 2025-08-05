@@ -27,14 +27,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/images/progress.gif" afterDir="false" />
+    <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="7.17f AUG 04 2025">
+      <change afterPath="$PROJECT_DIR$/mongo-dump/mongorestore.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/archivetimestamp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/archivetimestamp.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-game.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/looma-utilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-utilities.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-TTS.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-TTS.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-version" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-version" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +54,18 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "looma"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/looma/Looma-II",
+    "accountId": "f8c0ebb1-2b36-499e-bb85-7856e8958356"
+  }
+}]]></component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -85,6 +94,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/skip/Library/Application Support/JetBrains/IntelliJIdea2025.1/plugins/Shell Script/shellcheck&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/usr/local/var/www/Looma&quot;,
@@ -93,7 +103,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.AIAssistantPromptsLibrary&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.customizations&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -123,6 +133,19 @@
       <option name="presentableId" value="Default" />
       <updated>1570473104432</updated>
       <workItem from="1749957782193" duration="2486000" />
+      <workItem from="1752945582230" duration="1584000" />
+      <workItem from="1753138842708" duration="910000" />
+      <workItem from="1753140033156" duration="14378000" />
+      <workItem from="1753311864046" duration="8731000" />
+      <workItem from="1753564203806" duration="170000" />
+      <workItem from="1753565827996" duration="667000" />
+      <workItem from="1753578740398" duration="11500000" />
+      <workItem from="1753739842906" duration="196000" />
+      <workItem from="1753740119166" duration="97000" />
+      <workItem from="1753740303156" duration="2602000" />
+      <workItem from="1753809692974" duration="15996000" />
+      <workItem from="1753915341768" duration="6130000" />
+      <workItem from="1754325864703" duration="3474000" />
     </task>
     <task id="LOCAL-00001" summary="5.2.3 adding mongoDB contents">
       <created>1571193627755</created>
@@ -306,7 +329,15 @@
       <option name="project" value="LOCAL" />
       <updated>1608693563896</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="7.17f AUG 04 2025">
+      <option name="closed" value="true" />
+      <created>1754342082947</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1754342082947</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -314,6 +345,7 @@
   </component>
   <component name="UnknownFeatures">
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.php" />
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.test" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -352,7 +384,8 @@
     <MESSAGE value="6.0.1h  various Nepali UI translations, improved games and clock&#10;6.0.1g  updated looma-templates (php, js, css)" />
     <MESSAGE value="&#10;6.0.1i (new maps, SAARC and Nepal Municipalities)" />
     <MESSAGE value="&#10;6.0.1i (new maps, SAARC and Nepal Municipalities)&#10;6.0.1h (polishing maps)" />
-    <option name="LAST_COMMIT_MESSAGE" value="&#10;6.0.1i (new maps, SAARC and Nepal Municipalities)&#10;6.0.1h (polishing maps)" />
+    <MESSAGE value="7.17f AUG 04 2025" />
+    <option name="LAST_COMMIT_MESSAGE" value="7.17f AUG 04 2025" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

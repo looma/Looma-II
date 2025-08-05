@@ -6,6 +6,7 @@
 #               OCT 2020 - changed to --size-only for CONTENT upload
 #                           to avoid unnecessary updates to modification date stamps for content files, so that download RSYNC will continue to skip them
 #               OCT 2023 - added 'archivetimestamp.txt' file to archive for use by 'loomaupdate'
+#               JUL 2025 - exclude COMPOSER files from archive [vendor/, composer.json, composer.lock]
 #
 #  used to update the 'archive' version of Looma on rsync.net, including new code, database & content
 #
@@ -24,10 +25,10 @@
 #-vv	very verbose
 #-z  	use compression
 #--dry-run
-#--delete 	delete files on destination that are not on source
 #--perms (=== -p)
 #--update
-# --include ".ssh/"  --exclude ".[!.]*" --delete-excluded
+# --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*"
+
 result () {
     if [[ $1 -ne 0 ]]
     then
@@ -44,12 +45,13 @@ result () {
 
 timestamp () {  # $1 is the dir to put the timestamp in [content or Looma]
   date +"%s" > $1/archivetimestamp.txt
-  echo " - - setting "$1/archivetimestamp.txt to $(date +"%s")
+  echo "in timestamp()"
+  echo " - - setting $1/archivetimestamp.txt to $(date +'%s')"
   echo "************************************"
 }  #  end timestamp()
 
 echo "************************************"
-echo " - - setting database version to today's date"
+echo " - - setting database version to todays date"
 echo "************************************"
 mongosh looma < "/usr/local/var/www/Looma/looma shell scripts/loomaMongoSetDate" &>/dev/null
 
@@ -73,32 +75,26 @@ echo "************************************"
 
 mongodump --quiet --db looma
 
-echo ' - - archiving Looma (code) to rsync.net'
+echo
 echo "************************************"
+echo ' - - archiving Looma (code + mongodb) to rsync.net'
+echo "************************************"
+
 cd   /usr/local/var/www/Looma		# cd to Looma/ (on a MAC)
 
 RW="58189@usw-s008.rsync.net"
 
 SECONDS=0
 
-### should exclude content/chapters folders for now so that Looma II's in the field wont run out of storage space
-###
-###   this code not tried yet
-###
-###    cd /var/local/var/www
-###    excludes='/content/chapters/'
-###    rsync ... ... --exclude $excludes ... ...
-###
-##############
-# sync code to rsync.net  [excluding "." files like .git/]
+# sync code to rsync.net  [excluding "." files like .git/ and composer related files]
 if [[ $1 = "dryrun" ]]
 then
-    echo "NOTE: dryrun"
-
-     #EXAMPLE chmod: --chmod=Dg+s,ug+w,Fo-w,+X
-
+    echo "NOTE: dryrun, no changes will be made"
      #removed "--include '.ssh'"
-    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update --progress  --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
+    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update --progress  \
+    --exclude ".[!.]*" --exclude "composer*" --exclude "vendor/"  \
+    -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
+
     echo "FINISHED dryrun"
 else
    timestamp "/usr/local/var/www/Looma"
@@ -106,7 +102,9 @@ else
     echo " - - new timestamp for code is $(cat /usr/local/var/www/Looma/archivetimestamp.txt)"
     echo "************************************"
 
-   rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update --progress   --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
+   rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update --progress   \
+   --exclude ".[!.]*" --exclude "composer*" --exclude "vendor/"  \
+   -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -129,7 +127,9 @@ SECONDS=0
 if [[ $1 = "dryrun" ]]
 then
     echo "NOTE: dryrun"
-    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update    --exclude ".[!.]*" --delete-excluded  -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
+    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update \
+    --exclude ".[!.]*" --delete \
+    -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
     echo "FINISHED dryrun"
 else
     timestamp "/usr/local/var/www/content"
@@ -137,7 +137,9 @@ else
     echo "new timestamp for content is "
     cat "/usr/local/var/www/content/archivetimestamp.txt"
 
-    rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update   --exclude ".[!.]*" --delete-excluded -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
+    rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update \
+    --exclude ".[!.]*" --delete \
+    -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."

@@ -19,4 +19,5 @@ Xlooma-pdf-viewer
 
 logins/defaultlogins.json
 /vendor/
-
+composer.test
+composer.lock

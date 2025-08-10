@@ -4,7 +4,7 @@ RUN apt-get update
 RUN apt-get install -y net-tools
 RUN apt-get install -y python3
 RUN apt-get install -y python3-pip
-RUN pip3 install torch==2.3.1+cpu -f https://download.pytorch.org/whl/torch_stable.html # this is necessary to avoid downloading unwanted NVIDIA libraries
+RUN pip3 install torch>0+cpu -f https://download.pytorch.org/whl/torch_stable.html # this is necessary to avoid downloading unwanted NVIDIA libraries
 RUN pip3 install langchain_huggingface qdrant_client sentence-transformers
 COPY load_models.py load_models.py
 RUN mkdir -p /tmp/.cache/hf

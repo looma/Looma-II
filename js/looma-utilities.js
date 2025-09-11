@@ -82,7 +82,8 @@ Description:
      "slideshow":"images/slideshow.png",
      "text":"images/textfile.png",
      "textfile":"images/textfile.png",
-     "looma":"images/LoomaLogo_small.png"
+     "looma":"images/LoomaLogo_small.png",
+     "chapter":"images/book.png"
  };
 
 var LOOMA = (function() {
@@ -141,7 +142,7 @@ playMedia : function(button) {
             window.location = 'audio?fn=' + button.getAttribute('data-fn') +
                 '&fp=' + button.getAttribute('data-fp') +
                 '&dn=' + button.getAttribute('data-dn');
-    
+
             //window.location = 'audio?fn=' + fn + '&fp=' + fp + '&dn=' + dn;
             break;
 
@@ -311,25 +312,25 @@ playMedia : function(button) {
                 button.getAttribute("data-ft"));
     } //end SWITCH
 }, //end LOOMA.playMedia()
-    
+
         makeActivityButton : function(result, id, db, mongoID, appendToDiv) {
              var thumbfile;
              var mongoID;
-             
+
             //var fp = (result.fp) ? 'data-fp=\"' + result.fp + '\"' : null;
             if (result) var fp = ("fp" in result && result.fp) ? result.fp : LOOMA.filepath(result.ft);
-        
+
             var lang;
             if (result.lang) lang = result.lang;
             else {
                 var cookie = LOOMA.readStore('language', 'cookie');
                 lang = cookie !== 'english' ? 'np' : 'en';
             }
-        
+
             var fn = (result.fn) ? result.fn : result.nfn;
             var db = (result.db) ? result.db : 'looma';
             var ft =  result.ft;
-            
+
             if (result.ID && result.ft === 'chapter') {
                 fp = LOOMA.filepath('chapter') +
                      LOOMA.parseCH_ID(result.ID)['currentGradeFolder'] + '/' +
@@ -351,62 +352,62 @@ playMedia : function(button) {
                 'data-dn="' + result.dn   + '" ' +
                 'data-ndn="' + result.ndn   + '" ' +
                 'data-prefix="' + result.prefix   + '" ' +
-            
+
                 'data-zoom="' + result.zoom + '" ' +
                 'data-url="' + result.url + '" ' +
-            
+
                 'data-grade="' + result.grade + '" ' +
                 'data-class="' + result.class + '" ' +
                 'data-subject="' + result.subject + '" ' +
                 'data-type="' + result.presentation_type + '" ' +
-            
+
                 'data-epversion="' + result.version + '" ' +
                 'data-ole="' + result.oleID + '" ' +
                 'data-ID="' + result.ID + '" ' +
                 'data-mongoID="'  + mongoID    + '" >'
-            
+
                 // add key1, key2, key3, key4, thumb, src, mondoID, url and ch_id data-fields  ???
                 //
             );
-        
+
             //    $newButton.append($('<img class="icon" src="images/alert.jpg">'));
-        
+
             //var fn = (language === 'native') ? result.nfn : result.fn;
             if ( ! ('fn' in result) && ('nfn' in result)) fn = result.nfn;
             else if ('fn' in result) fn = result.fn;
             else fn = null;
-        
+
             thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft, result.thumb);
             /*
                               if      (result.ft == 'EP'       && result.thumb)
                                                      thumbfile = '../ePaath/' + result.thumb;
-      
+
                               else if (result.thumb) thumbfile = result.fp + result.thumb ;
                               else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
-      
+
           */
             if (thumbfile) $newButton.append($('<img alt="" loading="lazy" draggable="false" src="' + thumbfile + '">'));
-        
+
             //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));
-        
+
             /*this idea is from: https://stackoverflow.com/questions/980855/inputting-a-default-image-in-case-the-src-attribute-of-an-html-img-is-not-vali
                    $newButton.append($('<object draggable="false" data="' + thumbfile + '" type="image/png">' +
                                         '<img alt="" src="' + result.fp + 'thumbnail.png">' +
                                         '</object>'));
              */
-        
-        
+
+
             var displayname;
             if (language==='english') displayname = ('dn' in result) ? result.dn : result.ndn;
             else displayname = ('ndn' in result) ? result.ndn : result.dn;
-        
-        
-        
+
+
+
             //var displayname = ((language === 'native' || (! 'dn' in result)) && result.ndn )  ? result.ndn : result.dn;
             $newButton.append($('<span class="dn">').text(displayname));
-        
+
             $newButton.append($('<img class="icon" src="' + icons[result.ft] + '">'));
-        
+
             $newButton.click(function() {LOOMA.playMedia(this);});
             $newButton.appendTo(appendToDiv);
         }, // end makeActivityButton()
@@ -1317,7 +1318,7 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
    });
 };  //end getCH_ID()
 
- 
+
  //LOOMA.sound
  // param is HTML 'embed' element with src=wav file
  // in the HTML have
@@ -1325,7 +1326,7 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
  // call with LOOMA.sound( $('#sound_object")[0] )
  LOOMA.sound = function(sound) { sound.Play();}
 
- 
+
 /* LOOMA.speak()
  * Author: Akshay Srivatsan
  * Date: Summer 2015/2016
@@ -1349,7 +1350,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
         //  for Looma in Nepal, use default rate = 2/3
 
     const defaultspeed = 2/3;
-    var   speed = rate ? rate : defaultspeed;
+    var speed;
+
+       if (rate <= 0 || rate > 2) rate = defaultspeed;
+       speed = 1/rate;
 
     /* requires a special regex package, like xregexp [https://www.regular-expressions.info/xregexp.html]
          const devanagari = /p{Devanagari}/u;
@@ -1360,9 +1364,9 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
      if ( text !== "" ) {
          var playPromise;
-    
+
        //  if (text.match(/[\u0900-\u097F]/g)) lang = "np";
-        
+
              /* commented out: set default engine and default voice in backend TTS.php
                      if (!engine) {
                              engine = 'piper'; //default engine is piper
@@ -1371,7 +1375,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                              else voice = 'en_US-amy-medium.onnx';
                      }
                */
-         console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
+         //console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
 
          var speechButton = document.getElementsByClassName("speak")[0];
 
@@ -1457,7 +1461,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
              } else {
                  // speechSynthesis usually accounts for latency itself, so there's no need to queue requests.
                  var speech = new SpeechSynthesisUtterance(text);
-                 speech.rate = speed;   // e.g. if rate is 2/3, slow down
+                 speech.rate = 1/speed;   // e.g. if rate is 2/3, slow down
                  speechSynthesis.speak(speech);
              }
          }
@@ -1469,14 +1473,14 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  //LOOMA.speak.playingAudio.pause();
                  LOOMA.speak.cleanup();
              } else {  //else start the new speech
-                 console.log("Playing Audio: " + text);
+                 //console("Playing Audio: " + text);
 
                  // To reduce latency before speech starts, split the speech into sentences, and speak each separately.
                  // separating on: period, comma, question mark, exclamation mark, semicolon, colon   /[.,?!;:]/
                  // Splitting over these punctuation marks will usually work.
                  //There are a few cases where it will sound unusual ("Dr.", "Mr.", "Ms.", etc).
                  //It may lag on unusually long sentences without punctuation.
-                 var splitSentences = text.split(/[.,?!;:]/);
+                 var splitSentences = text.split(/[.?!;:]/); //removed ","
                  console.log("Speaking " + splitSentences.length + " phrases.");
 
                  var lastAudio = null;
@@ -1484,13 +1488,14 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
                  for (var i = 0; i < splitSentences.length; i++) {
                      var currentText = splitSentences[i];
-                     var audioSource;
+                     if (currentText) {
+                         var audioSource;
 
                      audioSource = 'looma-TTS.php?' +
-                         'text='    + encodeURIComponent(currentText) +
-                         '&voice='  + encodeURIComponent(voice) +
-                         '&rate='   + encodeURIComponent(speed) +
-                         '&lang='   + encodeURIComponent(language) +
+                         'text=' + encodeURIComponent(currentText) +
+                         '&voice=' + encodeURIComponent(voice) +
+                         '&rate=' + encodeURIComponent(rate) +
+                         '&lang=' + encodeURIComponent(language) +
                          '&engine=' + encodeURIComponent(engine);
 
                      // This is like preloading images – all the requests to mimic will execute early, so there won't be lag between phrases.
@@ -1499,11 +1504,11 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      //this 'onended' handler is attached to each phrase before it is entered into the queue
                      currentAudio.onended = function () {
                          // When this phrase is over, start the next one, by popping it off the queue
-                         console.log("End of Phrase");
+                         //console.log("End of Phrase");
                          var nextAudio = LOOMA.speak.speechQueue.pop(); // The equivalent of "dequeue". (Pulls from the end of the array.)
-                         if (nextAudio != null) {
+                         if (nextAudio && nextAudio.textContent != null) {
                              LOOMA.speak.playingAudio = nextAudio;
-                             console.log("Playing Next Phrase");
+                             //console.log("Playing Next Phrase");
                              //play the next phrase
                              playPromise = nextAudio.play();
                          } else {
@@ -1520,10 +1525,11 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          LOOMA.speak.speechQueue.unshift(currentAudio); // The equivalent of "enqueue". (Puts it at the beginning of the array.)
                      }
                      lastAudio = currentAudio;
+                 }
                  }  // end FOR loop which builds the queue of audio phrases to play
-
                  LOOMA.speak.playingAudio = firstAudio;
-                 console.log("Playing Phrase");
+                 console.log("Playing '" + currentText + "' with " + voice + " at speed " + speed + " and using " + engine);
+
                  //play the first phrase
                  playPromise = firstAudio.play().then(
                      function () {
@@ -1540,6 +1546,8 @@ LOOMA.speak = function(text, engine, voice, rate) {
          }  //end of code that calls server-side MIMIC
      } // end if (text != '')
  }; //end LOOMA.speak()
+
+
 
  LOOMA.toggleFullscreen = function() {
      var fs =      document.getElementById('video-fullscreen');

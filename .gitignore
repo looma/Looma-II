@@ -18,4 +18,6 @@ Xlooma-pdf-viewer
 *.resources
 
 logins/defaultlogins.json
-
+/vendor/
+composer.test
+composer.lock

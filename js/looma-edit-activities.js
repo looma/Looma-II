@@ -438,6 +438,8 @@ $(document).ready(function() {
         else                       {textbook = true; $('#textbooks').show(); $('#otherbook-clear').trigger('click'); $('#otherbooks').hide();}
     });
     
+    /*check 'textbook' radio here*/
+    
     $('#submit-changes').click( submitChanges );
     
     $('#dismiss').off('click').click( function() {

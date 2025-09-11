@@ -19,7 +19,6 @@ namespace MongoDB\Model;
 
 use ArrayAccess;
 use MongoDB\Exception\BadMethodCallException;
-use ReturnTypeWillChange;
 
 use function array_key_exists;
 
@@ -29,50 +28,39 @@ use function array_key_exists;
  * This class models the database information returned by the listDatabases
  * command. It provides methods to access common database properties.
  *
- * @api
  * @see \MongoDB\Client::listDatabases()
  * @see https://mongodb.com/docs/manual/reference/command/listDatabases/
+ * @template-implements ArrayAccess<string, mixed>
  */
 class DatabaseInfo implements ArrayAccess
 {
-    /** @var array */
-    private $info;
-
-    /**
-     * @param array $info Database info
-     */
-    public function __construct(array $info)
+    /** @param array $info Database info */
+    public function __construct(private array $info)
     {
-        $this->info = $info;
     }
 
     /**
      * Return the database info as an array.
      *
      * @see https://php.net/oop5.magic#language.oop5.magic.debuginfo
-     * @return array
      */
-    public function __debugInfo()
+    public function __debugInfo(): array
     {
         return $this->info;
     }
 
     /**
      * Return the database name.
-     *
-     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return (string) $this->info['name'];
     }
 
     /**
      * Return the databases size on disk (in bytes).
-     *
-     * @return integer
      */
-    public function getSizeOnDisk()
+    public function getSizeOnDisk(): int
     {
         /* The MongoDB server might return this number as an integer or float */
         return (integer) $this->info['sizeOnDisk'];
@@ -80,10 +68,8 @@ class DatabaseInfo implements ArrayAccess
 
     /**
      * Return whether the database is empty.
-     *
-     * @return boolean
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return (boolean) $this->info['empty'];
     }
@@ -92,39 +78,31 @@ class DatabaseInfo implements ArrayAccess
      * Check whether a field exists in the database information.
      *
      * @see https://php.net/arrayaccess.offsetexists
-     * @param mixed $key
-     * @return boolean
+     * @psalm-param array-key $offset
      */
-    #[ReturnTypeWillChange]
-    public function offsetExists($key)
+    public function offsetExists(mixed $offset): bool
     {
-        return array_key_exists($key, $this->info);
+        return array_key_exists($offset, $this->info);
     }
 
     /**
      * Return the field's value from the database information.
      *
      * @see https://php.net/arrayaccess.offsetget
-     * @param mixed $key
-     * @return mixed
+     * @psalm-param array-key $offset
      */
-    #[ReturnTypeWillChange]
-    public function offsetGet($key)
+    public function offsetGet(mixed $offset): mixed
     {
-        return $this->info[$key];
+        return $this->info[$offset];
     }
 
     /**
      * Not supported.
      *
      * @see https://php.net/arrayaccess.offsetset
-     * @param mixed $key
-     * @param mixed $value
      * @throws BadMethodCallException
-     * @return void
      */
-    #[ReturnTypeWillChange]
-    public function offsetSet($key, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw BadMethodCallException::classIsImmutable(self::class);
     }
@@ -133,12 +111,9 @@ class DatabaseInfo implements ArrayAccess
      * Not supported.
      *
      * @see https://php.net/arrayaccess.offsetunset
-     * @param mixed $key
      * @throws BadMethodCallException
-     * @return void
      */
-    #[ReturnTypeWillChange]
-    public function offsetUnset($key)
+    public function offsetUnset(mixed $offset): void
     {
         throw BadMethodCallException::classIsImmutable(self::class);
     }

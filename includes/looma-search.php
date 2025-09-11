@@ -139,7 +139,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
             $sources = array(
                 array("CEHRD", "ck12",  "phet", "epaath",   "khan", "w4s",       "TED", 'hesperian'), // not used
                 array("CEHRD", "Dr Dann", "PhET", "OLE",    "khan", "wikipedia", "TED", "hesperian"), //internal names for IDs  #xxx-chk and #xxx-checkbox
-                array("CEHRD", "CK-12", "PhET", "ePaath", "Khan", "Wikipedia", "TED", "Hesperian"), //the displayed name for source values
+                array("CEHRD", "Dr Dann", "PhET", "ePaath", "Khan", "Wikipedia", "TED", "Hesperian"), //the displayed name for source values
             );
 
           for($x = 0; $x < count($sources[1]); $x++) {
@@ -165,8 +165,8 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
         $connection = @fsockopen($host, $port, $errno, $errstr, $timeout);
 
-        if ($connection) echo "<label><input type='checkbox' name='semantic' />(Experimental) Semantic Search</label>";
-        else echo "error checking for Qdrant:  " . $errno;
+ //       if ($connection) echo "<label><input type='checkbox' name='semantic' />(Experimental) Semantic Search</label>";
+        //else echo "error checking for Qdrant:  " . $errno;
 
 
         echo "</div>";

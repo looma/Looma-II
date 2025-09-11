@@ -61,7 +61,7 @@ if ($engine === 'piper') {
     if ($lang === "np") $voice = "ne_NP-google-medium.onnx";
     else                $voice = "en_US-amy-medium.onnx";
     $command = "echo  "  .  escapeshellarg($text)  . " | piper " .
-        " --model ../voices/piper/usr/share/piper/$voice " .
+        " --model voices/piper/$voice " .
         " --length_scale $speed" .
         " --output_file $outputFileName";  // move voices to inside ../Looma ???
 
@@ -75,7 +75,7 @@ if ($engine === 'piper') {
 
     if ($lang === 'np') $text = "I do not know how to speak Nepali.";
 
-    $voiceDir = "../voices/";
+    $voiceDir = "voices/mimic/";
     $voiceFile = $voiceDir . $voice . ".flitevox";
 
     $mimicCommand = exec("which mimic");

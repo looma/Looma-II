@@ -118,7 +118,7 @@ function md5(inputString) {
 function lessonpack (lesson) { // pack the timeline into an array of collection/id pairs for storage
     var packitem;
     var packarray = [];
-    
+
     $(lesson).each(function() {
         packitem = {};  //make a new object, unlinking the references already pushed into packarray
         packitem.collection = $(this).data('collection');
@@ -131,19 +131,19 @@ function lessonpack (lesson) { // pack the timeline into an array of collection/
         if (packitem.collection === 'chapters') packitem.lang         = $(this).data('lang');
         packarray.push(packitem);
     });
-    
+
     return packarray;
 } //end lessonpack()
 
 ///////// lessonunpack /////////
 function lessonunpack (lesson) {  //un-pack the array of collection/id pairs into html to display on the timeline
-    
+
         function verify(collection, id) {
             if ( ! id ) return null;
             if (collection === 'chapters') return id;
             return id.match(/^[0-9a-f]{24}$/i) ? id : '000000000000000000000000'
         }
-    
+
     lessonclear();
     if (lesson.author) {
         author = lesson.author;
@@ -154,12 +154,12 @@ function lessonunpack (lesson) {  //un-pack the array of collection/id pairs int
     }
     setname(lesson.dn, author);
     currentDB = lesson.db ? lesson.db : 'looma';
-    
+
     var posts = [];  //we will push all the $.post() deferreds in the foreach below into posts[]
     var elements = [];
-    
+
   //  for (var index=0;index<lesson.data.length;index++) {
-   
+
     convertedSomeTextFiles = false;
     $(lesson.data).each(function(index, val) {  // param "index" is auto-generated and incremented by "each()"
         // retrieve each timeline element from mongo and add it to the current timeline
@@ -176,21 +176,21 @@ function lessonunpack (lesson) {  //un-pack the array of collection/id pairs int
                 {cmd: "openByID", currentDB, collection: val.collection, id: verify(val.collection, val.id)},
             async function(result) {
                 var newDiv = createActivityDiv(result);
-                
+
                 //add data-index to timeline element for later sorting
                 //    (because the elements are delivered async, they may be out of order)
                 $(newDiv.firstChild).attr('data-index', parseInt(index));
-    
+
                 if ( $(newDiv.firstChild).attr('data-type') === 'text')
                     await convertTextfile( $(newDiv.firstChild) );
-                
+
                 console.log('adding ID :' + result._id + ' with index = ' + index);
                 elements.push(newDiv.firstChild);
             },
             'json'
         ));
     });
-    
+
     //  when all the $.post's are complete, then re-order the timeline to account for out-of-order elements from asynch $.post calls
     Promise.all(posts).then (function(){
         orderTimeline(elements);  // puts the items in elements array into the timeline in order
@@ -200,9 +200,9 @@ function lessonunpack (lesson) {  //un-pack the array of collection/id pairs int
         $('#timelineDisplay').show();
         $current_item = $('#timeline .activityDiv').first();  // select first timeline item
         preview($current_item);
-      
+
         if (convertedSomeTextFiles) lessonsave(lesson.dn);
-    
+
     });
 } //end lessonunpack()
 
@@ -234,11 +234,11 @@ function clearFilter () {
         $("#dropdown_grade").val("").change();
         $("#dropdown_subject").val("").change();
     }
-    
+
     $("#innerResultsMenu").empty();
     $("#innerResultsDiv").empty();
     $previewpanel.empty();
-    
+
 } //end clearFilter()
 /////////////////////////////////////////////////
 
@@ -248,23 +248,23 @@ function clearResults() {
     $previewpanel =     $('#previewpanel');
     $previewpanel.empty();
     //preview($current_item);
-    
+
 } //end clearResults()
 
 function displayResults(results) {
     var result_array = [];
     result_array['activities'] = [];  //not searching for dictionary entries
     result_array['chapters']  = [];  //not searching for textbooks
-    
+
     for (var i=0; i < results.list.length; i++) {
         if (results.list[i]['ft'] === 'chapter')      result_array['chapters'].push(results.list[i]);
         else if (results.list[i]['ft'] !== 'section') result_array['activities'].push(results.list[i]);
     }
-    
+
     clearResults();
     displaySearchResults(result_array);
     makedraggable();
-    
+
 } //end displayresults()
 
 
@@ -276,36 +276,36 @@ function displaySearchResults(filterdata_object) {
     var currentResultDiv = document.createElement("div");
     currentResultDiv.id = "currentResultDiv";
     $(currentResultDiv).appendTo($("#innerResultsDiv"));
-    
+
 //***********************
 // display Activities in Search Results pane
 //***********************
-    
+
     var actResultDiv = document.createElement("div");
     actResultDiv.id = "actResultDiv";
     $(actResultDiv).appendTo(currentResultDiv);
-    
+
     var collectionTitle = document.createElement("h1");
     collectionTitle.id = "activityTitle";
-    
+
     var activitiesarraylength = filterdata_object.activities.length;
 
     for(var i=0; i<activitiesarraylength; i++) {
         var rElement = createActivityDiv(filterdata_object.activities[i]);  //BUG: array[i-1] not defined when i==0  FIXED
-        
+
         actResultDiv.appendChild(rElement);
-        
+
     }
 
 //***********************
 // display Chapters in Search Results pane
 //***********************
-    
+
     var chaptersarraylength = filterdata_object.chapters.length;
     if (chaptersarraylength > 0) {
         for(i=0; i<chaptersarraylength; i++) {
             rElement = createActivityDiv(filterdata_object.chapters[i]);
-            
+
             if (rElement) actResultDiv.appendChild(rElement);
         }
     } // end Print Chapters Array
@@ -313,7 +313,7 @@ function displaySearchResults(filterdata_object) {
 ///////////////////////////////
 // Create inner results menu
 //////////////////////////////
-    
+
     $("<span/>", {
         id : "chaptersScroll",
         html : "Chapters (" + chaptersarraylength + ")&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -322,12 +322,12 @@ function displaySearchResults(filterdata_object) {
         id : "activitiesScroll",
         html : "Activities (" + activitiesarraylength + ')'
     }).appendTo("#innerResultsMenu");
-    
+
     $("#innerResultsMenu").css("border-bottom","1px solid #000");
-    
+
     $('#chaptersScroll').click(function()  {$('#innerResultsDiv').scrollTop($('#chapterTitle').position().top);});
     $('#activitiesScroll').click(function(){$('#innerResultsDiv').scrollTop($('#activityTitle').position().top);});
-    
+
 } //end displaySearchResults()
 
 
@@ -337,19 +337,19 @@ function thumbnail (item) {
     //builds a filepath/filename for the thumbnail of this "item" based on type
     var collection, filetype, filename, filepath;
     var imgsrc, idExtractArray;
-    
+
     if ($(item).attr('thumb')) return $(item).attr('thumb');  //some activities have explicit thumbnail set
-   
+
     if ($(item).attr('ft') === 'inline') return "images/textfile.png";
-   
+
     collection = $(item).attr('collection');
     filetype = $(item).attr('ft');
     if ($(item).attr('fn')) filename = $(item).attr('fn');
-    
+
     if ($(item).attr('lang') === 'np') filename = $(item).attr('nfn');
-    
+
     if ($(item).attr('fp')) filepath = $(item).attr('fp');
-    
+
     if (collection === "chapters" || item.pn != null) {
         //idExtractArray = extractItemId(item);
       //  filepath = idExtractArray["currentGradeFolder"] + "/" + idExtractArray["currentSubjectFull"] + "/";
@@ -359,7 +359,7 @@ function thumbnail (item) {
         imgsrc = LOOMA.thumbnail(filename, filepath, 'chapter');
     }
     else imgsrc = LOOMA.thumbnail(filename, filepath, filetype);
-    
+
     return imgsrc;
 } // end thumbnail()
 
@@ -370,9 +370,9 @@ function extractItemId(item) {
 }  // enc extractItemId()
 
 function createActivityDiv (activity) {
-    
+
     function innerActivityDiv (item) {
-        
+
         // activityDiv looks like this:
         //      <div class="activityDiv" data-collection=collection>
         //                               data-id=_id
@@ -401,31 +401,31 @@ function createActivityDiv (activity) {
         //      </div>
         var activityDiv = document.createElement("div");
         activityDiv.className = "activityDiv";
-        
+
         $(activityDiv).attr("data-collection", (item.ft == 'chapter') ? 'chapters' : 'activities');
-        
+
         if ('_id' in item) $(activityDiv).attr("data-id",
             (item.ft == 'chapter') ? item['_id'] : item['_id']['$id'] || item['_id']['$oid']);
-    
+
         if ('dn' in item) $(activityDiv).attr("data-dn",item['dn']);
         if ('db' in item) $(activityDiv).attr("data-db",item['db']);
-    
+
         if ('mongoID' in item) $(activityDiv).attr("data-mongoid",
             (item.ft == 'chapter') ? '' : item['mongoID']['$id'] || item['mongoID']['$oid']);
-        
+
         var itemtype = item['ft'] === 'text-template' ? 'text-template' : item['ft'];
         $(activityDiv).attr("data-type", itemtype);
         $(activityDiv).attr("data-fp", item['fp']);
-    
+
         if(itemtype === "EP") {
              $(activityDiv).attr("data-epversion",item['version']);
              $(activityDiv).attr("data-grade",item['grade']);
              $(activityDiv).attr("data-ole",item['oleID']);
         }
-    
+
         //var lang =  $("input:radio[name='chapter-language']:checked").val();
         $(activityDiv).attr("data-lang", item['lang']);
-        
+
         if (item['ft'] === 'inline') {
             $(activityDiv).attr("data-html", item['html']);
             $(activityDiv).attr("data-nepali", item['nepali']);
@@ -450,40 +450,40 @@ function createActivityDiv (activity) {
         var thumbnaildiv = document.createElement("div");
         thumbnaildiv.className = "thumbnaildiv";
         $(thumbnaildiv).appendTo(activityDiv);
-        
+
         $("<img/>", {
             class : "resultsimg",
             loading: "lazy",
             src : thumbnail(item, collection)
         }).appendTo(thumbnaildiv);
-        
+
         // Result Text
         var textdiv = document.createElement("div");
         textdiv.className = "textdiv";
         $(textdiv).appendTo(activityDiv);
-        
+
         // Display Name
         if      ('dn' in  item) var dn = item.dn;
         else if ('ndn' in item)     dn = item.ndn;
         else dn = "";
-        
+
         $("<p/>", {
             class : "result_dn",
             html : "<b>" + dn.substring(0, 30) + "</b>"
         }).appendTo(textdiv);
-        
+
         // File Type
         $("<span/>", {
             class : "result_ft",
             html : filetype(itemtype) + "  "
         }).appendTo(textdiv);
-      
+
         // index
         $("<span/>", {
             class : "result_index",
             html:" (1)"
         }).appendTo(textdiv);
-    
+
         // ID
         if ('ch_id' in item) {
             $("<span/>", {
@@ -497,48 +497,48 @@ function createActivityDiv (activity) {
                 html : "[" + item._id + "]"
             }).appendTo(textdiv);
         }
-        
+
         $("<br>").appendTo(textdiv);
-        
+
         // Buttons
         var buttondiv = document.createElement("div");
         buttondiv.className = "buttondiv";
         $(buttondiv).appendTo(activityDiv);
-        
+
         // "Add" button
         var addButton = document.createElement("button");
         addButton.innerText = "Add";
         addButton.className = "add";
         buttondiv.appendChild(addButton);
-    
+
         // "Copy" button
         var copyButton = document.createElement("button");
         copyButton.innerText = "Copy";
         copyButton.className = "copy";
         buttondiv.appendChild(copyButton);
-        
+
         // "Delete" button
         var removeButton = $("<button/>", {class: "remove", html:"Remove"});
         $(buttondiv).append(removeButton);
-        
+
         // "Preview" button
         var previewButton = document.createElement("button");
         previewButton.innerText = "View";
         previewButton.className = "preview";
         buttondiv.appendChild(previewButton);
-    
+
         return activityDiv;
     } //end innerActivityDiv()
-    
+
    // var idExtractArray = extractItemId(activity);
-    
+
     if (activity.ft !== 'section') {
         var div = document.createElement("div");
         div.className = "resultitem";
-        
+
         var newDiv = innerActivityDiv(activity);
         $(newDiv).appendTo(div);
-        
+
         return div;
     } else return null;
 }  // end createActivityDiv()
@@ -550,10 +550,10 @@ function scroll_to_item($item) {
     $('#timeline').animate( { scrollLeft: $item.width() * ( $item.attr('data-index') - 3 ) }, 100);
     $('#timeline .activityDiv').removeClass('playing');
     $('.resultitem').removeClass('search-preview');
-    
+
     $item.addClass('playing');
     $current_item = $item;
-    
+
 }  //  end scroll_to_item()
 
 ///////////////////////////////////////////
@@ -576,10 +576,10 @@ function preview_prev() {
 
 // display an item (timeline or search result) in the preview panel
 function preview ($item, do_not_select) {
-    
+
     // displays an item in the preview window
     // if the item is in the timeline, scroll to the item and set class='playing' to highlight it
-    
+
     if ( ! do_not_select ) { // for items in the timeline
         $current_item = $item;
         scroll_to_item($item);
@@ -587,42 +587,50 @@ function preview ($item, do_not_select) {
         $('.resultitem').removeClass('search-preview');
         $item.parent().addClass('search-preview');
     }
-    
+
     $previewpanel.empty().append($("<p/>", {html : "Loading preview..."}));
     $texteditbutton.hide();
-    
+
     var collection = $item.attr('data-collection');
- 
+
     var filetype = $item.attr('data-type');
- 
+
     var filename = $item.attr('data-fn');
     var $mongo = $item.attr('data-mongoid');
     var filepath = $item.attr('data-fp');
-    
+
     var previewSrc;
     var displayLang;
-    
+
     /////////////////////   chapter   //////////////////////////////////////////
+
     if (collection == "chapters") {
-        if ($item.attr('data-lang'))        displayLang = $item.attr('data-lang');
+  /*      if ($item.attr('data-lang'))        displayLang = $item.attr('data-lang');
             else if (language === 'native') displayLang = 'np';
             else                            displayLang = 'en';
-            
+
         if (displayLang === 'en')
-            previewSrc = homedirectory + 'content/' +
+*/
+
+            previewSrc = LOOMA.ch_idFilepath($item.attr('data-id'), $item.attr('data-lang')) +
+                         LOOMA.ch_idName($item.attr('data-id'), $item.attr('data-lang')) +
+                         '#page=1' + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"';
+
+/*
+        previewSrc = homedirectory + 'content/' +
                 $item.attr('data-fp') + $item.attr('data-fn') +
                 '#page=' + $item.attr('data-pn') + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"';
         else previewSrc = homedirectory + 'content/' +
             $item.attr('data-fp') + $item.attr('data-nfn') +
             '#page=' + $item.attr('data-npn') + '\"  style=\"height:60vh;width:60vw;\" type=\"application/pdf\"';
-        
+   */
         document.querySelector("div#previewpanel").innerHTML = '<embed src="' + previewSrc + '">';
     }
 
     ////////////////////   activities   ///////////////////////////////////////////
 
     else if (collection == "activities") {
-    
+
         ////////////////////   video   ///////////////////////////////
         if( filetype == "video" ||
             filetype == "mov" ||
@@ -631,11 +639,11 @@ function preview ($item, do_not_select) {
             filetype == "mp5") {
             if (!filepath) filepath = '../content/videos/';
             document.querySelector("#previewpanel").innerHTML =
-                
+
                 //		'<video controls> <source src="' + homedirectory +
                 //		         'content/videos/' + filename + '" type="video/mp4"> </video>';
-                
-                
+
+
                 // '<div id="video-player">' +
                 '<div id="video-area">' +
                 '<div id="video-area">' +
@@ -647,7 +655,7 @@ function preview ($item, do_not_select) {
                 '</div></div></div>' +
                 '<div id="title-area"><h3 id="title"></h3></div>' +
                 '<div id="media-controls">' +
-                
+
                 //'<button id="fullscreen-playpause"></button>' +
                 '<div id="time" class="title">0:00</div>' +
                 '<button type="button" class="play-pause"></button>' +
@@ -655,9 +663,9 @@ function preview ($item, do_not_select) {
                 '<button type="button" class="mute"></button>' +
                 '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
                 '</div>';
-            
+
             attachMediaControls();  //hook up event listeners to the audio and video HTML
-            
+
         }
         ////////////////////   pdf   ///////////////////////////////
         else if (filetype=="pdf") {
@@ -668,7 +676,7 @@ function preview ($item, do_not_select) {
         }
         ////////////////////   audio   ///////////////////////////////
         else if (filetype=="mp3" || filetype=="m4a" || filetype=="audio") {
-            
+
             if (!filepath) filepath = '../content/audio/';
             document.querySelector("div#previewpanel").innerHTML = '<br><br><br><audio id="audio"> <source src="' +
                 filepath +
@@ -681,7 +689,7 @@ function preview ($item, do_not_select) {
                 '<input type="range" class="video volume-bar" min="0" max="1" step="0.1" value="0.5" style="display:inline-block"><br>' +
                 '</div>';
             attachMediaControls();  //hook up event listeners to the audio and video HTML
-            
+
         }
         ////////////////////   picture   ///////////////////////////////
         else if (filetype=="jpg" || filetype=="gif" || filetype=="png" || filetype=="image" || filetype=="jpeg") {
@@ -704,22 +712,22 @@ function preview ($item, do_not_select) {
         ////////////////////   map   ///////////////////////////////
         else if (filetype=="map")
             $previewpanel.html("<iframe src='map?id=" + $mongo + "'>");
-        
+
         ////////////////////   ePaath   ///////////////////////////////
-        
+
         else if (filetype.toLowerCase() === "ep") {
             var lang = $item.attr('data-lang');
             if (lang === 'both') lang = language==='native'?'np':'en';
-            
+
             if ($item.attr('data-epversion') === '2015') {
                 $previewpanel.html("<iframe src='epaath?epversion=2015&fp=" + filepath + "&fn=" + filename + "/start.html'>");
-    
+
             } else if($item.attr('data-epversion') === '2019') {
                 $previewpanel.html("<iframe " +
                     "src='epaath?epversion=2019&ole=" + $item.attr('data-ole') +
                     "&lang=" +  lang +
                     "&grade=" + $item.attr('data-grade').substring(5,) + "'>");
-    
+
             } else {  // epversion 2022
                 $previewpanel.html("<iframe " +
                     "src='epaath?epversion=2022&ole=" + $item.attr('data-ole') +
@@ -727,7 +735,7 @@ function preview ($item, do_not_select) {
                         "&grade=" + $item.attr('data-grade').substring(5,) + "'>");
             }
         }
-        
+
         ////////////////////   game   ///////////////////////////////
         else if (filetype=="game")
             $previewpanel.html('<iframe src=game?id=' + $item.attr('data-mongoid') + ' zoom=0.5>');
@@ -743,7 +751,7 @@ function preview ($item, do_not_select) {
         ////////////////////   text and text-template   ///////////////////////////////
         else if (filetype=="text"|| filetype == "text-template") {
             var id = $item.attr('data-mongoid');
-            
+
             $.post("looma-database-utilities.php",
                 {cmd: "openByID", collection: "text", id: id},
                 function(result) {
@@ -759,7 +767,7 @@ function preview ($item, do_not_select) {
         else if (filetype === 'inline') {
             $previewpanel.empty().append($('<div class="textpreview text-display"></div>').html($item.attr('data-html')));
             $('.textpreview').attr('contenteditable', 'false');
-    
+
             $item.find('.textdiv .result_dn').text('');
             $texteditbutton.show();
         }
@@ -776,24 +784,24 @@ function insertTimelineElement(source, target) {
                                              //NOTE: crucial to "off()" event handlers,
                                              //or the new element will still be linked to the old
     $('.hint').hide();
-    
+
     if ($dest.attr('data-type') === 'text-template' || $dest.attr('data-type') === 'text') cloneTextfile($dest, target);
     else {
         $dest.removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
-    
+
         //$dest.addClass("ui-sortable-handle");  //  ?? this next stmt needed??
-    
+
         if (target) $dest.insertAfter(target);   // insert after target
         else $dest.appendTo("#timelineDisplay");  // or insert at end
-    
-    
+
+
             //$('#timeline').animate({scrollLeft: $dest.outerWidth(true) * ($dest.index() - 4)}, 100);
         }
     $dest.addClass('timelineElement');
     preview($dest);
-   
+
     renumberTimeline();
-    
+
     makesortable();  //TIMELINE elements can be drag'n'dropped
 } //  end insertTimelineElement()
 
@@ -816,14 +824,14 @@ function cloneTextfile(source, target) {
         'json'
     ).then(function(result) {
            // result has "_id" of the new ACTIVITY, and "dn", and "mongoID"
-    
+
            result = JSON.parse(result);
            $clone.attr('data-id', result['id']);
            $clone.attr('data-html', result['data']);
            $clone.attr('data-nepali', result['nepali']);
            $clone.attr('data-dn', 'inline');
            $clone.attr('data-type', 'inline');
-           
+
            $clone.removeClass('ui-draggable-handle')
                .removeClass("ui-draggable")
                .removeClass("ui-draggable-disabled")
@@ -831,10 +839,10 @@ function cloneTextfile(source, target) {
                .removeClass("ui-sortable-helper")
                .addClass("timelineElement");
            //$clone.addClass("ui-sortable-handle");  //  ?? this next stmt needed??
-    
+
            $clone.find('.result_dn').text('');
            $clone.find('.result_ft').text('inline');
-    
+
            //NOTE: this seems to be the critical section that causes the clone to appear at the end instead of in place
            // seems to be timing dependent? as if there is an async process that might not have completed
            // if (target) target.removeAttr("style");
@@ -842,10 +850,10 @@ function cloneTextfile(source, target) {
            //$clone.removeAttr("style");
         $clone.css('position', 'unset');
            //END NOTE
-    
+
        if (target) target.after($clone);   // insert after target
        else $clone.appendTo("#timelineDisplay");  // or insert at end
-       
+
         renumberTimeline();
         makesortable();
        preview($clone);
@@ -859,11 +867,11 @@ async function convertTextfile(source) {
     // into an 'inline' text item
     var newname = source.data('dn');
     if (currentname.match(LOOMA.CH_IDregex)) newname = currentname.match(LOOMA.CH_IDregex)[0] + " " + newname;
-    
+
     //POST "copytext" to looma-database-utilities.php
     // THEN copy the new _id and the new mongoID into the clone
     // THEN insert clone into timeline
-    
+
     $.post("looma-database-utilities.php",
         {   cmd: "openText",
             collection: 'text_files',
@@ -875,24 +883,24 @@ async function convertTextfile(source) {
         'json'
     ).then(function(result) {
         // result has "_id" of the new ACTIVITY, and "dn", and "mongoID"
-        
+
         result = JSON.parse(result);
         source.attr('data-id', result['id']);
         source.attr('data-html', result['data']);
         source.attr('data-nepali', result['nepali']);
         source.attr('data-dn', 'inline');
         source.attr('data-type', 'inline');
-        
+
         source.removeClass('ui-draggable-handle')
             .removeClass("ui-draggable")
             .removeClass("ui-draggable-disabled")
             .removeClass("ui-draggable-dragging")
             .removeClass("ui-sortable-helper")
             .addClass('timelineElement');
-    
+
         source.find('.result_dn').text('');
         source.find('.result_ft').text('inline');
-        
+
         //NOTE: this seems to be the critical section that causes the clone to appear at the end instead of in place
         // seems to be timing dependent? as if there is an async process that might not have completed
         // if (target) target.removeAttr("style");
@@ -900,12 +908,12 @@ async function convertTextfile(source) {
         source.removeAttr("style");
         //$clone.css('position', 'unset');
         //END NOTE
-    
+
         convertedSomeTextFiles = true;
         makesortable();
         preview($current_item);
     });
-    
+
 }  // end convertTextfile()
 
 function removeTimelineElement (elem) {
@@ -917,9 +925,9 @@ function removeTimelineElement (elem) {
         preview($neighbor);
     else
         preview($timeline.first());
-    
+
     renumberTimeline();
-    
+
 ``} // end removeTimelineElement()
 
 function getSorted(selector, attrName) {
@@ -935,31 +943,31 @@ function orderTimeline (elements){  // "elements" is an array of items that arri
     // this function [re-]orders the array based on those data-index values
     // then inserts them in order into the lesson timeline
     //  $timeline is $('#timelineDisplay');
-    
+
     $('#timelineDisplay').empty();
-    
+
     elements.sort(function(a, b) {  // "elements" is an JS array. using JS "sort()" to order it
         return parseInt($(a).attr('data-index')) - parseInt($(b).attr('data-index'));
     });
-    
+
     $(elements).each(function(index) {  // append each array element to the timeline in sorted order. each() preserves ordering
         // let number = index + 1;
         // $(this).find(".result_index").html(' (' + number + ')');
         $('#timelineDisplay').append($(this));
         console.log('appending ' + index);
     });
-    
+
     //renumberTimeline();
-    
+
 } // end orderTimeline()
 
 function renumberTimeline () {
     $timeline.children().each(function(index, item) {
         let number = index + 1;
         $(item).find(".result_index").html(' (' + number + ')');
-    
+
         $(item).attr('data-index', index); // FEB 1 2024
-    
+
     });
 }  // end renumberTimeline()
 
@@ -988,11 +996,11 @@ function makesortable (){
         handle: $(".activityDiv")  //restricts elements that can be clicked to drag to sort
     }).disableSelection();
     //    });
-        
+
         $('#timelineDisplay .activityDiv').addClass('ui-sortable-handle');
-    
+
         //renumberTimeline();
-    
+
 } // end makesortable()
 
 /////////////////////////// DRAGGABLE UI ////////  requires jQuery UI  ///////////////////
@@ -1041,35 +1049,35 @@ function openTextEditor () {
     $textpreview.attr("contentEditable", "true");
     $texteditbutton.hide();
     LOOMA.makeTransparent($('#timeline'));
-    
+
     // disable SAVE button until contents change
     $("#text-edit-save").prop("disabled",true);
     $("#text-edit-translate").prop("disabled",false);
     $textpreview.on('input', function() {
         $("#text-edit-save").prop("disabled",false);
         $("#text-edit-translate").prop("disabled",true);
- 
+
         // NOTE: next line set 'modified' for the lesson
         //       if the inline text element doesnt actually get changed, the modified stays set
         //       would be better to save the 'inline' contents when opening the text editor
         //       and checking the current contents against those initial contents when closing the text editor
         savedSignature = ' ';
- 
+
     });
     $textpreview.attr('user-select', 'contain');
     textEditLanguage = 'english';
-    
+
 } // end openTextEditor()
 
 
 function openTextTranslator (e) {
     var $textpreview = $('.textpreview');
     translating = true;        $('#previewpopup').empty().hide();
-    
+
     $textpreview.attr("contentEditable", "true");
-  
+
     $('#previewpopup').html($('.textpreview').html()).show();
-    
+
     if ($($current_item).attr('data-nepali')) $('.textpreview').html($($current_item).attr('data-nepali'));
     else $('.textpreview').html('');
 
@@ -1081,7 +1089,7 @@ function openTextTranslator (e) {
     });
     $textpreview.attr('user-select', 'contain');
     textEditLanguage = 'native';
-    
+
 } // end openTextTranslator()
 
 
@@ -1100,35 +1108,35 @@ function saveTextEdits() {
 
 function cancelEdit() {
     var $textpreview = $('.textpreview');
-    
+
     $('#previewpanel .text-display').html($($current_item).attr('data-html'));
-    
+
     $('#text-editor-buttons').hide();
     $textpreview.attr("contentEditable", "false");
     $texteditbutton.show();
     $('#search-bar').show();
     $('#filecommands').show();
     LOOMA.makeOpaque($('#timeline'));
-    
+
     $textpreview.attr('user-select', 'none');
     translating = false;
-    
+
     preview($current_item);
     // turn ON clicks on timeline elements
 };  // end cancelEdit()
 
 function edit(editbutton) {
-   
+
     function color (color) {
         document.execCommand('styleWithCSS', false, 'true');
         document.execCommand('foreColor', false, color);
     };
-    
+
     function highlight (color) {
         document.execCommand('styleWithCSS', false, 'true');
         document.execCommand('hiliteColor', false, color);
     };
-    
+
     function justify (direction) {
         document.execCommand('styleWithCSS', false, 'true');
         switch (direction) {
@@ -1143,9 +1151,9 @@ function edit(editbutton) {
                 break;
         }
     };
-    
+
     console.log(' edit button ' + $(editbutton).data('edit') + ' clicked');
-    
+
     switch ($(editbutton).data('edit')) {
         case 'highlight':
             highlight($(editbutton).data('color'));
@@ -1208,7 +1216,7 @@ function lessonnew () {
 function cloneMasterLesson($chapter) {
     // create a new lesson from lesson "Master" [db="looma"] and insert the requested chapter in the timeline
     var ch_id = $chapter.text().match(LOOMA.CH_IDregex)[0];
-    
+
     // First, open the "Master" lesson
     $.post("looma-database-utilities.php",
         {cmd: "openByName", db: 'looma', dn: 'Master', collection: 'lessons', ft: 'lesson'},
@@ -1221,13 +1229,13 @@ function cloneMasterLesson($chapter) {
                 owner = true;
                 currentname = $chapter.text();
                 setname(currentname, loginname);
-    
+
                 newlesson['dn'] = $chapter.text();
                 newlesson['ft'] = 'lesson';
                 newlesson['author'] = loginname;
                 newlesson['data'] = response['data'];
                 newlesson['db'] = 'loomalocal';
-                
+
                 newlesson['data'].forEach(function(timeline_item, index) {
                     if (timeline_item.collection === 'chapters') {
                         timeline_item.id = ch_id;
@@ -1237,15 +1245,15 @@ function cloneMasterLesson($chapter) {
                     };
                     $(timeline_item).attr('data-index', index);
                 });
-               
+
             }
-            
+
         //    isnewlesson = true;
             lessondisplay(newlesson);
         },
         'json'
     );
- 
+
     savedSignature = null;
 }  // end cloneMasterLesson()
 
@@ -1264,7 +1272,7 @@ function makeNewLesson($chapter) {
 function clonePhonicsLesson(letter, master, number) {
     //NOTE: letter is a letter smallCap, like Gg, master is one of Aa or Bb, number is 1 or 2
     //var mastername =  "Letter " + master + " Phonics Lesson" + number;
-    
+
     // First, open the "Phonics Master" lesson
     $.post("looma-database-utilities.php",
         {cmd: "openByName", dn: master, collection: 'lessons', ft: 'lesson'},
@@ -1277,16 +1285,16 @@ function clonePhonicsLesson(letter, master, number) {
                 owner = true;
                 currentname = "Letter " + letter + " Phonics Lesson " + number;
                 setname(currentname, loginname);
-                
+
                 newlesson['dn'] = currentname;
                 newlesson['ft'] = 'lesson';
                 newlesson['author'] = 'kathy';
                 newlesson['data'] = [];
-                
-      
-                
+
+
+
                 var count = 0; var limit = response.data.length;
-                
+
                 var textclones = [];  //we will push all the $.post() deferreds in the foreach below into textclones[]
                 // then, for each item in the Master timeline, clone a copy for the new lesson
                 response.data.forEach(function(timeline_item, index) {
@@ -1300,7 +1308,7 @@ function clonePhonicsLesson(letter, master, number) {
                         $.post("looma-database-utilities.php",
                             {cmd: "openByID", collection: 'activities', id: timeline_item.id},
                             function (item_activity) {
-                                
+
                                 // if the item not a chapter, nor a text file, just copy it into the new lesson timeline
                                 if (item_activity.ft !== 'text') {  //copy any non-text timeline items
                                     newlesson.data.push(item_activity);
@@ -1333,14 +1341,14 @@ function clonePhonicsLesson(letter, master, number) {
                                                             collection:'activities',
                                                             index: index});
                                                     count++;
-                                                    
+
                                                     if (count === limit) {
                                                         newlesson.data = orderNewLesson(newlesson.data);
                                                         isnewlesson = true;
                                                         lessondisplay(newlesson);
                                                         savedSignature = null;
                                                     }
-                                                    
+
                                                 },
                                                 'json'
                                             ));
@@ -1385,31 +1393,31 @@ function openPreview ($item) {
 /////////////////////////// ONLOAD FUNCTION ///////////////////////////
 
 window.onload = function () {
-    
+
     $searchResultsDiv = $('#innerResultsDiv');  //sets a global variable used by looma-search.js
     $timeline =         $('#timelineDisplay');  //the DIV where the timeline is being edited
     $previewpanel =     $('#previewpanel');
-    
+
     loginname = LOOMA.loggedIn();
     author = loginname;
-    
+
     var loginlevel = LOOMA.readStore('login-level','cookie')
     var loginteam  = LOOMA.readStore('login-team','cookie')
   //  if (loginname && loginlevel === 'admin' )   $('.admin').show();
   //  if (loginname && loginlevel === 'exec' )  { $('.admin').show(); $('.exec').show(); }
-    
+
     $('#setup-panel .cancel').click(function(){
         $('.setup-panel').hide();
         LOOMA.makeOpaque($('#main-container'));
     });
-    
+
 //////////////////////////////////////////
     // text books
-    
+
     $('.lang').change(function() {
         $('#setup-panel-select').prop("disabled",true);
     });
-    
+
     $("#grade-chng-menu").change(function() {
         $('#warning').text("");
         showTextSubjectDropdown($('#grade-chng-menu'),
@@ -1418,7 +1426,7 @@ window.onload = function () {
             $("input:radio[name='lang']:checked").val());
         $('#setup-panel-select').prop("disabled",true);
     });  //end drop-menu.change()
-    
+
     $("#subject-chng-menu").change(function() {
         $('#warning').text("");
         showTextChapterDropdown($('#grade-chng-menu'),
@@ -1427,7 +1435,7 @@ window.onload = function () {
             $("input:radio[name='lang']:checked").val());
         $('#setup-panel-select').prop("disabled",true);
     });  //end drop-menu.change()
-    
+
     $('#chapter-chng-menu').change(function() {
         $('#warning').text("");
         if (!$('#chapter-chng-menu').val() ||$('#chapter-chng-menu :selected').text() === '(any)...')
@@ -1451,66 +1459,66 @@ window.onload = function () {
                 .off('click')
                 .click(function() {makeNewLesson($('#chapter-chng-menu :selected'));});
     });
-    
+
     $('#setup-panel-select').click(function() {makeNewLesson($('#chapter-chng-menu :selected'));});
-    
+
     $("input[type=radio][name='lang']").change(function() {
         $('#warning').text("");
         $('#grade-chng-menu').prop('selectedIndex', 0); // reset grade select field
         $('#subject-chng-menu').empty(); $('#chapter-chng-menu').empty();
     });
-  
+
     $('#clear_button').click(clearFilter);
-    
+
     $('#search').change(function() {
         $("#innerResultsMenu").empty();
         $("#innerResultsDiv").empty();
         $previewpanel.empty();
     });
-    
+
     pagesz=100;
-    
+
     $('.chapterFilter').prop('disabled', true);
     $('.mediaFilter').prop('disabled',   false);
-    
+
     $('#lesson-checkbox').prop('disabled' , true).hide();
     $('#includeLesson').val(false);
-    
+
 ///////////////////////////////
 // click handlers for '.add', '.preview' buttons
 ///////////////////////////////
-    
+
     //$(elementlist).on(event, selector, handler).
     //  ************   ADD   ****************
     $('#innerResultsDiv'           ).on('click', '.add',        function() {
         insertTimelineElement($(this).closest('.activityDiv'));
         //renumberTimeline();
         return false;});
-    
+
     //   ************   PREVIEW   ****************
     $('#innerResultsDiv').on('click', '.preview',    function() {
         preview($(this).closest('.activityDiv'), true); return false;});
     $('#innerResultsDiv').on('click', '.resultsimg', function() {
         preview($(this).closest('.activityDiv'), true); return false;});
-    
+
     $('#timeline').on('click', '.preview',    function() {
         preview($(this).closest('.activityDiv')); return false;});
     $('#timeline').on('click', '.resultsimg', function()  {
         preview($(this).closest('.activityDiv'));return false;});
-   
+
     //   ************   REMOVE   ****************
     $('#timeline').on('click', '.remove',     function() {
         removeTimelineElement(this); return false;});
-    
+
     //   ************   COPY   ****************
     $('#timeline').on('click', '.copy',     function() {
         copyTimelineElement($(this).closest('.activityDiv')); return false;
         });
-    
+
 //////////////////////////////////////
 /////////FILE COMMANDS setup /////////
 //////////////////////////////////////
-    
+
     /*  callback functions expected by looma-filecommands.js:  */
     callbacks ['clear'] =           lessonclear;
     callbacks ['save']  =           lessonsave;
@@ -1522,58 +1530,58 @@ window.onload = function () {
     callbacks ['showsearchitems'] = lessonshowsearchitems;
     callbacks ['checkpoint'] =      lessoncheckpoint;
     //callbacks ['quit'] not overridden - use default action from filecommands.js
-    
+
     /*  variable assignments expected by looma-filecommands.js:  */
     currentname = "";                    //currentname is defined in looma-filecommands.js and is used there
     currentfiletype =   'lesson';        //currentfiletype   is defined in looma-filecommands.js and is used there
     currentcollection = 'lessons';       //currentcollection is an index into $collections (mongo-connect.php)
     currentDB = 'loomalocal';
-    
+
     //////
    $('.file-cmd#saveas').click(function(){currentcollection = 'lessons';  currentDB = 'loomalocal'});
     //////
-    
+
     // set file search box title
     $('.filesearch-collectionname').text('Lesson Plans');
     // set collection in filesearch form
     $('#filesearch  #collection').val('lesson');  // should be 'lessons'  ???
-    
+
    makedroppable(); // sets the timeline to accept activityDiv drops
    makesortable();  // makes the timeline sortable
-    
+
     $('#timelineLeft' ).on('click',  function(){ preview_prev();});
     $('#timelineRight').on('click', function(){ preview_next();});
-    
+
     $('#timeline').on('mouseover', '.activityDiv',  function () { //handlerIn
         //var $btn = $(this).closest('button');
         if ($(this).attr('data-type') === 'inline' && !translating) openPreview($(this));
         else
             $('#subtitle').text($(this).attr('data-dn') + ' (' + LOOMA.typename($(this).attr('data-type')) + ')');
     });
-    
+
    $('#timeline').on('mouseout', '.activityDiv',  function () { //handlerOut
        $('#subtitle').text('');
        $('#previewpopup').empty().hide();
    });
-    
+
     $('#text-editor-buttons').hide();
-    
+
     $texteditbutton = $('#edit-text-file');
     $texteditbutton.click(openTextEditor);
-    
+
     $('.button-group')
         .on( "mouseenter", function(x) {$(x.target).find('.edit-menu').show()} )
         .on( "mouseleave", function(x) {$(x.target).find('.edit-menu').hide()} );
-    
+
     $('button.text-edit').click(function () { edit(this);});
-    
+
     // QUIT
     $('#dismiss-editor').on('click', quit );  //disable default DISMISS btn function and substitute QUIT()
-    
+
    // lessoncheckpoint();
-    
+
     $('.dropdown-item#chapter').css("display", "block").click(lessonnew);
-    
+
 };  //end window.onload()
 
 

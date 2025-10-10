@@ -111,6 +111,10 @@ info () {
   timestamp=$(cat /tmp/timestamp)
   echo -n "    Last content update: "
   date -d "@$timestamp"   "+%F %T"
+
+  echo -n "    Disk space (total/used/free): "
+  ssh  -P $port -i /home/looma/.ssh/$ID-id_rsa 'odroid@127.0.0.1'  "df -h | grep mmcblk0p2"
+
 }
 
 ports () {
@@ -143,6 +147,7 @@ connected () {
 recover () {
   # SCP a new copy of 'loomaupdater' script to the remote Looma to recover loomaupdate functionality
     scp -q -P $port -i /home/looma/.ssh/$ID-id_rsa loomaupdater 'odroid@127.0.0.1:/var/www/html/Looma/looma shell scripts/'
+    ## scp -q -P $port -i /home/looma/.ssh/$ID-id_rsa loomaupdate 'odroid@127.0.0.1:/usr/local/bin/'
     check $? 'recover'
     echo "copied a new copy of 'loomaupdater' to $ID [result = $?"
 }

@@ -161,8 +161,9 @@ include ('includes/header.php');
         <div id="system_info" >
             <button id="advanced_button">System Info</button>
             <div id="advanced_info">
-                <p class="screensize"></p>
+              <!--  <p class="screensize"></p>
                 <p class="bodysize"></p>
+              -->
 
                 <p class="mongo-version">MongoDB version: <?php global $mongo_version; echo $mongo_version ?> </p>
 
@@ -180,6 +181,17 @@ include ('includes/header.php');
 
                 echo '<p class="system">Server: ' . $_SERVER['SERVER_NAME'] . '</p>';
                     //echo '<p class="system">Browser: ' . $_SERVER['HTTP_USER_AGENT'] . '</p>';
+
+/* NOTE: we would like to display the total disk space and free disk space, but blocked by oper_basedir PHP security setting
+    $directory = "/"; // or specify a path, e.g. "/"
+    $total = disk_total_space($directory); // Total disk space in bytes
+    $free  = disk_free_space($directory);  // Free disk space in bytes
+    $used  = $total - $free;               // Used disk space in bytes
+
+    echo "Total space: $total bytes\n";
+    echo "Free space: $free bytes\n";
+    echo "Used space: $used bytes\n";
+*/
 
                 if ($_SERVER['SERVER_NAME'] !== 'looma.website') {
                     global $ENV_IP;

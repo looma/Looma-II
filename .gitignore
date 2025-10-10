@@ -20,6 +20,8 @@ logins/defaultlogins.json
 #  before pushing to GitHub
 # and to change back the names afterwards
 # vendor/
+vendorPHP7/
+vendorPHP8/
 
 # LOOMA - composer.lock, composer.json are not needed except when 'composer' is re-run
 composer.test

@@ -14,6 +14,26 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "js/pdfjs/pdf.worker.min.js";
 
 //DEBUG  const filename = '../content/textbooks/Class1/Math/Math-1-1051.pdf';
 
+/*
+FUNCTIONS:
+    makePageDivs()
+    drawPage()
+    drawMultiplePages()
+    enablePageControls()
+    showPage()
+    showPageNum()
+    enableScrollDetect()
+    disableScrollDetect()
+    getScrolledPage()
+    isScrolledIntoView()
+    enableZoomControls()
+    disableZoomControls()
+    setZoom()
+    displayThumb()
+    displayMultipleThumbs()
+    drawThumbs()
+    playPDF()
+ */
 //const initialZoom = 'page-width';  //NOTE: this kills pdf display in looma-play-lesson. WHY????
 const initialZoom = 2.3;
 var currentScale = initialZoom;
@@ -36,42 +56,42 @@ function makePageDivs(doc, start, finish) {
 
 async function drawPage (doc, pagenum)  {
     doc.getPage(pagenum).then (page => {
-        
+
         /*new*/ var renderTask = null;
-        
+
         function renderPage() {
             if (renderTask !== null) {renderTask.internalRenderTask.cancel();cancels++;return;}
             // also tried this way to cancel. neither seems to work
             // if (renderTask !== null) {renderTask.cancel();cancels++;return;}
-            
+
             const pdf_canvas = document.getElementById('pdf-canvas'+pagenum);
             const pdf_context = pdf_canvas.getContext('2d');
-            
+
             $('#pdf-text'+pagenum).empty();
             let viewport = page.getViewport({scale:currentScale});
             pdf_canvas.width = viewport.width;
             pdf_canvas.height = viewport.height;
-            
+
             renderTask = page.render ({canvasContext:pdf_context, viewport:viewport});
-            
+
             renderTask.promise.then(function() {
                 renderTask = null;
                 renders++;
                 // Returns a promise, on resolving it will return text contents of the page
                 return page.getTextContent();})
                 .then(function(textContent) {
-                    
+
                     var canvas_height = pdf_canvas.height;  // Canvas height
                     var canvas_width = pdf_canvas.width;  // Canvas width
                     var canvas_top = pdf_canvas.offsetTop;  // Canvas top
                     var canvas_left = pdf_canvas.offsetLeft;  // Canvas left
-                    
+
                     // Assign CSS to the text-layer element
                     $("#pdf-text"+pagenum).css({ left:   canvas_left + 'px',
                         top:    canvas_top + 'px',
                         height: canvas_height + 'px',
                         width:  canvas_width + 'px' });
-                    
+
                     // Pass the data to the method for rendering of text over the pdf canvas.
                     pdfjsLib.renderTextLayer({
                         textContent: textContent,
@@ -79,13 +99,13 @@ async function drawPage (doc, pagenum)  {
                         viewport: viewport,
                         textDivs: []
                     }).promise.then(function() {delete renderPromises[pagenum];});
-                    
+
                     // the text layer should render on top of the canvas,
                     // but it is being drawn below the canvas
                     // this next statement compensates for the mis-placement of text layer
                     // and puts the text right on top of the corresponding text in the canvas
                     $("#pdf-text"+pagenum).css('top', pdf_canvas.top);
-                    
+
                 })
                 .catch(function(err) {
                     renderTask = null;
@@ -93,7 +113,7 @@ async function drawPage (doc, pagenum)  {
                     cancels++;
                     if (err.name === 'RenderingCancelledException'){
                         renderPage();
-                        
+
                     }
                 });  //  end catch()
         } // end renderPage()
@@ -105,17 +125,17 @@ async function drawPage (doc, pagenum)  {
 async function drawMultiplePages(doc, start, finish) {
     // display the pages of this DOC from page = START to page = FINISH
     for (var page = start; page <=  finish; page++) { drawPage(doc, page);}
-    
+
     //NOTE: zoomcontrols are getting enabled too soom
     // probalby need to collect all the page render promises and here do promises.all( () => enableZoomControls(););
-    
-    
+
+
 }  // end drawMultiplePages
 
 
 function enablePageControls() {
     // using jQuery ".one()" to de-bounce and prevent multiple page-up/page-downs
-    
+
     $('#next-page').off('click').one('click', function (e) {
         e.preventDefault();
         if (currentPage < endPage) showPage(currentPage + 1);
@@ -125,12 +145,13 @@ function enablePageControls() {
         if (currentPage > startPage) showPage(currentPage - 1);
     });
 }
+
 function showPage(pagenum) {
     if (startPage <= pagenum && pagenum <= endPage) {
         console.log('showing page ' + pagenum);
         disableScrollDetect();
         currentPage = pagenum;
-        
+
         $('#pdf').stop(true,true)
             // .off('scroll')
             .animate({scrollTop: $("#pdf-canvas" + pagenum)[0].offsetTop},
@@ -142,7 +163,7 @@ function showPage(pagenum) {
                     enableScrollDetect();}
             );    //.on('scroll',function() {didScroll = true;});
     }
-    
+
 } // end showPage
 
 function showPageNum (p) {
@@ -196,7 +217,7 @@ function enableZoomControls() {
         $('#zoom-btn').text(Math.round((currentScale * 0.8 / initialZoom) * 100).toString() + '%');
         await setZoom(Math.max(currentScale * 0.8,1));  // restricting min zoom to 35%
     });
-    
+
     $('#zoom-in').one('click', async function () {
         $('#zoom-btn').text(Math.round((currentScale * 1.25 / initialZoom) * 100).toString() + '%');
         await setZoom(Math.min(currentScale * 1.25,3.25));  // restricting max zoom to 200%
@@ -210,9 +231,9 @@ async function setZoom(zoom) {
         currentScale = zoom;
         //$('#pdf').empty();
         //turnOffControls();
-        
+
         disableZoomControls();
-        
+
         zooming = true;
         await drawMultiplePages(pdfdoc, startPage, endPage);
         zooming = false;
@@ -236,7 +257,7 @@ function displayThumb (doc, pagenum)  {
 
 async function displayMultipleThumbs (doc, start, finish) {
     for (var page = start; page <= finish; page++) {
-        
+
         $('<canvas/>', {id:'thumb-canvas'+page, class: 'thumb-canvas'}).appendTo('#thumbs');
         $('#thumb-canvas'+page).attr('data-page',page);
         displayThumb(pdfdoc, page);
@@ -245,9 +266,9 @@ async function displayMultipleThumbs (doc, start, finish) {
 
 async function drawThumbs() {
     if ($('#thumbs').length){
-        
+
         await displayMultipleThumbs(pdfdoc, startPage, endPage);
-        
+
         $('#showthumbs').click(function () {$('#thumbs').toggle();});
         $('.thumb-canvas').click(function() {
             $('#thumbs').hide();
@@ -256,3 +277,35 @@ async function drawThumbs() {
         $('#showthumbs').show();
     }
 }  // end drawThumbs()
+
+function playPDF() {
+
+    // get calling PARAMs
+    filename = $('#pdf').data('fn');
+    filepath = $('#pdf').data('fp');
+    startPage = $('#pdf').data('page') ? $('#pdf').data('page') : 1;
+    if ($('#pdf').data('len') && $('#pdf').data('len') >0)
+        endPage = startPage + $('#pdf').data('len') - 1; else endPage = startPage + 999;
+    currentScale = $('#pdf').data('zoom') && !isNaN($('#pdf').data('zoom')) ? $('#pdf').data('zoom') : initialZoom;
+
+    // load the PDF file
+    //turnOffControls();
+    pdfjsLib.getDocument(filepath + filename).promise.then(
+        async function(doc) {
+            pdfdoc = doc;
+            currentPage = startPage;
+            maxPages = doc._pdfInfo.numPages || 1;
+            if (endPage > maxPages) endPage = maxPages;
+            $('#maxpages').text(endPage - startPage + 1);
+            console.log('loaded file ' + filepath + filename + ' with ' + maxPages + ' pages');
+
+            makePageDivs(doc, startPage, endPage);
+
+            // displayFirstPage(doc,startPage);
+
+            await drawMultiplePages(doc, startPage, endPage).promise;
+            showPageNum(startPage);
+            //turnOnControls();
+        }).then( () =>  {drawThumbs();});
+
+} // end playPDF()

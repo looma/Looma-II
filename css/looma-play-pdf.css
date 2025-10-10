@@ -1,18 +1,22 @@
 
+/* *****************
+filename: looma-play-pdf.css
+***************** */
+
 /* main container for PDF display */
 #pdf {
     /*position:relative;*/
     position:absolute;
     height:92vh;
     /*  height:100%;*/
-    
+
    /* padding-left: 3.5vw;  // trying to center PDF textbook page in lesson viewer */
-    
+
     /*content-visibility: auto;*/
-    
+
     user-select: text;
     -webkit-user-select: text;
-    
+
     width:100%;
     background-color: var(--looma-background);
     margin-right:3px;
@@ -73,6 +77,9 @@ pdf {
     line-height: 1.0;
 }
 
+.pdf-text:fullscreen {
+    left:98px;
+}
 .pdf-text > span {
     position: absolute;
     white-space: pre;
@@ -84,10 +91,10 @@ pdf {
     height:8vh;
     min-height:8vh;
     width:100%;
-    
+
     user-select: none;
     -webkit-user-select: none;
-    
+
     background-color:yellow;
     background-color: var(--looma-toolbar);
     color:black;
@@ -192,21 +199,21 @@ pdf {
 }
 button#fullscreen-control {
     display:inline-block;
-    right:9vw;
+    right:5vw;
 }
 
 button.speak {
     display:inline-block;
-    right:9vw;
+    right:5vw;
 }
 
 button.lookup {
     display:inline-block;
-    right:9vw;
+    right:5vw;
 }
  button.download {
      display:inline-block;
-     right:9vw;
+     right:5vw;
      bottom:44vh;
  }
 
@@ -231,6 +238,6 @@ button.lookup {
 }
  .thumb-canvas:hover {
      border: 3px solid yellow;
-    
+
  }
 #showthumbs {visibility:none;}

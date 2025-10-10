@@ -7,28 +7,29 @@
 #                           to avoid unnecessary updates to modification date stamps for content files, so that download RSYNC will continue to skip them
 #               OCT 2023 - added 'archivetimestamp.txt' file to archive for use by 'loomaupdate'
 #               JUL 2025 - exclude COMPOSER files from archive [vendor/, composer.json, composer.lock]
+#               SEP 2025 - add "preview" and "release" parameters
 #
 #  used to update the 'archive' version of Looma on rsync.net, including new code, database & content
 #
 #  set up to run on a MAC [other computer types would require changes to this script]
 
 #RSYNC options used:
-#-a  "archive" equivalent to -rlptgoD
-#   -r  recursive
-#   -l  recreate symlink on the destination
-#   -p  preserve permissions
-#   -t  preserve modification time
-#   -g  preserve group
-#   -o  preserve owner
-#   -D  transfer devices and specials (NA for Looma)
 
-#-vv	very verbose
-#-z  	use compression
-#--dry-run
-#--perms (=== -p)
-#--update
+# -rtvz     recursive, set modification time, verbose, use compression
+# --progress, --update, --delete, --no-perms
+# --chmod=ugo=rwX
+# --chown=looma:looma. NOT USED - files get 58198:58198 on Update Server, then get odroid:odroid on Looma's that download from the update server
+# optional: --dry-run
 # --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*"
 
+############### pause() ##################
+pause () {
+   echo " Paused $1"
+   read -p "     press [Enter] to continue"
+}  #  end pause()
+
+
+############### result() ##################
 result () {
     if [[ $1 -ne 0 ]]
     then
@@ -43,12 +44,26 @@ result () {
     fi
 }  #  end result()
 
+############### timestamp() ##################
 timestamp () {  # $1 is the dir to put the timestamp in [content or Looma]
   date +"%s" > $1/archivetimestamp.txt
   echo "in timestamp()"
-  echo " - - setting $1/archivetimestamp.txt to $(date +'%s')"
+  echo " - - setting $1/archivetimestamp.txt to $(date +'%s') [$(date)]"
   echo "************************************"
 }  #  end timestamp()
+
+
+############### MAIN CODE ##################
+
+if [[ "$1" == "release" || "$1" == "preview" ]]; then
+    echo "will archive to \"$1\" folder on Looma Update Server"
+else
+    echo "ERROR: unrecognized parameter \"$1\". Call with 'loomaarchive release' or 'loomaarchive preview'"
+    return
+fi
+
+echo
+pause "did you remember to change Looma/vendor to be for PHP7?"
 
 echo "************************************"
 echo " - - setting database version to todays date"
@@ -75,36 +90,48 @@ echo "************************************"
 
 mongodump --quiet --db looma
 
-echo
-echo "************************************"
-echo ' - - archiving Looma (code + mongodb) to rsync.net'
-echo "************************************"
-
+#
+# ############# COPY CODE FILES #################
+#
 cd   /usr/local/var/www/Looma		# cd to Looma/ (on a MAC)
+codesource="/usr/local/var/www/Looma/"
 
-RW="58189@usw-s008.rsync.net"
-
+if [[ "$1" == "release" ]]; then
+    codedestination="58189@usw-s008.rsync.net:Looma"
+elif [[ "$1" == "preview" ]]; then
+    codedestination="58189@usw-s008.rsync.net:preview/Looma"
+else
+    echo "parameter $1 not recognized. use 'release' or 'preview' as first paramter"
+    return
+fi
 SECONDS=0
 
+echo
+echo "************************************"
+echo " - - archiving Looma (code + mongodb) to $codedestination"
+echo "************************************"
+
 # sync code to rsync.net  [excluding "." files like .git/ and composer related files]
-if [[ $1 = "dryrun" ]]
+if [[ $2 = "dryrun" ]]
 then
     echo "NOTE: dryrun, no changes will be made"
      #removed "--include '.ssh'"
-    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update --progress  \
-    --exclude ".[!.]*" --exclude "composer*" --exclude "vendor/"  \
-    -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
+    rsync -rtvz  --dry-run --delete --no-perms --times \
+    --chmod=u+rwX,go+rX  --update --progress  \
+    --exclude ".[!.]*"  --exclude "vendorPHP7/"  --exclude "vendorPHP8/" \
+    -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
 
     echo "FINISHED dryrun"
 else
    timestamp "/usr/local/var/www/Looma"
 
-    echo " - - new timestamp for code is $(cat /usr/local/var/www/Looma/archivetimestamp.txt)"
+    #echo " - - new timestamp for code is $(cat /usr/local/var/www/Looma/archivetimestamp.txt)"
     echo "************************************"
 
-   rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update --progress   \
-   --exclude ".[!.]*" --exclude "composer*" --exclude "vendor/"  \
-   -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/Looma  $RW:
+   rsync -rtvz            --delete --no-perms --times \
+   --chmod=u+rwX,go+rX  --update --progress   \
+   --exclude ".[!.]*"  --exclude "vendorPHP7/"  --exclude "vendorPHP8/"  \
+   -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -117,29 +144,36 @@ if [[ $userchoice = "n" ]]
     exit 1
   fi
 
-echo "************************************"
-echo 'archiving Looma (content) to rsync.net'
-echo "************************************"
-echo
-cd /usr/local/var/www/content		        # cd to content/ (on a MAC)
+#
+# ############# COPY CONTENT FILES #################
+#
+cd /usr/local/var/www/content		        # cd to content folder (on a MAC)
+contentsource="/usr/local/var/www/content/"
+contentdestination="58189@usw-s008.rsync.net:content"
+
 SECONDS=0
 
-if [[ $1 = "dryrun" ]]
+echo "************************************"
+echo "archiving Looma (content) to $contentdestination"
+echo "************************************"
+echo
+
+if [[ $2 = "dryrun" ]]
 then
     echo "NOTE: dryrun"
-    rsync -avz  --dry-run --delete --perms --chmod=u+rwx,go+rx --update \
+    rsync -rtvz  --dry-run --delete --no-perms --chmod=u+rwX,go+rX --update \
     --exclude ".[!.]*" --delete \
-    -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
+    -e "ssh -i ~/.ssh/id_rsa" $contentsource  $contentdestination
     echo "FINISHED dryrun"
 else
-    timestamp "/usr/local/var/www/content"
+    timestamp $contentsource
 
-    echo "new timestamp for content is "
-    cat "/usr/local/var/www/content/archivetimestamp.txt"
+    #echo "new timestamp for content is "
+    #cat "/usr/local/var/www/content/archivetimestamp.txt"
 
-    rsync -avz            --delete --perms --chmod=u+rwx,go+rx --update \
+    rsync -rtvz            --delete --no-perms --chmod=u+rwX,go+rX  --update \
     --exclude ".[!.]*" --delete \
-    -e "ssh -i ~/.ssh/id_rsa" /usr/local/var/www/content  $RW:
+    -e "ssh -i ~/.ssh/id_rsa" $contentsource  $contentdestination
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -147,3 +181,9 @@ echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
 echo "*********************************************"
 echo " - - DONE updating Looma archive on rsync.net"
 echo "*********************************************"
+
+
+echo
+pause " * * * * remember to change Looma/vendor to be for PHP8"
+echo
+

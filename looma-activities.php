@@ -394,6 +394,10 @@ $query= array('$or' => array(
     array("nch_id" => $ch_id)
 ));
 
+//for "exec" level logins, also show activities with 'ai_ch_id' matching the chaper ObjectId
+if (loginLevel() === 'exec') $query['$or'][] = array("ai_ch_id" => $ch_id);
+
+
         $activities = mongoFind($activities_collection, $query, null, null, null);
 		foreach ($activities as $activity)  {
 

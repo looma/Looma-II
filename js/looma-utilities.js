@@ -147,10 +147,8 @@ playMedia : function(button) {
             break;
 
         case "pdf":      //PDF
-     // case "chapter":  //CHAPTER
         case "document": //DOCUMENT (some PDFs)
         case "textbook":
-      //  case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
@@ -548,8 +546,8 @@ thumbnail: function (filename, filepath, filetype, thumb) {
 
                 filetype = filetype.toLowerCase();
 
-                if (filetype == 'chapter') {
-                  //  imgsrc = homedirectory + "content/textbooks/" + filepath + filename + "_thumb.jpg";
+                if (filetype === 'chapter') {
+                  imgsrc = homedirectory + "content/" + filepath + filename.replace(/\.pdf$/i, "") + "_thumb.jpg";
                   //  thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
                   //  imgsrc = homedirectory + "content/" + filepath + thumbnail_prefix + "_thumb.jpg";
                 }
@@ -1226,14 +1224,22 @@ ch_id   :  function (grade, subject, unit, chapter) {
 
     // LOOMA ch_idFilepath
     //
-        ch_idFilepath : function(ch_id) {
+        ch_idFilepath : function(ch_id, lang) {
             var parts = LOOMA.parseCH_ID(ch_id);
-            return '../content/textbooks/Class' +
+            if (lang === 'np') ch_id = ch_id + '-nepali';
+            return '../content/chapters/Class' +
                 parts['currentGradeNumber'] + '/' +
                 parts['currentSubjectFull'] + '/' +
-                parts['currentSubjectFull'] + '-' +
-                parts['currentGradeNumber'] + '.pdf';
+                lang + '/' ;
         },
+
+    // LOOMA ch_idName
+    //
+        ch_idName : function(ch_id, lang) {
+            //var parts = LOOMA.parseCH_ID(ch_id);
+            if (lang === 'np') ch_id = ch_id + '-nepali';
+            return  ch_id + '.pdf';
+        }
 
 
 

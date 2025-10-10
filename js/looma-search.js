@@ -24,14 +24,14 @@ function clearResults() {}
 /////  clearSearch()    /////
 /////////////////////////////
 function clearSearch() {
-    
+
     if ($ajaxRequest) $ajaxRequest.abort();
     $('#media-submit').prop("disabled",false);
-    
+
     var prevCollection = $('#collection').val();
     $("#search").trigger("reset");
     setCollection(prevCollection);
-    
+
     if ($('#collection').val() == 'activities') {
         //$('.keyword-filter').val("").change();
         setRootKeyword();
@@ -43,11 +43,11 @@ function clearSearch() {
     $('#chapter-div').hide();
     $('#preview').empty();
     pageno = 1;
-    
+
     //clearResults();  //provided by calling .JS file
     clearSearchState();
     $("#search-term").focus();
-    
+
 } // end clearSearch()
 
 /////////////////////////////
@@ -57,33 +57,33 @@ function clearSearchState () {
    // $("#top").hide;
     LOOMA.clearStore('libraryScroll', 'session');
     LOOMA.clearStore(searchName,      'session');
-    
+
 }  //end clearSearchState()
 
 /////////////////////////////
 /////  restoreSearchState()   /////
 /////////////////////////////
 function restoreSearchState () {
-    
+
     var $search = $('#search');
     //$search[0].reset();
-    
+
     var savedForm = LOOMA.restoreForm($('#search'), searchName);  //restore the search settings
     pagesz = $search.find("#pagesz").val();
-    
+
     if ($('#collection').val() == 'chapters') {
         //$('#media-search').hide();
         setCollection('chapters');
         //$('.media-input').prop('disabled', true);
-       
+
         if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != ''))
             showTextChapterDropdown( $('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'), $("input:radio[name='language']:checked").val());
-        
+
         $('#search').submit();  //re-run the search
-    
+
     } else {
         setCollection('activities');
-    
+
         // reset some search form fields not handled by LOOMA.restoreForm() using 'savedForm'
         //for each element of savedForm that has name=='type[]' and name=='src[]' set the type[value] = selected
         if (savedForm && savedForm.length > 0) {
@@ -93,24 +93,24 @@ function restoreSearchState () {
                 if (item.name == 'type[]') $("#search #" + item.value + "-checkbox")[0].checked = true;
                 if (item.name == 'src[]')  $("#search #" + item.value + "-checkbox")[0].checked = true;
             });
-            
+
             //setRootKeyword();  // initialize keyword 1 to 'root' of keyword tree from mongo
-            
+
             var keys = [];
             var key1 = savedForm.find(x => x.name === 'key1'); keys[1] = (key1?key1.value:null);
             var key2 = savedForm.find(x => x.name === 'key2'); keys[2]=  (key2?key2.value:null);
             var key3 = savedForm.find(x => x.name === 'key3'); keys[3] = (key3?key3.value:null);
             var key4 = savedForm.find(x => x.name === 'key4'); keys[4] = (key4?key4.value:null);
             keys[5] = null;
-            
+
             // add more elements to KEYS[] if there are more levels of keywords
             restoreKeywordDropdown(1,keys);  // restore and select keywords 1,2,3,4 if specified
         }
     }
- 
+
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('libraryScroll', 'session'));
     $("#search-term").focus();
-    
+
 }  //end restoreSearchState()
 
 /////////////////////////////
@@ -129,7 +129,7 @@ function saveSearchState () {
 function setCollection(collection) {
     clearResults();  //provided by calling .JS file
     $('#collection').val(collection);
-    
+
     if (collection == 'activities') {
         $('#media-search').show();
         $('#chapter-search').hide();
@@ -142,7 +142,7 @@ function setCollection(collection) {
         $('#chapter-lang').show();
         $('.chapter-input').prop('disabled', false);
         $('.media-input').prop('disabled',   true);
-        
+
         $('#chapter-div').hide();
         $('#chapter-drop-menu').empty();
     }
@@ -154,13 +154,13 @@ function setCollection(collection) {
 /////////////////////////////
 function isFilterSet() {
     var set = false;
-    
+
     if ($('#collection').val() == 'activities') {
         if ($('#search-term').val()){set = true;}
         $(".flt-chkbx").each( function() {if (this.checked) {set = true;}} );
         if ($("#key1-menu").val() != "") {set = true;}
     } else { //collection=='chapters'
-        
+
         if ($("#grade-drop-menu").val() != "") {set = true;}
         else if ($("#subject-drop-menu").val() != "") {set = true;}
     }
@@ -214,9 +214,9 @@ function restoreKeywordDropdown(level,keys) {
 
     var $menu, $element;
     var key = keys[level]?keys[level]:null;
-    
+
     if (key && key !== '') {
-        
+
         //mark this key as SELECTED in this level's dropdown menu
         $menu = $('#key' + level + '-menu'); // get the dropdown option elements for this level
         if ($menu) {
@@ -226,7 +226,7 @@ function restoreKeywordDropdown(level,keys) {
 
          if ($element.data('kids') !== 'undefined') {  //the MONGO document for KEYWORDS returns KIDS as 'undefined' if there are no kids
             console.log('calling server with level = ' + level + ' and keys: ' + keys[1] + ', '+ keys[2] + ', '+ keys[3] + ', '+ keys[4] );
-            
+
             $.post("looma-database-utilities.php",
                 {cmd: "keywordList", id: $element.data('kids')},
                 function(kids) {
@@ -252,13 +252,13 @@ function restoreKeywordDropdown(level,keys) {
 function showKeywordDropdown(event) {
     var menu  = event.target;
     var selected = menu.options[menu.selectedIndex];
-    
+
     //clear and disable younger brothers
     $(menu).nextAll().empty().val('').prop('disabled', true).text('');
     var $val = $(menu).val();
-    
+
     if ( $val && $val != '' && ($(menu).data('level') < 4))
-        
+
         //console.log('asking for keyword list of ' + $(selected).data('kids'));
         $.post("looma-database-utilities.php",
             {cmd: "keywordList",
@@ -293,11 +293,11 @@ function showTextSubjectDropdown($grades, $subjects, $chapters) {
         $.post("looma-database-utilities.php",
             {cmd: "textSubjectList",
                 class:   $grades.val()},
-            
+
             function(response) {
                 //if ($div) $div.show();
                 $('<option/>', {value: "", label: "(any)..."}).appendTo($subjects);
-                
+
                 $subjects.append(response);
             },
             'html'
@@ -310,7 +310,7 @@ function showTextSubjectDropdown($grades, $subjects, $chapters) {
 /////  showTextChapterDropdown()  /////
 ///////////////////////////////////
 function showTextChapterDropdown($grades, $subjects, $chapters, lang) {
-    
+
     $chapters.empty();
     if ( ($grades.val() != '') && ($subjects.val() != ''))
         $.post("looma-database-utilities.php",
@@ -318,12 +318,12 @@ function showTextChapterDropdown($grades, $subjects, $chapters, lang) {
                 class:   $grades.val(),
                 subject: $subjects.val(),
                 lang:    lang},
-            
+
             function(response) {
                 //$('#chapter_label').show();
                 $('#chapter-div').show();
                 $('<option/>', {value: "", label: "(any)..."}).appendTo($chapters);
-                
+
                 $chapters.append(response);
             },
             'html'
@@ -335,14 +335,14 @@ function showTextChapterDropdown($grades, $subjects, $chapters, lang) {
 /////  showBookDropdown()  /////
 ///////////////////////////////////
 function showBookDropdown($src, $books, $chapters) {
- 
+
     $books.empty();
     $chapters.empty();
     if ( ($src.val() != ''))
         $.post("looma-database-utilities.php",
             {cmd: "bookList",
                 prefix:   $src.val()},
-            
+
             function(response) {
                 $('<option/>', {value: "", label: "(any)..."}).appendTo($books);
                 $books.append(response);
@@ -357,13 +357,13 @@ function showBookDropdown($src, $books, $chapters) {
 /////  showBookChapterDropdown()  /////
 ///////////////////////////////////
 function showBookChapterDropdown($src, $books, $chapters) {
-    
+
     $chapters.empty().show();
     if ( ($src.val() != '') && ($books.val() != ''))
         $.post("looma-database-utilities.php",
             {cmd: "bookChapterList",
              book_id: $books.val()},
-            
+
             function(response) {
                 $('<option/>', {value: "", label: "(any)..."}).appendTo($chapters);
                 $chapters.append(response);
@@ -379,7 +379,7 @@ function showBookChapterDropdown($src, $books, $chapters) {
 function refreshPage() {
     //  if the FORM contents have been saved, then restore them, else make a clean search page with the form cleared
     var formSettings = LOOMA.readStore(searchName, 'session');
-    
+
     if (formSettings) {
         restoreSearchState();
     } else {
@@ -396,14 +396,14 @@ function sendSearchRequest(searchForm, callBack) {
     searchForm.find("#pagesz").val(pagesz);
     searchForm.find("#pageno").val(pageno);
     searchForm.find("#language").val(LOOMA.readCookie('language'));
-    
+
     var loadingmessage = $("<p/>Loading results<span id='ellipsis'>.</span>").appendTo("#results-div");
-    
+
     var ellipsisTimer = setInterval(
         function () {
             $('#ellipsis').text($('#ellipsis').text().length < 10 ? $('#ellipsis').text() + '.' : '');
         },66 );
-    
+
     if  ($('#collection').val() == 'activities') {
         searchForm.find('#cmd').val("search");
         $ajaxRequest = $.post("looma-database-utilities.php",
@@ -431,7 +431,7 @@ function sendSearchRequest(searchForm, callBack) {
             'json');
     }
     //$("#search-term").focus();
-    
+
 } //end sendSearchRequest()
 
 function translatePage() {
@@ -451,20 +451,20 @@ function translatePage() {
 /////  document.ready()  /////
 //////////////////////////////
 $(document).ready(function() {
-    
+
     ///////////////////////////
     ///////   SUBMIT    ///////
     ///////////////////////////
     $('#search').submit(function( event ) {
         event.preventDefault();
-    
+
         console.log('search submitted');
-        
+
         clearResults();  // "clearResults()" provided by the JS of the page which includes search.php
-    
+
         $searchResultsDiv.empty().show();
         pageno = 1;
-        
+
         if (!isFilterSet()) {
             $searchResultsDiv.html(LOOMA.translatableSpans('Please select at least 1 filter option before searching',
                                                            'खोजी गर्नु अघि कम्तिमा १ फिल्टर विकल्प छान्नुहोस्'));
@@ -473,62 +473,62 @@ $(document).ready(function() {
             sendSearchRequest ($("#search"), displayResults);
         }
         $("#search-term").focus();
-    
+
         return false;
     }); //end search.submit
- 
+
     $('#ft-media').click(function() {
-        
+
         if ($('#collection').val() == 'chapters'){ //changing from CHAPTERS to ACTIVITIES
             setCollection('activities');
         }
     }); //end ft-media.click()
-    
+
     $('#ft-chapter').click(function() { //changing from ACTIVITIES to CHAPTERS
-        
+
         if ($('#collection').val() == 'activities') {
             setCollection('chapters');
-            
+
             if ( ($('#grade-drop-menu').val() != '') && ($('#subject-drop-menu').val() != '') )
                  $('#chapter-div').show();
             else $('#chapter-div').hide();
         }
     });  //end ft-chapter.click()
-    
+
     $(".media-filter").change( function(){$("#search-term").focus();});
-    
+
     $("#grade-drop-menu").change(function() {
         showTextSubjectDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'),$("input:radio[name='language']:checked").val());
     });  //end drop-menu.change()
-    
+
     $("#subject-drop-menu").change(function() {
-        showTextChapterDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'), $("input:radio[name='language']:checked").val());
+        showTextChapterDropdown($('#grade-drop-menu'), $('#subject-drop-menu'), $('#chapter-drop-menu'), $("input:radio[name='chapter-language']:checked").val());
     });  //end drop-menu.change()
-    
-    $('input[type=radio][name=language]').change(function() {
+
+    $('input[type=radio][name=chapter-language]').change(function() {
         $('#grade-drop-menu').prop('selectedIndex', 0); // reset grade select field
         $('#subject-drop-menu').empty(); $('#chapter-drop-menu').empty();
     });
-    
+
     $("#keyword-div .keyword-dropdown").change(showKeywordDropdown);
-    
+
     $('.clear-search').click(clearSearch);
-    
+
     $searchResultsDiv = $('#results-div');  //where to display the search x - override in page's JS if desired
-    
+
     var language = LOOMA.readStore('language', 'cookie');
     if (!language) {
         LOOMA.setStore('language', 'english', 'cookie');
         language = 'english';
     }
     if (language === 'native') $('#search-term').attr('placeholder','खोज टर्म प्रविष्ट गर्नुहोस्');
-    
+
     translatePage();
     $('#translate').click(translatePage);
-    
+
     setCollection('activities');
     refreshPage();
-    
+
     toolbar_button_activate("search");
-    
+
 }); // end document.ready

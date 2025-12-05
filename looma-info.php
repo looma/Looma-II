@@ -66,56 +66,77 @@ include ('includes/header.php');
             <!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
 
             <a draggable="false"  draggable="false" class="attribution" href="https://www.cehrd.gov.np/" target="_blank">
-                <img draggable="false" src="images/logos/CEHRD-logo.png" height="66px"></a>
-            <a draggable="false"  draggable="false" class="attribution" href="https://erdcn.org/" target="_blank">
-                <img draggable="false" src="images/logos/ERDCN.png" height="66px"></a>
+              <img draggable="false" src="images/logos/CEHRD-logo.png"  ></a>
+             <a draggable="false"  draggable="false" class="attribution" href="https://looma.education/" target="_blank">
+                 <img draggable="false" src="images/logos/VSPL.jpg"  ></a>
+             <a draggable="false"  class="attribution" href="https://www.peacecorps.gov/nepal/" target="_blank">
+                <img draggable="false" src="images/logos/US Peace Corps logo.jpeg"  ></a>
+            <a draggable="false"  class="attribution" href="https://www.linkedin.com/in/dipak-poudel-27a705382/?originalSubdomain=np" target="_blank">
+                <img draggable="false" src="images/logos/coronet logo.png"  ></a>
+          <br>
             <a draggable="false"  draggable="false" class="attribution" href="http://www.khanacademy.org" target="_blank">
-                <img draggable="false" src="images/logos/khan.jpg" height="66px"></a>
+                <img draggable="false" src="images/logos/khan.jpg"  ></a>
             <a draggable="false"  class="attribution" href="http://www.olenepal.org" target="_blank">
-                <img draggable="false" src="images/logos/ole-nepal.jpg" height="66px"></a>
-            <a draggable="false"  class="attribution" href="https://www.wikipedia.org" target="_blank">
-                <img draggable="false" src="images/logos/wikipedia.jpg" height="66px"></a>
+                <img draggable="false" src="images/logos/ole-nepal.jpg"  ></a>
+            <a draggable="false"  class="attribution" href="https://en.wikipedia.org/wiki/Wikipedia:Wikipedia_for_Schools" target="_blank">
+                <img draggable="false" src="images/logos/schools-wikipedia-logo.png"  ></a>
             <a draggable="false"  class="attribution" href="https://phet.colorado.edu" target="_blank">
-                <img draggable="false" src="images/logos/PHET.png" height="44px"></a>
+                <img draggable="false" src="images/logos/PHET.png"  style="height: 7vh;"></a>
             <a draggable="false"  class="attribution" href="https://ed.ted.com" target="_blank">
                 <img draggable="false" src="images/logos/TedEd.jpg" height="44px"></a>
+            <a draggable="false"  class="attribution" href="https://hesperian.org" target="_blank">
+                <img draggable="false" src="images/logos/hesperian.png" height="55px"></a>
+          <a draggable="false"  class="attribution" href="https://memcf.org/" target="_blank">
+               <img draggable="false" src="images/logos/MEMCF.jpg"  style="height: 14vh;"></a>
 
             <!--
             <a draggable="false"  class="attribution" href="https://leafletjs.com" target="_blank">
-                <img draggable="false" src="images/logos/leaflet-logo.png" height="66px"></a>
+                <img draggable="false" src="images/logos/leaflet-logo.png"  ></a>
             <a draggable="false"  class="attribution" href="https://www.openstreetmap.org" target="_blank">
-                <img draggable="false" src="images/logos/openstreetmap-logo.png" height="66px"></a>
+                <img draggable="false" src="images/logos/openstreetmap-logo.png"  ></a>
             <a draggable="false"  class="attribution" href="https://translate.google.com" target="_blank">
-                <img draggable="false" src="images/logos/google-translate.jpg" height="66px"></a>
+                <img draggable="false" src="images/logos/google-translate.jpg"  ></a>
             <a draggable="false"  class="attribution" href="https://www.mapbox.com" target="_blank">
-                <img draggable="false" src="images/logos/tilemill.png" height="66px"></a>
+                <img draggable="false" src="images/logos/tilemill.png"  ></a>
             <br>
-    -->
             <a draggable="false"  draggable="false" class="attribution" href="https://looma.education" target="_blank">
-                <img draggable="false" src="images/logos/Looma-english-amanda.png" height="66px"></a>
-            <br>
+                <img draggable="false" src="images/logos/Looma-english-amanda.png"  ></a>
+            -->
+        <br>
+
+           <a draggable="false"  class="attribution" href="https://www.projectredwood.org/" target="_blank">
+              <img draggable="false" src="images/logos/project redwood.png"  ></a>
+           <a draggable="false"  class="attribution" href="https://www.instagram.com/rotarypokhara/?hl=en" target="_blank">
+              <img draggable="false" src="images/logos/RCP Rotary.jpg"  ></a>
+           <a draggable="false"  class="attribution" href="https://wpvrotary.org//" target="_blank">
+               <img draggable="false" src="images/logos/rotary-woodsidePV.png"  style="height: 14vh;"></a>
+
+           <a draggable="false"  class="attribution" href="https://www.namastechildrensfund.org/" target="_blank">
+              <img draggable="false" src="images/logos/NCF.png" style="height: 16vh;" ></a>
+           <a draggable="false"  class="attribution" href="https://trifc.org/" target="_blank">
+              <img draggable="false" src="images/logos/TRIFC.jpg"  ></a>
+           <a draggable="false"  class="attribution" href="https://gnha.org.np/" target="_blank">
+              <img draggable="false" src="images/logos/GNHA.png" style="height: 8vh;"></a>
             <a draggable="false"  draggable="false" class="attribution" href="http://www.menschen-im-dialog.de/" target="_blank">
-                <img draggable="false" src="images/logos/menschen-im-dialog_BLACK.png" height="66px"></a>
-            <a draggable="false"  class="attribution" href="https://hesperian.org" target="_blank">
-                <img draggable="false" src="images/logos/hesperian.png" height="33px"></a>
+                <img draggable="false" src="images/logos/menschen-im-dialog_BLACK.png"  ></a>
             <a draggable="false"  class="attribution" href="https://www.edutechnepal.org/" target="_blank">
-                <img draggable="false" src="images/logos/edutech.png" height="66px"></a>
-            <a draggable="false"  class="attribution" href="https://wesharesolar.org//" target="_blank">
-                <img draggable="false" src="images/logos/WeShareSolar with text.png" height="33px"></a>
-            <a draggable="false"  class="attribution" href="https://www.projectredwood.org/" target="_blank">
-                <img draggable="false" src="images/logos/project-redwood-small.jpg" height="66px"></a>
+                <img draggable="false" src="images/logos/edutech.png"  ></a>
+
+
     <!--
-            <a draggable="false"  class="attribution" href="https://jquery.com" target="_blank">
-                <img draggable="false" src="images/logos/jquery-logo.png" height="66px"></a>
+          <a draggable="false"  class="attribution" href="https://wesharesolar.org//" target="_blank">
+              <img draggable="false" src="images/logos/WeShareSolar with text.png" height="33px"></a>
+          <a draggable="false"  class="attribution" href="https://jquery.com" target="_blank">
+                <img draggable="false" src="images/logos/jquery-logo.png"  ></a>
             <a draggable="false"  class="attribution" href="https://aws.amazon.com" target="_blank">
-                <img draggable="false" src="images/logos/AWS.png" height="66px"></a>
+                <img draggable="false" src="images/logos/AWS.png"  ></a>
             <span><img draggable="false" src="images/logos/css3-html5-logo.png" height="44px"></span>
             <a draggable="false"  class="attribution" href="https://www.mongodb.com" target="_blank">
-                <img draggable="false" src="images/logos/mongodb-logo.png" height="66px"></a>
+                <img draggable="false" src="images/logos/mongodb-logo.png"  ></a>
             <a draggable="false"  class="attribution" href="https://www.jetbrains.com/?from=Looma" target="_blank">
                 <img draggable="false" src="images/logos/jetbrains.svg" height="44px"></a>
             <a draggable="false"  class="attribution" href="https://www.stackoverflow.org" target="_blank">
-                <img draggable="false" src="images/logos/stackoverflow.png" height="66px"></a>
+                <img draggable="false" src="images/logos/stackoverflow.png"  ></a>
     -->
 
         </div>
@@ -132,12 +153,14 @@ include ('includes/header.php');
         <h4>Tested only in Google Chrome</h4>
 
         <?php
-        if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
+       /* if(isset($_COOKIE["source"]) &&  $_COOKIE["source"] === 'CEHRD') {
             echo "<h4>Report bugs and suggestions to:  ";
             echo "<a href='mailto:iemis@cehrd.gov.np''>iemis@cehrd.gov.np</a>";
             echo "</h4>";
         } else
             echo "<h4>Report bugs and suggestions to:  info AT looma DOT education</h4>";
+        */
+
         ?>
         </div>
         <h4 id="credits-title">Contributors</h4>

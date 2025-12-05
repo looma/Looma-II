@@ -399,6 +399,8 @@ echo "********************"
     #       copy new files into "content" directory
 #################################################
 
+        ########## NOTE: content always comes from ../content. there is no separate ../preview/content folder
+
     checktimestamp "/var/www/html"  ${SOURCE_URL} "content"
 
     if [[ $? = 1 ]]
@@ -420,7 +422,7 @@ echo "********************"
             echo "starting to update content files. this takes a long time. please wait ..."
             echo
             #### calling DOSYNC() ##########
-            dosync "${SOURCE_PREFIX}content/" "/var/www/html/content" "--size-only"
+            dosync "${SOURCE_URL}:../content/" "/var/www/html/content" "--size-only"
 
             echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
             contenttime=$SECONDS
@@ -435,7 +437,10 @@ echo "********************"
 echo "*****************************************"
 echo
 echo "  deleting browser cache";
-rm -R /home/odroid/snap/chromium/common/chromium/Default/Cache
+if [ -d "/home/odroid/snap/chromium/common/chromium/Default/Cache" ]; then
+  rm -rf "/home/odroid/snap/chromium/common/chromium/Default/Cache"
+fi
+#rm -R /home/odroid/snap/chromium/common/chromium/Default/Cache
 echo
 
 echo "****************************************************************"

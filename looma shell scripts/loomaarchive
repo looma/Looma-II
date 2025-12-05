@@ -63,7 +63,8 @@ else
 fi
 
 echo
-pause "did you remember to change Looma/vendor to be for PHP7?"
+# we now leave vendor/ vendorPHP7 and vendorPHP8/ on the rsync server, and DON'T update them in "loomwarchive"
+# pause "did you remember to change Looma/vendor to be for PHP7?"
 
 echo "************************************"
 echo " - - setting database version to todays date"
@@ -118,7 +119,7 @@ then
      #removed "--include '.ssh'"
     rsync -rtvz  --dry-run --delete --no-perms --times \
     --chmod=u+rwX,go+rX  --update --progress  \
-    --exclude ".[!.]*"  --exclude "vendorPHP7/"  --exclude "vendorPHP8/" \
+    --exclude ".[!.]*"  --exclude "vendorPHP7/"  --exclude "vendorPHP8/" --exclude "vendor/" \
     -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
 
     echo "FINISHED dryrun"
@@ -130,7 +131,7 @@ else
 
    rsync -rtvz            --delete --no-perms --times \
    --chmod=u+rwX,go+rX  --update --progress   \
-   --exclude ".[!.]*"  --exclude "vendorPHP7/"  --exclude "vendorPHP8/"  \
+   --exclude ".[!.]*"  --exclude "vendorPHP7/"  --exclude "vendorPHP8/"  --exclude "vendor/" \
    -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
 fi
 result $?
@@ -184,6 +185,7 @@ echo "*********************************************"
 
 
 echo
-pause " * * * * remember to change Looma/vendor to be for PHP8"
+# we now leave vendor/ vendorPHP7 and vendorPHP8/ on the rsync server, and dont update them in "loomwarchive"
+# pause " * * * * remember to change Looma/vendor to be for PHP8"
 echo
 

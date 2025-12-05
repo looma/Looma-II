@@ -1355,10 +1355,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
         //      in speechSynthesis  SpeachSynthesisUtterance.rate = rate ( e.g. if rate === 0.5 speak slower)
         //  for Looma in Nepal, use default rate = 2/3
 
-    const defaultspeed = 2/3;
     var speed;
+    const defaultspeed = 2/3;
 
-       if (rate <= 0 || rate > 2) rate = defaultspeed;
+       if (!rate || rate <= 0 || rate > 2) rate = defaultspeed;
        speed = 1/rate;
 
     /* requires a special regex package, like xregexp [https://www.regular-expressions.info/xregexp.html]
@@ -1456,10 +1456,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
     //start of LOOMA.speak code: ///
     ////////////////////////////////
 
-         if (engine === 'synthesis') {
-             // we use synthesis if the user is running Safari or Chrome.
+         if ( (! engine && speechSynthesis.getVoices().length > 0) || engine === 'synthesis') {  //CHECK THIS. SHOULD IT BE speechSynthesis.getVoices()?
+             // we use synthesis if the user is running Safari or Chrome - any browser that has speechSynthesis installed
              // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
-             // Chromium's speechSynthesis seems to be broken. (re-check this)
+             // Chromium's speechSynthesis seems to be broken. (they dont load any voices, so TTS doesnt happen)
              if (speechSynthesis.speaking) {
                  if (speechSynthesis.paused)
                      speechSynthesis.resume();
@@ -1550,7 +1550,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  LOOMA.speak.activate();
              }
          }  //end of code that calls server-side MIMIC
-     } // end if (text != '')
+     } // end if (text != "")
  }; //end LOOMA.speak()
 
 

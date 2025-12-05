@@ -1,5 +1,10 @@
 CHANGE LOG FOR LOOMA
 
+2025 11
+- version 7.19
+- added new partner logos to info page
+- removed "dictionary images" thumbnails - not used, saves 32MB
+
 2025 09
 - version 7.18
 - fixed PDF play in lesson player and lesson editor

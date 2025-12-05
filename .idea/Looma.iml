@@ -3,10 +3,10 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/mongodb/mongodb" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/jean85/pretty-package-versions" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php80" />
+      <excludeFolder url="file://$MODULE_DIR$/vendorPHPcurrent/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendorPHPcurrent/jean85/pretty-package-versions" />
+      <excludeFolder url="file://$MODULE_DIR$/vendorPHPcurrent/mongodb/mongodb" />
+      <excludeFolder url="file://$MODULE_DIR$/vendorPHPcurrent/symfony/polyfill-php80" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

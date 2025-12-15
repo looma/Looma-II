@@ -14,6 +14,10 @@
         <?php tooltip("Lookup") ?>
     </button>
 
+     <button class="captions looma-control-button">
+        <?php tooltip("Captions On/Off") ?>
+    </button>
+
     <?php
 
     // NOTE: the floating looma download button is NOT implemented here
@@ -31,12 +35,15 @@
     <button id = "fullscreen-control"   class="looma-control-button">
         <?php tooltip("Full Screen") ?>
     </button>
+
     <button id = "fullscreen-playpause" class="looma-control-button play-pause">
         <?php tooltip("Play/Pause") ?>
     </button>
+
     <button id = "next-item"            class="looma-control-button">
         <?php tooltip("Next") ?>
     </button>
+
     <button id = "prev-item"            class="looma-control-button">
         <?php tooltip("Previous") ?>
     </button>

@@ -25,7 +25,7 @@ Description: looma lesson plan presenter
     ?>
             <div id="fullscreen" class="keyboard">
 
-                <input id="force_keyboard" hidden>
+              <!--  <input id="force_keyboard" hidden> -->
 
 
                 <div id="viewer">
@@ -299,8 +299,8 @@ Description: looma lesson plan presenter
     <script src="js/tether.min.js">  </script>
  <!--    <script src="js/bootstrap.min.js">  </script>  -->
     <script src="js/looma-media-controls.js"></script>
-    <script src="js/pdfjs/pdf.min.js"></script>
-    <script src="js/looma-pdf-utilities.js"></script>
+  <!--     <script src="js/pdfjs/pdf.min.js"></script> -->
+<!--       <script src="js/looma-pdf-utilities.js"></script> -->
 
       <!-- <script src="js/looma-play-pdf.js"></script> -->
 

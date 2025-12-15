@@ -1682,8 +1682,13 @@ LOOMA.alert = function(msg, time, notTransparent, next){
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
   //  var $attachpoint = ($('#fullscreen').length > 0) ? $('#fullscreen') : $(document.body);
-    var $attachpoint = $(document.body);
-    $attachpoint.append("<div class= 'popup'>" +
+
+   // var $attachpoint = $(document.body); //NOTE: changed to attach popups to #fullscreen
+    //          so that popups appear in fullscreen mode
+
+    var $attachpoint = $('#fullscreen');
+
+    $attachpoint.append("<div class='popup'>" +
         "<button class='popup-button dismiss-popup'><b>X</b></button>"+ msg +
         "<button id ='close-popup' class ='popup-button'>" +
         //"<img src='images/alert.jpg' class='alert-icon'" +

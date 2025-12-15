@@ -96,7 +96,14 @@ window.onload = function() {
 
     $('#find').change(); //FIND operation not implemented this version
 
-    playPDF();
+    //playPDF();
+
+    playPDF($('#pdf')[0], $('#pdf').data('fn'),
+                          $('#pdf').data('fp'),
+                          $('#pdf').data('page'),
+                          $('#pdf').data('len'),
+                          $('#pdf').data('lang'),
+                          $('#pdf').data('zoom') );
 
     toolbar_button_activate("library");
 

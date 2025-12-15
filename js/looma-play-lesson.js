@@ -199,6 +199,29 @@ function play ($item) {
         case 'pdf':
         case 'chapter':
 
+                        /*
+                        echo '<div id="pdf" class="scroll"'  .
+                            '  data-fn="' .    $filename .
+                            '" data-fp="' .   $filepath .
+                            '" data-page="' . $pagenum .
+                            '" data-len="' . $len .
+                            '" data-lang="' . $lang .
+                            '" data-zoom="'.  $zoom .'">';
+                        echo '</div>';
+
+                         */
+
+                /*
+
+    playPDF($('#pdf')[0], $('#pdf').data('fn'),
+                          $('#pdf').data('fp'),
+                          $('#pdf').data('page'),
+                          $('#pdf').data('len'),
+                          $('#pdf').data('lang'),
+                          $('#pdf').data('zoom') );
+
+                 */
+
 
             $('#fullscreen-control, .speak, .lookup').show();
 
@@ -230,12 +253,21 @@ function play ($item) {
 
           //  var previewSrc = 'looma-play-pdf.php?fn=' + filename + '&fp=' + filepath + '&pg=' + pagenumber + '&len=' + length;
 
-            $("div#displayers").empty().html('<embed src="' + previewSrc + '>');
+        //    $("div#displayers").empty().html('<embed src="' + previewSrc + '>');
+
+            playPDF($('#pdf')[0],
+                filename,
+                filepath,
+                pagenumber,
+                length,
+                lang,
+                2.3 );
+
+
+
             $('#viewer').hide();
             $('#displayers').show();
 
-     ////       $viewer.empty().append( $('#pdf-canvas').clone(true) );  //  .attr('id', 'pdfnew')
-            // NOTE cl
         break;
 
         case 'text':

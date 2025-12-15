@@ -4,6 +4,9 @@ CHANGE LOG FOR LOOMA
 - version 7.19
 - added new partner logos to info page
 - removed "dictionary images" thumbnails - not used, saves 32MB
+- fixed text-selection, word lookup and TTS in looma lesson player
+- fixed PDF toolbar in lesson player to match regular Looma PDF player
+- added video captions ON/OFF button in video player
 
 2025 09
 - version 7.18

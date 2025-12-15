@@ -9,12 +9,12 @@
 <?php
 //include('includes/js-includes.php');
 
-$filename = (isset($_REQUEST['fn']) ? urldecode($_REQUEST['fn']) : "");
-$filepath = (isset($_REQUEST['fp']) ? urldecode($_REQUEST['fp']) : "");
-$pagenum = (isset($_REQUEST['page']) ? urldecode($_REQUEST['page']) : 1);
-$len = (isset($_REQUEST['len']) ? urldecode($_REQUEST['len']) : 10);
-$lang = (isset($_REQUEST['lang']) ? urldecode($_REQUEST['lang']) : "");
-$zoom = (isset($_REQUEST['zoom']) ? urldecode($_REQUEST['zoom']) : "page-width");
+$filename = (isset($_REQUEST['fn'])    ? urldecode($_REQUEST['fn']) : "");
+$filepath = (isset($_REQUEST['fp'])    ? urldecode($_REQUEST['fp']) : "");
+$pagenum  =  (isset($_REQUEST['page']) ? urldecode($_REQUEST['page']) : 1);
+$len      = (isset($_REQUEST['len'])   ? urldecode($_REQUEST['len']) : 10);
+$lang     = (isset($_REQUEST['lang'])  ? urldecode($_REQUEST['lang']) : "");
+$zoom     = (isset($_REQUEST['zoom'])  ? urldecode($_REQUEST['zoom']) : "page-width");
 
 echo '<div id="pdf" class="scroll"'  .
         '  data-fn="' .    $filename .
@@ -24,8 +24,6 @@ echo '<div id="pdf" class="scroll"'  .
         '" data-lang="' . $lang .
         '" data-zoom="'.  $zoom .'">';
     echo '</div>';
-
-
 ?>
 
 <script src="js/pdfjs/pdf.min.js"></script>

@@ -16,12 +16,13 @@ Attribution: slightly borrowed from Matt West (blog.teamtreehouse.com)
 //NOTE: fileName, filePath , displayName, and thumbPath are set with JS injected by the PHP
 
 $(document).ready(function () {
-    
+
     var video = document.getElementById("video");
     attachMediaControls(video);  //looma-media-controls.js adds eventlisteners to play/pause/volume/slider controls
     //attachFullscreenPlayPauseControl();
     modifyFullscreenControl();
     $('#fullscreen-playpause').show();
-    
-    
+    $('.captions').show();
+
+
 });

@@ -46,11 +46,11 @@ var didScroll = false;
 var renderPromises = [];
 var renders = 0; var cancels = 0;
 
-function makePageDivs(doc, start, finish) {
+function makePageDivs(div, doc, start, finish) {
     // allocate a canvas and a text-layer for each of the pages of this DOC from page = START to page = FINISH
     for (var page = start; page <= finish; page++) {
-        $('<canvas/>', {id:'pdf-canvas'+page, class: 'pdf-canvas'}).appendTo('#pdf');
-        $('<div/>', {id:'pdf-text'+page, class: 'pdf-text textLayer'}).appendTo('#pdf');
+        $('<canvas/>', {id:'pdf-canvas'+page, class: 'pdf-canvas'}).appendTo(div);
+        $('<div/>', {id:'pdf-text'+page, class: 'pdf-text textLayer'}).appendTo(div);
     }
 }  // end makePageDivs
 
@@ -278,16 +278,17 @@ async function drawThumbs() {
     }
 }  // end drawThumbs()
 
-function playPDF() {
+function playPDF(PDFdiv,filename,filepath,start,len,lang,zoom) {
 
     // get calling PARAMs
-    filename = $('#pdf').data('fn');
-    filepath = $('#pdf').data('fp');
-    startPage = $('#pdf').data('page') ? $('#pdf').data('page') : 1;
-    if ($('#pdf').data('len') && $('#pdf').data('len') >0)
-        endPage = startPage + $('#pdf').data('len') - 1; else endPage = startPage + 999;
-    currentScale = $('#pdf').data('zoom') && !isNaN($('#pdf').data('zoom')) ? $('#pdf').data('zoom') : initialZoom;
-
+    //filename = $('#pdf').data('fn');
+    //filepath = $('#pdf').data('fp');
+    //startPage = $('#pdf').data('page') ? $('#pdf').data('page') : 1;
+    startPage = start ? start : 1;
+    if (len && len >0)
+        endPage = startPage + len - 1; else endPage = startPage + 999;
+    //currentScale = $('#pdf').data('zoom') && !isNaN($('#pdf').data('zoom')) ? $('#pdf').data('zoom') : initialZoom;
+    if (zoom) currentScale = zoom; else currentScale = initialZoom;
     // load the PDF file
     //turnOffControls();
     pdfjsLib.getDocument(filepath + filename).promise.then(
@@ -299,7 +300,7 @@ function playPDF() {
             $('#maxpages').text(endPage - startPage + 1);
             console.log('loaded file ' + filepath + filename + ' with ' + maxPages + ' pages');
 
-            makePageDivs(doc, startPage, endPage);
+            makePageDivs(PDFdiv,doc, startPage, endPage);
 
             // displayFirstPage(doc,startPage);
 

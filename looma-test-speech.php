@@ -4,7 +4,7 @@ require_once('includes/looma-isloggedin.php');
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
 $loggedin = loggedIn(); if (!$loggedin) header('Location: looma-login.php');
-error_log("Starting Dictionary Edit session. logged in as: " . $loggedin);
+error_log("Starting Speech Test session. logged in as: " . $loggedin);
 ?>
 
 

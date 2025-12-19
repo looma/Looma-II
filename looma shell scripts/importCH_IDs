@@ -17,12 +17,12 @@
 //  verification function that check validity of incoming ch_id
 ////////////////////////
 
-function legalCH_ID(ch,dn) {
+function legalCH_ID(ch,dn,src) {
     var char = ch.trim();
     if (char && char.length>0) {
         var legal = db.chapters.find({"_id": char});
         if ( !legal.hasNext() ) {
-            print("************ NO CHAPTER FOUND FOR ch_id:     " + char + " named " + dn);
+            print("***** NO CHAPTER FOUND FOR ch_id:     " + char + " for [" + src + "] activity named " + dn);
             illegalcount++;
             return false;
         } else return true;
@@ -32,6 +32,7 @@ function legalCH_ID(ch,dn) {
 var requestcount = 0;
 var changecount = 0;
 var illegalcount = 0;
+var newCH_IDs = 0;
 
 var input = 'ch_idsToImport.tsv';
 print ('Importing CH_IDs from ' + input);
@@ -69,9 +70,10 @@ docs.forEach( function(doc) {
             IDs.forEach   (function(id){
                 id = id.trim();
 
-                if (!legalCH_ID(id,activity['dn'])) return;
+                if (!legalCH_ID(id,activity['dn'],activity['src'])) return;
 
                 if(id && activity['ch_id'].indexOf(id) === -1) {
+                    newCH_IDs++;
                     activity['ch_id'].push(id);
                 }});
 
@@ -86,5 +88,5 @@ docs.forEach( function(doc) {
 
 print('');
 print('+++++  ' + requestcount + '  lines processed');
-print('+++++  ' + changecount + '  changes made');
+print('+++++  ' + newCH_IDs + '  ch_ids added');
 print('+++++  ' + illegalcount + '  illegal ch_ids found');

@@ -27,6 +27,7 @@
 */
 
 $text =   (isset($_REQUEST['text']) && $_REQUEST['text'] != "")   ? htmlentities($_REQUEST["text"]) : null;
+$text = escapeshellarg($text);
 //if ($text === null) return;
 
 $voice =   ( isset($_REQUEST['voice'])  && $_REQUEST['voice']  != "undefined") ? $_REQUEST["voice"] : null;
@@ -44,8 +45,8 @@ $speed = 1/$rate;
 
 // detecting devanagari is now done in looma-utilities.js LOOMA.speak()
 if (preg_match('/\p{Devanagari}/u', $text))
-    $lang = 'np';
-else $lang = 'en';
+     $text_lang = 'np';
+else $text_lang = 'en';
 
 date_default_timezone_set("UTC");
 $date = new DateTime();
@@ -56,32 +57,76 @@ if (file_exists($outputFileName)) // IF we get conflicting filenames, generate a
 
 //echo "in TTS.php, engine is $engine, text is $text,  voice is $voice, speed is $speed"; //return;
 
-if ($engine === 'piper') {
-    if ( ! exec('which piper')) return;
-    if ($lang === "np") $voice = "ne_NP-google-medium.onnx";
-    else                $voice = "en_US-amy-medium.onnx";
-    $command = "echo  "  .  escapeshellarg($text)  . " | piper " .
-        " --model voices/piper/$voice " .
-        " --length_scale $speed" .
-        " --output_file $outputFileName";  // move voices to inside ../Looma ???
+/* OLD CODE
+if ($engine === 'piper') {   /////// * * * PIPER * * *  /////////
+    if ($text_lang === "np") {
+        $voice = "ne_NP-google-medium.onnx";
+        $voiceport = "5001";
+    } else {
+        $voice = "en_US-amy-medium.onnx";
+        $voiceport = "5000"
+    };
 
-} else if ($engine === 'mimic') {
-    //echo "in mimic";
+// this command "curl" calls the piper-tts[http] server running in background, to get low latency response
+    // port 5000 is for English voice, port 5001 is for Nepali voice
+        $command = "curl -X POST -H 'Content-Type: application/json'" .
+            " -d \"{ 'text': $text }\" " .
+            " -o $outputFileName localhost:$voiceport";
+
+  this command calls piper directly, but has high latency (>2sec) to respond because it reloads the voice on each call
+     if ( ! exec('which piper')) return;
+     $voiceFile = "../piper/voices/$voice";
+     $command = "echo  "  .  $text  . " | piper " .
+        "  --model $voiceFile" .
+        "  --length_scale $speed" .
+        "  --output_file $outputFileName";
+END OLC CODE*/
+
+if ($engine === 'piper') {   /////// * * * PIPER * * *  /////////
+    if ($text_lang === "np") {
+        $voice = "ne_NP-google-medium.onnx";
+        $voiceport = "5001";
+    } else {
+        $voice = "en_US-amy-medium.onnx";
+        $voiceport = "5000";
+    };
+
+// this command "curl" calls the piper-tts[http] server running in background, to get low latency response
+    // port 5000 is for English voice, port 5001 is for Nepali voice
+        $text = trim($text,"'");
+        $command = "curl -X POST -H 'Content-Type: application/json'" .
+            " -d '{ \"text\": \"$text\" }' " .
+            " -o $outputFileName localhost:$voiceport";
+
+//echo $command;return;
+
+ /* this command calls piper directly, but has high latency (>2sec) to respond because it reloads the voice on each call
+     if ( ! exec('which piper')) return;
+     $voiceFile = "../piper/voices/$voice";
+     $command = "echo  "  .  $text  . " | piper " .
+        "  --model $voiceFile" .
+        "  --length_scale $speed" .
+        "  --output_file $outputFileName";
+*/
+
+
+
+
+
+} else if ($engine === 'mimic') {  /////// * * * MIMIC * * *  /////////
     if (empty($voice)) {
-        // Good mimic voices: cmu_us_bdl (male), cmu_us_jmk (male),
-        //              cmu_us_ljm (female), cmu_us_aup (male), mycroft_voice_4.0 (male)
+        // Good mimic voices: cmu_us_bdl (male),cmu_us_jmk (male),cmu_us_ljm (female),cmu_us_aup (male), mycroft_voice_4.0 (male)
         $voice = "cmu_us_aup";
     }
 
-    if ($lang === 'np') $text = "I do not know how to speak Nepali.";
+    if ($text_lang === 'np') $text = "I do not know how to speak Nepali.";
 
-    $voiceDir = "voices/mimic/";
-    $voiceFile = $voiceDir . $voice . ".flitevox";
+    $voiceFile = "../mimic/voices/$voice" . ".flitevox";
 
     $mimicCommand = exec("which mimic");
-    $command = "$mimicCommand -t " .
-        escapeshellarg($text) .
-        " --setf duration_stretch=" . (string) $speed .  // to slow down to 2/3 rate, we stretch to 1.5
+    $command = "$mimicCommand " .
+        " -t $text" .
+        "  --setf duration_stretch=$speed" .  // to slow down to 2/3 rate, we stretch to 1.5
         "  -voice " . escapeshellarg($voiceFile) .
         "  -o " . $outputFileName;
 
@@ -94,5 +139,5 @@ header("Content-Type: audio/wav");
 exec($command);
 // send the .wav file to the client
 readfile($outputFileName);           // play the wave file to the client side
-unlink($outputFileName);             // delete the wave file
+//unlink($outputFileName);             // delete the wave file
 ?>

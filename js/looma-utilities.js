@@ -147,10 +147,8 @@ playMedia : function(button) {
             break;
 
         case "pdf":      //PDF
-     // case "chapter":  //CHAPTER
         case "document": //DOCUMENT (some PDFs)
         case "textbook":
-      //  case "section":  //textbook SECTIONs are 'played' if len > 0
             var pdfZoom =  button.getAttribute('data-zoom');
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
@@ -548,8 +546,8 @@ thumbnail: function (filename, filepath, filetype, thumb) {
 
                 filetype = filetype.toLowerCase();
 
-                if (filetype == 'chapter') {
-                  //  imgsrc = homedirectory + "content/textbooks/" + filepath + filename + "_thumb.jpg";
+                if (filetype === 'chapter') {
+                  imgsrc = homedirectory + "content/" + filepath + filename.replace(/\.pdf$/i, "") + "_thumb.jpg";
                   //  thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
                   //  imgsrc = homedirectory + "content/" + filepath + thumbnail_prefix + "_thumb.jpg";
                 }
@@ -1226,14 +1224,22 @@ ch_id   :  function (grade, subject, unit, chapter) {
 
     // LOOMA ch_idFilepath
     //
-        ch_idFilepath : function(ch_id) {
+        ch_idFilepath : function(ch_id, lang) {
             var parts = LOOMA.parseCH_ID(ch_id);
-            return '../content/textbooks/Class' +
+            if (lang === 'np') ch_id = ch_id + '-nepali';
+            return '../content/chapters/Class' +
                 parts['currentGradeNumber'] + '/' +
                 parts['currentSubjectFull'] + '/' +
-                parts['currentSubjectFull'] + '-' +
-                parts['currentGradeNumber'] + '.pdf';
+                lang + '/' ;
         },
+
+    // LOOMA ch_idName
+    //
+        ch_idName : function(ch_id, lang) {
+            //var parts = LOOMA.parseCH_ID(ch_id);
+            if (lang === 'np') ch_id = ch_id + '-nepali';
+            return  ch_id + '.pdf';
+        }
 
 
 
@@ -1349,10 +1355,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
         //      in speechSynthesis  SpeachSynthesisUtterance.rate = rate ( e.g. if rate === 0.5 speak slower)
         //  for Looma in Nepal, use default rate = 2/3
 
-    const defaultspeed = 2/3;
     var speed;
+    const defaultspeed = 2/3;
 
-       if (rate <= 0 || rate > 2) rate = defaultspeed;
+       if (!rate || rate <= 0 || rate > 2) rate = defaultspeed;
        speed = 1/rate;
 
     /* requires a special regex package, like xregexp [https://www.regular-expressions.info/xregexp.html]
@@ -1450,10 +1456,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
     //start of LOOMA.speak code: ///
     ////////////////////////////////
 
-         if (engine === 'synthesis') {
-             // we use synthesis if the user is running Safari or Chrome.
+         if ( (! engine && speechSynthesis.getVoices().length > 0) || engine === 'synthesis') {  //CHECK THIS. SHOULD IT BE speechSynthesis.getVoices()?
+             // we use synthesis if the user is running Safari or Chrome - any browser that has speechSynthesis installed
              // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
-             // Chromium's speechSynthesis seems to be broken. (re-check this)
+             // Chromium's speechSynthesis seems to be broken. (they dont load any voices, so TTS doesnt happen)
              if (speechSynthesis.speaking) {
                  if (speechSynthesis.paused)
                      speechSynthesis.resume();
@@ -1544,7 +1550,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  LOOMA.speak.activate();
              }
          }  //end of code that calls server-side MIMIC
-     } // end if (text != '')
+     } // end if (text != "")
  }; //end LOOMA.speak()
 
 
@@ -1676,8 +1682,13 @@ LOOMA.alert = function(msg, time, notTransparent, next){
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
   //  var $attachpoint = ($('#fullscreen').length > 0) ? $('#fullscreen') : $(document.body);
-    var $attachpoint = $(document.body);
-    $attachpoint.append("<div class= 'popup'>" +
+
+   // var $attachpoint = $(document.body); //NOTE: changed to attach popups to #fullscreen
+    //          so that popups appear in fullscreen mode
+
+    var $attachpoint = $('#fullscreen');
+
+    $attachpoint.append("<div class='popup'>" +
         "<button class='popup-button dismiss-popup'><b>X</b></button>"+ msg +
         "<button id ='close-popup' class ='popup-button'>" +
         //"<img src='images/alert.jpg' class='alert-icon'" +

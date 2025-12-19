@@ -1,5 +1,26 @@
 CHANGE LOG FOR LOOMA
 
+2025 11
+- version 7.19
+- added new partner logos to info page
+- removed "dictionary images" thumbnails - not used, saves 32MB
+- fixed text-selection, word lookup and TTS in looma lesson player
+- fixed PDF toolbar in lesson player to match regular Looma PDF player
+- added video captions ON/OFF button in video player
+
+2025 09
+- version 7.18
+- fixed PDF play in lesson player and lesson editor
+    - PDF toolbar shows in any PDF display, and when in 'fullscreen'
+- 675 new resources to chapter assignments for ePaath, khan, Dr Dann and TED
+- fixed bug in text-to-speech
+
+2025 08
+- teacher guides converted to unicode
+- looma reverse SSH server "info" command shows disk space on the remote
+- 'loomaupdate' script deletes browser cache
+- piper TTS [english and nepali]
+
 2025 07 23
 - removed math practice exercises
 

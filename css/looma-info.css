@@ -3,7 +3,7 @@
     display:grid;
     grid-template-rows:  1fr 3fr 3fr 3fr;
     grid-template-columns: [left] 4fr [middle-left] 6fr [middle-right] 3fr [right];
-    
+
     /*font-size:1.75em;*/
 }
 
@@ -31,7 +31,7 @@
 }
 
 #log-viewer button {
-   
+
     margin-top: 3vh;
     height: 5vh;
     float: left;
@@ -66,6 +66,9 @@ a {color:lightgreen;}
      margin: 2vh 3vw;
  }
 
+a img {
+    height:10vh;
+}
 
 #logos h5 {
     color:blue;
@@ -75,7 +78,7 @@ a {color:lightgreen;}
  img.loomalogo {
      height:10vh;
  }
- 
+
 img.cehrd-logo {
     position:absolute;
     top: 3vh;
@@ -90,7 +93,7 @@ img.cehrd-logo {
      grid-column: middle-right /right;
      margin-right:5vw;
  }
- 
+
  #credits {
      grid-row: 2 / -1;
      grid-column: middle-right;
@@ -101,14 +104,14 @@ img.cehrd-logo {
      height:95%;
      width:75%;
     padding:0 auto;
-     
+
      font-size: 1em;
      overflow:hidden;
      text-align:center;
  }
 
  #credits ul {padding: 0;}
- 
+
 #credits li {list-style-type: none;}
 
 span {
@@ -129,7 +132,7 @@ span {
      float: left;
      margin-left: 1vw;
  }
- 
+
 #advanced_info {
     display:none;
     position:absolute;
@@ -141,18 +144,18 @@ span {
     color:blue;
     background:white;
 }
- 
+
  .screensize, .bodysize, .ip, .system, .mongo-version, .php-version {
      vertical-align:middle;
      text-align:left;
      font-size: 0.8em;
      line-height:1.5vh;
  }
- 
+
 .ip:hover {
     font-size:1em;
 }
- 
+
  #trademark {
      position:relative;
      top:-20px;

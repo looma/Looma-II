@@ -74,6 +74,7 @@ if ! command -v sshpass &> /dev/null
 echo "********************************************************"
 echo " Looma - update a USB memory stick"
 echo "    copies new or modified files from rsync.net to a USB memory stick"
+echo "    loomaUSBer version AUG 2025"
 echo "*******************************************************"
 echo
 
@@ -131,7 +132,7 @@ echo
 echo "**************************************************"
 echo "- preparing to update Looma code on the USB memory"
 echo
-echo "enter 'looma' is asked for a password"
+echo "enter 'looma' if asked for a password"
 echo
 echo -n  "- - continue [y/n]?"; read input;
 

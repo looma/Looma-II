@@ -1,6 +1,6 @@
 /*
     NOTE: suggested CSS resets that we could try
-    
+
     html, body, div, span, object, iframe,
     h1, h2, h3, h4, h5, h6, p, blockquote, pre,
     abbr, address, cite, code,
@@ -21,7 +21,7 @@
       vertical-align: baseline;
       background: transparent;
     }
-    
+
     body {
       line-height: 1;
     }
@@ -29,9 +29,9 @@
  */
 
 html {
-    
+
     --looma-phone-width:667;
-    
+
     --looma-green: #29aa29;  /*green  = 063006 for TEST Looma */
     --looma-purple:#800080;  /*purple = 800080 for INDIA Looma */
     --looma-blue:#091F48;    /* Looma blue = 091F48 for regular Looma */
@@ -41,13 +41,13 @@ html {
     --looma-font-color:yellow;
     --looma-button-background:white;
     --looma-button-font-color:black;
-    
+
     --looma-button-hover-background:white;
     --looma-button-hover-font-color:black;
-    
+
     --looma-button-active-background:var(--looma-background);
     --looma-button-active-font-color:var(--looma-font-color);
-    
+
     --looma-scrollbar-track:lightgoldenrodyellow;
     background-color: white;
     height:100vh;
@@ -73,12 +73,12 @@ body {
 	padding:0;
     height:100vh;
     width:100vw;
-    
+
     font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", "Noteworthy",sans-serif;
-    
+
     background-color: var(--looma-background);
     color: var(--looma-font-color);
-    
+
 	overflow: hidden;
 	text-align: center;
     word-wrap:break-word;
@@ -89,7 +89,7 @@ body {
      grid-template-rows:    [top]  repeat(9, 1fr) [toolbar] 1fr [bottom];
      grid-template-columns: [left] repeat(16, 1fr)[toolbar] 1fr [right];
  }
- 
+
 body * {
     user-drag:none;
     -webkit-user-drag:none;
@@ -167,7 +167,7 @@ body * {
 h1, h3, h3, button, #looma-logo-div, #partner-logo-div, #CEHRD-logo-div {
     user-select:none;
     -webkit-user-select: none;
-    
+
 }
 
 h1.title, h2.title, h3.title {
@@ -189,7 +189,7 @@ h1 span, h2 span, h3 span {
     display:inline-block;
     user-select: none;
     -webkit-user-select: none;
-    
+
 }
 
 .credit{
@@ -199,7 +199,7 @@ h1 span, h2 span, h3 span {
     line-height: 12px;
     user-select:none;
     -webkit-user-select: none;
-    
+
     position: fixed;
     right:3vw;
     bottom:10vh;
@@ -284,7 +284,7 @@ button {
 	border-color: #FFFFFF;
 	border: 5px;
 	border-radius: 5px;
- 
+
 
 	display:inline-block;
 	height:80%;
@@ -419,9 +419,9 @@ button:hover span.tip.yes-show 	{
    bottom: 0vh;
    /* right:5vw;*/
     margin:auto;
-    
+
     font-size: 0.7em;
-    
+
     z-index: 100;
     border: 1px solid #000000;
     border-radius: 3px;
@@ -429,9 +429,9 @@ button:hover span.tip.yes-show 	{
     color:#000000;}
 
 button:hover span.tip.yes-show.big-show {
-    
+
     display:none;
-    
+
     font-size:0.5em;
     left:60vw;
     padding:0 auto;
@@ -478,6 +478,14 @@ button.lookup {
     bottom:33vh;
     display:none;
     background-image: url("../images/dictionary.png");
+    background-size: 75% 75%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+}
+
+button.captions {
+    bottom:38vh;
+    display:none;
+    background-image: url("../images/captions.png");
     background-size: 75% 75%;
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
 }
@@ -536,7 +544,7 @@ button#bagh-chal {
     /*white-space: pre;*/
     border:2px solid black;
     border-radius:6px;
-    z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
+    z-index:2000; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
 }
 
 .popup img#image {
@@ -600,6 +608,7 @@ button#bagh-chal {
 
 #fullscreen {
     position: relative;
+    z-index:1000;
     max-width:100%;
     width:100%;
     height:100%; /*trying to find best way to size fullscreen video*/
@@ -747,9 +756,9 @@ div.center {
 }
 
 .watermark {
-    
+
     display:none;  /* turn on with individual page CSS files (e.g. in CEHRD theme CSS file)*/
-    
+
     transform: rotate(-30deg);
     z-index: 9999;
     opacity:0.3;
@@ -778,30 +787,30 @@ div.center {
 } */
 @media screen and (max-width:480px) and (orientation:portrait),
        screen and (max-width:916px) and (orientation:landscape) {
-    
+
     body {
         --looma-background: var(--looma-blue);
         background-color: var(--looma-background);
         font-family: "Noteworthy";
     }
     h1.title {font-size:2em;}
-    
+
     button.img.play, button.img.activity, button.img.map {
         width: 27vw;
         height:18vh;
         font-size: 1em;
     }
-    
+
     button.img {
         height: 40vh;
         width: 27vw;
     }
-    
+
     th, td{
         padding: 0;
     }
     td button, th button{
         margin: 0;
     }
-    
+
 }

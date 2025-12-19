@@ -54,7 +54,7 @@ function toggleNepali() {
 
 function addKey(keyboardRow, i) {
     var key = $("<button></button>").addClass("keyboard-button");
-    
+
     // There are four things each button could represent: the normal English key, the shifted English key, the normal Nepali key, and the shifted Nepali key.
     var keySpan = $("<span></span>");
     keySpan.addClass("key-normal");
@@ -75,7 +75,7 @@ function addKey(keyboardRow, i) {
     nepaliShifted.addClass("key-nepali-shifted");
     nepaliShifted.html(nepaliShiftedKeys[i]);
     key.append(nepaliShifted);
-    
+
     keyboardRow.append(key);
 }
 
@@ -105,11 +105,11 @@ function createKeyboard() {
         //.addClass('keyboard');
 
     ///keyboardContainer.append($("<br/>"));
- 
+
     // First Row
     var keyboardRow = ($('<div class="keyboard-row">'));
     keyboard.append(keyboardRow);
-    
+
     for (var i = 0; i < 13; i++) {
         addKey(keyboardRow, i);
     }
@@ -130,7 +130,7 @@ function createKeyboard() {
     // Second Row
     var keyboardRow = ($('<div class="keyboard-row">'));
     keyboard.append(keyboardRow);
-    
+
     for (var i = 13; i < 26; i++) {
         addKey(keyboardRow, i);
     }
@@ -158,11 +158,11 @@ function createKeyboard() {
     keyboardRow.append(enter);
     */
     ///keyboard.append($("<br/>"));
-    
+
     // Fourth Row
     var keyboardRow = ($('<div class="keyboard-row">'));
     keyboard.append(keyboardRow);
-    
+
     var shift = $("<button></button>")
         .attr('id', 'keyboard-shift')
         .addClass("keyboard-button keyboard-special")
@@ -176,11 +176,11 @@ function createKeyboard() {
     for (var i = 37; i < 47; i++) {
         addKey(keyboardRow, i);
     }
-    
+
     // Fifth Row
     var keyboardRow = ($('<div class="keyboard-row">'));
     keyboard.append(keyboardRow);
-    
+
     var language = $("<button></button>")
         .attr('id', 'keyboard-language')
         .addClass("keyboard-button keyboard-special")
@@ -216,6 +216,11 @@ function createKeyboard() {
 
     $(keyboardContainer).append(keyboard);
     $('body').append(keyboardContainer);
+
+    // NOTE: the keyboard should be attached to #fullscreen, not body, in order to show when in FS mode
+    //       BUT, have to fix transparent setting for it to work
+    // $('#fullscreen').append(keyboardContainer);
+
     $('.keyboard-button').click(keyClicked);
 }
 
@@ -321,8 +326,8 @@ function showKeyboard(event) {
     // Ignore invalid inputs, if they were somehow assigned to "destination".
     if ($(target).hasClass("nokeyboard")) return;
     if ($(target).attr("readonly") != null) return;
-    
-    
+
+
     $('.keyboard-entry').css({
         display: "none"
     });
@@ -347,16 +352,16 @@ function showKeyboard(event) {
     temporaryDestination.css({
         display: ""
     });
-    
+
     LOOMA.makeTransparent( $('#main-container-horizontal') );
     $("#looma-keyboard-container").css({
         display: "block"
     });
     temporaryDestination.focus();
-    
+
     var lang = LOOMA.readStore('language', 'cookie');
     if  (lang === 'native' && !isNepali() || lang === 'english' && isNepali()) toggleNepali();
-    
+
 }  // end showKeyboard()
 
 // Dismiss the keyboard, resetting everything to normal. The current text will be inserted into the text field.
@@ -392,21 +397,24 @@ $(document).ready(function() {
         return;
     }
  /**/
-    
+
     createKeyboard();
-    
+
     validInputs.click(
         elementFocused);
     var showKeyboardButton = $("<button></button>").addClass(
         "show-keyboard looma-control-button").click(showKeyboard);
-    
+
     showKeyboardButton.append($('<span class="tip english-tip yes-show">Keyboard</span>'))
     showKeyboardButton.append($('<span class="tip native-tip">Keyboard</span>'))
-    
+
     destination = $(document.activeElement);
-    
+
+  //  if ( $('#epaath_iframe').length)
+  //      $('#iframe').append(showKeyboardButton)
+  //  else
     if ( $('#fullscreen').length)
-         $('#fullscreen').append(showKeyboardButton)
+        $('#fullscreen').append(showKeyboardButton)
     else $("#main-container-horizontal").append(showKeyboardButton)
-    
+
 });

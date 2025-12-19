@@ -780,26 +780,27 @@ require_once('includes/looma-utilities.php');
               //  $query = array('_id' => array('$regex' => mongoRegex($regex)));
                 $query = array('_id' => mongoRegex($regex));
                 $chapters = mongoFind($chapters_collection, $query, '_id', null, null);
-                foreach ($chapters as $ch) {
+                foreach ($chapters as $ch)
+                    if ($ch['ft'] === 'chapter') {
 
-                    // check if a lesson exists for this chapter
-                    $hasLesson = hasLesson($ch['_id']);
+                        // check if a lesson exists for this chapter
+                        $hasLesson = hasLesson($ch['_id']);
 
-                    //if ($hasLesson && !isset($hasLesson['mongoID'])) { echo 'haslesson with no mongoID: ' . $hasLesson['dn'];}
+                        //if ($hasLesson && !isset($hasLesson['mongoID'])) { echo 'haslesson with no mongoID: ' . $hasLesson['dn'];}
 
-                    $mark = $hasLesson ? "class='hasLesson'" .
-                        "data-mongo='" . $hasLesson['mongoID'] .
-                        "' data-db='" . $hasLesson['db'] .
-                        "' " : "";
+                        $mark = $hasLesson ? "class='hasLesson'" .
+                            "data-mongo='" . $hasLesson['mongoID'] .
+                            "' data-db='" . $hasLesson['db'] .
+                            "' " : "";
 
-                   // if      ($lang === 'en' && isset($ch['dn'])  && $ch['dn'] !== '')
-                        if      ($lang === 'en' || $lang === 'both')
-                        echo "<option " . $mark . " value='" . $ch['_id'] . "'>" . "(" . $ch['_id'] . ") " . $ch['dn'] . "</option>";
-                   // else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '') {
-                    else if ($lang === 'np') {
-                        $nch_id = ( isset($ch['nch_id'])) ? $ch['nch_id'] : $ch['_id'];
-                        echo "<option " . $mark . "value='" . $nch_id . "'>" . "(" . $nch_id . ") " . $ch['ndn'] . "</option>";
-                    }
+                       // if      ($lang === 'en' && isset($ch['dn'])  && $ch['dn'] !== '')
+                            if      ($lang === 'en' || $lang === 'both')
+                            echo "<option " . $mark . " value='" . $ch['_id'] . "'>" . "(" . $ch['_id'] . ") " . $ch['dn'] . "</option>";
+                       // else if ($lang === 'np' &&  isset($ch['ndn']) && $ch['ndn'] !== '') {
+                        else if ($lang === 'np') {
+                            $nch_id = ( isset($ch['nch_id'])) ? $ch['nch_id'] : $ch['_id'];
+                            echo "<option " . $mark . "value='" . $nch_id . "'>" . "(" . $nch_id . ") " . $ch['ndn'] . "</option>";
+                        }
                 }
             }
             return;  // end textChapterList()

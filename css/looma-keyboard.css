@@ -5,7 +5,7 @@
     left: 5vw;
     width: 90vw;
     background-color: inherit;
-    z-index: 2147483648;
+    z-index: 9999;
     display: none;
     border-radius:5px;
     border:2px solid white;

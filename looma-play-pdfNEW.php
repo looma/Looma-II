@@ -92,7 +92,7 @@ else                                                 logFiletypeHit('pdf');
 
         <?php
         //echo '<div id="fullscreen">';
-        include('looma-pdf-viewerNEW.php');
+        include ('includes/looma-pdf-viewerNEW.php');
         include ('includes/looma-control-buttons.php');
 
         downloadButton($filepath, $filename);

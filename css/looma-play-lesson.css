@@ -10,7 +10,13 @@ Revision: 3.0
 canvas {aspect-ratio: auto 1270 / 1661;
     width:100%;
 }
-#pdf {position:absolute;}
+#pdf {position:absolute;
+    height:82vh;
+}
+
+#pdf:fullscreen {
+    height:100vh;
+}
 html {
     box-sizing: border-box;
 }
@@ -58,7 +64,7 @@ iframe {
     margin:0;
     padding: 0;
     position:static;
-    
+
 }
 
 #fullscreen.keyboard  button.show-keyboard{
@@ -72,6 +78,7 @@ iframe {
 }
 
 #viewer {
+    display:none;
     height:100%;
     width:100%;
 }
@@ -146,7 +153,7 @@ iframe {
 button.looma-control-button { display: none;}
 
 button#fullscreen-control {
-    display:inline-block;
+    display:none;
     bottom:16vh;
     right:5vw;
 }
@@ -202,7 +209,7 @@ button#prev-item:-webkit-full-screen {
 span.hint {
     position:absolute;
     top:45%;
-    
+
     padding:10vh 0 0 0;
     color:#888;
     z-index:-1;
@@ -219,7 +226,19 @@ span.hint {
     max-height:100%;
     max-width:100%;}
 
+#displayers {
+    display:none;
+    height:100%;
+    width:100%;
+}
+
+#displayers embed {
+    height:100vh;
+    width:100vw;
+}
+
 #timeline {
+    position:relative;
     display: inline-flex;
     bottom:0;
     left:0;
@@ -231,7 +250,7 @@ span.hint {
     background-color:var(--looma-toolbar);
     color:black;
     vertical-align:middle;
-    
+
     overflow-x: scroll;
     overflow-y: hidden;
 }
@@ -242,7 +261,7 @@ span.hint {
     background-color:var(--looma-toolbar);
     height:100%;
     width: 100%;
-  
+
     vertical-align:middle;
     border-radius: 3px;
 }
@@ -284,7 +303,7 @@ button.lesson-element {
 button.lesson-element.playing, button.lesson-element:focus {
     border:5px solid red;
  }
- 
+
 button.lesson-element .name{
     display:none;
 }
@@ -346,9 +365,8 @@ span#lesson-name {
 
 .control-button-fullscreen {
     position: absolute;
-    
-    display:none;
-    
+
+
     opacity:0.4;
     background: white;
     background-position: left top;
@@ -419,11 +437,11 @@ span#lesson-name {
     /*background-color: #091F48;  */
     /*color: yellow;  */
     /*font-size: 20px;*/
-    
+
     overflow:hidden;
     white-space:nowrap !important;
     text-overflow:ellipsis;
-    
+
 }
 
 .text-display p,

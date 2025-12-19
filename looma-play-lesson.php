@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
 Author: Skip
-Filename: looma-lesson-present.php
+Filename: looma-play-lesson.php
 Date: 02/2017
 Description: looma lesson plan presenter
 -->
@@ -25,16 +25,26 @@ Description: looma lesson plan presenter
     ?>
             <div id="fullscreen" class="keyboard">
 
-                <input id="force_keyboard" hidden>
+              <!--  <input id="force_keyboard" hidden> -->
+
 
                 <div id="viewer">
                 </div>
 
-                 <div id="displayers" hidden>
+                 <div id="displayers" >
+
                     <div id="pdf-canvas">
-                        <div id="pdf" class="scroll" data-fn="" data-fp="" data-page="" data-len="" data-zoom="">
+                        <?php
+                            include("includes/looma-pdf-toolbar.php");
+                            include("includes/looma-pdf-viewer.php");
+                        ?>
+
+                  <!--      <div id="pdf" class="scroll" data-fn="" data-fp="" data-page="" data-len="" data-zoom="">
                         </div>
+             -->
                     </div>
+                     <div id="thumbs"></div>
+
                 </div>
 
                 <?php
@@ -287,10 +297,13 @@ Description: looma lesson plan presenter
     <script src="js/jquery-ui.min.js">  </script>
     <script src="js/jquery.hotkeys.js"> </script>
     <script src="js/tether.min.js">  </script>
-    <script src="js/bootstrap.min.js">  </script>
+ <!--    <script src="js/bootstrap.min.js">  </script>  -->
     <script src="js/looma-media-controls.js"></script>
-    <script src="js/pdfjs/pdf.min.js"></script>
-    <script src="js/looma-pdf-utilities.js"></script>
-    <script src="js/looma-play-lesson.js"></script>
+  <!--     <script src="js/pdfjs/pdf.min.js"></script> -->
+<!--       <script src="js/looma-pdf-utilities.js"></script> -->
+
+      <!-- <script src="js/looma-play-pdf.js"></script> -->
+
+  <script src="js/looma-play-lesson.js"></script>
  </body>
 </html>

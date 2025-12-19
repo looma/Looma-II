@@ -35,6 +35,10 @@ button#fullscreen-control {
 }
 
 button#fullscreen-playpause {
+    display:block;
+}
+
+button#fullscreen-playpause {
     display:none;
     bottom:26vh;
     height:10vh;

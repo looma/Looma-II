@@ -9,8 +9,10 @@ body {height:100%}
     margin:3%;
     overflow-y:scroll;
     background-color: white;
-    
+
 }
+
+button.speak {display:block;}
 
 pre {
     white-space: pre-wrap;
@@ -21,7 +23,7 @@ pre {
     white-space: pre-wrap;
     color: black;
     margin: 5% auto;
-    
+
     text-align: left;
     white-space: pre-wrap;
 }

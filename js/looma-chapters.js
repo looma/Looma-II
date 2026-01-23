@@ -31,7 +31,7 @@ function activityButtonClicked(){
     var chapter_dn = this.getAttribute('data-chdn');
     var chapter_ndn = this.getAttribute('data-chndn');
         var chapter_lang = this.getAttribute('data-lang');
-        
+
         LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
         //remember scroll position
         LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session');
@@ -46,7 +46,7 @@ function activityButtonClicked(){
         window.location = "activities?ch=" + chapter_id +
                                                 "&chdn=" + chapter_dn +
                                                 "&chndn=" + chapter_ndn +
-                                                "&lang=" + chapter_lang +
+                                                "&chapter_lang=" + chapter_lang +
                                                 "&grade=" + className +
                                                 "&subject=" + subject;
     };  //  end activityButtonClicked()
@@ -56,7 +56,7 @@ function lessonButtonClicked(){
     var chapter_id = this.getAttribute('data-ch');
     var mongo_id =   this.getAttribute('data-id');
     var chapter_lang = this.getAttribute('data-lang');
-    
+
     LOOMA.setStore('chapter', chapter_id, 'session');    //set a COOKIE for CHAPTER
     LOOMA.setStore('chapterScroll', $("#main-container-horizontal").scrollTop(), 'session'); //remember scroll position
     LOOMA.clearStore('lesson-plan-index','session');
@@ -96,9 +96,9 @@ $(document).ready (function() {
 
     //scroll to prior scroll position
     $("#main-container-horizontal").scrollTop(LOOMA.readStore('chapterScroll', 'session'));
-    
+
     $(".chapter .info").hover(function(){showSummary()});
-    
+
     toolbar_button_activate("home");
 
 }); //end of document.ready anonymous function

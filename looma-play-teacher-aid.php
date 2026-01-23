@@ -15,7 +15,6 @@ Comments:
 <?php $page_title = 'Looma - Teacher Aid';
 include ('includes/header.php');
 include ('includes/looma-utilities.php');
-
 ?>
 
 <link rel="stylesheet" href="css/looma.css">
@@ -69,6 +68,9 @@ include ('includes/looma-utilities.php');
             echo "<div class='text-display'>";
             echo "<pre>" . $contents . "</pre>";
             echo "</div>";
+
+            include ('includes/looma-control-buttons.php');
+
      //   };
       //  echo "</div>";
     }

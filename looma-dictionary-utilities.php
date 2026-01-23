@@ -157,8 +157,8 @@ if (isset($_REQUEST["cmd"])) {
 			$maxCount = (isset($_REQUEST["count"]) ?
 				min(max(0,$_REQUEST['count']),$MAX_NUM) : $DEFAULT_NUM);
 
-			$classes =  array('class1','class2','class3','class4','class5','class6',
-							  'class7','class8', 'class9', 'class10', 'class11', 'class12');
+			$classes =  array('class1','class2','class3','class4', 'class5', 'class6',
+							  'class7','class8','class9','class10','class11','class12');
 			$subjects = array('english','english optional','math','math optional','social studies','moral education',
 							  'science', 'science optional','nepali','serafera','health', 'vocation','computer');
 			$prefixes['english'] = 'EN'; $prefixes['english optional'] = 'ENa'; $prefixes['math'] = 'M';
@@ -228,7 +228,7 @@ if (isset($_REQUEST["cmd"])) {
 		echo $list;
 		exit(); //end LIST cmd
 
-	
+
 ////////////////////////////
 ////// command ADD   //////
 ////////////////////////////

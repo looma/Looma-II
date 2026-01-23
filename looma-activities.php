@@ -19,7 +19,10 @@ Description:  displays a list of activities for a chapter (class/subject/chapter
     //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
         //                       $mongo_id, $ole_id, $url, $pg, $zoom, $grade,
         //                       $epversion, $nfn, $npg, $prefix,$lang)
+
+require_once('includes/looma-isloggedin.php');
 ?>
+
 </head>
 <body>
 <?php
@@ -73,14 +76,39 @@ $foundActivity;
         return $list;
     } // end wordList()
 
+    function wordsWithPicturesList($ch_id) {
+
+            //$query = ['ch_id':$ch_id];
+            $words = mongoFindRandom($dictionary_collection, $query, 100 * (int) $maxCount);
+
+    		//print_r($words);
+
+            $count = 0;
+            foreach ($words as $newWord) {
+                //echo "looking for " . "../content/dictionary images/" . $newWord['en'] . ".jpg";
+                    if (file_exists("../content/dictionary images/" . $newWord['en'] . ".jpg")) {
+                    array_push($list, $newWord);
+                    $count++;
+                    if ($count >= $maxCount) break;
+                }
+            }
+    };  // end wordsWithPicturesList()
+
     function makeButton($activity) {
         //depending on the filetype of the activity, display the appropriate button
-        global $buttons, $maxButtons, $ch_id, $foundActivity, $shown, $lang ;
+        global $buttons, $maxButtons, $ch_id, $foundActivity, $shown, $chapter_lang, $lang ;
 
         $id = $activity['_id'];
 
         // check for no FT
         if (!isset($activity['ft'])) return;
+
+// NOTE: temporary change to show only NP resources for NP chapters
+
+//echo "logged in is " . loggedIn() . " and login level is " . loginLevel();
+//echo "chapter lang is " . $chapter_lang . " and activity lang is " . $activity['lang'];
+
+if (loggedIn() && loginLevel() === 'test' && $chapter_lang !== $activity['lang'] && $activity['lang'] !== "both") return;
 
         //check if this Activity has already been shown
         //add to 'shown' array, so it wont be shown again
@@ -92,13 +120,13 @@ $foundActivity;
             $ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
 
-        if ($lang === 'np') $dn = (isset($activity['ndn'])? $activity['ndn']:(isset($activity['dn']) ? $activity['dn'] : ""));
+        if ($chapter_lang === 'np') $dn = (isset($activity['ndn'])? $activity['ndn']:(isset($activity['dn']) ? $activity['dn'] : ""));
         else                $dn = (isset($activity['dn']) ? $activity['dn'] : "");
 
-        if ($lang === 'np') $fp = (isset($activity['nfp'])? $activity['nfp']:(isset($activity['fp']) ? $activity['fp'] : ""));
+        if ($chapter_lang === 'np') $fp = (isset($activity['nfp'])? $activity['nfp']:(isset($activity['fp']) ? $activity['fp'] : ""));
         else                $fp = (isset($activity['fp']) ? $activity['fp'] : "");
 
-        if ($lang === 'np') $fn = (isset($activity['nfn'])? $activity['nfn']:(isset($activity['fn']) ? $activity['fn'] : ""));
+        if ($chapter_lang === 'np') $fn = (isset($activity['nfn'])? $activity['nfn']:(isset($activity['fn']) ? $activity['fn'] : ""));
         else                $fn = (isset($activity['fn']) ? $activity['fn'] : "");
 
         $thumb = (isset($activity['thumb']) ? $activity['thumb'] : "");
@@ -130,7 +158,7 @@ $foundActivity;
                 case "mp4":
                 case "mov":
                 case "m4v":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,$lang);
+                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,$activity['lang']);
                     break;
                 case "slideshow":
                     makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "", "",null,null,$lang);
@@ -149,7 +177,7 @@ $foundActivity;
                 case "jpeg":
                 case "png":
                 case "gif":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
+                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,$lang);
                     break;
                 case "audio":
                 case "mp3":
@@ -180,7 +208,7 @@ $foundActivity;
                 case "ep":
                 case "epaath":
                     if ($epversion === 2015) $thumb = $fp . $fn . "/thumbnail.jpg";
-                    if ( substr($oleID, 0, 3) === 'nep') $lang = 'np';
+                    $lang = 'en'; if ( substr($oleID, 0, 3) === 'nep') $lang = 'np';
                     makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion,null,null,null,$lang);
                     break;
                 case "html":
@@ -211,10 +239,12 @@ $foundActivity;
         $grade = (isset($_GET['grade'])) ? trim($_GET['grade']) : '';
         $gradenumber = (isset($_GET['grade'])) ? str_replace("class", "", $grade) : '';
         $subject = (isset($_GET['subject'])) ? trim($_GET['subject']) : '';
-        $lang = (isset($_GET['lang'])) ? trim($_GET['lang']) : 'en';
+
+$lang = 'en';
+
+        $chapter_lang = (isset($_GET['chapter_lang'])) ? trim($_GET['chapter_lang']) : 'en';
 		$ch_id = trim($_GET['ch']);
         $ch_dn = trim($_GET['chdn']);
-
         $ch_ndn =  (isset($_GET['chndn'])) ? trim($_GET['chndn']) : $ch_dn;
 
         echo "<div id='main-container-horizontal' class='scroll'>";
@@ -288,7 +318,7 @@ $foundActivity;
 
         echo "<a href='looma-game.php?type=keywords&class=Class $gradenumber&subject=$subject&ch_id=" . $ch_id . "'>";
             echo "  <button class='activity  img'>";
-            echo "    <img src='images/dictionary.png'>";
+            echo "    <img src='images/games.png'>";
             echo "    <span>Key Vocabulary</span>";
             echo "  </button>";
         echo "</a>";
@@ -305,7 +335,7 @@ $foundActivity;
     //create a vocab review button if there are any words from this chapter in the dictionary
     $words = wordList($ch_id, false);
 
-    if ($lang === 'en' && count($words) >= 3) {
+    if ($chapter_lang === 'en' && count($words) >= 3) {
         echo "<td>";
 
         echo "<a href='looma-vocab-flashcard.php?ch_id=" . $ch_id . "'>";
@@ -320,6 +350,9 @@ $foundActivity;
         nextButton();
 
         if (intval($gradenumber) <= 4) { //button for vocabulary picture matching game
+
+            // need to check here if this chapter has any words with pictures in dictionary
+
             echo "<td>";
 
             //echo "<a href='looma-game.php?type=picture&class=class" . $gradenumber . "&subject=" . $subject . "&ch_id=" . $ch_id . "'>";

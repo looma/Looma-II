@@ -300,7 +300,8 @@ Description: looma lesson plan presenter
  <!--    <script src="js/bootstrap.min.js">  </script>  -->
     <script src="js/looma-media-controls.js"></script>
   <!--     <script src="js/pdfjs/pdf.min.js"></script> -->
-<!--       <script src="js/looma-pdf-utilities.js"></script> -->
+
+   <script src="js/looma-pdf-utilities.js"></script>
 
       <!-- <script src="js/looma-play-pdf.js"></script> -->
 

@@ -154,6 +154,8 @@ function thumbnail ($file, $path, $type) {
     $dot = $file ? strrpos($file, ".") : "";  //strrpos finds the LAST occurrence
     if ( $dot ) { $src = $path . substr($file, 0, $dot) . "_thumb.jpg";}
 
+    if (!file_exists($src)) $src = $path . substr($file, 0, $dot) . "_thumb.JPG";
+
     //echo "thumb is " . $src . '<br>';
     //if (file_exists($src)) echo "file exists"; else echo "file does not exist";
 

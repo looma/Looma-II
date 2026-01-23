@@ -23,7 +23,7 @@ they want to edit a video
 	<body>
 		<?php
             //Gets the filename, filepath, and the thumbnail location
-            $filename = urldecode($_REQUEST['fn']);
+            $filename = rawurldecode($_REQUEST['fn']);
             $filepath = urldecode($_REQUEST['fp']);
             $displayname = urldecode($_REQUEST['dn']);
             $thumbFile = thumbnail($filename,$filepath,"mp4");

@@ -150,7 +150,7 @@ playMedia : function(button) {
         case "document": //DOCUMENT (some PDFs)
         case "textbook":
             var pdfZoom =  button.getAttribute('data-zoom');
-            if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
+            if ( ! pdfZoom || pdfZoom === "undefined" || pdfZoom === "auto") pdfZoom = '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
             var pdfLen =  button.getAttribute('data-len') ? button.getAttribute('data-len') : 1000;
                     window.location = 'pdf?' +
@@ -243,7 +243,7 @@ playMedia : function(button) {
         case "ep":
           //  var lang = language==='native'?'np':'en';
 
-            if (! lang || lang === 'both') lang =  language==='native'?'np':'en';
+            if (! lang || lang === 'null' || lang === 'both') lang =  language==='native'?'np':'en';
 
             if (button.getAttribute("data-epversion") == 2015) {
                 fp = encodeURIComponent(button.getAttribute('data-fp'));

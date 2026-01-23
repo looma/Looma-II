@@ -19,7 +19,7 @@ Description: formatting and styling for the game page
 }
 
 .header {
-  grid-column: left / 2;
+  grid-column: left / right;
   grid-row: top / 2;
     user-select:none;
 }
@@ -73,7 +73,7 @@ h1#gameTitle {font-size: 5vh;}
     margin:5vh;
     color:            var(--looma-button-font-color);
     background-color: var(--looma-button-background);
-    
+
     width:11%;
     height:65%;
     font-size: 5vw;
@@ -493,7 +493,7 @@ button:hover, .button:hover
 
 
 /***************** TIMELINE GAME ******************/
- 
+
  /*empty (and hidden) button in the timeline that's just used to position/style the dates and events*/
 .empty
 {

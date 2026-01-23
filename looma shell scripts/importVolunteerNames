@@ -21,7 +21,7 @@ var docs = file.split(/[\r\n]+/);  // split file into array of lines containing 
 print ('Processing ' + docs.length + ' lines');
 docs.forEach( function(doc) {
         if (doc) {
-                if (param !== 'dryrun') db.volunteers.insert({'name':doc});
+                if (param === 'run') db.volunteers.insert({'name':doc});
                 print(++changecount + ' - - - added volunteer: ' + doc);
         }
 }) ; // end foreach doc

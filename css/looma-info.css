@@ -1,7 +1,7 @@
 
 #main-container-horizontal {
     display:grid;
-    grid-template-rows:  1fr 3fr 3fr 3fr;
+    grid-template-rows:  1fr 3fr 20fr 3fr;
     grid-template-columns: [left] 4fr [middle-left] 6fr [middle-right] 3fr [right];
 
     /*font-size:1.75em;*/
@@ -59,6 +59,7 @@ a {color:lightgreen;}
  #logos {
      grid-row: 3;
      grid-column: left / middle-right;
+     overflow:hidden;
      background-color: white;
      border:3px solid red;
      border-radius:12px;

@@ -895,7 +895,7 @@ require_once('includes/looma-utilities.php');
     case "search":
         // called (from looma-search.js, from lesson-plan.js, and other "editors") using POST with FORMDATA serialized by jquery
         // $_POST[] can have these entries:
-        // cmd = "searchChapters", collection, [class], [subj], [chapter (a ch_id)], sort, search-term,
+        // cmd = "search", collection, search-term,
         // [chapter-language (in 'en'|'np')],
         // key1, key2, key3, key4
         // src[] (array of checked 'sources') and type[] (array of checked 'types')
@@ -995,7 +995,8 @@ require_once('includes/looma-utilities.php');
 
         if (sizeof($extensions) > 0) $query['ft'] = array('$in' => $extensions);  //if filetypes given, search only for them
 
-         else if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson']);
+         else if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson','chapter']);
+         else $query['ft'] = array('$nin' => ['chapter']);
 
         if (sizeof($sources) > 0) $query['src'] = array('$in' => $sources);
 

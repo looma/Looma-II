@@ -162,8 +162,6 @@ span {
      top:-20px;
  }
 
-/*a {color:white;}*/
-
 #info-panel {
     grid-row: 4;
     grid-column: left / middle-right;

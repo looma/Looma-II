@@ -98,6 +98,10 @@ info () {
   info=$(cat /tmp/info)
   echo "    Looma version:  $info"
 
+  echo "    Disk space (total/used/free): "
+  echo "Filesystem      Size  Used Avail Use%"
+  ssh  -P $port -i /home/looma/.ssh/$ID-id_rsa 'odroid@127.0.0.1'  'df -h | grep mmcblk0p2'
+
   rm -f /tmp/timestamp
   scp -q -P $port -i /home/looma/.ssh/$ID-id_rsa 'odroid@127.0.0.1:/var/www/html/Looma/archivetimestamp.txt'    /tmp/timestamp
   check $? 'scp'
@@ -111,9 +115,6 @@ info () {
   timestamp=$(cat /tmp/timestamp)
   echo -n "    Last content update: "
   date -d "@$timestamp"   "+%F %T"
-
-  echo -n "    Disk space (total/used/free): "
-  ssh  -P $port -i /home/looma/.ssh/$ID-id_rsa 'odroid@127.0.0.1'  "df -h | grep mmcblk0p2"
 
 }
 

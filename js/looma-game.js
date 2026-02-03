@@ -72,7 +72,7 @@ function timelineFindDate(ev) {
     }
     clickedEventID = ev.target.id;
     this.style.color = "blue";
-    
+
     var dateButtons = document.getElementsByClassName("date");
     for (i = 0; i < dateButtons.length; i++)
     {
@@ -83,13 +83,13 @@ function timelineFindDate(ev) {
 // checks to see if the user matched the event to the correct date by clicking
 function checkTimelineMatch(ev) {
     var dateID = ev.target.id;
-    
+
     var dateButtons = document.getElementsByClassName("date");
     for (i = 0; i < dateButtons.length; i++)
     {
         dateButtons[i].removeEventListener('click', checkTimelineMatch);
     }
-    
+
     if ($("#" + dateID).data("index") == $("#" +clickedEventID).data("index"))
     {
         rightDraggingOutput($("#" +clickedEventID).data("index"));
@@ -104,14 +104,14 @@ function checkTimelineMatch(ev) {
 function rightDraggingOutput(eventID) {
     //must rest to undefined otherwise when we remove style attribute we remove visibility:hidden
     clickedEventID = undefined;
-    
+
     var goal = getNumQuestions();
     increaseScore();
     numMatched++;
     var eventButtons = document.getElementsByClassName("event");
     var emptyEventButtons = document.getElementsByClassName("emptyEvent");
     var dateButtons = document.getElementsByClassName("date");
-    
+
     //makes the selected event button and date button green
     for (i = 0; i < eventButtons.length; i++)
     {
@@ -127,7 +127,7 @@ function rightDraggingOutput(eventID) {
             dateButtons[i].style.color = "#0bd871";
         }
     }
-    
+
     /*performs the following after 1 second:
     hides the event button in the "events" div
     resets the style of the date button
@@ -138,14 +138,14 @@ function rightDraggingOutput(eventID) {
             if ($(eventButtons[i]).data("index") == eventID)
                 eventButtons[i].style.visibility = "hidden";
         }
-        
+
         for (i = 0; i < dateButtons.length; i++) {
             if ($(dateButtons[i]).data("index") == eventID)
             { dateButtons[i].removeAttribute("style");
               dateButtons[i].disabled = true;
             }
         }
-        
+
         var timelineEventButtons = document.getElementsByClassName("timelineEvent");
         for (i = 0; i < timelineEventButtons.length; i++) {
             if (i == eventID)
@@ -161,7 +161,7 @@ function wrongDraggingOutput(eventID, dateID)
     clickedEventID = undefined;
     var eventButtons = document.getElementsByClassName("event");
     var dateButtons = document.getElementsByClassName("date");
-    
+
     //makes the selected event button and date button red
     for (i = 0; i < eventButtons.length; i++)
     {
@@ -177,7 +177,7 @@ function wrongDraggingOutput(eventID, dateID)
             dateButtons[i].style.color = "#f70426";
         }
     }
-    
+
     //resets the style of the selected event and date buttons
     setTimeout(function(){
         for (i = 0; i < eventButtons.length; i++)
@@ -202,21 +202,21 @@ function runTimeline(){
 function runTimelineOLD()
 {
     $('<div class="timeline"><ol>').appendTo($('#game'));
-  
+
     numMatched = 0;
     curr_question = 1;
     startTimer(time_limit);
-    
+
     //document.getElementById("progress-bar").style.width = ourWidth;
-    
+
     var eventButtons = document.getElementsByClassName("event");
     var dateButtons = document.getElementsByClassName("date");
-    
+
     if ( numMatched == eventButtons.length )
     {
         //document.getElementById("endMessage").innerHTML = "Good job! You matched all " + numMatched + " events to their dates in " + numGuesses + " guesses.";
         gameOver();
-        
+
         for (var i = 0; i < dateButtons.length; i++) {dateButtons[i].disabled = true;}
     }
     else
@@ -230,7 +230,7 @@ function runTimelineOLD()
             dateButtons[$i].addEventListener('dragleave', resetStyle);
         }
     }
-    
+
 }; //end runTimelineOLD()
 
 
@@ -245,7 +245,7 @@ var mcTries;
 // //////////////////////////////////
 function mcCorrectAnswer(event) {
     $('.correct').toggleClass('good');
-    
+
     setTimeout(function() {
         $('.correct').toggleClass('good');
         correctAnswer();
@@ -256,11 +256,11 @@ function mcCorrectAnswer(event) {
 // ////////////////////////////////
 function mcWrongAnswer(event) {
     $(event.currentTarget).toggleClass('bad');
-    
+
     setTimeout(function() {
         $(event.currentTarget).toggleClass('bad');
         mcTries++;
-        
+
         if (mcTries > 3) {
             //if (curr_question >= num_questions) gameOver();
             //else
@@ -275,7 +275,7 @@ function mcWrongAnswer(event) {
             startTimer(time_limit);
         }
     },2000);
-    
+
     //});
 }
 
@@ -298,7 +298,7 @@ function runMC() {
 /////////////////////////////////////////////////////
 ////////  MATCHING GAME   ///////////////////////////
 /////////////////////////////////////////////////////
-    
+
     var previousClick;
     var selected_pair;
     var selected_prompt, selected_resp;
@@ -313,7 +313,7 @@ function matchPromptClick(event) {
     //selected_pair = event.target.className.split(' ')[1];
     selected_prompt = $(event.currentTarget).data()['pair'];
     $('.prompt.not-done[data-pair=' + selected_prompt + ']').addClass('clicked');
-    
+
     if ($(event.currentTarget).data()['word'] && game.presentation_type !== 'picture matching') LOOMA.speak($(event.currentTarget).data()['word']);
 
     if (previousClick === 'response') {checkMatch();
@@ -329,11 +329,11 @@ function matchPromptClick(event) {
 // /////// matchResponseClick  /////////
 // //////////////////////////
 function matchResponseClick(event) {
-  
+
     $('.response.not-done').removeClass('clicked');
     selected_resp = $(event.currentTarget).data()['pair'];
     $('.response.not-done[data-pair=' + selected_resp + ']').addClass('clicked');
-    
+
     if (previousClick === 'prompt') {checkMatch();
     } else {
         previousClick = 'response'
@@ -343,7 +343,7 @@ function matchResponseClick(event) {
 function checkMatch() {
     var r = selected_resp;
     var p = selected_prompt;
-    
+
     if (selected_resp === selected_prompt) {  //correct!
         matches_made++;
         //scores[curr_team-1]++;
@@ -352,47 +352,47 @@ function checkMatch() {
         //$('.'+selected_resp).css('color','green');
         $('.response[data-pair=' + selected_resp + ']').addClass('matched');
         $('.prompt[data-pair=' + selected_prompt + ']').addClass('matched');
-  
+
         // selected_prompt = null;
         // selected_resp = null;
         previousClick = null;
-   
+
         setTimeout(function() {
             //$('.'+selected_resp).hide();
             $('.response[data-pair=' + r + ']').removeClass('matched not-done clicked').addClass('done').off('click');
             $('.prompt[data-pair=' + p + ']').removeClass('matched not-done clicked').addClass('done').off('click');
-            
+
             // remove this P/R pair from activeMatch arrays
             if (['matching','spoken matching','spoken to picture', 'picture matching'].includes(game.presentation_type))
             {
                 activeMatchPrompts.splice(selected_prompt,1);
                 activeMatchResponses.splice(selected_resp,1);
             }
-            
+
             correctAnswer();
             //showTeam();
             //if (matches_made === game['prompts'].length) gameOver();
             if (matches_made === num_questions) gameOver();
         }, 1000);
-        
+
     } else {  //incorrect!
         //$('.response.'+selected_resp).css('color','red');
         //$('.prompt.'+selected_resp).css('color','red');
         $('.response[data-pair=' + selected_resp + ']').removeClass('clicked').addClass('mismatched');
         $('.prompt[data-pair=' + selected_prompt + ']').removeClass('clicked').addClass('mismatched');
-    
+
         //remove prompt onclick
         //$('.prompt').off('click');
         selected_resp = null;
         selected_prompt = null;
         previousClick = null;
-        
+
         setTimeout(function() {
             //$('.response.'+selected_resp).css('color','black');
             //$('.prompt.'+selected_resp).css('color','black');
             $('.response[data-pair=' + r + ']').removeClass('mismatched');
             $('.prompt[data-pair=' + p + ']').removeClass('mismatched');
-          
+
             wrongAnswer();
         },1000);
     }
@@ -431,24 +431,24 @@ function matchResponseButton(type,i,response) {
 //////////////////////////////  NOTE: runs a 'matching' game using 'prompts[]' and 'responses[]'
 
 function runMatch(type) { //called to start the game or when a question is answered correctly
-  
+
     var button;
     var showQuestions = 5;
     showTeam();
   //  matches_made = 0;
-    
+
     //$('#game').append('<h4 class="question" id="question-number">Match the prompts on the left to the corresponding responses on the right.</h4>');
-  
-    
+
+
     $('#question').html(' Click left and right items to find a match ');
-    
+
     // game prompts and responses are in             game['prompts'] and      game['responses']
     // currently active prompts and responses are in activeMatchPrompts[] and activeMatchResponses[]
-    
-    
+
+
     while (activeMatchPrompts.length < showQuestions && prompts.length > 0) {
         var rnd = Math.floor(Math.random() * (prompts.length));
-        
+
         activeMatchPrompts.push(prompts.splice(rnd, 1)); //removes the "rnd" element from prompts[] and adds it to activeMatchPrompts[]
         activeMatchResponses.push(responses.splice(rnd, 1));
     }
@@ -456,7 +456,7 @@ function runMatch(type) { //called to start the game or when a question is answe
     responseButtons = [];
     $('#prompts').empty();
     $('#responses').empty();
-    
+
     activeMatchPrompts.forEach(function(prompt, i){
         //button = $('<button class="prompt not-done"  data-word="' + prompt +  '" data-pair="' + i.toString() + '" id="prompt-'+i.toString()+'">' + prompt + '</button>');
         button = matchPromptButton(type,i,prompt);
@@ -469,11 +469,11 @@ function runMatch(type) { //called to start the game or when a question is answe
         button.click(matchResponseClick);
         responseButtons.push(button);
     });
-    
+
     //https://www.w3schools.com/js/js_array_sort.asp
     promptButtons.sort  (function(a, b){return 0.5 - Math.random()});
     responseButtons.sort(function(a, b){return 0.5 - Math.random()});
-    
+
     promptButtons.forEach(function(promptButton){
         $('#prompts').append(promptButton);
         $('#prompts').append('<br/>');
@@ -495,13 +495,13 @@ function runMatchSpeak() {
     showTeam();
     matches_made = 0;
     num_questions = 5;
-    
+
     //$('#game').append('<h4 class="question" id="question-number">Match the prompts on the left to the corresponding responses on the right.</h4>');
     $('#game').append('<div id="prompts"></div>');
     $('#game').append('<div id="responses"></div>');
-    
+
     $('#question').html('Click left and right items to find a match');
-    
+
     var prompts =   game['prompts']; prompts.length = num_questions;
     var responses = game['responses'];  responses.length = num_questions;
     //console.log(prompts)
@@ -509,7 +509,7 @@ function runMatchSpeak() {
      promptButtons = [];
      responseButtons = [];
     prompts.forEach(function(prompt, i){
-        
+
         var button = $('<button class="prompt not-done"  data-word="' + prompt +  '" data-pair="' + i.toString() + '" id="prompt-'+i.toString()+'">' + speechbubble + '</button>');
         button.click(matchPromptClick);
         promptButtons.push(button);
@@ -543,13 +543,13 @@ function runMatchSpeakToPicture() {
     showTeam();
     matches_made = 0;
     num_questions = 5;
-    
+
     //$('#game').append('<h4 class="question" id="question-number">Match the prompts on the left to the corresponding responses on the right.</h4>');
     $('#game').append('<div id="prompts"></div>');
     $('#game').append('<div id="responses"></div>');
-    
+
     $('#question').html('Click left and right items to find a match');
-    
+
     var prompts =   game['prompts'];
     var responses = game['responses'];
     //console.log(prompts)
@@ -557,7 +557,7 @@ function runMatchSpeakToPicture() {
     promptButtons = [];
     responseButtons = [];
     prompts.forEach(function(prompt, i){
-        
+
         var button = $('<button class="prompt not-done"  data-word="' + prompt +  '" data-pair="' + i.toString() + '" id="prompt-'+i.toString()+'">' + speechbubble + '</button>');
         button.click(matchPromptClick);
         promptButtons.push(button);
@@ -570,11 +570,11 @@ function runMatchSpeakToPicture() {
         button.click(matchResponseClick);
         responseButtons.push(button);
     });
-    
+
     //https://www.w3schools.com/js/js_array_sort.asp
     promptButtons.sort  (function(a, b){return 0.5 - Math.random()});
     responseButtons.sort(function(a, b){return 0.5 - Math.random()});
-    
+
     promptButtons.forEach(function(promptButton){
         $('#prompts').append(promptButton);
         $('#prompts').append('<br/>');
@@ -595,7 +595,7 @@ function pictureListSucceed(words){
     //console.log('Success, found ${result.length} words: ${result}');
     promptButtons = [];
     responseButtons = [];
-    
+
     if (words.length === 0) {
         LOOMA.alert("No words found for this chapter",null,true);
         return;
@@ -614,11 +614,11 @@ function pictureListSucceed(words){
         promptButtons.push(buttonPicture);
         responseButtons.push(buttonWord);
     });
-    
+
     //https://www.w3schools.com/js/js_array_sort.asp
     promptButtons.sort  (function(a, b){return 0.5 - Math.random()});
     responseButtons.sort(function(a, b){return 0.5 - Math.random()});
-    
+
     promptButtons.forEach(function(promptButton){
         $('#prompts').append(promptButton);
         $('#prompts').append('<br/>');
@@ -658,13 +658,13 @@ function runMatchPicture() {
     showTeam();
     matches_made = 0;
     num_questions = 5;
-    
+
     //$('#game').append('<h4 class="question" id="question-number">Match the prompts on the left to the corresponding responses on the right.</h4>');
     $('#game').append('<div id="prompts"></div>');
     $('#game').append('<div id="responses"></div>');
-    
+
     $('#question').html('Click left and right items to find a match');
-    
+
     var prompts =   game['prompts'];
     var responses = game['responses'];
     //console.log(prompts)
@@ -684,11 +684,11 @@ function runMatchPicture() {
         button.click(matchResponseClick);
         responseButtons.push(button);
     });
-    
+
     //https://www.w3schools.com/js/js_array_sort.asp
     promptButtons.sort  (function(a, b){return 0.5 - Math.random()});
     responseButtons.sort(function(a, b){return 0.5 - Math.random()});
-    
+
     promptButtons.forEach(function(promptButton){
         $('#prompts').append(promptButton);
         $('#prompts').append('<br/>');
@@ -726,25 +726,25 @@ function speakListFail(jqXHR, textStatus, errorThrown){
 function runSpeakHelper(words){
      promptButtons = [];
      responseButtons = [];
-    
+
     words.forEach(function(word, i){
         var buttonPicture = $('<button class="prompt not-done picture" ' +
             'data-word=' + word['en'] + ' data-pair="' + i.toString() + '" id="prompt-' + i.toString() + '">' +
             '<img src="images/speech1.png" /></button>');
         //var buttonWord = $('<button class="response not-done picture" data-pair="${i.toString()}" id="response-${i.toString()}">${word['en']}</button>');
-    
+
         var buttonWord =
             $('<button class="response not-done picture" ' +
                 'data-pair="' + i.toString() +
                 '" id="response-"' + i.toString() + '">' + word['en']  + '</button>');
-       
+
         promptButtons.push(buttonPicture);
         responseButtons.push(buttonWord);
     });
-    
+
     promptButtons.sort  (function(a, b){return 0.5 - Math.random()});
     responseButtons.sort(function(a, b){return 0.5 - Math.random()});
-    
+
     promptButtons.forEach(function(promptButton){
         $('#prompts').append(promptButton);
         $('#prompts').append('<br/>');
@@ -764,11 +764,11 @@ function runRandomSpeak(grade, subject) {
     $('#game').append('<div id="prompts"></div>');
     $('#game').append('<div id="responses"></div>');
     $('#question').html('Click left and right items to find a match.');
-    
+
     num_questions = 5;
     var random = true;
     time_limit = 15;
-    
+
     getSpeakWords(grade, subject, null, num_questions, random);
 }  // END runRandomSpeak() //
 
@@ -799,17 +799,17 @@ function translateListSucceed(words){
                 '" data-pair="' + i.toString() +
                 '" id="prompt-' + i.toString() + '">' + english + '</button>');
         promptButtons.push(buttonWord);
-       
+
         var nepali = word['np'];
         var buttonResponse =
             $('<button class="response not-done picture" ' +
                 'data-pair="' + i.toString() +
                 '" id="response-"' + i.toString() + '">' + nepali  + '</button>');
         responseButtons.push(buttonResponse); });
-    
+
     promptButtons.sort  (function(a, b){return 0.5 - Math.random()});
     responseButtons.sort(function(a, b){return 0.5 - Math.random()});
-    
+
     promptButtons.forEach(function(promptButton){
         $('#prompts').append(promptButton);
         $('#prompts').append('<br/>');
@@ -831,11 +831,11 @@ function runTranslate(grade, subject) {
     promptButtons = [];
     responseButtons = [];
     $('#question').html('Click left and right items to find a match.');
-    
+
     num_questions = 5;
     var random = true;
     time_limit = 45;
-    
+
     getTranslateWords(grade, subject, ch_id, num_questions, random);
 }  // END runtranslate() //
 
@@ -875,9 +875,9 @@ function runRandom () {
         'possible-teams': [1, 2, 3, 4],
         'presentation_type': 'vocabulary'
     };
-    
+
     $("#gameTitle span").html(game['name']);
-    
+
     function get_wordlist_succeed(words) {
         // console.log("success",words)
         if (words.length === 0) {
@@ -887,10 +887,10 @@ function runRandom () {
         $(words).each(function (index, word) {
             game['prompts'].push(word['en']);
         });
-    
+
         // get definitions of the words in 'prompts[]' from Looma dictionary
         var wordcount = 0;
-    
+
         function word_define_succeed(res) {
             game['responses'].push(res);
             wordcount++;
@@ -898,14 +898,14 @@ function runRandom () {
                 LOOMA.define(game['prompts'][wordcount], word_define_succeed, word_define_fail);
             else runMatch(type);
         }
-        
+
         function word_define_fail(r) {console.log("word define fail", r);}
-    
+
         LOOMA.define(game['prompts'][wordcount], word_define_succeed, word_define_fail);
     }
-    
+
     function get_wordlist_fail(r) {console.log("get wordlist failed: ", r);}
-    
+
     LOOMA.wordlist("class" + randClass.toString(),
         randSubj.toLowerCase(),
         "",
@@ -934,12 +934,12 @@ function runConc() {
 
     if (prompts.length   > 8) prompts.length = 8;
     if (responses.length > 8) responses.length = 8;
-    
+
     $('#question').html('Click two cards to find a match');
-    
+
     curr_question = 1;
     num_questions = prompts.length;
-    
+
     var allButtons = [];
     prompts.forEach(function(prompt, i){
         var button = $('<button class="concButton"  data-pair="' + i.toString() +
@@ -964,9 +964,9 @@ function runConc() {
         $('#game').append(button);
         //console.log(button[0]['children'][0])
     });
-    
+
     startTimer(time_limit)
-    
+
     //$('.concText').hide();
 } // end runConc()
 
@@ -979,20 +979,20 @@ function runConc() {
 function runConcType(type) {
     var prompts =   game['prompts'];
     var responses = game['responses'];
-    
+
     if (prompts.length   > 8) prompts.length = 8;
     if (responses.length > 8) responses.length = 8;
-    
+
     $('#question').html('Click two cards to find a match');
-    
+
     curr_question = 1;
     num_questions = prompts.length;
-    
+
     var allButtons = [];
-    
+
     // set up 'prompts'
     prompts.forEach(function(prompt, i){
-        
+
         switch (type) {
             case 'concentration':
                 var button = $('<button class="concButton"  data-word="' + prompt + '" data-pair="' + i.toString() +
@@ -1019,14 +1019,14 @@ function runConcType(type) {
                     '">' + speechbubble + '</span></button>');
                 break;
         }
-        
+
         button.click(handleConcFirstClick);
         allButtons.push(button);
     });
-    
+
     // set up 'responses'
     responses.forEach(function(response,i){
-        
+
         switch (type) {
             case 'concentration':
                 var button = $('<button class="concButton"  data-pair="'+i.toString() +
@@ -1055,18 +1055,18 @@ function runConcType(type) {
                     '</span></button>');
                 break;
         }
-    
-    
+
+
 
         button.click(handleConcFirstClick);
         allButtons.push(button);
     });
-    
+
     allButtons.sort(function(a, b){return 0.5 - Math.random()});
     allButtons.forEach(function(button){
         $('#game').append(button);
     });
-    
+
     startTimer(time_limit)
 } // end runConcType()
 
@@ -1078,7 +1078,7 @@ function concCorrectAnswer() {
     $('.concButton').off('click');
     scores[curr_team-1]++;
     updateScores();
-    
+
     $concFirstClicked.toggleClass ('correct');
     $concSecondClicked.toggleClass('correct');
 
@@ -1091,7 +1091,7 @@ function concCorrectAnswer() {
         curr_question++;
         if (curr_question > num_questions) gameOver();
     },2000);
-    
+
     nextQuestion();
 }
 
@@ -1100,10 +1100,10 @@ function concCorrectAnswer() {
 // //////////////////////////
 function concWrongAnswer() {
     $('.concButton').off('click');
-    
+
     $concFirstClicked.toggleClass ('wrong');
     $concSecondClicked.toggleClass('wrong');
- 
+
     setTimeout(function() {
         $concFirstClicked.toggleClass ('wrong').toggleClass('flipped');
         $concSecondClicked.toggleClass('wrong').toggleClass('flipped');
@@ -1132,14 +1132,14 @@ function handleConcFirstClick(event) {
     //selected_pair = num;
     $concFirstClicked = $(event.currentTarget);
     //selected_pair = $concFirstClicked.data['pair'];
-    
+
     //var textId = $("#"+id).find('span')[0].id;
     concFlipCard($concFirstClicked);
-    
+
     if ($(this).hasClass('spoken')) {LOOMA.speak($(this).data('word'))};
-    
+
     //visible_text_id_1 = textId;
-    
+
     $('.concButton').off('click').click(handleConcSecondClick);
 }
 
@@ -1150,9 +1150,9 @@ function handleConcFirstClick(event) {
 function handleConcSecondClick(event) {
     // console.log("SECOND CLICK")
     $concSecondClicked = $(event.currentTarget);
-    
+
     if ($(this).hasClass('spoken')) {LOOMA.speak($(this).data('word'))};
-    
+
     if ($concSecondClicked.attr('id') == $concFirstClicked.attr('id')) {
         //concFlipCard($concFirstClicked);
         $concFirstClicked = $(event.currentTarget);
@@ -1166,10 +1166,10 @@ function handleConcSecondClick(event) {
         //var textId = $("#"+id).find('span')[0].id;
         //$('#'+textId).show();
         //visible_text_id_2 = textId;
-    
-    
+
+
         $('.concButton').off('click').click(handleConcFirstClick);
-        
+
         if ($concFirstClicked.data('pair') === $concSecondClicked.data('pair'))
             concCorrectAnswer();
         else concWrongAnswer();
@@ -1188,7 +1188,7 @@ var map, baseLayer, mapJSON;
 function runMap() {
     num_questions = game['prompts'].length;
     curr_question = 1;
-    
+
     var map_json_file = game['geojson'];
     var map_info = game['key'];
     var map_lat =  game['startLat'];
@@ -1200,9 +1200,9 @@ function runMap() {
                             '" data-lat="'  + map_lat  +
                             '" data-long="' + map_long +
                             '" data-zoom="' + map_zoom +'" >');
-    
+
     game['prompts'].sort(function(a, b){return 0.5 - Math.random()});
-    
+
     $('#question-number').html(LOOMA.translatableSpans('Question','प्रश्न') + ' ' + curr_question);
     $('#question').text('Click on: ' + game['prompts'][curr_question-1]);
     $('#game').append('<div id="map">');
@@ -1217,32 +1217,32 @@ function runMap() {
             nextQuestion();
         }
     });
-    
+
             //var lat = game['startLat'];
             //var long = game['startLong'];
             //var zoom = game['startZoom'];
-            
+
             map = L.map('map').setView([map_lat, map_long], map_zoom);
             map.options.minZoom = 1;
             map.options.maxZoom = 5;
-            
+
             var el = document.getElementsByClassName('leaflet-container');
             for (var i = 0; i < el.length; i++)
                 { el[i].style.backgroundColor = '#b8dfe6'; }  //light-blue background
-            
+
             //Sets boundaries for the distance the user can span in pixels
             var southWest = L.latLng(-85.0511, -180);
             var northEast = L.latLng(85.0511, 180);
             var bounds = L.latLngBounds(southWest, northEast);
             map.setMaxBounds(bounds);
             map.on('drag', function () {map.panInsideBounds(bounds, {animate: false});});
-            
+
             var link = '../content/maps/json/' + map_json_file;
             $.getJSON(link, function (result) {
                 mapJSON = result;
                 redrawMap(mapJSON);
             });
-            
+
          startTimer(time_limit);
 }  //end runMap()
 
@@ -1253,17 +1253,17 @@ function mapClick(e)
     //if(!alreadyRight) { //prevents it from going red after you have gotten it right
         rightAnswer = game['prompts'][curr_question-1];
     //}
-    
+
     //var infoKey = document.getElementById("question").getAttribute("data-info");
     var infoKey = $('#map-data').data('info');
     var clickedAnswer = layer.feature.properties[infoKey];
     //var clickedAnswer = game['key'];
     if(rightAnswer == clickedAnswer) //they got it right
     {   pauseTimer();
-    
+
         scores[curr_team-1]++;
         updateScores();
-        
+
         layer.setStyle({fillColor: 'green'});
         document.getElementById("question").innerHTML = "Correct! That is " + rightAnswer;
   /*      if(!alreadyRight) //&& !clickedWrong)
@@ -1342,13 +1342,13 @@ function runYesNo() {
     $('#scoreboard').show();
     num_questions = 10;
     time_limit = 8;
-    
+
     $('#game').append('<button id="yes_button" class="yesno">CORRECT</button>');
     $('#game').append('<button id="no_button"  class="yesno">WRONG</button>');
-    
+
     $('#yes_button').click(correctAnswer);
     $('#no_button').click( wrongAnswer);
-    
+
     startTimer(time_limit);
 } //end runYesNo()
 
@@ -1411,11 +1411,11 @@ function updateProgress(team, score, maxScore) {
 ///////// nextQuestion  /////////
 /////////////////////////////////
 function nextQuestion() {
-    
+
     if (curr_question > num_questions) gameOver();
     else {
         startTimer(time_limit);
-        
+
         switch (game['presentation_type']) {
             case 'multiple choice':
                 //var prompts = game['prompts'];
@@ -1426,15 +1426,15 @@ function nextQuestion() {
                     var questionData = game['prompts'][curr_question-1];
                     var question = questionData['question'];
                     $("#question").html(question);
-        
+
                     var answers = [];
                     answers.push(questionData['correctAns']);
                     questionData['wrongAns'].forEach( function(wrong){ answers.push(wrong); });
-        
+
                     answers.sort(function(a, b){return 0.5 - Math.random()});
-        
+
                     $('#answers').empty();
-                    
+
                     answers.forEach(function(ans){
                         if (ans === questionData['correctAns']) {
                             var button = $('<button class="answer correct">' + ans + '</button>');
@@ -1456,7 +1456,7 @@ function nextQuestion() {
                 //$('#game').append('<h4 class="question" id="question-number">Match the prompts on the left to the corresponding responses on the right.</h4>');
                 $('#game').append('<div id="prompts"></div>');
                 $('#game').append('<div id="responses"></div>');
-                
+
                 // get definitions of the words in 'prompts[]' from Looma dictionary
                 var wordcount = 1;
                 $(game['prompts']).each(function (index, word) {
@@ -1465,11 +1465,11 @@ function nextQuestion() {
                         wordcount++;
                         //if (wordcount > game['prompts'].length) runMatch(type);
                     }
-                    
+
                     function word_define_fail(r) {
                         console.log("fail", r);
                     }
-                    
+
                     LOOMA.define(word, word_define_succeed, word_define_fail);
                 });
                 break;
@@ -1515,14 +1515,14 @@ function nextQuestion() {
 function correctAnswer () {
     pauseTimer();
     clearScreen();
-    
+
     scores[curr_team-1]++;
     updateScores();
-    
+
     nextTeam();
     curr_question++;
     setTimer(time_limit);
-    
+
     if (game['presentation_type'] === 'matching'||
              game['presentation_type'] === 'spoken matching' ||
              game['presentation_type'] === 'spoken to picture' ||
@@ -1562,7 +1562,7 @@ function gameOver() {
     $('#game').hide();
     $('#next').hide();
     $('#top').hide();
-    
+
     $('#gameOverFrame').show();
     pauseTimer();
     $timer.html('');
@@ -1578,10 +1578,11 @@ function gameOver() {
                         '&class='+ grade +
                         '&subject='+ subject +
                         '&type='+ type +
-                        '"><button> Replay Game </button></a>');
-    
+                        '&ch_id='+ ch_id +
+        '"><button> Replay Game </button></a>');
+
     var gamesHomeButton = $('<a href="looma-games.php"><button> Games Home Page </button></a>');
-    
+
     $("#scoreList").append(replayButton);
     $("#scoreList").append("<br/><br/>");
     $("#scoreList").append(gamesHomeButton);
@@ -1596,19 +1597,19 @@ function gameOver() {
         $('#thegameframe').hide();
         $('#timer').hide();
         $('#scoreboard').hide();
-    
+
         $("#sortgame").show();
-        
+
         function setBins() {
             $('.heading').hide();
             $('.bin').hide();
-    
+
             for (var i = 0; i < game['bins'].length; i++) {
                 $('#heading' + i).text(game['bins'][i]['heading']).show();
                 $('#bin' + i).show().droppable({scope:game['bins'][i]['scope']});
             }
         }
-        
+
         function setWords() {
             var list = [];
             for (var i = 0; i < game['words'].length; i++) {
@@ -1617,21 +1618,21 @@ function gameOver() {
             list.sort(() => Math.random() - 0.5);
             return list.slice();
         };
-        
+
         function startSortGame() {
             words = setWords();
             $('#words').show();
             nextWord();
             $(".bin").empty();
         }
-    
+
         function nextWord() {
             if (words.length === 0) {
                 $('#words').empty().hide();
                 LOOMA.alert('<p>Game over. Good work.</p>Click "Play Again" to play again', 10, true);
                 return;
             }
-        
+
             var $word = $("<p class='word " + words[0].value + "'>" + (words[0].key) + "</p>");
             $word.draggable({revert:'invalid',
                 cursor:'move',
@@ -1642,19 +1643,19 @@ function gameOver() {
             $('#words').empty().append($word);
             words = words.slice(1); // removes the first word from 'words'
         };
-        
+
             $('button.speak').off('click').click(function () {
                 var selectedString = document.getSelection().toString();
                 var toSpeak = (selectedString ? selectedString : $('#words p.word').text());
                 LOOMA.speak(toSpeak);
             }); //end speak button onclick function
-        
+
             $('button.lookup').off('click').click(function(){
                 var toString = window.getSelection().toString();
                 var toString = (toString ? toString : $('#words p.word').text());
                 LOOMA.popupDefinition(toString.split(' ')[0], 15, 'en');
             });
-        
+
             $(".bin").droppable({
                 accept:".word",
                 drop: function(event, ui) {
@@ -1665,13 +1666,13 @@ function gameOver() {
                     $dest.removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
                     $dest.removeAttr('style').addClass('dropped');
                     $dest.appendTo(event.target);
-                
+
                     nextWord();
                 }
             });
-        
+
             $('#next_button').click(startSortGame);
-        
+
             setBins();
             startSortGame();
     };  // end runSort()
@@ -1682,12 +1683,12 @@ function gameOver() {
         $('#timer').show();
         $('#scoreboard').show();
     };
-    
+
     /////////////////////////////
     ///////// fail  /////////
     ////////////////////////////
         function game_not_found(r) {LOOMA.alert("Game not found",5);};
-        
+
     /////////////////////////////
     ///////// succeed  /////////
     ////      fetched a game from mongoDB   /////
@@ -1699,22 +1700,22 @@ function gameOver() {
             subject = ('subject' in game) ? game['subject'] : null;
             grade = ('class' in game) ? game['class'] : null;
             ch_id = ('ch_id' in game) ? game['ch_id'] : null;
-            
+
             if (type === 'sort') runSort(game);
-    
+
             else {
                 $("#optionsframe").show();
                 $('.teamnumber').click(function () {
                     $("#optionsframe").hide();
                     showGame();
-    
+
                     num_teams = $(this).data('team');
                     initScores(num_teams);
-        
+
                     curr_team = 1;
                     showTeam();
                     curr_question = 1;
-                    
+
                     // some games dont have an entry in mongoDB 'games' collection, instead they are randomly generated
                     // based on grade and subject and [sometimes] chapter
                     if      (type === 'yesno')     runYesNo();
@@ -1724,12 +1725,12 @@ function gameOver() {
                //     else if (type === 'picture')   runPicture(grade, subject, ch_id);
                //     else if (type === 'speak')     runRandomSpeak(grade, subject, ch_id);
                //     else if (type === 'translate') runTranslate(grade, subject, ch_id);
-                    
+
                 else {  // regular game
 
                     time_limit = (game['timeLimit']) ? game['timeLimit'] : 30;
                     setTimer(time_limit);
-                    
+
                     switch (type) {
                         case 'concentration':
                         case 'spoken concentration':
@@ -1741,12 +1742,12 @@ function gameOver() {
                         case 'spoken matching':
                         case 'spoken to picture':
                         case 'picture matching':
-    
+
                             matches_made = 0;
                             activeMatchPrompts = [];
                             activeMatchResponses = [];
                             num_questions = game['prompts'].length;
-    
+
                             prompts =   game['prompts'];
                             responses = game['responses'];
                             $('#game').append('<div id="prompts"></div>');
@@ -1755,7 +1756,7 @@ function gameOver() {
                             //console.log(responses)
                             runMatch(type);
                             break;
-                            
+
                         case 'picture':
                             runPicture(grade, subject, ch_id);
                             break;
@@ -1765,7 +1766,7 @@ function gameOver() {
                         case 'translate':
                             runTranslate(grade, subject);
                             break;
-           
+
                         case 'multiple choice':
                             runMC();
                             break;
@@ -1778,7 +1779,7 @@ function gameOver() {
                         default:
                             $("#gameTitle").html("Game type not recognized");
                             break;
-                        }  
+                        }
                     }
                 });
             }
@@ -1816,7 +1817,7 @@ function buildKeywordGame(keywordgame) {
     });
     game_found(game);
     //runMatch('matching');
-    
+
 };
 
 function runKeyword (ch_id) {
@@ -1854,5 +1855,5 @@ $(document).ready (function() {
         game_found(randomGame);
     };
     toolbar_button_activate("games");
-    
+
 });

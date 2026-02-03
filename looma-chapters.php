@@ -11,7 +11,8 @@ Description:  displays for a textbook (class/subject)
 <?php $page_title = 'Looma Chapters';
 include ('includes/header.php');
 require_once('includes/looma-utilities.php');
-
+    logUserActivity();
+    logPageHit('chapters');
 ?>
     <link rel="stylesheet" href="css/looma-chapters.css">
 </head>
@@ -118,18 +119,18 @@ foreach ($chapters as $ch) {
 
 ////////// ENGLISH chapter ///////////
 // display chapter button for english textbook, if any
-    if ($tb_fn && $ch_pn) { echo "<button class='$ch_ft en-chapter' 
-                                      data-lang='en' 
-                                      data-fn='$tb_fn' 
+    if ($tb_fn && $ch_pn) { echo "<button class='$ch_ft en-chapter'
+                                      data-lang='en'
+                                      data-fn='$tb_fn'
                                       data-fp='$tb_fp'
-                                      data-ch='$ch_id'  
-                                      data-ft='$ch_ft' 
-                                      data-class='$class' 
-                                      data-subject='$subject' 
+                                      data-ch='$ch_id'
+                                      data-ft='$ch_ft'
+                                      data-class='$class'
+                                      data-subject='$subject'
                                       data-source='$source'
- 
-                                      data-zoom='2.1'  
-                                      data-len='$ch_len' 
+
+                                      data-zoom='2.1'
+                                      data-len='$ch_len'
                                       data-page='$ch_pn'>
                                       $ch_dn
                                   </button>";
@@ -212,12 +213,12 @@ foreach ($chapters as $ch) {
                                     data-fn='$tb_nfn'
                                     data-fp='$tb_fp'
                                     data-ch='$nch_id'
-                                    data-ft='$nch_ft' 
-                                    data-class='$class' 
-                                    data-subject='$subject'  
+                                    data-ft='$nch_ft'
+                                    data-class='$class'
+                                    data-subject='$subject'
                                     data-source='$source'
-             
-                                    data-zoom='2.3'  
+
+                                    data-zoom='2.3'
                                     data-len='$ch_nlen'
                                     data-page='$ch_npn'>
                                     $ch_ndn

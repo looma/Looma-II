@@ -17,7 +17,6 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
 
 <body>
     <div class="container">
-        <h1 class="credit"> Created by Luke, Meg, Catie, Alexa and Sun-Mi </h1>
 
         <?php
         $id =         isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
@@ -25,6 +24,10 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         $class =      isset($_REQUEST['class']) ? $_REQUEST['class'] : null;
         $subject =    isset($_REQUEST['subject']) ? $_REQUEST['subject'] : null;
         $ch_id =    isset($_REQUEST['ch_id']) ? $_REQUEST['ch_id'] : null;
+        $author =    isset($_REQUEST['autor']) ? $_REQUEST['author'] : null;
+
+        if ($author) echo "<h1 class='credit'> Authored by $author </h1>";
+        else         echo "<h1 class='credit'> Created by Luke, Meg, Catie, Alexa and Sun-Mi </h1>";
         ?>
 
         <div class="header">

@@ -5,6 +5,15 @@ CHANGE LOG FOR LOOMA
 - 335 new resources
 - 900 new resource to chapter assignments (6,7,8 grades)
 - added "speak" button to "teacher aids" page
+- 137 new games from SPSH II Lots 1,2
+- 97 new games from WRP II Lot 5,6,7
+- 283 new games from WRP II 8,9,10,11 and SPHS II Lots 3
+- 23 new games and 140 resources from SPHS II Lots 4,5,6,7
+- added "play-captions" field to video activities in mongo [for videos that dont have voice track]
+- fixed bugs in games and games home page
+- removed inaccurate resoure-to-chapter assignments
+- removed vocabulary games from Math chapter resources
+- removed chapters' lessons from chapters' resources
 
 2025 11
 - version 7.19

@@ -35,16 +35,16 @@ require_once ('includes/looma-utilities.php');
              echo'</h1></div>';
 
             $subject_key = array("M"=>"Math", "S"=>"Science", "N"=>"Nepali", "EN"=>"English",
-                "SS"=>"Social Studies", "V"=>"Vocational", "H"=>"Health");
+                "SS"=>"Social Studies", "V"=>"Vocational", "H"=>"Health", "SF"=>"Serofero");
 
             $titles = array(
                 "multiple choice"=>"Multiple Choice",
                 "concentration"  =>"Concentration",
                 "matching"       =>"Matching",
                 "map"            =>"Map",
-                "vocab"            =>"Vocabulary",
-                "arith"            =>"Arithmetic",
-                "picture"            =>"Picture Matching",
+                "vocab"          =>"Vocabulary",
+                "arith"          =>"Arithmetic",
+                "picture"        =>"Picture Matching",
                 "timeline"       =>"History");
 
             // given: grade and subject
@@ -56,19 +56,24 @@ require_once ('includes/looma-utilities.php');
             //      if subject = english [others later] add a vocab game
 
             $query = [];
-            $query['cl_lo'] = array('$lte' => (int)substr($game_class,5));
-            $query['cl_hi'] = array('$gte' => (int)substr($game_class,5));
+            $query['cl_lo'] = array('$lte' => (int)substr($game_class,5),'$ne' => 0);
+            $query['cl_hi'] = array('$gte' => (int)substr($game_class,5),'$ne' => 0);
             $query['subject'] = $game_subject;
 
         //print_r($query);
+
+        echo '<div id="buttons">';
 
             $games = mongoFind($games_collection, $query, null, null, null);
             foreach ($games as $game) {
 
                 //makeActivityButton();
+
+
                 echo '<button class="activity img game" data-class="' . $game_class . '" data-subject="' . $game_subject .
-                    '" data-id="' . (string) $game['_id'] .
-                    '" data-type="' . $game['presentation_type'] . '"' .
+                    '" data-id="' . (string) $game['_id'];
+                if (isset($game['author'])) echo    '" data-author="' . (string) $game['author'];
+                echo    '" data-type="' . $game['presentation_type'] . '"' .
                     '"> ';
 
                 echo '<img loading="lazy" draggable="false" src="images/games.png">';
@@ -128,7 +133,7 @@ require_once ('includes/looma-utilities.php');
                     echo '</p>';
                 echo '</button>';
             };
-
+        echo '</div>';
         ?>
     </div>
 </div>

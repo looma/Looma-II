@@ -688,7 +688,8 @@ button.img.subject img {
 
 button.img.play, button.img.activity{
     position:relative;
-	font-size: 30px;
+	/*font-size: 30px;*/
+    font-size: 1.5em;
 	font-weight:bold;
     max-width:30vw;
 }

@@ -201,7 +201,7 @@ dosync () {
     sshpass -p 'looma' \
         rsync -rtvz  $DRYRUNMODE $SIZEONLY  \
         --stats  --times \
-        --no-perms  --chmod=u+rwX,go+rX  \
+        --perms --owner --group --chown=odroid:odroid --chmod=u+rwX,go+rX  \
         --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*" \
         -e "ssh"   \
        $SOURCE  $DESTINATION
@@ -212,7 +212,7 @@ dosync () {
       echo "enter password 'looma' if requested"
         rsync -rtvz  $DRYRUNMODE $SIZEONLY  \
         --stats  --times \
-        --no-perms  --chmod=u+rwX,go+rX  \
+        --perms --owner --group --chown=odroid:odroid --chmod=u+rwX,go+rX  \
         --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*" \
         -e "ssh"   \
        $SOURCE  $DESTINATION
@@ -257,6 +257,9 @@ if [[ "$1" = "dryrun" || "$2" == "dryrun" ]]
   else
     DRYRUNMODE=""
 fi
+
+contenttime=0
+codetime=0
 
 #####################
 ##################### user input - choose update from USB stick or from Internet
@@ -385,7 +388,7 @@ echo "********************"
 
                     if [[ -f /var/www/html/Looma/mongo-dump/logins/defaultlogins.json ]]
                     then
-                       mongoimport --quiet --db loomausers --collection logins  --mode upsert --file "/var/www/html/Looma/mongo-dump/logins/defaultlogins.json"
+                       mongoimport --quiet --db loomausers --collection logins  --mode upsert --upsertFields name --file "/var/www/html/Looma/mongo-dump/logins/defaultlogins.json"
                        rm "/var/www/html/Looma/mongo-dump/logins/defaultlogins.json"
                     fi
                 else echo "ERROR: no source dir (/var/www/html/Looma/mongo-dump/dump/looma) found for mongo restore"

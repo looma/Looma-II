@@ -700,38 +700,36 @@ require_once('includes/looma-utilities.php');
           // - - - gameSubjectList - - - //
           /////////////////////////////
           case "gameSubjectList":
-              // input is class
+              //    input is "class" (grade level)
               //    query games and histories collections to get subjects available for this class
               /* $subjects = array(
-                      'S' => 'science',
-                      'M' => 'math',
+                      'S' => ' science',
+                      'M' =>  'math',
                       'EN' => 'english',
-                      'N' => 'nepali',
+                      'N' =>  'nepali',
                       'SS' => 'social studies',
+                      'SF' => 'serofero',
                       'H'  => 'health',
                       'V'  => 'vocation',
-                      'SSa' => 'social studies optional', //now used for "Moral Education"
+                      'SSa' =>'social studies optional', //now used for "Moral Education"
                       'Ma' => 'math optional');
               */
-              $subjectList = [];
+
               $query = [];
-              $query['cl_lo'] = array('$lte' => (int)substr($_REQUEST['class'],5));
-              $query['cl_hi'] = array('$gte' => (int)substr($_REQUEST['class'],5));
-            //  $query = array('cl_lo' => array('$lte' => substr($_REQUEST['class'],5)),
-              //               'cl_hi' => array('$gte' => substr($_REQUEST['class'],5)));
+              $query['cl_lo'] = array('$exists' => true, '$lte' => (int)substr($_REQUEST['class'],5));
+              $query['cl_hi'] = array('$exists' => true, '$gte' => (int)substr($_REQUEST['class'],5));
 
               $games = mongoFind($games_collection, $query, null, null, null);
-              foreach ($games as $game) {
+
+           $subjectList = [];
+
+                  foreach ($games as $game) {
                   //echo "game[subject][index] is " . $game['subject'][$index];
-                  if (isset($game['subject'])) foreach ($game['subject'] as $index => $subj) $subjectList[] = strtolower($game['subject'][$index]);
+                  if (isset($game['subject'])) foreach ($game['subject'] as $index => $subj) {
+                  $subjectList[] = strtolower($subj);
+                //  echo "subject for " . $_REQUEST['class'] . "  is  " .    $game['subject'][$index];
+                  }
               }
-
-              $histories = mongoFind($history_collection, $query, null, null, null);
-              foreach ($histories as $history)
-                  foreach ($history['subject'] as $index => $subj) $subjectList[] = $history['subject'][$index];
-
-              $subjectList[] = 'math';
-              $subjectList[] = 'english';
 
               echo json_encode(array_unique($subjectList));
               return;  // end gameSubjectList()

@@ -22,10 +22,21 @@ REM Change Reason:		Feature Request: Make variables changeable by end-user
 REM Change Details:		Added variable selection and logging (default vs. new values)
 REM ***********************************************************************************
 REM ***********************************************************************************
+REM Change Date:		2026-01-24
+REM Change Reason:		Support content update on removable drives (D:\Looma\content)
+REM Change Details:		Script automatically checks which content location is used.
+REM ***********************************************************************************
+REM ***********************************************************************************
+REM Change Date:		2026-01-26
+REM Change Reason:		WSL Update Added
+REM Change Details:		WSL Update will run prior downloading update scripts
+REM ***********************************************************************************
+REM ***********************************************************************************
 REM Change Date:		YYYY-MM-DD
 REM Change Reason:		[TEXT]
 REM Change Details:		[TEXT]
 REM ***********************************************************************************
+
 
 REM Global Variables
 Set LogFile="%TEMP%\_AutoUpdateLoomaWin.Log"
@@ -104,6 +115,29 @@ Echo %DATE% %TIME% Update_looma = %Update_looma%													>>%LogFile%
 Echo %DATE% %TIME% Update_maps = %Update_maps%														>>%LogFile%
 Echo %DATE% %TIME% Update_epaath = %Update_epaath%													>>%LogFile%
 
+REM Update WSL
+:UpdateWSL
+For /L %%i in (1,1,%RetryCount%) do (
+	Echo %DATE% %TIME% Starting WSL Update
+	Echo %DATE% %TIME% Starting WSL Update															>>%LogFile%
+	cmd.exe /c "WSL.EXE --update"
+	IF ERRORLEVEL 255 (
+		Echo %DATE% %TIME% WSL Update was interrupted, check internet connection and admin rights
+		Echo %DATE% %TIME% WSL Update was interrupted, retry %%i of %RetryCount% in %RetryDelay% seconds...
+		Echo %DATE% %TIME% WSL Update was interrupted, retry %%i of %RetryCount% in %RetryDelay% seconds... >>%LogFile%
+		timeout %RetryDelay%
+		If %%i==%RetryCount% (
+			choice /c yn /m "WSL Update failed %%i times - check internet connection! Try again?"
+			If ERRORLEVEL 2 goto ExitWithErrorCode
+			If ERRORLEVEL 1 goto UpdateWSL
+		)
+	)
+	IF ERRORLEVEL 1 Goto ExitWithErrorCode
+	IF ERRORLEVEL 0 Goto UpdateWSLSuccess
+)
+:UpdateWSLSuccess
+Echo %DATE% %TIME% Successfully finished WSL Update											>>%LogFile%
+
 REM Downloading new scripts via rsync first (same script updates Looma)
 :UpdateLooma
 For /L %%i in (1,1,%RetryCount%) do (
@@ -149,7 +183,7 @@ IF %ERRORLEVEL% NEQ 0 Goto ExitWithErrorCode
 
 REM Reconfigure Apache for Looma
 If %Update_Apache%=="NO" echo "Skipping Update Apache Server Configuration"							>>%LogFile%
-If %Update_Apache%=="NO" goto Update_content
+If %Update_Apache%=="NO" goto SetContentScript
 Echo %DATE% %TIME% Copy new file from %SYSTEMDRIVE%\xampp\linux\httpd.conf to %SYSTEMDRIVE%\xampp\apache\conf\httpd.conf
 Echo %DATE% %TIME% Copy new file from %SYSTEMDRIVE%\xampp\linux\httpd.conf to %SYSTEMDRIVE%\xampp\apache\conf\httpd.conf >>%LogFile%
 XCopy "%SYSTEMDRIVE%\xampp\linux\httpd.conf" %SYSTEMDRIVE%\xampp\apache\conf\httpd.conf /v /Y		>>%LogFile%
@@ -161,21 +195,69 @@ REM Due to the user context switch to an admin user, the script does not recogni
 REM cmd.exe /C %SYSTEMDRIVE%\xampp\xampp-control.exe
 msg /v /w %USERNAME% "Apache Server from XAMPP Console has been restarted? If done, press OK"
 
+REM ------------------------------------------------------------------
+REM Decide which content update script to run (D: preferred, else C:)
+REM Conditions:
+REM  - If D:\Looma\content\ exists -> use update_content-d.sh
+REM  - Else if C:\xampp\htdocs is a real directory (NOT a junction) -> use update_content-c.sh
+REM  - Else -> abort with error
+REM ------------------------------------------------------------------
+:SetContentScript
+set CONTENT_SCRIPT=""
+set CONTENT_DECISION_LOG=""
+
+REM Case A: D:\Looma\content\ exists
+if exist "D:\Looma\content\" (
+    set "CONTENT_SCRIPT=update_content-d.sh"
+    set "CONTENT_DECISION_LOG=Using update_content-d.sh (D:\Looma\content\ exists)"
+    goto :ContentScriptChosen
+)
+
+REM Case B: C:\xampp\htdocs is a real directory AND NOT a junction
+REM 1) Is it a directory?
+if exist "C:\xampp\htdocs\content\" (
+    REM 2) Is it a reparse point (junction)? fsutil returns 0 if it IS a reparse point
+    fsutil reparsepoint query "C:\xampp\htdocs\content" >nul 2>&1
+    if errorlevel 1 (
+        REM errorlevel 1 means: NOT a reparse point -> OK to use C:
+        set "CONTENT_SCRIPT=update_content-c.sh"
+        set "CONTENT_DECISION_LOG=Using update_content-c.sh (C:\xampp\htdocs is a real directory, not a junction)"
+        goto :ContentScriptChosen
+    ) else (
+        REM It's a junction -> not allowed to update - probably SD card missing
+        set "CONTENT_DECISION_LOG=ABORT: C:\xampp\htdocs\content is a junction (reparse point) – not allowed"
+        goto :ContentScriptError
+    )
+) else (
+    REM C:\xampp\htdocs is not a directory at all
+    set "CONTENT_DECISION_LOG=ABORT: C:\xampp\htdocs\content does not exist as a real directory"
+    goto :ContentScriptError
+)
+
+:ContentScriptChosen
+echo %DATE% %TIME% %CONTENT_DECISION_LOG%>>%LogFile%
+goto :Update_content
+
+:ContentScriptError
+echo %DATE% %TIME% %CONTENT_DECISION_LOG%>>%LogFile%
+echo %DATE% %TIME% %CONTENT_DECISION_LOG%
+goto ExitWithErrorCode
+
 REM Download new looma content (delta-update)
 :Update_content
-If %update_content%=="NO" echo "Skipping Update_content.sh"											>>%LogFile%
+If %update_content%=="NO" echo "Skipping %CONTENT_SCRIPT%"											>>%LogFile%
 If %update_content%=="NO" goto Update_epaath
 For /L %%i in (1,1,%RetryCount%) do (
-	Echo %DATE% %TIME% Starting Update_content.sh
-	Echo %DATE% %TIME% Starting Update_content.sh													>>%LogFile%
-	cmd.exe /c bash "update_content.sh"
+	Echo %DATE% %TIME% Starting %CONTENT_SCRIPT%
+	Echo %DATE% %TIME% Starting %CONTENT_SCRIPT%													>>%LogFile%
+	cmd.exe /c bash "%CONTENT_SCRIPT%"
 	IF ERRORLEVEL 255 (
-		Echo %DATE% %TIME% Update_content.sh was interrupted, check internet connection.
-		Echo %DATE% %TIME% Update_content.sh was interrupted, retry %%i of %RetryCount% in %RetryDelay% seconds...
-		Echo %DATE% %TIME% Update_content.sh was interrupted, retry %%i of %RetryCount% in %RetryDelay% seconds... >>%LogFile%
+		Echo %DATE% %TIME% %CONTENT_SCRIPT% was interrupted, check internet connection.
+		Echo %DATE% %TIME% %CONTENT_SCRIPT% was interrupted, retry %%i of %RetryCount% in %RetryDelay% seconds...
+		Echo %DATE% %TIME% %CONTENT_SCRIPT% was interrupted, retry %%i of %RetryCount% in %RetryDelay% seconds... >>%LogFile%
 		timeout %RetryDelay%
 		If %%i==%RetryCount% (
-			choice /c yn /m "Update_content.sh failed %%i times - check internet connection! Try again?"
+			choice /c yn /m "%CONTENT_SCRIPT% failed %%i times - check internet connection! Try again?"
 			If ERRORLEVEL 2 goto ExitWithErrorCode
 			If ERRORLEVEL 1 goto Update_content
 		)
@@ -184,7 +266,7 @@ For /L %%i in (1,1,%RetryCount%) do (
 	IF ERRORLEVEL 0 Goto Update_ContentSuccess
 )
 :Update_ContentSuccess
-Echo %DATE% %TIME% Successfully finished Update_content.sh											>>%LogFile%
+Echo %DATE% %TIME% Successfully finished %CONTENT_SCRIPT%											>>%LogFile%
 
 :Update_epaath
 If %Update_epaath%=="NO" echo "Skipping Update_epaath.sh"											>>%LogFile%
@@ -265,6 +347,24 @@ cmd.exe /C "Update_database.cmd"
 IF %ERRORLEVEL% NEQ 0 Goto ExitWithErrorCode
 Echo %DATE% %TIME% Successfully finished update_database.cmd
 Echo %DATE% %TIME% Successfully finished update_database.cmd										>>%LogFile%
+
+:ClearChromeBrowserCache
+Echo %DATE% %TIME% Clear Google Chrome Browser Cache
+Echo %DATE% %TIME% Clear Google Chrome Browser Cache												>>%LogFile%
+	cmd.exe /c rd /s /q "%LOCALAPPDATA%\Google\Chrome\User Data\Default\Cache"
+	IF ERRORLEVEL 1 Goto ExitWithErrorCode
+	IF ERRORLEVEL 0 Goto ClearChromeBrowserCache_Success
+:ClearChromeBrowserCache_Success
+Echo %DATE% %TIME% Successfully finished Clearing Google Chrome browser cache						>>%LogFile%
+
+:ClearEdgeBrowserCache
+Echo %DATE% %TIME% Clear Microsoft Edge Browser Cache
+Echo %DATE% %TIME% Clear Microsoft Edge Browser Cache												>>%LogFile%
+	cmd.exe /c rd /s /q "%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Cache"
+	IF ERRORLEVEL 1 Goto ExitWithErrorCode
+	IF ERRORLEVEL 0 Goto ClearEdgeBrowserCache_Success
+:ClearEdgeBrowserCache_Success
+Echo %DATE% %TIME% Successfully finished Clearing Microsoft Edge browser cache						>>%LogFile%
 
 :ENDSUCCESS
 Echo *********************************************************************************** 			>>%LogFile%

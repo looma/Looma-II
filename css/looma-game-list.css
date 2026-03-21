@@ -7,6 +7,21 @@
     margin-bottom:5vh;
 }
 
+#buttons {
+    display: grid;
+    /* 3 equal columns; change to your needs */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+
+    /* optional: ensure row-wise auto placement */
+    grid-auto-flow: row; /* default is row */
+}
+
+.item {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+}
+
 button.game {
     /*height:25vh;*/
     width: 30vw;

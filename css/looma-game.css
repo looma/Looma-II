@@ -12,8 +12,8 @@ Description: formatting and styling for the game page
     grid-column: left / right;
   display: grid;
   grid-template-columns: [left] 85%  15% [right] ;
-  grid-template-rows: [top] 8% 8%  22% 12% 40% 10% [bottom];
-  width: 100vw;
+  grid-template-rows: [top] 8% 13%  22% 12% 35% 10% [bottom];
+width: 100vw;
     padding:0;
     margin:0;
 }
@@ -51,6 +51,9 @@ h1#gameTitle {font-size: 5vh;}
     position:relative;
     top:5vh;
 }
+
+#sidebar {grid-column: 2 / right;}
+
 #timer {
     grid-column: 2 / 3;
     grid-row: 2 / 4;
@@ -632,7 +635,7 @@ a button:hover {color:blue;}
     color:blue;
     text-overflow:ellipsis;
     overflow: hidden;
-    white-space: nowrap;
+    white-space: normal;
 }
 
 #answers {

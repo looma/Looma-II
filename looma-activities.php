@@ -25,6 +25,7 @@ require_once('includes/looma-isloggedin.php');
 
 </head>
 <body>
+
 <?php
 $shown = array();
 $foundActivity;
@@ -116,8 +117,8 @@ if (loggedIn() && loginLevel() === 'test' && $chapter_lang !== $activity['lang']
             array_push($shown,$id);
 
             $ft = strtolower($activity['ft']);
-         //   $dn = (isset($activity['dn']) ? $activity['dn'] : (isset($activity['ndn']) ? $activity['ndn'] : ""));
-            $ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
+            $dn = (isset($activity['dn']) ? $activity['dn'] : (isset($activity['ndn']) ? $activity['ndn'] : ""));
+         //   $ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
             $fp = (isset($activity['fp']) ? $activity['fp'] : "");
 
         if ($chapter_lang === 'np') $dn = (isset($activity['ndn'])? $activity['ndn']:(isset($activity['dn']) ? $activity['dn'] : ""));
@@ -145,6 +146,9 @@ if (loggedIn() && loginLevel() === 'test' && $chapter_lang !== $activity['lang']
         else if ($ft === 'game') $thumb = 'images/games.png';
         else $thumb = null;
 
+        if (isset($activity['zoom'])) $zoom = $activity['zoom']; else $zoom = 'auto';
+                    //echo "zoom is " . $zoom;
+
     //$thumb = str_replace('.JPG', '.jpg', $thumb);
 
         if ( $ft !== 'text' && $ft !== 'quiz') {
@@ -158,7 +162,9 @@ if (loggedIn() && loginLevel() === 'test' && $chapter_lang !== $activity['lang']
                 case "mp4":
                 case "mov":
                 case "m4v":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,$activity['lang']);
+                    if ( isset($activity['play-captions']) &&  ! $activity['play-captions'] ) $captions = 'false';
+                                                                                         else $captions = 'true';
+                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,$activity['lang'],$captions);
                     break;
                 case "slideshow":
                     makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "", "",null,null,$lang);
@@ -186,9 +192,9 @@ if (loggedIn() && loginLevel() === 'test' && $chapter_lang !== $activity['lang']
                     break;
                 case "pdf":
                     if (isset($activity['type']) && $activity['type'] === "TG")
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], "auto", "", "",null,null,null,$lang);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], $zoom, "", "",null,null,null,$lang);
                     else
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,$lang);
+                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", $zoom, "", "",null,null,null,$lang);
                     break;
                 case "game":
                 case "history":
@@ -240,7 +246,7 @@ if (loggedIn() && loginLevel() === 'test' && $chapter_lang !== $activity['lang']
         $gradenumber = (isset($_GET['grade'])) ? str_replace("class", "", $grade) : '';
         $subject = (isset($_GET['subject'])) ? trim($_GET['subject']) : '';
 
-$lang = 'en';
+        $lang = 'en';
 
         $chapter_lang = (isset($_GET['chapter_lang'])) ? trim($_GET['chapter_lang']) : 'en';
 		$ch_id = trim($_GET['ch']);
@@ -306,12 +312,11 @@ $lang = 'en';
         $foundActivity = true;
         nextButton();
 
-/**/
 
     //echo "grade is " . $grade . ", subject is " . ucfirst($subject) . ", ch_id is " . $ch_id;
     $filename = "../content/chapters/Class$gradenumber/" . ucfirst($subject) . "/en/$ch_id.keywords";
     //echo "filename is " . $filename;
-    if (file_exists($filename)) {
+    if (file_exists($filename) && $subject !== "math" && substr($ch_id, -3) !== '.00') {
 
 
         echo "<td>";
@@ -328,14 +333,14 @@ $lang = 'en';
         nextButton();
     } //else echo "keywords file not found";
 
- /**/
+
 
 
 
     //create a vocab review button if there are any words from this chapter in the dictionary
     $words = wordList($ch_id, false);
 
-    if ($chapter_lang === 'en' && count($words) >= 3) {
+    if ($chapter_lang === 'en' && count($words) >= 3 && $subject !== "math") {
         echo "<td>";
 
         echo "<a href='looma-vocab-flashcard.php?ch_id=" . $ch_id . "'>";
@@ -348,8 +353,10 @@ $lang = 'en';
         echo "</td>";
         $foundActivity = true;
         nextButton();
+    }
 
-        if (intval($gradenumber) <= 4) { //button for vocabulary picture matching game
+    if ($subject !== "math") {
+        if (intval($gradenumber) <= 4 ) { //button for vocabulary picture matching game
 
             // need to check here if this chapter has any words with pictures in dictionary
 
@@ -427,18 +434,23 @@ $query= array('$or' => array(
     array("nch_id" => $ch_id)
 ));
 
-//for "exec" level logins, also show activities with 'ai_ch_id' matching the chaper ObjectId
-if (loginLevel() === 'exec') $query['$or'][] = array("ai_ch_id" => $ch_id);
+//for "exec" level logins, also show activities with 'ai_ch_id' matching the chapter ObjectId
 
 
-        $activities = mongoFind($activities_collection, $query, null, null, null);
-		foreach ($activities as $activity)  {
+        if (loginLevel() === 'exec') $query['$or'][] = array("ai_ch_id" => $ch_id);
 
-		    //echo $activity['dn'];
 
-		    makeButton($activity);
-            $foundActivity = true;
-        }
+                $activities = mongoFind($activities_collection, $query, null, null, null);
+                foreach ($activities as $activity)  {
+
+                    //echo $activity['dn'];
+
+                if (  ! ( $activity['ft'] === 'lesson' && isset($activity['ch_id']) && in_array($ch_id, iterator_to_array($activity['ch_id']) ) ) ){
+                    makeButton($activity);
+                    $foundActivity = true;
+                }
+            }
+
 
         // REMOVED this keyword matching code JAN 2020. it puts too many activities, esp. in lower grades, that dont match the expertise
         // RE-INSTATED this keyword matching code FEB 2020. adding a check for cl_lo <= grade <= cl_hi

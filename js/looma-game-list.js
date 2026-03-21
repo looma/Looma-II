@@ -13,21 +13,23 @@ function gameButtonClicked() {
     var gameType =    $(this).data('type');
     var gameClass =   $(this).data('class');
     var gameSubject = $(this).data('subject');
- 
+    var author = $(this).data('author');
+
     if       (gameType === 'vocab')
          window.location = "looma-vocab-flashcard.php?class=" + gameClass + "&subject=" + gameSubject + "&random=true";
     else if (gameType === 'arith')
-         window.location = "looma-arith.php?class=" + gameClass;
-    else if (gameType === 'sort')
-        window.location = "looma-sort-game.php?id=" + gameId;
+         window.location = "looma-arith.php?class=" + gameClass + "&author=" + author;
+  //  else if (gameType === 'sort')
+    //    window.location = "looma-sort-game.php?id=" + gameId;
     else window.location = "game?id="      + gameId +
                                          "&class="   + gameClass +
                                          "&subject=" + gameSubject +
-                                         "&type="    + gameType;
+                                         "&type="    + gameType +
+                                         "&author=" + author;
 }
 
 $(document).ready (function() {
     toolbar_button_activate("games");
-    
+
     $("button.game").click(gameButtonClicked);
 });

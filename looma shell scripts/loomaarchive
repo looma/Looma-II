@@ -117,7 +117,7 @@ if [[ $2 = "dryrun" ]]
 then
     echo "NOTE: dryrun, no changes will be made"
      #removed "--include '.ssh'"
-    rsync -rtvz  --dry-run --delete --no-perms --times \
+    rsync -rtvz  --dry-run --delete --perms --times \
     --chmod=u+rwX,go+rX  --update --progress  \
     --exclude ".[!.]*"  --exclude "vendorPHP7/"  --exclude "vendorPHP8/" --exclude "vendor/" \
     -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
@@ -129,7 +129,7 @@ else
     #echo " - - new timestamp for code is $(cat /usr/local/var/www/Looma/archivetimestamp.txt)"
     echo "************************************"
 
-   rsync -rtvz            --delete --no-perms --times \
+   rsync -rtvz            --delete --perms --times \
    --chmod=u+rwX,go+rX  --update --progress   \
    --exclude ".[!.]*"  --exclude "vendorPHP7/"  --exclude "vendorPHP8/"  --exclude "vendor/" \
    -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
@@ -162,7 +162,7 @@ echo
 if [[ $2 = "dryrun" ]]
 then
     echo "NOTE: dryrun"
-    rsync -rtvz  --dry-run --delete --no-perms --chmod=u+rwX,go+rX --update \
+    rsync -rtvz  --dry-run --delete --perms --chmod=u+rwX,go+rX --update \
     --exclude ".[!.]*" --delete \
     -e "ssh -i ~/.ssh/id_rsa" $contentsource  $contentdestination
     echo "FINISHED dryrun"
@@ -172,7 +172,7 @@ else
     #echo "new timestamp for content is "
     #cat "/usr/local/var/www/content/archivetimestamp.txt"
 
-    rsync -rtvz            --delete --no-perms --chmod=u+rwX,go+rX  --update \
+    rsync -rtvz            --delete --perms --chmod=u+rwX,go+rX  --update \
     --exclude ".[!.]*" --delete \
     -e "ssh -i ~/.ssh/id_rsa" $contentsource  $contentdestination
 fi

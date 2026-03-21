@@ -16,6 +16,7 @@ var nnames = {
     'science' : 'विज्ञान',
     'english' : 'अंग्रेजी',
     'math'    :  'गणित',
+    'serofero'    :  'सेरोफेरो',
     'social studies' : 'सामाजिक शिक्षा' };
 
 var displaynames = {
@@ -23,12 +24,12 @@ var displaynames = {
     'english' : 'English',
     'math'    :  'Math',
     'health'  :  'Health',
-    'serafero':  'Serafero',
+    'serofero':  'Serofero',
     'nepali'  :  'Nepali',
     'social studies' : 'Social' };
 
 function displaySubjects (className) {
-    
+
     $.post("looma-database-utilities.php",
         {cmd: "gameSubjectList",
             class: className},
@@ -41,20 +42,20 @@ function displaySubjects (className) {
                     'data-class="' + className + '"' +
                     'data-subject="' + subjects[index] + '"' +
                     'class="subject game" id="' + name + '">');
-                
+
                 var displayname = displaynames[name.toLowerCase()];
                 $newButton.append($("<p class='english-keyword caps'>"+ displayname + "<p class='xlat'>"+ nname + "</p></p>"));
                 $newButton.append($("<p class='native-keyword caps'>"+ nname + "<p class='xlat'>"+ displayname + "</p></p>"));
-                
+
                 $newButton.append($('<img draggable="false" src="images/games.png" />' ));
-                
+
                 $('#subjects').append($newButton);
             };
             $("button.subject").click(gameButtonClicked);
-            
+
             //subjectName = LOOMA.readStore('subject', 'session');
             //activateSubject(subjectName);
-            
+
             var language;
             language = LOOMA.readStore('language', 'cookie');
             if (!language) {
@@ -87,20 +88,20 @@ function classButtonClicked(){
     className = this.getAttribute('id');
     //
     // gradeName = this.getAttribute('data-name');
-    
+
     activateClass(className);              //activate this CLASS - highlights the button
     LOOMA.setStore("game-class", className, 'session');  //set a COOKIE for CLASS (lifetime = this browser session)
-    
+
     $('#subjects').empty();
     displaySubjects(className);              // display SUBJECT buttons for this CLASS
     activateSubject(null);                  // de-activate all SUBJECTS
-    
+
 }; // end classButtonClicked()
 
 function gameButtonClicked(){
     var subjectName = $(this).data('subject');
     var className = $(this).data('class');
-    
+
     //LOOMA.setStore("subject", subjectName, 'session');  //set a COOKIE for SUBJECT (lifetime = this browser session)
     window.location = "game-list?class=" + encodeURIComponent(className) +
                                              "&subject=" + encodeURIComponent(subjectName) ;
@@ -109,22 +110,22 @@ function gameButtonClicked(){
 
 
 $(document).ready (function() {
-    
+
     $("button.class").click(classButtonClicked);
     $("button.subject").click(gameButtonClicked);
-    
+
     //set scroll position to top of page
     //LOOMA.setStore('chapterScroll', 0, 'session');
-    
+
     className = LOOMA.readStore('game-class', 'session');
     if (!className) {
         className = 'class1';
         LOOMA.setStore('game-class', className, 'session');  //set a COOKIE for CLASS (lifetime = this browser session)
     };
-    
+
     toolbar_button_activate("games");
-    
+
     activateClass (className);
     displaySubjects(className);
-    
+
 }); //end of document.ready

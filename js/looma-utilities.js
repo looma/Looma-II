@@ -105,6 +105,8 @@ playMedia : function(button) {
     var ndn = encodeURIComponent(button.getAttribute('data-ndn'));
     var lang = encodeURIComponent(button.getAttribute('data-lang'));
     var ch_id = encodeURIComponent(button.getAttribute('data-ch_id'));
+    var captions = encodeURIComponent(button.getAttribute('data-captions'));
+    if ( ! captions || captions === 'undefined') captions = true;
     var language = LOOMA.readStore('language', 'cookie');
 
     switch (button.getAttribute("data-ft").toLowerCase()) {
@@ -115,7 +117,8 @@ playMedia : function(button) {
             window.location = 'video?' +
                  'fn=' + fn +
                 '&fp=' + fp +
-                '&dn=' + dn;
+                '&dn=' + dn +
+                '&captions=' + captions;
             break;
 
         case "evi":
@@ -338,7 +341,9 @@ playMedia : function(button) {
                 ft='pdf';
             }
 
+            //var captions = result['play-captions'];
             if (result.mongoID) {mongoID = result.mongoID.$oid;}
+
             var $newButton = $(
                 '<button class="activity play img" ' +
                 'data-id="' + result._id          + '" ' +
@@ -362,6 +367,7 @@ playMedia : function(button) {
                 'data-epversion="' + result.version + '" ' +
                 'data-ole="' + result.oleID + '" ' +
                 'data-ID="' + result.ID + '" ' +
+                'data-captions="' + result['play-captions'] + '" ' +
                 'data-mongoID="'  + mongoID    + '" >'
 
                 // add key1, key2, key3, key4, thumb, src, mondoID, url and ch_id data-fields  ???

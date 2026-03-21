@@ -20,7 +20,9 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
         <div id="fullscreen">
         <h1 class="credit"> Created by Ellie, Jayden, Alexa, Catie, and May</h1>
 
-        <?php include ('includes/looma-control-buttons.php');?>
+        <?php include ('includes/looma-control-buttons.php');
+              include ('includes/looma-utilities.php');
+        ?>
 
 
 
@@ -45,8 +47,11 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
         foreach ($cursor as $doc) {
 
             $title = isset($doc['title']) ? $doc['title'] : null;
+            $ndn = isset($doc['ndn']) ? $doc['ndn'] : $title;
             ?>
-            <label for="keywords">Search:</label><input id="keywords" class="searchBar" size="18" placeholder="enter words to search" >
+            <label for="keywords">
+                <?php bilingual('Search','खोज'); ?>
+            </label><input id="keywords" class="searchBar" size="18" placeholder="....." >
 
         <button id= "previous"> <span class="english-keyword"> Prev </span>               </button>
         <button id= "next" clickcount = "-1"> <span class="english-keyword"> Next </span> </button>
@@ -58,7 +63,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
         <button class="returnToLeftmost">   <img src="images/reverse-double-arrow.png">   </button>
 
         <?php
-            echo "<h1> $title </h1>";
+            echo "<h1>"; bilingual($title,$ndn); echo "</h1>";
             echo '<div id="playground">';
             echo '<section class ="timeline">';
             echo '<ol>';
@@ -81,11 +86,11 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
                   if ($count%2 == 0)
                   {
                    echo '
-            
+
                    <li>
-            
+
                      <div class="timeline-description">
-            
+
                        <div class="dropdown" style="float:">'; // edited out
 
                    echo '<button class="dropbtn"' .  " " . $id1 . " " . $id2 . " " . $msg . '>' .  $event['title'] . '</button>';
@@ -93,16 +98,16 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
                    echo '<button class="dropdate">' . $event['date'] . '</button>'; //dropbtn before dropdate so dropbtn is on top
 
                        '</div>
-            
+
                    </li>';
 
                  } else
                  {
                   echo '
                    <li>
-            
+
                      <div class="timeline-description">
-            
+
                        <div class="dropdown" style="float:">'; // edited out
 
                        echo '<button class="dropdate">' . $event['date'] . '</button>';

@@ -1,0 +1,1 @@
+find . -name '*.pdf' -exec ocrmypdf --force-ocr --rotate-pages --output-type pdf –optimize 2 -l eng+nep '{}' '{}.ocr.pdf' ';'

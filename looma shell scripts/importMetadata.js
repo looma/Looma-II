@@ -54,13 +54,14 @@ lines.forEach( function(doc) {
     var ndn = fields[1].trim();
     var ft = fields[16].trim().toLowerCase(); if (ft === 'ep') ft = "EP";
     var fn = fields[14].trim();
+    var nfn = fields[15].trim();
 
-    //query = {'fn':  fn, 'ft': ft };    // query to look for NEW resource files
-    query = {'dn':  dn, 'ft': ft };    // query to look of existing resource files
+    query = {'fn':  fn, 'ft': ft };    // query to look for NEW resource files
+    //query = {'dn':  dn, 'ft': ft };      // query to look for existing resource files
 
     var activities = db.activities.find(query);
 
-        if (!activities.hasNext()) print(requestcount + ' - - - - - - - - dn: ' + dn + ' and ft: ' + ft + '       NOT FOUND');
+        if (!activities.hasNext()) print(requestcount + ' - - fn: ' + fn + '- - - - - - dn: ' + dn + ' and ft: ' + ft + '       NOT FOUND');
         else
             if (activities.length > 1) {
                 print('*************NOTE: duplicate ACTIVITY FOUND, Name = ' + dn + ' ft = ' + ft);

@@ -61,10 +61,10 @@ include ('includes/header.php');
           ?>
         </div>
         <div id="logos">
-            <h5> Partners and content providers for Looma</h5>
+            <!--<h5> Partners and content providers for Looma</h5> -->
 
             <!--  ADD HOVER INFORMATION FOR EACH LOGO, WITH ATTRIBUTION, NAME/ADDRESS/URL -->
-
+<div></div> <div></div>
             <a draggable="false"  draggable="false" class="attribution" href="https://www.cehrd.gov.np/" target="_blank">
               <img draggable="false" src="images/logos/CEHRD-logo.png"  ></a>
              <a draggable="false"  draggable="false" class="attribution" href="https://looma.education/" target="_blank">
@@ -73,8 +73,9 @@ include ('includes/header.php');
                 <img draggable="false" src="images/logos/US Peace Corps logo.jpeg"  ></a>
             <a draggable="false"  class="attribution" href="https://www.linkedin.com/in/dipak-poudel-27a705382/?originalSubdomain=np" target="_blank">
                 <img draggable="false" src="images/logos/coronet logo.png"  ></a>
-          <br>
-            <a draggable="false"  draggable="false" class="attribution" href="http://www.khanacademy.org" target="_blank">
+  <div class="break-row"></div>
+  <div></div>
+              <a draggable="false"  draggable="false" class="attribution" href="http://www.khanacademy.org" target="_blank">
                 <img draggable="false" src="images/logos/khan.jpg"  ></a>
             <a draggable="false"  class="attribution" href="http://www.olenepal.org" target="_blank">
                 <img draggable="false" src="images/logos/ole-nepal.jpg"  ></a>
@@ -102,7 +103,7 @@ include ('includes/header.php');
             <a draggable="false"  draggable="false" class="attribution" href="https://looma.education" target="_blank">
                 <img draggable="false" src="images/logos/Looma-english-amanda.png"  ></a>
             -->
-        <br>
+  <div class="break-row"></div>
 
            <a draggable="false"  class="attribution" href="https://www.projectredwood.org/" target="_blank">
               <img draggable="false" src="images/logos/project redwood.png"  ></a>

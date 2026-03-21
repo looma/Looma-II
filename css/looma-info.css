@@ -32,7 +32,7 @@
 
 #log-viewer button {
 
-    margin-top: 3vh;
+    margin-top: -3vh;
     height: 5vh;
     float: left;
     margin-left: 1vw;
@@ -59,13 +59,21 @@ a {color:lightgreen;}
  #logos {
      grid-row: 3;
      grid-column: left / middle-right;
+     display:grid;
+     grid-template-columns: repeat(8, 1fr); /* 8 columns */
+     place-items: center;
+     justify-content: center;
      overflow:hidden;
      background-color: white;
      border:3px solid red;
      border-radius:12px;
      padding:5px;
+     padding-left:2vw;
      margin: 2vh 3vw;
  }
+#logos .break-row {
+    grid-column: 1 / -1;  /* start at first column line, span full row */
+}
 
 a img {
     height:10vh;

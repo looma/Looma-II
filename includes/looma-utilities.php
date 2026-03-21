@@ -16,6 +16,7 @@
 /// encrypt
 /// redirect_user
 /// getFPandFN
+/// bilingual
 /// //////////////////
 
 $ch_idREGEX =  "/^([1-9]|10|11|12)(M|N|S|SF|SS|EN|H|V)([0-9][0-9])(\.[0-9][0-9])?$/";
@@ -285,7 +286,11 @@ function makeMapButton($id, $thumb, $dn) {
 
 // NOTE: instead of this long list of args, the fn should take one param - an assoc array/object with all the activity's attributes
 
-function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang) {
+function makeActivityButton($ft, $fp, $fn, $dn,
+                            $ndn, $thumb, $ch_id, $mongo_id,
+                            $ole_id, $url, $pg, $zoom, $grade,
+                            $epversion, $nfn, $npg, $prefix,
+                            $lang,$captions='true') {
 
     global $icons;
 	//NOTE: would be better to call this with an object with fields ft, fp, fn, etc. smaller arglist and fewer null parameters
@@ -393,6 +398,8 @@ function makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id,
         if ($ndn)         echo "data-ndn='" .  $ndn . "' ";
 
         if ($prefix)      echo "data-prefix='" .  $prefix . "' ";
+        if ( $captions && $captions === 'false' )      echo "data-captions='false' ";
+        else echo "data-captions='true' ";
 
         if ($mongo_id)    echo "data-id='" .  $mongo_id . "' ";
         if ($mongo_id)    echo "data-mongoid='" .  $mongo_id . "' ";
@@ -548,4 +555,9 @@ function getFP() { //get and verify FP (filepath) parameter from POST request
     }
     return $fp;
 }  // end getFP()
+
+function bilingual($en, $np) {
+    echo "<div><span class='english'>" . $en . "</span><span class='native'>" . $np . "</span></div>";
+};  //end bilingual()
+
 ?>

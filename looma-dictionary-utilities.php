@@ -73,6 +73,7 @@ if (isset($_REQUEST["cmd"])) {
 				{   //Add fields with blanks to avoid errors on code that receives words
 
 					if (file_exists('../content/dictionary images/' . $word['en'] . '.jpg')) $word['img'] = $word['en'];
+					if (file_exists('../content/dictionary images/' . $word['en'] . '.mp4')) $word['nsl'] = $word['en'];
 
 					if(!keyIsSet('np', $word))    $word['np'] = '';
 					if(!keyIsSet('en', $word))    $word['en'] = '';

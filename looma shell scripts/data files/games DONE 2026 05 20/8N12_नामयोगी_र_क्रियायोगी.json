@@ -1,0 +1,139 @@
+{
+    "title": "8N15 नामयोगी र क्रियायोगी पहिचान चुनौती",
+    "ft": "game",
+    "presentation_type": "sort",
+    "timeLimit": 120,
+    "bins": [
+        {
+            "heading": "नामयोगी शब्दहरू",
+            "scope": "namayogi_bin"
+        },
+        {
+            "heading": "क्रियायोगी शब्दहरू",
+            "scope": "kriyayogi_bin"
+        },
+        {
+            "heading": "अन्य पदवर्ग",
+            "scope": "others_bin"
+        }
+    ],
+    "words": [
+        {
+            "en": "दाइसित",
+            "bin": "namayogi_bin"
+        },
+        {
+            "en": "घरअगाडि",
+            "bin": "namayogi_bin"
+        },
+        {
+            "en": "उनीहरूप्रति",
+            "bin": "namayogi_bin"
+        },
+        {
+            "en": "रुखमुनि",
+            "bin": "namayogi_bin"
+        },
+        {
+            "en": "बगैंचातिर",
+            "bin": "namayogi_bin"
+        },
+        {
+            "en": "आमासँग",
+            "bin": "namayogi_bin"
+        },
+        {
+            "en": "पसलबाहिर",
+            "bin": "namayogi_bin"
+        },
+        {
+            "en": "घरपछाडि",
+            "bin": "namayogi_bin"
+        },
+        {
+            "en": "खेतभित्र",
+            "bin": "namayogi_bin"
+        },
+        {
+            "en": "मुसुक्क",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "फटाफट",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "अकस्मात्",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "चाँडै",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "सरासर",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "हिजो",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "साह्रै",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "असाध्यै",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "टुप्लुक्क",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "भोलि",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "राम",
+            "bin": "others_bin"
+        },
+        {
+            "en": "सुन्दर",
+            "bin": "others_bin"
+        },
+        {
+            "en": "दौडिन्छ",
+            "bin": "others_bin"
+        },
+        {
+            "en": "बिस्तारै",
+            "bin": "kriyayogi_bin"
+        },
+        {
+            "en": "स्याबास",
+            "bin": "others_bin"
+        },
+        {
+            "en": "किताब",
+            "bin": "others_bin"
+        },
+        {
+            "en": "पढ्छ",
+            "bin": "others_bin"
+        },
+        {
+            "en": "हामी",
+            "bin": "others_bin"
+        }
+    ],
+    "author": "Sudip Awasthi",
+    "subject": [
+        "nepali"
+    ],
+    "ch_id": "8N15",
+    "ch_lo": 8,
+    "ch_hi": 8,
+    "lang": "np",
+    "lot": "SPHS II Lot 12"
+}

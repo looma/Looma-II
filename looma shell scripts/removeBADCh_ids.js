@@ -16,7 +16,7 @@ function legalCH_ID(ch,dn) {
     if (char && char.length>0) {
         var legal = db.chapters.find({"_id": char});
         if ( !legal.hasNext() ) {
-            print("************ NO CHAPTER FOUND FOR ch_id:     " + char + " named " + dn);
+          //  print("************ NO CHAPTER FOUND FOR ch_id:     " + char + " named " + dn);
             illegalcount++;
             return false;
         } else return true;
@@ -26,17 +26,37 @@ function legalCH_ID(ch,dn) {
 var changecount = 0;
 var illegalcount = 0;
 
+print();print('processing CH_IDs');print();
+
 var activities = db.activities.find();
 while (activities.hasNext()) {
     var activity = activities.next();
 
-    if (activity && activity['ch_id']) {
+    if (activity && Array.isArray(activity['ch_id']) && activity['ch_id'].length > 0) {
         activity['ch_id'].forEach(function(ch, index) {
             if ( ! legalCH_ID(ch,activity['dn'])) {
                 changecount++;
                 if (param === 'run')
                     db.activities.updateOne({_id: activity['_id']}, {$pull: {ch_id:ch}});
-                print (' *** ' +  activity['dn'] + ': removing ' + ch);
+                print (' *** ' +  activity['dn'] + ': removing CH_ID:   ' + ch);
+            }
+        });
+    }
+}
+
+print();print('processing NCH_IDs');print();
+
+var activities = db.activities.find();
+while (activities.hasNext()) {
+    var activity = activities.next();
+
+    if (activity && Array.isArray(activity['nch_id']) && activity['nch_id'].length > 0) {
+        activity['nch_id'].forEach(function(ch, index) {
+            if ( ! legalCH_ID(ch,activity['dn'])) {
+                changecount++;
+                if (param === 'run')
+                    db.activities.updateOne({_id: activity['_id']}, {$pull: {nch_id:ch}});
+                print (' *** ' +  activity['dn'] + ': removing NCH_ID:   ' + ch);
             }
         });
     }
@@ -45,4 +65,4 @@ while (activities.hasNext()) {
 print('');
 if (param === 'run') print('+++++  ' + changecount + '  changes made');
 else                 print('+++++  DRYRUN: ' + changecount + '  changes would have been made');
-print (illegalcount + ' illegal ch_id\s');
+//print (illegalcount + ' illegal ch_id\s');

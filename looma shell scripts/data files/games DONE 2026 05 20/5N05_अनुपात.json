@@ -1,0 +1,107 @@
+{
+  "title": "5N05 निपातको प्रयोग",
+  "presentation_type": "multiple choice",
+  "ft": "game",
+  "timeLimit": 100,
+  "prompts": [
+    {
+      "question": "उसले भाइलाई ___ बोलायो ।",
+      "correctAns": "पो",
+      "wrongAns": [
+        "र",
+        "अनि",
+        "कि"
+      ]
+    },
+    {
+      "question": "उनीहरू घरमा बस्छन् ___ ।",
+      "correctAns": "रे",
+      "wrongAns": [
+        "तर",
+        "वा",
+        "नत्र"
+      ]
+    },
+    {
+      "question": "तिमी कहाँ जान्छौ ___ ?",
+      "correctAns": "नि",
+      "wrongAns": [
+        "तथा",
+        "र",
+        "किनभने"
+      ]
+    },
+    {
+      "question": "म ___ कक्षाकार्य गर्छु ।",
+      "correctAns": "त",
+      "wrongAns": [
+        "वा",
+        "अनि",
+        "तर"
+      ]
+    },
+    {
+      "question": "लौ, ऊ ___ आएछ ।",
+      "correctAns": "पनि",
+      "wrongAns": [
+        "र",
+        "कि",
+        "नत्र"
+      ]
+    },
+    {
+      "question": "आज पानी पर्छ ___ ।",
+      "correctAns": "क्यारे",
+      "wrongAns": [
+        "वा",
+        "अनि",
+        "तर"
+      ]
+    },
+    {
+      "question": "तिमी त घर जाउ ___ ।",
+      "correctAns": "है",
+      "wrongAns": [
+        "र",
+        "कि",
+        "वा"
+      ]
+    },
+    {
+      "question": "तिमीले त काम बिगार्यौ ___ ।",
+      "correctAns": "ब्यारे",
+      "wrongAns": [
+        "अनि",
+        "तथा",
+        "किनकि"
+      ]
+    },
+    {
+      "question": "तपाईँ ___ जानुहोस् न ।",
+      "correctAns": "नै",
+      "wrongAns": [
+        "र",
+        "तर",
+        "वा"
+      ]
+    },
+    {
+      "question": "खै, मलाई त थाहा छैन ___ ।",
+      "correctAns": "अँ",
+      "wrongAns": [
+        "कि",
+        "नत्र",
+        "अनि"
+      ]
+    }
+  ],
+  "cl_lo": 5,
+  "cl_hi": 5,
+  "author": "Sudip Awasthi",
+  "subject": [
+    "nepali"
+  ],
+  "ch_id": "5N05",
+  "lang": "np",
+  "lot": "SPHS II Lot 11"
+}

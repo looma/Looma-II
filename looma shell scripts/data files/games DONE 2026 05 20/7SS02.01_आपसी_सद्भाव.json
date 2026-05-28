@@ -1,0 +1,75 @@
+{
+  "title": "7SS02.01 आपसी सद्भाव",
+  "ft": "game",
+  "presentation_type": "sort",
+  "timeLimit": 100,
+  "bins": [
+    {
+      "heading": "आपसी सद्भाव",
+      "scope": "harmony"
+    }
+  ],
+  "words": [
+    {
+      "en": "एकअर्कालाई सम्मान गर्नु",
+      "bin": "harmony"
+    },
+    {
+      "en": "धर्म र संस्कृतिको कदर गर्नु",
+      "bin": "harmony"
+    },
+    {
+      "en": "जातीय भेदभाव गर्नु",
+      "bin": "wrong"
+    },
+    {
+      "en": "झगडा मिलाउनु",
+      "bin": "harmony"
+    },
+    {
+      "en": "अरूको विचार नसुन्नु",
+      "bin": "wrong"
+    },
+    {
+      "en": "मिलेर काम गर्नु",
+      "bin": "harmony"
+    },
+    {
+      "en": "अफवाह फैलाउनु",
+      "bin": "wrong"
+    },
+    {
+      "en": "समस्या संवादबाट समाधान गर्नु",
+      "bin": "harmony"
+    },
+    {
+      "en": "घृणा फैलाउनु",
+      "bin": "wrong"
+    },
+    {
+      "en": "एकअर्कालाई सहयोग गर्नु",
+      "bin": "harmony"
+    },
+    {
+      "en": "अरूको अपमान गर्नु",
+      "bin": "wrong"
+    },
+    {
+      "en": "फरक विचारलाई स्वीकार गर्नु",
+      "bin": "harmony"
+    },
+    {
+      "en": "मिलाप र समझदारी बढाउनु",
+      "bin": "harmony"
+    }
+  ],
+  "cl_lo": 7,
+  "cl_hi": 7,
+  "author": "Adars",
+  "subject": [
+    "social studies"
+  ],
+  "ch_id": "7SS02.01",
+  "lang": "np",
+  "lot": "SPHS II Lot 8"
+}

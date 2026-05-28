@@ -1,0 +1,107 @@
+{
+  "title": "7SS09.06 नोबेल शान्ति पुरस्कार २०२०",
+  "presentation_type": "multiple choice",
+  "ft": "game",
+  "timeLimit": 150,
+  "prompts": [
+    {
+      "question": "नोबेल शान्ति पुरस्कार २०२० कसले जित्यो?",
+      "correctAns": "World Food Programme (WFP)",
+      "wrongAns": [
+        "Greta Thunberg",
+        "WHO",
+        "Jacinda Ardern"
+      ]
+    },
+    {
+      "question": "World Food Programme (WFP) ले पुरस्कार किन पाए?",
+      "correctAns": "भोकमरीसँग लड्ने, संघर्षग्रस्त क्षेत्रमा शान्ति बढाउने र भोकलाई हतियारको रूपमा प्रयोग हुनबाट रोक्ने",
+      "wrongAns": [
+        "जलवायु परिवर्तनको लागि",
+        "COVID-19 नियन्त्रणको लागि",
+        "महिला अधिकारको लागि"
+      ]
+    },
+    {
+      "question": "नोबेल शान्ति पुरस्कार २०२० को समारोह कहाँ भयो?",
+      "correctAns": "ओस्लो, नर्वे",
+      "wrongAns": [
+        "स्टकहोम, स्वीडेन",
+        "जिनिभा, स्विजरल्यान्ड",
+        "न्यूयोर्क, अमेरिका"
+      ]
+    },
+    {
+      "question": "World Food Programme कहिले स्थापना भयो?",
+      "correctAns": "१९६१",
+      "wrongAns": [
+        "१९५०",
+        "१९७०",
+        "१९८५"
+      ]
+    },
+    {
+      "question": "2020 नोबेल शान्ति पुरस्कारका अन्य प्रमुख नामाङ्कनहरू को थिए?",
+      "correctAns": "Greta Thunberg & Fridays for Future, Jacinda Ardern, Loujain al-Hathloul",
+      "wrongAns": [
+        "Elon Musk, Jeff Bezos, Mark Zuckerberg",
+        "Narendra Modi, Xi Jinping, Vladimir Putin",
+        "Bill Gates, Oprah Winfrey, Angelina Jolie"
+      ]
+    },
+    {
+      "question": "नोबेल शान्ति पुरस्कार चयन गर्ने संस्था कुन हो?",
+      "correctAns": "नर्वेजियन नोबेल कमिटी",
+      "wrongAns": [
+        "संयुक्त राष्ट्र संघ",
+        "विश्व स्वास्थ्य संगठन",
+        "युरोपेली संघ"
+      ]
+    },
+    {
+      "question": "नोबेल शान्ति पुरस्कार २०२० को पुरस्कार रकम कति थियो?",
+      "correctAns": "१० मिलियन स्वीडिस क्रोन",
+      "wrongAns": [
+        "५ मिलियन USD",
+        "१ मिलियन युरो",
+        "१५ मिलियन GBP"
+      ]
+    },
+    {
+      "question": "World Food Programme को मुख्य उद्देश्य के हो?",
+      "correctAns": "भोकमरी नियन्त्रण र खाद्य सुरक्षा सुनिश्चित गर्नु",
+      "wrongAns": [
+        "जलवायु परिवर्तनको नियन्त्रण",
+        "महिला अधिकारको संरक्षण",
+        "COVID-19 नियन्त्रण"
+      ]
+    },
+    {
+      "question": "Greta Thunberg र Fridays for Future 2020 मा किन नामाङ्कन भएका थिए?",
+      "correctAns": "राजनीतिज्ञलाई विश्वव्यापी जलवायु संकटबारे सचेत गराउन",
+      "wrongAns": [
+        "महिला अधिकारको लागि",
+        "भोकमरीसँग लड्न",
+        "COVID-19 नियन्त्रण"
+      ]
+    },
+    {
+      "question": "नोबेल शान्ति पुरस्कारको घोषणा कहिले गरिन्छ?",
+      "correctAns": "९ अक्टोबर २०२०",
+      "wrongAns": [
+        "१० डिसेम्बर २०२०",
+        "१ जनवरी २०२०",
+        "१५ नोभेम्बर २०२०"
+      ]
+    }
+  ],
+  "cl_lo": 7,
+  "cl_hi": 7,
+  "author": "Bikash Kadayat",
+  "subject": [
+    "Social Studies"
+  ],
+  "ch_id": "7SS09.06",
+  "lang": "np",
+  "lot": "SPHS II Lot 8"
+}

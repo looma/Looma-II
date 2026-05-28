@@ -238,8 +238,8 @@ playMedia : function(button) {
             break;
 
         case "looma":
-            var fp = encodeURIComponent(button.getAttribute('data-fp'));
-            window.location = fp;
+            var url = encodeURIComponent(button.getAttribute('data-url'));
+            window.location = url;
             break;
 
         case "epaath":

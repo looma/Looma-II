@@ -1,0 +1,111 @@
+{
+    "title": "8N08 ‘क्ष’ र ‘छ’ को शुद्ध-अशुद्ध वर्गीकरण",
+    "ft": "game",
+    "presentation_type": "sort",
+    "timeLimit": 120,
+    "bins": [
+        {
+            "heading": "‘क्ष’ भएका शुद्ध शब्द",
+            "scope": "ksha_shuddha"
+        },
+        {
+            "heading": "‘छ’ भएका शुद्ध शब्द",
+            "scope": "cha_shuddha"
+        },
+        {
+            "heading": "अशुद्ध शब्द",
+            "scope": "ashuddha_bin"
+        }
+    ],
+    "words": [
+        {
+            "en": "क्षेत्र",
+            "bin": "ksha_shuddha"
+        },
+        {
+            "en": "छेत्र",
+            "bin": "ashuddha_bin"
+        },
+        {
+            "en": "छाता",
+            "bin": "cha_shuddha"
+        },
+        {
+            "en": "क्षाता",
+            "bin": "ashuddha_bin"
+        },
+        {
+            "en": "क्षमता",
+            "bin": "ksha_shuddha"
+        },
+        {
+            "en": "छमता",
+            "bin": "ashuddha_bin"
+        },
+        {
+            "en": "छोरी",
+            "bin": "cha_shuddha"
+        },
+        {
+            "en": "क्षोरी",
+            "bin": "ashuddha_bin"
+        },
+        {
+            "en": "क्षमा",
+            "bin": "ksha_shuddha"
+        },
+        {
+            "en": "छमा",
+            "bin": "ashuddha_bin"
+        },
+        {
+            "en": "छलफल",
+            "bin": "cha_shuddha"
+        },
+        {
+            "en": "क्षलफल",
+            "bin": "ashuddha_bin"
+        },
+        {
+            "en": "नक्षत्र",
+            "bin": "ksha_shuddha"
+        },
+        {
+            "en": "नछेत्र",
+            "bin": "ashuddha_bin"
+        },
+        {
+            "en": "शिक्षण",
+            "bin": "ksha_shuddha"
+        },
+        {
+            "en": "शिक्छण",
+            "bin": "ashuddha_bin"
+        },
+        {
+            "en": "छिटो",
+            "bin": "cha_shuddha"
+        },
+        {
+            "en": "क्षितो",
+            "bin": "ashuddha_bin"
+        },
+        {
+            "en": "क्षति",
+            "bin": "ksha_shuddha"
+        },
+        {
+            "en": "छति",
+            "bin": "ashuddha_bin"
+        }
+    ],
+    "author": "Sudip Awasthi",
+    "subject": [
+        "nepali"
+    ],
+    "ch_id": "8N08",
+    "ch_lo": 7,
+    "ch_hi": 8,
+    "lang": "np",
+    "lot": "SPHS II Lot 12"
+}

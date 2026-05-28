@@ -25,10 +25,10 @@ var displayArea;
 
     function OK(html) {
         $('#definitionDisplay').html(html);
-    
+
         var img = document.getElementById('definitionThumb');
         if (img) {
-            
+
             //The MODAL - opens window of image when clicked
             var modal = document.getElementById('definitionImage');
             // Get the image and insert it inside the modal
@@ -43,11 +43,30 @@ var displayArea;
                 modal.style.display = "none";
             };
         }
-    
+       /*
+        var signed = document.getElementById('definitionSigned');
+
+        if (img) {
+
+            //The MODAL - opens window of image when clicked
+            var modal = document.getElementById('            var modal = document.getElementById(\'definitionImage\');\n');
+            // Get the image and insert it inside the modal
+            var modalImg = document.getElementById("img01");
+            img.onclick = function () {
+                modal.style.display = "block";
+                modalImg.src = this.src;
+            };
+            // Get the <span> element (x) that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+            span.onclick = function () {
+                modal.style.display = "none";
+            };
+        }
+*/
         if ($('#definition').text().length > 100) $('#definition').css('font-size', '0.75em');
         if ($('#rwdef').text().length > 100)      $('#rwdef').css('font-size', '0.75em');
     }; //end OK()
-    
+
     //This is the fail function, used when the Looma database can not find the word
     function fail(jqXHR, textStatus, errorThrown) {
         LOOMA.alert("Dictionary lookup failedx");
@@ -68,19 +87,19 @@ function getDefinition(event) {
 }; //end getDefinition()
 
 $(document).ready (function() {
-    
+
     var elem = document.getElementById("lookup");
     elem.addEventListener('submit', getDefinition);
-    
+
     $('#input').focus(
         function(){$('#npinput').val('')});
  //   $('#npinput').focus(
    //     function(){$('#input').val('')});
- 
+
     // SPEAK button will say the word, unless text is selected, in which case, it will speak the selected text
     $('button.speak').off('click').click(function () {
         var selection, word, nepali, pos, definition, rwdef, toSpeak;
-    
+
         selection = document.getSelection().toString();
         word =      document.getElementById('input').value;
         nepali =    document.getElementById('nepali').innerText;
@@ -91,20 +110,20 @@ $(document).ready (function() {
             definition = definition.replace("(n)", " noun ");
         };
         rwdef = document.getElementById('rwdef'); if (rwdef) definition += ', ' + rwdef.innerText;
-    
+
         if (selection) {
             LOOMA.speak(selection);
         } else {
             LOOMA.speak(word + '. ' + nepali + '. ' + definition);
-            
+
             //LOOMA.speak(nepali);
             //LOOMA.speak(definition);
         }
-        
+
         $('#input').trigger('focus');
-        
+
     }); //end speak button onclick function
-    
+
     toolbar_button_activate("dictionary");
-    
+
 });

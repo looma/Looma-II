@@ -1,0 +1,35 @@
+{
+    "title": "8N02 पर्यायवाची शब्द",
+    "ft": "game",
+    "presentation_type": "concentration",
+    "timeLimit": 100,
+    "prompts": [
+        "सूर्य",
+        "पृथ्वी",
+        "जल",
+        "वन",
+        "बालक",
+        "विद्यालय",
+        "आकाश",
+        "मित्र"
+    ],
+    "responses": [
+        "घाम",
+        "धर्ती",
+        "पानी",
+        "जंगल",
+        "केटा",
+        "स्कूल",
+        "गगन",
+        "साथी"
+    ],
+    "author": "Abijeet",
+    "subject": [
+        "nepali"
+    ],
+    "ch_id": "8N02",
+    "ch_lo": 8,
+    "ch_hi": 8,
+    "lang": "np",
+    "lot": "SPHS II Lot 12"
+}

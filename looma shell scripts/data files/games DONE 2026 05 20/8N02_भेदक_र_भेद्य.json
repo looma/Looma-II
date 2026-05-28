@@ -1,0 +1,75 @@
+{
+    "title": "8N02 भेदक र भेद्य",
+    "ft": "game",
+    "presentation_type": "sort",
+    "timeLimit": 100,
+    "bins": [
+        {
+            "heading": "भेदक",
+            "scope": "agent"
+        },
+        {
+            "heading": "भेद्य",
+            "scope": "object"
+        }
+    ],
+    "words": [
+        {
+            "en": "राम",
+            "bin": "agent"
+        },
+        {
+            "en": "सीता",
+            "bin": "agent"
+        },
+        {
+            "en": "बुवा",
+            "bin": "agent"
+        },
+        {
+            "en": "शिक्षक",
+            "bin": "agent"
+        },
+        {
+            "en": "बालक",
+            "bin": "agent"
+        },
+        {
+            "en": "आमा",
+            "bin": "agent"
+        },
+        {
+            "en": "किताब",
+            "bin": "object"
+        },
+        {
+            "en": "खाना",
+            "bin": "object"
+        },
+        {
+            "en": "चित्र",
+            "bin": "object"
+        },
+        {
+            "en": "घडी",
+            "bin": "object"
+        },
+        {
+            "en": "पानी",
+            "bin": "object"
+        },
+        {
+            "en": "घर",
+            "bin": "object"
+        }
+    ],
+    "author": "Abijeet",
+    "subject": [
+        "nepali"
+    ],
+    "ch_id": "8N02",
+    "ch_lo": 8,
+    "ch_hi": 8,
+    "lang": "np",
+    "lot": "SPHS II Lot 12"
+}

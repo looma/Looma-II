@@ -1,0 +1,133 @@
+{
+    "title": "8N16 पदयोग र पदवियोग पहिचान",
+    "presentation_type": "sort",
+    "ft": "game",
+    "timeLimit": 120,
+    "bins": [
+        {
+            "heading": "पदयोग",
+            "scope": "padyog"
+        },
+        {
+            "heading": "पदवियोग",
+            "scope": "padbiyog"
+        },
+        {
+            "heading": "गलत शब्द",
+            "scope": "incorrect"
+        }
+    ],
+    "words": [
+        {
+            "en": "घरतिर",
+            "scope": "padyog"
+        },
+        {
+            "en": "घर तिर",
+            "scope": "padbiyog"
+        },
+        {
+            "en": "रामले",
+            "scope": "padyog"
+        },
+        {
+            "en": "राम ले",
+            "scope": "padbiyog"
+        },
+        {
+            "en": "साथीसँग",
+            "scope": "padyog"
+        },
+        {
+            "en": "साथी सँग",
+            "scope": "padbiyog"
+        },
+        {
+            "en": "रातभरि",
+            "scope": "padyog"
+        },
+        {
+            "en": "रात भरि",
+            "scope": "padbiyog"
+        },
+        {
+            "en": "खाँदैछ",
+            "scope": "padyog"
+        },
+        {
+            "en": "खाँदै छ",
+            "scope": "padbiyog"
+        },
+        {
+            "en": "ऊमात्र",
+            "scope": "padyog"
+        },
+        {
+            "en": "ऊ मात्र",
+            "scope": "padbiyog"
+        },
+        {
+            "en": "विद्यालयमा",
+            "scope": "padyog"
+        },
+        {
+            "en": "विद्यालय मा",
+            "scope": "padbiyog"
+        },
+        {
+            "en": "तिमीलाई",
+            "scope": "padyog"
+        },
+        {
+            "en": "तिमी लाई",
+            "scope": "padbiyog"
+        },
+        {
+            "en": "भाइभन्दा",
+            "scope": "padyog"
+        },
+        {
+            "en": "भाइ भन्दा",
+            "scope": "padbiyog"
+        },
+        {
+            "en": "पढेकोछ",
+            "scope": "padyog"
+        },
+        {
+            "en": "पढेको छ",
+            "scope": "padbiyog"
+        },
+        {
+            "en": "घरतिर्",
+            "scope": "incorrect"
+        },
+        {
+            "en": "रामलेे",
+            "scope": "incorrect"
+        },
+        {
+            "en": "साथीँसँग",
+            "scope": "incorrect"
+        },
+        {
+            "en": "रातभरी",
+            "scope": "incorrect"
+        },
+        {
+            "en": "विद्यालयम",
+            "scope": "incorrect"
+        },
+        {
+            "en": "तिमिलाई",
+            "scope": "incorrect"
+        }
+    ],
+    "author": "Bikash Kadayat",
+    "subject": "Nepali",
+    "ch_id": "8N16",
+    "ch_lo": 8,
+    "ch_hi": 8,
+    "lang": "np",
+    "lot": "SPHS II Lot 12"
+}

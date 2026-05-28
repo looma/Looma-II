@@ -1,0 +1,99 @@
+{
+    "title": "8N14 पञ्चमवर्णको प्रयोग",
+    "ft": "game",
+    "presentation_type": "sort",
+    "timeLimit": 120,
+    "bins": [
+        {
+            "heading": "ङ (क वर्ग)",
+            "scope": "nga"
+        },
+        {
+            "heading": "ञ (च वर्ग)",
+            "scope": "nya"
+        },
+        {
+            "heading": "ण (ट वर्ग)",
+            "scope": "adha"
+        },
+        {
+            "heading": "न (त वर्ग)",
+            "scope": "na"
+        },
+        {
+            "heading": "म (प वर्ग)",
+            "scope": "ma"
+        }
+    ],
+    "words": [
+        {
+            "en": "कङ्गाल",
+            "bin": "nga"
+        },
+        {
+            "en": "जङ्गल",
+            "bin": "nga"
+        },
+        {
+            "en": "शङ्ख",
+            "bin": "nga"
+        },
+        {
+            "en": "चञ्चल",
+            "bin": "nya"
+        },
+        {
+            "en": "लज्जा",
+            "bin": "nya"
+        },
+        {
+            "en": "अञ्चल",
+            "bin": "nya"
+        },
+        {
+            "en": "घण्टा",
+            "bin": "adha"
+        },
+        {
+            "en": "कण्ठ",
+            "bin": "adha"
+        },
+        {
+            "en": "सन्तति",
+            "bin": "na"
+        },
+        {
+            "en": "सन्ध्या",
+            "bin": "na"
+        },
+        {
+            "en": "अनुसन्धान",
+            "bin": "na"
+        },
+        {
+            "en": "चम्पा",
+            "bin": "ma"
+        },
+        {
+            "en": "सम्बन्ध",
+            "bin": "ma"
+        },
+        {
+            "en": "डम्बर",
+            "bin": "ma"
+        },
+        {
+            "en": "सम्भव",
+            "bin": "ma"
+        }
+    ],
+    "author": "Adars",
+    "subject": [
+        "nepali"
+    ],
+    "ch_id": "8N14",
+    "ch_lo": 8,
+    "ch_hi": 8,
+    "lang": "np",
+    "lot": "SPHS II Lot 12"
+}

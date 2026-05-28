@@ -1,0 +1,75 @@
+{
+    "title": "8N02 मापक र असमापक क्रिया",
+    "ft": "game",
+    "presentation_type": "sort",
+    "timeLimit": 100,
+    "bins": [
+        {
+            "heading": "मापक क्रिया",
+            "scope": "transitive"
+        },
+        {
+            "heading": "असमापक क्रिया",
+            "scope": "intransitive"
+        }
+    ],
+    "words": [
+        {
+            "en": "लेख्नु",
+            "bin": "transitive"
+        },
+        {
+            "en": "खानु",
+            "bin": "transitive"
+        },
+        {
+            "en": "पढ्नु",
+            "bin": "transitive"
+        },
+        {
+            "en": "खेल्नु",
+            "bin": "transitive"
+        },
+        {
+            "en": "बोल्नु",
+            "bin": "transitive"
+        },
+        {
+            "en": "काट्नु",
+            "bin": "transitive"
+        },
+        {
+            "en": "खान",
+            "bin": "intransitive"
+        },
+        {
+            "en": "पढ्न",
+            "bin": "intransitive"
+        },
+        {
+            "en": "खेल्न",
+            "bin": "intransitive"
+        },
+        {
+            "en": "हेर्न",
+            "bin": "intransitive"
+        },
+        {
+            "en": "सुन्न",
+            "bin": "intransitive"
+        },
+        {
+            "en": "हिँड्न",
+            "bin": "intransitive"
+        }
+    ],
+    "author": "Abijeet",
+    "subject": [
+        "nepali"
+    ],
+    "ch_id": "8N02",
+    "ch_lo": 8,
+    "ch_hi": 8,
+    "lang": "np",
+    "lot": "SPHS II Lot 12"
+}

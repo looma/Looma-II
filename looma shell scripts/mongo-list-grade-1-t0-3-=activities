@@ -1,0 +1,1 @@
+mongoexport --db=looma --collection=activities --query='{ "$or": [ { "ch_id": "/^1[A-Z]/" }, { "ch_id": "/^2[A-Z]/" }, { "ch_id": "/^3[A-Z]/" } ] }' --type=csv  --fields=dn,ch_id --out=temp.csv

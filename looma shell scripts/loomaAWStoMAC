@@ -1,14 +1,19 @@
 #!/bin/bash
 #
 #  filename: loomaAWStoMAC
-#       VERSION 1.2
+#       VERSION 1.3
 #       author: skip
-#       date:   JUL 2021
+#       date:   JUL 2021 / MAY 2026
 #
-#  used to backup looma code, database and content from Looma Online on AWS to Skip's iMac
+#  used to backup looma code, database and content from
+#    Looma Online on AWS (looma.website) to Skip's iMac
 #
-#  the target iMac folders are also automatically sync'd with
-#    Dropbox > 03 Content Reference > 01 Content > D Finished Content > Content on Looma
+#  the target iMac folders are then automatically sync'd with
+#    Dropbox > 09 Looma Backup AWS in folders "Looma" and "content"
+#
+#  log of the operation is stored in "/Users/skip/Desktop/Looma Backup Logs (AWStoMAC)/loomabackuplogfile_$(date +%F-%T)"
+#
+#  run with "crontab" at 12:30am (after the daily mongodump on AWS saves the latest DB contents into "  ")
 #
 #  can be called with a parameter "dryrun" in which case the transfers are not performed,
 #    configured to be run on a MAC
@@ -64,7 +69,7 @@ log "script loomaAWStoMAC: Looma backup from AWS to Mac, last run date: `date`"
 HOSTNAME=`hostname`
 log "host is $HOSTNAME"
 
-TARGET="/Users/skip/Dropbox/03 Content reference/01 Content/D Finished Content/Content on Looma"
+TARGET="/Users/skip/Dropbox/09 Looma Backup AWS"
 
 cd  "$TARGET"
 

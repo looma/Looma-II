@@ -1,0 +1,28 @@
+{
+  "title": "तत्सम तद्भव र आगन्तुक शब्द",
+  "ft": "game",
+  "presentation_type": "sort",
+  "timeLimit": 15,
+  "bins": [
+    { "heading": "तसम", "scope": "tasm" },
+    { "heading": "तभव", "scope": "tabhav" },
+    { "heading": "आगतुक", "scope": "agatuk" }
+  ],
+  "words": [
+    { "en": "जल", "bin": "tasm" },
+    { "en": "अग्नि", "bin": "tabhav" },
+    { "en": "विद्या", "bin": "agatuk" },
+    { "en": "पृथ्वी", "bin": "tasm" },
+    { "en": "गगन", "bin": "agatuk" },
+    { "en": "वन", "bin": "tabhav" },
+    { "en": "नदी", "bin": "tasm" },
+    { "en": "सूर्य", "bin": "tabhav" },
+    { "en": "शान्ति", "bin": "agatuk" },
+    { "en": "पुस्तक", "bin": "tasm" }
+  ],
+  "cl_lo": 6,
+  "cl_hi": 7,
+  "author": "Adars",
+  "subject": ["nepali"],
+  "ch_id": "7N14"
+}

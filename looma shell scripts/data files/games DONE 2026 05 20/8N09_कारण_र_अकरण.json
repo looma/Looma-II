@@ -1,0 +1,95 @@
+{
+    "title": "8N13 करण र अकरण वाक्य वर्गीकरण",
+    "ft": "game",
+    "presentation_type": "sort",
+    "timeLimit": 120,
+    "bins": [
+        {
+            "heading": "करण वाक्य ",
+            "scope": "karan_bin"
+        },
+        {
+            "heading": "अकरण वाक्य",
+            "scope": "akaran_bin"
+        },
+        {
+            "heading": "अशुद्ध हिज्जे",
+            "scope": "wrong_bin"
+        }
+    ],
+    "words": [
+        {
+            "en": "रामले सीतालाई काम गर्न लगायो।",
+            "bin": "karan_bin"
+        },
+        {
+            "en": "म किताब पढ्दिनँ।",
+            "bin": "akaran_bin"
+        },
+        {
+            "en": "म किताब पढ्दिन।",
+            "bin": "wrong_bin"
+        },
+        {
+            "en": "शिक्षकले कविता लेख्न लगाए।",
+            "bin": "karan_bin"
+        },
+        {
+            "en": "सीता गीत गाउँदिनन्।",
+            "bin": "akaran_bin"
+        },
+        {
+            "en": "बाबुले छोरासँग काम गराए।",
+            "bin": "karan_bin"
+        },
+        {
+            "en": "ऊ गीत गाउँदैन।",
+            "bin": "akaran_bin"
+        },
+        {
+            "en": "ऊ गीत गाउदैन।",
+            "bin": "wrong_bin"
+        },
+        {
+            "en": "आमाले पानी ल्याउन पठाउनुभयो।",
+            "bin": "karan_bin"
+        },
+        {
+            "en": "बालक हाँसेन।",
+            "bin": "akaran_bin"
+        },
+        {
+            "en": "बालक हाँसेनँ।",
+            "bin": "wrong_bin"
+        },
+        {
+            "en": "प्रधानाध्यापकले सफा गर्न लगाउनुभयो।",
+            "bin": "karan_bin"
+        },
+        {
+            "en": "ऊ आज विद्यालय जाँदैन।",
+            "bin": "akaran_bin"
+        },
+        {
+            "en": "हामी भात खान्छौँ।",
+            "bin": "karan_bin"
+        },
+        {
+            "en": "हामी भात खादैनौ।",
+            "bin": "wrong_bin"
+        },
+        {
+            "en": "भाइ खेल्न जाँदैन।",
+            "bin": "akaran_bin"
+        }
+    ],
+    "author": "Sudip Awasthi",
+    "subject": [
+        "nepali"
+    ],
+    "ch_id": "8N13",
+    "ch_lo": 8,
+    "ch_hi": 8,
+    "lang": "np",
+    "lot": "SPHS II Lot 12"
+}

@@ -1,0 +1,75 @@
+{
+    "title": "8N02 विशेषण र विशेष्य",
+    "ft": "game",
+    "presentation_type": "sort",
+    "timeLimit": 100,
+    "bins": [
+        {
+            "heading": "विशेषण",
+            "scope": "adj"
+        },
+        {
+            "heading": "विशेष्य",
+            "scope": "noun"
+        }
+    ],
+    "words": [
+        {
+            "en": "रातो",
+            "bin": "adj"
+        },
+        {
+            "en": "ठूलो",
+            "bin": "adj"
+        },
+        {
+            "en": "पुरानो",
+            "bin": "adj"
+        },
+        {
+            "en": "मेहेनती",
+            "bin": "adj"
+        },
+        {
+            "en": "स्वादिलो",
+            "bin": "adj"
+        },
+        {
+            "en": "छिटो",
+            "bin": "adj"
+        },
+        {
+            "en": "घर",
+            "bin": "noun"
+        },
+        {
+            "en": "किताब",
+            "bin": "noun"
+        },
+        {
+            "en": "विद्यार्थी",
+            "bin": "noun"
+        },
+        {
+            "en": "घोडा",
+            "bin": "noun"
+        },
+        {
+            "en": "खाना",
+            "bin": "noun"
+        },
+        {
+            "en": "फूल",
+            "bin": "noun"
+        }
+    ],
+    "author": "Abijeet",
+    "subject": [
+        "nepali"
+    ],
+    "ch_id": "8N02",
+    "ch_lo": 8,
+    "ch_hi": 8,
+    "lang": "np",
+    "lot": "SPHS II Lot 12"
+}

@@ -1,6 +1,14 @@
 <?php
 require_once('includes/looma-isloggedin.php');
-require_once('vendor/autoload.php');
+//require_once('vendor/autoload.php');
+
+  if (PHP_MAJOR_VERSION >= 8) {
+      require_once('vendorPHP8/autoload.php');
+  } else {
+      require_once('vendor/autoload.php');
+  }
+
+
 
 // NOTE: this code sending "header" must be before ANY data is sent to client=side
 $loggedin = loggedIn();
@@ -70,13 +78,13 @@ if ( $cmd === 'update' ) {
    //     $dryrun = " --dry-run ";
     $dryrun = " ";
      //   echo "dryrun is $dryrun <br>";
-        
+
     if ( ! $updated ) {
         $shellcommand = $rsynccommand . " " . $dryrun . " " . $rsyncURL . "@" . $username . ":../Looma/ /var/www/html/Looma";
         //$shellcommand = $rsynccommand . " " . $username . "@" . $rsyncURL . ":test_folder/    /tmp/test_folder";
 
         $code = 0;
-       
+
         echo "SHELLCOMMAND is $shellcommand <br>";
 
         $result = shell_exec($shellcommand);

@@ -247,7 +247,16 @@ $dbname = 'looma';
 
 try {
     if (getenv("DOCKER")=="1") {
-            require_once('vendor/autoload.php');
+            //require_once('vendor/autoload.php');
+
+              if (PHP_MAJOR_VERSION >= 8) {
+                  require_once('vendorPHP8/autoload.php');
+              } else {
+                  require_once('vendor/autoload.php');
+              }
+
+
+
             $mongoClient = new MongoDB\Client("mongodb://looma-db:27017");    //make a new mongo client object
             // TODO: get the actual version
             $mongo_version = '4.4.3';
@@ -274,7 +283,16 @@ try {
         }
 
         if ($mongo_level >= 3) {
-            require_once('vendor/autoload.php');
+            //require_once('vendor/autoload.php');
+
+              if (PHP_MAJOR_VERSION >= 8) {
+                  require_once('vendorPHP8/autoload.php');
+              } else {
+                  require_once('vendor/autoload.php');
+              }
+
+
+
             $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
         } else {  //old mongo is running
             $mongoClient = new MongoClient("mongodb://localhost:27017");    //make a new mongo client object

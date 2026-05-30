@@ -1,2 +1,2 @@
-this vendor/ folder is for Looma's running PHP8
-it contains ~949 files
+this vendor/ folder is for Looma's running PHP7
+it contains ~1540 files

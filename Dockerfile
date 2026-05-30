@@ -1,11 +1,11 @@
-FROM php:7.4.33-apache
+FROM php:8.1-apache
 RUN pecl install mongodb-1.15.0
 RUN apt-get update
 RUN apt-get install -y net-tools
 RUN apt-get install -y python3
 RUN apt-get install -y python3-pip
-RUN pip3 install torch>0+cpu -f https://download.pytorch.org/whl/torch_stable.html # this is necessary to avoid downloading unwanted NVIDIA libraries
-RUN pip3 install langchain_huggingface qdrant_client sentence-transformers
+RUN pip3 install --break-system-packages torch>0+cpu -f https://download.pytorch.org/whl/torch_stable.html # this is necessary to avoid downloading unwanted NVIDIA libraries
+RUN pip3 install --break-system-packages langchain_huggingface qdrant_client sentence-transformers
 COPY load_models.py load_models.py
 RUN mkdir -p /tmp/.cache/hf
 RUN export HF_HOME=/tmp/.cache/hf; python3 load_models.py
@@ -15,7 +15,7 @@ RUN mkdir -p /usr/local/var/www/Looma
 COPY docker_php.ini /usr/local/etc/php/php.ini
 COPY search.py /bin/search.py
 COPY launch.sh /bin/launch.sh
-RUN pip3 install flask
+RUN pip3 install --break-system-packages flask
 RUN chmod +x /bin/search.py
 RUN chmod +x /bin/launch.sh
 

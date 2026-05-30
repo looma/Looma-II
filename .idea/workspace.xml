@@ -28,11 +28,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="7.20e MAR 28  2026">
-      <change afterPath="$PROJECT_DIR$/images/chat.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/chat.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/includes/mongo-connect.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/mongo-connect.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-updater.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-updater.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,7 +220,7 @@
       <workItem from="1774122440672" duration="355000" />
       <workItem from="1774122808109" duration="99397000" />
       <workItem from="1778818619128" duration="22844000" />
-      <workItem from="1779402940312" duration="20244000" />
+      <workItem from="1779402940312" duration="21688000" />
     </task>
     <task id="LOCAL-00001" summary="5.2.3 adding mongoDB contents">
       <created>1571193627755</created>
@@ -511,7 +508,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779997347720</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="7.20e MAR 28  2026">
+      <option name="closed" value="true" />
+      <created>1780015739562</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1780015739562</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

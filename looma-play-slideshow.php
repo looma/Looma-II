@@ -15,20 +15,11 @@ Description: looma slideshow presenter
 <!--
 <link rel="stylesheet" href="css/looma-text-display.css">
 -->
-<link rel="stylesheet" href="css/looma-play-slideshow.css">
+  <link rel="stylesheet" href="css/looma-play-slideshow.css">
 
   </head>
 
   <body>
-    <?php
-        //Gets the filename, filepath, and the thumbnail location
-        if (isset($_REQUEST['id'])) $slideshow_id = $_REQUEST['id'];
-        else {
-            echo "<h1>File not found</h1>";
-            exit;
-        }
-    ?>
-
 
         <div id="main-container-horizontal">
           <div id="fullscreen">
@@ -44,6 +35,16 @@ Description: looma slideshow presenter
             <div id="timeline">
 
         <?php
+        //Gets the filename, filepath, and the thumbnail location
+
+      if (isset($_REQUEST['id'])) $slideshow_id = $_REQUEST['id']; else $slideshow_id = null;
+            if (isset($_REQUEST['db']) && $_REQUEST['db'] === 'loomalocal') {
+                $db = 'loomalocal';
+                $dbCollection = $localcollections['slideshows'];
+            } else {
+                $db = 'looma';
+                $dbCollection = $collections['slideshows'];
+            };
 
         //look up the slideshow in mongo slideshows collection
         //send DN, AUTHOR and DATE in a hidden DIV
@@ -52,7 +53,7 @@ Description: looma slideshow presenter
          if ($slideshow_id) {   //get the mongo document for this slideshow
             $query = array('_id' => mongoId($slideshow_id));
 
-            $slideshow = mongoFindOne($slideshows_collection, $query);
+            $slideshow = mongoFindOne($dbCollection, $query);
 
             if (!$slideshow) {
                 echo "<h1>File not found</h1>";

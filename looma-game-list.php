@@ -23,6 +23,15 @@ require_once ('includes/looma-utilities.php');
 
         <?php
 
+            function classNUmber($class) {
+                if
+                    ($class === 'class11') return 11;
+                else if
+                    ($class === 'class12') return 12;
+                else
+                    return substr($class,5);
+            };
+
             $game_class =   $_REQUEST["class"]; $class_name = substr_replace($game_class, ' ', 5, 0);
             $game_subject = $_REQUEST["subject"];
             if ($game_subject === 'social studies') $subject_name = 'Social Studies'; else $subject_name = $game_subject;
@@ -56,8 +65,9 @@ require_once ('includes/looma-utilities.php');
             //      if subject = english [others later] add a vocab game
 
             $query = [];
-            $query['cl_lo'] = array('$lte' => (int)substr($game_class,5),'$ne' => 0);
-            $query['cl_hi'] = array('$gte' => (int)substr($game_class,5),'$ne' => 0);
+            $class = classNumber ($game_class);
+            $query['cl_lo'] = array('$lte' => (int)$class);
+            $query['cl_hi'] = array('$gte' => (int)$class);
             $query['subject'] = $game_subject;
 
         //print_r($query);

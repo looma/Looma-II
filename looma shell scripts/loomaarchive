@@ -8,6 +8,7 @@
 #               OCT 2023 - added 'archivetimestamp.txt' file to archive for use by 'loomaupdate'
 #               JUL 2025 - exclude COMPOSER files from archive [vendor/, composer.json, composer.lock]
 #               SEP 2025 - add "preview" and "release" parameters
+#               JUN 2026 - add COMPOSER files back in to the sync
 #
 #  used to update the 'archive' version of Looma on rsync.net, including new code, database & content
 #
@@ -20,7 +21,7 @@
 # --chmod=ugo=rwX
 # --chown=looma:looma. NOT USED - files get 58198:58198 on Update Server, then get odroid:odroid on Looma's that download from the update server
 # optional: --dry-run
-# --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*"
+# --include ".ssh/"  --exclude ".[!.]*"
 
 ############### pause() ##################
 pause () {
@@ -63,8 +64,6 @@ else
 fi
 
 echo
-# we now leave vendor/ vendorPHP7 and vendorPHP8/ on the rsync server, and DON'T update them in "loomwarchive"
-# pause "did you remember to change Looma/vendor to be for PHP7?"
 
 echo "************************************"
 echo " - - setting database version to todays date"
@@ -119,8 +118,7 @@ then
      #removed "--include '.ssh'"
     rsync -rtvz  --dry-run --delete --perms --times \
     --chmod=u+rwX,go+rX  --update --progress  \
-    --exclude ".[!.]*"  --exclude "vendorPHP7/"  --exclude "vendorPHP8/" --exclude "vendor/" \
-    -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
+    --exclude ".[!.]*"  -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
 
     echo "FINISHED dryrun"
 else
@@ -131,8 +129,7 @@ else
 
    rsync -rtvz            --delete --perms --times \
    --chmod=u+rwX,go+rX  --update --progress   \
-   --exclude ".[!.]*"  --exclude "vendorPHP7/"  --exclude "vendorPHP8/"  --exclude "vendor/" \
-   -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
+   --exclude ".[!.]*"  -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
 fi
 result $?
 echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
@@ -183,9 +180,4 @@ echo "*********************************************"
 echo " - - DONE updating Looma archive on rsync.net"
 echo "*********************************************"
 
-
-echo
-# we now leave vendor/ vendorPHP7 and vendorPHP8/ on the rsync server, and dont update them in "loomwarchive"
-# pause " * * * * remember to change Looma/vendor to be for PHP8"
-echo
 

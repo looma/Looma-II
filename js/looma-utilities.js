@@ -296,7 +296,8 @@ playMedia : function(button) {
 
              */
         case "slideshow":
-            window.location = 'slideshow?id=' + button.getAttribute("data-mongoid");
+            window.location = 'slideshow?id=' + button.getAttribute("data-mongoid") +
+            '&db=' + button.getAttribute('data-db');
             break;
 
         case "history":

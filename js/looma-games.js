@@ -13,19 +13,21 @@ Description:
 var className, subjectName, gradeName, prefix;
 
 var nnames = {
-    'science' : 'विज्ञान',
-    'english' : 'अंग्रेजी',
-    'math'    :  'गणित',
-    'serofero'    :  'सेरोफेरो',
+    'science'  : 'विज्ञान',
+    'english'  : 'अंग्रेजी',
+    'math'     : 'गणित',
+    'bealth'   : 'स्वास्थ्य',
+    'serofero' : 'सेरोफेरो',
+    'nepali'   : 'नेपाली',
     'social studies' : 'सामाजिक शिक्षा' };
 
 var displaynames = {
     'science' : 'Science',
     'english' : 'English',
-    'math'    :  'Math',
-    'health'  :  'Health',
-    'serofero':  'Serofero',
-    'nepali'  :  'Nepali',
+    'math'    : 'Math',
+    'health'  : 'Health',
+    'serofero': 'Serofero',
+    'nepali'  : 'Nepali',
     'social studies' : 'Social' };
 
 function displaySubjects (className) {

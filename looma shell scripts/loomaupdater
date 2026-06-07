@@ -3,11 +3,12 @@
 #  filename: loomaupdater
 #       VERSION 7.0
 #       author: skip
-#       date:   SEP 2021, OCT 2023, FEB 2024, MAY 2024, OCT 2025
+#       date:   SEP 2021, OCT 2023, FEB 2024, MAY 2024, OCT 2025, MAY 2026
 #
 #     revised OCT 2025 to add option to sync with "preview" version of Looma
 #     revised OCT 2023 to check 'archivetimestamp.txt' to see if an update is needed
 #       on both /Looma and /content
+#     revised MAY 2026 bug fixes for "preview" and general cleanup
 #
 #  used to update a pre-installed Looma by installing latest code, database & content
 #           only changed or brand new files are transferred
@@ -18,7 +19,7 @@
 #
 #   file structure expected if on the USB:
 #
-#       Looma/               (full set of new Looma code)
+#       Looma/*               (full set of new Looma code)
 #       Looma/mongo-dump/dump/looma/   (latest mongodump of the new database content)
 #       content/*   (folders with new content)
 #                   (these are usually NEW folders,
@@ -37,7 +38,7 @@
 #
 #       CALL with "loomaupdate [dryrun] [preview]
 #           optional arg "dryrun" for testing the script without actually changng files
-#           optional arg "preview" for synching with the PREVIEW version instead of RELEASE version of Looma
+#           optional arg "preview" for sync'ing with the PREVIEW version instead of RELEASE version of Looma
 
 #RSYNC options used:
 
@@ -47,7 +48,7 @@
 # --chown=looma:looma. NOT USED - files get 58198:58198 on Update Server, then get odroid:odroid on Looma's that download from the update server
 # optional: --dry-run
 # --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*"
-
+# --size-only for files in content/
 
 checksudo() {
     if [ "$(id -u)" -ne 0 ]; then
@@ -73,6 +74,7 @@ pause () {
    read -p "     press [Enter] to continue"
 }  #  end pause()
 
+# backup() not currently used. check the code carefully before using again
 backup () {
     echo
     echo "****************************************************************"
@@ -81,13 +83,13 @@ backup () {
     echo -n  "- - continue ('n' recommended) [y/n]?"; read input;
     if [[ $input = "y" ]]
     then
-        if [ -d "/var/www/html/LoomaBAK" ]
+        if [ -d "$DESTINATION_URL/LoomaBAK" ]
         then
           echo "- deleting old LoomaBAK directory"
-          sudo rm -r "/var/www/html/LoomaBAK"
+          sudo rm -r "$DESTINATION_URL/LoomaBAK"
           result $?
         fi
-        mv    "/var/www/html/Looma"   "/var/www/html/LoomaBAk"
+        mv    "$DESTINATION_URL/Looma"   "$DESTINATION_URL/LoomaBAk"
         result $?
     else
         echo " - - - SKIPPED: backing up Looma code "
@@ -126,17 +128,20 @@ checknetworkspeed () {
 # ///////////////////////////////////////////////////////////
 # /////////////     checktimestamp ()    /////////////////////
 # ///////////////////////////////////////////////////////////
-# return 1 if timestamps are equal [so no update is needed]
-checktimestamp () {         # call with
-#                           $1 = destination directory to check for timestamp [/var/www/html/content or /var/www/html/Looma]
-#                           $2 = source url to check for timestamp
-#                           $3 = 'Looma' or 'content'
+# return 1 if timestamps are equal [ meaning no update is needed ]
+checktimestamp () {    # call with
+#                          $1 = local destination ($DESTINATION_URL is /var/www/html for Looma Boxes)
+#                          $2 = source URL, either Looma Update server on rsync.net or USB stick
+#                          $3 = source folder, either "Looma" or "content"
+#                          $4 = source folder prefix, either "" or "preview/"
 
-# echo "in checktimestamp(): source path is $2, source dir is $3, source file is ${3}/archivetimestamp.txt"
+# echo "in checktimestamp(): source URL is $2, source dir is $3, source file is ${3}/archivetimestamp.txt"
 # get timestamp of files currently on this Looma
-  if [[ -f $1/$3/archivetimestamp.txt ]]
+  if [[ -f ${1}/${3}/archivetimestamp.txt ]]
    then
-     current=`cat "$1/$3/archivetimestamp.txt"`
+    // current=`cat "$1/$3/archivetimestamp.txt"`
+     current=$(<"${1}/${3}/archivetimestamp.txt")
+
    else
      current="none"
    fi
@@ -146,12 +151,12 @@ checktimestamp () {         # call with
   then
       if [[ `which sshpass` != "" ]]
       then
-        latest=`sshpass -p looma ssh $2 cat "${3}/archivetimestamp.txt"`
+        latest=`sshpass -p looma ssh $2 cat "../${4}${3}/archivetimestamp.txt"`
       else
         echo "enter password 'looma' if requested"
-        latest=`ssh  $2 cat "${3}/archivetimestamp.txt"`
+        latest=                 `ssh $2 cat "../${4}${3}/archivetimestamp.txt"`
       fi
-  else
+  else   # source is USB stick
      latest=`cat "${2}/${3}/archivetimestamp.txt"`
   fi
 
@@ -172,25 +177,37 @@ checktimestamp () {         # call with
 # function DOSYNC() to exec the rsync.
 # global var $DRYRUNMODE is either "--dry-run" or ""
 # call dosync() with:
-#       $1 = "source"
-#       $2 = "destination"
-#       and [optional] $3 = "--sizeonly" or null
+#                          $1 = local destination (/var/www/html for Looma Boxes)
+#                          $2 = source URL, either Looma Update server on rsync.net or USB stick
+#                          $3 = source folder, either "Looma" or "content"
+#                          $4 = source folder prefix, either "" or "preview/"
 
 dosync () {
-
-    SOURCE=$1
-    DESTINATION=$2
-    SIZEONLY=$3
 
     # RSYNC_PASSWORD avoids manual entry of password for rsync (but, doesnt work?)
     # RSYNC_PASSWORD="looma"
     echo "**********************************";
 
+    SYNC_DESTINATION="${1}/${3}"
+    if [[ $source = "I" ]]
+    then
+        SYNC_SOURCE="${2}:../${4}/${3}"
+    else
+        SYNC_SOURCE="$2"
+    fi
+
+if [[ $3 = "content" ]]
+    then
+        SIZE_ONLY=" --size-only"
+    else
+        SIZE_ONLY=""
+    fi
+
  if [[ $DRYRUNMODE = "--dry-run" ]]
     then
-      echo "in dosync(): doing RSYNC from $SOURCE to $DESTINATION with --dry-run [no changes will be made]"
+      echo "in dosync(): doing RSYNC from $2$4$3 to $1 with --dry-run [no changes will be made]"
     else
-      echo "in dosync(): doing RSYNC from $SOURCE to $DESTINATION"
+      echo "in dosync(): doing RSYNC from $2$4$3 to $1"
  fi
     echo
     #echo "  *** *** if prompted for \"password:\" enter \"looma\"  *** ***"
@@ -199,23 +216,23 @@ dosync () {
       # NOTE, adding "O" option to avoid errors with modified date updates
     then
     sshpass -p 'looma' \
-        rsync -rtvz  $DRYRUNMODE $SIZEONLY  \
-        --stats  --times \
+        rsync -rtvz  $DRYRUNMODE $SIZE_ONLY  \
+        --stats  --times --itemize-changes \
         --perms --owner --group --chown=odroid:odroid --chmod=u+rwX,go+rX  \
         --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*" \
         -e "ssh"   \
-       $SOURCE  $DESTINATION
+       $SYNC_SOURCE  $SYNC_DESTINATION
       # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
     returncode=$?
      # NOTE, could try adding "O" option ["oh", not "zero"] to avoid errors with modified date updates
     else
       echo "enter password 'looma' if requested"
-        rsync -rtvz  $DRYRUNMODE $SIZEONLY  \
-        --stats  --times \
-        --perms --owner --group --chown=odroid:odroid --chmod=u+rwX,go+rX  \
+        rsync -rtvz  $DRYRUNMODE $SIZE_ONLY  \
+        --stats  --times --itemize-changes \
+        --perms --owner --group --chown=odroid:odroid --chmod=u+rwX,go+rX   \
         --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*" \
         -e "ssh"   \
-       $SOURCE  $DESTINATION
+       $SYNC_SOURCE  $SYNC_DESTINATION
       # NOTE: RSYNC needs a slash after FROM dir and no slash after TO dir
       returncode=$?
     fi
@@ -224,14 +241,14 @@ dosync () {
   then
      echo
      echo "**************************"
-     echo "setting $DESTINATION/archivetimestamp.txt to $latest [`date -r $latest`]"
-     echo $latest > $DESTINATION/archivetimestamp.txt
+     echo "setting $SYNC_DESTINATION/archivetimestamp.txt to $latest [`date -r $latest`]"
+     echo $latest > $SYNC_DESTINATION/archivetimestamp.txt
      echo
  fi
 
  if [[ $returncode != 0 ]]
  then
-     echo "looma update 'rsync' operation from $SOURCE failed with error $returncode. rerun 'loomaupdate' later"
+     echo "looma update 'rsync' operation from $SYNC_SOURCE failed with error $returncode. rerun 'loomaupdate' later"
      exit
  fi
 }  #  end dosync()
@@ -251,11 +268,11 @@ echo "Be sure you have read the instructions"
 echo "****************************************************************"
 
 
-if [[ "$1" = "dryrun" || "$2" == "dryrun" ]]
+if [[ "$1" != "dryrun" && "$2" != "dryrun" ]]
   then
-    DRYRUNMODE="--dry-run"
-  else
     DRYRUNMODE=""
+  else
+    DRYRUNMODE="--dry-run"
 fi
 
 contenttime=0
@@ -274,7 +291,8 @@ then
 ########################################
 ###########################  sourcing from USB - settings  #############
 
-  SOURCE_PREFIX="/media/odroid/LOOMA/loomaupdate/"   # for Linux (different for MAC)
+  SOURCE_URL="/media/odroid/LOOMA/loomaupdate/"   # for Linux (different for MAC)
+  SOURCE_EXTENSION=""
 
       echo; echo "****************************************************************"
       echo "    you must insert a USB memory stick which is named LOOMA"
@@ -282,11 +300,11 @@ then
       echo "    the USB stick must have the files to be uploaded stored in a top-level folder named 'loomaupdate' "
       echo "****************************************************************"
 
-      cd /media/odroid/LOOMA/loomaupdate
+      cd $SOURCE_URL
 
       if [ "$?" -ne 0 ]
       then
-          echo; echo "ERROR: couldn't find LOOMA/loomaupdate directory on USB"
+          echo; echo "ERROR: couldn't find $SOURCE_URL directory on USB"
           exit 1
       fi
 
@@ -304,9 +322,9 @@ then
 
 	if [[ "$1" = "preview" || "$2" == "preview" ]]
 	  then
-	      SOURCE_PREFIX="${SOURCE_URL}:../preview/"
+	      SOURCE_EXTENSION="preview/"
 	  else
-	      SOURCE_PREFIX="${SOURCE_URL}:../"
+	      SOURCE_EXTENSION=""
 	fi
 
     echo; echo "****************************************************************"
@@ -327,25 +345,26 @@ then
 
 echo "********************"
 
+   DESTINATION_URL="/var/www/html"
 
-   if [ ! -d /var/www/html/Looma ];
+   if [ ! -d $DESTINATION_URL/Looma ];
      then
        echo "Target directory does not contain a /Looma folder"
        exit
-    fi
+   fi
 
 ###############  do the transfers ###############
 #################################################
     #       copy current Looma code to LoomaBAK
-    #       NOTE: call to function DACKUP() commented out for now to save time
+    #       NOTE: call to function backup() commented out for now to save time
     # backup
 
-    checktimestamp "/var/www/html"  ${SOURCE_URL} "Looma"
+    checktimestamp $DESTINATION_URL  $SOURCE_URL "Looma" $SOURCE_EXTENSION
 
     if [[ $? = 1 ]]
       then
         echo "++++++++++++++++++++++++"
-        echo "/var/www/html/Looma is UP TO DATE [No files  will be transferred]"
+        echo "/$DESTINATION_URL/Looma is UP TO DATE [No files  will be transferred]"
         echo "++++++++++++++++++++++++"
       else
 
@@ -363,12 +382,13 @@ echo "********************"
         echo
 
         #### calling DOSYNC() ##########
-        dosync "${SOURCE_PREFIX}Looma/"   "/var/www/html/Looma"
+
+        dosync "$DESTINATION_URL" "$SOURCE_URL" "Looma"  "$SOURCE_EXTENSION"
 
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
         codetime=$SECONDS
 
-          if [[ -d "/var/www/html/Looma/mongo-dump/dump/looma" && "$DRYRUNMODE" != "--dry-run" ]]
+          if [[ -d "$DESTINATION_URL/Looma/mongo-dump/dump/looma" && "$DRYRUNMODE" != "--dry-run" ]]
                 then
                     echo
                     echo "starting to update Looma's database. please wait ..."
@@ -384,14 +404,14 @@ echo "********************"
 
                     #mongosh --quiet --eval "db.dropDatabase();" looma
 
-                    mongorestore --quiet --db looma "/var/www/html/Looma/mongo-dump/dump/looma/"
+                    mongorestore --quiet --db looma "/$DESTINATION_URL/Looma/mongo-dump/dump/looma/"
 
-                    if [[ -f /var/www/html/Looma/mongo-dump/logins/defaultlogins.json ]]
+                    if [[ -f "$DESTINATION_URL/Looma/mongo-dump/logins/defaultlogins.json" ]]
                     then
-                       mongoimport --quiet --db loomausers --collection logins  --mode upsert --upsertFields name --file "/var/www/html/Looma/mongo-dump/logins/defaultlogins.json"
-                       rm "/var/www/html/Looma/mongo-dump/logins/defaultlogins.json"
+                       mongoimport --quiet --db loomausers --collection logins  --mode upsert --upsertFields name --file "$DESTINATION_URL/Looma/mongo-dump/logins/defaultlogins.json"
+                       rm "$DESTINATION_URL/Looma/mongo-dump/logins/defaultlogins.json"
                     fi
-                else echo "ERROR: no source dir (/var/www/html/Looma/mongo-dump/dump/looma) found for mongo restore"
+                else echo "ERROR: no source dir ($DESTINATION_URL/Looma/mongo-dump/dump/looma) found for mongo restore"
                 fi
         else
             echo " - - - SKIPPED: installing new Looma code"
@@ -403,13 +423,13 @@ echo "********************"
 #################################################
 
         ########## NOTE: content always comes from ../content. there is no separate ../preview/content folder
-
-    checktimestamp "/var/www/html"  ${SOURCE_URL} "content"
+    SOURCE_EXTENSION=""
+    checktimestamp $DESTINATION_URL  $SOURCE_URL "content" $SOURCE_EXTENSION
 
     if [[ $? = 1 ]]
       then
         echo "++++++++++++++++++++++++"
-        echo "/var/www/html/content is UP TO DATE [No files will be transferred]"
+        echo "$DESTINATION_URL/content is UP TO DATE [No files will be transferred]"
         echo "++++++++++++++++++++++++"
       else
         echo
@@ -420,12 +440,12 @@ echo "********************"
         then
            SECONDS=0
 
-            #  for CONTENT calling dosync() with $4 (size-only) = "--size-only"
+            #  for CONTENT calling dosync()
             echo
             echo "starting to update content files. this takes a long time. please wait ..."
             echo
             #### calling DOSYNC() ##########
-            dosync "${SOURCE_URL}:../content/" "/var/www/html/content" "--size-only"
+            dosync "$DESTINATION_URL" "$SOURCE_URL" "content"  ""
 
             echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
             contenttime=$SECONDS

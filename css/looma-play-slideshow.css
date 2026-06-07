@@ -30,7 +30,7 @@ body {
 #timeline-container {
     grid-row: timeline / bottom;
     grid-column: left / middle;
-    
+
     overflow-x: scroll;
     overflow-y: hidden;
     border: 2px solid black;
@@ -136,6 +136,8 @@ button.lookup {
     opacity: 0.4;
 }
 
+button.captions {display:none;}
+
 #back, #forward, #return {
 	opacity: 0.8;
 	width: 10vh;
@@ -195,7 +197,7 @@ button#prev-item:-webkit-full-screen {
     background-color:yellow;
     color:black;
     vertical-align:middle;
-    
+
     overflow-x: scroll;
     overflow-y: hidden;
 }
@@ -205,7 +207,7 @@ button#prev-item:-webkit-full-screen {
 }
 
 #controlpanel {
-    
+
     grid-row: timeline / bottom;
     grid-column: middle / right;
     padding: 5px;
@@ -214,7 +216,7 @@ button#prev-item:-webkit-full-screen {
     border-radius: 10px;
     vertical-align: middle;
 
- 
+
 }
 
 #title {

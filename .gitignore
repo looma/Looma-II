@@ -7,19 +7,14 @@
 .settings
 .travis.yml
 
+.idea/
+
 .DS_Store
 .editorconfig
 
 *.resources
 
 logins/defaultlogins.json
-
-# LOOMA - vendor/ should be in the GIT repo
-# be sure to change the name of vendor/ for php8 to vendorPHP8/
-#     and to change the name of vendorPHP7/ to vendor/
-#  before pushing to GitHub
-# and to change back the names afterwards
-# vendor/
 
 # LOOMA - composer.lock, composer.json are not needed except when 'composer' is re-run
 composer.test

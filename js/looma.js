@@ -317,7 +317,13 @@ $(document).ready (function() {
                 }
             }
         }
-    })
+    });
+
+    // Turn off the automatic X-Requested-With header
+    //  in Looma-II on Docker, ajax calls get CORS errors and cant load e.g. maps data
+    $.ajaxSetup({
+        headers: { 'X-Requested-With': null }
+    });
 /*
     //attach LOOMA.download() to the '.download' button
 

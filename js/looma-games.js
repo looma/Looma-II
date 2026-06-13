@@ -16,10 +16,10 @@ var nnames = {
     'science'  : 'विज्ञान',
     'english'  : 'अंग्रेजी',
     'math'     : 'गणित',
-    'bealth'   : 'स्वास्थ्य',
+    'health'   : 'स्वास्थ्य',
     'serofero' : 'सेरोफेरो',
     'nepali'   : 'नेपाली',
-    'social studies' : 'सामाजिक शिक्षा' };
+    'social studies' : 'सामाजिक' };
 
 var displaynames = {
     'science' : 'Science',

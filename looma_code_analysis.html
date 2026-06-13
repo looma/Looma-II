@@ -1,0 +1,397 @@
+Looma Codebase Analysis
+
+What is Looma?
+
+Looma is an offline educational platform designed for schools in Nepal. It runs on low-cost ARM-based computers (Odroid) serving a local network of tablets. It provides
+textbook-aligned content (videos, PDFs, lessons, games, dictionaries) for grades 1–12 in Nepali and English, functioning without an internet connection.
+
+Stats
+
+┌─────────────────────┬───────────────────────────┐
+│      Component      │           Count           │
+├─────────────────────┼───────────────────────────┤
+│ PHP pages           │ 120 files (~14,700 lines) │
+├─────────────────────┼───────────────────────────┤
+│ JavaScript modules  │ 130 files                 │
+├─────────────────────┼───────────────────────────┤
+│ CSS stylesheets     │ 111 files                 │
+├─────────────────────┼───────────────────────────┤
+│ MongoDB collections │ ~15+                      │
+└─────────────────────┴───────────────────────────┘
+
+Architecture Diagram
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                        LOOMA SYSTEM                                 │
+│                   (Offline Education Platform)                      │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌──────────────┐    ┌──────────────────────────────────────────┐   │
+│  │   Browser     │◄──►│          Apache / PHP Server             │   │
+│  │  (Tablets)    │    │     (Docker or native on Odroid)         │   │
+│  └──────┬───────┘    └──────────────┬───────────────────────────┘   │
+│         │                           │                               │
+│         │ HTML/CSS/JS               │ PHP (MongoDB driver)          │
+│         ▼                           ▼                               │
+│  ┌──────────────────┐    ┌─────────────────────┐                   │
+│  │    FRONTEND       │    │   MongoDB ("looma")  │                   │
+│  │                   │    │                     │                   │
+│  │  js/looma*.js     │    │  Collections:       │                   │
+│  │  css/looma*.css   │    │   ├─ activities     │                   │
+│  │  pdfjs            │    │   ├─ chapters       │                   │
+│  │  jQuery/jQueryUI  │    │   ├─ dictionary     │                   │
+│  │  Google Blockly   │    │   ├─ text-files     │                   │
+│  │  Leaflet (maps)   │    │   ├─ lessons        │                   │
+│  │                   │    │   ├─ games          │                   │
+│  └──────────────────┘    │   ├─ histories       │                   │
+│                           │   ├─ slideshow      │                   │
+│                           │   └─ logins (users) │                   │
+│                           └─────────────────────┘                   │
+│                                                                     │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │                    CONTENT (on disk)                          │   │
+│  │  /var/www/html/content/                                      │   │
+│  │   ├─ videos/    PDFs/    ePaath/    maps/    images/         │   │
+│  └──────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │                UPDATE SYSTEM (loomaupdater)                   │   │
+│  │  rsync from USB stick or rsync.net ──► code + content + DB   │   │
+│  └──────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
+
+Directory Structure
+
+Looma/
+├── index.php                  # Entry point → redirects to looma-index.php
+├── header.php                 # Shared HTML head (CSS/JS includes, nav bar)
+├── includes/                  # Core PHP backend
+│   ├── looma-connect.php      #   MongoDB connection singleton
+│   ├── looma-login-check.php  #   Session/auth middleware
+│   ├── looma-utils.php        #   Utility functions
+│   ├── looma-search.php       #   Activity search logic
+│   └── constants.php          #   System constants (paths, names)
+├── js/                        # 130 JavaScript modules
+├── css/                       # 111 CSS stylesheets
+├── images/                    # Icons, backgrounds, UI assets
+├── fonts/                     # Nepali/Devanagari + Latin fonts
+├── locale/                    # i18n (Nepali translations)
+├── mongo-dump/                # Database backup/restore files
+├── looma shell scripts/       # Admin & maintenance scripts
+├── pdfjs-4.10.38-dist/        # PDF.js viewer library
+├── vendor/                    # Composer PHP dependencies
+└── Looma System Files/        # Linux system config for Odroid
+
+PHP Pages by Category
+
+Core Navigation
+
+┌──────────────────────┬───────────────────────────────────────────────┐
+│         File         │                    Purpose                    │
+├──────────────────────┼───────────────────────────────────────────────┤
+│ looma-index.php      │ Main landing page                             │
+├──────────────────────┼───────────────────────────────────────────────┤
+│ looma-home.php       │ Home dashboard                                │
+├──────────────────────┼───────────────────────────────────────────────┤
+│ looma-chapters.php   │ Textbook chapter browser (primary navigation) │
+├──────────────────────┼───────────────────────────────────────────────┤
+│ looma-chapterIDs.php │ Chapter ID utilities                          │
+├──────────────────────┼───────────────────────────────────────────────┤
+│ looma-activities.php │ Activity listing/search                       │
+└──────────────────────┴───────────────────────────────────────────────┘
+
+Content Players (view content)
+
+┌───────────────────────────────────────────────┬───────────────────────────────────────────┐
+│                     File                      │                  Purpose                  │
+├───────────────────────────────────────────────┼───────────────────────────────────────────┤
+│ looma-play-video.php                          │ Video player                              │
+├───────────────────────────────────────────────┼───────────────────────────────────────────┤
+│ looma-play-pdf.php                            │ PDF viewer                                │
+├───────────────────────────────────────────────┼───────────────────────────────────────────┤
+│ looma-play-text.php / looma-play-textfile.php │ Text/document viewer                      │
+├───────────────────────────────────────────────┼───────────────────────────────────────────┤
+│ looma-play-lesson.php                         │ Lesson player (slideshows of mixed media) │
+├───────────────────────────────────────────────┼───────────────────────────────────────────┤
+│ looma-play-slideshow.php                      │ Slideshow player                          │
+├───────────────────────────────────────────────┼───────────────────────────────────────────┤
+│ looma-play-image.php                          │ Image viewer                              │
+├───────────────────────────────────────────────┼───────────────────────────────────────────┤
+│ looma-play-audio.php                          │ Audio player                              │
+├───────────────────────────────────────────────┼───────────────────────────────────────────┤
+│ looma-play-map.php                            │ Map viewer (Leaflet)                      │
+├───────────────────────────────────────────────┼───────────────────────────────────────────┤
+│ looma-play-teacher-aid.php                    │ Teacher aid viewer                        │
+├───────────────────────────────────────────────┼───────────────────────────────────────────┤
+│ looma-play-edited-video.php                   │ Edited video player                       │
+└───────────────────────────────────────────────┴───────────────────────────────────────────┘
+
+Content Editors (create/modify content)
+
+┌───────────────────────────┬──────────────────────────┐
+│           File            │         Purpose          │
+├───────────────────────────┼──────────────────────────┤
+│ looma-edit-lesson.php     │ Lesson editor            │
+├───────────────────────────┼──────────────────────────┤
+│ looma-edit-slideshow.php  │ Slideshow editor         │
+├───────────────────────────┼──────────────────────────┤
+│ looma-edit-text.php       │ Text editor              │
+├───────────────────────────┼──────────────────────────┤
+│ looma-edit-video.php      │ Video segment editor     │
+├───────────────────────────┼──────────────────────────┤
+│ looma-edit-activities.php │ Activity metadata editor │
+├───────────────────────────┼──────────────────────────┤
+│ looma-edit-dictionary.php │ Dictionary entry editor  │
+├───────────────────────────┼──────────────────────────┤
+│ looma-edit-keywords.php   │ Keyword editor           │
+├───────────────────────────┼──────────────────────────┤
+│ looma-editor-template.php │ Shared editor template   │
+├───────────────────────────┼──────────────────────────┤
+│ looma-paint.php           │ Drawing/painting tool    │
+└───────────────────────────┴──────────────────────────┘
+
+Games & Interactive
+
+┌─────────────────────────────────────────────┬───────────────────────────────┐
+│                    File                     │            Purpose            │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-games.php                             │ Game launcher/browser         │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-game.php                              │ Single game player            │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-game-list.php                         │ Game listing                  │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-game-utilities.php                    │ Game helper functions         │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-sort-game.php                         │ Sorting game                  │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-bagh-chal.php                         │ Traditional Nepali board game │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-connect4.php                          │ Connect Four game             │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-life.php                              │ Conway's Game of Life         │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-mapgames.php                          │ Geography games               │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-arith.php / looma-arith-problems.php  │ Arithmetic practice           │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-blockly.php                           │ Blockly visual programming    │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-calculator.php                        │ Calculator                    │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-clock*.php                            │ Clock/time learning tools     │
+├─────────────────────────────────────────────┼───────────────────────────────┤
+│ looma-vocab.php / looma-vocab-flashcard.php │ Vocabulary flashcards         │
+└─────────────────────────────────────────────┴───────────────────────────────┘
+
+Reference & Search
+
+┌──────────────────────────────────────┬────────────────────────────────────────┐
+│                 File                 │                Purpose                 │
+├──────────────────────────────────────┼────────────────────────────────────────┤
+│ looma-dictionary.php                 │ Nepali-English dictionary              │
+├──────────────────────────────────────┼────────────────────────────────────────┤
+│ looma-library.php                    │ Content library browser                │
+├──────────────────────────────────────┼────────────────────────────────────────┤
+│ looma-library-search.php             │ Library search                         │
+├──────────────────────────────────────┼────────────────────────────────────────┤
+│ looma-wikipedia.php / looma-wiki.php │ Wikipedia viewer                       │
+├──────────────────────────────────────┼────────────────────────────────────────┤
+│ looma-web.php                        │ Web browser frame                      │
+├──────────────────────────────────────┼────────────────────────────────────────┤
+│ looma-epaath.php                     │ ePaath interactive lessons (OLE Nepal) │
+└──────────────────────────────────────┴────────────────────────────────────────┘
+
+Admin & System
+
+┌─────────────────────────────────────────┬──────────────────────────────────────────────────────────┐
+│                  File                   │                         Purpose                          │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-login.php / looma-logout.php      │ Authentication                                           │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-register-user.php                 │ User registration                                        │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-change-password.php               │ Password management                                      │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-settings.php                      │ System settings                                          │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-database-admin.php                │ Database admin panel                                     │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-database-utilities.php            │ DB utility functions                                     │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-admin-*.php                       │ Admin editors (textbooks, chapters, activities, content) │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-import-content.php                │ Content import tool                                      │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-upload-file.php                   │ File upload handler                                      │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-update.php / looma-updater.php    │ System update UI                                         │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-server-info.php                   │ Server diagnostics                                       │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-log-viewer.php                    │ Log viewer                                               │
+├─────────────────────────────────────────┼──────────────────────────────────────────────────────────┤
+│ looma-histories.php / looma-history.php │ Usage history tracking                                   │
+└─────────────────────────────────────────┴──────────────────────────────────────────────────────────┘
+
+JavaScript Architecture
+
+Each PHP page typically has a matching JS file. Key modules:
+
+┌──────────────────────────┬──────────────────────────────────────────────────────┐
+│           File           │                       Purpose                        │
+├──────────────────────────┼──────────────────────────────────────────────────────┤
+│ looma-utils.js           │ Core utilities (AJAX helpers, DOM manipulation)      │
+├──────────────────────────┼──────────────────────────────────────────────────────┤
+│ looma-search.js          │ Activity search & filtering                          │
+├──────────────────────────┼──────────────────────────────────────────────────────┤
+│ looma-controls.js        │ Media playback controls                              │
+├──────────────────────────┼──────────────────────────────────────────────────────┤
+│ looma-filemanager.js     │ File upload/management                               │
+├──────────────────────────┼──────────────────────────────────────────────────────┤
+│ looma-dictionary.js      │ Dictionary lookup logic                              │
+├──────────────────────────┼──────────────────────────────────────────────────────┤
+│ looma-games.js           │ Game engine (matching, sorting, concentration, etc.) │
+├──────────────────────────┼──────────────────────────────────────────────────────┤
+│ looma-lesson-*.js        │ Lesson editor/player logic                           │
+├──────────────────────────┼──────────────────────────────────────────────────────┤
+│ looma-map.js             │ Leaflet map integration                              │
+├──────────────────────────┼──────────────────────────────────────────────────────┤
+│ looma-speech.js          │ Text-to-speech (via looma-TTS.php)                   │
+├──────────────────────────┼──────────────────────────────────────────────────────┤
+│ looma-text-translator.js │ Translation utilities                                │
+└──────────────────────────┴──────────────────────────────────────────────────────┘
+
+Frontend Libraries
+
+- jQuery + jQuery UI — DOM manipulation, drag-and-drop, dialogs
+- PDF.js — PDF rendering
+- Leaflet — Interactive maps
+- Google Blockly — Visual programming
+- No build system — Plain JS files loaded via <script> tags in header.php
+
+Database Schema (MongoDB)
+
+The looma database has these key collections:
+
+    ┌────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ Collection │                                                                   Purpose                                                                    │
+├────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ activities │ Central content registry — every piece of content (video, PDF, lesson, game, etc.) gets an entry with metadata (dn, ft, fn, ch_id, keywords) │
+  ├────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ chapters   │ Textbook chapter hierarchy (subject → grade → unit → chapter)                                                                                │
+├────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ dictionary │ Nepali-English dictionary entries                                                                                                            │
+├────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ text-files │ Stored text documents                                                                                                                        │
+├────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ lessons    │ Lesson sequences (ordered lists of activities)                                                                                               │
+├────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ games      │ Game definitions (type, items, answers)                                                                                                      │
+├────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ slideshow  │ Slideshow definitions                                                                                                                        │
+├────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ histories  │ User activity/usage logs                                                                                                                     │
+└────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  The loomausers database stores logins (user accounts with roles).
+
+Update & Deployment System
+
+- Docker — Dockerfile + docker-compose.yml for containerized deployment (PHP 8 + Apache + MongoDB)
+- loomaupdater — Bash script to sync code/content/DB from USB or rsync.net
+- mongo-dump/ — Contains mongodump output for database distribution
+- Shell scripts — importMetadata.js, importGames.js, and other mongo shell scripts for bulk data operations
+- Makefile — Build targets for packaging and deployment
+
+Data Flow
+
+User (tablet browser)
+│
+▼
+  looma-chapters.php ──► Browse textbook chapters
+      │                     (queries db.chapters)
+▼
+  looma-activities.php ──► List activities for a chapter
+      │                     (queries db.activities by ch_id)
+▼
+  looma-play-*.php ──► Play content
+      │                 (video/PDF/lesson/game)
+      │
+▼
+  looma-history.php ──► Log usage
+(writes to db.histories)
+
+Admin (teacher/developer)
+      │
+▼
+  looma-edit-*.php ──► Create/modify content
+      │                 (writes to db.activities, db.lessons, etc.)
+▼
+  looma-admin-*.php ──► Manage textbooks, chapters, content
+      │
+▼
+  looma-database-admin.php ──► Direct DB operations
+
+⏺ That's the full picture. The core pattern is straightforward: a PHP + MongoDB + jQuery web app where each feature is a self-contained PHP page with a matching JS and CSS
+file, all tied together through the activities collection as the central content registry, and chapters providing the curriculum-based navigation structure. No frameworks,
+    no build tools — just traditional server-rendered pages with AJAX for dynamic interactions.
+
+✻ Churned for 1m 54s
+
+⏺ Agent "Explore data and scripts" completed
+
+⏺ Agent "Explore PHP backend structure" completed
+
+⏺ Agent "Explore JS and CSS frontend" completed
+
+⏺ All three research agents have completed. The summary and diagrams I provided above are already comprehensive and incorporate all the findings. A few additional details
+from the deep dives worth highlighting:
+
+    Additional Findings
+
+MongoDB — 4 databases, not just 1:
+
+┌─────────────┬───────────────────────────────────────────────────────────────┐
+│  Database   │                            Purpose                            │
+├─────────────┼───────────────────────────────────────────────────────────────┤
+│ looma       │ Main content (21 collections, ~64MB)                          │
+├─────────────┼───────────────────────────────────────────────────────────────┤
+│ loomausers  │ Authentication (logins collection)                            │
+├─────────────┼───────────────────────────────────────────────────────────────┤
+│ activitylog │ Usage analytics (users, hours, days, weeks, pages, filetypes) │
+├─────────────┼───────────────────────────────────────────────────────────────┤
+│ loomalocal  │ Offline-saved content (lessons, slideshows, text_files)       │
+└─────────────┴───────────────────────────────────────────────────────────────┘
+
+  AI/ML Layer (recent addition):
+- search.py — Flask microservice for semantic search using HuggingFace embeddings + Qdrant vector DB
+- load_models.py — Preloads the all-mpnet-base-v2 sentence-transformer model
+- Piper TTS — Offline text-to-speech with Nepali (ne_NP) and English (en_US) voice models
+
+Central API Endpoint:
+    - looma-database-utilities.php (~1,700 lines) is the main backend API with 20+ commands: open, save, delete, search, uploadFile, keywordAdd, addChapterID, getLogData, etc.
+    Almost all frontend AJAX calls target this file.
+
+    Chapter ID Format:
+{grade}{subject}{chapter}.{page}
+Example: 3M-05.02 = Grade 3, Math, Chapter 5, Page 2
+Subjects: M(Math), N(Nepali), EN(English), S(Science),
+    SS(Social Studies), H(Health), V(Vocation)
+
+Multi-environment deployment — the same codebase runs on:
+    - Odroid boxes (schools in Nepal)
+- Docker containers (local dev / AWS)
+- CEHRD server (learning.cehrd.edu.np)
+- India deployment (india.looma.website)
+
+Frontend patterns:
+    - LOOMA global namespace object in looma-utilities.js — provides all shared functions
+- jQuery $.post() to looma-database-utilities.php for all data operations
+- Cookie-based auth with salt+SHA256 passwords, three role levels: default, admin, exec
+- Preeti-to-Unicode font conversion for legacy Nepali text
+- 10+ CSS themes (magenta, CEHRD, India, high-contrast, etc.)
+
+Shell scripts directory has 219 files including 41 MongoDB utility scripts for bulk operations (fixing page numbers, chapter IDs, display names, importing games/metadata,
+    etc.).
+

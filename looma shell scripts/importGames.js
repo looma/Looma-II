@@ -1,15 +1,19 @@
 // filename: importGames.js
-//
-// ONE TIME read new game JSON files, verify them and load into "games" collection and "activities" collection
+/*
+  importGames.js is a MongoDB shell script that reads game JSON files from a local directory (data files/games), validates them, checks for duplicates, and inserts new games
+  into both the games and activities collections. It supports a dry-run mode via a param variable.
+*/
+// script to read new game JSON files, verify them and load into "games" collection and "activities" collection
+//      set a variable named "param" to "run" to actually make changes to the database, or "dryrun" to just print the changes
 //          run in MONGO SHELL with: load('importGames.js')
 //
 //  author: Skip
-//  2026 01 17
+//  2026 01 17, 2026 06 10
 //
 /*
     read files in "/Users/skip/Desktop/temp/games"
     for each file, verify the JSON using game format rules
-        [rudimentary for now. need to expand verify tests]
+        [only rudimentary checks are done for now. need to expand verify tests]
     check for previously existing game with this 'title'
     load the game into db.games collection
     register the game into db.activities collection with ch_id's from the JSON
@@ -34,12 +38,16 @@ function gameExists(gamejson) {
     else return false;
 }
 function verifyGame(gamejson) {
-    const gameTypes = ['matching','sort','concentration',
-         'spoken matching','picture matching','multiple choice',
-         'picture concentration','spoken to picture','spoken picture concentration',
-         'spoken concentration','map'];
+    if (! gamejson.presentation_type) {
+        print(" for " + gamejson.title + " presentation_type is missing");
+        return false;
+    }
 
-    if (! gameTypes.includes(gamejson.presentation_type)) return false;
+    const gameTypes = db.games.distinct('presentation_type');
+    if (! gameTypes.includes(gamejson.presentation_type)) {
+        print (" for "  + gamejson.title + " presentation_type '" + gamejson.presentation_type + "' is not legal");
+        return false;
+    }
 
     //
     // put lots more game verification logic here
@@ -54,7 +62,7 @@ function registerGame(gamejson) {
     var result = db.games.insertOne(gamejson);
 
     var gamelang = (gamejson['lang']) ? gamejson['lang'] : 'both';
-    newActivity = {dn:gamejson.title,mongoID:result.insertedId,
+    var newActivity = {dn:gamejson.title,mongoID:result.insertedId,
                    ft:'game',thumb:'images/games.png',ch_id:[gamejson.ch_id],
                    lang:gamelang,
                    date:today()};
@@ -64,28 +72,28 @@ function registerGame(gamejson) {
     //printjson(newActivity);
 }; // end registerGame()
 
-var count = 0; good = 0; var bad = 0; var exists = 0;
+var count = 0; var good = 0; var bad = 0; var exists = 0;
 
 const dirPath = 'data files/games';  // Replace with your directory path
 
 const games = listFiles(dirPath);  // Returns array of file info objects [web:14]
-var good = 0;
 
 games.forEach(function(file) {
     let game = {};
     var basename;
     count++;
     if (!file.isDirectory) {  // Skip subdirectories
-        const content = fs.readFileSync(file.name, 'utf8');  // Read file content [web:3][web:10]
+        //const content = fs.readFileSync(file.name, 'utf8');  // Read file content [web:3][web:10]
+        const content = cat(file.name);
         basename = file.name.split('/').pop();  // Extract filename
         try {
             print (count + ' processing file name ' + basename);
-            game = EJSON.parse(content);  // Parse to JSON object [web:10]
+            game = JSON.parse(content);  // Parse to JSON object [web:10]
         }
         catch (e) {
-            game = content;  // Keep as string if not valid JSON
+            print('.    JSON parse error in ' + basename + ': ' + e.message);
+            game = {};  // Keep as string if not valid JSON
         }
-    }
 
     if ( ! verifyGame(game)) {
         bad++;
@@ -103,9 +111,10 @@ games.forEach(function(file) {
           print('processed New Game number' + count + ' with title ' + file.name);
       } else print('                OK');
     }
+    }
 });
 
-print (' found ' + bad + ' invalid JSON files')p;
+print (' found ' + bad + ' invalid JSON files');
 print (' found ' + exists + ' existing files');
 if (param === 'run')  print (' processed ' + good + ' games');
 else                  print ('DRYRUN: would have processed ' + good + ' new games');

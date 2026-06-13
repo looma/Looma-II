@@ -89,7 +89,7 @@ backup () {
           sudo rm -r "$DESTINATION_URL/LoomaBAK"
           result $?
         fi
-        mv    "$DESTINATION_URL/Looma"   "$DESTINATION_URL/LoomaBAk"
+        mv    "$DESTINATION_URL/Looma"   "$DESTINATION_URL/LoomaBAK"
         result $?
     else
         echo " - - - SKIPPED: backing up Looma code "
@@ -107,7 +107,7 @@ checknetworkspeed () {
     echo "************************************"
     echo
     t=$(date +%s)
-    wget ftp://speedtest.tele2.net/10MB.zip -O /dev/null > /dev/null
+    wget -q ftp://speedtest.tele2.net/10MB.zip -O /dev/null 2>/dev/null
     r=$?
     s=$(date +%s)
     if [[ $r -ne 0 ]]
@@ -116,7 +116,9 @@ checknetworkspeed () {
         echo "no internet connection found";exit $r;
     else
         echo "****************************************************************"
-        echo -n "Internet speed is MB/s: ";expr 8 \* 10 / $(($s - $t))
+        elapsed=$(($s - $t))
+        if [[ $elapsed -eq 0 ]]; then elapsed=1; fi
+        echo -n "Internet speed is MB/s: ";expr 8 \* 10 / $elapsed
         echo -n  "- - continue at this speed [y/n]?"; read input;
         if [[ $input != "y" ]]
         then
@@ -137,9 +139,9 @@ checktimestamp () {    # call with
 
 # echo "in checktimestamp(): source URL is $2, source dir is $3, source file is ${3}/archivetimestamp.txt"
 # get timestamp of files currently on this Looma
-  if [[ -f ${1}/${3}/archivetimestamp.txt ]]
+  if [[ -f "${1}/${3}/archivetimestamp.txt" ]]
    then
-    // current=`cat "$1/$3/archivetimestamp.txt"`
+     # current=`cat "$1/$3/archivetimestamp.txt"`
      current=$(<"${1}/${3}/archivetimestamp.txt")
 
    else
@@ -154,7 +156,7 @@ checktimestamp () {    # call with
         latest=`sshpass -p looma ssh $2 cat "../${4}${3}/archivetimestamp.txt"`
       else
         echo "enter password 'looma' if requested"
-        latest=                 `ssh $2 cat "../${4}${3}/archivetimestamp.txt"`
+        latest=`ssh $2 cat "../${4}${3}/archivetimestamp.txt"`
       fi
   else   # source is USB stick
      latest=`cat "${2}/${3}/archivetimestamp.txt"`
@@ -193,7 +195,7 @@ dosync () {
     then
         SYNC_SOURCE="${2}:../${4}/${3}"
     else
-        SYNC_SOURCE="$2"
+        SYNC_SOURCE="${2}/${3}"
     fi
 
 if [[ $3 = "content" ]]
@@ -237,19 +239,19 @@ if [[ $3 = "content" ]]
       returncode=$?
     fi
 
-  if [[ $DRYRUNMODE != "--dry-run"  && $returncode = 0 ]]
+  if [[ $DRYRUNMODE != "--dry-run"  && $returncode -eq 0 ]]
   then
      echo
      echo "**************************"
-     echo "setting $SYNC_DESTINATION/archivetimestamp.txt to $latest [`date -r $latest`]"
-     echo $latest > $SYNC_DESTINATION/archivetimestamp.txt
+     echo "setting $SYNC_DESTINATION/archivetimestamp.txt to $latest"
+     echo "$latest" > "$SYNC_DESTINATION/archivetimestamp.txt"
      echo
  fi
 
- if [[ $returncode != 0 ]]
+ if [[ $returncode -ne 0 ]]
  then
      echo "looma update 'rsync' operation from $SYNC_SOURCE failed with error $returncode. rerun 'loomaupdate' later"
-     exit
+     exit 1
  fi
 }  #  end dosync()
 
@@ -300,13 +302,7 @@ then
       echo "    the USB stick must have the files to be uploaded stored in a top-level folder named 'loomaupdate' "
       echo "****************************************************************"
 
-      cd $SOURCE_URL
-
-      if [ "$?" -ne 0 ]
-      then
-          echo; echo "ERROR: couldn't find $SOURCE_URL directory on USB"
-          exit 1
-      fi
+      cd "$SOURCE_URL" || { echo "ERROR: couldn't find $SOURCE_URL directory on USB"; exit 1; }
 
       echo
       echo -n  "- using this directory to get new files: ";pwd
@@ -320,7 +316,7 @@ then
       # URL for rsync.net Looma Archive Server
      SOURCE_URL="58191@usw-s008.rsync.net"
 
-	if [[ "$1" = "preview" || "$2" == "preview" ]]
+	if [[ "$1" == "preview" || "$2" == "preview" ]]
 	  then
 	      SOURCE_EXTENSION="preview/"
 	  else
@@ -347,10 +343,10 @@ echo "********************"
 
    DESTINATION_URL="/var/www/html"
 
-   if [ ! -d $DESTINATION_URL/Looma ];
+   if [ ! -d "$DESTINATION_URL/Looma" ];
      then
        echo "Target directory does not contain a /Looma folder"
-       exit
+       exit 1
    fi
 
 ###############  do the transfers ###############
@@ -359,12 +355,12 @@ echo "********************"
     #       NOTE: call to function backup() commented out for now to save time
     # backup
 
-    checktimestamp $DESTINATION_URL  $SOURCE_URL "Looma" $SOURCE_EXTENSION
+  checktimestamp "$DESTINATION_URL" "$SOURCE_URL" "Looma" "$SOURCE_EXTENSION"
 
     if [[ $? = 1 ]]
       then
         echo "++++++++++++++++++++++++"
-        echo "/$DESTINATION_URL/Looma is UP TO DATE [No files  will be transferred]"
+        echo "$DESTINATION_URL/Looma is UP TO DATE [No files  will be transferred]"
         echo "++++++++++++++++++++++++"
       else
 
@@ -394,17 +390,7 @@ echo "********************"
                     echo "starting to update Looma's database. please wait ..."
                     echo
 
-                      if which mongo
-                      then
-                         mongo --quiet --eval "db.dropDatabase();" looma
-                      elif which mongosh
-                      then
-                         mongosh --quiet --eval "db.dropDatabase();" looma
-                      fi
-
-                    #mongosh --quiet --eval "db.dropDatabase();" looma
-
-                    mongorestore --quiet --db looma "/$DESTINATION_URL/Looma/mongo-dump/dump/looma/"
+                    mongorestore --quiet --drop --db looma "$DESTINATION_URL/Looma/mongo-dump/dump/looma/"
 
                     if [[ -f "$DESTINATION_URL/Looma/mongo-dump/logins/defaultlogins.json" ]]
                     then
@@ -424,7 +410,7 @@ echo "********************"
 
         ########## NOTE: content always comes from ../content. there is no separate ../preview/content folder
     SOURCE_EXTENSION=""
-    checktimestamp $DESTINATION_URL  $SOURCE_URL "content" $SOURCE_EXTENSION
+    checktimestamp "$DESTINATION_URL" "$SOURCE_URL" "content" "$SOURCE_EXTENSION"
 
     if [[ $? = 1 ]]
       then

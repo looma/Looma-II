@@ -1,4 +1,13 @@
 // mongo terminal program "importMetadata."
+/*
+importMetadata.js is a MongoDB shell script that bulk-updates documents in the activities collection by reading metadata from a TSV file (metadataToImport.tsv). For each
+  row in the TSV:
+
+  1. It parses 17 tab-separated fields (display name, Nepali display name, chapter IDs, class range, language, keywords, filename, Nepali filename, file type).
+  2. It queries db.activities to find a matching document by fn (filename) and ft (file type).
+  3. If a unique match is found, it updates the document's fields (dn, ndn, ch_id, cl_lo, cl_hi, lang, key1–key4).
+  4. It supports a param variable: 'run' writes changes to the DB, otherwise it's a dry run.
+*/
 //      input from a TSV file
 //          each line of which contains:
 //              fields[0..1]: dn  ndn
@@ -6,10 +15,12 @@
 //              fields[7..9]: cl_lo	cl_hi lang
 //              fields[10..13]: key1	key2	key3	key4
 //              fields[14..16]: fn   nfn   ft
-//          inserts fields into the activities based on matching DN and FT
+//          looks up in activities collection based on FN and FT
+//          inserts specified fields into the activity
 //
 //  make sure there is a file 'metadataToImport.tsv' in TAB-SEPARATED format, in the current directory
 //  start MONGO in LOOMA db with: 'mongo looma'
+//      set a variable named "param" to "run" to actually make changes to the database, or "dryrun" to just print the changes
 //  run in MONGO SHELL with: load('importMetadata.js')
 //
 //"use strict";
@@ -45,6 +56,7 @@ var lines = file.split(/[\r\n]+/);  // split file into array of lines containing
 print ('Processing ' + lines.length + ' lines');
 
 lines.forEach( function(doc) {
+    if (!doc.trim()) return; // skip empty lines
     requestcount++;
     // print(requestcount + '-' + dn + '[' + ft + ']');
 
@@ -61,9 +73,10 @@ lines.forEach( function(doc) {
 
     var activities = db.activities.find(query);
 
-        if (!activities.hasNext()) print(requestcount + ' - - fn: ' + fn + '- - - - - - dn: ' + dn + ' and ft: ' + ft + '       NOT FOUND');
-        else
-            if (activities.length > 1) {
+        if (!activities.hasNext()) { //not found
+            print(requestcount + ' - - fn: ' + fn + '- - - - - - dn: ' + dn + ' and ft: ' + ft + '       NOT FOUND');
+        } else
+            if (activities.count() > 1) {
                 print('*************NOTE: duplicate ACTIVITY FOUND, Name = ' + dn + ' ft = ' + ft);
                 duplicates++;
             }

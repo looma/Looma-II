@@ -1,0 +1,44 @@
+{
+  "name": "looma-http-5xx-anomaly",
+  "description": "Per-service anomalous count of HTTP 5xx responses (from access logs).",
+  "time_field": "@timestamp",
+  "indices": [
+    "looma-logs-*"
+  ],
+  "category_field": [
+    "serviceName.keyword"
+  ],
+  "filter_query": {
+    "range": {
+      "http_status_code": {
+        "gte": 500
+      }
+    }
+  },
+  "detection_interval": {
+    "period": {
+      "interval": 2,
+      "unit": "MINUTES"
+    }
+  },
+  "window_delay": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "schema_version": 0,
+  "feature_attributes": [
+    {
+      "feature_name": "http_5xx",
+      "feature_enabled": true,
+      "aggregation_query": {
+        "http_5xx": {
+          "value_count": {
+            "field": "http_status_code"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "analysis": {
+    "hours_back": 24,
+    "min_confidence": 0.8,
+    "enabled": true,
+    "description": "Analyze logs from the past 24 hours for training examples with 80% minimum confidence"
+  },
+  "feedback": {
+    "min_examples_for_training": 50,
+    "good_percentage_threshold": 70.0,
+    "enabled": true,
+    "description": "Model is ready for training when we have 50+ examples with 70%+ marked as 'good'"
+  },
+  "retraining": {
+    "enabled": true,
+    "model_types": [
+      "rag_query",
+      "summary_generation",
+      "chapter_generation",
+      "keyword_extraction"
+    ],
+    "description": "Models that can be automatically retrained when enough labeled examples are available"
+  },
+  "notifications": {
+    "log_level": "INFO",
+    "send_alerts": false,
+    "alert_emails": [],
+    "description": "Alert configuration (not implemented yet)"
+  }
+}

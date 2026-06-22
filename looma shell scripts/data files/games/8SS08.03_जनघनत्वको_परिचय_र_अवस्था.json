@@ -1,0 +1,34 @@
+{
+  "title": "8SS08.03 जनघनत्वको परिचय र अवस्था",
+  "ft": "game",
+  "presentation_type": "sort",
+  "timeLimit": 120,
+  "bins": [
+    {
+      "heading": "जनघनत्व तथ्याङ्क (वर्ष/प्रति वर्ग कि.मि.)",
+      "scope": "density_stats"
+    },
+    {
+      "heading": "जनघनत्वको अवधारणा",
+      "scope": "density_concept"
+    }
+  ],
+  "words": [
+    { "en": "२०३८ सालमा १०२", "bin": "density_stats" },
+    { "en": "२०६८ सालमा १८०", "bin": "density_stats" },
+    { "en": "२०७८ सालमा १९८", "bin": "density_stats" },
+    { "en": "३० वर्षपछिको अन्तर", "bin": "density_stats" },
+    { "en": "प्रति वर्ग किलोमिटर बसोबास", "bin": "density_concept" },
+    { "en": "जनसङ्ख्या र क्षेत्रफलको अनुपात", "bin": "density_concept" },
+    { "en": "प्रत्येक जनगणनामा बढ्दो क्रम", "bin": "density_concept" },
+    { "en": "सहरमा उच्च घनत्व", "bin": "density_concept" },
+    { "en": "विकटमा न्यून घनत्व", "bin": "density_concept" }
+  ],
+  "cl_lo": 8,
+  "cl_hi": 8,
+  "lang": "np",
+  "author": "Sudip Awasthi",
+  "subject": ["social studies"],
+  "lot": "SPHS II Lot 5",
+  "ch_id": "8SS08.03"
+}

@@ -1,0 +1,35 @@
+{
+  "title": "8SS08.02 जनसङ्ख्या बनोटका विविध आधार",
+  "ft": "game",
+  "presentation_type": "sort",
+  "timeLimit": 100,
+  "bins": [
+    {
+      "heading": "जनसङ्ख्या बनोटका आधार",
+      "scope": "composition_basis"
+    },
+    {
+      "heading": "अन्य (असम्बन्धित)",
+      "scope": "others"
+    }
+  ],
+  "words": [
+    { "en": "उमेर", "bin": "composition_basis" },
+    { "en": "लिङ्ग", "bin": "composition_basis" },
+    { "en": "जातजाति", "bin": "composition_basis" },
+    { "en": "धर्म", "bin": "composition_basis" },
+    { "en": "पेशा", "bin": "composition_basis" },
+    { "en": "मातृभाषा", "bin": "composition_basis" },
+    { "en": "हावापानी", "bin": "others" },
+    { "en": "माटोको प्रकार", "bin": "others" },
+    { "en": "जङ्गल", "bin": "others" },
+    { "en": "हिमालको उचाइ", "bin": "others" }
+  ],
+  "cl_lo": 8,
+  "cl_hi": 8,
+  "lang": "np",
+  "author": "Sudip Awasthi",
+  "subject": ["social studies"],
+  "lot": "SPHS II Lot 5",
+  "ch_id": "8SS08.02"
+}

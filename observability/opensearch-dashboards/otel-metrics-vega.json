@@ -1,0 +1,293 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "title": "OTel Metrics by Service",
+  "padding": 5,
+  "autosize": {
+    "type": "fit",
+    "contains": "padding"
+  },
+  "data": [
+    {
+      "name": "rawdata",
+      "url": {
+        "index": "otel-metrics-*",
+        "%context%": true,
+        "%timefield%": "time",
+        "body": {
+          "size": 0,
+          "aggs": {
+            "values_only": {
+              "filter": {
+                "exists": {
+                  "field": "value"
+                }
+              },
+              "aggs": {
+                "services": {
+                  "terms": {
+                    "field": "serviceName.keyword",
+                    "size": 6,
+                    "order": {
+                      "_count": "desc"
+                    },
+                    "missing": "unknown"
+                  },
+                  "aggs": {
+                    "metrics": {
+                      "terms": {
+                        "field": "name.keyword",
+                        "size": 4,
+                        "order": {
+                          "_count": "desc"
+                        }
+                      },
+                      "aggs": {
+                        "time_buckets": {
+                          "date_histogram": {
+                            "field": "time",
+                            "fixed_interval": "30m",
+                            "extended_bounds": {
+                              "min": {
+                                "%timefilter%": "min"
+                              },
+                              "max": {
+                                "%timefilter%": "max"
+                              }
+                            },
+                            "min_doc_count": 0
+                          },
+                          "aggs": {
+                            "avg_value": {
+                              "avg": {
+                                "field": "value"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "format": {
+        "property": "aggregations.values_only.services.buckets"
+      }
+    },
+    {
+      "name": "metricdata",
+      "source": "rawdata",
+      "transform": [
+        {
+          "type": "flatten",
+          "fields": [
+            "metrics.buckets"
+          ],
+          "as": [
+            "metric"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "flatdata",
+      "source": "metricdata",
+      "transform": [
+        {
+          "type": "flatten",
+          "fields": [
+            "metric.time_buckets.buckets"
+          ],
+          "as": [
+            "bucket"
+          ]
+        },
+        {
+          "type": "formula",
+          "as": "service",
+          "expr": "datum.key"
+        },
+        {
+          "type": "formula",
+          "as": "metric_name",
+          "expr": "datum.metric.key"
+        },
+        {
+          "type": "formula",
+          "as": "series",
+          "expr": "datum.key + ' / ' + datum.metric.key"
+        },
+        {
+          "type": "formula",
+          "as": "time",
+          "expr": "toDate(datum.bucket.key)"
+        },
+        {
+          "type": "formula",
+          "as": "value",
+          "expr": "isValid(datum.bucket.avg_value.value) ? datum.bucket.avg_value.value : null"
+        },
+        {
+          "type": "filter",
+          "expr": "datum.value != null"
+        },
+        {
+          "type": "collect",
+          "sort": {
+            "field": [
+              "series",
+              "time"
+            ],
+            "order": [
+              "ascending",
+              "ascending"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "time",
+      "domain": {
+        "data": "flatdata",
+        "field": "time"
+      },
+      "range": "width",
+      "nice": true
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {
+        "data": "flatdata",
+        "field": "value"
+      },
+      "range": "height",
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": {
+        "data": "flatdata",
+        "field": "series"
+      },
+      "range": "category"
+    }
+  ],
+  "axes": [
+    {
+      "orient": "bottom",
+      "scale": "x",
+      "format": "%H:%M",
+      "labelOverlap": true,
+      "title": "time"
+    },
+    {
+      "orient": "left",
+      "scale": "y",
+      "labelOverlap": true,
+      "title": "avg(value)"
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "orient": "right",
+      "title": "service / metric",
+      "labelLimit": 360,
+      "symbolSize": 80
+    }
+  ],
+  "marks": [
+    {
+      "type": "group",
+      "from": {
+        "facet": {
+          "name": "series_facet",
+          "data": "flatdata",
+          "groupby": "series"
+        }
+      },
+      "encode": {
+        "enter": {
+          "width": {
+            "signal": "width"
+          },
+          "height": {
+            "signal": "height"
+          }
+        }
+      },
+      "marks": [
+        {
+          "type": "line",
+          "from": {
+            "data": "series_facet"
+          },
+          "encode": {
+            "enter": {
+              "interpolate": {
+                "value": "monotone"
+              },
+              "strokeWidth": {
+                "value": 2
+              }
+            },
+            "update": {
+              "x": {
+                "scale": "x",
+                "field": "time"
+              },
+              "y": {
+                "scale": "y",
+                "field": "value"
+              },
+              "stroke": {
+                "scale": "color",
+                "field": "series"
+              }
+            }
+          }
+        },
+        {
+          "type": "symbol",
+          "from": {
+            "data": "series_facet"
+          },
+          "encode": {
+            "enter": {
+              "size": {
+                "value": 25
+              }
+            },
+            "update": {
+              "x": {
+                "scale": "x",
+                "field": "time"
+              },
+              "y": {
+                "scale": "y",
+                "field": "value"
+              },
+              "fill": {
+                "scale": "color",
+                "field": "series"
+              },
+              "tooltip": {
+                "signal": "{'service': datum.service, 'metric': datum.metric_name, 'time': timeFormat(datum.time, '%Y-%m-%d %H:%M'), 'avg(value)': datum.value}"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

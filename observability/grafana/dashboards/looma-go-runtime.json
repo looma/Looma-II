@@ -1,0 +1,181 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 1,
+  "title": "Looma — Go runtime",
+  "uid": "looma-go-runtime",
+  "tags": ["looma", "go", "runtime"],
+  "time": { "from": "now-1h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "job",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(go_info, job)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": false,
+        "allValue": ".*"
+      },
+      {
+        "name": "instance",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(go_info{job=~\"$job\"}, instance)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": false,
+        "allValue": ".*"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Goroutines",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "targets": [{ "expr": "go_goroutines{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "goroutines" }],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0 } }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "OS threads",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "targets": [{ "expr": "go_threads{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "threads" }],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0 } }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "GOMAXPROCS",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+      "targets": [{ "expr": "go_sched_gomaxprocs_threads{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "gomaxprocs" }],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0 } }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "CPU usage (cores)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        { "expr": "rate(process_cpu_seconds_total{job=~\"$job\",instance=~\"$instance\"}[5m])", "legendFormat": "cpu" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": { "defaults": { "unit": "cores", "decimals": 3 } }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Heap (bytes)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "go_memstats_heap_alloc_bytes{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "heap_alloc" },
+        { "expr": "go_memstats_heap_inuse_bytes{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "heap_inuse" },
+        { "expr": "go_memstats_heap_idle_bytes{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "heap_idle" },
+        { "expr": "go_memstats_heap_released_bytes{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "heap_released" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "bytes" } }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Process memory (bytes)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "process_resident_memory_bytes{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "rss" },
+        { "expr": "process_virtual_memory_bytes{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "virtual" },
+        { "expr": "go_memstats_sys_bytes{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "go_sys" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "bytes" } }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Allocation rate (bytes/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "rate(go_gc_heap_allocs_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m])", "legendFormat": "alloc_bytes" },
+        { "expr": "rate(go_gc_heap_frees_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m])", "legendFormat": "free_bytes" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "Bps" } }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "GC cycles (cycles/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "rate(go_gc_cycles_total_gc_cycles_total{job=~\"$job\",instance=~\"$instance\"}[5m])", "legendFormat": "total" },
+        { "expr": "rate(go_gc_cycles_automatic_gc_cycles_total{job=~\"$job\",instance=~\"$instance\"}[5m])", "legendFormat": "automatic" },
+        { "expr": "rate(go_gc_cycles_forced_gc_cycles_total{job=~\"$job\",instance=~\"$instance\"}[5m])", "legendFormat": "forced" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "GC pause quantiles (s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 20, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum by (le) (rate(go_gc_pauses_seconds_bucket{job=~\"$job\",instance=~\"$instance\"}[5m])))", "legendFormat": "p50" },
+        { "expr": "histogram_quantile(0.95, sum by (le) (rate(go_gc_pauses_seconds_bucket{job=~\"$job\",instance=~\"$instance\"}[5m])))", "legendFormat": "p95" },
+        { "expr": "histogram_quantile(0.99, sum by (le) (rate(go_gc_pauses_seconds_bucket{job=~\"$job\",instance=~\"$instance\"}[5m])))", "legendFormat": "p99" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" } }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Scheduler latency quantiles (s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 20, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum by (le) (rate(go_sched_latencies_seconds_bucket{job=~\"$job\",instance=~\"$instance\"}[5m])))", "legendFormat": "p50" },
+        { "expr": "histogram_quantile(0.95, sum by (le) (rate(go_sched_latencies_seconds_bucket{job=~\"$job\",instance=~\"$instance\"}[5m])))", "legendFormat": "p95" },
+        { "expr": "histogram_quantile(0.99, sum by (le) (rate(go_sched_latencies_seconds_bucket{job=~\"$job\",instance=~\"$instance\"}[5m])))", "legendFormat": "p99" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" } }
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Network IO (bytes/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 28, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "rate(process_network_receive_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m])", "legendFormat": "rx" },
+        { "expr": "rate(process_network_transmit_bytes_total{job=~\"$job\",instance=~\"$instance\"}[5m])", "legendFormat": "tx" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "Bps" } }
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "File descriptors",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 28, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "process_open_fds{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "open_fds" },
+        { "expr": "process_max_fds{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "max_fds" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0 } }
+    }
+  ]
+}

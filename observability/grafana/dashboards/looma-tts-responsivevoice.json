@@ -1,0 +1,240 @@
+{
+  "annotations": { "list": [] },
+  "description": "RED metrics and logs for the ResponsiveVoice TTS engine (span tts.responsivevoice) — the cloud-based voice service with multiple language and speaker options. Used as fallback when local engines are unavailable.",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 2,
+  "refresh": "30s",
+  "title": "Looma — TTS · ResponsiveVoice",
+  "uid": "looma-tts-responsivevoice",
+  "tags": ["looma", "tts", "responsivevoice"],
+  "time": { "from": "now-6h", "to": "now" },
+  "links": [
+    {
+      "type": "dashboards",
+      "title": "TTS dashboards",
+      "tags": ["tts"],
+      "asDropdown": true,
+      "keepTime": true,
+      "includeVars": false,
+      "icon": "external link"
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "rate",
+        "label": "Rate window",
+        "type": "interval",
+        "query": "1m,5m,10m,30m,1h",
+        "current": { "text": "5m", "value": "5m" },
+        "options": [
+          { "text": "1m", "value": "1m", "selected": false },
+          { "text": "5m", "value": "5m", "selected": true },
+          { "text": "10m", "value": "10m", "selected": false },
+          { "text": "30m", "value": "30m", "selected": false },
+          { "text": "1h", "value": "1h", "selected": false }
+        ],
+        "auto": false
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row",
+      "id": 1,
+      "title": "ResponsiveVoice · health",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Requests ($__range)",
+      "description": "ResponsiveVoice synthesis calls completed in the selected time range.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 1, "w": 4, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\"}[$__range])) or vector(0)", "legendFormat": "requests" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "purple" } } }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Errors ($__range)",
+      "description": "ResponsiveVoice synthesis calls that ended with span status STATUS_CODE_ERROR in the selected range.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 4, "y": 1, "w": 4, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\",status_code=\"STATUS_CODE_ERROR\"}[$__range])) or vector(0)", "legendFormat": "errors" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 5 } ] }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Error rate ($__range)",
+      "description": "Errored ResponsiveVoice calls as a percentage of all ResponsiveVoice calls in the selected range. Shows 0% when there is no traffic.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 8, "y": 1, "w": 4, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "100 * (sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\",status_code=\"STATUS_CODE_ERROR\"}[$__range])) or vector(0)) / clamp_min(sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\"}[$__range])) or vector(0), 1)", "legendFormat": "error %" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 2 }, { "color": "red", "value": 10 } ] }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "p50 latency",
+      "description": "Median (50th-percentile) ResponsiveVoice synthesis duration over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 1, "w": 4, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "histogram_quantile(0.50, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\"}[$rate])))", "legendFormat": "p50" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "ms" } }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "p95 latency",
+      "description": "95th-percentile ResponsiveVoice synthesis duration over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 16, "y": 1, "w": 4, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\"}[$rate])))", "legendFormat": "p95" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 800 }, { "color": "red", "value": 2000 } ] }
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "p99 latency",
+      "description": "99th-percentile ResponsiveVoice synthesis duration over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 20, "y": 1, "w": 4, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\"}[$rate])))", "legendFormat": "p99" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "ms" } }
+    },
+    {
+      "type": "row",
+      "id": 8,
+      "title": "ResponsiveVoice · throughput & latency",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 5, "w": 24, "h": 1 }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Request rate",
+      "description": "ResponsiveVoice synthesis request rate, averaged over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 6, "w": 12, "h": 8 },
+      "targets": [
+        { "refId": "A", "expr": "sum(rate(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\"}[$rate]))", "legendFormat": "requests/s" }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+      "fieldConfig": { "defaults": { "unit": "reqps", "color": { "mode": "fixed", "fixedColor": "purple" }, "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 14, "showPoints": "never" } } }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Latency p50 / p95 / p99",
+      "description": "ResponsiveVoice synthesis duration percentiles (p50, p95, p99) over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 6, "w": 12, "h": 8 },
+      "targets": [
+        { "refId": "A", "expr": "histogram_quantile(0.50, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\"}[$rate])))", "legendFormat": "p50" },
+        { "refId": "B", "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\"}[$rate])))", "legendFormat": "p95" },
+        { "refId": "C", "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\"}[$rate])))", "legendFormat": "p99" }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "ms", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never" } } }
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Errors over time",
+      "description": "Count of errored ResponsiveVoice calls bucketed over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 14, "w": 12, "h": 7 },
+      "targets": [
+        { "refId": "A", "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\",status_code=\"STATUS_CODE_ERROR\"}[$rate]))", "legendFormat": "errors" }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "red" }, "custom": { "drawStyle": "bars", "lineWidth": 1, "fillOpacity": 70, "showPoints": "never" } } }
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Calls by status",
+      "description": "ResponsiveVoice request rate split by span status code (OK, ERROR, UNSET).",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 14, "w": 12, "h": 7 },
+      "targets": [
+        { "refId": "A", "expr": "sum by (status_code) (rate(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.responsivevoice\"}[$rate]))", "legendFormat": "{{status_code}}" }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "reqps", "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 40, "showPoints": "never", "stacking": { "mode": "normal", "group": "A" } } } }
+    },
+    {
+      "type": "row",
+      "id": 13,
+      "title": "ResponsiveVoice · logs & notes",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 21, "w": 24, "h": 1 }
+    },
+    {
+      "id": 14,
+      "type": "text",
+      "title": "About ResponsiveVoice",
+      "gridPos": { "x": 0, "y": 22, "w": 6, "h": 10 },
+      "options": {
+        "mode": "markdown",
+        "content": "## ResponsiveVoice\n\nResponsiveVoice is the **cloud-based fallback** TTS engine with extensive voice and language support.\n\n- Supports multiple languages including English, Hindi (closest to Nepali), and others.\n- Runs as a cloud service (loaded from CDN in browser JavaScript).\n- Used as fallback when local engines are unavailable or when explicitly selected.\n- Span: `tts.responsivevoice`.\n\nThis dashboard typically shows low or no traffic when Piper is functioning correctly. High traffic here may indicate local TTS engine issues or user preference settings."
+      }
+    },
+    {
+      "id": 15,
+      "type": "logs",
+      "title": "Recent ResponsiveVoice / TTS log lines (looma-web)",
+      "description": "Recent looma-web container log lines (looma-logs-*) mentioning ResponsiveVoice or the TTS proxy.",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-logs" },
+      "gridPos": { "x": 6, "y": 22, "w": 18, "h": 10 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "message:ResponsiveVoice OR message:responsivevoice OR message:responsiveVoice",
+          "metrics": [ { "type": "logs", "id": "1" } ],
+          "bucketAggs": [ { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "@timestamp" } ]
+        }
+      ],
+      "options": { "showTime": true, "showLabels": false, "wrapLogMessage": true, "prettifyLogMessage": false, "sortOrder": "Descending", "dedupStrategy": "none", "enableLogDetails": true }
+    }
+  ]
+}

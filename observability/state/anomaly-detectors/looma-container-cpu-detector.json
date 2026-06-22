@@ -1,0 +1,42 @@
+{
+  "name": "looma-container-cpu-anomaly",
+  "description": "USE/Utilization: anomalous CPU usage per container (docker.cpu.total.pct from metricbeat).",
+  "time_field": "@timestamp",
+  "indices": [
+    "metricbeat-*"
+  ],
+  "category_field": [
+    "container.name.keyword"
+  ],
+  "filter_query": {
+    "term": {
+      "metricset.name.keyword": "cpu"
+    }
+  },
+  "detection_interval": {
+    "period": {
+      "interval": 2,
+      "unit": "MINUTES"
+    }
+  },
+  "window_delay": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "schema_version": 0,
+  "feature_attributes": [
+    {
+      "feature_name": "cpu_pct",
+      "feature_enabled": true,
+      "aggregation_query": {
+        "cpu_pct": {
+          "max": {
+            "field": "docker.cpu.total.pct"
+          }
+        }
+      }
+    }
+  ]
+}

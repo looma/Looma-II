@@ -1,0 +1,121 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 1,
+  "title": "Looma — OpenSearch ingestion (overview)",
+  "uid": "looma-os-ingestion",
+  "tags": ["looma", "opensearch", "ingestion"],
+  "time": { "from": "now-6h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "otel_exporter",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(otelcol_exporter_sent_spans_total{job=\"otelcol_internal\"}, exporter)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*"
+      },
+      {
+        "name": "vector_component",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(vector_component_sent_events_total, component_id)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "OTel Collector → exporters — traces sent (spans/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (exporter) (rate(otelcol_exporter_sent_spans_total{job=\"otelcol_internal\",exporter=~\"$otel_exporter\"}[5m]))",
+          "legendFormat": "{{exporter}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "OTel Collector → exporters — logs sent (records/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (exporter) (rate(otelcol_exporter_sent_log_records_total{job=\"otelcol_internal\",exporter=~\"$otel_exporter\"}[5m]))",
+          "legendFormat": "{{exporter}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "OTel Collector → exporters — metrics sent (points/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (exporter) (rate(otelcol_exporter_sent_metric_points_total{job=\"otelcol_internal\",exporter=~\"$otel_exporter\"}[5m]))",
+          "legendFormat": "{{exporter}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "OTel Collector → exporters — send failures (spans/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (exporter) (rate(otelcol_exporter_send_failed_spans_total{job=\"otelcol_internal\",exporter=~\"$otel_exporter\"}[5m]))",
+          "legendFormat": "{{exporter}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Vector → OpenSearch — events sent (events/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (component_id) (rate(vector_component_sent_events_total{component_id=~\"$vector_component\"}[5m]))",
+          "legendFormat": "{{component_id}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Vector — sink errors (errors/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (component_id) (rate(vector_component_errors_total[5m]))",
+          "legendFormat": "{{component_id}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+    "config":  {
+                   "buildNum":  8857,
+                   "defaultIndex":  "347df670-4595-11f1-95b0-cb6bad4e57f8",
+                   "observability:traceAnalyticsCorrelatedLogsIndices":  "otel-v1-apm-span-*",
+                   "observability:traceAnalyticsServiceIndices":  "otel-v1-apm-service-map*,jaeger-service-*",
+                   "theme:darkMode":  null,
+                   "observability:traceAnalyticsCustomModeDefault":  true,
+                   "observability:traceAnalyticsCorrelatedLogsFieldMappings":  "{\"serviceName\":\"serviceName\",\"spanId\":\"spanId\",\"timestamp\":\"startTime\",\"traceId\":\"traceId\"}",
+                   "observability:traceAnalyticsSpanIndices":  "otel-v1-apm-span*"
+               },
+    "migrationVersion":  {
+                             "config":  "7.9.0"
+                         },
+    "references":  {
+
+                   },
+    "type":  "config"
+}

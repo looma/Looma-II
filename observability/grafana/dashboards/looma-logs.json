@@ -1,0 +1,64 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 1,
+  "title": "Looma — Logs (per service)",
+  "uid": "looma-logs",
+  "tags": ["looma", "logs", "opensearch"],
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Log volume per service (events/min)",
+      "description": "Built from the per-service indices (looma-logs-*). Each LOOMA container has its own index.",
+      "datasource": "OpenSearch-Logs",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 10 },
+      "targets": [
+        {
+          "query": "*",
+          "alias": "{{term service.keyword}}",
+          "metrics": [{ "type": "count", "id": "1" }],
+          "bucketAggs": [
+            {
+              "type": "terms",
+              "id": "3",
+              "field": "service.keyword",
+              "settings": { "size": "20", "order": "desc", "orderBy": "_count" }
+            },
+            {
+              "type": "date_histogram",
+              "id": "2",
+              "settings": { "interval": "1m" },
+              "field": "@timestamp"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "logs",
+      "title": "Recent logs (all services)",
+      "datasource": "OpenSearch-Logs",
+      "gridPos": { "x": 0, "y": 10, "w": 24, "h": 14 },
+      "targets": [
+        {
+          "query": "*",
+          "alias": "logs",
+          "metrics": [{ "type": "logs", "id": "1" }],
+          "bucketAggs": [
+            {
+              "type": "date_histogram",
+              "id": "2",
+              "settings": { "interval": "auto" },
+              "field": "@timestamp"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

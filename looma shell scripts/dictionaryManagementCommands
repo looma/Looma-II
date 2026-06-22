@@ -1,0 +1,15 @@
+Dictionary maintenance functions:
+
+Generate list of words with pictures
+
+cd "content/dictionary images"
+ls | grep -v thumb | sed 's/\.jpg//' > ~/Desktop/dictionary_pictures
+
+Generate list of all dictionary words
+
+mongoexport --db=looma --collection=dictionary --projection="{'en':1}" --out="dictionary_words"
+Sort -u dictionary_words > dictionary_words_sorted
+
+Generate list of words without pictures
+
+comm -23  dictionary_words_sorted dictionary_pictures > dictionary_words_without_pictures

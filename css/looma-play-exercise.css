@@ -1,0 +1,208 @@
+/* AI exercise / vocab game player styling. The body, font and toolbar
+   already come from looma.css; we only style the player cards on top of
+   the standard looma-blue background. */
+
+#exercise-host,
+#vocab-host {
+    width: 92%;
+    max-width: 800px;
+    margin: 18px auto 24px auto;
+    color: #15233a;
+}
+
+.ex-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin: 14px 0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+    text-align: left;
+}
+
+.ex-progress {
+    font-weight: 700;
+    color: #091F48;
+    margin-bottom: 6px;
+    text-align: right;
+    opacity: 0.8;
+}
+
+.ex-source-tag {
+    display: inline-block;
+    background: #e8f0ff;
+    color: #091F48;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 3px 10px;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.ex-prompt {
+    font-size: 1.4rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    margin-bottom: 18px;
+}
+
+.ex-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ex-options label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 2px solid #091F48;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.ex-options label:hover {
+    background: #fff8d4;
+}
+
+.ex-options input[type="radio"] {
+    transform: scale(1.4);
+}
+
+.ex-options label.picked {
+    background: #fff8d4;
+}
+
+.ex-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 22px;
+}
+
+.ex-validation {
+    color: #b00020;
+    min-height: 22px;
+    font-size: 1rem;
+}
+
+.ex-primary, .ex-secondary {
+    border: 2px solid #091F48;
+    background: #091F48;
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1.05rem;
+}
+.ex-primary:hover { background: #122d63; }
+
+.ex-secondary {
+    background: #fff;
+    color: #091F48;
+}
+.ex-secondary:hover { background: #fff8d4; }
+
+.ex-result-title {
+    margin: 0 0 6px 0;
+    color: #091F48;
+}
+.ex-score {
+    font-size: 3.2rem;
+    font-weight: 800;
+    color: #091F48;
+    line-height: 1.1;
+}
+.ex-detail {
+    opacity: 0.85;
+    margin-bottom: 14px;
+    font-size: 1.1rem;
+}
+.ex-recos {
+    margin-top: 10px;
+}
+.ex-recos h3 {
+    margin: 14px 0 4px 0;
+    color: #091F48;
+}
+.ex-recos ul {
+    margin-top: 4px;
+}
+.ex-recos #didyouknow,
+.ex-recos .didyouknow {
+    background: #e8f0ff;
+    border-left: 4px solid #091F48;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-style: italic;
+    margin: 10px 0;
+}
+
+/* Resources-style card grid for the post-quiz recommendations. Each card
+   is a `button.activity.play.img` (so LOOMA.playMedia routes the click to
+   the same viewer the Resources page links to) with a large thumb, a label
+   and a small overlay icon in the corner showing the file type. */
+.ex-recos .reco-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+    margin: 8px 0 16px 0;
+}
+.ex-recos .reco-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    padding: 10px;
+    border: 2px solid #091F48;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    color: #091F48;
+    font-family: inherit;
+    text-align: center;
+    transition: background-color 0.12s ease, transform 0.08s ease;
+}
+.ex-recos .reco-card:hover {
+    background: #fff8d4;
+    transform: translateY(-1px);
+}
+.ex-recos .reco-card > img:first-of-type {
+    width: 100%;
+    height: 96px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+.ex-recos .reco-card .reco-card-label {
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    word-break: break-word;
+}
+.ex-recos .reco-card .icon {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 26px;
+    height: 26px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 6px;
+    padding: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.ex-recos .reco-card .reco-card-topic {
+    font-size: 0.78rem;
+    opacity: 0.65;
+    font-style: italic;
+}
+.ex-recos h3 {
+    margin: 18px 0 8px 0;
+    color: #091F48;
+}

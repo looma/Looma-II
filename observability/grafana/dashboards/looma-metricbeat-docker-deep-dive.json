@@ -1,0 +1,1308 @@
+{
+    "annotations":  {
+                        "list":  [
+
+                                 ]
+                    },
+    "time":  {
+                 "to":  "now",
+                 "from":  "now-3h"
+             },
+    "templating":  {
+                       "list":  [
+                                    {
+                                        "allValue":  ".*",
+                                        "type":  "query",
+                                        "includeAll":  true,
+                                        "query":  "label_values(docker_info_containers_total{job=\"vector\",module=\"docker\"}, host)",
+                                        "datasource":  {
+                                                           "type":  "prometheus",
+                                                           "uid":  "prometheus"
+                                                       },
+                                        "name":  "host",
+                                        "multi":  true,
+                                        "refresh":  2,
+                                        "current":  {
+                                                        "selected":  true,
+                                                        "value":  "$__all",
+                                                        "text":  "All"
+                                                    }
+                                    },
+                                    {
+                                        "allValue":  ".*",
+                                        "type":  "query",
+                                        "includeAll":  true,
+                                        "query":  "label_values(docker_container_size_rw{job=\"vector\",module=\"docker\",host=~\"$host\"}, container)",
+                                        "datasource":  {
+                                                           "type":  "prometheus",
+                                                           "uid":  "prometheus"
+                                                       },
+                                        "name":  "container",
+                                        "multi":  true,
+                                        "refresh":  2,
+                                        "current":  {
+                                                        "selected":  true,
+                                                        "value":  "$__all",
+                                                        "text":  "All"
+                                                    }
+                                    },
+                                    {
+                                        "allValue":  ".*",
+                                        "type":  "query",
+                                        "includeAll":  true,
+                                        "query":  "label_values(docker_container_size_rw{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\"}, image)",
+                                        "datasource":  {
+                                                           "type":  "prometheus",
+                                                           "uid":  "prometheus"
+                                                       },
+                                        "name":  "image",
+                                        "multi":  true,
+                                        "refresh":  2,
+                                        "current":  {
+                                                        "selected":  true,
+                                                        "value":  "$__all",
+                                                        "text":  "All"
+                                                    }
+                                    },
+                                    {
+                                        "allValue":  ".*",
+                                        "type":  "query",
+                                        "includeAll":  true,
+                                        "query":  "label_values(docker_container_size_rw{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\"}, docker_status)",
+                                        "datasource":  {
+                                                           "type":  "prometheus",
+                                                           "uid":  "prometheus"
+                                                       },
+                                        "name":  "status",
+                                        "multi":  true,
+                                        "refresh":  2,
+                                        "current":  {
+                                                        "selected":  true,
+                                                        "value":  "$__all",
+                                                        "text":  "All"
+                                                    }
+                                    }
+                                ]
+                   },
+    "version":  1,
+    "panels":  [
+                   {
+                       "id":  100,
+                       "gridPos":  {
+                                       "y":  0,
+                                       "w":  24,
+                                       "h":  1,
+                                       "x":  0
+                                   },
+                       "collapsed":  false,
+                       "type":  "row",
+                       "title":  "CPU ticks and system CPU",
+                       "panels":  [
+
+                                  ]
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  101,
+                       "type":  "timeseries",
+                       "description":  "Raw tick counters reported by Metricbeat docker.cpu.",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "short",
+                                                            "decimals":  0
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} user ticks",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_cpu_user_ticks{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} kernel ticks",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_cpu_kernel_ticks{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} system ticks",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_cpu_system_ticks{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "CPU ticks by container",
+                       "gridPos":  {
+                                       "y":  1,
+                                       "w":  12,
+                                       "h":  8,
+                                       "x":  0
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  102,
+                       "type":  "timeseries",
+                       "description":  "Per-container CPU usage. `total.pct` is fraction of one core (0..N where N=cores). `total.norm.pct` is normalized to the whole host (0..1 = 0..100%).",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "percentunit",
+                                                            "decimals":  2
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} total pct",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_cpu_total_pct{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} total norm pct",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_cpu_total_norm_pct{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Container CPU usage (total pct, normalized)",
+                       "gridPos":  {
+                                       "y":  1,
+                                       "w":  12,
+                                       "h":  8,
+                                       "x":  12
+                                   }
+                   },
+                   {
+                       "id":  103,
+                       "gridPos":  {
+                                       "y":  9,
+                                       "w":  24,
+                                       "h":  1,
+                                       "x":  0
+                                   },
+                       "collapsed":  false,
+                       "type":  "row",
+                       "title":  "Memory working set and anonymous/file pages",
+                       "panels":  [
+
+                                  ]
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  104,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "bytes",
+                                                            "decimals":  0
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} active anon",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_active_anon{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} inactive anon",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_inactive_anon{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} active file",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_active_file{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} inactive file",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_inactive_file{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "D",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Memory active / inactive pages",
+                       "gridPos":  {
+                                       "y":  10,
+                                       "w":  12,
+                                       "h":  8,
+                                       "x":  0
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  105,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "bytes",
+                                                            "decimals":  0
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} anon",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_anon{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} file",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_file{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} shmem",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_shmem{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} sock",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_sock{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "D",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Memory anon/file/shmem/sock",
+                       "gridPos":  {
+                                       "y":  10,
+                                       "w":  12,
+                                       "h":  8,
+                                       "x":  12
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  106,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "bytes",
+                                                            "decimals":  0
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} slab",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_slab{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} slab reclaimable",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_slab_reclaimable{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} slab unreclaimable",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_slab_unreclaimable{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} kernel stack",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_kernel_stack{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "D",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} file mapped",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_file_mapped{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "E",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} file dirty",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_file_dirty{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "F",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Memory slab / kernel / mapped / dirty",
+                       "gridPos":  {
+                                       "y":  18,
+                                       "w":  12,
+                                       "h":  8,
+                                       "x":  0
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  107,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "short",
+                                                            "decimals":  0
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} pgfault",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgfault{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} pgmajfault",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgmajfault{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} pgactivate",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgactivate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} pgdeactivate",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgdeactivate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "D",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} pgrefill",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgrefill{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "E",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Memory paging events",
+                       "gridPos":  {
+                                       "y":  18,
+                                       "w":  12,
+                                       "h":  8,
+                                       "x":  12
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  108,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "short",
+                                                            "decimals":  0
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} pgscan",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgscan{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} pgsteal",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgsteal{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} workingset activate",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_workingset_activate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} workingset refault",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_workingset_refault{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "D",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} workingset nodereclaim",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_workingset_nodereclaim{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "E",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Memory reclaim / scan / steal / workingset",
+                       "gridPos":  {
+                                       "y":  26,
+                                       "w":  12,
+                                       "h":  8,
+                                       "x":  0
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  109,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "short",
+                                                            "decimals":  0
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} anon thp",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_anon_thp{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} thp fault alloc",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_thp_fault_alloc{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} thp collapse alloc",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_thp_collapse_alloc{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} unevictable",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_unevictable{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "D",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} fail count",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_memory_fail_count{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "E",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Memory THP / unevictable / fail count",
+                       "gridPos":  {
+                                       "y":  26,
+                                       "w":  12,
+                                       "h":  8,
+                                       "x":  12
+                                   }
+                   },
+                   {
+                       "id":  110,
+                       "gridPos":  {
+                                       "y":  34,
+                                       "w":  24,
+                                       "h":  1,
+                                       "x":  0
+                                   },
+                       "collapsed":  false,
+                       "type":  "row",
+                       "title":  "Disk latency, queueing and rates",
+                       "panels":  [
+
+                                  ]
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  111,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "short",
+                                                            "decimals":  0
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} read queued",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_read_queued{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} write queued",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_write_queued{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} summary queued",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_queued{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Disk queued operations",
+                       "gridPos":  {
+                                       "y":  35,
+                                       "w":  8,
+                                       "h":  8,
+                                       "x":  0
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  112,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "s",
+                                                            "decimals":  2
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} read service",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_read_service_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} write service",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_write_service_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} summary service",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_service_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Disk service time",
+                       "gridPos":  {
+                                       "y":  35,
+                                       "w":  8,
+                                       "h":  8,
+                                       "x":  8
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  113,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "s",
+                                                            "decimals":  2
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} read wait",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_read_wait_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} write wait",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_write_wait_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} summary wait",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_wait_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Disk wait time",
+                       "gridPos":  {
+                                       "y":  35,
+                                       "w":  8,
+                                       "h":  8,
+                                       "x":  16
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  114,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "short",
+                                                            "decimals":  2
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} read rate",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_read_rate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} write rate",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_write_rate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} summary rate",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_rate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "C",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Metricbeat disk rates",
+                       "gridPos":  {
+                                       "y":  43,
+                                       "w":  24,
+                                       "h":  8,
+                                       "x":  0
+                                   }
+                   },
+                   {
+                       "id":  115,
+                       "gridPos":  {
+                                       "y":  51,
+                                       "w":  24,
+                                       "h":  1,
+                                       "x":  0
+                                   },
+                       "collapsed":  false,
+                       "type":  "row",
+                       "title":  "Network reliability and healthchecks",
+                       "panels":  [
+
+                                  ]
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  116,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "pps",
+                                                            "decimals":  2
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} inbound dropped",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (rate(docker_network_inbound_dropped{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} outbound dropped",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (rate(docker_network_outbound_dropped{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Network dropped packets",
+                       "gridPos":  {
+                                       "y":  52,
+                                       "w":  12,
+                                       "h":  8,
+                                       "x":  0
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  117,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "pps",
+                                                            "decimals":  2
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} inbound errors",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (rate(docker_network_inbound_errors{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} outbound errors",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "sum by (container,image,host) (rate(docker_network_outbound_errors{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Network errors",
+                       "gridPos":  {
+                                       "y":  52,
+                                       "w":  12,
+                                       "h":  8,
+                                       "x":  12
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  118,
+                       "type":  "timeseries",
+                       "description":  "",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "short",
+                                                            "decimals":  0
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{container}} exit code",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_healthcheck_event_exit_code{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "A",
+                                           "instant":  false
+                                       },
+                                       {
+                                           "legendFormat":  "{{container}} failing streak",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "max by (container,image,host) (docker_healthcheck_failingstreak{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "refId":  "B",
+                                           "instant":  false
+                                       }
+                                   ],
+                       "title":  "Healthcheck exit code and failing streak",
+                       "gridPos":  {
+                                       "y":  60,
+                                       "w":  24,
+                                       "h":  8,
+                                       "x":  0
+                                   }
+                   },
+                   {
+                       "options":  {
+                                       "legend":  {
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true,
+                                                      "displayMode":  "table"
+                                                  },
+                                       "tooltip":  {
+                                                       "sort":  "desc",
+                                                       "mode":  "multi"
+                                                   }
+                                   },
+                       "id":  119,
+                       "type":  "table",
+                       "transformations":  [
+                                               {
+                                                   "id":  "labelsToFields",
+                                                   "options":  {
+                                                                   "valueLabel":  "series"
+                                                               }
+                                               }
+                                           ],
+                       "description":  "Inventory table of every docker_* time series produced from Metricbeat through Vector.",
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "prometheus"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "unit":  "short",
+                                                            "decimals":  0
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "targets":  [
+                                       {
+                                           "legendFormat":  "{{__name__}}",
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "prometheus"
+                                                          },
+                                           "expr":  "count by (__name__,dataset) ({__name__=~\"docker_.*\",job=\"vector\",module=\"docker\"})",
+                                           "refId":  "A",
+                                           "instant":  true
+                                       }
+                                   ],
+                       "title":  "All docker_* metric names currently present",
+                       "gridPos":  {
+                                       "y":  68,
+                                       "w":  24,
+                                       "h":  10,
+                                       "x":  0
+                                   }
+                   }
+               ],
+    "tags":  [
+                 "looma",
+                 "metricbeat",
+                 "docker",
+                 "deep-dive"
+             ],
+    "editable":  true,
+    "graphTooltip":  1,
+    "uid":  "looma-metricbeat-docker-deep-dive",
+    "refresh":  "15s",
+    "title":  "Looma - Metricbeat Docker Deep Dive",
+    "schemaVersion":  39
+}

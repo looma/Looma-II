@@ -1,0 +1,430 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "description": "Page-access volume and chapter time-on-task. Sources: Prometheus counters (looma_event_total, looma_chapter_time_ms_total). Raw events: OTLP logs in OpenSearch (otel-events*).",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": [
+    "looma",
+    "learning",
+    "engagement"
+  ],
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Looma — Page & Chapter Engagement",
+  "uid": "looma-learning-engagement",
+  "version": 2,
+  "refresh": "30s",
+  "templating": {
+    "list": [
+      {
+        "name": "grade",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(looma_event_total, looma_grade)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "subject",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(looma_event_total, looma_subject)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      },
+      {
+        "name": "language",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(looma_event_total, looma_language)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Page hits (any page)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 5
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(sum_over_time(looma_event_total{looma_event=\"page\"}[$__range])) or vector(0)"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Chapter time (selected)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 5
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "h"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(sum(sum_over_time(looma_chapter_time_ms_milliseconds_total{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])) / 3600000) or vector(0)"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Most-visited pages",
+      "description": "Top 15 pages by hit count in the selected time range. Source: looma_event_total{looma_event=\"page\"} (cumulative counter emitted by logPageHit() in PHP).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 10
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "no page hits in range",
+          "custom": {
+            "align": "auto",
+            "displayMode": "gradient-gauge"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "looma_page" },
+            "properties": [
+              { "id": "displayName", "value": "page" },
+              { "id": "custom.displayMode", "value": "auto" },
+              { "id": "custom.width", "value": 280 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Value" },
+            "properties": [
+              { "id": "displayName", "value": "hits" }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": { "Time": true },
+            "indexByName": { "looma_page": 0, "Value": 1 }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [{ "field": "Value", "desc": true }]
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "footer": { "show": false }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "topk(15, sum by (looma_page) (max_over_time(looma_event_total{looma_event=\"page\"}[$__range])))",
+          "legendFormat": "{{looma_page}}",
+          "format": "table",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "table",
+      "title": "Slowest chapters — total minutes spent",
+      "description": "Chapters sorted by total time-on-task in the selected range. Source: looma_chapter_time_ms_milliseconds_total (cumulative counter, ms, emitted by LOOMA.telemetry.stopChapterTimer() in the PDF viewer). Empty when no chapter PDFs have been opened in the range.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 24,
+        "h": 10
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m",
+          "noValue": "no chapter time in range",
+          "custom": {
+            "align": "auto",
+            "displayMode": "gradient-gauge"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "looma_grade" },
+            "properties": [
+              { "id": "displayName", "value": "grade" },
+              { "id": "custom.displayMode", "value": "auto" },
+              { "id": "custom.width", "value": 80 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "looma_chapter_id" },
+            "properties": [
+              { "id": "displayName", "value": "chapter_id" },
+              { "id": "custom.displayMode", "value": "auto" },
+              { "id": "custom.width", "value": 160 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "looma_chapter_name" },
+            "properties": [
+              { "id": "displayName", "value": "chapter" },
+              { "id": "custom.displayMode", "value": "auto" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Value" },
+            "properties": [
+              { "id": "displayName", "value": "minutes" }
+            ]
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": { "Time": true },
+            "indexByName": { "looma_grade": 0, "looma_chapter_id": 1, "looma_chapter_name": 2, "Value": 3 }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [{ "field": "Value", "desc": true }]
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "footer": { "show": false }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "topk(15, sum by (looma_grade, looma_chapter_id, looma_chapter_name) (max_over_time(looma_chapter_time_ms_milliseconds_total{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])) / 60000)",
+          "legendFormat": "{{looma_grade}} {{looma_chapter_id}} {{looma_chapter_name}}",
+          "format": "table",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Page hits over time",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 12,
+        "h": 9
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "sum"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (looma_page) (sum_over_time(looma_event_total{looma_event=\"page\"}[5m]))",
+          "legendFormat": "{{looma_page}}"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "piechart",
+      "title": "Chapter time split — by subject",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 9
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        }
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ]
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "right"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (looma_subject) (sum_over_time(looma_chapter_time_ms_milliseconds_total[$__range]))",
+          "legendFormat": "{{looma_subject}}"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "table",
+      "title": "Recent page events (OTLP)",
+      "description": "Raw telemetry logs as ingested via OTLP. Use this to validate that the app is actually sending events.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-events"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 29,
+        "w": 12,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "serviceName:\"looma-web\" AND (body:*page* OR body:*chapter* OR body:*hit*)",
+          "metrics": [
+            {
+              "type": "logs",
+              "id": "1"
+            }
+          ],
+          "bucketAggs": [],
+          "timeField": "time"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    },
+    {
+      "id": 6,
+      "type": "table",
+      "title": "Recent chapter visits",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-events"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 29,
+        "w": 12,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "serviceName:\"looma-web\" AND (body:*chapter_time* OR body:*chapter* OR body:*page*)",
+          "metrics": [
+            {
+              "type": "logs",
+              "id": "1"
+            }
+          ],
+          "bucketAggs": [],
+          "timeField": "time"
+        }
+      ],
+      "options": {
+        "showHeader": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+# Reduce build context for `looma-web` image (the PHP web app).
+# Other services have their own build contexts in docker-compose.yml.
+
+# Local caches / backups
+_codex_backups/
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+
+# Looma AI service (built separately from ./looma-ai)
+looma-ai/
+looma-ai-data/
+
+# Other services (built separately)
+mongo-dump/
+search-service/
+search-service-legacy/
+
+# Common large artifacts
+*.db
+*.sqlite
+*.sqlite3
+*.log
+*.tar
+*.tar.gz
+*.zip
+*.7z
+

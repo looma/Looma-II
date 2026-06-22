@@ -1,0 +1,55 @@
+{
+  "name": "looma-span-error-anomaly",
+  "description": "RED/Errors: anomalous count of error spans (status.code=2) per service. Excludes synthetic topology-probe spans.",
+  "time_field": "startTime",
+  "indices": [
+    "otel-v1-apm-span-*"
+  ],
+  "category_field": [
+    "serviceName.keyword"
+  ],
+  "filter_query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "status.code": 2
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "term": {
+            "span.attributes.looma@topology_probe": true
+          }
+        }
+      ]
+    }
+  },
+  "detection_interval": {
+    "period": {
+      "interval": 2,
+      "unit": "MINUTES"
+    }
+  },
+  "window_delay": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "schema_version": 0,
+  "feature_attributes": [
+    {
+      "feature_name": "error_spans",
+      "feature_enabled": true,
+      "aggregation_query": {
+        "error_spans": {
+          "value_count": {
+            "field": "durationInNanos"
+          }
+        }
+      }
+    }
+  ]
+}

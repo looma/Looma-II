@@ -1,0 +1,59 @@
+{
+  "type": "monitor",
+  "name": "looma-trace-errors",
+  "enabled": true,
+  "schedule": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "monitor_type": "query_level_monitor",
+  "inputs": [
+    {
+      "search": {
+        "indices": [
+          "otel-v1-apm-span-*"
+        ],
+        "query": {
+          "size": 0,
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "startTime": {
+                      "gte": "now-5m",
+                      "lte": "now"
+                    }
+                  }
+                },
+                {
+                  "term": {
+                    "status.code": 2
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "query_level_trigger": {
+        "id": "looma-trace-errors-trigger",
+        "name": "Trace errors detected",
+        "severity": "2",
+        "condition": {
+          "script": {
+            "source": "ctx.results[0].hits.total.value > 0",
+            "lang": "painless"
+          }
+        },
+        "actions": []
+      }
+    }
+  ]
+}

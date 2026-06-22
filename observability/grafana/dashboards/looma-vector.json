@@ -1,0 +1,74 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 1,
+  "title": "Looma — Vector pipeline",
+  "uid": "looma-vector",
+  "tags": ["looma", "vector", "logs"],
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Events received per source (events/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (component_id) (rate(vector_component_received_events_total{component_kind=\"source\"}[2m]))",
+          "legendFormat": "{{component_id}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Events shipped per sink (events/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (component_id) (rate(vector_component_sent_events_total{component_kind=\"sink\"}[2m]))",
+          "legendFormat": "{{component_id}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Component errors / dropped events (events/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 8, "w": 24, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (component_id, error_type) (rate(vector_component_errors_total[2m]))",
+          "legendFormat": "{{component_id}} :: {{error_type}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 0.1 }] }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Buffer pressure (events received vs sent per buffer)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (component_id) (rate(vector_buffer_received_events_total[2m])) - sum by (component_id) (rate(vector_buffer_sent_events_total[2m]))",
+          "legendFormat": "{{component_id}} (Δ)"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "title": "8SS03.04 न्यायपालिकाको परिचय र अदालतको गठन",
+  "ft": "game",
+  "presentation_type": "sort",
+  "timeLimit": 180,
+  "bins": [
+    {
+      "heading": "न्यायपालिकाको परिचय र कार्य",
+      "scope": "judiciary_intro"
+    },
+    {
+      "heading": "सर्वोच्च अदालत (Supreme Court)",
+      "scope": "supreme_court"
+    },
+    {
+      "heading": "उच्च र जिल्ला अदालत (High & District)",
+      "scope": "high_district"
+    }
+  ],
+  "words": [
+    { "en": "राज्यका तीन अङ्गमध्ये एक", "bin": "judiciary_intro" },
+    { "en": "संविधान र कानुनको व्याख्या गर्ने", "bin": "judiciary_intro" },
+    { "en": "स्वतन्त्र र निष्पक्ष हुनुपर्ने", "bin": "judiciary_intro" },
+    { "en": "सबैभन्दा माथिल्लो तहको अदालत", "bin": "supreme_court" },
+    { "en": "प्रधानन्यायाधीश र बढीमा २० जना न्यायाधीश", "bin": "supreme_court" },
+    { "en": "प्रधानन्यायाधीशको पदावधि ६ वर्ष", "bin": "supreme_court" },
+    { "en": "प्रत्येक प्रदेशमा एक-एक ओटा रहने", "bin": "high_district" },
+    { "en": "प्रत्येक जिल्लामा एउटा रहने", "bin": "high_district" },
+    { "en": "मौलिक हकको संरक्षणका लागि आदेश दिने", "bin": "high_district" },
+    { "en": "अभिलेख अदालत पनि भनिने", "bin": "supreme_court" },
+    { "en": "जिल्ला न्यायाधीशको नियुक्ति प्रधानन्यायाधीशबाट", "bin": "high_district" },
+    { "en": "अन्याय परेकालाई न्याय दिने अङ्ग", "bin": "judiciary_intro" }
+  ],
+  "cl_lo": 8,
+  "cl_hi": 10,
+  "lang": "np",
+  "author": "Milan Bogati",
+  "subject": ["social studies"],
+  "lot": "SPHS II Lot 4",
+  "ch_id": "8SS03.04"
+}

@@ -1,0 +1,99 @@
+# Observability — Odroid overlay (8 GB ARM device)
+#
+# Use TOGETHER with the canonical compose, never alone:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.odroid.yml up -d --build
+#
+# Goal: keep the OpenSearch-based core (logs, traces, service maps, dashboards,
+# Observability Applications) that the user wants, but fit it next to the Looma
+# app inside 8 GB. It does NOT edit the canonical docker-compose.yml.
+#
+# Changes:
+#  1. Puts the heaviest, non-essential services behind the `heavy` profile so
+#     they stay OFF by default: the whole Coroot stack (Coroot UI + ClickHouse +
+#     Postgres + node/cluster agents). The node-agent also needs eBPF, which may
+#     not work on the odroid kernel. Enable later with `--profile heavy` only if
+#     RAM allows.
+#  2. Puts the AI-derived analysis workers behind the `ai` profile (OFF).
+#  3. Shrinks JVM heaps and caps mem_limit on the kept services.
+#
+# Reality check: even trimmed, OpenSearch + Dashboards + Data Prepper + the
+# Looma app (esp. zvec/torch) is a LOT for 8 GB. Add swap/zram, and if unstable
+# disable looma-search/looma-ai. mem_limit values are caps (OOM-kill if exceeded)
+# — raise them if a service crash-loops, lower them if the host OOMs.
+
+services:
+  # ---- kept services: heap + mem caps -------------------------------------
+  opensearch:
+    environment:
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx768m --enable-native-access=ALL-UNNAMED"
+    mem_limit: 1280m
+
+  opensearch-dashboards:
+    mem_limit: 896m
+
+  data-prepper:
+    environment:
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+    mem_limit: 768m
+
+  otel-collector:
+    mem_limit: 384m
+
+  vector:
+    mem_limit: 256m
+    # On the odroid (agents-only mode) Vector ships to the OpenSearch on the
+    # dev machine instead of a local one. Set LOOMA_OPENSEARCH_URL in the shell
+    # (looma-up.sh exports it from /etc/looma-odroid.env); defaults to the local
+    # one so the full stack on a 16 GB host is unaffected.
+    environment:
+      LOOMA_OPENSEARCH_URL: ${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}
+
+  metricbeat:
+    mem_limit: 384m
+
+  prometheus:
+    mem_limit: 384m
+
+  grafana:
+    mem_limit: 256m
+
+  docker-stats-exporter:
+    mem_limit: 128m
+
+  topology-probe:
+    mem_limit: 128m
+
+  retention:
+    mem_limit: 128m
+
+  # ---- heavy Coroot stack: OFF by default (enable with --profile heavy) ----
+  coroot:
+    profiles: ["heavy"]
+  clickhouse:
+    profiles: ["heavy"]
+  coroot-postgres:
+    profiles: ["heavy"]
+  coroot-node-agent:
+    profiles: ["heavy"]
+  coroot-cluster-agent:
+    profiles: ["heavy"]
+
+  # ---- Heavy AI analysis workers: OFF by default. Use the SEPARATE `analysis`
+  #      profile so turning on the assistant (app `ai` profile) does NOT also
+  #      start these (enable explicitly with --profile analysis). ----
+  looma-analysis-worker:
+    profiles: ["analysis"]
+  looma-feedback-labeling:
+    profiles: ["analysis"]
+
+# The canonical observability compose declares `loomanet` as a compose-managed
+# network. On the box the network is created up-front (by the installer/looma-up.sh)
+# and shared with the app stack, so treat it as EXTERNAL here — otherwise compose
+# errors with "network loomanet exists but was not created by compose". This
+# overlay is only used on the box (where loomanet is always pre-created), so dev
+# (which uses the canonical compose to create it) is unaffected.
+networks:
+  loomanet:
+    name: loomanet
+    external: true

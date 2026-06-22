@@ -1,0 +1,53 @@
+# AUTO-LOADED by `docker compose up` (no extra -f needed).
+#
+# 1) Serves the REAL content (books/PDFs/images, maps, ePaath) instead of empty
+#    named volumes — Compose merges service volumes by container path, so these
+#    binds REPLACE the empty-volume mounts. NO resource limits.
+# 2) Keeps the heavy AI service OFF by default (behind the `ai` profile) so a
+#    plain `docker compose up` runs lean on an 8 GB box. Enable with `--profile ai`.
+#
+# Layout assumed: `content/` and `maps2018/` sit NEXT TO the repo folder (this is
+# how the installer lays it out on the box: /home/odroid/looma/{Looma, content,
+# maps2018}). The on-disk ePaath dir is lowercase `content/epaath`. Override the
+# locations with LOOMA_CONTENT_DIR / LOOMA_MAPS_DIR / LOOMA_EPAATH_DIR if needed.
+#
+# All binds are :ro and reference dirs that EXIST, so this is safe even when the
+# source lives on a read-only filesystem (Docker would fail trying to create a
+# missing bind source on a read-only FS). Writable data (Mongo, search index,
+# logs) stays on Docker named volumes under /var/lib/docker.
+
+# 3) OTLP endpoint is configurable so the odroid can send the app's traces/logs/
+#    metrics to the otel-collector ON THE DEV MACHINE. Set LOOMA_OTEL_ENDPOINT
+#    (looma-up.sh exports it from /etc/looma-odroid.env), e.g.
+#    http://192.168.3.243:4318. Defaults to the local collector so a single-host
+#    setup is unaffected.
+
+services:
+  looma-web:
+    volumes:
+      - ${LOOMA_CONTENT_DIR:-../content}:/usr/local/var/www/content:ro
+      - ${LOOMA_MAPS_DIR:-../maps2018}:/usr/local/var/www/maps2018:ro
+      - ${LOOMA_EPAATH_DIR:-../content/epaath}:/usr/local/var/www/ePaath:ro
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${LOOMA_OTEL_ENDPOINT:-http://looma-otel-collector:4318}
+    # Drop looma-ai from start-order deps (it is gated off below). `!override`
+    # REPLACES the canonical list instead of merging. AI features degrade
+    # gracefully when looma-ai is absent.
+    depends_on: !override
+      - looma-db
+      - looma-search
+      - looma-mimic
+
+  looma-search:
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${LOOMA_OTEL_ENDPOINT:-http://looma-otel-collector:4318}
+
+  looma-mimic:
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${LOOMA_OTEL_ENDPOINT:-http://looma-otel-collector:4318}
+
+  looma-ai:
+    # Heavy (torch). OFF by default on 8 GB — enable with `--profile ai`.
+    profiles: ["ai"]
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${LOOMA_OTEL_ENDPOINT:-http://looma-otel-collector:4318}

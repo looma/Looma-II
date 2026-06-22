@@ -1,0 +1,187 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 1,
+  "title": "Looma — OTel Collector (detailed)",
+  "uid": "looma-otelcol-detailed",
+  "tags": ["looma", "otel", "collector"],
+  "time": { "from": "now-1h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "receiver",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(otelcol_receiver_accepted_spans_total{job=\"otelcol_internal\"}, receiver)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*"
+      },
+      {
+        "name": "exporter",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(otelcol_exporter_sent_spans_total{job=\"otelcol_internal\"}, exporter)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*"
+      },
+      {
+        "name": "processor",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(otelcol_processor_incoming_items_total{job=\"otelcol_internal\"}, processor)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Receivers — accepted spans/s",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (receiver) (rate(otelcol_receiver_accepted_spans_total{job=\"otelcol_internal\",receiver=~\"$receiver\"}[5m]))",
+          "legendFormat": "{{receiver}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Receivers — refused spans/s",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (receiver) (rate(otelcol_receiver_refused_spans_total{job=\"otelcol_internal\",receiver=~\"$receiver\"}[5m]))",
+          "legendFormat": "{{receiver}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Receivers — accepted log records/s",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (receiver) (rate(otelcol_receiver_accepted_log_records_total{job=\"otelcol_internal\",receiver=~\"$receiver\"}[5m]))",
+          "legendFormat": "{{receiver}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Receivers — accepted metric points/s",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (receiver) (rate(otelcol_receiver_accepted_metric_points_total{job=\"otelcol_internal\",receiver=~\"$receiver\"}[5m]))",
+          "legendFormat": "{{receiver}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Exporters — sent spans/s",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (exporter) (rate(otelcol_exporter_sent_spans_total{job=\"otelcol_internal\",exporter=~\"$exporter\"}[5m]))",
+          "legendFormat": "{{exporter}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Exporters — send failed spans/s",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (exporter) (rate(otelcol_exporter_send_failed_spans_total{job=\"otelcol_internal\",exporter=~\"$exporter\"}[5m]))",
+          "legendFormat": "{{exporter}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Exporters — sent log records/s",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 24, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (exporter) (rate(otelcol_exporter_sent_log_records_total{job=\"otelcol_internal\",exporter=~\"$exporter\"}[5m]))",
+          "legendFormat": "{{exporter}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Exporters — sent metric points/s",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 24, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (exporter) (rate(otelcol_exporter_sent_metric_points_total{job=\"otelcol_internal\",exporter=~\"$exporter\"}[5m]))",
+          "legendFormat": "{{exporter}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Processors — incoming items/s",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 32, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (processor) (rate(otelcol_processor_incoming_items_total{job=\"otelcol_internal\",processor=~\"$processor\"}[5m]))",
+          "legendFormat": "{{processor}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Processors — outgoing items/s",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 32, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (processor) (rate(otelcol_processor_outgoing_items_total{job=\"otelcol_internal\",processor=~\"$processor\"}[5m]))",
+          "legendFormat": "{{processor}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    }
+  ]
+}

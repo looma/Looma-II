@@ -1,0 +1,367 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 2,
+  "title": "Looma — Vector internal logs",
+  "uid": "looma-vector-logs",
+  "tags": ["looma", "vector", "logs", "observability"],
+  "time": { "from": "now-6h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "level",
+        "type": "custom",
+        "label": "Level",
+        "query": "*,INFO,WARN,ERROR,DEBUG,TRACE",
+        "current": { "text": "*", "value": "*" }
+      },
+      {
+        "name": "component",
+        "type": "textbox",
+        "label": "Component contains",
+        "current": { "text": "", "value": "" }
+      },
+      {
+        "name": "q",
+        "type": "textbox",
+        "label": "Message contains",
+        "current": { "text": "", "value": "" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Total events (selected range)",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+      "targets": [
+        {
+          "query": "*",
+          "metrics": [{ "type": "count", "id": "1" }],
+          "bucketAggs": [
+            { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
+          ]
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "value" },
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "WARN events",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
+      "targets": [
+        {
+          "query": "metadata.level:WARN",
+          "metrics": [{ "type": "count", "id": "1" }],
+          "bucketAggs": [
+            { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
+          ]
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "value" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "orange", "value": 1 }] }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "ERROR events",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
+      "targets": [
+        {
+          "query": "metadata.level:ERROR",
+          "metrics": [{ "type": "count", "id": "1" }],
+          "bucketAggs": [
+            { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
+          ]
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "value" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Sink timeouts",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 12, "y": 0, "w": 4, "h": 4 },
+      "targets": [
+        {
+          "query": "message:\"Request timed out\"",
+          "metrics": [{ "type": "count", "id": "1" }],
+          "bucketAggs": [
+            { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
+          ]
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["sum"] }, "colorMode": "value" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Distinct components",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 16, "y": 0, "w": 4, "h": 4 },
+      "targets": [
+        {
+          "query": "*",
+          "metrics": [{ "type": "cardinality", "id": "1", "field": "vector.component_id.keyword" }],
+          "bucketAggs": [
+            { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
+          ]
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["max"] } },
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Distinct hosts",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 20, "y": 0, "w": 4, "h": 4 },
+      "targets": [
+        {
+          "query": "*",
+          "metrics": [{ "type": "cardinality", "id": "1", "field": "host.keyword" }],
+          "bucketAggs": [
+            { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
+          ]
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["max"] } },
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Events per level (events/min)",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "query": "*",
+          "alias": "{{term metadata.level.keyword}}",
+          "metrics": [{ "type": "count", "id": "1" }],
+          "bucketAggs": [
+            {
+              "type": "terms",
+              "id": "3",
+              "field": "metadata.level.keyword",
+              "settings": { "size": "10", "order": "desc", "orderBy": "_count", "min_doc_count": "1" }
+            },
+            {
+              "type": "date_histogram",
+              "id": "2",
+              "settings": { "interval": "1m", "min_doc_count": "0" },
+              "field": "timestamp"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "bars", "stacking": { "mode": "normal" }, "fillOpacity": 80 },
+          "unit": "short"
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "ERROR" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] },
+          { "matcher": { "id": "byName", "options": "WARN" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }] },
+          { "matcher": { "id": "byName", "options": "INFO" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "blue" } }] },
+          { "matcher": { "id": "byName", "options": "DEBUG" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "gray" } }] }
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Events per Vector component (events/min)",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "query": "_exists_:vector.component_id",
+          "alias": "{{term vector.component_id.keyword}}",
+          "metrics": [{ "type": "count", "id": "1" }],
+          "bucketAggs": [
+            {
+              "type": "terms",
+              "id": "3",
+              "field": "vector.component_id.keyword",
+              "settings": { "size": "15", "order": "desc", "orderBy": "_count", "min_doc_count": "1" }
+            },
+            {
+              "type": "date_histogram",
+              "id": "2",
+              "settings": { "interval": "1m", "min_doc_count": "0" },
+              "field": "timestamp"
+            }
+          ]
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+
+    {
+      "id": 12,
+      "type": "barchart",
+      "title": "Top 10 components (count)",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 0, "y": 12, "w": 8, "h": 8 },
+      "targets": [
+        {
+          "query": "_exists_:vector.component_id",
+          "metrics": [{ "type": "count", "id": "1" }],
+          "bucketAggs": [
+            {
+              "type": "date_histogram",
+              "id": "2",
+              "settings": { "interval": "auto", "min_doc_count": "0" },
+              "field": "timestamp"
+            },
+            {
+              "type": "terms",
+              "id": "3",
+              "field": "vector.component_id.keyword",
+              "settings": { "size": "10", "order": "desc", "orderBy": "_count", "min_doc_count": "1" }
+            }
+          ]
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 13,
+      "type": "barchart",
+      "title": "Top 10 modules (count)",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 8, "y": 12, "w": 8, "h": 8 },
+      "targets": [
+        {
+          "query": "_exists_:metadata.module_path",
+          "metrics": [{ "type": "count", "id": "1" }],
+          "bucketAggs": [
+            {
+              "type": "date_histogram",
+              "id": "2",
+              "settings": { "interval": "auto", "min_doc_count": "0" },
+              "field": "timestamp"
+            },
+            {
+              "type": "terms",
+              "id": "3",
+              "field": "metadata.module_path.keyword",
+              "settings": { "size": "10", "order": "desc", "orderBy": "_count", "min_doc_count": "1" }
+            }
+          ]
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 14,
+      "type": "piechart",
+      "title": "Component kind (source / transform / sink)",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 16, "y": 12, "w": 8, "h": 8 },
+      "targets": [
+        {
+          "query": "_exists_:vector.component_kind",
+          "metrics": [{ "type": "count", "id": "1" }],
+          "bucketAggs": [
+            {
+              "type": "date_histogram",
+              "id": "2",
+              "settings": { "interval": "auto", "min_doc_count": "0" },
+              "field": "timestamp"
+            },
+            {
+              "type": "terms",
+              "id": "3",
+              "field": "vector.component_kind.keyword",
+              "settings": { "size": "10", "order": "desc", "orderBy": "_count", "min_doc_count": "1" }
+            }
+          ]
+        }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "right" } }
+    },
+
+    {
+      "id": 20,
+      "type": "logs",
+      "title": "WARN / ERROR events",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 0, "y": 20, "w": 24, "h": 10 },
+      "targets": [
+        {
+          "query": "metadata.level:(WARN OR ERROR)",
+          "metrics": [{ "type": "logs", "id": "1" }],
+          "bucketAggs": [
+            { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
+          ]
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none",
+        "enableLogDetails": true
+      }
+    },
+
+    {
+      "id": 21,
+      "type": "logs",
+      "title": "Filtered logs — by level / component / message",
+      "description": "Use the variables at the top to drill into specific events. Leave a textbox empty to skip that filter; set Level=* to match all levels.",
+      "datasource": "OpenSearch-VectorLogs",
+      "gridPos": { "x": 0, "y": 30, "w": 24, "h": 14 },
+      "targets": [
+        {
+          "query": "metadata.level:${level:lucene} AND vector.component_id:*${component:lucene}* AND message:*${q:lucene}*",
+          "metrics": [{ "type": "logs", "id": "1" }],
+          "bucketAggs": [
+            { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
+          ]
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "sortOrder": "Descending",
+        "dedupStrategy": "exact",
+        "enableLogDetails": true
+      }
+    }
+  ]
+}

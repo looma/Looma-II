@@ -1,0 +1,49 @@
+// filename: dictionaryCompare
+// author: skip
+// Oct 2020
+//
+// ONE TIME program to
+//      cmpare dictionary entries between two versions of Looma dictionaries
+//   run in MONGO SHELL with: load('dictionaryCompare')
+
+var dictionarycursor;
+var count = 0;
+var duplicatecount = 0;
+var uniquecount = 0;
+
+print('db is ' + db); print('');
+
+
+dictionarycursor = db.dictionary.find({'en':/^[A-Z]/});
+while (dictionarycursor.hasNext()) {
+    count++;
+    var word = dictionarycursor.next();
+
+    if ('en' in word) {
+        var match = db.dictionaryV2.findOne({en: word['en']});
+        if (match) duplicatecount++;
+         else      {
+            print(word['en']); uniquecount++;
+         }
+     } else {
+        print('entry with no EN found ' + word);
+     }
+};
+
+/*
+dictionarycursor = db.dictionary.find({'en':/^[i-p]/});
+while (dictionarycursor.hasNext()) {
+    var word = dictionarycursor.next();
+    if (word['en']) {
+    match = db.dictionaryV2.findOne({en: word['en']});
+    if (!match) print(word['en']);
+    }
+};
+*/
+
+print('');
+print('looked at  ' + count +          ' dictionary entries');
+print('found '      + duplicatecount + ' words that are in both V1 and V2');
+print('found '      + uniquecount +    ' words in V2 but not in V1');
+print('');
+

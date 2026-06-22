@@ -1,0 +1,353 @@
+/*
+ * looma-assistant.css
+ * Styling for the LOOMA Assistant chat modal (includes/looma-assistant-modal.php).
+ *
+ * Loaded globally from header.php so the assistant button — which lives in the
+ * looma-control-button set alongside Speak (TTS), Lookup and the keyboard — can
+ * open the chat on every page. Every rule is scoped under #looma-assistant-modal
+ * so this file has no effect on the rest of the page.
+ *
+ * Design goal — projector legibility:
+ * LOOMA runs on low-cost projectors in bright, daylit classrooms. Every colour
+ * here is SOLID and HIGH-CONTRAST — no semi-transparent rgba() fills, which
+ * wash out and look discoloured when the projected image is dim. Borders are
+ * thick and dark, and text is large enough to read from the back of a room.
+ */
+
+/* Projector-friendly palette — all solid, all high-contrast.
+   Scoped to the modal so the tokens never leak into the rest of the page. */
+#looma-assistant-modal {
+    --la-ink:        #0a0a0a;  /* near-black — text and icons              */
+    --la-line:       #1a1a1a;  /* solid dark — every border                */
+    --la-surface:    #ffffff;  /* solid white — cards and inputs           */
+    --la-panel:      #eceef0;  /* solid light grey — secondary panels      */
+    --la-accent:     #0b5fbf;  /* strong blue — primary action / user chat */
+    --la-accent-ink: #ffffff;  /* text on the blue accent                  */
+    --la-highlight:  #ffe44d;  /* LOOMA yellow — header and hover state    */
+    --la-danger:     #d32f2f;  /* solid red — destructive (Close)          */
+    --la-muted:      #404040;  /* solid dark grey — secondary text         */
+}
+
+#looma-assistant-modal,
+#looma-assistant-modal * {
+    box-sizing: border-box;
+}
+
+/* Modal shell. JS toggles inline display:flex / display:none to open/close. */
+#looma-assistant-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2vh 2vw;
+    /* Dark scrim so the bright card stands out even on a washed-out projector.
+       Above every looma-control-button, including #fullscreen-control which
+       itself uses the max 32-bit z-index so it shows in fullscreen mode. */
+    background: rgba(0, 0, 0, 0.80);
+    z-index: 2147483647;
+}
+
+/* Card — the bright, solid surface that holds the whole assistant. */
+#looma-assistant-modal .ai-modal-card {
+    display: flex;
+    flex-direction: column;
+    width: min(1100px, 96vw);
+    max-height: 94vh;
+    background: var(--la-surface);
+    color: var(--la-ink);
+    border: 4px solid var(--la-line);
+    border-radius: 14px;
+    box-shadow: 0 14px 50px rgba(0, 0, 0, 0.65);
+    overflow: hidden;            /* clip child corners to the card radius */
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+/* Header — a solid LOOMA-yellow bar with black text: maximum contrast. */
+#looma-assistant-modal .ai-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--la-highlight);
+    border-bottom: 4px solid var(--la-line);
+}
+
+#looma-assistant-modal .ai-modal-header h3 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--la-ink);
+    letter-spacing: 0.3px;
+}
+
+#looma-assistant-modal .ai-modal-header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Shared helper class the modal markup relies on (defined here so the modal
+   looks right on pages whose own CSS does not provide it). */
+#looma-assistant-modal .black-border {
+    border: 2px solid var(--la-line);
+    border-radius: 8px;
+}
+
+/* Header buttons (Clear chat). */
+#looma-assistant-modal button.black-border {
+    padding: 10px 18px;
+    min-width: 100px;
+    line-height: 1.15;
+    height: auto;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--la-ink);
+    background: var(--la-surface);
+    border: 3px solid var(--la-line);
+}
+
+#looma-assistant-modal button.black-border:hover {
+    background: var(--la-highlight);
+}
+
+/* Close — same footprint as the Clear chat button, solid red, white "×". */
+#looma-assistant-modal .ai-close-btn {
+    min-width: 100px;
+    height: auto;
+    padding: 10px 18px;
+    border: 3px solid var(--la-line);
+    border-radius: 8px;
+    background: var(--la-danger);
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#looma-assistant-modal .ai-close-btn:hover {
+    background: #b71c1c;          /* darker red */
+}
+
+/* Secondary text (status line). Dimmed with a solid grey, never opacity —
+   opacity-faded text is the first thing to vanish on a weak projector. */
+#looma-assistant-modal .muted {
+    opacity: 1;
+    color: var(--la-muted);
+    font-size: 16px;
+}
+
+/* Chat area */
+#looma-assistant-modal .ai-chat {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+#looma-assistant-modal .ai-chat-messages {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 40vh;
+    padding: 16px;
+    background: var(--la-panel);
+    color: var(--la-ink);
+}
+
+/* Friendly hint while the conversation is empty. The text is set (and
+   localised to English / Nepali) by looma-assistant-button.js via the
+   data-empty-hint attribute. */
+#looma-assistant-modal .ai-chat-messages:empty::before {
+    content: attr(data-empty-hint);
+    display: block;
+    color: var(--la-muted);
+    font-size: 17px;
+    font-style: italic;
+}
+
+/* Chat entries appended by looma-assistant-button.js */
+#looma-assistant-modal .ai-chat-entry {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 18px;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+#looma-assistant-modal .ai-chat-entry.assistant {
+    margin-right: auto;
+    max-width: 100%;             /* room for the source-card grid */
+    background: var(--la-surface);
+    color: var(--la-ink);
+    border: 2px solid var(--la-line);
+    border-left: 8px solid var(--la-accent);
+}
+
+#looma-assistant-modal .ai-chat-entry.user {
+    margin-left: auto;
+    max-width: 88%;
+    background: var(--la-accent);
+    color: var(--la-accent-ink);
+    border: 2px solid var(--la-line);
+}
+
+#looma-assistant-modal .ai-chat-entry.ai-chat-error {
+    border-left-color: var(--la-danger);
+    color: #8a1c1c;
+    font-weight: 700;
+}
+
+/* Own-words answer text */
+#looma-assistant-modal .ai-answer p {
+    margin: 0 0 8px;
+}
+#looma-assistant-modal .ai-answer p:last-child {
+    margin-bottom: 0;
+}
+#looma-assistant-modal .ai-answer-list {
+    margin: 4px 0 8px;
+    padding-left: 24px;
+}
+
+/* "Sources from Looma content" heading above the result grid */
+#looma-assistant-modal .ai-result-heading {
+    margin: 14px 0 8px;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--la-muted);
+    text-align: center;
+}
+
+/* Source results. The cards themselves are produced by LOOMA.makeActivityButton()
+   and styled by looma.css (button.img.activity) — exactly the same cards as the
+   search results page. This grid only positions them: 3 per row (so the default
+   6 contexts form 2 rows), centred inside the answer bubble. */
+#looma-assistant-modal .ai-result-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    max-width: 900px;
+    margin: 0 auto;              /* centre the grid in the answer bubble */
+}
+
+/* External references (Wikipedia / dictionary fallbacks) */
+#looma-assistant-modal .ai-ext-refs {
+    margin-top: 12px;
+}
+#looma-assistant-modal .ai-ext-ref {
+    font-size: 14px;
+    margin-top: 4px;
+    color: var(--la-muted);
+}
+#looma-assistant-modal .ai-ext-ref a {
+    color: var(--la-accent);
+    font-weight: 700;
+}
+
+/* Controls panel (just the "Limit to selected chapter" filter + status) */
+#looma-assistant-modal .ai-chat-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 18px;
+    background: var(--la-panel);
+    border-top: 3px solid var(--la-line);
+}
+
+#looma-assistant-modal .ai-chat-controls label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--la-ink);
+}
+
+#looma-assistant-modal input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    accent-color: var(--la-accent);
+    cursor: pointer;
+}
+
+#looma-assistant-modal #looma-assistant-rag-status {
+    display: block;
+    font-size: 16px;
+}
+
+/* Compose row — textarea + Send */
+#looma-assistant-modal .ai-chat-compose {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    padding: 14px 18px;
+    background: var(--la-panel);
+    border-top: 3px solid var(--la-line);
+}
+
+#looma-assistant-modal textarea {
+    font-size: 17px;
+    color: var(--la-ink);
+    background: var(--la-surface);
+    border: 2px solid var(--la-line);
+    border-radius: 8px;
+    padding: 9px 11px;
+}
+
+#looma-assistant-modal .ai-chat-input {
+    flex: 1 1 auto;
+    resize: none;
+    min-height: 64px;
+}
+
+/* Send — the primary call to action: solid blue, white text, dark border so
+   the button shape stays crisp even if the projector renders blue muddy. */
+#looma-assistant-modal button.black-border.ai-chat-send {
+    flex: 0 0 auto;
+    min-width: 130px;
+    padding: 0 28px;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--la-accent-ink);
+    background: var(--la-accent);
+    border: 3px solid var(--la-line);
+}
+
+#looma-assistant-modal button.black-border.ai-chat-send:hover {
+    background: #084a96;
+}
+
+#looma-assistant-modal button.black-border.ai-chat-send:disabled {
+    background: var(--la-muted);
+    cursor: progress;
+}
+
+/* Visible keyboard-focus outline for accessibility. */
+#looma-assistant-modal button:focus-visible,
+#looma-assistant-modal input:focus-visible,
+#looma-assistant-modal textarea:focus-visible {
+    outline: 3px solid var(--la-accent);
+    outline-offset: 2px;
+}
+
+/* Chunky scrollbar so the chat history is easy to grab on a touch projector. */
+#looma-assistant-modal .ai-chat-messages::-webkit-scrollbar {
+    width: 14px;
+}
+
+#looma-assistant-modal .ai-chat-messages::-webkit-scrollbar-thumb {
+    background: var(--la-muted);
+    border-radius: 7px;
+    border: 3px solid var(--la-panel);
+}

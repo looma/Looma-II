@@ -1,0 +1,71 @@
+{
+  "type": "monitor",
+  "name": "looma-log-errors",
+  "enabled": true,
+  "schedule": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "monitor_type": "query_level_monitor",
+  "inputs": [
+    {
+      "search": {
+        "indices": [
+          "looma-logs-*"
+        ],
+        "query": {
+          "size": 0,
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "@timestamp": {
+                      "gte": "now-5m",
+                      "lte": "now"
+                    }
+                  }
+                }
+              ],
+              "should": [
+                {
+                  "terms": {
+                    "level.keyword": [
+                      "ERROR",
+                      "FATAL",
+                      "WARN"
+                    ]
+                  }
+                },
+                {
+                  "match": {
+                    "message": "error exception fatal failed timeout refused"
+                  }
+                }
+              ],
+              "minimum_should_match": 1
+            }
+          }
+        }
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "query_level_trigger": {
+        "id": "looma-log-errors-trigger",
+        "name": "Log errors detected",
+        "severity": "2",
+        "condition": {
+          "script": {
+            "source": "ctx.results[0].hits.total.value > 0",
+            "lang": "painless"
+          }
+        },
+        "actions": []
+      }
+    }
+  ]
+}

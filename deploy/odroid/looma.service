@@ -1,0 +1,19 @@
+[Unit]
+# Looma full stack (app + observability) — autostart at boot.
+# Placeholders @REPO_DIR@ / @USER@ are substituted by install-odroid.sh.
+Description=Looma full stack (Docker: app + observability)
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# First boot may build images — do not time out.
+TimeoutStartSec=0
+EnvironmentFile=-/etc/looma-odroid.env
+ExecStart=@REPO_DIR@/deploy/odroid/looma-up.sh
+ExecStop=@REPO_DIR@/deploy/odroid/looma-down.sh
+
+[Install]
+WantedBy=multi-user.target

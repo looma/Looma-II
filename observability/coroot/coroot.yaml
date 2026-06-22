@@ -1,0 +1,47 @@
+listen_address: 0.0.0.0:8080
+data_dir: /data
+
+grpc:
+  disabled: false
+  listenAddress: :4317
+
+cache:
+  ttl: 30d
+  gc_interval: 10m
+
+traces:
+  ttl: 7d
+logs:
+  ttl: 7d
+profiles:
+  ttl: 7d
+metrics:
+  ttl: 15d
+
+postgres:
+  connection_string: postgres://coroot:coroot@looma-coroot-postgres:5432/coroot?sslmode=disable
+
+global_prometheus:
+  url: http://looma-prometheus:9091
+  refresh_interval: 15s
+  remote_write_url: http://looma-prometheus:9091/api/v1/write
+  use_clickhouse: false
+
+global_clickhouse:
+  address: looma-clickhouse:9000
+  user: coroot
+  password: coroot
+  database: coroot
+
+clickhouse_space_manager:
+  enabled: true
+  usage_threshold_percent: 70
+  min_partitions: 1
+
+auth:
+  anonymous_role: Admin
+
+disable_usage_statistics: true
+do_not_check_for_updates: true
+do_not_check_for_deployments: false
+disableBuiltinAlerts: false

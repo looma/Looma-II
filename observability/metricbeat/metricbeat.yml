@@ -1,0 +1,53 @@
+metricbeat.modules:
+  - module: docker
+    metricsets:
+      - container
+      - cpu
+      - diskio
+      - event
+      - healthcheck
+      - info
+      - image
+      - memory
+      - network
+    hosts: ["unix:///var/run/docker.sock"]
+    # The Docker socket is shared by five collectors (otel-collector,
+    # coroot-node-agent, docker-stats-exporter, vector and this Metricbeat).
+    # Under disk-I/O pressure the daemon's /containers/json enumeration over
+    # ~20 containers can take longer than the previous 10s period, which made
+    # every metricset fail with "context deadline exceeded". Polling at 30s
+    # both cuts the socket/OpenSearch write load 3x and raises the effective
+    # fetch deadline well clear of a slow daemon response.
+    period: 30s
+    # Be explicit instead of inheriting the period: give a single slow daemon
+    # response room to complete rather than being cancelled mid-flight.
+    timeout: 30s
+    enabled: true
+
+  # MongoDB — the Looma application database (looma-db). Standalone instance,
+  # no auth in this compose, so no credentials are needed.
+  #  - status  : serverStatus (connections, opcounters, network, memory, asserts)
+  #  - dbstats : per-database size/object/index counts
+  #  - metrics : serverStatus.metrics (document ops, query executor, ttl, ...)
+  # replstatus/collstats are intentionally omitted: looma-db is not a replica
+  # set, and collstats would fan out one document per collection.
+  - module: mongodb
+    metricsets:
+      - status
+      - dbstats
+      - metrics
+    hosts: ["looma-db:27017"]
+    period: 30s
+    enabled: true
+
+processors:
+  - add_host_metadata: ~
+  - add_docker_metadata: ~
+
+setup.ilm.enabled: false
+
+output.logstash:
+  hosts: ["looma-vector:5044"]
+
+logging.to_stderr: true
+logging.level: info

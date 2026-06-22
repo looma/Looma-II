@@ -1,0 +1,42 @@
+{
+  "name": "looma-container-memory-anomaly",
+  "description": "USE/Saturation: anomalous memory usage per container (docker.memory.usage.pct from metricbeat).",
+  "time_field": "@timestamp",
+  "indices": [
+    "metricbeat-*"
+  ],
+  "category_field": [
+    "container.name.keyword"
+  ],
+  "filter_query": {
+    "term": {
+      "metricset.name.keyword": "memory"
+    }
+  },
+  "detection_interval": {
+    "period": {
+      "interval": 2,
+      "unit": "MINUTES"
+    }
+  },
+  "window_delay": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "schema_version": 0,
+  "feature_attributes": [
+    {
+      "feature_name": "memory_pct",
+      "feature_enabled": true,
+      "aggregation_query": {
+        "memory_pct": {
+          "max": {
+            "field": "docker.memory.usage.pct"
+          }
+        }
+      }
+    }
+  ]
+}

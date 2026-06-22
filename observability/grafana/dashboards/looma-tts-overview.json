@@ -1,0 +1,330 @@
+{
+  "annotations": { "list": [] },
+  "description": "RED metrics — requests, errors, latency — for the server-side TTS engines (Piper and Mimic), derived from OpenTelemetry span metrics. Browser Speech runs on the student device and has its own dashboard.",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 3,
+  "refresh": "30s",
+  "title": "Looma — TTS",
+  "uid": "looma-tts",
+  "tags": ["looma", "tts", "overview"],
+  "time": { "from": "now-6h", "to": "now" },
+  "links": [
+    {
+      "type": "dashboards",
+      "title": "TTS dashboards",
+      "tags": ["tts"],
+      "asDropdown": true,
+      "keepTime": true,
+      "includeVars": false,
+      "icon": "external link"
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "rate",
+        "label": "Rate window",
+        "type": "interval",
+        "query": "1m,5m,10m,30m,1h",
+        "current": { "text": "5m", "value": "5m" },
+        "options": [
+          { "text": "1m", "value": "1m", "selected": false },
+          { "text": "5m", "value": "5m", "selected": true },
+          { "text": "10m", "value": "10m", "selected": false },
+          { "text": "30m", "value": "30m", "selected": false },
+          { "text": "1h", "value": "1h", "selected": false }
+        ],
+        "auto": false
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row",
+      "id": 1,
+      "title": "Overview · all server engines",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "TTS requests ($__range)",
+      "description": "Total Piper + Mimic synthesis calls completed in the selected time range.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 1, "w": 5, "h": 4 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=~\"tts.piper|tts.mimic\"}[$__range])) or vector(0)",
+          "legendFormat": "requests"
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "blue" } } }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Errors ($__range)",
+      "description": "Synthesis calls that ended with span status STATUS_CODE_ERROR, across both server engines, in the selected range.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 5, "y": 1, "w": 5, "h": 4 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=~\"tts.piper|tts.mimic\",status_code=\"STATUS_CODE_ERROR\"}[$__range])) or vector(0)",
+          "legendFormat": "errors"
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 5 } ] }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Error rate ($__range)",
+      "description": "Errored synthesis calls as a percentage of all synthesis calls in the selected range. Shows 0% when there is no traffic.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 10, "y": 1, "w": 4, "h": 4 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 * (sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=~\"tts.piper|tts.mimic\",status_code=\"STATUS_CODE_ERROR\"}[$__range])) or vector(0)) / clamp_min(sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=~\"tts.piper|tts.mimic\"}[$__range])) or vector(0), 1)",
+          "legendFormat": "error %"
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 2 }, { "color": "red", "value": 10 } ] }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Throughput",
+      "description": "Current synthesis request rate across both server engines, averaged over the selected $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 14, "y": 1, "w": 5, "h": 4 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=~\"tts.piper|tts.mimic\"}[$rate])) or vector(0)",
+          "legendFormat": "req/s"
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "reqps", "color": { "mode": "fixed", "fixedColor": "purple" } } }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Latency p95 (all engines)",
+      "description": "95th-percentile synthesis duration across both server engines over the selected $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 19, "y": 1, "w": 5, "h": 4 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=~\"tts.piper|tts.mimic\"}[$rate])))",
+          "legendFormat": "p95"
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 800 }, { "color": "red", "value": 2000 } ] }
+        }
+      }
+    },
+    {
+      "type": "row",
+      "id": 7,
+      "title": "Per engine",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 5, "w": 24, "h": 1 }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Request rate by engine",
+      "description": "Synthesis request rate split by engine span (tts.piper, tts.mimic), averaged over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 6, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (span_name) (rate(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=~\"tts.piper|tts.mimic\"}[$rate]))",
+          "legendFormat": "{{span_name}}"
+        }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "reqps", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 12, "showPoints": "never" } } }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Latency p95 by engine",
+      "description": "95th-percentile synthesis duration per engine over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 6, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le,span_name) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=~\"tts.piper|tts.mimic\"}[$rate])))",
+          "legendFormat": "{{span_name}} p95"
+        }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "ms", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 10, "showPoints": "never" } } }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Errors by engine",
+      "description": "Count of errored synthesis calls per engine, bucketed over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 14, "w": 12, "h": 7 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (span_name) (increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=~\"tts.piper|tts.mimic\",status_code=\"STATUS_CODE_ERROR\"}[$rate]))",
+          "legendFormat": "{{span_name}}"
+        }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "drawStyle": "bars", "lineWidth": 1, "fillOpacity": 70, "showPoints": "never" } } }
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Throughput share (stacked)",
+      "description": "Stacked synthesis request rate per engine — shows how each engine contributes to total throughput.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 14, "w": 12, "h": 7 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (span_name) (rate(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=~\"tts.piper|tts.mimic\"}[$rate]))",
+          "legendFormat": "{{span_name}}"
+        }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "reqps", "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 40, "showPoints": "never", "stacking": { "mode": "normal", "group": "A" } } } }
+    },
+    {
+      "type": "row",
+      "id": 12,
+      "title": "Engine snapshots",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 21, "w": 24, "h": 1 }
+    },
+    {
+      "id": 13,
+      "type": "stat",
+      "title": "Piper · requests ($__range)",
+      "description": "Piper synthesis calls completed in the selected range.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 22, "w": 6, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\"}[$__range])) or vector(0)", "legendFormat": "piper" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "green" } } }
+    },
+    {
+      "id": 14,
+      "type": "stat",
+      "title": "Piper · p95 latency",
+      "description": "Piper 95th-percentile synthesis duration over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 6, "y": 22, "w": 6, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\"}[$rate])))", "legendFormat": "p95" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 800 }, { "color": "red", "value": 2000 } ] }
+        }
+      }
+    },
+    {
+      "id": 15,
+      "type": "stat",
+      "title": "Mimic · requests ($__range)",
+      "description": "Mimic synthesis calls completed in the selected range.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 22, "w": 6, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.mimic\"}[$__range])) or vector(0)", "legendFormat": "mimic" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "orange" } } }
+    },
+    {
+      "id": 16,
+      "type": "stat",
+      "title": "Mimic · p95 latency",
+      "description": "Mimic 95th-percentile synthesis duration over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 18, "y": 22, "w": 6, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.mimic\"}[$rate])))", "legendFormat": "p95" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 800 }, { "color": "red", "value": 2000 } ] }
+        }
+      }
+    },
+    {
+      "type": "row",
+      "id": 17,
+      "title": "Context",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 26, "w": 24, "h": 1 }
+    },
+    {
+      "id": 18,
+      "type": "text",
+      "title": "TTS engines",
+      "gridPos": { "x": 0, "y": 27, "w": 8, "h": 9 },
+      "options": {
+        "mode": "markdown",
+        "content": "## TTS engines\n\n**Piper** — the default. Neural TTS synthesized on the server (`piper_http_server.py`). Fast, offline, good quality. Span: `tts.piper`.\n\n**Mimic** — legacy fallback, also server-side, English only. Span: `tts.mimic`.\n\n**Browser Speech** — the browser's built-in Web Speech API. Runs entirely on the student device, so it emits **no server spans** — see the *Browser Speech* dashboard.\n\nAll server requests are proxied through `looma-TTS.php`.\n\nUse the **TTS dashboards** dropdown (top-right) to drill into each engine."
+      }
+    },
+    {
+      "id": 19,
+      "type": "logs",
+      "title": "Recent TTS log lines (looma-web)",
+      "description": "Recent looma-web container log lines (looma-logs-*) mentioning TTS, Piper, Mimic or the TTS proxy.",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-logs" },
+      "gridPos": { "x": 8, "y": 27, "w": 16, "h": 9 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "message:tts OR message:piper OR message:mimic OR message:looma-TTS.php",
+          "metrics": [ { "type": "logs", "id": "1" } ],
+          "bucketAggs": [ { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "@timestamp" } ]
+        }
+      ],
+      "options": { "showTime": true, "showLabels": false, "wrapLogMessage": true, "prettifyLogMessage": false, "sortOrder": "Descending", "dedupStrategy": "none", "enableLogDetails": true }
+    }
+  ]
+}

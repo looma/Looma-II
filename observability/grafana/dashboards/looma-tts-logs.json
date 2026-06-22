@@ -1,0 +1,93 @@
+{
+  "annotations": { "list": [] },
+  "description": "Raw TTS log search across docker container logs (looma-logs-*) and OTLP application events (otel-events*). Use the Service and Query variables to drill in.",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 3,
+  "refresh": "30s",
+  "title": "Looma — TTS · Logs",
+  "uid": "looma-tts-logs",
+  "tags": ["looma", "tts", "logs"],
+  "time": { "from": "now-6h", "to": "now" },
+  "links": [
+    {
+      "type": "dashboards",
+      "title": "TTS dashboards",
+      "tags": ["tts"],
+      "asDropdown": true,
+      "keepTime": true,
+      "includeVars": false,
+      "icon": "external link"
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "service",
+        "type": "custom",
+        "label": "Service",
+        "query": "looma-web,looma-ai,looma-search,piper-tts",
+        "current": { "text": "looma-web", "value": "looma-web" }
+      },
+      {
+        "name": "q",
+        "type": "textbox",
+        "label": "Query contains",
+        "current": { "text": "looma-TTS.php", "value": "looma-TTS.php" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "logs",
+      "title": "Container logs — filter by service + query",
+      "description": "Docker container logs (looma-logs-*) for the selected service, matching the Query text or any TTS keyword (tts, piper, mimic, synthesis).",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-logs" },
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 14 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "(index_service:\"$service\" OR service:\"$service\" OR container_name:*${service}*) AND (message:\"$q\" OR message:tts OR message:piper OR message:mimic OR message:synthesis)",
+          "metrics": [ { "type": "logs", "id": "1" } ],
+          "bucketAggs": [ { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "@timestamp" } ]
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none",
+        "enableLogDetails": true
+      }
+    },
+    {
+      "id": 2,
+      "type": "logs",
+      "title": "App events (OTLP) — serviceName + TTS keywords",
+      "description": "OTLP application events (otel-events*) for the selected service, matching the Query text or any TTS keyword (tts, piper, mimic, synthesis).",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-events" },
+      "gridPos": { "x": 0, "y": 14, "w": 24, "h": 12 },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "serviceName:\"$service\" AND (body:\"$q\" OR body:tts OR body:piper OR body:mimic OR body:synthesis)",
+          "metrics": [ { "type": "logs", "id": "1" } ],
+          "bucketAggs": [ { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "time" } ]
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "prettifyLogMessage": false,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none",
+        "enableLogDetails": true
+      }
+    }
+  ]
+}

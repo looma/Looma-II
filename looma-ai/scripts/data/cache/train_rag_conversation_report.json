@@ -1,0 +1,320 @@
+{
+  "summary": {
+    "base": "http://127.0.0.1:8089",
+    "chapters_conversed": 8,
+    "turns_per_chapter": 3,
+    "elapsed_sec": 7.44,
+    "turns_total": 24,
+    "errors": 0,
+    "empty_answers": 0,
+    "avg_answer_chars": 147.3,
+    "avg_contexts_per_turn": 2.42,
+    "avg_latency_ms": 309.7
+  },
+  "transcripts": [
+    {
+      "chapter_id": "doc_6d93da89ae86bc30_ch_3",
+      "chapter_title": "9M03",
+      "subject": "math",
+      "grade": 9,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "reading comprehension",
+          "answer": "Reading comprehension techniques Reading a text with certain techniques helps us better comprehend it. Depending on the purpose of reading, we can adapt different strategies of reading. Make a list of five new words from the reading text. Comprehension Answer the following questions. What did Alice do while her sister was reading a book?",
+          "context_count": 5,
+          "first_context_title": null,
+          "latency_ms": 4062.3,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 2,
+          "question": "What questions could a teacher ask about this?",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 113.2,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 3,
+          "question": "Give me a real-world example.",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 132.2,
+          "ok": true,
+          "error": null
+        }
+      ]
+    },
+    {
+      "chapter_id": "doc_d45cdb2a89af72d5_ch_71",
+      "chapter_title": "1EN02.71",
+      "subject": "english",
+      "grade": 1,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "parts of a plant",
+          "answer": "Some parts of the plant are under the ground. Most parts of the plant are out of the ground. Small parts emerge from the stem of the plant. The food made in the leaves of the plant reaches different parts of the plant through the stem. Identify the different parts of the plant in the picture above.",
+          "context_count": 8,
+          "first_context_title": null,
+          "latency_ms": 282.8,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 2,
+          "question": "What are the key terms I should remember?",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 177.8,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 3,
+          "question": "Summarize the main idea in one sentence.",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 81.4,
+          "ok": true,
+          "error": null
+        }
+      ]
+    },
+    {
+      "chapter_id": "doc_ca2d1e6fe3b970c5_ch_1",
+      "chapter_title": "5M15 nepali",
+      "subject": "math",
+      "grade": 5,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "parts of speech",
+          "answer": "Which parts of speech do the words in bold belong to? Word Pronunciation Parts of Number of Stressed Speech syllables syllable( s) a. We can find words of such type in all parts of speech. Another name of word class is a parts of speech. In the text, the underlined words belong to different word classes or parts of speech.",
+          "context_count": 8,
+          "first_context_title": null,
+          "latency_ms": 149.1,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 2,
+          "question": "What are the key terms I should remember?",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 55.9,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 3,
+          "question": "What questions could a teacher ask about this?",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 31.3,
+          "ok": true,
+          "error": null
+        }
+      ]
+    },
+    {
+      "chapter_id": "doc_9bf88cb2657903d4_ch_1",
+      "chapter_title": "6S02.02 nepali",
+      "subject": "science",
+      "grade": 6,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "parts of a plant",
+          "answer": "Some parts of the plant are under the ground. Most parts of the plant are out of the ground. Small parts emerge from the stem of the plant. The food made in the leaves of the plant reaches different parts of the plant through the stem. Identify the different parts of the plant in the picture above.",
+          "context_count": 8,
+          "first_context_title": null,
+          "latency_ms": 54.0,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 2,
+          "question": "Summarize the main idea in one sentence.",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 51.3,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 3,
+          "question": "What are the key terms I should remember?",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 17.5,
+          "ok": true,
+          "error": null
+        }
+      ]
+    },
+    {
+      "chapter_id": "doc_24fcf4582e1f92b9_ch_1",
+      "chapter_title": "7SS08.03 nepali",
+      "subject": "social_studies",
+      "grade": 7,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "addition",
+          "answer": "In addition, the size of the breast and vagina increases. Mathematics, Grade 7 47 Properties of Addition of Integers 1. This is called Commutative law of addition. Addition of three digit numbers. \u0913 399\u0966 Mathematical Operation 044 Mathematical Operation Addition \u096d\u0966 Hari has 12 eggs.",
+          "context_count": 8,
+          "first_context_title": null,
+          "latency_ms": 644.9,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 2,
+          "question": "What are the key terms I should remember?",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 55.4,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 3,
+          "question": "Summarize the main idea in one sentence.",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 17.4,
+          "ok": true,
+          "error": null
+        }
+      ]
+    },
+    {
+      "chapter_id": "doc_761de3d3f4da9d08_ch_1",
+      "chapter_title": "6SS09.05 nepali",
+      "subject": "social_studies",
+      "grade": 6,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "multiplication",
+          "answer": "Relation between multiplication and division 2 What is the relation between rey multiplication and division? Multiplication Table Fill in theene 10 My Mathematics, Grade 3 133 -- #### **Day 2: Multiplication and Division Related to Capacity** **1. If any rational number a b multiplied by b a becomes 1, then it is called inverse property of multiplication. 5.4 Multiplication Activity 1 Mina's mother bought 4 dozen pencils for Mina.",
+          "context_count": 8,
+          "first_context_title": null,
+          "latency_ms": 694.5,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 2,
+          "question": "Summarize the main idea in one sentence.",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 77.5,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 3,
+          "question": "Give me a real-world example.",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 13.1,
+          "ok": true,
+          "error": null
+        }
+      ]
+    },
+    {
+      "chapter_id": "doc_c2909b95043ec1d8_ch_1",
+      "chapter_title": "9SS06.06 nepali",
+      "subject": "social_studies",
+      "grade": 9,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "reading comprehension",
+          "answer": "Reading comprehension techniques Reading a text with certain techniques helps us better comprehend it. Depending on the purpose of reading, we can adapt different strategies of reading. Make a list of five new words from the reading text. Comprehension Answer the following questions. What did Alice do while her sister was reading a book?",
+          "context_count": 5,
+          "first_context_title": null,
+          "latency_ms": 28.3,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 2,
+          "question": "Can you explain that more simply for a young student?",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 231.9,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 3,
+          "question": "What are the key terms I should remember?",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 140.5,
+          "ok": true,
+          "error": null
+        }
+      ]
+    },
+    {
+      "chapter_id": "doc_92b6c084d2b73f1e_ch_4",
+      "chapter_title": "6S01.04",
+      "subject": "science",
+      "grade": 6,
+      "turns": [
+        {
+          "turn": 1,
+          "question": "simple machines",
+          "answer": "Every parts of a complex machine are simple machines. Similarly, various simple machines combinely work together in a complex machine. Are all complex machines made from simple machines? It is not possible to do complex work with simple machines. There are four types of simple machines based on structure.",
+          "context_count": 8,
+          "first_context_title": null,
+          "latency_ms": 135.8,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 2,
+          "question": "Give me a real-world example.",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 135.8,
+          "ok": true,
+          "error": null
+        },
+        {
+          "turn": 3,
+          "question": "What are the key terms I should remember?",
+          "answer": "No relevant content found in the index for this question.",
+          "context_count": 0,
+          "first_context_title": null,
+          "latency_ms": 48.5,
+          "ok": true,
+          "error": null
+        }
+      ]
+    }
+  ]
+}

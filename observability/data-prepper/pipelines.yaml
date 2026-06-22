@@ -1,0 +1,137 @@
+otel-trace-pipeline:
+  workers: 4
+  delay: "100"
+  source:
+    otel_trace_source:
+      ssl: false
+      authentication:
+        unauthenticated:
+      port: 21890
+  buffer:
+    bounded_blocking:
+      buffer_size: 102400
+      batch_size: 1024
+  sink:
+    - pipeline:
+        name: "raw-pipeline"
+    - pipeline:
+        name: "service-map-pipeline"
+
+raw-pipeline:
+  workers: 4
+  delay: "3000"
+  source:
+    pipeline:
+      name: "otel-trace-pipeline"
+  buffer:
+    bounded_blocking:
+      buffer_size: 102400
+      batch_size: 3200
+  processor:
+    - otel_traces:
+    # NOTE: the standard `otel_trace_group` processor was removed. It enriches
+    # spans by querying the DEFAULT `otel-v1-apm-span` index for each trace's
+    # root span, but this pipeline writes per-service indices
+    # (`otel-v1-apm-span-${serviceName}`) and never populates that default index.
+    # The result was a constant `index_not_found_exception [otel-v1-apm-span]`
+    # error on every batch. `otel_traces` already sets traceGroup for roots seen
+    # in the same batch, which is all the per-service / ss4o setup needs.
+    - add_entries:
+        entries:
+          - key: "target_index"
+            format: "otel-v1-apm-span-${serviceName}"
+  sink:
+    # Single sink: per-service span indices. The old second sink
+    # (`index_type: trace-analytics-raw`) wrote every span a SECOND time into the
+    # default `otel-v1-apm-span` rollover index — duplicate storage for an index
+    # nothing reads (the OpenSearch Trace Analytics plugin already matches the
+    # per-service indices via the `otel-v1-apm-span-*` pattern). Removed.
+    - opensearch:
+        hosts: ["http://looma-opensearch:9200"]
+        insecure: true
+        index_type: custom
+        index: "otel-v1-apm-span-${serviceName}"
+        bulk_size: 10
+        max_retries: 5
+        dlq_file: "/tmp/dp-dlq-trace-custom.log"
+
+service-map-pipeline:
+  workers: 1
+  delay: "100"
+  source:
+    pipeline:
+      name: "otel-trace-pipeline"
+  processor:
+    - service_map:
+        db_path: "/tmp"
+  buffer:
+    bounded_blocking:
+      buffer_size: 102400
+      batch_size: 1024
+  sink:
+    - opensearch:
+        hosts: ["http://looma-opensearch:9200"]
+        insecure: true
+        index_type: trace-analytics-service-map
+
+otel-logs-pipeline:
+  source:
+    otel_logs_source:
+      port: 21892
+      ssl: false
+      authentication:
+        unauthenticated:
+  buffer:
+    bounded_blocking:
+      buffer_size: 20480
+      batch_size: 10
+  processor:
+    - add_entries:
+        entries:
+          - key: "serviceName"
+            value: "unknown"
+            add_when: "/serviceName == null or /serviceName == \"\""
+            overwrite_if_key_exists: true
+  sink:
+    - opensearch:
+        hosts: ["http://looma-opensearch:9200"]
+        insecure: true
+        index_type: custom
+        # Split logs per service with a daily shard, mirroring the metrics
+        # pipeline (otel-metrics-${serviceName}-%{dd-MM-yyyy}). Rolling 7-day
+        # retention is enforced by ISM policy `looma-7day-delete` on the
+        # `otel-events-*-*-*-*` pattern.
+        index: "otel-events-${/serviceName}-%{dd-MM-yyyy}"
+        normalize_index: true
+        dlq_file: "/tmp/dp-dlq-logs.log"
+
+otel-metrics-pipeline:
+  source:
+    otel_metrics_source:
+      port: 21891
+      ssl: false
+      authentication:
+        unauthenticated:
+  buffer:
+    bounded_blocking:
+      buffer_size: 20480
+      batch_size: 1000
+  processor:
+    - otel_metrics:
+    - add_entries:
+        entries:
+          - key: "serviceName"
+            value: "unknown"
+            add_when: "/serviceName == null or /serviceName == \"\""
+            overwrite_if_key_exists: true
+  sink:
+    - opensearch:
+        hosts: ["http://looma-opensearch:9200"]
+        insecure: true
+        index_type: custom
+        # Keep metrics split by service, like traces, while retaining a daily
+        # shard boundary. Data Prepper expands serviceName from the processed
+        # OTel metric event and expands the date pattern using event time.
+        index: "otel-metrics-${/serviceName}-%{dd-MM-yyyy}"
+        normalize_index: true
+        dlq_file: "/tmp/dp-dlq-metrics.log"

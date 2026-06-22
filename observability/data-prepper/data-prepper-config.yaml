@@ -1,0 +1,8 @@
+ssl: false
+# Bind the management API on all interfaces so the docker healthcheck on
+# port 4900 can reach it.
+serverPort: 4900
+metricRegistries:
+  - Prometheus
+authentication:
+  unauthenticated:

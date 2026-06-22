@@ -1,0 +1,21 @@
+<clickhouse>
+  <!-- WSL2 disables IPv6 on the container interface. The stock image ships
+       config.d/docker_related_config.xml which binds every port on BOTH
+       <listen_host>::</listen_host> (IPv6 any) and 0.0.0.0 (IPv4 any), so each
+       port's IPv6 bind fails at boot with:
+         Listen [::]:9005 failed: DNS error: EAI: Address family for hostname
+         not supported
+       Forcing IPv4-only listening removes that warning. replace="replace"
+       discards the inherited <listen_host> entries instead of adding to them.
+       This file sorts after docker_related_config.xml so the replace wins.
+       Coroot reaches ClickHouse over the native protocol (looma-clickhouse:9000)
+       and the healthcheck hits 127.0.0.1:8123 — both are IPv4, so nothing here
+       loses connectivity. -->
+  <listen_host replace="replace">0.0.0.0</listen_host>
+
+  <!-- The MySQL- and PostgreSQL-wire-protocol ports are unused: Coroot speaks
+       the native protocol on 9000 and HTTP on 8123. Dropping them removes two
+       more listeners (and the [::]:9004 / [::]:9005 IPv6 bind attempts). -->
+  <mysql_port remove="remove"/>
+  <postgresql_port remove="remove"/>
+</clickhouse>

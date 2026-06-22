@@ -1,0 +1,487 @@
+data_dir = "/var/lib/vector"
+
+[api]
+enabled = true
+address = "0.0.0.0:8686"
+
+# ---------------------------------------------------------------------------
+# Sources
+# ---------------------------------------------------------------------------
+
+[sources.internal_metrics]
+type = "internal_metrics"
+
+[sources.internal_logs]
+type = "internal_logs"
+
+# Docker container stdout/stderr (the logs you see in `docker compose up`).
+# We deliberately do NOT use include_containers — every running LOOMA
+# service should ship its logs to its own OpenSearch index so the user
+# can query each one independently. We only exclude looma-vector itself
+# to avoid a feedback loop (vector indexing its own writes).
+
+[sources.docker_logs]
+type = "docker_logs"
+docker_host = "unix:///var/run/docker.sock"
+auto_partial_merge = true
+exclude_containers = ["looma-vector", "looma-opensearch", "looma-metricbeat"]
+
+[sources.docker_logs_opensearch]
+type = "docker_logs"
+docker_host = "unix:///var/run/docker.sock"
+auto_partial_merge = true
+include_containers = ["looma-opensearch"]
+
+  # OpenSearch writes one log entry per line, each starting with a bracketed
+  # timestamp, e.g.:
+  #   [2026-05-15T08:22:08,698][INFO ][o.o.j.t.PluginClient] [328d2e872bca] ...
+  # Stack traces and other continuation lines do NOT start with `[`, so we
+  # treat any line beginning with `[` as the start of a new event and merge
+  # every following non-`[` line into the preceding event.
+  [sources.docker_logs_opensearch.multiline]
+  start_pattern = '^\[?\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}[.,]\d{3}'
+  condition_pattern = '^\[?\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}[.,]\d{3}'
+  mode = "halt_before"
+  timeout_ms = 1000
+
+
+
+# Optional: ship any local log files dropped in observability/logs/
+#[sources.file_logs]
+#type = "file"
+#include = ["/var/log/looma/*.log"]
+#read_from = "beginning"
+#ignore_older_secs = 0
+
+[sources.metricbeat]
+type = "logstash"
+address= "0.0.0.0:5044"
+
+# ---------------------------------------------------------------------------
+# Transforms
+# ---------------------------------------------------------------------------
+
+[transforms.docker_enriched]
+type = "remap"
+inputs = ["docker_logs", "docker_logs_opensearch"]
+source = '''
+.service = .container_name
+.source = "docker"
+.@timestamp = .timestamp
+del(.timestamp)
+
+# Docker container labels are a flat map whose keys contain dots
+# (e.g. `com.docker.compose.project`, `com.docker.compose.project.config_files`).
+# When OpenSearch builds dynamic mappings it sees `label.com` as both a
+# string and an object and rejects the document with
+# `can't merge a non object mapping [label.com.docker.compose.project]`.
+# Flatten labels into a single JSON string field instead so they remain
+# searchable without breaking the index mapping.
+if exists(.label) {
+  .labels_json = encode_json(.label)
+  del(.label)
+}
+
+# `index_service` is what we feed into the OpenSearch index template.
+# OpenSearch index names must be lowercase and cannot contain
+# `\\ / * ? " < > | , #`. Container names are already hyphen-friendly,
+# but we sanitize defensively.
+.index_service = downcase(string!(.service))
+.index_service = replace(.index_service, r'[^a-z0-9._-]', "-")
+if .index_service == "" {
+  .index_service = "unknown"
+}
+
+# Common observability dimensions for log/trace correlation and dashboards.
+.serviceName = .service
+.service_namespace = "looma"
+.deployment_environment = "looma"
+.service_version = "dev"
+
+traceparent_match = parse_regex(
+  string!(.message),
+  r'(?i)(?:traceparent[=:" ]+)?00-(?P<trace_id>[0-9a-f]{32})-(?P<span_id>[0-9a-f]{16})-[0-9a-f]{2}'
+) ?? null
+if traceparent_match != null {
+  .trace_id = traceparent_match.trace_id
+  .span_id = traceparent_match.span_id
+}
+
+trace_id_match = parse_regex(
+  string!(.message),
+  r'(?i)(?:trace_id|trace\.id|traceId)[=:" ]+(?P<trace_id>[0-9a-f]{32})'
+) ?? null
+if trace_id_match != null && !exists(.trace_id) {
+  .trace_id = trace_id_match.trace_id
+}
+
+span_id_match = parse_regex(
+  string!(.message),
+  r'(?i)(?:span_id|span\.id|spanId)[=:" ]+(?P<span_id>[0-9a-f]{16})'
+) ?? null
+if span_id_match != null && !exists(.span_id) {
+  .span_id = span_id_match.span_id
+}
+'''
+
+[transforms.opensearch_log_parsed]
+type = "remap"
+inputs = ["docker_enriched"]
+source = '''
+if .service == "looma-opensearch-node" {
+  parsed, err = parse_grok(
+    string!(.message),
+    "\\[%{TIMESTAMP_ISO8601:timestamp}\\]\\[%{DATA:level}\\s+\\]\\[%{DATA:component}\\s+\\] \\[%{DATA:node}\\] %{GREEDYDATA:message}"
+  )
+
+  if err == null {
+    . = merge(., parsed)
+  }
+}
+
+if .service == "looma-opensearch-node" && .level == "INFO" {
+  .observability_noise = true
+  .observability_noise_reason = "opensearch_info_log"
+}
+'''
+
+[transforms.service_logs_parsed]
+type = "remap"
+inputs = ["opensearch_log_parsed"]
+source = '''
+msg = string(.message) ?? ""
+
+if .service == "looma-web" {
+  parsed, err = parse_regex(
+    msg,
+    r'^(?P<vhost>\S+) (?P<client_ip>\S+) (?P<ident>\S+) (?P<auth>\S+) \[(?P<apache_time>[^\]]+)\] "(?P<http_method>[A-Z]+) (?P<url_original>[^"]+) HTTP/(?P<http_version>[0-9.]+)" (?P<http_status_code>\d+) (?P<http_response_bytes>\d+|-) "(?P<http_referrer>[^"]*)" "(?P<user_agent>[^"]*)"$'
+  )
+  if err == null {
+    . = merge(., parsed)
+    .log_format = "apache_access"
+    .http_status_code = to_int(.http_status_code) ?? .http_status_code
+    .http_response_bytes = to_int(.http_response_bytes) ?? null
+    url_parts = parse_regex(string!(.url_original), r'^(?P<url_path>[^? ]+)(?:\?(?P<url_query>.*))?$') ?? null
+    if url_parts != null {
+      .url_path = url_parts.url_path
+      if exists(url_parts.url_query) {
+        .url_query = url_parts.url_query
+      }
+    }
+    if .user_agent == "looma-topology-probe/1.0" {
+      .observability_noise = true
+      .observability_noise_reason = "topology_probe_access_log"
+    }
+  }
+}
+
+if .service == "looma-search" || .service == "looma-search-legacy" {
+  parsed, err = parse_regex(
+    msg,
+    r'^(?P<app_time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3}) (?P<level>[A-Z]+) \[(?P<logger>[^\]]+)\] \[(?P<source_location>[^\]]+)\] \[trace_id=(?P<log_trace_id>[0-9a-f]+) span_id=(?P<log_span_id>[0-9a-f]+) resource\.service\.name=(?P<resource_service_name>\S+) trace_sampled=(?P<trace_sampled>\S+)\] - (?P<client_ip>\S+) - - \[(?P<http_time>[^\]]+)\] "(?P<http_method>[A-Z]+) (?P<url_original>[^"]+) HTTP/(?P<http_version>[0-9.]+)" (?P<http_status_code>\d+) (?P<http_response_bytes>\d+|-)$'
+  )
+  if err == null {
+    . = merge(., parsed)
+    .log_format = "python_werkzeug"
+    .http_status_code = to_int(.http_status_code) ?? .http_status_code
+    .http_response_bytes = to_int(.http_response_bytes) ?? null
+    url_parts = parse_regex(string!(.url_original), r'^(?P<url_path>[^? ]+)(?:\?(?P<url_query>.*))?$') ?? null
+    if url_parts != null {
+      .url_path = url_parts.url_path
+      if exists(url_parts.url_query) {
+        .url_query = url_parts.url_query
+      }
+    }
+    if .log_trace_id != "0" && length(string!(.log_trace_id)) == 32 {
+      .trace_id = .log_trace_id
+    }
+    if .log_span_id != "0" && length(string!(.log_span_id)) == 16 {
+      .span_id = .log_span_id
+    }
+    if .url_path == "/health" {
+      .observability_noise = true
+      .observability_noise_reason = "healthcheck_access_log"
+    }
+  }
+}
+
+if .service == "looma-ai" {
+  parsed, err = parse_regex(
+    msg,
+    r'^(?P<client_ip>\S+) - - \[(?P<http_time>[^\]]+)\] "(?P<http_method>[A-Z]+) (?P<url_original>[^"]+) HTTP/(?P<http_version>[0-9.]+)" (?P<http_status_code>\d+) (?P<http_response_bytes>\d+|-)$'
+  )
+  if err == null {
+    . = merge(., parsed)
+    .log_format = "python_http_server"
+    .http_status_code = to_int(.http_status_code) ?? .http_status_code
+    .http_response_bytes = to_int(.http_response_bytes) ?? null
+    url_parts = parse_regex(string!(.url_original), r'^(?P<url_path>[^? ]+)(?:\?(?P<url_query>.*))?$') ?? null
+    if url_parts != null {
+      .url_path = url_parts.url_path
+      if exists(url_parts.url_query) {
+        .url_query = url_parts.url_query
+      }
+    }
+    if .url_path == "/health" {
+      .observability_noise = true
+      .observability_noise_reason = "healthcheck_access_log"
+    }
+  }
+}
+
+if .service == "looma-db" && starts_with(msg, "{") {
+  parsed, err = parse_json(msg)
+  if err == null {
+    .log_format = "mongodb_json"
+    .mongo_event_id = parsed.id
+    .mongo_context = parsed.ctx
+    .component = parsed.c
+    .level = parsed.s
+    .message = parsed.msg
+    mongo_date = get(parsed, ["t", "$" + "date"]) ?? null
+    if mongo_date != null {
+      .timestamp = mongo_date
+    }
+    if exists(parsed.attr) {
+      .mongo_attrs_json = encode_json(parsed.attr)
+    }
+    if .mongo_event_id == 22943 || .mongo_event_id == 22944 {
+      .observability_noise = true
+      .observability_noise_reason = "mongodb_connection_lifecycle"
+    }
+  }
+}
+
+if !exists(.index_service) || .index_service == null || .index_service == "" {
+  service_name = string(.service) ?? "unknown"
+  .index_service = downcase(service_name)
+  .index_service = replace(.index_service, r'[^a-z0-9._-]', "-")
+  if .index_service == "" {
+    .index_service = "unknown"
+  }
+}
+'''
+
+[transforms.drop_observability_noise]
+type = "filter"
+inputs = ["service_logs_parsed"]
+condition = '''
+!(exists(.observability_noise) && .observability_noise == true)
+'''
+
+[transforms.metricbeat_to_metric_batch]
+type = "remap"
+inputs = ["metricbeat"]
+source = '''
+new_data = []
+
+event_type = string(.event.module) ?? "metricbeat"
+metric_data = get(., [event_type]) ?? null
+
+# Only Docker module events become `docker_*` Prometheus metrics. Other
+# Metricbeat modules keep going to OpenSearch via `opensearch_metricbeat`, but
+# are not exported back into Prometheus with a misleading Docker prefix.
+if event_type != "docker" {
+  metric_data = null
+}
+
+tags = {
+  "cluster": string(.@metadata.cluster) ?? "",
+  "module": event_type,
+  "dataset": string(.event.dataset) ?? "",
+  "job": string(.@metadata.beat) ?? "metricbeat",
+  "namespace": string(.kubernetes.namespace) ?? "",
+  "pod": string(.kubernetes.pod.name) ?? "",
+  "container": string(.container.name) ?? string(.docker.container.name) ?? "",
+  "container_id": string(.container.id) ?? string(.docker.container.id) ?? "",
+  "image": string(.container.image.name) ?? string(.docker.container.image) ?? "",
+  "docker_status": string(.docker.container.status) ?? "",
+  "kubernetes_node": string(.kubernetes.node.name) ?? "",
+  "host": string(.host.name) ?? ""
+}
+
+if exists(.system.network.name) {
+  tags.network_name = string(.system.network.name) ?? ""
+}
+
+if metric_data != null {
+  metric_data = flatten!(metric_data)
+
+  for_each(metric_data) -> |key, value| {
+    if is_float(value) || is_integer(value) {
+      metric_name = replace(event_type + "_" + string(key), ".", "_")
+      metric_name = replace(metric_name, r'[^A-Za-z0-9_:]', "_")
+
+      if !starts_with(metric_name, "docker_") {
+        metric_name = "docker_" + metric_name
+      }
+
+      metric_suffix = slice(metric_name, 7) ?? metric_name
+
+      metric_structure = {}
+      if ends_with(metric_name, "_total") || ends_with(metric_name, "_count") || starts_with(metric_name, "docker_total") || starts_with(metric_name, "docker_count") {
+        metric_structure = {"counter": {"value": value}}
+      } else if ends_with(metric_name, "_per_sec") || ends_with(metric_name, "_rate") || starts_with(metric_name, "docker_per_sec") || starts_with(metric_name, "docker_rate") || ends_with(metric_name, "in_bytes") || ends_with(metric_name, "out_bytes") {
+        metric_structure = {"counter": {"value": value}}
+      } else {
+        metric_structure = {"gauge": {"value": value}}
+      }
+
+      data = {
+        "kind": "absolute",
+        "namespace": "docker",
+        "name": metric_suffix,
+        "tags": tags,
+        "timestamp": parse_timestamp(.@timestamp, "%Y-%m-%dT%H:%M:%S%.9fZ") ?? now()
+      }
+
+      data = merge(data, metric_structure)
+      new_data = append(new_data, [data])
+    }
+  }
+
+  . = {"metric": new_data}
+} else {
+  . = {}
+}
+'''
+
+[transforms.metricbeat_metric_events]
+type = "lua"
+inputs = ["metricbeat_to_metric_batch"]
+version = "2"
+hooks.process = "process"
+source = '''
+function process(event, emit)
+  local metrics = event.log.metric
+  if metrics ~= nil then
+    for _, metric_data in pairs(metrics) do
+      emit({ metric = metric_data })
+    end
+  end
+end
+'''
+
+# Break the feedback loop: the elasticsearch sink emits a WARN every time it
+# times out, and that WARN goes through internal_logs -> opensearch_vector_logs.
+# When OpenSearch is slow, each timeout produces another event that must be
+# shipped, amplifying the backlog. We drop self-referential retry warnings here.
+
+
+#[transforms.file_enriched]
+#type = "remap"
+#inputs = ["file_logs"]
+#source = '''
+#.service = "looma-files"
+#.index_service = "looma-files"
+#.source = "file"
+#.@timestamp = now()
+#'''
+
+# ---------------------------------------------------------------------------
+# Sinks
+# ---------------------------------------------------------------------------
+
+# OpenSearch (no security in our compose). Writes a daily index.
+[sinks.opensearch]
+type = "elasticsearch"
+inputs = ["drop_observability_noise"]  #"file_enriched"
+endpoints = ["${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"]
+api_version = "v7"
+mode = "bulk"
+compression = "gzip"
+
+  [sinks.opensearch.bulk]
+  action = "index"
+  # One daily index per service: `looma-logs-<container>-YYYY-MM-DD`.
+  # Examples:
+  #   looma-logs-looma-web-2026-04-30
+  #   looma-logs-looma-ai-2026-04-30
+  #   looma-logs-looma-search-2026-04-30
+  index = "looma-logs-{{ index_service }}-%Y-%m-%d"
+
+  [sinks.opensearch.batch]
+  # Smaller, faster batches: lets OpenSearch ack within request.timeout_secs
+  # even under load. Default is 10 MB / unlimited events / 1s flush.
+  max_bytes = 5242880      # 5 MB
+  max_events = 1000
+  timeout_secs = 5
+
+  [sinks.opensearch.request]
+  timeout_secs = 120        # was default 60s — main cause of the WARNs
+  retry_attempts = 10
+  retry_max_duration_secs = 60
+  concurrency = "adaptive"
+
+  [sinks.opensearch.buffer]
+  type = "memory"
+  # Bigger buffer absorbs backpressure while OpenSearch catches up.
+  max_events = 50000
+  when_full = "block"
+
+
+# Metricbeat Sink to Opensearch
+[sinks.opensearch_metricbeat]
+type = "elasticsearch"
+inputs = ["metricbeat"]
+endpoints = ["${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"]
+api_version = "v7"
+mode = "bulk"
+compression = "gzip"
+
+  [sinks.opensearch_metricbeat.bulk]
+  action = "index"
+  index = "metricbeat-8.12.2-%Y-%m-%d"
+
+  [sinks.opensearch_metricbeat.batch]
+  max_bytes = 5242880
+  max_events = 1000
+  timeout_secs = 5
+
+  [sinks.opensearch_metricbeat.request]
+  timeout_secs = 120
+  retry_attempts = 10
+  retry_max_duration_secs = 60
+  concurrency = "adaptive"
+
+  [sinks.opensearch_metricbeat.buffer]
+  type = "memory"
+  max_events = 50000
+  when_full = "block"
+
+
+# Vector's own internal logs (filtered to prevent feedback loop)
+[sinks.opensearch_vector_logs]
+type = "elasticsearch"
+inputs = ["internal_logs"]
+endpoints = ["${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"]
+api_version = "v7"
+mode = "bulk"
+compression = "gzip"
+
+  [sinks.opensearch_vector_logs.bulk]
+  action = "index"
+  index = "vector-logs-%Y-%m-%d"
+
+  [sinks.opensearch_vector_logs.batch]
+  max_bytes = 2097152      # 2 MB — internal logs are low volume
+  max_events = 500
+  timeout_secs = 5
+
+  [sinks.opensearch_vector_logs.request]
+  timeout_secs = 120
+  retry_attempts = 10
+  retry_max_duration_secs = 60
+  concurrency = "adaptive"
+
+  [sinks.opensearch_vector_logs.buffer]
+  type = "memory"
+  max_events = 20000
+  when_full = "drop_newest"   # never block the pipeline because of self-logs
+
+# Vector internal metrics (scraped by Prometheus).
+[sinks.prometheus]
+type = "prometheus_exporter"
+inputs = ["internal_metrics", "metricbeat_metric_events"]
+address = "0.0.0.0:8889"
+default_namespace = "vector"

@@ -1,0 +1,817 @@
+networks:
+  loomanet:
+    name: loomanet
+
+volumes:
+  looma_opensearch_data:
+    name: looma_opensearch_data
+  looma_prometheus_data:
+    name: looma_prometheus_data
+  looma_grafana_data:
+    name: looma_grafana_data
+  looma_otel_storage:
+    name: looma_otel_storage
+  looma_apache_logs:
+    name: looma_apache_logs
+  # Coroot — eBPF-based auto-instrumentation (the docker-compose-friendly
+  # answer to Pixie). Its three storage volumes:
+  #   looma_coroot_data           — Coroot's UI/config state
+  #   looma_coroot_postgres_data  — Coroot metadata (projects, users, alerts)
+  #   looma_clickhouse_data       — traces / logs / continuous profiles
+  #   looma_coroot_node_agent_data — node-agent WAL (offline buffer)
+  #   looma_coroot_cluster_agent_data — cluster-agent WAL / cache
+  looma_coroot_data:
+    name: looma_coroot_data
+  looma_coroot_postgres_data:
+    name: looma_coroot_postgres_data
+  looma_clickhouse_data:
+    name: looma_clickhouse_data
+  looma_coroot_node_agent_data:
+    name: looma_coroot_node_agent_data
+  looma_coroot_cluster_agent_data:
+    name: looma_coroot_cluster_agent_data
+
+services:
+  # -------------------------
+  # OpenSearch — base storage/engine for traces and logs
+  # -------------------------
+  opensearch:
+    image: opensearchproject/opensearch:3.6.0
+    container_name: looma-opensearch-node
+    environment:
+      discovery.type: single-node
+      # memory_lock disabled on purpose: Docker Desktop (WSL2) does not
+      # reliably support mlockall and the container would crash on boot.
+      bootstrap.memory_lock: "false"
+      # `--enable-native-access=ALL-UNNAMED` silences the "restricted method
+      # in java.lang.System has been called" warning that JNA triggers under
+      # JDK 21+. The rest of the heap / GC config is unchanged.
+      OPENSEARCH_JAVA_OPTS: "-Xms2g -Xmx2g --enable-native-access=ALL-UNNAMED"
+      http.max_content_length: 512mb
+      # The image's entrypoint runs the Security plugin's demo installer
+      # before honoring plugins.security.disabled, and the installer aborts
+      # when OPENSEARCH_INITIAL_ADMIN_PASSWORD is missing — making the
+      # container exit with code 1. These two flags skip the installer
+      # entirely and load the cluster without security.
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      DISABLE_SECURITY_PLUGIN: "true"
+
+      # ---------- Silence expected boot-time warnings ----------
+      # The performance-analyzer plugin's missing properties file logs a
+      # full stack trace at every boot; we don't use that plugin, so turn
+      # the agent off completely.
+      disable_performance_analyzer_agent_run: "true"
+      # The SQL/PPL plugin requires a 32-char encryption master key whenever
+      # any datasource API is touched; even when unused, it warns on every
+      # boot. Set a placeholder so the warning never fires (no datasources
+      # are configured in this stack).
+      plugins.query.datasources.encryption.masterkey: "00000000000000000000000000000000"
+      # The dangling-index check is intentionally off (single-node cluster
+      # in Docker Desktop), but logs a WARN if left at its implicit default.
+      # Make the choice explicit instead.
+      gateway.auto_import_dangling_indices: "false"
+
+      # ---------- Boot-time logger levels ----------
+      # OpenSearch reads `logger.<name>` env vars at startup and applies them
+      # before any plugin logs its first WARN. This catches warnings that the
+      # opensearch-aliases bootstrap (persistent _cluster/settings) is too
+      # late to silence.
+      logger.org.opensearch.security: "ERROR"
+      logger.org.opensearch.securityanalytics: "ERROR"
+      logger.org.opensearch.sql.plugin: "ERROR"
+      logger.org.opensearch.sql.legacy: "ERROR"
+      logger.org.opensearch.timeseries.cluster: "ERROR"
+      logger.org.opensearch.indexmanagement.indexstatemanagement: "ERROR"
+      logger.org.opensearch.gateway.DanglingIndicesState: "ERROR"
+      logger.org.opensearch.performanceanalyzer: "ERROR"
+      logger.org.opensearch.ml.action: "ERROR"
+      # The `stderr` logger captures every line third-party libs print to
+      # System.err — SLF4J load-failure noise, "Policy attached", "Java
+      # vector incubator API enabled", etc. Demoting to ERROR drops the lot.
+      logger.stderr: "ERROR"
+      # Drop the per-system-index deprecation spam (~15 lines / boot) that
+      # `IndexNameExpressionResolver` emits when plugins touch their state
+      # indices on startup. Persistent override in opensearch-aliases also
+      # sets this, but this catches the warnings emitted before bootstrap.
+      logger.org.opensearch.deprecation: "ERROR"
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - looma_opensearch_data:/usr/share/opensearch/data
+    ports:
+      # 0.0.0.0 binding so other devices on the LAN (e.g. smart TV) can reach
+      # the OpenSearch HTTP API at http://<host-LAN-ip>:49200
+      - "0.0.0.0:49200:9200"
+      - "0.0.0.0:49600:9600"
+    networks:
+      loomanet:
+        aliases:
+          - opensearch
+          # Keep the old DNS name as an alias so the ~dozen configs that dial
+          # http://looma-opensearch:9200 (grafana datasources, bootstrap,
+          # opensearch-aliases, retention, dashboards, vector outputs) keep
+          # resolving after the container was renamed to looma-opensearch-node.
+          - looma-opensearch
+          - looma-opensearch-node
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/9200' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 45s
+
+  # -------------------------
+  # OpenSearch bootstrap: tune cluster settings — quiet noisy deprecation
+  # logs and raise the Metricbeat index field-mapping limit.
+  # -------------------------
+  opensearch-aliases:
+    image: opensearchproject/opensearch:3.6.0
+    container_name: looma-opensearch-aliases
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    networks:
+      - loomanet
+    restart: "no"
+    entrypoint: ["/bin/bash", "-lc"]
+    command:
+      - |
+        set -euo pipefail
+        base="http://looma-opensearch:9200"
+
+        echo "Waiting for OpenSearch..."
+        until curl -fsS "$${base}" >/dev/null; do sleep 1; done
+
+        echo "Silencing noisy plugin / startup loggers (persistent cluster settings)..."
+        curl -fsS -XPUT "$${base}/_cluster/settings" \
+          -H 'Content-Type: application/json' \
+          -d '{
+            "persistent": {
+              "logger.org.opensearch.deprecation.common.IndexNameExpressionResolver": "ERROR",
+              "logger.org.opensearch.deprecation": "ERROR",
+              "logger.org.opensearch.security": "ERROR",
+              "logger.org.opensearch.securityanalytics": "ERROR",
+              "logger.org.opensearch.sql.plugin": "ERROR",
+              "logger.org.opensearch.sql.legacy": "ERROR",
+              "logger.org.opensearch.timeseries.cluster": "ERROR",
+              "logger.org.opensearch.indexmanagement.indexstatemanagement": "ERROR",
+              "logger.org.opensearch.gateway.DanglingIndicesState": "ERROR",
+              "logger.org.opensearch.performanceanalyzer": "ERROR",
+              "logger.org.opensearch.ml.action": "ERROR",
+              "logger.stderr": "ERROR"
+            }
+          }' >/dev/null
+
+        # NOTE: indices originally created under the OpenDistro names still
+        # carry settings like `index.opendistro.index_state_management.
+        # rollover_alias`. The persistent deprecation logger above silences
+        # the per-scan warning; a one-off `_settings` migration is optional
+        # and left to a separate maintenance script when the time comes.
+
+        echo "Ensuring Metricbeat index template (raise field limit)..."
+        # Metricbeat indices can exceed the default 1000-field mapping limit.
+        # This is safe: it only affects indices matching `metricbeat-*`.
+        curl -fsS -XPUT "$${base}/_index_template/metricbeat" \
+          -H 'Content-Type: application/json' \
+          -d '{"index_patterns":["metricbeat-*"],"template":{"settings":{"index.mapping.total_fields.limit":5000}},"priority":50}' >/dev/null
+
+        # Also update any already-created Metricbeat indices (if any).
+        curl -fsS -XPUT "$${base}/metricbeat-*/_settings" \
+          -H 'Content-Type: application/json' \
+          -d '{"index.mapping.total_fields.limit":5000}' >/dev/null || true
+
+        echo "Ensuring otel-v1-apm-span trace-analytics template (string fields as keyword)..."
+        # Data Prepper writes per-service span indices via index_type:custom, which
+        # get DYNAMIC mappings — every string (serviceName, traceGroup, traceId, ...)
+        # lands as `text`. The OpenSearch Dashboards Trace Analytics plugin runs
+        # `terms` aggregations and sorts on those fields (serviceName, traceGroup AND
+        # traceId), which fails on text with a fielddata error — surfacing in the UI
+        # as "Cannot read properties of undefined (reading 'aggregations')". A
+        # dynamic_template maps ALL strings to keyword (matching the official
+        # trace-analytics template) so no field is missed; explicit properties pin
+        # the date/numeric types. ignore_above keeps oversized attribute values from
+        # failing the index. Applies to indices created AFTER it exists, so any
+        # pre-existing otel-v1-apm-span-* indices must be recreated once.
+        curl -fsS -XPUT "$${base}/_index_template/otel-v1-apm-span" \
+          -H 'Content-Type: application/json' \
+          -d '{"index_patterns":["otel-v1-apm-span-*"],"priority":50,"template":{"mappings":{"dynamic_templates":[{"strings_as_keyword":{"match_mapping_type":"string","mapping":{"type":"keyword","ignore_above":8191}}}],"properties":{"traceId":{"type":"keyword"},"spanId":{"type":"keyword"},"parentSpanId":{"type":"keyword"},"serviceName":{"type":"keyword"},"traceGroup":{"type":"keyword"},"name":{"type":"keyword"},"kind":{"type":"keyword"},"startTime":{"type":"date"},"endTime":{"type":"date"},"durationInNanos":{"type":"long"},"status":{"properties":{"code":{"type":"integer"}}},"traceGroupFields":{"properties":{"endTime":{"type":"date"},"durationInNanos":{"type":"long"},"statusCode":{"type":"integer"}}}}}}}' >/dev/null
+
+        echo "Done."
+
+  # -------------------------
+  # OpenSearch Dashboards — UI for logs (Discover) and traces (Trace
+  # Analytics + Service Map).
+  # -------------------------
+  opensearch-dashboards:
+    build:
+      context: ./opensearch-dashboards
+      dockerfile: Dockerfile
+    image: looma-opensearch-dashboards:latest
+    pull_policy: never
+    container_name: looma-opensearch-dashboards
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    environment:
+      OPENSEARCH_HOSTS: '["http://looma-opensearch:9200"]'
+      DISABLE_SECURITY_DASHBOARDS_PLUGIN: "true"
+      VIS_TYPE_VEGA_ENABLEEXTERNALURLS: "true"
+    ports:
+      - "45601:5601"
+    networks:
+      - loomanet
+
+  # -------------------------
+  # Data Prepper — OTLP ingestion pipelines into OpenSearch
+  # (traces -> Trace Analytics + Service Map; logs -> events index).
+  # Metrics go through Prometheus instead, not Data Prepper.
+  # -------------------------
+  data-prepper:
+    build:
+      context: ./data-prepper
+      dockerfile: Dockerfile
+    image: looma-data-prepper:latest
+    pull_policy: never
+    container_name: looma-data-prepper
+    restart: unless-stopped
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    environment:
+      # Was crashing OOM during startup with the default heap; bump to 1g so all
+      # three otel pipelines (traces / metrics / logs) come up cleanly and stay up.
+      JAVA_OPTS: "-Xms512m -Xmx1g"
+    ports:
+      - "21890:21890" # OTLP traces
+      - "21891:21891" # OTLP metrics
+      - "21892:21892" # OTLP logs
+      - "44900:4900"  # health
+    networks:
+      - loomanet
+    # Make `condition: service_healthy` viable for the otel-collector — without
+    # this, the collector starts before Data Prepper is bound to its gRPC ports
+    # and the gRPC dialer logs `no children to pick from`.
+    healthcheck:
+      # Use a TCP probe on the OTLP traces port (21890) instead of curl on the
+      # admin port — the admin port can be up *before* the OTLP listeners, and
+      # that race is what made the collector log `connection refused` after
+      # the dependency-check passed.
+      test: ["CMD-SHELL", "(echo > /dev/tcp/127.0.0.1/21890) >/dev/null 2>&1 && (echo > /dev/tcp/127.0.0.1/21891) >/dev/null 2>&1 && (echo > /dev/tcp/127.0.0.1/21892) >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 60
+      start_period: 60s
+
+  # -------------------------
+  # OpenTelemetry Collector — single OTLP entrypoint for apps.
+  # Forwards traces/logs to Data Prepper (-> OpenSearch) and exposes
+  # metrics on :8889 for Prometheus to scrape. Generates RED-style
+  # spanmetrics from traces so services get latency/error/request
+  # metrics in Grafana out of the box.
+  # -------------------------
+  otel-collector:
+    build:
+      context: ./otel-collector
+      dockerfile: Dockerfile
+    image: looma-otel-collector:latest
+    pull_policy: never
+    container_name: looma-otel-collector
+    restart: unless-stopped
+    user: "0"  # needs root to read host /proc, /var/run/docker.sock, /var/log/apache2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Mount the host's filesystem read-only so the hostmetrics receiver can
+      # report disk/memory/cpu/processes from the actual host, not the container.
+      - /:/hostfs:ro
+      # Persist queues for retried spans/logs so transient OpenSearch outages
+      # don't lose data.
+      - looma_otel_storage:/var/lib/otelcol/file_storage
+      # Tail the same Apache logs the looma-web container writes.
+      - looma_apache_logs:/var/log/apache2:ro
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    environment:
+      HOST_PROC: /hostfs/proc
+      HOST_SYS: /hostfs/sys
+      HOST_ETC: /hostfs/etc
+      HOST_VAR: /hostfs/var
+      HOST_RUN: /hostfs/run
+      HOST_DEV: /hostfs/dev
+    ports:
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+      - "48888:8888"  # OTel Collector internal metrics
+      - "48889:8889"  # Prometheus scrape endpoint — apps + host + docker + mongo
+      - "48890:8890"  # Prometheus scrape endpoint — span-derived metrics
+      - "41888:1888"  # zpages (debug)
+      - "43133:13133" # health_check
+      - "41777:1777"  # pprof
+    networks:
+      - loomanet
+    healthcheck:
+      # The upstream collector image is distroless: no /bin/sh and no wget.
+      # Use the collector binary directly so Docker healthchecks can run.
+      test: ["CMD", "/otelcol-contrib", "validate", "--config=/etc/otel-collector-config.yaml"]
+      interval: 10s
+      timeout: 3s
+      retries: 30
+      start_period: 30s
+    depends_on:
+      data-prepper:
+        condition: service_healthy
+      opensearch:
+        condition: service_healthy
+
+  # -------------------------
+  # Vector — receives Metricbeat (Beats protocol) and ships logs/metrics to OpenSearch
+  # -------------------------
+  vector:
+    build:
+      context: ./vector
+      dockerfile: Dockerfile
+    image: looma-vector:latest
+    pull_policy: never
+    container_name: looma-vector
+    command: ["--config", "/etc/vector/vector.toml"]
+    environment:
+      VECTOR_LOG: "info"
+    user: "0:0"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - loomanet
+
+  # -------------------------
+  # docker-stats-exporter — queries the Docker socket and exposes per-container
+  # CPU / memory / network / IO metrics on /metrics. Replaces cAdvisor, which
+  # fails on Docker Desktop / WSL2 (it can't resolve `/var/lib/docker/image/
+  # overlayfs/layerdb/mounts/<id>/mount-id`).
+  # -------------------------
+  docker-stats-exporter:
+    build:
+      context: ./docker-stats
+      dockerfile: Dockerfile
+    image: looma-docker-stats-exporter:latest
+    pull_policy: never
+    container_name: looma-docker-stats
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "48081:9417"
+    networks:
+      - loomanet
+    restart: unless-stopped
+
+  # -------------------------
+  # Metricbeat (docker module) — ships Docker runtime metrics into OpenSearch.
+  # -------------------------
+  metricbeat:
+    build:
+      context: ./metricbeat
+      dockerfile: Dockerfile
+    image: looma-metricbeat:latest
+    pull_policy: never
+    container_name: looma-metricbeat
+    user: root
+    command: ["--strict.perms=false"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      opensearch:
+        condition: service_healthy
+      vector:
+        condition: service_started
+    networks:
+      - loomanet
+    restart: unless-stopped
+
+  # -------------------------
+  # Logstash — receives Metricbeat (Beats protocol) and writes to OpenSearch
+  # as `metricbeat-<version>-YYYY.MM.DD` indices.
+  # -------------------------
+  # logstash:
+  #   image: opensearchproject/logstash-oss-with-opensearch-output-plugin:latest
+  #   container_name: looma-logstash
+  #   volumes:
+  #     - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+  #   ports:
+  #     - "45044:5044" # beats input (optional: for host access)
+  #   depends_on:
+  #     opensearch:
+  #       condition: service_healthy
+  #   networks:
+  #     - loomanet
+  #   restart: unless-stopped
+
+  # -------------------------
+  # Prometheus — scrapes OTel Collector and Vector and stores the
+  # metrics that Grafana queries.
+  # -------------------------
+  prometheus:
+    build:
+      context: ./prometheus
+      dockerfile: Dockerfile
+    image: looma-prometheus:latest
+    pull_policy: never
+    container_name: looma-prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+      - "--web.listen-address=0.0.0.0:9091"
+      - "--web.enable-lifecycle"
+      - "--web.enable-admin-api"
+      # Required so Coroot can forward the node-agent's metrics (which it
+      # receives at /api/v1/metrics) into Prometheus via the standard
+      # remote-write protocol. Without this flag the receiver returns 404,
+      # node_agent_* series never land, and Coroot reports 0 nodes / 0 apps.
+      - "--web.enable-remote-write-receiver"
+    volumes:
+      - looma_prometheus_data:/prometheus
+    # Keep Prometheus internal-only. Publishing 9090 through Docker creates
+    # dockerd proxy listeners (172.18.0.1 / 192.168.65.x) that Coroot sees as
+    # app instances without container metrics, which triggers false
+    # "Instance availability: no instances available" alerts for Prometheus.
+    networks:
+      - loomanet
+    depends_on:
+      - otel-collector
+
+  # -------------------------
+  # Grafana — single pane of glass: metrics from Prometheus, logs and
+  # traces from OpenSearch. Datasources and starter dashboards are
+  # provisioned automatically.
+  # -------------------------
+  grafana:
+    build:
+      context: ./grafana
+      dockerfile: Dockerfile
+    image: looma-grafana:latest
+    pull_policy: never
+    container_name: looma-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      # Bundled OpenSearch datasource plugin (logs + traces from OS).
+      GF_INSTALL_PLUGINS: "grafana-opensearch-datasource"
+      # Listen on all interfaces (default already, but explicit for clarity).
+      GF_SERVER_HTTP_ADDR: "0.0.0.0"
+      GF_SERVER_HTTP_PORT: "3000"
+      # Smart TV friendly: allow anonymous read-only access so the TV browser
+      # doesn't need to handle the login form. Admin login still works for edits.
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_NAME: "Main Org."
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+      # Allow embedding in iframes (some TV launchers wrap pages this way).
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+      GF_SECURITY_COOKIE_SAMESITE: "lax"
+    volumes:
+      - looma_grafana_data:/var/lib/grafana
+    ports:
+      # 0.0.0.0 binding so other devices on the LAN (e.g. smart TV) can reach
+      # the Grafana UI at http://<host-LAN-ip>:43000
+      - "0.0.0.0:43000:3000"
+    networks:
+      - loomanet
+    depends_on:
+      - prometheus
+      - opensearch
+
+  # -------------------------
+  # Log Analysis Worker — continuous analysis of logs for AI improvement
+  # Processes logs from OpenSearch, extracts training examples, and stores
+  # feedback labels for model retraining.
+  # -------------------------
+  looma-analysis-worker:
+    profiles: ["analysis"]
+    # Reuse the same runtime image as looma-ai (built by the main Looma compose).
+    image: looma-ai:latest
+    container_name: looma-analysis-worker
+    environment:
+      PYTHONUNBUFFERED: "1"
+      # OpenSearch connection
+      OPENSEARCH_URL: "http://looma-opensearch:9200"
+      # Database
+      DB_PATH: "/app/data/looma_ai.db"
+      # Analysis parameters
+      ANALYSIS_INTERVAL_MINUTES: "60"
+      HOURS_BACK: "24"
+      MIN_CONFIDENCE: "0.8"
+    volumes:
+      # Share looma-ai scripts
+      - ../looma-ai:/app/scripts:ro
+      - ../looma-ai-data:/app/data
+    working_dir: /app/scripts
+    command: ["python3", "analysis_worker.py", "--mode", "continuous", "--interval-minutes", "60"]
+    restart: unless-stopped
+    networks:
+      - loomanet
+    depends_on:
+      - opensearch
+
+  # -------------------------
+  # Feedback Labeling API — HTTP interface for manual example labeling
+  # Allows curators to label training examples for model improvement
+  # -------------------------
+  looma-feedback-labeling:
+    profiles: ["analysis"]
+    # Reuse the same runtime image as looma-ai (built by the main Looma compose).
+    image: looma-ai:latest
+    container_name: looma-feedback-labeling
+    environment:
+      PYTHONUNBUFFERED: "1"
+      # Database
+      DB_PATH: "/app/data/looma_ai.db"
+    volumes:
+      # Share looma-ai scripts
+      - ../looma-ai:/app/scripts:ro
+      - ../looma-ai-data:/app/data
+    working_dir: /app/scripts
+    command: ["python3", "feedback_labeling.py", "--port", "8888", "--host", "0.0.0.0"]
+    ports:
+      - "48888:8888"
+    restart: unless-stopped
+    networks:
+      - loomanet
+    # Depends on looma-ai, but it's started by the main Looma compose.
+    # Keeping this service independent lets the observability stack boot alone.
+
+
+  # -------------------------
+  # Topology probe — emits synthetic OTel traces, metrics, and logs that
+  # describe every edge in the Looma service mesh. The collector's
+  # service_graph connector and Data Prepper's service_map processor pick
+  # these up so the OpenSearch service map shows ALL services (including
+  # infrastructure like Prometheus, Grafana, Vector, OpenSearch itself)
+  # and the relationships between them — even for services that don't
+  # natively emit traces.
+  # -------------------------
+  topology-probe:
+    build:
+      context: ./topology-probe
+    image: looma-topology-probe:latest
+    container_name: looma-topology-probe
+    restart: unless-stopped
+    networks:
+      - loomanet
+    environment:
+      OTLP_HTTP_ENDPOINT: http://looma-otel-collector:4318
+      LOOMA_PROBE_INTERVAL_SEC: "30"
+      LOOMA_PROBE_TIMEOUT_SEC: "5"
+      LOOMA_ENV: looma
+    depends_on:
+      otel-collector:
+        condition: service_started
+
+  # -------------------------
+  # Bootstrap — imports OpenSearch state (dashboards, advanced settings,
+  # Applications, advanced settings, ISM policies) snapshotted under observability/state/ into the running
+  # cluster. Runs once per `docker compose up`, exits 0 when done. Idempotent.
+  # -------------------------
+  bootstrap:
+    # state/ is baked into the image (state/Dockerfile) instead of being
+    # bind-mounted, so the service is immune to Docker Desktop host-path mount
+    # failures. Rebuild after refreshing the snapshot: docker compose build bootstrap
+    build:
+      context: ./state
+      dockerfile: Dockerfile
+    image: looma-bootstrap:latest
+    pull_policy: never
+    container_name: looma-bootstrap
+    restart: "no"
+    user: "0"
+    entrypoint: ["sh", "/state/bootstrap.sh"]
+    environment:
+      OS_URL: http://looma-opensearch:9200
+      OSD_URL: http://looma-opensearch-dashboards:5601
+      OSD_VERSION: "3.6.0"
+    depends_on:
+      opensearch:
+        condition: service_healthy
+      opensearch-dashboards:
+        condition: service_started
+    networks:
+      - loomanet
+
+  # -------------------------
+  # Retention sidecar — daily delete-by-query against accumulating indices
+  # (single index, no date rollover). Time-series indices with a date suffix
+  # are handled by ISM policy `looma-7day-delete`.
+  # -------------------------
+  retention:
+    # looma-retention.sh is baked into the image (retention/Dockerfile) instead
+    # of being bind-mounted, so the service is immune to Docker Desktop
+    # host-path mount failures.
+    build:
+      context: ./retention
+      dockerfile: Dockerfile
+    image: looma-retention:latest
+    pull_policy: never
+    container_name: looma-retention
+    restart: unless-stopped
+    networks:
+      - loomanet
+    entrypoint: ["sh", "/opt/looma-retention.sh"]
+    environment:
+      OS_URL: http://looma-opensearch:9200
+      RETENTION: now-7d
+    depends_on:
+      opensearch:
+        condition: service_healthy
+
+  # -------------------------
+  # Coroot — eBPF-based auto-instrumentation. The closest fit to Pixie that
+  # actually runs in docker-compose: coroot-node-agent uses eBPF (kprobes /
+  # uprobes / tracepoints) to auto-discover every container's HTTP / gRPC /
+  # SQL / Redis / Kafka / Mongo traffic and emits RED metrics + spans
+  # without touching application code. The coroot UI builds the service
+  # map, SLO views and root-cause inference on top of those signals.
+  #
+  # Topology:
+  #   coroot (UI + API, port 8080)
+  #     ├── coroot-postgres (metadata: projects / users / alerts)
+  #     └── clickhouse      (traces / logs / continuous profiles)
+  #   coroot-node-agent (one per host, eBPF) → ships to coroot:8080
+  #
+  # Re-uses the EXISTING `prometheus` service for metrics scraping — Coroot
+  # reads the same TSDB Grafana already queries, so we don't double the
+  # metrics pipeline.
+  # -------------------------
+
+  coroot-postgres:
+    image: postgres:16-alpine
+    container_name: looma-coroot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: coroot
+      POSTGRES_USER: coroot
+      POSTGRES_PASSWORD: coroot
+    volumes:
+      - looma_coroot_postgres_data:/var/lib/postgresql/data
+    networks:
+      loomanet:
+        aliases:
+          - coroot-postgres
+          - looma-coroot-postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U coroot -d coroot"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: looma-clickhouse
+    restart: unless-stopped
+    environment:
+      CLICKHOUSE_USER: coroot
+      CLICKHOUSE_PASSWORD: coroot
+      CLICKHOUSE_DB: coroot
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - looma_clickhouse_data:/var/lib/clickhouse
+      # Match Coroot's official compose defaults: keep ClickHouse from
+      # accumulating its own query/system logs in this observability stack.
+      - ./clickhouse/coroot-logging.xml:/etc/clickhouse-server/config.d/coroot-logging.xml:ro
+      - ./clickhouse/coroot-user-logging.xml:/etc/clickhouse-server/config.d/coroot-user-logging.xml:ro
+      # Force IPv4-only listening (WSL2 has no IPv6) and drop the unused
+      # MySQL/PostgreSQL wire-protocol ports — silences the boot-time
+      # "Listen [::]:9005 failed: Address family ... not supported" warning.
+      - ./clickhouse/listen-ipv4.xml:/etc/clickhouse-server/config.d/listen-ipv4.xml:ro
+    ports:
+      # Expose HTTP for ad-hoc queries / optional Grafana ClickHouse datasource.
+      - "0.0.0.0:48123:8123"
+    networks:
+      loomanet:
+        aliases:
+          - clickhouse
+          - looma-clickhouse
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8123/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  coroot:
+    # Pinned to 1.21.1 to match coroot-node-agent 1.21.0 — older 1.8.x can't
+    # parse the agent's proto-v2 / zstd payload (logs filled with
+    # "proto: cannot parse invalid wire-format data" and the project saw 0
+    # nodes / 0 apps regardless of any other fix).
+    image: ghcr.io/coroot/coroot:1.21.1
+    container_name: looma-coroot
+    restart: unless-stopped
+    depends_on:
+      coroot-postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+      prometheus:
+        condition: service_started
+    command:
+      # Keep Coroot's project/API-key/storage setup declarative. Some settings
+      # such as predefined projects are only available through the YAML config.
+      - "--config=/etc/coroot/coroot.yaml"
+    volumes:
+      - looma_coroot_data:/data
+      - ./coroot/coroot.yaml:/etc/coroot/coroot.yaml:ro
+    ports:
+      # 0.0.0.0 binding so the LAN (e.g. the smart TV) can reach the Coroot UI
+      # at http://<host-LAN-ip>:48085, matching the Grafana / OpenSearch pattern.
+      - "0.0.0.0:48085:8080"
+    networks:
+      loomanet:
+        aliases:
+          - coroot
+          - looma-coroot
+    # The Coroot image is minimal and doesn't include wget/curl, so an in-
+    # container HTTP healthcheck reports unhealthy even while the server is up.
+    healthcheck:
+      disable: true
+
+  coroot-node-agent:
+    image: ghcr.io/coroot/coroot-node-agent:1.21.1
+    container_name: looma-coroot-node-agent
+    restart: unless-stopped
+    depends_on:
+      coroot:
+        condition: service_started
+    # eBPF probes (kprobes / uprobes / tracepoints) need privileged + host PID
+    # namespace to read kernel events and follow processes across container
+    # boundaries. On Docker Desktop (WSL2) the WSL kernel ships with BPF / BTF
+    # so most probes work; a few uprobes may degrade gracefully when the host
+    # kernel lacks the matching tracepoints.
+    privileged: true
+    pid: "host"
+    command:
+      - "--collector-endpoint=http://looma-coroot:8080"
+      - "--cgroupfs-root=/host/sys/fs/cgroup"
+      - "--wal-dir=/data"
+      # No API key in this single-project, anonymous-admin install. That keeps
+      # Coroot's default project as the implicit destination, matching the
+      # official Docker Compose deployment model.
+      # Coroot 1.21 exposes the current ingest API under /v1/*. Keeping these
+      # explicit avoids surprises if the agent's defaults change.
+      - "--metrics-endpoint=http://looma-coroot:8080/v1/metrics"
+      - "--traces-endpoint=http://looma-coroot:8080/v1/traces"
+      - "--logs-endpoint=http://looma-coroot:8080/v1/logs"
+      - "--profiles-endpoint=http://looma-coroot:8080/v1/profiles"
+      - "--scrape-interval=15s"
+      - "--log-per-second=20"
+      - "--log-burst=200"
+      - "--track-public-network=0.0.0.0/0"
+      # Disable the TCP-RTT pinger. It relies on SO_TIMESTAMPING hardware/kernel
+      # RX timestamps, which the Docker Desktop / WSL2 kernel does not provide, so
+      # it only spammed `pinger.go: failed to get RX timestamp: no timestamp
+      # found` errors without ever producing an RTT metric on this host.
+      - "--disable-pinger"
+    volumes:
+      - looma_coroot_node_agent_data:/data
+      - /sys/kernel/debug:/sys/kernel/debug:ro
+      - /sys/kernel/tracing:/sys/kernel/tracing:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+      - /etc/machine-id:/etc/machine-id:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - loomanet
+
+  coroot-cluster-agent:
+    # Official Coroot compose includes this alongside node-agent. It adds
+    # cluster-level discovery/metadata and keeps its own WAL so restarts don't
+    # lose queued metrics.
+    image: ghcr.io/coroot/coroot-cluster-agent:latest
+    container_name: looma-coroot-cluster-agent
+    restart: unless-stopped
+    pull_policy: always
+    depends_on:
+      coroot:
+        condition: service_started
+    command:
+      - "--coroot-url=http://looma-coroot:8080"
+      - "--config-update-interval=30s"
+      - "--config-update-timeout=10s"
+      - "--metrics-scrape-interval=15s"
+      - "--metrics-scrape-timeout=10s"
+      - "--metrics-wal-dir=/data"
+      - "--profiles-scrape-interval=60s"
+      - "--profiles-scrape-timeout=10s"
+      - "--track-database-changes"
+      - "--track-database-sizes"
+      - "--max-tables-per-database=2000"
+      - "--exclude-databases=admin"
+      - "--exclude-databases=config"
+      - "--exclude-databases=local"
+    volumes:
+      - looma_coroot_cluster_agent_data:/data
+    networks:
+      - loomanet

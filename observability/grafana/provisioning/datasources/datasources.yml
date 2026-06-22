@@ -1,0 +1,78 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://looma-prometheus:9091
+    isDefault: true
+    jsonData:
+      timeInterval: 15s
+
+  - name: OpenSearch-Logs
+    uid: opensearch-logs
+    type: grafana-opensearch-datasource
+    access: proxy
+    url: http://looma-opensearch:9200
+    # Vector ships docker logs into per-service indices: looma-logs-<container>-YYYY-MM-DD.
+    database: "looma-logs-*"
+    jsonData:
+      flavor: opensearch
+      version: 3.6.0
+      timeField: "@timestamp"
+      logMessageField: message
+      logLevelField: severityText
+
+  - name: OpenSearch-Traces
+    uid: opensearch-traces
+    type: grafana-opensearch-datasource
+    access: proxy
+    url: http://looma-opensearch:9200
+    database: "otel-v1-apm-span-*"
+    jsonData:
+      flavor: opensearch
+      version: 3.6.0
+      timeField: "startTime"
+
+  - name: OpenSearch-VectorLogs
+    uid: opensearch-vectorlogs
+    type: grafana-opensearch-datasource
+    access: proxy
+    url: http://looma-opensearch:9200
+    # Vector ships its own internal_logs into vector-logs-YYYY-MM-DD.
+    # The internal_logs source emits a top-level `timestamp` field — the
+    # docker_logs flow renames it to `@timestamp` but the internal flow does
+    # not, so we must point the datasource at the actual field name.
+    database: "vector-logs-*"
+    jsonData:
+      flavor: opensearch
+      version: 3.6.0
+      timeField: "timestamp"
+      logMessageField: message
+      logLevelField: metadata.level
+
+  - name: OpenSearch-Events
+    uid: opensearch-events
+    type: grafana-opensearch-datasource
+    access: proxy
+    url: http://looma-opensearch:9200
+    # Data Prepper writes OTLP logs into `otel-events` (and potentially rolled indices).
+    database: "otel-events*"
+    jsonData:
+      flavor: opensearch
+      version: 3.6.0
+      timeField: "time"
+      logMessageField: body
+      logLevelField: severityText
+
+  - name: OpenSearch-Metricbeat
+    uid: opensearch-metricbeat
+    type: grafana-opensearch-datasource
+    access: proxy
+    url: http://looma-opensearch:9200
+    database: "metricbeat-*"
+    jsonData:
+      flavor: opensearch
+      version: 3.6.0
+      timeField: "@timestamp"

@@ -1,0 +1,486 @@
+s:
+  # ----- Apps / PHP / browser RUM -----
+  # NOTE: in collector v0.151+ the inline alias is `otlp_grpc`/`otlp_http`. We
+  # use the canonical receiver here which configures both protocols at once.
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins: ["*"]
+          allowed_headers: ["*"]
+        max_request_body_size: 33554432
+      grpc:
+        endpoint: 0.0.0.0:4317
+        max_recv_msg_size_mib: 32
+
+  # ----- Host OS metrics -----
+  host_metrics:
+    collection_interval: 30s
+    root_path: /hostfs
+    scrapers:
+      cpu:
+        metrics:
+          system.cpu.utilization:
+            enabled: true
+      load: {}
+      memory:
+        metrics:
+          system.memory.utilization:
+            enabled: true
+      disk: {}
+      filesystem:
+        exclude_mount_points:
+          match_type: regexp
+          mount_points:
+            - ^/parent-distro($|/)
+            - ^/mnt/docker-desktop-disk($|/)
+            - ^/mnt/host/wsl($|/)
+           receiver - ^/mnt/host/wslg($|/)
+            - ^/run/desktop/mnt/host/wsl($|/)
+            - ^/run/desktop/mnt/host/wslg($|/)
+            - ^/run/desktop/mnt/docker-desktop-disk($|/)
+        metrics:
+          system.filesystem.utilization:
+            enabled: true
+      network: {}
+
+  # ----- Per-container stats -----
+  docker_stats:
+    endpoint: unix:///var/run/docker.sock
+    collection_interval: 20s
+    timeout: 5s
+
+  # ----- MongoDB -----
+  # Disabled by default: mongodbreceiver expects a replica set and will spam
+  # errors when MongoDB is running standalone.
+  # mongodb:
+  #   hosts:
+  #     - endpoint: looma-db:27017
+  #   collection_interval: 30s
+  #   initial_delay: 5s
+
+  # ----- Apache log file tail -----
+  file_log/apache:
+    include:
+      - /var/log/apache2/*.log
+    start_at: end
+    include_file_path: true
+    include_file_name: true
+    operators:
+      - type: regex_parser
+        regex: '^(?P<remote>\S+)\s\S+\s\S+\s\[(?P<ts>[^\]]+)\]\s"(?P<method>\w+)\s(?P<path>\S+)\s\S+"\s(?P<status>\d+)\s(?P<size>\S+)'
+        on_error: send
+
+processors:
+  batch:
+    timeout: 2s
+    send_batch_size: 512
+    send_batch_max_size: 2048
+
+  memory_limiter:
+    check_interval: 2s
+    limit_mib: 1024
+    spike_limit_mib: 256
+
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: "looma"
+        action: upsert
+      - key: service.namespace
+        value: "looma"
+        action: upsert
+
+  # Drop the noisy hostmetrics/docker counters that the contrib build
+  # publishes in two conflicting types, plus health-check spans.
+  filter/dedupe_metrics:
+    error_mode: ignore
+    metrics:
+      metric:
+        - 'name == "system.disk.io_time"'
+        - 'name == "system.disk.weighted_io_time"'
+        - 'name == "system.network.io"'
+        - 'name == "system.network.packets"'
+        - 'name == "system.network.dropped"'
+        - 'name == "system.paging.operations"'
+        - 'name == "system.paging.faults"'
+        - 'name == "container.cpu.usage.total"'
+        - 'name == "container.cpu.usage.kernelmode"'
+        - 'name == "container.cpu.usage.usermode"'
+        - 'name == "container.blockio.io_service_bytes_recursive"'
+        - 'name == "container.network.io.usage.tx_bytes"'
+        - 'name == "container.network.io.usage.rx_bytes"'
+
+  filter/no_health:
+    error_mode: ignore
+    traces:
+      span:
+        - 'attributes["url.path"] == "/health" or attributes["http.target"] == "/health"'
+
+  # Workaround for OpenSearch mapping conflicts where MongoDB collection
+  # attributes were previously auto-mapped as `long`, causing spans carrying the
+  # actual collection name string to be permanently rejected. Preserve the value
+  # under a fresh Looma-specific attribute and remove the conflicting names.
+  attributes/drop_bad_mongo_collection:
+    actions:
+      - key: looma.mongodb_collection
+        from_attribute: db.mongodb.collection_name
+        action: insert
+      - key: looma.mongodb_collection
+        from_attribute: db.mongodb.collection
+        action: insert
+      - key: db.mongodb.collection_name
+        action: delete
+      - key: db.mongodb.collection
+        action: delete
+
+  # Same defensive rename for any other attribute that has historically been
+  # auto-mapped to `long` by OpenSearch dynamic mapping. Add new entries here
+  # if the collector logs `mapper_parsing_exception` for new attribute names.
+  attributes/string_safe:
+    actions:
+      - key: looma.grade
+        action: upsert
+        from_attribute: looma.grade
+      - key: looma.chapter_id
+        action: upsert
+        from_attribute: looma.chapter_id
+
+  tail_sampling:
+    decision_wait: 10s
+    num_traces: 100000
+    expected_new_traces_per_sec: 200
+    policies:
+      - name: errors-always
+        type: status_code
+        status_code: { status_codes: [ERROR] }
+      - name: slow-keep
+        type: latency
+        latency: { threshold_ms: 750 }
+      - name: looma-domain-keep
+        type: string_attribute
+        string_attribute:
+          key: looma.event
+          values: [score, chapter_time, page, lang_switch]
+      - name: random-50
+        type: probabilistic
+        probabilistic: { sampling_percentage: 50 }
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+    path: /
+  zpages:
+    endpoint: 0.0.0.0:1888
+  pprof:
+    endpoint: 0.0.0.0:1777
+  file_storage/otc:
+    directory: /var/lib/otelcol/file_storage
+    timeout: 1s
+    compaction:
+      directory: /var/lib/otelcol/file_storage
+      on_start: true
+      on_rebound: true
+      rebound_needed_threshold_mib: 100
+      rebound_trigger_threshold_mib: 10
+
+exporters:
+  # === TRACE BACKENDS ===
+  otlp_grpc/data_prepper_traces:
+    endpoint: looma-data-prepper:21890
+    tls:
+      insecure: true
+    timeout: 30s
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 5000
+      storage: file_storage/otc
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 5m
+
+  # Coroot ingests OTLP traces over HTTP at :8080/v1/traces — the SAME endpoint
+  # its node-agent ships spans to, proven to land in the ClickHouse DB Coroot
+  # queries for its Traces UI. Its :4317 gRPC server accepts the connection but
+  # does NOT persist app spans sent there (they vanish, no error), so we must use
+  # the HTTP path, otherwise Coroot only ever shows node-agent eBPF spans.
+  otlphttp/coroot:
+    traces_endpoint: http://looma-coroot:8080/v1/traces
+    # Coroot routes ingested OTLP to a project by the x-api-key header. Without
+    # it Coroot answers 200 but DROPS the spans (no project), which is why app
+    # traces never appeared. The all-zeros key is Coroot's built-in "Default
+    # project access (no API key required)" key — portable for this single,
+    # anonymous-admin project (no env-specific secret baked into the config).
+    headers:
+      x-api-key: "00000000000000000000000000000000"
+    compression: none
+    tls:
+      insecure: true
+    timeout: 30s
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 5000
+      storage: file_storage/otc
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 5m
+
+  opensearch/traces:
+    http:
+      endpoint: http://looma-opensearch:9200
+      tls:
+        insecure: true
+    logs_index: otel-traces
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 5000
+      storage: file_storage/otc
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 5m
+
+  # === LOG BACKENDS ===
+  otlp_grpc/data_prepper_logs:
+    endpoint: looma-data-prepper:21892
+    tls:
+      insecure: true
+    timeout: 30s
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 5000
+      storage: file_storage/otc
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 5m
+
+  opensearch/logs:
+    http:
+      endpoint: http://looma-opensearch:9200
+      tls:
+        insecure: true
+    logs_index: looma-app-logs
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 5000
+      storage: file_storage/otc
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 5m
+
+  # === COROOT VIA CLICKHOUSE ===
+  # Coroot's service map and root-cause inference run on top of OpenTelemetry
+  # traces / logs stored in ClickHouse (the same ClickHouse instance that
+  # backs the Coroot UI). The contrib `clickhouse` exporter writes the
+  # standard OTel schema (otel_traces, otel_logs, ...); Coroot is then
+  # pointed at this database via the project's "OpenTelemetry" data source.
+  #
+  # The same spans are still shipped to OpenSearch + Data Prepper, so the
+  # existing Trace Analytics / Service Map keep working. ClickHouse becomes
+  # a third trace backend dedicated to Coroot.
+  clickhouse/coroot:
+    endpoint: tcp://looma-clickhouse:9000
+    username: coroot
+    password: coroot
+    # Use a SEPARATE database from Coroot's own. Coroot also writes to
+    # `coroot.otel_logs` from the node-agent packet capture path, but with a
+    # different column type for SeverityNumber (UInt8). When the OTel
+    # exporter creates `otel_logs` with its own schema (UInt32) in the same
+    # database, every node-agent packet handle then fails with
+    # `TYPE_MISMATCH (53): Cannot convert: UInt32 to UInt8`. Putting the OTel
+    # tables in their own database avoids the column-type clash entirely;
+    # Coroot reads from this database via the project's OpenTelemetry data
+    # source (configured in the UI: Settings → Integrations → OpenTelemetry).
+    database: otel
+    create_schema: true
+    traces_table_name: otel_traces
+    logs_table_name: otel_logs
+    ttl: 168h        # 7 days, matches the OpenSearch trace retention.
+    # 10s wasn't enough under sustained load — ClickHouse can take longer to
+    # ack a large batch, causing the exporter to log "context deadline
+    # exceeded" while the insert is in fact still running. 30s gives the
+    # server room to finish; the retry/queue handles real failures.
+    timeout: 30s
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 5000
+      storage: file_storage/otc
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 5m
+
+  # === METRIC BACKENDS ===
+  otlp_grpc/data_prepper_metrics:
+    endpoint: looma-data-prepper:21891
+    tls:
+      insecure: true
+    timeout: 30s
+    sending_queue:
+      enabled: true
+      num_consumers: 4
+      queue_size: 5000
+      storage: file_storage/otc
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 5m
+
+  # Application + host + docker + mongo metrics on :8889.
+  prometheus/app:
+    endpoint: "0.0.0.0:8889"
+    namespace: ""
+    send_timestamps: true
+    metric_expiration: 5m
+    add_metric_suffixes: true
+    resource_to_telemetry_conversion:
+      enabled: true
+
+  # Span-derived RED metrics on :8890 (separate registry → no type collisions).
+  prometheus/spans:
+    endpoint: "0.0.0.0:8890"
+    namespace: ""
+    send_timestamps: true
+    metric_expiration: 5m
+    add_metric_suffixes: true
+    resource_to_telemetry_conversion:
+      enabled: false
+
+  debug:
+    verbosity: basic
+
+connectors:
+  forward/traces: {}
+  forward/logs: {}
+
+  span_metrics:
+    histogram:
+      explicit:
+        buckets: [5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2.5s, 5s, 10s]
+    # Emits Prometheus series traces_span_metrics_calls_total and
+    # traces_span_metrics_duration_milliseconds_bucket — RED metrics that
+    # the Grafana dashboards query.
+    namespace: traces.span.metrics
+    dimensions:
+      - name: http.method
+      - name: http.status_code
+      - name: http.route
+      - name: rpc.grpc.status_code
+      - name: looma.subject
+      - name: looma.grade
+      - name: looma.chapter_id
+    aggregation_temporality: AGGREGATION_TEMPORALITY_CUMULATIVE
+    metrics_flush_interval: 30s
+
+  service_graph:
+    latency_histogram_buckets: [10ms, 50ms, 100ms, 250ms, 500ms, 1s, 2s, 5s]
+    metrics_flush_interval: 30s
+    dimensions:
+      - looma.subject
+      - looma.grade
+    store:
+      ttl: 2s
+      max_items: 200000
+
+  count:
+    logs:
+      looma.score.events:
+        description: Score events from quizzes/exams/games
+        conditions:
+          - 'attributes["looma.event"] == "score"'
+      looma.page.events:
+        description: Page-hit events
+        conditions:
+          - 'attributes["looma.event"] == "page"'
+      looma.chapter_time.events:
+        description: Chapter-time events
+        conditions:
+          - 'attributes["looma.event"] == "chapter_time"'
+
+service:
+  extensions: [health_check, zpages, pprof, file_storage/otc]
+  telemetry:
+    metrics:
+      readers:
+        - pull:
+            exporter:
+              prometheus:
+                host: 0.0.0.0
+                port: 8888
+    logs:
+      level: info
+      encoding: console
+  pipelines:
+    # === TRACES ===
+    traces/in:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [forward/traces]
+
+    traces:
+      receivers: [forward/traces]
+      processors: [filter/no_health, attributes/drop_bad_mongo_collection, batch]
+      # App spans are exported to Coroot's OTLP/HTTP ingest (looma-coroot:8080
+      # /v1/traces) so they land in the ClickHouse DB Coroot queries for its
+      # Traces UI and app model, merging with the node-agent's eBPF spans.
+      #
+      # NOTE: only the OTLP exporter is wired in — NOT the `clickhouse/coroot`
+      # exporter. That one creates its DB at startup and CRASH-LOOPS the whole
+      # collector when looma-clickhouse is absent (e.g. the 8 GB odroid, where
+      # Coroot is off behind the `heavy` profile). The OTLP exporter merely
+      # queues + retries when Coroot is unreachable, so it is safe everywhere.
+      exporters: [otlp_grpc/data_prepper_traces, opensearch/traces, otlphttp/coroot]
+
+    traces/metricsgen:
+      receivers: [forward/traces]
+      processors: [attributes/drop_bad_mongo_collection, batch]
+      exporters: [span_metrics, service_graph]
+
+    traces/sampled:
+      receivers: [forward/traces]
+      processors: [tail_sampling, attributes/drop_bad_mongo_collection, batch]
+      exporters: [opensearch/traces]
+
+    # === METRICS — APP + HOST + DOCKER + MONGO ===
+    metrics:
+      receivers: [otlp, host_metrics, docker_stats]
+      processors: [memory_limiter, resource, filter/dedupe_metrics, batch]
+      exporters: [prometheus/app, otlp_grpc/data_prepper_metrics]
+
+    metrics/spanmetrics:
+      receivers: [span_metrics, service_graph]
+      processors: [batch]
+      exporters: [prometheus/spans, otlp_grpc/data_prepper_metrics]
+
+    # === LOGS ===
+    logs/in:
+      receivers: [otlp, file_log/apache]
+      processors: [memory_limiter, resource, batch]
+      exporters: [forward/logs]
+
+    logs:
+      receivers: [forward/logs]
+      processors: [batch]
+      exporters: [otlp_grpc/data_prepper_logs, opensearch/logs, count]
+
+    metrics/from_logs:
+      receivers: [count]
+      exporters: [prometheus/app, otlp_grpc/data_prepper_metrics]

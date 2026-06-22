@@ -1,0 +1,18 @@
+// ONE TIME program to
+//    scan through specified documents in dictionary collection
+//    look for duplicates (based on same 'en' and 'def)
+//    and delete all but the first entry
+//
+//    run in MONGO SHELL with: load('dictionaryDeleteDuplicates')
+
+var docs, doc, en;
+var count = 0;
+
+docs = db.dictionary.find();
+while (docs.hasNext()) {
+	doc = docs.next();
+	count++;
+	en = doc['en'];
+	print(en);
+};
+print('Number of words = ' + count);

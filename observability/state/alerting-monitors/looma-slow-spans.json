@@ -1,0 +1,61 @@
+{
+  "type": "monitor",
+  "name": "looma-slow-spans",
+  "enabled": true,
+  "schedule": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "monitor_type": "query_level_monitor",
+  "inputs": [
+    {
+      "search": {
+        "indices": [
+          "otel-v1-apm-span-*"
+        ],
+        "query": {
+          "size": 0,
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "startTime": {
+                      "gte": "now-5m",
+                      "lte": "now"
+                    }
+                  }
+                },
+                {
+                  "range": {
+                    "durationInNanos": {
+                      "gte": 2000000000
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "query_level_trigger": {
+        "id": "looma-slow-spans-trigger",
+        "name": "Slow spans detected",
+        "severity": "3",
+        "condition": {
+          "script": {
+            "source": "ctx.results[0].hits.total.value > 0",
+            "lang": "painless"
+          }
+        },
+        "actions": []
+      }
+    }
+  ]
+}

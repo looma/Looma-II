@@ -1,0 +1,40 @@
+{
+  "name": "looma-log-volume-anomaly",
+  "description": "Per-service log volume anomalies (flood = problem; silence = a service stopped logging / crashed).",
+  "time_field": "@timestamp",
+  "indices": [
+    "looma-logs-*"
+  ],
+  "category_field": [
+    "serviceName.keyword"
+  ],
+  "filter_query": {
+    "match_all": {}
+  },
+  "detection_interval": {
+    "period": {
+      "interval": 2,
+      "unit": "MINUTES"
+    }
+  },
+  "window_delay": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "schema_version": 0,
+  "feature_attributes": [
+    {
+      "feature_name": "log_events",
+      "feature_enabled": true,
+      "aggregation_query": {
+        "log_events": {
+          "value_count": {
+            "field": "@timestamp"
+          }
+        }
+      }
+    }
+  ]
+}

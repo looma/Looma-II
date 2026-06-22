@@ -1,0 +1,73 @@
+{
+  "type": "monitor",
+  "name": "looma-ingestion-failures",
+  "enabled": true,
+  "schedule": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "monitor_type": "query_level_monitor",
+  "inputs": [
+    {
+      "search": {
+        "indices": [
+          "looma-logs-looma-vector-*",
+          "looma-logs-looma-data-prepper-*",
+          "looma-logs-looma-otel-collector-*"
+        ],
+        "query": {
+          "size": 0,
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "@timestamp": {
+                      "gte": "now-5m",
+                      "lte": "now"
+                    }
+                  }
+                }
+              ],
+              "should": [
+                {
+                  "match": {
+                    "message": "failed failure error dropped rejected timeout refused"
+                  }
+                },
+                {
+                  "terms": {
+                    "level.keyword": [
+                      "ERROR",
+                      "FATAL",
+                      "WARN"
+                    ]
+                  }
+                }
+              ],
+              "minimum_should_match": 1
+            }
+          }
+        }
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "query_level_trigger": {
+        "id": "looma-ingestion-failures-trigger",
+        "name": "Ingestion failures detected",
+        "severity": "2",
+        "condition": {
+          "script": {
+            "source": "ctx.results[0].hits.total.value > 0",
+            "lang": "painless"
+          }
+        },
+        "actions": []
+      }
+    }
+  ]
+}

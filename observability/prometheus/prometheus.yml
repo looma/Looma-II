@@ -1,0 +1,60 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    deployment: looma
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9091"]
+
+  # OTel Collector — application + host + docker + mongo + log-derived counters.
+  - job_name: otel-collector-app
+    static_configs:
+      - targets: ["looma-otel-collector:8889"]
+
+  # OTel Collector — span-derived RED metrics (separate registry to avoid type clashes).
+  - job_name: otel-collector-spans
+    static_configs:
+      - targets: ["looma-otel-collector:8890"]
+
+  # OTel Collector's own internal telemetry metrics.
+  - job_name: otelcol_internal
+    static_configs:
+      - targets: ["looma-otel-collector:8888"]
+
+  # Vector's internal metrics (events processed, sink errors, ...).
+  - job_name: vector
+    static_configs:
+      - targets: ["looma-vector:8889"]
+
+  # docker-stats-exporter — per-container CPU / memory / network / IO.
+  - job_name: docker_stats
+    static_configs:
+      - targets: ["looma-docker-stats:9417"]
+
+  # Looma services export metrics via OpenTelemetry -> looma-otel-collector.
+  # Do not scrape apps directly unless they explicitly expose /metrics.
+
+  # Grafana itself.
+  - job_name: grafana
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["looma-grafana:3000"]
+
+  # Data Prepper — pipeline depth / sink failures.
+  - job_name: data-prepper
+    metrics_path: /metrics/prometheus
+    static_configs:
+      - targets: ["looma-data-prepper:4900"]
+
+  # NOTE: previously we tried to scrape /metrics from looma-coroot,
+  # looma-coroot-node-agent and looma-clickhouse, but in the deployed mode:
+  #   - coroot's :8080 serves the SPA HTML (no Prom exposition)
+  #   - the node-agent runs in push mode (--api-key); its --listen port
+  #     does not bind a /metrics endpoint
+  #   - clickhouse-server needs `prometheus.endpoint=/metrics` enabled in
+  #     config.xml before :9363 returns anything
+  # The data we actually want from these is delivered via Coroot's remote
+  # write to Prometheus, so no scrape jobs are needed here.

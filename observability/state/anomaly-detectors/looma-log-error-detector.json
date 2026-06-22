@@ -1,0 +1,62 @@
+{
+  "name": "looma-log-error-anomaly",
+  "description": "Per-service anomalous error/warn log volume (level ERROR/FATAL/WARN or error-like message text).",
+  "time_field": "@timestamp",
+  "indices": [
+    "looma-logs-*"
+  ],
+  "category_field": [
+    "serviceName.keyword"
+  ],
+  "filter_query": {
+    "bool": {
+      "should": [
+        {
+          "terms": {
+            "level.keyword": [
+              "ERROR",
+              "FATAL",
+              "WARN",
+              "error",
+              "fatal",
+              "warn",
+              "warning"
+            ]
+          }
+        },
+        {
+          "match": {
+            "message": "error exception fatal failed timeout refused panic traceback"
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  "detection_interval": {
+    "period": {
+      "interval": 2,
+      "unit": "MINUTES"
+    }
+  },
+  "window_delay": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "schema_version": 0,
+  "feature_attributes": [
+    {
+      "feature_name": "error_logs",
+      "feature_enabled": true,
+      "aggregation_query": {
+        "error_logs": {
+          "value_count": {
+            "field": "@timestamp"
+          }
+        }
+      }
+    }
+  ]
+}

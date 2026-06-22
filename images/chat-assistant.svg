@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Chat bubble background (dark) -->
+  <rect x="50" y="50" width="360" height="280" rx="40" ry="40" fill="#1a1a1a"/>
+  
+  <!-- Chat bubble pointer -->
+  <polygon points="180,330 120,400 200,330" fill="#1a1a1a"/>
+  
+  <!-- Three dots (messaging indicator) -->
+  <!-- Left dot -->
+  <circle cx="150" cy="190" r="35" fill="#ffffff"/>
+  
+  <!-- Middle dot -->
+  <circle cx="256" cy="190" r="35" fill="#ffffff"/>
+  
+  <!-- Right dot -->
+  <circle cx="362" cy="190" r="35" fill="#ffffff"/>
+</svg>

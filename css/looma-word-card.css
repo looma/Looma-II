@@ -1,0 +1,259 @@
+/*
+ * looma-word-card.css
+ * Styling for inline word definition cards shown on word selection/hover
+ */
+
+.looma-word-card {
+    background: white;
+    border: 2px solid var(--looma-blue, #091F48);
+    border-radius: 10px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.32);
+    padding: 18px 22px;
+    max-width: 440px;
+    min-width: 340px;
+    font-size: 1.15em;
+    line-height: 1.45;
+    z-index: 10000;
+    pointer-events: auto;
+    animation: wordCardSlideIn 0.2s ease;
+}
+
+@keyframes wordCardSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* The header centres the (trimmed) word at the top of the card; the close
+   button is taken out of the flow so it never pushes the word off-centre. */
+.word-card-header {
+    position: relative;
+    display: block;
+    text-align: center;
+    margin-bottom: 14px;
+    padding: 0 36px 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.word-text {
+    display: block;
+    font-weight: bold;
+    font-size: 1.55em;
+    color: var(--looma-blue, #091F48);
+    word-break: break-word;
+    text-align: center;
+}
+
+.word-card-close {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: none;
+    border: none;
+    font-size: 2em;
+    line-height: 1;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.word-card-close:hover {
+    color: #000;
+}
+
+.word-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.word-definition,
+.word-translation {
+    font-size: 1.05em;
+    line-height: 1.5;
+    color: #333;
+}
+
+.word-definition strong,
+.word-translation strong {
+    color: var(--looma-blue, #091F48);
+    font-weight: 700;
+    font-size: 1.05em;
+}
+
+.word-definition {
+    max-height: 140px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.word-translation {
+    font-style: italic;
+    color: #555;
+}
+
+/* Definition states used by the online-fallback flow.
+   'pending' = "Looking up online…", 'none' = no definition available. */
+.word-definition-pending,
+.word-definition-none {
+    font-style: italic;
+    color: #888;
+}
+
+/* A definition fetched from the internet is tagged so it is clear it did
+   not come from Looma's own dictionary. */
+.word-definition-online::after {
+    content: " (online)";
+    font-size: 0.8em;
+    font-style: italic;
+    color: #888;
+}
+
+.word-card-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.word-tts-button {
+    background-color: var(--looma-toolbar, #FFE44D);
+    border: 2px solid var(--looma-blue, #091F48);
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    font-weight: bold;
+    font-size: 1.05em;
+    min-width: 150px;
+    height: 48px;
+}
+
+.word-tts-button:hover {
+    background-color: var(--looma-blue, #091F48);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.word-tts-button:active {
+    transform: scale(0.95);
+}
+
+.word-tts-button.disabled,
+.word-tts-button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.word-tts-button.disabled:hover,
+.word-tts-button:disabled:hover {
+    background-color: var(--looma-toolbar, #FFE44D);
+    color: inherit;
+    box-shadow: none;
+    transform: none;
+}
+
+.word-tts-button img {
+    height: 70%;
+    width: auto;
+    filter: invert(0);
+}
+
+.word-tts-button:hover img {
+    filter: invert(1);
+}
+
+.word-tts-button.disabled:hover img,
+.word-tts-button:disabled:hover img {
+    filter: invert(0);
+}
+
+.word-tts-button span {
+    line-height: 1.1;
+}
+
+/* Responsive adjustments — the card stays comfortably readable even when
+   the viewport is narrow. */
+@media screen and (max-width: 500px) {
+    .looma-word-card {
+        min-width: 260px;
+        max-width: 94vw;
+        font-size: 1em;
+        padding: 14px 16px;
+    }
+
+    .word-text {
+        font-size: 1.3em;
+    }
+
+    .word-definition {
+        max-height: 110px;
+        font-size: 1em;
+    }
+
+    .word-translation {
+        font-size: 1em;
+    }
+
+    .word-tts-button {
+        min-width: 130px;
+        height: 44px;
+        font-size: 1em;
+    }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+    .looma-word-card {
+        background: #2a2a2a;
+        border-color: #FFE44D;
+        color: #f0f0f0;
+    }
+    
+    .word-text {
+        color: #FFE44D;
+    }
+    
+    .word-definition,
+    .word-translation {
+        color: #e0e0e0;
+    }
+    
+    .word-definition strong,
+    .word-translation strong {
+        color: #FFE44D;
+    }
+    
+    .word-card-close {
+        color: #999;
+    }
+    
+    .word-card-close:hover {
+        color: #fff;
+    }
+    
+    .word-card-header,
+    .word-card-actions {
+        border-color: #444;
+    }
+}

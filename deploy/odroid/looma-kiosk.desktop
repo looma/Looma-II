@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Looma Kiosk
+Comment=Wait for Looma to be ready, then open it fullscreen (Chromium kiosk)
+# @KIOSK_URL@ is substituted by install-odroid.sh. Waits up to ~5 min for
+# looma-web to answer, then launches Chromium in kiosk mode. Works with either
+# the chromium-browser or chromium (snap) command.
+Exec=bash -lc 'for i in $(seq 1 60); do curl -fsS -o /dev/null "@KIOSK_URL@" && break; sleep 5; done; CB=$(command -v chromium-browser || command -v chromium); exec "$CB" --kiosk --incognito --noerrdialogs --disable-infobars --disable-session-crashed-bubble --check-for-update-interval=31536000 "@KIOSK_URL@"'
+X-GNOME-Autostart-enabled=true
+Terminal=false

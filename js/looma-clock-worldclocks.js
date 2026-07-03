@@ -39,8 +39,11 @@ window.onload = function() {
 
     var allCanvases = [nepal, melbourne, newYork, paris, london, sanFrancisco, moscow, cairo];
     var allCanvasContexts = [ctx1, ctx2, ctx3, ctx4, ctx5, ctx6, ctx7, ctx8];
-    var names =       ["Kathmandu, Nepal", "Tokyo, Japan", "New York City, United States",
-                       "Paris, France", "London, England", "San Francisco, United States", "Moscow, Russia", "Cairo, Egypt"];
+    // real IANA time zones (same order as the canvases) so the browser applies DST automatically
+    var zones =       ["Asia/Kathmandu", "Asia/Tokyo", "America/New_York",
+                       "Europe/Paris", "Europe/London", "America/Los_Angeles", "Europe/Moscow", "Africa/Cairo"];
+    var names =       ["Kathmandu, Nepal", "Tokyo, Japan", "New York City, USA",
+                       "Paris, France", "London, England", "San Francisco, USA", "Moscow, Russia", "Cairo, Egypt"];
     var nativeNames = ["काठमॉनडु, नेपाल",     "टोक्यो, जापान",   "न्यूयोर्क शहर, संयुक्त राज्य अमेरिका",
                        "पेरिस, फ्रान्स",     "लन्डन, इङ्गल्याण्ड",   "सैन फ्रान्सिस्को, संयुक्त राज्य अमेरिका",  "मास्को, रूस",       "कायरो, इजीपट"];
     
@@ -85,25 +88,37 @@ window.onload = function() {
         drawAllNames();
     });
     
-    // var secondtimer = setInterval(nextTime, 1000);
+    var secondtimer = setInterval(nextTime, 1000);   // tick the clocks + time labels every second
     
-    function drawClock(distanceM, distanceH, ctx) {
+    // current { hour:0-23, minute, second } in a given IANA time zone (DST applied by the browser)
+    function getZoneTime(zone) {
+        var parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: zone, hour12: false,
+            hour: '2-digit', minute: '2-digit', second: '2-digit'
+        }).formatToParts(new Date());
+        var t = { hour: 0, minute: 0, second: 0 };
+        parts.forEach(function(p) {
+            if (p.type === 'hour')   t.hour   = parseInt(p.value, 10);
+            if (p.type === 'minute') t.minute = parseInt(p.value, 10);
+            if (p.type === 'second') t.second = parseInt(p.value, 10);
+        });
+        if (t.hour === 24) t.hour = 0;   // some browsers format midnight as "24"
+        return t;
+    }
+
+    function drawClock(zone, ctx) {
+        var t = getZoneTime(zone);
         drawFace(ctx);
         drawNumbers(ctx);
         drawTicks(ctx, radius * 0.02);
-        drawTime(ctx, hour + distanceH, minute + distanceM, second);
-        drawDigitalTime(hour + distanceH, minute + distanceM, ctx);
+        drawTime(ctx, t.hour, t.minute, t.second);
+        drawDigitalTime(t.hour, t.minute, ctx);
     }
 
     function drawAllClocks() {
-        drawClock(45, 5, ctx1); //kathmandu
-        drawClock(0, 9, ctx2);  //tokyo
-        drawClock(0, -5, ctx3); //new york
-        drawClock(0, 1, ctx4);  //paris
-        drawClock(0, 0, ctx5);  //london
-        drawClock(0, -8, ctx6); //san francisco
-        drawClock(0, 3, ctx7);  //moscow
-        drawClock(0, 2, ctx8);  //cairo
+        for (var i = 0; i < allCanvasContexts.length; i++) {
+            drawClock(zones[i], allCanvasContexts[i]);
+        }
     }
     
     function eraseName(ctx, name) {
@@ -119,20 +134,17 @@ window.onload = function() {
     }
     
     function drawAllNames() {
-        if (language === 'english')
-            for (num = 0; num < names.length; num++) {
-                eraseName(allCanvasContexts[num], nativeNames[num]);
-                drawName(allCanvasContexts[num], names[num]);
-            }
-        else for (num = 0; num < nativeNames.length; num++) {
-            eraseName(allCanvasContexts[num], names[num]);
-            drawName(allCanvasContexts[num], nativeNames[num]);
+        // write the "City, Country" label into the HTML element above each clock
+        var labels = (language === 'english') ? names : nativeNames;
+        for (num = 0; num < allCanvases.length; num++) {
+            var nameEl = document.getElementById(allCanvases[num].id + '-name');
+            if (nameEl) nameEl.textContent = labels[num];
         }
     };
     
   
     function nextTime() {
-        incrementSecond();
+        // redraw from the real current time each tick (no manual counter to drift)
         drawAllClocks();
     }
     
@@ -287,12 +299,9 @@ window.onload = function() {
             }
         }
     
-        ctx.fillStyle = "black";
-        ctx.font = "18px Chalkboard";
-        //ctx.font = "25px Ariel";
-        ctx.clearRect(-radius * 2 / 3, radius, radius * 1.5, radius / 2);
-        ctx.fillText((language==='english' ? digitalTime : nepaliTime), 0, radius + 12);
-       // ctx.fillText(digitalTime, 0, radius + 12);
+        // write the time into the HTML element below this clock (styled yellow in CSS)
+        var timeEl = document.getElementById(ctx.canvas.id + '-time');
+        if (timeEl) timeEl.textContent = (language === 'english' ? digitalTime : nepaliTime);
     } // end drawDigitalTime()
                             
                             /*    function drawDigitalTime(hours, minutes, ctx) {

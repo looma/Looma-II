@@ -152,7 +152,6 @@ $(document).ready (function() {
 //draw the hands on the clock depending on the hour, minute, and second
     function drawTime(hour, minute, second) {
         var newHour = hour;
-        var newMinute = minute;
         
         if (newHour > 12) {
             newHour = newHour - 12;
@@ -239,6 +238,7 @@ $(document).ready (function() {
             document.getElementById("b2").style.display = 'none';
             document.getElementById("c").style.display = 'none';
             document.getElementById("d").style.display = 'none';
+            document.getElementById("e").style.display = 'none';   // Stopwatch & Timer button
             currentTimeSwitch.style.display = 'none';
             document.getElementById("dragHands").innerHTML = "";
         }
@@ -248,6 +248,7 @@ $(document).ready (function() {
             document.getElementById("b2").style.display = 'block';
             document.getElementById("c").style.display = 'block';
             document.getElementById("d").style.display = 'block';
+            document.getElementById("e").style.display = 'block';   // Stopwatch & Timer button
             currentTimeSwitch.style.display = 'block';
             document.getElementById("dragHands").innerHTML = "Drag and drop the hour or minute hand!";
         }
@@ -629,14 +630,12 @@ $(document).ready (function() {
     toCurrentTime();
     
     function clearTimers() {
-        for(var i=0; i < timer; i+=1) {clearInterval(i);}
-        timer = 0;
+        if (timer) { clearInterval(timer); }  // stop the actual running interval
+        timer = false;                        // mark "no timer running" (matches checks elsewhere)
     };  // end clearTimers()
     
     window.onbeforeunload = clearTimers;
   
-    $(document).ready(function() {
-        toolbar_button_activate("clock");
-    });
+    toolbar_button_activate("clock");   // already inside the outer $(document).ready
     
 });

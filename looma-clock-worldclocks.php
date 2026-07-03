@@ -24,34 +24,56 @@ $page_title = 'Looma - Time';
 </head>
 
 <body>
-    <div id="main-container-horizontal">
+    <div id="main-container-horizontal" class="wc-page">
 
         <h1 id="header-row"> <?php keyword("Looma Clock") ?></h1><br>
         <h2 class = "credit"> <?php keyword("Clocks Around the World") ?></h2>
 
 
         <div id="clockrow1" class="clock-row">
-        <canvas id="nepal" width="220" height="220">
-        </canvas>
-        <canvas id="tokyo" width="220" height="220">
-        </canvas>
-        <canvas id="newYork" width="220" height="220">
-        </canvas>
-        <canvas id="paris" width="220" height="220">
-        </canvas>
-        </div>
-        <div id="namerow2" class="name-row">
-
-            <div id="clockrow2" class="clock-row">
-            <canvas id="london" width="220" height="220">
-        </canvas>
-        <canvas id="sanFrancisco" width="220" height="220">
-        </canvas>
-        <canvas id="moscow" width="220" height="220">
-        </canvas>
-        <canvas id="cairo" width="220" height="220">
-        </canvas>
+            <div class="wc-clock">
+                <div class="wc-name" id="nepal-name"></div>
+                <canvas id="nepal" width="220" height="220"></canvas>
+                <div class="wc-time" id="nepal-time"></div>
             </div>
+            <div class="wc-clock">
+                <div class="wc-name" id="tokyo-name"></div>
+                <canvas id="tokyo" width="220" height="220"></canvas>
+                <div class="wc-time" id="tokyo-time"></div>
+            </div>
+            <div class="wc-clock">
+                <div class="wc-name" id="newYork-name"></div>
+                <canvas id="newYork" width="220" height="220"></canvas>
+                <div class="wc-time" id="newYork-time"></div>
+            </div>
+            <div class="wc-clock">
+                <div class="wc-name" id="paris-name"></div>
+                <canvas id="paris" width="220" height="220"></canvas>
+                <div class="wc-time" id="paris-time"></div>
+            </div>
+        </div>
+        <div id="clockrow2" class="clock-row">
+            <div class="wc-clock">
+                <div class="wc-name" id="london-name"></div>
+                <canvas id="london" width="220" height="220"></canvas>
+                <div class="wc-time" id="london-time"></div>
+            </div>
+            <div class="wc-clock">
+                <div class="wc-name" id="sanFrancisco-name"></div>
+                <canvas id="sanFrancisco" width="220" height="220"></canvas>
+                <div class="wc-time" id="sanFrancisco-time"></div>
+            </div>
+            <div class="wc-clock">
+                <div class="wc-name" id="moscow-name"></div>
+                <canvas id="moscow" width="220" height="220"></canvas>
+                <div class="wc-time" id="moscow-time"></div>
+            </div>
+            <div class="wc-clock">
+                <div class="wc-name" id="cairo-name"></div>
+                <canvas id="cairo" width="220" height="220"></canvas>
+                <div class="wc-time" id="cairo-time"></div>
+            </div>
+        </div>
 
         <script src="js/looma-clock-worldclocks.js"></script>
     </div>

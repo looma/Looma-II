@@ -44,6 +44,35 @@ function makeMapButton($file, $thumb, $dn) {
     <h1 class="credit"> Created by Sophie, Morgan, Henry, Kendall</h1>
     <div class="center">
         <br>
+
+        <!-- Geography Games — quick links to the map-based games from Mongo.
+             Previously only reachable via the games tab; surfaced here so
+             they're findable from the Maps context. -->
+        <h2 class="section-title" style="margin-top:0;"><?php keyword("Geography Games"); ?></h2>
+        <table><tr>
+        <?php
+        $geographyGames = array(
+            array('id' => '5b620280a18f69cb2937c982', 'name' => 'Continents',        'thumb' => 'images/globe.png'),
+            array('id' => '5b620286a18f69cb2937c983', 'name' => 'Asia Countries',    'thumb' => 'images/globe.png'),
+            array('id' => '5f2204c96cf78b3916cf2cc5', 'name' => 'Europe Countries',  'thumb' => 'images/globe.png'),
+        );
+        global $icons;
+        foreach ($geographyGames as $g) {
+            echo '<td>';
+            echo '<a href="game?id=' . $g['id'] . '&type=map">';
+            echo   '<button class="map img">';
+            echo     '<img src="' . $g['thumb'] . '">';
+            echo     '<span class="name">' . $g['name'] . '</span>';
+            if (isset($icons['game'])) echo '<img class="icon" src="' . $icons['game'] . '">';
+            echo   '</button>';
+            echo '</a>';
+            echo '</td>';
+        }
+        ?>
+        </tr></table>
+
+        <h2 class="section-title"><?php keyword("Maps"); ?></h2>
+
         <?php
         //modifications for maps
         //***************************

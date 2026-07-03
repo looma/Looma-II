@@ -7,7 +7,7 @@ Description: this file randomly chooses a continent and highlights it, then asks
 
 window.onload = function() {
 
-    var answers = ["North America", "South America", "Europe", "Asia", "Africa","Australia", "Antartica", "Pacific Ocean",
+    var answers = ["North America", "South America", "Europe", "Asia", "Africa", "Oceania", "Antartica", "Pacific Ocean",
     "Atlantic Ocean", "Indian Ocean", "Arctic Ocean"];
     var currentAnswerNum;
     var userGuess;
@@ -78,7 +78,7 @@ window.onload = function() {
                 ctx.arc(400, 170,40,0,2*Math.PI);
                 ctx.stroke();
                 break;
-            case "Australia":
+            case "Oceania":
                 ctx.arc(625, 250,40,0,2*Math.PI);
                 ctx.stroke();
                 break;

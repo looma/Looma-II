@@ -365,8 +365,8 @@ function checkMatch() {
             // remove this P/R pair from activeMatch arrays
             if (['matching','spoken matching','spoken to picture', 'picture matching'].includes(game.presentation_type))
             {
-                activeMatchPrompts.splice(selected_prompt,1);
-                activeMatchResponses.splice(selected_resp,1);
+                activeMatchPrompts.splice(p,1);
+                activeMatchResponses.splice(r,1);
             }
 
             correctAnswer();
@@ -1225,6 +1225,25 @@ function runMap() {
             map = L.map('map').setView([map_lat, map_long], map_zoom);
             map.options.minZoom = 1;
             map.options.maxZoom = 5;
+            map.options.zoomSnap = 0.25;
+            map.options.zoomDelta = 0.5;
+            map.options.wheelPxPerZoomLevel = 120;
+
+            // Raw-DOM click on the map container (capture phase) — Leaflet 0.7.2's
+            // per-feature click handler is unreliable on complex MultiPolygons
+            // (India, China, etc.), and map.on('click') doesn't catch those either.
+            // The DOM listener fires for ANY click within the map area regardless.
+            // Listen on document (capture phase) — fires first in the DOM chain.
+            document.addEventListener('click', function (e) {
+                var t = e.target;
+                var tagName = t.tagName || '?';
+                var className = (t.className && t.className.baseVal !== undefined) ? t.className.baseVal : (t.className || '');
+                var mapEl = document.getElementById('map');
+                var insideMap = mapEl && mapEl.contains(t);
+                console.log("[doc-click] target:", tagName, "class:", className, "insideMap:", insideMap);
+                if (!insideMap) return;
+                handleMapClick(e);
+            }, true);
 
             var el = document.getElementsByClassName('leaflet-container');
             for (var i = 0; i < el.length; i++)
@@ -1246,18 +1265,50 @@ function runMap() {
          startTimer(time_limit);
 }  //end runMap()
 
+var mapAdvancing = false;       // guard so a single click can't double-advance
+var mapClickHandled = false;    // set when per-feature mapClick fires; the DOM-level
+                                // fallback (handleMapClick) checks this to skip dupes.
+
+// Drop a temporary marker on the click that shows the resolved country name.
+// Survives even when Leaflet 0.7.2 fails to render the underlying polygon path,
+// so the player always sees their click was processed.
+function showMapClickFeedback(latlng, name, correct) {
+    if (!map || !latlng) return;
+    var bg = correct ? '#1ea54a' : '#c83232';
+    var marker = L.marker(latlng, {
+        icon: L.divIcon({
+            html: '<span style="background:' + bg + ';color:white;padding:3px 8px;'
+                + 'font-size:13px;font-family:sans-serif;font-weight:bold;white-space:nowrap;'
+                + 'pointer-events:none;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.4);">'
+                + (correct ? '✓ ' : '✗ ') + name + '</span>',
+            iconSize: [1, 1],
+            iconAnchor: [0, 0],
+            className: ''
+        }),
+        clickable: false,
+        keyboard: false
+    }).addTo(map);
+    setTimeout(function () { try { map.removeLayer(marker); } catch (e) {} }, 1100);
+}
 function mapClick(e)
 {
-    var layer = e.target;
-    //var currentQuestion = document.getElementById("question");
-    //if(!alreadyRight) { //prevents it from going red after you have gotten it right
-        rightAnswer = game['prompts'][curr_question-1];
-    //}
+    if (mapAdvancing) return;
+    // KEY FIX: Leaflet 0.7.2's L.FeatureGroup._propagateEvent has a broken
+    // extend() argument order, so for MultiPolygon features (China, India,
+    // Russia, etc.) `e.target` ends up as an inner sub-polygon WITHOUT a
+    // `feature` property — accessing layer.feature.properties throws.
+    // `this` is the layer the handler was actually attached to (the parent
+    // FeatureGroup) and DOES have `feature`.
+    var layer = (this && this.feature) ? this : e.target;
+    if (!layer || !layer.feature) return;
+    mapClickHandled = true;
+    setTimeout(function () { mapClickHandled = false; }, 50);
 
-    //var infoKey = document.getElementById("question").getAttribute("data-info");
+    rightAnswer = game['prompts'][curr_question-1];
     var infoKey = $('#map-data').data('info');
     var clickedAnswer = layer.feature.properties[infoKey];
-    //var clickedAnswer = game['key'];
+    console.log("[map] clicked=" + clickedAnswer + " expected=" + rightAnswer);
+
     if(rightAnswer == clickedAnswer) //they got it right
     {   pauseTimer();
 
@@ -1266,17 +1317,284 @@ function mapClick(e)
 
         layer.setStyle({fillColor: 'green'});
         document.getElementById("question").innerHTML = "Correct! That is " + rightAnswer;
-  /*      if(!alreadyRight) //&& !clickedWrong)
-            { alreadyRight = true;
-              LOOMA.alert("Correct! That is " + rightAnswer,4,false,correctAnswer);
-            }
-   */
+        showMapClickFeedback(e.latlng, rightAnswer, true);
+        // Auto-advance: trigger the Next-button handler after a brief pause.
+        mapAdvancing = true;
+        setTimeout(function () {
+            try { $('#next').click(); } finally { mapAdvancing = false; }
+        }, 900);
     }
     else
     {   clickedWrong = true;
         layer.setStyle({fillColor: 'red'});
+        document.getElementById("question").innerHTML =
+            "Click on: " + rightAnswer + "  (You clicked " + clickedAnswer + ")";
+        showMapClickFeedback(e.latlng, clickedAnswer, false);
     }
 } //end mapClick()
+
+// Ray-casting point-in-polygon. ring = [[lng, lat], ...].
+function pointInRing(x, y, ring) {
+    var inside = false;
+    for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        var xi = ring[i][0], yi = ring[i][1];
+        var xj = ring[j][0], yj = ring[j][1];
+        if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) {
+            inside = !inside;
+        }
+    }
+    return inside;
+}
+
+function pointInFeature(lng, lat, feature) {
+    var g = feature.geometry;
+    if (g.type === 'Polygon') {
+        if (!pointInRing(lng, lat, g.coordinates[0])) return false;
+        for (var i = 1; i < g.coordinates.length; i++) {
+            if (pointInRing(lng, lat, g.coordinates[i])) return false;  // in a hole
+        }
+        return true;
+    }
+    if (g.type === 'MultiPolygon') {
+        for (var p = 0; p < g.coordinates.length; p++) {
+            var poly = g.coordinates[p];
+            if (pointInRing(lng, lat, poly[0])) {
+                var inHole = false;
+                for (var h = 1; h < poly.length; h++) {
+                    if (pointInRing(lng, lat, poly[h])) { inHole = true; break; }
+                }
+                if (!inHole) return true;
+            }
+        }
+    }
+    return false;
+}
+
+// Squared distance from (px, py) to line segment (x1, y1)-(x2, y2).
+function distSqToSegment(px, py, x1, y1, x2, y2) {
+    var dx = x2 - x1, dy = y2 - y1;
+    if (dx === 0 && dy === 0) {
+        var ex = px - x1, ey = py - y1;
+        return ex * ex + ey * ey;
+    }
+    var t = ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy);
+    if (t < 0) t = 0; else if (t > 1) t = 1;
+    var fx = x1 + t * dx - px;
+    var fy = y1 + t * dy - py;
+    return fx * fx + fy * fy;
+}
+
+// Squared minimum distance from a point to a feature's polygon edges.
+// Cheap fallback for clicks landing in water adjacent to a country.
+function distSqToFeature(lng, lat, feature) {
+    var g = feature.geometry;
+    var polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+    var minSq = Infinity;
+    for (var p = 0; p < polys.length; p++) {
+        var ring = polys[p][0];
+        for (var i = 0, len = ring.length - 1; i < len; i++) {
+            var d = distSqToSegment(lng, lat,
+                ring[i][0], ring[i][1],
+                ring[i + 1][0], ring[i + 1][1]);
+            if (d < minSq) minSq = d;
+        }
+    }
+    return minSq;
+}
+
+// Manual, generous bboxes for countries whose polygon-derived bbox feels too
+// tight for game UX. Tune these freely — they only affect the "click missed
+// the polygon" snap fallback, not exact polygon hits.
+// Format: {minX (lng), minY (lat), maxX (lng), maxY (lat)}.
+var MANUAL_BBOXES = {
+    "China":        {minX: 68,  minY: 18,  maxX: 145, maxY: 60},
+    "India":        {minX: 55,  minY: 0,   maxX: 100, maxY: 42},
+    "Indonesia":    {minX: 88,  minY: -20, maxX: 148, maxY: 10},
+    "Russia":       {minX: 20,  minY: 35,  maxX: 180, maxY: 85},
+    "Saudi Arabia": {minX: 30,  minY: 12,  maxX: 58,  maxY: 36},
+    "Yemen":        {minX: 38,  minY: 5,   maxX: 58,  maxY: 22},
+    "Oman":         {minX: 48,  minY: 14,  maxX: 70,  maxY: 30},
+    "Iran":         {minX: 40,  minY: 22,  maxX: 67,  maxY: 42},
+    "Pakistan":     {minX: 56,  minY: 18,  maxX: 80,  maxY: 38},
+    "Afghanistan":  {minX: 58,  minY: 28,  maxX: 77,  maxY: 40},
+    "Kazakhstan":   {minX: 45,  minY: 40,  maxX: 90,  maxY: 57},
+    "Mongolia":     {minX: 86,  minY: 40,  maxX: 124, maxY: 54},
+    "Uzbekistan":   {minX: 53,  minY: 36,  maxX: 76,  maxY: 47},
+    "Turkmenistan": {minX: 50,  minY: 34,  maxX: 70,  maxY: 44},
+    "Tajikistan":   {minX: 67,  minY: 36,  maxX: 76,  maxY: 42},
+    "Kyrgyzstan":   {minX: 68,  minY: 39,  maxX: 81,  maxY: 44},
+    "Laos":         {minX: 99,  minY: 13,  maxX: 108, maxY: 23},
+    "Nepal":        {minX: 79,  minY: 26,  maxX: 89,  maxY: 31},
+    "Bhutan":       {minX: 88,  minY: 26,  maxX: 93,  maxY: 29},
+    "Japan":        {minX: 120, minY: 22,  maxX: 160, maxY: 52},
+    "Philippines":  {minX: 113, minY: 3,   maxX: 136, maxY: 24},
+    "Turkey":       {minX: 23,  minY: 33,  maxX: 47,  maxY: 45},
+    "Bangladesh":   {minX: 84,  minY: 12,  maxX: 96,  maxY: 28},
+    "Thailand":     {minX: 92,  minY: 0,   maxX: 108, maxY: 22},
+    "Vietnam":      {minX: 100, minY: 5,   maxX: 120, maxY: 25},
+    "Myanmar":      {minX: 88,  minY: 5,   maxX: 105, maxY: 30},
+    "Cambodia":     {minX: 100, minY: 7,   maxX: 110, maxY: 17},
+    "Malaysia":     {minX: 96,  minY: -3,  maxX: 122, maxY: 10},
+    "Iraq":         {minX: 36,  minY: 28,  maxX: 50,  maxY: 38},
+    "Syria":        {minX: 34,  minY: 32,  maxX: 43,  maxY: 38},
+    "Korea":        {minX: 120, minY: 30,  maxX: 134, maxY: 40},
+    "Dem. Rep. Korea": {minX: 122, minY: 36, maxX: 133, maxY: 44},
+    "Sri Lanka":    {minX: 75,  minY: 0,   maxX: 86,  maxY: 12},
+    "Taiwan":       {minX: 117, minY: 19,  maxX: 125, maxY: 27},
+};
+
+// Returns true if a manual bbox is defined for this country and contains the click.
+function pointInManualBbox(lng, lat, name) {
+    var b = MANUAL_BBOXES[name];
+    if (!b) return false;
+    return lng >= b.minX && lng <= b.maxX && lat >= b.minY && lat <= b.maxY;
+}
+
+// Prefer the larger country when enclaves overlap (e.g. Hong Kong inside China).
+function featureBboxArea(feature) {
+    if (feature._bboxArea !== undefined) return feature._bboxArea;
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    var polys = feature.geometry.type === 'Polygon'
+                ? [feature.geometry.coordinates]
+                : feature.geometry.coordinates;
+    for (var p = 0; p < polys.length; p++) {
+        var ring = polys[p][0];
+        for (var pt = 0; pt < ring.length; pt++) {
+            var x = ring[pt][0], y = ring[pt][1];
+            if (x < minX) minX = x; if (x > maxX) maxX = x;
+            if (y < minY) minY = y; if (y > maxY) maxY = y;
+        }
+    }
+    feature._bboxArea = (maxX - minX) * (maxY - minY);
+    return feature._bboxArea;
+}
+
+// DOM click fallback. Wired up in runMap as a capture-phase listener on #map,
+// so this fires for ANY click in the map area regardless of what Leaflet does
+// internally with path event propagation.
+function handleMapClick(domEvent) {
+    console.log("[dom] click event received, target:", domEvent.target.tagName, domEvent.target.className);
+    if (mapAdvancing) { console.log("[dom] blocked: mapAdvancing"); return; }
+    if (domEvent.target && domEvent.target.closest &&
+        domEvent.target.closest('.leaflet-control-container')) {
+        console.log("[dom] blocked: leaflet control"); return;
+    }
+    // Defer briefly so per-feature mapClick (if it fires) sets the dedupe flag first.
+    setTimeout(function () {
+        if (mapClickHandled) { console.log("[dom] skipped: per-feature already handled"); return; }
+        if (!baseLayer || !map) { console.log("[dom] skipped: baseLayer/map missing"); return; }
+
+        var rect = document.getElementById('map').getBoundingClientRect();
+        var containerPoint = L.point(
+            domEvent.clientX - rect.left,
+            domEvent.clientY - rect.top
+        );
+        var latlng = map.containerPointToLatLng(containerPoint);
+        var lng = latlng.lng, lat = latlng.lat;
+        console.log("[dom] click latlng: (" + lat.toFixed(2) + ", " + lng.toFixed(2) + ")");
+
+        // Build the set of country names the player can actually answer with —
+        // anything not in the prompt list (Indian Ocean Ter., Siachen Glacier,
+        // Hong Kong, Macao, N. Cyprus) is ineligible to be the clicked country.
+        var validNames = {};
+        if (game && game['prompts']) {
+            for (var pi = 0; pi < game['prompts'].length; pi++) validNames[game['prompts'][pi]] = true;
+        }
+
+        var matched = [], best = null, bestArea = -1, layerCount = 0;
+        // Single-tier snap. Each country has ONE effective bbox (manual if
+        // defined, else polygon-derived). Click in any of these bboxes -> that
+        // country is a candidate. Tiebreaker: closest to the bbox center
+        // (so the middle of a country's bbox always wins for that country,
+        // and overlap is decided naturally by proximity to each center).
+        var snapBest = null, snapCenterDsq = Infinity, snapName = null;
+        var anywhereBest = null, anywhereDsq = Infinity, anywhereName = null;
+        baseLayer.eachLayer(function (layer) {
+            layerCount++;
+            if (!layer.feature) return;
+            var name = layer.feature.properties.name;
+            if (!validNames[name]) return;  // skip non-prompt features
+
+            // Determine this country's effective bbox: manual if defined,
+            // otherwise computed from the polygon.
+            var eff = MANUAL_BBOXES[name];
+            if (!eff) {
+                var g = layer.feature.geometry;
+                var pminX = Infinity, pminY = Infinity, pmaxX = -Infinity, pmaxY = -Infinity;
+                var polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+                for (var p = 0; p < polys.length; p++) {
+                    var ring = polys[p][0];
+                    for (var pt = 0; pt < ring.length; pt++) {
+                        var x = ring[pt][0], y = ring[pt][1];
+                        if (x < pminX) pminX = x; if (x > pmaxX) pmaxX = x;
+                        if (y < pminY) pminY = y; if (y > pmaxY) pmaxY = y;
+                    }
+                }
+                eff = {minX: pminX, minY: pminY, maxX: pmaxX, maxY: pmaxY};
+            }
+
+            if (pointInFeature(lng, lat, layer.feature)) {
+                matched.push(name);
+                var area = featureBboxArea(layer.feature);
+                if (area > bestArea) { bestArea = area; best = layer; }
+            }
+
+            // Bbox snap candidate: click inside effective bbox, tiebreaker by
+            // distance to bbox center.
+            var bboxHit = (lng >= eff.minX && lng <= eff.maxX && lat >= eff.minY && lat <= eff.maxY);
+            if (bboxHit) {
+                var cx = (eff.minX + eff.maxX) / 2;
+                var cy = (eff.minY + eff.maxY) / 2;
+                var dsq = (lng - cx) * (lng - cx) + (lat - cy) * (lat - cy);
+                if (dsq < snapCenterDsq) {
+                    snapCenterDsq = dsq; snapBest = layer; snapName = name;
+                }
+            }
+
+            // Absolute-nearest fallback for clicks outside ALL bboxes.
+            var dCoast = distSqToFeature(lng, lat, layer.feature);
+            if (dCoast < anywhereDsq) {
+                anywhereDsq = dCoast; anywhereBest = layer; anywhereName = name;
+            }
+        });
+        console.log("[dom] checked " + layerCount + " layers, matched: " + JSON.stringify(matched));
+
+        if (!best) {
+            if (snapBest) {
+                console.log("[dom] snap (in bbox, closest-center): " + snapName);
+                best = snapBest;
+            } else {
+                console.log("[dom] snap (no bbox hit, absolute nearest): " + anywhereName + " (sq-dist=" + anywhereDsq.toFixed(2) + ")");
+                best = anywhereBest;
+            }
+        }
+        if (!best) { console.log("[dom] no country at all"); return; }
+
+        rightAnswer = game['prompts'][curr_question - 1];
+        var infoKey = $('#map-data').data('info');
+        var clickedAnswer = best.feature.properties[infoKey];
+        console.log("[map-fallback] clicked=" + clickedAnswer + " expected=" + rightAnswer);
+
+        if (rightAnswer == clickedAnswer) {
+            pauseTimer();
+            scores[curr_team - 1]++;
+            updateScores();
+            best.setStyle({fillColor: 'green'});
+            document.getElementById("question").innerHTML = "Correct! That is " + rightAnswer;
+            showMapClickFeedback(latlng, rightAnswer, true);
+            mapAdvancing = true;
+            setTimeout(function () {
+                try { $('#next').click(); } finally { mapAdvancing = false; }
+            }, 900);
+        } else {
+            clickedWrong = true;
+            best.setStyle({fillColor: 'red'});
+            document.getElementById("question").innerHTML =
+                "Click on: " + rightAnswer + "  (You clicked " + clickedAnswer + ")";
+            showMapClickFeedback(latlng, clickedAnswer, false);
+        }
+    }, 20);
+}
 
 // Highlights the area that the mouse is hovering over in gray
 function highlightMapFeature(e)
@@ -1323,6 +1641,99 @@ function redrawMap(mapJson) {
         onEachFeature: mapOnEachFeature
     });
     baseLayer.addTo(map);
+    drawDebugBboxes();
+}
+
+// Visualize every country's EFFECTIVE bbox (the one the snap actually uses).
+// Manual bboxes drawn red, auto-derived polygon bboxes drawn blue. Toggle by
+// adding ?bboxes=1 to the URL.
+var debugBboxLayer = null;
+function drawDebugBboxes() {
+    if (!/[?&]bboxes/.test(window.location.search)) return;
+    if (!map || !baseLayer) return;
+    if (debugBboxLayer) { map.removeLayer(debugBboxLayer); }
+    debugBboxLayer = L.layerGroup();
+
+    // Collect set of game-valid country names.
+    var validNames = {};
+    if (game && game['prompts']) {
+        for (var pi = 0; pi < game['prompts'].length; pi++) validNames[game['prompts'][pi]] = true;
+    }
+
+    function addRect(name, b, color) {
+        L.rectangle(
+            [[b.minY, b.minX], [b.maxY, b.maxX]],
+            {color: color, weight: 2, opacity: 0.7, fill: false, fillOpacity: 0, clickable: false}
+        ).addTo(debugBboxLayer);
+        L.marker([b.maxY, b.minX], {
+            icon: L.divIcon({
+                html: '<span style="background:' + color + ';color:white;padding:1px 4px;'
+                    + 'font-size:10px;font-family:sans-serif;white-space:nowrap;pointer-events:none;'
+                    + 'border-radius:2px;opacity:0.85;">' + name + '</span>',
+                iconSize: [1, 1],
+                iconAnchor: [0, 0],
+                className: ''
+            }),
+            clickable: false,
+            keyboard: false
+        }).addTo(debugBboxLayer);
+    }
+
+    // Iterate every feature and draw its effective bbox.
+    baseLayer.eachLayer(function (layer) {
+        if (!layer.feature) return;
+        var name = layer.feature.properties.name;
+        if (!validNames[name]) return;
+        if (MANUAL_BBOXES[name]) {
+            addRect(name, MANUAL_BBOXES[name], 'rgba(220,0,0,0.85)');
+        } else {
+            // Polygon-derived bbox.
+            var g = layer.feature.geometry;
+            var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            var polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+            for (var p = 0; p < polys.length; p++) {
+                var ring = polys[p][0];
+                for (var pt = 0; pt < ring.length; pt++) {
+                    var x = ring[pt][0], y = ring[pt][1];
+                    if (x < minX) minX = x; if (x > maxX) maxX = x;
+                    if (y < minY) minY = y; if (y > maxY) maxY = y;
+                }
+            }
+            addRect(name, {minX: minX, minY: minY, maxX: maxX, maxY: maxY}, 'rgba(0,0,200,0.85)');
+        }
+    });
+
+    debugBboxLayer.addTo(map);
+
+    // Belt-and-suspenders: Leaflet 0.7.2's `clickable: false` only removes the
+    // cursor class — the SVG paths and marker icons still catch clicks where
+    // they're rendered. Force pointer-events: none on every element so the
+    // overlay is purely visual and clicks pass through to the actual map.
+    // Also inject a CSS rule as a backstop for elements added later (next
+    // question redraws the bbox layer).
+    if (!document.getElementById('bbox-debug-css')) {
+        var s = document.createElement('style');
+        s.id = 'bbox-debug-css';
+        s.textContent =
+            '.bbox-debug-rect, .bbox-debug-label, .bbox-debug-label * { pointer-events: none !important; }';
+        document.head.appendChild(s);
+    }
+    setTimeout(function () {
+        var nPath = 0, nIcon = 0;
+        debugBboxLayer.eachLayer(function (l) {
+            if (l._path) {
+                l._path.style.pointerEvents = 'none';
+                l._path.setAttribute('class', (l._path.getAttribute('class') || '') + ' bbox-debug-rect');
+                nPath++;
+            }
+            if (l._icon) {
+                l._icon.style.pointerEvents = 'none';
+                l._icon.setAttribute('class', (l._icon.getAttribute('class') || '') + ' bbox-debug-label');
+                nIcon++;
+            }
+        });
+        console.log('[bbox-overlay] disabled pointer-events on', nPath, 'paths and', nIcon, 'icons');
+    }, 0);
 }
 
     //gets the new map question
@@ -1573,6 +1984,21 @@ function gameOver() {
         if (scores[i-1] > 0 && scores[i-1] == Math.max(...scores)) results.append('<span class="red"> WINNER</span>');
         $("#scoreList").append(results);
     }
+    try {
+        // Best team's correct-count is the canonical game score; total questions is num_questions.
+        var best = Math.max.apply(null, scores);
+        var totalQ = (typeof num_questions === 'number' && num_questions > 0)
+            ? num_questions
+            : (Array.isArray(scores) && scores.length ? best : 0);
+        if (window.LOOMA && LOOMA.telemetry) {
+            LOOMA.telemetry.score('game', {
+                game_id: game_id, game_type: type,
+                grade: grade, subject: subject, chapter_id: ch_id,
+                correct: best, total: totalQ,
+                num_teams: num_teams,
+            });
+        }
+    } catch (e) { /* never let telemetry break game flow */ }
     var replayButton = $('<a href="looma-game.php' +
                         '?id='+ game_id +
                         '&class='+ grade +

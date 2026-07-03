@@ -7,6 +7,17 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
 -->
   <?php $page_title = 'Looma Team Game';
         include ("includes/header.php");
+        // looma_trace_page is defined in a telemetry include not yet present locally.
+        // Guard the call so the page loads; activates automatically when that file lands.
+        if (function_exists('looma_trace_page')) {
+            looma_trace_page('game', [
+                'game_id'  => $_REQUEST['id']      ?? null,
+                'type'     => $_REQUEST['type']    ?? null,
+                'grade'    => $_REQUEST['class']   ?? null,
+                'subject'  => $_REQUEST['subject'] ?? null,
+                'ch_id'    => $_REQUEST['ch_id']   ?? null,
+            ]);
+        }
   ?>
 
     <link href='css/looma.css'         rel='stylesheet' type='text/css'>
@@ -146,10 +157,12 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
     <script type="text/javascript" src="js/looma-scoreboard.js"></script>
     <script src="js/looma-sort-game.js"></script>
 
-    <!--  NOTE: dont use Leafletjs1.7.1 for map games, stay with 0.7.3
-          <script src="js/leafletjs1.7.1/leaflet.js"></script>
-    -->
-    <script src="js/leafletjs0.7.3/leaflet.js"></script>
+    <!-- Use Leaflet 1.7.1 (same as the /map page). 0.7.x had a
+         MultiPolygon click-event bug that broke per-feature click handlers on
+         India / China / Saudi Arabia / Russia / Indonesia / Japan / etc. -->
+    <script src="js/leafletjs1.7.1/leaflet.js"></script>
+    <!-- <script src="js/leafletjs0.7.3/leaflet.js"></script> -->
+
 
 
 

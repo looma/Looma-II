@@ -474,7 +474,23 @@ $TKW = array (
 	"Search by Title" => "शीर्षक अनुसार खोजी" ,
 	"Search by Subject" => "विषय अनुसार खोजी",
 	"Portals" => "पोर्टलहरू",
-	"About Wikipedia for Schools" => "िद्यालयका लागि विकिपिडियाका बारेमा"
+	"About Wikipedia for Schools" => "िद्यालयका लागि विकिपिडियाका बारेमा",
+
+	// --- Paint: File menu + Paper background dropdown ---
+	"File" => "फाइल",
+	"Save file" => "फाइल बचत गर्नुहोस्",
+	"Open file" => "फाइल खोल्नुहोस्",
+	"Paper" => "कागज",
+	"Blank" => "खाली",
+	"Lined" => "रेखाङ्कित",
+	"Graph" => "ग्राफ",
+	"Coordinate" => "निर्देशांक",
+	"Music staff" => "सङ्गीत रेखा",
+	"Number line" => "सङ्ख्या रेखा",
+	"Tens frame" => "दसको ढाँचा",
+	"Protractor" => "चाँदा",
+	"Ruler" => "स्केल",
+	"Nepal map" => "नेपालको नक्सा"
 
 ); //end array TKW
 ?>

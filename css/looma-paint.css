@@ -39,9 +39,9 @@ canvas {
     right:0;
     top:0;
     display:grid;
-    grid-row-gap: 3vh;
-    grid-template-rows: repeat(8, 1fr);
-    padding: 2vh 0 10vh 2vw;
+    grid-row-gap: 1.5vh;
+    grid-template-rows: repeat(7, 1fr);
+    padding: 1vh 0 1vh 2vw;
     overflow:visible;
 }
 .button-div.drop {
@@ -54,7 +54,7 @@ canvas {
 .dropdown {
     display:inline-block;
     width:6vw;
-    height:11vh;
+    height:9vh;
 }
 
 .drop-button {
@@ -71,8 +71,15 @@ canvas {
 }
 
 .drop-button img {
-    height:90%;
-    
+    /* Constrain both dimensions so the icon fits inside the button, then
+       object-fit: contain preserves aspect ratio so icons of any shape
+       stay proportional as the viewport (and therefore the button) resizes.
+       Also centered horizontally/vertically inside the button. */
+    max-height: 90%;
+    max-width: 90%;
+    object-fit: contain;
+    display: block;
+    margin: auto;
     /*z-index: 10;*/
 }
 
@@ -110,6 +117,45 @@ canvas {
 
 .dropdown:hover .drop-content {
     display: block;
+}
+
+/* Paper dropdown has more items (10) than any other dropdown and a text
+   label instead of an icon. Push the menu up so all entries fit on screen,
+   widen it so longer labels like "Coordinate" / "Number line" aren't
+   cramped, and bump the button + item sizes for readability. */
+#background {
+    font-size: 1.4em;
+}
+
+#background .drop-content {
+    bottom: 28vh;
+    width: 12vw;
+    /* Menu right edge should reach approximately to the start of the "P"
+       in "Paper" — just enough overlap that moving the cursor from the
+       button into the menu keeps :hover continuous, without the menu
+       obscuring the button label itself. */
+    right: 7vw;
+}
+
+#background .drop-content p {
+    font-size: 1.8vh;
+    padding: 0.8vh 1vh;
+}
+
+/* Upper-right translation tooltip shown while the "Save current drawing?"
+   confirm popup is open. Mimics .xlat (looma.css:400) but is visible
+   continuously rather than only on hover. */
+#paint-xlat-tooltip {
+    position: fixed;
+    top: 20px;
+    right: 15px;
+    z-index: 9999;
+    border: 1px solid #000;
+    border-radius: 3px;
+    background-color: #FAFCAC;
+    padding: 5px 10px;
+    font-size: 1em;
+    color: #000;
 }
 
 div#notice {

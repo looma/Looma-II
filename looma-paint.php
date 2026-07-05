@@ -42,7 +42,7 @@ logPageHit('paint');
         </div>
 
         <div class="dropdown">
-            <button class="drop-button" id="size"><img draggable="false" src="images/medium.png">
+            <button class="drop-button" id="size"><img draggable="false" src="images/lineticknessicon.png">
                 <div class="drop-content">
                     <img draggable="false" src="images/extrathin.png"  name="size" value="2">
                     <img draggable="false" src="images/thin.png"       name="size" value="5">
@@ -54,13 +54,16 @@ logPageHit('paint');
         </div>
 
         <div class="dropdown">
-            <button class="drop-button" id="shape"><img draggable="false" src="images/scribble.png">
+            <button class="drop-button" id="shape"><img draggable="false" src="images/shapesicon.png">
                 <div class="drop-content" >
                     <img draggable="false" src="images/scribble.png"  name="shape" value="scribble">
                     <img draggable="false" src="images/line.png"      name="shape" value="line">
                     <img draggable="false" src="images/rectangle.png" name="shape" value="rectangle">
                     <img draggable="false" src="images/circle.png"    name="shape" value="oval">
                     <img draggable="false" src="images/heart.png"     name="shape" value="heart">
+                    <img draggable="false" src="images/forward-arrow.png" name="shape" value="arrow">
+                    <img draggable="false" src="images/star.svg"      name="shape" value="star">
+                    <img draggable="false" src="images/diamond.svg"   name="shape" value="diamond">
                 </div>
             </button>
         </div>
@@ -70,6 +73,23 @@ logPageHit('paint');
                 <div class="drop-content" >
                     <img draggable="false" src="images/draw.png"  name="pencil" value="draw">
                     <img draggable="false" src="images/erase.png" name="pencil" value="erase">
+                </div>
+            </button>
+        </div>
+
+        <div class="dropdown">
+            <button class="drop-button" id="background"><?php keyword('Paper'); ?>
+                <div class="drop-content" >
+                    <p data-bg="blank"><?php keyword('Blank'); ?></p>
+                    <p data-bg="lined"><?php keyword('Lined'); ?></p>
+                    <p data-bg="grid"><?php keyword('Graph'); ?></p>
+                    <p data-bg="coord"><?php keyword('Coordinate'); ?></p>
+                    <p data-bg="music"><?php keyword('Music staff'); ?></p>
+                    <p data-bg="numberline"><?php keyword('Number line'); ?></p>
+                    <p data-bg="tens"><?php keyword('Tens frame'); ?></p>
+                    <p data-bg="protractor"><?php keyword('Protractor'); ?></p>
+                    <p data-bg="ruler"><?php keyword('Ruler'); ?></p>
+                    <p data-bg="nepal"><?php keyword('Nepal map'); ?></p>
                 </div>
             </button>
         </div>

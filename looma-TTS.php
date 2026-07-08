@@ -72,7 +72,7 @@ if ($engine === 'piper') {
         $voice = "cmu_us_aup";
     }
 
-    if ($lang === 'np') $text = "I do not know how to speak Nepali.";
+    if ($lang === 'np') $text = "";
 
     $voiceDir = "../voices/";
     $voiceFile = $voiceDir . $voice . ".flitevox";

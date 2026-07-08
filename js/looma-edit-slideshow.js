@@ -8,7 +8,7 @@ Owner: VillageTech Solutions (villagetechsolutions.org)
 Date: 04 2018
 Revision: Looma 4.0
  */
- 
+
 'use strict';
 
 var savedSignature ="";   //savedSignature is checkpoint of timeline for checking for modification
@@ -25,51 +25,51 @@ var searchName = 'slideshow-editor-search';
 
 ///////// editor_clear  /////////
 function editor_clear() {
-    
+
     setname("");
     $("#preview").hide();
     $timeline.empty();
     $timeline.data('thumb', 'images/play-slideshow-icon.png');
     clearFilter();
-    
+
     editor_checkpoint();
-    
+
 }
 
 ///////  editor_showsearchitems  /////////
 function editor_showsearchitems() {    //NOTE: this should all be done with CSS
-  
+
     // Remove the ability of the user to check unwanted boxes
     var pdf = document.querySelector('span[data-id="pdf-chk"]');
     pdf.style.display = "none";
-  
+
     var video = document.querySelector('span[data-id="video-chk"]');
     video.style.display = "none";
-  
+
     var audio = document.querySelector('span[data-id="audio-chk"]');
     audio.style.display = "none";
-  
+
     var history = document.querySelector('span[data-id="history-chk"]');
     history.style.display = "none";
-  
+
     var html = document.querySelector('span[data-id="html-chk"]');
     html.style.display = "none";
-  
+
     var ss = document.querySelector('span[data-id="slideshow-chk"]');
     ss.style.display = "none";
-  
+
     var map = document.querySelector('span[data-id="map-chk"]');
     map.style.display = "none";
-  
+
     var evi = document.querySelector('span[data-id="evi-chk"]');
     evi.style.display = "none";
-  
+
     var lesson = document.querySelector('span[data-id="lesson-chk"]');
     lesson.style.display = "none";
-    
+
     var game = document.querySelector('span[data-id="game-chk"]');
     game.style.display = "none";
-    
+
     var looma = document.querySelector('span[data-id="looma-chk"]');
     looma.style.display = "none";
 }
@@ -89,7 +89,7 @@ function signature(elem) { //param is jQ object of the timeline ($timeline)
         //console.log('sig is ', sig);
         //console.log('x is ', x);
         //console.log('index is ', index);
-        sig += $(x).data('id');});
+        sig += $(x).data('id') + ($(x).data('caption') || '');});
     return sig;
 }
 
@@ -97,19 +97,19 @@ function signature(elem) { //param is jQ object of the timeline ($timeline)
 function editor_pack (activityDivs) { // pack the timeline into an array of collection/id pairs for storage
     var packitem;
     var packarray = [];
-    
+
     $(activityDivs).each(function() {
         packitem = {};  //make a new object, unlinking the references already pushed into packarray
         packitem.collection = $(this).data('collection');
         packitem.id         = $(this).data('id');
         packitem.type       = $(this).data('type');
         packitem.caption    = $(this).data('caption');
-        
+
         if (packitem.collection == "activities"){
             packarray.push(packitem);
         }
     });
-    
+
     return packarray;
 } //end editor_pack()
 
@@ -118,16 +118,16 @@ function unpack (response) {
     //unpack the array of collection/id pairs into html to display on the timeline
     //for each element in response.data, call createActivityDiv, and attach the return value to #timelinediv
     // also set filename in UI
-    
+
     editor_clear();
-    
-    setname(response.dn);
+
+    setname(response.dn, response.author);
     $timeline.data('slideshow-id', response['_id']['$id']);
-    
+
     // need to record ID of newly opened slideshow so that later SAVEs can save to it
-    
+
     var posts = [];  //we will push all the $.post() deferreds in the foreach below into posts[]
-    
+
     $(response.data).each(function(index) {
         // retrieve each timeline element from mongo and add it to the current timeline
         //var newDiv = null;  //reset newDiv so previous references to it are broken
@@ -146,39 +146,41 @@ function unpack (response) {
             'json'
         ));
     });
-    
+
     //  when all the $.post are complete, then re-order the timeline to account for out-of-order elements from asynch $.post calls
     $.when.apply(null, posts).then(function() {
         orderTimeline();
         editor_checkpoint();
         makesortable();
-    
+        $('#timeline').stop(true).scrollLeft(0);
+
+        // preview the first slide
+        var $firstSlide = $timeline.find('.activityDiv').first();
+        if ($firstSlide.length) preview_result($firstSlide[0]);
+
     if (response.thumb && response.thumb != '') {
         $timeline.data('thumb', response.thumb);
         var thumb = response.thumb;
        // outlineThumbnail( $(".inTimeline[data-thumb='" + response.thumb + "']") );
         outlineThumbnail( $(".inTimeline").find("img[src='" + thumb + "']" ).parents('.activityDiv') ); //also should be CSS
-        
+
     } else
         $timeline.data('thumb', 'images/play-slideshow-icon.png');
     });
-    
+
 } //end unpack()
 
 ///////// editor_display  /////////
 function editor_display (response) {
     clearFilter();
-    $timeline.html(unpack(response));
     currentDB = response.db ? response.db : 'looma';
-    editor_checkpoint();
+    unpack(response);
 }
 
 /////////  editor_save  /////////
 
 function editor_save(name) {
-    editor = loginname;
-    
-    savefile(LOOMA.escapeHTML(name), 'slideshows', 'slideshow', editor_pack($('#timelineDisplay .activityDiv')), "true",null);
+    savefile(name, 'slideshows', 'slideshow', editor_pack($('#timelineDisplay .activityDiv')), "true", loginname);
 } //end editor_save()
 
 /*function XXXeditor_save(name) {
@@ -209,7 +211,7 @@ function editor_save(name) {
 
 ///////// editor_templatesave /////////
 function editor_templatesave(name) {
-    savefile(name, currentcollection, currentfiletype + '-template', editor_pack($timeline.html()), "false",null);
+    savefile(name, currentcollection, currentfiletype + '-template', editor_pack($('#timelineDisplay .activityDiv')), "false", null);
     //note, the final param to 'savefile()' [to make an activity] set to 'false'
     //because lessons templates are not recorded as  activities
 } //end editor_templatesave()
@@ -220,7 +222,7 @@ function editor_templatesave(name) {
 
 var clearFilter = function() {
     console.log('clearFilter');
-    
+
     if ($('#collection').val() == 'activities') {
         $('#searchString').val("");
         $(".filter_dropdown").each(function() { this.selectedIndex = 0; });
@@ -231,7 +233,7 @@ var clearFilter = function() {
         $("#dropdown_grade").val("").change();
         $("#dropdown_subject").val("").change();
     }
-    
+
     $("#innerResultsMenu").empty();
     $("#innerResultsDiv").empty();
     $("#preview").empty();
@@ -251,18 +253,18 @@ function displayResults(results) {
     var result_array = [];
     result_array['activities'] = [];  //array to store ACTIVITIES returned by SEARCH
     result_array['chapters']  = [];   //array to store CHAPTERS returned by SEARCH
-    
+
     for (var i=0; i < results.list.length; i++) {
         if (results.list[i]['ft'] == 'chapter') result_array['chapters'].push(results.list[i]);
         else                               result_array['activities'].push(results.list[i]);
     }
-    
+
     $('#innerResultsMenu, #innerResultsDiv').empty();
-    
+
     displaySearchResults(result_array);
-    
+
     makedraggable();  //not working for now
-    
+
 } //end displayresults()
 
 
@@ -274,19 +276,19 @@ function displaySearchResults (filterdata_object) {
     var currentResultDiv = document.createElement("div");
     currentResultDiv.id = "currentResultDiv";
     $(currentResultDiv).appendTo("#innerResultsDiv");
-  
-  
+
+
 //***********************
 // display Activities in Search Results pane
 //***********************
-    
+
     var actResultDiv = document.createElement("div");
     actResultDiv.id = "actResultDiv";
     $(actResultDiv).appendTo(currentResultDiv);
-    
+
     var collectionTitle = document.createElement("h5");
     collectionTitle.id = "activityTitle";
-    
+
     var activitiesarraylength = filterdata_object.activities.length;
     if (activitiesarraylength == 0) {
         collectionTitle.innerHTML = "<a class='heading' name='activities'>Activities (0 Results)</a>";
@@ -298,7 +300,7 @@ function displaySearchResults (filterdata_object) {
         collectionTitle.innerHTML = "<a class='heading' name='activities'>Activities (" + activitiesarraylength + " Results)</a>";
     }
     actResultDiv.appendChild(collectionTitle);
-    
+
     for(var i=0; i<filterdata_object.activities.length; i++) {
         var rElement = createActivityDiv(filterdata_object.activities[i]);  //BUG: array[i-1] not defined when i==0
         actResultDiv.appendChild(rElement);
@@ -309,12 +311,12 @@ function displaySearchResults (filterdata_object) {
 //***********************/
 // display Chapters in Search Results pane
 //***********************/
-    
+
     var chaptersarraylength = filterdata_object.chapters.length;
     if (chaptersarraylength > 0) {
         collectionTitle = document.createElement("h5");
         collectionTitle.id = "chapterTitle";
-        
+
         if (chaptersarraylength == 1) {
             collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (1 Result)</a>";
         }
@@ -322,20 +324,20 @@ function displaySearchResults (filterdata_object) {
             collectionTitle.innerHTML = "<a class='heading' name='activities'>Chapters (" + chaptersarraylength + " Results)</a>";
         }
         actResultDiv.appendChild(collectionTitle);
-        
+
         for(i=0; i<filterdata_object.chapters.length; i++) {
             rElement = createActivityDiv(filterdata_object.chapters[i]);
-            
+
             actResultDiv.appendChild(rElement);
         }
     }
-  
+
 // end Print Chapters Array
 
 ///////////////////////////////
 // Create inner results menu
 //////////////////////////////
-    
+
     $("<span/>", {
         id : "chaptersScroll",
         html : "Chapters (" + chaptersarraylength + ")&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -344,29 +346,29 @@ function displaySearchResults (filterdata_object) {
         id : "activitiesScroll",
         html : "Activities (" + activitiesarraylength + ')'
     }).appendTo("#innerResultsMenu");
-    
+
     $("#innerResultsMenu").css("border-bottom","1px solid #000");
-    
+
     $('#chaptersScroll').click(function()  {$('#innerResultsDiv').scrollTop($('#chapterTitle').position().top);});
     $('#activitiesScroll').click(function(){$('#innerResultsDiv').scrollTop($('#activityTitle').position().top);});
-    
+
 } //end displaySearchResults()
 
 
 function thumbnail (item) {
-    
+
     //builds a filepath/filename for the thumbnail of this "item" based on type
     var collection, filetype, filename, filepath;
     var thumbnail_prefix, path, imgsrc, idExtractArray;
-    
+
     if (item.thumb) return item.thumb;  //some activities have explicit thumbnail set
-    
+
     if (item.ft) filetype = item.ft;
     if (item.fn) filename = item.fn;
     if (item.fp) filepath = item.fp;
-    
+
     imgsrc = LOOMA.thumbnail(filename, filepath, filetype);
-    
+
     return imgsrc;
 } // end thumbnail()
 
@@ -380,10 +382,10 @@ function extractItemId(item) {
 ///////  createActivityDiv  //////////
 ////////////////////////////////////////
 function createActivityDiv (activity) {
-    
-    
+
+
     function innerActivityDiv (item) {
-        
+
         // activityDiv looks like this:
         //      <div class="activityDiv" data-collection=collection>
         //                               data-id=_id
@@ -403,39 +405,39 @@ function createActivityDiv (activity) {
         //      </div>
         var activityDiv = document.createElement("div");
         activityDiv.className = "activityDiv";
-        
+
         $(activityDiv).data("collection", (item.ft == 'chapter') ? 'chapters' : 'activities');
-     
-        $(activityDiv).data("id",         (item.ft == 'chapter') ? item['_id'] : (item['_id']['$id'] ? item['_id']['id'] :item['_id']['$oid']));
-     
+
+        $(activityDiv).data("id",         (item.ft == 'chapter') ? item['_id'] : (item['_id']['$id'] ? item['_id']['$id'] : item['_id']['$oid']));
+
         $(activityDiv).data("type", item['ft']);
         $(activityDiv).data("caption", item.caption);
-        
+
         item.collection = (item.ft == 'chapter')?'chapters':'activities';
         $.data(activityDiv, 'mongo', item);  //save the whole mongo document ("item") in the DOM element
-        
+
         // Thumbnail
         var thumbnaildiv = document.createElement("div");
         thumbnaildiv.className = "thumbnaildiv";
         $(thumbnaildiv).appendTo(activityDiv);
-        
+
         $("<img/>", {
             class : "resultsimg",
-            src : thumbnail(item, collection)
+            src : thumbnail(item)
         }).appendTo(thumbnaildiv);
-        
+
         // Result Text
         var textdiv = document.createElement("div");
         textdiv.className = "textdiv";
         $(textdiv).appendTo(activityDiv);
-        
+
         // Display Name
-        if (item.dn) var dn = item.dn.substring(0, 20); //else dn = item.ndn.substring(0,20);
+        var dn = item.dn ? item.dn.substring(0, 20) : (item.ndn ? item.ndn.substring(0, 20) : "");
         $("<p/>", {
             class : "result_dn",
             html : "<b>" + dn + "</b>"
         }).appendTo(textdiv);
-        
+
       /*
         // File Type
         $("<span/>", {
@@ -443,7 +445,7 @@ function createActivityDiv (activity) {
             html : LOOMA.typename(item.ft) + "  "
         }).appendTo(textdiv);
       */
-      
+
         // ID
         if ('ch_id' in item) {
             $("<span/>", {
@@ -457,46 +459,46 @@ function createActivityDiv (activity) {
                 html : "[" + item._id + "]"
             }).appendTo(textdiv);
         }
-        
+
         $("<br>").appendTo(activityDiv);
-        
+
         // Buttons
         var buttondiv = document.createElement("div");
         buttondiv.className = "buttondiv";
         $(buttondiv).appendTo(activityDiv);
-        
+
         // "Add" button
         var addButton = document.createElement("button");
         addButton.innerText = "Add";
         addButton.className = "add";
-        
+
         buttondiv.appendChild(addButton);
-        
+
         //buttondiv.appendChild(document.createElement("div"));
-        
+
         // "Delete" button
         var removeButton = $("<button/>", {class: "remove", html:"Delete"});
         $(buttondiv).append(removeButton);
-        
+
         // "Preview" button
         var previewButton = document.createElement("button");
         previewButton.innerText = "Preview";
         previewButton.className = "preview";
-  
+
         buttondiv.appendChild(previewButton);
-        
+
         return activityDiv;
     } //end innerActivityDiv()
-    
-    
+
+
    // var idExtractArray = extractItemId(activity);
-    
+
     var div = document.createElement("div");
     div.className = "resultitem";
-    
+
     var newDiv = innerActivityDiv(activity);
     $(newDiv).appendTo(div);
-    
+
     return div;
 }  // end createActivityDiv()
 
@@ -510,19 +512,19 @@ function preview_result (item) {
     $('#hints').hide();
     $('.hint').hide();
     //$('#previewpanel').append($("<p/>", {html : "Loading preview..."}));
-    
+
     var collection = $(item).data('collection');
     var filetype = $(item).data('type');
     var filename = $(item).data('mongo').fn;
     var $mongo = $(item).data('mongo');
     var dataID = $(item).data('id');
     var caption = $(item).data('caption');
-    
+
     currentlyPreviewedActivity = item;
-    
+
     var filepath;
     if ('fp' in $mongo) filepath = $mongo.fp;
-    
+
     // Pictures
     if(filetype=="jpg" || filetype=="gif" || filetype=="png" || filetype=="image") {
         if (!filepath) filepath = '../content/pictures/';
@@ -532,30 +534,30 @@ function preview_result (item) {
             filename + '"id="displayImage" data-id="' + dataID + '">'
             //+ '<button class="addCaption" hidden>Add Caption</button>'
             + '<button class="deleteCaption" hidden>Delete Caption</button>'
-            + '<input id="captionForm" placeholder="<Edit caption here (followed by carriage return)>" hidden></br>';
-       
+            + '<input id="captionForm" placeholder="<Edit caption here...>" hidden></br>';
+
        if ($(item).hasClass('inTimeline')) {
            $('#captionForm').show().focus();
            $('#captionForm').change(newCaption);
            $('.deleteCaption').click(deleteCaption);
            if (caption && caption !== "") $('#captionForm').val(caption);
        }
-       
-       
+
+
         /*
         showCaptionForm();
         $('#displayImage').css('max-height', '55vh');
         $('.captionForm').hide();
         var caption = getCorrectCaption();
         document.getElementById("captionBox").value = caption;
-        
+
         dealWithCaptionButtons();
         */
     }
         // Text Files
         else if (filetype=="text") {
             //use the mongoID of the textfile to query text_files collection and retrieve HTML for this text file
-            
+
             $.post("looma-database-utilities.php",
                 {cmd: "openByID", collection: "text", id: $(item).data('mongo').mongoID.$id},
                 function(result) {
@@ -602,10 +604,10 @@ function outlineThumbnail(item) {
 }
 
 function presentSlideshow() {
-    
+
     //NEED TO save COOKIE with current slideshow so it can be re-loaded on return
     // also delete the COOKIE when new slideshow is loaded in editor
-    
+
     if (savedSignature === "") LOOMA.alert("No slideshow is open",5);
     else if (editor_modified())  LOOMA.alert("You must save your work before presenting",5);
     else  window.location.href = 'looma-play-slideshow.php?id=' + $timeline.data('slideshow-id');
@@ -621,24 +623,24 @@ function insertTimelineElement(source) {
                                              //NOTE: crucial to "off()" event handlers,
                                              //or the new element will still be linked to the old
     $dest.removeClass('ui-draggable-handle').removeClass("ui-draggable").removeClass("ui-draggable-disabled");
-    
+
     //  ?? this next stmt needed??
     $dest.addClass("ui-sortable-handle").addClass("inTimeline");
     //
     $dest.appendTo("#timelineDisplay");
-    
+
     // scroll the timeline so that the new element is in the middle - animated to slow scrolling
     $('#timeline').animate( { scrollLeft: $dest.outerWidth(true) * ( $dest.index() - 4 ) }, 100);
-    
+
     refreshsortable();  //TIMELINE elements can be drag'n'dropped
-    
+
 } //end insertTimelineElement()
 
 function removeTimelineElement (elem) {
     // Removing list item from timelineHolder
     //var outerDiv = this.parentNode.parentNode;
     //outerDiv.remove();    // "Remove" button is within 3 divs
-    
+
     $('#timeline').animate( { scrollLeft: $(elem).closest('.activityDiv').outerWidth(true) * ( $(elem).closest('.activityDiv').index() - 4 ) }, 100);
     $(elem).closest('.activityDiv').remove();
     $('#preview').hide();
@@ -647,11 +649,10 @@ function removeTimelineElement (elem) {
 }  //end removeTimelineElement()
 
 
-var orderTimeline = function() {  // the timeline is populated with items that arrive acsynchronously by AJAX from the [mongo] server
+var orderTimeline = function() {  // the timeline is populated with items that arrive asynchronously by AJAX from the [mongo] server
     // a 'data-index' attribute is stored with each timeline item
     // this function [re-]orders the timeline based on those data-index values
-    var $timeline = $('#timelineDisplay');
-    
+
     $timeline.find('.activityDiv').sort(function(a, b) {
         //return +a.dataset.index - +b.dataset.index;
         return $(a).data('index') - $(b).data('index');
@@ -697,7 +698,7 @@ function makedraggable() {
         //    $('#timelineDisplay').sortable("option", "scroll", false);
         //},
         stop: function(event, ui) {
-            
+
             if ($('#timelineDisplay').find(ui.helper).length > 0) {  //if the helper was dropped on the timeline...
                 $(ui.helper).data($clone.data());  // insert the data() we copied into $clone back into the new timeline element
                 refreshsortable();
@@ -716,28 +717,28 @@ function quit() {
 
 $(document).ready(function() {
    // editor_showsearchitems();
-    
+
     $('#present-link').click(presentSlideshow);
     $('#timeline').on('dblclick', '.activityDiv', saveThumbnailToTimeline);
-    
+
     var image = document.getElementById('image-checkbox');
     //var text =  document.getElementById('text-checkbox');
     // Set the 'image' box to checked by default
     image.checked = true;
-    
+
     // Ensure that a file type is always selected.
     // If none is selected, automatically select the 'image' box
   //  image.onchange = function(){if (!image.checked && !text.checked){image.checked = true;}};
   //  text.onchange = function() {if (!image.checked && !text.checked){image.checked = true;}};
-    
+
     $('#timeline').show();
     $('#source-div').empty();
     $('#search-kind').empty();
-  
+
     loginname = LOOMA.loggedIn();
     if (loginname && ( loginname== 'skip')) $('.admin').show();
     $('.template-cmd').hide();
-    
+
     // the Editor using this code must set 'currentcollection' to the mongo collection being edited
     // e.g. "slideshows", "lessons", "text_files" or "edited_videos"
     currentname = "";
@@ -746,7 +747,7 @@ $(document).ready(function() {
     currentDB = 'loomalocal';
     $('#collectionname').text('Slideshows');
     $('#includeLesson').val(false);
-    
+
     //callback functions expected by looma-filecommands.js:
     callbacks ['savetemplate']  =   function(){console.log ('filecommand: savetemplate called');};
     callbacks ['open']  =           function(){console.log ('filecommand: open called');};
@@ -763,9 +764,9 @@ $(document).ready(function() {
 ///////////////////////////////
 // click handlers for '.add', '.preview' buttons
 ///////////////////////////////
-    
+
     currentlyPreviewedActivity = null;
-    
+
     //$(elementlist).on(event, selector, handler).
     $('#innerResultsDiv'           ).on('click', '.add',        function() {
         insertTimelineElement($(this).closest('.activityDiv'));return false;});
@@ -785,22 +786,55 @@ $(document).ready(function() {
             return false;
         });
   */
-   
-    $('#timelineLeft').on('click', function(){
-        $('#timeline').animate({scrollLeft: '-=200px'}, 700);
+
+    function stepTimeline(direction) {
+        // navigate to prev/next slide relative to currently previewed one
+        var $slides = $timeline.find('.activityDiv');
+        if (!$slides.length) return;
+
+        var $current = currentlyPreviewedActivity ? $(currentlyPreviewedActivity) : null;
+        var $next;
+
+        if ($current && $current.closest('#timelineDisplay').length) {
+            var idx = $slides.index($current);
+            var newIdx = idx + direction;
+            if (newIdx >= 0 && newIdx < $slides.length) $next = $slides.eq(newIdx);
+        } else {
+            // no current selection — go to first or last
+            $next = (direction > 0) ? $slides.first() : $slides.last();
+        }
+
+        if ($next && $next.length) {
+            preview_result($next[0]);
+            // scroll the timeline to show the new element
+            var scrollPos = $next[0].offsetLeft - $('#timeline')[0].offsetLeft;
+            $('#timeline').stop(true).animate({scrollLeft: scrollPos}, 300);
+        }
+    }
+
+    $('#timelineLeft').on('click', function(){ stepTimeline(-1); });
+    $('#timelineRight').on('click', function(){ stepTimeline(1); });
+
+    // keyboard arrow keys step through the timeline
+    $(document).on('keydown', function(e) {
+        if ($(e.target).is('input, textarea')) return;
+        if (e.which === 37) {  // left arrow
+            e.preventDefault();
+            stepTimeline(-1);
+        } else if (e.which === 39) {  // right arrow
+            e.preventDefault();
+            stepTimeline(1);
+        }
     });
-    $('#timelineRight').on('click', function(){
-        $('#timeline').animate({scrollLeft: '+=200px'}, 700);
-    });
-    
+
     $timeline = $('#timelineDisplay');  //the DIV where the timeline is being edited
     //$timelinedata = $('#timeline-data');  //the DIV where the timeline hidden data is stored
-    
+
     //show the "New Text File" button in filecommands.js to allow text-frame editor to be called in an iFrame
     $('#show_text').show();
-    
+
     $('#dismiss').off('click').click( function() { quit();});  //disable default DISMISS btn function and substitute QUIT()
-    
+
     $('.file-cmd#saveas').click(function(){currentcollection = 'slideshows';  currentDB = 'loomalocal'});
-    
+
 });

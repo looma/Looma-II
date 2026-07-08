@@ -95,7 +95,7 @@ $foundActivity;
             }
     };  // end wordsWithPicturesList()
 
-    function makeButton($activity) {
+    function prepareButton($activity) {
         //depending on the filetype of the activity, display the appropriate button
         global $buttons, $maxButtons, $ch_id, $foundActivity, $shown, $chapter_lang, $lang ;
 
@@ -104,138 +104,100 @@ $foundActivity;
         // check for no FT
         if (!isset($activity['ft'])) return;
 
-// NOTE: temporary change to show only NP resources for NP chapters
+        // filter: show only matching-lang resources for 'test' login level
+        if (loggedIn() && loginLevel() === 'test' && $chapter_lang !== $activity['lang'] && $activity['lang'] !== "both") return;
 
-//echo "logged in is " . loggedIn() . " and login level is " . loginLevel();
-//echo "chapter lang is " . $chapter_lang . " and activity lang is " . $activity['lang'];
+        $ft = strtolower($activity['ft']);
 
-if (loggedIn() && loginLevel() === 'test' && $chapter_lang !== $activity['lang'] && $activity['lang'] !== "both") return;
+        // skip text and quiz — not shown on activities page
+        if ($ft === 'text' || $ft === 'quiz' || $ft === 'voc') return;
 
-        //check if this Activity has already been shown
-        //add to 'shown' array, so it wont be shown again
-        if ( ! in_array($id, $shown)) {
-            array_push($shown,$id);
+        // check if already shown; add to 'shown' array
+        if (in_array($id, $shown)) return;
+        array_push($shown, $id);
 
-            $ft = strtolower($activity['ft']);
-            $dn = (isset($activity['dn']) ? $activity['dn'] : (isset($activity['ndn']) ? $activity['ndn'] : ""));
-         //   $ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
-            $fp = (isset($activity['fp']) ? $activity['fp'] : "");
+        // pick language-appropriate fields
+        if ($chapter_lang === 'np') {
+            $dn = isset($activity['ndn']) ? $activity['ndn'] : (isset($activity['dn']) ? $activity['dn'] : "");
+            $fp = isset($activity['nfp']) ? $activity['nfp'] : (isset($activity['fp']) ? $activity['fp'] : "");
+            $fn = isset($activity['nfn']) ? $activity['nfn'] : (isset($activity['fn']) ? $activity['fn'] : "");
+        } else {
+            $dn = isset($activity['dn']) ? $activity['dn'] : "";
+            $fp = isset($activity['fp']) ? $activity['fp'] : "";
+            $fn = isset($activity['fn']) ? $activity['fn'] : "";
+        }
 
-        if ($chapter_lang === 'np') $dn = (isset($activity['ndn'])? $activity['ndn']:(isset($activity['dn']) ? $activity['dn'] : ""));
-        else                $dn = (isset($activity['dn']) ? $activity['dn'] : "");
+        // build the button descriptor array for makeButton()
+        $b = array(
+            'ft'       => $ft,
+            'fp'       => $fp,
+            'fn'       => ($ft === 'evi') ? $fn . ".mp4" : $fn,
+            'dn'       => $dn,
+            'ndn'      => isset($activity['ndn']) ? $activity['ndn'] : null,
+            'ch_id'    => $ch_id,
+            'lang'     => isset($activity['lang']) ? $activity['lang'] : $lang,
+            'db'       => isset($activity['db']) ? $activity['db'] : null,
+            'prefix'   => isset($activity['prefix']) ? $activity['prefix'] : null,
+            'url'      => isset($activity['url']) ? $activity['url'] : null,
+            'grade'    => isset($activity['grade']) ? $activity['grade'] : null,
+        );
 
-        if ($chapter_lang === 'np') $fp = (isset($activity['nfp'])? $activity['nfp']:(isset($activity['fp']) ? $activity['fp'] : ""));
-        else                $fp = (isset($activity['fp']) ? $activity['fp'] : "");
+        // mongo_id: for slideshow/map/evi use mongoId object; otherwise use mongoID string
+        $mongoID = isset($activity['mongoID']) ? $activity['mongoID'] : null;
+        if ($ft === 'slideshow' || $ft === 'map' || $ft === 'evi')
+            $b['mongo_id'] = $mongoID ? mongoId($mongoID) : null;
+        else if ($ft === 'game' || $ft === 'history' || $ft === 'lesson')
+            $b['mongo_id'] = $mongoID;
 
-        if ($chapter_lang === 'np') $fn = (isset($activity['nfn'])? $activity['nfn']:(isset($activity['fn']) ? $activity['fn'] : ""));
-        else                $fn = (isset($activity['fn']) ? $activity['fn'] : "");
+        // thumbnail
+        if (isset($activity['thumb']))      $b['thumb'] = $activity['thumb'];
 
-        $thumb = (isset($activity['thumb']) ? $activity['thumb'] : "");
+        // captions for video
+        if (isset($activity['play-captions']) && !$activity['play-captions'])
+            $b['captions'] = 'false';
 
-        $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
-        $prefix = (isset($activity['prefix']) ? $activity['prefix'] : "");
-        $oleID = (isset($activity['oleID']) ? $activity['oleID'] : "");
-            $mongoID = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
-        $epversion = (isset($activity['version']) ? $activity['version'] : "");
-        $grade = (isset($activity['grade']) ? $activity['grade'] : "");
-        $url = (isset($activity['url']) ? $activity['url'] : "");
+        // PDF-specific
+        if ($ft === 'pdf') {
+            $b['zoom'] = isset($activity['zoom']) ? $activity['zoom'] : 'auto';
+            if (isset($activity['type']) && $activity['type'] === 'TG') {
+                $b['pg']  = isset($activity['pn']) ? $activity['pn'] : 1;
+                $b['len'] = isset($activity['len']) ? $activity['len'] : null;
+            } else {
+                $b['pg'] = 1;
+            }
+        }
 
-        if (isset($activity['thumb'])) $thumb = $activity['thumb'];
-        else if (isset($activity['fn']) && isset($activity['fp']))
-            $thumb = thumbnail($activity['fn'],$activity['fp'],$activity['ft']);
-        else if ($ft === 'game') $thumb = 'images/games.png';
-        else $thumb = null;
+        // epaath
+        if ($ft === 'ep' || $ft === 'epaath') {
+            $oleID = isset($activity['oleID']) ? $activity['oleID'] : null;
+            $b['ole_id']    = $oleID;
+            $b['epversion'] = isset($activity['version']) ? $activity['version'] : null;
+            if ($oleID && substr($oleID, 0, 3) === 'nep') $b['lang'] = 'np';
+            else $b['lang'] = 'en';
+        }
 
-        if (isset($activity['zoom'])) $zoom = $activity['zoom']; else $zoom = 'auto';
-                    //echo "zoom is " . $zoom;
+        // looma page: fp is the url
+        if ($ft === 'looma') {
+            $b['fp'] = isset($activity['url']) ? $activity['url'] : null;
+            $b['fn'] = null;
+        }
 
-    //$thumb = str_replace('.JPG', '.jpg', $thumb);
-
-        if ( $ft !== 'text' && $ft !== 'quiz') {
+        // map: use makeMapButton (special case, not makeButton)
+        if ($ft === 'map') {
             echo "<td>";
-
-            if ($ft === 'slideshow' ||  $ft === 'map' || $ft === 'evi' )
-                $id = mongoId ($activity['mongoID']);
-
-            switch ($ft) {
-                case "video":
-                case "mp4":
-                case "mov":
-                case "m4v":
-                    if ( isset($activity['play-captions']) &&  ! $activity['play-captions'] ) $captions = 'false';
-                                                                                         else $captions = 'true';
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,$activity['lang'],$captions);
-                    break;
-                case "slideshow":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "", "",null,null,$lang);
-                    break;
-                case "lesson":
-                    $thumb = "images/lesson.png";
-                    makeActivityButton($ft, $fp, "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null,null,$lang);
-                    break;
-                case "evi":      //edited videos
-                    makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null,null);
-                    break;
-                case "voc":     //vocabulary reviews
-                    break;
-                case "image":
-                case "jpg":
-                case "jpeg":
-                case "png":
-                case "gif":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,$lang);
-                    break;
-                case "audio":
-                case "mp3":
-                case "m4a":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
-                    break;
-                case "pdf":
-                    if (isset($activity['type']) && $activity['type'] === "TG")
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", $activity['len'], $activity['pn'], $zoom, "", "",null,null,null,$lang);
-                    else
-                        makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", $zoom, "", "",null,null,null,$lang);
-                    break;
-                case "game":
-                case "history":
-                    makeActivityButton($ft, null, null, $dn, "", $thumb, $ch_id, $id, "", "", "1", "auto", $grade, "",null,null,null,null);
-                    break;
-                case "text":
-                    //NOTE: dont show individual text files in Activities page for a chapter
-                    //makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null,null);
-                    break;
-                case "map";
-                 //   makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, $mongoID, "", "", "", "", "", "",null,null,null,null);
-                     makeMapButton($mongoID, $thumb, $dn);
-                    break;
-                case "looma";  //open a Looma page (e.g. calculator or paint)
-                    makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "",null,null,null,null);
-                    break;
-                case "ep":
-                case "epaath":
-                    if ($epversion === 2015) $thumb = $fp . $fn . "/thumbnail.jpg";
-                    $lang = 'en'; if ( substr($oleID, 0, 3) === 'nep') $lang = 'np';
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion,null,null,null,$lang);
-                    break;
-                case "html":
-                case "HTML":
-                    // make a HTML button
-                makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,null);
-                    break;
-                case "book":
-                    // make a book button
-                    makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, "", "", "", "", "", "", "",null,null, $prefix,$lang);
-                    break;
-                default:
-                  //  echo "unknown filetype \"" . $ft . "\" in activities.php";
-                    break;
-            }  //end SWITCH
+            makeMapButton($mongoID, isset($activity['thumb']) ? $activity['thumb'] : null, $dn);
             echo "</td>";
             $foundActivity = true;
             nextButton();
-            }
+            return;
         }
-    } //end makeButton()
+
+        echo "<td>";
+        makeButton($b);
+        echo "</td>";
+        $foundActivity = true;
+        nextButton();
+    } //end prepareButton()
 
     /////////////////////////////////////////////////
     /////////////  MAIN CODE ////////////////////////
@@ -293,7 +255,7 @@ if (loggedIn() && loginLevel() === 'test' && $chapter_lang !== $activity['lang']
 
         $teacher_guide = mongoFindOne($teacherguides_collection, $query);
         if ($teacher_guide) {
-            makeButton($teacher_guide);
+            prepareButton($teacher_guide);
             $foundActivity = true;
         }
 */
@@ -446,7 +408,7 @@ $query= array('$or' => array(
                     //echo $activity['dn'];
 
                 if (  ! ( $activity['ft'] === 'lesson' && isset($activity['ch_id']) && in_array($ch_id, iterator_to_array($activity['ch_id']) ) ) ){
-                    makeButton($activity);
+                    prepareButton($activity);
                     $foundActivity = true;
                 }
             }
@@ -478,7 +440,7 @@ $query= array('$or' => array(
 //                                            isset($activity['cl_hi']) &&
 //                                           ($activity['cl_lo'] <= $gradenumber) &&
 //                                           ($gradenumber <= $activity['cl_hi']))
-//                                         makeButton($activity);
+//                                         prepareButton($activity);
 
         echo "</tr></table>";
 

@@ -9,12 +9,9 @@
 
 #buttons {
     display: grid;
-    /* 3 equal columns; change to your needs */
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
-
-    /* optional: ensure row-wise auto placement */
-    grid-auto-flow: row; /* default is row */
+    justify-items: center;
 }
 
 .item {

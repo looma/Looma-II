@@ -120,9 +120,9 @@ include ('includes/header.php');
               <img draggable="false" src="images/logos/GNHA.png" style="height: 8vh;"></a>
             <a draggable="false"  draggable="false" class="attribution" href="http://www.menschen-im-dialog.de/" target="_blank">
                 <img draggable="false" src="images/logos/menschen-im-dialog_BLACK.png"  ></a>
-            <a draggable="false"  class="attribution" href="https://www.edutechnepal.org/" target="_blank">
+           <!-- <a draggable="false"  class="attribution" href="https://www.edutechnepal.org/" target="_blank">
                 <img draggable="false" src="images/logos/edutech.png"  ></a>
-
+            -->
 
     <!--
           <a draggable="false"  class="attribution" href="https://wesharesolar.org//" target="_blank">

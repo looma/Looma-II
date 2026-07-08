@@ -57,8 +57,9 @@ Description: looma slideshow presenter
 
             if (!$slideshow) {
                 echo "<h1>File not found</h1>";
-                exit;
-            }
+                $displayname = "<not found>";
+                $data = null;
+            } else {
             $displayname = $slideshow['dn'];
 
             if (isset($slideshow['data'])) $data = $slideshow['data'];
@@ -79,26 +80,18 @@ Description: looma slideshow presenter
                      $thumbSrc = thumbnail($details['fn'], $details['fp'], "slideshow");
                 else $thumbSrc = null;
 
-                //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom)
-
                 $caption = isset($slideshow_element['caption']) ? $slideshow_element['caption']: "";
 
-                makeActivityButton(
-                        $details['ft'],
-                       (isset($details['fp'])) ? $details['fp'] : null,
-                       (isset($details['fn'])) ? $details['fn'] : null,
-
-                        $caption,
-                        //(isset($details['dn'])) ? $details['dn'] : null,
-                        null,
-                        $thumbSrc,
-                       "",
-                       $slideshow_element['id'],
-                       null, //$caption,
-                       null,
-                       null,
-                       null, null, null,null,null,null,null);
+                makeButton(array(
+                    'ft'       => $details['ft'],
+                    'fp'       => isset($details['fp']) ? $details['fp'] : null,
+                    'fn'       => isset($details['fn']) ? $details['fn'] : null,
+                    'dn'       => $caption,
+                    'thumb'    => $thumbSrc,
+                    'mongo_id' => $slideshow_element['id'],
+                ));
              }
+         } // end else (slideshow found)
          }
             else {echo "<h1>No slideshow selected</h1>";
                   $displayname = "<none>";}

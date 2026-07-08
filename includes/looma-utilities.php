@@ -152,16 +152,18 @@ function thumbnail ($file, $path, $type) {
 
     $src = "";
 
-    $dot = $file ? strrpos($file, ".") : "";  //strrpos finds the LAST occurrence
-    if ( $dot ) { $src = $path . substr($file, 0, $dot) . "_thumb.jpg";}
-
-    if (!file_exists($src)) $src = $path . substr($file, 0, $dot) . "_thumb.JPG";
+    $dot = $file ? strrpos($file, ".") : false;  //strrpos finds the LAST occurrence
+    if ( $dot !== false ) {
+        $src = $path . substr($file, 0, $dot) . "_thumb.jpg";
+        if (!file_exists($src)) $src = $path . substr($file, 0, $dot) . "_thumb.JPG";
+    }
 
     //echo "thumb is " . $src . '<br>';
     //if (file_exists($src)) echo "file exists"; else echo "file does not exist";
 
     // if no specific thumbnail, use folder's thumbnail
-    if (!file_exists($src)) $src = $path . "thumbnail.png";
+    if ($path === "../content/dictionary images/") $src = $path . $file;
+    else if (!file_exists($src)) $src = $path . "thumbnail.png";
 
     // if still no thumbnail, use filetype's thumbnail
     if (!file_exists($src)) {
@@ -200,19 +202,9 @@ function language() {
 
 function displayName($filename, $dn, $ndn, $lang, $color) {
 
-    //echo "DN is " . $dn . "**";
-    //echo "NDN is " . $ndn . "**";
-
-    //echo "lang is " . $lang;
-
-  //  if (!$ndn) $ndn = $dn;
-  //  if (!$dn)  $dn  = $ndn;
-  //  if (!$dn)  $dn  = $ndn;
-
     if ($dn && $ndn) {
-
         if ($lang && $lang === 'np')
-            echo "<span class='name np'>" . $ndn . "</span>";
+            echo "<span class='name np' style='color:" . $color . "'>"  . $ndn . "</span>";
         else if ($lang && $lang === 'en')
             echo "<span class='name en' style='color:" . $color . "'>" . $dn . "</span>";
         else {
@@ -428,6 +420,103 @@ function makeActivityButton($ft, $fp, $fn, $dn,
     echo "</button>";
 
 	} //end makeActivityButton()
+
+/*********************************/
+/******** makeButton *************/
+/*********************************/
+// new version of makeActivityButton that takes a single associative array
+// $a keys: ft, fp, fn, nfn, dn, ndn, thumb, ch_id, mongo_id, db,
+//          ole_id, url, pg, len, npg, zoom, grade, epversion, prefix, lang, captions,
+//          class, subject, type, author
+
+function makeButton($a) {
+    global $icons;
+
+    $ft = isset($a['ft']) ? $a['ft'] : null;
+    if (!$ft) return;
+
+    // default filepath if not provided
+    $fp = isset($a['fp']) ? $a['fp'] : null;
+    if (!$fp) {
+        $defaults = array(
+            'video'=>'../content/videos/', 'mp4'=>'../content/videos/', 'MP4'=>'../content/videos/',
+            'mp5'=>'../content/videos/', 'm4v'=>'../content/videos/', 'mov'=>'../content/videos/',
+            'image'=>'../content/pictures/', 'jpg'=>'../content/pictures/', 'jpeg'=>'../content/pictures/',
+            'JPG'=>'../content/pictures/','png'=>'../content/pictures/', 'gif'=>'../content/pictures/',
+            'audio'=>'../content/audio/', 'mp3'=>'../content/audio/', 'm4a'=>'../content/audio/',
+            'pdf'=>'../content/pdfs/', 'html'=>'../content/html/', 'HTML'=>'../content/html/',
+            'slideshow'=>'../content/slideshows/', 'evi'=>'../content/videos/'
+        );
+        if (isset($defaults[$ft])) $fp = $defaults[$ft];
+    }
+
+    // thumbnail
+    $fn = isset($a['fn']) ? $a['fn'] : null;
+    if (isset($a['thumb']) && $a['thumb']) $thumbSrc = $a['thumb'];
+    else $thumbSrc = thumbnail($fn, $fp, $ft);
+
+    // build data attributes — only include fields that have values
+    $attrs = array();
+    if ($ft)                          $attrs['ft'] = $ft;
+    if ($fp)                          $attrs['fp'] = $fp;
+    if ($fn)                          $attrs['fn'] = $fn;
+    if (isset($a['nfn']) && $a['nfn'])       $attrs['nfn'] = $a['nfn'];
+    if (isset($a['dn'])  && $a['dn'])        $attrs['dn']  = $a['dn'];
+    if (isset($a['ndn']) && $a['ndn'])       $attrs['ndn'] = $a['ndn'];
+    if (isset($a['lang']) && $a['lang'])     $attrs['lang'] = $a['lang'];
+    if (isset($a['db'])  && $a['db'])        $attrs['db']  = $a['db'];
+    if (isset($a['prefix']) && $a['prefix']) $attrs['prefix'] = $a['prefix'];
+
+    if (isset($a['mongo_id']) && $a['mongo_id']) {
+        $attrs['id']      = $a['mongo_id'];
+        $attrs['mongoid'] = $a['mongo_id'];
+    }
+    if (isset($a['ch_id']) && $a['ch_id'])       $attrs['ch']  = $a['ch_id'];
+    if (isset($a['url'])   && $a['url'])         $attrs['url'] = $a['url'];
+    if (isset($a['ole_id']) && $a['ole_id'])     $attrs['ole'] = $a['ole_id'];
+    if (isset($a['grade'])  && $a['grade'])      $attrs['grade'] = $a['grade'];
+    if (isset($a['epversion']) && $a['epversion']) $attrs['epversion'] = $a['epversion'];
+    if (isset($a['class'])   && $a['class'])     $attrs['class']   = $a['class'];
+    if (isset($a['subject']) && $a['subject'])   $attrs['subject'] = $a['subject'];
+    if (isset($a['type'])    && $a['type'])      $attrs['type']    = $a['type'];
+    if (isset($a['author'])  && $a['author'])    $attrs['author']  = $a['author'];
+
+    if ($ft === 'EP' || $ft === 'ep' || $ft === 'epaath') $attrs['subject'] = 'english';
+
+    // captions: only include if explicitly 'false'
+    if (isset($a['captions']) && $a['captions'] === 'false') $attrs['captions'] = 'false';
+    else $attrs['captions'] = 'true';
+
+    // PDF/chapter-specific
+    if ($ft == 'pdf' || $ft == 'chapter') {
+        $attrs['page'] = isset($a['pg'])  ? $a['pg']  : 1;
+        $attrs['len']  = isset($a['len']) ? $a['len'] : (isset($a['url']) ? $a['url'] : 999);
+        if (isset($a['npg']) && $a['npg']) $attrs['npg'] = $a['npg'];
+        if (isset($a['nlen']) && $a['nlen']) $attrs['nlen'] = $a['nlen'];
+        $attrs['zoom'] = isset($a['zoom']) ? $a['zoom'] : '';
+    }
+
+    // emit the button
+    echo "<button class='activity play img' ";
+    foreach ($attrs as $key => $val) {
+        if ($key === 'fn') echo 'data-fn="' . $val . '" ';
+        else               echo "data-" . $key . "='" . $val . "' ";
+    }
+    echo ">";
+
+    if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
+
+    $dn  = isset($a['dn'])  ? $a['dn']  : null;
+    $ndn = isset($a['ndn']) ? $a['ndn'] : null;
+    displayName($fn, $dn, $ndn, language(), 'black');
+
+    if ($dn)      echo "<span class='tip yes-show big-show'>" . $dn . "</span>";
+    else if ($ndn) echo "<span class='tip yes-show big-show'>" . $ndn . "</span>";
+
+    if (isset($icons[$ft])) echo "<img class='icon' src='" . $icons[$ft] . "'>";
+    echo "</button>";
+
+} //end makeButton()
 
 /*********************************/
 /******** makeChapterButton *****/

@@ -400,7 +400,7 @@ h1 span.english-keyword, h1 span.native-keyword {
 span:hover .xlat {
     display:block;
     position:fixed;
-    top:20px;
+   /* top:20px; */
     right:15px;
     z-index: 1000;
     border: 1px solid #000000;
@@ -429,13 +429,13 @@ button:hover span.tip.yes-show 	{
     color:#000000;}
 
 button:hover span.tip.yes-show.big-show {
-
-    display:none;
-
-    font-size:0.5em;
-    left:60vw;
+    display:block;
+    font-size:0.75em;
     padding:0 auto;
-    width:30vh;
+    width:90%;
+    position:absolute;
+    bottom:0;
+    left:0;
 }
 
 /*****************

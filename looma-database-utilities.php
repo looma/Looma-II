@@ -457,6 +457,7 @@ require_once('includes/looma-utilities.php');
             $insert = array(
                 "dn" => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)),
                 "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template'
+                "db" => $_REQUEST['db'],
                 "author" => $_COOKIE['login'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
                 "data" => $_REQUEST["data"]
@@ -502,6 +503,34 @@ require_once('includes/looma-utilities.php');
                 $activitycollection);
             echo json_encode($result);
 
+        }
+        else if (($collection == "game") || ($collection == "games")) {
+            $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
+            $gamedata = $_REQUEST['data'];
+
+            $insert = array(
+                "dn" => $save_dn,
+                "ft" => 'game',
+                "db" => $_REQUEST['db'],
+                "title" => isset($gamedata['title']) ? $gamedata['title'] : $save_dn,
+                "presentation_type" => isset($gamedata['presentation_type']) ? $gamedata['presentation_type'] : '',
+                "lang" => isset($gamedata['lang']) ? $gamedata['lang'] : 'en',
+                "cl_lo" => isset($gamedata['cl_lo']) ? (int)$gamedata['cl_lo'] : 1,
+                "cl_hi" => isset($gamedata['cl_hi']) ? (int)$gamedata['cl_hi'] : 1,
+                "subject" => isset($gamedata['subject']) ? $gamedata['subject'] : '',
+                "timeLimit" => isset($gamedata['timeLimit']) ? (int)$gamedata['timeLimit'] : 60,
+                "author" => $_COOKIE['login'],
+                "date" => gmdate("Y.m.d")
+            );
+
+            // type-specific data
+            if (isset($gamedata['prompts']))   $insert['prompts']   = $gamedata['prompts'];
+            if (isset($gamedata['responses'])) $insert['responses'] = $gamedata['responses'];
+            if (isset($gamedata['bins']))      $insert['bins']      = $gamedata['bins'];
+            if (isset($gamedata['words']))     $insert['words']     = $gamedata['words'];
+
+            $result = saveToMongo($dbCollection, $save_dn, 'game', $insert, $activitycollection);
+            echo json_encode($result);
         }
         // else handle other collections' specific save requirements
         return;
@@ -702,8 +731,8 @@ require_once('includes/looma-utilities.php');
           case "gameSubjectList":
               //    input is "class" (grade level)
               //    query games and histories collections to get subjects available for this class
-              /* $subjects = array(
-                      'S' => ' science',
+              $subjects = array(
+                      'S' => 'science',
                       'M' =>  'math',
                       'EN' => 'english',
                       'N' =>  'nepali',
@@ -713,22 +742,29 @@ require_once('includes/looma-utilities.php');
                       'V'  => 'vocation',
                       'SSa' =>'social studies optional', //now used for "Moral Education"
                       'Ma' => 'math optional');
-              */
 
               $query = [];
               $query['cl_lo'] = array('$exists' => true, '$lte' => (int)substr($_REQUEST['class'],5));
               $query['cl_hi'] = array('$exists' => true, '$gte' => (int)substr($_REQUEST['class'],5));
 
               $games = mongoFind($games_collection, $query, null, null, null);
+              $localGames = mongoFind($local_games_collection, $query, null, null, null);
 
            $subjectList = [];
 
-                  foreach ($games as $game) {
+              foreach (array($games, $localGames) as $cursor) {
+                  foreach ($cursor as $game) {
                   //echo "game[subject][index] is " . $game['subject'][$index];
-                  if (isset($game['subject'])) foreach ($game['subject'] as $index => $subj) {
-                  $subjectList[] = strtolower($subj);
-                //  echo "subject for " . $_REQUEST['class'] . "  is  " .    $game['subject'][$index];
+                  if (isset($game['subject'])) {
+          //            if (is_array($game['subject']))
+                          foreach ( (array) $game['subject'] as $index => $subj) {
+                          $lowercasesubject = strtolower($subj);
+                          if (in_array($lowercasesubject,$subjects)) $subjectList[] = $lowercasesubject;
+                        //  echo "subject for " . $_REQUEST['class'] . "  is  " .    $game['subject'][$index];
+                          }
+           //           else  $subjectList[] = $lowercasesubject;
                   }
+              }
               }
 
               echo json_encode(array_unique($subjectList));

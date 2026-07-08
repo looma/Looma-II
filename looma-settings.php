@@ -43,11 +43,16 @@ Description:  for Looma 2
                  <button class="settings-control">Text Editor</button>
              </a>
 
-             <a href="looma-text-translator.php">
-                 <button class="settings-control">Text Translator</button>
+             <a href="looma-edit-game.php">
+                 <button class="settings-control">Game Editor</button>
              </a>
 
-             <a href="looma-edit-slideshow.php">
+   <!--
+            <a href="looma-text-translator.php">
+                 <button class="settings-control">Text Translator</button>
+             </a>
+  -->
+            <a href="looma-edit-slideshow.php">
                  <button class="settings-control">Slideshow Editor</button>
              </a>
 

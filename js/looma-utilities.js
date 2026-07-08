@@ -100,6 +100,7 @@ var LOOMA = (function() {
 playMedia : function(button) {
 
     var fn = encodeURIComponent(button.getAttribute('data-fn'));
+    var nfn = encodeURIComponent(button.getAttribute('data-nfn'));
     var fp = encodeURIComponent(button.getAttribute('data-fp'));
     var dn = encodeURIComponent(button.getAttribute('data-dn'));
     var ndn = encodeURIComponent(button.getAttribute('data-ndn'));
@@ -223,10 +224,15 @@ playMedia : function(button) {
             break;
 
         case "html":
+            if (! lang || lang === 'null' || lang === 'both') lang =  language==='native'?'np':'en';
+
             var fp = encodeURIComponent(button.getAttribute('data-fp'));
-            var fn = encodeURIComponent(button.getAttribute('data-fn'));
+            if (lang === 'np')
+                var effective_fn = nfn;
+            else
+                var effective_fn = fn;
             var kbd = encodeURIComponent(button.getAttribute('data-dn')) === 'ePaath' ? "keyboard" : "";
-            window.location = 'html?fp=' + fp + '&fn=' + fn + '&ep=' + kbd;
+            window.location = 'html?fp=' + fp + '&fn=' + effective_fn + '&ep=' + kbd;
             break;
 
         case "book":
@@ -275,6 +281,7 @@ playMedia : function(button) {
 
         case "game":
              window.location = 'game?id=' + button.getAttribute('data-mongoid') +
+                 '&db=' + button.getAttribute('data-db') +
                  '&class=' + button.getAttribute('data-class') +
                  '&subject=' + button.getAttribute('data-subject') +
                  '&ch_id=' + button.getAttribute('data-ch_id') +
@@ -330,6 +337,7 @@ playMedia : function(button) {
             }
 
             var fn = (result.fn) ? result.fn : result.nfn;
+            var nfn = (result.nfn) ? result.nfn : result.fn;
             var db = (result.db) ? result.db : 'looma';
             var ft =  result.ft;
 
@@ -349,6 +357,7 @@ playMedia : function(button) {
                 '<button class="activity play img" ' +
                 'data-id="' + result._id          + '" ' +
                 'data-fn="' + fn   + '" ' +
+                'data-nfn="' + nfn   + '" ' +
                 'data-fp="' + fp          + '" ' +
                 'data-db="' + db          + '" ' +
                 'data-ft="' + ft   + '" ' +
@@ -391,15 +400,7 @@ playMedia : function(button) {
                               else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
 
           */
-            if (thumbfile) $newButton.append($('<img alt="" loading="lazy" draggable="false" src="' + thumbfile + '">'));
-
-            //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));
-
-            /*this idea is from: https://stackoverflow.com/questions/980855/inputting-a-default-image-in-case-the-src-attribute-of-an-html-img-is-not-vali
-                   $newButton.append($('<object draggable="false" data="' + thumbfile + '" type="image/png">' +
-                                        '<img alt="" src="' + result.fp + 'thumbnail.png">' +
-                                        '</object>'));
-             */
+            if (thumbfile) $newButton.append(LOOMA.thumbImg(thumbfile, result.fp, result.ft));
 
 
             var displayname;
@@ -417,6 +418,102 @@ playMedia : function(button) {
             $newButton.appendTo(appendToDiv);
         }, // end makeActivityButton()
 
+        // new version: takes a single result object, only emits data attrs for fields that exist
+        makeButton : function(result, appendToDiv) {
+            if (!result || !result.ft) return;
+
+            var ft = result.ft;
+            var fp = result.fp || LOOMA.filepath(ft);
+            var fn = result.fn || result.nfn || null;
+            var db = result.db || 'looma';
+
+            var lang = result.lang;
+            if (!lang) {
+                var cookie = LOOMA.readStore('language', 'cookie');
+                lang = cookie !== 'english' ? 'np' : 'en';
+            }
+
+            // chapter special case
+            if (result.ID && ft === 'chapter') {
+                fp = LOOMA.filepath('chapter') +
+                     LOOMA.parseCH_ID(result.ID)['currentGradeFolder'] + '/' +
+                     LOOMA.parseCH_ID(result.ID)['currentSubjectFull'] + '/' +
+                     lang + '/';
+                fn = result.ID + '.pdf';
+                ft = 'pdf';
+            }
+
+            var mongoID = null;
+            if (result.mongoID) mongoID = result.mongoID.$oid || result.mongoID;
+
+            // build data attributes — only include fields with values
+            var attrs = {};
+            attrs['ft'] = ft;
+            if (fp)   attrs['fp']   = fp;
+            if (fn)   attrs['fn']   = fn;
+            if (db)   attrs['db']   = db;
+            if (lang) attrs['lang'] = lang;
+
+            if (result.dn)     attrs['dn']     = result.dn;
+            if (result.ndn)    attrs['ndn']    = result.ndn;
+            if (result.nfn)    attrs['nfn']    = result.nfn;
+            if (result.prefix) attrs['prefix'] = result.prefix;
+
+            if (result._id)    attrs['id']      = result._id;
+            if (mongoID)       attrs['mongoid'] = mongoID;
+
+            if (result.url)     attrs['url']       = result.url;
+            if (result.oleID)   attrs['ole']       = result.oleID;
+            if (result.grade)   attrs['grade']     = result.grade;
+            if (result['class'])  attrs['class']   = result['class'];
+            if (result.subject)   attrs['subject'] = result.subject;
+            if (result.presentation_type) attrs['type'] = result.presentation_type;
+            if (result.version) attrs['epversion'] = result.version;
+            if (result.author)  attrs['author']    = result.author;
+            if (result.ch_id)   attrs['ch']        = result.ch_id;
+            if (result.ID)      attrs['ID']        = result.ID;
+
+            if (result['play-captions'] === false || result['play-captions'] === 'false')
+                attrs['captions'] = 'false';
+            else attrs['captions'] = 'true';
+
+            if (ft === 'pdf' || ft === 'chapter' || ft === 'textbook') {
+                attrs['page'] = result.pn  || 1;
+                attrs['len']  = result.len || result.url || 999;
+                if (result.zoom) attrs['zoom'] = result.zoom;
+                if (result.npn)  attrs['npg']  = result.npn;
+            }
+
+            // build button element
+            var attrStr = '';
+            for (var key in attrs) {
+                if (attrs.hasOwnProperty(key) && attrs[key] != null) {
+                    attrStr += 'data-' + key + '="' + attrs[key] + '" ';
+                }
+            }
+            var $btn = $('<button class="activity play img" ' + attrStr + '>');
+
+            // thumbnail
+            if (!('fn' in result) && ('nfn' in result)) fn = result.nfn;
+            else if ('fn' in result) fn = result.fn;
+            var thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft, result.thumb);
+            if (thumbfile) $btn.append(LOOMA.thumbImg(thumbfile, result.fp, result.ft));
+
+            // display name — matches PHP displayName() logic
+            var dn = result.dn || null;
+            var ndn = result.ndn || null;
+            $btn.append(LOOMA.displayName(fn, dn, ndn));
+
+            // tooltip
+            var tip = dn || ndn;
+            if (tip) $btn.append($('<span class="tip yes-show big-show">').text(tip));
+
+            // icon
+            if (icons[result.ft]) $btn.append($('<img class="icon" src="' + icons[result.ft] + '">'));
+
+            $btn.click(function() { LOOMA.playMedia(this); });
+            $btn.appendTo(appendToDiv);
+        }, // end makeButton()
 
         makeActivityButtonFromId: function (id, db, mongoID, appendToDiv) {
     // given an ID for an activity in the activities collection in mongo,
@@ -432,7 +529,7 @@ playMedia : function(button) {
                  collection: 'activities',
                  id: id},
                  function(result) {
-                    LOOMA.makeActivityButton(result, id, db, mongoID, appendToDiv)
+                    LOOMA.makeButton(result, appendToDiv)
             },
                 'json'
               );
@@ -533,101 +630,136 @@ filepath: function(filetype) {
 
 
 thumbnail: function (filename, filepath, filetype, thumb) {
-            //builds a filepath/filename for the thumbnail of this "filename" based on type and source
+            // builds a thumbnail path, matching PHP thumbnail() logic:
+            //   1. if thumb parameter provided, use it
+            //   2. dictionary images: use the image itself
+            //   3. epaath: special thumbnail path
+            //   4. for any file with an extension: path + basename + "_thumb.jpg"
+            //      (thumbImg handles fallback to _thumb.JPG, folder thumbnail.png, generic icon)
+            //   5. if no filename: generic icon for filetype
 
-                            /*
-                                if      (result.ft == 'EP'       && result.thumb)
-                                                     thumbfile = '../ePaath/' + result.thumb;
-                                else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft === 'map') && result.thumb)
-                                                     thumbfile = result.thumb;
-                                else if (result.thumb) thumbfile = result.fp + result.thumb ;
-                                else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
-                                else thumbfile = null;
-                             */
+            if (!filetype) return null;
 
-            var thumbnail_prefix, path;
-            var imgsrc = null;
-            var homedirectory = '../';
+            // if a thumb was explicitly provided, use it directly
+            if (thumb) return thumb;
 
-            if (filetype) {
+            var path = filepath || LOOMA.filepath(filetype);
 
-                filetype = filetype.toLowerCase();
+            // dictionary images: use the image itself as thumbnail
+            if (filepath && filepath.indexOf('dictionary images') >= 0 && filename) {
+                return filepath + filename;
+            }
 
-                if (filetype === 'chapter') {
-                  imgsrc = homedirectory + "content/" + filepath + filename.replace(/\.pdf$/i, "") + "_thumb.jpg";
-                  //  thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
-                  //  imgsrc = homedirectory + "content/" + filepath + thumbnail_prefix + "_thumb.jpg";
-                }
-                else if (filepath && filepath.indexOf('/Khan/') >= 0) {
-                    imgsrc = homedirectory + 'content/Khan/thumbnail.png';
-                }
-                else if (filepath && filepath.indexOf('/W4S/') >= 0) {
-                    imgsrc = homedirectory + 'content/W4S/thumbnail.png';
-                }
-                else if (filepath && filepath.indexOf('/W4S2013/') >= 0) {
-                    imgsrc = homedirectory + 'content/W4S2013/thumbnail.png';
-                }
-                else if (filetype == "mp3" || filetype == "m4a" || filetype == "audio") {  //audio
-                    if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
-                    imgsrc = path + "thumbnail.png";
-                }
-                else if (filetype == "mp4" || filetype == "mp5" || filetype == "m4v" || filetype == "mov" || filetype == "video") { //video
-                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
-                    if (filepath) path = filepath; else path = homedirectory + 'content/videos/';
-                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
-                }
-                else if (filetype == "jpg"  || filetype == "jpeg"  || filetype == "gif" || filetype == "png" || filetype == "image" ) { //picture
-                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
-                    if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
-                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
-                }
-                else if (filepath && filepath.indexOf('Hesperian') >= 0) { //keep this before filetype===pdf
-                    imgsrc = filepath + "thumbnail.png";
-                }
-                else if (filetype == "pdf" || filetype === "textbook") { //pdf - we dont use Document type any more
-                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
-                    if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
-                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
-                }
-                else if (filetype == "html") { //html
-                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
-                    if (filepath) path = filepath; else path = homedirectory + 'content/html/';
-                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
-                }
-                else if (filetype == "EP" || filetype == "ep" || filetype == "epaath") {
-                    if (filepath === "../content/epaath/activities/")
-                         imgsrc = filepath + filename + "/thumbnail.jpg";
-                    else imgsrc = "images/logos/ole-nepal.jpg";
-                }
-                else if (filetype == "text" || filetype == "text-template") {
-                    imgsrc = "images/textfile.png";
-                }
-                else if (filetype == "lesson") {
-                    imgsrc = "images/lesson2.png";
-                }
-                /*fix by looking up DN in mongo*/
-                else if (filetype == "evi") {
-                    imgsrc = "images/video.png";
-                }
-                else if (filetype == "history") {
-                    imgsrc = thumb;
-                }
-                else if (filetype == "map") {
-                    imgsrc = thumb;
-                }
-                else if (filetype == "game") {
-                    imgsrc = "images/games.png";
-                }
-                else if (filetype == "slideshow") {
-                    imgsrc = thumb;
-                }
-                else if (filetype == "looma") {
-                    imgsrc =  thumb;
+            // epaath: special thumbnail path
+            var ftl = filetype.toLowerCase();
+            if (ftl === 'ep' || ftl === 'epaath') {
+                if (filepath === "../content/epaath/activities/" && filename)
+                     return filepath + filename + "/thumbnail.jpg";
+                else return "images/logos/ole-nepal.jpg";
+            }
+
+            // chapter: filepath is relative within content/chapters/
+            if (ftl === 'chapter' && filename) {
+                return '../content/' + filepath + filename.replace(/\.pdf$/i, "") + "_thumb.jpg";
+            }
+
+            // for any file with an extension: strip extension, append _thumb.jpg
+            // thumbImg() will handle fallbacks (_thumb.JPG, folder thumbnail.png, generic icon)
+            if (filename) {
+                var dot = filename.lastIndexOf('.');
+                if (dot > 0) {
+                    return path + filename.substr(0, dot) + "_thumb.jpg";
                 }
             }
 
-            return imgsrc;
+            // no filename: return generic icon for this filetype
+            return LOOMA.fallbackIcon(filetype);
         }, //end thumbnail()
+
+// returns the generic fallback icon for a filetype (last resort if no thumbnail file exists)
+fallbackIcon: function(ft) {
+    if (!ft) return null;
+    ft = ft.toLowerCase();
+    var icons = {
+        'mp4':'images/video.png', 'mp5':'images/video.png', 'm4v':'images/video.png',
+        'mov':'images/video.png', 'video':'images/video.png', 'evi':'images/video.png',
+        'jpg':'images/picture.png', 'jpeg':'images/picture.png', 'png':'images/picture.png',
+        'gif':'images/picture.png', 'image':'images/picture.png',
+        'mp3':'images/audio.png', 'm4a':'images/audio.png', 'audio':'images/audio.png',
+        'pdf':'images/pdf.png',
+        'text':'images/textfile.png', 'text-template':'images/textfile.png',
+        'lesson':'images/lesson2.png',
+        'slideshow':'images/play-slideshow-icon.png',
+        'game':'images/games.png',
+        'ep':'images/logos/ole-nepal.jpg', 'epaath':'images/logos/ole-nepal.jpg',
+        'looma':'images/LoomaLogo.png'
+    };
+    return icons[ft] || null;
+},
+
+// creates an <img> element with onerror fallback chain:
+//   tries src, then _thumb.JPG, then folder thumbnail.png, then generic filetype icon
+thumbImg: function(src, fp, ft) {
+    var $img = $('<img alt="" loading="lazy" draggable="false">');
+    if (!src) {
+        var fb = LOOMA.fallbackIcon(ft);
+        if (fb) $img.attr('src', fb);
+        return $img;
+    }
+    var fallbacks = [];
+    // if src ends with _thumb.jpg, try _thumb.JPG as first fallback
+    if (src.match(/_thumb\.jpg$/)) {
+        fallbacks.push(src.replace(/_thumb\.jpg$/, '_thumb.JPG'));
+    }
+    // folder thumbnail as next fallback
+    if (fp) fallbacks.push(fp + 'thumbnail.png');
+    // generic filetype icon as last fallback
+    var icon = LOOMA.fallbackIcon(ft);
+    if (icon) fallbacks.push(icon);
+
+    $img.on('error', function() {
+        if (fallbacks.length > 0) {
+            $(this).attr('src', fallbacks.shift());
+        } else {
+            $(this).off('error');
+        }
+    });
+    $img.attr('src', src);
+    return $img;
+},
+
+// returns jQuery elements for bilingual display name, matching PHP displayName()
+// if both dn and ndn: show bilingual with english-keyword/native-keyword spans
+// if only one: show that one
+// if neither: show filename
+displayName: function(filename, dn, ndn) {
+    var $container = $('<span>');
+    var language = LOOMA.readStore('language', 'cookie');
+
+    if (dn && ndn) {
+        if (language === 'native') {
+            $container.append($('<span class="name np">').text(ndn));
+        } else if (language === 'english') {
+            $container.append($('<span class="name en" style="color:black">').text(dn));
+        } else {
+            $container.append(
+                $('<span class="english-keyword">').text(dn)
+                    .append($('<span class="xlat">').text(ndn))
+            );
+            $container.append(
+                $('<span class="native-keyword">').text(ndn)
+                    .append($('<span class="xlat">').text(dn))
+            );
+        }
+    } else if (dn) {
+        $container.append($('<span class="name en" style="color:black">').text(dn));
+    } else if (ndn) {
+        $container.append($('<span class="name np">').text(ndn));
+    } else if (filename) {
+        $container.append($('<span class="name">').text(filename));
+    }
+    return $container;
+},
 
 //returns an english describing the file type, given a FT
 typename: function(ft) {
@@ -1688,12 +1820,7 @@ LOOMA.closePopup = function() {
 LOOMA.alert = function(msg, time, notTransparent, next){
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
-  //  var $attachpoint = ($('#fullscreen').length > 0) ? $('#fullscreen') : $(document.body);
-
-   // var $attachpoint = $(document.body); //NOTE: changed to attach popups to #fullscreen
-    //          so that popups appear in fullscreen mode
-
-    var $attachpoint = $('#fullscreen');
+    var $attachpoint = ($('#fullscreen').length > 0) ? $('#fullscreen') : $(document.body);
 
     $attachpoint.append("<div class='popup'>" +
         "<button class='popup-button dismiss-popup'><b>X</b></button>"+ msg +
@@ -1768,9 +1895,9 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<input id='popup-input' autofocus></input>" +
         "<button id='confirm-popup' class='popup-button'>"+
-        LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>").hide().fadeIn(1000) ;
-
-    $('#popup-input').focus();
+        LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>").hide().fadeIn(1000, function() {
+            $('#popup-input').focus();
+        }) ;
 
     $('#popup-input').on( 'keydown', function( e ) {
                 if ( e.keyCode === 13 ) {  // carriage return

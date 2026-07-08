@@ -38,6 +38,11 @@ function gameExists(gamejson) {
     else return false;
 }
 function verifyGame(gamejson) {
+    if (! gamejson.title) {
+        print(" for " + gamejson.title + " title is missing");
+        return false;
+    }
+
     if (! gamejson.presentation_type) {
         print(" for " + gamejson.title + " presentation_type is missing");
         return false;
@@ -74,9 +79,9 @@ function registerGame(gamejson) {
 
 var count = 0; var good = 0; var bad = 0; var exists = 0;
 
-const dirPath = 'data files/games';  // Replace with your directory path
+var dirPath = 'data files/games';  // Replace with your directory path
 
-const games = listFiles(dirPath);  // Returns array of file info objects [web:14]
+var games = listFiles(dirPath);  // Returns array of file info objects [web:14]
 
 games.forEach(function(file) {
     let game = {};

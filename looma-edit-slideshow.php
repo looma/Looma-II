@@ -9,8 +9,8 @@ error_log("Starting Slideshow Edit session. logged in as: " . $loggedin);
 
 <!doctype html>
 <!--
-Filename: looma-editor-template.php
-Description: template for Looma editor tools, like Lesson Plan Editor, Slideshow Editor, etc
+Filename: looma-edit-slideshow.php
+Description: Looma Slideshow Editor
 
 Programmer name: Skip, Kiefer
 Owner: VillageTech Solutions (villagetechsolutions.org)
@@ -25,7 +25,7 @@ Revision: Looma 3.0
     <link rel = "Stylesheet" type = "text/css" href = "css/looma-search.css">
     <link rel = "Stylesheet" type = "text/css" href = "css/looma-filecommands.css">
     <link rel = "Stylesheet" type = "text/css" href = "css/looma-edit-slideshow.css">
-
+ma
 </head>
 
 <body>
@@ -65,10 +65,11 @@ Revision: Looma 3.0
             <div id="timelineDisplay" class="timelineCenter">
             </div>
         </div>
-        <div id="timeline-data" hidden></div>
 
             <button type="button" id="timelineLeft" class="timelineScroll"></button>
             <button type="button" id="timelineRight" class="timelineScroll"></button>
+
+        <div id="timeline-data" hidden></div>
 
     </div>
 

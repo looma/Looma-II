@@ -13,7 +13,6 @@ Description:  displays a list of activity buttons of wikipedia articles matching
 <?php $page_title = 'Looma Wikipedia';
 require_once ('includes/header.php');
 
-//use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $grade, $epversion, $nfn, $npg, $prefix,$lang)
 require_once('includes/looma-utilities.php');
 ?>
 </head>
@@ -25,144 +24,75 @@ require_once('includes/looma-utilities.php');
 $shown = array();
 $foundActivity;
 
-function makeButton($activity) {
+function prepareButton($activity) {
     //depending on the filetype of the activity, display the appropriate button
     global $buttons, $maxButtons, $ch_id, $foundActivity, $shown, $lang ;
 
     $id = $activity['_id'];
 
     if ( ! in_array($id, $shown)) {  //check if this Activity has already been shown
-        array_push($shown,$id);  //add to 'shown' array, so it wont be shown again
+        array_push($shown,$id);
 
         $ft = $activity['ft'];
-        $dn =  $activity['dn'];
-        $ndn = (isset($activity['ndn']) ? $activity['ndn'] : "");
-        $fp = (isset($activity['fp']) ? $activity['fp'] : "");
-        $fn = (isset($activity['fn']) ? $activity['fn'] : "");
-        //$fn = urlencode($fn);
-        $thumb = (isset($activity['thumb']) ? $activity['thumb'] : "");
-        $id = (isset($activity['mongoID']) ? $activity['mongoID'] : "");
-        $prefix = (isset($activity['prefix']) ? $activity['prefix'] : "");
-        $oleID = (isset($activity['oleID']) ? $activity['oleID'] : "");
-        $epversion = (isset($activity['version']) ? $activity['version'] : "");
-        $grade = (isset($activity['grade']) ? $activity['grade'] : "");
-        $url = (isset($activity['url']) ? $activity['url'] : "");
 
-        if (isset($activity['thumb'])) $thumb = $activity['thumb'];
-        else if (isset($activity['fn']) && isset($activity['fp']))
-            $thumb = $activity['fp'] . thumbnail($fn,$fp,$ft);
-        else if ($ft === 'game') $thumb = 'images/games.png';
-        else $thumb = null;
+        // skip types not shown on wiki page
+        if ($ft === 'text' || $ft === 'VOC' || $ft === 'LP') return;
 
-        //$thumb = (isset($activity['thumb']) ? $activity['thumb'] : thumbnail($fn));
+        // build the button descriptor array
+        $b = array(
+            'ft'       => $ft,
+            'fp'       => isset($activity['fp']) ? $activity['fp'] : null,
+            'fn'       => ($ft === 'evi' && isset($activity['fn'])) ? $activity['fn'] . ".mp4" : (isset($activity['fn']) ? $activity['fn'] : null),
+            'dn'       => isset($activity['dn']) ? $activity['dn'] : null,
+            'ndn'      => isset($activity['ndn']) ? $activity['ndn'] : null,
+            'ch_id'    => $ch_id,
+            'prefix'   => isset($activity['prefix']) ? $activity['prefix'] : null,
+            'url'      => isset($activity['url']) ? $activity['url'] : null,
+            'grade'    => isset($activity['grade']) ? $activity['grade'] : null,
+        );
 
-        //DEBUG print_r($activity);
+        // thumbnail
+        if (isset($activity['thumb'])) $b['thumb'] = $activity['thumb'];
 
-        if ( ! ( $ft == 'text' )) {
+        // mongo_id for types that need it
+        $mongoID = isset($activity['mongoID']) ? $activity['mongoID'] : null;
+        if ($ft === 'slideshow' || $ft === 'evi')
+            $b['mongo_id'] = $mongoID ? mongoId($mongoID) : null;
+        else if ($ft === 'lesson' || $ft === 'game')
+            $b['mongo_id'] = $mongoID;
 
-            echo "<td>";
-
-            if ($ft == 'slideshow' ||  $ft == 'evi') $id = new MongoID($activity['mongoID']);
-
-            switch ($ft) {
-                case "video":
-                case "mp4":
-                case "mov":
-                case "m4v":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,null);
-                    break;
-
-                case "slideshow":
-                    // in mongodb [for now] 'fn' contains the filename AND the mongoID (concatenated, separated by a space)
-                    // 'fn' => 1,      // format: "path/to/image.png mongoid"
-                    //      'dn' => 1, // format: "Slideshow Name"
-                    //$split = explode(" ", $fn);
-                    //$imagesrc = $split[0];
-                    //$mongoid  = $split[1];
-                    //$fp = urlencode('../content/slideshows/');
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "", "",null,null,null);
-                    break;
-
-                case "lesson":
-                    $thumb = "images/lesson.png";
-                    makeActivityButton($ft, $fp, "", $dn, "", $thumb, "", $id, "", "", "", "", "", "",null,null,null,null);
-                    break;
-
-                case "evi":      //edited videos
-                    makeActivityButton($ft, $fp, $fn . ".mp4", $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null,null);
-                    break;
-
-                case "VOC":     //vocabulary reviews
-                    break;
-
-                case "LP";      //lesson plan
-                    break;
-
-                case "image":
-                case "jpg":
-                case "jpeg":
-                case "png":
-                case "gif":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
-                    break;
-
-                case "audio":
-                case "mp3":
-                case "m4a":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null,null,null);
-                    break;
-
-                case "pdf":
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "1", "auto", "", "",null,null,null,null);
-                    break;
-
-                case "game":
-                    makeActivityButton($ft, null, null, $dn, "", $thumb, $ch_id, $id, "", "", "1", "auto", $grade, "",null,null,null,null);
-                    break;
-
-                case "text":
-                    //NOTE: dont show individual text files in Activities page for a chapter
-                    //makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, $id, "", "", "", "", "", "",null,null,null,null);
-                    break;
-
-                case "map";
-                    makeActivityButton($ft, $fp, $fn, $dn, "", "/" . $fn . "_thumb.png", $ch_id, "", "", "", "", "", "", "",null,null,null,null);
-                    break;
-
-                case "looma";  //open a Looma page (e.g. calculator or paint)
-                    makeActivityButton($ft, $url, "", $dn, "", "", $ch_id, "", "", "", "", "", "", "",null,null,null,null);
-                    break;
-
-                case "EP":
-                case "epaath":
-                    if ($epversion === 2015) $thumb = $fp . $fn . "/thumbnail.jpg";
-                    if ( substr($oleID, 0, 3) === 'nep') $lang = 'np';
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", $oleID, "", "", "", $grade, $epversion,null,null,null,$lang);
-                    break;
-
-                case "html":
-                case "HTML":
-                    // make a HTML button
-                    makeActivityButton($ft, $fp, $fn, $dn, "", $thumb, $ch_id, "", "", "", "", "", "", "",null,null, null,null);
-                    break;
-
-                case "book":
-                    // make a book button
-                    makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, "", "", "", "", "", "", "",null,null, $prefix,null);
-                    break;
-
-                default:
-                    echo "unknown filetype \"" . $ft . "\" in activities.php";
-                    break;
-
-            }  //end SWITCH
-            echo "</td>";
-            $foundActivity = true;
-            $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
-
+        // PDF-specific
+        if ($ft === 'pdf') {
+            $b['pg'] = 1;
+            $b['zoom'] = 'auto';
         }
+
+        // epaath
+        if ($ft === 'EP' || $ft === 'epaath') {
+            $oleID = isset($activity['oleID']) ? $activity['oleID'] : null;
+            $b['ole_id']    = $oleID;
+            $b['epversion'] = isset($activity['version']) ? $activity['version'] : null;
+            if ($oleID && substr($oleID, 0, 3) === 'nep') $b['lang'] = 'np';
+        }
+
+        // looma page: fp is the url
+        if ($ft === 'looma') {
+            $b['fp'] = isset($activity['url']) ? $activity['url'] : null;
+            $b['fn'] = null;
+        }
+
+        // lesson: fixed thumbnail
+        if ($ft === 'lesson') {
+            $b['thumb'] = 'images/lesson.png';
+        }
+
+        echo "<td>";
+        makeButton($b);
+        echo "</td>";
+        $foundActivity = true;
+        $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
     }
-} //end makeButton()
+} //end prepareButton()
 
 /*
  * NOTE: should validate these parameters, esp. using "isset"
@@ -207,7 +137,7 @@ $words = mongoFindOne($activities_collection, $query, null, null, null);
 //$activities = $activities_collection -> find($query);
 $activities = mongoFind($activities_collection, $query, null, null, null);
 if ($activities) $foundActivity = true;
-foreach ($activities as $activity)  makeButton($activity);
+foreach ($activities as $activity)  prepareButton($activity);
 
 echo "</tr></table>";
 if (!$foundActivity) echo "<h2>No activities for this chapter</h2>"

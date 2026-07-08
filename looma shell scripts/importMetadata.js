@@ -1,7 +1,7 @@
 // mongo terminal program "importMetadata."
 /*
-importMetadata.js is a MongoDB shell script that bulk-updates documents in the activities collection by reading metadata from a TSV file (metadataToImport.tsv). For each
-  row in the TSV:
+importMetadata.js is a MongoDB shell script that bulk-updates documents in the activities collection
+  by reading metadata from a TSV file (metadataToImport.tsv). For each row in the TSV:
 
   1. It parses 17 tab-separated fields (display name, Nepali display name, chapter IDs, class range, language, keywords, filename, Nepali filename, file type).
   2. It queries db.activities to find a matching document by fn (filename) and ft (file type).
@@ -30,6 +30,17 @@ var changecount = 0;
 var duplicates = 0;
 var query;
 
+
+function today () {
+    const today = new Date();
+
+    const yyyy = today.getFullYear();
+    const mm   = String(today.getMonth() + 1).padStart(2, '0'); // 01-12
+    const dd   = String(today.getDate()).padStart(2, '0');      // 01-31
+    return `${yyyy} ${mm} ${dd}`;
+};  // end today()
+
+
 //
 //  column order for the .tsv file
 //  dn,ndn,ch_id1,ch_id2,ch_id3,ch_id4,ch_id5,cl_lo,cl_hi,lang,key1,key2,key3,key4,fn,nfn,ft
@@ -48,7 +59,7 @@ function insertCh_id(id, document) {
       }
     }
 
-var input = 'metadataToImport.tsv';
+var input = 'data files/metadataToImport.tsv';
 print ('Importing from file: ' + input);
 
 var file = cat(input);  // read  the file (for now, specifying a path doesnt work)
@@ -86,6 +97,8 @@ lines.forEach( function(doc) {
             var activity = activities.next();
 
             if (activity) {
+
+                activity['date'] = today();
                 if (fields[0]) activity['dn'] = fields[0];
                 if (fields[1]) activity['ndn'] = fields[1];
 

@@ -1790,12 +1790,12 @@ function gameOver() {
 ///////// runGame  /////////  NOTE: gets a game from mongoDB by "id" and runs it
 ////////////////////////////
 
-function runGame (id) {
+function runGame (id, db) {
     $.ajax(
         "looma-database-utilities.php",
         {   type: 'GET',
             dataType: "json",
-            data: "collection=games&cmd=getGame&gameId=" + id,
+            data: "collection=games&cmd=getGame&gameId=" + id + (db ? "&db=" + db : ""),
             error:   game_not_found,
             success: game_found
         });
@@ -1841,7 +1841,8 @@ $(document).ready (function() {
     var $game = $('#thegameframe');
     $timer =  $('#timer-count');
     game_id = $game.data('gameid');
-    if (game_id) runGame(game_id);
+    var game_db = $game.data('db');
+    if (game_id) runGame(game_id, game_db);
     else if ($game.data('type') === 'keywords' && $game.data('ch_id')) {
         runKeyword($game.data('ch_id'));
     }

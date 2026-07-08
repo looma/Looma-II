@@ -151,15 +151,15 @@ checktimestamp () {    # call with
 # get timestamp of files on Looma Archive Server
   if [[ $source = "I" ]]
   then
-      if [[ `which sshpass` != "" ]]
+      if command -v sshpass &>/dev/null
       then
-        latest=`sshpass -p looma ssh $2 cat "../${4}${3}/archivetimestamp.txt"`
+        latest=$(sshpass -p looma ssh "$2" cat "../${4}${3}/archivetimestamp.txt")
       else
         echo "enter password 'looma' if requested"
-        latest=`ssh $2 cat "../${4}${3}/archivetimestamp.txt"`
+        latest=$(ssh "$2" cat "../${4}${3}/archivetimestamp.txt")
       fi
   else   # source is USB stick
-     latest=`cat "${2}/${3}/archivetimestamp.txt"`
+     latest=$(cat "${2}/${3}/archivetimestamp.txt")
   fi
 
 # check if timestamps are equal
@@ -193,9 +193,9 @@ dosync () {
     SYNC_DESTINATION="${1}/${3}"
     if [[ $source = "I" ]]
     then
-        SYNC_SOURCE="${2}:../${4}/${3}"
+        SYNC_SOURCE="${2}:../${4}/${3}/"
     else
-        SYNC_SOURCE="${2}/${3}"
+        SYNC_SOURCE="${2}/${3}/"
     fi
 
 if [[ $3 = "content" ]]
@@ -214,7 +214,7 @@ if [[ $3 = "content" ]]
     echo
     #echo "  *** *** if prompted for \"password:\" enter \"looma\"  *** ***"
 
-    if [[ `which sshpass` != "" ]]
+    if command -v sshpass &>/dev/null
       # NOTE, adding "O" option to avoid errors with modified date updates
     then
     sshpass -p 'looma' \
@@ -239,7 +239,7 @@ if [[ $3 = "content" ]]
       returncode=$?
     fi
 
-  if [[ $DRYRUNMODE != "--dry-run"  && $returncode -eq 0 ]]
+  if [[ $DRYRUNMODE != "--dry-run"  && $returncode -eq 0 && -n "$latest" ]]
   then
      echo
      echo "**************************"
@@ -384,20 +384,26 @@ echo "********************"
         echo "$(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds elapsed."
         codetime=$SECONDS
 
-          if [[ -d "$DESTINATION_URL/Looma/mongo-dump/dump/looma" && "$DRYRUNMODE" != "--dry-run" ]]
+          if [[ -d "$DESTINATION_URL/Looma/mongo-dump/dump/looma" ]]
                 then
-                    echo
-                    echo "starting to update Looma's database. please wait ..."
-                    echo
-
-                    mongorestore --quiet --drop --db looma "$DESTINATION_URL/Looma/mongo-dump/dump/looma/"
-
-                    if [[ -f "$DESTINATION_URL/Looma/mongo-dump/logins/defaultlogins.json" ]]
+                    if [[ "$DRYRUNMODE" != "--dry-run" ]]
                     then
-                       mongoimport --quiet --db loomausers --collection logins  --mode upsert --upsertFields name --file "$DESTINATION_URL/Looma/mongo-dump/logins/defaultlogins.json"
-                       rm "$DESTINATION_URL/Looma/mongo-dump/logins/defaultlogins.json"
+                        echo
+                        echo "starting to update Looma's database. please wait ..."
+                        echo
+
+                        mongorestore --quiet --drop --db looma "$DESTINATION_URL/Looma/mongo-dump/dump/looma/"
+
+                        if [[ -f "$DESTINATION_URL/Looma/mongo-dump/logins/defaultlogins.json" ]]
+                        then
+                           mongoimport --quiet --db loomausers --collection logins  --mode upsert --upsertFields name --file "$DESTINATION_URL/Looma/mongo-dump/logins/defaultlogins.json"
+                           rm "$DESTINATION_URL/Looma/mongo-dump/logins/defaultlogins.json"
+                        fi
+                    else
+                        echo "DRYRUN: would have restored database from mongo-dump"
                     fi
-                else echo "ERROR: no source dir ($DESTINATION_URL/Looma/mongo-dump/dump/looma) found for mongo restore"
+                else
+                    echo "ERROR: no source dir ($DESTINATION_URL/Looma/mongo-dump/dump/looma) found for mongo restore"
                 fi
         else
             echo " - - - SKIPPED: installing new Looma code"

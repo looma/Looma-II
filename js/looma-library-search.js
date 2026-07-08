@@ -103,11 +103,7 @@ function displayActivities(results, table, next, count) {
             //console.log(results[i]);
             $('#result-row-' + row).append("<td id='query-result-" + resultColumn + "'></td>");
     
-        var mongoID = (results[i]['mongoID']) ? (results[i]['mongoID']['$id'] || results[i]['mongoID']['$oid']) : "";
-        var db = results[i]['db'];
-       // var mongoID = results[i]['mongoID']['$id'] || results[i]['mongoID']['$oid'];
-            LOOMA.makeActivityButton(results[i],results[i]['_id']['$id'] || results[i]['_id']['$oid'],
-                                      db, mongoID, '#query-result-' + resultColumn);
+            LOOMA.makeButton(results[i], '#query-result-' + resultColumn);
             resultColumn ++;
            };
     resultsShown = last;  //careful: can exceed resultsTotal

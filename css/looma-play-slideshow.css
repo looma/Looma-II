@@ -53,12 +53,13 @@ body {
     position:relative;
     height:100%;
     width:100%;
-    padding: 3vh;
 }
 
 .caption {
     left:4vw;
     display: block;
+    position: relative;
+    top: -8vh;
     height: 7%;
     width:90%;
     overflow: hidden;
@@ -73,10 +74,10 @@ body {
 
 .media-container {
     font-size:2.5em;
-    height:90%;
+    /*it height:90%;*/
     margin:auto;
     overflow:hidden;
-   /* height:100%;*/
+   height:100%;
 }
 
 .media-container img{

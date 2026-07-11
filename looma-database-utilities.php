@@ -466,6 +466,30 @@ require_once('includes/looma-utilities.php');
             $result = saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), $_REQUEST['ft'], $insert, $activitycollection);
             echo json_encode($result);
         }
+        else if ($collection == "user_histories") {
+            // admin-created timelines. Saved ONLY to the 'user_histories' collection -
+            // the curated, read-only 'histories' collection is never referenced here.
+            // Stored in the native history shape (title + events) so the read-only
+            // viewer could render them, plus dn/ft so the File-menu Open/search works.
+            $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
+            $events  = isset($_REQUEST['data']) ? array_values($_REQUEST['data']) : array();
+
+            $insert = array(
+                "dn"     => $save_dn,       // used by File-menu Open/search + saveToMongo key
+                "ft"     => 'history',      // so File-menu search (type=history) finds it
+                "db"     => $_REQUEST['db'],
+                "title"  => $save_dn,       // native history-viewer field
+                "events" => $events,        // native history-viewer field
+                "author" => $_COOKIE['login'],
+                "date"   => gmdate("Y.m.d")  //using greenwich time
+            );
+            if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
+
+            // final param FALSE: do NOT create an 'activities' index entry, so these
+            // timelines stay out of the general library/search - only the History editor lists them.
+            $result = saveToMongo($dbCollection, $save_dn, 'history', $insert, false);
+            echo json_encode($result);
+        }
         else if ($collection == "activities") {
             $insert = $_REQUEST['data'];
             $insert["date"] = gmdate("Y.m.d");  //using greenwich time

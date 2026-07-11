@@ -64,6 +64,10 @@ Description:  for Looma 2
                  <button id="requestcontent" class="admin-control" >Dictionary Editor</button>
              </a>
 
+             <a href="looma-edit-history.php">
+                 <button class="admin-control" >History Timeline Editor</button>
+             </a>
+
              <a href="looma-text-scan.php">
                  <button id="textscan" class="admin-control" >Scan Text Files</button>
              </a>

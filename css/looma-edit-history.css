@@ -39,7 +39,9 @@ body {
     padding: 0.5vh 1vw;
 }
 #timeline-details-btn {
-    background-color: #2E3192;
+    /* use the 'background' shorthand (not background-color) so it overrides the theme's
+       button { background: <white gradient> } rule, which otherwise paints white on top. */
+    background: #2E3192;
     color: white;
     border: none;
     border-radius: 5px;
@@ -47,8 +49,9 @@ body {
     font-size: 1.1em;
     padding: 0.6vh 1.2vw;
     cursor: pointer;
+    box-shadow: none;
 }
-#timeline-details-btn:hover { background-color: #3d40c0; }
+#timeline-details-btn:hover { background: #3d40c0; }
 .timelineScroll {
     font-size: 1.4em;
     width: 3vw;

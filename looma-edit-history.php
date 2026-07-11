@@ -78,7 +78,7 @@ Revision: Looma 7.x
                 <img id="tl-cover-preview" alt="cover preview" hidden>
                 <div id="tl-cover-actions">
                     <button id="tl-choose-image" type="button">Choose image&hellip;</button>
-                    <button id="tl-remove-image" type="button" hidden>Remove</button>
+                    <button id="tl-remove-image" type="button" hidden>Remove image</button>
                     <input id="tl-cover-file" type="file" accept="image/*" hidden>
                     <input id="tl-cover-url" type="text" placeholder="&hellip;or paste an image URL / path">
                 </div>

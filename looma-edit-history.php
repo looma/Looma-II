@@ -34,7 +34,7 @@ Revision: Looma 7.x
 ?>
 
     <link rel="Stylesheet" type="text/css" href="css/looma-filecommands.css">
-    <link rel="Stylesheet" type="text/css" href="css/looma-edit-history.css">
+    <link rel="Stylesheet" type="text/css" href="css/looma-edit-history.css?v=<?php echo @filemtime(__DIR__.'/css/looma-edit-history.css'); ?>">
 
 </head>
 
@@ -140,6 +140,6 @@ Revision: Looma 7.x
 
     <?php include ('includes/looma-filecommands.php'); ?>
 
-    <script src="js/looma-edit-history.js"></script>
+    <script src="js/looma-edit-history.js?v=<?php echo @filemtime(__DIR__.'/js/looma-edit-history.js'); ?>"></script>
 </body>
 </html>

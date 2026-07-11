@@ -201,16 +201,19 @@ body {
 
 /* Nepali translation fields - collapsed until the toggle is clicked */
 .nepali-toggle {
+    display: inline-block;
     margin-top: 1.6vh;
-    background: none;
-    border: none;
+    background: #eef0fb;
+    border: 1.5px solid #2E3192;
     color: #2E3192;
     cursor: pointer;
     font: inherit;
     font-size: 0.95em;
-    padding: 0.4vh 0;
-    text-decoration: underline;
+    padding: 0.7vh 1.2vw;
+    border-radius: 6px;
+    text-decoration: none;
 }
+.nepali-toggle:hover { background: #2E3192; color: #fff; }
 .nepali-fields { display: none; border-left: 3px solid #dfe0f0; padding-left: 1vw; margin-top: 0.6vh; }
 .nepali-fields.show { display: block; }
 .modal-card {
@@ -293,6 +296,38 @@ body {
     background-size: 80% 80%; background-repeat: no-repeat; background-position: center;
     position: fixed; bottom: 1vh; right: 2vw; z-index: 50; cursor: pointer;
 }
+
+/* The global LOOMA.confirm() "Save current work…" dialog uses floated buttons of
+   differing heights. Tidy it up on this editor page: put the buttons on one line at the
+   same height, red X on the left, purple Confirm on the right. */
+.popup.confirmation {
+    font-size: 1.6em;
+    padding: 2vh 2vw;
+    text-align: right;
+    line-height: 1.4;
+}
+.popup.confirmation .popup-button {
+    float: none;
+    position: static;
+    display: inline-block;
+    vertical-align: middle;
+    width: auto;
+    min-width: 6vw;
+    height: auto;
+    margin: 1.2vh 0.4vw 0;
+    padding: 1vh 1.6vw;
+    font-size: 0.62em;
+    border: 1px solid #2E3192;
+    border-radius: 6px;
+}
+.popup.confirmation .dismiss-popup {
+    float: left;
+    min-width: 0;
+    width: auto;
+    border-color: #c33;
+}
+.popup.confirmation #confirm-popup { background: #2E3192; color: #fff; border-color: #2E3192; }
+.popup.confirmation #close-popup   { background: #fff; color: #2E3192; }
 
 /* File Commands dropdown (positioned like the other editors) */
 #filecommands { position: absolute; width: 15vw; right: 6vw; top: 1vh; z-index: 60; }

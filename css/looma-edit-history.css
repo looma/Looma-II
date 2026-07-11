@@ -2,9 +2,9 @@
 LOOMA css file
 Filename: looma-edit-history.css
 Description: styles for the History Timeline Editor (looma-edit-history.php).
-             The timeline mirrors the read-only viewer (css/looma-history.css): a horizontal
-             yellow line with events alternating above/below, Comic Sans title/date buttons,
-             on a scrollable palegoldenrod field. Adds in-place editing chrome.
+             Timeline mirrors the read-only viewer (css/looma-history.css): a horizontal
+             yellow line with event cards alternating above/below, on a scrollable
+             palegoldenrod field. Editing is done through two modals.
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Revision: Looma 7.x
 */
@@ -38,17 +38,17 @@ body {
     gap: 1vw;
     padding: 0.5vh 1vw;
 }
-#add-event {
+#timeline-details-btn {
     background-color: #2E3192;
     color: white;
     border: none;
     border-radius: 5px;
     font: inherit;
-    font-size: 1.2em;
+    font-size: 1.1em;
     padding: 0.6vh 1.2vw;
     cursor: pointer;
 }
-#add-event:hover { background-color: #3d40c0; }
+#timeline-details-btn:hover { background-color: #3d40c0; }
 .timelineScroll {
     font-size: 1.4em;
     width: 3vw;
@@ -68,25 +68,14 @@ body {
     border-radius: 4px;
     overflow-x: auto;
     overflow-y: hidden;
-    height: 78vh;
+    height: 82vh;
     width: 100%;
-}
-#empty-hint {
-    position: absolute;
-    top: 40%;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    color: #8a7f4a;
-    font-size: 1.6em;
-    line-height: 1.6;
-    pointer-events: none;
 }
 .timeline { height: 100%; }
 .timeline ol {
     list-style: none;
     margin: 0;
-    padding: 0 6vw;
+    padding: 0 3vw;
     height: 100%;
     display: flex;
     align-items: center;
@@ -106,17 +95,56 @@ body {
     z-index: 0;
 }
 
-/* ---- an event on the timeline ---- */
+/* ---- insert slots (the tappable "+") ---- */
+.insert-slot {
+    position: relative;
+    flex: 0 0 5vw;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.insert-btn {
+    width: 4vh;
+    height: 4vh;
+    border-radius: 50%;
+    border: 0.3vh dashed #2E3192;
+    background: #fff;
+    color: #2E3192;
+    font-size: 1.6em;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+.insert-btn:hover { background: #2E3192; color: #fff; }
+/* the big "insert first event" prompt on an empty timeline */
+.insert-slot.first { flex: 0 0 auto; }
+.insert-slot.first .insert-btn {
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    padding: 2vh 3vw;
+    font-size: 1.3em;
+    white-space: nowrap;
+    font-family: inherit;
+}
+
+/* ---- an event card on the timeline ---- */
 .event {
     position: relative;
-    flex: 0 0 27vw;
+    flex: 0 0 24vw;
     height: 100%;
+    cursor: pointer;
 }
 /* the dot where the event meets the line */
 .event::after {
     content: '';
     position: absolute;
-    left: 3vw;
+    left: 50%;
     top: 50%;
     width: 1.6vh;
     height: 1.6vh;
@@ -128,79 +156,36 @@ body {
 }
 .timeline-description {
     position: absolute;
-    left: 1.5vw;
-    width: 24vw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22vw;
     z-index: 5;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
 }
-/* odd events sit ABOVE the line, even events BELOW (matches the viewer's alternation) */
-.event:nth-child(odd)  .timeline-description { bottom: 52%; }
-.event:nth-child(even) .timeline-description { top: 52%; }
+/* odd events (index 0,2,4… = "above") sit above the line; "below" sit below */
+.event.above .timeline-description { bottom: 53%; }
+.event.below .timeline-description { top: 53%; }
 
-/* the editable title + date buttons (styled like the viewer's .dropbtn / .dropdate) */
+/* title + date styled like the viewer's .dropbtn / .dropdate */
 .dropbtn, .dropdate {
-    font: 1.6em "Comic Sans MS", cursive, sans-serif;
+    font: 1.5em "Comic Sans MS", cursive, sans-serif;
     padding: 1vh;
-    min-height: 4vh;
-    border: 2px solid transparent;
-    border-radius: 4px;
+    border: 2px solid #e4dca0;
+    border-radius: 6px;
     background: #fff;
-    outline: none;
-    cursor: text;
+    text-align: center;
     white-space: normal;
     overflow-wrap: anywhere;
 }
-.dropbtn { font-weight: bold; margin-bottom: 0.4vh; }
-.dropdate { font-size: 1.3em; background: #dadaff; margin-bottom: 0.4vh; }
-.dropbtn:focus, .dropdate:focus { border-color: #2E3192; background: #fffde7; }
-/* placeholder text for empty editable fields */
-.dropbtn:empty:before, .dropdate:empty:before {
-    content: attr(data-placeholder);
-    color: #b0a97e;
-    font-style: italic;
-}
+.dropbtn { font-weight: bold; margin-bottom: 0.4vh; box-shadow: 0 0 6px #cfc68a; }
+.dropdate { font-size: 1.2em; background: #dadaff; }
+.event:hover .dropbtn { border-color: #2E3192; }
+.dropbtn:empty:before { content: "(untitled)"; color: #b0a97e; font-style: italic; }
 
-/* per-event controls (appear on hover) */
-.event-controls {
-    display: flex;
-    gap: 0.3vw;
-    margin-bottom: 0.4vh;
-    opacity: 0;
-    transition: opacity 0.15s;
-}
-.event:hover .event-controls, .event.editing .event-controls { opacity: 1; }
-.event-controls button {
-    font-size: 1em;
-    line-height: 1;
-    width: 2.4vw;
-    height: 3.4vh;
-    border: 1px solid #bbb;
-    border-radius: 4px;
-    background: #fff;
-    cursor: pointer;
-    padding: 0;
-}
-.event-controls .ev-remove { color: #c33; }
-.event-controls button:hover { background: #eef; }
-.event.editing .timeline-description { filter: drop-shadow(0 0 6px #2E3192); }
-
-/* small chip showing a linked activity on the event */
-.ev-links { display: flex; flex-wrap: wrap; gap: 0.3vw; margin-top: 0.3vh; }
-.ev-link-chip {
-    font-size: 0.8em;
-    background: #e6eefc;
-    border: 1px solid #9bb8e8;
-    border-radius: 10px;
-    padding: 0 0.5vw;
-    max-width: 22vw;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* ---- details overlay ---- */
-.overlay {
+/* ---- modals ---- */
+.modal {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -210,78 +195,77 @@ body {
     align-items: flex-start;
     justify-content: center;
 }
-.details-card {
+.modal-card {
     background: #fff;
-    margin-top: 4vh;
+    margin-top: 5vh;
     padding: 2vh 2vw;
-    border-radius: 8px;
-    width: 60vw;
-    max-height: 90vh;
+    border-radius: 10px;
+    width: 46vw;
+    max-height: 88vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 0 30px rgba(0,0,0,0.4);
 }
-.details-card h2 { margin-top: 0; }
-.details-card label {
+.modal-card h2 { margin: 0 0 1vh; }
+.modal-card label {
     display: block;
     margin-top: 1.2vh;
     font-weight: bold;
     font-size: 0.95em;
 }
-.details-card input,
-.details-card textarea {
+.modal-card input,
+.modal-card textarea {
     width: 100%;
     box-sizing: border-box;
     font: inherit;
     font-size: 1em;
-    padding: 0.6vh 0.5vw;
+    padding: 0.7vh 0.5vw;
     margin-top: 0.3vh;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 5px;
 }
-.details-card textarea { min-height: 8vh; resize: vertical; }
-#details-close {
+.modal-card textarea { min-height: 9vh; resize: vertical; }
+.modal-close {
     position: absolute;
     top: 1vh; right: 1vw;
-    width: 3vh; height: 3vh;
-    border: none; border-radius: 4px;
-    background: #c33; color: #fff;
-    font-size: 1.2em; line-height: 1; cursor: pointer;
-}
-.details-actions { margin-top: 2vh; text-align: right; }
-#details-done, #d-link-activity {
-    font: inherit; font-size: 1.05em;
-    padding: 0.7vh 1.4vw;
+    width: 3.2vh; height: 3.2vh;
     border: none; border-radius: 5px;
-    background: #2E3192; color: #fff; cursor: pointer;
+    background: #c33; color: #fff;
+    font-size: 1.3em; line-height: 1; cursor: pointer;
 }
-#d-link-activity { background: #2e7d32; margin-top: 0.6vh; }
+.modal-actions {
+    margin-top: 2vh;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1vw;
+}
+.modal-actions button {
+    font: inherit; font-size: 1.05em;
+    padding: 0.8vh 1.6vw;
+    border: none; border-radius: 6px;
+    cursor: pointer;
+}
+.modal-actions .primary { background: #2E3192; color: #fff; }
+.modal-actions .primary:hover { background: #3d40c0; }
+#ev-delete { background: #c33; color: #fff; margin-right: auto; }
 
-/* linked-activity chips inside the details card */
-#d-activities { display: flex; flex-wrap: wrap; gap: 0.5vw; margin-top: 0.4vh; }
-.d-chip {
-    display: inline-flex; align-items: center;
-    background: #e6eefc; border: 1px solid #9bb8e8;
-    border-radius: 12px; padding: 0.3vh 0.6vw; font-size: 0.9em;
+/* cover image chooser */
+#tl-cover-row { display: flex; gap: 1vw; align-items: flex-start; margin-top: 0.4vh; }
+#tl-cover-preview {
+    width: 10vw; height: 10vw;
+    object-fit: cover;
+    border: 1px solid #ccc; border-radius: 6px;
+    background: #f4f4f4;
 }
-.d-chip button {
-    margin-left: 0.4vw; border: none; background: transparent;
-    color: #c33; cursor: pointer; font-size: 1em; line-height: 1;
+#tl-cover-actions { flex: 1; display: flex; flex-direction: column; gap: 0.6vh; }
+#tl-choose-image, #tl-remove-image {
+    font: inherit; font-size: 1em;
+    padding: 0.6vh 1vw;
+    border: 1px solid #2e7d32; color: #2e7d32; background: #fff;
+    border-radius: 5px; cursor: pointer;
+    align-self: flex-start;
 }
-
-/* activity search results inside the details card */
-#activity-search { margin-top: 1vh; border-top: 1px solid #ddd; padding-top: 1vh; }
-#activity-results { max-height: 30vh; overflow-y: auto; margin-top: 1vh; }
-.resultitem {
-    display: flex; align-items: center; gap: 0.6vw;
-    padding: 0.5vh; border-bottom: 1px solid #eee;
-}
-.resultitem img { width: 5vw; max-height: 7vh; box-shadow: 0 0 6px #aaa; }
-.resultitem .result_dn { flex: 1; margin: 0; }
-.resultitem button {
-    font: inherit; border: 1px solid #2e7d32; color: #2e7d32;
-    background: #fff; border-radius: 4px; cursor: pointer; padding: 0.3vh 0.6vw;
-}
+#tl-remove-image { border-color: #c33; color: #c33; }
 
 /* dismiss / back button */
 #dismiss {

@@ -483,7 +483,8 @@ require_once('includes/looma-utilities.php');
                 "author" => $_COOKIE['login'],
                 "date"   => gmdate("Y.m.d")  //using greenwich time
             );
-            if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
+            if (isset($_REQUEST['ndn']))   $insert['ndn']   = $_REQUEST['ndn'];    // Nepali timeline title
+            if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];  // cover image (data-URL or path)
 
             // final param FALSE: do NOT create an 'activities' index entry, so these
             // timelines stay out of the general library/search - only the History editor lists them.

@@ -3,20 +3,18 @@ LOOMA javascript file
 Filename: looma-edit-history.js
 Description: editor for user-created history timelines.
 
-    The editing surface mirrors the read-only viewer (looma-history.php): a horizontal timeline
-    with events alternating above/below a line. Each event's TITLE and DATE are edited in place
-    (tap and type). Everything else - Nepali title/date, description, and up to two linked
-    activities - is edited in a per-event details panel (the pencil button).
+    UX: a Timeline modal (title, Nepali title, cover image) opens on entry / File-New.
+    Then a blank timeline in the real viewer format (yellow line, events alternating
+    above/below). Tap a "+" insert slot to add an event, or tap an event to edit it in
+    the Event modal (title, date, description, + optional Nepali). No linked activities.
 
-    A timeline is a document in the 'user_histories' collection:
-        { dn, ft:'history', title, events: [ event, ... ] }
+    Data model (in the 'user_histories' collection):
+        { dn, ft:'history', title, ndn, thumb, events:[ event, ... ] }
     each event:
-        { title, date, popup:[description, activityId1?, activityId2?],
-          ndn?, ndate?, npopup:[nepaliDescription]? }
+        { title, date, popup:[description], ndn?, ndate?, npopup:[nepaliDescription]? }
 
-    IMPORTANT: this editor reads/writes ONLY the 'user_histories' collection. The curated,
-    read-only 'histories' collection (the 11 approved timelines) is never referenced.
-    File-menu / save-load / activity-search flow follows the Slideshow-editor patterns.
+    IMPORTANT: reads/writes ONLY the 'user_histories' collection. The curated, read-only
+    'histories' collection (the 11 approved timelines) is never referenced.
 
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Revision: Looma 7.x
@@ -24,171 +22,176 @@ Revision: Looma 7.x
 
 'use strict';
 
-var savedSignature = "";     //checkpoint for detecting modifications
+var DEFAULT_THUMB = 'images/logos/LoomaLogoTransparent.png';
+
 var loginname, loginlevel, loginteam;
-var $ol;                     //the #timeline-ol element
-var currentLi = null;        //the event whose details panel is open
+var savedSignature = "";
 
-var searchName = 'history-editor-search';   //used by looma-search.js
+// --- source of truth ---
+var timeline = { ndn: "", thumb: "" };   // title is kept in `currentname` (the File-menu name)
+var events = [];                          // array of {title, ndn, date, ndate, desc, ndesc}
+
+var editingIndex = null;                  // event index being edited (null => creating new)
+var insertIndex  = 0;                     // where a new event will be inserted
+var pendingThumb = "";                    // cover image chosen in the Timeline modal (data-URL or url)
+
 
 //////////////////////////////////
-///////   EVENT TIMELINE   ////////
+///////   RENDER TIMELINE  ////////
 //////////////////////////////////
 
-///////// buildEventLi  /////////  create one editable event; ev may be undefined (blank)
-function buildEventLi(ev) {
-    ev = ev || {};
-    var popup  = ev.popup  || [];
-    var npopup = ev.npopup || [];
+function renderTimeline() {
+    var $ol = $('#timeline-ol').empty();
 
+    if (events.length === 0) {
+        $ol.append(
+            '<li class="insert-slot first">' +
+            '<button class="insert-btn" data-index="0">&#43; Insert first event</button>' +
+            '</li>'
+        );
+        return;
+    }
+
+    for (var i = 0; i < events.length; i++) {
+        $ol.append(insertSlot(i));
+        $ol.append(eventCard(i));
+    }
+    $ol.append(insertSlot(events.length));
+}
+
+function insertSlot(index) {
+    return $('<li class="insert-slot"><button class="insert-btn" title="Insert event here">&#43;</button></li>')
+        .find('.insert-btn').attr('data-index', index).end();
+}
+
+function eventCard(i) {
+    var e = events[i];
     var $li = $(
         '<li class="event">' +
           '<div class="timeline-description">' +
-            '<div class="event-controls">' +
-              '<button class="ev-move-left"  title="Move earlier">&#8249;</button>' +
-              '<button class="ev-details"    title="Edit description / Nepali / activities">&#9998;</button>' +
-              '<button class="ev-remove"     title="Delete event">&times;</button>' +
-              '<button class="ev-move-right" title="Move later">&#8250;</button>' +
-            '</div>' +
-            '<div class="dropbtn"  contenteditable="true" data-placeholder="Event title"></div>' +
-            '<div class="dropdate" contenteditable="true" data-placeholder="Date"></div>' +
-            '<div class="ev-links"></div>' +
+            '<div class="dropbtn"></div>' +
+            '<div class="dropdate"></div>' +
           '</div>' +
         '</li>'
     );
-
-    $li.find('.dropbtn').text(ev.title || '');
-    $li.find('.dropdate').text(ev.date || '');
-    $li.data('ntitle', ev.ndn   || '');
-    $li.data('ndate',  ev.ndate || '');
-    $li.data('desc',   popup[0]  || '');
-    $li.data('ndesc',  npopup[0] || '');
-    if (popup[1]) $li.data('id1', popup[1]);
-    if (popup[2]) $li.data('id2', popup[2]);
-
-    renderLinks($li);
+    $li.addClass(i % 2 === 0 ? 'above' : 'below');
+    $li.attr('data-index', i);
+    $li.find('.dropbtn').text(e.title || '');
+    $li.find('.dropdate').text(e.date || '');
     return $li;
-}
-
-///////// addEvent  /////////
-function addEvent(ev) {
-    var $li = buildEventLi(ev);
-    $ol.append($li);
-    return $li;
-}
-
-///////// refreshEmptyHint  /////////
-function refreshEmptyHint() {
-    $('#empty-hint').toggle($ol.find('.event').length === 0);
-}
-
-///////// renderLinks  /////////  show a chip per linked activity on the event
-function renderLinks($li) {
-    var $links = $li.find('.ev-links').empty();
-    [['id1', 'name1'], ['id2', 'name2']].forEach(function(p) {
-        var id = $li.data(p[0]);
-        if (!id) return;
-        var $chip = $('<span class="ev-link-chip">activity&hellip;</span>');
-        $links.append($chip);
-        var nm = $li.data(p[1]);
-        if (nm) { $chip.text('▶ ' + nm); return; }
-        lookupActivityName(id, function(name) { $li.data(p[1], name); $chip.text('▶ ' + name); });
-    });
-}
-
-///////// lookupActivityName  /////////
-function lookupActivityName(id, cb) {
-    $.post('looma-database-utilities.php',
-        { cmd: 'openByID', collection: 'activities', id: id },
-        function(r) { cb((r && r.dn) ? r.dn : ('[' + id + ']')); }, 'json');
 }
 
 
 //////////////////////////////////
-///////   DETAILS PANEL    ////////
+///////   TIMELINE MODAL   ////////
 //////////////////////////////////
 
-function openDetails($li) {
-    currentLi = $li;
-    $('.event').removeClass('editing');
-    $li.addClass('editing');
-
-    $('#d-title').val($li.find('.dropbtn').text());
-    $('#d-ntitle').val($li.data('ntitle') || '');
-    $('#d-date').val($li.find('.dropdate').text());
-    $('#d-ndate').val($li.data('ndate') || '');
-    $('#d-desc').val($li.data('desc') || '');
-    $('#d-ndesc').val($li.data('ndesc') || '');
-
-    renderDetailChips();
-    $('#activity-search').attr('hidden', true);
-    $('#event-details').removeAttr('hidden');
-    $('#d-title').focus();
+function openTimelineModal() {
+    $('#tl-title').val(currentname || '');
+    $('#tl-ntitle').val(timeline.ndn || '');
+    $('#tl-cover-url').val('');
+    pendingThumb = timeline.thumb || '';
+    showCoverPreview(pendingThumb);
+    $('#timeline-modal').removeAttr('hidden');
+    $('#tl-title').focus();
 }
 
-function closeDetails(save) {
-    if (save && currentLi) {
-        var $li = currentLi;
-        $li.find('.dropbtn').text($.trim($('#d-title').val()));
-        $li.find('.dropdate').text($.trim($('#d-date').val()));
-        $li.data('ntitle', $.trim($('#d-ntitle').val()));
-        $li.data('ndate',  $.trim($('#d-ndate').val()));
-        $li.data('desc',   $('#d-desc').val());
-        $li.data('ndesc',  $.trim($('#d-ndesc').val()));
-        renderLinks($li);
+function showCoverPreview(src) {
+    if (src) {
+        $('#tl-cover-preview').attr('src', src).removeAttr('hidden');
+        $('#tl-remove-image').removeAttr('hidden');
+    } else {
+        $('#tl-cover-preview').attr('src', '').attr('hidden', true);
+        $('#tl-remove-image').attr('hidden', true);
     }
-    $('.event').removeClass('editing');
-    $('#event-details').attr('hidden', true);
-    currentLi = null;
 }
 
-///////// renderDetailChips  /////////  chips (with remove) for linked activities in the panel
-function renderDetailChips() {
-    var $box = $('#d-activities').empty();
-    if (!currentLi) return;
-    [['id1', 'name1'], ['id2', 'name2']].forEach(function(p) {
-        var id = currentLi.data(p[0]);
-        if (!id) return;
-        var nm = currentLi.data(p[1]) || ('[' + id + ']');
-        var $chip = $('<span class="d-chip"></span>').text(nm);
-        $('<button title="Remove">&times;</button>').data('slot', p[0]).appendTo($chip);
-        $box.append($chip);
-        if (!currentLi.data(p[1])) {
-            lookupActivityName(id, function(name) {
-                currentLi.data(p[1], name);
-                $chip.contents().first().replaceWith(document.createTextNode(name));
-            });
-        }
-    });
+function saveTimelineModal() {
+    var title = $.trim($('#tl-title').val());
+    if (!title) { LOOMA.alert('Please enter a timeline title.', 5); return; }
+
+    var urlVal = $.trim($('#tl-cover-url').val());
+    if (urlVal) pendingThumb = urlVal;    // a pasted URL overrides
+
+    currentname   = title;
+    timeline.ndn  = $.trim($('#tl-ntitle').val());
+    timeline.thumb = pendingThumb || '';
+    setname(currentname, loginname);
+
+    $('#timeline-modal').attr('hidden', true);
 }
 
-///////// attachActivity  /////////  link a searched activity to the event being edited
-function attachActivity(id, dn) {
-    if (!currentLi) return;
-    if      (!currentLi.data('id1')) { currentLi.data('id1', id); currentLi.data('name1', dn); }
-    else if (!currentLi.data('id2')) { currentLi.data('id2', id); currentLi.data('name2', dn); }
-    else { LOOMA.alert('An event can link at most 2 activities.', 5); return; }
-    renderDetailChips();
+// read a chosen image file, downscale it to a small data-URL (no server upload needed)
+function loadImageToThumb(file, cb) {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+        var img = new Image();
+        img.onload = function() {
+            var max = 400, w = img.width, h = img.height;
+            if (w > h && w > max)      { h = Math.round(h * max / w); w = max; }
+            else if (h >= w && h > max){ w = Math.round(w * max / h); h = max; }
+            var c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            c.getContext('2d').drawImage(img, 0, 0, w, h);
+            cb(c.toDataURL('image/jpeg', 0.8));
+        };
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
 }
 
 
 //////////////////////////////////
-///////   ACTIVITY SEARCH  ////////
+///////     EVENT MODAL    ////////
 //////////////////////////////////
-// displayResults() is the callback invoked by looma-search.js after a search
-function displayResults(results) {
-    var $box = $('#activity-results').empty();
-    var acts = results.list.filter(function(x) { return x.ft !== 'chapter'; });
-    if (!acts.length) { $box.text('No activities found.'); return; }
 
-    acts.forEach(function(item) {
-        var id = (item._id && (item._id.$id || item._id.$oid)) || item._id;
-        var $row = $('<div class="resultitem"></div>');
-        $('<img>').attr('src', LOOMA.thumbnail(item.fn, item.fp, item.ft)).appendTo($row);
-        $('<p class="result_dn"></p>').text(item.dn || '').appendTo($row);
-        $('<button>Add</button>').data('id', id).data('dn', item.dn).appendTo($row);
-        $box.append($row);
-    });
+function openEventModal(index, isNew) {
+    if (isNew) {
+        editingIndex = null;
+        insertIndex  = index;
+        $('#event-modal-title').text('Add Event');
+        $('#ev-delete').attr('hidden', true);
+        $('#ev-title, #ev-ntitle, #ev-date, #ev-ndate, #ev-desc, #ev-ndesc').val('');
+    } else {
+        editingIndex = index;
+        var e = events[index];
+        $('#event-modal-title').text('Edit Event');
+        $('#ev-delete').removeAttr('hidden');
+        $('#ev-title').val(e.title  || '');
+        $('#ev-ntitle').val(e.ndn   || '');
+        $('#ev-date').val(e.date    || '');
+        $('#ev-ndate').val(e.ndate  || '');
+        $('#ev-desc').val(e.desc    || '');
+        $('#ev-ndesc').val(e.ndesc  || '');
+    }
+    $('#event-modal').removeAttr('hidden');
+    $('#ev-title').focus();
+}
+
+function saveEventModal() {
+    var title = $.trim($('#ev-title').val());
+    if (!title) { LOOMA.alert('Please enter an event title.', 5); return; }
+
+    var e = {
+        title: title,
+        ndn:   $.trim($('#ev-ntitle').val()),
+        date:  $.trim($('#ev-date').val()),
+        ndate: $.trim($('#ev-ndate').val()),
+        desc:  $('#ev-desc').val(),
+        ndesc: $.trim($('#ev-ndesc').val())
+    };
+
+    if (editingIndex !== null) events[editingIndex] = e;
+    else                       events.splice(insertIndex, 0, e);
+
+    $('#event-modal').attr('hidden', true);
+    renderTimeline();
+}
+
+function deleteEvent() {
+    if (editingIndex !== null) events.splice(editingIndex, 1);
+    $('#event-modal').attr('hidden', true);
+    renderTimeline();
 }
 
 
@@ -198,10 +201,10 @@ function displayResults(results) {
 
 function editor_clear() {
     setname("");
-    $ol.empty();
-    $ol.removeData('history-id');
-    closeDetails(false);
-    refreshEmptyHint();
+    timeline = { ndn: "", thumb: "" };
+    events = [];
+    $('#timeline-modal, #event-modal').attr('hidden', true);
+    renderTimeline();
     editor_checkpoint();
 }
 
@@ -209,67 +212,66 @@ function editor_checkpoint() { savedSignature = signature(); }
 function editor_modified()   { return (signature() !== savedSignature); }
 
 function signature() {
-    var sig = "";
-    $ol.find('.event').each(function() {
-        var $li = $(this);
-        sig += '|' + $li.find('.dropbtn').text()
-             + '~' + $li.find('.dropdate').text()
-             + '~' + ($li.data('ntitle') || '')
-             + '~' + ($li.data('ndate')  || '')
-             + '~' + ($li.data('desc')   || '')
-             + '~' + ($li.data('ndesc')  || '')
-             + '~' + ($li.data('id1')    || '')
-             + '~' + ($li.data('id2')    || '');
-    });
-    return sig;
+    return JSON.stringify({ n: currentname || '', t: timeline, e: events });
 }
 
-//  pack the events (in current timeline order) into the events[] array for storage
-function editor_pack() {
-    var events = [];
-    $ol.find('.event').each(function() {
-        var $li    = $(this);
-        var title  = $.trim($li.find('.dropbtn').text());
-        var date   = $.trim($li.find('.dropdate').text());
-        var ntitle = $.trim($li.data('ntitle') || '');
-        var ndate  = $.trim($li.data('ndate')  || '');
-        var desc   = $li.data('desc')  || '';
-        var ndesc  = $.trim($li.data('ndesc') || '');
-        var id1    = $li.data('id1') || '';
-        var id2    = $li.data('id2') || '';
-
-        var popup = [desc];
-        if (id1 || id2) popup.push(id1);
-        if (id2)        popup.push(id2);
-
-        var ev = { title: title, date: date, popup: popup };
-        if (ntitle) ev.ndn    = ntitle;
-        if (ndate)  ev.ndate  = ndate;
-        if (ndesc)  ev.npopup = [ndesc];
-        events.push(ev);
+//  pack events into the stored shape
+function packEvents() {
+    return events.map(function(e) {
+        var ev = { title: e.title, date: e.date, popup: [e.desc || ''] };
+        if (e.ndn)   ev.ndn    = e.ndn;
+        if (e.ndate) ev.ndate  = e.ndate;
+        if (e.ndesc) ev.npopup = [e.ndesc];
+        return ev;
     });
-    return events;
 }
 
+//  custom save: savefile() can't carry title/ndn/thumb, so post them directly
 function editor_save(name) {
-    if ($ol.find('.event').length === 0) {
-        LOOMA.alert('Add at least one event before saving.', 5);
-        return;
-    }
-    // savefile(name, collection, filetype, data, activityFlag, author)
-    savefile(name, currentcollection, currentfiletype, editor_pack(), "false", loginname);
-    // activityFlag 'false' - user timelines are NOT indexed as activities (stay out of library search)
+    if (events.length === 0) { LOOMA.alert('Add at least one event before saving.', 5); return; }
+    if (!name) name = currentname;
+
+    $.post("looma-database-utilities.php", {
+        cmd:        "save",
+        collection: "user_histories",
+        db:         currentDB,
+        ft:         "history",
+        activity:   "false",          // NOT indexed as an activity (stays out of library search)
+        dn:         LOOMA.escapeHTML(name),
+        title:      LOOMA.escapeHTML(name),
+        ndn:        timeline.ndn || '',
+        thumb:      timeline.thumb || DEFAULT_THUMB,
+        author:     loginname,
+        editor:     loginname,
+        data:       packEvents()
+    }).then(function() {
+        editor_checkpoint();
+        LOOMA.alert('Timeline "' + name + '" saved', 5);
+    });
 }
 
 // called by filecommands after a File-menu OPEN
 function editor_display(response) {
     editor_clear();
     setname(response.dn || response.title, response.author);
-    if (response['_id']) $ol.data('history-id', response['_id']['$id'] || response['_id']['$oid']);
 
-    var events = response.events || response.data || [];
-    $(events).each(function(i, ev) { addEvent(ev); });
-    refreshEmptyHint();
+    timeline.ndn   = response.ndn   || '';
+    timeline.thumb = response.thumb || '';
+
+    events = (response.events || response.data || []).map(function(ev) {
+        var popup  = ev.popup  || [];
+        var npopup = ev.npopup || [];
+        return {
+            title: ev.title || '',
+            ndn:   ev.ndn   || '',
+            date:  ev.date  || '',
+            ndate: ev.ndate || '',
+            desc:  popup[0] || '',
+            ndesc: npopup[0] || ''
+        };
+    });
+
+    renderTimeline();
     editor_checkpoint();
 }
 
@@ -280,8 +282,6 @@ function quit() {
 
 
 $(document).ready(function() {
-    $ol = $('#timeline-ol');
-
     loginname  = LOOMA.loggedIn();
     loginlevel = LOOMA.readCookie('login-level');
     loginteam  = LOOMA.readCookie('login-team');
@@ -292,11 +292,6 @@ $(document).ready(function() {
     currentfiletype   = "history";
     currentDB         = 'loomalocal';
 
-    // the activity search (#search, inside the details panel) searches ACTIVITIES
-    $('#collection').val('activities');
-    $('#includeLesson').val(false);
-    var image = document.getElementById('image-checkbox'); if (image) image.checked = true;
-
     $('.template-cmd').hide();   // no templates for history timelines
 
     // callbacks expected by looma-filecommands.js
@@ -305,55 +300,46 @@ $(document).ready(function() {
     callbacks['display']    = editor_display;
     callbacks['modified']   = editor_modified;
     callbacks['checkpoint'] = editor_checkpoint;
-    callbacks['new']        = function() { addEvent(); refreshEmptyHint(); editor_checkpoint(); };
+    callbacks['new']        = function() { openTimelineModal(); };
 
-    // + Add Event
-    $('#add-event').on('click', function() {
-        var $li = addEvent();
-        refreshEmptyHint();
-        $('#playground').animate({ scrollLeft: $('#playground')[0].scrollWidth }, 300);
-        $li.find('.dropbtn').focus();
+    // --- timeline surface ---
+    $('#timeline-ol').on('click', '.insert-btn', function() {
+        openEventModal(parseInt($(this).attr('data-index'), 10), true);
     });
-
-    // per-event controls (delegated)
-    $ol.on('click', '.ev-details', function() { openDetails($(this).closest('.event')); return false; });
-    $ol.on('click', '.ev-remove', function() {
-        var $li = $(this).closest('.event');
-        if (currentLi && currentLi[0] === $li[0]) closeDetails(false);
-        $li.remove(); refreshEmptyHint(); return false;
-    });
-    $ol.on('click', '.ev-move-left', function() {
-        var $li = $(this).closest('.event'), $prev = $li.prev('.event');
-        if ($prev.length) $li.insertBefore($prev);
-        return false;
-    });
-    $ol.on('click', '.ev-move-right', function() {
-        var $li = $(this).closest('.event'), $next = $li.next('.event');
-        if ($next.length) $li.insertAfter($next);
-        return false;
+    $('#timeline-ol').on('click', '.event', function() {
+        openEventModal(parseInt($(this).attr('data-index'), 10), false);
     });
 
-    // details panel
-    $('#details-done').on('click',  function() { closeDetails(true); });
-    $('#details-close').on('click', function() { closeDetails(true); });
-    $('#d-link-activity').on('click', function() {
-        $('#activity-search').removeAttr('hidden');
-        $('#search-term').focus();
-    });
-    $('#d-activities').on('click', 'button', function() {
-        var slot = $(this).data('slot');
-        currentLi.removeData(slot).removeData(slot === 'id1' ? 'name1' : 'name2');
-        if (slot === 'id1' && currentLi.data('id2')) {   // keep positions compact
-            currentLi.data('id1', currentLi.data('id2')); currentLi.data('name1', currentLi.data('name2'));
-            currentLi.removeData('id2').removeData('name2');
+    // --- timeline modal ---
+    $('#timeline-details-btn').on('click', openTimelineModal);
+    $('#tl-done').on('click', saveTimelineModal);
+    $('#tl-choose-image').on('click', function() { $('#tl-cover-file').click(); });
+    $('#tl-cover-file').on('change', function() {
+        if (this.files && this.files[0]) {
+            loadImageToThumb(this.files[0], function(dataUrl) {
+                pendingThumb = dataUrl;
+                $('#tl-cover-url').val('');
+                showCoverPreview(dataUrl);
+            });
         }
-        renderDetailChips();
-        return false;
     });
-    $('#activity-results').on('click', 'button', function() {
-        attachActivity($(this).data('id'), $(this).data('dn'));
-        return false;
+    $('#tl-cover-url').on('input', function() {
+        var v = $.trim($(this).val());
+        if (v) { pendingThumb = v; showCoverPreview(v); }
     });
+    $('#tl-remove-image').on('click', function() {
+        pendingThumb = '';
+        $('#tl-cover-url').val('');
+        $('#tl-cover-file').val('');
+        showCoverPreview('');
+    });
+
+    // --- event modal ---
+    $('#ev-done').on('click', saveEventModal);
+    $('#ev-delete').on('click', deleteEvent);
+
+    // close (X) buttons - just hide, no changes applied
+    $('.modal-close').on('click', function() { $('#' + $(this).data('modal')).attr('hidden', true); });
 
     // timeline scroll arrows
     $('#timelineLeft').on('click',  function() { $('#playground').animate({ scrollLeft: '-=300px' }, 500); });
@@ -362,6 +348,9 @@ $(document).ready(function() {
     // dismiss / back -> quit (prompts to save if modified)
     $('#dismiss').off('click').on('click', function() { quit(); });
 
-    refreshEmptyHint();
+    renderTimeline();
     editor_checkpoint();
+
+    // on entry with a fresh timeline, open the Timeline modal first
+    openTimelineModal();
 });

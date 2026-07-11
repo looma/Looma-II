@@ -92,8 +92,17 @@ function openTimelineModal() {
     $('#tl-cover-url').val('');
     pendingThumb = timeline.thumb || '';
     showCoverPreview(pendingThumb);
-    $('#timeline-modal').removeAttr('hidden');
+    setNepali('tl-nepali', !!timeline.ndn);     // expand only if a Nepali title already exists
+    $('#timeline-modal').addClass('open');
     $('#tl-title').focus();
+}
+
+// show/collapse the Nepali translation fields for a modal
+function setNepali(targetId, expand) {
+    var $fields = $('#' + targetId);
+    var $btn = $('.nepali-toggle[data-target="' + targetId + '"]');
+    if (expand) { $fields.addClass('show');   $btn.html('&minus; Hide Nepali translation'); }
+    else        { $fields.removeClass('show'); $btn.html('&#43; Add Nepali translation'); }
 }
 
 function showCoverPreview(src) {
@@ -118,7 +127,7 @@ function saveTimelineModal() {
     timeline.thumb = pendingThumb || '';
     setname(currentname, loginname);
 
-    $('#timeline-modal').attr('hidden', true);
+    $('#timeline-modal').removeClass('open');
 }
 
 // read a chosen image file, downscale it to a small data-URL (no server upload needed)
@@ -152,6 +161,7 @@ function openEventModal(index, isNew) {
         $('#event-modal-title').text('Add Event');
         $('#ev-delete').attr('hidden', true);
         $('#ev-title, #ev-ntitle, #ev-date, #ev-ndate, #ev-desc, #ev-ndesc').val('');
+        setNepali('ev-nepali', false);
     } else {
         editingIndex = index;
         var e = events[index];
@@ -163,8 +173,9 @@ function openEventModal(index, isNew) {
         $('#ev-ndate').val(e.ndate  || '');
         $('#ev-desc').val(e.desc    || '');
         $('#ev-ndesc').val(e.ndesc  || '');
+        setNepali('ev-nepali', !!(e.ndn || e.ndate || e.ndesc));  // expand only if Nepali content exists
     }
-    $('#event-modal').removeAttr('hidden');
+    $('#event-modal').addClass('open');
     $('#ev-title').focus();
 }
 
@@ -184,13 +195,13 @@ function saveEventModal() {
     if (editingIndex !== null) events[editingIndex] = e;
     else                       events.splice(insertIndex, 0, e);
 
-    $('#event-modal').attr('hidden', true);
+    $('#event-modal').removeClass('open');
     renderTimeline();
 }
 
 function deleteEvent() {
     if (editingIndex !== null) events.splice(editingIndex, 1);
-    $('#event-modal').attr('hidden', true);
+    $('#event-modal').removeClass('open');
     renderTimeline();
 }
 
@@ -203,7 +214,7 @@ function editor_clear() {
     setname("");
     timeline = { ndn: "", thumb: "" };
     events = [];
-    $('#timeline-modal, #event-modal').attr('hidden', true);
+    $('#timeline-modal, #event-modal').removeClass('open');
     renderTimeline();
     editor_checkpoint();
 }
@@ -339,7 +350,13 @@ $(document).ready(function() {
     $('#ev-delete').on('click', deleteEvent);
 
     // close (X) buttons - just hide, no changes applied
-    $('.modal-close').on('click', function() { $('#' + $(this).data('modal')).attr('hidden', true); });
+    $('.modal-close').on('click', function() { $('#' + $(this).data('modal')).removeClass('open'); });
+
+    // Nepali translation toggle (both modals)
+    $('.nepali-toggle').on('click', function() {
+        var t = $(this).data('target');
+        setNepali(t, !$('#' + t).hasClass('show'));
+    });
 
     // timeline scroll arrows
     $('#timelineLeft').on('click',  function() { $('#playground').animate({ scrollLeft: '-=300px' }, 500); });

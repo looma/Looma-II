@@ -185,16 +185,34 @@ body {
 .dropbtn:empty:before { content: "(untitled)"; color: #b0a97e; font-style: italic; }
 
 /* ---- modals ---- */
+/* hidden by default; shown by adding .open (do NOT rely on the [hidden] attribute -
+   this author rule would override it). */
 .modal {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     background: rgba(0,0,0,0.45);
     z-index: 100;
-    display: flex;
+    display: none;
     align-items: flex-start;
     justify-content: center;
 }
+.modal.open { display: flex; }
+
+/* Nepali translation fields - collapsed until the toggle is clicked */
+.nepali-toggle {
+    margin-top: 1.6vh;
+    background: none;
+    border: none;
+    color: #2E3192;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.95em;
+    padding: 0.4vh 0;
+    text-decoration: underline;
+}
+.nepali-fields { display: none; border-left: 3px solid #dfe0f0; padding-left: 1vw; margin-top: 0.6vh; }
+.nepali-fields.show { display: block; }
 .modal-card {
     background: #fff;
     margin-top: 5vh;

@@ -64,17 +64,14 @@ Revision: Looma 7.x
 
     </div>
 
-    <!-- ===== Modal A: Timeline details (title + Nepali + cover image) ===== -->
-    <div id="timeline-modal" class="modal" hidden>
+    <!-- ===== Modal A: Timeline details (title + cover image; Nepali behind a toggle) ===== -->
+    <div id="timeline-modal" class="modal">
         <div class="modal-card">
             <button class="modal-close" data-modal="timeline-modal" title="Close">&times;</button>
             <h2>Timeline Details</h2>
 
-            <label>Timeline title (English)</label>
+            <label>Timeline title</label>
             <input id="tl-title" type="text" placeholder="e.g. History of Nepal">
-
-            <label>&#2358;&#2368;&#2352;&#2381;&#2359;&#2325; (Nepali title &ndash; optional)</label>
-            <input id="tl-ntitle" type="text" placeholder="Nepali title">
 
             <label>Cover image (optional)</label>
             <div id="tl-cover-row">
@@ -87,32 +84,42 @@ Revision: Looma 7.x
                 </div>
             </div>
 
+            <button type="button" class="nepali-toggle" data-target="tl-nepali">&#43; Add Nepali translation</button>
+            <div id="tl-nepali" class="nepali-fields">
+                <label>&#2358;&#2368;&#2352;&#2381;&#2359;&#2325; &mdash; Nepali title</label>
+                <input id="tl-ntitle" type="text" placeholder="Nepali title">
+            </div>
+
             <div class="modal-actions">
                 <button id="tl-done" class="primary">Done</button>
             </div>
         </div>
     </div>
 
-    <!-- ===== Modal B: Event (title, date, description, + Nepali) ===== -->
-    <div id="event-modal" class="modal" hidden>
+    <!-- ===== Modal B: Event (title, date, description; Nepali behind a toggle) ===== -->
+    <div id="event-modal" class="modal">
         <div class="modal-card">
             <button class="modal-close" data-modal="event-modal" title="Close">&times;</button>
             <h2 id="event-modal-title">Add Event</h2>
 
-            <label>Event title (English)</label>
+            <label>Event title</label>
             <input id="ev-title" type="text" placeholder="e.g. Unification of Nepal">
-            <label>&#2358;&#2368;&#2352;&#2381;&#2359;&#2325; (Nepali title &ndash; optional)</label>
-            <input id="ev-ntitle" type="text" placeholder="Nepali title">
 
-            <label>Date (English)</label>
+            <label>Date</label>
             <input id="ev-date" type="text" placeholder="e.g. 1768">
-            <label>&#2350;&#2367;&#2340;&#2367; (Nepali date &ndash; optional)</label>
-            <input id="ev-ndate" type="text" placeholder="Nepali date">
 
             <label>Description (shown when the event is tapped)</label>
-            <textarea id="ev-desc" placeholder="Description (English)"></textarea>
-            <label>&#2357;&#2367;&#2357;&#2352;&#2339; (Nepali description &ndash; optional)</label>
-            <textarea id="ev-ndesc" placeholder="Nepali description"></textarea>
+            <textarea id="ev-desc" placeholder="Description"></textarea>
+
+            <button type="button" class="nepali-toggle" data-target="ev-nepali">&#43; Add Nepali translation</button>
+            <div id="ev-nepali" class="nepali-fields">
+                <label>&#2358;&#2368;&#2352;&#2381;&#2359;&#2325; &mdash; Nepali title</label>
+                <input id="ev-ntitle" type="text" placeholder="Nepali title">
+                <label>&#2350;&#2367;&#2340;&#2367; &mdash; Nepali date</label>
+                <input id="ev-ndate" type="text" placeholder="Nepali date">
+                <label>&#2357;&#2367;&#2357;&#2352;&#2339; &mdash; Nepali description</label>
+                <textarea id="ev-ndesc" placeholder="Nepali description"></textarea>
+            </div>
 
             <div class="modal-actions">
                 <button id="ev-delete" hidden>Delete event</button>

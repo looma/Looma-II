@@ -2,7 +2,9 @@
 LOOMA css file
 Filename: looma-edit-history.css
 Description: styles for the History Timeline Editor (looma-edit-history.php).
-             Based on looma-edit-slideshow.css, adapted for editable event cards.
+             The timeline mirrors the read-only viewer (css/looma-history.css): a horizontal
+             yellow line with events alternating above/below, Comic Sans title/date buttons,
+             on a scrollable palegoldenrod field. Adds in-place editing chrome.
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Revision: Looma 7.x
 */
@@ -11,218 +13,288 @@ body {
     margin: 0;
     background-color: #e3e3e3;
     color: black;
-}
-#main-container {
-    padding: 1vh;
-    display: grid;
-    grid-gap: 1vh;
-    grid-template-columns: 28vw 60vw 5vw 5vw;
-    grid-template-rows: 5vh 13vh 30vh 40vh;
-    background-color: lightgray;
     font-family: "Comic Sans MS", cursive, sans-serif;
-    color: black;
 }
-#main-container > div { border-radius: 4px; color: green; }
+#main-container { padding: 1vh; }
 
+/* ---- header ---- */
 #header {
-    grid-column: 1/-1;
-    grid-row: 1;
-    vertical-align: middle;
+    height: 7vh;
     background-color: #F2C01B;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    padding: 0 1vw;
 }
-#header span { margin-bottom: 6px; }
-#title { float: left; padding-left: 5vw; }
+#title { font-size: 1.3em; }
+#editor-name { font-weight: bold; font-size: 1.2em; }
 
-#search-bar {
-    grid-column: 1/-1;
-    grid-row: 2;
-    position: relative;
-    background-color: white;
+/* ---- toolbar ---- */
+#toolbar-row {
+    height: 6vh;
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    padding: 0.5vh 1vw;
 }
-div#search-panel { height: 100%; }
-#search span { font-weight: bold; }
-#grade-div, #subject-div, #chapter-div { display: inline-block; }
-#search input { font: inherit; }
-
-.all-transparent { opacity: .3; }
-
-#outerResultsDiv {
-    grid-column: 1;
-    grid-row: 3;
-    overflow: hidden;
-    background-color: white;
-}
-#previewpanel {
-    grid-column: 2/-1;
-    grid-row: 3;
-    background-color: white;
-    overflow: hidden;
-}
-#timeline    { grid-column: 1/-3; grid-row: 4; }
-#timelineLeft  { grid-column: -3 / -2; grid-row: 4; }
-#timelineRight { grid-column: -2 / -1; grid-row: 4; }
-
-button {
-    display: inline;
-    border-radius: 0.313em;
-    height: 5vh;
-    white-space: nowrap;
-    font-size: 1.5em;
-    margin-top: 3px;
-}
-button#add-event {
-    position: absolute;
-    right: 1vw;
-    top: 1vh;
+#add-event {
     background-color: #2E3192;
     color: white;
     border: none;
-    padding: 0 1vw;
-}
-
-p.hint  { padding: 2px 0 0 0; color: #aaa; font-size: 1.2em; }
-span.hint { float: left; margin: 5vh 0 0 6vh; color: #aaa; font-size: 2em; z-index: -1; }
-
-/* FILECOMMANDS */
-#filecommands { position: absolute; width: 15vw; right: 5vw; top: 0.5vh; }
-.btn-group, #cmd-btn {
-    font-family: "Comic Sans MS", cursive, sans-serif;
-    padding: 0; margin-bottom: 1vh; width: 100%;
-}
-.dropdown-menu { padding: 10px; background-color: white; z-index: 1; }
-.dropdown-item {
-    font-size: 1.2em; margin-top: 2px; font: inherit;
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5));
-}
-.dropdown-item:hover {
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#87cefa));
-    color: white;
-}
-#dismiss {
-    color: white; background-color: red; border-color: red;
-    height: 5vh; width: 4vw;
-    background-image: url("../images/back-arrow.png");
-    background-size: 90% 90%; background-repeat: no-repeat;
-    position: absolute; bottom: 1vh; right: 3vw; z-index: 2;
-}
-
-/*************** Search Results pane ***********************/
-#innerResultsMenu { height: 10%; z-index: 1; display: block; padding: 5px; }
-#innerResultsDiv  { overflow-y: auto; height: 90%; }
-.result_ID { font-size: 0.7em; font-style: normal; }
-.resultitem { padding: 3px; border-bottom: 1px solid #000; overflow: auto; }
-.resultitem .remove { display: none; }
-.textdiv p { margin: 0 auto; }
-.resultsimg {
-    float: left; width: 6vw; min-height: 8vh; max-height: 8vh;
-    box-shadow: 0px 0px 10px #888888; cursor: pointer;
-}
-.buttondiv button { float: right; font-size: 1em; height: 4vh; }
-.activityDiv { overflow: auto; }
-.thumbnaildiv, .textdiv { padding: 0.4vw; display: inline-block; float: left; }
-.textdiv { max-width: 12vw; }
-
-/************* Preview panel ***************/
-#preview { position: relative; height: 100%; text-align: center; }
-#displayImage { position: relative; max-height: 100%; display: block; margin: 0 auto; }
-#previewpanel p { margin: 10px; }
-
-/************* Timeline of event cards ***************/
-#timeline {
-    background: #fff;
-    height: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    box-shadow: 0px 0px 25px #C4C4C4;
-}
-.timelineCenter {
-    min-width: 100%;
-    height: 100%;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: stretch;
-}
-#timelineLeft {
-    background-image: url("../images/carrot-back.png");
-    background-repeat: no-repeat; background-size: 100% 100%; background-color: white;
-}
-#timelineRight {
-    background-image: url("../images/carrot-fwd.png");
-    background-repeat: no-repeat; background-size: 100% 100%; background-color: white;
-}
-.timelineScroll { height: 90%; }
-
-/* individual event card */
-.eventCard {
-    flex: 0 0 22vw;
-    margin: 0.6vh 0.5vw;
-    padding: 0.4vw;
-    background-color: #fbf7e3;
-    border: 2px solid #d8cf9a;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0px 0px 8px #bbb;
-}
-.eventCard.activeCard {
-    border-color: #2E3192;
-    box-shadow: 0px 0px 10px #2E3192;
-}
-.ev-head {
-    display: flex;
-    align-items: center;
-    background-color: #dadaff;
-    border-radius: 4px;
-    padding: 2px;
-    margin-bottom: 3px;
-    cursor: move;               /* drag handle to reorder */
-}
-.ev-head .ev-date {
-    flex: 1;
-    font-weight: bold;
-    font-size: 1.1em;
-    border: none;
-    background: transparent;
-}
-.ev-remove {
-    height: 3vh; width: 3vh;
-    font-size: 1.2em; line-height: 1;
-    color: white; background-color: #c33; border: none; border-radius: 3px;
-    margin: 0; padding: 0;
+    border-radius: 5px;
+    font: inherit;
+    font-size: 1.2em;
+    padding: 0.6vh 1.2vw;
     cursor: pointer;
 }
-.eventCard input,
-.eventCard textarea {
-    font: inherit;
-    font-size: 0.95em;
-    margin: 2px 0;
-    padding: 2px 4px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    width: 100%;
-    box-sizing: border-box;
+#add-event:hover { background-color: #3d40c0; }
+.timelineScroll {
+    font-size: 1.4em;
+    width: 3vw;
+    height: 5vh;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
 }
-.eventCard .ev-title { font-weight: bold; }
-.eventCard .ev-ntitle, .eventCard .ev-ndate, .eventCard .ev-ndesc { color: #555; }
-.eventCard textarea { flex: 1; min-height: 4vh; resize: none; }
+.edit-hint { color: #666; font-size: 0.95em; }
 
-/* linked-activity chips */
-.ev-activities { display: flex; flex-wrap: wrap; margin-top: 2px; }
-.ev-chip {
-    display: inline-flex;
+/* ---- the timeline field (mirrors looma-history.php #playground) ---- */
+#playground {
+    position: relative;
+    background-color: palegoldenrod;
+    border: 0.1vh solid #ccc;
+    border-radius: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 78vh;
+    width: 100%;
+}
+#empty-hint {
+    position: absolute;
+    top: 40%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #8a7f4a;
+    font-size: 1.6em;
+    line-height: 1.6;
+    pointer-events: none;
+}
+.timeline { height: 100%; }
+.timeline ol {
+    list-style: none;
+    margin: 0;
+    padding: 0 6vw;
+    height: 100%;
+    display: flex;
     align-items: center;
-    background-color: #e6eefc;
+    position: relative;
+    min-width: min-content;
+}
+/* the horizontal yellow line */
+.timeline ol::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 0.6vh;
+    background: #ff0;
+    transform: translateY(-50%);
+    z-index: 0;
+}
+
+/* ---- an event on the timeline ---- */
+.event {
+    position: relative;
+    flex: 0 0 27vw;
+    height: 100%;
+}
+/* the dot where the event meets the line */
+.event::after {
+    content: '';
+    position: absolute;
+    left: 3vw;
+    top: 50%;
+    width: 1.6vh;
+    height: 1.6vh;
+    background: #d9b800;
+    border: 0.3vh solid #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+.timeline-description {
+    position: absolute;
+    left: 1.5vw;
+    width: 24vw;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+}
+/* odd events sit ABOVE the line, even events BELOW (matches the viewer's alternation) */
+.event:nth-child(odd)  .timeline-description { bottom: 52%; }
+.event:nth-child(even) .timeline-description { top: 52%; }
+
+/* the editable title + date buttons (styled like the viewer's .dropbtn / .dropdate) */
+.dropbtn, .dropdate {
+    font: 1.6em "Comic Sans MS", cursive, sans-serif;
+    padding: 1vh;
+    min-height: 4vh;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    background: #fff;
+    outline: none;
+    cursor: text;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+.dropbtn { font-weight: bold; margin-bottom: 0.4vh; }
+.dropdate { font-size: 1.3em; background: #dadaff; margin-bottom: 0.4vh; }
+.dropbtn:focus, .dropdate:focus { border-color: #2E3192; background: #fffde7; }
+/* placeholder text for empty editable fields */
+.dropbtn:empty:before, .dropdate:empty:before {
+    content: attr(data-placeholder);
+    color: #b0a97e;
+    font-style: italic;
+}
+
+/* per-event controls (appear on hover) */
+.event-controls {
+    display: flex;
+    gap: 0.3vw;
+    margin-bottom: 0.4vh;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+.event:hover .event-controls, .event.editing .event-controls { opacity: 1; }
+.event-controls button {
+    font-size: 1em;
+    line-height: 1;
+    width: 2.4vw;
+    height: 3.4vh;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    padding: 0;
+}
+.event-controls .ev-remove { color: #c33; }
+.event-controls button:hover { background: #eef; }
+.event.editing .timeline-description { filter: drop-shadow(0 0 6px #2E3192); }
+
+/* small chip showing a linked activity on the event */
+.ev-links { display: flex; flex-wrap: wrap; gap: 0.3vw; margin-top: 0.3vh; }
+.ev-link-chip {
+    font-size: 0.8em;
+    background: #e6eefc;
     border: 1px solid #9bb8e8;
     border-radius: 10px;
-    padding: 1px 4px;
-    margin: 2px 3px 0 0;
-    font-size: 0.75em;
-    max-width: 100%;
+    padding: 0 0.5vw;
+    max-width: 22vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-.ev-chip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 8vw; }
-.ev-chip-remove {
-    height: auto; width: auto;
-    font-size: 1em; line-height: 1;
-    margin: 0 0 0 3px; padding: 0 3px;
-    border: none; background: transparent; color: #c33; cursor: pointer;
+
+/* ---- details overlay ---- */
+.overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.45);
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
 }
+.details-card {
+    background: #fff;
+    margin-top: 4vh;
+    padding: 2vh 2vw;
+    border-radius: 8px;
+    width: 60vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 0 30px rgba(0,0,0,0.4);
+}
+.details-card h2 { margin-top: 0; }
+.details-card label {
+    display: block;
+    margin-top: 1.2vh;
+    font-weight: bold;
+    font-size: 0.95em;
+}
+.details-card input,
+.details-card textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font: inherit;
+    font-size: 1em;
+    padding: 0.6vh 0.5vw;
+    margin-top: 0.3vh;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.details-card textarea { min-height: 8vh; resize: vertical; }
+#details-close {
+    position: absolute;
+    top: 1vh; right: 1vw;
+    width: 3vh; height: 3vh;
+    border: none; border-radius: 4px;
+    background: #c33; color: #fff;
+    font-size: 1.2em; line-height: 1; cursor: pointer;
+}
+.details-actions { margin-top: 2vh; text-align: right; }
+#details-done, #d-link-activity {
+    font: inherit; font-size: 1.05em;
+    padding: 0.7vh 1.4vw;
+    border: none; border-radius: 5px;
+    background: #2E3192; color: #fff; cursor: pointer;
+}
+#d-link-activity { background: #2e7d32; margin-top: 0.6vh; }
+
+/* linked-activity chips inside the details card */
+#d-activities { display: flex; flex-wrap: wrap; gap: 0.5vw; margin-top: 0.4vh; }
+.d-chip {
+    display: inline-flex; align-items: center;
+    background: #e6eefc; border: 1px solid #9bb8e8;
+    border-radius: 12px; padding: 0.3vh 0.6vw; font-size: 0.9em;
+}
+.d-chip button {
+    margin-left: 0.4vw; border: none; background: transparent;
+    color: #c33; cursor: pointer; font-size: 1em; line-height: 1;
+}
+
+/* activity search results inside the details card */
+#activity-search { margin-top: 1vh; border-top: 1px solid #ddd; padding-top: 1vh; }
+#activity-results { max-height: 30vh; overflow-y: auto; margin-top: 1vh; }
+.resultitem {
+    display: flex; align-items: center; gap: 0.6vw;
+    padding: 0.5vh; border-bottom: 1px solid #eee;
+}
+.resultitem img { width: 5vw; max-height: 7vh; box-shadow: 0 0 6px #aaa; }
+.resultitem .result_dn { flex: 1; margin: 0; }
+.resultitem button {
+    font: inherit; border: 1px solid #2e7d32; color: #2e7d32;
+    background: #fff; border-radius: 4px; cursor: pointer; padding: 0.3vh 0.6vw;
+}
+
+/* dismiss / back button */
+#dismiss {
+    color: white; background-color: red; border: none;
+    height: 6vh; width: 4vw;
+    background-image: url("../images/back-arrow.png");
+    background-size: 80% 80%; background-repeat: no-repeat; background-position: center;
+    position: fixed; bottom: 1vh; right: 2vw; z-index: 50; cursor: pointer;
+}
+
+/* File Commands dropdown (positioned like the other editors) */
+#filecommands { position: absolute; width: 15vw; right: 6vw; top: 1vh; z-index: 60; }
+.btn-group, #cmd-btn { font-family: "Comic Sans MS", cursive, sans-serif; padding: 0; width: 100%; }
+.dropdown-menu { padding: 10px; background-color: white; z-index: 61; }
+.dropdown-item { font-size: 1.1em; margin-top: 2px; font: inherit; }
+.dropdown-item:hover { background: #87cefa; color: white; }

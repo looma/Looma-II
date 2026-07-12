@@ -82,6 +82,21 @@ function makeMapButton($file, $thumb, $dn) {
 
         echo "<table><tr>";
 
+        // Standalone map pages that don't live in Mongo. Rendered first so they
+        // sit alongside the priority Nepal Map / Looma Schools Map entries.
+        echo '<td>';
+        echo   '<a href="looma-roads-nepal.php">';
+        echo     '<button class="map img">';
+        echo       '<img src="images/roads-nepal-thumb.svg" alt="Roads of Nepal">';
+        echo       '<span class="name">Roads of Nepal</span>';
+        if (isset($icons['map'])) echo '<img class="icon" src="' . $icons['map'] . '">';
+        echo     '</button>';
+        echo   '</a>';
+        echo '</td>';
+        $buttons++;
+        if ($buttons > $maxButtons) { $buttons = 1; echo "</tr><tr>"; }
+
+
         //$maps = $maps_collection->find();
         $maps = mongoFind($maps_collection, [], null, null, null);
 

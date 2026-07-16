@@ -36,13 +36,8 @@ services:
     depends_on: !override
       - looma-db
       - looma-search
-      - looma-mimic
 
   looma-search:
-    environment:
-      OTEL_EXPORTER_OTLP_ENDPOINT: ${LOOMA_OTEL_ENDPOINT:-http://looma-otel-collector:4318}
-
-  looma-mimic:
     environment:
       OTEL_EXPORTER_OTLP_ENDPOINT: ${LOOMA_OTEL_ENDPOINT:-http://looma-otel-collector:4318}
 

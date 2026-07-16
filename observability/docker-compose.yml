@@ -1,3 +1,10 @@
+# Distinct Compose PROJECT name. Without this, `docker compose` derives the
+# project name from the directory — and since both this stack and Artrackr's live
+# in a folder called `observability`, they merged into a single `observability`
+# project and saw each other's containers as orphans. Pinning the name keeps the
+# two observability stacks completely separate.
+name: looma-observability
+
 networks:
   loomanet:
     name: loomanet
@@ -666,7 +673,15 @@ services:
       retries: 12
 
   clickhouse:
-    image: clickhouse/clickhouse-server:24.8
+    # Config XMLs are baked into the image (clickhouse/Dockerfile) instead of
+    # being bind-mounted — single-file bind mounts are fragile on Docker Desktop
+    # / WSL2 (a stale inode makes ClickHouse's ConfigReloader die with
+    # `posix_stat ... No such device`).
+    build:
+      context: ./clickhouse
+      dockerfile: Dockerfile
+    image: looma-clickhouse:latest
+    pull_policy: never
     container_name: looma-clickhouse
     restart: unless-stopped
     environment:
@@ -680,14 +695,11 @@ services:
         hard: 262144
     volumes:
       - looma_clickhouse_data:/var/lib/clickhouse
-      # Match Coroot's official compose defaults: keep ClickHouse from
-      # accumulating its own query/system logs in this observability stack.
-      - ./clickhouse/coroot-logging.xml:/etc/clickhouse-server/config.d/coroot-logging.xml:ro
-      - ./clickhouse/coroot-user-logging.xml:/etc/clickhouse-server/config.d/coroot-user-logging.xml:ro
-      # Force IPv4-only listening (WSL2 has no IPv6) and drop the unused
-      # MySQL/PostgreSQL wire-protocol ports — silences the boot-time
-      # "Listen [::]:9005 failed: Address family ... not supported" warning.
-      - ./clickhouse/listen-ipv4.xml:/etc/clickhouse-server/config.d/listen-ipv4.xml:ro
+      # NOTE: coroot-logging.xml, coroot-user-logging.xml and listen-ipv4.xml are
+      # now BAKED into the image (clickhouse/Dockerfile) instead of bind-mounted.
+      # They keep ClickHouse from accumulating its own query/system logs and force
+      # IPv4-only listening (WSL2 has no IPv6). Baking avoids the Docker Desktop /
+      # WSL2 stale single-file-mount crash (`posix_stat ... No such device`).
     ports:
       # Expose HTTP for ad-hoc queries / optional Grafana ClickHouse datasource.
       - "0.0.0.0:48123:8123"

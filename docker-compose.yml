@@ -1,41 +1,184 @@
-#version: '3.9'
 
 networks:
   loomanet:
     name: loomanet
+    # Reuse the existing network created by the observability stack.
+    # Prevents Docker Compose warnings and ensures cross-stack DNS works.
+    external: true
 
 volumes:
   looma_tmp:
-    driver: local
     name: looma_tmp
+  looma_content:
+    name: looma_content
+  looma_maps2018:
+    name: looma_maps2018
+  looma_epaath:
+    name: looma_epaath
+  looma_ai_data:
+    name: looma_ai_data
+  looma_search_index:
+    name: looma_search_index
+  looma_search_hf:
+    name: looma_search_hf
+  looma_apache_logs:
+    name: looma_apache_logs
+    external: true
 
 services:
   looma-web:
-    # image: ghcr.io/looma/loomaweb:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: loomaweb:latest
     container_name: looma-web
-    volumes:
-      - .:/usr/local/var/www/Looma:ro
-      - /usr/local/var/www/content:/usr/local/var/www/content:ro
-      - /usr/local/var/www/maps2018:/usr/local/var/www/maps2018:ro
-      - /usr/local/var/www/ePaath:/usr/local/var/www/ePaath:ro
     ports:
-      - 48080:8080
-    restart: always
-    tty: true
+      - "48080:8080"
+    volumes:
+      - looma_content:/usr/local/var/www/content:ro
+      - looma_maps2018:/usr/local/var/www/maps2018:ro
+      - looma_epaath:/usr/local/var/www/ePaath:ro
+      # Share Apache access/error logs with the OTel Collector for filelog ingestion.
+      - looma_apache_logs:/var/log/apache2
+    environment:
+      LOOMA_SEARCH_ENGINE: zvec
+      LOOMA_SEARCH_URL: http://looma-search:46333/search
+      # Semantic search is always served by the dedicated zvec index service
+      # (looma-search). Keeping this separate from looma-ai makes search stable
+      # even if AI is down.
+      LOOMA_SEARCH_URL_ZVEC: http://looma-search:46333/search
+      LOOMA_AI_URL: http://looma-ai:8089
+      # OpenTelemetry — PHP shim posts spans to the otel-collector. We also
+      # publish counters/logs from looma-telemetry.php and logPageHit().
+      OTEL_SERVICE_NAME: looma-web
+      OTEL_SERVICE_NAMESPACE: looma
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://looma-otel-collector:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_TRACES_EXPORTER: otlp
+      OTEL_LOGS_EXPORTER: otlp
+      OTEL_METRICS_EXPORTER: otlp
+      OTEL_RESOURCE_ATTRIBUTES: "service.name=looma-web,service.namespace=looma,service.version=dev,deployment.environment=looma"
+      LOOMA_ENV: "${LOOMA_ENV:-looma}"
     depends_on:
       - looma-db
+      - looma-search
+      - looma-ai
+    restart: unless-stopped
+    tty: true
+    networks:
+      - loomanet
+
+  # NOTE: the looma-mimic TTS service was removed. Piper (served locally inside
+  # looma-web via looma-TTS.php) is now the only TTS engine, so Looma speaks
+  # fully offline. Mimic/ResponsiveVoice/browser-speech were dropped.
+
+  looma-ai:
+    build:
+      context: ./looma-ai
+      dockerfile: Dockerfile
+    image: looma-ai:latest
+    container_name: looma-ai
+    ports:
+      - "8089:8089"
+    environment:
+      # OpenTelemetry: send traces to the observability stack's collector.
+      OTEL_SERVICE_NAME: looma-ai
+      OTEL_TRACES_EXPORTER: otlp
+      OTEL_LOGS_EXPORTER: otlp
+      OTEL_METRICS_EXPORTER: otlp
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://looma-otel-collector:4318
+      OTEL_EXPORTER_OTLP_TIMEOUT: "10000"
+      OTEL_PYTHON_LOG_CORRELATION: "false"
+      PYTHONWARNINGS: "ignore:pkg_resources is deprecated as an API:UserWarning"
+      OTEL_RESOURCE_ATTRIBUTES: service.name=looma-ai,service.namespace=looma,service.version=dev,deployment.environment=looma
+      LOOMA_ENV: "${LOOMA_ENV:-looma}"
+      LOOMA_SOURCE_ROOT: /looma/content
+      LOOMA_DEVICE: cpu
+      # Enable embeddings for curriculum zvec ingestion/search. If this host is
+      # moved to an older CPU that cannot run torch, set these back to 1/0.
+      LOOMA_DISABLE_EMBEDDINGS: "0"
+      LOOMA_ENABLE_EMBED_INDEXING: "1"
+      HF_HOME: /app/data/models/hf
+      TRANSFORMERS_CACHE: /app/data/models/hf
+      LOOMA_MONGO_URL: mongodb://looma-db:27017
+      LOOMA_MONGO_DB: looma
+      LOOMA_MONGO_COLLECTION: activities
+      # OpenTelemetry — see scripts/otel_bootstrap.py
+    volumes:
+      # looma-ai writes generated chapter resources back into content (e.g. .summary/.keywords)
+      - looma_content:/looma/content
+      - looma_ai_data:/app/data
+    command: ["python", "scripts/looma_server.py", "--host", "0.0.0.0", "--port", "8089"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8089/health').read()"]
+      interval: 10s
+      timeout: 3s
+      retries: 15
+    restart: unless-stopped
+    tty: true
     networks:
       - loomanet
 
   looma-db:
-    # image: ghcr.io/looma/loomadb:latest
+    build:
+      context: ./mongo-dump
+      dockerfile: Dockerfile
     image: loomadb:latest
     container_name: looma-db
     ports:
-      - 47017:27017
-    restart: always
+      - "47017:27017"
+    restart: unless-stopped
     tty: true
     networks:
       - loomanet
 
+  looma-search:
+    build:
+      context: ..
+      dockerfile: Looma/search-service/Dockerfile
+    image: loomasearch:latest
+    container_name: looma-search
+    ports:
+      - "46333:46333"
+    depends_on:
+      - looma-db
+    environment:
+      MONGO_URL: mongodb://looma-db:27017
+      MONGO_DB: looma
+      MONGO_COLLECTION: activities
+      # all-MiniLM-L6-v2 (384-dim, matches EMBEDDING_DIM) is ~5x faster on CPU than
+      # all-mpnet-base-v2, so the first/background index build completes much sooner.
+      # Must match the model baked into the image (search-service/Dockerfile).
+      MODEL_NAME: sentence-transformers/all-MiniLM-L6-v2
+      HF_HOME: /models/hf
+      INDEX_DIR: /data/zvec-index
+      # Build the embedding index only when it's missing. Rebuilding the whole
+      # zvec index on every restart is a heavy CPU+disk spike that saturated the
+      # shared WSL2 virtual disk and tripped Coroot's "high I/O load" alerts.
+      # The index lives on the persistent looma_search_index volume, so a normal
+      # restart can reuse it; delete the volume (or set this to 1) to force a
+      # rebuild after the source data changes.
+      SEARCH_REBUILD_ON_START: "0"
+      SEARCH_PORT: "46333"
+      OTEL_SERVICE_NAME: looma-search
+      OTEL_TRACES_EXPORTER: otlp
+      OTEL_LOGS_EXPORTER: otlp
+      OTEL_METRICS_EXPORTER: otlp
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://looma-otel-collector:4318
+      OTEL_EXPORTER_OTLP_TIMEOUT: "10000"
+      OTEL_PYTHON_LOG_CORRELATION: "false"
+      PYTHONWARNINGS: "ignore:pkg_resources is deprecated as an API:UserWarning"
+      OTEL_RESOURCE_ATTRIBUTES: service.name=looma-search,service.namespace=looma,service.version=dev,deployment.environment=looma
+      LOOMA_ENV: "${LOOMA_ENV:-looma}"
+    volumes:
+      - looma_search_index:/data
+      - looma_search_hf:/models/hf
+    restart: unless-stopped
+    tty: true
+    networks:
+      - loomanet
+
+  # Semantic search is served exclusively by the zvec index service
+  # (looma-search). The Qdrant-backed legacy search service has been removed.

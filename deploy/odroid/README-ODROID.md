@@ -50,10 +50,25 @@ until you set it yourself.
 | `./looma-installer.sh build-bundle docker\|native\|all` | Build the **offline** payload — run on a build box **with internet, arm64** |
 | `./looma-installer.sh --help` | All flags |
 
-`up` also **frees the app's host ports before starting** — it disables any leftover
-native `looma-search`/`looma-ai`/`looma-piper` service (and clears a stray non-Docker
-process on 46333/8089/47017/48080) so a stale service can't block the containers with
-`address already in use`. See *Troubleshooting*.
+### Re-installing is always safe
+
+Running the installer again means *"install it again, whatever is on this box"* — it
+never stops half-way on leftovers from an earlier run or a hand-started stack. Before
+anything is built, both deployments:
+
+- **Free the host ports** they publish (46333, 8089, 47017, 48080, 5002), including
+  disabling a leftover native `looma-search`/`looma-ai`/`looma-piper` service. Those
+  units are `Restart=always`, so killing the process never sticks — the unit has to be
+  disabled, otherwise you get `address already in use` forever.
+- **Take back container names** owned by the *other* compose project. Names are global
+  to Docker but a project only ever adopts its own containers, so a leftover
+  `looma-ai` aborts the install with `Conflict. The container name "/looma-ai" is
+  already in use`. Only foreign containers are removed — the stack's own are left for
+  Compose to recreate (`looma-db` in particular keeps Mongo in its writable layer).
+- **Retry once** after clearing the way, before reporting a real failure.
+
+`down` on the previous deployment now also runs even when `looma.service` was never
+installed — a stack you started by hand with `docker compose up` still gets cleaned up.
 
 ### Install flags
 
@@ -86,7 +101,7 @@ process on 46333/8089/47017/48080) so a stale service can't block the containers
 1. Installs Docker Engine + Compose (from `get.docker.com`, or from the disk bundle when offline). A swapfile is created **only if you asked for one** (`--swap`; off by default).
 2. Copies the project into the install root: repo → `/var/www/html/Looma`, plus `maps2018/`, `piper/`, `includes/` and the `.dockerignore` that keeps the 80 GB `content/` out of the build context.
 3. **Content**: rsync to `/var/www/html/content` **in place** (`--size-only`) — a full copy on a fresh box, an incremental update on a box that already has it, so it never re-copies 80 GB.
-4. **Migrating a native box**: disables `apache2`/`httpd`/`mongod`/`piper` and the native `looma-search`/`looma-ai`/`looma-piper` services **and** the native browser kiosk autostart, so Docker takes over and you don't get a second, blank browser window on login.
+4. **Migrating a native box**: disables `apache2`/`httpd`/`mongod`/`piper` and the native `looma-search`/`looma-ai`/`looma-piper` services **and** the native browser kiosk autostart, so Docker takes over and you don't get a second, blank browser window on login. It also brings the `looma-native` sidecar project down and **takes back any container name** it still owns (see *Re-installing is always safe* below).
 5. Creates `loomanet` + `looma_apache_logs`, then **frees the app's host ports** and starts the stack (the first build is slow on ARM; Mongo restores itself from the disk's dump).
 6. Builds the **zvec** search index and verifies it, so the box ships with working semantic search.
 7. Installs `looma.service` (boot start, with the CPU-frequency cap as `ExecStartPre`) + the Chromium kiosk autostart, then tells you to remove the disk.
@@ -197,6 +212,10 @@ the stack auto-starts and Chromium opens Looma fullscreen.
 ## Troubleshooting (8 GB box)
 
 - **`address already in use` on 46333 (or 8089/47017/48080)**: a leftover native `looma-search`/`looma-ai`/`looma-piper` service is holding the port — and because it has `Restart=always`, `fuser -k` frees it only for a moment before systemd respawns it. `looma-installer.sh up` now disables those services and clears the port automatically; to fix it by hand: `sudo systemctl disable --now looma-search.service looma-ai.service looma-piper.service` (check the holder first with `sudo ss -ltnp 'sport = :46333'`).
+- **`getcwd: cannot access parent directories: Input/output error`** / **`rsync: getcwd(): Input/output error (5)`**: the USB disk's mount went stale under your shell (it was re-mounted, or the bus dropped), so the shell's working directory is a dead handle — `sudo` passes it to the installer. Fresh lookups of the same absolute path still work, which is why the script itself runs but `rsync` refuses to start. The installer now steps onto `/` immediately and never uses the caller's directory, so this can't stop an install any more. In your own shell just `cd /`. If it persists, the disk really is failing: `dmesg | tail -30` for USB resets, then re-plug it (or use a powered hub — this board browns out under load and drops the bus).
+- **`Conflict. The container name "/looma-ai" is already in use`**: another compose project (the Docker stack vs. the native sidecars, or a hand-run `docker compose up`) still owns the name. The installer now takes it back automatically; by hand: `sudo docker rm -f looma-ai looma-search looma-piper`, then re-run.
+- **`WARN volume "looma_ai_data" already exists but was created for project "looma" (expected "looma-native")`**: **harmless** — Compose warns and then reuses the volume, and the install continues. `looma_search_index` / `looma_search_hf` / `looma_ai_data` are deliberately shared by both deployments, so the native sidecar file declares them `external` (Compose skips the ownership check on external volumes) and the installer creates them up front. **Nothing is deleted** — the zvec index and the HF cache survive a docker ↔ native switch.
+- **`mongorestore … key too large to index` on `looma.dictionary`**: a pre-existing data issue (a dictionary key exceeds WiredTiger's 1024-byte index limit). Only that one index fails — **the documents are restored** and the install continues, which is why it is a `[warn]`.
 - **The board resets during TTS**: the CPU-frequency cap isn't in effect. Re-run with `--cpu-max-freq 1500000` (the default), and confirm `looma.service` / `looma-cpu-cap.service` is enabled.
 - **Host OOM / instability**: observability is off by default; if you turned it on, stop the obs stack: `cd /var/www/html/Looma/observability && docker compose -f docker-compose.yml -f docker-compose.odroid.yml down`.
 - **zvec too heavy**: stop `looma-search` — Looma still serves content, just without semantic search.

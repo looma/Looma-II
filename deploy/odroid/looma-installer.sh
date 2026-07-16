@@ -38,6 +38,22 @@ SRC_ROOT="$(cd "$SRC_REPO/.." && pwd)"          # disk root (content/ maps2018/ 
 REPO_NAME="$(basename "$SRC_REPO")"
 OBS_DIR="$SRC_REPO/observability"
 
+# Step off the caller's working directory onto one that always exists.
+#
+# The install disk is USB, and `sudo` hands us the invoking shell's CWD. When that
+# CWD is on a disk whose mount went stale (a USB dropout — this board browns out
+# under load, see CPU_MAX_FREQ — or a re-mount), the directory still "exists" for
+# the shell but getcwd() fails, and then:
+#   * every forked command prints
+#       job-working-directory: error retrieving current directory: getcwd: ...
+#   * rsync REFUSES to run at all: "rsync: getcwd(): Input/output error (5)",
+#     which killed the install mid-copy.
+# Nothing below needs the caller's CWD — SCRIPT_PATH/SRC_REPO are resolved above and
+# every other path in this script is absolute — so an unreadable CWD must never be
+# able to stop an install. This has to come AFTER the resolution above: a relative
+# invocation (`./looma-installer.sh`) still needs the original CWD to find itself.
+cd / 2>/dev/null || true
+
 # Offline payload directories (data only — produced by `build-bundle`). They live
 # next to this script by default, i.e. ON THE DISK; --bundle-dir puts them anywhere
 # else, which is what you need when the disk is mounted read-only.
@@ -444,13 +460,24 @@ services:
     command: ["python", "scripts/looma_server.py", "--host", "0.0.0.0", "--port", "8089"]
     restart: unless-stopped
 
+# These three are SHARED with the Docker app stack (docker-compose.yml), which
+# declares them under its own project. `external: true` makes Compose skip the
+# ownership check entirely instead of warning
+#   volume "looma_ai_data" already exists but was created for project "looma"
+#   (expected "looma-native"). Use external: true to use an existing volume
+# on every docker <-> native switch — and it keeps the zvec index and the HF cache
+# INSTEAD of throwing them away. `external` also means Compose never creates them,
+# so the installer does (ensure_shared_volumes) before it brings this file up.
 volumes:
   looma_search_index:
     name: looma_search_index
+    external: true
   looma_search_hf:
     name: looma_search_hf
+    external: true
   looma_ai_data:
     name: looma_ai_data
+    external: true
 EOF
 }
 
@@ -998,9 +1025,30 @@ resolve_obs_endpoints() {
   fi
 }
 
+# The disk IS the installer, so it has to be readable before we touch the box. A USB
+# dropout or a stale mount is not hypothetical here — the board browns out under load
+# (see CPU_MAX_FREQ) and takes the disk with it. Catch it NOW, with the recovery
+# spelled out, instead of half-way through the rsync that copies the repo in.
+check_source_readable() {
+  local mp
+  if ls "$SRC_REPO" >/dev/null 2>&1 && [ -r "$SCRIPT_PATH" ]; then return 0; fi
+  mp="$(df -P "$SRC_REPO" 2>/dev/null | awk 'NR==2{print $6}' || true)"
+  die "cannot read the Looma repo on the install disk:
+    $SRC_REPO
+  The disk is unreadable or its mount went stale (a USB dropout). This is the same
+  fault behind 'getcwd: cannot access parent directories: Input/output error' and
+  'rsync: getcwd(): Input/output error (5)'. Recover the disk, then re-run:
+      cd /                                   # step off the dead directory first
+      sudo umount -l '${mp:-<mountpoint>}' && sudo mount -a   # or just re-plug the disk
+      dmesg | tail -30                       # USB resets / I/O errors show up here
+  If dmesg shows repeated resets, use another USB port (or a powered hub): this
+  board browns out under load and drops the bus."
+}
+
 preflight() {
   [ "$(id -u)" -eq 0 ] || die "run as root: sudo $0 ${1:-}"
   id "$TARGET_USER" >/dev/null 2>&1 || die "user '$TARGET_USER' does not exist (use --user)"
+  check_source_readable
   [ -d "$SRC_ROOT/content" ] || die "no content/ next to the repo at $SRC_ROOT"
   # Running the INSTALLED copy would rsync $WWW/Looma onto itself with --delete.
   [ "$SRC_REPO" != "$WWW/$REPO_NAME" ] || \
@@ -1203,6 +1251,63 @@ disable_foreign_browser_autostarts() {
   done
 }
 
+# The compose project name the DOCKER app stack runs under. Compose derives it from
+# the project directory ($WWW/$REPO_NAME -> "Looma" -> "looma") and stamps it onto
+# every volume it creates, so we have to derive it the same way to tell OUR volumes
+# from another project's.
+app_project_name() {
+  printf '%s' "$REPO_NAME" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9_-'
+}
+
+# Container names are GLOBAL to the Docker daemon, but a compose project only ever
+# adopts the containers IT created. One left by ANOTHER project — the Docker stack's
+# looma-ai vs the native sidecars' looma-ai, or anything from a hand-run
+# `docker compose up` — is a hard, install-killing
+#   Conflict. The container name "/looma-ai" is already in use by container "…"
+# Re-running the installer means "install it again, whatever is on this box", so
+# take the name back. Only containers belonging to a DIFFERENT project are removed:
+# our own are left for compose to adopt/recreate, which matters for looma-db (it
+# keeps Mongo in its writable layer, with no volume behind it).
+remove_conflicting_containers() {
+  command -v docker >/dev/null 2>&1 || return 0
+  local want="$1"; shift
+  local c owner
+  for c in "$@"; do
+    docker container inspect "$c" >/dev/null 2>&1 || continue
+    # `{{ if .Config.Labels }}`: an unlabelled container has a nil map, which `index`
+    # alone would choke on — guard it so this reports "" instead of erroring.
+    owner="$(docker container inspect \
+      --format '{{ if .Config.Labels }}{{ index .Config.Labels "com.docker.compose.project" }}{{ end }}' \
+      "$c" 2>/dev/null || true)"
+    [ "$owner" = "$want" ] && continue          # ours — compose recreates it itself
+    if docker rm -f "$c" >/dev/null 2>&1; then
+      log "  removed the container $c (compose project '${owner:-none}') — it held a name this install needs"
+    else
+      warn "  could not remove the container $c — remove it by hand: docker rm -f $c"
+    fi
+  done
+}
+
+# looma_search_index / looma_search_hf / looma_ai_data are shared by BOTH deployments
+# under the same fixed names. The native template declares them `external` (Compose
+# skips every ownership check on an external volume, which is what silences the
+#   volume "looma_ai_data" already exists but was created for project "looma"
+#   (expected "looma-native"). Use external: true to use an existing volume
+# warnings) — but `external` also means Compose will NOT create them, so a box that
+# has never run the Docker stack needs them to exist first. Creating them empty is
+# safe: Docker seeds an empty named volume from the image's own content on first
+# mount, so the baked HF model still lands in /models/hf, offline included.
+ensure_shared_volumes() {
+  command -v docker >/dev/null 2>&1 || return 0
+  local v
+  for v in looma_search_index looma_search_hf looma_ai_data; do
+    docker volume inspect "$v" >/dev/null 2>&1 && continue
+    docker volume create "$v" >/dev/null 2>&1 \
+      && log "  created the shared volume $v" \
+      || warn "  could not create the volume $v"
+  done
+}
+
 disable_native_stack() {
   # A box that ran the native Looma keeps Apache/Mongo/Piper AND a browser
   # autostart — both must go, or they fight the containers and open a second
@@ -1215,6 +1320,16 @@ disable_native_stack() {
     fi
   done
 
+  # The native deployment ALSO runs zvec/Piper/looma-ai as CONTAINERS in their own
+  # compose project ("looma-native"), and those hold both the app's host ports and
+  # the container NAMES the Docker stack needs. Take the names back — the Docker
+  # stack recreates looma-search/looma-ai from its own compose file, and Piper is
+  # served from inside looma-web. Mirrors disable_docker_stack() the other way.
+  ( cd "$WWW/$REPO_NAME" 2>/dev/null && docker compose -f docker-compose.native.yml \
+      -p looma-native --profile ai down ) >/dev/null 2>&1 \
+    && log "  brought down the native sidecar containers" || true
+  remove_conflicting_containers "$(app_project_name)" looma-search looma-piper looma-ai
+
   disable_foreign_browser_autostarts
 
   warn "Docker MongoDB is restored from the disk's mongo-dump (latest) — DB changes made"
@@ -1226,9 +1341,17 @@ disable_native_stack() {
 # whatever containers are up. Both must go before the native Apache/Mongo take over,
 # or they fight for the same ports (80, 27017, 46333, 5002, 8089).
 disable_docker_stack() {
-  systemctl list-unit-files 2>/dev/null | grep -q '^looma\.service' || return 0
+  # NO early return on "is looma.service installed?" — it used to bail out here, and
+  # that was wrong: a stack started BY HAND (`docker compose up`, i.e. any aborted or
+  # exploratory install) leaves containers and volumes behind WITHOUT ever installing
+  # the unit. The teardown then silently did nothing and the leftover looma-ai/-search
+  # went on holding their names and ports, so the next install died with
+  #   Conflict. The container name "/looma-ai" is already in use
+  # Containers are the thing to look for, not the unit.
   log "disabling the Docker stack (looma.service + containers) so native takes over"
-  systemctl disable --now looma.service 2>/dev/null && log "  disabled looma.service" || true
+  if systemctl list-unit-files 2>/dev/null | grep -q '^looma\.service'; then
+    systemctl disable --now looma.service 2>/dev/null && log "  disabled looma.service" || true
+  fi
   if command -v docker >/dev/null 2>&1; then
     local repo_dest="$WWW/$REPO_NAME"
     ( cd "$repo_dest" 2>/dev/null && docker compose --profile ai down ) 2>/dev/null \
@@ -1324,6 +1447,12 @@ EOF
   docker network inspect loomanet >/dev/null 2>&1 || { log "creating loomanet"; docker network create loomanet; }
   docker volume inspect looma_apache_logs >/dev/null 2>&1 || docker volume create looma_apache_logs >/dev/null
 
+  # Belt and braces: take back any container name still held by ANOTHER project,
+  # even when the native heuristic above didn't fire (a box that only ever ran the
+  # sidecars, a half-finished switch, a hand-run `docker compose up`, …). A no-op
+  # once they are ours — compose adopts and recreates its own containers.
+  remove_conflicting_containers "$(app_project_name)" looma-search looma-piper looma-ai
+
   # 7) OFFLINE: load every image so compose finds them locally
   if [ "$OFFLINE" = "1" ]; then
     log "loading container images from the offline bundle (large — be patient)…"
@@ -1411,10 +1540,26 @@ native_sidecars_docker() {
   [ "$WITH_AI" = "1" ] && { svcs+=(looma-ai); profiles+=(--profile ai); }
   [ "$OFFLINE" = "1" ] && { build=(); pull=(--pull never); }
 
+  # A container from the DOCKER deployment (or from a hand-run `docker compose up`)
+  # still owning one of these names aborts the whole install with a name Conflict —
+  # compose never adopts another project's container. Take the names back, free the
+  # ports, and make sure the external shared volumes exist, BEFORE we build.
+  remove_conflicting_containers looma-native "${svcs[@]}"
+  ensure_shared_volumes
+
   log "building and starting: ${svcs[*]}  (the first ARM build is slow — be patient)"
-  ( cd "$repo_dest" && docker compose -f docker-compose.native.yml -p looma-native \
-      "${profiles[@]}" up -d "${build[@]}" "${pull[@]}" "${svcs[@]}" ) \
-    || die "the sidecar containers failed to start — check: docker compose -f $f -p looma-native logs"
+  if ! ( cd "$repo_dest" && docker compose -f docker-compose.native.yml -p looma-native \
+           "${profiles[@]}" up -d "${build[@]}" "${pull[@]}" "${svcs[@]}" ); then
+    # Re-running the installer means "install it again, no matter what is on this
+    # box": clear the two things that can still be in the way (a name we don't own,
+    # a squatted port) and try once more before giving up.
+    warn "the sidecars did not start — clearing what is in the way and retrying once"
+    remove_conflicting_containers looma-native "${svcs[@]}"
+    free_app_host_ports
+    ( cd "$repo_dest" && docker compose -f docker-compose.native.yml -p looma-native \
+        "${profiles[@]}" up -d "${build[@]}" "${pull[@]}" "${svcs[@]}" ) \
+      || die "the sidecar containers failed to start — check: docker compose -f $f -p looma-native logs"
+  fi
 
   # They restart with Docker on every boot (restart: unless-stopped), so there is no
   # systemd unit to install here.
@@ -1872,7 +2017,9 @@ free_app_host_ports() {
   #    recreates that container cleanly; killing its proxy would only confuse Docker.
   command -v fuser >/dev/null 2>&1 || return 0
   local port pid comm
-  for port in 46333 8089 47017 48080; do
+  # 5002 is the native sidecar Piper; the Docker stack serves Piper from inside
+  # looma-web and publishes nothing there, so listing it is a no-op for Docker.
+  for port in 46333 8089 47017 48080 5002; do
     for pid in $(fuser "${port}/tcp" 2>/dev/null); do
       comm="$(cat "/proc/$pid/comm" 2>/dev/null || true)"
       case "$comm" in
@@ -1919,6 +2066,12 @@ cmd_up() {
   # leftover native looma-search.service (Restart=always) is the usual reason
   # `docker compose up` fails with "address already in use" on 46333, over and over.
   free_app_host_ports
+  # …and that no OTHER compose project still owns a container name we need, which
+  # would fail with `Conflict. The container name "/looma-ai" is already in use`.
+  # Only foreign containers go; compose adopts and recreates its own. looma-db and
+  # looma-web are deliberately not listed — they are only ever ours, and looma-db
+  # keeps Mongo in its writable layer, so it must never be removed behind a boot.
+  remove_conflicting_containers "$(app_project_name)" looma-search looma-piper looma-ai
 
   # --- APP FIRST (the kiosk depends on looma-web :48080) ---
   echo "[looma-up] app…"

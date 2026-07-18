@@ -21,9 +21,8 @@ Description: editor for user-created history timelines.
     description, + optional Nepali). The description is what shows when an event is tapped in
     the viewer.
 
-    Reads/writes ONLY the 'user_histories' collection; the curated, read-only 'histories'
-    collection (the 11 approved timelines) is never touched. File-menu / save / load reuse
-    the Slideshow-editor patterns.
+    Reads/writes the 'histories' collection, alongside the curated approved timelines.
+    File-menu / save / load reuse the Slideshow-editor patterns.
 
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Revision: Looma 7.x
@@ -50,6 +49,7 @@ Revision: Looma 7.x
 
         <div id="toolbar-row">
             <button id="timeline-details-btn">&#9998; Timeline Details</button>
+            <button id="timeline-save-btn">Save</button>
             <button id="timelineLeft"  class="timelineScroll" title="Scroll left">&#8249;</button>
             <button id="timelineRight" class="timelineScroll" title="Scroll right">&#8250;</button>
             <span class="edit-hint">Tap a <b>&#43;</b> to add an event &bull; tap an event to edit it</span>

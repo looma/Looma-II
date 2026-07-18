@@ -466,9 +466,9 @@ require_once('includes/looma-utilities.php');
             $result = saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), $_REQUEST['ft'], $insert, $activitycollection);
             echo json_encode($result);
         }
-        else if ($collection == "user_histories") {
-            // admin-created timelines. Saved ONLY to the 'user_histories' collection -
-            // the curated, read-only 'histories' collection is never referenced here.
+        else if ($collection == "histories") {
+            // admin-created timelines. Saved to the 'histories' collection alongside
+            // the curated timelines.
             // Stored in the native history shape (title + events) so the read-only
             // viewer could render them, plus dn/ft so the File-menu Open/search works.
             $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));

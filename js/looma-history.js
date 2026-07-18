@@ -118,7 +118,10 @@ $(document).ready (function() {
 
             var target = $(e.target);   //The element that has been clicked
             var header = $(target).html();
-            var descrip = $(target).attr("data-msg");   // The description of an event pulled from the json with looma-history.php
+            // prefer the manual Nepali popup text when the toggle is set to native; fall back to English
+            var histLang = LOOMA.readStore('language', 'cookie');
+            var ndescrip = $(target).attr("data-nmsg");
+            var descrip = (histLang === 'native' && ndescrip) ? ndescrip : $(target).attr("data-msg");   // event description from looma-history.php
 
             // Defining the popup function--creates a function, inserts a description, and maybe ids if there are any
             var historypopup = function(msg, msgtitle, notTransparent){

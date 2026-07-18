@@ -8,6 +8,18 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
   <?php $page_title = 'Looma History Timeline';
 
     include ("includes/header.php");
+
+    // Returns bilingual span markup for the language toggle. CSS + LOOMA.translate()
+    // show either the .english or .native span based on the 'language' cookie.
+    // Falls back to the English string when the manual Nepali translation is empty,
+    // so the Nepali view never renders blank. Does NOT machine-translate anything.
+    if (!function_exists('bilingualHist')) {
+        function bilingualHist($en, $np) {
+            $en = (string) $en;
+            $np = ($np === null || $np === '') ? $en : (string) $np;
+            return "<span class='english'>" . $en . "</span><span class='native'>" . $np . "</span>";
+        }
+    }
   ?>
 
     <link href='css/looma-history.css' rel='stylesheet' type='text/css'>
@@ -63,7 +75,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
         <button class="returnToLeftmost">   <img src="images/reverse-double-arrow.png">   </button>
 
         <?php
-            echo "<h1>"; bilingual($title,$ndn); echo "</h1>";
+            echo "<h1>" . bilingualHist($title, $ndn) . "</h1>";
             echo '<div id="playground">';
             echo '<section class ="timeline">';
             echo '<ol>';
@@ -74,8 +86,12 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
                   $id1 = "";
                   $id2 = "";
 
-                   if(isset($event['popup'][0]))
+                   if(isset($event['popup'][0])) {
                         $msg = 'data-msg=' .  $event['popup'][0] ;
+                        // manual Nepali popup text; JS falls back to data-msg when absent
+                        if(isset($event['npopup'][0]) && $event['npopup'][0] !== '')
+                             $msg .= ' data-nmsg=' . $event['npopup'][0];
+                   }
 
                   if(isset($event['popup'][1]))
                         $id1 = 'data-id1=' . $event['popup'][1];
@@ -93,9 +109,9 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
 
                        <div class="dropdown" style="float:">'; // edited out
 
-                   echo '<button class="dropbtn"' .  " " . $id1 . " " . $id2 . " " . $msg . '>' .  $event['title'] . '</button>';
+                   echo '<button class="dropbtn"' .  " " . $id1 . " " . $id2 . " " . $msg . '>' .  bilingualHist($event['title'], isset($event['ndn']) ? $event['ndn'] : '') . '</button>';
 
-                   echo '<button class="dropdate">' . $event['date'] . '</button>'; //dropbtn before dropdate so dropbtn is on top
+                   echo '<button class="dropdate">' . bilingualHist($event['date'], isset($event['ndate']) ? $event['ndate'] : '') . '</button>'; //dropbtn before dropdate so dropbtn is on top
 
                        '</div>
 
@@ -110,8 +126,8 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
 
                        <div class="dropdown" style="float:">'; // edited out
 
-                       echo '<button class="dropdate">' . $event['date'] . '</button>';
-                       echo '<button class="dropbtn"' . " " . $id1 . " " . $id2 . " " . $msg . '>' . $event['title'] . '</button>';
+                       echo '<button class="dropdate">' . bilingualHist($event['date'], isset($event['ndate']) ? $event['ndate'] : '') . '</button>';
+                       echo '<button class="dropbtn"' . " " . $id1 . " " . $id2 . " " . $msg . '>' . bilingualHist($event['title'], isset($event['ndn']) ? $event['ndn'] : '') . '</button>';
 
                        '</div>
                    </li>';

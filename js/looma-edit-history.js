@@ -8,13 +8,13 @@ Description: editor for user-created history timelines.
     above/below). Tap a "+" insert slot to add an event, or tap an event to edit it in
     the Event modal (title, date, description, + optional Nepali). No linked activities.
 
-    Data model (in the 'user_histories' collection):
+    Data model (in the 'histories' collection):
         { dn, ft:'history', title, ndn, thumb, events:[ event, ... ] }
     each event:
         { title, date, popup:[description], ndn?, ndate?, npopup:[nepaliDescription]? }
 
-    IMPORTANT: reads/writes ONLY the 'user_histories' collection. The curated, read-only
-    'histories' collection (the 11 approved timelines) is never referenced.
+    IMPORTANT: reads/writes the 'histories' collection, alongside the curated
+    approved timelines.
 
 Owner: VillageTech Solutions (villagetechsolutions.org)
 Revision: Looma 7.x
@@ -244,7 +244,7 @@ function editor_save(name) {
 
     $.post("looma-database-utilities.php", {
         cmd:        "save",
-        collection: "user_histories",
+        collection: "histories",
         db:         currentDB,
         ft:         "history",
         activity:   "false",          // NOT indexed as an activity (stays out of library search)
@@ -297,9 +297,9 @@ $(document).ready(function() {
     loginlevel = LOOMA.readCookie('login-level');
     loginteam  = LOOMA.readCookie('login-team');
 
-    // File commands operate on the user_histories collection ONLY
+    // File commands operate on the histories collection ONLY
     currentname       = "";
-    currentcollection = "user_histories";
+    currentcollection = "histories";
     currentfiletype   = "history";
     currentDB         = 'loomalocal';
 
@@ -323,6 +323,9 @@ $(document).ready(function() {
 
     // --- timeline modal ---
     $('#timeline-details-btn').on('click', openTimelineModal);
+    $('#timeline-save-btn').on('click', function() {
+        savework(currentname, currentcollection, currentfiletype);
+    });
     $('#tl-done').on('click', saveTimelineModal);
     $('#tl-choose-image').on('click', function() { $('#tl-cover-file').click(); });
     $('#tl-cover-file').on('change', function() {

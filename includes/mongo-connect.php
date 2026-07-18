@@ -321,7 +321,6 @@ $TG_collection  = $loomaDB -> TG;
 $dictionary_collection = $loomaDB -> dictionary;
 $history_collection    = $loomaDB -> histories;
 $histories_collection  = $loomaDB -> histories;
-$user_histories_collection = $loomaDB -> user_histories;  // admin-created timelines (separate from the curated, read-only 'histories')
 $slideshows_collection = $loomaDB -> slideshows;
 $text_files_collection = $loomaDB -> text_files;
 $lessons_collection    = $loomaDB -> lessons;
@@ -363,7 +362,6 @@ $collections = array(
     "maps" =>          $maps_collection,
     "history" =>       $histories_collection,
     "histories" =>     $histories_collection,
-    "user_histories" => $user_histories_collection,
     "game" =>          $games_collection,
     "games" =>         $games_collection,
     "edited_videos" => $edited_videos_collection,
@@ -389,7 +387,7 @@ $local_lessons_collection     = $localdbname -> lessons;
 $local_slideshows_collection     = $localdbname -> slideshows;
 $local_textfiles_collection     = $localdbname -> text_files;
 $local_activities_collection  = $localdbname -> activities;
-$local_user_histories_collection = $localdbname -> user_histories;
+$local_histories_collection       = $localdbname -> histories;
 
 $localcollections = array(
     "lessons" =>    $local_lessons_collection,
@@ -397,7 +395,7 @@ $localcollections = array(
     "text_files" =>    $local_textfiles_collection,
     "text" =>    $local_textfiles_collection,
     "activities" => $local_activities_collection,
-    "user_histories" => $local_user_histories_collection
+    "histories" => $local_histories_collection
 );
 
 $logcollections = array(

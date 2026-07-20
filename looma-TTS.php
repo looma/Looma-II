@@ -1,98 +1,246 @@
 <?php
 /*
-	Author: Akshay Srivatsan
-	Date: July 8, 2016
-    UPdated: JUN 2025, by Skip
-    extended JUN 2025 by Skip - add piper engine for Nepali speech
+    Author: Akshay Srivatsan
+    Date: July 8, 2016
+    Updated: MAR 2026 for Piper-over-Flask integration
 
-	Notes: Make sure "piper" or "mimic" []https://github.com/MycroftAI/mimic] has been installed
-        on the Looma server and
-        that the voices have been copied to /var/www/html/Looma/voices/piper/
- *
-    IMPORTANT: make sure the binary for piper [check "which piper"] is in the $PATH of the webserver process
-               usually, put the piper binary in /usr/local/bin
- *
-    Usage: looma-TTS.php?text=TEXT&voice=VOICE&engine=ENGINE&lang=LANGUAGE&rate=RATE  [URLencode the parameter text strings]
-        TEXT = the (English) text to convert to audio
-        VOICE = the voice to speak with
-        ENGINE = "piper" (or "mimic" [legacy])
-        LANG = 'np' or 'en'
-        RATE = speed relative to 1=normal rate
+    Usage:
+        looma-TTS.php?text=TEXT&voice=VOICE&engine=ENGINE&lang=LANGUAGE&rate=RATE
 
-    The client side may break up a long text into multiple short texts
-    and then call this server page for each
-    If multiple phrases are submitted, this server page could be called
-    more than once per second.Adding the random number will ensure a unique filename.
+    This file keeps the existing Looma frontend contract, but delegates synthesis
+    to the local Flask server that wraps Piper.
 */
 
-$text =   (isset($_REQUEST['text']) && $_REQUEST['text'] != "")   ? htmlentities($_REQUEST["text"]) : null;
-//if ($text === null) return;
-
-$voice =   ( isset($_REQUEST['voice'])  && $_REQUEST['voice']  != "undefined") ? $_REQUEST["voice"] : null;
-$engine =  ( isset($_REQUEST['engine']) && $_REQUEST['engine'] != "undefined") ? $_REQUEST["engine"] : null;
-
-if      ( ! $engine && exec('which piper')) $engine = 'piper';
-else if ( ! $engine && exec('which mimic')) $engine = 'mimic';
-//else return;
-
-// RATE parameter sets speaking rate ( rate > 1 means FASTER)
-// default RATE for Looma is 2/3 - speak slower so Nepali
-// students can understand easier
-$rate =  ( isset($_REQUEST['rate']) && $_REQUEST['rate'] != "undefined")   ? $_REQUEST['rate'] : 2/3;
-$speed = 1/$rate;
-
-// detecting devanagari is now done in looma-utilities.js LOOMA.speak()
-if (preg_match('/\p{Devanagari}/u', $text))
-    $lang = 'np';
-else $lang = 'en';
-
-date_default_timezone_set("UTC");
-$date = new DateTime();
-
-$outputFileName = "/tmp/website.looma.tts.speak." . $date->getTimestamp() . "_" . mt_rand() . ".wav";
-if (file_exists($outputFileName)) // IF we get conflicting filenames, generate a different filename
-{ $outputFileName = "/tmp/website.looma.tts.speak." . $date->getTimestamp() . "_" . mt_rand() . "_" . mt_rand() . ".wav";}
-
-//echo "in TTS.php, engine is $engine, text is $text,  voice is $voice, speed is $speed"; //return;
-
-if ($engine === 'piper') {
-    if ( ! exec('which piper')) return;
-    if ($lang === "np") $voice = "ne_NP-google-medium.onnx";
-    else                $voice = "en_US-amy-medium.onnx";
-    $command = "echo  "  .  escapeshellarg($text)  . " | piper " .
-        " --model ../voices/piper/usr/share/piper/$voice " .
-        " --length_scale $speed" .
-        " --output_file $outputFileName";  // move voices to inside ../Looma ???
-
-} else if ($engine === 'mimic') {
-    //echo "in mimic";
-    if (empty($voice)) {
-        // Good mimic voices: cmu_us_bdl (male), cmu_us_jmk (male),
-        //              cmu_us_ljm (female), cmu_us_aup (male), mycroft_voice_4.0 (male)
-        $voice = "cmu_us_aup";
-    }
-
-    if ($lang === 'np') $text = "";
-
-    $voiceDir = "../voices/";
-    $voiceFile = $voiceDir . $voice . ".flitevox";
-
-    $mimicCommand = exec("which mimic");
-    $command = "$mimicCommand -t " .
-        escapeshellarg($text) .
-        " --setf duration_stretch=" . (string) $speed .  // to slow down to 2/3 rate, we stretch to 1.5
-        "  -voice " . escapeshellarg($voiceFile) .
-        "  -o " . $outputFileName;
-} else if ($engine === 'espeak') {
-    }
-else return;
-
 header("Access-Control-Allow-Origin: *");
-header("Content-Type: audio/wav");
 
-// execute the shell command to convert 'text' to voice and create a .wav file in /tmp
-exec($command);
-// send the .wav file to the client
-readfile($outputFileName);           // play the wave file to the client side
-unlink($outputFileName);             // delete the wave file
+// Optional OpenTelemetry spans + trace propagation (no-op if disabled).
+require_once(__DIR__ . "/includes/otel.php");
+
+if (function_exists('looma_trace_page')) {
+    looma_trace_page('tts', [
+        'engine' => $_REQUEST['engine'] ?? null,
+        'voice'  => $_REQUEST['voice']  ?? null,
+        'lang'   => $_REQUEST['lang']   ?? null,
+        'rate'   => $_REQUEST['rate']   ?? null,
+        'len'    => isset($_REQUEST['text']) ? strlen((string)$_REQUEST['text']) : 0,
+    ]);
+}
+
+$text = isset($_REQUEST["text"]) ? trim((string) $_REQUEST["text"]) : "";
+if ($text === "") {
+    http_response_code(400);
+    header("Content-Type: application/json");
+    echo json_encode(["error" => "Missing text"]);
+    exit;
+}
+
+// Piper is the ONLY TTS engine now (local, offline, all languages). The Mimic
+// branch and the browser-speechSynthesis / ResponsiveVoice engines were removed
+// so Looma speaks without any internet access. Any `engine` parameter is ignored.
+$engine = "piper";
+
+$requestedLang = isset($_REQUEST["lang"]) ? strtolower(trim((string) $_REQUEST["lang"])) : "";
+
+// Looma sometimes sends "english"/"native" rather than "en"/"ne".
+if ($requestedLang === "english" || $requestedLang === "en") {
+    $language = "en";
+} else if ($requestedLang === "native" || $requestedLang === "ne" || $requestedLang === "np") {
+    $language = "ne";
+} else if (preg_match('/\p{Devanagari}/u', $text)) {
+    $language = "ne";
+} else {
+    $language = "en";
+}
+
+$ttsRequest = [
+    "text" => $text,
+    "language" => $language,
+];
+
+// Reading speed. The frontend sends a Looma "rate" (rate > 1 is faster); the
+// Piper server converts it to a length_scale. This used to be read only for the
+// trace attributes above and never forwarded, so the speed chosen on the
+// Reading Settings page had no effect on Piper at all.
+if (isset($_REQUEST["rate"]) && is_numeric($_REQUEST["rate"])) {
+    $rate = (float) $_REQUEST["rate"];
+    if ($rate > 0 && $rate <= 2) {
+        $ttsRequest["rate"] = $rate;
+    }
+}
+
+// An explicit Piper voice model (sent by the TTS test page) overrides the
+// server's language-based default. Only forward a safe model filename.
+$requestedVoice = isset($_REQUEST["voice"]) ? trim((string) $_REQUEST["voice"]) : "";
+if ($requestedVoice !== "" && preg_match('/^[A-Za-z0-9_.-]+$/', $requestedVoice)) {
+    $ttsRequest["voice"] = $requestedVoice;
+}
+
+$payload = json_encode($ttsRequest, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+if ($payload === false) {
+    http_response_code(500);
+    header("Content-Type: application/json");
+    echo json_encode(["error" => "Failed to encode TTS request"]);
+    exit;
+}
+
+$ttsUrl = "http://127.0.0.1:5002/tts";
+$healthUrl = "http://127.0.0.1:5002/health";
+
+// Prefer curl when available because it gives us response headers/status cleanly.
+if (function_exists("curl_init")) {
+    $piperSpan = looma_otel_start_span(
+        "tts.piper",
+        [
+            "tts.engine" => "piper",
+            "tts.language" => $language,
+            "tts.text_chars" => strlen($text),
+            "url.full" => $ttsUrl,
+            "http.request.method" => "POST",
+        ],
+        3 // CLIENT
+    );
+    $traceparent = looma_otel_traceparent_for_span($piperSpan);
+
+    $httpHeaders = [
+        "Content-Type: application/json",
+        "Content-Length: " . strlen($payload),
+    ];
+    if ($traceparent) {
+        $httpHeaders[] = "traceparent: " . $traceparent;
+    }
+
+    $ch = curl_init($ttsUrl);
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => $httpHeaders,
+        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_CONNECTTIMEOUT => 3,
+        CURLOPT_TIMEOUT => 120,
+        CURLOPT_HEADER => true,
+    ]);
+
+    $t0 = microtime(true);
+    $response = curl_exec($ch);
+    $curlError = curl_error($ch);
+    $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $headerSize = (int) curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+    curl_close($ch);
+
+    looma_otel_end_span(
+        $piperSpan,
+        [
+            "http.response.status_code" => $httpCode,
+            "tts.duration_ms" => (int) round((microtime(true) - $t0) * 1000),
+            "error.message" => $curlError ? (string) $curlError : "",
+        ],
+        ($response === false || $httpCode >= 500) ? 2 : 0
+    );
+
+    if ($response === false) {
+        http_response_code(502);
+        header("Content-Type: application/json");
+        echo json_encode([
+            "error" => "Unable to contact Piper server",
+            "details" => $curlError,
+            "server" => $healthUrl,
+        ]);
+        exit;
+    }
+
+    $rawHeaders = substr($response, 0, $headerSize);
+    $body = substr($response, $headerSize);
+    $contentType = "audio/wav";
+
+    foreach (explode("\r\n", $rawHeaders) as $headerLine) {
+        if (stripos($headerLine, "Content-Type:") === 0) {
+            $contentType = trim(substr($headerLine, strlen("Content-Type:")));
+            break;
+        }
+    }
+
+    http_response_code($httpCode > 0 ? $httpCode : 200);
+    header("Content-Type: " . $contentType);
+    echo $body;
+    exit;
+}
+
+// Fallback when the curl extension is not enabled.
+$piperSpan = looma_otel_start_span(
+    "tts.piper",
+    [
+        "tts.engine" => "piper",
+        "tts.language" => $language,
+        "tts.text_chars" => strlen($text),
+        "url.full" => $ttsUrl,
+        "http.request.method" => "POST",
+    ],
+    3 // CLIENT
+);
+$traceparent = looma_otel_traceparent_for_span($piperSpan);
+
+$headerLines = [
+    "Content-Type: application/json",
+    "Content-Length: " . strlen($payload),
+];
+if ($traceparent) {
+    $headerLines[] = "traceparent: " . $traceparent;
+}
+
+$context = stream_context_create([
+    "http" => [
+        "method" => "POST",
+        "header" => implode("\r\n", $headerLines),
+        "content" => $payload,
+        "timeout" => 120,
+        "ignore_errors" => true,
+    ],
+]);
+
+$t0 = microtime(true);
+$response = @file_get_contents($ttsUrl, false, $context);
+if ($response === false) {
+    looma_otel_end_span(
+        $piperSpan,
+        [
+            "http.response.status_code" => 0,
+            "tts.duration_ms" => (int) round((microtime(true) - $t0) * 1000),
+        ],
+        2
+    );
+    http_response_code(502);
+    header("Content-Type: application/json");
+    echo json_encode([
+        "error" => "Unable to contact Piper server",
+        "server" => $healthUrl,
+    ]);
+    exit;
+}
+
+$contentType = "audio/wav";
+$statusCode = 200;
+
+if (isset($http_response_header) && is_array($http_response_header)) {
+    foreach ($http_response_header as $headerLine) {
+        if (preg_match('#^HTTP/\S+\s+(\d{3})#', $headerLine, $matches)) {
+            $statusCode = (int) $matches[1];
+        } else if (stripos($headerLine, "Content-Type:") === 0) {
+            $contentType = trim(substr($headerLine, strlen("Content-Type:")));
+        }
+    }
+}
+
+looma_otel_end_span(
+    $piperSpan,
+    [
+        "http.response.status_code" => $statusCode,
+        "tts.duration_ms" => (int) round((microtime(true) - $t0) * 1000),
+    ],
+    ($statusCode >= 500) ? 2 : 0
+);
+
+http_response_code($statusCode);
+header("Content-Type: " . $contentType);
+echo $response;
 ?>

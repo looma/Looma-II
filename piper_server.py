@@ -64,6 +64,28 @@ DEFAULT_VOICE_EN = os.environ.get("LOOMA_PIPER_VOICE_EN", "en_US-amy-low.onnx")
 DEFAULT_VOICE_NE = os.environ.get("LOOMA_PIPER_VOICE_NE", "ne_NP-google-x_low.onnx")
 
 
+# Looma sends a *rate* (rate > 1 is faster, default 2/3 = deliberately slower
+# than natural for Nepali classrooms). Piper instead takes a *length_scale*,
+# where LARGER is SLOWER — so the two are reciprocal. Without this Piper ran at
+# its built-in length_scale of 1.0, which is why it sounded rushed and why the
+# speed chosen on the Reading Settings page had no audible effect.
+DEFAULT_RATE = float(os.environ.get("LOOMA_PIPER_DEFAULT_RATE", "0.6667"))
+MIN_LENGTH_SCALE = 0.5   # ~2x faster than natural
+MAX_LENGTH_SCALE = 3.0   # ~3x slower than natural
+
+
+def _length_scale_for(rate) -> str:
+    try:
+        rate = float(rate)
+    except (TypeError, ValueError):
+        rate = DEFAULT_RATE
+    if not (0 < rate <= 2):
+        rate = DEFAULT_RATE
+    scale = 1.0 / rate
+    scale = max(MIN_LENGTH_SCALE, min(MAX_LENGTH_SCALE, scale))
+    return f"{scale:.3f}"
+
+
 def _pick_voice(language: str) -> str:
     lang = (language or "").strip().lower()
     if lang in {"ne", "np", "native", "nep", "nepali"}:
@@ -106,6 +128,7 @@ def tts():
 
     language = (payload.get("language") or "").strip()
     voice = (payload.get("voice") or "").strip() or _pick_voice(language)
+    length_scale = _length_scale_for(payload.get("rate"))
     model_path = _resolve_model(voice)
 
     if not model_path.exists():
@@ -135,11 +158,17 @@ def tts():
                 span.set_attribute("piper.model_path", str(model_path))
                 span.set_attribute("piper.text_chars", len(text))
                 span.set_attribute("piper.language", language or "")
+                span.set_attribute("piper.length_scale", length_scale)
             except Exception:
                 pass
             t0 = time.time()
             proc = subprocess.run(
-                [PIPER_BIN, "--model", str(model_path), "--output_file", str(tmp_path)],
+                [
+                    PIPER_BIN,
+                    "--model", str(model_path),
+                    "--length_scale", length_scale,
+                    "--output_file", str(tmp_path),
+                ],
                 input=text,
                 text=True,
                 capture_output=True,

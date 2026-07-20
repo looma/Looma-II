@@ -1268,6 +1268,69 @@ app_project_name() {
 # take the name back. Only containers belonging to a DIFFERENT project are removed:
 # our own are left for compose to adopt/recreate, which matters for looma-db (it
 # keeps Mongo in its writable layer, with no volume behind it).
+# Is a TCP port free? ss first (iproute2, always on Ubuntu), then fuser/lsof.
+port_free() {
+  local p="$1"
+  if command -v ss >/dev/null 2>&1; then
+    ss -ltnH "sport = :$p" 2>/dev/null | grep -q . && return 1 || return 0
+  elif command -v fuser >/dev/null 2>&1; then
+    fuser "$p/tcp" >/dev/null 2>&1 && return 1 || return 0
+  fi
+  return 0                                   # cannot tell — let Docker decide
+}
+
+port_holder() {                              # what is sitting on the port
+  local p="$1" h=""
+  command -v ss >/dev/null 2>&1 && \
+    h="$(ss -ltnpH "sport = :$p" 2>/dev/null | sed -n 's/.*users:((\(.*\))).*/\1/p' | head -1 || true)"
+  printf '%s' "$h"
+}
+
+# Make sure the ports this install needs are actually free BEFORE compose tries to
+# bind them — otherwise the stack dies with Docker's cryptic
+#   failed to bind host port for 0.0.0.0:46333: address already in use
+# The usual culprit is the OTHER deployment: the native install runs zvec/Piper as
+# host-networked containers (and optionally systemd units) on these very ports.
+# Anything of OURS is removed; anything foreign is named, so you know what to stop.
+free_required_ports() {
+  local project="$1"; shift
+  local p c owner unit holder
+
+  # 1) Leftover looma-* containers from any OTHER compose project (or started by
+  #    hand). Volumes are untouched, so no data is lost — compose recreates them.
+  if command -v docker >/dev/null 2>&1; then
+    for c in $(docker ps -a --format '{{.Names}}' 2>/dev/null | grep -E '^looma-' || true); do
+      owner="$(docker container inspect \
+        --format '{{ if .Config.Labels }}{{ index .Config.Labels "com.docker.compose.project" }}{{ end }}' \
+        "$c" 2>/dev/null || true)"
+      [ "$owner" = "$project" ] && continue   # ours — compose handles it
+      docker rm -f "$c" >/dev/null 2>&1 \
+        && log "  removed the leftover container $c (compose project '${owner:-none}')" || true
+    done
+  fi
+
+  # 2) Host services of ours that bind the same ports.
+  for p in "$@"; do
+    port_free "$p" && continue
+    for unit in looma-search looma-piper looma-ai piper; do
+      systemctl is-active --quiet "${unit}.service" 2>/dev/null || continue
+      systemctl disable --now "${unit}.service" >/dev/null 2>&1 \
+        && log "  stopped ${unit}.service — it was holding port $p" || true
+    done
+  done
+
+  # 3) Still taken? Say by what, instead of letting Docker fail obscurely.
+  for p in "$@"; do
+    port_free "$p" && continue
+    holder="$(port_holder "$p")"
+    die "port $p is already in use by ${holder:-an unknown process}.
+  Looma needs it. Find it and stop it:
+      sudo ss -ltnp 'sport = :$p'
+      docker ps -a          # if it is a container, 'docker rm -f <name>'
+  Then run this installer again."
+  done
+}
+
 remove_conflicting_containers() {
   command -v docker >/dev/null 2>&1 || return 0
   local want="$1"; shift
@@ -1402,15 +1465,23 @@ install_deploy_docker() {
   make_swap
   check_space
 
-  # 3) Copy everything into the install root.
-  # 3a) siblings + root files (incl. .dockerignore, which keeps the 80 GB content/
+  # 3) Take over from a native install FIRST — before the copy below. 3b) runs
+  #    `rsync --delete`, which DELETES $WWW/$REPO_NAME/docker-compose.native.yml
+  #    (that file is generated on the box, so it is not in the source). Tearing the
+  #    sidecars down afterwards then silently did nothing — compose had no file to
+  #    read — and the surviving looma-search kept port 46333, so the stack died with
+  #    "failed to bind host port for 0.0.0.0:46333: address already in use".
+  [ "$native" = "1" ] && disable_native_stack
+
+  # 4) Copy everything into the install root.
+  # 4a) siblings + root files (incl. .dockerignore, which keeps the 80 GB content/
   #     out of the build context); content and the repo are handled separately.
   log "copying project files -> $WWW (maps2018, piper, includes, .dockerignore …)"
   rsync -a \
     --exclude 'content/' --exclude "$REPO_NAME/" --exclude 'looma-env/' --exclude '.claude/' \
     --exclude '**/.git/' --exclude '**/.venv/' --exclude '**/__pycache__/' --exclude '**/node_modules/' \
     "$SRC_ROOT/" "$WWW/"
-  # 3b) the repo (clean update of the code). The offline payload is read straight
+  # 4b) the repo (clean update of the code). The offline payload is read straight
   #     from the disk during this install, so don't duplicate those GBs onto the box.
   log "copying repo -> $repo_dest"
   rsync -a --delete \
@@ -1418,12 +1489,9 @@ install_deploy_docker() {
     --exclude 'deploy/odroid/offline/' --exclude 'deploy/odroid/native-bundle/' \
     "$SRC_REPO/" "$repo_dest/"
   chmod +x "$repo_dest/deploy/odroid/looma-installer.sh" 2>/dev/null || true
-  # 3c) content
+  # 4c) content
   copy_content
   [ -d "$epaath_dir" ] || epaath_dir="$content_dir/ePaath"   # fall back to the capitalised name
-
-  # 4) Take over from a native install, if there was one
-  [ "$native" = "1" ] && disable_native_stack
 
   # 5) Options for `up` / systemd
   log "writing /etc/looma-odroid.env"
@@ -1460,7 +1528,12 @@ EOF
     log "loaded images:"; docker images --format '  {{.Repository}}:{{.Tag}}' | sort -u | sed -n '1,40p'
   fi
 
-  # 8) Build + start. Online: --build so a re-install picks up Dockerfile changes.
+  # 8) Free the ports first — a leftover from the other deployment binding 46333/
+  #    48080/8089 is what turns a re-install into "address already in use".
+  log "checking that the ports Looma needs are free"
+  free_required_ports "$(app_project_name)" 48080 47017 46333 8089
+
+  # 9) Build + start. Online: --build so a re-install picks up Dockerfile changes.
   #    Offline: no build, no pull — `up` adds --pull never (OFFLINE in the env file).
   if [ "$OFFLINE" = "1" ]; then
     log "starting Looma from the pre-loaded images (offline; no build, no pull)…"
@@ -2011,7 +2084,26 @@ free_app_host_ports() {
     fi
   done
 
-  # 2) Belt and braces: a NON-Docker process still holding one of the ports (e.g. a
+  # 2) A container from the OTHER deployment holding one of these ports. The native
+  #    install runs looma-search/looma-piper/looma-ai in the `looma-native` project
+  #    with host networking, so the port's holder is docker-proxy/dockerd and step 3
+  #    below deliberately leaves those alone — which is why this used to loop
+  #    forever on "address already in use". Remove the container itself instead;
+  #    only containers NOT in our own project are touched, and volumes survive.
+  if command -v docker >/dev/null 2>&1; then
+    local ours c owner
+    ours="$(app_project_name)"
+    for c in $(docker ps -a --format '{{.Names}}' 2>/dev/null | grep -E '^looma-' || true); do
+      owner="$(docker container inspect \
+        --format '{{ if .Config.Labels }}{{ index .Config.Labels "com.docker.compose.project" }}{{ end }}' \
+        "$c" 2>/dev/null || true)"
+      [ "$owner" = "$ours" ] && continue
+      docker rm -f "$c" >/dev/null 2>&1 \
+        && echo "[looma-up]   removed container $c from the other deployment (project '${owner:-none}')" || true
+    done
+  fi
+
+  # 3) Belt and braces: a NON-Docker process still holding one of the ports (e.g. a
   #    gunicorn/python started by hand) is cleared too. A port held by our OWN
   #    container is skipped — its holder is docker-proxy/dockerd and compose
   #    recreates that container cleanly; killing its proxy would only confuse Docker.

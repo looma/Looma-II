@@ -1570,6 +1570,69 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
  // call with LOOMA.sound( $('#sound_object")[0] )
  LOOMA.sound = function(sound) { sound.Play();}
 
+/* Characters a digit is never legitimately embedded in: LOWERCASE Latin, plus
+ * Devanagari (which has no case) minus its own digits at U+0966-U+096F.
+ *
+ * Uppercase is deliberately left out. "H2O", "CO2" and "SO4" fill the science
+ * textbooks, and a rule that pulled those apart would do more damage than the
+ * problem it fixes; a digit that turns up in the middle of ordinary lowercase
+ * running text, on the other hand, is always the text layer's doing.
+ */
+LOOMA.isWordLetter = function (ch) {
+    return /[a-zऀ-॥॰-ॿ]/.test(ch || '');
+};
+
+LOOMA.isWordDigit = function (ch) {
+    return /[0-9०-९]/.test(ch || '');
+};
+
+/* LOOMA.strayDigitIndexes(chars)
+ * Positions, in an array of single characters, of every digit with a word letter
+ * (see above) on BOTH sides — "so1me". Those digits are never part of the word,
+ * so they get dropped. Digits that start or end a word are left alone, which
+ * keeps "COVID-19", "2nd", "Class 7" and "1051" intact.
+ *
+ * Both LOOMA.cleanSelectedText() (which works on a string) and the reading
+ * highlight (which has to drop the same characters from its character->DOM map,
+ * not just from a string) run this one function, so the text that is spoken and
+ * the text that is matched against the page can never disagree.
+ */
+LOOMA.strayDigitIndexes = function (chars) {
+    var drop = [];
+    var i = 0;
+    while (i < chars.length) {
+        if (!LOOMA.isWordDigit(chars[i])) { i++; continue; }
+        var end = i;
+        while (end < chars.length && LOOMA.isWordDigit(chars[end])) end++;
+        if (LOOMA.isWordLetter(i > 0 ? chars[i - 1] : '') &&
+            LOOMA.isWordLetter(end < chars.length ? chars[end] : '')) {
+            for (var k = i; k < end; k++) drop.push(k);
+        }
+        i = end;
+    }
+    return drop;
+};
+
+/* LOOMA.cleanSelectedText(text)
+ * Tidy a raw text selection before it is spoken, looked up or highlighted.
+ *
+ * The pdf.js text layer is a pile of absolutely positioned spans whose DOM order
+ * is the PDF's content-stream order, not the order the words sit on the page.
+ * Long words are split across several of those spans ("fin" + "e"), and anything
+ * that merely falls BETWEEN the two ends of a selection in DOM order — a page
+ * number, a running header, a figure label — is dragged along with it. The
+ * result is a digit wedged into the middle of a word: "so" + "1" + "me".
+ * looma-play-pdf.js now rebuilds PDF selections in reading order so this mostly
+ * stops at the source; this is the safety net for whatever still gets through,
+ * and for the same problem on non-PDF pages.
+ */
+LOOMA.cleanSelectedText = function (text) {
+    var chars = String(text == null ? '' : text).replace(/\|/g, ' ').split('');
+    var drop = LOOMA.strayDigitIndexes(chars);
+    for (var i = drop.length - 1; i >= 0; i--) chars.splice(drop[i], 1);
+    return chars.join('').replace(/\s+/g, ' ').trim();
+};
+
 // Clone selection snapshots because ranges can be invalidated once the DOM is highlighted/repainted.
 LOOMA.speakCloneSnapshot = function (snapshot) {
     if (!snapshot) return null;
@@ -1639,15 +1702,14 @@ LOOMA.speak = function(text, engine, voice, rate) {
     // When the caller does not name an engine — e.g. the Speak button reading a
     // text selection — fall back to the user's saved default TTS technology
     // (chosen on the Reading Settings page; stored in the tts-engine cookie).
-    // With NO saved preference, follow the network: online -> ResponsiveVoice
-    // (better cloud voices), offline -> Piper (local, always works). A saved
-    // preference is still honoured here, but engine === 'responsivevoice' also
-    // falls back to Piper on its own if it actually fails to load/connect (see
-    // the ResponsiveVoice branch below) — so reading never just goes silent
-    // because the box lost its connection mid-session.
+    // Piper is ALWAYS the default: it is local, offline and works on every box.
+    // ResponsiveVoice is used only when the teacher has explicitly selected it
+    // on the Reading Settings page (which itself only offers it when the box has
+    // internet). Even then, engine === 'responsivevoice' falls back to Piper on
+    // its own if it fails to load/connect (see the ResponsiveVoice branch below)
+    // — so reading never just goes silent when the connection drops mid-session.
     if (!engine) {
-        engine = LOOMA.readStore('tts-engine', 'cookie') ||
-                 (navigator.onLine ? 'responsivevoice' : 'piper');
+        engine = LOOMA.readStore('tts-engine', 'cookie') || 'piper';
         if (!voice) {
             var _ve = LOOMA.readStore('tts-voice-en', 'cookie');
             var _vn = LOOMA.readStore('tts-voice-np', 'cookie');
@@ -1791,22 +1853,126 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
          LOOMA.speak.clearBlockHighlight = function () {
              // Remove the temporary highlight spans and restore plain text nodes.
-             if (!LOOMA.speak.highlightMarks) return;
-             LOOMA.speak.highlightMarks.forEach(function (mark) {
+             var marks = LOOMA.speak.highlightMarks;
+             LOOMA.speak.highlightMarks = [];
+             if (!marks || !marks.length) return;
+
+             var touchedParents = [];
+             marks.forEach(function (mark) {
                  if (!mark || !mark.parentNode) return;
                  var ownerDocument = mark.ownerDocument || document;
-                 var textNode = ownerDocument.createTextNode(mark.textContent);
-                 mark.parentNode.replaceChild(textNode, mark);
+                 var parent = mark.parentNode;
+                 parent.replaceChild(ownerDocument.createTextNode(mark.textContent), mark);
+                 if (touchedParents.indexOf(parent) === -1) touchedParents.push(parent);
              });
-             LOOMA.speak.highlightMarks = [];
+
+             // Glue the restored text back into single text nodes. Highlighting a
+             // sentence carves its text node into three (before / mark / after), and
+             // without this the original node stays detached for good — so every entry
+             // the character map holds for it is dead, and the NEXT sentence can only
+             // highlight whatever part of itself happens to live in a node no earlier
+             // sentence touched. That is what left long sentences half-highlighted.
+             touchedParents.forEach(function (parent) {
+                 try { parent.normalize(); } catch (e) {}
+             });
+
+             // The map now points at nodes that no longer exist — force a rebuild.
+             if (LOOMA.speak.highlightContext) LOOMA.speak.highlightContext.stale = true;
+         };
+
+         /* The spoken sentence and the text on screen are compared with ALL
+          * whitespace removed, and with the same stray digits dropped from both.
+          *
+          * A PDF text layer splits one word across several spans ("fin" + "e"),
+          * runs others together with no gap at all, and the sentence handed to the
+          * TTS engine has already been re-spaced on the way out — so any rule that
+          * tries to agree on where the spaces belong will disagree somewhere, and a
+          * sentence that fails to match is a sentence that is read aloud with no
+          * highlight at all. Ignoring spaces entirely makes the two sides line up
+          * every time. */
+         function normalizeForMatch(str) {
+             // Whitespace and "|" are dropped first (LOOMA.cleanSelectedText turns "|"
+             // into a space, which would survive here and not on the page side), and
+             // only then the stray digits — which is the order that catches a digit
+             // living in a span of its own, "so" + "1" + "me".
+             var compact = String(str == null ? '' : str).toLowerCase().replace(/[\s|]+/g, '');
+             return LOOMA.cleanSelectedText(compact);
+         }
+
+         /* Walk the root and build the aggregate string plus its character -> DOM map.
+          *
+          * The walk covers the WHOLE root rather than just the selected range, so it
+          * produces the identical string every time it runs. That is what makes the
+          * context rebuildable after a highlight has rewritten the DOM without every
+          * offset shifting underneath it; the range only marks out a
+          * [windowStart, windowEnd) slice of that string to start reading from. */
+         LOOMA.speak.refreshHighlightContext = function (context, range) {
+             var ownerDocument = context && context.ownerDocument;
+             var root = context && context.root;
+             if (!root || !ownerDocument) return context;
+
+             var ownerWindow = ownerDocument.defaultView || window;
+             var NodeFilterRef = ownerWindow.NodeFilter || NodeFilter;
+
+             var walker = ownerDocument.createTreeWalker(root, NodeFilterRef.SHOW_TEXT, {
+                 acceptNode: function (node) {
+                     var parent = node.parentElement;
+                     if (!parent) return NodeFilterRef.FILTER_REJECT;
+                     if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilterRef.FILTER_REJECT;
+                     if (parent.closest('script, style, noscript, button, input, textarea, select, .toolbar, #toolbar-container')) return NodeFilterRef.FILTER_REJECT;
+                     return NodeFilterRef.FILTER_ACCEPT;
+                 }
+             });
+
+             function inRange(node, offset) {
+                 if (!range) return false;
+                 try { return range.isPointInRange(node, offset); } catch (e) { return false; }
+             }
+
+             var chars = [];
+             var map = [];
+             var windowStart = -1;
+             var windowEnd = -1;
+             var current;
+
+             while ((current = walker.nextNode())) {
+                 var raw = current.nodeValue;
+                 for (var i = 0; i < raw.length; i++) {
+                     var ch = raw[i];
+                     // Skipped for the same reason normalizeForMatch() drops them.
+                     if (/[\s|]/.test(ch)) continue;
+                     if (range && inRange(current, i)) {
+                         if (windowStart === -1) windowStart = chars.length;
+                         windowEnd = chars.length + 1;
+                     }
+                     chars.push(ch.toLowerCase());
+                     map.push({node: current, offset: i});
+                 }
+             }
+
+             // Drop the digits that were never in the book from the map too, not just
+             // from a string, so the page and the spoken text stay aligned character
+             // for character. See LOOMA.cleanSelectedText().
+             var drop = LOOMA.strayDigitIndexes(chars);
+             for (var d = drop.length - 1; d >= 0; d--) {
+                 chars.splice(drop[d], 1);
+                 map.splice(drop[d], 1);
+                 if (windowStart > drop[d]) windowStart--;
+                 if (windowEnd > drop[d]) windowEnd--;
+             }
+
+             context.aggregate = chars.join('');
+             context.map = map;
+             if (range) {
+                 context.windowStart = windowStart === -1 ? 0 : windowStart;
+                 context.windowEnd = windowEnd === -1 ? context.aggregate.length : windowEnd;
+             }
+             context.stale = false;
+             return context;
          };
 
          LOOMA.speak.buildHighlightContext = function () {
              // Build a searchable text map so each spoken segment can be matched back to visible DOM text.
-             function normalizeText(str) {
-                 return str.replace(/\s+/g, ' ').trim().toLowerCase();
-             }
-
              function getSnapshotDocument(snapshot) {
                  // Rebuild highlights inside the correct iframe/document when replaying older text.
                  if (snapshot && snapshot.frameId) {
@@ -1820,9 +1986,8 @@ LOOMA.speak = function(text, engine, voice, rate) {
              var snapshot = LOOMA.speak.selectionSnapshot || LOOMA.speak.captureSelectionSnapshot();
              if (!snapshot) return null;
 
-             var sourceRange = null;
              var ownerDocument = getSnapshotDocument(snapshot);
-             var restrictToRange = false;
+             var sourceRange = null;
              var root = null;
 
              if (snapshot.range && snapshot.range.cloneRange) {
@@ -1830,9 +1995,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      sourceRange = snapshot.range.cloneRange();
                      root = sourceRange.commonAncestorContainer;
                      if (root && root.nodeType === Node.TEXT_NODE) root = root.parentNode;
-                     if (root && ownerDocument.contains(root)) {
-                         restrictToRange = true;
-                     }
+                     if (!root || !ownerDocument.contains(root)) { sourceRange = null; root = null; }
                  } catch (e) {
                      sourceRange = null;
                      root = null;
@@ -1840,102 +2003,39 @@ LOOMA.speak = function(text, engine, voice, rate) {
              }
 
              if (!root) {
-                 // If the original range is no longer reliable, search inside the whole document and narrow later.
+                 // If the original range is no longer reliable, search inside the whole document and narrow below.
                  root = ownerDocument.body || ownerDocument.documentElement;
              }
              if (!root) return null;
 
-             var ownerWindow = ownerDocument.defaultView || window;
-             var NodeFilterRef = ownerWindow.NodeFilter || NodeFilter;
-             var RangeRef = ownerWindow.Range || Range;
-
-             var walker = ownerDocument.createTreeWalker(root, NodeFilterRef.SHOW_TEXT, {
-                 acceptNode: function (node) {
-                     var parent = node.parentElement;
-                     if (!parent) return NodeFilterRef.FILTER_REJECT;
-                     if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilterRef.FILTER_REJECT;
-                     if (parent.closest('script, style, noscript, button, input, textarea, select, .toolbar, #toolbar-container')) return NodeFilterRef.FILTER_REJECT;
-
-                     if (restrictToRange && sourceRange) {
-                         if (typeof sourceRange.intersectsNode === 'function') {
-                             try {
-                                 return sourceRange.intersectsNode(node) ? NodeFilterRef.FILTER_ACCEPT : NodeFilterRef.FILTER_REJECT;
-                             } catch (e) {}
-                         }
-
-                         var nodeRange = ownerDocument.createRange();
-                         nodeRange.selectNodeContents(node);
-                         var endsBeforeSelection =
-                             nodeRange.compareBoundaryPoints(RangeRef.END_TO_START, sourceRange) <= 0;
-                         var startsAfterSelection =
-                             nodeRange.compareBoundaryPoints(RangeRef.START_TO_END, sourceRange) >= 0;
-
-                         if (endsBeforeSelection || startsAfterSelection) {
-                             return NodeFilterRef.FILTER_REJECT;
-                         }
-                     }
-                     return NodeFilterRef.FILTER_ACCEPT;
-                 }
-             });
-
-             var aggregate = '';
-             var map = [];
-             var prevEndedWord = false;
-             var current;
-
-             while ((current = walker.nextNode())) {
-                 var raw = current.nodeValue;
-                 var startOffset = (restrictToRange && current === sourceRange.startContainer) ? sourceRange.startOffset : 0;
-                 var endOffset = (restrictToRange && current === sourceRange.endContainer) ? sourceRange.endOffset : raw.length;
-                 var slice = raw.slice(startOffset, endOffset);
-                 if (!slice) continue;
-
-                 var nodeStartsWord = /^\S/.test(slice);
-                 if (aggregate && prevEndedWord && nodeStartsWord) {
-                     aggregate += ' ';
-                     map.push({node: current, offset: startOffset, synthetic: true});
-                 }
-
-                 var inSpace = false;
-                 for (var i = 0; i < slice.length; i++) {
-                     var ch = slice[i];
-                     var rawOffset = startOffset + i;
-                     if (/\s/.test(ch)) {
-                         if (!inSpace && aggregate) {
-                             aggregate += ' ';
-                             map.push({node: current, offset: rawOffset, synthetic: false});
-                         }
-                         inSpace = true;
-                     } else {
-                         aggregate += ch.toLowerCase();
-                         map.push({node: current, offset: rawOffset, synthetic: false});
-                         inSpace = false;
-                     }
-                 }
-
-                 prevEndedWord = /\S$/.test(slice);
-             }
-
-             // Replay after clearing the selection uses the saved selected text to constrain the search window.
-             var searchIndex = 0;
-             var searchLimit = aggregate.length;
-             if (!restrictToRange && snapshot.text) {
-                 var selectionTarget = normalizeText(snapshot.text);
-                 var selectionStart = aggregate.indexOf(selectionTarget);
-                 if (selectionStart !== -1) {
-                     searchIndex = selectionStart;
-                     searchLimit = selectionStart + selectionTarget.length;
-                 }
-             }
-
-             return {
-                 aggregate: aggregate,
-                 map: map,
-                 normalizeText: normalizeText,
+             var context = {
+                 root: root,
                  ownerDocument: ownerDocument,
-                 searchIndex: searchIndex,
-                 searchLimit: searchLimit
+                 normalizeText: normalizeForMatch,
+                 aggregate: '',
+                 map: [],
+                 windowStart: 0,
+                 windowEnd: 0,
+                 searchIndex: 0,
+                 stale: false
              };
+
+             LOOMA.speak.refreshHighlightContext(context, sourceRange);
+
+             if (!sourceRange) {
+                 // Replay after clearing the selection uses the saved selected text to constrain the search window.
+                 context.windowStart = 0;
+                 context.windowEnd = context.aggregate.length;
+                 var selectionTarget = snapshot.text ? normalizeForMatch(snapshot.text) : '';
+                 var selectionStart = selectionTarget ? context.aggregate.indexOf(selectionTarget) : -1;
+                 if (selectionStart !== -1) {
+                     context.windowStart = selectionStart;
+                     context.windowEnd = selectionStart + selectionTarget.length;
+                 }
+             }
+
+             context.searchIndex = context.windowStart;
+             return context;
          };
 
          LOOMA.speak.highlightBlock = function (blockText) {
@@ -1944,6 +2044,12 @@ LOOMA.speak = function(text, engine, voice, rate) {
              if (!blockText) return;
 
              var context = LOOMA.speak.highlightContext;
+             if (context && context.stale) {
+                 // The previous sentence's highlight rewrote the DOM. Re-walk the same
+                 // root so the map points at live text nodes again — the text itself is
+                 // unchanged, so the aggregate and the cursor into it still hold good.
+                 LOOMA.speak.refreshHighlightContext(context, null);
+             }
              if (!context) context = LOOMA.speak.buildHighlightContext();
              if (!context) return;
              LOOMA.speak.highlightContext = context;
@@ -1953,9 +2059,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
              // Continue searching forward so repeated phrases highlight in reading order.
              var startIndex = context.aggregate.indexOf(target, context.searchIndex || 0);
-             if (startIndex === -1 && typeof context.searchLimit === 'number' && context.searchLimit > 0) {
-                 startIndex = context.aggregate.slice(0, context.searchLimit).indexOf(target);
-             }
+             if (startIndex === -1) startIndex = context.aggregate.indexOf(target, context.windowStart || 0);
              if (startIndex === -1) startIndex = context.aggregate.indexOf(target);
              if (startIndex === -1) return;
 
@@ -1965,7 +2069,8 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
              for (var j = startIndex; j <= endIndex; j++) {
                  var entry = context.map[j];
-                 if (!entry || entry.synthetic || entry.offset >= entry.node.nodeValue.length) continue;
+                 if (!entry || !entry.node || !entry.node.parentNode) continue;
+                 if (entry.offset >= entry.node.nodeValue.length) continue;
                  if (!perNode.has(entry.node)) perNode.set(entry.node, {start: entry.offset, end: entry.offset});
                  var segment = perNode.get(entry.node);
                  if (entry.offset < segment.start) segment.start = entry.offset;
@@ -2118,6 +2223,15 @@ LOOMA.speak = function(text, engine, voice, rate) {
              // it cannot be loaded (typically: the box has no internet right now),
              // fall back to Piper instead of just going silent — a box that drops
              // offline mid-session must still be able to read aloud.
+             //
+             // Show the spinner NOW: loading responsivevoice.org and waiting for
+             // the cloud to return audio takes seconds, and until onstart fires
+             // the button gave no feedback at all (the Piper path below already
+             // does this). onstart/onerror clear it via activate()/disable().
+             LOOMA.speak.buttonPending = true;
+             LOOMA.speak.applyPendingButtonState();
+             LOOMA.speak.updateButtonAvailability();
+
              LOOMA.speak.ensureResponsiveVoice(function (rvAvailable) {
              if (!rvAvailable) {
                  console.warn('ResponsiveVoice is unavailable (needs internet + a valid key) — falling back to Piper.');
@@ -2150,6 +2264,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          });
                      }
                  } catch (e) {}
+                 // Hand the spinner over to the Piper path, which sets its own
+                 // pending state — otherwise it would stay spinning from here.
+                 LOOMA.speak.buttonPending = false;
+                 LOOMA.speak.clearPendingButtonState();
                  LOOMA.speak(text, 'piper', voice, rate);
              } else {
                  // Pressing Speak again while it is talking stops it (toggle),
@@ -2724,7 +2842,6 @@ LOOMA.speak.getSelectedText = function () {
     }
 
     var text = readSelection(window);
-    if (text) return text;
 
     ['iframe', 'epaath_iframe'].forEach(function (id) {
         if (text) return;
@@ -2737,7 +2854,8 @@ LOOMA.speak.getSelectedText = function () {
         }
     });
 
-    return text;
+    // Never hand on a word with a digit wedged into it — see LOOMA.cleanSelectedText().
+    return LOOMA.cleanSelectedText(text);
 };
 
 LOOMA.speak.normalizeSpeakKey = function (text) {
@@ -2830,11 +2948,44 @@ LOOMA.speak.applyPendingButtonState = function () {
     LOOMA.speak.getButtons().forEach(function (button) {
         button.classList.add('tts-pending');
     });
+    LOOMA.speak.emitStateChange();
 };
 
 LOOMA.speak.clearPendingButtonState = function () {
     LOOMA.speak.getButtons().forEach(function (button) {
         button.classList.remove('tts-pending');
+    });
+    LOOMA.speak.emitStateChange();
+};
+
+/* LOOMA.speak.onStateChange(cb) / emitStateChange()
+ *
+ * The pending/busy visuals above only ever reach `button.speak` — the floating
+ * Speak control. Pages with their own Speak buttons (the Reading Settings page
+ * has one per engine) got no feedback at all while waiting, which is worst
+ * exactly where the wait is longest: ResponsiveVoice has to fetch its script
+ * from responsivevoice.org and then wait on the cloud for audio, several seconds
+ * in which nothing on screen moved. Those pages subscribe here instead of
+ * reaching into LOOMA.speak's internals.
+ *
+ * cb({pending, busy}) — `pending` is "asked for, no audio yet" (show a spinner),
+ * `busy` is "audio is sounding". Fired only when the pair actually changes.
+ */
+LOOMA.speak.stateListeners = [];
+
+LOOMA.speak.onStateChange = function (cb) {
+    if (typeof cb !== 'function') return;
+    LOOMA.speak.stateListeners.push(cb);
+    try { cb({pending: !!LOOMA.speak.buttonPending, busy: !!LOOMA.speak.buttonActive}); } catch (e) {}
+};
+
+LOOMA.speak.emitStateChange = function () {
+    var state = {pending: !!LOOMA.speak.buttonPending, busy: !!LOOMA.speak.buttonActive};
+    var signature = state.pending + '|' + state.busy;
+    if (signature === LOOMA.speak.lastStateSignature) return;
+    LOOMA.speak.lastStateSignature = signature;
+    LOOMA.speak.stateListeners.forEach(function (cb) {
+        try { cb(state); } catch (e) {}
     });
 };
 
@@ -2872,6 +3023,8 @@ LOOMA.speak.updateButtonAvailability = function () {
         speechButton.setAttribute('aria-disabled', selectable ? 'false' : 'true');
         $button.toggleClass('tts-disabled', !selectable);
     });
+
+    LOOMA.speak.emitStateChange();
 };
 
 LOOMA.speak.installSelectionWatcher = function () {
@@ -2987,11 +3140,11 @@ LOOMA.speak.installButtonGuard = function () {
         // and stay silent. No-op (and no network call) for any other engine.
         try {
             // Mirrors LOOMA.speak()'s own engine resolution (saved cookie, else
-            // online -> responsivevoice / offline -> piper) so the preload kicks
-            // in whenever a click would actually end up using ResponsiveVoice,
-            // not only when the cookie names it explicitly.
-            var _rvWillRun = LOOMA.readStore('tts-engine', 'cookie') ||
-                              (navigator.onLine ? 'responsivevoice' : 'piper');
+            // Piper) so the preload kicks in only when the click would actually
+            // end up using ResponsiveVoice — i.e. when the teacher explicitly
+            // selected it. With no saved preference nothing is preloaded and no
+            // request to responsivevoice.org is made at all.
+            var _rvWillRun = LOOMA.readStore('tts-engine', 'cookie') || 'piper';
             if (_rvWillRun === 'responsivevoice') {
                 LOOMA.speak.ensureResponsiveVoice(function () {});
             }

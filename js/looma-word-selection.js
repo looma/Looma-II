@@ -49,6 +49,12 @@ var LOOMA_WORD_SELECTION = (function () {
      * trimmed string so the card shows a tidy word.
      */
     function cleanText(text) {
+        // LOOMA.cleanSelectedText() also drops digits wedged into a word ("so1me"),
+        // which a PDF text layer produces often enough that the card would otherwise
+        // show a nonsense word and look up a word that cannot exist.
+        if (typeof LOOMA !== 'undefined' && typeof LOOMA.cleanSelectedText === 'function') {
+            return LOOMA.cleanSelectedText(text);
+        }
         return String(text == null ? '' : text)
             .replace(/\|/g, ' ')
             .replace(/\s+/g, ' ')

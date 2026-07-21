@@ -1,75 +1,280 @@
-body {
-    display:grid;
-    grid-template-rows: [top] repeat(9,1fr) [toolbar] 1fr [bottom];
-    grid-template-columns: [left] repeat(17,1fr) [toolbar] 1fr [right];
-    grid-gap: 8px;
-}
+/* looma-test-speech.css — layout for the Reading Settings page.
+   The Looma theme (navy background, yellow text, Comic font, white buttons)
+   comes from looma.css; this file only lays the page out so the engine
+   columns line up neatly — every column has the same Speak button height,
+   the same English/Nepali voice fields and the same default checkbox, so
+   each control sits at the same height across all four engines. */
 
 #main-container-horizontal {
-    grid-row: top/toolbar;
-    grid-column: left/right;
-    display:grid;
-    grid-template-rows: repeat(9,1fr);
-    grid-template-columns: repeat(17,1fr);
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
-button {font-size:1.2em;}
-button:hover {color:blue;}
+#tts-test {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3.4vh;
+    padding: 4vh 4vw 6vh;
+    box-sizing: border-box;
 
-button.show-keyboard {
-    bottom:19vh;
-    display:inline-block;
+    /* Row heights shared by every engine column. Because each column lays its
+       controls out on these SAME explicit tracks, matching controls always land
+       on the same line across the columns — see .tts-engine. */
+    --tts-voice-row:   calc(1.6em + 46px);   /* caption + 40px dropdown */
+    --tts-rate-row:    calc(1.4em + 42px);   /* caption + 36px dropdown */
+    --tts-default-row: 3.4em;                /* checkbox + up to two lines of label */
 }
 
-p#prompt {
-    grid-row: 2 / 3;
-    grid-column: 2/5;
-    font-size:1.5em;
-    position:relative;
-    top:3vh;
+/* page heading */
+.tts-heading {
+    margin: 0;
+    font-size: 2.4em;
+    color: var(--looma-font-color);   /* Looma yellow */
+    text-align: center;
 }
 
-input {
-    grid-row: 2 / 3;
-    grid-column: 6 / -2;
+/* a labelled row: yellow label + its control(s), centered */
+.tts-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px 20px;
+    width: 100%;
+}
+
+.tts-label {
+    font-size: 1.5em;
+    color: var(--looma-font-color);   /* Looma yellow */
+}
+
+/* the phrase to speak — white box, large red text (as before) */
+#text {
+    flex: 1 1 520px;
+    max-width: 1080px;
+    font-size: 2em;
+    color: red;
+    background-color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    box-sizing: border-box;
+}
+
+/* rate dropdown */
+.tts-row select {
+    font-size: 1.2em;
+    padding: 5px 10px;
     border-radius: 5px;
-    font-size:2em;
-    color:red;}
-
-
-
-#mimic {
-    grid-row: 4/6;
-    grid-column:2/6;
 }
 
-#piper {
-    grid-row: 4/6;
-    grid-column: 7/11;
+/* ---- engine columns -------------------------------------------------- */
+/* One column per TTS engine, laid out side by side and equal width. */
+.tts-engine-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;          /* every column the same height        */
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
 }
 
-#synthesis {
-    grid-row: 4/6;
-    grid-column: 12/16;
+/* each engine column: Speak button, English voice + speed, Nepali voice + speed,
+   and the default checkbox, on six shared row tracks */
+.tts-engine {
+    /* A grid on EXPLICIT row tracks, not a flex column whose rows size themselves
+       to their own content. Both columns hold the same six controls in the same
+       order, so pinning the track heights is what guarantees that the Speak
+       buttons, the voice pickers, the speed pickers and — the one that kept
+       drifting out of line — the "Default for reading text selections" checkboxes
+       sit at the same height across the two engines, whatever the labels do. */
+    display: grid;
+    grid-template-rows:
+        auto                      /* Speak button (its own height is fixed) */
+        var(--tts-voice-row)      /* English voice    */
+        var(--tts-rate-row)       /* English speed    */
+        var(--tts-voice-row)      /* Nepali voice     */
+        var(--tts-rate-row)       /* Nepali speed     */
+        var(--tts-default-row);   /* default checkbox */
+    align-content: start;
+    gap: 14px;
+    flex: 1 1 300px;
+    max-width: 430px;
+    /* Reserve the unavailable-note strip in EVERY column and position the note
+       inside it (below), so the note — which only exists in the ResponsiveVoice
+       column, and keeps a min-height even while empty — never takes part in the
+       layout and cannot push that column's controls around. */
+    position: relative;
+    padding-bottom: 1.7em;
 }
 
-#rateDiv {
-    grid-row: 7/7;
-    grid-column: 3/15;
-    font-size:1.5em;
-    text-align:left;
+/* Speak button — fixed height so the voice fields below start at the same
+   line in every column, whatever the button label length. */
+.tts-engine-button {
+    position: relative;         /* anchors the waiting spinner below */
+    width: 100%;
+    height: 11vh;
+    min-height: 84px;
+    font-size: 1.3em;
+    padding: 10px 16px;
+    cursor: pointer;
 }
 
-div#mimic-voicelist {
-    display:none;
-}
-div#piper-voicelist {
-    display:block;
+/* Turning circle, shown from the moment the button is pressed until the first
+   audio comes out. ResponsiveVoice is a cloud engine — it has to fetch its
+   script from responsivevoice.org and then wait on the network — so without
+   this the button sat looking dead for several seconds and invited a second
+   press. Set and cleared by looma-test-speech.js via LOOMA.speak.onStateChange().
+   The keyframes (ttsPendingSpin) live in looma.css, next to the matching spinner
+   on the floating Speak control. */
+.tts-engine-button.tts-engine-pending {
+    color: transparent;         /* the label would sit under the spinner */
+    cursor: progress;
 }
 
-div.voicelist {
-    grid-row:8/9 ;
-    grid-column: 3/15;
-    font-size:1.5em;
-    text-align:left;
+.tts-engine-button.tts-engine-pending::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2.2em;
+    height: 2.2em;
+    margin: -1.1em 0 0 -1.1em;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 0.28em solid rgba(0, 0, 0, 0.18);
+    border-top-color: #1565d8;
+    border-right-color: rgba(21, 101, 216, 0.75);
+    animation: ttsPendingSpin 0.8s linear infinite;
+    pointer-events: none;
+}
+
+/* a labelled voice selector: yellow caption above a full-width dropdown */
+.tts-voice-field {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    width: 100%;
+}
+
+/* Captions stay on one line. A caption that wrapped in one column but not the
+   other used to push everything below it down and break the alignment. */
+.tts-voice-field label,
+.tts-rate-field label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tts-voice-field label {
+    font-size: 1.1em;
+    color: var(--looma-font-color);   /* Looma yellow */
+    text-align: center;
+}
+
+.tts-voice-select {
+    width: 100%;
+    height: 40px;
+    font-size: 1.1em;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.tts-voice-select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Per-language speed dropdown — sits directly under its matching voice so the
+   English voice + English speed (and Nepali voice + Nepali speed) read as a
+   pair. Slightly tighter/dimmer than the voice field to show the grouping. */
+.tts-rate-field {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    width: 100%;
+}
+
+.tts-rate-field label {
+    font-size: 0.95em;
+    color: var(--looma-font-color);   /* Looma yellow */
+    text-align: center;
+    opacity: 0.85;
+}
+
+.tts-rate-select {
+    width: 100%;
+    height: 36px;
+    font-size: 1em;
+    padding: 4px 10px;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* "Default for reading text selections" checkbox — picks the TTS technology
+   LOOMA.speak() uses when reading a text selection. It sits on the last of
+   .tts-engine's shared row tracks, which is what keeps the two checkboxes on the
+   same line; no `margin-top: auto` any more, since that pushed each one to the
+   bottom of its OWN column and so lined them up only when the columns happened
+   to be the same height. Large checkbox and clear text so it stays legible on
+   classroom projectors. */
+.tts-default-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding-top: 6px;
+    font-size: 1.15em;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--looma-font-color);   /* Looma yellow */
+    cursor: pointer;
+}
+
+.tts-default {
+    width: 26px;
+    height: 26px;
+    flex: 0 0 auto;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #1565d8;
+}
+
+/* ResponsiveVoice is a cloud engine, so it is locked whenever the box cannot
+   reach the internet. Dim the whole column (not just the disabled controls) so
+   it is obvious at a glance that the engine is unavailable rather than broken.
+   Piper, being local, is never dimmed. */
+.tts-engine-unavailable .tts-engine-button,
+.tts-engine-unavailable .tts-voice-field,
+.tts-engine-unavailable .tts-rate-field,
+.tts-engine-unavailable .tts-default-label {
+    opacity: 0.45;
+}
+
+.tts-engine-unavailable .tts-engine-button,
+.tts-engine-unavailable .tts-default-label,
+.tts-engine-unavailable .tts-default {
+    cursor: not-allowed;
+}
+
+/* Explains WHY the column is locked; empty (and so invisible) when available.
+   Sits in the strip reserved by .tts-engine's padding-bottom and is taken OUT of
+   the flow, so it can never shift the default checkbox above it — the checkboxes
+   stay aligned across columns whether or not this note has text. */
+.tts-unavailable-note {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    min-height: 1.2em;
+    font-size: 0.95em;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--looma-font-color);   /* Looma yellow */
 }

@@ -1286,24 +1286,68 @@ port_holder() {                              # what is sitting on the port
   printf '%s' "$h"
 }
 
+# Which CONTAINER publishes this host port, if any. `ss` only ever reports
+# "docker-proxy" for a published port, which tells you nothing about which
+# container to stop — this maps the port back to a name you can act on.
+port_container() {
+  local p="$1"
+  command -v docker >/dev/null 2>&1 || return 0
+  docker ps --format '{{.Names}}|{{.Ports}}' 2>/dev/null \
+    | awk -F'|' -v port=":$p->" 'index($2, port) { print $1; exit }'
+}
+
+# `docker stop` returns once the container is gone, but the kernel can hold the
+# listening socket a moment longer while docker-proxy tears down. Re-checking
+# immediately would then abort the install over a port that is about to be free.
+wait_port_free() {
+  local p="$1" tries="${2:-20}"
+  while [ "$tries" -gt 0 ]; do
+    port_free "$p" && return 0
+    sleep 0.5
+    tries=$((tries - 1))
+  done
+  return 1
+}
+
 # Make sure the ports this install needs are actually free BEFORE compose tries to
 # bind them — otherwise the stack dies with Docker's cryptic
 #   failed to bind host port for 0.0.0.0:46333: address already in use
-# The usual culprit is the OTHER deployment: the native install runs zvec/Piper as
-# host-networked containers (and optionally systemd units) on these very ports.
-# Anything of OURS is removed; anything foreign is named, so you know what to stop.
+# Two things land on these ports. The OTHER deployment: the native install runs
+# zvec/Piper as host-networked containers (and optionally systemd units) on these
+# very ports — those are removed. And OUR OWN containers still running from a
+# previous install — those are stopped, so compose can rebind and recreate them.
+# Every container holding a needed port is cleared automatically; only a genuinely
+# foreign, non-container process stops the install, and it is named precisely.
 free_required_ports() {
   local project="$1"; shift
   local p c owner unit holder
 
-  # 1) Leftover looma-* containers from any OTHER compose project (or started by
-  #    hand). Volumes are untouched, so no data is lost — compose recreates them.
+  # 1) Leftover looma-* containers. Volumes are untouched either way, so no data
+  #    is lost — compose recreates the containers in the `up` step below.
+  #
+  #    FOREIGN containers (another compose project, or started by hand) are
+  #    removed outright: nothing here will ever manage them.
+  #
+  #    OURS are STOPPED, not skipped. They must be, because a running container
+  #    of ours from a PREVIOUS install still publishes the port — that is the
+  #    docker-proxy that used to make a perfectly ordinary re-install die at the
+  #    port check below with "port 8089 is already in use". Leaving them up for
+  #    compose to adopt cannot work: the preflight aborts before compose ever
+  #    runs. Stopping (rather than removing) keeps compose's adoption intact —
+  #    `up` starts or recreates them exactly as it would have.
   if command -v docker >/dev/null 2>&1; then
     for c in $(docker ps -a --format '{{.Names}}' 2>/dev/null | grep -E '^looma-' || true); do
       owner="$(docker container inspect \
         --format '{{ if .Config.Labels }}{{ index .Config.Labels "com.docker.compose.project" }}{{ end }}' \
         "$c" 2>/dev/null || true)"
-      [ "$owner" = "$project" ] && continue   # ours — compose handles it
+      if [ "$owner" = "$project" ]; then
+        # Only touch it if it is actually running and thus holding ports.
+        docker ps --format '{{.Names}}' 2>/dev/null | grep -qx "$c" || continue
+        docker stop "$c" >/dev/null 2>&1 \
+          && log "  stopped our own running container $c — compose restarts it" \
+          || warn "  could not stop $c — remove it by hand: docker rm -f $c"
+        continue
+      fi
       docker rm -f "$c" >/dev/null 2>&1 \
         && log "  removed the leftover container $c (compose project '${owner:-none}')" || true
     done
@@ -1319,14 +1363,36 @@ free_required_ports() {
     done
   done
 
-  # 3) Still taken? Say by what, instead of letting Docker fail obscurely.
+  # 3) Still taken by a CONTAINER? Resolve docker-proxy back to the container that
+  #    published the port and clear it here. Step 1 only matches names starting
+  #    with "looma-", so anything renamed, or a stray hand-run container, would
+  #    otherwise reach the die below and force the user to do this by hand — the
+  #    installer has enough information to just fix it.
   for p in "$@"; do
-    port_free "$p" && continue
+    wait_port_free "$p" 6 && continue     # give step 1's stops time to release
+    c="$(port_container "$p")"
+    [ -n "$c" ] || continue
+    owner="$(docker container inspect \
+      --format '{{ if .Config.Labels }}{{ index .Config.Labels "com.docker.compose.project" }}{{ end }}' \
+      "$c" 2>/dev/null || true)"
+    if [ "$owner" = "$project" ]; then
+      docker stop "$c" >/dev/null 2>&1 \
+        && log "  stopped our own container $c — it was publishing port $p" || true
+    else
+      docker rm -f "$c" >/dev/null 2>&1 \
+        && log "  removed the container $c (compose project '${owner:-none}') — it was publishing port $p" || true
+    fi
+  done
+
+  # 4) Genuinely foreign process (not a container at all). Say precisely what it
+  #    is — this is the one case the installer cannot resolve on its own.
+  for p in "$@"; do
+    wait_port_free "$p" 20 && continue
     holder="$(port_holder "$p")"
     die "port $p is already in use by ${holder:-an unknown process}.
-  Looma needs it. Find it and stop it:
+  Looma needs it. It is NOT a container (those were cleared automatically),
+  so it is another program on this box. Find it and stop it:
       sudo ss -ltnp 'sport = :$p'
-      docker ps -a          # if it is a container, 'docker rm -f <name>'
   Then run this installer again."
   done
 }
@@ -1533,29 +1599,11 @@ EOF
   log "checking that the ports Looma needs are free"
   free_required_ports "$(app_project_name)" 48080 47017 46333 8089
 
-  # 9) Build + start. Online: --build so a re-install picks up Dockerfile changes.
-  #    Offline: no build, no pull — `up` adds --pull never (OFFLINE in the env file).
-  if [ "$OFFLINE" = "1" ]; then
-    log "starting Looma from the pre-loaded images (offline; no build, no pull)…"
-    "$repo_dest/deploy/odroid/looma-installer.sh" up
-  else
-    log "building and starting Looma… (the first build is slow on ARM)"
-    "$repo_dest/deploy/odroid/looma-installer.sh" up --build
-  fi
-
-  # 9) zvec: build the index NOW and confirm it indexed, so the box ships with
-  #    working semantic search and we fail loudly here, not on the first search.
-  log "building the zvec search index (first build; slow on ARM, please wait)…"
-  for _ in $(seq 1 90); do curl -fsS "http://localhost:46333/health" >/dev/null 2>&1 && break; sleep 5; done
-  local zresp; zresp="$(curl -fsS -X POST --max-time 1800 "http://localhost:46333/rebuild" 2>/dev/null || true)"
-  case "$zresp" in
-    *'"ok"'*true*) log "zvec OK: $zresp" ;;
-    *) warn "zvec did NOT build cleanly: ${zresp:-<no response>}"
-       warn "  check: docker logs looma-search --tail 50 ; docker logs looma-db --tail 20"
-       warn "  retry: curl -X POST http://localhost:46333/rebuild" ;;
-  esac
-
-  # 10) Autostart
+  # 9) Autostart FIRST — before the stack is started. This used to come last, so a
+  #    first start that failed (a squatted port, an image that crash-loops) killed
+  #    the installer before the unit was ever written: the box then had Looma
+  #    installed but NOTHING at boot. Registering it up front means a later fix
+  #    (or just a reboot) brings the stack up on its own.
   log "installing the systemd unit looma.service"
   if [ "${CPU_MAX_FREQ:-0}" = "0" ] || [ -z "${CPU_MAX_FREQ:-}" ]; then
     tpl_looma_service | sed -e "s#@REPO_DIR@#$repo_dest#g" -e '/scaling_max_freq/d' \
@@ -1569,6 +1617,28 @@ EOF
   systemctl enable looma.service
   install_kiosk
   install_start_shortcut
+
+  # 10) Build + start. Online: --build so a re-install picks up Dockerfile changes.
+  #    Offline: no build, no pull — `up` adds --pull never (OFFLINE in the env file).
+  if [ "$OFFLINE" = "1" ]; then
+    log "starting Looma from the pre-loaded images (offline; no build, no pull)…"
+    "$repo_dest/deploy/odroid/looma-installer.sh" up
+  else
+    log "building and starting Looma… (the first build is slow on ARM)"
+    "$repo_dest/deploy/odroid/looma-installer.sh" up --build
+  fi
+
+  # 11) zvec: build the index NOW and confirm it indexed, so the box ships with
+  #    working semantic search and we fail loudly here, not on the first search.
+  log "building the zvec search index (first build; slow on ARM, please wait)…"
+  for _ in $(seq 1 90); do curl -fsS "http://localhost:46333/health" >/dev/null 2>&1 && break; sleep 5; done
+  local zresp; zresp="$(curl -fsS -X POST --max-time 1800 "http://localhost:46333/rebuild" 2>/dev/null || true)"
+  case "$zresp" in
+    *'"ok"'*true*) log "zvec OK: $zresp" ;;
+    *) warn "zvec did NOT build cleanly: ${zresp:-<no response>}"
+       warn "  check: docker logs looma-search --tail 50 ; docker logs looma-db --tail 20"
+       warn "  retry: curl -X POST http://localhost:46333/rebuild" ;;
+  esac
 
   local obs_state; obs_state="$(obs_label)"
   log "DONE — Looma runs in Docker from $WWW. You can REMOVE THE DISK."

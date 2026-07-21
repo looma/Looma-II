@@ -1,0 +1,228 @@
+/*
+LOOMA css file
+Filename: looma-edit-game.css
+Description: styles for Looma Game Editor
+Programmer name: Skip
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Date: 06 2026
+Revision: Looma 7
+*/
+body {
+    box-sizing: border-box;
+    margin: 0;
+    background-color:#e3e3e3;
+    color:black;
+}
+#main-container {
+    padding:1vh 1vh 1vh 1vh;
+    display:grid;
+    grid-gap:1vh;
+    grid-template-columns: 30vw 1fr;
+    grid-template-rows: 5vh 1fr;
+    background-color:lightgray;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    color:black;
+    min-height: 80vh;
+}
+#main-container > div {
+    border-radius:4px;
+}
+#header {
+    grid-column: 1/-1;
+    grid-row: 1;
+    vertical-align:middle;
+    background-color: #F2C01B;
+}
+#header span { margin-bottom: 6px; }
+
+#title {
+    float:left;
+    padding-left:5vw;
+}
+
+#game-properties {
+    grid-column: 1;
+    grid-row: 2;
+    background-color: white;
+    padding: 1vh 1vw;
+    overflow-y: auto;
+}
+
+#game-properties h3 {
+    margin: 0 0 1vh 0;
+    color: #2E3192;
+}
+
+#game-data {
+    grid-column: 2;
+    grid-row: 2;
+    background-color: white;
+    padding: 1vh 1vw;
+    overflow-y: auto;
+}
+
+#game-data h3 {
+    margin: 0 0 1vh 0;
+    color: #2E3192;
+}
+
+.form-row {
+    margin-bottom: 0.8vh;
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+}
+
+.form-row label {
+    min-width: 8vw;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.form-row input, .form-row select {
+    font: inherit;
+    font-size: 1.1em;
+    padding: 2px 4px;
+    border: 1px solid #999;
+    border-radius: 3px;
+}
+
+.form-row input[type="text"] {
+    width: 15vw;
+}
+
+.form-row input[type="number"] {
+    width: 5vw;
+}
+
+/* Game data entry tables */
+#game-data-area table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1vh;
+}
+
+#game-data-area th {
+    background-color: #2E3192;
+    color: white;
+    padding: 4px 8px;
+    text-align: left;
+    font-size: 1.1em;
+}
+
+#game-data-area td {
+    padding: 3px 4px;
+    border-bottom: 1px solid #ccc;
+}
+
+#game-data-area td input {
+    font: inherit;
+    font-size: 1em;
+    width: 100%;
+    padding: 2px 4px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+#game-data-area .remove-row {
+    background-color: #c00;
+    color: black;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 2px 8px;
+    height: auto;
+}
+
+#game-data-area .add-row {
+    margin-top: 1vh;
+    font: inherit;
+    font-size: 1.1em;
+    padding: 4px 12px;
+    border-radius: 4px;
+    background-color: #2E3192;
+    color: black;
+    border: none;
+    cursor: pointer;
+    height: auto;
+}
+
+/* Sort game: bins section */
+.sort-section {
+    margin-bottom: 1vh;
+}
+
+.sort-section h4 {
+    margin: 0.5vh 0;
+    color: #333;
+}
+
+/* Multiple choice wrong answers */
+td .wrong-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+td .wrong-answers input {
+    width: 100%;
+}
+
+p.hint {
+    color:#aaa;
+    font-size:1.3em;
+    padding: 2vh;
+}
+
+/* Filecommands positioning */
+#filecommands {
+    position: absolute;
+    width:15vw;
+    right:5vw;
+    top:0.5vh;
+}
+
+.btn-group, #cmd-btn {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    padding:0;
+    margin-bottom:1vh;
+    width:100%;
+}
+
+.dropdown-menu {
+    padding: 10px;
+    background-color:white;
+    z-index:1;
+}
+
+.dropdown-item {
+    font-size: 1.2em;
+    margin-top: 2px;
+    font:inherit;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5));
+}
+.dropdown-item:hover {
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#87cefa));
+    color:white;
+}
+
+#dismiss {
+    color: white;
+    background-color: red;
+    border-color: red;
+    height: 5vh;
+    width: 4vw;
+    background-image: url("../images/back-arrow.png");
+    background-size: 90% 90%;
+    background-repeat: no-repeat;
+    position:absolute;
+    bottom: 2vh;
+    right: 3vw;
+    z-index:2;
+}
+
+button.speak, button.lookup, button#fullscreen-control {
+    display:none;
+}

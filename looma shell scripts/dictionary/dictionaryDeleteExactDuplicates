@@ -1,0 +1,58 @@
+// ONE TIME program to
+//    scan through specified documents in dictionary collection
+//    look for duplicates (based on same 'en' and 'def)
+//    merge the duplicates into one document to maximize filled fields
+//
+//    run in MONGO SHELL with: load('dictionaryDeleteExactDuplicates')
+
+var docs, doc, dupl, duplicates, en;
+var count = 0;
+
+docs = db.dictionary.find();
+while (docs.hasNext()) {
+	doc = docs.next();
+	en = doc['en'];
+	def = doc['def'];
+    
+     	duplicates = db.dictionary.find({'en': en, 'def': def});
+     	if (duplicates && duplicates.count() > 1) {
+            dupl = duplicates.next();
+            print('exact duplicate found for: ' + en);
+            var pluralFilled = false;
+            var rwFilled = false;
+            var ch_idFilled = false;
+
+            if (doc['plural'] && doc['plural'].trim() !== '') {
+                pluralFilled = true;
+            }
+            if (doc['rw'] && doc['rw'].trim() !== '') {
+                rwFilled = true;
+            }
+            if (doc['ch_id'] && doc['ch_id'].trim() !== '') {
+                ch_idFilled = true;
+            }
+
+		while (duplicates.hasNext()) {
+			dupl = duplicates.next();	
+			if (!pluralFilled && dupl['plural'] && dupl['plural'].trim() !== '') {
+				var duplPlural = dupl['plural'];
+				db.dictionary.update(doc, {$upsert: {plural:duplPlural}});
+				pluralFilled = true;
+			}
+			if (!rwFilled && dupl['rw'] && dupl['rw'].trim() !== '') {
+				var duplRw = dupl['rw'];
+				db.dictionary.update(doc, {$upsert: {rw:duplRw}});
+				rwFilled = true;
+			}
+			if (!ch_idFilled && dupl['ch_id'] && dupl['ch_id'].trim() !== '') {
+				var duplCh_id = dupl['ch_id'];
+				db.dictionary.update(doc, {$upsert: {ch_id:duplCh_id}});
+				ch_idFilled = true;
+			}
+			db.dictionary.remove(dupl);
+			count++; 
+		}
+	};
+};
+count = count/2;
+print('Number of duplicates combined: ' + count);

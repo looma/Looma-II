@@ -145,5 +145,10 @@ require_once ('includes/looma-utilities.php');
 <?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>
 
+<script>
+    // highlight the Worksheet toolbar button (show the worksheet-yellow icon)
+    $(document).ready(function () { toolbar_button_activate("worksheet"); });
+</script>
+
 </body>
 </html>

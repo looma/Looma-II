@@ -15,6 +15,7 @@ $pagenum  =  (isset($_REQUEST['page']) ? urldecode($_REQUEST['page']) : 1);
 $len      = (isset($_REQUEST['len'])   ? urldecode($_REQUEST['len']) : 10);
 $lang     = (isset($_REQUEST['lang'])  ? urldecode($_REQUEST['lang']) : "");
 $zoom     = (isset($_REQUEST['zoom'])  ? urldecode($_REQUEST['zoom']) : "page-width");
+$ft       = (isset($_REQUEST['ft'])    ? urldecode($_REQUEST['ft']) : "");
 
 echo '<div id="pdf" class="scroll"'  .
         '  data-fn="' .    $filename .
@@ -22,6 +23,7 @@ echo '<div id="pdf" class="scroll"'  .
         '" data-page="' . $pagenum .
         '" data-len="' . $len .
         '" data-lang="' . $lang .
+        '" data-ft="' . $ft .
         '" data-zoom="'.  $zoom .'">';
     echo '</div>';
 ?>

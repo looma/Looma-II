@@ -27,18 +27,30 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="7.31 July 8 2026">
-      <change afterPath="$PROJECT_DIR$/images/worksheet 2.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/worksheet 3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/worksheet-yellow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/worksheet.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/looma shell scripts/importCH_IDsforWorksheets.js" afterDir="false" />
+    <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="7.32 July 20 2026">
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/ch_idsToImportforWorksheets.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/1EN corrected ch_ids.numbers" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma-worksheet-list.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma-worksheets.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.claude/settings.local.json" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CHANGE LOG" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGE LOG" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/archivetimestamp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/archivetimestamp.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.bson" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-game-list.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-game-list.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-play-pdf.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-play-pdf.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/looma-toolbar.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/looma-toolbar.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/worksheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/worksheet.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-pdf-viewer.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-pdf-viewer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-search.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-search.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/toolbar-vertical.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/toolbar-vertical.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/toolbar.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/toolbar.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-edit-lesson.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-edit-lesson.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-pdf-utilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-pdf-utilities.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-play-lesson.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-play-lesson.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-play-pdf.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-play-pdf.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-utilities.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-utilities.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/importCH_IDsforWorksheets.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importCH_IDsforWorksheets.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-database-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-database-utilities.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-play-pdf.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-play-pdf.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +62,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="4017" />
+    <option name="cachedIndexableFilesCount" value="4024" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="ExportToHTMLSettings">
@@ -130,33 +142,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/skip/Library/Application Support/JetBrains/IntelliJIdea2025.1/plugins/Shell Script/shellcheck&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/usr/local/var/www/Looma&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SHELLCHECK.PATH": "/Users/skip/Library/Application Support/JetBrains/IntelliJIdea2025.1/plugins/Shell Script/shellcheck",
+    "git-widget-placeholder": "looma-skip",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/usr/local/var/www/Looma",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -243,7 +255,7 @@
       <workItem from="1781055890293" duration="244092000" />
       <workItem from="1783546513432" duration="210000" />
       <workItem from="1783546738981" duration="31851000" />
-      <workItem from="1784435440514" duration="7147000" />
+      <workItem from="1784435440514" duration="47096000" />
     </task>
     <task id="LOCAL-00001" summary="5.2.3 adding mongoDB contents">
       <created>1571193627755</created>
@@ -595,7 +607,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783546941939</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="7.32 July 20 2026">
+      <option name="closed" value="true" />
+      <created>1784598299838</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1784598299838</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -620,7 +640,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="6.0.1b&#10;major release&#10;PHP 7.x compatibility&#10;MongoDB 4.x compatibility&#10;minor bug fixes&#10;profile in README&#10;recent mongodump" />
     <MESSAGE value="6.0.1c&#10;major release&#10;PHP 7.x compatibility&#10;MongoDB 4.x compatibility&#10;minor bug fixes&#10;profile in README&#10;recent mongodump" />
     <MESSAGE value="6.0.1d&#10;major release&#10;PHP 7.x compatibility&#10;MongoDB 4.x compatibility&#10;minor bug fixes&#10;profile in README&#10;recent mongodump&#10;&#10;6.0.1d&#10;new games (picture game)&#10;new games nav&#10;added Nepali subject ePaaths" />
     <MESSAGE value="6.0.1d&#10;major release&#10;PHP 7.x compatibility&#10;MongoDB 4.x compatibility&#10;minor bug fixes&#10;profile in README&#10;recent mongodump&#10;&#10;6.0.1e&#10;new games (picture game)&#10;new games nav&#10;added Nepali subject ePaaths&#10;&#10;6.0.1f&#10;registered new lessons&#10;vocab 'speak' games" />
@@ -645,7 +664,8 @@
     <MESSAGE value="7.21 JUN 30 2026" />
     <MESSAGE value="7.3 JUN 13 2026" />
     <MESSAGE value="7.31 July 8 2026" />
-    <option name="LAST_COMMIT_MESSAGE" value="7.31 July 8 2026" />
+    <MESSAGE value="7.32 July 20 2026" />
+    <option name="LAST_COMMIT_MESSAGE" value="7.32 July 20 2026" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

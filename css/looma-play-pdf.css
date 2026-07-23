@@ -87,6 +87,12 @@ pdf {
     transform-origin: 0% 0%;}
 
 /* PDF TOOLBAR */
+
+/* worksheets are shown without the top PDF toolbar, and use the full height
+   (the page is then scaled to fit this area - see 'fit' zoom in looma-pdf-utilities.js) */
+.worksheet-mode #pdf-toolbar { display:none !important; }
+.worksheet-mode #pdf { height:100vh; }
+
 #pdf-toolbar {
     height:8vh;
     min-height:8vh;

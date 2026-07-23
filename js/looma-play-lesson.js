@@ -198,6 +198,7 @@ function play ($item) {
 
         case 'pdf':
         case 'chapter':
+        case 'worksheet':   // worksheets are PDFs - display like a pdf
 
                         /*
                         echo '<div id="pdf" class="scroll"'  .

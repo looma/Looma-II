@@ -984,6 +984,7 @@ require_once('includes/looma-utilities.php');
                 case 'lesson-template':
                 case 'game':
                 case 'looma':
+                case 'worksheet':
                     array_push($extensions, $type);
                     break;
                 case 'quiz': // filetype "quiz" not implemented yet

@@ -83,7 +83,8 @@ Description:
      "text":"images/textfile.png",
      "textfile":"images/textfile.png",
      "looma":"images/LoomaLogo_small.png",
-     "chapter":"images/book.png"
+     "chapter":"images/book.png",
+     "worksheet":"images/worksheet.png"
  };
 
 var LOOMA = (function() {
@@ -150,11 +151,13 @@ playMedia : function(button) {
             //window.location = 'audio?fn=' + fn + '&fp=' + fp + '&dn=' + dn;
             break;
 
-        case "pdf":      //PDF
-        case "document": //DOCUMENT (some PDFs)
+        case "pdf":       //PDF
+        case "document":  //DOCUMENT (some PDFs)
         case "textbook":
+        case "worksheet": //WORKSHEET (displayed like a PDF)
             var pdfZoom =  button.getAttribute('data-zoom');
-            if ( ! pdfZoom || pdfZoom === "undefined" || pdfZoom === "auto") pdfZoom = '2.3';
+            if ( ! pdfZoom || pdfZoom === "undefined" || pdfZoom === "auto")
+                pdfZoom = (button.getAttribute("data-ft").toLowerCase() === "worksheet") ? '1.25' : '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
             var pdfLen =  button.getAttribute('data-len') ? button.getAttribute('data-len') : 1000;
                     window.location = 'pdf?' +
@@ -163,7 +166,8 @@ playMedia : function(button) {
                     '&lang=' + lang +
                     '&zoom=' + pdfZoom +
                     '&len=' + pdfLen +
-                    '&page=' + pdfPage;
+                    '&page=' + pdfPage +
+                    '&ft=' + encodeURIComponent(button.getAttribute('data-ft'));
             break;
 
         case "chapter":  //CHAPTER
@@ -477,7 +481,7 @@ playMedia : function(button) {
                 attrs['captions'] = 'false';
             else attrs['captions'] = 'true';
 
-            if (ft === 'pdf' || ft === 'chapter' || ft === 'textbook') {
+            if (ft === 'pdf' || ft === 'chapter' || ft === 'textbook' || ft === 'worksheet') {
                 attrs['page'] = result.pn  || 1;
                 attrs['len']  = result.len || result.url || 999;
                 if (result.zoom) attrs['zoom'] = result.zoom;
@@ -608,6 +612,10 @@ filepath: function(filetype) {
                 path = homedirectory + "content/pdfs/";
                 break;
 
+            case "worksheet": //worksheet (displayed like a pdf, stored in its own folder)
+                path = homedirectory + "content/worksheets/";
+                break;
+
             case "epaath":
             case "EP":
                 path = homedirectory + "content/epaath/activities/";
@@ -692,7 +700,8 @@ fallbackIcon: function(ft) {
         'slideshow':'images/play-slideshow-icon.png',
         'game':'images/games.png',
         'ep':'images/logos/ole-nepal.jpg', 'epaath':'images/logos/ole-nepal.jpg',
-        'looma':'images/LoomaLogo.png'
+        'looma':'images/LoomaLogo.png',
+        'worksheet':'images/worksheet.png'
     };
     return icons[ft] || null;
 },
@@ -779,7 +788,8 @@ typename: function(ft) {
         html:'HTML',
         looma:'Looma Page',
         chapter:'Chapter',
-        text: 'Text File'
+        text: 'Text File',
+        worksheet: 'Worksheet'
     };
 
     return (ft in names) ? names[ft] : ft;

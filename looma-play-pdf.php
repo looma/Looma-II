@@ -17,13 +17,16 @@ Revision: Looma 5.7
     $filepath = $_REQUEST['fp'];
     if ( strpos($filepath, 'chapters')) logFiletypeHit('chapter');
     else                                logFiletypeHit('pdf');
+    // worksheets display without the top PDF toolbar (see css/looma-play-pdf.css)
+    $ft = isset($_REQUEST['ft']) ? $_REQUEST['ft'] : '';
+    $worksheet_mode = ($ft === 'worksheet') ? ' worksheet-mode' : '';
 ?>
 <link rel="stylesheet" href="css/font-awesome.min.css">
 </head>
 
 <body>
 
-<div id="main-container-vertical">
+<div id="main-container-vertical" class="<?php echo trim($worksheet_mode); ?>">
     <div id="fullscreen">
 
 <?php

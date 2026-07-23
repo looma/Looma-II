@@ -3,8 +3,12 @@ CHANGE LOG FOR LOOMA
 2026 07
 - version 7.32
 - added "worksheet" filetype (FT)
-- added 700+ worksheets and assigned to chapters in grades 1,2,3
-- adde worksheet to search
+- added 350+ worksheets and assigned to chapters in grades 1,2,3
+- added worksheet filetype to library search and search panels (php and js)
+- worksheets open like PDFs (playMedia), with default zoom 1.25 and worksheet icon
+- added "Worksheet" toolbar button (replaces "Web") - opens looma-worksheets.php
+- added looma-worksheets.php (choose grade + subject) and looma-worksheet-list.php (lists worksheets by grade/subject)
+- serofero/nepali subject labels shown in Nepali, english shown in English
 
 2026 07
 - version 7.31

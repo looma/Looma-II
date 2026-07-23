@@ -7,7 +7,7 @@
     justify-content: flex-start;
     align-items: center;
     overflow: hidden;
-    
+
     padding: 0 2%;
     background-color: var(--looma-toolbar);
 }
@@ -70,10 +70,13 @@ button.toolbar#toolbar-record {display:none;}
     font-weight: bold;
     background-position: center;
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.50);
-    
+
 }
 
-#toolbar button img {height:80%;width:80%;}
+#toolbar button img {
+    height:80%;
+    /*width:80%; */
+}
 
 .toolbar-button.active {
     background-color:var(--looma-background);
@@ -87,7 +90,7 @@ button.toolbar#toolbar-record {display:none;}
     height: 6vh !important;
     width: 4vw;
     font-weight: bold;
-  
+
     font-size: 1em;
     background-position: center;
 }

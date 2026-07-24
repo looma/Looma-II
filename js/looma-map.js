@@ -370,10 +370,11 @@ function _loomaMapCountryDisplayName(props) {
         'continent', 'CONTINENT',
         // Nepal admin-level polygons on maps that aren't detected as full
         // Nepal-admin maps (e.g. Looma Schools Map, which has Provinces +
-        // Districts but no threeLayer flag). These fall through last so
-        // country-level names always win when both are present.
-        'title', 'DISTRICT', 'District', 'district',
-        'Municipality', 'MUNICIPALITY', 'municipality'
+        // Districts but no threeLayer flag). Most-specific first because
+        // municipality features carry BOTH Municipality and DISTRICT.
+        'Municipality', 'MUNICIPALITY', 'municipality',
+        'DISTRICT', 'District', 'district',
+        'title'
     ]);
 }
 
@@ -739,12 +740,18 @@ function _loomaMapBuildSearchIndex() {
     var out = [];
     var seen = {};
     var nameKeys = [
+        // MOST SPECIFIC FIRST — municipality features carry BOTH Municipality
+        // and DISTRICT props (the district they're in), so DISTRICT must not
+        // win the match. Similarly a district-level feature only carries
+        // DISTRICT; a province only carries `title`. So the priority is
+        // Municipality > DISTRICT > title before we fall through to the
+        // generic country / place keys.
+        'Municipality', 'MUNICIPALITY', 'municipality',
+        'DISTRICT', 'District', 'district',
+        'title',
         'name', 'NAME', 'country_name', 'country', 'admin', 'ADMIN',
         'NAME_0', 'NAME_ENGLI', 'name_long', 'formal_en',
         'city', 'CITY',
-        // Nepal admin layers (provinces / districts / municipalities).
-        'title', 'DISTRICT', 'District', 'district',
-        'Municipality', 'MUNICIPALITY', 'municipality',
         // continents.geojson on the World Map.
         'continent', 'CONTINENT'
     ];
@@ -777,8 +784,53 @@ function _loomaMapBuildSearchIndex() {
     return out;
 }
 
+// Helpers used by the search result focus logic for the Nepal Map's 3-level
+// admin layers.
+function _loomaMapNepalBaseIndexOf(targetLayer) {
+    if (!Array.isArray(baseLayers)) return -1;
+    for (var i = 0; i < baseLayers.length; i++) {
+        var bl = baseLayers[i];
+        if (!bl || typeof bl.hasLayer !== 'function') continue;
+        try { if (bl.hasLayer(targetLayer)) return i; } catch (_) {}
+    }
+    return -1;
+}
+
+function _loomaMapSwitchNepalBaseTo(targetBase) {
+    // Duplicates the branch that lives inside baseLayerButtons()'s change
+    // handler so we can switch base layers programmatically (e.g. from
+    // search) without triggering DOM events.
+    if (!data || !data.info || data.info.threeLayer !== 'true') return;
+    if (currentBase === targetBase) return;
+    _loomaMapClearNepalSelection();
+    if (targetBase === 0) {
+        if (baseLayers[2] && map.hasLayer(baseLayers[2])) map.removeLayer(baseLayers[2]);
+        if (baseLayers[0] && baseLayers[0].bringToFront) baseLayers[0].bringToFront();
+    } else if (targetBase === 1) {
+        if (baseLayers[2]) {
+            if (!map.hasLayer(baseLayers[2])) map.addLayer(baseLayers[2]);
+            if (baseLayers[2].bringToFront) baseLayers[2].bringToFront();
+        }
+        if (baseLayers[1] && baseLayers[1].bringToFront) baseLayers[1].bringToFront();
+    } else if (targetBase === 2) {
+        if (baseLayers[2]) {
+            if (!map.hasLayer(baseLayers[2])) map.addLayer(baseLayers[2]);
+            if (baseLayers[2].bringToFront) baseLayers[2].bringToFront();
+        }
+    }
+    currentBase = targetBase;
+    // Best-effort: sync the radio buttons in the base-layer chooser control.
+    try {
+        for (var i = 0; i <= 2; i++) {
+            var el = document.getElementById('id' + i);
+            if (el) el.checked = (i === targetBase);
+        }
+    } catch (_) {}
+}
+
 // Once a result is chosen, focus + reveal it. Points get openPopup(); polygon
-// features get a yellow-flash + the country card.
+// features get a yellow-flash + the country card (or the Nepal-specific
+// selection panel on Nepal Map's admin layers).
 function _loomaMapFocusSearchResult(rec) {
     if (!rec || !rec.layer || !map) return;
     var lyr = rec.layer;
@@ -808,6 +860,30 @@ function _loomaMapFocusSearchResult(rec) {
             }
         }, 100);
         return;
+    }
+
+    // Nepal Map admin polygon (province / district / municipality) — needs a
+    // different flow than generic countries: switch to the layer's own base
+    // level FIRST (so it's visible + selectable), then use the Nepal
+    // selection panel instead of the country card. Same code path the click
+    // handler at onEachFeature takes when a Nepal admin layer is active.
+    var isNepalAdmin =
+        _loomaMapIsNepalMap() &&
+        data && data.info && data.info.threeLayer === 'true' &&
+        typeof lyr.setStyle === 'function' && lyr.feature;
+    if (isNepalAdmin) {
+        var targetBase = _loomaMapNepalBaseIndexOf(lyr);
+        if (targetBase >= 0) {
+            _loomaMapSwitchNepalBaseTo(targetBase);
+            if (typeof lyr.getBounds === 'function') {
+                var padMax = targetBase === 0 ? 9 : (targetBase === 1 ? 11 : 13);
+                try { map.fitBounds(lyr.getBounds(), { maxZoom: padMax, padding: [40, 40] }); }
+                catch (_) {}
+            }
+            try { _loomaMapSelectNepalFeature(lyr); } catch (_) {}
+            try { _loomaMapFocusFeature(lyr); } catch (_) {}
+            return;
+        }
     }
 
     // Polygon (country / province) — fit bounds, briefly highlight, open the

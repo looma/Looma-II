@@ -715,6 +715,172 @@ function _loomaMapEnsureCountryClickPanel() {
     return countryClickPanel;
 }
 
+// ---------------------------------------------------------------------------
+// Search control (Skip review item 8). Lets the user type a country / city /
+// mountain / temple name and jump to it. Reuses everything the click-flow
+// already does: highlightFeature for countries, marker.openPopup for points.
+// ---------------------------------------------------------------------------
+var loomaMapSearchControl;
+
+// Walk every layer currently on the map and collect (name, layer) pairs.
+// The set changes as base/add-on layers finish loading, so the index is
+// rebuilt on each keystroke — cheap because there are only ~50 features on
+// a country map and it's just a string filter after that.
+function _loomaMapBuildSearchIndex() {
+    if (!map || !map.eachLayer) return [];
+    var out = [];
+    var seen = {};
+    var nameKeys = [
+        'name', 'NAME', 'country_name', 'country', 'admin', 'ADMIN',
+        'NAME_0', 'NAME_ENGLI', 'name_long', 'formal_en',
+        'city', 'CITY', 'title'
+    ];
+    function collect(layer) {
+        if (!layer || !layer.feature) return;
+        var props = layer.feature.properties || {};
+        var name = _loomaMapPickProp(props, nameKeys);
+        if (!name) return;
+        var key = ('' + name).toLowerCase().trim();
+        if (!key || seen[key]) return;
+        seen[key] = true;
+        out.push({ name: '' + name, layer: layer });
+    }
+    map.eachLayer(function (top) {
+        collect(top);
+        // GeoJSON layers wrap sub-layers; iterate those too.
+        if (top && typeof top.eachLayer === 'function') {
+            try { top.eachLayer(collect); } catch (_) {}
+        }
+    });
+    return out;
+}
+
+// Once a result is chosen, focus + reveal it. Points get openPopup(); polygon
+// features get a yellow-flash + the country card.
+function _loomaMapFocusSearchResult(rec) {
+    if (!rec || !rec.layer || !map) return;
+    var lyr = rec.layer;
+
+    // Point (circleMarker / marker) — pan, open the marker popup.
+    if (typeof lyr.getLatLng === 'function') {
+        var ll = lyr.getLatLng();
+        var currentZoom = map.getZoom();
+        var maxZ = map.options && map.options.maxZoom ? Number(map.options.maxZoom) : 8;
+        map.setView(ll, Math.min(maxZ, Math.max(currentZoom, 5)), { animate: true });
+        if (typeof lyr.openPopup === 'function') {
+            try { lyr.openPopup(); } catch (_) {}
+        } else if (typeof lyr.fire === 'function') {
+            try { lyr.fire('click'); } catch (_) {}
+        }
+        return;
+    }
+
+    // Polygon (country / province) — fit bounds, briefly highlight, open the
+    // country click panel.
+    if (typeof lyr.getBounds === 'function') {
+        try { map.fitBounds(lyr.getBounds(), { maxZoom: 6, padding: [40, 40] }); }
+        catch (_) {}
+    }
+    // Yellow flash so the user can see WHERE the match landed. Same style the
+    // hover handler uses; we set + reset via setStyle instead of calling the
+    // inner highlightFeature (which is in a closure we can't reach).
+    if (typeof lyr.setStyle === 'function') {
+        var priorStyle;
+        try { priorStyle = { weight: lyr.options && lyr.options.weight, color: lyr.options && lyr.options.color, fillOpacity: lyr.options && lyr.options.fillOpacity }; }
+        catch (_) { priorStyle = null; }
+        try { lyr.setStyle({ weight: 5, color: 'yellow', fillOpacity: 0.3 }); } catch (_) {}
+        setTimeout(function () {
+            // Ask the parent GeoJSON to reset if possible; else best-effort revert.
+            try {
+                if (lyr._eventParents) {
+                    for (var k in lyr._eventParents) {
+                        var parent = lyr._eventParents[k];
+                        if (parent && parent.resetStyle) { parent.resetStyle(lyr); return; }
+                    }
+                }
+                if (priorStyle) lyr.setStyle(priorStyle);
+            } catch (_) {}
+        }, 1500);
+    }
+    // Open the country info panel — same as a click would.
+    try { _loomaMapShowCountryClickInfo({ target: lyr }); } catch (_) {}
+}
+
+function _loomaMapEnsureSearchControl() {
+    if (loomaMapSearchControl || !map) return loomaMapSearchControl;
+    var C = L.Control.extend({
+        options: { position: 'topleft' },
+        onAdd: function () {
+            var wrap = L.DomUtil.create('div', 'looma-map-search leaflet-bar');
+            wrap.innerHTML =
+                '<input type="text" class="looma-map-search-input" placeholder="Search…" autocomplete="off" spellcheck="false" />' +
+                '<ul class="looma-map-search-results" hidden></ul>';
+            L.DomEvent.disableClickPropagation(wrap);
+            L.DomEvent.disableScrollPropagation(wrap);
+            var input = wrap.querySelector('input');
+            var list  = wrap.querySelector('ul');
+
+            function render(matches, q) {
+                list.innerHTML = '';
+                if (!matches.length) { list.hidden = true; return; }
+                matches.slice(0, 8).forEach(function (rec) {
+                    var li = L.DomUtil.create('li', '', list);
+                    li.textContent = rec.name;
+                    L.DomEvent.on(li, 'click', function () {
+                        list.hidden = true;
+                        input.value = rec.name;
+                        input.blur();
+                        _loomaMapFocusSearchResult(rec);
+                    });
+                });
+                list.hidden = false;
+            }
+
+            function runSearch() {
+                var q = input.value.trim().toLowerCase();
+                if (!q) { list.hidden = true; return null; }
+                var idx = _loomaMapBuildSearchIndex();
+                var matches = idx.filter(function (r) { return r.name.toLowerCase().indexOf(q) !== -1; });
+                // Sort: exact prefix > substring, then by length.
+                matches.sort(function (a, b) {
+                    var ai = a.name.toLowerCase().indexOf(q);
+                    var bi = b.name.toLowerCase().indexOf(q);
+                    if (ai !== bi) return ai - bi;
+                    return a.name.length - b.name.length;
+                });
+                render(matches, q);
+                return matches[0] || null;
+            }
+
+            L.DomEvent.on(input, 'input', runSearch);
+            L.DomEvent.on(input, 'keydown', function (e) {
+                if (e.keyCode === 13) {
+                    // Enter: jump to top match.
+                    var top = runSearch();
+                    if (top) {
+                        list.hidden = true;
+                        input.value = top.name;
+                        input.blur();
+                        _loomaMapFocusSearchResult(top);
+                    }
+                } else if (e.keyCode === 27) {
+                    input.value = '';
+                    list.hidden = true;
+                    input.blur();
+                }
+            });
+            L.DomEvent.on(input, 'focus', function () {
+                if (input.value.trim()) runSearch();
+            });
+
+            return wrap;
+        }
+    });
+    loomaMapSearchControl = new C();
+    loomaMapSearchControl.addTo(map);
+    return loomaMapSearchControl;
+}
+
 function _loomaMapUpdateCountryPanelFlag(props, extension, keepPanelVisible) {
     var panel = _loomaMapEnsureCountryClickPanel();
     var div = panel._div;
@@ -2632,6 +2798,7 @@ window.onload = function () {
             });
 
             _loomaMapEnsureCountryClickPanel();
+            _loomaMapEnsureSearchControl();
 
             map.on('click', function () {
                 if (countryClickJustOpened) {

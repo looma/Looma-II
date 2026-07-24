@@ -5,6 +5,55 @@
     background: var(--looma-blue, #091F48); /* was Leaflet default grey; use Looma brand blue */
 }
 
+/* Search box (top-left of the map). Lets students find a country / city /
+   mountain / temple by name. See _loomaMapEnsureSearchControl in looma-map.js. */
+.looma-map-search {
+    background: rgba(255, 255, 255, 0.98);
+    padding: 4px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    max-width: 280px;
+}
+.looma-map-search-input {
+    width: 220px;
+    height: 34px;
+    padding: 4px 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    color: #1a1a1a;
+    background: #fff;
+    box-sizing: border-box;
+}
+.looma-map-search-input:focus {
+    border-color: var(--looma-blue, #091F48);
+    box-shadow: 0 0 0 2px rgba(9, 31, 72, 0.15);
+}
+.looma-map-search-results {
+    list-style: none;
+    margin: 4px 0 0 0;
+    padding: 0;
+    max-height: 260px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+.looma-map-search-results li {
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #1a1a1a;
+    border-bottom: 1px solid #f0f0f0;
+}
+.looma-map-search-results li:last-child { border-bottom: none; }
+.looma-map-search-results li:hover {
+    background: #f4f6fa;
+    color: var(--looma-blue, #091F48);
+}
+
 /* Bigger Leaflet zoom buttons for the /maps pages — accessibility / touch-friendly.
    Mirrors the block in css/looma-game.css so map games and the maps tab share the
    same 44x44 px controls. */

@@ -43,6 +43,54 @@ Description: "Roads of Nepal" map. Fully offline. Renders Nepal's major road
     .looma-country-tooltip {
         font-weight: bold;
     }
+    /* Small in-map search widget (top-left). Searches provinces + named roads. */
+    .roads-search {
+        background: rgba(255,255,255,0.98);
+        padding: 4px;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        max-width: 260px;
+    }
+    .roads-search-input {
+        width: 200px; height: 32px;
+        padding: 4px 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        color: #1a1a1a;
+        background: #fff;
+        box-sizing: border-box;
+        outline: none;
+    }
+    .roads-search-input:focus {
+        border-color: #b0281c;
+        box-shadow: 0 0 0 2px rgba(176, 40, 28, 0.15);
+    }
+    .roads-search-results {
+        list-style: none;
+        margin: 4px 0 0 0;
+        padding: 0;
+        max-height: 240px;
+        overflow-y: auto;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        color: #1a1a1a;
+        font-size: 13px;
+    }
+    .roads-search-results li {
+        padding: 5px 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .roads-search-results li:last-child { border-bottom: none; }
+    .roads-search-results li:hover { background: #f4f6fa; color: #b0281c; }
+    .roads-search-results .kind {
+        font-size: 11px;
+        color: #888;
+        margin-left: 6px;
+    }
 </style>
 
 </head>
@@ -75,10 +123,18 @@ window.addEventListener('load', function () {
     var provincesPromise = fetch('data/nepal-provinces.min.json').then(function (r) { return r.json(); });
     var roadsPromise     = fetch('data/nepal-roads.geojson').then(function (r) { return r.json(); });
 
+    // Layer refs kept in scope so the search widget can jump to matches.
+    var provincesLayer = null;
+    var roadsLayer = null;
+    // Search index: [{name, kind: 'province'|'road', layer}]. Named roads
+    // are deduped — 8k line features boil down to ~874 unique names, so
+    // clicking a result jumps to the first segment with that name.
+    var searchIndex = [];
+
     provincesPromise.then(function (provincesGeo) {
         var provinceHover = { fillColor: '#f2ead0', color: '#8a5a2a', weight: 2, fillOpacity: 1 };
         var provinceDefault = { fillColor: '#f7efd7', color: '#b8964b', weight: 1.5, fillOpacity: 1 };
-        var provinces = L.geoJSON(provincesGeo, {
+        provincesLayer = L.geoJSON(provincesGeo, {
             style: function () { return provinceDefault; },
             onEachFeature: function (feature, layer) {
                 var props = feature.properties || {};
@@ -90,8 +146,9 @@ window.addEventListener('load', function () {
                 layer.bindTooltip(label, { sticky: true, direction: 'auto', className: 'looma-country-tooltip' });
                 layer.on({
                     mouseover: function (e) { e.target.setStyle(provinceHover); },
-                    mouseout:  function (e) { provinces.resetStyle(e.target); }
+                    mouseout:  function (e) { provincesLayer.resetStyle(e.target); }
                 });
+                if (english) searchIndex.push({ name: english, kind: 'province', layer: layer });
             }
         }).addTo(map);
 
@@ -103,7 +160,8 @@ window.addEventListener('load', function () {
                 primary:   {color: '#e05a1a', weight: 2.2, opacity: 0.9},
                 secondary: {color: '#b8894f', weight: 1.4, opacity: 0.85}
             };
-            L.geoJSON(roadsGeo, {
+            var seenRoadNames = {};
+            roadsLayer = L.geoJSON(roadsGeo, {
                 style: function (feature) {
                     var cls = (feature.properties && feature.properties.highway) || 'secondary';
                     return styles[cls] || styles.secondary;
@@ -112,6 +170,10 @@ window.addEventListener('load', function () {
                     var p = feature.properties || {};
                     var label = [p.name, p.ref].filter(Boolean).join(' — ');
                     if (label) layer.bindTooltip(label, { sticky: true, direction: 'auto' });
+                    if (p.name && !seenRoadNames[p.name.toLowerCase()]) {
+                        seenRoadNames[p.name.toLowerCase()] = true;
+                        searchIndex.push({ name: p.name, kind: 'road', layer: layer });
+                    }
                 }
             }).addTo(map);
         });
@@ -135,6 +197,84 @@ window.addEventListener('load', function () {
         return div;
     };
     legend.addTo(map);
+
+    // Search widget — top-left, small. Indexes 7 provinces + ~874 unique
+    // road names. Matches by substring, prefix ranks higher.
+    var searchControl = L.control({ position: 'topleft' });
+    searchControl.onAdd = function () {
+        var wrap = L.DomUtil.create('div', 'roads-search leaflet-bar');
+        wrap.innerHTML =
+            '<input type="text" class="roads-search-input" placeholder="Search provinces / roads…" autocomplete="off" spellcheck="false" />' +
+            '<ul class="roads-search-results" hidden></ul>';
+        L.DomEvent.disableClickPropagation(wrap);
+        L.DomEvent.disableScrollPropagation(wrap);
+        var input = wrap.querySelector('input');
+        var list  = wrap.querySelector('ul');
+
+        function focusMatch(rec) {
+            if (!rec || !rec.layer) return;
+            if (rec.kind === 'province') {
+                try { map.fitBounds(rec.layer.getBounds(), { maxZoom: 10, padding: [40,40] }); } catch(_) {}
+                if (rec.layer.openTooltip) try { rec.layer.openTooltip(); } catch(_) {}
+            } else { // road
+                try { map.fitBounds(rec.layer.getBounds(), { maxZoom: 13, padding: [40,40] }); } catch(_) {}
+                // Flash: bump weight briefly so the searched road stands out.
+                var origStyle;
+                try { origStyle = rec.layer.options ? {weight: rec.layer.options.weight, color: rec.layer.options.color, opacity: rec.layer.options.opacity} : null; } catch(_) { origStyle = null; }
+                try { rec.layer.setStyle({ weight: 6, color: '#ffb400', opacity: 1 }); } catch(_) {}
+                setTimeout(function () {
+                    try {
+                        if (roadsLayer && roadsLayer.resetStyle) roadsLayer.resetStyle(rec.layer);
+                        else if (origStyle) rec.layer.setStyle(origStyle);
+                    } catch(_) {}
+                }, 1800);
+                if (rec.layer.openTooltip) try { rec.layer.openTooltip(); } catch(_) {}
+            }
+        }
+
+        function runSearch() {
+            var q = input.value.trim().toLowerCase();
+            if (!q) { list.hidden = true; return null; }
+            var matches = searchIndex.filter(function (r) {
+                return r.name.toLowerCase().indexOf(q) !== -1;
+            });
+            matches.sort(function (a, b) {
+                var ai = a.name.toLowerCase().indexOf(q);
+                var bi = b.name.toLowerCase().indexOf(q);
+                if (ai !== bi) return ai - bi;
+                // Provinces before roads if same prefix.
+                if (a.kind !== b.kind) return a.kind === 'province' ? -1 : 1;
+                return a.name.length - b.name.length;
+            });
+            list.innerHTML = '';
+            if (!matches.length) { list.hidden = true; return null; }
+            matches.slice(0, 8).forEach(function (rec) {
+                var li = L.DomUtil.create('li', '', list);
+                li.innerHTML = rec.name + '<span class="kind">' + rec.kind + '</span>';
+                L.DomEvent.on(li, 'click', function () {
+                    list.hidden = true;
+                    input.value = rec.name;
+                    input.blur();
+                    focusMatch(rec);
+                });
+            });
+            list.hidden = false;
+            return matches[0];
+        }
+
+        L.DomEvent.on(input, 'input', runSearch);
+        L.DomEvent.on(input, 'keydown', function (e) {
+            if (e.keyCode === 13) {
+                var top = runSearch();
+                if (top) { list.hidden = true; input.value = top.name; input.blur(); focusMatch(top); }
+            } else if (e.keyCode === 27) {
+                input.value = ''; list.hidden = true; input.blur();
+            }
+        });
+        L.DomEvent.on(input, 'focus', function () { if (input.value.trim()) runSearch(); });
+        return wrap;
+    };
+    searchControl.addTo(map);
 
     if (typeof toolbar_button_activate === 'function') toolbar_button_activate('maps');
 });

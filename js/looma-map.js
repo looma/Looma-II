@@ -367,7 +367,13 @@ function _loomaMapCountryDisplayName(props) {
         'name_long', 'formal_en', 'NAME_0', 'NAME_ENGLI', 'name', 'NAME',
         // World Map's continents.geojson features only carry `continent` —
         // fall through to it so the hover tooltip still shows a name.
-        'continent', 'CONTINENT'
+        'continent', 'CONTINENT',
+        // Nepal admin-level polygons on maps that aren't detected as full
+        // Nepal-admin maps (e.g. Looma Schools Map, which has Provinces +
+        // Districts but no threeLayer flag). These fall through last so
+        // country-level names always win when both are present.
+        'title', 'DISTRICT', 'District', 'district',
+        'Municipality', 'MUNICIPALITY', 'municipality'
     ]);
 }
 
@@ -722,18 +728,25 @@ function _loomaMapEnsureCountryClickPanel() {
 // ---------------------------------------------------------------------------
 var loomaMapSearchControl;
 
-// Walk every layer currently on the map and collect (name, layer) pairs.
+// Walk every layer currently on the map AND every layer that's been loaded
+// (even if not currently visible — this is how Nepal Map's Districts and
+// Municipalities are indexed even when the user is looking at Provinces).
 // The set changes as base/add-on layers finish loading, so the index is
-// rebuilt on each keystroke — cheap because there are only ~50 features on
-// a country map and it's just a string filter after that.
+// rebuilt on each keystroke — cheap because it's ~a few thousand string
+// comparisons at most.
 function _loomaMapBuildSearchIndex() {
-    if (!map || !map.eachLayer) return [];
+    if (!map) return [];
     var out = [];
     var seen = {};
     var nameKeys = [
         'name', 'NAME', 'country_name', 'country', 'admin', 'ADMIN',
         'NAME_0', 'NAME_ENGLI', 'name_long', 'formal_en',
-        'city', 'CITY', 'title'
+        'city', 'CITY',
+        // Nepal admin layers (provinces / districts / municipalities).
+        'title', 'DISTRICT', 'District', 'district',
+        'Municipality', 'MUNICIPALITY', 'municipality',
+        // continents.geojson on the World Map.
+        'continent', 'CONTINENT'
     ];
     function collect(layer) {
         if (!layer || !layer.feature) return;
@@ -745,13 +758,22 @@ function _loomaMapBuildSearchIndex() {
         seen[key] = true;
         out.push({ name: '' + name, layer: layer });
     }
-    map.eachLayer(function (top) {
+    function walkLayer(top) {
+        if (!top) return;
         collect(top);
         // GeoJSON layers wrap sub-layers; iterate those too.
-        if (top && typeof top.eachLayer === 'function') {
+        if (typeof top.eachLayer === 'function') {
             try { top.eachLayer(collect); } catch (_) {}
         }
-    });
+    }
+    // Everything currently displayed on the map.
+    if (typeof map.eachLayer === 'function') map.eachLayer(walkLayer);
+    // Also every base layer that was loaded — some may not be currently on
+    // the map (e.g. Nepal Map's Districts / Municipalities when Provinces is
+    // the active view). This is the module-global from loadBaseLayers.
+    if (Array.isArray(baseLayers)) {
+        baseLayers.forEach(walkLayer);
+    }
     return out;
 }
 
@@ -761,17 +783,30 @@ function _loomaMapFocusSearchResult(rec) {
     if (!rec || !rec.layer || !map) return;
     var lyr = rec.layer;
 
-    // Point (circleMarker / marker) — pan, open the marker popup.
+    // Point (circleMarker / marker) — pan, then simulate a click so the
+    // normal click handler binds + opens the popup. openPopup() alone doesn't
+    // work here because most add-on markers bind their popup ONLY on click
+    // (see _loomaMapShowCapitalClickProps -> _loomaMapShowCapitalPopupAtMarker).
     if (typeof lyr.getLatLng === 'function') {
         var ll = lyr.getLatLng();
         var currentZoom = map.getZoom();
         var maxZ = map.options && map.options.maxZoom ? Number(map.options.maxZoom) : 8;
         map.setView(ll, Math.min(maxZ, Math.max(currentZoom, 5)), { animate: true });
-        if (typeof lyr.openPopup === 'function') {
-            try { lyr.openPopup(); } catch (_) {}
-        } else if (typeof lyr.fire === 'function') {
-            try { lyr.fire('click'); } catch (_) {}
-        }
+        // Fire the click after the pan so the click handler sees the marker
+        // at its final position. Also try openPopup as a fallback in case a
+        // popup is already bound.
+        setTimeout(function () {
+            var opened = false;
+            if (typeof lyr.getPopup === 'function') {
+                try {
+                    var p = lyr.getPopup();
+                    if (p && typeof lyr.openPopup === 'function') { lyr.openPopup(); opened = true; }
+                } catch (_) {}
+            }
+            if (!opened && typeof lyr.fire === 'function') {
+                try { lyr.fire('click', { latlng: ll, target: lyr }); } catch (_) {}
+            }
+        }, 100);
         return;
     }
 
@@ -808,6 +843,11 @@ function _loomaMapFocusSearchResult(rec) {
 
 function _loomaMapEnsureSearchControl() {
     if (loomaMapSearchControl || !map) return loomaMapSearchControl;
+    // Street maps (Pokhara Street Map, Kathmandu Street Map) don't have
+    // named base features to search over — they're pure tile layers. Skip
+    // the search control for them.
+    var titleLower = ((data && data.title) || mapTitle || '').toLowerCase();
+    if (titleLower.indexOf('street') !== -1) return null;
     var C = L.Control.extend({
         options: { position: 'topleft' },
         onAdd: function () {
@@ -2626,10 +2666,14 @@ function _loomaMapBuildCapitalPhotoCandidates(cityName, extension) {
             return { label: 'Highest point', valueHtml: '' + value };
         }
 
-        // Also handle elevation-in-feet fields by converting to metres.
+        // Also handle elevation-in-feet fields by converting to metres. The
+        // Nepal mountains geojson uses `"elevation (ft)"` verbatim, so include
+        // that (with the space and parentheses) alongside the underscore-style
+        // keys that other sources use.
         var isElevationFeet =
             keyLower === 'elev_ft' ||
             keyLower === 'elevation_ft' ||
+            keyLower === 'elevation (ft)' ||
             keyLower === 'alt_ft' ||
             keyLower === 'altitude_ft' ||
             keyLower === 'highest_ft' ||

@@ -1976,7 +1976,16 @@ function loadAddOnLayers (layerData, information) {
         });
     }
     else for (var i = 0; i < layerData.length; i++)
-        { var link = '/content/maps/json/' + layerData[i].geojson + '?' + LOOMA_MAP_CACHE_BUSTER;
+        {
+            // If the layer descriptor specifies an absolute path (e.g.
+            // "/data/nepal-cities.geojson"), use it verbatim so we can serve
+            // supplemental GeoJSON from the app's local /data/ directory
+            // rather than /content/ (which redirects to looma.website). Any
+            // plain filename still resolves under /content/maps/json/ as before.
+            var geoRef = layerData[i].geojson || '';
+            var link = (geoRef.charAt(0) === '/'
+                ? geoRef
+                : '/content/maps/json/' + geoRef) + '?' + LOOMA_MAP_CACHE_BUSTER;
                 // Wrap in a Promise that always resolves so a single 404 doesn't
                 // break Promise.all — otherwise the post-load auto-show loop
                 // (which turns on the Capitals layer) never runs.

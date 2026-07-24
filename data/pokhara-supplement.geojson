@@ -1,0 +1,21 @@
+{
+  "type": "FeatureCollection",
+  "note": "Supplemental Nepal cities not present in the World/Asia base city geojsons on looma.website. Currently just Pokhara — Skip's Jul 2026 review flagged that it was missing from both the World and Asia maps.",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pokhara",
+        "country": "Nepal",
+        "country_name": "Nepal",
+        "ISO_A3": "NPL",
+        "population": "414141",
+        "combined": "Pokhara, Nepal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [83.991281, 28.235096]
+      }
+    }
+  ]
+}

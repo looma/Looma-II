@@ -832,16 +832,31 @@ function _loomaMapShowCountryClickProps(props) {
     }
 }
 
+// Monotonic click token. Every marker click increments this. When the async
+// supplemental-country-facts fetch resolves, we compare against the current
+// value — if a newer click has happened, we skip the re-render. This prevents
+// the pre-existing race where clicking marker A, then quickly clicking marker
+// B (or dismissing), caused A's stale popup to re-open once its deferred
+// resolved. That race is what surfaced as "click hangs" / "two popups open".
+var _loomaMapClickToken = 0;
+
 function _loomaMapShowCapitalClickProps(capitalProps, imageLink, marker, opts) {
     // Click on a marker: open the country card (top-right) AND a popup
     // directly over the marker. Generic 'place' features (Nepal lakes,
     // temples, mountains, cities) don't have country-level facts — for those
     // we skip the country panel entirely and only show the marker popup.
     opts = opts || {};
+    var myToken = ++_loomaMapClickToken;
     var popupOpts = {open: true, placeKind: opts.placeKind, inPop: opts.inPop, imageKey: opts.imageKey};
     try {
         countryClickJustOpened = true;
         setTimeout(function () { countryClickJustOpened = false; }, 250);
+
+        // Explicitly close any prior popup before opening a new one. Leaflet's
+        // autoClose usually handles this, but the async re-render below can
+        // reopen a stale popup — the closePopup here is defense-in-depth for
+        // the fast-click case.
+        if (typeof map !== 'undefined' && map && map.closePopup) map.closePopup();
 
         if (opts.placeKind === 'place') {
             _loomaMapCloseCountryPanel();
@@ -865,6 +880,10 @@ function _loomaMapShowCapitalClickProps(capitalProps, imageLink, marker, opts) {
         }
         if (needLoadSupplemental) {
             _loomaMapLoadSupplementalCountryFacts().done(function () {
+                // Bail if the user has since clicked another marker — the
+                // re-render below would resurrect this popup over whatever
+                // the user actually cares about now.
+                if (myToken !== _loomaMapClickToken) return;
                 _loomaMapHydrateLoadedLayers();
                 _loomaMapRenderCountryCard(capitalProps);
                 _loomaMapShowCapitalPopupAtMarker(capitalProps, marker, imageLink, {placeKind: opts.placeKind, inPop: opts.inPop, imageKey: opts.imageKey});

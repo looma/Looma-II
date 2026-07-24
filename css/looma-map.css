@@ -2,6 +2,29 @@
     position:relative;
     bottom:0;
     width: 100%; height: 100%;
+    background: var(--looma-blue, #091F48); /* was Leaflet default grey; use Looma brand blue */
+}
+
+/* Bigger Leaflet zoom buttons for the /maps pages — accessibility / touch-friendly.
+   Mirrors the block in css/looma-game.css so map games and the maps tab share the
+   same 44x44 px controls. */
+.leaflet-control-zoom a {
+    width: 44px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+    font-size: 26px !important;
+    font-weight: bold;
+}
+.leaflet-control-zoom {
+    border-radius: 6px !important;
+}
+.leaflet-control-zoom a:first-child {
+    border-top-left-radius: 6px !important;
+    border-top-right-radius: 6px !important;
+}
+.leaflet-control-zoom a:last-child {
+    border-bottom-left-radius: 6px !important;
+    border-bottom-right-radius: 6px !important;
 }
 
 h1 {margin:10px 0 10px 0}
@@ -13,10 +36,16 @@ div.viewer {
 div.viewer img {
 }
 
+/* ============================================================ */
+/*  Classroom sizing                                            */
+/*  Hover tooltips, info containers and flags are scaled up so   */
+/*  they stay readable from the back of a whole classroom.       */
+/* ============================================================ */
+
 /* All of the info boxes in the map */
 .info {
-    padding: 10px 8px;
-    font: 26px Arial, Helvetica, sans-serif;
+    padding: 14px 16px;
+    font: 38px Arial, Helvetica, sans-serif;
     color: #555555;
     background: #f4f4f4;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -25,30 +54,170 @@ div.viewer img {
 
 /* The legend and the writing in it, overrides .info */
 .legend {
-    font: 18px Arial, Helvetica, sans-serif;
-    line-height: 20px;
+    font: 24px Arial, Helvetica, sans-serif;
+    line-height: 26px;
     color: #555;
 }
 
 /* The boxes in the legend */
 .legend i {
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
     float: left;
-    margin-right: 8px;
+    margin-right: 10px;
     opacity: 0.7;
 }
 
 /* Images in the info box for the map  [where the nations' FLAGs are shown*/
 img.info-image{
-    width: 300px;
-    height: 200px;
+    width: 440px;
+    height: 290px;
+}
+
+.info .hover-country-facts {
+    margin: 8px 0;
+}
+
+.info .country-fact-card {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    margin: 5px 0;
+    padding: 7px 11px;
+    text-align: left;
+}
+
+.info .country-fact-card b {
+    color: #091F48;
+    display: block;
+    font-size: 21px;
+    margin-bottom: 1px;
+}
+
+.info .country-fact-card span {
+    color: #333333;
+    display: block;
+    font-size: 23px;
+}
+
+.nepal-hover-panel,
+.nepal-selection-panel {
+    min-width: 300px;
+    max-width: 480px;
+    padding: 18px 24px;
+    color: #091F48;
+    font: 700 32px Arial, Helvetica, sans-serif;
+    line-height: 1.2;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.nepal-hover-panel {
+    position: relative;
+    z-index: 2;
+}
+
+.nepal-selection-panel.has-details {
+    position: relative;
+    z-index: 1;
+    text-align: left;
+    font-size: 22px;
+    font-weight: 400;
+}
+
+.nepal-selection-panel .nepal-selection-title {
+    color: #091F48;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.nepal-selection-panel .country-fact-card {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    margin: 5px 0;
+    padding: 5px 8px;
+}
+
+.nepal-selection-panel .country-fact-card b {
+    color: #091F48;
+    display: block;
+    font-size: 19px;
+    margin-bottom: 1px;
+}
+
+.nepal-selection-panel .country-fact-card span {
+    color: #111111;
+    display: block;
+    font-size: 22px;
+    line-height: 1.25;
 }
 
 .leaflet-popup-pane {}
 
 
-.capital-popup {height:50vh;width:33vw;}
+.capital-popup {
+    height: auto;
+    width: auto;
+    pointer-events: none;
+}
+
+.capital-popup .leaflet-popup-content-wrapper,
+.capital-popup .leaflet-popup-tip-container {
+    pointer-events: none;
+}
+
+.capital-popup .leaflet-popup-content {
+    width: 760px !important;
+}
+
+.capital-popup-layout {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 680px;
+}
+
+.capital-popup-media {
+    width: 340px;
+    flex: 0 0 340px;
+}
+
+.capital-popup-media .pop-image {
+    width: 100%;
+    height: auto !important;
+    max-height: 250px;
+    object-fit: contain;
+    display: block;
+}
+
+.capital-popup-info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.capital-popup-name {
+    color: #091F48;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.capital-popup-row b {
+    color: #091F48;
+    display: block;
+    font-size: 22px;
+    margin-bottom: 3px;
+}
+
+.capital-popup-row span {
+    color: #333333;
+    display: block;
+    font-size: 27px;
+}
 
 .leaflet-popop-content-wrapper {
     height: 20vh !important;
@@ -58,17 +227,341 @@ img.info-image{
 
 /* Pop-ups */
 .leaflet-popup-content{
-    font-size: 20px;
+    font-size: 27px;
     color: #555555;
-    
+
     width:auto !important; }
 
  .leaflet-popup-tip-container {display:none;}
 
+.looma-country-click-popup {
+    min-width: 320px;
+    max-width: 470px;
+}
+
+.looma-country-click-popup .country-card-title {
+    color: #091F48;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.looma-country-click-popup .country-fact-card {
+    background: #f4f4f4;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    margin: 6px 0;
+    padding: 9px 12px;
+}
+
+.looma-country-click-popup .country-fact-card b {
+    color: #091F48;
+    display: block;
+    font-size: 21px;
+    margin-bottom: 2px;
+}
+
+.looma-country-click-popup .country-fact-card span {
+    color: #333333;
+    display: block;
+    font-size: 25px;
+}
+
 /*Images in the popup box for the map*/
 img.pop-image{
-    height:15vh !important;
+    height:22vh !important;
     width:auto;
+}
+
+.looma-country-tooltip {
+    background: rgba(9, 31, 72, 0.94);
+    border: 2px solid rgba(255, 255, 255, 0.82);
+    border-radius: 6px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+    font: 700 30px Arial, Helvetica, sans-serif;
+    padding: 9px 16px;
+}
+
+.looma-country-tooltip:before {
+    border-top-color: rgba(9, 31, 72, 0.94);
+}
+
+/* ============================================================ */
+/*  Country panel (top-right) — flag + country card              */
+/* ============================================================ */
+/* The panel hosts two stacked elements:                          */
+/*   1. The country flag (.flag-wrap)                             */
+/*   2. The country card (.country-card)  — name, pop, capital,  */
+/*      area, currency, gdp, language, highest point             */
+/* The capital card is NOT here — it appears as a popup directly */
+/* over the capital marker on the map (.capital-marker-popup).   */
+
+.looma-country-panel {
+    position: relative;
+    /* Responsive width so the panel never overflows narrow / portrait screens
+       (was a fixed 470px). max-width caps it on wide projectors. */
+    width: min(470px, 36vw);
+    max-width: 92vw;
+    /* Small top gap so the panel can never sit under the main toolbar when
+       the map fills the whole viewport. */
+    margin-top: 1vh;
+    pointer-events: none;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+}
+
+/* Flag at the top of the stack — only takes space when populated.
+   Height is now viewport-relative (was a fixed 270/360 px, which became
+   gigantic on portrait / short screens). */
+.looma-country-panel .flag-wrap {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 18vh;
+    background: transparent;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.25s ease, max-height 0.4s ease;
+    pointer-events: auto;
+    max-height: 18vh;
+    opacity: 1;
+    flex: 0 0 auto;
+}
+
+.looma-country-panel .flag-wrap.empty {
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.looma-country-panel .flag {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: transparent;
+    display: block;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
+}
+
+/* Cards: closed = collapsed to zero height with no opacity. Open = expanded
+   with the natural content height. Two independent .panel-card elements so
+   the country card and capital card slide in/out separately. */
+.looma-country-panel .panel-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 12px;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.28);
+    color: #15233a;
+    padding: 0 18px;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition:
+        max-height 0.45s cubic-bezier(0.22, 0.85, 0.35, 1),
+        opacity    0.25s ease-out,
+        padding    0.45s ease,
+        transform  0.30s ease-out;
+}
+
+.looma-country-panel .panel-card.open {
+    /* Fill the viewport space left under the flag (flag 18vh + gaps/margins ≈ 22vh)
+       and DON'T scroll — the country facts are a fixed, compact set, so the whole
+       panel (flag + card) is meant to fit fully on screen with no scrollbar. */
+    max-height: calc(100vh - 22vh);
+    opacity: 1;
+    padding: 14px 16px;
+    transform: translateY(0);
+    pointer-events: auto;
+    overflow: hidden;
+}
+
+.looma-country-panel .country-card-title {
+    color: #091F48;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+}
+
+.looma-country-panel .country-fact-card {
+    background: #f4f4f4;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    margin: 4px 0;
+    padding: 4px 11px;
+    font-size: 17px;
+}
+
+.looma-country-panel .country-fact-card b {
+    color: #091F48;
+    display: block;
+    font-size: 15px;
+    margin-bottom: 1px;
+}
+
+.looma-country-panel .country-fact-card span,
+.looma-country-panel .country-fact-value {
+    color: #111111;
+    display: block;
+    font-size: 18px;
+    line-height: 1.2;
+    /* No min-height — the old 24px floor wasted ~24px per fact and pushed the
+       fixed fact list past the viewport, forcing the scroll we're removing. */
+}
+
+/* ============================================================ */
+/*  Capital popup — appears directly over the capital marker    */
+/* ============================================================ */
+.capital-marker-popup .leaflet-popup-content-wrapper {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 12px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.30);
+    padding: 4px 6px;
+    /* Let the wrapper size itself to the content — the marker.bindPopup
+       maxWidth option then acts as a soft ceiling, but content with nowrap
+       values won't be clipped horizontally. */
+    width: auto;
+    max-width: 92vw;
+    box-sizing: border-box;
+}
+
+.capital-marker-popup .leaflet-popup-content {
+    margin: 10px 12px;
+    width: auto !important;
+    min-width: 300px;
+    max-width: none !important;
+    font-size: 21px;
+    color: #111111;
+}
+
+.capital-marker-popup .leaflet-popup-tip-container {
+    display: block;
+}
+
+.capital-marker-popup .leaflet-popup-tip {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.capital-marker-popup .leaflet-popup-close-button {
+    color: #091F48;
+    font-size: 30px;
+    padding: 6px 10px 0 0;
+}
+
+.capital-marker-card .capital-card-layout {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.capital-marker-card .capital-card-photo {
+    flex: 0 0 auto;
+    width: 360px;
+    height: auto;
+    max-height: 440px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.capital-marker-card .capital-card-info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.capital-marker-card .capital-card-title {
+    color: #091F48;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+}
+
+.capital-marker-card .country-fact-card {
+    background: #f4f4f4;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    margin: 5px 0;
+    padding: 6px 10px;
+    font-size: 20px;
+}
+
+.capital-marker-card .capital-fact-card {
+    background: #ffffff;
+}
+
+/* Generic place fact card (Nepal lakes / temples / mountains / cities). */
+.capital-marker-card .place-fact-card {
+    background: #ffffff;
+}
+
+.capital-marker-card.place-marker-card .capital-card-layout {
+    display: grid;
+    grid-template-columns: minmax(230px, 300px) minmax(190px, 1fr);
+    gap: 12px;
+    max-width: min(92vw, 820px);
+    box-sizing: border-box;
+}
+
+.capital-marker-card.place-marker-card .capital-card-photo {
+    width: 100%;
+    height: 170px;
+    max-height: 170px;
+    object-fit: cover;
+}
+
+.capital-marker-card.place-marker-card .capital-card-info {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.capital-marker-card.place-marker-card .capital-card-title {
+    font-size: 22px;
+    line-height: 1.15;
+    margin-right: 18px;
+}
+
+.capital-marker-card.place-marker-card .country-fact-card {
+    box-sizing: border-box;
+    max-width: 100%;
+    padding: 5px 9px;
+}
+
+.capital-marker-card.place-marker-card .country-fact-card span,
+.capital-marker-card.place-marker-card .country-fact-value {
+    /* Keep labels on one line so wider popups actually take advantage of the extra
+       horizontal room. Long values still wrap because we allow overflow-wrap. */
+    white-space: nowrap;
+    overflow-wrap: normal;
+}
+
+.capital-marker-card .country-fact-card b {
+    color: #091F48;
+    display: block;
+    font-size: 19px;
+    margin-bottom: 1px;
+}
+
+.capital-marker-card .country-fact-card span,
+.capital-marker-card .country-fact-value {
+    color: #111111;
+    display: block;
+    font-size: 22px;
+    line-height: 1.25;
+    white-space: nowrap;
+}
+
+.capital-marker-card .capital-card-info {
+    /* Let the card grow as wide as the longest no-wrap value needs. */
+    min-width: 0;
+    flex: 0 0 auto;
 }
 
 /* Some websites say that this way to style the boxes is sketchy, but it works for our purposes */
@@ -129,4 +622,30 @@ button#fullscreen-control {
 screen and (max-device-width:768px) and (orientation:landscape) {    .info {font-size:2vwx;
    padding: 1px 5px;
     }
+}
+
+/* ============================================================ */
+/*  Floating control buttons — clear the top-right country panel */
+/* ============================================================ */
+/* The Speak / Assistant / Lookup / Keyboard / Fullscreen buttons float at
+   right:5vw (looma.css). On the maps page that lands them ON TOP of the
+   top-right country panel (a Leaflet topright control, min(470px, 36vw) wide),
+   so the chat-bubble (Assistant) sat over the country card. This file only
+   loads on looma-play-map.php, so shifting the whole column just inboard of
+   the panel is scoped to the maps page and leaves every other page untouched.
+
+   NOTE: looma-assistant-button.js sets the Assistant button's `right` inline,
+   reading it from the Speak button's COMPUTED `right`. So we must move
+   button.speak too — the JS then aligns the Assistant (and keyboard) to the
+   same shifted column automatically.
+
+   Only the UTILITY stack moves. #fullscreen-control stays in its bottom-right
+   corner (it sits below the panel, so it never overlapped), and the media-nav
+   buttons (next/prev/play-pause) are a separate group left untouched. */
+button.speak,
+button.looma-assistant,
+button.lookup,
+button.captions,
+button.show-keyboard {
+    right: calc(min(470px, 36vw) + 1.5vw) !important;
 }

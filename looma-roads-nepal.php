@@ -82,8 +82,12 @@ window.addEventListener('load', function () {
             style: function () { return provinceDefault; },
             onEachFeature: function (feature, layer) {
                 var props = feature.properties || {};
-                var name = props.PROVINCE_1 || props.province || props.name || props.NAME || 'Province';
-                layer.bindTooltip('' + name, { sticky: true, direction: 'auto', className: 'looma-country-tooltip' });
+                // The shipped GeoJSON stores the province name in `title`
+                // (e.g. "Koshi Pradesh", "Bagmati Pradesh"). Nepali script is in `Nepali`.
+                var english = props.title || props.PROVINCE_1 || props.province || props.name || props.NAME || 'Province';
+                var nepali = props.Nepali || '';
+                var label = nepali ? english + ' — ' + nepali : english;
+                layer.bindTooltip(label, { sticky: true, direction: 'auto', className: 'looma-country-tooltip' });
                 layer.on({
                     mouseover: function (e) { e.target.setStyle(provinceHover); },
                     mouseout:  function (e) { provinces.resetStyle(e.target); }

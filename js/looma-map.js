@@ -935,8 +935,8 @@ function _loomaMapShowCapitalPopupAtMarker(capitalProps, marker, imageLink, opts
             autoClose: true,
             autoPan: true,
             keepInView: true,
-            maxWidth: isPlace ? 720 : 480,
-            minWidth: isPlace ? 320 : 360
+            maxWidth: isPlace ? 900 : 640,
+            minWidth: isPlace ? 380 : 400
         });
     }
     if (opts.open) marker.openPopup();
@@ -2411,7 +2411,7 @@ function _loomaMapBuildCapitalPhotoCandidates(cityName, extension) {
             return { label: 'Population', valueHtml: toCommas('' + value) };
         }
 
-        // Highest point / elevation (meters + feet).
+        // Highest point / elevation — metric only, per Skip's review.
         var isElevationMeters =
             keyLower === 'elev_m' ||
             keyLower === 'elevation_m' ||
@@ -2424,10 +2424,30 @@ function _loomaMapBuildCapitalPhotoCandidates(cityName, extension) {
         if (isElevationMeters) {
             var meters = _loomaMapAsNumber(value);
             if (meters !== null) {
-                var feet = meters * 3.28084;
                 return {
                     label: 'Highest point',
-                    valueHtml: Math.round(meters) + ' m / ' + Math.round(feet) + ' ft'
+                    valueHtml: toCommas(Math.round(meters)) + ' m'
+                };
+            }
+            return { label: 'Highest point', valueHtml: '' + value };
+        }
+
+        // Also handle elevation-in-feet fields by converting to metres.
+        var isElevationFeet =
+            keyLower === 'elev_ft' ||
+            keyLower === 'elevation_ft' ||
+            keyLower === 'alt_ft' ||
+            keyLower === 'altitude_ft' ||
+            keyLower === 'highest_ft' ||
+            keyLower === 'highest_point_ft' ||
+            keyLower === 'highestpoint_ft';
+
+        if (isElevationFeet) {
+            var feetVal = _loomaMapAsNumber(value);
+            if (feetVal !== null) {
+                return {
+                    label: 'Highest point',
+                    valueHtml: toCommas(Math.round(feetVal * 0.3048)) + ' m'
                 };
             }
             return { label: 'Highest point', valueHtml: '' + value };

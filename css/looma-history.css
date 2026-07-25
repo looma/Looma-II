@@ -372,6 +372,22 @@ button.img:hover {
     width: 3vw;
 }
 
+/* inline images added in the History editor (up to 2 per event) */
+.popup-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vh;
+    margin-top: 2vh;
+    justify-content: flex-start;
+}
+.popup-image {
+    max-width: 48%;
+    max-height: 45vh;
+    object-fit: contain;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
 span.english-keyword {    word-break: break-word;
 }
 

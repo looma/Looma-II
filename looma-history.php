@@ -99,6 +99,11 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
                   if(isset($event['popup'][2]))
                         $id2 = 'data-id2='. $event['popup'][2];
 
+                  // up to 2 Library images shown inline in the popup (looma-edit-history.js)
+                  $imgs = "";
+                  if(isset($event['images']) && is_array($event['images']) && count($event['images']))
+                        $imgs = 'data-images="' . htmlspecialchars(json_encode(array_values($event['images'])), ENT_QUOTES) . '"';
+
                   if ($count%2 == 0)
                   {
                    echo '
@@ -109,7 +114,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
 
                        <div class="dropdown" style="float:">'; // edited out
 
-                   echo '<button class="dropbtn"' .  " " . $id1 . " " . $id2 . " " . $msg . '>' .  bilingualHist($event['title'], isset($event['ndn']) ? $event['ndn'] : '') . '</button>';
+                   echo '<button class="dropbtn" ' . $imgs .  " " . $id1 . " " . $id2 . " " . $msg . '>' .  bilingualHist($event['title'], isset($event['ndn']) ? $event['ndn'] : '') . '</button>';
 
                    echo '<button class="dropdate">' . bilingualHist($event['date'], isset($event['ndate']) ? $event['ndate'] : '') . '</button>'; //dropbtn before dropdate so dropbtn is on top
 
@@ -127,7 +132,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
                        <div class="dropdown" style="float:">'; // edited out
 
                        echo '<button class="dropdate">' . bilingualHist($event['date'], isset($event['ndate']) ? $event['ndate'] : '') . '</button>';
-                       echo '<button class="dropbtn"' . " " . $id1 . " " . $id2 . " " . $msg . '>' . bilingualHist($event['title'], isset($event['ndn']) ? $event['ndn'] : '') . '</button>';
+                       echo '<button class="dropbtn" ' . $imgs . " " . $id1 . " " . $id2 . " " . $msg . '>' . bilingualHist($event['title'], isset($event['ndn']) ? $event['ndn'] : '') . '</button>';
 
                        '</div>
                    </li>';

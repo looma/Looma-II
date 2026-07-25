@@ -52,7 +52,7 @@ Revision: Looma 7.x
             <button id="timeline-save-btn">Save</button>
             <button id="timelineLeft"  class="timelineScroll" title="Scroll left">&#8249;</button>
             <button id="timelineRight" class="timelineScroll" title="Scroll right">&#8250;</button>
-            <span class="edit-hint">Tap a <b>&#43;</b> to add an event &bull; tap an event to edit it</span>
+            <span class="edit-hint"><b>&#43; Add event</b> adds after the last event &bull; drag an event to reorder &bull; tap an event to edit it</span>
         </div>
 
         <!-- the editable timeline (mirrors looma-history.php's #playground / .timeline) -->
@@ -111,6 +111,12 @@ Revision: Looma 7.x
             <label>Description (shown when the event is tapped)</label>
             <textarea id="ev-desc" placeholder="Description"></textarea>
 
+            <label>Images (up to 2, shown in the event's popup)</label>
+            <div id="ev-images">
+                <div id="ev-images-list"></div>
+                <button type="button" id="ev-add-image">&#43; Add image from Library</button>
+            </div>
+
             <button type="button" class="nepali-toggle" data-target="ev-nepali">&#43; Add Nepali translation</button>
             <div id="ev-nepali" class="nepali-fields">
                 <label>&#2358;&#2368;&#2352;&#2381;&#2359;&#2325; &mdash; Nepali title</label>
@@ -128,6 +134,16 @@ Revision: Looma 7.x
         </div>
     </div>
 
+    <!-- ===== Image search overlay: pick up to 2 images from the Looma Library ===== -->
+    <div id="imgsearch-modal" class="modal">
+        <div class="modal-card imgsearch-card">
+            <button class="modal-close" data-modal="imgsearch-modal" title="Close">&times;</button>
+            <h2>Add an image from the Looma Library</h2>
+            <?php include ('includes/looma-search.php'); ?>
+            <div id="results-div"></div>
+        </div>
+    </div>
+
     <?php include('includes/looma-control-buttons.php'); ?>
     <button class='control-button' id='dismiss'></button>
 
@@ -140,6 +156,7 @@ Revision: Looma 7.x
 
     <?php include ('includes/looma-filecommands.php'); ?>
 
+    <script src="js/looma-search.js"></script>
     <script src="js/looma-edit-history.js?v=<?php echo @filemtime(__DIR__.'/js/looma-edit-history.js'); ?>"></script>
 </body>
 </html>

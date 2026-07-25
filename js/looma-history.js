@@ -141,6 +141,21 @@ $(document).ready (function() {
                         LOOMA.makeActivityButtonFromId($(target).attr("data-id2"), 'looma',"", $(".popup"));
                     }
 
+                    // inline images added in the History editor (up to 2)
+                    var imagesAttr = $(target).attr("data-images");
+                    if (imagesAttr) {
+                        try {
+                            var imgs = JSON.parse(imagesAttr);
+                            if (imgs && imgs.length) {
+                                var $wrap = $("<div class='popup-images'></div>");
+                                imgs.forEach(function(src) {
+                                    $("<img class='popup-image' draggable='false'>").attr('src', src).appendTo($wrap);
+                                });
+                                $wrap.appendTo($(".popup"));
+                            }
+                        } catch (err) { console.log('history popup images parse error', err); }
+                    }
+
                     $('#dismiss-popup').click(function() {
                         LOOMA.closePopup();
                     });

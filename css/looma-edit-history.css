@@ -126,6 +126,17 @@ body {
     padding: 0;
 }
 .insert-btn:hover { background: #2E3192; color: #fff; }
+/* between-event "+" slots are secondary: de-emphasized until hovered, so the prominent
+   "Add event" (toolbar + end of timeline) is the obvious way to add an event. */
+.insert-slot:not(.first):not(.add-after) { flex: 0 0 3.5vw; }
+.insert-slot:not(.first):not(.add-after) .insert-btn {
+    width: 3vh;
+    height: 3vh;
+    font-size: 1.1em;
+    border-width: 0.2vh;
+    opacity: 0.3;
+}
+.insert-slot:not(.first):not(.add-after) .insert-btn:hover { opacity: 1; }
 /* the big "insert first event" prompt on an empty timeline */
 .insert-slot.first { flex: 0 0 auto; }
 .insert-slot.first .insert-btn {
@@ -137,6 +148,29 @@ body {
     white-space: nowrap;
     font-family: inherit;
 }
+/* prominent "Add event" slot after the last event (mirrors the toolbar button) */
+.insert-slot.add-after { flex: 0 0 auto; }
+.insert-slot.add-after .insert-btn {
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    padding: 1.4vh 2vw;
+    font-size: 1.15em;
+    white-space: nowrap;
+    font-family: inherit;
+    font-weight: bold;
+    border-style: solid;
+    background: #1b8f3a;
+    border-color: #1b8f3a;
+    color: #fff;
+    opacity: 1;
+}
+.insert-slot.add-after .insert-btn:hover { background: #23a847; color: #fff; }
+
+/* drag-to-reorder cues */
+.event { touch-action: none; }
+#timeline-ol .ui-sortable-helper .timeline-description { opacity: 0.95; }
+.event.ui-sortable-helper { z-index: 20; }
 
 /* ---- an event card on the timeline ---- */
 .event {
@@ -333,6 +367,65 @@ body {
 }
 .popup.confirmation #confirm-popup { background: #2E3192; color: #fff; border-color: #2E3192; }
 .popup.confirmation #close-popup   { background: #fff; color: #2E3192; }
+
+/* ---- event images (up to 2 per event) ---- */
+#ev-images { margin-top: 0.4vh; }
+#ev-images-list { display: flex; gap: 1vw; flex-wrap: wrap; }
+.ev-img-slot { position: relative; width: 8vw; height: 8vw; }
+.ev-img-slot img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border: 1px solid #ccc; border-radius: 6px;
+    background: #f4f4f4;
+}
+.ev-img-remove {
+    position: absolute; top: -0.7vh; right: -0.4vw;
+    width: 2.6vh; height: 2.6vh;
+    border: none; border-radius: 50%;
+    background: #c33; color: #fff;
+    font-size: 1em; line-height: 1; cursor: pointer;
+    padding: 0;
+}
+#ev-add-image {
+    margin-top: 0.9vh;
+    font: inherit; font-size: 1em;
+    padding: 0.6vh 1vw;
+    border: 1px solid #2e7d32; color: #2e7d32; background: #fff;
+    border-radius: 5px; cursor: pointer;
+}
+#ev-add-image:hover { background: #2e7d32; color: #fff; }
+
+/* ---- image search overlay (embeds the shared Looma search panel) ---- */
+.imgsearch-card { width: 72vw; }
+/* keep the embedded search focused on pictures: hide the media/chapter switch,
+   chapter search, and the text-file type checkbox */
+#imgsearch-modal #search-kind,
+#imgsearch-modal #chapter-search,
+#imgsearch-modal #source-div,
+#imgsearch-modal #search span.typ-chk[data-id="text-chk"] { display: none; }
+#imgsearch-modal #search-panel { position: static; width: auto; }
+#results-div {
+    display: flex; flex-wrap: wrap; gap: 1vw;
+    margin-top: 1.5vh;
+    max-height: 56vh; overflow-y: auto;
+    align-content: flex-start;
+}
+.imgresult {
+    width: 12vw;
+    border: 1px solid #ccc; border-radius: 6px;
+    background: #fff; cursor: pointer;
+    padding: 0.5vh;
+    display: flex; flex-direction: column; align-items: center;
+    font: inherit;
+}
+.imgresult:hover { border-color: #2E3192; box-shadow: 0 0 8px #b9bbe6; }
+.imgresult img { width: 100%; height: 9vw; object-fit: contain; }
+.imgresult-dn {
+    font-size: 0.8em; margin-top: 0.4vh;
+    max-width: 100%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.imgsearch-empty { color: #666; margin-top: 1.5vh; }
 
 /* File Commands dropdown (positioned like the other editors) */
 #filecommands { position: absolute; width: 15vw; right: 6vw; top: 1vh; z-index: 60; }

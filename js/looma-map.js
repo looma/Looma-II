@@ -828,45 +828,126 @@ function _loomaMapSwitchNepalBaseTo(targetBase) {
     } catch (_) {}
 }
 
-// Once a result is chosen, focus + reveal it. Points get openPopup(); polygon
-// features get a yellow-flash + the country card (or the Nepal-specific
-// selection panel on Nepal Map's admin layers).
+// Persistent highlight created by the search. Cleared whenever a new search
+// result is picked or the user clicks the map. Holds either a yellow-star
+// L.marker (for point features) or nothing (polygon highlights live on the
+// polygon's own setStyle and are reset by _loomaMapClearSearchHighlight).
+var _loomaMapSearchHighlightMarker = null;
+var _loomaMapSearchHighlightedPolygon = null;
+var _loomaMapSearchHighlightedPolygonPriorStyle = null;
+
+function _loomaMapClearSearchHighlight() {
+    if (_loomaMapSearchHighlightMarker && map) {
+        try { map.removeLayer(_loomaMapSearchHighlightMarker); } catch (_) {}
+        _loomaMapSearchHighlightMarker = null;
+    }
+    if (_loomaMapSearchHighlightedPolygon) {
+        try {
+            var lyr = _loomaMapSearchHighlightedPolygon;
+            // Ask the parent GeoJSON to reset, else best-effort revert to the
+            // captured prior style.
+            var reset = false;
+            if (lyr._eventParents) {
+                for (var k in lyr._eventParents) {
+                    var parent = lyr._eventParents[k];
+                    if (parent && parent.resetStyle) {
+                        parent.resetStyle(lyr);
+                        reset = true; break;
+                    }
+                }
+            }
+            if (!reset && _loomaMapSearchHighlightedPolygonPriorStyle) {
+                lyr.setStyle(_loomaMapSearchHighlightedPolygonPriorStyle);
+            }
+        } catch (_) {}
+        _loomaMapSearchHighlightedPolygon = null;
+        _loomaMapSearchHighlightedPolygonPriorStyle = null;
+    }
+}
+
+// Draw a yellow star at the point marker's location. Uses a divIcon so it
+// scales nicely and doesn't depend on any image file. Placed in the search-
+// highlight pane above add-on markers so it stays visible.
+function _loomaMapDrawSearchStarAt(latlng) {
+    if (!map || !latlng) return;
+    var icon = L.divIcon({
+        className: 'looma-search-star',
+        html: '<span aria-hidden="true">★</span>',
+        iconSize: [36, 36],
+        iconAnchor: [18, 18]
+    });
+    // Prefer the dedicated high-z-index pane if it exists; fall back to
+    // markerPane (600, still above overlayPane 400) on maps that ran before
+    // the pane setup.
+    var pane = 'markerPane';
+    try { if (map.getPane('loomaSearchHighlightPane')) pane = 'loomaSearchHighlightPane'; } catch (_) {}
+    _loomaMapSearchHighlightMarker = L.marker(latlng, {
+        icon: icon,
+        interactive: false,
+        keyboard: false,
+        pane: pane
+    }).addTo(map);
+}
+
+// Render place-style content (city / mountain / lake / temple) into the
+// top-right country panel so it doesn't obscure the map. Bypasses the
+// marker popup entirely for search-driven selections.
+function _loomaMapShowPlaceInTopRightPanel(rec) {
+    if (!rec || !rec.layer) return;
+    var lyr = rec.layer;
+    var props = (lyr.feature && lyr.feature.properties) || {};
+    // Reconstruct the same imageLink / imageKey the click handler would use.
+    // We don't have the original layerData index handy on the marker, but we
+    // can pull the properties needed by _loomaMapBuildPlaceCardHtml directly
+    // from the feature — that function already handles missing image
+    // gracefully.
+    var imageKey = 'name';
+    var imageLink = props[imageKey] ? props[imageKey] : '';
+    // Match the click-flow signature. inPop can be undefined; the builder
+    // treats undefined as "include every property".
+    var opts = { placeKind: 'place', imageKey: imageKey };
+    var html;
+    try {
+        html = _loomaMapBuildPlaceCardHtml(props, imageLink, opts);
+    } catch (_) { html = null; }
+    if (!html) return;
+    // Panel-wrap: reuse the country click panel's DOM slot. Hide the flag
+    // (places don't have flags) and swap the card body.
+    var panel = _loomaMapEnsureCountryClickPanel();
+    if (!panel || !panel._div) return;
+    _loomaMapHideFlag();
+    var card = panel._div.querySelector('.country-card');
+    if (!card) return;
+    // Wrap the place-card HTML in an outer container that gives it the same
+    // .capital-marker-card place styling the popup would have. The existing
+    // CSS keys off `.capital-marker-card.place-marker-card`.
+    card.querySelector('.card-body').innerHTML =
+        '<div class="capital-marker-card place-marker-card">' + html + '</div>';
+    card.classList.remove('open');
+    setTimeout(function () { card.classList.add('open'); }, 20);
+    panel._div.classList.add('open');
+}
+
+// Once a result is chosen, highlight it in place (no zoom / no pan) and show
+// its info in the top-right panel. Points get a yellow star; polygons get a
+// yellow outline + fill flash that persists until the next search / click.
 function _loomaMapFocusSearchResult(rec) {
     if (!rec || !rec.layer || !map) return;
+    _loomaMapClearSearchHighlight();
     var lyr = rec.layer;
 
-    // Point (circleMarker / marker) — pan, then simulate a click so the
-    // normal click handler binds + opens the popup. openPopup() alone doesn't
-    // work here because most add-on markers bind their popup ONLY on click
-    // (see _loomaMapShowCapitalClickProps -> _loomaMapShowCapitalPopupAtMarker).
+    // Point (city / capital / mountain / temple / lake).
     if (typeof lyr.getLatLng === 'function') {
         var ll = lyr.getLatLng();
-        var currentZoom = map.getZoom();
-        var maxZ = map.options && map.options.maxZoom ? Number(map.options.maxZoom) : 8;
-        map.setView(ll, Math.min(maxZ, Math.max(currentZoom, 5)), { animate: true });
-        // Fire the click after the pan so the click handler sees the marker
-        // at its final position. Also try openPopup as a fallback in case a
-        // popup is already bound.
-        setTimeout(function () {
-            var opened = false;
-            if (typeof lyr.getPopup === 'function') {
-                try {
-                    var p = lyr.getPopup();
-                    if (p && typeof lyr.openPopup === 'function') { lyr.openPopup(); opened = true; }
-                } catch (_) {}
-            }
-            if (!opened && typeof lyr.fire === 'function') {
-                try { lyr.fire('click', { latlng: ll, target: lyr }); } catch (_) {}
-            }
-        }, 100);
+        _loomaMapDrawSearchStarAt(ll);
+        _loomaMapShowPlaceInTopRightPanel(rec);
         return;
     }
 
-    // Nepal Map admin polygon (province / district / municipality) — needs a
-    // different flow than generic countries: switch to the layer's own base
-    // level FIRST (so it's visible + selectable), then use the Nepal
-    // selection panel instead of the country card. Same code path the click
-    // handler at onEachFeature takes when a Nepal admin layer is active.
+    // Nepal Map admin polygon — same top-right selection panel the click
+    // flow uses, but switch to the correct base layer first without changing
+    // the map view. NB: this deliberately does NOT fitBounds (per Skip's
+    // review request to keep the view where the user put it).
     var isNepalAdmin =
         _loomaMapIsNepalMap() &&
         data && data.info && data.info.threeLayer === 'true' &&
@@ -875,45 +956,27 @@ function _loomaMapFocusSearchResult(rec) {
         var targetBase = _loomaMapNepalBaseIndexOf(lyr);
         if (targetBase >= 0) {
             _loomaMapSwitchNepalBaseTo(targetBase);
-            if (typeof lyr.getBounds === 'function') {
-                var padMax = targetBase === 0 ? 9 : (targetBase === 1 ? 11 : 13);
-                try { map.fitBounds(lyr.getBounds(), { maxZoom: padMax, padding: [40, 40] }); }
-                catch (_) {}
-            }
             try { _loomaMapSelectNepalFeature(lyr); } catch (_) {}
-            try { _loomaMapFocusFeature(lyr); } catch (_) {}
             return;
         }
     }
 
-    // Polygon (country / province) — fit bounds, briefly highlight, open the
-    // country click panel.
-    if (typeof lyr.getBounds === 'function') {
-        try { map.fitBounds(lyr.getBounds(), { maxZoom: 6, padding: [40, 40] }); }
-        catch (_) {}
-    }
-    // Yellow flash so the user can see WHERE the match landed. Same style the
-    // hover handler uses; we set + reset via setStyle instead of calling the
-    // inner highlightFeature (which is in a closure we can't reach).
+    // Country / continent polygon — persistent yellow highlight (no fade)
+    // + country info panel in the top-right.
     if (typeof lyr.setStyle === 'function') {
-        var priorStyle;
-        try { priorStyle = { weight: lyr.options && lyr.options.weight, color: lyr.options && lyr.options.color, fillOpacity: lyr.options && lyr.options.fillOpacity }; }
-        catch (_) { priorStyle = null; }
-        try { lyr.setStyle({ weight: 5, color: 'yellow', fillOpacity: 0.3 }); } catch (_) {}
-        setTimeout(function () {
-            // Ask the parent GeoJSON to reset if possible; else best-effort revert.
-            try {
-                if (lyr._eventParents) {
-                    for (var k in lyr._eventParents) {
-                        var parent = lyr._eventParents[k];
-                        if (parent && parent.resetStyle) { parent.resetStyle(lyr); return; }
-                    }
-                }
-                if (priorStyle) lyr.setStyle(priorStyle);
-            } catch (_) {}
-        }, 1500);
+        try {
+            _loomaMapSearchHighlightedPolygonPriorStyle = {
+                weight: (lyr.options && lyr.options.weight),
+                color: (lyr.options && lyr.options.color),
+                fillOpacity: (lyr.options && lyr.options.fillOpacity),
+                fillColor: (lyr.options && lyr.options.fillColor)
+            };
+        } catch (_) { _loomaMapSearchHighlightedPolygonPriorStyle = null; }
+        try {
+            lyr.setStyle({ weight: 5, color: '#ffcc00', fillOpacity: 0.35, fillColor: '#ffe680' });
+            _loomaMapSearchHighlightedPolygon = lyr;
+        } catch (_) {}
     }
-    // Open the country info panel — same as a click would.
     try { _loomaMapShowCountryClickInfo({ target: lyr }); } catch (_) {}
 }
 
@@ -1287,6 +1350,9 @@ function _loomaMapCloseCountryPanel() {
     // be open over a marker. Called when the user clicks empty background.
     _loomaMapStopCapitalTimeTicker();
     if (typeof map !== 'undefined' && map && map.closePopup) map.closePopup();
+    // Also drop any lingering search highlight (yellow star / yellow polygon
+    // outline) so panel and highlight stay in sync.
+    try { _loomaMapClearSearchHighlight(); } catch (_) {}
     if (!countryClickPanel || !countryClickPanel._div) return;
     var div = countryClickPanel._div;
     var wrap = div.querySelector('.flag-wrap');
@@ -2089,10 +2155,12 @@ function loadAddOnLayers (layerData, information) {
                 var idx = layerIndex;
                 _loomaMapHydrateGeoJsonFeatures(data);
                 var addOnLayer = L.geoJson(data, {
+                    pane: 'loomaAddOnPane', // draw above base polygons
                     pointToLayer: function (feature, latlng) {
                         feature.properties = _loomaMapHydrateCountryProps(feature.properties || {});
-                        
+
                         var localMarker = L.circleMarker(latlng, {
+                            pane: 'loomaAddOnPane', // above base polygons
                             radius: layerData[idx].style.radius,
                             color : layerData[idx].style.color,
                             weight : layerData[idx].style.weight,
@@ -2838,7 +2906,29 @@ window.onload = function () {
                 var el = document.getElementsByClassName('leaflet-container');
                 for (var i = 0; i < el.length; i++) el[i].style.backgroundColor = bColor;
             }
-            
+
+            // Custom pane above the default overlayPane (z-index 400). Add-on
+            // features (capitals, cities, mountains, temples, lakes) draw as
+            // L.circleMarker which is rendered as SVG inside the overlayPane
+            // — so if a base-layer polygon is drawn AFTER the markers, it
+            // covers them. This shows up on Asia / Europe / Africa / etc.
+            // where you can see the dots under the polygons before clicking
+            // anything. Putting the add-on layers in a higher-z-index pane
+            // fixes the stacking permanently, regardless of draw order.
+            try {
+                if (!map.getPane('loomaAddOnPane')) {
+                    map.createPane('loomaAddOnPane');
+                    map.getPane('loomaAddOnPane').style.zIndex = 500;
+                }
+                // Same for the search highlight (yellow star / outline) — it
+                // needs to sit above the add-on markers too.
+                if (!map.getPane('loomaSearchHighlightPane')) {
+                    map.createPane('loomaSearchHighlightPane');
+                    map.getPane('loomaSearchHighlightPane').style.zIndex = 650;
+                }
+            } catch (paneErr) { console.warn('pane setup failed', paneErr); }
+
+
             //Zoom levels
             if (data.info.zoom) {
                 map.options.minZoom = data.info.zoom.minZoom;
@@ -2927,6 +3017,7 @@ window.onload = function () {
                 }
                 _loomaMapClearNepalSelection();
                 _loomaMapCloseCountryPanel();
+                _loomaMapClearSearchHighlight();
                 _loomaMapFocusDefaultBounds();
             });
 

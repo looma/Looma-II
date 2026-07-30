@@ -5,6 +5,36 @@
     background: var(--looma-blue, #091F48); /* was Leaflet default grey; use Looma brand blue */
 }
 
+/* Yellow-star highlight overlaid on a searched point (city / mountain /
+   temple / lake). Rendered by _loomaMapDrawSearchStarAt as an L.divIcon.
+   Uses text-shadow to draw a dark outline so the star reads on any base. */
+.looma-search-star {
+    background: transparent;
+    border: none;
+    text-align: center;
+    line-height: 36px;
+    pointer-events: none;
+    animation: looma-search-star-pop 400ms ease-out;
+}
+.looma-search-star > span {
+    display: inline-block;
+    font-size: 34px;
+    color: #ffd400;
+    text-shadow:
+        0 0 3px rgba(0, 0, 0, 0.85),
+        0 0 6px rgba(0, 0, 0, 0.55),
+        -1px -1px 0 rgba(0, 0, 0, 0.9),
+         1px -1px 0 rgba(0, 0, 0, 0.9),
+        -1px  1px 0 rgba(0, 0, 0, 0.9),
+         1px  1px 0 rgba(0, 0, 0, 0.9);
+    line-height: 36px;
+}
+@keyframes looma-search-star-pop {
+    0%   { transform: scale(0.3); opacity: 0; }
+    60%  { transform: scale(1.25); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
 /* Search box (top-left of the map). Lets students find a country / city /
    mountain / temple by name. See _loomaMapEnsureSearchControl in looma-map.js. */
 .looma-map-search {

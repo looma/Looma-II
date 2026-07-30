@@ -211,26 +211,60 @@ window.addEventListener('load', function () {
         var input = wrap.querySelector('input');
         var list  = wrap.querySelector('ul');
 
+        // Persistent-highlight state, so a fresh search clears the last one
+        // instead of stacking styles.
+        var lastHighlight = null;
+        var lastHighlightPrior = null;
+        var lastHighlightLayer = null; // 'provinces' or 'roads' — for resetStyle
+        function clearHighlight() {
+            if (!lastHighlight) return;
+            try {
+                var parentLayer = lastHighlightLayer === 'provinces' ? provincesLayer : roadsLayer;
+                if (parentLayer && parentLayer.resetStyle) parentLayer.resetStyle(lastHighlight);
+                else if (lastHighlightPrior) lastHighlight.setStyle(lastHighlightPrior);
+            } catch(_) {}
+            lastHighlight = null; lastHighlightPrior = null; lastHighlightLayer = null;
+        }
+
         function focusMatch(rec) {
             if (!rec || !rec.layer) return;
+            // Per Skip's review: do NOT change the map view. Just highlight
+            // the matched feature in place so students can find it visually.
+            clearHighlight();
             if (rec.kind === 'province') {
-                try { map.fitBounds(rec.layer.getBounds(), { maxZoom: 10, padding: [40,40] }); } catch(_) {}
+                try {
+                    lastHighlightPrior = {
+                        weight: (rec.layer.options && rec.layer.options.weight),
+                        color: (rec.layer.options && rec.layer.options.color),
+                        fillColor: (rec.layer.options && rec.layer.options.fillColor),
+                        fillOpacity: (rec.layer.options && rec.layer.options.fillOpacity)
+                    };
+                } catch(_) { lastHighlightPrior = null; }
+                try {
+                    rec.layer.setStyle({ weight: 4, color: '#ffb400', fillColor: '#ffe680', fillOpacity: 0.6 });
+                    lastHighlight = rec.layer;
+                    lastHighlightLayer = 'provinces';
+                } catch(_) {}
                 if (rec.layer.openTooltip) try { rec.layer.openTooltip(); } catch(_) {}
             } else { // road
-                try { map.fitBounds(rec.layer.getBounds(), { maxZoom: 13, padding: [40,40] }); } catch(_) {}
-                // Flash: bump weight briefly so the searched road stands out.
-                var origStyle;
-                try { origStyle = rec.layer.options ? {weight: rec.layer.options.weight, color: rec.layer.options.color, opacity: rec.layer.options.opacity} : null; } catch(_) { origStyle = null; }
-                try { rec.layer.setStyle({ weight: 6, color: '#ffb400', opacity: 1 }); } catch(_) {}
-                setTimeout(function () {
-                    try {
-                        if (roadsLayer && roadsLayer.resetStyle) roadsLayer.resetStyle(rec.layer);
-                        else if (origStyle) rec.layer.setStyle(origStyle);
-                    } catch(_) {}
-                }, 1800);
+                try {
+                    lastHighlightPrior = {
+                        weight: (rec.layer.options && rec.layer.options.weight),
+                        color: (rec.layer.options && rec.layer.options.color),
+                        opacity: (rec.layer.options && rec.layer.options.opacity)
+                    };
+                } catch(_) { lastHighlightPrior = null; }
+                try {
+                    rec.layer.setStyle({ weight: 6, color: '#ffb400', opacity: 1 });
+                    lastHighlight = rec.layer;
+                    lastHighlightLayer = 'roads';
+                } catch(_) {}
                 if (rec.layer.openTooltip) try { rec.layer.openTooltip(); } catch(_) {}
             }
         }
+
+        // Clear the highlight when the user clicks the empty map.
+        map.on('click', clearHighlight);
 
         function runSearch() {
             var q = input.value.trim().toLowerCase();

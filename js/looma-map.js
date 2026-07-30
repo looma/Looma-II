@@ -1862,11 +1862,25 @@ function loadBaseLayers (layerData) {
                 if (_loomaMapIsNepalAdministrativeLayer()) {
                     countryClickJustOpened = true;
                     _loomaMapSelectNepalFeature(e.target);
-                    _loomaMapFocusFeature(e.target);
+                    // NO fitBounds — click behavior mirrors search: highlight
+                    // in place, don't change the map view.
                     return;
                 }
                 _loomaMapShowCountryClickInfo(e);
-                _loomaMapFocusFeature(e.target);
+                // Persistent yellow polygon highlight (same style the search
+                // flow applies) so a click gives the same visual affordance
+                // as picking the country from search — and again, no zoom.
+                try { _loomaMapClearSearchHighlight(); } catch (_) {}
+                try {
+                    _loomaMapSearchHighlightedPolygonPriorStyle = {
+                        weight: (e.target.options && e.target.options.weight),
+                        color: (e.target.options && e.target.options.color),
+                        fillOpacity: (e.target.options && e.target.options.fillOpacity),
+                        fillColor: (e.target.options && e.target.options.fillColor)
+                    };
+                    e.target.setStyle({ weight: 5, color: '#ffcc00', fillOpacity: 0.35, fillColor: '#ffe680' });
+                    _loomaMapSearchHighlightedPolygon = e.target;
+                } catch (_) {}
             }
         });
         // Name tooltip on hover. Nepal admin layers use their local admin

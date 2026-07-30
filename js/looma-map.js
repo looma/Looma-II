@@ -1748,8 +1748,15 @@ function _loomaMapSelectNepalFeature(layer) {
     _loomaMapClearNepalSelection();
     nepalSelectedLayer = layer;
     nepalSelectedBase = currentBase;
+    // Set the border weight/color directly on the layer so the selection
+    // ALWAYS reads as a thicker border, independent of whether the outline
+    // overlay below ends up above or below the base layer in DOM order.
+    // (Municipalities default to weight 1 which is easy to miss when
+    // selected; bumping to 4 makes it unambiguously highlighted.)
     layer.setStyle({
         fillColor: '#ff3333',
+        color: '#d00000',
+        weight: 4,
         opacity: 1,
         fillOpacity: 0.78
     });

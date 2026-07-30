@@ -49,7 +49,6 @@ Revision: Looma 7.x
 
         <div id="toolbar-row">
             <button id="timeline-details-btn">&#9998; Timeline Details</button>
-            <button id="timeline-save-btn">Save</button>
             <button id="timelineLeft"  class="timelineScroll" title="Scroll left">&#8249;</button>
             <button id="timelineRight" class="timelineScroll" title="Scroll right">&#8250;</button>
             <span class="edit-hint"><b>&#43; Add event</b> adds after the last event &bull; drag an event to reorder &bull; tap an event to edit it</span>
@@ -77,10 +76,8 @@ Revision: Looma 7.x
             <div id="tl-cover-row">
                 <img id="tl-cover-preview" alt="cover preview" hidden>
                 <div id="tl-cover-actions">
-                    <button id="tl-choose-image" type="button">Choose image&hellip;</button>
+                    <button id="tl-choose-image" type="button">Choose image from Library&hellip;</button>
                     <button id="tl-remove-image" type="button" hidden>Remove image</button>
-                    <input id="tl-cover-file" type="file" accept="image/*" hidden>
-                    <input id="tl-cover-url" type="text" placeholder="&hellip;or paste an image URL / path">
                 </div>
             </div>
 

@@ -486,9 +486,10 @@ require_once('includes/looma-utilities.php');
             if (isset($_REQUEST['ndn']))   $insert['ndn']   = $_REQUEST['ndn'];    // Nepali timeline title
             if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];  // cover image (data-URL or path)
 
-            // final param FALSE: do NOT create an 'activities' index entry, so these
-            // timelines stay out of the general library/search - only the History editor lists them.
-            $result = saveToMongo($dbCollection, $save_dn, 'history', $insert, false);
+            // pass the request-driven $activitycollection so an 'ft:history' entry is
+            // added to the activities index (when saved with activity="true"), making
+            // these timelines discoverable in the general library/search like other content.
+            $result = saveToMongo($dbCollection, $save_dn, 'history', $insert, $activitycollection);
             echo json_encode($result);
         }
         else if ($collection == "activities") {

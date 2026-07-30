@@ -54,9 +54,12 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
         else $query = array('_id' => mongoID($_REQUEST['id']));
 
         //$cursor =  $history_collection->find($query, array("title"=>1, "events"=>1)); //should be findOne()  ??
-        $cursor =  mongoFind($history_collection, $query, null, null, null); //should be findOne()  ??
+        // check the curated (looma) DB first, then fall back to admin-created timelines (loomalocal)
+        $docs = iterator_to_array(mongoFind($history_collection, $query, null, null, null), false);
+        if (count($docs) === 0)
+            $docs = iterator_to_array(mongoFind($local_histories_collection, $query, null, null, null), false);
 
-        foreach ($cursor as $doc) {
+        foreach ($docs as $doc) {
 
             $title = isset($doc['title']) ? $doc['title'] : null;
             $ndn = isset($doc['ndn']) ? $doc['ndn'] : $title;

@@ -31,7 +31,11 @@ logPageHit('histories');
 
         echo "<table><tr>";
 
-        $histories = mongoFind($histories_collection, [], null, null, null);
+        // curated timelines (looma DB) + admin-created ones (loomalocal DB), so
+        // timelines made in the editor appear here next to the curated ones
+        $histories = iterator_to_array(mongoFind($histories_collection, [], null, null, null), false);
+        $histories = array_merge($histories,
+            iterator_to_array(mongoFind($local_histories_collection, [], null, null, null), false));
 
         foreach ($histories as $history) {
 
@@ -39,7 +43,7 @@ logPageHit('histories');
             $dn = $history['title'];
             $ndn = isset($history['ndn']) ?  $history['ndn'] : "";
             $ft = "history";
-            $thumb = $history['thumb'];
+            $thumb = isset($history['thumb']) ? $history['thumb'] : "";
             $id = $history['_id'];  //mongoID of the descriptor for this lesson
             makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
             echo "</td>";

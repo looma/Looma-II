@@ -117,7 +117,6 @@ function eventCard(i) {
 function openTimelineModal() {
     $('#tl-title').val(currentname || '');
     $('#tl-ntitle').val(timeline.ndn || '');
-    $('#tl-cover-url').val('');
     pendingThumb = timeline.thumb || '';
     showCoverPreview(pendingThumb);
     setNepali('tl-nepali', !!timeline.ndn);     // expand only if a Nepali title already exists
@@ -147,34 +146,12 @@ function saveTimelineModal() {
     var title = $.trim($('#tl-title').val());
     if (!title) { LOOMA.alert('Please enter a timeline title.', 5); return; }
 
-    var urlVal = $.trim($('#tl-cover-url').val());
-    if (urlVal) pendingThumb = urlVal;    // a pasted URL overrides
-
     currentname   = title;
     timeline.ndn  = $.trim($('#tl-ntitle').val());
     timeline.thumb = pendingThumb || '';
     setname(currentname, loginname);
 
     $('#timeline-modal').removeClass('open');
-}
-
-// read a chosen image file, downscale it to a small data-URL (no server upload needed)
-function loadImageToThumb(file, cb) {
-    var reader = new FileReader();
-    reader.onload = function(ev) {
-        var img = new Image();
-        img.onload = function() {
-            var max = 400, w = img.width, h = img.height;
-            if (w > h && w > max)      { h = Math.round(h * max / w); w = max; }
-            else if (h >= w && h > max){ w = Math.round(w * max / h); h = max; }
-            var c = document.createElement('canvas');
-            c.width = w; c.height = h;
-            c.getContext('2d').drawImage(img, 0, 0, w, h);
-            cb(c.toDataURL('image/jpeg', 0.8));
-        };
-        img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
 }
 
 
@@ -260,8 +237,13 @@ function deleteEvent() {
 
 var IMAGE_TYPES = { image:1, jpg:1, jpeg:1, png:1, gif:1 };
 
-function openImageSearch() {
-    if (eventImages.length >= 2) { LOOMA.alert('An event can have at most 2 images.', 5); return; }
+var imgSearchTarget = 'event';   // 'event' or 'cover' - where a picked Library image goes
+
+function openImageSearch(target) {
+    imgSearchTarget = (target === 'cover') ? 'cover' : 'event';
+    if (imgSearchTarget === 'event' && eventImages.length >= 2) {
+        LOOMA.alert('An event can have at most 2 images.', 5); return;
+    }
     $('#image-checkbox').prop('checked', true);   // constrain the shared search to pictures
     $('#results-div').empty();
     $('#imgsearch-modal').addClass('open');
@@ -298,6 +280,12 @@ function clearResults() { $('#results-div').empty(); }
 
 function addSelectedImage(src) {
     if (!src) return;
+    if (imgSearchTarget === 'cover') {          // Timeline Details cover image
+        pendingThumb = src;
+        showCoverPreview(src);
+        $('#imgsearch-modal').removeClass('open');
+        return;
+    }
     if (eventImages.length >= 2) { LOOMA.alert('An event can have at most 2 images.', 5); return; }
     eventImages.push(src);
     renderEventImages();
@@ -337,17 +325,18 @@ function packEvents() {
     });
 }
 
-//  custom save: savefile() can't carry title/ndn/thumb, so post them directly
+//  custom save: savefile() can't carry title/ndn/thumb, so post them directly.
+//  returns the save promise (or undefined if the save was blocked) so callers can act after it.
 function editor_save(name) {
     if (events.length === 0) { LOOMA.alert('Add at least one event before saving.', 5); return; }
     if (!name) name = currentname;
 
-    $.post("looma-database-utilities.php", {
+    return $.post("looma-database-utilities.php", {
         cmd:        "save",
         collection: "histories",
         db:         currentDB,
         ft:         "history",
-        activity:   "false",          // NOT indexed as an activity (stays out of library search)
+        activity:   "true",           // index as an activity so it appears in the library search
         dn:         LOOMA.escapeHTML(name),
         title:      LOOMA.escapeHTML(name),
         ndn:        timeline.ndn || '',
@@ -388,8 +377,30 @@ function editor_display(response) {
 }
 
 function quit() {
-    if (callbacks['modified']()) savework(currentname, currentcollection, currentfiletype);
-    else window.history.back();
+    // no unsaved edits -> just leave, no prompt
+    if (!callbacks['modified']()) { window.history.back(); return; }
+
+    // one Save / Don't save / Cancel prompt. Reuses the file-commands save panel but calls
+    // editor_save directly, so there's no redundant second "confirm" dialog.
+    var $panel = $('#filesave-panel');
+    LOOMA.makeTransparent($('#main-container'));
+    $panel.find('#filesave-message').text('Save your changes before leaving?');
+    $panel.show();
+
+    function closePanel() {
+        $panel.hide();
+        LOOMA.makeOpaque($('#main-container'));
+        $panel.find('.dismiss').off('click');
+        $('#filesave-nosave, #filesave-save').off('click');
+    }
+    $panel.find('.dismiss').off('click').on('click', function() { closePanel(); });                    // Cancel -> stay
+    $('#filesave-nosave').off('click').on('click', function() { closePanel(); window.history.back(); }); // Don't save -> leave
+    $('#filesave-save').off('click').on('click', function() {                                           // Save -> save, then leave
+        closePanel();
+        var p = editor_save(currentname);
+        if (p && p.then) p.then(function() { window.history.back(); });
+        // if the save was blocked (e.g. empty timeline), stay so the user can fix it
+    });
 }
 
 
@@ -424,28 +435,10 @@ $(document).ready(function() {
 
     // --- timeline modal ---
     $('#timeline-details-btn').on('click', openTimelineModal);
-    $('#timeline-save-btn').on('click', function() {
-        savework(currentname, currentcollection, currentfiletype);
-    });
     $('#tl-done').on('click', saveTimelineModal);
-    $('#tl-choose-image').on('click', function() { $('#tl-cover-file').click(); });
-    $('#tl-cover-file').on('change', function() {
-        if (this.files && this.files[0]) {
-            loadImageToThumb(this.files[0], function(dataUrl) {
-                pendingThumb = dataUrl;
-                $('#tl-cover-url').val('');
-                showCoverPreview(dataUrl);
-            });
-        }
-    });
-    $('#tl-cover-url').on('input', function() {
-        var v = $.trim($(this).val());
-        if (v) { pendingThumb = v; showCoverPreview(v); }
-    });
+    $('#tl-choose-image').on('click', function() { openImageSearch('cover'); });
     $('#tl-remove-image').on('click', function() {
         pendingThumb = '';
-        $('#tl-cover-url').val('');
-        $('#tl-cover-file').val('');
         showCoverPreview('');
     });
 
@@ -454,7 +447,7 @@ $(document).ready(function() {
     $('#ev-delete').on('click', deleteEvent);
 
     // --- event images ---
-    $('#ev-add-image').on('click', openImageSearch);
+    $('#ev-add-image').on('click', function() { openImageSearch('event'); });
     $('#ev-images-list').on('click', '.ev-img-remove', function() {
         eventImages.splice(parseInt($(this).attr('data-i'), 10), 1);
         renderEventImages();

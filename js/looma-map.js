@@ -889,40 +889,53 @@ function _loomaMapDrawSearchStarAt(latlng) {
     }).addTo(map);
 }
 
-// Render place-style content (city / mountain / lake / temple) into the
-// top-right country panel so it doesn't obscure the map. Bypasses the
-// marker popup entirely for search-driven selections.
-function _loomaMapShowPlaceInTopRightPanel(rec) {
+// Build a proper /content/maps/photos/... URL from a name if the caller
+// didn't already resolve one. Handles the "just a bare name" case my
+// earlier version was accidentally passing straight into the img src.
+function _loomaMapCoerceImageLink(imageLinkRaw, imageName) {
+    if (!imageLinkRaw) return imageName
+        ? getPhotoLink(('' + imageName).replace(/ /g, '_'),
+                       (data && data.info && (data.info.infoExtension || data.info.popExtension)) || 'jpg')
+        : '';
+    // Already a URL / path — leave it alone.
+    if (imageLinkRaw.indexOf('/') !== -1 || imageLinkRaw.indexOf('.') !== -1) return imageLinkRaw;
+    // Bare name string — turn it into a photo URL.
+    return getPhotoLink(('' + imageLinkRaw).replace(/ /g, '_'),
+                        (data && data.info && (data.info.infoExtension || data.info.popExtension)) || 'jpg');
+}
+
+// Render a place / capital / city card into the top-right country panel so
+// it doesn't obscure the map. Bypasses the on-marker popup entirely. Used
+// by BOTH the search flow AND the marker-click flow so the two behave the
+// same way (yellow star + top-right info).
+function _loomaMapShowPlaceInTopRightPanel(rec, imageLinkArg, optsArg) {
     if (!rec || !rec.layer) return;
     var lyr = rec.layer;
     var props = (lyr.feature && lyr.feature.properties) || {};
-    // Reconstruct the same imageLink / imageKey the click handler would use.
-    // We don't have the original layerData index handy on the marker, but we
-    // can pull the properties needed by _loomaMapBuildPlaceCardHtml directly
-    // from the feature — that function already handles missing image
-    // gracefully.
-    var imageKey = 'name';
-    var imageLink = props[imageKey] ? props[imageKey] : '';
-    // Match the click-flow signature. inPop can be undefined; the builder
-    // treats undefined as "include every property".
-    var opts = { placeKind: 'place', imageKey: imageKey };
+    var opts = optsArg || {};
+    var placeKind = opts.placeKind || 'place';
+    var imageKey = opts.imageKey || 'name';
+    // Coerce imageLink from raw-name / URL / undefined into a real URL.
+    var imageName = props[imageKey] || props.name || props.NAME || props.title;
+    var imageLink = _loomaMapCoerceImageLink(imageLinkArg, imageName);
+    var cardOpts = { placeKind: placeKind, inPop: opts.inPop, imageKey: imageKey };
     var html;
     try {
-        html = _loomaMapBuildPlaceCardHtml(props, imageLink, opts);
+        // _loomaMapBuildCapitalCardHtml handles all placeKinds: for 'place'
+        // it delegates to _loomaMapBuildPlaceCardHtml; otherwise it builds
+        // the capital-style card with local time etc.
+        html = _loomaMapBuildCapitalCardHtml(props, imageLink, cardOpts);
     } catch (_) { html = null; }
     if (!html) return;
-    // Panel-wrap: reuse the country click panel's DOM slot. Hide the flag
-    // (places don't have flags) and swap the card body.
+    // Panel-wrap: reuse the country click panel's DOM slot.
     var panel = _loomaMapEnsureCountryClickPanel();
     if (!panel || !panel._div) return;
     _loomaMapHideFlag();
     var card = panel._div.querySelector('.country-card');
     if (!card) return;
-    // Wrap the place-card HTML in an outer container that gives it the same
-    // .capital-marker-card place styling the popup would have. The existing
-    // CSS keys off `.capital-marker-card.place-marker-card`.
+    var isPlace = placeKind === 'place';
     card.querySelector('.card-body').innerHTML =
-        '<div class="capital-marker-card place-marker-card">' + html + '</div>';
+        '<div class="capital-marker-card' + (isPlace ? ' place-marker-card' : '') + '">' + html + '</div>';
     card.classList.remove('open');
     setTimeout(function () { card.classList.add('open'); }, 20);
     panel._div.classList.add('open');
@@ -1186,53 +1199,59 @@ function _loomaMapShowCountryClickProps(props) {
 var _loomaMapClickToken = 0;
 
 function _loomaMapShowCapitalClickProps(capitalProps, imageLink, marker, opts) {
-    // Click on a marker: open the country card (top-right) AND a popup
-    // directly over the marker. Generic 'place' features (Nepal lakes,
-    // temples, mountains, cities) don't have country-level facts — for those
-    // we skip the country panel entirely and only show the marker popup.
+    // Click on a marker: uniform behavior across capitals / cities / places —
+    // draw a yellow star at the marker location and render the info in the
+    // top-right panel instead of a popup pinned on the marker. This matches
+    // what the search flow does. Previously each placeKind had its own
+    // treatment and always opened a popup that obscured the map.
     opts = opts || {};
     var myToken = ++_loomaMapClickToken;
-    var popupOpts = {open: true, placeKind: opts.placeKind, inPop: opts.inPop, imageKey: opts.imageKey};
     try {
         countryClickJustOpened = true;
         setTimeout(function () { countryClickJustOpened = false; }, 250);
 
-        // Explicitly close any prior popup before opening a new one. Leaflet's
-        // autoClose usually handles this, but the async re-render below can
-        // reopen a stale popup — the closePopup here is defense-in-depth for
-        // the fast-click case.
+        // Explicitly close any lingering popup (from an older click path or
+        // an autoClose that didn't fire in time).
         if (typeof map !== 'undefined' && map && map.closePopup) map.closePopup();
 
-        if (opts.placeKind === 'place') {
-            _loomaMapCloseCountryPanel();
-            _loomaMapShowCapitalPopupAtMarker(capitalProps, marker, imageLink, popupOpts);
-            return;
+        // Star + top-right — same treatment as search selection.
+        _loomaMapClearSearchHighlight();
+        if (marker && typeof marker.getLatLng === 'function') {
+            _loomaMapDrawSearchStarAt(marker.getLatLng());
         }
+        _loomaMapShowPlaceInTopRightPanel({ layer: marker }, imageLink, {
+            placeKind: opts.placeKind,
+            inPop: opts.inPop,
+            imageKey: opts.imageKey
+        });
 
-        _loomaMapRenderCountryCard(capitalProps);
-        _loomaMapShowCapitalPopupAtMarker(capitalProps, marker, imageLink, popupOpts);
-
-        // If we don't yet have the supplemental country facts, load them and
-        // re-render once they're available (capital markers usually carry
-        // city props but rely on supplemental data for country fields).
-        var needLoadSupplemental = !supplementalCountryFacts || Object.keys(supplementalCountryFacts).length === 0;
-        if (!needLoadSupplemental) {
-            var iso = _loomaMapGuessCountryISO(capitalProps);
-            if (iso) {
-                var isoU = ('' + iso).toUpperCase();
-                if (!supplementalCountryFacts[isoU]) needLoadSupplemental = true;
+        // For capitals (world / continent maps that carry country context),
+        // ALSO hydrate country supplemental facts if we don't have them yet
+        // and re-render — so fields like GDP / area / population that come
+        // from the supplemental file also show. Skipped for 'place' features
+        // which are Nepal lakes/temples/mountains/cities and don't have
+        // country-level facts to load.
+        if (opts.placeKind !== 'place') {
+            var needLoadSupplemental = !supplementalCountryFacts || Object.keys(supplementalCountryFacts).length === 0;
+            if (!needLoadSupplemental) {
+                var iso = _loomaMapGuessCountryISO(capitalProps);
+                if (iso) {
+                    var isoU = ('' + iso).toUpperCase();
+                    if (!supplementalCountryFacts[isoU]) needLoadSupplemental = true;
+                }
             }
-        }
-        if (needLoadSupplemental) {
-            _loomaMapLoadSupplementalCountryFacts().done(function () {
-                // Bail if the user has since clicked another marker — the
-                // re-render below would resurrect this popup over whatever
-                // the user actually cares about now.
-                if (myToken !== _loomaMapClickToken) return;
-                _loomaMapHydrateLoadedLayers();
-                _loomaMapRenderCountryCard(capitalProps);
-                _loomaMapShowCapitalPopupAtMarker(capitalProps, marker, imageLink, {placeKind: opts.placeKind, inPop: opts.inPop, imageKey: opts.imageKey});
-            });
+            if (needLoadSupplemental) {
+                _loomaMapLoadSupplementalCountryFacts().done(function () {
+                    // Bail if the user has since clicked another marker.
+                    if (myToken !== _loomaMapClickToken) return;
+                    _loomaMapHydrateLoadedLayers();
+                    _loomaMapShowPlaceInTopRightPanel({ layer: marker }, imageLink, {
+                        placeKind: opts.placeKind,
+                        inPop: opts.inPop,
+                        imageKey: opts.imageKey
+                    });
+                });
+            }
         }
     } catch (err) {
         console.warn('capital click panel failed', err);

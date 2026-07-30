@@ -66,7 +66,8 @@ function ch_idToSubject ($ch_id) {
      "slideshow" => "images/slideshow.png",
      "text" => "images/textfile.png",
      "textfile" => "images/textfile.png",
-     "looma" => "images/LoomaLogo_small.png"
+     "looma" => "images/LoomaLogo_small.png",
+     "worksheet" => "images/worksheet.png"
  );
 
 /****************************/

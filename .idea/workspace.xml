@@ -28,19 +28,56 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="7.32b July 22 2026&#10;full implement of worksheets: &#10;worksheets, worksheet-list, edit-lesson, play-lesson, etc">
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/AllLots.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/batchYojana.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/metadataEXISTINGToImport.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/metadataEXISTINGToImportDONE.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/metadataNEWToImport.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/metadataNEWToImportGOOD.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/metadataToImportforWorksheets.tsv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/metadata_to_load_new_files_yojana.numbers" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/data files/metadata_to_load_old_files_yojana.numbers" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/importMetadataEXISTINGresources.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/yojana/importMetadata.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/yojana/metadata_to_load_new_files_yojana.numbers" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/looma shell scripts/yojana/metadata_to_load_old_files_yojana.numbers" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/worksheet 2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/worksheet 3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/worksheet-yellow.png" beforeDir="false" afterPath="$PROJECT_DIR$/images/worksheet-yellow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/2026 01 19 old resources metadata.numbers" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/2026 01 19 old resources metadata.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/250702 Remove Resource from ch_id (Looma) 14.numbers" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.numbers" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImport.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImportOLD.tsv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma shell scripts/ch_idsToImportforWorksheets.txt" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/ch_idsToImportforWorksheets.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-worksheet-list.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-worksheet-list.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-worksheets.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-worksheets.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGE LOG" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGE LOG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/archivetimestamp.txt" beforeDir="false" afterPath="$PROJECT_DIR$/archivetimestamp.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-utilities.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/looma-version" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-version" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/data files/metadataToImport.tsv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/importCH_IDsforWorksheets.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importMetadataForWorksheets.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/importMetadata.js" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/importMetadataNEWresources.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-library-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-library-utilities.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/TG.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/TG.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/activities.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/chapters.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/chapters.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary2024.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/dictionary2024.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/edited_videos.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/edited_videos.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/folders.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/folders.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/games.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/games.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/games.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/games.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/histories.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/histories.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/lessons.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/lessons.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/lessons.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/lessons.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/maps.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/maps.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/pages.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/pages.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/schools.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/schools.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/slideshows.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/slideshows.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/slideshows.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/slideshows.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/tags.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/tags.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/teacher_guides.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/teacher_guides.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/text_files.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/text_files.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/textbooks.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/textbooks.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/volunteers.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/volunteers.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/volunteers.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/volunteers.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/wikipedia.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/wikipedia.metadata.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +89,7 @@
     <execution />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="4024" />
+    <option name="cachedIndexableFilesCount" value="4189" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="ExportToHTMLSettings">
@@ -700,8 +737,8 @@
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/looma shell scripts/importMetadata.js</url>
-          <line>78</line>
+          <url>file://$PROJECT_DIR$/looma shell scripts/importMetadataNEWresources.js</url>
+          <line>85</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>

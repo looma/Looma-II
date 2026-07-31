@@ -1876,8 +1876,23 @@ function loadBaseLayers (layerData) {
         return $.getJSON(url, null)
             .done(function(result) {
                 _loomaMapHydrateGeoJsonFeatures(result);
+                // Per-layer style function locked to this layer's index —
+                // avoids the styleLayer-reads-currentBase bug where a muni
+                // rendered with the WRONG base's weight because layers load
+                // async and currentBase is a moving target.
+                var lockedIndex = index;
+                var perLayerStyle = function (feature) {
+                    var s = data.baseLayers[lockedIndex].style;
+                    return {
+                        fillColor: (typeof getColor === 'function') ? getColor(feature, s) : undefined,
+                        weight: Number(s.weight),
+                        opacity: Number(s.opacity),
+                        color: s.color,
+                        fillOpacity: Number(s.fillOpacity)
+                    };
+                };
                 var baseLayer = L.geoJson(result, {
-                    style: styleLayer,
+                    style: perLayerStyle,
                     onEachFeature: onEachFeature
                 });
                 baseLayers[index] = baseLayer;
@@ -2034,9 +2049,15 @@ function loadBaseLayers (layerData) {
     
     // Highlights the area that the mouse is hovering over in gray
     function highlightFeature(e) {
-        var style = layerData[currentBase].style;
         var layer = e.target;
         if (layer === nepalSelectedLayer) return;
+        // Use the layer's OWN owning base, not the module-global currentBase.
+        // Nepal Map has all three admin layers loaded at once and either can
+        // be interactive on top; hovering a muni while on Districts view
+        // used to apply District's hover style (wrong hoverWeight) to a muni.
+        var ownBase = (typeof _loomaMapNepalBaseIndexOf === 'function') ? _loomaMapNepalBaseIndexOf(layer) : -1;
+        if (ownBase < 0) ownBase = currentBase;
+        var style = layerData[ownBase].style;
         
         if (style.onHover)
         {
@@ -2084,11 +2105,29 @@ function loadBaseLayers (layerData) {
         var layer = e.target;
         if (layer.closeTooltip) layer.closeTooltip();
         if (layer === nepalSelectedLayer) return;
-        //layer.resetStyle();
-        baseLayers[currentBase].resetStyle(e.target);
-        //baseLayers[currentBase].resetStyle();
-        // layer.bringToBack(e.target);
-        //info.update(); //Comment this out to avoid glitches when the mouse goes over the info box
+        // Reset using the layer's OWN base, not currentBase — otherwise
+        // hovering a muni while on Districts view resets it with District's
+        // style function (weight 2) instead of Muni's (weight 1), and the
+        // border stays "wrong weight" until a full base-layer redraw.
+        // Apply the base config's style directly so we don't depend on the
+        // resetStyle -> styleLayer chain that reads currentBase.
+        var ownBase = (typeof _loomaMapNepalBaseIndexOf === 'function') ? _loomaMapNepalBaseIndexOf(layer) : -1;
+        if (ownBase < 0) ownBase = currentBase;
+        if (data && data.baseLayers && data.baseLayers[ownBase] && data.baseLayers[ownBase].style) {
+            var s = data.baseLayers[ownBase].style;
+            var restore = {
+                weight: Number(s.weight),
+                opacity: Number(s.opacity),
+                color: s.color,
+                fillOpacity: Number(s.fillOpacity)
+            };
+            if (typeof getColor === 'function' && layer.feature) {
+                restore.fillColor = getColor(layer.feature, s);
+            }
+            try { layer.setStyle(restore); } catch (_) {}
+        } else if (baseLayers && baseLayers[ownBase] && baseLayers[ownBase].resetStyle) {
+            try { baseLayers[ownBase].resetStyle(layer); } catch (_) {}
+        }
     }
     
     
@@ -2476,12 +2515,17 @@ function addOnButtons (layerData)
             boxes[i].type = "checkbox";
             boxes[i].id = "id" + i;
             boxes[i].checked = !!popUpShowing[i];
-            labels[i] = document.createElement('text'); // Create the label
+            labels[i] = document.createElement('label'); // Real <label> instead of <text>
+            labels[i].htmlFor = "id" + i;
             labels[i].appendChild(document.createTextNode(' ' + layerData[i].name + ' '));
 
-            div.appendChild(boxes[i]); // Add to map
-            div.appendChild(labels[i]);
-            
+            // Wrap each checkbox+label pair in its own row so the label
+            // stays on the same line as the checkbox (Mountains / Temples /
+            // etc. all long enough to wrap otherwise).
+            var row = L.DomUtil.create('div', 'info-row', div);
+            row.appendChild(boxes[i]);
+            row.appendChild(labels[i]);
+
             boxes[i].addEventListener('change', function () {
                 var numChecked = this.id.charAt(2);
                 if (this.checked) {

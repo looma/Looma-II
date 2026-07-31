@@ -284,17 +284,26 @@ window.addEventListener('load', function () {
         var input = wrap.querySelector('input');
         var list  = wrap.querySelector('ul');
 
-        // Persistent-highlight state. For provinces: one layer. For roads:
-        // all segments sharing a name — potentially dozens.
-        var lastHighlightLayers = [];   // one province, or many road segments
+        // Persistent-highlight state. For provinces we still tweak the
+        // polygon's style directly (province polygons are big and simple);
+        // for roads we draw a dedicated OVERLAY on top so the underlying
+        // road segments are never mutated. Two-layer overlay per segment
+        // (dark underlay + bright yellow on top) gives a proper "outlined
+        // road" look at a glance.
+        var lastHighlightLayers = [];   // provinces only — the actual polygons
+        var lastHighlightGroup = null;  // roads only — overlay layer group
         var lastHighlightKind = null;   // 'province' | 'road'
         function clearHighlight() {
-            if (!lastHighlightLayers.length) { hideRoadInfoPanel(); return; }
-            var parent = lastHighlightKind === 'province' ? provincesLayer : roadsLayer;
-            lastHighlightLayers.forEach(function (lyr) {
-                try { if (parent && parent.resetStyle) parent.resetStyle(lyr); } catch (_) {}
-            });
-            lastHighlightLayers = [];
+            if (lastHighlightLayers.length) {
+                lastHighlightLayers.forEach(function (lyr) {
+                    try { if (provincesLayer && provincesLayer.resetStyle) provincesLayer.resetStyle(lyr); } catch (_) {}
+                });
+                lastHighlightLayers = [];
+            }
+            if (lastHighlightGroup) {
+                try { map.removeLayer(lastHighlightGroup); } catch (_) {}
+                lastHighlightGroup = null;
+            }
             lastHighlightKind = null;
             hideRoadInfoPanel();
         }
@@ -311,11 +320,35 @@ window.addEventListener('load', function () {
                 } catch(_) {}
                 if (rec.layer.openTooltip) try { rec.layer.openTooltip(); } catch(_) {}
             } else if (rec.kind === 'road' && rec.layers && rec.layers.length) {
-                // Highlight every segment with the same road name.
+                // Two-layer overlay per segment: dark brown underlay to make
+                // the yellow read against any base, then a bright yellow
+                // line on top. Both sit in a single L.layerGroup so
+                // clearHighlight can drop them in one call.
+                lastHighlightGroup = L.layerGroup();
                 rec.layers.forEach(function (lyr) {
-                    try { lyr.setStyle({ weight: 6, color: '#ffb400', opacity: 1 }); } catch(_) {}
+                    if (typeof lyr.getLatLngs !== 'function') return;
+                    var latlngs = lyr.getLatLngs();
+                    if (!latlngs || !latlngs.length) return;
+                    // Dark border/underlay — slightly wider than the yellow.
+                    L.polyline(latlngs, {
+                        color: '#4a1a05',
+                        weight: 11,
+                        opacity: 0.85,
+                        lineCap: 'round',
+                        lineJoin: 'round',
+                        interactive: false
+                    }).addTo(lastHighlightGroup);
+                    // Bright yellow on top.
+                    L.polyline(latlngs, {
+                        color: '#ffea00',
+                        weight: 7,
+                        opacity: 1,
+                        lineCap: 'round',
+                        lineJoin: 'round',
+                        interactive: false
+                    }).addTo(lastHighlightGroup);
                 });
-                lastHighlightLayers = rec.layers.slice();
+                lastHighlightGroup.addTo(map);
                 lastHighlightKind = 'road';
                 showRoadInfoPanel(rec.name, rec.layers.length);
             }

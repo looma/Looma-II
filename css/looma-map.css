@@ -122,12 +122,34 @@ div.viewer img {
 
 /* All of the info boxes in the map */
 .info {
-    padding: 14px 16px;
-    font: 38px Arial, Helvetica, sans-serif;
-    color: #555555;
+    padding: 8px 10px;
+    font: 18px Arial, Helvetica, sans-serif;
+    color: #444;
     background: #f4f4f4;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
+    border-radius: 6px;
+    max-width: 300px;
+    line-height: 1.35;
+}
+/* One row per (radio + label) pair — radio and its label stay on the same
+   line, and rows stack vertically so 'Municipalities' doesn't wrap under a
+   dangling checkbox. Uses flexbox with center alignment. */
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 3px 0;
+}
+.info input[type="radio"],
+.info input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex-shrink: 0;
+}
+.info label {
+    cursor: pointer;
+    line-height: 1.2;
 }
 
 /* The legend and the writing in it, overrides .info */

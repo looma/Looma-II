@@ -1735,21 +1735,36 @@ function _loomaMapShowNepalSelectionDetails(layer) {
 }
 
 function _loomaMapClearNepalSelection() {
-    if (nepalSelectedLayer) {
-        // First try the parent GeoJSON's resetStyle — the canonical way.
+    // Removing the overlay is enough to "deselect" visually IF nothing has
+    // mutated the base layer. But the mouseover/mouseout hover handler
+    // bails on `layer === nepalSelectedLayer`, so if the user hovered the
+    // selected layer, resetHighlight never ran and the base still carries
+    // hover state (weight 3). AND resetStyle via the geoJson group uses
+    // the styleLayer function, which reads the module-global currentBase —
+    // if the user has since switched base layers, that returns the WRONG
+    // base's style (which is exactly the "border becomes thinner" bug
+    // when a district got reset with municipality weight, or vice versa).
+    //
+    // So: explicitly apply the OWNING base's style from the mongo config.
+    if (nepalSelectedLayer && nepalSelectedBase !== null) {
         try {
-            if (nepalSelectedBase !== null && baseLayers && baseLayers[nepalSelectedBase] && baseLayers[nepalSelectedBase].resetStyle) {
+            var baseCfg = data && data.baseLayers && data.baseLayers[nepalSelectedBase];
+            if (baseCfg && baseCfg.style) {
+                var s = baseCfg.style;
+                var restore = {
+                    weight: Number(s.weight),
+                    opacity: Number(s.opacity),
+                    color: s.color,
+                    fillOpacity: Number(s.fillOpacity)
+                };
+                if (typeof getColor === 'function' && nepalSelectedLayer.feature) {
+                    restore.fillColor = getColor(nepalSelectedLayer.feature, s);
+                }
+                nepalSelectedLayer.setStyle(restore);
+            } else if (baseLayers && baseLayers[nepalSelectedBase] && baseLayers[nepalSelectedBase].resetStyle) {
                 baseLayers[nepalSelectedBase].resetStyle(nepalSelectedLayer);
             }
         } catch (_) { /* best-effort */ }
-        // Belt-and-suspenders: also explicitly re-apply the snapshotted
-        // pre-select style. resetStyle can leave subtle drift (setStyle merges
-        // rather than replaces on some Leaflet builds), which showed up as
-        // the deselected feature having a slightly different border weight
-        // than its neighbours.
-        if (nepalSelectedOriginalStyle) {
-            try { nepalSelectedLayer.setStyle(nepalSelectedOriginalStyle); } catch (_) {}
-        }
     }
     if (nepalSelectedOutlineLayer && map) {
         try { map.removeLayer(nepalSelectedOutlineLayer); } catch (_) { /* best-effort */ }
@@ -1765,42 +1780,26 @@ function _loomaMapSelectNepalFeature(layer) {
     if (!layer) return false;
     _loomaMapClearNepalSelection();
     nepalSelectedLayer = layer;
-    nepalSelectedBase = currentBase;
-    // Snapshot pre-select style so _loomaMapClearNepalSelection can restore
-    // it exactly. Pulled from the mongo baseLayer config (which is what
-    // resetStyle uses anyway) so this handles the case where the layer's
-    // own .options have been drifting because of prior setStyle calls.
-    nepalSelectedOriginalStyle = null;
-    try {
-        var baseCfg = data && data.baseLayers && data.baseLayers[currentBase];
-        if (baseCfg && baseCfg.style) {
-            var s = baseCfg.style;
-            nepalSelectedOriginalStyle = {
-                fillColor: (typeof getColor === 'function') ? getColor(layer.feature, s) : (layer.options && layer.options.fillColor),
-                weight: Number(s.weight),
-                opacity: Number(s.opacity),
-                color: s.color,
-                fillOpacity: Number(s.fillOpacity)
-            };
-        }
-    } catch (_) { nepalSelectedOriginalStyle = null; }
-    // Set the border weight/color directly on the layer so the selection
-    // ALWAYS reads as a thicker border, independent of whether the outline
-    // overlay below ends up above or below the base layer in DOM order.
-    // (Municipalities default to weight 1 which is easy to miss when
-    // selected; bumping to 4 makes it unambiguously highlighted.)
-    layer.setStyle({
-        fillColor: '#ff3333',
-        color: '#d00000',
-        weight: 4,
-        opacity: 1,
-        fillOpacity: 0.78
-    });
+    // Find the base layer that actually OWNS this feature (not currentBase,
+    // which is the layer the user is browsing — those can differ when e.g.
+    // the user is on Districts view but clicks a municipality that's
+    // rendered on top). Fall back to currentBase if the lookup fails.
+    var ownBase = (typeof _loomaMapNepalBaseIndexOf === 'function') ? _loomaMapNepalBaseIndexOf(layer) : -1;
+    nepalSelectedBase = (ownBase >= 0) ? ownBase : currentBase;
+    // IMPORTANT: do NOT mutate the underlying base-layer feature's style.
+    // Previous attempts (setStyle + snapshot + restore) all showed subtle
+    // border-weight drift on deselect because Leaflet's setStyle merges and
+    // resetStyle path has its own quirks. Instead we express the selection
+    // ENTIRELY via a separate overlay layer that carries both the red fill
+    // AND the thick border. Removing that overlay on deselect leaves the
+    // base layer byte-identical to its neighbours.
+    nepalSelectedOriginalStyle = null; // kept for API compat, no longer used
     nepalSelectedOutlineLayer = L.geoJson(layer.feature, {
         interactive: false,
         style: {
             color: '#d00000',
-            fillOpacity: 0,
+            fillColor: '#ff3333',
+            fillOpacity: 0.55,
             opacity: 1,
             weight: 6
         }
@@ -2131,13 +2130,16 @@ function baseLayerButtons (layerData)
             baseBoxes[i].type= "radio";
             baseBoxes[i].name = "choice";
             baseBoxes[i].id = "id" + i;
-            
-            baseLabels[i] = document.createElement('text');  // Create label
+
+            baseLabels[i] = document.createElement('label');  // Real <label>, not <text>
             baseLabels[i].htmlFor = "id" + i;
             baseLabels[i].appendChild(document.createTextNode(' ' + _loomaMapBaseLayerButtonName(layerData[i], i) + ' '));
-            
-            div.appendChild(baseBoxes[i]);
-            div.appendChild(baseLabels[i]);
+
+            // Wrap each radio+label pair in its own row so they align to the
+            // same line even when the label wraps ('Municipalities' is long).
+            var row = L.DomUtil.create('div', 'info-row', div);
+            row.appendChild(baseBoxes[i]);
+            row.appendChild(baseLabels[i]);
             
             
             // Brings the base layer to the front if its button is checked

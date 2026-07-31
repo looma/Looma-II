@@ -34,6 +34,10 @@ var countryClickJustOpened = false;
 var nepalSelectedLayer = null;
 var nepalSelectedOutlineLayer = null;
 var nepalSelectedBase = null;
+// Snapshot of the layer's style taken BEFORE we apply the red-selected style,
+// so we can restore it byte-for-byte on deselect. Relying on resetStyle alone
+// left visible drift on some layers (border stayed thicker than neighbours).
+var nepalSelectedOriginalStyle = null;
 var nepalSelectionPanel = null;
 var nepalHoverPanel = null;
 var supplementalCountryFacts = {};
@@ -1731,8 +1735,21 @@ function _loomaMapShowNepalSelectionDetails(layer) {
 }
 
 function _loomaMapClearNepalSelection() {
-    if (nepalSelectedLayer && nepalSelectedBase !== null && baseLayers && baseLayers[nepalSelectedBase]) {
-        try { baseLayers[nepalSelectedBase].resetStyle(nepalSelectedLayer); } catch (_) { /* best-effort */ }
+    if (nepalSelectedLayer) {
+        // First try the parent GeoJSON's resetStyle — the canonical way.
+        try {
+            if (nepalSelectedBase !== null && baseLayers && baseLayers[nepalSelectedBase] && baseLayers[nepalSelectedBase].resetStyle) {
+                baseLayers[nepalSelectedBase].resetStyle(nepalSelectedLayer);
+            }
+        } catch (_) { /* best-effort */ }
+        // Belt-and-suspenders: also explicitly re-apply the snapshotted
+        // pre-select style. resetStyle can leave subtle drift (setStyle merges
+        // rather than replaces on some Leaflet builds), which showed up as
+        // the deselected feature having a slightly different border weight
+        // than its neighbours.
+        if (nepalSelectedOriginalStyle) {
+            try { nepalSelectedLayer.setStyle(nepalSelectedOriginalStyle); } catch (_) {}
+        }
     }
     if (nepalSelectedOutlineLayer && map) {
         try { map.removeLayer(nepalSelectedOutlineLayer); } catch (_) { /* best-effort */ }
@@ -1740,6 +1757,7 @@ function _loomaMapClearNepalSelection() {
     nepalSelectedLayer = null;
     nepalSelectedOutlineLayer = null;
     nepalSelectedBase = null;
+    nepalSelectedOriginalStyle = null;
     _loomaMapHideNepalSelectionDetails();
 }
 
@@ -1748,6 +1766,24 @@ function _loomaMapSelectNepalFeature(layer) {
     _loomaMapClearNepalSelection();
     nepalSelectedLayer = layer;
     nepalSelectedBase = currentBase;
+    // Snapshot pre-select style so _loomaMapClearNepalSelection can restore
+    // it exactly. Pulled from the mongo baseLayer config (which is what
+    // resetStyle uses anyway) so this handles the case where the layer's
+    // own .options have been drifting because of prior setStyle calls.
+    nepalSelectedOriginalStyle = null;
+    try {
+        var baseCfg = data && data.baseLayers && data.baseLayers[currentBase];
+        if (baseCfg && baseCfg.style) {
+            var s = baseCfg.style;
+            nepalSelectedOriginalStyle = {
+                fillColor: (typeof getColor === 'function') ? getColor(layer.feature, s) : (layer.options && layer.options.fillColor),
+                weight: Number(s.weight),
+                opacity: Number(s.opacity),
+                color: s.color,
+                fillOpacity: Number(s.fillOpacity)
+            };
+        }
+    } catch (_) { nepalSelectedOriginalStyle = null; }
     // Set the border weight/color directly on the layer so the selection
     // ALWAYS reads as a thicker border, independent of whether the outline
     // overlay below ends up above or below the base layer in DOM order.

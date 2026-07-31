@@ -84,26 +84,25 @@
     color: var(--looma-blue, #091F48);
 }
 
-/* Bigger Leaflet zoom buttons for the /maps pages — accessibility / touch-friendly.
-   Mirrors the block in css/looma-game.css so map games and the maps tab share the
-   same 44x44 px controls. */
+/* 2x zoom buttons for the /maps pages — accessibility / touch-friendly,
+   matched across all maps (games page + roads-of-nepal use the same size). */
 .leaflet-control-zoom a {
-    width: 44px !important;
-    height: 44px !important;
-    line-height: 44px !important;
-    font-size: 26px !important;
+    width: 88px !important;
+    height: 88px !important;
+    line-height: 88px !important;
+    font-size: 52px !important;
     font-weight: bold;
 }
 .leaflet-control-zoom {
-    border-radius: 6px !important;
+    border-radius: 8px !important;
 }
 .leaflet-control-zoom a:first-child {
-    border-top-left-radius: 6px !important;
-    border-top-right-radius: 6px !important;
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
 }
 .leaflet-control-zoom a:last-child {
-    border-bottom-left-radius: 6px !important;
-    border-bottom-right-radius: 6px !important;
+    border-bottom-left-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
 }
 
 h1 {margin:10px 0 10px 0}

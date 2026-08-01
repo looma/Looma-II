@@ -119,6 +119,22 @@ canvas {
     display: block;
 }
 
+/* Shape dropdown grew to 11 icons (scribble → line → rect → oval → heart →
+   arrow → star → diamond → whole/half/quarter notes). At the default
+   max-height of 8vh per icon that's ~99vh of menu, taller than the
+   viewport, so items get cut off. Shrink each icon a bit and push the
+   menu up so all 11 stay visible — while keeping the icons readable
+   in size. */
+#shape .drop-content {
+    bottom: 32vh;
+    width: 9vw;
+}
+
+#shape .drop-content img {
+    max-height: 5.5vh;
+    padding: 4%;
+}
+
 /* Paper dropdown has more items (10) than any other dropdown and a text
    label instead of an icon. Push the menu up so all entries fit on screen,
    widen it so longer labels like "Coordinate" / "Number line" aren't

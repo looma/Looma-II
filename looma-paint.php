@@ -64,6 +64,9 @@ logPageHit('paint');
                     <img draggable="false" src="images/forward-arrow.png" name="shape" value="arrow">
                     <img draggable="false" src="images/star.svg"      name="shape" value="star">
                     <img draggable="false" src="images/diamond.svg"   name="shape" value="diamond">
+                    <img draggable="false" src="images/whole-note.svg"   name="shape" value="whole-note">
+                    <img draggable="false" src="images/half-note.svg"    name="shape" value="half-note">
+                    <img draggable="false" src="images/quarter-note.svg" name="shape" value="quarter-note">
                 </div>
             </button>
         </div>

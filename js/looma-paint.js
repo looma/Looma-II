@@ -74,7 +74,7 @@ var select; //function to process a button click that changes PAINT settings (e.
 // properties are 'color', 'size', 'shape' and 'pencil'
 //   legal values for 'color': any strokeColor value accepted by paper.js. similar to CSS colors, e.g. "red" or "#ff0000"
 //   legal values for 'size': any strokeWidth value accepted by paper.js, e.g. 'thin', 'extrathin' or numrical - '4' means "4pt"
-//     legal values for 'shape': 'scribble', 'line', 'rectangle', 'oval', 'heart', 'arrow', 'star', 'diamond'
+//     legal values for 'shape': 'scribble', 'line', 'rectangle', 'oval', 'heart', 'arrow', 'star', 'diamond', 'whole-note', 'half-note', 'quarter-note'
 //     legal values for 'pencil': 'draw', 'erase'
 var currentSettings = {
     color: "red",
@@ -333,6 +333,47 @@ function makeStar(rect) {
     return new paper.Path.Star(center, 5, outerRadius, innerRadius);
 }
 
+// Build a music note as a paper.Group: an oval "head" plus (for half and
+// quarter notes) a vertical stem rising from the head's right side.
+//   noteType 'whole'   → open oval, no stem
+//   noteType 'half'    → open oval, stem
+//   noteType 'quarter' → filled oval, stem
+// `rect` is the drag bounding box that sizes the note head; the stem for
+// half/quarter is proportional to the head height.
+function makeMusicNote(rect, noteType, color, strokeWidth) {
+    var group = new paper.Group();
+
+    // Note head — an ellipse fitting the drag rectangle
+    var head = new paper.Path.Ellipse(rect);
+    if (noteType === 'quarter') {
+        head.fillColor = color;
+    } else {
+        head.strokeColor = color;
+        head.strokeWidth = strokeWidth;
+        head.fillColor   = null;
+    }
+    group.addChild(head);
+
+    // Stem: half and quarter notes have one; whole notes do not.
+    // Rises from the right side of the head. Length scales with head
+    // height (classical proportion ~3x).
+    if (noteType === 'half' || noteType === 'quarter') {
+        var stemX      = Math.max(rect.left, rect.right);
+        var stemMidY   = (rect.top + rect.bottom) / 2;
+        var stemLength = Math.abs(rect.height) * 3;
+        var stem = new paper.Path.Line(
+            new paper.Point(stemX, stemMidY),
+            new paper.Point(stemX, stemMidY - stemLength)
+        );
+        stem.strokeColor = color;
+        stem.strokeWidth = strokeWidth;
+        stem.strokeCap   = 'round';
+        group.addChild(stem);
+    }
+
+    return group;
+}
+
 // Build an arrow from `start` to `end` as a paper.Group containing the
 // line shaft plus a filled triangular arrowhead at the tip. Length is the
 // distance between the two points; direction is the line angle; size is
@@ -449,11 +490,25 @@ mouseDown = function(e) {
         // drags to set length and direction.
         currentPath = makeArrow(startPoint, startPoint, color, currentSettings.size);
     }
+    else if (currentSettings.shape == 'whole-note'   ||
+             currentSettings.shape == 'half-note'    ||
+             currentSettings.shape == 'quarter-note')
+    {
+        // Start as a zero-size music note; mouseMove rebuilds it.
+        // The shape value (e.g. "quarter-note") maps to the note type
+        // ("quarter") by taking the first hyphen-separated segment.
+        var noteType = currentSettings.shape.split('-')[0];
+        var initRect = new paper.Rectangle(startPoint, startPoint);
+        currentPath = makeMusicNote(initRect, noteType, color, currentSettings.size);
+    }
 
-    // Apply common stroke styling. Skip this for arrow — makeArrow already
-    // styles the shaft and filled arrowhead, and forcing strokeColor here
-    // on the Group would clobber the arrowhead's appearance.
-    if (currentPath && currentSettings.shape !== 'arrow') {
+    // Apply common stroke styling. Skip this for shapes that manage their
+    // own styling internally (Groups with mixed fill+stroke) — forcing
+    // strokeColor on the Group would clobber the specialized rendering.
+    if (currentPath && currentSettings.shape !== 'arrow'
+                    && currentSettings.shape !== 'whole-note'
+                    && currentSettings.shape !== 'half-note'
+                    && currentSettings.shape !== 'quarter-note') {
 
         currentPath.strokeColor = color;
         currentPath.strokeWidth = currentSettings.size;
@@ -522,6 +577,17 @@ mouseMove = function(e) {
                                     new paper.Point(x, y),
                                     getColor(),
                                     currentSettings.size);
+            paper.view.draw();
+        }
+        else if (currentSettings.shape == 'whole-note'   ||
+                 currentSettings.shape == 'half-note'    ||
+                 currentSettings.shape == 'quarter-note')
+        {
+            // Rebuild the note with the drag rectangle sizing its head.
+            currentPath.remove();
+            var noteType = currentSettings.shape.split('-')[0];
+            var rect = new paper.Rectangle(startPoint, new paper.Point(x, y));
+            currentPath = makeMusicNote(rect, noteType, getColor(), currentSettings.size);
             paper.view.draw();
         }
     } //end IF (isDrawing)
@@ -720,27 +786,29 @@ var BACKGROUNDS = (function () {
         '</svg>';
 
     // Coordinate plane: faint grid, heavier x/y axes, arrowheads, labels -9..9
+    // Bolder strokes and larger font-size so labels are readable when the
+    // background is scaled down to fit the canvas.
     var coord = '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">';
-    coord += '<g stroke="#dde8f0" stroke-width="1">';
+    coord += '<g stroke="#dde8f0" stroke-width="2">';
     for (i = 40; i < 800; i += 40) {
         if (i === 400) continue;
         coord += '<line x1="' + i + '" y1="0" x2="' + i + '" y2="800"/>';
         coord += '<line x1="0" y1="' + i + '" x2="800" y2="' + i + '"/>';
     }
     coord += '</g>';
-    coord += '<g stroke="#666" stroke-width="2">';
+    coord += '<g stroke="#444" stroke-width="4">';
     coord += '<line x1="0" y1="400" x2="800" y2="400"/>';
     coord += '<line x1="400" y1="0" x2="400" y2="800"/>';
     coord += '</g>';
-    coord += '<polygon points="800,400 780,392 780,408" fill="#666"/>';
-    coord += '<polygon points="400,0 392,20 408,20" fill="#666"/>';
-    coord += '<g font-family="sans-serif" font-size="14" fill="#666" text-anchor="middle">';
+    coord += '<polygon points="800,400 770,386 770,414" fill="#444"/>';
+    coord += '<polygon points="400,0 386,30 414,30" fill="#444"/>';
+    coord += '<g font-family="sans-serif" font-size="22" font-weight="bold" fill="#444" text-anchor="middle">';
     for (i = -9; i <= 9; i++) {
         if (i === 0) continue;
-        coord += '<text x="' + (400 + i * 40) + '" y="418">' + i + '</text>';
-        coord += '<text x="386" y="' + (400 - i * 40 + 5) + '">' + i + '</text>';
+        coord += '<text x="' + (400 + i * 40) + '" y="428">' + i + '</text>';
+        coord += '<text x="376" y="' + (400 - i * 40 + 8) + '">' + i + '</text>';
     }
-    coord += '<text x="386" y="418">0</text>';
+    coord += '<text x="376" y="428">0</text>';
     coord += '</g></svg>';
 
     // Music staff: 5 lines as a repeating tile so multiple staves stack vertically
@@ -796,10 +864,13 @@ var BACKGROUNDS = (function () {
     }
     protractor += '</g><circle cx="300" cy="300" r="4" fill="#555"/></svg>';
 
-    // Ruler: 0..20 cm with major cm ticks, half-cm, and mm subdivisions
-    var ruler = '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="80" viewBox="0 0 1000 80">';
-    ruler += '<rect x="40" y="20" width="920" height="40" fill="none" stroke="#888" stroke-width="2"/>';
-    ruler += '<g stroke="#888" stroke-width="1">';
+    // Ruler: 0..20 cm with major cm ticks, half-cm, and mm subdivisions.
+    // Bolder strokes and larger font so it stays legible when scaled to
+    // fit the canvas width. SVG height bumped to 100 to give room for the
+    // larger cm labels below the ruler body.
+    var ruler = '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="100" viewBox="0 0 1000 100">';
+    ruler += '<rect x="40" y="20" width="920" height="40" fill="none" stroke="#444" stroke-width="3"/>';
+    ruler += '<g stroke="#444" stroke-width="2">';
     for (i = 0; i <= 200; i++) {
         var rx = (40 + i * 4.6).toFixed(2);
         var len;
@@ -809,10 +880,10 @@ var BACKGROUNDS = (function () {
         ruler += '<line x1="' + rx + '" y1="20" x2="' + rx + '" y2="' + (20 + len) + '"/>';
     }
     ruler += '</g>';
-    ruler += '<g font-family="sans-serif" font-size="12" fill="#555" text-anchor="middle">';
+    ruler += '<g font-family="sans-serif" font-size="18" font-weight="bold" fill="#333" text-anchor="middle">';
     for (i = 0; i <= 20; i++) {
         var cx = 40 + i * 46;
-        ruler += '<text x="' + cx + '" y="72">' + i + '</text>';
+        ruler += '<text x="' + cx + '" y="82">' + i + '</text>';
     }
     ruler += '</g></svg>';
 

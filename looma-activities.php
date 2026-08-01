@@ -276,14 +276,19 @@ $foundActivity;
 
 
     //echo "grade is " . $grade . ", subject is " . ucfirst($subject) . ", ch_id is " . $ch_id;
-    $filename = "../content/chapters/Class$gradenumber/" . ucfirst($subject) . "/en/$ch_id.keywords";
+    //  Nepali chapters use their np/ keyword file (named "<ch_id>-np.keywords"); everything else uses en/
+    //  build the path the same way getKeyVocabulary does (ch_idToClass/ch_idToSubject) so the
+    //  button check and the game's file fetch always agree on the class/subject folder names
+    $kw_lang = ($chapter_lang === 'np') ? 'np' : 'en';
+    $kw_suffix = ($kw_lang === 'np') ? '-np' : '';
+    $filename = "../content/chapters/" . ch_idToClass($ch_id) . "/" . ch_idToSubject($ch_id) . "/$kw_lang/$ch_id$kw_suffix.keywords";
     //echo "filename is " . $filename;
-    if (file_exists($filename) && $subject !== "math" && substr($ch_id, -3) !== '.00') {
+    if (file_exists($filename) /* && $subject !== "math" */ && substr($ch_id, -3) !== '.00') {
 
 
         echo "<td>";
 
-        echo "<a href='looma-game.php?type=keywords&class=Class $gradenumber&subject=$subject&ch_id=" . $ch_id . "'>";
+        echo "<a href='looma-game.php?type=keywords&class=Class $gradenumber&subject=$subject&ch_id=" . $ch_id . "&lang=$kw_lang'>";
             echo "  <button class='activity  img'>";
             echo "    <img src='images/games.png'>";
             echo "    <span>Key Vocabulary</span>";

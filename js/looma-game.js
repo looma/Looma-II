@@ -1801,9 +1801,11 @@ function runGame (id, db) {
         });
 } //  end runGame()
 
-function buildKeywordGame(keywordgame) {
+function buildKeywordGame(keywordgame, lang) {
     // 'keywordgame is JSON of keywords with fields 'en', 'np', 'def' and 'ndef'
-    // build 'game[]' array
+    // build 'game[]' array.  For a Nepali game use the np word and ndef definition.
+    var wordField = (lang === 'np') ? 'np'   : 'en';
+    var defField  = (lang === 'np') ? 'ndef' : 'def';
     var game = []; game['prompts'] = []; game['responses'] = [];
     game['title'] = "Key Vocabulary";
     game['presentation_type'] = 'matching';
@@ -1812,23 +1814,23 @@ function buildKeywordGame(keywordgame) {
     game['class'] = "";
     keywordgame.forEach( function(item, i)
     {
-      game['prompts'][i] = item.en;
-      game['responses'][i] = item.def;
+      game['prompts'][i] = item[wordField];
+      game['responses'][i] = item[defField];
     });
     game_found(game);
     //runMatch('matching');
 
 };
 
-function runKeyword (ch_id) {
-    // get keyword file
+function runKeyword (ch_id, lang) {
+    // get keyword file (lang selects the en/ or np/ keyword file; defaults to 'en')
     $.ajax(
         "looma-database-utilities.php",
         {   type: 'GET',
             dataType: "json",
-            data: "cmd=getKeyVocabulary&ch_id=" + ch_id,
+            data: "cmd=getKeyVocabulary&ch_id=" + ch_id + "&lang=" + (lang || 'en'),
             error:   game_not_found,
-            success: buildKeywordGame
+            success: function (keywordgame) { buildKeywordGame(keywordgame, lang); }
         });
 
 };
@@ -1844,7 +1846,7 @@ $(document).ready (function() {
     var game_db = $game.data('db');
     if (game_id) runGame(game_id, game_db);
     else if ($game.data('type') === 'keywords' && $game.data('ch_id')) {
-        runKeyword($game.data('ch_id'));
+        runKeyword($game.data('ch_id'), $game.data('lang'));
     }
     else {
         var randomGame = {};

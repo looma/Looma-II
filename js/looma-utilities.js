@@ -1038,7 +1038,12 @@ defHTML: function (definition, rwdef) {  // helper function for utilities.js, no
         var $img = $('<img id="definitionThumb" alt="" src="../content/dictionary\ images/' + imgName + '"/>');
     }
 
-    $div.append($english, $nepali, $pos, $def, $img);
+    if (definition.nsl) {
+        var vidName = definition.nsl + ".mp4";
+        var $signed = $('<img id="definitionSigned" alt="sign language" src="images/sign_language.png" data-video="../content/sign\ language/' + vidName + '"/>');
+    }
+
+    $div.append($english, $nepali, $pos, $def, $img, $signed);
 
         if (rwdef) {
             var $rwdef = $('<div id="rwdef"/>');

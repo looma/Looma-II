@@ -35,16 +35,7 @@ include ('includes/looma-utilities.php');
         $ch_id = ($_REQUEST['ch_id']);
 
       //  echo "<div id='fullscreen'>";
- /*       if ($type === 'keywords') {
 
-                NOTE: should reformat 'keywords' file from JSON to lines with <fieldname> ":" <tab> <value>
-                like "word:   boy
-                      nepali:
-                      definition:   young male human"
-                then display this in the $contents
-
-        } else {  // other types (summary, outline, plan)
-*/
             $class = ch_idToClass($ch_id);
             $subject = ch_idToSubject($ch_id);
             $fp = "../content/chapters/$class/$subject/en/$ch_id.$type";
@@ -71,7 +62,6 @@ include ('includes/looma-utilities.php');
 
             include ('includes/looma-control-buttons.php');
 
-     //   };
       //  echo "</div>";
     }
     ?>

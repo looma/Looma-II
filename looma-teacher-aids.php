@@ -15,9 +15,6 @@ require_once ('includes/header.php');
 require_once ('includes/mongo-connect.php');
 
 require_once('includes/looma-utilities.php');
-//use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id,
-//                       $mongo_id, $ole_id, $url, $pg, $zoom, $grade,
-//                       $epversion, $nfn, $npg, $prefix,$lang)
 ?>
 <link rel="stylesheet" href="css/looma-teacher-aids.css">
 </head>
@@ -118,8 +115,8 @@ if ($tg) {
 
 
 // make buttons for TEACHER AIDS if present
-$aids = ['summary','outline','plan','keywords','quiz','objectives'];
-$aidnames = ['Summary','Outline','Plan','Keywords','Quizzes','Objectives'];
+$aids = ['summary','outline','plan','keywords','quiz','objectives','topics'];
+$aidnames = ['Summary','Outline','Plan','Keywords','Quizzes','Objectives','Topics'];
 for ($i=0; $i<sizeof($aids); $i++)  {
     $aid = $aids[$i];
 

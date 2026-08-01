@@ -1684,12 +1684,13 @@ require_once('includes/looma-utilities.php');
           ///////////////////////////////////////////
               case "getKeyVocabulary":
                   //echo "in get key vocabulary";
-                  $lang = 'en';
+                  $lang = (isset($_REQUEST['lang']) && $_REQUEST['lang'] === 'np') ? 'np' : 'en';
+                  $suffix = ($lang === 'np') ? '-np' : '';   // np files are named "<ch_id>-np.keywords"
                   $class = ch_idToClass($ch_id);
                   //echo "class is " . $class;
                   $subject = ch_idToSubject($ch_id);
                   //echo "subject is " . $subject;
-                  $file = "../content/chapters/$class/$subject/$lang/$ch_id.keywords";
+                  $file = "../content/chapters/$class/$subject/$lang/$ch_id$suffix.keywords";
 
                   //echo "keyword file is " . $file;
 

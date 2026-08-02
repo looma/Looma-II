@@ -113,7 +113,6 @@ if ($tg) {
 
 //if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
 
-
 // make buttons for TEACHER AIDS if present
 $aids = ['summary','outline','plan','keywords','quiz','objectives','topics'];
 $aidnames = ['Summary','Outline','Plan','Keywords','Quizzes','Objectives','Topics'];

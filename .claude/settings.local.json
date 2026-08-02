@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(ls /usr/local/var/www/Looma/looma-*.php)",
-      "Bash(mongosh --quiet --eval 'db=connect\\(\"mongodb://127.0.0.1:27017/looma\"\\); var c=db.activities.find\\({ft:\"worksheet\"}\\); c.forEach\\(d=>print\\(JSON.stringify\\({fp:d.fp,fn:d.fn,dn:d.dn}\\)\\)\\); print\\(\"count=\"+db.activities.countDocuments\\({ft:\"worksheet\"}\\)\\)')"
+      "Bash(mongosh --quiet --eval 'db=connect\\(\"mongodb://127.0.0.1:27017/looma\"\\); var c=db.activities.find\\({ft:\"worksheet\"}\\); c.forEach\\(d=>print\\(JSON.stringify\\({fp:d.fp,fn:d.fn,dn:d.dn}\\)\\)\\); print\\(\"count=\"+db.activities.countDocuments\\({ft:\"worksheet\"}\\)\\)')",
+      "Read(//private/tmp/**)",
+      "Bash(tar xzf *)"
     ]
   }
 }

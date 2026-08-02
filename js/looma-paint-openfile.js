@@ -13,7 +13,17 @@ for (var i = 0; i < localStorage.length; i++) {
     var link = document.createElement("a");
     link.href = "looma-paint.php#" + key;
     var img = new Image();
-    img.src = 'data:image/svg+xml;base64,' + btoa(localStorage.getItem(key));
+    // Stored value may be either the new JSON format {svg, background}
+    // or a legacy raw-SVG string. Try JSON first, fall back to raw.
+    var stored = localStorage.getItem(key);
+    var svg = stored;
+    try {
+        var parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === 'object' && typeof parsed.svg === 'string') {
+            svg = parsed.svg;
+        }
+    } catch (e) { /* legacy raw SVG — use as-is */ }
+    img.src = 'data:image/svg+xml;base64,' + btoa(svg);
     //img.width = 200;
     //img.height = 200;
     var button = document.createElement("button");

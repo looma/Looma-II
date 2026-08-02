@@ -703,6 +703,34 @@ function savePaint() {
     LOOMA.alert('Drawing saved', 10);
 } //savePaint()
 
+// Pack the current drawing + the active Paper background choice into a
+// single JSON string that we store in localStorage. Saving both together
+// means opening a drawing later restores the same Paper (grid, coord,
+// ruler, ...) that was in use when the file was saved, instead of
+// whichever Paper the user last picked globally.
+function packDrawing() {
+    return JSON.stringify({
+        svg:        paper.project.exportSVG({asString: true}),
+        background: localStorage.getItem(BACKGROUND_KEY) || 'blank'
+    });
+}
+
+// Unpack a stored save. Accepts either the new JSON format above OR a
+// legacy raw-SVG string (drawings saved before this format was introduced
+// don't have a JSON wrapper). Returns { svg, background } where
+// background is null for legacy saves — the caller can then decide
+// whether to leave the current Paper as-is or reset it.
+function unpackDrawing(stored) {
+    if (!stored) return { svg: null, background: null };
+    try {
+        var parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === 'object' && typeof parsed.svg === 'string') {
+            return { svg: parsed.svg, background: parsed.background || null };
+        }
+    } catch (e) { /* not JSON — treat as legacy raw SVG */ }
+    return { svg: stored, background: null };
+}
+
 function saveFile() {  //original  version. saves files to user's localStorage. not permanent or accessible by others
     /*
     Save the file in localStorage.
@@ -712,9 +740,7 @@ function saveFile() {  //original  version. saves files to user's localStorage. 
     var counter = parseInt(localStorage.getItem(COUNTER));
     localStorage.setItem(
         "LOOMA_" + (counter + 1).toString(),
-        paper.project.exportSVG({
-            asString: true
-        })
+        packDrawing()
     );
     localStorage.setItem(COUNTER, (counter + 1).toString());
     LOOMA.alert('Drawing saved',5,true);  //shows a hidden div with id='notice' for 5 seconds
@@ -723,8 +749,8 @@ function saveFile() {  //original  version. saves files to user's localStorage. 
 }
 
 function saveDraft() {
-    // Auto-save the current canvas to a fixed slot so it can be restored next visit.
-    localStorage.setItem(DRAFT_KEY, paper.project.exportSVG({asString: true}));
+    // Auto-save the current canvas + background so both can be restored next visit.
+    localStorage.setItem(DRAFT_KEY, packDrawing());
 }
 
 function clearDraft() {
@@ -733,12 +759,16 @@ function clearDraft() {
 }
 
 function restoreDraft() {
-    // If a draft was stashed last visit, load it back onto the canvas.
-    var svg = localStorage.getItem(DRAFT_KEY);
-    if (svg) {
-        paper.project.importSVG(svg);
+    // If a draft was stashed last visit, load it back onto the canvas AND
+    // restore the Paper background that was active when the draft was saved.
+    var stored = localStorage.getItem(DRAFT_KEY);
+    if (!stored) return;
+    var d = unpackDrawing(stored);
+    if (d.svg) {
+        paper.project.importSVG(d.svg);
         paper.view.draw();
     }
+    if (d.background) setBackground(d.background);
 }
 
 // Wrapper around LOOMA.confirm that ALSO shows a small yellow translation
@@ -902,7 +932,8 @@ var BACKGROUNDS = (function () {
         ruler:      { image: svgUrl(ruler),      repeat: 'no-repeat', size: 'contain', position: 'bottom center' },
         // Uses the shipped map image directly rather than an inline SVG,
         // so any accuracy work happens by swapping out the .jpg file.
-        nepal:      { image: 'url("images/map_outline_nepal.jpg")', repeat: 'no-repeat', size: 'contain', position: 'center' }
+        // Current source: 7-provinces outline of Nepal.
+        nepal:      { image: 'url("images/7mapnepal.png")', repeat: 'no-repeat', size: 'contain', position: 'center' }
     };
 })();
 
@@ -935,11 +966,16 @@ function openFile(fileName) {
     Actually open a file by name/id.
     Before loading it, clear everything.
     If the file doesn't exist, it clears the project but doesn't load anything.
+    Restores the Paper background that was active when the file was saved
+    (new format). Legacy saves have no background info — we leave the
+    current Paper as-is in that case.
     */
     paper.project.clear();
     historyStack = [];
-    paper.project.importSVG(localStorage.getItem(fileName));
+    var d = unpackDrawing(localStorage.getItem(fileName));
+    if (d.svg) paper.project.importSVG(d.svg);
     paper.view.draw();
+    if (d.background) setBackground(d.background);
     isDirty = false;
 }
 

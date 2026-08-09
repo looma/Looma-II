@@ -42,9 +42,33 @@
     padding: 4px;
     border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-    max-width: 280px;
+    max-width: 340px;
+}
+.looma-map-search-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.looma-map-search-btn {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: rgba(255,255,255,0.9);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 70% 70%;
+    cursor: pointer;
+    padding: 0;
+    background-image: url("../images/looma-search2.png");
+}
+.looma-map-search-btn:hover {
+    background-color: #f4f6fa;
+    border-color: var(--looma-blue, #091F48);
 }
 .looma-map-search-input {
+    flex: 1 1 auto;
     width: 220px;
     height: 34px;
     padding: 4px 10px;
@@ -152,19 +176,40 @@ div.viewer img {
     line-height: 1.2;
 }
 
-/* The legend and the writing in it, overrides .info */
+/* Looma Schools Map has just one base-layer chooser + a Schools add-on at
+   bottom-left, so there's plenty of headroom to grow the toggle panel
+   without colliding with the top-left search bar. */
+body.map-looma-schools-map .info {
+    padding: 12px 16px;
+    font-size: 26px;
+    max-width: 380px;
+}
+body.map-looma-schools-map .info input[type="radio"],
+body.map-looma-schools-map .info input[type="checkbox"] {
+    width: 26px;
+    height: 26px;
+}
+body.map-looma-schools-map .info-row {
+    gap: 10px;
+    margin: 5px 0;
+}
+
+/* The legend and the writing in it, overrides .info. Nepal Map is the
+   only /maps page with a bottom-left color legend, and its bottomleft
+   stack (base-toggle + addOn-toggle + legend) is tight against the
+   top-left search bar — this size is the largest that clears the search. */
 .legend {
-    font: 24px Arial, Helvetica, sans-serif;
-    line-height: 26px;
+    font: 28px Arial, Helvetica, sans-serif;
+    line-height: 32px;
     color: #555;
 }
 
 /* The boxes in the legend */
 .legend i {
-    width: 26px;
-    height: 26px;
+    width: 32px;
+    height: 32px;
     float: left;
-    margin-right: 10px;
+    margin-right: 12px;
     opacity: 0.7;
 }
 

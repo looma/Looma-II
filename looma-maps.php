@@ -52,11 +52,17 @@ function makeMapButton($file, $thumb, $dn) {
         <table><tr>
         <?php
         $geographyGames = array(
-            array('id' => '5b620280a18f69cb2937c982', 'name' => 'Continents',        'thumb' => 'images/globe.png'),
-            array('id' => '5b620286a18f69cb2937c983', 'name' => 'Asia Countries',    'thumb' => 'images/globe.png'),
-            array('id' => '5f2204c96cf78b3916cf2cc5', 'name' => 'Europe Countries',  'thumb' => 'images/globe.png'),
+            array('id' => '5b620280a18f69cb2937c982', 'name' => 'Continents',              'thumb' => 'images/globe.png'),
+            array('id' => '6a78dc5973dbd01789db8655', 'name' => 'World Countries',         'thumb' => 'images/globe.png'),
+            array('id' => '5b620286a18f69cb2937c983', 'name' => 'Asia Countries',          'thumb' => 'images/globe.png'),
+            array('id' => '5f2204c96cf78b3916cf2cc5', 'name' => 'Europe Countries',        'thumb' => 'images/globe.png'),
+            array('id' => '6a78dc5973dbd01789db864f', 'name' => 'Africa Countries',        'thumb' => 'images/globe.png'),
+            array('id' => '6a78dc5973dbd01789db8651', 'name' => 'North America Countries', 'thumb' => 'images/globe.png'),
+            array('id' => '6a78dc5973dbd01789db8653', 'name' => 'South America Countries', 'thumb' => 'images/globe.png'),
         );
         global $icons;
+        $gameCol = 1;
+        $gameMax = 3;
         foreach ($geographyGames as $g) {
             echo '<td>';
             echo '<a href="game?id=' . $g['id'] . '&type=map">';
@@ -67,6 +73,8 @@ function makeMapButton($file, $thumb, $dn) {
             echo   '</button>';
             echo '</a>';
             echo '</td>';
+            $gameCol++;
+            if ($gameCol > $gameMax) { $gameCol = 1; echo '</tr><tr>'; }
         }
         ?>
         </tr></table>

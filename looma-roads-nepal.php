@@ -24,37 +24,64 @@ Description: "Roads of Nepal" map. Fully offline. Renders Nepal's major road
         width: 100%;
         height: calc(90vh - 90px);   /* container is 9/10 of viewport; subtract the title rows */
         min-height: 350px;
-        background: #cfe6f0; /* pale blue "beyond Nepal" so land vs ocean reads clearly */
+        background: #091F48; /* Looma blue — consistent with the other maps */
     }
+    /* Legend enlarged 2x for classroom projection. */
     .roads-legend {
-        background: rgba(255, 255, 255, 0.92);
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-size: 13px;
+        background: rgba(255, 255, 255, 0.94);
+        padding: 16px 24px;
+        border-radius: 10px;
+        font-size: 26px;
         line-height: 1.6;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.28);
         color: #1a1a1a;
     }
-    .roads-legend b { color: #b0281c; }
+    .roads-legend b { color: #b0281c; font-size: 30px; }
     .roads-legend .swatch {
-        display: inline-block; width: 22px; height: 3px;
-        vertical-align: middle; margin-right: 6px;
+        display: inline-block; width: 44px; height: 6px;
+        vertical-align: middle; margin-right: 12px;
     }
     .looma-country-tooltip {
         font-weight: bold;
+        font-size: 18px;
     }
-    /* Small in-map search widget (top-left). Searches provinces + named roads. */
+    /* Search widget (top-left). Same size as the /maps search widget so
+       it doesn't cover the map. Row = magnifier button + text input. */
     .roads-search {
         background: rgba(255,255,255,0.98);
         padding: 4px;
         border-radius: 6px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-        max-width: 260px;
+        max-width: 300px;
+    }
+    .roads-search-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .roads-search-btn {
+        width: 34px;
+        height: 34px;
+        flex: 0 0 auto;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: rgba(255,255,255,0.9);
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: 70% 70%;
+        cursor: pointer;
+        padding: 0;
+        background-image: url("images/looma-search2.png");
+    }
+    .roads-search-btn:hover {
+        background-color: #f4f6fa;
+        border-color: #b0281c;
     }
     .roads-search-input {
-        width: 200px; height: 32px;
+        flex: 1 1 auto;
+        width: 220px; height: 34px;
         padding: 4px 10px;
-        font-size: 14px;
+        font-size: 15px;
         border: 1px solid #ccc;
         border-radius: 4px;
         color: #1a1a1a;
@@ -70,26 +97,26 @@ Description: "Roads of Nepal" map. Fully offline. Renders Nepal's major road
         list-style: none;
         margin: 4px 0 0 0;
         padding: 0;
-        max-height: 240px;
+        max-height: 260px;
         overflow-y: auto;
         background: #fff;
         border: 1px solid #ddd;
         border-radius: 4px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         color: #1a1a1a;
-        font-size: 13px;
+        font-size: 14px;
     }
     .roads-search-results li {
-        padding: 5px 10px;
+        padding: 6px 10px;
         cursor: pointer;
         border-bottom: 1px solid #f0f0f0;
     }
     .roads-search-results li:last-child { border-bottom: none; }
     .roads-search-results li:hover { background: #f4f6fa; color: #b0281c; }
     .roads-search-results .kind {
-        font-size: 11px;
+        font-size: 12px;
         color: #888;
-        margin-left: 6px;
+        margin-left: 8px;
     }
     /* Top-right info panel showing the selected road name. Positioned by
        Leaflet's control container; we just style it. */
@@ -168,7 +195,11 @@ window.addEventListener('load', function () {
         maxZoom: 12,
         zoomSnap: 0.25,
         zoomDelta: 0.5,
-        wheelPxPerZoomLevel: 120
+        wheelPxPerZoomLevel: 120,
+        // Classroom touchscreens routinely register a firm tap as a double-tap;
+        // Leaflet's default double-click-to-zoom then jumps to max zoom and
+        // strands the user. All zooming should go through the +/- buttons.
+        doubleClickZoom: false
     });
     map.setMaxBounds(L.latLngBounds(L.latLng(25.5, 78), L.latLng(31.5, 91.5)));
 
@@ -187,8 +218,137 @@ window.addEventListener('load', function () {
     // Shape: [{ name, kind: 'province', layer } | { name, kind: 'road', layers[] }]
     var searchIndex = [];
 
+    // Base weights per road class. Fattened for classroom projection
+    // (Skip Aug 2026 review). Weights scale with zoom via zoomScale() so
+    // roads stay readable when zoomed in AND when the map is small.
+    var baseWeights = { trunk: 6, primary: 4.4, secondary: 3 };
+    var roadColors  = { trunk: '#c02020', primary: '#e05a1a', secondary: '#b8894f' };
+    // Selection color: bright red. On the previous pale-blue-ish background
+    // the yellow highlight didn't read well when projected in a classroom,
+    // so Skip asked for white background + red highlighting instead.
+    var HIGHLIGHT_COLOR = '#ff0000';
+    var HIGHLIGHT_WEIGHT_BASE = 14; // also scales with zoom
+    function zoomScale() {
+        // At default zoom (7) scale = 1. Each level up adds 25%, each level down loses 25%.
+        var z = map.getZoom();
+        return Math.max(0.6, 1 + (z - 7) * 0.25);
+    }
+    function baseStyleFor(feature) {
+        var cls = (feature.properties && feature.properties.highway) || 'secondary';
+        var scale = zoomScale();
+        return {
+            color: roadColors[cls] || roadColors.secondary,
+            weight: (baseWeights[cls] || baseWeights.secondary) * scale,
+            opacity: 0.95
+        };
+    }
+    function highlightStyle() {
+        return {
+            color: HIGHLIGHT_COLOR,
+            weight: HIGHLIGHT_WEIGHT_BASE * zoomScale(),
+            opacity: 1
+        };
+    }
+
+    // Persistent-highlight state — shared between the search widget, the
+    // road-click handler, and the zoomend re-styler. Kept at module scope
+    // so all three code paths see the same values.
+    var lastHighlightLayers = [];   // provinces or road segments
+    var lastHighlightKind = null;   // 'province' | 'road'
+    var roadInfoDiv = null;         // populated when the info-panel control mounts
+
+    function showRoadInfoPanel(name, segCount) {
+        if (!roadInfoDiv) return;
+        roadInfoDiv.querySelector('.roads-info-name').textContent = name;
+        roadInfoDiv.querySelector('.roads-info-segments').textContent =
+            segCount > 1 ? segCount + ' segments' : '';
+        roadInfoDiv.style.display = 'block';
+    }
+    function hideRoadInfoPanel() {
+        if (!roadInfoDiv) return;
+        roadInfoDiv.style.display = 'none';
+    }
+    function clearHighlight() {
+        if (lastHighlightLayers.length) {
+            var parent = lastHighlightKind === 'province' ? provincesLayer : roadsLayer;
+            lastHighlightLayers.forEach(function (lyr) {
+                try { if (parent && parent.resetStyle) parent.resetStyle(lyr); } catch (_) {}
+            });
+            lastHighlightLayers = [];
+        }
+        lastHighlightKind = null;
+        hideRoadInfoPanel();
+    }
+    function focusMatch(rec) {
+        if (!rec) return;
+        // No map view change per Skip's review — highlight in place.
+        clearHighlight();
+        if (rec.kind === 'province' && rec.layer) {
+            try {
+                rec.layer.setStyle({ weight: 4, color: HIGHLIGHT_COLOR, fillColor: '#ffd6d6', fillOpacity: 0.55 });
+                lastHighlightLayers = [rec.layer];
+                lastHighlightKind = 'province';
+            } catch (_) {}
+            if (rec.layer.openTooltip) try { rec.layer.openTooltip(); } catch (_) {}
+        } else if (rec.kind === 'road' && rec.layers && rec.layers.length) {
+            // Recolor every segment sharing this name to bright red.
+            // resetStyle on cleanup brings each segment back to its
+            // trunk/primary/secondary color via baseStyleFor.
+            var hs = highlightStyle();
+            rec.layers.forEach(function (lyr) {
+                try {
+                    lyr.setStyle(hs);
+                    if (typeof lyr.bringToFront === 'function') lyr.bringToFront();
+                } catch (_) {}
+            });
+            lastHighlightLayers = rec.layers.slice();
+            lastHighlightKind = 'road';
+            showRoadInfoPanel(rec.name, rec.layers.length);
+        }
+    }
+
+    // Top-right info panel showing the selected road's name. Mounted eagerly
+    // (before the road data loads) so the reference is stable.
+    var roadInfoControl = L.control({ position: 'topright' });
+    roadInfoControl.onAdd = function () {
+        var div = L.DomUtil.create('div', 'roads-info-panel leaflet-control');
+        L.DomEvent.disableClickPropagation(div);
+        div.style.display = 'none';
+        div.innerHTML =
+            '<div class="roads-info-close" title="Close">×</div>' +
+            '<div class="roads-info-label">Selected road</div>' +
+            '<div class="roads-info-name"></div>' +
+            '<div class="roads-info-segments"></div>';
+        div.querySelector('.roads-info-close').addEventListener('click', clearHighlight);
+        roadInfoDiv = div;
+        return div;
+    };
+    roadInfoControl.addTo(map);
+
+    // Re-apply road styles when the zoom level changes so weights scale.
+    // Highlighted segments keep their (also-scaled) red style.
+    map.on('zoomend', function () {
+        if (roadsLayer) {
+            try { roadsLayer.setStyle(baseStyleFor); } catch (_) {}
+        }
+        if (lastHighlightKind === 'road' && lastHighlightLayers.length) {
+            var hs = highlightStyle();
+            lastHighlightLayers.forEach(function (lyr) {
+                try {
+                    lyr.setStyle(hs);
+                    if (typeof lyr.bringToFront === 'function') lyr.bringToFront();
+                } catch (_) {}
+            });
+        }
+    });
+
+    // Clicking empty map clears the highlight and closes the panel.
+    map.on('click', clearHighlight);
+
     provincesPromise.then(function (provincesGeo) {
-        var provinceHover = { fillColor: '#f2ead0', color: '#8a5a2a', weight: 2, fillOpacity: 1 };
+        // Tan/beige land shapes over the Looma-blue map background so the
+        // country reads clearly against the surrounding "sea".
+        var provinceHover   = { fillColor: '#f2ead0', color: '#8a5a2a', weight: 2,   fillOpacity: 1 };
         var provinceDefault = { fillColor: '#f7efd7', color: '#b8964b', weight: 1.5, fillOpacity: 1 };
         provincesLayer = L.geoJSON(provincesGeo, {
             style: function () { return provinceDefault; },
@@ -210,40 +370,58 @@ window.addEventListener('load', function () {
 
         // Once provinces are down, roads on top.
         return roadsPromise.then(function (roadsGeo) {
-            // Different visual weights per road class — trunk is thickest.
-            var styles = {
-                trunk:     {color: '#c02020', weight: 3.0, opacity: 0.95},
-                primary:   {color: '#e05a1a', weight: 2.2, opacity: 0.9},
-                secondary: {color: '#b8894f', weight: 1.4, opacity: 0.85}
-            };
-            // roadIndexByName: name.toLowerCase() -> { name, kind:'road', layers[] }
-            // The same object is stored in searchIndex so the search widget
-            // sees all segments together.
-            var roadIndexByName = {};
+            // Road segments are indexed under two shapes so search finds
+            // them regardless of what the user types:
+            //  - by name (e.g. "Prithvi Highway") — primary entry
+            //  - by ref  (e.g. "H01", "F26")     — for ref-only OSM roads
+            //    AND as an alias for named roads that carry a route number
+            // Alias entries share the same `layers[]` array as their primary,
+            // so highlighting one highlights all segments of the road.
+            //
+            // Coverage in the shipped geojson (8,318 segments):
+            //   4,276 with a name, 3,221 with only a ref, 821 with neither.
+            // Previously only the 4,276 named ones were searchable.
+            var roadIndex = {};  // lookup key -> record
             roadsLayer = L.geoJSON(roadsGeo, {
-                style: function (feature) {
-                    var cls = (feature.properties && feature.properties.highway) || 'secondary';
-                    return styles[cls] || styles.secondary;
-                },
+                style: baseStyleFor,
                 onEachFeature: function (feature, layer) {
                     var p = feature.properties || {};
                     var label = [p.name, p.ref].filter(Boolean).join(' — ');
                     if (label) layer.bindTooltip(label, { sticky: true, direction: 'auto' });
-                    if (p.name) {
-                        var key = p.name.toLowerCase();
-                        if (!roadIndexByName[key]) {
-                            roadIndexByName[key] = { name: p.name, kind: 'road', layers: [] };
-                            searchIndex.push(roadIndexByName[key]);
+
+                    var primaryKey = (p.name || p.ref || '').toLowerCase();
+                    if (primaryKey) {
+                        if (!roadIndex[primaryKey]) {
+                            roadIndex[primaryKey] = {
+                                name: p.name || p.ref,
+                                kind: 'road',
+                                layers: []
+                            };
+                            searchIndex.push(roadIndex[primaryKey]);
                         }
-                        roadIndexByName[key].layers.push(layer);
+                        roadIndex[primaryKey].layers.push(layer);
+
+                        // Alias entry so users searching by route number find
+                        // the same road (and vice-versa for named roads).
+                        if (p.name && p.ref) {
+                            var refKey = p.ref.toLowerCase();
+                            if (refKey !== primaryKey && !roadIndex[refKey]) {
+                                roadIndex[refKey] = {
+                                    name: p.ref + ' — ' + p.name,
+                                    kind: 'road',
+                                    layers: roadIndex[primaryKey].layers   // shared reference
+                                };
+                                searchIndex.push(roadIndex[refKey]);
+                            }
+                        }
                     }
                     // Clicking any single road segment selects the whole road.
                     layer.on('click', function (e) {
                         L.DomEvent.stopPropagation(e);
-                        if (p.name) {
-                            focusMatch(roadIndexByName[p.name.toLowerCase()]);
+                        if (primaryKey && roadIndex[primaryKey]) {
+                            focusMatch(roadIndex[primaryKey]);
                         } else {
-                            // Unnamed road — just flash this segment.
+                            // Unnamed and unnumbered — flash just this segment.
                             focusMatch({ name: '(unnamed road)', kind: 'road', layers: [layer] });
                         }
                     });
@@ -258,117 +436,37 @@ window.addEventListener('load', function () {
             '<code>data/nepal-provinces.min.json</code>.</div>';
     });
 
-    // Legend.
+    // Legend. Swatch heights match the base road weights (defined above).
     var legend = L.control({ position: 'bottomright' });
     legend.onAdd = function () {
         var div = L.DomUtil.create('div', 'roads-legend');
         div.innerHTML =
             '<b>Roads of Nepal</b><br>' +
-            '<span class="swatch" style="background:#c02020;height:3px;"></span> Trunk<br>' +
-            '<span class="swatch" style="background:#e05a1a;height:2px;"></span> Primary<br>' +
-            '<span class="swatch" style="background:#b8894f;height:1.5px;"></span> Secondary';
+            '<span class="swatch" style="background:#c02020;height:6px;"></span> Trunk<br>' +
+            '<span class="swatch" style="background:#e05a1a;height:5px;"></span> Primary<br>' +
+            '<span class="swatch" style="background:#b8894f;height:3px;"></span> Secondary';
         return div;
     };
     legend.addTo(map);
 
-    // Search widget — top-left, small. Indexes 7 provinces + ~874 unique
-    // road names. Matches by substring, prefix ranks higher.
+    // Search widget — top-left. Indexes 7 provinces + ~874 unique road
+    // names. Matches by substring, prefix ranks higher. Uses the shared
+    // outer-scope focusMatch so click, search, and zoomend all agree on
+    // the current selection.
     var searchControl = L.control({ position: 'topleft' });
     searchControl.onAdd = function () {
         var wrap = L.DomUtil.create('div', 'roads-search leaflet-bar');
         wrap.innerHTML =
-            '<input type="text" class="roads-search-input" placeholder="Search provinces / roads…" autocomplete="off" spellcheck="false" />' +
+            '<div class="roads-search-row">' +
+                '<button type="button" class="roads-search-btn" title="Search"></button>' +
+                '<input type="text" class="roads-search-input" placeholder="Search provinces / roads…" autocomplete="off" spellcheck="false" />' +
+            '</div>' +
             '<ul class="roads-search-results" hidden></ul>';
         L.DomEvent.disableClickPropagation(wrap);
         L.DomEvent.disableScrollPropagation(wrap);
-        var input = wrap.querySelector('input');
-        var list  = wrap.querySelector('ul');
-
-        // Persistent-highlight state. For both provinces AND roads we
-        // mutate the layer's style directly and rely on resetStyle to
-        // restore — this is safe because the roadsLayer's style function
-        // is deterministic (uses feature.properties.highway), so resetStyle
-        // always brings a segment back to its original trunk/primary/
-        // secondary color. Same for provinces.
-        var lastHighlightLayers = [];   // provinces or road segments
-        var lastHighlightKind = null;   // 'province' | 'road'
-        function clearHighlight() {
-            if (lastHighlightLayers.length) {
-                var parent = lastHighlightKind === 'province' ? provincesLayer : roadsLayer;
-                lastHighlightLayers.forEach(function (lyr) {
-                    try { if (parent && parent.resetStyle) parent.resetStyle(lyr); } catch (_) {}
-                });
-                lastHighlightLayers = [];
-            }
-            lastHighlightKind = null;
-            hideRoadInfoPanel();
-        }
-
-        function focusMatch(rec) {
-            if (!rec) return;
-            // No map view change per Skip's review — highlight in place.
-            clearHighlight();
-            if (rec.kind === 'province' && rec.layer) {
-                try {
-                    rec.layer.setStyle({ weight: 4, color: '#ffb400', fillColor: '#ffe680', fillOpacity: 0.6 });
-                    lastHighlightLayers = [rec.layer];
-                    lastHighlightKind = 'province';
-                } catch(_) {}
-                if (rec.layer.openTooltip) try { rec.layer.openTooltip(); } catch(_) {}
-            } else if (rec.kind === 'road' && rec.layers && rec.layers.length) {
-                // Recolor EVERY segment sharing this name to bright yellow.
-                // resetStyle on cleanup brings each segment back to its
-                // trunk/primary/secondary color via the roads style function.
-                rec.layers.forEach(function (lyr) {
-                    try {
-                        lyr.setStyle({
-                            color: '#ffea00',
-                            weight: 8,
-                            opacity: 1
-                        });
-                        if (typeof lyr.bringToFront === 'function') lyr.bringToFront();
-                    } catch(_) {}
-                });
-                lastHighlightLayers = rec.layers.slice();
-                lastHighlightKind = 'road';
-                showRoadInfoPanel(rec.name, rec.layers.length);
-            }
-        }
-
-        // Small top-right info panel showing the selected road's name.
-        // Same DOM pattern the country info panel uses on other maps.
-        var roadInfoControl = L.control({ position: 'topright' });
-        var roadInfoDiv = null;
-        roadInfoControl.onAdd = function () {
-            var div = L.DomUtil.create('div', 'roads-info-panel leaflet-control');
-            L.DomEvent.disableClickPropagation(div);
-            div.style.display = 'none';
-            div.innerHTML =
-                '<div class="roads-info-close" title="Close">×</div>' +
-                '<div class="roads-info-label">Selected road</div>' +
-                '<div class="roads-info-name"></div>' +
-                '<div class="roads-info-segments"></div>';
-            div.querySelector('.roads-info-close').addEventListener('click', function () {
-                clearHighlight();
-            });
-            roadInfoDiv = div;
-            return div;
-        };
-        roadInfoControl.addTo(map);
-        function showRoadInfoPanel(name, segCount) {
-            if (!roadInfoDiv) return;
-            roadInfoDiv.querySelector('.roads-info-name').textContent = name;
-            roadInfoDiv.querySelector('.roads-info-segments').textContent =
-                segCount > 1 ? segCount + ' segments' : '';
-            roadInfoDiv.style.display = 'block';
-        }
-        function hideRoadInfoPanel() {
-            if (!roadInfoDiv) return;
-            roadInfoDiv.style.display = 'none';
-        }
-
-        // Clicking empty map clears the highlight and closes the panel.
-        map.on('click', clearHighlight);
+        var input     = wrap.querySelector('input');
+        var list      = wrap.querySelector('ul');
+        var searchBtn = wrap.querySelector('.roads-search-btn');
 
         function runSearch() {
             var q = input.value.trim().toLowerCase();
@@ -410,6 +508,20 @@ window.addEventListener('load', function () {
             }
         });
         L.DomEvent.on(input, 'focus', function () { if (input.value.trim()) runSearch(); });
+
+        // Magnifying-glass button: same as pressing Enter — jump to top match.
+        L.DomEvent.on(searchBtn, 'click', function () {
+            var top = runSearch();
+            if (top) {
+                list.hidden = true;
+                input.value = top.name;
+                input.blur();
+                focusMatch(top);
+            } else {
+                input.focus();
+            }
+        });
+
         return wrap;
     };
     searchControl.addTo(map);

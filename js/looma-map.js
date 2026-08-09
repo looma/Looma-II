@@ -999,22 +999,27 @@ function _loomaMapFocusSearchResult(rec) {
 
 function _loomaMapEnsureSearchControl() {
     if (loomaMapSearchControl || !map) return loomaMapSearchControl;
-    // Street maps (Pokhara Street Map, Kathmandu Street Map) don't have
-    // named base features to search over — they're pure tile layers. Skip
-    // the search control for them.
+    // Street maps (Pokhara Street Map, Kathmandu Street Map) and the World
+    // Topography map don't have named base features to search over — they're
+    // pure tile layers. Skip the search control for them.
     var titleLower = ((data && data.title) || mapTitle || '').toLowerCase();
     if (titleLower.indexOf('street') !== -1) return null;
+    if (titleLower.indexOf('topograph') !== -1) return null;
     var C = L.Control.extend({
         options: { position: 'topleft' },
         onAdd: function () {
             var wrap = L.DomUtil.create('div', 'looma-map-search leaflet-bar');
             wrap.innerHTML =
-                '<input type="text" class="looma-map-search-input" placeholder="Search…" autocomplete="off" spellcheck="false" />' +
+                '<div class="looma-map-search-row">' +
+                    '<button type="button" class="looma-map-search-btn" title="Search"></button>' +
+                    '<input type="text" class="looma-map-search-input" placeholder="Search…" autocomplete="off" spellcheck="false" />' +
+                '</div>' +
                 '<ul class="looma-map-search-results" hidden></ul>';
             L.DomEvent.disableClickPropagation(wrap);
             L.DomEvent.disableScrollPropagation(wrap);
-            var input = wrap.querySelector('input');
-            var list  = wrap.querySelector('ul');
+            var input     = wrap.querySelector('input');
+            var list      = wrap.querySelector('ul');
+            var searchBtn = wrap.querySelector('.looma-map-search-btn');
 
             function render(matches, q) {
                 list.innerHTML = '';
@@ -1067,6 +1072,19 @@ function _loomaMapEnsureSearchControl() {
             });
             L.DomEvent.on(input, 'focus', function () {
                 if (input.value.trim()) runSearch();
+            });
+
+            // Magnifying-glass button: same as pressing Enter — jump to top match.
+            L.DomEvent.on(searchBtn, 'click', function () {
+                var top = runSearch();
+                if (top) {
+                    list.hidden = true;
+                    input.value = top.name;
+                    input.blur();
+                    _loomaMapFocusSearchResult(top);
+                } else {
+                    input.focus();
+                }
             });
 
             return wrap;
@@ -2992,6 +3010,18 @@ window.onload = function () {
             //would disappear on pan or zoom
             
             mapTitle = data.title;
+
+            // Per-map body class so CSS can target a specific map by title.
+            // Used by looma-map.css to give Looma Schools Map larger toggles
+            // (it has fewer bottom-left controls than Nepal Map, so there's
+            // more headroom to grow the .info panel without colliding with
+            // the top-left search bar).
+            try {
+                var slug = ('' + (data.title || '')).toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                if (slug) document.body.classList.add('map-' + slug);
+            } catch (_) { /* body class is a nice-to-have */ }
             
             if (data.baseLayers) baseLayers = new Array(data.baseLayers.length); // array of feature layers
             
@@ -3005,9 +3035,16 @@ window.onload = function () {
                 else priorityOn = true;  //??? was false?
             }
             
+            // Disable Leaflet's default double-click-to-zoom. In classroom /
+            // touchscreen contexts a "click" often lands as a double-tap,
+            // which zooms in to the marker location and leaves the user
+            // stuck at high zoom on the city street maps (Skip's Aug 2026
+            // review). All zooming should go through the explicit +/- buttons.
+            var mapOpts = { doubleClickZoom: false };
+
             // Starting map view
             if (data.info.start) {
-                map = L.map('map').setView(
+                map = L.map('map', mapOpts).setView(
                     [data.info.start.startLat, data.info.start.startLong],
                     data.info.start.startZoom
                 );
@@ -3015,11 +3052,11 @@ window.onload = function () {
                 // Heuristic defaults for city street maps if mongo start coords weren't set.
                 var titleLower = ((data.title || mapTitle || '') + '').toLowerCase();
                 if (titleLower.indexOf('pokhara') !== -1) {
-                    map = L.map('map').setView([28.2096, 83.9856], 13);
+                    map = L.map('map', mapOpts).setView([28.2096, 83.9856], 13);
                 } else if (titleLower.indexOf('kathmandu') !== -1) {
-                    map = L.map('map').setView([27.7172, 85.3240], 13);
+                    map = L.map('map', mapOpts).setView([27.7172, 85.3240], 13);
                 } else {
-                    map = L.map('map').setView([27, 85], 3);
+                    map = L.map('map', mapOpts).setView([27, 85], 3);
                 }
             }
             

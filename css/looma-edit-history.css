@@ -430,4 +430,9 @@ body {
 .btn-group, #cmd-btn { font-family: "Comic Sans MS", cursive, sans-serif; padding: 0; width: 100%; }
 .dropdown-menu { padding: 10px; background-color: white; z-index: 61; }
 .dropdown-item { font-size: 1.1em; margin-top: 2px; font: inherit; }
-.dropdown-item:hover { background: #87cefa; color: white; }
+/* No hover override here: filecommands.css sets `#filecommands button` (an ID
+   selector) to a white background, which out-specifies any class-level hover
+   background. A `.dropdown-item:hover { color:#fff }` therefore painted white
+   text on a background that stayed white, so the label disappeared on hover.
+   Leave the hover to filecommands.css/bootstrap (dark text on white) so it
+   behaves like the slideshow editor and stays readable. */

@@ -22,7 +22,7 @@ Description: Creates history timelines with search, scroll, lookup, speech, and 
     }
   ?>
 
-    <link href='css/looma-history.css' rel='stylesheet' type='text/css'>
+    <link href='css/looma-history.css?v=<?php echo @filemtime(__DIR__.'/css/looma-history.css'); ?>' rel='stylesheet' type='text/css'>
 
 </head>
 

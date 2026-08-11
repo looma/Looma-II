@@ -43,13 +43,13 @@
       "id": 1,
       "type": "logs",
       "title": "Container logs — filter by service + query",
-      "description": "Docker container logs (looma-logs-*) for the selected service, matching the Query text or any TTS keyword (tts, piper, mimic, synthesis).",
+      "description": "Docker container logs (looma-logs-*) for the selected service, matching the Query text or any TTS keyword (tts, piper, synthesis).",
       "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-logs" },
       "gridPos": { "x": 0, "y": 0, "w": 24, "h": 14 },
       "targets": [
         {
           "refId": "A",
-          "query": "(index_service:\"$service\" OR service:\"$service\" OR container_name:*${service}*) AND (message:\"$q\" OR message:tts OR message:piper OR message:mimic OR message:synthesis)",
+          "query": "(index_service:\"$service\" OR service:\"$service\" OR container_name:*${service}*) AND (message:\"$q\" OR message:tts OR message:piper OR message:synthesis)",
           "metrics": [ { "type": "logs", "id": "1" } ],
           "bucketAggs": [ { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "@timestamp" } ]
         }
@@ -68,13 +68,13 @@
       "id": 2,
       "type": "logs",
       "title": "App events (OTLP) — serviceName + TTS keywords",
-      "description": "OTLP application events (otel-events*) for the selected service, matching the Query text or any TTS keyword (tts, piper, mimic, synthesis).",
+      "description": "OTLP application events (otel-events*) for the selected service, matching the Query text or any TTS keyword (tts, piper, synthesis).",
       "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-events" },
       "gridPos": { "x": 0, "y": 14, "w": 24, "h": 12 },
       "targets": [
         {
           "refId": "A",
-          "query": "serviceName:\"$service\" AND (body:\"$q\" OR body:tts OR body:piper OR body:mimic OR body:synthesis)",
+          "query": "serviceName:\"$service\" AND (body:\"$q\" OR body:tts OR body:piper OR body:synthesis)",
           "metrics": [ { "type": "logs", "id": "1" } ],
           "bucketAggs": [ { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "time" } ]
         }

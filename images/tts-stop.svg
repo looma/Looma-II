@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="stop">
+  <!-- Looma TTS button, state: stop (shown while the Speak button is held down).
+       The speech bubble is IDENTICAL in all the other states; only the glyph
+       inside changes, so switching state never makes the button jump or resize.
+       Grey (#6e6e6e) on transparent: the button supplies its own round
+       background. Holding for two and a half seconds restarts the reading — see
+       LOOMA.speak.installButtonGuard() in js/looma-utilities.js. -->
+  <ellipse cx="256" cy="232" rx="196" ry="172"
+           fill="none" stroke="#6e6e6e" stroke-width="34"/>
+  <path d="M 152 366 L 232 398 L 74 470 Z"
+        fill="#6e6e6e" stroke="#6e6e6e" stroke-width="26" stroke-linejoin="round"/>
+  <rect x="196" y="172" width="120" height="120" rx="18" fill="#6e6e6e"/>
+</svg>

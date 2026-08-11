@@ -12,18 +12,23 @@ Description: display layer built on pdf.js for showing chapters in PDFs
 window.onload = function() {
     
     $('button.lookup').off('click').click(function(){
-        // var toString = selection;
-        
         var toString = window.getSelection().toString();
-        
-        
-        console.log ('selected text to lookup: "', toString, '"');
-        // LOOMA.lookupWord(toString);
-        if ($('#pdf').data('lang') === 'np') {
-            toString = convertPreeti(toString);
-            LOOMA.popupDefinition(toString.split(' ')[0], 15, 'np');
-            
-        } else LOOMA.popupDefinition(toString.split(' ')[0], 15, 'en');
+
+        var isNp = ($('#pdf').data('lang') === 'np');
+        if (isNp) toString = convertPreeti(toString);
+
+        // The pdf.js text layer splices page numbers / running headers into the
+        // middle of a word ("some" -> "so1me"), so the raw selection must never go
+        // straight to the dictionary. LOOMA.cleanSelectedText() strips digits
+        // wedged inside a word (keeping H2O / CO2 / 2nd), exactly as the Speak
+        // button and the definition card already do — otherwise this NEW viewer
+        // looked up impossible words like "s01ne".
+        if (typeof LOOMA !== 'undefined' && typeof LOOMA.cleanSelectedText === 'function') {
+            toString = LOOMA.cleanSelectedText(toString);
+        }
+
+        console.log('selected text to lookup: "', toString, '"');
+        LOOMA.popupDefinition(toString.split(' ')[0], 15, isNp ? 'np' : 'en');
         return false;
     });
     

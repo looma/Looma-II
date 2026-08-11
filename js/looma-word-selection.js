@@ -49,9 +49,10 @@ var LOOMA_WORD_SELECTION = (function () {
      * trimmed string so the card shows a tidy word.
      */
     function cleanText(text) {
-        // LOOMA.cleanSelectedText() also drops digits wedged into a word ("so1me"),
-        // which a PDF text layer produces often enough that the card would otherwise
-        // show a nonsense word and look up a word that cannot exist.
+        // LOOMA.cleanSelectedText() drops digits wedged into a word ("so1me") AND
+        // the glyph garbage a PDF font with no ToUnicode map emits — so selecting a
+        // PDF image (whose text layer is all garbage) cleans to '' and shows NO
+        // card, and a garbled word never gets looked up.
         if (typeof LOOMA !== 'undefined' && typeof LOOMA.cleanSelectedText === 'function') {
             return LOOMA.cleanSelectedText(text);
         }

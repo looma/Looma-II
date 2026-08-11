@@ -16,8 +16,18 @@ define ("CLASSES", 8);
 // chosen separately for English and Nepali on each engine (the matching voice
 // sits right above it), so a teacher can, say, slow Nepali down while keeping
 // English at normal pace. Default 2/3 — Looma's long-standing speed for Nepal.
+// The steps between 2/3 and 1.5 are close together because that is the range a
+// class actually reads at; the extremes are there for a first listen.
 function ttsRateSelect($id) {
-    $opts = array('0.50' => '1/2', '0.67' => '2/3', '1' => '1', '1.5' => '1.5', '2' => '2');
+    $opts = array(
+        '0.50' => '1/2 — slowest',
+        '0.67' => '2/3 — default',
+        '0.75' => '3/4',
+        '1'    => '1 — normal',
+        '1.25' => '1 1/4',
+        '1.5'  => '1 1/2',
+        '2'    => '2 — fastest',
+    );
     echo '<select id="' . $id . '" class="tts-rate-select">';
     foreach ($opts as $val => $label) {
         $sel = ($val === '0.67') ? ' selected' : '';
@@ -52,9 +62,14 @@ function ttsRateSelect($id) {
 
             <div class="tts-engine">
                 <button id="piper" type="button" class="tts-engine-button">Speak with Piper</button>
+                <!-- The Piper voice lists are filled in by looma-test-speech.js
+                     from looma-TTS-voices.php, i.e. from the models actually
+                     installed on this box (multi-speaker models contribute one
+                     entry per speaker). The options below are the fallback shown
+                     if that request fails. -->
                 <div class="tts-voice-field">
                     <label for="piper-voice-en">English voice</label>
-                    <select id="piper-voice-en" class="tts-voice-select">
+                    <select id="piper-voice-en" class="tts-voice-select" data-lang="en">
                         <option value="en_US-amy-low.onnx" selected>English (US female)</option>
                     </select>
                 </div>
@@ -64,7 +79,7 @@ function ttsRateSelect($id) {
                 </div>
                 <div class="tts-voice-field">
                     <label for="piper-voice-np">Nepali voice</label>
-                    <select id="piper-voice-np" class="tts-voice-select">
+                    <select id="piper-voice-np" class="tts-voice-select" data-lang="ne">
                         <option value="ne_NP-google-x_low.onnx" selected>Nepali (google)</option>
                     </select>
                 </div>
@@ -82,11 +97,18 @@ function ttsRateSelect($id) {
                 <button id="responsivevoice" type="button" class="tts-engine-button">Speak with ResponsiveVoice</button>
                 <div class="tts-voice-field">
                     <label for="responsivevoice-voice-en">English voice</label>
+                    <!-- ResponsiveVoice voice NAMES, exactly as its API spells them.
+                         A wider set than the four we started with so a teacher can
+                         compare accents the way they can with the Piper models. -->
                     <select id="responsivevoice-voice-en" class="tts-voice-select">
                         <option value="UK English Female" selected>UK English Female</option>
                         <option value="UK English Male">UK English Male</option>
                         <option value="US English Female">US English Female</option>
                         <option value="US English Male">US English Male</option>
+                        <option value="Australian Female">Australian Female</option>
+                        <option value="Australian Male">Australian Male</option>
+                        <option value="Indian English Female">Indian English Female</option>
+                        <option value="Indian English Male">Indian English Male</option>
                     </select>
                 </div>
                 <div class="tts-rate-field">
@@ -95,9 +117,18 @@ function ttsRateSelect($id) {
                 </div>
                 <div class="tts-voice-field">
                     <label for="responsivevoice-voice-np">Nepali voice</label>
+                    <!-- ResponsiveVoice has no Nepali voice. These are the nearest
+                         South-Asian ones it does have: Hindi reads Devanagari
+                         directly, the Bangla and Tamil voices are there to be
+                         compared against it. For real Nepali, use Piper. -->
                     <select id="responsivevoice-voice-np" class="tts-voice-select">
                         <option value="Hindi Female" selected>Hindi Female (closest to Nepali)</option>
                         <option value="Hindi Male">Hindi Male</option>
+                        <option value="Bangla India Female">Bangla India Female</option>
+                        <option value="Bangla India Male">Bangla India Male</option>
+                        <option value="Bangla Bangladesh Female">Bangla Bangladesh Female</option>
+                        <option value="Tamil Female">Tamil Female</option>
+                        <option value="Tamil Male">Tamil Male</option>
                     </select>
                 </div>
                 <div class="tts-rate-field">
@@ -113,8 +144,7 @@ function ttsRateSelect($id) {
                 <p id="responsivevoice-unavailable-note" class="tts-unavailable-note"></p>
             </div>
 
-            <!-- Mimic and Browser Speech (speechSynthesis) were removed. The two
-                 remaining engines are Piper (local/offline — always the default)
+            <!-- The two engines are Piper (local/offline — always the default)
                  and ResponsiveVoice (cloud — selectable only with internet). -->
 
         </div>

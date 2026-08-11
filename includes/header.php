@@ -146,6 +146,14 @@ header("Pragma: no-cache");
 
       <!-- <div class="watermark">Under Construction</div>  -->
 
+      <?php
+        // Which optional features this box has, for the JS that draws the
+        // buttons. A box installed without the zvec stack must not show the
+        // AI Assistant, exam generation or semantic search at all.
+        require_once (__DIR__ . '/looma-features.php');
+        echo "\n      <script>window.LOOMA_FEATURES = " . looma_feature_flags_json() . ";</script>\n";
+      ?>
+
       <link rel="stylesheet" href="css/looma.css?v=<?php echo @filemtime(__DIR__.'/../css/looma.css') ?: time(); ?>">             <!-- Looma CSS -->
       <link rel="stylesheet" href="css/looma-keyboard.css">    <!-- Looma keyboard CSS -->
       <link rel="stylesheet" href="css/looma-assistant.css?v=<?php echo @filemtime(__DIR__.'/../css/looma-assistant.css') ?: time(); ?>">   <!-- Looma Assistant chat modal CSS -->

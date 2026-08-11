@@ -3,10 +3,14 @@ LOOMA javascript file
 Filename: looma-test-speech.js
 Description: drives looma-test-speech.php — the "Reading Settings" page.
              The two TTS engines are Piper (local/offline) and ResponsiveVoice
-             (cloud — needs internet). Mimic and the browser speechSynthesis
-             engine were removed. The page lets you pick a separate English and
-             Nepali voice for each engine, set the reading speed per language,
+             (cloud — needs internet). The page lets you pick a separate English
+             and Nepali voice for each engine, set the reading speed per language,
              and choose which engine is the default for reading text selections.
+
+             The Piper voice lists are built at runtime from
+             looma-TTS-voices.php (the models installed on this box), so a
+             multi-speaker model such as the Nepali ne_NP-google one shows up as
+             one entry per speaker.
 
              Every setting is saved to cookies and read back automatically:
                tts-engine    — default TTS engine ('piper' or 'responsivevoice')
@@ -17,7 +21,7 @@ Description: drives looma-test-speech.php — the "Reading Settings" page.
              LOOMA.speak() reads these cookies, so English text is spoken with
              the English voice and Nepali text with the Nepali voice.
 Programmer name: Skip
-Revision: Looma 2.0.x  (Mimic / browser speechSynthesis removed)
+Revision: Looma 2.0.x  (Piper + ResponsiveVoice only)
  */
 
 'use strict';
@@ -245,6 +249,52 @@ $(document).ready(function () {
     // not have to reload the page after plugging in the network.
     $(window).on('online offline', refreshResponsiveVoiceAvailability);
 
+    /* ---- Piper voice lists ----
+       Piper's voices are whatever .onnx models are installed on this box, so the
+       two dropdowns are built from looma-TTS-voices.php rather than hard-coded.
+       Multi-speaker models are already expanded server-side into one entry per
+       speaker — that is how Nepali gets a real choice of voices (the
+       ne_NP-google models carry 18) for Nepali speakers to compare and rank.
+       If the request fails the static fallback <option>s in the page stay. */
+    function fillPiperVoices(done) {
+        var $en = $('#' + selectIds.piper.en);
+        var $np = $('#' + selectIds.piper.np);
+
+        $.getJSON('looma-TTS-voices.php')
+            .done(function (data) {
+                var list = (data && data.voices) || [];
+                if (!list.length) return;
+
+                var groups = { en: [], ne: [] };
+                list.forEach(function (voice) {
+                    if (!voice || !voice.id) return;
+                    // Anything that is not Nepali is offered as an English
+                    // voice: those models all read Latin text, and a box with,
+                    // say, an en_GB voice installed should still show it.
+                    (voice.language === 'ne' ? groups.ne : groups.en).push(voice);
+                });
+
+                [['en', $en], ['ne', $np]].forEach(function (pair) {
+                    var entries = groups[pair[0]];
+                    var $select = pair[1];
+                    if (!entries.length || !$select.length) return;
+
+                    $select.empty();
+                    entries.forEach(function (voice) {
+                        $('<option>').attr('value', voice.id)
+                                     .text(voice.label || voice.id)
+                                     .prop('selected', !!voice['default'])
+                                     .appendTo($select);
+                    });
+                });
+            })
+            .always(function () {
+                // Restore only after the lists exist, otherwise the saved voice
+                // has no matching <option> yet and would be discarded.
+                done();
+            });
+    }
+
     /* ---- restore the saved settings when the page opens ---- */
     function restoreSavedSettings() {
         var legacyRate = LOOMA.readStore('tts-rate', 'cookie');
@@ -282,7 +332,7 @@ $(document).ready(function () {
         saveDefaultEngine(savedEngine);
     }
 
-    restoreSavedSettings();
+    fillPiperVoices(restoreSavedSettings);
     refreshResponsiveVoiceAvailability();
 
 }); //end document.ready function

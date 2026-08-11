@@ -491,10 +491,18 @@ button#fullscreen-control:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
+/* The Speak button tells you what pressing it will DO, through the icon itself:
+ *   (no class)        speech bubble          — nothing selected, nothing to read
+ *   .tts-state-play   bubble + play          — text is selected (or reading is paused): press to read
+ *   .tts-state-pause  bubble + pause         — reading right now: press to pause
+ *   .tts-state-repeat bubble + circular arrow— finished: press to read it again
+ * The bubble is identical in all four files, so only the glyph changes and the
+ * button never jumps. looma-utilities.js sets the class in
+ * LOOMA.speak.updateButtonAvailability(). */
 button.speak {
     bottom:22vh;
     display:none;
-    background-image: url("../images/speech1.png");  /* speech-bubble icon — TTS (formerly Assistant) */
+    background-image: url("../images/tts-idle.svg");
     background-size: 85% 85%;
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
     border: 0.2em solid transparent;
@@ -520,6 +528,17 @@ button.looma-assistant {
     transition: transform 0.18s ease, opacity 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
     z-index: 1050;
 }
+
+button.speak.tts-state-play   { background-image: url("../images/tts-play.svg"); }
+button.speak.tts-state-pause  { background-image: url("../images/tts-pause.svg"); }
+button.speak.tts-state-repeat { background-image: url("../images/tts-repeat.svg"); }
+
+/* .tts-holding — the button is being held down. It shows STOP for as long as the
+   press lasts and, after two and a half seconds, the reading restarts (see
+   LOOMA.speak.installButtonGuard / LOOMA.speak.restart in js/looma-utilities.js).
+   Listed after the four state rules so it wins over whichever icon was showing;
+   letting go puts the previous icon straight back. */
+button.speak.tts-holding      { background-image: url("../images/tts-stop.svg"); }
 
 button.looma-control-button.speak:not(.tts-disabled):not(.tts-busy):hover,
 button.looma-control-button.speak.tts-pending {
@@ -558,6 +577,44 @@ button.looma-control-button.speak.tts-pending::after {
     border-right-color: rgba(255, 212, 0, 0.85);
     box-sizing: border-box;
     animation: ttsPendingSpin 0.8s linear infinite;
+    pointer-events: none;
+}
+
+button.looma-control-button.speak.tts-holding {
+    /* Same "you are being listened to" look as pending, so the held button reads
+       as active rather than stuck. */
+    border-color: yellow;
+    border-width: 4px;
+    opacity: 1;
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(255,212,0,0.6);
+}
+
+button.looma-control-button.speak.tts-holding::after {
+    /* The 2.5-second countdown. Same circle as the pending spinner above —
+       same place, same size, same yellow — but it FILLS instead of spinning:
+       --tts-hold goes 0 → 1 over those 2.5 seconds (set per frame in
+       looma-utilities.js), and the mask punches out the middle so what is left
+       is a ring closing on itself. Declared after the .tts-pending rule so a
+       hold that starts while audio is still loading shows the countdown rather
+       than the spinner. */
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 38%;
+    height: 38%;
+    margin-left: -19%;
+    margin-top: -19%;
+    border: 0;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: none;
+    background: conic-gradient(
+        rgba(255, 212, 0, 1) calc(var(--tts-hold, 0) * 360deg),
+        rgba(255, 255, 0, 0.28) 0);
+    -webkit-mask: radial-gradient(circle, transparent 56%, #000 58%);
+            mask: radial-gradient(circle, transparent 56%, #000 58%);
     pointer-events: none;
 }
 
@@ -744,14 +801,63 @@ button#bagh-chal {
     background-color: rgba(200,200,200,0.7);
 }
 
+/* ---- reading highlight -------------------------------------------------
+   The band under the sentence being read uses THE TOOLBAR COLOUR (the yellow
+   of the menu bar at the bottom of the page, --looma-toolbar), so the page has
+   one accent colour instead of two nearly-equal yellows. The themes override
+   that variable (CEHRD teal, INDIA orange) and the highlight follows along.
+   The text itself must stay fully readable — see the multiply note below. */
+
 .tts-block-highlight {
-    /* Highlight used for the sentence/block currently being read aloud. */
-    background-color: #ffe44d;
-    color: #111;
-    font-weight: 700;
+    /* Sentence being read aloud on a normal HTML page (which is now most
+       chapters), in the toolbar colour and in BOLD so the sentence stands out
+       from the rest of the paragraph.
+
+       The band is a gradient of fixed height, not a background-color: the
+       background of an inline box covers the font's full content area, which in
+       Looma's comic font is taller than the line spacing of a typical chapter —
+       a plain background-color therefore bled over the lines above and below.
+       `box-decoration-break: clone` gives every line fragment of a wrapped
+       sentence its own band. looma-utilities.js sets the same declarations
+       inline (an HTML chapter renders inside an iframe this file never reaches);
+       keep the two in step.
+
+       Near-black on the toolbar yellow is ~19:1 contrast: the words stand out
+       MORE inside the highlight than outside it, which is the point. */
+    background-image: linear-gradient(var(--looma-toolbar, yellow), var(--looma-toolbar, yellow));
+    background-repeat: no-repeat;
+    background-size: 100% 1.25em;
+    background-position: 0 50%;
+    -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
+    color: #000;
+    font-weight: bold;
+    border-radius: 0.1em;
+}
+
+.tts-pdf-highlight {
+    /* One band per line over the PDF. The glyphs live on the <canvas> UNDER
+       this element, so a translucent wash (what this used to be) acts as a film
+       over them: black text came out grey-olive and the yellow itself came out
+       muddy where the browser's own selection band overlapped.
+
+       `multiply` is what a real highlighter pen does: each channel is
+       multiplied, so white paper becomes the yellow and BLACK TEXT STAYS BLACK
+       (0 × anything = 0). Nothing is dimmed. With pure yellow it is also
+       idempotent — two overlapping bands (the reading band plus the browser's
+       selection) give exactly the same colour instead of a darker patch. */
+    background-color: var(--looma-toolbar, yellow);
+    mix-blend-mode: multiply;
     border-radius: 0.15em;
-    padding: 0 0.03em;
-    box-shadow: 0 0 0 0.08em rgba(255, 212, 0, 0.45);
+    z-index: 1;
+}
+
+@supports not (mix-blend-mode: multiply) {
+    /* Old engine: keep the previous translucent wash rather than a solid band,
+       which would hide the text completely. */
+    .tts-pdf-highlight {
+        background-color: rgba(255, 214, 0, 0.42);
+    }
 }
 
 .popup {

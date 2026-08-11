@@ -60,6 +60,23 @@ def _extract_pdf_text(path: Path, *, max_pages: int, max_chars: int) -> str:
     return (" ".join(parts))[:max_chars]
 
 
+def _strip_html(raw: str) -> str:
+    """Readable text out of an HTML file — no markup, no script/style."""
+    try:
+        from bs4 import BeautifulSoup
+
+        soup = BeautifulSoup(raw, "lxml")
+        for tag in soup(["script", "style", "noscript"]):
+            tag.decompose()
+        return _clean_text(soup.get_text(" "))
+    except Exception:
+        import html as _html
+
+        text = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", raw)
+        text = re.sub(r"(?s)<[^>]+>", " ", text)
+        return _clean_text(_html.unescape(text))
+
+
 def _dn_from_filename(path: Path) -> str:
     return path.stem.replace("_", " ").replace("-", " ").strip()[:200]
 
@@ -82,7 +99,12 @@ def _doc_for_file(content_root: Path, p: Path, *, namespace: str, src: str, lang
         text = _extract_pdf_text(p, max_pages=max_pdf_pages, max_chars=max_pdf_chars)
     elif suf in {".html", ".htm", ".txt", ".md"}:
         ft = "html" if suf in {".html", ".htm"} else "text"
-        text = _clean_text(p.read_text(encoding="utf-8", errors="ignore"))[:40000]
+        raw = p.read_text(encoding="utf-8", errors="ignore")
+        # Index the WORDS, not the markup: raw HTML would fill the embeddings
+        # with tag names and inline CSS, and a search for a lesson's topic would
+        # be competing with every <span style="…"> in the file.
+        text = _strip_html(raw) if suf in {".html", ".htm"} else _clean_text(raw)
+        text = text[:40000]
     elif suf == ".vtt":
         ft = "vtt"
         text = _clean_vtt(p.read_text(encoding="utf-8", errors="ignore"))[:40000]
@@ -109,10 +131,23 @@ def _doc_for_file(content_root: Path, p: Path, *, namespace: str, src: str, lang
     }
 
 
+def _has_html_twin(p: Path) -> bool:
+    """True when this PDF also exists as HTML in the same folder."""
+    return any(p.with_suffix(ext).exists() for ext in (".html", ".htm"))
+
+
 def _iter_files(root: Path):
     for p in root.rglob("*"):
-        if p.is_file():
-            yield p
+        if not p.is_file():
+            continue
+        # HTML WINS. Chapters ship as a .pdf AND the .html generated from it, and
+        # the app opens the HTML. Ingesting both would put the same chapter in the
+        # index twice — two hits for one lesson — and the PDF copy is the worse
+        # text of the two (broken ligatures, OCR noise). So skip a PDF whenever
+        # its HTML twin is next to it.
+        if p.suffix.lower() == ".pdf" and _has_html_twin(p):
+            continue
+        yield p
 
 
 def ingest_folder(

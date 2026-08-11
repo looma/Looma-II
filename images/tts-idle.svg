@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="idle">
+  <!-- Looma TTS button, state: idle.
+       The speech bubble is IDENTICAL in all four states; only the glyph inside
+       changes, so switching state never makes the button jump or resize. Grey
+       (#6e6e6e) on transparent: the button supplies its own round background. -->
+  <ellipse cx="256" cy="232" rx="196" ry="172"
+           fill="none" stroke="#6e6e6e" stroke-width="34"/>
+  <path d="M 152 366 L 232 398 L 74 470 Z"
+        fill="#6e6e6e" stroke="#6e6e6e" stroke-width="26" stroke-linejoin="round"/>
+
+</svg>

@@ -41,8 +41,15 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         <input type='hidden' id='pageno' value='1' name='pageno'/>
         <input type='hidden' id='pagesz' value='500' name='pagesz'/>
         <input type='hidden' id='language' value='english' name='language'/>
-        <!-- Semantic search is always on and always served by the zvec engine. -->
-        <input type='hidden' id='semantic' value='1' name='semantic'/>
+        <?php
+          // Semantic search is served by the zvec engine — so it is only asked
+          // for on a box that HAS zvec. Without it the same form still searches,
+          // just as a plain Mongo query, instead of waiting on a service that
+          // was never installed.
+          require_once (__DIR__ . '/looma-features.php');
+          $looma_semantic = looma_zvec_enabled() ? '1' : '0';
+        ?>
+        <input type='hidden' id='semantic' value='<?php echo $looma_semantic; ?>' name='semantic'/>
         <input type='hidden' id='semantic_engine' value='zvec' name='semantic_engine'/>
 
 

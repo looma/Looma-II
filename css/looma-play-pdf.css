@@ -112,6 +112,21 @@ pdf {
 .pdf-text:fullscreen {
     left:98px;
 }
+
+/* The text layer is invisible (color:transparent) and sits ON TOP of the canvas,
+   so what you see when you select is the BROWSER's selection band painted over
+   the glyphs. Left at its default it is a different colour from the reading
+   highlight, which is why a half-read sentence showed two clashing yellows.
+   Same accent colour as the toolbar and the reading band, kept translucent
+   because — unlike .tts-pdf-highlight — a selection band cannot be blended, and
+   a solid one would cover the text on the canvas underneath. */
+.pdf-text ::selection {
+    background: rgba(255, 255, 0, 0.45);
+    background: color-mix(in srgb, var(--looma-toolbar, yellow) 55%, transparent);
+}
+.pdf-text ::-moz-selection {
+    background: rgba(255, 255, 0, 0.45);
+}
 .pdf-text > span {
     position: absolute;
     white-space: pre;

@@ -104,6 +104,9 @@
 
     <?php include ('includes/toolbar.php'); ?>
     <?php include ('includes/js-includes.php'); ?>
-    <script src="js/looma-home.js"></script>
+    <!-- ?v=<mtime>: without it a browser keeps serving the cached copy, so a fix
+         to this file reaches nobody until they clear their cache by hand. Every
+         other Looma script is versioned this way. -->
+    <script src="js/looma-home.js?v=<?php echo @filemtime('js/looma-home.js') ?: time(); ?>"></script>
 </body>
 </html>

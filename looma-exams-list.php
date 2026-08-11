@@ -16,6 +16,20 @@
 $page_title = 'Exams';
 require_once 'includes/header.php';
 require_once 'includes/looma-utilities.php';
+require_once 'includes/looma-features.php';
+
+// The entry points to this page are hidden when the box has no zvec stack, but a
+// bookmark or a typed URL still lands here — and without looma-ai the page would
+// just sit there empty with no explanation. Say what is going on instead.
+if (!looma_ai_enabled()) {
+    echo "</head><body><div id='main-container-horizontal'><div class='exams-unavailable'>"
+       . "<h1>Exams are not available on this Looma</h1>"
+       . "<p>Exam generation needs the looma-ai service, which was not "
+       . "installed on this box. Re-run the Looma installer and enable it to turn "
+       . "exams, the AI Assistant and semantic search back on.</p>"
+       . "</div></div></body></html>";
+    exit;
+}
 
 looma_trace_page('exams-list', [
     'grade'    => $_GET['grade']    ?? null,

@@ -31,26 +31,38 @@ RUN rm /tmp/piper.tar.gz
 # Download Piper "low" quality voice models with retries because Hugging Face
 # occasionally returns transient 5xx errors. Nepali's lowest published quality
 # is "x_low"; English (amy) uses "low".
+#
+# The DEFAULT pair is mandatory — the build fails without it. The EXTRA voices
+# exist so teachers (and Nepali speakers judging the Nepali ones) can compare and
+# pick the defaults on the Reading Settings page; they are best-effort, so a
+# temporarily unreachable model never breaks the image. All of them are "low" /
+# "x_low" quality: on an ODROID that is what keeps synthesis inside the
+# one-second target. Trim or extend the list with --build-arg.
+#
+# Nepali is not short of voices despite having a single model: ne_NP-google
+# carries 18 speakers, and piper_server.py lists each one separately.
+ARG PIPER_EXTRA_VOICES="en/en_US/ryan/low/en_US-ryan-low en/en_US/lessac/low/en_US-lessac-low en/en_GB/alan/low/en_GB-alan-low ne/ne_NP/google/medium/ne_NP-google-medium"
 RUN set -eux; \
     mkdir -p /usr/share/piper; \
+    base=https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0; \
     download() { \
-        url="$1"; \
-        output="$2"; \
-        curl -fL \
-            --retry 8 \
-            --retry-delay 5 \
-            --retry-all-errors \
-            "$url" \
-            -o "$output"; \
+        curl -fL --retry 8 --retry-delay 5 --retry-all-errors "$1" -o "$2"; \
     }; \
-    download https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/ne/ne_NP/google/x_low/ne_NP-google-x_low.onnx /usr/share/piper/ne_NP-google-x_low.onnx; \
-    download https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/ne/ne_NP/google/x_low/ne_NP-google-x_low.onnx.json /usr/share/piper/ne_NP-google-x_low.onnx.json; \
-    download https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_US/amy/low/en_US-amy-low.onnx /usr/share/piper/en_US-amy-low.onnx; \
-    download https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_US/amy/low/en_US-amy-low.onnx.json /usr/share/piper/en_US-amy-low.onnx.json
-
-# fill in XXX to load more voices
-# RUN    wget https://huggingface.co/rhasspy/piper-voices/blob/main/en/XXX       -O /usr/share/piper/XXX \
-#     && wget https://huggingface.co/rhasspy/piper-voices/blob/main/en/XXX.json  -O /usr/share/piper/XXX.json
+    voice() { \
+        name=$(basename "$1"); \
+        download "$base/$1.onnx"      "/usr/share/piper/$name.onnx"; \
+        download "$base/$1.onnx.json" "/usr/share/piper/$name.onnx.json"; \
+    }; \
+    voice ne/ne_NP/google/x_low/ne_NP-google-x_low; \
+    voice en/en_US/amy/low/en_US-amy-low; \
+    for extra in $PIPER_EXTRA_VOICES; do \
+        name=$(basename "$extra"); \
+        voice "$extra" || { \
+            echo "WARNING: optional voice $name not installed"; \
+            rm -f "/usr/share/piper/$name.onnx" "/usr/share/piper/$name.onnx.json"; \
+        }; \
+    done; \
+    ls -1 /usr/share/piper
 
 # Add Piper to PATH
 ENV PATH="/usr/local/bin/piper:${PATH}"

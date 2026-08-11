@@ -14,6 +14,17 @@ Description:
 var className, subjectName, gradeName, prefix;
 var cover;
 
+/* Which subject request is the current one.
+ *
+ * displaySubjects() asks the server for a class's textbooks and APPENDS a button
+ * per book when the answer arrives. That answer can take seconds, and nothing
+ * used to tie it back to the class that asked for it — so opening the page (which
+ * loads the remembered class) and then pressing another class left TWO requests in
+ * flight, and the slower one appended ITS year's subjects underneath the year you
+ * actually picked. That is the "I press class 7 and get subjects from other years"
+ * bug. Every request now carries a sequence number and a late answer is dropped. */
+var subjectsRequestSeq = 0;
+
 var subjectnames = {
     'english' : 'English',
     'english1' : 'English 1',
@@ -95,18 +106,33 @@ function orderSubjects(a, b) {
     };  // end orderSubjects()
     
 function displaySubjects (className) {
-    
+
+    var mySeq = ++subjectsRequestSeq;
+    // Clear NOW, not when the answer lands: on a slow box the old year would
+    // otherwise stay on screen for seconds after the press, looking like the
+    // press did nothing.
+    $('#subjects').empty();
+
     $.post("looma-database-utilities.php",
         {cmd: "textBookList",
             class: className},
         function(books) {
-            
+
+            // A newer class was pressed while this was in flight — these books are
+            // for the year the teacher already moved away from.
+            if (mySeq !== subjectsRequestSeq) return;
+
             books.sort(orderSubjects);
-    
+
             books.forEach (function(book) {
                 if ('fn' in book || 'nfn' in book) {
                     var tb_path = '../content/' + book['fp'];
-                    var $newButton = $('<button type="button" class="subject" id="' + book["subject"] + '" data-prefix="' + book['prefix'] + '">');
+                    // data-class: the button carries the year it belongs to, so a
+                    // press always opens ITS year's chapters — never whichever
+                    // class a shared variable happened to hold last.
+                    var bookClass = book['class'] || className;
+                    var $newButton = $('<button type="button" class="subject" id="' + book["subject"] + '"' +
+                        ' data-prefix="' + book['prefix'] + '" data-class="' + bookClass + '">');
     
                     var subjectname = subjectnames[book['subject']];
                     var nsubjectname = nsubjectnames[book['subject']];
@@ -190,7 +216,10 @@ function classButtonClicked(){
 function subjectButtonClicked(){
     subjectName = this.getAttribute('id');
     prefix = $(this).data('prefix');
-    
+    // The button's OWN class — see data-class in displaySubjects().
+    var buttonClass = $(this).data('class') || className;
+    className = buttonClass;
+
     LOOMA.setStore("subject", subjectName, 'session');  //set a COOKIE for SUBJECT (lifetime = this browser session)
     
     //set scroll position to top of page

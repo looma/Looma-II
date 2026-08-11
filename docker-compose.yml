@@ -59,6 +59,13 @@ services:
       OTEL_METRICS_EXPORTER: otlp
       OTEL_RESOURCE_ATTRIBUTES: "service.name=looma-web,service.namespace=looma,service.version=dev,deployment.environment=looma"
       LOOMA_ENV: "${LOOMA_ENV:-looma}"
+      # Piper TTS runs inside this container (launch.sh -> piper_server.py, which
+      # looma-TTS.php calls on 127.0.0.1:5002). Warm voices are what keep a Speak
+      # press near a second; each warm (voice, speed) pair holds its model in RAM,
+      # so 3 covers the everyday English + Nepali pair plus one speed change and
+      # stays comfortable on an 8 GB box.
+      LOOMA_PIPER_MAX_WORKERS: "3"
+      LOOMA_PIPER_PREWARM: "1"
     depends_on:
       - looma-db
       - looma-search
@@ -68,9 +75,9 @@ services:
     networks:
       - loomanet
 
-  # NOTE: the looma-mimic TTS service was removed. Piper (served locally inside
-  # looma-web via looma-TTS.php) is now the only TTS engine, so Looma speaks
-  # fully offline. Mimic/ResponsiveVoice/browser-speech were dropped.
+  # NOTE: there is no TTS service here. Piper (served locally inside looma-web
+  # via looma-TTS.php) is the offline engine, and ResponsiveVoice is cloud-side
+  # and client-only, so neither needs a container of its own.
 
   looma-ai:
     build:

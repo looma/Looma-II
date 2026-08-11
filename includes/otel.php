@@ -145,9 +145,41 @@ if (!function_exists('looma_otel_bootstrap')) {
         return looma_otel_format_traceparent($traceIdHex, $spanIdHex, $flags);
     }
 
+    /* Circuit breaker for an absent collector.
+     *
+     * When nothing is listening, every emission still pays a full round of DNS +
+     * connect attempts (traces, its retry, and logs) before giving up. Measured on
+     * a box whose collector container was stopped: 1.7 s just to fail to resolve
+     * the name, ~5.3 s added to EVERY page — which is how a menu press ends up
+     * racing a still-in-flight request for another class.
+     *
+     * So a failure is remembered: emission is skipped entirely for the next
+     * minute. One slow request per minute instead of every request, and it heals
+     * on its own once the collector answers again.
+     */
+    function looma_otel_breaker_file() {
+        return sys_get_temp_dir() . '/looma-otel-unreachable';
+    }
+
+    function looma_otel_breaker_open() {
+        $mtime = @filemtime(looma_otel_breaker_file());
+        return $mtime !== false && $mtime > (time() - 60);
+    }
+
+    function looma_otel_breaker_trip($failed) {
+        if ($failed) {
+            @touch(looma_otel_breaker_file());
+        } else {
+            @unlink(looma_otel_breaker_file());
+        }
+    }
+
     function looma_otel_bootstrap() {
         if (getenv('OTEL_DISABLED') === '1') return;
         if (php_sapi_name() === 'cli') return;
+        // The collector was unreachable moments ago; don't make this request wait
+        // to rediscover that.
+        if (looma_otel_breaker_open()) return;
 
         $startNanos = looma_otel_now_nanos();
         $incoming = looma_otel_parse_traceparent($_SERVER['HTTP_TRACEPARENT'] ?? '');
@@ -283,12 +315,17 @@ if (!function_exists('looma_otel_bootstrap')) {
                 $resp = @file_get_contents($tracesUrl, false, $context);
                 return $resp !== false;
             };
-            if (!$send($body, $tracesUrl)) {
+            $ok = $send($body, $tracesUrl);
+            if (!$ok) {
                 // Single fast retry — collector occasionally drops the first
                 // connection right after a container restart.
                 usleep(150_000); // 150 ms
-                $send($body, $tracesUrl);
+                $ok = $send($body, $tracesUrl);
             }
+            // Remember the outcome: a dead collector must not be rediscovered,
+            // at seconds a time, by every request that follows.
+            looma_otel_breaker_trip(!$ok);
+            if (!$ok) return;
 
             if (getenv('OTEL_LOGS_EXPORTER') === 'otlp') {
                 $logsUrl = preg_replace('#/v1/traces$#', '/v1/logs', $tracesUrl);

@@ -32,6 +32,22 @@ $grade = trim($_GET['grade']);  // display name of $class - format is "Grade 1",
 $subject = trim($_GET['subject']) ;
 $prefix = trim($_GET['prefix']) ;
 
+/* A chapter may exist as a PDF, as an HTML page, or as BOTH — and when both are
+ * there the HTML WINS: it is the readable, searchable copy generated from the
+ * PDF. PDFs open in the PDF viewer (the historical default); an HTML chapter
+ * opens in the HTML viewer instead. Given the chapter folder and the base name(s) the file
+ * could have (en: "5EN14"; np: "7S01-nepali" then "7S01"), return the ".html"
+ * filename if one exists on disk, or null when the chapter is a PDF. The folder
+ * layout mirrors what LOOMA.playMedia() builds for PDFs:
+ *   ../content/chapters/{Class}/{Subject}/{en|np}/{base}.{html|pdf}
+ */
+function looma_chapter_html($dir, $bases) {
+    foreach ($bases as $b) {
+        if (is_file($dir . $b . '.html')) return $b . '.html';
+    }
+    return null;
+}
+
 //show PAGE TITLE = "Chapters for Grade n Subject"
 
 if ($subject === "social studies") $caps = "Social Studies and Human Value Education";
@@ -62,6 +78,11 @@ echo "</h1>";
 // every saved exam for this grade and subject, and is where the user can
 // click "Generate Exam" to build a fresh one. We don't create exams from
 // here any more — Generate Exam lives on the exams page only.
+//
+// Exams are BUILT by looma-ai from the chapter text, so this button follows
+// looma-ai: no assistant service (or no zvec stack under it) means no button.
+require_once (__DIR__ . '/includes/looma-features.php');
+if (looma_ai_enabled()) {
 $exam_lang = isset($_COOKIE['lang']) ? strtolower(trim($_COOKIE['lang'])) : 'en';
 if (!in_array($exam_lang, ['en', 'np'], true)) { $exam_lang = 'en'; }
 // Pass the grade as a plain digit so it matches the format the exams page
@@ -78,6 +99,7 @@ echo "<a id='exams-btn-link' class='exams-btn-link' "
    . "<button id='exams-btn' class='generate-exam-btn' type='button'>"
    . ($exam_lang === 'np' ? 'परीक्षाहरू' : 'Exams')
    . "</button></a>";
+}  // end if (looma_ai_enabled())
 
 echo "</div>";
 
@@ -147,7 +169,24 @@ foreach ($chapters as $ch) {
 
 ////////// ENGLISH chapter ///////////
 // display chapter button for english textbook, if any
-    if ($tb_fn && $ch_pn) { echo "<button class='$ch_ft en-chapter'
+    if ($tb_fn && $ch_pn) {
+      // HTML chapter? Open the HTML viewer. Keep the 'chapter' class so the same
+      // click handler fires; only data-ft changes so playMedia() routes to HTML.
+      $en_dir  = "../content/chapters/$class/$subject/en/";
+      $en_html = looma_chapter_html($en_dir, array($ch_id));
+      if ($en_html) {
+        echo "<button class='$ch_ft en-chapter'
+                                      data-lang='en'
+                                      data-ft='htmlchapter'
+                                      data-fp='" . htmlspecialchars($en_dir, ENT_QUOTES) . "'
+                                      data-fn='" . htmlspecialchars($en_html, ENT_QUOTES) . "'
+                                      data-ch='$ch_id'
+                                      data-chdn='" . htmlspecialchars($ch_dn, ENT_QUOTES) . "'
+                                      data-class='$class'
+                                      data-subject='$subject'>
+                                      $ch_dn
+                                  </button>";
+      } else { echo "<button class='$ch_ft en-chapter'
                                       data-lang='en'
                                       data-fn='$tb_fn'
                                       data-fp='$tb_fp'
@@ -165,6 +204,7 @@ foreach ($chapters as $ch) {
                                       data-page='$ch_pn'>
                                       $ch_dn
                                   </button>";
+      }
 
 ////////// ENGLISH lesson ///////////
 // display a button for the lesson plans for this chapter
@@ -245,7 +285,24 @@ foreach ($chapters as $ch) {
 
 ////////// NEPALI chapter ///////////
     // display chapter button for 2nd [native] textbook, if any
-    if ($tb_nfn && $ch_npn) { echo "<button class='$nch_ft np-chapter'
+    if ($tb_nfn && $ch_npn) {
+      // HTML chapter (Nepali)? np PDFs are named "{id}-nepali.pdf", so an HTML
+      // one is most likely "{id}-nepali.html"; also accept "{id}.html".
+      $np_dir  = "../content/chapters/$class/$subject/np/";
+      $np_html = looma_chapter_html($np_dir, array($nch_id . '-nepali', $nch_id));
+      if ($np_html) {
+        echo "<button class='$nch_ft np-chapter'
+                                    data-lang='np'
+                                    data-ft='htmlchapter'
+                                    data-fp='" . htmlspecialchars($np_dir, ENT_QUOTES) . "'
+                                    data-fn='" . htmlspecialchars($np_html, ENT_QUOTES) . "'
+                                    data-ch='$nch_id'
+                                    data-chdn='" . htmlspecialchars($ch_ndn, ENT_QUOTES) . "'
+                                    data-class='$class'
+                                    data-subject='$subject'>
+                                    $ch_ndn
+                                  </button>";
+      } else { echo "<button class='$nch_ft np-chapter'
                                     data-lang='np'
                                     data-fn='$tb_nfn'
                                     data-fp='$tb_fp'
@@ -263,6 +320,7 @@ foreach ($chapters as $ch) {
                                     data-page='$ch_npn'>
                                     $ch_ndn
                                   </button>";
+      }
 
 
 ////////// NEPALI lesson ///////////

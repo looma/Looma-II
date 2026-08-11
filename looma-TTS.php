@@ -16,6 +16,23 @@ header("Access-Control-Allow-Origin: *");
 // Optional OpenTelemetry spans + trace propagation (no-op if disabled).
 require_once(__DIR__ . "/includes/otel.php");
 
+// Tracing is OPTIONAL — but these helpers were being called unguarded, so a shim
+// that did not define them killed TTS outright with a fatal error. That is not
+// hypothetical: includes/otel.php defines everything inside
+// `if (!function_exists('looma_otel_bootstrap'))`, so when another (older) shim
+// is loaded first — the dev stack auto-prepends one via php.ini — the whole
+// block is skipped and these three never exist. Speech must not depend on
+// telemetry, so fall back to no-ops.
+if (!function_exists('looma_otel_start_span')) {
+    function looma_otel_start_span($name, $attributes = array(), $kind = 1) { return null; }
+}
+if (!function_exists('looma_otel_end_span')) {
+    function looma_otel_end_span($span, $attributes = array(), $statusCode = 0) { }
+}
+if (!function_exists('looma_otel_traceparent_for_span')) {
+    function looma_otel_traceparent_for_span($span) { return null; }
+}
+
 if (function_exists('looma_trace_page')) {
     looma_trace_page('tts', [
         'engine' => $_REQUEST['engine'] ?? null,
@@ -34,9 +51,10 @@ if ($text === "") {
     exit;
 }
 
-// Piper is the ONLY TTS engine now (local, offline, all languages). The Mimic
-// branch and the browser-speechSynthesis / ResponsiveVoice engines were removed
-// so Looma speaks without any internet access. Any `engine` parameter is ignored.
+// Piper is the ONLY server-side TTS engine (local, offline, all languages), so
+// this endpoint always synthesizes with Piper and any `engine` parameter is
+// ignored. The other supported engine, ResponsiveVoice, is cloud TTS that runs
+// entirely client-side (js/looma-utilities.js) and never reaches this file.
 $engine = "piper";
 
 $requestedLang = isset($_REQUEST["lang"]) ? strtolower(trim((string) $_REQUEST["lang"])) : "";
@@ -68,10 +86,15 @@ if (isset($_REQUEST["rate"]) && is_numeric($_REQUEST["rate"])) {
     }
 }
 
-// An explicit Piper voice model (sent by the TTS test page) overrides the
-// server's language-based default. Only forward a safe model filename.
+// An explicit Piper voice (picked on the Reading Settings page) overrides the
+// server's language-based default. A voice id is a model filename, optionally
+// followed by "#<speaker>" for a multi-speaker model — the Nepali ne_NP-google
+// models carry 18 speakers, and each one is selectable on its own. Only forward
+// a safe id: no path separators, no "..".
 $requestedVoice = isset($_REQUEST["voice"]) ? trim((string) $_REQUEST["voice"]) : "";
-if ($requestedVoice !== "" && preg_match('/^[A-Za-z0-9_.-]+$/', $requestedVoice)) {
+if ($requestedVoice !== ""
+    && preg_match('/^[A-Za-z0-9_.+-]+(#\d{1,4})?$/', $requestedVoice)
+    && strpos($requestedVoice, "..") === false) {
     $ttsRequest["voice"] = $requestedVoice;
 }
 
@@ -84,8 +107,15 @@ if ($payload === false) {
     exit;
 }
 
-$ttsUrl = "http://127.0.0.1:5002/tts";
-$healthUrl = "http://127.0.0.1:5002/health";
+// Where the Piper Flask server listens. It runs INSIDE looma-web in the packaged
+// deployments (hence the loopback default), but it can also be its own container
+// or host service — the dev stack runs it as `looma-piper` — so the address is
+// configurable instead of hard-coded.
+$piperBase = getenv("LOOMA_PIPER_URL");
+$piperBase = $piperBase ? rtrim($piperBase, "/") : "http://127.0.0.1:5002";
+
+$ttsUrl = $piperBase . "/tts";
+$healthUrl = $piperBase . "/health";
 
 // Prefer curl when available because it gives us response headers/status cleanly.
 if (function_exists("curl_init")) {
@@ -152,16 +182,25 @@ if (function_exists("curl_init")) {
     $rawHeaders = substr($response, 0, $headerSize);
     $body = substr($response, $headerSize);
     $contentType = "audio/wav";
+    $ttsHeaders = [];
 
     foreach (explode("\r\n", $rawHeaders) as $headerLine) {
         if (stripos($headerLine, "Content-Type:") === 0) {
             $contentType = trim(substr($headerLine, strlen("Content-Type:")));
-            break;
+        } else if (stripos($headerLine, "X-Looma-TTS-") === 0) {
+            // Pass Piper's own diagnostics through: which voice actually spoke,
+            // whether it came from the cache, and how long synthesis took. They
+            // are what makes a slow or wrong-voiced Speak press explainable from
+            // the browser's network panel instead of only from the server logs.
+            $ttsHeaders[] = trim($headerLine);
         }
     }
 
     http_response_code($httpCode > 0 ? $httpCode : 200);
     header("Content-Type: " . $contentType);
+    foreach ($ttsHeaders as $headerLine) {
+        header($headerLine);
+    }
     echo $body;
     exit;
 }

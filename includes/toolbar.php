@@ -1,4 +1,4 @@
-﻿<?php  if (isset($_REQUEST['toolbar']) && $_REQUEST['toolbar'] === 'no') return; ?>
+<?php  if (isset($_REQUEST['toolbar']) && $_REQUEST['toolbar'] === 'no') return; ?>
 
 <link rel="stylesheet" href="css/looma-toolbar.css">
 

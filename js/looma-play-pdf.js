@@ -130,6 +130,29 @@ function getPdfSelectionText() {
     return LOOMA.cleanSelectedText(text);
 }
 
+/**
+ * When the user copies (Ctrl+C) a selection out of the PDF, replace the
+ * clipboard text with the SAME cleaned, reading-order text that TTS and the
+ * dictionary use — so a copy never carries the raw text-layer garbage (broken
+ * ToUnicode "n1achine", figure-label noise, stray page numbers). Only copies
+ * that start inside the PDF text layer are touched; everything else is left
+ * exactly as the browser would copy it.
+ */
+document.addEventListener('copy', function (e) {
+    var selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;
+
+    var node = selection.anchorNode;
+    var el = (node && node.nodeType === 3) ? node.parentNode : node;
+    if (!el || !el.closest || !el.closest('#pdf .pdf-text')) return;
+
+    var clean = getPdfSelectionText();
+    if (clean && e.clipboardData) {
+        e.clipboardData.setData('text/plain', clean);
+        e.preventDefault();
+    }
+});
+
 window.onload = function() {
 
   $('button.speak').off('click').click(function(){

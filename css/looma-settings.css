@@ -1,4 +1,12 @@
-#main-container-horizontal {}
+/* The page is laid out top-to-bottom in normal flow. Heights are left to the
+   content (see the button rules below): the labels are sized in `em`, so any
+   fixed vh/% height clips them as soon as the window is short or the browser is
+   zoomed. If the tools still do not fit, the container scrolls instead of
+   hiding the last row behind the toolbar. */
+#main-container-horizontal {
+    overflow-y: auto;
+    padding-bottom: 1rem;
+}
 
 h1.title {
     font-size: 3em;
@@ -6,9 +14,8 @@ h1.title {
 }
 
 #user-tools {
-    height:28%;
-    overflow:hidden;
     padding-top: 4px;
+    padding-bottom: 1.6rem;
     position:relative;
     font-size: 1.2em;
 }
@@ -18,9 +25,24 @@ h1.title {
 }
 
 #tools {
-    height:55%;
     margin: 0 auto;
     font-size: 1.2em;
+}
+
+/* One row of controls. A row whose buttons are all hidden (the admin/exec rows
+   for a plain teacher login) collapses to nothing, so the rows below simply move
+   up. */
+.tool-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.6rem;
+    margin-bottom: 0.6rem;
+}
+
+.tool-row:last-child {
+    margin-bottom: 0;
 }
 
 button {display:inline;}
@@ -31,9 +53,18 @@ button.img.activity img {
     max-height:60%;
     padding:0 5px 20px 0;}
 
+ /* 5vh/20vw as a MINIMUM, never as the actual size: a button grows to fit its
+    label so nothing is cut off ("Logout" losing the tail of its g, "Login to use
+    Teacher Tools" losing "Tools"). Buttons clip their own overflow, so a fixed
+    height is what truncated the text. */
  #tools button {
-     height:5vh;
-     width:20vw;
+     height: auto;
+     min-height: 5vh;
+     width: auto;
+     min-width: 20vw;
+     padding: 0.3em 0.9em;
+     line-height: 1.35;
+     white-space: nowrap;
  }
 
 #voicegender {float:left;
@@ -66,8 +97,11 @@ span#themes {font-size: 1em}
     border-radius:5px;
     font-size: 1em;
     font-weight:bold;
-    height:5vh;
-    width:15vw;
+    height: auto;
+    min-height: 5vh;
+    width: auto;          /* 15vw cut "Looma Classic" short on a narrow window */
+    min-width: 15vw;
+    max-width: 90vw;
 }
 
 #voicelist select {
@@ -81,9 +115,11 @@ select.theme, select.voice {
 }
 
 .login {
-    height:10%;
-    width:20%;
-    font-size:1em;
+    height: auto;
+    min-height: 5vh;
+    width: auto;
+    min-width: 20vw;
+    font-size: 1em;
 }
 
 /* Login message stacked above its action buttons, the whole block centred. */
@@ -119,9 +155,63 @@ select.theme, select.voice {
 a, a:focus, a:hover {text-decoration: none;
     }
 
-a button.logo {height:18vh;font-size:1.5em;}
+a button.logo {
+    height: auto;
+    min-height: 18vh;
+    padding: 0.5em 1em;
+    font-size: 1.5em;
+}
 
 button.logo img {
     height:8vh;
     margin:auto;
+}
+
+/* Short window (or a zoomed-in browser): an exec/skip login shows the most
+   controls — two login buttons, three rows of tools, the theme picker and
+   Reading Settings — and at the full sizes above the last rows end up behind the
+   toolbar. Compact the page chrome (title, logo, gaps) so everything fits
+   without shrinking the tool buttons themselves. */
+@media (max-height: 800px) {
+    h1.title {
+        font-size: 2em;
+        margin-bottom: 0.4rem;
+    }
+
+    #user-tools {
+        padding-top: 0;
+        padding-bottom: 0.5rem;
+        font-size: 1.1em;
+    }
+
+    a button.logo {
+        min-height: 0;
+        padding: 0.25em 0.8em;
+        font-size: 1.1em;
+    }
+
+    button.logo img {
+        height: 5.5vh;
+    }
+
+    #login-box {
+        margin-bottom: 0.5rem;
+    }
+
+    #login-status {
+        margin-bottom: 0.4rem;
+    }
+
+    #tools button,
+    .login {
+        min-height: 4.5vh;
+    }
+
+    #themelist select {
+        height: 4.5vh;
+    }
+
+    .tool-row {
+        margin-bottom: 0.35rem;
+    }
 }

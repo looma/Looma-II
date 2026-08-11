@@ -1,4 +1,4 @@
-﻿.panel { background: rgba(255,255,255,0.05); border: 2px solid rgba(0,0,0,0.15); border-radius: 12px; padding: 12px 14px; margin: 12px 12px; }
+.panel { background: rgba(255,255,255,0.05); border: 2px solid rgba(0,0,0,0.15); border-radius: 12px; padding: 12px 14px; margin: 12px 12px; }
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
 label { display: flex; gap: 8px; align-items: center; }
 .results { margin-top: 10px; }

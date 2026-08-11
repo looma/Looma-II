@@ -395,17 +395,12 @@ h1 span.english-keyword, h1 span.native-keyword {
     display:inline-block;
 }
 
-/* button labels [made by makeButton()] sit on their own line under the thumbnail */
-button span.english-keyword, button span.native-keyword {
-    display:block;
-}
-
 .xlat {display:none;}
 
 span:hover .xlat {
     display:block;
     position:fixed;
-   /* top:20px; */
+    top:20px;
     right:15px;
     z-index: 1000;
     border: 1px solid #000000;
@@ -421,26 +416,35 @@ button.hidden {display:none;}  /*used in looma-wikipedia.php*/
 button:hover span.tip.yes-show 	{
     position:absolute;
     display:block;
-   bottom: 0vh;
-   /* right:5vw;*/
-    margin:auto;
+   bottom: 100%;
+   left: 50%;
+   transform: translateX(-50%) translateY(-8px);
+   margin:auto;
 
-    font-size: 0.7em;
+    font-size: 1.8em;
+    font-weight: bold;
+    padding: 12px 16px;
+    white-space: nowrap;
+    min-width: 120px;
 
-    z-index: 100;
-    border: 1px solid #000000;
-    border-radius: 3px;
-    background-color: #C4E9F5;
-    color:#000000;}
+    z-index: 10000;
+    border: 2px solid #000000;
+    border-radius: 8px;
+    background-color: #FFE44D;
+    color:#000000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);}
 
 button:hover span.tip.yes-show.big-show {
+
     display:block;
-    font-size:0.75em;
-    padding:0 auto;
-    width:90%;
-    position:absolute;
-    bottom:0;
-    left:0;
+
+    font-size:1.8em;
+    font-weight: bold;
+    padding: 12px 16px;
+    white-space: nowrap;
+    left:auto;
+    width:auto;
+    min-width: 140px;
 }
 
 /*****************
@@ -453,13 +457,22 @@ button.looma-control-button {
     position: fixed;
     right:5vw;
     display:none;
-    opacity: 0.4;
+    opacity: 0.5;
     z-index: 1000;
-    height: 10vh;
-    width:  10vh;
+    height: 12vh;
+    width:  12vh;
     background-repeat: no-repeat;
     background-position: center;
     box-shadow:none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button.looma-control-button:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
 button#fullscreen-control {
@@ -469,30 +482,264 @@ button#fullscreen-control {
     background-image: url("../images/fullscreen2.png");
     background-size: 100% 100%;
     background-color:rgba(200,200,200,0.7);  /*transparent light gray*/
+    cursor: pointer;
 }
 
+button#fullscreen-control:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* The Speak button tells you what pressing it will DO, through the icon itself:
+ *   (no class)        speech bubble          — nothing selected, nothing to read
+ *   .tts-state-play   bubble + play          — text is selected (or reading is paused): press to read
+ *   .tts-state-pause  bubble + pause         — reading right now: press to pause
+ *   .tts-state-repeat bubble + circular arrow— finished: press to read it again
+ * The bubble is identical in all four files, so only the glyph changes and the
+ * button never jumps. looma-utilities.js sets the class in
+ * LOOMA.speak.updateButtonAvailability(). */
 button.speak {
     bottom:22vh;
     display:none;
-    background-image: url("../images/speech1.png");
-    background-size: 100% 100%;
+    background-image: url("../images/tts-idle.svg");
+    background-size: 85% 85%;
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+    border: 0.2em solid transparent;
+    box-sizing: border-box;
+    position: fixed;
+    transition: transform 0.18s ease, opacity 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    cursor: pointer;
+}
+
+button.looma-assistant {
+    /* Top of the floating control-button column — NOT the top of the page.
+       looma-assistant-button.js refines this so it lands one slot above the
+       topmost control button the current page shows. No `top` here: a fixed
+       element with both top and bottom set would ignore the JS `bottom`. */
+    bottom: 55vh;
+    display:none;
+    background-image: url("../images/chat-assistant.svg");  /* chat bubble with dots icon — Looma Assistant chat */
+    background-size: 85% 85%;
+    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+    border: 0.2em solid transparent;
+    box-sizing: border-box;
+    position: fixed;
+    transition: transform 0.18s ease, opacity 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    z-index: 1050;
+}
+
+button.speak.tts-state-play   { background-image: url("../images/tts-play.svg"); }
+button.speak.tts-state-pause  { background-image: url("../images/tts-pause.svg"); }
+button.speak.tts-state-repeat { background-image: url("../images/tts-repeat.svg"); }
+
+/* .tts-holding — the button is being held down. It shows STOP for as long as the
+   press lasts and, after two and a half seconds, the reading restarts (see
+   LOOMA.speak.installButtonGuard / LOOMA.speak.restart in js/looma-utilities.js).
+   Listed after the four state rules so it wins over whichever icon was showing;
+   letting go puts the previous icon straight back. */
+button.speak.tts-holding      { background-image: url("../images/tts-stop.svg"); }
+
+button.looma-control-button.speak:not(.tts-disabled):not(.tts-busy):hover,
+button.looma-control-button.speak.tts-pending {
+    /* Pending reuses the hover look so the user sees the click was accepted before audio starts. */
+    color: var(--looma-button-hover-font-color);
+    border-color: yellow;
+    border-width: 4px;
+    opacity: 1;
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(255,212,0,0.6);
+}
+
+button.looma-control-button.lookup:hover,
+button.looma-control-button.captions:hover,
+button.looma-control-button.download:hover {
+    border-color: yellow;
+    border-width: 4px;
+    opacity: 1;
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(255,212,0,0.6);
+}
+
+button.looma-control-button.speak.tts-pending::after {
+    /* Spinner shown only while audio is being fetched/generated. */
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 38%;
+    height: 38%;
+    margin-left: -19%;
+    margin-top: -19%;
+    border-radius: 50%;
+    border: 0.22em solid rgba(255, 255, 0, 0.3);
+    border-top-color: rgba(255, 212, 0, 1);
+    border-right-color: rgba(255, 212, 0, 0.85);
+    box-sizing: border-box;
+    animation: ttsPendingSpin 0.8s linear infinite;
+    pointer-events: none;
+}
+
+button.looma-control-button.speak.tts-holding {
+    /* Same "you are being listened to" look as pending, so the held button reads
+       as active rather than stuck. */
+    border-color: yellow;
+    border-width: 4px;
+    opacity: 1;
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(255,212,0,0.6);
+}
+
+button.looma-control-button.speak.tts-holding::after {
+    /* The 2.5-second countdown. Same circle as the pending spinner above —
+       same place, same size, same yellow — but it FILLS instead of spinning:
+       --tts-hold goes 0 → 1 over those 2.5 seconds (set per frame in
+       looma-utilities.js), and the mask punches out the middle so what is left
+       is a ring closing on itself. Declared after the .tts-pending rule so a
+       hold that starts while audio is still loading shows the countdown rather
+       than the spinner. */
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 38%;
+    height: 38%;
+    margin-left: -19%;
+    margin-top: -19%;
+    border: 0;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: none;
+    background: conic-gradient(
+        rgba(255, 212, 0, 1) calc(var(--tts-hold, 0) * 360deg),
+        rgba(255, 255, 0, 0.28) 0);
+    -webkit-mask: radial-gradient(circle, transparent 56%, #000 58%);
+            mask: radial-gradient(circle, transparent 56%, #000 58%);
+    pointer-events: none;
+}
+
+button.looma-control-button.speak.tts-busy {
+    /* Busy styling tracks active playback: larger button plus yellow outline while audio is sounding. */
+    transform: scale(1.2) !important;
+    transform-origin: center center !important;
+    opacity: 1 !important;
+    border: 0.22em solid #ffd400 !important;
+    outline: 0.18em solid #ffd400 !important;
+    outline-offset: 0.08em !important;
+    box-shadow: 0 0 1em rgba(255, 212, 0, 0.95) !important;
+    animation: ttsSpeakPulse 0.9s ease-in-out infinite;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+button.speak.tts-disabled {
+    opacity: 0.35 !important;
+    filter: grayscale(1);
+    background-color: rgba(120,120,120,0.85);
+    border-color: rgba(150,150,150,0.65);
+    box-shadow: none;
+    pointer-events: none;
+}
+
+button.looma-control-button.looma-assistant:hover {
+    color: var(--looma-button-hover-font-color);
+    border-color: yellow;
+    border-width: 4px;
+    opacity: 1;
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(255,212,0,0.6);
+}
+
+/* ---------------------------------------------------------------------------
+ * Fullscreen — compact control-button sidebar
+ *
+ * Outside fullscreen the Speak / Lookup / Assistant / Keyboard / Fullscreen
+ * controls float over the page at right:5vw, 12vh wide, 0.5 opacity. In
+ * fullscreen (PDF book, dictionary, history pages, ...) that column looked
+ * untidy and sat over the page's scrollbar. Here it is docked into a compact,
+ * fully-opaque column just inside the right edge — clear of the scrollbar.
+ * `:fullscreen` matches the fullscreened element (#fullscreen / #video-
+ * fullscreen, which the control buttons live inside), so this works on every
+ * content page without per-page CSS. The :-webkit-full-screen copy is kept as
+ * a separate rule so an unknown pseudo-class can't drop the whole block.
+ * ------------------------------------------------------------------------- */
+:fullscreen button.looma-control-button {
+    right: 22px;            /* just inside a typical page scrollbar */
+    width: 8.5vh;
+    height: 8.5vh;
+    opacity: 1;
+    border: 2px solid rgba(0, 0, 0, 0.55);
+    box-shadow: -3px 0 12px rgba(0, 0, 0, 0.40);
+}
+:-webkit-full-screen button.looma-control-button {
+    right: 22px;
+    width: 8.5vh;
+    height: 8.5vh;
+    opacity: 1;
+    border: 2px solid rgba(0, 0, 0, 0.55);
+    box-shadow: -3px 0 12px rgba(0, 0, 0, 0.40);
+}
+
+/* The Fullscreen button carries an id, so match it explicitly to win specificity. */
+:fullscreen button#fullscreen-control {
+    right: 22px;
+    width: 8.5vh;
+    height: 8.5vh;
+}
+:-webkit-full-screen button#fullscreen-control {
+    right: 22px;
+    width: 8.5vh;
+    height: 8.5vh;
+}
+
+/* Gentler hover zoom so the compact column doesn't jump out over the content. */
+:fullscreen button.looma-control-button:hover {
+    transform: scale(1.06);
+}
+:-webkit-full-screen button.looma-control-button:hover {
+    transform: scale(1.06);
+}
+
+@keyframes ttsSpeakPulse {
+    0% {
+        border-color: rgba(255, 212, 0, 0.35);
+        box-shadow: 0 0 0.2em rgba(255, 212, 0, 0.2);
+    }
+    50% {
+        border-color: rgba(255, 212, 0, 1);
+        box-shadow: 0 0 1em rgba(255, 212, 0, 0.95);
+    }
+    100% {
+        border-color: rgba(255, 212, 0, 0.35);
+        box-shadow: 0 0 0.2em rgba(255, 212, 0, 0.2);
+    }
+}
+
+@keyframes ttsPendingSpin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 button.lookup {
-    bottom:33vh;
+    bottom:44vh;
     display:none;
     background-image: url("../images/dictionary.png");
     background-size: 75% 75%;
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+    cursor: pointer;
 }
 
 button.captions {
-    bottom:38vh;
+    bottom:49vh;
     display:none;
     background-image: url("../images/captions.png");
     background-size: 75% 75%;
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+    cursor: pointer;
 }
 
 button.download {
@@ -501,24 +748,43 @@ button.download {
     background-image: url("../images/download.png");
     background-size: 75% 75%;
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+    cursor: pointer;
 }
 
 button#next-item {
-    bottom:44vh;
+    bottom:55vh;
     /*display:none;*/
     z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
     background-image: url("../images/carrot-fwd.png");
     background-size: 100% 100%;
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+    cursor: pointer;
+}
+
+button#next-item:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    border-color: yellow;
+    border-width: 4px;
 }
 
 button#prev-item {
-    bottom:56vh;
+    bottom:67vh;
     /*display:none;*/
     z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
     background-image: url("../images/carrot-back.png");
     background-size: 100% 100%;
     background-color:rgba(200,200,200,0.7); /* transparent light gray*/
+    cursor: pointer;
+}
+
+button#prev-item:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    border-color: yellow;
+    border-width: 4px;
 }
 
 button.show-keyboard {
@@ -533,6 +799,65 @@ button#bagh-chal {
     background-image: url("../images/alquerque_board.png");
     background-size: 80% 80%;
     background-color: rgba(200,200,200,0.7);
+}
+
+/* ---- reading highlight -------------------------------------------------
+   The band under the sentence being read uses THE TOOLBAR COLOUR (the yellow
+   of the menu bar at the bottom of the page, --looma-toolbar), so the page has
+   one accent colour instead of two nearly-equal yellows. The themes override
+   that variable (CEHRD teal, INDIA orange) and the highlight follows along.
+   The text itself must stay fully readable — see the multiply note below. */
+
+.tts-block-highlight {
+    /* Sentence being read aloud on a normal HTML page (which is now most
+       chapters), in the toolbar colour and in BOLD so the sentence stands out
+       from the rest of the paragraph.
+
+       The band is a gradient of fixed height, not a background-color: the
+       background of an inline box covers the font's full content area, which in
+       Looma's comic font is taller than the line spacing of a typical chapter —
+       a plain background-color therefore bled over the lines above and below.
+       `box-decoration-break: clone` gives every line fragment of a wrapped
+       sentence its own band. looma-utilities.js sets the same declarations
+       inline (an HTML chapter renders inside an iframe this file never reaches);
+       keep the two in step.
+
+       Near-black on the toolbar yellow is ~19:1 contrast: the words stand out
+       MORE inside the highlight than outside it, which is the point. */
+    background-image: linear-gradient(var(--looma-toolbar, yellow), var(--looma-toolbar, yellow));
+    background-repeat: no-repeat;
+    background-size: 100% 1.25em;
+    background-position: 0 50%;
+    -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
+    color: #000;
+    font-weight: bold;
+    border-radius: 0.1em;
+}
+
+.tts-pdf-highlight {
+    /* One band per line over the PDF. The glyphs live on the <canvas> UNDER
+       this element, so a translucent wash (what this used to be) acts as a film
+       over them: black text came out grey-olive and the yellow itself came out
+       muddy where the browser's own selection band overlapped.
+
+       `multiply` is what a real highlighter pen does: each channel is
+       multiplied, so white paper becomes the yellow and BLACK TEXT STAYS BLACK
+       (0 × anything = 0). Nothing is dimmed. With pure yellow it is also
+       idempotent — two overlapping bands (the reading band plus the browser's
+       selection) give exactly the same colour instead of a darker patch. */
+    background-color: var(--looma-toolbar, yellow);
+    mix-blend-mode: multiply;
+    border-radius: 0.15em;
+    z-index: 1;
+}
+
+@supports not (mix-blend-mode: multiply) {
+    /* Old engine: keep the previous translucent wash rather than a solid band,
+       which would hide the text completely. */
+    .tts-pdf-highlight {
+        background-color: rgba(255, 214, 0, 0.42);
+    }
 }
 
 .popup {
@@ -646,16 +971,23 @@ button.map {position:relative;}
 button.img img, button.img object {
 	position:relative;
     height:90%;
+    width:35%;
 	float:left;
 	max-width:35%;
+    max-height:90%;
+    object-fit:contain;
 }
 
-button.img .icon {
+button.img > img.icon {
     position:absolute;
-    right:3px;
-    bottom:3px;
-    height:20%;
-    width:8%;
+    right:5px;
+    bottom:5px;
+    width:auto;
+    height:auto;
+    max-width:40px;
+    max-height:32px;
+    object-fit:contain;
+    float:none;
 }
 
 button.img object img {
@@ -687,14 +1019,16 @@ button.img.subject {
 button.img.subject img {
      width:45%;
      height:50%;
+     max-width:45%;
+     max-height:50%;
      margin:5px 2px;
      float:left;
+     object-fit:contain;
  }
 
 button.img.play, button.img.activity{
     position:relative;
-	/*font-size: 30px;*/
-    font-size: 1.5em;
+	font-size: 30px;
 	font-weight:bold;
     max-width:30vw;
 }
@@ -817,6 +1151,24 @@ div.center {
     }
     td button, th button{
         margin: 0;
+    }
+
+    /* Reduce control button sizes for small screens */
+    button.looma-control-button {
+        height: 9vh;
+        width: 9vh;
+    }
+
+    button.speak {
+        bottom: 16vh;
+    }
+
+    button.looma-assistant {
+        bottom: 40vh;
+    }
+
+    button#fullscreen-control {
+        bottom: 8vh;
     }
 
 }

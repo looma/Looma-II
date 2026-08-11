@@ -331,6 +331,16 @@
   /* ---------- wiring ---------- */
 
   function initAssistantButton() {
+    // The assistant IS looma-ai, which only exists on a box installed with the
+    // zvec stack. Where it was left out, hide the button instead of offering a
+    // chat that can never answer. (No flag at all = an older box that has the
+    // stack; see includes/looma-features.php.)
+    var features = (typeof window !== 'undefined' && window.LOOMA_FEATURES) || {};
+    if (features.assistant === false) {
+      $('button.looma-assistant').css('display', 'none');
+      return;
+    }
+
     // The assistant should be reachable on every page (not just those that
     // also show the Speak/TTS button) — students may want to ask questions on
     // the home, library, history, dictionary pages too. The button only exists

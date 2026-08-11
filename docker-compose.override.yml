@@ -30,14 +30,31 @@ services:
       - ${LOOMA_EPAATH_DIR:-../content/epaath}:/usr/local/var/www/ePaath:ro
     environment:
       OTEL_EXPORTER_OTLP_ENDPOINT: ${LOOMA_OTEL_ENDPOINT:-http://looma-otel-collector:4318}
-    # Drop looma-ai from start-order deps (it is gated off below). `!override`
-    # REPLACES the canonical list instead of merging. AI features degrade
-    # gracefully when looma-ai is absent.
+      # 1 when this box runs no collector. The PHP shim then skips emission
+      # instead of resolving a hostname that does not exist: a failed lookup
+      # costs whatever the resolver takes to give up — seconds on a school box
+      # with no DNS — and it is paid on EVERY request, TTS sentences included.
+      OTEL_DISABLED: "${LOOMA_OTEL_DISABLED:-0}"
+      # 0 on a box installed WITHOUT the zvec stack: the app then hides semantic
+      # search, the AI Assistant and exam generation rather than offering buttons
+      # with no service behind them (includes/looma-features.php).
+      LOOMA_ZVEC: "${LOOMA_ZVEC:-1}"
+      # The assistant half. Search can be installed without looma-ai, so the AI
+      # Assistant and exam buttons follow this one instead of LOOMA_ZVEC.
+      LOOMA_AI: "${LOOMA_AI:-1}"
+    # Drop looma-ai AND looma-search from start-order deps: both are optional
+    # (profiles below), and compose refuses to start a service that depends on
+    # one which the active profiles exclude. `!override` REPLACES the canonical
+    # list instead of merging. Both degrade gracefully when absent — search falls
+    # back to a plain Mongo query, AI features are hidden.
     depends_on: !override
       - looma-db
-      - looma-search
 
   looma-search:
+    # The zvec stack is optional. `looma-installer.sh up` adds `--profile search`
+    # only when the box was installed with it; without that this service simply
+    # does not start.
+    profiles: ["search"]
     environment:
       OTEL_EXPORTER_OTLP_ENDPOINT: ${LOOMA_OTEL_ENDPOINT:-http://looma-otel-collector:4318}
 

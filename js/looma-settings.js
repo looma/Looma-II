@@ -21,7 +21,7 @@ function populateVoiceList() {
   for(var  i = 0; i < voices.length ; i++) {
     var option = document.createElement('span');
 
-    //   <span class="voicespan"><input type="radio" data-engine="mimic" class="voice" id="cmu_us_axb"  value="cmu_us_axb">   Indian female (axb) </span><br>
+    //   <span class="voicespan"><input type="radio" data-engine="piper" class="voice" id="en_US-amy-medium"  value="en_US-amy-medium">   English female (amy) </span><br>
     option.innerHTML = voices[i].name + ' (' + voices[i].lang + ')';
 
     if(voices[i].default) {
@@ -55,9 +55,11 @@ $(document).ready (function() {
 
     $('.gender').change(function() {
                         var newVoice = encodeURIComponent(this.value);
-                        var engine = 'mimic';
                         LOOMA.changeVoice(newVoice); // change voice when voice button is clicked
-                        LOOMA.speak('the voice has been changed', engine, newVoice);
+                        // Piper is the local/offline engine Looma speaks with.
+                        // Voices are chosen on the Reading Settings page, so no
+                        // voice is forced here.
+                        LOOMA.speak('the voice has been changed', 'piper');
                     });
 
     //$('.voice#' + LOOMA.readStore('voice', 'cookie')).attr('checked', 'checked'); //add checkmark on current voice

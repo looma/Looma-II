@@ -90,10 +90,21 @@ WITH_OBSERVABILITY="${WITH_OBSERVABILITY:-0}"  # full obs stack on this box
 WITH_AGENTS="${WITH_AGENTS:-0}"            # agents-only: Vector+Metricbeat -> remote obs
 WITH_AI="${WITH_AI:-1}"                    # looma-ai = the in-app assistant (ON by default)
 WITH_ANALYSIS="${WITH_ANALYSIS:-0}"        # heavy obs AI analysis workers (torch) — OFF
-WITH_SEARCH="${WITH_SEARCH:-1}"            # zvec semantic search (native install only)
+# The zvec STACK: the search service + looma-ai. One switch, because the three
+# features a teacher sees — semantic search, the AI Assistant and exam generation
+# — all run on it. Turning it off skips those containers/services AND tells the
+# app to stop offering the features (LOOMA_ZVEC=0 -> includes/looma-features.php),
+# so nobody is left pressing a button that cannot answer. Applies to BOTH
+# deployments; it used to be a native-only flag.
+WITH_SEARCH="${WITH_SEARCH:-1}"            # zvec stack: search + AI + exams
 INSTALL_KIOSK="${INSTALL_KIOSK:-1}"
 KIOSK_URL="${KIOSK_URL:-}"                 # empty = derive from DEPLOY (docker :48080, native :80)
-MAKE_SWAP="${MAKE_SWAP:-0}"                # off by default; --swap creates one
+# Swap is ON by default: 8 GB of RAM is not enough headroom for Looma plus Piper
+# TTS (each warm voice model stays resident) and a browser, and the failure mode
+# without swap is the OOM killer taking out a service mid-lesson. --no-swap
+# turns it off (e.g. a box that already has a swap partition — make_swap detects
+# that case on its own and does not add a second one).
+MAKE_SWAP="${MAKE_SWAP:-1}"                # on by default; --no-swap skips it
 SWAP_GB="${SWAP_GB:-8}"
 # Cap every CPU's max frequency at boot, before Looma starts (an ODROID that clocks
 # to its rated ceiling — no overclock needed — under Piper TTS or a full container
@@ -119,6 +130,22 @@ MONGO_VERSION="${MONGO_VERSION:-5.0.27}"
 MONGO_SERIES="${MONGO_SERIES:-5.0}"
 MONGODB_EXT_VERSION="${MONGODB_EXT_VERSION:-1.15.0}"
 PIPER_VERSION="${PIPER_VERSION:-v1.2.0}"
+# Piper voice models, as huggingface paths WITHOUT the .onnx suffix.
+#   PIPER_VOICES       — mandatory: the two Looma speaks with out of the box
+#   PIPER_EXTRA_VOICES — best-effort: offered on the Reading Settings page so
+#                        teachers (and Nepali speakers judging the Nepali ones)
+#                        can compare them and pick the defaults. A download that
+#                        fails only costs that voice, not the install.
+# Everything is "low"/"x_low" quality: on this board that is what keeps a spoken
+# sentence starting within about a second. Nepali is not short of choice with one
+# model — ne_NP-google carries 18 speakers and each is selectable on its own.
+PIPER_VOICES="${PIPER_VOICES:-ne/ne_NP/google/x_low/ne_NP-google-x_low en/en_US/amy/low/en_US-amy-low}"
+PIPER_EXTRA_VOICES="${PIPER_EXTRA_VOICES:-en/en_US/ryan/low/en_US-ryan-low en/en_US/lessac/low/en_US-lessac-low en/en_GB/alan/low/en_GB-alan-low ne/ne_NP/google/medium/ne_NP-google-medium}"
+PIPER_VOICES_BASE="${PIPER_VOICES_BASE:-https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0}"
+# How small $WWW/content has to be for `verify` to call it a failed copy. The real
+# library is tens of GB, so single digits means an interrupted rsync — but a school
+# running a trimmed content set can lower this.
+CONTENT_MIN_GB="${CONTENT_MIN_GB:-5}"
 
 log()  { printf '\n\033[1;36m[looma]\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m[warn]\033[0m %s\n' "$*"; }
@@ -147,6 +174,73 @@ mkdirs() {  # mkdir -p that explains a read-only disk instead of failing silentl
   done
 }
 
+# Download the Piper voice models (model + its .json) into $1. The mandatory
+# pair aborts the install if it cannot be fetched; each extra voice is allowed to
+# fail on its own — a box with one English voice missing still speaks.
+fetch_piper_voices() {
+  local dest="$1" path name
+  mkdirs "$dest"
+
+  for path in $PIPER_VOICES; do
+    name="$(basename "$path")"
+    if [ ! -s "$dest/$name.onnx" ]; then
+      curl -fSL "$PIPER_VOICES_BASE/$path.onnx"      -o "$dest/$name.onnx"
+      curl -fSL "$PIPER_VOICES_BASE/$path.onnx.json" -o "$dest/$name.onnx.json"
+    fi
+  done
+
+  for path in $PIPER_EXTRA_VOICES; do
+    name="$(basename "$path")"
+    if [ -s "$dest/$name.onnx" ]; then
+      continue
+    fi
+    if curl -fSL "$PIPER_VOICES_BASE/$path.onnx"      -o "$dest/$name.onnx" \
+    && curl -fSL "$PIPER_VOICES_BASE/$path.onnx.json" -o "$dest/$name.onnx.json"; then
+      log "  + optional voice $name"
+    else
+      warn "optional voice $name could not be downloaded — skipping it"
+      rm -f "$dest/$name.onnx" "$dest/$name.onnx.json"
+    fi
+  done
+
+  log "voice models in $dest: $(ls -1 "$dest"/*.onnx 2>/dev/null | wc -l)"
+  # Never let this function's exit status abort the install: a missing OPTIONAL
+  # voice is not a failure, and under `set -e` a trailing non-zero status would
+  # kill the whole run.
+  return 0
+}
+
+# Feed the chapters into the search index, reading the HTML files.
+#
+# Every chapter ships as a .pdf AND the .html generated from it, and the app
+# opens the HTML — so that is what search must index too. The ingester skips a
+# PDF whenever its HTML twin sits next to it, which means one entry per chapter
+# (not two) and the better text of the two: the HTML has no broken ligatures and
+# needs no OCR. Without this step the index only ever held `activities`, so a
+# search never matched the actual lesson text.
+#
+# Runs inside the looma-ai container (it carries pymongo + bs4). Best-effort: a
+# box can be used without it, the search is just thinner until it runs.
+ingest_chapters_html() {
+  [ "$WITH_SEARCH" = "1" ] || return 0
+  command -v docker >/dev/null 2>&1 || return 0
+
+  if ! docker ps --format '{{.Names}}' 2>/dev/null | grep -qx looma-ai; then
+    warn "chapters not ingested — looma-ai is not running (it does the reading)."
+    warn "  Run it later with:  docker exec looma-ai python scripts/ingest_bulk_content_to_mongo.py --folder chapters"
+    return 0
+  fi
+
+  log "ingesting the chapter HTML into the search index (skips the PDFs)…"
+  if docker exec looma-ai python scripts/ingest_bulk_content_to_mongo.py --folder chapters; then
+    log "chapters ingested"
+  else
+    warn "the chapter ingestion failed — search will still work, but without chapter text."
+    warn "  retry: docker exec looma-ai python scripts/ingest_bulk_content_to_mongo.py --folder chapters"
+  fi
+  return 0
+}
+
 kiosk_url() {  # the URL the kiosk opens: explicit if given, else per deployment
   if [ -n "$KIOSK_URL" ]; then echo "$KIOSK_URL"
   elif [ "$DEPLOY" = "native" ]; then echo "http://localhost/home"
@@ -161,6 +255,10 @@ Looma ODROID installer — one script, all deployments.
   sudo $0 install [flags]          scripted install, no form
   sudo $0 up [--build]             start the stack (used by looma.service)
   sudo $0 down [--volumes]         stop the stack  (--volumes also WIPES data)
+  sudo $0 verify                   check that this box works: the app answers, the
+                                   content is there and reachable, and TTS really
+                                   speaks English + Nepali (with its latency).
+                                   Runs at the end of every install too.
        $0 build-bundle docker|native|all [--bundle-dir PATH]
                                    build the offline payload — run on a build box
                                    WITH internet, same arch (arm64) as the odroid
@@ -171,7 +269,7 @@ Install flags (all optional; passing any flag skips the form):
                           zvec + Piper as containers.  docker: the whole app in containers.
   --sidecars docker|host  native only: run zvec/Piper as containers (default), or on the
                           host with a venv + systemd units (needs Python >= 3.9)
-  --swap                  Create a ${SWAP_GB}G swapfile (OFF by default)
+  --swap                  Create a ${SWAP_GB}G swapfile (ON by default)
   --swap-gb N             Same, but N gigabytes. On a re-install with a DIFFERENT
                           N than before, REPLACES the existing swapfile (does not
                           just leave the old size in place, and does not add a
@@ -181,7 +279,7 @@ Install flags (all optional; passing any flag skips the form):
   --user NAME             Desktop user for autostart/kiosk (default: $TARGET_USER)
   --kiosk-url URL         URL the kiosk opens (default: docker :48080, native :80)
   --no-kiosk              Don't install the Chromium kiosk autostart
-  --no-swap               Don't create a ${SWAP_GB}G swapfile
+  --no-swap               Don't create a ${SWAP_GB}G swapfile (it is created by default)
   --observability         Run the full obs stack here (OpenSearch/Grafana/traces).
                           OFF by default — it is the heaviest thing on an 8 GB box.
   --no-observability      App only (the default)
@@ -291,6 +389,23 @@ Define LOOMA_ROOT @LOOMA_ROOT@
     SetEnv LOOMA_SEARCH_URL http://127.0.0.1:46333/search
     SetEnv LOOMA_SEARCH_URL_ZVEC http://127.0.0.1:46333/search
     SetEnv LOOMA_AI_URL http://127.0.0.1:8089
+
+    # Telemetry. WITHOUT these the PHP shim (includes/otel.php) falls back to its
+    # built-in default, http://looma-otel-collector:4318 — a DOCKER hostname that
+    # does not exist on a native box. Every page then does a doomed DNS lookup
+    # before it answers, and on a school box with no DNS server that is a
+    # multi-second stall PER REQUEST; TTS feels it worst, because every sentence
+    # is its own request. OTEL_DISABLED=1 makes the shim skip emission entirely.
+    SetEnv OTEL_DISABLED @OTEL_DISABLED@
+    SetEnv OTEL_EXPORTER_OTLP_ENDPOINT @OTEL_ENDPOINT@
+
+    # 0 when this box was installed WITHOUT the zvec stack. includes/looma-features.php
+    # reads it and the app then hides semantic search, the AI Assistant and exam
+    # generation, instead of offering buttons with no service behind them.
+    SetEnv LOOMA_ZVEC @LOOMA_ZVEC@
+    # The assistant half (looma-ai). Search can be installed without it, so the
+    # AI Assistant and exam buttons follow THIS one.
+    SetEnv LOOMA_AI @LOOMA_AI_ON@
 
     # NOTE: do NOT set a PHP handler here. Ubuntu's mod_php already installs one
     # (/etc/apache2/mods-enabled/php7.4.conf). A second `SetHandler
@@ -426,6 +541,12 @@ services:
       LOOMA_PIPER_HOST: 0.0.0.0
       LOOMA_PIPER_PORT: "5002"
       LOOMA_PIPER_VOICE_DIR: /usr/share/piper
+      # Warm voices are what keeps a Speak press under a second: the models stay
+      # loaded instead of being read from disk on every sentence. Each warm
+      # (voice, speed) pair costs its model in RAM, hence the cap; 3 covers the
+      # everyday English + Nepali pair plus one speed change.
+      LOOMA_PIPER_MAX_WORKERS: "3"
+      LOOMA_PIPER_PREWARM: "1"
     command: ["python3", "/usr/local/var/www/@REPO_NAME@/piper_server.py"]
     restart: unless-stopped
 
@@ -507,6 +628,13 @@ Type=simple
 Environment=LOOMA_PIPER_BIN=piper
 Environment=LOOMA_PIPER_VOICE_DIR=/usr/share/piper
 Environment=LOOMA_PIPER_PORT=5002
+# Warm voices are what keeps a Speak press under a second: the models stay loaded
+# instead of being read from disk on every sentence. Each warm (voice, speed) pair
+# costs its model in RAM, hence the cap; 3 covers the everyday English + Nepali
+# pair plus one speed change. Pre-warming means the first press of the day does
+# not pay the load either.
+Environment=LOOMA_PIPER_MAX_WORKERS=3
+Environment=LOOMA_PIPER_PREWARM=1
 # The Piper binary lives in @LOOMA_ROOT@/piper.
 Environment=PATH=@LOOMA_ROOT@/piper:/usr/local/bin/piper:/usr/local/bin:/usr/bin:/bin
 # OTLP: @OTEL_ENDPOINT@/@OTEL_TRACES@ are substituted by the installer; when obs is
@@ -844,7 +972,7 @@ summary() {
   printf "$row" "Install source" "$([ "$OFFLINE" = 1 ] && echo 'offline — from the disk bundle, no internet' || echo 'online — pulls/builds from the internet')"
   printf "$row" "Observability" "$(obs_label)"
   printf "$row" "AI assistant" "$(onoff "$WITH_AI")"
-  [ "$DEPLOY" = native ] && printf "$row" "Search (zvec)" "$(onoff "$WITH_SEARCH")"
+  printf "$row" "zvec stack" "$(onoff "$WITH_SEARCH")$([ "$WITH_SEARCH" = 1 ]       && echo ' — semantic search + AI Assistant + exams'       || echo ' — no semantic search, no AI Assistant, no exams')"
   [ "$DEPLOY" = docker ] && [ "$WITH_OBSERVABILITY" = 1 ] && printf "$row" "Analysis workers" "$(onoff "$WITH_ANALYSIS")"
   printf "$row" "Kiosk autostart" "$(onoff "$INSTALL_KIOSK")$([ "$INSTALL_KIOSK" = 1 ] && echo " -> $(kiosk_url)")"
   printf "$row" "Swapfile (${SWAP_GB}G)" "$(yesno "$MAKE_SWAP")"
@@ -864,11 +992,11 @@ run_form() {
       "deploy"  "Deployment ............ $DEPLOY"
       "source"  "Install source ........ $([ "$OFFLINE" = 1 ] && echo 'offline (disk bundle)' || echo 'online (internet)')"
       "obs"     "Observability ......... $(obs_label)"
+      "search"  "zvec stack ............ $(onoff "$WITH_SEARCH")  (search + AI + exams)"
       "ai"      "AI assistant (looma-ai) $(onoff "$WITH_AI")"
     )
     [ "$DEPLOY" = "native" ] && rows+=(
-      "sidecars" "zvec + Piper run ...... $([ "$SIDECARS" = docker ] && echo 'in Docker' || echo 'on the host')"
-      "search"   "Search service (zvec) . $(onoff "$WITH_SEARCH")" )
+      "sidecars" "zvec + Piper run ...... $([ "$SIDECARS" = docker ] && echo 'in Docker' || echo 'on the host')" )
     [ "$DEPLOY" = "docker" ] && [ "$WITH_OBSERVABILITY" = "1" ] && \
       rows+=( "analysis" "Obs analysis workers .. $(onoff "$WITH_ANALYSIS")" )
     rows+=(
@@ -933,7 +1061,19 @@ run_form() {
         ;;
       obs)      edit_observability ;;
       ai)       ui_yesno "Run the in-app AI assistant (looma-ai)?\n\nIt is heavy (torch) — turn it off if 8 GB is tight." && WITH_AI=1 || WITH_AI=0 ;;
-      search)   ui_yesno "Install the zvec semantic search service?" && WITH_SEARCH=1 || WITH_SEARCH=0 ;;
+      search)   if ui_yesno "Install the zvec stack?
+
+It provides SEMANTIC SEARCH, the AI ASSISTANT and EXAM GENERATION.
+
+It is the heaviest part of Looma (torch + an index over the whole curriculum). Saying no removes those three features from the app entirely — the buttons are not shown at all."; then
+                  WITH_SEARCH=1
+                else
+                  WITH_SEARCH=0
+                  # looma-ai IS the assistant/exams half of the stack: it cannot
+                  # stay on by itself.
+                  [ "$WITH_AI" = "1" ] && log "  AI assistant turned off too — it is part of the zvec stack"
+                  WITH_AI=0
+                fi ;;
       analysis) ui_yesno "Also run the heavy observability AI analysis workers (torch)?\n\nSeparate from the assistant; off by default." && WITH_ANALYSIS=1 || WITH_ANALYSIS=0 ;;
       kiosk)    ui_yesno "Install the Chromium kiosk autostart (fullscreen Looma on login)?" && INSTALL_KIOSK=1 || INSTALL_KIOSK=0 ;;
       url)      ui_input KIOSK_URL "URL the kiosk opens" "$(kiosk_url)" || true ;;
@@ -1561,14 +1701,25 @@ install_deploy_docker() {
 
   # 5) Options for `up` / systemd
   log "writing /etc/looma-odroid.env"
+  # Is there any collector for the app to talk to — here or on another host?
+  local otel_disabled=1
+  if [ "$WITH_OBSERVABILITY" = "1" ] || [ -n "$REMOTE_OBS_HOST" ]; then otel_disabled=0; fi
   cat > /etc/looma-odroid.env <<EOF
 # Generated by looma-installer.sh
 WITH_OBSERVABILITY=$WITH_OBSERVABILITY
+# The zvec stack. 0 = no looma-search / looma-ai containers AND no semantic
+# search, AI Assistant or exams in the app (looma-web reads LOOMA_ZVEC).
+WITH_SEARCH=$WITH_SEARCH
 WITH_AI=$WITH_AI
 WITH_ANALYSIS=$WITH_ANALYSIS
 WITH_AGENTS=$WITH_AGENTS
 LOOMA_OTEL_ENDPOINT=$LOOMA_OTEL_ENDPOINT
 LOOMA_OPENSEARCH_URL=$LOOMA_OPENSEARCH_URL
+# 1 = no collector on this box (and none remote), so the PHP shim skips emission.
+# Left on, it resolves a hostname that does not exist on every single request;
+# where DNS has nothing to answer it, that wait is seconds, and TTS — one request
+# per sentence — is where it hurts most.
+LOOMA_OTEL_DISABLED=$otel_disabled
 LOOMA_CONTENT_DIR=$content_dir
 LOOMA_MAPS_DIR=$maps_dir
 LOOMA_EPAATH_DIR=$epaath_dir
@@ -1628,17 +1779,24 @@ EOF
     "$repo_dest/deploy/odroid/looma-installer.sh" up --build
   fi
 
-  # 11) zvec: build the index NOW and confirm it indexed, so the box ships with
+  # 11) zvec: ingest the chapters, then build the index NOW, so the box ships with
   #    working semantic search and we fail loudly here, not on the first search.
-  log "building the zvec search index (first build; slow on ARM, please wait)…"
-  for _ in $(seq 1 90); do curl -fsS "http://localhost:46333/health" >/dev/null 2>&1 && break; sleep 5; done
-  local zresp; zresp="$(curl -fsS -X POST --max-time 1800 "http://localhost:46333/rebuild" 2>/dev/null || true)"
-  case "$zresp" in
-    *'"ok"'*true*) log "zvec OK: $zresp" ;;
-    *) warn "zvec did NOT build cleanly: ${zresp:-<no response>}"
-       warn "  check: docker logs looma-search --tail 50 ; docker logs looma-db --tail 20"
-       warn "  retry: curl -X POST http://localhost:46333/rebuild" ;;
-  esac
+  if [ "$WITH_SEARCH" = "1" ]; then
+    for _ in $(seq 1 90); do curl -fsS "http://localhost:46333/health" >/dev/null 2>&1 && break; sleep 5; done
+    ingest_chapters_html      # chapter HTML -> mongo, before the index is built
+    log "building the zvec search index (first build; slow on ARM, please wait)…"
+    local zresp; zresp="$(curl -fsS -X POST --max-time 1800 "http://localhost:46333/rebuild" 2>/dev/null || true)"
+    case "$zresp" in
+      *'"ok"'*true*) log "zvec OK: $zresp" ;;
+      *) warn "zvec did NOT build cleanly: ${zresp:-<no response>}"
+         warn "  check: docker logs looma-search --tail 50 ; docker logs looma-db --tail 20"
+         warn "  retry: curl -X POST http://localhost:46333/rebuild" ;;
+    esac
+  else
+    log "zvec stack not installed — skipping search/AI/exams (the app hides them too)"
+  fi
+
+  verify_install
 
   local obs_state; obs_state="$(obs_label)"
   log "DONE — Looma runs in Docker from $WWW. You can REMOVE THE DISK."
@@ -1707,8 +1865,9 @@ native_sidecars_docker() {
   # They restart with Docker on every boot (restart: unless-stopped), so there is no
   # systemd unit to install here.
   if [ "$WITH_SEARCH" = "1" ]; then
-    log "building the zvec index (first build; slow on ARM)…"
     for _ in $(seq 1 90); do curl -fsS http://127.0.0.1:46333/health >/dev/null 2>&1 && break; sleep 5; done
+    ingest_chapters_html      # chapter HTML -> mongo, before the index is built
+    log "building the zvec index (first build; slow on ARM)…"
     curl -fsS -X POST --max-time 1800 http://127.0.0.1:46333/rebuild >/dev/null 2>&1 \
       || warn "zvec did not build — check 'docker logs looma-search', retry: curl -X POST http://127.0.0.1:46333/rebuild"
   fi
@@ -1836,7 +1995,12 @@ install_deploy_native() {
   grep -qE '^\s*Listen\s+80\b' /etc/apache2/ports.conf || echo "Listen 80" >> /etc/apache2/ports.conf
   # Drop the old :8080 listener if a previous install added it (nothing serves it now).
   sed -i -E '/^\s*Listen\s+8080\s*$/d' /etc/apache2/ports.conf
+  # otel_enabled is 0 whenever there is no collector to talk to, and the vhost
+  # turns that into OTEL_DISABLED=1 for the PHP — see the SetEnv block in the
+  # template for why an unset endpoint is expensive rather than merely useless.
+  local otel_disabled=1; [ "$otel_enabled" = "1" ] && otel_disabled=0
   tpl_apache_conf | sed -e "s#@LOOMA_ROOT@#$WWW#g" -e "s#@REPO_NAME@#$REPO_NAME#g" \
+    -e "s#@OTEL_DISABLED@#$otel_disabled#g" -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" \
     > /etc/apache2/sites-available/looma.conf
   a2dissite 000-default >/dev/null 2>&1 || true
   a2ensite looma >/dev/null 2>&1 || true
@@ -1911,15 +2075,20 @@ install_deploy_native() {
     tar -xzf "$NATIVE_BUNDLE/piper/piper_arm64.tar.gz" -C "$WWW/"     # extracts a piper/ dir
     cp -rn "$WWW/piper/." /usr/local/bin/piper/ 2>/dev/null || true
     cp -n "$NATIVE_BUNDLE"/piper/voices/* /usr/share/piper/ 2>/dev/null || true
+    # A bundle built before the current voice list only carries the two original
+    # models — and this branch wins whenever the disk has a bundle, even for an
+    # ONLINE install, so without this top-up the extra voices would never appear
+    # on any box installed from the disk. fetch_piper_voices skips what is
+    # already there, so this only downloads what the bundle is missing.
+    if [ "$OFFLINE" != "1" ]; then
+      log "topping up the voice models the bundle does not carry"
+      fetch_piper_voices /usr/share/piper || warn "could not top up the voice models"
+    fi
   elif [ "$OFFLINE" != "1" ]; then
     local a; a="$(uname -m)"; [ "$a" = "aarch64" ] && a=arm64
     curl -fSL "https://github.com/rhasspy/piper/releases/download/${PIPER_VERSION}/piper_${a}.tar.gz" -o /tmp/piper.tgz
     tar -xzf /tmp/piper.tgz -C "$WWW/" && rm -f /tmp/piper.tgz
-    local vbase="https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0"
-    curl -fSL "$vbase/ne/ne_NP/google/x_low/ne_NP-google-x_low.onnx"      -o /usr/share/piper/ne_NP-google-x_low.onnx
-    curl -fSL "$vbase/ne/ne_NP/google/x_low/ne_NP-google-x_low.onnx.json" -o /usr/share/piper/ne_NP-google-x_low.onnx.json
-    curl -fSL "$vbase/en/en_US/amy/low/en_US-amy-low.onnx"                -o /usr/share/piper/en_US-amy-low.onnx
-    curl -fSL "$vbase/en/en_US/amy/low/en_US-amy-low.onnx.json"           -o /usr/share/piper/en_US-amy-low.onnx.json
+    fetch_piper_voices /usr/share/piper
   fi
   chown -R www-data:www-data "$WWW/piper" /usr/share/piper 2>/dev/null || true
 
@@ -2035,6 +2204,19 @@ install_deploy_native() {
     WITH_SEARCH=0
   fi
 
+  # Either half of the stack may have just been switched off because its
+  # dependencies would not install. The vhost was written EARLIER in this run and
+  # still says the stack is present, so the app would go on offering search, the
+  # assistant and exams with nothing behind them. Correct it here.
+  if [ "$WITH_SEARCH" != "1" ]; then
+    WITH_AI=0
+    if grep -q 'SetEnv LOOMA_ZVEC 1' /etc/apache2/sites-available/looma.conf 2>/dev/null; then
+      sed -i -e 's/SetEnv LOOMA_ZVEC 1/SetEnv LOOMA_ZVEC 0/'              -e 's/SetEnv LOOMA_AI 1/SetEnv LOOMA_AI 0/' /etc/apache2/sites-available/looma.conf
+      log "the app will not offer semantic search, the AI Assistant or exams on this box"
+      systemctl reload apache2 >/dev/null 2>&1 || systemctl restart apache2 >/dev/null 2>&1 || true
+    fi
+  fi
+
   # 8) HuggingFace cache, so search/AI work offline
   mkdir -p "$HF_DIR"
   if [ -d "$NATIVE_BUNDLE/hf" ] && [ -n "$(ls -A "$NATIVE_BUNDLE/hf" 2>/dev/null)" ]; then
@@ -2105,6 +2287,8 @@ install_deploy_native() {
   install_kiosk
   install_start_shortcut
 
+  verify_install
+
   log "DONE — native Looma installed."
   cat <<EOF
 
@@ -2125,6 +2309,231 @@ EOF
     echo "  Services:   systemctl status apache2 mongod looma-piper looma-search looma-ai"
   fi
   echo "  Reboot to confirm autostart + the kiosk."
+}
+
+# ===========================================================================
+# VERIFY — does this box actually work?
+# ===========================================================================
+# An install that "finished" is not the same as an install that WORKS: the two
+# ways this has bitten in the field are content that never made it onto the box
+# and TTS that is silently dead (a stale image, missing voice models, a Piper
+# that never came up). Both used to be discovered by a teacher in a classroom.
+# So the install ends by exercising the real paths — the same URLs the app uses —
+# and says plainly what is right and what is not. Also runnable on its own:
+#     looma-installer.sh verify
+V_OK=0; V_WARN=0; V_FAIL=0
+
+v_ok()   { V_OK=$((V_OK+1));     printf '  \033[1;32m[ ok ]\033[0m  %s\n' "$*"; }
+v_warn() { V_WARN=$((V_WARN+1)); printf '  \033[1;33m[warn]\033[0m  %s\n' "$*"; }
+v_fail() { V_FAIL=$((V_FAIL+1)); printf '  \033[1;31m[FAIL]\033[0m  %s\n' "$*"; }
+
+# Where the app answers on THIS box (not kiosk_url, which may be hand-set).
+app_base_url() {
+  [ "$DEPLOY" = "native" ] && echo "http://127.0.0.1" || echo "http://127.0.0.1:48080"
+}
+
+# Wait until the app answers at all — right after an install Apache/the container
+# may still be coming up, and a check that runs one second too early is noise.
+v_wait_for_app() {
+  local base="$1" i
+  for i in $(seq 1 30); do
+    curl -fsS -o /dev/null --max-time 5 "$base/looma-home.php" 2>/dev/null && return 0
+    sleep 2
+  done
+  return 1
+}
+
+verify_content() {
+  local base="$1" dir="$WWW/content" gb probe rel code
+  if [ ! -d "$dir" ]; then
+    v_fail "content is MISSING at $dir — re-run the install with the disk attached"
+    return 0
+  fi
+
+  gb=$(du -sk "$dir" 2>/dev/null | awk '{print int($1/1024/1024)}')
+  if [ "${gb:-0}" -lt "$CONTENT_MIN_GB" ]; then
+    v_fail "content is only ~${gb} GB at $dir (expected >= ${CONTENT_MIN_GB} GB) — the copy did not finish. Re-run the install (rsync resumes)"
+  else
+    v_ok "content ~${gb} GB at $dir"
+  fi
+
+  [ -d "$WWW/maps2018" ] && v_ok "maps2018 present" || v_warn "no maps2018 at $WWW/maps2018 — the map activities will not open"
+  if [ -d "$dir/epaath" ] || [ -d "$dir/ePaath" ]; then
+    v_ok "ePaath present"
+  else
+    v_warn "no ePaath under $dir — the ePaath lessons will not open"
+  fi
+
+  # Content on disk is not the same as content REACHABLE: /content is an Apache
+  # alias, and a broken alias looks exactly like missing content to a teacher.
+  probe="$(find "$dir" -maxdepth 3 -type f \( -name '*.htm' -o -name '*.html' -o -name '*.jpg' \) \
+           ! -name '* *' -print -quit 2>/dev/null || true)"
+  if [ -n "$probe" ]; then
+    rel="${probe#"$dir"/}"
+    code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$base/content/$rel" || echo 000)"
+    case "$code" in
+      200) v_ok "the web server serves /content (200 on $(basename "$rel"))" ;;
+      *)   v_fail "the web server returned $code for /content/$rel — check the Apache /content alias" ;;
+    esac
+  fi
+}
+
+verify_app() {
+  local base="$1" code
+  code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$base/looma-home.php" || echo 000)"
+  case "$code" in
+    200|302) v_ok "the app answers on $base (HTTP $code)" ;;
+    000)     v_fail "nothing answers on $base — $([ "$DEPLOY" = native ] && echo 'systemctl status apache2' || echo 'docker logs looma-web')" ;;
+    *)       v_fail "the app returned HTTP $code on $base" ;;
+  esac
+}
+
+# One synthesis through the SAME url the Speak button uses: Apache -> PHP ->
+# Piper. Prints the latency, because "it speaks" and "it speaks in under a
+# second" are different claims and only one of them is the target.
+v_tts_probe() {
+  local base="$1" lang="$2" text="$3" label="$4"
+  local out="/tmp/looma-tts-verify-$lang.wav" resp code secs
+
+  resp="$(curl -s -G -o "$out" -w '%{http_code} %{time_total}' --max-time 90 \
+          "$base/looma-TTS.php" --data-urlencode "text=$text" --data-urlencode "lang=$lang" \
+          2>/dev/null || echo "000 0")"
+  code="${resp%% *}"; secs="${resp##* }"
+
+  if [ "$code" != "200" ]; then
+    v_fail "$label TTS returned HTTP $code — $(head -c 200 "$out" 2>/dev/null)"
+    rm -f "$out"; return 0
+  fi
+  if [ "$(head -c 4 "$out" 2>/dev/null)" != "RIFF" ]; then
+    v_fail "$label TTS did not return audio — $(head -c 200 "$out" 2>/dev/null)"
+    rm -f "$out"; return 0
+  fi
+
+  local kb; kb=$(( $(stat -c%s "$out" 2>/dev/null || echo 0) / 1024 ))
+  # awk, not bash arithmetic: these are fractional seconds.
+  if awk "BEGIN{exit !($secs > 2.0)}"; then
+    v_warn "$label TTS speaks (${kb} KB) but took ${secs}s — slower than the ~1s target; check 'warm' in :5002/health"
+  else
+    v_ok "$label TTS speaks (${kb} KB in ${secs}s)"
+  fi
+  rm -f "$out"
+}
+
+verify_tts() {
+  local base="$1" health voices en_n ne_n
+  health="$(curl -fsS --max-time 10 http://127.0.0.1:5002/health 2>/dev/null || true)"
+  if [ -z "$health" ]; then
+    v_fail "Piper is not answering on :5002 — $([ "$SIDECARS" = host ] && [ "$DEPLOY" = native ] \
+             && echo 'journalctl -u looma-piper -n 50' || echo 'docker logs looma-piper --tail 50')"
+    return 0
+  fi
+  case "$health" in
+    *'"warm"'*) v_ok "Piper is up (warm voices enabled)" ;;
+    *) v_warn "Piper answers but is the OLD server (no warm workers / no /voices) — the image was not rebuilt.
+            Rebuild it: cd $WWW/$REPO_NAME && docker compose -f docker-compose.native.yml -p looma-native up -d --build looma-piper" ;;
+  esac
+  # Whitespace-independent: the two servers (and Flask versions) format this
+  # differently, and a loose match here would report a missing model as fine.
+  local h_flat; h_flat="$(printf '%s' "$health" | tr -d ' \n\t')"
+  local where; where="$([ "$SIDECARS" = host ] && echo "ls -1 /usr/share/piper" \
+                        || echo "docker exec looma-piper ls -1 /usr/share/piper")"
+  case "$h_flat" in
+    *'"en":true'*) : ;;
+    *) v_fail "the default ENGLISH voice model is missing — check: $where" ;;
+  esac
+  case "$h_flat" in
+    *'"ne":true'*) : ;;
+    *) v_fail "the default NEPALI voice model is missing — Looma cannot read Nepali. Check: $where" ;;
+  esac
+
+  # How much choice the Reading Settings page will actually offer.
+  voices="$(curl -fsS --max-time 15 "$base/looma-TTS-voices.php" 2>/dev/null || true)"
+  if [ -n "$voices" ]; then
+    en_n=$(printf '%s' "$voices" | grep -o '"language": *"en"' | wc -l | tr -d ' ')
+    ne_n=$(printf '%s' "$voices" | grep -o '"language": *"ne"' | wc -l | tr -d ' ')
+    if [ "${en_n:-0}" -ge 2 ] && [ "${ne_n:-0}" -ge 2 ]; then
+      v_ok "voices offered: $en_n English, $ne_n Nepali"
+    else
+      v_warn "only $en_n English / $ne_n Nepali voice(s) offered — the extra models did not install.
+            Check: docker exec looma-piper ls -1 /usr/share/piper   (expect 6 .onnx files)"
+    fi
+  else
+    v_warn "looma-TTS-voices.php did not answer — the Reading Settings page will show only the built-in voices"
+  fi
+
+  # English twice with DIFFERENT text: the first call may still be paying the
+  # model load, and a repeat of the same sentence would come from the cache and
+  # prove nothing. The second one is the number that matters.
+  v_tts_probe "$base" en "Looma is ready to read." "English (first)"
+  v_tts_probe "$base" en "The sun rises over the hills of Nepal." "English"
+  v_tts_probe "$base" ne "नमस्ते, यो लूमा हो।" "Nepali"
+}
+
+verify_services() {
+  local base="$1"
+  local out
+  # zvec is optional in BOTH deployments now, so "not running" is only a problem
+  # when it was actually asked for.
+  if [ "$WITH_SEARCH" = "1" ]; then
+    out="$(curl -fsS --max-time 10 http://127.0.0.1:46333/health 2>/dev/null || true)"
+    [ -n "$out" ] && v_ok "search (zvec) is up" \
+      || v_warn "zvec search is not answering on :46333 — docker logs looma-search --tail 50"
+  else
+    v_ok "zvec stack not installed — no semantic search, AI Assistant or exams (as chosen)"
+  fi
+  if [ "$WITH_AI" = "1" ]; then
+    out="$(curl -fsS --max-time 10 http://127.0.0.1:8089/health 2>/dev/null || true)"
+    [ -n "$out" ] && v_ok "the AI assistant is up" \
+      || v_warn "looma-ai is not answering on :8089 — docker logs looma-ai --tail 50"
+  fi
+
+  # What the APP believes must match what was installed. A box without the stack
+  # that still draws the Exams / AI buttons is exactly the confusion this avoids.
+  local flags
+  flags="$(curl -fsS --max-time 10 "$base/looma-home.php" 2>/dev/null | grep -o '"zvec":[a-z]*' | head -1 || true)"
+  case "$flags" in
+    '"zvec":true')
+        [ "$WITH_SEARCH" = "1" ] \
+          && v_ok "the app offers semantic search, the AI Assistant and exams" \
+          || v_fail "the app still offers search/AI/exams but the stack was NOT installed — check 'SetEnv LOOMA_ZVEC' in the vhost (native) or LOOMA_ZVEC in looma-web (docker)" ;;
+    '"zvec":false')
+        [ "$WITH_SEARCH" = "1" ] \
+          && v_fail "the app hides search/AI/exams although the stack WAS installed — check LOOMA_ZVEC" \
+          || v_ok "the app correctly hides search, the AI Assistant and exams" ;;
+    *) : ;;   # login redirect or an older page — nothing to compare
+  esac
+  if systemctl list-unit-files 2>/dev/null | grep -q '^looma\.service'; then
+    systemctl is-enabled looma.service >/dev/null 2>&1 \
+      && v_ok "looma.service is enabled (starts at boot)" \
+      || v_warn "looma.service is NOT enabled — Looma will not start at boot"
+  fi
+  if [ "$INSTALL_KIOSK" = "1" ]; then
+    [ -f "/home/$TARGET_USER/.config/autostart/looma-kiosk.desktop" ] \
+      && v_ok "the kiosk autostart is installed for $TARGET_USER" \
+      || v_warn "no kiosk autostart for $TARGET_USER"
+  fi
+}
+
+verify_install() {
+  local base; base="$(app_base_url)"
+  V_OK=0; V_WARN=0; V_FAIL=0
+  log "checking that this box actually works ($base)"
+  v_wait_for_app "$base" || true      # the checks below report it properly
+
+  verify_app "$base"
+  verify_content "$base"
+  verify_tts "$base"
+  verify_services "$base"
+
+  echo
+  if [ "$V_FAIL" -gt 0 ]; then
+    warn "$V_OK ok, $V_WARN warning(s), $V_FAIL FAILURE(S) — Looma is NOT fully working yet (see the [FAIL] lines above)"
+  elif [ "$V_WARN" -gt 0 ]; then
+    log "$V_OK ok, $V_WARN warning(s), no failures — Looma works; the warnings above are worth a look"
+  else
+    log "$V_OK checks passed — content and TTS are working"
+  fi
+  return 0
 }
 
 # ===========================================================================
@@ -2202,19 +2611,30 @@ cmd_up() {
 
   # Defaults, then the installer's answers.
   WITH_OBSERVABILITY=1; WITH_AI=1; WITH_ANALYSIS=0; WITH_AGENTS=0; OFFLINE=0
+  WITH_SEARCH=1
   LOOMA_CONTENT_DIR="$SRC_ROOT/content"
   LOOMA_MAPS_DIR="$SRC_ROOT/maps2018"
   LOOMA_EPAATH_DIR="$SRC_ROOT/content/epaath"
   LOOMA_OTEL_ENDPOINT="http://looma-otel-collector:4318"
   LOOMA_OPENSEARCH_URL="http://looma-opensearch:9200"
+  # Default 0 (emit) only because a box installed before this setting existed had
+  # a collector; the env file written by the installer is what really decides.
+  LOOMA_OTEL_DISABLED=0
   # shellcheck disable=SC1091
   [ -f /etc/looma-odroid.env ] && . /etc/looma-odroid.env
   export LOOMA_CONTENT_DIR LOOMA_MAPS_DIR LOOMA_EPAATH_DIR LOOMA_OTEL_ENDPOINT LOOMA_OPENSEARCH_URL
+  export LOOMA_OTEL_DISABLED
+  # Same switch, two audiences: the compose profile decides whether the search
+  # container starts, LOOMA_ZVEC decides whether the app offers the features.
+  LOOMA_ZVEC="$WITH_SEARCH"; export LOOMA_ZVEC
+  LOOMA_AI="$WITH_AI"; export LOOMA_AI
 
   # `ai` turns on the assistant. `analysis` turns on the heavy obs workers — kept
   # SEPARATE, so enabling the assistant does not also start those.
   local app_profiles=() obs_profiles=() build_args=() pull_args=()
-  [ "$WITH_AI" = "1" ] && app_profiles+=(--profile ai)
+  [ "$WITH_SEARCH" = "1" ] && app_profiles+=(--profile search)
+  # looma-ai is the assistant/exams half of the same stack — never on its own.
+  [ "$WITH_AI" = "1" ] && [ "$WITH_SEARCH" = "1" ] && app_profiles+=(--profile ai)
   [ "$WITH_ANALYSIS" = "1" ] && obs_profiles+=(--profile analysis)
   [ "${1:-}" = "--build" ] && build_args=(--build)
   # OFFLINE: never build, never pull — use only the images loaded onto the box.
@@ -2411,11 +2831,7 @@ build_bundle_native() {
   log "downloading Piper ${PIPER_VERSION} (arm64) + the voice models"
   curl -fSL "https://github.com/rhasspy/piper/releases/download/${PIPER_VERSION}/piper_arm64.tar.gz" \
     -o "$NATIVE_BUNDLE/piper/piper_arm64.tar.gz"
-  local vbase="https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0"
-  curl -fSL "$vbase/ne/ne_NP/google/x_low/ne_NP-google-x_low.onnx"      -o "$NATIVE_BUNDLE/piper/voices/ne_NP-google-x_low.onnx"
-  curl -fSL "$vbase/ne/ne_NP/google/x_low/ne_NP-google-x_low.onnx.json" -o "$NATIVE_BUNDLE/piper/voices/ne_NP-google-x_low.onnx.json"
-  curl -fSL "$vbase/en/en_US/amy/low/en_US-amy-low.onnx"                -o "$NATIVE_BUNDLE/piper/voices/en_US-amy-low.onnx"
-  curl -fSL "$vbase/en/en_US/amy/low/en_US-amy-low.onnx.json"           -o "$NATIVE_BUNDLE/piper/voices/en_US-amy-low.onnx.json"
+  fetch_piper_voices "$NATIVE_BUNDLE/piper/voices"
 
   log "pre-downloading the HuggingFace models into hf/ (best-effort)"
   [ -f "$SRC_REPO/load_models.py" ] && \
@@ -2491,6 +2907,14 @@ cmd_install() {
     run_form
   fi
 
+  # One rule, wherever the answer came from (form or flags): no zvec stack means
+  # no looma-ai either. The assistant and exam generation ARE looma-ai, and it is
+  # useless without the stack it sits on.
+  if [ "$WITH_SEARCH" != "1" ] && [ "$WITH_AI" = "1" ]; then
+    log "zvec stack is off — turning the AI assistant off with it"
+    WITH_AI=0
+  fi
+
   resolve_obs_endpoints
   preflight "install"
   # Always — not just when switching deployments: a leftover legacy browser
@@ -2530,6 +2954,39 @@ cmd_install() {
   esac
 }
 
+# Run the post-install checks on their own, on a box installed at some earlier
+# point (so it has to work out for itself how Looma runs here).
+cmd_verify() {
+  while [ $# -gt 0 ]; do case "$1" in
+    --docker) DEPLOY=docker; shift;;
+    --native) DEPLOY=native; shift;;
+    --www)    WWW="$2"; shift 2;;
+    --user)   TARGET_USER="$2"; shift 2;;
+    -h|--help) usage; exit 0;;
+    *) die "unknown option for verify: $1";;
+  esac; done
+
+  # Options written by the Docker install (WITH_AI, …), so the checks match what
+  # was actually asked for instead of the defaults at the top of this script.
+  # shellcheck disable=SC1091
+  [ -f /etc/looma-odroid.env ] && . /etc/looma-odroid.env
+
+  # Which deployment is this? The app container is the giveaway; a host Apache
+  # serving the repo means the native one.
+  if command -v docker >/dev/null 2>&1 && docker ps -a --format '{{.Names}}' 2>/dev/null | grep -qx looma-web; then
+    DEPLOY=docker
+  elif systemctl is-active apache2 >/dev/null 2>&1 || systemctl is-active httpd >/dev/null 2>&1; then
+    DEPLOY=native
+  fi
+  # Piper on the host (a venv unit) rather than in a container changes the
+  # "where do I look for the logs" hints.
+  systemctl list-unit-files 2>/dev/null | grep -q '^looma-piper\.service' && SIDECARS=host || true
+
+  log "verifying a $DEPLOY install at $WWW"
+  verify_install
+  [ "$V_FAIL" -eq 0 ] || exit 1
+}
+
 # ===========================================================================
 main() {
   # NOTE: no bare `shift` in the no-argument case — with $# = 0 it fails, and
@@ -2539,6 +2996,7 @@ main() {
   case "$cmd" in
     up)           cmd_up "$@" ;;
     down)         cmd_down "$@" ;;
+    verify)       cmd_verify "$@" ;;
     build-bundle) cmd_build_bundle "$@" ;;
     install)      cmd_install "$@" ;;
     -h|--help)    usage ;;

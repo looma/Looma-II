@@ -47,6 +47,7 @@ until you set it yourself.
 | `sudo ./looma-installer.sh install [flags]` | Scripted install — **any flag skips the form** |
 | `sudo ./looma-installer.sh up [--build]` | Start the stack (this is what `looma.service` runs at boot) |
 | `sudo ./looma-installer.sh down [--volumes]` | Stop it (`--volumes` also **wipes** Mongo/zvec/OpenSearch data) |
+| `sudo ./looma-installer.sh verify` | Check that the box **works**: app answers, content is present *and* reachable over HTTP, and TTS really speaks English + Nepali (printing its latency). Runs automatically at the end of every install; exits non-zero if anything failed |
 | `./looma-installer.sh build-bundle docker\|native\|all` | Build the **offline** payload — run on a build box **with internet, arm64** |
 | `./looma-installer.sh --help` | All flags |
 
@@ -83,7 +84,7 @@ installed — a stack you started by hand with `docker compose up` still gets cl
 | `--analysis` | Also run the heavy obs AI analysis workers (torch) |
 | `--ai` / `--no-ai` | The in-app assistant `looma-ai` — **on by default** |
 | `--no-search` | Native only: skip the zvec search service |
-| `--swap` / `--no-swap` | Create the swapfile / skip it. **Off by default** |
+| `--swap` / `--no-swap` | Create the swapfile / skip it. **On by default** — 8 GB of RAM is tight once Piper's voice models stay resident, and without swap the OOM killer takes out a service mid-lesson |
 | `--swap-gb N` | Swapfile size in GB (default 8). On a re-install with a different N, **replaces** the existing swapfile |
 | `--cpu-max-freq kHz` | Cap every CPU's max frequency at boot (default **1500000 = 1.5 GHz**; `0` = leave the CPUs alone). Prevents Piper TTS from browning out / resetting the board |
 | `--www PATH` / `--user NAME` / `--kiosk-url URL` | Install root (`/var/www/html`), desktop user (`odroid`), kiosk URL (default: native `:80`, Docker `:48080`) |
@@ -98,7 +99,7 @@ installed — a stack you started by hand with `docker compose up` still gets cl
 
 ## What the Docker install does
 
-1. Installs Docker Engine + Compose (from `get.docker.com`, or from the disk bundle when offline). A swapfile is created **only if you asked for one** (`--swap`; off by default).
+1. Installs Docker Engine + Compose (from `get.docker.com`, or from the disk bundle when offline). An 8 GB swapfile is created **by default** (`--no-swap` skips it; a box that already has swap of its own is left alone).
 2. Copies the project into the install root: repo → `/var/www/html/Looma`, plus `maps2018/`, `piper/`, `includes/` and the `.dockerignore` that keeps the 80 GB `content/` out of the build context.
 3. **Content**: rsync to `/var/www/html/content` **in place** (`--size-only`) — a full copy on a fresh box, an incremental update on a box that already has it, so it never re-copies 80 GB.
 4. **Migrating a native box**: disables `apache2`/`httpd`/`mongod`/`piper` and the native `looma-search`/`looma-ai`/`looma-piper` services **and** the native browser kiosk autostart, so Docker takes over and you don't get a second, blank browser window on login. It also brings the `looma-native` sidecar project down and **takes back any container name** it still owns (see *Re-installing is always safe* below).
@@ -199,9 +200,26 @@ Toggle observability/AI later: edit `/etc/looma-odroid.env` (`WITH_OBSERVABILITY
 
 ## Verify
 
+The install ends by checking itself, and you can re-run the same checks whenever
+you want:
+
+```bash
+sudo ./looma-installer.sh verify
+```
+
+It reports `[ ok ] / [warn] / [FAIL]` per check — the app, the content (on disk
+**and** served over `/content`), maps2018, ePaath, Piper's health, how many
+English/Nepali voices the Reading Settings page will offer, and one real
+synthesis in each language **with its latency** (a warning if a sentence takes
+more than ~2 s, which means the warm voices are not working). A `[FAIL]` line
+always names the command that shows why.
+
+By hand:
+
 ```bash
 curl -I http://localhost:48080          # Docker app (native: http://localhost/) — expect 200/302
 curl http://localhost:46333/health      # search (zvec)
+curl http://127.0.0.1:5002/health       # Piper TTS — must include "warm" and voices_exist en+ne
 docker ps                               # looma-web, looma-db, looma-search (+ looma-ai)
 systemctl is-enabled looma.service      # -> enabled
 ```

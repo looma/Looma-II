@@ -1097,10 +1097,84 @@ def _context_as_chapter_chunk(row: dict, *, score: float | None = None, max_char
     return _context_as_activity(doc, text=text, score=score)
 
 
+def _chapter_source_file(ch_dir: "Path", chapter_id: str, language: str | None) -> "Path | None":
+    """The file that holds this chapter's text: the HTML one when it exists.
+
+    HTML WINS over PDF — the same rule the app uses to OPEN a chapter. It is also
+    the better source to read from: the HTML was generated from the PDF, so it
+    carries the same words without the PDF's broken ligatures and without needing
+    OCR (which costs seconds per chapter and misreads Devanagari).
+
+    Nepali chapters are named "{id}-nepali.{ext}"; English ones just "{id}".
+    """
+    lang = (language or 'en').strip().lower()
+    bases = [f'{chapter_id}-nepali', chapter_id] if lang in {'np', 'ne', 'nepali'} else [chapter_id]
+
+    for base in bases:
+        for ext in ('.html', '.htm'):
+            candidate = ch_dir / f'{base}{ext}'
+            if candidate.exists():
+                return candidate
+    for base in bases:
+        candidate = ch_dir / f'{base}.pdf'
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def _text_from_chapter_html(path: "Path") -> list[str]:
+    """Readable text out of a chapter HTML file (no markup, no script/style)."""
+    try:
+        raw = path.read_text(encoding='utf-8', errors='ignore')
+    except Exception:
+        return []
+
+    text = ''
+    try:
+        from bs4 import BeautifulSoup  # noqa: WPS433
+
+        soup = BeautifulSoup(raw, 'lxml')
+        for tag in soup(['script', 'style', 'noscript']):
+            tag.decompose()
+        text = soup.get_text(' ')
+    except Exception:
+        # No bs4/lxml on this box: strip the tags well enough to keep the words.
+        import html as _html  # noqa: WPS433
+
+        text = re.sub(r'(?is)<(script|style)[^>]*>.*?</\1>', ' ', raw)
+        text = re.sub(r'(?s)<[^>]+>', ' ', text)
+        text = _html.unescape(text)
+
+    parts = [clean_text(chunk) for chunk in text.split('\n')]
+    joined = clean_text(' '.join(p for p in parts if p))
+    if len(joined) < 25:
+        return []
+    return _chunk_text_simple(joined, chunk_size=1400, overlap=200)
+
+
 def _extract_chapter_text_from_pdf(*, chapter_id: str, grade: int | None, subject: str | None, language: str | None) -> list[str]:
+    """Chapter text for summaries, keywords, assistant answers and exams.
+
+    Named "…_from_pdf" for its 13 call sites; it now reads the chapter's HTML
+    when there is one and only falls back to the PDF otherwise.
+    """
     ch_dir = find_chapter_dir(grade=grade, subject=subject, language=language)
     if ch_dir is None:
         return []
+
+    source = _chapter_source_file(ch_dir, chapter_id, language)
+    if source is None:
+        return []
+
+    if source.suffix.lower() in {'.html', '.htm'}:
+        _otel_record('chapter_html_extract_calls', 1, chapter_id=chapter_id, language=str(language or ''))
+        _t_html = time.time()
+        chunks = _text_from_chapter_html(source)
+        _otel_record('chapter_html_extract_latency_ms', (time.time() - _t_html) * 1000.0,
+                     error='' if chunks else '1')
+        if chunks:
+            return chunks
+        # An empty/broken HTML file must not silence a chapter that still has a PDF.
 
     pdf_path = ch_dir / f'{chapter_id}.pdf'
     if not pdf_path.exists():

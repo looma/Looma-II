@@ -41,6 +41,16 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
         <input type='hidden' id='pageno' value='1' name='pageno'/>
         <input type='hidden' id='pagesz' value='500' name='pagesz'/>
         <input type='hidden' id='language' value='english' name='language'/>
+        <?php
+          // Semantic search is served by the zvec engine — so it is only asked
+          // for on a box that HAS zvec. Without it the same form still searches,
+          // just as a plain Mongo query, instead of waiting on a service that
+          // was never installed.
+          require_once (__DIR__ . '/looma-features.php');
+          $looma_semantic = looma_zvec_enabled() ? '1' : '0';
+        ?>
+        <input type='hidden' id='semantic' value='<?php echo $looma_semantic; ?>' name='semantic'/>
+        <input type='hidden' id='semantic_engine' value='zvec' name='semantic_engine'/>
 
 
   <!--  /**************************************/
@@ -77,9 +87,9 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
                 echo keyword("Type: ");
 
                 $types = array(
-                array("pdf", "video", "image",    "audio", "history", "html", "slideshow", "map", "lesson", "looma", "game", "text", "text-template", "worksheet"), //tags used as IDs for checkbox html elements
-                array("pdf", "video", "image",    "audio", "history", "html", "slideshow", "map", "lesson", "looma", "game", "text", "text-template", "worksheet"), //the 'ft' values used in the DB
-                array("PDF", "Video", "Pictures", "Audio", "History", "HTML", "Slideshow", "Map", "Lesson", "Page",  "Game", "Text", "Text Template", "Worksheet"), //human readable versions for labels displayed on checkboxes
+                array("pdf", "video", "image",    "audio", "history", "html", "slideshow", "map", "lesson", "looma", "game", "text", "text-template"), //tags used as IDs for checkbox html elements
+                array("pdf", "video", "image",    "audio", "history", "html", "slideshow", "map", "lesson", "looma", "game", "text", "text-template"), //the 'ft' values used in the DB
+                array("PDF", "Video", "Pictures", "Audio", "History", "HTML", "Slideshow", "Map", "Lesson", "Page",  "Game", "Text", "Text Template"), //human readable versions for labels displayed on checkboxes
                 );
                 for($x = 0; $x < count($types[0]); $x++) {
                      echo "<span  class='typ-chk' data-id='"  . $types[0][$x] . "-chk'>";
@@ -158,16 +168,9 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
 
             echo "</div>";
 
-    // test if Qdrant DB is running on this system. if so, add 'semantic search' to the Search panel
-        $host = '127.0.0.1'; // or 'localhost'
-        $port = 46333;        // Qdrant port
-        $timeout = 1;        // seconds
-
-        $connection = @fsockopen($host, $port, $errno, $errstr, $timeout);
-
- //       if ($connection) echo "<label><input type='checkbox' name='semantic' />(Experimental) Semantic Search</label>";
-        //else echo "error checking for Qdrant:  " . $errno;
-
+    // Semantic search is always enabled and always served by the zvec engine.
+    // The toggle/engine picker was removed: searches use zvec automatically,
+    // and the search backend falls back to a plain Mongo query if zvec is down.
 
         echo "</div>";
 

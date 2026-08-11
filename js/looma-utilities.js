@@ -97,6 +97,36 @@ var LOOMA = (function() {
 
     return {
 
+/* Ask the server which file actually delivers a chapter: the HTML one if it
+ * exists, otherwise the PDF the caller built.
+ *
+ * HTML always wins over PDF. looma-chapters.php enforces that when it renders
+ * chapter buttons (they arrive already marked data-ft='htmlchapter'), but every
+ * OTHER way into a chapter — library search, lesson plans, the assistant —
+ * assembles a ".pdf" path in JavaScript and never checks the disk. Routing that
+ * assembly through here makes the rule hold everywhere.
+ *
+ * On any failure it answers "chapter", so a chapter still opens as a PDF if this
+ * request is slow, blocked or 404s. Never let the preference break the opening.
+ */
+resolveChapterFile : function(fp, fn, callback) {
+    var fallback = { ft: 'chapter', fp: fp, fn: fn };
+    try {
+        $.ajax({
+            url: 'looma-chapter-file.php',
+            data: { fp: decodeURIComponent(fp), fn: decodeURIComponent(fn) },
+            dataType: 'json',
+            timeout: 4000
+        }).done(function (resolved) {
+            callback((resolved && resolved.ft) ? resolved : fallback);
+        }).fail(function () {
+            callback(fallback);
+        });
+    } catch (e) {
+        callback(fallback);
+    }
+},
+
 playMedia : function(button) {
 
     var fn    = encodeURIComponent(button.getAttribute('data-fn'));
@@ -245,7 +275,7 @@ playMedia : function(button) {
 
             var chDn  = button.getAttribute('data-chdn') || button.getAttribute('data-dn') || '';
 
-            window.location = 'pdf?' +
+            var pdfUrl = 'pdf?' +
                 'fn='  + chapterFN +
                 '&fp=' + chapterFP +
                     '&lang=' + lang +
@@ -258,6 +288,18 @@ playMedia : function(button) {
                     '&chdn=' + encodeURIComponent(chDn) +
                     '&grade=' + encodeURIComponent(button.getAttribute('data-class') || '') +
                     '&subject=' + encodeURIComponent(chapter_subject || '');
+
+            // HTML WINS. This path builds a .pdf name without ever looking at the
+            // disk, and it is the path every entry point other than the chapters
+            // page uses (library search, lesson plans, the assistant). So ask the
+            // server whether the same chapter also exists as HTML, and prefer it.
+            LOOMA.resolveChapterFile(chapterFP, chapterFN, function (resolved) {
+                if (resolved && resolved.ft === 'htmlchapter') {
+                    window.location = 'html?fp=' + resolved.fp + '&fn=' + resolved.fn;
+                } else {
+                    window.location = pdfUrl;
+                }
+            });
             }
             break;
 
@@ -265,6 +307,15 @@ playMedia : function(button) {
             var id = encodeURIComponent(button.getAttribute('data-mongoId'));
             var db = button.getAttribute('data-db') === 'loomalocal' ? 'loomalocal' : 'looma';
             window.location = 'text?id=' + id + '&db=' + db + '&lang=' + ((language==='native') ? 'np' : 'en');
+            break;
+
+        case "htmlchapter":
+            // A chapter delivered as an HTML page instead of a PDF. Open it in the
+            // HTML viewer with the file resolved server-side (looma-chapters.php).
+            // Unlike the generic "html" case below, the file to open is always
+            // this button's own data-fp/data-fn (one language per button), so
+            // there is no en/np alternate to disambiguate.
+            window.location = 'html?fp=' + fp + '&fn=' + fn;
             break;
 
         case "html":
@@ -1582,15 +1633,106 @@ LOOMA.isWordLetter = function (ch) {
     return /[a-zऀ-॥॰-ॿ]/.test(ch || '');
 };
 
+/* LOOMA.isAnyLetter(ch)
+ * Like isWordLetter but ALSO counts UPPERCASE Latin. Used for the LEFT side of a
+ * stray-digit test: a word can start with a capital ("Some"), so the letter
+ * before an intra-word digit may be uppercase, while the RIGHT side still has to
+ * be lowercase/Devanagari to tell "the word continues" (running text) apart from
+ * "a chemical subscript" (H2O, Fe2O3, Na2SO4 — always followed by an UPPERCASE
+ * element symbol or the word end). */
+LOOMA.isAnyLetter = function (ch) {
+    return /[A-Za-zऀ-॥॰-ॿ]/.test(ch || '');
+};
+
 LOOMA.isWordDigit = function (ch) {
     return /[0-9०-९]/.test(ch || '');
 };
 
+/* LOOMA.isReadableChar(ch)
+ * True for a character that legitimately appears in Looma's text: Latin letters
+ * (incl. accented Latin-1), Devanagari, digits of either script, ordinary
+ * punctuation and whitespace.
+ *
+ * Everything else is treated as glyph garbage: characters from the Unicode
+ * private-use area (U+E000–U+F8FF), the replacement char, C0/C1 control codes,
+ * box-drawing, dingbats and stray symbol blocks. That garbage is precisely what
+ * a PDF font with no ToUnicode map emits — the "weird characters" seen in a
+ * selection, and the entire text layer pdf.js lays over an IMAGE. Matching a
+ * conservative allow-list (rather than trying to enumerate the garbage) means a
+ * codepoint we have never seen still gets dropped by default.
+ *   !-~            = all printable ASCII (a-z A-Z 0-9 and ASCII punctuation)
+ *   U+00A0–U+00FF  = Latin-1 supplement (accented letters)
+ *   U+0900–U+097F  = Devanagari (letters, matras, digits, danda)
+ *   U+2010–U+2027, U+2030–U+205E = general punctuation (dashes, quotes, …)
+ */
+LOOMA.isReadableChar = function (ch) {
+    return /[\t\n\r\x20-\x7E\u00A0-\u00FF\u0900-\u097F\u2010-\u2027\u2030-\u205E]/.test(ch || '');
+};
+
+/* LOOMA.garbageCharIndexes(chars)
+ * The indexes of every non-readable character in a char array — the companion
+ * to strayDigitIndexes(). Both LOOMA.cleanSelectedText() (a string) and the
+ * reading-highlight map builder drop the SAME characters through this one
+ * function, so the spoken text and the on-page character map stay aligned.
+ */
+LOOMA.garbageCharIndexes = function (chars) {
+    var drop = [];
+    for (var i = 0; i < chars.length; i++) {
+        if (!LOOMA.isReadableChar(chars[i])) drop.push(i);
+    }
+    return drop;
+};
+
+/* LOOMA.isGarbageText(text)
+ * True when a string carries NO real letters or digits at all — a run of pure
+ * symbol/garbage glyphs, which is what selecting a PDF image produces. This is
+ * the signal to suppress the word card, TTS and highlight for an image
+ * selection. A string with even one Latin/Devanagari letter or a digit is
+ * treated as text (its stray garbage is cleaned out instead).
+ */
+LOOMA.isGarbageText = function (text) {
+    var s = String(text == null ? '' : text);
+    if (!s.trim()) return true;
+    // Latin letters, or Devanagari vowels/consonants/extended letters, or a
+    // digit of either script. Deliberately excludes Devanagari matras/danda so a
+    // string of only combining marks still counts as garbage.
+    return !/[A-Za-z\u00C0-\u024F\u0904-\u0939\u0958-\u0961\u0971-\u097F0-9\u0966-\u096F]/.test(s);
+};
+
+/* LOOMA.disableGarbageSpans(container)
+ * Walk the direct children of a pdf.js text-layer container and make every span
+ * that is pure glyph garbage (isGarbageText) unselectable. Those spans are the
+ * ones pdf.js lays over an image, so this is what stops an image from being
+ * "selected" into weird characters at the source. Real text spans are untouched.
+ */
+LOOMA.disableGarbageSpans = function (container) {
+    if (!container || !container.children) return;
+    var spans = container.children;
+    for (var i = 0; i < spans.length; i++) {
+        var el = spans[i];
+        if (LOOMA.isGarbageText(el.textContent || '')) {
+            el.style.userSelect = 'none';
+            el.style.webkitUserSelect = 'none';
+            el.style.pointerEvents = 'none';
+            el.setAttribute('data-looma-garbage', '1');
+        }
+    }
+};
+
 /* LOOMA.strayDigitIndexes(chars)
- * Positions, in an array of single characters, of every digit with a word letter
- * (see above) on BOTH sides — "so1me". Those digits are never part of the word,
- * so they get dropped. Digits that start or end a word are left alone, which
- * keeps "COVID-19", "2nd", "Class 7" and "1051" intact.
+ * Positions, in an array of single characters, of every digit run wedged INSIDE a
+ * word — "so1me", "S01me". A run is dropped when there is a letter (of any case)
+ * on the LEFT and the word CONTINUES in lowercase/Devanagari on the RIGHT.
+ *
+ * The asymmetry is deliberate and load-bearing:
+ *   - LEFT may be uppercase, so a capitalised word at a sentence start ("Some"
+ *     mangled to "S01me") is still cleaned.
+ *   - RIGHT must be lowercase/Devanagari. Chemical subscripts are ALWAYS followed
+ *     by an UPPERCASE element symbol or the word end (H2O, Fe2O3, Na2SO4, CO2),
+ *     so requiring a lowercase right-neighbour keeps every formula intact while
+ *     still catching ordinary running text.
+ *   - A run with NO left letter is left alone, so ordinals ("2nd", "1st") and
+ *     "COVID-19" / "Class 7" / "1051" survive.
  *
  * Both LOOMA.cleanSelectedText() (which works on a string) and the reading
  * highlight (which has to drop the same characters from its character->DOM map,
@@ -1604,8 +1746,9 @@ LOOMA.strayDigitIndexes = function (chars) {
         if (!LOOMA.isWordDigit(chars[i])) { i++; continue; }
         var end = i;
         while (end < chars.length && LOOMA.isWordDigit(chars[end])) end++;
-        if (LOOMA.isWordLetter(i > 0 ? chars[i - 1] : '') &&
-            LOOMA.isWordLetter(end < chars.length ? chars[end] : '')) {
+        var left  = i > 0 ? chars[i - 1] : '';
+        var right = end < chars.length ? chars[end] : '';
+        if (LOOMA.isAnyLetter(left) && LOOMA.isWordLetter(right)) {
             for (var k = i; k < end; k++) drop.push(k);
         }
         i = end;
@@ -1625,12 +1768,94 @@ LOOMA.strayDigitIndexes = function (chars) {
  * looma-play-pdf.js now rebuilds PDF selections in reading order so this mostly
  * stops at the source; this is the safety net for whatever still gets through,
  * and for the same problem on non-PDF pages.
+ *
+ * It ALSO strips glyph garbage — the private-use / symbol characters a PDF font
+ * with no ToUnicode map emits (the "weird characters"). A selection that is
+ * ONLY garbage — which is what a PDF image's text layer is — cleans to '', so
+ * an image cannot be spoken, looked up or highlighted. See LOOMA.isReadableChar
+ * / LOOMA.isGarbageText.
  */
+/* LOOMA.repairPdfTextArtifacts(text)
+ * Repair the SYSTEMATIC letter mangling produced by a PDF whose text layer has a
+ * broken ToUnicode map. The page renders correctly on the canvas (from the glyph
+ * outlines), but the extracted Unicode is wrong in fixed, repeatable ways. The
+ * dominant one in Looma's Nepali/English science textbooks is the letter "m"
+ * coming out as "n1" or "1n" (e.g. "n1achine", "sn1ooth", "displacen1ent",
+ * "1notion"). Neither "n1" nor "1n" glued to a letter ever occurs inside a real
+ * English or Nepali word, so restoring "m" is safe. This MUST run before stray
+ * digit removal, which would otherwise delete the "1" and leave "nachine".
+ *
+ * This only fixes the deterministic font-mapping artefacts. It cannot recover
+ * genuinely random OCR noise from scanned insets (e.g. "co,Tered" for "covered"),
+ * where the information is lost in the source PDF — that needs the PDF's text
+ * layer regenerated, not a text-side fix.
+ */
+LOOMA.repairPdfTextArtifacts = function (text) {
+    return String(text == null ? '' : text)
+        // "m/s" — the speed unit that fills this physics textbook — comes out as
+        // "n1/s". "n1/" is never legitimate, so this is context-free and safe.
+        .replace(/n1\//g, 'm/')
+        // "m" extracted as "n1" inside a word: mid-word (sn1ooth) and word-initial
+        // (n1achine). The letter context avoids the rare "1"-as-"l" collision
+        // (a hypothetical "on1ine" stays untouched rather than becoming "omine").
+        .replace(/([A-Za-z])n1(?=[A-Za-z])/g, '$1m')
+        .replace(/\bn1(?=[A-Za-z])/g, 'm')
+        // "m" extracted as "1n": mid-word (i1nport) and word-initial (1notion).
+        // The immediate-letter lookahead keeps "1n fact" ("In fact") out of it.
+        .replace(/([A-Za-z])1n(?=[A-Za-z])/g, '$1m')
+        .replace(/\b1n(?=[A-Za-z])/g, 'm');
+};
+
+/* LOOMA.fixMixedAlnum(text)
+ * In a school textbook a real WORD is letters only and a real NUMBER is digits
+ * (with a decimal separator) only — the two never mix inside one token. The PDF
+ * text layer, though, glues them together in two different ways, handled here
+ * per whitespace-delimited token:
+ *
+ *   1. A clean number stuck to its unit — "0.67m/s", "30m", "1800s". This is a
+ *      real value that lost its space, so it is SPLIT: "0.67 m/s", "30 m",
+ *      "1800 s" (and any stray digit left in the unit is dropped).
+ *   2. A digit wedged into a word — "so1me", "grade7", "path7". The digit is
+ *      extraction noise, so it is DELETED: "some", "grade", "path".
+ *
+ * A pure number keeps every digit, so decimals survive untouched: "1.1", "1,2",
+ * "1,5" are all returned exactly as they came in. Devanagari digits (०-९) are
+ * treated the same as Latin ones.
+ */
+LOOMA.fixMixedAlnum = function (text) {
+    var DIGIT  = /[0-9०-९]/;
+    var LETTER = /[A-Za-zऄ-हक़-ॡॱ-ॿ]/;
+    return String(text == null ? '' : text).replace(/\S+/g, function (tok) {
+        // Pure word, pure number/decimal, or punctuation — nothing mixed to fix.
+        if (!LETTER.test(tok) || !DIGIT.test(tok)) return tok;
+        // Case 1: a number (with optional decimal separators) glued to a unit.
+        var m = tok.match(/^([0-9०-९]+(?:[.,][0-9०-९]+)*)([\s\S]+)$/);
+        if (m && LETTER.test(m[2].charAt(0))) {
+            return m[1] + ' ' + m[2].replace(/[0-9०-९]/g, '');
+        }
+        // Case 2: a digit wedged into a word — drop the digits.
+        return tok.replace(/[0-9०-९]/g, '');
+    });
+};
+
 LOOMA.cleanSelectedText = function (text) {
+    // Repair the systematic ToUnicode artefacts (m -> n1/1n) first, while the "1"
+    // is still glued to its letters and identifiable.
+    text = LOOMA.repairPdfTextArtifacts(text);
+    // Then unmix number/letter tokens (keeps decimals, splits values from units,
+    // drops digits wedged into words). Supersedes the old stray-digit pass.
+    text = LOOMA.fixMixedAlnum(text);
     var chars = String(text == null ? '' : text).replace(/\|/g, ' ').split('');
-    var drop = LOOMA.strayDigitIndexes(chars);
-    for (var i = drop.length - 1; i >= 0; i--) chars.splice(drop[i], 1);
-    return chars.join('').replace(/\s+/g, ' ').trim();
+    // Drop glyph garbage — the private-use / symbol characters a PDF font with no
+    // ToUnicode map emits (the "weird characters", and the whole of an image's
+    // text layer).
+    var garbage = LOOMA.garbageCharIndexes(chars);
+    for (var g = garbage.length - 1; g >= 0; g--) chars.splice(garbage[g], 1);
+    var cleaned = chars.join('').replace(/\s+/g, ' ').trim();
+    // A selection that was ONLY garbage (an image, or a broken text run) cleans
+    // to nothing readable — return '' so no card, no speech and no highlight.
+    if (LOOMA.isGarbageText(cleaned)) return '';
+    return cleaned;
 };
 
 // Clone selection snapshots because ranges can be invalidated once the DOM is highlighted/repainted.
@@ -1655,7 +1880,7 @@ LOOMA.speakCloneSnapshot = function (snapshot) {
  * Date: Summer 2015/2016
  *      revised JUN 2025 for 'piper' TTS
  * Description:  to use TTS import this file from your HTML file.
- * If it uses piper or mimic, the call can specify a  voice.
+ * The call can specify a Piper voice.
  *
  * Uses the standard javascript object "speechSynthesis" if present [and browser !== Chromium],
  * otherwise, calls server-side looma-TTS.php, which uses piper to generate a wave file
@@ -1665,10 +1890,9 @@ LOOMA.speakCloneSnapshot = function (snapshot) {
  */
 LOOMA.speak = function(text, engine, voice, rate) {
         //speak the TEXT,
-        //using [optional] ENGINE (in {'piper', 'synthesis', 'mimic'})
+        //using [optional] ENGINE (in {'piper', 'responsivevoice'})
         //using [optional] VOICE
         //using [optional] RATE sets the speed of speech. (rate > 1 is FASTER)
-        //      in mimic  --setf duration_stretch=1/rate ( e.g. if rate === 0.5 stretch by 2x (slower))
         //      in speechSynthesis  SpeachSynthesisUtterance.rate = rate ( e.g. if rate === 0.5 speak slower)
         //  for Looma in Nepal, use default rate = 2/3
 
@@ -1718,8 +1942,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
         }
     }
     // The only supported engines are Piper (local/offline) and ResponsiveVoice
-    // (cloud). Mimic and the browser speechSynthesis engine were removed, so any
-    // stale/other value is coerced to Piper.
+    // (cloud), so any stale/other value is coerced to Piper.
     if (engine !== 'piper' && engine !== 'responsivevoice') engine = 'piper';
 
     // `voice` may be a plain string (one voice for all text) or a per-language
@@ -1789,7 +2012,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
          /*
          * speak.activate() makes the "Speak" button opaque and larger,
          * to give feedback to the user while the TTS request is waiting.
-         * Only called when Mimic is used.
+         * Only called for server-side (Piper) audio.
          */
          LOOMA.speak.activate = function () {
              // Busy means audio is actively playing, not merely queued.
@@ -1803,7 +2026,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
          /*
           * speak.disable() makes the "Speak" button translucent and regular sized,
           * to show the user that the TTS is finished.
-          * Only called when Mimic is used.
+          * Only called for server-side (Piper) audio.
           */
          LOOMA.speak.disable = function () {
              // Reset button visuals after pause/stop/end/error.
@@ -1815,7 +2038,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
          }; // end speak.disable()
 
          /*
-          * Resets the TTS and button to their original states (only when Mimic is used).
+          * Resets the TTS and button to their original states.
           */
          LOOMA.speak.cleanup = function () {
              // A new run invalidates any old fetches, object URLs and highlight state.
@@ -1852,6 +2075,14 @@ LOOMA.speak = function(text, engine, voice, rate) {
          }; // end speak.cleanup
 
          LOOMA.speak.clearBlockHighlight = function () {
+             // Remove the PDF highlight bands (overlay divs — these never touched
+             // the text, so nothing to restore and the map stays valid).
+             var overlays = LOOMA.speak.highlightOverlays;
+             LOOMA.speak.highlightOverlays = [];
+             if (overlays && overlays.length) {
+                 overlays.forEach(function (el) { if (el && el.parentNode) el.parentNode.removeChild(el); });
+             }
+
              // Remove the temporary highlight spans and restore plain text nodes.
              var marks = LOOMA.speak.highlightMarks;
              LOOMA.speak.highlightMarks = [];
@@ -1891,12 +2122,15 @@ LOOMA.speak = function(text, engine, voice, rate) {
           * highlight at all. Ignoring spaces entirely makes the two sides line up
           * every time. */
          function normalizeForMatch(str) {
-             // Whitespace and "|" are dropped first (LOOMA.cleanSelectedText turns "|"
-             // into a space, which would survive here and not on the page side), and
-             // only then the stray digits — which is the order that catches a digit
-             // living in a span of its own, "so" + "1" + "me".
-             var compact = String(str == null ? '' : str).toLowerCase().replace(/[\s|]+/g, '');
-             return LOOMA.cleanSelectedText(compact);
+             // Clean FIRST (so fixMixedAlnum can see word/number token boundaries),
+             // then lowercase, drop whitespace/"|", and drop ALL digits. Both sides
+             // of the match drop every digit, so they can never disagree over a page
+             // number or a standalone value the way "wedged vs standalone" would —
+             // the match is driven by the (highly distinctive) letters alone.
+             return LOOMA.cleanSelectedText(str)
+                 .toLowerCase()
+                 .replace(/[\s|]+/g, '')
+                 .replace(/[0-9०-९]/g, '');
          }
 
          /* Walk the root and build the aggregate string plus its character -> DOM map.
@@ -1941,6 +2175,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      var ch = raw[i];
                      // Skipped for the same reason normalizeForMatch() drops them.
                      if (/[\s|]/.test(ch)) continue;
+                     // Drop glyph garbage here too, so the highlight character map
+                     // stays aligned with the cleaned/spoken text. See
+                     // LOOMA.cleanSelectedText() / LOOMA.isReadableChar().
+                     if (!LOOMA.isReadableChar(ch)) continue;
                      if (range && inRange(current, i)) {
                          if (windowStart === -1) windowStart = chars.length;
                          windowEnd = chars.length + 1;
@@ -1950,15 +2188,26 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  }
              }
 
-             // Drop the digits that were never in the book from the map too, not just
-             // from a string, so the page and the spoken text stay aligned character
-             // for character. See LOOMA.cleanSelectedText().
-             var drop = LOOMA.strayDigitIndexes(chars);
-             for (var d = drop.length - 1; d >= 0; d--) {
-                 chars.splice(drop[d], 1);
-                 map.splice(drop[d], 1);
-                 if (windowStart > drop[d]) windowStart--;
-                 if (windowEnd > drop[d]) windowEnd--;
+             // Bring the aggregate into the SAME shape normalizeForMatch() produces
+             // for the spoken text, keeping the char->DOM map aligned so a matched
+             // sentence still points at live nodes. Two index-aligned passes:
+             //   1. repair the "m"-as-"n1"/"1n" artefact (the 'n'/'1' keeps its DOM
+             //      entry as the new 'm'; its partner char is dropped);
+             //   2. drop every digit (matches normalizeForMatch dropping all digits).
+             function dropAt(idx) {
+                 chars.splice(idx, 1);
+                 map.splice(idx, 1);
+                 if (windowStart > idx) windowStart--;
+                 if (windowEnd > idx) windowEnd--;
+             }
+             function isLetterLC(c) { return /[a-zऀ-ॿ]/.test(c || ''); }
+             for (var r = 0; r < chars.length - 1; r++) {
+                 var a = chars[r], b = chars[r + 1], nx = chars[r + 2];
+                 if (a === 'n' && b === '1' && (isLetterLC(nx) || nx === '/')) { chars[r] = 'm'; dropAt(r + 1); }
+                 else if (a === '1' && b === 'n' && isLetterLC(nx)) { chars[r] = 'm'; dropAt(r + 1); }
+             }
+             for (var d = chars.length - 1; d >= 0; d--) {
+                 if (LOOMA.isWordDigit(chars[d])) dropAt(d);
              }
 
              context.aggregate = chars.join('');
@@ -2038,6 +2287,83 @@ LOOMA.speak = function(text, engine, voice, rate) {
              return context;
          };
 
+         /* Merge a Range's client rects (one per pdf.js word-span) into ONE band
+          * per text line, bridging the gaps at spaces so a sentence reads as a
+          * single continuous highlight rather than a row of separate boxes. */
+
+
+         /* Highlight a PDF sentence with translucent yellow bands drawn BEHIND the
+          * text (the visible glyphs live on the canvas). The text is never wrapped,
+          * bolded or reflowed, so words keep their exact pdf.js spacing — and each
+          * line gets one continuous band, not a box per word. */
+         /* The colour of the reading highlight: the SAME one as the toolbar at the
+          * bottom of the page (--looma-toolbar), so the page has one accent rather
+          * than two nearly-equal yellows — and so the themes that repaint the
+          * toolbar (CEHRD teal, INDIA orange) repaint the highlight with it.
+          *
+          * Read from the MAIN document on purpose: a chapter opened as HTML lives
+          * in an iframe whose document knows nothing of Looma's CSS variables. */
+         /* Height of the reading band, in em of the text it covers. Tall enough
+          * to sit behind ascenders and descenders, short enough that it cannot
+          * reach the line above or below at the line spacing chapters use. */
+         LOOMA.speak.HIGHLIGHT_BAND_EM = 1.25;
+
+         LOOMA.speak.highlightColor = function () {
+             if (LOOMA.speak.cachedHighlightColor) return LOOMA.speak.cachedHighlightColor;
+             var accent = '';
+             try {
+                 accent = (window.getComputedStyle(document.documentElement)
+                                 .getPropertyValue('--looma-toolbar') || '').trim();
+             } catch (e) { accent = ''; }
+             LOOMA.speak.cachedHighlightColor = accent || 'yellow';
+             return LOOMA.speak.cachedHighlightColor;
+         };
+
+         LOOMA.speak.renderPdfHighlight = function (range, layer) {
+             LOOMA.speak.highlightOverlays = LOOMA.speak.highlightOverlays || [];
+             var ownerDocument = layer.ownerDocument || document;
+             var base = layer.getBoundingClientRect();   // the text layer is the positioning origin
+             var lines = LOOMA.speak.mergeRectsByLine(range.getClientRects());
+             var accent = LOOMA.speak.highlightColor();
+             var made = [];
+             lines.forEach(function (r) {
+                 /* Height. The rect is the span's FONT box, which on these pages
+                  * is taller than the gap to the next line — so a band drawn at
+                  * rect height covers part of the lines around it, and two bands
+                  * of a sentence that wraps overlap each other. Cap it at the
+                  * measured line spacing less a small gutter, and centre what is
+                  * left on the line, so a band can never touch its neighbours. */
+                 var height = r.bottom - r.top;
+                 var limit = LOOMA.speak.bandLimitAt(layer, r.top) || height * 0.76;
+                 var band = Math.max(4, Math.min(height, limit));
+
+                 var div = ownerDocument.createElement('div');
+                 div.className = 'tts-pdf-highlight';
+                 div.style.position = 'absolute';
+                 div.style.left = (r.left - base.left) + 'px';
+                 div.style.top = (r.top - base.top + (height - band) / 2) + 'px';
+                 div.style.width = (r.right - r.left) + 'px';
+                 div.style.height = band + 'px';
+                 /* Colour set INLINE, like the HTML highlight: a converted chapter
+                  * is its own document inside an iframe, carrying its own copy of
+                  * this rule, and looma.css never reaches it. Inline wins over
+                  * both, so the band is the toolbar colour everywhere.
+                  *
+                  * `multiply` is what a highlighter pen does — white paper turns
+                  * the accent colour and the ink underneath STAYS BLACK. On a
+                  * scanned page it is the only way to be opaque about the colour
+                  * without hiding the words: they are pixels in the scan below. */
+                 div.style.backgroundColor = accent;
+                 div.style.mixBlendMode = 'multiply';
+                 div.style.borderRadius = '0.15em';
+                 div.style.pointerEvents = 'none';
+                 layer.appendChild(div);
+                 made.push(div);
+             });
+             LOOMA.speak.highlightOverlays = LOOMA.speak.highlightOverlays.concat(made);
+             return made.length > 0;
+         };
+
          LOOMA.speak.highlightBlock = function (blockText) {
              // Highlight only the sentence/block currently being read.
              LOOMA.speak.clearBlockHighlight();
@@ -2058,13 +2384,62 @@ LOOMA.speak = function(text, engine, voice, rate) {
              if (!target) return;
 
              // Continue searching forward so repeated phrases highlight in reading order.
-             var startIndex = context.aggregate.indexOf(target, context.searchIndex || 0);
-             if (startIndex === -1) startIndex = context.aggregate.indexOf(target, context.windowStart || 0);
-             if (startIndex === -1) startIndex = context.aggregate.indexOf(target);
+             function locate(ctx) {
+                 var at = ctx.aggregate.indexOf(target, ctx.searchIndex || 0);
+                 if (at === -1) at = ctx.aggregate.indexOf(target, ctx.windowStart || 0);
+                 if (at === -1) at = ctx.aggregate.indexOf(target);
+                 return at;
+             }
+             // Every character we are about to wrap must still point at a live text
+             // node long enough to hold its offset. If any does not, the DOM moved
+             // under the map since it was built, and wrapping now would highlight
+             // ONLY the part of the sentence that stayed valid — the classic
+             // half-highlighted sentence. Rebuild the map once (the text is
+             // unchanged, so the aggregate/cursor still hold) and re-locate, so we
+             // either highlight the whole sentence or, if it truly cannot be mapped,
+             // nothing — never half.
+             function rangeMapValid(ctx, from, to) {
+                 for (var v = from; v <= to; v++) {
+                     var e = ctx.map[v];
+                     if (!e || !e.node || !e.node.parentNode) return false;
+                     if (!e.node.nodeValue || e.offset >= e.node.nodeValue.length) return false;
+                 }
+                 return true;
+             }
+
+             var startIndex = locate(context);
              if (startIndex === -1) return;
+             var endIndex = startIndex + target.length - 1;
+
+             if (!rangeMapValid(context, startIndex, endIndex)) {
+                 LOOMA.speak.refreshHighlightContext(context, null);
+                 startIndex = locate(context);
+                 if (startIndex === -1) return;
+                 endIndex = startIndex + target.length - 1;
+                 if (!rangeMapValid(context, startIndex, endIndex)) return;
+             }
 
              context.searchIndex = startIndex + target.length;
-             var endIndex = startIndex + target.length - 1;
+
+             // PDF path: draw translucent bands behind the text instead of
+             // wrapping it. On a pdf.js text layer each word is its own absolutely
+             // positioned span, so wrapping produced a separate bold box per word
+             // (crowded, fragmented). Bands from the range's client rects, merged
+             // per line, give one continuous highlight and never touch the text.
+             var startEntry = context.map[startIndex];
+             var endEntry = context.map[endIndex];
+             var startParent = startEntry && startEntry.node && startEntry.node.parentElement;
+             var pdfLayer = startParent && startParent.closest ? startParent.closest('.pdf-text, .textLayer') : null;
+             if (pdfLayer) {
+                 try {
+                     var pdfDoc = startEntry.node.ownerDocument || document;
+                     var pdfRange = pdfDoc.createRange();
+                     pdfRange.setStart(startEntry.node, startEntry.offset);
+                     pdfRange.setEnd(endEntry.node, endEntry.offset + 1);
+                     if (LOOMA.speak.renderPdfHighlight(pdfRange, pdfLayer)) return;
+                 } catch (e) { /* fall through to the wrapping path below */ }
+             }
+
              var perNode = new Map();
 
              for (var j = startIndex; j <= endIndex; j++) {
@@ -2098,12 +2473,30 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  var mark = ownerDocument.createElement('span');
                  mark.className = 'tts-block-highlight';
                  mark.textContent = middle;
-                 mark.style.backgroundColor = '#ffe44d';
-                 mark.style.color = '#111';
-                 mark.style.fontWeight = '700';
-                 mark.style.borderRadius = '0.18em';
-                 mark.style.padding = '0 0.03em';
-                 mark.style.boxShadow = '0 0 0 0.08em rgba(255, 212, 0, 0.45)';
+                 // The styles are set INLINE and not left to the .tts-block-highlight
+                 // rule, because an HTML chapter is loaded inside an iframe and
+                 // Looma's stylesheet does not reach into that document. The
+                 // accent comes from the theme all the same — see highlightColor().
+                 //
+                 // The band is painted as a GRADIENT, not as background-color: an
+                 // inline box's background fills the font's whole content area,
+                 // which in Looma's comic font is taller than the line spacing of a
+                 // typical chapter — so a plain background-color bled over the
+                 // lines above and below. A gradient can be given a height
+                 // (HIGHLIGHT_BAND_EM), so the band always stays inside its own
+                 // line. `box-decoration-break: clone` makes each line fragment of
+                 // a wrapped sentence paint its own band instead of one band
+                 // stretched across the whole hypothetical box.
+                 var bandColor = LOOMA.speak.highlightColor();
+                 mark.style.backgroundImage = 'linear-gradient(' + bandColor + ',' + bandColor + ')';
+                 mark.style.backgroundRepeat = 'no-repeat';
+                 mark.style.backgroundSize = '100% ' + LOOMA.speak.HIGHLIGHT_BAND_EM + 'em';
+                 mark.style.backgroundPosition = '0 50%';
+                 mark.style.setProperty('-webkit-box-decoration-break', 'clone');
+                 mark.style.setProperty('box-decoration-break', 'clone');
+                 mark.style.color = '#000';        // ~19:1 on the toolbar yellow
+                 mark.style.fontWeight = 'bold';   // the sentence being read stands out
+                 mark.style.borderRadius = '0.1em';
                  fragment.appendChild(mark);
 
                  if (after) fragment.appendChild(ownerDocument.createTextNode(after));
@@ -2117,7 +2510,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
     //start of LOOMA.speak code: ///
     ////////////////////////////////
 
-         // Shared by every engine that highlights as it reads (Piper/Mimic and
+         // Shared by every engine that highlights as it reads (Piper and
          // ResponsiveVoice): short sentence-level chunks so the highlight can
          // follow along, instead of one giant utterance highlighted all at once
          // (or, before this fix, not highlighted at all — see the ResponsiveVoice
@@ -2228,6 +2621,20 @@ LOOMA.speak = function(text, engine, voice, rate) {
              // the cloud to return audio takes seconds, and until onstart fires
              // the button gave no feedback at all (the Piper path below already
              // does this). onstart/onerror clear it via activate()/disable().
+             // PIPER IS THE DEFAULT, and the only engine that works offline. When
+             // the browser already knows it has no connection, don't spend seconds
+             // fetching responsivevoice.org just to fail: read with Piper now.
+             // (An `onLine` of true is only a hint — a LAN with no route out still
+             // reports true — so the fallback inside the callback below stays.)
+             if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+                 console.warn('offline — reading with Piper instead of ResponsiveVoice.');
+                 // No voice: the voices held here are ResponsiveVoice NAMES
+                 // ("UK English Female"), which mean nothing to Piper. Leaving it
+                 // empty lets Piper pick its own default for each language.
+                 LOOMA.speak(text, 'piper', { en: '', np: '' }, { en: rateEn, np: rateNp });
+                 return;
+             }
+
              LOOMA.speak.buttonPending = true;
              LOOMA.speak.applyPendingButtonState();
              LOOMA.speak.updateButtonAvailability();
@@ -2268,7 +2675,9 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  // pending state — otherwise it would stay spinning from here.
                  LOOMA.speak.buttonPending = false;
                  LOOMA.speak.clearPendingButtonState();
-                 LOOMA.speak(text, 'piper', voice, rate);
+                 // Same as the offline short-circuit above: hand Piper no voice
+                 // rather than a ResponsiveVoice name it cannot use.
+                 LOOMA.speak(text, 'piper', { en: '', np: '' }, rate);
              } else {
                  // Pressing Speak again while it is talking stops it (toggle),
                  // matching how the other engines behave.
@@ -2308,12 +2717,12 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          tts_text_chars: (text || '').length,
                          tts_source:     rvSrc
                      };
-                     // Speak sentence-by-sentence (like Piper/Mimic below) instead of
+                     // Speak sentence-by-sentence (like Piper below) instead of
                      // handing the WHOLE text to ResponsiveVoice as one utterance —
                      // that old shape never called highlightBlock() at all, so the
                      // reading highlight only ever showed up with Piper, never with
                      // ResponsiveVoice. rvRunId (shared LOOMA.speak.runId counter,
-                     // same one Piper/Mimic use) stops a stale chain the moment a
+                     // same one Piper uses) stops a stale chain the moment a
                      // new speak() call or cancel() supersedes it.
                      var rvRunId = ++LOOMA.speak.runId;
                      var rvSegments = splitIntoPlaybackSegments(text);
@@ -2440,7 +2849,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
          }
 
          else { // default path is Flask/Piper
-             // Include engine settings so the same text can switch between Piper and Mimic.
+             // Re-fetch when the voice or the speed changes, not just when the text does.
              var textKey = LOOMA.speak.normalizeSpeakKey(text);
              var requestKey = [engine || 'piper', voiceEn + '~' + voiceNp, rate || '', textKey].join('|');
              var activeKey = LOOMA.speak.currentSourceKey || '';
@@ -2551,8 +2960,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      return;
                  }
 
-                 var useMimic = engine === 'mimic';
-                 // Always call the Looma PHP endpoint. It proxies Piper (Flask) and can also serve Mimic.
+                 // Always call the Looma PHP endpoint, which proxies Piper (Flask).
                  // Calling http://127.0.0.1:5002/tts from the browser would hit the *client* machine, not the server/container.
                  var ttsEndpoint = 'looma-TTS.php';
 
@@ -2583,30 +2991,19 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
                  function fetchSegmentAudio(segmentText) {
                      // Each segment is fetched independently so the first phrase can start while later ones are still loading.
-                     var request;
-                     if (useMimic) {
-                         // Mimic is English-only, so the English voice always applies.
-                         request = fetch(ttsEndpoint + '?' + $.param({
-                             text: segmentText,
-                             engine: 'mimic',
-                             voice: voiceEn || 'cmu_us_axb',
-                             rate: rateEn
-                         }));
-                     } else {
-                         var piperParams = {
-                             text: segmentText,
-                             engine: 'piper',
-                             lang: detectSegmentLanguage(segmentText),
-                             rate: rateForLang(detectSegmentLanguage(segmentText))
-                         };
-                         // A specific Piper voice model (e.g. picked on the TTS test page)
-                         // overrides the server's language-based default. Each segment uses
-                         // the voice for its detected language; when omitted, the Piper
-                         // server auto-selects the voice from the detected language.
-                         var segVoice = (piperParams.lang === 'ne') ? voiceNp : voiceEn;
-                         if (segVoice) piperParams.voice = segVoice;
-                         request = fetch(ttsEndpoint + '?' + $.param(piperParams));
-                     }
+                     var piperParams = {
+                         text: segmentText,
+                         engine: 'piper',
+                         lang: detectSegmentLanguage(segmentText),
+                         rate: rateForLang(detectSegmentLanguage(segmentText))
+                     };
+                     // A specific Piper voice (picked on the Reading Settings page)
+                     // overrides the server's language-based default. Each segment uses
+                     // the voice for its detected language; when omitted, the Piper
+                     // server auto-selects the voice from the detected language.
+                     var segVoice = (piperParams.lang === 'ne') ? voiceNp : voiceEn;
+                     if (segVoice) piperParams.voice = segVoice;
+                     var request = fetch(ttsEndpoint + '?' + $.param(piperParams));
 
                      return request.then(function (response) {
                          if (!response.ok) throw new Error('Browser TTS request failed: ' + response.status);
@@ -2715,7 +3112,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  LOOMA.speak.buttonPending = true;
                  LOOMA.speak.applyPendingButtonState();
                  LOOMA.speak.updateButtonAvailability();
-                 console.log("Playing " + playbackSegments.length + " segments in browser using " + (useMimic ? "Mimic" : "Piper"));
+                 console.log("Playing " + playbackSegments.length + " segments in browser using Piper");
                  playPromise = blockPromises[0].then(function (preparedBlock) {
                      return playPreparedBlock(preparedBlock, 0);
                  }).catch(function (error) {
@@ -2735,7 +3132,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
                  console.log('promise is ', playPromise);
              }
-         }  //end of code that calls server-side MIMIC
+         }  //end of code that calls server-side Piper
      } // end if (text != "")
      LOOMA.speak.updateButtonAvailability();
  }; //end LOOMA.speak()
@@ -2823,6 +3220,220 @@ LOOMA.speak.ensureResponsiveVoice = function (cb) {
     };
     script.onerror = function () { settle(false); };
     document.head.appendChild(script);
+};
+
+/* ---- reading-band geometry on a converted chapter page --------------------
+ *
+ * A converted chapter is the scanned page as an image with a layer of
+ * absolutely-positioned, transparent <span>s over it — one per line of print.
+ * Both the reading band and the blue selection are sized from those spans, so
+ * the two live here together and cannot drift apart.
+ *
+ * These are OUTSIDE the LOOMA.speak closure on purpose: the line fitter has to
+ * run when a chapter loads, long before anything has been read aloud.
+ */
+
+/* How far apart the lines of THIS page actually are, in px.
+ *
+ * A band may never be taller than this or it reaches the line above and below.
+ * The rect of a text span is its own line box and says nothing about the spacing
+ * around it, so measure the page instead: take the top of every span in the text
+ * layer and use the MEDIAN gap between consecutive lines. The median ignores
+ * both the odd superscript sitting a couple of pixels off and the big jump
+ * across a paragraph break.
+ *
+ * Cached on the layer and keyed by its width: these pages are responsive, so the
+ * spacing only changes when the layer is re-laid out, and a width that no longer
+ * matches is exactly when the cached value went stale.
+ */
+LOOMA.speak.lineMetricsFor = function (layer) {
+    if (layer.loomaLineMetrics && layer.loomaLineMetricsWidth === layer.clientWidth) {
+        return layer.loomaLineMetrics;
+    }
+
+    // Offsets from the layer's own top, NOT viewport coordinates: the page
+    // scrolls, and a cached viewport position would be wrong the moment it does.
+    var origin = layer.getBoundingClientRect().top;
+    var tops = [];
+    var heights = [];
+    var spans = layer.querySelectorAll('span');
+    for (var i = 0; i < spans.length; i++) {
+        var box = spans[i].getBoundingClientRect();
+        if (box.height > 0) { tops.push(box.top - origin); heights.push(box.height); }
+    }
+    tops.sort(function (a, b) { return a - b; });
+    heights.sort(function (a, b) { return a - b; });
+
+    // Several spans can sit on ONE line of print — the converter splits a line
+    // wherever the font or size changes — and their tops differ by a pixel or
+    // two. Cluster them, or every one of those little differences would read as
+    // a line of its own and leave no room for any band at all.
+    var medianHeight = heights.length ? heights[Math.floor(heights.length / 2)] : 0;
+    var tolerance = Math.max(3, medianHeight * 0.5);
+
+    var lineTops = [];      // one entry per line of print
+    var gaps = [];
+    for (var j = 0; j < tops.length; j++) {
+        var last = lineTops.length ? lineTops[lineTops.length - 1] : null;
+        if (last === null || tops[j] - last > tolerance) {
+            if (last !== null) gaps.push(tops[j] - last);
+            lineTops.push(tops[j]);
+        }
+    }
+    gaps.sort(function (a, b) { return a - b; });
+
+    layer.loomaLineMetrics = {
+        tops: lineTops,
+        spacing: gaps.length ? gaps[Math.floor(gaps.length / 2)] : 0
+    };
+    layer.loomaLineMetricsWidth = layer.clientWidth;
+    return layer.loomaLineMetrics;
+};
+
+/* The tallest a band on THIS line may be, so it always keeps daylight between
+ * itself and the lines around it.
+ *
+ * Measured against the nearest line above and below rather than the page median:
+ * a page mixes loose and tight paragraphs, and the median leaves a band 0.2px
+ * short of the next line inside a tight one — which reads as one solid slab.
+ */
+LOOMA.speak.bandLimitAt = function (layer, top) {
+    var metrics = LOOMA.speak.lineMetricsFor(layer);
+    var tops = metrics.tops;
+    var offset = top - layer.getBoundingClientRect().top;
+    if (!tops.length) return metrics.spacing ? metrics.spacing * 0.88 : 0;
+
+    /* Snap to the line this band belongs to FIRST. The rect handed in comes from
+     * a Range and starts a couple of pixels above the span's own box, so looking
+     * straight for "the nearest top below" used to find the line's own top and
+     * conclude the lines were 3px apart. */
+    var index = 0;
+    var best = Infinity;
+    for (var i = 0; i < tops.length; i++) {
+        var distance = Math.abs(tops[i] - offset);
+        if (distance < best) { best = distance; index = i; }
+    }
+
+    var below = (index + 1 < tops.length) ? tops[index + 1] - tops[index] : Infinity;
+    var above = (index > 0) ? tops[index] - tops[index - 1] : Infinity;
+
+    var local = Math.min(below, above);
+    if (!isFinite(local)) local = metrics.spacing;      // the only line on the page
+    if (!(local > 0)) return 0;
+    return local - Math.max(2, local * 0.12);
+};
+
+/* Group the rects of a range into ONE rect per line of print. */
+LOOMA.speak.mergeRectsByLine = function (rects) {
+    var arr = [];
+    for (var i = 0; i < rects.length; i++) {
+        var r = rects[i];
+        if (r.width > 0 && r.height > 0) {
+            arr.push({ left: r.left, top: r.top, right: r.right, bottom: r.bottom });
+        }
+    }
+    arr.sort(function (a, b) { return (a.top - b.top) || (a.left - b.left); });
+
+    var lines = [];
+    arr.forEach(function (r) {
+        var mid = (r.top + r.bottom) / 2;
+        var tol = Math.max(4, (r.bottom - r.top) * 0.5);
+        var line = null;
+        for (var k = 0; k < lines.length; k++) {
+            if (Math.abs((lines[k].top + lines[k].bottom) / 2 - mid) <= tol) { line = lines[k]; break; }
+        }
+        if (!line) {
+            lines.push({ left: r.left, top: r.top, right: r.right, bottom: r.bottom });
+        } else {
+            line.left = Math.min(line.left, r.left);
+            line.top = Math.min(line.top, r.top);
+            line.right = Math.max(line.right, r.right);
+            line.bottom = Math.max(line.bottom, r.bottom);
+        }
+    });
+    return lines;
+};
+
+/* Draw the BLUE SELECTION as bands of our own, the same height as the reading
+ * band.
+ *
+ * The browser sizes ::selection from the FONT's own ascent+descent, which on
+ * these pages is taller than the gap to the next line — so selecting two
+ * consecutive lines produced one solid blue slab that swallowed the lines around
+ * it. That height cannot be styled (line-height does not move it, which is why
+ * this is not a one-line CSS fix), so the only way to bound it is to stop the
+ * browser painting the selection at all and draw it ourselves, through the very
+ * same geometry the reading band uses.
+ *
+ * The selection itself is untouched — only its paint. Copying, the Speak button
+ * and the word-definition card all still read window.getSelection() as before.
+ */
+LOOMA.speak.SELECTION_BAND_COLOR = 'rgba(0, 110, 255, 0.32)';   // as the pages' own ::selection was
+
+LOOMA.speak.installSelectionBands = function (doc) {
+    if (!doc || !doc.body || doc.loomaSelectionBands) return;
+    if (!doc.querySelector('.tl')) return;          // not a converted chapter: leave it alone
+    doc.loomaSelectionBands = true;
+
+    var style = doc.createElement('style');
+    style.textContent =
+        '.tl span::selection{background:transparent}' +
+        '.tl span::-moz-selection{background:transparent}' +
+        '.looma-selection-band{position:absolute;pointer-events:none;z-index:2;' +
+        'background:' + LOOMA.speak.SELECTION_BAND_COLOR + ';border-radius:.15em}';
+    (doc.head || doc.documentElement).appendChild(style);
+
+    var bands = [];
+
+    function clearBands() {
+        bands.forEach(function (el) { if (el.parentNode) el.parentNode.removeChild(el); });
+        bands = [];
+    }
+
+    function layerOf(node) {
+        var el = node && node.nodeType === 3 ? node.parentNode : node;
+        while (el && el !== doc && !(el.classList && el.classList.contains('tl'))) el = el.parentElement;
+        return (el && el.classList && el.classList.contains('tl')) ? el : null;
+    }
+
+    function drawBands() {
+        clearBands();
+
+        var win = doc.defaultView;
+        var selection = win && win.getSelection ? win.getSelection() : null;
+        if (!selection || selection.isCollapsed || !selection.rangeCount) return;
+
+        var range = selection.getRangeAt(0);
+        var layer = layerOf(range.startContainer) || layerOf(range.endContainer);
+        if (!layer) return;     // selected something else on the page: browser's job
+
+        // Bands go on the BODY, in document coordinates, so a selection running
+        // across two pages is one set of bands rather than one set per layer.
+        var scrollX = win.scrollX || 0;
+        var scrollY = win.scrollY || 0;
+
+        LOOMA.speak.mergeRectsByLine(range.getClientRects()).forEach(function (r) {
+            var height = r.bottom - r.top;
+            var limit = LOOMA.speak.bandLimitAt(layer, r.top);
+            var band = limit ? Math.max(4, Math.min(height, limit)) : height;
+            var div = doc.createElement('div');
+            div.className = 'looma-selection-band';
+            div.style.left = (r.left + scrollX) + 'px';
+            div.style.top = (r.top + scrollY + (height - band) / 2) + 'px';
+            div.style.width = (r.right - r.left) + 'px';
+            div.style.height = band + 'px';
+            doc.body.appendChild(div);
+            bands.push(div);
+        });
+    }
+
+    doc.addEventListener('selectionchange', drawBands);
+
+    var redrawTimer = null;
+    (doc.defaultView || window).addEventListener('resize', function () {
+        clearTimeout(redrawTimer);
+        redrawTimer = setTimeout(drawBands, 200);
+    });
 };
 
 LOOMA.speak.getButtons = function () {
@@ -3000,10 +3611,42 @@ LOOMA.speak.updateButtonAvailability = function () {
     var isPending = !!LOOMA.speak.buttonPending;
     var selectable = LOOMA.speak.hasSelection() || !!LOOMA.speak.currentSourceText || !!LOOMA.speak.lastCompletedText;
 
+    /* Which icon the button shows — it should say what pressing it will do:
+     *   pause   reading right now
+     *   play    text is selected, or a reading is paused and can resume
+     *   repeat  the last reading finished and can be played again
+     *   idle    nothing selected and nothing read yet
+     * Selecting new text always wins over "repeat", so picking a fresh sentence
+     * after one finished puts the button back on play. While a segment is still
+     * being fetched the icon stays on play and the spinner (.tts-pending) shows
+     * the wait — the audio is not sounding yet, so pause would be a lie. */
+    // A finished reading usually leaves its text STILL SELECTED, so "is something
+    // selected?" alone would show play again the moment it ends. Compare the
+    // selection with what was just read: the same text means "repeat", different
+    // text means the user picked something new and it is a fresh play.
+    var justRead = '';
+    try {
+        var selectedNow = LOOMA.speak.getSelectedText ? LOOMA.speak.getSelectedText() : '';
+        if (selectedNow && LOOMA.speak.lastCompletedText &&
+            LOOMA.speak.normalizeSpeakKey(selectedNow) ===
+            LOOMA.speak.normalizeSpeakKey(LOOMA.speak.lastCompletedText)) {
+            justRead = selectedNow;
+        }
+    } catch (e) { justRead = ''; }
+
+    var iconState = 'idle';
+    if (isBusy) iconState = 'pause';
+    else if (justRead) iconState = 'repeat';
+    else if (LOOMA.speak.hasSelection() || LOOMA.speak.currentSourceText) iconState = 'play';
+    else if (LOOMA.speak.lastCompletedText) iconState = 'repeat';
+
     LOOMA.speak.getButtons().forEach(function (speechButton) {
         var $button = $(speechButton);
         $button.toggleClass('tts-busy', isBusy);
         $button.toggleClass('tts-pending', isPending && !isBusy);
+        $button.toggleClass('tts-state-play', iconState === 'play');
+        $button.toggleClass('tts-state-pause', iconState === 'pause');
+        $button.toggleClass('tts-state-repeat', iconState === 'repeat');
 
         if (isBusy) {
             speechButton.disabled = false;
@@ -3080,6 +3723,41 @@ LOOMA.speak.installSelectionMirrors = function () {
     });
 };
 
+/* LOOMA.speak.restart()
+ *
+ * Start the CURRENT reading again from its first sentence. Used by the
+ * press-and-hold gesture on the Speak button (see installButtonGuard below).
+ *
+ * cleanup() drops currentSourceText/Snapshot, so the text and its highlight
+ * context are captured first and then handed back through lastCompleted* —
+ * the same pair the "repeat" press already replays, which is why calling
+ * LOOMA.speak() with no argument here reads the very same text with the very
+ * same highlighting instead of whatever happens to be selected now.
+ */
+LOOMA.speak.restart = function () {
+    var text = LOOMA.speak.currentSourceText || LOOMA.speak.lastCompletedText || '';
+    var snapshot = LOOMA.speakCloneSnapshot(
+        LOOMA.speak.currentSourceSnapshot || LOOMA.speak.lastCompletedSnapshot);
+
+    LOOMA.speak.cleanup();
+
+    if (text) {
+        LOOMA.speak.lastCompletedText = text;
+        LOOMA.speak.lastCompletedSnapshot = snapshot;
+        LOOMA.speak();
+        return true;
+    }
+
+    // Nothing has been read yet: hold acts on the live selection, if any, so the
+    // gesture never feels dead. mousedown/pointerdown preventDefault keeps that
+    // selection alive through the whole press.
+    if (LOOMA.speak.hasSelection && LOOMA.speak.hasSelection()) {
+        LOOMA.speak();
+        return true;
+    }
+    return false;
+};
+
 LOOMA.speak.installButtonGuard = function () {
     // Global guard gives Speak one consistent meaning before page-specific handlers run.
     if (LOOMA.speak.buttonGuardInstalled) return;
@@ -3095,15 +3773,123 @@ LOOMA.speak.installButtonGuard = function () {
         return null;
     }
 
+    /* ---- press and hold to restart -------------------------------------
+     *
+     * A short press keeps every meaning it always had (play / pause / repeat).
+     * HOLDING the button for two and a half seconds restarts the reading from the top.
+     *
+     * While the button is held it shows the STOP glyph and the same ring the
+     * button already draws while it waits for audio — except this one is not a
+     * spinner: it fills up over those 2.5 seconds, so the countdown is visible
+     * and letting go early is an obvious way out. The fill is driven by the
+     * --tts-hold custom property (0 → 1) on the button, updated per frame.
+     */
+    var HOLD_RESTART_MS = 2500;
+    var HOLD_TICK_MS = 60;             // ~16 fps: smooth enough for a 2.5s sweep
+    var holdButton = null;
+    var holdStartedAt = 0;
+    var holdTimer = null;
+
+    function paintHold(progress) {
+        if (!holdButton) return;
+        holdButton.style.setProperty('--tts-hold', Math.max(0, Math.min(1, progress)));
+    }
+
+    function endHold() {
+        if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
+        if (holdButton) {
+            holdButton.classList.remove('tts-holding');
+            holdButton.style.removeProperty('--tts-hold');
+        }
+        holdButton = null;
+        holdStartedAt = 0;
+    }
+
+    /* A plain interval, not requestAnimationFrame: rAF is tied to painting and
+       stops being served whenever the page is not being composited, which would
+       freeze the countdown mid-press and never restart anything. Elapsed time is
+       read from the clock each tick, so a throttled interval still completes at
+       the right moment instead of counting ticks. */
+    function tickHold() {
+        if (!holdButton) return;
+        var elapsed = Date.now() - holdStartedAt;
+        paintHold(elapsed / HOLD_RESTART_MS);
+
+        if (elapsed >= HOLD_RESTART_MS) {
+            endHold();
+            // Swallow the click that the release is about to fire, so the
+            // restart is not immediately followed by a pause/replay press.
+            LOOMA.speak.holdRestartFired = true;
+            try { LOOMA.speak.restart(); } catch (e) { console.log('TTS restart failed: ', e); }
+        }
+    }
+
+    function beginHold(event) {
+        var button = findSpeakButton(event.target);
+        // Only a primary press starts a hold; a disabled button has nothing to restart.
+        if (!button || button.disabled || (event.button !== undefined && event.button !== 0)) return;
+        if (holdButton === button) return;   // touch + mouse can both fire for one press
+
+        endHold();
+        holdButton = button;
+        holdStartedAt = Date.now();
+        button.classList.add('tts-holding');
+        paintHold(0);
+        holdTimer = setInterval(tickHold, HOLD_TICK_MS);
+    }
+
+    function endHoldFromEvent(event) {
+        if (!holdButton) return;
+        // A release anywhere ends the hold, but a "left the element" event only
+        // counts when it is the held button itself being left — those fire for
+        // any element the pointer leaves and would otherwise cancel at once.
+        var type = event && event.type;
+        if ((type === 'pointerleave' || type === 'mouseleave') && event.target !== holdButton) return;
+        endHold();
+    }
+
+    ['pointerdown', 'touchstart'].forEach(function (name) {
+        document.addEventListener(name, beginHold, true);
+    });
+    ['pointerup', 'pointercancel', 'pointerleave', 'touchend', 'touchcancel', 'mouseup', 'mouseleave']
+        .forEach(function (name) {
+            document.addEventListener(name, endHoldFromEvent, true);
+        });
+    window.addEventListener('blur', endHold);
+
+    // A long press on a touch screen (and a right-click) would otherwise raise
+    // the context menu on top of the gesture.
+    document.addEventListener('contextmenu', function (event) {
+        if (findSpeakButton(event.target)) event.preventDefault();
+    });
+
     document.addEventListener('click', function (event) {
         var button = findSpeakButton(event.target);
         if (!button) return;
 
+        // The press that just restarted the reading ends in a click — drop it
+        // here, in the capture phase, before any page handler sees it.
+        if (LOOMA.speak.holdRestartFired) {
+            LOOMA.speak.holdRestartFired = false;
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            return false;
+        }
+
         if (LOOMA.speak.playingAudio) {
             var selectedText = (LOOMA.speak.getSelectedText ? LOOMA.speak.getSelectedText() : '');
             var selectedKey = LOOMA.speak.normalizeSpeakKey ? LOOMA.speak.normalizeSpeakKey(selectedText) : (selectedText || '').toLowerCase();
-            var currentKey = LOOMA.speak.currentSourceKey || '';
-            var hasNewSelection = !!selectedKey && selectedKey !== currentKey;
+            // Compare TEXT with TEXT. This used to test the selection against
+            // currentSourceKey, which is not a text at all but the composite
+            // request key ("piper|voices|rate|text") — so the two could never be
+            // equal, every press while reading counted as "new selection", and
+            // the pause button restarted the reading from the top instead of
+            // pausing it. The mousedown handler below deliberately keeps the
+            // selection alive, so this fired on every single press.
+            var currentText = LOOMA.speak.currentSourceText || '';
+            var currentTextKey = LOOMA.speak.normalizeSpeakKey ? LOOMA.speak.normalizeSpeakKey(currentText) : currentText.toLowerCase();
+            var hasNewSelection = !!selectedKey && !!currentTextKey && selectedKey !== currentTextKey;
 
             if (hasNewSelection) {
                 LOOMA.speak.cleanup();
@@ -3113,6 +3899,13 @@ LOOMA.speak.installButtonGuard = function () {
             event.preventDefault();
             event.stopPropagation();
             event.stopImmediatePropagation();
+
+            // A reading is a chain of one-sentence clips. Between two of them the
+            // finished clip is still the "current" audio while the next one is
+            // being fetched, and an ENDED clip reports paused === true — so a
+            // press landing in that gap would replay the sentence just read while
+            // the next one starts too, i.e. two voices at once. Swallow it.
+            if (LOOMA.speak.playingAudio.ended) return false;
 
             if (LOOMA.speak.playingAudio.paused) {
                 LOOMA.speak.playingAudio.play().then(function () {

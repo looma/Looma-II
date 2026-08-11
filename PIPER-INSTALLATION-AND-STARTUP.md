@@ -6,6 +6,40 @@ This document explains how Piper is installed in the Looma project and which ste
 
 The information below was confirmed on the current machine. Some commands are included as reproducible setup steps for reinstalling or configuring Piper again on a similar system.
 
+> **Which server is actually running?** This document describes the LEGACY
+> hand-built native setup (`piper/piper_http_server.py` started by
+> `piper.service`). Both current deployments — Docker and the ODROID installer —
+> run **`Looma/piper_server.py`** instead (`looma-piper.service`, or the
+> `looma-piper` container); `deploy/odroid/looma-installer.sh` disables the old
+> `piper.service` on sight, because it overclocked the board into resets. Use
+> the notes below for the legacy boxes only, and see *Voices, speed and latency*
+> for what the current server does.
+
+## Voices, speed and latency (`Looma/piper_server.py`)
+
+| Endpoint | What it does |
+| --- | --- |
+| `POST /tts` | `{text, language, voice, rate}` → WAV. Answers `X-Looma-TTS-Cache: hit\|miss` and `X-Looma-TTS-Ms`, so latency is measurable straight from the browser's network panel. |
+| `GET /voices` | Every voice installed on the box, for the Reading Settings dropdowns (proxied to the browser by `looma-TTS-voices.php`). |
+| `GET /health` | Voice directory, the warm workers, cache size. |
+
+* **Latency.** The server keeps **warm piper processes** (`--json-input`) whose
+  models are already loaded, caches every synthesized WAV, and pre-warms the two
+  default voices at start-up — so the first press of the day does not pay the
+  model load either. Cold model load happens once per (voice, speed); a repeated
+  sentence is served from cache.
+* **Voices.** A voice id is a model filename, optionally `#<speaker>` for a
+  multi-speaker model — `ne_NP-google-x_low.onnx#7` is speaker 7. That is what
+  gives Nepali a real choice: one model, **18 speakers**, each selectable and
+  auditionable on the Reading Settings page.
+* **Speed.** Looma sends `rate` (higher is faster); the server converts it to
+  Piper's reciprocal `length_scale`. Chosen per language on the Reading Settings
+  page and stored in the `tts-rate-en` / `tts-rate-np` cookies.
+* **Tuning** (env): `LOOMA_PIPER_VOICE_EN` / `_NE`, `LOOMA_PIPER_MAX_WORKERS`
+  (warm models kept in RAM), `LOOMA_PIPER_CACHE_DIR` / `_CACHE_FILES`,
+  `LOOMA_PIPER_DEFAULT_RATE`, `LOOMA_PIPER_SENTENCE_SILENCE`,
+  `LOOMA_PIPER_PREWARM=0` to disable pre-warming.
+
 ## Goal
 
 Piper is the main/default TTS engine used by Looma. Instead of calling the Piper binary directly for every request, Looma uses a small Python/Flask HTTP server:
@@ -391,11 +425,9 @@ The PHP file that forwards TTS requests to Piper is:
 /var/www/html/Looma/looma-TTS.php
 ```
 
-In that file, Piper remains the main/default engine. Mimic is only used when the request explicitly includes:
-
-```text
-engine=mimic
-```
+Piper is the only server-side engine in that file, so any `engine` parameter in
+the request is ignored. The other supported engine, ResponsiveVoice, is cloud
+TTS that runs entirely in the browser and never reaches `looma-TTS.php`.
 
 ## Useful Diagnostic Commands
 

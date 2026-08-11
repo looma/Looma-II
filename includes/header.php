@@ -46,12 +46,29 @@ header("Pragma: no-cache");
     }
 
    // set 'source' cookie and 'theme' cookie if needed, and refresh page
-    if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER ||
+   if (!isset($_COOKIE['source']) || $_COOKIE['source'] !== $LOOMA_SERVER ||
         !isset($_COOKIE['theme'])  || $_COOKIE['theme']  !== $LOOMA_SERVER) {
               setcookie('source',$LOOMA_SERVER,0,"/");
               setcookie('theme', $LOOMA_SERVER,0,"/");
               header("Refresh:0");  //reload page to get cookies updated
               exit;
+    }
+
+    // OpenTelemetry tracing for Looma PHP pages/endpoints.
+    // Must come after the cookie-refresh early exit above to avoid emitting
+    // spans for the forced refresh round-trip.
+    require_once('includes/otel.php');
+
+    // Auto-tag every page that includes header.php with a span attribute
+    // derived from its file name. Pages can still call looma_trace_page()
+    // explicitly with extra fields — this is the "always on" baseline.
+    if (function_exists('looma_trace_page') && empty($GLOBALS['__looma_trace_page_done__'])) {
+        $GLOBALS['__looma_trace_page_done__'] = true;
+        $script = basename($_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '');
+        // Strip leading 'looma-' and trailing '.php' to keep the page label short.
+        $page = preg_replace('/^looma-|\.php$/', '', $script);
+        if ($page === '' || $page === false) $page = 'index';
+        try { looma_trace_page($page); } catch (Throwable $e) { /* never break a page */ }
     }
 
 // get operating environment of server
@@ -129,8 +146,18 @@ header("Pragma: no-cache");
 
       <!-- <div class="watermark">Under Construction</div>  -->
 
-      <link rel="stylesheet" href="css/looma.css">             <!-- Looma CSS -->
+      <?php
+        // Which optional features this box has, for the JS that draws the
+        // buttons. A box installed without the zvec stack must not show the
+        // AI Assistant, exam generation or semantic search at all.
+        require_once (__DIR__ . '/looma-features.php');
+        echo "\n      <script>window.LOOMA_FEATURES = " . looma_feature_flags_json() . ";</script>\n";
+      ?>
+
+      <link rel="stylesheet" href="css/looma.css?v=<?php echo @filemtime(__DIR__.'/../css/looma.css') ?: time(); ?>">             <!-- Looma CSS -->
       <link rel="stylesheet" href="css/looma-keyboard.css">    <!-- Looma keyboard CSS -->
+      <link rel="stylesheet" href="css/looma-assistant.css?v=<?php echo @filemtime(__DIR__.'/../css/looma-assistant.css') ?: time(); ?>">   <!-- Looma Assistant chat modal CSS -->
+      <link rel="stylesheet" href="css/looma-word-card.css?v=<?php echo @filemtime('css/looma-word-card.css') ?: time(); ?>">    <!-- Looma word selection card CSS -->
 
     <?php  /*retrieve 'theme' cookie from $_COOKIE and use it to load the correct 'css/looma-theme-xxxxxx.css' stylesheet*/
             /*        if ( $LOOMA_SERVER === 'CEHRD' )         $settheme = "CEHRD";
@@ -157,5 +184,3 @@ header("Pragma: no-cache");
     }
         echo "<div id='timezone' hidden>" . date_default_timezone_get() . "</div>";
 ?>
-
-

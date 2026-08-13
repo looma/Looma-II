@@ -2057,6 +2057,18 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  clearInterval(LOOMA.speak.playbackPoller);
                  LOOMA.speak.playbackPoller = null;
              }
+             // ResponsiveVoice plays inside its own script and owns no media
+             // element, so it is invisible to the playingAudio branch below —
+             // nothing here used to stop it, and the next reading talked over
+             // the one still running.
+             if (LOOMA.speak.rvState) {
+                 LOOMA.speak.rvState = null;
+                 try {
+                     if (typeof responsiveVoice !== 'undefined' && responsiveVoice.cancel) {
+                         responsiveVoice.cancel();
+                     }
+                 } catch (e) {}
+             }
              if (speechSynthesis.speaking) speechSynthesis.pause();
              else {
                  if (LOOMA.speak.playingAudio) {
@@ -2685,6 +2697,23 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  try { rvPlaying = (typeof responsiveVoice.isPlaying === 'function') && responsiveVoice.isPlaying(); } catch (e) {}
                  if (rvPlaying) {
                      responsiveVoice.cancel();
+                     // Retire the run properly rather than just going quiet: a
+                     // leftover rvState would make the button guard offer
+                     // "resume" for a reading that no longer exists, and handing
+                     // the text to lastCompleted* is what lets the next press
+                     // repeat it. (Reached from callers that speak directly, such
+                     // as the Reading Settings page — a press on the Speak
+                     // control is intercepted by the button guard first.)
+                     if (LOOMA.speak.rvState) {
+                         LOOMA.speak.rvState = null;
+                         LOOMA.speak.lastCompletedText = LOOMA.speak.currentSourceText || '';
+                         LOOMA.speak.lastCompletedSnapshot =
+                             LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
+                         LOOMA.speak.currentSourceKey = null;
+                         LOOMA.speak.currentSourceText = null;
+                         LOOMA.speak.currentSourceSnapshot = null;
+                     }
+                     LOOMA.speak.clearBlockHighlight();
                      LOOMA.speak.disable();
                  } else {
                      // ResponsiveVoice's rate runs ~0–1.5; clamp the Looma rate.
@@ -2728,12 +2757,44 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      var rvSegments = splitIntoPlaybackSegments(text);
                      LOOMA.speak.highlightContext = LOOMA.speak.buildHighlightContext();
 
+                     // The same playback bookkeeping the Piper path keeps (see the
+                     // currentSourceText/Snapshot block further down). Without it a
+                     // ResponsiveVoice reading was invisible to everything built on
+                     // top of a reading: pause/resume, the press-and-hold restart and
+                     // the "repeat" press all key off these fields, so with RV
+                     // selected the button could only ever START something.
+                     var rvSnapshot = replaySnapshot || LOOMA.speak.captureSelectionSnapshot();
+                     LOOMA.speak.selectionSnapshot = LOOMA.speakCloneSnapshot(rvSnapshot);
+                     LOOMA.speak.currentSourceKey = ['responsivevoice', rvVoice, rvRate,
+                                                     LOOMA.speak.normalizeSpeakKey(text)].join('|');
+                     LOOMA.speak.currentSourceText = text;
+                     LOOMA.speak.currentSourceSnapshot = LOOMA.speakCloneSnapshot(rvSnapshot);
+                     // RV exposes no media element to ask "are you paused?", so that
+                     // flag is ours to keep. The watchdog below and the button guard
+                     // both read it.
+                     LOOMA.speak.rvState = { runId: rvRunId, paused: false };
+
+                     // Mirrors finishBrowserPlayback() on the Piper side: hand the
+                     // text and its highlight context over to lastCompleted* so the
+                     // next press repeats this reading instead of finding nothing.
+                     function finishRvPlayback() {
+                         if (rvRunId !== LOOMA.speak.runId) return;
+                         LOOMA.speak.rvState = null;
+                         LOOMA.speak.lastCompletedText = LOOMA.speak.currentSourceText || text;
+                         LOOMA.speak.lastCompletedSnapshot =
+                             LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
+                         LOOMA.speak.currentSourceKey = null;
+                         LOOMA.speak.currentSourceText = null;
+                         LOOMA.speak.currentSourceSnapshot = null;
+                         LOOMA.speak.clearBlockHighlight();
+                         LOOMA.speak.disable();
+                     }
+
                      function speakNextRvSegment(index) {
                          if (rvRunId !== LOOMA.speak.runId) return;
                          var segment = rvSegments[index];
                          if (!segment) {
-                             LOOMA.speak.clearBlockHighlight();
-                             LOOMA.speak.disable();
+                             finishRvPlayback();
                              return;
                          }
 
@@ -2753,6 +2814,12 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          }
                          function advance() {
                              if (advanced) return;
+                             // A PAUSED reading must not roll on to the next
+                             // sentence. RV reports "not playing" while paused —
+                             // the very state the watchdog uses to detect a
+                             // dropped onend — so without this, pausing would
+                             // skip ahead a sentence a second later.
+                             if (LOOMA.speak.rvState && LOOMA.speak.rvState.paused) return;
                              advanced = true;
                              stopWatchdog();
                              if (rvRunId !== LOOMA.speak.runId) return;
@@ -2766,6 +2833,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
                              var idleTicks = 0;
                              watchdog = setInterval(function () {
                                  if (advanced || rvRunId !== LOOMA.speak.runId) { stopWatchdog(); return; }
+                                 // Hold the count still while paused, so resuming
+                                 // starts from a clean slate instead of advancing
+                                 // on the idle ticks the pause itself produced.
+                                 if (LOOMA.speak.rvState && LOOMA.speak.rvState.paused) { idleTicks = 0; return; }
                                  var playing;
                                  try {
                                      playing = (typeof responsiveVoice.isPlaying === 'function')
@@ -2827,6 +2898,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                                              Object.assign({ tts_status: 'error', tts_error: msg }, rvEventBase));
                                      }
                                  } catch (e) {}
+                                 LOOMA.speak.rvState = null;
                                  LOOMA.speak.clearBlockHighlight();
                                  LOOMA.speak.disable();
                              },
@@ -2839,6 +2911,12 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
                      responsiveVoice.cancel();
                      if (rvSegments.length === 0) {
+                         // Nothing to say: drop the run state again, or the button
+                         // guard would offer to pause a reading that never started.
+                         LOOMA.speak.rvState = null;
+                         LOOMA.speak.currentSourceKey = null;
+                         LOOMA.speak.currentSourceText = null;
+                         LOOMA.speak.currentSourceSnapshot = null;
                          LOOMA.speak.disable();
                      } else {
                          speakNextRvSegment(0);
@@ -3874,6 +3952,58 @@ LOOMA.speak.installButtonGuard = function () {
             event.preventDefault();
             event.stopPropagation();
             event.stopImmediatePropagation();
+            return false;
+        }
+
+        /* ResponsiveVoice plays inside its own script and never sets
+           playingAudio, so the branch below could not see an RV reading at all:
+           every press fell through to a fresh LOOMA.speak(), which is why pause
+           did nothing with RV selected. Handle it on its own terms first — RV
+           exposes pause()/resume(), a real pause rather than the
+           cancel-and-forget the engine used to do. */
+        var rvState = LOOMA.speak.rvState;
+        if (rvState && rvState.runId === LOOMA.speak.runId && typeof responsiveVoice !== 'undefined') {
+            var rvSelected = (LOOMA.speak.getSelectedText ? LOOMA.speak.getSelectedText() : '');
+            var rvSelectedKey = LOOMA.speak.normalizeSpeakKey
+                ? LOOMA.speak.normalizeSpeakKey(rvSelected) : (rvSelected || '').toLowerCase();
+            var rvCurrent = LOOMA.speak.currentSourceText || '';
+            var rvCurrentKey = LOOMA.speak.normalizeSpeakKey
+                ? LOOMA.speak.normalizeSpeakKey(rvCurrent) : rvCurrent.toLowerCase();
+
+            // Picking new text mid-reading starts that text, exactly as it does
+            // for Piper — only a press with the SAME (or no) selection pauses.
+            if (rvSelectedKey && rvCurrentKey && rvSelectedKey !== rvCurrentKey) {
+                LOOMA.speak.cleanup();
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            var rvCanPause = typeof responsiveVoice.pause === 'function' &&
+                             typeof responsiveVoice.resume === 'function';
+            if (!rvCanPause) {
+                // An RV build without pause/resume: stopping is the honest
+                // fallback, and lastCompleted* still lets the next press repeat.
+                try { responsiveVoice.cancel(); } catch (e) {}
+                LOOMA.speak.rvState = null;
+                LOOMA.speak.lastCompletedText = rvCurrent;
+                LOOMA.speak.lastCompletedSnapshot =
+                    LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
+                LOOMA.speak.disable();
+                return false;
+            }
+
+            if (rvState.paused) {
+                rvState.paused = false;
+                try { responsiveVoice.resume(); } catch (e) {}
+                LOOMA.speak.activate();
+            } else {
+                rvState.paused = true;
+                try { responsiveVoice.pause(); } catch (e) {}
+                LOOMA.speak.disable();
+            }
             return false;
         }
 

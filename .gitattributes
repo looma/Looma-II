@@ -1,0 +1,4 @@
+# Shell scripts must keep LF endings — they run on Linux (odroid deploy targets).
+# CRLF breaks the shebang and `set -o pipefail` with "invalid option name".
+*.sh text eol=lf
+*.bash text eol=lf

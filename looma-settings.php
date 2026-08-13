@@ -12,6 +12,7 @@ Description:  for Looma 2
 <?php $page_title = 'Looma Settings';
       require_once ('includes/header.php');
       require_once ('includes/looma-utilities.php');
+      require_once ('includes/looma-features.php');
       logPageHit('settings');
 ?>
 	<link rel="stylesheet" href="css/looma-settings.css">
@@ -31,64 +32,78 @@ Description:  for Looma 2
         </div>
 
          <div id="tools">
-             <span id="login-status"></span>
-             <button class="login"></button>
-             <button class="change-password settings-control"></button><br><br>
+             <div id="login-box">
+                 <span id="login-status"></span>
+                 <div id="login-actions">
+                     <button class="login"></button>
+                     <button class="change-password settings-control"></button>
+                 </div>
+             </div>
 
-            <a href="looma-edit-lesson.php">
-                <button class="settings-control">Lesson Editor</button>
-            </a>
+            <!-- One .tool-row per row of buttons: the rows used to be separated by
+                 <br>s, whose empty line boxes pushed the last controls behind the
+                 toolbar on short windows. See css/looma-settings.css. -->
+            <div class="tool-row">
+                <a href="looma-edit-lesson.php">
+                    <button class="settings-control">Lesson Editor</button>
+                </a>
 
-             <a href="looma-edit-text.php">
-                 <button class="settings-control">Text Editor</button>
-             </a>
+                <a href="looma-edit-text.php">
+                    <button class="settings-control">Text Editor</button>
+                </a>
 
-             <a href="looma-edit-game.php">
-                 <button class="settings-control">Game Editor</button>
-             </a>
+                <a href="looma-text-translator.php">
+                    <button class="settings-control">Text Translator</button>
+                </a>
 
-   <!--
-            <a href="looma-text-translator.php">
-                 <button class="settings-control">Text Translator</button>
-             </a>
-  -->
-            <a href="looma-edit-slideshow.php">
-                 <button class="settings-control">Slideshow Editor</button>
-             </a>
+                <a href="looma-edit-slideshow.php">
+                    <button class="settings-control">Slideshow Editor</button>
+                </a>
 
-           <!--  <a href="looma-edit-video.php">
-                 <button class="settings-control">Video Editor</button>
-             </a>
+              <!--  <a href="looma-edit-video.php">
+                    <button class="settings-control">Video Editor</button>
+                </a>
+               -->
+            </div>
+
+            <div class="tool-row">
+                <?php
+                // The AI Tooling page is a console for looma-ai — it does nothing
+                // but poll a service that isn't there on a box installed without
+                // the zvec stack. Drop the button rather than offer a dead page.
+                if (looma_ai_enabled()): ?>
+                <a href="looma-ai.php">
+                    <button class="admin-control">AI Tooling</button>
+                </a>
+                <?php endif; ?>
+
+                <a href="looma-edit-activities.php">
+                    <button class="admin-control">Resource Editor</button>
+                </a>
+
+                <a href="looma-edit-dictionary.php">
+                    <button id="requestcontent" class="admin-control" >Dictionary Editor</button>
+                </a>
+
+                <a href="looma-text-scan.php">
+                    <button id="textscan" class="admin-control" >Scan Text Files</button>
+                </a>
+            <!--
+                <a href="looma-content-request.php">
+                    <button id="requestcontent" class="admin-control" >Request Resource</button>
+                </a>
             -->
+            </div>
 
-             <a href="looma-edit-activities.php">
-                 <button class="admin-control">Resource Editor</button>
-             </a>
+            <div class="tool-row">
+                <a href="looma-register-user.php">
+                    <button id="registeruser" class="exec-control" >Users</button>
+                </a>
 
-             <a href="looma-edit-dictionary.php">
-                 <button id="requestcontent" class="admin-control" >Dictionary Editor</button>
-             </a>
-
-             <a href="looma-edit-history.php">
-                 <button class="admin-control" >History Timeline Editor</button>
-             </a>
-
-             <a href="looma-text-scan.php">
-                 <button id="textscan" class="admin-control" >Scan Text Files</button>
-             </a>
-         <!--
-             <a href="looma-content-request.php">
-                 <button id="requestcontent" class="admin-control" >Request Resource</button>
-             </a>
-        -->
-             <br>
-             <a href="looma-register-user.php">
-                 <button id="registeruser" class="exec-control" >Users</button>
-             </a>
-
-             <a href="looma-import-content.php">
-                 <button id="update" class="exec-control" > Import Content </button>
-             </a>
+                <a href="looma-import-content.php">
+                    <button id="update" class="exec-control" > Import Content </button>
+                </a>
+            </div>
 
 <?php    // enable line below to restrict UPDATE to Looma boxes [$LOOMA_SERVER === 'looma local']
   //  if ($LOOMA_SERVER === 'looma local') {
@@ -98,9 +113,7 @@ Description:  for Looma 2
   //  };
 ?>
 
-             <br>
-
-             <br><div id="themelist" class="exec-control">
+             <div class="tool-row"><div id="themelist" class="exec-control">
                  <span>Change theme of Looma's pages:  </span>
                  <select id="themes">
                      <option class="theme" id="looma"         value="looma">         Looma Classic
@@ -122,12 +135,12 @@ Description:  for Looma 2
                      <option class="theme" id="blueandgreen"  value="blueandgreen">  Blue-Green
                          <img class="thumb" src="images/theme-blue-green.png" > </option>
                  </select>
-             </div>
-             <br><br>
-             <div>
+             </div></div>
+
+             <div class="tool-row">
                  <div id="speechtestdiv" class="admin-control">
                      <a href="looma-test-speech.php">
-                        <button id="speechtest" class="settings-control exec-control">Speech Test</button>
+                        <button id="speechtest" class="settings-control exec-control">Reading Settings</button>
                     </a>
                  </div>
              </div>

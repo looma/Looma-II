@@ -73,7 +73,9 @@ if (isset($_REQUEST["cmd"])) {
 				{   //Add fields with blanks to avoid errors on code that receives words
 
 					if (file_exists('../content/dictionary images/' . $word['en'] . '.jpg')) $word['img'] = $word['en'];
-					if (file_exists('../content/sign language/' . $word['en'] . '.mp4')) $word['nsl'] = $word['en'];
+					// sign-language video files are capitalized (e.g. "boy" -> "Boy.mp4")
+					$slName = ucfirst($word['en']);
+					if (file_exists('../content/sign language/' . $slName . '.mp4')) $word['nsl'] = $slName;
 
 					if(!keyIsSet('np', $word))    $word['np'] = '';
 					if(!keyIsSet('en', $word))    $word['en'] = '';
@@ -161,10 +163,10 @@ if (isset($_REQUEST["cmd"])) {
 			$classes =  array('class1','class2','class3','class4', 'class5', 'class6',
 							  'class7','class8','class9','class10','class11','class12');
 			$subjects = array('english','english optional','math','math optional','social studies','moral education',
-							  'science', 'science optional','nepali','serafera','health', 'vocation','computer');
+							  'science', 'science optional','nepali','serofero','health', 'vocation','computer');
 			$prefixes['english'] = 'EN'; $prefixes['english optional'] = 'ENa'; $prefixes['math'] = 'M';
 			$prefixes['math optional'] = 'Ma'; $prefixes['science'] = 'S'; $prefixes['science optional'] = 'Sa';
-			$prefixes['serafero'] = 'SF'; $prefixes['nepali'] = 'N'; $prefixes['health'] = 'H';
+			$prefixes['serofero'] = 'SF'; $prefixes['nepali'] = 'N'; $prefixes['health'] = 'H';
 			$prefixes['social studies'] = 'SS'; $prefixes['moral education'] = 'SSa';
 			$prefixes['vocation'] = 'V'; $prefixes['computer'] = 'CS';
 

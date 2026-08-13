@@ -45,7 +45,7 @@
 # -rtvz     recursive, set modification time, verbose, use compression
 # --progress, --update, --delete, --no-perms
 # --chmod=ugo=rwX
-# --chown=looma:looma. NOT USED - files get 58198:58198 on Update Server, then get odroid:odroid on Looma's that download from the update server
+# --chown=odroid:odroid. NOT USED - files get 58198:58198 on Update Server, then get odroid:odroid on Looma's that download from the update server
 # optional: --dry-run
 # --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*"
 # --size-only for files in content/
@@ -220,7 +220,7 @@ if [[ $3 = "content" ]]
     sshpass -p 'looma' \
         rsync -rtvz  $DRYRUNMODE $SIZE_ONLY  \
         --stats  --times --itemize-changes \
-        --perms --owner --group --chown=odroid:odroid --chmod=u+rwX,go+rX  \
+        --perms  --chown=odroid:odroid --chmod=u=rwX,go=rX  \
         --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*" \
         -e "ssh"   \
        $SYNC_SOURCE  $SYNC_DESTINATION
@@ -231,7 +231,7 @@ if [[ $3 = "content" ]]
       echo "enter password 'looma' if requested"
         rsync -rtvz  $DRYRUNMODE $SIZE_ONLY  \
         --stats  --times --itemize-changes \
-        --perms --owner --group --chown=odroid:odroid --chmod=u+rwX,go+rX   \
+        --perms  --chown=odroid:odroid --chmod=u=rwX,go=rX   \
         --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*" \
         -e "ssh"   \
        $SYNC_SOURCE  $SYNC_DESTINATION

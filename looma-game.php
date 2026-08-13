@@ -24,6 +24,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         $class =      isset($_REQUEST['class']) ? $_REQUEST['class'] : null;
         $subject =    isset($_REQUEST['subject']) ? $_REQUEST['subject'] : null;
         $ch_id =    isset($_REQUEST['ch_id']) ? $_REQUEST['ch_id'] : null;
+        $lang =       isset($_REQUEST['lang']) ? $_REQUEST['lang'] : 'en';
         $db =         isset($_REQUEST['db']) ? $_REQUEST['db'] : null;
         $author =    isset($_REQUEST['autor']) ? $_REQUEST['author'] : null;
 
@@ -87,6 +88,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
                 'data-type="' .    $type . '" ' .
                 'data-class="' .   $class . '" ' .
             'data-subject="' . $subject . '" ' .
+            'data-lang="' . $lang . '" ' .
             'data-ch_id="' . $ch_id .
             '">';
 

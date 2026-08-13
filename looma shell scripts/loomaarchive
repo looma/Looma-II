@@ -17,8 +17,8 @@
 #RSYNC options used:
 
 # -rtvz     recursive, set modification time, verbose, use compression
-# --progress, --update, --delete, --no-perms
-# --chmod=ugo=rwX
+# --progress, --delete, --perms
+# --chmod=u=rwX,go=rX
 # --chown=looma:looma. NOT USED - files get 58198:58198 on Update Server, then get odroid:odroid on Looma's that download from the update server
 # optional: --dry-run
 # --include ".ssh/"  --exclude ".[!.]*"
@@ -116,19 +116,16 @@ if [[ $2 = "dryrun" ]]
 then
     echo "NOTE: dryrun, no changes will be made"
      #removed "--include '.ssh'"
-    rsync -rtvz  --dry-run --delete --perms --times \
-    --chmod=u+rwX,go+rX  --update --progress  \
+    rsync -rtvz -i   --dry-run --delete --perms --times \
+    --chmod=u=rwX,go=rX   --progress  \
     --exclude ".[!.]*"  -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
 
     echo "FINISHED dryrun"
 else
    timestamp "/usr/local/var/www/Looma"
 
-    #echo " - - new timestamp for code is $(cat /usr/local/var/www/Looma/archivetimestamp.txt)"
-    echo "************************************"
-
-   rsync -rtvz            --delete --perms --times \
-   --chmod=u+rwX,go+rX  --update --progress   \
+   rsync -rtvz -i            --delete --perms --times \
+   --chmod=u=rwX,go=rX   --progress   \
    --exclude ".[!.]*"  -e "ssh -i ~/.ssh/id_rsa" $codesource  $codedestination
 fi
 result $?
@@ -159,17 +156,14 @@ echo
 if [[ $2 = "dryrun" ]]
 then
     echo "NOTE: dryrun"
-    rsync -rtvz  --dry-run --delete --perms --chmod=u+rwX,go+rX --update \
+    rsync -rtvz  --dry-run --delete --perms --chmod=u=rwX,go=rX  \
     --exclude ".[!.]*" --delete \
     -e "ssh -i ~/.ssh/id_rsa" $contentsource  $contentdestination
     echo "FINISHED dryrun"
 else
     timestamp $contentsource
 
-    #echo "new timestamp for content is "
-    #cat "/usr/local/var/www/content/archivetimestamp.txt"
-
-    rsync -rtvz            --delete --perms --chmod=u+rwX,go+rX  --update \
+    rsync -rtvz            --delete --perms --chmod=u=rwX,go=rX   \
     --exclude ".[!.]*" --delete \
     -e "ssh -i ~/.ssh/id_rsa" $contentsource  $contentdestination
 fi

@@ -1,7 +1,39 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls /usr/local/var/www/Looma/looma-*.php)"
+      "Bash(ls /usr/local/var/www/Looma/looma-*.php)",
+      "Bash(mongosh --quiet --eval 'db=connect\\(\"mongodb://127.0.0.1:27017/looma\"\\); var c=db.activities.find\\({ft:\"worksheet\"}\\); c.forEach\\(d=>print\\(JSON.stringify\\({fp:d.fp,fn:d.fn,dn:d.dn}\\)\\)\\); print\\(\"count=\"+db.activities.countDocuments\\({ft:\"worksheet\"}\\)\\)')",
+      "Read(//private/tmp/**)",
+      "Bash(tar xzf *)",
+      "Bash(awk '{print $1}')",
+      "Bash(curl -s -o /tmp/ep.html -w \"%{http_code}\\\\n\" \"http://localhost/looma-epaath.php?epversion=2022&ole=mataoe01&lang=english&grade=5\")",
+      "Read(//tmp/**)",
+      "Bash(npx playwright *)",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-sandbox --virtual-time-budget=12000 --enable-logging=stderr --v=0 --dump-dom \"http://localhost/kbtest/harness-lesson.html\")",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-sandbox --virtual-time-budget=12000 --dump-dom \"http://localhost/kbtest/harness-lesson.html\")",
+      "Bash(python3 -c ' *)",
+      "Bash(python3 -)",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-sandbox --virtual-time-budget=10000 --enable-logging=stderr --v=0 --dump-dom \"http://localhost/looma-epaath.php?epversion=2022&ole=are&lang=english&grade=3\")",
+      "Bash(pkill -f \"virtual-time-budget=10000\")",
+      "Bash(python3 -c \"import websockets; print\\('websockets ok'\\)\")",
+      "Bash(python3 -c \"import websocket; print\\('websocket-client ok'\\)\")",
+      "Bash(pip3 list *)",
+      "Bash(timeout 90 \"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-sandbox --dump-dom \"http://localhost/looma-epaath.php?epversion=2022&ole=are&lang=english&grade=3\")",
+      "Bash(echo \"exit=$?\")",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-sandbox --dump-dom \"http://localhost/looma-epaath.php?epversion=2022&ole=are&lang=english&grade=3\")",
+      "Read(//usr/local/var/log/httpd/**)",
+      "Bash(curl -s -b \"source=looma-laptop;theme=looma-laptop\" \"http://localhost/looma-epaath.php?epversion=2022&ole=are&lang=english&grade=3\")",
+      "Bash(grep -o 'urlParams\\\\.[a-zA-Z]*\\\\|$_GET\\\\[[^]]*\\\\]\\\\|params\\\\[['\\\\''\"][a-z]*' js/ole.start.js)",
+      "Bash(mongosh --quiet looma --eval ' *)",
+      "Bash(mongosh --quiet looma --eval 'printjson\\(db.activities.findOne\\(\\)\\)')",
+      "Bash(mongosh --quiet looma --eval 'printjson\\(db.chapters.findOne\\({ch_id:\"3M05.01\"}\\)\\)')",
+      "Bash(mongosh --quiet looma --eval 'printjson\\(db.chapters.findOne\\(\\)\\)')",
+      "Bash(grep -n \"function \\\\|^\\\\$\\(document\\)\\\\|addEventListener\" js/looma.js)",
+      "Bash(mongosh --quiet looma --eval 'printjson\\(db.activities.findOne\\({ft:\"lesson\"}\\)\\); printjson\\(db.chapters.findOne\\(\\)\\)')",
+      "Bash(php -v)",
+      "Bash(mongod --version)",
+      "Bash(mongosh --quiet looma --eval 'printjson\\(db.lessons.findOne\\(\\)\\)')",
+      "Bash(echo \"--- exit $? ---\")"
     ]
   }
 }

@@ -32,13 +32,16 @@ include ('includes/looma-utilities.php');
     }
     else {
         $type = ($_REQUEST['type']);
+        $lang = ($_REQUEST['lang']);
         $ch_id = ($_REQUEST['ch_id']);
 
       //  echo "<div id='fullscreen'>";
 
             $class = ch_idToClass($ch_id);
             $subject = ch_idToSubject($ch_id);
-            $fp = "../content/chapters/$class/$subject/en/$ch_id.$type";
+
+            $fp = ($lang === 'np') ? "../content/chapters/$class/$subject/$lang/$ch_id-np.$type"
+                                   : "../content/chapters/$class/$subject/$lang/$ch_id.$type";
             $contents = file_get_contents($fp);
 
             if ($type === "keywords") {

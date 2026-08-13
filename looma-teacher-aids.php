@@ -114,17 +114,21 @@ if ($tg) {
 //if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
 
 // make buttons for TEACHER AIDS if present
-$aids = ['summary','outline','plan','keywords','quiz','objectives','topics'];
-$aidnames = ['Summary','Outline','Plan','Keywords','Quizzes','Objectives','Topics'];
+$aids = ['summary','outline','plan','keywords','quiz','test', 'objectives','topics'];
+$aidnames = ($lang === 'np') ? ['सारांश', 'रूपरेखा', 'योजना', 'किवर्ड', 'क्विज', 'परीक्षण', 'उद्देश्यहरू', 'विषयहरू']
+                             :['Summary','Outline','Plan','Keywords','Quizzes','Tests','Objectives','Topics'];
+
 for ($i=0; $i<sizeof($aids); $i++)  {
     $aid = $aids[$i];
 
    //echo ("LOOKING FOR ../content/chapters/Class$gradenumber/$subject/$lang/$ch_id.$aid");
 
-    if (file_exists("../content/chapters/Class$gradenumber/$subject/$lang/$ch_id.$aid")) {
-        echo "<td><a href='looma-play-teacher-aid.php?dn=$aid&type=$aid&ch_id=$ch_id'>";
+    $file = ($lang === 'np') ? "../content/chapters/Class$gradenumber/$subject/$lang/$ch_id-np.$aid"
+                             : "../content/chapters/Class$gradenumber/$subject/$lang/$ch_id.$aid";
+    if (file_exists($file)) {
+        echo "<td><a href='looma-play-teacher-aid.php?dn=$aid&type=$aid&ch_id=$ch_id&lang=$lang'>";
         echo "<button class='activity  img' >";
-        echo "<span class='name'>Chapter " . $aidnames[$i] . "</span>";
+        echo "<span class='name'>" . (($lang === 'np') ? "अध्याय " : "Chapter ") . $aidnames[$i] . "</span>";
         // echo "img src='" . chapterthumbnail($ch_id) . "'";
        // echo $ch_id;
         echo "</button></a></td>";

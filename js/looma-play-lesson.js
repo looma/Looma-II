@@ -186,10 +186,10 @@ function play ($item) {
                 $htmlHTML.attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
             } else   if (version==2022) {
                 var prefix = 'ePaath/ePaath2022/';
-                $htmlHTML.find('embed').attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
+                $htmlHTML.attr('src', prefix + 'start.html?id=' + oleID + '&lang=' + lang + '&grade=' + grade.substring(5));
             }
             else
-                $htmlHTML.find('embed').attr('src', 'content/epaath/activities/'+ fn + '/start.html');
+                $htmlHTML.attr('src', 'content/epaath/activities/'+ fn + '/start.html');
 
             $('#fullscreen').addClass('keyboard');
 
@@ -280,7 +280,7 @@ function play ($item) {
         case 'html':
         case 'HTML':
             $('#fullscreen-control, .speak, .lookup').show();
-            $htmlHTML.find('embed').attr('src', fp + fn);
+            $htmlHTML.attr('src', fp + fn);
 
             $htmlHTML.appendTo($viewer);
             break;
@@ -416,9 +416,11 @@ function textHTML(id) {
 }
 
 function makeHtmlHTML() {
+    // NOTE: an <iframe>, not an <embed>: the onscreen keyboard can only reach the input boxes
+    //       of an activity displayed in an iframe (see js/looma-keyboard.js), and ePaath
+    //       activities need it to fill in their answer boxes
     return (
-      //  '<div id="fullscreen" class="keyboard"><embed src="" height=100% width=100%></div>'
-    '<embed src="" height=100% width=100%>'
+    '<iframe id="epaath_iframe" name="looma-frame" src="" style="height:100%; width:100%" allowfullscreen></iframe>'
     );
 }
 

@@ -97,7 +97,7 @@ $foundActivity;
 
     function prepareButton($activity) {
         //depending on the filetype of the activity, display the appropriate button
-        global $buttons, $maxButtons, $ch_id, $foundActivity, $shown, $chapter_lang, $lang ;
+        global $buttons, $maxButtons, $ch_id, $foundActivity, $shown, $lang, $lang ;
 
         $id = $activity['_id'];
 
@@ -105,7 +105,7 @@ $foundActivity;
         if (!isset($activity['ft'])) return;
 
         // filter: show only matching-lang resources for 'test' login level
-        if (loggedIn() && loginLevel() === 'test' && $chapter_lang !== $activity['lang'] && $activity['lang'] !== "both") return;
+        if (loggedIn() && loginLevel() === 'test' && $lang !== $activity['lang'] && $activity['lang'] !== "both") return;
 
         $ft = strtolower($activity['ft']);
 
@@ -117,7 +117,7 @@ $foundActivity;
         array_push($shown, $id);
 
         // pick language-appropriate fields
-        if ($chapter_lang === 'np') {
+        if ($lang === 'np') {
             $dn = isset($activity['ndn']) ? $activity['ndn'] : (isset($activity['dn']) ? $activity['dn'] : "");
             $fp = isset($activity['nfp']) ? $activity['nfp'] : (isset($activity['fp']) ? $activity['fp'] : "");
             $fn = isset($activity['nfn']) ? $activity['nfn'] : (isset($activity['fn']) ? $activity['fn'] : "");
@@ -210,7 +210,7 @@ $foundActivity;
 
         $lang = 'en';
 
-        $chapter_lang = (isset($_GET['chapter_lang'])) ? trim($_GET['chapter_lang']) : 'en';
+        $lang = (isset($_GET['chapter_lang'])) ? trim($_GET['chapter_lang']) : 'en';
 		$ch_id = trim($_GET['ch']);
         $ch_dn = trim($_GET['chdn']);
         $ch_ndn =  (isset($_GET['chndn'])) ? trim($_GET['chndn']) : $ch_dn;
@@ -261,7 +261,7 @@ $foundActivity;
 */
         // make a button for TEACHER AIDS
 
-        echo "<td><a href='looma-teacher-aids.php?ch_id=$ch_id&chdn=$ch_dn&grade=$grade&subject=$subject'>";
+        echo "<td><a href='looma-teacher-aids.php?ch_id=$ch_id&chdn=$ch_dn&grade=$grade&subject=$subject&lang=$lang'>";
 
         echo "<button class='activity play img' >";
       //  echo "img src='" . chapterthumbnail($ch_id) . "'";
@@ -279,7 +279,7 @@ $foundActivity;
     //  Nepali chapters use their np/ keyword file (named "<ch_id>-np.keywords"); everything else uses en/
     //  build the path the same way getKeyVocabulary does (ch_idToClass/ch_idToSubject) so the
     //  button check and the game's file fetch always agree on the class/subject folder names
-    $kw_lang = ($chapter_lang === 'np') ? 'np' : 'en';
+    $kw_lang = ($lang === 'np') ? 'np' : 'en';
     $kw_suffix = ($kw_lang === 'np') ? '-np' : '';
     $filename = "../content/chapters/" . ch_idToClass($ch_id) . "/" . ch_idToSubject($ch_id) . "/$kw_lang/$ch_id$kw_suffix.keywords";
     //echo "filename is " . $filename;
@@ -307,7 +307,7 @@ $foundActivity;
     //create a vocab review button if there are any words from this chapter in the dictionary
     $words = wordList($ch_id, false);
 
-    if ($chapter_lang === 'en' && count($words) >= 3 && $subject !== "math") {
+    if ($lang === 'en' && count($words) >= 3 && $subject !== "math") {
         echo "<td>";
 
         echo "<a href='looma-vocab-flashcard.php?ch_id=" . $ch_id . "'>";

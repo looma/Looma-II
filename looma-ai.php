@@ -3,6 +3,21 @@
 $page_title = "Looma AI Tooling";
 require_once('includes/header.php');
 require_once('includes/looma-utilities.php');
+require_once('includes/looma-features.php');
+
+// The button that leads here is hidden on a box without the zvec stack, but a
+// bookmark or a typed URL still lands here — and this page is nothing but a
+// console for looma-ai, so without it every panel would sit at "Connecting to
+// AI service..." forever. Say what is going on instead.
+if (!looma_ai_enabled()) {
+    echo "</head><body><div id='main-container-horizontal'><div class='ai-unavailable'>"
+       . "<h1>AI Tooling is not available on this Looma</h1>"
+       . "<p>The AI tools need the looma-ai service, which was not installed on "
+       . "this box. Re-run the Looma installer and enable it to turn AI tooling, "
+       . "exams, the AI Assistant and semantic search back on.</p>"
+       . "</div></div></body></html>";
+    exit;
+}
 
 logPageHit('ai');
 looma_trace_page('ai');

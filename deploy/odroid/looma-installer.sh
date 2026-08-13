@@ -69,14 +69,26 @@ set_bundle_paths
 # ---------------------------------------------------------------------------
 # Options (defaults; overridden by the form or by flags)
 # ---------------------------------------------------------------------------
-# native = Apache/PHP/MongoDB on the host (the default), but with the two services
-# the host cannot run well — zvec search and Piper TTS — as CONTAINERS. focal's
-# Python is 3.8, and neither zvec's nor looma-ai's pinned requirements install on
-# it; the images already carry the right Python, torch, the embedding model and the
-# Piper voices. SIDECARS=host forces the old all-on-the-host behaviour instead.
+# native = Apache/PHP/MongoDB on the host (the default), with the heavy services
+# as CONTAINERS by default. focal's Python is 3.8, and neither zvec's nor
+# looma-ai's pinned requirements install on it; the images already carry the right
+# Python, torch, the embedding model and the Piper voices. SIDECARS=host (zvec)
+# and PIPER_MODE=host (Piper) each force the all-on-the-host path for their half.
 DEPLOY="${DEPLOY:-native}"                 # docker | native
-SIDECARS="${SIDECARS:-docker}"             # native only: docker | host
-OFFLINE="${OFFLINE:-0}"                    # 1 = install with NO internet, from the disk bundle
+SIDECARS="${SIDECARS:-docker}"             # native only: where zvec runs — docker | host
+# Piper is tracked SEPARATELY from the zvec stack. TTS is core Looma — every box
+# needs it, including one installed without zvec — and the two have opposite
+# constraints: zvec really wants the container (focal's Python 3.8 cannot build
+# its requirements), while Piper is a self-contained binary that runs fine on the
+# host and is often better there, with no Docker in the audio path at all. Tying
+# both to one switch meant you could not have the sensible mix.
+PIPER_MODE="${PIPER_MODE:-docker}"         # native only: Piper TTS — docker | host
+# Where the packages/images come from. NOT a question anyone is asked: the
+# installer works it out (see settle_install_source) — a disk bundle is used when
+# it is there, otherwise the network, and a box with neither is told so plainly.
+# --offline / --online pin it when you need to override that.
+OFFLINE="${OFFLINE:-}"                     # ""=auto-detect, 1=disk bundle, 0=internet
+OFFLINE_EXPLICIT=0                         # 1 once --offline/--online has spoken
 WWW="${WWW:-/var/www/html}"                # install root ON THE BOX
 TARGET_USER="${TARGET_USER:-odroid}"       # desktop user for autostart/kiosk
 # Piper CPU guard: TTS inference at full tilt browns out / resets the odroid.
@@ -88,7 +100,13 @@ PIPER_THREADS="${PIPER_THREADS:-2}"
 # content. Turn it on with --observability, or in the form.
 WITH_OBSERVABILITY="${WITH_OBSERVABILITY:-0}"  # full obs stack on this box
 WITH_AGENTS="${WITH_AGENTS:-0}"            # agents-only: Vector+Metricbeat -> remote obs
-WITH_AI="${WITH_AI:-1}"                    # looma-ai = the in-app assistant (ON by default)
+# looma-ai is NOT a separate choice any more — it is half of the zvec stack, and
+# WITH_SEARCH decides both (settle_stack_flags derives this). It stays a variable
+# only because the install can still DEMOTE it at runtime: on a host install whose
+# torch/requirements refuse to build, search survives and the assistant does not,
+# and the app then has to hide the assistant/exam buttons on its own
+# (includes/looma-features.php reads LOOMA_AI for exactly that case).
+WITH_AI="${WITH_AI:-1}"                    # derived from WITH_SEARCH; may be demoted on failure
 WITH_ANALYSIS="${WITH_ANALYSIS:-0}"        # heavy obs AI analysis workers (torch) — OFF
 # The zvec STACK: the search service + looma-ai. One switch, because the three
 # features a teacher sees — semantic search, the AI Assistant and exam generation
@@ -177,29 +195,51 @@ mkdirs() {  # mkdir -p that explains a read-only disk instead of failing silentl
 # Download the Piper voice models (model + its .json) into $1. The mandatory
 # pair aborts the install if it cannot be fetched; each extra voice is allowed to
 # fail on its own — a box with one English voice missing still speaks.
+# A voice is COMPLETE only when both halves are on disk. The .json is fetched second,
+# so a model whose download was cut off shows up as an .onnx with no .json — which is
+# what makes this the check that catches a truncated file.
+voice_complete() { [ -s "$1/$2.onnx" ] && [ -s "$1/$2.onnx.json" ]; }
+
+# Fetch ONE voice atomically: download beside the target and move into place only
+# when BOTH halves arrived. Without this an interrupted download (these are 60-75 MB
+# each, over USB, on a board that browns out) leaves a truncated but NON-EMPTY .onnx
+# — and the old `[ ! -s ... ]` guard then SKIPPED it on every later run, so the voice
+# stayed silently broken forever and piper failed only when a child pressed Speak.
+fetch_one_voice() {  # remote_path  dest  name   -> 0 = in place, 1 = nothing written
+  local path="$1" dest="$2" name="$3"
+  local t_onnx="$dest/.$name.onnx.part" t_json="$dest/.$name.onnx.json.part"
+  rm -f "$t_onnx" "$t_json"
+  if curl -fSL --retry 3 --retry-delay 2 "$PIPER_VOICES_BASE/$path.onnx"      -o "$t_onnx" \
+  && curl -fSL --retry 3 --retry-delay 2 "$PIPER_VOICES_BASE/$path.onnx.json" -o "$t_json" \
+  && [ -s "$t_onnx" ] && [ -s "$t_json" ]; then
+    mv -f "$t_onnx" "$dest/$name.onnx" && mv -f "$t_json" "$dest/$name.onnx.json" && return 0
+  fi
+  rm -f "$t_onnx" "$t_json"
+  return 1
+}
+
 fetch_piper_voices() {
   local dest="$1" path name
   mkdirs "$dest"
 
   for path in $PIPER_VOICES; do
     name="$(basename "$path")"
-    if [ ! -s "$dest/$name.onnx" ]; then
-      curl -fSL "$PIPER_VOICES_BASE/$path.onnx"      -o "$dest/$name.onnx"
-      curl -fSL "$PIPER_VOICES_BASE/$path.onnx.json" -o "$dest/$name.onnx.json"
-    fi
+    voice_complete "$dest" "$name" && continue
+    # Half-downloaded leftovers from an interrupted run, or from the version of this
+    # script that wrote straight to the target — clear them so the retry is clean.
+    rm -f "$dest/$name.onnx" "$dest/$name.onnx.json"
+    fetch_one_voice "$path" "$dest" "$name" \
+      || warn "the REQUIRED voice $name could not be downloaded — TTS will not speak it"
   done
 
   for path in $PIPER_EXTRA_VOICES; do
     name="$(basename "$path")"
-    if [ -s "$dest/$name.onnx" ]; then
-      continue
-    fi
-    if curl -fSL "$PIPER_VOICES_BASE/$path.onnx"      -o "$dest/$name.onnx" \
-    && curl -fSL "$PIPER_VOICES_BASE/$path.onnx.json" -o "$dest/$name.onnx.json"; then
+    voice_complete "$dest" "$name" && continue
+    rm -f "$dest/$name.onnx" "$dest/$name.onnx.json"
+    if fetch_one_voice "$path" "$dest" "$name"; then
       log "  + optional voice $name"
     else
       warn "optional voice $name could not be downloaded — skipping it"
-      rm -f "$dest/$name.onnx" "$dest/$name.onnx.json"
     fi
   done
 
@@ -219,25 +259,43 @@ fetch_piper_voices() {
 # needs no OCR. Without this step the index only ever held `activities`, so a
 # search never matched the actual lesson text.
 #
-# Runs inside the looma-ai container (it carries pymongo + bs4). Best-effort: a
-# box can be used without it, the search is just thinner until it runs.
+# The reading is done by looma-ai's ingester (it needs pymongo + bs4), which lives
+# EITHER in the container or in the host venv depending on how this box was
+# installed — so look for both rather than assuming Docker. Best-effort: a box can
+# be used without it, the search is just thinner until it runs.
 ingest_chapters_html() {
   [ "$WITH_SEARCH" = "1" ] || return 0
-  command -v docker >/dev/null 2>&1 || return 0
 
-  if ! docker ps --format '{{.Names}}' 2>/dev/null | grep -qx looma-ai; then
-    warn "chapters not ingested — looma-ai is not running (it does the reading)."
-    warn "  Run it later with:  docker exec looma-ai python scripts/ingest_bulk_content_to_mongo.py --folder chapters"
+  local rel="scripts/ingest_bulk_content_to_mongo.py"
+
+  if command -v docker >/dev/null 2>&1 \
+     && docker ps --format '{{.Names}}' 2>/dev/null | grep -qx looma-ai; then
+    log "ingesting the chapter HTML into the search index (skips the PDFs)…"
+    if docker exec looma-ai python "$rel" --folder chapters; then
+      log "chapters ingested"
+    else
+      warn "the chapter ingestion failed — search will still work, but without chapter text."
+      warn "  retry: docker exec looma-ai python $rel --folder chapters"
+    fi
     return 0
   fi
 
-  log "ingesting the chapter HTML into the search index (skips the PDFs)…"
-  if docker exec looma-ai python scripts/ingest_bulk_content_to_mongo.py --folder chapters; then
-    log "chapters ingested"
-  else
-    warn "the chapter ingestion failed — search will still work, but without chapter text."
-    warn "  retry: docker exec looma-ai python scripts/ingest_bulk_content_to_mongo.py --folder chapters"
+  # On the host: the same script, run with the venv python from looma-ai's own
+  # directory (which is how looma-ai.service runs it).
+  local ai_dir="$WWW/$REPO_NAME/looma-ai"
+  if [ -x "$VENV/bin/python" ] && [ -f "$ai_dir/$rel" ]; then
+    log "ingesting the chapter HTML into the search index (host venv; skips the PDFs)…"
+    if ( cd "$ai_dir" && "$VENV/bin/python" "$rel" --folder chapters ); then
+      log "chapters ingested"
+    else
+      warn "the chapter ingestion failed — search will still work, but without chapter text."
+      warn "  retry: cd $ai_dir && $VENV/bin/python $rel --folder chapters"
+    fi
+    return 0
   fi
+
+  warn "chapters not ingested — neither the looma-ai container nor the host venv is available."
+  warn "  Search will work, but it will not match the lesson text until this runs."
   return 0
 }
 
@@ -267,14 +325,20 @@ Looma ODROID installer — one script, all deployments.
 Install flags (all optional; passing any flag skips the form):
   --native | --docker     native (the default): Apache/PHP/MongoDB on the host, with
                           zvec + Piper as containers.  docker: the whole app in containers.
-  --sidecars docker|host  native only: run zvec/Piper as containers (default), or on the
-                          host with a venv + systemd units (needs Python >= 3.9)
+  --sidecars docker|host  native only: run the ZVEC STACK as containers (default), or on
+                          the host with a venv + systemd units (needs Python >= 3.9)
+  --piper docker|host     native only: run PIPER TTS as a container (default), or on the
+                          host as the Piper binary + a systemd unit. Independent of
+                          --sidecars: speech does not depend on the zvec stack.
   --swap                  Create a ${SWAP_GB}G swapfile (ON by default)
   --swap-gb N             Same, but N gigabytes. On a re-install with a DIFFERENT
                           N than before, REPLACES the existing swapfile (does not
                           just leave the old size in place, and does not add a
                           second one)
-  --offline | --online    Install from the disk bundle with NO internet, or from the net
+  --offline | --online    Pin the install source. You normally need NEITHER: the
+                          installer detects it — a usable bundle on the disk is used
+                          and no internet is touched, otherwise it installs from the
+                          network, and a box with neither is told before it is changed.
   --www PATH              Install root on the box (default: $WWW)
   --user NAME             Desktop user for autostart/kiosk (default: $TARGET_USER)
   --kiosk-url URL         URL the kiosk opens (default: docker :48080, native :80)
@@ -286,8 +350,12 @@ Install flags (all optional; passing any flag skips the form):
   --remote-obs IP         Send telemetry to an obs stack on another host (this box runs
                           only Vector+Metricbeat; needs IP reachable on :4318 and :49200)
   --analysis              Also run the heavy obs AI analysis workers (torch)
-  --ai | --no-ai          Run the in-app assistant looma-ai (ON by default)
-  --no-search             Native only: don't install the zvec search service
+  --no-search             Leave the ZVEC STACK out — no semantic search, no AI
+                          Assistant, no exam generation, and the app hides all
+                          three rather than offering buttons with nothing behind
+                          them. Piper TTS is unaffected.
+  --ai | --no-ai          Obsolete, accepted and ignored: the assistant is part of
+                          the zvec stack. Use --no-search.
   --cpu-max-freq kHz      Cap every CPU's max frequency at boot, before Looma starts
                           (default: $CPU_MAX_FREQ = $((CPU_MAX_FREQ/1000)) MHz; 0 = leave the CPUs alone)
   --bundle-dir PATH       Where the offline bundle lives (default: next to this
@@ -964,20 +1032,71 @@ obs_label() {
   else echo "none"; fi
 }
 
+# CPU_MAX_FREQ is in kHz, because that is what /sys/.../scaling_max_freq takes.
+# The form talks MHz — that is how the board is described everywhere else — and
+# converts, so nobody has to type five zeros to ask for 1.5 GHz.
+cpu_freq_label() {
+  if [ "${CPU_MAX_FREQ:-0}" = "0" ] || [ -z "${CPU_MAX_FREQ:-}" ]; then
+    echo "unchanged (Piper TTS may brown out this board)"
+  else
+    echo "$((CPU_MAX_FREQ / 1000)) MHz, capped at boot"
+  fi
+}
+
+edit_cpu_freq() {
+  local mhz=$(( ${CPU_MAX_FREQ:-0} / 1000 ))
+  ui_input mhz "Cap every CPU at this frequency (MHz), on every boot.
+
+Piper TTS at full tilt pushes this board past its power/thermal budget and it
+RESETS mid-sentence — capping the CPUs is what stops that, with no overclock
+involved. 1500 is the value confirmed on this hardware to still leave Piper
+usable. 0 leaves the CPUs alone." "$mhz" || return 0
+
+  case "$mhz" in
+    ''|*[!0-9]*)
+      warn "'$mhz' is not a number — CPU frequency left at $(cpu_freq_label)"
+      return 0 ;;
+  esac
+  # A typo here is not harmless: too low makes TTS unusably slow, and a value
+  # above what the board offers is simply ignored by the kernel, so the cap that
+  # was supposed to stop the resets silently does nothing.
+  if [ "$mhz" -ne 0 ] && { [ "$mhz" -lt 400 ] || [ "$mhz" -gt 2400 ]; }; then
+    warn "$mhz MHz is outside the range this board runs at (400-2400) — left at $(cpu_freq_label)"
+    return 0
+  fi
+  CPU_MAX_FREQ=$(( mhz * 1000 ))
+}
+
+# The install source is DETECTED, never asked (see settle_install_source). The
+# review screen still shows it, because "where did these bits come from" is the
+# first question when an install goes wrong — it is just reported, not offered.
+install_source_label() {
+  if [ "$OFFLINE_EXPLICIT" = "1" ]; then
+    [ "$OFFLINE" = "1" ] && echo "offline — the disk bundle (forced with --offline)" \
+                         || echo "online — the internet (forced with --online)"
+    return 0
+  fi
+  if bundle_present; then
+    echo "auto -> offline, the bundle on the disk ($(bundle_where))"
+  else
+    echo "auto -> online, no bundle on the disk (the network is checked before anything is installed)"
+  fi
+}
+
 summary() {
   local row='  %-16s: %s\n'
   printf "$row" "Deployment" "$DEPLOY$([ "$DEPLOY" = native ] && echo ' (Apache/PHP/MongoDB on the host)' || echo ' (containers)')"
-  [ "$DEPLOY" = native ] && printf "$row" "zvec + Piper" \
+  [ "$DEPLOY" = native ] && [ "$WITH_SEARCH" = 1 ] && printf "$row" "zvec deploy" \
     "$([ "$SIDECARS" = docker ] && echo 'in Docker (recommended)' || echo 'on the host (venv + systemd)')"
-  printf "$row" "Install source" "$([ "$OFFLINE" = 1 ] && echo 'offline — from the disk bundle, no internet' || echo 'online — pulls/builds from the internet')"
+  [ "$DEPLOY" = native ] && printf "$row" "piper deploy" \
+    "$([ "$PIPER_MODE" = docker ] && echo 'in Docker' || echo 'on the host (binary + systemd)')"
+  printf "$row" "Install source" "$(install_source_label)"
   printf "$row" "Observability" "$(obs_label)"
-  printf "$row" "AI assistant" "$(onoff "$WITH_AI")"
-  printf "$row" "zvec stack" "$(onoff "$WITH_SEARCH")$([ "$WITH_SEARCH" = 1 ]       && echo ' — semantic search + AI Assistant + exams'       || echo ' — no semantic search, no AI Assistant, no exams')"
+  printf "$row" "zvec" "$(onoff "$WITH_SEARCH")$([ "$WITH_SEARCH" = 1 ]       && echo ' — semantic search + AI Assistant + exams'       || echo ' — no semantic search, no AI Assistant, no exams')"
   [ "$DEPLOY" = docker ] && [ "$WITH_OBSERVABILITY" = 1 ] && printf "$row" "Analysis workers" "$(onoff "$WITH_ANALYSIS")"
   printf "$row" "Kiosk autostart" "$(onoff "$INSTALL_KIOSK")$([ "$INSTALL_KIOSK" = 1 ] && echo " -> $(kiosk_url)")"
   printf "$row" "Swapfile (${SWAP_GB}G)" "$(yesno "$MAKE_SWAP")"
-  printf "$row" "CPU max freq" \
-    "$([ "${CPU_MAX_FREQ:-0}" = 0 ] && echo 'unchanged (Piper TTS may brown out this board)' || echo "capped at $((CPU_MAX_FREQ/1000)) MHz at boot")"
+  printf "$row" "CPU max freq" "$(cpu_freq_label)"
   printf "$row" "Install root" "$WWW"
   printf "$row" "Desktop user" "$TARGET_USER"
   return 0
@@ -988,20 +1107,28 @@ run_form() {
   while :; do
     # The menu is rebuilt every pass so each row shows its CURRENT value, and
     # rows that don't apply to the chosen deployment simply aren't offered.
+    # Install source is NOT here on purpose: it is detected, not chosen.
     local rows=(
       "deploy"  "Deployment ............ $DEPLOY"
-      "source"  "Install source ........ $([ "$OFFLINE" = 1 ] && echo 'offline (disk bundle)' || echo 'online (internet)')"
       "obs"     "Observability ......... $(obs_label)"
-      "search"  "zvec stack ............ $(onoff "$WITH_SEARCH")  (search + AI + exams)"
-      "ai"      "AI assistant (looma-ai) $(onoff "$WITH_AI")"
+      "zvec"    "zvec .................. $(onoff "$WITH_SEARCH")  (search + AI + exams)"
     )
+    # The tag is the left-hand column whiptail shows, i.e. the field NAME the person
+    # installing reads — so it says what the row is about ("zvec deploy"), not the
+    # internal word for how it happens to be deployed ("sidecars"). The description
+    # stays self-contained because the plain-text fallback below prints ONLY the
+    # description, never the tag. The SIDECARS variable and the --sidecars flag keep
+    # their names: they are the scripted interface, and renaming them would break
+    # install commands people already have.
     [ "$DEPLOY" = "native" ] && rows+=(
-      "sidecars" "zvec + Piper run ...... $([ "$SIDECARS" = docker ] && echo 'in Docker' || echo 'on the host')" )
+      "zvec deploy"  "zvec deploy ........... $([ "$WITH_SEARCH" = 1 ] && { [ "$SIDECARS" = docker ] && echo 'in Docker' || echo 'on the host'; } || echo '(turn zvec on first)')"
+      "piper deploy" "piper deploy .......... $([ "$PIPER_MODE" = docker ] && echo 'in Docker' || echo 'on the host')" )
     [ "$DEPLOY" = "docker" ] && [ "$WITH_OBSERVABILITY" = "1" ] && \
       rows+=( "analysis" "Obs analysis workers .. $(onoff "$WITH_ANALYSIS")" )
     rows+=(
       "kiosk"   "Chromium kiosk ........ $(onoff "$INSTALL_KIOSK")"
       "url"     "Kiosk URL ............. $(kiosk_url)"
+      "cpu"     "CPU max frequency ..... $(cpu_freq_label)"
       "swap"    "Swapfile (${SWAP_GB}G) ....... $(yesno "$MAKE_SWAP")"
       "root"    "Install root .......... $WWW"
       "user"    "Desktop user .......... $TARGET_USER"
@@ -1037,46 +1164,42 @@ run_form() {
           ""|http://localhost/home|http://localhost:48080/home|http://localhost|http://localhost:8080|http://localhost:48080) KIOSK_URL="" ;;
         esac
         ;;
-      source)
-        local SRC=online; [ "$OFFLINE" = 1 ] && SRC=offline
-        ui_choose SRC "Where do the packages/images come from?" \
-          "online"  "Internet — Docker/apt/pip fetch what they need" \
-          "offline" "The disk bundle — no internet is used at all" || true
-        if [ "$SRC" = "offline" ]; then
-          if [ "$DEPLOY" = "docker" ] && [ ! -f "$OFFLINE_DIR/images/looma-images.tar" ]; then
-            warn "no Docker bundle on the disk ($OFFLINE_DIR/images/looma-images.tar) — build it with: $0 build-bundle docker"
-            ui_yesno "The Docker offline bundle is MISSING from the disk.\n\nKeep 'offline' anyway (the install will fail until the bundle is there)?" || SRC=online
-          fi
-          if [ "$DEPLOY" = "native" ] && ! ls "$NATIVE_BUNDLE"/deb/*.deb >/dev/null 2>&1; then
-            warn "no native bundle on the disk ($NATIVE_BUNDLE/deb) — build it with: $0 build-bundle native"
-            ui_yesno "The native offline bundle is MISSING from the disk.\n\nKeep 'offline' anyway (the install will fail until the bundle is there)?" || SRC=online
-          fi
+      "zvec deploy")
+        # Only answerable while zvec is ON: with it off neither the search
+        # service nor looma-ai is installed, so there is nothing to place. (Piper
+        # has its own row and is not affected either way.)
+        if [ "$WITH_SEARCH" != "1" ]; then
+          ui_yesno "zvec is OFF, so there is nothing to place.
+
+Turn zvec on now? It brings semantic search, the AI Assistant and exam generation." \
+            && WITH_SEARCH=1 || true
+          continue
         fi
-        [ "$SRC" = "offline" ] && OFFLINE=1 || OFFLINE=0
-        ;;
-      sidecars)
-        ui_choose SIDECARS "How should zvec search and Piper TTS run?" \
-          "docker" "As containers — recommended; they bring their own Python, torch and voices" \
+        ui_choose SIDECARS "How should the zvec stack (search + looma-ai) run?" \
+          "docker" "As containers — recommended; they bring their own Python, torch and the embedding model" \
           "host"   "On the host — a venv + systemd units; needs Python >= 3.9 (focal has 3.8)" || true
         ;;
+      "piper deploy")
+        ui_choose PIPER_MODE "How should Piper TTS run?" \
+          "docker" "As a container — the voices are baked into the image, nothing to download" \
+          "host"   "On the host — the Piper binary + a systemd unit; no Docker in the audio path" || true
+        ;;
       obs)      edit_observability ;;
-      ai)       ui_yesno "Run the in-app AI assistant (looma-ai)?\n\nIt is heavy (torch) — turn it off if 8 GB is tight." && WITH_AI=1 || WITH_AI=0 ;;
-      search)   if ui_yesno "Install the zvec stack?
+      zvec)     if ui_yesno "Install the zvec stack?
 
-It provides SEMANTIC SEARCH, the AI ASSISTANT and EXAM GENERATION.
+It provides SEMANTIC SEARCH, the AI ASSISTANT and EXAM GENERATION — one switch, because all three run on it.
 
-It is the heaviest part of Looma (torch + an index over the whole curriculum). Saying no removes those three features from the app entirely — the buttons are not shown at all."; then
+It is the heaviest part of Looma (torch + an index over the whole curriculum). Saying no removes those three features from the app entirely — the buttons are not shown at all.
+
+Piper TTS is NOT part of this: speech works either way."; then
                   WITH_SEARCH=1
                 else
                   WITH_SEARCH=0
-                  # looma-ai IS the assistant/exams half of the stack: it cannot
-                  # stay on by itself.
-                  [ "$WITH_AI" = "1" ] && log "  AI assistant turned off too — it is part of the zvec stack"
-                  WITH_AI=0
                 fi ;;
       analysis) ui_yesno "Also run the heavy observability AI analysis workers (torch)?\n\nSeparate from the assistant; off by default." && WITH_ANALYSIS=1 || WITH_ANALYSIS=0 ;;
       kiosk)    ui_yesno "Install the Chromium kiosk autostart (fullscreen Looma on login)?" && INSTALL_KIOSK=1 || INSTALL_KIOSK=0 ;;
       url)      ui_input KIOSK_URL "URL the kiosk opens" "$(kiosk_url)" || true ;;
+      cpu)      edit_cpu_freq ;;
       swap)     if ui_yesno "Create a swapfile (recommended on 8 GB)?\n\nA re-install with a different size REPLACES the existing swapfile."; then
                   MAKE_SWAP=1; ui_input SWAP_GB "Swapfile size (GB)" "$SWAP_GB" || true
                 else
@@ -1126,34 +1249,277 @@ tidy_known_broken_apt_repos() {
   fi
 }
 
-bundle_present() {
-  if [ "$DEPLOY" = "native" ]; then ls "$NATIVE_BUNDLE"/deb/*.deb >/dev/null 2>&1
-  else [ -f "$OFFLINE_DIR/images/looma-images.tar" ] && ls "$OFFLINE_DIR"/docker/docker-*.tgz >/dev/null 2>&1
+# The installed MongoDB as a comparable number: "4.4.29" -> 404, "3.6.9" -> 306, and
+# 0 when mongod is not installed at all. The MINOR matters — the pymongo cutoff is
+# 4.2, so a bare major would not tell 4.0 (too old) from 4.2 (fine).
+#
+# The trailing `|| true` is load-bearing: under `set -euo pipefail` a missing mongod
+# makes the pipeline exit 127, and the callers assign this in a plain
+# `mver="$(mongod_vernum)"`, which would abort the install.
+mongod_vernum() {
+  local v
+  v="$(mongod --version 2>/dev/null | sed -n 's/^db version v\([0-9]*\)\.\([0-9]*\).*/\1 \2/p' | head -1 || true)"
+  [ -n "$v" ] || { echo 0; return 0; }
+  echo $(( ${v%% *} * 100 + ${v##* } ))
+}
+
+# What Looma needs (402 = MongoDB 4.2) and what it prefers (the MONGO_SERIES this
+# script installs). Below the minimum the box is replaced; between the two it is
+# kept with a warning, because replacing a working 4.2/4.4 would cost a full
+# dump/restore to gain only the dictionary index — and on some ODROID boards
+# (Cortex-A73/A53, i.e. ARMv8.0-A) MongoDB 5.0 cannot run AT ALL: it needs
+# ARMv8.2-A and dies with SIGILL on anything older, so 4.4 is the ceiling there.
+MONGO_MIN_VERNUM=402
+
+# The MongoDB on the box has to be NEW ENOUGH for the rest of Looma, not merely
+# present. focal ships `mongodb-server` 3.6, and a box that ran the old native
+# Looma still has it — so "mongod exists, keep it" (what step 1 used to do) left
+# 3.6 in place. Nothing complains while the installer runs, but afterwards:
+#   * pymongo 4.x — what looma-ai AND the search service both run — refuses to
+#     speak to anything older than 4.2 ("reports wire version 6, but this version
+#     of PyMongo requires at least 8"), so the chapter ingestion dies …
+#   * … and so does the zvec index build, INVISIBLY: /rebuild answers 202 and
+#     builds in a background thread, so the installer's curl succeeds and the box
+#     ships with an EMPTY index that answers every classroom search with nothing.
+#   * mongorestore of the 5.0 dump rejects some indexes ("key too large to
+#     index"), which is what makes the Nepali dictionary crawl.
+# So anything below MONGO_MIN_VERNUM is REPLACED by mongodb-org. Old data files are
+# not carried over — 3.6's cannot be read by 5.0 (that upgrade path is 3.6 -> 4.0 ->
+# 4.2 -> 4.4 -> 5.0, one series at a time, and 5.0 simply refuses to start on them) —
+# so the data directory is dumped for safety and then emptied; step 5 restores the
+# repo's own dump over it in either case.
+#
+# Ubuntu's own MongoDB packages CONFLICT with mongodb-org at the FILE level, so they
+# have to be gone before mongodb-org is installed.
+#
+# This is deliberately NOT part of replace_ancient_mongodb: `mongo-tools` OUTLIVES
+# the server. It is a dependency of mongodb-clients, and purging a package never
+# removes its dependencies (only autoremove would, which this script does not run).
+# So after one pass removes mongod, `mongo-tools` is still there, replace_ancient_
+# mongodb sees no mongod and returns early — and the box is stuck forever on
+#   trying to overwrite '/usr/bin/bsondump', which is also in package mongo-tools
+#   mongodb-org-tools : Depends: mongodb-database-tools but it is not going to be installed
+# Hence: run this whenever we are about to install mongodb-org, not only when there
+# is an old server to replace.
+#
+# (`mongo-tools` is not a typo for mongodb-tools — that is genuinely Ubuntu's name
+# for it, and it is the package that owns /usr/bin/bsondump, mongodump, mongorestore.)
+purge_conflicting_mongo_packages() {
+  local old_pkgs=() p
+  # Purge only what is actually installed: `apt-get purge` on an unknown package name
+  # aborts before touching the ones that do exist.
+  for p in mongodb mongodb-server mongodb-server-core mongodb-clients mongo-tools mongodb-dev; do
+    if dpkg-query -W -f='${Status}' "$p" 2>/dev/null | grep -q 'ok installed'; then
+      old_pkgs+=("$p")
+    fi
+  done
+  # Last resort for a name this list does not know: whoever owns the binary that
+  # mongodb-database-tools collides on, as long as it is not already an mongodb-org
+  # package (which would mean there is nothing to clean up).
+  local owner
+  owner="$(dpkg -S /usr/bin/bsondump 2>/dev/null | cut -d: -f1 || true)"
+  case "$owner" in
+    ""|mongodb-database-tools|mongodb-org*) ;;
+    *) case " ${old_pkgs[*]-} " in *" $owner "*) ;; *) old_pkgs+=("$owner") ;; esac ;;
+  esac
+
+  [ "${#old_pkgs[@]}" -gt 0 ] || return 0
+  log "  purging Ubuntu's own MongoDB packages (they conflict with mongodb-org): ${old_pkgs[*]}"
+  apt-get purge -y "${old_pkgs[@]}" && return 0
+
+  # apt REFUSES to do anything — including a purge — while some other package has
+  # unmet dependencies, and a half-finished mongodb-org install is exactly that:
+  #   mongodb-org-tools : Depends: mongodb-database-tools but it is not going to be installed
+  # That is a DEADLOCK. apt will not remove the conflicting package until the
+  # dependency is satisfied, and the dependency cannot be satisfied until the
+  # conflicting package is removed — `apt --fix-broken install` just re-runs into the
+  # same file conflict. dpkg has no such resolver, so drive it directly and let apt
+  # tidy up afterwards. This is the only way out of a box already in that state.
+  warn "  apt refused (unmet dependencies from an earlier partial install) — using dpkg directly"
+  dpkg --purge --force-depends "${old_pkgs[@]}" || warn "  dpkg also reported an issue (see above)"
+  apt-get -y -f install || true
+}
+
+# Returns 0 when it removed one (the caller must then install MONGO_SERIES), 1 when
+# the MongoDB that is there is good enough and should be kept.
+replace_ancient_mongodb() {
+  local mver; mver="$(mongod_vernum)"
+  [ "$mver" -gt 0 ] || return 1                    # nothing installed — nothing to replace
+  [ "$mver" -lt "$MONGO_MIN_VERNUM" ] || return 1  # 4.2+ is good enough; leave it alone
+
+  warn "this box runs MongoDB $((mver/100)).$((mver%100)), and Looma needs 4.2 or newer —"
+  warn "  pymongo 4 refuses anything older, so chapter ingestion and the zvec index"
+  warn "  would both fail (the index silently, leaving every search unanswered)."
+  log "replacing it with MongoDB ${MONGO_SERIES}"
+
+  local svc=mongod
+  systemctl list-unit-files 2>/dev/null | grep -q '^mongod\.service' || svc=mongodb
+
+  # A safety copy taken with the OLD tools while they are still installed. It is
+  # NOT restored automatically (step 5 loads the repo dump, as it always has), but
+  # a box carrying locally-made content is not left with nothing to go back to.
+  if command -v mongodump >/dev/null 2>&1; then
+    systemctl start "$svc" >/dev/null 2>&1 || true
+    local bak="/var/backups/looma-mongo$((mver/100)).$((mver%100))-$(date +%Y%m%d-%H%M%S)"
+    if mongodump --out "$bak" >/dev/null 2>&1; then
+      log "  the old database was dumped to $bak"
+    else
+      warn "  could not dump the old database — carrying on (the repo dump is restored below)"
+    fi
+  fi
+  systemctl stop "$svc" >/dev/null 2>&1 || true
+  systemctl disable "$svc" >/dev/null 2>&1 || true
+
+  purge_conflicting_mongo_packages
+
+  # Remove the data directory ITSELF, not just its contents: emptying it leaves it
+  # owned by the purged package's `mongodb` user, and the new mongod — which runs as
+  # its own `mongodb` user, not necessarily the same uid — then fails to start with
+  # "Unable to create/open the lock file: Permission denied", which looks from the
+  # outside exactly like "no reachable servers". Gone entirely, the new package's
+  # postinst recreates it with the right ownership.
+  rm -rf /var/lib/mongodb /etc/mongodb.conf 2>/dev/null || true
+  return 0
+}
+
+# Which MongoDB series this board can actually RUN.
+#
+# MongoDB 5.0+ requires ARMv8.2-A on arm64 and dies with SIGILL ("Illegal
+# instruction", systemd status=4) on anything older — which includes the Cortex-A73
+# + A53 of the ODROID-N2/N2+. The service never opens 27017, so every client just
+# reports that there are no reachable servers. 4.4 is the last series those boards
+# can run, and at wire version 9 it is comfortably above pymongo's 4.2 cutoff, so
+# nothing in Looma actually needs 5.0 — only the dictionary index prefers it.
+#
+# asimdhp (half-precision advanced SIMD) is an ARMv8.2-A feature and is the
+# practical marker in /proc/cpuinfo: Cortex-A55/A76 report it, A53/A72/A73 do not.
+settle_mongo_series() {
+  [ "$MONGO_SERIES" = "5.0" ] || return 0          # explicitly overridden — respect it
+  case "$(uname -m)" in aarch64|arm64) ;; *) return 0 ;; esac
+  grep -qw asimdhp /proc/cpuinfo 2>/dev/null && return 0
+
+  warn "this board is ARMv8.0-A (no asimdhp) — MongoDB 5.0 would crash on it with"
+  warn "  'Illegal instruction'. Installing MongoDB 4.4 instead, the newest series"
+  warn "  it can run. Looma is fine with it (pymongo needs 4.2+); only the dictionary"
+  warn "  index is happier on 5.0. Override with MONGO_SERIES=5.0 if this is wrong."
+  MONGO_SERIES=4.4
+  MONGO_VERSION=4.4.29
+}
+
+# Wait for the zvec index to actually CONTAIN something.
+#
+# /rebuild returns 202 the moment the background thread starts (see the endpoint in
+# search-service/search_service.py), so its exit status says only "the service is
+# up" — never "the index built". Every call site used to treat that 202 as success
+# and print "zvec OK", which is how a box with an unreachable/empty Mongo passed the
+# install and failed in a classroom. /health carries `doc_count`, so poll that.
+wait_for_zvec_index() {  # base_url  logs_hint
+  local base="$1" hint="$2" health n=0
+  while [ "$n" -lt 180 ]; do          # 180 * 10s = 30 min, same ceiling as the old --max-time
+    health="$(curl -fsS --max-time 10 "$base/health" 2>/dev/null || true)"
+    case "$health" in
+      *'"doc_count"'*)
+        # doc_count is 0 both while building and after a build that found nothing,
+        # so only a positive count ends the wait.
+        if ! printf '%s' "$health" | grep -qE '"doc_count":[[:space:]]*0[,}]'; then
+          log "zvec index built: $(printf '%s' "$health" | sed -n 's/.*"doc_count":[[:space:]]*\([0-9]*\).*/\1/p') documents"
+          return 0
+        fi ;;
+    esac
+    n=$((n+1)); sleep 10
+  done
+  warn "the zvec index is still EMPTY after 30 minutes — semantic search will answer nothing."
+  warn "  last /health: ${health:-<no response>}"
+  warn "  check: $hint"
+  warn "  retry: curl -X POST $base/rebuild"
+  return 1
+}
+
+docker_bundle_present() {
+  [ -f "$OFFLINE_DIR/images/looma-images.tar" ] && ls "$OFFLINE_DIR"/docker/docker-*.tgz >/dev/null 2>&1
+}
+native_bundle_present() { ls "$NATIVE_BUNDLE"/deb/*.deb >/dev/null 2>&1; }
+
+bundle_where() {
+  if [ "$DEPLOY" = "native" ]; then
+    if [ "$SIDECARS" = "docker" ] || [ "$PIPER_MODE" = "docker" ]
+      then echo "$NATIVE_BUNDLE + $OFFLINE_DIR"
+      else echo "$NATIVE_BUNDLE"
+    fi
+  else
+    echo "$OFFLINE_DIR"
   fi
 }
 
-# OFFLINE means "take everything from the disk bundle". If that bundle isn't there,
-# don't just abort: a box WITH a network can install perfectly well online, so fall
-# back to that and say so. Only a box with no bundle AND no network is truly stuck.
-settle_install_source() {
-  [ "$OFFLINE" = "1" ] || return 0
-  bundle_present && return 0
-
-  local where; [ "$DEPLOY" = "native" ] && where="$NATIVE_BUNDLE" || where="$OFFLINE_DIR"
-  warn "you asked for an OFFLINE install, but there is no bundle at $where."
-  warn "(a bundle only exists after '$SCRIPT_PATH build-bundle $DEPLOY', which itself needs internet)"
-  log  "checking whether this box has a network…"
-
-  if have_network; then
-    warn "this box IS online — installing ONLINE instead (nothing else changes)."
-    OFFLINE=0
+# Does the disk carry what THIS configuration needs? A native install that runs
+# zvec or Piper in Docker needs the IMAGE bundle as well as the .debs, so checking
+# only the .debs would call a half-bundle complete and then fail mid-install, with
+# the box already half-changed.
+bundle_present() {
+  if [ "$DEPLOY" = "native" ]; then
+    native_bundle_present || return 1
+    if [ "$SIDECARS" = "docker" ] || [ "$PIPER_MODE" = "docker" ]; then
+      docker_bundle_present || return 1
+    fi
     return 0
   fi
+  docker_bundle_present
+}
 
-  die "no bundle and no network — this box cannot install anything as things stand.
+# Where the bits come from — WORKED OUT, never asked. A school box in the field
+# has no internet and a disk in its hand; asking it to describe its own
+# connectivity in a form is asking the wrong person a question the installer can
+# answer for itself, and getting it wrong is a failed install halfway through.
+#
+# The rule: a usable bundle on the disk wins (deterministic, and the disk is
+# exactly why it was built), otherwise the network, and a box with neither is
+# told so before anything on it has been touched. --offline / --online pin it.
+settle_install_source() {
+  if [ "$OFFLINE_EXPLICIT" = "1" ]; then
+    [ "$OFFLINE" = "1" ] || return 0
+    bundle_present && return 0
+    warn "you asked for an OFFLINE install, but the disk has no bundle for this configuration."
+    warn "  looked in: $(bundle_where)"
+    warn "  (a bundle only exists after '$SCRIPT_PATH build-bundle $DEPLOY', which itself needs internet)"
+    log  "checking whether this box has a network…"
+    if have_network; then
+      warn "this box IS online — installing ONLINE instead (nothing else changes)."
+      OFFLINE=0
+      return 0
+    fi
+    die "no bundle and no network — this box cannot install anything as things stand.
   Either give it a network and re-run, or build the bundle on a machine that has one:
       $SCRIPT_PATH build-bundle $DEPLOY --bundle-dir /var/lib/looma-bundle
   then install with:  --offline --bundle-dir /var/lib/looma-bundle"
+  fi
+
+  # Auto.
+  if bundle_present; then
+    OFFLINE=1
+    log "install source: the disk bundle ($(bundle_where)) — no internet will be used"
+    return 0
+  fi
+
+  log "no disk bundle for this configuration ($(bundle_where)) — checking the network…"
+  if have_network; then
+    OFFLINE=0
+    log "install source: the internet (this box is online)"
+    return 0
+  fi
+
+  die "this box has NO network and the disk has NO bundle for a $DEPLOY install.
+  Nothing has been changed. Build the bundle on a machine that has internet:
+      $SCRIPT_PATH build-bundle $DEPLOY --bundle-dir /some/dir
+  copy it onto the disk next to this script, and re-run — it will be picked up
+  on its own, with no flags."
+}
+
+# looma-ai is the assistant/exam half of the zvec stack, not a choice of its own:
+# the stack is what a teacher sees as "semantic search + AI Assistant + exams".
+# Derived here, in ONE place, so no path can leave the two disagreeing — an
+# assistant switched on with no stack under it is a button that cannot answer.
+settle_stack_flags() {
+  WITH_AI="$WITH_SEARCH"
 }
 
 resolve_obs_endpoints() {
@@ -1652,7 +2018,7 @@ install_deploy_docker() {
   [ -f "$SRC_REPO/docker-compose.yml" ] || die "no docker-compose.yml in $SRC_REPO"
   log "install root: $WWW   (repo -> $repo_dest, content -> $content_dir)"
   log "previous native install detected: $(yesno "$native")"
-  log "options: offline=$OFFLINE observability=$WITH_OBSERVABILITY agents=$WITH_AGENTS ai=$WITH_AI kiosk=$INSTALL_KIOSK"
+  log "options: offline=$OFFLINE observability=$WITH_OBSERVABILITY agents=$WITH_AGENTS zvec=$WITH_SEARCH kiosk=$INSTALL_KIOSK"
 
   # 0) Offline preflight
   if [ "$OFFLINE" = "1" ]; then
@@ -1785,13 +2151,14 @@ EOF
     for _ in $(seq 1 90); do curl -fsS "http://localhost:46333/health" >/dev/null 2>&1 && break; sleep 5; done
     ingest_chapters_html      # chapter HTML -> mongo, before the index is built
     log "building the zvec search index (first build; slow on ARM, please wait)…"
-    local zresp; zresp="$(curl -fsS -X POST --max-time 1800 "http://localhost:46333/rebuild" 2>/dev/null || true)"
+    local zresp; zresp="$(curl -fsS -X POST --max-time 60 "http://localhost:46333/rebuild" 2>/dev/null || true)"
     case "$zresp" in
-      *'"ok"'*true*) log "zvec OK: $zresp" ;;
-      *) warn "zvec did NOT build cleanly: ${zresp:-<no response>}"
-         warn "  check: docker logs looma-search --tail 50 ; docker logs looma-db --tail 20"
-         warn "  retry: curl -X POST http://localhost:46333/rebuild" ;;
+      *'"ok"'*true*) : ;;   # 202 = the build STARTED; wait_for_zvec_index says whether it worked
+      *) warn "zvec did not accept the rebuild request: ${zresp:-<no response>}"
+         warn "  check: docker logs looma-search --tail 50 ; docker logs looma-db --tail 20" ;;
     esac
+    wait_for_zvec_index "http://localhost:46333" \
+      "docker logs looma-search --tail 50 ; docker logs looma-db --tail 20" || true
   else
     log "zvec stack not installed — skipping search/AI/exams (the app hides them too)"
   fi
@@ -1824,7 +2191,13 @@ native_sidecars_docker() {
   ensure_docker
 
   # Host-side units from an earlier native install would fight for the same ports.
-  for u in looma-piper looma-search looma-ai piper; do
+  # Only for the halves actually MOVING into Docker: with the two settings split,
+  # the other half may legitimately be running on the host right now, and taking
+  # its unit down here would silently uninstall a service nobody asked about.
+  local stale=(piper)                                   # the legacy overclocking unit, always
+  [ "$PIPER_MODE" = "docker" ] && stale+=(looma-piper)
+  [ "$SIDECARS" = "docker" ]   && stale+=(looma-search looma-ai)
+  for u in "${stale[@]}"; do
     if systemctl list-unit-files 2>/dev/null | grep -q "^${u}\.service"; then
       systemctl disable --now "${u}.service" >/dev/null 2>&1 \
         && log "  disabled the host ${u}.service — the container takes over" || true
@@ -1836,10 +2209,22 @@ native_sidecars_docker() {
   tpl_native_sidecars | sed -e "s#@REPO_NAME@#$REPO_NAME#g" -e "s#@WWW@#$WWW#g" \
     -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" -e "s#@OTEL_TRACES@#$otel_traces#g" > "$f"
 
-  local svcs=(looma-piper) profiles=() build=(--build) pull=()
-  [ "$WITH_SEARCH" = "1" ] && svcs+=(looma-search)
-  [ "$WITH_AI" = "1" ] && { svcs+=(looma-ai); profiles+=(--profile ai); }
+  # Only the halves that asked for Docker. Piper and the zvec stack are chosen
+  # independently, so this can legitimately be Piper alone, zvec alone, or both.
+  local svcs=() profiles=() build=(--build) pull=()
+  [ "$PIPER_MODE" = "docker" ] && svcs+=(looma-piper)
+  if [ "$SIDECARS" = "docker" ]; then
+    [ "$WITH_SEARCH" = "1" ] && svcs+=(looma-search)
+    [ "$WITH_AI" = "1" ] && { svcs+=(looma-ai); profiles+=(--profile ai); }
+  fi
   [ "$OFFLINE" = "1" ] && { build=(); pull=(--pull never); }
+
+  # Nothing to containerise (zvec on the host and either no stack or Piper on the
+  # host too) — the host path does all the work in this configuration.
+  if [ "${#svcs[@]}" -eq 0 ]; then
+    log "no sidecar containers needed for this configuration"
+    return 0
+  fi
 
   # A container from the DOCKER deployment (or from a hand-run `docker compose up`)
   # still owning one of these names aborts the whole install with a name Conflict —
@@ -1864,16 +2249,28 @@ native_sidecars_docker() {
 
   # They restart with Docker on every boot (restart: unless-stopped), so there is no
   # systemd unit to install here.
-  if [ "$WITH_SEARCH" = "1" ]; then
+  if [ "$SIDECARS" = "docker" ] && [ "$WITH_SEARCH" = "1" ]; then
     for _ in $(seq 1 90); do curl -fsS http://127.0.0.1:46333/health >/dev/null 2>&1 && break; sleep 5; done
     ingest_chapters_html      # chapter HTML -> mongo, before the index is built
     log "building the zvec index (first build; slow on ARM)…"
-    curl -fsS -X POST --max-time 1800 http://127.0.0.1:46333/rebuild >/dev/null 2>&1 \
-      || warn "zvec did not build — check 'docker logs looma-search', retry: curl -X POST http://127.0.0.1:46333/rebuild"
+    curl -fsS -X POST --max-time 60 http://127.0.0.1:46333/rebuild >/dev/null 2>&1 \
+      || warn "zvec did not accept the rebuild request — check: docker logs looma-search"
+    wait_for_zvec_index "http://127.0.0.1:46333" "docker logs looma-search --tail 50" || true
   fi
-  for _ in $(seq 1 24); do curl -fsS http://127.0.0.1:5002/health >/dev/null 2>&1 && break; sleep 5; done
-  curl -fsS http://127.0.0.1:5002/health >/dev/null 2>&1 \
-    || warn "Piper is not answering on :5002 — check: docker logs looma-piper"
+  if [ "$PIPER_MODE" = "docker" ]; then
+    for _ in $(seq 1 24); do curl -fsS http://127.0.0.1:5002/health >/dev/null 2>&1 && break; sleep 5; done
+    if curl -fsS http://127.0.0.1:5002/health >/dev/null 2>&1; then
+      log "Piper TTS answers on 127.0.0.1:5002"
+    else
+      # `compose up -d` reports "Started" for a container that then exits, and
+      # restart: unless-stopped keeps it flapping — so show why, here, rather than
+      # letting the install finish looking clean on a box that cannot speak.
+      warn "Piper is NOT answering on :5002 — the app will not speak."
+      warn "  the last lines of its log:"
+      docker logs looma-piper --tail 15 2>&1 | sed 's/^/         /' || true
+      warn "  container state: $(docker ps -a --filter name=looma-piper --format '{{.Status}}' 2>/dev/null || echo '<none>')"
+    fi
+  fi
 }
 
 # ===========================================================================
@@ -1902,7 +2299,7 @@ install_deploy_native() {
     otel_endpoint=""; otel_traces=none; otel_enabled=0
   fi
 
-  log "NATIVE install — root=$WWW repo->$repo_dest offline=$OFFLINE ai=$WITH_AI search=$WITH_SEARCH"
+  log "NATIVE install — root=$WWW repo->$repo_dest offline=$OFFLINE zvec=$WITH_SEARCH ($SIDECARS) piper=$PIPER_MODE"
 
   # A previous DOCKER install: take it down before this one claims the same ports.
   disable_docker_stack
@@ -1925,16 +2322,24 @@ install_deploy_native() {
   fi
 
   # 1) OS packages
+  settle_mongo_series          # drops to 4.4 on boards that cannot run 5.0
   if [ "$OFFLINE" = "1" ]; then
     log "installing OS packages from the bundle (dpkg, no internet)"
+    # The bundle carries the mongodb-org 5.0 debs, and focal's mongodb-server
+    # CONFLICTS with them — dpkg would refuse the whole set. Purging works offline.
+    replace_ancient_mongodb || true
     dpkg -i "$NATIVE_BUNDLE"/deb/*.deb || apt-get -y -f install --no-download || warn "dpkg reported unmet deps (see above)"
   else
     log "installing OS packages via apt (online)"
     # MongoDB: a box that ran the native Looma ALREADY has mongod, installed from a
     # repo that may no longer be configured. Asking apt for mongodb-org then fails
     # with "Unable to locate package". So only add the repo + install the package
-    # when mongod is genuinely missing; otherwise keep the MongoDB that is there.
+    # when mongod is genuinely missing; otherwise keep the MongoDB that is there —
+    # but only when it is 5.0 or newer. An older one is removed first (see
+    # replace_ancient_mongodb: focal's 3.6 is too old for pymongo 4 and for the
+    # dump's indexes), which makes `mongod` missing and takes the install branch.
     local mongo_pkgs=()
+    replace_ancient_mongodb || true
     if command -v mongod >/dev/null 2>&1; then
       log "MongoDB is already installed ($(mongod --version 2>/dev/null | head -1)) — keeping it"
     else
@@ -1942,6 +2347,10 @@ install_deploy_native() {
       curl -fsSL "https://pgp.mongodb.com/server-${MONGO_SERIES}.asc" | gpg --dearmor --batch --yes -o "/usr/share/keyrings/mongodb-server-${MONGO_SERIES}.gpg"
       echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-${MONGO_SERIES}.gpg arch=arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/${MONGO_SERIES} multiverse" \
         > "/etc/apt/sources.list.d/mongodb-org-${MONGO_SERIES}.list"
+      # Unconditionally, NOT only when replace_ancient_mongodb ran: after a first
+      # pass has removed the old server, `mongo-tools` is still installed and still
+      # blocks mongodb-database-tools. See the function for the full trap.
+      purge_conflicting_mongo_packages
       mongo_pkgs=(mongodb-org)
     fi
     # NOT fatal: an odroid typically carries third-party repos (deb.odroid.in,
@@ -1950,14 +2359,23 @@ install_deploy_native() {
     # if a package really is unavailable, the install step right after says so.
     tidy_known_broken_apt_repos
     apt-get update || warn "apt-get update reported errors (a broken third-party repo?) — continuing"
+    # A previous run that died mid-transaction (see the dpkg file-conflict note in
+    # replace_ancient_mongodb) leaves packages UNPACKED but unconfigured, and every
+    # later apt call then refuses to do anything until that is settled. Cheap no-op
+    # when the state is already clean.
+    dpkg --configure -a >/dev/null 2>&1 || true
+    apt-get -y -f install >/dev/null 2>&1 || true
     apt-get install -y apache2 apache2-utils libapache2-mod-php7.4 \
       php7.4 php7.4-cli php7.4-common php7.4-curl php7.4-mbstring php7.4-xml \
       php7.4-gd php7.4-zip php7.4-bcmath php-mongodb \
       python3 python3-venv python3-pip \
       unzip curl wget net-tools rsync "${mongo_pkgs[@]}" \
       || die "apt could not install the native packages (see above).
-  If they are simply not available for this Ubuntu, the native install is not possible here —
-  the Docker install is:   sudo $SCRIPT_PATH"
+  \"trying to overwrite '/usr/bin/...', which is also in package X\" is a leftover
+  from Ubuntu's own MongoDB, not a missing package: purge X and re-run this script
+  (  sudo apt-get purge -y X && sudo apt-get -f install  ).
+  If the packages are simply not available for this Ubuntu, the native install is
+  not possible here — the Docker install is:   sudo $SCRIPT_PATH"
   fi
 
   # mongorestore/mongoimport (mongodb-org-tools / mongodb-database-tools) are what
@@ -2001,6 +2419,7 @@ install_deploy_native() {
   local otel_disabled=1; [ "$otel_enabled" = "1" ] && otel_disabled=0
   tpl_apache_conf | sed -e "s#@LOOMA_ROOT@#$WWW#g" -e "s#@REPO_NAME@#$REPO_NAME#g" \
     -e "s#@OTEL_DISABLED@#$otel_disabled#g" -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" \
+    -e "s#@LOOMA_ZVEC@#$WITH_SEARCH#g" -e "s#@LOOMA_AI_ON@#$WITH_AI#g" \
     > /etc/apache2/sites-available/looma.conf
   a2dissite 000-default >/dev/null 2>&1 || true
   a2ensite looma >/dev/null 2>&1 || true
@@ -2015,24 +2434,99 @@ install_deploy_native() {
   systemctl list-unit-files 2>/dev/null | grep -q '^mongod\.service' || \
     { systemctl list-unit-files 2>/dev/null | grep -q '^mongodb\.service' && mongo_svc=mongodb; }
   log "starting MongoDB ($mongo_svc.service) and restoring the Looma dump"
+  # A data/log directory left behind by an earlier MongoDB can be owned by a uid the
+  # new package's `mongodb` user does not have, and mongod then refuses to start with
+  # "Permission denied" on the lock file. Cheap to make sure, impossible to debug from
+  # the client side (every tool just says there are no reachable servers).
+  [ -d /var/lib/mongodb ] && chown -R mongodb:mongodb /var/lib/mongodb 2>/dev/null || true
+  [ -d /var/log/mongodb ] && chown -R mongodb:mongodb /var/log/mongodb 2>/dev/null || true
   systemctl enable "$mongo_svc" >/dev/null 2>&1 || true
   systemctl start "$mongo_svc" || warn "$mongo_svc failed to start — check: journalctl -u $mongo_svc -n 40"
+  local mongo_up=0
   for _ in $(seq 1 30); do
-    mongosh --quiet --eval 'db.runCommand({ping:1})' >/dev/null 2>&1 && break
-    mongo   --quiet --eval 'db.runCommand({ping:1})' >/dev/null 2>&1 && break
+    mongosh --quiet --eval 'db.runCommand({ping:1})' >/dev/null 2>&1 && { mongo_up=1; break; }
+    mongo   --quiet --eval 'db.runCommand({ping:1})' >/dev/null 2>&1 && { mongo_up=1; break; }
     sleep 2
   done
-  # The dump is taken from MongoDB 5.0. An older mongod (what a box that ran the old
-  # native Looma still has) restores the DATA but rejects some indexes — e.g. the
-  # Nepali dictionary keys, "WiredTigerIndex::insert: key too large to index".
-  local mver; mver="$(mongod --version 2>/dev/null | sed -n 's/^db version v\([0-9]*\).*/\1/p' | head -1 || true)"
-  if [ -n "$mver" ] && [ "$mver" -lt 5 ] 2>/dev/null; then
-    warn "this box runs MongoDB $mver, but the dump comes from MongoDB 5.0."
-    warn "  The data restores, but some indexes will be REJECTED ('key too large to index'),"
-    warn "  which makes dictionary lookups slow. The Docker install ships Mongo 5.0 and avoids this."
+  # Everything below (the dump, the chapter ingestion, the zvec index) needs a
+  # LIVE mongod, and each one fails in its own confusing way when there isn't one.
+  # Say the real thing once, here, with the two causes that actually happen on these
+  # boards — SIGILL on 5.0 (see settle_mongo_series) and a data dir it cannot write.
+  # A dbpath left over from an OLDER MongoDB that this one cannot open. The log says
+  #   Failed to start up WiredTiger under any compatibility version
+  #   Terminating. reason: "95: Operation not supported"
+  # and mongod exits 14 — which `systemctl status` shows as a bare "status=14" with
+  # no hint at all, because the real message goes to mongod.log. This is what a 3.6
+  # box turns into if its data directory outlives the packages (the WiredTiger files
+  # are not readable across that many series), and it blocks EVERYTHING downstream.
+  # Move it aside rather than delete it: the install is about to mongorestore the
+  # repo dump on top anyway, and the old directory stays on disk to go back to.
+  # Only the TAIL of the log, never the whole file: mongod.conf sets logAppend, so a
+  # box that once hit this keeps the line forever, and grepping the whole file would
+  # move the data directory aside on a later, unrelated failure (a full disk, say).
+  if [ "$mongo_up" != "1" ] && [ -d /var/lib/mongodb ] \
+     && tail -n 40 /var/log/mongodb/mongod.log 2>/dev/null | grep -q "Failed to start up WiredTiger"; then
+    local moved="/var/lib/mongodb.incompatible-$(date +%Y%m%d-%H%M%S)"
+    warn "MongoDB cannot open its data directory — it was written by an older version."
+    log  "moving it to $moved and starting with a clean one (the dump is restored below)"
+    systemctl stop "$mongo_svc" >/dev/null 2>&1 || true
+    if mv /var/lib/mongodb "$moved"; then
+      mkdir -p /var/lib/mongodb
+      chown -R mongodb:mongodb /var/lib/mongodb 2>/dev/null || true
+      systemctl start "$mongo_svc" >/dev/null 2>&1 || true
+      for _ in $(seq 1 30); do
+        mongosh --quiet --eval 'db.runCommand({ping:1})' >/dev/null 2>&1 && { mongo_up=1; break; }
+        mongo   --quiet --eval 'db.runCommand({ping:1})' >/dev/null 2>&1 && { mongo_up=1; break; }
+        sleep 2
+      done
+      [ "$mongo_up" = "1" ] && log "MongoDB is up on a clean data directory"
+      warn "  the old data directory is kept at $moved — delete it once this box is verified"
+    else
+      warn "  could not move it — do it by hand: sudo mv /var/lib/mongodb $moved"
+    fi
   fi
 
-  if [ -d "$SRC_REPO/mongo-dump/dump" ]; then
+  if [ "$mongo_up" != "1" ]; then
+    warn "MongoDB is NOT answering on 127.0.0.1:27017 — the restore, the chapter"
+    warn "  ingestion and the zvec index will all fail from here on."
+    # PRINT the log rather than pointing at it. `systemctl status` only ever shows
+    # the lines mongod emits BEFORE it opens its log file, so the actual reason
+    # (bad data files, a full disk, permissions) is invisible there — every failure
+    # looks alike, as a bare "status=14", and the install ends without ever saying
+    # what went wrong on a box the installer may not see again.
+    if [ -f /var/log/mongodb/mongod.log ]; then
+      warn "  the last lines of /var/log/mongodb/mongod.log:"
+      tail -n 15 /var/log/mongodb/mongod.log 2>/dev/null | sed 's/^/         /' || true
+    fi
+    df -h /var 2>/dev/null | tail -1 | sed 's/^/  [warn]   disk: /' || true
+    warn "  full context: systemctl status $mongo_svc ; journalctl -u $mongo_svc -n 40"
+    warn "  'Failed to start up WiredTiger' means old data files survived the upgrade:"
+    warn "    sudo systemctl stop $mongo_svc && sudo mv /var/lib/mongodb /var/lib/mongodb.old \\"
+    warn "      && sudo mkdir -p /var/lib/mongodb && sudo chown -R mongodb:mongodb /var/lib/mongodb"
+    warn "  'Illegal instruction' (status=4/SIGILL) means this board cannot run MongoDB"
+    warn "  $MONGO_SERIES — reinstall with: sudo MONGO_SERIES=4.4 $SCRIPT_PATH install --native"
+  fi
+  # The dump is taken from MongoDB 5.0. An older mongod restores the DATA but rejects
+  # some indexes — e.g. the Nepali dictionary keys, "WiredTigerIndex::insert: key too
+  # large to index". 4.2/4.4 is deliberately kept (see MONGO_MIN_VERNUM), and on an
+  # ARMv8.0-A board 4.4 is as far as it can go, so this is a note, not a failure.
+  local mver; mver="$(mongod_vernum)"
+  if [ "$mver" -gt 0 ] && [ "$mver" -lt 500 ]; then
+    warn "this box runs MongoDB $((mver/100)).$((mver%100)), but the dump comes from MongoDB 5.0."
+    warn "  The data restores and Looma works (pymongo needs 4.2+), but some indexes may be"
+    warn "  REJECTED ('key too large to index'), which makes dictionary lookups slow."
+  fi
+
+  # Skip the data steps entirely when there is no server to talk to. Running them
+  # anyway buries the ONE real error (mongod is down, said just above) under a pile
+  # of "server selection error / connection refused" from mongorestore, mongoimport,
+  # the chapter ingester and the zvec build in turn — which is exactly how the real
+  # cause got lost the first time this happened on a box.
+  if [ "$mongo_up" != "1" ]; then
+    warn "skipping the dump restore and the login seed — MongoDB is not running."
+    warn "  the chapter ingestion and the zvec index further down will fail for the same"
+    warn "  reason; fix mongod first (above), then re-run this installer — it is idempotent."
+  elif [ -d "$SRC_REPO/mongo-dump/dump" ]; then
     # --drop: on a re-install/update, mongorestore's default (insert-only) leaves
     # every already-restored document alone and just logs "duplicate key" for each
     # one — a newer dump on the disk would never actually reach the database. Drop
@@ -2046,29 +2540,36 @@ install_deploy_native() {
   fi
   # --mode=upsert: on a re-install the seed logins are already there, and the default
   # insert mode then fails every one of them with E11000 duplicate key.
-  [ -f "$SRC_REPO/mongo-dump/logins/defaultlogins.json" ] && \
+  [ "$mongo_up" = "1" ] && [ -f "$SRC_REPO/mongo-dump/logins/defaultlogins.json" ] && \
     { mongoimport --db loomausers --collection logins --mode=upsert \
         --file "$SRC_REPO/mongo-dump/logins/defaultlogins.json" || warn "the login seed import failed"; }
 
-  # 6-9) zvec + Piper (+ looma-ai). Two ways to run them:
-  #   SIDECARS=docker (default) — as containers, which is the only way that actually
-  #     works on focal: the host has Python 3.8 and neither zvec's nor looma-ai's
-  #     requirements install on it, while the images carry the right Python, torch,
-  #     the embedding model and the Piper voices.
-  #   SIDECARS=host — the legacy path: Piper binary + a venv + systemd units.
-  if [ "$SIDECARS" = "docker" ]; then
+  # 6-9) Piper TTS and the zvec stack. Each can run as a CONTAINER or ON THE HOST,
+  # and the two are chosen independently:
+  #   in Docker — the images bring their own Python, torch, the embedding model and
+  #     the Piper voices. For zvec this is effectively the only way that works on
+  #     focal, whose Python is 3.8 and cannot build its requirements.
+  #   on the host — a venv + systemd units. Reasonable for Piper (a self-contained
+  #     binary, and it keeps Docker out of the audio path); for zvec it needs a
+  #     Python >= 3.9 that this script has to go and fetch.
+  # So both halves can be needed in one run: e.g. zvec in Docker, Piper on the host.
+  if [ "$PIPER_MODE" = "docker" ] || [ "$SIDECARS" = "docker" ]; then
     native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces"
-  else
-
-  # A previous SIDECARS=docker install left containers with restart:unless-stopped
-  # (docker-compose.native.yml) — they'd keep running and fight the host venv/
-  # systemd services below for the same ports (46333, 5002, 8089).
-  if command -v docker >/dev/null 2>&1 && [ -f "$repo_dest/docker-compose.native.yml" ]; then
-    log "stopping the previous Docker sidecars (switching zvec/Piper/AI to the host)"
-    ( cd "$repo_dest" && docker compose -f docker-compose.native.yml -p looma-native --profile ai down ) 2>/dev/null || true
   fi
 
+  if [ "$PIPER_MODE" = "host" ] || [ "$SIDECARS" = "host" ]; then
+
+  # NOTE: the containers whose half is moving to the host are NOT torn down here.
+  # They used to be, and that was wrong: everything below (the Piper binary, ~250 MB
+  # of voice models, the Python venv) takes many minutes and needs no ports at all,
+  # so killing the working container first opened a long window in which the box had
+  # NO TTS — and any failure inside that window (a dropped download, a dead apt repo)
+  # left it with neither a container nor a systemd unit. The teardown now happens
+  # immediately before the units that replace them start. See "handing the ports over"
+  # further down.
+
   # 6) Piper TTS — binary + voices
+  if [ "$PIPER_MODE" = "host" ]; then
   log "installing Piper TTS"
   mkdir -p "$WWW/piper" /usr/share/piper
   if [ -f "$NATIVE_BUNDLE/piper/piper_arm64.tar.gz" ]; then
@@ -2086,22 +2587,85 @@ install_deploy_native() {
     fi
   elif [ "$OFFLINE" != "1" ]; then
     local a; a="$(uname -m)"; [ "$a" = "aarch64" ] && a=arm64
-    curl -fSL "https://github.com/rhasspy/piper/releases/download/${PIPER_VERSION}/piper_${a}.tar.gz" -o /tmp/piper.tgz
-    tar -xzf /tmp/piper.tgz -C "$WWW/" && rm -f /tmp/piper.tgz
+    # Download to a .part and only unpack a COMPLETE archive. A cut-off download
+    # (this board's USB drops, see the getcwd note at the top) otherwise unpacks
+    # partially, leaves a piper/ directory that looks installed, and the unit below
+    # is then enabled against a binary that cannot run.
+    if curl -fSL --retry 3 --retry-delay 2 \
+         "https://github.com/rhasspy/piper/releases/download/${PIPER_VERSION}/piper_${a}.tar.gz" \
+         -o /tmp/piper.tgz.part \
+       && tar -tzf /tmp/piper.tgz.part >/dev/null 2>&1; then
+      mv -f /tmp/piper.tgz.part /tmp/piper.tgz
+      tar -xzf /tmp/piper.tgz -C "$WWW/" || warn "the Piper archive did not unpack cleanly"
+      rm -f /tmp/piper.tgz
+    else
+      rm -f /tmp/piper.tgz.part
+      warn "the Piper binary could not be downloaded (piper_${a}.tar.gz) — TTS will not work."
+      warn "  re-run this installer once the network/disk is stable."
+    fi
     fetch_piper_voices /usr/share/piper
+  else
+    # Offline, and the disk has no piper payload. This branch used to do NOTHING
+    # AT ALL, silently: no binary, no voices, no warning — and then the systemd
+    # unit below was enabled against an executable that is not there, so TTS was
+    # simply dead on a box whose install had just said it succeeded. Say it, and
+    # take the container instead when that is possible, since Piper is not
+    # optional the way the zvec stack is: a Looma that cannot read aloud is not
+    # doing its job.
+    warn "no Piper payload on the disk ($NATIVE_BUNDLE/piper/piper_arm64.tar.gz) and no internet."
+    if command -v docker >/dev/null 2>&1 && docker_bundle_present; then
+      warn "  falling back to the Piper CONTAINER, which the disk does carry."
+      PIPER_MODE=docker
+      native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces"
+    else
+      warn "  this box will have NO text-to-speech. Add piper/ to the bundle:"
+      warn "    $SCRIPT_PATH build-bundle native --bundle-dir $BUNDLE_ROOT"
+    fi
   fi
   chown -R www-data:www-data "$WWW/piper" /usr/share/piper 2>/dev/null || true
+
+  # Prove the binary is actually there and executable BEFORE a unit is enabled
+  # against it. Without this the install cheerfully finishes, `systemctl status`
+  # shows looma-piper "activating (auto-restart)" forever, and the first person to
+  # find out is whoever presses Speak in a classroom. Same for the voices: piper
+  # with no model exits on the first request, not at startup.
+  local piper_bin=""
+  for c in "$WWW/piper/piper" /usr/local/bin/piper/piper /usr/local/bin/piper; do
+    [ -x "$c" ] && { piper_bin="$c"; break; }
+  done
+  if [ -n "$piper_bin" ]; then
+    log "Piper binary: $piper_bin"
+  else
+    warn "NO Piper binary found (looked in $WWW/piper/, /usr/local/bin/piper) — TTS cannot work."
+    warn "  the systemd unit will be installed but will restart-loop until this is fixed."
+  fi
+  # `|| true` is load-bearing: with NO .onnx files ls exits non-zero, pipefail
+  # propagates it, and under `set -e` this assignment would abort the whole install
+  # at exactly the moment it is trying to report that the voices are missing.
+  local n_voices; n_voices="$(ls -1 /usr/share/piper/*.onnx 2>/dev/null | wc -l || true)"
+  if [ "${n_voices:-0}" -lt 1 ]; then
+    warn "NO voice models in /usr/share/piper — Piper starts but cannot speak."
+  else
+    log "voice models available to Piper: $n_voices"
+  fi
+  fi   # end PIPER_MODE=host — Piper binary + voices
 
   # 7) Shared Python venv (Piper Flask sidecar + search + looma-ai)
   # focal's default python3 is 3.8, but looma-ai's requirements need >= 3.9 (anyio,
   # fastapi & co. no longer publish for 3.8), so building the venv with python3
   # gives "No matching distribution found" and a venv that cannot run search/ai.
   # Take the newest python3.x on the box instead, and install one if there is none.
+  #
+  # Only the ZVEC half needs that. Piper's sidecar is Flask + gunicorn, which are
+  # perfectly happy on 3.8 — so a box running Piper on the host and zvec in Docker
+  # must not be sent off to download a whole standalone CPython it will never use.
+  local needs_new_python=0
+  [ "$SIDECARS" = "host" ] && [ "$WITH_SEARCH" = "1" ] && needs_new_python=1
   local py=""
   for c in python3.12 python3.11 python3.10 python3.9; do
     command -v "$c" >/dev/null 2>&1 && { py="$c"; break; }
   done
-  if [ -z "$py" ] && [ "$OFFLINE" != "1" ]; then
+  if [ -z "$py" ] && [ "$needs_new_python" = "1" ] && [ "$OFFLINE" != "1" ]; then
     # First try the distro (works where the repos already carry 3.9+).
     log "no Python >= 3.9 on this box (focal ships 3.8) — getting one for search/looma-ai"
     if apt-get install -y python3.10 python3.10-venv python3.10-dev >/dev/null 2>&1 \
@@ -2145,7 +2709,11 @@ install_deploy_native() {
     log "creating the Python venv at $VENV ($($py --version 2>&1))"
   else
     py=python3
-    warn "falling back to $(python3 --version 2>&1) — the assistant and zvec search need >= 3.9 and will NOT install"
+    if [ "$needs_new_python" = "1" ]; then
+      warn "falling back to $(python3 --version 2>&1) — the assistant and zvec search need >= 3.9 and will NOT install"
+    else
+      log "creating the Python venv at $VENV ($(python3 --version 2>&1)) — enough for Piper's Flask sidecar"
+    fi
   fi
   rm -rf "$VENV"
   "$py" -m venv "$VENV" || { venv_ok=0; warn "could not create the venv with $py"; }
@@ -2162,59 +2730,110 @@ install_deploy_native() {
   # exactly why a re-installed box's zvec silently never got real embeddings,
   # only the HashingVectorizer fallback). looma-ai/requirements.txt pins its own
   # pymongo 4.x too, so this MUST install after it, to win.
+  # $mver comes from mongod_vernum(), i.e. 402 for 4.2 — NOT a bare major. Comparing
+  # it against 4 (as this once did, when the value was a major) is silently always
+  # false, which would quietly ship pymongo 4 against a Mongo that cannot speak to it.
+  # In practice step 1 guarantees >= 4.2, so this is the belt to that braces.
   local pymongo_spec="pymongo"
-  if [ -n "$mver" ] && [ "$mver" -lt 4 ] 2>/dev/null; then
+  if [ "$mver" -gt 0 ] && [ "$mver" -lt "$MONGO_MIN_VERNUM" ] 2>/dev/null; then
     pymongo_spec="pymongo==3.13.0"
-    warn "MongoDB $mver is too old for modern PyMongo (needs >= 4.2/wire version 8) — pinning $pymongo_spec instead"
+    warn "MongoDB $((mver/100)).$((mver%100)) is too old for modern PyMongo (needs >= 4.2/wire version 8) — pinning $pymongo_spec instead"
   fi
+  # Two independent dependency sets in one venv: flask/gunicorn for Piper's
+  # sidecar, and the heavy torch/sklearn set for zvec + looma-ai. Install only the
+  # ones this configuration actually runs on the host — pulling torch onto a box
+  # whose zvec lives in a container is a very long download for nothing, and on
+  # focal it is the download most likely to fail and muddy the log.
+  local want_piper_deps=0 want_stack_deps=0
+  [ "$PIPER_MODE" = "host" ] && want_piper_deps=1
+  [ "$SIDECARS" = "host" ] && [ "$WITH_SEARCH" = "1" ] && want_stack_deps=1
   if [ "$venv_ok" = "1" ]; then
     if [ "$OFFLINE" = "1" ] && ls "$NATIVE_BUNDLE"/wheels/*.whl >/dev/null 2>&1; then
-      "$VENV/bin/pip" install --no-index --find-links "$NATIVE_BUNDLE/wheels" flask gunicorn \
-        || warn "the offline flask/gunicorn install had issues (Piper TTS needs them)"
-      [ -f "$SRC_REPO/looma-ai/requirements.txt" ] && \
-        { "$VENV/bin/pip" install --no-index --find-links "$NATIVE_BUNDLE/wheels" -r "$SRC_REPO/looma-ai/requirements.txt" && ai_deps_ok=1; }
-      "$VENV/bin/pip" install --no-index --find-links "$NATIVE_BUNDLE/wheels" \
-        "$pymongo_spec" scikit-learn scipy "sentence-transformers==3.0.1" \
-        && search_deps_ok=1 || warn "search-service deps failed to install offline (zvec needs them)"
+      [ "$want_piper_deps" = "1" ] && \
+        { "$VENV/bin/pip" install --no-index --find-links "$NATIVE_BUNDLE/wheels" flask gunicorn \
+          || warn "the offline flask/gunicorn install had issues (Piper TTS needs them)"; }
+      if [ "$want_stack_deps" = "1" ]; then
+        [ -f "$SRC_REPO/looma-ai/requirements.txt" ] && \
+          { "$VENV/bin/pip" install --no-index --find-links "$NATIVE_BUNDLE/wheels" -r "$SRC_REPO/looma-ai/requirements.txt" && ai_deps_ok=1; }
+        "$VENV/bin/pip" install --no-index --find-links "$NATIVE_BUNDLE/wheels" \
+          "$pymongo_spec" scikit-learn scipy "sentence-transformers==3.0.1" \
+          && search_deps_ok=1 || warn "search-service deps failed to install offline (zvec needs them)"
+      fi
     else
       "$VENV/bin/pip" install --upgrade pip wheel >/dev/null 2>&1 || true
-      "$VENV/bin/pip" install flask gunicorn \
-        || warn "flask/gunicorn failed to install (Piper TTS needs them)"
-      [ -f "$SRC_REPO/looma-ai/requirements.txt" ] && \
-        { "$VENV/bin/pip" install --extra-index-url https://download.pytorch.org/whl/cpu -r "$SRC_REPO/looma-ai/requirements.txt" && ai_deps_ok=1; }
-      "$VENV/bin/pip" install --extra-index-url https://download.pytorch.org/whl/cpu \
-        "$pymongo_spec" scikit-learn scipy "sentence-transformers==3.0.1" \
-        && search_deps_ok=1 || warn "search-service deps failed to install (zvec needs them)"
+      [ "$want_piper_deps" = "1" ] && \
+        { "$VENV/bin/pip" install flask gunicorn \
+          || warn "flask/gunicorn failed to install (Piper TTS needs them)"; }
+      if [ "$want_stack_deps" = "1" ]; then
+        [ -f "$SRC_REPO/looma-ai/requirements.txt" ] && \
+          { "$VENV/bin/pip" install --extra-index-url https://download.pytorch.org/whl/cpu -r "$SRC_REPO/looma-ai/requirements.txt" && ai_deps_ok=1; }
+        "$VENV/bin/pip" install --extra-index-url https://download.pytorch.org/whl/cpu \
+          "$pymongo_spec" scikit-learn scipy "sentence-transformers==3.0.1" \
+          && search_deps_ok=1 || warn "search-service deps failed to install (zvec needs them)"
+      fi
+    fi
+  fi
+
+  # piper_server.py imports flask at module level, so a venv without it makes the
+  # unit die on every start, forever. pip's exit status is not proof — an offline
+  # --find-links run can report success having installed nothing useful — so ask the
+  # venv itself, which is the same question systemd will ask a moment later.
+  if [ "$want_piper_deps" = "1" ]; then
+    if [ "$venv_ok" = "1" ] && "$VENV/bin/python" -c "import flask" >/dev/null 2>&1; then
+      log "the venv can import flask — Piper's sidecar has what it needs"
+    else
+      warn "the venv at $VENV CANNOT import flask — Piper TTS will not start."
+      warn "  fix: sudo $VENV/bin/pip install flask gunicorn"
     fi
   fi
 
   # Don't enable services whose dependencies are not there: a unit that crash-loops
   # every 5 s is worse than one that was never installed, and it hides the real cause.
-  if [ "$ai_deps_ok" != "1" ] && [ "$WITH_AI" = "1" ]; then
-    warn "looma-ai/requirements.txt did NOT install (see the pip errors above)."
-    warn "  Skipping looma-ai — it would only crash-loop."
-    warn "  Those requirements are pinned for the Python in the Docker image; on this host"
-    warn "  they need Python >= 3.9. The Docker install has none of this trouble: sudo $SCRIPT_PATH"
-    WITH_AI=0
-  fi
-  if [ "$search_deps_ok" != "1" ] && [ "$WITH_SEARCH" = "1" ]; then
-    warn "search-service's dependencies (pymongo/scikit-learn/scipy/sentence-transformers)"
-    warn "  did NOT install — skipping the zvec search service, it would only crash-loop."
-    warn "  The Docker install (--sidecars docker, the default) carries these already: sudo $SCRIPT_PATH"
-    WITH_SEARCH=0
+  #
+  # ONLY when the stack is running on this host. Now that Piper can bring us into
+  # this block on its own (PIPER_MODE=host with SIDECARS=docker), ai_deps_ok and
+  # search_deps_ok are legitimately 0 in a run that never tried to install them —
+  # and acting on that would switch off a containerised zvec that is up and
+  # perfectly healthy, then tell the app to hide search, the assistant and exams.
+  if [ "$SIDECARS" = "host" ]; then
+    if [ "$ai_deps_ok" != "1" ] && [ "$WITH_AI" = "1" ]; then
+      warn "looma-ai/requirements.txt did NOT install (see the pip errors above)."
+      warn "  Skipping looma-ai — it would only crash-loop."
+      warn "  Those requirements are pinned for the Python in the Docker image; on this host"
+      warn "  they need Python >= 3.9. The Docker install has none of this trouble: sudo $SCRIPT_PATH"
+      WITH_AI=0
+    fi
+    if [ "$search_deps_ok" != "1" ] && [ "$WITH_SEARCH" = "1" ]; then
+      warn "search-service's dependencies (pymongo/scikit-learn/scipy/sentence-transformers)"
+      warn "  did NOT install — skipping the zvec search service, it would only crash-loop."
+      warn "  The Docker install (--sidecars docker, the default) carries these already: sudo $SCRIPT_PATH"
+      WITH_SEARCH=0
+    fi
   fi
 
   # Either half of the stack may have just been switched off because its
   # dependencies would not install. The vhost was written EARLIER in this run and
   # still says the stack is present, so the app would go on offering search, the
   # assistant and exams with nothing behind them. Correct it here.
-  if [ "$WITH_SEARCH" != "1" ]; then
-    WITH_AI=0
-    if grep -q 'SetEnv LOOMA_ZVEC 1' /etc/apache2/sites-available/looma.conf 2>/dev/null; then
-      sed -i -e 's/SetEnv LOOMA_ZVEC 1/SetEnv LOOMA_ZVEC 0/'              -e 's/SetEnv LOOMA_AI 1/SetEnv LOOMA_AI 0/' /etc/apache2/sites-available/looma.conf
+  #
+  # Resync BOTH flags to whatever the vars now say, rather than only patching
+  # 1 -> 0 when search dropped out: looma-ai can fail on its own (its deps are
+  # the heavy ones), which leaves search working but must still take the
+  # Exams / AI Assistant / AI Tooling buttons away. Matching `[^ ]*` also
+  # repairs a vhost from an installer that wrote the @LOOMA_ZVEC@ placeholder
+  # through unsubstituted — PHP read that literal as "not 0", i.e. enabled.
+  [ "$WITH_SEARCH" != "1" ] && WITH_AI=0
+  local vhost=/etc/apache2/sites-available/looma.conf
+  if [ -f "$vhost" ] && { ! grep -q "SetEnv LOOMA_ZVEC $WITH_SEARCH\$" "$vhost" \
+                       || ! grep -q "SetEnv LOOMA_AI $WITH_AI\$"       "$vhost"; }; then
+    sed -i -e "s#SetEnv LOOMA_ZVEC [^ ]*#SetEnv LOOMA_ZVEC $WITH_SEARCH#" \
+           -e "s#SetEnv LOOMA_AI [^ ]*#SetEnv LOOMA_AI $WITH_AI#" "$vhost"
+    if [ "$WITH_SEARCH" != "1" ]; then
       log "the app will not offer semantic search, the AI Assistant or exams on this box"
-      systemctl reload apache2 >/dev/null 2>&1 || systemctl restart apache2 >/dev/null 2>&1 || true
+    elif [ "$WITH_AI" != "1" ]; then
+      log "the app will offer semantic search but not the AI Assistant, exams or AI tooling"
     fi
+    systemctl reload apache2 >/dev/null 2>&1 || systemctl restart apache2 >/dev/null 2>&1 || true
   fi
 
   # 8) HuggingFace cache, so search/AI work offline
@@ -2238,7 +2857,8 @@ install_deploy_native() {
   [ -n "$(ls -A "$HF_DIR" 2>/dev/null)" ] && hf_offline=1
   log "HuggingFace cache at $HF_DIR: $([ "$hf_offline" = 1 ] && echo 'has models -> offline mode on' || echo 'empty -> allowing a network fetch on first run')"
 
-  # 9) systemd units (piper always; search/ai optional)
+  # 9) systemd units — one per half that runs on THIS HOST. Piper and the zvec
+  #    stack are independent, so this may install the Piper unit alone.
   local sedargs=(-e "s#@LOOMA_ROOT@#$WWW#g" -e "s#@REPO_NAME@#$REPO_NAME#g" -e "s#@VENV@#$VENV#g"
                  -e "s#@HF_DIR@#$HF_DIR#g" -e "s#@HF_OFFLINE@#$hf_offline#g"
                  -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" -e "s#@OTEL_TRACES@#$otel_traces#g"
@@ -2254,19 +2874,80 @@ install_deploy_native() {
     systemctl disable --now piper.service 2>/dev/null \
       && log "  disabled the legacy piper.service (it overclocked the CPU -> reboots)" || true
   fi
-  tpl_unit_piper  | sed "${sedargs[@]}" > /etc/systemd/system/looma-piper.service
-  [ "$WITH_SEARCH" = "1" ] && tpl_unit_search | sed "${sedargs[@]}" > /etc/systemd/system/looma-search.service
-  [ "$WITH_AI" = "1" ]     && tpl_unit_ai     | sed "${sedargs[@]}" > /etc/systemd/system/looma-ai.service
-  # A service we are NOT installing may still be enabled from an earlier install —
-  # stop it, or it crash-loops forever against a venv that no longer has its deps.
-  [ "$WITH_SEARCH" = "1" ] || systemctl disable --now looma-search.service >/dev/null 2>&1 || true
-  [ "$WITH_AI" = "1" ]     || systemctl disable --now looma-ai.service     >/dev/null 2>&1 || true
-  systemctl daemon-reload
-  systemctl enable --now looma-piper.service || warn "looma-piper failed — journalctl -u looma-piper"
-  [ "$WITH_SEARCH" = "1" ] && { systemctl enable --now looma-search.service || warn "looma-search failed — journalctl -u looma-search"; }
-  [ "$WITH_AI" = "1" ]     && { systemctl enable --now looma-ai.service     || warn "looma-ai failed — journalctl -u looma-ai"; }
+  # Which units belong on this host in THIS configuration. Anything not on the
+  # list is disabled below rather than left behind: a unit from a previous install
+  # whose half has since moved into Docker would crash-loop against a venv that no
+  # longer has its deps, and fight the container for the port.
+  local want_piper_unit=0 want_search_unit=0 want_ai_unit=0
+  [ "$PIPER_MODE" = "host" ] && want_piper_unit=1
+  if [ "$SIDECARS" = "host" ]; then
+    [ "$WITH_SEARCH" = "1" ] && want_search_unit=1
+    [ "$WITH_AI" = "1" ]     && want_ai_unit=1
+  fi
 
-  fi   # end SIDECARS=host
+  # Handing the ports over: only NOW do the containers being replaced go away.
+  # Everything they serve (5002, 46333, 8089) stays up until this point, and the
+  # units that take those ports are written and started immediately below — so a
+  # failure earlier in this install leaves the box exactly as it was, still working,
+  # instead of stripped of TTS and search for the rest of the run.
+  if command -v docker >/dev/null 2>&1 && [ -f "$repo_dest/docker-compose.native.yml" ]; then
+    local to_host=()
+    [ "$want_piper_unit"  = "1" ] && to_host+=(looma-piper)
+    [ "$want_search_unit" = "1" ] && to_host+=(looma-search)
+    [ "$want_ai_unit"     = "1" ] && to_host+=(looma-ai)
+    if [ "${#to_host[@]}" -gt 0 ]; then
+      log "stopping the previous Docker sidecars for: ${to_host[*]} (they move to the host)"
+      ( cd "$repo_dest" && docker compose -f docker-compose.native.yml -p looma-native \
+          --profile ai rm -sf "${to_host[@]}" ) >/dev/null 2>&1 || true
+    fi
+  fi
+
+  [ "$want_piper_unit"  = "1" ] && tpl_unit_piper  | sed "${sedargs[@]}" > /etc/systemd/system/looma-piper.service
+  [ "$want_search_unit" = "1" ] && tpl_unit_search | sed "${sedargs[@]}" > /etc/systemd/system/looma-search.service
+  [ "$want_ai_unit"     = "1" ] && tpl_unit_ai     | sed "${sedargs[@]}" > /etc/systemd/system/looma-ai.service
+  [ "$want_piper_unit"  = "1" ] || systemctl disable --now looma-piper.service  >/dev/null 2>&1 || true
+  [ "$want_search_unit" = "1" ] || systemctl disable --now looma-search.service >/dev/null 2>&1 || true
+  [ "$want_ai_unit"     = "1" ] || systemctl disable --now looma-ai.service     >/dev/null 2>&1 || true
+  systemctl daemon-reload
+  [ "$want_piper_unit"  = "1" ] && { systemctl enable --now looma-piper.service  || warn "looma-piper failed — journalctl -u looma-piper"; }
+  [ "$want_search_unit" = "1" ] && { systemctl enable --now looma-search.service || warn "looma-search failed — journalctl -u looma-search"; }
+  [ "$want_ai_unit"     = "1" ] && { systemctl enable --now looma-ai.service     || warn "looma-ai failed — journalctl -u looma-ai"; }
+
+  # `systemctl enable --now` succeeds the moment systemd FORKS the process — it says
+  # nothing about whether Piper then died on a missing binary, an import error or a
+  # busy port. Restart=always turns that into a silent restart loop that looks fine
+  # in the install log, so probe the port the way looma-TTS.php will.
+  if [ "$want_piper_unit" = "1" ]; then
+    local piper_ok=0
+    for _ in $(seq 1 30); do
+      curl -fsS --max-time 5 http://127.0.0.1:5002/health >/dev/null 2>&1 && { piper_ok=1; break; }
+      sleep 2
+    done
+    if [ "$piper_ok" = "1" ]; then
+      log "Piper TTS answers on 127.0.0.1:5002"
+    else
+      warn "Piper TTS is NOT answering on 127.0.0.1:5002 — the app will not speak."
+      warn "  the last lines of its journal:"
+      journalctl -u looma-piper -n 15 --no-pager 2>/dev/null | sed 's/^/         /' || true
+      warn "  most often: no piper binary (see step 6 above), flask missing from $VENV,"
+      warn "  or something else already on :5002 — check: sudo ss -ltnp | grep 5002"
+    fi
+  fi
+
+  # Ingest the chapters and build the index NOW, exactly as the container path
+  # does — this host path never did, so a box with zvec on the host shipped with
+  # an EMPTY index: search came up healthy and answered nothing, and the first
+  # person to find out was whoever searched in a classroom.
+  if [ "$want_search_unit" = "1" ]; then
+    for _ in $(seq 1 90); do curl -fsS http://127.0.0.1:46333/health >/dev/null 2>&1 && break; sleep 5; done
+    ingest_chapters_html
+    log "building the zvec index (first build; slow on ARM)…"
+    curl -fsS -X POST --max-time 60 http://127.0.0.1:46333/rebuild >/dev/null 2>&1 \
+      || warn "zvec did not accept the rebuild request — check: journalctl -u looma-search"
+    wait_for_zvec_index "http://127.0.0.1:46333" "journalctl -u looma-search -n 50" || true
+  fi
+
+  fi   # end of the host half (Piper and/or the zvec stack on this box)
 
   # 10) Observability: the app is native, but the obs STACK still runs in Docker,
   #     with an override so the collector tails the HOST's Apache logs.
@@ -2297,16 +2978,25 @@ install_deploy_native() {
   Search:     curl -s http://127.0.0.1:46333/health           (zvec$([ "$WITH_SEARCH" = 1 ] || echo ' — disabled'))
   AI:         curl -s http://127.0.0.1:8089/health            (looma-ai$([ "$WITH_AI" = 1 ] || echo ' — disabled'))
 EOF
+  # Piper and the zvec stack are placed independently, so say where EACH one went
+  # rather than assuming one answer covers both.
+  local in_docker=() on_host=(apache2 mongod)
+  [ "$PIPER_MODE" = "docker" ] && in_docker+=(looma-piper) || on_host+=(looma-piper)
   if [ "$SIDECARS" = "docker" ]; then
+    [ "$WITH_SEARCH" = 1 ] && in_docker+=(looma-search)
+    [ "$WITH_AI" = 1 ]     && in_docker+=(looma-ai)
+  else
+    [ "$WITH_SEARCH" = 1 ] && on_host+=(looma-search)
+    [ "$WITH_AI" = 1 ]     && on_host+=(looma-ai)
+  fi
+  echo "  On the host:   systemctl status ${on_host[*]}"
+  if [ "${#in_docker[@]}" -gt 0 ]; then
     cat <<EOF
-  On the host:   systemctl status apache2 mongod
-  In Docker:     docker ps    (looma-piper, looma-search$([ "$WITH_AI" = 1 ] && echo ', looma-ai'))
+  In Docker:     docker ps    (${in_docker[*]})
                  they use host networking, so they talk to the host's MongoDB on :27017
   Manage them:   cd $repo_dest && docker compose -f docker-compose.native.yml -p looma-native ps|logs|restart
   They come back on their own after a reboot (restart: unless-stopped).
 EOF
-  else
-    echo "  Services:   systemctl status apache2 mongod looma-piper looma-search looma-ai"
   fi
   echo "  Reboot to confirm autostart + the kiosk."
 }
@@ -2423,7 +3113,7 @@ verify_tts() {
   local base="$1" health voices en_n ne_n
   health="$(curl -fsS --max-time 10 http://127.0.0.1:5002/health 2>/dev/null || true)"
   if [ -z "$health" ]; then
-    v_fail "Piper is not answering on :5002 — $([ "$SIDECARS" = host ] && [ "$DEPLOY" = native ] \
+    v_fail "Piper is not answering on :5002 — $([ "$PIPER_MODE" = host ] && [ "$DEPLOY" = native ] \
              && echo 'journalctl -u looma-piper -n 50' || echo 'docker logs looma-piper --tail 50')"
     return 0
   fi
@@ -2435,7 +3125,7 @@ verify_tts() {
   # Whitespace-independent: the two servers (and Flask versions) format this
   # differently, and a loose match here would report a missing model as fine.
   local h_flat; h_flat="$(printf '%s' "$health" | tr -d ' \n\t')"
-  local where; where="$([ "$SIDECARS" = host ] && echo "ls -1 /usr/share/piper" \
+  local where; where="$([ "$PIPER_MODE" = host ] && echo "ls -1 /usr/share/piper" \
                         || echo "docker exec looma-piper ls -1 /usr/share/piper")"
   case "$h_flat" in
     *'"en":true'*) : ;;
@@ -2472,12 +3162,37 @@ verify_tts() {
 verify_services() {
   local base="$1"
   local out
+  # MongoDB FIRST — everything else rests on it. The native deployment runs it on the
+  # host, and when it is down the failure surfaces everywhere except where the cause
+  # is: the app throws, search returns nothing, the assistant is silent. Verifying it
+  # explicitly is what turns four confusing symptoms back into one sentence.
+  if [ "$DEPLOY" = "native" ]; then
+    if mongosh --quiet --eval 'db.runCommand({ping:1})' >/dev/null 2>&1 \
+    || mongo   --quiet --eval 'db.runCommand({ping:1})' >/dev/null 2>&1; then
+      v_ok "MongoDB answers on 127.0.0.1:27017 ($(mongod --version 2>/dev/null | head -1))"
+    else
+      v_fail "MongoDB is NOT answering on 127.0.0.1:27017 — Looma cannot work without it."
+      v_fail "  tail -n 20 /var/log/mongodb/mongod.log   (systemctl status only shows 'status=14')"
+      v_fail "  'Failed to start up WiredTiger' -> data files from an older MongoDB survived;"
+      v_fail "  'Illegal instruction' -> this board needs MONGO_SERIES=4.4, not 5.0."
+    fi
+  fi
   # zvec is optional in BOTH deployments now, so "not running" is only a problem
   # when it was actually asked for.
   if [ "$WITH_SEARCH" = "1" ]; then
     out="$(curl -fsS --max-time 10 http://127.0.0.1:46333/health 2>/dev/null || true)"
-    [ -n "$out" ] && v_ok "search (zvec) is up" \
-      || v_warn "zvec search is not answering on :46333 — docker logs looma-search --tail 50"
+    # "up" is not "working": the service answers /health perfectly well with an
+    # EMPTY index (a Mongo it cannot read, a rebuild that never ran), and then every
+    # search in the classroom returns nothing. doc_count is what actually matters.
+    if [ -z "$out" ]; then
+      v_warn "zvec search is not answering on :46333 — docker logs looma-search --tail 50"
+    elif printf '%s' "$out" | grep -qE '"doc_count":[[:space:]]*0[,}]'; then
+      v_fail "zvec search is up but its index is EMPTY — every search returns nothing."
+      v_fail "  $out"
+      v_fail "  rebuild: curl -X POST http://127.0.0.1:46333/rebuild   (then re-run: $0 verify)"
+    else
+      v_ok "search (zvec) is up ($(printf '%s' "$out" | sed -n 's/.*"doc_count":[[:space:]]*\([0-9]*\).*/\1/p') documents indexed)"
+    fi
   else
     v_ok "zvec stack not installed — no semantic search, AI Assistant or exams (as chosen)"
   fi
@@ -2879,8 +3594,8 @@ cmd_install() {
   while [ $# -gt 0 ]; do case "$1" in
     --docker) DEPLOY=docker; shift;;
     --native) DEPLOY=native; shift;;
-    --offline) OFFLINE=1; shift;;
-    --online) OFFLINE=0; shift;;
+    --offline) OFFLINE=1; OFFLINE_EXPLICIT=1; shift;;
+    --online) OFFLINE=0; OFFLINE_EXPLICIT=1; shift;;
     --www) WWW="$2"; shift 2;;
     --user) TARGET_USER="$2"; shift 2;;
     --kiosk-url) KIOSK_URL="$2"; shift 2;;
@@ -2890,10 +3605,14 @@ cmd_install() {
     --no-observability) WITH_OBSERVABILITY=0; WITH_AGENTS=0; shift;;
     --remote-obs) WITH_OBSERVABILITY=0; WITH_AGENTS=1; REMOTE_OBS_HOST="$2"; shift 2;;
     --analysis) WITH_ANALYSIS=1; shift;;
-    --ai) WITH_AI=1; shift;;
-    --no-ai) WITH_AI=0; shift;;
+    # The assistant is no longer selectable on its own — it is half of the zvec
+    # stack. Accept the old flags so existing scripts do not die on them, but say
+    # plainly that they no longer decide anything; --no-search leaves the stack out.
+    --ai) warn "--ai is obsolete: the AI assistant is part of the zvec stack and is on with it"; shift;;
+    --no-ai) warn "--no-ai is obsolete: the AI assistant is part of the zvec stack. Use --no-search to leave the whole stack out"; shift;;
     --no-search) WITH_SEARCH=0; shift;;
     --sidecars) SIDECARS="$2"; shift 2;;
+    --piper) PIPER_MODE="$2"; shift 2;;
     --swap) MAKE_SWAP=1; shift;;
     --swap-gb) MAKE_SWAP=1; SWAP_GB="$2"; shift 2;;
     --cpu-max-freq) CPU_MAX_FREQ="$2"; shift 2;;
@@ -2907,13 +3626,15 @@ cmd_install() {
     run_form
   fi
 
-  # One rule, wherever the answer came from (form or flags): no zvec stack means
-  # no looma-ai either. The assistant and exam generation ARE looma-ai, and it is
-  # useless without the stack it sits on.
-  if [ "$WITH_SEARCH" != "1" ] && [ "$WITH_AI" = "1" ]; then
-    log "zvec stack is off — turning the AI assistant off with it"
-    WITH_AI=0
-  fi
+  # A typo in --sidecars/--piper used to sail straight through and silently mean
+  # "host" (anything that is not the literal "docker"), quietly installing the
+  # opposite of what was asked for.
+  case "$SIDECARS"   in docker|host) ;; *) die "--sidecars must be 'docker' or 'host' (got: $SIDECARS)";; esac
+  case "$PIPER_MODE" in docker|host) ;; *) die "--piper must be 'docker' or 'host' (got: $PIPER_MODE)";; esac
+
+  # One rule, wherever the answer came from (form or flags): the assistant follows
+  # the stack, because it IS half of it.
+  settle_stack_flags
 
   resolve_obs_endpoints
   preflight "install"
@@ -2978,9 +3699,13 @@ cmd_verify() {
   elif systemctl is-active apache2 >/dev/null 2>&1 || systemctl is-active httpd >/dev/null 2>&1; then
     DEPLOY=native
   fi
-  # Piper on the host (a venv unit) rather than in a container changes the
-  # "where do I look for the logs" hints.
-  systemctl list-unit-files 2>/dev/null | grep -q '^looma-piper\.service' && SIDECARS=host || true
+  # Where each half actually ended up — it changes the "where do I look for the
+  # logs" hints, and the two are placed independently, so ask about each. An
+  # ENABLED unit is the test, not merely an installed one: the installer leaves
+  # a disabled unit behind when a half moves into Docker.
+  if systemctl is-enabled looma-piper.service >/dev/null 2>&1; then PIPER_MODE=host; else PIPER_MODE=docker; fi
+  if systemctl is-enabled looma-search.service >/dev/null 2>&1 \
+     || systemctl is-enabled looma-ai.service >/dev/null 2>&1; then SIDECARS=host; else SIDECARS=docker; fi
 
   log "verifying a $DEPLOY install at $WWW"
   verify_install

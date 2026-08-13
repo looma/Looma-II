@@ -12,6 +12,7 @@ Description:  for Looma 2
 <?php $page_title = 'Looma Settings';
       require_once ('includes/header.php');
       require_once ('includes/looma-utilities.php');
+      require_once ('includes/looma-features.php');
       logPageHit('settings');
 ?>
 	<link rel="stylesheet" href="css/looma-settings.css">
@@ -66,9 +67,15 @@ Description:  for Looma 2
             </div>
 
             <div class="tool-row">
+                <?php
+                // The AI Tooling page is a console for looma-ai — it does nothing
+                // but poll a service that isn't there on a box installed without
+                // the zvec stack. Drop the button rather than offer a dead page.
+                if (looma_ai_enabled()): ?>
                 <a href="looma-ai.php">
                     <button class="admin-control">AI Tooling</button>
                 </a>
+                <?php endif; ?>
 
                 <a href="looma-edit-activities.php">
                     <button class="admin-control">Resource Editor</button>

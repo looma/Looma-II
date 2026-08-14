@@ -51,7 +51,7 @@ function displayActivities($files, next, count) {
     var last = Math.min(next + count - 1, numFiles);
     for (var i = next - 1; i <= last - 1; i++) {
         if ($files.list[i])
-        LOOMA.makeActivityButton($files.list[i], $files.list[i]._id.$oid, $files.list[i].db, $files.list[i].mongoID, $('#file-list-table'));
+        LOOMA.makeButton($files.list[i], $('#file-list-table'));
     }
     resultsShown = last;  //careful: can exceed numfiles
     if (resultsShown < numFiles) $("#more").show(); else $("#more").hide();

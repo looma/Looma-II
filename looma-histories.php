@@ -36,12 +36,13 @@ logPageHit('histories');
         foreach ($histories as $history) {
 
             echo "<td>";
-            $dn = $history['title'];
-            $ndn = isset($history['ndn']) ?  $history['ndn'] : "";
-            $ft = "history";
-            $thumb = $history['thumb'];
-            $id = $history['_id'];  //mongoID of the descriptor for this lesson
-            makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+            makeButton(array(
+                'ft' => 'history',
+                'dn' => $history['title'],
+                'ndn' => isset($history['ndn']) ? $history['ndn'] : null,
+                'thumb' => $history['thumb'],
+                'mongo_id' => $history['_id'],
+            ));
             echo "</td>";
             $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
 

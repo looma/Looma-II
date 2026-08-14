@@ -1,0 +1,41 @@
+	अग्लो पहिचान गरौँ	1M01	math	np	1	1	अग्लो_पहिचान_गरौँ.pdf	worksheet	WP II Lot 17															
+	अङ्क अभ्यास	1M15	math	np	1	1	अङ्क_अभ्यास.pdf	worksheet	WP II Lot 17															
+	अङ्क कोठा	1M07	math	np	1	1	अङ्क_कोठा.pdf	worksheet	WP II Lot 17															
+	अङ्क मिलाऔँ	1M06	math	np	1	1	अङ्क_मिलाऔँ.pdf	worksheet	WP II Lot 17															
+	आकारहरू पहिचान	1M03	math	np	1	1	आकारहरू_पहिचान.pdf	worksheet	WP II Lot 17															
+	कलमको गन्ती	1M15	math	np	1	1	कलमको_गन्ती.pdf	worksheet	WP II Lot 17															
+	कोठा थोप्लाको जोड	1M07	math	np	1	1	कोठा _थोप्लाको_जोड.pdf	worksheet	WP II Lot 17															
+	गणना क्षेत्र	3M08.01	math	np	3	3	गणना_क्षेत्र.pdf	worksheet	WP II Lot 17															
+	गन्ती र जोडा मिलाऔँ	1M04	math	np	1	1	गन्ती_र_जोडा_मिलाऔँ.pdf	worksheet	WP II Lot 17															
+	गन्ती र सङ्ख्या	1M04	math	np	1	1	गन्ती_र_सङ्ख्या.pdf	worksheet	WP II Lot 17															
+	गुणन	3M05.03	math	np	3	3	गुणन_पत्ता_लगाउनुहोस्.pdf	worksheet	WP II Lot 17															
+	गुणन पत्ता लगाउनुहोस्	3M05.03	math	np	3	3	गुणन_भाग_दुई.pdf	worksheet	WP II Lot 17															
+	गुणन भाग दुई	3M05.03	math	np	3	3	गुणन.pdf	worksheet	WP II Lot 17															
+	गोल घेरा	1M14	math	np	1	1	गोल_घेरा.pdf	worksheet	WP II Lot 17															
+	घटाउने अभ्यास	1M17	math	np	1	1	घटाउने_अभ्यास.pdf	worksheet	WP II Lot 17															
+	घण्टा रूपान्तरण गर्नुहोस्	3M06.01	math	np	3	3	घण्टा_रूपान्तरण_गर्नुहोस्.pdf	worksheet	WP II Lot 17															
+	चार अङ्कको घटाउ	3M05.02	math	np	3	3	चार_अङ्कको_घटाउ.pdf	worksheet	WP II Lot 17															
+	चौतारीमा साथीहरू	1M07	math	np	1	1	चौतारीमा_साथीहरू.pdf	worksheet	WP II Lot 17															
+	छिमेकी सङ्ख्याहरू	1M15	math	np	1	1	छिमेकी_सङ्ख्याहरू.pdf	worksheet	WP II Lot 17															
+	जोड र घटाउ	3M05.02	math	np	3	3	जोड_र_घटाउ.pdf	worksheet	WP II Lot 17															
+	जोडौँ	1M16	math	np	1	1	जोडौँ.pdf	worksheet	WP II Lot 17															
+	जोर बिजोर	1M12	math	np	1	1	जोर_बिजोर.pdf	worksheet	WP II Lot 17															
+	डिभिजन अभ्यास	3M05.04	math	np	3	3	डिभिजन_अभ्यास.pdf	worksheet	WP II Lot 17															
+	तीन अंक संख्याहरू गुणन	3M05.03	math	np	3	3	तीन_अंक_संख्याहरू_गुणन.pdf	worksheet	WP II Lot 17															
+	दुई अङ्कको गुणन	3M05.03	math	np	3	3	दुई_अङ्कको_गुणन.pdf	worksheet	WP II Lot 17															
+	नोटको पहिचान	1M20	math	np	1	1	नोटको_पहिचान.pdf	worksheet	WP II Lot 17															
+	पहिले र पछि	1M14	math	np	1	1	पहिले_र_पछि.pdf	worksheet	WP II Lot 17															
+	पिक्टोग्राफ	3M07.05	math	np	3	3	पिक्टोग्राफ.pdf	worksheet	WP II Lot 17															
+	पैसा घटाउनुहोस्	3M07.01	math	np	3	3	पैसा_घटाउनुहोस्.pdf	worksheet	WP II Lot 17															
+	पैसा रूपान्तरण	3M07.01	math	np	3	3	पैसा_रूपान्तरण.pdf	worksheet	WP II Lot 17															
+	पैसाको जोड	3M07.01	math	np	3	3	पैसाको_जोड.pdf	worksheet	WP II Lot 17															
+	फटाफट जोड	1M10	math	np	1	1	फटाफट_जोड.pdf	worksheet	WP II Lot 17															
+	बार र समय	1M19	math	np	1	1	बार_र_समय.pdf	worksheet	WP II Lot 17															
+	रेखा बनाऔँ	1M02	math	np	1	1	रेखा_बनाऔँ.pdf	worksheet	WP II Lot 17															
+	लिटर र मिलिलिटर	3M07.02	math	np	3	3	लिटर_र_मिलिलिटर_रूपान्तरण.pdf	worksheet	WP II Lot 17															
+	लिटर र मिलिलिटर रूपान्तरण	3M07.02	math	np	3	3	लिटर_र_मिलिलिटर.pdf	worksheet	WP II Lot 17															
+	वजन रूपान्तरण	3M07.04	math	np	3	3	वजन_रूपान्तरण.pdf	worksheet	WP II Lot 17															
+	समान आकारका वस्तुहरू	1M03	math	np	1	1	समान_आकारका_वस्तुहरू.pdf	worksheet	WP II Lot 17															
+	सेन्टिमिटर र मिटर	3M07.03	math	np	3	3	सेन्टिमिटर_र_मिटर.pdf	worksheet	WP II Lot 17															
+	हप्ता र दिनहरू	3M06.01	math	np	3	3	हप्ता_र_दिनहरू.pdf	worksheet	WP II Lot 17															
+	हराएको सङ्ख्या	1M15	math	np	1	1	हराएको_सङ्ख्या.pdf	worksheet	WP II Lot 17															

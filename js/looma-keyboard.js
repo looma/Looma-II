@@ -15,9 +15,97 @@ var nepaliShiftedKeys = "़!@#$%^&*()॰॒ठऔैृथञूीओफईऐ
 
 var destination = undefined;
 var temporaryDestination = undefined;
+var dimmed = undefined;     // the page content that is dimmed while the keyboard is showing
 
-var validInputsString =
-    'input:not([type]):not(.nokeyboard):not([readonly]), input[type=text]:not(.nokeyboard):not([readonly]), input[type=password]:not(.nokeyboard):not([readonly]), textarea:not(.nokeyboard):not([readonly])';
+var validInputsString = ['input:not([type])', 'input[type=text]', 'input[type=password]',
+                         'input[type=number]', 'textarea'
+                        ].map(function(selector) {
+                            return selector + ':not(.nokeyboard):not([readonly]):not([disabled])';
+                        }).join(', ');
+
+/*******************************************************************************
+ * ACTIVITY FRAMES
+ *
+ * ePaath (and other HTML) activities are displayed in an <iframe> (or an <embed>),
+ * so the boxes the student types into belong to a different document than this
+ * keyboard. The functions below reach into those documents. Activities are served
+ * by the Looma server itself, so they are same-origin and readable; a frame that
+ * isn't readable (e.g. an external website) is simply skipped.
+ ******************************************************************************/
+
+// the document inside a frame element, or null if it can't be read
+function frameDocument(frame) {
+    try {
+        return frame.contentDocument ||
+              (frame.contentWindow && frame.contentWindow.document) || null;
+    } catch (error) {   // cross-origin frame
+        return null;
+    }
+}
+
+// this page's document, plus the document of every readable frame on it
+function allDocuments(doc, list) {
+    doc  = doc  || document;
+    list = list || [];
+    list.push(doc);
+    $('iframe, embed, object', doc).each(function() {
+        var framedoc = frameDocument(this);
+        if (framedoc && list.indexOf(framedoc) < 0) allDocuments(framedoc, list);
+    });
+    return list;
+}
+
+// every input the keyboard can type into, including those inside activity frames
+function allValidInputs() {
+    var $inputs = $();
+    allDocuments().forEach(function(doc) {
+        $inputs = $inputs.add($(validInputsString, doc));
+    });
+    return $inputs;
+}
+
+// the input the student last tapped, on this page or inside any activity frame
+function focusedInput() {
+    var $focused = $();
+    allDocuments().forEach(function(doc) {
+        var focused = doc.activeElement;
+        if (focused && $(focused).is(validInputsString)) $focused = $focused.add(focused);
+    });
+    return $focused.last();    // an activity's input wins over anything focused on the Looma page
+}
+
+// can the keyboard type into this element?
+function isInput($element) {
+    if (!$element || !$element.length) return false;
+    var tag = $element.prop('tagName').toLowerCase();
+    return (tag === 'input' || tag === 'textarea');
+}
+
+// is the destination inside an activity frame rather than on the Looma page itself?
+function inFrame() {
+    return !!(destination && destination[0] && destination[0].ownerDocument !== document);
+}
+
+/*
+ * Watch every activity frame for the student tapping one of its inputs.
+ * Activities build their input boxes as they run, so the handler is delegated to the
+ * frame's document - that way it also works for boxes that don't exist yet. A frame that
+ * loads a new page gets a new document, which clears the flag below automatically.
+ */
+function watchFrames() {
+    allDocuments().forEach(function(doc) {
+        if (doc === document || doc.loomaKeyboardWatched) return;
+        doc.loomaKeyboardWatched = true;
+        $(doc).on('focusin click', validInputsString, elementFocused);
+    });
+}
+
+// on a page that displays activities, show the Keyboard button only while a box the student
+// can type into is on the screen
+function updateKeyboardButton() {
+    if ($('#looma-keyboard-container').is(':visible')) return;   // leave it alone while typing
+    $('.show-keyboard').toggle(allValidInputs().filter(':visible').length > 0);
+}
 
 // Check if the "shift" key is down.
 function isShifted() {
@@ -266,9 +354,40 @@ function backspace() {
     }
 }
 
+// <input type="number"> accepts only ASCII digits, so translate Nepali digits for those boxes.
+function forDestination(text) {
+    if (destination.attr('type') !== 'number') return text;
+    return text.replace(/[०-९]/g, function(digit) {
+        return String('०१२३४५६७८९'.indexOf(digit));
+    });
+}
+
+/*
+ * Copy the keyboard's text into the box the student is filling in.
+ * An activity in a frame watches its inputs to check answers as they are typed, and
+ * jQuery's .val() is silent, so also send the events the activity is listening for.
+ */
+function writeDestination() {
+    if (!isInput(destination) || !temporaryDestination) return;
+
+    if (isTextArea()) destination.html(forDestination(temporaryDestination.html()));
+    else              destination.val (forDestination(temporaryDestination.val()));
+
+    if (!inFrame()) return;
+
+    var input = destination[0];
+    var frameWindow = input.ownerDocument.defaultView || window;
+    ['input', 'keyup', 'change'].forEach(function(type) {
+        input.dispatchEvent(new frameWindow.Event(type, {bubbles: true}));
+    });
+}
+
 // Event handler when a button is clicked. Checks if the key is a special key, then performs the appropriate action.
 function keyClicked(event) {
     var target = event.currentTarget;
+
+    // the Close key is handled by hideKeyboard(), which is also bound to it
+    if ($(target).attr('id') === 'keyboard-hide') return;
 
     if ($(target).hasClass('keyboard-special')) {
         switch ($(target).attr('id')) {
@@ -300,6 +419,12 @@ function keyClicked(event) {
     if ($(target).attr('id') != 'keyboard-shift') {
         $("#looma-keyboard").removeClass("shifted");
     }
+
+    // An activity in a frame reacts as the student types (it checks answers, echoes the
+    // number in Nepali, etc), so keep its box in step with the keyboard. On Looma's own
+    // pages the text is still copied over only when the keyboard closes.
+    if (inFrame()) writeDestination();
+
     temporaryDestination.focus();
 }
 
@@ -309,19 +434,23 @@ function keyClicked(event) {
 function showKeyboard(event) {
     var target = destination;
     // Make sure the target is a valid type of input.
-    if ($(target).prop("tagName").toLowerCase() != "textarea" && $(target).prop(
-            "tagName").toLowerCase() != "input") {
-        var validInputs = $(validInputsString);
-        // If there's only one valid input, we can assume that's what the user wanted to edit.
-        if (validInputs.length == 1) {
+    if (! isInput(target)) {
+        // the box the student tapped, wherever it is - including inside an activity frame
+        var focused = focusedInput();
+        var validInputs = allValidInputs();
+
+        if (focused.length) {
+            target = focused;
+        } else if (validInputs.length == 1) {
+            // If there's only one valid input, we can assume that's what the user wanted to edit.
             target = validInputs;
-	    destination = validInputs;
         } else {
-            target = $(':focus');
-            destination = $(':focus');
-            // ??? handle multiple input elements here. not implemented yet.
+            // several boxes and none of them chosen - the student has to pick one first
+            LOOMA.alert(LOOMA.translatableSpans('Tap the box you want to type in, then tap Keyboard',
+                'तपाईं टाइप गर्न चाहनुहुने बाकसमा थिच्नुहोस्, त्यसपछि किबोर्ड थिच्नुहोस्'), 4, true);
             return;
         }
+        destination = target;
     }
     // Ignore invalid inputs, if they were somehow assigned to "destination".
     if ($(target).hasClass("nokeyboard")) return;
@@ -341,9 +470,7 @@ function showKeyboard(event) {
         });
     } else {
         temporaryDestination = $('#inputEntry');
-        if ($(target).val()) {
-            temporaryDestination.val($(target).val());
-        }
+        temporaryDestination.val($(target).val() || '');   // empty box means start with an empty entry
         $('#keyboard-enter').css({
             visibility: "hidden"
         });
@@ -353,8 +480,22 @@ function showKeyboard(event) {
         display: ""
     });
 
-    LOOMA.makeTransparent( $('#main-container-horizontal') );
-    $("#looma-keyboard-container").css({
+    var $keyboardContainer = $("#looma-keyboard-container");
+
+    // In fullscreen the browser paints only what is inside the fullscreen element, so the
+    // keyboard has to move in there (hideKeyboard() puts it back on the body).
+    var fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
+    if (fullscreenElement && ! $.contains(fullscreenElement, $keyboardContainer[0]))
+        $keyboardContainer.appendTo(fullscreenElement);
+
+    // Dim what is behind the keyboard - but never an ancestor of the keyboard, because
+    // 'all-transparent' would fade the keys and pointerEvents:'none' would ignore taps on them.
+    var $main = $('#main-container-horizontal');
+    if ($main.length && ! $.contains($main[0], $keyboardContainer[0])) dimmed = $main;
+    else dimmed = $keyboardContainer.siblings('div, iframe, embed, object');
+    LOOMA.makeTransparent(dimmed);
+
+    $keyboardContainer.css({
         display: "block"
     });
     temporaryDestination.focus();
@@ -366,19 +507,24 @@ function showKeyboard(event) {
 
 // Dismiss the keyboard, resetting everything to normal. The current text will be inserted into the text field.
 function hideKeyboard() {
-    if (isTextArea()) {
-        destination.html(temporaryDestination.html());
-    } else {
-        destination.val(temporaryDestination.val());
-    }
+    writeDestination();
 
-    $('#textareaEntry').html();
+    $('#textareaEntry').html('');
     $('#inputEntry').val('');
-    LOOMA.makeOpaque( $('#main-container-horizontal') );
-    $("#looma-keyboard-container").css({
+    $("#looma-keyboard").removeClass("shifted");
+
+    LOOMA.makeOpaque(dimmed || $('#main-container-horizontal'));
+    dimmed = undefined;
+
+    var $keyboardContainer = $("#looma-keyboard-container");
+    $keyboardContainer.css({
         display: "none"
     });
-    $("#search-term").focus();
+    if ($keyboardContainer.parent()[0] !== document.body) $keyboardContainer.appendTo('body');
+
+    // hand focus back to the activity's box, so it sees the answer being finished
+    if (inFrame()) destination.focus();
+    else          $("#search-term").focus();
 }
 
 // Called whenever a compatible element is focused.
@@ -391,8 +537,13 @@ $(document).ready(function() {
     var validInputs = $(validInputsString);
     //console.log(validInputs);
 
+    // A page that plays an ePaath or HTML activity has no inputs of its own - the activity's
+    // boxes show up later, inside its frame - so build the keyboard for those pages too.
+    var playsActivities = $('#fullscreen').hasClass('keyboard') ||
+                          $('#fullscreen').find('iframe, embed, object').length > 0;
+
 /**/
-    if (validInputs.length == 0 && ! $('#fullscreen').hasClass('keyboard')) {
+    if (validInputs.length == 0 && ! playsActivities) {
         console.log("No text inputs.");
         return;
     }
@@ -416,5 +567,16 @@ $(document).ready(function() {
     if ( $('#fullscreen').length)
         $('#fullscreen').append(showKeyboardButton)
     else $("#main-container-horizontal").append(showKeyboardButton)
+
+    // An activity frame loads new pages and builds new input boxes while it runs, so keep
+    // looking for boxes to type into instead of deciding once, at page load.
+    if (playsActivities) {
+        watchFrames();
+        updateKeyboardButton();
+        setInterval(function() {
+            watchFrames();
+            updateKeyboardButton();
+        }, 1000);
+    }
 
 });

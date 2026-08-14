@@ -283,12 +283,16 @@ try {
         }
 
         if ($mongo_level >= 3) {
-            //require_once('vendor/autoload.php');
+               // this line for AWS server
+          //     require_once('vendor/autoload.php');
 
-              if (PHP_MAJOR_VERSION >= 8) {
-                  require_once('vendorPHP8/autoload.php');
+            // if (PHP_MAJOR_VERSION >= 8) {
+             if (PHP_VERSION_ID >= 80100) {
+                 // this line for macbook laptop with php8.1+
+                 require_once('vendorPHP8/autoload.php');
               } else {
-                  require_once('vendor/autoload.php');
+                 // this line for looma box with PHP 7
+                 require_once('vendor/autoload.php');
               }
 
 
@@ -387,12 +391,15 @@ $local_lessons_collection     = $localdbname -> lessons;
 $local_slideshows_collection     = $localdbname -> slideshows;
 $local_textfiles_collection     = $localdbname -> text_files;
 $local_activities_collection  = $localdbname -> activities;
+$local_games_collection       = $localdbname -> games;
 
 $localcollections = array(
     "lessons" =>    $local_lessons_collection,
     "slideshows" =>    $local_slideshows_collection,
     "text_files" =>    $local_textfiles_collection,
     "text" =>    $local_textfiles_collection,
+    "games" =>     $local_games_collection,
+    "game" =>      $local_games_collection,
     "activities" => $local_activities_collection
 );
 

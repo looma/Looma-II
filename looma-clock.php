@@ -56,6 +56,10 @@ Comments:
                 <button TYPE="submit" id="d" class="clock-button"><?php keyword("World Clocks")?></button>
             </FORM>
 
+            <FORM METHOD="LINK" ACTION="looma-clock-stopwatch.php" id="stopwatchTimerButton">
+                <button TYPE="submit" id="e" class="clock-button"><?php keyword("Stopwatch")?> &amp; <?php keyword("Timer")?></button>
+            </FORM>
+
             <FORM id="oneClock">
                 <button TYPE="button" id="clock-only"  class="clock-button looma-control-button"></button>
             </FORM>
@@ -89,8 +93,8 @@ Comments:
             <span id="day"></span>
             <span id="date"></span>
         </div>
-        </div>
         <p id = "dragHands"> <?php keyword("Drag the clock hands to change the time") ?></p>
+        </div>
     </div>
 
     <?php

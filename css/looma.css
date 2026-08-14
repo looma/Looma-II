@@ -395,6 +395,11 @@ h1 span.english-keyword, h1 span.native-keyword {
     display:inline-block;
 }
 
+/* button labels [made by makeButton()] sit on their own line under the thumbnail */
+button span.english-keyword, button span.native-keyword {
+    display:block;
+}
+
 .xlat {display:none;}
 
 span:hover .xlat {

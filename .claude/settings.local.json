@@ -33,7 +33,9 @@
       "Bash(php -v)",
       "Bash(mongod --version)",
       "Bash(mongosh --quiet looma --eval 'printjson\\(db.lessons.findOne\\(\\)\\)')",
-      "Bash(echo \"--- exit $? ---\")"
+      "Bash(echo \"--- exit $? ---\")",
+      "Bash(curl -s -o /tmp/ok.html -w \"http=%{http_code} bytes=%{size_download}\\\\n\" -b \"source=looma-laptop;theme=looma-laptop;language=english\" \"http://localhost/looma-html.php?fp=..%2FePaath%2F&fn=index.html&ep=\")",
+      "Bash(curl -s -o /tmp/bad.html -w \"http=%{http_code} bytes=%{size_download}\\\\n\" -b \"source=looma-laptop;theme=looma-laptop;language=native\" \"http://localhost/looma-html.php?fp=..%2FePaath%2F&fn=null&ep=\")"
     ]
   }
 }

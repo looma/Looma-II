@@ -509,7 +509,10 @@ function makeButton($a) {
 
     $dn  = isset($a['dn'])  ? $a['dn']  : null;
     $ndn = isset($a['ndn']) ? $a['ndn'] : null;
-    displayName($fn, $dn, $ndn, language(), 'black');
+    // Pass no language, so that displayName() emits BOTH labels as a translatable
+    // .english-keyword / .native-keyword pair. Passing language() here would bake the label
+    // into one language at render time, and the TRANSLATE button could not toggle it.
+    displayName($fn, $dn, $ndn, null, 'black');
 
     if ($dn)      echo "<span class='tip yes-show big-show'>" . $dn . "</span>";
     else if ($ndn) echo "<span class='tip yes-show big-show'>" . $ndn . "</span>";

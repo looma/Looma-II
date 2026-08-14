@@ -231,10 +231,13 @@ playMedia : function(button) {
             if (! lang || lang === 'null' || lang === 'both') lang =  language==='native'?'np':'en';
 
             var fp = encodeURIComponent(button.getAttribute('data-fp'));
-            if (lang === 'np')
-                var effective_fn = nfn;
-            else
-                var effective_fn = fn;
+            // Only some html activities have a separate Nepali file. The rest [ePaath, Khan, ...]
+            // serve both languages from one file, and have no 'nfn' - in that case getAttribute()
+            // returns null and encodeURIComponent() turns it into the string "null", which would
+            // ask for a file named 'null'. So fall back to 'fn' whenever there is no real 'nfn'.
+            if (lang === 'np' && nfn && nfn !== 'null' && nfn !== 'undefined')
+                 var effective_fn = nfn;
+            else var effective_fn = fn;
             var kbd = encodeURIComponent(button.getAttribute('data-dn')) === 'ePaath' ? "keyboard" : "";
             window.location = 'html?fp=' + fp + '&fn=' + effective_fn + '&ep=' + kbd;
             break;

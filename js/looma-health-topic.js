@@ -55,6 +55,25 @@ $(document).ready(function () {
     var wantView = new URLSearchParams(window.location.search).get('view');
     if (wantView && $views[wantView]) showView(wantView);
 
+    /* ---------- keep the embedded Practice game in sync with the language flag ----------
+       The global #translate handler (looma.js) flips the language cookie and re-translates
+       THIS page, but its jQuery selectors can't reach inside the game iframe. So when the
+       flag is toggled, also push the (now-updated) language into the iframe's own document.
+       Same-origin, so we can call the iframe's LOOMA.translate directly. setTimeout(0) lets
+       looma.js update the cookie first, regardless of click-handler order. If the iframe
+       isn't loaded yet, we do nothing — it reads the cookie itself on first load. */
+    $('#translate').on('click', function () {
+        setTimeout(function () {
+            var f = document.getElementById('fa-game-frame');
+            if (!f || !f.getAttribute('src')) return;
+            try {
+                var win = f.contentWindow;
+                var lang = LOOMA.readStore('language', 'cookie');
+                if (win && win.LOOMA && typeof win.LOOMA.translate === 'function') win.LOOMA.translate(lang);
+            } catch (e) { /* iframe not ready / cross-origin — ignore */ }
+        }, 0);
+    });
+
     /* ---------- Emergency action cards: tap to reveal the picture ---------- */
     $('.fa-step-expand').on('click', function () {
         var $btn = $(this);

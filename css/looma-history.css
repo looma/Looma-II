@@ -55,8 +55,30 @@ h1 {
 /*Positioning of the timeline in the window*/
 .timeline ol {
   font-size: 0;
+  position: relative;   /* anchor for the full-width line (::before) */
   width: 100vw;
   padding: 18vh 0;
+  /* Left-align the event slots. A global `text-align:center` (css/looma.css)
+     otherwise centers timelines with only a few events, indenting the first
+     event. Long (curated) timelines overflow and left-align on their own, so
+     this makes short editor-made timelines start in the same place as them. */
+  text-align: left;
+}
+
+/*The continuous timeline line. Drawn as one element that always spans the full
+  screen width, so the line looks the same no matter how many events a timeline
+  has. (The per-event <li> backgrounds below still carry the line under events
+  that scroll off-screen on long timelines.)*/
+.timeline ol::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -5vw;        /* cancel #playground's 5vw left padding to reach the edge */
+  width: 100vw;      /* always span the full screen, regardless of event count */
+  height: 0.5vh;
+  background: #ff0;
+  transform: translateY(-50%);
+  z-index: 0;
 }
 
 /*The display of the line of the timeline*/
@@ -64,7 +86,11 @@ h1 {
   position: relative;
   display: inline-block;
   list-style-type: none;
-  left: -20vh;
+  /* NOTE: previously `left: -20vh` shifted every event left, which pushed the
+     first event partly off the left edge of the screen (worse on taller
+     windows, since the shift is in vh). Removed so the timeline starts at its
+     natural left padding and the first event is fully visible. Inter-event
+     spacing is unchanged because the shift applied equally to every event. */
   width: 30vw;
   height: 0.5vh;
   background: #ff0;
@@ -157,6 +183,7 @@ input#keywords {display:inline;}
 .dropdown {
   width:100%;
   display: inline-block;
+  text-align: center;   /* center the date button under its event */
 }
 
  .dropdown-content {
@@ -370,6 +397,22 @@ button.img:hover {
     margin-left: 1vh;
     background: red;
     width: 3vw;
+}
+
+/* inline images added in the History editor (up to 2 per event) */
+.popup-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vh;
+    margin-top: 2vh;
+    justify-content: flex-start;
+}
+.popup-image {
+    max-width: 48%;
+    max-height: 45vh;
+    object-fit: contain;
+    border: 1px solid #ccc;
+    border-radius: 6px;
 }
 
 span.english-keyword {    word-break: break-word;

@@ -118,7 +118,10 @@ $(document).ready (function() {
 
             var target = $(e.target);   //The element that has been clicked
             var header = $(target).html();
-            var descrip = $(target).attr("data-msg");   // The description of an event pulled from the json with looma-history.php
+            // prefer the manual Nepali popup text when the toggle is set to native; fall back to English
+            var histLang = LOOMA.readStore('language', 'cookie');
+            var ndescrip = $(target).attr("data-nmsg");
+            var descrip = (histLang === 'native' && ndescrip) ? ndescrip : $(target).attr("data-msg");   // event description from looma-history.php
 
             // Defining the popup function--creates a function, inserts a description, and maybe ids if there are any
             var historypopup = function(msg, msgtitle, notTransparent){
@@ -136,6 +139,21 @@ $(document).ready (function() {
                     }
                     if(id2 !== undefined && id2 !== null) {
                         LOOMA.makeActivityButtonFromId($(target).attr("data-id2"), 'looma',"", $(".popup"));
+                    }
+
+                    // inline images added in the History editor (up to 2)
+                    var imagesAttr = $(target).attr("data-images");
+                    if (imagesAttr) {
+                        try {
+                            var imgs = JSON.parse(imagesAttr);
+                            if (imgs && imgs.length) {
+                                var $wrap = $("<div class='popup-images'></div>");
+                                imgs.forEach(function(src) {
+                                    $("<img class='popup-image' draggable='false'>").attr('src', src).appendTo($wrap);
+                                });
+                                $wrap.appendTo($(".popup"));
+                            }
+                        } catch (err) { console.log('history popup images parse error', err); }
                     }
 
                     $('#dismiss-popup').click(function() {

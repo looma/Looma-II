@@ -2,7 +2,7 @@
 #main-container-horizontal {
     background-color: var(--looma-background);
     display:grid;
-    grid-template-rows: [top] repeat(4,1fr) [bottom];
+    grid-template-rows: [top] repeat(5,1fr) [bottom];
     grid-template-columns: [left] 1fr 3fr 1fr [right];
     grid-gap: 1vh;}
 
@@ -59,8 +59,26 @@ h2 {
 /* user input buttons */
 
 .clock-button {
-    font-size: 2.6em;
-    margin:2vh 2vw;
+    /* scale smoothly with viewport width between a min and max (no breakpoint snap) */
+    font-size: clamp(0.8rem, 2vw, 2.4em);
+    margin: 1.5vh 1vw;
+    max-width: 100%;              /* never wider than its column */
+    box-sizing: border-box;
+    white-space: normal;         /* wrap long labels instead of running off the page */
+    overflow-wrap: break-word;
+}
+
+/* keep the button cells (forms) from being forced wider than their grid track,
+   which is what pushed buttons off the page */
+#main-container-horizontal form { min-width: 0; }
+
+/* make every menu button fill its cell so they're all the SAME size — a long
+   label like "Stopwatch & Timer" no longer looks bigger than the short ones.
+   :not(.looma-control-button) leaves the small icon/toggle buttons alone. */
+#main-container-horizontal:not(.sw-page):not(.wc-page) .clock-button:not(.looma-control-button) {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
 }
 #digitalClockButton {
     margin:2vh 0 0 0;
@@ -70,7 +88,7 @@ h2 {
 
 #singleClockButton {
     grid-column:1;
-    grid-row:2;
+    grid-row:3;
 }
 #analogClockButton {
     grid-column:3;
@@ -79,12 +97,12 @@ h2 {
 }
 #doubleClockButton {
     grid-column:1;
-    grid-row:3;
+    grid-row:4;
 }
 
 #acrossWorldClocks{
     grid-column:1;
-    grid-row:4;
+    grid-row:5;
 }
 
 #oneClock {
@@ -110,7 +128,7 @@ h2 {
     right:5vw;
     height:15vh;
     width:20vw;
-    font-size:2em;
+    font-size:clamp(0.9rem, 2vw, 2em);
 }
 
 #b2 {}
@@ -120,17 +138,36 @@ h2 {
 #d {}
 
 #clock-only {
-    bottom:23vh;
-    display:inline-block;
+    position: fixed;
+    right: 7vw;                /* same vertical line as the speak + fullscreen buttons */
+    bottom: 25vh;              /* stacked between them so nothing overlaps */
+    display: inline-block;
+    margin: 0;                 /* match speak/fullscreen exactly (clear the .clock-button margin) */
+    max-width: none;
+    box-sizing: content-box;
     background-position: center;
-    background-size: 100% 100%;
-    background-color:none;
-    
     z-index:2147483647; /*this is 2^31-1 which is the z-index browsers use for FULLSCREEN */
     background-image: url("../images/clock.png");
     background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-color:rgba(200,200,200,0.3);  /*transparent light gray*/
+    background-color: transparent;   /* drop the filled gray box so it looks like the other icons */
+}
+
+/* force the three right-side control buttons to an IDENTICAL box + icon size.
+   button#clock-only is specific enough to beat the base control-button sizing. */
+button.speak,
+button#fullscreen-control,
+button#clock-only {
+    width: 9vh;
+    height: 9vh;
+    box-sizing: border-box;
+    padding: 0;
+    border: 2px solid rgba(255, 255, 255, 0.35);   /* subtle light outline */
+    border-radius: 12px;                            /* rounded square */
+    background-color: rgba(255, 255, 255, 0.08);    /* faint lighter fill over the navy background */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 62%;
+    opacity: 0.85;
 }
 
 #clockImage{
@@ -146,8 +183,11 @@ h2 {
 }
 
 #mainClock{
-    height:70vh;
-    width:70vh;
+    /* scale with the SMALLER of viewport height/width, so the clock shrinks when the
+       browser gets narrow as well as short. 0.7 * min(viewport) also matches the 0.7
+       factor used by resizeCanvas() in looma-clock.js, so dragging stays accurate. */
+    height:min(70vh, 70vw);
+    width:min(70vh, 70vw);
 }
 
 #mainClock:fullscreen{
@@ -157,25 +197,38 @@ h2 {
 
 #digitalDisplay{
     display:inline-block;
-    position:relative;
-    top:-38vh;
-    right:-21vw;
-    font-size: 6em;
-    grid-column:2;
-    grid-row:4;
+    position:fixed;                /* pin to the screen, not the (taller) page */
+    bottom:14vh;                   /* above the toolbar, below the clock and the drag-hands text */
+    left:50%;
+    transform:translateX(-50%);    /* center horizontally */
+    font-size: clamp(2rem, 7.5vw, 7em);   /* a little bigger */
+    text-align:center;
+    letter-spacing: 0.2em;         /* spaced-out look like the screenshot */
+    z-index:2147483647;            /* sit above the clock canvas */
 }
 
 #amOrPm1, #digitalTime{
-/*    font-family: digitalFont; */
-    font-family: "Digital-7 Mono";
+    font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", "Noteworthy", sans-serif;
+    color: var(--looma-font-color);   /* Looma yellow */
+}
+#amOrPm1 {
+    position: absolute;
+    left: 100%;                /* place PM to the right WITHOUT shifting the HH:MM centering */
+    margin-left: 0.3em;
+    white-space: nowrap;
 }
 #dragHands{
-    font-size: 2em;
-    position:relative;
-    top:10vh;
-    height:8vh;
+    font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", "Noteworthy", sans-serif;  /* match the rest of the page */
+    font-weight: bold;
+    font-size: clamp(0.7rem, 1.6vw, 1.6em);   /* a little smaller */
+    position:fixed;                /* pinned to the screen so it shows in fullscreen too */
+    bottom:28vh;                   /* between the clock above and the time readout below */
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    text-align:center;
     margin:0;
-    
+    z-index:2147483647;            /* stay above the clock canvas */
 }
 #toCurrentTime{
     font-size:1.75em;
@@ -195,40 +248,40 @@ h2 {
 
 #time {
     font-family: "Digital-7 Mono";
-    color: lime;
-    font-size: 13em;
+    color: var(--looma-font-color);   /* Looma yellow (was green/lime) */
+    font-size: clamp(2rem, 12vw, 13em);
     position: absolute;
     top: 21%;
     left: 2%;
 }
 #amOrPm {
     font-family: "Digital-7 Mono";
-    color: lime;
-    font-size: 9em;
+    color: var(--looma-font-color);   /* Looma yellow (was green/lime) */
+    font-size: clamp(1.2rem, 8vw, 9em);
     position: absolute;
     top: 31%;
     left: 81%;
 }
 #seconds {
     font-family: "Digital-7 Mono";
-    color: lime;
-    font-size: 9em;
+    color: var(--looma-font-color);   /* Looma yellow (was green/lime) */
+    font-size: clamp(1.2rem, 8vw, 9em);
     position: absolute;
     top: 30%;
     left: 60%;
 }
 #day {
     font-family: "Digital-7 Mono";
-    color: lime;
-    font-size: 5em;
+    color: var(--looma-font-color);   /* Looma yellow (was green/lime) */
+    font-size: clamp(0.8rem, 4.5vw, 5em);
     position: absolute;
     top: 57%;
     left: 9%;
 }
 #date {
     font-family: "Digital-7 Mono";
-    color: lime;
-    font-size: 5em;
+    color: var(--looma-font-color);   /* Looma yellow (was green/lime) */
+    font-size: clamp(0.8rem, 4.5vw, 5em);
     position: absolute;
     top: 72%;
     left: 9%;
@@ -287,7 +340,7 @@ h2 {
     margin: auto;
     left: 1%;
     top: 77%;
-    font-size: 2.5em;
+    font-size: clamp(1rem, 2.5vw, 2.5em);
 }
 
 #getInput{
@@ -295,7 +348,7 @@ h2 {
     top: 77%;
     padding: 1vh;
     right: 5vw;
-    font-size: 2.5em;
+    font-size: clamp(1rem, 2.5vw, 2.5em);
     width: 50vw;
     border: 2px solid black;
     border-radius:5px;
@@ -319,7 +372,7 @@ h2 {
     margin:auto;
     top: 90%;
     left: 5vw;
-    font-size: 2em;
+    font-size: clamp(0.9rem, 2vw, 2em);
 }
 
 #userHour{
@@ -337,69 +390,144 @@ h2 {
     
 }
 
-/* World Clocks */
-#nepal{
-    top: 15%;
-    left: 16%;
-    position: absolute;
+/* ============================================================
+   World Clocks - responsive layout
+   The 8 clock canvases are sized by looma-clock-worldclocks.js; here we just
+   flow them in centered, wrapping rows (instead of fixed % positions) so the
+   page resizes cleanly and the clocks never overlap.
+   ============================================================ */
+#main-container-horizontal.wc-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 0.3vh;
+    overflow: hidden;          /* never spill onto the toolbar */
+}
+.wc-page h1 { float: none; width: auto; margin: 0; font-size: clamp(0.9rem, 2.2vw, 1.5em); }
+.wc-page h2 { position: static; margin: 0 0 0.3vh 0; font-size: clamp(0.7rem, 1.4vw, 1.05em); text-align: center; width: 100%; }
+
+/* exactly 4 clocks per row, evenly spaced, scaling with the viewport */
+.wc-page .clock-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.3vh 1.5vw;
+    width: 100%;
+    align-items: start;
+    justify-items: center;
+    margin-bottom: 0.3vh;
 }
 
-#tokyo{
-    top: 15%;
-    left: 33%;
-    position: absolute;
+/* each clock is a column: City, Country (yellow) / analog clock / time (yellow) */
+.wc-clock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+.wc-clock canvas {
+    width: 100%;
+    height: auto;
+    /* cap by BOTH width and height so two rows always fit above the toolbar */
+    max-width: min(22vw, 31vh);
+}
+.wc-name {
+    color: yellow;
+    font-weight: bold;
+    font-size: clamp(0.82rem, 1.7vw, 1.65em);
+    text-align: center;
+    line-height: 1.1;
+    white-space: nowrap;          /* keep names on one line so the clocks stay aligned */
+    margin-bottom: 0.2em;
+}
+.wc-time {
+    color: yellow;
+    font-size: clamp(0.82rem, 1.8vw, 1.65em);
+    margin-top: 0.2em;
 }
 
-#newYork{
-    top: 15%;
-    left: 50%;
-    position: absolute;
+/* Button, time-readout, and drag-hands sizes now scale smoothly via clamp() above,
+   so the old single-breakpoint media query is no longer needed. */
 
+/* ============================================================
+   Stopwatch & Timer
+   - entry button on the main clock page (empty right-column slot)
+   - the looma-clock-stopwatch.php page itself
+   ============================================================ */
+
+/* entry button on the main clock page */
+#stopwatchTimerButton {
+    grid-column: 1;
+    grid-row: 2;
+    transform: translateY(-3vh);   /* nudge up a little */
 }
 
-#paris{
-    top: 15%;
-    left: 67%;
-    position: absolute;
-
+/* the Stopwatch & Timer page: override the main clock page's grid so
+   we can simply center the controls in a column. */
+#main-container-horizontal.sw-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    padding: 2vh 2vw 0;
+    box-sizing: border-box;
+    overflow-x: hidden;        /* nothing spills off the sides */
 }
+.sw-page h1 { float: none; width: auto; margin: 1vh 0 0 0; }
+.sw-page h2.credit { position: static; font-size: clamp(1rem, 3vw, 1.6em); margin: 0 0 2vh 0; }
 
-#london{
-    top: 58%;
-    left: 16%;
-    position: absolute;
+/* mode toggle (Stopwatch | Timer) */
+#sw-mode-toggle {
+    margin: 1vh 0 2vh 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1vw;
+    max-width: 100%;
 }
+.sw-mode-button { font-size: clamp(1rem, 3.5vw, 2em); opacity: 0.45; }
+.sw-mode-button.active { opacity: 1; text-decoration: underline; }
 
-#sanFrancisco{
-    top: 58%;
-    left: 33%;
-    position: absolute;
+/* big time readout */
+#sw-display {
+    font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", "Noteworthy", sans-serif;   /* match the main clock page's time */
+    font-weight: 100;                       /* thinnest */
+    font-size: clamp(2.5rem, 16vw, 20em);   /* big on a projector; shrinks on narrow screens so it fits */
+    line-height: 1;
+    margin: 1vh 0;
+    max-width: 100%;
 }
+/* silent flash when the timer reaches zero */
+#sw-display.flashing { animation: sw-flash 0.6s steps(1) infinite; }
+@keyframes sw-flash { 50% { color: red; } }
 
-#moscow{
-    top: 58%;
-    left: 50%;
-    position: absolute;
+/* timer duration setup (hidden in stopwatch mode) */
+#sw-timer-setup { margin: 1vh 0; }
+#sw-timer-presets, #sw-timer-adjust {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1vw;
+    margin: 1vh 0;
+    max-width: 100%;
 }
+.sw-preset-button, .sw-adjust-button {
+    font-size: clamp(0.9rem, 2.8vw, 1.6em);
+    min-width: 2.2em;
+    margin: 0 0.5vw;
+}
+.sw-preset-button.active { text-decoration: underline; }
+#sw-timer-set-label { font-size: clamp(0.9rem, 2.8vw, 1.6em); margin: 0 1vw; }
 
-#cairo{
-    top: 58%;
-    left: 67%;
-    position: absolute;
+/* start / reset */
+#sw-controls {
+    margin: 2vh 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1vw;
+    max-width: 100%;
 }
-
-@media screen and (max-device-width:480px) and (orientation:portrait),
-screen and (max-device-width:768px) and (orientation:landscape) {    .clock-button {font-size:initial;}
-    .clock-button {
-        font-size:2vw;
-        margin: 0;
-        border: 0;
-        padding: 0;
-    }
-    
-    #digitalDisplay {
-        right:0;
-        font-size:5em;
-    }
-    #dragHands {font-size: 1.5em;}
-}
+#sw-controls .clock-button { font-size: clamp(1rem, 3.5vw, 2em); }

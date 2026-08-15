@@ -1,0 +1,438 @@
+/*
+LOOMA css file
+Filename: looma-edit-history.css
+Description: styles for the History Timeline Editor (looma-edit-history.php).
+             Timeline mirrors the read-only viewer (css/looma-history.css): a horizontal
+             yellow line with event cards alternating above/below, on a scrollable
+             palegoldenrod field. Editing is done through two modals.
+Owner: VillageTech Solutions (villagetechsolutions.org)
+Revision: Looma 7.x
+*/
+body {
+    box-sizing: border-box;
+    margin: 0;
+    background-color: #e3e3e3;
+    color: black;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+#main-container { padding: 1vh; }
+
+/* ---- header ---- */
+#header {
+    height: 7vh;
+    background-color: #F2C01B;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    padding: 0 1vw;
+}
+#title { font-size: 1.3em; }
+#editor-name { font-weight: bold; font-size: 1.2em; }
+
+/* ---- toolbar ---- */
+#toolbar-row {
+    height: 6vh;
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    padding: 0.5vh 1vw;
+}
+#timeline-details-btn {
+    /* use the 'background' shorthand (not background-color) so it overrides the theme's
+       button { background: <white gradient> } rule, which otherwise paints white on top. */
+    background: #2E3192;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font: inherit;
+    font-size: 1.1em;
+    padding: 0.6vh 1.2vw;
+    cursor: pointer;
+    box-shadow: none;
+}
+#timeline-details-btn:hover { background: #3d40c0; }
+.timelineScroll {
+    font-size: 1.4em;
+    width: 3vw;
+    height: 5vh;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+}
+.edit-hint { color: #666; font-size: 0.95em; }
+
+/* ---- the timeline field (mirrors looma-history.php #playground) ---- */
+#playground {
+    position: relative;
+    background-color: palegoldenrod;
+    border: 0.1vh solid #ccc;
+    border-radius: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 82vh;
+    width: 100%;
+}
+.timeline { height: 100%; }
+.timeline ol {
+    list-style: none;
+    margin: 0;
+    padding: 0 3vw;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    min-width: min-content;
+}
+/* the horizontal yellow line */
+.timeline ol::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 0.6vh;
+    background: #ff0;
+    transform: translateY(-50%);
+    z-index: 0;
+}
+
+/* ---- insert slots (the tappable "+") ---- */
+.insert-slot {
+    position: relative;
+    flex: 0 0 5vw;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.insert-btn {
+    width: 4vh;
+    height: 4vh;
+    border-radius: 50%;
+    border: 0.3vh dashed #2E3192;
+    background: #fff;
+    color: #2E3192;
+    font-size: 1.6em;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+.insert-btn:hover { background: #2E3192; color: #fff; }
+/* between-event "+" slots are secondary: de-emphasized until hovered, so the prominent
+   "Add event" (toolbar + end of timeline) is the obvious way to add an event. */
+.insert-slot:not(.first):not(.add-after) { flex: 0 0 3.5vw; }
+.insert-slot:not(.first):not(.add-after) .insert-btn {
+    width: 3vh;
+    height: 3vh;
+    font-size: 1.1em;
+    border-width: 0.2vh;
+    opacity: 0.3;
+}
+.insert-slot:not(.first):not(.add-after) .insert-btn:hover { opacity: 1; }
+/* the big "insert first event" prompt on an empty timeline */
+.insert-slot.first { flex: 0 0 auto; }
+.insert-slot.first .insert-btn {
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    padding: 2vh 3vw;
+    font-size: 1.3em;
+    white-space: nowrap;
+    font-family: inherit;
+}
+/* prominent "Add event" slot after the last event (mirrors the toolbar button) */
+.insert-slot.add-after { flex: 0 0 auto; }
+.insert-slot.add-after .insert-btn {
+    width: auto;
+    height: auto;
+    border-radius: 8px;
+    padding: 1.4vh 2vw;
+    font-size: 1.15em;
+    white-space: nowrap;
+    font-family: inherit;
+    font-weight: bold;
+    border-style: solid;
+    background: #1b8f3a;
+    border-color: #1b8f3a;
+    color: #fff;
+    opacity: 1;
+}
+.insert-slot.add-after .insert-btn:hover { background: #23a847; color: #fff; }
+
+/* drag-to-reorder cues */
+.event { touch-action: none; }
+#timeline-ol .ui-sortable-helper .timeline-description { opacity: 0.95; }
+.event.ui-sortable-helper { z-index: 20; }
+
+/* ---- an event card on the timeline ---- */
+.event {
+    position: relative;
+    flex: 0 0 24vw;
+    height: 100%;
+    cursor: pointer;
+}
+/* the dot where the event meets the line */
+.event::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1.6vh;
+    height: 1.6vh;
+    background: #d9b800;
+    border: 0.3vh solid #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+.timeline-description {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22vw;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+/* odd events (index 0,2,4… = "above") sit above the line; "below" sit below */
+.event.above .timeline-description { bottom: 53%; }
+.event.below .timeline-description { top: 53%; }
+
+/* title + date styled like the viewer's .dropbtn / .dropdate */
+.dropbtn, .dropdate {
+    font: 1.5em "Comic Sans MS", cursive, sans-serif;
+    padding: 1vh;
+    border: 2px solid #e4dca0;
+    border-radius: 6px;
+    background: #fff;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+.dropbtn { font-weight: bold; margin-bottom: 0.4vh; box-shadow: 0 0 6px #cfc68a; }
+.dropdate { font-size: 1.2em; background: #dadaff; }
+.event:hover .dropbtn { border-color: #2E3192; }
+.dropbtn:empty:before { content: "(untitled)"; color: #b0a97e; font-style: italic; }
+
+/* ---- modals ---- */
+/* hidden by default; shown by adding .open (do NOT rely on the [hidden] attribute -
+   this author rule would override it). */
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.45);
+    z-index: 100;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+}
+.modal.open { display: flex; }
+
+/* Nepali translation fields - collapsed until the toggle is clicked */
+.nepali-toggle {
+    display: inline-block;
+    margin-top: 1.6vh;
+    background: #eef0fb;
+    border: 1.5px solid #2E3192;
+    color: #2E3192;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.95em;
+    padding: 0.7vh 1.2vw;
+    border-radius: 6px;
+    text-decoration: none;
+}
+.nepali-toggle:hover { background: #2E3192; color: #fff; }
+.nepali-fields { display: none; border-left: 3px solid #dfe0f0; padding-left: 1vw; margin-top: 0.6vh; }
+.nepali-fields.show { display: block; }
+.modal-card {
+    background: #fff;
+    margin-top: 5vh;
+    padding: 2vh 2vw;
+    border-radius: 10px;
+    width: 46vw;
+    max-height: 88vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 0 30px rgba(0,0,0,0.4);
+}
+.modal-card h2 { margin: 0 0 1vh; }
+.modal-card label {
+    display: block;
+    margin-top: 1.2vh;
+    font-weight: bold;
+    font-size: 0.95em;
+}
+.modal-card input,
+.modal-card textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font: inherit;
+    font-size: 1em;
+    padding: 0.7vh 0.5vw;
+    margin-top: 0.3vh;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.modal-card textarea { min-height: 9vh; resize: vertical; }
+.modal-close {
+    position: absolute;
+    top: 1vh; right: 1vw;
+    width: 3.2vh; height: 3.2vh;
+    border: none; border-radius: 5px;
+    background: #c33; color: #fff;
+    font-size: 1.3em; line-height: 1; cursor: pointer;
+}
+.modal-actions {
+    margin-top: 2vh;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1vw;
+}
+.modal-actions button {
+    font: inherit; font-size: 1.05em;
+    padding: 0.8vh 1.6vw;
+    border: none; border-radius: 6px;
+    cursor: pointer;
+}
+.modal-actions .primary { background: #2E3192; color: #fff; }
+.modal-actions .primary:hover { background: #3d40c0; }
+#ev-delete { background: #c33; color: #fff; margin-right: auto; }
+
+/* cover image chooser */
+#tl-cover-row { display: flex; gap: 1vw; align-items: flex-start; margin-top: 0.4vh; }
+#tl-cover-preview {
+    width: 10vw; height: 10vw;
+    object-fit: cover;
+    border: 1px solid #ccc; border-radius: 6px;
+    background: #f4f4f4;
+}
+#tl-cover-actions { flex: 1; display: flex; flex-direction: column; gap: 0.6vh; }
+#tl-choose-image, #tl-remove-image {
+    font: inherit; font-size: 1em;
+    padding: 0.6vh 1vw;
+    border: 1px solid #2e7d32; color: #2e7d32; background: #fff;
+    border-radius: 5px; cursor: pointer;
+    align-self: flex-start;
+}
+#tl-remove-image { border-color: #c33; color: #c33; }
+
+/* dismiss / back button */
+#dismiss {
+    color: white; background-color: red; border: none;
+    height: 6vh; width: 4vw;
+    background-image: url("../images/back-arrow.png");
+    background-size: 80% 80%; background-repeat: no-repeat; background-position: center;
+    position: fixed; bottom: 1vh; right: 2vw; z-index: 50; cursor: pointer;
+}
+
+/* The global LOOMA.confirm() "Save current work…" dialog uses floated buttons of
+   differing heights. Tidy it up on this editor page: put the buttons on one line at the
+   same height, red X on the left, purple Confirm on the right. */
+.popup.confirmation {
+    font-size: 1.6em;
+    padding: 2vh 2vw;
+    text-align: right;
+    line-height: 1.4;
+}
+.popup.confirmation .popup-button {
+    float: none;
+    position: static;
+    display: inline-block;
+    vertical-align: middle;
+    width: auto;
+    min-width: 6vw;
+    height: auto;
+    margin: 1.2vh 0.4vw 0;
+    padding: 1vh 1.6vw;
+    font-size: 0.62em;
+    border: 1px solid #2E3192;
+    border-radius: 6px;
+}
+.popup.confirmation .dismiss-popup {
+    float: left;
+    min-width: 0;
+    width: auto;
+    border-color: #c33;
+}
+.popup.confirmation #confirm-popup { background: #2E3192; color: #fff; border-color: #2E3192; }
+.popup.confirmation #close-popup   { background: #fff; color: #2E3192; }
+
+/* ---- event images (up to 2 per event) ---- */
+#ev-images { margin-top: 0.4vh; }
+#ev-images-list { display: flex; gap: 1vw; flex-wrap: wrap; }
+.ev-img-slot { position: relative; width: 8vw; height: 8vw; }
+.ev-img-slot img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border: 1px solid #ccc; border-radius: 6px;
+    background: #f4f4f4;
+}
+.ev-img-remove {
+    position: absolute; top: -0.7vh; right: -0.4vw;
+    width: 2.6vh; height: 2.6vh;
+    border: none; border-radius: 50%;
+    background: #c33; color: #fff;
+    font-size: 1em; line-height: 1; cursor: pointer;
+    padding: 0;
+}
+#ev-add-image {
+    margin-top: 0.9vh;
+    font: inherit; font-size: 1em;
+    padding: 0.6vh 1vw;
+    border: 1px solid #2e7d32; color: #2e7d32; background: #fff;
+    border-radius: 5px; cursor: pointer;
+}
+#ev-add-image:hover { background: #2e7d32; color: #fff; }
+
+/* ---- image search overlay (embeds the shared Looma search panel) ---- */
+.imgsearch-card { width: 72vw; }
+/* keep the embedded search focused on pictures: hide the media/chapter switch,
+   chapter search, and the text-file type checkbox */
+#imgsearch-modal #search-kind,
+#imgsearch-modal #chapter-search,
+#imgsearch-modal #source-div,
+#imgsearch-modal #search span.typ-chk[data-id="text-chk"] { display: none; }
+#imgsearch-modal #search-panel { position: static; width: auto; }
+#results-div {
+    display: flex; flex-wrap: wrap; gap: 1vw;
+    margin-top: 1.5vh;
+    max-height: 56vh; overflow-y: auto;
+    align-content: flex-start;
+}
+.imgresult {
+    width: 12vw;
+    border: 1px solid #ccc; border-radius: 6px;
+    background: #fff; cursor: pointer;
+    padding: 0.5vh;
+    display: flex; flex-direction: column; align-items: center;
+    font: inherit;
+}
+.imgresult:hover { border-color: #2E3192; box-shadow: 0 0 8px #b9bbe6; }
+.imgresult img { width: 100%; height: 9vw; object-fit: contain; }
+.imgresult-dn {
+    font-size: 0.8em; margin-top: 0.4vh;
+    max-width: 100%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.imgsearch-empty { color: #666; margin-top: 1.5vh; }
+
+/* File Commands dropdown (positioned like the other editors) */
+#filecommands { position: absolute; width: 15vw; right: 6vw; top: 1vh; z-index: 60; }
+.btn-group, #cmd-btn { font-family: "Comic Sans MS", cursive, sans-serif; padding: 0; width: 100%; }
+.dropdown-menu { padding: 10px; background-color: white; z-index: 61; }
+.dropdown-item { font-size: 1.1em; margin-top: 2px; font: inherit; }
+/* No hover override here: filecommands.css sets `#filecommands button` (an ID
+   selector) to a white background, which out-specifies any class-level hover
+   background. A `.dropdown-item:hover { color:#fff }` therefore painted white
+   text on a background that stayed white, so the label disappeared on hover.
+   Leave the hover to filecommands.css/bootstrap (dark text on white) so it
+   behaves like the slideshow editor and stays readable. */

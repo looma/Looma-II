@@ -467,6 +467,32 @@ require_once('includes/looma-utilities.php');
             $result = saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), $_REQUEST['ft'], $insert, $activitycollection);
             echo json_encode($result);
         }
+        else if ($collection == "histories") {
+            // admin-created timelines. Saved to the 'histories' collection alongside
+            // the curated timelines.
+            // Stored in the native history shape (title + events) so the read-only
+            // viewer could render them, plus dn/ft so the File-menu Open/search works.
+            $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
+            $events  = isset($_REQUEST['data']) ? array_values($_REQUEST['data']) : array();
+
+            $insert = array(
+                "dn"     => $save_dn,       // used by File-menu Open/search + saveToMongo key
+                "ft"     => 'history',      // so File-menu search (type=history) finds it
+                "db"     => $_REQUEST['db'],
+                "title"  => $save_dn,       // native history-viewer field
+                "events" => $events,        // native history-viewer field
+                "author" => $_COOKIE['login'],
+                "date"   => gmdate("Y.m.d")  //using greenwich time
+            );
+            if (isset($_REQUEST['ndn']))   $insert['ndn']   = $_REQUEST['ndn'];    // Nepali timeline title
+            if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];  // cover image (data-URL or path)
+
+            // pass the request-driven $activitycollection so an 'ft:history' entry is
+            // added to the activities index (when saved with activity="true"), making
+            // these timelines discoverable in the general library/search like other content.
+            $result = saveToMongo($dbCollection, $save_dn, 'history', $insert, $activitycollection);
+            echo json_encode($result);
+        }
         else if ($collection == "activities") {
             $insert = $_REQUEST['data'];
             $insert["date"] = gmdate("Y.m.d");  //using greenwich time

@@ -31,13 +31,13 @@ h2, h3.title  {font-size:2em;}
      display:inline-block !important;
      user-select:none;
  }
- 
+
  #search span.typ-chk[data-id="text-template-chk"] {display:none  !important;}
 
  #search span.typ-chk[data-id="text-chk"] {display:none  !important;}
 
  div#search-kind {display:none;}
- 
+
  form#search *{
      font-size:0.94em;
  }
@@ -54,7 +54,7 @@ h2, h3.title  {font-size:2em;}
      width: 10vh;
      height: 10vh;
  }
- 
+
 /***************************************/
 /******* Button to switch btwn search mode and folder mode ******/
 /***************************************/
@@ -72,7 +72,7 @@ button#toggle-database{
      height:100%;
      width:100%;
  }
- 
+
 /***************************************/
 /****** search-results div specs *******/
 /***************************************/
@@ -85,7 +85,7 @@ button#toggle-database{
     background-color:rgba(27,71,177,.45);
     z-index:10;
     overflow-y:auto;
-    border:2px solid black;
+    /*border:2px solid black;*/
     border-radius:6px;
 }
 
@@ -108,10 +108,10 @@ button#top, button#more {
      font-size:1em !important;
      color:white;
      /*zoom:150%;*/
-    
+
      -moz-border-radius:10px;
      -webkit-border-radius: 10px;
      border-radius:10px;
      border:3px solid yellow;
-  
+
  }

@@ -41,6 +41,12 @@ Description:  dictionary look-up UI for Looma 2
                 <img class="modal-content" id="img01">
             </div>
 
+            <!-- The Modal for the sign-language video -->
+            <div id="definitionVideo" class="modal">
+                <span class="close close-video">×</span>
+                <video class="modal-content" id="video01" controls loop playsinline></video>
+            </div>
+
         </div>
       </div>
 

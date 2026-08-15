@@ -43,26 +43,30 @@ var displayArea;
                 modal.style.display = "none";
             };
         }
-       /*
+
+        // sign-language icon: click it to pop up the modal and play the video with sound
         var signed = document.getElementById('definitionSigned');
+        if (signed) {
 
-        if (img) {
+            //The MODAL - opens a window with the video when clicked
+            var vmodal = document.getElementById('definitionVideo');
+            // Get the video element inside the modal
+            var modalVid = document.getElementById('video01');
 
-            //The MODAL - opens window of image when clicked
-            var modal = document.getElementById('            var modal = document.getElementById(\'definitionImage\');\n');
-            // Get the image and insert it inside the modal
-            var modalImg = document.getElementById("img01");
-            img.onclick = function () {
-                modal.style.display = "block";
-                modalImg.src = this.src;
+            signed.onclick = function () {
+                vmodal.style.display = "block";
+                modalVid.src = this.getAttribute('data-video');   // the sign-language mp4
+                modalVid.muted = false;                           // play with sound
+                modalVid.play();
             };
-            // Get the <span> element (x) that closes the modal
-            var span = document.getElementsByClassName("close")[0];
-            span.onclick = function () {
-                modal.style.display = "none";
+            // Get the <span> element (x) that closes the modal (and stops playback)
+            var vspan = document.getElementsByClassName("close-video")[0];
+            vspan.onclick = function () {
+                vmodal.style.display = "none";
+                modalVid.pause();
             };
         }
-*/
+
         if ($('#definition').text().length > 100) $('#definition').css('font-size', '0.75em');
         if ($('#rwdef').text().length > 100)      $('#rwdef').css('font-size', '0.75em');
     }; //end OK()

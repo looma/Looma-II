@@ -241,7 +241,7 @@ function deletefile(deletename, collection, filetype)  { //filetype must be give
             console.log("DELETED ", deletename);
         },
         'json'
-    ).then(LOOMA.alert('File ' + deletename + ' deleted', 5));
+    ).then(function() { LOOMA.alert('File ' + deletename + ' deleted', 5); });
 }  // end DELETEFILE()
 
 ///////////////////////////////
@@ -444,8 +444,8 @@ function displayFileSearchResults(results)
                 "<tr><td>" +
                 "<button class='result' " + master +
                 "data-id='" + (value['_id']['$id'] || value['_id']['$oid']) + "' " +
-                "data-db='" + value['db'] + "' " +
-                "data-ft='lesson' " +
+                "data-db='" + (value['db'] || 'looma') + "' " +
+                "data-ft='" + (value['ft'] || 'lesson') + "' " +
                 //"data-mongo='" + value + "' " +
                 "title='" + displayname + "' " +
                 "<h4> <b> " + displayname + " </b> </h4>" +

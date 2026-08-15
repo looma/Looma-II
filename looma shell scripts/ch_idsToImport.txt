@@ -1,0 +1,359 @@
+3 Digit Addition		2M05.01													
+3 Digit Subtraction		2M05.02													
+A or An		1EN10.02													
+Action Commands		1EN05.01													
+Action Verbs		1EN05.02													
+Add And Complete		1M01													
+Add And Fill		1M07													
+Add Subtract		3M05.02													
+Add The Numbers		1M07													
+Adding Money		3M07.01													
+Addition		1M16													
+All About A		1EN02.01													
+All About A		1EN02.01													
+Angles		3M04.02													
+Animal Sounds		2EN10.01													
+Animals and babies		3EN10.02													
+Animals Habitats		2EN10.03													
+Ascending Numbers		2M04.01													
+Before And After		1M14													
+Biggest One		1M01													
+Biggest One 2		3M05.02													
+Body Parts		2EN01.05													
+Body parts 2		1EN03.01													
+Calendar		2M02.01													
+Can Cant		3EN01.05													
+CAPACITY		2M01.01													
+Centimeter And Meter		3M07.03													
+Choose It Right		1EN02.07													
+Choose It Right		1EN02.07													
+Circling S Words		1EN02.39													
+Clothes We Wear		2EN05.03													
+Comparing Fractions		3M03.03													
+Comparison of Numbers		3M02.02													
+Complete the Sentences		2EN09.04													
+Complete The Vegetable		1EN10.03													
+Complete The Words		1EN04.03													
+Compound Word		3EN04.04													
+Connecting Words		2EN09.05													
+Consecutive		1M15													
+Converting Hours		3M06.01													
+Converting Litre		3M07.02													
+Correct Match		3EN04.03													
+Correct words		3EN01.03													
+Correct Words		3EN07.04													
+Counting Game		2M06.03													
+Counting with Shapes		2M07.01													
+Countries currency		3EN01.02													
+Cultural Dress		3EN06.02													
+Currency		1M19													
+Currency Calculations		2M08.02													
+Currency match		1M19													
+Dialogue		3EN03.04													
+Dialogue Complete		3EN04.04													
+Division Exercise		3M05.04													
+Division Journey		2M09.02													
+Everyday Hobbies		2EN09.02													
+Family Members		2EN01.02													
+Figure out the Area		2M06.02													
+Fill blanks		3EN02.02													
+Fill the blanks		3EN01.01													
+Fill The Numbers		1M04													
+Filling Words		3EN02.04													
+Find Animals		1EN12.05													
+Find My Twin		1EN01.02													
+Find My Twin		1EN01.02													
+Find Rabbit		1EN12.05													
+Find The Object		1EN02.03													
+Find The Object		1EN02.03													
+Find The Shape		1M03													
+Flowers		2EN04.02													
+Four Digit Addition		3M05.01													
+Fractions		3M03.03													
+Fruits		1EN10.01													
+Gadgets Word Puzzle		2EN07.02													
+Geometric Shapes		3M04.03													
+Habits Hygiene		2EN04.05													
+Identifying Z Words		1EN02.54													
+Jobs of Furniture		1EN05.04													
+Labeling Body Parts		2EN01.05													
+Learning Colors		2EN05.02													
+Learning Division		2M09.02													
+Let's Trace		1EN01.11													
+Let's Trace		1EN01.11													
+Let's Trace Lines		1M02													
+Listing		3EN03.01													
+Litre And Millilitre		3M07.02													
+Look Find		1EN02.43													
+Make Sentences		2EN07.05													
+Match meanings		3EN02.04													
+Match opposites		3EN01.01													
+Match The Colors		1EN06.02													
+Maze Adventure		1EN01.02													
+Maze Adventure		1EN01.02													
+Maze Escape		1EN02.09													
+Maze Escape		1EN02.09													
+Maze Mania		1EN01.05													
+Maze Mania		1EN01.05													
+Meanings to words		3EN10.03													
+Members of Family		2EN01.01													
+Money Conversion		3M07.01													
+Multiplicand		3M05.03													
+Multiplication		3M05.03													
+Multiplication two		3M05.03													
+Multiply Line		2M09.01													
+Musical Instruments		3EN06.01													
+Must or mustnt		3EN03.05													
+Name Of Sports		1EN05.05													
+Name That Animal		1EN12.01													
+Name That Bird		1EN12.03													
+Name the Objects		2EN05.01													
+Naming Animals		2EN02.05													
+Naming Picture		3EN05.01													
+Naming Picture		3EN05.03													
+Nepali Currency		2M08.02													
+Not W		1EN02.48													
+Number Bond		1M06													
+Number Match		1M04													
+Numbers and their Place		2M03.01													
+Odd And Even		2M04.02													
+Odd Or Even		1M12													
+Order Alphabet		3EN01.01													
+Order weeks		1EN04.05													
+Our Festival		2EN06.01													
+Parts of Body		2EN01.06													
+Parts Of Pengiuns		3EN10.01													
+Past Tense		3EN10.01													
+Path Finder		1EN01.03													
+Path Finder		1EN01.03													
+Patterns of Numbers		3M02.03													
+Pictograph		3M07.05													
+Picture Chat		1EN02.05													
+Picture Chat		1EN02.05													
+Place Value		3M02.01													
+Place Value 2		2M03.01													
+Place Value Adventure		2M03.01													
+Place Value Identification		2M03.01													
+Place Values		1M15													
+Places		1EN08.01													
+Plural nouns		2EN08.03													
+Preposition		3EN04.05													
+Puzzle Complete		1EN09.01													
+R Path		1EN02.37													
+Rooms		2EN04.01													
+Scale Measure		2M06.01													
+Sentence Making		3EN01.01													
+Shading Fractions		2M06.04													
+Shape Match		1M03													
+Short Forms		3EN01.02													
+Singular and Plural		2EN06.04													
+Singular Plural		2EN04.02													
+Skipping Exercise		2M06.03													
+Smallest One		1M01													
+Sorting Numbers		3M03.01													
+Sports		3EN09.02													
+Spot and Match X		1EN02.50													
+Spot the Match		1EN01.01													
+Spot the Match 2		1EN01.01													
+Subtracting Money		3M07.01													
+Subtraction		1M18													
+Subtraction Adventure		3M04.03													
+Subtraction Four		3M05.02													
+Super Maze Challenge		1EN01.06													
+Super Maze Challenge		1EN01.06													
+Take Away		1M11													
+Three Into Two		3M05.03													
+Tick It Right		1EN01.13													
+Tick It Right		1EN01.13													
+Time		3EN02.01													
+Time 2		1EN04.04													
+Tools and usage		3EN07.01													
+Twin Finder		1EN01.03													
+Twin Finder		1EN01.03													
+Two Digit Multiplication		3M05.03													
+U Road		1EN02.44													
+U To Z Match		1EN02.56													
+Understanding Pictographs		2M08.01													
+Unscramble Objects		1EN07.03													
+Unscramble the Months		2EN06.03													
+Unscrambling Food		1EN09.02													
+V Road		1EN02.46													
+Vehicles Match		1EN09.03													
+Vocab Practice		3EN09.03													
+Vocabulary		2EN01.04													
+Vocabulary Matching		2EN05.4													
+Weather		2EN04.04													
+Weeks And Days		3M06.01													
+Weight Conversion		3M07.04													
+Weight Estimate		2M04.03													
+What Is The Time		2M02.01													
+Where We Shop		2EN07.03													
+Who Is First		1M14													
+Word Arrangement		2EN06.04													
+Word Match		2EN03.05													
+Word Meanings		2EN03.04													
+Word Meanings		3EN06.03													
+Word Puzzle		2EN07.01													
+Word Scramble Puzzle		2EN07.05													
+Word to Picture		1EN02.10													
+Word to Picture		1EN02.10													
+Words and Pictures		2EN09.03													
+Words with T		1EN02.41													
+Y Path		1EN02.52													
+	कक्षाकोठा	1SF04.06													
+	कडा र नरम वस्तुहरू	1SF06.03													
+	खान मिल्ने र नमिल्ने	1SF01.03													
+	खानाको स्रोत	1SF01.03													
+	खानेकुराको स्वाद	1SF06.03													
+	जनावर र बच्चाहरू	1SF03.04													
+	जनावर	1SF03.04													
+	प्राकृतिक प्रकोप	1SF04.04													
+	बाजागाजा	1SF07.05													
+	बाटो खोजौं	1SF01.05													
+	लुगाहरूको नाम	1SF01.02													
+	विद्युतीय उपकरण	1SF02.04													
+	विभिन्न रेखाहरू	1SF07.01													
+	शरीरका अङ्गहरू	1SF02.01													
+	सजीव र निर्जीव	1SF05.01													
+	ऊर्जाका स्रोत	2SF02.03													
+	काम र उपकरण	2SF01.06													
+	काम	2SF01.06													
+	खानाका स्रोतहरू	2SF01.04													
+	जनावरहरू	2SF03.05													
+	छिमेकीसँगको व्यवहार	2SF01.02													
+	जनावरहरूको चाल	2SF05.01													
+	प्रकाशका स्रोतहरू	2SF02.05													
+	पेशा	2SF01.01													
+	प्राकृतिक प्रकोप	2SF04.05													
+	बिरुवाका भागहरू	2SF05.02													
+	खानाका स्रोत	2SF03.05													
+	सञ्चारका साधनहरू	2SF08.01													
+	सही गलत बानी	2SF01.03													
+	स्वस्थ खानपान	2SF01.04													
+	चाडपर्व र खानेकुरा	2SF07.01													
+	पानीका स्रोतहरू	2SF09.03													
+	बाली र बिरुवाको पहिचान	2SF05.03													
+	मेरो परिवार	2SF01.01													
+	मौसम र लुगाहरू	1SF10.02													
+	राम्रा र नराम्रा बानीहरू	1SF04.03													
+	लुगाफाटाको नाम	2SF01.01													
+	वस्तुहरूको आकार	2SF06.04													
+	सजीव र निर्जीवको वर्गीकरण	1SF05.01													
+	सञ्चारका साधनहरू 2	1SF09.01													
+	समय र सावधानी	2SF09.01													
+	सरसफाइ र हाम्रो बानी	1SF06.01													
+	सर्ने र नसर्ने रोगहरू	2SF03.03													
+	सार्वजनिक सम्पत्तिको संरक्षण	2SF06.02													
+	सेवा र सहयोग	2SF01.03													
+	हाम्रा चाडपर्वहरू	1SF08.01													
+	हाम्रा राष्ट्रिय प्रतीकहरू	2SF07.02													
+	हाम्रो भूगोल र शब्द खोज	1SF10.03													
+	हावा र वस्तुहरू	1SF10.04													
+	खाद्य शृङ्खला	3SF05.03													
+	खानपान र हाम्रो स्वास्थ्य	3SF01.02													
+	खानेकुराका स्रोतहरू	3SF01.02													
+	जनावरका घरहरू	3SF03.03													
+	नसर्ने रोगका कारणहरू	3SF03.05													
+	नाप र नाप्ने साधनहरू	3SF01.03													
+	नाप्ने साधनको सही पहिचान	3SF01.03													
+	पदार्थका अवस्थाहरू	3SF06.03													
+	प्राकृतिक प्रकोप र यसका कारणहरू	3SF04.02													
+	फोहरमैलाको व्यवस्थापन	3SF06.01													
+	बिरुवाहरूको पहिचान र वर्गीकरण	3SF05.02													
+	बिरुवाहरूको वर्गीकरण	3SF05.02													
+	वस्तुका अवस्थाहरू	3SF06.03													
+	संकेत र चिह्नहरू	3SF09.01													
+	सामान र उत्पादन स्थल	3SF09.02													
+	हाम्रा काम र पेसा	3SF01.01													
+	हाम्रा चाडपर्वहरू 2	3SF08.01													
+	हाम्रा नाता-सम्बन्धहरू	3SF01.01													
+	हाम्रा लुगा र तिनका स्रोत	3SF03.04													
+	हाम्रा वरिपरिका संकेतहरू	3SF09.03													
+	हाम्रो मौसम	3SF10.01													
+	हाम्रो शरीर र सरसफाइ	3SF02.02													
+	अग्लो पहिचान गरौँ	1M01													
+	अङ्क अभ्यास	1M15													
+	अङ्क कोठा	1M07													
+	अङ्क मिलाऔँ	1M06													
+	आकारहरू पहिचान	1M03													
+	कलमको गन्ती	1M15													
+	कोठा थोप्लाको जोड	1M07													
+	गणना क्षेत्र	3M08.01													
+	गन्ती र जोडा मिलाऔँ	1M04													
+	गन्ती र सङ्ख्या	1M04													
+	गुणन पत्ता लगाउनुहोस्	3M05.03													
+	गुणन भाग दुई	3M05.03													
+	गुणन	3M05.03													
+	गोल घेरा	1M14													
+	घटाउने अभ्यास	1M17													
+	घण्टा रूपान्तरण गर्नुहोस्	3M06.01													
+	चार अङ्कको घटाउ	3M05.02													
+	चौतारीमा साथीहरू	1M07													
+	छिमेकी सङ्ख्याहरू	1M15													
+	जोड र घटाउ	3M05.02													
+	जोडौँ	1M16													
+	जोर बिजोर	1M12													
+	डिभिजन अभ्यास	3M05.04													
+	तीन अंक संख्याहरू गुणन	3M05.03													
+	दुई अङ्कको गुणन	3M05.03													
+	नोटको पहिचान	1M20													
+	पहिले र पछि	1M14													
+	पिक्टोग्राफ	3M07.05													
+	पैसा घटाउनुहोस्	3M07.01													
+	पैसा रूपान्तरण	3M07.01													
+	पैसाको जोड	3M07.01													
+	फटाफट जोड	1M10													
+	बार र समय	1M19													
+	रेखा बनाऔँ	1M02													
+	लिटर र मिलिलिटर रूपान्तरण	3M07.02													
+	लिटर र मिलिलिटर	3M07.02													
+	वजन रूपान्तरण	3M07.04													
+	समान आकारका वस्तुहरू	1M03													
+	सेन्टिमिटर र मिटर	3M07.03													
+	हप्ता र दिनहरू	3M06.01													
+	हराएको सङ्ख्या	1M15													
+	अक्षरको खेल	2N01													
+	आधा वर्ण	1N11													
+	खाली ठाउँ	2N01													
+	गोलो घेरा	2N02													
+	चित्र	1N11													
+	चित्र पहिचान	2N06													
+	जनावर 2	2N01													
+	जोडा मिलाउ	1N10													
+	फूलको नाम	2N05													
+	वर्ण र मात्रा	1N10													
+	वस्तुको नाम	1N11													
+	वाक्य बनाउ	2N03													
+	वाक्य बनाउनुहोस्	2N04													
+	विराम चिन्ह	2N05													
+	शब्द अर्थ	2N03													
+	शब्द खोज	1N10													
+	शब्द गठन	2N02													
+	शब्द निर्माण	1N10													
+	शब्द र चित्र	2N01													
+	शब्द विभाजन	2N02													
+	शब्दहरू बनाउनुहोस्	2N04													
+	उपसर्ग लागेका शब्दहरू	2N11													
+	क्रियापदको छनोट	2N11													
+	चित्र र शब्द	2N08													
+	प्रत्यय र शब्द निर्माण	2N11													
+	लुकेका शब्दहरूको खोजी	2N10													
+	विशेषण शब्दको प्रयोग	2N11													
+	शब्द खोज्नुहोस्	2N08													
+	शब्द र अर्थ	2N11													
+	शब्द र अर्थको जोडा	2N10													
+	सञ्चार र प्रविधि	2N09													
+	३ अंकको जोड	2M05.01													
+	३ अंकीय घटाउ	2M05.01													
+	आकारहरूसँग गणना	2M07.01													
+	खेतबारीका जनावरहरू	2M06.03													
+	गुणन रेखा	2M09.01													
+	चित्रहरूको गणना	2M08.01													
+	डिभिजन	2M09.02													
+	तौलको अनुमान	2M04.03													
+	धारिता	2M01.01													
+	पैसाको पहिचान	2M08.02													
+	बढ्दो क्रमका संख्याहरू	2M04.01													
+	स्किपिङ अभ्यास	2M06.03													
+	स्थान मान अभियान	2M03.01													
+	स्थान मान पहिचान	2M03.01													

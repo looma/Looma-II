@@ -19,14 +19,10 @@
 #configured to be run on a LOOMA (linux)
 
 #RSYNC options used:
-#-a  "archive" equivalent to -rlptgoD
 #   -r  recursive
 #   -l  recreate symlink on the destination
 #   -p  preserve permissions
 #   -t  preserve modification time
-#   -g  preserve group
-#   -o  preserve owner
-#   -D  transfer devices and specials (NA for Looma)
 
 #-v	    verbose
 #-vv	very verbose
@@ -35,8 +31,6 @@
 #--delete 	delete files on destination that are not on source
 #--size-only  [for Content files, only update if the size has changed, even tho dates may differ]
 #--perms (=== -p)
-#--update   skip files if destination  already exists and has a later date
-#--include '.ssh'
 #--exclude '.[!.]*'
 #--progress show transfer progress
 #--stats    print stats at the end
@@ -142,10 +136,10 @@ then
     SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        sshpass -p 'looma' rsync -az --dry-run --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
+        sshpass -p 'looma' rsync -rlptzv --dry-run --delete --perms --stats --progress --exclude '.[!.]*'    $RO:../Looma/ Looma
         result $?
     else
-        sshpass -p 'looma' rsync -az           --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../Looma/ Looma
+        sshpass -p 'looma' rsync -rlptzv           --delete --perms --stats --progress --exclude '.[!.]*'    $RO:../Looma/ Looma
         result $?
         timestamp "Looma"
     fi
@@ -162,10 +156,10 @@ then
     SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        sshpass -p 'looma' rsync -az --dry-run --size-only --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
+        sshpass -p 'looma' rsync -rlptzv --dry-run --size-only --delete --perms --stats --progress --exclude '.[!.]*'    $RO:../content/ content
         result $?
     else
-        sshpass -p 'looma' rsync -az --quiet   --size-only --delete --perms --stats --update --progress --include '.ssh' --exclude '.[!.]*' -e "ssh -i /var/www/html/Looma/.ssh/readonly"   $RO:../content/ content
+        sshpass -p 'looma' rsync -rlptzv --quiet   --size-only --delete --perms --stats --progress --exclude '.[!.]*'    $RO:../content/ content
         result $?
         timestamp "content"
     fi
@@ -174,5 +168,9 @@ fi
 echo
 echo "****************************************************************************"
 echo "DONE LOOMA UPDATE: updating USB memory with Looma code, database and content"
+if [[ $1 = "dryrun"]]
+then
+    echo "DRYRUN ONLY - - NO FILES TRANSFERRED"
+fi
 echo "****************************************************************************"
 echo

@@ -1,0 +1,107 @@
+/*
+ * looma-branching.css
+ * Branching decision-scenario play screen, styled to match the first-aid lessons.
+ * Values pulled verbatim from css/looma-health.css:
+ *   ink   #16202e (--fa-ink)      card bg #ffffff (--fa-card-bg)
+ *   blue  #1d6fb8 (--fa-blue)     muted   #5a6675 (--fa-muted)
+ *   radius 18px (--fa-radius)     shadow  0 4px 14px rgba(0,0,0,.18) (--fa-shadow)
+ *   choice tint/border from .fa-quiz-option; correct #e7f7ec/#1c8a3b; fatal #fdecec/#d93a3a; amber #faeeda
+ * Font is the lesson font (Arial/Helvetica) — named because the branching screen runs inside
+ * looma-game.php, whose theme font would otherwise apply.
+ */
+
+/* ---- ONE big overall card: situation + choices + feedback all grouped together ---- */
+#branchinggame {
+    grid-column: left / right;
+    grid-row: top / bottom;
+    align-self: start;
+    z-index: 10;
+    box-sizing: border-box;
+    width: 92%;
+    max-width: 680px;
+    margin: 3vh auto;
+    max-height: 94vh;
+    overflow-y: auto;
+    padding: 2rem 2.2rem;
+    text-align: left;
+
+    background: #ffffff;
+    color: #16202e;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+/* theme colours translatable spans yellow — inherit the colour of whatever element they sit in */
+#branchinggame .english-keyword,
+#branchinggame .native-keyword { color: inherit; }
+
+/* ---- embedded in the Practice iframe: no page chrome, flow to content height so the
+        iframe (auto-sized by the parent) shows no scrollbar and no leftover full-height space.
+        Keep the theme's navy body background (NOT transparent) so it blends with the navy topic
+        page behind — #branchinggame stays the ONLY card (a transparent body exposed a white html
+        that looked like a second big card). ---- */
+body.branch-embed { height: auto; min-height: 0; overflow: visible; }
+body.branch-embed .container { display: block; height: auto; width: auto; }
+body.branch-embed #branchinggame {
+    grid-column: auto; grid-row: auto; position: static;
+    margin: 0 auto; max-height: none; overflow: visible;
+}
+
+/* ---- topic title: centered, lesson blue, no icon ---- */
+.branch-topic {
+    text-align: center;
+    color: #1d6fb8;
+    font-weight: bold;
+    font-size: clamp(1.4rem, 2.4vw, 2.1rem);
+    margin: 0 0 .5rem;
+}
+
+/* ---- step counter: small, muted, centered, above the situation ---- */
+.branch-step {
+    text-align: center;
+    font-size: .9rem; letter-spacing: .05em; text-transform: uppercase;
+    color: #5a6675; margin: 0 0 1.1rem;
+}
+
+/* ---- situation text: near-black, lesson body size ---- */
+.branch-situation .branch-text {
+    font-size: clamp(1.15rem, 1.9vw, 1.6rem);
+    line-height: 1.4; margin: 0 0 1.2rem; color: #16202e;
+}
+.branch-image img { max-width: 100%; max-height: 220px; margin: 0 0 1.2rem; border-radius: 10px; }
+
+/* ---- choice buttons: white, hairline grey border; hover = blue tint + blue border (no lift) ---- */
+.branch-choices { display: flex; flex-direction: column; gap: .9rem; margin: 0 0 1rem; }
+button.branch-choice {
+    width: 100%; text-align: left;
+    background: #f3f6f9; color: #16202e;
+    border: 3px solid #d4dce4; border-radius: 12px;
+    padding: 1rem 1.3rem;
+    font-family: inherit; font-size: clamp(1.05rem, 1.7vw, 1.4rem); cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+}
+button.branch-choice:hover:not(:disabled) { background: #e4eefa; border-color: #1d6fb8; }  /* tint on hover */
+button.branch-choice:disabled { opacity: .5; cursor: default; }
+
+/* ---- tinted feedback / ending panels INSIDE the big card ---- */
+.branch-panel {
+    border-radius: 12px; padding: 1.1rem 1.3rem; margin: 0 0 1rem; text-align: left;
+}
+.branch-panel.correct { background: #e7f7ec; border: 2px solid #1c8a3b; color: #16202e; }  /* right */
+.branch-panel.amber   { background: #faeeda; border: 2px solid #e0b877; color: #8a5a12; }  /* recoverable slip */
+.branch-panel.fatal   { background: #fdecec; border: 2px solid #d93a3a; color: #a71d1d; }  /* fatal */
+.branch-outcome, .branch-ending-text {
+    margin: 0; font-size: clamp(1.05rem, 1.7vw, 1.4rem); line-height: 1.4;
+}
+
+/* ---- action buttons (Continue / Play again / Start again) ---- */
+button.branch-continue, button.branch-restart {
+    font-family: inherit; font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+    padding: .7em 1.7em; border: none; border-radius: 12px; color: #fff; cursor: pointer;
+}
+button.branch-continue        { background: #1d6fb8; }
+button.branch-continue:hover  { background: #135a99; }
+button.branch-restart.success { background: #1c8a3b; }
+button.branch-restart.fatal   { background: #d93a3a; }
+
+.branch-error { color: #d93a3a; font-weight: bold; }

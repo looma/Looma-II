@@ -11,11 +11,12 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
 
     <link href='css/looma.css'         rel='stylesheet' type='text/css'>
     <link href='css/looma-game.css'    rel='stylesheet' type='text/css'>
+    <link href='css/looma-branching.css?v=<?php echo @filemtime(__DIR__.'/css/looma-branching.css'); ?>' rel='stylesheet' type='text/css'>
     <link href='css/leaflet.css'       rel='stylesheet' type='text/css'>
 
 </head>
 
-<body>
+<body class="<?php echo (isset($_REQUEST['embed']) && $_REQUEST['embed']) ? 'branch-embed' : ''; ?>">
     <div class="container">
 
         <?php
@@ -26,6 +27,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
         $ch_id =    isset($_REQUEST['ch_id']) ? $_REQUEST['ch_id'] : null;
         $lang =       isset($_REQUEST['lang']) ? $_REQUEST['lang'] : 'en';
         $db =         isset($_REQUEST['db']) ? $_REQUEST['db'] : null;
+        $sample =   isset($_REQUEST['sample']) ? $_REQUEST['sample'] : null;  // branching demo: load a hardcoded sample scenario (no DB)
         $author =    isset($_REQUEST['autor']) ? $_REQUEST['author'] : null;
 
         if ($author) echo "<h1 class='credit'> Authored by $author </h1>";
@@ -65,6 +67,19 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
             </div>
       </div>
 
+        <!-- branching-scenario render target (presentation_type: "branching") -->
+        <div id="branchinggame" hidden>
+            <div id="branch-topic"     class="branch-topic"></div>
+            <div id="branch-card"      class="branch-card">
+                <div id="branch-step"      class="branch-step"></div>
+                <div id="branch-situation" class="branch-situation"></div>
+                <div id="branch-image"     class="branch-image"></div>
+            </div>
+            <div id="branch-choices"   class="branch-choices"></div>
+            <div id="branch-feedback"  class="branch-feedback"></div>
+            <div id="branch-controls"  class="branch-controls"></div>
+        </div>
+
     <?php
 
         echo '<div id="optionsframe">';
@@ -89,7 +104,8 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
                 'data-class="' .   $class . '" ' .
             'data-subject="' . $subject . '" ' .
             'data-lang="' . $lang . '" ' .
-            'data-ch_id="' . $ch_id .
+            'data-ch_id="' . $ch_id . '" ' .
+            'data-sample="' . $sample .
             '">';
 
 
@@ -138,14 +154,17 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
          echo '</div>';
     ?>
 
+        <?php if (!(isset($_REQUEST['embed']) && $_REQUEST['embed'])) { /* hide chrome when embedded in the Practice iframe */ ?>
         <div class = "toolbar">
           <?php include ('includes/toolbar.php'); ?>
         </div>
+        <?php } ?>
 </body>
 
     <?php include ('includes/js-includes.php'); ?>
     <script src="js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/looma-game.js"></script>
+    <script type="text/javascript" src="js/looma-branching-sample.js?v=<?php echo @filemtime(__DIR__.'/js/looma-branching-sample.js'); ?>"></script>
+    <script type="text/javascript" src="js/looma-game.js?v=<?php echo @filemtime(__DIR__.'/js/looma-game.js'); ?>"></script>
     <script type="text/javascript" src="js/looma-timer.js"></script>
     <script type="text/javascript" src="js/looma-scoreboard.js"></script>
     <script src="js/looma-sort-game.js"></script>

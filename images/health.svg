@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Health">
+  <rect x="6" y="6" width="88" height="88" rx="20" fill="#ffffff" stroke="#d93a3a" stroke-width="6"/>
+  <path d="M42 22 h16 v20 h20 v16 h-20 v20 h-16 v-20 h-20 v-16 h20 z" fill="#d93a3a"/>
+</svg>

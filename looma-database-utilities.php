@@ -1059,6 +1059,12 @@ require_once('includes/looma-utilities.php');
          else if(isset($_REQUEST['includeLesson']) && $_REQUEST['includeLesson'] == 'false') $query['ft'] = array('$nin' => ['lesson','chapter']);
          else $query['ft'] = array('$nin' => ['chapter']);
 
+        // Pre-existing/curated history timelines were seeded in the native viewer shape
+        // (title + events) with no 'ft' field, unlike editor-made ones (ft:'history').
+        // The histories collection holds only timelines, so drop the ft filter for it so
+        // the File-menu Open finds the curated timelines alongside the locally-made ones.
+        if (isset($_REQUEST['collection']) && $_REQUEST['collection'] === 'histories') unset($query['ft']);
+
         if (sizeof($sources) > 0) $query['src'] = array('$in' => $sources);
 
         if ($nameRegex) {

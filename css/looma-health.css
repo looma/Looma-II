@@ -1,0 +1,351 @@
+/* ============================================================
+   looma-health.css  —  First Aid / Health module
+   Grid, topic page (Emergency + Learn views), quiz, disclaimers.
+   Designed for projector scale (target 1920x1080) + high contrast.
+   Uses --looma-* theme vars for the page background; the module
+   supplies its own strong accent colours (red = danger/never).
+   ============================================================ */
+
+:root {
+    --fa-red:        #d93a3a;   /* danger / emergency / never */
+    --fa-red-dark:   #a71d1d;
+    --fa-red-bg:     #fdecec;
+    --fa-teal:       #ffd400;   /* soft highlight — Looma yellow (tips / get-care) */
+    --fa-teal-bg:    #fff7cc;   /* pale yellow background */
+    --fa-teal-ink:   #6b5200;   /* dark gold — for accent TEXT on white */
+    --fa-blue:       #1d6fb8;   /* primary interactive accent (toggle, numbers, dots, nav) */
+    --fa-blue-dark:  #135a99;
+    --fa-green:      #1c8a3b;   /* success (quiz correct / done) */
+    --fa-ink:        #16202e;   /* dark text on white cards */
+    --fa-muted:      #5a6675;
+    --fa-card-bg:    #ffffff;
+    --fa-radius:     18px;
+    --fa-shadow:     0 4px 14px rgba(0,0,0,.18);
+}
+
+/* NOTE: language visibility is handled entirely by LOOMA.translate() (js/looma-utilities.js),
+   which toggles inline display on .english/.native. We deliberately do NOT hide .native via a
+   stylesheet — jQuery 3's .show() cannot override a stylesheet display:none, which would
+   permanently hide the Nepali text. (Same brief flash-then-resolve as every other Looma page.) */
+
+.fa-page {
+    padding: 2vh 3vw 6vh;
+    box-sizing: border-box;
+    color: var(--looma-font-color);
+    /* clean sans-serif matching the map controls (.info / .legend in looma-map.css) */
+    font-family: Arial, Helvetica, sans-serif;
+}
+/* buttons/inputs don't inherit font-family by default — force the module font */
+.fa-page button, .fa-page input, .fa-page select, .fa-page textarea { font-family: inherit; }
+
+/* ---------- persistent safety disclaimer (PRD §11) ---------- */
+.fa-disclaimer {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    background: var(--fa-red-bg);
+    color: var(--fa-red-dark);
+    border: 3px solid var(--fa-red);
+    border-radius: 12px;
+    padding: 1rem 1.4rem;
+    margin: 0 0 2vh;
+    font-size: clamp(1rem, 1.5vw, 1.5rem);
+    font-weight: bold;
+    line-height: 1.35;
+}
+.fa-disclaimer-icon { font-size: 1.8em; line-height: 1; }
+
+/* ---------- grid home ---------- */
+.fa-title    { font-size: clamp(2rem, 4vw, 4rem); margin: 1vh 0 0; text-align: center; }
+.fa-subtitle { font-size: clamp(1.1rem, 2vw, 2rem); margin: .3rem 0 3vh; opacity: .85; text-align: left;
+               text-transform: uppercase; letter-spacing: .08em; font-weight: bold; }
+
+.fa-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(20rem, 90%), 1fr));
+    gap: clamp(1rem, 2.2vw, 2.4rem);
+}
+
+.fa-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--fa-card-bg);
+    color: var(--fa-ink);
+    border-radius: var(--fa-radius);
+    box-shadow: var(--fa-shadow);
+    text-decoration: none;
+    overflow: hidden;
+    min-height: 22vh;
+    border: 4px solid transparent;
+    transition: transform .12s ease, border-color .12s ease;
+}
+.fa-card:hover, .fa-card:focus { border-color: var(--fa-blue); transform: translateY(-4px); outline: none; }
+.fa-card-title {
+    font-size: clamp(1.4rem, 2.4vw, 2.4rem);
+    font-weight: bold;
+    padding: 1rem 1.2rem 1.3rem;
+    text-align: center;
+}
+.fa-badge-draft {
+    background: #fff4d6; color: #7a5a00;
+    font-size: clamp(.85rem, 1.2vw, 1.1rem);
+    text-align: center; padding: .35rem; border-top: 1px dashed #d9c48a;
+}
+.fa-empty { background:#fff; color:var(--fa-ink); padding:2rem; border-radius:12px; }
+
+/* admin-only tools bar on the grid (hidden from normal users) */
+.fa-admin-bar { display: flex; gap: 1rem; margin: 0 0 2vh; flex-wrap: wrap; }
+.fa-admin-link {
+    background: rgba(255,255,255,.14); color: var(--looma-font-color);
+    border: 1px solid rgba(255,255,255,.3); border-radius: 10px;
+    padding: .5rem 1rem; font-size: clamp(.9rem, 1.3vw, 1.2rem); font-weight: bold; text-decoration: none;
+}
+.fa-admin-link:hover { background: rgba(255,255,255,.28); }
+
+/* ---------- illustration placeholder slot (PRD §8) ---------- */
+.fa-illus-slot {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: .3rem; text-align: center;
+    background: #f1f4f8;
+    color: var(--fa-muted);
+    border: 1px solid #e0e6ec; border-radius: 10px;
+    padding: 1.1rem;
+    min-height: 12vh;
+}
+.fa-illus-tag  { font-weight: bold; text-transform: uppercase; letter-spacing: .08em; font-size: .8rem; }
+.fa-illus-desc { font-style: italic; font-size: clamp(1rem, 1.5vw, 1.4rem); color: var(--fa-ink); }
+.fa-illus-note { font-size: .8rem; opacity: .8; }
+.fa-card-illus { border-radius: 0; border-top: none; border-left: none; border-right: none; }
+
+/* real illustration image on a topic card (replaces the placeholder slot) */
+.fa-card-photo { padding: 0; background: #fff; overflow: hidden; }
+.fa-card-photo img { display: block; width: 100%; height: 22vh; object-fit: cover; }
+
+/* real illustration image inside a step / learn card (replaces placeholder text) */
+.fa-illus-photo { padding: 0; background: #fff; border-color: #e0e6ec; overflow: hidden; }
+.fa-illus-photo img { display: block; width: 100%; height: auto; border-radius: 10px; }
+
+/* ============================================================
+   TOPIC PAGE
+   ============================================================ */
+.fa-topic-header {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 1rem;
+    margin-bottom: 1.5vh;
+}
+.fa-back {
+    background: var(--fa-card-bg); color: var(--fa-ink);
+    border: none; border-radius: 12px; padding: .6rem 1.2rem;
+    font-size: clamp(1rem, 1.6vw, 1.4rem); font-weight: bold; cursor: pointer;
+    box-shadow: var(--fa-shadow);
+}
+.fa-topic-title { font-size: clamp(1.8rem, 3.4vw, 3.4rem); margin: 0 0 1.2vh; }
+
+.fa-source {
+    font-size: clamp(.85rem, 1.2vw, 1.1rem);
+    opacity: .85; margin: 0 0 2vh; font-style: italic;
+}
+
+/* ---------- Emergency / Learn segmented control (PRD §6) ---------- */
+/* dark inset track so it doesn't compete with the yellow title; active Emergency = red, Learn = blue */
+.fa-ic { width: 1.15em; height: 1.15em; flex: none; vertical-align: -0.15em; }
+.fa-toggle {
+    display: inline-flex; background: #08163a;
+    border: none; border-radius: 999px;
+    padding: 5px; gap: 4px; margin-top: 1vh; margin-bottom: 3vh;
+}
+.fa-toggle button {
+    display: inline-flex; align-items: center; gap: .5rem;
+    border: none; background: transparent; color: #9db0d4;
+    font-size: clamp(1.05rem, 1.7vw, 1.5rem); font-weight: bold;
+    padding: .55rem 1.9rem; border-radius: 999px; cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+}
+.fa-toggle button[aria-selected="true"] { color: #fff; }
+.fa-toggle .fa-toggle-em[aria-selected="true"]    { background: #e24b4a; }
+.fa-toggle .fa-toggle-learn[aria-selected="true"] { background: var(--fa-blue); }
+
+/* ---------- Emergency view ---------- */
+.fa-view { display: none; }
+.fa-view.fa-view-active { display: block; }
+
+.fa-emergency-heading {
+    font-size: clamp(1.4rem, 2.3vw, 2.1rem); font-weight: bold; margin: 0 0 2vh; text-align: left;
+    text-transform: uppercase; letter-spacing: .04em; color: var(--looma-font-color);
+    padding-bottom: .6rem; border-bottom: 2px solid rgba(255,255,255,.25);
+}
+
+/* action cards — full-width, stacked, loudest thing on the page (PRD §6a) */
+.fa-steps { list-style: none; margin: 0 0 3.5vh; padding: 0; counter-reset: fa-step; }
+.fa-step {
+    display: flex; align-items: flex-start; gap: 1.1rem;
+    background: var(--fa-card-bg); color: var(--fa-ink);
+    border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    padding: 1.2rem 1.5rem; margin-bottom: 1rem;
+    text-align: left;
+}
+.fa-step-num {
+    counter-increment: fa-step;
+    background: var(--fa-blue); color: #fff;
+    width: 2.4rem; height: 2.4rem; flex: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; font-weight: bold; margin-top: .1rem;
+}
+.fa-step-num::before { content: counter(fa-step); }
+.fa-step-body { flex: 1 1 auto; min-width: 0; }
+/* bold action sentence + regular-weight muted supporting clause on the same line */
+.fa-step-action { margin: 0; font-size: clamp(1.15rem, 1.9vw, 1.6rem); line-height: 1.4; font-weight: normal; }
+.fa-step-action strong { font-weight: bold; }
+.fa-step-sub { color: var(--fa-muted); }
+.fa-step-expand {
+    margin-top: .7rem; background: none; border: none; box-shadow: none; padding: 0;
+    color: var(--fa-blue); font-weight: bold; font-size: .9rem; cursor: pointer;
+    display: inline-flex; align-items: center; gap: .35rem;
+}
+.fa-step-expand::before { content: "\25B8"; font-size: .9em; display: inline-block; transition: transform .15s ease; }
+.fa-step-expand[aria-expanded="true"]::before { transform: rotate(90deg); }
+.fa-step-detail { margin-top: .8rem; }
+.fa-step-detail .fa-illus-slot { min-height: 8vh; max-width: 22rem; }
+
+/* two support panels side by side, collapse to stacked on narrow screens */
+.fa-support-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 3vh; align-items: start; }
+@media (max-width: 780px) { .fa-support-row { grid-template-columns: 1fr; } }
+
+/* Never do these — calm guardrails: soft red tint, small label, plain-weight items (PRD §6a) */
+.fa-never { background: #fcebeb; border: none; border-radius: 12px; padding: 1.3rem 1.5rem; color: #501313; text-align: left; }
+.fa-never-title {
+    display: flex; align-items: center; gap: .5rem; margin: 0 0 .9rem; text-align: left;
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem); font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #a32d2d;
+}
+.fa-never-title .fa-ic { width: 1.25em; height: 1.25em; }
+.fa-never ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .5rem; }
+.fa-never li {
+    position: relative; padding-left: 1.1rem; text-align: left;
+    font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: normal; line-height: 1.35; color: #501313;
+}
+.fa-never li::before { content: "•"; position: absolute; left: .1rem; color: #a32d2d; }
+
+/* Get care — soft amber tint; bold primary line + tap-to-call pills (PRD §6c) */
+.fa-getcare { background: #faeeda; border: none; border-radius: 12px; padding: 1.3rem 1.5rem; color: var(--fa-ink); text-align: left; }
+.fa-getcare-title {
+    display: flex; align-items: center; gap: .5rem; margin: 0 0 .9rem;
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem); font-weight: bold; text-transform: uppercase; letter-spacing: .05em; color: #8a5a12;
+}
+.fa-getcare-title .fa-ic { width: 1.25em; height: 1.25em; }
+.fa-getcare-primary { font-size: clamp(1.1rem, 1.7vw, 1.45rem); font-weight: bold; margin: 0 0 1rem; line-height: 1.4; }
+.fa-call-pills { display: flex; flex-wrap: wrap; gap: .6rem; }
+.fa-call-pill {
+    display: inline-flex; align-items: center; gap: .5rem; text-decoration: none;
+    background: #fff; color: var(--fa-ink); border-radius: 999px; padding: .55rem 1.1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.12); font-size: clamp(1rem, 1.5vw, 1.25rem);
+}
+.fa-call-pill .fa-ic { color: var(--fa-blue); }
+.fa-call-label { color: var(--fa-muted); font-size: .85em; }
+.fa-call-num { font-weight: bold; font-variant-numeric: tabular-nums; }
+.fa-more-contacts { margin-top: .9rem; }
+.fa-more-contacts summary { cursor: pointer; font-weight: bold; color: #8a5a12; font-size: .95rem; list-style: none; }
+.fa-more-contacts summary::-webkit-details-marker { display: none; }
+.fa-more-contacts summary::before { content: "\25B8  "; }
+.fa-more-contacts[open] summary::before { content: "\25BE  "; }
+.fa-call-pills-more { margin-top: .7rem; }
+
+/* ---------- Learn view ---------- */
+.fa-learn-stage { max-width: 60rem; margin: 0 auto; }
+
+/* segmented progress bar — filled = blue, unfilled = dark navy; label + step title above */
+.fa-lp { margin-bottom: 1.5rem; }
+.fa-lp-top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: .5rem; }
+.fa-lp-count { color: #fff; font-weight: bold; font-size: clamp(1rem, 1.6vw, 1.3rem); }
+.fa-lp-title { color: #9db0d4; font-size: clamp(.9rem, 1.4vw, 1.15rem); text-align: right; }
+.fa-lp-track { display: flex; gap: .4rem; }
+.fa-lp-seg { flex: 1 1 0; height: .5rem; border-radius: 999px; background: #1c3566; transition: background .2s ease; }
+.fa-lp-seg.filled { background: var(--fa-blue); }
+
+.fa-learn-card {
+    background: var(--fa-card-bg); color: var(--fa-ink);
+    border-radius: var(--fa-radius); box-shadow: var(--fa-shadow);
+    padding: 2rem 2.2rem; min-height: 40vh;
+}
+/* action = the "top thing" above the image (centered heading); bulky content below is left-aligned */
+.fa-learn-action { font-size: clamp(1.5rem, 2.6vw, 2.3rem); font-weight: bold; margin: 0 0 1.2rem; text-align: center; }
+.fa-learn-card .fa-illus-slot { margin: 0 auto 1.6rem; max-width: 32rem; }
+/* WHY — its own uppercase blue label with a help icon, then readable body text below */
+.fa-why { margin: 0 0 1.3rem; text-align: left; }
+.fa-why-label {
+    display: inline-flex; align-items: center; gap: .45rem; margin-bottom: .5rem;
+    color: var(--fa-blue); font-weight: bold; text-transform: uppercase; letter-spacing: .05em;
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+}
+.fa-why-label .fa-ic { width: 1.15em; height: 1.15em; }
+.fa-why-text { margin: 0; font-weight: normal; color: #3a4654; font-size: clamp(15px, 1.3vw, 1.1rem); line-height: 1.6; }
+
+/* REMEMBER — calm takeaway: light yellow tint, 3px left accent bar, squared-off left corners */
+.fa-remember {
+    display: flex; align-items: flex-start; gap: .6rem; text-align: left;
+    background: #fdf6dd; border-left: 3px solid #f2c400; border-radius: 0 12px 12px 0;
+    padding: .9rem 1.1rem;
+}
+.fa-remember .fa-ic { color: #b8860b; margin-top: .15rem; width: 1.2em; height: 1.2em; flex: none; }
+.fa-remember-text { margin: 0; font-weight: normal; color: var(--fa-ink); font-size: clamp(15px, 1.3vw, 1.1rem); line-height: 1.55; }
+.fa-remember-text strong { font-weight: bold; }
+
+.fa-learn-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.6rem; }
+.fa-nav-btn {
+    background: var(--fa-blue); color: #fff; border: none; border-radius: 12px;
+    padding: .9rem 2rem; font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: bold; cursor: pointer;
+    box-shadow: var(--fa-shadow);
+}
+.fa-nav-btn:hover:not([disabled]) { background: var(--fa-blue-dark); }
+.fa-nav-btn[disabled] { opacity: .4; cursor: default; }
+
+/* Quiz "done" panel — clean success state (no tacky emoji; a drawn green check) */
+.fa-quiz-done { text-align: center; padding: 1rem 0 .5rem; }
+.fa-done-check {
+    width: 4rem; height: 4rem; margin: 0 auto 1.2rem; border-radius: 50%;
+    background: var(--fa-green); color: #fff;
+    font-size: 2.2rem; line-height: 4rem; font-weight: bold;
+}
+.fa-done-msg { font-size: clamp(1.2rem, 2vw, 1.7rem); font-weight: bold; margin: 0 0 1.5rem; }
+.fa-done-review { display: inline-block; }
+
+/* ---------- Quiz (Learn end) ---------- */
+.fa-quiz-q { font-size: clamp(1.4rem, 2.4vw, 2.1rem); font-weight: bold; margin: 0 0 1.4rem; text-align: left; }
+.fa-quiz-feedback { text-align: left; }
+.fa-quiz-options { display: flex; flex-direction: column; gap: .9rem; margin-bottom: 1.4rem; }
+.fa-quiz-option {
+    text-align: left; background: #f3f6f9; color: var(--fa-ink);
+    border: 3px solid #d4dce4; border-radius: 12px; padding: 1rem 1.3rem;
+    font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: bold; cursor: pointer;
+}
+.fa-quiz-option:hover:not([disabled]) { border-color: var(--fa-blue); }
+.fa-quiz-option.correct   { border-color: #1c8a3b; background: #e7f7ec; }
+.fa-quiz-option.correct::after   { content: "  \2714"; color:#1c8a3b; }   /* icon, not colour alone */
+.fa-quiz-option.incorrect { border-color: var(--fa-red); background: var(--fa-red-bg); }
+.fa-quiz-option.incorrect::after { content: "  \2718"; color: var(--fa-red); }
+.fa-quiz-feedback {
+    font-size: clamp(1.05rem, 1.7vw, 1.4rem); line-height: 1.4;
+    padding: 1rem 1.2rem; border-radius: 12px; margin-bottom: 1.2rem; display: none;
+}
+.fa-quiz-feedback.show { display: block; background: #eef1f4; color: var(--fa-ink); }
+.fa-quiz-progress { font-size: clamp(1rem,1.6vw,1.3rem); opacity:.9; margin-bottom: 1rem; }
+/* quiz nav row: Back (secondary) on the left, Next/Done on the right */
+.fa-quiz-nav { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: .3rem; }
+.fa-nav-secondary { background: #fff; color: var(--fa-blue); border: 2px solid var(--fa-blue); box-shadow: none; }
+.fa-nav-secondary:hover:not([disabled]) { background: #eef4fb; }
+
+/* placeholder-topic banner */
+.fa-placeholder-note {
+    background: #fff4d6; color: #7a5a00; border: 3px solid #e0c46a; border-radius: 12px;
+    padding: 1rem 1.3rem; margin-bottom: 2vh; font-weight: bold;
+    font-size: clamp(1rem, 1.5vw, 1.4rem);
+}
+
+/* ---------- accessibility ---------- */
+.fa-card:focus-visible, .fa-toggle button:focus-visible, .fa-nav-btn:focus-visible,
+.fa-quiz-option:focus-visible, .fa-back:focus-visible, .fa-step-expand:focus-visible,
+.fa-call-pill:focus-visible, .fa-more-contacts summary:focus-visible {
+    outline: 4px solid #ffd400; outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+    .fa-card, .fa-nav-btn { transition: none; }
+    .fa-card:hover, .fa-card:focus { transform: none; }
+}

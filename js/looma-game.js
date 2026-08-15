@@ -1503,6 +1503,10 @@ function nextQuestion() {
             case 'timeline':
                 //runTimeline();
                 break;
+            case 'branching':
+                // branching runs its own traversal loop (runBranching); it does not use the
+                // per-question/team sequence, so nothing to render here. Listed for recognizability.
+                break;
             default:
                 break;
         }
@@ -1677,6 +1681,156 @@ function gameOver() {
             startSortGame();
     };  // end runSort()
 
+    /////////////////////////////
+    ///////// runBranching  /////////
+    ////////////////////////////
+    // Renders a "branching" scenario: a generalized decision tree.
+    //   game.start = entry node id
+    //   game.nodes = { <id>: { situation:{en,np}, image?, terminal?,
+    //                          choices:[ { label:{en,np}, outcome:{en,np}, correct, next } ] } }
+    // Flow: render nodes[start] -> on choice, show outcome -> load nodes[choice.next]
+    //       -> repeat until a terminal node -> offer Restart.
+    // Bilingual text is emitted via LOOMA.translatableSpans so the toolbar language
+    // toggle (LOOMA.translate) switches EN/NE live, exactly like the rest of the engine.
+    function runBranching(game) {
+        // branching is single-player traversal: hide ALL other game chrome so nothing overlaps
+        // the choice buttons (grid siblings paint on top and would steal clicks otherwise).
+        $("#optionsframe").hide();
+        $('#thegameframe').hide();
+        $('#timer').hide();
+        $('#scoreboard').hide();
+        $('#sortgame').hide();
+        $('#top').hide();          // #question + empty #next button (sat over our buttons)
+        $('#sidebar').hide();      // right-hand scoreboard/timer column
+        $('.credit').hide();       // "Authored by…" line
+        $('.header').hide();       // theme title bar (yellow #gameTitle) — title goes inside the card instead
+        $('#branchinggame').show();
+
+        var nodes = game['nodes'] || {};
+
+        // bilingual helper: pair = {en, np} -> span pair honoring the current language
+        function txt(pair) {
+            pair = pair || {};
+            return LOOMA.translatableSpans(pair['en'] || '', pair['np'] || '');
+        }
+
+        // re-apply the current language to freshly-built spans
+        function applyLanguage() {
+            var lang = (LOOMA.readStore('language', 'cookie') === 'native') ? 'native' : 'english';
+            LOOMA.translate(lang);
+        }
+
+        // --- precompute presentation metadata from the tree (content-agnostic) ---
+
+        // step number of each decision node = shortest distance from start (for "Step X of N")
+        var steps = {}; var totalSteps = 0;
+        (function () {
+            var queue = [game['start']]; steps[game['start']] = 1;
+            while (queue.length) {
+                var id = queue.shift(); var n = nodes[id];
+                if (!n || n['terminal']) continue;
+                if (steps[id] > totalSteps) totalSteps = steps[id];
+                (n['choices'] || []).forEach(function (c) {
+                    var t = nodes[c['next']];
+                    if (t && !t['terminal'] && !(c['next'] in steps)) {
+                        steps[c['next']] = steps[id] + 1; queue.push(c['next']);
+                    }
+                });
+            }
+        })();
+
+        // classify each terminal as 'success' or 'fatal': a terminal reached by ANY correct or
+        // recoverable (has-outcome-text) choice is a success; one reached only by empty-outcome
+        // wrong choices is fatal. Derived from structure, not node names.
+        var terminalKind = {};
+        Object.keys(nodes).forEach(function (nid) {
+            (nodes[nid]['choices'] || []).forEach(function (c) {
+                var t = nodes[c['next']];
+                if (!t || !t['terminal']) return;
+                var oc = c['outcome'] || {};
+                var goodRoute = c['correct'] || oc['en'] || oc['np'];
+                if (goodRoute) terminalKind[c['next']] = 'success';
+                else           terminalKind[c['next']] = terminalKind[c['next']] || 'fatal';
+            });
+        });
+
+        // set a bilingual title (title may be a plain string or {en,np})
+        var title = game['title'];
+        var titleHtml = (title && typeof title === 'object')
+            ? LOOMA.translatableSpans(title['en'] || '', title['np'] || '')
+            : (title || '');
+        $('#branch-topic').html(titleHtml);
+
+        function renderNode(id) {
+            var node = nodes[id];
+            $('#branch-step,#branch-feedback,#branch-controls,#branch-choices').empty();
+            $('#branch-image').empty().hide();
+
+            if (!node) {
+                $('#branch-card').show();
+                $('#branch-situation').html('<p class="branch-error">Missing node: ' + id + '</p>');
+                return;
+            }
+
+            if (node['terminal']) {   // ENDING: a tinted card (same treatment as the situation card) + restart
+                var fatal = (terminalKind[id] === 'fatal');
+                $('#branch-card').hide();
+                $('#branch-feedback').append(
+                    $('<div class="branch-panel ' + (fatal ? 'fatal' : 'correct') + '"></div>')
+                        .html('<p class="branch-ending-text">' + txt(node['situation']) + '</p>'));
+                var label = fatal
+                    ? LOOMA.translatableSpans('Start again', 'फेरि सुरु गर्नुहोस्')
+                    : LOOMA.translatableSpans('Play again',  'फेरि खेल्नुहोस्');
+                $('<button class="branch-restart activity ' + (fatal ? 'fatal' : 'success') + '"></button>')
+                    .html(label)
+                    .on('click', function () { renderNode(game['start']); })
+                    .appendTo('#branch-controls');
+                applyLanguage();
+                return;
+            }
+
+            // DECISION node: white situation card + neutral (no-colour-hint) choice buttons
+            $('#branch-card').show();
+            if (steps[id]) {
+                $('#branch-step').html(LOOMA.translatableSpans(
+                    'Step ' + steps[id] + ' of ' + totalSteps,
+                    'चरण ' + steps[id] + ' / ' + totalSteps));
+            }
+            $('#branch-situation').html('<p class="branch-text">' + txt(node['situation']) + '</p>');
+            if (node['image']) $('#branch-image').html('<img src="' + node['image'] + '" alt="">').show();
+
+            (node['choices'] || []).forEach(function (choice) {
+                $('<button class="branch-choice activity"></button>')
+                    .html(txt(choice['label']))
+                    .on('click', function () { chooseChoice(choice); })
+                    .appendTo('#branch-choices');
+            });
+            applyLanguage();
+        }
+
+        function chooseChoice(choice) {
+            $('#branch-choices .branch-choice').prop('disabled', true);   // lock the node once chosen
+
+            // no outcome text -> a fatal wrong choice; skip feedback and go straight to its ending
+            var oc = choice['outcome'] || {};
+            if (!(oc['en'] || oc['np'])) { renderNode(choice['next']); return; }
+
+            // correct -> green; recoverable slip -> amber. Rendered as a tinted card (same shape as the situation card).
+            var kind = choice['correct'] ? 'correct' : 'amber';
+            $('#branch-feedback').append(
+                $('<div class="branch-panel ' + kind + '"></div>')
+                    .html('<p class="branch-outcome">' + txt(choice['outcome']) + '</p>'));
+
+            $('<button class="branch-continue activity"></button>')
+                .html(LOOMA.translatableSpans('Continue', 'जारी राख्नुहोस्'))
+                .on('click', function () { renderNode(choice['next']); })
+                .appendTo('#branch-controls');
+            applyLanguage();
+        }
+
+        renderNode(game['start']);
+    }  // end runBranching()
+
     function showGame() {
         $('#gameOverFrame').hide();
         $('#thegameframe').show();
@@ -1702,6 +1856,8 @@ function gameOver() {
             ch_id = ('ch_id' in game) ? game['ch_id'] : null;
 
             if (type === 'sort') runSort(game);
+
+            else if (type === 'branching') runBranching(game);   // sixth type: decision-tree scenarios (single-player traversal, like sort)
 
             else {
                 $("#optionsframe").show();
@@ -1845,6 +2001,10 @@ $(document).ready (function() {
     game_id = $game.data('gameid');
     var game_db = $game.data('db');
     if (game_id) runGame(game_id, game_db);
+    // branching demo: load a hardcoded sample scenario without a DB round-trip
+    else if ($game.data('sample') && window.BRANCHING_SAMPLES && window.BRANCHING_SAMPLES[$game.data('sample')]) {
+        game_found(window.BRANCHING_SAMPLES[$game.data('sample')]);
+    }
     else if ($game.data('type') === 'keywords' && $game.data('ch_id')) {
         runKeyword($game.data('ch_id'), $game.data('lang'));
     }

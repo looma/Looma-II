@@ -8,6 +8,7 @@
 .travis.yml
 .idea/workspace.xml
 .idea/
+.idea/workspace.xml
 
 .DS_Store
 .editorconfig

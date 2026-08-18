@@ -743,13 +743,11 @@ function _loomaMapBuildSearchIndex() {
     if (!map) return [];
     var out = [];
     var seen = {};
-    var nameKeys = [
-        // MOST SPECIFIC FIRST — municipality features carry BOTH Municipality
-        // and DISTRICT props (the district they're in), so DISTRICT must not
-        // win the match. Similarly a district-level feature only carries
-        // DISTRICT; a province only carries `title`. So the priority is
-        // Municipality > DISTRICT > title before we fall through to the
-        // generic country / place keys.
+    // For POLYGON features (base admin layers, country polygons). Most-
+    // specific admin field first — municipality features carry BOTH
+    // Municipality and DISTRICT props (the district they're in), so
+    // DISTRICT must not win the match.
+    var polygonKeys = [
         'Municipality', 'MUNICIPALITY', 'municipality',
         'DISTRICT', 'District', 'district',
         'title',
@@ -759,10 +757,26 @@ function _loomaMapBuildSearchIndex() {
         // continents.geojson on the World Map.
         'continent', 'CONTINENT'
     ];
+    // For POINT features (schools, cities, mountains, temples, lakes).
+    // These often carry a `district` / `municipality` prop as CONTEXT
+    // (which district the school is in), not as an identity — so we must
+    // NOT index a school under its district's name. E.g. Looma Schools
+    // Map schools have {name: "Shree Janata...", district: "Nawalpur"};
+    // searching "Nawalpur" should hit the district polygon, not a school.
+    var pointKeys = [
+        'name', 'NAME',
+        'title',
+        'city', 'CITY',
+        'country_name', 'country', 'admin', 'ADMIN',
+        'NAME_0', 'NAME_ENGLI', 'name_long', 'formal_en'
+    ];
     function collect(layer) {
         if (!layer || !layer.feature) return;
         var props = layer.feature.properties || {};
-        var name = _loomaMapPickProp(props, nameKeys);
+        // Points carry getLatLng; polygons do not. Pick key set accordingly.
+        var isPoint = (typeof layer.getLatLng === 'function');
+        var keys = isPoint ? pointKeys : polygonKeys;
+        var name = _loomaMapPickProp(props, keys);
         if (!name) return;
         var key = ('' + name).toLowerCase().trim();
         if (!key || seen[key]) return;
@@ -914,6 +928,13 @@ function _loomaMapCoerceImageLink(imageLinkRaw, imageName) {
 // same way (yellow star + top-right info).
 function _loomaMapShowPlaceInTopRightPanel(rec, imageLinkArg, optsArg) {
     if (!rec || !rec.layer) return;
+    // If a Nepal admin selection was previously showing, hide it — the
+    // place card and the Nepal selection card share the top-right corner
+    // and would otherwise stack.
+    try { _loomaMapClearNepalSelection(); } catch (_) {}
+    // Close any lingering on-map popup so users don't see two info blocks
+    // (old on-map popup + new RHS panel) at the same time.
+    try { if (map && map.closePopup) map.closePopup(); } catch (_) {}
     var lyr = rec.layer;
     var props = (lyr.feature && lyr.feature.properties) || {};
     var opts = optsArg || {};
@@ -951,6 +972,9 @@ function _loomaMapShowPlaceInTopRightPanel(rec, imageLinkArg, optsArg) {
 function _loomaMapFocusSearchResult(rec) {
     if (!rec || !rec.layer || !map) return;
     _loomaMapClearSearchHighlight();
+    // Any lingering on-map popup from a prior click must go before the
+    // new search result renders, else user sees both info blocks.
+    try { if (map.closePopup) map.closePopup(); } catch (_) {}
     var lyr = rec.layer;
 
     // Point (city / capital / mountain / temple / lake).
@@ -1797,6 +1821,11 @@ function _loomaMapClearNepalSelection() {
 function _loomaMapSelectNepalFeature(layer) {
     if (!layer) return false;
     _loomaMapClearNepalSelection();
+    // Nepal selection + the country-click panel both live at position:topright
+    // and will stack visually if both are open. When a Nepal admin selection
+    // opens, close any lingering city/school/country card so users don't see
+    // a stale panel behind the new district / municipality details.
+    try { _loomaMapCloseCountryPanel(); } catch (_) {}
     nepalSelectedLayer = layer;
     // Find the base layer that actually OWNS this feature (not currentBase,
     // which is the layer the user is browsing — those can differ when e.g.
@@ -1958,8 +1987,10 @@ function loadBaseLayers (layerData) {
                 } catch (_) {}
             }
         });
-        // Name tooltip on hover. Nepal admin layers use their local admin
-        // fields; country maps use the hydrated country display name.
+        // Hover name goes in the top-right hover panel — the floating
+        // sticky tooltip was obscuring the map (white text on black block
+        // near the cursor). Nepal admin uses local admin fields; country
+        // maps use the hydrated country display name.
         try {
             var hoverName = (_loomaMapIsNepalMap() && data && data.info && data.info.threeLayer === "true") ?
                 _loomaMapNepalTooltipName(feature) :
@@ -1967,14 +1998,14 @@ function loadBaseLayers (layerData) {
                 window._loomaMapCountryDisplayName(feature.properties || {}) :
                 _loomaMapPickProp(feature.properties || {}, ['country_name', 'country', 'admin', 'ADMIN', 'name', 'NAME']));
             if (hoverName) {
-                layer.bindTooltip('' + hoverName, {
-                    sticky: true,
-                    direction: 'auto',
-                    className: 'looma-country-tooltip',
-                    opacity: 0.95
+                layer.on('mouseover', function () {
+                    try { _loomaMapShowNepalHoverName('' + hoverName); } catch (_) {}
+                });
+                layer.on('mouseout', function () {
+                    try { _loomaMapShowNepalHoverName(''); } catch (_) {}
                 });
             }
-        } catch (_) { /* tooltip is non-critical */ }
+        } catch (_) { /* hover panel is non-critical */ }
     }
 
     // Click handler for layers where hover/highlight isn't appropriate (e.g. add-on layers).
@@ -2378,13 +2409,19 @@ function loadAddOnLayers (layerData, information) {
                         var isLakeLayer     = layerKindName.indexOf('lake')     !== -1;
                         var isMountainLayer = layerKindName.indexOf('mountain') !== -1;
                         var isTempleLayer   = layerKindName.indexOf('temple')   !== -1;
+                        // Looma Schools Map's addOn: name="Looma Schools",
+                        // geojson="looma schools lat long.json". Without this,
+                        // school clicks fall through to the bindPopup branch
+                        // and open a popup pinned on the marker (obscures the
+                        // map). Route them through the top-right panel instead.
+                        var isSchoolLayer   = layerKindName.indexOf('school')   !== -1 || layerGeojson.indexOf('school') !== -1;
                         // Nepal Map's Cities (and lakes/temples/mountains) share the
                         // generic 'place' card so all the Nepal-specific fields
                         // (Nepali name, Province, District, Elevation, …) show up.
                         // The world map's Capitals/Cities keep the slimmer
                         // population+local-time card.
                         var isNepalAddOn = layerGeojson.indexOf('nepal') === 0;
-                        var isPlaceLayer = isCapitalLayer || isCityLayer || isLakeLayer || isMountainLayer || isTempleLayer;
+                        var isPlaceLayer = isCapitalLayer || isCityLayer || isLakeLayer || isMountainLayer || isTempleLayer || isSchoolLayer;
 
                         if (isPlaceLayer) {
                             var capturedImageLink = (typeof imageLink !== 'undefined') ? imageLink : '';

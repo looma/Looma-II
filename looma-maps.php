@@ -45,40 +45,6 @@ function makeMapButton($file, $thumb, $dn) {
     <div class="center">
         <br>
 
-        <!-- Geography Games — quick links to the map-based games from Mongo.
-             Previously only reachable via the games tab; surfaced here so
-             they're findable from the Maps context. -->
-        <h2 class="section-title" style="margin-top:0;"><?php keyword("Geography Games"); ?></h2>
-        <table><tr>
-        <?php
-        $geographyGames = array(
-            array('id' => '5b620280a18f69cb2937c982', 'name' => 'Continents',              'thumb' => 'images/globe.png'),
-            array('id' => '6a78dc5973dbd01789db8655', 'name' => 'World Countries',         'thumb' => 'images/globe.png'),
-            array('id' => '5b620286a18f69cb2937c983', 'name' => 'Asia Countries',          'thumb' => 'images/globe.png'),
-            array('id' => '5f2204c96cf78b3916cf2cc5', 'name' => 'Europe Countries',        'thumb' => 'images/globe.png'),
-            array('id' => '6a78dc5973dbd01789db864f', 'name' => 'Africa Countries',        'thumb' => 'images/globe.png'),
-            array('id' => '6a78dc5973dbd01789db8651', 'name' => 'North America Countries', 'thumb' => 'images/globe.png'),
-            array('id' => '6a78dc5973dbd01789db8653', 'name' => 'South America Countries', 'thumb' => 'images/globe.png'),
-        );
-        global $icons;
-        $gameCol = 1;
-        $gameMax = 3;
-        foreach ($geographyGames as $g) {
-            echo '<td>';
-            echo '<a href="game?id=' . $g['id'] . '&type=map">';
-            echo   '<button class="map img">';
-            echo     '<img src="' . $g['thumb'] . '">';
-            echo     '<span class="name">' . $g['name'] . '</span>';
-            if (isset($icons['game'])) echo '<img class="icon" src="' . $icons['game'] . '">';
-            echo   '</button>';
-            echo '</a>';
-            echo '</td>';
-            $gameCol++;
-            if ($gameCol > $gameMax) { $gameCol = 1; echo '</tr><tr>'; }
-        }
-        ?>
-        </tr></table>
-
         <h2 class="section-title"><?php keyword("Maps"); ?></h2>
 
         <?php
@@ -87,10 +53,27 @@ function makeMapButton($file, $thumb, $dn) {
         //make buttons for maps directory -- virtual folder, populated from maps collection in mongoDB
         $buttons = 1;
         $maxButtons = 3;
+        global $icons;
 
         echo "<table><tr>";
 
-        // Standalone map pages that don't live in Mongo. Rendered first so they
+        // First tile: Map Games — opens looma-map-games.php with the
+        // continent / country quiz tiles. Was inlined as seven tiles at
+        // the top of this page; that pushed the actual map buttons below
+        // the fold, so it's collapsed to a single entry point.
+        echo '<td>';
+        echo   '<a href="looma-map-games.php">';
+        echo     '<button class="map img">';
+        echo       '<img src="images/globe.png" alt="Map Games">';
+        echo       '<span class="name">Map Games</span>';
+        if (isset($icons['game'])) echo '<img class="icon" src="' . $icons['game'] . '">';
+        echo     '</button>';
+        echo   '</a>';
+        echo '</td>';
+        $buttons++;
+        if ($buttons > $maxButtons) { $buttons = 1; echo "</tr><tr>"; }
+
+        // Standalone map pages that don't live in Mongo. Rendered next so they
         // sit alongside the priority Nepal Map / Looma Schools Map entries.
         echo '<td>';
         echo   '<a href="looma-roads-nepal.php">';

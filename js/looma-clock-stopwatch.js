@@ -85,6 +85,7 @@ $(document).ready(function () {
             } else {                                    // start / resume
                 if (timerRemaining <= 0) return;        // nothing to count down
                 clearFlash();
+                ensureAudio();                          // unlock sound on this user click
                 timerEnd = Date.now() + timerRemaining;
                 running = true;
             }
@@ -110,11 +111,43 @@ $(document).ready(function () {
         timerRemaining = 0;
         updateStartStopLabel();
         flash();
+        beep();
     }
 
-    // ---------- silent flash at zero ----------
+    // ---------- flash + sound at zero ----------
     function flash()      { $display.addClass('flashing'); }
     function clearFlash() { $display.removeClass('flashing'); }
+
+    // Web Audio beep (no audio file needed). The context is created/resumed on a
+    // user click (Start) so the browser allows it to play later, when time is up.
+    var audioCtx = null;
+    function ensureAudio() {
+        try {
+            var AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            if (!audioCtx) audioCtx = new AudioCtx();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        } catch (e) { /* no audio available */ }
+    }
+    function beep() {
+        ensureAudio();                                 // (re)create if needed
+        if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();   // re-arm if the browser suspended it
+        var now = audioCtx.currentTime;
+        [0, 0.3, 0.6].forEach(function (offset) {      // three short beeps
+            var osc = audioCtx.createOscillator();
+            var gain = audioCtx.createGain();
+            osc.type = 'square';                       // brighter / louder than sine
+            osc.frequency.value = 880;                 // A5 tone
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            gain.gain.setValueAtTime(0.0001, now + offset);
+            gain.gain.linearRampToValueAtTime(0.6, now + offset + 0.02);
+            gain.gain.linearRampToValueAtTime(0.0001, now + offset + 0.25);
+            osc.start(now + offset);
+            osc.stop(now + offset + 0.27);
+        });
+    }
 
     function updateStartStopLabel() {
         var word = running ? 'Pause' : 'Start';

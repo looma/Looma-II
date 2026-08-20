@@ -1075,6 +1075,7 @@ function runConcType(type) {
 // /////// concCorrectAnswer  /////////
 // ///////////////////////////////////
 function concCorrectAnswer() {
+    LOOMA.playCorrect();
     $('.concButton').off('click');
     scores[curr_team-1]++;
     updateScores();
@@ -1099,6 +1100,7 @@ function concCorrectAnswer() {
 // /////// concWrongAnswer  /////////
 // //////////////////////////
 function concWrongAnswer() {
+    LOOMA.playWrong();
     $('.concButton').off('click');
 
     $concFirstClicked.toggleClass ('wrong');
@@ -1513,6 +1515,7 @@ function nextQuestion() {
 //////// correctAnswer  /////
 /////////////////////////////
 function correctAnswer () {
+    LOOMA.playCorrect();
     pauseTimer();
     clearScreen();
 
@@ -1540,6 +1543,7 @@ function correctAnswer () {
 // /////// wrongAnswer  /////////
 // //////////////////////////
 function wrongAnswer () {
+    LOOMA.playWrong();
     pauseTimer();
     clearScreen();
     nextTeam();

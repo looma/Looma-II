@@ -14,7 +14,7 @@
 #   loomaUSB can be called with a parameter "dryrun" in which case the transfers are not performed,
 #   but 'dry run' instead
 
-# using rsync downloads all changed or more recent files from rsybnc.net to a USB stick
+# using rsync downloads all changed or more recent files from rsync.net to a USB stick
 
 #configured to be run on a LOOMA (linux)
 
@@ -35,6 +35,16 @@
 #--progress show transfer progress
 #--stats    print stats at the end
 #
+
+###############################################
+# - NOTE on owner, group and permissions
+# - loomaarchive copies TO rsync.net FROM laptop
+#           setting target files with chmod=u=rwX,go=rX and owner and group get set to owner=58189, group=58189
+# - Optionally, loomaUSB copies TO USB on looma box FROM rsync.net
+#           setting target files with chmod=u=rwX,go=rX and owner and group get set to owner=odroid, group=odroid
+# - the loomaupdate copies TO looma box FROM rsync.net (option "I") or USB (option "U")
+#           setting target files with owner=odroid, group=odroid, chmod=u=rwX,go=rX
+###############################################
 result () {
     if [[ $1 -ne 0 ]]
     then
@@ -136,10 +146,14 @@ then
     SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        sshpass -p 'looma' rsync -rlptzv --dry-run --delete --perms --stats --progress --exclude '.[!.]*'    $RO:../Looma/ Looma
+        sshpass -p 'looma' rsync -rlptzv --dry-run --delete \
+                --perms  --chown=odroid:odroid --chmod=u=rwX,go=rX  \
+                 --stats --progress --exclude '.[!.]*'    $RO:../Looma/ Looma
         result $?
     else
-        sshpass -p 'looma' rsync -rlptzv           --delete --perms --stats --progress --exclude '.[!.]*'    $RO:../Looma/ Looma
+        sshpass -p 'looma' rsync -rlptzv           --delete \
+                --perms  --chown=odroid:odroid --chmod=u=rwX,go=rX  \
+                --stats --progress --exclude '.[!.]*'    $RO:../Looma/ Looma
         result $?
         timestamp "Looma"
     fi
@@ -156,10 +170,14 @@ then
     SECONDS=0
     if [[ $1 = "dryrun" ]]
     then
-        sshpass -p 'looma' rsync -rlptzv --dry-run --size-only --delete --perms --stats --progress --exclude '.[!.]*'    $RO:../content/ content
+        sshpass -p 'looma' rsync -rlptzv --dry-run --size-only --delete \
+                --perms  --chown=odroid:odroid --chmod=u=rwX,go=rX  \
+                --stats --progress --exclude '.[!.]*'    $RO:../content/   content
         result $?
     else
-        sshpass -p 'looma' rsync -rlptzv --quiet   --size-only --delete --perms --stats --progress --exclude '.[!.]*'    $RO:../content/ content
+        sshpass -p 'looma' rsync -rlptzv --quiet   --size-only --delete \
+                --perms  --chown=odroid:odroid --chmod=u=rwX,go=rX  \
+                --stats --progress --exclude '.[!.]*'    $RO:../content/   content
         result $?
         timestamp "content"
     fi
@@ -168,7 +186,7 @@ fi
 echo
 echo "****************************************************************************"
 echo "DONE LOOMA UPDATE: updating USB memory with Looma code, database and content"
-if [[ $1 = "dryrun"]]
+if [[ $1 = "dryrun" ]]
 then
     echo "DRYRUN ONLY - - NO FILES TRANSFERRED"
 fi

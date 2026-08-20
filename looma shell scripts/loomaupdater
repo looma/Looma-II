@@ -43,12 +43,21 @@
 #RSYNC options used:
 
 # -rtvz     recursive, set modification time, verbose, use compression
-# --progress, --update, --delete, --no-perms
-# --chmod=ugo=rwX
-# --chown=odroid:odroid. NOT USED - files get 58198:58198 on Update Server, then get odroid:odroid on Looma's that download from the update server
+# --progress, --update, --delete
+# --chown=odroid:odroid [files get 58198:58198 on Update Server, then get odroid:odroid on Looma's that download from the update server]
 # optional: --dry-run
 # --include ".ssh/"  --exclude ".[!.]*" --exclude "vendor/" --exclude "composer*"
 # --size-only for files in content/
+
+###############################################
+# - NOTE on owner, group and permissions
+# - loomaarchive copies TO rsync.net FROM laptop
+#           setting target files with chmod=u=rwX,go=rX and owner and group get set to owner=58189, group=58189
+# - Optionally, loomaUSB copies TO USB on looma box FROM rsync.net
+#           setting target files with chmod=u=rwX,go=rX and owner and group get set to owner=odroid, group=odroid
+# - the loomaupdate copies TO looma box FROM rsync.net (option "I") or USB (option "U")
+#           setting target files with owner=odroid, group=odroid, chmod=u=rwX,go=rX
+###############################################
 
 checksudo() {
     if [ "$(id -u)" -ne 0 ]; then

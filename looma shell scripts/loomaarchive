@@ -19,9 +19,19 @@
 # -rtvz     recursive, set modification time, verbose, use compression
 # --progress, --delete, --perms
 # --chmod=u=rwX,go=rX
-# --chown=looma:looma. NOT USED - files get 58198:58198 on Update Server, then get odroid:odroid on Looma's that download from the update server
+# --chown=looma:looma. NOT USED - files get 58189:58189 on Update Server, then get odroid:odroid on Looma's that download from the update server
 # optional: --dry-run
 # --include ".ssh/"  --exclude ".[!.]*"
+
+###############################################
+# - NOTE on owner, group and permissions
+# - loomaarchive copies TO rsync.net FROM laptop
+#           setting target files with chmod=u=rwX,go=rX and owner and group get set to owner=58189, group=58189
+# - Optionally, loomaUSB copies TO USB on looma box FROM rsync.net
+#           setting target files with chmod=u=rwX,go=rX and owner and group get set to owner=odroid, group=odroid
+# - the loomaupdate copies TO looma box FROM rsync.net (option "I") or USB (option "U")
+#           setting target files with owner=odroid, group=odroid, chmod=u=rwX,go=rX
+###############################################
 
 ############### pause() ##################
 pause () {

@@ -80,6 +80,26 @@ h2 {
     margin-left: 0;
     margin-right: 0;
 }
+
+/* Clock Game buttons: mark them with the Looma game icon (like Library Search),
+   with smaller text so the icon fits. Button size stays the same. */
+.game-button {
+    display: flex;
+    align-items: center;          /* icon on the left, vertically centered */
+    gap: 0.5em;
+    font-size: clamp(0.7rem, 1.6vw, 1.6em);
+}
+.game-icon {
+    height: 2.7em;                /* a little bigger */
+    max-height: 100%;
+    flex: 0 0 auto;
+}
+#e .game-icon { height: 4em; margin-left: -0.4em; }  /* stopwatch icon: bigger + nudged left */
+.game-label {
+    flex: 1 1 auto;               /* take the rest of the button... */
+    text-align: center;          /* ...and center the label in it, like the picture */
+    line-height: 1.1;
+}
 #digitalClockButton {
     margin:2vh 0 0 0;
     grid-column:3;
@@ -429,12 +449,12 @@ button#clock-only {
     width: 100%;
     height: auto;
     /* cap by BOTH width and height so two rows always fit above the toolbar */
-    max-width: min(22vw, 31vh);
+    max-width: min(20vw, 26vh);
 }
 .wc-name {
     color: yellow;
     font-weight: bold;
-    font-size: clamp(0.82rem, 1.7vw, 1.65em);
+    font-size: clamp(0.8rem, 1.6vw, 1.5em);
     text-align: center;
     line-height: 1.1;
     white-space: nowrap;          /* keep names on one line so the clocks stay aligned */
@@ -442,7 +462,7 @@ button#clock-only {
 }
 .wc-time {
     color: yellow;
-    font-size: clamp(0.82rem, 1.8vw, 1.65em);
+    font-size: clamp(0.8rem, 1.7vw, 1.5em);
     margin-top: 0.2em;
 }
 

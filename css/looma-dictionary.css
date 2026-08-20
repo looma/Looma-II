@@ -102,6 +102,22 @@ button#submit {
 
 #image:hover {opacity: 0.7;}
 
+#definitionSigned {
+    bottom: 5vh;
+    left: 10vw;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    max-height: 10vh;
+    max-width: 15vw;
+}
+
+#definitionSigned:hover {opacity: 0.7;}
+
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
@@ -186,7 +202,11 @@ button#submit {
         top: 40vh;
         left: 0;
     }
-    
+    #definitionSigned {
+        bottom: 2vh;
+        left: 0;
+    }
+
     button.speak { bottom:32vh; }
     button.show-keyboard {bottom:47vh;}
 

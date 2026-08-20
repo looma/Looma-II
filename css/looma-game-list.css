@@ -9,12 +9,9 @@
 
 #buttons {
     display: grid;
-    /* 3 equal columns; change to your needs */
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
-
-    /* optional: ensure row-wise auto placement */
-    grid-auto-flow: row; /* default is row */
+    justify-items: center;
 }
 
 .item {
@@ -22,14 +19,16 @@
     padding: 0.5rem;
 }
 
-button.game {
+button.game,
+button.worksheet {
     /*height:25vh;*/
     width: 30vw;
     margin: 5px;
     font-size: 2em;
 }
 
-button.game a {
+button.game a,
+button.worksheet a {
     color:black;
     text-decoration:none;
 }

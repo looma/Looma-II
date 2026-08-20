@@ -300,6 +300,17 @@ function playPDF(PDFdiv,filename,filepath,start,len,lang,zoom) {
             $('#maxpages').text(endPage - startPage + 1);
             console.log('loaded file ' + filepath + filename + ' with ' + maxPages + ' pages');
 
+            // 'fit' zoom (worksheets): scale the page to fill the #pdf area as much as
+            // possible without a scroll bar - the min of the width-fit and height-fit
+            // scales, with a small margin so canvas/element margins can't force a scrollbar
+            if (currentScale === 'fit') {
+                var fitPage = await doc.getPage(startPage);
+                var base = fitPage.getViewport({scale: 1});
+                var box = document.getElementById('pdf');
+                var fit = Math.min(box.clientWidth / base.width, box.clientHeight / base.height);
+                currentScale = (fit > 0 ? fit : initialZoom) * 0.97;
+            }
+
             makePageDivs(PDFdiv,doc, startPage, endPage);
 
             // displayFirstPage(doc,startPage);

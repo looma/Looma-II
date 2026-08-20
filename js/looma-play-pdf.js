@@ -11,8 +11,42 @@ Description: display layer built on pdf.js for showing chapters in PDFs
 
 "use strict";
 
+var wsResizeTimer;
+
+function isWorksheet() { return $('#pdf').data('ft') === 'worksheet'; }
+
+// Recompute the fit scale for the current #pdf size and redraw the (single-page)
+// worksheet on a FRESH canvas. Rebuilding the canvas avoids an intermittent
+// vertical-flip that can occur when pdf.js re-renders onto an already-used canvas
+// (its render-cancel is unreliable). The fullscreen<->normal transition fires
+// resize/fullscreenchange events, which is when the flip was showing up.
+function refitWorksheet() {
+    if (!pdfdoc || !isWorksheet()) return;
+    pdfdoc.getPage(startPage).then(function(page) {
+        var base = page.getViewport({scale: 1});
+        var box = document.getElementById('pdf');
+        var fit = Math.min(box.clientWidth / base.width, box.clientHeight / base.height);
+        currentScale = (fit > 0 ? fit : initialZoom) * 0.97;
+        $('#pdf').empty();                                   // drop the old (possibly mid-render) canvas
+        makePageDivs($('#pdf')[0], pdfdoc, startPage, endPage);
+        drawMultiplePages(pdfdoc, startPage, endPage);
+    });
+}
+
+// debounce transition events so the many resize/fullscreenchange events fired
+// during a fullscreen toggle collapse into a single clean redraw
+function scheduleWorksheetRefit() {
+    clearTimeout(wsResizeTimer);
+    wsResizeTimer = setTimeout(refitWorksheet, 200);
+}
+
 $(window).resize(async function() {
-    await drawMultiplePages(pdfdoc, startPage, endPage).promise;
+    if (isWorksheet()) scheduleWorksheetRefit();
+    else await drawMultiplePages(pdfdoc, startPage, endPage).promise;
+});
+
+document.addEventListener('fullscreenchange', function() {
+    if (isWorksheet()) scheduleWorksheetRefit();
 });
 
 window.onload = function() {
@@ -98,12 +132,17 @@ window.onload = function() {
 
     //playPDF();
 
+    // worksheets: fit the page to the display area - as big as possible with no scroll bar
+    // (playPDF() computes the exact scale once the page's natural size is known)
+    var pdfZoom = $('#pdf').data('zoom');
+    if ($('#pdf').data('ft') === 'worksheet') pdfZoom = 'fit';
+
     playPDF($('#pdf')[0], $('#pdf').data('fn'),
                           $('#pdf').data('fp'),
                           $('#pdf').data('page'),
                           $('#pdf').data('len'),
                           $('#pdf').data('lang'),
-                          $('#pdf').data('zoom') );
+                          pdfZoom );
 
     toolbar_button_activate("library");
 

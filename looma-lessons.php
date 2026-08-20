@@ -39,12 +39,13 @@ logPageHit('lessons');
         foreach ($lessons as $lesson) {
 
             echo "<td>";
-            $dn = $lesson['dn'];
-            $ndn = isset($lesson['ndn']) ?  $lesson['ndn'] : "";
-            $ft = "lesson";
-            $thumb = "images/lesson.png";
-            $id = $lesson['mongoID'];  //mongoID of the descriptor for this lesson
-            makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+            makeButton(array(
+                'ft' => 'lesson',
+                'dn' => $lesson['dn'],
+                'ndn' => isset($lesson['ndn']) ? $lesson['ndn'] : null,
+                'thumb' => 'images/lesson.png',
+                'mongo_id' => $lesson['mongoID'],
+            ));
             echo "</td>";
             $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
 

@@ -14,7 +14,7 @@ var className, subjectName, gradeName, prefix;
 
 var nnames = {
     'science'  : 'विज्ञान',
-    'english'  : 'अंग्रेजी',
+    'english'  : 'English',
     'math'     : 'गणित',
     'health'   : 'स्वास्थ्य',
     'serofero' : 'सेरोफेरो',
@@ -26,9 +26,9 @@ var displaynames = {
     'english' : 'English',
     'math'    : 'Math',
     'health'  : 'Health',
-    'serofero': 'Serofero',
-    'nepali'  : 'Nepali',
-    'social studies' : 'Social' };
+    'serofero': 'सेरोफेरो',
+    'nepali'  : 'नेपाली',
+    'social studies' : 'सामाजिक' };
 
 function displaySubjects (className) {
 

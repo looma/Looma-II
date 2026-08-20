@@ -34,13 +34,13 @@ Description: Initial "demos" page. Takes the user to each demo.
             foreach ($demos as $demo) {
               // $demo = Sdemos.next();
                 echo "<td>";
-                $dn = $demo['dn'];
-                $ndn = isset($demo['ndn']) ?  $demo['ndn'] : "";
-                $ft = "blockly-demo";
-                $thumb = "images/logos/blockly.jpg";
-                $id = $demo['_id'];  //mongoID of the descriptor for this lesson
-                //use makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom, $nfn, $npg,$prefix,$lang)
-                makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+                makeButton(array(
+                    'ft' => 'blockly-demo',
+                    'dn' => $demo['dn'],
+                    'ndn' => isset($demo['ndn']) ? $demo['ndn'] : null,
+                    'thumb' => 'images/logos/blockly.jpg',
+                    'mongo_id' => $demo['_id'],
+                ));
                 echo "</td>";
                 $buttons++; if ($buttons > $maxButtons) {$buttons = 1; echo "</tr><tr>";}
 

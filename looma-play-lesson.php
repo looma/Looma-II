@@ -63,66 +63,8 @@ Description: looma lesson plan presenter
         <?php
 
         function makeNotFoundButton() {
-            global $playLang;
-            makeActivityButton('filenotfound', null, null, null, null, null, null, null, null, null,
-                              null, null, null, null, null, null, null, null, null, $playLang);
+            makeButton(array('ft' => 'filenotfound'));
         };  // end makeNotFoundButton()
-
-        //look up the lesson plan in mongo lessons collection
-        //send DN, AUTHOR and DATE in a hidden DIV
-        //for each ACTIVITY in the DATA field of the lesson, create an 'activity button' in the timeline
-
-        function thumbPrefix($ft) {   // this should be in includes/looma-utilities.php
-            $fp =   "";
-		switch ($ft) { //if $fp is not specified, use the default content folder for this $ft
-            case "video":
-            case "mp4":
-            case "mp5":
-            case "m4v":
-            case "mov":
-                $fp = '../content/videos/';
-                break;
-            case "image":
-            case "jpg":
-            case "jpeg":
-            case "png":
-            case "gif":
-                $fp = '../content/pictures/';
-                break;
-            case "audio":
-            case "m4a":
-            case "mp3":
-                $fp = '../content/audio/';
-                break;
-            case "pdf":
-                $fp = '../content/pdfs/';
-                break;
-            case "slideshow":
-                $fp = urlencode('../content/slideshows/');
-                break;
-            case "evi":
-                $fp = '../content/videos/';
-                break;
-            case "html":
-            case "HTML":
-                $fp = '../content/html/';
-                break;
-            case "EP":
-            case "epaath":
-                break;
-            case "VOC":       //vocabulary reviews
-            case "lesson":    //lesson plan
-            case "map":       //map
-            case "game":      //game
-            case "text":      //text
-            case "book":      //book
-            case "looma":     //looma
-            case "chapter":   //chapter
-            case "history":   //$fp = '../content/histories/';
-                break;
-        };
-        return $fp;
-        };  //  end thumbPrefix()
 
     /////////////// MAIN BODY /////////////
         if (isset($_REQUEST['id'])) $lesson_id = $_REQUEST['id']; else $lesson_id = null;
@@ -161,53 +103,32 @@ Description: looma lesson plan presenter
                         if (!$details) {
                             makeNotFoundButton();
                         } else {
+                            // thumbnail: use thumb field if present, otherwise let makeButton handle it
                             if (isset($details['thumb']) && $details['thumb'] != "")
                                 $thumbSrc = $details['thumb'];
                             else if (isset($details['ft']) && $details['ft'] == 'EP' && isset($details['version']) && $details['version'] == 2015)
                                 $thumbSrc = '../content/epaath/activities/' . $details["fn"] . '/thumbnail.jpg';
-                           // else if (isset($details['ft']) && $details['ft'] == 'EP' && isset($details['version']) && $details['version'] == 2019)
-                             //   $thumbSrc = $details['thumb'];
-                           // else if (isset($details['ft']) && $details['ft'] == 'EP' && isset($details['version']) && $details['version'] == 2022)
-                             //   $thumbSrc = '../ePaath/' . $details['thumb'];
-                            else if (isset($details['ft']) && $details['ft'] == 'evi')
-                                $thumbSrc = 'images/video.png';
-                            else if (isset($details['ft']) && $details['ft'] == 'text')
-                                $thumbSrc = 'images/textfile.png';
-                            else if (isset($details['ft']) && $details['ft'] == 'game')
-                                $thumbSrc = 'images/games.png';
-                            else if (isset($details['fn']) && isset($details['fp']))
-                                $thumbSrc = thumbnail($details['fn'], $details['fp'],$details['ft']);
-                            else if (isset($details['fn']))
-                                $thumbSrc = thumbnail($details['fn'], thumbPrefix($details['ft']), $details['ft']);
-                            else $thumbSrc = 'images/LoomaLogo_small.png';
+                            else $thumbSrc = null;  // let makeButton() generate thumbnail
 
-                            if (isset($details['ft']) && $details['ft'] == 'EP' && $details['subject'] === 'nepali') $playLang = 'np'; else $playLang = 'en';
-                            //  format is:  makeActivityButton($ft, $fp, $fn, $dn, $ndn, $thumb, $ch_id, $mongo_id, $ole_id, $url, $pg, $zoom,$grade,$epversion,$nfn,$npg,$prefix,$lang)
+                            $playLang = (isset($details['ft']) && $details['ft'] == 'EP' && $details['subject'] === 'nepali') ? 'np' : 'en';
 
-                            //echo "thumb is " . $thumbSrc;
-
-                            makeActivityButton(
-                                $details['ft'],
-                                (isset($details['fp'])) ? $details['fp'] : null,
-                                (isset($details['fn'])) ? $details['fn'] : null,
-                                (isset($details['dn'])) ? $details['dn'] : null,
-                                null,
-                                $thumbSrc,
-
-                                "", //(isset($details['ch_id'])) ? $details['ch_id'] : null,
-                                (isset($details['mongoID'])) ? $details['mongoID'] : null,
-                                (isset($details['oleID'])) ? $details['oleID'] : null,
-                                (isset($details['url'])) ? $details['url'] : null,
-                                (isset($details['pn'])) ? $details['pn'] : null,
-                                null,
-                                (isset($details['grade'])) ? $details['grade'] : null,
-                                (isset($details['version'])) ? $details['version'] : null,
-                                (isset($details['nfn'])) ? $details['nfn'] : null,
-                                (isset($details['npn'])) ? $details['npn'] : null,
-                                null,
-                                $playLang,
-                                (isset($details['nfn'])) ? $details['nfn'] : null,
-                            );
+                            makeButton(array(
+                                'ft'        => $details['ft'],
+                                'fp'        => isset($details['fp']) ? $details['fp'] : null,
+                                'fn'        => isset($details['fn']) ? $details['fn'] : null,
+                                'dn'        => isset($details['dn']) ? $details['dn'] : null,
+                                'ndn'       => isset($details['ndn']) ? $details['ndn'] : null,
+                                'nfn'       => isset($details['nfn']) ? $details['nfn'] : null,
+                                'thumb'     => $thumbSrc,
+                                'mongo_id'  => isset($details['mongoID']) ? $details['mongoID'] : null,
+                                'ole_id'    => isset($details['oleID']) ? $details['oleID'] : null,
+                                'url'       => isset($details['url']) ? $details['url'] : null,
+                                'pg'        => isset($details['pn']) ? $details['pn'] : null,
+                                'npg'       => isset($details['npn']) ? $details['npn'] : null,
+                                'grade'     => isset($details['grade']) ? $details['grade'] : null,
+                                'epversion' => isset($details['version']) ? $details['version'] : null,
+                                'lang'      => $playLang,
+                            ));
                         }  // end if (activity exists)
                     } else
 
@@ -245,27 +166,21 @@ Description: looma lesson plan presenter
                             //echo "filename is " . $filename . '<br>';
                             //echo "filepath is " . $filepath . '<br>';
 
-                              makeChapterButton('chapter',
-                                  '../content/' . $filepath,
-                                  $filename,
-                                  $displayname,
-                                  null,
-                                  $thumbSrc,
-                                  $chapter['_id'],
-                                  null,
-                                  null,
-                                  null,
-                                  $pagenumber,
-                                  $len,
-                                  2.3,
-                                  null,
-                                  null,
-                                  $nfn,
-                                  $npn,
-                                  $nlen,
-                                  null,
-                                  $lang
-                              );
+                              makeButton(array(
+                                  'ft'    => 'chapter',
+                                  'fp'    => '../content/' . $filepath,
+                                  'fn'    => $filename,
+                                  'nfn'   => $nfn,
+                                  'dn'    => $displayname,
+                                  'thumb' => $thumbSrc,
+                                  'ch_id' => $chapter['_id'],
+                                  'pg'    => $pagenumber,
+                                  'npg'   => $npn,
+                                  'len'   => $len,
+                                  'nlen'  => $nlen,
+                                  'zoom'  => 2.3,
+                                  'lang'  => $lang,
+                              ));
                           }
                     }
                     }

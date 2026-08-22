@@ -1723,6 +1723,45 @@ LOOMA.speak = function(text, engine, voice, rate) {
     }
  }; //end toggleFullscreen()
 
+// ---- game sound effects (generated with Web Audio, so they work fully offline) ----
+LOOMA._audioCtx = null;
+LOOMA._initAudio = function () {
+    try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        if (!LOOMA._audioCtx) LOOMA._audioCtx = new AC();
+        if (LOOMA._audioCtx.state === 'suspended') LOOMA._audioCtx.resume();
+    } catch (e) { /* no audio available */ }
+};
+// play a short sequence of tones
+LOOMA._tones = function (freqs, type) {
+    LOOMA._initAudio();
+    var ctx = LOOMA._audioCtx;
+    if (!ctx) return;
+    if (ctx.state === 'suspended') ctx.resume();
+    var now = ctx.currentTime, step = 0.13;
+    freqs.forEach(function (f, i) {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.value = f;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        var start = now + i * step;
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.linearRampToValueAtTime(0.5, start + 0.02);
+        gain.gain.linearRampToValueAtTime(0.0001, start + step + 0.05);
+        osc.start(start);
+        osc.stop(start + step + 0.06);
+    });
+};
+// happy rising chime for a right answer, low buzz for a wrong one
+LOOMA.playCorrect = function () { LOOMA._tones([660, 990], 'sine'); };
+LOOMA.playWrong   = function () { LOOMA._tones([220, 165], 'square'); };
+// arm the audio on the first user interaction so it's ready by answer time
+document.addEventListener('click',   LOOMA._initAudio, { once: true });
+document.addEventListener('keydown', LOOMA._initAudio, { once: true });
+
  /*
 //toggle fullscreen display of the element with id="fullscreen"
 LOOMA.toggleFullscreen = function() {

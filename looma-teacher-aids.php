@@ -114,9 +114,9 @@ if ($tg) {
 //if ($thumbSrc) echo '<img alt="" loading="lazy" draggable="false" src="' . $thumbSrc . '">';
 
 // make buttons for TEACHER AIDS if present
-$aids = ['summary','outline','plan','keywords','quiz','test', 'objectives','topics'];
-$aidnames = ($lang === 'np') ? ['सारांश', 'रूपरेखा', 'योजना', 'किवर्ड', 'क्विज', 'परीक्षण', 'उद्देश्यहरू', 'विषयहरू']
-                             :['Summary','Outline','Plan','Keywords','Quizzes','Tests','Objectives','Topics'];
+$aids = ['summary','outline','plan','keywords','quiz','test', 'objectives','topics','project'];
+$aidnames = ($lang === 'np') ? ['सारांश', 'रूपरेखा', 'योजना', 'किवर्ड', 'क्विज', 'परीक्षण', 'उद्देश्यहरू', 'विषयहरू','परियोजनाहरू']
+                             :['Summary','Outline','Plan','Keywords','Quizzes','Tests','Objectives','Topics','Projects'];
 
 for ($i=0; $i<sizeof($aids); $i++)  {
     $aid = $aids[$i];

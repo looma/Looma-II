@@ -45,7 +45,7 @@ logPageHit('histories');
             $ft = "history";
             $thumb = isset($history['thumb']) ? $history['thumb'] : "";
             $id = $history['_id'];  //mongoID of the descriptor for this lesson
-            makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+            //makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
             makeButton(array(
                 'ft' => 'history',
                 'dn' => $history['title'],

@@ -786,32 +786,43 @@ div.center {
 /*@media all and (device-width: 667px) and (device-height: 322px) and (orientation:landscape) {
     #main-container-horizontal { height: 1024px; }
 } */
-@media screen and (max-width:480px) and (orientation:portrait),
-       screen and (max-width:916px) and (orientation:landscape) {
 
-    body {
-        --looma-background: var(--looma-blue);
-        background-color: var(--looma-background);
-        font-family: "Noteworthy";
-    }
-    h1.title {font-size:2em;}
-
-    button.img.play, button.img.activity, button.img.map {
-        width: 27vw;
-        height:18vh;
-        font-size: 1em;
-    }
-
-    button.img {
-        height: 40vh;
-        width: 27vw;
-    }
-
-    th, td{
-        padding: 0;
-    }
-    td button, th button{
-        margin: 0;
-    }
-
-}
+/*  ── OLD phone rules — commented out on 2026-08-21 ───────────────────
+ *  These were an early attempt at smartphone formatting. They set
+ *  body font-family, h1.title font-size, and button.img dimensions
+ *  globally on screens smaller than 480px portrait / 916px landscape.
+ *  Overlaps and conflicts with the newer css/looma-mobile.css, so
+ *  they've been disabled. If mobile ever needs some of these rules
+ *  back, migrate them into css/looma-mobile.css so all responsive
+ *  logic lives in one place.
+ *
+ *  @media screen and (max-width:480px) and (orientation:portrait),
+ *         screen and (max-width:916px) and (orientation:landscape) {
+ *
+ *      body {
+ *          --looma-background: var(--looma-blue);
+ *          background-color: var(--looma-background);
+ *          font-family: "Noteworthy";
+ *      }
+ *      h1.title {font-size:2em;}
+ *
+ *      button.img.play, button.img.activity, button.img.map {
+ *          width: 27vw;
+ *          height:18vh;
+ *          font-size: 1em;
+ *      }
+ *
+ *      button.img {
+ *          height: 40vh;
+ *          width: 27vw;
+ *      }
+ *
+ *      th, td{
+ *          padding: 0;
+ *      }
+ *      td button, th button{
+ *          margin: 0;
+ *      }
+ *
+ *  }
+ *  ───────────────────────────────────────────────────────────────── */

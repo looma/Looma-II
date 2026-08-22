@@ -141,6 +141,11 @@ header("Pragma: no-cache");
             */
     echo "<link rel='stylesheet' href='css/looma-theme-" .  $_COOKIE['theme'] . ".css' id='theme-stylesheet'>";
 
+    /* Mobile / phone-sized-screen overrides. Rules inside are wrapped in
+       @media (max-width: 767px), so they only apply on phones. Loaded
+       last so it can override any earlier theme or per-page CSS. */
+    echo "<link rel='stylesheet' href='css/looma-mobile.css'>";
+
       //  require_once('includes/looma-isloggedin.php');
 
     function keyIsSet($key, $array) { return isset($array[$key]);} //compatibility shim for php 5.x "array_key_exists()"

@@ -198,8 +198,18 @@ window.onload = function () {
     setBackground(localStorage.getItem(BACKGROUND_KEY) || 'blank');
 
     // Wire up the Paper dropdown — each <p data-bg="..."> swaps the canvas background.
+    // We ALSO register a fallback handler on the outer button because iOS Safari
+    // dispatches taps inside <button> to the button itself, not to inner <p>
+    // elements. In that case the <p> handler never fires. The fallback uses
+    // elementFromPoint on the tap coordinates to find the actual tapped item.
     $('#background .drop-content p').click(function () {
         setBackground($(this).data('bg'));
+    });
+    $('#background').on('click', function (e) {
+        if ($(e.target).is('p[data-bg]')) return;  // primary handler already ran
+        var elt = document.elementFromPoint(e.clientX, e.clientY);
+        var $item = $(elt).closest('p[data-bg]');
+        if ($item.length) setBackground($item.data('bg'));
     });
 
     // Intercept clicks on Looma's main toolbar buttons (Home, Library, Dictionary, ...)
@@ -282,6 +292,14 @@ window.onload = function () {
         }
 
         paper.view.draw();
+
+        // Step 3: re-apply the current Paper background. Setting
+        // paper.view.viewSize above updates canvas.width/height attributes,
+        // and on some browsers (notably mobile Safari crossing responsive
+        // breakpoints) this can drop the inline background-image style set
+        // by setBackground(). Re-applying it here guarantees the backdrop
+        // survives resizes and media-query transitions.
+        setBackground(localStorage.getItem(BACKGROUND_KEY) || 'blank');
     });
 
     //non-W3C standard CSS "user-select:none" keeps the canvas from being selectable

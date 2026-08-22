@@ -896,7 +896,40 @@ defHTML: function (definition, rwdef) {  // helper function for utilities.js, no
         var $img = $('<img id="definitionThumb" alt="" src="../content/dictionary\ images/' + imgName + '"/>');
     }
 
-    $div.append($english, $nepali, $pos, $def, $img);
+    // Sign-language video for this word. Files live at
+    //   content/sign language/<word>.mp4
+    // and are auto-fetched by Docker from looma.website. Not every word
+    // has a video — only common ones — so a 404 is expected and normal;
+    // the error handler hides the element silently in that case.
+    //
+    // The video collection uses mixed case (some filenames are lowercase
+    // like "airplane.mp4", some are Title case like "Cat.mp4"), so we
+    // emit multiple <source> tags for the candidate cases. The browser
+    // walks sources in order and uses the first that successfully loads.
+    var $sign;
+    if (definition.en) {
+        var word = definition.en;
+        var titleCase = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        var candidates = [word, word.toLowerCase(), titleCase];
+        // De-duplicate to avoid making the browser retry identical URLs.
+        var seen = {}, unique = [];
+        for (var ci = 0; ci < candidates.length; ci++) {
+            if (!seen[candidates[ci]]) {
+                seen[candidates[ci]] = true;
+                unique.push(candidates[ci]);
+            }
+        }
+        var sources = unique.map(function (name) {
+            return '<source src="../content/sign language/' +
+                   encodeURIComponent(name) + '.mp4" type="video/mp4">';
+        }).join('');
+        $sign = $('<video id="definitionSign" autoplay loop muted playsinline preload="metadata">' +
+                  sources + '</video>');
+        // Fires once all sources have failed — hide the empty element.
+        $sign.on('error', function () { $sign.hide(); });
+    }
+
+    $div.append($english, $nepali, $pos, $def, $img, $sign);
 
         if (rwdef) {
             var $rwdef = $('<div id="rwdef"/>');

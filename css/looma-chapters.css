@@ -38,9 +38,79 @@ button.np-lesson {grid-column:5;font-size: 2.5vh;}
 button.np-activities {grid-column:6;font-size: 2.0vh;}
 
 button.heading {
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1958cc), color-stop(100%,#1c62e3));
+    /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1958cc), color-stop(100%,#1c62e3));*/
+    /* Match page background so the yellow text pops (same treatment as button.section). */
+    background: var(--looma-background);
     color: yellow;
     font-size: 3.0vh;
+    /* Persistent white border to give the headers a visible outline against
+       the matching navy background. */
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+/* Keep the white border on hover — the site-wide button:hover rule in
+   looma.css normally changes border-color to yellow (and width to 4px),
+   which we override here so headers stay visually stable. */
+button.heading:hover {
+    border: 2px solid white;
+    background: var(--looma-background);
+    color: yellow;
+}
+
+/* All row buttons (chapter title / lesson / lessons / resources) get the
+   same navy + white border + yellow text as the headers, so the whole
+   student resource page has a consistent look.
+
+   We match the LANGUAGE-specific classes (.en-chapter, .np-chapter, etc.)
+   rather than the base class, because the chapter title button gets its
+   base class from the chapter's file type in the database (chapter, html,
+   section, pdf, ...). Language classes are always present and consistent.
+
+   :not(.heading) excludes the top-row column headers (styled above with a
+   permanently-white border and no hover highlight). */
+button.en-chapter:not(.heading),
+button.np-chapter:not(.heading),
+button.en-lesson:not(.heading),
+button.np-lesson:not(.heading),
+button.en-activities:not(.heading),
+button.np-activities:not(.heading) {
+    background: var(--looma-background);
+    color: yellow;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+/* Hover: yellow highlight border (thicker) on ALL clickable resource
+   buttons so users get consistent hover feedback across every row. */
+button.en-chapter:not(.heading):hover,
+button.np-chapter:not(.heading):hover,
+button.en-lesson:not(.heading):hover,
+button.np-lesson:not(.heading):hover,
+button.en-activities:not(.heading):hover,
+button.np-activities:not(.heading):hover {
+    background: var(--looma-background);
+    color: yellow;
+    border: 4px solid yellow;
+}
+
+/* .last-visited marks the ONE most-recently-clicked resource button.
+   Only a single button on the page carries this class at a time — the
+   JS in looma-chapters.js clears it from any prior button whenever a new
+   button is clicked. Mid-brightness blue stands out clearly from the
+   base navy while keeping the same yellow text and white outline. */
+button.last-visited {
+    background: #1958cc;
+    color: yellow;
+    border: 2px solid white;
+}
+
+/* Last-visited button ALSO shows the yellow hover highlight so hover
+   feedback stays consistent across every clickable button on the page. */
+button.last-visited:hover {
+    background: #1958cc;
+    color: yellow;
+    border: 4px solid yellow;
 }
 
 button.heading.en-chapter div, button.heading.np-chapter div
@@ -54,6 +124,9 @@ button.heading.en-activities {font-size:2.2vh;}
 
 button.section {
     /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4981e9), color-stop(100%,#6091eb));*/
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3371e6), color-stop(100%,#77a1ee));
+    /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3371e6), color-stop(100%,#77a1ee));*/
+    /* Match page background (--looma-background = #091F48 for regular Looma,
+       different colors for CEHRD/INDIA themes) so the yellow text pops. */
+    background: var(--looma-background);
     color: yellow;
 }

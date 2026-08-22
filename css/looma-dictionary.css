@@ -102,6 +102,21 @@ button#submit {
 
 #image:hover {opacity: 0.7;}
 
+/* Sign-language video, positioned on the right of the definition area
+   (mirror of the still image on the left). Loops silently. Hidden by
+   JS if the file doesn't exist for this word. */
+#definitionSign {
+    top: 30vh;
+    right: 10vw;
+    position: absolute;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    max-height: 30vh;
+    max-width: 30vw;
+    background-color: #000;
+}
+
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */

@@ -20,3 +20,4 @@ logins/defaultlogins.json
 composer.test
 composer.lock
 composerNEW.json
+.env

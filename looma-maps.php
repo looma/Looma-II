@@ -44,14 +44,49 @@ function makeMapButton($file, $thumb, $dn) {
     <h1 class="credit"> Created by Sophie, Morgan, Henry, Kendall</h1>
     <div class="center">
         <br>
+
+        <h2 class="section-title"><?php keyword("Maps"); ?></h2>
+
         <?php
         //modifications for maps
         //***************************
         //make buttons for maps directory -- virtual folder, populated from maps collection in mongoDB
         $buttons = 1;
         $maxButtons = 3;
+        global $icons;
 
         echo "<table><tr>";
+
+        // First tile: Map Games — opens looma-map-games.php with the
+        // continent / country quiz tiles. Was inlined as seven tiles at
+        // the top of this page; that pushed the actual map buttons below
+        // the fold, so it's collapsed to a single entry point.
+        echo '<td>';
+        echo   '<a href="looma-map-games.php">';
+        echo     '<button class="map img">';
+        echo       '<img src="images/globe.png" alt="Map Games">';
+        echo       '<span class="name">Map Games</span>';
+        if (isset($icons['game'])) echo '<img class="icon" src="' . $icons['game'] . '">';
+        echo     '</button>';
+        echo   '</a>';
+        echo '</td>';
+        $buttons++;
+        if ($buttons > $maxButtons) { $buttons = 1; echo "</tr><tr>"; }
+
+        // Standalone map pages that don't live in Mongo. Rendered next so they
+        // sit alongside the priority Nepal Map / Looma Schools Map entries.
+        echo '<td>';
+        echo   '<a href="looma-roads-nepal.php">';
+        echo     '<button class="map img">';
+        echo       '<img src="images/roads-nepal-thumb.svg" alt="Roads of Nepal">';
+        echo       '<span class="name">Roads of Nepal</span>';
+        if (isset($icons['map'])) echo '<img class="icon" src="' . $icons['map'] . '">';
+        echo     '</button>';
+        echo   '</a>';
+        echo '</td>';
+        $buttons++;
+        if ($buttons > $maxButtons) { $buttons = 1; echo "</tr><tr>"; }
+
 
         //$maps = $maps_collection->find();
         $maps = mongoFind($maps_collection, [], null, null, null);

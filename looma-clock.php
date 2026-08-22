@@ -33,8 +33,9 @@ Comments:
             <h1 class="credit">Created by Grant and John</h1>
 
             <FORM METHOD="LINK" ACTION="looma-clock-singleclock.php" id="singleClockButton">
-                <button TYPE="submit"  id="a" class="clock-button">
-                    <?php keyword("Clock Game") ?> <?php keyword("1")?>
+                <button TYPE="submit"  id="a" class="clock-button game-button">
+                    <img class="game-icon" src="images/games.png" alt="">
+                    <span class="game-label"><?php keyword("Clock Game") ?> <?php keyword("1")?></span>
                 </button>
             </FORM>
 
@@ -49,11 +50,21 @@ Comments:
             </FORM>
 
             <FORM METHOD="LINK" ACTION="looma-clock-doubleclock.php" id="doubleClockButton">
-                <button TYPE="submit" id="c" class="clock-button"><?php keyword("Clock Game")?> <?php keyword("2")?></button>
+                <button TYPE="submit" id="c" class="clock-button game-button">
+                    <img class="game-icon" src="images/games.png" alt="">
+                    <span class="game-label"><?php keyword("Clock Game")?> <?php keyword("2")?></span>
+                </button>
             </FORM>
 
             <FORM METHOD="LINK" ACTION="looma-clock-worldclocks.php" id="acrossWorldClocks">
                 <button TYPE="submit" id="d" class="clock-button"><?php keyword("World Clocks")?></button>
+            </FORM>
+
+            <FORM METHOD="LINK" ACTION="looma-clock-stopwatch.php" id="stopwatchTimerButton">
+                <button TYPE="submit" id="e" class="clock-button game-button">
+                    <img class="game-icon" src="images/stopwatch.png" alt="">
+                    <span class="game-label"><?php keyword("Stopwatch")?> &amp; <?php keyword("Timer")?></span>
+                </button>
             </FORM>
 
             <FORM id="oneClock">
@@ -89,8 +100,8 @@ Comments:
             <span id="day"></span>
             <span id="date"></span>
         </div>
-        </div>
         <p id = "dragHands"> <?php keyword("Drag the clock hands to change the time") ?></p>
+        </div>
     </div>
 
     <?php

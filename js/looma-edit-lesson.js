@@ -667,9 +667,9 @@ function preview ($item, do_not_select) {
             attachMediaControls();  //hook up event listeners to the audio and video HTML
 
         }
-        ////////////////////   pdf   ///////////////////////////////
-        else if (filetype=="pdf") {
-            if (!filepath) filepath = '../content/pdfs/';
+        ////////////////////   pdf / worksheet   ///////////////////////////////
+        else if (filetype=="pdf" || filetype=="worksheet") {
+            if (!filepath) filepath = (filetype=="worksheet") ? '../content/worksheets/' : '../content/pdfs/';
             document.querySelector("div#previewpanel").innerHTML =
                 '<iframe src="' + filepath + filename + '"' +
                 ' style="height:60vh;width:60vw;" type="application/pdf">';

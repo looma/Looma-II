@@ -33,7 +33,7 @@ Description:  popup SEARCH panel for Looma pages
             <?php
             if ($login_level === 'exec') {
                 echo '<button class="dropdown-item file-cmd" id="import">Import</button><br>';
-                echo '<div> id="import-instruction" hidden</div>';
+                echo '<div id="import-instruction" hidden></div>';
                 echo '<textarea id="import-text"    hidden></textarea>';
             }
             ?>

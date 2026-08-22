@@ -43,11 +43,16 @@ Description:  for Looma 2
                  <button class="settings-control">Text Editor</button>
              </a>
 
-             <a href="looma-text-translator.php">
-                 <button class="settings-control">Text Translator</button>
+             <a href="looma-edit-game.php">
+                 <button class="settings-control">Game Editor</button>
              </a>
 
-             <a href="looma-edit-slideshow.php">
+   <!--
+            <a href="looma-text-translator.php">
+                 <button class="settings-control">Text Translator</button>
+             </a>
+  -->
+            <a href="looma-edit-slideshow.php">
                  <button class="settings-control">Slideshow Editor</button>
              </a>
 
@@ -62,6 +67,10 @@ Description:  for Looma 2
 
              <a href="looma-edit-dictionary.php">
                  <button id="requestcontent" class="admin-control" >Dictionary Editor</button>
+             </a>
+
+             <a href="looma-edit-history.php">
+                 <button class="admin-control" >History Timeline Editor</button>
              </a>
 
              <a href="looma-text-scan.php">

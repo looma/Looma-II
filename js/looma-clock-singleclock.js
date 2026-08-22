@@ -137,10 +137,12 @@ function userInput() {
     var $txtOutput = $("#txtOutput");
     
     if (userH == globalHour && userM == globalMinute) {
+        LOOMA.playCorrect();
         outputValue = "<span style='color:green;'>You are correct! </span>The time displayed on the clock is ";
     }
-    
+
     else {
+        LOOMA.playWrong();
         outputValue = "<span style='color:red;'>That's not right. </span> The correct answer is ";
     }
     

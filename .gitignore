@@ -6,8 +6,9 @@
 .pydevproject.bak
 .settings
 .travis.yml
-
+.idea/workspace.xml
 .idea/
+.ai/
 
 .DS_Store
 .editorconfig

@@ -125,6 +125,7 @@ $TKW = array (
     "Documents" => "कागजातहरू",
     "Dr Dann" => "डा. ड्यान",
     "Drag and drop the hour or minute hand!" => "घण्टा वा मिनेट हात तान्‍नुहोस्!",
+    "Drag the clock hands to change the time" => "समय परिवर्तन गर्न घडीका सुईहरू तान्‍नुहोस्",
     "Draw" => "चित्र कोर्नुहोस्",
     "Drawing saved" => "चित्र सुरक्षित गरियो",
     "Dynasties" => "राजवंशहरू",
@@ -306,6 +307,7 @@ $TKW = array (
     "Recreation" => "मनोरञ्‍जन",
     "Red" => "रातो",
     "Rename" => "पुन: नामकरण",
+    "Reset" => "रिसेट",
     "Residential" => "आवासीय",
     "Resources" => "स्रोतहरू",
     "Revolution" => "क्रान्ति",
@@ -339,6 +341,7 @@ $TKW = array (
     "Space" => "ठाउँ",
     "Speaking" => "बोल्ने",
     "Sport" => "खेलकुद",
+    "Stopwatch" => "स्टपवाच",
     "Street" => "सडक",
     "Subtract" => "घटाऊ",
     "Subtraction" => "घटाऊ",
@@ -357,7 +360,7 @@ $TKW = array (
     "Textbooks" => "पाठ्यपुस्तकहरू",
 	"textbooks2019" => "२०१९का पाठ्यपुस्तकहरू",
 	"Time" => "समय",
-	"Timer" => "घडी",
+	"Timer" => "टाइमर",
 	"Timed out" => "समय समाप्त",
     "Timeline" => "समयरेखा",
     "Timelines" => "समयरेखाहरू",
@@ -474,7 +477,23 @@ $TKW = array (
 	"Search by Title" => "शीर्षक अनुसार खोजी" ,
 	"Search by Subject" => "विषय अनुसार खोजी",
 	"Portals" => "पोर्टलहरू",
-	"About Wikipedia for Schools" => "िद्यालयका लागि विकिपिडियाका बारेमा"
+	"About Wikipedia for Schools" => "िद्यालयका लागि विकिपिडियाका बारेमा",
+
+	// --- Paint: File menu + Paper background dropdown ---
+	"File" => "फाइल",
+	"Save file" => "फाइल बचत गर्नुहोस्",
+	"Open file" => "फाइल खोल्नुहोस्",
+	"Paper" => "कागज",
+	"Blank" => "खाली",
+	"Lined" => "रेखाङ्कित",
+	"Graph" => "ग्राफ",
+	"Coordinate" => "निर्देशांक",
+	"Music staff" => "सङ्गीत रेखा",
+	"Number line" => "सङ्ख्या रेखा",
+	"Tens frame" => "दसको ढाँचा",
+	"Protractor" => "चाँदा",
+	"Ruler" => "स्केल",
+	"Nepal map" => "नेपालको नक्सा"
 
 ); //end array TKW
 ?>

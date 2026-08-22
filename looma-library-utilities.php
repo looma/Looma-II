@@ -37,7 +37,7 @@ function isRegistered($name, $dir) {
                  global $activities_collection;
 
                  $query = array('fn' => $name,'fp' => $dir . '/');
-                 $projection = array('_id' => 0, 'fn' => 1, 'dn' => 1,  'ch_id' => 1);
+                 $projection = array('_id' => 0, 'fn' => 1, 'nfn' => 1, 'dn' => 1,  'ndn' => 1, 'ch_id' => 1);
                  $activity = mongoFindOne($activities_collection, $query);
 
                  if (! $activity) {  //some legacy activities dont have 'fp' set, look for these if fp + fn search fails
@@ -46,8 +46,12 @@ function isRegistered($name, $dir) {
                   }
 
                  if ($activity)  {
-                     $response = array('reg' => true, 'dn'=>$activity['dn']);
+                     $response = array('reg' => true);
                      if (isset( $activity['ch_id'])) $response['ch_id'] = $activity['ch_id'];
+                     if (isset( $activity['fn']))    $response['fn'] =    $activity['fn'];
+                     if (isset( $activity['nfn']))   $response['nfn'] =   $activity['nfn'];
+                     if (isset( $activity['dn']))    $response['dn'] =    $activity['dn'];
+                     if (isset( $activity['ndn']))   $response['ndn'] =   $activity['ndn'];
                     return $response;
                   }
                  else return array('reg' => false);

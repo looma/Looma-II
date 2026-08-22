@@ -120,9 +120,9 @@ include ('includes/header.php');
               <img draggable="false" src="images/logos/GNHA.png" style="height: 8vh;"></a>
             <a draggable="false"  draggable="false" class="attribution" href="http://www.menschen-im-dialog.de/" target="_blank">
                 <img draggable="false" src="images/logos/menschen-im-dialog_BLACK.png"  ></a>
-            <a draggable="false"  class="attribution" href="https://www.edutechnepal.org/" target="_blank">
+           <!-- <a draggable="false"  class="attribution" href="https://www.edutechnepal.org/" target="_blank">
                 <img draggable="false" src="images/logos/edutech.png"  ></a>
-
+            -->
 
     <!--
           <a draggable="false"  class="attribution" href="https://wesharesolar.org//" target="_blank">
@@ -193,6 +193,28 @@ include ('includes/header.php');
 
                 <p class="php-version">PHP version: <?php echo phpversion();?></p>
                 <?php
+
+                // PDF.js has no server side to ask, so read the version out of the
+                // library itself. Handles either layout, so this keeps working across
+                // a PDF.js upgrade: v4 and later ship build/pdf.mjs containing
+                //     const version = "6.2.108";
+                // while v2/v3 shipped pdf.js containing
+                //     var pdfjsVersion = '2.2.228';
+                // js/pdfjs/VERSION, if present, is the last resort.
+                $pdfjs_version = 'not installed';
+                $pdfjs_probes  = array('js/pdfjs/build/pdf.mjs' => '/const version = "([\d.]+)"/',
+                                       'js/pdfjs/pdf.js'        => '/pdfjsVersion = \'([\d.]+)\'/');
+                foreach ($pdfjs_probes as $pdfjs_file => $pdfjs_re) {
+                    $pdfjs_path = __DIR__ . '/' . $pdfjs_file;
+                    if (is_readable($pdfjs_path) &&
+                        preg_match($pdfjs_re, file_get_contents($pdfjs_path), $pdfjs_match)) {
+                        $pdfjs_version = $pdfjs_match[1];
+                        break;
+                    }
+                }
+                if ($pdfjs_version === 'not installed' && is_readable(__DIR__ . '/js/pdfjs/VERSION'))
+                    $pdfjs_version = trim(file_get_contents(__DIR__ . '/js/pdfjs/VERSION'));
+                echo '<p class="pdfjs-version">PDF.js version: ' . $pdfjs_version . '</p>';
 
                 global $ENV_OS;
                 echo '<p class="system">OS:  ' . $ENV_OS . '</p>';

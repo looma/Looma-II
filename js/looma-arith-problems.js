@@ -279,11 +279,13 @@ function checkAnswer(){
     else              { correct = num2 / num1;}
     
     if(parseInt(answer) === correct){
+        LOOMA.playCorrect();
         $('#message').text('Correct. Try another problem').css('color','green').show();
         //document.getElementById('message-wrong').style.visibility = 'hidden';
         //document.getElementById('message-correct').style.visibility = 'visible';
     }
     else{  //wrong answer given
+        LOOMA.playWrong();
         $('#message').text('Incorrect: Try again').css('color','red').show();
         //document.getElementById('message-wrong').style.visibility = 'visible';
         //document.getElementById('message-correct').style.visibility = 'hidden';

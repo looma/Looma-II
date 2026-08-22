@@ -75,13 +75,24 @@ require_once ('includes/looma-utilities.php');
         echo '<div id="buttons">';
 
             $games = mongoFind($games_collection, $query, null, null, null);
-            foreach ($games as $game) {
+            $localGames = mongoFind($local_games_collection, $query, null, null, null);
 
-                //makeActivityButton();
+            foreach (array(array($games, 'looma'), array($localGames, 'loomalocal')) as $pair) {
+                $cursor = $pair[0];
+                $db = $pair[1];
+                foreach ($cursor as $game) {
 
+                // look up the activity for this game to get dn and ndn
+                $activity_query = array('ft' => 'game', 'mongoID' => mongoId($game['_id']));
+                $activity = mongoFindOne($activities_collection, $activity_query);
+
+                $dn  = isset($activity['dn'])  ? $activity['dn']  : (isset($game['title']) ? $game['title'] : '');
+                $ndn = isset($activity['ndn']) ? $activity['ndn'] : null;
 
                 echo '<button class="activity img game" data-class="' . $game_class . '" data-subject="' . $game_subject .
+                    '" data-db="' . $db .
                     '" data-id="' . (string) $game['_id'];
+                if (isset($game['ch_id'])) echo '" data-ch="' . $game['ch_id'];
                 if (isset($game['author'])) echo    '" data-author="' . (string) $game['author'];
                 echo    '" data-type="' . $game['presentation_type'] . '"' .
                     '"> ';
@@ -89,10 +100,14 @@ require_once ('includes/looma-utilities.php');
                 echo '<img loading="lazy" draggable="false" src="images/games.png">';
 
                 echo '<p>';
-                keyword($game['title']);
+                displayName(null, $dn, $ndn, language(), 'black');
                 echo '</p><p class="small">';
                 keyword($game['presentation_type'] . ' game');
-                echo '</p></button>';
+                echo '</p>';
+                $tip = $dn ? $dn : $ndn;
+                if ($tip) echo "<span class='tip yes-show big-show'>" . $tip . "</span>";
+                echo '</button>';
+            }
             }
 
             if ($game_subject === 'english') {

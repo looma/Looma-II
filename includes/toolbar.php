@@ -97,11 +97,21 @@
 			</button>
 
             <!--WEB-->
+        <!--
 			<button onclick="parent.location.href = 'web';"
                     id="toolbar-web" class="toolbar-button ">
 				<img loading="lazy" draggable="false" src="images/web.png"   >
                 <img class="active" loading="lazy" draggable="false" hidden src="images/web-yellow.png"   >
                 <?php tooltip("Web") ?>
+			</button>
+        -->
+
+            <!--WORKSHEET-->
+			<button onclick="parent.location.href = 'looma-worksheets.php';"
+                    id="toolbar-worksheet" class="toolbar-button ">
+				<img loading="lazy" draggable="false" src="images/worksheet.png"   >
+                <img class="active" loading="lazy" draggable="false" hidden src="images/worksheet-yellow.png"   >
+                <?php tooltip("Worksheet") ?>
 			</button>
 
 

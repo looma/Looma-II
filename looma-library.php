@@ -107,7 +107,8 @@ else if  ( ! is_dir(realpath($path)) ||
             echo '<button id="wikipedia-index" class="activity img">';
             echo '<img src="images/logos/wikipedia.jpg"/>';
             keyword("Wikipedia");
-            echo "<img class='icon' src='images/logos/wikipedia.jpg'";
+            echo "<span class='tip yes-show big-show'>Wikipedia</span>";
+            echo "<img class='icon' src='images/logos/wikipedia.jpg'>";
             echo '</button></td>';
             nextbutton();
         }  //end IF wiki4schools
@@ -123,7 +124,7 @@ else if  ( ! is_dir(realpath($path)) ||
             $ndn = "ई-पाठ";  //note should be using mongo folders collection to get dn and ndn
             $ft = "html";   // "html" is correct [not "EP"] to get the ePaath directory
             $thumb = "../content/epaath/thumbnail.png";
-            makeActivityButton($ft, "../ePaath/", "index.html", $dn, $ndn, $thumb, "", "", "index", "", "", "", "1", "2019", null, null,null,null);
+            makeButton(array('ft'=>$ft, 'fp'=>'../ePaath/', 'fn'=>'index.html', 'dn'=>$dn, 'ndn'=>$ndn, 'thumb'=>$thumb, 'ole_id'=>'index', 'grade'=>'1', 'epversion'=>'2019'));
             echo "</td>";
             nextButton();
         }  //end IF ePaath
@@ -134,7 +135,7 @@ else if  ( ! is_dir(realpath($path)) ||
             $ndn = "प्रारम्भिक शिक्षा पठन सामाग्री";  //note should be using mongo folders collection to get dn and ndn
             $ft = "html";   // "html" is correct [not "EP"] to get the ePaath directory
             $thumb = "../ePaath/ePaath2022/thumbnail.png";
-            makeActivityButton($ft, "../ePaath/ePaath2022/", "index.html", $dn, $ndn, $thumb, "", "", "index", "", "", "", "1", "2022", null, null,null,null);
+            makeButton(array('ft'=>$ft, 'fp'=>'../ePaath/ePaath2022/', 'fn'=>'index.html', 'dn'=>$dn, 'ndn'=>$ndn, 'thumb'=>$thumb, 'ole_id'=>'index', 'grade'=>'1', 'epversion'=>'2022'));
             echo "</td>";
             nextButton();
         }   // end IF ePaath2022
@@ -166,7 +167,7 @@ else if  ( ! is_dir(realpath($path)) ||
             $ndn = "खान एकेडेमी";  //note should be using mongo folders collection to get dn and ndn
             $ft = "html";
             $thumb = "../content/Khan/thumbnail.png";
-            makeActivityButton($ft, "../content/Khan/", "index.html", $dn, $ndn, $thumb, "", "", "", "", "", "", "", "", null, null,null,null);
+            makeButton(array('ft'=>$ft, 'fp'=>'../content/Khan/', 'fn'=>'index.html', 'dn'=>$dn, 'ndn'=>$ndn, 'thumb'=>$thumb));
             echo "</td>";
             nextButton();
         }  //end IF Khan
@@ -250,7 +251,7 @@ else if  ( ! is_dir(realpath($path)) ||
 
             echo "<img class='icon' src='images/folder.png'>";
 
-            echo "<span class='tip yes-show big-show' >" . $dir['file'] . "</span>" .
+            echo "<span class='tip yes-show big-show' >" . $dir['dn'] . "</span>" .
                 "</button></a></td>";
             nextButton();
         }
@@ -275,11 +276,7 @@ echo "</tr></table>";
         $count = 0;
         foreach ($lessons as $lesson) {
             echo "<td>";
-            $dn = $lesson['dn'];
-            $ft = "lesson";
-            $thumb = "../content/lessons/thumbnail.png";
-            $id = $lesson['mongoID'];  //mongoID of the descriptor for this lesson
-            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+            makeButton(array('ft'=>'lesson', 'dn'=>$lesson['dn'], 'thumb'=>'../content/lessons/thumbnail.png', 'mongo_id'=>$lesson['mongoID']));
             echo "</td>";
             nextButton();
             $count ++;
@@ -318,13 +315,7 @@ echo "</tr></table>";
 
         foreach ($editedVideos as $doc) {
             echo "<td>";
-            $dn = $doc['dn'];
-            $ft = "evi";
-            $thumb = (isset($doc['thumb'])) ? $doc['thumb'] : "";
-            $id = $doc['_id'];
-            //$json = $doc['JSON'];  //NOTE: this passed the full text of the edited script in the URL.
-            // should just pass the mongo ID and have the player retrieve the script's full text
-            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+            makeButton(array('ft'=>'evi', 'dn'=>$doc['dn'], 'thumb'=>isset($doc['thumb']) ? $doc['thumb'] : null, 'mongo_id'=>$doc['_id']));
 
             echo "</td>";
             nextButton();
@@ -348,13 +339,10 @@ echo "</tr></table>";
                 echo "<td>";
                 if ($doc['version'] == 2015) {
                     $file = $doc['fn'];
-                    $thumb = "../content/epaath/activities/" . $file . "/thumbnail.jpg";
-                    $dn = $doc['dn'];
-                    $ndn = $doc['ndn'];
-                    if (isset($doc['ndn'])) $ndn = $doc['ndn']; else $ndn = $dn;
-                    makeActivityButton("EP", $path, $file, $dn, $ndn, $thumb, "", "", "", "", "", "", "", $doc['version'], null, null,null,null);
+                    $ndn = isset($doc['ndn']) ? $doc['ndn'] : $doc['dn'];
+                    makeButton(array('ft'=>'EP', 'fp'=>$path, 'fn'=>$file, 'dn'=>$doc['dn'], 'ndn'=>$ndn, 'thumb'=>$path . $file . "/thumbnail.jpg", 'epversion'=>$doc['version']));
                 } else {
-                    makeActivityButton("EP", "", "", $doc['dn'], $doc['ndn'], $doc['thumb'], "", "", $doc['oleID'], "", "", "", $doc['grade'], $doc['version'], null, null,null,null);
+                    makeButton(array('ft'=>'EP', 'dn'=>$doc['dn'], 'ndn'=>$doc['ndn'], 'thumb'=>$doc['thumb'], 'ole_id'=>$doc['oleID'], 'grade'=>$doc['grade'], 'epversion'=>$doc['version']));
                 }
                 echo "</td>";
                nextButton();
@@ -389,9 +377,7 @@ echo "</tr></table>";
                     //NOTE: for now, fp and fn are concatenated in fn
                     //$path = $slideshow['fp'];
 
-                    $ft = "slideshow";
-                    $id = $slideshow['_id'];  //mongoID of the descriptor for this slideshow
-                    makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+                    makeButton(array('ft'=>'slideshow', 'dn'=>$dn, 'ndn'=>$ndn, 'thumb'=>$thumb, 'mongo_id'=>$slideshow['_id']));
                     echo "</td>";
                     nextButton();
                 } //end FOREACH slideshow
@@ -413,11 +399,7 @@ echo "</tr></table>";
 
                         if (keyIsSet('ft', $lesson) && ($lesson['ft'] == "lesson")) {  //do not display lesson templates
                             echo "<td>";
-                            $dn = $lesson['dn'];
-                            $ft = "lesson";
-                            $thumb = $path . "thumbnail.png";
-                            $id = $lesson['_id'];  //mongoID of the descriptor for this lesson
-                            makeActivityButton($ft, "", "", $dn, "", $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+                            makeButton(array('ft'=>'lesson', 'dn'=>$lesson['dn'], 'thumb'=>$path . "thumbnail.png", 'mongo_id'=>$lesson['_id']));
                             echo "</td>";
                           nextButton();
                         }
@@ -442,12 +424,8 @@ echo "</tr></table>";
                             //echo "DEBUG   found history " . $history['dn'] . "<br>";
                             echo "<td>";
                             $dn = $history['title'];
-                            if (isset($history['ndn'])) $ndn = $history['ndn']; else $ndn = $dn;
-                            $ft = "history";
-                            $thumb = $path . $dn . "_thumb.jpg";
-                            //$thumb = $path . "thumbnail.png";
-                            $id = $history['_id'];  //mongoID of the descriptor for this history
-                            makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+                            $ndn = isset($history['ndn']) ? $history['ndn'] : $dn;
+                            makeButton(array('ft'=>'history', 'dn'=>$dn, 'ndn'=>$ndn, 'thumb'=>$path . $dn . "_thumb.jpg", 'mongo_id'=>$history['_id']));
                             echo "</td>";
                             nextButton();
 
@@ -472,12 +450,9 @@ echo "</tr></table>";
 
                                 echo "<td>";
                                 $dn = $map['dn'];
-                                $ndn = (isset($map['ndn'])) ? $map['ndn'] : $dn;
-                                //$url = $map['url'];
-                                $ft = "map";
-                                if (isset($map['thumb'])) $thumb = $map['thumb']; else $thumb = $path . "thumbnail.png";
-                                $id = $map['mongoID'];  //mongoID of the descriptor for this map
-                                makeActivityButton($ft, "", "", $dn, $ndn, $thumb, "", $id, "", "", "", "", "", "", null, null,null,null);
+                                $ndn = isset($map['ndn']) ? $map['ndn'] : $dn;
+                                $thumb = isset($map['thumb']) ? $map['thumb'] : $path . "thumbnail.png";
+                                makeButton(array('ft'=>'map', 'dn'=>$dn, 'ndn'=>$ndn, 'thumb'=>$thumb, 'mongo_id'=>$map['mongoID']));
                                 echo "</td>";
                                nextButton();
 
@@ -554,11 +529,11 @@ echo "</tr></table>";
 
                                 if ($dircount > 0) echo "<hr>";
 
-                            echo "<div id='file-list' hidden>";
-                                $numUnique = sizeof($list);
-                                echo json_encode(array('count' => $numUnique, 'list' => $list));
-                            echo "</div>";
-                            echo "<div id='file-list-table'></div>";
+                                echo "<div id='file-list' hidden>";
+                                    $numUnique = sizeof($list);
+                                    echo json_encode(array('count' => $numUnique, 'list' => $list));
+                                echo "</div>";
+                                echo "<div id='file-list-table'></div>";
                             };
                         };
     echo "</tr></table>";

@@ -252,9 +252,11 @@ window.onload = function () {
         var guess = userGuess.value;
         
         if (guess === answers[currentAnswerNum]) {
+            LOOMA.playCorrect();
             outputValue = "<p>Correct!</p><p> It\'s " + answers[currentAnswerNum] + "</p>";
         }
         else {
+            LOOMA.playWrong();
             outputValue = "Incorrect < br> It's  ";
             outputValue = "<p>Incorrect!</p><p> It\'s " + answers[currentAnswerNum] + "</p>";
         }

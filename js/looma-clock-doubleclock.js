@@ -196,10 +196,12 @@ function userInput() {
     var $txtOutput = $("#txtOutput");
     
     if (userH == hoursPassed && userM == minutesPassed) {
+        LOOMA.playCorrect();
         outputValue = "<span style='color:green;'>You are correct! </span>The difference between the clocks is ";
     }
-    
+
     else {
+        LOOMA.playWrong();
         outputValue = "<span style='color:red;'>That's not right.  </span>The correct answer is ";
     }
     

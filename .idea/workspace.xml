@@ -28,95 +28,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="991c2f7d-9a46-48c0-8582-e782a88129a5" name="Default Changelist" comment="Release 7.33e AUG 2026&#10;&#10;git ignore and add 'project' teacher aid type to looma-teacher-aids.php">
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/firstaid.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/firstaid.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/TG.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/TG.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/activities.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/activities.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/chapters.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/chapters.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/dictionary.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/dictionary.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/dictionary2024.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/dictionary2024.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/edited_videos.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/edited_videos.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/folders.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/folders.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/games.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/games.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/histories.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/histories.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/lessons.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/lessons.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/maps.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/maps.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/pages.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/pages.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/schools.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/schools.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/slideshows.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/slideshows.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/tags.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/tags.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/teacher_guides.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/teacher_guides.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/text_files.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/text_files.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/textbooks.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/textbooks.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/version_number.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/version_number.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/volunteers.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/volunteers.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/wikipedia.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/wikipedia.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/TG.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/TG.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/activities.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/activities.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/chapters.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/chapters.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/dictionary.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/dictionary.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/dictionary2024.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/dictionary2024.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/edited_videos.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/edited_videos.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/folders.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/folders.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/games.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/games.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/histories.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/histories.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/lessons.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/lessons.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/maps.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/maps.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/pages.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/pages.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/schools.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/schools.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/slideshows.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/slideshows.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/tags.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/tags.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/teacher_guides.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/teacher_guides.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/text_files.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/text_files.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/textbooks.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/textbooks.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/version_number.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/version_number.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/volunteers.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/volunteers.metadata.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/wikipedia.bson" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/wikipedia.metadata.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/looma-histories.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-histories.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/version_number.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/mongo-connect.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/mongo-connect.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/looma-filecommands.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/looma-filecommands.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma-database-utilities.php" beforeDir="false" afterPath="$PROJECT_DIR$/looma-database-utilities.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -218,33 +133,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "SHELLCHECK.PATH": "/Users/skip/Library/Application Support/JetBrains/IntelliJIdea2025.1/plugins/Shell Script/shellcheck",
-    "git-widget-placeholder": "master",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/usr/local/var/www/Looma",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/skip/Library/Application Support/JetBrains/IntelliJIdea2025.1/plugins/Shell Script/shellcheck&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/usr/local/var/www/Looma&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -776,6 +691,12 @@
           <url>file://$PROJECT_DIR$/js/looma-chapterIDs.js</url>
           <line>21</line>
           <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/js/looma-filecommands.js</url>
+          <line>439</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -437,7 +437,8 @@ function displayFileSearchResults(results)
             var author = value['author'] ? ("Author: " + value['author']) : "";
             var date = value['date'] ? ("  Date: " + value['date']) : "";
             
-            var displayname =  $("<div/>").html(value['dn']).text();
+            // curated history timelines carry only 'title' (no 'dn'); fall back so they show a label
+            var displayname =  $("<div/>").html(value['dn'] || value['title'] || '').text();
             var master = value['master'] ? 'master' : '';
             
             $display.append(

@@ -396,13 +396,13 @@ $local_games_collection       = $localdbname -> games;
 
 $localcollections = array(
     "lessons" =>    $local_lessons_collection,
-    "slideshows" =>    $local_slideshows_collection,
-    "text_files" =>    $local_textfiles_collection,
-    "text" =>    $local_textfiles_collection,
-    "activities" => $local_activities_collection,
-    "histories" => $local_histories_collection,
-    "games" =>     $local_games_collection,
-    "game" =>      $local_games_collection,
+    "slideshows" => $local_slideshows_collection,
+    "text_files" => $local_textfiles_collection,
+    "text" =>       $local_textfiles_collection,
+    "histories" =>  $local_histories_collection,
+    "history" =>    $local_histories_collection,
+    "games" =>      $local_games_collection,
+    "game" =>       $local_games_collection,
     "activities" => $local_activities_collection
 );
 

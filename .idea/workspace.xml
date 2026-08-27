@@ -4,8 +4,185 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3a62cddb-0a27-4a45-87ae-8fcb89b5fe92" name="Changes" comment="Merge remote-tracking branch 'origin/master' into looma-skip&#10;&#10;# Conflicts:&#10;#&#9;.gitignore&#10;#&#9;.idea/workspace.xml&#10;#&#9;mongo-dump/dump/looma/version_number.bson">
-      <change beforePath="$PROJECT_DIR$/includes/looma-version" beforeDir="false" afterPath="$PROJECT_DIR$/includes/looma-version" afterDir="false" />
+    <list default="true" id="3a62cddb-0a27-4a45-87ae-8fcb89b5fe92" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaUSBer" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaUSBer" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaarchive" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaarchive" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/looma shell scripts/loomaupdater" beforeDir="false" afterPath="$PROJECT_DIR$/looma shell scripts/loomaupdater" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/games.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/games.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/games.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/games.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/maps.bson" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/maps.bson" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump/looma/maps.metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/mongo-dump/dump/looma/maps.metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/TG.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/TG.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/activities.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/activities.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/chapters.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/chapters.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/dictionary.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/dictionary.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/dictionary2024.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/dictionary2024.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/edited_videos.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/edited_videos.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/folders.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/folders.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/games.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/games.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/histories.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/histories.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/lessons.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/lessons.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/maps.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/maps.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/pages.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/pages.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/schools.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/schools.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/slideshows.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/slideshows.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/tags.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/tags.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/teacher_guides.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/teacher_guides.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/text_files.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/text_files.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/textbooks.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/textbooks.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/version_number.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/version_number.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/volunteers.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/volunteers.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/wikipedia.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dump20200819/looma/wikipedia.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/TG.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/TG.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/activities.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/activities.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/chapters.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/chapters.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/dictionary.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/dictionary.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/dictionary2024.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/dictionary2024.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/edited_videos.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/edited_videos.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/folders.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/folders.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/games.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/games.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/histories.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/histories.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/lessons.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/lessons.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/maps.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/maps.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/pages.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/pages.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/schools.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/schools.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/slideshows.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/slideshows.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/tags.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/tags.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/teacher_guides.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/teacher_guides.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/text_files.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/text_files.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/textbooks.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/textbooks.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/version_number.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/version_number.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/volunteers.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/volunteers.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/wikipedia.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260812/looma/wikipedia.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/TG.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/TG.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/activities.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/activities.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/chapters.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/chapters.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/dictionary.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/dictionary.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/dictionary2024.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/dictionary2024.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/edited_videos.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/edited_videos.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/folders.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/folders.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/games.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/games.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/histories.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/histories.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/lessons.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/lessons.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/maps.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/maps.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/pages.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/pages.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/schools.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/schools.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/slideshows.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/slideshows.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/tags.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/tags.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/teacher_guides.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/teacher_guides.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/text_files.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/text_files.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/textbooks.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/textbooks.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/version_number.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/version_number.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/volunteers.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/volunteers.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/wikipedia.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpAWS20260821/looma/wikipedia.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/TG.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/TG.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/activities.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/activities.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/chapters.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/chapters.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/dictionary.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/dictionary.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/dictionary2024.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/dictionary2024.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/edited_videos.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/edited_videos.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/firstaid.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/firstaid.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/folders.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/folders.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/games.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/games.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/histories.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/histories.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/lessons.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/lessons.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/maps.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/maps.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/pages.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/pages.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/schools.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/schools.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/slideshows.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/slideshows.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/tags.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/tags.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/teacher_guides.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/teacher_guides.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/text_files.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/text_files.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/textbooks.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/textbooks.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/version_number.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/version_number.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/volunteers.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/volunteers.metadata.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/wikipedia.bson" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo-dump/dumpLILY/looma/wikipedia.metadata.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

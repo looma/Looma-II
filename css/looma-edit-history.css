@@ -425,6 +425,24 @@ body {
 }
 .imgsearch-empty { color: #666; margin-top: 1.5vh; }
 
+/* ---- File Commands search / open overlay ---- */
+/* Every Looma editor dims its page while the File Commands search panel is up, so the
+   panel reads as "on top". This editor was missing that rule, so the timeline's events
+   painted OVER the search box. Restoring it also makes #main-container a stacking
+   context, helping drop the timeline behind the panel. */
+.all-transparent { opacity: 0.3; }
+
+/* Belt-and-suspenders: the search bar (#filesearch-panel) ships with NO z-index and the
+   results with only z-index:3, both BELOW the timeline's event cards (z-index:5), insert
+   "+" buttons (z-index:3) and scroll tabs. Lift the panels above all of it. Body-prefixed
+   so it also outranks the copy of looma-filecommands.css re-linked later in the page. */
+body #filesearch-panel,
+body #filesearch-results { z-index: 1000; }
+
+/* ...and hide the floating event labels entirely so they don't crowd the search field
+   (they're position:absolute across the timeline, not just behind the panel). */
+#main-container.all-transparent .timeline-description { visibility: hidden; }
+
 /* File Commands dropdown (positioned like the other editors) */
 #filecommands { position: absolute; width: 15vw; right: 6vw; top: 1vh; z-index: 60; }
 .btn-group, #cmd-btn { font-family: "Comic Sans MS", cursive, sans-serif; padding: 0; width: 100%; }

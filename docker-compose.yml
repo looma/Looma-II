@@ -41,12 +41,13 @@ services:
       # Share Apache access/error logs with the OTel Collector for filelog ingestion.
       - looma_apache_logs:/var/log/apache2
     environment:
-      LOOMA_SEARCH_ENGINE: zvec
+      LOOMA_SEARCH_ENGINE: semantic
       LOOMA_SEARCH_URL: http://looma-search:46333/search
-      # Semantic search is always served by the dedicated zvec index service
+      # Semantic search is always served by the dedicated search index service
       # (looma-search). Keeping this separate from looma-ai makes search stable
-      # even if AI is down.
-      LOOMA_SEARCH_URL_ZVEC: http://looma-search:46333/search
+      # even if AI is down. NOTE: looma-search does NOT use the zvec library;
+      # looma-ai is the one that does. See README-ZVEC.txt section 0.
+      LOOMA_SEARCH_URL_SEMANTIC: http://looma-search:46333/search
       LOOMA_AI_URL: http://looma-ai:8089
       # OpenTelemetry — PHP shim posts spans to the otel-collector. We also
       # publish counters/logs from looma-telemetry.php and logPageHit().
@@ -159,15 +160,46 @@ services:
       # Must match the model baked into the image (search-service/Dockerfile).
       MODEL_NAME: sentence-transformers/all-MiniLM-L6-v2
       HF_HOME: /models/hf
-      INDEX_DIR: /data/zvec-index
+      # Renamed from /data/zvec-index: this service contains no zvec.
+      # search_service.py falls back to the old directory if it still
+      # holds the index, so an existing volume is never orphaned.
+      INDEX_DIR: /data/search-index
       # Build the embedding index only when it's missing. Rebuilding the whole
-      # zvec index on every restart is a heavy CPU+disk spike that saturated the
+      # search index on every restart is a heavy CPU+disk spike that saturated the
       # shared WSL2 virtual disk and tripped Coroot's "high I/O load" alerts.
       # The index lives on the persistent looma_search_index volume, so a normal
       # restart can reuse it; delete the volume (or set this to 1) to force a
       # rebuild after the source data changes.
       SEARCH_REBUILD_ON_START: "0"
       SEARCH_PORT: "46333"
+      # search_service.py pins every BLAS/OMP pool to 1 thread by default. That
+      # is the right call on the 8 GB board -- a multi-threaded embed there was
+      # what saturated the shared disk and tripped Coroot's I/O alerts -- but it
+      # is exactly wrong on the workstation that BUILDS the shipped index, where
+      # a full-corpus embed is a one-off and the machine has cores to spare.
+      # The service reads these with setdefault(), so setting them here wins.
+      # Leave at 1 on a box; deploy/odroid/build-search-artifacts.sh raises it.
+      OMP_NUM_THREADS: "${LOOMA_SEARCH_THREADS:-1}"
+      OPENBLAS_NUM_THREADS: "${LOOMA_SEARCH_THREADS:-1}"
+      MKL_NUM_THREADS: "${LOOMA_SEARCH_THREADS:-1}"
+      NUMEXPR_NUM_THREADS: "${LOOMA_SEARCH_THREADS:-1}"
+      # How deep into a document a semantic search can reach. The embedding
+      # model only reads its first ~1000 characters, so a document is embedded
+      # as up to this many overlapping windows — 4 covers roughly the first two
+      # printed pages, which is what makes a textbook findable by its content
+      # rather than only by its cover.
+      #
+      # This is the setting that drives the index's size and the service's
+      # resident memory: only text-bearing documents (PDFs, HTML) grow, but they
+      # grow with it. Keep the value used to BUILD a prebuilt index and the one
+      # on the box in step — an index built at 4 loads fine at any value, but
+      # its extra windows are only worth carrying if the box searches them.
+      SEARCH_MAX_CHUNKS_PER_DOC: "${LOOMA_SEARCH_MAX_CHUNKS:-4}"
+      # Results per query. The old default of 12 was chosen when nothing filtered
+      # the hits; now that the Type/Source checkboxes are pushed down into the
+      # index, the caller asks for more (see LOOMA_SEARCH_TOPK in
+      # looma-database-utilities.php) and this is only the floor.
+      SEARCH_TOPK: "${LOOMA_SEARCH_TOPK:-12}"
       OTEL_SERVICE_NAME: looma-search
       OTEL_TRACES_EXPORTER: otlp
       OTEL_LOGS_EXPORTER: otlp

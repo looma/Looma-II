@@ -47,7 +47,7 @@ in addition, in #type-filter, CSS sets all .typ-chk checkboxes to display:none. 
           // just as a plain Mongo query, instead of waiting on a service that
           // was never installed.
           require_once (__DIR__ . '/looma-features.php');
-          $looma_semantic = looma_zvec_enabled() ? '1' : '0';
+          $looma_semantic = looma_semantic_enabled() ? '1' : '0';
         ?>
         <input type='hidden' id='semantic' value='<?php echo $looma_semantic; ?>' name='semantic'/>
         <input type='hidden' id='semantic_engine' value='zvec' name='semantic_engine'/>

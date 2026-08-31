@@ -11,8 +11,9 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path as _Path
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from urllib.parse import parse_qs, urlparse, quote
-from urllib.request import Request, urlopen
+from urllib.parse import parse_qs, urlparse
+# NOTE: no urllib.request here. This server answers from the local index and
+# Mongo only; nothing in it may open an outbound connection.
 
 # ---------------------------------------------------------------------------
 # OpenTelemetry (optional)
@@ -213,13 +214,17 @@ if str(_PROJECT_ROOT) not in sys.path:
 from pymongo import MongoClient
 from bson import ObjectId
 
+from app import paths
 from app.embed.model import MODEL_NAME, load_model
 from app.index.sqlite_store import get_conn
 
 
-DB_PATH = 'data/index/looma.db'
-COLLECTION_PATH = 'data/zvec/curriculum_chunks'
-ACTIVITIES_INDEX_PATH = 'data/zvec/activities_index'
+# app/paths.py owns the layout. These were CWD-relative strings, so the store
+# the server opened depended on where it was launched from -- which is how a
+# second, half-populated AI data tree came to exist on the dev disk.
+DB_PATH = str(paths.SQLITE_DB_PATH)
+COLLECTION_PATH = str(paths.zvec_collection_path('curriculum_chunks'))
+ACTIVITIES_INDEX_PATH = str(paths.zvec_collection_path('activities_index'))
 ACTIVITIES_BATCH_SIZE = 32
 ACTIVITIES_TOPK_DEFAULT = 12
 CONTENT_ROOT = os.environ.get('LOOMA_SOURCE_ROOT') or '/looma/content'
@@ -443,6 +448,70 @@ def looma_web_path_for_file(path: Path) -> str | None:
         return None
     rel_str = str(rel).replace('\\', '/').lstrip('/')
     return '../content/' + rel_str
+
+
+# ---------------------------------------------------------------------------
+# The chapter's textbook file: HTML if there is one, otherwise the PDF.
+# ---------------------------------------------------------------------------
+# HTML ALWAYS WINS. Nearly every chapter now ships as BOTH a .pdf and the .html
+# generated from it, and the app opens the HTML everywhere -- looma-chapters.php
+# marks its buttons ft='htmlchapter', and every other entry point routes through
+# looma-chapter-file.php, which applies exactly this rule. The AI Tooling page
+# was the one place still hard-wired to the PDF: it showed a "PDF" row that said
+# "Missing" for a chapter that HAS a textbook, just not in that format, and its
+# Open button sent the teacher to the PDF viewer for a chapter the rest of Looma
+# opens as a page.
+#
+# `.htm` is accepted alongside `.html` for the same reason the PHP does: a
+# handful of the converted files carry the short extension.
+TEXTBOOK_HTML_SUFFIXES = ('.html', '.htm')
+
+
+def chapter_file_bases(chapter_id: str, language: str | None) -> list[str]:
+    """Stem(s) a chapter's files can carry, best guess first.
+
+    The np/ folders name their files "7S01-nepali.pdf", not "7S01.pdf", so a
+    Nepali chapter looked "missing" to anything that only tried the bare id.
+    The bare id stays in the list as a fallback because a few np/ folders were
+    filled in before that convention settled.
+    """
+    lang = (language or 'en').strip().lower()
+    if lang in {'np', 'ne', 'nep', 'nepali'}:
+        return [f'{chapter_id}-nepali', chapter_id]
+    return [chapter_id]
+
+
+def find_chapter_textbook(ch_dir: Path, chapter_id: str, language: str | None = None) -> dict:
+    """Which file delivers this chapter, and what else is lying next to it.
+
+    Returns {'format': 'html'|'pdf'|None, 'path', 'html_path', 'pdf_path'}.
+    `html_path` / `pdf_path` are filled in whenever that file exists, so the UI
+    can still offer the PDF (to re-upload or edit) on a chapter served as HTML.
+    """
+    bases = chapter_file_bases(chapter_id, language)
+
+    html_path = None
+    for base in bases:
+        for suffix in TEXTBOOK_HTML_SUFFIXES:
+            candidate = ch_dir / f'{base}{suffix}'
+            if candidate.exists():
+                html_path = candidate
+                break
+        if html_path is not None:
+            break
+
+    pdf_path = None
+    for base in bases:
+        candidate = ch_dir / f'{base}.pdf'
+        if candidate.exists():
+            pdf_path = candidate
+            break
+
+    if html_path is not None:
+        return {'format': 'html', 'path': html_path, 'html_path': html_path, 'pdf_path': pdf_path}
+    if pdf_path is not None:
+        return {'format': 'pdf', 'path': pdf_path, 'html_path': None, 'pdf_path': pdf_path}
+    return {'format': None, 'path': None, 'html_path': None, 'pdf_path': None}
 
 
 def safe_read_text(path: Path, *, limit_chars: int = 2000) -> str:
@@ -771,64 +840,14 @@ def _wh_score_bonus(wh: str, sentence: str) -> float:
     return bonus
 
 
-def _wikipedia_lookup(question: str, *, language: str | None = None, timeout: float = 4.0) -> dict | None:
-    """Best-effort Wikipedia summary fallback.
-
-    Returns {'title','extract','url'} or None. We pick a single noun phrase
-    from the question (longest run of capitalised words, otherwise the longest
-    content word) and call the public REST `/page/summary/<title>` endpoint.
-    """
-    if not question or not question.strip():
-        return None
-    lang = (language or '').strip().lower()
-    if lang in ('np', 'ne', 'nepali'):
-        host = 'ne.wikipedia.org'
-    elif lang in ('hi', 'hindi'):
-        host = 'hi.wikipedia.org'
-    else:
-        host = 'en.wikipedia.org'
-
-    candidates: list[str] = []
-    for m in _PROPER_NOUN_RE.finditer(question):
-        candidates.append(m.group(1))
-    if not candidates:
-        # last-resort: longest non-stopword token
-        tokens = [t for t in re.findall(r'[A-Za-zÀ-ÿऀ-ॿ]{3,}', question)
-                  if t.lower() not in {'who','what','when','where','why','how','which','the','and','for'}]
-        if tokens:
-            candidates.append(max(tokens, key=len))
-    if not candidates:
-        _otel_record('wikipedia_calls', 1, language=lang or 'en', outcome='no_candidate')
-        return None
-
-    seen = set()
-    for cand in candidates[:3]:
-        c = cand.strip()
-        if not c or c.lower() in seen:
-            continue
-        seen.add(c.lower())
-        try:
-            url = f"https://{host}/api/rest_v1/page/summary/{quote(c)}"
-            req = Request(url, headers={'Accept': 'application/json',
-                                        'User-Agent': 'looma-ai/1.0 (+https://looma.education)'})
-            with urlopen(req, timeout=timeout) as resp:
-                if resp.status != 200:
-                    continue
-                data = json.loads(resp.read().decode('utf-8', errors='ignore') or '{}')
-        except Exception:
-            continue
-        extract = (data.get('extract') or '').strip()
-        if not extract:
-            continue
-        _otel_record('wikipedia_calls', 1, language=lang or 'en', outcome='hit')
-        return {
-            'title': data.get('title') or c,
-            'extract': extract,
-            'url': (data.get('content_urls') or {}).get('desktop', {}).get('page'),
-            'source': f'wikipedia:{host}',
-        }
-    _otel_record('wikipedia_calls', 1, language=lang or 'en', outcome='miss')
-    return None
+# LOCAL CONTENT ONLY. A `_wikipedia_lookup()` used to live here and call
+# en/ne.wikipedia.org whenever the curriculum index had no confident answer.
+# It is gone on purpose: the assistant answers from what this box carries and
+# nothing else. A school box is offline most of the time, so the fallback
+# mostly bought a 4s timeout per question; and on the rare box that DID reach
+# the network it put text nobody has on disk in front of a class, with a link
+# they cannot open. When the local content cannot answer, saying so is the
+# honest reply -- see the "I couldn't find a confident answer" branch below.
 
 
 def _dictionary_lookup_general(word: str) -> dict | None:
@@ -1107,11 +1126,10 @@ def _chapter_source_file(ch_dir: "Path", chapter_id: str, language: str | None) 
 
     Nepali chapters are named "{id}-nepali.{ext}"; English ones just "{id}".
     """
-    lang = (language or 'en').strip().lower()
-    bases = [f'{chapter_id}-nepali', chapter_id] if lang in {'np', 'ne', 'nepali'} else [chapter_id]
+    bases = chapter_file_bases(chapter_id, language)
 
     for base in bases:
-        for ext in ('.html', '.htm'):
+        for ext in TEXTBOOK_HTML_SUFFIXES:
             candidate = ch_dir / f'{base}{ext}'
             if candidate.exists():
                 return candidate
@@ -2811,22 +2829,9 @@ class Handler(BaseHTTPRequestHandler):
                                 answer_source = 'dictionary'
                                 external_refs.append({'type': 'dictionary', 'word': d.get('en'), 'np': d.get('np'), 'def': definition})
 
-                # 2) Wikipedia summary — broad open-domain coverage.
-                if not answer or answer.startswith('No relevant content'):
-                    wiki = _wikipedia_lookup(question, language=language)
-                    if wiki and wiki.get('extract'):
-                        # Run the same WH-aware sentence picker over the Wikipedia
-                        # extract so the answer matches the question shape.
-                        wiki_answer = _compose_answer(question, [wiki['extract']], history=history, wh=wh_kind)
-                        if not wiki_answer:
-                            wiki_answer = wiki['extract']
-                        answer = wiki_answer
-                        answer_source = wiki.get('source') or 'wikipedia'
-                        external_refs.append({
-                            'type': 'wikipedia',
-                            'title': wiki.get('title'),
-                            'url': wiki.get('url'),
-                        })
+                # There is no step 2. The Looma dictionary above is the last
+                # fallback there is -- everything the assistant can say comes
+                # off this box. See the note where _wikipedia_lookup() used to be.
 
             if not answer:
                 if results:
@@ -4579,19 +4584,41 @@ class Handler(BaseHTTPRequestHandler):
                     en_keywords = en_fallback / f'{chapter_id}.keywords' if en_fallback else None
                     en_objectives = en_fallback / f'{chapter_id}.objectives' if en_fallback else None
 
+                    # Which file actually delivers this chapter. HTML wins; the
+                    # PDF is still reported so the page can offer Update/Edit on
+                    # it, but it is no longer what "the chapter" means.
+                    textbook = find_chapter_textbook(ch_dir, chapter_id, language)
+                    # Report the PDF that IS there, which in np/ is
+                    # "<id>-nepali.pdf" -- the bare-id path below is only where an
+                    # upload would land, and pointing Open/Edit at it meant those
+                    # buttons did nothing at all on a Nepali chapter.
+                    if textbook['pdf_path'] is not None:
+                        pdf_path = textbook['pdf_path']
+
                     out['paths'] = {
                         'chapter_dir': str(ch_dir),
                         'summary': str(summary_path),
                         'keywords': str(keywords_path),
                         'objectives': str(objectives_path),
                         'pdf': str(pdf_path),
+                        'html': str(textbook['html_path']) if textbook['html_path'] else None,
+                        'textbook': str(textbook['path']) if textbook['path'] else None,
                     }
                     out['web_paths'].update({
                         'summary': looma_web_path_for_file(summary_path),
                         'keywords': looma_web_path_for_file(keywords_path),
                         'objectives': looma_web_path_for_file(objectives_path),
                         'pdf': looma_web_path_for_file(pdf_path),
+                        'html': looma_web_path_for_file(textbook['html_path']) if textbook['html_path'] else None,
+                        'textbook': looma_web_path_for_file(textbook['path']) if textbook['path'] else None,
                     })
+                    # `format` is what the UI labels the row with, and it is None
+                    # only when the chapter has neither file.
+                    out['textbook'] = {
+                        'format': textbook['format'],
+                        'has_html': textbook['html_path'] is not None,
+                        'has_pdf': textbook['pdf_path'] is not None,
+                    }
                     out['exists'].update(
                         {
                         # Treat the Nepali side as "present" when an English
@@ -4601,6 +4628,10 @@ class Handler(BaseHTTPRequestHandler):
                         'keywords':   keywords_path.exists()   or bool(en_keywords   and en_keywords.exists()),
                         'objectives': objectives_path.exists() or bool(en_objectives and en_objectives.exists()),
                         'pdf':        pdf_path.exists(),
+                        'html':       textbook['html_path'] is not None,
+                        # The row the AI page draws: present when the chapter has
+                        # a textbook in EITHER format.
+                        'textbook':   textbook['format'] is not None,
                         }
                     )
 

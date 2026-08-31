@@ -1,17 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Chat bubble background (dark) -->
-  <rect x="50" y="50" width="360" height="280" rx="40" ry="40" fill="#1a1a1a"/>
-  
-  <!-- Chat bubble pointer -->
-  <polygon points="180,330 120,400 200,330" fill="#1a1a1a"/>
-  
-  <!-- Three dots (messaging indicator) -->
-  <!-- Left dot -->
-  <circle cx="150" cy="190" r="35" fill="#ffffff"/>
-  
-  <!-- Middle dot -->
-  <circle cx="256" cy="190" r="35" fill="#ffffff"/>
-  
-  <!-- Right dot -->
-  <circle cx="362" cy="190" r="35" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="assistant">
+  <!-- Looma Assistant button icon: a rounded speech bubble with three dots.
+       Grey (#6e6e6e) on transparent, matching tts-idle.svg and its siblings —
+       the button supplies its own light-grey rounded background (see
+       button.looma-assistant in css/looma.css), so drawing a tile here too
+       would show as a square inside a square with a doubled edge.
+       Replaces the earlier near-black, sharp-cornered bubble. -->
+
+  <!-- Bubble body -->
+  <rect x="56" y="96" width="400" height="260" rx="58" ry="58" fill="#6e6e6e"/>
+
+  <!-- Tail, bottom-left: vertical on its left edge, sloping back up to the
+       bubble on its right, so it reads as one shape with the body above. -->
+  <path d="M 136 340 L 244 340 L 136 448 Z" fill="#6e6e6e"/>
+
+  <!-- Three dots (messaging indicator), centred in the bubble body -->
+  <circle cx="156" cy="226" r="38" fill="#ffffff"/>
+  <circle cx="256" cy="226" r="38" fill="#ffffff"/>
+  <circle cx="356" cy="226" r="38" fill="#ffffff"/>
 </svg>

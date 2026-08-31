@@ -28,20 +28,19 @@ RUN ARCH=$(dpkg --print-architecture); wget https://github.com/rhasspy/piper/rel
 RUN tar -xzf /tmp/piper.tar.gz -C /usr/local/bin
 RUN rm /tmp/piper.tar.gz
 
-# Download Piper "low" quality voice models with retries because Hugging Face
-# occasionally returns transient 5xx errors. Nepali's lowest published quality
-# is "x_low"; English (amy) uses "low".
+# The FASTEST tier only, deliberately. This board synthesizes slower than real
+# time, so quality is a speed choice: medium is ~1.4x slower than x_low on the
+# same sentence, and high is worse again — on an ODROID that is the difference
+# between a lesson that flows and one that waits.
 #
-# The DEFAULT pair is mandatory — the build fails without it. The EXTRA voices
-# exist so teachers (and Nepali speakers judging the Nepali ones) can compare and
-# pick the defaults on the Reading Settings page; they are best-effort, so a
-# temporarily unreachable model never breaks the image. All of them are "low" /
-# "x_low" quality: on an ODROID that is what keeps synthesis inside the
-# one-second target. Trim or extend the list with --build-arg.
+# "x_low only" is not possible: piper publishes exactly ONE x_low model and it is
+# Nepali (ne_NP-google-x_low). English has no x_low at all, so its fastest tier is
+# low — the 7 models below. Together: 8 models, ~450 MB, 25 voices on the Reading
+# Settings page (the Nepali model carries 18 speakers).
 #
-# Nepali is not short of voices despite having a single model: ne_NP-google
-# carries 18 speakers, and piper_server.py lists each one separately.
-ARG PIPER_EXTRA_VOICES="en/en_US/ryan/low/en_US-ryan-low en/en_US/lessac/low/en_US-lessac-low en/en_GB/alan/low/en_GB-alan-low ne/ne_NP/google/medium/ne_NP-google-medium"
+# To offer medium/high as well, add their paths here; the page lists whatever is
+# in the voice directory and labels the quality on its own.
+ARG PIPER_EXTRA_VOICES="en/en_GB/alan/low/en_GB-alan-low en/en_GB/southern_english_female/low/en_GB-southern_english_female-low en/en_US/danny/low/en_US-danny-low en/en_US/kathleen/low/en_US-kathleen-low en/en_US/lessac/low/en_US-lessac-low en/en_US/ryan/low/en_US-ryan-low"
 RUN set -eux; \
     mkdir -p /usr/share/piper; \
     base=https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0; \

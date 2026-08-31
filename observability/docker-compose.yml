@@ -10,6 +10,13 @@ networks:
     name: loomanet
 
 volumes:
+  # Created and owned by the MAIN Looma compose (../docker-compose.yml).
+  # Declared external so this stack attaches to the same store instead of
+  # making a second one -- the analysis workers used to bind-mount a host
+  # folder that duplicated it and then drifted.
+  looma_ai_data:
+    name: looma_ai_data
+    external: true
   looma_opensearch_data:
     name: looma_opensearch_data
   looma_prometheus_data:
@@ -513,7 +520,11 @@ services:
     volumes:
       # Share looma-ai scripts
       - ../looma-ai:/app/scripts:ro
-      - ../looma-ai-data:/app/data
+      # Was ../looma-ai-data, a host folder that duplicated looma-ai's data
+      # tree and drifted from it. Use the SAME named volume looma-ai itself
+      # uses: these workers belong to the same app and keep their own db
+      # (looma_ai.db) inside it. See ../README-ZVEC.txt section 2.6.
+      - looma_ai_data:/app/data
     working_dir: /app/scripts
     command: ["python3", "analysis_worker.py", "--mode", "continuous", "--interval-minutes", "60"]
     restart: unless-stopped
@@ -538,7 +549,11 @@ services:
     volumes:
       # Share looma-ai scripts
       - ../looma-ai:/app/scripts:ro
-      - ../looma-ai-data:/app/data
+      # Was ../looma-ai-data, a host folder that duplicated looma-ai's data
+      # tree and drifted from it. Use the SAME named volume looma-ai itself
+      # uses: these workers belong to the same app and keep their own db
+      # (looma_ai.db) inside it. See ../README-ZVEC.txt section 2.6.
+      - looma_ai_data:/app/data
     working_dir: /app/scripts
     command: ["python3", "feedback_labeling.py", "--port", "8888", "--host", "0.0.0.0"]
     ports:

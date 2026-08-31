@@ -12,6 +12,16 @@ Revision: 1.0
 
 require_once ('includes/mongo-connect.php');
 require_once('includes/looma-utilities.php');
+require_once ('includes/otel.php');
+if (function_exists('looma_trace_page')) {
+    looma_trace_page('database-utilities', [
+        'cmd'        => $_REQUEST['cmd']        ?? null,
+        'collection' => $_REQUEST['collection'] ?? null,
+        'q'          => $_REQUEST['search-term'] ?? null,
+        'semantic'   => isset($_REQUEST['semantic']) ? '1' : '0',
+        'engine'     => $_REQUEST['semantic_engine'] ?? null,
+    ]);
+}
 
 ////////////////////////
 ///****************************************
@@ -457,7 +467,6 @@ require_once('includes/looma-utilities.php');
             $insert = array(
                 "dn" => trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)),
                 "ft" => $_REQUEST["ft"],  //TYPE can be 'text' or 'text-template'
-                "db" => $_REQUEST['db'],
                 "author" => $_COOKIE['login'],
                 "date" => gmdate("Y.m.d"),  //using greenwich time
                 "data" => $_REQUEST["data"]
@@ -465,32 +474,6 @@ require_once('includes/looma-utilities.php');
             if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];
 
             $result = saveToMongo($dbCollection, trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES)), $_REQUEST['ft'], $insert, $activitycollection);
-            echo json_encode($result);
-        }
-        else if ($collection == "histories") {
-            // admin-created timelines. Saved to the 'histories' collection alongside
-            // the curated timelines.
-            // Stored in the native history shape (title + events) so the read-only
-            // viewer could render them, plus dn/ft so the File-menu Open/search works.
-            $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
-            $events  = isset($_REQUEST['data']) ? array_values($_REQUEST['data']) : array();
-
-            $insert = array(
-                "dn"     => $save_dn,       // used by File-menu Open/search + saveToMongo key
-                "ft"     => 'history',      // so File-menu search (type=history) finds it
-                "db"     => $_REQUEST['db'],
-                "title"  => $save_dn,       // native history-viewer field
-                "events" => $events,        // native history-viewer field
-                "author" => $_COOKIE['login'],
-                "date"   => gmdate("Y.m.d")  //using greenwich time
-            );
-            if (isset($_REQUEST['ndn']))   $insert['ndn']   = $_REQUEST['ndn'];    // Nepali timeline title
-            if (isset($_REQUEST['thumb'])) $insert['thumb'] = $_REQUEST['thumb'];  // cover image (data-URL or path)
-
-            // pass the request-driven $activitycollection so an 'ft:history' entry is
-            // added to the activities index (when saved with activity="true"), making
-            // these timelines discoverable in the general library/search like other content.
-            $result = saveToMongo($dbCollection, $save_dn, 'history', $insert, $activitycollection);
             echo json_encode($result);
         }
         else if ($collection == "activities") {
@@ -529,34 +512,6 @@ require_once('includes/looma-utilities.php');
                 $activitycollection);
             echo json_encode($result);
 
-        }
-        else if (($collection == "game") || ($collection == "games")) {
-            $save_dn = trim(htmlspecialchars_decode($_REQUEST['dn'],ENT_QUOTES));
-            $gamedata = $_REQUEST['data'];
-
-            $insert = array(
-                "dn" => $save_dn,
-                "ft" => 'game',
-                "db" => $_REQUEST['db'],
-                "title" => isset($gamedata['title']) ? $gamedata['title'] : $save_dn,
-                "presentation_type" => isset($gamedata['presentation_type']) ? $gamedata['presentation_type'] : '',
-                "lang" => isset($gamedata['lang']) ? $gamedata['lang'] : 'en',
-                "cl_lo" => isset($gamedata['cl_lo']) ? (int)$gamedata['cl_lo'] : 1,
-                "cl_hi" => isset($gamedata['cl_hi']) ? (int)$gamedata['cl_hi'] : 1,
-                "subject" => isset($gamedata['subject']) ? $gamedata['subject'] : '',
-                "timeLimit" => isset($gamedata['timeLimit']) ? (int)$gamedata['timeLimit'] : 60,
-                "author" => $_COOKIE['login'],
-                "date" => gmdate("Y.m.d")
-            );
-
-            // type-specific data
-            if (isset($gamedata['prompts']))   $insert['prompts']   = $gamedata['prompts'];
-            if (isset($gamedata['responses'])) $insert['responses'] = $gamedata['responses'];
-            if (isset($gamedata['bins']))      $insert['bins']      = $gamedata['bins'];
-            if (isset($gamedata['words']))     $insert['words']     = $gamedata['words'];
-
-            $result = saveToMongo($dbCollection, $save_dn, 'game', $insert, $activitycollection);
-            echo json_encode($result);
         }
         // else handle other collections' specific save requirements
         return;
@@ -755,43 +710,38 @@ require_once('includes/looma-utilities.php');
           // - - - gameSubjectList - - - //
           /////////////////////////////
           case "gameSubjectList":
-              //    input is "class" (grade level)
+              // input is class
               //    query games and histories collections to get subjects available for this class
-              $subjects = array(
+              /* $subjects = array(
                       'S' => 'science',
-                      'M' =>  'math',
+                      'M' => 'math',
                       'EN' => 'english',
-                      'N' =>  'nepali',
+                      'N' => 'nepali',
                       'SS' => 'social studies',
-                      'SF' => 'serofero',
                       'H'  => 'health',
                       'V'  => 'vocation',
-                      'SSa' =>'social studies optional', //now used for "Moral Education"
+                      'SSa' => 'social studies optional', //now used for "Moral Education"
                       'Ma' => 'math optional');
-
+              */
+              $subjectList = [];
               $query = [];
-              $query['cl_lo'] = array('$exists' => true, '$lte' => (int)substr($_REQUEST['class'],5));
-              $query['cl_hi'] = array('$exists' => true, '$gte' => (int)substr($_REQUEST['class'],5));
+              $query['cl_lo'] = array('$lte' => (int)substr($_REQUEST['class'],5));
+              $query['cl_hi'] = array('$gte' => (int)substr($_REQUEST['class'],5));
+            //  $query = array('cl_lo' => array('$lte' => substr($_REQUEST['class'],5)),
+              //               'cl_hi' => array('$gte' => substr($_REQUEST['class'],5)));
 
               $games = mongoFind($games_collection, $query, null, null, null);
-              $localGames = mongoFind($local_games_collection, $query, null, null, null);
-
-           $subjectList = [];
-
-              foreach (array($games, $localGames) as $cursor) {
-                  foreach ($cursor as $game) {
+              foreach ($games as $game) {
                   //echo "game[subject][index] is " . $game['subject'][$index];
-                  if (isset($game['subject'])) {
-          //            if (is_array($game['subject']))
-                          foreach ( (array) $game['subject'] as $index => $subj) {
-                          $lowercasesubject = strtolower($subj);
-                          if (in_array($lowercasesubject,$subjects)) $subjectList[] = $lowercasesubject;
-                        //  echo "subject for " . $_REQUEST['class'] . "  is  " .    $game['subject'][$index];
-                          }
-           //           else  $subjectList[] = $lowercasesubject;
-                  }
+                  if (isset($game['subject'])) foreach ($game['subject'] as $index => $subj) $subjectList[] = strtolower($game['subject'][$index]);
               }
-              }
+
+              $histories = mongoFind($history_collection, $query, null, null, null);
+              foreach ($histories as $history)
+                  foreach ($history['subject'] as $index => $subj) $subjectList[] = $history['subject'][$index];
+
+              $subjectList[] = 'math';
+              $subjectList[] = 'english';
 
               echo json_encode(array_unique($subjectList));
               return;  // end gameSubjectList()
@@ -953,26 +903,33 @@ require_once('includes/looma-utilities.php');
     // - - - SEARCH - - - //
     ////////////////////////
     case "search":
-        // called (from looma-search.js, from looma-edit-lesson.js, and other "editors") using POST with FORMDATA serialized by jquery
+        // called (from looma-search.js, from lesson-plan.js, and other "editors") using POST with FORMDATA serialized by jquery
         // $_POST[] can have these entries:
         // cmd = "search", collection, search-term,
         // [chapter-language (in 'en'|'np')],
         // key1, key2, key3, key4
-        // src[] (array of checked 'sources')
-        // type[] (array of looma file types)
+        // src[] (array of checked 'sources') and type[] (array of checked 'types')
+
         // look in collections[ft] and in localcollections[ft]
 
         // known filetypes are the FT values in Activities collection
-        // e.g. 'video', 'audio', 'image', 'pdf', 'textbook', 'text', 'html', 'slideshow', 'lesson', 'looma','history'
+        // e.g. 'video', 'audio', 'image', 'pdf', 'textbook', 'text', 'html', 'slideshow', 'lesson', 'looma'
 
         if (isset($_REQUEST['language'])) $language = $_REQUEST['language']; else $language = 'english';
 
+        // No box ticked => the array stays empty => no 'ft'/'src' restriction is added
+        // to the query below, so every kind of content matching the search term shows up.
+        // One or more boxes ticked => only those kinds are returned.
+        // Read from $_REQUEST, not $_POST: the guard above tests $_REQUEST, so a GET-borne
+        // search used to walk a null $_POST entry and silently drop the filter.
         $filetypes = array();       //array of FT filetypes to include in the search
-        if (isset($_REQUEST['type'])) foreach ($_POST['type'] as $i) if ($i != '') array_push($filetypes, $i);
+        if (isset($_REQUEST['type']) && is_array($_REQUEST['type']))
+            foreach ($_REQUEST['type'] as $i) if ($i != '') array_push($filetypes, $i);
         //echo "types is: "; print_r($filetypes);
 
         $sources = array();       //array of sources to include in the search
-        if (isset($_REQUEST['src'])) foreach ($_POST['src'] as $i) array_push($sources, $i);
+        if (isset($_REQUEST['src']) && is_array($_REQUEST['src']))
+            foreach ($_REQUEST['src'] as $i) if ($i != '') array_push($sources, $i);
 
         //echo "sources is: "; print_r($sources);
 
@@ -1010,7 +967,6 @@ require_once('includes/looma-utilities.php');
                 case 'lesson-template':
                 case 'game':
                 case 'looma':
-                case 'worksheet':
                     array_push($extensions, $type);
                     break;
                 case 'quiz': // filetype "quiz" not implemented yet
@@ -1100,16 +1056,167 @@ require_once('includes/looma-utilities.php');
 
         //echo "query is: "; print_r($query);
 
-        if (isset($_REQUEST['semantic']) && $_REQUEST['semantic']) {
-            $raw_result = shell_exec("curl localhost:46333/search?q=" . urlencode(escapeshellarg($_POST['search-term'])));
-            $qdrant_results = json_decode($raw_result, true);
-            $ids = array_column($qdrant_results, 'source_id');
-            $qdrant_results_dict = array_combine($ids, $qdrant_results);
+        // No search term means nothing to embed, so the zvec round-trip (up to
+        // LOOMA_SEARCH_TIMEOUT seconds) would only produce hits that are then discarded.
+        if (isset($_REQUEST['semantic']) && $_REQUEST['semantic'] && $nameRegex) {
+            // Semantic search is always served by the zvec index service.
+            $searchEngine = 'zvec';
+            // LOOMA_SEARCH_URL_ZVEC is the legacy name (the service it points at
+            // contains no zvec -- see includes/looma-features.php). Read the new
+            // name first so an installed box, whose vhost still sets the old one,
+            // keeps working without being touched.
+            $searchUrl = getenv('LOOMA_SEARCH_URL_SEMANTIC');
+            if (!$searchUrl) $searchUrl = getenv('LOOMA_SEARCH_URL_ZVEC');
+            if (!$searchUrl) $searchUrl = 'http://looma-search:46333/search';
 
-            $query_or = array();
-            $query_or["_id"] = array();
-            $query_or["_id"]['$in'] = array_map(function($d) {return mongoId($d["source_id"]);}, $qdrant_results);
-            $query = array('$or' => array($query, $query_or));
+            // Zvec activities search may live on either:
+            //   - the dedicated zvec container (looma-search:46333/search) which already returns
+            //     Mongo ObjectIds in `source_id`, or
+            //   - the looma-ai container (looma-ai:8089/search_activities) which is the
+            //     activities-only endpoint.
+            // Only force the rewrite when we are pointing at looma-ai (whose plain `/search` returns
+            // chapter chunk ids, not Mongo ObjectIds). Leave looma-search:46333/search intact.
+            if (strpos($searchUrl, 'looma-ai') !== false) {
+                $searchUrl = preg_replace('#/search(?=\\?|$)#', '/search_activities', $searchUrl, 1);
+            }
+
+            // curl must be silent; otherwise progress/errors can pollute output and break JSON parsing.
+            $curlUrl = $searchUrl . '?q=' . urlencode($_POST['search-term']);
+
+            // PUSH THE CHECKBOXES DOWN. Type and Source are hard filters on the
+            // Mongo query below, but until now zvec never heard about them: it
+            // scored the whole corpus, returned its N globally-best documents,
+            // and Mongo then dropped every one whose ft/src the teacher had not
+            // ticked. With ~315k documents indexed, ticking "Video" would
+            // routinely leave NOTHING semantic behind — the global best dozen
+            // are rarely all videos — so the search quietly fell back to being
+            // purely lexical exactly when the teacher had narrowed it.
+            //
+            // $extensions is the same list the 'ft' $in clause uses, so what
+            // zvec scores and what Mongo keeps can no longer disagree.
+            foreach ($extensions as $ext) {
+                if ($ext !== '') $curlUrl .= '&ft=' . urlencode($ext);
+            }
+            foreach ($sources as $srcName) {
+                if ($srcName !== '') $curlUrl .= '&src=' . urlencode($srcName);
+            }
+
+            // How many semantic hits to ask for. The service's own default is 12,
+            // which is a sensible answer for "the best few" but far too few to
+            // survive the keyword dropdowns further down (those are applied by
+            // Mongo and zvec cannot know about them). 60 costs the same scan —
+            // the top-k cut is the cheap part — and leaves room for them.
+            $semanticTopK = (int) (getenv('LOOMA_SEARCH_TOPK') ?: 60);
+            if ($semanticTopK < 1)   $semanticTopK = 60;
+            if ($semanticTopK > 500) $semanticTopK = 500;
+            $curlUrl .= '&topk=' . $semanticTopK;
+
+            // Identify the downstream so the OpenSearch service map draws the
+            // correct edge from looma-web → <peer>. `peer.service` is the
+            // attribute the service_graph connector / Data Prepper service_map
+            // processor pick up to label the edge.
+            $peerService = 'looma-search';
+            if (strpos($searchUrl, 'looma-ai') !== false) $peerService = 'looma-ai';
+
+            // Create a CLIENT span and inject its trace context into the downstream request so
+            // the Python service can join the same distributed trace.
+            $spanCtx = function_exists('looma_otel_start_span')
+                ? looma_otel_start_span('http.semantic_search', [
+                    'engine'        => $searchEngine,
+                    'url'           => $searchUrl,
+                    'q'             => (string)($_POST['search-term'] ?? ''),
+                    'http.method'   => 'GET',
+                    'http.url'      => $curlUrl,
+                    'peer.service'  => $peerService,
+                    'server.address'=> $peerService,
+                  ], 3)
+                : null;
+
+            $traceparent = null;
+            if ($spanCtx && function_exists('looma_otel_format_traceparent')) {
+                $traceparent = looma_otel_format_traceparent(
+                    $spanCtx['trace_id_hex'] ?? '',
+                    $spanCtx['span_id_hex'] ?? '',
+                    $spanCtx['flags'] ?? '01'
+                );
+            }
+
+            // How long to wait for the zvec service before giving up on the semantic
+            // half of the search.
+            //
+            // This used to be a flat 4s, on the reasoning that "zvec replies in well
+            // under 1s". That holds on a dev x86 box with a warm service and a small
+            // index; it does NOT hold on an ODROID. Two things break it there: the
+            // FIRST query after the service starts pays for the embedding model's
+            // lazy init (measured at ~14s even on x86), and the index now covers the
+            // whole of content/ — hundreds of thousands of vectors to score instead
+            // of tens of thousands.
+            //
+            // What made this so hard to see: on timeout curl returns nothing, the id
+            // list comes back empty, and the Mongo query simply stays LEXICAL. The
+            // page still shows results, so nothing looks broken — semantic search has
+            // just silently stopped happening. Better to make a teacher wait than to
+            // hand them keyword matches while claiming to be semantic.
+            $semanticTimeoutSec = (int) (getenv('LOOMA_SEARCH_TIMEOUT') ?: 20);
+            if ($semanticTimeoutSec < 1) $semanticTimeoutSec = 20;
+            $cmd = "curl -sS --max-time " . intval($semanticTimeoutSec);
+            if ($traceparent) {
+                $cmd .= " -H " . escapeshellarg("traceparent: " . $traceparent);
+            }
+            $cmd .= " " . escapeshellarg($curlUrl);
+
+            $raw_result = shell_exec($cmd);
+            if ($spanCtx && function_exists('looma_otel_end_span')) {
+                $status = 0;
+                $attrs = [
+                    'http.response_content_length' => is_string($raw_result) ? strlen($raw_result) : 0,
+                ];
+                if (!is_string($raw_result) || $raw_result === '') {
+                    $status = 2;
+                    $attrs['error.type'] = 'curl_empty_response';
+                }
+                looma_otel_end_span($spanCtx, $attrs, $status);
+            }
+            $decoded = json_decode($raw_result, true);
+
+            // We expect an array of {source_id, dn, ft, score}. Anything else => no semantic results.
+            $semantic_results = array();
+            if (is_array($decoded) && !isset($decoded['error'])) {
+                // Guard against accidentally calling the looma-ai chapter endpoint (/search),
+                // which returns {mode, results:[...]} and does NOT contain Mongo IDs.
+                if (array_key_exists('results', $decoded) && !array_key_exists('source_id', $decoded)) {
+                    $decoded = array();
+                }
+
+                if (is_array($decoded) && array_values($decoded) === $decoded) {
+                    foreach ($decoded as $row) {
+                        if (!is_array($row) || !isset($row['source_id'])) continue;
+                        // Mongo ObjectId must be 24 hex chars.
+                        if (!preg_match('/^[a-f0-9]{24}$/i', (string)$row['source_id'])) continue;
+                        $semantic_results[] = $row;
+                    }
+                }
+            }
+
+            $ids = array_column($semantic_results, 'source_id');
+            $semantic_results_dict = $ids ? array_combine($ids, $semantic_results) : array();
+
+            // The Type/Source/Keyword checkboxes are HARD filters: a semantic hit has to
+            // live inside them, not beside them. This used to wrap the whole filtered
+            // query in an $or with a bare id list, which meant zvec could hand back a
+            // document of ANY type - so ticking "Video" still returned PDFs, images and
+            // slideshows. Widen only the TEXT match instead: a document qualifies when
+            // its name matches the search term OR zvec picked it, and it must still
+            // satisfy every checked filter.
+            // $nameRegex guards the empty-search-term case: with no term there is
+            // nothing for zvec to match on, and narrowing to its id list would hide
+            // content that the checkboxes alone should return.
+            if (!empty($ids) && $nameRegex) {
+                $query_or = array();
+                $query_or["_id"] = array();
+                $query_or["_id"]['$in'] = array_map(function($id) {return mongoId($id);}, $ids);
+                $query['$or'][] = $query_or;
+            }
         }
 
 
@@ -1130,6 +1237,27 @@ require_once('includes/looma-utilities.php');
             $d['db'] = 'loomalocal';
             if ($d['ft'] !== 'quiz') $result[] = $d;
         };
+
+        // If semantic search is enabled, float semantic matches to the top in score order.
+        if (isset($semantic_results_dict) && is_array($semantic_results_dict) && !empty($semantic_results_dict)) {
+            foreach ($result as &$d) {
+                $sid = isset($d['_id']) ? (string)$d['_id'] : '';
+                if ($sid && isset($semantic_results_dict[$sid])) {
+                    $d['semantic_score'] = $semantic_results_dict[$sid]['score'] ?? null;
+                    $d['semantic_engine'] = $searchEngine ?? 'zvec';
+                }
+            }
+            unset($d);
+
+            usort($result, function($a, $b) {
+                $sa = isset($a['semantic_score']) ? floatval($a['semantic_score']) : -1.0;
+                $sb = isset($b['semantic_score']) ? floatval($b['semantic_score']) : -1.0;
+                if ($sa !== $sb) return ($sa < $sb) ? 1 : -1;
+                $dna = isset($a['dn']) ? strtolower((string)$a['dn']) : '';
+                $dnb = isset($b['dn']) ? strtolower((string)$b['dn']) : '';
+                return $dna <=> $dnb;
+            });
+        }
 
         // removing duplicate results - based on 'fn' and 'fp' being equal
         // this allows for duplicate display names ["dn"] in 'activities' collection
@@ -1186,7 +1314,35 @@ require_once('includes/looma-utilities.php');
        // $unique = $result;
         $numUnique = sizeof($result);
 
-          echo json_encode(array('count'=> $numUnique, 'list'=>$result));
+        // Did-you-mean: if the query returned nothing useful, ask the zvec
+        // search service for spelling suggestions over its indexed vocabulary.
+        // Only fires when there are zero results, to keep the happy path fast.
+        $suggestions = array();
+        if ($numUnique === 0 && isset($_POST['search-term']) && trim($_POST['search-term']) !== '') {
+            $suggestUrlBase = getenv('LOOMA_SEARCH_URL_SEMANTIC');
+            if (!$suggestUrlBase) $suggestUrlBase = getenv('LOOMA_SEARCH_URL_ZVEC');
+            if (!$suggestUrlBase) $suggestUrlBase = 'http://looma-search:46333/search';
+            // Replace trailing /search or /search_activities with /suggest.
+            $suggestUrl = preg_replace('#/(search|search_activities)(?=\?|$)#', '/suggest', $suggestUrlBase, 1);
+            $sUrl = $suggestUrl . '?q=' . urlencode($_POST['search-term']);
+            // Same story as the search call above, on a tighter budget: suggestions
+            // are a nicety, so they get a fraction of the search timeout rather than
+            // the whole of it — but 2s flat was below what an ARM box needs to answer
+            // at all, which made "did you mean" dead weight on exactly the boxes that
+            // most need it.
+            // isset(): this block also runs with semantic search OFF (it only needs a
+            // zero-result query), and $semanticTimeoutSec is set in the semantic branch.
+            $sBase = isset($semanticTimeoutSec) ? $semanticTimeoutSec : (int) (getenv('LOOMA_SEARCH_TIMEOUT') ?: 20);
+            $sTimeout = max(2, (int) round($sBase / 2));
+            $sCmd = 'curl -sS --max-time ' . intval($sTimeout) . ' ' . escapeshellarg($sUrl);
+            $sRaw = shell_exec($sCmd);
+            $sDec = json_decode($sRaw, true);
+            if (is_array($sDec) && isset($sDec['suggestions']) && is_array($sDec['suggestions'])) {
+                $suggestions = $sDec['suggestions'];
+            }
+        }
+
+          echo json_encode(array('count'=> $numUnique, 'list'=>$result, 'suggestions' => $suggestions));
 
         //echo json_encode(array('count'=> sizeof($result), 'list'=>$result));
 
@@ -1710,13 +1866,12 @@ require_once('includes/looma-utilities.php');
           ///////////////////////////////////////////
               case "getKeyVocabulary":
                   //echo "in get key vocabulary";
-                  $lang = (isset($_REQUEST['lang']) && $_REQUEST['lang'] === 'np') ? 'np' : 'en';
-                  $suffix = ($lang === 'np') ? '-np' : '';   // np files are named "<ch_id>-np.keywords"
+                  $lang = 'en';
                   $class = ch_idToClass($ch_id);
                   //echo "class is " . $class;
                   $subject = ch_idToSubject($ch_id);
                   //echo "subject is " . $subject;
-                  $file = "../content/chapters/$class/$subject/$lang/$ch_id$suffix.keywords";
+                  $file = "../content/chapters/$class/$subject/$lang/$ch_id.keywords";
 
                   //echo "keyword file is " . $file;
 
@@ -1764,4 +1919,3 @@ require_once('includes/looma-utilities.php');
 
 else return; //no CMD given
 ?>
-

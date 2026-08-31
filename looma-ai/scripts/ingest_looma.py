@@ -13,6 +13,7 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 from tqdm import tqdm
 
+from app import paths
 from app.extract.text_extractors import extract_any
 from app.extract.text_extractors import _looks_like_scanned_or_empty as looks_like_scanned_or_empty
 from app.utils.clean import clean_text
@@ -29,7 +30,9 @@ except Exception:
     insert_curriculum_docs = None
 
 
-DEFAULT_ROOT = Path(os.environ.get('LOOMA_SOURCE_ROOT', 'data/raw/looma'))
+# LOOMA_SOURCE_ROOT is what the compose sets (/looma/content). Without it we
+# fall back to the package-anchored raw dir rather than a CWD-relative one.
+DEFAULT_ROOT = Path(os.environ.get('LOOMA_SOURCE_ROOT') or paths.RAW_DIR)
 
 SUPPORTED = {
     # Standard document formats.

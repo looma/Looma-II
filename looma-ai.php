@@ -5,7 +5,7 @@ require_once('includes/header.php');
 require_once('includes/looma-utilities.php');
 require_once('includes/looma-features.php');
 
-// The button that leads here is hidden on a box without the zvec stack, but a
+// The button that leads here is hidden on a box without the semantic stack, but a
 // bookmark or a typed URL still lands here — and this page is nothing but a
 // console for looma-ai, so without it every panel would sit at "Connecting to
 // AI service..." forever. Say what is going on instead.

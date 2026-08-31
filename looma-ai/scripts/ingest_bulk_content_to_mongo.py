@@ -104,7 +104,9 @@ def _doc_for_file(content_root: Path, p: Path, *, namespace: str, src: str, lang
         # with tag names and inline CSS, and a search for a lesson's topic would
         # be competing with every <span style="…"> in the file.
         text = _strip_html(raw) if suf in {".html", ".htm"} else _clean_text(raw)
-        text = text[:40000]
+        # Same reasoning as the PDF caps above: store generously, embed as much
+        # of it as the search service is configured for.
+        text = text[:max_pdf_chars]
     elif suf == ".vtt":
         ft = "vtt"
         text = _clean_vtt(p.read_text(encoding="utf-8", errors="ignore"))[:40000]
@@ -136,7 +138,7 @@ def _has_html_twin(p: Path) -> bool:
     return any(p.with_suffix(ext).exists() for ext in (".html", ".htm"))
 
 
-def _iter_files(root: Path):
+def _iter_files(root: Path, *, html_only: bool = False):
     for p in root.rglob("*"):
         if not p.is_file():
             continue
@@ -145,7 +147,15 @@ def _iter_files(root: Path):
         # index twice — two hits for one lesson — and the PDF copy is the worse
         # text of the two (broken ligatures, OCR noise). So skip a PDF whenever
         # its HTML twin is next to it.
-        if p.suffix.lower() == ".pdf" and _has_html_twin(p):
+        #
+        # html_only goes further and drops EVERY pdf in the folder, twin or not.
+        # That is the rule for `chapters`, where the twin test alone still lets a
+        # PDF through: the handful of chapters whose conversion failed have no
+        # .html next to them (they are scans with no OCR layer), so the twin test
+        # says "no twin, index the PDF" — and the index would then hold a chapter
+        # the app cannot even open in that form, carrying no extractable text
+        # anyway. A folder asked for as HTML-only means HTML-only.
+        if p.suffix.lower() == ".pdf" and (html_only or _has_html_twin(p)):
             continue
         yield p
 
@@ -162,10 +172,11 @@ def ingest_folder(
     dry_run: bool,
     max_pdf_pages: int,
     max_pdf_chars: int,
+    html_only: bool = False,
 ):
     ops: list[UpdateOne] = []
     n = 0
-    for p in _iter_files(folder):
+    for p in _iter_files(folder, html_only=html_only):
         doc = _doc_for_file(
             content_root,
             p,
@@ -199,8 +210,21 @@ def main():
     ap.add_argument("--mongo-collection", default=os.environ.get("LOOMA_MONGO_COLLECTION", "activities"))
     ap.add_argument("--lang", default="en")
     ap.add_argument("--batch", type=int, default=300)
-    ap.add_argument("--max-pdf-pages", type=int, default=2)
-    ap.add_argument("--max-pdf-chars", type=int, default=12000)
+    # READING A FILE IS THE EXPENSIVE HALF, AND IT ONLY HAPPENS HERE.
+    #
+    # These were 2 pages / 12000 characters, which is roughly a cover page and a
+    # table of contents -- so a textbook could only ever be found by what was
+    # printed on its front. Re-reading 3.5k PDFs to fix that costs an hour of
+    # wall clock and touches every file on the disk; re-EMBEDDING what is already
+    # in Mongo costs a fraction of that and no disk reads at all. So pull the
+    # text deep once, here, and let the search service decide how much of it to
+    # embed (SEARCH_MAX_CHUNKS_PER_DOC). Raising that later then needs a rebuild,
+    # not another pass over the content drive.
+    #
+    # 40 pages / 60k characters covers a normal chapter end to end and still
+    # bounds the two textbooks in the corpus that run to hundreds of pages.
+    ap.add_argument("--max-pdf-pages", type=int, default=40)
+    ap.add_argument("--max-pdf-chars", type=int, default=60000)
     ap.add_argument("--dry-run", action="store_true")
 
     ap.add_argument("--dr-dann", action="store_true")
@@ -226,6 +250,14 @@ def main():
         action="append",
         default=[],
         help="Exclude a top-level content folder by name (repeatable).",
+    )
+    ap.add_argument(
+        "--html-only",
+        action="append",
+        metavar="FOLDER",
+        help="In this top-level folder, never ingest a PDF — not even one with no "
+             "HTML twin (repeatable). Defaults to 'chapters'. Pass --html-only '' "
+             "to turn the rule off entirely.",
     )
     ap.add_argument(
         "--folder",
@@ -257,6 +289,14 @@ def main():
             selected[k] = (True, folder_name, src)
 
     exclude = {e.strip() for e in (args.exclude or []) if e and e.strip()}
+
+    # chapters is HTML-only unless the caller says otherwise. `--html-only ''`
+    # (an empty value) is the way to clear the default rather than extend it,
+    # since argparse's append would otherwise only ever ADD to the list.
+    if args.html_only is None:
+        html_only = {"chapters"}
+    else:
+        html_only = {h.strip() for h in args.html_only if h and h.strip()}
     internal_skip = {
         # These are not content roots we want to index as "activities".
         "hidden",
@@ -272,6 +312,8 @@ def main():
         if not folder.exists():
             print(f"skip {src}: not found at {folder}", flush=True)
             return
+        if folder_name in html_only:
+            print(f"{src}: HTML-only (no PDFs)", flush=True)
         ingest_folder(
             coll,
             content_root=content_root,
@@ -283,6 +325,7 @@ def main():
             dry_run=args.dry_run,
             max_pdf_pages=max(0, int(args.max_pdf_pages)),
             max_pdf_chars=max(0, int(args.max_pdf_chars)),
+            html_only=folder_name in html_only,
         )
 
     if args.all or args.rest:

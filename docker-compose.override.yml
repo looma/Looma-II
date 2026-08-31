@@ -35,10 +35,12 @@ services:
       # costs whatever the resolver takes to give up — seconds on a school box
       # with no DNS — and it is paid on EVERY request, TTS sentences included.
       OTEL_DISABLED: "${LOOMA_OTEL_DISABLED:-0}"
-      # 0 on a box installed WITHOUT the zvec stack: the app then hides semantic
+      # 0 on a box installed WITHOUT the semantic stack: the app then hides semantic
       # search, the AI Assistant and exam generation rather than offering buttons
       # with no service behind them (includes/looma-features.php).
-      LOOMA_ZVEC: "${LOOMA_ZVEC:-1}"
+      # Renamed from LOOMA_ZVEC; includes/looma-features.php reads the new name
+      # first and falls back to the old one for boxes installed before the rename.
+      LOOMA_SEMANTIC: "${LOOMA_SEMANTIC:-${LOOMA_ZVEC:-1}}"
       # The assistant half. Search can be installed without looma-ai, so the AI
       # Assistant and exam buttons follow this one instead of LOOMA_ZVEC.
       LOOMA_AI: "${LOOMA_AI:-1}"
@@ -51,7 +53,7 @@ services:
       - looma-db
 
   looma-search:
-    # The zvec stack is optional. `looma-installer.sh up` adds `--profile search`
+    # The semantic stack is optional. `looma-installer.sh up` adds `--profile search`
     # only when the box was installed with it; without that this service simply
     # does not start.
     profiles: ["search"]

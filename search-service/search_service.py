@@ -121,10 +121,63 @@ MONGO_URL = os.environ.get("MONGO_URL", "mongodb://looma-db:27017")
 MONGO_DB = os.environ.get("MONGO_DB", "looma")
 MONGO_COLLECTION = os.environ.get("MONGO_COLLECTION", "activities")
 MODEL_NAME = os.environ.get("MODEL_NAME", "sentence-transformers/all-MiniLM-L6-v2")
-INDEX_DIR = Path(os.environ.get("INDEX_DIR", "/data/zvec-index"))
+# WHERE THE INDEX LIVES.
+#
+# This directory used to be called "zvec-index", which was simply untrue: this
+# service has never imported zvec. It is a NumPy matrix and a JSON sidecar. The
+# name was left over from a design that was never built, and it cost real
+# debugging time because `looma-ai` next door DOES use zvec, so "the zvec index"
+# pointed at two different things depending on who said it.
+#
+# Renaming a path that already exists on installed boxes would orphan their
+# index and trigger a multi-hour rebuild on first boot, so the old location is
+# still honoured: if the configured directory holds no index but a sibling
+# `zvec-index` does, we read from there. That covers both layouts —
+# /data/search-index -> /data/zvec-index (docker) and
+# /var/lib/looma/search-index -> /var/lib/looma/zvec-index (native).
+#
+# Nothing WRITES to the legacy path; the next rebuild lands in the new one.
+_LEGACY_INDEX_DIRNAME = "zvec-index"
+
+
+def _resolve_index_dir() -> Path:
+    configured = Path(os.environ.get("INDEX_DIR", "/data/search-index"))
+    if (configured / "index_meta.json").exists():
+        return configured
+    legacy = configured.parent / _LEGACY_INDEX_DIRNAME
+    if legacy != configured and (legacy / "index_meta.json").exists():
+        return legacy
+    return configured
+
+
+INDEX_DIR = _resolve_index_dir()
 SEARCH_PORT = int(os.environ.get("SEARCH_PORT", "46333"))
 SEARCH_TOPK = int(os.environ.get("SEARCH_TOPK", "12"))
 SEARCH_REBUILD_ON_START = os.environ.get("SEARCH_REBUILD_ON_START", "1") == "1"
+# How much of a long document is reachable by a semantic search.
+#
+# The embedding model has a 256-word-piece window (~1000 characters). Everything
+# past it is DISCARDED by the encoder, so a one-vector-per-document index can
+# only ever match a textbook on its cover page, no matter how much text the
+# ingester pulled out of the PDF. That was the real ceiling on "search the
+# content": raising the ingester's page limit alone changed nothing.
+#
+# So a document is embedded as up to MAX_CHUNKS windows of CHUNK_CHARS, each one
+# its own row, all carrying the SAME Mongo id. search() collapses them back to
+# one hit per document, keeping the best-scoring window.
+#
+# The cap is what keeps this affordable. The corpus is ~315k documents but the
+# large majority (images, videos, audio) are a filename and nothing else, so
+# they stay one row; only PDFs and HTML pages grow. Raising the cap raises the
+# index file AND the service's resident memory roughly in proportion to the
+# text-bearing share — which matters on an 8 GB box, so measure before raising.
+SEARCH_CHUNK_CHARS = int(os.environ.get("SEARCH_CHUNK_CHARS", "1000"))
+SEARCH_CHUNK_OVERLAP = int(os.environ.get("SEARCH_CHUNK_OVERLAP", "100"))
+SEARCH_MAX_CHUNKS_PER_DOC = max(1, int(os.environ.get("SEARCH_MAX_CHUNKS_PER_DOC", "4")))
+# How far into a document the "did you mean" vocabulary is collected from. Wider
+# than the embedding budget on purpose — collecting a word costs a regex match,
+# not a vector — and unchanged from what the one-vector index used.
+VOCAB_SCAN_CHARS = int(os.environ.get("SEARCH_VOCAB_SCAN_CHARS", "12000"))
 EMBEDDING_DIM = int(os.environ.get("EMBEDDING_DIM", "384"))
 # When 1 (default), try to load a sentence-transformers model for true semantic
 # embeddings before falling back to HashingVectorizer. Set to 0 to force the
@@ -211,7 +264,30 @@ def collect_strings(value: Any, key: str | None = None) -> list[str]:
 SEARCH_LOW_SCORE = float(os.environ.get("SEARCH_LOW_SCORE", "0.18"))
 
 
-class ZvecSearchIndex:
+def chunk_for_embedding(text: str) -> list[str]:
+    """Split one document's searchable text into embeddable windows.
+
+    Always returns at least one window (so a document is never dropped), never
+    more than SEARCH_MAX_CHUNKS_PER_DOC. Windows overlap slightly so a sentence
+    straddling a boundary is still whole in one of them.
+    """
+    text = (text or "").strip()
+    if not text:
+        return []
+    size = max(200, SEARCH_CHUNK_CHARS)
+    if len(text) <= size or SEARCH_MAX_CHUNKS_PER_DOC == 1:
+        return [text[:size]]
+
+    step = max(1, size - max(0, SEARCH_CHUNK_OVERLAP))
+    out: list[str] = []
+    start = 0
+    while start < len(text) and len(out) < SEARCH_MAX_CHUNKS_PER_DOC:
+        out.append(text[start:start + size])
+        start += step
+    return out
+
+
+class SemanticSearchIndex:
     def __init__(self) -> None:
         self._lock = threading.RLock()
         # Guards the background-build state only (kept separate from the heavy
@@ -248,6 +324,7 @@ class ZvecSearchIndex:
         self._doc_ft: list[str | None] = []
         self._doc_fp: list[str | None] = []
         self._doc_fn: list[str | None] = []
+        self._doc_src: list[str | None] = []
         self._matrix: sparse.csr_matrix | None = None
         self._dense = None  # type: ignore[assignment]  # numpy ndarray when sbert is active
         self._last_build_count = 0
@@ -305,6 +382,7 @@ class ZvecSearchIndex:
                 self._doc_ft = []
                 self._doc_fp = []
                 self._doc_fn = []
+                self._doc_src = []
                 self._matrix = None
                 self._dense = None
                 self._vocab = set()
@@ -329,12 +407,20 @@ class ZvecSearchIndex:
                     )
 
                 batch_size = 32
+                # How much of one document the windows below can cover: they step
+                # by (CHUNK_CHARS - OVERLAP) and there are at most MAX_CHUNKS.
+                embed_budget = (
+                    max(1, SEARCH_MAX_CHUNKS_PER_DOC - 1)
+                    * max(1, SEARCH_CHUNK_CHARS - max(0, SEARCH_CHUNK_OVERLAP))
+                    + max(200, SEARCH_CHUNK_CHARS)
+                )
                 texts_to_embed: list[str] = []
                 ids: list[str] = []
                 dns: list[str | None] = []
                 fts: list[str | None] = []
                 fps: list[str | None] = []
                 fns: list[str | None] = []
+                srcs: list[str | None] = []
 
                 for mongo_doc in mongo_docs:
                     source_id = str(mongo_doc["_id"])
@@ -342,32 +428,53 @@ class ZvecSearchIndex:
                     if not texts:
                         continue
 
-                    search_text = " ".join(dict.fromkeys(texts))[:12000]
+                    full_text = " ".join(dict.fromkeys(texts))[:VOCAB_SCAN_CHARS]
                     # Pull individual lowercase tokens of length >= 3 into the
                     # suggestion vocabulary. We strip punctuation so "Cellulose."
                     # contributes "cellulose", not "cellulose.".
-                    for tok in re.findall(r"[A-Za-zऀ-ॿ]{3,30}", search_text):
+                    #
+                    # Scanned from the FULL text, not from the windows that get
+                    # embedded. "Did you mean" is a spelling aid: a word is worth
+                    # suggesting wherever in the document it appeared, and this
+                    # costs a regex pass, not a vector.
+                    for tok in re.findall(r"[A-Za-zऀ-ॿ]{3,30}", full_text):
                         self._vocab.add(tok.lower())
-                    ids.append(source_id)
+
+                    # Embed only as far as the windows can actually reach. Text
+                    # past the budget is dead weight in the encoder -- raise
+                    # SEARCH_MAX_CHUNKS_PER_DOC and this follows it down the page.
+                    windows = chunk_for_embedding(full_text[:embed_budget])
+                    if not windows:
+                        continue
+
                     dn = mongo_doc.get("dn")
                     ft = mongo_doc.get("ft")
                     fp = mongo_doc.get("fp") or mongo_doc.get("nfp")
                     fn = mongo_doc.get("fn") or mongo_doc.get("nfn")
                     if not fp:
                         fp = _default_fp_for_ft(ft)
-                    dns.append(str(dn)[:1000] if dn is not None else None)
-                    fts.append(str(ft)[:200] if ft is not None else None)
-                    fps.append(str(fp)[:2000] if fp is not None else None)
-                    fns.append(str(fn)[:512] if fn is not None else None)
-                    texts_to_embed.append(search_text)
+                    # `src` is the Source checkbox column (CEHRD / PhET / Khan / …).
+                    # Kept beside ft so the Source filter can be pushed down too.
+                    src = mongo_doc.get("src")
+
+                    # One ROW per window, all repeating the same document id and
+                    # metadata. search() collapses them back to one hit per id.
+                    for window in windows:
+                        ids.append(source_id)
+                        dns.append(str(dn)[:1000] if dn is not None else None)
+                        fts.append(str(ft)[:200] if ft is not None else None)
+                        fps.append(str(fp)[:2000] if fp is not None else None)
+                        fns.append(str(fn)[:512] if fn is not None else None)
+                        srcs.append(str(src)[:120] if src is not None else None)
+                        texts_to_embed.append(window)
 
                     # Keep memory usage stable by chunking matrix builds.
                     if len(texts_to_embed) >= batch_size:
-                        self._append_matrix(ids, dns, fts, fps, fns, texts_to_embed)
-                        ids, dns, fts, fps, fns, texts_to_embed = [], [], [], [], [], []
+                        self._append_matrix(ids, dns, fts, fps, fns, srcs, texts_to_embed)
+                        ids, dns, fts, fps, fns, srcs, texts_to_embed = [], [], [], [], [], [], []
 
                 if texts_to_embed:
-                    self._append_matrix(ids, dns, fts, fps, fns, texts_to_embed)
+                    self._append_matrix(ids, dns, fts, fps, fns, srcs, texts_to_embed)
 
                 self._last_build_count = len(self._doc_ids)
                 if _rebuild_span is not None:
@@ -388,6 +495,7 @@ class ZvecSearchIndex:
         fts: list[str | None],
         fps: list[str | None],
         fns: list[str | None],
+        srcs: list[str | None],
         texts: list[str],
     ) -> None:
         X = self._embed(texts)
@@ -407,6 +515,7 @@ class ZvecSearchIndex:
         self._doc_ft.extend(fts)
         self._doc_fp.extend(fps)
         self._doc_fn.extend(fns)
+        self._doc_src.extend(srcs)
 
     # --- Persistence ------------------------------------------------------
     # The index is saved to INDEX_DIR after each rebuild and loaded on startup, so
@@ -433,6 +542,7 @@ class ZvecSearchIndex:
                 "doc_ft": self._doc_ft,
                 "doc_fp": self._doc_fp,
                 "doc_fn": self._doc_fn,
+                "doc_src": self._doc_src,
                 "vocab": sorted(self._vocab),
             }
             # Write the vectors next to the metadata.
@@ -445,11 +555,11 @@ class ZvecSearchIndex:
             tmp.write_text(json.dumps(meta), encoding="utf-8")
             tmp.replace(self._index_meta_path())
             _logging.getLogger(__name__).info(
-                "saved zvec index (%d docs, backend=%s) to %s",
+                "saved search index (%d docs, backend=%s) to %s",
                 self._last_build_count, self._backend, INDEX_DIR,
             )
         except Exception:  # noqa: BLE001
-            _logging.getLogger(__name__).exception("failed to persist zvec index")
+            _logging.getLogger(__name__).exception("failed to persist search index")
 
     def load_index(self) -> bool:
         """Load a previously-saved index from INDEX_DIR. Returns True only when a
@@ -487,18 +597,27 @@ class ZvecSearchIndex:
                 self._doc_ft = list(meta.get("doc_ft") or [])
                 self._doc_fp = list(meta.get("doc_fp") or [])
                 self._doc_fn = list(meta.get("doc_fn") or [])
+                # doc_src arrived after the first prebuilt indexes shipped, and it
+                # is NOT worth invalidating a 3-hour build over: an index without
+                # it still answers every query, it just cannot push the Source
+                # filter down (looma-database-utilities.php still applies Source
+                # as a hard Mongo filter either way). Pad so the lists stay
+                # index-aligned with doc_ids.
+                self._doc_src = list(meta.get("doc_src") or [])
+                if len(self._doc_src) != len(self._doc_ids):
+                    self._doc_src = [None] * len(self._doc_ids)
                 self._vocab = set(meta.get("vocab") or [])
                 self._last_build_count = int(meta.get("count") or len(self._doc_ids))
 
             if not self.is_ready():
                 return False
             _logging.getLogger(__name__).info(
-                "loaded persisted zvec index (%d docs, backend=%s) from %s",
+                "loaded persisted search index (%d docs, backend=%s) from %s",
                 self._last_build_count, self._backend, INDEX_DIR,
             )
             return True
         except Exception:  # noqa: BLE001
-            _logging.getLogger(__name__).exception("failed to load persisted zvec index")
+            _logging.getLogger(__name__).exception("failed to load persisted search index")
             return False
 
     def is_ready(self) -> bool:
@@ -518,12 +637,12 @@ class ZvecSearchIndex:
             try:
                 self.rebuild()
             except Exception:  # noqa: BLE001
-                _logging.getLogger(__name__).exception("background zvec index build failed")
+                _logging.getLogger(__name__).exception("background search index build failed")
             finally:
                 with self._build_lock:
                     self._building = False
 
-        threading.Thread(target=_run, name="zvec-index-build", daemon=True).start()
+        threading.Thread(target=_run, name="search-index-build", daemon=True).start()
         return True
 
     def ensure_ready(self) -> None:
@@ -535,13 +654,68 @@ class ZvecSearchIndex:
             return
         self.start_background_rebuild()
 
-    def search(self, query_text: str, topk: int) -> list[dict[str, Any]]:
+    def _allowed_mask(self, fts: set[str] | None, srcs: set[str] | None):
+        """Boolean mask over the corpus for the Type / Source checkboxes.
+
+        Returns None when nothing is filtered, so the common case pays nothing.
+
+        WHY THIS IS HERE AND NOT ONLY IN MONGO. The checkboxes were always hard
+        filters — looma-database-utilities.php ANDs them into the Mongo query, so
+        a semantic hit of the wrong type is dropped. The problem was that the
+        drop happened AFTER top-k: the service scored the whole corpus, returned
+        its 12 best documents of ANY type, and Mongo then threw away the ones the
+        teacher had not ticked. Tick "Video" and you would routinely get zero
+        semantic results — not because the corpus has no relevant videos, but
+        because the 12 globally-best documents happened to be PDFs and pages.
+        Masking BEFORE the top-k means "the 12 best videos", which is what the
+        checkbox is asking for.
+
+        Matching is case-insensitive: the form posts "CEHRD"/"Dr Dann" while the
+        documents carry whatever case the importer wrote.
+        """
+        if not fts and not srcs:
+            return None
+        import numpy as np
+
+        n = len(self._doc_ids)
+        mask = np.ones(n, dtype=bool)
+        if fts:
+            wanted = {f.strip().lower() for f in fts if f and f.strip()}
+            if wanted:
+                mask &= np.fromiter(
+                    ((ft or "").strip().lower() in wanted for ft in self._doc_ft),
+                    dtype=bool,
+                    count=n,
+                )
+        if srcs:
+            wanted = {x.strip().lower() for x in srcs if x and x.strip()}
+            # An index built before doc_src existed has None everywhere; filtering
+            # on it would return nothing at all, which is far worse than ignoring
+            # a filter Mongo is about to apply anyway.
+            if wanted and any(self._doc_src):
+                mask &= np.fromiter(
+                    ((sv or "").strip().lower() in wanted for sv in self._doc_src),
+                    dtype=bool,
+                    count=n,
+                )
+        return mask
+
+    def search(
+        self,
+        query_text: str,
+        topk: int,
+        *,
+        fts: set[str] | None = None,
+        srcs: set[str] | None = None,
+    ) -> list[dict[str, Any]]:
         with _span(
             "search.query",
             **{
                 "looma.search.backend": "sbert" if self._sbert is not None else "hashing",
                 "looma.search.query_len": len(query_text or ""),
                 "looma.search.topk": int(topk or SEARCH_TOPK),
+                "looma.search.filter_ft": ",".join(sorted(fts)) if fts else "",
+                "looma.search.filter_src": ",".join(sorted(srcs)) if srcs else "",
             },
         ) as _query_span:
             self.ensure_ready()
@@ -567,27 +741,69 @@ class ZvecSearchIndex:
                 if scores.size == 0:
                     return []
 
-                k = max(1, min(int(topk or SEARCH_TOPK), scores.size))
-                # Partial sort to find top-k efficiently.
-                idx = scores.argpartition(-k)[-k:]
-                idx = idx[idx.argsort()[::-1]]
+                # Apply the Type / Source checkboxes BEFORE the top-k cut, so the
+                # k results are the k best MATCHING documents rather than
+                # whatever survives a global top-k. -inf keeps the array shape
+                # (and therefore the index -> document mapping) intact.
+                mask = self._allowed_mask(fts, srcs)
+                if mask is not None:
+                    if not mask.any():
+                        return []
+                    import numpy as np
+                    scores = np.where(mask, scores, -np.inf)
+                    candidates = int(mask.sum())
+                else:
+                    candidates = int(scores.size)
 
+                want = max(1, int(topk or SEARCH_TOPK))
+                # Rows are WINDOWS, and one document can own several of them, so
+                # ask for more rows than the caller wants hits: in the worst case
+                # every one of the best rows belongs to the same document. Pull
+                # want * max-chunks and dedupe below.
+                k = max(1, min(want * SEARCH_MAX_CHUNKS_PER_DOC, candidates))
+                # Partial sort to find top-k efficiently, then order those k by
+                # SCORE, best first.
+                #
+                # This used to read `idx = idx[idx.argsort()[::-1]]`, which sorts
+                # the row NUMBERS, not their scores — the k best rows came back in
+                # descending row order. It was invisible because the only caller
+                # (looma-database-utilities.php) re-sorts by `semantic_score`
+                # before rendering. It is not invisible any more: the dedupe below
+                # keeps the FIRST row it sees per document and stops at `want`, so
+                # a wrong order would pick an arbitrary window and truncate the
+                # result set arbitrarily.
+                import numpy as np
+                idx = scores.argpartition(-k)[-k:]
+                idx = idx[np.argsort(scores[idx], kind="stable")[::-1]]
+
+            # One hit per DOCUMENT. `idx` is ordered best-first, so the first row
+            # seen for a document is its best-scoring window; later windows of
+            # the same document are dropped. Callers (and the PHP that maps
+            # source_id onto a Mongo _id) must never see the same id twice.
             out: list[dict[str, Any]] = []
+            seen: set[str] = set()
             for i in idx.tolist():
+                source_id = self._doc_ids[i]
+                if source_id in seen:
+                    continue
+                seen.add(source_id)
                 fp = self._doc_fp[i]
                 fn = self._doc_fn[i]
                 source_path = (str(fp) + str(fn)) if (fp and fn) else None
                 out.append(
                     {
-                        "source_id": self._doc_ids[i],
+                        "source_id": source_id,
                         "dn": self._doc_dn[i],
                         "ft": self._doc_ft[i],
                         "looma_fp": fp,
                         "looma_fn": fn,
                         "source_path": source_path,
+                        "src": self._doc_src[i] if i < len(self._doc_src) else None,
                         "score": float(scores[i]),
                     }
                 )
+                if len(out) >= want:
+                    break
             if _query_span is not None:
                 try:
                     _query_span.set_attribute("looma.search.results", len(out))
@@ -635,7 +851,14 @@ class ZvecSearchIndex:
     def stats(self) -> dict[str, Any]:
         return {
             "ready": (self._matrix is not None) or (self._dense is not None),
+            # doc_count is the ROW count and stays that way: build-search-artifacts.sh
+            # and the installer both watch it change to know a rebuild finished,
+            # and it is the number that predicts memory. `unique_docs` is the one
+            # to read as "how much of the library is indexed".
             "doc_count": self._last_build_count,
+            "unique_docs": len(set(self._doc_ids)) if self._doc_ids else 0,
+            "max_chunks_per_doc": SEARCH_MAX_CHUNKS_PER_DOC,
+            "chunk_chars": SEARCH_CHUNK_CHARS,
             "index_dir": str(INDEX_DIR),
             "model_name": self._backend,
             "backend": "sbert" if self._sbert is not None else "hashing",
@@ -647,7 +870,7 @@ class ZvecSearchIndex:
         }
 
 
-search_index = ZvecSearchIndex()
+search_index = SemanticSearchIndex()
 
 # Warm the index up at import time so it's ready under gunicorn too. The previous
 # warmup lived only in `if __name__ == "__main__"`, which gunicorn never runs — so
@@ -659,6 +882,28 @@ search_index = ZvecSearchIndex()
 _loaded_index = search_index.load_index()
 if SEARCH_REBUILD_ON_START or not _loaded_index:
     search_index.start_background_rebuild()
+
+
+def _warm_query_encoder() -> None:
+    """Pay the embedding model's first-call cost HERE, not on a teacher's first search.
+
+    Loading the model is not the same as being ready to use it: the first encode
+    also builds torch's kernels and allocates its buffers, and that showed up as a
+    ~14s first query even on x86 with the model already resident. On an ODROID it
+    is far worse, and the caller gives up long before it lands — looma-web's curl
+    times out, the id list comes back empty, and the search silently degrades to a
+    lexical one. One throwaway encode in a background thread costs nothing and
+    makes the first real query as fast as the second.
+    """
+    try:
+        search_index.ensure_ready()
+        search_index._embed(["warm up"])
+        _logging.getLogger(__name__).info("query encoder warmed")
+    except Exception:  # noqa: BLE001 — a failed warm-up must never stop the service
+        _logging.getLogger(__name__).exception("query encoder warm-up failed")
+
+
+threading.Thread(target=_warm_query_encoder, name="search-warm", daemon=True).start()
 
 
 @app.get("/health")
@@ -678,10 +923,31 @@ def rebuild() -> Any:
     }), 202
 
 
+def _filter_args() -> tuple[set[str] | None, set[str] | None]:
+    """Read the Type / Source checkbox filters off the query string.
+
+    Accepted either repeated (`?ft=video&ft=audio`, which is what a form's
+    `type[]` naturally becomes) or comma-joined (`?ft=video,audio`). Empty means
+    "no filter" — an empty set must NOT be read as "match nothing".
+    """
+    def _collect(*names: str) -> set[str] | None:
+        values: set[str] = set()
+        for name in names:
+            for raw in request.args.getlist(name):
+                for part in str(raw).split(","):
+                    part = part.strip()
+                    if part:
+                        values.add(part)
+        return values or None
+
+    return _collect("ft", "type", "type[]"), _collect("src", "src[]", "source")
+
+
 @app.get("/search")
 def search() -> Any:
     query_text = request.args.get("q", "").strip()
     topk = int(request.args.get("topk", str(SEARCH_TOPK)))
+    fts, srcs = _filter_args()
     # Existing PHP callers (looma-database-utilities.php) expect a plain JSON
     # array of {source_id, dn, ft, score}. New callers that want the
     # `{results, suggestions, top_score}` envelope must pass `with_suggestions=1`.
@@ -690,7 +956,7 @@ def search() -> Any:
         return jsonify({"error": "Missing search query"}), 400
 
     try:
-        results = search_index.search(query_text, topk)
+        results = search_index.search(query_text, topk, fts=fts, srcs=srcs)
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
 
@@ -732,10 +998,11 @@ def suggest() -> Any:
 def search_activities() -> Any:
     query_text = request.args.get("q", "").strip()
     topk = int(request.args.get("topk", str(SEARCH_TOPK)))
+    fts, srcs = _filter_args()
     if not query_text:
         return jsonify({"error": "Missing search query"}), 400
     try:
-        return jsonify(search_index.search(query_text, topk))
+        return jsonify(search_index.search(query_text, topk, fts=fts, srcs=srcs))
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
 

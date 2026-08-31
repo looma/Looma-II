@@ -70,7 +70,7 @@ Description:  for Looma 2
                 <?php
                 // The AI Tooling page is a console for looma-ai — it does nothing
                 // but poll a service that isn't there on a box installed without
-                // the zvec stack. Drop the button rather than offer a dead page.
+                // the semantic stack. Drop the button rather than offer a dead page.
                 if (looma_ai_enabled()): ?>
                 <a href="looma-ai.php">
                     <button class="admin-control">AI Tooling</button>

@@ -917,12 +917,19 @@ if (function_exists('looma_trace_page')) {
 
         if (isset($_REQUEST['language'])) $language = $_REQUEST['language']; else $language = 'english';
 
+        // No box ticked => the array stays empty => no 'ft'/'src' restriction is added
+        // to the query below, so every kind of content matching the search term shows up.
+        // One or more boxes ticked => only those kinds are returned.
+        // Read from $_REQUEST, not $_POST: the guard above tests $_REQUEST, so a GET-borne
+        // search used to walk a null $_POST entry and silently drop the filter.
         $filetypes = array();       //array of FT filetypes to include in the search
-        if (isset($_REQUEST['type'])) foreach ($_POST['type'] as $i) if ($i != '') array_push($filetypes, $i);
+        if (isset($_REQUEST['type']) && is_array($_REQUEST['type']))
+            foreach ($_REQUEST['type'] as $i) if ($i != '') array_push($filetypes, $i);
         //echo "types is: "; print_r($filetypes);
 
         $sources = array();       //array of sources to include in the search
-        if (isset($_REQUEST['src'])) foreach ($_POST['src'] as $i) array_push($sources, $i);
+        if (isset($_REQUEST['src']) && is_array($_REQUEST['src']))
+            foreach ($_REQUEST['src'] as $i) if ($i != '') array_push($sources, $i);
 
         //echo "sources is: "; print_r($sources);
 
@@ -1049,10 +1056,17 @@ if (function_exists('looma_trace_page')) {
 
         //echo "query is: "; print_r($query);
 
-        if (isset($_REQUEST['semantic']) && $_REQUEST['semantic']) {
+        // No search term means nothing to embed, so the zvec round-trip (up to
+        // LOOMA_SEARCH_TIMEOUT seconds) would only produce hits that are then discarded.
+        if (isset($_REQUEST['semantic']) && $_REQUEST['semantic'] && $nameRegex) {
             // Semantic search is always served by the zvec index service.
             $searchEngine = 'zvec';
-            $searchUrl = getenv('LOOMA_SEARCH_URL_ZVEC');
+            // LOOMA_SEARCH_URL_ZVEC is the legacy name (the service it points at
+            // contains no zvec -- see includes/looma-features.php). Read the new
+            // name first so an installed box, whose vhost still sets the old one,
+            // keeps working without being touched.
+            $searchUrl = getenv('LOOMA_SEARCH_URL_SEMANTIC');
+            if (!$searchUrl) $searchUrl = getenv('LOOMA_SEARCH_URL_ZVEC');
             if (!$searchUrl) $searchUrl = 'http://looma-search:46333/search';
 
             // Zvec activities search may live on either:
@@ -1068,6 +1082,34 @@ if (function_exists('looma_trace_page')) {
 
             // curl must be silent; otherwise progress/errors can pollute output and break JSON parsing.
             $curlUrl = $searchUrl . '?q=' . urlencode($_POST['search-term']);
+
+            // PUSH THE CHECKBOXES DOWN. Type and Source are hard filters on the
+            // Mongo query below, but until now zvec never heard about them: it
+            // scored the whole corpus, returned its N globally-best documents,
+            // and Mongo then dropped every one whose ft/src the teacher had not
+            // ticked. With ~315k documents indexed, ticking "Video" would
+            // routinely leave NOTHING semantic behind — the global best dozen
+            // are rarely all videos — so the search quietly fell back to being
+            // purely lexical exactly when the teacher had narrowed it.
+            //
+            // $extensions is the same list the 'ft' $in clause uses, so what
+            // zvec scores and what Mongo keeps can no longer disagree.
+            foreach ($extensions as $ext) {
+                if ($ext !== '') $curlUrl .= '&ft=' . urlencode($ext);
+            }
+            foreach ($sources as $srcName) {
+                if ($srcName !== '') $curlUrl .= '&src=' . urlencode($srcName);
+            }
+
+            // How many semantic hits to ask for. The service's own default is 12,
+            // which is a sensible answer for "the best few" but far too few to
+            // survive the keyword dropdowns further down (those are applied by
+            // Mongo and zvec cannot know about them). 60 costs the same scan —
+            // the top-k cut is the cheap part — and leaves room for them.
+            $semanticTopK = (int) (getenv('LOOMA_SEARCH_TOPK') ?: 60);
+            if ($semanticTopK < 1)   $semanticTopK = 60;
+            if ($semanticTopK > 500) $semanticTopK = 500;
+            $curlUrl .= '&topk=' . $semanticTopK;
 
             // Identify the downstream so the OpenSearch service map draws the
             // correct edge from looma-web → <peer>. `peer.service` is the
@@ -1099,8 +1141,24 @@ if (function_exists('looma_trace_page')) {
                 );
             }
 
-            // The Zvec service replies in well under 1s; 4s leaves ample headroom.
-            $semanticTimeoutSec = 4;
+            // How long to wait for the zvec service before giving up on the semantic
+            // half of the search.
+            //
+            // This used to be a flat 4s, on the reasoning that "zvec replies in well
+            // under 1s". That holds on a dev x86 box with a warm service and a small
+            // index; it does NOT hold on an ODROID. Two things break it there: the
+            // FIRST query after the service starts pays for the embedding model's
+            // lazy init (measured at ~14s even on x86), and the index now covers the
+            // whole of content/ — hundreds of thousands of vectors to score instead
+            // of tens of thousands.
+            //
+            // What made this so hard to see: on timeout curl returns nothing, the id
+            // list comes back empty, and the Mongo query simply stays LEXICAL. The
+            // page still shows results, so nothing looks broken — semantic search has
+            // just silently stopped happening. Better to make a teacher wait than to
+            // hand them keyword matches while claiming to be semantic.
+            $semanticTimeoutSec = (int) (getenv('LOOMA_SEARCH_TIMEOUT') ?: 20);
+            if ($semanticTimeoutSec < 1) $semanticTimeoutSec = 20;
             $cmd = "curl -sS --max-time " . intval($semanticTimeoutSec);
             if ($traceparent) {
                 $cmd .= " -H " . escapeshellarg("traceparent: " . $traceparent);
@@ -1143,11 +1201,21 @@ if (function_exists('looma_trace_page')) {
             $ids = array_column($semantic_results, 'source_id');
             $semantic_results_dict = $ids ? array_combine($ids, $semantic_results) : array();
 
-            if (!empty($ids)) {
+            // The Type/Source/Keyword checkboxes are HARD filters: a semantic hit has to
+            // live inside them, not beside them. This used to wrap the whole filtered
+            // query in an $or with a bare id list, which meant zvec could hand back a
+            // document of ANY type - so ticking "Video" still returned PDFs, images and
+            // slideshows. Widen only the TEXT match instead: a document qualifies when
+            // its name matches the search term OR zvec picked it, and it must still
+            // satisfy every checked filter.
+            // $nameRegex guards the empty-search-term case: with no term there is
+            // nothing for zvec to match on, and narrowing to its id list would hide
+            // content that the checkboxes alone should return.
+            if (!empty($ids) && $nameRegex) {
                 $query_or = array();
                 $query_or["_id"] = array();
                 $query_or["_id"]['$in'] = array_map(function($id) {return mongoId($id);}, $ids);
-                $query = array('$or' => array($query, $query_or));
+                $query['$or'][] = $query_or;
             }
         }
 
@@ -1251,12 +1319,22 @@ if (function_exists('looma_trace_page')) {
         // Only fires when there are zero results, to keep the happy path fast.
         $suggestions = array();
         if ($numUnique === 0 && isset($_POST['search-term']) && trim($_POST['search-term']) !== '') {
-            $suggestUrlBase = getenv('LOOMA_SEARCH_URL_ZVEC');
+            $suggestUrlBase = getenv('LOOMA_SEARCH_URL_SEMANTIC');
+            if (!$suggestUrlBase) $suggestUrlBase = getenv('LOOMA_SEARCH_URL_ZVEC');
             if (!$suggestUrlBase) $suggestUrlBase = 'http://looma-search:46333/search';
             // Replace trailing /search or /search_activities with /suggest.
             $suggestUrl = preg_replace('#/(search|search_activities)(?=\?|$)#', '/suggest', $suggestUrlBase, 1);
             $sUrl = $suggestUrl . '?q=' . urlencode($_POST['search-term']);
-            $sCmd = 'curl -sS --max-time 2 ' . escapeshellarg($sUrl);
+            // Same story as the search call above, on a tighter budget: suggestions
+            // are a nicety, so they get a fraction of the search timeout rather than
+            // the whole of it — but 2s flat was below what an ARM box needs to answer
+            // at all, which made "did you mean" dead weight on exactly the boxes that
+            // most need it.
+            // isset(): this block also runs with semantic search OFF (it only needs a
+            // zero-result query), and $semanticTimeoutSec is set in the semantic branch.
+            $sBase = isset($semanticTimeoutSec) ? $semanticTimeoutSec : (int) (getenv('LOOMA_SEARCH_TIMEOUT') ?: 20);
+            $sTimeout = max(2, (int) round($sBase / 2));
+            $sCmd = 'curl -sS --max-time ' . intval($sTimeout) . ' ' . escapeshellarg($sUrl);
             $sRaw = shell_exec($sCmd);
             $sDec = json_decode($sRaw, true);
             if (is_array($sDec) && isset($sDec['suggestions']) && is_array($sDec['suggestions'])) {

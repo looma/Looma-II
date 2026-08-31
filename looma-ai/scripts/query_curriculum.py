@@ -1,9 +1,18 @@
 import sqlite3
+import sys
+from pathlib import Path
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 import zvec
 from sentence_transformers import SentenceTransformer
 
-DB_PATH = "data/index/looma.db"
-COLLECTION_PATH = "data/zvec/curriculum_chunks"
+from app import paths
+
+DB_PATH = str(paths.SQLITE_DB_PATH)
+COLLECTION_PATH = str(paths.zvec_collection_path("curriculum_chunks"))
 
 model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
 collection = zvec.open(path=COLLECTION_PATH)

@@ -19,25 +19,109 @@ until you choose *Review and install*.
 ```
 === Looma ODROID installer ===
    1) Deployment ............ native
-   2) Install source ........ online (internet)
-   3) Observability ......... none
-   4) AI assistant (looma-ai) on
-   5) zvec + Piper run ...... in Docker
-   6) Search service (zvec) . on
-   7) Chromium kiosk ........ on
-   8) Kiosk URL ............. http://localhost/home
-   9) Swapfile (8G) ......... no
+   2) Observability ......... none
+   3) zvec .................. off  (search + AI + exams)
+   4) zvec deploy ........... (turn zvec on first)
+   5) piper deploy .......... on the host
+   6) Chromium kiosk ........ on
+   7) Kiosk URL ............. http://localhost/home
+   8) Swapfile (8G) ......... yes
+   9) CPU max freq .......... 1800 MHz, capped at boot
   10) Install root .......... /var/www/html
   11) Desktop user .......... odroid
   12) ==> Review and install
   13) Quit without changing anything
 ```
 
-Rows that don't apply are not offered: the *zvec + Piper* and *Search service*
+The **defaults** shown above are what a box gets when nothing is chosen: zvec
+**off**, Piper **on the host**, CPUs capped at **1800 MHz**.
+
+Rows that don't apply are not offered: the *zvec deploy* and *piper deploy*
 rows only appear for a native install; the *Obs analysis workers* row only for a
 Docker install with the full obs stack on. The kiosk URL follows the deployment
 (`http://localhost/home` for native, `http://localhost:48080/home` for Docker)
 until you set it yourself.
+
+## Installing a box, step by step
+
+### 1. Prepare the disk (once, on a workstation)
+
+The disk carries the repo, `content/`, and — if these boxes are to have semantic
+search — the **prebuilt search index**, which is what keeps the install to minutes
+instead of hours:
+
+```bash
+# only if the boxes will be installed with --search
+./deploy/odroid/build-search-artifacts.sh
+#   -> writes search-index/ (~500 MB) and mongo-dump/dump/ into the repo
+```
+
+Then copy the whole project tree to the disk, keeping the layout — the installer
+reads `Dockerfile.piper` and `content/` from **one level above** the repo:
+
+```
+<DISK>/Looma/                 <- content/, maps2018/, Dockerfile.piper, docker-compose.yml
+<DISK>/Looma/Looma/           <- the repo: the installer, search-index/, mongo-dump/
+```
+
+For a box with **no internet at all**, also build the offline payload — on an
+**arm64** machine, since images and .debs are architecture-specific (see
+*Offline install* below).
+
+### 2. Run the installer on the box
+
+Plug the disk in, open a terminal on the odroid, and run it **as root, from the
+disk**:
+
+```bash
+sudo "/media/odroid/<DISK>/Looma/Looma/deploy/odroid/looma-installer.sh"
+```
+
+No flags gets you the form. Nothing is touched until you choose *Review and
+install*, so it is safe to look around first.
+
+### 3. Choose what this box is
+
+The three that matter, and what they cost:
+
+| Row | Default | Change it when |
+|---|---|---|
+| **Deployment** | native | `docker` puts everything in containers — heavier, but identical on every box |
+| **zvec** | **off** | Turn it **on** for semantic search, the AI Assistant and exam generation. It is the heaviest part of Looma; with the prebuilt index on the disk it still installs in minutes |
+| **piper deploy** | **on the host** | Leave it. `docker` works too, but adds a container to the audio path for no gain |
+| **CPU max freq** | 1800 MHz | Drop to **1500** if the board resets mid-sentence during TTS |
+
+Scripted equivalent, no form:
+
+```bash
+sudo ./looma-installer.sh install --native --search          # with semantic search
+sudo ./looma-installer.sh install --native                   # app + TTS only
+sudo ./looma-installer.sh install --native --search --ingest-exclude "W4S W4S2013"
+```
+
+### 4. Wait — and know what is slow and why
+
+The install prints each step. The two that take real time:
+
+- **The first build on ARM is slow.** Docker deployment only; the native one
+  installs packages instead.
+- **The search index.** With `search-index/` on the disk you will see
+  `installed the prebuilt search index into … (502M)` and the box is ready in
+  seconds. **Without** it, the box reads every file under `content/` and embeds
+  it — hours on this hardware, and the installer gives up waiting after 30
+  minutes and warns. If you see that warning, the disk was missing the artifacts.
+
+### 5. Check it works, then remove the disk
+
+`verify` runs automatically at the end and prints a green/red list. Re-run it any
+time:
+
+```bash
+sudo ./looma-installer.sh verify
+```
+
+When it passes, **remove the disk** — the box is standalone — and reuse it on the
+next one.
 
 ## Commands
 
@@ -45,9 +129,10 @@ until you set it yourself.
 |---|---|
 | `sudo ./looma-installer.sh` | Interactive form, then install |
 | `sudo ./looma-installer.sh install [flags]` | Scripted install — **any flag skips the form** |
-| `sudo ./looma-installer.sh up [--build]` | Start the stack (this is what `looma.service` runs at boot) |
-| `sudo ./looma-installer.sh down [--volumes]` | Stop it (`--volumes` also **wipes** Mongo/zvec/OpenSearch data) |
-| `sudo ./looma-installer.sh verify` | Check that the box **works**: app answers, content is present *and* reachable over HTTP, and TTS really speaks English + Nepali (printing its latency). Runs automatically at the end of every install; exits non-zero if anything failed |
+| `sudo ./looma-installer.sh up [--build]` | Start the stack (this is what `looma.service` runs at boot). **Docker deployment only** — on a box whose `/etc/looma-odroid.env` says `DEPLOY=native` it refuses, and disables the stray `looma.service` that called it |
+| `sudo ./looma-installer.sh down [--volumes]` | Stop it (`--volumes` also **wipes** Mongo/zvec/OpenSearch data). Same native guard as `up` |
+| `sudo ./looma-installer.sh verify` | Check that the box **works**: app answers, content is present *and* reachable over HTTP, and TTS really speaks English + Nepali (printing its latency), and the **right autostart unit for this deployment** is enabled so it still works after a reboot. Runs automatically at the end of every install; exits non-zero if anything failed |
+| `sudo ./diagnose-piper.sh [--fix]` | Walk the whole TTS chain (`browser → looma-TTS.php → :5002 → piper binary + voices`) and print which link is broken, including *what switched Piper off at boot*. `--fix` flips the systemd units back and re-tests |
 | `./looma-installer.sh build-bundle docker\|native\|all` | Build the **offline** payload — run on a build box **with internet, arm64** |
 | `./looma-installer.sh --help` | All flags |
 
@@ -75,25 +160,28 @@ installed — a stack you started by hand with `docker compose up` still gets cl
 
 | Flag | Effect |
 |---|---|
-| `--native` / `--docker` | **native is the default**: Apache/PHP 7.4/MongoDB on the host, with zvec + Piper as containers. `--docker`: the whole app in containers |
-| `--sidecars docker\|host` | Native only: run zvec/Piper as containers (default), or on the host with a venv + systemd units (needs Python ≥ 3.9) |
+| `--native` / `--docker` | **native is the default**: Apache/PHP 7.4/MongoDB on the host, Piper on the host, and the semantic stack (if installed) as containers. `--docker`: the whole app in containers |
+| `--sidecars docker\|host` | Native only: run the semantic stack as containers (default), or on the host with a venv + systemd units (needs Python ≥ 3.9) |
+| `--piper docker\|host` | Native only: where Piper TTS runs. **`host` is the default** — the binary plus a systemd unit, no Docker in the audio path. `docker` builds the small `Dockerfile.piper` image (~1 GB), never the 34 GB web image |
 | `--offline` / `--online` | Install from the disk bundle with **no internet**, or from the network |
 | `--observability` | Run the full obs stack on this box (OpenSearch/Grafana/traces). **Off by default** — it is the heaviest thing on an 8 GB box |
 | `--no-observability` | App only — this is the default |
 | `--remote-obs IP` | This box runs only Vector+Metricbeat and ships traces/logs to the obs stack on `IP` (`:4318` OTLP, `:49200` OpenSearch) |
 | `--analysis` | Also run the heavy obs AI analysis workers (torch) |
-| `--ai` / `--no-ai` | The in-app assistant `looma-ai` — **on by default** |
-| `--no-search` | Native only: skip the zvec search service |
+| `--ai` / `--no-ai` | Obsolete, accepted and ignored: the assistant is part of the semantic stack (`--search`) |
+| `--search` | Install the **zvec stack** — semantic search, the AI Assistant and exam generation. **Off by default**: it is the heaviest part of Looma (torch + an index over the whole curriculum) |
+| `--no-search` | Leave the semantic stack out — **this is the default**; the app hides all three features |
+| `--ingest-exclude "A B"` | Content folders to leave **out** of the search index. With zvec on, the install indexes **all** of `content/` (chapters as HTML only) — the Wikipedia trees are ~93% of the indexable files, so `--ingest-exclude "W4S W4S2013"` is the usual way to keep a small box's ingest and index rebuilds short |
 | `--swap` / `--no-swap` | Create the swapfile / skip it. **On by default** — 8 GB of RAM is tight once Piper's voice models stay resident, and without swap the OOM killer takes out a service mid-lesson |
 | `--swap-gb N` | Swapfile size in GB (default 8). On a re-install with a different N, **replaces** the existing swapfile |
-| `--cpu-max-freq kHz` | Cap every CPU's max frequency at boot (default **1500000 = 1.5 GHz**; `0` = leave the CPUs alone). Prevents Piper TTS from browning out / resetting the board |
+| `--cpu-max-freq kHz` | Cap every CPU's max frequency at boot (default **1800000 = 1.8 GHz**; `0` = leave the CPUs alone). **1500000 is the value confirmed on real hardware** to stop Piper TTS browning out / resetting the board — the 1.8 GHz default trades some of that protection for speed, so set it back to 1500000 on a board that resets |
 | `--www PATH` / `--user NAME` / `--kiosk-url URL` | Install root (`/var/www/html`), desktop user (`odroid`), kiosk URL (default: native `:80`, Docker `:48080`) |
 | `--no-kiosk` | Skip the Chromium kiosk autostart |
 | `--bundle-dir PATH` | Where the offline bundle lives (default: next to the script, on the disk). **Use it when the disk is mounted read-only** — build and install with the same `PATH` |
 
 > **CPU brownout guard:** on this board Piper TTS at full clock draws enough current
 > to reset the box mid-synthesis. Both deployments cap the CPU frequency at boot
-> (1.5 GHz by default) via an `ExecStartPre` on `looma.service` (Docker) or the
+> (1.8 GHz by default) via an `ExecStartPre` on `looma.service` (Docker) or the
 > `looma-cpu-cap.service` (native). Set `--cpu-max-freq 0` only if you know the board
 > can take it.
 
@@ -104,7 +192,7 @@ installed — a stack you started by hand with `docker compose up` still gets cl
 3. **Content**: rsync to `/var/www/html/content` **in place** (`--size-only`) — a full copy on a fresh box, an incremental update on a box that already has it, so it never re-copies 80 GB.
 4. **Migrating a native box**: disables `apache2`/`httpd`/`mongod`/`piper` and the native `looma-search`/`looma-ai`/`looma-piper` services **and** the native browser kiosk autostart, so Docker takes over and you don't get a second, blank browser window on login. It also brings the `looma-native` sidecar project down and **takes back any container name** it still owns (see *Re-installing is always safe* below).
 5. Creates `loomanet` + `looma_apache_logs`, then **frees the app's host ports** and starts the stack (the first build is slow on ARM; Mongo restores itself from the disk's dump).
-6. Builds the **zvec** search index and verifies it, so the box ships with working semantic search.
+6. **Installs the prebuilt search index** if the disk carries one (`search-index/`, built by `build-search-artifacts.sh` — see below), so the box comes up searchable in seconds. Otherwise it falls back to **ingesting the content and building the index on the box**, then verifies it either way, so a box never ships with an empty index. With zvec on, this reads **every top-level folder** under `content/` — encyclopedias, dictionaries, lessons, teacher tools, subtitles, the lot. The **chapters go in as HTML only**: each one ships as a `.pdf` and the `.html` generated from it, the app opens the HTML, and indexing both would return one lesson twice with the worse text of the two. Skipped only with `--no-search` (no zvec at all) or trimmed with `--ingest-exclude`.
 7. Installs `looma.service` (boot start, with the CPU-frequency cap as `ExecStartPre`) + the Chromium kiosk autostart, then tells you to remove the disk.
 
 > **Migration note:** the Docker MongoDB is restored from the **disk's** `mongo-dump`,
@@ -125,22 +213,58 @@ installed — a stack you started by hand with `docker compose up` still gets cl
 | Travels (copied/baked) | Regenerated on the box |
 |---|---|
 | App code | OpenSearch log/trace/metric indices |
-| MongoDB content (baked into `loomadb` from `mongo-dump/`) | zvec index (built at install, rebuilt on demand) |
+| MongoDB content (baked into `loomadb` from `mongo-dump/`) | zvec index — **only when the disk has no `search-index/`** |
 | Content / maps2018 / epaath | Trace service maps (after some traffic) |
+| **zvec search index (`search-index/`)** | |
 | Grafana dashboards + obs saved objects (`observability/state/`) | |
+
+### Prebuilding the search index (`build-search-artifacts.sh`)
+
+The install has two expensive halves, and **neither has to run on the box**:
+reading ~96k content files to pull their text out, and embedding that text into
+384-dim vectors. Both produce artifacts that travel — the text is MongoDB
+documents, the index is a float32 matrix plus its metadata — so build them once
+on a workstation:
+
+```bash
+./deploy/odroid/build-search-artifacts.sh                        # everything
+./deploy/odroid/build-search-artifacts.sh --exclude "W4S W4S2013"  # without the Wikipedia trees
+```
+
+It ingests the content with the **same arguments the installer would use** (all of
+`content/`, chapters as HTML only), rebuilds the index, and writes
+`mongo-dump/dump/` and `search-index/` into the repo. Every box installed from
+that disk then loads the index instead of building it — seconds instead of a full
+embed of the corpus on an ARM CPU, and no exposure to the OOM killer that the
+native unit caps `OMP_NUM_THREADS=1` to avoid.
+
+`search_service.py` re-validates the artifact on load (index format, embedding
+backend, model name). A mismatch — a box that fell back to the hashing backend
+because torch would not install, say — is **rejected**, and that box ingests and
+builds for itself exactly as before. The prebuilt index can only make an install
+faster, never wrong.
 
 ## Native install (the default)
 
 Choose *native* in the form, or `--native`. Apache + PHP 7.4 (mod_php) + MongoDB 5.0
 run as host services on Ubuntu 20.04 (focal) arm64, serving the app on **`:80`**.
 
-The two services the host cannot run well — **zvec search and Piper TTS** (focal's
-Python is 3.8, which can't install their requirements) — run as **containers** by
-default (`--sidecars docker`), using host networking so they publish 46333 / 5002 /
-8089 straight onto the host where Apache/PHP expect them, and reach the host's
-MongoDB on `127.0.0.1:27017` without exposing it to the LAN. `looma-ai` runs the
-same way when AI is on. `--sidecars host` is the legacy path: it installs a venv +
-`looma-search`/`looma-piper`/`looma-ai` systemd units instead (needs Python ≥ 3.9).
+**Piper TTS runs on the host by default** (`--piper host`): the binary plus a
+`looma-piper` systemd unit, no Docker in the audio path. `--piper docker` runs it as
+a container instead, built from `Dockerfile.piper` — a ~1 GB image with just the
+binary, the voices and the Flask wrapper. (It used to run the 34 GB `looma-web`
+image with `piper_server.py` as its command, which on a real board meant building
+torch and the HuggingFace models to say a sentence out loud; the build never
+finished, so the container never existed and pressing *Speak* did nothing. If the
+disk has no `Dockerfile.piper`, the installer says so and falls back to Piper on the
+host rather than leaving the box mute.)
+
+**The semantic stack** — the search service and `looma-ai` — runs as **containers** by
+default when it is installed at all (`--sidecars docker`), because focal's Python
+3.8 cannot install torch. Host networking means they publish 46333 / 8089 straight
+onto the host where Apache/PHP expect them, and reach the host's MongoDB on
+`127.0.0.1:27017` without exposing it to the LAN. `--sidecars host` is the legacy
+path: a venv + `looma-search`/`looma-ai` systemd units instead (needs Python ≥ 3.9).
 
 A `looma-cpu-cap.service` caps the CPU frequency at boot (the brownout guard above),
 and if observability is turned on the obs **stack** still runs in Docker, with an
@@ -182,8 +306,10 @@ form (or `--offline`). The installer puts Docker on the box from the bundle,
 anything. `/etc/looma-odroid.env` keeps `OFFLINE=1`, so every reboot stays offline
 too (`up` always passes `--pull never`).
 
-TTS is **Piper** only — local and offline, with its English and Nepali voices baked
-into the `looma-web` image.
+TTS is **Piper** only — local and offline. The voices travel three ways, so an
+offline box always has them: baked into the `looma-web` image (Docker deployment),
+in the `looma-piper` image the bundle now carries (native + `--piper docker`), and
+in `native-bundle/piper/` for the default native install.
 
 ## After install
 
@@ -214,18 +340,124 @@ synthesis in each language **with its latency** (a warning if a sentence takes
 more than ~2 s, which means the warm voices are not working). A `[FAIL]` line
 always names the command that shows why.
 
-By hand:
+### Health endpoints
+
+| Service | Endpoint | Port |
+|---|---|---|
+| App (native) | `http://localhost/home` | 80 |
+| App (Docker) | `http://localhost:48080/home` | 48080 |
+| Piper TTS | `http://127.0.0.1:5002/health` | 5002 |
+| zvec search | `http://127.0.0.1:46333/health` | 46333 |
+| looma-ai (assistant/exams) | `http://127.0.0.1:8089/health` | 8089 |
 
 ```bash
 curl -I http://localhost:48080          # Docker app (native: http://localhost/) — expect 200/302
-curl http://localhost:46333/health      # search (zvec)
-curl http://127.0.0.1:5002/health       # Piper TTS — must include "warm" and voices_exist en+ne
+curl -s http://127.0.0.1:46333/health   # search (zvec)
+curl -s http://127.0.0.1:5002/health    # Piper TTS — must include the voices, en + ne
 docker ps                               # looma-web, looma-db, looma-search (+ looma-ai)
-systemctl is-enabled looma.service      # -> enabled
+```
+
+**Autostart — check the unit that belongs to *your* deployment.** They are not
+interchangeable, and mixing them up is what makes a box go mute overnight:
+
+```bash
+# Docker deployment:
+systemctl is-enabled looma.service        # -> enabled
+
+# Native deployment: looma.service must be OFF (see the note below); each
+# service autostarts on its own instead.
+systemctl is-enabled looma.service        # -> disabled  (or not installed)
+systemctl is-enabled apache2 mongod looma-piper   # -> enabled enabled enabled
+```
+
+> **Never `systemctl enable looma.service` on a native box.** `looma.service` runs
+> `looma-installer.sh up`, the **Docker** deployment's boot command, and `up`'s
+> first job is to clear the host services off the ports the containers want — so
+> it disables `looma-piper` (and `looma-search`, `looma-ai`) about a minute after
+> systemd started them. `disable` beats the unit's own `Restart=always`, so the
+> board comes up **mute** and the journal shows a Piper that started perfectly and
+> was then stopped by nobody in particular. `up`/`down` now refuse to run on a box
+> whose `/etc/looma-odroid.env` says `DEPLOY=native`, and disable the stray unit
+> themselves — but on a box installed before that, fix it with
+> `sudo systemctl disable --now looma.service && sudo systemctl enable --now looma-piper`.
+
+> **"Up" is not "working" — check `doc_count`.** The search service answers
+> `/health` perfectly happily with an EMPTY index, and then every classroom search
+> returns nothing:
+>
+> ```bash
+> curl -s http://127.0.0.1:46333/health | grep -o '"doc_count":[0-9]*'
+> ```
+>
+> A box installed from a disk with the prebuilt index reports the same number the
+> artifact was built with (e.g. `315175`). `0` means the index is not there.
+> **While a rebuild is running, `doc_count` keeps reporting the OLD value** and
+> search returns nothing — so a number that never changes during a rebuild is not
+> proof of anything. Rebuild by hand (hours on this hardware — prefer the prebuilt
+> index) with `curl -X POST http://127.0.0.1:46333/rebuild`.
+
+The Piper equivalent of "answers but says nothing" is worth testing directly:
+
+```bash
+curl -s -X POST http://127.0.0.1:5002/tts -H "Content-Type: application/json"      -d '{"text":"Looma speaks","lang":"en"}' -o /tmp/t.wav && file /tmp/t.wav
+#   -> RIFF (little-endian) data, WAVE audio
 ```
 
 Then Grafana on `:43000`, OpenSearch Dashboards on `:45601`, and a reboot to confirm
 the stack auto-starts and Chromium opens Looma fullscreen.
+
+## Tuning: TTS latency and search timeouts
+
+This board synthesizes speech **slower than real time**, so the numbers below are
+about how long a teacher waits, not about audio quality.
+
+**What already ships tuned.** Piper keeps its voice models warm
+(`LOOMA_PIPER_PREWARM=1`, `MAX_WORKERS=3`), appends 0.05 s of silence per sentence
+instead of Piper's own 0.2 s (measured 357 ms → 318 ms per sentence), and the app
+cuts only the FIRST segment of a reading at a clause boundary so sound starts after
+part of a sentence rather than all of it — measured **413 ms → 255 ms** to first
+audio on x86, and the same proportion applies here.
+
+**The voices installed are the FASTEST tier only** — 8 models, ~450 MB, 25 rows
+on the Reading Settings page. Quality is a speed choice on this hardware, so the
+box ships with the fast ones and the page labels what they are: `x_low` =
+*fastest*, `low` = *fast*.
+
+Note what "fastest tier" means per language, because it is not symmetric: piper
+publishes exactly **one** `x_low` model and it is Nepali (`ne_NP-google-x_low`,
+which carries 18 speakers). **English has no `x_low` at all**, so its fastest tier
+is `low` — alan, southern_english_female, amy, danny, kathleen, lessac and ryan.
+
+`medium` and `high` exist upstream (25 and 5 English models, 2 more Nepali) and
+are deliberately left out: `medium` measured ~1.4x slower than `x_low` on the same
+sentence, and this board already synthesizes slower than real time. To offer them,
+add their paths to the `PIPER_EXTRA_VOICES` build arg — the page lists whatever is
+in the voice directory and labels the quality itself, so nothing else changes.
+
+**The one knob worth touching: the Nepali voice.** `ne_NP-google-medium` measured
+**400 ms** against **285 ms** for `ne_NP-google-x_low` — 1.4× — on the same text.
+Both are installed; the choice is on the Reading Settings page, and the server's
+own default is already `x_low`.
+
+| Variable | Default | Effect |
+|---|---|---|
+| `LOOMA_PIPER_SENTENCE_SILENCE` | `0.05` | Silence appended per sentence. It is synthesized like any other audio, so it costs latency *and* dead air |
+| `LOOMA_PIPER_MAX_WORKERS` | `3` | Warm (voice, speed) pairs kept resident. Each holds a model in RAM |
+| `LOOMA_PIPER_PREWARM` | `1` | Load the default voices at startup so the first press is not the slow one |
+| `LOOMA_PIPER_MAX_SPEAKERS` | `24` | Voices a single multi-speaker model may contribute to the Reading Settings list |
+| `LOOMA_SEARCH_TIMEOUT` | `20` | Seconds the app waits for the zvec service. **On timeout the search silently falls back to a lexical one** — it looks like it worked, it just stopped being semantic. The old flat 4 s was below what this board needs |
+
+Three things measured and ruled out, so nobody spends a day on them again:
+
+- **Parallel workers buy nothing.** Piper already uses all cores for a single
+  synthesis — 3 parallel requests were 1.1× faster than 3 sequential, not 3×.
+- **Piper v1.2.0 exposes no thread-count option.**
+- **Streaming (`--output_raw`) does not start the audio sooner.** Piper emits per
+  SENTENCE, not progressively within one: a long sentence produced its first byte
+  at 0.36 s and its last at 0.37 s. Since Looma already sends one sentence per
+  request, the floor stays "inference time of the first sentence". Feeding a
+  player live would be worse than useless here — the board synthesizes slower than
+  real time, so playback would start early and then run dry mid-sentence.
 
 ## Troubleshooting (8 GB box)
 
@@ -240,7 +472,14 @@ the stack auto-starts and Chromium opens Looma fullscreen.
   3. **`Unable to create/open the lock file … Permission denied`**: `/var/lib/mongodb` was left behind by a previous MongoDB and is owned by a uid the new `mongodb` user doesn't have. `sudo chown -R mongodb:mongodb /var/lib/mongodb /var/log/mongodb && sudo systemctl restart mongod`.
 - **`pymongo.errors.ConfigurationError: Server at 127.0.0.1:27017 reports wire version 6, but this version of PyMongo requires at least 8`** (native install): the box is running **MongoDB 3.6** — focal's own `mongodb-server` package, kept from a pre-existing native Looma. `pymongo` 4.x, which both `looma-ai` and the search service use, refuses to talk to anything older than 4.2. Two things break, and **only the first one is visible**: the chapter ingestion prints this traceback, and the **zvec index silently builds empty** (`POST /rebuild` returns 202 immediately and does the work in a background thread, so the installer's `curl` succeeds either way — check `curl -s http://127.0.0.1:46333/health` and look at `doc_count`). The installer now detects a MongoDB older than 5.0 in step 1 and replaces it with `mongodb-org` (dumping the old database to `/var/backups/looma-mongo<N>-<timestamp>` first, since 3.6's files cannot be read by 5.0), so re-running the installer fixes a box that is already in this state.
 - **`mongorestore … key too large to index` on `looma.dictionary`**: a pre-existing data issue (a dictionary key exceeds WiredTiger's 1024-byte index limit). Only that one index fails — **the documents are restored** and the install continues, which is why it is a `[warn]`.
-- **The board resets during TTS**: the CPU-frequency cap isn't in effect. Re-run with `--cpu-max-freq 1500000` (the default), and confirm `looma.service` / `looma-cpu-cap.service` is enabled.
+- **TTS worked, then the box came up mute after a reboot** (`looma-piper.service: inactive (disabled)`, nothing on `:5002`, and the journal shows it starting cleanly at boot and being stopped a minute later): a **`looma.service` left enabled on a native box**. It runs `looma-installer.sh up` at boot, and `up` clears the host services off the container ports — so it disables `looma-piper`, `looma-search` and `looma-ai`, and `disable` survives the unit's `Restart=always`. Two things used to lead here: `verify` printing *"looma.service is NOT enabled — Looma will not start at boot"* on a native box (it now reports the right unit per deployment, and treats an enabled `looma.service` on native as a **failure**), and switching a box from Docker to native. Fixed in the installer — `up`/`down` refuse on `DEPLOY=native` and disable the stray unit, and every install now asserts the boot path before it finishes. On a box already in this state:
+  ```bash
+  sudo ./diagnose-piper.sh --fix      # names the cause, flips the units back, re-tests
+  # or by hand:
+  sudo systemctl disable --now looma.service
+  sudo systemctl enable  --now looma-piper.service
+  ```
+- **The board resets during TTS**: the CPU-frequency cap isn't in effect. Re-run with `--cpu-max-freq 1500000` (the default), and confirm `looma-cpu-cap.service` (native) or `looma.service` (Docker) is enabled.
 - **Host OOM / instability**: observability is off by default; if you turned it on, stop the obs stack: `cd /var/www/html/Looma/observability && docker compose -f docker-compose.yml -f docker-compose.odroid.yml down`.
 - **zvec too heavy**: stop `looma-search` — Looma still serves content, just without semantic search.
 - **`exec format error` after `docker load`**: the offline bundle was built on x86. Rebuild Phase 1 on arm64.

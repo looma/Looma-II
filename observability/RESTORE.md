@@ -25,9 +25,15 @@ saved — only the *definitions* (dashboards, panels, applications) travel.
 ## Prerequisites on the new device
 
 - Docker + Docker Compose v2
-- The sibling directory `../looma-ai` and `../looma-ai-data` must exist — the
-  compose file bind-mounts them for the AI service. If you don't run the AI
-  service, comment out the `looma-ai` / `looma-ai-rebuild` services.
+- The sibling directory `../looma-ai` must exist — the compose file bind-mounts
+  it read-only for the analysis workers' scripts.
+- Their DATA now lives in the `looma_ai_data` named volume, declared external
+  here because the main Looma compose creates it. Bring that stack up first,
+  or create the volume with `docker volume create looma_ai_data`.
+  (It used to be a `../looma-ai-data` host folder; that duplicated looma-ai's
+  own data tree and drifted from it, so it was removed — see
+  ../README-ZVEC.txt section 2.6.)
+- If you don't run the analysis workers, simply omit `--profile analysis`.
 
 ## Deploy
 

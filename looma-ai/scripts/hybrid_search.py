@@ -10,11 +10,12 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 import zvec
 
+from app import paths
 from app.embed.model import load_model
 
 
-DB_PATH = 'data/index/looma.db'
-COLLECTION_PATH = 'data/zvec/curriculum_chunks'
+DB_PATH = str(paths.SQLITE_DB_PATH)
+COLLECTION_PATH = str(paths.zvec_collection_path('curriculum_chunks'))
 
 
 def get_doc_id(result):

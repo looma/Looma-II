@@ -46,8 +46,12 @@ def _zvec_sample() -> dict:
     be defeated by import-order or module-aliasing issues."""
     import os as _os
     import sqlite3 as _sql
-    db_path = _os.environ.get("LOOMA_INDEX_DB", "data/index/looma.db")
-    coll_path = _os.environ.get("LOOMA_ZVEC_PATH", "data/zvec/curriculum_chunks")
+    # Defaults come from app.paths so this reports on the SAME stores the
+    # server opens, whatever directory the process was started in.
+    from app import paths as _paths
+
+    db_path = _os.environ.get("LOOMA_INDEX_DB") or str(_paths.SQLITE_DB_PATH)
+    coll_path = _os.environ.get("LOOMA_ZVEC_PATH") or str(_paths.zvec_collection_path("curriculum_chunks"))
     s: dict = {}
     try:
         s["zvec_ready"] = 1.0 if _os.path.exists(coll_path) else 0.0
@@ -207,7 +211,6 @@ def init_metrics(service_name: str) -> None:
     INSTRUMENTS["exam_questions"]    = _METER.create_histogram("looma_exam_questions_count",    unit="1",  description="Number of questions rendered in /generate_exam.")
     INSTRUMENTS["quiz_questions"]    = _METER.create_histogram("looma_quiz_questions_count",    unit="1",  description="Number of questions rendered in /quiz_html.")
     INSTRUMENTS["vocab_questions"]   = _METER.create_histogram("looma_vocab_questions_count",   unit="1",  description="Number of questions rendered in /vocab_html.")
-    INSTRUMENTS["wikipedia_calls"]   = _METER.create_counter("looma_wikipedia_calls_total",     unit="1",  description="Wikipedia REST fallbacks performed by the chat model.")
     INSTRUMENTS["dictionary_calls"]  = _METER.create_counter("looma_dictionary_calls_total",    unit="1",  description="Mongo dictionary lookups performed by chat / recommendations.")
     INSTRUMENTS["embed_calls"]       = _METER.create_counter("looma_embed_calls_total",         unit="1",  description="Embedding model invocations")
     INSTRUMENTS["embed_latency_ms"]  = _METER.create_histogram("looma_embed_latency_ms",        unit="ms", description="Embedding latency")

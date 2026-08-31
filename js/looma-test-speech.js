@@ -34,8 +34,13 @@ $(document).ready(function () {
 
     // Per-engine selected voices — English and Nepali kept separately so each
     // language is read with the right voice.
+    // The Nepali seed carries "#0" — its speaker. ne_NP-google is multi-speaker,
+    // so the catalog offers one id per speaker and a bare model name matches no
+    // <option>. Without the suffix the restore below would find nothing, fall
+    // back to whatever the dropdown had selected, and rewrite the cookie on
+    // every first visit for no reason. Speaker 0 is the same voice either way.
     var voices = {
-        piper:           { en: 'en_US-amy-low.onnx', np: 'ne_NP-google-x_low.onnx' },
+        piper:           { en: 'en_US-amy-low.onnx', np: 'ne_NP-google-x_low.onnx#0' },
         responsivevoice: { en: 'UK English Female',  np: 'Hindi Female' }
     };
 

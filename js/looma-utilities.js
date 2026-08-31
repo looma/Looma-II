@@ -1917,7 +1917,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
        if (rateNp == null) rateNp = _validRate(LOOMA.readStore('tts-rate-np', 'cookie')) || _validRate(LOOMA.readStore('tts-rate', 'cookie')) || defaultspeed;
        // Pick the speed for a given language ('ne'/'np' → Nepali) or piece of text.
        function rateForLang(lang) { return (lang === 'ne' || lang === 'np') ? rateNp : rateEn; }
-       function rateForText(t)    { return /[ऀ-ॿ]/.test(t || '') ? rateNp : rateEn; }
+       function rateForText(t)    { return rateForLang(LOOMA.speak.detectLanguage(t)); }
        // Keep the legacy scalar rate/speed (English) for the code paths that
        // still reference a single value (request keys, telemetry attributes …).
        rate = rateEn;
@@ -2043,6 +2043,11 @@ LOOMA.speak = function(text, engine, voice, rate) {
          LOOMA.speak.cleanup = function () {
              // A new run invalidates any old fetches, object URLs and highlight state.
              LOOMA.speak.runId += 1;
+             // A reading held between two sentences is over as soon as anything
+             // else starts — leaving these set would make the button offer to
+             // resume a chain that no longer exists.
+             LOOMA.speak.gapPaused = false;
+             LOOMA.speak.resumeReading = null;
              LOOMA.speak.currentSourceKey = null;
              LOOMA.speak.currentSourceText = null;
              LOOMA.speak.currentSourceSnapshot = null;
@@ -2085,6 +2090,38 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  LOOMA.speak.disable();
              }
          }; // end speak.cleanup
+
+         /*
+          * Stop the WHOLE reading, from wherever the press landed.
+          *
+          * A reading is a chain of one-sentence clips, so at any moment it is in
+          * one of three states: a clip is playing, a clip has just ended and the
+          * next is still being synthesized, or nothing is playing yet because the
+          * first one has not arrived. Only the first of those had a working
+          * control — a press in either gap did nothing at all.
+          *
+          * That reads as "pause and stop are broken in Nepali", and the language
+          * is only indirectly to blame: the Nepali voice is a `medium` model where
+          * English uses `low`, so on an ODROID each sentence takes seconds to
+          * synthesize and nearly every press lands in a gap. The same box in
+          * English is fast enough that a clip is almost always playing.
+          *
+          * Stopping (not pausing) is the honest action here: there is no audio to
+          * pause mid-gap. cleanup() bumps runId, which every step of the fetch/play
+          * chain checks, so the sentences still in flight are abandoned instead of
+          * starting up after the press. lastCompleted* is saved first — exactly as
+          * finishBrowserPlayback() does — so the next press replays the passage.
+          */
+         LOOMA.speak.stopReading = function () {
+             var stoppedText = LOOMA.speak.currentSourceText;
+             var stoppedSnapshot = LOOMA.speak.currentSourceSnapshot;
+             if (stoppedText) {
+                 LOOMA.speak.lastCompletedText = stoppedText;
+                 LOOMA.speak.lastCompletedSnapshot = LOOMA.speakCloneSnapshot(stoppedSnapshot);
+             }
+             LOOMA.speak.cleanup();
+             LOOMA.speak.disable();
+         }; // end speak.stopReading
 
          LOOMA.speak.clearBlockHighlight = function () {
              // Remove the PDF highlight bands (overlay divs — these never touched
@@ -2527,6 +2564,43 @@ LOOMA.speak = function(text, engine, voice, rate) {
          // follow along, instead of one giant utterance highlighted all at once
          // (or, before this fix, not highlighted at all — see the ResponsiveVoice
          // branch below).
+         /* How much of the FIRST sentence to synthesize before playback starts.
+          *
+          * Nothing is heard until the first clip is ready, so the wait before a
+          * reading begins is exactly "how long Piper takes on sentence one" — and
+          * an ODROID synthesizes slower than real time, which turns a long opening
+          * sentence into seconds of apparent deadness. Cutting only that first
+          * segment down to a clause gets sound out roughly in proportion: a third
+          * of the sentence, a third of the wait. Every later clip stays a whole
+          * sentence, so prosody is untouched from the second one on, and by then
+          * the fetch chain is already running ahead of playback.
+          *
+          * Never mid-word, and never when the sentence has no natural break. */
+         var FIRST_SEGMENT_MAX = 80;   // characters
+         var FIRST_SEGMENT_MIN = 25;   // don't leave an opening scrap too short to sound natural
+
+         function splitFirstSegment(part) {
+             if (part.length <= FIRST_SEGMENT_MAX) return [part];
+             // Prefer a clause break (comma/semicolon/colon/dash, plus the
+             // Devanagari comma), else any space. Scan forwards keeping the LAST
+             // match, so the break lands as late as it can while under the cap.
+             var window = part.slice(0, FIRST_SEGMENT_MAX + 1);
+             var cut = -1;
+             var clause = /[,;:\u2014\u2013\u0964]/g, m;
+             while ((m = clause.exec(window)) !== null) {
+                 if (m.index + 1 >= FIRST_SEGMENT_MIN) cut = m.index + 1;
+             }
+             if (cut < 0) {
+                 var space = window.lastIndexOf(' ');
+                 if (space >= FIRST_SEGMENT_MIN) cut = space;
+             }
+             if (cut < 0) return [part];          // no natural break: leave it whole
+             var head = part.slice(0, cut).trim();
+             var tail = part.slice(cut).trim();
+             if (!head || !tail) return [part];
+             return [head, tail];
+         }
+
          function splitIntoPlaybackSegments(sourceText) {
              var normalized = sourceText
                  .replace(/\r/g, ' ')
@@ -2535,9 +2609,17 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  .trim();
              if (!normalized) return [];
 
-             return (normalized.match(/[^.!?।]+[.!?।]?/g) || [normalized])
+             // \u0964 danda and \u0965 DOUBLE danda both end a Devanagari sentence.
+             // The double danda closes a verse or a stanza \u2014 common in the poetry
+             // and scripture in Looma's Nepali chapters \u2014 and without it the whole
+             // passage stayed ONE clip: nothing is heard until every line of it has
+             // been synthesized, and pause has only one place to land.
+             var sentences = (normalized.match(/[^.!?\u0964\u0965]+[.!?\u0964\u0965]?/g) || [normalized])
                  .map(function (part) { return part.replace(/\s+/g, ' ').trim(); })
                  .filter(function (part) { return part.length > 0; });
+
+             if (sentences.length === 0) return sentences;
+             return splitFirstSegment(sentences[0]).concat(sentences.slice(1));
          }
 
          if (engine === 'synthesis') {
@@ -2658,7 +2740,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  // the same tts.responsivevoice series the dashboards already
                  // query, plus a tts_speak event for the logs side.
                  var rvUnavailSrc = (typeof location !== 'undefined' && location.pathname) || '';
-                 var rvUnavailLang = /[ऀ-ॿ]/.test(text) ? 'np' : 'en';
+                 var rvUnavailLang = (LOOMA.speak.detectLanguage(text) === 'ne') ? 'np' : 'en';
                  try {
                      if (window.LOOMA && LOOMA.otel && LOOMA.otel.emitSpan) {
                          var rvUnavailT = Date.now();
@@ -2724,7 +2806,11 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      var rvT0 = Date.now();
                      // Devanagari text uses the Nepali voice, Latin text the
                      // English one — both chosen on the Reading Settings page.
-                     var rvLang = /[ऀ-ॿ]/.test(text) ? 'np' : 'en';
+                     // These are the PASSAGE-level values: the fallback voice, and
+                     // what the telemetry below reports. The voice and speed each
+                     // sentence is actually read with are picked per segment in
+                     // speakNextRvSegment(), the same way the Piper path does it.
+                     var rvLang = (LOOMA.speak.detectLanguage(text) === 'ne') ? 'np' : 'en';
                      var rvVoice = ((rvLang === 'np') ? voiceNp : voiceEn) || 'UK English Female';
                      var rvSrc = (typeof location !== 'undefined' && location.pathname) || '';
                      // Span + telemetry attributes shared by every outcome so a
@@ -2798,6 +2884,18 @@ LOOMA.speak = function(text, engine, voice, rate) {
                              return;
                          }
 
+                         // Voice and speed follow the SENTENCE, exactly as they do
+                         // on the Piper path. They used to be fixed for the whole
+                         // passage from the first Devanagari character found
+                         // anywhere in it, so one Nepali word made the Nepali voice
+                         // read the English sentences too — and a chapter with a
+                         // single English caption made the English voice read all
+                         // the Nepali. Mixed pages are most of Looma's content.
+                         var segLang = LOOMA.speak.detectLanguage(segment);
+                         var segVoice = ((segLang === 'ne') ? voiceNp : voiceEn) || rvVoice;
+                         // Same clamp as rvRate: ResponsiveVoice's rate runs ~0–1.5.
+                         var segRate = Math.min(1.5, Math.max(0, rateForLang(segLang) || (2 / 3)));
+
                          // ResponsiveVoice does not always deliver onend — most
                          // reliably on the very FIRST utterance of a session,
                          // where RV/Chrome can drop the callback entirely. With
@@ -2854,8 +2952,8 @@ LOOMA.speak = function(text, engine, voice, rate) {
                              if (!advanced && rvRunId === LOOMA.speak.runId) advance();
                          }, 5000);
 
-                         responsiveVoice.speak(segment, rvVoice, {
-                             rate: rvRate,
+                         responsiveVoice.speak(segment, segVoice, {
+                             rate: segRate,
                              onstart: function () {
                                  clearTimeout(startGuard);
                                  if (rvRunId !== LOOMA.speak.runId) return;
@@ -3042,12 +3140,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  // Calling http://127.0.0.1:5002/tts from the browser would hit the *client* machine, not the server/container.
                  var ttsEndpoint = 'looma-TTS.php';
 
+                 // Mixed English/Nepali content is routed sentence-by-sentence to
+                 // the right Piper worker. See LOOMA.speak.detectLanguage().
                  function detectSegmentLanguage(segment) {
-                     // Mixed English/Nepali content is routed sentence-by-sentence to the right Piper worker.
-                     var devanagariCount = (segment.match(/[\u0900-\u097F]/g) || []).length;
-                     var latinCount = (segment.match(/[A-Za-z]/g) || []).length;
-                     if (devanagariCount >= 4 && devanagariCount > latinCount) return 'ne';
-                     return 'en';
+                     return LOOMA.speak.detectLanguage(segment);
                  }
 
                  function finishBrowserPlayback(audio) {
@@ -3139,9 +3235,35 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          }
 
                          blockPromises[nextIndex].then(function (nextPreparedBlock) {
+                             if (currentRunId !== LOOMA.speak.runId) return;
+                             /* The press landed in the gap: this sentence was still
+                              * being synthesized when the user asked for a pause, so
+                              * hold it at the door rather than starting it. The next
+                              * press calls resumeReading() and the passage carries on
+                              * from here — which is what a paused reading has to do
+                              * for the button to be allowed to show "resume". */
+                             if (LOOMA.speak.gapPaused) {
+                                 LOOMA.speak.resumeReading = function () {
+                                     if (currentRunId !== LOOMA.speak.runId) return;
+                                     LOOMA.speak.gapPaused = false;
+                                     LOOMA.speak.resumeReading = null;
+                                     playPreparedBlock(nextPreparedBlock, nextIndex);
+                                 };
+                                 // Waiting on the user now, not on Piper: no spinner.
+                                 LOOMA.speak.buttonPending = false;
+                                 LOOMA.speak.clearPendingButtonState();
+                                 LOOMA.speak.updateButtonAvailability();
+                                 return;
+                             }
                              playPreparedBlock(nextPreparedBlock, nextIndex);
                          }).catch(function (error) {
                              console.log('Browser playback error: ', error);
+                             // The sentence that was being held never arrived, so
+                             // there is nothing left to resume — drop the hold or
+                             // the button would keep offering a resume that only
+                             // ever restarts the passage.
+                             LOOMA.speak.gapPaused = false;
+                             LOOMA.speak.resumeReading = null;
                              LOOMA.speak.playingAudio = null;
                              LOOMA.speak.disable();
                          });
@@ -3547,8 +3669,76 @@ LOOMA.speak.getSelectedText = function () {
     return LOOMA.cleanSelectedText(text);
 };
 
+/* LOOMA.speak.normalizeSpeakKey(text)
+ *
+ * The one answer to "are these two strings the same passage?". Every control
+ * that has to tell a PAUSE press apart from a NEW SELECTION press keys off it:
+ * hasNewSelection on the Piper and ResponsiveVoice paths, justRead in
+ * updateButtonAvailability, and the currentSourceKey request key.
+ *
+ * It compares two strings that reach it down DIFFERENT pipelines, and that is
+ * why the zero-width characters go. What the page hands to LOOMA.speak() is the
+ * RAW selection (looma-html.js reads the iframe selection straight out of the
+ * DOM); what the button guard compares it against on the next press is
+ * LOOMA.speak.getSelectedText(), which has been through cleanSelectedText().
+ * That cleaner drops anything outside its readable allow-list — and U+200C ZWNJ
+ * and U+200D ZWJ are outside it, because they sit just past the end of the
+ * Devanagari block at U+097F.
+ *
+ * Devanagari uses those two joiners to write conjuncts and half-forms, so
+ * Nepali text is full of them and English has none at all. The two sides came
+ * out different for every Nepali selection carrying one, every press counted as
+ * "the user picked something else", and pause restarted the reading from the
+ * top instead of pausing it — in Nepali only, which is exactly how it was
+ * reported. (The same mismatch made a finished Nepali reading show the play
+ * icon rather than repeat.)
+ *
+ * Stripping them HERE and nowhere else is deliberate: this function only ever
+ * compares and keys, so the word card still looks up the cleaned form, the
+ * reading highlight keeps its character map aligned, and Piper is still asked
+ * to say exactly the text the page holds. Nothing about the reading changes.
+ */
 LOOMA.speak.normalizeSpeakKey = function (text) {
-    return (text || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    return (text || '')
+        // ZWSP, ZWNJ, ZWJ, LRM, RLM, word joiner, BOM — invisible, and never a
+        // reason to call two selections different passages.
+        .replace(/[\u200B-\u200F\u2060\uFEFF]/g, '')
+        .replace(/\s+/g, ' ').trim().toLowerCase();
+};
+
+/* LOOMA.speak.detectLanguage(text) -> 'ne' | 'en'
+ *
+ * Which of Looma's two languages a piece of text is written in — the one
+ * answer every engine asks for, to pick a voice and a reading speed.
+ *
+ * ONE definition on purpose. There used to be several, and they disagreed:
+ * Piper weighed the two scripts against each other per sentence, while
+ * ResponsiveVoice asked only "is there any Devanagari in the whole passage?"
+ * — so a single Nepali word anywhere made the Nepali voice read the English
+ * sentences too. Mixed chapters are full of exactly that.
+ *
+ * (The `engine === 'synthesis'` block still carries the old whole-text test.
+ * That branch is unreachable — LOOMA.speak() coerces every engine that is not
+ * 'responsivevoice' to 'piper' before it — so it was left alone rather than
+ * half-modernised; it wants deleting, not fixing.)
+ *
+ * Whichever script the text is mostly written in wins, at any length: a stray
+ * danda in an English sentence loses to the Latin letters around it, and a
+ * two-character Nepali word with no Latin at all is still Nepali.
+ *
+ * KNOWN LIMIT — one voice per sentence. A sentence written in BOTH scripts is
+ * read entirely by one of them, so the other half comes out mispronounced; the
+ * split above works on sentences, not words. Devanagari also writes a word in
+ * fewer codepoints than Latin does, so counting characters under-counts the
+ * Nepali side: "यो Looma हो।" is 5 against 5 and goes to the English voice.
+ * Counting WORDS instead would call that one Nepali, at the cost of changing
+ * how every other mixed sentence is routed — a content decision, not a bug fix,
+ * so it is left as it is and written down here.
+ */
+LOOMA.speak.detectLanguage = function (text) {
+    var devanagariCount = ((text || '').match(/[ऀ-ॿ]/g) || []).length;
+    var latinCount = ((text || '').match(/[A-Za-z]/g) || []).length;
+    return (devanagariCount > 0 && devanagariCount > latinCount) ? 'ne' : 'en';
 };
 
 LOOMA.speak.captureSelectionSnapshot = function () {
@@ -3683,6 +3873,28 @@ LOOMA.speak.hasSelection = function () {
     return !!LOOMA.speak.selectionActive;
 };
 
+/* LOOMA.speak.isPaused()
+ *
+ * Is a reading halted with somewhere to carry on from — i.e. would the next
+ * press RESUME it? The three engines pause in three different ways, and the
+ * button has to recognise all of them or it goes back to offering "read it
+ * again" over a passage that is merely paused:
+ *
+ *   Piper / browser audio — a real <audio> element, paused and not finished
+ *   between two sentences — no element to pause, so the CHAIN is held instead
+ *   ResponsiveVoice       — its own flag; RV plays inside its script and owns
+ *                           no media element for us to look at
+ *
+ * An ENDED clip also reports paused === true, which is why `ended` is excluded:
+ * that one is the gap, and gapPaused is what says whether the gap is a pause.
+ */
+LOOMA.speak.isPaused = function () {
+    if (LOOMA.speak.gapPaused) return true;
+    if (LOOMA.speak.rvState && LOOMA.speak.rvState.paused) return true;
+    var audio = LOOMA.speak.playingAudio;
+    return !!(audio && audio.paused && !audio.ended);
+};
+
 LOOMA.speak.updateButtonAvailability = function () {
     // The button stays usable for live selection, paused audio and replay of the last completed reading.
     var isBusy = !!LOOMA.speak.buttonActive;
@@ -3712,8 +3924,15 @@ LOOMA.speak.updateButtonAvailability = function () {
         }
     } catch (e) { justRead = ''; }
 
+    // PAUSED beats every "repeat" test below it. A passage that is only halted
+    // has somewhere to carry on from, so the button must offer to resume it —
+    // and the two tests would otherwise disagree, because pausing leaves the
+    // text SELECTED and a reading of text that was read once before matches
+    // lastCompletedText exactly. That is what turned the pause button into the
+    // circular "start again" arrow the moment a teacher paused a repeat.
     var iconState = 'idle';
     if (isBusy) iconState = 'pause';
+    else if (LOOMA.speak.isPaused()) iconState = 'play';
     else if (justRead) iconState = 'repeat';
     else if (LOOMA.speak.hasSelection() || LOOMA.speak.currentSourceText) iconState = 'play';
     else if (LOOMA.speak.lastCompletedText) iconState = 'repeat';
@@ -4007,6 +4226,21 @@ LOOMA.speak.installButtonGuard = function () {
             return false;
         }
 
+        // Nothing is playing YET: the press landed while Piper is still synthesizing
+        // the first sentence. The block below only handles a live audio element, so
+        // this fell through to a fresh LOOMA.speak() — which sees the same request
+        // already pending and returns, leaving the press with no effect at all.
+        // On a slow board that window is seconds long (and longer in Nepali, whose
+        // voice is a `medium` model), so this is most of what a teacher presses.
+        // A press while pending means "I changed my mind": cancel the fetch.
+        if (!LOOMA.speak.playingAudio && LOOMA.speak.buttonPending) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            LOOMA.speak.stopReading();
+            return false;
+        }
+
         if (LOOMA.speak.playingAudio) {
             var selectedText = (LOOMA.speak.getSelectedText ? LOOMA.speak.getSelectedText() : '');
             var selectedKey = LOOMA.speak.normalizeSpeakKey ? LOOMA.speak.normalizeSpeakKey(selectedText) : (selectedText || '').toLowerCase();
@@ -4030,12 +4264,42 @@ LOOMA.speak.installButtonGuard = function () {
             event.stopPropagation();
             event.stopImmediatePropagation();
 
-            // A reading is a chain of one-sentence clips. Between two of them the
-            // finished clip is still the "current" audio while the next one is
-            // being fetched, and an ENDED clip reports paused === true — so a
-            // press landing in that gap would replay the sentence just read while
-            // the next one starts too, i.e. two voices at once. Swallow it.
-            if (LOOMA.speak.playingAudio.ended) return false;
+            /* Between two clips the finished one is still the "current" audio
+             * while the next is being fetched, and an ENDED clip reports
+             * paused === true. Calling play() on it would replay the sentence
+             * just read while the next one starts too — two voices at once.
+             *
+             * So pause the CHAIN instead of the element: the sentence in flight
+             * is held (see the `ended` handler in playPreparedBlock) and the next
+             * press carries on from there. This used to call stopReading(), which
+             * ended the whole passage — a press that looked like pause acted like
+             * stop, and the button turned into "start again" instead of "resume".
+             * On this board that is most of what a teacher presses: each sentence
+             * takes seconds to synthesize, and longer in Nepali — noticeably so
+             * even on the default ne_NP-google-x_low voice, and more again for
+             * anyone who picks ne_NP-google-medium on the Reading Settings page. */
+            if (LOOMA.speak.playingAudio.ended) {
+                if (LOOMA.speak.gapPaused) {
+                    // Resume. If the held sentence has already arrived, start it;
+                    // if Piper is still working on it, just lift the hold — the
+                    // fetch's own handler plays it the moment it resolves, and the
+                    // spinner goes back on to show the wait is Piper's again.
+                    var resume = LOOMA.speak.resumeReading;
+                    LOOMA.speak.gapPaused = false;
+                    LOOMA.speak.resumeReading = null;
+                    if (resume) {
+                        resume();
+                    } else {
+                        LOOMA.speak.buttonPending = true;
+                        LOOMA.speak.applyPendingButtonState();
+                        LOOMA.speak.updateButtonAvailability();
+                    }
+                    return false;
+                }
+                LOOMA.speak.gapPaused = true;
+                LOOMA.speak.disable();
+                return false;
+            }
 
             if (LOOMA.speak.playingAudio.paused) {
                 LOOMA.speak.playingAudio.play().then(function () {

@@ -220,7 +220,7 @@
   }
 
   // Renders one assistant turn: the own-words answer, then the source cards,
-  // then any external references (Wikipedia / dictionary).
+  // then any references the service attached.
   function appendAssistantMessage(data) {
     var entry = $('<div class="ai-chat-entry assistant">');
     entry.append($('<div class="ai-answer">').html(renderAnswerHtml(data.answer || t('noAnswer'))));
@@ -244,19 +244,23 @@
       });
     }
 
+    // References the service attached alongside the answer. The only one it can
+    // still produce is the Looma dictionary: the assistant answers from this
+    // box's own content, so there is no Wikipedia (or any other online) source
+    // to render, and nothing here may carry an off-box link a class cannot open.
     var refs = data.external_refs || [];
     if (refs.length) {
       var refWrap = $('<div class="ai-ext-refs">');
       refs.forEach(function (r) {
-        var label = (r.type === 'wikipedia') ? ('Wikipedia — ' + (r.title || ''))
-                  : (r.type === 'dictionary') ? ('Dictionary — ' + (r.word || r.en || ''))
-                  : (r.type || 'Reference');
-        var item = r.url
-          ? $('<a target="_blank" rel="noopener">').attr('href', r.url).text(label)
-          : $('<span>').text(label);
-        refWrap.append($('<div class="ai-ext-ref">').text(t('reference')).append(item));
+        if (r && r.type === 'dictionary') {
+          refWrap.append(
+            $('<div class="ai-ext-ref">')
+              .text(t('reference'))
+              .append($('<span>').text('Dictionary — ' + (r.word || r.en || '')))
+          );
+        }
       });
-      entry.append(refWrap);
+      if (refWrap.children().length) entry.append(refWrap);
     }
 
     chatBox().append(entry);

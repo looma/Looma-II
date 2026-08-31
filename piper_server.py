@@ -101,7 +101,13 @@ MAX_LENGTH_SCALE = 3.0   # ~3x slower than natural
 # Silence Piper appends after each sentence. Looma already splits the text into
 # one-sentence segments and plays them back to back, so a long tail here is just
 # dead air the listener reads as lag.
-SENTENCE_SILENCE = os.environ.get("LOOMA_PIPER_SENTENCE_SILENCE", "0.2")
+#
+# 0.05 rather than Piper's 0.2: those extra 0.15s are synthesized like any other
+# audio, so they cost BOTH latency and silence. Measured at 357ms -> 318ms per
+# sentence (11%) on x86 — and an ODROID, which synthesizes slower than real time,
+# pays proportionally more. Raise it with LOOMA_PIPER_SENTENCE_SILENCE if a class
+# wants a longer pause between sentences.
+SENTENCE_SILENCE = os.environ.get("LOOMA_PIPER_SENTENCE_SILENCE", "0.05")
 
 # Warm workers are what keep the first sentence under a second, but each one
 # holds a whole model in RAM — so the pool is bounded and evicts the
@@ -114,6 +120,13 @@ CACHE_DIR = Path(os.environ.get("LOOMA_PIPER_CACHE_DIR", "/tmp/looma_piper_cache
 MAX_CACHE_FILES = max(0, int(os.environ.get("LOOMA_PIPER_CACHE_FILES", "400")))
 
 MAX_TEXT_LENGTH = int(os.environ.get("LOOMA_PIPER_MAX_TEXT", "2500"))
+
+# How many voices a MULTI-SPEAKER model may contribute to the catalog. Piper
+# publishes research corpora as single models with hundreds of speakers
+# (en_US-libritts: 904), and the Reading Settings page lists one row per speaker
+# — so without a cap the page grows to ~2000 rows. 24 keeps every speaker of the
+# models a classroom uses (Nepali's ne_NP-google has 18) while trimming the tail.
+MAX_SPEAKERS_LISTED = max(1, int(os.environ.get("LOOMA_PIPER_MAX_SPEAKERS", "24")))
 
 # Warm workers are an OPTIMIZATION, never a dependency. If the warm path
 # misbehaves on a box (an odd piper build, a wedged process), synthesis falls
@@ -268,6 +281,55 @@ _QUALITY_LABEL = {
     "high": "best quality",
 }
 
+# ---------------------------------------------------------------------------
+# THE VOICES LOOMA OFFERS  —  this list is the Reading Settings page
+# ---------------------------------------------------------------------------
+# Eight voices: four English, four Nepali. Everything installed but not named
+# here is still perfectly usable by id (looma-TTS.php will happily synthesize
+# with it) — it just is not put in front of a teacher.
+#
+# Curating is the whole point. Left to itself the catalog expands every model
+# into one row per speaker, and the Nepali models are MULTI-SPEAKER: ne_NP-google
+# carries 18 voices in one file, so the page listed 36 Nepali rows against 4
+# English ones. Nobody picks a voice out of 36 rows called "voice 11 of 18".
+#
+# WHY THESE EIGHT, and what you may freely change:
+#
+#   English — four separate single-speaker models, two female, two male. Piper
+#   ships no gender metadata for any voice (not in the .onnx.json, not in
+#   voices.json, not in the MODEL_CARDs), so those labels come from the source
+#   datasets and are written by hand here.
+#
+#   Nepali — three speakers of ne_NP-google plus ne_NP-chitwan. There is no
+#   male Nepali voice to be had: ne_NP-google is trained on OpenSLR SLR43, whose
+#   one download is `ne_np_female.zip`, "Nepali data from female speakers" — all
+#   18 speakers are female. ne_NP-chitwan (OHF-Voice/voice-datasets, CC0) is the
+#   only Nepali voice from any other dataset, and its speaker's gender is not
+#   documented anywhere upstream. It is listed WITHOUT a gender label rather
+#   than with a guessed one; listen to it and write the right word in.
+#
+#   The three google speaker numbers (#0, #6, #12) are spread across the 18 on
+#   purpose and are NOT a judgement about how they sound — nobody has listened.
+#   Audition all 18 with LOOMA_PIPER_VOICES_ALL=1 (below) and swap the numbers.
+#
+# Entries are (voice id, language family, label). A voice id is a model
+# filename, plus "#<speaker>" for one speaker of a multi-speaker model.
+CURATED_VOICES: list[tuple[str, str, str]] = [
+    ("en_US-amy-low.onnx",       "en", "English (US) — Amy (female)"),
+    ("en_US-lessac-low.onnx",    "en", "English (US) — Lessac (female)"),
+    ("en_US-ryan-low.onnx",      "en", "English (US) — Ryan (male)"),
+    ("en_GB-alan-low.onnx",      "en", "English (UK) — Alan (male)"),
+    ("ne_NP-google-x_low.onnx#0",  "ne", "Nepali — voice 1 (female)"),
+    ("ne_NP-google-x_low.onnx#6",  "ne", "Nepali — voice 2 (female)"),
+    ("ne_NP-google-x_low.onnx#12", "ne", "Nepali — voice 3 (female)"),
+    ("ne_NP-chitwan-medium.onnx",  "ne", "Nepali — Chitwan"),
+]
+
+# Show every installed voice instead of the eight above — the way to AUDITION
+# all 18 Nepali speakers before choosing which three to list. Not a mode to
+# leave a classroom box in.
+VOICES_SHOW_ALL = os.environ.get("LOOMA_PIPER_VOICES_ALL", "0").strip().lower() in {"1", "true", "yes", "on"}
+
 
 def _model_config(model_path: Path) -> dict:
     """Read a model's sidecar .onnx.json, or {} when it is missing/unreadable."""
@@ -363,8 +425,15 @@ def _build_catalog() -> list[dict]:
         # Multi-speaker: one entry per speaker. This is what gives Nepali real
         # choice — ne_NP-google carries 18 different voices in one model, and
         # the point of listing them is to let Nepali speakers pick.
-        for index, speaker in enumerate(speakers, start=1):
-            label = f"{language_label} — {dataset} voice {index} of {len(speakers)}"
+        #
+        # Capped, because "one entry per speaker" does not scale: en_US-libritts
+        # and libritts_r carry 904 speakers EACH and en_GB-vctk 109, so listing
+        # every one would put ~2000 rows in the Reading Settings dropdown and make
+        # the page useless. The cap is well above the models a classroom actually
+        # picks from (Nepali's 18 all fit), and raising it is one variable.
+        shown = speakers[:MAX_SPEAKERS_LISTED]
+        for index, speaker in enumerate(shown, start=1):
+            label = f"{language_label} — {dataset} voice {index} of {len(shown)}"
             if quality_note:
                 label += f" ({quality_note})"
             voices.append({
@@ -384,6 +453,51 @@ def _build_catalog() -> list[dict]:
     return voices
 
 
+def _curate(catalog: list[dict]) -> list[dict]:
+    """Reduce the full catalog to the voices Looma OFFERS (see CURATED_VOICES).
+
+    Order, labels and which one is the per-language default all come from that
+    list, so the Reading Settings page reads the way it is written there rather
+    than the way the voice directory happens to sort.
+
+    A curated voice that is not installed on this box is skipped, not offered:
+    listing it would put a row in the dropdown that fails at the first press.
+    If NONE of them are installed the full catalog is returned instead — a box
+    with different models still gets a usable settings page rather than an empty
+    one.
+    """
+    if VOICES_SHOW_ALL:
+        return catalog
+
+    by_id = {voice.get("id"): voice for voice in catalog}
+    curated: list[dict] = []
+    have_default: set[str] = set()
+
+    for voice_id, family, label in CURATED_VOICES:
+        source = by_id.get(voice_id)
+        if source is None:
+            continue
+        entry = dict(source)
+        entry["label"] = label
+        entry["language"] = family or entry.get("language")
+        # First one listed for a language is that language's default.
+        entry["default"] = family not in have_default
+        have_default.add(family)
+        curated.append(entry)
+
+    if not curated:
+        log.warning("none of the %d curated voices are installed in %s - "
+                    "offering every installed voice instead",
+                    len(CURATED_VOICES), VOICE_DIR)
+        return catalog
+
+    missing = [voice_id for voice_id, _, _ in CURATED_VOICES if voice_id not in by_id]
+    if missing:
+        log.warning("curated voice(s) NOT installed, so not offered: %s", ", ".join(missing))
+
+    return curated
+
+
 def voice_catalog(force: bool = False) -> list[dict]:
     """Return the (cached) voice catalog, rescanning when the directory changes."""
     global _catalog_cache, _catalog_stamp
@@ -391,7 +505,7 @@ def voice_catalog(force: bool = False) -> list[dict]:
     stamp = _voice_dir_stamp()
     with _CATALOG_LOCK:
         if force or stamp != _catalog_stamp or not _catalog_cache:
-            _catalog_cache = _build_catalog()
+            _catalog_cache = _curate(_build_catalog())
             _catalog_stamp = stamp
         return list(_catalog_cache)
 
@@ -510,11 +624,13 @@ class PiperWorker:
         self.process.stdin.write(line)
         self.process.stdin.flush()
 
-    # Poll fast (10 ms) so the audio is handed back almost as soon as Piper has
-    # finished writing it. Three equal-size reads (~30 ms) still confirm the WAV
-    # is complete — Piper writes a sentence-sized file in one burst.
-    _POLL_INTERVAL = 0.01
-    _STABLE_READS = 3
+    # Poll fast so the audio is handed back almost as soon as Piper has finished
+    # writing it. Two equal-size reads at 5 ms still confirm the WAV is complete —
+    # Piper writes a sentence-sized file in one burst — and cost 10 ms instead of
+    # the 30 ms three reads at 10 ms did. That was pure fixed tax on every single
+    # sentence, paid after the audio was already on disk.
+    _POLL_INTERVAL = 0.005
+    _STABLE_READS = 2
 
     def _wait_for_output(self, output_path: Path, timeout: float) -> None:
         deadline = time.time() + timeout

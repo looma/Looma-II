@@ -38,6 +38,31 @@ function loomaPdfViewerUrl(webPath, options) {
     + '&zoom=' + encodeURIComponent(zoom);
 }
 
+/* The chapter's own viewer URL.
+ *
+ * HTML WINS. A chapter that exists as .html is opened as a page by the rest of
+ * Looma (looma-chapters.php marks its buttons ft='htmlchapter'; every other
+ * entry point asks looma-chapter-file.php, which applies the same rule), so the
+ * AI page has to open it the same way. Falling through to the PDF viewer for a
+ * chapter Looma serves as HTML showed the teacher a different artefact from the
+ * one their class sees.
+ *
+ * `status.web_paths.textbook` is already the winner, picked server-side; this
+ * only has to route it to the right viewer.
+ */
+function loomaTextbookViewerUrl(webPath) {
+  if (!webPath) return null;
+  var raw = String(webPath).replace(/\\/g, '/').split('#')[0].split('?')[0];
+  if (/\.html?$/i.test(raw)) {
+    var slash = raw.lastIndexOf('/');
+    var fp = slash >= 0 ? raw.slice(0, slash + 1) : '';
+    var fn = slash >= 0 ? raw.slice(slash + 1) : raw;
+    return 'html?fp=' + encodeURIComponent(safeDecodeURIComponent(fp))
+         + '&fn=' + encodeURIComponent(safeDecodeURIComponent(fn));
+  }
+  return loomaPdfViewerUrl(webPath);
+}
+
 function setBaseUi() {
   try {
     var openHealth = qs('#ai-open-health');
@@ -400,9 +425,9 @@ function renderRag(out) {
   } catch (_) {}
 
   // Source / WH-kind tag — small visual hint about where the answer came from
-  // and what shape of question it was. Helps the user understand that the chat
-  // can answer who/what/when/where/why/how on any topic, falling back to
-  // Wikipedia or the Looma dictionary when the curriculum doesn't cover it.
+  // and what shape of question it was. Every source named here is on this box:
+  // the curriculum index, or the Looma dictionary when the curriculum doesn't
+  // cover the word. The assistant never reaches the internet.
   try {
     var src = out && out.answer_source;
     var wh = out && out.wh_kind;
@@ -411,10 +436,7 @@ function renderRag(out) {
       meta.className = 'ai-chat-sources';
       var refs = (out && Array.isArray(out.external_refs)) ? out.external_refs : [];
       var refHtml = refs.map(function (r) {
-        if (r && r.type === 'wikipedia' && r.url) {
-          return ' <a href="' + r.url + '" target="_blank" rel="noopener">'
-               + escHtml(r.title || 'Wikipedia') + '</a>';
-        }
+        // Local references only — nothing here may render an off-box link.
         if (r && r.type === 'dictionary') {
           return ' <span title="Looma dictionary">📖 ' + escHtml(r.word || '') + '</span>';
         }
@@ -871,16 +893,25 @@ function renderCards(status) {
   var tbody = document.createElement('tbody');
   table.appendChild(tbody);
 
-  var pdfWebPath = (status && status.web_paths && status.web_paths.pdf) || null;
+  // The chapter's textbook. `web_paths.textbook` is the file Looma actually
+  // opens for this chapter -- the .html when one exists, the .pdf otherwise --
+  // and web_paths.pdf is still the PDF, which the Update/Edit buttons need even
+  // on a chapter that is served as HTML.
+  var tbInfo = (status && status.textbook) || {};
+  var pdfWebPath = wp.pdf || null;
+  var textbookWebPath = wp.textbook || pdfWebPath || null;
+  var textbookFormat = tbInfo.format || (pdfWebPath ? 'pdf' : null);
+  var hasTextbook = !!(exists.textbook || exists.html || exists.pdf);
+
   var pickPdf = function () {
     var fileEl = qs('#ai-pdf-file');
     if (!fileEl) return;
     try { fileEl.value = ''; } catch (_) {}
     fileEl.click();
   };
-  var openPdfViewer = function () {
-    if (!pdfWebPath) return;
-    window.location = loomaPdfViewerUrl(pdfWebPath);
+  var openTextbookViewer = function () {
+    if (!textbookWebPath) return;
+    window.location = loomaTextbookViewerUrl(textbookWebPath);
   };
   var openPdfEditor = function () {
     if (!pdfWebPath) return;
@@ -901,20 +932,33 @@ function renderCards(status) {
     });
   };
   // ─────────────────────────────────────────────────────────────────────
-  // Top-level rows: PDF + Lesson
+  // Top-level rows: Textbook + Lesson
   // ─────────────────────────────────────────────────────────────────────
 
-  // PDF — OPEN when present; UPLOAD when missing.
-  var pdfActionNode;
-  if (exists.pdf) {
-    var openPdf = makeButton('Open', openPdfViewer, !pdfWebPath);
-    var updatePdf = makeButton('Update', pickPdf, false);
-    var editPdf   = makeButton('Edit',   openPdfEditor, !pdfWebPath);
-    pdfActionNode = makeActionGroup(openPdf, makeActionGroup(updatePdf, editPdf));
+  // Textbook — the chapter itself, in whichever format Looma serves it. The row
+  // used to be labelled "PDF" and read exists.pdf, so a chapter that had been
+  // converted to HTML (which is most of them) showed up as "Missing" and its
+  // Open button went to the PDF viewer. The status pill names the format so a
+  // teacher can see at a glance which of the two this chapter is.
+  //
+  // Update / Edit stay PDF-only on purpose: both act on the source PDF (upload a
+  // replacement, annotate it), and there is no HTML editor here. They are hidden
+  // rather than disabled on a chapter that has no PDF at all.
+  var textbookActionNode;
+  if (hasTextbook) {
+    var openTextbook = makeButton('Open', openTextbookViewer, !textbookWebPath);
+    if (tbInfo.has_pdf || exists.pdf) {
+      var updatePdf = makeButton('Update PDF', pickPdf, false);
+      var editPdf   = makeButton('Edit PDF',   openPdfEditor, !pdfWebPath);
+      textbookActionNode = makeActionGroup(openTextbook, makeActionGroup(updatePdf, editPdf));
+    } else {
+      textbookActionNode = makeActionGroup(openTextbook, makeButton('Upload PDF', pickPdf, false));
+    }
   } else {
-    pdfActionNode = makeButton('Upload', pickPdf, false);
+    textbookActionNode = makeButton('Upload', pickPdf, false);
   }
-  addRow(tbody, 'PDF', pill(!!exists.pdf, exists.pdf ? 'Present' : 'Missing'), pdfActionNode);
+  var textbookLabel = (textbookFormat === 'html') ? 'HTML' : (textbookFormat === 'pdf' ? 'PDF' : 'Missing');
+  addRow(tbody, 'Textbook', pill(hasTextbook, hasTextbook ? textbookLabel : 'Missing'), textbookActionNode);
 
   // Lesson — Generate when missing, Open + Replace when present.
   var hasLesson = !!(exists && exists.lesson);
@@ -1658,7 +1702,9 @@ function updateContentPills(status) {
   var lessonCount = Number(byFt.lesson || byFt.lessons || 0);
 
   var items = [
-    { label: 'PDF', ok: !!exists.pdf },
+    // "Textbook", not "PDF": most chapters are served as HTML now, and reading
+    // exists.pdf here marked those as missing. See the Textbook row above.
+    { label: 'Textbook', ok: !!(exists.textbook || exists.html || exists.pdf) },
     { label: 'Summary', ok: !!exists.summary },
     { label: 'Keywords', ok: !!exists.keywords },
     { label: 'Quiz', ok: !!exists.quiz },

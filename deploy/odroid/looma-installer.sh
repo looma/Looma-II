@@ -10,7 +10,7 @@
 #   sudo ./looma-installer.sh install [flags] # scripted install (no form)
 #   sudo ./looma-installer.sh up [--build]    # start the stack   (systemd ExecStart)
 #   sudo ./looma-installer.sh down [--volumes]# stop the stack    (systemd ExecStop)
-#        ./looma-installer.sh build-bundle docker|native|all
+#        ./looma-installer.sh build-bundle docker|native|index|all
 #                                             # build the OFFLINE payload — run this
 #                                             # on a build box WITH internet, arm64
 #   ./looma-installer.sh --help
@@ -75,14 +75,14 @@ set_bundle_paths
 # Python, torch, the embedding model and the Piper voices. SIDECARS=host (zvec)
 # and PIPER_MODE=host (Piper) each force the all-on-the-host path for their half.
 DEPLOY="${DEPLOY:-native}"                 # docker | native
-SIDECARS="${SIDECARS:-docker}"             # native only: where zvec runs — docker | host
-# Piper is tracked SEPARATELY from the zvec stack. TTS is core Looma — every box
-# needs it, including one installed without zvec — and the two have opposite
+SIDECARS="${SIDECARS:-docker}"             # native only: where the semantic stack runs — docker | host
+# Piper is tracked SEPARATELY from the semantic stack. TTS is core Looma — every box
+# needs it, including one installed without the semantic stack — and the two have opposite
 # constraints: zvec really wants the container (focal's Python 3.8 cannot build
 # its requirements), while Piper is a self-contained binary that runs fine on the
 # host and is often better there, with no Docker in the audio path at all. Tying
 # both to one switch meant you could not have the sensible mix.
-PIPER_MODE="${PIPER_MODE:-docker}"         # native only: Piper TTS — docker | host
+PIPER_MODE="${PIPER_MODE:-host}"           # native only: Piper TTS — docker | host
 # Where the packages/images come from. NOT a question anyone is asked: the
 # installer works it out (see settle_install_source) — a disk bundle is used when
 # it is there, otherwise the network, and a box with neither is told so plainly.
@@ -100,21 +100,28 @@ PIPER_THREADS="${PIPER_THREADS:-2}"
 # content. Turn it on with --observability, or in the form.
 WITH_OBSERVABILITY="${WITH_OBSERVABILITY:-0}"  # full obs stack on this box
 WITH_AGENTS="${WITH_AGENTS:-0}"            # agents-only: Vector+Metricbeat -> remote obs
-# looma-ai is NOT a separate choice any more — it is half of the zvec stack, and
+# looma-ai is NOT a separate choice any more — it is half of the semantic stack, and
 # WITH_SEARCH decides both (settle_stack_flags derives this). It stays a variable
 # only because the install can still DEMOTE it at runtime: on a host install whose
 # torch/requirements refuse to build, search survives and the assistant does not,
 # and the app then has to hide the assistant/exam buttons on its own
 # (includes/looma-features.php reads LOOMA_AI for exactly that case).
-WITH_AI="${WITH_AI:-1}"                    # derived from WITH_SEARCH; may be demoted on failure
+WITH_AI="${WITH_AI:-0}"                    # derived from WITH_SEARCH; may be demoted on failure
 WITH_ANALYSIS="${WITH_ANALYSIS:-0}"        # heavy obs AI analysis workers (torch) — OFF
-# The zvec STACK: the search service + looma-ai. One switch, because the three
+# The SEMANTIC STACK: the search service + looma-ai. One switch, because the three
 # features a teacher sees — semantic search, the AI Assistant and exam generation
 # — all run on it. Turning it off skips those containers/services AND tells the
 # app to stop offering the features (LOOMA_ZVEC=0 -> includes/looma-features.php),
 # so nobody is left pressing a button that cannot answer. Applies to BOTH
 # deployments; it used to be a native-only flag.
-WITH_SEARCH="${WITH_SEARCH:-1}"            # zvec stack: search + AI + exams
+WITH_SEARCH="${WITH_SEARCH:-0}"            # semantic stack: search + AI + exams — OFF by default, --search turns it on
+# With the semantic stack on, the install ingests ALL of content/ so the box ships
+# able to search everything it carries (see ingest_content). This is the list of
+# top-level content folders to leave OUT of that — space-separated, empty by
+# default. It exists because the Wikipedia-for-Schools trees are ~93% of the
+# indexable files on a full content drive: a box that does not need them can be
+# installed with INGEST_EXCLUDE="W4S W4S2013" and still index all the rest.
+INGEST_EXCLUDE="${INGEST_EXCLUDE:-}"       # content folders to skip when ingesting
 INSTALL_KIOSK="${INSTALL_KIOSK:-1}"
 KIOSK_URL="${KIOSK_URL:-}"                 # empty = derive from DEPLOY (docker :48080, native :80)
 # Swap is ON by default: 8 GB of RAM is not enough headroom for Looma plus Piper
@@ -128,11 +135,10 @@ SWAP_GB="${SWAP_GB:-8}"
 # to its rated ceiling — no overclock needed — under Piper TTS or a full container
 # stack browns out and resets; reproduced on real hardware by pressing play in the
 # Piper UI). 0 = leave the CPUs alone. 1900000 is this board's own hardware max
-# (a no-op cap), so it does NOT protect against the brownout by itself — 1500000
-# is the lowest value confirmed on this hardware to still leave Piper usable while
-# avoiding the reset. Applied by looma.service (Docker) or looma-cpu-cap.service
-# (native) via ExecStartPre, so it survives reboots either way.
-CPU_MAX_FREQ="${CPU_MAX_FREQ:-1500000}"    # kHz — 1500000 = 1.5 GHz
+# (a no-op cap). The default is 1800000; a board that still resets during TTS can
+# be re-run with --cpu-max-freq 1500000. Applied by looma.service (Docker) or
+# looma-cpu-cap.service (native) via ExecStartPre, so it survives reboots either way.
+CPU_MAX_FREQ="${CPU_MAX_FREQ:-1800000}"    # kHz — 1800000 = 1.8 GHz
 REMOTE_OBS_HOST="${REMOTE_OBS_HOST:-}"     # set by the "remote" observability profile
 LOOMA_OTEL_ENDPOINT="${LOOMA_OTEL_ENDPOINT:-http://looma-otel-collector:4318}"
 LOOMA_OPENSEARCH_URL="${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"
@@ -149,16 +155,29 @@ MONGO_SERIES="${MONGO_SERIES:-5.0}"
 MONGODB_EXT_VERSION="${MONGODB_EXT_VERSION:-1.15.0}"
 PIPER_VERSION="${PIPER_VERSION:-v1.2.0}"
 # Piper voice models, as huggingface paths WITHOUT the .onnx suffix.
-#   PIPER_VOICES       — mandatory: the two Looma speaks with out of the box
-#   PIPER_EXTRA_VOICES — best-effort: offered on the Reading Settings page so
-#                        teachers (and Nepali speakers judging the Nepali ones)
-#                        can compare them and pick the defaults. A download that
-#                        fails only costs that voice, not the install.
-# Everything is "low"/"x_low" quality: on this board that is what keeps a spoken
-# sentence starting within about a second. Nepali is not short of choice with one
-# model — ne_NP-google carries 18 speakers and each is selectable on its own.
+#   PIPER_VOICES       — mandatory: the two Looma falls back to
+#   PIPER_EXTRA_VOICES — best-effort: a download that fails costs that voice,
+#                        not the install.
+#
+# These six models are exactly what the Reading Settings page offers: FOUR
+# English voices and FOUR Nepali ones. Which eight, and their labels, are set in
+# ONE place — CURATED_VOICES in piper_server.py. Change the list there and the
+# models here together; anything downloaded but not curated is dead weight on
+# the disk, and anything curated but not downloaded is quietly not offered.
+#
+# Everything is "low"/"x_low" quality except Chitwan, which upstream publishes
+# only as medium: on this board quality is a speed choice, and low/x_low is what
+# keeps a spoken sentence starting within about a second.
+#
+# NEPALI HAS NO MALE VOICE. ne_NP-google is trained on OpenSLR SLR43, whose one
+# download is `ne_np_female.zip` — all 18 of its speakers are female. Three of
+# them are offered, plus ne_NP-chitwan (OHF-Voice/voice-datasets, CC0), the only
+# Nepali voice from any other dataset; its speaker's gender is not documented
+# upstream. ne_NP-google-medium used to be fetched here and no longer is: it is
+# the same 18 female speakers again, one quality tier slower, so it cost ~110 MB
+# and 18 more rows on the settings page for no new voice.
 PIPER_VOICES="${PIPER_VOICES:-ne/ne_NP/google/x_low/ne_NP-google-x_low en/en_US/amy/low/en_US-amy-low}"
-PIPER_EXTRA_VOICES="${PIPER_EXTRA_VOICES:-en/en_US/ryan/low/en_US-ryan-low en/en_US/lessac/low/en_US-lessac-low en/en_GB/alan/low/en_GB-alan-low ne/ne_NP/google/medium/ne_NP-google-medium}"
+PIPER_EXTRA_VOICES="${PIPER_EXTRA_VOICES:-en/en_US/ryan/low/en_US-ryan-low en/en_US/lessac/low/en_US-lessac-low en/en_GB/alan/low/en_GB-alan-low ne/ne_NP/chitwan/medium/ne_NP-chitwan-medium}"
 PIPER_VOICES_BASE="${PIPER_VOICES_BASE:-https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0}"
 # How small $WWW/content has to be for `verify` to call it a failed copy. The real
 # library is tens of GB, so single digits means an interrupted rsync — but a school
@@ -250,32 +269,56 @@ fetch_piper_voices() {
   return 0
 }
 
-# Feed the chapters into the search index, reading the HTML files.
+# Feed the CONTENT into the search index — everything the box ships with, not
+# just the chapters.
 #
-# Every chapter ships as a .pdf AND the .html generated from it, and the app
-# opens the HTML — so that is what search must index too. The ingester skips a
-# PDF whenever its HTML twin sits next to it, which means one entry per chapter
-# (not two) and the better text of the two: the HTML has no broken ligatures and
-# needs no OCR. Without this step the index only ever held `activities`, so a
-# search never matched the actual lesson text.
+# A box installed WITH zvec has to come out of the install able to search what is
+# actually on it. So this walks every top-level folder under content/ (--all), not
+# a hand-picked list: the encyclopedias, the dictionaries, the lessons, the
+# teacher tools, the video subtitles — all of it. Anything left out here is
+# content a teacher can open but can never find by searching.
+#
+# CHAPTERS ARE HTML-ONLY. Every chapter ships as a .pdf AND the .html generated
+# from it, and the app opens the HTML — so that is what search must index too.
+# Indexing both would put one lesson in the index twice, and the PDF is the worse
+# text of the two (broken ligatures, OCR noise). --html-only chapters drops every
+# chapter PDF, including the couple whose conversion failed and have no .html
+# next to them: those are scans with no OCR layer, so the PDF carries no
+# extractable text anyway and the app could not open it as a chapter regardless.
+#
+# INGEST_EXCLUDE is the escape hatch for a box that should not carry the lot. The
+# Wikipedia-for-Schools trees (W4S, W4S2013) are ~93% of the indexable files on a
+# full content drive, and on a slow board they dominate both the ingest and every
+# later index rebuild — a small box can be installed with
+# INGEST_EXCLUDE="W4S W4S2013" and still get everything else.
 #
 # The reading is done by looma-ai's ingester (it needs pymongo + bs4), which lives
 # EITHER in the container or in the host venv depending on how this box was
 # installed — so look for both rather than assuming Docker. Best-effort: a box can
 # be used without it, the search is just thinner until it runs.
-ingest_chapters_html() {
+ingest_content() {
   [ "$WITH_SEARCH" = "1" ] || return 0
 
   local rel="scripts/ingest_bulk_content_to_mongo.py"
 
+  # --all walks every top-level content folder; the ingester skips its own
+  # internal ones (hidden/.git/__MACOSX). _downloads and _reports are ours: the
+  # source tarballs and the content-check reports, not anything a teacher opens.
+  local args="--all --html-only chapters --exclude _downloads --exclude _reports"
+  local x
+  for x in $INGEST_EXCLUDE; do args="$args --exclude $x"; done
+
+  local what="all content (chapters as HTML only)"
+  [ -n "$INGEST_EXCLUDE" ] && what="$what, without: $INGEST_EXCLUDE"
+
   if command -v docker >/dev/null 2>&1 \
      && docker ps --format '{{.Names}}' 2>/dev/null | grep -qx looma-ai; then
-    log "ingesting the chapter HTML into the search index (skips the PDFs)…"
-    if docker exec looma-ai python "$rel" --folder chapters; then
-      log "chapters ingested"
+    log "ingesting $what into the search index… (slow on ARM — it reads every file)"
+    if docker exec looma-ai python "$rel" $args; then
+      log "content ingested"
     else
-      warn "the chapter ingestion failed — search will still work, but without chapter text."
-      warn "  retry: docker exec looma-ai python $rel --folder chapters"
+      warn "the content ingestion failed — search will still work, but it will not match the text."
+      warn "  retry: docker exec looma-ai python $rel $args"
     fi
     return 0
   fi
@@ -284,18 +327,18 @@ ingest_chapters_html() {
   # directory (which is how looma-ai.service runs it).
   local ai_dir="$WWW/$REPO_NAME/looma-ai"
   if [ -x "$VENV/bin/python" ] && [ -f "$ai_dir/$rel" ]; then
-    log "ingesting the chapter HTML into the search index (host venv; skips the PDFs)…"
-    if ( cd "$ai_dir" && "$VENV/bin/python" "$rel" --folder chapters ); then
-      log "chapters ingested"
+    log "ingesting $what into the search index (host venv)… (slow — it reads every file)"
+    if ( cd "$ai_dir" && "$VENV/bin/python" "$rel" $args ); then
+      log "content ingested"
     else
-      warn "the chapter ingestion failed — search will still work, but without chapter text."
-      warn "  retry: cd $ai_dir && $VENV/bin/python $rel --folder chapters"
+      warn "the content ingestion failed — search will still work, but it will not match the text."
+      warn "  retry: cd $ai_dir && $VENV/bin/python $rel $args"
     fi
     return 0
   fi
 
-  warn "chapters not ingested — neither the looma-ai container nor the host venv is available."
-  warn "  Search will work, but it will not match the lesson text until this runs."
+  warn "content not ingested — neither the looma-ai container nor the host venv is available."
+  warn "  Search will work, but it will not match the content text until this runs."
   return 0
 }
 
@@ -317,9 +360,13 @@ Looma ODROID installer — one script, all deployments.
                                    content is there and reachable, and TTS really
                                    speaks English + Nepali (with its latency).
                                    Runs at the end of every install too.
-       $0 build-bundle docker|native|all [--bundle-dir PATH]
+  sudo $0 open-disk                open all folders on an NTFS/exFAT install disk so
+                                   every odroid sees the whole disk (run once)
+       $0 build-bundle docker|native|index|all [--bundle-dir PATH]
                                    build the offline payload — run on a build box
-                                   WITH internet, same arch (arm64) as the odroid
+                                   WITH internet, same arch (arm64) as the odroid.
+                                   'index' exports the ALREADY-BUILT zvec search
+                                   index onto the disk so the odroid never re-ingests.
   $0 --help
 
 Install flags (all optional; passing any flag skips the form):
@@ -327,9 +374,9 @@ Install flags (all optional; passing any flag skips the form):
                           zvec + Piper as containers.  docker: the whole app in containers.
   --sidecars docker|host  native only: run the ZVEC STACK as containers (default), or on
                           the host with a venv + systemd units (needs Python >= 3.9)
-  --piper docker|host     native only: run PIPER TTS as a container (default), or on the
-                          host as the Piper binary + a systemd unit. Independent of
-                          --sidecars: speech does not depend on the zvec stack.
+  --piper docker|host     native only: run PIPER TTS as a container, or on the host as
+                          the Piper binary + a systemd unit (the default). Independent
+                          of --sidecars: speech does not depend on the semantic stack.
   --swap                  Create a ${SWAP_GB}G swapfile (ON by default)
   --swap-gb N             Same, but N gigabytes. On a re-install with a DIFFERENT
                           N than before, REPLACES the existing swapfile (does not
@@ -350,12 +397,20 @@ Install flags (all optional; passing any flag skips the form):
   --remote-obs IP         Send telemetry to an obs stack on another host (this box runs
                           only Vector+Metricbeat; needs IP reachable on :4318 and :49200)
   --analysis              Also run the heavy obs AI analysis workers (torch)
-  --no-search             Leave the ZVEC STACK out — no semantic search, no AI
-                          Assistant, no exam generation, and the app hides all
-                          three rather than offering buttons with nothing behind
-                          them. Piper TTS is unaffected.
+  --search                Install the ZVEC STACK — semantic search, the AI Assistant
+                          and exam generation. OFF by default: it is the heaviest
+                          part of Looma (torch, plus an index over the whole
+                          curriculum), so a box only carries it when asked.
+  --no-search             Leave the semantic stack out — the default. The app hides all
+                          three features rather than offering buttons with nothing
+                          behind them. Piper TTS is unaffected.
   --ai | --no-ai          Obsolete, accepted and ignored: the assistant is part of
-                          the zvec stack. Use --no-search.
+                          the semantic stack. Use --no-search.
+  --ingest-exclude "A B"  Content folders to leave OUT of the search index (the
+                          install indexes ALL of content/ by default, with the
+                          chapters as HTML only). The Wikipedia trees are ~93% of
+                          the files: --ingest-exclude "W4S W4S2013" is the usual
+                          way to keep a small box's ingest and rebuilds short.
   --cpu-max-freq kHz      Cap every CPU's max frequency at boot, before Looma starts
                           (default: $CPU_MAX_FREQ = $((CPU_MAX_FREQ/1000)) MHz; 0 = leave the CPUs alone)
   --bundle-dir PATH       Where the offline bundle lives (default: next to this
@@ -453,8 +508,10 @@ Define LOOMA_ROOT @LOOMA_ROOT@
     # inside Docker but NOT on this host — search would silently return nothing.
     # zvec/Piper/AI listen on the host here, whether they run as containers with
     # host networking (the default) or as systemd services.
-    SetEnv LOOMA_SEARCH_ENGINE zvec
+    SetEnv LOOMA_SEARCH_ENGINE semantic
     SetEnv LOOMA_SEARCH_URL http://127.0.0.1:46333/search
+    SetEnv LOOMA_SEARCH_URL_SEMANTIC http://127.0.0.1:46333/search
+    # Legacy name, still read as a fallback by looma-database-utilities.php.
     SetEnv LOOMA_SEARCH_URL_ZVEC http://127.0.0.1:46333/search
     SetEnv LOOMA_AI_URL http://127.0.0.1:8089
 
@@ -467,9 +524,12 @@ Define LOOMA_ROOT @LOOMA_ROOT@
     SetEnv OTEL_DISABLED @OTEL_DISABLED@
     SetEnv OTEL_EXPORTER_OTLP_ENDPOINT @OTEL_ENDPOINT@
 
-    # 0 when this box was installed WITHOUT the zvec stack. includes/looma-features.php
+    # 0 when this box was installed WITHOUT the semantic stack. includes/looma-features.php
     # reads it and the app then hides semantic search, the AI Assistant and exam
     # generation, instead of offering buttons with no service behind them.
+    SetEnv LOOMA_SEMANTIC @LOOMA_ZVEC@
+    # Legacy name for the same switch; includes/looma-features.php reads
+    # LOOMA_SEMANTIC first and falls back to this.
     SetEnv LOOMA_ZVEC @LOOMA_ZVEC@
     # The assistant half (looma-ai). Search can be installed without it, so the
     # AI Assistant and exam buttons follow THIS one.
@@ -565,8 +625,12 @@ tpl_native_sidecars() {
 # straight onto the host, exactly where the native Apache/PHP expects them. The
 # alternative — a bridge network — would mean exposing MongoDB on the LAN.
 #
-# Piper has no image of its own: it lives inside the web image (voices baked in),
-# so we run that image with the Piper Flask server as its command.
+# Piper builds from Dockerfile.piper — the SMALL image (~1 GB: the binary, the
+# voices and the Flask wrapper). It used to run the WEB image with piper_server.py
+# as its command, and on a real ODROID that meant building 34 GB of torch and
+# HuggingFace models just to say a sentence out loud: the build is what failed, so
+# the container never existed and pressing Speak did nothing at all. Nothing in
+# the web image is needed for speech.
 cat <<'EOF'
 services:
   looma-search:
@@ -582,7 +646,7 @@ services:
       MONGO_COLLECTION: activities
       MODEL_NAME: sentence-transformers/all-MiniLM-L6-v2
       HF_HOME: /models/hf
-      INDEX_DIR: /data/zvec-index
+      INDEX_DIR: /data/search-index
       SEARCH_REBUILD_ON_START: "0"
       SEARCH_PORT: "46333"
       OTEL_SERVICE_NAME: looma-search
@@ -597,10 +661,18 @@ services:
     restart: unless-stopped
 
   looma-piper:
+    # context is the REPO directory, deliberately. The install root one level up
+    # holds content/ — 80 GB that Docker would package as build context before
+    # building anything at all. The repo has piper_server.py at its root, so
+    # REPO_DIR is "." here; stage_piper_dockerfile() puts Dockerfile.piper beside
+    # it (it ships one level up from the repo, which the NATIVE install does not
+    # copy to the box).
     build:
       context: .
-      dockerfile: Dockerfile
-    image: loomaweb:latest
+      dockerfile: Dockerfile.piper
+      args:
+        REPO_DIR: "."
+    image: looma-piper:latest
     container_name: looma-piper
     network_mode: host
     # 0.0.0.0, not the script's 127.0.0.1 default: with host networking that is the
@@ -615,7 +687,6 @@ services:
       # everyday English + Nepali pair plus one speed change.
       LOOMA_PIPER_MAX_WORKERS: "3"
       LOOMA_PIPER_PREWARM: "1"
-    command: ["python3", "/usr/local/var/www/@REPO_NAME@/piper_server.py"]
     restart: unless-stopped
 
   looma-ai:
@@ -762,14 +833,14 @@ Environment=SEARCH_PORT=46333
 # back to its own default, mongodb://looma-db:27017 (a Docker-network hostname),
 # which fails DNS resolution on the native host and search never connects.
 Environment=MONGO_URL=mongodb://127.0.0.1:27017
-# search_service.py's own default INDEX_DIR (/data/zvec-index) only makes sense
+# search_service.py's own default INDEX_DIR (/data/search-index) only makes sense
 # inside the Docker image — /data does not exist on the native host at all, and
 # www-data cannot create a directory at the filesystem root. _save_index() catches
 # that failure silently (logs it, does not crash), so the service looks fine but
 # NEVER actually persists the index — every restart re-embeds the whole corpus
 # from zero and loses it again the moment it restarts again. Point it somewhere
 # www-data can actually write.
-Environment=INDEX_DIR=/var/lib/looma/zvec-index
+Environment=INDEX_DIR=/var/lib/looma/search-index
 # search_service.py rebuilds the WHOLE index on every start unless this is "0"
 # (default "1" — see SEARCH_REBUILD_ON_START in search_service.py). It still
 # rebuilds automatically the first time there is no saved index at all, so this
@@ -1050,7 +1121,7 @@ edit_cpu_freq() {
 Piper TTS at full tilt pushes this board past its power/thermal budget and it
 RESETS mid-sentence — capping the CPUs is what stops that, with no overclock
 involved. 1500 is the value confirmed on this hardware to still leave Piper
-usable. 0 leaves the CPUs alone." "$mhz" || return 0
+usable, if this board ever resets during TTS. 0 leaves the CPUs alone." "$mhz" || return 0
 
   case "$mhz" in
     ''|*[!0-9]*)
@@ -1093,6 +1164,8 @@ summary() {
   printf "$row" "Install source" "$(install_source_label)"
   printf "$row" "Observability" "$(obs_label)"
   printf "$row" "zvec" "$(onoff "$WITH_SEARCH")$([ "$WITH_SEARCH" = 1 ]       && echo ' — semantic search + AI Assistant + exams'       || echo ' — no semantic search, no AI Assistant, no exams')"
+  [ "$WITH_SEARCH" = 1 ] && printf "$row" "Search index" \
+    "all content, chapters as HTML only$([ -n "$INGEST_EXCLUDE" ] && echo " — without: $INGEST_EXCLUDE")"
   [ "$DEPLOY" = docker ] && [ "$WITH_OBSERVABILITY" = 1 ] && printf "$row" "Analysis workers" "$(onoff "$WITH_ANALYSIS")"
   printf "$row" "Kiosk autostart" "$(onoff "$INSTALL_KIOSK")$([ "$INSTALL_KIOSK" = 1 ] && echo " -> $(kiosk_url)")"
   printf "$row" "Swapfile (${SWAP_GB}G)" "$(yesno "$MAKE_SWAP")"
@@ -1175,7 +1248,7 @@ Turn zvec on now? It brings semantic search, the AI Assistant and exam generatio
             && WITH_SEARCH=1 || true
           continue
         fi
-        ui_choose SIDECARS "How should the zvec stack (search + looma-ai) run?" \
+        ui_choose SIDECARS "How should the semantic stack (search + looma-ai) run?" \
           "docker" "As containers — recommended; they bring their own Python, torch and the embedding model" \
           "host"   "On the host — a venv + systemd units; needs Python >= 3.9 (focal has 3.8)" || true
         ;;
@@ -1185,7 +1258,7 @@ Turn zvec on now? It brings semantic search, the AI Assistant and exam generatio
           "host"   "On the host — the Piper binary + a systemd unit; no Docker in the audio path" || true
         ;;
       obs)      edit_observability ;;
-      zvec)     if ui_yesno "Install the zvec stack?
+      zvec)     if ui_yesno "Install the semantic stack?
 
 It provides SEMANTIC SEARCH, the AI ASSISTANT and EXAM GENERATION — one switch, because all three run on it.
 
@@ -1413,7 +1486,67 @@ settle_mongo_series() {
 # up" — never "the index built". Every call site used to treat that 202 as success
 # and print "zvec OK", which is how a box with an unreachable/empty Mongo passed the
 # install and failed in a classroom. /health carries `doc_count`, so poll that.
-wait_for_zvec_index() {  # base_url  logs_hint
+# --- Prebuilt search index -------------------------------------------------
+#
+# Embedding the whole corpus is the single most expensive thing this install
+# does, and it is the one thing that does NOT have to happen on the box: the
+# index is just a float32 matrix plus its metadata, and search_service.py already
+# loads it from INDEX_DIR on start instead of rebuilding (SEARCH_REBUILD_ON_START
+# is 0 in both deployments). So a disk built with `build-search-artifacts.sh`
+# carries search-index/ next to mongo-dump/, and this drops it into place BEFORE
+# the search service first starts. The box then boots with a working index in
+# seconds instead of embedding ~100k documents on an ARM CPU — the same build
+# that the native unit has to cap to OMP_NUM_THREADS=1 to keep the OOM killer
+# from taking it out halfway.
+#
+# load_index() re-validates what it loads (format, backend, model name), so a
+# stale or mismatched artifact is REJECTED rather than trusted — the box then
+# ingests and rebuilds on its own, exactly as it did before. Nothing here can
+# leave the box with a wrong index; the worst case is the slow path.
+prebuilt_index_dir() { echo "$SRC_REPO/search-index"; }
+
+have_prebuilt_index() { [ -f "$(prebuilt_index_dir)/index_meta.json" ]; }
+
+install_prebuilt_index() {  # dest_dir  [owner]
+  local dest="$1" owner="${2:-}" src; src="$(prebuilt_index_dir)"
+  have_prebuilt_index || return 1
+  mkdir -p "$dest" || return 1
+  # index_meta.json LAST: search_service.py keys off it, so copying the vectors
+  # first means the service never sees metadata pointing at a half-copied matrix.
+  cp -f "$src"/dense.npy "$dest"/ 2>/dev/null || true
+  cp -f "$src"/matrix.npz "$dest"/ 2>/dev/null || true
+  cp -f "$src"/index_meta.json "$dest"/ || return 1
+  [ -n "$owner" ] && chown -R "$owner" "$dest" 2>/dev/null
+  log "installed the prebuilt search index into $dest ($(du -sh "$dest" 2>/dev/null | cut -f1))"
+  return 0
+}
+
+# The Docker index lives in the looma_search_index volume; on the box that is a
+# plain directory under /var/lib/docker/volumes, so it can be filled before the
+# service ever runs without needing a helper container (an offline box has no
+# spare image to borrow for a copy).
+install_prebuilt_index_docker() {
+  have_prebuilt_index || return 1
+  command -v docker >/dev/null 2>&1 || return 1
+  docker volume create looma_search_index >/dev/null 2>&1 || true
+  local mp; mp="$(docker volume inspect -f '{{.Mountpoint}}' looma_search_index 2>/dev/null || true)"
+  [ -n "$mp" ] && [ -d "$mp" ] || return 1
+  install_prebuilt_index "$mp/search-index"
+}
+
+search_index_has_docs() {  # base_url — 0 when the service reports a NON-EMPTY index
+  local health
+  health="$(curl -fsS --max-time 10 "$1/health" 2>/dev/null || true)"
+  case "$health" in
+    *'"doc_count"'*)
+      printf '%s' "$health" | grep -qE '"doc_count":[[:space:]]*0[,}]' && return 1
+      log "search index already loaded: $(printf '%s' "$health" | sed -n 's/.*"doc_count":[[:space:]]*\([0-9]*\).*/\1/p') documents (prebuilt — no ingest, no rebuild)"
+      return 0 ;;
+  esac
+  return 1
+}
+
+wait_for_search_index() {  # base_url  logs_hint
   local base="$1" hint="$2" health n=0
   while [ "$n" -lt 180 ]; do          # 180 * 10s = 30 min, same ceiling as the old --max-time
     health="$(curl -fsS --max-time 10 "$base/health" 2>/dev/null || true)"
@@ -1514,7 +1647,7 @@ settle_install_source() {
   on its own, with no flags."
 }
 
-# looma-ai is the assistant/exam half of the zvec stack, not a choice of its own:
+# looma-ai is the assistant/exam half of the semantic stack, not a choice of its own:
 # the stack is what a teacher sees as "semantic search + AI Assistant + exams".
 # Derived here, in ONE place, so no path can leave the two disagreeing — an
 # assistant switched on with no stack under it is a button that cannot answer.
@@ -2060,7 +2193,10 @@ install_deploy_docker() {
     --exclude '.git/' --exclude '**/.venv/' --exclude '**/__pycache__/' --exclude '**/node_modules/' \
     --exclude 'deploy/odroid/offline/' --exclude 'deploy/odroid/native-bundle/' \
     "$SRC_REPO/" "$repo_dest/"
-  chmod +x "$repo_dest/deploy/odroid/looma-installer.sh" 2>/dev/null || true
+  # diagnose-piper.sh too: an NTFS/exFAT source disk carries no exec bit, and it is
+  # the first thing anyone runs when a box goes mute.
+  chmod +x "$repo_dest/deploy/odroid/looma-installer.sh" \
+           "$repo_dest/deploy/odroid/diagnose-piper.sh" 2>/dev/null || true
   # 4c) content
   copy_content
   [ -d "$epaath_dir" ] || epaath_dir="$content_dir/ePaath"   # fall back to the capitalised name
@@ -2072,8 +2208,18 @@ install_deploy_docker() {
   if [ "$WITH_OBSERVABILITY" = "1" ] || [ -n "$REMOTE_OBS_HOST" ]; then otel_disabled=0; fi
   cat > /etc/looma-odroid.env <<EOF
 # Generated by looma-installer.sh
+# How this box was installed. Nothing recorded these before, so a later run
+# could not tell native from docker or know where Piper runs — which is why
+# diagnose-piper.sh reported "PIPER_MODE unset" and skipped the systemd
+# checks on a box whose Piper service was the thing that had failed.
+DEPLOY=$DEPLOY
+PIPER_MODE=$PIPER_MODE
+SIDECARS=$SIDECARS
+WWW=$WWW
+REPO_NAME=$REPO_NAME
+VENV=$VENV
 WITH_OBSERVABILITY=$WITH_OBSERVABILITY
-# The zvec stack. 0 = no looma-search / looma-ai containers AND no semantic
+# The semantic stack. 0 = no looma-search / looma-ai containers AND no semantic
 # search, AI Assistant or exams in the app (looma-web reads LOOMA_ZVEC).
 WITH_SEARCH=$WITH_SEARCH
 WITH_AI=$WITH_AI
@@ -2137,6 +2283,11 @@ EOF
 
   # 10) Build + start. Online: --build so a re-install picks up Dockerfile changes.
   #    Offline: no build, no pull — `up` adds --pull never (OFFLINE in the env file).
+  #    The prebuilt index goes into the volume FIRST, so looma-search finds it on
+  #    its very first start and never embeds the corpus on this board.
+  # `|| true`: no prebuilt index on the disk is the NORMAL case, not a failure —
+  # without it `set -e` would abort the install right here.
+  [ "$WITH_SEARCH" = "1" ] && install_prebuilt_index_docker || true
   if [ "$OFFLINE" = "1" ]; then
     log "starting Looma from the pre-loaded images (offline; no build, no pull)…"
     "$repo_dest/deploy/odroid/looma-installer.sh" up
@@ -2145,23 +2296,33 @@ EOF
     "$repo_dest/deploy/odroid/looma-installer.sh" up --build
   fi
 
-  # 11) zvec: ingest the chapters, then build the index NOW, so the box ships with
-  #    working semantic search and we fail loudly here, not on the first search.
+  # 11) zvec: make sure the box ships with a WORKING index, and fail loudly here
+  #    rather than on the first search in a classroom. The prebuilt index was
+  #    already dropped into the volume before the stack started, so the usual
+  #    case is that the service came up with it loaded and there is nothing left
+  #    to do; ingesting and embedding on the box is the fallback.
   if [ "$WITH_SEARCH" = "1" ]; then
     for _ in $(seq 1 90); do curl -fsS "http://localhost:46333/health" >/dev/null 2>&1 && break; sleep 5; done
-    ingest_chapters_html      # chapter HTML -> mongo, before the index is built
-    log "building the zvec search index (first build; slow on ARM, please wait)…"
-    local zresp; zresp="$(curl -fsS -X POST --max-time 60 "http://localhost:46333/rebuild" 2>/dev/null || true)"
-    case "$zresp" in
-      *'"ok"'*true*) : ;;   # 202 = the build STARTED; wait_for_zvec_index says whether it worked
-      *) warn "zvec did not accept the rebuild request: ${zresp:-<no response>}"
-         warn "  check: docker logs looma-search --tail 50 ; docker logs looma-db --tail 20" ;;
-    esac
-    wait_for_zvec_index "http://localhost:46333" \
-      "docker logs looma-search --tail 50 ; docker logs looma-db --tail 20" || true
+    if ! search_index_has_docs "http://localhost:46333"; then
+      ingest_content            # all content -> mongo, before the index is built
+      log "building the zvec search index (first build; slow on ARM, please wait)…"
+      local zresp; zresp="$(curl -fsS -X POST --max-time 60 "http://localhost:46333/rebuild" 2>/dev/null || true)"
+      case "$zresp" in
+        *'"ok"'*true*) : ;;   # 202 = the build STARTED; wait_for_search_index says whether it worked
+        *) warn "zvec did not accept the rebuild request: ${zresp:-<no response>}"
+           warn "  check: docker logs looma-search --tail 50 ; docker logs looma-db --tail 20" ;;
+      esac
+      wait_for_search_index "http://localhost:46333" \
+        "docker logs looma-search --tail 50 ; docker logs looma-db --tail 20" || true
+    fi
   else
     log "zvec stack not installed — skipping search/AI/exams (the app hides them too)"
   fi
+
+  # No install finishes with a box that cannot speak: this synthesizes a real
+  # sentence, repairs what is missing, and switches Piper to the other mode
+  # rather than reporting success over silence.
+  ensure_piper_works "$repo_dest" || true
 
   verify_install
 
@@ -2185,6 +2346,272 @@ EOF
 # They use host networking, so they reach the HOST's MongoDB on 127.0.0.1:27017 and
 # publish 46333 / 5002 / 8089 exactly where the native Apache/PHP looks for them —
 # no bridge network, and MongoDB is never exposed beyond the host.
+# Does Piper actually SPEAK on this box right now?
+#
+# Deliberately not "is the unit active" or "does /health answer": a Flask sidecar
+# answers /health perfectly while the piper binary underneath it is missing, and a
+# systemd unit reports active for the second before it crash-loops. One real
+# sentence, and the WAV header checked, is the only answer that means anything.
+piper_speaks() {
+  curl -fsS --max-time 10 http://127.0.0.1:5002/health >/dev/null 2>&1 || return 1
+  local out; out="$(mktemp)"
+  if ! curl -fsS --max-time 60 -X POST http://127.0.0.1:5002/tts \
+         -H 'Content-Type: application/json' \
+         -d '{"text":"Looma speaks","language":"en"}' -o "$out" 2>/dev/null; then
+    rm -f "$out"; return 1
+  fi
+  local ok=1
+  head -c 4 "$out" 2>/dev/null | grep -q RIFF && ok=0
+  rm -f "$out"
+  return $ok
+}
+
+wait_for_piper() {   # seconds to wait (models load on first start)
+  local waited=0 max="${1:-90}"
+  while [ "$waited" -lt "$max" ]; do
+    piper_speaks && return 0
+    sleep 5; waited=$((waited + 5))
+  done
+  return 1
+}
+
+# Put right whatever a host Piper is missing. Each of these has been a real
+# failure on a real box, and each used to be only a warning.
+repair_piper_host() {
+  local repaired=0
+
+  # 0) Something that DISABLES the unit at boot. The commonest cause of a silent
+  #    host Piper is not a missing file at all — it is looma.service, the Docker
+  #    deployment's boot unit, still enabled on a box that is now native: it runs
+  #    `up`, and `up` used to clear the host services off the container ports.
+  #    Repairing the files without this would fix TTS until the next reboot only.
+  if [ "$DEPLOY" = "native" ] && systemctl is-enabled looma.service >/dev/null 2>&1; then
+    warn "  looma.service (the DOCKER autostart) is enabled on this native box — it turns"
+    warn "  Piper off at every boot. Disabling it; native Looma autostarts without it."
+    systemctl disable looma.service >/dev/null 2>&1 && repaired=1 || true
+  fi
+
+  # 1) flask. The unit is `$VENV/bin/python piper_server.py`, so no flask means it
+  #    restart-loops forever. pip failing here used to warn and move on.
+  if [ -x "$VENV/bin/python" ] && ! "$VENV/bin/python" -c 'import flask' 2>/dev/null; then
+    warn "  flask is missing from $VENV — installing it (Piper cannot start without it)"
+    if [ "$OFFLINE" = "1" ] && ls "$NATIVE_BUNDLE"/wheels/*.whl >/dev/null 2>&1; then
+      "$VENV/bin/pip" install --no-index --find-links "$NATIVE_BUNDLE/wheels" flask gunicorn \
+        >/dev/null 2>&1 && repaired=1
+    else
+      "$VENV/bin/pip" install flask gunicorn >/dev/null 2>&1 && repaired=1
+    fi
+  fi
+
+  # 2) The voices. The binary reads them from /usr/share/piper; the disk carries
+  #    them next to the binary or in the native bundle.
+  if ! ls /usr/share/piper/*.onnx >/dev/null 2>&1; then
+    warn "  no voice models in /usr/share/piper — copying them from the disk"
+    mkdir -p /usr/share/piper
+    cp -n "$WWW"/piper/*.onnx      /usr/share/piper/ 2>/dev/null && repaired=1
+    cp -n "$WWW"/piper/*.onnx.json /usr/share/piper/ 2>/dev/null || true
+    cp -n "$NATIVE_BUNDLE"/piper/voices/* /usr/share/piper/ 2>/dev/null && repaired=1
+  fi
+
+  # 3) The service file itself. A box can reach here with the unit never written
+  #    (an install that took the Docker path first, say).
+  if ! systemctl list-unit-files 2>/dev/null | grep -q '^looma-piper\.service'; then
+    warn "  looma-piper.service is not installed — cannot repair the host path from here"
+    return 1
+  fi
+
+  # 4) enable, not just restart. A unit that was DISABLED (see 0 above) restarts
+  #    happily and is gone again at the next boot — `enable --now` is what makes
+  #    the repair survive one. Then a restart, so a unit that was already enabled
+  #    but wedged also picks up whatever 1) and 2) just put on disk.
+  if ! systemctl is-enabled --quiet looma-piper.service 2>/dev/null; then
+    warn "  looma-piper.service was disabled — enabling it so TTS survives a reboot"
+    systemctl enable --now looma-piper >/dev/null 2>&1 && repaired=1 || true
+  fi
+  systemctl restart looma-piper >/dev/null 2>&1 || true
+  [ "$repaired" = "1" ] && return 0
+  return 1
+}
+
+# Will TTS still be there after the box is switched off and on again? Two things
+# decide that, and neither shows up in a health check at the end of an install:
+#   - looma.service, the DOCKER autostart, must NOT be enabled on a native box
+#     (it runs `up` at boot, which clears the host services off the ports)
+#   - looma-piper.service must be ENABLED, not merely running
+# Both are asserted rather than reported: a mute classroom the morning after is
+# the exact failure this whole file exists to prevent.
+ensure_piper_survives_reboot() {
+  [ "$DEPLOY" = "native" ] || return 0
+
+  if systemctl is-enabled looma.service >/dev/null 2>&1; then
+    warn "looma.service (the DOCKER autostart) is enabled on this NATIVE box — at every boot"
+    warn "  it runs 'looma-installer.sh up', which switches Piper TTS and search off again."
+    warn "  Disabling it. Native Looma needs no boot unit: apache2, mongod and looma-piper"
+    warn "  are each enabled and come back on their own."
+    systemctl disable looma.service >/dev/null 2>&1 || true
+  fi
+
+  [ "$PIPER_MODE" = "host" ] || return 0
+  systemctl list-unit-files 2>/dev/null | grep -q '^looma-piper\.service' || return 0
+  if ! systemctl is-enabled --quiet looma-piper.service 2>/dev/null; then
+    warn "looma-piper.service is not enabled — this box would be MUTE after a reboot. Enabling it."
+    systemctl enable --now looma-piper.service >/dev/null 2>&1 || true
+  fi
+  return 0
+}
+
+# THE GUARANTEE: an install does not finish with a box that cannot speak.
+#
+# Runs last, after both deployments have done their work, and treats "Piper is
+# silent" as something to FIX rather than report: repair the mode we are in, and
+# if that cannot work, move to the other one. TTS is core Looma — a box without it
+# is not a Looma box — so this is worth a minute at the end of a long install.
+ensure_piper_works() {
+  local repo_dest="${1:-$WWW/$REPO_NAME}"
+
+  # "Speaks now" was never the whole guarantee — it has to speak after a REBOOT
+  # too, and that is the half that failed in the field: Piper answered perfectly
+  # at the end of the install and the box was mute the next morning, because
+  # looma.service was still enabled and switched it off at boot. Nothing below
+  # can detect that, so assert the boot path first, whatever :5002 says.
+  ensure_piper_survives_reboot
+
+  log "checking that this box can actually speak…"
+  if wait_for_piper 90; then
+    log "TTS works (Piper answered with audio on :5002)"
+    return 0
+  fi
+
+  warn "Piper is not producing audio on :5002 — repairing rather than leaving the box mute"
+
+  # --- repair the mode we are in -------------------------------------------
+  if [ "$PIPER_MODE" = "host" ]; then
+    repair_piper_host || true
+    wait_for_piper 90 && { log "TTS works after repairing the host install"; return 0; }
+  else
+    # Docker: the container may have failed to build or start. Recreating it is
+    # cheap next to the alternative.
+    if command -v docker >/dev/null 2>&1; then
+      warn "  restarting the Piper container"
+      docker restart looma-piper >/dev/null 2>&1 \
+        || ( cd "$repo_dest" && docker compose -f docker-compose.native.yml -p looma-native up -d looma-piper >/dev/null 2>&1 ) \
+        || true
+      wait_for_piper 120 && { log "TTS works after restarting the container"; return 0; }
+    fi
+  fi
+
+  # --- fall back to the other mode -----------------------------------------
+  if [ "$PIPER_MODE" = "host" ]; then
+    if command -v docker >/dev/null 2>&1 && stage_piper_dockerfile "$repo_dest"; then
+      warn "  the host path cannot speak — switching Piper to a CONTAINER"
+      systemctl disable --now looma-piper >/dev/null 2>&1 || true
+      PIPER_MODE=docker
+      ( cd "$repo_dest" && docker compose -f docker-compose.native.yml -p looma-native up -d --build looma-piper ) \
+        >/dev/null 2>&1 || true
+      wait_for_piper 300 && { log "TTS works — Piper now runs as a container"; return 0; }
+    fi
+  else
+    if piper_host_capable "$WWW"; then
+      warn "  the container cannot speak — switching Piper to the HOST"
+      docker rm -f looma-piper >/dev/null 2>&1 || true
+      PIPER_MODE=host
+      repair_piper_host || true
+      systemctl enable --now looma-piper >/dev/null 2>&1 || true
+      wait_for_piper 120 && { log "TTS works — Piper now runs on the host"; return 0; }
+    fi
+  fi
+
+  # --- out of options: say so where it cannot be missed ---------------------
+  warn ""
+  warn "########################################################################"
+  warn "#  THIS BOX HAS NO TEXT-TO-SPEECH. Everything else installed fine.      #"
+  warn "########################################################################"
+  warn "  Both paths were tried. What to look at, in this order:"
+  warn "    sudo $repo_dest/deploy/odroid/diagnose-piper.sh"
+  warn "    journalctl -u looma-piper -n 40 --no-pager"
+  warn "    docker logs looma-piper --tail 40"
+  warn ""
+  PIPER_BROKEN=1
+  return 1
+}
+
+# Settle PIPER_MODE against what this box can actually run.
+#
+# TTS is core Looma — every box needs it — so neither missing piece may end in
+# silence. Each mode has one prerequisite the disk might not carry:
+#
+#   host   -> the piper binary and voice models
+#   docker -> Dockerfile.piper (staged by stage_piper_dockerfile)
+#
+# Checked here, BEFORE the sidecars are written and before the host half runs, so
+# whichever mode we end up in is one the box can honour. Called with the install
+# root, since that is where the disk's piper/ payload lands.
+piper_host_capable() {   # -> 0 when a host Piper could actually speak
+  local www="$1" c
+  local have_bin=0 have_voice=0
+  for c in "$www/piper/piper" /usr/local/bin/piper/piper /usr/local/bin/piper; do
+    [ -x "$c" ] && { have_bin=1; break; }
+  done
+  # Voices ship three ways: already installed, on the disk next to the binary, or
+  # in the native bundle waiting to be copied.
+  for c in /usr/share/piper "$www/piper" "$NATIVE_BUNDLE/piper/voices"; do
+    ls "$c"/*.onnx >/dev/null 2>&1 && { have_voice=1; break; }
+  done
+  [ "$have_bin" = "1" ] && [ "$have_voice" = "1" ]
+}
+
+settle_piper_mode() {   # install_root  repo_dest
+  local www="$1" repo_dest="$2"
+  if [ "$PIPER_MODE" = "host" ]; then
+    piper_host_capable "$www" && return 0
+    warn "no Piper binary/voices for a host install (looked in $www/piper, /usr/local/bin/piper,"
+    warn "  $NATIVE_BUNDLE/piper/voices) — a systemd unit here would just restart-loop with no TTS."
+    if command -v docker >/dev/null 2>&1 && stage_piper_dockerfile "$repo_dest"; then
+      warn "  running Piper as a CONTAINER instead; TTS will work."
+      PIPER_MODE=docker
+    else
+      warn "  and Docker cannot take over either — THIS BOX WILL HAVE NO SPEECH."
+      warn "  Fix the disk (it should carry piper/ next to content/) and re-run."
+    fi
+    return 0
+  fi
+
+  # docker: stage_piper_dockerfile reports whether the image can be built at all.
+  if ! stage_piper_dockerfile "$repo_dest"; then
+    warn "Dockerfile.piper is not on this disk ($SRC_ROOT/Dockerfile.piper) — Piper cannot run as a container."
+    if piper_host_capable "$www"; then
+      warn "  running Piper ON THE HOST instead; TTS will work."
+      PIPER_MODE=host
+    else
+      warn "  and the host has no piper binary/voices either — THIS BOX WILL HAVE NO SPEECH."
+    fi
+  fi
+  return 0
+}
+
+# Put Dockerfile.piper where the sidecar compose can build it.
+#
+# It ships ONE LEVEL UP from the repo (next to content/ and maps2018/), because
+# the dev compose builds it with that directory as context. The native install
+# copies only the repo and content/ to the box — never that level — so the file
+# simply was not there, and compose failed with
+# "failed to read dockerfile: open Dockerfile.piper: no such file or directory"
+# after the whole install had already run. Copying it into the repo directory
+# fixes that AND keeps the build context off content/: the repo is a few hundred
+# MB, the install root is 80 GB.
+stage_piper_dockerfile() {   # -> 0 when the sidecar compose can build Piper
+  local dest="$1/Dockerfile.piper" src="$SRC_ROOT/Dockerfile.piper"
+  if [ -f "$src" ]; then
+    cp -f "$src" "$dest" || return 1
+    log "staged Dockerfile.piper -> $dest"
+    return 0
+  fi
+  # Already staged by an earlier run (a re-install from a disk that has since
+  # been re-imaged, say) is just as good.
+  [ -f "$dest" ] && { log "using the Dockerfile.piper already at $dest"; return 0; }
+  return 1
+}
+
 native_sidecars_docker() {
   local repo_dest="$1" otel_endpoint="$2" otel_traces="$3" u
   log "zvec + Piper will run as CONTAINERS (they carry their own Python/torch/voices)"
@@ -2209,7 +2636,7 @@ native_sidecars_docker() {
   tpl_native_sidecars | sed -e "s#@REPO_NAME@#$REPO_NAME#g" -e "s#@WWW@#$WWW#g" \
     -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" -e "s#@OTEL_TRACES@#$otel_traces#g" > "$f"
 
-  # Only the halves that asked for Docker. Piper and the zvec stack are chosen
+  # Only the halves that asked for Docker. Piper and the semantic stack are chosen
   # independently, so this can legitimately be Piper alone, zvec alone, or both.
   local svcs=() profiles=() build=(--build) pull=()
   [ "$PIPER_MODE" = "docker" ] && svcs+=(looma-piper)
@@ -2232,6 +2659,9 @@ native_sidecars_docker() {
   # ports, and make sure the external shared volumes exist, BEFORE we build.
   remove_conflicting_containers looma-native "${svcs[@]}"
   ensure_shared_volumes
+  # Same as the Docker deployment: seed the index volume before looma-search's
+  # first start, so it loads instead of embedding the corpus on this board.
+  [ "$SIDECARS" = "docker" ] && [ "$WITH_SEARCH" = "1" ] && install_prebuilt_index_docker || true
 
   log "building and starting: ${svcs[*]}  (the first ARM build is slow — be patient)"
   if ! ( cd "$repo_dest" && docker compose -f docker-compose.native.yml -p looma-native \
@@ -2251,11 +2681,13 @@ native_sidecars_docker() {
   # systemd unit to install here.
   if [ "$SIDECARS" = "docker" ] && [ "$WITH_SEARCH" = "1" ]; then
     for _ in $(seq 1 90); do curl -fsS http://127.0.0.1:46333/health >/dev/null 2>&1 && break; sleep 5; done
-    ingest_chapters_html      # chapter HTML -> mongo, before the index is built
-    log "building the zvec index (first build; slow on ARM)…"
-    curl -fsS -X POST --max-time 60 http://127.0.0.1:46333/rebuild >/dev/null 2>&1 \
-      || warn "zvec did not accept the rebuild request — check: docker logs looma-search"
-    wait_for_zvec_index "http://127.0.0.1:46333" "docker logs looma-search --tail 50" || true
+    if ! search_index_has_docs "http://127.0.0.1:46333"; then
+      ingest_content            # all content -> mongo, before the index is built
+      log "building the zvec index (first build; slow on ARM)…"
+      curl -fsS -X POST --max-time 60 http://127.0.0.1:46333/rebuild >/dev/null 2>&1 \
+        || warn "zvec did not accept the rebuild request — check: docker logs looma-search"
+      wait_for_search_index "http://127.0.0.1:46333" "docker logs looma-search --tail 50" || true
+    fi
   fi
   if [ "$PIPER_MODE" = "docker" ]; then
     for _ in $(seq 1 24); do curl -fsS http://127.0.0.1:5002/health >/dev/null 2>&1 && break; sleep 5; done
@@ -2398,13 +2830,31 @@ install_deploy_native() {
   a2enmod php7.4 rewrite alias dir >/dev/null 2>&1 || true
 
   # 3) The app + content
-  log "copying repo -> $repo_dest"
+  #
+  # 3a) The disk assets that live ABOVE the repo — piper/ (the TTS binary and its
+  #     voices), Dockerfile.piper, maps2018/, includes/. The Docker deployment has
+  #     always copied these; the native one did not, and that is exactly why a
+  #     native box with Piper on the host found no binary in $WWW/piper/, warned,
+  #     and installed a systemd unit that restart-looped with no TTS at all.
+  #     content/ and the repo are handled separately, right below.
+  log "copying project files -> $WWW (piper, maps2018, includes …)"
   mkdir -p "$WWW"
+  rsync -a \
+    --exclude 'content/' --exclude "$REPO_NAME/" --exclude 'looma-env/' --exclude '.claude/' \
+    --exclude '**/.git/' --exclude '**/.venv/' --exclude '**/__pycache__/' --exclude '**/node_modules/' \
+    --exclude 'deploy/odroid/offline/' --exclude 'deploy/odroid/native-bundle/' \
+    "$SRC_ROOT/" "$WWW/"
+
+  # 3b) the repo itself
+  log "copying repo -> $repo_dest"
   rsync -a --delete \
     --exclude '.git/' --exclude '**/.venv/' --exclude '**/__pycache__/' --exclude '**/node_modules/' \
     --exclude 'deploy/odroid/offline/' --exclude 'deploy/odroid/native-bundle/' \
     "$SRC_REPO/" "$repo_dest/"
-  chmod +x "$repo_dest/deploy/odroid/looma-installer.sh" 2>/dev/null || true
+  # diagnose-piper.sh too: an NTFS/exFAT source disk carries no exec bit, and it is
+  # the first thing anyone runs when a box goes mute.
+  chmod +x "$repo_dest/deploy/odroid/looma-installer.sh" \
+           "$repo_dest/deploy/odroid/diagnose-piper.sh" 2>/dev/null || true
   copy_content
   chown -R www-data:www-data "$repo_dest" "$WWW/content" 2>/dev/null || true
 
@@ -2544,7 +2994,7 @@ install_deploy_native() {
     { mongoimport --db loomausers --collection logins --mode=upsert \
         --file "$SRC_REPO/mongo-dump/logins/defaultlogins.json" || warn "the login seed import failed"; }
 
-  # 6-9) Piper TTS and the zvec stack. Each can run as a CONTAINER or ON THE HOST,
+  # 6-9) Piper TTS and the semantic stack. Each can run as a CONTAINER or ON THE HOST,
   # and the two are chosen independently:
   #   in Docker — the images bring their own Python, torch, the embedding model and
   #     the Piper voices. For zvec this is effectively the only way that works on
@@ -2553,6 +3003,11 @@ install_deploy_native() {
   #     binary, and it keeps Docker out of the audio path); for zvec it needs a
   #     Python >= 3.9 that this script has to go and fetch.
   # So both halves can be needed in one run: e.g. zvec in Docker, Piper on the host.
+  # Decide where Piper can actually run BEFORE either half acts on it, so a
+  # missing binary or a missing Dockerfile.piper switches modes instead of
+  # leaving the box silent.
+  settle_piper_mode "$WWW" "$repo_dest"
+
   if [ "$PIPER_MODE" = "docker" ] || [ "$SIDECARS" = "docker" ]; then
     native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces"
   fi
@@ -2610,7 +3065,7 @@ install_deploy_native() {
     # unit below was enabled against an executable that is not there, so TTS was
     # simply dead on a box whose install had just said it succeeded. Say it, and
     # take the container instead when that is possible, since Piper is not
-    # optional the way the zvec stack is: a Looma that cannot read aloud is not
+    # optional the way the semantic stack is: a Looma that cannot read aloud is not
     # doing its job.
     warn "no Piper payload on the disk ($NATIVE_BUNDLE/piper/piper_arm64.tar.gz) and no internet."
     if command -v docker >/dev/null 2>&1 && docker_bundle_present; then
@@ -2843,10 +3298,10 @@ install_deploy_native() {
     cp -rn "$NATIVE_BUNDLE"/hf/. "$HF_DIR/" 2>/dev/null || true
   fi
   # zvec's persisted index (see INDEX_DIR in tpl_unit_search) — search_service.py's
-  # own default (/data/zvec-index) doesn't exist on the native host and www-data
+  # own default (/data/search-index) doesn't exist on the native host and www-data
   # cannot create it (root of the filesystem); this is where it actually lives here.
-  mkdir -p /var/lib/looma/zvec-index
-  chown -R www-data:www-data "$HF_DIR" "$VENV" /var/lib/looma/zvec-index 2>/dev/null || true
+  mkdir -p /var/lib/looma/search-index
+  chown -R www-data:www-data "$HF_DIR" "$VENV" /var/lib/looma/search-index 2>/dev/null || true
 
   # TRANSFORMERS_OFFLINE/HF_HUB_OFFLINE must only be forced on when $HF_DIR actually
   # has a cached model (bundled installs, or a box that already fetched one). An
@@ -2909,6 +3364,10 @@ install_deploy_native() {
   [ "$want_search_unit" = "1" ] || systemctl disable --now looma-search.service >/dev/null 2>&1 || true
   [ "$want_ai_unit"     = "1" ] || systemctl disable --now looma-ai.service     >/dev/null 2>&1 || true
   systemctl daemon-reload
+  # Before looma-search starts for the first time: the unit's INDEX_DIR is a plain
+  # directory here, so the prebuilt index is a straight copy. www-data owns it
+  # because that is who the unit runs as (see tpl_unit_search).
+  [ "$want_search_unit" = "1" ] && install_prebuilt_index /var/lib/looma/search-index www-data:www-data || true
   [ "$want_piper_unit"  = "1" ] && { systemctl enable --now looma-piper.service  || warn "looma-piper failed — journalctl -u looma-piper"; }
   [ "$want_search_unit" = "1" ] && { systemctl enable --now looma-search.service || warn "looma-search failed — journalctl -u looma-search"; }
   [ "$want_ai_unit"     = "1" ] && { systemctl enable --now looma-ai.service     || warn "looma-ai failed — journalctl -u looma-ai"; }
@@ -2934,20 +3393,22 @@ install_deploy_native() {
     fi
   fi
 
-  # Ingest the chapters and build the index NOW, exactly as the container path
+  # Ingest the content and build the index NOW, exactly as the container path
   # does — this host path never did, so a box with zvec on the host shipped with
   # an EMPTY index: search came up healthy and answered nothing, and the first
   # person to find out was whoever searched in a classroom.
   if [ "$want_search_unit" = "1" ]; then
     for _ in $(seq 1 90); do curl -fsS http://127.0.0.1:46333/health >/dev/null 2>&1 && break; sleep 5; done
-    ingest_chapters_html
-    log "building the zvec index (first build; slow on ARM)…"
-    curl -fsS -X POST --max-time 60 http://127.0.0.1:46333/rebuild >/dev/null 2>&1 \
-      || warn "zvec did not accept the rebuild request — check: journalctl -u looma-search"
-    wait_for_zvec_index "http://127.0.0.1:46333" "journalctl -u looma-search -n 50" || true
+    if ! search_index_has_docs "http://127.0.0.1:46333"; then
+      ingest_content
+      log "building the zvec index (first build; slow on ARM)…"
+      curl -fsS -X POST --max-time 60 http://127.0.0.1:46333/rebuild >/dev/null 2>&1 \
+        || warn "zvec did not accept the rebuild request — check: journalctl -u looma-search"
+      wait_for_search_index "http://127.0.0.1:46333" "journalctl -u looma-search -n 50" || true
+    fi
   fi
 
-  fi   # end of the host half (Piper and/or the zvec stack on this box)
+  fi   # end of the host half (Piper and/or the semantic stack on this box)
 
   # 10) Observability: the app is native, but the obs STACK still runs in Docker,
   #     with an override so the collector tails the HOST's Apache logs.
@@ -2968,6 +3429,29 @@ install_deploy_native() {
   install_kiosk
   install_start_shortcut
 
+  # The native install never recorded what it did. Same file the Docker path
+  # writes, so `up`, looma.service and the diagnostics can read this box's
+  # own configuration instead of guessing at it.
+  log "writing /etc/looma-odroid.env"
+  cat > /etc/looma-odroid.env <<EOF
+# Generated by looma-installer.sh (native install)
+DEPLOY=$DEPLOY
+PIPER_MODE=$PIPER_MODE
+SIDECARS=$SIDECARS
+WWW=$WWW
+REPO_NAME=$REPO_NAME
+VENV=$VENV
+WITH_SEARCH=$WITH_SEARCH
+WITH_AI=$WITH_AI
+WITH_OBSERVABILITY=$WITH_OBSERVABILITY
+OFFLINE=$OFFLINE
+EOF
+
+  # No install finishes with a box that cannot speak: this synthesizes a real
+  # sentence, repairs what is missing, and switches Piper to the other mode
+  # rather than reporting success over silence.
+  ensure_piper_works "$repo_dest" || true
+
   verify_install
 
   log "DONE — native Looma installed."
@@ -2978,7 +3462,7 @@ install_deploy_native() {
   Search:     curl -s http://127.0.0.1:46333/health           (zvec$([ "$WITH_SEARCH" = 1 ] || echo ' — disabled'))
   AI:         curl -s http://127.0.0.1:8089/health            (looma-ai$([ "$WITH_AI" = 1 ] || echo ' — disabled'))
 EOF
-  # Piper and the zvec stack are placed independently, so say where EACH one went
+  # Piper and the semantic stack are placed independently, so say where EACH one went
   # rather than assuming one answer covers both.
   local in_docker=() on_host=(apache2 mongod)
   [ "$PIPER_MODE" = "docker" ] && in_docker+=(looma-piper) || on_host+=(looma-piper)
@@ -3141,11 +3625,16 @@ verify_tts() {
   if [ -n "$voices" ]; then
     en_n=$(printf '%s' "$voices" | grep -o '"language": *"en"' | wc -l | tr -d ' ')
     ne_n=$(printf '%s' "$voices" | grep -o '"language": *"ne"' | wc -l | tr -d ' ')
-    if [ "${en_n:-0}" -ge 2 ] && [ "${ne_n:-0}" -ge 2 ]; then
+    # FOUR of each is the contract — see CURATED_VOICES in piper_server.py, and
+    # PIPER_VOICES/PIPER_EXTRA_VOICES above for the models they need. Fewer means
+    # a best-effort download failed, so the page is short a voice.
+    if [ "${en_n:-0}" -ge 4 ] && [ "${ne_n:-0}" -ge 4 ]; then
       v_ok "voices offered: $en_n English, $ne_n Nepali"
     else
-      v_warn "only $en_n English / $ne_n Nepali voice(s) offered — the extra models did not install.
-            Check: docker exec looma-piper ls -1 /usr/share/piper   (expect 6 .onnx files)"
+      v_warn "only $en_n English / $ne_n Nepali voice(s) offered (expected 4 and 4) — a voice
+            model did not download. Check: $([ "$PIPER_MODE" = host ] && echo 'ls -1 /usr/share/piper' \
+              || echo 'docker exec looma-piper ls -1 /usr/share/piper')   (expect 6 .onnx files)
+            Re-running the installer fetches whatever is missing."
     fi
   else
     v_warn "looma-TTS-voices.php did not answer — the Reading Settings page will show only the built-in voices"
@@ -3217,7 +3706,28 @@ verify_services() {
           || v_ok "the app correctly hides search, the AI Assistant and exams" ;;
     *) : ;;   # login redirect or an older page — nothing to compare
   esac
-  if systemctl list-unit-files 2>/dev/null | grep -q '^looma\.service'; then
+  # Autostart. Which unit is the RIGHT one depends on the deployment, and reading
+  # this the same way for both is how a native box ended up mute: it was told
+  # "looma.service is NOT enabled — Looma will not start at boot", enabling it
+  # looked like the obvious fix, and from then on every boot ran `up`, which
+  # disabled looma-piper.service a minute later. On native, an enabled
+  # looma.service is the FAULT, not the fix.
+  if [ "$DEPLOY" = "native" ]; then
+    if systemctl list-unit-files 2>/dev/null | grep -q '^looma\.service' \
+       && systemctl is-enabled looma.service >/dev/null 2>&1; then
+      v_fail "looma.service (the DOCKER autostart) is enabled on this NATIVE box — it runs
+            'looma-installer.sh up' at every boot, which switches Piper TTS and search OFF
+            a minute after systemd starts them. Fix: sudo systemctl disable --now looma.service"
+    else
+      v_ok "no Docker autostart on this native box (apache2/mongod/looma-piper start at boot)"
+    fi
+    if [ "$PIPER_MODE" = "host" ]; then
+      systemctl is-enabled looma-piper.service >/dev/null 2>&1 \
+        && v_ok "looma-piper.service is enabled (TTS comes back after a reboot)" \
+        || v_fail "looma-piper.service is NOT enabled — TTS works now but the box will be MUTE
+            after the next reboot. Fix: sudo systemctl enable --now looma-piper.service"
+    fi
+  elif systemctl list-unit-files 2>/dev/null | grep -q '^looma\.service'; then
     systemctl is-enabled looma.service >/dev/null 2>&1 \
       && v_ok "looma.service is enabled (starts at boot)" \
       || v_warn "looma.service is NOT enabled — Looma will not start at boot"
@@ -3264,7 +3774,77 @@ verify_install() {
 # so `fuser -k 46333/tcp` frees the port for a few seconds and systemd respawns
 # it before the container can bind — which is why killing the PID never sticks.
 # DISABLING the unit (not just killing it) is what stops the respawn for good.
+# THE NATIVE GUARD.
+#
+# `up`/`down` belong to the DOCKER deployment: looma.service calls them at boot to
+# raise the compose stack. On a NATIVE box they must do nothing at all, because
+# free_app_host_ports() below deliberately clears the host services off the ports
+# the containers want — and on a native box those host services ARE Looma.
+#
+# This is not hypothetical. A box installed as Docker and later re-installed as
+# native kept looma.service enabled; every boot it ran `up`, which disabled
+# looma-piper.service about a minute after systemd had started it. `disable` beats
+# the unit's own Restart=always, so the board came up mute, and the journal showed
+# a Piper that had started perfectly and then been stopped by nobody in particular.
+# looma-search and looma-ai went the same way.
+#
+# So: refuse, and take the unit out of the boot path for good rather than losing
+# TTS again at the next reboot. A native box needs no boot unit of its own —
+# apache2, mongod and looma-piper are each `enable`d and come back on their own.
+refuse_up_on_native() {
+  [ "${DEPLOY:-docker}" = "native" ] || return 0
+  echo "[looma-up] this box is a NATIVE install (DEPLOY=native in /etc/looma-odroid.env)."
+  echo "[looma-up] 'up'/'down' are the Docker deployment's commands — doing nothing."
+  if systemctl is-enabled looma.service >/dev/null 2>&1; then
+    echo "[looma-up] looma.service is enabled here and would disable Piper/search at every"
+    echo "[looma-up] boot — disabling it. Native Looma autostarts via apache2, mongod and"
+    echo "[looma-up] looma-piper.service instead."
+    systemctl disable looma.service >/dev/null 2>&1 || true
+  fi
+  # Whatever this unit already took away on earlier boots, put back.
+  restore_native_units || true
+  return 1
+}
+
+# Re-enable the host services a stray `up` disabled. Only ever touches units that
+# exist AND belong on this box per /etc/looma-odroid.env, so it can be called
+# blindly. Silent when there is nothing to do.
+restore_native_units() {
+  local svc units=()
+  [ "${PIPER_MODE:-host}" = "host" ] && units+=(looma-piper) || true
+  if [ "${SIDECARS:-docker}" = "host" ]; then
+    [ "${WITH_SEARCH:-0}" = "1" ] && units+=(looma-search) || true
+    [ "${WITH_AI:-0}" = "1" ]     && units+=(looma-ai)     || true
+  fi
+  for svc in "${units[@]:-}"; do
+    [ -n "$svc" ] || continue
+    systemctl list-unit-files 2>/dev/null | grep -q "^${svc}\.service" || continue
+    # Already enabled AND running: nothing to do. Enabled but stopped still needs
+    # the start, which is why both are tested.
+    if systemctl is-enabled --quiet "${svc}.service" 2>/dev/null \
+       && systemctl is-active --quiet "${svc}.service" 2>/dev/null; then
+      continue
+    fi
+    echo "[looma-up] re-enabling ${svc}.service (a previous Docker-mode 'up' turned it off)"
+    systemctl enable --now "${svc}.service" >/dev/null 2>&1 || true
+  done
+  return 0
+}
+
 free_app_host_ports() {
+  # NEVER on a native box. This function exists to hand ports to CONTAINERS, so on
+  # a native install every judgement it makes is inverted: there the host services
+  # ARE the deployment. It used to run regardless, and that is how a perfectly
+  # healthy box went mute — looma.service (left enabled by an earlier Docker
+  # install) ran `up` at boot, this disabled looma-piper.service a minute after
+  # systemd had started it, and TTS never came back because `disable` survives the
+  # unit's own Restart=always. cmd_up already refuses on native; this is the second
+  # lock, for a hand-run `looma-installer.sh up`.
+  if [ "${DEPLOY:-docker}" = "native" ]; then
+    echo "[looma-up] this box is a NATIVE install — leaving the host services alone"
+    return 0
+  fi
+
   # 1) The real culprit: native systemd services that publish these ports. In the
   #    Docker deployment (the only path that calls cmd_up) the containers own these
   #    ports, so a host service on the same port is always the wrong one to keep.
@@ -3325,6 +3905,11 @@ cmd_up() {
   local repo_dir="$SRC_REPO" obs_dir="$OBS_DIR"
 
   # Defaults, then the installer's answers.
+  # DEPLOY is forced to `docker` here rather than inheriting the script-wide
+  # default (`native`): `up` IS the Docker deployment's boot command, so a box with
+  # no /etc/looma-odroid.env (installed before that file existed) must still start.
+  # Only an env file that explicitly says native turns the guard below on.
+  DEPLOY=docker
   WITH_OBSERVABILITY=1; WITH_AI=1; WITH_ANALYSIS=0; WITH_AGENTS=0; OFFLINE=0
   WITH_SEARCH=1
   LOOMA_CONTENT_DIR="$SRC_ROOT/content"
@@ -3343,6 +3928,9 @@ cmd_up() {
   # container starts, LOOMA_ZVEC decides whether the app offers the features.
   LOOMA_ZVEC="$WITH_SEARCH"; export LOOMA_ZVEC
   LOOMA_AI="$WITH_AI"; export LOOMA_AI
+
+  # THE NATIVE GUARD — do not remove. See refuse_up_on_native() for what this cost.
+  refuse_up_on_native || return 0
 
   # `ai` turns on the assistant. `analysis` turns on the heavy obs workers — kept
   # SEPARATE, so enabling the assistant does not also start those.
@@ -3410,6 +3998,15 @@ cmd_up() {
 }
 
 cmd_down() {
+  # Same guard as `up`, and for the same unit: looma.service runs this as its
+  # ExecStop. On a native box it has nothing of its own to stop.
+  DEPLOY=docker
+  # `|| true`: `set -e` is in force here (unlike cmd_up), and a box with no env
+  # file must not have `down` die on the test itself.
+  # shellcheck disable=SC1091
+  [ -f /etc/looma-odroid.env ] && . /etc/looma-odroid.env || true
+  refuse_up_on_native || return 0
+
   # --volumes ALSO deletes the data volumes (DANGER: wipes Mongo, the zvec index,
   # OpenSearch/Grafana data). Content and maps are host copies — never touched.
   local extra=()
@@ -3467,8 +4064,23 @@ EOF
   ( cd "$OBS_DIR" && docker compose -f docker-compose.yml -f docker-compose.odroid.yml pull --ignore-buildable ) \
     || warn "some obs images failed to pull (continuing)"
 
+  # Piper's own image is NOT in the repo's compose (that file runs Piper inside
+  # looma-web), but the ODROID's native deployment runs it as its own container —
+  # so an offline box would find no looma-piper:latest to load and come up mute.
+  # Dockerfile.piper lives one level up, next to the repo directory.
+  if stage_piper_dockerfile "$SRC_REPO"; then
+    # Context is the REPO, not the directory above it — that one holds content/,
+    # and Docker packs the whole context before it builds anything. Same reason
+    # the box's sidecar compose builds from the repo.
+    log "building the Piper image (small: binary + voices, no torch)"
+    ( cd "$SRC_REPO" && docker build -f Dockerfile.piper --build-arg REPO_DIR=.         -t looma-piper:latest . )       || warn "the Piper image failed to build — an offline native box will have no TTS container"
+  else
+    warn "no Dockerfile.piper on this disk — offline boxes will have no looma-piper image"
+  fi
+
   log "enumerating the images both stacks reference"
   {
+    echo looma-piper:latest
     ( cd "$SRC_REPO" && docker compose --profile ai config --images )
     ( cd "$OBS_DIR"  && docker compose -f docker-compose.yml -f docker-compose.odroid.yml config --images )
   } | sort -u > "$OFFLINE_DIR/images/IMAGES.list"
@@ -3563,20 +4175,110 @@ EOF
   log "native offline bundle ready: $NATIVE_BUNDLE  ($(du -sh "$NATIVE_BUNDLE" | awk '{print $1}'))"
 }
 
+# Export the zvec search index that is ALREADY BUILT on this machine onto the disk
+# (repo/search-index/), so the odroid install drops it straight into the volume and
+# never re-ingests the corpus (hours of embedding on ARM). The consumer side already
+# exists — install_prebuilt_index_docker() / _native pick this up automatically.
+# Run this where Looma runs with a populated index (e.g. your dev box).
+build_bundle_index() {
+  command -v docker >/dev/null 2>&1 || die "docker is required to export the search index"
+  local dest; dest="$(prebuilt_index_dir)"        # $SRC_REPO/search-index
+  mkdirs "$dest"
+  log "exporting the zvec search index -> $dest"
+
+  # A tar pipe out of the volume (not a bind mount) so this behaves identically on
+  # Windows/Docker Desktop, where binding a host path into a helper is awkward.
+  # busybox is tiny and universal; this box has internet (that is where you build).
+  if docker volume inspect looma_search_index >/dev/null 2>&1; then
+    docker run --rm -v looma_search_index:/data busybox \
+      sh -c 'cd /data/search-index 2>/dev/null || cd /data/zvec-index 2>/dev/null; tar -cf - . 2>/dev/null' \
+      | tar -C "$dest" -xf - 2>/dev/null || true
+  fi
+  # Fallback: straight out of the (possibly stopped) container.
+  if [ ! -f "$dest/index_meta.json" ] && docker container inspect looma-search >/dev/null 2>&1; then
+    docker cp looma-search:/data/search-index/. "$dest"/ >/dev/null 2>&1 \
+      || docker cp looma-search:/data/zvec-index/. "$dest"/ >/dev/null 2>&1 || true
+  fi
+
+  [ -f "$dest/index_meta.json" ] || die "no built index was found in the looma_search_index volume.
+  Build it first, on this machine, then re-run:
+      docker compose --profile search --profile ai up -d
+      curl -X POST http://localhost:46333/rebuild
+      # wait until:  curl -s http://localhost:46333/health   shows \"doc_count\" > 0
+      $0 build-bundle index"
+
+  log "search index exported: $(du -sh "$dest" 2>/dev/null | cut -f1)"
+  log "It rides on the disk; the odroid install drops it into the volume — no ingest, no rebuild."
+}
+
+# The install disk is often NTFS (a Windows-formatted external drive). On NTFS the
+# visibility of a folder on Linux is decided by the MOUNT OPTIONS, not by chmod —
+# folders created on Windows by a different account map to an owner the odroid's
+# user cannot read, so they "disappear" ("I only see some folders, not all"). This
+# exposes everything: it re-mounts the disk holding this script with umask=000
+# (NTFS/exFAT/vfat), or opens read bits with chmod (native Linux FS). Idempotent
+# and best-effort — it never aborts the install.
+open_source_disk() {
+  command -v findmnt >/dev/null 2>&1 || return 0
+  local mp dev fstype
+  mp="$(df -P "$SCRIPT_DIR" 2>/dev/null | awk 'NR==2{print $6}')"
+  [ -n "$mp" ] || return 0
+  dev="$(findmnt -no SOURCE --target "$mp" 2>/dev/null || true)"
+  fstype="$(findmnt -no FSTYPE --target "$mp" 2>/dev/null || true)"
+  [ -n "$fstype" ] || return 0
+  log "source disk: $mp  (device ${dev:-?}, $fstype)"
+
+  case "$fstype" in
+    ntfs|ntfs3|fuseblk)
+      # Try an in-place remount first (cheap, keeps the running script's disk up).
+      if mount -o remount,umask=000 "$mp" 2>/dev/null; then
+        log "  remounted with umask=000 — every folder is now visible to all users"
+        return 0
+      fi
+      # ntfs-3g usually refuses to change umask on remount. A full umount is unsafe
+      # while we are RUNNING from this disk, so don't do it here — tell the user the
+      # exact one-liner to run from OUTSIDE the disk (e.g. their home dir).
+      warn "  could not open the NTFS permissions in place. Run this ONCE, from your home dir,"
+      warn "  and every odroid will then see all folders:"
+      warn "      cd ~ && sudo umount '$mp' && sudo mount -t ntfs-3g -o umask=000,uid=$TARGET_USER,gid=$TARGET_USER '${dev:-/dev/sdX1}' '$mp'"
+      warn "  (Root can still read everything, so THIS install copies all folders regardless.)"
+      ;;
+    exfat|vfat)
+      mount -o remount,umask=000 "$mp" 2>/dev/null \
+        && log "  remounted with umask=000 — all files visible to everyone" \
+        || log "  $fstype already exposes files to all users"
+      ;;
+    ext4|ext3|ext2|btrfs|xfs)
+      chmod -R a+rX "$mp" 2>/dev/null \
+        && log "  opened read/execute bits on the disk (chmod -R a+rX)" \
+        || warn "  chmod reported issues on some paths"
+      ;;
+    *) warn "  unknown filesystem '$fstype' — cannot open permissions automatically" ;;
+  esac
+  return 0
+}
+
+# Standalone entry point so it can be run on its own, before any install.
+cmd_open_disk() {
+  [ "$(id -u)" -eq 0 ] || die "run as root: sudo $0 open-disk"
+  open_source_disk
+}
+
 cmd_build_bundle() {
   local what=all
   while [ $# -gt 0 ]; do case "$1" in
-    docker|native|all) what="$1"; shift;;
+    docker|native|index|all) what="$1"; shift;;
     --bundle-dir) BUNDLE_ROOT="$2"; set_bundle_paths; shift 2;;
     -h|--help) usage; exit 0;;
-    *) die "build-bundle takes: docker | native | all  [--bundle-dir PATH]";;
+    *) die "build-bundle takes: docker | native | index | all  [--bundle-dir PATH]";;
   esac; done
 
   log "bundle destination: $BUNDLE_ROOT"
   case "$what" in
     docker) build_bundle_docker ;;
     native) build_bundle_native ;;
-    all)    build_bundle_docker; build_bundle_native ;;
+    index)  build_bundle_index ;;
+    all)    build_bundle_docker; build_bundle_native; build_bundle_index ;;
   esac
   cat <<EOF
 
@@ -3608,9 +4310,11 @@ cmd_install() {
     # The assistant is no longer selectable on its own — it is half of the zvec
     # stack. Accept the old flags so existing scripts do not die on them, but say
     # plainly that they no longer decide anything; --no-search leaves the stack out.
-    --ai) warn "--ai is obsolete: the AI assistant is part of the zvec stack and is on with it"; shift;;
-    --no-ai) warn "--no-ai is obsolete: the AI assistant is part of the zvec stack. Use --no-search to leave the whole stack out"; shift;;
-    --no-search) WITH_SEARCH=0; shift;;
+    --ai) warn "--ai is obsolete: the AI assistant is part of the semantic stack and is on with it"; shift;;
+    --no-ai) warn "--no-ai is obsolete: the AI assistant is part of the semantic stack. Use --no-search to leave the whole stack out"; shift;;
+    --search) WITH_SEARCH=1; shift;;
+    --no-search) WITH_SEARCH=0; shift;;   # the default; kept so old scripts keep working
+    --ingest-exclude) INGEST_EXCLUDE="${2:-}"; shift 2;;
     --sidecars) SIDECARS="$2"; shift 2;;
     --piper) PIPER_MODE="$2"; shift 2;;
     --swap) MAKE_SWAP=1; shift;;
@@ -3638,6 +4342,9 @@ cmd_install() {
 
   resolve_obs_endpoints
   preflight "install"
+  # NTFS/exFAT disks hide folders whose Windows owner the odroid can't map — open
+  # them up front so the copy below sees the WHOLE disk, on every odroid.
+  open_source_disk
   # Always — not just when switching deployments: a leftover legacy browser
   # autostart (an old firefox.desktop, a hand-edited kiosk entry, …) opens a
   # SECOND browser window on login next to ours, on every deploy and re-install.
@@ -3687,25 +4394,35 @@ cmd_verify() {
     *) die "unknown option for verify: $1";;
   esac; done
 
-  # Options written by the Docker install (WITH_AI, …), so the checks match what
-  # was actually asked for instead of the defaults at the top of this script.
+  # Options written by the install (WITH_AI, DEPLOY, PIPER_MODE, …), so the checks
+  # match what was actually asked for instead of the defaults at the top of this
+  # script. This file is the RECORD of what this box was told to be, and it wins.
+  local have_env=0
   # shellcheck disable=SC1091
-  [ -f /etc/looma-odroid.env ] && . /etc/looma-odroid.env
+  [ -f /etc/looma-odroid.env ] && { . /etc/looma-odroid.env; have_env=1; } || true
 
-  # Which deployment is this? The app container is the giveaway; a host Apache
-  # serving the repo means the native one.
-  if command -v docker >/dev/null 2>&1 && docker ps -a --format '{{.Names}}' 2>/dev/null | grep -qx looma-web; then
-    DEPLOY=docker
-  elif systemctl is-active apache2 >/dev/null 2>&1 || systemctl is-active httpd >/dev/null 2>&1; then
-    DEPLOY=native
+  # Guessing from what is running is only for a box installed before that file
+  # existed. It must NEVER override the record, because every signal it reads is
+  # also a symptom: a native box whose stray looma.service brings up looma-web at
+  # boot looks "docker", and — worse — a looma-piper.service that something
+  # DISABLED looks like "Piper lives in a container", which silently skips the
+  # very check that would have reported the fault.
+  if [ "$have_env" != "1" ]; then
+    # Which deployment is this? The app container is the giveaway; a host Apache
+    # serving the repo means the native one.
+    if command -v docker >/dev/null 2>&1 && docker ps -a --format '{{.Names}}' 2>/dev/null | grep -qx looma-web; then
+      DEPLOY=docker
+    elif systemctl is-active apache2 >/dev/null 2>&1 || systemctl is-active httpd >/dev/null 2>&1; then
+      DEPLOY=native
+    fi
+    # Where each half actually ended up — it changes the "where do I look for the
+    # logs" hints, and the two are placed independently, so ask about each. An
+    # ENABLED unit is the test, not merely an installed one: the installer leaves
+    # a disabled unit behind when a half moves into Docker.
+    if systemctl is-enabled looma-piper.service >/dev/null 2>&1; then PIPER_MODE=host; else PIPER_MODE=docker; fi
+    if systemctl is-enabled looma-search.service >/dev/null 2>&1 \
+       || systemctl is-enabled looma-ai.service >/dev/null 2>&1; then SIDECARS=host; else SIDECARS=docker; fi
   fi
-  # Where each half actually ended up — it changes the "where do I look for the
-  # logs" hints, and the two are placed independently, so ask about each. An
-  # ENABLED unit is the test, not merely an installed one: the installer leaves
-  # a disabled unit behind when a half moves into Docker.
-  if systemctl is-enabled looma-piper.service >/dev/null 2>&1; then PIPER_MODE=host; else PIPER_MODE=docker; fi
-  if systemctl is-enabled looma-search.service >/dev/null 2>&1 \
-     || systemctl is-enabled looma-ai.service >/dev/null 2>&1; then SIDECARS=host; else SIDECARS=docker; fi
 
   log "verifying a $DEPLOY install at $WWW"
   verify_install
@@ -3722,6 +4439,7 @@ main() {
     up)           cmd_up "$@" ;;
     down)         cmd_down "$@" ;;
     verify)       cmd_verify "$@" ;;
+    open-disk)    cmd_open_disk "$@" ;;
     build-bundle) cmd_build_bundle "$@" ;;
     install)      cmd_install "$@" ;;
     -h|--help)    usage ;;

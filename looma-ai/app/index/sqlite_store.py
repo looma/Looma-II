@@ -2,8 +2,12 @@
 import sqlite3
 from pathlib import Path
 
+from app.paths import SQLITE_DB_PATH
 
-DB_PATH = Path("data/index/looma.db")
+
+# Anchored to the package root by app.paths, not to the CWD -- see the note
+# there about the two rival data directories this used to produce.
+DB_PATH = SQLITE_DB_PATH
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "schema.sql"
 
 

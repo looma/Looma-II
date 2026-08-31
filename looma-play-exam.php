@@ -116,7 +116,7 @@ $qs = http_build_query(array_filter([
 <body style="margin:0;padding:0;background:#162A51;">
 
 <div id="exam-loading" role="status" aria-label="Loading exam">
-  <img class="logo" src="images/LoomaLogo.png" alt="Looma">
+  <img class="logo" src="images/looma-exam-loading-logo.png" alt="Looma">
   <div class="exam-loading-spinner" aria-hidden="true"></div>
 </div>
 

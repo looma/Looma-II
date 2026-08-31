@@ -27,7 +27,8 @@
 
     background: #ffffff;
     color: #16202e;
-    font-family: Arial, Helvetica, sans-serif;
+    /* match the rest of the Looma UI (body font in looma.css) rather than a bare sans-serif */
+    font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", "Noteworthy", sans-serif;
     border-radius: 18px;
     box-shadow: 0 4px 14px rgba(0,0,0,.18);
 }
@@ -46,6 +47,13 @@ body.branch-embed #branchinggame {
     grid-column: auto; grid-row: auto; position: static;
     margin: 0 auto; max-height: none; overflow: visible;
 }
+
+/* ---- suppress the hover tooltip that shows the opposite-language translation.
+        LOOMA.translatableSpans() embeds a nested <span class="xlat"> which looma.css
+        reveals on hover (span:hover .xlat). It's distracting inside the Practice game,
+        so hide it here. Id-scoped so it beats the global hover rule without !important
+        (same approach as css/looma-search.css). ---- */
+#branchinggame span.xlat { display: none; }
 
 /* ---- topic title: centered, lesson blue, no icon ---- */
 .branch-topic {

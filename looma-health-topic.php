@@ -104,8 +104,12 @@ Owner: VillageTech Solutions (villagetechsolutions.org)
         exit;
     }
 
-    // topics that have a branching-scenario game get a "Practice" view next to Emergency/Learn
-    $branchingTopics = array('snakebite');
+    // topics that have a branching-scenario game get a "Practice" view next to Emergency/Learn.
+    // Each id here must have a matching scenario key in js/looma-branching-sample.js (BRANCHING_SAMPLES).
+    $branchingTopics = array(
+        'snakebite', 'severe-bleeding', 'burns', 'choking', 'drowning', 'fractures',
+        'head-injury', 'spinal-injury', 'road-traffic-injury', 'poisoning', 'heatstroke', 'hypothermia'
+    );
     $hasGame    = in_array($id, $branchingTopics, true);
     $gameSample = $id;   // branching sample key matches the topic id
 ?>

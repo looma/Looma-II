@@ -1,0 +1,98 @@
+<!doctype html>
+<!--
+  looma-branching-demo.html  — OFFLINE demo harness (no PHP, no Mongo).
+  Loads the REAL sample data (js/looma-branching-sample.js) and REAL styles
+  (css/looma-branching.css) + a faithful copy of runBranching(), so the branching
+  play screen can be seen end-to-end. Dark background mimics the game page.
+  Open by double-clicking. The engine itself uses looma-game.php + js/looma-game.js.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Looma Branching — demo</title>
+  <link href="css/looma-branching.css" rel="stylesheet">
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; background:#0d1b3e; margin:0; }
+    .demo-bar { background:#21599b; color:#fff; padding:0.6em 1em; display:flex; gap:1em; align-items:center; }
+    .demo-bar button { font-size:1em; padding:0.4em 1em; border-radius:8px; border:none; cursor:pointer; }
+    /* harness override: #branchinggame uses grid placement in the real page; here it's plain flow */
+    #branchinggame { grid-column:auto; grid-row:auto; }
+  </style>
+</head>
+<body>
+  <div class="demo-bar">
+    <strong>Branching demo</strong>
+    <button id="langToggle">भाषा / Language: <span id="langLabel">English</span></button>
+    <span>(offline harness — mirrors looma-game.php)</span>
+  </div>
+
+  <div id="branchinggame">
+    <div id="branch-topic"     class="branch-topic"></div>
+    <div id="branch-card"      class="branch-card">
+      <div id="branch-step"      class="branch-step"></div>
+      <div id="branch-situation" class="branch-situation"></div>
+      <div id="branch-image"     class="branch-image"></div>
+    </div>
+    <div id="branch-choices"   class="branch-choices"></div>
+    <div id="branch-feedback"  class="branch-feedback"></div>
+    <div id="branch-controls"  class="branch-controls"></div>
+  </div>
+
+  <script src="js/jquery3.6.0.min.js"></script>
+  <script src="js/looma-branching-sample.js"></script>
+  <script>
+  'use strict';
+  var LOOMA = {
+    _lang: 'english',
+    readStore: function (name) { return (name === 'language') ? LOOMA._lang : null; },
+    translatableSpans: function (english, native) {
+      if (LOOMA._lang === 'english')
+        return "<span class='english-keyword'>" + english + "</span><span class='native-keyword' style='display:none'>" + native + "</span>";
+      return "<span class='english-keyword' style='display:none'>" + english + "</span><span class='native-keyword'>" + native + "</span>";
+    },
+    translate: function (l) { if (l === 'native') { $('.english-keyword').hide(); $('.native-keyword').show(); } else { $('.english-keyword').show(); $('.native-keyword').hide(); } }
+  };
+
+  // ---- faithful copy of runBranching() from js/looma-game.js ----
+  function runBranching(game) {
+    $('#branchinggame').show();
+    var nodes = game.nodes || {};
+    function txt(p){p=p||{};return LOOMA.translatableSpans(p.en||'',p.np||'');}
+    function applyLang(){LOOMA.translate(LOOMA.readStore('language')==='native'?'native':'english');}
+    var steps={},total=0;(function(){var q=[game.start];steps[game.start]=1;while(q.length){var id=q.shift(),n=nodes[id];if(!n||n.terminal)continue;if(steps[id]>total)total=steps[id];(n.choices||[]).forEach(function(c){var t=nodes[c.next];if(t&&!t.terminal&&!(c.next in steps)){steps[c.next]=steps[id]+1;q.push(c.next);}});}})();
+    var kindOf={};Object.keys(nodes).forEach(function(nid){(nodes[nid].choices||[]).forEach(function(c){var t=nodes[c.next];if(!t||!t.terminal)return;var oc=c.outcome||{},good=c.correct||oc.en||oc.np;if(good)kindOf[c.next]='success';else kindOf[c.next]=kindOf[c.next]||'fatal';});});
+    var ti=game.title;$('#branch-topic').html(ti&&typeof ti==='object'?LOOMA.translatableSpans(ti.en||'',ti.np||''):(ti||''));
+    function renderNode(id){var n=nodes[id];$('#branch-step,#branch-feedback,#branch-controls,#branch-choices').empty();$('#branch-image').empty().hide();
+      if(!n){$('#branch-card').show();$('#branch-situation').html('<p class="branch-error">Missing node: '+id+'</p>');return;}
+      if(n.terminal){var fatal=kindOf[id]==='fatal';$('#branch-card').hide();$('#branch-feedback').append($('<div class="branch-panel '+(fatal?'fatal':'correct')+'"></div>').html('<p class="branch-ending-text">'+txt(n.situation)+'</p>'));
+        $('<button class="branch-restart activity '+(fatal?'fatal':'success')+'"></button>').html(fatal?LOOMA.translatableSpans('Start again','फेरि सुरु गर्नुहोस्'):LOOMA.translatableSpans('Play again','फेरि खेल्नुहोस्')).on('click',function(){renderNode(game.start);}).appendTo('#branch-controls');applyLang();return;}
+      $('#branch-card').show();
+      if(steps[id])$('#branch-step').html(LOOMA.translatableSpans('Step '+steps[id]+' of '+total,'चरण '+steps[id]+' / '+total));
+      $('#branch-situation').html('<p class="branch-text">'+txt(n.situation)+'</p>');
+      (n.choices||[]).forEach(function(c){$('<button class="branch-choice activity"></button>').html(txt(c.label)).on('click',function(){choose(c);}).appendTo('#branch-choices');});applyLang();}
+    function choose(c){$('#branch-choices .branch-choice').prop('disabled',true);var oc=c.outcome||{};if(!(oc.en||oc.np)){renderNode(c.next);return;}
+      $('#branch-feedback').append($('<div class="branch-panel '+(c.correct?'correct':'amber')+'"></div>').html('<p class="branch-outcome">'+txt(oc)+'</p>'));
+      $('<button class="branch-continue activity"></button>').html(LOOMA.translatableSpans('Continue','जारी राख्नुहोस्')).on('click',function(){renderNode(c.next);}).appendTo('#branch-controls');applyLang();}
+    renderNode(game.start);
+  }
+
+  $(function () {
+    var params = new URLSearchParams(location.search);
+    if (params.get('lang') === 'np') { LOOMA._lang = 'native'; $('#langLabel').text('नेपाली'); }
+    var scenario = params.get('scenario') || 'snakebite';
+    runBranching(window.BRANCHING_SAMPLES[scenario]);
+    LOOMA.translate(LOOMA._lang);
+    var path = params.get('path');
+    if (path) path.split(',').forEach(function (tok) {
+      if (tok === 'c') $('#branch-controls .branch-continue, #branch-controls .branch-restart').first().click();
+      else             $('#branch-choices .branch-choice').eq(+tok).click();
+    });
+    $('#langToggle').on('click', function () {
+      LOOMA._lang = (LOOMA._lang === 'english') ? 'native' : 'english';
+      $('#langLabel').text(LOOMA._lang === 'english' ? 'English' : 'नेपाली');
+      LOOMA.translate(LOOMA._lang);
+    });
+  });
+  </script>
+</body>
+</html>

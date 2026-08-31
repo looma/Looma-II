@@ -1,0 +1,1995 @@
+{
+  "_meta": {
+    "language": "en",
+    "note": "English-only content. NP (Nepali) fields are present but empty, to be filled in a later translation pass and then checked by a native speaker. EVERY topic must be reviewed and signed off by a qualified medical professional before real deployment. Clinical content is paraphrased (not copied) from the reputable sources cited per topic; facts are sourced, wording is original.",
+    "review_status": "DRAFT — NOT medically signed off",
+    "generated": "2026-07-30",
+    "_split_note": "Topics 'spinal-injury' (Head, neck and back) and 'heat-and-cold' (Heatstroke and hypothermia) are authored combined here, but the converter (convert_firstaid.py) splits each into two live topics: head-injury + spinal-injury(Neck and back), and heatstroke + hypothermia. Edit the combined topics here; the split happens automatically on reload."
+  },
+  "getCare": {
+    "message": "A snakebite, bad bleed, serious burn, or a person who is struggling to breathe is a race against time. Get to the nearest health post or hospital as fast as you safely can. Reaching medical care quickly is the single most important thing you can do — no home remedy replaces it.",
+    "numbers": [
+      {
+        "label": "Ambulance",
+        "number": "102"
+      },
+      {
+        "label": "Nepal Police / emergency",
+        "number": "100"
+      },
+      {
+        "label": "Nepal Red Cross Society (HQ)",
+        "number": "01-4270650"
+      },
+      {
+        "label": "Poison Information (TU Teaching Hospital)",
+        "number": "01-4412303"
+      }
+    ],
+    "localContactPrompt": "LOCAL contact — fill in for your village: e.g. your nearest health post, or the local Female Community Health Volunteer (FCHV). The deploying school/community fills this in."
+  },
+  "topics": [
+    {
+      "id": "snakebite",
+      "title": {
+        "en": "Snakebite",
+        "np": "सर्पदंश"
+      },
+      "order": 1,
+      "illustration": "coiled snake beside a swelling ankle",
+      "source_citation": "WHO 'Snakebite envenoming' health topic and WHO/SEARO Guidelines for the Management of Snakebites (2nd ed.); IFRC Guidelines 2025 'Snakebites'; Tun-Pe et al. field trials on local compression pads for Russell's viper. DECISIONS: limb kept at ~heart level; taught local pressure-PAD method rather than full-limb pressure-immobilisation bandaging; unconscious casualties placed on the left side.",
+      "emergency": [
+        {
+          "action": {
+            "en": "Move away from the snake. Get the person a safe distance from where the bite happened so it can't strike again.",
+            "np": "सर्पबाट टाढा जानुहोस्। व्यक्तिलाई टोकेको ठाउँबाट सुरक्षित दूरीमा लैजानुहोस् ताकि सर्पले फेरि टोक्न नसकोस्।"
+          },
+          "illustration": "person stepping back from grass"
+        },
+        {
+          "action": {
+            "en": "Keep the person calm and completely still. Fear and movement speed venom through the body, and most bites are survivable with prompt care.",
+            "np": "व्यक्तिलाई शान्त र पूर्ण रूपमा स्थिर राख्नुहोस्। डर र हलचलले विष शरीरभरि छिटो फैलाउँछ, र प्रायः टोकाइमा तुरुन्त उपचार पाए ज्यान बच्छ।"
+          },
+          "illustration": "person sitting still, calm"
+        },
+        {
+          "action": {
+            "en": "Keep the bitten limb still, immobilised in a comfortable position at roughly heart level. Muscle movement pumps venom into the bloodstream faster.",
+            "np": "टोकिएको हात वा खुट्टालाई स्थिर राख्नुहोस्, लगभग मुटुको तहमा आरामदायी अवस्थामा नहल्लाई राख्नुहोस्। मांसपेशी चल्दा विष रगतमा छिटो पुग्छ।"
+          },
+          "illustration": "limb resting still and supported at heart level"
+        },
+        {
+          "action": {
+            "en": "Gently remove rings, bangles, watches and tight clothing near the bite. Swelling can come fast and trap them.",
+            "np": "टोकेको नजिकका औंठी, चुरा, घडी र कसिलो लुगा बिस्तारै हटाउनुहोस्। सुन्निने काम छिटो हुन सक्छ र यी अड्किन सक्छन्।"
+          },
+          "illustration": "removing a bangle from a swelling wrist"
+        },
+        {
+          "action": {
+            "en": "Immobilise the limb with a splint or sling, like a broken bone. A still limb slows venom spread and is the most important thing after staying calm.",
+            "np": "भाँचिएको हड्डीलाई झैं स्प्लिन्ट वा झोलुङ्गोले हात/खुट्टालाई नहल्लिने बनाउनुहोस्। स्थिर हातले विष फैलिन ढिलो पार्छ र शान्त रहनुपछिको सबैभन्दा महत्त्वपूर्ण काम यही हो।"
+          },
+          "illustration": "splinted arm in a sling"
+        },
+        {
+          "action": {
+            "en": "If you have a clean cloth and a bandage, place a folded pad (about the size of your palm) over the bite and bandage it firmly like a sprained ankle — snug, not cutting off blood flow. Then still get to hospital fast.",
+            "np": "यदि तपाईंसँग सफा कपडा र पट्टी छ भने, टोकेको ठाउँमा पट्ट्याइएको सफा कपडाको खण्ड (लगभग हत्केलाको आकारको) राखेर मर्किएको खुट्टामा झैं कसेर बाँध्नुहोस् — कसिलो, तर रगत बहाव नरोकिने गरी। त्यसपछि पनि छिटो अस्पताल पुग्नुहोस्।"
+          },
+          "illustration": "folded pad bandaged over a bite"
+        },
+        {
+          "action": {
+            "en": "Transport to a hospital with antivenom immediately. Carry the person if you can — do not let them walk.",
+            "np": "तुरुन्तै एन्टिभेनम भएको अस्पतालमा लैजानुहोस्। सकेसम्म व्यक्तिलाई बोकेर लैजानुहोस् — हिँड्न नदिनुहोस्।"
+          },
+          "illustration": "person carried toward a health post"
+        },
+        {
+          "action": {
+            "en": "If they vomit or lose consciousness, lay them on their left side to keep the airway clear. Watch their breathing the whole way.",
+            "np": "यदि उनीहरूलाई बान्ता भयो वा बेहोस भए, श्वासनली सफा राख्न देब्रे कोल्टे पारेर सुताउनुहोस्। बाटोभरि उनीहरूको सास फेराइ हेरिरहनुहोस्।"
+          },
+          "illustration": "person on their left side, recovery position"
+        }
+      ],
+      "never": [
+        {
+          "en": "Do NOT apply a tourniquet or tie anything tightly around the limb — it can destroy the limb and doesn't stop venom.",
+          "np": "टर्निकेट नलगाउनुहोस् वा हात/खुट्टामा केही पनि कसेर नबाँध्नुहोस् — यसले अंग नै नष्ट गर्न सक्छ र विष रोक्दैन।"
+        },
+        {
+          "en": "Do NOT cut, slash, or open the bite wound.",
+          "np": "टोकेको घाउलाई नकाट्नुहोस्, नचिर्नुहोस्, वा नखोल्नुहोस्।"
+        },
+        {
+          "en": "Do NOT try to suck out or squeeze out the venom.",
+          "np": "विषलाई चुसेर वा निचोरेर निकाल्ने प्रयास नगर्नुहोस्।"
+        },
+        {
+          "en": "Do NOT apply ice, herbs, chemicals, or electric shock to the bite.",
+          "np": "टोकेको ठाउँमा बरफ, जडीबुटी, रसायन, वा बिजुलीको झट्का नदिनुहोस्।"
+        },
+        {
+          "en": "Do NOT give alcohol, coffee, or any stimulant.",
+          "np": "रक्सी, कफी, वा कुनै उत्तेजक पदार्थ नदिनुहोस्।"
+        },
+        {
+          "en": "Do NOT give aspirin or ibuprofen for pain — they can worsen bleeding. Paracetamol is safer if pain relief is needed.",
+          "np": "दुखाइका लागि एस्पिरिन वा आइबुप्रोफेन नदिनुहोस् — यसले रक्तस्राव बढाउन सक्छ। दुखाइ कम गर्न आवश्यक भए प्यारासिटामोल बढी सुरक्षित हुन्छ।"
+        },
+        {
+          "en": "Do NOT chase or try to catch the snake, and do NOT wait to see what happens — go to hospital straight away.",
+          "np": "सर्पलाई खेद्ने वा समात्ने प्रयास नगर्नुहोस्, र के हुन्छ भनेर पर्खिनु हुँदैन — सोझै अस्पताल जानुहोस्।"
+        }
+      ],
+      "learn": [
+        {
+          "action": {
+            "en": "Recognise the two kinds of dangerous venom in Nepal.",
+            "np": "नेपालमा पाइने दुई प्रकारका खतरनाक विष चिन्नुहोस्।"
+          },
+          "why": {
+            "en": "Cobras and kraits (elapids) carry neurotoxic venom that can cause drooping eyelids, slurred speech, trouble swallowing and, later, difficulty breathing. Vipers (including Russell's viper and pit vipers, common in Nepal) carry venom that affects blood clotting, causing swelling, bruising and bleeding. Many pit viper bites cause local swelling only. Either way, the first aid is the same — get to hospital.",
+            "np": "गोमन र करैत (इलापिड) सर्पहरूमा स्नायुमा असर गर्ने विष हुन्छ, जसले परेला झुल्ने, बोली लर्बराउने, निल्न गाह्रो हुने र पछि सास फेर्न गाह्रो हुन सक्छ। भाइपर सर्पहरू (नेपालमा सामान्य रसेल भाइपर र पिट भाइपर सहित) को विषले रगत जम्ने क्रियामा असर गर्छ, जसले सुन्निने, निलडाम र रक्तस्राव गराउँछ। धेरै पिट भाइपरको टोकाइले टोकेकै ठाउँमा मात्र सुन्निन्छ। जे भए पनि, प्राथमिक उपचार उही हो — अस्पताल पुग्नुहोस्।"
+          },
+          "tip": {
+            "en": "Watch especially for drooping eyelids or trouble breathing — these signal a neurotoxic bite that can turn critical quickly.",
+            "np": "विशेष गरी परेला झुल्ने वा सास फेर्न गाह्रो हुने कुरामा ध्यान दिनुहोस् — यी स्नायु विषको संकेत हुन् जुन छिट्टै गम्भीर हुन सक्छ।"
+          },
+          "illustration": "face showing drooping eyelids"
+        },
+        {
+          "action": {
+            "en": "Keep the person calm and still.",
+            "np": "व्यक्तिलाई शान्त र स्थिर राख्नुहोस्।"
+          },
+          "why": {
+            "en": "A racing heartbeat and movement pump venom through the body faster. Many bites inject little or no venom, so staying calm genuinely buys time.",
+            "np": "छिटो चल्ने मुटुको धड्कन र हलचलले विष शरीरभरि छिटो फैलाउँछ। धेरै टोकाइमा थोरै वा एकदमै कम विष पस्छ, त्यसैले शान्त रहँदा साँच्चै समय पाइन्छ।"
+          },
+          "tip": {
+            "en": "Reassure them out loud: most snakebites are survivable with prompt hospital care.",
+            "np": "उनीहरूलाई ठूलो स्वरमा ढाडस दिनुहोस्: तुरुन्त अस्पतालको उपचार पाए धेरैजसो सर्पदंशबाट ज्यान बच्छ।"
+          },
+          "illustration": "person sitting still, calm"
+        },
+        {
+          "action": {
+            "en": "Immobilise the bitten limb and keep it still.",
+            "np": "टोकिएको हात/खुट्टालाई नहल्लिने बनाएर स्थिर राख्नुहोस्।"
+          },
+          "why": {
+            "en": "A still limb slows how fast venom travels — the same logic as splinting a fracture. Keep it in a comfortable position at about heart level, not deliberately raised or lowered.",
+            "np": "स्थिर अंगले विष फैलिने गति ढिलो पार्छ — हड्डी भाँचिँदा स्प्लिन्ट लगाएजस्तै तर्क। यसलाई मुटुको तहमा आरामदायी अवस्थामा राख्नुहोस्, जानाजान माथि वा तल नपार्नुहोस्।"
+          },
+          "tip": {
+            "en": "Splint it like a broken bone, but never tight enough to cut off blood flow.",
+            "np": "भाँचिएको हड्डीलाई झैं स्प्लिन्ट लगाउनुहोस्, तर रगत बहाव रोकिने गरी कहिल्यै कसिलो नबनाउनुहोस्।"
+          },
+          "illustration": "splinted arm resting at heart level"
+        },
+        {
+          "action": {
+            "en": "Use a simple pressure pad, not a full-limb pressure bandage.",
+            "np": "पूरै अंग बाँध्ने प्रेसर ब्यान्डेज होइन, सरल प्रेसर प्याड प्रयोग गर्नुहोस्।"
+          },
+          "why": {
+            "en": "A folded pad over the bite, bandaged firmly like a sprained ankle, is simple to do and helps slow venom for the snakes common in Nepal — including Russell's viper, where local compression pads have been shown to help. A full-limb pressure bandage needs exact, even pressure most people can't judge; applied wrongly it does nothing or causes harm, and it's dangerous over a viper bite.",
+            "np": "टोकेको ठाउँमा पट्ट्याइएको प्याड राखेर मर्किएको खुट्टामा झैं कसेर बाँध्नु सजिलो छ र नेपालमा सामान्य सर्पहरूको विष — रसेल भाइपर सहित, जहाँ स्थानीय प्रेसर प्याडले मद्दत गरेको देखिएको छ — ढिलो पार्न मद्दत गर्छ। पूरै अंग बाँध्ने प्रेसर ब्यान्डेजलाई ठ्याक्कै, समान दबाब चाहिन्छ जुन धेरैले अनुमान गर्न सक्दैनन्; गलत तरिकाले लगाए केही गर्दैन वा हानि गर्छ, र भाइपर टोकाइमा यो खतरनाक हुन्छ।"
+          },
+          "tip": {
+            "en": "The pad should be snug but never so tight you can't slip a finger under it, and never so tight the fingers or toes go cold or blue.",
+            "np": "प्याड कसिलो हुनुपर्छ तर यति कसिलो नहोस् कि तल औंला छिराउन नसकियोस्, र यति कसिलो कहिल्यै नहोस् कि औंलाहरू चिसो वा नीलो होऊन्।"
+          },
+          "illustration": "folded pad bandaged over a bite"
+        },
+        {
+          "action": {
+            "en": "Get to antivenom fast — it is the only real cure.",
+            "np": "छिटो एन्टिभेनम पुग्नुहोस् — यही मात्र साँचो उपचार हो।"
+          },
+          "why": {
+            "en": "Antivenom neutralises the toxins and works best early. No cutting, sucking, herb or charm can replace it, and delays cost lives.",
+            "np": "एन्टिभेनमले विषलाई निष्क्रिय बनाउँछ र चाँडै दिँदा उत्तम काम गर्छ। कुनै काट्ने, चुस्ने, जडीबुटी वा झारफुकले यसको ठाउँ लिन सक्दैन, र ढिलाइले ज्यान जान्छ।"
+          },
+          "tip": {
+            "en": "Note the snake's colour and shape if you safely can — it helps doctors — but never risk a second bite.",
+            "np": "सुरक्षित भए सर्पको रङ र आकार याद गर्नुहोस् — यसले डाक्टरलाई मद्दत गर्छ — तर दोस्रो पटक टोकिने जोखिम कहिल्यै नलिनुहोस्।"
+          },
+          "illustration": "hospital with antivenom vial"
+        }
+      ],
+      "quiz": [
+        {
+          "question": {
+            "en": "Someone is bitten on the ankle by a snake in a field. What should you do first?",
+            "np": "खेतमा कसैलाई सर्पले खुट्टाको गोलीगाँठोमा टोक्यो। तपाईंले पहिले के गर्नुपर्छ?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Keep them calm and still, immobilise the limb, and get them to hospital",
+                "np": "उनलाई शान्त र स्थिर राख्नुहोस्, अंगलाई नहल्लिने बनाउनुहोस्, र अस्पताल पुर्‍याउनुहोस्"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "Tie a tight band above the bite to stop the venom",
+                "np": "विष रोक्न टोकेको माथि कसेर पट्टी बाँध्नुहोस्"
+              },
+              "isCorrect": false
+            },
+            {
+              "text": {
+                "en": "Cut the wound and suck out the venom",
+                "np": "घाउ काटेर विष चुस्नुहोस्"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "Staying calm and still slows venom spread. Tourniquets, cutting and sucking all cause harm and are never recommended.",
+            "np": "शान्त र स्थिर रहँदा विष फैलिन ढिलो हुन्छ। टर्निकेट, काट्ने र चुस्ने सबैले हानि गर्छन् र यी कहिल्यै सिफारिस गरिँदैन।"
+          }
+        },
+        {
+          "question": {
+            "en": "Which sign suggests a dangerous neurotoxic bite (cobra or krait)?",
+            "np": "कुन लक्षणले खतरनाक स्नायु-विष टोकाइ (गोमन वा करैत) को संकेत गर्छ?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Drooping eyelids and trouble swallowing or breathing",
+                "np": "परेला झुल्ने र निल्न वा सास फेर्न गाह्रो हुने"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "A small itch that quickly disappears",
+                "np": "छिट्टै हराउने सानो चिलाउने"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "Neurotoxic venom attacks the nerves — drooping eyelids, slurred speech and breathing trouble are red flags needing urgent hospital care.",
+            "np": "स्नायु-विषले नसामा आक्रमण गर्छ — परेला झुल्ने, बोली लर्बराउने र सास फेर्न गाह्रो हुनु तुरुन्त अस्पताल उपचार चाहिने खतराका संकेत हुन्।"
+          }
+        }
+      ]
+    },
+    {
+      "id": "severe-bleeding",
+      "title": {
+        "en": "Severe bleeding",
+        "np": "गम्भीर रक्तस्राव"
+      },
+      "order": 2,
+      "illustration": "hands pressing a folded cloth onto a bleeding forearm",
+      "source_citation": "IFRC Guidelines 2025 'Severe bleeding'; American Red Cross and British Red Cross bleeding guidance; ILCOR 2020/2025 CoSTR and 'Stop the Bleed' (ABC: Alert–Bleeding–Compress).",
+      "emergency": [
+        {
+          "action": {
+            "en": "Check the scene is safe and protect yourself. Put on gloves or use a plastic bag between your hand and the blood if you can.",
+            "np": "वरपर सुरक्षित छ कि छैन जाँच्नुहोस् र आफूलाई जोगाउनुहोस्। सकेसम्म पन्जा लगाउनुहोस् वा हात र रगतको बीचमा प्लास्टिकको झोला प्रयोग गर्नुहोस्।"
+          },
+          "illustration": "rescuer putting on gloves"
+        },
+        {
+          "action": {
+            "en": "Call for help or send someone to call. Uncontrolled bleeding is the top preventable cause of death from injury.",
+            "np": "सहयोगका लागि बोलाउनुहोस् वा कसैलाई फोन गर्न पठाउनुहोस्। नियन्त्रण नभएको रक्तस्राव चोटपटकबाट हुने रोक्न सकिने मृत्युको प्रमुख कारण हो।"
+          },
+          "illustration": "person calling for help"
+        },
+        {
+          "action": {
+            "en": "Find the source of the bleeding. Move clothing aside so you can see the actual wound.",
+            "np": "रगत बगेको ठाउँ पत्ता लगाउनुहोस्। साँचो घाउ देख्न लुगा हटाउनुहोस्।"
+          },
+          "illustration": "clothing moved to expose a wound"
+        },
+        {
+          "action": {
+            "en": "Press hard and directly on the wound with a clean cloth or your gloved hand. Firm, direct pressure is the fastest way to stop bleeding.",
+            "np": "सफा कपडा वा पन्जा लगाएको हातले घाउमा सिधै कसेर थिच्नुहोस्। बलियो, सिधा दबाब रक्तस्राव रोक्ने सबैभन्दा छिटो उपाय हो।"
+          },
+          "illustration": "hands pressing cloth on wound"
+        },
+        {
+          "action": {
+            "en": "Keep pressing without lifting off. If blood soaks through, add another cloth on top and keep pressing — don't remove the first.",
+            "np": "नउठाई थिचिरहनुहोस्। यदि रगतले कपडा भिजायो भने, माथि अर्को कपडा थपेर थिचिरहनुहोस् — पहिलोलाई नहटाउनुहोस्।"
+          },
+          "illustration": "second cloth added over first"
+        },
+        {
+          "action": {
+            "en": "Help the person lie down and keep them warm and still. This helps prevent shock.",
+            "np": "व्यक्तिलाई सुत्न मद्दत गर्नुहोस् र न्यानो र स्थिर राख्नुहोस्। यसले शक (रक्तचाप घट्ने अवस्था) रोक्न मद्दत गर्छ।"
+          },
+          "illustration": "person lying down, covered with a blanket"
+        },
+        {
+          "action": {
+            "en": "For a limb bleed that won't stop, apply a tourniquet above the wound if you have one and are trained. Note the time it went on.",
+            "np": "हात वा खुट्टाको नरोकिने रक्तस्रावमा, तपाईंसँग टर्निकेट छ र तालिम प्राप्त हुनुहुन्छ भने घाउभन्दा माथि टर्निकेट लगाउनुहोस्। लगाएको समय टिपेर राख्नुहोस्।"
+          },
+          "illustration": "tourniquet high on a limb with time noted"
+        }
+      ],
+      "never": [
+        {
+          "en": "Do NOT keep lifting the cloth to peek — it disturbs clotting and restarts the bleeding.",
+          "np": "हेर्नका लागि कपडा बारम्बार नउठाउनुहोस् — यसले रगत जम्ने क्रिया बिथोल्छ र फेरि रक्तस्राव सुरु गराउँछ।"
+        },
+        {
+          "en": "Do NOT remove an object stuck in the wound — press around it, not on it.",
+          "np": "घाउमा अड्किएको वस्तु ननिकाल्नुहोस् — त्यसमाथि होइन, वरिपरि थिच्नुहोस्।"
+        },
+        {
+          "en": "Do NOT remove blood-soaked cloths — add fresh ones on top.",
+          "np": "रगतले भिजेको कपडा नहटाउनुहोस् — माथि नयाँ कपडा थप्नुहोस्।"
+        },
+        {
+          "en": "Do NOT loosen or remove a tourniquet once applied — leave it for medical staff.",
+          "np": "एकपटक लगाइसकेपछि टर्निकेट खुकुलो नबनाउनुहोस् वा नहटाउनुहोस् — यसलाई स्वास्थ्यकर्मीका लागि छोड्नुहोस्।"
+        }
+      ],
+      "learn": [
+        {
+          "action": {
+            "en": "Know how fast bleeding becomes life-threatening.",
+            "np": "रक्तस्राव कति छिटो जीवनका लागि खतरनाक हुन्छ भन्ने जान्नुहोस्।"
+          },
+          "why": {
+            "en": "Blood carries oxygen to every organ. An adult has about 5 litres; losing more than about 2 can be fatal, and heavy bleeding can reach that in only a few minutes. That is why 'stop the bleed' comes before almost everything else — faster than waiting for an ambulance.",
+            "np": "रगतले हरेक अंगमा अक्सिजन पुर्‍याउँछ। एक वयस्कमा लगभग ५ लिटर रगत हुन्छ; लगभग २ लिटरभन्दा बढी गुमाए ज्यान जान सक्छ, र धेरै रक्तस्राव भए केही मिनेटमै त्यति पुग्न सक्छ। त्यसैले 'रक्तस्राव रोक्ने' काम अरू लगभग सबै भन्दा पहिले आउँछ — एम्बुलेन्स पर्खनुभन्दा छिटो।"
+          },
+          "tip": {
+            "en": "Spurting or pulsing blood means an artery — treat it as an immediate emergency.",
+            "np": "पिच्किएर वा धड्किएर आउने रगत भनेको धमनीको हो — यसलाई तत्काल आपतकाल ठान्नुहोस्।"
+          },
+          "illustration": "diagram of blood loss over minutes"
+        },
+        {
+          "action": {
+            "en": "Remember the ABCs of bleeding: Alert, Bleeding, Compress.",
+            "np": "रक्तस्रावको ABC सम्झनुहोस्: Alert (सचेत गराउनुहोस्), Bleeding (रक्तस्राव खोज्नुहोस्), Compress (थिच्नुहोस्)।"
+          },
+          "why": {
+            "en": "Alert emergency help, find the Bleeding source under clothing, and Compress it hard and without stopping. Pressure directly on the wound is the simplest and most effective way to stop it — it lets the blood clot and physically blocks the escape.",
+            "np": "आपतकालीन सहायतालाई सचेत गराउनुहोस्, लुगामुनि रक्तस्रावको स्रोत खोज्नुहोस्, र नरोकी बलियोसँग थिच्नुहोस्। घाउमा सिधै दबाब दिनु यसलाई रोक्ने सबैभन्दा सरल र प्रभावकारी उपाय हो — यसले रगत जम्न दिन्छ र रगत बाहिर निस्कने बाटो थुन्छ।"
+          },
+          "tip": {
+            "en": "Any clean material works as a pad — a folded shirt, a towel, a scarf. If you have none, press with a bare gloved hand.",
+            "np": "कुनै पनि सफा कपडा प्याडको रूपमा काम लाग्छ — पट्ट्याइएको सर्ट, तौलिया, स्कार्फ। केही छैन भने पन्जा लगाएको हातले नै थिच्नुहोस्।"
+          },
+          "illustration": "hands pressing cloth on wound"
+        },
+        {
+          "action": {
+            "en": "Don't peek, and don't chase 'pressure points'.",
+            "np": "नियालेर नहेर्नुहोस्, र 'प्रेसर पोइन्ट' पछि नलाग्नुहोस्।"
+          },
+          "why": {
+            "en": "Lifting the pad to check restarts the bleeding by disturbing the forming clot. Pressing on distant 'pressure points' instead of the wound is unreliable — there is usually more than one artery feeding a limb, so it doesn't stop the flow.",
+            "np": "जाँच्न प्याड उठाउँदा जम्दै गरेको रगतको डल्लो बिथोलिएर फेरि रक्तस्राव सुरु हुन्छ। घाउको सट्टा टाढाका 'प्रेसर पोइन्ट' थिच्नु भरपर्दो हुँदैन — प्रायः एउटा अंगमा एकभन्दा बढी धमनी हुन्छन्, त्यसैले यसले बगाइ रोक्दैन।"
+          },
+          "tip": {
+            "en": "If blood soaks through, add more material on top and keep pressing — never remove the soaked layer.",
+            "np": "रगतले भिजाए माथि थप कपडा राखेर थिचिरहनुहोस् — भिजेको तह कहिल्यै नहटाउनुहोस्।"
+          },
+          "illustration": "second cloth added over first"
+        },
+        {
+          "action": {
+            "en": "Leave embedded objects in place.",
+            "np": "गाडिएको वस्तुलाई त्यहीँ छोड्नुहोस्।"
+          },
+          "why": {
+            "en": "A stuck object — glass, metal, a blade — may be plugging the wound and pressing against the cut vessel. Pulling it out can release much worse bleeding you then can't control.",
+            "np": "अड्किएको वस्तु — सिसा, धातु, धारिलो वस्तु — ले घाउ थुनिरहेको र काटिएको नसामा थिचिरहेको हुन सक्छ। यसलाई तान्दा नियन्त्रण गर्न नसकिने धेरै खराब रक्तस्राव हुन सक्छ।"
+          },
+          "tip": {
+            "en": "Pad around the object to hold it steady, and press on either side of it, not on it.",
+            "np": "वस्तुलाई स्थिर राख्न वरिपरि प्याड राख्नुहोस्, र त्यसमाथि होइन, दुवैतिर थिच्नुहोस्।"
+          },
+          "illustration": "padding placed around an embedded object"
+        },
+        {
+          "action": {
+            "en": "Use a tourniquet only as a last resort, on a limb.",
+            "np": "टर्निकेट अन्तिम उपायको रूपमा मात्र, हात वा खुट्टामा प्रयोग गर्नुहोस्।"
+          },
+          "why": {
+            "en": "When direct pressure just won't control severe bleeding from an arm or leg, a tourniquet placed above the wound can save a life. But it cuts off all blood to the limb, so it can cause serious damage if left on too long — which is why the time must be written down and only medical staff should loosen it.",
+            "np": "हात वा खुट्टाको गम्भीर रक्तस्राव सिधा दबाबले नियन्त्रण नहुँदा, घाउभन्दा माथि लगाइएको टर्निकेटले ज्यान बचाउन सक्छ। तर यसले अंगमा जाने सबै रगत रोक्छ, त्यसैले धेरै बेर छोडे गम्भीर क्षति हुन सक्छ — त्यसैले लगाएको समय लेख्नुपर्छ र स्वास्थ्यकर्मीले मात्र यसलाई खुकुलो पार्नुपर्छ।"
+          },
+          "tip": {
+            "en": "A proper manufactured tourniquet works best; improvised ones (belts, scarves) often fail to generate enough pressure.",
+            "np": "बनाइएको उचित टर्निकेट सबैभन्दा राम्रो हुन्छ; घरैमा जुटाइएका (पेटी, स्कार्फ) ले प्रायः पर्याप्त दबाब दिन सक्दैनन्।"
+          },
+          "illustration": "tourniquet high on a limb with time noted"
+        },
+        {
+          "action": {
+            "en": "Watch for shock while you wait.",
+            "np": "पर्खिँदा शकका लक्षणमा ध्यान दिनुहोस्।"
+          },
+          "why": {
+            "en": "Heavy blood loss can drop the blood supply to vital organs — this is shock. Signs are pale, cold, clammy skin, fast breathing, weakness and confusion. It is a life-threatening emergency on its own.",
+            "np": "धेरै रगत गुम्दा महत्त्वपूर्ण अंगहरूमा रगतको आपूर्ति घट्न सक्छ — यसैलाई शक भनिन्छ। लक्षणहरू हुन्: पहेँलो, चिसो, टिलपिल छाला, छिटो सास, कमजोरी र अलमल। यो आफैँमा जीवनका लागि खतरनाक आपतकाल हो।"
+          },
+          "tip": {
+            "en": "Keep the person lying down, warm and still, and keep pressure on the wound until help arrives.",
+            "np": "मद्दत नआउन्जेल व्यक्तिलाई सुताएर, न्यानो र स्थिर राख्नुहोस्, र घाउमा दबाब दिइरहनुहोस्।"
+          },
+          "illustration": "person lying down, covered with a blanket"
+        }
+      ],
+      "quiz": [
+        {
+          "question": {
+            "en": "Blood soaks through the cloth you're pressing on the wound. What do you do?",
+            "np": "तपाईंले घाउमा थिचिरहेको कपडा रगतले भिजायो। तपाईं के गर्नुहुन्छ?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Add another cloth on top and keep pressing firmly",
+                "np": "माथि अर्को कपडा थपेर बलियोसँग थिचिरहनुहोस्"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "Remove the soaked cloth to check the wound",
+                "np": "घाउ जाँच्न भिजेको कपडा हटाउनुहोस्"
+              },
+              "isCorrect": false
+            },
+            {
+              "text": {
+                "en": "Stop pressing so a clot can form",
+                "np": "रगत जम्न दिन थिच्न छोड्नुहोस्"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "Never lift off to check — it disrupts clotting. Layer more material and maintain firm, steady pressure.",
+            "np": "जाँच्न कहिल्यै नउठाउनुहोस् — यसले रगत जम्ने क्रिया बिथोल्छ। थप कपडा थपेर बलियो, स्थिर दबाब कायम राख्नुहोस्।"
+          }
+        }
+      ]
+    },
+    {
+      "id": "burns",
+      "title": {
+        "en": "Burns and scalds",
+        "np": "पोलाइ र डढाइ"
+      },
+      "order": 3,
+      "illustration": "forearm held under a running tap",
+      "source_citation": "IFRC Guidelines 2025 'Burns'; WHO burns guidance; Global First Aid Centre cooling recommendation (cool running water, at least 20 minutes).",
+      "emergency": [
+        {
+          "action": {
+            "en": "Stop the burning. Move the person from the heat source, put out flames, or move them away from the hot liquid or chemical.",
+            "np": "पोल्ने कुरा रोक्नुहोस्। व्यक्तिलाई तापको स्रोतबाट हटाउनुहोस्, आगो निभाउनुहोस्, वा तातो तरल पदार्थ वा रसायनबाट टाढा लैजानुहोस्।"
+          },
+          "illustration": "person moved away from fire"
+        },
+        {
+          "action": {
+            "en": "Cool the burn under cool running water for at least 20 minutes. This is the single most helpful thing you can do, and it still helps up to a few hours after the burn.",
+            "np": "पोलेको ठाउँलाई बगिरहेको चिसो पानीमुनि कम्तीमा २० मिनेट चिसो पार्नुहोस्। यो तपाईंले गर्न सक्ने सबैभन्दा उपयोगी काम हो, र पोलेको केही घण्टापछिसम्म पनि यसले मद्दत गर्छ।"
+          },
+          "illustration": "burn held under running water"
+        },
+        {
+          "action": {
+            "en": "While cooling, gently remove rings, watches and tight clothing near the burn before it swells — unless they are stuck to the skin.",
+            "np": "चिसो पार्दै गर्दा, सुन्निनुअघि पोलेको नजिकका औंठी, घडी र कसिलो लुगा बिस्तारै हटाउनुहोस् — छालामा टाँसिएको छैन भने।"
+          },
+          "illustration": "removing a ring near a burn"
+        },
+        {
+          "action": {
+            "en": "Keep the person warm overall while cooling the burn, especially children — long cooling can chill the body.",
+            "np": "पोलेको ठाउँ चिसो पार्दा पनि व्यक्तिलाई समग्रमा न्यानो राख्नुहोस्, विशेष गरी बच्चालाई — लामो समय चिसो पार्दा शरीर नै चिसो हुन सक्छ।"
+          },
+          "illustration": "child wrapped in a blanket, arm under tap"
+        },
+        {
+          "action": {
+            "en": "After cooling, cover the burn loosely with a clean, non-fluffy cloth or clean plastic like cling film.",
+            "np": "चिसो पारेपछि, पोलेको ठाउँलाई सफा, रौं नझर्ने कपडा वा क्लिङ फिल्मजस्तो सफा प्लास्टिकले खुकुलो गरी छोप्नुहोस्।"
+          },
+          "illustration": "burn covered with clean plastic"
+        },
+        {
+          "action": {
+            "en": "Get medical help for any burn that is large, deep, blistered, or on the face, hands, feet, joints or genitals — or any burn to a baby or elderly person.",
+            "np": "ठूलो, गहिरो, फोका उठेको, वा अनुहार, हात, खुट्टा, जोर्नी वा गुप्ताङ्गमा पोलेको — वा बच्चा वा वृद्धलाई पोलेको जुनसुकै अवस्थामा चिकित्सा सहायता लिनुहोस्।"
+          },
+          "illustration": "person heading to a health post"
+        }
+      ],
+      "never": [
+        {
+          "en": "Do NOT apply toothpaste, butter, oil, honey, herbs or ash to a burn.",
+          "np": "पोलेको ठाउँमा दन्तमञ्जन, मक्खन, तेल, मह, जडीबुटी वा खरानी नलगाउनुहोस्।"
+        },
+        {
+          "en": "Do NOT use ice or ice-cold water — it damages the skin further.",
+          "np": "बरफ वा बरफजस्तो चिसो पानी प्रयोग नगर्नुहोस् — यसले छालालाई अझ बिगार्छ।"
+        },
+        {
+          "en": "Do NOT burst blisters.",
+          "np": "फोका नफुटाउनुहोस्।"
+        },
+        {
+          "en": "Do NOT peel off clothing that is stuck to the burn.",
+          "np": "पोलेको ठाउँमा टाँसिएको लुगा नतान्नुहोस्।"
+        }
+      ],
+      "learn": [
+        {
+          "action": {
+            "en": "Stop the burning before anything else.",
+            "np": "अरू केही गर्नुअघि पोल्ने कुरा रोक्नुहोस्।"
+          },
+          "why": {
+            "en": "A burn keeps damaging tissue as long as heat, hot liquid or chemical stays in contact with the skin. Removing the source — smothering flames, moving away from the heat, brushing off dry chemical — stops the injury getting deeper.",
+            "np": "जबसम्म ताप, तातो तरल वा रसायन छालामा टाँसिइरहन्छ, पोलाइले तन्तुलाई बिगारिरहन्छ। स्रोत हटाउनु — आगो निभाउनु, तापबाट टाढा जानु, सुख्खा रसायन झार्नु — ले चोट गहिरो हुनबाट रोक्छ।"
+          },
+          "tip": {
+            "en": "'Stop, drop and roll' smothers clothing flames; don't run, which fans them.",
+            "np": "'रोक्नुहोस्, ढल्नुहोस् र गुड्नुहोस्' ले लुगाको आगो निभाउँछ; नदौडनुहोस्, दौडँदा आगो झन् बढ्छ।"
+          },
+          "illustration": "person smothering flames with a blanket"
+        },
+        {
+          "action": {
+            "en": "Cool the burn with running water for at least 20 minutes.",
+            "np": "पोलेको ठाउँलाई बगिरहेको पानीले कम्तीमा २० मिनेट चिसो पार्नुहोस्।"
+          },
+          "why": {
+            "en": "Cooling draws heat out of the skin, which limits how deep the burn goes, eases pain, reduces swelling and shortens healing. It still helps even if you start up to a few hours later. It is proven and costs nothing but water and time.",
+            "np": "चिसो पार्दा छालाबाट ताप निकाल्छ, जसले पोलाइ कति गहिरो जान्छ भन्ने सीमित गर्छ, दुखाइ कम गर्छ, सुन्निने घटाउँछ र निको हुन छिटो बनाउँछ। केही घण्टापछि सुरु गरे पनि यसले मद्दत गर्छ। यो प्रमाणित छ र पानी र समयबाहेक केही खर्च हुँदैन।"
+          },
+          "tip": {
+            "en": "If clean running water is scarce, pour any clean cool water steadily over the burn — don't waste time hunting for the 'perfect' water.",
+            "np": "सफा बगिरहेको पानी अभाव भए, कुनै पनि सफा चिसो पानी पोलेको ठाउँमा निरन्तर खन्याउनुहोस् — 'उत्तम' पानी खोज्दै समय खेर नफाल्नुहोस्।"
+          },
+          "illustration": "burn held under running water"
+        },
+        {
+          "action": {
+            "en": "Cool the burn, but keep the person warm.",
+            "np": "पोलेको ठाउँ चिसो पार्नुहोस्, तर व्यक्तिलाई न्यानो राख्नुहोस्।"
+          },
+          "why": {
+            "en": "Twenty minutes of water on a large burn — especially on a child or a baby — can chill the whole body dangerously. You want the burn cool but the person warm.",
+            "np": "ठूलो पोलाइमा २० मिनेट पानी — विशेष गरी बच्चा वा शिशुमा — ले पूरै शरीरलाई खतरनाक रूपमा चिसो बनाउन सक्छ। पोलेको ठाउँ चिसो तर व्यक्ति न्यानो हुनुपर्छ।"
+          },
+          "tip": {
+            "en": "Cover the rest of the body with a blanket while the burn is under the water.",
+            "np": "पोलेको ठाउँ पानीमुनि हुँदा बाँकी शरीरलाई कम्बलले छोप्नुहोस्।"
+          },
+          "illustration": "child wrapped in a blanket, arm under tap"
+        },
+        {
+          "action": {
+            "en": "Cover loosely after cooling.",
+            "np": "चिसो पारेपछि खुकुलो गरी छोप्नुहोस्।"
+          },
+          "why": {
+            "en": "A clean, smooth covering keeps dirt and germs out and reduces pain by keeping air off the raw skin. Fluffy cotton wool sticks to the wound and must be avoided.",
+            "np": "सफा, चिल्लो छोपाइले धुलो र किटाणु टाढा राख्छ र नाङ्गो छालामा हावा नलाग्न दिएर दुखाइ कम गर्छ। रौंदार कपास घाउमा टाँसिन्छ र यसलाई प्रयोग गर्नु हुँदैन।"
+          },
+          "tip": {
+            "en": "Clean plastic cling film, laid on (not wrapped tightly), makes an excellent burn cover if you have it.",
+            "np": "सफा प्लास्टिक क्लिङ फिल्म, राखेर (कसेर नबेरी) राख्दा, तपाईंसँग छ भने पोलाइ छोप्ने उत्कृष्ट साधन बन्छ।"
+          },
+          "illustration": "burn covered with clean plastic"
+        },
+        {
+          "action": {
+            "en": "Understand why traditional remedies harm.",
+            "np": "परम्परागत उपचारले किन हानि गर्छ बुझ्नुहोस्।"
+          },
+          "why": {
+            "en": "Toothpaste, butter, oil, honey and ash trap heat against the skin and feed bacteria, raising infection risk and making it harder for a doctor to see and treat the burn. Ice can freeze the already-damaged skin and kill more of it.",
+            "np": "दन्तमञ्जन, मक्खन, तेल, मह र खरानीले छालामा ताप थुन्छन् र ब्याक्टेरियालाई बढाउँछन्, जसले संक्रमणको जोखिम बढाउँछ र डाक्टरलाई पोलाइ हेर्न र उपचार गर्न गाह्रो बनाउँछ। बरफले पहिले नै बिग्रिएको छालालाई जमाएर अझ बढी नष्ट गर्न सक्छ।"
+          },
+          "tip": {
+            "en": "Water is the only thing a burn needs in the first 20 minutes — nothing else.",
+            "np": "पहिलो २० मिनेटमा पोलाइलाई चाहिने एउटै कुरा पानी हो — अरू केही होइन।"
+          },
+          "illustration": "crossed-out toothpaste tube"
+        },
+        {
+          "action": {
+            "en": "Know which burns must go to hospital.",
+            "np": "कुन पोलाइ अस्पताल लैजानैपर्छ भन्ने जान्नुहोस्।"
+          },
+          "why": {
+            "en": "Deep burns, burns bigger than the person's palm, burns that go all the way around a limb, and burns to the face, hands, feet, joints or genitals can cause lasting harm and need medical care. So does any burn to a baby or an elderly person, and any electrical or chemical burn.",
+            "np": "गहिरो पोलाइ, व्यक्तिको हत्केलाभन्दा ठूलो पोलाइ, अंगको वरिपरि पूरै घुमेको पोलाइ, र अनुहार, हात, खुट्टा, जोर्नी वा गुप्ताङ्गको पोलाइले दीर्घकालीन हानि गर्न सक्छ र चिकित्सा उपचार चाहिन्छ। बच्चा वा वृद्धको कुनै पनि पोलाइ, र कुनै पनि बिजुली वा रासायनिक पोलाइलाई पनि उपचार चाहिन्छ।"
+          },
+          "tip": {
+            "en": "For a chemical burn, rinse with lots of running water for even longer — 20 minutes or more.",
+            "np": "रासायनिक पोलाइका लागि, बगिरहेको प्रशस्त पानीले अझ बढी बेर — २० मिनेट वा बढी — पखाल्नुहोस्।"
+          },
+          "illustration": "person heading to a health post"
+        }
+      ],
+      "quiz": [
+        {
+          "question": {
+            "en": "A child spills boiling water on their arm. What is the most important first step?",
+            "np": "बच्चाले उम्लेको पानी आफ्नो हातमा खन्यायो। सबैभन्दा महत्त्वपूर्ण पहिलो कदम के हो?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Cool it under running water for at least 20 minutes",
+                "np": "बगिरहेको पानीमुनि कम्तीमा २० मिनेट चिसो पार्नुहोस्"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "Rub toothpaste on it",
+                "np": "त्यसमा दन्तमञ्जन घस्नुहोस्"
+              },
+              "isCorrect": false
+            },
+            {
+              "text": {
+                "en": "Pack it in ice",
+                "np": "बरफले छोप्नुहोस्"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "Prolonged cool (not ice-cold) running water is the proven treatment. Toothpaste traps heat and bacteria; ice damages the skin.",
+            "np": "लामो समय बगिरहेको चिसो (बरफजस्तो होइन) पानी नै प्रमाणित उपचार हो। दन्तमञ्जनले ताप र ब्याक्टेरिया थुन्छ; बरफले छाला बिगार्छ।"
+          }
+        }
+      ]
+    },
+    {
+      "id": "choking",
+      "title": {
+        "en": "Choking",
+        "np": "घाँटीमा अड्किनु"
+      },
+      "order": 4,
+      "illustration": "person bent forward receiving back blows",
+      "source_citation": "IFRC Guidelines 2025 'Choking'; American Red Cross and British Red Cross choking guidance; Resuscitation Council UK 2025 (escalating cough → back blows → abdominal thrusts).",
+      "emergency": [
+        {
+          "action": {
+            "en": "Ask 'Are you choking?' If they can cough, speak or breathe, encourage them to keep coughing — a strong cough is the best way to clear a blockage.",
+            "np": "'तपाईंलाई घाँटीमा केही अड्कियो?' भनी सोध्नुहोस्। उनले खोक्न, बोल्न वा सास फेर्न सक्छन् भने, खोकिरहन प्रोत्साहन गर्नुहोस् — बलियो खोकी नै अड्किएको कुरा हटाउने उत्तम उपाय हो।"
+          },
+          "illustration": "person coughing, rescuer watching"
+        },
+        {
+          "action": {
+            "en": "If they cannot cough, speak or breathe, or are making high-pitched sounds, act now — the airway is blocked. Bend them forward.",
+            "np": "उनले खोक्न, बोल्न वा सास फेर्न सक्दैनन्, वा चर्को सिठी जस्तो आवाज निकाल्दैछन् भने, अहिल्यै काम गर्नुहोस् — श्वासनली अवरुद्ध छ। उनलाई अगाडि निहुराउनुहोस्।"
+          },
+          "illustration": "person bent forward at the waist"
+        },
+        {
+          "action": {
+            "en": "Give up to 5 firm back blows between the shoulder blades with the heel of your hand, one at a time.",
+            "np": "हातको कुर्कुच्चाले काँधका हाडका बीचमा एक-एक गरी बढीमा ५ पटक बलियोसँग ढाडमा हिर्काउनुहोस्।"
+          },
+          "illustration": "back blows between shoulder blades"
+        },
+        {
+          "action": {
+            "en": "If that fails, give up to 5 abdominal thrusts: stand behind, make a fist just above the navel, and pull sharply inward and upward.",
+            "np": "त्यसले काम गरेन भने, बढीमा ५ पटक पेट थिच्नुहोस्: पछाडि उभिनुहोस्, नाइटोभन्दा ठीकमाथि मुट्ठी बनाउनुहोस्, र भित्रतिर र माथितिर झट्का दिएर तान्नुहोस्।"
+          },
+          "illustration": "abdominal thrusts from behind"
+        },
+        {
+          "action": {
+            "en": "Keep alternating 5 back blows and 5 abdominal thrusts until the object comes out or the person becomes unresponsive.",
+            "np": "अड्किएको वस्तु ननिस्केसम्म वा व्यक्ति बेहोस नभएसम्म ५ पटक ढाडमा हिर्काउने र ५ पटक पेट थिच्ने पालैपालो गरिरहनुहोस्।"
+          },
+          "illustration": "alternating back blows and thrusts"
+        },
+        {
+          "action": {
+            "en": "If they become unresponsive, lower them gently to the ground, get emergency help, and start CPR (chest compressions) if you know how.",
+            "np": "उनी बेहोस भए, बिस्तारै भुइँमा सुताउनुहोस्, आपतकालीन सहायता बोलाउनुहोस्, र थाहा छ भने CPR (छाती थिच्ने) सुरु गर्नुहोस्।"
+          },
+          "illustration": "person lowered to ground, CPR begun"
+        }
+      ],
+      "never": [
+        {
+          "en": "Do NOT slap the back of someone who can still cough or speak — let them cough.",
+          "np": "अझै खोक्न वा बोल्न सक्ने व्यक्तिको ढाडमा नहिर्काउनुहोस् — उनलाई खोक्न दिनुहोस्।"
+        },
+        {
+          "en": "Do NOT do a blind finger-sweep in the mouth — it can push the object deeper. Only remove an object you can clearly see.",
+          "np": "मुखभित्र नदेखिकन औंलाले नखोतल्नुहोस् — यसले वस्तुलाई अझ भित्र धकेल्न सक्छ। स्पष्ट देखिने वस्तु मात्र निकाल्नुहोस्।"
+        },
+        {
+          "en": "Do NOT give abdominal thrusts to a baby under one year — use back blows and chest thrusts instead.",
+          "np": "एक वर्षमुनिको शिशुलाई पेट नथिच्नुहोस् — बरु ढाडमा हिर्काउने र छाती थिच्ने गर्नुहोस्।"
+        },
+        {
+          "en": "Do NOT skip seeing a doctor afterward — thrusts can cause internal injury, and the airway may still be irritated.",
+          "np": "त्यसपछि डाक्टरलाई देखाउन नछोड्नुहोस् — थिच्दा भित्री चोट लाग्न सक्छ, र श्वासनली अझै जलनयुक्त हुन सक्छ।"
+        }
+      ],
+      "learn": [
+        {
+          "action": {
+            "en": "Tell the difference between a mild and a severe block.",
+            "np": "हल्का र गम्भीर अवरोधबीचको भिन्नता चिन्नुहोस्।"
+          },
+          "why": {
+            "en": "If they can cough, speak or breathe, air is still moving — a strong cough is the best tool and you should let them use it. If they are silent, can't breathe, or make high-pitched squeaky noises, the airway is fully blocked and they will lose consciousness within minutes unless you act.",
+            "np": "उनले खोक्न, बोल्न वा सास फेर्न सक्छन् भने, हावा अझै चलिरहेको छ — बलियो खोकी नै उत्तम साधन हो र उनलाई त्यो प्रयोग गर्न दिनुपर्छ। उनी चुपचाप छन्, सास फेर्न सक्दैनन्, वा चर्को किचकिच आवाज निकाल्छन् भने, श्वासनली पूर्ण रूपमा अवरुद्ध छ र तपाईंले केही नगरे केही मिनेटमै उनी बेहोस हुनेछन्।"
+          },
+          "tip": {
+            "en": "Clutching the throat with both hands is the universal choking sign — learn to spot it across a room.",
+            "np": "दुवै हातले घाँटी समात्नु घाँटीमा अड्किएको विश्वव्यापी संकेत हो — कोठाको अर्को छेउबाट पनि चिन्न सिक्नुहोस्।"
+          },
+          "illustration": "hands clutching the throat"
+        },
+        {
+          "action": {
+            "en": "Do back blows the right way.",
+            "np": "ढाडमा सही तरिकाले हिर्काउनुहोस्।"
+          },
+          "why": {
+            "en": "Bending the person well forward means a dislodged object falls out of the mouth instead of back down the airway. A firm strike with the heel of your hand between the shoulder blades sends a shock wave that can free the blockage.",
+            "np": "व्यक्तिलाई राम्ररी अगाडि निहुराउँदा अड्किएको वस्तु श्वासनलीभित्र फर्किनुको सट्टा मुखबाट बाहिर झर्छ। हातको कुर्कुच्चाले काँधका हाडका बीचमा बलियोसँग हिर्काउँदा अवरोध हटाउन सक्ने झट्का पुग्छ।"
+          },
+          "tip": {
+            "en": "Give up to five, checking after each one to see if the blockage has cleared — you don't always need all five.",
+            "np": "बढीमा पाँच पटक दिनुहोस्, हरेक पटकपछि अवरोध हट्यो कि भनेर जाँच्नुहोस् — सधैँ पाँचै पटक चाहिँदैन।"
+          },
+          "illustration": "person bent forward receiving a back blow"
+        },
+        {
+          "action": {
+            "en": "Do abdominal thrusts the right way.",
+            "np": "पेट सही तरिकाले थिच्नुहोस्।"
+          },
+          "why": {
+            "en": "Standing behind, a sharp inward-and-upward pull just above the navel squeezes the lungs and forces trapped air upward — like a cough you create for them — which can push the object out.",
+            "np": "पछाडि उभिएर, नाइटोभन्दा ठीकमाथि भित्र र माथितिर झट्का दिएर तान्दा फोक्सो थिचिन्छ र थुनिएको हावा माथितिर धकेलिन्छ — उनका लागि तपाईंले बनाइदिएको खोकीजस्तै — जसले वस्तु बाहिर धकेल्न सक्छ।"
+          },
+          "tip": {
+            "en": "For a pregnant person or someone too large to reach around, give chest thrusts instead, against the centre of the breastbone.",
+            "np": "गर्भवती व्यक्ति वा वरिपरि हात नपुग्ने ठूलो व्यक्तिका लागि, बरु छातीको हाडको बीचमा छाती थिच्नुहोस्।"
+          },
+          "illustration": "abdominal thrusts from behind"
+        },
+        {
+          "action": {
+            "en": "A choking baby is handled differently.",
+            "np": "घाँटीमा अड्किएको शिशुलाई फरक तरिकाले सम्हाल्नुपर्छ।"
+          },
+          "why": {
+            "en": "A baby under one year is too fragile for abdominal thrusts. Instead, support them face-down along your forearm for back blows, then turn them face-up for chest thrusts using two fingers on the breastbone.",
+            "np": "एक वर्षमुनिको शिशु पेट थिच्नका लागि निकै नाजुक हुन्छ। बरु, ढाडमा हिर्काउन उनलाई तपाईंको पाखुरामा घोप्टो पारेर अड्याउनुहोस्, त्यसपछि छातीको हाडमा दुई औंलाले छाती थिच्न उनलाई उत्तानो पार्नुहोस्।"
+          },
+          "tip": {
+            "en": "Keep the baby's head lower than the chest so gravity helps the object come out.",
+            "np": "गुरुत्वले वस्तु बाहिर आउन मद्दत गरोस् भनेर शिशुको टाउको छातीभन्दा तल राख्नुहोस्।"
+          },
+          "illustration": "baby face-down along a forearm"
+        },
+        {
+          "action": {
+            "en": "Know what to do if they go unresponsive.",
+            "np": "उनी बेहोस भए के गर्ने भन्ने जान्नुहोस्।"
+          },
+          "why": {
+            "en": "If the person collapses, the muscles relax and it may now be possible to clear the airway with CPR. Lower them gently, get emergency help, and start chest compressions — these also build pressure that can shift the object.",
+            "np": "व्यक्ति ढले, मांसपेशी खुकुलो हुन्छ र अब CPR ले श्वासनली सफा गर्न सम्भव हुन सक्छ। उनलाई बिस्तारै सुताउनुहोस्, आपतकालीन सहायता बोलाउनुहोस्, र छाती थिच्न सुरु गर्नुहोस् — यसले वस्तु सार्न सक्ने दबाब पनि बनाउँछ।"
+          },
+          "tip": {
+            "en": "Only remove an object you can clearly see in the mouth. Never sweep a finger around blindly — you can push it deeper.",
+            "np": "मुखमा स्पष्ट देखिने वस्तु मात्र निकाल्नुहोस्। नदेखिकन औंला कहिल्यै नखोतल्नुहोस् — तपाईंले यसलाई अझ भित्र धकेल्न सक्नुहुन्छ।"
+          },
+          "illustration": "person lowered to the ground"
+        },
+        {
+          "action": {
+            "en": "See a doctor afterwards.",
+            "np": "त्यसपछि डाक्टरलाई देखाउनुहोस्।"
+          },
+          "why": {
+            "en": "Abdominal and chest thrusts can bruise or injure internal organs, and a partly-cleared airway can still be irritated or hold fragments. A check-up is wise even when the person seems fine.",
+            "np": "पेट र छाती थिच्दा भित्री अंगमा निलडाम वा चोट लाग्न सक्छ, र आंशिक रूपमा सफा भएको श्वासनली अझै जलनयुक्त हुन वा टुक्रा बाँकी रहन सक्छ। व्यक्ति ठीक देखिए पनि जाँच गराउनु बुद्धिमानी हो।"
+          },
+          "tip": {
+            "en": "This is especially important if thrusts were needed to clear the blockage.",
+            "np": "अवरोध हटाउन थिच्नुपरेको थियो भने यो विशेष महत्त्वपूर्ण छ।"
+          },
+          "illustration": "person being checked by a health worker"
+        }
+      ],
+      "quiz": [
+        {
+          "question": {
+            "en": "A man at dinner suddenly can't speak or cough and clutches his throat. What do you do?",
+            "np": "खाना खाँदै गर्दा एक जना मान्छे अचानक बोल्न वा खोक्न सक्दैनन् र घाँटी समात्छन्। तपाईं के गर्नुहुन्छ?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Give up to 5 back blows, then up to 5 abdominal thrusts, and repeat",
+                "np": "बढीमा ५ पटक ढाडमा हिर्काउनुहोस्, त्यसपछि बढीमा ५ पटक पेट थिच्नुहोस्, र दोहोर्‍याउनुहोस्"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "Give him water to wash it down",
+                "np": "निल्न मद्दत होस् भनेर पानी दिनुहोस्"
+              },
+              "isCorrect": false
+            },
+            {
+              "text": {
+                "en": "Wait to see if it clears on its own",
+                "np": "आफैँ हट्छ कि भनेर पर्खनुहोस्"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "A silent, non-coughing person has a fully blocked airway. Act immediately with back blows and abdominal thrusts.",
+            "np": "चुपचाप, खोक्न नसक्ने व्यक्तिको श्वासनली पूर्ण अवरुद्ध हुन्छ। ढाडमा हिर्काउने र पेट थिच्ने काम तुरुन्तै गर्नुहोस्।"
+          }
+        }
+      ]
+    },
+    {
+      "id": "drowning",
+      "title": {
+        "en": "Drowning",
+        "np": "डुब्नु"
+      },
+      "order": 5,
+      "illustration": "person reaching a pole to someone in water",
+      "source_citation": "IFRC Guidelines 2025 'Drowning'; WHO drowning guidance; Resuscitation Council UK 2025. DECISION: taught as trained breaths-first 30:2 with an explicit compressions-only fallback for untrained rescuers, since drowning arrest is hypoxic.",
+      "emergency": [
+        {
+          "action": {
+            "en": "Get them out of the water without becoming a victim yourself. Reach with a pole or branch, or throw something that floats — don't jump in unless you are trained.",
+            "np": "आफू पीडित नबनी उनलाई पानीबाट निकाल्नुहोस्। लट्ठी वा हाँगाले पुर्‍याउनुहोस्, वा तैरने कुनै कुरा फ्याँक्नुहोस् — तालिम प्राप्त नभई पानीमा नहाम फाल्नुहोस्।"
+          },
+          "illustration": "reaching a pole from the bank"
+        },
+        {
+          "action": {
+            "en": "Once out, check if they respond and are breathing normally. Shout for help.",
+            "np": "निकालेपछि, उनले प्रतिक्रिया दिन्छन् र सामान्य रूपमा सास फेर्दैछन् कि भनेर जाँच्नुहोस्। सहयोगका लागि कराउनुहोस्।"
+          },
+          "illustration": "checking response and breathing"
+        },
+        {
+          "action": {
+            "en": "If they are not breathing normally, start CPR now. If you are trained: give 2 rescue breaths first, then continue cycles of 30 chest compressions and 2 breaths. Getting air in matters most in drowning.",
+            "np": "उनी सामान्य रूपमा सास फेरिरहेका छैनन् भने, अहिल्यै CPR सुरु गर्नुहोस्। तालिम प्राप्त हुनुहुन्छ भने: पहिले २ पटक बचाउ सास दिनुहोस्, त्यसपछि ३० पटक छाती थिच्ने र २ पटक सास दिने चक्र जारी राख्नुहोस्। डुबाइमा हावा भित्र पुर्‍याउनु सबैभन्दा महत्त्वपूर्ण हुन्छ।"
+          },
+          "illustration": "rescue breaths being given"
+        },
+        {
+          "action": {
+            "en": "If you are not trained or cannot give breaths: push hard and fast in the centre of the chest without stopping. Compressions alone are far better than doing nothing.",
+            "np": "तपाईं तालिम प्राप्त हुनुहुन्न वा सास दिन सक्नुहुन्न भने: छातीको बीचमा नरोकी बलियो र छिटो थिच्नुहोस्। केही नगर्नुभन्दा छाती थिच्ने मात्रै पनि धेरै राम्रो हो।"
+          },
+          "illustration": "chest compressions in the centre of the chest"
+        },
+        {
+          "action": {
+            "en": "Send someone to call emergency services while you continue care.",
+            "np": "तपाईंले उपचार जारी राख्दै गर्दा कसैलाई आपतकालीन सेवा बोलाउन पठाउनुहोस्।"
+          },
+          "illustration": "someone running to call for help"
+        },
+        {
+          "action": {
+            "en": "If they are breathing, lay them on their side (recovery position) and keep them warm — wet skin loses heat fast.",
+            "np": "उनी सास फेरिरहेका छन् भने, छेउ फर्काएर सुताउनुहोस् (रिकभरी पोजिसन) र न्यानो राख्नुहोस् — भिजेको छालाले छिटो ताप गुमाउँछ।"
+          },
+          "illustration": "person on their side, covered"
+        },
+        {
+          "action": {
+            "en": "Everyone rescued from drowning must see a doctor, even if they seem fine — lung problems can appear hours later.",
+            "np": "डुबाइबाट बचाइएका सबैले डाक्टरलाई देखाउनैपर्छ, ठीक देखिए पनि — फोक्सोको समस्या केही घण्टापछि देखिन सक्छ।"
+          },
+          "illustration": "person taken to clinic"
+        }
+      ],
+      "never": [
+        {
+          "en": "Do NOT enter dangerous or fast-moving water to rescue someone unless trained and safe to do so.",
+          "np": "तालिम प्राप्त र सुरक्षित नभएसम्म कसैलाई बचाउन खतरनाक वा छिटो बग्ने पानीमा नपस्नुहोस्।"
+        },
+        {
+          "en": "Do NOT try to 'push water out' of the lungs or stomach — it wastes time and can cause vomiting.",
+          "np": "फोक्सो वा पेटबाट 'पानी निकाल्ने' प्रयास नगर्नुहोस् — यसले समय खेर फाल्छ र बान्ता गराउन सक्छ।"
+        },
+        {
+          "en": "Do NOT assume someone is fine just because they are breathing — get them checked.",
+          "np": "सास फेरिरहेकै भरमा कोही ठीक छ भनी नठान्नुहोस् — उनलाई जाँच गराउनुहोस्।"
+        }
+      ],
+      "learn": [
+        {
+          "action": {
+            "en": "Know what real drowning looks like.",
+            "np": "साँचो डुबाइ कस्तो देखिन्छ भन्ने जान्नुहोस्।"
+          },
+          "why": {
+            "en": "Drowning is usually silent, not the splashing and shouting people expect. A drowning person often can't call out or wave — they bob at the surface, head tilted back, arms pressing down, unable to reach for help. It can happen in seconds and in shallow water.",
+            "np": "डुबाइ प्रायः चुपचाप हुन्छ, मानिसले सोचेजस्तो पानी छ्याप्दै र कराउँदै होइन। डुब्दै गरेको व्यक्तिले प्रायः कराउन वा हात हल्लाउन सक्दैनन् — उनी पानीको सतहमा उत्रन-डुब्न गर्छन्, टाउको पछाडि ढल्केको, हात तल थिच्दै, सहयोग माग्न असमर्थ। यो केही सेकेन्डमै र कम गहिरो पानीमा पनि हुन सक्छ।"
+          },
+          "tip": {
+            "en": "A child who has gone quiet in or near water needs checking immediately.",
+            "np": "पानीमा वा पानी नजिक अचानक चुप लागेको बच्चालाई तुरुन्त जाँच्नुपर्छ।"
+          },
+          "illustration": "person low in the water, head tilted back"
+        },
+        {
+          "action": {
+            "en": "Rescue without becoming a second victim.",
+            "np": "दोस्रो पीडित नबनी बचाउनुहोस्।"
+          },
+          "why": {
+            "en": "Many drowning deaths include would-be rescuers who jumped in and were pulled under by the panicking person or the current. Reaching or throwing a float is far safer and often just as effective.",
+            "np": "धेरै डुबाइका मृत्युमा पानीमा हाम फालेर आत्तिएको व्यक्ति वा भेलले तानिएका बचाउनेहरू पर्छन्। लट्ठी पुर्‍याउनु वा तैरने कुरा फ्याँक्नु धेरै सुरक्षित र प्रायः त्यत्तिकै प्रभावकारी हुन्छ।"
+          },
+          "tip": {
+            "en": "Remember 'reach or throw, don't go' — a rope, pole, branch, or anything that floats can pull a person to safety.",
+            "np": "'पुर्‍याउनुहोस् वा फ्याँक्नुहोस्, नजानुहोस्' सम्झनुहोस् — डोरी, लट्ठी, हाँगा, वा तैरने जुनसुकै कुराले व्यक्तिलाई सुरक्षित तान्न सक्छ।"
+          },
+          "illustration": "throwing a float on a rope"
+        },
+        {
+          "action": {
+            "en": "Get air in first — but never skip CPR if you can't.",
+            "np": "पहिले हावा भित्र पुर्‍याउनुहोस् — तर सक्नुहुन्न भने पनि CPR कहिल्यै नछोड्नुहोस्।"
+          },
+          "why": {
+            "en": "Drowning kills mainly through lack of oxygen, so if you are trained, starting with 2 rescue breaths then cycles of 30 compressions and 2 breaths gives the best chance. This is different from a sudden adult heart attack, where compressions come first.",
+            "np": "डुबाइले मुख्यतया अक्सिजनको अभावले ज्यान लिन्छ, त्यसैले तालिम प्राप्त हुनुहुन्छ भने, पहिले २ बचाउ सास त्यसपछि ३० थिचाइ र २ सासको चक्रबाट सुरु गर्दा उत्तम अवसर हुन्छ। यो अचानक हुने वयस्कको हृदयाघातभन्दा फरक हो, जहाँ थिचाइ पहिले आउँछ।"
+          },
+          "tip": {
+            "en": "If you're untrained or unwilling to give breaths, don't freeze — chest compressions alone still save lives.",
+            "np": "तपाईं तालिम प्राप्त हुनुहुन्न वा सास दिन चाहनुहुन्न भने, नअडिनुहोस् — छाती थिच्ने मात्रैले पनि ज्यान बचाउँछ।"
+          },
+          "illustration": "chest compressions"
+        },
+        {
+          "action": {
+            "en": "Don't waste time trying to empty the lungs.",
+            "np": "फोक्सो खाली गर्ने प्रयासमा समय खेर नफाल्नुहोस्।"
+          },
+          "why": {
+            "en": "Pressing on the stomach or holding the person upside down to 'get the water out' does not work and delays the breaths and compressions that actually help. It also often causes vomiting, which can block the airway.",
+            "np": "'पानी निकाल्न' पेट थिच्नु वा व्यक्तिलाई घोप्टो झुण्ड्याउनुले काम गर्दैन र साँच्चै मद्दत गर्ने सास र थिचाइमा ढिलाइ गर्छ। यसले प्रायः बान्ता पनि गराउँछ, जसले श्वासनली अवरुद्ध गर्न सक्छ।"
+          },
+          "tip": {
+            "en": "If they vomit, turn them on their side, clear the mouth, and continue.",
+            "np": "उनलाई बान्ता भए, छेउ फर्काउनुहोस्, मुख सफा गर्नुहोस्, र जारी राख्नुहोस्।"
+          },
+          "illustration": "crossed-out upside-down figure"
+        },
+        {
+          "action": {
+            "en": "Keep a rescued person warm.",
+            "np": "बचाइएको व्यक्तिलाई न्यानो राख्नुहोस्।"
+          },
+          "why": {
+            "en": "Wet skin, cold water and wind strip body heat fast, and a cold body is harder to resuscitate. Hypothermia is a real risk even in warm weather.",
+            "np": "भिजेको छाला, चिसो पानी र बतासले शरीरको ताप छिटो लैजान्छ, र चिसो शरीरलाई पुनर्जीवित गर्न गाह्रो हुन्छ। न्यानो मौसममा पनि हाइपोथर्मिया साँचो जोखिम हो।"
+          },
+          "tip": {
+            "en": "Remove wet clothes if you can and wrap them in something dry.",
+            "np": "सके भिजेको लुगा हटाउनुहोस् र उनलाई सुख्खा कुरामा बेर्नुहोस्।"
+          },
+          "illustration": "person wrapped in a dry blanket"
+        },
+        {
+          "action": {
+            "en": "Everyone rescued must see a doctor.",
+            "np": "बचाइएका सबैले डाक्टरलाई देखाउनैपर्छ।"
+          },
+          "why": {
+            "en": "Even someone who seems fine after a near-drowning can develop breathing problems hours later as water and irritation affect the lungs. This delayed effect can be dangerous if missed.",
+            "np": "डुब्न लागेर बचेको व्यक्ति ठीक देखिए पनि पानी र जलनले फोक्सोमा असर गर्दा केही घण्टापछि सास फेर्ने समस्या देखा पर्न सक्छ। यो ढिलो असर छुटे खतरनाक हुन सक्छ।"
+          },
+          "tip": {
+            "en": "Don't let a rescued person simply go home 'because they feel okay'.",
+            "np": "बचाइएको व्यक्तिलाई 'ठीक महसुस भइरहेको छ' भन्दैमा घर जान नदिनुहोस्।"
+          },
+          "illustration": "person taken to clinic"
+        }
+      ],
+      "quiz": [
+        {
+          "question": {
+            "en": "You see someone struggling in a fast river. What is the safest first action?",
+            "np": "तपाईंले छिटो बग्ने नदीमा कोही संघर्ष गरिरहेको देख्नुहुन्छ। सबैभन्दा सुरक्षित पहिलो काम के हो?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Reach or throw something that floats from the bank",
+                "np": "किनाराबाट तैरने कुनै कुरा पुर्‍याउनुहोस् वा फ्याँक्नुहोस्"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "Jump straight in to pull them out",
+                "np": "उनलाई निकाल्न सोझै पानीमा हाम फाल्नुहोस्"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "Reach or throw, don't go. Entering fast water risks two drownings instead of one.",
+            "np": "पुर्‍याउनुहोस् वा फ्याँक्नुहोस्, नजानुहोस्। छिटो बग्ने पानीमा पस्दा एकको सट्टा दुई जना डुब्ने जोखिम हुन्छ।"
+          }
+        }
+      ]
+    },
+    {
+      "id": "fractures",
+      "title": {
+        "en": "Fractures and falls",
+        "np": "हड्डी भाँचिनु र लड्नु"
+      },
+      "order": 6,
+      "illustration": "forearm supported in a padded splint",
+      "source_citation": "IFRC Guidelines 2025 'Fractures, sprains and strains'; ILCOR/AHA splinting guidance (splint in position found, do not straighten).",
+      "emergency": [
+        {
+          "action": {
+            "en": "Keep the injured part still. Tell the person not to move it and support it in the position you found it.",
+            "np": "चोट लागेको भाग स्थिर राख्नुहोस्। व्यक्तिलाई नचलाउन भन्नुहोस् र भेट्टाएकै अवस्थामा अड्याउनुहोस्।"
+          },
+          "illustration": "hand supporting an injured limb still"
+        },
+        {
+          "action": {
+            "en": "Steady and support the injury. If you must move them for help, splint it with padded soft cloth, tying above and below the break, not over it.",
+            "np": "चोटलाई स्थिर र अड्याउनुहोस्। सहयोगका लागि उनलाई सार्नैपरे, नरम कपडाको प्याड राखेर स्प्लिन्ट लगाउनुहोस्, भाँचिएको ठाउँमाथि होइन, माथि र तल बाँध्नुहोस्।"
+          },
+          "illustration": "padded splint being tied on"
+        },
+        {
+          "action": {
+            "en": "Put something cold, wrapped in cloth, on a closed injury to reduce swelling and pain. Never put ice directly on skin.",
+            "np": "सुन्निने र दुखाइ कम गर्न, नखुलेको चोटमा कपडामा बेरेको चिसो कुरा राख्नुहोस्। बरफ कहिल्यै सिधै छालामा नराख्नुहोस्।"
+          },
+          "illustration": "wrapped cold pack on injury"
+        },
+        {
+          "action": {
+            "en": "If bone has broken the skin, cover the wound with a clean dressing and press gently around it — not on the bone — to control bleeding.",
+            "np": "हड्डीले छाला फोडेको छ भने, घाउलाई सफा पट्टीले छोप्नुहोस् र रक्तस्राव नियन्त्रण गर्न वरिपरि बिस्तारै थिच्नुहोस् — हड्डीमाथि होइन।"
+          },
+          "illustration": "clean dressing over an open fracture"
+        },
+        {
+          "action": {
+            "en": "Get to medical care. Don't let them eat or drink in case they need surgery.",
+            "np": "चिकित्सा उपचारमा पुग्नुहोस्। शल्यक्रिया चाहिन सक्ने भएकाले उनलाई केही खान वा पिउन नदिनुहोस्।"
+          },
+          "illustration": "person transported to hospital"
+        }
+      ],
+      "never": [
+        {
+          "en": "Do NOT try to straighten or push a broken bone back into place.",
+          "np": "भाँचिएको हड्डीलाई सोझ्याउने वा ठाउँमा फर्काउने प्रयास नगर्नुहोस्।"
+        },
+        {
+          "en": "Do NOT move the person unnecessarily, especially if the neck or back might be hurt.",
+          "np": "व्यक्तिलाई अनावश्यक रूपमा नचलाउनुहोस्, विशेष गरी घाँटी वा ढाडमा चोट लागेको हुन सक्छ भने।"
+        },
+        {
+          "en": "Do NOT tie a splint so tightly it cuts off blood flow — check that fingers or toes stay warm and pink.",
+          "np": "स्प्लिन्टलाई रगत बहाव रोकिने गरी यति कसेर नबाँध्नुहोस् — औंलाहरू न्यानो र गुलाबी छन् कि भनेर जाँच्नुहोस्।"
+        }
+      ],
+      "learn": [
+        {
+          "action": {
+            "en": "Recognise a likely broken bone.",
+            "np": "भाँचिएको हुन सक्ने हड्डी चिन्नुहोस्।"
+          },
+          "why": {
+            "en": "You can't always be sure without an X-ray, so treat it as broken if there is severe pain, swelling, bruising, an odd shape or angle, a grating feeling, or the person can't use or bear weight on the part. A snap or crack at the time of injury is another clue.",
+            "np": "एक्स-रे बिना सधैँ निश्चित हुन सकिँदैन, त्यसैले तीव्र दुखाइ, सुन्निने, निलडाम, अनौठो आकार वा कोण, कर्याककुरुक महसुस, वा व्यक्तिले त्यो भाग प्रयोग गर्न वा त्यसमा भार दिन नसक्ने भए भाँचिएको ठानेर उपचार गर्नुहोस्। चोट लाग्दा 'चट्' वा 'क्र्याक' आवाज आउनु अर्को संकेत हो।"
+          },
+          "tip": {
+            "en": "When in doubt, treat it as a fracture — it does no harm and prevents worse injury.",
+            "np": "शंका लागे, हड्डी भाँचिएकै ठानेर उपचार गर्नुहोस् — यसले हानि गर्दैन र अझ खराब चोट रोक्छ।"
+          },
+          "illustration": "swollen misshapen forearm"
+        },
+        {
+          "action": {
+            "en": "Immobilise the injury in the position found.",
+            "np": "चोटलाई भेट्टाएकै अवस्थामा नहल्लिने बनाउनुहोस्।"
+          },
+          "why": {
+            "en": "A broken bone has sharp ends near nerves and blood vessels. Straightening or pushing it can tear them and cause lasting damage. Supporting it exactly as you found it reduces pain and prevents the break getting worse on the way to help.",
+            "np": "भाँचिएको हड्डीका धारिला टुप्पा नसा र रक्तनलीका नजिक हुन्छन्। सोझ्याउँदा वा धकेल्दा ती च्यातिएर दीर्घकालीन क्षति हुन सक्छ। भेट्टाएकै अवस्थामा अड्याउँदा दुखाइ कम हुन्छ र सहयोगमा पुग्दासम्म भाँचिएको ठाउँ अझ बिग्रन रोकिन्छ।"
+          },
+          "tip": {
+            "en": "Pad the splint well and tie it above and below the break, never directly over it.",
+            "np": "स्प्लिन्टमा राम्ररी प्याड राख्नुहोस् र भाँचिएको ठाउँको माथि र तल बाँध्नुहोस्, कहिल्यै सिधै त्यसमाथि होइन।"
+          },
+          "illustration": "padded splint tied above and below break"
+        },
+        {
+          "action": {
+            "en": "Watch the circulation beyond the injury.",
+            "np": "चोटभन्दा पर रगत सञ्चारमा ध्यान दिनुहोस्।"
+          },
+          "why": {
+            "en": "A tight splint or heavy swelling can cut off blood flow past the injury. A hand or foot that turns pale, blue, cold or numb has lost its blood supply — an emergency that can cost the limb.",
+            "np": "कसिलो स्प्लिन्ट वा धेरै सुन्निनाले चोटभन्दा परको रगत बहाव रोक्न सक्छ। फुस्रो, नीलो, चिसो वा सुन्निएर स्पर्श नहुने हात वा खुट्टाले रगतको आपूर्ति गुमाएको हो — यो अंग नै गुम्न सक्ने आपतकाल हो।"
+          },
+          "tip": {
+            "en": "Check that fingers or toes stay warm and pink; loosen the splint at once if they don't.",
+            "np": "औंलाहरू न्यानो र गुलाबी छन् कि भनेर जाँच्नुहोस्; छैनन् भने तुरुन्तै स्प्लिन्ट खुकुलो पार्नुहोस्।"
+          },
+          "illustration": "checking fingertip colour"
+        },
+        {
+          "action": {
+            "en": "Handle an open fracture carefully.",
+            "np": "खुला (छाला फुटेको) भाँचिएको हड्डीलाई सावधानीपूर्वक सम्हाल्नुहोस्।"
+          },
+          "why": {
+            "en": "When bone breaks the skin, there is both bleeding and a high infection risk straight to the bone. Cover the wound with a clean dressing and press gently around it — never directly on the exposed bone.",
+            "np": "हड्डीले छाला फोड्दा रक्तस्राव पनि हुन्छ र सिधै हड्डीसम्म संक्रमणको उच्च जोखिम हुन्छ। घाउलाई सफा पट्टीले छोप्नुहोस् र वरिपरि बिस्तारै थिच्नुहोस् — बाहिर निस्केको हड्डीमाथि कहिल्यै सिधै होइन।"
+          },
+          "tip": {
+            "en": "Don't try to push the bone back under the skin.",
+            "np": "हड्डीलाई छालामुनि फर्काउने प्रयास नगर्नुहोस्।"
+          },
+          "illustration": "clean dressing around an open fracture"
+        },
+        {
+          "action": {
+            "en": "Use cold and rest to ease swelling.",
+            "np": "सुन्निने कम गर्न चिसो र आराम प्रयोग गर्नुहोस्।"
+          },
+          "why": {
+            "en": "For a closed injury, something cold wrapped in cloth reduces swelling and pain in the first hours. Rest and support do the same. This helps sprains and strains as well as fractures.",
+            "np": "नखुलेको चोटका लागि, कपडामा बेरेको चिसो कुराले पहिलो केही घण्टामा सुन्निने र दुखाइ कम गर्छ। आराम र अड्याइले पनि त्यही गर्छ। यसले हड्डी भाँचिएको मात्र होइन, मर्किएको र तन्किएकोमा पनि मद्दत गर्छ।"
+          },
+          "tip": {
+            "en": "Never put ice directly on skin — always wrap it first.",
+            "np": "बरफ कहिल्यै सिधै छालामा नराख्नुहोस् — सधैँ पहिले बेर्नुहोस्।"
+          },
+          "illustration": "wrapped cold pack on injury"
+        },
+        {
+          "action": {
+            "en": "Don't move the person unnecessarily.",
+            "np": "व्यक्तिलाई अनावश्यक रूपमा नचलाउनुहोस्।"
+          },
+          "why": {
+            "en": "Especially after a fall, moving someone can worsen a hidden neck or back injury. If they may need surgery, food or drink can also delay it — so hold off on both.",
+            "np": "विशेष गरी लडेपछि, व्यक्तिलाई सार्दा लुकेको घाँटी वा ढाडको चोट अझ बिग्रन सक्छ। शल्यक्रिया चाहिन सक्छ भने, खानपानले पनि त्यसलाई ढिलो गराउन सक्छ — त्यसैले दुवैबाट रोकिनुहोस्।"
+          },
+          "tip": {
+            "en": "Bring help and transport to the person where possible, rather than moving them to it.",
+            "np": "सम्भव भएसम्म व्यक्तिलाई सहयोग र साधनतिर लैजानुभन्दा सहयोग र साधन व्यक्तिकहाँ ल्याउनुहोस्।"
+          },
+          "illustration": "person kept still awaiting help"
+        }
+      ],
+      "quiz": [
+        {
+          "question": {
+            "en": "Someone falls and their forearm is bent at a wrong angle. What should you do?",
+            "np": "कोही लड्छन् र उनको नाडी/पाखुरा बाङ्गो कोणमा मुडिन्छ। तपाईंले के गर्नुपर्छ?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Support and splint it in the position it's in, then get help",
+                "np": "जुन अवस्थामा छ त्यसैमा अड्याएर स्प्लिन्ट लगाउनुहोस्, त्यसपछि सहयोग लिनुहोस्"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "Gently straighten it back to normal",
+                "np": "बिस्तारै सोझ्याएर सामान्य बनाउनुहोस्"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "Never straighten a fracture. Immobilise it as found to avoid tearing nerves or vessels.",
+            "np": "भाँचिएको हड्डी कहिल्यै नसोझ्याउनुहोस्। नसा वा रक्तनली नच्यातियोस् भनेर भेट्टाएकै अवस्थामा नहल्लिने बनाउनुहोस्।"
+          }
+        }
+      ]
+    },
+    {
+      "id": "spinal-injury",
+      "title": {
+        "en": "Head, neck and back injury",
+        "np": "टाउको, घाँटी र ढाडको चोट"
+      },
+      "order": 7,
+      "illustration": "rescuer steadying a lying person's head with both hands",
+      "source_citation": "IFRC Guidelines 2025 'Spinal injury' and 'Head injury and concussion'; ILCOR/ANZCOR spinal guidance (manual head support, avoid rigid collars by lay providers).",
+      "emergency": [
+        {
+          "action": {
+            "en": "Suspect a spine injury after any fall from height, road crash, or blow to the head. Tell the person to stay still and not move.",
+            "np": "अग्लो ठाउँबाट लड्दा, सडक दुर्घटना, वा टाउकोमा चोट लागेपछि मेरुदण्डको चोटको शंका गर्नुहोस्। व्यक्तिलाई स्थिर रहन र नचल्न भन्नुहोस्।"
+          },
+          "illustration": "person told to stay still"
+        },
+        {
+          "action": {
+            "en": "Kneel behind their head and gently hold it still with both hands, keeping head, neck and body in one straight line.",
+            "np": "उनको टाउकोपछाडि घुँडा टेकेर दुवै हातले टाउकोलाई बिस्तारै स्थिर समात्नुहोस्, टाउको, घाँटी र शरीरलाई एउटै सिधा रेखामा राख्नुहोस्।"
+          },
+          "illustration": "hands steadying the head"
+        },
+        {
+          "action": {
+            "en": "Keep them warm, keep talking to them, and watch their breathing while someone calls for emergency help.",
+            "np": "कसैले आपतकालीन सहायता बोलाउँदै गर्दा उनलाई न्यानो राख्नुहोस्, कुरा गरिरहनुहोस्, र सास फेराइ हेरिरहनुहोस्।"
+          },
+          "illustration": "rescuer reassuring the person"
+        },
+        {
+          "action": {
+            "en": "Only move them if they are in danger (fire, water) or if they stop breathing and need CPR.",
+            "np": "उनी खतरामा छन् (आगो, पानी) वा सास फेर्न बन्द गरी CPR चाहिन्छ भने मात्र सार्नुहोस्।"
+          },
+          "illustration": "person moved only for danger"
+        }
+      ],
+      "never": [
+        {
+          "en": "Do NOT move the head, neck or back unless life is in immediate danger.",
+          "np": "ज्यान तत्काल खतरामा नभएसम्म टाउको, घाँटी वा ढाड नचलाउनुहोस्।"
+        },
+        {
+          "en": "Do NOT bend, twist or lift the neck.",
+          "np": "घाँटीलाई ननिहुराउनुहोस्, नबटार्नुहोस् वा नउचाल्नुहोस्।"
+        },
+        {
+          "en": "Do NOT remove a motorcycle helmet unless you must open the airway and know how.",
+          "np": "श्वासनली खोल्नैपर्ने र कसरी हटाउने भन्ने थाहा नभएसम्म मोटरसाइकलको हेल्मेट नहटाउनुहोस्।"
+        }
+      ],
+      "learn": [
+        {
+          "action": {
+            "en": "Know when to suspect a spine injury.",
+            "np": "मेरुदण्डको चोटको शंका कहिले गर्ने भन्ने जान्नुहोस्।"
+          },
+          "why": {
+            "en": "You can't see a spinal fracture, so suspect one from how the injury happened: a fall from height, a road crash, a diving accident, or any hard blow to the head or back. Pain in the neck or back, tingling, numbness or weakness in the limbs are warning signs — but a spine can be injured even without them.",
+            "np": "मेरुदण्डको भाँचिएको देख्न सकिँदैन, त्यसैले चोट कसरी लाग्यो त्यसबाट शंका गर्नुहोस्: अग्लो ठाउँबाट लड्नु, सडक दुर्घटना, पानीमा हाम फाल्दाको दुर्घटना, वा टाउको वा ढाडमा जोडले लाग्ने कुनै पनि चोट। घाँटी वा ढाड दुख्नु, हातखुट्टामा झमझमाउनु, सुन्निनु वा कमजोरी हुनु चेतावनीका संकेत हुन् — तर यी बिना पनि मेरुदण्डमा चोट लाग्न सक्छ।"
+          },
+          "tip": {
+            "en": "When the mechanism is serious, assume a spine injury and keep the person still, even if they feel okay.",
+            "np": "चोट लाग्ने तरिका गम्भीर छ भने, व्यक्तिलाई ठीक महसुस भए पनि मेरुदण्डको चोट भएकै ठानेर स्थिर राख्नुहोस्।"
+          },
+          "illustration": "person lying still after a fall"
+        },
+        {
+          "action": {
+            "en": "Keep the head, neck and spine still and in line.",
+            "np": "टाउको, घाँटी र मेरुदण्डलाई स्थिर र एकै रेखामा राख्नुहोस्।"
+          },
+          "why": {
+            "en": "If the spine is fractured, the loose bone can press on or cut the spinal cord — the bundle of nerves controlling the body — causing permanent paralysis. Holding everything in one straight line protects the cord until trained help with proper equipment arrives.",
+            "np": "मेरुदण्ड भाँचिएको छ भने, खुकुलो हड्डीले स्पाइनल कर्ड — शरीर नियन्त्रण गर्ने नसाहरूको समूह — मा थिच्न वा काट्न सक्छ, जसले स्थायी पक्षाघात गराउँछ। सबैलाई एउटै सिधा रेखामा राख्दा उपयुक्त उपकरणसहितको तालिम प्राप्त सहयोग नआउन्जेल कर्ड जोगिन्छ।"
+          },
+          "tip": {
+            "en": "Kneel behind the head and cradle it gently with both hands — the single most useful thing a bystander can safely do.",
+            "np": "टाउकोपछाडि घुँडा टेकेर दुवै हातले बिस्तारै अँगालो हालेझैं समात्नुहोस् — छेउमा रहेको व्यक्तिले सुरक्षित रूपमा गर्न सक्ने सबैभन्दा उपयोगी काम यही हो।"
+          },
+          "illustration": "hands steadying the head"
+        },
+        {
+          "action": {
+            "en": "Understand why you don't move them.",
+            "np": "उनलाई किन नचलाउने भन्ने बुझ्नुहोस्।"
+          },
+          "why": {
+            "en": "Bending, twisting or lifting the neck or back can turn a survivable injury into lifelong paralysis. This is why the rule is to steady and wait, not to sit them up, carry them, or 'walk it off'.",
+            "np": "घाँटी वा ढाड निहुराउँदा, बटार्दा वा उचाल्दा बाँच्न सकिने चोट जीवनभरको पक्षाघातमा बदलिन सक्छ। त्यसैले नियम भनेको स्थिर राखेर पर्खनु हो, उठाएर बसाल्नु, बोक्नु, वा 'हिँडेर सन्चो पार्नु' होइन।"
+          },
+          "tip": {
+            "en": "Leave a motorbike helmet on unless you must reach the airway and know how to remove it safely.",
+            "np": "श्वासनलीसम्म पुग्नैपर्ने र सुरक्षित रूपमा हटाउन जान्ने अवस्था नभएसम्म मोटरसाइकलको हेल्मेट लगाइराख्नुहोस्।"
+          },
+          "illustration": "person kept still, helmet on"
+        },
+        {
+          "action": {
+            "en": "Watch for signs of serious head injury.",
+            "np": "गम्भीर टाउको चोटका लक्षणमा ध्यान दिनुहोस्।"
+          },
+          "why": {
+            "en": "A knock to the head can cause bleeding or swelling inside the skull that builds over minutes to hours. Confusion, repeated vomiting, unequal pupils, clear fluid from the nose or ears, a bad headache or increasing drowsiness are red flags.",
+            "np": "टाउकोमा लागेको चोटले खोपडीभित्र रक्तस्राव वा सुन्निने गराउन सक्छ, जुन मिनेटदेखि घण्टौंमा बढ्दै जान्छ। अलमल, बारम्बार बान्ता, आँखाका नानी असमान हुनु, नाक वा कानबाट सफा तरल बग्नु, कडा टाउको दुखाइ वा बढ्दो निद्रालुपन खतराका संकेत हुन्।"
+          },
+          "tip": {
+            "en": "Anyone knocked unconscious, even briefly, must be seen by a doctor.",
+            "np": "छोटो समयका लागि भए पनि बेहोस भएको जोसुकैलाई डाक्टरलाई देखाउनैपर्छ।"
+          },
+          "illustration": "checking a dazed person's pupils"
+        },
+        {
+          "action": {
+            "en": "Recognise concussion, even without a blackout.",
+            "np": "बेहोस नभए पनि कन्कसन (मस्तिष्क आघात) चिन्नुहोस्।"
+          },
+          "why": {
+            "en": "A concussion can happen without losing consciousness. Look for confusion, memory gaps, dizziness, nausea, blurred vision or acting 'not quite right' after a head knock.",
+            "np": "कन्कसन बेहोस नभई पनि हुन सक्छ। टाउकोमा चोट लागेपछि अलमल, सम्झनामा खाली ठाउँ, रिंगटा, वाकवाकी, धमिलो देखिने वा 'ठ्याक्कै ठीक नभएको' व्यवहार खोज्नुहोस्।"
+          },
+          "tip": {
+            "en": "Someone with concussion should stop any activity, rest, and be watched — and see a doctor if symptoms worsen.",
+            "np": "कन्कसन भएको व्यक्तिले कुनै पनि गतिविधि रोक्नुपर्छ, आराम गर्नुपर्छ, र निगरानीमा राख्नुपर्छ — लक्षण बिग्रे डाक्टरलाई देखाउनुहोस्।"
+          },
+          "illustration": "person holding their head, looking dazed"
+        },
+        {
+          "action": {
+            "en": "Know the rare times you must move them.",
+            "np": "उनलाई सार्नैपर्ने विरलै अवस्था जान्नुहोस्।"
+          },
+          "why": {
+            "en": "The only reasons to move someone with a suspected spine injury are immediate danger — fire, water, traffic — or if they stop breathing and need CPR. Then, saving the life comes first.",
+            "np": "मेरुदण्डको चोट शंका भएको व्यक्तिलाई सार्ने एकमात्र कारण भनेको तत्काल खतरा — आगो, पानी, ट्राफिक — वा उनी सास फेर्न बन्द गरी CPR चाहिनु हो। त्यस्तो बेला, ज्यान बचाउनु पहिलो हो।"
+          },
+          "tip": {
+            "en": "If you must move them, try to keep the head, neck and body moving together as one unit.",
+            "np": "सार्नैपरे, टाउको, घाँटी र शरीरलाई एउटै इकाइको रूपमा सँगै सार्ने प्रयास गर्नुहोस्।"
+          },
+          "illustration": "person moved as one unit for danger"
+        }
+      ],
+      "quiz": [
+        {
+          "question": {
+            "en": "A rider is thrown from a motorbike, awake but with neck pain. What do you do?",
+            "np": "एक जना सवार मोटरसाइकलबाट बाहिर फ्याँकिन्छन्, होसमा छन् तर घाँटी दुख्छ। तपाईं के गर्नुहुन्छ?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Keep them still, steady their head, and wait for help",
+                "np": "उनलाई स्थिर राख्नुहोस्, टाउको अड्याउनुहोस्, र सहयोग पर्खनुहोस्"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "Help them sit up and walk it off",
+                "np": "उठाएर बसाल्नुहोस् र हिँडेर सन्चो पार्न सहयोग गर्नुहोस्"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "Neck pain after a crash means possible spinal injury. Keep them still to avoid making it worse.",
+            "np": "दुर्घटनापछि घाँटी दुख्नुले मेरुदण्डको चोट हुन सक्ने संकेत गर्छ। अझ नबिगारियोस् भनेर उनलाई स्थिर राख्नुहोस्।"
+          }
+        }
+      ]
+    },
+    {
+      "id": "road-traffic-injury",
+      "title": {
+        "en": "Road traffic injury",
+        "np": "सडक दुर्घटनाको चोट"
+      },
+      "order": 8,
+      "illustration": "warning triangle on a road near a stopped vehicle",
+      "source_citation": "IFRC Guidelines 2025 (General approach; Severe bleeding; Spinal injury) applied to road crashes; WHO road-safety and post-crash first-response guidance.",
+      "emergency": [
+        {
+          "action": {
+            "en": "Make the scene safe first. Watch for traffic and, if you safely can, warn other drivers before you approach.",
+            "np": "पहिले घटनास्थल सुरक्षित बनाउनुहोस्। ट्राफिकमा ध्यान दिनुहोस् र सुरक्षित भए, नजिक जानुअघि अन्य चालकहरूलाई सचेत गराउनुहोस्।"
+          },
+          "illustration": "warning triangle on the road"
+        },
+        {
+          "action": {
+            "en": "Call for emergency help and give a clear location. Ask for an ambulance.",
+            "np": "आपतकालीन सहायता बोलाउनुहोस् र स्पष्ट स्थान बताउनुहोस्। एम्बुलेन्स माग्नुहोस्।"
+          },
+          "illustration": "person calling for help"
+        },
+        {
+          "action": {
+            "en": "Do not move injured people unless there is fire or another immediate danger. Assume neck and back injuries.",
+            "np": "आगो वा अन्य तत्काल खतरा नभएसम्म घाइतेलाई नसार्नुहोस्। घाँटी र ढाडको चोट भएकै ठान्नुहोस्।"
+          },
+          "illustration": "injured person left in place, steadied"
+        },
+        {
+          "action": {
+            "en": "Control any heavy bleeding with firm, direct pressure using a clean cloth.",
+            "np": "कुनै पनि धेरै रक्तस्रावलाई सफा कपडाले बलियो, सिधा दबाब दिएर नियन्त्रण गर्नुहोस्।"
+          },
+          "illustration": "pressure applied to a wound"
+        },
+        {
+          "action": {
+            "en": "If someone is unresponsive but breathing, and there's no sign of spine injury, place them on their side to protect the airway.",
+            "np": "कोही बेहोस छन् तर सास फेरिरहेका छन्, र मेरुदण्ड चोटको कुनै संकेत छैन भने, श्वासनली जोगाउन उनलाई छेउ फर्काएर राख्नुहोस्।"
+          },
+          "illustration": "person placed on their side"
+        },
+        {
+          "action": {
+            "en": "Keep the injured warm, still and reassured until help arrives.",
+            "np": "सहयोग नआउन्जेल घाइतेलाई न्यानो, स्थिर र ढाडस दिइराख्नुहोस्।"
+          },
+          "illustration": "person covered and reassured"
+        }
+      ],
+      "never": [
+        {
+          "en": "Do NOT rush into traffic — a second casualty helps no one.",
+          "np": "ट्राफिकमा हतारिएर नपस्नुहोस् — दोस्रो घाइतेले कसैलाई मद्दत गर्दैन।"
+        },
+        {
+          "en": "Do NOT drag injured people out of vehicles unless there is fire or immediate danger.",
+          "np": "आगो वा तत्काल खतरा नभएसम्म घाइतेलाई सवारीबाट घिसारेर ननिकाल्नुहोस्।"
+        },
+        {
+          "en": "Do NOT remove helmets unnecessarily.",
+          "np": "अनावश्यक रूपमा हेल्मेट नहटाउनुहोस्।"
+        }
+      ],
+      "learn": [
+        {
+          "action": {
+            "en": "Secure the scene before helping.",
+            "np": "मद्दत गर्नुअघि घटनास्थल सुरक्षित बनाउनुहोस्।"
+          },
+          "why": {
+            "en": "Rescuers struck by passing traffic are a real danger at crashes, and Nepal's roads add sharp bends, poor light and fast bikes. If you are hurt too, there are now more casualties and fewer helpers. Your safety genuinely comes first.",
+            "np": "दुर्घटनास्थलमा गुड्दै गरेको सवारीले ठक्कर दिने बचाउकर्ता साँचो खतरा हुन्, र नेपालका सडकमा तीखा मोड, कमजोर उज्यालो र छिटो गुड्ने बाइक थपिन्छन्। तपाईं पनि घाइते हुनुभयो भने, अब बढी घाइते र कम मद्दतगार हुन्छन्। तपाईंको सुरक्षा साँच्चै पहिलो हो।"
+          },
+          "tip": {
+            "en": "Turn on hazard lights, set out a warning triangle or object well back up the road, and have someone slow oncoming traffic.",
+            "np": "ह्याजर्ड लाइट बाल्नुहोस्, सडकमा राम्रै पर चेतावनी त्रिकोण वा कुनै वस्तु राख्नुहोस्, र कसैलाई आउँदै गरेको ट्राफिक ढिलो गराउन लगाउनुहोस्।"
+          },
+          "illustration": "hazard lights and warning triangle"
+        },
+        {
+          "action": {
+            "en": "Call for help and give a clear location.",
+            "np": "सहयोग बोलाउनुहोस् र स्पष्ट स्थान बताउनुहोस्।"
+          },
+          "why": {
+            "en": "Ambulances can't come if they can't find you. A clear landmark and road name, plus how many people are hurt, gets the right help moving while you give first aid.",
+            "np": "एम्बुलेन्सले तपाईंलाई भेट्टाउन नसके आउन सक्दैन। स्पष्ट चिनारी स्थान र सडकको नाम, र कति जना घाइते छन् भन्ने जानकारीले तपाईं प्राथमिक उपचार दिँदै गर्दा सही सहयोग चलायमान बनाउँछ।"
+          },
+          "tip": {
+            "en": "Send a specific person to make the call so it doesn't get lost in a crowd of bystanders.",
+            "np": "फोन गर्ने काम भीडमा हराउन नदिन कुनै निश्चित व्यक्तिलाई फोन गर्न पठाउनुहोस्।"
+          },
+          "illustration": "person making an emergency call"
+        },
+        {
+          "action": {
+            "en": "Leave people where they are unless there's danger.",
+            "np": "खतरा नभएसम्म मानिसलाई जहाँ छन् त्यहीँ छोड्नुहोस्।"
+          },
+          "why": {
+            "en": "Crash victims often have neck and back injuries. Dragging or sitting them up can turn a recoverable injury into permanent paralysis. Steady them in place instead.",
+            "np": "दुर्घटना पीडितलाई प्रायः घाँटी र ढाडको चोट हुन्छ। घिसार्दा वा उठाएर बसाल्दा निको हुन सक्ने चोट स्थायी पक्षाघातमा बदलिन सक्छ। बरु उनलाई त्यहीँ स्थिर राख्नुहोस्।"
+          },
+          "tip": {
+            "en": "The only exceptions are fire, sinking, or needing to reach the airway to save a life.",
+            "np": "एकमात्र अपवाद भनेको आगो, डुब्दै हुनु, वा ज्यान बचाउन श्वासनलीसम्म पुग्नुपर्नु हो।"
+          },
+          "illustration": "person steadied inside a vehicle"
+        },
+        {
+          "action": {
+            "en": "Know your priorities: breathing, then bleeding.",
+            "np": "आफ्ना प्राथमिकता जान्नुहोस्: पहिले सास, त्यसपछि रक्तस्राव।"
+          },
+          "why": {
+            "en": "After scene safety, the biggest killers are a blocked airway and heavy bleeding. An unresponsive person who isn't breathing needs CPR; heavy bleeding needs firm direct pressure. These come before minor injuries.",
+            "np": "घटनास्थल सुरक्षापछि, सबैभन्दा ठूला ज्यान लिने कारण भनेको अवरुद्ध श्वासनली र धेरै रक्तस्राव हुन्। सास नफेरिरहेको बेहोस व्यक्तिलाई CPR चाहिन्छ; धेरै रक्तस्रावलाई बलियो सिधा दबाब चाहिन्छ। यी साना चोटभन्दा पहिले आउँछन्।"
+          },
+          "tip": {
+            "en": "A quick check — are they awake, breathing, bleeding badly? — tells you what to do first.",
+            "np": "एउटा छिटो जाँच — उनी होसमा छन्, सास फेरिरहेका छन्, धेरै रगत बगिरहेको छ? — ले पहिले के गर्ने भन्ने बताउँछ।"
+          },
+          "illustration": "rescuer checking breathing then a wound"
+        },
+        {
+          "action": {
+            "en": "Handle helmets and riders with care.",
+            "np": "हेल्मेट र सवारहरूलाई सावधानीपूर्वक सम्हाल्नुहोस्।"
+          },
+          "why": {
+            "en": "Removing a motorbike helmet can twist an injured neck. Leave it on unless it blocks the airway of someone not breathing, and even then remove it as gently as possible, ideally with a second person steadying the neck.",
+            "np": "मोटरसाइकलको हेल्मेट हटाउँदा घाइते घाँटी बटारिन सक्छ। सास नफेरिरहेको व्यक्तिको श्वासनली यसले नरोकेसम्म लगाइराख्नुहोस्, र त्यस्तो अवस्थामा पनि सकेसम्म बिस्तारै, आदर्श रूपमा अर्को व्यक्तिले घाँटी अड्याएर हटाउनुहोस्।"
+          },
+          "tip": {
+            "en": "An open-face helmet rarely needs removing at all to check breathing.",
+            "np": "खुला अनुहार भएको हेल्मेट सास जाँच्न विरलै हटाउनुपर्छ।"
+          },
+          "illustration": "helmet left in place, neck supported"
+        },
+        {
+          "action": {
+            "en": "With several casualties, help the quiet ones first.",
+            "np": "धेरै घाइते हुँदा, पहिले चुपचाप भएकालाई मद्दत गर्नुहोस्।"
+          },
+          "why": {
+            "en": "The person screaming can breathe and has a pulse. The silent, still person may have a blocked airway or be bleeding to death. When many are hurt and help is limited, check the quiet ones first.",
+            "np": "चिच्याइरहेको व्यक्तिले सास फेर्न सक्छ र नाडी चलिरहेको छ। चुपचाप, नहल्लिने व्यक्तिको श्वासनली अवरुद्ध हुन वा रक्तस्रावले मर्ने अवस्थामा हुन सक्छ। धेरै घाइते र सीमित सहयोग हुँदा, पहिले चुपचाप भएकालाई जाँच्नुहोस्।"
+          },
+          "tip": {
+            "en": "Enlist bystanders — one to call, others to apply pressure or steady heads under your direction.",
+            "np": "छेउमा भएकाहरूलाई लगाउनुहोस् — एक जनालाई फोन गर्न, अरूलाई तपाईंको निर्देशनमा दबाब दिन वा टाउको अड्याउन।"
+          },
+          "illustration": "rescuer directing bystanders at a crash"
+        }
+      ],
+      "quiz": [
+        {
+          "question": {
+            "en": "You arrive at a motorbike crash on a busy road. What comes first?",
+            "np": "तपाईं व्यस्त सडकमा भएको मोटरसाइकल दुर्घटनास्थलमा पुग्नुहुन्छ। पहिले के आउँछ?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Make the scene safe and warn traffic before approaching",
+                "np": "नजिक जानुअघि घटनास्थल सुरक्षित बनाउनुहोस् र ट्राफिकलाई सचेत गराउनुहोस्"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "Run straight to the rider in the road",
+                "np": "सडकमा रहेको सवारकहाँ सोझै दौडनुहोस्"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "Scene safety first. Becoming a second casualty helps no one and blocks rescuers.",
+            "np": "पहिले घटनास्थल सुरक्षा। दोस्रो घाइते बन्दा कसैलाई मद्दत हुँदैन र बचाउकर्ताको बाटो रोकिन्छ।"
+          }
+        }
+      ]
+    },
+    {
+      "id": "poisoning",
+      "title": {
+        "en": "Poisoning",
+        "np": "विषाक्तता"
+      },
+      "order": 9,
+      "illustration": "pesticide bottle with a warning symbol",
+      "source_citation": "IFRC Guidelines 2025 'Poisoning'; WHO guidance on poisoning and pesticide (organophosphate) exposure relevant to agricultural Nepal.",
+      "emergency": [
+        {
+          "action": {
+            "en": "Protect yourself first. If it's fumes or gas, move the person to fresh air without breathing it in yourself.",
+            "np": "पहिले आफूलाई जोगाउनुहोस्। धुवाँ वा ग्यास हो भने, आफूले सास नतानी व्यक्तिलाई ताजा हावामा लैजानुहोस्।"
+          },
+          "illustration": "person moved to fresh air"
+        },
+        {
+          "action": {
+            "en": "If poison was swallowed, do not make them vomit. Find out what was taken, how much, and when.",
+            "np": "विष निलेको छ भने, बान्ता नगराउनुहोस्। के, कति र कहिले लिइयो भन्ने पत्ता लगाउनुहोस्।"
+          },
+          "illustration": "container kept for identification"
+        },
+        {
+          "action": {
+            "en": "Keep any container, label, plant or pill packet so medical staff can identify the poison.",
+            "np": "स्वास्थ्यकर्मीले विष पहिचान गर्न सकून् भनेर कुनै पनि भाँडो, लेबल, बिरुवा वा औषधिको प्याकेट राख्नुहोस्।"
+          },
+          "illustration": "poison container and label saved"
+        },
+        {
+          "action": {
+            "en": "Call a poison centre or get to hospital immediately, and take the container with you.",
+            "np": "विष केन्द्रमा फोन गर्नुहोस् वा तुरुन्तै अस्पताल पुग्नुहोस्, र भाँडो आफूसँगै लैजानुहोस्।"
+          },
+          "illustration": "rushing to hospital with the container"
+        },
+        {
+          "action": {
+            "en": "If poison is on the skin or in the eyes, rinse with plenty of clean running water. Remove contaminated clothing.",
+            "np": "विष छाला वा आँखामा छ भने, बगिरहेको प्रशस्त सफा पानीले पखाल्नुहोस्। दूषित लुगा हटाउनुहोस्।"
+          },
+          "illustration": "rinsing skin under running water"
+        },
+        {
+          "action": {
+            "en": "If they become unresponsive but are breathing, lay them on their side and be ready to start CPR.",
+            "np": "उनी बेहोस भए तर सास फेरिरहेका छन् भने, छेउ फर्काएर सुताउनुहोस् र CPR सुरु गर्न तयार रहनुहोस्।"
+          },
+          "illustration": "person on their side"
+        }
+      ],
+      "never": [
+        {
+          "en": "Do NOT make the person vomit unless a poison expert or doctor tells you to.",
+          "np": "विष विशेषज्ञ वा डाक्टरले नभनेसम्म व्यक्तिलाई बान्ता नगराउनुहोस्।"
+        },
+        {
+          "en": "Do NOT give them anything to eat or drink unless advised by a medical professional.",
+          "np": "स्वास्थ्यकर्मीले सल्लाह नदिएसम्म उनलाई केही खान वा पिउन नदिनुहोस्।"
+        },
+        {
+          "en": "Do NOT give salt water, milk, or 'home antidotes' — they can make things worse.",
+          "np": "नुनपानी, दूध, वा 'घरेलु प्रतिविष' नदिनुहोस् — यसले अवस्था अझ बिगार्न सक्छ।"
+        },
+        {
+          "en": "Do NOT put yourself at risk from fumes or chemicals — protect yourself first.",
+          "np": "धुवाँ वा रसायनको जोखिममा आफूलाई नपार्नुहोस् — पहिले आफूलाई जोगाउनुहोस्।"
+        }
+      ],
+      "learn": [
+        {
+          "action": {
+            "en": "Poison can enter the body four ways.",
+            "np": "विष शरीरमा चार तरिकाले पस्न सक्छ।"
+          },
+          "why": {
+            "en": "Poisons can be swallowed (medicines, pesticides, alcohol, plants), breathed in (smoke, fumes, gas), absorbed through the skin (chemicals, pesticides), or injected (bites, stings). Knowing the route shapes what you do — moving to fresh air for fumes, rinsing for skin contact.",
+            "np": "विष निल्न सकिन्छ (औषधि, विषादी, रक्सी, बिरुवा), सास मार्फत भित्र जान सक्छ (धुवाँ, बाफ, ग्यास), छालाबाट सोसिन सक्छ (रसायन, विषादी), वा घोप्न सकिन्छ (टोकाइ, खिल)। कुन बाटोबाट पस्यो भन्ने थाहा पाउँदा के गर्ने भन्ने निर्धारण हुन्छ — बाफका लागि ताजा हावामा लैजानु, छालामा लागे पखाल्नु।"
+          },
+          "tip": {
+            "en": "Suspect poisoning when someone becomes suddenly ill near chemicals, medicines, or an unusual smell.",
+            "np": "कोही रसायन, औषधि, वा अनौठो गन्ध नजिक अचानक बिरामी भए विषाक्तताको शंका गर्नुहोस्।"
+          },
+          "illustration": "icons of the four poison routes"
+        },
+        {
+          "action": {
+            "en": "Protect yourself first.",
+            "np": "पहिले आफूलाई जोगाउनुहोस्।"
+          },
+          "why": {
+            "en": "Fumes and chemicals that harmed the person can harm you too. If you collapse beside them, no one is left to help. Ventilate the area or move the person to fresh air only if you can do it safely.",
+            "np": "व्यक्तिलाई हानि गरेको बाफ र रसायनले तपाईंलाई पनि हानि गर्न सक्छ। तपाईं उनको छेउमा ढल्नुभयो भने, मद्दत गर्ने कोही रहँदैन। सुरक्षित रूपमा गर्न सक्नुहुन्छ भने मात्र ठाउँमा हावा खेलाउनुहोस् वा व्यक्तिलाई ताजा हावामा लैजानुहोस्।"
+          },
+          "tip": {
+            "en": "Don't enter an enclosed space full of fumes to pull someone out — call for trained help.",
+            "np": "कसैलाई निकाल्न बाफले भरिएको बन्द ठाउँमा नपस्नुहोस् — तालिम प्राप्त सहयोग बोलाउनुहोस्।"
+          },
+          "illustration": "rescuer opening a window for air"
+        },
+        {
+          "action": {
+            "en": "Never force vomiting.",
+            "np": "बलजफ्ती कहिल्यै बान्ता नगराउनुहोस्।"
+          },
+          "why": {
+            "en": "This is the biggest myth to unlearn. Corrosive chemicals and petroleum products burn just as badly coming back up, and vomit can be breathed into the lungs. Making someone vomit almost always causes more harm than good.",
+            "np": "यो बिर्सनुपर्ने सबैभन्दा ठूलो भ्रम हो। खियाउने रसायन र पेट्रोलियम पदार्थ फर्केर आउँदा पनि उत्तिकै खराब गरी पोल्छन्, र बान्ता फोक्सोमा साससँगै जान सक्छ। कसैलाई बान्ता गराउँदा प्रायः फाइदाभन्दा बढी हानि हुन्छ।"
+          },
+          "tip": {
+            "en": "Also skip salt water, milk and 'home antidotes' — they don't work and waste time.",
+            "np": "नुनपानी, दूध र 'घरेलु प्रतिविष' पनि नदिनुहोस् — यी काम गर्दैनन् र समय खेर फाल्छन्।"
+          },
+          "illustration": "crossed-out vomiting figure"
+        },
+        {
+          "action": {
+            "en": "Take pesticide poisoning very seriously.",
+            "np": "विषादीको विषाक्ततालाई निकै गम्भीरतापूर्वक लिनुहोस्।"
+          },
+          "why": {
+            "en": "In farming areas, swallowed pesticide — sometimes accidental, sometimes self-harm — is a leading, fast-acting poisoning. Some pesticides (organophosphates) have specific hospital antidotes, so speed to care directly saves lives.",
+            "np": "खेतीपाती हुने क्षेत्रमा, निलिएको विषादी — कहिले संयोगवश, कहिले आत्म-हानि — एक प्रमुख, छिटो असर गर्ने विषाक्तता हो। केही विषादी (अर्गानोफस्फेट) का अस्पतालमा विशेष प्रतिविष हुन्छन्, त्यसैले छिटो उपचारले सिधै ज्यान बचाउँछ।"
+          },
+          "tip": {
+            "en": "If self-harm may be involved, stay with the person, be calm and non-judgemental, and get both medical and emotional support.",
+            "np": "आत्म-हानि संलग्न हुन सक्छ भने, व्यक्तिसँगै रहनुहोस्, शान्त र आरोप नलगाउने बन्नुहोस्, र चिकित्सा र भावनात्मक दुवै सहयोग जुटाउनुहोस्।"
+          },
+          "illustration": "pesticide bottle with warning"
+        },
+        {
+          "action": {
+            "en": "Bring the poison's identity to the hospital.",
+            "np": "विषको पहिचान अस्पताल लैजानुहोस्।"
+          },
+          "why": {
+            "en": "The container, label, plant or pill packet tells doctors exactly what they are treating and whether an antidote exists. Guessing costs precious time.",
+            "np": "भाँडो, लेबल, बिरुवा वा औषधिको प्याकेटले डाक्टरलाई ठ्याक्कै के को उपचार गर्दैछन् र प्रतिविष छ कि छैन भन्ने बताउँछ। अनुमान गर्दा बहुमूल्य समय खेर जान्छ।"
+          },
+          "tip": {
+            "en": "A clear photo of the label works too if you can't safely bring the container.",
+            "np": "भाँडो सुरक्षित रूपमा लैजान सक्नुहुन्न भने लेबलको स्पष्ट फोटोले पनि काम गर्छ।"
+          },
+          "illustration": "photographing a label"
+        },
+        {
+          "action": {
+            "en": "Rinse skin and eyes, protect the airway.",
+            "np": "छाला र आँखा पखाल्नुहोस्, श्वासनली जोगाउनुहोस्।"
+          },
+          "why": {
+            "en": "Poison on the skin or in the eyes keeps burning until it's washed off — rinse with plenty of clean running water and remove contaminated clothing. If the person becomes unresponsive but is breathing, the side position keeps vomit from blocking the airway.",
+            "np": "छाला वा आँखामा लागेको विष नधोएसम्म पोलिरहन्छ — बगिरहेको प्रशस्त सफा पानीले पखाल्नुहोस् र दूषित लुगा हटाउनुहोस्। व्यक्ति बेहोस भए तर सास फेरिरहेका छन् भने, छेउ फर्काएर राख्दा बान्ताले श्वासनली अवरुद्ध गर्नबाट जोगिन्छ।"
+          },
+          "tip": {
+            "en": "Rinse eyes from the inner corner outward so you don't wash chemical into the other eye.",
+            "np": "अर्को आँखामा रसायन नपुगोस् भनेर आँखालाई भित्री कुनाबाट बाहिरतिर पखाल्नुहोस्।"
+          },
+          "illustration": "rinsing an eye under running water"
+        }
+      ],
+      "quiz": [
+        {
+          "question": {
+            "en": "Someone swallowed pesticide. What should you do?",
+            "np": "कसैले विषादी निल्यो। तपाईंले के गर्नुपर्छ?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Get them to hospital fast and bring the container; do not make them vomit",
+                "np": "उनलाई छिटो अस्पताल पुर्‍याउनुहोस् र भाँडो लैजानुहोस्; बान्ता नगराउनुहोस्"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "Make them vomit to remove the poison",
+                "np": "विष निकाल्न बान्ता गराउनुहोस्"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "Forced vomiting can cause more harm. Rapid hospital care and identifying the poison matter most — some pesticides have antidotes.",
+            "np": "बलजफ्ती बान्ता गराउँदा बढी हानि हुन सक्छ। छिटो अस्पताल उपचार र विष पहिचान गर्नु सबैभन्दा महत्त्वपूर्ण छ — केही विषादीका प्रतिविष हुन्छन्।"
+          }
+        }
+      ]
+    },
+    {
+      "id": "heat-and-cold",
+      "title": {
+        "en": "Heatstroke and hypothermia",
+        "np": "लू लाग्नु र हाइपोथर्मिया"
+      },
+      "order": 10,
+      "illustration": "a hot sun on one side, a snowy mountain on the other",
+      "source_citation": "IFRC Guidelines 2025 'Hyperthermia' and 'Hypothermia'; WHO heat-health guidance; ILCOR cooling guidance (rapid cooling for heatstroke).",
+      "emergency": [
+        {
+          "action": {
+            "en": "HEATSTROKE — Recognise it: very hot skin, confusion, headache, dizziness or collapse in the heat. This is life-threatening.",
+            "np": "चिन्नुहोस्: धेरै तातो छाला, अलमल, टाउको दुखाइ, रिंगटा वा गर्मीमा ढल्नु। यो जीवनका लागि खतरनाक हो।"
+          },
+          "illustration": "person collapsing in the sun"
+        },
+        {
+          "action": {
+            "en": "HEATSTROKE — Move them into shade or a cool place and remove extra clothing.",
+            "np": "उनलाई छायाँ वा चिसो ठाउँमा लैजानुहोस् र बढी लुगा हटाउनुहोस्।"
+          },
+          "illustration": "person moved into shade"
+        },
+        {
+          "action": {
+            "en": "HEATSTROKE — Cool them fast: pour cool water over the body, fan them, and place cool wet cloths on the neck, armpits and groin. Rapid cooling saves lives.",
+            "np": "उनलाई छिटो चिसो पार्नुहोस्: शरीरमा चिसो पानी खन्याउनुहोस्, हावा हम्किनुहोस्, र घाँटी, काखी र जाँघमा चिसो भिजेका कपडा राख्नुहोस्। छिटो चिसो पार्दा ज्यान बच्छ।"
+          },
+          "illustration": "cool water poured over person, fanning"
+        },
+        {
+          "action": {
+            "en": "HEATSTROKE — If fully alert, give small sips of water. Get emergency help urgently if they are confused or unconscious.",
+            "np": "पूर्ण होसमा छन् भने, थोरै-थोरै पानी घुट्क्याउन दिनुहोस्। उनी अलमलमा वा बेहोस छन् भने तुरुन्तै आपतकालीन सहायता बोलाउनुहोस्।"
+          },
+          "illustration": "small sips of water given"
+        },
+        {
+          "action": {
+            "en": "HYPOTHERMIA — Recognise it: shivering, cold pale skin, confusion or drowsiness after cold exposure. Move them somewhere warm and dry.",
+            "np": "चिन्नुहोस्: काम्नु, चिसो फुस्रो छाला, चिसोमा रहेपछि अलमल वा निद्रालुपन। उनलाई कतै न्यानो र सुख्खा ठाउँमा लैजानुहोस्।"
+          },
+          "illustration": "person shivering, being moved indoors"
+        },
+        {
+          "action": {
+            "en": "HYPOTHERMIA — Remove wet clothes, wrap them in dry blankets including the head, insulate them from the cold ground, and warm them gradually.",
+            "np": "भिजेको लुगा हटाउनुहोस्, टाउकोसहित सुख्खा कम्बलले बेर्नुहोस्, चिसो जमिनबाट अलग राख्नुहोस्, र बिस्तारै न्यानो बनाउनुहोस्।"
+          },
+          "illustration": "person wrapped in dry blankets"
+        }
+      ],
+      "never": [
+        {
+          "en": "Do NOT give alcohol to warm someone — it actually increases heat loss.",
+          "np": "कसैलाई न्यानो बनाउन रक्सी नदिनुहोस् — यसले वास्तवमा ताप गुमाउने बढाउँछ।"
+        },
+        {
+          "en": "Do NOT rub or massage frozen or very cold limbs.",
+          "np": "जमेका वा धेरै चिसो हात/खुट्टा नमल्नुहोस् वा मसाज नगर्नुहोस्।"
+        },
+        {
+          "en": "Do NOT warm a severely cold person too fast or handle them roughly — it can trigger dangerous heart rhythms.",
+          "np": "धेरै चिसो भएको व्यक्तिलाई अति छिटो न्यानो नबनाउनुहोस् वा नराम्ररी नसम्हाल्नुहोस् — यसले खतरनाक मुटुको धड्कन निम्त्याउन सक्छ।"
+        },
+        {
+          "en": "Do NOT ignore confusion or collapse in the heat — heatstroke is an emergency.",
+          "np": "गर्मीमा अलमल वा ढल्नुलाई बेवास्ता नगर्नुहोस् — लू आपतकाल हो।"
+        }
+      ],
+      "learn": [
+        {
+          "action": {
+            "en": "Tell heat exhaustion from heatstroke.",
+            "np": "हिट एक्जसन (गर्मीले थकान) र लू छुट्याउनुहोस्।"
+          },
+          "why": {
+            "en": "Heat exhaustion — heavy sweating, headache, dizziness, nausea, tiredness — is a warning sign, and resting in shade with sips of water usually fixes it. Heatstroke is the emergency it can become: the person stops sweating, skin is hot and dry or flushed, and they grow confused or collapse. The body has lost temperature control.",
+            "np": "हिट एक्जसन — धेरै पसिना, टाउको दुखाइ, रिंगटा, वाकवाकी, थकान — चेतावनीको संकेत हो, र छायाँमा आराम गरेर थोरै-थोरै पानी पिउँदा प्रायः ठीक हुन्छ। लू त्यही बिग्रेर बन्ने आपतकाल हो: व्यक्तिको पसिना बन्द हुन्छ, छाला तातो र सुख्खा वा राताम्मे हुन्छ, र उनी अलमलमा पर्छन् वा ढल्छन्। शरीरले तापमान नियन्त्रण गुमाइसकेको हुन्छ।"
+          },
+          "tip": {
+            "en": "Confusion or a change in behaviour in the heat is the line between 'rest and cool' and 'this is an emergency'.",
+            "np": "गर्मीमा अलमल वा व्यवहारमा परिवर्तन नै 'आराम गर र चिसो पार' र 'यो आपतकाल हो' बीचको सीमा हो।"
+          },
+          "illustration": "two figures, one resting, one collapsing"
+        },
+        {
+          "action": {
+            "en": "Cool a heatstroke victim rapidly.",
+            "np": "लू लागेको व्यक्तिलाई छिटो चिसो पार्नुहोस्।"
+          },
+          "why": {
+            "en": "In heatstroke every minute of high temperature damages the brain and organs, so fast cooling is the single priority — more urgent than anything else you might do. Get them into shade, strip extra clothing, and cool aggressively.",
+            "np": "लूमा उच्च तापमानको हरेक मिनेटले मस्तिष्क र अंगहरूलाई बिगार्छ, त्यसैले छिटो चिसो पार्नु एकमात्र प्राथमिकता हो — तपाईंले गर्न सक्ने अरू जुनसुकै कामभन्दा जरुरी। उनलाई छायाँमा लैजानुहोस्, बढी लुगा हटाउनुहोस्, र जोडतोडले चिसो पार्नुहोस्।"
+          },
+          "tip": {
+            "en": "Pour cool water over the body, fan them, and put cool wet cloths on the neck, armpits and groin where big blood vessels run.",
+            "np": "शरीरमा चिसो पानी खन्याउनुहोस्, हावा हम्किनुहोस्, र ठूला रक्तनली भएका घाँटी, काखी र जाँघमा चिसो भिजेका कपडा राख्नुहोस्।"
+          },
+          "illustration": "cool water and fanning"
+        },
+        {
+          "action": {
+            "en": "Give fluids only if fully alert.",
+            "np": "पूर्ण होसमा भए मात्र तरल पदार्थ दिनुहोस्।"
+          },
+          "why": {
+            "en": "Cool water in small sips helps someone who is awake and can swallow safely. But giving drink to a confused or drowsy person risks it going into the lungs.",
+            "np": "होसमा रहेको र सुरक्षित रूपमा निल्न सक्ने व्यक्तिलाई थोरै-थोरै चिसो पानीले मद्दत गर्छ। तर अलमलमा परेको वा निद्रालु व्यक्तिलाई पिउन दिँदा फोक्सोमा जाने जोखिम हुन्छ।"
+          },
+          "tip": {
+            "en": "If they can't drink safely, focus everything on cooling and getting help.",
+            "np": "सुरक्षित रूपमा पिउन सक्दैनन् भने, सबै ध्यान चिसो पार्ने र सहयोग बोलाउनेमा दिनुहोस्।"
+          },
+          "illustration": "small sips of water given"
+        },
+        {
+          "action": {
+            "en": "Recognise hypothermia early.",
+            "np": "हाइपोथर्मिया चाँडै चिन्नुहोस्।"
+          },
+          "why": {
+            "en": "Hypothermia is the body getting dangerously cold — a real risk on Nepal's high trails and cold nights, and after being wet. Early signs are shivering, cold pale skin and clumsiness; as it worsens shivering may stop and the person becomes confused, drowsy and slurred, which is more dangerous, not less.",
+            "np": "हाइपोथर्मिया भनेको शरीर खतरनाक रूपमा चिसो हुनु हो — नेपालका अग्ला बाटा र चिसो रातमा, र भिजेपछि यो साँचो जोखिम हो। सुरुका संकेत हुन् काम्नु, चिसो फुस्रो छाला र फुर्तिलो नहुनु; बिग्रँदै जाँदा काम्नु रोकिन सक्छ र व्यक्ति अलमलमा पर्छन्, निद्रालु र लर्बराउने हुन्छन्, जुन कम होइन बढी खतरनाक हो।"
+          },
+          "tip": {
+            "en": "When shivering stops but the person is still cold and confused, treat it as severe.",
+            "np": "काम्नु रोकिन्छ तर व्यक्ति अझै चिसो र अलमलमा छन् भने, यसलाई गम्भीर ठानेर उपचार गर्नुहोस्।"
+          },
+          "illustration": "person shivering in the cold"
+        },
+        {
+          "action": {
+            "en": "Warm a cold person gently and gradually.",
+            "np": "चिसो भएको व्यक्तिलाई बिस्तारै र क्रमशः न्यानो बनाउनुहोस्।"
+          },
+          "why": {
+            "en": "A very cold body is fragile, and rough handling or sudden intense heat can trigger a dangerous heart rhythm. Steady, gentle rewarming is safest: shelter, dry clothing, blankets, and shared body warmth.",
+            "np": "धेरै चिसो शरीर नाजुक हुन्छ, र नराम्रो सम्हालाइ वा अचानकको तीव्र तापले खतरनाक मुटुको धड्कन निम्त्याउन सक्छ। स्थिर, बिस्तारै न्यानो बनाउनु सबैभन्दा सुरक्षित हो: ओत, सुख्खा लुगा, कम्बल, र शरीरको न्यानो साझा गर्नु।"
+          },
+          "tip": {
+            "en": "Cover the head, insulate them from the cold ground, and remove wet clothing.",
+            "np": "टाउको छोप्नुहोस्, चिसो जमिनबाट अलग राख्नुहोस्, र भिजेको लुगा हटाउनुहोस्।"
+          },
+          "illustration": "person wrapped and insulated from the ground"
+        },
+        {
+          "action": {
+            "en": "Know what makes both worse.",
+            "np": "दुवैलाई के कुराले बिगार्छ जान्नुहोस्।"
+          },
+          "why": {
+            "en": "Alcohol feels warming but actually speeds heat loss, so it harms a cold person. Rubbing frozen skin or limbs damages the tissue. And ignoring early warning signs — in either direction — lets a manageable problem become life-threatening.",
+            "np": "रक्सीले न्यानो महसुस गराउँछ तर वास्तवमा ताप गुमाउने छिटो बनाउँछ, त्यसैले यो चिसो भएको व्यक्तिलाई हानिकारक हुन्छ। जमेको छाला वा हातखुट्टा मल्दा तन्तु बिग्रन्छ। र सुरुका चेतावनीका संकेत — जुनसुकै दिशाका — बेवास्ता गर्दा सम्हाल्न सकिने समस्या जीवनका लागि खतरनाक बन्छ।"
+          },
+          "tip": {
+            "en": "Prevention matters most: shade, water and rest in heat; dry layers, shelter and fuel in cold.",
+            "np": "रोकथाम सबैभन्दा महत्त्वपूर्ण छ: गर्मीमा छायाँ, पानी र आराम; चिसोमा सुख्खा लुगाका तह, ओत र इन्धन।"
+          },
+          "illustration": "crossed-out alcohol bottle"
+        }
+      ],
+      "quiz": [
+        {
+          "question": {
+            "en": "A farmworker collapses in extreme heat, confused and very hot to the touch. What do you do?",
+            "np": "एक खेतमजदुर अत्यधिक गर्मीमा ढल्छन्, अलमलमा छन् र छुँदा धेरै तातो छन्। तपाईं के गर्नुहुन्छ?"
+          },
+          "options": [
+            {
+              "text": {
+                "en": "Move to shade, cool them rapidly with water and fanning, and call for help",
+                "np": "छायाँमा लैजानुहोस्, पानी र हावाले छिटो चिसो पार्नुहोस्, र सहयोग बोलाउनुहोस्"
+              },
+              "isCorrect": true
+            },
+            {
+              "text": {
+                "en": "Wrap them warmly and give hot tea",
+                "np": "न्यानोसँग बेर्नुहोस् र तातो चिया दिनुहोस्"
+              },
+              "isCorrect": false
+            }
+          ],
+          "feedback": {
+            "en": "Confusion plus high heat is heatstroke — an emergency needing rapid cooling, not warming.",
+            "np": "अलमल र उच्च गर्मी भनेको लू हो — यो न्यानो बनाउने होइन, छिटो चिसो पार्नुपर्ने आपतकाल हो।"
+          }
+        }
+      ]
+    }
+  ]
+}

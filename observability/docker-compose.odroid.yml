@@ -48,6 +48,14 @@ services:
     # one so the full stack on a 16 GB host is unaffected.
     environment:
       LOOMA_OPENSEARCH_URL: ${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}
+      # Which box shipped each log/metric, and its LAN IP — in agents-only mode
+      # every odroid writes to the one OpenSearch on the server, so Vector stamps
+      # box_name / box_ip on every document. looma-installer.sh 'up' exports both
+      # (name from /etc/looma-odroid.env or the hostname; IP resolved each boot).
+      # Unset on the full-stack host, where Vector falls back to the container
+      # hostname / "unknown".
+      LOOMA_BOX_NAME: ${LOOMA_BOX_NAME:-}
+      LOOMA_BOX_IP: ${LOOMA_BOX_IP:-}
 
   metricbeat:
     mem_limit: 384m

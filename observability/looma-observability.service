@@ -1,0 +1,35 @@
+# Bring the Looma data-server observability stack up on every boot, and down
+# on shutdown. Stronger than compose's per-container `restart: unless-stopped`
+# (which only restarts containers that still exist): it re-runs `compose up -d`,
+# so anything removed is recreated and the one-shot init containers
+# (`opensearch-aliases`, `state`) re-run idempotently. See DATA-SERVER.md.
+#
+# Install (as root):
+#   1. Edit WorkingDirectory below if the repo lives elsewhere.
+#   2. cp looma-observability.service /etc/systemd/system/
+#   3. systemctl daemon-reload
+#   4. systemctl enable --now looma-observability.service
+#   Check:  systemctl status looma-observability   |   journalctl -u looma-observability -b
+
+[Unit]
+Description=Looma observability data-server stack (docker compose)
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+# Don't start until the data disk (LOOMA_DATA_ROOT) is mounted, or OpenSearch/
+# Prometheus/Grafana would come up against an empty directory.
+RequiresMountsFor=/mnt/looma
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/twosa/Projectos/Looma/observability
+# Give image pulls / slow first starts room; 0 = no limit.
+TimeoutStartSec=0
+ExecStart=/usr/bin/docker compose -f docker-compose.yml -f docker-compose.data-server.yml up -d --remove-orphans
+ExecStop=/usr/bin/docker compose -f docker-compose.yml -f docker-compose.data-server.yml down
+# Reconcile drift if the unit is restarted while running.
+ExecReload=/usr/bin/docker compose -f docker-compose.yml -f docker-compose.data-server.yml up -d --remove-orphans
+
+[Install]
+WantedBy=multi-user.target

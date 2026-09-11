@@ -1,0 +1,95 @@
+# Observability — DATA-SERVER overlay.
+#
+# Use this when this machine is a DEDICATED, standalone collection server for
+# every Looma box in the field — not a single Looma install's own "full"
+# on-box observability. Each box is installed with
+#   deploy/odroid/looma-installer.sh install --remote-obs <this-server-IP>
+# (see deploy/odroid/README-ODROID.md), which points its Vector+Metricbeat
+# agents and its app's OTLP traces at this stack's :49200 / :4318. This
+# overlay does not change any of that wiring — it only changes WHERE the data
+# this stack receives is stored.
+#
+# Every persistent volume below moves from Docker's own storage onto a
+# dedicated data disk (LOOMA_DATA_ROOT, default /mnt/looma) via a bind mount,
+# so the telemetry from the whole fleet survives independently of whatever
+# else runs on this Docker host, and can be backed up / replaced without
+# touching the rest of the machine. Also gives OpenSearch a snapshot
+# repository on that same disk with a daily Snapshot Management policy (see
+# state/bootstrap.sh, section 8) — the actual backup of the collected data.
+#
+# Modelled on the Artrackr observability data-server (observability/data-server/
+# in that repo): same two-tier idea (a lightweight per-machine agent shipping
+# to one central OpenSearch + Vector + otel-collector, disk-backed for
+# durability), adapted to Looma's existing single-compose-file layout instead
+# of a separate data-server/monitored-server split — the odroid installer's
+# `--remote-obs` already IS Looma's "monitored-server" side.
+#
+# Use TOGETHER with the canonical compose, never alone:
+#   docker network create loomanet   # only if it doesn't exist yet
+#   docker compose -f docker-compose.yml -f docker-compose.data-server.yml up -d --build
+#
+# First-time move of any volume that already has data under Docker's own
+# storage (i.e. this box ran the stack before this overlay existed):
+#   scripts/migrate-volumes-to-disk.sh
+#
+# See DATA-SERVER.md for the full deployment walkthrough.
+
+volumes:
+  looma_opensearch_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${LOOMA_DATA_ROOT:-/mnt/looma}/opensearch
+  # OpenSearch snapshot repository (fs). Not declared in the canonical compose
+  # at all — it only exists in this overlay, since only a disk-backed
+  # deployment has anywhere durable to put it.
+  looma_opensearch_snapshots:
+    name: looma_opensearch_snapshots
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${LOOMA_DATA_ROOT:-/mnt/looma}/snapshots
+  looma_prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${LOOMA_DATA_ROOT:-/mnt/looma}/prometheus
+  looma_grafana_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${LOOMA_DATA_ROOT:-/mnt/looma}/grafana
+  looma_otel_storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${LOOMA_DATA_ROOT:-/mnt/looma}/otel
+  # Vector's own state dir (checkpoints for the sources it tails). Not
+  # persisted at all in the canonical compose (ephemeral, container-local) —
+  # worth keeping here so a container recreate does not re-read Docker's log
+  # backlog for every box's containers in one burst.
+  looma_vector_buffer:
+    name: looma_vector_buffer
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${LOOMA_DATA_ROOT:-/mnt/looma}/vector
+
+services:
+  opensearch:
+    environment:
+      # fs snapshot repository target (bind-mounted below); bootstrap.sh
+      # section 8 registers the repo + a daily Snapshot Management policy.
+      path.repo: "/usr/share/opensearch/snapshots"
+    volumes:
+      - looma_opensearch_snapshots:/usr/share/opensearch/snapshots
+
+  vector:
+    volumes:
+      - looma_vector_buffer:/var/lib/vector

@@ -26,6 +26,12 @@ docker compose -f docker-compose.yml up -d
 docker compose -f docker-compose.yml ps
 ```
 
+Running this on a dedicated server that collects traces/logs/metrics from
+**every Looma box in the field** (not just this one machine)? See
+[DATA-SERVER.md](DATA-SERVER.md) — an additional overlay that moves every
+persistent volume onto its own data disk and adds daily OpenSearch snapshots,
+so the fleet's data outlives any single container recreate.
+
 ### UIs
 
 | URL | What |

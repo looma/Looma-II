@@ -70,6 +70,19 @@ source = '''
 .@timestamp = .timestamp
 del(.timestamp)
 
+# Which box shipped this event, and its LAN IP. In agents-only mode every
+# odroid writes to the ONE OpenSearch on the server; without these two fields
+# the logs from different boxes are indistinguishable. looma-installer.sh 'up'
+# exports LOOMA_BOX_NAME (the box name set at install, else its hostname) and
+# LOOMA_BOX_IP (resolved fresh each boot). On the full-stack host both are
+# unset and we fall back to the container hostname / "unknown".
+box_name = get_env_var("LOOMA_BOX_NAME") ?? ""
+if box_name == "" { box_name = get_hostname() ?? "unknown" }
+.box_name = box_name
+box_ip = get_env_var("LOOMA_BOX_IP") ?? ""
+if box_ip == "" { box_ip = "unknown" }
+.box_ip = box_ip
+
 # Docker container labels are a flat map whose keys contain dots
 # (e.g. `com.docker.compose.project`, `com.docker.compose.project.config_files`).
 # When OpenSearch builds dynamic mappings it sees `label.com` as both a
@@ -297,7 +310,9 @@ tags = {
   "image": string(.container.image.name) ?? string(.docker.container.image) ?? "",
   "docker_status": string(.docker.container.status) ?? "",
   "kubernetes_node": string(.kubernetes.node.name) ?? "",
-  "host": string(.host.name) ?? ""
+  "host": string(.host.name) ?? "",
+  "box": get_env_var("LOOMA_BOX_NAME") ?? "",
+  "box_ip": get_env_var("LOOMA_BOX_IP") ?? ""
 }
 
 if exists(.system.network.name) {
@@ -378,6 +393,33 @@ end
 #.@timestamp = now()
 #'''
 
+# Stamp the box identity onto the two pipelines that do NOT pass through
+# `docker_enriched` — raw Metricbeat documents, and Vector's own internal logs
+# — so every document landing in the shared OpenSearch carries box_name / box_ip.
+[transforms.metricbeat_enriched]
+type = "remap"
+inputs = ["metricbeat"]
+source = '''
+box_name = get_env_var("LOOMA_BOX_NAME") ?? ""
+if box_name == "" { box_name = get_hostname() ?? "unknown" }
+.box_name = box_name
+box_ip = get_env_var("LOOMA_BOX_IP") ?? ""
+if box_ip == "" { box_ip = "unknown" }
+.box_ip = box_ip
+'''
+
+[transforms.vector_logs_enriched]
+type = "remap"
+inputs = ["internal_logs"]
+source = '''
+box_name = get_env_var("LOOMA_BOX_NAME") ?? ""
+if box_name == "" { box_name = get_hostname() ?? "unknown" }
+.box_name = box_name
+box_ip = get_env_var("LOOMA_BOX_IP") ?? ""
+if box_ip == "" { box_ip = "unknown" }
+.box_ip = box_ip
+'''
+
 # ---------------------------------------------------------------------------
 # Sinks
 # ---------------------------------------------------------------------------
@@ -423,7 +465,7 @@ compression = "gzip"
 # Metricbeat Sink to Opensearch
 [sinks.opensearch_metricbeat]
 type = "elasticsearch"
-inputs = ["metricbeat"]
+inputs = ["metricbeat_enriched"]
 endpoints = ["${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"]
 api_version = "v7"
 mode = "bulk"
@@ -453,7 +495,7 @@ compression = "gzip"
 # Vector's own internal logs (filtered to prevent feedback loop)
 [sinks.opensearch_vector_logs]
 type = "elasticsearch"
-inputs = ["internal_logs"]
+inputs = ["vector_logs_enriched"]
 endpoints = ["${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"]
 api_version = "v7"
 mode = "bulk"

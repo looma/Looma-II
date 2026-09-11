@@ -1,4 +1,4 @@
-s:
+receivers:
   # ----- Apps / PHP / browser RUM -----
   # NOTE: in collector v0.151+ the inline alias is `otlp_grpc`/`otlp_http`. We
   # use the canonical receiver here which configures both protocols at once.
@@ -36,7 +36,7 @@ s:
             - ^/parent-distro($|/)
             - ^/mnt/docker-desktop-disk($|/)
             - ^/mnt/host/wsl($|/)
-           receiver - ^/mnt/host/wslg($|/)
+            - ^/mnt/host/wslg($|/)
             - ^/run/desktop/mnt/host/wsl($|/)
             - ^/run/desktop/mnt/host/wslg($|/)
             - ^/run/desktop/mnt/docker-desktop-disk($|/)

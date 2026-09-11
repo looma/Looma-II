@@ -167,6 +167,7 @@ installed — a stack you started by hand with `docker compose up` still gets cl
 | `--observability` | Run the full obs stack on this box (OpenSearch/Grafana/traces). **Off by default** — it is the heaviest thing on an 8 GB box |
 | `--no-observability` | App only — this is the default |
 | `--remote-obs IP` | This box runs only Vector+Metricbeat and ships traces/logs to the obs stack on `IP` (`:4318` OTLP, `:49200` OpenSearch) |
+| `--box-name NAME` | Name this box carries in the observability data — Vector stamps `box_name` on every log/metric (and adds the box's LAN IP as `box_ip`). Default: the box's hostname. Essential when several boxes ship to one OpenSearch |
 | `--analysis` | Also run the heavy obs AI analysis workers (torch) |
 | `--ai` / `--no-ai` | Obsolete, accepted and ignored: the assistant is part of the semantic stack (`--search`) |
 | `--search` | Install the **zvec stack** — semantic search, the AI Assistant and exam generation. **Off by default**: it is the heaviest part of Looma (torch + an index over the whole curriculum) |
@@ -322,7 +323,8 @@ docker ps ; docker stats --no-stream ; free -h
 ```
 
 Toggle observability/AI later: edit `/etc/looma-odroid.env` (`WITH_OBSERVABILITY`,
-`WITH_AI`, `WITH_ANALYSIS`, `OFFLINE`) and run `looma-installer.sh up`.
+`WITH_AI`, `WITH_ANALYSIS`, `OFFLINE`, `LOOMA_BOX_NAME`) and run `looma-installer.sh up`.
+`box_ip` in the shipped data is re-detected on every `up` — it is not stored here.
 
 ## Verify
 

@@ -1,9 +1,11 @@
 apiVersion: 1
 
 providers:
-  - name: looma
+  # Infra: health/performance of the observability stack itself (OpenSearch,
+  # otel-collector, Vector, Prometheus, MongoDB, containers, RUM, zvec…).
+  - name: looma-data-stack
     orgId: 1
-    folder: Looma
+    folder: "Looma — Data Stack"
     type: file
     disableDeletion: false
     updateIntervalSeconds: 30
@@ -11,4 +13,16 @@ providers:
     options:
       # Keep dashboards outside /var/lib/grafana so the persisted data volume
       # (looma_grafana_data) doesn't hide provisioned dashboards.
-      path: /opt/looma-dashboards
+      path: /opt/looma-dashboards/data-stack
+
+  # School usage: how the odroid boxes are actually being used — exams,
+  # exercises, scores, page/chapter engagement, TTS.
+  - name: looma-school-usage
+    orgId: 1
+    folder: "Looma — School Usage"
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /opt/looma-dashboards/school-usage

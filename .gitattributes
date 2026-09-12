@@ -2,3 +2,4 @@
 # CRLF breaks the shebang and `set -o pipefail` with "invalid option name".
 *.sh text eol=lf
 *.bash text eol=lf
+mongo-dump/dump/looma/*.bson filter=lfs diff=lfs merge=lfs -text

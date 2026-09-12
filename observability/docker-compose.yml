@@ -330,9 +330,21 @@ services:
     image: looma-vector:latest
     pull_policy: never
     container_name: looma-vector
-    command: ["--config", "/etc/vector/vector.toml"]
+    # LOOMA_VECTOR_CONFIG picks the role: the default (unset) runs the server
+    # config (vector.toml — writes to this box's own OpenSearch/Prometheus
+    # AND accepts incoming agents on :6000); looma-installer.sh's agents-only
+    # `up` path sets it to vector-agent.toml on the box instead (forwards
+    # everything to the server over that same :6000, nothing written locally).
+    entrypoint: ["sh", "-c"]
+    command: ["exec vector --config \"$$LOOMA_VECTOR_CONFIG\""]
     environment:
       VECTOR_LOG: "info"
+      LOOMA_VECTOR_CONFIG: "${LOOMA_VECTOR_CONFIG:-/etc/vector/vector.toml}"
+    ports:
+      # Vector's own wire protocol (sources.agents in vector.toml) — the ONLY
+      # port a remote agent box needs reachable here for its logs+metrics.
+      # No OpenSearch port is ever exposed to the field.
+      - "0.0.0.0:6000:6000"
     user: "0:0"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

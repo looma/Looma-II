@@ -4,10 +4,11 @@
 # every Looma box in the field — not a single Looma install's own "full"
 # on-box observability. Each box is installed with
 #   deploy/odroid/looma-installer.sh install --remote-obs <this-server-IP>
-# (see deploy/odroid/README-ODROID.md), which points its Vector+Metricbeat
-# agents and its app's OTLP traces at this stack's :49200 / :4318. This
-# overlay does not change any of that wiring — it only changes WHERE the data
-# this stack receives is stored.
+# (see deploy/odroid/README-ODROID.md), which points its own Vector at this
+# stack's Vector (:6000, native wire protocol — never OpenSearch's REST API
+# directly) and its app's OTLP traces at :4318. This overlay does not change
+# any of that wiring — it only changes WHERE the data this stack receives is
+# stored.
 #
 # Every persistent volume below moves from Docker's own storage onto a
 # dedicated data disk (LOOMA_DATA_ROOT, default /mnt/looma) via a bind mount,

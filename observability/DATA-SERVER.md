@@ -13,10 +13,11 @@ the odroid installer's `--remote-obs` flag already **is** Looma's
 ```
                          EVERY LOOMA BOX (odroid, --remote-obs <this-IP>)
                          ─────────────────────────────────────────────────
-                         vector (docker logs)   ──┐
-                         metricbeat ──(via vector)─┼── HTTP ──┐
-                         app OTLP traces ──────────┼──────────┼── network ──┐
-                                                                             │
+                         metricbeat ──(beats, local)──> vector (agent role) ──┐
+                         docker logs ──────────────────────────────────────┼── Vector wire
+                                                                            │   protocol :6000
+                         app OTLP traces ─────────────────────────────────┼── HTTP :4318
+                                                                           │
                          ═══════════════════════════════════════════════════╪═══
                                                                              ▼
                          THIS MACHINE (docker-compose.data-server.yml)
@@ -25,7 +26,7 @@ the odroid installer's `--remote-obs` flag already **is** Looma's
                                                             ▼
                                                        opensearch ──> opensearch-dashboards
                                                             ▲                (Trace Analytics,
-                         vector, metricbeat ───────────────┘                 Service Map, Discover)
+                         vector (server role) ─────────────┘                 Service Map, Discover)
                                                             │
                          prometheus <───────── /metrics ────┘
                               │
@@ -35,13 +36,26 @@ the odroid installer's `--remote-obs` flag already **is** Looma's
                          All of the above persisted on LOOMA_DATA_ROOT (/mnt/looma)
 ```
 
-Every box sends **directly** to this stack's published ports — there is no
-central Vector/Beats aggregator listening for forwarded traffic the way
-Artrackr's data-server does. Each box's own Vector already does the parsing
-and writes straight to `http://<this-host>:49200` (bulk HTTP), and each app's
-OTel SDK writes straight to `http://<this-host>:4318` (OTLP/HTTP). This
-overlay does not change any of that — see `deploy/odroid/README-ODROID.md`
-(`--remote-obs`) and `observability/vector/vector.toml` for the sending side.
+No box ever opens a connection TO the field — every box only ever calls OUT,
+on exactly two ports: OTLP (`:4318`, its own app's traces/logs/metrics) and
+Vector's native wire protocol (`:6000`, everything Metricbeat + Docker logs).
+**This server's OpenSearch port is never exposed to the field at all** — each
+box's own Vector (the "agent" role, `vector/vector-agent.toml`) already does
+the same box_name/box_ip enrichment and per-service log parsing this stack's
+own Vector does, then ships the result to THIS Vector (`sources.agents` in
+`vector/vector.toml`), which re-splits it by `.looma_stream` and writes it to
+this box's local OpenSearch/Prometheus — exactly as if it had come from a
+locally running container.
+
+Unlike Artrackr's data-server, this one **is** a central Vector aggregator:
+each box's own Vector (the "agent" role) forwards to this stack's Vector over
+Vector's native wire protocol instead of writing to OpenSearch directly —
+that keeps the OpenSearch port off the field entirely. Each app's OTel SDK
+still writes straight to `http://<this-host>:4318` (OTLP/HTTP), same as
+before. This overlay does not change any of that — see
+`deploy/odroid/README-ODROID.md` (`--remote-obs`),
+`observability/vector/vector.toml` (server role) and
+`observability/vector/vector-agent.toml` (box role) for the sending side.
 
 ## What this overlay actually changes
 
@@ -111,24 +125,29 @@ sudo ./deploy/odroid/looma-installer.sh install --docker --remote-obs <this-serv
 
 or pick **Observability → remote** in the installer's form and enter this
 server's IP. See `deploy/odroid/README-ODROID.md` for the full flag/port
-table, and `observability/vector/vector.toml` for how `box_name`/`box_ip` get
-stamped onto every log and metric so the fleet is distinguishable in one
-shared OpenSearch.
+table, and `observability/vector/vector.toml` / `vector-agent.toml` for how
+`box_name`/`box_ip` get stamped onto every log and metric so the fleet is
+distinguishable in one shared OpenSearch.
 
 ## UIs and ports
 
 Same as the plain stack — this overlay changes storage, not networking. See
-`observability/README.md` for the port table (Grafana `:43000`, OpenSearch
-Dashboards `:45601`, OpenSearch HTTP `:49200`, OTLP gRPC/HTTP `:4317`/`:4318`,
-…) and `deploy/odroid/README-ODROID.md` for which of those a remote box needs
-reachable (`:4318` OTLP, `:49200` OpenSearch).
+`observability/README.md` for the full port table (Grafana `:43000`,
+OpenSearch Dashboards `:45601`, OpenSearch HTTP `:49200`, OTLP gRPC/HTTP
+`:4317`/`:4318`, Vector `:6000`, …). **Only `:4318` (OTLP) and `:6000`
+(Vector) need to be reachable from a remote box** — that is the entire
+firewall surface a field box needs; OpenSearch's own port (`:49200`) never
+has to be opened to the LAN at all, since no box ever talks to it directly
+(see `deploy/odroid/README-ODROID.md`).
 
-Every service already binds `0.0.0.0`, so this is reachable on the LAN as-is.
-There is **no authentication anywhere in this stack** (OpenSearch runs with
-`DISABLE_SECURITY_PLUGIN`, Grafana ships `admin/admin` with anonymous
-viewers) — treat the network between the boxes and this server as trusted
-(a private LAN/VPN), or firewall these ports to the boxes' own IPs before
-exposing this machine any further.
+Every service already binds `0.0.0.0` inside Docker, so make sure your host
+firewall matches that intent deliberately — allow `:4318` and `:6000` from
+the boxes' network, and leave everything else (OpenSearch, Grafana,
+OpenSearch Dashboards, Prometheus) closed to the LAN unless you specifically
+want to browse them from another machine. There is **no authentication
+anywhere in this stack** (OpenSearch runs with `DISABLE_SECURITY_PLUGIN`,
+Grafana ships `admin/admin` with anonymous viewers), so treat whatever you do
+open as trusted network.
 
 ## Retention
 

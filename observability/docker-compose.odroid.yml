@@ -42,16 +42,19 @@ services:
 
   vector:
     mem_limit: 256m
-    # On the odroid (agents-only mode) Vector ships to the OpenSearch on the
-    # dev machine instead of a local one. Set LOOMA_OPENSEARCH_URL in the shell
-    # (looma-up.sh exports it from /etc/looma-odroid.env); defaults to the local
-    # one so the full stack on a 16 GB host is unaffected.
+    # LOOMA_OPENSEARCH_URL only matters for the FULL on-box stack (writes to
+    # its own local OpenSearch, unaffected here). Agents-only mode instead
+    # sets LOOMA_VECTOR_CONFIG=vector-agent.toml + LOOMA_VECTOR_SERVER (see
+    # looma-installer.sh cmd_up's agents-only branch) — that config never
+    # touches OpenSearch at all, it ships everything to the server's Vector.
     environment:
       LOOMA_OPENSEARCH_URL: ${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}
+      LOOMA_VECTOR_CONFIG: ${LOOMA_VECTOR_CONFIG:-/etc/vector/vector.toml}
+      LOOMA_VECTOR_SERVER: ${LOOMA_VECTOR_SERVER:-looma-vector:6000}
       # Which box shipped each log/metric, and its LAN IP — in agents-only mode
-      # every odroid writes to the one OpenSearch on the server, so Vector stamps
-      # box_name / box_ip on every document. looma-installer.sh 'up' exports both
-      # (name from /etc/looma-odroid.env or the hostname; IP resolved each boot).
+      # every odroid ships to the one server, so Vector stamps box_name /
+      # box_ip on every document. looma-installer.sh 'up' exports both (name
+      # from /etc/looma-odroid.env or the hostname; IP resolved each boot).
       # Unset on the full-stack host, where Vector falls back to the container
       # hostname / "unknown".
       LOOMA_BOX_NAME: ${LOOMA_BOX_NAME:-}

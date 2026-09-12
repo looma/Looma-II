@@ -142,6 +142,9 @@ REMOTE_OBS_HOST="${REMOTE_OBS_HOST:-}"     # set by the "remote" observability p
 BOX_NAME="${BOX_NAME:-}"
 LOOMA_OTEL_ENDPOINT="${LOOMA_OTEL_ENDPOINT:-http://looma-otel-collector:4318}"
 LOOMA_OPENSEARCH_URL="${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"
+# Remote agents mode only: this box's Vector ships to the SERVER'S Vector
+# (native wire protocol), never to its OpenSearch — see resolve_obs_endpoints().
+LOOMA_VECTOR_SERVER="${LOOMA_VECTOR_SERVER:-looma-vector:6000}"
 # native-only paths
 VENV="${VENV:-/opt/looma/venv}"
 HF_DIR="${HF_DIR:-/var/lib/looma/hf}"
@@ -354,7 +357,8 @@ Install flags (all optional; passing any flag skips the form):
                           OFF by default — it is the heaviest thing on an 8 GB box.
   --no-observability      App only (the default)
   --remote-obs IP         Send telemetry to an obs stack on another host (this box runs
-                          only Vector+Metricbeat; needs IP reachable on :4318 and :49200)
+                          only Vector+Metricbeat; needs IP reachable on :4318 and :6000 —
+                          never OpenSearch's own port)
   --box-name NAME         Name that identifies this box in the observability data
                           (Vector's \`box_name\` tag on logs/metrics, \`looma.device_name\`
                           on app traces; its LAN IP is added as \`box_ip\`).
@@ -1037,7 +1041,7 @@ edit_observability() {
     none)   WITH_OBSERVABILITY=0; WITH_AGENTS=0; WITH_ANALYSIS=0 ;;
     remote) WITH_OBSERVABILITY=0; WITH_AGENTS=1; WITH_ANALYSIS=0
             local h="$REMOTE_OBS_HOST"
-            ui_input h "Remote observability host (IP/hostname; must be reachable on :4318 OTLP and :49200 OpenSearch)" "$h" || return 0
+            ui_input h "Remote observability host (IP/hostname; must be reachable on :4318 OTLP and :6000 Vector — never OpenSearch's own port)" "$h" || return 0
             if [ -z "$h" ]; then warn "the remote profile needs a host — leaving observability unchanged"; return 0; fi
             REMOTE_OBS_HOST="$h" ;;
   esac
@@ -1552,9 +1556,15 @@ settle_stack_flags() {
 resolve_obs_endpoints() {
   # Docker: the app talks to the local collector by container name, or to the
   # remote host in agents-only mode. Native: services use the host's :4318.
+  # Vector+Metricbeat never touch the remote OpenSearch REST API directly —
+  # this box's own Vector ships its (already-enriched) logs/metrics to the
+  # SERVER'S Vector over Vector's native wire protocol (:6000), which then
+  # writes to that server's OpenSearch/Prometheus locally. That is the ONLY
+  # port besides OTLP (:4318) this box needs reachable on the server —
+  # OpenSearch's own port never has to be opened to the field.
   if [ -n "$REMOTE_OBS_HOST" ]; then
     LOOMA_OTEL_ENDPOINT="http://$REMOTE_OBS_HOST:4318"
-    LOOMA_OPENSEARCH_URL="http://$REMOTE_OBS_HOST:49200"
+    LOOMA_VECTOR_SERVER="$REMOTE_OBS_HOST:6000"
   fi
 }
 
@@ -2116,6 +2126,12 @@ WITH_ANALYSIS=$WITH_ANALYSIS
 WITH_AGENTS=$WITH_AGENTS
 LOOMA_OTEL_ENDPOINT=$LOOMA_OTEL_ENDPOINT
 LOOMA_OPENSEARCH_URL=$LOOMA_OPENSEARCH_URL
+# Remote agents mode only: this box's Vector -> the server's Vector (native
+# wire protocol, :6000) -> that server's own OpenSearch/Prometheus. Not used
+# by LOOMA_OPENSEARCH_URL above — this box's Vector never talks OpenSearch
+# REST directly, so nothing but OTLP (:4318) and this (:6000) has to be open
+# on the server.
+LOOMA_VECTOR_SERVER=$LOOMA_VECTOR_SERVER
 # 1 = no collector on this box (and none remote), so the PHP shim skips emission.
 # Left on, it resolves a hostname that does not exist on every single request;
 # where DNS has nothing to answer it, that wait is seconds, and TTS — one request
@@ -3373,12 +3389,14 @@ cmd_up() {
   LOOMA_EPAATH_DIR="$SRC_ROOT/content/epaath"
   LOOMA_OTEL_ENDPOINT="http://looma-otel-collector:4318"
   LOOMA_OPENSEARCH_URL="http://looma-opensearch:9200"
+  LOOMA_VECTOR_SERVER="looma-vector:6000"
   # Default 0 (emit) only because a box installed before this setting existed had
   # a collector; the env file written by the installer is what really decides.
   LOOMA_OTEL_DISABLED=0
   # shellcheck disable=SC1091
   [ -f /etc/looma-odroid.env ] && . /etc/looma-odroid.env
   export LOOMA_CONTENT_DIR LOOMA_MAPS_DIR LOOMA_EPAATH_DIR LOOMA_OTEL_ENDPOINT LOOMA_OPENSEARCH_URL
+  export LOOMA_VECTOR_SERVER
   export LOOMA_OTEL_DISABLED
   # Box identity for the observability data: Vector stamps box_name / box_ip onto
   # every log and metric it ships (so a shared OpenSearch can tell the boxes
@@ -3441,10 +3459,14 @@ cmd_up() {
   fi
 
   # --- AGENTS-ONLY: just Vector + Metricbeat, shipping to a REMOTE obs stack ---
-  # No local OpenSearch/collector. `--no-deps` so it doesn't pull those in.
+  # No local OpenSearch/collector — LOOMA_VECTOR_CONFIG picks vector-agent.toml,
+  # which never talks OpenSearch at all: everything (logs+metrics) goes out
+  # over Vector's own wire protocol to the server's Vector (LOOMA_VECTOR_SERVER,
+  # :6000). `--no-deps` so it doesn't pull the local OpenSearch/collector in.
   if [ "$WITH_AGENTS" = "1" ] && [ "$WITH_OBSERVABILITY" != "1" ]; then
-    echo "[looma-up] agents (Vector+Metricbeat -> remote $LOOMA_OPENSEARCH_URL)…"
-    ( cd "$obs_dir" && docker compose -f docker-compose.yml -f docker-compose.odroid.yml \
+    echo "[looma-up] agents (Vector+Metricbeat -> this box's Vector -> remote Vector $LOOMA_VECTOR_SERVER)…"
+    ( cd "$obs_dir" && LOOMA_VECTOR_CONFIG=/etc/vector/vector-agent.toml \
+        docker compose -f docker-compose.yml -f docker-compose.odroid.yml \
         up -d --no-deps "${build_args[@]}" "${pull_args[@]}" vector metricbeat ) \
       || echo "[looma-up] WARN: the agents did not start — the app is up regardless." >&2
   fi

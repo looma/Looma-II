@@ -166,7 +166,7 @@ installed — a stack you started by hand with `docker compose up` still gets cl
 | `--offline` / `--online` | Install from the disk bundle with **no internet**, or from the network |
 | `--observability` | Run the full obs stack on this box (OpenSearch/Grafana/traces). **Off by default** — it is the heaviest thing on an 8 GB box |
 | `--no-observability` | App only — this is the default |
-| `--remote-obs IP` | This box runs only Vector+Metricbeat and ships traces/logs to the obs stack on `IP` (`:4318` OTLP, `:49200` OpenSearch) |
+| `--remote-obs IP` | This box runs only Vector+Metricbeat and ships to the obs stack on `IP` — the app's own traces/logs/metrics over OTLP (`:4318`), everything Vector+Metricbeat collect over Vector's own wire protocol (`:6000`). Neither this box nor `IP` ever needs OpenSearch's port (`:49200`) reachable from the other — see `observability/vector/vector-agent.toml` |
 | `--box-name NAME` | Name this box carries in the observability data — Vector stamps `box_name` on every log/metric (and adds the box's LAN IP as `box_ip`). Default: the box's hostname. Essential when several boxes ship to one OpenSearch |
 | `--analysis` | Also run the heavy obs AI analysis workers (torch) |
 | `--ai` / `--no-ai` | Obsolete, accepted and ignored: the assistant is part of the semantic stack (`--search`) |

@@ -1,5 +1,19 @@
 data_dir = "/var/lib/vector"
 
+# ---------------------------------------------------------------------------
+# AGENT role — runs on an odroid box in "remote agents" mode
+# (looma-installer.sh --remote-obs <server>). Same enrichment/parsing as the
+# server's own vector.toml, but nothing here ever talks to OpenSearch (or any
+# other server-side backend) directly: every event — logs AND metrics — is
+# shipped out over ONE outbound connection, Vector's own native wire
+# protocol, to the server's Vector (sources.agents in vector.toml, default
+# :6000). That box then re-splits, transforms and writes it to its own
+# OpenSearch/Prometheus. This is what keeps a school box firewall-simple: it
+# only ever calls OUT, on two ports (OTLP :4318 for the app's own traces, this
+# for Vector) — nothing needs to accept inbound connections from the server,
+# and the server's OpenSearch port never has to be reachable from the field.
+# ---------------------------------------------------------------------------
+
 [api]
 enabled = true
 address = "0.0.0.0:8686"
@@ -26,76 +40,30 @@ docker_host = "unix:///var/run/docker.sock"
 auto_partial_merge = true
 exclude_containers = ["looma-vector", "looma-opensearch", "looma-metricbeat"]
 
+# No box in agent mode ever runs looma-opensearch, so this source normally
+# finds nothing — kept only so transforms.opensearch_log_parsed stays a
+# harmless no-op instead of a dangling reference, and the two configs stay a
+# straightforward diff of each other.
 [sources.docker_logs_opensearch]
 type = "docker_logs"
 docker_host = "unix:///var/run/docker.sock"
 auto_partial_merge = true
 include_containers = ["looma-opensearch"]
 
-  # OpenSearch writes one log entry per line, each starting with a bracketed
-  # timestamp, e.g.:
-  #   [2026-05-15T08:22:08,698][INFO ][o.o.j.t.PluginClient] [328d2e872bca] ...
-  # Stack traces and other continuation lines do NOT start with `[`, so we
-  # treat any line beginning with `[` as the start of a new event and merge
-  # every following non-`[` line into the preceding event.
   [sources.docker_logs_opensearch.multiline]
   start_pattern = '^\[?\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}[.,]\d{3}'
   condition_pattern = '^\[?\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}[.,]\d{3}'
   mode = "halt_before"
   timeout_ms = 1000
 
-
-
-# Optional: ship any local log files dropped in observability/logs/
-#[sources.file_logs]
-#type = "file"
-#include = ["/var/log/looma/*.log"]
-#read_from = "beginning"
-#ignore_older_secs = 0
-
 [sources.metricbeat]
 type = "logstash"
 address= "0.0.0.0:5044"
 
-# Odroid boxes in "remote agents" mode (looma-installer.sh --remote-obs) run
-# THEIR OWN Vector (see vector/vector-agent.toml), which already does its own
-# box_name/box_ip enrichment and per-service log parsing, then pushes the
-# result here over Vector's native wire protocol instead of writing to the
-# OpenSearch REST API directly. This is the ONLY port a box needs reachable
-# on this server for its logs+metrics — no OpenSearch port has to be opened
-# to the field at all. Carries a mix of already-tagged log events (routed
-# below by `.looma_stream`) and metric events (untagged; they fall straight
-# through to the same Prometheus sink as this box's own metrics).
-[sources.agents]
-type = "vector"
-address = "0.0.0.0:6000"
-
 # ---------------------------------------------------------------------------
-# Transforms
+# Transforms — identical enrichment/parsing to vector.toml; only the tagging
+# (`.looma_stream`) right before the outbound sink and the sink itself differ.
 # ---------------------------------------------------------------------------
-
-# Split the agents' mixed log stream back into the three shapes each
-# corresponds to on THIS box (app container logs / raw Metricbeat / Vector's
-# own internal logs) — see the matching `.looma_stream` tag set in
-# vector-agent.toml right before its `to_central` sink. `.looma_stream` is
-# absent on metric events (VRL field lookups are null-safe across event
-# types), so none of these three ever match a metric and only logs are
-# split here — metrics from `agents` are wired straight into sinks.prometheus
-# below, unfiltered.
-[transforms.agents_app_logs]
-type = "filter"
-inputs = ["agents"]
-condition = '.looma_stream == "app_logs"'
-
-[transforms.agents_metricbeat_raw]
-type = "filter"
-inputs = ["agents"]
-condition = '.looma_stream == "metricbeat_raw"'
-
-[transforms.agents_vector_internal]
-type = "filter"
-inputs = ["agents"]
-condition = '.looma_stream == "vector_internal"'
 
 [transforms.docker_enriched]
 type = "remap"
@@ -106,12 +74,9 @@ source = '''
 .@timestamp = .timestamp
 del(.timestamp)
 
-# Which box shipped this event, and its LAN IP. In agents-only mode every
-# odroid writes to the ONE OpenSearch on the server; without these two fields
-# the logs from different boxes are indistinguishable. looma-installer.sh 'up'
+# Which box shipped this event, and its LAN IP — looma-installer.sh 'up'
 # exports LOOMA_BOX_NAME (the box name set at install, else its hostname) and
-# LOOMA_BOX_IP (resolved fresh each boot). On the full-stack host both are
-# unset and we fall back to the container hostname / "unknown".
+# LOOMA_BOX_IP (resolved fresh each boot).
 box_name = get_env_var("LOOMA_BOX_NAME") ?? ""
 if box_name == "" { box_name = get_hostname() ?? "unknown" }
 .box_name = box_name
@@ -131,7 +96,7 @@ if exists(.label) {
   del(.label)
 }
 
-# `index_service` is what we feed into the OpenSearch index template.
+# `index_service` is what the server's OpenSearch index template uses.
 # OpenSearch index names must be lowercase and cannot contain
 # `\\ / * ? " < > | , #`. Container names are already hyphen-friendly,
 # but we sanitize defensively.
@@ -171,6 +136,10 @@ span_id_match = parse_regex(
 if span_id_match != null && !exists(.span_id) {
   .span_id = span_id_match.span_id
 }
+
+# Tag so the server (vector.toml) routes this into its OWN app-logs sink —
+# see transforms.agents_app_logs there. Set last so nothing above can drop it.
+.looma_stream = "app_logs"
 '''
 
 [transforms.opensearch_log_parsed]
@@ -328,8 +297,9 @@ event_type = string(.event.module) ?? "metricbeat"
 metric_data = get(., [event_type]) ?? null
 
 # Only Docker module events become `docker_*` Prometheus metrics. Other
-# Metricbeat modules keep going to OpenSearch via `opensearch_metricbeat`, but
-# are not exported back into Prometheus with a misleading Docker prefix.
+# Metricbeat modules keep going to the server's OpenSearch via
+# opensearch_metricbeat, but are not exported back into Prometheus with a
+# misleading Docker prefix.
 if event_type != "docker" {
   metric_data = null
 }
@@ -413,25 +383,9 @@ function process(event, emit)
 end
 '''
 
-# Break the feedback loop: the elasticsearch sink emits a WARN every time it
-# times out, and that WARN goes through internal_logs -> opensearch_vector_logs.
-# When OpenSearch is slow, each timeout produces another event that must be
-# shipped, amplifying the backlog. We drop self-referential retry warnings here.
-
-
-#[transforms.file_enriched]
-#type = "remap"
-#inputs = ["file_logs"]
-#source = '''
-#.service = "looma-files"
-#.index_service = "looma-files"
-#.source = "file"
-#.@timestamp = now()
-#'''
-
 # Stamp the box identity onto the two pipelines that do NOT pass through
 # `docker_enriched` — raw Metricbeat documents, and Vector's own internal logs
-# — so every document landing in the shared OpenSearch carries box_name / box_ip.
+# — and tag each with which of the server's OpenSearch sinks it belongs in.
 [transforms.metricbeat_enriched]
 type = "remap"
 inputs = ["metricbeat"]
@@ -442,6 +396,7 @@ if box_name == "" { box_name = get_hostname() ?? "unknown" }
 box_ip = get_env_var("LOOMA_BOX_IP") ?? ""
 if box_ip == "" { box_ip = "unknown" }
 .box_ip = box_ip
+.looma_stream = "metricbeat_raw"
 '''
 
 [transforms.vector_logs_enriched]
@@ -454,117 +409,43 @@ if box_name == "" { box_name = get_hostname() ?? "unknown" }
 box_ip = get_env_var("LOOMA_BOX_IP") ?? ""
 if box_ip == "" { box_ip = "unknown" }
 .box_ip = box_ip
+.looma_stream = "vector_internal"
+'''
+
+# This box's own Vector health metrics — untagged they'd be indistinguishable
+# from the server's own once merged into its single Prometheus exporter.
+[transforms.internal_metrics_tagged]
+type = "remap"
+inputs = ["internal_metrics"]
+source = '''
+box_name = get_env_var("LOOMA_BOX_NAME") ?? ""
+if box_name == "" { box_name = get_hostname() ?? "unknown" }
+.tags.box = box_name
+box_ip = get_env_var("LOOMA_BOX_IP") ?? ""
+if box_ip == "" { box_ip = "unknown" }
+.tags.box_ip = box_ip
 '''
 
 # ---------------------------------------------------------------------------
-# Sinks
+# Sink — ONE outbound connection, everything (logs + metrics) over Vector's
+# own wire protocol. No OpenSearch/Prometheus credentials or ports on this
+# box at all; the server (vector.toml's sources.agents + the
+# agents_app_logs/agents_metricbeat_raw/agents_vector_internal filters) does
+# the rest.
 # ---------------------------------------------------------------------------
 
-# OpenSearch (no security in our compose). Writes a daily index.
-[sinks.opensearch]
-type = "elasticsearch"
-inputs = ["drop_observability_noise", "agents_app_logs"]  #"file_enriched"
-endpoints = ["${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"]
-api_version = "v7"
-mode = "bulk"
-compression = "gzip"
+[sinks.to_central]
+type = "vector"
+inputs = ["drop_observability_noise", "metricbeat_enriched", "vector_logs_enriched", "metricbeat_metric_events", "internal_metrics_tagged"]
+address = "${LOOMA_VECTOR_SERVER:-looma-vector:6000}"
 
-  [sinks.opensearch.bulk]
-  action = "index"
-  # One daily index per service: `looma-logs-<container>-YYYY-MM-DD`.
-  # Examples:
-  #   looma-logs-looma-web-2026-04-30
-  #   looma-logs-looma-ai-2026-04-30
-  #   looma-logs-looma-search-2026-04-30
-  index = "looma-logs-{{ index_service }}-%Y-%m-%d"
-
-  [sinks.opensearch.batch]
-  # Smaller, faster batches: lets OpenSearch ack within request.timeout_secs
-  # even under load. Default is 10 MB / unlimited events / 1s flush.
-  max_bytes = 5242880      # 5 MB
+  [sinks.to_central.batch]
   max_events = 1000
   timeout_secs = 5
 
-  [sinks.opensearch.request]
-  timeout_secs = 120        # was default 60s — main cause of the WARNs
-  retry_attempts = 10
-  retry_max_duration_secs = 60
-  concurrency = "adaptive"
-
-  [sinks.opensearch.buffer]
+  [sinks.to_central.buffer]
   type = "memory"
-  # Bigger buffer absorbs backpressure while OpenSearch catches up.
+  # A school box's uplink can drop; absorb backpressure instead of losing
+  # data outright while the server (or the network) is briefly unreachable.
   max_events = 50000
   when_full = "block"
-
-
-# Metricbeat Sink to Opensearch
-[sinks.opensearch_metricbeat]
-type = "elasticsearch"
-inputs = ["metricbeat_enriched", "agents_metricbeat_raw"]
-endpoints = ["${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"]
-api_version = "v7"
-mode = "bulk"
-compression = "gzip"
-
-  [sinks.opensearch_metricbeat.bulk]
-  action = "index"
-  index = "metricbeat-8.12.2-%Y-%m-%d"
-
-  [sinks.opensearch_metricbeat.batch]
-  max_bytes = 5242880
-  max_events = 1000
-  timeout_secs = 5
-
-  [sinks.opensearch_metricbeat.request]
-  timeout_secs = 120
-  retry_attempts = 10
-  retry_max_duration_secs = 60
-  concurrency = "adaptive"
-
-  [sinks.opensearch_metricbeat.buffer]
-  type = "memory"
-  max_events = 50000
-  when_full = "block"
-
-
-# Vector's own internal logs (filtered to prevent feedback loop)
-[sinks.opensearch_vector_logs]
-type = "elasticsearch"
-inputs = ["vector_logs_enriched", "agents_vector_internal"]
-endpoints = ["${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"]
-api_version = "v7"
-mode = "bulk"
-compression = "gzip"
-
-  [sinks.opensearch_vector_logs.bulk]
-  action = "index"
-  index = "vector-logs-%Y-%m-%d"
-
-  [sinks.opensearch_vector_logs.batch]
-  max_bytes = 2097152      # 2 MB — internal logs are low volume
-  max_events = 500
-  timeout_secs = 5
-
-  [sinks.opensearch_vector_logs.request]
-  timeout_secs = 120
-  retry_attempts = 10
-  retry_max_duration_secs = 60
-  concurrency = "adaptive"
-
-  [sinks.opensearch_vector_logs.buffer]
-  type = "memory"
-  max_events = 20000
-  when_full = "drop_newest"   # never block the pipeline because of self-logs
-
-# Vector internal metrics (scraped by Prometheus).
-[sinks.prometheus]
-type = "prometheus_exporter"
-# `agents` also carries the field-server side already-tagged log events
-# (`.looma_stream`), but only Metric events from it ever reach a
-# prometheus_exporter sink — Vector routes each event by its own type, so
-# the log-typed ones are simply not eligible here, same as they'd never
-# reach this sink from `internal_metrics` either.
-inputs = ["internal_metrics", "metricbeat_metric_events", "agents"]
-address = "0.0.0.0:8889"
-default_namespace = "vector"

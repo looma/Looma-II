@@ -58,7 +58,11 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       OTEL_LOGS_EXPORTER: otlp
       OTEL_METRICS_EXPORTER: otlp
-      OTEL_RESOURCE_ATTRIBUTES: "service.name=looma-web,service.namespace=looma,service.version=dev,deployment.environment=looma"
+      OTEL_RESOURCE_ATTRIBUTES: "service.name=looma-web,service.namespace=looma,service.version=dev,deployment.environment=looma,looma.device_name=${LOOMA_BOX_NAME:-unknown}"
+      # Which physical box this is — set by looma-installer.sh (form field "Box
+      # name"), else the box's own hostname if run outside the installer. Lets a
+      # shared OpenSearch/Grafana tell traces/logs from different machines apart.
+      LOOMA_BOX_NAME: "${LOOMA_BOX_NAME:-}"
       LOOMA_ENV: "${LOOMA_ENV:-looma}"
       # Piper TTS runs inside this container (launch.sh -> piper_server.py, which
       # looma-TTS.php calls on 127.0.0.1:5002). Warm voices are what keep a Speak
@@ -99,7 +103,7 @@ services:
       OTEL_EXPORTER_OTLP_TIMEOUT: "10000"
       OTEL_PYTHON_LOG_CORRELATION: "false"
       PYTHONWARNINGS: "ignore:pkg_resources is deprecated as an API:UserWarning"
-      OTEL_RESOURCE_ATTRIBUTES: service.name=looma-ai,service.namespace=looma,service.version=dev,deployment.environment=looma
+      OTEL_RESOURCE_ATTRIBUTES: service.name=looma-ai,service.namespace=looma,service.version=dev,deployment.environment=looma,looma.device_name=${LOOMA_BOX_NAME:-unknown}
       LOOMA_ENV: "${LOOMA_ENV:-looma}"
       LOOMA_SOURCE_ROOT: /looma/content
       LOOMA_DEVICE: cpu
@@ -209,7 +213,7 @@ services:
       OTEL_EXPORTER_OTLP_TIMEOUT: "10000"
       OTEL_PYTHON_LOG_CORRELATION: "false"
       PYTHONWARNINGS: "ignore:pkg_resources is deprecated as an API:UserWarning"
-      OTEL_RESOURCE_ATTRIBUTES: service.name=looma-search,service.namespace=looma,service.version=dev,deployment.environment=looma
+      OTEL_RESOURCE_ATTRIBUTES: service.name=looma-search,service.namespace=looma,service.version=dev,deployment.environment=looma,looma.device_name=${LOOMA_BOX_NAME:-unknown}
       LOOMA_ENV: "${LOOMA_ENV:-looma}"
     volumes:
       - looma_search_index:/data

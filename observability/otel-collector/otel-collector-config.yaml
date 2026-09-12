@@ -203,35 +203,6 @@ exporters:
       max_interval: 30s
       max_elapsed_time: 5m
 
-  # Coroot ingests OTLP traces over HTTP at :8080/v1/traces — the SAME endpoint
-  # its node-agent ships spans to, proven to land in the ClickHouse DB Coroot
-  # queries for its Traces UI. Its :4317 gRPC server accepts the connection but
-  # does NOT persist app spans sent there (they vanish, no error), so we must use
-  # the HTTP path, otherwise Coroot only ever shows node-agent eBPF spans.
-  otlphttp/coroot:
-    traces_endpoint: http://looma-coroot:8080/v1/traces
-    # Coroot routes ingested OTLP to a project by the x-api-key header. Without
-    # it Coroot answers 200 but DROPS the spans (no project), which is why app
-    # traces never appeared. The all-zeros key is Coroot's built-in "Default
-    # project access (no API key required)" key — portable for this single,
-    # anonymous-admin project (no env-specific secret baked into the config).
-    headers:
-      x-api-key: "00000000000000000000000000000000"
-    compression: none
-    tls:
-      insecure: true
-    timeout: 30s
-    sending_queue:
-      enabled: true
-      num_consumers: 4
-      queue_size: 5000
-      storage: file_storage/otc
-    retry_on_failure:
-      enabled: true
-      initial_interval: 5s
-      max_interval: 30s
-      max_elapsed_time: 5m
-
   opensearch/traces:
     http:
       endpoint: http://looma-opensearch:9200
@@ -272,50 +243,6 @@ exporters:
       tls:
         insecure: true
     logs_index: looma-app-logs
-    sending_queue:
-      enabled: true
-      num_consumers: 4
-      queue_size: 5000
-      storage: file_storage/otc
-    retry_on_failure:
-      enabled: true
-      initial_interval: 5s
-      max_interval: 30s
-      max_elapsed_time: 5m
-
-  # === COROOT VIA CLICKHOUSE ===
-  # Coroot's service map and root-cause inference run on top of OpenTelemetry
-  # traces / logs stored in ClickHouse (the same ClickHouse instance that
-  # backs the Coroot UI). The contrib `clickhouse` exporter writes the
-  # standard OTel schema (otel_traces, otel_logs, ...); Coroot is then
-  # pointed at this database via the project's "OpenTelemetry" data source.
-  #
-  # The same spans are still shipped to OpenSearch + Data Prepper, so the
-  # existing Trace Analytics / Service Map keep working. ClickHouse becomes
-  # a third trace backend dedicated to Coroot.
-  clickhouse/coroot:
-    endpoint: tcp://looma-clickhouse:9000
-    username: coroot
-    password: coroot
-    # Use a SEPARATE database from Coroot's own. Coroot also writes to
-    # `coroot.otel_logs` from the node-agent packet capture path, but with a
-    # different column type for SeverityNumber (UInt8). When the OTel
-    # exporter creates `otel_logs` with its own schema (UInt32) in the same
-    # database, every node-agent packet handle then fails with
-    # `TYPE_MISMATCH (53): Cannot convert: UInt32 to UInt8`. Putting the OTel
-    # tables in their own database avoids the column-type clash entirely;
-    # Coroot reads from this database via the project's OpenTelemetry data
-    # source (configured in the UI: Settings → Integrations → OpenTelemetry).
-    database: otel
-    create_schema: true
-    traces_table_name: otel_traces
-    logs_table_name: otel_logs
-    ttl: 168h        # 7 days, matches the OpenSearch trace retention.
-    # 10s wasn't enough under sustained load — ClickHouse can take longer to
-    # ack a large batch, causing the exporter to log "context deadline
-    # exceeded" while the insert is in fact still running. 30s gives the
-    # server room to finish; the retry/queue handles real failures.
-    timeout: 30s
     sending_queue:
       enabled: true
       num_consumers: 4
@@ -438,16 +365,7 @@ service:
     traces:
       receivers: [forward/traces]
       processors: [filter/no_health, attributes/drop_bad_mongo_collection, batch]
-      # App spans are exported to Coroot's OTLP/HTTP ingest (looma-coroot:8080
-      # /v1/traces) so they land in the ClickHouse DB Coroot queries for its
-      # Traces UI and app model, merging with the node-agent's eBPF spans.
-      #
-      # NOTE: only the OTLP exporter is wired in — NOT the `clickhouse/coroot`
-      # exporter. That one creates its DB at startup and CRASH-LOOPS the whole
-      # collector when looma-clickhouse is absent (e.g. the 8 GB odroid, where
-      # Coroot is off behind the `heavy` profile). The OTLP exporter merely
-      # queues + retries when Coroot is unreachable, so it is safe everywhere.
-      exporters: [otlp_grpc/data_prepper_traces, opensearch/traces, otlphttp/coroot]
+      exporters: [otlp_grpc/data_prepper_traces, opensearch/traces]
 
     traces/metricsgen:
       receivers: [forward/traces]

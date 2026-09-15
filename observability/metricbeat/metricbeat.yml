@@ -18,9 +18,18 @@ metricbeat.modules:
     # every metricset fail with "context deadline exceeded". Polling at 30s
     # both cuts the socket/OpenSearch write load 3x and raises the effective
     # fetch deadline well clear of a slow daemon response.
-    period: 30s
-    # Be explicit instead of inheriting the period: give a single slow daemon
-    # response room to complete rather than being cancelled mid-flight.
+    #
+    # LOOMA_METRICBEAT_PERIOD overrides this — the odroid overlay
+    # (docker-compose.odroid.yml) sets it to 1h: container/Mongo stats are
+    # infrastructure health, not urgent, unlike the app's own page/chapter/
+    # exercise/exam/score telemetry (looma-telemetry.php), which ships
+    # in real time over a completely separate OTLP path regardless of this
+    # setting. The server's own self-monitoring metricbeat is unaffected
+    # (env unset there, so it keeps the 30s default below).
+    period: ${LOOMA_METRICBEAT_PERIOD:30s}
+    # Timeout stays independent of period — always give a single slow daemon
+    # response room to complete rather than being cancelled mid-flight, even
+    # when period itself is stretched out to 1h.
     timeout: 30s
     enabled: true
 
@@ -37,7 +46,7 @@ metricbeat.modules:
       - dbstats
       - metrics
     hosts: ["looma-db:27017"]
-    period: 30s
+    period: ${LOOMA_METRICBEAT_PERIOD:30s}
     enabled: true
 
 processors:

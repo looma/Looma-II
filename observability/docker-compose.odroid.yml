@@ -36,6 +36,13 @@ services:
 
   metricbeat:
     mem_limit: 384m
+    environment:
+      # Container/Mongo infra stats only need to be hourly on a school box —
+      # what actually matters in real time (pages opened, chapters/exercises/
+      # games/exams/lessons/quizzes/maps opened, every score) ships through a
+      # completely separate path (looma-telemetry.php -> OTLP) unaffected by
+      # this. See metricbeat/metricbeat.yml.
+      LOOMA_METRICBEAT_PERIOD: ${LOOMA_METRICBEAT_PERIOD:-1h}
 
 # The canonical observability compose declares `loomanet` as a compose-managed
 # network. On the box the network is created up-front (by the installer/looma-up.sh)

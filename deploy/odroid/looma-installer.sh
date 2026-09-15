@@ -681,7 +681,12 @@ services:
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
       OTEL_TRACES_EXPORTER: "@OTEL_TRACES@"
       OTEL_LOGS_EXPORTER: "@OTEL_TRACES@"
-      OTEL_METRICS_EXPORTER: none
+      # looma-ai is the only one of the three sidecars with real custom metrics
+      # (scripts/otel_bootstrap.py's init_metrics() — search calls, generation
+      # calls, endpoint latency, zvec status gauges). Piper/search stay "none":
+      # they never call otel_bootstrap's metrics API, so there is nothing for
+      # this to turn on for them.
+      OTEL_METRICS_EXPORTER: otlp
       OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@"
     volumes:
       # The host's content dir — looma-ai writes summaries/keywords back into it.
@@ -895,7 +900,9 @@ Environment=OTEL_EXPORTER_OTLP_ENDPOINT=@OTEL_ENDPOINT@
 Environment=OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 Environment=OTEL_TRACES_EXPORTER=@OTEL_TRACES@
 Environment=OTEL_LOGS_EXPORTER=@OTEL_TRACES@
-Environment=OTEL_METRICS_EXPORTER=none
+# looma-ai is the only one of the three sidecars with real custom metrics —
+# see the matching comment in native_sidecars_docker()'s compose template.
+Environment=OTEL_METRICS_EXPORTER=otlp
 Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=looma-ai,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@
 WorkingDirectory=@LOOMA_ROOT@/@REPO_NAME@/looma-ai
 ExecStart=@VENV@/bin/python scripts/looma_server.py --host 0.0.0.0 --port 8089

@@ -288,8 +288,16 @@ exporters:
     send_timestamps: true
     metric_expiration: 5m
     add_metric_suffixes: true
+    # Enabled (unlike the original default) so traces_span_metrics_* carries
+    # looma_device_name/looma_public_ip/looma_geo_city/looma_geo_country —
+    # the span_metrics connector still keeps its own low-cardinality
+    # dimensions (service_name, span_name, status_code, ...); this only adds
+    # the resource attributes every span in a batch already shares (one PHP
+    # process = one box), so it's bounded by the number of distinct boxes,
+    # not by request volume. Without it, the Data Stack RED dashboard and
+    # every TTS dashboard had no way to filter by machine or location.
     resource_to_telemetry_conversion:
-      enabled: false
+      enabled: true
 
   debug:
     verbosity: basic

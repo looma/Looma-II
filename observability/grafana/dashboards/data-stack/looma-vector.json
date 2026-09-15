@@ -7,6 +7,43 @@
   "title": "Looma — Vector pipeline",
   "uid": "looma-vector",
   "tags": ["looma", "vector", "logs"],
+  "templating": {
+    "list": [
+      {
+        "name": "device",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(vector_component_received_events_total, box)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": { "text": "All", "value": ".*" }
+      },
+      {
+        "name": "city",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(vector_component_received_events_total, box_geo_city)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": { "text": "All", "value": ".*" }
+      },
+      {
+        "name": "country",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(vector_component_received_events_total, box_geo_country)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": { "text": "All", "value": ".*" }
+      }
+    ]
+  },
   "time": { "from": "now-1h", "to": "now" },
   "panels": [
     {
@@ -17,7 +54,7 @@
       "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "sum by (component_id) (rate(vector_component_received_events_total{component_kind=\"source\"}[2m]))",
+          "expr": "sum by (component_id) (rate(vector_component_received_events_total{component_kind=\"source\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\"}[2m]))",
           "legendFormat": "{{component_id}}"
         }
       ],
@@ -31,7 +68,7 @@
       "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "sum by (component_id) (rate(vector_component_sent_events_total{component_kind=\"sink\"}[2m]))",
+          "expr": "sum by (component_id) (rate(vector_component_sent_events_total{component_kind=\"sink\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\"}[2m]))",
           "legendFormat": "{{component_id}}"
         }
       ],
@@ -45,7 +82,7 @@
       "gridPos": { "x": 0, "y": 8, "w": 24, "h": 8 },
       "targets": [
         {
-          "expr": "sum by (component_id, error_type) (rate(vector_component_errors_total[2m]))",
+          "expr": "sum by (component_id, error_type) (rate(vector_component_errors_total{box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\"}[2m]))",
           "legendFormat": "{{component_id}} :: {{error_type}}"
         }
       ],
@@ -64,7 +101,7 @@
       "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 },
       "targets": [
         {
-          "expr": "sum by (component_id) (rate(vector_buffer_received_events_total[2m])) - sum by (component_id) (rate(vector_buffer_sent_events_total[2m]))",
+          "expr": "sum by (component_id) (rate(vector_buffer_received_events_total{box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\"}[2m])) - sum by (component_id) (rate(vector_buffer_sent_events_total{box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\"}[2m]))",
           "legendFormat": "{{component_id}} (Δ)"
         }
       ],

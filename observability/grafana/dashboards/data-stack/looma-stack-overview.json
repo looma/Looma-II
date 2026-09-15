@@ -79,16 +79,9 @@
       "targets": [{ "refId": "A", "expr": "sum by (device, direction) (rate(system_disk_io_bytes_total[5m]))", "legendFormat": "{{device}} {{direction}}" }]
     },
     {
-      "id": 9, "type": "timeseries", "title": "MongoDB CPU (%)",
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "x": 0, "y": 25, "w": 12, "h": 7 },
-      "fieldConfig": { "defaults": { "unit": "percent", "min": 0 } },
-      "targets": [{ "refId": "A", "expr": "100 * container_cpu_utilization_ratio{container_name=\"looma-db\"}", "legendFormat": "looma-db" }]
-    },
-    {
       "id": 10, "type": "timeseries", "title": "looma-ai span duration p95 (ms)",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "x": 12, "y": 25, "w": 12, "h": 7 },
+      "gridPos": { "x": 0, "y": 25, "w": 12, "h": 7 },
       "fieldConfig": { "defaults": { "unit": "ms" } },
       "targets": [{ "refId": "A", "expr": "histogram_quantile(0.95, sum by (span_name, le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-ai\"}[5m])))", "legendFormat": "{{span_name}}" }]
     },

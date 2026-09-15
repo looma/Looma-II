@@ -11,6 +11,57 @@
   "templating": {
     "list": [
       {
+        "name": "device",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(traces_span_metrics_calls_total, looma_device_name)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
+        "name": "city",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(traces_span_metrics_calls_total, looma_geo_city)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
+        "name": "country",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(traces_span_metrics_calls_total, looma_geo_country)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
         "name": "service",
         "type": "query",
         "datasource": "Prometheus",
@@ -30,7 +81,7 @@
       "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total{service_name=~\"$service\"}[5m]))",
+          "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total{service_name=~\"$service\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m]))",
           "legendFormat": "{{service_name}}"
         }
       ],
@@ -44,7 +95,7 @@
       "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total{service_name=~\"$service\",status_code=\"STATUS_CODE_ERROR\"}[5m]))",
+          "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total{service_name=~\"$service\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\",status_code=\"STATUS_CODE_ERROR\"}[5m]))",
           "legendFormat": "{{service_name}}"
         }
       ],
@@ -58,7 +109,7 @@
       "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum by (le, service_name) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\"}[5m])))",
+          "expr": "histogram_quantile(0.95, sum by (le, service_name) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m])))",
           "legendFormat": "{{service_name}}"
         }
       ],
@@ -72,7 +123,7 @@
       "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
       "targets": [
         {
-          "expr": "histogram_quantile(0.50, sum by (le, service_name) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\"}[5m])))",
+          "expr": "histogram_quantile(0.50, sum by (le, service_name) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m])))",
           "legendFormat": "{{service_name}}"
         }
       ],
@@ -86,7 +137,7 @@
       "gridPos": { "x": 0, "y": 16, "w": 24, "h": 8 },
       "targets": [
         {
-          "expr": "topk(10, sum by (service_name, span_name) (rate(traces_span_metrics_calls_total{service_name=~\"$service\"}[5m])))",
+          "expr": "topk(10, sum by (service_name, span_name) (rate(traces_span_metrics_calls_total{service_name=~\"$service\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m])))",
           "legendFormat": "{{service_name}} :: {{span_name}}"
         }
       ],

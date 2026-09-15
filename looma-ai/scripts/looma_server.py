@@ -38,6 +38,25 @@ if _otel_init is not None:
     except Exception:
         pass
 
+# init_metrics() builds the MeterProvider AND populates otel_bootstrap.INSTRUMENTS —
+# every _otel_record()/record() call below is a silent no-op until this runs
+# (record() looks the instrument up in INSTRUMENTS and returns immediately if
+# it isn't there). This was never called anywhere in the codebase, so every
+# looma-ai metric (search/generation calls, endpoint latency, the zvec status
+# gauges the Data Stack "zvec" dashboard reads) has always been dead.
+try:
+    from scripts.otel_bootstrap import init_metrics as _otel_init_metrics
+except Exception:
+    try:
+        from otel_bootstrap import init_metrics as _otel_init_metrics  # type: ignore
+    except Exception:
+        _otel_init_metrics = None  # type: ignore
+if _otel_init_metrics is not None:
+    try:
+        _otel_init_metrics("looma-ai")
+    except Exception:
+        pass
+
 
 # ---------------------------------------------------------------------------
 # Structured Logging for Feedback Loop Integration

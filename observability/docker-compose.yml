@@ -209,17 +209,21 @@ services:
         # Each odroid box captures its own public IP once at install time
         # (looma-installer.sh -> LOOMA_BOX_PUBLIC_IP) since box_ip/box_name are
         # LAN-private and geoip cannot resolve those to a real location. The
-        # attribute then reaches OpenSearch under one of three different field
-        # paths depending on which pipeline wrote the document, so this one
-        # ingest pipeline tries all three (ignore_missing lets the other two
-        # no-op on any given doc):
-        #   - box_public_ip                        Vector-shipped indices (metricbeat-*, vector-logs-*, looma-logs-*)
-        #   - resource.looma.public_ip              OTel Collector -> OpenSearch logs directly (looma-app-logs)
-        #   - resource.attributes.looma@public_ip   OTel Collector -> Data Prepper traces (otel-v1-apm-span-*; Data Prepper
-        #                                            flattens attribute keys, replacing "." with "@")
+        # attribute then reaches OpenSearch under one of three different SHAPES
+        # depending on which pipeline wrote the document — none of them is a
+        # plain dotted ingest field path, so a script processor does the
+        # lookup rather than three geoip processors with ignore_missing:
+        #   - box_public_ip                          flat field. Vector-shipped indices (metricbeat-*, vector-logs-*, looma-logs-*).
+        #   - resource."looma.public_ip"              ONE nested object (resource), whose key itself contains a literal dot.
+        #                                              OTel Collector -> OpenSearch logs directly (looma-app-logs).
+        #   - "resource.attributes.looma@public_ip"   ONE flat key whose name itself contains literal dots and an "@" (Data
+        #                                              Prepper flattens attribute keys, replacing "." with "@", but does not
+        #                                              nest "resource"/"attributes"). otel-v1-apm-span-*.
+        # Verified against real documents from an installed odroid, not just synthetic ones -
+        # the naive "three dotted ingest paths" version silently matched none of them.
         curl -fsS -XPUT "$${base}/_ingest/pipeline/looma-geoip" \
           -H 'Content-Type: application/json' \
-          -d '{"description":"Looma: resolve a device public IP to an approximate geographic location.","processors":[{"geoip":{"field":"box_public_ip","target_field":"geo","ignore_missing":true}},{"geoip":{"field":"resource.looma.public_ip","target_field":"geo","ignore_missing":true}},{"geoip":{"field":"resource.attributes.looma@public_ip","target_field":"geo","ignore_missing":true}}]}' >/dev/null
+          -d '{"description":"Looma: resolve a device public IP to an approximate geographic location.","processors":[{"script":{"lang":"painless","params":{"f1":"box_public_ip","f2":"looma.public_ip","f3":"resource.attributes.looma@public_ip","rk":"resource"},"source":"def ip = null; if (ctx.containsKey(params.f1)) { ip = ctx.get(params.f1); } if (ip == null && ctx.containsKey(params.f3)) { ip = ctx.get(params.f3); } if (ip == null && ctx.containsKey(params.rk)) { def res = ctx.get(params.rk); if (res instanceof Map && res.containsKey(params.f2)) { ip = res.get(params.f2); } } if (ip != null) { ctx.__geoip_ip = ip; }"}},{"geoip":{"field":"__geoip_ip","target_field":"geo","ignore_missing":true}},{"remove":{"field":"__geoip_ip","ignore_missing":true}}]}' >/dev/null
 
         echo "Ensuring looma-app-logs / looma-logs-* / vector-logs-* templates use the geoip pipeline..."
         curl -fsS -XPUT "$${base}/_index_template/looma-app-logs" \

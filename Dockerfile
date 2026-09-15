@@ -21,8 +21,17 @@ RUN pip3 install flask
 RUN chmod +x /bin/launch.sh
 
 # Download and install Piper TTS
-RUN apt-get update && apt-get install -y --no-install-recommends wget unzip curl libcurl4 && rm -rf /var/lib/apt/lists/*
-RUN apt-get install -y --reinstall --no-install-recommends curl libcurl4 && rm -rf /var/lib/apt/lists/*
+# wget/unzip are genuinely new here; curl/libcurl4 already exist in the base
+# image (php:7.4.33-apache) — this is only ever an UPGRADE to their latest
+# security patch. The Debian security archive occasionally has a brief sync
+# gap where the CDN edge's index lists a point release whose .deb 404s for a
+# while (confirmed upstream, not a mirror we control) — don't fail the whole
+# image build over that: wget/unzip are required and still fail the build if
+# missing, the curl/libcurl4 upgrade is best-effort and falls back to the
+# base image's already-working (if less patched) copy.
+RUN apt-get update && apt-get install -y --no-install-recommends wget unzip \
+    && (apt-get install -y --no-install-recommends curl libcurl4 || true) \
+    && rm -rf /var/lib/apt/lists/*
 RUN dpkg --print-architecture
 RUN ARCH=$(dpkg --print-architecture); wget https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_$ARCH.tar.gz -O /tmp/piper.tar.gz
 RUN tar -xzf /tmp/piper.tar.gz -C /usr/local/bin

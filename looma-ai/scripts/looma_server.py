@@ -1290,12 +1290,26 @@ def _split_block_by_numbered_items(block: dict) -> list[dict]:
 
 # Subjects whose chapters are mostly computational/quantitative. For these we
 # skip narrative cloze + true-false derivations and emit only worked-example
-# variants — otherwise a Maths or Science exam ends up full of grammar-style
+# variants — otherwise a Maths exam ends up full of grammar-style
 # fill-in-the-blank questions instead of actual problems.
+#
+# Deliberately NOT Science/Physics/Chemistry/Biology/Computer (despite the
+# original comment above grouping them in here): at the grades this
+# curriculum covers, those chapters are prose with only INCIDENTAL numbers
+# (page refs, dates, measurements in a sentence), not worked examples. The
+# quantitative path's only question source is _arith_variants_for_text(),
+# whose trigger patterns (e.g. the bare "NUMBER - NUMBER" / "NUMBER + NUMBER"
+# regex for 'minus'/'plus') match ANY two nearby numbers with a separator
+# between them, anywhere in the chapter body — so a Science chapter mentioning
+# e.g. "temperatures of 55 and 24 degrees" produced a fabricated "55 − 24 = ?"
+# arithmetic question with no relation to the actual science content. Keeping
+# these subjects on the narrative path (cloze / true-false / definitions)
+# avoids manufacturing nonsense arithmetic from prose; a genuine worked
+# example in the text can still surface there since _arith_variants_for_text
+# runs on the narrative path too, just isn't the only source.
 _QUANTITATIVE_SUBJECT_KEYWORDS = (
     'math', 'mathematic', 'arithmetic', 'algebra', 'geometry',
-    'science', 'physics', 'chemistry', 'biology', 'computer',
-    'गणित', 'विज्ञान',  # Nepali: math, science
+    'गणित',  # Nepali: math
 )
 
 
@@ -4743,6 +4757,20 @@ class Handler(BaseHTTPRequestHandler):
                     per_ch = 1
                 if per_ch > 10:
                     per_ch = 10
+                # This HTML is served from looma-ai's own origin (port 8089) but
+                # loaded inside an <iframe> on the main web app (looma-play-exam.php).
+                # Anything in it that references the app's own static assets or
+                # content — thumbnails, type icons, the recommendation cards'
+                # links — needs an ABSOLUTE url back to that origin: a relative
+                # path like "../content/..." resolves against the IFRAME's own
+                # document (looma-ai), which has no /content alias at all, not
+                # against the parent page. looma-play-exam.php passes its own
+                # origin as web_origin; validated as a bare http(s) origin (no
+                # path/query) since it gets embedded directly into the page's
+                # JS below.
+                web_origin = (q1('web_origin', '') or '').strip()
+                if not re.match(r'^https?://[A-Za-z0-9.\-]+(?::\d+)?$', web_origin):
+                    web_origin = ''
 
                 if not prefix and not (grade and subject):
                     return self._html(400, '<h1>Missing prefix (or grade+subject)</h1>')
@@ -5042,25 +5070,38 @@ class Handler(BaseHTTPRequestHandler):
         return;
       }}
       var rec = j.recommendations || {{}};
+      // This page is served by looma-ai (port 8089) inside an <iframe> on the
+      // main web app — a relative "/images/..." or "../content/..." URL here
+      // resolves against THIS document's own origin, which has no /images or
+      // /content routes at all. WEB_ORIGIN (looma-play-exam.php's own origin,
+      // passed as ?web_origin=) makes every asset/link below absolute.
+      var WEB_ORIGIN = {web_origin!r};
+      function absUrl(p) {{
+        if (!p) return p;
+        if (/^https?:\/\//i.test(p)) return p;
+        var clean = p.replace(/^(\.\.\/)+/, '/');
+        if (clean.charAt(0) !== '/') clean = '/' + clean;
+        return WEB_ORIGIN + clean;
+      }}
       // Resources-style cards (thumb + label + type icon) so the exam result
       // panel uses the same visual language as the chapter Resources page.
       var TYPE_ICONS = {{
-        video:'/Looma/images/video.png', mp4:'/Looma/images/video.png', m4v:'/Looma/images/video.png',
-        mov:'/Looma/images/video.png', evi:'/Looma/images/video.png',
-        audio:'/Looma/images/audio.png', mp3:'/Looma/images/audio.png', m4a:'/Looma/images/audio.png',
-        image:'/Looma/images/picture.png', jpg:'/Looma/images/picture.png', jpeg:'/Looma/images/picture.png',
-        png:'/Looma/images/picture.png', gif:'/Looma/images/picture.png',
-        pdf:'/Looma/images/pdf.png', book:'/Looma/images/book.png', textbook:'/Looma/images/book.png',
-        chapter:'/Looma/images/book.png', document:'/Looma/images/pdf.png',
-        lesson:'/Looma/images/lesson.png', slideshow:'/Looma/images/slideshow.png',
-        game:'/Looma/images/games.png', exercise:'/Looma/images/games.png',
-        vocab:'/Looma/images/games.png', voc:'/Looma/images/games.png',
-        map:'/Looma/images/maps.png', html:'/Looma/images/html.png',
-        ep:'/Looma/images/ep.png', epaath:'/Looma/images/ep.png',
-        history:'/Looma/images/history.png', text:'/Looma/images/textfile.png'
+        video:'/images/video.png', mp4:'/images/video.png', m4v:'/images/video.png',
+        mov:'/images/video.png', evi:'/images/video.png',
+        audio:'/images/audio.png', mp3:'/images/audio.png', m4a:'/images/audio.png',
+        image:'/images/picture.png', jpg:'/images/picture.png', jpeg:'/images/picture.png',
+        png:'/images/picture.png', gif:'/images/picture.png',
+        pdf:'/images/pdf.png', book:'/images/book.png', textbook:'/images/book.png',
+        chapter:'/images/book.png', document:'/images/pdf.png',
+        lesson:'/images/lesson.png', slideshow:'/images/slideshow.png',
+        game:'/images/games.png', exercise:'/images/games.png',
+        vocab:'/images/games.png', voc:'/images/games.png',
+        map:'/images/maps.png', html:'/images/html.png',
+        ep:'/images/ep.png', epaath:'/images/ep.png',
+        history:'/images/history.png', text:'/images/textfile.png'
       }};
       function iconFor(ft) {{
-        return TYPE_ICONS[String(ft||'').toLowerCase()] || '/Looma/images/alert.jpg';
+        return absUrl(TYPE_ICONS[String(ft||'').toLowerCase()] || '/images/alert.jpg');
       }}
       function stripExt(fn) {{
         if (!fn) return '';
@@ -5074,40 +5115,40 @@ class Handler(BaseHTTPRequestHandler):
         var card = document.createElement('a');
         card.className = 'reco-card';
         // The exam page lives inside an iframe served by looma-ai (port 8089).
-        // Hop out to the parent frame so /video, /pdf etc. land on the
-        // looma-web page the user already came from.
+        // These are absolute (WEB_ORIGIN) so they work whether target='_top'
+        // breaks out of the iframe or not.
         var href;
         if (ft === 'video' || ft === 'mp4' || ft === 'mov' || ft === 'm4v') {{
-          href = '/Looma/video?fn=' + encodeURIComponent(fn) +
+          href = WEB_ORIGIN + '/video?fn=' + encodeURIComponent(fn) +
                  '&fp=' + encodeURIComponent(fp) +
                  '&dn=' + encodeURIComponent(dn);
         }} else if (ft === 'pdf' || ft === 'document' || ft === 'textbook') {{
-          href = '/Looma/pdf?fn=' + encodeURIComponent(fn) +
+          href = WEB_ORIGIN + '/pdf?fn=' + encodeURIComponent(fn) +
                  '&fp=' + encodeURIComponent(fp);
         }} else if (ft === 'image' || ft === 'jpg' || ft === 'jpeg' || ft === 'png' || ft === 'gif') {{
-          href = '/Looma/image?fn=' + encodeURIComponent(fn) +
+          href = WEB_ORIGIN + '/image?fn=' + encodeURIComponent(fn) +
                  '&fp=' + encodeURIComponent(fp);
         }} else if (ft === 'audio' || ft === 'mp3' || ft === 'm4a') {{
-          href = '/Looma/audio?fn=' + encodeURIComponent(fn) +
+          href = WEB_ORIGIN + '/audio?fn=' + encodeURIComponent(fn) +
                  '&fp=' + encodeURIComponent(fp) +
                  '&dn=' + encodeURIComponent(dn);
         }} else if (ft === 'lesson') {{
-          href = '/Looma/lesson?id=' + encodeURIComponent(it.id || '');
+          href = WEB_ORIGIN + '/lesson?id=' + encodeURIComponent(it.id || '');
         }} else if (ft === 'slideshow') {{
-          href = '/Looma/slideshow?id=' + encodeURIComponent(it.id || '');
+          href = WEB_ORIGIN + '/slideshow?id=' + encodeURIComponent(it.id || '');
         }} else if (ft === 'map') {{
-          href = '/Looma/map?id=' + encodeURIComponent(it.id || '');
+          href = WEB_ORIGIN + '/map?id=' + encodeURIComponent(it.id || '');
         }} else if (ft === 'history') {{
-          href = '/Looma/history?id=' + encodeURIComponent(it.id || '');
+          href = WEB_ORIGIN + '/history?id=' + encodeURIComponent(it.id || '');
         }} else {{
           // Fallback: drop the user on the chapter Resources folder so they
           // can find the item there.
-          href = '/Looma/activities?ch=' + encodeURIComponent(CTX.prefix || '');
+          href = WEB_ORIGIN + '/activities?ch=' + encodeURIComponent(CTX.prefix || '');
         }}
         card.href = href;
         card.target = '_top';
 
-        var thumbUrl = (fp && fn) ? (fp + stripExt(fn) + '_thumb.jpg') : '';
+        var thumbUrl = (fp && fn) ? (absUrl(fp) + stripExt(fn) + '_thumb.jpg') : '';
         var img = document.createElement('img');
         img.alt = ''; img.draggable = false;
         img.className = 'reco-thumb';

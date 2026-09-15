@@ -132,6 +132,12 @@ $qs = http_build_query(array_filter([
 <script>
 (function () {
   var aiBase     = (window.LOOMAAI_BASE) || (window.location.protocol + '//' + window.location.hostname + ':8089');
+  // The exam HTML looma-ai returns is loaded into this iframe from a
+  // DIFFERENT origin (aiBase, port 8089) — its own relative asset/link URLs
+  // would resolve against that origin, which serves none of /images,
+  // /content or the clean routes (/video, /pdf, ...). Passing this page's
+  // own origin lets that HTML build absolute URLs back to it instead.
+  var webOrigin  = window.location.protocol + '//' + window.location.host;
   var qs         = <?php echo json_encode($qs, JSON_UNESCAPED_SLASHES); ?>;
   var savedFile  = <?php echo json_encode($saved_file, JSON_UNESCAPED_SLASHES); ?>;
   var frame      = document.getElementById('exam-frame');
@@ -157,7 +163,8 @@ $qs = http_build_query(array_filter([
     frame.src = 'content/exams/' + encodeURIComponent(savedFile);
   } else {
     // Live-generation mode: ask looma-ai to build a fresh exam now.
-    frame.src = aiBase + '/generate_exam?' + (qs || '');
+    var sep = qs ? '&' : '';
+    frame.src = aiBase + '/generate_exam?' + (qs || '') + sep + 'web_origin=' + encodeURIComponent(webOrigin);
   }
 })();
 </script>

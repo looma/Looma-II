@@ -33,7 +33,11 @@ services:
   # OpenSearch — base storage/engine for traces and logs
   # -------------------------
   opensearch:
-    image: opensearchproject/opensearch:3.6.0
+    build:
+      context: ./opensearch
+      dockerfile: Dockerfile
+    image: looma-opensearch:3.6.0
+    pull_policy: never
     container_name: looma-opensearch-node
     environment:
       discovery.type: single-node

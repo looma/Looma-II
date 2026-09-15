@@ -249,10 +249,15 @@ function looma_telemetry_infer_context(string $referer): array {
 }
 
 function looma_telemetry_resource_attrs(): array {
+    // Same box-name convention as includes/otel.php, so a score/chapter_time
+    // event is attributable to the machine it came from in a shared
+    // OpenSearch/Grafana, exactly like traces and logs already are.
+    $deviceName = getenv('LOOMA_BOX_NAME') ?: (function_exists('gethostname') ? (gethostname() ?: 'unknown') : 'unknown');
     return [
         ['key' => 'service.name',           'value' => ['stringValue' => getenv('OTEL_SERVICE_NAME') ?: 'looma-web']],
         ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
         ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'local']],
+        ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
     ];
 }
 

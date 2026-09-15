@@ -7,3 +7,4 @@
     <script src="js/looma.js">           </script>      <!-- Looma common page functions -->
     <script src="js/looma-screenfull.js"></script>      <!-- implements FULLSCREEN mode  -->
     <script src="js/looma-keyboard.js">  </script>      <!-- adds a KEYBOARD button if the page has any inputs -->
+    <script src="js/looma-telemetry.js"></script>       <!-- learning telemetry: chapter_time / score, + postMessage bridge for AI-served quiz/exam iframes -->

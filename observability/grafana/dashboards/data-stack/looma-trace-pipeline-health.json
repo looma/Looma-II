@@ -1,0 +1,84 @@
+{
+  "annotations": { "list": [] },
+  "description": "End-to-end health of the trace pipeline. Use this when traces stop appearing in OpenSearch — it shows where in the chain (otel-collector queue, data-prepper, opensearch) the drops are happening.",
+  "editable": true,
+  "schemaVersion": 39,
+  "tags": ["looma", "tracing", "pipeline"],
+  "time": { "from": "now-1h", "to": "now" },
+  "title": "Looma — Trace Pipeline Health",
+  "uid": "looma-trace-pipeline-health",
+  "version": 1,
+  "refresh": "30s",
+  "templating": { "list": [] },
+  "panels": [
+    {
+      "id": 1, "type": "timeseries", "title": "OTel Collector — spans accepted/refused/sent (per-second)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "targets": [
+        { "refId": "A", "expr": "sum(rate(otelcol_receiver_accepted_spans_total[5m]))", "legendFormat": "accepted" },
+        { "refId": "B", "expr": "sum(rate(otelcol_receiver_refused_spans_total[5m]))", "legendFormat": "refused" },
+        { "refId": "C", "expr": "sum by (exporter) (rate(otelcol_exporter_sent_spans_total[5m]))", "legendFormat": "sent → {{exporter}}" },
+        { "refId": "D", "expr": "sum by (exporter) (rate(otelcol_exporter_send_failed_spans_total[5m]))", "legendFormat": "failed → {{exporter}}" }
+      ]
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "OTel exporter queue depth (per exporter)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "targets": [{ "refId": "A", "expr": "otelcol_exporter_queue_size", "legendFormat": "{{exporter}}" }]
+    },
+    {
+      "id": 3, "type": "timeseries", "title": "OTel processor batch sizes",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "targets": [{ "refId": "A", "expr": "rate(otelcol_processor_batch_batch_send_size_count[5m])", "legendFormat": "{{processor}}" }]
+    },
+    {
+      "id": 4, "type": "stat", "title": "Drops in last range",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 16, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "short",
+        "thresholds": { "mode": "absolute", "steps": [
+          { "color": "green", "value": null },
+          { "color": "orange", "value": 1 },
+          { "color": "red", "value": 50 } ] } } },
+      "targets": [{ "refId": "A", "expr": "sum(increase(otelcol_receiver_refused_spans_total[$__range])) + sum(increase(otelcol_exporter_send_failed_spans_total[$__range])) + sum(increase(otelcol_processor_tail_sampling_sampling_trace_dropped_too_early_total[$__range]))" }]
+    },
+    {
+      "id": 5, "type": "stat", "title": "Collector → Data Prepper (spans/s)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 6, "y": 16, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "ops" } },
+      "targets": [{ "refId": "A", "expr": "sum(rate(otelcol_exporter_sent_spans_total{exporter=\"otlp/data_prepper_traces\"}[5m]))" }]
+    },
+    {
+      "id": 7, "type": "stat", "title": "Data Prepper trace records/s",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 16, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "ops" } },
+      "targets": [{ "refId": "A", "expr": "sum(rate(otel_trace_source_recordsIn_total[5m]))" }]
+    },
+    {
+      "id": 8, "type": "table", "title": "Per-service trace volume",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 21, "w": 24, "h": 9 },
+      "targets": [{ "refId": "A", "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total[5m]))", "format": "table", "instant": true }]
+    },
+    {
+      "id": 9, "type": "table", "title": "Recent trace ingestion errors",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-logs" },
+      "gridPos": { "x": 0, "y": 30, "w": 24, "h": 9 },
+      "targets": [{
+        "refId": "A",
+        "query": "index_service:(looma-otel-collector OR looma-data-prepper OR looma-opensearch) AND (message:*error* OR message:*warn* OR message:*exception*)",
+        "metrics": [{ "type": "logs", "id": "1" }],
+        "bucketAggs": [],
+        "timeField": "@timestamp"
+      }]
+    }
+  ]
+}

@@ -10,6 +10,47 @@
 .idea/
 .ai/
 
+# Python virtual environment (centenas de MB: torch, CUDA, etc.)
+looma-ai/.venv/
+.venv/
+venv/
+env/
+
+# Dados de IA gerados / descarregados (bases de dados, índices, modelos, vetores)
+looma-ai/data/
+looma-ai-data/
+*.db
+*.proxima
+*.index
+
+# Caches e bytecode Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Backups e ficheiros temporários
+_codex_backups/
+.tmp-export.json
+*.tmp
+*.bak
+*.swp
+*~
+
+# Segredos / variáveis de ambiente (NÃO enviar para o GitHub)
+.env
+.env.local
+.env.*.local
+**/.env.local
+**/secrets.h
+
+# Logs
+*.log
+logs/
+
+# OS
 .DS_Store
 .editorconfig
 

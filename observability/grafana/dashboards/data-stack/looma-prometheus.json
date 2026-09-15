@@ -1,0 +1,231 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 1,
+  "title": "Looma — Prometheus",
+  "uid": "looma-prometheus",
+  "tags": ["looma", "prometheus", "metrics"],
+  "time": { "from": "now-1h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "job",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(prometheus_build_info, job)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": false,
+        "allValue": ".*"
+      },
+      {
+        "name": "instance",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(prometheus_build_info{job=~\"$job\"}, instance)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": false,
+        "allValue": ".*"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Up",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "targets": [{ "expr": "up{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "up" }],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Ready",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "targets": [{ "expr": "prometheus_ready{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "ready" }],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Last config reload OK",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        { "expr": "prometheus_config_last_reload_successful{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "reload_ok" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Config reload age (s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        { "expr": "time() - prometheus_config_last_reload_success_timestamp_seconds{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "age" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": { "defaults": { "unit": "s", "decimals": 0 } }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Samples appended (samples/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "rate(prometheus_tsdb_head_samples_appended_total{job=~\"$job\",instance=~\"$instance\"}[5m])", "legendFormat": "append_rate" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "TSDB head: series / chunks",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "prometheus_tsdb_head_series{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "series" },
+        { "expr": "prometheus_tsdb_head_chunks{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "chunks" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0 } }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "WAL / blocks size (bytes)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "prometheus_tsdb_wal_storage_size_bytes{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "wal_size" },
+        { "expr": "prometheus_tsdb_storage_blocks_bytes{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "blocks_size" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "bytes" } }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Blocks loaded",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
+      "targets": [{ "expr": "prometheus_tsdb_blocks_loaded{job=~\"$job\",instance=~\"$instance\"}", "legendFormat": "blocks_loaded" }],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0 } }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Scrape pool targets",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 20, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (scrape_job) (prometheus_target_scrape_pool_targets{job=~\"$job\",instance=~\"$instance\"})",
+          "legendFormat": "{{scrape_job}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0 } }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Discovered targets",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 20, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "sum by (config) (prometheus_sd_discovered_targets{job=~\"$job\",instance=~\"$instance\"})", "legendFormat": "{{config}}" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 0 } }
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "HTTP request rate (req/s) by handler (top 10)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 28, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "topk(10, sum by (handler) (rate(prometheus_http_requests_total{job=~\"$job\",instance=~\"$instance\"}[5m])))",
+          "legendFormat": "{{handler}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "HTTP errors (5xx req/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 28, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "sum(rate(prometheus_http_requests_total{job=~\"$job\",instance=~\"$instance\",code=~\"5..\"}[5m]))", "legendFormat": "5xx" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "HTTP latency p50/p95/p99 (s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 36, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum by (le) (rate(prometheus_http_request_duration_seconds_bucket{job=~\"$job\",instance=~\"$instance\"}[5m])))", "legendFormat": "p50" },
+        { "expr": "histogram_quantile(0.95, sum by (le) (rate(prometheus_http_request_duration_seconds_bucket{job=~\"$job\",instance=~\"$instance\"}[5m])))", "legendFormat": "p95" },
+        { "expr": "histogram_quantile(0.99, sum by (le) (rate(prometheus_http_request_duration_seconds_bucket{job=~\"$job\",instance=~\"$instance\"}[5m])))", "legendFormat": "p99" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" } }
+    },
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "Remote storage: samples in (samples/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 36, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "rate(prometheus_remote_storage_samples_in_total{job=~\"$job\",instance=~\"$instance\"}[5m])", "legendFormat": "samples_in" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    },
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "Conntrack (connections/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 44, "w": 24, "h": 8 },
+      "targets": [
+        { "expr": "sum by (dialer_name) (rate(net_conntrack_dialer_conn_attempted_total{job=~\"$job\",instance=~\"$instance\"}[5m]))", "legendFormat": "dial {{dialer_name}} attempted" },
+        { "expr": "sum by (dialer_name) (rate(net_conntrack_dialer_conn_failed_total{job=~\"$job\",instance=~\"$instance\"}[5m]))", "legendFormat": "dial {{dialer_name}} failed" },
+        { "expr": "sum by (listener_name) (rate(net_conntrack_listener_conn_accepted_total{job=~\"$job\",instance=~\"$instance\"}[5m]))", "legendFormat": "listen {{listener_name}} accepted" },
+        { "expr": "sum by (listener_name) (rate(net_conntrack_listener_conn_closed_total{job=~\"$job\",instance=~\"$instance\"}[5m]))", "legendFormat": "listen {{listener_name}} closed" }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ops" } }
+    }
+  ]
+}

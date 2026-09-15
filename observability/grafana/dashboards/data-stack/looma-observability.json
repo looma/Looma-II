@@ -1,0 +1,579 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 1,
+  "title": "Looma — Observability (services, traces, spans)",
+  "uid": "looma-observability",
+  "tags": ["looma", "observability", "tracing", "otel"],
+  "time": { "from": "now-1h", "to": "now" },
+  "refresh": "30s",
+  "templating": {
+    "list": [
+      {
+        "name": "service",
+        "label": "Service",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(traces_span_metrics_calls_total, service_name)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "operation",
+        "label": "Operation",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(traces_span_metrics_calls_total{service_name=~\"$service\"}, span_name)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "current": { "text": "All", "value": "$__all" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Health overview",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Spans / sec",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 1, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "sum(rate(traces_span_metrics_calls_total{service_name=~\"$service\"}[5m]))",
+          "legendFormat": "spans/s"
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value" },
+      "fieldConfig": { "defaults": { "unit": "reqps", "decimals": 2 } }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Active services",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 6, "y": 1, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "count(count by (service_name) (rate(traces_span_metrics_calls_total[5m]) > 0))",
+          "legendFormat": "services"
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value" },
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Error rate (5m)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 1, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "100 * sum(rate(traces_span_metrics_calls_total{service_name=~\"$service\",status_code=\"STATUS_CODE_ERROR\"}[5m])) / clamp_min(sum(rate(traces_span_metrics_calls_total{service_name=~\"$service\"}[5m])), 1e-9)",
+          "legendFormat": "%"
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 1 },
+              { "color": "red",    "value": 5 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "p95 latency (5m)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 18, "y": 1, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\"}[5m])))",
+          "legendFormat": "p95"
+        }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green",  "value": null },
+              { "color": "orange", "value": 500 },
+              { "color": "red",    "value": 2000 }
+            ]
+          }
+        }
+      }
+    },
+
+    {
+      "type": "row",
+      "title": "Service graph (who calls whom)",
+      "gridPos": { "x": 0, "y": 5, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 9,
+      "type": "nodeGraph",
+      "title": "Interactive service map",
+      "description": "Drag nodes to rearrange. Each node is a service; each edge is a client→server call. Edge thickness encodes call rate; the donut around each node shows error proportion. Built from OTel servicegraph metrics.",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 6, "w": 24, "h": 14 },
+      "targets": [
+        {
+          "refId": "nodes_calls",
+          "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total[$__rate_interval]))",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "nodes_errors",
+          "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[$__rate_interval]))",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "edges_rate",
+          "expr": "sum by (client, server) (rate(traces_service_graph_request_total[$__rate_interval]))",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "edges_errors",
+          "expr": "sum by (client, server) (rate(traces_service_graph_request_failed_total[$__rate_interval]))",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {},
+          "filter": { "id": "byRefId", "options": "nodes_calls|nodes_errors" },
+          "topic": "series"
+        },
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "service_name",
+            "mode": "outer"
+          },
+          "filter": { "id": "byRefId", "options": "nodes_calls|nodes_errors" }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": { "names": ["service_name", "Value #nodes_calls", "Value #nodes_errors"] }
+          },
+          "filter": { "id": "byRefId", "options": "nodes_calls|nodes_errors" }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "service_name": "id",
+              "Value #nodes_calls": "mainStat",
+              "Value #nodes_errors": "arc__failed"
+            }
+          },
+          "filter": { "id": "byRefId", "options": "nodes_calls|nodes_errors" }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "title",
+            "mode": "binary",
+            "binary": { "left": "id", "operator": "+", "right": "id" },
+            "reduce": { "reducer": "first" }
+          },
+          "filter": { "id": "byRefId", "options": "nodes_calls|nodes_errors" }
+        },
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": null,
+            "mode": "outer"
+          },
+          "filter": { "id": "byRefId", "options": "edges_rate|edges_errors" }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "client": "source",
+              "server": "target",
+              "Value #edges_rate": "mainStat",
+              "Value #edges_errors": "secondaryStat"
+            }
+          },
+          "filter": { "id": "byRefId", "options": "edges_rate|edges_errors" }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "id",
+            "mode": "binary",
+            "binary": { "left": "source", "operator": "+", "right": "target" },
+            "reduce": { "reducer": "first" }
+          },
+          "filter": { "id": "byRefId", "options": "edges_rate|edges_errors" }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "mainStat" },
+            "properties": [{ "id": "displayName", "value": "calls/s" }, { "id": "unit", "value": "reqps" }, { "id": "decimals", "value": 2 }] },
+          { "matcher": { "id": "byName", "options": "secondaryStat" },
+            "properties": [{ "id": "displayName", "value": "errors/s" }, { "id": "unit", "value": "reqps" }, { "id": "decimals", "value": 3 }] },
+          { "matcher": { "id": "byName", "options": "arc__failed" },
+            "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }, { "id": "displayName", "value": "errors" }] }
+        ]
+      },
+      "options": { "nodes": { "mainStatUnit": "reqps", "secondaryStatUnit": "reqps" } }
+    },
+
+    {
+      "id": 10,
+      "type": "table",
+      "title": "Service edges — req/s, error %, p95 latency",
+      "datasource": "Prometheus",
+      "description": "Each row is a directed edge from `client` service to `server` service, computed from the OTel servicegraph connector.",
+      "gridPos": { "x": 0, "y": 20, "w": 14, "h": 10 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (client, server) (rate(traces_service_graph_request_total{client=~\"$service|.*\",server=~\"$service|.*\"}[5m]))",
+          "legendFormat": "{{client}} → {{server}}",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "expr": "100 * sum by (client, server) (rate(traces_service_graph_request_failed_total[5m])) / clamp_min(sum by (client, server) (rate(traces_service_graph_request_total[5m])), 1e-9)",
+          "legendFormat": "{{client}} → {{server}}",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "C",
+          "expr": "1000 * histogram_quantile(0.95, sum by (le, client, server) (rate(traces_service_graph_request_server_seconds_bucket[5m])))",
+          "legendFormat": "{{client}} → {{server}}",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        { "id": "merge", "options": {} },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true, "__name__": true, "job": true, "instance": true,
+              "exported_job": true, "exported_instance": true
+            },
+            "renameByName": {
+              "Value #A": "req/s",
+              "Value #B": "error %",
+              "Value #C": "p95 (ms)",
+              "client": "from",
+              "server": "to"
+            },
+            "indexByName": {
+              "from": 0, "to": 1, "Value #A": 2, "Value #B": 3, "Value #C": 4
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "field": "req/s", "desc": true }] }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "align": "left" } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "req/s" },
+            "properties": [{ "id": "unit", "value": "reqps" }, { "id": "decimals", "value": 2 }] },
+          { "matcher": { "id": "byName", "options": "error %" },
+            "properties": [
+              { "id": "unit", "value": "percent" }, { "id": "decimals", "value": 2 },
+              { "id": "custom.cellOptions", "value": { "type": "color-background", "mode": "gradient" } },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [
+                { "color": "green", "value": null },
+                { "color": "orange", "value": 1 },
+                { "color": "red", "value": 5 }
+              ] } }
+            ] },
+          { "matcher": { "id": "byName", "options": "p95 (ms)" },
+            "properties": [
+              { "id": "unit", "value": "ms" }, { "id": "decimals", "value": 0 },
+              { "id": "custom.cellOptions", "value": { "type": "color-background", "mode": "gradient" } },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [
+                { "color": "green", "value": null },
+                { "color": "orange", "value": 500 },
+                { "color": "red", "value": 2000 }
+              ] } }
+            ] }
+        ]
+      }
+    },
+
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Service-to-service traffic (req/s)",
+      "datasource": "Prometheus",
+      "description": "Top 10 directed edges by request rate — useful for spotting noisy callers.",
+      "gridPos": { "x": 14, "y": 20, "w": 10, "h": 10 },
+      "targets": [
+        {
+          "expr": "topk(10, sum by (client, server) (rate(traces_service_graph_request_total[2m])))",
+          "legendFormat": "{{client}} → {{server}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+
+    {
+      "type": "row",
+      "title": "Service RED",
+      "gridPos": { "x": 0, "y": 30, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Request rate (req/s) per service",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 31, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total{service_name=~\"$service\"}[5m]))",
+          "legendFormat": "{{service_name}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "reqps" } }
+    },
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "Error rate (errors/s) per service",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 31, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total{service_name=~\"$service\",status_code=\"STATUS_CODE_ERROR\"}[5m]))",
+          "legendFormat": "{{service_name}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null },
+            { "color": "red", "value": 0.05 }
+          ] }
+        }
+      }
+    },
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "p95 latency per service (ms)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 39, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le, service_name) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\"}[5m])))",
+          "legendFormat": "{{service_name}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ms" } }
+    },
+    {
+      "id": 23,
+      "type": "timeseries",
+      "title": "p50 / p99 latency overall (ms)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 39, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "refId": "p50",
+          "expr": "histogram_quantile(0.50, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\"}[5m])))",
+          "legendFormat": "p50"
+        },
+        {
+          "refId": "p99",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\"}[5m])))",
+          "legendFormat": "p99"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "ms" } }
+    },
+
+    {
+      "type": "row",
+      "title": "Functions / operations",
+      "gridPos": { "x": 0, "y": 47, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 30,
+      "type": "table",
+      "title": "Top operations — calls / errors / p95",
+      "datasource": "Prometheus",
+      "description": "Per (service, operation) breakdown — calls, errors and p95 latency.",
+      "gridPos": { "x": 0, "y": 48, "w": 24, "h": 12 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (service_name, span_name) (rate(traces_span_metrics_calls_total{service_name=~\"$service\",span_name=~\"$operation\"}[5m]))",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "expr": "sum by (service_name, span_name) (rate(traces_span_metrics_calls_total{service_name=~\"$service\",span_name=~\"$operation\",status_code=\"STATUS_CODE_ERROR\"}[5m]))",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.95, sum by (le, service_name, span_name) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\",span_name=~\"$operation\"}[5m])))",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        { "id": "merge", "options": {} },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true, "__name__": true, "job": true, "instance": true,
+              "exported_job": true, "exported_instance": true
+            },
+            "renameByName": {
+              "service_name": "service",
+              "span_name": "operation",
+              "Value #A": "req/s",
+              "Value #B": "errors/s",
+              "Value #C": "p95 (ms)"
+            },
+            "indexByName": {
+              "service": 0, "operation": 1, "Value #A": 2, "Value #B": 3, "Value #C": 4
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": { "fields": {}, "sort": [{ "field": "p95 (ms)", "desc": true }] }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "align": "left" } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "req/s" },
+            "properties": [{ "id": "unit", "value": "reqps" }, { "id": "decimals", "value": 2 }] },
+          { "matcher": { "id": "byName", "options": "errors/s" },
+            "properties": [
+              { "id": "unit", "value": "reqps" }, { "id": "decimals", "value": 2 },
+              { "id": "custom.cellOptions", "value": { "type": "color-background", "mode": "gradient" } },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [
+                { "color": "green", "value": null },
+                { "color": "red", "value": 0.05 }
+              ] } }
+            ] },
+          { "matcher": { "id": "byName", "options": "p95 (ms)" },
+            "properties": [
+              { "id": "unit", "value": "ms" }, { "id": "decimals", "value": 0 },
+              { "id": "custom.cellOptions", "value": { "type": "color-background", "mode": "gradient" } },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [
+                { "color": "green", "value": null },
+                { "color": "orange", "value": 500 },
+                { "color": "red", "value": 2000 }
+              ] } }
+            ] }
+        ]
+      }
+    },
+
+    {
+      "type": "row",
+      "title": "Traces & spans",
+      "gridPos": { "x": 0, "y": 60, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 41,
+      "type": "logs",
+      "title": "Recent error / slow spans (OpenSearch)",
+      "description": "Spans from the OpenSearch trace index, filtered to errors or duration ≥ 1s. Each row links back to the trace via traceID.",
+      "datasource": "OpenSearch-Traces",
+      "gridPos": { "x": 0, "y": 75, "w": 24, "h": 12 },
+      "targets": [
+        {
+          "query": "(status.code:ERROR OR durationInNanos:>=1000000000) AND serviceName:$service",
+          "metrics": [{ "type": "logs", "id": "1" }],
+          "bucketAggs": [
+            { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "startTime" }
+          ]
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "showLabels": true,
+        "wrapLogMessage": true,
+        "sortOrder": "Descending",
+        "dedupStrategy": "none",
+        "enableLogDetails": true
+      }
+    },
+
+    {
+      "type": "row",
+      "title": "Open in deep tools",
+      "gridPos": { "x": 0, "y": 87, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 50,
+      "type": "text",
+      "title": "Shortcuts",
+      "gridPos": { "x": 0, "y": 88, "w": 24, "h": 5 },
+      "options": {
+        "mode": "html",
+        "content": "<div style='display:flex;gap:14px;flex-wrap:wrap;font-size:14px;line-height:1.5'><a href='/d/looma-services-red' target='_blank'>📊 RED dashboard</a><a href='/d/looma-trace-pipeline-health' target='_blank'>🩺 Trace pipeline health</a><a href='/d/looma-otelcol-detailed' target='_blank'>📈 OTel Collector detail</a></div>"
+      }
+    }
+  ]
+}

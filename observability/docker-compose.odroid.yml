@@ -2,90 +2,40 @@
 #
 # Use TOGETHER with the canonical compose, never alone:
 #
-#   docker compose -f docker-compose.yml -f docker-compose.odroid.yml up -d --build
+#   docker compose -f docker-compose.yml -f docker-compose.odroid.yml \
+#     up -d --no-deps vector metricbeat
 #
-# Goal: keep the OpenSearch-based core (logs, traces, service maps, dashboards,
-# Observability Applications) that the user wants, but fit it next to the Looma
-# app inside 8 GB. It does NOT edit the canonical docker-compose.yml.
-#
-# Changes:
-#  1. Puts the heaviest, non-essential services behind the `heavy` profile so
-#     they stay OFF by default: the whole Coroot stack (Coroot UI + ClickHouse +
-#     Postgres + node/cluster agents). The node-agent also needs eBPF, which may
-#     not work on the odroid kernel. Enable later with `--profile heavy` only if
-#     RAM allows.
-#  2. Puts the AI-derived analysis workers behind the `ai` profile (OFF).
-#  3. Shrinks JVM heaps and caps mem_limit on the kept services.
-#
-# Reality check: even trimmed, OpenSearch + Dashboards + Data Prepper + the
-# Looma app (esp. zvec/torch) is a LOT for 8 GB. Add swap/zram, and if unstable
-# disable looma-search/looma-ai. mem_limit values are caps (OOM-kill if exceeded)
-# — raise them if a service crash-loops, lower them if the host OOMs.
+# An odroid box NEVER runs OpenSearch/Grafana/otel-collector/etc. — those only
+# ever run on the dedicated data server (see observability/DATA-SERVER.md).
+# This box runs ONLY the observability AGENTS: Vector (in its "agent" role,
+# LOOMA_VECTOR_CONFIG=vector-agent.toml — ships everything to the server's
+# Vector over its native wire protocol, never touches OpenSearch directly)
+# and Metricbeat (ships Docker container stats to this box's own Vector over
+# Beats). looma-installer.sh's settle_observability() decides whether this
+# overlay is even used at all — on by default the moment the server is
+# reachable, off otherwise (--no-observability forces it off; --remote-obs
+# picks a different server).
 
 services:
-  # ---- kept services: heap + mem caps -------------------------------------
-  opensearch:
-    environment:
-      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx768m --enable-native-access=ALL-UNNAMED"
-    mem_limit: 1280m
-
-  opensearch-dashboards:
-    mem_limit: 896m
-
-  data-prepper:
-    environment:
-      JAVA_OPTS: "-Xms256m -Xmx512m"
-    mem_limit: 768m
-
-  otel-collector:
-    mem_limit: 384m
-
   vector:
     mem_limit: 256m
-    # On the odroid (agents-only mode) Vector ships to the OpenSearch on the
-    # dev machine instead of a local one. Set LOOMA_OPENSEARCH_URL in the shell
-    # (looma-up.sh exports it from /etc/looma-odroid.env); defaults to the local
-    # one so the full stack on a 16 GB host is unaffected.
     environment:
-      LOOMA_OPENSEARCH_URL: ${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}
+      # The agent role — see the big comment at the top of vector-agent.toml.
+      # Overridden back to vector.toml only if this box is ever pointed at
+      # itself for local debugging; looma-installer.sh always sets this.
+      LOOMA_VECTOR_CONFIG: ${LOOMA_VECTOR_CONFIG:-/etc/vector/vector-agent.toml}
+      # Where the server's Vector is (its native wire protocol, :6000) —
+      # looma-installer.sh's --remote-obs / settle_observability() sets this.
+      LOOMA_VECTOR_SERVER: ${LOOMA_VECTOR_SERVER:-looma-vector:6000}
+      # Which box shipped each log/metric, and its LAN IP — every odroid ships
+      # to the one server, so Vector stamps box_name/box_ip on everything.
+      # looma-installer.sh 'up' exports both (name from /etc/looma-odroid.env
+      # or the hostname; IP resolved fresh each boot).
+      LOOMA_BOX_NAME: ${LOOMA_BOX_NAME:-}
+      LOOMA_BOX_IP: ${LOOMA_BOX_IP:-}
 
   metricbeat:
     mem_limit: 384m
-
-  prometheus:
-    mem_limit: 384m
-
-  grafana:
-    mem_limit: 256m
-
-  docker-stats-exporter:
-    mem_limit: 128m
-
-  topology-probe:
-    mem_limit: 128m
-
-  retention:
-    mem_limit: 128m
-
-  # ---- heavy Coroot stack: OFF by default (enable with --profile heavy) ----
-  coroot:
-    profiles: ["heavy"]
-  clickhouse:
-    profiles: ["heavy"]
-  coroot-postgres:
-    profiles: ["heavy"]
-  coroot-node-agent:
-    profiles: ["heavy"]
-  coroot-cluster-agent:
-    profiles: ["heavy"]
-
-  # ---- Heavy AI analysis workers: OFF by default. Use the SEPARATE `analysis`
-  #      profile so turning on the assistant (app `ai` profile) does NOT also
-  #      start these (enable explicitly with --profile analysis). ----
-  looma-analysis-worker:
-    profiles: ["analysis"]
-  looma-feedback-labeling:
-    profiles: ["analysis"]
 
 # The canonical observability compose declares `loomanet` as a compose-managed
 # network. On the box the network is created up-front (by the installer/looma-up.sh)

@@ -1,0 +1,207 @@
+{
+  "annotations": { "list": [] },
+  "description": "Final-exam performance — based on score telemetry emitted by /generate_exam and looma-telemetry.php with looma_activity=\"exam\". The chapter_id field on exam events is the prefix (e.g. 1EN), so panels group by grade+subject+prefix.",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["looma", "learning", "exams"],
+  "time": { "from": "now-30d", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Looma — Learning Exams",
+  "uid": "looma-learning-exams",
+  "version": 1,
+  "refresh": "30s",
+  "templating": {
+    "list": [
+      {
+        "name": "grade", "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(looma_score_ratio{looma_activity=\"exam\"}, looma_grade)",
+        "includeAll": true, "multi": true, "refresh": 2,
+        "allValue": ".*", "current": { "text": "All", "value": ".*" }
+      },
+      {
+        "name": "subject", "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\"}, looma_subject)",
+        "includeAll": true, "multi": true, "refresh": 2,
+        "allValue": ".*", "current": { "text": "All", "value": ".*" }
+      },
+      {
+        "name": "language", "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(looma_score_ratio{looma_activity=\"exam\"}, looma_language)",
+        "includeAll": true, "multi": true, "refresh": 2,
+        "allValue": ".*", "current": { "text": "All", "value": ".*" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Average exam score (selected)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1,
+        "thresholds": { "mode": "absolute", "steps": [
+          { "color": "red", "value": null },
+          { "color": "orange", "value": 0.5 },
+          { "color": "green", "value": 0.75 }
+        ]}}, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "graphMode": "area", "colorMode": "value" },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum(sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])), 1))"
+      }]
+    },
+    {
+      "id": 2, "type": "stat", "title": "Exams taken (selected)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "targets": [{
+        "refId": "A",
+        "expr": "sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])) or vector(0)"
+      }]
+    },
+    {
+      "id": 3, "type": "stat", "title": "Pass rate (≥ 50%)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1,
+        "thresholds": { "mode": "absolute", "steps": [
+          { "color": "red", "value": null },
+          { "color": "orange", "value": 0.6 },
+          { "color": "green", "value": 0.8 }
+        ]}} },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"} >= 0.5)[$__range:])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])), 1))"
+      }]
+    },
+    {
+      "id": 4, "type": "stat", "title": "Distinction rate (≥ 80%)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"} >= 0.8)[$__range:])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])), 1))"
+      }]
+    },
+    {
+      "id": 5, "type": "timeseries", "title": "Average exam score over time — by grade",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 5, "w": 12, "h": 9 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "min", "max"] } },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum by (looma_grade) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[1h])) / clamp_min(sum by (looma_grade) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[1h])), 1))",
+        "legendFormat": "Grade {{looma_grade}}"
+      }]
+    },
+    {
+      "id": 6, "type": "barchart", "title": "Average exam score by subject",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 5, "w": 12, "h": 9 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
+      "options": { "orientation": "horizontal", "legend": { "displayMode": "hidden" } },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum by (looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])) / clamp_min(sum by (looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])), 1))",
+        "legendFormat": "{{looma_subject}}",
+        "format": "time_series"
+      }]
+    },
+    {
+      "id": 7, "type": "barchart", "title": "Average exam score by grade × subject",
+      "description": "One row per (grade, subject) cohort — quickly spot which year struggles most in which discipline.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 14, "w": 24, "h": 10 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
+      "options": { "orientation": "horizontal", "legend": { "displayMode": "hidden" } },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum by (looma_grade, looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])) / clamp_min(sum by (looma_grade, looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])), 1))",
+        "legendFormat": "Grade {{looma_grade}} — {{looma_subject}}",
+        "format": "time_series"
+      }]
+    },
+    {
+      "id": 8, "type": "piechart", "title": "Score distribution",
+      "description": "Bucketed proportion of exam attempts by score band.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 24, "w": 12, "h": 9 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "options": { "reduceOptions": { "calcs": ["sum"] }, "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] } },
+      "targets": [
+        { "refId": "A",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"} < 0.25)[$__range:]))",
+          "legendFormat": "0–25% (fail)" },
+        { "refId": "B",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"} >= 0.25 < 0.5)[$__range:]))",
+          "legendFormat": "25–50% (weak)" },
+        { "refId": "C",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"} >= 0.5 < 0.65)[$__range:]))",
+          "legendFormat": "50–65% (pass)" },
+        { "refId": "D",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"} >= 0.65 < 0.8)[$__range:]))",
+          "legendFormat": "65–80% (good)" },
+        { "refId": "E",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"} >= 0.8 < 0.9)[$__range:]))",
+          "legendFormat": "80–90% (very good)" },
+        { "refId": "F",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"} >= 0.9)[$__range:]))",
+          "legendFormat": "90–100% (excellent)" }
+      ]
+    },
+    {
+      "id": 9, "type": "table", "title": "Exam summary by prefix (chapter_id label)",
+      "description": "The exam endpoint stores the curriculum prefix (e.g. 1EN, 6M) in the chapter_id field, so this table is per textbook.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 24, "w": 12, "h": 9 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
+      "transformations": [
+        { "id": "labelsToFields", "options": { "valueLabel": "avg_score" } }
+      ],
+      "options": { "showHeader": true },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum by (looma_chapter_id, looma_grade, looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])) / clamp_min(sum by (looma_chapter_id, looma_grade, looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])), 1))",
+        "format": "table",
+        "instant": true
+      }]
+    },
+    {
+      "id": 10, "type": "table", "title": "Top weak topics across exams",
+      "description": "Aggregated weak-topic strings posted by the exam scorer — recurring topics suggest curriculum gaps that need extra teaching.",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-events" },
+      "gridPos": { "x": 0, "y": 33, "w": 12, "h": 10 },
+      "targets": [{
+        "refId": "A",
+        "query": "attributes.looma.event:score AND attributes.looma.activity:exam AND attributes.looma.weak_topics:*",
+        "metrics": [{ "type": "count", "id": "1" }],
+        "bucketAggs": [
+          { "type": "terms", "id": "2", "field": "attributes.looma.weak_topics", "settings": { "size": "20", "order": "desc", "orderBy": "_count" } }
+        ],
+        "timeField": "@timestamp"
+      }],
+      "options": { "showHeader": true }
+    },
+    {
+      "id": 11, "type": "table", "title": "Recent exam attempts",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-events" },
+      "gridPos": { "x": 12, "y": 33, "w": 12, "h": 10 },
+      "targets": [{
+        "refId": "A",
+        "query": "attributes.looma.event:score AND attributes.looma.activity:exam",
+        "metrics": [{ "type": "logs", "id": "1" }],
+        "bucketAggs": [],
+        "timeField": "@timestamp"
+      }],
+      "options": { "showHeader": true }
+    }
+  ]
+}

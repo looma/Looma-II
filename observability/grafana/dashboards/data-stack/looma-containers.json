@@ -1,0 +1,180 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 1,
+  "title": "Looma — Containers (cAdvisor)",
+  "uid": "looma-containers",
+  "tags": ["looma", "cadvisor", "containers"],
+  "time": { "from": "now-1h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "container",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(container_last_seen{name=~\"looma-.*\"}, name)",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "looma-.*"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "CPU usage (cores) per container",
+      "description": "Normalized CPU consumption per LOOMA container.",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{name=~\"$container\"}[2m]))",
+          "legendFormat": "{{name}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "none", "decimals": 3 } }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Memory usage (RSS) per container",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (name) (container_memory_rss{name=~\"$container\"})",
+          "legendFormat": "{{name}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "bytes" } }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Network RX (bytes/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (name) (rate(container_network_receive_bytes_total{name=~\"$container\"}[2m]))",
+          "legendFormat": "{{name}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "Bps" } }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Network TX (bytes/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (name) (rate(container_network_transmit_bytes_total{name=~\"$container\"}[2m]))",
+          "legendFormat": "{{name}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "Bps" } }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Disk read / write (bytes/s)",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (name) (rate(container_fs_reads_bytes_total{name=~\"$container\"}[2m]))",
+          "legendFormat": "{{name}} read"
+        },
+        {
+          "expr": "sum by (name) (rate(container_fs_writes_bytes_total{name=~\"$container\"}[2m]))",
+          "legendFormat": "{{name}} write"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "Bps" } }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Container restarts",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "sum by (name) (changes(container_start_time_seconds{name=~\"$container\"}[1h]))",
+          "legendFormat": "{{name}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "Containers — current state",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 24, "w": 24, "h": 8 },
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": { "valueLabel": "Value" }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        }
+      ],
+      "targets": [
+        {
+          "expr": "sum by (name) (container_memory_rss{name=~\"$container\"})",
+          "legendFormat": "{{name}}",
+          "format": "table",
+          "instant": true,
+          "refId": "MEM"
+        },
+        {
+          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{name=~\"$container\"}[2m]))",
+          "legendFormat": "{{name}}",
+          "format": "table",
+          "instant": true,
+          "refId": "CPU"
+        }
+      ]
+    }
+    ,
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Total CPU used (%)",
+      "description": "Total CPU used across selected LOOMA containers. Computed as cores used (rate of CPU seconds) * 100, so values may exceed 100% on multi-core hosts.",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 32, "w": 12, "h": 6 },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"$container\"}[2m])) * 100",
+          "legendFormat": "total"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "percent", "decimals": 1 } }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Total memory used (%)",
+      "description": "Total memory used across selected LOOMA containers as a percentage of the sum of their configured memory limits. If containers are unbounded (limit=0), the percentage may be misleading.",
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 32, "w": 12, "h": 6 },
+      "targets": [
+        {
+          "expr": "100 * sum(container_memory_rss{name=~\"$container\"}) / clamp_min(sum(container_spec_memory_limit_bytes{name=~\"$container\"}), 1)",
+          "legendFormat": "total"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "percent", "decimals": 1 } }
+    }
+  ]
+}

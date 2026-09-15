@@ -236,4 +236,30 @@ if [ -d /state/anomaly-detectors ]; then
   done
 fi
 
+# --- 8) Snapshot repository + Snapshot Management policy -------------------
+# fs repo on the dedicated data disk — only present when this cluster is the
+# standalone DATA-SERVER deployment (docker-compose.data-server.yml sets
+# path.repo and bind-mounts the snapshots volume). On every other deployment
+# (odroid on-box "full" profile, a plain dev checkout) path.repo is unset, so
+# the PUT below fails harmlessly (`|| true`) and there is nothing to snapshot.
+# Daily full snapshot at 02:00 UTC, keep 30 (min 7) up to 45 days.
+log "registering snapshot repo + daily SM policy (no-op unless path.repo is set)"
+curl -s -o /dev/null -H 'Content-Type: application/json' \
+  -X PUT "$OS_URL/_snapshot/looma-fs" \
+  -d '{"type":"fs","settings":{"location":"/usr/share/opensearch/snapshots","compress":true,"max_snapshot_bytes_per_sec":"200mb","max_restore_bytes_per_sec":"200mb"}}' || true
+smc=$(curl -s -o /tmp/sm.json -w '%{http_code}' -H 'Content-Type: application/json' \
+  -X POST "$OS_URL/_plugins/_sm/policies/looma-daily" \
+  -d '{
+    "description":"Daily full snapshot of the Looma observability cluster.",
+    "creation":{"schedule":{"cron":{"expression":"0 2 * * *","timezone":"UTC"}},"time_limit":"2h"},
+    "deletion":{"schedule":{"cron":{"expression":"30 2 * * *","timezone":"UTC"}},"condition":{"max_count":30,"max_age":"45d","min_count":7},"time_limit":"1h"},
+    "snapshot_config":{"repository":"looma-fs","ignore_unavailable":true,"include_global_state":true,"partial":true}
+  }')
+case "$smc" in
+  2*)  log "SM policy looma-daily: ok" ;;
+  400) log "SM policy looma-daily: skipped (400 — no snapshot repo, path.repo not set on this deployment)" ;;
+  409) log "SM policy looma-daily: exists (409) - leaving as is" ;;
+  *)   log "SM policy looma-daily: $smc $(head -c 160 /tmp/sm.json)" ;;
+esac
+
 log "bootstrap done"

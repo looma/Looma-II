@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Keeps the external disk's Looma copy in sync with every commit — see
+# deploy/sync-to-external-disk.sh. Installed via:
+#   git config core.hooksPath .githooks
+# (this repo already has that set; a fresh clone needs it run once — see
+# deploy/sync-to-external-disk.sh's header, or just run that script by hand).
+#
+# Never blocks the commit: runs in the background, and the sync script itself
+# never fails loudly when the disk isn't there.
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)"
+[ -n "$repo_root" ] && [ -x "$repo_root/deploy/sync-to-external-disk.sh" ] || exit 0
+
+nohup "$repo_root/deploy/sync-to-external-disk.sh" >>"$repo_root/.git/sync-to-external-disk.log" 2>&1 &
+disown 2>/dev/null || true
+exit 0

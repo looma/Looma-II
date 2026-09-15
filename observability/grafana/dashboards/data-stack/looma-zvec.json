@@ -1,0 +1,290 @@
+{
+  "annotations": { "list": [] },
+  "description": "Monitoring for ZVEC — the vector store behind the Looma AI RAG (looma-ai). Store state comes from the looma_zvec_* observable gauges; RAG query performance from the looma-ai endpoint/chat metrics and span metrics.",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "title": "Looma — ZVEC",
+  "uid": "looma-zvec",
+  "tags": ["looma", "zvec", "rag", "ai"],
+  "time": { "from": "now-6h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "rate",
+        "label": "Rate window",
+        "type": "interval",
+        "query": "1m,5m,10m,30m,1h",
+        "current": { "text": "5m", "value": "5m" },
+        "options": [
+          { "text": "1m", "value": "1m", "selected": false },
+          { "text": "5m", "value": "5m", "selected": true },
+          { "text": "10m", "value": "10m", "selected": false },
+          { "text": "30m", "value": "30m", "selected": false },
+          { "text": "1h", "value": "1h", "selected": false }
+        ],
+        "auto": false
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row",
+      "id": 1,
+      "title": "ZVEC vector store",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Store ready",
+      "description": "ZVEC curriculum vector store present on disk and reachable.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 1, "w": 4, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "max(looma_zvec_ready_ratio)", "legendFormat": "ready" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "mappings": [ { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "READY", "color": "green" } } } ],
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "green", "value": 1 } ] }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Vectors indexed",
+      "description": "Number of vectors in the ZVEC curriculum collection (looma_zvec_doc_count_ratio).",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 4, "y": 1, "w": 5, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "max(looma_zvec_doc_count_ratio)", "legendFormat": "vectors" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "blue" } } }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Source chunks (SQLite)",
+      "description": "Curriculum chunks in SQLite — the corpus ZVEC should have fully ingested.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 9, "y": 1, "w": 5, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "max(looma_zvec_sqlite_chunks_ratio)", "legendFormat": "chunks" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "purple" } } }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Ingestion coverage",
+      "description": "Vectors indexed as a percentage of source chunks. Below 100% means ZVEC ingestion is incomplete or stale.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 14, "y": 1, "w": 5, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "100 * max(looma_zvec_doc_count_ratio) / clamp_min(max(looma_zvec_sqlite_chunks_ratio), 1)", "legendFormat": "coverage" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "orange", "value": 80 }, { "color": "green", "value": 99 } ] }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Chapters / documents",
+      "description": "Chapters and documents in the SQLite corpus behind ZVEC.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 19, "y": 1, "w": 5, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "max(looma_zvec_sqlite_chapters_ratio)", "legendFormat": "chapters" },
+        { "refId": "B", "expr": "max(looma_zvec_sqlite_documents_ratio)", "legendFormat": "documents" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "short" } }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Vectors indexed vs source chunks",
+      "description": "ZVEC vector count tracked against the SQLite chunk corpus. The two lines should converge when ingestion is complete.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 5, "w": 12, "h": 8 },
+      "targets": [
+        { "refId": "A", "expr": "max(looma_zvec_doc_count_ratio)", "legendFormat": "ZVEC vectors" },
+        { "refId": "B", "expr": "max(looma_zvec_sqlite_chunks_ratio)", "legendFormat": "SQLite chunks" }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 12, "showPoints": "never" } } }
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "SQLite corpus over time",
+      "description": "Documents and chapters in the curriculum SQLite database.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 5, "w": 12, "h": 8 },
+      "targets": [
+        { "refId": "A", "expr": "max(looma_zvec_sqlite_documents_ratio)", "legendFormat": "documents" },
+        { "refId": "B", "expr": "max(looma_zvec_sqlite_chapters_ratio)", "legendFormat": "chapters" }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 10, "showPoints": "never" } } }
+    },
+    {
+      "type": "row",
+      "id": 9,
+      "title": "RAG queries (ZVEC retrieval)",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 13, "w": 24, "h": 1 }
+    },
+    {
+      "id": 10,
+      "type": "stat",
+      "title": "RAG queries ($__range)",
+      "description": "Total /rag_query + /chat calls served in the selected range (looma_chat_calls_total).",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 14, "w": 6, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "sum(increase(looma_chat_calls_total[$__range])) or vector(0)", "legendFormat": "queries" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "blue" } } }
+    },
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "Query rate",
+      "description": "Current RAG query throughput, averaged over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 6, "y": 14, "w": 6, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "sum(rate(looma_chat_calls_total[$rate])) or vector(0)", "legendFormat": "req/s" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "reqps", "color": { "mode": "fixed", "fixedColor": "purple" } } }
+    },
+    {
+      "id": 12,
+      "type": "stat",
+      "title": "RAG p95 latency",
+      "description": "95th-percentile /rag_query latency over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 14, "w": 6, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "histogram_quantile(0.95, sum by (le) (rate(looma_endpoint_latency_ms_milliseconds_bucket{route=\"/rag_query\"}[$rate])))", "legendFormat": "p95" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 3000 }, { "color": "red", "value": 8000 } ] }
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": "stat",
+      "title": "RAG errors ($__range)",
+      "description": "/rag_query invocations that ended in an error status.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 18, "y": 14, "w": 6, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "sum(increase(looma_endpoint_errors_total{route=\"/rag_query\"}[$__range])) or vector(0)", "legendFormat": "errors" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 1 }, { "color": "red", "value": 5 } ] }
+        }
+      }
+    },
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "RAG query rate by mode",
+      "description": "/rag_query + /chat throughput, split by the wh_kind label the service tags each query with.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 18, "w": 12, "h": 8 },
+      "targets": [ { "refId": "A", "expr": "sum by (wh_kind) (rate(looma_chat_calls_total[$rate]))", "legendFormat": "{{wh_kind}}" } ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "reqps", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 12, "showPoints": "never" } } }
+    },
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "RAG latency percentiles",
+      "description": "/rag_query latency p50 / p95 / p99 over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 18, "w": 12, "h": 8 },
+      "targets": [
+        { "refId": "A", "expr": "histogram_quantile(0.50, sum by (le) (rate(looma_endpoint_latency_ms_milliseconds_bucket{route=\"/rag_query\"}[$rate])))", "legendFormat": "p50" },
+        { "refId": "B", "expr": "histogram_quantile(0.95, sum by (le) (rate(looma_endpoint_latency_ms_milliseconds_bucket{route=\"/rag_query\"}[$rate])))", "legendFormat": "p95" },
+        { "refId": "C", "expr": "histogram_quantile(0.99, sum by (le) (rate(looma_endpoint_latency_ms_milliseconds_bucket{route=\"/rag_query\"}[$rate])))", "legendFormat": "p99" }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "ms", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never" } } }
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Endpoint calls by status",
+      "description": "/rag_query invocations per second split by status label (start / ok / error).",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 26, "w": 12, "h": 8 },
+      "targets": [ { "refId": "A", "expr": "sum by (status) (rate(looma_endpoint_calls_total{route=\"/rag_query\"}[$rate]))", "legendFormat": "{{status}}" } ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "reqps", "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 40, "showPoints": "never", "stacking": { "mode": "normal", "group": "A" } } } }
+    },
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "Answer length (characters)",
+      "description": "Length of the answers ZVEC-backed RAG returns — p50 / p95 over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 26, "w": 12, "h": 8 },
+      "targets": [
+        { "refId": "A", "expr": "histogram_quantile(0.50, sum by (le) (rate(looma_chat_answer_chars_bucket[$rate])))", "legendFormat": "p50" },
+        { "refId": "B", "expr": "histogram_quantile(0.95, sum by (le) (rate(looma_chat_answer_chars_bucket[$rate])))", "legendFormat": "p95" }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never" } } }
+    },
+    {
+      "type": "row",
+      "id": 18,
+      "title": "looma-ai service (span metrics)",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 34, "w": 24, "h": 1 }
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Request rate by operation",
+      "description": "looma-ai span throughput by span_name — request handling plus the downstream calls ZVEC retrieval depends on (MongoDB find/aggregate, etc.).",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 35, "w": 12, "h": 8 },
+      "targets": [ { "refId": "A", "expr": "topk(10, sum by (span_name) (rate(traces_span_metrics_calls_total{service_name=\"looma-ai\"}[$rate])))", "legendFormat": "{{span_name}}" } ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "reqps", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 10, "showPoints": "never" } } }
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Latency p95 by operation",
+      "description": "95th-percentile span duration per looma-ai operation.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 35, "w": 12, "h": 8 },
+      "targets": [ { "refId": "A", "expr": "histogram_quantile(0.95, sum by (le,span_name) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-ai\"}[$rate])))", "legendFormat": "{{span_name}}" } ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "ms", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never" } } }
+    },
+    {
+      "id": 21,
+      "type": "timeseries",
+      "title": "Errors by operation",
+      "description": "looma-ai spans that ended with STATUS_CODE_ERROR, bucketed over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 43, "w": 24, "h": 7 },
+      "targets": [ { "refId": "A", "expr": "sum by (span_name) (increase(traces_span_metrics_calls_total{service_name=\"looma-ai\",status_code=\"STATUS_CODE_ERROR\"}[$rate]))", "legendFormat": "{{span_name}}" } ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "drawStyle": "bars", "lineWidth": 1, "fillOpacity": 70, "showPoints": "never" } } }
+    }
+  ]
+}

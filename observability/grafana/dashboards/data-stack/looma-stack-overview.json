@@ -1,0 +1,130 @@
+{
+  "annotations": { "list": [] },
+  "description": "Top-level health: every service in the Looma stack on one page. RED metrics from spanmetrics, host & container utilisation from hostmetrics/docker_stats, MongoDB pulse, RUM web-vitals and pipeline depth.",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["looma", "overview"],
+  "time": { "from": "now-1h", "to": "now" },
+  "timezone": "browser",
+  "title": "Looma — Stack Overview",
+  "uid": "looma-stack-overview",
+  "version": 1,
+  "refresh": "30s",
+  "templating": { "list": [] },
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Services up",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 0, "w": 4, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "targets": [{ "refId": "A", "expr": "sum(up)" }]
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "Span calls/s by service (RED)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 4, "y": 0, "w": 10, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "reqps" } },
+      "targets": [{ "refId": "A", "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total[5m]))", "legendFormat": "{{service_name}}" }]
+    },
+    {
+      "id": 3, "type": "timeseries", "title": "p95 span duration by service",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 14, "y": 0, "w": 10, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "targets": [{ "refId": "A", "expr": "histogram_quantile(0.95, sum by (service_name, le) (rate(traces_span_metrics_duration_milliseconds_bucket[5m]))) / 1000", "legendFormat": "{{service_name}}" }]
+    },
+    {
+      "id": 4, "type": "stat", "title": "Errors / minute",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 5, "w": 4, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "short", "thresholds": { "mode": "absolute", "steps": [
+        { "color": "green", "value": null },
+        { "color": "orange", "value": 1 },
+        { "color": "red", "value": 5 }
+      ] } } },
+      "targets": [{ "refId": "A", "expr": "sum(rate(traces_span_metrics_calls_total{status_code=\"STATUS_CODE_ERROR\"}[5m])) * 60" }]
+    },
+    {
+      "id": 5, "type": "timeseries", "title": "Container CPU %",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 10, "w": 12, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "percent" } },
+      "targets": [{ "refId": "A", "expr": "sum by (container_name) (rate(container_cpu_usage_seconds_total[5m])) * 100", "legendFormat": "{{container_name}}" }]
+    },
+    {
+      "id": 6, "type": "timeseries", "title": "Container memory (MB)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 10, "w": 12, "h": 8 },
+      "fieldConfig": { "defaults": { "unit": "decmbytes" } },
+      "targets": [{ "refId": "A", "expr": "sum by (container_name) (container_memory_usage_bytes) / 1024 / 1024", "legendFormat": "{{container_name}}" }]
+    },
+    {
+      "id": 7, "type": "timeseries", "title": "Host system load",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 18, "w": 12, "h": 7 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "targets": [
+        { "refId": "A", "expr": "system_cpu_load_average_1m", "legendFormat": "1m" },
+        { "refId": "B", "expr": "system_cpu_load_average_5m", "legendFormat": "5m" },
+        { "refId": "C", "expr": "system_cpu_load_average_15m", "legendFormat": "15m" }
+      ]
+    },
+    {
+      "id": 8, "type": "timeseries", "title": "Host disk IO (bytes/s)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 18, "w": 12, "h": 7 },
+      "fieldConfig": { "defaults": { "unit": "Bps" } },
+      "targets": [{ "refId": "A", "expr": "sum by (device, direction) (rate(system_disk_io_bytes_total[5m]))", "legendFormat": "{{device}} {{direction}}" }]
+    },
+    {
+      "id": 9, "type": "timeseries", "title": "MongoDB CPU (%)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 25, "w": 12, "h": 7 },
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0 } },
+      "targets": [{ "refId": "A", "expr": "100 * container_cpu_utilization_ratio{container_name=\"looma-db\"}", "legendFormat": "looma-db" }]
+    },
+    {
+      "id": 10, "type": "timeseries", "title": "looma-ai span duration p95 (ms)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 25, "w": 12, "h": 7 },
+      "fieldConfig": { "defaults": { "unit": "ms" } },
+      "targets": [{ "refId": "A", "expr": "histogram_quantile(0.95, sum by (span_name, le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-ai\"}[5m])))", "legendFormat": "{{span_name}}" }]
+    },
+    {
+      "id": 11, "type": "timeseries", "title": "Learning telemetry events / min",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 32, "w": 12, "h": 7 },
+      "fieldConfig": { "defaults": { "unit": "ops", "min": 0 } },
+      "targets": [
+        { "refId": "A", "expr": "60 * sum by (looma_event) (rate(looma_event_total[5m]))", "legendFormat": "{{looma_event}}" }
+      ]
+    },
+    {
+      "id": 12, "type": "stat", "title": "RUM JS errors / min",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-logs" },
+      "gridPos": { "x": 12, "y": 32, "w": 6, "h": 7 },
+      "targets": [{
+        "refId": "A",
+        "query": "attributes.error.type:js OR attributes.error.type:unhandledrejection",
+        "metrics": [{ "type": "count", "id": "1" }],
+        "bucketAggs": [{ "type": "date_histogram", "id": "2", "field": "@timestamp", "settings": { "interval": "1m" } }],
+        "timeField": "@timestamp"
+      }]
+    },
+    {
+      "id": 13, "type": "table", "title": "Top spans by call count",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 18, "y": 32, "w": 6, "h": 7 },
+      "targets": [{ "refId": "A", "expr": "topk(10, sum by (span_name, service_name) (increase(traces_span_metrics_calls_total[$__range])))", "format": "table", "instant": true }]
+    },
+    {
+      "id": 14, "type": "table", "title": "Service map (server→client)",
+      "description": "Service-graph metrics from the servicegraph connector. Edges are server-to-client RPC latency.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 39, "w": 24, "h": 8 },
+      "targets": [{ "refId": "A", "expr": "sum by (client, server) (increase(traces_service_graph_request_total[$__range]))", "format": "table", "instant": true }]
+    }
+  ]
+}

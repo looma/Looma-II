@@ -1,0 +1,131 @@
+{
+  "annotations": { "list": [] },
+  "description": "Load latency and usage for the Browser Speech engine (Web Speech API / speechSynthesis). It runs in the student's browser, so it has no server span — looma-utilities.js emits a browser-RUM span 'tts.synthesis' (service looma-web-rum) timing each call from request to first audio.",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "version": 3,
+  "refresh": "30s",
+  "title": "Looma — TTS · Browser Speech",
+  "uid": "looma-tts-speech",
+  "tags": ["looma", "tts", "speechsynthesis", "browser"],
+  "time": { "from": "now-6h", "to": "now" },
+  "links": [
+    { "type": "dashboards", "title": "TTS dashboards", "tags": ["tts"], "asDropdown": true, "keepTime": true, "includeVars": false, "icon": "external link" }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "rate", "label": "Rate window", "type": "interval",
+        "query": "1m,5m,10m,30m,1h", "current": { "text": "5m", "value": "5m" },
+        "options": [
+          { "text": "1m", "value": "1m", "selected": false },
+          { "text": "5m", "value": "5m", "selected": true },
+          { "text": "10m", "value": "10m", "selected": false },
+          { "text": "30m", "value": "30m", "selected": false },
+          { "text": "1h", "value": "1h", "selected": false }
+        ],
+        "auto": false
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row", "id": 1, "title": "Browser Speech · health", "collapsed": false,
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 }
+    },
+    {
+      "id": 2, "type": "stat", "title": "Requests ($__range)",
+      "description": "speechSynthesis utterances spoken in the selected range (browser-RUM span tts.synthesis).",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 1, "w": 5, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.synthesis\"}[$__range])) or vector(0)", "legendFormat": "requests" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "short", "color": { "mode": "fixed", "fixedColor": "blue" } } }
+    },
+    {
+      "id": 3, "type": "stat", "title": "Throughput",
+      "description": "Current Browser Speech request rate, averaged over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 5, "y": 1, "w": 5, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "sum(rate(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.synthesis\"}[$rate])) or vector(0)", "legendFormat": "req/s" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "reqps", "color": { "mode": "fixed", "fixedColor": "purple" } } }
+    },
+    {
+      "id": 4, "type": "stat", "title": "Load latency p50",
+      "description": "Median time from the speak() call to the first audio, over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 10, "y": 1, "w": 4, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "histogram_quantile(0.50, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.synthesis\"}[$rate])))", "legendFormat": "p50" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "ms" } }
+    },
+    {
+      "id": 5, "type": "stat", "title": "Load latency p95",
+      "description": "95th-percentile time from the speak() call to the first audio. Browser Speech is on-device, so this is usually very low.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 14, "y": 1, "w": 5, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.synthesis\"}[$rate])))", "legendFormat": "p95" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 600 }, { "color": "red", "value": 1500 } ] }
+        }
+      }
+    },
+    {
+      "id": 6, "type": "stat", "title": "Load latency p99",
+      "description": "99th-percentile time from the speak() call to the first audio.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 19, "y": 1, "w": 5, "h": 4 },
+      "targets": [ { "refId": "A", "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.synthesis\"}[$rate])))", "legendFormat": "p99" } ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": { "defaults": { "unit": "ms" } }
+    },
+    {
+      "type": "row", "id": 7, "title": "Load latency & throughput", "collapsed": false,
+      "gridPos": { "x": 0, "y": 5, "w": 24, "h": 1 }
+    },
+    {
+      "id": 8, "type": "timeseries", "title": "Request rate",
+      "description": "speechSynthesis utterances per second, averaged over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 6, "w": 12, "h": 8 },
+      "targets": [ { "refId": "A", "expr": "sum(rate(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.synthesis\"}[$rate]))", "legendFormat": "requests/s" } ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+      "fieldConfig": { "defaults": { "unit": "reqps", "color": { "mode": "fixed", "fixedColor": "green" }, "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 14, "showPoints": "never" } } }
+    },
+    {
+      "id": 9, "type": "timeseries", "title": "Load latency p50 / p95 / p99",
+      "description": "Time from the speechSynthesis speak() call to the first audio — the engine's load latency — over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 6, "w": 12, "h": 8 },
+      "targets": [
+        { "refId": "A", "expr": "histogram_quantile(0.50, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.synthesis\"}[$rate])))", "legendFormat": "p50" },
+        { "refId": "B", "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.synthesis\"}[$rate])))", "legendFormat": "p95" },
+        { "refId": "C", "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web-rum\",span_name=\"tts.synthesis\"}[$rate])))", "legendFormat": "p99" }
+      ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "fieldConfig": { "defaults": { "unit": "ms", "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never" } } }
+    },
+    {
+      "id": 10, "type": "timeseries", "title": "Requests over time",
+      "description": "speechSynthesis utterances, bucketed over the $rate window.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 14, "w": 12, "h": 7 },
+      "targets": [ { "refId": "A", "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web-rum\",span_name=\"tts.synthesis\"}[$rate]))", "legendFormat": "requests" } ],
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" } },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "drawStyle": "bars", "lineWidth": 1, "fillOpacity": 70, "showPoints": "never" } } }
+    },
+    {
+      "id": 11, "type": "text", "title": "About Browser Speech",
+      "gridPos": { "x": 12, "y": 14, "w": 12, "h": 7 },
+      "options": {
+        "mode": "markdown",
+        "content": "## Browser Speech (Web Speech API)\n\n**Browser Speech** uses the browser's built-in `speechSynthesis` API — audio is generated **on the student's device**, fully offline, with no server call.\n\nBecause it runs client-side it produces **no server span**. `js/looma-utilities.js` emits a browser-RUM span **`tts.synthesis`** (service `looma-web-rum`) timing each call from `speechSynthesis.speak()` to the utterance's `start` event — i.e. the **load latency**.\n\nIt speaks **only** when a Speak button is pressed — never automatically on text selection.\n\nPick Browser Speech as the default engine, or test it, on the **Speech Test** page."
+      }
+    }
+  ]
+}

@@ -200,6 +200,11 @@ if (!function_exists('looma_otel_bootstrap')) {
         $service    = getenv('OTEL_SERVICE_NAME') ?: 'looma-web';
         $endpoint   = rtrim(getenv('OTEL_EXPORTER_OTLP_ENDPOINT') ?: 'http://looma-otel-collector:4318', '/');
         $tracesUrl  = $endpoint . '/v1/traces';
+        // The box's own name — set by looma-installer.sh (Vector already stamps
+        // it on every log/metric as box_name); stamping it here too means traces
+        // from this box are distinguishable in a shared OpenSearch/Grafana the
+        // same way logs already are.
+        $deviceName = getenv('LOOMA_BOX_NAME') ?: (function_exists('gethostname') ? (gethostname() ?: 'unknown') : 'unknown');
 
         // Keep legacy names for existing code that might read these.
         $GLOBALS['looma_otel_trace_id'] = $traceIdHex;
@@ -222,7 +227,7 @@ if (!function_exists('looma_otel_bootstrap')) {
             $GLOBALS['looma_otel_spans'] = [];
         }
 
-        register_shutdown_function(function () use ($startNanos, $traceIdB64, $rootSpanIdB64, $parentSpanIdB64, $service, $tracesUrl) {
+        register_shutdown_function(function () use ($startNanos, $traceIdB64, $rootSpanIdB64, $parentSpanIdB64, $service, $tracesUrl, $deviceName) {
             $endNanos = looma_otel_now_nanos();
 
             $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -271,6 +276,7 @@ if (!function_exists('looma_otel_bootstrap')) {
                             ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
                             ['key' => 'service.version',        'value' => ['stringValue' => getenv('LOOMA_VERSION') ?: 'dev']],
                             ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'looma']],
+                            ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
                         ],
                     ],
                     'scopeSpans' => [[
@@ -337,6 +343,7 @@ if (!function_exists('looma_otel_bootstrap')) {
                                 ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
                                 ['key' => 'service.version',        'value' => ['stringValue' => getenv('LOOMA_VERSION') ?: 'dev']],
                                 ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'looma']],
+                                ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
                             ],
                         ],
                         'scopeLogs' => [[

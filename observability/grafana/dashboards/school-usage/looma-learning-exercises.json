@@ -1,0 +1,195 @@
+{
+  "annotations": { "list": [] },
+  "description": "Exercise (per-chapter quiz) performance — based on score telemetry emitted by /quiz_html and looma-telemetry.php with looma_activity=\"exercise\". Slice by year (grade), subject, chapter, language. Includes weak-topic frequency and recent attempts.",
+  "editable": true,
+  "graphTooltip": 1,
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["looma", "learning", "exercises"],
+  "time": { "from": "now-7d", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Looma — Learning Exercises",
+  "uid": "looma-learning-exercises",
+  "version": 1,
+  "refresh": "30s",
+  "templating": {
+    "list": [
+      {
+        "name": "grade", "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(looma_score_ratio{looma_activity=\"exercise\"}, looma_grade)",
+        "includeAll": true, "multi": true, "refresh": 2,
+        "allValue": ".*", "current": { "text": "All", "value": ".*" }
+      },
+      {
+        "name": "subject", "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\"}, looma_subject)",
+        "includeAll": true, "multi": true, "refresh": 2,
+        "allValue": ".*", "current": { "text": "All", "value": ".*" }
+      },
+      {
+        "name": "chapter", "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\"}, looma_chapter_id)",
+        "includeAll": true, "multi": true, "refresh": 2,
+        "allValue": ".*", "current": { "text": "All", "value": ".*" }
+      },
+      {
+        "name": "language", "type": "query",
+        "datasource": { "type": "prometheus", "uid": "prometheus" },
+        "query": "label_values(looma_score_ratio{looma_activity=\"exercise\"}, looma_language)",
+        "includeAll": true, "multi": true, "refresh": 2,
+        "allValue": ".*", "current": { "text": "All", "value": ".*" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Average exercise score (selected)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1,
+        "thresholds": { "mode": "absolute", "steps": [
+          { "color": "red", "value": null },
+          { "color": "orange", "value": 0.5 },
+          { "color": "green", "value": 0.75 }
+        ]}}, "overrides": [] },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "graphMode": "area", "colorMode": "value" },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum(sum_over_time(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"}[$__range])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"}[$__range])), 1))"
+      }]
+    },
+    {
+      "id": 2, "type": "stat", "title": "Exercise attempts (selected)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "targets": [{
+        "refId": "A",
+        "expr": "sum(count_over_time(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"}[$__range])) or vector(0)"
+      }]
+    },
+    {
+      "id": 3, "type": "stat", "title": "Pass rate (≥ 50%)",
+      "description": "Percentage of attempts where the student scored 50% or more.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1,
+        "thresholds": { "mode": "absolute", "steps": [
+          { "color": "red", "value": null },
+          { "color": "orange", "value": 0.6 },
+          { "color": "green", "value": 0.8 }
+        ]}} },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum(count_over_time((looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"} >= 0.5)[$__range:])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"}[$__range])), 1))"
+      }]
+    },
+    {
+      "id": 4, "type": "stat", "title": "Mastery (≥ 90%)",
+      "description": "Attempts at or above 90% — the chapter is considered mastered.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 5 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum(count_over_time((looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"} >= 0.9)[$__range:])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"}[$__range])), 1))"
+      }]
+    },
+    {
+      "id": 5, "type": "timeseries", "title": "Average exercise score over time — by subject",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 5, "w": 12, "h": 9 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "min", "max"] } },
+      "targets": [{
+        "refId": "A",
+        "expr": "(sum by (looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"}[15m])) / clamp_min(sum by (looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"}[15m])), 1))",
+        "legendFormat": "{{looma_subject}}"
+      }]
+    },
+    {
+      "id": 6, "type": "barchart", "title": "Hardest chapters (lowest avg score)",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 5, "w": 12, "h": 9 },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
+      "options": { "orientation": "horizontal", "legend": { "displayMode": "hidden" } },
+      "targets": [{
+        "refId": "A",
+        "expr": "bottomk(15, (sum by (looma_chapter_id, looma_subject, looma_grade) (sum_over_time(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"}[$__range])) / clamp_min(sum by (looma_chapter_id, looma_subject, looma_grade) (count_over_time(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"}[$__range])), 1)))",
+        "legendFormat": "{{looma_grade}}/{{looma_subject}}/{{looma_chapter_id}}",
+        "format": "time_series"
+      }]
+    },
+    {
+      "id": 7, "type": "barchart", "title": "Most attempted chapters",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 0, "y": 14, "w": 12, "h": 9 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "options": { "orientation": "horizontal", "legend": { "displayMode": "hidden" } },
+      "targets": [{
+        "refId": "A",
+        "expr": "topk(15, sum by (looma_chapter_id, looma_subject, looma_grade) (count_over_time(looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"}[$__range])))",
+        "legendFormat": "{{looma_grade}}/{{looma_subject}}/{{looma_chapter_id}}",
+        "format": "time_series"
+      }]
+    },
+    {
+      "id": 8, "type": "piechart", "title": "Score distribution",
+      "description": "Bucketed proportion of attempts by score band.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 12, "y": 14, "w": 12, "h": 9 },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "options": { "reduceOptions": { "calcs": ["sum"] }, "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] } },
+      "targets": [
+        { "refId": "A",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"} < 0.25)[$__range:]))",
+          "legendFormat": "0–25% (struggling)" },
+        { "refId": "B",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"} >= 0.25 < 0.5)[$__range:]))",
+          "legendFormat": "25–50% (weak)" },
+        { "refId": "C",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"} >= 0.5 < 0.75)[$__range:]))",
+          "legendFormat": "50–75% (passing)" },
+        { "refId": "D",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"} >= 0.75 < 0.9)[$__range:]))",
+          "legendFormat": "75–90% (good)" },
+        { "refId": "E",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exercise\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_chapter_id=~\"$chapter\", looma_language=~\"$language\"} >= 0.9)[$__range:]))",
+          "legendFormat": "90–100% (mastery)" }
+      ]
+    },
+    {
+      "id": 9, "type": "table", "title": "Top weak topics across exercises",
+      "description": "Frequency of weak-topic strings reported by /recommend_after_score (recurring topics → curriculum gaps).",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-events" },
+      "gridPos": { "x": 0, "y": 23, "w": 12, "h": 10 },
+      "targets": [{
+        "refId": "A",
+        "query": "attributes.looma.event:score AND attributes.looma.activity:exercise AND attributes.looma.weak_topics:*",
+        "metrics": [{ "type": "count", "id": "1" }],
+        "bucketAggs": [
+          { "type": "terms", "id": "2", "field": "attributes.looma.weak_topics", "settings": { "size": "20", "order": "desc", "orderBy": "_count" } }
+        ],
+        "timeField": "@timestamp"
+      }],
+      "options": { "showHeader": true }
+    },
+    {
+      "id": 10, "type": "table", "title": "Recent exercise attempts",
+      "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-events" },
+      "gridPos": { "x": 12, "y": 23, "w": 12, "h": 10 },
+      "targets": [{
+        "refId": "A",
+        "query": "attributes.looma.event:score AND attributes.looma.activity:exercise",
+        "metrics": [{ "type": "logs", "id": "1" }],
+        "bucketAggs": [],
+        "timeField": "@timestamp"
+      }],
+      "options": { "showHeader": true }
+    }
+  ]
+}

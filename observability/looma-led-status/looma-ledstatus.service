@@ -1,0 +1,14 @@
+[Unit]
+Description=Looma stack status endpoint for the ESP32 LED panel
+After=docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+EnvironmentFile=-%h/.config/looma-ledstatus/config.env
+ExecStart=/usr/bin/python3 %h/.local/share/looma-ledstatus/status_server.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

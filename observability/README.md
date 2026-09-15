@@ -26,6 +26,12 @@ docker compose -f docker-compose.yml up -d
 docker compose -f docker-compose.yml ps
 ```
 
+Running this on a dedicated server that collects traces/logs/metrics from
+**every Looma box in the field** (not just this one machine)? See
+[DATA-SERVER.md](DATA-SERVER.md) — an additional overlay that moves every
+persistent volume onto its own data disk and adds daily OpenSearch snapshots,
+so the fleet's data outlives any single container recreate.
+
 ### UIs
 
 | URL | What |
@@ -35,13 +41,17 @@ docker compose -f docker-compose.yml ps
 | http://localhost:16686 | Jaeger UI (optional) |
 | http://localhost:49200 | OpenSearch HTTP API |
 | internal: http://looma-prometheus:9091 | Prometheus query API |
+| internal: looma-vector:6000 | Vector's own wire protocol — remote agent boxes forward here, see `vector/vector-agent.toml` |
 
-Grafana ships pre-provisioned with:
+Grafana ships pre-provisioned into two folders (`grafana/dashboards/data-stack/`
+and `grafana/dashboards/school-usage/`, see `grafana/provisioning/dashboards/dashboards.yml`):
 
-- **Looma — Services RED (spanmetrics)** dashboard — request rate, error rate and p50/p95 latency per service, derived from incoming traces.
-- **Looma — Observability pipeline health** dashboard — Vector throughput/errors, Prometheus scrape targets, OTel Collector exported spans.
-- **Looma — Go runtime** dashboard — process + GC + scheduler metrics (for Go-based exporters).
-- **Looma — Prometheus** dashboard — Prometheus internals, TSDB and HTTP latencies.
+- **Looma — Data Stack**: infra health — OpenSearch ingestion, OTel Collector,
+  Vector pipeline, Prometheus, MongoDB, containers, RUM, zvec, Services RED
+  (spanmetrics), pipeline/trace-pipeline health, Go runtime, logs.
+- **Looma — School Usage**: how the fleet is actually being used — exams,
+  exercises, scores, page & chapter engagement, TTS (Piper/ResponsiveVoice/
+  browser speech).
 
 Datasources:
 

@@ -37,34 +37,58 @@ INSTRUMENTS: dict = {}
 # Tiny time-bounded cache so the ZVEC observable gauges sample the store at
 # most once per ~10s no matter how many gauge callbacks fire.
 _ZVEC_CACHE = {"t": 0.0, "data": {}}
-_ZVEC_COLL = {"handle": None}
+
+
+def _re_search_to_health(search_url: str) -> str:
+    """'http://host:port/search' (or '/search_activities') -> '.../health'."""
+    import re as _re
+    return _re.sub(r'/search(?:_activities)?(?=\?|$)', '/health', search_url, count=1)
 
 
 def _zvec_sample() -> dict:
-    """Read ZVEC vector-store state directly (filesystem + sqlite + the zvec
-    library). Self-contained — needs no wiring from looma_server, so it cannot
-    be defeated by import-order or module-aliasing issues."""
+    """Read ZVEC vector-store state.
+
+    zvec_ready / zvec_docs come from looma-search's own /health endpoint,
+    NOT from a local zvec.open() — looma-ai and looma-search are separate
+    containers on separate Docker volumes (looma_ai_data vs
+    looma_search_index; see native_sidecars_docker() in
+    deploy/odroid/looma-installer.sh), so looma-ai never had the real index
+    on its own filesystem. Reading /app/data/zvec/... here always reported
+    "DOWN" / 0 docs regardless of the actual store's health, because that
+    path is a different, permanently-empty volume — not the one
+    search_service.py (and every real search/exam/recommendation request)
+    actually serves from. LOOMA_SEARCH_URL_ZVEC/LOOMA_SEARCH_URL match the
+    env vars looma-chapters.php's vhost already sets for the same endpoint;
+    127.0.0.1 works because both containers use network_mode: host.
+
+    sqlite_chunks/documents/chapters ARE read locally below — that SQLite
+    index (app/index/sqlite_store.py, populated by scripts/ingest_looma.py)
+    is looma-ai's own, not shared with looma-search.
+    """
     import os as _os
     import sqlite3 as _sql
-    # Defaults come from app.paths so this reports on the SAME stores the
-    # server opens, whatever directory the process was started in.
+    import urllib.request as _urlreq
+    # Defaults come from app.paths so the SQLite half reports on the same
+    # store the server opens, whatever directory the process was started in.
     from app import paths as _paths
 
     db_path = _os.environ.get("LOOMA_INDEX_DB") or str(_paths.SQLITE_DB_PATH)
-    coll_path = _os.environ.get("LOOMA_ZVEC_PATH") or str(_paths.zvec_collection_path("curriculum_chunks"))
+    search_url = (
+        _os.environ.get("LOOMA_SEARCH_URL_ZVEC")
+        or _os.environ.get("LOOMA_SEARCH_URL")
+        or "http://127.0.0.1:46333/search"
+    )
+    health_url = _re_search_to_health(search_url)
     s: dict = {}
     try:
-        s["zvec_ready"] = 1.0 if _os.path.exists(coll_path) else 0.0
+        with _urlreq.urlopen(health_url, timeout=2.0) as resp:
+            import json as _json
+            health = _json.loads(resp.read().decode("utf-8", "replace"))
+        s["zvec_ready"] = 1.0 if health.get("ready") else 0.0
+        s["zvec_docs"] = float(int(health.get("doc_count") or health.get("unique_docs") or 0))
     except Exception:
         s["zvec_ready"] = 0.0
-    try:
-        if _ZVEC_COLL["handle"] is None:
-            import zvec  # noqa: WPS433
-            _ZVEC_COLL["handle"] = zvec.open(path=coll_path)
-        coll = _ZVEC_COLL["handle"]
-        s["zvec_docs"] = float(int(getattr(getattr(coll, "stats", None), "doc_count", 0) or 0))
-    except Exception:
-        _ZVEC_COLL["handle"] = None
+        s["zvec_docs"] = 0.0
     try:
         conn = _sql.connect(db_path, timeout=0.5)
         for key, table in (("sqlite_chunks", "chunks"),

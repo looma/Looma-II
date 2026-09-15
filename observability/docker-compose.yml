@@ -98,10 +98,16 @@ services:
     volumes:
       - looma_opensearch_data:/usr/share/opensearch/data
     ports:
-      # 0.0.0.0 binding so other devices on the LAN (e.g. smart TV) can reach
-      # the OpenSearch HTTP API at http://<host-LAN-ip>:49200
-      - "0.0.0.0:49200:9200"
-      - "0.0.0.0:49600:9600"
+      # 127.0.0.1 only — nothing on the LAN (an odroid included) needs to
+      # reach OpenSearch's REST API directly any more: Vector-to-Vector
+      # (vector/vector-agent.toml) replaced that. UFW alone can't enforce
+      # this for a Docker-published port — Docker writes its own iptables
+      # rules in the FORWARD chain, which bypasses UFW's INPUT-chain rules
+      # entirely, so a UFW "deny"/missing-allow rule for 49200 does nothing
+      # as long as the port is bound to 0.0.0.0. Binding to loopback is what
+      # actually keeps this off the LAN.
+      - "127.0.0.1:49200:9200"
+      - "127.0.0.1:49600:9600"
     networks:
       loomanet:
         aliases:

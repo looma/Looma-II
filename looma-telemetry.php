@@ -253,12 +253,20 @@ function looma_telemetry_resource_attrs(): array {
     // event is attributable to the machine it came from in a shared
     // OpenSearch/Grafana, exactly like traces and logs already are.
     $deviceName = getenv('LOOMA_BOX_NAME') ?: (function_exists('gethostname') ? (gethostname() ?: 'unknown') : 'unknown');
-    return [
+    // This box's public IP, captured once at install time (empty if it had no
+    // internet then) — box_ip/LAN addresses have no real-world location, so
+    // the data server's geoip ingest pipeline resolves this one instead.
+    $publicIp = getenv('LOOMA_BOX_PUBLIC_IP') ?: '';
+    $attrs = [
         ['key' => 'service.name',           'value' => ['stringValue' => getenv('OTEL_SERVICE_NAME') ?: 'looma-web']],
         ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
         ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'local']],
         ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
     ];
+    if ($publicIp !== '') {
+        $attrs[] = ['key' => 'looma.public_ip', 'value' => ['stringValue' => $publicIp]];
+    }
+    return $attrs;
 }
 
 function looma_telemetry_attrs(array $doc): array {

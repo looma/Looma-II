@@ -195,6 +195,10 @@ if (!function_exists('looma_otel_bootstrap')) {
         // from this box are distinguishable in a shared OpenSearch/Grafana the
         // same way logs already are.
         $deviceName = getenv('LOOMA_BOX_NAME') ?: (function_exists('gethostname') ? (gethostname() ?: 'unknown') : 'unknown');
+        // This box's public IP, captured once at install time (empty if it had no
+        // internet then) — box_ip/LAN addresses have no real-world location, so
+        // the data server's geoip ingest pipeline resolves this one instead.
+        $publicIp = getenv('LOOMA_BOX_PUBLIC_IP') ?: '';
 
         // Keep legacy names for existing code that might read these.
         $GLOBALS['looma_otel_trace_id'] = $traceIdHex;
@@ -215,8 +219,21 @@ if (!function_exists('looma_otel_bootstrap')) {
             $GLOBALS['looma_otel_spans'] = [];
         }
 
-        register_shutdown_function(function () use ($startNanos, $traceIdHex, $rootSpanIdHex, $parentSpanIdHex, $service, $tracesUrl, $deviceName) {
+        register_shutdown_function(function () use ($startNanos, $traceIdHex, $rootSpanIdHex, $parentSpanIdHex, $service, $tracesUrl, $deviceName, $publicIp) {
             $endNanos = looma_otel_now_nanos();
+            // Shared resource attributes for both the trace and (optional) log
+            // payload below — built once so looma.public_ip only needs adding
+            // in one place instead of two literal arrays staying in sync.
+            $resourceAttrs = [
+                ['key' => 'service.name',           'value' => ['stringValue' => $service]],
+                ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
+                ['key' => 'service.version',        'value' => ['stringValue' => getenv('LOOMA_VERSION') ?: 'dev']],
+                ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'looma']],
+                ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
+            ];
+            if ($publicIp !== '') {
+                $resourceAttrs[] = ['key' => 'looma.public_ip', 'value' => ['stringValue' => $publicIp]];
+            }
 
             $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
             $uri    = $_SERVER['REQUEST_URI']    ?? '/';
@@ -259,13 +276,7 @@ if (!function_exists('looma_otel_bootstrap')) {
             $payload = [
                 'resourceSpans' => [[
                     'resource' => [
-                        'attributes' => [
-                            ['key' => 'service.name',           'value' => ['stringValue' => $service]],
-                            ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
-                            ['key' => 'service.version',        'value' => ['stringValue' => getenv('LOOMA_VERSION') ?: 'dev']],
-                            ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'looma']],
-                            ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
-                        ],
+                        'attributes' => $resourceAttrs,
                     ],
                     'scopeSpans' => [[
                         'scope' => ['name' => 'looma-web.php'],
@@ -326,13 +337,7 @@ if (!function_exists('looma_otel_bootstrap')) {
                 $logPayload = [
                     'resourceLogs' => [[
                         'resource' => [
-                            'attributes' => [
-                                ['key' => 'service.name',           'value' => ['stringValue' => $service]],
-                                ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
-                                ['key' => 'service.version',        'value' => ['stringValue' => getenv('LOOMA_VERSION') ?: 'dev']],
-                                ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'looma']],
-                                ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
-                            ],
+                            'attributes' => $resourceAttrs,
                         ],
                         'scopeLogs' => [[
                             'scope' => ['name' => 'looma-web.php'],

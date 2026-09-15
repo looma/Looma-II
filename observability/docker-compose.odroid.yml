@@ -33,6 +33,11 @@ services:
       # or the hostname; IP resolved fresh each boot).
       LOOMA_BOX_NAME: ${LOOMA_BOX_NAME:-}
       LOOMA_BOX_IP: ${LOOMA_BOX_IP:-}
+      # This box's public IP, captured once at install time (empty if it had
+      # no internet then) — box_ip above is LAN-private and has no real-world
+      # location, so the data server's geoip ingest pipeline resolves this one
+      # instead. See /etc/looma-odroid.env.
+      LOOMA_BOX_PUBLIC_IP: ${LOOMA_BOX_PUBLIC_IP:-}
 
   metricbeat:
     mem_limit: 384m

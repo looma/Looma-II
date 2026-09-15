@@ -182,7 +182,7 @@ services:
         # This is safe: it only affects indices matching `metricbeat-*`.
         curl -fsS -XPUT "$${base}/_index_template/metricbeat" \
           -H 'Content-Type: application/json' \
-          -d '{"index_patterns":["metricbeat-*"],"template":{"settings":{"index.mapping.total_fields.limit":5000}},"priority":50}' >/dev/null
+          -d '{"index_patterns":["metricbeat-*"],"template":{"settings":{"index.mapping.total_fields.limit":5000,"index.default_pipeline":"looma-geoip"}},"priority":50}' >/dev/null
 
         # Also update any already-created Metricbeat indices (if any).
         curl -fsS -XPUT "$${base}/metricbeat-*/_settings" \
@@ -203,7 +203,48 @@ services:
         # pre-existing otel-v1-apm-span-* indices must be recreated once.
         curl -fsS -XPUT "$${base}/_index_template/otel-v1-apm-span" \
           -H 'Content-Type: application/json' \
-          -d '{"index_patterns":["otel-v1-apm-span-*"],"priority":50,"template":{"mappings":{"dynamic_templates":[{"strings_as_keyword":{"match_mapping_type":"string","mapping":{"type":"keyword","ignore_above":8191}}}],"properties":{"traceId":{"type":"keyword"},"spanId":{"type":"keyword"},"parentSpanId":{"type":"keyword"},"serviceName":{"type":"keyword"},"traceGroup":{"type":"keyword"},"name":{"type":"keyword"},"kind":{"type":"keyword"},"startTime":{"type":"date"},"endTime":{"type":"date"},"durationInNanos":{"type":"long"},"status":{"properties":{"code":{"type":"integer"}}},"traceGroupFields":{"properties":{"endTime":{"type":"date"},"durationInNanos":{"type":"long"},"statusCode":{"type":"integer"}}}}}}}' >/dev/null
+          -d '{"index_patterns":["otel-v1-apm-span-*"],"priority":50,"template":{"settings":{"index.default_pipeline":"looma-geoip"},"mappings":{"dynamic_templates":[{"strings_as_keyword":{"match_mapping_type":"string","mapping":{"type":"keyword","ignore_above":8191}}}],"properties":{"traceId":{"type":"keyword"},"spanId":{"type":"keyword"},"parentSpanId":{"type":"keyword"},"serviceName":{"type":"keyword"},"traceGroup":{"type":"keyword"},"name":{"type":"keyword"},"kind":{"type":"keyword"},"startTime":{"type":"date"},"endTime":{"type":"date"},"durationInNanos":{"type":"long"},"status":{"properties":{"code":{"type":"integer"}}},"traceGroupFields":{"properties":{"endTime":{"type":"date"},"durationInNanos":{"type":"long"},"statusCode":{"type":"integer"}}}}}}}' >/dev/null
+
+        echo "Ensuring the geoip ingest pipeline (device public IP -> approximate location)..."
+        # Each odroid box captures its own public IP once at install time
+        # (looma-installer.sh -> LOOMA_BOX_PUBLIC_IP) since box_ip/box_name are
+        # LAN-private and geoip cannot resolve those to a real location. The
+        # attribute then reaches OpenSearch under one of three different field
+        # paths depending on which pipeline wrote the document, so this one
+        # ingest pipeline tries all three (ignore_missing lets the other two
+        # no-op on any given doc):
+        #   - box_public_ip                        Vector-shipped indices (metricbeat-*, vector-logs-*, looma-logs-*)
+        #   - resource.looma.public_ip              OTel Collector -> OpenSearch logs directly (looma-app-logs)
+        #   - resource.attributes.looma@public_ip   OTel Collector -> Data Prepper traces (otel-v1-apm-span-*; Data Prepper
+        #                                            flattens attribute keys, replacing "." with "@")
+        curl -fsS -XPUT "$${base}/_ingest/pipeline/looma-geoip" \
+          -H 'Content-Type: application/json' \
+          -d '{"description":"Looma: resolve a device public IP to an approximate geographic location.","processors":[{"geoip":{"field":"box_public_ip","target_field":"geo","ignore_missing":true}},{"geoip":{"field":"resource.looma.public_ip","target_field":"geo","ignore_missing":true}},{"geoip":{"field":"resource.attributes.looma@public_ip","target_field":"geo","ignore_missing":true}}]}' >/dev/null
+
+        echo "Ensuring looma-app-logs / looma-logs-* / vector-logs-* templates use the geoip pipeline..."
+        curl -fsS -XPUT "$${base}/_index_template/looma-app-logs" \
+          -H 'Content-Type: application/json' \
+          -d '{"index_patterns":["looma-app-logs"],"priority":50,"template":{"settings":{"index.default_pipeline":"looma-geoip"}}}' >/dev/null
+        curl -fsS -XPUT "$${base}/_index_template/looma-vector-logs" \
+          -H 'Content-Type: application/json' \
+          -d '{"index_patterns":["looma-logs-*","vector-logs-*"],"priority":50,"template":{"settings":{"index.default_pipeline":"looma-geoip"}}}' >/dev/null
+
+        # default_pipeline only applies to indices created AFTER the template/setting
+        # exists, so also set it directly on whatever already exists (matches the
+        # Metricbeat field-limit fixup above). A day's index that already has
+        # documents keeps those un-enriched; only new writes to it pick up geo.
+        curl -fsS -XPUT "$${base}/metricbeat-*/_settings" \
+          -H 'Content-Type: application/json' \
+          -d '{"index.default_pipeline":"looma-geoip"}' >/dev/null || true
+        curl -fsS -XPUT "$${base}/otel-v1-apm-span-*/_settings" \
+          -H 'Content-Type: application/json' \
+          -d '{"index.default_pipeline":"looma-geoip"}' >/dev/null || true
+        curl -fsS -XPUT "$${base}/looma-app-logs/_settings" \
+          -H 'Content-Type: application/json' \
+          -d '{"index.default_pipeline":"looma-geoip"}' >/dev/null || true
+        curl -fsS -XPUT "$${base}/looma-logs-*,vector-logs-*/_settings" \
+          -H 'Content-Type: application/json' \
+          -d '{"index.default_pipeline":"looma-geoip"}' >/dev/null || true
 
         echo "Done."
 

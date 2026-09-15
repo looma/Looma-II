@@ -25,6 +25,23 @@
   "templating": {
     "list": [
       {
+        "name": "device",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(looma_score_ratio, looma_device_name)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
         "name": "grade",
         "type": "query",
         "datasource": {
@@ -129,7 +146,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "(sum(sum_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\"}[$__range])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\"}[$__range])), 1))"
+          "expr": "(sum(sum_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\"}[$__range])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\"}[$__range])), 1))"
         }
       ]
     },
@@ -158,7 +175,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\"}[$__range])) or vector(0)"
+          "expr": "sum(count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\"}[$__range])) or vector(0)"
         }
       ]
     },
@@ -196,7 +213,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "(sum by (looma_subject) (sum_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_subject!=\"\"}[15m])) / clamp_min(sum by (looma_subject) (count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_subject!=\"\"}[15m])), 1))",
+          "expr": "(sum by (looma_subject) (sum_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\", looma_subject!=\"\"}[15m])) / clamp_min(sum by (looma_subject) (count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\", looma_subject!=\"\"}[15m])), 1))",
           "legendFormat": "{{looma_subject}}"
         }
       ]
@@ -260,7 +277,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "(sum by (looma_subject) (sum_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_subject!=\"\"}[$__range])) / clamp_min(sum by (looma_subject) (count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_subject!=\"\"}[$__range])), 1))",
+          "expr": "(sum by (looma_subject) (sum_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\", looma_subject!=\"\"}[$__range])) / clamp_min(sum by (looma_subject) (count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\", looma_subject!=\"\"}[$__range])), 1))",
           "legendFormat": "{{looma_subject}}",
           "format": "table",
           "instant": true
@@ -356,7 +373,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(15, sum by (looma_subject) (count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_subject!=\"\"}[$__range])))",
+          "expr": "topk(15, sum by (looma_subject) (count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\", looma_subject!=\"\"}[$__range])))",
           "legendFormat": "{{looma_subject}}",
           "format": "table",
           "instant": true
@@ -422,7 +439,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "(sum by (looma_grade) (sum_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_grade!=\"\"}[$__range])) / clamp_min(sum by (looma_grade) (count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_grade!=\"\"}[$__range])), 1))",
+          "expr": "(sum by (looma_grade) (sum_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\", looma_grade!=\"\"}[$__range])) / clamp_min(sum by (looma_grade) (count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\", looma_grade!=\"\"}[$__range])), 1))",
           "legendFormat": "{{looma_grade}}",
           "format": "table",
           "instant": true
@@ -496,7 +513,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "(sum by (looma_grade, looma_subject) (sum_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_grade!=\"\", looma_subject!=\"\"}[$__range])) / clamp_min(sum by (looma_grade, looma_subject) (count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_grade!=\"\", looma_subject!=\"\"}[$__range])), 1))",
+          "expr": "(sum by (looma_grade, looma_subject) (sum_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\", looma_grade!=\"\", looma_subject!=\"\"}[$__range])) / clamp_min(sum by (looma_grade, looma_subject) (count_over_time(looma_score_ratio{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_activity=~\"$activity\", looma_device_name=~\"$device\", looma_grade!=\"\", looma_subject!=\"\"}[$__range])), 1))",
           "legendFormat": "{{looma_grade}} {{looma_subject}}",
           "format": "table",
           "instant": true

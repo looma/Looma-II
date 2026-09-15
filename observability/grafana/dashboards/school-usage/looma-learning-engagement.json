@@ -25,6 +25,23 @@
   "templating": {
     "list": [
       {
+        "name": "device",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(looma_event_total, looma_device_name)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
         "name": "grade",
         "type": "query",
         "datasource": {
@@ -100,7 +117,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(sum_over_time(looma_event_total{looma_event=\"page\"}[$__range])) or vector(0)"
+          "expr": "sum(sum_over_time(looma_event_total{looma_event=\"page\", looma_device_name=~\"$device\"}[$__range])) or vector(0)"
         }
       ]
     },
@@ -126,7 +143,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "(sum(sum_over_time(looma_chapter_time_ms_milliseconds_total{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])) / 3600000) or vector(0)"
+          "expr": "(sum(sum_over_time(looma_chapter_time_ms_milliseconds_total{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])) / 3600000) or vector(0)"
         }
       ]
     },
@@ -134,7 +151,7 @@
       "id": 7,
       "type": "table",
       "title": "Most-visited pages",
-      "description": "Top 15 pages by hit count in the selected time range. Source: looma_event_total{looma_event=\"page\"} (cumulative counter emitted by logPageHit() in PHP).",
+      "description": "Top 15 pages by hit count in the selected time range. Source: looma_event_total{looma_event=\"page\", looma_device_name=~\"$device\"} (cumulative counter emitted by logPageHit() in PHP).",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -194,7 +211,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(15, sum by (looma_page) (max_over_time(looma_event_total{looma_event=\"page\"}[$__range])))",
+          "expr": "topk(15, sum by (looma_page) (max_over_time(looma_event_total{looma_event=\"page\", looma_device_name=~\"$device\"}[$__range])))",
           "legendFormat": "{{looma_page}}",
           "format": "table",
           "instant": true
@@ -280,7 +297,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(15, sum by (looma_grade, looma_chapter_id, looma_chapter_name) (max_over_time(looma_chapter_time_ms_milliseconds_total{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\"}[$__range])) / 60000)",
+          "expr": "topk(15, sum by (looma_grade, looma_chapter_id, looma_chapter_name) (max_over_time(looma_chapter_time_ms_milliseconds_total{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])) / 60000)",
           "legendFormat": "{{looma_grade}} {{looma_chapter_id}} {{looma_chapter_name}}",
           "format": "table",
           "instant": true
@@ -318,7 +335,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (looma_page) (sum_over_time(looma_event_total{looma_event=\"page\"}[5m]))",
+          "expr": "sum by (looma_page) (sum_over_time(looma_event_total{looma_event=\"page\", looma_device_name=~\"$device\"}[5m]))",
           "legendFormat": "{{looma_page}}"
         }
       ]
@@ -356,7 +373,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (looma_subject) (sum_over_time(looma_chapter_time_ms_milliseconds_total[$__range]))",
+          "expr": "sum by (looma_subject) (sum_over_time(looma_chapter_time_ms_milliseconds_total{looma_device_name=~\"$device\"}[$__range]))",
           "legendFormat": "{{looma_subject}}"
         }
       ]

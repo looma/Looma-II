@@ -262,4 +262,31 @@ case "$smc" in
   *)   log "SM policy looma-daily: $smc $(head -c 160 /tmp/sm.json)" ;;
 esac
 
+# --- 9) Query datasource: Prometheus federation ------------------------------
+# Registers Prometheus as an OpenSearch SQL/PPL datasource — needs
+# plugins.query.datasources.encryption.masterkey set on the cluster (see
+# docker-compose.yml). Once registered, PPL queries like
+# `source = prometheus.opensearch_jvm_mem_heap_used_percent` work from
+# OpenSearch Dashboards' Observability > Metrics, correlating Prometheus
+# metrics with the traces/logs already in this same cluster instead of only
+# the other direction (Prometheus scraping OpenSearch's own stats — see
+# observability/opensearch/Dockerfile). PUT only works on an EXISTING
+# datasource (404 otherwise), so check first, same pattern as the ISM
+# policies above. https://docs.opensearch.org/latest/observing-your-data/prometheusmetrics/
+log "registering the prometheus query datasource"
+ds_payload='{"name":"prometheus","connector":"prometheus","properties":{"prometheus.uri":"http://looma-prometheus:9091"}}'
+ds_exists=$(curl -s -o /dev/null -w '%{http_code}' "$OS_URL/_plugins/_query/_datasources/prometheus")
+if [ "$ds_exists" = "200" ]; then
+  code=$(curl -s -o /tmp/ds-resp.json -w '%{http_code}' -H 'Content-Type: application/json' \
+    -X PUT "$OS_URL/_plugins/_query/_datasources" -d "$ds_payload")
+else
+  code=$(curl -s -o /tmp/ds-resp.json -w '%{http_code}' -H 'Content-Type: application/json' \
+    -X POST "$OS_URL/_plugins/_query/_datasources" -d "$ds_payload")
+fi
+if echo "$code" | grep -qE '^2'; then
+  log "prometheus datasource: ok ($code)"
+else
+  log "prometheus datasource: failed ($code): $(head -c 200 /tmp/ds-resp.json 2>/dev/null)"
+fi
+
 log "bootstrap done"

@@ -95,11 +95,18 @@ TARGET_USER="${TARGET_USER:-odroid}"       # desktop user for autostart/kiosk
 # Cap the service rather than the board. 200% = 2 cores' worth.
 PIPER_CPUQUOTA="${PIPER_CPUQUOTA:-200%}"
 PIPER_THREADS="${PIPER_THREADS:-2}"
-# Observability is OFF by default: on an 8 GB box the full stack (OpenSearch,
-# Grafana, traces) is the heaviest thing on it, and Looma does not need it to serve
-# content. Turn it on with --observability, or in the form.
-WITH_OBSERVABILITY="${WITH_OBSERVABILITY:-0}"  # full obs stack on this box
-WITH_AGENTS="${WITH_AGENTS:-0}"            # agents-only: Vector+Metricbeat -> remote obs
+# There is no on-box observability stack any more — OpenSearch/Grafana/etc.
+# only ever run on the dedicated data server, never on a school box. This box
+# only ever runs the AGENTS (Vector+Metricbeat, shipping to that server) —
+# NOT a question anyone is asked: settle_observability() turns it on the
+# moment the server is reachable, off the moment it is not. --no-observability
+# forces it off regardless (e.g. testing, or a box that must stay silent);
+# --remote-obs IP overrides which server it ships to.
+WITH_AGENTS="${WITH_AGENTS:-0}"            # agents-only: Vector+Metricbeat -> the data server
+OBS_EXPLICIT=0                             # 1 once --remote-obs/--no-observability has spoken
+# Where the agents ship to when nothing else says otherwise. This is a real,
+# specific server (see observability/DATA-SERVER.md) — not a placeholder.
+LOOMA_DATA_SERVER_DEFAULT="192.168.1.115"
 # looma-ai is NOT a separate choice any more — it is half of the zvec stack, and
 # WITH_SEARCH decides both (settle_stack_flags derives this). It stays a variable
 # only because the install can still DEMOTE it at runtime: on a host install whose
@@ -107,7 +114,6 @@ WITH_AGENTS="${WITH_AGENTS:-0}"            # agents-only: Vector+Metricbeat -> r
 # and the app then has to hide the assistant/exam buttons on its own
 # (includes/looma-features.php reads LOOMA_AI for exactly that case).
 WITH_AI="${WITH_AI:-1}"                    # derived from WITH_SEARCH; may be demoted on failure
-WITH_ANALYSIS="${WITH_ANALYSIS:-0}"        # heavy obs AI analysis workers (torch) — OFF
 # The zvec STACK: the search service + looma-ai. One switch, because the three
 # features a teacher sees — semantic search, the AI Assistant and exam generation
 # — all run on it. Turning it off skips those containers/services AND tells the
@@ -133,7 +139,7 @@ SWAP_GB="${SWAP_GB:-8}"
 # avoiding the reset. Applied by looma.service (Docker) or looma-cpu-cap.service
 # (native) via ExecStartPre, so it survives reboots either way.
 CPU_MAX_FREQ="${CPU_MAX_FREQ:-1500000}"    # kHz — 1500000 = 1.5 GHz
-REMOTE_OBS_HOST="${REMOTE_OBS_HOST:-}"     # set by the "remote" observability profile
+REMOTE_OBS_HOST="${REMOTE_OBS_HOST:-}"     # data server IP; empty = auto (LOOMA_DATA_SERVER_DEFAULT)
 # Identifies this box in the observability data — Vector stamps it on every log
 # and metric as `box_name` (and adds the box's LAN IP as `box_ip`). It matters
 # because in the "remote" profile every box ships to the ONE OpenSearch on the
@@ -353,17 +359,19 @@ Install flags (all optional; passing any flag skips the form):
   --kiosk-url URL         URL the kiosk opens (default: docker :48080, native :80)
   --no-kiosk              Don't install the Chromium kiosk autostart
   --no-swap               Don't create a ${SWAP_GB}G swapfile (it is created by default)
-  --observability         Run the full obs stack here (OpenSearch/Grafana/traces).
-                          OFF by default — it is the heaviest thing on an 8 GB box.
-  --no-observability      App only (the default)
-  --remote-obs IP         Send telemetry to an obs stack on another host (this box runs
-                          only Vector+Metricbeat; needs IP reachable on :4318 and :6000 —
-                          never OpenSearch's own port)
+  --remote-obs IP         Ship telemetry (Vector+Metricbeat, and the app's own OTLP) to
+                          the data server at IP instead of the default
+                          ($LOOMA_DATA_SERVER_DEFAULT). Needs IP reachable on :4318 and
+                          :6000 — never OpenSearch's own port. NOT normally needed: the
+                          installer turns this on BY ITSELF the moment the default server
+                          is reachable (see settle_observability) — this box never runs
+                          OpenSearch/Grafana itself, only the agents that ship to one.
+  --no-observability      Force telemetry off even if the server is reachable (testing,
+                          or a box that must stay silent)
   --box-name NAME         Name that identifies this box in the observability data
                           (Vector's \`box_name\` tag on logs/metrics, \`looma.device_name\`
                           on app traces; its LAN IP is added as \`box_ip\`).
                           Default: the box's hostname.
-  --analysis              Also run the heavy obs AI analysis workers (torch)
   --no-search             Leave the ZVEC STACK out — no semantic search, no AI
                           Assistant, no exam generation, and the app hides all
                           three rather than offering buttons with nothing behind
@@ -691,21 +699,6 @@ volumes:
 EOF
 }
 
-tpl_native_obs_override() {
-# In the NATIVE install the app runs on the host but the observability STACK still
-# runs in Docker. `!override` REPLACES the collector's volume list so it tails the
-# HOST's Apache logs instead of the (non-existent) looma_apache_logs volume.
-cat <<'EOF'
-services:
-  otel-collector:
-    volumes: !override
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /:/hostfs:ro
-      - looma_otel_storage:/var/lib/otelcol/file_storage
-      - /var/log/apache2:/var/log/apache2:ro
-EOF
-}
-
 tpl_unit_piper() {
 cat <<'EOF'
 [Unit]
@@ -1027,29 +1020,30 @@ ui_yesno() {  # "question"  -> 0 = yes
   else local a; read -rp "$q [Y/n]: " a || true; case "${a:-Y}" in [Nn]*) return 1;; *) return 0;; esac; fi
 }
 
-# Pick the observability profile and, for "remote", the host that receives it.
+# settle_observability() already auto-detected this (on -> the data server, the
+# moment it's reachable; off otherwise). This row exists only to OVERRIDE that
+# — a different server, or forcing it off — same as --remote-obs/--no-observability.
+# There is no "full stack on this box" choice any more: OpenSearch/Grafana/etc.
+# only ever run on the data server, never on a school box.
 edit_observability() {
   local OBS=none
-  [ "$WITH_OBSERVABILITY" = "1" ] && OBS=full
   [ "$WITH_AGENTS" = "1" ] && OBS=remote
-  ui_choose OBS "Observability profile" \
-    "full"   "Full stack on this box — OpenSearch, Dashboards, Grafana, traces (trimmed for 8 GB)" \
-    "remote" "Remote — this box runs only Vector+Metricbeat and ships traces/logs to another host" \
-    "none"   "None — Looma app only (lightest)" || return 0
+  ui_choose OBS "Observability (auto-detected: $(obs_label))" \
+    "remote" "Ship Vector+Metricbeat+telemetry to the data server" \
+    "none"   "Off — don't ship anything (testing, or a box that must stay silent)" || return 0
+  OBS_EXPLICIT=1
   case "$OBS" in
-    full)   WITH_OBSERVABILITY=1; WITH_AGENTS=0 ;;
-    none)   WITH_OBSERVABILITY=0; WITH_AGENTS=0; WITH_ANALYSIS=0 ;;
-    remote) WITH_OBSERVABILITY=0; WITH_AGENTS=1; WITH_ANALYSIS=0
-            local h="$REMOTE_OBS_HOST"
-            ui_input h "Remote observability host (IP/hostname; must be reachable on :4318 OTLP and :6000 Vector — never OpenSearch's own port)" "$h" || return 0
-            if [ -z "$h" ]; then warn "the remote profile needs a host — leaving observability unchanged"; return 0; fi
+    none)   WITH_AGENTS=0 ;;
+    remote) WITH_AGENTS=1
+            local h="${REMOTE_OBS_HOST:-$LOOMA_DATA_SERVER_DEFAULT}"
+            ui_input h "Data server (IP/hostname; must be reachable on :4318 OTLP and :6000 Vector — never OpenSearch's own port)" "$h" || return 0
+            if [ -z "$h" ]; then warn "observability needs a host — leaving it unchanged"; return 0; fi
             REMOTE_OBS_HOST="$h" ;;
   esac
 }
 
 obs_label() {
-  if [ "$WITH_OBSERVABILITY" = "1" ]; then echo "full (on this box)"
-  elif [ "$WITH_AGENTS" = "1" ]; then echo "remote -> ${REMOTE_OBS_HOST:-?}"
+  if [ "$WITH_AGENTS" = "1" ]; then echo "-> ${REMOTE_OBS_HOST:-?}"
   else echo "none"; fi
 }
 
@@ -1120,7 +1114,6 @@ summary() {
   printf "$row" "Observability" "$(obs_label)"
   printf "$row" "Box name (obs)" "$(box_name_label)"
   printf "$row" "zvec" "$(onoff "$WITH_SEARCH")$([ "$WITH_SEARCH" = 1 ]       && echo ' — semantic search + AI Assistant + exams'       || echo ' — no semantic search, no AI Assistant, no exams')"
-  [ "$DEPLOY" = docker ] && [ "$WITH_OBSERVABILITY" = 1 ] && printf "$row" "Analysis workers" "$(onoff "$WITH_ANALYSIS")"
   printf "$row" "Kiosk autostart" "$(onoff "$INSTALL_KIOSK")$([ "$INSTALL_KIOSK" = 1 ] && echo " -> $(kiosk_url)")"
   printf "$row" "Swapfile (${SWAP_GB}G)" "$(yesno "$MAKE_SWAP")"
   printf "$row" "CPU max freq" "$(cpu_freq_label)"
@@ -1151,8 +1144,6 @@ run_form() {
     [ "$DEPLOY" = "native" ] && rows+=(
       "zvec deploy"  "zvec deploy ........... $([ "$WITH_SEARCH" = 1 ] && { [ "$SIDECARS" = docker ] && echo 'in Docker' || echo 'on the host'; } || echo '(turn zvec on first)')"
       "piper deploy" "piper deploy .......... $([ "$PIPER_MODE" = docker ] && echo 'in Docker' || echo 'on the host')" )
-    [ "$DEPLOY" = "docker" ] && [ "$WITH_OBSERVABILITY" = "1" ] && \
-      rows+=( "analysis" "Obs analysis workers .. $(onoff "$WITH_ANALYSIS")" )
     rows+=(
       "kiosk"   "Chromium kiosk ........ $(onoff "$INSTALL_KIOSK")"
       "url"     "Kiosk URL ............. $(kiosk_url)"
@@ -1227,7 +1218,6 @@ Piper TTS is NOT part of this: speech works either way."; then
                 else
                   WITH_SEARCH=0
                 fi ;;
-      analysis) ui_yesno "Also run the heavy observability AI analysis workers (torch)?\n\nSeparate from the assistant; off by default." && WITH_ANALYSIS=1 || WITH_ANALYSIS=0 ;;
       kiosk)    ui_yesno "Install the Chromium kiosk autostart (fullscreen Looma on login)?" && INSTALL_KIOSK=1 || INSTALL_KIOSK=0 ;;
       url)      ui_input KIOSK_URL "URL the kiosk opens" "$(kiosk_url)" || true ;;
       cpu)      edit_cpu_freq ;;
@@ -1253,8 +1243,19 @@ Proceed with the install?" && return 0
 # Shared install steps
 # ===========================================================================
 have_network() {
-  curl -fsS --max-time 8 -o /dev/null https://download.docker.com/ 2>/dev/null && return 0
-  ping -c1 -W3 8.8.8.8 >/dev/null 2>&1
+  # Memoized: settle_observability() and settle_install_source() both call
+  # this, and each check is a multi-second timeout when genuinely offline —
+  # no reason to pay that twice in one run.
+  if [ -n "${_HAVE_NETWORK_CACHE:-}" ]; then
+    [ "$_HAVE_NETWORK_CACHE" = "1" ]
+    return
+  fi
+  if curl -fsS --max-time 8 -o /dev/null https://download.docker.com/ 2>/dev/null || ping -c1 -W3 8.8.8.8 >/dev/null 2>&1; then
+    _HAVE_NETWORK_CACHE=1
+  else
+    _HAVE_NETWORK_CACHE=0
+  fi
+  [ "$_HAVE_NETWORK_CACHE" = "1" ]
 }
 
 # Best-effort noise reduction before apt-get update — NOT required for the install
@@ -1553,10 +1554,30 @@ settle_stack_flags() {
   WITH_AI="$WITH_SEARCH"
 }
 
+# Whether this box ships telemetry, and to where. NOT a question anyone is
+# asked (unless --remote-obs/--no-observability already answered it, or the
+# form's Observability row was used to override it): a school box is either
+# on a network that reaches the data server — in which case it should
+# obviously be sending its logs/metrics/traces there — or it genuinely is
+# not, in which case there is nowhere to send them and trying only adds a
+# doomed-connection wait to every request (see OTEL_DISABLED in the vhost
+# template). Uses the SAME network check as the install source (have_network),
+# so "online" means the same thing everywhere in this installer.
+settle_observability() {
+  [ "$OBS_EXPLICIT" = "1" ] && return 0
+  if have_network; then
+    WITH_AGENTS=1
+    REMOTE_OBS_HOST="$LOOMA_DATA_SERVER_DEFAULT"
+  else
+    WITH_AGENTS=0
+    REMOTE_OBS_HOST=""
+  fi
+}
+
 resolve_obs_endpoints() {
-  # Docker: the app talks to the local collector by container name, or to the
-  # remote host in agents-only mode. Native: services use the host's :4318.
-  # Vector+Metricbeat never touch the remote OpenSearch REST API directly —
+  # Native: services use the host's :4318 via the data server. Docker: same,
+  # by container-name override (docker-compose.override.yml). Vector+Metricbeat
+  # never touch the remote OpenSearch REST API directly —
   # this box's own Vector ships its (already-enriched) logs/metrics to the
   # SERVER'S Vector over Vector's native wire protocol (:6000), which then
   # writes to that server's OpenSearch/Prometheus locally. That is the ONLY
@@ -2029,8 +2050,8 @@ disable_docker_stack() {
     ( cd "$repo_dest" 2>/dev/null && docker compose --profile ai down ) 2>/dev/null \
       && log "  brought down the app stack" || true
     ( cd "$repo_dest/observability" 2>/dev/null && docker compose \
-        -f docker-compose.yml -f docker-compose.odroid.yml --profile heavy --profile ai down ) 2>/dev/null \
-      && log "  brought down observability" || true
+        -f docker-compose.yml -f docker-compose.odroid.yml down ) 2>/dev/null \
+      && log "  brought down the observability agents" || true
     ( cd "$repo_dest" 2>/dev/null && docker compose -f docker-compose.native.yml -p looma-native --profile ai down ) 2>/dev/null \
       && log "  brought down the native sidecar containers" || true
   fi
@@ -2055,7 +2076,7 @@ install_deploy_docker() {
   [ -f "$SRC_REPO/docker-compose.yml" ] || die "no docker-compose.yml in $SRC_REPO"
   log "install root: $WWW   (repo -> $repo_dest, content -> $content_dir)"
   log "previous native install detected: $(yesno "$native")"
-  log "options: offline=$OFFLINE observability=$WITH_OBSERVABILITY agents=$WITH_AGENTS zvec=$WITH_SEARCH kiosk=$INSTALL_KIOSK"
+  log "options: offline=$OFFLINE agents=$WITH_AGENTS(-> ${REMOTE_OBS_HOST:-none}) zvec=$WITH_SEARCH kiosk=$INSTALL_KIOSK"
 
   # 0) Offline preflight
   if [ "$OFFLINE" = "1" ]; then
@@ -2104,16 +2125,15 @@ install_deploy_docker() {
 
   # 5) Options for `up` / systemd
   log "writing /etc/looma-odroid.env"
-  # Is there any collector for the app to talk to — here or on another host?
+  # Is there any collector for the app to talk to — the data server, if reachable?
   local otel_disabled=1
-  if [ "$WITH_OBSERVABILITY" = "1" ] || [ -n "$REMOTE_OBS_HOST" ]; then otel_disabled=0; fi
+  [ -n "$REMOTE_OBS_HOST" ] && otel_disabled=0
   # Stable identifier for this box in the observability data — the hostname unless
   # --box-name / the form field set one. The LAN IP is deliberately NOT frozen
   # here: `up` resolves it fresh on every boot (DHCP) and exports LOOMA_BOX_IP.
   local box_name="${BOX_NAME:-$(hostname)}"
   cat > /etc/looma-odroid.env <<EOF
 # Generated by looma-installer.sh
-WITH_OBSERVABILITY=$WITH_OBSERVABILITY
 # Name Vector stamps on every log/metric from this box as \`box_name\`, and the
 # apps stamp on every trace as \`looma.device_name\` (\`box_ip\` is added at 'up'
 # time). Change it and re-run 'looma-installer.sh up'.
@@ -2122,7 +2142,10 @@ LOOMA_BOX_NAME=$box_name
 # search, AI Assistant or exams in the app (looma-web reads LOOMA_ZVEC).
 WITH_SEARCH=$WITH_SEARCH
 WITH_AI=$WITH_AI
-WITH_ANALYSIS=$WITH_ANALYSIS
+# 1 = ship Vector+Metricbeat+telemetry to the data server below — set by
+# settle_observability() the moment it was reachable at install time (or by
+# --remote-obs/--no-observability). Re-run 'looma-installer.sh install' (or
+# just edit this file + 'up') if connectivity changes later.
 WITH_AGENTS=$WITH_AGENTS
 LOOMA_OTEL_ENDPOINT=$LOOMA_OTEL_ENDPOINT
 LOOMA_OPENSEARCH_URL=$LOOMA_OPENSEARCH_URL
@@ -2223,7 +2246,7 @@ EOF
   Install root:   $WWW   ($REPO_NAME/, content/, maps2018/, …)
   App:            curl -I $(kiosk_url)        (expect 200/302)
   Search (zvec):  curl http://localhost:46333/health
-  Observability:  $obs_state  ->  Grafana :43000 / OpenSearch Dashboards :45601
+  Observability:  $obs_state  (Grafana/OpenSearch live on that server, not here)
   Autostart:      systemctl is-enabled looma.service   (-> enabled)
   Reboot to confirm the stack auto-starts and Chromium opens $(kiosk_url).
 
@@ -2345,11 +2368,9 @@ install_deploy_native() {
       die "offline requested but there are no .debs in $NATIVE_BUNDLE/deb (run: $0 build-bundle native)"
   fi
 
-  # Telemetry: local obs stack -> localhost collector; remote -> that host; none
-  # -> exporters off, so the services don't waste time retrying a dead endpoint.
-  if [ "$WITH_OBSERVABILITY" = "1" ]; then
-    otel_endpoint="http://localhost:4318"; otel_traces=otlp; otel_enabled=1
-  elif [ -n "$REMOTE_OBS_HOST" ]; then
+  # Telemetry: the data server if reachable; none -> exporters off, so the
+  # services don't waste time retrying a dead endpoint.
+  if [ -n "$REMOTE_OBS_HOST" ]; then
     otel_endpoint="http://$REMOTE_OBS_HOST:4318"; otel_traces=otlp; otel_enabled=1
   else
     otel_endpoint=""; otel_traces=none; otel_enabled=0
@@ -3006,18 +3027,22 @@ install_deploy_native() {
 
   fi   # end of the host half (Piper and/or the zvec stack on this box)
 
-  # 10) Observability: the app is native, but the obs STACK still runs in Docker,
-  #     with an override so the collector tails the HOST's Apache logs.
-  if [ "$WITH_OBSERVABILITY" = "1" ]; then
+  # 10) Observability: agents only (Vector+Metricbeat, shipping to the data
+  #     server) — OpenSearch/Grafana/etc. never run on this box, native or
+  #     otherwise. Vector's docker_logs source only sees the search/AI/Piper
+  #     containers this way (native Apache/PHP's own access/error logs are
+  #     not container output, so they are not captured here) — the app's own
+  #     OTLP traces (SetEnv in the vhost, already wired above) are unaffected.
+  if [ "$WITH_AGENTS" = "1" ]; then
     if docker compose version >/dev/null 2>&1; then
-      log "starting the observability stack (Docker) with the native override"
-      local ovr="$repo_dest/observability/docker-compose.native.yml"
-      tpl_native_obs_override > "$ovr"
-      ( cd "$repo_dest/observability" && docker compose -p looma-observability \
-          -f docker-compose.yml -f docker-compose.odroid.yml -f "$ovr" up -d ) \
-        || warn "observability did not fully start — the native app is up regardless"
+      log "starting the observability agents (Vector+Metricbeat -> $REMOTE_OBS_HOST)"
+      docker network inspect loomanet >/dev/null 2>&1 || docker network create loomanet
+      ( cd "$repo_dest/observability" && LOOMA_VECTOR_CONFIG=/etc/vector/vector-agent.toml \
+          docker compose -p looma-observability -f docker-compose.yml -f docker-compose.odroid.yml \
+          up -d --no-deps vector metricbeat ) \
+        || warn "the observability agents did not fully start — the native app is up regardless"
     else
-      warn "observability was requested but Docker is not installed — skipping the obs stack."
+      warn "observability agents were requested but Docker is not installed — skipping."
       warn "  The native services still emit OTLP to $otel_endpoint; install Docker, or re-run with --no-observability."
     fi
   fi
@@ -3382,7 +3407,7 @@ cmd_up() {
   local repo_dir="$SRC_REPO" obs_dir="$OBS_DIR"
 
   # Defaults, then the installer's answers.
-  WITH_OBSERVABILITY=1; WITH_AI=1; WITH_ANALYSIS=0; WITH_AGENTS=0; OFFLINE=0
+  WITH_AI=1; WITH_AGENTS=0; OFFLINE=0
   WITH_SEARCH=1
   LOOMA_CONTENT_DIR="$SRC_ROOT/content"
   LOOMA_MAPS_DIR="$SRC_ROOT/maps2018"
@@ -3413,13 +3438,10 @@ cmd_up() {
   LOOMA_ZVEC="$WITH_SEARCH"; export LOOMA_ZVEC
   LOOMA_AI="$WITH_AI"; export LOOMA_AI
 
-  # `ai` turns on the assistant. `analysis` turns on the heavy obs workers — kept
-  # SEPARATE, so enabling the assistant does not also start those.
-  local app_profiles=() obs_profiles=() build_args=() pull_args=()
+  local app_profiles=() build_args=() pull_args=()
   [ "$WITH_SEARCH" = "1" ] && app_profiles+=(--profile search)
   # looma-ai is the assistant/exams half of the same stack — never on its own.
   [ "$WITH_AI" = "1" ] && [ "$WITH_SEARCH" = "1" ] && app_profiles+=(--profile ai)
-  [ "$WITH_ANALYSIS" = "1" ] && obs_profiles+=(--profile analysis)
   [ "${1:-}" = "--build" ] && build_args=(--build)
   # OFFLINE: never build, never pull — use only the images loaded onto the box.
   # `--pull never` also stops services with `pull_policy: always` reaching a registry.
@@ -3448,22 +3470,14 @@ cmd_up() {
     exit 1
   fi
 
-  # --- OBSERVABILITY: best-effort, never blocks the app/box ---
-  if [ "$WITH_OBSERVABILITY" = "1" ]; then
-    echo "[looma-up] observability (trimmed for 8 GB; best-effort)…"
-    if ! ( cd "$obs_dir" && docker compose \
-            -f docker-compose.yml -f docker-compose.odroid.yml "${obs_profiles[@]}" up -d "${build_args[@]}" "${pull_args[@]}" ); then
-      echo "[looma-up] WARN: observability did not fully start — the app is up regardless." >&2
-      echo "[looma-up]       check: cd $obs_dir && docker compose -f docker-compose.yml -f docker-compose.odroid.yml ps" >&2
-    fi
-  fi
-
-  # --- AGENTS-ONLY: just Vector + Metricbeat, shipping to a REMOTE obs stack ---
-  # No local OpenSearch/collector — LOOMA_VECTOR_CONFIG picks vector-agent.toml,
-  # which never talks OpenSearch at all: everything (logs+metrics) goes out
-  # over Vector's own wire protocol to the server's Vector (LOOMA_VECTOR_SERVER,
-  # :6000). `--no-deps` so it doesn't pull the local OpenSearch/collector in.
-  if [ "$WITH_AGENTS" = "1" ] && [ "$WITH_OBSERVABILITY" != "1" ]; then
+  # --- OBSERVABILITY: agents only (Vector+Metricbeat), best-effort, never
+  # blocks the app/box. No local OpenSearch/collector on this box at all —
+  # OpenSearch/Grafana/etc. only ever run on the data server.
+  # LOOMA_VECTOR_CONFIG picks vector-agent.toml, which never talks OpenSearch
+  # directly: everything (logs+metrics) goes out over Vector's own wire
+  # protocol to the server's Vector (LOOMA_VECTOR_SERVER, :6000). `--no-deps`
+  # so it doesn't pull the (unused) local OpenSearch/collector in.
+  if [ "$WITH_AGENTS" = "1" ]; then
     echo "[looma-up] agents (Vector+Metricbeat -> this box's Vector -> remote Vector $LOOMA_VECTOR_SERVER)…"
     ( cd "$obs_dir" && LOOMA_VECTOR_CONFIG=/etc/vector/vector-agent.toml \
         docker compose -f docker-compose.yml -f docker-compose.odroid.yml \
@@ -3483,17 +3497,17 @@ cmd_up() {
 }
 
 cmd_down() {
-  # --volumes ALSO deletes the data volumes (DANGER: wipes Mongo, the zvec index,
-  # OpenSearch/Grafana data). Content and maps are host copies — never touched.
+  # --volumes ALSO deletes the data volumes (DANGER: wipes Mongo, the zvec
+  # index). Content and maps are host copies — never touched.
   local extra=()
   [ "${1:-}" = "--volumes" ] && extra+=(--volumes)
 
   echo "[looma-down] app…"
   ( cd "$SRC_REPO" && docker compose --profile ai down "${extra[@]}" ) || true
 
-  echo "[looma-down] observability…"
+  echo "[looma-down] observability agents…"
   ( cd "$OBS_DIR" && docker compose \
-      -f docker-compose.yml -f docker-compose.odroid.yml --profile heavy --profile ai down "${extra[@]}" ) || true
+      -f docker-compose.yml -f docker-compose.odroid.yml down "${extra[@]}" ) || true
 
   echo "[looma-down] done."
 }
@@ -3533,17 +3547,21 @@ EOF
 
   log "building the app images (pulls base images + Piper/voices — needs internet)"
   ( cd "$SRC_REPO" && docker compose --profile ai build )
-  log "building the observability images"
-  ( cd "$OBS_DIR" && docker compose -f docker-compose.yml -f docker-compose.odroid.yml build ) \
-    || warn "some obs images failed to build (continuing — the app images are what matter)"
-  log "pulling the third-party observability images (opensearch, clickhouse, coroot, …)"
-  ( cd "$OBS_DIR" && docker compose -f docker-compose.yml -f docker-compose.odroid.yml pull --ignore-buildable ) \
-    || warn "some obs images failed to pull (continuing)"
+  # Only vector + metricbeat — the box never runs OpenSearch/Grafana/Coroot/etc.
+  # any more (those only run on the data server), so there is nothing else in
+  # observability/ worth the bundle size.
+  log "building the observability AGENT images (vector, metricbeat)"
+  ( cd "$OBS_DIR" && docker compose -f docker-compose.yml -f docker-compose.odroid.yml build vector metricbeat ) \
+    || warn "the agent images failed to build (continuing — the app images are what matter)"
 
   log "enumerating the images both stacks reference"
   {
     ( cd "$SRC_REPO" && docker compose --profile ai config --images )
-    ( cd "$OBS_DIR"  && docker compose -f docker-compose.yml -f docker-compose.odroid.yml config --images )
+    # NOT `config --images vector metricbeat`: vector's depends_on: opensearch
+    # (needed for the SERVER role's own startup ordering) drags OpenSearch's
+    # multi-GB image into that list too, even though the agent role never
+    # touches it. These two image NAMES are what actually gets built above.
+    printf '%s\n' looma-vector:latest looma-metricbeat:latest
   } | sort -u > "$OFFLINE_DIR/images/IMAGES.list"
 
   # Save only what actually exists locally (skip anything that failed to build/pull).
@@ -3674,11 +3692,10 @@ cmd_install() {
     --kiosk-url) KIOSK_URL="$2"; shift 2;;
     --no-kiosk) INSTALL_KIOSK=0; shift;;
     --no-swap) MAKE_SWAP=0; shift;;
-    --observability) WITH_OBSERVABILITY=1; WITH_AGENTS=0; shift;;
-    --no-observability) WITH_OBSERVABILITY=0; WITH_AGENTS=0; shift;;
-    --remote-obs) WITH_OBSERVABILITY=0; WITH_AGENTS=1; REMOTE_OBS_HOST="$2"; shift 2;;
+    --observability) warn "--observability is gone — this box never runs the full obs stack any more, only agents shipping to the data server (auto-detected; see --remote-obs)"; shift;;
+    --no-observability) WITH_AGENTS=0; OBS_EXPLICIT=1; shift;;
+    --remote-obs) WITH_AGENTS=1; REMOTE_OBS_HOST="$2"; OBS_EXPLICIT=1; shift 2;;
     --box-name) BOX_NAME="$2"; shift 2;;
-    --analysis) WITH_ANALYSIS=1; shift;;
     # The assistant is no longer selectable on its own — it is half of the zvec
     # stack. Accept the old flags so existing scripts do not die on them, but say
     # plainly that they no longer decide anything; --no-search leaves the stack out.
@@ -3694,6 +3711,10 @@ cmd_install() {
     -h|--help) usage; exit 0;;
     *) die "unknown option: $1 (see --help)";;
   esac; done
+
+  # Auto-detect BEFORE the form, so it shows the real default (and a scripted
+  # install that never touches the form still gets it).
+  settle_observability
 
   # No flags on a terminal -> the form. Any flag skips it (scripted installs).
   if [ "$had_flags" -eq 0 ] && [ -t 0 ]; then

@@ -19,7 +19,7 @@ until you choose *Review and install*.
 ```
 === Looma ODROID installer ===
    1) Deployment ............ native
-   2) Observability ......... none
+   2) Observability ......... -> 192.168.1.115   (auto-detected: the data server is reachable)
    3) zvec .................. off  (search + AI + exams)
    4) zvec deploy ........... (turn zvec on first)
    5) piper deploy .......... on the host
@@ -37,10 +37,14 @@ The **defaults** shown above are what a box gets when nothing is chosen: zvec
 **off**, Piper **on the host**, CPUs capped at **1800 MHz**.
 
 Rows that don't apply are not offered: the *zvec deploy* and *piper deploy*
-rows only appear for a native install; the *Obs analysis workers* row only for a
-Docker install with the full obs stack on. The kiosk URL follows the deployment
+rows only appear for a native install. The kiosk URL follows the deployment
 (`http://localhost/home` for native, `http://localhost:48080/home` for Docker)
 until you set it yourself.
+
+The *Observability* row is pre-filled automatically — on, shipping to the
+data server, the moment it's reachable; off otherwise — you only ever need to
+touch it to override that (a different server, or forcing it off; see
+`--remote-obs`/`--no-observability` in the flags table below).
 
 ## Installing a box, step by step
 
@@ -63,6 +67,14 @@ reads `Dockerfile.piper` and `content/` from **one level above** the repo:
 <DISK>/Looma/                 <- content/, maps2018/, Dockerfile.piper, docker-compose.yml
 <DISK>/Looma/Looma/           <- the repo: the installer, search-index/, mongo-dump/
 ```
+
+`<DISK>/Looma/Looma/` needs to stay in sync with whatever you actually have
+here, always — once the disk is plugged in, `deploy/sync-to-external-disk.sh`
+does that automatically after every commit (a git `post-commit` hook, see
+`.githooks/`; `git config core.hooksPath .githooks` — already set in this
+repo). Run it by hand any time with `deploy/sync-to-external-disk.sh`; it
+finds the disk's existing repo folder on its own (whatever it's named) and
+never touches anything that doesn't look like a Looma checkout.
 
 For a box with **no internet at all**, also build the offline payload — on an
 **arm64** machine, since images and .debs are architecture-specific (see
@@ -164,11 +176,9 @@ installed — a stack you started by hand with `docker compose up` still gets cl
 | `--sidecars docker\|host` | Native only: run the semantic stack as containers (default), or on the host with a venv + systemd units (needs Python ≥ 3.9) |
 | `--piper docker\|host` | Native only: where Piper TTS runs. **`host` is the default** — the binary plus a systemd unit, no Docker in the audio path. `docker` builds the small `Dockerfile.piper` image (~1 GB), never the 34 GB web image |
 | `--offline` / `--online` | Install from the disk bundle with **no internet**, or from the network |
-| `--observability` | Run the full obs stack on this box (OpenSearch/Grafana/traces). **Off by default** — it is the heaviest thing on an 8 GB box |
-| `--no-observability` | App only — this is the default |
-| `--remote-obs IP` | This box runs only Vector+Metricbeat and ships to the obs stack on `IP` — the app's own traces/logs/metrics over OTLP (`:4318`), everything Vector+Metricbeat collect over Vector's own wire protocol (`:6000`). Neither this box nor `IP` ever needs OpenSearch's port (`:49200`) reachable from the other — see `observability/vector/vector-agent.toml` |
+| `--remote-obs IP` | Ship telemetry to the data server at `IP` instead of the default (`192.168.1.115`) — the app's own traces/logs/metrics over OTLP (`:4318`), everything Vector+Metricbeat collect over Vector's own wire protocol (`:6000`). Neither this box nor `IP` ever needs OpenSearch's port reachable from the other — see `observability/vector/vector-agent.toml`. **You don't normally need this**: the installer turns observability on by itself, against the default server, the moment it's reachable |
+| `--no-observability` | Force telemetry off even if the data server is reachable (testing, or a box that must stay silent) |
 | `--box-name NAME` | Name this box carries in the observability data — Vector stamps `box_name` on every log/metric (and adds the box's LAN IP as `box_ip`). Default: the box's hostname. Essential when several boxes ship to one OpenSearch |
-| `--analysis` | Also run the heavy obs AI analysis workers (torch) |
 | `--ai` / `--no-ai` | Obsolete, accepted and ignored: the assistant is part of the semantic stack (`--search`) |
 | `--search` | Install the **zvec stack** — semantic search, the AI Assistant and exam generation. **Off by default**: it is the heaviest part of Looma (torch + an index over the whole curriculum) |
 | `--no-search` | Leave the semantic stack out — **this is the default**; the app hides all three features |
@@ -322,8 +332,8 @@ sudo systemctl start|stop|status looma.service
 docker ps ; docker stats --no-stream ; free -h
 ```
 
-Toggle observability/AI later: edit `/etc/looma-odroid.env` (`WITH_OBSERVABILITY`,
-`WITH_AI`, `WITH_ANALYSIS`, `OFFLINE`, `LOOMA_BOX_NAME`) and run `looma-installer.sh up`.
+Toggle observability/AI later: edit `/etc/looma-odroid.env` (`WITH_AGENTS`,
+`WITH_AI`, `OFFLINE`, `LOOMA_BOX_NAME`) and run `looma-installer.sh up`.
 `box_ip` in the shipped data is re-detected on every `up` — it is not stored here.
 
 ## Verify

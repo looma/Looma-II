@@ -199,6 +199,10 @@ if (!function_exists('looma_otel_bootstrap')) {
         // internet then) — box_ip/LAN addresses have no real-world location, so
         // the data server's geoip ingest pipeline resolves this one instead.
         $publicIp = getenv('LOOMA_BOX_PUBLIC_IP') ?: '';
+        // Rough city/country from that same install-time lookup — lets Grafana
+        // filter machines/scores by location, not just by device name.
+        $geoCity    = getenv('LOOMA_BOX_GEO_CITY') ?: '';
+        $geoCountry = getenv('LOOMA_BOX_GEO_COUNTRY') ?: '';
 
         // Keep legacy names for existing code that might read these.
         $GLOBALS['looma_otel_trace_id'] = $traceIdHex;
@@ -219,7 +223,7 @@ if (!function_exists('looma_otel_bootstrap')) {
             $GLOBALS['looma_otel_spans'] = [];
         }
 
-        register_shutdown_function(function () use ($startNanos, $traceIdHex, $rootSpanIdHex, $parentSpanIdHex, $service, $tracesUrl, $deviceName, $publicIp) {
+        register_shutdown_function(function () use ($startNanos, $traceIdHex, $rootSpanIdHex, $parentSpanIdHex, $service, $tracesUrl, $deviceName, $publicIp, $geoCity, $geoCountry) {
             $endNanos = looma_otel_now_nanos();
             // Shared resource attributes for both the trace and (optional) log
             // payload below — built once so looma.public_ip only needs adding
@@ -233,6 +237,12 @@ if (!function_exists('looma_otel_bootstrap')) {
             ];
             if ($publicIp !== '') {
                 $resourceAttrs[] = ['key' => 'looma.public_ip', 'value' => ['stringValue' => $publicIp]];
+            }
+            if ($geoCity !== '') {
+                $resourceAttrs[] = ['key' => 'looma.geo_city', 'value' => ['stringValue' => $geoCity]];
+            }
+            if ($geoCountry !== '') {
+                $resourceAttrs[] = ['key' => 'looma.geo_country', 'value' => ['stringValue' => $geoCountry]];
             }
 
             $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';

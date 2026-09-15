@@ -498,6 +498,13 @@ Define LOOMA_ROOT @LOOMA_ROOT@
     # pipeline can resolve roughly where the box physically is — box_ip/LAN
     # IPs have no real-world location to look up.
     SetEnv LOOMA_BOX_PUBLIC_IP @BOX_PUBLIC_IP@
+    # Rough city/country from that same install-time lookup — lets Grafana
+    # filter machines/scores by location, not just by device name. Quoted:
+    # unlike box_name/box_public_ip these routinely contain spaces (e.g.
+    # "United States"), which Apache's directive parser would otherwise
+    # split into extra unexpected arguments.
+    SetEnv LOOMA_BOX_GEO_CITY "@BOX_GEO_CITY@"
+    SetEnv LOOMA_BOX_GEO_COUNTRY "@BOX_GEO_COUNTRY@"
 
     # 0 when this box was installed WITHOUT the zvec stack. includes/looma-features.php
     # reads it and the app then hides semantic search, the AI Assistant and exam
@@ -2137,14 +2144,26 @@ install_deploy_docker() {
   # --box-name / the form field set one. The LAN IP is deliberately NOT frozen
   # here: `up` resolves it fresh on every boot (DHCP) and exports LOOMA_BOX_IP.
   local box_name="${BOX_NAME:-$(hostname)}"
-  # Public IP, best-effort, captured ONCE here rather than every boot: box_ip is
-  # the LAN address (192.168.x.x) and geoip cannot resolve that to a real
-  # location. This box likely has internet right now (mid-install) but may
-  # never again once it's shipped to a school, so this is the one chance to
-  # get it — falls back to empty (the geoip pipeline just skips the doc) if
-  # there's no connectivity or the response isn't a plain IPv4.
-  local box_public_ip
-  box_public_ip="$(curl -fsS --max-time 4 https://api.ipify.org 2>/dev/null || true)"
+  # Public IP + rough city/country, best-effort, captured ONCE here rather than
+  # every boot: box_ip is the LAN address (192.168.x.x) and geoip cannot
+  # resolve that to a real location. This box likely has internet right now
+  # (mid-install) but may never again once it's shipped to a school, so this
+  # is the one chance to get it. One request (ip-api.com, no key, HTTP-only on
+  # the free tier — fine for a one-off lookup of non-sensitive data) returns
+  # all three; each falls back to empty on any failure (no connectivity, rate
+  # limit, unexpected response) rather than trusting a half-parsed value —
+  # Vector/otel.php/looma-telemetry.php all skip an attribute entirely when
+  # it's empty, rather than shipping "".
+  local box_public_ip box_geo_city box_geo_country _geo_json
+  _geo_json="$(curl -fsS --max-time 5 http://ip-api.com/json/ 2>/dev/null || true)"
+  case "$_geo_json" in
+    *'"status":"success"'*)
+      box_public_ip="$(printf '%s' "$_geo_json" | sed -n 's/.*"query":"\([^"]*\)".*/\1/p')"
+      box_geo_city="$(printf '%s' "$_geo_json" | sed -n 's/.*"city":"\([^"]*\)".*/\1/p')"
+      box_geo_country="$(printf '%s' "$_geo_json" | sed -n 's/.*"country":"\([^"]*\)".*/\1/p')"
+      ;;
+    *) box_public_ip=""; box_geo_city=""; box_geo_country="" ;;
+  esac
   case "$box_public_ip" in
     ''|*[!0-9.]*) box_public_ip="" ;;
   esac
@@ -2154,10 +2173,13 @@ install_deploy_docker() {
 # apps stamp on every trace as \`looma.device_name\` (\`box_ip\` is added at 'up'
 # time). Change it and re-run 'looma-installer.sh up'.
 LOOMA_BOX_NAME=$box_name
-# This box's public IP at install time (empty if there was no internet then).
-# Feeds the geoip ingest pipeline on the data server so dashboards can show
-# roughly where each box is. Edit by hand if it's wrong or was never set.
+# This box's public IP + rough location at install time (empty if there was
+# no internet then, or the lookup failed). Feeds the geoip ingest pipeline on
+# the data server and the city/country Grafana filters. Edit by hand if
+# they're wrong or were never set.
 LOOMA_BOX_PUBLIC_IP=$box_public_ip
+LOOMA_BOX_GEO_CITY=$box_geo_city
+LOOMA_BOX_GEO_COUNTRY=$box_geo_country
 # The zvec stack. 0 = no looma-search / looma-ai containers AND no semantic
 # search, AI Assistant or exams in the app (looma-web reads LOOMA_ZVEC).
 WITH_SEARCH=$WITH_SEARCH
@@ -2378,6 +2400,24 @@ install_deploy_native() {
   # field, else its hostname. Stamped as looma.device_name onto every
   # trace this box emits, alongside Vector's existing box_name on logs/metrics.
   local box_name="${BOX_NAME:-$(hostname)}"
+  # Public IP + rough city/country, best-effort, captured ONCE here (see the
+  # matching comment in install_deploy_docker() — same one-request lookup,
+  # same "always fall back to empty" reasoning). Skipped entirely when
+  # OFFLINE=1: there is no internet to ask, so don't spend the timeout on it.
+  local box_public_ip="" box_geo_city="" box_geo_country="" _geo_json
+  if [ "$OFFLINE" != "1" ]; then
+    _geo_json="$(curl -fsS --max-time 5 http://ip-api.com/json/ 2>/dev/null || true)"
+    case "$_geo_json" in
+      *'"status":"success"'*)
+        box_public_ip="$(printf '%s' "$_geo_json" | sed -n 's/.*"query":"\([^"]*\)".*/\1/p')"
+        box_geo_city="$(printf '%s' "$_geo_json" | sed -n 's/.*"city":"\([^"]*\)".*/\1/p')"
+        box_geo_country="$(printf '%s' "$_geo_json" | sed -n 's/.*"country":"\([^"]*\)".*/\1/p')"
+        ;;
+    esac
+    case "$box_public_ip" in
+      ''|*[!0-9.]*) box_public_ip="" ;;
+    esac
+  fi
 
   [ -f "$SRC_REPO/looma-TTS.php" ] || die "the repo at $SRC_REPO does not look like Looma"
   . /etc/os-release 2>/dev/null || true
@@ -2517,6 +2557,8 @@ install_deploy_native() {
   tpl_apache_conf | sed -e "s#@LOOMA_ROOT@#$WWW#g" -e "s#@REPO_NAME@#$REPO_NAME#g" \
     -e "s#@OTEL_DISABLED@#$otel_disabled#g" -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" \
     -e "s#@BOX_NAME@#$box_name#g" \
+    -e "s#@BOX_PUBLIC_IP@#$box_public_ip#g" -e "s#@BOX_GEO_CITY@#$box_geo_city#g" \
+    -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g" \
     -e "s#@LOOMA_ZVEC@#$WITH_SEARCH#g" -e "s#@LOOMA_AI_ON@#$WITH_AI#g" \
     > /etc/apache2/sites-available/looma.conf
   a2dissite 000-default >/dev/null 2>&1 || true
@@ -3057,7 +3099,20 @@ install_deploy_native() {
     if docker compose version >/dev/null 2>&1; then
       log "starting the observability agents (Vector+Metricbeat -> $REMOTE_OBS_HOST)"
       docker network inspect loomanet >/dev/null 2>&1 || docker network create loomanet
-      ( cd "$repo_dest/observability" && LOOMA_VECTOR_CONFIG=/etc/vector/vector-agent.toml \
+      # Same box-identity vars the vhost's SetEnv block stamps on PHP traces —
+      # docker-compose.odroid.yml interpolates them as ${LOOMA_BOX_NAME:-} etc,
+      # so without exporting them here Vector would stamp every log/metric
+      # with nothing, silently losing per-box (and per-city/country) filtering.
+      local box_ip
+      box_ip="$(ip -4 route get 1.1.1.1 2>/dev/null | sed -n 's/.*[[:space:]]src[[:space:]]\{1,\}\([0-9.]\{1,\}\).*/\1/p' | head -n1)"
+      [ -n "$box_ip" ] || box_ip="$(hostname -I 2>/dev/null | awk '{print $1}')"
+      ( cd "$repo_dest/observability" \
+          && LOOMA_VECTOR_CONFIG=/etc/vector/vector-agent.toml \
+             LOOMA_BOX_NAME="$box_name" \
+             LOOMA_BOX_IP="$box_ip" \
+             LOOMA_BOX_PUBLIC_IP="$box_public_ip" \
+             LOOMA_BOX_GEO_CITY="$box_geo_city" \
+             LOOMA_BOX_GEO_COUNTRY="$box_geo_country" \
           docker compose -p looma-observability -f docker-compose.yml -f docker-compose.odroid.yml \
           up -d --no-deps vector metricbeat ) \
         || warn "the observability agents did not fully start — the native app is up regardless"
@@ -3458,7 +3513,10 @@ cmd_up() {
   # goal this function exists for. Empty if the box never had internet at
   # install time; the geoip pipeline on the data server just skips those docs.
   LOOMA_BOX_PUBLIC_IP="${LOOMA_BOX_PUBLIC_IP:-}"
-  export LOOMA_BOX_NAME LOOMA_BOX_IP LOOMA_BOX_PUBLIC_IP
+  # Same story as public_ip — captured once at install time, not re-resolved.
+  LOOMA_BOX_GEO_CITY="${LOOMA_BOX_GEO_CITY:-}"
+  LOOMA_BOX_GEO_COUNTRY="${LOOMA_BOX_GEO_COUNTRY:-}"
+  export LOOMA_BOX_NAME LOOMA_BOX_IP LOOMA_BOX_PUBLIC_IP LOOMA_BOX_GEO_CITY LOOMA_BOX_GEO_COUNTRY
   # Same switch, two audiences: the compose profile decides whether the search
   # container starts, LOOMA_ZVEC decides whether the app offers the features.
   LOOMA_ZVEC="$WITH_SEARCH"; export LOOMA_ZVEC

@@ -33,6 +33,40 @@
         }
       },
       {
+        "name": "city",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(looma_score_ratio, looma_geo_city)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
+        "name": "country",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(looma_score_ratio, looma_geo_country)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
         "name": "grade", "type": "query",
         "datasource": { "type": "prometheus", "uid": "prometheus" },
         "query": "label_values(looma_score_ratio{looma_activity=\"exam\"}, looma_grade)",
@@ -69,7 +103,7 @@
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "graphMode": "area", "colorMode": "value" },
       "targets": [{
         "refId": "A",
-        "expr": "(sum(sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])), 1))"
+        "expr": "(sum(sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])), 1))"
       }]
     },
     {
@@ -79,7 +113,7 @@
       "fieldConfig": { "defaults": { "unit": "short" } },
       "targets": [{
         "refId": "A",
-        "expr": "sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])) or vector(0)"
+        "expr": "sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) or vector(0)"
       }]
     },
     {
@@ -94,7 +128,7 @@
         ]}} },
       "targets": [{
         "refId": "A",
-        "expr": "(sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"} >= 0.5)[$__range:])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])), 1))"
+        "expr": "(sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"} >= 0.5)[$__range:])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])), 1))"
       }]
     },
     {
@@ -104,7 +138,7 @@
       "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
       "targets": [{
         "refId": "A",
-        "expr": "(sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"} >= 0.8)[$__range:])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])), 1))"
+        "expr": "(sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"} >= 0.8)[$__range:])) / clamp_min(sum(count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])), 1))"
       }]
     },
     {
@@ -115,7 +149,7 @@
       "options": { "legend": { "displayMode": "table", "placement": "bottom", "calcs": ["mean", "min", "max"] } },
       "targets": [{
         "refId": "A",
-        "expr": "(sum by (looma_grade) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[1h])) / clamp_min(sum by (looma_grade) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[1h])), 1))",
+        "expr": "(sum by (looma_grade) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[1h])) / clamp_min(sum by (looma_grade) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[1h])), 1))",
         "legendFormat": "Grade {{looma_grade}}"
       }]
     },
@@ -127,7 +161,7 @@
       "options": { "orientation": "horizontal", "legend": { "displayMode": "hidden" } },
       "targets": [{
         "refId": "A",
-        "expr": "(sum by (looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])) / clamp_min(sum by (looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])), 1))",
+        "expr": "(sum by (looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) / clamp_min(sum by (looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])), 1))",
         "legendFormat": "{{looma_subject}}",
         "format": "time_series"
       }]
@@ -141,7 +175,7 @@
       "options": { "orientation": "horizontal", "legend": { "displayMode": "hidden" } },
       "targets": [{
         "refId": "A",
-        "expr": "(sum by (looma_grade, looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])) / clamp_min(sum by (looma_grade, looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])), 1))",
+        "expr": "(sum by (looma_grade, looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) / clamp_min(sum by (looma_grade, looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])), 1))",
         "legendFormat": "Grade {{looma_grade}} — {{looma_subject}}",
         "format": "time_series"
       }]
@@ -155,22 +189,22 @@
       "options": { "reduceOptions": { "calcs": ["sum"] }, "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] } },
       "targets": [
         { "refId": "A",
-          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"} < 0.25)[$__range:]))",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"} < 0.25)[$__range:]))",
           "legendFormat": "0–25% (fail)" },
         { "refId": "B",
-          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"} >= 0.25 < 0.5)[$__range:]))",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"} >= 0.25 < 0.5)[$__range:]))",
           "legendFormat": "25–50% (weak)" },
         { "refId": "C",
-          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"} >= 0.5 < 0.65)[$__range:]))",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"} >= 0.5 < 0.65)[$__range:]))",
           "legendFormat": "50–65% (pass)" },
         { "refId": "D",
-          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"} >= 0.65 < 0.8)[$__range:]))",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"} >= 0.65 < 0.8)[$__range:]))",
           "legendFormat": "65–80% (good)" },
         { "refId": "E",
-          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"} >= 0.8 < 0.9)[$__range:]))",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"} >= 0.8 < 0.9)[$__range:]))",
           "legendFormat": "80–90% (very good)" },
         { "refId": "F",
-          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"} >= 0.9)[$__range:]))",
+          "expr": "sum(count_over_time((looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"} >= 0.9)[$__range:]))",
           "legendFormat": "90–100% (excellent)" }
       ]
     },
@@ -186,7 +220,7 @@
       "options": { "showHeader": true },
       "targets": [{
         "refId": "A",
-        "expr": "(sum by (looma_chapter_id, looma_grade, looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])) / clamp_min(sum by (looma_chapter_id, looma_grade, looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\"}[$__range])), 1))",
+        "expr": "(sum by (looma_chapter_id, looma_grade, looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) / clamp_min(sum by (looma_chapter_id, looma_grade, looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])), 1))",
         "format": "table",
         "instant": true
       }]

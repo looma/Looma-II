@@ -257,6 +257,10 @@ function looma_telemetry_resource_attrs(): array {
     // internet then) — box_ip/LAN addresses have no real-world location, so
     // the data server's geoip ingest pipeline resolves this one instead.
     $publicIp = getenv('LOOMA_BOX_PUBLIC_IP') ?: '';
+    // Rough city/country from that same install-time lookup — lets Grafana
+    // filter machines/scores by location, not just by device name.
+    $geoCity    = getenv('LOOMA_BOX_GEO_CITY') ?: '';
+    $geoCountry = getenv('LOOMA_BOX_GEO_COUNTRY') ?: '';
     $attrs = [
         ['key' => 'service.name',           'value' => ['stringValue' => getenv('OTEL_SERVICE_NAME') ?: 'looma-web']],
         ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
@@ -265,6 +269,12 @@ function looma_telemetry_resource_attrs(): array {
     ];
     if ($publicIp !== '') {
         $attrs[] = ['key' => 'looma.public_ip', 'value' => ['stringValue' => $publicIp]];
+    }
+    if ($geoCity !== '') {
+        $attrs[] = ['key' => 'looma.geo_city', 'value' => ['stringValue' => $geoCity]];
+    }
+    if ($geoCountry !== '') {
+        $attrs[] = ['key' => 'looma.geo_country', 'value' => ['stringValue' => $geoCountry]];
     }
     return $attrs;
 }

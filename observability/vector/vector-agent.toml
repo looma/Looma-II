@@ -89,6 +89,12 @@ if box_ip == "" { box_ip = "unknown" }
 # ignore_missing skips it instead of choking on an invalid value.
 box_public_ip = get_env_var("LOOMA_BOX_PUBLIC_IP") ?? ""
 if box_public_ip != "" { .box_public_ip = box_public_ip }
+# Rough city/country from that same install-time lookup — lets Grafana
+# filter machines/scores by location, not just by device name.
+box_geo_city = get_env_var("LOOMA_BOX_GEO_CITY") ?? ""
+if box_geo_city != "" { .box_geo_city = box_geo_city }
+box_geo_country = get_env_var("LOOMA_BOX_GEO_COUNTRY") ?? ""
+if box_geo_country != "" { .box_geo_country = box_geo_country }
 
 # Docker container labels are a flat map whose keys contain dots
 # (e.g. `com.docker.compose.project`, `com.docker.compose.project.config_files`).
@@ -325,7 +331,9 @@ tags = {
   "host": string(.host.name) ?? "",
   "box": get_env_var("LOOMA_BOX_NAME") ?? "",
   "box_ip": get_env_var("LOOMA_BOX_IP") ?? "",
-  "box_public_ip": get_env_var("LOOMA_BOX_PUBLIC_IP") ?? ""
+  "box_public_ip": get_env_var("LOOMA_BOX_PUBLIC_IP") ?? "",
+  "box_geo_city": get_env_var("LOOMA_BOX_GEO_CITY") ?? "",
+  "box_geo_country": get_env_var("LOOMA_BOX_GEO_COUNTRY") ?? ""
 }
 
 if exists(.system.network.name) {
@@ -405,6 +413,10 @@ if box_ip == "" { box_ip = "unknown" }
 .box_ip = box_ip
 box_public_ip = get_env_var("LOOMA_BOX_PUBLIC_IP") ?? ""
 if box_public_ip != "" { .box_public_ip = box_public_ip }
+box_geo_city = get_env_var("LOOMA_BOX_GEO_CITY") ?? ""
+if box_geo_city != "" { .box_geo_city = box_geo_city }
+box_geo_country = get_env_var("LOOMA_BOX_GEO_COUNTRY") ?? ""
+if box_geo_country != "" { .box_geo_country = box_geo_country }
 .looma_stream = "metricbeat_raw"
 '''
 
@@ -420,6 +432,10 @@ if box_ip == "" { box_ip = "unknown" }
 .box_ip = box_ip
 box_public_ip = get_env_var("LOOMA_BOX_PUBLIC_IP") ?? ""
 if box_public_ip != "" { .box_public_ip = box_public_ip }
+box_geo_city = get_env_var("LOOMA_BOX_GEO_CITY") ?? ""
+if box_geo_city != "" { .box_geo_city = box_geo_city }
+box_geo_country = get_env_var("LOOMA_BOX_GEO_COUNTRY") ?? ""
+if box_geo_country != "" { .box_geo_country = box_geo_country }
 .looma_stream = "vector_internal"
 '''
 
@@ -436,6 +452,8 @@ box_ip = get_env_var("LOOMA_BOX_IP") ?? ""
 if box_ip == "" { box_ip = "unknown" }
 .tags.box_ip = box_ip
 .tags.box_public_ip = get_env_var("LOOMA_BOX_PUBLIC_IP") ?? ""
+.tags.box_geo_city = get_env_var("LOOMA_BOX_GEO_CITY") ?? ""
+.tags.box_geo_country = get_env_var("LOOMA_BOX_GEO_COUNTRY") ?? ""
 '''
 
 # ---------------------------------------------------------------------------

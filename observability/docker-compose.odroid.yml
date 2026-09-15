@@ -38,6 +38,10 @@ services:
       # location, so the data server's geoip ingest pipeline resolves this one
       # instead. See /etc/looma-odroid.env.
       LOOMA_BOX_PUBLIC_IP: ${LOOMA_BOX_PUBLIC_IP:-}
+      # Rough city/country from that same install-time lookup — lets Grafana
+      # filter machines/scores by location, not just by device name.
+      LOOMA_BOX_GEO_CITY: ${LOOMA_BOX_GEO_CITY:-}
+      LOOMA_BOX_GEO_COUNTRY: ${LOOMA_BOX_GEO_COUNTRY:-}
 
   metricbeat:
     mem_limit: 384m

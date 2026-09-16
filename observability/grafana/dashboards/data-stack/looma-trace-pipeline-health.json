@@ -53,14 +53,14 @@
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "x": 6, "y": 16, "w": 6, "h": 5 },
       "fieldConfig": { "defaults": { "unit": "ops" } },
-      "targets": [{ "refId": "A", "expr": "sum(rate(otelcol_exporter_sent_spans_total{exporter=\"otlp/data_prepper_traces\"}[5m]))" }]
+      "targets": [{ "refId": "A", "expr": "sum(rate(otelcol_exporter_sent_spans_total{exporter=\"otlp_grpc/data_prepper_traces\"}[5m]))" }]
     },
     {
       "id": 7, "type": "stat", "title": "Data Prepper trace records/s",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "x": 12, "y": 16, "w": 6, "h": 5 },
       "fieldConfig": { "defaults": { "unit": "ops" } },
-      "targets": [{ "refId": "A", "expr": "sum(rate(otel_trace_source_recordsIn_total[5m]))" }]
+      "targets": [{ "refId": "A", "expr": "sum(rate(otel_trace_pipeline_recordsProcessed_total[5m]))" }]
     },
     {
       "id": 8, "type": "table", "title": "Per-service trace volume",

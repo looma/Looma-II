@@ -395,15 +395,13 @@
           }
         },
         {
-          "id": "joinByField",
-          "options": {
-            "byField": null,
-            "mode": "outer"
-          },
+          "id": "merge",
+          "options": {},
           "filter": {
             "id": "byRefId",
             "options": "edges_rate|edges_errors"
-          }
+          },
+          "topic": "series"
         },
         {
           "id": "organize",

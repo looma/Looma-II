@@ -3110,6 +3110,33 @@ install_deploy_native() {
     if docker compose version >/dev/null 2>&1; then
       log "starting the observability agents (Vector+Metricbeat -> $REMOTE_OBS_HOST)"
       docker network inspect loomanet >/dev/null 2>&1 || docker network create loomanet
+
+      # MongoDB is host-installed and bound to 127.0.0.1 only by default — not
+      # reachable from Metricbeat's mongodb module, which runs bridge-networked
+      # on loomanet. Widen bindIp to also accept connections from loomanet's
+      # own gateway address (this box's specific subnet, read back from the
+      # network we just ensured exists — Docker doesn't hand out the same one
+      # on every box). Scoped to that one address, not 0.0.0.0: still
+      # unreachable from the school's LAN, only from containers on this box's
+      # own loomanet bridge. No-ops (same effect, no restart) if already set.
+      if [ -f /etc/mongod.conf ] && command -v mongod >/dev/null 2>&1; then
+        local loomanet_gw
+        loomanet_gw="$(docker network inspect loomanet --format '{{(index .IPAM.Config 0).Gateway}}' 2>/dev/null || true)"
+        if [ -n "$loomanet_gw" ] && ! grep -q "$loomanet_gw" /etc/mongod.conf; then
+          log "widening MongoDB's bindIp to include loomanet's gateway ($loomanet_gw) so Metricbeat can reach it"
+          sed -i -E "s/^(\s*bindIp:\s*)([0-9.]+)\s*\$/\1\2,$loomanet_gw/" /etc/mongod.conf
+          if grep -q "$loomanet_gw" /etc/mongod.conf; then
+            local mongo_svc_restart=mongod
+            systemctl list-unit-files 2>/dev/null | grep -q '^mongod\.service' || \
+              { systemctl list-unit-files 2>/dev/null | grep -q '^mongodb\.service' && mongo_svc_restart=mongodb; }
+            systemctl restart "$mongo_svc_restart" \
+              || warn "MongoDB's bindIp was widened but the restart failed — check: systemctl status $mongo_svc_restart"
+          else
+            warn "could not widen MongoDB's bindIp automatically — the MongoDB Grafana dashboard will stay empty until /etc/mongod.conf's net.bindIp includes $loomanet_gw and mongod is restarted"
+          fi
+        fi
+      fi
+
       # Same box-identity vars the vhost's SetEnv block stamps on PHP traces —
       # docker-compose.odroid.yml interpolates them as ${LOOMA_BOX_NAME:-} etc,
       # so without exporting them here Vector would stamp every log/metric

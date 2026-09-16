@@ -367,7 +367,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "60 * sum by (looma_event{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}) (rate(looma_event_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m]))",
+          "expr": "60 * sum by (looma_event) (rate(looma_event_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m]))",
           "legendFormat": "{{looma_event}}"
         }
       ]

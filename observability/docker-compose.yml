@@ -450,6 +450,14 @@ services:
     container_name: looma-metricbeat
     user: root
     command: ["--strict.perms=false"]
+    environment:
+      # This central instance self-monitors the observability stack's own
+      # containers — there is no app MongoDB here to point the mongodb module
+      # at (that only exists on an odroid box, native-installed or as the
+      # looma-db container on a Docker-mode app deployment). Left enabled, it
+      # was silently failing every cycle trying to resolve "looma-db" on a
+      # network that never has that hostname.
+      LOOMA_METRICBEAT_MONGO_ENABLED: "false"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:

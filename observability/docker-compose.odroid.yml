@@ -52,6 +52,14 @@ services:
       # completely separate path (looma-telemetry.php -> OTLP) unaffected by
       # this. See metricbeat/metricbeat.yml.
       LOOMA_METRICBEAT_PERIOD: ${LOOMA_METRICBEAT_PERIOD:-1h}
+      # An odroid install is native — MongoDB is host-installed, not a
+      # "looma-db" container on this bridge network (that hostname only ever
+      # resolves on a Docker-mode app deployment). "auto" makes the image's
+      # own entrypoint wrapper (metricbeat/docker-entrypoint-wrapper.sh)
+      # resolve this container's own default-route gateway at startup — the
+      # loomanet subnet Docker assigns isn't the same on every box, so a
+      # fixed IP here would only work on the one box it was measured on.
+      LOOMA_METRICBEAT_MONGO_HOST: auto
 
 # The canonical observability compose declares `loomanet` as a compose-managed
 # network. On the box the network is created up-front (by the installer/looma-up.sh)

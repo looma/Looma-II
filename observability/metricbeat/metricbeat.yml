@@ -33,21 +33,31 @@ metricbeat.modules:
     timeout: 30s
     enabled: true
 
-  # MongoDB — the Looma application database (looma-db). Standalone instance,
-  # no auth in this compose, so no credentials are needed.
+  # MongoDB — the Looma application database. Standalone instance, no auth in
+  # this compose, so no credentials are needed.
   #  - status  : serverStatus (connections, opcounters, network, memory, asserts)
   #  - dbstats : per-database size/object/index counts
   #  - metrics : serverStatus.metrics (document ops, query executor, ttl, ...)
   # replstatus/collstats are intentionally omitted: looma-db is not a replica
   # set, and collstats would fan out one document per collection.
+  #
+  # LOOMA_METRICBEAT_MONGO_HOST default ("looma-db") only resolves on a
+  # DOCKER-mode app deployment, where a container of that name shares this
+  # bridge network (loomanet). It NEVER resolved on a native odroid install
+  # (MongoDB there is host-installed, reachable only via
+  # host.docker.internal — see docker-compose.odroid.yml's extra_hosts) or on
+  # this central self-monitoring instance (no app MongoDB here at all,
+  # LOOMA_METRICBEAT_MONGO_ENABLED=false in docker-compose.yml) — every
+  # metricset silently failed with a DNS lookup error instead, which is why
+  # the Grafana MongoDB dashboard was permanently empty on a native box.
   - module: mongodb
     metricsets:
       - status
       - dbstats
       - metrics
-    hosts: ["looma-db:27017"]
+    hosts: ["${LOOMA_METRICBEAT_MONGO_HOST:looma-db}:27017"]
     period: ${LOOMA_METRICBEAT_PERIOD:30s}
-    enabled: true
+    enabled: ${LOOMA_METRICBEAT_MONGO_ENABLED:true}
 
 processors:
   - add_host_metadata: ~

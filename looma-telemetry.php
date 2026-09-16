@@ -307,6 +307,30 @@ function looma_telemetry_attrs(array $doc): array {
     return $attrs;
 }
 
+// Attributes for looma_event_total specifically — categorical dimensions
+// only (event/activity/grade/subject/...), never the per-submission numeric
+// fields (correct/total/score/duration_ms). Those are near-unique on every
+// single event (an exact score like 0.0555...), so attaching them as OTLP
+// metric attributes turns every event into its own permanent, never-repeated
+// Prometheus time series: unbounded cardinality, and rate()/sum() over the
+// counter can't work since no two events ever share a label set. The numeric
+// values themselves already have proper homes — looma_score_ratio (gauge)
+// and looma_chapter_time_ms (sum) below — as the metric's *value*, not a label.
+function looma_telemetry_event_count_attrs(array $doc): array {
+    $attrs = [];
+    foreach (['event', 'activity', 'grade', 'subject', 'chapter_id', 'chapter_name', 'language', 'page'] as $k) {
+        if (!empty($doc[$k])) {
+            $attrs[] = ['key' => "looma.$k", 'value' => ['stringValue' => (string)$doc[$k]]];
+        }
+    }
+    foreach (['tts_engine', 'tts_voice', 'tts_language', 'tts_source', 'tts_status', 'tts_error'] as $k) {
+        if (!empty($doc[$k])) {
+            $attrs[] = ['key' => "looma.$k", 'value' => ['stringValue' => (string)$doc[$k]]];
+        }
+    }
+    return $attrs;
+}
+
 function looma_telemetry_emit_otlp(array $doc): void {
     $endpoint = looma_telemetry_otlp_endpoint();
     $resource = ['attributes' => looma_telemetry_resource_attrs()];
@@ -316,6 +340,11 @@ function looma_telemetry_emit_otlp(array $doc): void {
     // the Grafana panels stay empty.
     $startNanos = (string)((int)$tNanos - 60_000_000_000);
     $attrs    = looma_telemetry_attrs($doc);
+    // Metric attributes: categorical dimensions only — see
+    // looma_telemetry_event_count_attrs() for why correct/total/score/
+    // duration_ms can't be labels here. Logs keep the full $attrs above;
+    // OpenSearch documents don't have Prometheus's cardinality problem.
+    $countAttrs = looma_telemetry_event_count_attrs($doc);
 
     // 1. Log record — flows into OpenSearch for the engagement dashboard.
     $logBody = json_encode([
@@ -345,7 +374,7 @@ function looma_telemetry_emit_otlp(array $doc): void {
             'aggregationTemporality' => 2, // CUMULATIVE
             'isMonotonic' => true,
             'dataPoints' => [[
-                'attributes'        => $attrs,
+                'attributes'        => $countAttrs,
                 'startTimeUnixNano' => $startNanos,
                 'timeUnixNano'      => $tNanos,
                 'asInt'             => '1',
@@ -360,7 +389,7 @@ function looma_telemetry_emit_otlp(array $doc): void {
             'unit' => '1',
             'gauge' => [
                 'dataPoints' => [[
-                    'attributes'   => $attrs,
+                    'attributes'   => $countAttrs,
                     'timeUnixNano' => $tNanos,
                     'asDouble'     => (float)$doc['score'],
                 ]],
@@ -375,7 +404,7 @@ function looma_telemetry_emit_otlp(array $doc): void {
                 'aggregationTemporality' => 2,
                 'isMonotonic' => true,
                 'dataPoints' => [[
-                    'attributes'        => $attrs,
+                    'attributes'        => $countAttrs,
                     'startTimeUnixNano' => $startNanos,
                     'timeUnixNano'      => $tNanos,
                     'asInt'             => (string)(int)$doc['duration_ms'],

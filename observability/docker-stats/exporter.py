@@ -10,8 +10,10 @@ relies on filesystem paths Docker Desktop doesn't expose).
 from __future__ import annotations
 
 import os
+import re
 import threading
 import time
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import docker
@@ -85,6 +87,13 @@ G_LAST_SEEN = Gauge(
     LABEL_NAMES,
     registry=REGISTRY,
 )
+G_START_TIME = Gauge(
+    "container_start_time_seconds",
+    "Unix timestamp the container most recently started (changes() on this "
+    "is the standard cAdvisor-dashboard way to detect restarts).",
+    LABEL_NAMES,
+    registry=REGISTRY,
+)
 
 
 def _cpu_seconds(stats: dict) -> float | None:
@@ -115,6 +124,25 @@ def _io_totals(stats: dict) -> tuple[int, int]:
         elif op == "write":
             write += v
     return read, write
+
+
+def _parse_docker_time(ts: str | None) -> float | None:
+    """Parse a Docker RFC3339 timestamp (nanosecond precision, e.g.
+    "2026-09-16T08:27:02.181994416Z") into a Unix epoch float.
+    datetime.fromisoformat only supports up to microsecond precision, so
+    truncate any fractional-second digits beyond 6 before parsing."""
+    if not ts:
+        return None
+    m = re.match(r'^(.*T\d{2}:\d{2}:\d{2})(\.\d+)?(Z|[+-]\d{2}:\d{2})$', ts)
+    if not m:
+        return None
+    base, frac, tz = m.groups()
+    frac = frac[:7] if frac else ''  # '.' + up to 6 digits
+    tz = '+00:00' if tz == 'Z' else tz
+    try:
+        return datetime.fromisoformat(base + frac + tz).timestamp()
+    except ValueError:
+        return None
 
 
 def _safe_image_tag(c: "docker.models.containers.Container") -> str:
@@ -168,6 +196,10 @@ def collect_loop(client: docker.DockerClient) -> None:
                 G_FS_WRITE.labels(**labels).set(w)
 
                 G_LAST_SEEN.labels(**labels).set(time.time())
+
+                started_at = _parse_docker_time((c.attrs.get("State") or {}).get("StartedAt"))
+                if started_at is not None:
+                    G_START_TIME.labels(**labels).set(started_at)
         except Exception as exc:
             print(f"[docker-stats] collect cycle error: {exc}", flush=True)
 

@@ -15,6 +15,30 @@ from urllib.parse import parse_qs, urlparse
 # NOTE: no urllib.request here. This server answers from the local index and
 # Mongo only; nothing in it may open an outbound connection.
 
+# Put the project root on sys.path *before* the otel_bootstrap imports below.
+# Those imports try `from scripts.otel_bootstrap import ...` first, falling
+# back to a bare `from otel_bootstrap import ...`. Which one succeeds depends
+# on whether the project root is already importable as the `scripts` package
+# — and since this file is invoked as `python scripts/looma_server.py`,
+# sys.path[0] starts out as this file's own directory, so the `scripts.*`
+# form fails here and every otel_bootstrap import below silently falls back
+# to the bare module. That was fine on its own, EXCEPT this same sys.path
+# insertion used to happen later in the file (right before the request
+# handler class): once it ran, subsequent `scripts.otel_bootstrap` imports
+# (evaluated fresh on every _otel_record() call, since that import lives
+# inside a function body) started succeeding instead — resolving to a
+# *second*, never-initialized copy of the module with its own empty
+# INSTRUMENTS dict, so every metric recorded during request handling was a
+# silent no-op while only the observable zvec gauges (bound by closure to
+# the original correctly-initialized module) kept working. Doing this here,
+# before any otel_bootstrap import is attempted, makes every one of them —
+# init and per-request alike — consistently resolve to `scripts.otel_bootstrap`.
+import sys
+from pathlib import Path
+_PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 # ---------------------------------------------------------------------------
 # OpenTelemetry (optional)
 # ---------------------------------------------------------------------------
@@ -223,12 +247,8 @@ def _parse_multipart(body: bytes, content_type_header: str):
         cursor = next_idx
     return parts
 
-import sys
-from pathlib import Path
-
-_PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(_PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PROJECT_ROOT))
+# sys.path / _PROJECT_ROOT are set up near the top of the file, before the
+# otel_bootstrap imports — see the comment there.
 
 from pymongo import MongoClient
 from bson import ObjectId

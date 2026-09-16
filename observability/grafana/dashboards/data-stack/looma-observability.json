@@ -939,8 +939,9 @@
       "id": 41,
       "type": "logs",
       "title": "Recent error / slow spans (OpenSearch)",
-      "description": "Spans from the OpenSearch trace index, filtered to errors or duration ≥ 1s. Each row links back to the trace via traceID.",
+      "description": "Spans from the OpenSearch trace index, filtered to errors or duration ≥ 1s. Each row links back to the trace via traceID. Always looks back 6h regardless of the dashboard's time picker — errors are rare enough here that the dashboard's own 1h default frequently shows nothing even when the system is healthy.",
       "datasource": "OpenSearch-Traces",
+      "timeFrom": "6h",
       "gridPos": {
         "x": 0,
         "y": 75,

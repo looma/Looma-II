@@ -185,7 +185,7 @@
       "datasource": "Prometheus",
       "gridPos": { "x": 12, "y": 28, "w": 12, "h": 8 },
       "targets": [
-        { "expr": "sum(rate(prometheus_http_requests_total{job=~\"$job\",instance=~\"$instance\",code=~\"5..\"}[5m]))", "legendFormat": "5xx" }
+        { "expr": "sum(rate(prometheus_http_requests_total{job=~\"$job\",instance=~\"$instance\",code=~\"5..\"}[5m])) or vector(0)", "legendFormat": "5xx" }
       ],
       "fieldConfig": { "defaults": { "unit": "reqps" } }
     },

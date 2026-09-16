@@ -316,7 +316,7 @@
     },
     {
       "id": 6,
-      "type": "barchart",
+      "type": "table",
       "title": "Slowest spans (p95 latency)",
       "datasource": {
         "type": "prometheus",
@@ -328,16 +328,45 @@
         "w": 12,
         "h": 9
       },
+      "description": "Rendered as a table — Grafana's barchart panel silently refuses to draw this exact frame shape (verified: identical data renders correctly as a table, so this is a barchart rendering quirk, not a data problem).",
       "fieldConfig": {
         "defaults": {
           "unit": "ms"
-        }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "span_name"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "span"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "p95 latency"
+              }
+            ]
+          }
+        ]
       },
       "options": {
-        "orientation": "vertical",
-        "legend": {
-          "displayMode": "hidden"
-        }
+        "sortBy": [
+          {
+            "displayName": "p95 latency",
+            "desc": true
+          }
+        ]
       },
       "targets": [
         {
@@ -350,9 +379,11 @@
       ],
       "transformations": [
         {
-          "id": "labelsToFields",
+          "id": "filterFieldsByName",
           "options": {
-            "valueLabel": "p95_ms"
+            "exclude": {
+              "names": ["Time"]
+            }
           }
         }
       ]

@@ -8,3 +8,4 @@
     <script src="js/looma-screenfull.js"></script>      <!-- implements FULLSCREEN mode  -->
     <script src="js/looma-keyboard.js">  </script>      <!-- adds a KEYBOARD button if the page has any inputs -->
     <script src="js/looma-telemetry.js"></script>       <!-- learning telemetry: chapter_time / score, + postMessage bridge for AI-served quiz/exam iframes -->
+    <script src="js/looma-assistant-button.js"></script> <!-- LOOMA Assistant floating button + RAG chat modal -->

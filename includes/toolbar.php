@@ -1,6 +1,6 @@
 <?php  if (isset($_REQUEST['toolbar']) && $_REQUEST['toolbar'] === 'no') return; ?>
 
-<link rel="stylesheet" href="css/looma-toolbar.css">
+<link rel="stylesheet" href="css/looma-toolbar.css?v=<?php echo @filemtime(__DIR__.'/../css/looma-toolbar.css') ?: time(); ?>">
 
     <div id="toolbar-container" class="toolbar">
  		<div class="button-div" id="toolbar">
@@ -188,3 +188,5 @@
         <p id="login-id" ><?php if (loggedIn()) echo "You are logged in as '" . $_COOKIE['login'] ."'" ?></p>
 
     </div>
+
+    <?php include ('includes/looma-assistant-widget.php'); ?>

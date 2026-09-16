@@ -63,6 +63,7 @@ Description:
       <script src="js/looma-utilities.js"> </script>      <!-- Looma utility functions -->
       <script src="js/looma.js">           </script>      <!-- Looma common page functions -->
       <script src="js/looma-screenfull.js"></script>      <!-- implements FULLSCREEN mode  -->
+      <script src="js/looma-assistant-button.js"></script> <!-- LOOMA Assistant floating button + RAG chat modal -->
       <!--Include other JS here -->
     <script src="js/looma-numpad.js" type="text/javascript"></script>
     <script src="js/looma-arith-problems.js" type="text/javascript"></script>

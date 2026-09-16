@@ -6,7 +6,13 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
-    overflow: hidden;
+    /* visible, not hidden: the global "button { overflow:hidden }" rule in
+       looma.css already clips each button's own icon, and .toolbar-button
+       below re-opens that per-button so its hover tip (yellow badge with the
+       page title, from tooltip() in includes/toolbar.php) can render above
+       the button instead of being clipped away. If this container itself
+       clipped too, the tip would still never escape. */
+    overflow: visible;
 
     padding: 0 2%;
     background-color: var(--looma-toolbar);
@@ -19,7 +25,11 @@
     flex-wrap:nowrap;
     justify-content: flex-start;
     align-items:center;
-    overflow: hidden;
+    /* visible, not hidden: see the matching comment on #toolbar-container —
+       this container clipping would stop the hover tip escaping too, even
+       once the button itself (.toolbar-button-vertical, below) stops
+       clipping it. */
+    overflow: visible;
     background-color: var(--looma-toolbar);
 }
 
@@ -107,6 +117,20 @@ button.flag-vertical {
     transform: scale(1.2,1.2);
     background-color:#888;
     border: 2px solid white;
+}
+
+/* looma.css's global "button { overflow:hidden }" clips each button to its
+   own box, which also clips the yellow tooltip span (span.tip, positioned via
+   bottom:100% to sit just above the button) that tooltip() emits for every
+   toolbar button. Re-open it here so that badge can render.
+   position:relative makes the button itself the tip's containing block, so
+   "bottom:100%; left:50%" is computed against THIS button's own box — it
+   lands directly above the button that's actually being hovered, not
+   wherever it would fall back to (some ancestor further up, or nowhere
+   useful) if the button were left position:static. */
+.toolbar-button, .toolbar-button-vertical {
+    position: relative;
+    overflow: visible;
 }
 
 #toolbar span {

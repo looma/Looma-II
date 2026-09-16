@@ -47,3 +47,6 @@
     <button id = "prev-item"            class="looma-control-button">
         <?php tooltip("Previous") ?>
     </button>
+
+    <?php include ('includes/looma-assistant-widget.php'); ?>
+

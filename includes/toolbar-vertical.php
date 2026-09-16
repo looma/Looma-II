@@ -1,5 +1,5 @@
 
-    <link rel="stylesheet" href="css/looma-toolbar.css">
+    <link rel="stylesheet" href="css/looma-toolbar.css?v=<?php echo @filemtime(__DIR__.'/../css/looma-toolbar.css') ?: time(); ?>">
 
     <div id="toolbar-container-vertical" class="toolbar">
  		<div class="button-div" id="toolbar-vertical">
@@ -150,3 +150,5 @@
             <!-- <span id="datetime"></span> -->
         </div>
     </div>
+
+    <?php include ('includes/looma-assistant-widget.php'); ?>

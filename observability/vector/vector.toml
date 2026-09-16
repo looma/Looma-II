@@ -201,9 +201,14 @@ source = '''
 msg = string(.message) ?? ""
 
 if .service == "looma-web" {
+  # Apache's built-in "combined" LogFormat (what includes/httpd.conf's
+  # CustomLog actually uses) is `%h %l %u %t "%r" %>s %O "%{Referer}i"
+  # "%{User-agent}i"` — three leading fields, no vhost (%v). A leading
+  # vhost capture here used to make this regex never match any real
+  # line at all.
   parsed, err = parse_regex(
     msg,
-    r'^(?P<vhost>\S+) (?P<client_ip>\S+) (?P<ident>\S+) (?P<auth>\S+) \[(?P<apache_time>[^\]]+)\] "(?P<http_method>[A-Z]+) (?P<url_original>[^"]+) HTTP/(?P<http_version>[0-9.]+)" (?P<http_status_code>\d+) (?P<http_response_bytes>\d+|-) "(?P<http_referrer>[^"]*)" "(?P<user_agent>[^"]*)"$'
+    r'^(?P<client_ip>\S+) (?P<ident>\S+) (?P<auth>\S+) \[(?P<apache_time>[^\]]+)\] "(?P<http_method>[A-Z]+) (?P<url_original>[^"]+) HTTP/(?P<http_version>[0-9.]+)" (?P<http_status_code>\d+) (?P<http_response_bytes>\d+|-) "(?P<http_referrer>[^"]*)" "(?P<user_agent>[^"]*)"$'
   )
   if err == null {
     . = merge(., parsed)

@@ -19,6 +19,12 @@
 services:
   vector:
     mem_limit: 256m
+    # looma-web is native here (Apache + PHP, not a container), so its logs
+    # never reach sources.docker_logs — vector-agent.toml's apache_web_logs
+    # file source tails the real files directly instead. Read-only: Vector
+    # only ever reads these, never rotates/deletes them.
+    volumes:
+      - /var/log/apache2:/var/log/apache2:ro
     environment:
       # The agent role — see the big comment at the top of vector-agent.toml.
       # Overridden back to vector.toml only if this box is ever pointed at

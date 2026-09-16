@@ -290,7 +290,7 @@
       "id": 9,
       "type": "nodeGraph",
       "title": "Interactive service map",
-      "description": "Drag nodes to rearrange. Each node is a service; each edge is a client→server call. Edge thickness encodes call rate; the donut around each node shows error proportion. Built from OTel servicegraph metrics.",
+      "description": "Drag nodes to rearrange, or switch to grid layout (bottom-right icon) for a cleaner view. Each node is a service (labeled with calls/s); each edge is a client→server call. Built from OTel servicegraph metrics. \"user\"/\"unknown\"/\"looma\" pseudo-endpoints are excluded since they aren't real traced services.",
       "datasource": "Prometheus",
       "gridPos": {
         "x": 0,
@@ -301,140 +301,46 @@
       "targets": [
         {
           "refId": "nodes_calls",
-          "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval]))",
-          "format": "table",
-          "instant": true
-        },
-        {
-          "refId": "nodes_errors",
-          "expr": "sum by (service_name) (rate(traces_span_metrics_calls_total{status_code=\"STATUS_CODE_ERROR\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval]))",
+          "expr": "label_replace(sum by (service_name) (rate(traces_span_metrics_calls_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval])), \"id\", \"$1\", \"service_name\", \"(.*)\")",
           "format": "table",
           "instant": true
         },
         {
           "refId": "edges_rate",
-          "expr": "sum by (client, server) (rate(traces_service_graph_request_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval]))",
-          "format": "table",
-          "instant": true
-        },
-        {
-          "refId": "edges_errors",
-          "expr": "sum by (client, server) (rate(traces_service_graph_request_failed_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval]))",
+          "expr": "label_join(label_replace(label_replace(sum by (client, server) (rate(traces_service_graph_request_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\", client!~\"user|unknown|looma\", server!~\"user|unknown|looma\"}[$__rate_interval])), \"source\", \"$1\", \"client\", \"(.*)\"), \"target\", \"$1\", \"server\", \"(.*)\"), \"id\", \"->\", \"client\", \"server\")",
           "format": "table",
           "instant": true
         }
       ],
       "transformations": [
         {
-          "id": "merge",
-          "options": {},
+          "id": "calculateField",
           "filter": {
             "id": "byRefId",
-            "options": "nodes_calls|nodes_errors"
+            "options": "nodes_calls"
           },
-          "topic": "series"
-        },
-        {
-          "id": "joinByField",
           "options": {
-            "byField": "service_name",
-            "mode": "outer"
-          },
-          "filter": {
-            "id": "byRefId",
-            "options": "nodes_calls|nodes_errors"
-          }
-        },
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "service_name",
-                "Value #nodes_calls",
-                "Value #nodes_errors"
-              ]
+            "alias": "mainStat",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "first",
+              "include": ["Value #nodes_calls"]
             }
-          },
-          "filter": {
-            "id": "byRefId",
-            "options": "nodes_calls|nodes_errors"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "renameByName": {
-              "service_name": "id",
-              "Value #nodes_calls": "mainStat",
-              "Value #nodes_errors": "arc__failed"
-            }
-          },
-          "filter": {
-            "id": "byRefId",
-            "options": "nodes_calls|nodes_errors"
           }
         },
         {
           "id": "calculateField",
+          "filter": {
+            "id": "byRefId",
+            "options": "edges_rate"
+          },
           "options": {
-            "alias": "title",
-            "mode": "binary",
-            "binary": {
-              "left": "id",
-              "operator": "+",
-              "right": "id"
-            },
+            "alias": "mainStat",
+            "mode": "reduceRow",
             "reduce": {
-              "reducer": "first"
+              "reducer": "first",
+              "include": ["Value #edges_rate"]
             }
-          },
-          "filter": {
-            "id": "byRefId",
-            "options": "nodes_calls|nodes_errors"
-          }
-        },
-        {
-          "id": "merge",
-          "options": {},
-          "filter": {
-            "id": "byRefId",
-            "options": "edges_rate|edges_errors"
-          },
-          "topic": "series"
-        },
-        {
-          "id": "organize",
-          "options": {
-            "renameByName": {
-              "client": "source",
-              "server": "target",
-              "Value #edges_rate": "mainStat",
-              "Value #edges_errors": "secondaryStat"
-            }
-          },
-          "filter": {
-            "id": "byRefId",
-            "options": "edges_rate|edges_errors"
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "id",
-            "mode": "binary",
-            "binary": {
-              "left": "source",
-              "operator": "+",
-              "right": "target"
-            },
-            "reduce": {
-              "reducer": "first"
-            }
-          },
-          "filter": {
-            "id": "byRefId",
-            "options": "edges_rate|edges_errors"
           }
         }
       ],
@@ -460,52 +366,12 @@
                 "value": 2
               }
             ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "secondaryStat"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "errors/s"
-              },
-              {
-                "id": "unit",
-                "value": "reqps"
-              },
-              {
-                "id": "decimals",
-                "value": 3
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "arc__failed"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "red"
-                }
-              },
-              {
-                "id": "displayName",
-                "value": "errors"
-              }
-            ]
           }
         ]
       },
       "options": {
         "nodes": {
-          "mainStatUnit": "reqps",
-          "secondaryStatUnit": "reqps"
+          "mainStatUnit": "reqps"
         }
       }
     },

@@ -949,7 +949,7 @@
       },
       "targets": [
         {
-          "query": "(status.code:ERROR OR durationInNanos:>=1000000000) AND serviceName:$service",
+          "query": "(status.code:2 OR durationInNanos:>=1000000000) AND serviceName:${service:lucene}",
           "metrics": [
             {
               "type": "logs",

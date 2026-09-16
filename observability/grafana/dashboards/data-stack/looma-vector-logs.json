@@ -264,8 +264,9 @@
 
     {
       "id": 12,
-      "type": "barchart",
+      "type": "table",
       "title": "Top 10 components (count)",
+      "description": "Rendered as a table — Grafana's OpenSearch datasource returns zero frames for a terms aggregation nested inside a date_histogram (verified directly: the same terms agg alone returns real data, nested it silently breaks), and separately, the barchart panel type doesn't render this shape of data at all even when it has some. A flat top-N ranking doesn't need the time breakdown anyway.",
       "datasource": "OpenSearch-VectorLogs",
       "gridPos": { "x": 0, "y": 12, "w": 8, "h": 8 },
       "targets": [
@@ -273,12 +274,6 @@
           "query": "_exists_:vector.component_id AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
-            {
-              "type": "date_histogram",
-              "id": "2",
-              "settings": { "interval": "auto", "min_doc_count": "0" },
-              "field": "timestamp"
-            },
             {
               "type": "terms",
               "id": "3",
@@ -292,8 +287,9 @@
     },
     {
       "id": 13,
-      "type": "barchart",
+      "type": "table",
       "title": "Top 10 modules (count)",
+      "description": "Rendered as a table — see the Top 10 components panel for why (nested date_histogram/terms breaks the OpenSearch datasource response; barchart doesn't render this shape either).",
       "datasource": "OpenSearch-VectorLogs",
       "gridPos": { "x": 8, "y": 12, "w": 8, "h": 8 },
       "targets": [
@@ -301,12 +297,6 @@
           "query": "_exists_:metadata.module_path AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
-            {
-              "type": "date_histogram",
-              "id": "2",
-              "settings": { "interval": "auto", "min_doc_count": "0" },
-              "field": "timestamp"
-            },
             {
               "type": "terms",
               "id": "3",
@@ -322,6 +312,7 @@
       "id": 14,
       "type": "piechart",
       "title": "Component kind (source / transform / sink)",
+      "description": "See the Top 10 components panel — a terms aggregation nested inside date_histogram silently returns zero frames from the OpenSearch datasource; removed the date_histogram wrapper (unneeded for a plain breakdown anyway).",
       "datasource": "OpenSearch-VectorLogs",
       "gridPos": { "x": 16, "y": 12, "w": 8, "h": 8 },
       "targets": [
@@ -329,12 +320,6 @@
           "query": "_exists_:vector.component_kind AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
-            {
-              "type": "date_histogram",
-              "id": "2",
-              "settings": { "interval": "auto", "min_doc_count": "0" },
-              "field": "timestamp"
-            },
             {
               "type": "terms",
               "id": "3",

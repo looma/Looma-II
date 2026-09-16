@@ -391,10 +391,11 @@
     {
       "id": 7,
       "type": "table",
-      "title": "Recent errors (OTLP logs)",
+      "title": "Recent errors (backend logs)",
+      "description": "No real service ever emits an OTLP-level error/exception log event for looma-web (only looma.score telemetry exists) — this used to query that non-existent stream and always showed \"No data\". Repointed at the same real backend-log index the docker panel uses, filtered to HTTP 4xx/5xx responses or error/exception text in the message.",
       "datasource": {
         "type": "grafana-opensearch-datasource",
-        "uid": "opensearch-events"
+        "uid": "opensearch-logs"
       },
       "gridPos": {
         "x": 0,
@@ -405,7 +406,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "serviceName:\"$service\" AND (severityText:ERROR OR body:*error* OR body:*exception*) AND (resource.attributes.looma@device_name:${device:lucene} AND resource.attributes.looma@geo_city:${city:lucene} AND resource.attributes.looma@geo_country:${country:lucene})",
+          "query": "(index_service:\"$service\" OR service:\"$service\" OR container_name:*${service}*) AND (http_status_code:>=400 OR message:*error* OR message:*exception*) AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [
             {
               "type": "logs",
@@ -413,7 +414,7 @@
             }
           ],
           "bucketAggs": [],
-          "timeField": "time"
+          "timeField": "@timestamp"
         }
       ],
       "options": {

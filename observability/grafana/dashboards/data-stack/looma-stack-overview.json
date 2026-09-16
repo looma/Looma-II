@@ -348,6 +348,8 @@
       "id": 11,
       "type": "timeseries",
       "title": "Learning telemetry events / min",
+      "description": "Always looks back 24h regardless of the dashboard's time picker. Real exam/score events (looma_event_total) are genuinely bursty — students take exams in clusters, not continuously — so the dashboard's short default range often lands between events even when the pipeline is working fine.",
+      "timeFrom": "24h",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -367,7 +369,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "60 * sum by (looma_event) (rate(looma_event_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m]))",
+          "expr": "60 * sum by (looma_event) (rate(looma_event_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[30m]))",
           "legendFormat": "{{looma_event}}"
         }
       ]

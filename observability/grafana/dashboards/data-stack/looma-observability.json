@@ -332,6 +332,21 @@
           "id": "calculateField",
           "filter": {
             "id": "byRefId",
+            "options": "nodes_calls"
+          },
+          "options": {
+            "alias": "title",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "first",
+              "include": ["id"]
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "filter": {
+            "id": "byRefId",
             "options": "edges_rate"
           },
           "options": {

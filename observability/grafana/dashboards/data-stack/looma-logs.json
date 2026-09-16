@@ -8,6 +8,46 @@
   "uid": "looma-logs",
   "tags": ["looma", "logs", "opensearch"],
   "time": { "from": "now-1h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "device",
+        "type": "query",
+        "label": "Device",
+        "datasource": "OpenSearch-Logs",
+        "query": "{\"find\": \"terms\", \"field\": \"box_name.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "city",
+        "type": "query",
+        "label": "City",
+        "datasource": "OpenSearch-Logs",
+        "query": "{\"find\": \"terms\", \"field\": \"box_geo_city.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "country",
+        "type": "query",
+        "label": "Country",
+        "datasource": "OpenSearch-Logs",
+        "query": "{\"find\": \"terms\", \"field\": \"box_geo_country.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      }
+    ]
+  },
   "panels": [
     {
       "id": 1,
@@ -18,7 +58,7 @@
       "gridPos": { "x": 0, "y": 0, "w": 24, "h": 10 },
       "targets": [
         {
-          "query": "*",
+          "query": "box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene}",
           "alias": "{{term service.keyword}}",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
@@ -46,7 +86,7 @@
       "gridPos": { "x": 0, "y": 10, "w": 24, "h": 14 },
       "targets": [
         {
-          "query": "*",
+          "query": "box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene}",
           "alias": "logs",
           "metrics": [{ "type": "logs", "id": "1" }],
           "bucketAggs": [

@@ -11,6 +11,42 @@
   "templating": {
     "list": [
       {
+        "name": "device",
+        "type": "query",
+        "label": "Device",
+        "datasource": "OpenSearch-VectorLogs",
+        "query": "{\"find\": \"terms\", \"field\": \"box_name.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "city",
+        "type": "query",
+        "label": "City",
+        "datasource": "OpenSearch-VectorLogs",
+        "query": "{\"find\": \"terms\", \"field\": \"box_geo_city.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "country",
+        "type": "query",
+        "label": "Country",
+        "datasource": "OpenSearch-VectorLogs",
+        "query": "{\"find\": \"terms\", \"field\": \"box_geo_country.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
         "name": "level",
         "type": "custom",
         "label": "Level",
@@ -40,7 +76,7 @@
       "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
       "targets": [
         {
-          "query": "*",
+          "query": "box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene}",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
             { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
@@ -58,7 +94,7 @@
       "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
       "targets": [
         {
-          "query": "metadata.level:WARN",
+          "query": "metadata.level:WARN AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
             { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
@@ -81,7 +117,7 @@
       "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
       "targets": [
         {
-          "query": "metadata.level:ERROR",
+          "query": "metadata.level:ERROR AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
             { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
@@ -104,7 +140,7 @@
       "gridPos": { "x": 12, "y": 0, "w": 4, "h": 4 },
       "targets": [
         {
-          "query": "message:\"Request timed out\"",
+          "query": "message:\"Request timed out\" AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
             { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
@@ -127,7 +163,7 @@
       "gridPos": { "x": 16, "y": 0, "w": 4, "h": 4 },
       "targets": [
         {
-          "query": "*",
+          "query": "box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene}",
           "metrics": [{ "type": "cardinality", "id": "1", "field": "vector.component_id.keyword" }],
           "bucketAggs": [
             { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
@@ -145,7 +181,7 @@
       "gridPos": { "x": 20, "y": 0, "w": 4, "h": 4 },
       "targets": [
         {
-          "query": "*",
+          "query": "box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene}",
           "metrics": [{ "type": "cardinality", "id": "1", "field": "host.keyword" }],
           "bucketAggs": [
             { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
@@ -164,7 +200,7 @@
       "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
       "targets": [
         {
-          "query": "*",
+          "query": "box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene}",
           "alias": "{{term metadata.level.keyword}}",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
@@ -204,7 +240,7 @@
       "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
       "targets": [
         {
-          "query": "_exists_:vector.component_id",
+          "query": "_exists_:vector.component_id AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "alias": "{{term vector.component_id.keyword}}",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
@@ -234,7 +270,7 @@
       "gridPos": { "x": 0, "y": 12, "w": 8, "h": 8 },
       "targets": [
         {
-          "query": "_exists_:vector.component_id",
+          "query": "_exists_:vector.component_id AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
             {
@@ -262,7 +298,7 @@
       "gridPos": { "x": 8, "y": 12, "w": 8, "h": 8 },
       "targets": [
         {
-          "query": "_exists_:metadata.module_path",
+          "query": "_exists_:metadata.module_path AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
             {
@@ -290,7 +326,7 @@
       "gridPos": { "x": 16, "y": 12, "w": 8, "h": 8 },
       "targets": [
         {
-          "query": "_exists_:vector.component_kind",
+          "query": "_exists_:vector.component_kind AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "count", "id": "1" }],
           "bucketAggs": [
             {
@@ -319,7 +355,7 @@
       "gridPos": { "x": 0, "y": 20, "w": 24, "h": 10 },
       "targets": [
         {
-          "query": "metadata.level:(WARN OR ERROR)",
+          "query": "metadata.level:(WARN OR ERROR) AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "logs", "id": "1" }],
           "bucketAggs": [
             { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }
@@ -346,7 +382,7 @@
       "gridPos": { "x": 0, "y": 30, "w": 24, "h": 14 },
       "targets": [
         {
-          "query": "metadata.level:${level:lucene} AND vector.component_id:*${component:lucene}* AND message:*${q:lucene}*",
+          "query": "metadata.level:${level:lucene} AND vector.component_id:*${component:lucene}* AND message:*${q:lucene}* AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [{ "type": "logs", "id": "1" }],
           "bucketAggs": [
             { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "timestamp" }

@@ -10,7 +10,46 @@
   "uid": "looma-mongodb",
   "tags": ["looma", "mongodb", "database", "metricbeat"],
   "time": { "from": "now-6h", "to": "now" },
-  "templating": { "list": [] },
+  "templating": {
+    "list": [
+      {
+        "name": "device",
+        "type": "query",
+        "label": "Device",
+        "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-metricbeat" },
+        "query": "{\"find\": \"terms\", \"field\": \"box_name.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "city",
+        "type": "query",
+        "label": "City",
+        "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-metricbeat" },
+        "query": "{\"find\": \"terms\", \"field\": \"box_geo_city.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "country",
+        "type": "query",
+        "label": "Country",
+        "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-metricbeat" },
+        "query": "{\"find\": \"terms\", \"field\": \"box_geo_country.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      }
+    ]
+  },
   "panels": [
     {
       "type": "row",
@@ -29,7 +68,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "event.module:mongodb AND metricset.name:status",
+          "query": "event.module:mongodb AND metricset.name:status AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [ { "id": "1", "type": "max", "field": "mongodb.status.connections.current" } ],
           "bucketAggs": [ { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } } ],
           "timeField": "@timestamp"
@@ -48,7 +87,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "event.module:mongodb AND metricset.name:status",
+          "query": "event.module:mongodb AND metricset.name:status AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [ { "id": "1", "type": "max", "field": "mongodb.status.connections.available" } ],
           "bucketAggs": [ { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } } ],
           "timeField": "@timestamp"
@@ -67,7 +106,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "event.module:mongodb AND metricset.name:status",
+          "query": "event.module:mongodb AND metricset.name:status AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [ { "id": "1", "type": "max", "field": "mongodb.status.memory.resident.mb" } ],
           "bucketAggs": [ { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } } ],
           "timeField": "@timestamp"
@@ -86,7 +125,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "event.module:mongodb AND metricset.name:status",
+          "query": "event.module:mongodb AND metricset.name:status AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [ { "id": "1", "type": "max", "field": "mongodb.status.memory.virtual.mb" } ],
           "bucketAggs": [ { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } } ],
           "timeField": "@timestamp"
@@ -105,7 +144,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "event.module:mongodb AND metricset.name:dbstats",
+          "query": "event.module:mongodb AND metricset.name:dbstats AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [ { "id": "1", "type": "sum", "field": "mongodb.dbstats.objects" } ],
           "bucketAggs": [ { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } } ],
           "timeField": "@timestamp"
@@ -124,7 +163,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "event.module:mongodb AND metricset.name:status",
+          "query": "event.module:mongodb AND metricset.name:status AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [ { "id": "1", "type": "max", "field": "mongodb.status.uptime.ms" } ],
           "bucketAggs": [ { "id": "2", "type": "date_histogram", "field": "@timestamp", "settings": { "interval": "auto" } } ],
           "timeField": "@timestamp"
@@ -284,7 +323,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "event.module:mongodb AND metricset.name:dbstats",
+          "query": "event.module:mongodb AND metricset.name:dbstats AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "timeField": "@timestamp",
           "metrics": [ { "id": "1", "type": "max", "field": "mongodb.dbstats.data_size.bytes" } ],
           "bucketAggs": [
@@ -306,7 +345,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "event.module:mongodb AND metricset.name:dbstats",
+          "query": "event.module:mongodb AND metricset.name:dbstats AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "timeField": "@timestamp",
           "metrics": [ { "id": "1", "type": "max", "field": "mongodb.dbstats.index_size.bytes" } ],
           "bucketAggs": [
@@ -328,7 +367,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "event.module:mongodb AND metricset.name:dbstats",
+          "query": "event.module:mongodb AND metricset.name:dbstats AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "timeField": "@timestamp",
           "metrics": [
             { "id": "1", "type": "max", "field": "mongodb.dbstats.objects" },

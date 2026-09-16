@@ -23,6 +23,57 @@
   "templating": {
     "list": [
       {
+        "name": "device",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(traces_span_metrics_calls_total, looma_device_name)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
+        "name": "city",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(traces_span_metrics_calls_total, looma_geo_city)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
+        "name": "country",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(traces_span_metrics_calls_total, looma_geo_country)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
         "name": "service",
         "type": "query",
         "label": "Service",
@@ -81,7 +132,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=~\"$service\",span_name=~\"$span\"}[$__range])) or vector(0)"
+          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=~\"$service\",span_name=~\"$span\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) or vector(0)"
         }
       ]
     },
@@ -124,7 +175,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\",span_name=~\"$span\"}[5m])))"
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\",span_name=~\"$span\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m])))"
         }
       ]
     },
@@ -167,7 +218,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=~\"$service\",span_name=~\"$span\",status_code=\"STATUS_CODE_ERROR\"}[$__range])) or vector(0)"
+          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=~\"$service\",span_name=~\"$span\",status_code=\"STATUS_CODE_ERROR\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) or vector(0)"
         }
       ]
     },
@@ -231,7 +282,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(traces_span_metrics_calls_total{service_name=~\"$service\",span_name=~\"$span\"}[5m]))",
+          "expr": "sum(rate(traces_span_metrics_calls_total{service_name=~\"$service\",span_name=~\"$span\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m]))",
           "legendFormat": "req/s"
         }
       ]
@@ -258,7 +309,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\",span_name=~\"$span\"}[5m])))",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\",span_name=~\"$span\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m])))",
           "legendFormat": "p95"
         }
       ]
@@ -291,7 +342,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(10, histogram_quantile(0.95, sum by (span_name, le) (increase(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\",span_name=~\"$span\"}[$__range]))))",
+          "expr": "topk(10, histogram_quantile(0.95, sum by (span_name, le) (increase(traces_span_metrics_duration_milliseconds_bucket{service_name=~\"$service\",span_name=~\"$span\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range]))))",
           "legendFormat": "{{span_name}}",
           "format": "table",
           "instant": true
@@ -323,7 +374,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "serviceName:\"$service\" AND (severityText:ERROR OR body:*error* OR body:*exception*)",
+          "query": "serviceName:\"$service\" AND (severityText:ERROR OR body:*error* OR body:*exception*) AND (resource.attributes.looma@device_name:${device:lucene} AND resource.attributes.looma@geo_city:${city:lucene} AND resource.attributes.looma@geo_country:${country:lucene})",
           "metrics": [
             {
               "type": "logs",
@@ -355,7 +406,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "(index_service:\"$service\" OR service:\"$service\" OR container_name:*${service}*) AND (message:*error* OR message:*warn* OR message:*exception*)",
+          "query": "(index_service:\"$service\" OR service:\"$service\" OR container_name:*${service}*) AND (message:*error* OR message:*warn* OR message:*exception*) AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [
             {
               "type": "logs",

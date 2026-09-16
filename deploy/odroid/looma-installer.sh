@@ -630,7 +630,7 @@ services:
       OTEL_TRACES_EXPORTER: "@OTEL_TRACES@"
       OTEL_LOGS_EXPORTER: "@OTEL_TRACES@"
       OTEL_METRICS_EXPORTER: none
-      OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@"
+      OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@"
     volumes:
       - looma_search_index:/data
       - looma_search_hf:/models/hf
@@ -687,7 +687,7 @@ services:
       # they never call otel_bootstrap's metrics API, so there is nothing for
       # this to turn on for them.
       OTEL_METRICS_EXPORTER: otlp
-      OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@"
+      OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@"
     volumes:
       # The host's content dir — looma-ai writes summaries/keywords back into it.
       - @WWW@/content:/looma/content
@@ -744,7 +744,7 @@ Environment=OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 Environment=OTEL_TRACES_EXPORTER=@OTEL_TRACES@
 Environment=OTEL_METRICS_EXPORTER=none
 Environment=OTEL_LOGS_EXPORTER=none
-Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=piper-tts,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@
+Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=piper-tts,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@
 # CPU GUARD — do NOT remove. Piper/onnxruntime inference otherwise pegs every core
 # at max frequency; on the odroid that exceeds the board's power/thermal budget and
 # it RESETS mid-synthesis. (The legacy piper.service made this worse by explicitly
@@ -835,7 +835,7 @@ Environment=OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 Environment=OTEL_TRACES_EXPORTER=@OTEL_TRACES@
 Environment=OTEL_LOGS_EXPORTER=@OTEL_TRACES@
 Environment=OTEL_METRICS_EXPORTER=none
-Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=looma-search,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@
+Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=looma-search,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@
 WorkingDirectory=@LOOMA_ROOT@/@REPO_NAME@/search-service
 # 1 worker (the zvec index is in memory); long timeout so the first-run
 # full-corpus embed isn't killed on ARM.
@@ -903,7 +903,7 @@ Environment=OTEL_LOGS_EXPORTER=@OTEL_TRACES@
 # looma-ai is the only one of the three sidecars with real custom metrics —
 # see the matching comment in native_sidecars_docker()'s compose template.
 Environment=OTEL_METRICS_EXPORTER=otlp
-Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=looma-ai,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@
+Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=looma-ai,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@
 WorkingDirectory=@LOOMA_ROOT@/@REPO_NAME@/looma-ai
 ExecStart=@VENV@/bin/python scripts/looma_server.py --host 0.0.0.0 --port 8089
 Restart=always
@@ -2309,7 +2309,8 @@ EOF
 # publish 46333 / 5002 / 8089 exactly where the native Apache/PHP looks for them —
 # no bridge network, and MongoDB is never exposed beyond the host.
 native_sidecars_docker() {
-  local repo_dest="$1" otel_endpoint="$2" otel_traces="$3" box_name="$4" u
+  local repo_dest="$1" otel_endpoint="$2" otel_traces="$3" box_name="$4" \
+        box_public_ip="$5" box_geo_city="$6" box_geo_country="$7" u
   log "zvec + Piper will run as CONTAINERS (they carry their own Python/torch/voices)"
   ensure_docker
 
@@ -2331,7 +2332,8 @@ native_sidecars_docker() {
   log "writing $f"
   tpl_native_sidecars | sed -e "s#@REPO_NAME@#$REPO_NAME#g" -e "s#@WWW@#$WWW#g" \
     -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" -e "s#@OTEL_TRACES@#$otel_traces#g" \
-    -e "s#@BOX_NAME@#$box_name#g" > "$f"
+    -e "s#@BOX_NAME@#$box_name#g" -e "s#@BOX_PUBLIC_IP@#$box_public_ip#g" \
+    -e "s#@BOX_GEO_CITY@#$box_geo_city#g" -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g" > "$f"
 
   # Only the halves that asked for Docker. Piper and the zvec stack are chosen
   # independently, so this can legitimately be Piper alone, zvec alone, or both.
@@ -2701,7 +2703,7 @@ install_deploy_native() {
   #     Python >= 3.9 that this script has to go and fetch.
   # So both halves can be needed in one run: e.g. zvec in Docker, Piper on the host.
   if [ "$PIPER_MODE" = "docker" ] || [ "$SIDECARS" = "docker" ]; then
-    native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces" "$box_name"
+    native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces" "$box_name" "$box_public_ip" "$box_geo_city" "$box_geo_country"
   fi
 
   if [ "$PIPER_MODE" = "host" ] || [ "$SIDECARS" = "host" ]; then
@@ -2763,7 +2765,7 @@ install_deploy_native() {
     if command -v docker >/dev/null 2>&1 && docker_bundle_present; then
       warn "  falling back to the Piper CONTAINER, which the disk does carry."
       PIPER_MODE=docker
-      native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces" "$box_name"
+      native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces" "$box_name" "$box_public_ip" "$box_geo_city" "$box_geo_country"
     else
       warn "  this box will have NO text-to-speech. Add piper/ to the bundle:"
       warn "    $SCRIPT_PATH build-bundle native --bundle-dir $BUNDLE_ROOT"
@@ -3010,6 +3012,8 @@ install_deploy_native() {
                  -e "s#@HF_DIR@#$HF_DIR#g" -e "s#@HF_OFFLINE@#$hf_offline#g"
                  -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" -e "s#@OTEL_TRACES@#$otel_traces#g"
                  -e "s#@OTEL_ENABLED@#$otel_enabled#g" -e "s#@BOX_NAME@#$box_name#g"
+                 -e "s#@BOX_PUBLIC_IP@#$box_public_ip#g" -e "s#@BOX_GEO_CITY@#$box_geo_city#g"
+                 -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g"
                  -e "s#@PIPER_CPUQUOTA@#$PIPER_CPUQUOTA#g" -e "s#@PIPER_THREADS@#$PIPER_THREADS#g")
   log "installing the systemd services"
   # The LEGACY `piper.service` (from piper/piper.service) raises the CPU to its

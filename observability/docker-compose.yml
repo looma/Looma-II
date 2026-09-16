@@ -395,6 +395,13 @@ services:
     environment:
       VECTOR_LOG: "info"
       LOOMA_VECTOR_CONFIG: "${LOOMA_VECTOR_CONFIG:-/etc/vector/vector.toml}"
+      # Without this, vector.toml's own box_name/box_ip enrichment (same VRL
+      # as every agent) falls back to get_hostname() — this container's own
+      # random Docker hostname (e.g. "45a67c0392bd"), which then shows up as
+      # a meaningless "device" in any dashboard filter built from box_name.
+      # Named explicitly so it reads as "the data server itself", not a
+      # school box, wherever Vector's own self-monitoring logs land.
+      LOOMA_BOX_NAME: "looma-data-server"
     ports:
       # Vector's own wire protocol (sources.agents in vector.toml) — the ONLY
       # port a remote agent box needs reachable here for its logs+metrics.

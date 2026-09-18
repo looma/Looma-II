@@ -67,7 +67,3 @@ button#prev:disabled, button#next:disabled {color:gray;}
     background-image:url("../images/map-marker.png");
     background-size:30%;
 }
-button:hover span.tip.yes-show {
-    position: relative;
-    font-size:1em;
-}

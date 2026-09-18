@@ -413,6 +413,11 @@ span.tip { display:none;}
 
 button.hidden {display:none;}  /*used in looma-wikipedia.php*/
 
+/* Fixed px, not em/rem: several pages (looma-template.php, the admin/editor
+   pages, …) load bootstrap.css, which sets html{font-size:10px}, and other
+   pages don't — so an em/rem size here rendered at a different absolute size
+   per page depending on which stylesheets that page happened to load. Fixed
+   px is the only way this tip is the same size on every page. */
 button:hover span.tip.yes-show 	{
     position:absolute;
     display:block;
@@ -421,11 +426,11 @@ button:hover span.tip.yes-show 	{
    transform: translateX(-50%) translateY(-8px);
    margin:auto;
 
-    font-size: 1.8em;
+    font-size: 20px;
     font-weight: bold;
-    padding: 12px 16px;
+    padding: 8px 14px;
     white-space: nowrap;
-    min-width: 120px;
+    min-width: 100px;
 
     z-index: 10000;
     border: 2px solid #000000;
@@ -438,13 +443,13 @@ button:hover span.tip.yes-show.big-show {
 
     display:block;
 
-    font-size:1.8em;
+    font-size: 20px;
     font-weight: bold;
-    padding: 12px 16px;
+    padding: 8px 14px;
     white-space: nowrap;
     left:auto;
     width:auto;
-    min-width: 140px;
+    min-width: 110px;
 }
 
 /*****************

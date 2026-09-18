@@ -40,10 +40,6 @@
     background-size: 100%;
     background-repeat: no-repeat;
 }
-button:hover span.tip.yes-show {
-    position: relative;
-    font-size:1em;
-}
 #about {
     grid-row: 2;
     grid-column: left / middle-right;

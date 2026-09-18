@@ -109,6 +109,15 @@ button.section {
    only background-color here left the theme's white/grey gradient painted
    over our color and the button still looked white. */
 button.generate-exam-btn {
+    /* height/max-height/margin: not the page's generic "button {height:9vh;
+       margin:10px 12px}" grid sizing — that made this fixed corner chip
+       tall enough to reach down into the chapter grid's first row and
+       overlap it. Sized to its own text + padding instead. */
+    height: auto;
+    max-height: none;
+    margin: 0;
+    padding: 1.2vh 1.8vw;
+    border-radius: 16px;
     background: var(--looma-toolbar, yellow);
     color: #000;
     font-weight: bold;

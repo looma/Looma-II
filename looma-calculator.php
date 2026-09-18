@@ -14,7 +14,7 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
     logPageHit('calculator');
 ?>
 
-    <link rel="stylesheet" type="text/css" href="css/looma-calculator.css">
+    <link rel="stylesheet" type="text/css" href="css/looma-calculator.css?v=<?php echo @filemtime(__DIR__.'/css/looma-calculator.css') ?: time(); ?>">
 </head>
 
 <body>

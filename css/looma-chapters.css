@@ -43,11 +43,31 @@ button.heading {
     font-size: 3.0vh;
 }
 
+/* Flexbox, not the floats this used to be: the title <div> (float:right) and
+   the thumbnail <img> (float:left, from the generic "button.img img" rule)
+   only sit side by side when the button happens to be wide enough for both —
+   on this grid column they usually aren't, so the left-floated image wraps
+   onto its own line below the text and spills out under the button. Flex
+   guarantees the two sit in one row, each sized to its own content, with no
+   dependency on available width. */
+button.heading.en-chapter, button.heading.np-chapter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+button.heading.en-chapter img, button.heading.np-chapter img {
+    order: 1;
+    flex: 0 0 auto;
+}
+
 button.heading.en-chapter div, button.heading.np-chapter div
 {
-    float:right;
-    padding-right:3vw;
-    padding-top:1.35vh;
+    order: 2;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-right: 3vw;
+    padding-top: 1.35vh;
 
 }
 button.heading.en-activities {font-size:2.2vh;}
@@ -56,4 +76,17 @@ button.section {
     /*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4981e9), color-stop(100%,#6091eb));*/
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3371e6), color-stop(100%,#77a1ee));
     color: yellow;
+}
+
+/* Same yellow as the toolbar (var(--looma-toolbar)) rather than the plain
+   white every other button defaults to, so it reads as a distinct
+   call-to-action against the header's blue title bar. */
+button.generate-exam-btn {
+    background-color: var(--looma-toolbar, yellow);
+    color: #000;
+    font-weight: bold;
+}
+
+button.generate-exam-btn:hover {
+    background-color: var(--looma-toolbar, yellow);
 }

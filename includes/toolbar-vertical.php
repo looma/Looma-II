@@ -38,7 +38,13 @@
                 <img class="active" loading="lazy" draggable="false" hidden src="images/search-yellow.png"   >
                 <?php tooltip("Search") ?>
             </button>
-    
+
+            <!--LOOMA ASSISTANT-->
+            <button id="toolbar-assistant" type="button" class="toolbar-button vertical looma-assistant">
+                <img draggable="false" src="images/chat-assistant.svg" height="70%">
+                <?php tooltip('LOOMA Assistant');?>
+            </button>
+
             <!--DICTIONARY-->
            <button onclick="parent.location.href = 'dictionary';"
                    id="toolbar-dictionary" class="toolbar-button  vertical ">
@@ -111,12 +117,6 @@
                 <img draggable="false" src="images/worksheet.png"  height = "70%" >
                 <img class="active" loading="lazy" draggable="false" hidden src="images/worksheet-yellow.png"   >
                 <?php tooltip('Worksheet');?>
-            </button>
-
-            <!--LOOMA ASSISTANT-->
-            <button id="toolbar-assistant" type="button" class="toolbar-button vertical looma-assistant">
-                <img draggable="false" src="images/chat-assistant.svg" height="70%">
-                <?php tooltip('LOOMA Assistant');?>
             </button>
 
             <!--SETTINGS-->

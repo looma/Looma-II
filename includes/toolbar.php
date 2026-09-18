@@ -40,6 +40,12 @@
                 <?php tooltip("Search") ?>
 			</button>
 
+            <!--LOOMA ASSISTANT-->
+            <button id="toolbar-assistant" type="button" class="toolbar-button looma-assistant">
+                <img loading="lazy" draggable="false" src="images/chat-assistant.svg" height="80%">
+                <?php tooltip("LOOMA Assistant") ?>
+            </button>
+
             <!--DICTIONARY-->
 			<button onclick="parent.location.href = 'dictionary';"
                     id="toolbar-dictionary" class="toolbar-button ">
@@ -124,12 +130,6 @@
                 <?php tooltip("Home") ?>
             </button>
         -->
-
-            <!--LOOMA ASSISTANT-->
-            <button id="toolbar-assistant" type="button" class="toolbar-button looma-assistant">
-                <img loading="lazy" draggable="false" src="images/chat-assistant.svg" height="80%">
-                <?php tooltip("LOOMA Assistant") ?>
-            </button>
 
             <!--SETTINGS-->
 			<button onclick="parent.location.href = 'settings';"

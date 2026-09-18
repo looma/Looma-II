@@ -12,11 +12,6 @@
    * passages as cards, mirroring the Looma search results page.
    */
 
-  // Media-navigation buttons share the looma-control-button class but are a
-  // separate group — they are excluded when finding the top of the utility set
-  // (Fullscreen, Piper/TTS, Lookup, ...).
-  var MEDIA_NAV_IDS = ['next-item', 'prev-item', 'fullscreen-playpause'];
-
   // looma-ai service base URL. looma-ai.js (only on the AI page) publishes the
   // resolved value as window.LOOMAAI_BASE; everywhere else we derive it the
   // same way — same host as the web app, fixed port 8089. Note: hostname has
@@ -127,48 +122,18 @@
     }
   }
 
-  // Place the assistant ALWAYS at the top of the looma-control-button column,
-  // regardless of which other buttons (speak, lookup, keyboard, …) the current
-  // page happens to show. The keyboard is included in the topEdge calculation
-  // now, so the assistant lands above it instead of underneath.
-  function positionAssistantButton() {
-    var $assistant = $('button.looma-assistant');
-    if (!$assistant.length || $assistant.css('display') === 'none') return;
-
-    var topEdge = 0;  // highest occupied point, px measured from viewport bottom
-    $('button.looma-control-button').each(function () {
-      if (this === $assistant[0]) return;
-      if (MEDIA_NAV_IDS.indexOf(this.id) !== -1) return;
-      var cs = window.getComputedStyle(this);
-      if (cs.display === 'none' || cs.visibility === 'hidden') return;
-      var bottom = parseFloat(cs.bottom);
-      if (isNaN(bottom)) return;
-      var height = parseFloat(cs.height);
-      var edge = bottom + (isNaN(height) ? 0 : height);
-      if (edge > topEdge) topEdge = edge;
-    });
-
-    // Share the Piper/TTS button's column so the assistant — and the keyboard
-    // below it — line up vertically with the rest (some pages shift them off
-    // 5vw, e.g. the clock page uses 7vw).
+  // The assistant now lives in the main toolbar (a normal .toolbar-button,
+  // laid out by CSS like Home/Library/…), not as a floating control-button —
+  // so it no longer needs JS to park itself above the speak/lookup/keyboard
+  // stack. The keyboard's `right` still needs to track the speak button's
+  // column on pages that shift it off the 5vw default (e.g. the clock page
+  // uses 7vw), so that half of the old positionAssistantButton() stays.
+  function alignKeyboardWithSpeak() {
     var speakBtn = document.querySelector('button.speak');
-    var alignRight = null;
-    if (speakBtn) {
-      var speakRight = window.getComputedStyle(speakBtn).right;
-      if (speakRight && speakRight !== 'auto') alignRight = speakRight;
-    }
-    var gap = window.innerHeight * 0.01;  // ~1vh — matches the existing stack
-    var update = { top: 'auto' };          // clear any stray `top` so `bottom` applies
-    if (alignRight) update.right = alignRight;
-    if (topEdge > 0) update.bottom = Math.round(topEdge + gap) + 'px';
-    $assistant.css(update);
-
-    // Keep the keyboard column-aligned with the assistant. Its vertical
-    // position is owned by CSS (per page / global default) so it sits in the
-    // contiguous stack just like speak and lookup; only its `right` is synced
-    // here so the column doesn't drift on pages that move speak off 5vw.
-    if (alignRight) {
-      $('button.show-keyboard').css('right', alignRight);
+    if (!speakBtn) return;
+    var speakRight = window.getComputedStyle(speakBtn).right;
+    if (speakRight && speakRight !== 'auto') {
+      $('button.show-keyboard').css('right', speakRight);
     }
   }
 
@@ -345,20 +310,16 @@
       return;
     }
 
-    // The assistant should be reachable on every page (not just those that
-    // also show the Speak/TTS button) — students may want to ask questions on
-    // the home, library, history, dictionary pages too. The button only exists
-    // in the DOM on pages that include looma-control-buttons.php anyway, so an
-    // empty jQuery set on other pages is a harmless no-op.
-    $('button.looma-assistant').css('display', 'inline-block');
+    // The assistant is a normal toolbar button (see includes/toolbar.php /
+    // toolbar-vertical.php) and reachable on every page that shows the main
+    // toolbar. It only exists in the DOM on pages that include one of those,
+    // so an empty jQuery set elsewhere is a harmless no-op.
+    $('button.looma-assistant').css('display', '');
 
-    // Park it at the top of the control-button set, and keep it there when the
-    // viewport or fullscreen state changes the rest of the stack.
-    positionAssistantButton();
-    setTimeout(positionAssistantButton, 300);  // re-run once layout settles
-    $(window).on('resize', positionAssistantButton);
-    document.addEventListener('fullscreenchange', positionAssistantButton);
-    document.addEventListener('webkitfullscreenchange', positionAssistantButton);
+    alignKeyboardWithSpeak();
+    $(window).on('resize', alignKeyboardWithSpeak);
+    document.addEventListener('fullscreenchange', alignKeyboardWithSpeak);
+    document.addEventListener('webkitfullscreenchange', alignKeyboardWithSpeak);
 
     // Show modal when assistant button clicked
     $(document).on('click', '.looma-assistant, button.looma-assistant', function (e) {

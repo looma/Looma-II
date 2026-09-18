@@ -112,7 +112,13 @@
                 <img class="active" loading="lazy" draggable="false" hidden src="images/worksheet-yellow.png"   >
                 <?php tooltip('Worksheet');?>
             </button>
-    
+
+            <!--LOOMA ASSISTANT-->
+            <button id="toolbar-assistant" type="button" class="toolbar-button vertical looma-assistant">
+                <img draggable="false" src="images/chat-assistant.svg" height="70%">
+                <?php tooltip('LOOMA Assistant');?>
+            </button>
+
             <!--SETTINGS-->
            <!--
             <button onclick="parent.location.href = 'settings';"

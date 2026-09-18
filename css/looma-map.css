@@ -772,23 +772,21 @@ screen and (max-device-width:768px) and (orientation:landscape) {    .info {font
 /* ============================================================ */
 /*  Floating control buttons — clear the top-right country panel */
 /* ============================================================ */
-/* The Speak / Assistant / Lookup / Keyboard / Fullscreen buttons float at
-   right:5vw (looma.css). On the maps page that lands them ON TOP of the
-   top-right country panel (a Leaflet topright control, min(470px, 36vw) wide),
-   so the chat-bubble (Assistant) sat over the country card. This file only
-   loads on looma-play-map.php, so shifting the whole column just inboard of
-   the panel is scoped to the maps page and leaves every other page untouched.
+/* The Speak / Lookup / Keyboard / Fullscreen buttons float at right:5vw
+   (looma.css). On the maps page that lands them ON TOP of the top-right
+   country panel (a Leaflet topright control, min(470px, 36vw) wide). This
+   file only loads on looma-play-map.php, so shifting the whole column just
+   inboard of the panel is scoped to the maps page and leaves every other
+   page untouched.
 
-   NOTE: looma-assistant-button.js sets the Assistant button's `right` inline,
-   reading it from the Speak button's COMPUTED `right`. So we must move
-   button.speak too — the JS then aligns the Assistant (and keyboard) to the
-   same shifted column automatically.
+   The Assistant is no longer part of this floating stack (it's a toolbar
+   button now — see includes/toolbar.php), so it's not shifted here; moving
+   it would just misplace it, since a toolbar button isn't position:fixed.
 
    Only the UTILITY stack moves. #fullscreen-control stays in its bottom-right
    corner (it sits below the panel, so it never overlapped), and the media-nav
    buttons (next/prev/play-pause) are a separate group left untouched. */
 button.speak,
-button.looma-assistant,
 button.lookup,
 button.captions,
 button.show-keyboard {

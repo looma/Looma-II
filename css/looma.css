@@ -517,23 +517,6 @@ button.speak {
     cursor: pointer;
 }
 
-button.looma-assistant {
-    /* Top of the floating control-button column — NOT the top of the page.
-       looma-assistant-button.js refines this so it lands one slot above the
-       topmost control button the current page shows. No `top` here: a fixed
-       element with both top and bottom set would ignore the JS `bottom`. */
-    bottom: 55vh;
-    display:none;
-    background-image: url("../images/chat-assistant.svg");  /* chat bubble with dots icon — Looma Assistant chat */
-    background-size: 85% 85%;
-    background-color:rgba(200,200,200,0.7); /* transparent light gray*/
-    border: 0.2em solid transparent;
-    box-sizing: border-box;
-    position: fixed;
-    transition: transform 0.18s ease, opacity 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
-    z-index: 1050;
-}
-
 button.speak.tts-state-play   { background-image: url("../images/tts-play.svg"); }
 button.speak.tts-state-pause  { background-image: url("../images/tts-pause.svg"); }
 button.speak.tts-state-repeat { background-image: url("../images/tts-repeat.svg"); }
@@ -644,15 +627,6 @@ button.speak.tts-disabled {
     border-color: rgba(150,150,150,0.65);
     box-shadow: none;
     pointer-events: none;
-}
-
-button.looma-control-button.looma-assistant:hover {
-    color: var(--looma-button-hover-font-color);
-    border-color: yellow;
-    border-width: 4px;
-    opacity: 1;
-    transform: scale(1.15);
-    box-shadow: 0 4px 12px rgba(255,212,0,0.6);
 }
 
 /* ---------------------------------------------------------------------------
@@ -1166,10 +1140,6 @@ div.center {
 
     button.speak {
         bottom: 16vh;
-    }
-
-    button.looma-assistant {
-        bottom: 40vh;
     }
 
     button#fullscreen-control {

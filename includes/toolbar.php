@@ -125,6 +125,12 @@
             </button>
         -->
 
+            <!--LOOMA ASSISTANT-->
+            <button id="toolbar-assistant" type="button" class="toolbar-button looma-assistant">
+                <img loading="lazy" draggable="false" src="images/chat-assistant.svg" height="80%">
+                <?php tooltip("LOOMA Assistant") ?>
+            </button>
+
             <!--SETTINGS-->
 			<button onclick="parent.location.href = 'settings';"
                     id="toolbar-settings" class="toolbar-button ">

@@ -32,7 +32,7 @@ Description: displays all the classes and on-click, all the subjects, plus toolb
                     <?php keyword('2') ?></button></td>
                 <td><button id="btn3" class="calc-button" value="  3  " 		onclick="NumPressed('3')">
                     <?php keyword('3') ?></button></td>
-                <td colspan="2"><button id="btnC" class="calc-button"  onclick="Clear()">
+                <td colspan="2" class="col-span-2"><button id="btnC" class="calc-button"  onclick="Clear()">
                     <?php keyword('Clear') ?></button></td>
             </tr>
             <tr>

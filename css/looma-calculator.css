@@ -17,7 +17,22 @@ h1.title {
     flex: 0 0 auto;
 }
 
+/* display:grid on the <table> itself, tr{display:contents} so the <tr>
+   boxes drop out and their <td> children become the grid's own items — a
+   real CSS grid track sizing (1fr) instead of table row layout. Percentage
+   height on <tr> (this used to be tr{height:25%}) is a table-layout
+   feature, not a flex/grid one, and it isn't reliably honoured once the
+   table's own height comes from flex-grow rather than a fixed number — in
+   practice the browser sized each row by its buttons' content instead, so
+   4 rows plus gaps came out taller than the space flex had given the
+   table, and the 4th row was pushed out under the toolbar instead of
+   shrinking to fit. Grid tracks don't have that ambiguity: 1fr always
+   means exactly one quarter of whatever height the table actually has. */
 table {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
     margin:auto;
     width:100%;
     /* fills whatever height title+display didn't use; min-height:0 lets it
@@ -25,15 +40,13 @@ table {
        flex items default to min-height:auto, which ignores flex-shrink. */
     flex: 1 1 auto;
     min-height: 0;
-    table-layout: fixed;
-    border-spacing: 10px;
-    border-collapse:collapse;
-    cell-padding: 0px;
 }
 
-tr { height: 25%; }
+tr { display: contents; }
 
-td {padding:10px}
+/* Clear (row 1) is the only cell with colspan — grid auto-placement has no
+   idea what an HTML colspan attribute means, so it needs telling directly. */
+td.col-span-2 { grid-column: span 2; }
 
 #display {
        flex: 0 0 auto;

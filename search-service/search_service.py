@@ -120,7 +120,16 @@ _logging.getLogger(__name__).info("search service started")
 MONGO_URL = os.environ.get("MONGO_URL", "mongodb://looma-db:27017")
 MONGO_DB = os.environ.get("MONGO_DB", "looma")
 MONGO_COLLECTION = os.environ.get("MONGO_COLLECTION", "activities")
-MODEL_NAME = os.environ.get("MODEL_NAME", "sentence-transformers/all-MiniLM-L6-v2")
+# paraphrase-multilingual-MiniLM-L12-v2, not all-MiniLM-L6-v2: the old default
+# is an English-only model (BERT-base-uncased vocabulary). On real Devanagari
+# text it doesn't just tokenize inefficiently, it was never trained to
+# understand the language at all — measured, 1000 chars of Nepali came out to
+# 584 word-pieces against this model's 256-token window (vs 255 for English,
+# already at the edge), so on top of not understanding Nepali semantically it
+# was silently discarding more than half of every Nepali chunk before the
+# encoder ever saw it. The multilingual model this switches to is the same one
+# looma-ai/app/embed/model.py already uses, and matches EMBEDDING_DIM=384.
+MODEL_NAME = os.environ.get("MODEL_NAME", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
 # WHERE THE INDEX LIVES.
 #
 # This directory used to be called "zvec-index", which was simply untrue: this
@@ -156,11 +165,16 @@ SEARCH_TOPK = int(os.environ.get("SEARCH_TOPK", "12"))
 SEARCH_REBUILD_ON_START = os.environ.get("SEARCH_REBUILD_ON_START", "1") == "1"
 # How much of a long document is reachable by a semantic search.
 #
-# The embedding model has a 256-word-piece window (~1000 characters). Everything
-# past it is DISCARDED by the encoder, so a one-vector-per-document index can
-# only ever match a textbook on its cover page, no matter how much text the
-# ingester pulled out of the PDF. That was the real ceiling on "search the
-# content": raising the ingester's page limit alone changed nothing.
+# The embedding model has a 128-word-piece window. Everything past it is
+# DISCARDED by the encoder — measured directly against its tokenizer, not
+# assumed: 400 chars comes out to 106-113 tokens for Nepali/English
+# respectively, with margin under 128 for denser real-world text (the old
+# 1000-char figure was tuned against all-MiniLM-L6-v2's 256-token window and
+# never re-checked when MODEL_NAME changed above). Past that window a
+# one-vector-per-document index can only ever match a textbook on its cover
+# page, no matter how much text the ingester pulled out of the PDF. That was
+# the real ceiling on "search the content": raising the ingester's page limit
+# alone changed nothing.
 #
 # So a document is embedded as up to MAX_CHUNKS windows of CHUNK_CHARS, each one
 # its own row, all carrying the SAME Mongo id. search() collapses them back to
@@ -171,8 +185,8 @@ SEARCH_REBUILD_ON_START = os.environ.get("SEARCH_REBUILD_ON_START", "1") == "1"
 # they stay one row; only PDFs and HTML pages grow. Raising the cap raises the
 # index file AND the service's resident memory roughly in proportion to the
 # text-bearing share — which matters on an 8 GB box, so measure before raising.
-SEARCH_CHUNK_CHARS = int(os.environ.get("SEARCH_CHUNK_CHARS", "1000"))
-SEARCH_CHUNK_OVERLAP = int(os.environ.get("SEARCH_CHUNK_OVERLAP", "100"))
+SEARCH_CHUNK_CHARS = int(os.environ.get("SEARCH_CHUNK_CHARS", "400"))
+SEARCH_CHUNK_OVERLAP = int(os.environ.get("SEARCH_CHUNK_OVERLAP", "60"))
 SEARCH_MAX_CHUNKS_PER_DOC = max(1, int(os.environ.get("SEARCH_MAX_CHUNKS_PER_DOC", "4")))
 # How far into a document the "did you mean" vocabulary is collected from. Wider
 # than the embedding budget on purpose — collecting a word costs a regex match,

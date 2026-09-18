@@ -39,9 +39,14 @@ RUN python -m pip install --upgrade pip wheel \
 # runtime path the compose sets, and the (initially empty) looma_search_hf named
 # volume is auto-populated from this baked dir the first time the container runs.
 ENV HF_HOME=/models/hf
-# all-MiniLM-L6-v2 (384-dim) matches EMBEDDING_DIM=384 and is ~5x faster / far lighter
-# on CPU than all-mpnet-base-v2 — so the background index build finishes much sooner.
-ENV MODEL_NAME=sentence-transformers/all-MiniLM-L6-v2
+# paraphrase-multilingual-MiniLM-L12-v2 (384-dim, matches EMBEDDING_DIM=384),
+# not all-MiniLM-L6-v2: the latter is English-only and doesn't understand
+# Nepali content at all, on top of tokenizing it into more than twice as many
+# word-pieces as English (measured: 584 vs 255 per 1000 chars) — see the
+# MODEL_NAME comment in search_service.py. This model is heavier than L6 (a
+# slower background index build on the odroid's CPU), but L6 was never a
+# viable option for a bilingual English/Nepali corpus regardless of speed.
+ENV MODEL_NAME=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('${MODEL_NAME}')"
 
 EXPOSE 46333

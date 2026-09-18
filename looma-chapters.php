@@ -20,7 +20,7 @@ require_once('includes/looma-utilities.php');
         'prefix'  => $_GET['prefix']  ?? null,
     ]);
 ?>
-    <link rel="stylesheet" href="css/looma-chapters.css">
+    <link rel="stylesheet" href="css/looma-chapters.css?v=<?php echo @filemtime(__DIR__.'/css/looma-chapters.css') ?: time(); ?>">
 </head>
 
 <body>

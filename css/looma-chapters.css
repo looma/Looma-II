@@ -59,6 +59,13 @@ button.heading.en-chapter, button.heading.np-chapter {
 button.heading.en-chapter img, button.heading.np-chapter img {
     order: 1;
     flex: 0 0 auto;
+    /* Overrides the generic "button.img img" width:35%/max-width:35% — at
+       35% of this wide heading button the thumbnail alone left too little
+       room for "Textbook Chapters" to fit on one line, forcing a wrap.
+       width:auto lets it size from its own aspect ratio against the 90%
+       height instead of claiming a fixed share of the button's width. */
+    width: auto;
+    max-width: 15%;
 }
 
 button.heading.en-chapter div, button.heading.np-chapter div
@@ -68,6 +75,9 @@ button.heading.en-chapter div, button.heading.np-chapter div
     min-width: 0;
     padding-right: 3vw;
     padding-top: 1.35vh;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
 }
 button.heading.en-activities {font-size:2.2vh;}
@@ -78,15 +88,32 @@ button.section {
     color: yellow;
 }
 
+/* Fixed to the viewport's top-right corner instead of sitting in normal flow
+   in #header (where it rendered centered under the title, below the h1) —
+   this is a page-level action (jump to the exams list), not part of the
+   title bar's content. */
+.exams-btn-link {
+    position: fixed;
+    top: 1.5vh;
+    right: 1.5vw;
+    z-index: 100;
+}
+
 /* Same yellow as the toolbar (var(--looma-toolbar)) rather than the plain
    white every other button defaults to, so it reads as a distinct
-   call-to-action against the header's blue title bar. */
+   call-to-action against the header's blue title bar.
+   The `background` SHORTHAND, not background-color: several themes (e.g.
+   looma-theme-looma-laptop.css) style the plain "button" element with both
+   a background-color AND a `background: -webkit-gradient(...)` image on top
+   of it — the shorthand always resets the image component too, so setting
+   only background-color here left the theme's white/grey gradient painted
+   over our color and the button still looked white. */
 button.generate-exam-btn {
-    background-color: var(--looma-toolbar, yellow);
+    background: var(--looma-toolbar, yellow);
     color: #000;
     font-weight: bold;
 }
 
 button.generate-exam-btn:hover {
-    background-color: var(--looma-toolbar, yellow);
+    background: var(--looma-toolbar, yellow);
 }

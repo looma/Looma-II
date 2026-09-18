@@ -541,7 +541,12 @@ services:
       # Infinity (static/inline JSON as a datasource) for panels that aren't
       # operational telemetry — e.g. the content semantic-graph Node Graph
       # panel, which doesn't warrant its own OpenSearch index/shards.
-      GF_INSTALL_PLUGINS: "grafana-opensearch-datasource,yesoreyeram-infinity-datasource"
+      # Infinity pinned to 3.7.1, not latest: 4.0.0 requires Grafana >=11.6.11
+      # (this image is 11.3.0) and fails in the browser with a SystemJS error
+      # loading react/jsx-runtime — 3.7.1 only needs >=10.4.8 and doesn't
+      # depend on that shared import. Bump this only alongside the Grafana
+      # base image version in ./grafana/Dockerfile.
+      GF_INSTALL_PLUGINS: "grafana-opensearch-datasource,yesoreyeram-infinity-datasource 3.7.1"
       # Listen on all interfaces (default already, but explicit for clarity).
       GF_SERVER_HTTP_ADDR: "0.0.0.0"
       GF_SERVER_HTTP_PORT: "3000"

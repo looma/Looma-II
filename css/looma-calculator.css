@@ -1,85 +1,49 @@
 
-/* Column flex instead of the block layout looma.css gives every page's
-   #main-container-horizontal: title / display / keypad need to share the
-   available height and none of them have a size that's known in advance
-   (the title wraps in Nepali, translated button labels vary in length), so
-   percentages on each one independently (the old approach) drift out of
-   sync with each other and overflow past the bottom of the screen. Flex
-   keeps title and display at their natural size and hands the keypad
-   everything that's left. */
-#main-container-horizontal {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-h1.title {
-    flex: 0 0 auto;
-}
-
-/* display:grid on the <table> itself, tr{display:contents} so the <tr>
-   boxes drop out and their <td> children become the grid's own items — a
-   real CSS grid track sizing (1fr) instead of table row layout. Percentage
-   height on <tr> (this used to be tr{height:25%}) is a table-layout
-   feature, not a flex/grid one, and it isn't reliably honoured once the
-   table's own height comes from flex-grow rather than a fixed number — in
-   practice the browser sized each row by its buttons' content instead, so
-   4 rows plus gaps came out taller than the space flex had given the
-   table, and the 4th row was pushed out under the toolbar instead of
-   shrinking to fit. Grid tracks don't have that ambiguity: 1fr always
-   means exactly one quarter of whatever height the table actually has. */
 table {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    gap: 10px;
-    margin:auto;
-    width:100%;
-    /* fills whatever height title+display didn't use; min-height:0 lets it
-       shrink below its content's "natural" size instead of overflowing —
-       flex items default to min-height:auto, which ignores flex-shrink. */
-    flex: 1 1 auto;
-    min-height: 0;
+	margin:auto;
+	height:60%;
+	width:100%;
+	table-layout: fixed;
+	border-spacing: 10px;
+	border-collapse:collapse;
+	cell-padding: 0px;
 }
 
-tr { display: contents; }
-
-/* Clear (row 1) is the only cell with colspan — grid auto-placement has no
-   idea what an HTML colspan attribute means, so it needs telling directly. */
-td.col-span-2 { grid-column: span 2; }
+td {padding:10px}
 
 #display {
-       flex: 0 0 auto;
        padding: 0 3vw;
-       font-size: 8vh;
+       font-size: 10vh;
        font-weight: bold;
        font-family: "Comic Sans MS", "Comic Sans", cursive;
        text-align:right;
        vertical-align: middle;
        background-color: #ffffff ;
 	   margin: 1% 0 1% 0;
+       height:15%;
        width: 75%;
        border:3px solid red;
        border-radius: 12px;
        color:black;
 }
 
+/* Only change from the original: display:flex + centering instead of
+   inline-block, and height:100% instead of min-height:10vh. The label was
+   bleeding outside the button's own box — font-size:10vh paired with a
+   fixed line-height:28px (left over from before font-size was made
+   viewport-relative, when this was a plain 50px/28px pairing) put a ~90px
+   glyph inside a 28px line box with no vertical centering, so it overflowed
+   into the row above/below instead of being contained in the button.
+   Flex centering positions the label inside whatever box the button ends
+   up being — this does not change how big that box is; the table/td sizing
+   above is untouched. */
 button.calc-button {
 	padding:0;
 	margin:0;
     border:1px solid #606060;
-    /* fills its <td> exactly (see tr height above) and centers the label
-       inside that box, so the label's own font metrics can never push the
-       button taller than the row and bleed into the row above/below —
-       which is what a fixed, oversized font-size with a much smaller fixed
-       line-height (its previous 10vh / 28px pairing, from when this was a
-       plain 50px/28px pairing before font-size was made responsive) used
-       to do. */
     display:flex;
     align-items:center;
     justify-content:center;
-    height:100%;
-    width:100%;
     box-sizing:border-box;
     font-size:6vh;
     font-weight: bold;
@@ -87,6 +51,8 @@ button.calc-button {
     font-family: "Comic Sans MS", "Comic Sans", cursive;
     text-decoration:none;
     text-align:center;
+    height:100%;
+    width: 100%;
 }
 
 
@@ -103,5 +69,5 @@ screen and (max-device-width:768px) and (orientation:landscape) {    td { paddin
     button.calc-button {
         font-size: 5vw;
     }
-    #display { margin:0; font-size: 5vh; }
+    #display { margin:0;}
 }

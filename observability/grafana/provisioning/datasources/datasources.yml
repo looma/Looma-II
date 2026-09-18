@@ -76,3 +76,12 @@ datasources:
       flavor: opensearch
       version: 3.6.0
       timeField: "@timestamp"
+
+  # Static/inline JSON as a datasource — for panels backed by data that isn't
+  # operational telemetry (an OpenSearch index per such panel would burn real
+  # shards on a cluster already near its per-node shard cap). First user: the
+  # content semantic-graph Node Graph panel (dashboards/content-graph.json).
+  - name: Infinity
+    uid: infinity
+    type: yesoreyeram-infinity-datasource
+    access: proxy

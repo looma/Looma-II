@@ -537,8 +537,11 @@ services:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
       GF_USERS_ALLOW_SIGN_UP: "false"
-      # Bundled OpenSearch datasource plugin (logs + traces from OS).
-      GF_INSTALL_PLUGINS: "grafana-opensearch-datasource"
+      # Bundled OpenSearch datasource plugin (logs + traces from OS), plus
+      # Infinity (static/inline JSON as a datasource) for panels that aren't
+      # operational telemetry — e.g. the content semantic-graph Node Graph
+      # panel, which doesn't warrant its own OpenSearch index/shards.
+      GF_INSTALL_PLUGINS: "grafana-opensearch-datasource,yesoreyeram-infinity-datasource"
       # Listen on all interfaces (default already, but explicit for clarity).
       GF_SERVER_HTTP_ADDR: "0.0.0.0"
       GF_SERVER_HTTP_PORT: "3000"

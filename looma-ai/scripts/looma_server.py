@@ -1561,7 +1561,12 @@ def open_or_create_vector_collection(path: str, name: str, dim: int):
 
     schema = zvec.CollectionSchema(
         name=name,
-        vectors=zvec.VectorSchema('embedding', zvec.DataType.VECTOR_FP32, dim),
+        vectors=zvec.VectorSchema(
+            'embedding', zvec.DataType.VECTOR_FP32, dim,
+            # Explicit, not the HnswIndexParam() default (MetricType.IP) —
+            # see the matching comment in app/index/zvec_store.py.
+            index_param=zvec.HnswIndexParam(metric_type=zvec.MetricType.COSINE),
+        ),
     )
     return zvec.create_and_open(path=path, schema=schema)
 

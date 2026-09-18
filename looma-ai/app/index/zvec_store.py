@@ -16,7 +16,18 @@ def open_or_create_collection(path, name):
     ZVEC_DIR.mkdir(parents=True, exist_ok=True)
     schema = zvec.CollectionSchema(
         name=name,
-        vectors=zvec.VectorSchema('embedding', zvec.DataType.VECTOR_FP32, EMBED_DIM),
+        vectors=zvec.VectorSchema(
+            'embedding', zvec.DataType.VECTOR_FP32, EMBED_DIM,
+            # Left implicit before, this defaulted to HnswIndexParam()'s own
+            # default, MetricType.IP (inner product) — only ranking correctly
+            # by the invariant that every embed call passes
+            # normalize_embeddings=True (app/embed/model.py), since IP over
+            # unit vectors equals cosine similarity. One embed call anywhere
+            # that skips normalization would silently rank by raw dot product
+            # instead and degrade retrieval with no error. COSINE makes the
+            # correct metric explicit regardless of that invariant.
+            index_param=zvec.HnswIndexParam(metric_type=zvec.MetricType.COSINE),
+        ),
     )
     return zvec.create_and_open(path=path, schema=schema)
 

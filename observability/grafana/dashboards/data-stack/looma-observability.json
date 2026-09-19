@@ -322,25 +322,13 @@
       "targets": [
         {
           "refId": "nodes_calls",
-          "expr": "label_replace(sum by (service_name) (rate(traces_span_metrics_calls_total{span_kind=\"SPAN_KIND_SERVER\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval])), \"id\", \"$1\", \"service_name\", \"(.*)\")",
-          "format": "table",
-          "instant": true
-        },
-        {
-          "refId": "nodes_errors",
-          "expr": "label_replace(sum by (service_name) (rate(traces_span_metrics_calls_total{span_kind=\"SPAN_KIND_SERVER\", status_code!=\"STATUS_CODE_OK\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval])), \"id\", \"$1\", \"service_name\", \"(.*)\")",
-          "format": "table",
-          "instant": true
-        },
-        {
-          "refId": "nodes_duration",
-          "expr": "label_replace(histogram_quantile(0.95, sum by (service_name, le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_kind=\"SPAN_KIND_SERVER\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval]))), \"id\", \"$1\", \"service_name\", \"(.*)\")",
+          "expr": "label_replace(sum by (service_name) (rate(traces_span_metrics_calls_total{span_kind=\"SPAN_KIND_SERVER\", service_name!~\"looma-data-prepper|looma-docker-stats|looma-grafana|looma-metricbeat|looma-opensearch.*|looma-otel-collector|looma-prometheus|looma-vector\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m])), \"id\", \"$1\", \"service_name\", \"(.*)\")",
           "format": "table",
           "instant": true
         },
         {
           "refId": "edges_rate",
-          "expr": "label_join(label_replace(label_replace(sum by (client, server) (rate(traces_service_graph_request_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\", client!~\"user|unknown|looma\", server!~\"user|unknown|looma\"}[$__rate_interval])), \"source\", \"$1\", \"client\", \"(.*)\"), \"target\", \"$1\", \"server\", \"(.*)\"), \"id\", \"->\", \"client\", \"server\")",
+          "expr": "label_join(label_replace(label_replace(sum by (client, server) (rate(traces_service_graph_request_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\", client!~\"user|unknown|looma|looma-data-prepper|looma-docker-stats|looma-grafana|looma-metricbeat|looma-opensearch.*|looma-otel-collector|looma-prometheus|looma-vector\", server!~\"user|unknown|looma|looma-data-prepper|looma-docker-stats|looma-grafana|looma-metricbeat|looma-opensearch.*|looma-otel-collector|looma-prometheus|looma-vector\"}[5m])), \"source\", \"$1\", \"client\", \"(.*)\"), \"target\", \"$1\", \"server\", \"(.*)\"), \"id\", \"->\", \"client\", \"server\")",
           "format": "table",
           "instant": true
         }
@@ -351,26 +339,6 @@
           "filter": {
             "id": "byRefId",
             "options": "nodes_calls"
-          },
-          "options": {
-            "mode": "columns"
-          }
-        },
-        {
-          "id": "labelsToFields",
-          "filter": {
-            "id": "byRefId",
-            "options": "nodes_errors"
-          },
-          "options": {
-            "mode": "columns"
-          }
-        },
-        {
-          "id": "labelsToFields",
-          "filter": {
-            "id": "byRefId",
-            "options": "nodes_duration"
           },
           "options": {
             "mode": "columns"
@@ -393,12 +361,12 @@
             "options": "nodes_calls"
           },
           "options": {
-            "alias": "request_rate",
+            "alias": "mainStat",
             "mode": "reduceRow",
             "reduce": {
               "reducer": "first",
               "include": [
-                "Value"
+                "Value #nodes_calls"
               ]
             }
           }
@@ -424,40 +392,6 @@
           "id": "calculateField",
           "filter": {
             "id": "byRefId",
-            "options": "nodes_errors"
-          },
-          "options": {
-            "alias": "error_rate",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "first",
-              "include": [
-                "Value"
-              ]
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "filter": {
-            "id": "byRefId",
-            "options": "nodes_duration"
-          },
-          "options": {
-            "alias": "p95_duration_ms",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "first",
-              "include": [
-                "Value"
-              ]
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "filter": {
-            "id": "byRefId",
             "options": "edges_rate"
           },
           "options": {
@@ -466,83 +400,7 @@
             "reduce": {
               "reducer": "first",
               "include": [
-                "Value"
-              ]
-            }
-          }
-        },
-        {
-          "id": "joinByField",
-          "filter": {
-            "id": "byRefId",
-            "options": "nodes_calls|nodes_errors|nodes_duration"
-          },
-          "options": {
-            "byField": "id",
-            "mode": "outer"
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "mainStat",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "first",
-              "include": [
-                "request_rate"
-              ]
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "secondaryStat",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "first",
-              "include": [
-                "error_rate"
-              ]
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "detail__Requests/sec",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "first",
-              "include": [
-                "request_rate"
-              ]
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "detail__Errors/sec",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "first",
-              "include": [
-                "error_rate"
-              ]
-            }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "detail__p95 duration (ms)",
-            "mode": "reduceRow",
-            "reduce": {
-              "reducer": "first",
-              "include": [
-                "p95_duration_ms"
+                "Value #edges_rate"
               ]
             }
           }

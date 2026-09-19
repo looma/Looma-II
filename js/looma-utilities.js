@@ -4185,7 +4185,17 @@ LOOMA.speak.installButtonGuard = function () {
             var rvSelected = (LOOMA.speak.getSelectedText ? LOOMA.speak.getSelectedText() : '');
             var rvSelectedKey = LOOMA.speak.normalizeSpeakKey
                 ? LOOMA.speak.normalizeSpeakKey(rvSelected) : (rvSelected || '').toLowerCase();
-            var rvCurrent = LOOMA.speak.currentSourceText || '';
+            // currentSourceText is the RAW selection (what Piper/RV was actually
+            // asked to say); getSelectedText() above has been through
+            // LOOMA.cleanSelectedText() (strips PDF glyph garbage, unmixes digits
+            // wedged into words — "activity 1.5", "6m/s", any textbook chapter ID).
+            // Comparing the two as-is means any passage with a digit next to a
+            // letter — most science/maths text — never matches itself, so every
+            // pause press reads as "new selection" and restarts from the top
+            // instead of pausing. Clean this side the same way before comparing.
+            var rvCurrent = LOOMA.cleanSelectedText
+                ? LOOMA.cleanSelectedText(LOOMA.speak.currentSourceText || '')
+                : (LOOMA.speak.currentSourceText || '');
             var rvCurrentKey = LOOMA.speak.normalizeSpeakKey
                 ? LOOMA.speak.normalizeSpeakKey(rvCurrent) : rvCurrent.toLowerCase();
 
@@ -4251,7 +4261,18 @@ LOOMA.speak.installButtonGuard = function () {
             // the pause button restarted the reading from the top instead of
             // pausing it. The mousedown handler below deliberately keeps the
             // selection alive, so this fired on every single press.
-            var currentText = LOOMA.speak.currentSourceText || '';
+            //
+            // currentSourceText is the RAW selection (what was actually sent to
+            // Piper); selectedText above went through getSelectedText(), which
+            // runs LOOMA.cleanSelectedText() (unmixes digits wedged into words —
+            // "activity 1.5", "6m/s", any chapter ID like 6S01.02). Left
+            // uncleaned here, a passage with a digit next to a letter — most
+            // science/maths text — never matches itself, so every pause press on
+            // that content reads as "new selection" and restarts from the top
+            // instead of pausing.
+            var currentText = LOOMA.cleanSelectedText
+                ? LOOMA.cleanSelectedText(LOOMA.speak.currentSourceText || '')
+                : (LOOMA.speak.currentSourceText || '');
             var currentTextKey = LOOMA.speak.normalizeSpeakKey ? LOOMA.speak.normalizeSpeakKey(currentText) : currentText.toLowerCase();
             var hasNewSelection = !!selectedKey && !!currentTextKey && selectedKey !== currentTextKey;
 

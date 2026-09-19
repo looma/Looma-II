@@ -1791,10 +1791,13 @@ function openAIPage(type, chapterId) {
     return;
   }
 
-  // Quiz path — publish first (overwrite=true so the published copy reflects
-  // the current N), then redirect.
+  // Quiz path — generate first (overwrite=true so the stored copy reflects
+  // the current N), then redirect. Must hit /generate, not /publish_resources:
+  // the latter only knows summary/keywords and silently ignores types:['quiz'],
+  // which left the quiz never actually stored and forced a second, redundant
+  // on-demand generation once the player asked /quiz_data for it.
   setActionStatus('Preparing exercises...', false);
-  fetch(AI_BASE + '/publish_resources', {
+  fetch(AI_BASE + '/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

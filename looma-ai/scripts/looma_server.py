@@ -2820,11 +2820,11 @@ class Handler(BaseHTTPRequestHandler):
 
             wh_kind = _classify_wh(question)
 
-            def _build_answer(context_texts: list[str]) -> str:
+            def _build_answer(context_texts: list[str]) -> tuple[str, bool]:
                 qa_answer = _qa_span_answer(question, context_texts)
                 if qa_answer:
-                    return qa_answer
-                return _compose_answer(question, context_texts, history=history, wh=wh_kind)
+                    return qa_answer, True
+                return _compose_answer(question, context_texts, history=history, wh=wh_kind), False
 
             # zvec/fts/hybrid over curriculum chunks (sqlite + optional zvec embeddings).
             if mode not in {'hybrid', 'fts', 'semantic'}:
@@ -2897,14 +2897,25 @@ class Handler(BaseHTTPRequestHandler):
                     contexts.sort(key=lambda c: (0 if str(c.get('_id') or '') in boost_ids else 1))
                 except Exception:
                     pass
-            answer = _build_answer(context_texts)
+            answer, answer_is_qa = _build_answer(context_texts)
             answer_source = 'curriculum' if answer else None
 
             # If the curriculum index didn't yield a usable answer, try general
             # knowledge sources so the chat model can still respond to any
             # who/what/when/where/why/how question, on any topic.
+            #
+            # _wh_score_bonus judges _compose_answer's WHOLE-SENTENCE output —
+            # it looks for a linking verb ("is"/"are"/...) or similar shape, so
+            # it scores 0 on a bare noun-phrase span like "Kathmandu" and would
+            # otherwise discard a confident, correct QA answer in favour of
+            # this weaker fallback (a real case: "what is the capital of
+            # Nepal?" -> QA correctly answers "Kathmandu", but the dictionary
+            # fallback below then matches "capital" out of the question text
+            # and replaces it with capital's OTHER meaning, "uppercase").
+            # _qa_span_answer already has its own confidence gate (MIN_SCORE
+            # in app/qa/extractor.py), so a QA answer doesn't need this one too.
             external_refs: list[dict] = []
-            if (not answer) or _wh_score_bonus(wh_kind, answer) <= 0:
+            if (not answer) or (not answer_is_qa and _wh_score_bonus(wh_kind, answer) <= 0):
                 # 1) Dictionary fallback — only useful for "define / what is X".
                 if wh_kind in ('define', 'what'):
                     word_match = re.search(r'\b(?:define|meaning of|what is|what are)\s+(?:an?\s+|the\s+)?([A-Za-zÀ-ÿ\-]+)', question, re.I)

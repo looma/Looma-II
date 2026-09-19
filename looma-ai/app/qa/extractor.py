@@ -19,14 +19,24 @@ forward pass and only ever repeats words already in the given text, so it
 can't hallucinate content that isn't there — the same safety property
 _compose_answer already had, with much better precision.
 
-Model: deepset/xlm-roberta-base-squad2, quantized to ONNX int8 (see
-deploy/odroid/build-qa-model.py) — 278MB, not the 855MB a naive PyTorch
-dynamic-quantization would give: dynamic quantization only quantizes
-nn.Linear layers, and 69% of this model's parameters are the multilingual
-vocabulary's embedding table, which dynamic quantization can't touch. ONNX's
-quantizer does quantize it. Shipped as a prebuilt artifact (see
-QA_MODEL_DIR in app/paths.py) rather than quantized on the box, since
-quantizing needs the ~1.1GB fp32 model in memory even transiently.
+Model: deepset/xlm-roberta-base-squad2, quantized to ONNX int8 — 278MB, not
+the 855MB a naive PyTorch dynamic-quantization would give: dynamic
+quantization only quantizes nn.Linear layers, and 69% of this model's
+parameters are the multilingual vocabulary's embedding table, which dynamic
+quantization can't touch. ONNX's quantizer does quantize it. Shipped as a
+prebuilt artifact (see QA_MODEL_DIR in app/paths.py) rather than quantized on
+the box, since quantizing needs the ~1.1GB fp32 model in memory even
+transiently.
+
+Inference is plain onnxruntime.InferenceSession, not optimum's
+ORTModelForQuestionAnswering wrapper: optimum pulls in the `onnx` package,
+which on this box's actual dependency set needs protobuf>=6.31 — but
+opentelemetry-proto (already required here) needs protobuf<5.0, and there is
+no protobuf version that satisfies both. optimum/onnx were never needed at
+inference time anyway (only for exporting/quantizing, done once on a
+workstation — see the commit that added this file); raw onnxruntime plus the
+tokenizer we already depend on for embeddings sidesteps the conflict
+entirely, confirmed against this exact odroid image.
 """
 import os
 from functools import lru_cache
@@ -50,17 +60,18 @@ def _load():
     try:
         # Lazy import, same reason as app/embed/model.py: keep the server
         # able to start (FTS-only / sentence-picking-only) even where
-        # onnxruntime/optimum aren't installed or don't run on the CPU.
-        from optimum.onnxruntime import ORTModelForQuestionAnswering  # noqa: WPS433
+        # onnxruntime isn't installed or doesn't run on the CPU.
+        import onnxruntime  # noqa: WPS433
         from transformers import AutoTokenizer  # noqa: WPS433
 
         tokenizer = AutoTokenizer.from_pretrained(str(QA_MODEL_DIR))
-        model = ORTModelForQuestionAnswering.from_pretrained(
-            str(QA_MODEL_DIR), file_name='model_quantized.onnx',
+        session = onnxruntime.InferenceSession(
+            str(QA_MODEL_DIR / 'model_quantized.onnx'),
+            providers=['CPUExecutionProvider'],
         )
     except Exception:
         return None
-    return tokenizer, model
+    return tokenizer, session
 
 
 def extract_answer(question: str, context: str):
@@ -73,20 +84,20 @@ def extract_answer(question: str, context: str):
     loaded = _load()
     if loaded is None or not question or not context:
         return None
-    tokenizer, model = loaded
+    tokenizer, session = loaded
 
     try:
         encoded = tokenizer(
             question, context,
-            return_offsets_mapping=True, return_tensors='pt',
+            return_offsets_mapping=True, return_tensors='np',
             truncation='only_second', max_length=MAX_SEQ_LEN,
         )
         offsets = encoded.pop('offset_mapping')[0].tolist()
         sequence_ids = encoded.sequence_ids(0)
         model_inputs = {k: v for k, v in encoded.items() if k in ('input_ids', 'attention_mask')}
-        output = model(**model_inputs)
-        start_logits = output.start_logits[0]
-        end_logits = output.end_logits[0]
+        start_logits, end_logits = session.run(None, model_inputs)
+        start_logits = start_logits[0]
+        end_logits = end_logits[0]
     except Exception:
         return None
 
@@ -96,7 +107,7 @@ def extract_answer(question: str, context: str):
 
     # Index 0 is always <s> (CLS-equivalent) — SQuAD2 models are trained to
     # point start AND end there when the context doesn't answer the question.
-    no_answer_score = (start_logits[0] + end_logits[0]).item()
+    no_answer_score = float(start_logits[0] + end_logits[0])
 
     best_span = None
     best_score = no_answer_score
@@ -104,7 +115,7 @@ def extract_answer(question: str, context: str):
         for end in context_positions:
             if end < start or end - start > MAX_ANSWER_TOKENS:
                 continue
-            score = (start_logits[start] + end_logits[end]).item()
+            score = float(start_logits[start] + end_logits[end])
             if score > best_score:
                 best_score = score
                 best_span = (start, end)

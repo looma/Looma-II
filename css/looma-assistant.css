@@ -253,7 +253,7 @@
     font-weight: 700;
 }
 
-/* Controls panel (just the "Limit to selected chapter" filter + status) */
+/* Controls panel (just the status line) */
 #looma-assistant-modal .ai-chat-controls {
     display: flex;
     flex-direction: column;
@@ -261,24 +261,6 @@
     padding: 14px 18px;
     background: var(--la-panel);
     border-top: 3px solid var(--la-line);
-}
-
-#looma-assistant-modal .ai-chat-controls label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--la-ink);
-}
-
-#looma-assistant-modal input[type="checkbox"] {
-    width: 24px;
-    height: 24px;
-    margin: 0;
-    accent-color: var(--la-accent);
-    cursor: pointer;
 }
 
 #looma-assistant-modal #looma-assistant-rag-status {

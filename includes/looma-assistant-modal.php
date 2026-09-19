@@ -18,10 +18,6 @@
       <div id="looma-assistant-rag-chat" class="ai-chat-messages" aria-label="Chat history"></div>
 
       <div class="ai-chat-controls">
-        <label class="ai-chat-checkbox">
-          <input id="looma-assistant-rag-use-filters" type="checkbox">
-          <span id="looma-assistant-limit-label">Limit to selected chapter</span>
-        </label>
         <span id="looma-assistant-rag-status" class="muted"></span>
       </div>
 

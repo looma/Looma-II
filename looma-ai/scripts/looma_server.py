@@ -283,10 +283,19 @@ def looma_fp_fn_from_source_path(source_path: str):
 
     p = source_path.replace('\\', '/')
     pl = p.lower()
-    marker = '/looma/content/'
-    i = pl.find(marker)
-    if i < 0:
+    # '/looma/content/' is the container convention (LOOMA_SOURCE_ROOT=/looma/content).
+    # A bare '/content/' also matches a workstation ingest, where the content dir is
+    # a plain sibling folder (any absolute path ending .../content/...) rather than
+    # mounted at /looma/content — same rel-path math either way. Try the specific
+    # one first so a path that happens to contain both resolves to the real root.
+    marker = None
+    for candidate in ('/looma/content/', '/content/'):
+        if candidate in pl:
+            marker = candidate
+            break
+    if marker is None:
         return None, None
+    i = pl.find(marker)
 
     rel = p[i + len(marker):]
     rel = rel.lstrip('/')

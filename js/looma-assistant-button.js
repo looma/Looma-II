@@ -45,7 +45,6 @@
     en: {
       title:       'LOOMA Assistant',
       clear:       'Clear chat',
-      limit:       'Limit to selected chapter',
       placeholder: 'Ask me about anything…',
       send:        'Send',
       thinking:    'Thinking…',
@@ -58,7 +57,6 @@
     ne: {
       title:       'LOOMA सहायक',
       clear:       'कुराकानी खाली गर',
-      limit:       'छानिएको अध्यायमा सीमित गर',
       placeholder: 'मलाई जे पनि सोध्नुहोस्…',
       send:        'पठाउनुहोस्',
       thinking:    'सोच्दै…',
@@ -80,7 +78,6 @@
     $('#looma-assistant-modal-title').text(t('title'));
     $('#looma-assistant-rag-clear').text(t('clear'));
     $('#looma-assistant-rag-run').text(t('send'));
-    $('#looma-assistant-limit-label').text(t('limit'));
     $('#looma-assistant-rag-question').attr('placeholder', t('placeholder'));
     // The empty-chat hint is a CSS ::before that reads data-empty-hint.
     $('#looma-assistant-rag-chat').attr('data-empty-hint', t('emptyHint'));
@@ -252,19 +249,6 @@
       language: loomaLang(),
       history: chatHistory.slice(-10)
     };
-
-    // "Limit to selected chapter": scope the search to the chapter/subject the
-    // student currently has open (stored in session by the rest of Looma).
-    if ($('#looma-assistant-rag-use-filters').prop('checked')) {
-      try {
-        var chapter = LOOMA.readStore('chapter', 'session');
-        var subject = LOOMA.readStore('subject', 'session');
-        var grade = parseInt(LOOMA.readStore('class', 'session'), 10);
-        if (chapter) payload.chapter_id = chapter;
-        if (subject) payload.subject = subject;
-        if (!isNaN(grade)) payload.grade = grade;
-      } catch (e) {}
-    }
 
     fetch(AI_BASE + '/rag_query', {
       method: 'POST',

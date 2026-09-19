@@ -56,6 +56,11 @@ ZVEC_DIR = _from_env('ZVEC_BASE_PATH', DATA_DIR / 'zvec')
 SQLITE_DB_PATH = _from_env('SQLITE_DB_PATH', DATA_DIR / 'index' / 'looma.db')
 MODELS_DIR = _from_env('LOOMA_AI_MODELS_DIR', DATA_DIR / 'models')
 RAW_DIR = _from_env('LOOMA_RAW_PATH', DATA_DIR / 'raw' / 'looma')
+# Quantized ONNX extractive-QA model (deepset/xlm-roberta-base-squad2) — see
+# app/qa/extractor.py. Shipped as a prebuilt artifact, not downloaded/quantized
+# on the box: quantizing on-device would need the ~1.1GB fp32 model in memory
+# even transiently, which doesn't fit next to everything else already running.
+QA_MODEL_DIR = _from_env('LOOMA_QA_MODEL_DIR', DATA_DIR / 'qa_model')
 
 
 def zvec_collection_path(name: str) -> Path:
@@ -78,5 +83,6 @@ def describe() -> str:
             f'zvec         : {ZVEC_DIR}',
             f'sqlite       : {SQLITE_DB_PATH}',
             f'models       : {MODELS_DIR}',
+            f'qa model     : {QA_MODEL_DIR}',
         ]
     )

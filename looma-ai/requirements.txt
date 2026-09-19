@@ -38,6 +38,12 @@ sympy==1.14.0
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.4.1
 sentence-transformers==3.0.1
+# Extractive QA (app/qa/extractor.py) — the shipped model is ONNX int8, so
+# this only needs onnxruntime's CPU wheel + optimum's thin loading wrapper,
+# not a second copy of torch/transformers for it.
+optimum==2.1.0
+optimum-onnx==0.1.0
+onnxruntime==1.30.0
 threadpoolctl==3.6.0
 tqdm==4.67.3
 typer==0.24.1

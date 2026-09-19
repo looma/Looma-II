@@ -733,7 +733,7 @@ def _rag_boost_context_ids(conn, *, question: str, chapter_id: str | None, limit
         return set()
 
 
-def _chunk_text_simple(text: str, *, chunk_size: int = 1200, overlap: int = 200) -> list[str]:
+def _chunk_text_simple(text: str, *, chunk_size: int = 400, overlap: int = 60) -> list[str]:
     text = re.sub(r'\s+', ' ', (text or '')).strip()
     if not text:
         return []
@@ -1008,6 +1008,33 @@ def _navigate_chapters(conn, question: str, *, grade: int | None = None, subject
     return results[:limit]
 
 
+def _qa_span_answer(question: str, context_texts: list[str]) -> str:
+    """Try app/qa/extractor's span-extraction model against the top few
+    retrieved chunks; return its answer only if confident. See that module's
+    docstring for why this exists alongside _compose_answer below: token
+    overlap scores "mentions Portugal" the same as "answers where Portugal
+    is", and this reads the question and text together instead.
+
+    A wrong or unconfident span here just means the caller falls back to
+    _compose_answer, same as _compose_answer returning '' today — this
+    can't make an answer worse than the existing behavior, only skip a
+    chance to improve it.
+    """
+    try:
+        from app.qa.extractor import extract_answer  # noqa: WPS433
+    except Exception:
+        return ''
+
+    best = None
+    for context in (context_texts or [])[:3]:
+        if not isinstance(context, str) or not context.strip():
+            continue
+        result = extract_answer(question, context)
+        if result and (best is None or result['score'] > best['score']):
+            best = result
+    return best['answer'] if best else ''
+
+
 def _compose_answer(question: str, context_texts: list[str], *, history: list | None = None, wh: str | None = None) -> str:
     """Multi-sentence extractive answer using token-overlap scoring + MMR diversity.
 
@@ -1206,7 +1233,11 @@ def _text_from_chapter_html(path: "Path") -> list[str]:
     joined = clean_text(' '.join(p for p in parts if p))
     if len(joined) < 25:
         return []
-    return _chunk_text_simple(joined, chunk_size=1400, overlap=200)
+    # 400/60, not 1400/200: these chunks feed "summaries, keywords, assistant
+    # answers and exams" (see docstring below) through the same 128-token
+    # embedding model as ingest_looma.py — see app/chunk/chunker.py for the
+    # measured truncation this was silently causing at the old chunk size.
+    return _chunk_text_simple(joined, chunk_size=400, overlap=60)
 
 
 def _extract_chapter_text_from_pdf(*, chapter_id: str, grade: int | None, subject: str | None, language: str | None) -> list[str]:
@@ -1257,8 +1288,8 @@ def _extract_chapter_text_from_pdf(*, chapter_id: str, grade: int | None, subjec
     if not parts:
         return []
 
-    # Chunk the concatenated content to keep keyword/summary models stable.
-    return _chunk_text_simple('\n'.join(parts), chunk_size=1400, overlap=200)
+    # 400/60 — see the matching comment on the HTML branch above.
+    return _chunk_text_simple('\n'.join(parts), chunk_size=400, overlap=60)
 
 
 # Match the textbook activity headings used throughout the CEHRD curriculum.
@@ -2790,6 +2821,9 @@ class Handler(BaseHTTPRequestHandler):
             wh_kind = _classify_wh(question)
 
             def _build_answer(context_texts: list[str]) -> str:
+                qa_answer = _qa_span_answer(question, context_texts)
+                if qa_answer:
+                    return qa_answer
                 return _compose_answer(question, context_texts, history=history, wh=wh_kind)
 
             # zvec/fts/hybrid over curriculum chunks (sqlite + optional zvec embeddings).

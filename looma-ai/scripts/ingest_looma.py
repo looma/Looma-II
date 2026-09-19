@@ -500,7 +500,7 @@ def main():
                     continue
 
                 parent_chapter = chapter_for_page(chapters, page_num)
-                chunks = chunk_text(raw_text, chunk_size=1200, overlap=200)
+                chunks = chunk_text(raw_text, chunk_size=400, overlap=60)
                 if not chunks:
                     continue
 

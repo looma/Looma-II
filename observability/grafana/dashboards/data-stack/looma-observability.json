@@ -322,7 +322,19 @@
       "targets": [
         {
           "refId": "nodes_calls",
-          "expr": "label_replace(sum by (service_name) (rate(traces_span_metrics_calls_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval])), \"id\", \"$1\", \"service_name\", \"(.*)\")",
+          "expr": "label_replace(sum by (service_name) (rate(traces_span_metrics_calls_total{span_kind=\"SPAN_KIND_SERVER\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval])), \"id\", \"$1\", \"service_name\", \"(.*)\")",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "nodes_errors",
+          "expr": "label_replace(sum by (service_name) (rate(traces_span_metrics_calls_total{span_kind=\"SPAN_KIND_SERVER\", status_code!=\"STATUS_CODE_OK\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval])), \"id\", \"$1\", \"service_name\", \"(.*)\")",
+          "format": "table",
+          "instant": true
+        },
+        {
+          "refId": "nodes_duration",
+          "expr": "label_replace(histogram_quantile(0.95, sum by (service_name, le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_kind=\"SPAN_KIND_SERVER\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__rate_interval]))), \"id\", \"$1\", \"service_name\", \"(.*)\")",
           "format": "table",
           "instant": true
         },
@@ -348,6 +360,26 @@
           "id": "labelsToFields",
           "filter": {
             "id": "byRefId",
+            "options": "nodes_errors"
+          },
+          "options": {
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "filter": {
+            "id": "byRefId",
+            "options": "nodes_duration"
+          },
+          "options": {
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "filter": {
+            "id": "byRefId",
             "options": "edges_rate"
           },
           "options": {
@@ -361,7 +393,7 @@
             "options": "nodes_calls"
           },
           "options": {
-            "alias": "mainStat",
+            "alias": "request_rate",
             "mode": "reduceRow",
             "reduce": {
               "reducer": "first",
@@ -392,6 +424,40 @@
           "id": "calculateField",
           "filter": {
             "id": "byRefId",
+            "options": "nodes_errors"
+          },
+          "options": {
+            "alias": "error_rate",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "first",
+              "include": [
+                "Value"
+              ]
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "filter": {
+            "id": "byRefId",
+            "options": "nodes_duration"
+          },
+          "options": {
+            "alias": "p95_duration_ms",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "first",
+              "include": [
+                "Value"
+              ]
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "filter": {
+            "id": "byRefId",
             "options": "edges_rate"
           },
           "options": {
@@ -401,6 +467,82 @@
               "reducer": "first",
               "include": [
                 "Value"
+              ]
+            }
+          }
+        },
+        {
+          "id": "joinByField",
+          "filter": {
+            "id": "byRefId",
+            "options": "nodes_calls|nodes_errors|nodes_duration"
+          },
+          "options": {
+            "byField": "id",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "mainStat",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "first",
+              "include": [
+                "request_rate"
+              ]
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "secondaryStat",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "first",
+              "include": [
+                "error_rate"
+              ]
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "detail__Requests/sec",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "first",
+              "include": [
+                "request_rate"
+              ]
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "detail__Errors/sec",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "first",
+              "include": [
+                "error_rate"
+              ]
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "detail__p95 duration (ms)",
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "first",
+              "include": [
+                "p95_duration_ms"
               ]
             }
           }
@@ -428,12 +570,33 @@
                 "value": 2
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "secondaryStat"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "errors/s"
+              },
+              {
+                "id": "unit",
+                "value": "reqps"
+              },
+              {
+                "id": "decimals",
+                "value": 3
+              }
+            ]
           }
         ]
       },
       "options": {
         "nodes": {
-          "mainStatUnit": "reqps"
+          "mainStatUnit": "reqps",
+          "secondaryStatUnit": "reqps"
         }
       }
     },

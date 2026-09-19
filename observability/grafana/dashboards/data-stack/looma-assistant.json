@@ -399,7 +399,7 @@
     },
     {
       "id": 10,
-      "type": "barchart",
+      "type": "bargauge",
       "title": "Questions by type",
       "description": "Classified question shape (where/what/who/when/why/how/how_many) — what students are actually asking.",
       "datasource": {
@@ -422,13 +422,20 @@
       ],
       "options": {
         "orientation": "horizontal",
+        "displayMode": "gradient",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
         "legend": {
           "displayMode": "none"
         }
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short"
+          "unit": "short",
+          "min": 0
         }
       }
     },

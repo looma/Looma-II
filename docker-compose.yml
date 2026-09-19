@@ -159,10 +159,11 @@ services:
       MONGO_URL: mongodb://looma-db:27017
       MONGO_DB: looma
       MONGO_COLLECTION: activities
-      # all-MiniLM-L6-v2 (384-dim, matches EMBEDDING_DIM) is ~5x faster on CPU than
-      # all-mpnet-base-v2, so the first/background index build completes much sooner.
+      # paraphrase-multilingual-MiniLM-L12-v2 (384-dim, matches EMBEDDING_DIM) —
+      # not all-MiniLM-L6-v2, which is English-only and doesn't understand Nepali
+      # content at all. See the MODEL_NAME comment in search-service/search_service.py.
       # Must match the model baked into the image (search-service/Dockerfile).
-      MODEL_NAME: sentence-transformers/all-MiniLM-L6-v2
+      MODEL_NAME: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
       HF_HOME: /models/hf
       # Renamed from /data/zvec-index: this service contains no zvec.
       # search_service.py falls back to the old directory if it still

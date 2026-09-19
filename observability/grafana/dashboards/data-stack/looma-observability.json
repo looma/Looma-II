@@ -76,7 +76,10 @@
         "name": "service",
         "label": "Service",
         "type": "query",
-        "datasource": "Prometheus",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
         "query": "label_values(traces_span_metrics_calls_total, service_name)",
         "refresh": 2,
         "includeAll": true,
@@ -90,7 +93,10 @@
         "name": "operation",
         "label": "Operation",
         "type": "query",
-        "datasource": "Prometheus",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
         "query": "label_values(traces_span_metrics_calls_total{service_name=~\"$service\"}, span_name)",
         "refresh": 2,
         "includeAll": true,
@@ -118,7 +124,10 @@
       "id": 1,
       "type": "stat",
       "title": "Spans / sec",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "x": 0,
         "y": 1,
@@ -150,7 +159,10 @@
       "id": 2,
       "type": "stat",
       "title": "Active services",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "x": 6,
         "y": 1,
@@ -181,7 +193,10 @@
       "id": 3,
       "type": "stat",
       "title": "Error rate (5m)",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "x": 12,
         "y": 1,
@@ -230,7 +245,10 @@
       "id": 4,
       "type": "stat",
       "title": "p95 latency (5m)",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "x": 18,
         "y": 1,
@@ -291,7 +309,10 @@
       "type": "nodeGraph",
       "title": "Interactive service map",
       "description": "Drag nodes to rearrange, or switch to grid layout (bottom-right icon) for a cleaner view. Each node is a service (labeled with calls/s); each edge is a client→server call. Built from OTel servicegraph metrics. \"user\"/\"unknown\"/\"looma\" pseudo-endpoints are excluded since they aren't real traced services.",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "x": 0,
         "y": 6,
@@ -314,6 +335,26 @@
       ],
       "transformations": [
         {
+          "id": "labelsToFields",
+          "filter": {
+            "id": "byRefId",
+            "options": "nodes_calls"
+          },
+          "options": {
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "filter": {
+            "id": "byRefId",
+            "options": "edges_rate"
+          },
+          "options": {
+            "mode": "columns"
+          }
+        },
+        {
           "id": "calculateField",
           "filter": {
             "id": "byRefId",
@@ -324,7 +365,9 @@
             "mode": "reduceRow",
             "reduce": {
               "reducer": "first",
-              "include": ["Value #nodes_calls"]
+              "include": [
+                "Value"
+              ]
             }
           }
         },
@@ -339,7 +382,9 @@
             "mode": "reduceRow",
             "reduce": {
               "reducer": "first",
-              "include": ["id"]
+              "include": [
+                "id"
+              ]
             }
           }
         },
@@ -354,7 +399,9 @@
             "mode": "reduceRow",
             "reduce": {
               "reducer": "first",
-              "include": ["Value #edges_rate"]
+              "include": [
+                "Value"
+              ]
             }
           }
         }
@@ -394,7 +441,10 @@
       "id": 10,
       "type": "table",
       "title": "Service edges — req/s, error %, p95 latency",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "Each row is a directed edge from `client` service to `server` service, computed from the OTel servicegraph connector.",
       "gridPos": {
         "x": 0,
@@ -586,7 +636,10 @@
       "id": 11,
       "type": "timeseries",
       "title": "Service-to-service traffic (req/s)",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "Top 10 directed edges by request rate — useful for spotting noisy callers.",
       "gridPos": {
         "x": 14,
@@ -621,7 +674,10 @@
       "id": 20,
       "type": "timeseries",
       "title": "Request rate (req/s) per service",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "x": 0,
         "y": 31,
@@ -644,7 +700,10 @@
       "id": 21,
       "type": "timeseries",
       "title": "Error rate (errors/s) per service",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "x": 12,
         "y": 31,
@@ -680,7 +739,10 @@
       "id": 22,
       "type": "timeseries",
       "title": "p95 latency per service (ms)",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "x": 0,
         "y": 39,
@@ -703,7 +765,10 @@
       "id": 23,
       "type": "timeseries",
       "title": "p50 / p99 latency overall (ms)",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "x": 12,
         "y": 39,
@@ -743,7 +808,10 @@
       "id": 30,
       "type": "table",
       "title": "Top operations — calls / errors / p95",
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "Per (service, operation) breakdown — calls, errors and p95 latency.",
       "gridPos": {
         "x": 0,
@@ -940,7 +1008,10 @@
       "type": "logs",
       "title": "Recent error / slow spans (OpenSearch)",
       "description": "Spans from the OpenSearch trace index, filtered to errors or duration ≥ 1s. Each row links back to the trace via traceID. Always looks back 6h regardless of the dashboard's time picker — errors are rare enough here that the dashboard's own 1h default frequently shows nothing even when the system is healthy.",
-      "datasource": "OpenSearch-Traces",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
       "timeFrom": "6h",
       "gridPos": {
         "x": 0,

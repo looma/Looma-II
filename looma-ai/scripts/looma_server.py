@@ -6571,6 +6571,24 @@ class Handler(BaseHTTPRequestHandler):
         return None
 
 
+# Give otel_bootstrap's ZVEC gauges a lock-safe way to read the real doc count:
+# the collection is already open (and locked) in this same process via
+# Handler._get_collection() — see the comment on _zvec_sample() for why a
+# second zvec.open() elsewhere can't be used instead.
+try:
+    from scripts.otel_bootstrap import register_zvec_collection_getter as _register_zvec_getter
+except Exception:
+    try:
+        from otel_bootstrap import register_zvec_collection_getter as _register_zvec_getter  # type: ignore
+    except Exception:
+        _register_zvec_getter = None  # type: ignore
+if _register_zvec_getter is not None:
+    try:
+        _register_zvec_getter(Handler._get_collection)
+    except Exception:
+        pass
+
+
 def build_arg_parser():
     p = argparse.ArgumentParser(description='LOOMA AI HTTP server (chapter search + generation)')
     p.add_argument('--host', default='127.0.0.1')

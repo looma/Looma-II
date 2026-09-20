@@ -29,6 +29,27 @@ _INITIALIZED = False
 _LOGS_INITIALIZED = False
 _LOG = logging.getLogger(__name__)
 
+# Set by looma_server.py once its Handler class exists (see register_zvec_collection_getter
+# below) to `lambda: Handler._get_collection()` — the SAME already-open, in-process zvec
+# collection /rag_query itself queries. Reading through it is what makes the local doc
+# count both correct AND lock-safe: zvec takes an exclusive file lock on the collection
+# directory, so a second `zvec.open()` from anywhere else (this module included) throws
+# "Can't lock read-write collection" while the server holds it open.
+_ZVEC_COLLECTION_GETTER = None
+
+
+def register_zvec_collection_getter(fn) -> None:
+    """Let looma_server.py hand us its live zvec collection accessor.
+
+    Called once at import time, right after `class Handler` is defined. Without
+    this, `_zvec_sample()` has no lock-safe way to read the LOCAL collection's
+    real doc count and falls back to looma-search's /health — a different
+    service on a different volume, which answers "is looma-search's index up"
+    rather than "is looma-ai's own curriculum ingestion complete".
+    """
+    global _ZVEC_COLLECTION_GETTER
+    _ZVEC_COLLECTION_GETTER = fn
+
 # Pre-declared instruments (populated in init_metrics()). They are always
 # importable so call sites can be unconditional and zero-cost when metrics
 # are disabled.
@@ -48,18 +69,26 @@ def _re_search_to_health(search_url: str) -> str:
 def _zvec_sample() -> dict:
     """Read ZVEC vector-store state.
 
-    zvec_ready / zvec_docs come from looma-search's own /health endpoint,
-    NOT from a local zvec.open() — looma-ai and looma-search are separate
-    containers on separate Docker volumes (looma_ai_data vs
-    looma_search_index; see native_sidecars_docker() in
-    deploy/odroid/looma-installer.sh), so looma-ai never had the real index
-    on its own filesystem. Reading /app/data/zvec/... here always reported
-    "DOWN" / 0 docs regardless of the actual store's health, because that
-    path is a different, permanently-empty volume — not the one
-    search_service.py (and every real search/exam/recommendation request)
-    actually serves from. LOOMA_SEARCH_URL_ZVEC/LOOMA_SEARCH_URL match the
-    env vars looma-chapters.php's vhost already sets for the same endpoint;
-    127.0.0.1 works because both containers use network_mode: host.
+    zvec_ready / zvec_docs are read through the REGISTERED in-process
+    collection getter (see register_zvec_collection_getter) whenever one is
+    available — the same already-open `curriculum_chunks` collection handle
+    /rag_query itself queries via Handler._get_collection(). That is the only
+    lock-safe way to read it: zvec holds an exclusive file lock on the
+    collection directory for as long as the server keeps it open, so a fresh
+    `zvec.open()` from here (or from any other process) fails with "Can't
+    lock read-write collection" instead of reporting a real count.
+
+    This used to call looma-search's own /health endpoint instead, on the
+    theory that looma-ai's local zvec directory was a permanently-empty,
+    unused volume. Comparing the two directly (via /rag_query's own
+    diagnostics) showed that is no longer true — the local collection is the
+    one hybrid search / RAG / the QA extractor actually retrieve from, fully
+    populated (doc count == sqlite chunk count). Reporting looma-search's
+    unrelated doc count here instead made the "Ingestion coverage" panel
+    compare two different services' indexes and sit at ~2%, permanently,
+    regardless of looma-ai's real (100%) ingestion state. The health-endpoint
+    read is kept as a fallback for the case the getter was never registered
+    (e.g. this module imported outside looma_server.py's normal startup).
 
     sqlite_chunks/documents/chapters ARE read locally below — that SQLite
     index (app/index/sqlite_store.py, populated by scripts/ingest_looma.py)
@@ -67,28 +96,41 @@ def _zvec_sample() -> dict:
     """
     import os as _os
     import sqlite3 as _sql
-    import urllib.request as _urlreq
     # Defaults come from app.paths so the SQLite half reports on the same
     # store the server opens, whatever directory the process was started in.
     from app import paths as _paths
 
     db_path = _os.environ.get("LOOMA_INDEX_DB") or str(_paths.SQLITE_DB_PATH)
-    search_url = (
-        _os.environ.get("LOOMA_SEARCH_URL_ZVEC")
-        or _os.environ.get("LOOMA_SEARCH_URL")
-        or "http://127.0.0.1:46333/search"
-    )
-    health_url = _re_search_to_health(search_url)
     s: dict = {}
-    try:
-        with _urlreq.urlopen(health_url, timeout=2.0) as resp:
-            import json as _json
-            health = _json.loads(resp.read().decode("utf-8", "replace"))
-        s["zvec_ready"] = 1.0 if health.get("ready") else 0.0
-        s["zvec_docs"] = float(int(health.get("doc_count") or health.get("unique_docs") or 0))
-    except Exception:
-        s["zvec_ready"] = 0.0
-        s["zvec_docs"] = 0.0
+
+    local_doc_count = None
+    if _ZVEC_COLLECTION_GETTER is not None:
+        try:
+            coll = _ZVEC_COLLECTION_GETTER()
+            local_doc_count = int(getattr(getattr(coll, 'stats', None), 'doc_count', 0) or 0)
+        except Exception:
+            local_doc_count = None
+
+    if local_doc_count is not None:
+        s["zvec_ready"] = 1.0
+        s["zvec_docs"] = float(local_doc_count)
+    else:
+        import urllib.request as _urlreq
+        search_url = (
+            _os.environ.get("LOOMA_SEARCH_URL_ZVEC")
+            or _os.environ.get("LOOMA_SEARCH_URL")
+            or "http://127.0.0.1:46333/search"
+        )
+        health_url = _re_search_to_health(search_url)
+        try:
+            with _urlreq.urlopen(health_url, timeout=2.0) as resp:
+                import json as _json
+                health = _json.loads(resp.read().decode("utf-8", "replace"))
+            s["zvec_ready"] = 1.0 if health.get("ready") else 0.0
+            s["zvec_docs"] = float(int(health.get("doc_count") or health.get("unique_docs") or 0))
+        except Exception:
+            s["zvec_ready"] = 0.0
+            s["zvec_docs"] = 0.0
     try:
         conn = _sql.connect(db_path, timeout=0.5)
         for key, table in (("sqlite_chunks", "chunks"),

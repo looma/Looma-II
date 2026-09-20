@@ -459,6 +459,16 @@ if box_name == "" { box_name = get_hostname() ?? "unknown" }
 box_ip = get_env_var("LOOMA_BOX_IP") ?? ""
 if box_ip == "" { box_ip = "unknown" }
 .box_ip = box_ip
+# Same install-time lookup includes/otel.php reads as LOOMA_BOX_GEO_CITY/
+# LOOMA_BOX_GEO_COUNTRY for trace resource attributes. The "Vector internal
+# logs" dashboard's device/city/country template variables AND every panel
+# query together, so a document missing box_geo_city/box_geo_country dropped
+# out of every panel no matter what box_name matched — this is why the
+# dashboard showed nothing at all.
+box_geo_city = get_env_var("LOOMA_BOX_GEO_CITY") ?? ""
+if box_geo_city != "" { .box_geo_city = box_geo_city }
+box_geo_country = get_env_var("LOOMA_BOX_GEO_COUNTRY") ?? ""
+if box_geo_country != "" { .box_geo_country = box_geo_country }
 '''
 
 # ---------------------------------------------------------------------------

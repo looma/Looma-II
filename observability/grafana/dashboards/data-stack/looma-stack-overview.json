@@ -16,7 +16,7 @@
     "to": "now"
   },
   "timezone": "browser",
-  "title": "Looma — Stack Overview",
+  "title": "Looma \u2014 Stack Overview",
   "uid": "looma-stack-overview",
   "version": 1,
   "refresh": "30s",
@@ -88,7 +88,7 @@
         "x": 0,
         "y": 0,
         "w": 4,
-        "h": 5
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -166,9 +166,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 5,
+        "y": 4,
         "w": 4,
-        "h": 5
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -209,7 +209,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 10,
+        "y": 8,
         "w": 12,
         "h": 8
       },
@@ -236,7 +236,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 10,
+        "y": 8,
         "w": 12,
         "h": 8
       },
@@ -263,7 +263,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 18,
+        "y": 16,
         "w": 12,
         "h": 7
       },
@@ -300,7 +300,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 18,
+        "y": 16,
         "w": 12,
         "h": 7
       },
@@ -327,8 +327,8 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 25,
-        "w": 12,
+        "y": 23,
+        "w": 24,
         "h": 7
       },
       "fieldConfig": {
@@ -348,7 +348,7 @@
       "id": 11,
       "type": "timeseries",
       "title": "Learning telemetry events / min",
-      "description": "Always looks back 24h regardless of the dashboard's time picker. Real exam/score events (looma_event_total) are genuinely bursty — students take exams in clusters, not continuously — so the dashboard's short default range often lands between events even when the pipeline is working fine.",
+      "description": "Always looks back 24h regardless of the dashboard's time picker. Real exam/score events (looma_event_total) are genuinely bursty \u2014 students take exams in clusters, not continuously \u2014 so the dashboard's short default range often lands between events even when the pipeline is working fine.",
       "timeFrom": "24h",
       "datasource": {
         "type": "prometheus",
@@ -356,7 +356,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 32,
+        "y": 30,
         "w": 12,
         "h": 7
       },
@@ -384,7 +384,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 32,
+        "y": 30,
         "w": 6,
         "h": 7
       },
@@ -422,7 +422,7 @@
       },
       "gridPos": {
         "x": 18,
-        "y": 32,
+        "y": 30,
         "w": 6,
         "h": 7
       },
@@ -438,7 +438,7 @@
     {
       "id": 14,
       "type": "table",
-      "title": "Service map (server→client)",
+      "title": "Service map (server\u2192client)",
       "description": "Service-graph metrics from the servicegraph connector. Edges are server-to-client RPC latency.",
       "datasource": {
         "type": "prometheus",
@@ -446,7 +446,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 39,
+        "y": 37,
         "w": 24,
         "h": 8
       },

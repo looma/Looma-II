@@ -24,6 +24,13 @@ type = "internal_logs"
 type = "docker_logs"
 docker_host = "unix:///var/run/docker.sock"
 auto_partial_merge = true
+# This host also runs the artrackr-v2 observability stack (its own
+# artrackr-* containers) plus assorted anonymous one-off containers.
+# Without include_containers, docker_logs picks up EVERY container on the
+# docker socket regardless of project, which leaked artrackr-* logs (and
+# noise from anonymous containers) into this OpenSearch's looma-logs-*
+# indices. Scope to looma-prefixed containers only.
+include_containers = ["looma-"]
 exclude_containers = ["looma-vector", "looma-opensearch", "looma-metricbeat"]
 
 [sources.docker_logs_opensearch]
@@ -323,9 +330,23 @@ condition = '''
 !(exists(.observability_noise) && .observability_noise == true)
 '''
 
+# Metricbeat's docker module polls the shared docker.sock for every
+# container on the host, not just Looma's — same leak as docker_logs above,
+# but landing in the single metricbeat-<version>-YYYY-MM-DD index instead of
+# a per-container index (so it can't be cleaned up by deleting an index).
+# Drop any docker-module event whose container isn't looma-prefixed;
+# non-docker events (e.g. the mongodb module) have no container.name field
+# and pass through untouched.
+[transforms.metricbeat_looma_only]
+type = "filter"
+inputs = ["metricbeat"]
+condition = '''
+!exists(.container.name) || starts_with(string!(.container.name), "looma-")
+'''
+
 [transforms.metricbeat_to_metric_batch]
 type = "remap"
-inputs = ["metricbeat"]
+inputs = ["metricbeat_looma_only"]
 source = '''
 new_data = []
 
@@ -439,7 +460,7 @@ end
 # — so every document landing in the shared OpenSearch carries box_name / box_ip.
 [transforms.metricbeat_enriched]
 type = "remap"
-inputs = ["metricbeat"]
+inputs = ["metricbeat_looma_only"]
 source = '''
 box_name = get_env_var("LOOMA_BOX_NAME") ?? ""
 if box_name == "" { box_name = get_hostname() ?? "unknown" }

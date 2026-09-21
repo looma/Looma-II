@@ -4683,6 +4683,12 @@ var loginname = LOOMA.loggedIn();
 
  // Returns the ISO week of the date.
  Date.prototype.getWeek = function() {
+     // Something on the PDF viewer page calls this with `this` unbound
+     // (undefined) — throwing here aborts jQuery's whole ready-queue for
+     // whoever registered a $(document).ready() after that caller, which is
+     // how the floating control-button stacking fix below silently stopped
+     // running. Guard rather than track down every possible bad caller.
+     if (!(this instanceof Date)) return null;
      var date = new Date(this.getTime());
      date.setHours(0, 0, 0, 0);
      // Thursday in current week decides the year.
@@ -4693,3 +4699,88 @@ var loginname = LOOMA.loggedIn();
      return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
          - 3 + (week1.getDay() + 6) % 7) / 7);
  }
+
+// ---------------------------------------------------------------------------
+// Floating control-button stack (speak / lookup / keyboard / captions /
+// download / fullscreen / next / prev — includes/looma-control-buttons.php,
+// downloadButton(), and the keyboard button js/looma-keyboard.js appends at
+// runtime). Each one is independently `position: fixed` with its own
+// hardcoded `bottom` in css/looma.css, so CSS has no way to know which OTHER
+// buttons a given page also shows — two buttons added on different pages/
+// dates ended up sharing the same `bottom` (e.g. lookup/show-keyboard, or
+// download/next-item) and sat on top of each other wherever both are visible
+// at once (a chapter reader with TTS, dictionary lookup, captions, download
+// and the on-screen keyboard all available together).
+//
+// Re-stacking them here — bottom to top, by whichever are ACTUALLY visible
+// right now, using their real (post-CSS) height — fixes that everywhere at
+// once and stays correct in/out of fullscreen and at every breakpoint,
+// without needing every current and future button to share one hand-numbered
+// ladder of `bottom` values.
+// ---------------------------------------------------------------------------
+(function () {
+    // Bottom-to-top stacking order. A button not listed here (e.g.
+    // #bagh-chal, alone on looma-games.php and never sharing a page with any
+    // of these) is left exactly as CSS positions it.
+    var STACK_ORDER = ['fullscreen-control', 'speak', 'lookup', 'show-keyboard',
+                        'captions', 'download', 'next-item', 'prev-item'];
+    var GAP = 6; // px between stacked buttons
+
+    function stackKey(el) {
+        if (el.id && STACK_ORDER.indexOf(el.id) !== -1) return el.id;
+        for (var i = 0; i < STACK_ORDER.length; i++) {
+            if (el.classList.contains(STACK_ORDER[i])) return STACK_ORDER[i];
+        }
+        return null;
+    }
+
+    function layoutControlButtons() {
+        var visible = [];
+        $('.looma-control-button').each(function () {
+            if (stackKey(this) !== null && $(this).is(':visible')) visible.push(this);
+        });
+        if (!visible.length) return;
+
+        visible.sort(function (a, b) {
+            return STACK_ORDER.indexOf(stackKey(a)) - STACK_ORDER.indexOf(stackKey(b));
+        });
+
+        // Anchor to the first (lowest) visible button's OWN CSS `bottom` —
+        // normally #fullscreen-control's, which already differs between
+        // normal / :fullscreen / the small-screen media query — so the whole
+        // stack keeps the right distance from the corner everywhere.
+        var cumulative = parseFloat(window.getComputedStyle(visible[0]).bottom) || 0;
+        visible.forEach(function (el) {
+            el.style.bottom = cumulative + 'px';
+            cumulative += el.getBoundingClientRect().height + GAP;
+        });
+    }
+
+    // Plain polling rather than a MutationObserver: these buttons are shown/
+    // hidden from many different pages (looma-play-lesson.js,
+    // looma-keyboard.js, looma-assistant-button.js, ...), this function
+    // itself writes the `style` attribute an observer would be watching, and
+    // js/looma-keyboard.js already solves the same "watch for UI that
+    // changes from elsewhere" problem the same way (see its watchFrames()
+    // poll) — match that instead of adding a feedback-loop risk.
+    //
+    // Native DOMContentLoaded, not $(document).ready(): jQuery dispatches
+    // every registered ready callback off one shared internal queue, and an
+    // uncaught throw in an earlier one (e.g. the PDF viewer page — see the
+    // getWeek() guard above) can abort the rest of that queue, which is how
+    // this stopped running at all despite being registered correctly.
+    // Separate native listeners don't share that fate — one throwing doesn't
+    // stop the others from firing.
+    function initControlButtonStacking() {
+        layoutControlButtons();
+        setInterval(layoutControlButtons, 400);
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initControlButtonStacking);
+    } else {
+        initControlButtonStacking();
+    }
+    window.addEventListener('resize', layoutControlButtons);
+    document.addEventListener('fullscreenchange', layoutControlButtons);
+    document.addEventListener('webkitfullscreenchange', layoutControlButtons);
+})();

@@ -218,23 +218,24 @@ pdf {
     color: #000;
     width: 100%;
 }
+/* display:inline-block reveals these (base rule is display:none); right is
+   deliberately NOT repeated here — button.looma-control-button in looma.css
+   owns that (var(--looma-toolbar-col-width)-based, clears the scrollbar).
+   This file redeclaring right:5vw at equal specificity used to win by load
+   order and silently undo any change made there. */
 button#fullscreen-control {
     display:inline-block;
-    right:5vw;
 }
 
 button.speak {
     display:inline-block;
-    right:5vw;
 }
 
 button.lookup {
     display:inline-block;
-    right:5vw;
 }
  button.download {
      display:inline-block;
-     right:5vw;
      bottom:44vh;
  }
 

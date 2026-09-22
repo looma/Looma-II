@@ -43,10 +43,42 @@
 #toolbar-vertical {
     display:flex;
     flex-direction:column;
+    /* Take the space #toolbar-container-vertical actually has (grown/shrunk
+       against #logo-div below), instead of sizing to the buttons' natural
+       total height. min-height:0 is what lets this flex item shrink below
+       that natural size in the first place — without it the 14 buttons
+       inside just push the container (and the page) taller than the
+       viewport.
+       No overflow-y:auto here (tried it, reverted): CSS forces overflow-x to
+       the SAME non-visible behaviour as any non-visible overflow-y on the
+       same box, even if overflow-x is left/set to visible — there's no way
+       to scroll one axis while the other stays truly visible. Since the
+       hover tip (span.tip, see looma.css/looma-toolbar.css below) is a
+       descendant that deliberately escapes its button's box sideways, that
+       silently clipped every tip down to a sliver. flex-shrink down to each
+       button's min-height (below) already fits all 14 on every viewport
+       that's been tested; a screen too short even for that is expected to
+       stay a rarer, separate problem rather than trade working hover for
+       it. */
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    /* Vertical spacing between buttons, replacing per-button top/bottom
+       margin (see .toolbar-button.vertical below): margin is extra space
+       OUTSIDE a flex item's box that the flex-grow/shrink distribution
+       doesn't know about, so once every button is already frozen at its
+       min-height floor (the common case in this column — see that rule's
+       comment), each button's margin was still adding on top of a total
+       that already didn't fit, pushing the lowest buttons further past the
+       bottom edge for no visible benefit. gap on the flex container IS
+       accounted for by that same distribution, so the buttons' min-height
+       floor is what determines whether they fit, not floor-plus-margin. */
+    gap: 0.2vw;
 }
 #logo-div {
     flex-grow: 3; /*2*/
     flex-basis:0;
+    min-height: 0; /* let the logo shrink/collapse first if the vertical toolbar is genuinely out of room, rather than fighting the buttons for space */
     max-height:100%;
     text-align:center;
 }
@@ -96,9 +128,25 @@ button.toolbar#toolbar-record {display:none;}
 .toolbar-button.active img.active {display:inline;}
 
 .toolbar-button.vertical{
-    margin: 0.2vw;
-    height: 6vh !important;
-    width: 4vw;
+    /* No vertical margin: the gap between buttons now comes from
+       #toolbar-vertical's own `gap` (see its comment) so the flex
+       distribution accounts for it. Horizontal margin isn't needed either —
+       #toolbar-vertical centers every button with align-items:center. */
+    margin: 0;
+    /* flex (not a fixed height): divides #toolbar-vertical's actual
+       available height evenly across however many buttons are enabled.
+       flex-grow means each button still grows to fill a big/tall
+       screen — this toolbar targets large/rotated displays (Looma Boxes,
+       portrait monitors), where bigger buttons are the point, not a
+       defect — but flex-shrink now also lets all of them compress
+       together on a short viewport instead of overflowing past it (with
+       15 buttons registered, a flat 6vh each summed to more height than
+       many screens actually have). min-height is the tappable floor;
+       below that, #toolbar-vertical's overflow-y:auto takes over instead
+       of clipping the lowest buttons off entirely. */
+    flex: 1 1 0;
+    min-height: max(40px, 4vh);
+    width: max(44px, 4vw);
     font-weight: bold;
 
     font-size: 1em;
@@ -119,6 +167,20 @@ button.flag-vertical {
     border: 2px solid white;
 }
 
+/* transform doesn't just resize a button — it scales its entire rendered
+   subtree, tooltip span included, around the button's own center. That's
+   harmless for the horizontal toolbar, but #toolbar-container-vertical sits
+   flush against the browser's top AND right edges, and the tip is already
+   anchored to the button's right edge (see the right:0 rule below) — so
+   growing the button by 1.2x also drags the tip 1.2x further right, past
+   an edge that had no spare room to begin with, and clips most of the
+   badge off the visible screen. Drop the scale specifically here; the
+   background/border highlight above is still a clearly visible hover cue
+   on its own, and it doesn't carry the tip along with it. */
+.toolbar-button.vertical:hover {
+    transform: none;
+}
+
 /* looma.css's global "button { overflow:hidden }" clips each button to its
    own box, which also clips the yellow tooltip span (span.tip, positioned via
    bottom:100% to sit just above the button) that tooltip() emits for every
@@ -131,6 +193,34 @@ button.flag-vertical {
 .toolbar-button, .toolbar-button-vertical {
     position: relative;
     overflow: visible;
+}
+
+/* The vertical toolbar (toolbar-vertical.php) sits in the rightmost grid
+   column, flush against the browser's right edge (see the [toolbar]/[right]
+   columns in looma.css). button:hover span.tip.yes-show in looma.css centers
+   the tip on the button (left:50% + translateX(-50%)), which is fine when
+   there's room on both sides — here there's no room to the right of the
+   button at all, so half the tip was pushed past the viewport edge and
+   clipped. Anchor it to the button's right edge instead, so it only grows
+   left into the visible content area. */
+#toolbar-container-vertical button:hover span.tip.yes-show {
+    left: auto;
+    right: 0;
+    transform: translateY(-8px);
+}
+
+/* The tip's default placement (bottom:100%, i.e. above the button) needs
+   room above the button to render into — fine for most of this column, but
+   #toolbar-container-vertical spans the full page height starting at the
+   very top of the viewport, so the first button (Translate) has zero room
+   above it and the second (Home) has barely one button's worth. Both got
+   their tip clipped by the top of the screen. Flip just these two to open
+   downward instead; every button after them has at least one full button's
+   height of clearance above, which is enough. */
+#toolbar-vertical > button:nth-child(-n+2):hover span.tip.yes-show {
+    bottom: auto;
+    top: 100%;
+    transform: translateY(8px);
 }
 
 #toolbar span {

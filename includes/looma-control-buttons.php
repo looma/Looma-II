@@ -48,5 +48,9 @@
         <?php tooltip("Previous") ?>
     </button>
 
+    <button id="toolbar-assistant" type="button" class="looma-control-button looma-assistant">
+        <?php tooltip("LOOMA Assistant") ?>
+    </button>
+
     <?php include ('includes/looma-assistant-widget.php'); ?>
 

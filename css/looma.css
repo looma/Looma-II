@@ -87,7 +87,18 @@ body {
 body {
      display:grid;
      grid-template-rows:    [top]  repeat(9, 1fr) [toolbar] 1fr [bottom];
-     grid-template-columns: [left] repeat(16, 1fr)[toolbar] 1fr [right];
+     /* minmax floor: on a narrow/portrait viewport a bare 1fr shrinks the
+        vertical toolbar column (used by toolbar-vertical.php) to a sliver a
+        few pixels wide, taking its buttons down with it — see the matching
+        clamp() on .toolbar-button.vertical in looma-toolbar.css. */
+     grid-template-columns: [left] repeat(16, 1fr)[toolbar] minmax(64px, 1fr) [right];
+     /* Same width as that [toolbar] column (1/17 of the row, floored at
+        64px) — a plain CSS approximation of the grid math above, kept in
+        sync by hand since calc() can't read a grid track's resolved size.
+        Used to keep the floating .looma-control-button column (below)
+        clear of the toolbar column and the content pane's own scrollbar,
+        which sits right at that same boundary. */
+     --looma-toolbar-col-width: max(64px, 5.9vw);
  }
 
 body * {
@@ -124,6 +135,29 @@ body * {
 #toolbar-container-vertical {
     grid-row:    top / bottom;
     grid-column: toolbar / right;
+    /* Grid items default to min-height:auto, i.e. "never shrink below my
+       content's own size" — with 14 flex buttons inside (toolbar-vertical.php)
+       that content is taller than this column's actual track on a short
+       viewport, so instead of shrinking to fit, the whole grid row was
+       forced taller than the page and the excess got clipped by html's
+       overflow:hidden below. min-height:0 lets this column actually take
+       only the height the grid gives it, so the flex-shrink rules on
+       #toolbar-vertical/.toolbar-button.vertical (css/looma-toolbar.css) can
+       do their job and every button ends up visible.
+       height:100vh, explicitly, because min-height:0 alone still leaves
+       this column's actual size to whatever the grid resolves for its
+       [top]/[bottom] row span — and #main-container-horizontal (the sibling
+       spanning rows [top]/[toolbar], i.e. everything except this column's
+       own dedicated row) has its own min-content floor from whatever it's
+       showing (a PDF page, a PHP notice, ...). When that's taller than a
+       plain 9-row share, the grid solver grows THOSE rows to fit it and the
+       dedicated [toolbar] row is left with whatever's short — measured as
+       little as 441px of a 513px-tall viewport on looma-play-pdf.php,
+       starving every button below their min-height floor. This column's
+       height should never depend on how tall the PDF/content pane's own
+       content happens to be, so pin it to the viewport directly instead of
+       trusting the grid's row-sharing math for it. */
+    height: 100vh;
  }
 
 #main-container {
@@ -432,7 +466,14 @@ button:hover span.tip.yes-show 	{
     white-space: nowrap;
     min-width: 100px;
 
-    z-index: 10000;
+    /* Matches #fullscreen-control/#next-item/#prev-item's own z-index (see
+       below) — those sit in their OWN stacking context (position:fixed +
+       z-index create one), so a tip nested inside a lower-z-index button
+       (any looma-control-button at 1000) couldn't out-rank them no matter
+       how high the tip's own z-index was set within its parent's context.
+       This needs to at least match the highest z-index anything on the page
+       can have, not just be "a big number". */
+    z-index: 2147483647;
     border: 2px solid #000000;
     border-radius: 8px;
     background-color: #FFE44D;
@@ -460,7 +501,13 @@ button:hover span.tip.yes-show.big-show {
  ********************/
 button.looma-control-button {
     position: fixed;
-    right:5vw;
+    /* Clear the vertical-toolbar column AND the content viewer's own
+       scrollbar, which draws right at that column's left edge — a flat 5vw
+       put this button's right edge past that boundary and overlapping
+       both. --looma-toolbar-col-width is the toolbar column's own width;
+       +50px covers Looma's own 40px-wide ::-webkit-scrollbar (see
+       ::-webkit-scrollbar in this file) plus a visual gap. */
+    right: calc(var(--looma-toolbar-col-width) + 50px);
     display:none;
     opacity: 0.5;
     z-index: 1000;
@@ -764,6 +811,35 @@ button#prev-item:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     border-color: yellow;
     border-width: 4px;
+}
+
+/* Unlike the other looma-control-buttons above (speak/lookup/captions/...),
+   which default to display:none and only appear on pages that explicitly
+   opt in with their own JS, the assistant used to live in the main
+   toolbar (includes/toolbar.php), always visible wherever that toolbar
+   was. Moving it here, next to Piper/fullscreen, keeps that same
+   "always there" behaviour instead of quietly making it opt-in per page —
+   js/looma-assistant-button.js's initAssistantButton() still hides it with
+   an inline style when a box has no zvec/AI stack (features.assistant ===
+   false), which overrides this default same as before.
+   bottom:79vh, right above #prev-item (bottom:67vh, so its own top edge is
+   at 67+12=79vh) — NOT the 33vh gap between speak(22vh) and lookup(44vh)
+   that first looks free: that gap is only 44-(22+12)=10vh tall, 2vh short
+   of this button's own 12vh height, so a button placed there overlapped
+   show-keyboard (confirmed by screenshot). The slot above prev-item is the
+   only place in the default stack with a clean 12vh to spare, since this
+   button — unlike its neighbours — can't rely on being mutually exclusive
+   with whichever ones a given page opts into. A page whose own CSS already
+   repositions something up around 79vh (looma-play-lesson.css moves
+   #fullscreen-playpause to bottom:76vh) may still need its own tweak here,
+   same as any other looma-control-button already does per page. */
+button.looma-control-button.looma-assistant {
+    bottom: 79vh;
+    display: inline-block;
+    background-image: url("../images/chat-assistant.svg");
+    background-size: 75% 75%;
+    background-color: rgba(200,200,200,0.7);
+    cursor: pointer;
 }
 
 button.show-keyboard {

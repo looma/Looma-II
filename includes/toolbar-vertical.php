@@ -39,12 +39,6 @@
                 <?php tooltip("Search") ?>
             </button>
 
-            <!--LOOMA ASSISTANT-->
-            <button id="toolbar-assistant" type="button" class="toolbar-button vertical looma-assistant">
-                <img draggable="false" src="images/chat-assistant.svg" height="70%">
-                <?php tooltip('LOOMA Assistant');?>
-            </button>
-
             <!--DICTIONARY-->
            <button onclick="parent.location.href = 'dictionary';"
                    id="toolbar-dictionary" class="toolbar-button  vertical ">

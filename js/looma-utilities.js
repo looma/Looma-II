@@ -295,7 +295,12 @@ playMedia : function(button) {
             // server whether the same chapter also exists as HTML, and prefer it.
             LOOMA.resolveChapterFile(chapterFP, chapterFN, function (resolved) {
                 if (resolved && resolved.ft === 'htmlchapter') {
-                    window.location = 'html?fp=' + resolved.fp + '&fn=' + resolved.fn;
+                    window.location = 'html?fp=' + resolved.fp + '&fn=' + resolved.fn +
+                        '&ch=' + encodeURIComponent(button.getAttribute('data-ch') || '') +
+                        '&chdn=' + encodeURIComponent(chDn) +
+                        '&grade=' + encodeURIComponent(button.getAttribute('data-class') || '') +
+                        '&subject=' + encodeURIComponent(chapter_subject || '') +
+                        '&lang=' + encodeURIComponent(lang || '');
                 } else {
                     window.location = pdfUrl;
                 }
@@ -315,7 +320,12 @@ playMedia : function(button) {
             // Unlike the generic "html" case below, the file to open is always
             // this button's own data-fp/data-fn (one language per button), so
             // there is no en/np alternate to disambiguate.
-            window.location = 'html?fp=' + fp + '&fn=' + fn;
+            window.location = 'html?fp=' + fp + '&fn=' + fn +
+                '&ch=' + encodeURIComponent(button.getAttribute('data-ch') || '') +
+                '&chdn=' + encodeURIComponent(button.getAttribute('data-chdn') || button.getAttribute('data-dn') || '') +
+                '&grade=' + encodeURIComponent(button.getAttribute('data-class') || '') +
+                '&subject=' + encodeURIComponent(button.getAttribute('data-subject') || '') +
+                '&lang=' + encodeURIComponent(button.getAttribute('data-lang') || '');
             break;
 
         case "html":
@@ -4698,7 +4708,14 @@ var loginname = LOOMA.loggedIn();
      // Adjust to Thursday in week 1 and count number of weeks from date to week1.
      return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
          - 3 + (week1.getDay() + 6) % 7) / 7);
- }
+ };
+// Missing semicolon above used to be load-bearing: without it, JS treats
+// `Date.prototype.getWeek = function(){...}` and the very next statement
+// as ONE expression — `getWeekBody(nextStatement)()` — silently calling
+// getWeek immediately with the button-stacking IIFE as its argument (`this`
+// unbound, hence the crash this whole file used to have here), then trying
+// to call getWeek's return value. The button-stacking code below was never
+// actually broken; it was never running as its own statement at all.
 
 // ---------------------------------------------------------------------------
 // Floating control-button stack (speak / lookup / keyboard / captions /

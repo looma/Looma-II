@@ -97,7 +97,7 @@ $foundActivity;
 
     function prepareButton($activity) {
         //depending on the filetype of the activity, display the appropriate button
-        global $buttons, $maxButtons, $ch_id, $foundActivity, $shown, $lang, $lang ;
+        global $buttons, $maxButtons, $ch_id, $foundActivity, $shown, $lang, $lang, $subject;
 
         $id = $activity['_id'];
 
@@ -140,6 +140,12 @@ $foundActivity;
             'prefix'   => isset($activity['prefix']) ? $activity['prefix'] : null,
             'url'      => isset($activity['url']) ? $activity['url'] : null,
             'grade'    => isset($activity['grade']) ? $activity['grade'] : null,
+            // This page's own $subject (from ?subject=) — activity docs don't
+            // store one, so without this every button here (exercise, game,
+            // lesson, ...) rendered with no data-subject, and the "exercise"
+            // player/telemetry chain (looma-play-exercise.php -> looma-telemetry.php
+            // -> looma_subject on the Prometheus side) silently lost the subject.
+            'subject'  => $subject ?: null,
         );
 
         // mongo_id: for slideshow/map/evi use mongoId object; otherwise use mongoID string
@@ -212,7 +218,7 @@ $foundActivity;
 
         $lang = (isset($_GET['chapter_lang'])) ? trim($_GET['chapter_lang']) : 'en';
 		$ch_id = trim($_GET['ch']);
-        $ch_dn = trim($_GET['chdn']);
+        $ch_dn = isset($_GET['chdn']) ? trim($_GET['chdn']) : '';
         $ch_ndn =  (isset($_GET['chndn'])) ? trim($_GET['chndn']) : $ch_dn;
 
         echo "<div id='main-container-horizontal' class='scroll'>";

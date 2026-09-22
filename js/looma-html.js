@@ -12,6 +12,32 @@ Description: html page display JS for looma-html.php
 
 $(document).ready (function() {
 
+// *********  TELEMETRY: chapter time tracking (HTML chapters) ***************
+//   #fullscreen carries data-ch/data-chdn/data-grade/data-subject only when
+//   looma-html.php was opened as a textbook chapter (see js/looma-utilities.js's
+//   "htmlchapter" case and the html-resolved branch of "chapter"/"section").
+//   Absent for other HTML content (Wikipedia, ePaath, PhET) — nothing to track.
+    (function () {
+        var host = document.getElementById('fullscreen');
+        if (!host) return;
+        var chapterId = host.getAttribute('data-ch') || '';
+        if (!chapterId) return;
+
+        var meta = {
+            chapter_id:   chapterId,
+            chapter_name: host.getAttribute('data-chdn')    || null,
+            grade:        host.getAttribute('data-grade')   || null,
+            subject:      host.getAttribute('data-subject') || null,
+            language:     host.getAttribute('data-lang')    || null,
+        };
+        try {
+            if (window.LOOMA && LOOMA.telemetry) {
+                LOOMA.telemetry.track('page', Object.assign({ page: 'chapter_html' }, meta));
+                LOOMA.telemetry.startChapterTimer(meta);
+            }
+        } catch (e) { /* telemetry must never block the reader */ }
+    })();
+
 // *********  SELECTION BAND HEIGHT ***************
 //   A converted chapter is a scanned page with a layer of transparent text spans
 //   over it. Left alone, the browser paints the blue selection at the height of
@@ -78,8 +104,17 @@ $(document).ready (function() {
             }
         } catch (e) { /* telemetry must never block the switch */ }
 
+        // Carry the chapter context (ch/chdn/grade/subject) over to the other
+        // language too, so switching mid-chapter doesn't drop it — see the
+        // chapter-time tracking block above, which reads it back off #fullscreen.
+        var host = document.getElementById('fullscreen');
         window.location = 'html?fp=' + encodeURIComponent(altFp) +
-                            '&fn=' + encodeURIComponent(altFn);
+                            '&fn=' + encodeURIComponent(altFn) +
+                            '&ch=' + encodeURIComponent((host && host.getAttribute('data-ch')) || '') +
+                            '&chdn=' + encodeURIComponent((host && host.getAttribute('data-chdn')) || '') +
+                            '&grade=' + encodeURIComponent((host && host.getAttribute('data-grade')) || '') +
+                            '&subject=' + encodeURIComponent((host && host.getAttribute('data-subject')) || '') +
+                            '&lang=' + encodeURIComponent(frame.getAttribute('data-altlang') || '');
     });
 
     //attach LOOMA.lookup() to the '.lookup' button

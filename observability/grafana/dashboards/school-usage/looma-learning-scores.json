@@ -360,9 +360,9 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 5,
+        "y": 9,
         "w": 12,
-        "h": 9
+        "h": 5
       },
       "fieldConfig": {
         "defaults": {

@@ -159,11 +159,15 @@
       "gridPos": { "x": 12, "y": 5, "w": 12, "h": 9 },
       "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
       "options": { "orientation": "horizontal", "legend": { "displayMode": "hidden" } },
+      "transformations": [
+        { "id": "labelsToFields", "options": { "valueLabel": "avg_score" } }
+      ],
       "targets": [{
         "refId": "A",
         "expr": "(sum by (looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) / clamp_min(sum by (looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])), 1))",
         "legendFormat": "{{looma_subject}}",
-        "format": "time_series"
+        "format": "table",
+        "instant": true
       }]
     },
     {
@@ -173,11 +177,15 @@
       "gridPos": { "x": 0, "y": 14, "w": 24, "h": 10 },
       "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0, "max": 1 } },
       "options": { "orientation": "horizontal", "legend": { "displayMode": "hidden" } },
+      "transformations": [
+        { "id": "labelsToFields", "options": { "valueLabel": "avg_score" } }
+      ],
       "targets": [{
         "refId": "A",
         "expr": "(sum by (looma_grade, looma_subject) (sum_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) / clamp_min(sum by (looma_grade, looma_subject) (count_over_time(looma_score_ratio{looma_activity=\"exam\", looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])), 1))",
         "legendFormat": "Grade {{looma_grade}} — {{looma_subject}}",
-        "format": "time_series"
+        "format": "table",
+        "instant": true
       }]
     },
     {
@@ -232,12 +240,12 @@
       "gridPos": { "x": 0, "y": 33, "w": 12, "h": 10 },
       "targets": [{
         "refId": "A",
-        "query": "attributes.looma.event:score AND attributes.looma.activity:exam AND attributes.looma.weak_topics:*",
+        "query": "log.attributes.looma@event:score AND log.attributes.looma@activity:exam AND log.attributes.looma@weak_topics:*",
         "metrics": [{ "type": "count", "id": "1" }],
         "bucketAggs": [
-          { "type": "terms", "id": "2", "field": "attributes.looma.weak_topics", "settings": { "size": "20", "order": "desc", "orderBy": "_count" } }
+          { "type": "terms", "id": "2", "field": "log.attributes.looma@weak_topics", "settings": { "size": "20", "order": "desc", "orderBy": "_count" } }
         ],
-        "timeField": "@timestamp"
+        "timeField": "time"
       }],
       "options": { "showHeader": true }
     },
@@ -247,10 +255,10 @@
       "gridPos": { "x": 12, "y": 33, "w": 12, "h": 10 },
       "targets": [{
         "refId": "A",
-        "query": "attributes.looma.event:score AND attributes.looma.activity:exam",
+        "query": "log.attributes.looma@event:score AND log.attributes.looma@activity:exam",
         "metrics": [{ "type": "logs", "id": "1" }],
         "bucketAggs": [],
-        "timeField": "@timestamp"
+        "timeField": "time"
       }],
       "options": { "showHeader": true }
     }

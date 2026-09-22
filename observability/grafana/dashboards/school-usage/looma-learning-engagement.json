@@ -18,9 +18,9 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Looma — Page & Chapter Engagement",
+  "title": "Looma \u2014 Page & Chapter Engagement",
   "uid": "looma-learning-engagement",
-  "version": 2,
+  "version": 3,
   "refresh": "30s",
   "templating": {
     "list": [
@@ -151,7 +151,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(sum_over_time(looma_event_total{looma_event=\"page\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) or vector(0)"
+          "expr": "sum(sum_over_time(looma_event_total{looma_event=\"page\", looma_subject=~\"$subject\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) or vector(0)"
         }
       ]
     },
@@ -207,17 +207,35 @@
         },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "looma_page" },
+            "matcher": {
+              "id": "byName",
+              "options": "looma_page"
+            },
             "properties": [
-              { "id": "displayName", "value": "page" },
-              { "id": "custom.displayMode", "value": "auto" },
-              { "id": "custom.width", "value": 280 }
+              {
+                "id": "displayName",
+                "value": "page"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              },
+              {
+                "id": "custom.width",
+                "value": 280
+              }
             ]
           },
           {
-            "matcher": { "id": "byName", "options": "Value" },
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
             "properties": [
-              { "id": "displayName", "value": "hits" }
+              {
+                "id": "displayName",
+                "value": "hits"
+              }
             ]
           }
         ]
@@ -226,26 +244,38 @@
         {
           "id": "organize",
           "options": {
-            "excludeByName": { "Time": true },
-            "indexByName": { "looma_page": 0, "Value": 1 }
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "looma_page": 0,
+              "Value": 1
+            }
           }
         },
         {
           "id": "sortBy",
           "options": {
             "fields": {},
-            "sort": [{ "field": "Value", "desc": true }]
+            "sort": [
+              {
+                "field": "Value",
+                "desc": true
+              }
+            ]
           }
         }
       ],
       "options": {
         "showHeader": true,
-        "footer": { "show": false }
+        "footer": {
+          "show": false
+        }
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(15, sum by (looma_page) (max_over_time(looma_event_total{looma_event=\"page\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])))",
+          "expr": "topk(15, sum by (looma_page) (max_over_time(looma_event_total{looma_event=\"page\", looma_subject=~\"$subject\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])))",
           "legendFormat": "{{looma_page}}",
           "format": "table",
           "instant": true
@@ -255,8 +285,8 @@
     {
       "id": 3,
       "type": "table",
-      "title": "Slowest chapters — total minutes spent",
-      "description": "Chapters sorted by total time-on-task in the selected range. Source: looma_chapter_time_ms_milliseconds_total (cumulative counter, ms, emitted by LOOMA.telemetry.stopChapterTimer() in the PDF viewer). Empty when no chapter PDFs have been opened in the range.",
+      "title": "Slowest chapters \u2014 total minutes spent",
+      "description": "Chapters sorted by total time-on-task in the selected range. Source: looma_chapter_time_ms_milliseconds_total (cumulative counter, ms, emitted by LOOMA.telemetry.stopChapterTimer() in the PDF and HTML chapter viewers). Empty when no chapter PDFs have been opened in the range.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -278,32 +308,91 @@
         },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "looma_grade" },
+            "matcher": {
+              "id": "byName",
+              "options": "looma_grade"
+            },
             "properties": [
-              { "id": "displayName", "value": "grade" },
-              { "id": "custom.displayMode", "value": "auto" },
-              { "id": "custom.width", "value": 80 }
+              {
+                "id": "displayName",
+                "value": "grade"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              }
             ]
           },
           {
-            "matcher": { "id": "byName", "options": "looma_chapter_id" },
+            "matcher": {
+              "id": "byName",
+              "options": "looma_subject"
+            },
             "properties": [
-              { "id": "displayName", "value": "chapter_id" },
-              { "id": "custom.displayMode", "value": "auto" },
-              { "id": "custom.width", "value": 160 }
+              {
+                "id": "displayName",
+                "value": "subject"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
             ]
           },
           {
-            "matcher": { "id": "byName", "options": "looma_chapter_name" },
+            "matcher": {
+              "id": "byName",
+              "options": "looma_chapter_id"
+            },
             "properties": [
-              { "id": "displayName", "value": "chapter" },
-              { "id": "custom.displayMode", "value": "auto" }
+              {
+                "id": "displayName",
+                "value": "chapter_id"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              },
+              {
+                "id": "custom.width",
+                "value": 160
+              }
             ]
           },
           {
-            "matcher": { "id": "byName", "options": "Value" },
+            "matcher": {
+              "id": "byName",
+              "options": "looma_chapter_name"
+            },
             "properties": [
-              { "id": "displayName", "value": "minutes" }
+              {
+                "id": "displayName",
+                "value": "chapter"
+              },
+              {
+                "id": "custom.displayMode",
+                "value": "auto"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "minutes"
+              }
             ]
           }
         ]
@@ -312,27 +401,42 @@
         {
           "id": "organize",
           "options": {
-            "excludeByName": { "Time": true },
-            "indexByName": { "looma_grade": 0, "looma_chapter_id": 1, "looma_chapter_name": 2, "Value": 3 }
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "looma_grade": 0,
+              "looma_subject": 1,
+              "looma_chapter_id": 2,
+              "looma_chapter_name": 3,
+              "Value": 4
+            }
           }
         },
         {
           "id": "sortBy",
           "options": {
             "fields": {},
-            "sort": [{ "field": "Value", "desc": true }]
+            "sort": [
+              {
+                "field": "Value",
+                "desc": true
+              }
+            ]
           }
         }
       ],
       "options": {
         "showHeader": true,
-        "footer": { "show": false }
+        "footer": {
+          "show": false
+        }
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(15, sum by (looma_grade, looma_chapter_id, looma_chapter_name) (max_over_time(looma_chapter_time_ms_milliseconds_total{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) / 60000)",
-          "legendFormat": "{{looma_grade}} {{looma_chapter_id}} {{looma_chapter_name}}",
+          "expr": "topk(15, sum by (looma_grade, looma_subject, looma_chapter_id, looma_chapter_name) (max_over_time(looma_chapter_time_ms_milliseconds_total{looma_grade=~\"$grade\", looma_subject=~\"$subject\", looma_language=~\"$language\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) / 60000)",
+          "legendFormat": "{{looma_grade}} {{looma_subject}} {{looma_chapter_id}} {{looma_chapter_name}}",
           "format": "table",
           "instant": true
         }
@@ -369,7 +473,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (looma_page) (sum_over_time(looma_event_total{looma_event=\"page\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m]))",
+          "expr": "sum by (looma_page) (sum_over_time(looma_event_total{looma_event=\"page\", looma_subject=~\"$subject\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[5m]))",
           "legendFormat": "{{looma_page}}"
         }
       ]
@@ -377,7 +481,7 @@
     {
       "id": 5,
       "type": "piechart",
-      "title": "Chapter time split — by subject",
+      "title": "Chapter time split \u2014 by subject",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
@@ -407,7 +511,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (looma_subject) (sum_over_time(looma_chapter_time_ms_milliseconds_total{looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range]))",
+          "expr": "sum by (looma_subject) (sum_over_time(looma_chapter_time_ms_milliseconds_total{looma_subject=~\"$subject\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range]))",
           "legendFormat": "{{looma_subject}}"
         }
       ]

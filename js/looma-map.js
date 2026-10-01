@@ -3145,40 +3145,17 @@ window.onload = function () {
                     minZoom: map.options.minZoom || zoomCfg.minZoom || 1,
                     maxZoom: zoomCfg.maxZoom || 18,
                 };
-                // `en-worldmap` ships with a local tile pyramid. City street
-                // maps (Pokhara, Kathmandu, generic streetMap) fall back to
-                // OpenStreetMap because they genuinely need real-world tiles.
-                // Continent/region maps (Europe, Asia, ...) intentionally have
-                // NO tile background — they should show only the drawn region
-                // over the map background color, not the rest of the world.
-                var LOCAL_TILE_LAYERS = ['en-worldmap'];
-                var OSM_FALLBACK_LAYERS = ['streetMap', 'PokharaCity', 'KathmanduCity'];
-                // The World Topography map ships only a partial Nepal-region
-                // tile pyramid at zoom 9. Serve OpenTopoMap instead — it's a
-                // real topographic tile layer that covers the whole globe.
-                var TOPO_FALLBACK_LAYERS = ['en-worldmap/tile', 'topography', 'topo'];
+                // Tiles always come from the Looma server's local pyramids
+                // (/maps2018/tiles/<layer>) — schools are offline, so never
+                // fetch from OpenStreetMap / OpenTopoMap. Continent/region
+                // maps (Europe, Asia, ...) intentionally have NO tile
+                // background — they should show only the drawn region over
+                // the map background color, not the rest of the world.
+                var LOCAL_TILE_LAYERS = ['en-worldmap', 'en-worldmap/tile', 'topography', 'topo',
+                                         'streetMap', 'PokharaCity', 'KathmanduCity'];
                 if (LOCAL_TILE_LAYERS.indexOf(data.tileLayer) !== -1) {
                     var link = '/maps2018/tiles/' + data.tileLayer + '/{z}/{x}/{y}.' + data.tileExtension;
                     L.tileLayer(link, tileOpts).addTo(map);
-                } else if (TOPO_FALLBACK_LAYERS.indexOf(data.tileLayer) !== -1) {
-                    L.tileLayer(
-                        'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-                        Object.assign({}, tileOpts, {
-                            subdomains: 'abc',
-                            attribution: 'Map data: &copy; OpenStreetMap, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)',
-                            maxZoom: Math.min(17, tileOpts.maxZoom || 17),
-                            crossOrigin: true,
-                        })
-                    ).addTo(map);
-                } else if (OSM_FALLBACK_LAYERS.indexOf(data.tileLayer) !== -1) {
-                    L.tileLayer(
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        Object.assign({}, tileOpts, {
-                            attribution: '&copy; OpenStreetMap contributors',
-                            maxZoom: Math.min(19, tileOpts.maxZoom || 19),
-                            crossOrigin: true,
-                        })
-                    ).addTo(map);
                 }
             }
             

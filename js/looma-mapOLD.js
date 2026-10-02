@@ -327,11 +327,11 @@ function _loomaMapHasFactValueHtml(valueHtml) {
     if (!value) return false;
     value = value.toLowerCase();
     return value !== '-' &&
-        value !== '--' &&
-        value !== 'n/a' &&
-        value !== 'na' &&
-        value !== 'null' &&
-        value !== 'undefined';
+           value !== '--' &&
+           value !== 'n/a' &&
+           value !== 'na' &&
+           value !== 'null' &&
+           value !== 'undefined';
 }
 
 function _loomaMapCountryFacts(props) {
@@ -341,7 +341,7 @@ function _loomaMapCountryFacts(props) {
     // when present and fall back to the feature/hydrated population.
     var supplemental = _loomaMapSupplementalCountryFacts(props);
     var population = _loomaMapPickProp(supplemental, ['population']) ||
-        _loomaMapPickProp(hydrated, ['population', 'POP_EST', 'pop_est', 'pop']);
+                     _loomaMapPickProp(hydrated, ['population', 'POP_EST', 'pop_est', 'pop']);
     var capital = _loomaMapPickProp(hydrated, ['capital', 'CAPITAL']);
     var gdp = _loomaMapPickProp(hydrated, ['gdp_usd', 'gdp', 'gdp_current_usd', 'pib']);
     var highest = _loomaMapPickProp(hydrated, ['highest_point_m', 'highest_m', 'elev_m', 'elevation_m', 'alt_m']);
@@ -461,7 +461,7 @@ function _loomaMapBuildCountryClickHtml(props) {
     // pop — prefer supplemental.population so the country panel always shows
     // the country's population.
     var population = _loomaMapPickProp(supplemental, ['population']) ||
-        _loomaMapPickProp(hydrated, ['population', 'POP_EST', 'pop_est', 'pop']);
+                     _loomaMapPickProp(hydrated, ['population', 'POP_EST', 'pop_est', 'pop']);
     var gdp = _loomaMapPickProp(hydrated, ['gdp_usd', 'gdp', 'gdp_current_usd', 'pib']);
     var highest = _loomaMapPickProp(hydrated, ['highest_point_m', 'highest_m', 'elev_m', 'elevation_m', 'alt_m']);
     var currency = _loomaMapPickProp(hydrated, ['currency', 'currency_name', 'curr_name', 'money', 'monetary_unit']);
@@ -567,8 +567,8 @@ function _loomaMapBuildPlaceCardHtml(props, imageLink, opts) {
     var imageKey = opts.imageKey || 'name';
 
     var title = _loomaMapPickProp(props, ['name', 'NAME']) ||
-        _loomaMapPickProp(props, ['title', 'TITLE']) ||
-        'Place';
+                _loomaMapPickProp(props, ['title', 'TITLE']) ||
+                'Place';
 
     var rows = [];
     Object.keys(props).forEach(function (k) {
@@ -596,14 +596,14 @@ function _loomaMapBuildPlaceCardHtml(props, imageLink, opts) {
     var candidatesAttr = _loomaMapEscapeHtml(JSON.stringify(photoCandidates));
     var imageHtml = firstPhoto
         ? '<img class="capital-card-photo" src="' + _loomaMapEscapeHtml(firstPhoto) +
-        '" data-photo-candidates="' + candidatesAttr + '" data-photo-index="0" alt="">'
+          '" data-photo-candidates="' + candidatesAttr + '" data-photo-index="0" alt="">'
         : '';
 
     var infoHtml = '<div class="capital-card-title">' + _loomaMapEscapeHtml(title) + '</div>' + rows.join('');
     return (
         '<div class="capital-card-layout">' +
-        imageHtml +
-        '<div class="capital-card-info">' + infoHtml + '</div>' +
+            imageHtml +
+            '<div class="capital-card-info">' + infoHtml + '</div>' +
         '</div>'
     );
 }
@@ -649,7 +649,7 @@ function _loomaMapBuildCapitalCardHtml(capitalProps, imageLink, opts) {
     // real country pop from supplemental directly.
     var supplementalForPop = _loomaMapSupplementalCountryFacts(capitalProps);
     var countryPop = _loomaMapPickProp(supplementalForPop, ['population']) ||
-        _loomaMapPickProp(hydrated, ['POP_EST', 'pop_est', 'pop']);
+                     _loomaMapPickProp(hydrated, ['POP_EST', 'pop_est', 'pop']);
 
     var capPopN = _loomaMapAsNumber(capPop);
     var countryPopN = _loomaMapAsNumber(countryPop);
@@ -675,7 +675,7 @@ function _loomaMapBuildCapitalCardHtml(capitalProps, imageLink, opts) {
     var candidatesAttr = _loomaMapEscapeHtml(JSON.stringify(photoCandidates));
     var imageHtml = firstPhoto
         ? '<img class="capital-card-photo" src="' + _loomaMapEscapeHtml(firstPhoto) +
-        '" data-photo-candidates="' + candidatesAttr + '" data-photo-index="0" alt="">'
+          '" data-photo-candidates="' + candidatesAttr + '" data-photo-index="0" alt="">'
         : '';
 
     var infoRows = [];
@@ -699,8 +699,8 @@ function _loomaMapBuildCapitalCardHtml(capitalProps, imageLink, opts) {
 
     return (
         '<div class="capital-card-layout">' +
-        imageHtml +
-        '<div class="capital-card-info">' + infoRows.join('') + '</div>' +
+            imageHtml +
+            '<div class="capital-card-info">' + infoRows.join('') + '</div>' +
         '</div>'
     );
 }
@@ -913,13 +913,13 @@ function _loomaMapDrawSearchStarAt(latlng) {
 function _loomaMapCoerceImageLink(imageLinkRaw, imageName) {
     if (!imageLinkRaw) return imageName
         ? getPhotoLink(('' + imageName).replace(/ /g, '_'),
-            (data && data.info && (data.info.infoExtension || data.info.popExtension)) || 'jpg')
+                       (data && data.info && (data.info.infoExtension || data.info.popExtension)) || 'jpg')
         : '';
     // Already a URL / path — leave it alone.
     if (imageLinkRaw.indexOf('/') !== -1 || imageLinkRaw.indexOf('.') !== -1) return imageLinkRaw;
     // Bare name string — turn it into a photo URL.
     return getPhotoLink(('' + imageLinkRaw).replace(/ /g, '_'),
-        (data && data.info && (data.info.infoExtension || data.info.popExtension)) || 'jpg');
+                        (data && data.info && (data.info.infoExtension || data.info.popExtension)) || 'jpg');
 }
 
 // Render a place / capital / city card into the top-right country panel so
@@ -1035,8 +1035,8 @@ function _loomaMapEnsureSearchControl() {
             var wrap = L.DomUtil.create('div', 'looma-map-search leaflet-bar');
             wrap.innerHTML =
                 '<div class="looma-map-search-row">' +
-                '<button type="button" class="looma-map-search-btn" title="Search"></button>' +
-                '<input type="text" class="looma-map-search-input" placeholder="Search…" autocomplete="off" spellcheck="false" />' +
+                    '<button type="button" class="looma-map-search-btn" title="Search"></button>' +
+                    '<input type="text" class="looma-map-search-input" placeholder="Search…" autocomplete="off" spellcheck="false" />' +
                 '</div>' +
                 '<ul class="looma-map-search-results" hidden></ul>';
             L.DomEvent.disableClickPropagation(wrap);
@@ -1860,44 +1860,44 @@ function _loomaMapSelectNepalFeature(layer) {
 ////////////////////////
 
 // Sets the look of each map area
-function styleLayer(feature)
-{   var layerData = data.baseLayers;
-    return {
-        fillColor: getColor(feature, layerData[currentBase].style),
-        weight:      layerData[currentBase].style.weight,
-        opacity:     layerData[currentBase].style.opacity,
-        color:       layerData[currentBase].style.color,
-        fillOpacity: layerData[currentBase].style.fillOpacity
-    };
-}
-
-function lookUpColor (feature) {
-    return feature.properties.fillColor || "red";  //default color in case fillColor not specified
-}  //end lookUpColor
-
-// Assigns a color to a country/region/area
-function getColor(feature, style) {
-    try {
-        if (feature.properties.fillColor) return lookUpColor(feature); //some geoJSON has colors embedded in properties.fillColor
-
-        var random = style.random, cutoffs = style.cutoffs, colors = style.colors;
-        var featureUsedValue = feature.properties[style.colorFeature]; //the numerical feature used to determine the color
-        var index = random?featureUsedValue % (cutoffs.length):featureUsedValue;
-
-        for (var k = 0; k < colors.length - 1; k++) {
-            if (index < cutoffs[k]) return colors[k];
+    function styleLayer(feature)
+    {   var layerData = data.baseLayers;
+        return {
+            fillColor: getColor(feature, layerData[currentBase].style),
+            weight:      layerData[currentBase].style.weight,
+            opacity:     layerData[currentBase].style.opacity,
+            color:       layerData[currentBase].style.color,
+            fillOpacity: layerData[currentBase].style.fillOpacity
+        };
+    }
+    
+    function lookUpColor (feature) {
+        return feature.properties.fillColor || "red";  //default color in case fillColor not specified
+    }  //end lookUpColor
+    
+    // Assigns a color to a country/region/area
+    function getColor(feature, style) {
+        try {
+            if (feature.properties.fillColor) return lookUpColor(feature); //some geoJSON has colors embedded in properties.fillColor
+            
+            var random = style.random, cutoffs = style.cutoffs, colors = style.colors;
+            var featureUsedValue = feature.properties[style.colorFeature]; //the numerical feature used to determine the color
+            var index = random?featureUsedValue % (cutoffs.length):featureUsedValue;
+            
+            for (var k = 0; k < colors.length - 1; k++) {
+                if (index < cutoffs[k]) return colors[k];
+            }
+            return colors [colors.length - 1];
         }
-        return colors [colors.length - 1];
+        catch(err)
+        {  //if any data is missing, just make them all blue so that the map still loads
+            return 'blue';
+        }
     }
-    catch(err)
-    {  //if any data is missing, just make them all blue so that the map still loads
-        return 'blue';
-    }
-}
 
 ////////////////////////
 function loadBaseLayers (layerData) {
-
+    
     var currentStyle = 0;
     //var arrayIndex = 0; //a counter for the array
     var nextBase = 0;
@@ -1907,18 +1907,18 @@ function loadBaseLayers (layerData) {
         var link = '/content/maps/json/' + layerData[i].geojson + '?' + LOOMA_MAP_CACHE_BUSTER;
         promises[i] = getMapJSON(link, i);
     }
-
+    
     Promise.all(promises).then(function(){
-        console.log('In baselayer, promises has ' + promises.length + ' entries');
-        for (var j=0; j<Math.min(baseLayers.length, 2); j++) {
-            if (baseLayers[j]) baseLayers[j].addTo(map);
-        }
-        if (baseLayers[0]) baseLayers[0].bringToFront();
-        currentBase = 0;
-        baseLayerButtons(layerData);}
-    );
-
-
+            console.log('In baselayer, promises has ' + promises.length + ' entries');
+            for (var j=0; j<Math.min(baseLayers.length, 2); j++) {
+                if (baseLayers[j]) baseLayers[j].addTo(map);
+            }
+            if (baseLayers[0]) baseLayers[0].bringToFront();
+            currentBase = 0;
+            baseLayerButtons(layerData);}
+        );
+    
+    
     function getMapJSON(url, index) {
         return $.getJSON(url, null)
             .done(function(result) {
@@ -1956,7 +1956,7 @@ function loadBaseLayers (layerData) {
                 }
             });
     }
-
+    
     // Hovering listener. Calls highight/resethighlight functions
     function onEachFeature(feature, layer) {
         layer.on({
@@ -1995,8 +1995,8 @@ function loadBaseLayers (layerData) {
             var hoverName = (_loomaMapIsNepalMap() && data && data.info && data.info.threeLayer === "true") ?
                 _loomaMapNepalTooltipName(feature) :
                 (window._loomaMapCountryDisplayName ?
-                    window._loomaMapCountryDisplayName(feature.properties || {}) :
-                    _loomaMapPickProp(feature.properties || {}, ['country_name', 'country', 'admin', 'ADMIN', 'name', 'NAME']));
+                window._loomaMapCountryDisplayName(feature.properties || {}) :
+                _loomaMapPickProp(feature.properties || {}, ['country_name', 'country', 'admin', 'ADMIN', 'name', 'NAME']));
             if (hoverName) {
                 layer.on('mouseover', function () {
                     try { _loomaMapShowNepalHoverName('' + hoverName); } catch (_) {}
@@ -2095,7 +2095,7 @@ function loadBaseLayers (layerData) {
     function _loomaMapShowCountryClickInfo(e) {
         window._loomaMapShowCountryClickInfo(e);
     }
-
+    
     // Highlights the area that the mouse is hovering over in gray
     function highlightFeature(e) {
         var layer = e.target;
@@ -2107,7 +2107,7 @@ function loadBaseLayers (layerData) {
         var ownBase = (typeof _loomaMapNepalBaseIndexOf === 'function') ? _loomaMapNepalBaseIndexOf(layer) : -1;
         if (ownBase < 0) ownBase = currentBase;
         var style = layerData[ownBase].style;
-
+        
         if (style.onHover)
         {
             layer.setStyle({
@@ -2125,7 +2125,7 @@ function loadBaseLayers (layerData) {
                 fillOpacity: 0.3
             });
         }
-
+        
         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge)
         {
             //layer.bringToFront();
@@ -2136,7 +2136,7 @@ function loadBaseLayers (layerData) {
             _loomaMapSetInfoBoxVisible(false);
             return;
         }
-
+        
         if (window._loomaMapBuildCountryClickHtml(layer.feature.properties)) {
             _loomaMapSetInfoBoxVisible(false);
             _loomaMapShowCountryHoverFlag(layer.feature.properties);
@@ -2145,9 +2145,9 @@ function loadBaseLayers (layerData) {
             _loomaMapSetInfoBoxVisible(true);
             info.update(layer.feature.properties);
         }
-
+         
     }   //End of highlight function
-
+    
     // Makes sure that once the country is deselected the gray is gone
     function resetHighlight(e)
     {
@@ -2178,8 +2178,8 @@ function loadBaseLayers (layerData) {
             try { baseLayers[ownBase].resetStyle(layer); } catch (_) {}
         }
     }
-
-
+    
+    
 } // end loadBaseLayers()
 
 ////////////////////////
@@ -2228,13 +2228,13 @@ function baseLayerButtons (layerData)
             var row = L.DomUtil.create('div', 'info-row', div);
             row.appendChild(baseBoxes[i]);
             row.appendChild(baseLabels[i]);
-
-
+            
+            
             // Brings the base layer to the front if its button is checked
             baseBoxes[i].addEventListener('change', function()
             {
                 var checked = parseInt(this.id.charAt(2));
-
+                
                 if (data.info.threeLayer === "true") {
                     //special handling for 3-level map (province, district, municipality
                     _loomaMapClearNepalSelection();
@@ -2252,232 +2252,232 @@ function baseLayerButtons (layerData)
                         baseLayers[2].bringToFront();
                         currentBase = 2;
                     }
-
-                } else
-                if(this.checked) {
+                    
+               } else
+                    if(this.checked) {
                     //for (var x = 0; x < bases; x++) map.removeLayer(baseLayers[x]);
-
+                    
                     //baseLayers[checked].addTo(map);
-
+    
                     baseLayers[(checked + 1) % bases].bringToFront();
                     baseLayers[checked].bringToFront();
                     currentBase = checked;
-                    featureLayers();
+                   featureLayers();
                 }
             });
         }
         // checks the box of the initial visible layer
         baseBoxes[0].checked = true;
-
+        
         // //baseLayers[0].bringToFront();
         return div;
     }; // end choice.onAdd function
-
+    
     choice.addTo(map);
 } // end baseLayerButtons()
 
 
 function makeGeoJson(data) {
-    var geoJson =
+        var geoJson =
         {   "type": "FeatureCollection",
             "features": []
         };
-
-    var feature = {"type": "Feature",
-        "properties" : {"ip": "<IP>",
-            "country": "<country>",
-            "province": "<province>",
-            "city":    "<city>",
-            "lat":     "<lat>",
-            "long":    "<long>",
-            "visits":  "<visits>" },
-        "geometry":{"coordinates":[],
-            "type":"Point"}
-    };
-
-    data.forEach(function(datum) {
-        //TO CLONE an OBJECT: let cloneObj = JSON.parse(JSON.stringify(obj));
-        var temp =  JSON.parse(JSON.stringify(feature));
-        temp['properties']['ip'] = datum['ip'];
-        temp['properties']['country'] = "Nepal";
-        temp['properties']['province'] = datum['province'];
-        temp['properties']['city'] = datum['city'];
-        temp['properties']['lat'] = datum['lat'];
-        temp['properties']['long'] = datum['long'];
-        temp['properties']['visits'] = datum['visits'];
-        temp['geometry']['coordinates'].push( datum['long'], datum['lat'] );
-
-        geoJson['features'].push(temp);
-    });
-    return geoJson;
+        
+        var feature = {"type": "Feature",
+            "properties" : {"ip": "<IP>",
+                "country": "<country>",
+                "province": "<province>",
+                "city":    "<city>",
+                "lat":     "<lat>",
+                "long":    "<long>",
+                "visits":  "<visits>" },
+            "geometry":{"coordinates":[],
+                        "type":"Point"}
+                    };
+        
+        data.forEach(function(datum) {
+            //TO CLONE an OBJECT: let cloneObj = JSON.parse(JSON.stringify(obj));
+            var temp =  JSON.parse(JSON.stringify(feature));
+            temp['properties']['ip'] = datum['ip'];
+            temp['properties']['country'] = "Nepal";
+            temp['properties']['province'] = datum['province'];
+            temp['properties']['city'] = datum['city'];
+            temp['properties']['lat'] = datum['lat'];
+            temp['properties']['long'] = datum['long'];
+            temp['properties']['visits'] = datum['visits'];
+            temp['geometry']['coordinates'].push( datum['long'], datum['lat'] );
+            
+            geoJson['features'].push(temp);
+        });
+        return geoJson;
 };  // end makeGeoJson
 
 ////////////////////////
 // Loads the add-on layers onto the map by reading geojson in if they exist
 function loadAddOnLayers (layerData, information) {
+    
+            ///////////////////
+            function createAddOnLayer (data, layerIndex) {
+                var idx = layerIndex;
+                _loomaMapHydrateGeoJsonFeatures(data);
+                var addOnLayer = L.geoJson(data, {
+                    pane: 'loomaAddOnPane', // draw above base polygons
+                    pointToLayer: function (feature, latlng) {
+                        feature.properties = _loomaMapHydrateCountryProps(feature.properties || {});
 
-    ///////////////////
-    function createAddOnLayer (data, layerIndex) {
-        var idx = layerIndex;
-        _loomaMapHydrateGeoJsonFeatures(data);
-        var addOnLayer = L.geoJson(data, {
-            pane: 'loomaAddOnPane', // draw above base polygons
-            pointToLayer: function (feature, latlng) {
-                feature.properties = _loomaMapHydrateCountryProps(feature.properties || {});
-
-                var localMarker = L.circleMarker(latlng, {
-                    pane: 'loomaAddOnPane', // above base polygons
-                    radius: layerData[idx].style.radius,
-                    color : layerData[idx].style.color,
-                    weight : layerData[idx].style.weight,
-                    opacity : layerData[idx].style.opacity,
-                    fillOpacity : layerData[idx].style.fillOpacity,
-                    fillColor : layerData[idx].style.fillColor
-                });
-                marker = localMarker;
-
-                var popText = "";
-                var counter = 0;
-                var imageKey = "";
-                var imageData = "";
-                if (layerData[idx].image) imageKey = layerData[idx].image;
-
-                // Same "always show population/highest point" rule as in the info-box path.
-                var POPUP_ALWAYS_SHOW = ['population', 'highest_point_m'];
-                function popupIsAlwaysShown(k) {
-                    return POPUP_ALWAYS_SHOW.indexOf(String(k).toLowerCase()) !== -1;
-                }
-                Object.keys(feature.properties).forEach(function(key)
-                {
-                    if(layerData[idx].inPop) {
-                        var inPop = layerData[idx].inPop;
-                        if (counter == 0) //the first feature is the name, and we don't need context for that
-                        {
-                            if (inPop.indexOf(key) != -1)
-                            {
-                                popText += feature.properties[key].bold();
-                                popText += '<br>';
-                                counter++;
-                            }
-                        } else {
-                            if (inPop.indexOf(key) != -1 || popupIsAlwaysShown(key)) {
-                                var formatted = _loomaMapFormatProp(key, feature.properties[key]);
-                                popText += formatted.label.bold() + ": " + formatted.valueHtml;
-                                popText += '<br>';
-                            }
-                        }
-                    } else { //if they have not specified which features to include, include all of them
-                        if (counter == 0) { //the first feature is the name, and we don't need context for that
-                            popText += feature.properties[key].bold();
-                            popText += '<br>';
-                            counter++;
-                        } else {
-                            var formatted = _loomaMapFormatProp(key, feature.properties[key]);
-                            popText += formatted.label.bold() + ": " + formatted.valueHtml;
-                            popText += '<br>';
-                        }
-                    }
-                    if(imageKey == key) imageData = feature.properties[key];
-                });
-
-                if (!imageData && layerData[idx].image) {
-                    // The configured `image` key (e.g. 'capital') isn't always
-                    // present — European/Asian/world capitals expose the city
-                    // name under `name` instead. Fall back to common keys so
-                    // every capital can still resolve a photo.
-                    imageData = _loomaMapPickProp(feature.properties, [
-                        'capital', 'CAPITAL', 'name', 'NAME', 'city', 'CITY'
-                    ]) || '';
-                }
-
-                if(imageData && imageData.indexOf(' ') !== -1) imageData = imageData.replace(/ /gi, "_")
-
-                if (layerData[idx].image && information.popExtension && imageData) {
-                    try {
-                        var imageLink = getPhotoLink(imageData, information.popExtension);
-                        popText += "<img class='pop-image' src = " + imageLink + " alt = ''>";
-                    }
-                    catch (err) {
-                        console.log("error caught!");
-                    }
-                }
-
-                var layerKindName = String(layerData[idx].name || layerData[idx].geojson || '').toLowerCase();
-                var layerGeojson = String(layerData[idx].geojson || '').toLowerCase();
-                var isCapitalLayer  = layerKindName.indexOf('capital')  !== -1;
-                var isCityLayer     = layerKindName.indexOf('cities')   !== -1 || layerKindName.indexOf('city')    !== -1;
-                var isLakeLayer     = layerKindName.indexOf('lake')     !== -1;
-                var isMountainLayer = layerKindName.indexOf('mountain') !== -1;
-                var isTempleLayer   = layerKindName.indexOf('temple')   !== -1;
-                // Looma Schools Map's addOn: name="Looma Schools",
-                // geojson="looma schools lat long.json". Without this,
-                // school clicks fall through to the bindPopup branch
-                // and open a popup pinned on the marker (obscures the
-                // map). Route them through the top-right panel instead.
-                var isSchoolLayer   = layerKindName.indexOf('school')   !== -1 || layerGeojson.indexOf('school') !== -1;
-                // Nepal Map's Cities (and lakes/temples/mountains) share the
-                // generic 'place' card so all the Nepal-specific fields
-                // (Nepali name, Province, District, Elevation, …) show up.
-                // The world map's Capitals/Cities keep the slimmer
-                // population+local-time card.
-                var isNepalAddOn = layerGeojson.indexOf('nepal') === 0;
-                var isPlaceLayer = isCapitalLayer || isCityLayer || isLakeLayer || isMountainLayer || isTempleLayer || isSchoolLayer;
-
-                if (isPlaceLayer) {
-                    var capturedImageLink = (typeof imageLink !== 'undefined') ? imageLink : '';
-                    var capturedInPop = layerData[idx].inPop || '';
-                    var capturedImageKey = layerData[idx].image || 'name';
-                    var placeKind;
-                    if (isCapitalLayer) placeKind = 'capital';
-                    else if (isCityLayer && !isNepalAddOn) placeKind = 'city';
-                    else placeKind = 'place';
-                    localMarker.on('click', function (e) {
-                        if (e.originalEvent) L.DomEvent.stopPropagation(e.originalEvent);
-                        _loomaMapShowCapitalClickProps(feature.properties || {}, capturedImageLink, localMarker, {
-                            placeKind: placeKind,
-                            inPop: capturedInPop,
-                            imageKey: capturedImageKey
+                        var localMarker = L.circleMarker(latlng, {
+                            pane: 'loomaAddOnPane', // above base polygons
+                            radius: layerData[idx].style.radius,
+                            color : layerData[idx].style.color,
+                            weight : layerData[idx].style.weight,
+                            opacity : layerData[idx].style.opacity,
+                            fillOpacity : layerData[idx].style.fillOpacity,
+                            fillColor : layerData[idx].style.fillColor
                         });
-                    });
-                } else {
-                    // Unknown layer type — keep the legacy centred Leaflet popup.
-                    localMarker.bindPopup(popText, {
-                        className: 'capital-popup',
-                        keepInView: true,
-                        width: 600, minWidth: 600, maxWidth: 600,
-                    });
-                }
+                        marker = localMarker;
+                 
+                        var popText = "";
+                        var counter = 0;
+                        var imageKey = "";
+                        var imageData = "";
+                        if (layerData[idx].image) imageKey = layerData[idx].image;
+                        
+                        // Same "always show population/highest point" rule as in the info-box path.
+                        var POPUP_ALWAYS_SHOW = ['population', 'highest_point_m'];
+                        function popupIsAlwaysShown(k) {
+                            return POPUP_ALWAYS_SHOW.indexOf(String(k).toLowerCase()) !== -1;
+                        }
+                        Object.keys(feature.properties).forEach(function(key)
+                        {
+                            if(layerData[idx].inPop) {
+                                var inPop = layerData[idx].inPop;
+                                if (counter == 0) //the first feature is the name, and we don't need context for that
+                                {
+                                    if (inPop.indexOf(key) != -1)
+                                    {
+                                        popText += feature.properties[key].bold();
+                                        popText += '<br>';
+                                        counter++;
+                                    }
+                                } else {
+                                    if (inPop.indexOf(key) != -1 || popupIsAlwaysShown(key)) {
+                                        var formatted = _loomaMapFormatProp(key, feature.properties[key]);
+                                        popText += formatted.label.bold() + ": " + formatted.valueHtml;
+                                        popText += '<br>';
+                                    }
+                                }
+                            } else { //if they have not specified which features to include, include all of them
+                                if (counter == 0) { //the first feature is the name, and we don't need context for that
+                                    popText += feature.properties[key].bold();
+                                    popText += '<br>';
+                                    counter++;
+                                } else {
+                                    var formatted = _loomaMapFormatProp(key, feature.properties[key]);
+                                    popText += formatted.label.bold() + ": " + formatted.valueHtml;
+                                    popText += '<br>';
+                                }
+                            }
+                            if(imageKey == key) imageData = feature.properties[key];
+                        });
 
-                // markers.addLayer(marker);
+                        if (!imageData && layerData[idx].image) {
+                            // The configured `image` key (e.g. 'capital') isn't always
+                            // present — European/Asian/world capitals expose the city
+                            // name under `name` instead. Fall back to common keys so
+                            // every capital can still resolve a photo.
+                            imageData = _loomaMapPickProp(feature.properties, [
+                                'capital', 'CAPITAL', 'name', 'NAME', 'city', 'CITY'
+                            ]) || '';
+                        }
 
-                return localMarker;
-            }
-        });
-        addOnLayers[idx] = addOnLayer;
-        // addOnLayers[arrIndex] = markers;
-        //arrIndex ++;
-    }; // end createAddOnlayer()
+                        if(imageData && imageData.indexOf(' ') !== -1) imageData = imageData.replace(/ /gi, "_")
 
-    function createMarkerClusterAddOnLayer(data) {
-        var markers = L.markerClusterGroup();
-        var geojson = L.geoJson(data,
-            {
-                onEachFeature:function(feature, layer) {
-                    var popupText = feature.properties.ip + '<br>' + feature.properties.city;
-                    layer.bindPopup(popupText);
-                }
-            }
-        );
-        markers.addLayer(geojson);
+                        if (layerData[idx].image && information.popExtension && imageData) {
+                            try {
+                                var imageLink = getPhotoLink(imageData, information.popExtension);
+                                popText += "<img class='pop-image' src = " + imageLink + " alt = ''>";
+                            }
+                            catch (err) {
+                                console.log("error caught!");
+                            }
+                        }
 
-        addOnLayers[0] = markers;
-    }; // end createMarkerClusterAddOnLayer()
+                        var layerKindName = String(layerData[idx].name || layerData[idx].geojson || '').toLowerCase();
+                        var layerGeojson = String(layerData[idx].geojson || '').toLowerCase();
+                        var isCapitalLayer  = layerKindName.indexOf('capital')  !== -1;
+                        var isCityLayer     = layerKindName.indexOf('cities')   !== -1 || layerKindName.indexOf('city')    !== -1;
+                        var isLakeLayer     = layerKindName.indexOf('lake')     !== -1;
+                        var isMountainLayer = layerKindName.indexOf('mountain') !== -1;
+                        var isTempleLayer   = layerKindName.indexOf('temple')   !== -1;
+                        // Looma Schools Map's addOn: name="Looma Schools",
+                        // geojson="looma schools lat long.json". Without this,
+                        // school clicks fall through to the bindPopup branch
+                        // and open a popup pinned on the marker (obscures the
+                        // map). Route them through the top-right panel instead.
+                        var isSchoolLayer   = layerKindName.indexOf('school')   !== -1 || layerGeojson.indexOf('school') !== -1;
+                        // Nepal Map's Cities (and lakes/temples/mountains) share the
+                        // generic 'place' card so all the Nepal-specific fields
+                        // (Nepali name, Province, District, Elevation, …) show up.
+                        // The world map's Capitals/Cities keep the slimmer
+                        // population+local-time card.
+                        var isNepalAddOn = layerGeojson.indexOf('nepal') === 0;
+                        var isPlaceLayer = isCapitalLayer || isCityLayer || isLakeLayer || isMountainLayer || isTempleLayer || isSchoolLayer;
 
+                        if (isPlaceLayer) {
+                            var capturedImageLink = (typeof imageLink !== 'undefined') ? imageLink : '';
+                            var capturedInPop = layerData[idx].inPop || '';
+                            var capturedImageKey = layerData[idx].image || 'name';
+                            var placeKind;
+                            if (isCapitalLayer) placeKind = 'capital';
+                            else if (isCityLayer && !isNepalAddOn) placeKind = 'city';
+                            else placeKind = 'place';
+                            localMarker.on('click', function (e) {
+                                if (e.originalEvent) L.DomEvent.stopPropagation(e.originalEvent);
+                                _loomaMapShowCapitalClickProps(feature.properties || {}, capturedImageLink, localMarker, {
+                                    placeKind: placeKind,
+                                    inPop: capturedInPop,
+                                    imageKey: capturedImageKey
+                                });
+                            });
+                        } else {
+                            // Unknown layer type — keep the legacy centred Leaflet popup.
+                            localMarker.bindPopup(popText, {
+                                className: 'capital-popup',
+                                keepInView: true,
+                                width: 600, minWidth: 600, maxWidth: 600,
+                            });
+                        }
+                        
+                        // markers.addLayer(marker);
+                        
+                        return localMarker;
+                    }
+                });
+                addOnLayers[idx] = addOnLayer;
+                // addOnLayers[arrIndex] = markers;
+                //arrIndex ++;
+            }; // end createAddOnlayer()
+    
+            function createMarkerClusterAddOnLayer(data) {
+                var markers = L.markerClusterGroup();
+                var geojson = L.geoJson(data,
+                    {
+                        onEachFeature:function(feature, layer) {
+                        var popupText = feature.properties.ip + '<br>' + feature.properties.city;
+                        layer.bindPopup(popupText);
+                        }
+                    }
+                );
+                markers.addLayer(geojson);
+                
+                addOnLayers[0] = markers;
+            }; // end createMarkerClusterAddOnLayer()
+    
     //// start of loadAddOnLayers()  ////
     var promises = [];
     var marker;
     //var markers = new L.MarkerClusterGroup();
-
+    
     if (mapTitle === 'Looma User Locations') {
         promises[0] = new Promise(function (resolve) {
             $.post("looma-database-utilities.php", {cmd: 'getLogLocations'})
@@ -2498,44 +2498,44 @@ function loadAddOnLayers (layerData, information) {
         });
     }
     else for (var i = 0; i < layerData.length; i++)
-    {
-        // If the layer descriptor specifies an absolute path (e.g.
-        // "/data/nepal-cities.geojson"), use it verbatim so we can serve
-        // supplemental GeoJSON from the app's local /data/ directory
-        // rather than /content/ (which redirects to looma.website). Any
-        // plain filename still resolves under /content/maps/json/ as before.
-        var geoRef = layerData[i].geojson || '';
-        var link = (geoRef.charAt(0) === '/'
-            ? geoRef
-            : '/content/maps/json/' + geoRef) + '?' + LOOMA_MAP_CACHE_BUSTER;
-        // Wrap in a Promise that always resolves so a single 404 doesn't
-        // break Promise.all — otherwise the post-load auto-show loop
-        // (which turns on the Capitals layer) never runs.
-        promises[i] = (function (layerIndex, linkUrl) {
-            return new Promise(function (resolve) {
-                $.getJSON(linkUrl, function (data) {
-                    createAddOnLayer(data, layerIndex);
-                    resolve();
-                }).fail(function (xhr, status, err) {
-                    console.error('Failed to load add-on layer geojson:', linkUrl, status, err);
-                    if ($('#map-load-error').length === 0) {
-                        $('#map').append(
-                            "<div id='map-load-error' style='position:absolute;z-index:9999;left:10px;right:10px;top:10px;padding:8px;border-radius:6px;background:rgba(0,0,0,0.7);color:#fff;font-size:14px'>" +
-                            "Map data missing/unreachable: " + linkUrl +
-                            "</div>"
-                        );
-                    }
-                    resolve();
-                });
-            });
-        })(i, link);
-    }  // end for (i)
-
-
+        {
+            // If the layer descriptor specifies an absolute path (e.g.
+            // "/data/nepal-cities.geojson"), use it verbatim so we can serve
+            // supplemental GeoJSON from the app's local /data/ directory
+            // rather than /content/ (which redirects to looma.website). Any
+            // plain filename still resolves under /content/maps/json/ as before.
+            var geoRef = layerData[i].geojson || '';
+            var link = (geoRef.charAt(0) === '/'
+                ? geoRef
+                : '/content/maps/json/' + geoRef) + '?' + LOOMA_MAP_CACHE_BUSTER;
+                // Wrap in a Promise that always resolves so a single 404 doesn't
+                // break Promise.all — otherwise the post-load auto-show loop
+                // (which turns on the Capitals layer) never runs.
+                promises[i] = (function (layerIndex, linkUrl) {
+                    return new Promise(function (resolve) {
+                        $.getJSON(linkUrl, function (data) {
+                            createAddOnLayer(data, layerIndex);
+                            resolve();
+                        }).fail(function (xhr, status, err) {
+                            console.error('Failed to load add-on layer geojson:', linkUrl, status, err);
+                            if ($('#map-load-error').length === 0) {
+                                $('#map').append(
+                                    "<div id='map-load-error' style='position:absolute;z-index:9999;left:10px;right:10px;top:10px;padding:8px;border-radius:6px;background:rgba(0,0,0,0.7);color:#fff;font-size:14px'>" +
+                                    "Map data missing/unreachable: " + linkUrl +
+                                    "</div>"
+                                );
+                            }
+                            resolve();
+                        });
+                    });
+                })(i, link);
+        }  // end for (i)
+    
+    
     Promise.all(promises).then(function() {
         console.log('In addonlayer, promises has ' + promises.length + ' entries');
         //for (var layer of addOnLayers) layer.addTo(map); //not needed. checking the box will do addTo()
-
+        
         for (var i = 0; i < addOnLayers.length; i++) {
             var shouldShow = layerData[i] && (
                 layerData[i].pre_check ||
@@ -2593,37 +2593,37 @@ function addOnButtons (layerData)
                 featureLayers();
             });
         }
-
-        /*
-        for (var x = 0; x < addOnCount; x++)
-        {
-            boxes[x].addEventListener('change', function () {
-
-                var numChecked = this.id.charAt(2);
-                if (this.checked)  {
-                    popUpShowing[numChecked] = true;
-                    map.addLayer(addOnLayers[numChecked]);
-                } else {
-                    map.removeLayer(addOnLayers[numChecked]);
-                    popUpShowing[numChecked] = false;
-                }
-                featureLayers();
-            });
-        }
-        */
-        /* */
+        
+                    /*
+                    for (var x = 0; x < addOnCount; x++)
+                    {
+                        boxes[x].addEventListener('change', function () {
+            
+                            var numChecked = this.id.charAt(2);
+                            if (this.checked)  {
+                                popUpShowing[numChecked] = true;
+                                map.addLayer(addOnLayers[numChecked]);
+                            } else {
+                                map.removeLayer(addOnLayers[numChecked]);
+                                popUpShowing[numChecked] = false;
+                            }
+                            featureLayers();
+                        });
+                    }
+                    */
+    /* */
         if (addOnCount > 0 && layerData[0].pre_check) {
             $(boxes[0]).prop( "checked", true );
             popUpShowing[0] = true;
             map.addLayer(addOnLayers[0]);
             addOnLayers[0].bringToFront();
         }
-        /* */
-
+    /* */
+        
         return div;
     };
     layers.addTo(map);
-
+ 
 } // end addOnButtons()
 
 ////////////////////////
@@ -2862,182 +2862,182 @@ function _loomaMapBuildCapitalPhotoCandidates(cityName, extension) {
 // Number functions //
 //////////////////////
 
-// Inserts commas to long numbers to improve readability
-function toCommas(numRaw) {
-    if(isNaN(numRaw)) {
-        //if it's not a number, don't add commas
+    // Inserts commas to long numbers to improve readability
+    function toCommas(numRaw) {
+        if(isNaN(numRaw)) {
+            //if it's not a number, don't add commas
+            return numRaw;
+        } else {
+            var num = "";
+            if (numRaw.length >= 10)
+            { //Adds comma for 1 billion+, so on and so forth. Length of 10+ == billion
+                num += numRaw.substring(0, numRaw.length - 9) + ",";
+                numRaw = numRaw.substring(numRaw.length - 9, numRaw.length);
+            }
+            if (numRaw.length >= 7)
+            {        // length of 7+ == million (1,000,000)
+                num += numRaw.substring(0, numRaw.length - 6) + ",";
+                numRaw = numRaw.substring(numRaw.length - 6, numRaw.length);
+            }
+            if (numRaw.length >= 4)
+            {           // length of 4+ == thousand (1,000)
+                num += numRaw.substring(0, numRaw.length - 3) + ",";
+                numRaw = numRaw.substring(numRaw.length - 3, numRaw.length);
+            }
+            num += numRaw;
+            return num;
+        }
+    } // end toCommas()
+    
+    // Instead of displaying full number, prints out "billion" or "million" for readability
+    function toWords(numRaw) {
+        if (numRaw >= 1000000000000)
+            return (numRaw / 1000000000000 + ' trillion');
+        else if (numRaw >= 1000000000)
+            return (numRaw / 1000000000 + ' billion');
+        else if (numRaw >= 1000000)
+            return (numRaw / 1000000 + ' million');
+        else if (numRaw >= 1000)
+            return (numRaw / 1000 + ' thousand');
         return numRaw;
-    } else {
-        var num = "";
-        if (numRaw.length >= 10)
-        { //Adds comma for 1 billion+, so on and so forth. Length of 10+ == billion
-            num += numRaw.substring(0, numRaw.length - 9) + ",";
-            numRaw = numRaw.substring(numRaw.length - 9, numRaw.length);
-        }
-        if (numRaw.length >= 7)
-        {        // length of 7+ == million (1,000,000)
-            num += numRaw.substring(0, numRaw.length - 6) + ",";
-            numRaw = numRaw.substring(numRaw.length - 6, numRaw.length);
-        }
-        if (numRaw.length >= 4)
-        {           // length of 4+ == thousand (1,000)
-            num += numRaw.substring(0, numRaw.length - 3) + ",";
-            numRaw = numRaw.substring(numRaw.length - 3, numRaw.length);
-        }
-        num += numRaw;
-        return num;
-    }
-} // end toCommas()
-
-// Instead of displaying full number, prints out "billion" or "million" for readability
-function toWords(numRaw) {
-    if (numRaw >= 1000000000000)
-        return (numRaw / 1000000000000 + ' trillion');
-    else if (numRaw >= 1000000000)
-        return (numRaw / 1000000000 + ' billion');
-    else if (numRaw >= 1000000)
-        return (numRaw / 1000000 + ' million');
-    else if (numRaw >= 1000)
-        return (numRaw / 1000 + ' thousand');
-    return numRaw;
-} // end toWords()
-
-//Turns a number into date form with BCE/CE
-function toDate(dateRaw) {
-    if (dateRaw < 0) return Math.abs(dateRaw) + ' BCE';
-    else if (dateRaw < 1000) return dateRaw + ' CE';
-    return dateRaw;
-} // end toDate()
-
-//Correctly capitalizes a word by capitalizing first letter
-function capitalize(wordRaw) {
+    } // end toWords()
+    
+    //Turns a number into date form with BCE/CE
+    function toDate(dateRaw) {
+        if (dateRaw < 0) return Math.abs(dateRaw) + ' BCE';
+        else if (dateRaw < 1000) return dateRaw + ' CE';
+        return dateRaw;
+    } // end toDate()
+    
+    //Correctly capitalizes a word by capitalizing first letter
+    function capitalize(wordRaw) {
     return wordRaw.charAt(0).toUpperCase() + wordRaw.substring(1);
-} // end capitalize()
+    } // end capitalize()
 
-function _loomaMapAsNumber(value) {
-    if (value === null || value === undefined) return null;
-    if (typeof value === 'number' && isFinite(value)) return value;
-    var s = ('' + value).replace(/,/g, '').trim();
-    if (s === '') return null;
-    var n = Number(s);
-    return isFinite(n) ? n : null;
-}
-
-function _loomaMapFormatProp(keyRaw, valueRaw) {
-    var key = (keyRaw === null || keyRaw === undefined) ? '' : ('' + keyRaw);
-    var keyLower = key.toLowerCase();
-    var value = valueRaw;
-
-    // Normalize continent naming: some datasets incorrectly use "Australia" as a continent.
-    if (keyLower === 'continent' && ('' + value).toLowerCase() === 'australia') {
-        value = 'Oceania';
+    function _loomaMapAsNumber(value) {
+        if (value === null || value === undefined) return null;
+        if (typeof value === 'number' && isFinite(value)) return value;
+        var s = ('' + value).replace(/,/g, '').trim();
+        if (s === '') return null;
+        var n = Number(s);
+        return isFinite(n) ? n : null;
     }
 
-    // Normalize GDP naming: some datasets/localizations use "PIB" (Portuguese) for GDP.
-    // Always display as "GDP (USD)" and format as a USD number when possible.
-    var isGdp =
-        keyLower === 'gdp' ||
-        keyLower === 'gdp_usd' ||
-        keyLower === 'gdp_current_usd' ||
-        keyLower === 'pib';
-    if (isGdp) {
-        var gdpNum = _loomaMapAsNumber(value);
-        return {
-            label: 'GDP (USD)',
-            valueHtml: gdpNum === null ? (value === null || value === undefined || ('' + value).trim() === '' ? '-' : ('' + value)) : ('$' + toCommas(Math.round(gdpNum)))
-        };
-    }
+    function _loomaMapFormatProp(keyRaw, valueRaw) {
+        var key = (keyRaw === null || keyRaw === undefined) ? '' : ('' + keyRaw);
+        var keyLower = key.toLowerCase();
+        var value = valueRaw;
 
-    // Population field normalization (keep this conservative to avoid false positives).
-    var isPopulation =
-        keyLower === 'population' ||
-        keyLower === 'pop_est' ||
-        keyLower === 'pop' ||
-        keyLower === 'pop_estimate' ||
-        keyLower === 'pop2020' ||
-        keyLower === 'pop2019' ||
-        keyLower === 'pop2018' ||
-        keyLower === 'pop2005' ||
-        keyLower === 'pop2000' ||
-        keyLower === 'pop1990' ||
-        keyLower === 'pop1980';
+        // Normalize continent naming: some datasets incorrectly use "Australia" as a continent.
+        if (keyLower === 'continent' && ('' + value).toLowerCase() === 'australia') {
+            value = 'Oceania';
+        }
 
-    if (isPopulation) {
-        return { label: 'Population', valueHtml: toCommas('' + value) };
-    }
-
-    // Highest point / elevation — metric only, per Skip's review.
-    var isElevationMeters =
-        keyLower === 'elev_m' ||
-        keyLower === 'elevation_m' ||
-        keyLower === 'alt_m' ||
-        keyLower === 'altitude_m' ||
-        keyLower === 'highest_m' ||
-        keyLower === 'highest_point_m' ||
-        keyLower === 'highestpoint_m';
-
-    if (isElevationMeters) {
-        var meters = _loomaMapAsNumber(value);
-        if (meters !== null) {
+        // Normalize GDP naming: some datasets/localizations use "PIB" (Portuguese) for GDP.
+        // Always display as "GDP (USD)" and format as a USD number when possible.
+        var isGdp =
+            keyLower === 'gdp' ||
+            keyLower === 'gdp_usd' ||
+            keyLower === 'gdp_current_usd' ||
+            keyLower === 'pib';
+        if (isGdp) {
+            var gdpNum = _loomaMapAsNumber(value);
             return {
-                label: 'Highest point',
-                valueHtml: toCommas(Math.round(meters)) + ' m'
+                label: 'GDP (USD)',
+                valueHtml: gdpNum === null ? (value === null || value === undefined || ('' + value).trim() === '' ? '-' : ('' + value)) : ('$' + toCommas(Math.round(gdpNum)))
             };
         }
-        return { label: 'Highest point', valueHtml: '' + value };
-    }
 
-    // Also handle elevation-in-feet fields by converting to metres. The
-    // Nepal mountains geojson uses `"elevation (ft)"` verbatim, so include
-    // that (with the space and parentheses) alongside the underscore-style
-    // keys that other sources use.
-    var isElevationFeet =
-        keyLower === 'elev_ft' ||
-        keyLower === 'elevation_ft' ||
-        keyLower === 'elevation (ft)' ||
-        keyLower === 'alt_ft' ||
-        keyLower === 'altitude_ft' ||
-        keyLower === 'highest_ft' ||
-        keyLower === 'highest_point_ft' ||
-        keyLower === 'highestpoint_ft';
+        // Population field normalization (keep this conservative to avoid false positives).
+        var isPopulation =
+            keyLower === 'population' ||
+            keyLower === 'pop_est' ||
+            keyLower === 'pop' ||
+            keyLower === 'pop_estimate' ||
+            keyLower === 'pop2020' ||
+            keyLower === 'pop2019' ||
+            keyLower === 'pop2018' ||
+            keyLower === 'pop2005' ||
+            keyLower === 'pop2000' ||
+            keyLower === 'pop1990' ||
+            keyLower === 'pop1980';
 
-    if (isElevationFeet) {
-        var feetVal = _loomaMapAsNumber(value);
-        if (feetVal !== null) {
-            return {
-                label: 'Highest point',
-                valueHtml: toCommas(Math.round(feetVal * 0.3048)) + ' m'
-            };
+        if (isPopulation) {
+            return { label: 'Population', valueHtml: toCommas('' + value) };
         }
-        return { label: 'Highest point', valueHtml: '' + value };
-    }
 
-    return { label: capitalize(key), valueHtml: toCommas(value) };
-}
+        // Highest point / elevation — metric only, per Skip's review.
+        var isElevationMeters =
+            keyLower === 'elev_m' ||
+            keyLower === 'elevation_m' ||
+            keyLower === 'alt_m' ||
+            keyLower === 'altitude_m' ||
+            keyLower === 'highest_m' ||
+            keyLower === 'highest_point_m' ||
+            keyLower === 'highestpoint_m';
 
-//turns spaces into underscores for the names of images (so that we can use more generic names to  call the image)
-function spaceToUnderscore(wordRaw) {
-    var toReturn = "";
-    while(true) {
-        toReturn += wordRaw.substring(0, wordRaw.indexOf(' '));
-        toReturn += "_";
-        wordRaw = wordRaw.substring(wordRaw.indexOf(' ') + 1);
-
-        if(wordRaw.indexOf(' ') == -1) {
-            toReturn += wordRaw;
-            return toReturn;
+        if (isElevationMeters) {
+            var meters = _loomaMapAsNumber(value);
+            if (meters !== null) {
+                return {
+                    label: 'Highest point',
+                    valueHtml: toCommas(Math.round(meters)) + ' m'
+                };
+            }
+            return { label: 'Highest point', valueHtml: '' + value };
         }
+
+        // Also handle elevation-in-feet fields by converting to metres. The
+        // Nepal mountains geojson uses `"elevation (ft)"` verbatim, so include
+        // that (with the space and parentheses) alongside the underscore-style
+        // keys that other sources use.
+        var isElevationFeet =
+            keyLower === 'elev_ft' ||
+            keyLower === 'elevation_ft' ||
+            keyLower === 'elevation (ft)' ||
+            keyLower === 'alt_ft' ||
+            keyLower === 'altitude_ft' ||
+            keyLower === 'highest_ft' ||
+            keyLower === 'highest_point_ft' ||
+            keyLower === 'highestpoint_ft';
+
+        if (isElevationFeet) {
+            var feetVal = _loomaMapAsNumber(value);
+            if (feetVal !== null) {
+                return {
+                    label: 'Highest point',
+                    valueHtml: toCommas(Math.round(feetVal * 0.3048)) + ' m'
+                };
+            }
+            return { label: 'Highest point', valueHtml: '' + value };
+        }
+
+        return { label: capitalize(key), valueHtml: toCommas(value) };
     }
-    return toReturn;
-} // end spaceToUnderscore()
+    
+    //turns spaces into underscores for the names of images (so that we can use more generic names to  call the image)
+    function spaceToUnderscore(wordRaw) {
+        var toReturn = "";
+        while(true) {
+            toReturn += wordRaw.substring(0, wordRaw.indexOf(' '));
+            toReturn += "_";
+            wordRaw = wordRaw.substring(wordRaw.indexOf(' ') + 1);
+    
+            if(wordRaw.indexOf(' ') == -1) {
+                toReturn += wordRaw;
+                return toReturn;
+            }
+        }
+        return toReturn;
+    } // end spaceToUnderscore()
 
 //////////////////////////////////////////////
 
 window.onload = function () {
-
+    
     var mapid = $("#map").data()['id'];
     var collection = 'maps';
-
+    
     $.post("looma-database-utilities.php",
         {cmd: 'openByID', collection: collection, id: mapid},
         function(mapdata) {
@@ -3045,7 +3045,7 @@ window.onload = function () {
             L.Circle.prototype._checkIfEmpty = function () { return false; };
             //Fixes a Leaflet glitch that the circle markers
             //would disappear on pan or zoom
-
+            
             mapTitle = data.title;
 
             // Per-map body class so CSS can target a specific map by title.
@@ -3059,19 +3059,19 @@ window.onload = function () {
                     .replace(/^-+|-+$/g, '');
                 if (slug) document.body.classList.add('map-' + slug);
             } catch (_) { /* body class is a nice-to-have */ }
-
+            
             if (data.baseLayers) baseLayers = new Array(data.baseLayers.length); // array of feature layers
-
+            
             if (data.addOnLayers)
             {
                 addOnData = data.addOnLayers;
                 addOnLayers = new Array(data.addOnLayers.length);
                 popUpShowing = new Array(data.addOnLayers.length);
-
+                
                 if (addOnData[0].priority) priorityOn = true;
                 else priorityOn = true;  //??? was false?
             }
-
+            
             // Disable Leaflet's default double-click-to-zoom. In classroom /
             // touchscreen contexts a "click" often lands as a double-tap,
             // which zooms in to the marker location and leaves the user
@@ -3096,7 +3096,7 @@ window.onload = function () {
                     map = L.map('map', mapOpts).setView([27, 85], 3);
                 }
             }
-
+            
             if (data.info.backgroundColor)
             {   var bColor = data.info.backgroundColor;
                 var el = document.getElementsByClassName('leaflet-container');
@@ -3136,7 +3136,7 @@ window.onload = function () {
                 map.options.minZoom = 2.5;
                 map.options.maxZoom = 7;
             }
-
+            
             //If the map has tiles, add them as a background for the map
             if (data.tileLayer && data.tileExtension)
             {
@@ -3145,20 +3145,43 @@ window.onload = function () {
                     minZoom: map.options.minZoom || zoomCfg.minZoom || 1,
                     maxZoom: zoomCfg.maxZoom || 18,
                 };
-                // Tiles always come from the Looma server's local pyramids
-                // (/maps2018/tiles/<layer>) — schools are offline, so never
-                // fetch from OpenStreetMap / OpenTopoMap. Continent/region
-                // maps (Europe, Asia, ...) intentionally have NO tile
-                // background — they should show only the drawn region over
-                // the map background color, not the rest of the world.
-                var LOCAL_TILE_LAYERS = ['en-worldmap', 'en-worldmap/tile', 'topography', 'topo',
-                    'streetMap', 'PokharaCity', 'KathmanduCity'];
+                // `en-worldmap` ships with a local tile pyramid. City street
+                // maps (Pokhara, Kathmandu, generic streetMap) fall back to
+                // OpenStreetMap because they genuinely need real-world tiles.
+                // Continent/region maps (Europe, Asia, ...) intentionally have
+                // NO tile background — they should show only the drawn region
+                // over the map background color, not the rest of the world.
+                var LOCAL_TILE_LAYERS = ['en-worldmap'];
+                var OSM_FALLBACK_LAYERS = ['streetMap', 'PokharaCity', 'KathmanduCity'];
+                // The World Topography map ships only a partial Nepal-region
+                // tile pyramid at zoom 9. Serve OpenTopoMap instead — it's a
+                // real topographic tile layer that covers the whole globe.
+                var TOPO_FALLBACK_LAYERS = ['en-worldmap/tile', 'topography', 'topo'];
                 if (LOCAL_TILE_LAYERS.indexOf(data.tileLayer) !== -1) {
                     var link = '/maps2018/tiles/' + data.tileLayer + '/{z}/{x}/{y}.' + data.tileExtension;
                     L.tileLayer(link, tileOpts).addTo(map);
+                } else if (TOPO_FALLBACK_LAYERS.indexOf(data.tileLayer) !== -1) {
+                    L.tileLayer(
+                        'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+                        Object.assign({}, tileOpts, {
+                            subdomains: 'abc',
+                            attribution: 'Map data: &copy; OpenStreetMap, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)',
+                            maxZoom: Math.min(17, tileOpts.maxZoom || 17),
+                            crossOrigin: true,
+                        })
+                    ).addTo(map);
+                } else if (OSM_FALLBACK_LAYERS.indexOf(data.tileLayer) !== -1) {
+                    L.tileLayer(
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        Object.assign({}, tileOpts, {
+                            attribution: '&copy; OpenStreetMap contributors',
+                            maxZoom: Math.min(19, tileOpts.maxZoom || 19),
+                            crossOrigin: true,
+                        })
+                    ).addTo(map);
                 }
             }
-
+            
             //Sets boundaries for the distance the user can span in pixels
             var southWest, northEast;
             if (data.info.mapBounds) {
@@ -3175,7 +3198,7 @@ window.onload = function () {
                 ? _loomaMapExpandBoundsForPopupRoom(bounds)
                 : bounds;
             map.setMaxBounds(panningBounds);
-
+            
             map.on('drag', function () {
                 map.panInsideBounds(panningBounds, {animate: false});
             });
@@ -3215,11 +3238,11 @@ window.onload = function () {
 
                 if (data.legend) loadLegend(data.legend);
             });
-
+            
         }, // end of getJSON function
         'json'
     );
-
-    toolbar_button_activate("maps");
+    
+        toolbar_button_activate("maps");
 
 }; // End of window.onload()

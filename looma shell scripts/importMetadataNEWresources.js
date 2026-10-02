@@ -130,7 +130,7 @@ lines.forEach( function(doc) {
                 if (fields[KEY3]) activity['key3'] = fields[KEY3];
                 if (fields[KEY4]) activity['key4'] = fields[KEY4];
 
-              //  if (param === 'dryrun')  print(JSON.stringify(activity, null, 2));
+              //  if (param !== 'run')  print(JSON.stringify(activity, null, 2));
 
                if (param === 'run') db.activities.replaceOne({_id: activity._id}, activity);
                 changecount++;

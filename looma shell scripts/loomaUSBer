@@ -186,7 +186,7 @@ fi
 echo
 echo "****************************************************************************"
 echo "DONE LOOMA UPDATE: updating USB memory with Looma code, database and content"
-if [[ $1 = "dryrun"]]
+if [[ $1 = "dryrun" ]]
 then
     echo "DRYRUN ONLY - - NO FILES TRANSFERRED"
 fi

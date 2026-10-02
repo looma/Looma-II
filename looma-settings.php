@@ -39,12 +39,13 @@ Description:  for Looma 2
                 <button class="settings-control">Lesson Editor</button>
             </a>
 
-             <a href="looma-edit-text.php">
-                 <button class="settings-control">Text Editor</button>
-             </a>
 
              <a href="looma-edit-game.php">
                  <button class="settings-control">Game Editor</button>
+             </a>
+
+             <a href="looma-edit-history.php">
+                 <button class="settings-control" >History Timeline Editor</button>
              </a>
 
    <!--
@@ -69,8 +70,8 @@ Description:  for Looma 2
                  <button id="requestcontent" class="admin-control" >Dictionary Editor</button>
              </a>
 
-             <a href="looma-edit-history.php">
-                 <button class="admin-control" >History Timeline Editor</button>
+             <a href="looma-edit-text.php">
+                 <button class="admin-control">Text Editor</button>
              </a>
 
              <a href="looma-text-scan.php">

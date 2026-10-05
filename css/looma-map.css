@@ -103,6 +103,11 @@
     border-bottom: 1px solid #f0f0f0;
 }
 .looma-map-search-results li:last-child { border-bottom: none; }
+/* While the results list is open, draw the top-left corner (search) above
+   the bottom-left toggles. Toggled by showList() in looma-map.js. */
+.leaflet-top.leaflet-left.looma-map-search-open {
+    z-index: 1001;
+}
 .looma-map-search-results li:hover {
     background: #f4f6fa;
     color: var(--looma-blue, #091F48);

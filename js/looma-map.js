@@ -1045,25 +1045,37 @@ function _loomaMapEnsureSearchControl() {
             var list      = wrap.querySelector('ul');
             var searchBtn = wrap.querySelector('.looma-map-search-btn');
 
+            // Leaflet's top and bottom corners share a z-index, and the bottom
+            // corner comes later in the DOM, so the bottom-left toggles (base
+            // layers, Cities/Lakes/.../Rivers, legend) paint over the results
+            // list. Lift the top-left corner only while the list is open.
+            function showList(open) {
+                list.hidden = !open;
+                if (wrap.parentNode) wrap.parentNode.classList.toggle('looma-map-search-open', open);
+            }
+
             function render(matches, q) {
                 list.innerHTML = '';
-                if (!matches.length) { list.hidden = true; return; }
+                if (!matches.length) { showList(false); return; }
                 matches.slice(0, 8).forEach(function (rec) {
                     var li = L.DomUtil.create('li', '', list);
                     li.textContent = rec.name;
+                    // Keep focus in the input while pressing a result, so the
+                    // blur handler doesn't hide the list before the click lands.
+                    L.DomEvent.on(li, 'mousedown', L.DomEvent.preventDefault);
                     L.DomEvent.on(li, 'click', function () {
-                        list.hidden = true;
+                        showList(false);
                         input.value = rec.name;
                         input.blur();
                         _loomaMapFocusSearchResult(rec);
                     });
                 });
-                list.hidden = false;
+                showList(true);
             }
 
             function runSearch() {
                 var q = input.value.trim().toLowerCase();
-                if (!q) { list.hidden = true; return null; }
+                if (!q) { showList(false); return null; }
                 var idx = _loomaMapBuildSearchIndex();
                 var matches = idx.filter(function (r) { return r.name.toLowerCase().indexOf(q) !== -1; });
                 // Sort: exact prefix > substring, then by length.
@@ -1083,26 +1095,32 @@ function _loomaMapEnsureSearchControl() {
                     // Enter: jump to top match.
                     var top = runSearch();
                     if (top) {
-                        list.hidden = true;
+                        showList(false);
                         input.value = top.name;
                         input.blur();
                         _loomaMapFocusSearchResult(top);
                     }
                 } else if (e.keyCode === 27) {
                     input.value = '';
-                    list.hidden = true;
+                    showList(false);
                     input.blur();
                 }
             });
             L.DomEvent.on(input, 'focus', function () {
                 if (input.value.trim()) runSearch();
             });
+            // Close the list when the user moves on (e.g. taps a toggle), so it
+            // doesn't keep covering the controls. Delay lets a click on a
+            // result land before the list hides.
+            L.DomEvent.on(input, 'blur', function () {
+                setTimeout(function () { showList(false); }, 200);
+            });
 
             // Magnifying-glass button: same as pressing Enter — jump to top match.
             L.DomEvent.on(searchBtn, 'click', function () {
                 var top = runSearch();
                 if (top) {
-                    list.hidden = true;
+                    showList(false);
                     input.value = top.name;
                     input.blur();
                     _loomaMapFocusSearchResult(top);
@@ -1815,7 +1833,109 @@ function _loomaMapClearNepalSelection() {
     nepalSelectedOutlineLayer = null;
     nepalSelectedBase = null;
     nepalSelectedOriginalStyle = null;
+    _loomaMapClearRiverSelection();
     _loomaMapHideNepalSelectionDetails();
+}
+
+///////////////////////////////////////////////////
+// Rivers toggle (Nepal Map only)
+//
+// The river lines come from a local file, data/nepal-rivers.geojson, built
+// once from OpenStreetMap by "looma shell scripts/build-nepal-rivers.py".
+// Nothing here goes online — schools run offline.
+// Each feature is one whole river (MultiLineString) with properties
+// name, name_ne, length_km, rank (1 = major, 2 = river, 3 = small river).
+///////////////////////////////////////////////////
+var LOOMA_NEPAL_RIVERS_URL = 'data/nepal-rivers.geojson';
+var LOOMA_RIVER_COLOR = '#1f78d1';
+var LOOMA_RIVER_SELECTED_COLOR = '#ffd400';
+var nepalSelectedRiver = null;   // visible river line currently highlighted
+
+function _loomaMapIsNepalRiversMap() {
+    var title = ((data && data.title) || mapTitle || '').toLowerCase().trim();
+    return title === 'nepal map';
+}
+
+function _loomaMapRiverStyle(feature) {
+    var rank = feature && feature.properties ? Number(feature.properties.rank) : 3;
+    return {
+        color: LOOMA_RIVER_COLOR,
+        weight: rank === 1 ? 3.5 : (rank === 2 ? 2.2 : 1.3),
+        opacity: rank === 3 ? 0.75 : 0.95,
+        lineCap: 'round',
+        lineJoin: 'round'
+    };
+}
+
+function _loomaMapClearRiverSelection() {
+    if (!nepalSelectedRiver) return;
+    try { nepalSelectedRiver.setStyle(_loomaMapRiverStyle(nepalSelectedRiver.feature)); } catch (_) {}
+    nepalSelectedRiver = null;
+}
+
+function _loomaMapShowRiverDetails(props) {
+    _loomaMapEnsureNepalSelectionPanel();
+    if (!nepalSelectionPanel || !nepalSelectionPanel._div) return;
+    var rank = Number(props.rank);
+    var html = '<div class="nepal-selection-title">' + _loomaMapEscapeHtml(props.name || 'River') + '</div>';
+    html += _loomaMapNepalDetailRow('Nepali', props.name_ne);
+    html += _loomaMapNepalDetailRow('Type', rank === 1 ? 'Major river' : (rank === 2 ? 'River' : 'Small river'));
+    if (props.length_km) html += _loomaMapNepalDetailRow('Length (mapped)', 'about ' + props.length_km + ' km');
+    nepalSelectionPanel._div.classList.add('has-details');
+    nepalSelectionPanel._div.innerHTML = html;
+    nepalSelectionPanel._div.style.display = '';
+}
+
+function _loomaMapSelectRiver(riverLine) {
+    _loomaMapClearNepalSelection();
+    try { _loomaMapCloseCountryPanel(); } catch (_) {}
+    nepalSelectedRiver = riverLine;
+    var base = _loomaMapRiverStyle(riverLine.feature);
+    riverLine.setStyle({ color: LOOMA_RIVER_SELECTED_COLOR, weight: base.weight + 3, opacity: 1 });
+    riverLine.bringToFront();
+    _loomaMapShowRiverDetails(riverLine.feature.properties || {});
+}
+
+function _loomaMapCreateRiverLayer(geojson) {
+    // Own pane between the province/district polygons (overlayPane, 400) and
+    // the city/lake/temple markers (loomaAddOnPane, 500).
+    if (!map.getPane('loomaRiverPane')) {
+        map.createPane('loomaRiverPane');
+        map.getPane('loomaRiverPane').style.zIndex = 450;
+    }
+    var visibleByIndex = [];
+    var visible = L.geoJson(geojson, {
+        pane: 'loomaRiverPane',
+        interactive: false,
+        attribution: geojson.attribution || '',
+        style: _loomaMapRiverStyle,
+        onEachFeature: function (feature, layer) { visibleByIndex.push(layer); }
+    });
+    // Thin lines are hard to tap on a classroom touchscreen, so every river
+    // also gets a wide, invisible line on top that receives hover/click.
+    var hitIndex = 0;
+    var hit = L.geoJson(geojson, {
+        pane: 'loomaRiverPane',
+        style: function () { return { color: '#000', weight: 14, opacity: 0 }; },
+        onEachFeature: function (feature, layer) {
+            var line = visibleByIndex[hitIndex++];
+            layer.on('mouseover', function () {
+                if (line !== nepalSelectedRiver) line.setStyle({ weight: _loomaMapRiverStyle(feature).weight + 2 });
+                _loomaMapShowNepalHoverName(feature.properties.name);
+            });
+            layer.on('mouseout', function () {
+                if (line !== nepalSelectedRiver) line.setStyle(_loomaMapRiverStyle(feature));
+                _loomaMapShowNepalHoverName('');
+            });
+            layer.on('click', function (e) {
+                if (e.originalEvent) L.DomEvent.stopPropagation(e.originalEvent);
+                countryClickJustOpened = true;
+                setTimeout(function () { countryClickJustOpened = false; }, 250);
+                _loomaMapSelectRiver(line);
+            });
+        }
+    });
+    return L.featureGroup([visible, hit]);
 }
 
 function _loomaMapSelectNepalFeature(layer) {
@@ -2530,7 +2650,25 @@ function loadAddOnLayers (layerData, information) {
                     });
                 })(i, link);
         }  // end for (i)
-    
+
+    // Nepal Map: add a "Rivers" checkbox after the layers from the database.
+    // The river data is a local file in the Looma folder, not in mongo.
+    if (_loomaMapIsNepalRiversMap()) {
+        var riverIdx = layerData.length;
+        layerData.push({ name: 'Rivers' });
+        promises[riverIdx] = new Promise(function (resolve) {
+            $.getJSON(LOOMA_NEPAL_RIVERS_URL + '?' + LOOMA_MAP_CACHE_BUSTER, function (geojson) {
+                addOnLayers[riverIdx] = _loomaMapCreateRiverLayer(geojson);
+                resolve();
+            }).fail(function (xhr, status, err) {
+                // No river file on this server: drop the checkbox, keep the map working.
+                console.error('Failed to load Nepal rivers:', LOOMA_NEPAL_RIVERS_URL, status, err);
+                layerData.splice(riverIdx, 1);
+                resolve();
+            });
+        });
+    }
+
     
     Promise.all(promises).then(function() {
         console.log('In addonlayer, promises has ' + promises.length + ' entries');

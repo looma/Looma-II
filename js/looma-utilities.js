@@ -251,8 +251,10 @@ playMedia : function(button) {
             break;
 
         case "looma":
-            var url = encodeURIComponent(button.getAttribute('data-url'));
-            window.location = url;
+            // data-url is a same-origin Looma page (may carry a query string, e.g.
+            // looma-health-topic.php?id=snakebite). Do NOT encodeURIComponent the whole
+            // URL — that turns '?id=' into '%3Fid%3D' and breaks the query string.
+            window.location = button.getAttribute('data-url');
             break;
 
         case "epaath":

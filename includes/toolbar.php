@@ -80,6 +80,17 @@
                 <?php tooltip("History") ?>
             </button>
 
+            <!--HEALTH (temporary tab: First Aid module. Links direct to .php so no apache
+                 rewrite/restart is needed. To promote to a clean URL later, add
+                 RewriteRule ^health$ /looma-health.php in docker_httpd.conf + the
+                 deployment apache config, and change the href below to 'health'.) -->
+            <button onclick="parent.location.href = 'looma-health.php';"
+                    id="toolbar-health" class="toolbar-button ">
+                <img loading="lazy" draggable="false" src="images/health.svg"   >
+                <img class="active" loading="lazy" draggable="false" hidden src="images/health-yellow.svg"   >
+                <?php tooltip("Health") ?>
+            </button>
+
             <!--GAMES-->
 			<button onclick="parent.location.href = 'games';"
                     id="toolbar-games" class="toolbar-button ">

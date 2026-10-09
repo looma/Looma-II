@@ -15,11 +15,11 @@ error_log("Starting History Timeline Edit session. logged in as: " . $loggedin);
 Filename: looma-edit-history.php
 Description: editor for user-created history timelines.
 
-    Flow: on entry you set the timeline's title (+ Nepali) and a cover image (Timeline modal).
-    Then you land on a blank timeline (the real looma-history.php format). Tap a "+" insert
-    slot to add an event, or tap an existing event to edit it (Event modal: title, date,
-    description, + optional Nepali). The description is what shows when an event is tapped in
-    the viewer.
+    Flow: you land on a blank timeline (the real looma-history.php format) and add events
+    right away. Tap a "+" insert slot to add an event, or tap an existing event to edit it
+    (Event modal: title, date, description, + optional Nepali). The description is what shows
+    when an event is tapped in the viewer. On SAVE, an untitled timeline first collects its
+    title (+ Nepali) and cover image via the Timeline Details modal, then saves.
 
     Reads/writes the 'histories' collection, alongside the curated approved timelines.
     File-menu / save / load reuse the Slideshow-editor patterns.

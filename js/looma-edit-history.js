@@ -3,10 +3,13 @@ LOOMA javascript file
 Filename: looma-edit-history.js
 Description: editor for user-created history timelines.
 
-    UX: a Timeline modal (title, Nepali title, cover image) opens on entry / File-New.
-    Then a blank timeline in the real viewer format (yellow line, events alternating
-    above/below). Tap a "+" insert slot to add an event, or tap an event to edit it in
-    the Event modal (title, date, description, + optional Nepali). No linked activities.
+    UX: you land on a blank timeline (the real viewer format: yellow line, events
+    alternating above/below) and start adding events right away. Tap a "+" insert slot
+    to add an event, or tap an event to edit it in the Event modal (title, date,
+    description, + optional Nepali). No linked activities. On SAVE, an untitled timeline
+    opens the Timeline Details modal (title, Nepali title, cover image) to collect its
+    details, then saves; after that SAVE writes silently. The toolbar "Timeline Details"
+    button reopens that modal to edit the title/cover anytime.
 
     Data model (in the 'histories' collection):
         { dn, ft:'history', title, ndn, thumb, events:[ event, ... ] }
@@ -36,6 +39,8 @@ var editingIndex = null;                  // event index being edited (null => c
 var insertIndex  = 0;                     // where a new event will be inserted
 var pendingThumb = "";                    // cover image chosen in the Timeline modal (data-URL or url)
 var eventImages  = [];                    // up to 2 Library image URLs for the event being edited
+var timelineSaveMode = false;             // Timeline modal opened as the first-save gate (Done -> save)
+var timelineSaveThen = null;              // optional fn to run after a successful first-save (e.g. leave)
 
 
 //////////////////////////////////
@@ -114,7 +119,11 @@ function eventCard(i) {
 ///////   TIMELINE MODAL   ////////
 //////////////////////////////////
 
-function openTimelineModal() {
+// saveAfter: opened by SAVE on an untitled timeline -> Done captures details, then saves.
+// thenFn: optional callback run after that first save completes (used by quit -> Save & leave).
+function openTimelineModal(saveAfter, thenFn) {
+    timelineSaveMode = !!saveAfter;
+    timelineSaveThen = thenFn || null;
     $('#tl-title').val(currentname || '');
     $('#tl-ntitle').val(timeline.ndn || '');
     pendingThumb = timeline.thumb || '';
@@ -146,12 +155,50 @@ function saveTimelineModal() {
     var title = $.trim($('#tl-title').val());
     if (!title) { LOOMA.alert('Please enter a timeline title.', 5); return; }
 
-    currentname   = title;
-    timeline.ndn  = $.trim($('#tl-ntitle').val());
-    timeline.thumb = pendingThumb || '';
-    setname(currentname, loginname);
+    var ndn   = $.trim($('#tl-ntitle').val());
+    var thumb = pendingThumb || '';
 
-    $('#timeline-modal').removeClass('open');
+    function commit() {
+        currentname    = title;
+        timeline.ndn   = ndn;
+        timeline.thumb = thumb;
+        setname(currentname, loginname);
+        $('#timeline-modal').removeClass('open');
+    }
+
+    // plain edit via the toolbar "Timeline Details" button: just apply the changes
+    if (!timelineSaveMode) { commit(); return; }
+
+    // first save: reject a title already taken (mirrors the other Looma editors), then save
+    timelineExists(title)
+        .then(function(obj) {
+            LOOMA.alert('A timeline named "' + obj.name + '" already exists (owned by ' +
+                        obj.author + '). Please choose another title.', 6, true);
+        })
+        .catch(function() {
+            var thenFn = timelineSaveThen;
+            timelineSaveMode = false;
+            timelineSaveThen = null;
+            owner = true;
+            commit();
+            var p = editor_save(currentname);
+            if (p && p.then && thenFn) p.then(thenFn);
+        });
+}
+
+// resolve(found-doc) if a timeline of this name already exists, reject(name) if it's free.
+// mirrors fileexists() in looma-filecommands.js (endpoint echoes a JSON string).
+function timelineExists(name) {
+    return new Promise(function(resolve, reject) {
+        $.post('looma-database-utilities.php',
+            { cmd: 'exists', collection: currentcollection, ft: currentfiletype, dn: LOOMA.escapeHTML(name) },
+            'json')
+            .then(function(result) {
+                var a = JSON.parse(result);
+                if (a['_id'] == '') reject(name);   // name is free
+                else                resolve(a);      // name is taken
+            });
+    });
 }
 
 
@@ -397,6 +444,10 @@ function quit() {
     $('#filesave-nosave').off('click').on('click', function() { closePanel(); window.history.back(); }); // Don't save -> leave
     $('#filesave-save').off('click').on('click', function() {                                           // Save -> save, then leave
         closePanel();
+        if (currentname === '') {                        // never titled -> collect details first, then leave
+            openTimelineModal(true, function() { window.history.back(); });
+            return;
+        }
         var p = editor_save(currentname);
         if (p && p.then) p.then(function() { window.history.back(); });
         // if the save was blocked (e.g. empty timeline), stay so the user can fix it
@@ -423,7 +474,20 @@ $(document).ready(function() {
     callbacks['display']    = editor_display;
     callbacks['modified']   = editor_modified;
     callbacks['checkpoint'] = editor_checkpoint;
-    callbacks['new']        = function() { openTimelineModal(); };
+    // New just clears to a blank timeline (editor_clear already re-renders); title is asked at SAVE
+    callbacks['new']        = function() {};
+
+    // SAVE: an untitled timeline collects its details in the Timeline modal first, then saves.
+    // Mirrors looma-filecommands.js's #save branches, swapping its name prompt for our modal.
+    $('#save').off('click').on('click', function() {
+        if (events.length === 0) { LOOMA.alert('Add at least one event before saving.', 5); return; }
+        if (currentname === '')  { openTimelineModal(true); return; }   // first save -> Timeline Details -> save
+        if (!owner) {
+            LOOMA.alert('You are not the owner of this file. Use SAVE-AS to make a copy of your own', 5, true);
+            return;
+        }
+        if (callbacks['modified']()) editor_save(currentname);
+    });
 
     // --- timeline surface ---
     $('#timeline-ol').on('click', '.insert-btn', function() {
@@ -434,7 +498,8 @@ $(document).ready(function() {
     });
 
     // --- timeline modal ---
-    $('#timeline-details-btn').on('click', openTimelineModal);
+    // wrapper so the click event isn't passed as openTimelineModal's saveAfter arg
+    $('#timeline-details-btn').on('click', function() { openTimelineModal(); });
     $('#tl-done').on('click', saveTimelineModal);
     $('#tl-choose-image').on('click', function() { openImageSearch('cover'); });
     $('#tl-remove-image').on('click', function() {
@@ -472,9 +537,7 @@ $(document).ready(function() {
     // dismiss / back -> quit (prompts to save if modified)
     $('#dismiss').off('click').on('click', function() { quit(); });
 
+    // land on a blank timeline; the user adds events right away and titles it at SAVE
     renderTimeline();
     editor_checkpoint();
-
-    // on entry with a fresh timeline, open the Timeline modal first
-    openTimelineModal();
 });

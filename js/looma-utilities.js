@@ -83,8 +83,7 @@ Description:
      "text":"images/textfile.png",
      "textfile":"images/textfile.png",
      "looma":"images/LoomaLogo_small.png",
-     "chapter":"images/book.png",
-     "worksheet":"images/worksheet.png"
+     "chapter":"images/book.png"
  };
 
 var LOOMA = (function() {
@@ -98,18 +97,51 @@ var LOOMA = (function() {
 
     return {
 
+/* Ask the server which file actually delivers a chapter: the HTML one if it
+ * exists, otherwise the PDF the caller built.
+ *
+ * HTML always wins over PDF. looma-chapters.php enforces that when it renders
+ * chapter buttons (they arrive already marked data-ft='htmlchapter'), but every
+ * OTHER way into a chapter — library search, lesson plans, the assistant —
+ * assembles a ".pdf" path in JavaScript and never checks the disk. Routing that
+ * assembly through here makes the rule hold everywhere.
+ *
+ * On any failure it answers "chapter", so a chapter still opens as a PDF if this
+ * request is slow, blocked or 404s. Never let the preference break the opening.
+ */
+resolveChapterFile : function(fp, fn, callback) {
+    var fallback = { ft: 'chapter', fp: fp, fn: fn };
+    try {
+        $.ajax({
+            url: 'looma-chapter-file.php',
+            data: { fp: decodeURIComponent(fp), fn: decodeURIComponent(fn) },
+            dataType: 'json',
+            timeout: 4000
+        }).done(function (resolved) {
+            callback((resolved && resolved.ft) ? resolved : fallback);
+        }).fail(function () {
+            callback(fallback);
+        });
+    } catch (e) {
+        callback(fallback);
+    }
+},
+
 playMedia : function(button) {
 
-    var fn = encodeURIComponent(button.getAttribute('data-fn'));
-    var nfn = encodeURIComponent(button.getAttribute('data-nfn'));
-    var fp = encodeURIComponent(button.getAttribute('data-fp'));
-    var dn = encodeURIComponent(button.getAttribute('data-dn'));
-    var ndn = encodeURIComponent(button.getAttribute('data-ndn'));
-    var lang = encodeURIComponent(button.getAttribute('data-lang'));
+    var fn    = encodeURIComponent(button.getAttribute('data-fn'));
+    var nfn   = encodeURIComponent(button.getAttribute('data-nfn'));
+    var fp    = encodeURIComponent(button.getAttribute('data-fp'));
+    var nfp   = encodeURIComponent(button.getAttribute('data-nfp'));
+    var dn    = encodeURIComponent(button.getAttribute('data-dn'));
+    var ndn   = encodeURIComponent(button.getAttribute('data-ndn'));
     var ch_id = encodeURIComponent(button.getAttribute('data-ch_id'));
     var captions = encodeURIComponent(button.getAttribute('data-captions'));
     if ( ! captions || captions === 'undefined') captions = true;
+
+    var lang  = encodeURIComponent(button.getAttribute('data-lang'));
     var language = LOOMA.readStore('language', 'cookie');
+    if (! lang || lang === 'null' || lang === 'both') lang =  language==='native'?'np':'en';
 
     switch (button.getAttribute("data-ft").toLowerCase()) {
         case "video":
@@ -151,15 +183,19 @@ playMedia : function(button) {
             //window.location = 'audio?fn=' + fn + '&fp=' + fp + '&dn=' + dn;
             break;
 
-        case "pdf":       //PDF
-        case "document":  //DOCUMENT (some PDFs)
+        case "pdf":      //PDF
+        case "document": //DOCUMENT (some PDFs)
         case "textbook":
-        case "worksheet": //WORKSHEET (displayed like a PDF)
             var pdfZoom =  button.getAttribute('data-zoom');
-            if ( ! pdfZoom || pdfZoom === "undefined" || pdfZoom === "auto")
-                pdfZoom = (button.getAttribute("data-ft").toLowerCase() === "worksheet") ? '1.25' : '2.3';
+            if ( ! pdfZoom || pdfZoom === "undefined" || pdfZoom === "auto") pdfZoom = '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
             var pdfLen =  button.getAttribute('data-len') ? button.getAttribute('data-len') : 1000;
+            var altFn  = button.getAttribute('data-nfn') || '';
+            var altPage = button.getAttribute('data-npage') || '';
+            var pdfChId = button.getAttribute('data-ch')      || '';
+            var pdfChDn = button.getAttribute('data-chdn')    || button.getAttribute('data-dn') || '';
+            var pdfGrade = button.getAttribute('data-class')  || '';
+            var pdfSubj = button.getAttribute('data-subject') || '';
                     window.location = 'pdf?' +
                     'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
                     '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
@@ -167,7 +203,12 @@ playMedia : function(button) {
                     '&zoom=' + pdfZoom +
                     '&len=' + pdfLen +
                     '&page=' + pdfPage +
-                    '&ft=' + encodeURIComponent(button.getAttribute('data-ft'));
+                    '&nfn=' + encodeURIComponent(altFn) +
+                    '&npage=' + encodeURIComponent(altPage) +
+                    '&ch=' + encodeURIComponent(pdfChId) +
+                    '&chdn=' + encodeURIComponent(pdfChDn) +
+                    '&grade=' + encodeURIComponent(pdfGrade) +
+                    '&subject=' + encodeURIComponent(pdfSubj);
             break;
 
         case "chapter":  //CHAPTER
@@ -180,13 +221,26 @@ playMedia : function(button) {
             if ( ! pdfZoom || pdfZoom === "undefined") pdfZoom = '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
             var pdfLen =  button.getAttribute('data-page') ? button.getAttribute('data-len') : 100;
+            var chFn  = button.getAttribute('data-fn');
+            var chNfn = button.getAttribute('data-nfn');
+            var chNPage = button.getAttribute('data-npage') || '';
+            var chId  = button.getAttribute('data-ch')      || '';
+            var chDn  = button.getAttribute('data-chdn')    || button.getAttribute('data-dn') || '';
+            var chGrade = button.getAttribute('data-class') || '';
+            var chSubj  = button.getAttribute('data-subject') || '';
                     window.location = 'pdf?' +
-                    'fn=' + encodeURIComponent(button.getAttribute('data-fn')) +
+                    'fn=' + encodeURIComponent(chFn) +
                     '&fp=' + encodeURIComponent(button.getAttribute('data-fp')) +
                     '&lang=' + lang +
                     '&zoom=' + pdfZoom +
                     '&len=' + pdfLen +
-                    '&page=' + pdfPage;
+                    '&page=' + pdfPage +
+                    '&nfn=' + encodeURIComponent(chNfn || '') +
+                    '&npage=' + encodeURIComponent(chNPage) +
+                    '&ch=' + encodeURIComponent(chId) +
+                    '&chdn=' + encodeURIComponent(chDn) +
+                    '&grade=' + encodeURIComponent(chGrade) +
+                    '&subject=' + encodeURIComponent(chSubj);
        }
         else {  // load only the chapter PDF
           var pdfZoom =  button.getAttribute('data-zoom');
@@ -211,13 +265,46 @@ playMedia : function(button) {
                 ((folder==='np') ? '-nepali' : '') +
                 '.pdf';
 
-            window.location = 'pdf?' +
+            // Alternate-language file is the same chapter id with the opposite suffix.
+            var altFolder = (folder === 'np') ? 'en' : 'np';
+            var alt_chapterFP = '../content/chapters/' + button.getAttribute('data-class') + '/' +
+                chapter_subject + '/' + altFolder + '/';
+            var alt_chapterFN = encodeURIComponent(button.getAttribute('data-ch')) +
+                ((altFolder === 'np') ? '-nepali' : '') +
+                '.pdf';
+
+            var chDn  = button.getAttribute('data-chdn') || button.getAttribute('data-dn') || '';
+
+            var pdfUrl = 'pdf?' +
                 'fn='  + chapterFN +
                 '&fp=' + chapterFP +
                     '&lang=' + lang +
                     '&zoom=' + pdfZoom +
                     '&len=' + pdfLen +
-                    '&page=' + pdfPage;
+                    '&page=' + pdfPage +
+                    '&nfn=' + alt_chapterFN +
+                    '&nfp=' + alt_chapterFP +
+                    '&ch=' + encodeURIComponent(button.getAttribute('data-ch') || '') +
+                    '&chdn=' + encodeURIComponent(chDn) +
+                    '&grade=' + encodeURIComponent(button.getAttribute('data-class') || '') +
+                    '&subject=' + encodeURIComponent(chapter_subject || '');
+
+            // HTML WINS. This path builds a .pdf name without ever looking at the
+            // disk, and it is the path every entry point other than the chapters
+            // page uses (library search, lesson plans, the assistant). So ask the
+            // server whether the same chapter also exists as HTML, and prefer it.
+            LOOMA.resolveChapterFile(chapterFP, chapterFN, function (resolved) {
+                if (resolved && resolved.ft === 'htmlchapter') {
+                    window.location = 'html?fp=' + resolved.fp + '&fn=' + resolved.fn +
+                        '&ch=' + encodeURIComponent(button.getAttribute('data-ch') || '') +
+                        '&chdn=' + encodeURIComponent(chDn) +
+                        '&grade=' + encodeURIComponent(button.getAttribute('data-class') || '') +
+                        '&subject=' + encodeURIComponent(chapter_subject || '') +
+                        '&lang=' + encodeURIComponent(lang || '');
+                } else {
+                    window.location = pdfUrl;
+                }
+            });
             }
             break;
 
@@ -227,19 +314,25 @@ playMedia : function(button) {
             window.location = 'text?id=' + id + '&db=' + db + '&lang=' + ((language==='native') ? 'np' : 'en');
             break;
 
-        case "html":
-            if (! lang || lang === 'null' || lang === 'both') lang =  language==='native'?'np':'en';
+        case "htmlchapter":
+            // A chapter delivered as an HTML page instead of a PDF. Open it in the
+            // HTML viewer with the file resolved server-side (looma-chapters.php).
+            // Unlike the generic "html" case below, the file to open is always
+            // this button's own data-fp/data-fn (one language per button), so
+            // there is no en/np alternate to disambiguate.
+            window.location = 'html?fp=' + fp + '&fn=' + fn +
+                '&ch=' + encodeURIComponent(button.getAttribute('data-ch') || '') +
+                '&chdn=' + encodeURIComponent(button.getAttribute('data-chdn') || button.getAttribute('data-dn') || '') +
+                '&grade=' + encodeURIComponent(button.getAttribute('data-class') || '') +
+                '&subject=' + encodeURIComponent(button.getAttribute('data-subject') || '') +
+                '&lang=' + encodeURIComponent(button.getAttribute('data-lang') || '');
+            break;
 
-            var fp = encodeURIComponent(button.getAttribute('data-fp'));
-            // Only some html activities have a separate Nepali file. The rest [ePaath, Khan, ...]
-            // serve both languages from one file, and have no 'nfn' - in that case getAttribute()
-            // returns null and encodeURIComponent() turns it into the string "null", which would
-            // ask for a file named 'null'. So fall back to 'fn' whenever there is no real 'nfn'.
-            if (lang === 'np' && nfn && nfn !== 'null' && nfn !== 'undefined')
-                 var effective_fn = nfn;
-            else var effective_fn = fn;
+        case "html":
             var kbd = encodeURIComponent(button.getAttribute('data-dn')) === 'ePaath' ? "keyboard" : "";
-            window.location = 'html?fp=' + fp + '&fn=' + effective_fn + '&ep=' + kbd;
+            if ( lang === 'en' || nfn === 'null' || nfp === 'null')
+                 window.location = 'html?fp='  + fp + '&fn='  + fn + '&ep=' + kbd;
+            else window.location = 'html?fp=' + nfp + '&fn=' + nfn + '&ep=' + kbd;
             break;
 
         case "book":
@@ -251,16 +344,12 @@ playMedia : function(button) {
             break;
 
         case "looma":
-            var url = encodeURIComponent(button.getAttribute('data-url'));
-            window.location = url;
+            var fp = encodeURIComponent(button.getAttribute('data-fp'));
+            window.location = fp;
             break;
 
         case "epaath":
         case "ep":
-          //  var lang = language==='native'?'np':'en';
-
-            if (! lang || lang === 'null' || lang === 'both') lang =  language==='native'?'np':'en';
-
             if (button.getAttribute("data-epversion") == 2015) {
                 fp = encodeURIComponent(button.getAttribute('data-fp'));
                 fn = encodeURIComponent(button.getAttribute('data-fn') +
@@ -288,7 +377,6 @@ playMedia : function(button) {
 
         case "game":
              window.location = 'game?id=' + button.getAttribute('data-mongoid') +
-                 '&db=' + button.getAttribute('data-db') +
                  '&class=' + button.getAttribute('data-class') +
                  '&subject=' + button.getAttribute('data-subject') +
                  '&ch_id=' + button.getAttribute('data-ch_id') +
@@ -310,8 +398,7 @@ playMedia : function(button) {
 
              */
         case "slideshow":
-            window.location = 'slideshow?id=' + button.getAttribute("data-mongoid") +
-            '&db=' + button.getAttribute('data-db');
+            window.location = 'slideshow?id=' + button.getAttribute("data-mongoid");
             break;
 
         case "history":
@@ -322,6 +409,29 @@ playMedia : function(button) {
             window.location = 'looma-history.php?title=' + button.getAttribute('data-dn');
             break;
             */
+
+        case "exercise":
+            // AI-generated chapter exercises — open the standalone player.
+            // We pass ch_id (used by /quiz_data) and the chapter context so
+            // the player can fall back to on-demand generation when needed.
+            window.location = 'looma-play-exercise.php' +
+                '?ch_id='    + encodeURIComponent(button.getAttribute('data-ch') || '') +
+                '&mongoID='  + encodeURIComponent(button.getAttribute('data-mongoid') || '') +
+                '&grade='    + encodeURIComponent(button.getAttribute('data-grade') || '') +
+                '&subject='  + encodeURIComponent(button.getAttribute('data-subject') || '') +
+                '&language=' + encodeURIComponent(button.getAttribute('data-lang') || '');
+            break;
+
+        case "vocab":
+        case "voc":
+            // Legacy "Key Vocabulary" game — same destination the Resources
+            // page button uses, so AI/Resources behave identically.
+            var kvGrade = button.getAttribute('data-grade') || '';
+            window.location = 'looma-game.php?type=keywords' +
+                '&class='   + encodeURIComponent('Class ' + kvGrade) +
+                '&subject=' + encodeURIComponent(button.getAttribute('data-subject') || '') +
+                '&ch_id='   + encodeURIComponent(button.getAttribute('data-ch') || button.getAttribute('data-mongoid') || '');
+            break;
 
         default:
             console.log("ERROR: in LOOMA.playMedia(), unknown type: " +
@@ -344,7 +454,6 @@ playMedia : function(button) {
             }
 
             var fn = (result.fn) ? result.fn : result.nfn;
-            var nfn = (result.nfn) ? result.nfn : result.fn;
             var db = (result.db) ? result.db : 'looma';
             var ft =  result.ft;
 
@@ -364,7 +473,6 @@ playMedia : function(button) {
                 '<button class="activity play img" ' +
                 'data-id="' + result._id          + '" ' +
                 'data-fn="' + fn   + '" ' +
-                'data-nfn="' + nfn   + '" ' +
                 'data-fp="' + fp          + '" ' +
                 'data-db="' + db          + '" ' +
                 'data-ft="' + ft   + '" ' +
@@ -407,7 +515,41 @@ playMedia : function(button) {
                               else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
 
           */
-            if (thumbfile) $newButton.append(LOOMA.thumbImg(thumbfile, result.fp, result.ft));
+            if (thumbfile) {
+                // Many files — especially images — have no generated *_thumb.jpg,
+                // which would leave a broken image in the card. Attach a per-image
+                // fallback chain: original file (for images), then a folder
+                // placeholder. NOTE: the `error` event does not bubble, so this
+                // MUST be bound on the <img> itself — a delegated handler on a
+                // parent would never fire.
+                var $thumb = $('<img alt="" loading="lazy" draggable="false">');
+                (function ($img, ftype, filePath, fileName) {
+                    var chain = [];
+                    if (/^(image|jpe?g|png|gif)$/i.test(ftype || '') && filePath && fileName) {
+                        chain.push(filePath + fileName);          // the original image
+                    }
+                    if (filePath) chain.push(filePath + 'thumbnail.png');  // folder placeholder
+                    $img.on('error', function () {
+                        var next = null;
+                        while (chain.length) {
+                            var candidate = chain.shift();
+                            if (candidate && candidate !== this.getAttribute('src')) { next = candidate; break; }
+                        }
+                        if (next) this.src = next;
+                        else this.onerror = null;                 // give up — stop the loop
+                    });
+                })($thumb, ft, fp, fn);
+                $thumb.attr('src', thumbfile);   // set src AFTER binding so a cached 404 still triggers the handler
+                $newButton.append($thumb);
+            }
+
+            //                   ' onerror="this.onerror=null;this.src="' + result.fp + 'thumbnail.png" />'));
+
+            /*this idea is from: https://stackoverflow.com/questions/980855/inputting-a-default-image-in-case-the-src-attribute-of-an-html-img-is-not-vali
+                   $newButton.append($('<object draggable="false" data="' + thumbfile + '" type="image/png">' +
+                                        '<img alt="" src="' + result.fp + 'thumbnail.png">' +
+                                        '</object>'));
+             */
 
 
             var displayname;
@@ -425,102 +567,6 @@ playMedia : function(button) {
             $newButton.appendTo(appendToDiv);
         }, // end makeActivityButton()
 
-        // new version: takes a single result object, only emits data attrs for fields that exist
-        makeButton : function(result, appendToDiv) {
-            if (!result || !result.ft) return;
-
-            var ft = result.ft;
-            var fp = result.fp || LOOMA.filepath(ft);
-            var fn = result.fn || result.nfn || null;
-            var db = result.db || 'looma';
-
-            var lang = result.lang;
-            if (!lang) {
-                var cookie = LOOMA.readStore('language', 'cookie');
-                lang = cookie !== 'english' ? 'np' : 'en';
-            }
-
-            // chapter special case
-            if (result.ID && ft === 'chapter') {
-                fp = LOOMA.filepath('chapter') +
-                     LOOMA.parseCH_ID(result.ID)['currentGradeFolder'] + '/' +
-                     LOOMA.parseCH_ID(result.ID)['currentSubjectFull'] + '/' +
-                     lang + '/';
-                fn = result.ID + '.pdf';
-                ft = 'pdf';
-            }
-
-            var mongoID = null;
-            if (result.mongoID) mongoID = result.mongoID.$oid || result.mongoID;
-
-            // build data attributes — only include fields with values
-            var attrs = {};
-            attrs['ft'] = ft;
-            if (fp)   attrs['fp']   = fp;
-            if (fn)   attrs['fn']   = fn;
-            if (db)   attrs['db']   = db;
-            if (lang) attrs['lang'] = lang;
-
-            if (result.dn)     attrs['dn']     = result.dn;
-            if (result.ndn)    attrs['ndn']    = result.ndn;
-            if (result.nfn)    attrs['nfn']    = result.nfn;
-            if (result.prefix) attrs['prefix'] = result.prefix;
-
-            if (result._id)    attrs['id']      = result._id;
-            if (mongoID)       attrs['mongoid'] = mongoID;
-
-            if (result.url)     attrs['url']       = result.url;
-            if (result.oleID)   attrs['ole']       = result.oleID;
-            if (result.grade)   attrs['grade']     = result.grade;
-            if (result['class'])  attrs['class']   = result['class'];
-            if (result.subject)   attrs['subject'] = result.subject;
-            if (result.presentation_type) attrs['type'] = result.presentation_type;
-            if (result.version) attrs['epversion'] = result.version;
-            if (result.author)  attrs['author']    = result.author;
-            if (result.ch_id)   attrs['ch']        = result.ch_id;
-            if (result.ID)      attrs['ID']        = result.ID;
-
-            if (result['play-captions'] === false || result['play-captions'] === 'false')
-                attrs['captions'] = 'false';
-            else attrs['captions'] = 'true';
-
-            if (ft === 'pdf' || ft === 'chapter' || ft === 'textbook' || ft === 'worksheet') {
-                attrs['page'] = result.pn  || 1;
-                attrs['len']  = result.len || result.url || 999;
-                if (result.zoom) attrs['zoom'] = result.zoom;
-                if (result.npn)  attrs['npg']  = result.npn;
-            }
-
-            // build button element
-            var attrStr = '';
-            for (var key in attrs) {
-                if (attrs.hasOwnProperty(key) && attrs[key] != null) {
-                    attrStr += 'data-' + key + '="' + attrs[key] + '" ';
-                }
-            }
-            var $btn = $('<button class="activity play img" ' + attrStr + '>');
-
-            // thumbnail
-            if (!('fn' in result) && ('nfn' in result)) fn = result.nfn;
-            else if ('fn' in result) fn = result.fn;
-            var thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft, result.thumb);
-            if (thumbfile) $btn.append(LOOMA.thumbImg(thumbfile, result.fp, result.ft));
-
-            // display name — matches PHP displayName() logic
-            var dn = result.dn || null;
-            var ndn = result.ndn || null;
-            $btn.append(LOOMA.displayName(fn, dn, ndn));
-
-            // tooltip
-            var tip = dn || ndn;
-            if (tip) $btn.append($('<span class="tip yes-show big-show">').text(tip));
-
-            // icon
-            if (icons[result.ft]) $btn.append($('<img class="icon" src="' + icons[result.ft] + '">'));
-
-            $btn.click(function() { LOOMA.playMedia(this); });
-            $btn.appendTo(appendToDiv);
-        }, // end makeButton()
 
         makeActivityButtonFromId: function (id, db, mongoID, appendToDiv) {
     // given an ID for an activity in the activities collection in mongo,
@@ -536,7 +582,7 @@ playMedia : function(button) {
                  collection: 'activities',
                  id: id},
                  function(result) {
-                    LOOMA.makeButton(result, appendToDiv)
+                    LOOMA.makeActivityButton(result, id, db, mongoID, appendToDiv)
             },
                 'json'
               );
@@ -615,10 +661,6 @@ filepath: function(filetype) {
                 path = homedirectory + "content/pdfs/";
                 break;
 
-            case "worksheet": //worksheet (displayed like a pdf, stored in its own folder)
-                path = homedirectory + "content/worksheets/";
-                break;
-
             case "epaath":
             case "EP":
                 path = homedirectory + "content/epaath/activities/";
@@ -641,137 +683,101 @@ filepath: function(filetype) {
 
 
 thumbnail: function (filename, filepath, filetype, thumb) {
-            // builds a thumbnail path, matching PHP thumbnail() logic:
-            //   1. if thumb parameter provided, use it
-            //   2. dictionary images: use the image itself
-            //   3. epaath: special thumbnail path
-            //   4. for any file with an extension: path + basename + "_thumb.jpg"
-            //      (thumbImg handles fallback to _thumb.JPG, folder thumbnail.png, generic icon)
-            //   5. if no filename: generic icon for filetype
+            //builds a filepath/filename for the thumbnail of this "filename" based on type and source
 
-            if (!filetype) return null;
+                            /*
+                                if      (result.ft == 'EP'       && result.thumb)
+                                                     thumbfile = '../ePaath/' + result.thumb;
+                                else if ((result.ft === 'history' || result.ft === 'slideshow' || result.ft === 'map') && result.thumb)
+                                                     thumbfile = result.thumb;
+                                else if (result.thumb) thumbfile = result.fp + result.thumb ;
+                                else if (fn)                  thumbfile = LOOMA.thumbnail(fn, result.fp, result.ft);
+                                else thumbfile = null;
+                             */
 
-            // if a thumb was explicitly provided, use it directly
-            if (thumb) return thumb;
+            var thumbnail_prefix, path;
+            var imgsrc = null;
+            var homedirectory = '../';
 
-            var path = filepath || LOOMA.filepath(filetype);
+            if (filetype) {
 
-            // dictionary images: use the image itself as thumbnail
-            if (filepath && filepath.indexOf('dictionary images') >= 0 && filename) {
-                return filepath + filename;
-            }
+                filetype = filetype.toLowerCase();
 
-            // epaath: special thumbnail path
-            var ftl = filetype.toLowerCase();
-            if (ftl === 'ep' || ftl === 'epaath') {
-                if (filepath === "../content/epaath/activities/" && filename)
-                     return filepath + filename + "/thumbnail.jpg";
-                else return "images/logos/ole-nepal.jpg";
-            }
-
-            // chapter: filepath is relative within content/chapters/
-            if (ftl === 'chapter' && filename) {
-                return '../content/' + filepath + filename.replace(/\.pdf$/i, "") + "_thumb.jpg";
-            }
-
-            // for any file with an extension: strip extension, append _thumb.jpg
-            // thumbImg() will handle fallbacks (_thumb.JPG, folder thumbnail.png, generic icon)
-            if (filename) {
-                var dot = filename.lastIndexOf('.');
-                if (dot > 0) {
-                    return path + filename.substr(0, dot) + "_thumb.jpg";
+                if (filetype === 'chapter') {
+                  imgsrc = homedirectory + "content/" + filepath + filename.replace(/\.pdf$/i, "") + "_thumb.jpg";
+                  //  thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                  //  imgsrc = homedirectory + "content/" + filepath + thumbnail_prefix + "_thumb.jpg";
+                }
+                else if (filepath && filepath.indexOf('/Khan/') >= 0) {
+                    imgsrc = homedirectory + 'content/Khan/thumbnail.png';
+                }
+                else if (filepath && filepath.indexOf('/W4S/') >= 0) {
+                    imgsrc = homedirectory + 'content/W4S/thumbnail.png';
+                }
+                else if (filepath && filepath.indexOf('/W4S2013/') >= 0) {
+                    imgsrc = homedirectory + 'content/W4S2013/thumbnail.png';
+                }
+                else if (filetype == "mp3" || filetype == "m4a" || filetype == "audio") {  //audio
+                    if (filepath) path = filepath; else path = homedirectory + 'content/audio/';
+                    imgsrc = path + "thumbnail.png";
+                }
+                else if (filetype == "mp4" || filetype == "mp5" || filetype == "m4v" || filetype == "mov" || filetype == "video") { //video
+                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                    if (filepath) path = filepath; else path = homedirectory + 'content/videos/';
+                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+                }
+                else if (filetype == "jpg"  || filetype == "jpeg"  || filetype == "gif" || filetype == "png" || filetype == "image" ) { //picture
+                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                    if (filepath) path = filepath; else path = homedirectory + 'content/pictures/';
+                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+                }
+                else if (filepath && filepath.indexOf('Hesperian') >= 0) { //keep this before filetype===pdf
+                    imgsrc = filepath + "thumbnail.png";
+                }
+                else if (filetype == "pdf" || filetype === "textbook") { //pdf - we dont use Document type any more
+                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                    if (filepath) path = filepath; else path = homedirectory + 'content/pdfs/';
+                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+                }
+                else if (filetype == "html") { //html
+                    thumbnail_prefix = filename.substr(0, filename.lastIndexOf('.'));
+                    if (filepath) path = filepath; else path = homedirectory + 'content/html/';
+                    imgsrc = path + thumbnail_prefix + "_thumb.jpg";
+                }
+                else if (filetype == "EP" || filetype == "ep" || filetype == "epaath") {
+                    if (filepath === "../content/epaath/activities/")
+                         imgsrc = filepath + filename + "/thumbnail.jpg";
+                    else imgsrc = "images/logos/ole-nepal.jpg";
+                }
+                else if (filetype == "text" || filetype == "text-template") {
+                    imgsrc = "images/textfile.png";
+                }
+                else if (filetype == "lesson") {
+                    imgsrc = "images/lesson2.png";
+                }
+                /*fix by looking up DN in mongo*/
+                else if (filetype == "evi") {
+                    imgsrc = "images/video.png";
+                }
+                else if (filetype == "history") {
+                    imgsrc = thumb;
+                }
+                else if (filetype == "map") {
+                    imgsrc = thumb;
+                }
+                else if (filetype == "game") {
+                    imgsrc = "images/games.png";
+                }
+                else if (filetype == "slideshow") {
+                    imgsrc = thumb;
+                }
+                else if (filetype == "looma") {
+                    imgsrc =  thumb;
                 }
             }
 
-            // no filename: return generic icon for this filetype
-            return LOOMA.fallbackIcon(filetype);
+            return imgsrc;
         }, //end thumbnail()
-
-// returns the generic fallback icon for a filetype (last resort if no thumbnail file exists)
-fallbackIcon: function(ft) {
-    if (!ft) return null;
-    ft = ft.toLowerCase();
-    var icons = {
-        'mp4':'images/video.png', 'mp5':'images/video.png', 'm4v':'images/video.png',
-        'mov':'images/video.png', 'video':'images/video.png', 'evi':'images/video.png',
-        'jpg':'images/picture.png', 'jpeg':'images/picture.png', 'png':'images/picture.png',
-        'gif':'images/picture.png', 'image':'images/picture.png',
-        'mp3':'images/audio.png', 'm4a':'images/audio.png', 'audio':'images/audio.png',
-        'pdf':'images/pdf.png',
-        'text':'images/textfile.png', 'text-template':'images/textfile.png',
-        'lesson':'images/lesson2.png',
-        'slideshow':'images/play-slideshow-icon.png',
-        'game':'images/games.png',
-        'ep':'images/logos/ole-nepal.jpg', 'epaath':'images/logos/ole-nepal.jpg',
-        'looma':'images/LoomaLogo.png',
-        'worksheet':'images/worksheet.png'
-    };
-    return icons[ft] || null;
-},
-
-// creates an <img> element with onerror fallback chain:
-//   tries src, then _thumb.JPG, then folder thumbnail.png, then generic filetype icon
-thumbImg: function(src, fp, ft) {
-    var $img = $('<img alt="" loading="lazy" draggable="false">');
-    if (!src) {
-        var fb = LOOMA.fallbackIcon(ft);
-        if (fb) $img.attr('src', fb);
-        return $img;
-    }
-    var fallbacks = [];
-    // if src ends with _thumb.jpg, try _thumb.JPG as first fallback
-    if (src.match(/_thumb\.jpg$/)) {
-        fallbacks.push(src.replace(/_thumb\.jpg$/, '_thumb.JPG'));
-    }
-    // folder thumbnail as next fallback
-    if (fp) fallbacks.push(fp + 'thumbnail.png');
-    // generic filetype icon as last fallback
-    var icon = LOOMA.fallbackIcon(ft);
-    if (icon) fallbacks.push(icon);
-
-    $img.on('error', function() {
-        if (fallbacks.length > 0) {
-            $(this).attr('src', fallbacks.shift());
-        } else {
-            $(this).off('error');
-        }
-    });
-    $img.attr('src', src);
-    return $img;
-},
-
-// returns jQuery elements for bilingual display name, matching PHP displayName()
-// if both dn and ndn: show bilingual with english-keyword/native-keyword spans
-// if only one: show that one
-// if neither: show filename
-displayName: function(filename, dn, ndn) {
-    var $container = $('<span>');
-    var language = LOOMA.readStore('language', 'cookie');
-
-    if (dn && ndn) {
-        if (language === 'native') {
-            $container.append($('<span class="name np">').text(ndn));
-        } else if (language === 'english') {
-            $container.append($('<span class="name en" style="color:black">').text(dn));
-        } else {
-            $container.append(
-                $('<span class="english-keyword">').text(dn)
-                    .append($('<span class="xlat">').text(ndn))
-            );
-            $container.append(
-                $('<span class="native-keyword">').text(ndn)
-                    .append($('<span class="xlat">').text(dn))
-            );
-        }
-    } else if (dn) {
-        $container.append($('<span class="name en" style="color:black">').text(dn));
-    } else if (ndn) {
-        $container.append($('<span class="name np">').text(ndn));
-    } else if (filename) {
-        $container.append($('<span class="name">').text(filename));
-    }
-    return $container;
-},
 
 //returns an english describing the file type, given a FT
 typename: function(ft) {
@@ -791,8 +797,7 @@ typename: function(ft) {
         html:'HTML',
         looma:'Looma Page',
         chapter:'Chapter',
-        text: 'Text File',
-        worksheet: 'Worksheet'
+        text: 'Text File'
     };
 
     return (ft in names) ? names[ft] : ft;
@@ -872,8 +877,25 @@ restoreForm : function(form, name) {  // restore the settings of 'form' from ses
     if (formSettings && formSettings.length > 0) {
         // get the name, value pairs from formSettings and restore them in 'form'
         $.each(formSettings, function (i, item) {
-            if (['key1','key2','key3','key4'].indexOf(item.name) === -1 )
-                form[0].elements[item.name].value = item.value;
+            if (['key1','key2','key3','key4'].indexOf(item.name) === -1 ) {
+                var field = form[0].elements[item.name];
+                if (!field) return true;
+
+                if (field.length && !field.tagName) {
+                    var restoredChoice = false;
+                    $.each(field, function(j, option) {
+                        if (option.type === 'checkbox' || option.type === 'radio') {
+                            restoredChoice = true;
+                            if (option.value === item.value) option.checked = true;
+                        }
+                    });
+                    if (!restoredChoice && typeof field.value !== 'undefined') field.value = item.value;
+                } else if (field.type === 'checkbox' || field.type === 'radio') {
+                    field.checked = true;
+                } else {
+                    field.value = item.value;
+                }
+            }
         });
     }
     return formSettings;   //passes the saved form settings back to caller for further processing if neeeded
@@ -968,18 +990,48 @@ lookup : function(word, succeed, fail) {
 
     console.log('LOOMA.lookup: looking up "' + word + '"');
 
-    //returns OBJECT result == {en:english, np:nepali, def:definition, ch_id:chapter}
-    $.ajax(
-        "looma-dictionary-utilities.php", //Looma Odroid
-        {
-            type: 'POST',
-            cache: false,
-            crossDomain: true,
-            dataType: "json",
-            data: "cmd=lookup&word=" + encodeURIComponent(word.toLowerCase()),
-            error: fail,
-            success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
+    var hasOtel = !!(window.LOOMA && LOOMA.otel && LOOMA.otel.withSpan);
+    var run = function (ctx) {
+        return new Promise(function (resolve) {
+            //returns OBJECT result == {en:english, np:nepali, def:definition, ch_id:chapter}
+            $.ajax(
+                "looma-dictionary-utilities.php", //Looma Odroid
+                {
+                    type: 'POST',
+                    cache: false,
+                    crossDomain: true,
+                    dataType: "json",
+                    data: "cmd=lookup&word=" + encodeURIComponent(word.toLowerCase()),
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (ctx) {
+                            ctx.setAttr('http.response.status_code', jqXHR && jqXHR.status);
+                            ctx.error(errorThrown || textStatus || 'lookup failed');
+                        }
+                        try { fail && fail(jqXHR, textStatus, errorThrown); } catch (e) {}
+                        resolve();
+                    },
+                    success: function (result) {
+                        if (ctx) {
+                            ctx.setAttr('looma.dictionary.found', !!(result && result.en && result.def !== 'Word not found'));
+                            if (result && result.np) ctx.setAttr('looma.dictionary.np', String(result.np).slice(0, 64));
+                            if (result && result.ch_id) ctx.setAttr('looma.chapter_id', String(result.ch_id).slice(0, 32));
+                        }
+                        try { succeed && succeed(result); } catch (e) {}
+                        resolve();
+                    },
+                });
         });
+    };
+    if (hasOtel) {
+        LOOMA.otel.withSpan('dictionary.lookup', {
+            'looma.endpoint':       'looma-dictionary-utilities.php',
+            'looma.dictionary.cmd': 'lookup',
+            'looma.dictionary.lang': 'en',
+            'looma.word':            String(word || '').slice(0, 64),
+        }, run);
+    } else {
+        run(null);
+    }
     return false;
 }, //end lookup
 
@@ -987,21 +1039,90 @@ reverselookup : function(nepali, succeed, fail) {
 
     console.log('LOOMA.reverselookup: looking up "' + nepali + '"');
 
-    //returns OBJECT result == {en:english, np:nepali, phon:phonetic, def:definition, img:picture, ch_id:chapter}
-    $.ajax(
-        "looma-dictionary-utilities.php", //Looma Odroid
-        {
-            type: 'POST',
-            cache: false,
-            crossDomain: true,
-            dataType: "json",
-            data: "cmd=reverselookup&word=" + encodeURIComponent(nepali.toLowerCase()),
-            error: fail,
-            success: succeed //NOTE: provide a 'succeed' function which takes an argument "result" which will hold the translation/definition/image
+    var hasOtel = !!(window.LOOMA && LOOMA.otel && LOOMA.otel.withSpan);
+    var run = function (ctx) {
+        return new Promise(function (resolve) {
+            //returns OBJECT result == {en:english, np:nepali, phon:phonetic, def:definition, img:picture, ch_id:chapter}
+            $.ajax(
+                "looma-dictionary-utilities.php", //Looma Odroid
+                {
+                    type: 'POST',
+                    cache: false,
+                    crossDomain: true,
+                    dataType: "json",
+                    data: "cmd=reverselookup&word=" + encodeURIComponent(nepali.toLowerCase()),
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (ctx) {
+                            ctx.setAttr('http.response.status_code', jqXHR && jqXHR.status);
+                            ctx.error(errorThrown || textStatus || 'reverselookup failed');
+                        }
+                        try { fail && fail(jqXHR, textStatus, errorThrown); } catch (e) {}
+                        resolve();
+                    },
+                    success: function (result) {
+                        if (ctx) {
+                            ctx.setAttr('looma.dictionary.found', !!(result && result.en && result.def !== 'Word not found'));
+                            if (result && result.en) ctx.setAttr('looma.dictionary.en', String(result.en).slice(0, 64));
+                        }
+                        try { succeed && succeed(result); } catch (e) {}
+                        resolve();
+                    },
+                });
         });
-
+    };
+    if (hasOtel) {
+        LOOMA.otel.withSpan('dictionary.reverselookup', {
+            'looma.endpoint':       'looma-dictionary-utilities.php',
+            'looma.dictionary.cmd': 'reverselookup',
+            'looma.dictionary.lang': 'np',
+            'looma.word':            String(nepali || '').slice(0, 64),
+        }, run);
+    } else {
+        run(null);
+    }
     return false;
 }, //end REVERSELOOKUP
+
+// function ONLINELOOKUP fetches an English definition from the internet,
+//   used ONLY as a fallback when a word is missing from Looma's own
+//   dictionary. The actual network request runs server-side
+//   (looma-dictionary-utilities.php?cmd=onlinelookup, which calls
+//   api.dictionaryapi.dev) so it works behind the Looma box and is safe
+//   to call in the background.
+//        word:    the word to look up
+//        succeed: called with {en, def, part, phon, source:'online', found:true}
+//        fail:    called when there is no online definition (offline / not found)
+//   This NEVER triggers speech and never blocks — callers fire it after the
+//   local lookup has already been shown to the user.
+onlineLookup : function (word, succeed, fail) {
+    word = (word == null ? '' : String(word)).trim();
+    if (!word) { if (fail) fail(null); return false; }
+
+    // Quick offline shortcut so we don't even attempt a request with no network.
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        if (fail) fail(null);
+        return false;
+    }
+
+    $.ajax('looma-dictionary-utilities.php', {
+        type: 'GET',
+        cache: false,
+        dataType: 'json',
+        timeout: 9000,
+        data: { cmd: 'onlinelookup', word: word },
+        success: function (result) {
+            if (result && result.found && result.def) {
+                if (succeed) succeed(result);
+            } else {
+                if (fail) fail(result || null);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            if (fail) fail(null, textStatus, errorThrown);
+        }
+    });
+    return false;
+}, //end onlineLookup
 
 defHTML: function (definition, rwdef) {  // helper function for utilities.js, not called by other JS
         var def;
@@ -1014,6 +1135,32 @@ defHTML: function (definition, rwdef) {  // helper function for utilities.js, no
         $english.text(definition.en);
         $nepali.text(definition.np);
         if ('part' in definition) $pos.html('<i>' + definition.part + '</i>');
+
+        // "Word not found" path: if the server provided close-match suggestions,
+        // render them as clickable buttons that re-run the dictionary lookup.
+        if (definition.def === 'Word not found' &&
+            Array.isArray(definition.suggestions) && definition.suggestions.length) {
+            var $sugWrap = $('<div id="dict-suggestions" style="margin-top:10px;font-size:0.95em"/>');
+            $sugWrap.append($('<div/>').text('Did you mean:'));
+            var $list = $('<div class="suggestion-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px"/>');
+            definition.suggestions.forEach(function (term) {
+                var $btn = $('<button type="button" class="suggestion-btn"/>')
+                    .text(term)
+                    .css({ padding: '4px 10px', cursor: 'pointer', borderRadius: '4px' })
+                    .on('click', function () {
+                        var $input = $('#input');
+                        if ($input.length) {
+                            $input.val(term);
+                            $('#lookup').trigger('submit');
+                        }
+                    });
+                $list.append($btn);
+            });
+            $sugWrap.append($list);
+            $div.append($english, $pos, $def, $sugWrap);
+            $def.text('Word not found.');
+            return $div;
+        }
 
         if ('def' in definition && definition.def) def = definition.def.toLowerCase();
         else {
@@ -1041,12 +1188,7 @@ defHTML: function (definition, rwdef) {  // helper function for utilities.js, no
         var $img = $('<img id="definitionThumb" alt="" src="../content/dictionary\ images/' + imgName + '"/>');
     }
 
-    if (definition.nsl) {
-        var vidName = definition.nsl + ".mp4";
-        var $signed = $('<img id="definitionSigned" alt="sign language" src="images/sign_language.png" data-video="../content/sign\ language/' + vidName + '"/>');
-    }
-
-    $div.append($english, $nepali, $pos, $def, $img, $signed);
+    $div.append($english, $nepali, $pos, $def, $img);
 
         if (rwdef) {
             var $rwdef = $('<div id="rwdef"/>');
@@ -1489,13 +1631,266 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
  // call with LOOMA.sound( $('#sound_object")[0] )
  LOOMA.sound = function(sound) { sound.Play();}
 
+/* Characters a digit is never legitimately embedded in: LOWERCASE Latin, plus
+ * Devanagari (which has no case) minus its own digits at U+0966-U+096F.
+ *
+ * Uppercase is deliberately left out. "H2O", "CO2" and "SO4" fill the science
+ * textbooks, and a rule that pulled those apart would do more damage than the
+ * problem it fixes; a digit that turns up in the middle of ordinary lowercase
+ * running text, on the other hand, is always the text layer's doing.
+ */
+LOOMA.isWordLetter = function (ch) {
+    return /[a-zऀ-॥॰-ॿ]/.test(ch || '');
+};
+
+/* LOOMA.isAnyLetter(ch)
+ * Like isWordLetter but ALSO counts UPPERCASE Latin. Used for the LEFT side of a
+ * stray-digit test: a word can start with a capital ("Some"), so the letter
+ * before an intra-word digit may be uppercase, while the RIGHT side still has to
+ * be lowercase/Devanagari to tell "the word continues" (running text) apart from
+ * "a chemical subscript" (H2O, Fe2O3, Na2SO4 — always followed by an UPPERCASE
+ * element symbol or the word end). */
+LOOMA.isAnyLetter = function (ch) {
+    return /[A-Za-zऀ-॥॰-ॿ]/.test(ch || '');
+};
+
+LOOMA.isWordDigit = function (ch) {
+    return /[0-9०-९]/.test(ch || '');
+};
+
+/* LOOMA.isReadableChar(ch)
+ * True for a character that legitimately appears in Looma's text: Latin letters
+ * (incl. accented Latin-1), Devanagari, digits of either script, ordinary
+ * punctuation and whitespace.
+ *
+ * Everything else is treated as glyph garbage: characters from the Unicode
+ * private-use area (U+E000–U+F8FF), the replacement char, C0/C1 control codes,
+ * box-drawing, dingbats and stray symbol blocks. That garbage is precisely what
+ * a PDF font with no ToUnicode map emits — the "weird characters" seen in a
+ * selection, and the entire text layer pdf.js lays over an IMAGE. Matching a
+ * conservative allow-list (rather than trying to enumerate the garbage) means a
+ * codepoint we have never seen still gets dropped by default.
+ *   !-~            = all printable ASCII (a-z A-Z 0-9 and ASCII punctuation)
+ *   U+00A0–U+00FF  = Latin-1 supplement (accented letters)
+ *   U+0900–U+097F  = Devanagari (letters, matras, digits, danda)
+ *   U+2010–U+2027, U+2030–U+205E = general punctuation (dashes, quotes, …)
+ */
+LOOMA.isReadableChar = function (ch) {
+    return /[\t\n\r\x20-\x7E\u00A0-\u00FF\u0900-\u097F\u2010-\u2027\u2030-\u205E]/.test(ch || '');
+};
+
+/* LOOMA.garbageCharIndexes(chars)
+ * The indexes of every non-readable character in a char array — the companion
+ * to strayDigitIndexes(). Both LOOMA.cleanSelectedText() (a string) and the
+ * reading-highlight map builder drop the SAME characters through this one
+ * function, so the spoken text and the on-page character map stay aligned.
+ */
+LOOMA.garbageCharIndexes = function (chars) {
+    var drop = [];
+    for (var i = 0; i < chars.length; i++) {
+        if (!LOOMA.isReadableChar(chars[i])) drop.push(i);
+    }
+    return drop;
+};
+
+/* LOOMA.isGarbageText(text)
+ * True when a string carries NO real letters or digits at all — a run of pure
+ * symbol/garbage glyphs, which is what selecting a PDF image produces. This is
+ * the signal to suppress the word card, TTS and highlight for an image
+ * selection. A string with even one Latin/Devanagari letter or a digit is
+ * treated as text (its stray garbage is cleaned out instead).
+ */
+LOOMA.isGarbageText = function (text) {
+    var s = String(text == null ? '' : text);
+    if (!s.trim()) return true;
+    // Latin letters, or Devanagari vowels/consonants/extended letters, or a
+    // digit of either script. Deliberately excludes Devanagari matras/danda so a
+    // string of only combining marks still counts as garbage.
+    return !/[A-Za-z\u00C0-\u024F\u0904-\u0939\u0958-\u0961\u0971-\u097F0-9\u0966-\u096F]/.test(s);
+};
+
+/* LOOMA.disableGarbageSpans(container)
+ * Walk the direct children of a pdf.js text-layer container and make every span
+ * that is pure glyph garbage (isGarbageText) unselectable. Those spans are the
+ * ones pdf.js lays over an image, so this is what stops an image from being
+ * "selected" into weird characters at the source. Real text spans are untouched.
+ */
+LOOMA.disableGarbageSpans = function (container) {
+    if (!container || !container.children) return;
+    var spans = container.children;
+    for (var i = 0; i < spans.length; i++) {
+        var el = spans[i];
+        if (LOOMA.isGarbageText(el.textContent || '')) {
+            el.style.userSelect = 'none';
+            el.style.webkitUserSelect = 'none';
+            el.style.pointerEvents = 'none';
+            el.setAttribute('data-looma-garbage', '1');
+        }
+    }
+};
+
+/* LOOMA.strayDigitIndexes(chars)
+ * Positions, in an array of single characters, of every digit run wedged INSIDE a
+ * word — "so1me", "S01me". A run is dropped when there is a letter (of any case)
+ * on the LEFT and the word CONTINUES in lowercase/Devanagari on the RIGHT.
+ *
+ * The asymmetry is deliberate and load-bearing:
+ *   - LEFT may be uppercase, so a capitalised word at a sentence start ("Some"
+ *     mangled to "S01me") is still cleaned.
+ *   - RIGHT must be lowercase/Devanagari. Chemical subscripts are ALWAYS followed
+ *     by an UPPERCASE element symbol or the word end (H2O, Fe2O3, Na2SO4, CO2),
+ *     so requiring a lowercase right-neighbour keeps every formula intact while
+ *     still catching ordinary running text.
+ *   - A run with NO left letter is left alone, so ordinals ("2nd", "1st") and
+ *     "COVID-19" / "Class 7" / "1051" survive.
+ *
+ * Both LOOMA.cleanSelectedText() (which works on a string) and the reading
+ * highlight (which has to drop the same characters from its character->DOM map,
+ * not just from a string) run this one function, so the text that is spoken and
+ * the text that is matched against the page can never disagree.
+ */
+LOOMA.strayDigitIndexes = function (chars) {
+    var drop = [];
+    var i = 0;
+    while (i < chars.length) {
+        if (!LOOMA.isWordDigit(chars[i])) { i++; continue; }
+        var end = i;
+        while (end < chars.length && LOOMA.isWordDigit(chars[end])) end++;
+        var left  = i > 0 ? chars[i - 1] : '';
+        var right = end < chars.length ? chars[end] : '';
+        if (LOOMA.isAnyLetter(left) && LOOMA.isWordLetter(right)) {
+            for (var k = i; k < end; k++) drop.push(k);
+        }
+        i = end;
+    }
+    return drop;
+};
+
+/* LOOMA.cleanSelectedText(text)
+ * Tidy a raw text selection before it is spoken, looked up or highlighted.
+ *
+ * The pdf.js text layer is a pile of absolutely positioned spans whose DOM order
+ * is the PDF's content-stream order, not the order the words sit on the page.
+ * Long words are split across several of those spans ("fin" + "e"), and anything
+ * that merely falls BETWEEN the two ends of a selection in DOM order — a page
+ * number, a running header, a figure label — is dragged along with it. The
+ * result is a digit wedged into the middle of a word: "so" + "1" + "me".
+ * looma-play-pdf.js now rebuilds PDF selections in reading order so this mostly
+ * stops at the source; this is the safety net for whatever still gets through,
+ * and for the same problem on non-PDF pages.
+ *
+ * It ALSO strips glyph garbage — the private-use / symbol characters a PDF font
+ * with no ToUnicode map emits (the "weird characters"). A selection that is
+ * ONLY garbage — which is what a PDF image's text layer is — cleans to '', so
+ * an image cannot be spoken, looked up or highlighted. See LOOMA.isReadableChar
+ * / LOOMA.isGarbageText.
+ */
+/* LOOMA.repairPdfTextArtifacts(text)
+ * Repair the SYSTEMATIC letter mangling produced by a PDF whose text layer has a
+ * broken ToUnicode map. The page renders correctly on the canvas (from the glyph
+ * outlines), but the extracted Unicode is wrong in fixed, repeatable ways. The
+ * dominant one in Looma's Nepali/English science textbooks is the letter "m"
+ * coming out as "n1" or "1n" (e.g. "n1achine", "sn1ooth", "displacen1ent",
+ * "1notion"). Neither "n1" nor "1n" glued to a letter ever occurs inside a real
+ * English or Nepali word, so restoring "m" is safe. This MUST run before stray
+ * digit removal, which would otherwise delete the "1" and leave "nachine".
+ *
+ * This only fixes the deterministic font-mapping artefacts. It cannot recover
+ * genuinely random OCR noise from scanned insets (e.g. "co,Tered" for "covered"),
+ * where the information is lost in the source PDF — that needs the PDF's text
+ * layer regenerated, not a text-side fix.
+ */
+LOOMA.repairPdfTextArtifacts = function (text) {
+    return String(text == null ? '' : text)
+        // "m/s" — the speed unit that fills this physics textbook — comes out as
+        // "n1/s". "n1/" is never legitimate, so this is context-free and safe.
+        .replace(/n1\//g, 'm/')
+        // "m" extracted as "n1" inside a word: mid-word (sn1ooth) and word-initial
+        // (n1achine). The letter context avoids the rare "1"-as-"l" collision
+        // (a hypothetical "on1ine" stays untouched rather than becoming "omine").
+        .replace(/([A-Za-z])n1(?=[A-Za-z])/g, '$1m')
+        .replace(/\bn1(?=[A-Za-z])/g, 'm')
+        // "m" extracted as "1n": mid-word (i1nport) and word-initial (1notion).
+        // The immediate-letter lookahead keeps "1n fact" ("In fact") out of it.
+        .replace(/([A-Za-z])1n(?=[A-Za-z])/g, '$1m')
+        .replace(/\b1n(?=[A-Za-z])/g, 'm');
+};
+
+/* LOOMA.fixMixedAlnum(text)
+ * In a school textbook a real WORD is letters only and a real NUMBER is digits
+ * (with a decimal separator) only — the two never mix inside one token. The PDF
+ * text layer, though, glues them together in two different ways, handled here
+ * per whitespace-delimited token:
+ *
+ *   1. A clean number stuck to its unit — "0.67m/s", "30m", "1800s". This is a
+ *      real value that lost its space, so it is SPLIT: "0.67 m/s", "30 m",
+ *      "1800 s" (and any stray digit left in the unit is dropped).
+ *   2. A digit wedged into a word — "so1me", "grade7", "path7". The digit is
+ *      extraction noise, so it is DELETED: "some", "grade", "path".
+ *
+ * A pure number keeps every digit, so decimals survive untouched: "1.1", "1,2",
+ * "1,5" are all returned exactly as they came in. Devanagari digits (०-९) are
+ * treated the same as Latin ones.
+ */
+LOOMA.fixMixedAlnum = function (text) {
+    var DIGIT  = /[0-9०-९]/;
+    var LETTER = /[A-Za-zऄ-हक़-ॡॱ-ॿ]/;
+    return String(text == null ? '' : text).replace(/\S+/g, function (tok) {
+        // Pure word, pure number/decimal, or punctuation — nothing mixed to fix.
+        if (!LETTER.test(tok) || !DIGIT.test(tok)) return tok;
+        // Case 1: a number (with optional decimal separators) glued to a unit.
+        var m = tok.match(/^([0-9०-९]+(?:[.,][0-9०-९]+)*)([\s\S]+)$/);
+        if (m && LETTER.test(m[2].charAt(0))) {
+            return m[1] + ' ' + m[2].replace(/[0-9०-९]/g, '');
+        }
+        // Case 2: a digit wedged into a word — drop the digits.
+        return tok.replace(/[0-9०-९]/g, '');
+    });
+};
+
+LOOMA.cleanSelectedText = function (text) {
+    // Repair the systematic ToUnicode artefacts (m -> n1/1n) first, while the "1"
+    // is still glued to its letters and identifiable.
+    text = LOOMA.repairPdfTextArtifacts(text);
+    // Then unmix number/letter tokens (keeps decimals, splits values from units,
+    // drops digits wedged into words). Supersedes the old stray-digit pass.
+    text = LOOMA.fixMixedAlnum(text);
+    var chars = String(text == null ? '' : text).replace(/\|/g, ' ').split('');
+    // Drop glyph garbage — the private-use / symbol characters a PDF font with no
+    // ToUnicode map emits (the "weird characters", and the whole of an image's
+    // text layer).
+    var garbage = LOOMA.garbageCharIndexes(chars);
+    for (var g = garbage.length - 1; g >= 0; g--) chars.splice(garbage[g], 1);
+    var cleaned = chars.join('').replace(/\s+/g, ' ').trim();
+    // A selection that was ONLY garbage (an image, or a broken text run) cleans
+    // to nothing readable — return '' so no card, no speech and no highlight.
+    if (LOOMA.isGarbageText(cleaned)) return '';
+    return cleaned;
+};
+
+// Clone selection snapshots because ranges can be invalidated once the DOM is highlighted/repainted.
+LOOMA.speakCloneSnapshot = function (snapshot) {
+    if (!snapshot) return null;
+    var cloned = {
+        text: snapshot.text || '',
+        frameId: snapshot.frameId || null
+    };
+    if (snapshot.range && snapshot.range.cloneRange) {
+        try {
+            cloned.range = snapshot.range.cloneRange();
+        } catch (e) {
+            cloned.range = null;
+        }
+    } else cloned.range = null;
+    return cloned;
+};
 
 /* LOOMA.speak()
  * Author: Akshay Srivatsan
  * Date: Summer 2015/2016
  *      revised JUN 2025 for 'piper' TTS
  * Description:  to use TTS import this file from your HTML file.
- * If it uses piper or mimic, the call can specify a  voice.
+ * The call can specify a Piper voice.
  *
  * Uses the standard javascript object "speechSynthesis" if present [and browser !== Chromium],
  * otherwise, calls server-side looma-TTS.php, which uses piper to generate a wave file
@@ -1505,18 +1900,27 @@ LOOMA.getCH_ID = function(msg, confirmed, canceled, notTransparent) {
  */
 LOOMA.speak = function(text, engine, voice, rate) {
         //speak the TEXT,
-        //using [optional] ENGINE (in {'piper', 'synthesis', 'mimic'})
+        //using [optional] ENGINE (in {'piper', 'responsivevoice'})
         //using [optional] VOICE
         //using [optional] RATE sets the speed of speech. (rate > 1 is FASTER)
-        //      in mimic  --setf duration_stretch=1/rate ( e.g. if rate === 0.5 stretch by 2x (slower))
         //      in speechSynthesis  SpeachSynthesisUtterance.rate = rate ( e.g. if rate === 0.5 speak slower)
         //  for Looma in Nepal, use default rate = 2/3
 
-    var speed;
-    const defaultspeed = 2/3;
-
-       if (!rate || rate <= 0 || rate > 2) rate = defaultspeed;
-       speed = 1/rate;
+    // Engine/voice/rate resolution (cookies, defaults, per-language maps) is
+    // shared with LOOMA.speak.prefetch(), which needs the exact same choices
+    // the real press will make so its cache-warming request lands on the same
+    // Piper cache key. See LOOMA.speak.resolveVoiceAndRate() below.
+    var _resolved = LOOMA.speak.resolveVoiceAndRate(engine, voice, rate);
+    engine = _resolved.engine;
+    var rateEn = _resolved.rateEn, rateNp = _resolved.rateNp;
+    // Pick the speed for a given language ('ne'/'np' → Nepali) or piece of text.
+    function rateForLang(lang) { return (lang === 'ne' || lang === 'np') ? rateNp : rateEn; }
+    function rateForText(t)    { return rateForLang(LOOMA.speak.detectLanguage(t)); }
+    // Keep the legacy scalar rate/speed (English) for the code paths that
+    // still reference a single value (request keys, telemetry attributes …).
+    rate = rateEn;
+    var speed = 1/rate;
+    var voiceEn = _resolved.voiceEn, voiceNp = _resolved.voiceNp;
 
     /* requires a special regex package, like xregexp [https://www.regular-expressions.info/xregexp.html]
          const devanagari = /p{Devanagari}/u;
@@ -1524,6 +1928,22 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
      so, we use "if (text.match(/[\u0900-\u097F]/g))" instead for detecting devanagri unicode characters
     */
+
+     // Replay uses the last known text/snapshot when the user presses Speak without a fresh selection.
+     var replaySnapshot = null;
+     text = (text || '').replace(/\s+/g, ' ').trim();
+     if (!text && LOOMA.speak.currentSourceText) {
+         text = LOOMA.speak.currentSourceText;
+         // While paused, keep highlighting tied to the current in-memory reading.
+         replaySnapshot = LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
+         if (replaySnapshot) replaySnapshot.range = null;
+     }
+     if (!text && LOOMA.speak.lastCompletedText) {
+         text = LOOMA.speak.lastCompletedText;
+         // After a finished reading, replay rebuilds highlight context from the saved text/frame.
+         replaySnapshot = LOOMA.speakCloneSnapshot(LOOMA.speak.lastCompletedSnapshot);
+         if (replaySnapshot) replaySnapshot.range = null;
+     }
 
      if ( text !== "" ) {
          var playPromise;
@@ -1540,13 +1960,16 @@ LOOMA.speak = function(text, engine, voice, rate) {
                */
          //console.log('speaking : "' + text + '" using engine: ' + engine + ' and voice: ' + voice);
 
-         var speechButton = document.getElementsByClassName("speak")[0];
+         var speechButton = LOOMA.speak.getButton();
 
          if (LOOMA.speak.animationsInProgress == null) {
              LOOMA.speak.animationsInProgress = 0;
          }
          if (LOOMA.speak.speechQueue == null) {
              LOOMA.speak.speechQueue = [];
+         }
+         if (LOOMA.speak.runId == null) {
+             LOOMA.speak.runId = 0;
          }
          window.onbeforeunload = function () {
              console.log("Leaving this page. Stopping Audio");
@@ -1556,52 +1979,78 @@ LOOMA.speak = function(text, engine, voice, rate) {
          /*
          * speak.activate() makes the "Speak" button opaque and larger,
          * to give feedback to the user while the TTS request is waiting.
-         * Only called when Mimic is used.
+         * Only called for server-side (Piper) audio.
          */
          LOOMA.speak.activate = function () {
-             if (speechButton) {
-                 LOOMA.speak.animationsInProgress += 1;
-                 // If no animation is in progress, remember the button size
-                 if (LOOMA.speak.animationsInProgress == 1) {
-                     speechButton.oldOpacity = $(speechButton).css("opacity");
-                     speechButton.oldWidth = $(speechButton).css("width");
-                     speechButton.oldHeight = $(speechButton).css("height");
-
-                     $(speechButton).animate({
-                         opacity: 1,
-                         width: parseFloat(speechButton.oldWidth) * 2 + "px",
-                         height: parseFloat(speechButton.oldHeight) * 2 + "px",
-                     }, 500);
-                 }
-             }
+             // Busy means audio is actively playing, not merely queued.
+             LOOMA.speak.buttonActive = true;
+             LOOMA.speak.buttonPending = false;
+             LOOMA.speak.clearPendingButtonState();
+             LOOMA.speak.applyBusyButtonState();
+             LOOMA.speak.updateButtonAvailability();
          }; // end speak.activate()
 
          /*
           * speak.disable() makes the "Speak" button translucent and regular sized,
           * to show the user that the TTS is finished.
-          * Only called when Mimic is used.
+          * Only called for server-side (Piper) audio.
           */
          LOOMA.speak.disable = function () {
-             if (speechButton) {
-                 LOOMA.speak.animationsInProgress -= 1;
-                 if (LOOMA.speak.animationsInProgress == 0) {
-                     $(speechButton).animate({
-                         opacity: speechButton.oldOpacity,
-                         width: speechButton.oldWidth,
-                         height: speechButton.oldHeight,
-                     }, 500);
-                 }
-             }
+             // Reset button visuals after pause/stop/end/error.
+             LOOMA.speak.buttonActive = false;
+             LOOMA.speak.buttonPending = false;
+             LOOMA.speak.clearBusyButtonState();
+             LOOMA.speak.clearPendingButtonState();
+             LOOMA.speak.updateButtonAvailability();
          }; // end speak.disable()
 
          /*
-          * Resets the TTS and button to their original states (only when Mimic is used).
+          * Resets the TTS and button to their original states.
           */
          LOOMA.speak.cleanup = function () {
+             // A new run invalidates any old fetches, object URLs and highlight state.
+             LOOMA.speak.runId += 1;
+             // A reading held between two sentences is over as soon as anything
+             // else starts — leaving these set would make the button offer to
+             // resume a chain that no longer exists.
+             LOOMA.speak.gapPaused = false;
+             LOOMA.speak.resumeReading = null;
+             LOOMA.speak.currentSourceKey = null;
+             LOOMA.speak.currentSourceText = null;
+             LOOMA.speak.currentSourceSnapshot = null;
+             LOOMA.speak.clearBlockHighlight();
+             if (LOOMA.speak.blockObjectUrls) {
+                 LOOMA.speak.blockObjectUrls.forEach(function (objectUrl) {
+                     try { URL.revokeObjectURL(objectUrl); } catch (e) {}
+                 });
+                 LOOMA.speak.blockObjectUrls = [];
+             }
+             if (LOOMA.speak.playbackPoller) {
+                 clearInterval(LOOMA.speak.playbackPoller);
+                 LOOMA.speak.playbackPoller = null;
+             }
+             // ResponsiveVoice plays inside its own script and owns no media
+             // element, so it is invisible to the playingAudio branch below —
+             // nothing here used to stop it, and the next reading talked over
+             // the one still running.
+             if (LOOMA.speak.rvState) {
+                 LOOMA.speak.rvState = null;
+                 try {
+                     if (typeof responsiveVoice !== 'undefined' && responsiveVoice.cancel) {
+                         responsiveVoice.cancel();
+                     }
+                 } catch (e) {}
+             }
              if (speechSynthesis.speaking) speechSynthesis.pause();
              else {
                  if (LOOMA.speak.playingAudio) {
-                     LOOMA.speak.playingAudio.pause();
+            // A new selection should cancel the old reading; otherwise the same button acts as pause/resume.
+                     try {
+                         if (LOOMA.speak.playingAudio.pause) LOOMA.speak.playingAudio.pause();
+                     } catch (e) {}
+                     if (LOOMA.speak.playingAudio.loomaObjectUrl) {
+                         URL.revokeObjectURL(LOOMA.speak.playingAudio.loomaObjectUrl);
+                     }
                      LOOMA.speak.playingAudio = null;
                  }
                  LOOMA.speak.speechQueue = [];
@@ -1609,11 +2058,501 @@ LOOMA.speak = function(text, engine, voice, rate) {
              }
          }; // end speak.cleanup
 
+         /*
+          * Stop the WHOLE reading, from wherever the press landed.
+          *
+          * A reading is a chain of one-sentence clips, so at any moment it is in
+          * one of three states: a clip is playing, a clip has just ended and the
+          * next is still being synthesized, or nothing is playing yet because the
+          * first one has not arrived. Only the first of those had a working
+          * control — a press in either gap did nothing at all.
+          *
+          * That reads as "pause and stop are broken in Nepali", and the language
+          * is only indirectly to blame: the Nepali voice is a `medium` model where
+          * English uses `low`, so on an ODROID each sentence takes seconds to
+          * synthesize and nearly every press lands in a gap. The same box in
+          * English is fast enough that a clip is almost always playing.
+          *
+          * Stopping (not pausing) is the honest action here: there is no audio to
+          * pause mid-gap. cleanup() bumps runId, which every step of the fetch/play
+          * chain checks, so the sentences still in flight are abandoned instead of
+          * starting up after the press. lastCompleted* is saved first — exactly as
+          * finishBrowserPlayback() does — so the next press replays the passage.
+          */
+         LOOMA.speak.stopReading = function () {
+             var stoppedText = LOOMA.speak.currentSourceText;
+             var stoppedSnapshot = LOOMA.speak.currentSourceSnapshot;
+             if (stoppedText) {
+                 LOOMA.speak.lastCompletedText = stoppedText;
+                 LOOMA.speak.lastCompletedSnapshot = LOOMA.speakCloneSnapshot(stoppedSnapshot);
+             }
+             LOOMA.speak.cleanup();
+             LOOMA.speak.disable();
+         }; // end speak.stopReading
+
+         LOOMA.speak.clearBlockHighlight = function () {
+             // Remove the PDF highlight bands (overlay divs — these never touched
+             // the text, so nothing to restore and the map stays valid).
+             var overlays = LOOMA.speak.highlightOverlays;
+             LOOMA.speak.highlightOverlays = [];
+             if (overlays && overlays.length) {
+                 overlays.forEach(function (el) { if (el && el.parentNode) el.parentNode.removeChild(el); });
+             }
+
+             // Remove the temporary highlight spans and restore plain text nodes.
+             var marks = LOOMA.speak.highlightMarks;
+             LOOMA.speak.highlightMarks = [];
+             if (!marks || !marks.length) return;
+
+             var touchedParents = [];
+             marks.forEach(function (mark) {
+                 if (!mark || !mark.parentNode) return;
+                 var ownerDocument = mark.ownerDocument || document;
+                 var parent = mark.parentNode;
+                 parent.replaceChild(ownerDocument.createTextNode(mark.textContent), mark);
+                 if (touchedParents.indexOf(parent) === -1) touchedParents.push(parent);
+             });
+
+             // Glue the restored text back into single text nodes. Highlighting a
+             // sentence carves its text node into three (before / mark / after), and
+             // without this the original node stays detached for good — so every entry
+             // the character map holds for it is dead, and the NEXT sentence can only
+             // highlight whatever part of itself happens to live in a node no earlier
+             // sentence touched. That is what left long sentences half-highlighted.
+             touchedParents.forEach(function (parent) {
+                 try { parent.normalize(); } catch (e) {}
+             });
+
+             // The map now points at nodes that no longer exist — force a rebuild.
+             if (LOOMA.speak.highlightContext) LOOMA.speak.highlightContext.stale = true;
+         };
+
+         /* The spoken sentence and the text on screen are compared with ALL
+          * whitespace removed, and with the same stray digits dropped from both.
+          *
+          * A PDF text layer splits one word across several spans ("fin" + "e"),
+          * runs others together with no gap at all, and the sentence handed to the
+          * TTS engine has already been re-spaced on the way out — so any rule that
+          * tries to agree on where the spaces belong will disagree somewhere, and a
+          * sentence that fails to match is a sentence that is read aloud with no
+          * highlight at all. Ignoring spaces entirely makes the two sides line up
+          * every time. */
+         function normalizeForMatch(str) {
+             // Clean FIRST (so fixMixedAlnum can see word/number token boundaries),
+             // then lowercase, drop whitespace/"|", and drop ALL digits. Both sides
+             // of the match drop every digit, so they can never disagree over a page
+             // number or a standalone value the way "wedged vs standalone" would —
+             // the match is driven by the (highly distinctive) letters alone.
+             return LOOMA.cleanSelectedText(str)
+                 .toLowerCase()
+                 .replace(/[\s|]+/g, '')
+                 .replace(/[0-9०-९]/g, '');
+         }
+
+         /* Walk the root and build the aggregate string plus its character -> DOM map.
+          *
+          * The walk covers the WHOLE root rather than just the selected range, so it
+          * produces the identical string every time it runs. That is what makes the
+          * context rebuildable after a highlight has rewritten the DOM without every
+          * offset shifting underneath it; the range only marks out a
+          * [windowStart, windowEnd) slice of that string to start reading from. */
+         LOOMA.speak.refreshHighlightContext = function (context, range) {
+             var ownerDocument = context && context.ownerDocument;
+             var root = context && context.root;
+             if (!root || !ownerDocument) return context;
+
+             var ownerWindow = ownerDocument.defaultView || window;
+             var NodeFilterRef = ownerWindow.NodeFilter || NodeFilter;
+
+             var walker = ownerDocument.createTreeWalker(root, NodeFilterRef.SHOW_TEXT, {
+                 acceptNode: function (node) {
+                     var parent = node.parentElement;
+                     if (!parent) return NodeFilterRef.FILTER_REJECT;
+                     if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilterRef.FILTER_REJECT;
+                     if (parent.closest('script, style, noscript, button, input, textarea, select, .toolbar, #toolbar-container')) return NodeFilterRef.FILTER_REJECT;
+                     return NodeFilterRef.FILTER_ACCEPT;
+                 }
+             });
+
+             function inRange(node, offset) {
+                 if (!range) return false;
+                 try { return range.isPointInRange(node, offset); } catch (e) { return false; }
+             }
+
+             var chars = [];
+             var map = [];
+             var windowStart = -1;
+             var windowEnd = -1;
+             var current;
+
+             while ((current = walker.nextNode())) {
+                 var raw = current.nodeValue;
+                 for (var i = 0; i < raw.length; i++) {
+                     var ch = raw[i];
+                     // Skipped for the same reason normalizeForMatch() drops them.
+                     if (/[\s|]/.test(ch)) continue;
+                     // Drop glyph garbage here too, so the highlight character map
+                     // stays aligned with the cleaned/spoken text. See
+                     // LOOMA.cleanSelectedText() / LOOMA.isReadableChar().
+                     if (!LOOMA.isReadableChar(ch)) continue;
+                     if (range && inRange(current, i)) {
+                         if (windowStart === -1) windowStart = chars.length;
+                         windowEnd = chars.length + 1;
+                     }
+                     chars.push(ch.toLowerCase());
+                     map.push({node: current, offset: i});
+                 }
+             }
+
+             // Bring the aggregate into the SAME shape normalizeForMatch() produces
+             // for the spoken text, keeping the char->DOM map aligned so a matched
+             // sentence still points at live nodes. Two index-aligned passes:
+             //   1. repair the "m"-as-"n1"/"1n" artefact (the 'n'/'1' keeps its DOM
+             //      entry as the new 'm'; its partner char is dropped);
+             //   2. drop every digit (matches normalizeForMatch dropping all digits).
+             function dropAt(idx) {
+                 chars.splice(idx, 1);
+                 map.splice(idx, 1);
+                 if (windowStart > idx) windowStart--;
+                 if (windowEnd > idx) windowEnd--;
+             }
+             function isLetterLC(c) { return /[a-zऀ-ॿ]/.test(c || ''); }
+             for (var r = 0; r < chars.length - 1; r++) {
+                 var a = chars[r], b = chars[r + 1], nx = chars[r + 2];
+                 if (a === 'n' && b === '1' && (isLetterLC(nx) || nx === '/')) { chars[r] = 'm'; dropAt(r + 1); }
+                 else if (a === '1' && b === 'n' && isLetterLC(nx)) { chars[r] = 'm'; dropAt(r + 1); }
+             }
+             for (var d = chars.length - 1; d >= 0; d--) {
+                 if (LOOMA.isWordDigit(chars[d])) dropAt(d);
+             }
+
+             context.aggregate = chars.join('');
+             context.map = map;
+             if (range) {
+                 context.windowStart = windowStart === -1 ? 0 : windowStart;
+                 context.windowEnd = windowEnd === -1 ? context.aggregate.length : windowEnd;
+             }
+             context.stale = false;
+             return context;
+         };
+
+         LOOMA.speak.buildHighlightContext = function () {
+             // Build a searchable text map so each spoken segment can be matched back to visible DOM text.
+             function getSnapshotDocument(snapshot) {
+                 // Rebuild highlights inside the correct iframe/document when replaying older text.
+                 if (snapshot && snapshot.frameId) {
+                     var frame = document.getElementById(snapshot.frameId);
+                     if (frame && frame.contentDocument) return frame.contentDocument;
+                 }
+                 return document;
+             }
+
+             // Prefer the stored selection snapshot; fall back to the live selection for first-time reads.
+             var snapshot = LOOMA.speak.selectionSnapshot || LOOMA.speak.captureSelectionSnapshot();
+             if (!snapshot) return null;
+
+             var ownerDocument = getSnapshotDocument(snapshot);
+             var sourceRange = null;
+             var root = null;
+
+             if (snapshot.range && snapshot.range.cloneRange) {
+                 try {
+                     sourceRange = snapshot.range.cloneRange();
+                     root = sourceRange.commonAncestorContainer;
+                     if (root && root.nodeType === Node.TEXT_NODE) root = root.parentNode;
+                     if (!root || !ownerDocument.contains(root)) { sourceRange = null; root = null; }
+                 } catch (e) {
+                     sourceRange = null;
+                     root = null;
+                 }
+             }
+
+             if (!root) {
+                 // If the original range is no longer reliable, search inside the whole document and narrow below.
+                 root = ownerDocument.body || ownerDocument.documentElement;
+             }
+             if (!root) return null;
+
+             var context = {
+                 root: root,
+                 ownerDocument: ownerDocument,
+                 normalizeText: normalizeForMatch,
+                 aggregate: '',
+                 map: [],
+                 windowStart: 0,
+                 windowEnd: 0,
+                 searchIndex: 0,
+                 stale: false
+             };
+
+             LOOMA.speak.refreshHighlightContext(context, sourceRange);
+
+             if (!sourceRange) {
+                 // Replay after clearing the selection uses the saved selected text to constrain the search window.
+                 context.windowStart = 0;
+                 context.windowEnd = context.aggregate.length;
+                 var selectionTarget = snapshot.text ? normalizeForMatch(snapshot.text) : '';
+                 var selectionStart = selectionTarget ? context.aggregate.indexOf(selectionTarget) : -1;
+                 if (selectionStart !== -1) {
+                     context.windowStart = selectionStart;
+                     context.windowEnd = selectionStart + selectionTarget.length;
+                 }
+             }
+
+             context.searchIndex = context.windowStart;
+             return context;
+         };
+
+         /* Merge a Range's client rects (one per pdf.js word-span) into ONE band
+          * per text line, bridging the gaps at spaces so a sentence reads as a
+          * single continuous highlight rather than a row of separate boxes. */
+
+
+         /* Highlight a PDF sentence with translucent yellow bands drawn BEHIND the
+          * text (the visible glyphs live on the canvas). The text is never wrapped,
+          * bolded or reflowed, so words keep their exact pdf.js spacing — and each
+          * line gets one continuous band, not a box per word. */
+         /* The colour of the reading highlight: the SAME one as the toolbar at the
+          * bottom of the page (--looma-toolbar), so the page has one accent rather
+          * than two nearly-equal yellows — and so the themes that repaint the
+          * toolbar (CEHRD teal, INDIA orange) repaint the highlight with it.
+          *
+          * Read from the MAIN document on purpose: a chapter opened as HTML lives
+          * in an iframe whose document knows nothing of Looma's CSS variables. */
+         /* Height of the reading band, in em of the text it covers. Tall enough
+          * to sit behind ascenders and descenders, short enough that it cannot
+          * reach the line above or below at the line spacing chapters use. */
+         LOOMA.speak.HIGHLIGHT_BAND_EM = 1.25;
+
+         LOOMA.speak.highlightColor = function () {
+             if (LOOMA.speak.cachedHighlightColor) return LOOMA.speak.cachedHighlightColor;
+             var accent = '';
+             try {
+                 accent = (window.getComputedStyle(document.documentElement)
+                                 .getPropertyValue('--looma-toolbar') || '').trim();
+             } catch (e) { accent = ''; }
+             LOOMA.speak.cachedHighlightColor = accent || 'yellow';
+             return LOOMA.speak.cachedHighlightColor;
+         };
+
+         LOOMA.speak.renderPdfHighlight = function (range, layer) {
+             LOOMA.speak.highlightOverlays = LOOMA.speak.highlightOverlays || [];
+             var ownerDocument = layer.ownerDocument || document;
+             var base = layer.getBoundingClientRect();   // the text layer is the positioning origin
+             var lines = LOOMA.speak.mergeRectsByLine(range.getClientRects());
+             var accent = LOOMA.speak.highlightColor();
+             var made = [];
+             lines.forEach(function (r) {
+                 /* Height. The rect is the span's FONT box, which on these pages
+                  * is taller than the gap to the next line — so a band drawn at
+                  * rect height covers part of the lines around it, and two bands
+                  * of a sentence that wraps overlap each other. Cap it at the
+                  * measured line spacing less a small gutter, and centre what is
+                  * left on the line, so a band can never touch its neighbours. */
+                 var height = r.bottom - r.top;
+                 var limit = LOOMA.speak.bandLimitAt(layer, r.top) || height * 0.76;
+                 var band = Math.max(4, Math.min(height, limit));
+
+                 var div = ownerDocument.createElement('div');
+                 div.className = 'tts-pdf-highlight';
+                 div.style.position = 'absolute';
+                 div.style.left = (r.left - base.left) + 'px';
+                 div.style.top = (r.top - base.top + (height - band) / 2) + 'px';
+                 div.style.width = (r.right - r.left) + 'px';
+                 div.style.height = band + 'px';
+                 /* Colour set INLINE, like the HTML highlight: a converted chapter
+                  * is its own document inside an iframe, carrying its own copy of
+                  * this rule, and looma.css never reaches it. Inline wins over
+                  * both, so the band is the toolbar colour everywhere.
+                  *
+                  * `multiply` is what a highlighter pen does — white paper turns
+                  * the accent colour and the ink underneath STAYS BLACK. On a
+                  * scanned page it is the only way to be opaque about the colour
+                  * without hiding the words: they are pixels in the scan below. */
+                 div.style.backgroundColor = accent;
+                 div.style.mixBlendMode = 'multiply';
+                 div.style.borderRadius = '0.15em';
+                 div.style.pointerEvents = 'none';
+                 layer.appendChild(div);
+                 made.push(div);
+             });
+             LOOMA.speak.highlightOverlays = LOOMA.speak.highlightOverlays.concat(made);
+             return made.length > 0;
+         };
+
+         LOOMA.speak.highlightBlock = function (blockText) {
+             // Highlight only the sentence/block currently being read.
+             LOOMA.speak.clearBlockHighlight();
+             if (!blockText) return;
+
+             var context = LOOMA.speak.highlightContext;
+             if (context && context.stale) {
+                 // The previous sentence's highlight rewrote the DOM. Re-walk the same
+                 // root so the map points at live text nodes again — the text itself is
+                 // unchanged, so the aggregate and the cursor into it still hold good.
+                 LOOMA.speak.refreshHighlightContext(context, null);
+             }
+             if (!context) context = LOOMA.speak.buildHighlightContext();
+             if (!context) return;
+             LOOMA.speak.highlightContext = context;
+
+             var target = context.normalizeText(blockText);
+             if (!target) return;
+
+             // Continue searching forward so repeated phrases highlight in reading order.
+             function locate(ctx) {
+                 var at = ctx.aggregate.indexOf(target, ctx.searchIndex || 0);
+                 if (at === -1) at = ctx.aggregate.indexOf(target, ctx.windowStart || 0);
+                 if (at === -1) at = ctx.aggregate.indexOf(target);
+                 return at;
+             }
+             // Every character we are about to wrap must still point at a live text
+             // node long enough to hold its offset. If any does not, the DOM moved
+             // under the map since it was built, and wrapping now would highlight
+             // ONLY the part of the sentence that stayed valid — the classic
+             // half-highlighted sentence. Rebuild the map once (the text is
+             // unchanged, so the aggregate/cursor still hold) and re-locate, so we
+             // either highlight the whole sentence or, if it truly cannot be mapped,
+             // nothing — never half.
+             function rangeMapValid(ctx, from, to) {
+                 for (var v = from; v <= to; v++) {
+                     var e = ctx.map[v];
+                     if (!e || !e.node || !e.node.parentNode) return false;
+                     if (!e.node.nodeValue || e.offset >= e.node.nodeValue.length) return false;
+                 }
+                 return true;
+             }
+
+             var startIndex = locate(context);
+             if (startIndex === -1) return;
+             var endIndex = startIndex + target.length - 1;
+
+             if (!rangeMapValid(context, startIndex, endIndex)) {
+                 LOOMA.speak.refreshHighlightContext(context, null);
+                 startIndex = locate(context);
+                 if (startIndex === -1) return;
+                 endIndex = startIndex + target.length - 1;
+                 if (!rangeMapValid(context, startIndex, endIndex)) return;
+             }
+
+             context.searchIndex = startIndex + target.length;
+
+             // PDF path: draw translucent bands behind the text instead of
+             // wrapping it. On a pdf.js text layer each word is its own absolutely
+             // positioned span, so wrapping produced a separate bold box per word
+             // (crowded, fragmented). Bands from the range's client rects, merged
+             // per line, give one continuous highlight and never touch the text.
+             var startEntry = context.map[startIndex];
+             var endEntry = context.map[endIndex];
+             var startParent = startEntry && startEntry.node && startEntry.node.parentElement;
+             var pdfLayer = startParent && startParent.closest ? startParent.closest('.pdf-text, .textLayer') : null;
+             if (pdfLayer) {
+                 try {
+                     var pdfDoc = startEntry.node.ownerDocument || document;
+                     var pdfRange = pdfDoc.createRange();
+                     pdfRange.setStart(startEntry.node, startEntry.offset);
+                     pdfRange.setEnd(endEntry.node, endEntry.offset + 1);
+                     if (LOOMA.speak.renderPdfHighlight(pdfRange, pdfLayer)) return;
+                 } catch (e) { /* fall through to the wrapping path below */ }
+             }
+
+             var perNode = new Map();
+
+             for (var j = startIndex; j <= endIndex; j++) {
+                 var entry = context.map[j];
+                 if (!entry || !entry.node || !entry.node.parentNode) continue;
+                 if (entry.offset >= entry.node.nodeValue.length) continue;
+                 if (!perNode.has(entry.node)) perNode.set(entry.node, {start: entry.offset, end: entry.offset});
+                 var segment = perNode.get(entry.node);
+                 if (entry.offset < segment.start) segment.start = entry.offset;
+                 if (entry.offset > segment.end) segment.end = entry.offset;
+             }
+
+             LOOMA.speak.highlightMarks = [];
+
+             Array.from(perNode.entries()).map(function (pair) {
+                 return {node: pair[0], start: pair[1].start, end: pair[1].end + 1};
+             }).reverse().forEach(function (segment) {
+                 var node = segment.node;
+                 if (!node || !node.parentNode) return;
+
+                 var ownerDocument = node.ownerDocument || document;
+                 var text = node.nodeValue;
+                 var before = text.slice(0, segment.start);
+                 var middle = text.slice(segment.start, segment.end);
+                 var after = text.slice(segment.end);
+                 var fragment = ownerDocument.createDocumentFragment();
+
+                 if (before) fragment.appendChild(ownerDocument.createTextNode(before));
+
+                 // Wrap only the currently spoken text fragment so the highlight can be removed cleanly.
+                 var mark = ownerDocument.createElement('span');
+                 mark.className = 'tts-block-highlight';
+                 mark.textContent = middle;
+                 // The styles are set INLINE and not left to the .tts-block-highlight
+                 // rule, because an HTML chapter is loaded inside an iframe and
+                 // Looma's stylesheet does not reach into that document. The
+                 // accent comes from the theme all the same — see highlightColor().
+                 //
+                 // The band is painted as a GRADIENT, not as background-color: an
+                 // inline box's background fills the font's whole content area,
+                 // which in Looma's comic font is taller than the line spacing of a
+                 // typical chapter — so a plain background-color bled over the
+                 // lines above and below. A gradient can be given a height
+                 // (HIGHLIGHT_BAND_EM), so the band always stays inside its own
+                 // line. `box-decoration-break: clone` makes each line fragment of
+                 // a wrapped sentence paint its own band instead of one band
+                 // stretched across the whole hypothetical box.
+                 var bandColor = LOOMA.speak.highlightColor();
+                 mark.style.backgroundImage = 'linear-gradient(' + bandColor + ',' + bandColor + ')';
+                 mark.style.backgroundRepeat = 'no-repeat';
+                 mark.style.backgroundSize = '100% ' + LOOMA.speak.HIGHLIGHT_BAND_EM + 'em';
+                 mark.style.backgroundPosition = '0 50%';
+                 mark.style.setProperty('-webkit-box-decoration-break', 'clone');
+                 mark.style.setProperty('box-decoration-break', 'clone');
+                 mark.style.color = '#000';        // ~19:1 on the toolbar yellow
+                 mark.style.fontWeight = 'bold';   // the sentence being read stands out
+                 mark.style.borderRadius = '0.1em';
+                 fragment.appendChild(mark);
+
+                 if (after) fragment.appendChild(ownerDocument.createTextNode(after));
+
+                 node.parentNode.replaceChild(fragment, node);
+                 LOOMA.speak.highlightMarks.push(mark);
+             });
+         };
+
     ////////////////////////////////
     //start of LOOMA.speak code: ///
     ////////////////////////////////
 
-         if ( (! engine && speechSynthesis.getVoices().length > 0) || engine === 'synthesis') {  //CHECK THIS. SHOULD IT BE speechSynthesis.getVoices()?
+         // Shared by every engine that highlights as it reads (Piper and
+         // ResponsiveVoice): short sentence-level chunks so the highlight can
+         // follow along, instead of one giant utterance highlighted all at once
+         // (or, before this fix, not highlighted at all — see the ResponsiveVoice
+         // branch below).
+         /* How much of the FIRST sentence to synthesize before playback starts.
+          *
+          * Nothing is heard until the first clip is ready, so the wait before a
+          * reading begins is exactly "how long Piper takes on sentence one" — and
+          * an ODROID synthesizes slower than real time, which turns a long opening
+          * sentence into seconds of apparent deadness. Cutting only that first
+          * segment down to a clause gets sound out roughly in proportion: a third
+          * of the sentence, a third of the wait. Every later clip stays a whole
+          * sentence, so prosody is untouched from the second one on, and by then
+          * the fetch chain is already running ahead of playback.
+          *
+          * Never mid-word, and never when the sentence has no natural break. */
+         // Segment splitting (how much of the first sentence to cut for a fast
+         // start, and where sentences break) is shared with
+         // LOOMA.speak.prefetch() via LOOMA.speak.splitIntoPlaybackSegments()
+         // below, so a prefetch warms the exact same text Piper will be asked
+         // to speak for real.
+         function splitIntoPlaybackSegments(sourceText) {
+             return LOOMA.speak.splitIntoPlaybackSegments(sourceText);
+         }
+
+         if (engine === 'synthesis') {
              // we use synthesis if the user is running Safari or Chrome - any browser that has speechSynthesis installed
              // Firefox does have speechSynthesis, but be sure to set webspeech.synth.enabled=true in about:config
              // Chromium's speechSynthesis seems to be broken. (they dont load any voices, so TTS doesnt happen)
@@ -1624,91 +2563,1909 @@ LOOMA.speak = function(text, engine, voice, rate) {
              } else {
                  // speechSynthesis usually accounts for latency itself, so there's no need to queue requests.
                  var speech = new SpeechSynthesisUtterance(text);
-                 speech.rate = 1/speed;   // e.g. if rate is 2/3, slow down
+                 speech.rate = rateForText(text);   // per-language speed (e.g. 2/3 slows down)
+                 // Use the voice the user picked on the Reading Settings page — the
+                 // Nepali voice for Devanagari text, the English voice otherwise.
+                 var synthVoiceName = /[ऀ-ॿ]/.test(text) ? voiceNp : voiceEn;
+                 if (synthVoiceName) {
+                     try {
+                         var synthPick = (speechSynthesis.getVoices() || []).filter(
+                             function (v) { return v.name === synthVoiceName; })[0];
+                         if (synthPick) speech.voice = synthPick;
+                     } catch (e) {}
+                 }
+                 // Browser-RUM span: speechSynthesis runs client-side, so it
+                 // emits no server span. Time the call → first audio so the
+                 // TTS dashboards get a real load-latency figure for it. We
+                 // also send a `tts_speak` event to looma-telemetry.php so
+                 // engine / voice / language / rate / source land in OpenSearch
+                 // logs and Prometheus metrics behind the Grafana TTS panels.
+                 var synthT0 = Date.now();
+                 var synthLang = /[ऀ-ॿ]/.test(text) ? 'np' : 'en';
+                 var synthVoiceUsed = (synthLang === 'np') ? voiceNp : voiceEn;
+                 var synthSrc = (typeof location !== 'undefined' && location.pathname) || '';
+                 var synthSpanAttrs = {
+                     'tts.engine':     'synthesis',
+                     'tts.voice':      synthVoiceUsed || '',
+                     'tts.language':   synthLang,
+                     'tts.rate':       rate,
+                     'tts.text_chars': (text || '').length,
+                     'tts.source':     synthSrc
+                 };
+                 var synthEventBase = {
+                     tts_engine:     'synthesis',
+                     tts_voice:      synthVoiceUsed || '',
+                     tts_language:   synthLang,
+                     tts_rate:       rate,
+                     tts_text_chars: (text || '').length,
+                     tts_source:     synthSrc
+                 };
+                 speech.addEventListener('start', function () {
+                     try {
+                         if (window.LOOMA && LOOMA.otel && LOOMA.otel.emitSpan) {
+                             LOOMA.otel.emitSpan('tts.synthesis', synthT0, Date.now(), 1, synthSpanAttrs);
+                         }
+                     } catch (e) {}
+                     try {
+                         if (window.LOOMA && LOOMA.telemetry && LOOMA.telemetry.track) {
+                             LOOMA.telemetry.track('tts_speak', Object.assign({ tts_status: 'ok' }, synthEventBase));
+                         }
+                     } catch (e) {}
+                 });
+                 speech.addEventListener('error', function (ev) {
+                     var msg = String((ev && ev.error) || 'synthesis error');
+                     try {
+                         if (window.LOOMA && LOOMA.otel && LOOMA.otel.emitSpan) {
+                             LOOMA.otel.emitSpan('tts.synthesis', synthT0, Date.now(), 1,
+                                 Object.assign({ 'error.message': msg }, synthSpanAttrs),
+                                 { statusCode: 2 });
+                         }
+                     } catch (e) {}
+                     try {
+                         if (window.LOOMA && LOOMA.telemetry && LOOMA.telemetry.track) {
+                             LOOMA.telemetry.track('tts_speak',
+                                 Object.assign({ tts_status: 'error', tts_error: msg }, synthEventBase));
+                         }
+                     } catch (e) {}
+                 });
                  speechSynthesis.speak(speech);
              }
          }
 
-         else { // engine is NOT 'synthesis', therefore call server-side looma-TTS.php which uses 'piper' or 'mimic'
+         else if (engine === 'responsivevoice') {
+             // ResponsiveVoice — cloud TTS that runs entirely client-side. Its
+             // external script is loaded LAZILY (LOOMA.speak.ensureResponsiveVoice)
+             // the first time the user presses Speak with this engine selected, so
+             // pages that never use it make no request to responsivevoice.org. If
+             // it cannot be loaded (typically: the box has no internet right now),
+             // fall back to Piper instead of just going silent — a box that drops
+             // offline mid-session must still be able to read aloud.
+             //
+             // Show the spinner NOW: loading responsivevoice.org and waiting for
+             // the cloud to return audio takes seconds, and until onstart fires
+             // the button gave no feedback at all (the Piper path below already
+             // does this). onstart/onerror clear it via activate()/disable().
+             // PIPER IS THE DEFAULT, and the only engine that works offline. When
+             // the browser already knows it has no connection, don't spend seconds
+             // fetching responsivevoice.org just to fail: read with Piper now.
+             // (An `onLine` of true is only a hint — a LAN with no route out still
+             // reports true — so the fallback inside the callback below stays.)
+             if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+                 console.warn('offline — reading with Piper instead of ResponsiveVoice.');
+                 // No voice: the voices held here are ResponsiveVoice NAMES
+                 // ("UK English Female"), which mean nothing to Piper. Leaving it
+                 // empty lets Piper pick its own default for each language.
+                 LOOMA.speak(text, 'piper', { en: '', np: '' }, { en: rateEn, np: rateNp });
+                 return;
+             }
+
+             LOOMA.speak.buttonPending = true;
+             LOOMA.speak.applyPendingButtonState();
+             LOOMA.speak.updateButtonAvailability();
+
+             LOOMA.speak.ensureResponsiveVoice(function (rvAvailable) {
+             if (!rvAvailable) {
+                 console.warn('ResponsiveVoice is unavailable (needs internet + a valid key) — falling back to Piper.');
+                 // Surface the outage in Grafana: emit an ERROR-status span on
+                 // the same tts.responsivevoice series the dashboards already
+                 // query, plus a tts_speak event for the logs side.
+                 var rvUnavailSrc = (typeof location !== 'undefined' && location.pathname) || '';
+                 var rvUnavailLang = (LOOMA.speak.detectLanguage(text) === 'ne') ? 'np' : 'en';
+                 try {
+                     if (window.LOOMA && LOOMA.otel && LOOMA.otel.emitSpan) {
+                         var rvUnavailT = Date.now();
+                         LOOMA.otel.emitSpan('tts.responsivevoice', rvUnavailT, rvUnavailT + 1, 1, {
+                             'tts.engine':      'responsivevoice',
+                             'tts.language':    rvUnavailLang,
+                             'tts.text_chars':  (text || '').length,
+                             'tts.source':      rvUnavailSrc,
+                             'error.message':   'responsivevoice unavailable'
+                         }, { statusCode: 2 });
+                     }
+                 } catch (e) {}
+                 try {
+                     if (window.LOOMA && LOOMA.telemetry && LOOMA.telemetry.track) {
+                         LOOMA.telemetry.track('tts_speak', {
+                             tts_engine:     'responsivevoice',
+                             tts_language:   rvUnavailLang,
+                             tts_text_chars: (text || '').length,
+                             tts_source:     rvUnavailSrc,
+                             tts_status:     'error',
+                             tts_error:      'responsivevoice unavailable'
+                         });
+                     }
+                 } catch (e) {}
+                 // Hand the spinner over to the Piper path, which sets its own
+                 // pending state — otherwise it would stay spinning from here.
+                 LOOMA.speak.buttonPending = false;
+                 LOOMA.speak.clearPendingButtonState();
+                 // Same as the offline short-circuit above: hand Piper no voice
+                 // rather than a ResponsiveVoice name it cannot use.
+                 LOOMA.speak(text, 'piper', { en: '', np: '' }, rate);
+             } else {
+                 // Pressing Speak again while it is talking stops it (toggle),
+                 // matching how the other engines behave.
+                 var rvPlaying = false;
+                 try { rvPlaying = (typeof responsiveVoice.isPlaying === 'function') && responsiveVoice.isPlaying(); } catch (e) {}
+                 if (rvPlaying) {
+                     responsiveVoice.cancel();
+                     // Retire the run properly rather than just going quiet: a
+                     // leftover rvState would make the button guard offer
+                     // "resume" for a reading that no longer exists, and handing
+                     // the text to lastCompleted* is what lets the next press
+                     // repeat it. (Reached from callers that speak directly, such
+                     // as the Reading Settings page — a press on the Speak
+                     // control is intercepted by the button guard first.)
+                     if (LOOMA.speak.rvState) {
+                         LOOMA.speak.rvState = null;
+                         LOOMA.speak.lastCompletedText = LOOMA.speak.currentSourceText || '';
+                         LOOMA.speak.lastCompletedSnapshot =
+                             LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
+                         LOOMA.speak.currentSourceKey = null;
+                         LOOMA.speak.currentSourceText = null;
+                         LOOMA.speak.currentSourceSnapshot = null;
+                     }
+                     LOOMA.speak.clearBlockHighlight();
+                     LOOMA.speak.disable();
+                 } else {
+                     // ResponsiveVoice's rate runs ~0–1.5; clamp the Looma rate.
+                     var rvRate = Math.min(1.5, Math.max(0, rateForText(text) || (2/3)));
+                     // Browser-RUM span: ResponsiveVoice is a client-side cloud
+                     // engine with no server span — time the call → first audio
+                     // so its load latency shows in the TTS dashboards.
+                     var rvT0 = Date.now();
+                     // Devanagari text uses the Nepali voice, Latin text the
+                     // English one — both chosen on the Reading Settings page.
+                     // These are the PASSAGE-level values: the fallback voice, and
+                     // what the telemetry below reports. The voice and speed each
+                     // sentence is actually read with are picked per segment in
+                     // speakNextRvSegment(), the same way the Piper path does it.
+                     var rvLang = (LOOMA.speak.detectLanguage(text) === 'ne') ? 'np' : 'en';
+                     var rvVoice = ((rvLang === 'np') ? voiceNp : voiceEn) || 'UK English Female';
+                     var rvSrc = (typeof location !== 'undefined' && location.pathname) || '';
+                     // Span + telemetry attributes shared by every outcome so a
+                     // single tts.responsivevoice / tts_speak row in Grafana
+                     // carries the engine, voice, language, rate, source.
+                     var rvSpanAttrs = {
+                         'tts.engine':     'responsivevoice',
+                         'tts.voice':      rvVoice,
+                         'tts.language':   rvLang,
+                         'tts.rate':       rvRate,
+                         'tts.text_chars': (text || '').length,
+                         'tts.source':     rvSrc
+                     };
+                     var rvEventBase = {
+                         tts_engine:     'responsivevoice',
+                         tts_voice:      rvVoice,
+                         tts_language:   rvLang,
+                         tts_rate:       rvRate,
+                         tts_text_chars: (text || '').length,
+                         tts_source:     rvSrc
+                     };
+                     // Speak sentence-by-sentence (like Piper below) instead of
+                     // handing the WHOLE text to ResponsiveVoice as one utterance —
+                     // that old shape never called highlightBlock() at all, so the
+                     // reading highlight only ever showed up with Piper, never with
+                     // ResponsiveVoice. rvRunId (shared LOOMA.speak.runId counter,
+                     // same one Piper uses) stops a stale chain the moment a
+                     // new speak() call or cancel() supersedes it.
+                     var rvRunId = ++LOOMA.speak.runId;
+                     var rvSegments = splitIntoPlaybackSegments(text);
+                     LOOMA.speak.highlightContext = LOOMA.speak.buildHighlightContext();
+
+                     // The same playback bookkeeping the Piper path keeps (see the
+                     // currentSourceText/Snapshot block further down). Without it a
+                     // ResponsiveVoice reading was invisible to everything built on
+                     // top of a reading: pause/resume, the press-and-hold restart and
+                     // the "repeat" press all key off these fields, so with RV
+                     // selected the button could only ever START something.
+                     var rvSnapshot = replaySnapshot || LOOMA.speak.captureSelectionSnapshot();
+                     LOOMA.speak.selectionSnapshot = LOOMA.speakCloneSnapshot(rvSnapshot);
+                     LOOMA.speak.currentSourceKey = ['responsivevoice', rvVoice, rvRate,
+                                                     LOOMA.speak.normalizeSpeakKey(text)].join('|');
+                     LOOMA.speak.currentSourceText = text;
+                     LOOMA.speak.currentSourceSnapshot = LOOMA.speakCloneSnapshot(rvSnapshot);
+                     // RV exposes no media element to ask "are you paused?", so that
+                     // flag is ours to keep. The watchdog below and the button guard
+                     // both read it.
+                     LOOMA.speak.rvState = { runId: rvRunId, paused: false };
+
+                     // Mirrors finishBrowserPlayback() on the Piper side: hand the
+                     // text and its highlight context over to lastCompleted* so the
+                     // next press repeats this reading instead of finding nothing.
+                     function finishRvPlayback() {
+                         if (rvRunId !== LOOMA.speak.runId) return;
+                         LOOMA.speak.rvState = null;
+                         LOOMA.speak.lastCompletedText = LOOMA.speak.currentSourceText || text;
+                         LOOMA.speak.lastCompletedSnapshot =
+                             LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
+                         LOOMA.speak.currentSourceKey = null;
+                         LOOMA.speak.currentSourceText = null;
+                         LOOMA.speak.currentSourceSnapshot = null;
+                         LOOMA.speak.clearBlockHighlight();
+                         LOOMA.speak.disable();
+                     }
+
+                     function speakNextRvSegment(index) {
+                         if (rvRunId !== LOOMA.speak.runId) return;
+                         var segment = rvSegments[index];
+                         if (!segment) {
+                             finishRvPlayback();
+                             return;
+                         }
+
+                         // Voice and speed follow the SENTENCE, exactly as they do
+                         // on the Piper path. They used to be fixed for the whole
+                         // passage from the first Devanagari character found
+                         // anywhere in it, so one Nepali word made the Nepali voice
+                         // read the English sentences too — and a chapter with a
+                         // single English caption made the English voice read all
+                         // the Nepali. Mixed pages are most of Looma's content.
+                         var segLang = LOOMA.speak.detectLanguage(segment);
+                         var segVoice = ((segLang === 'ne') ? voiceNp : voiceEn) || rvVoice;
+                         // Same clamp as rvRate: ResponsiveVoice's rate runs ~0–1.5.
+                         var segRate = Math.min(1.5, Math.max(0, rateForLang(segLang) || (2 / 3)));
+
+                         // ResponsiveVoice does not always deliver onend — most
+                         // reliably on the very FIRST utterance of a session,
+                         // where RV/Chrome can drop the callback entirely. With
+                         // the chain hanging off onend alone that silently ended
+                         // the reading after sentence one. advance() is the single
+                         // way forward, is idempotent, and is additionally driven
+                         // by a watchdog that polls RV's own playing state, so a
+                         // missing callback costs a short pause instead of the
+                         // rest of the text.
+                         var advanced = false;
+                         var watchdog = null;
+                         function stopWatchdog() {
+                             if (watchdog) { clearInterval(watchdog); watchdog = null; }
+                         }
+                         function advance() {
+                             if (advanced) return;
+                             // A PAUSED reading must not roll on to the next
+                             // sentence. RV reports "not playing" while paused —
+                             // the very state the watchdog uses to detect a
+                             // dropped onend — so without this, pausing would
+                             // skip ahead a sentence a second later.
+                             if (LOOMA.speak.rvState && LOOMA.speak.rvState.paused) return;
+                             advanced = true;
+                             stopWatchdog();
+                             if (rvRunId !== LOOMA.speak.runId) return;
+                             // Leave RV's own callback stack before starting the
+                             // next utterance; speaking from inside onend can be
+                             // swallowed while RV is still tearing the last one down.
+                             setTimeout(function () { speakNextRvSegment(index + 1); }, 0);
+                         }
+                         function startWatchdog() {
+                             stopWatchdog();
+                             var idleTicks = 0;
+                             watchdog = setInterval(function () {
+                                 if (advanced || rvRunId !== LOOMA.speak.runId) { stopWatchdog(); return; }
+                                 // Hold the count still while paused, so resuming
+                                 // starts from a clean slate instead of advancing
+                                 // on the idle ticks the pause itself produced.
+                                 if (LOOMA.speak.rvState && LOOMA.speak.rvState.paused) { idleTicks = 0; return; }
+                                 var playing;
+                                 try {
+                                     playing = (typeof responsiveVoice.isPlaying === 'function')
+                                         ? responsiveVoice.isPlaying() : true;
+                                 } catch (e) { playing = true; }
+                                 // Require several consecutive idle reads: RV reports
+                                 // "not playing" briefly between its own internal chunks.
+                                 idleTicks = playing ? 0 : (idleTicks + 1);
+                                 if (idleTicks >= 4) advance();
+                             }, 250);
+                         }
+                         // If onstart never arrives either, the utterance was lost
+                         // outright — move on rather than stopping the reading.
+                         var startGuard = setTimeout(function () {
+                             if (!advanced && rvRunId === LOOMA.speak.runId) advance();
+                         }, 5000);
+
+                         responsiveVoice.speak(segment, segVoice, {
+                             rate: segRate,
+                             onstart: function () {
+                                 clearTimeout(startGuard);
+                                 if (rvRunId !== LOOMA.speak.runId) return;
+                                 startWatchdog();
+                                 if (index === 0) {
+                                     try {
+                                         if (window.LOOMA && LOOMA.otel && LOOMA.otel.emitSpan) {
+                                             LOOMA.otel.emitSpan('tts.responsivevoice', rvT0, Date.now(), 1, rvSpanAttrs);
+                                         }
+                                     } catch (e) {}
+                                     try {
+                                         if (window.LOOMA && LOOMA.telemetry && LOOMA.telemetry.track) {
+                                             LOOMA.telemetry.track('tts_speak',
+                                                 Object.assign({ tts_status: 'ok' }, rvEventBase));
+                                         }
+                                     } catch (e) {}
+                                 }
+                                 LOOMA.speak.activate();
+                                 LOOMA.speak.buttonActive = true;
+                                 LOOMA.speak.applyBusyButtonState();
+                                 LOOMA.speak.updateButtonAvailability();
+                                 LOOMA.speak.highlightBlock(segment);
+                             },
+                             onerror: function (ev) {
+                                 clearTimeout(startGuard);
+                                 advanced = true;   // an errored segment must not be retried by the watchdog
+                                 stopWatchdog();
+                                 if (rvRunId !== LOOMA.speak.runId) return;
+                                 var msg = String((ev && (ev.error || ev.message)) || 'responsivevoice error');
+                                 try {
+                                     if (window.LOOMA && LOOMA.otel && LOOMA.otel.emitSpan) {
+                                         LOOMA.otel.emitSpan('tts.responsivevoice', rvT0, Date.now(), 1,
+                                             Object.assign({ 'error.message': msg }, rvSpanAttrs),
+                                             { statusCode: 2 });
+                                     }
+                                 } catch (e) {}
+                                 try {
+                                     if (window.LOOMA && LOOMA.telemetry && LOOMA.telemetry.track) {
+                                         LOOMA.telemetry.track('tts_speak',
+                                             Object.assign({ tts_status: 'error', tts_error: msg }, rvEventBase));
+                                     }
+                                 } catch (e) {}
+                                 LOOMA.speak.rvState = null;
+                                 LOOMA.speak.clearBlockHighlight();
+                                 LOOMA.speak.disable();
+                             },
+                             onend: function () {
+                                 clearTimeout(startGuard);
+                                 advance();
+                             }
+                         });
+                     }
+
+                     responsiveVoice.cancel();
+                     if (rvSegments.length === 0) {
+                         // Nothing to say: drop the run state again, or the button
+                         // guard would offer to pause a reading that never started.
+                         LOOMA.speak.rvState = null;
+                         LOOMA.speak.currentSourceKey = null;
+                         LOOMA.speak.currentSourceText = null;
+                         LOOMA.speak.currentSourceSnapshot = null;
+                         LOOMA.speak.disable();
+                     } else {
+                         speakNextRvSegment(0);
+                     }
+                 }
+             }
+             });
+         }
+
+         else { // default path is Flask/Piper
+             // Re-fetch when the voice or the speed changes, not just when the text does.
+             var textKey = LOOMA.speak.normalizeSpeakKey(text);
+             var requestKey = [engine || 'piper', voiceEn + '~' + voiceNp, rate || '', textKey].join('|');
+             var activeKey = LOOMA.speak.currentSourceKey || '';
+
              if (LOOMA.speak.playingAudio != null) {
-                 // If speaking, stop the currently playing speech.
+                 if (requestKey && activeKey === requestKey) {
+                     if (LOOMA.speak.playingAudio.paused) {
+                         // Same text + paused audio means resume instead of starting a new fetch.
+                         LOOMA.speak.playingAudio.play().then(function () {
+                             // Highlight starts when audio playback actually starts, not when the request is sent.
+                         LOOMA.speak.activate();
+                         }).catch(function (error) {
+                             console.log('Browser playback resume error: ', error);
+                         });
+                     } else {
+                         LOOMA.speak.playingAudio.pause();
+                         LOOMA.speak.disable();
+                     }
+                     return;
+                 }
                  console.log("Stopping Audio");
-                 //LOOMA.speak.playingAudio.pause();
                  LOOMA.speak.cleanup();
-             } else {  //else start the new speech
+             } else if (LOOMA.speak.buttonPending) {
+                 if (requestKey && activeKey === requestKey) return;
+                 LOOMA.speak.cleanup();
+             }
+
+             {  //else start the new speech
+                 var currentRunId = ++LOOMA.speak.runId;
+                 // Keep the exact selection context that started this reading so highlight/replay can reuse it later.
+                 var activeSnapshot = replaySnapshot || LOOMA.speak.captureSelectionSnapshot();
+                 LOOMA.speak.selectionSnapshot = LOOMA.speakCloneSnapshot(activeSnapshot);
+                 LOOMA.speak.highlightContext = LOOMA.speak.buildHighlightContext();
+                 LOOMA.speak.currentSourceKey = requestKey;
+                 LOOMA.speak.currentSourceText = text;
+                 LOOMA.speak.currentSourceSnapshot = LOOMA.speakCloneSnapshot(activeSnapshot);
                  //console("Playing Audio: " + text);
 
-                 // To reduce latency before speech starts, split the speech into sentences, and speak each separately.
-                 // separating on: period, comma, question mark, exclamation mark, semicolon, colon   /[.,?!;:]/
-                 // Splitting over these punctuation marks will usually work.
-                 //There are a few cases where it will sound unusual ("Dr.", "Mr.", "Ms.", etc).
-                 //It may lag on unusually long sentences without punctuation.
-                 var splitSentences = text.split(/[.?!;:]/); //removed ","
-                 console.log("Speaking " + splitSentences.length + " phrases.");
+                 var playbackSegments = splitIntoPlaybackSegments(text);
+                 console.log("Speaking " + playbackSegments.length + " segments.");
 
-                 var lastAudio = null;
-                 var firstAudio = null;
+                 if (playbackSegments.length === 0) return;
 
-                 for (var i = 0; i < splitSentences.length; i++) {
-                     var currentText = splitSentences[i];
-                     if (currentText) {
-                         var audioSource;
-
-                     audioSource = 'looma-TTS.php?' +
-                         'text=' + encodeURIComponent(currentText) +
-                         '&voice=' + encodeURIComponent(voice) +
-                         '&rate=' + encodeURIComponent(rate) +
-                         '&lang=' + encodeURIComponent(language) +
-                         '&engine=' + encodeURIComponent(engine);
-
-                     // This is like preloading images – all the requests to mimic will execute early, so there won't be lag between phrases.
-                     var currentAudio = new Audio(audioSource);
-
-                     //this 'onended' handler is attached to each phrase before it is entered into the queue
-                     currentAudio.onended = function () {
-                         // When this phrase is over, start the next one, by popping it off the queue
-                         //console.log("End of Phrase");
-                         var nextAudio = LOOMA.speak.speechQueue.pop(); // The equivalent of "dequeue". (Pulls from the end of the array.)
-                         if (nextAudio && nextAudio.textContent != null) {
-                             LOOMA.speak.playingAudio = nextAudio;
-                             //console.log("Playing Next Phrase");
-                             //play the next phrase
-                             playPromise = nextAudio.play();
-                         } else {
-                             // There's nothing else to do, just remove the flag.
-                             console.log("Done with all phrases.");
-                             LOOMA.speak.cleanup();
-                         }
-                     };
-
-                     if (lastAudio == null) { //for the first phrase, dont put it on the queue, just play it
-                         firstAudio = currentAudio;
-                     } else {
-                         //push this phrase onto the queue
-                         LOOMA.speak.speechQueue.unshift(currentAudio); // The equivalent of "enqueue". (Puts it at the beginning of the array.)
+                 // `synthesis`/`speechsynthesis` uses the browser's Web Speech API.
+                 // This keeps the same public LOOMA.speak() signature used across Looma.
+                 // Note: because this runs on the client device, it does not generate server-side
+                 // traces; it is intended for local/offline speech on supported browsers.
+                 if (engine === 'synthesis' || engine === 'speechsynthesis') {
+                     if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
+                         console.warn('speechSynthesis is not available in this browser.');
+                         return;
                      }
-                     lastAudio = currentAudio;
-                 }
-                 }  // end FOR loop which builds the queue of audio phrases to play
-                 LOOMA.speak.playingAudio = firstAudio;
-                 console.log("Playing '" + currentText + "' with " + voice + " at speed " + speed + " and using " + engine);
 
-                 //play the first phrase
-                 playPromise = firstAudio.play().then(
-                     function () {
-                        console.log('Play started');
-                     }).catch(
-                         function (error) {
-                        console.log('Play promise error: ', error);
+                     var synthesisSegments = playbackSegments.slice(0);
+                     window.speechSynthesis.cancel();
+
+                     function speakNextSynthesisSegment() {
+                         if (currentRunId !== LOOMA.speak.runId) return;
+                         var segment = synthesisSegments.shift();
+                         if (!segment) {
+                             finishBrowserPlayback(null);
+                             return;
+                         }
+
+                         var utterance = new SpeechSynthesisUtterance(segment);
+                         utterance.rate = rateForLang(detectSegmentLanguage(segment));
+                         utterance.lang = detectSegmentLanguage(segment) === 'ne' ? 'ne-NP' : 'en-US';
+                         utterance.onstart = function () {
+                             if (currentRunId !== LOOMA.speak.runId) return;
+                             LOOMA.speak.activate();
+                             LOOMA.speak.buttonActive = true;
+                             LOOMA.speak.applyBusyButtonState();
+                             LOOMA.speak.updateButtonAvailability();
+                             LOOMA.speak.highlightBlock(segment);
+                         };
+                         utterance.onend = function () {
+                             if (currentRunId !== LOOMA.speak.runId) return;
+                             speakNextSynthesisSegment();
+                         };
+                         utterance.onerror = function (evt) {
+                             console.warn('speechSynthesis error', evt);
+                             if (currentRunId !== LOOMA.speak.runId) return;
+                             finishBrowserPlayback(null);
+                         };
+
+                         // Choose a best-effort voice matching the utterance language.
+                         try {
+                             var voices = window.speechSynthesis.getVoices();
+                             var preferred = voices.find(function (v) {
+                                 return utterance.lang === 'ne-NP' ? /^ne[-_]/i.test(v.lang) : /^en[-_]/i.test(v.lang);
+                             });
+                             if (preferred) utterance.voice = preferred;
+                         } catch (e) {}
+
+                         window.speechSynthesis.speak(utterance);
+                     }
+
+                     // Voices may load asynchronously in some browsers.
+                     if (window.speechSynthesis.getVoices().length === 0) {
+                         window.speechSynthesis.onvoiceschanged = function () {
+                             window.speechSynthesis.onvoiceschanged = null;
+                             speakNextSynthesisSegment();
+                         };
+                         setTimeout(speakNextSynthesisSegment, 500);
+                     } else {
+                         speakNextSynthesisSegment();
+                     }
+                     return;
+                 }
+
+                 // Always call the Looma PHP endpoint, which proxies Piper (Flask).
+                 // Calling http://127.0.0.1:5002/tts from the browser would hit the *client* machine, not the server/container.
+                 var ttsEndpoint = 'looma-TTS.php';
+
+                 // Mixed English/Nepali content is routed sentence-by-sentence to
+                 // the right Piper worker. See LOOMA.speak.detectLanguage().
+                 function detectSegmentLanguage(segment) {
+                     return LOOMA.speak.detectLanguage(segment);
+                 }
+
+                 function finishBrowserPlayback(audio) {
+                     // Save the just-finished selection context so replay can restore audio + highlight later.
+                     if (audio && audio.loomaObjectUrl) {
+                         URL.revokeObjectURL(audio.loomaObjectUrl);
+                     }
+                     if (currentRunId !== LOOMA.speak.runId) return;
+                     LOOMA.speak.playingAudio = null;
+                     LOOMA.speak.lastCompletedText = LOOMA.speak.currentSourceText || text;
+                     LOOMA.speak.lastCompletedSnapshot = LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
+                     LOOMA.speak.currentSourceKey = null;
+                     LOOMA.speak.currentSourceText = null;
+                     LOOMA.speak.currentSourceSnapshot = null;
+                     LOOMA.speak.clearBlockHighlight();
+                     LOOMA.speak.disable();
+                     console.log("Done with all phrases.");
+                 }
+
+                 function fetchSegmentAudio(segmentText) {
+                     // Each segment is fetched independently so the first phrase can start while later ones are still loading.
+                     var piperParams = {
+                         text: segmentText,
+                         engine: 'piper',
+                         lang: detectSegmentLanguage(segmentText),
+                         rate: rateForLang(detectSegmentLanguage(segmentText))
+                     };
+                     // A specific Piper voice (picked on the Reading Settings page)
+                     // overrides the server's language-based default. Each segment uses
+                     // the voice for its detected language; when omitted, the Piper
+                     // server auto-selects the voice from the detected language.
+                     var segVoice = (piperParams.lang === 'ne') ? voiceNp : voiceEn;
+                     if (segVoice) piperParams.voice = segVoice;
+                     var request = fetch(ttsEndpoint + '?' + $.param(piperParams));
+
+                     return request.then(function (response) {
+                         if (!response.ok) throw new Error('Browser TTS request failed: ' + response.status);
+                         return response.blob();
+                     }).then(function (audioBlob) {
+                         var audioUrl = URL.createObjectURL(audioBlob);
+                         if (!LOOMA.speak.blockObjectUrls) LOOMA.speak.blockObjectUrls = [];
+                         LOOMA.speak.blockObjectUrls.push(audioUrl);
+                         if (currentRunId !== LOOMA.speak.runId) {
+                             URL.revokeObjectURL(audioUrl);
+                             throw new Error('Stale TTS segment');
+                         }
+                         return {
+                             blockText: segmentText,
+                             objectUrl: audioUrl
+                         };
+                     });
+                 }
+
+                 function playPreparedBlock(preparedBlock, blockIndex) {
+                     if (currentRunId !== LOOMA.speak.runId) {
+                         if (preparedBlock && preparedBlock.objectUrl) URL.revokeObjectURL(preparedBlock.objectUrl);
+                         return;
+                     }
+
+                     var audio = new Audio(preparedBlock.objectUrl);
+                     audio.loomaObjectUrl = preparedBlock.objectUrl;
+                     LOOMA.speak.playingAudio = audio;
+
+                     audio.addEventListener('play', function () {
+                         if (currentRunId !== LOOMA.speak.runId) return;
+                         LOOMA.speak.activate();
+                         LOOMA.speak.buttonActive = true;
+                         LOOMA.speak.applyBusyButtonState();
+                         LOOMA.speak.updateButtonAvailability();
+                         LOOMA.speak.highlightBlock(preparedBlock.blockText);
+                     }, {once: true});
+
+                     audio.addEventListener('ended', function () {
+                         if (audio.loomaObjectUrl) {
+                             URL.revokeObjectURL(audio.loomaObjectUrl);
+                             LOOMA.speak.blockObjectUrls = (LOOMA.speak.blockObjectUrls || []).filter(function (url) {
+                                 return url !== audio.loomaObjectUrl;
+                             });
+                             audio.loomaObjectUrl = null;
+                         }
+
+                         // Chain the next segment only after this one ends to keep playback ordered.
+                         var nextIndex = blockIndex + 1;
+                         if (currentRunId !== LOOMA.speak.runId) return;
+
+                         if (nextIndex >= playbackSegments.length) {
+                             finishBrowserPlayback(audio);
+                             return;
+                         }
+
+                         blockPromises[nextIndex].then(function (nextPreparedBlock) {
+                             if (currentRunId !== LOOMA.speak.runId) return;
+                             /* The press landed in the gap: this sentence was still
+                              * being synthesized when the user asked for a pause, so
+                              * hold it at the door rather than starting it. The next
+                              * press calls resumeReading() and the passage carries on
+                              * from here — which is what a paused reading has to do
+                              * for the button to be allowed to show "resume". */
+                             if (LOOMA.speak.gapPaused) {
+                                 LOOMA.speak.resumeReading = function () {
+                                     if (currentRunId !== LOOMA.speak.runId) return;
+                                     LOOMA.speak.gapPaused = false;
+                                     LOOMA.speak.resumeReading = null;
+                                     playPreparedBlock(nextPreparedBlock, nextIndex);
+                                 };
+                                 // Waiting on the user now, not on Piper: no spinner.
+                                 LOOMA.speak.buttonPending = false;
+                                 LOOMA.speak.clearPendingButtonState();
+                                 LOOMA.speak.updateButtonAvailability();
+                                 return;
+                             }
+                             playPreparedBlock(nextPreparedBlock, nextIndex);
+                         }).catch(function (error) {
+                             console.log('Browser playback error: ', error);
+                             // The sentence that was being held never arrived, so
+                             // there is nothing left to resume — drop the hold or
+                             // the button would keep offering a resume that only
+                             // ever restarts the passage.
+                             LOOMA.speak.gapPaused = false;
+                             LOOMA.speak.resumeReading = null;
+                             LOOMA.speak.playingAudio = null;
+                             LOOMA.speak.disable();
+                         });
+                     }, {once: true});
+
+                     audio.addEventListener('error', function () {
+                         if (audio.loomaObjectUrl) {
+                             URL.revokeObjectURL(audio.loomaObjectUrl);
+                             LOOMA.speak.blockObjectUrls = (LOOMA.speak.blockObjectUrls || []).filter(function (url) {
+                                 return url !== audio.loomaObjectUrl;
+                             });
+                             audio.loomaObjectUrl = null;
+                         }
+                         if (currentRunId !== LOOMA.speak.runId) return;
+                         LOOMA.speak.playingAudio = null;
+                         LOOMA.speak.currentSourceKey = null;
+                         LOOMA.speak.currentSourceText = null;
+                         LOOMA.speak.currentSourceSnapshot = null;
+                         LOOMA.speak.clearBlockHighlight();
+                         LOOMA.speak.disable();
+                     }, {once: true});
+
+                     return audio.play();
+                 }
+
+                 // Segments are fetched strictly in order through the single
+                 // shared Piper worker. The first sentence therefore reaches
+                 // Piper with zero lock contention — the fastest possible start —
+                 // and the rest synthesize behind it while it is already playing.
+                 var blockPromises = [];
+                 var fetchChain = fetchSegmentAudio(playbackSegments[0]);
+                 blockPromises.push(fetchChain);
+                 for (var segIndex = 1; segIndex < playbackSegments.length; segIndex++) {
+                     (function (segmentText) {
+                         // Run the next segment whether the previous fetch resolved
+                         // or failed, so one bad segment never stalls the queue.
+                         fetchChain = fetchChain.then(
+                             function () { return fetchSegmentAudio(segmentText); },
+                             function () { return fetchSegmentAudio(segmentText); }
+                         );
+                         blockPromises.push(fetchChain);
+                     })(playbackSegments[segIndex]);
+                 }
+
+                 // Pending is the gap between button click and the first audible playback.
+                 LOOMA.speak.buttonPending = true;
+                 LOOMA.speak.applyPendingButtonState();
+                 LOOMA.speak.updateButtonAvailability();
+                 console.log("Playing " + playbackSegments.length + " segments in browser using Piper");
+                 playPromise = blockPromises[0].then(function (preparedBlock) {
+                     return playPreparedBlock(preparedBlock, 0);
+                 }).catch(function (error) {
+                     console.log('Browser playback error: ', error);
+                     LOOMA.speak.buttonPending = false;
+                     LOOMA.speak.clearPendingButtonState();
+                     if (LOOMA.speak.playingAudio && LOOMA.speak.playingAudio.loomaObjectUrl) {
+                         URL.revokeObjectURL(LOOMA.speak.playingAudio.loomaObjectUrl);
+                     }
+                     LOOMA.speak.playingAudio = null;
+                     LOOMA.speak.currentSourceKey = null;
+                     LOOMA.speak.currentSourceText = null;
+                     LOOMA.speak.currentSourceSnapshot = null;
+                     LOOMA.speak.clearBlockHighlight();
+                     LOOMA.speak.disable();
                  });
 
                  console.log('promise is ', playPromise);
-
-                 LOOMA.speak.activate();
              }
-         }  //end of code that calls server-side MIMIC
+         }  //end of code that calls server-side Piper
      } // end if (text != "")
+     LOOMA.speak.updateButtonAvailability();
  }; //end LOOMA.speak()
+
+/* LOOMA.speak.ensureResponsiveVoice(cb)
+ * ResponsiveVoice is a cloud TTS whose external script is intentionally NOT
+ * loaded on page load. It is fetched on demand the first time the user presses
+ * Speak with the ResponsiveVoice engine selected, so pages that never use it
+ * make no call to responsivevoice.org. Subsequent presses reuse the loaded
+ * engine. cb(available) is called with true once responsiveVoice.speak is ready,
+ * or false if the script can't load (offline / blocked / missing key). Callers
+ * that arrive while it is still downloading are queued and resolved together. */
+LOOMA.speak.ensureResponsiveVoice = function (cb) {
+    function ready() {
+        if (!(typeof responsiveVoice !== 'undefined' && responsiveVoice &&
+              typeof responsiveVoice.speak === 'function')) return false;
+        return true;
+    }
+
+    // Chrome populates speechSynthesis.getVoices() asynchronously. An utterance
+    // spoken while that list is still empty does play, but its onend never
+    // fires — which is exactly why the FIRST reading of a session stopped after
+    // one sentence while every later one was fine. So hold the first speak()
+    // until the voice list exists. Browsers where the list never populates (RV
+    // then serves its own cloud audio) must NOT be punished for it, so this is a
+    // best-effort wait, not a requirement: see waitForVoices() below.
+    function voicesReady() {
+        try {
+            if (typeof speechSynthesis === 'undefined' || !speechSynthesis ||
+                typeof speechSynthesis.getVoices !== 'function') return true;
+            var voices = speechSynthesis.getVoices();
+            return !!(voices && voices.length);
+        } catch (e) { return true; }
+    }
+
+    // Poll up to ~2s for the voice list, then continue regardless.
+    function waitForVoices(done) {
+        var tries = 0;
+        (function poll() {
+            if (voicesReady() || ++tries > 20) { done(); return; }
+            setTimeout(poll, 100);
+        })();
+    }
+
+    LOOMA.speak.rvWaiters = LOOMA.speak.rvWaiters || [];
+    LOOMA.speak.rvWaiters.push(cb);
+    if (LOOMA.speak.rvLoading) return;   // a load is already in flight
+    LOOMA.speak.rvLoading = true;
+
+    function settle(ok) {
+        LOOMA.speak.rvLoading = false;
+        var waiters = LOOMA.speak.rvWaiters || [];
+        LOOMA.speak.rvWaiters = [];
+        waiters.forEach(function (fn) { try { fn(ok); } catch (e) {} });
+    }
+
+    // The RV script is already loaded and only the voice list is missing —
+    // don't re-inject it, just wait for the voices.
+    if (ready()) { waitForVoices(function () { settle(true); }); return; }
+
+    var src = window.LOOMA_RESPONSIVEVOICE_SRC ||
+              'https://code.responsivevoice.org/responsivevoice.js?key=r2w8pU3y';
+    var script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.onload = function () {
+        // ResponsiveVoice auto-initialises on the window 'load' event. When the
+        // script is injected dynamically (after load), that event has already
+        // fired, so init() never runs on its own and .speak() stays silent —
+        // call it explicitly here. Harmless if RV already initialised.
+        try {
+            if (typeof responsiveVoice !== 'undefined' && responsiveVoice &&
+                typeof responsiveVoice.init === 'function') {
+                responsiveVoice.init();
+            }
+        } catch (e) {}
+        // RV may need a tick to finish wiring after init; poll briefly (≈4s
+        // ceiling) until responsiveVoice.speak is callable.
+        var tries = 0;
+        (function waitReady() {
+            if (ready()) { waitForVoices(function () { settle(true); }); return; }
+            if (++tries > 40) { settle(false); return; }
+            setTimeout(waitReady, 100);
+        })();
+    };
+    script.onerror = function () { settle(false); };
+    document.head.appendChild(script);
+};
+
+/* ---- reading-band geometry on a converted chapter page --------------------
+ *
+ * A converted chapter is the scanned page as an image with a layer of
+ * absolutely-positioned, transparent <span>s over it — one per line of print.
+ * Both the reading band and the blue selection are sized from those spans, so
+ * the two live here together and cannot drift apart.
+ *
+ * These are OUTSIDE the LOOMA.speak closure on purpose: the line fitter has to
+ * run when a chapter loads, long before anything has been read aloud.
+ */
+
+/* How far apart the lines of THIS page actually are, in px.
+ *
+ * A band may never be taller than this or it reaches the line above and below.
+ * The rect of a text span is its own line box and says nothing about the spacing
+ * around it, so measure the page instead: take the top of every span in the text
+ * layer and use the MEDIAN gap between consecutive lines. The median ignores
+ * both the odd superscript sitting a couple of pixels off and the big jump
+ * across a paragraph break.
+ *
+ * Cached on the layer and keyed by its width: these pages are responsive, so the
+ * spacing only changes when the layer is re-laid out, and a width that no longer
+ * matches is exactly when the cached value went stale.
+ */
+LOOMA.speak.lineMetricsFor = function (layer) {
+    if (layer.loomaLineMetrics && layer.loomaLineMetricsWidth === layer.clientWidth) {
+        return layer.loomaLineMetrics;
+    }
+
+    // Offsets from the layer's own top, NOT viewport coordinates: the page
+    // scrolls, and a cached viewport position would be wrong the moment it does.
+    var origin = layer.getBoundingClientRect().top;
+    var tops = [];
+    var heights = [];
+    var spans = layer.querySelectorAll('span');
+    for (var i = 0; i < spans.length; i++) {
+        var box = spans[i].getBoundingClientRect();
+        if (box.height > 0) { tops.push(box.top - origin); heights.push(box.height); }
+    }
+    tops.sort(function (a, b) { return a - b; });
+    heights.sort(function (a, b) { return a - b; });
+
+    // Several spans can sit on ONE line of print — the converter splits a line
+    // wherever the font or size changes — and their tops differ by a pixel or
+    // two. Cluster them, or every one of those little differences would read as
+    // a line of its own and leave no room for any band at all.
+    var medianHeight = heights.length ? heights[Math.floor(heights.length / 2)] : 0;
+    var tolerance = Math.max(3, medianHeight * 0.5);
+
+    var lineTops = [];      // one entry per line of print
+    var gaps = [];
+    for (var j = 0; j < tops.length; j++) {
+        var last = lineTops.length ? lineTops[lineTops.length - 1] : null;
+        if (last === null || tops[j] - last > tolerance) {
+            if (last !== null) gaps.push(tops[j] - last);
+            lineTops.push(tops[j]);
+        }
+    }
+    gaps.sort(function (a, b) { return a - b; });
+
+    layer.loomaLineMetrics = {
+        tops: lineTops,
+        spacing: gaps.length ? gaps[Math.floor(gaps.length / 2)] : 0
+    };
+    layer.loomaLineMetricsWidth = layer.clientWidth;
+    return layer.loomaLineMetrics;
+};
+
+/* The tallest a band on THIS line may be, so it always keeps daylight between
+ * itself and the lines around it.
+ *
+ * Measured against the nearest line above and below rather than the page median:
+ * a page mixes loose and tight paragraphs, and the median leaves a band 0.2px
+ * short of the next line inside a tight one — which reads as one solid slab.
+ */
+LOOMA.speak.bandLimitAt = function (layer, top) {
+    var metrics = LOOMA.speak.lineMetricsFor(layer);
+    var tops = metrics.tops;
+    var offset = top - layer.getBoundingClientRect().top;
+    if (!tops.length) return metrics.spacing ? metrics.spacing * 0.88 : 0;
+
+    /* Snap to the line this band belongs to FIRST. The rect handed in comes from
+     * a Range and starts a couple of pixels above the span's own box, so looking
+     * straight for "the nearest top below" used to find the line's own top and
+     * conclude the lines were 3px apart. */
+    var index = 0;
+    var best = Infinity;
+    for (var i = 0; i < tops.length; i++) {
+        var distance = Math.abs(tops[i] - offset);
+        if (distance < best) { best = distance; index = i; }
+    }
+
+    var below = (index + 1 < tops.length) ? tops[index + 1] - tops[index] : Infinity;
+    var above = (index > 0) ? tops[index] - tops[index - 1] : Infinity;
+
+    var local = Math.min(below, above);
+    if (!isFinite(local)) local = metrics.spacing;      // the only line on the page
+    if (!(local > 0)) return 0;
+    return local - Math.max(2, local * 0.12);
+};
+
+/* Group the rects of a range into ONE rect per line of print. */
+LOOMA.speak.mergeRectsByLine = function (rects) {
+    var arr = [];
+    for (var i = 0; i < rects.length; i++) {
+        var r = rects[i];
+        if (r.width > 0 && r.height > 0) {
+            arr.push({ left: r.left, top: r.top, right: r.right, bottom: r.bottom });
+        }
+    }
+    arr.sort(function (a, b) { return (a.top - b.top) || (a.left - b.left); });
+
+    var lines = [];
+    arr.forEach(function (r) {
+        var mid = (r.top + r.bottom) / 2;
+        var tol = Math.max(4, (r.bottom - r.top) * 0.5);
+        var line = null;
+        for (var k = 0; k < lines.length; k++) {
+            if (Math.abs((lines[k].top + lines[k].bottom) / 2 - mid) <= tol) { line = lines[k]; break; }
+        }
+        if (!line) {
+            lines.push({ left: r.left, top: r.top, right: r.right, bottom: r.bottom });
+        } else {
+            line.left = Math.min(line.left, r.left);
+            line.top = Math.min(line.top, r.top);
+            line.right = Math.max(line.right, r.right);
+            line.bottom = Math.max(line.bottom, r.bottom);
+        }
+    });
+    return lines;
+};
+
+/* Draw the BLUE SELECTION as bands of our own, the same height as the reading
+ * band.
+ *
+ * The browser sizes ::selection from the FONT's own ascent+descent, which on
+ * these pages is taller than the gap to the next line — so selecting two
+ * consecutive lines produced one solid blue slab that swallowed the lines around
+ * it. That height cannot be styled (line-height does not move it, which is why
+ * this is not a one-line CSS fix), so the only way to bound it is to stop the
+ * browser painting the selection at all and draw it ourselves, through the very
+ * same geometry the reading band uses.
+ *
+ * The selection itself is untouched — only its paint. Copying, the Speak button
+ * and the word-definition card all still read window.getSelection() as before.
+ */
+LOOMA.speak.SELECTION_BAND_COLOR = 'rgba(0, 110, 255, 0.32)';   // as the pages' own ::selection was
+
+LOOMA.speak.installSelectionBands = function (doc) {
+    if (!doc || !doc.body || doc.loomaSelectionBands) return;
+    if (!doc.querySelector('.tl')) return;          // not a converted chapter: leave it alone
+    doc.loomaSelectionBands = true;
+
+    var style = doc.createElement('style');
+    style.textContent =
+        '.tl span::selection{background:transparent}' +
+        '.tl span::-moz-selection{background:transparent}' +
+        '.looma-selection-band{position:absolute;pointer-events:none;z-index:2;' +
+        'background:' + LOOMA.speak.SELECTION_BAND_COLOR + ';border-radius:.15em}';
+    (doc.head || doc.documentElement).appendChild(style);
+
+    var bands = [];
+
+    function clearBands() {
+        bands.forEach(function (el) { if (el.parentNode) el.parentNode.removeChild(el); });
+        bands = [];
+    }
+
+    function layerOf(node) {
+        var el = node && node.nodeType === 3 ? node.parentNode : node;
+        while (el && el !== doc && !(el.classList && el.classList.contains('tl'))) el = el.parentElement;
+        return (el && el.classList && el.classList.contains('tl')) ? el : null;
+    }
+
+    function drawBands() {
+        clearBands();
+
+        var win = doc.defaultView;
+        var selection = win && win.getSelection ? win.getSelection() : null;
+        if (!selection || selection.isCollapsed || !selection.rangeCount) return;
+
+        var range = selection.getRangeAt(0);
+        var layer = layerOf(range.startContainer) || layerOf(range.endContainer);
+        if (!layer) return;     // selected something else on the page: browser's job
+
+        // Bands go on the BODY, in document coordinates, so a selection running
+        // across two pages is one set of bands rather than one set per layer.
+        var scrollX = win.scrollX || 0;
+        var scrollY = win.scrollY || 0;
+
+        LOOMA.speak.mergeRectsByLine(range.getClientRects()).forEach(function (r) {
+            var height = r.bottom - r.top;
+            var limit = LOOMA.speak.bandLimitAt(layer, r.top);
+            var band = limit ? Math.max(4, Math.min(height, limit)) : height;
+            var div = doc.createElement('div');
+            div.className = 'looma-selection-band';
+            div.style.left = (r.left + scrollX) + 'px';
+            div.style.top = (r.top + scrollY + (height - band) / 2) + 'px';
+            div.style.width = (r.right - r.left) + 'px';
+            div.style.height = band + 'px';
+            doc.body.appendChild(div);
+            bands.push(div);
+        });
+    }
+
+    doc.addEventListener('selectionchange', drawBands);
+
+    var redrawTimer = null;
+    (doc.defaultView || window).addEventListener('resize', function () {
+        clearTimeout(redrawTimer);
+        redrawTimer = setTimeout(drawBands, 200);
+    });
+};
+
+LOOMA.speak.getButtons = function () {
+    return Array.prototype.slice.call(document.querySelectorAll('button.speak'));
+};
+
+LOOMA.speak.getButton = function () {
+    return LOOMA.speak.getButtons()[0] || null;
+};
+
+LOOMA.speak.getSelectedText = function () {
+    function readSelection(win) {
+        if (!win || !win.getSelection) return '';
+        var selection = win.getSelection();
+        if (!selection || !selection.toString) return '';
+        return selection.toString().trim();
+    }
+
+    var text = readSelection(window);
+
+    ['iframe', 'epaath_iframe'].forEach(function (id) {
+        if (text) return;
+        var frame = document.getElementById(id);
+        if (!frame || !frame.contentWindow) return;
+        try {
+            text = readSelection(frame.contentWindow);
+        } catch (e) {
+            text = text || '';
+        }
+    });
+
+    // Never hand on a word with a digit wedged into it — see LOOMA.cleanSelectedText().
+    return LOOMA.cleanSelectedText(text);
+};
+
+/* LOOMA.speak.normalizeSpeakKey(text)
+ *
+ * The one answer to "are these two strings the same passage?". Every control
+ * that has to tell a PAUSE press apart from a NEW SELECTION press keys off it:
+ * hasNewSelection on the Piper and ResponsiveVoice paths, justRead in
+ * updateButtonAvailability, and the currentSourceKey request key.
+ *
+ * It compares two strings that reach it down DIFFERENT pipelines, and that is
+ * why the zero-width characters go. What the page hands to LOOMA.speak() is the
+ * RAW selection (looma-html.js reads the iframe selection straight out of the
+ * DOM); what the button guard compares it against on the next press is
+ * LOOMA.speak.getSelectedText(), which has been through cleanSelectedText().
+ * That cleaner drops anything outside its readable allow-list — and U+200C ZWNJ
+ * and U+200D ZWJ are outside it, because they sit just past the end of the
+ * Devanagari block at U+097F.
+ *
+ * Devanagari uses those two joiners to write conjuncts and half-forms, so
+ * Nepali text is full of them and English has none at all. The two sides came
+ * out different for every Nepali selection carrying one, every press counted as
+ * "the user picked something else", and pause restarted the reading from the
+ * top instead of pausing it — in Nepali only, which is exactly how it was
+ * reported. (The same mismatch made a finished Nepali reading show the play
+ * icon rather than repeat.)
+ *
+ * Stripping them HERE and nowhere else is deliberate: this function only ever
+ * compares and keys, so the word card still looks up the cleaned form, the
+ * reading highlight keeps its character map aligned, and Piper is still asked
+ * to say exactly the text the page holds. Nothing about the reading changes.
+ */
+LOOMA.speak.normalizeSpeakKey = function (text) {
+    return (text || '')
+        // ZWSP, ZWNJ, ZWJ, LRM, RLM, word joiner, BOM — invisible, and never a
+        // reason to call two selections different passages.
+        .replace(/[\u200B-\u200F\u2060\uFEFF]/g, '')
+        .replace(/\s+/g, ' ').trim().toLowerCase();
+};
+
+/* LOOMA.speak.detectLanguage(text) -> 'ne' | 'en'
+ *
+ * Which of Looma's two languages a piece of text is written in — the one
+ * answer every engine asks for, to pick a voice and a reading speed.
+ *
+ * ONE definition on purpose. There used to be several, and they disagreed:
+ * Piper weighed the two scripts against each other per sentence, while
+ * ResponsiveVoice asked only "is there any Devanagari in the whole passage?"
+ * — so a single Nepali word anywhere made the Nepali voice read the English
+ * sentences too. Mixed chapters are full of exactly that.
+ *
+ * (The `engine === 'synthesis'` block still carries the old whole-text test.
+ * That branch is unreachable — LOOMA.speak() coerces every engine that is not
+ * 'responsivevoice' to 'piper' before it — so it was left alone rather than
+ * half-modernised; it wants deleting, not fixing.)
+ *
+ * Whichever script the text is mostly written in wins, at any length: a stray
+ * danda in an English sentence loses to the Latin letters around it, and a
+ * two-character Nepali word with no Latin at all is still Nepali.
+ *
+ * KNOWN LIMIT — one voice per sentence. A sentence written in BOTH scripts is
+ * read entirely by one of them, so the other half comes out mispronounced; the
+ * split above works on sentences, not words. Devanagari also writes a word in
+ * fewer codepoints than Latin does, so counting characters under-counts the
+ * Nepali side: "यो Looma हो।" is 5 against 5 and goes to the English voice.
+ * Counting WORDS instead would call that one Nepali, at the cost of changing
+ * how every other mixed sentence is routed — a content decision, not a bug fix,
+ * so it is left as it is and written down here.
+ */
+LOOMA.speak.detectLanguage = function (text) {
+    var devanagariCount = ((text || '').match(/[ऀ-ॿ]/g) || []).length;
+    var latinCount = ((text || '').match(/[A-Za-z]/g) || []).length;
+    return (devanagariCount > 0 && devanagariCount > latinCount) ? 'ne' : 'en';
+};
+
+/* LOOMA.speak.resolveVoiceAndRate(engine, voice, rate)
+ *
+ * The engine/voice/per-language-speed resolution LOOMA.speak() has always
+ * done at the top of every call (cookies, defaults, the { en, np } rate/voice
+ * maps from the Reading Settings page). Pulled out so LOOMA.speak.prefetch()
+ * resolves voice and rate exactly the same way — a prefetch that guessed a
+ * different voice or speed would warm the wrong Piper cache key and the real
+ * press would still pay for synthesis. */
+LOOMA.speak.resolveVoiceAndRate = function (engine, voice, rate) {
+    var defaultspeed = 2/3;
+    function _validRate(r) { r = parseFloat(r); return (r > 0 && r <= 2) ? r : null; }
+
+    var rateEn = null, rateNp = null;
+    if (rate && typeof rate === 'object') {
+        rateEn = _validRate(rate.en);
+        rateNp = _validRate(rate.np);
+    } else {
+        rateEn = rateNp = _validRate(rate);
+    }
+    if (rateEn == null) rateEn = _validRate(LOOMA.readStore('tts-rate-en', 'cookie')) || _validRate(LOOMA.readStore('tts-rate', 'cookie')) || defaultspeed;
+    if (rateNp == null) rateNp = _validRate(LOOMA.readStore('tts-rate-np', 'cookie')) || _validRate(LOOMA.readStore('tts-rate', 'cookie')) || defaultspeed;
+
+    if (!engine) {
+        engine = LOOMA.readStore('tts-engine', 'cookie') || 'piper';
+        if (!voice) {
+            var _ve = LOOMA.readStore('tts-voice-en', 'cookie');
+            var _vn = LOOMA.readStore('tts-voice-np', 'cookie');
+            if (_ve || _vn) voice = { en: _ve || '', np: _vn || '' };
+            else voice = LOOMA.readStore('tts-voice', 'cookie') || voice;  // legacy single-voice cookie
+        }
+    }
+    if (engine !== 'piper' && engine !== 'responsivevoice') engine = 'piper';
+
+    var voiceEn = '', voiceNp = '';
+    if (voice && typeof voice === 'object') {
+        voiceEn = voice.en || ''; voiceNp = voice.np || '';
+    } else if (voice) {
+        voiceEn = voice; voiceNp = voice;
+    }
+
+    return { engine: engine, voiceEn: voiceEn, voiceNp: voiceNp, rateEn: rateEn, rateNp: rateNp };
+};
+
+/* LOOMA.speak.splitIntoPlaybackSegments(sourceText) / the FIRST_SEGMENT_* cut
+ *
+ * How much of the FIRST sentence to synthesize before playback starts.
+ *
+ * Nothing is heard until the first clip is ready, so the wait before a
+ * reading begins is exactly "how long Piper takes on sentence one" — and an
+ * ODROID synthesizes slower than real time, which turns a long opening
+ * sentence into seconds of apparent deadness. Cutting only that first segment
+ * down to a clause gets sound out roughly in proportion: a third of the
+ * sentence, a third of the wait. Every later clip stays a whole sentence, so
+ * prosody is untouched from the second one on, and by then the fetch chain is
+ * already running ahead of playback.
+ *
+ * Never mid-word, and never when the sentence has no natural break.
+ *
+ * Shared with LOOMA.speak.prefetch(), which needs the exact same first
+ * segment the real press will fetch, or its cache-warming request misses. */
+LOOMA.speak.FIRST_SEGMENT_MAX = 80;   // characters
+LOOMA.speak.FIRST_SEGMENT_MIN = 25;   // don't leave an opening scrap too short to sound natural
+
+LOOMA.speak.splitFirstSegment = function (part) {
+    var MAX = LOOMA.speak.FIRST_SEGMENT_MAX, MIN = LOOMA.speak.FIRST_SEGMENT_MIN;
+    if (part.length <= MAX) return [part];
+    // Prefer a clause break (comma/semicolon/colon/dash, plus the
+    // Devanagari comma), else any space. Scan forwards keeping the LAST
+    // match, so the break lands as late as it can while under the cap.
+    var window = part.slice(0, MAX + 1);
+    var cut = -1;
+    var clause = /[,;:—–।]/g, m;
+    while ((m = clause.exec(window)) !== null) {
+        if (m.index + 1 >= MIN) cut = m.index + 1;
+    }
+    if (cut < 0) {
+        var space = window.lastIndexOf(' ');
+        if (space >= MIN) cut = space;
+    }
+    if (cut < 0) return [part];          // no natural break: leave it whole
+    var head = part.slice(0, cut).trim();
+    var tail = part.slice(cut).trim();
+    if (!head || !tail) return [part];
+    return [head, tail];
+};
+
+LOOMA.speak.splitIntoPlaybackSegments = function (sourceText) {
+    var normalized = sourceText
+        .replace(/\r/g, ' ')
+        .replace(/\n+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (!normalized) return [];
+
+    // । danda and ॥ DOUBLE danda both end a Devanagari sentence.
+    // The double danda closes a verse or a stanza — common in the poetry
+    // and scripture in Looma's Nepali chapters — and without it the whole
+    // passage stayed ONE clip: nothing is heard until every line of it has
+    // been synthesized, and pause has only one place to land.
+    var sentences = (normalized.match(/[^.!?।॥]+[.!?।॥]?/g) || [normalized])
+        .map(function (part) { return part.replace(/\s+/g, ' ').trim(); })
+        .filter(function (part) { return part.length > 0; });
+
+    if (sentences.length === 0) return sentences;
+    return LOOMA.speak.splitFirstSegment(sentences[0]).concat(sentences.slice(1));
+};
+
+/* LOOMA.speak.prefetch(text)
+ *
+ * Piper has to run real inference on the first press of any sentence it has
+ * never spoken before — that floor cannot be removed in software. What CAN
+ * be removed is paying that floor exactly when the teacher's finger is on the
+ * Speak button: a touch-kiosk reading flow always has a gap between
+ * "selection finalized" and "Speak pressed" (lifting the finger, moving it to
+ * the button), and that gap is dead time today.
+ *
+ * This fires the SAME first-segment request LOOMA.speak() would make — same
+ * text, same voice, same rate — as soon as a selection exists, so it lands in
+ * Piper's server-side WAV cache (keyed on exactly those four things — see
+ * piper_server.py's _cache_path()) before the real press ever reaches the
+ * server. When the real press follows, Piper returns the cached WAV instead
+ * of re-synthesizing, which is where the actual time gets cut.
+ *
+ * Fire-and-forget: the response is discarded here. A press that lands WHILE
+ * this is still synthesizing waits no longer than it would have without this
+ * (Piper's warm worker serializes requests for one (voice, speed) pair
+ * either way) — so this is never worse, only sometimes free. */
+LOOMA.speak.prefetch = function (text) {
+    text = (text || '').replace(/\s+/g, ' ').trim();
+    if (text.length < 2) return;
+    if (text === LOOMA.speak.lastPrefetchedText) return;
+
+    // Only Piper has a server round trip + cache worth warming; browser
+    // speechSynthesis and ResponsiveVoice have no equivalent to hide.
+    var engine = LOOMA.readStore('tts-engine', 'cookie') || 'piper';
+    if (engine !== 'piper') return;
+
+    var resolved = LOOMA.speak.resolveVoiceAndRate(engine, null, null);
+    var segments = LOOMA.speak.splitIntoPlaybackSegments(text);
+    if (!segments.length) return;
+
+    LOOMA.speak.lastPrefetchedText = text;
+
+    var firstSegment = segments[0];
+    var lang = LOOMA.speak.detectLanguage(firstSegment);
+    var segVoice = (lang === 'ne') ? resolved.voiceNp : resolved.voiceEn;
+    var segRate = (lang === 'ne') ? resolved.rateNp : resolved.rateEn;
+
+    var piperParams = { text: firstSegment, engine: 'piper', lang: lang, rate: segRate };
+    if (segVoice) piperParams.voice = segVoice;
+
+    fetch('looma-TTS.php?' + $.param(piperParams)).catch(function () {
+        // Best-effort warm-up only; the real press (LOOMA.speak()) handles
+        // its own errors if Piper is actually unreachable.
+    });
+};
+
+LOOMA.speak.captureSelectionSnapshot = function () {
+    // Capture both plain text and a DOM range so audio playback and highlighting share the same selection.
+    function getSnapshot(win, frameId) {
+        if (!win || !win.getSelection) return null;
+        var selection = win.getSelection();
+        if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return null;
+
+        var text = selection.toString().trim();
+        if (!text) return null;
+
+        try {
+            return {
+                text: text,
+                range: selection.getRangeAt(0).cloneRange(),
+                frameId: frameId || null
+            };
+        } catch (e) {
+            return {text: text, range: null, frameId: frameId || null};
+        }
+    }
+
+    var snapshot = getSnapshot(window, null);
+    if (snapshot) {
+        LOOMA.speak.selectionSnapshot = snapshot;
+        return snapshot;
+    }
+
+    ['iframe', 'epaath_iframe'].forEach(function (id) {
+        if (snapshot) return;
+        var frame = document.getElementById(id);
+        if (!frame || !frame.contentWindow) return;
+        try {
+            snapshot = getSnapshot(frame.contentWindow, id);
+        } catch (e) {
+            snapshot = snapshot || null;
+        }
+    });
+
+    if (snapshot) LOOMA.speak.selectionSnapshot = snapshot;
+    return snapshot;
+};
+
+LOOMA.speak.refreshSelectionState = function () {
+    // Button availability follows the current live selection unless playback is already in progress.
+    var snapshot = LOOMA.speak.captureSelectionSnapshot();
+    var selectedText = snapshot ? snapshot.text : '';
+    if (selectedText) {
+        LOOMA.speak.lastSelectedText = selectedText;
+        LOOMA.speak.selectionActive = true;
+        // Warm Piper's cache for this selection NOW, while the teacher's
+        // finger/cursor is still travelling to the Speak button, instead of
+        // waiting for the press. See LOOMA.speak.prefetch() for why this is
+        // the one hook that covers the main page AND every mirrored iframe
+        // (chapter HTML, PDF viewer) — installSelectionWatcher() above
+        // already calls refreshSelectionState() on every selection change in
+        // all of them.
+        try { LOOMA.speak.prefetch(selectedText); } catch (e) {}
+    } else if (!LOOMA.speak.buttonActive) {
+        LOOMA.speak.lastSelectedText = '';
+        LOOMA.speak.selectionActive = false;
+    }
+
+};
+
+LOOMA.speak.applyBusyButtonState = function () {
+    // Busy styling stays on the original Speak button while audio is actively playing.
+    LOOMA.speak.getButtons().forEach(function (button) {
+        button.style.setProperty('transform', 'scale(1.2)', 'important');
+        button.style.setProperty('transform-origin', 'center center', 'important');
+        button.style.setProperty('opacity', '1', 'important');
+        button.style.setProperty('border', '0.35em solid #ffd400', 'important');
+        button.style.setProperty('outline', '0.2em solid #ffd400', 'important');
+        button.style.setProperty('outline-offset', '0.08em', 'important');
+        button.style.setProperty('box-shadow', '0 0 1.4em rgba(255, 212, 0, 1)', 'important');
+        button.style.setProperty('pointer-events', 'auto', 'important');
+        button.style.setProperty('animation', 'ttsSpeakPulse 0.9s ease-in-out infinite', 'important');
+        button.style.setProperty('z-index', '2147483646', 'important');
+    });
+};
+
+LOOMA.speak.clearBusyButtonState = function () {
+    LOOMA.speak.getButtons().forEach(function (button) {
+        ['transform', 'transform-origin', 'opacity', 'border', 'outline', 'outline-offset', 'box-shadow', 'pointer-events', 'animation', 'z-index']
+            .forEach(function (property) {
+                button.style.removeProperty(property);
+            });
+    });
+};
+
+LOOMA.speak.applyPendingButtonState = function () {
+    // Pending styling shows that a click was accepted even before audio starts.
+    LOOMA.speak.getButtons().forEach(function (button) {
+        button.classList.add('tts-pending');
+    });
+    LOOMA.speak.emitStateChange();
+};
+
+LOOMA.speak.clearPendingButtonState = function () {
+    LOOMA.speak.getButtons().forEach(function (button) {
+        button.classList.remove('tts-pending');
+    });
+    LOOMA.speak.emitStateChange();
+};
+
+/* LOOMA.speak.onStateChange(cb) / emitStateChange()
+ *
+ * The pending/busy visuals above only ever reach `button.speak` — the floating
+ * Speak control. Pages with their own Speak buttons (the Reading Settings page
+ * has one per engine) got no feedback at all while waiting, which is worst
+ * exactly where the wait is longest: ResponsiveVoice has to fetch its script
+ * from responsivevoice.org and then wait on the cloud for audio, several seconds
+ * in which nothing on screen moved. Those pages subscribe here instead of
+ * reaching into LOOMA.speak's internals.
+ *
+ * cb({pending, busy}) — `pending` is "asked for, no audio yet" (show a spinner),
+ * `busy` is "audio is sounding". Fired only when the pair actually changes.
+ */
+LOOMA.speak.stateListeners = [];
+
+LOOMA.speak.onStateChange = function (cb) {
+    if (typeof cb !== 'function') return;
+    LOOMA.speak.stateListeners.push(cb);
+    try { cb({pending: !!LOOMA.speak.buttonPending, busy: !!LOOMA.speak.buttonActive}); } catch (e) {}
+};
+
+LOOMA.speak.emitStateChange = function () {
+    var state = {pending: !!LOOMA.speak.buttonPending, busy: !!LOOMA.speak.buttonActive};
+    var signature = state.pending + '|' + state.busy;
+    if (signature === LOOMA.speak.lastStateSignature) return;
+    LOOMA.speak.lastStateSignature = signature;
+    LOOMA.speak.stateListeners.forEach(function (cb) {
+        try { cb(state); } catch (e) {}
+    });
+};
+
+LOOMA.speak.hasSelection = function () {
+    LOOMA.speak.refreshSelectionState();
+    return !!LOOMA.speak.selectionActive;
+};
+
+/* LOOMA.speak.isPaused()
+ *
+ * Is a reading halted with somewhere to carry on from — i.e. would the next
+ * press RESUME it? The three engines pause in three different ways, and the
+ * button has to recognise all of them or it goes back to offering "read it
+ * again" over a passage that is merely paused:
+ *
+ *   Piper / browser audio — a real <audio> element, paused and not finished
+ *   between two sentences — no element to pause, so the CHAIN is held instead
+ *   ResponsiveVoice       — its own flag; RV plays inside its script and owns
+ *                           no media element for us to look at
+ *
+ * An ENDED clip also reports paused === true, which is why `ended` is excluded:
+ * that one is the gap, and gapPaused is what says whether the gap is a pause.
+ */
+LOOMA.speak.isPaused = function () {
+    if (LOOMA.speak.gapPaused) return true;
+    if (LOOMA.speak.rvState && LOOMA.speak.rvState.paused) return true;
+    var audio = LOOMA.speak.playingAudio;
+    return !!(audio && audio.paused && !audio.ended);
+};
+
+LOOMA.speak.updateButtonAvailability = function () {
+    // The button stays usable for live selection, paused audio and replay of the last completed reading.
+    var isBusy = !!LOOMA.speak.buttonActive;
+    var isPending = !!LOOMA.speak.buttonPending;
+    var selectable = LOOMA.speak.hasSelection() || !!LOOMA.speak.currentSourceText || !!LOOMA.speak.lastCompletedText;
+
+    /* Which icon the button shows — it should say what pressing it will do:
+     *   pause   reading right now
+     *   play    text is selected, or a reading is paused and can resume
+     *   repeat  the last reading finished and can be played again
+     *   idle    nothing selected and nothing read yet
+     * Selecting new text always wins over "repeat", so picking a fresh sentence
+     * after one finished puts the button back on play. While a segment is still
+     * being fetched the icon stays on play and the spinner (.tts-pending) shows
+     * the wait — the audio is not sounding yet, so pause would be a lie. */
+    // A finished reading usually leaves its text STILL SELECTED, so "is something
+    // selected?" alone would show play again the moment it ends. Compare the
+    // selection with what was just read: the same text means "repeat", different
+    // text means the user picked something new and it is a fresh play.
+    var justRead = '';
+    try {
+        var selectedNow = LOOMA.speak.getSelectedText ? LOOMA.speak.getSelectedText() : '';
+        if (selectedNow && LOOMA.speak.lastCompletedText &&
+            LOOMA.speak.normalizeSpeakKey(selectedNow) ===
+            LOOMA.speak.normalizeSpeakKey(LOOMA.speak.lastCompletedText)) {
+            justRead = selectedNow;
+        }
+    } catch (e) { justRead = ''; }
+
+    // PAUSED beats every "repeat" test below it. A passage that is only halted
+    // has somewhere to carry on from, so the button must offer to resume it —
+    // and the two tests would otherwise disagree, because pausing leaves the
+    // text SELECTED and a reading of text that was read once before matches
+    // lastCompletedText exactly. That is what turned the pause button into the
+    // circular "start again" arrow the moment a teacher paused a repeat.
+    var iconState = 'idle';
+    if (isBusy) iconState = 'pause';
+    else if (LOOMA.speak.isPaused()) iconState = 'play';
+    else if (justRead) iconState = 'repeat';
+    else if (LOOMA.speak.hasSelection() || LOOMA.speak.currentSourceText) iconState = 'play';
+    else if (LOOMA.speak.lastCompletedText) iconState = 'repeat';
+
+    LOOMA.speak.getButtons().forEach(function (speechButton) {
+        var $button = $(speechButton);
+        $button.toggleClass('tts-busy', isBusy);
+        $button.toggleClass('tts-pending', isPending && !isBusy);
+        $button.toggleClass('tts-state-play', iconState === 'play');
+        $button.toggleClass('tts-state-pause', iconState === 'pause');
+        $button.toggleClass('tts-state-repeat', iconState === 'repeat');
+
+        if (isBusy) {
+            speechButton.disabled = false;
+            $button.removeClass('tts-disabled');
+            speechButton.setAttribute('aria-disabled', 'false');
+            return;
+        }
+
+        if (isPending) {
+            speechButton.disabled = false;
+            $button.removeClass('tts-disabled');
+            speechButton.setAttribute('aria-disabled', 'false');
+            return;
+        }
+
+        speechButton.disabled = !selectable;
+        speechButton.setAttribute('aria-disabled', selectable ? 'false' : 'true');
+        $button.toggleClass('tts-disabled', !selectable);
+    });
+
+    LOOMA.speak.emitStateChange();
+};
+
+LOOMA.speak.installSelectionWatcher = function () {
+    if (LOOMA.speak.selectionWatcherBound) return;
+    LOOMA.speak.selectionWatcherBound = true;
+
+    ['selectionchange', 'mouseup', 'keyup'].forEach(function (eventName) {
+        document.addEventListener(eventName, function () {
+            LOOMA.speak.refreshSelectionState();
+            LOOMA.speak.updateButtonAvailability();
+        });
+    });
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+            LOOMA.speak.updateButtonAvailability();
+            LOOMA.speak.installSelectionMirrors();
+            LOOMA.speak.installButtonGuard();
+        });
+    } else {
+        LOOMA.speak.updateButtonAvailability();
+        LOOMA.speak.installSelectionMirrors();
+        LOOMA.speak.installButtonGuard();
+    }
+};
+
+LOOMA.speak.installSelectionMirrors = function () {
+    if (LOOMA.speak.selectionMirrorsInstalled) return;
+    LOOMA.speak.selectionMirrorsInstalled = true;
+
+    ['iframe', 'epaath_iframe'].forEach(function (id) {
+        var frame = document.getElementById(id);
+        if (!frame) return;
+
+        function bindFrameSelection() {
+            try {
+                var doc = frame.contentDocument;
+                if (!doc || doc._loomaSpeakWatchBound) return;
+                doc._loomaSpeakWatchBound = true;
+
+                // Mirror iframe selections back to the main page so the shared Speak button updates correctly.
+                ['selectionchange', 'mouseup', 'keyup'].forEach(function (eventName) {
+                    doc.addEventListener(eventName, function () {
+                        LOOMA.speak.refreshSelectionState();
+                        LOOMA.speak.updateButtonAvailability();
+                    });
+                });
+            } catch (e) {}
+        }
+
+        frame.addEventListener('load', bindFrameSelection);
+        bindFrameSelection();
+    });
+};
+
+/* LOOMA.speak.restart()
+ *
+ * Start the CURRENT reading again from its first sentence. Used by the
+ * press-and-hold gesture on the Speak button (see installButtonGuard below).
+ *
+ * cleanup() drops currentSourceText/Snapshot, so the text and its highlight
+ * context are captured first and then handed back through lastCompleted* —
+ * the same pair the "repeat" press already replays, which is why calling
+ * LOOMA.speak() with no argument here reads the very same text with the very
+ * same highlighting instead of whatever happens to be selected now.
+ */
+LOOMA.speak.restart = function () {
+    var text = LOOMA.speak.currentSourceText || LOOMA.speak.lastCompletedText || '';
+    var snapshot = LOOMA.speakCloneSnapshot(
+        LOOMA.speak.currentSourceSnapshot || LOOMA.speak.lastCompletedSnapshot);
+
+    LOOMA.speak.cleanup();
+
+    if (text) {
+        LOOMA.speak.lastCompletedText = text;
+        LOOMA.speak.lastCompletedSnapshot = snapshot;
+        LOOMA.speak();
+        return true;
+    }
+
+    // Nothing has been read yet: hold acts on the live selection, if any, so the
+    // gesture never feels dead. mousedown/pointerdown preventDefault keeps that
+    // selection alive through the whole press.
+    if (LOOMA.speak.hasSelection && LOOMA.speak.hasSelection()) {
+        LOOMA.speak();
+        return true;
+    }
+    return false;
+};
+
+LOOMA.speak.installButtonGuard = function () {
+    // Global guard gives Speak one consistent meaning before page-specific handlers run.
+    if (LOOMA.speak.buttonGuardInstalled) return;
+    LOOMA.speak.buttonGuardInstalled = true;
+
+    function findSpeakButton(target) {
+        // Some clicks land on nested text nodes/icons inside the button, so walk up to the real button element.
+        var node = target && target.nodeType === 3 ? target.parentNode : target;
+        while (node && node !== document) {
+            if (node.matches && node.matches('button.speak')) return node;
+            node = node.parentNode;
+        }
+        return null;
+    }
+
+    /* ---- press and hold to restart -------------------------------------
+     *
+     * A short press keeps every meaning it always had (play / pause / repeat).
+     * HOLDING the button for two and a half seconds restarts the reading from the top.
+     *
+     * While the button is held it shows the STOP glyph and the same ring the
+     * button already draws while it waits for audio — except this one is not a
+     * spinner: it fills up over those 2.5 seconds, so the countdown is visible
+     * and letting go early is an obvious way out. The fill is driven by the
+     * --tts-hold custom property (0 → 1) on the button, updated per frame.
+     */
+    var HOLD_RESTART_MS = 2500;
+    var HOLD_TICK_MS = 60;             // ~16 fps: smooth enough for a 2.5s sweep
+    var holdButton = null;
+    var holdStartedAt = 0;
+    var holdTimer = null;
+
+    function paintHold(progress) {
+        if (!holdButton) return;
+        holdButton.style.setProperty('--tts-hold', Math.max(0, Math.min(1, progress)));
+    }
+
+    function endHold() {
+        if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
+        if (holdButton) {
+            holdButton.classList.remove('tts-holding');
+            holdButton.style.removeProperty('--tts-hold');
+        }
+        holdButton = null;
+        holdStartedAt = 0;
+    }
+
+    /* A plain interval, not requestAnimationFrame: rAF is tied to painting and
+       stops being served whenever the page is not being composited, which would
+       freeze the countdown mid-press and never restart anything. Elapsed time is
+       read from the clock each tick, so a throttled interval still completes at
+       the right moment instead of counting ticks. */
+    function tickHold() {
+        if (!holdButton) return;
+        var elapsed = Date.now() - holdStartedAt;
+        paintHold(elapsed / HOLD_RESTART_MS);
+
+        if (elapsed >= HOLD_RESTART_MS) {
+            endHold();
+            // Swallow the click that the release is about to fire, so the
+            // restart is not immediately followed by a pause/replay press.
+            LOOMA.speak.holdRestartFired = true;
+            try { LOOMA.speak.restart(); } catch (e) { console.log('TTS restart failed: ', e); }
+        }
+    }
+
+    function beginHold(event) {
+        var button = findSpeakButton(event.target);
+        // Only a primary press starts a hold; a disabled button has nothing to restart.
+        if (!button || button.disabled || (event.button !== undefined && event.button !== 0)) return;
+        if (holdButton === button) return;   // touch + mouse can both fire for one press
+
+        endHold();
+        holdButton = button;
+        holdStartedAt = Date.now();
+        button.classList.add('tts-holding');
+        paintHold(0);
+        holdTimer = setInterval(tickHold, HOLD_TICK_MS);
+    }
+
+    function endHoldFromEvent(event) {
+        if (!holdButton) return;
+        // A release anywhere ends the hold, but a "left the element" event only
+        // counts when it is the held button itself being left — those fire for
+        // any element the pointer leaves and would otherwise cancel at once.
+        var type = event && event.type;
+        if ((type === 'pointerleave' || type === 'mouseleave') && event.target !== holdButton) return;
+        endHold();
+    }
+
+    ['pointerdown', 'touchstart'].forEach(function (name) {
+        document.addEventListener(name, beginHold, true);
+    });
+    ['pointerup', 'pointercancel', 'pointerleave', 'touchend', 'touchcancel', 'mouseup', 'mouseleave']
+        .forEach(function (name) {
+            document.addEventListener(name, endHoldFromEvent, true);
+        });
+    window.addEventListener('blur', endHold);
+
+    // A long press on a touch screen (and a right-click) would otherwise raise
+    // the context menu on top of the gesture.
+    document.addEventListener('contextmenu', function (event) {
+        if (findSpeakButton(event.target)) event.preventDefault();
+    });
+
+    document.addEventListener('click', function (event) {
+        var button = findSpeakButton(event.target);
+        if (!button) return;
+
+        // The press that just restarted the reading ends in a click — drop it
+        // here, in the capture phase, before any page handler sees it.
+        if (LOOMA.speak.holdRestartFired) {
+            LOOMA.speak.holdRestartFired = false;
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            return false;
+        }
+
+        /* ResponsiveVoice plays inside its own script and never sets
+           playingAudio, so the branch below could not see an RV reading at all:
+           every press fell through to a fresh LOOMA.speak(), which is why pause
+           did nothing with RV selected. Handle it on its own terms first — RV
+           exposes pause()/resume(), a real pause rather than the
+           cancel-and-forget the engine used to do. */
+        var rvState = LOOMA.speak.rvState;
+        if (rvState && rvState.runId === LOOMA.speak.runId && typeof responsiveVoice !== 'undefined') {
+            var rvSelected = (LOOMA.speak.getSelectedText ? LOOMA.speak.getSelectedText() : '');
+            var rvSelectedKey = LOOMA.speak.normalizeSpeakKey
+                ? LOOMA.speak.normalizeSpeakKey(rvSelected) : (rvSelected || '').toLowerCase();
+            // currentSourceText is the RAW selection (what Piper/RV was actually
+            // asked to say); getSelectedText() above has been through
+            // LOOMA.cleanSelectedText() (strips PDF glyph garbage, unmixes digits
+            // wedged into words — "activity 1.5", "6m/s", any textbook chapter ID).
+            // Comparing the two as-is means any passage with a digit next to a
+            // letter — most science/maths text — never matches itself, so every
+            // pause press reads as "new selection" and restarts from the top
+            // instead of pausing. Clean this side the same way before comparing.
+            var rvCurrent = LOOMA.cleanSelectedText
+                ? LOOMA.cleanSelectedText(LOOMA.speak.currentSourceText || '')
+                : (LOOMA.speak.currentSourceText || '');
+            var rvCurrentKey = LOOMA.speak.normalizeSpeakKey
+                ? LOOMA.speak.normalizeSpeakKey(rvCurrent) : rvCurrent.toLowerCase();
+
+            // Picking new text mid-reading starts that text, exactly as it does
+            // for Piper — only a press with the SAME (or no) selection pauses.
+            if (rvSelectedKey && rvCurrentKey && rvSelectedKey !== rvCurrentKey) {
+                LOOMA.speak.cleanup();
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            var rvCanPause = typeof responsiveVoice.pause === 'function' &&
+                             typeof responsiveVoice.resume === 'function';
+            if (!rvCanPause) {
+                // An RV build without pause/resume: stopping is the honest
+                // fallback, and lastCompleted* still lets the next press repeat.
+                try { responsiveVoice.cancel(); } catch (e) {}
+                LOOMA.speak.rvState = null;
+                LOOMA.speak.lastCompletedText = rvCurrent;
+                LOOMA.speak.lastCompletedSnapshot =
+                    LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
+                LOOMA.speak.disable();
+                return false;
+            }
+
+            if (rvState.paused) {
+                rvState.paused = false;
+                try { responsiveVoice.resume(); } catch (e) {}
+                LOOMA.speak.activate();
+            } else {
+                rvState.paused = true;
+                try { responsiveVoice.pause(); } catch (e) {}
+                LOOMA.speak.disable();
+            }
+            return false;
+        }
+
+        // Nothing is playing YET: the press landed while Piper is still synthesizing
+        // the first sentence. The block below only handles a live audio element, so
+        // this fell through to a fresh LOOMA.speak() — which sees the same request
+        // already pending and returns, leaving the press with no effect at all.
+        // On a slow board that window is seconds long (and longer in Nepali, whose
+        // voice is a `medium` model), so this is most of what a teacher presses.
+        // A press while pending means "I changed my mind": cancel the fetch.
+        if (!LOOMA.speak.playingAudio && LOOMA.speak.buttonPending) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            LOOMA.speak.stopReading();
+            return false;
+        }
+
+        if (LOOMA.speak.playingAudio) {
+            var selectedText = (LOOMA.speak.getSelectedText ? LOOMA.speak.getSelectedText() : '');
+            var selectedKey = LOOMA.speak.normalizeSpeakKey ? LOOMA.speak.normalizeSpeakKey(selectedText) : (selectedText || '').toLowerCase();
+            // Compare TEXT with TEXT. This used to test the selection against
+            // currentSourceKey, which is not a text at all but the composite
+            // request key ("piper|voices|rate|text") — so the two could never be
+            // equal, every press while reading counted as "new selection", and
+            // the pause button restarted the reading from the top instead of
+            // pausing it. The mousedown handler below deliberately keeps the
+            // selection alive, so this fired on every single press.
+            //
+            // currentSourceText is the RAW selection (what was actually sent to
+            // Piper); selectedText above went through getSelectedText(), which
+            // runs LOOMA.cleanSelectedText() (unmixes digits wedged into words —
+            // "activity 1.5", "6m/s", any chapter ID like 6S01.02). Left
+            // uncleaned here, a passage with a digit next to a letter — most
+            // science/maths text — never matches itself, so every pause press on
+            // that content reads as "new selection" and restarts from the top
+            // instead of pausing.
+            var currentText = LOOMA.cleanSelectedText
+                ? LOOMA.cleanSelectedText(LOOMA.speak.currentSourceText || '')
+                : (LOOMA.speak.currentSourceText || '');
+            var currentTextKey = LOOMA.speak.normalizeSpeakKey ? LOOMA.speak.normalizeSpeakKey(currentText) : currentText.toLowerCase();
+            var hasNewSelection = !!selectedKey && !!currentTextKey && selectedKey !== currentTextKey;
+
+            if (hasNewSelection) {
+                LOOMA.speak.cleanup();
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+
+            /* Between two clips the finished one is still the "current" audio
+             * while the next is being fetched, and an ENDED clip reports
+             * paused === true. Calling play() on it would replay the sentence
+             * just read while the next one starts too — two voices at once.
+             *
+             * So pause the CHAIN instead of the element: the sentence in flight
+             * is held (see the `ended` handler in playPreparedBlock) and the next
+             * press carries on from there. This used to call stopReading(), which
+             * ended the whole passage — a press that looked like pause acted like
+             * stop, and the button turned into "start again" instead of "resume".
+             * On this board that is most of what a teacher presses: each sentence
+             * takes seconds to synthesize, and longer in Nepali — noticeably so
+             * even on the default ne_NP-google-x_low voice, and more again for
+             * anyone who picks ne_NP-google-medium on the Reading Settings page. */
+            if (LOOMA.speak.playingAudio.ended) {
+                if (LOOMA.speak.gapPaused) {
+                    // Resume. If the held sentence has already arrived, start it;
+                    // if Piper is still working on it, just lift the hold — the
+                    // fetch's own handler plays it the moment it resolves, and the
+                    // spinner goes back on to show the wait is Piper's again.
+                    var resume = LOOMA.speak.resumeReading;
+                    LOOMA.speak.gapPaused = false;
+                    LOOMA.speak.resumeReading = null;
+                    if (resume) {
+                        resume();
+                    } else {
+                        LOOMA.speak.buttonPending = true;
+                        LOOMA.speak.applyPendingButtonState();
+                        LOOMA.speak.updateButtonAvailability();
+                    }
+                    return false;
+                }
+                LOOMA.speak.gapPaused = true;
+                LOOMA.speak.disable();
+                return false;
+            }
+
+            if (LOOMA.speak.playingAudio.paused) {
+                LOOMA.speak.playingAudio.play().then(function () {
+                    LOOMA.speak.activate();
+                }).catch(function (error) {
+                    console.log('Browser playback resume error: ', error);
+                });
+            } else {
+                try {
+                    LOOMA.speak.playingAudio.pause();
+                } catch (e) {}
+                LOOMA.speak.disable();
+            }
+            return false;
+        }
+    }, true);
+
+    $(document).on('mousedown', 'button.speak', function (event) {
+        // Prevent the click from clearing the browser selection before we capture it for TTS/highlight.
+        event.preventDefault();
+        // If ResponsiveVoice is the chosen reading engine, kick off its lazy load
+        // + init NOW, on this user gesture (mousedown), so it is ready and audio
+        // is unlocked by the time the click fires LOOMA.speak(). Without this the
+        // first press would race the async download and Chrome's autoplay policy
+        // and stay silent. No-op (and no network call) for any other engine.
+        try {
+            // Mirrors LOOMA.speak()'s own engine resolution (saved cookie, else
+            // Piper) so the preload kicks in only when the click would actually
+            // end up using ResponsiveVoice — i.e. when the teacher explicitly
+            // selected it. With no saved preference nothing is preloaded and no
+            // request to responsivevoice.org is made at all.
+            var _rvWillRun = LOOMA.readStore('tts-engine', 'cookie') || 'piper';
+            if (_rvWillRun === 'responsivevoice') {
+                LOOMA.speak.ensureResponsiveVoice(function () {});
+            }
+        } catch (e) {}
+    });
+
+    $(document).on('click', 'button.speak', function (event) {
+        LOOMA.speak.refreshSelectionState();
+
+        if (this.disabled || (!LOOMA.speak.buttonActive && !LOOMA.speak.selectionActive && !LOOMA.speak.currentSourceText && !LOOMA.speak.lastCompletedText)) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return false;
+        }
+    });
+};
+
+LOOMA.speak.installSelectionWatcher();
 
 
 
@@ -1722,45 +4479,6 @@ LOOMA.speak = function(text, engine, voice, rate) {
         enterFS(fs);
     }
  }; //end toggleFullscreen()
-
-// ---- game sound effects (generated with Web Audio, so they work fully offline) ----
-LOOMA._audioCtx = null;
-LOOMA._initAudio = function () {
-    try {
-        var AC = window.AudioContext || window.webkitAudioContext;
-        if (!AC) return;
-        if (!LOOMA._audioCtx) LOOMA._audioCtx = new AC();
-        if (LOOMA._audioCtx.state === 'suspended') LOOMA._audioCtx.resume();
-    } catch (e) { /* no audio available */ }
-};
-// play a short sequence of tones
-LOOMA._tones = function (freqs, type) {
-    LOOMA._initAudio();
-    var ctx = LOOMA._audioCtx;
-    if (!ctx) return;
-    if (ctx.state === 'suspended') ctx.resume();
-    var now = ctx.currentTime, step = 0.13;
-    freqs.forEach(function (f, i) {
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.type = type || 'sine';
-        osc.frequency.value = f;
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        var start = now + i * step;
-        gain.gain.setValueAtTime(0.0001, start);
-        gain.gain.linearRampToValueAtTime(0.5, start + 0.02);
-        gain.gain.linearRampToValueAtTime(0.0001, start + step + 0.05);
-        osc.start(start);
-        osc.stop(start + step + 0.06);
-    });
-};
-// happy rising chime for a right answer, low buzz for a wrong one
-LOOMA.playCorrect = function () { LOOMA._tones([660, 990], 'sine'); };
-LOOMA.playWrong   = function () { LOOMA._tones([220, 165], 'square'); };
-// arm the audio on the first user interaction so it's ready by answer time
-document.addEventListener('click',   LOOMA._initAudio, { once: true });
-document.addEventListener('keydown', LOOMA._initAudio, { once: true });
 
  /*
 //toggle fullscreen display of the element with id="fullscreen"
@@ -1877,6 +4595,13 @@ LOOMA.closePopup = function() {
 LOOMA.alert = function(msg, time, notTransparent, next){
     LOOMA.closePopup();
     if (!notTransparent) LOOMA.makeTransparent();
+
+    // Attach the popup to #fullscreen so it stays visible in fullscreen mode,
+    // BUT fall back to <body> on pages that have no #fullscreen wrapper (e.g.
+    // the home page). Without this fallback the popup was appended to an empty
+    // jQuery set — so it never appeared, while makeTransparent() had already
+    // dimmed the page (opacity .6) and set pointer-events:none. The result was
+    // a darkened, frozen screen with no OK/✕ button to dismiss it.
     var $attachpoint = ($('#fullscreen').length > 0) ? $('#fullscreen') : $(document.body);
 
     $attachpoint.append("<div class='popup'>" +
@@ -1952,9 +4677,9 @@ LOOMA.prompt = function(msg, confirmed, canceled, notTransparent) {
         "<button id='close-popup' class='popup-button'>" + LOOMA.translatableSpans("cancel", "रद्द गरेर") + "</button>" +
         "<input id='popup-input' autofocus></input>" +
         "<button id='confirm-popup' class='popup-button'>"+
-        LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>").hide().fadeIn(1000, function() {
-            $('#popup-input').focus();
-        }) ;
+        LOOMA.translatableSpans("OK", "ठिक छ") +"</button></div>").hide().fadeIn(1000) ;
+
+    $('#popup-input').focus();
 
     $('#popup-input').on( 'keydown', function( e ) {
                 if ( e.keyCode === 13 ) {  // carriage return
@@ -2053,6 +4778,12 @@ var loginname = LOOMA.loggedIn();
 
  // Returns the ISO week of the date.
  Date.prototype.getWeek = function() {
+     // Something on the PDF viewer page calls this with `this` unbound
+     // (undefined) — throwing here aborts jQuery's whole ready-queue for
+     // whoever registered a $(document).ready() after that caller, which is
+     // how the floating control-button stacking fix below silently stopped
+     // running. Guard rather than track down every possible bad caller.
+     if (!(this instanceof Date)) return null;
      var date = new Date(this.getTime());
      date.setHours(0, 0, 0, 0);
      // Thursday in current week decides the year.
@@ -2062,4 +4793,96 @@ var loginname = LOOMA.loggedIn();
      // Adjust to Thursday in week 1 and count number of weeks from date to week1.
      return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
          - 3 + (week1.getDay() + 6) % 7) / 7);
- }
+ };
+// Missing semicolon above used to be load-bearing: without it, JS treats
+// `Date.prototype.getWeek = function(){...}` and the very next statement
+// as ONE expression — `getWeekBody(nextStatement)()` — silently calling
+// getWeek immediately with the button-stacking IIFE as its argument (`this`
+// unbound, hence the crash this whole file used to have here), then trying
+// to call getWeek's return value. The button-stacking code below was never
+// actually broken; it was never running as its own statement at all.
+
+// ---------------------------------------------------------------------------
+// Floating control-button stack (speak / lookup / keyboard / captions /
+// download / fullscreen / next / prev — includes/looma-control-buttons.php,
+// downloadButton(), and the keyboard button js/looma-keyboard.js appends at
+// runtime). Each one is independently `position: fixed` with its own
+// hardcoded `bottom` in css/looma.css, so CSS has no way to know which OTHER
+// buttons a given page also shows — two buttons added on different pages/
+// dates ended up sharing the same `bottom` (e.g. lookup/show-keyboard, or
+// download/next-item) and sat on top of each other wherever both are visible
+// at once (a chapter reader with TTS, dictionary lookup, captions, download
+// and the on-screen keyboard all available together).
+//
+// Re-stacking them here — bottom to top, by whichever are ACTUALLY visible
+// right now, using their real (post-CSS) height — fixes that everywhere at
+// once and stays correct in/out of fullscreen and at every breakpoint,
+// without needing every current and future button to share one hand-numbered
+// ladder of `bottom` values.
+// ---------------------------------------------------------------------------
+(function () {
+    // Bottom-to-top stacking order. A button not listed here (e.g.
+    // #bagh-chal, alone on looma-games.php and never sharing a page with any
+    // of these) is left exactly as CSS positions it.
+    var STACK_ORDER = ['fullscreen-control', 'speak', 'lookup', 'show-keyboard',
+                        'captions', 'download', 'next-item', 'prev-item'];
+    var GAP = 6; // px between stacked buttons
+
+    function stackKey(el) {
+        if (el.id && STACK_ORDER.indexOf(el.id) !== -1) return el.id;
+        for (var i = 0; i < STACK_ORDER.length; i++) {
+            if (el.classList.contains(STACK_ORDER[i])) return STACK_ORDER[i];
+        }
+        return null;
+    }
+
+    function layoutControlButtons() {
+        var visible = [];
+        $('.looma-control-button').each(function () {
+            if (stackKey(this) !== null && $(this).is(':visible')) visible.push(this);
+        });
+        if (!visible.length) return;
+
+        visible.sort(function (a, b) {
+            return STACK_ORDER.indexOf(stackKey(a)) - STACK_ORDER.indexOf(stackKey(b));
+        });
+
+        // Anchor to the first (lowest) visible button's OWN CSS `bottom` —
+        // normally #fullscreen-control's, which already differs between
+        // normal / :fullscreen / the small-screen media query — so the whole
+        // stack keeps the right distance from the corner everywhere.
+        var cumulative = parseFloat(window.getComputedStyle(visible[0]).bottom) || 0;
+        visible.forEach(function (el) {
+            el.style.bottom = cumulative + 'px';
+            cumulative += el.getBoundingClientRect().height + GAP;
+        });
+    }
+
+    // Plain polling rather than a MutationObserver: these buttons are shown/
+    // hidden from many different pages (looma-play-lesson.js,
+    // looma-keyboard.js, looma-assistant-button.js, ...), this function
+    // itself writes the `style` attribute an observer would be watching, and
+    // js/looma-keyboard.js already solves the same "watch for UI that
+    // changes from elsewhere" problem the same way (see its watchFrames()
+    // poll) — match that instead of adding a feedback-loop risk.
+    //
+    // Native DOMContentLoaded, not $(document).ready(): jQuery dispatches
+    // every registered ready callback off one shared internal queue, and an
+    // uncaught throw in an earlier one (e.g. the PDF viewer page — see the
+    // getWeek() guard above) can abort the rest of that queue, which is how
+    // this stopped running at all despite being registered correctly.
+    // Separate native listeners don't share that fate — one throwing doesn't
+    // stop the others from firing.
+    function initControlButtonStacking() {
+        layoutControlButtons();
+        setInterval(layoutControlButtons, 400);
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initControlButtonStacking);
+    } else {
+        initControlButtonStacking();
+    }
+    window.addEventListener('resize', layoutControlButtons);
+    document.addEventListener('fullscreenchange', layoutControlButtons);
+    document.addEventListener('webkitfullscreenchange', layoutControlButtons);
+})();

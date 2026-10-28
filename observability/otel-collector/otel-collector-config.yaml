@@ -322,6 +322,12 @@ connectors:
       - name: looma.subject
       - name: looma.grade
       - name: looma.chapter_id
+      # Set only on piper_server.py's piper.synthesize span. Without them the
+      # Piper dashboard can't tell a cache hit (a few ms) from real synthesis,
+      # so its latency percentiles blend the two. Both are low-cardinality: a
+      # bool and the handful of installed voice models.
+      - name: piper.cache_hit
+      - name: piper.voice
     aggregation_temporality: AGGREGATION_TEMPORALITY_CUMULATIVE
     metrics_flush_interval: 30s
 

@@ -1906,64 +1906,21 @@ LOOMA.speak = function(text, engine, voice, rate) {
         //      in speechSynthesis  SpeachSynthesisUtterance.rate = rate ( e.g. if rate === 0.5 speak slower)
         //  for Looma in Nepal, use default rate = 2/3
 
-    var speed;
-    const defaultspeed = 2/3;
-
-       // Speed is per-language now. `rate` may be a { en, np } map (chosen on the
-       // Reading Settings page) or a single number/string (legacy callers). When
-       // nothing is passed — e.g. the Speak button reading a text selection — the
-       // per-language speeds saved on the Reading Settings page are used
-       // (tts-rate-en / tts-rate-np cookies), falling back to the legacy single
-       // tts-rate cookie, then to 2/3 (Looma's default for Nepal).
-       function _validRate(r) { r = parseFloat(r); return (r > 0 && r <= 2) ? r : null; }
-       var rateEn = null, rateNp = null;
-       if (rate && typeof rate === 'object') {
-           rateEn = _validRate(rate.en);
-           rateNp = _validRate(rate.np);
-       } else {
-           rateEn = rateNp = _validRate(rate);
-       }
-       if (rateEn == null) rateEn = _validRate(LOOMA.readStore('tts-rate-en', 'cookie')) || _validRate(LOOMA.readStore('tts-rate', 'cookie')) || defaultspeed;
-       if (rateNp == null) rateNp = _validRate(LOOMA.readStore('tts-rate-np', 'cookie')) || _validRate(LOOMA.readStore('tts-rate', 'cookie')) || defaultspeed;
-       // Pick the speed for a given language ('ne'/'np' → Nepali) or piece of text.
-       function rateForLang(lang) { return (lang === 'ne' || lang === 'np') ? rateNp : rateEn; }
-       function rateForText(t)    { return rateForLang(LOOMA.speak.detectLanguage(t)); }
-       // Keep the legacy scalar rate/speed (English) for the code paths that
-       // still reference a single value (request keys, telemetry attributes …).
-       rate = rateEn;
-       speed = 1/rate;
-
-    // When the caller does not name an engine — e.g. the Speak button reading a
-    // text selection — fall back to the user's saved default TTS technology
-    // (chosen on the Reading Settings page; stored in the tts-engine cookie).
-    // Piper is ALWAYS the default: it is local, offline and works on every box.
-    // ResponsiveVoice is used only when the teacher has explicitly selected it
-    // on the Reading Settings page (which itself only offers it when the box has
-    // internet). Even then, engine === 'responsivevoice' falls back to Piper on
-    // its own if it fails to load/connect (see the ResponsiveVoice branch below)
-    // — so reading never just goes silent when the connection drops mid-session.
-    if (!engine) {
-        engine = LOOMA.readStore('tts-engine', 'cookie') || 'piper';
-        if (!voice) {
-            var _ve = LOOMA.readStore('tts-voice-en', 'cookie');
-            var _vn = LOOMA.readStore('tts-voice-np', 'cookie');
-            if (_ve || _vn) voice = { en: _ve || '', np: _vn || '' };
-            else voice = LOOMA.readStore('tts-voice', 'cookie') || voice;  // legacy single-voice cookie
-        }
-    }
-    // The only supported engines are Piper (local/offline) and ResponsiveVoice
-    // (cloud), so any stale/other value is coerced to Piper.
-    if (engine !== 'piper' && engine !== 'responsivevoice') engine = 'piper';
-
-    // `voice` may be a plain string (one voice for all text) or a per-language
-    // map { en, np } chosen on the Reading Settings page. Resolve both forms so the
-    // English voice reads Latin text and the Nepali voice reads Devanagari.
-    var voiceEn = '', voiceNp = '';
-    if (voice && typeof voice === 'object') {
-        voiceEn = voice.en || ''; voiceNp = voice.np || '';
-    } else if (voice) {
-        voiceEn = voice; voiceNp = voice;
-    }
+    // Engine/voice/rate resolution (cookies, defaults, per-language maps) is
+    // shared with LOOMA.speak.prefetch(), which needs the exact same choices
+    // the real press will make so its cache-warming request lands on the same
+    // Piper cache key. See LOOMA.speak.resolveVoiceAndRate() below.
+    var _resolved = LOOMA.speak.resolveVoiceAndRate(engine, voice, rate);
+    engine = _resolved.engine;
+    var rateEn = _resolved.rateEn, rateNp = _resolved.rateNp;
+    // Pick the speed for a given language ('ne'/'np' → Nepali) or piece of text.
+    function rateForLang(lang) { return (lang === 'ne' || lang === 'np') ? rateNp : rateEn; }
+    function rateForText(t)    { return rateForLang(LOOMA.speak.detectLanguage(t)); }
+    // Keep the legacy scalar rate/speed (English) for the code paths that
+    // still reference a single value (request keys, telemetry attributes …).
+    rate = rateEn;
+    var speed = 1/rate;
+    var voiceEn = _resolved.voiceEn, voiceNp = _resolved.voiceNp;
 
     /* requires a special regex package, like xregexp [https://www.regular-expressions.info/xregexp.html]
          const devanagari = /p{Devanagari}/u;
@@ -2586,50 +2543,13 @@ LOOMA.speak = function(text, engine, voice, rate) {
           * the fetch chain is already running ahead of playback.
           *
           * Never mid-word, and never when the sentence has no natural break. */
-         var FIRST_SEGMENT_MAX = 80;   // characters
-         var FIRST_SEGMENT_MIN = 25;   // don't leave an opening scrap too short to sound natural
-
-         function splitFirstSegment(part) {
-             if (part.length <= FIRST_SEGMENT_MAX) return [part];
-             // Prefer a clause break (comma/semicolon/colon/dash, plus the
-             // Devanagari comma), else any space. Scan forwards keeping the LAST
-             // match, so the break lands as late as it can while under the cap.
-             var window = part.slice(0, FIRST_SEGMENT_MAX + 1);
-             var cut = -1;
-             var clause = /[,;:\u2014\u2013\u0964]/g, m;
-             while ((m = clause.exec(window)) !== null) {
-                 if (m.index + 1 >= FIRST_SEGMENT_MIN) cut = m.index + 1;
-             }
-             if (cut < 0) {
-                 var space = window.lastIndexOf(' ');
-                 if (space >= FIRST_SEGMENT_MIN) cut = space;
-             }
-             if (cut < 0) return [part];          // no natural break: leave it whole
-             var head = part.slice(0, cut).trim();
-             var tail = part.slice(cut).trim();
-             if (!head || !tail) return [part];
-             return [head, tail];
-         }
-
+         // Segment splitting (how much of the first sentence to cut for a fast
+         // start, and where sentences break) is shared with
+         // LOOMA.speak.prefetch() via LOOMA.speak.splitIntoPlaybackSegments()
+         // below, so a prefetch warms the exact same text Piper will be asked
+         // to speak for real.
          function splitIntoPlaybackSegments(sourceText) {
-             var normalized = sourceText
-                 .replace(/\r/g, ' ')
-                 .replace(/\n+/g, ' ')
-                 .replace(/\s+/g, ' ')
-                 .trim();
-             if (!normalized) return [];
-
-             // \u0964 danda and \u0965 DOUBLE danda both end a Devanagari sentence.
-             // The double danda closes a verse or a stanza \u2014 common in the poetry
-             // and scripture in Looma's Nepali chapters \u2014 and without it the whole
-             // passage stayed ONE clip: nothing is heard until every line of it has
-             // been synthesized, and pause has only one place to land.
-             var sentences = (normalized.match(/[^.!?\u0964\u0965]+[.!?\u0964\u0965]?/g) || [normalized])
-                 .map(function (part) { return part.replace(/\s+/g, ' ').trim(); })
-                 .filter(function (part) { return part.length > 0; });
-
-             if (sentences.length === 0) return sentences;
-             return splitFirstSegment(sentences[0]).concat(sentences.slice(1));
+             return LOOMA.speak.splitIntoPlaybackSegments(sourceText);
          }
 
          if (engine === 'synthesis') {
@@ -3751,6 +3671,163 @@ LOOMA.speak.detectLanguage = function (text) {
     return (devanagariCount > 0 && devanagariCount > latinCount) ? 'ne' : 'en';
 };
 
+/* LOOMA.speak.resolveVoiceAndRate(engine, voice, rate)
+ *
+ * The engine/voice/per-language-speed resolution LOOMA.speak() has always
+ * done at the top of every call (cookies, defaults, the { en, np } rate/voice
+ * maps from the Reading Settings page). Pulled out so LOOMA.speak.prefetch()
+ * resolves voice and rate exactly the same way — a prefetch that guessed a
+ * different voice or speed would warm the wrong Piper cache key and the real
+ * press would still pay for synthesis. */
+LOOMA.speak.resolveVoiceAndRate = function (engine, voice, rate) {
+    var defaultspeed = 2/3;
+    function _validRate(r) { r = parseFloat(r); return (r > 0 && r <= 2) ? r : null; }
+
+    var rateEn = null, rateNp = null;
+    if (rate && typeof rate === 'object') {
+        rateEn = _validRate(rate.en);
+        rateNp = _validRate(rate.np);
+    } else {
+        rateEn = rateNp = _validRate(rate);
+    }
+    if (rateEn == null) rateEn = _validRate(LOOMA.readStore('tts-rate-en', 'cookie')) || _validRate(LOOMA.readStore('tts-rate', 'cookie')) || defaultspeed;
+    if (rateNp == null) rateNp = _validRate(LOOMA.readStore('tts-rate-np', 'cookie')) || _validRate(LOOMA.readStore('tts-rate', 'cookie')) || defaultspeed;
+
+    if (!engine) {
+        engine = LOOMA.readStore('tts-engine', 'cookie') || 'piper';
+        if (!voice) {
+            var _ve = LOOMA.readStore('tts-voice-en', 'cookie');
+            var _vn = LOOMA.readStore('tts-voice-np', 'cookie');
+            if (_ve || _vn) voice = { en: _ve || '', np: _vn || '' };
+            else voice = LOOMA.readStore('tts-voice', 'cookie') || voice;  // legacy single-voice cookie
+        }
+    }
+    if (engine !== 'piper' && engine !== 'responsivevoice') engine = 'piper';
+
+    var voiceEn = '', voiceNp = '';
+    if (voice && typeof voice === 'object') {
+        voiceEn = voice.en || ''; voiceNp = voice.np || '';
+    } else if (voice) {
+        voiceEn = voice; voiceNp = voice;
+    }
+
+    return { engine: engine, voiceEn: voiceEn, voiceNp: voiceNp, rateEn: rateEn, rateNp: rateNp };
+};
+
+/* LOOMA.speak.splitIntoPlaybackSegments(sourceText) / the FIRST_SEGMENT_* cut
+ *
+ * How much of the FIRST sentence to synthesize before playback starts.
+ *
+ * Nothing is heard until the first clip is ready, so the wait before a
+ * reading begins is exactly "how long Piper takes on sentence one" — and an
+ * ODROID synthesizes slower than real time, which turns a long opening
+ * sentence into seconds of apparent deadness. Cutting only that first segment
+ * down to a clause gets sound out roughly in proportion: a third of the
+ * sentence, a third of the wait. Every later clip stays a whole sentence, so
+ * prosody is untouched from the second one on, and by then the fetch chain is
+ * already running ahead of playback.
+ *
+ * Never mid-word, and never when the sentence has no natural break.
+ *
+ * Shared with LOOMA.speak.prefetch(), which needs the exact same first
+ * segment the real press will fetch, or its cache-warming request misses. */
+LOOMA.speak.FIRST_SEGMENT_MAX = 80;   // characters
+LOOMA.speak.FIRST_SEGMENT_MIN = 25;   // don't leave an opening scrap too short to sound natural
+
+LOOMA.speak.splitFirstSegment = function (part) {
+    var MAX = LOOMA.speak.FIRST_SEGMENT_MAX, MIN = LOOMA.speak.FIRST_SEGMENT_MIN;
+    if (part.length <= MAX) return [part];
+    // Prefer a clause break (comma/semicolon/colon/dash, plus the
+    // Devanagari comma), else any space. Scan forwards keeping the LAST
+    // match, so the break lands as late as it can while under the cap.
+    var window = part.slice(0, MAX + 1);
+    var cut = -1;
+    var clause = /[,;:—–।]/g, m;
+    while ((m = clause.exec(window)) !== null) {
+        if (m.index + 1 >= MIN) cut = m.index + 1;
+    }
+    if (cut < 0) {
+        var space = window.lastIndexOf(' ');
+        if (space >= MIN) cut = space;
+    }
+    if (cut < 0) return [part];          // no natural break: leave it whole
+    var head = part.slice(0, cut).trim();
+    var tail = part.slice(cut).trim();
+    if (!head || !tail) return [part];
+    return [head, tail];
+};
+
+LOOMA.speak.splitIntoPlaybackSegments = function (sourceText) {
+    var normalized = sourceText
+        .replace(/\r/g, ' ')
+        .replace(/\n+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (!normalized) return [];
+
+    // । danda and ॥ DOUBLE danda both end a Devanagari sentence.
+    // The double danda closes a verse or a stanza — common in the poetry
+    // and scripture in Looma's Nepali chapters — and without it the whole
+    // passage stayed ONE clip: nothing is heard until every line of it has
+    // been synthesized, and pause has only one place to land.
+    var sentences = (normalized.match(/[^.!?।॥]+[.!?।॥]?/g) || [normalized])
+        .map(function (part) { return part.replace(/\s+/g, ' ').trim(); })
+        .filter(function (part) { return part.length > 0; });
+
+    if (sentences.length === 0) return sentences;
+    return LOOMA.speak.splitFirstSegment(sentences[0]).concat(sentences.slice(1));
+};
+
+/* LOOMA.speak.prefetch(text)
+ *
+ * Piper has to run real inference on the first press of any sentence it has
+ * never spoken before — that floor cannot be removed in software. What CAN
+ * be removed is paying that floor exactly when the teacher's finger is on the
+ * Speak button: a touch-kiosk reading flow always has a gap between
+ * "selection finalized" and "Speak pressed" (lifting the finger, moving it to
+ * the button), and that gap is dead time today.
+ *
+ * This fires the SAME first-segment request LOOMA.speak() would make — same
+ * text, same voice, same rate — as soon as a selection exists, so it lands in
+ * Piper's server-side WAV cache (keyed on exactly those four things — see
+ * piper_server.py's _cache_path()) before the real press ever reaches the
+ * server. When the real press follows, Piper returns the cached WAV instead
+ * of re-synthesizing, which is where the actual time gets cut.
+ *
+ * Fire-and-forget: the response is discarded here. A press that lands WHILE
+ * this is still synthesizing waits no longer than it would have without this
+ * (Piper's warm worker serializes requests for one (voice, speed) pair
+ * either way) — so this is never worse, only sometimes free. */
+LOOMA.speak.prefetch = function (text) {
+    text = (text || '').replace(/\s+/g, ' ').trim();
+    if (text.length < 2) return;
+    if (text === LOOMA.speak.lastPrefetchedText) return;
+
+    // Only Piper has a server round trip + cache worth warming; browser
+    // speechSynthesis and ResponsiveVoice have no equivalent to hide.
+    var engine = LOOMA.readStore('tts-engine', 'cookie') || 'piper';
+    if (engine !== 'piper') return;
+
+    var resolved = LOOMA.speak.resolveVoiceAndRate(engine, null, null);
+    var segments = LOOMA.speak.splitIntoPlaybackSegments(text);
+    if (!segments.length) return;
+
+    LOOMA.speak.lastPrefetchedText = text;
+
+    var firstSegment = segments[0];
+    var lang = LOOMA.speak.detectLanguage(firstSegment);
+    var segVoice = (lang === 'ne') ? resolved.voiceNp : resolved.voiceEn;
+    var segRate = (lang === 'ne') ? resolved.rateNp : resolved.rateEn;
+
+    var piperParams = { text: firstSegment, engine: 'piper', lang: lang, rate: segRate };
+    if (segVoice) piperParams.voice = segVoice;
+
+    fetch('looma-TTS.php?' + $.param(piperParams)).catch(function () {
+        // Best-effort warm-up only; the real press (LOOMA.speak()) handles
+        // its own errors if Piper is actually unreachable.
+    });
+};
+
 LOOMA.speak.captureSelectionSnapshot = function () {
     // Capture both plain text and a DOM range so audio playback and highlighting share the same selection.
     function getSnapshot(win, frameId) {
@@ -3800,6 +3877,14 @@ LOOMA.speak.refreshSelectionState = function () {
     if (selectedText) {
         LOOMA.speak.lastSelectedText = selectedText;
         LOOMA.speak.selectionActive = true;
+        // Warm Piper's cache for this selection NOW, while the teacher's
+        // finger/cursor is still travelling to the Speak button, instead of
+        // waiting for the press. See LOOMA.speak.prefetch() for why this is
+        // the one hook that covers the main page AND every mirrored iframe
+        // (chapter HTML, PDF viewer) — installSelectionWatcher() above
+        // already calls refreshSelectionState() on every selection change in
+        // all of them.
+        try { LOOMA.speak.prefetch(selectedText); } catch (e) {}
     } else if (!LOOMA.speak.buttonActive) {
         LOOMA.speak.lastSelectedText = '';
         LOOMA.speak.selectionActive = false;

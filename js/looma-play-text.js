@@ -15,7 +15,16 @@ function displayText(result) {
         var html = '<div class="english">' + result.data + '</div><div class="native" hidden>' + native + '</div>';
         $('.text-display').html(html);
         LOOMA.translate(language);
-    
+
+        // The Speak button below reads this exact text when nothing is
+        // selected (see the fallback in the click handler). Most presses here
+        // have no selection — warm Piper's cache for it as soon as the page
+        // has something to read, instead of waiting for the press.
+        try {
+            if (window.LOOMA && LOOMA.speak && LOOMA.speak.prefetch) {
+                LOOMA.speak.prefetch(removeTags($('.english').html()));
+            }
+        } catch (e) {}
     }
     else $('.text-display').html('<h2>File not found</h2>');
 }; //end displayText()

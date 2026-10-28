@@ -271,7 +271,8 @@ services:
       DISABLE_SECURITY_DASHBOARDS_PLUGIN: "true"
       VIS_TYPE_VEGA_ENABLEEXTERNALURLS: "true"
     ports:
-      - "45601:5601"
+      - "127.0.0.1:45601:5601"
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:45601:5601"
     networks:
       - loomanet
 
@@ -296,10 +297,13 @@ services:
       # three otel pipelines (traces / metrics / logs) come up cleanly and stay up.
       JAVA_OPTS: "-Xms512m -Xmx1g"
     ports:
-      - "21890:21890" # OTLP traces
-      - "21891:21891" # OTLP metrics
-      - "21892:21892" # OTLP logs
-      - "44900:4900"  # health
+      - "127.0.0.1:21890:21890" # OTLP traces
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:21890:21890" # OTLP traces
+      - "127.0.0.1:21891:21891" # OTLP metrics
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:21891:21891" # OTLP metrics
+      - "127.0.0.1:21892:21892" # OTLP logs
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:21892:21892" # OTLP logs
+      - "127.0.0.1:44900:4900"  # health
     networks:
       - loomanet
     # Make `condition: service_healthy` viable for the otel-collector — without
@@ -351,14 +355,16 @@ services:
       HOST_RUN: /hostfs/run
       HOST_DEV: /hostfs/dev
     ports:
-      - "4317:4317"   # OTLP gRPC
-      - "4318:4318"   # OTLP HTTP
-      - "48888:8888"  # OTel Collector internal metrics
-      - "48889:8889"  # Prometheus scrape endpoint — apps + host + docker + mongo
-      - "48890:8890"  # Prometheus scrape endpoint — span-derived metrics
-      - "41888:1888"  # zpages (debug)
-      - "43133:13133" # health_check
-      - "41777:1777"  # pprof
+      - "127.0.0.1:4317:4317"   # OTLP gRPC
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:4317:4317"   # OTLP gRPC
+      - "127.0.0.1:4318:4318"   # OTLP HTTP
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:4318:4318"   # OTLP HTTP
+      - "127.0.0.1:48888:8888"  # OTel Collector internal metrics
+      - "127.0.0.1:48889:8889"  # Prometheus scrape endpoint — apps + host + docker + mongo
+      - "127.0.0.1:48890:8890"  # Prometheus scrape endpoint — span-derived metrics
+      - "127.0.0.1:41888:1888"  # zpages (debug)
+      - "127.0.0.1:43133:13133" # health_check
+      - "127.0.0.1:41777:1777"  # pprof
     networks:
       - loomanet
     healthcheck:
@@ -406,7 +412,8 @@ services:
       # Vector's own wire protocol (sources.agents in vector.toml) — the ONLY
       # port a remote agent box needs reachable here for its logs+metrics.
       # No OpenSearch port is ever exposed to the field.
-      - "0.0.0.0:6000:6000"
+      - "127.0.0.1:6000:6000"
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:6000:6000"
     user: "0:0"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -433,7 +440,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - "48081:9417"
+      - "127.0.0.1:48081:9417"
     networks:
       - loomanet
     restart: unless-stopped
@@ -563,7 +570,8 @@ services:
     ports:
       # 0.0.0.0 binding so other devices on the LAN (e.g. smart TV) can reach
       # the Grafana UI at http://<host-LAN-ip>:43000
-      - "0.0.0.0:43000:3000"
+      - "127.0.0.1:43000:3000"
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:43000:3000"
     networks:
       - loomanet
     depends_on:
@@ -630,7 +638,7 @@ services:
     working_dir: /app/scripts
     command: ["python3", "feedback_labeling.py", "--port", "8888", "--host", "0.0.0.0"]
     ports:
-      - "48888:8888"
+      - "127.0.0.1:48888:8888"
     restart: unless-stopped
     networks:
       - loomanet

@@ -227,14 +227,19 @@
       "id": 9,
       "type": "timeseries",
       "title": "Latency p95 by engine",
-      "description": "95th-percentile synthesis duration per engine over the $rate window.",
+      "description": "95th-percentile duration per engine over the $rate window: end-to-end as seen by looma-TTS.php (tts.piper) and Piper's own synthesis time in piper_server.py (piper.synthesize).",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "x": 12, "y": 6, "w": 12, "h": 8 },
       "targets": [
         {
           "refId": "A",
           "expr": "histogram_quantile(0.95, sum by (le,span_name) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
-          "legendFormat": "{{span_name}} p95"
+          "legendFormat": "{{span_name}} p95 (end-to-end)"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95, sum by (le,span_name) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
+          "legendFormat": "{{span_name}} p95 (synthesis)"
         }
       ],
       "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
@@ -287,7 +292,7 @@
       "title": "Piper · requests ($__range)",
       "description": "Piper synthesis calls completed in the selected range.",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "x": 0, "y": 22, "w": 12, "h": 4 },
+      "gridPos": { "x": 0, "y": 22, "w": 8, "h": 4 },
       "targets": [
         { "refId": "A", "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) or vector(0)", "legendFormat": "piper" }
       ],
@@ -297,12 +302,30 @@
     {
       "id": 14,
       "type": "stat",
-      "title": "Piper · p95 latency",
-      "description": "Piper 95th-percentile synthesis duration over the $rate window.",
+      "title": "Piper · end-to-end p95",
+      "description": "Piper 95th-percentile request duration as seen by looma-TTS.php (span tts.piper, includes the HTTP hop and WAV transfer) over the $rate window.",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "x": 12, "y": 22, "w": 12, "h": 4 },
+      "gridPos": { "x": 8, "y": 22, "w": 8, "h": 4 },
       "targets": [
         { "refId": "A", "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))", "legendFormat": "p95" }
+      ],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "orange", "value": 800 }, { "color": "red", "value": 2000 } ] }
+        }
+      }
+    },
+    {
+      "id": 20,
+      "type": "stat",
+      "title": "Piper · synthesis p95",
+      "description": "Piper 95th-percentile synthesis time inside piper_server.py (span piper.synthesize: cache lookup + model inference) over the $rate window. Breakdown by cache hit and voice on the Piper dashboard.",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "x": 16, "y": 22, "w": 8, "h": 4 },
+      "targets": [
+        { "refId": "A", "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))", "legendFormat": "p95" }
       ],
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "area", "textMode": "auto" },
       "fieldConfig": {

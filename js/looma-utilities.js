@@ -3109,8 +3109,14 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      if (segVoice) piperParams.voice = segVoice;
                      var request = fetch(ttsEndpoint + '?' + $.param(piperParams));
 
+                     // Slow speeds are synthesized at natural speed and slowed down
+                     // here instead (cheaper on the ODROID — see _synthesis_plan() in
+                     // piper_server.py). No header = an older server: play as is.
+                     var playbackRate = 1;
                      return request.then(function (response) {
                          if (!response.ok) throw new Error('Browser TTS request failed: ' + response.status);
+                         var headerRate = parseFloat(response.headers.get('X-Looma-TTS-Playback-Rate'));
+                         if (headerRate >= 0.25 && headerRate <= 4) playbackRate = headerRate;
                          return response.blob();
                      }).then(function (audioBlob) {
                          var audioUrl = URL.createObjectURL(audioBlob);
@@ -3122,7 +3128,8 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          }
                          return {
                              blockText: segmentText,
-                             objectUrl: audioUrl
+                             objectUrl: audioUrl,
+                             playbackRate: playbackRate
                          };
                      });
                  }
@@ -3135,6 +3142,13 @@ LOOMA.speak = function(text, engine, voice, rate) {
 
                      var audio = new Audio(preparedBlock.objectUrl);
                      audio.loomaObjectUrl = preparedBlock.objectUrl;
+                     if (preparedBlock.playbackRate && preparedBlock.playbackRate !== 1) {
+                         // preservesPitch: slower, not deeper. defaultPlaybackRate too,
+                         // because a media load resets playbackRate to it.
+                         audio.preservesPitch = audio.mozPreservesPitch = audio.webkitPreservesPitch = true;
+                         audio.defaultPlaybackRate = preparedBlock.playbackRate;
+                         audio.playbackRate = preparedBlock.playbackRate;
+                     }
                      LOOMA.speak.playingAudio = audio;
 
                      audio.addEventListener('play', function () {

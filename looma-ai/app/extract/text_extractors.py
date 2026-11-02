@@ -202,11 +202,11 @@ def extract_geojson(path: Path):
     return [{'page': 1, 'text': '\n'.join(lines) if lines else raw}]
 
 
-def extract_any(path: Path, ocr_langs='eng+nep'):
+def extract_any(path: Path, ocr_langs='eng+nep', ocr_if_low_text=True):
     suffix = path.suffix.lower()
 
     if suffix == '.pdf':
-        return extract_pdf(path, ocr_langs=ocr_langs)
+        return extract_pdf(path, ocr_langs=ocr_langs, ocr_if_low_text=ocr_if_low_text)
     if suffix == '.docx':
         return extract_docx(path)
     if suffix == '.pptx':

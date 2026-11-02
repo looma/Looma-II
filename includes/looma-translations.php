@@ -264,6 +264,7 @@ $TKW = array (
     "North" => "उत्तर",
     "Number" => "संख्या",
     "Numbers" => "अंकहरू",
+    "Oceania" => "ओसिनिया",
     "of" => "को",
     "Open file" => "फाइल खोल्नुहोस्",
     "Optional" => "वैकल्पिक",

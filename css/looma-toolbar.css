@@ -16,6 +16,37 @@
 
     padding: 0 2%;
     background-color: var(--looma-toolbar);
+    /* Grid items default to min-height:auto, so the 1fr [toolbar] row in
+       looma.css grew to fit whatever #logo-div held — on a box with several
+       network interfaces the IP list wrapped onto extra lines, the yellow bar
+       got taller, and the fixed .looma-control-button column (bottom:11vh)
+       ended up on top of it. min-height:0 pins the row to its 1fr share; the
+       #logo-div rules below make the IP text fit inside it instead. */
+    min-height: 0;
+}
+
+/* Horizontal toolbar only: one line for the IP list and one for the date,
+   cut with an ellipsis rather than wrapping (the vertical toolbar's narrow
+   column keeps its own wrapping layout). */
+#toolbar-container #logo-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: stretch;
+    min-width: 0;
+    overflow: hidden;
+    line-height: 1.15;
+    font-size: clamp(0.65rem, 0.85vw, 1rem);
+}
+
+#toolbar-container span.logo,
+#toolbar-container span#datetime {
+    display: block;
+    max-height: none;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #toolbar-container-vertical {

@@ -109,6 +109,18 @@ MAX_LENGTH_SCALE = 3.0   # ~3x slower than natural
 # wants a longer pause between sentences.
 SENTENCE_SILENCE = os.environ.get("LOOMA_PIPER_SENTENCE_SILENCE", "0.05")
 
+# Slow speech is cheaper to PLAY slowly than to SYNTHESIZE slowly. A length_scale
+# of 1.5 makes Piper generate 50% more audio frames per sentence, and this board
+# synthesizes slower than real time — measured on the ODROID (same sentences,
+# cache misses) at 3250 -> 2490 ms median for English and 2870 -> 2230 ms for
+# Nepali when generating at 1.0 instead of 1.5. So when the requested speed is
+# SLOWER than natural, synthesize at natural speed and tell the browser how much
+# to slow playback down (X-Looma-TTS-Playback-Rate, applied with preservesPitch
+# in LOOMA.speak, js/looma-utilities.js). It also means every slow speed shares
+# ONE warm worker and one cache entry per voice, instead of one per speed.
+# LOOMA_PIPER_NATURAL_SPEED_SYNTH=0 goes back to slowing down inside Piper.
+NATURAL_SPEED_SYNTH = os.environ.get("LOOMA_PIPER_NATURAL_SPEED_SYNTH", "1") != "0"
+
 # Warm workers are what keep the first sentence under a second, but each one
 # holds a whole model in RAM — so the pool is bounded and evicts the
 # least-recently-used worker. One (voice, speed) pair = one worker.
@@ -174,6 +186,18 @@ def _length_scale_for(rate) -> str:
     # Two decimals: the handful of speeds the UI offers then collapse onto a
     # handful of workers/cache keys instead of one per floating-point wobble.
     return f"{scale:.2f}"
+
+
+def _synthesis_plan(rate) -> tuple[str, float]:
+    """Return (length_scale to synthesize with, playback rate for the browser).
+
+    Only slowing down moves to playback; a faster-than-natural request is
+    cheaper to synthesize as asked, so it stays in Piper at playback rate 1.
+    """
+    length_scale = _length_scale_for(rate)
+    if not NATURAL_SPEED_SYNTH or float(length_scale) <= 1.0:
+        return length_scale, 1.0
+    return "1.00", round(1.0 / float(length_scale), 4)
 
 
 def _pick_voice(language: str) -> str:
@@ -754,6 +778,16 @@ def _synthesize_one_shot(model_path: Path, speaker: int | None, length_scale: st
         raise RuntimeError((proc.stderr or "piper synthesis failed").strip()[:2000])
 
 
+# Requests in flight for a cache key nobody has finished writing yet. Lets a
+# second request for the EXACT same (model, speaker, length_scale, text) wait
+# for the first instead of synthesizing it all over again — see
+# synthesize_cached() below for why this matters now that the browser
+# prefetches a selection's audio ahead of the Speak press
+# (LOOMA.speak.prefetch() in looma-utilities.js).
+_INFLIGHT: dict[Path, threading.Event] = {}
+_INFLIGHT_LOCK = threading.Lock()
+
+
 def synthesize_cached(model_path: Path, speaker: int | None, length_scale: str,
                       text: str, timeout: float = 120.0) -> tuple[Path, bool]:
     """Return (wav path, cache_hit) for this request, synthesizing when needed."""
@@ -767,6 +801,29 @@ def synthesize_cached(model_path: Path, speaker: int | None, length_scale: str,
         except OSError:
             pass
         return cache_path, True
+
+    # Coalesce concurrent requests for the SAME key onto one synthesis. The
+    # warm worker already serializes them via its own lock (PiperWorker.lock),
+    # so without this a request landing while an identical one is still
+    # running used to just wait for that lock and then redo the exact same
+    # work — a press arriving a moment after its own prefetch paid for TWO
+    # full syntheses back to back instead of one, which is slower than having
+    # no prefetch at all. Only the LEADER (the first one in) actually
+    # synthesizes; everyone else waits for its event and reads its result.
+    with _INFLIGHT_LOCK:
+        event = _INFLIGHT.get(cache_path)
+        if event is not None:
+            is_leader = False
+        else:
+            event = threading.Event()
+            _INFLIGHT[cache_path] = event
+            is_leader = True
+
+    if not is_leader:
+        if event.wait(timeout) and cache_path.exists() and cache_path.stat().st_size > 44:
+            return cache_path, True
+        # The leader's attempt failed or timed out — fall through and try once,
+        # independently, rather than leaving this request with nothing.
 
     tmp = tempfile.NamedTemporaryFile(prefix="looma_piper_", suffix=".wav", delete=False)
     tmp_path = Path(tmp.name)
@@ -804,6 +861,12 @@ def synthesize_cached(model_path: Path, speaker: int | None, length_scale: str,
                 tmp_path.unlink()
             except OSError:
                 pass
+        # Release anyone waiting on this key — win or lose, so a failed
+        # synthesis never leaves another request hanging until its timeout.
+        if is_leader:
+            with _INFLIGHT_LOCK:
+                _INFLIGHT.pop(cache_path, None)
+            event.set()
 
 
 def describe_setup() -> None:
@@ -846,7 +909,7 @@ def prewarm() -> None:
             continue
         try:
             t0 = time.time()
-            synthesize_cached(model_path, speaker, _length_scale_for(DEFAULT_RATE),
+            synthesize_cached(model_path, speaker, _synthesis_plan(DEFAULT_RATE)[0],
                               text, timeout=180.0)
             log.info("pre-warmed %s in %d ms", model_path.name,
                      int((time.time() - t0) * 1000))
@@ -883,6 +946,7 @@ def health():
                 "voices_exist": {"en": model_en.exists(), "ne": model_ne.exists()},
                 "voice_count": len(voice_catalog()),
                 "warm": {"enabled": WARM_ENABLED, "failures": _warm_failures},
+                "natural_speed_synth": NATURAL_SPEED_SYNTH,
                 "workers": workers,
                 "cache": {"dir": str(CACHE_DIR), "files": cached_files},
             }
@@ -925,7 +989,7 @@ def tts():
 
     # What we actually synthesize with, which is not always what was asked for.
     voice_id = model_path.name + (f"#{speaker}" if speaker is not None else "")
-    length_scale = _length_scale_for(payload.get("rate"))
+    length_scale, playback_rate = _synthesis_plan(payload.get("rate"))
 
     # Wrap synthesis in its own span so latency, voice and text length show up in
     # OpenSearch Trace Analytics / Grafana.
@@ -951,6 +1015,7 @@ def tts():
                 span.set_attribute("piper.text_chars", len(text))
                 span.set_attribute("piper.language", language or "")
                 span.set_attribute("piper.length_scale", length_scale)
+                span.set_attribute("piper.playback_rate", playback_rate)
             except Exception:
                 pass
 
@@ -970,6 +1035,8 @@ def tts():
         resp.headers["X-Looma-TTS-Cache"] = "hit" if cache_hit else "miss"
         resp.headers["X-Looma-TTS-Ms"] = str(duration_ms)
         resp.headers["X-Looma-TTS-Voice"] = voice_id
+        # looma-TTS.php forwards every X-Looma-TTS-* header; see _synthesis_plan().
+        resp.headers["X-Looma-TTS-Playback-Rate"] = f"{playback_rate:g}"
         return resp
     except (TimeoutError, subprocess.TimeoutExpired) as exc:
         log.error("synthesis timed out (voice=%s, %d chars): %s", voice_id, len(text), exc)

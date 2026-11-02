@@ -156,7 +156,7 @@ Description: Creates a game with a scoreboard, timer, and prompts. Information a
 
     <?php include ('includes/js-includes.php'); ?>
     <script src="js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/looma-game.js"></script>
+    <script type="text/javascript" src="js/looma-game.js<?php echo looma_js_v('js/looma-game.js'); ?>"></script>
     <script type="text/javascript" src="js/looma-timer.js"></script>
     <script type="text/javascript" src="js/looma-scoreboard.js"></script>
     <script src="js/looma-sort-game.js"></script>

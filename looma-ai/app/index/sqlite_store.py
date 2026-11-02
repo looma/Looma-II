@@ -92,6 +92,16 @@ def _ensure_fts(conn: sqlite3.Connection) -> None:
 
 def _ensure_schema(conn: sqlite3.Connection):
     conn.execute("PRAGMA foreign_keys = ON;")
+    # Default (rollback-journal) mode fsyncs and recreates the journal file
+    # on every commit — with one commit per ingested file, that turned a
+    # bulk ingest (hundreds/thousands of files) into one multi-second disk
+    # round-trip per file. WAL defers/batches those fsyncs (readers aren't
+    # blocked by the writer either), which is the standard fix and is at
+    # least as crash-safe as the default for this single-writer workload.
+    # NORMAL sync is WAL's recommended pairing — still fsyncs at WAL
+    # checkpoints, just not after every single transaction.
+    conn.execute("PRAGMA journal_mode = WAL;")
+    conn.execute("PRAGMA synchronous = NORMAL;")
 
     row = conn.execute(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='documents'"
@@ -101,6 +111,15 @@ def _ensure_schema(conn: sqlite3.Connection):
         schema_sql = SCHEMA_PATH.read_text(encoding="utf-8")
         conn.executescript(schema_sql)
         conn.commit()
+    else:
+        # schema.sql's CREATE TABLE IF NOT EXISTS never touches a table that
+        # already exists, so a column added there needs its own migration
+        # for every box whose documents table predates it.
+        cols = {r["name"] for r in conn.execute("PRAGMA table_info(documents)")}
+        if "country" not in cols:
+            conn.execute("ALTER TABLE documents ADD COLUMN country TEXT")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_documents_country ON documents(country)")
+            conn.commit()
 
     _ensure_fts(conn)
 
@@ -118,9 +137,9 @@ def upsert_document(conn, doc):
         """
         INSERT INTO documents (
             id, source_path, file_name, file_type, file_hash, language, title,
-            subject, grade_level, total_pages, ocr_required, ingestion_status
+            subject, grade_level, country, total_pages, ocr_required, ingestion_status
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(id) DO UPDATE SET
             source_path=excluded.source_path,
             file_name=excluded.file_name,
@@ -130,6 +149,7 @@ def upsert_document(conn, doc):
             title=excluded.title,
             subject=excluded.subject,
             grade_level=excluded.grade_level,
+            country=excluded.country,
             total_pages=excluded.total_pages,
             ocr_required=excluded.ocr_required,
             ingestion_status=excluded.ingestion_status,
@@ -145,6 +165,7 @@ def upsert_document(conn, doc):
             doc.get("title"),
             doc.get("subject"),
             doc.get("grade_level"),
+            doc.get("country"),
             doc.get("total_pages"),
             doc.get("ocr_required", 0),
             doc.get("ingestion_status", "indexed"),
@@ -153,6 +174,12 @@ def upsert_document(conn, doc):
 
 
 def replace_chapters(conn, document_id, chapters):
+    # chunks.chapter_id is a foreign key into chapters, so on a re-ingest
+    # (--force) the old chunks must go before their chapters can be deleted,
+    # or this trips a FOREIGN KEY constraint failure. replace_chunks() is
+    # called later with the new chunk rows (which reference the chapters
+    # inserted below), so this delete is safe to run standalone here.
+    conn.execute("DELETE FROM chunks WHERE document_id = ?", (document_id,))
     conn.execute("DELETE FROM chapters WHERE document_id = ?", (document_id,))
     for ch in chapters:
         conn.execute(

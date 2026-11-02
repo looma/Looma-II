@@ -1259,10 +1259,17 @@ function runMap() {
             map.on('drag', function () {map.panInsideBounds(bounds, {animate: false});});
 
             var link = '../content/maps/json/' + map_json_file;
-            $.getJSON(link, function (result) {
-                mapJSON = result;
-                redrawMap(mapJSON);
-            });
+            // cache:'no-cache' makes the browser revalidate (ETag -> 304) on
+            // every load. The .geojson files are served without Cache-Control,
+            // so $.getJSON let the browser heuristically reuse a stale copy for
+            // weeks after a map file was edited (e.g. countries added to
+            // europeanCountries.geojson never showing up in the game).
+            fetch(link, {cache: 'no-cache'})
+                .then(function (response) { return response.json(); })
+                .then(function (result) {
+                    mapJSON = result;
+                    redrawMap(mapJSON);
+                });
 
          startTimer(time_limit);
 }  //end runMap()

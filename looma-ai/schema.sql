@@ -10,12 +10,19 @@ CREATE TABLE IF NOT EXISTS documents (
   title TEXT,
   subject TEXT,
   grade_level INTEGER,
+  -- NULL = universal/supplementary (OpenStax, Wikipedia, Khan — useful in any
+  -- country's box). A real value ties this document to one country's official
+  -- curriculum, so a per-country box build can select
+  -- "country = X OR country IS NULL" and skip everything else.
+  country TEXT,
   total_pages INTEGER,
   ocr_required INTEGER DEFAULT 0,
   ingestion_status TEXT DEFAULT 'pending',
   created_at TEXT DEFAULT CURRENT_TIMESTAMP,
   updated_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS idx_documents_country ON documents(country);
 
 CREATE TABLE IF NOT EXISTS chapters (
   id TEXT PRIMARY KEY,

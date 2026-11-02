@@ -134,6 +134,43 @@
     }
   }
 
+  // looma.css parks the assistant at bottom:79vh, the one slot that is always
+  // free whatever control buttons a page enables. On pages that only show a
+  // few of them (text page: fullscreen/speak/lookup) that leaves it floating
+  // far above the rest of the column. Instead, sit it just above the highest
+  // control button that is actually visible; 79vh stays as the no-JS fallback.
+  function stackAssistantAboveControls() {
+    var btn = document.querySelector('button.looma-control-button.looma-assistant');
+    if (!btn || window.getComputedStyle(btn).display === 'none') return;
+    var highest = Infinity;
+    document.querySelectorAll('button.looma-control-button').forEach(function (b) {
+      if (b === btn || b.closest('#looma-assistant-modal')) return;
+      var cs = window.getComputedStyle(b);
+      if (cs.display === 'none' || cs.visibility === 'hidden') return;
+      var r = b.getBoundingClientRect();
+      if (r.height) highest = Math.min(highest, r.top);
+    });
+    if (highest === Infinity) { btn.style.bottom = ''; return; }
+    var gap = window.innerHeight * 0.01;
+    btn.style.bottom = Math.round(window.innerHeight - highest + gap) + 'px';
+  }
+
+  // Pages show/hide speak, lookup, keyboard, ... from their own JS after load,
+  // so re-stack whenever one of them changes. The assistant itself is left out
+  // of the observer, otherwise setting its bottom would re-trigger this.
+  function watchControlButtons() {
+    if (!window.MutationObserver) return;
+    var pending = false;
+    var observer = new MutationObserver(function () {
+      if (pending) return;
+      pending = true;
+      window.requestAnimationFrame(function () { pending = false; stackAssistantAboveControls(); });
+    });
+    document.querySelectorAll('button.looma-control-button:not(.looma-assistant)').forEach(function (b) {
+      observer.observe(b, { attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
+    });
+  }
+
   /* ---------- rendering helpers ---------- */
 
   function escapeHtml(s) {
@@ -300,10 +337,15 @@
     // so an empty jQuery set elsewhere is a harmless no-op.
     $('button.looma-assistant').css('display', '');
 
-    alignKeyboardWithSpeak();
-    $(window).on('resize', alignKeyboardWithSpeak);
-    document.addEventListener('fullscreenchange', alignKeyboardWithSpeak);
-    document.addEventListener('webkitfullscreenchange', alignKeyboardWithSpeak);
+    function relayoutControls() {
+      alignKeyboardWithSpeak();
+      stackAssistantAboveControls();
+    }
+    relayoutControls();
+    $(window).on('load resize', relayoutControls);
+    document.addEventListener('fullscreenchange', relayoutControls);
+    document.addEventListener('webkitfullscreenchange', relayoutControls);
+    watchControlButtons();
 
     // Show modal when assistant button clicked
     $(document).on('click', '.looma-assistant, button.looma-assistant', function (e) {

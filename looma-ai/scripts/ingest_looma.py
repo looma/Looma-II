@@ -200,6 +200,12 @@ def infer_metadata(path: Path):
         'health': 'health',
         'english': 'english',
         'nepali': 'nepali',
+        # Added for OER sources (OpenStax, etc.) outside the original
+        # Nepal-curriculum subject set now that Looma's content scope is
+        # universal, not Nepal-only.
+        'business': 'business',
+        'computer_science': 'computer_science',
+        'college_success': 'college_success',
     }
     for part in parts:
         if part in subject_by_folder:
@@ -264,6 +270,20 @@ def detect_chapters(pages, document_id, subject, grade_level, title_hint, chapte
                 ch_title = title_tail if title_tail else f'Capítulo {ch_num}'
                 found.append({'page': page['page'], 'chapter_number': ch_num, 'chapter_title': ch_title})
                 break
+
+    # A table of contents page lists "Chapter N: Title" once per chapter, same
+    # as each chapter's own opening page — a book with a ToC (every OpenStax
+    # book) matches every chapter number twice, which used to insert the same
+    # id (document_id + "_ch_" + chapter_number) twice and crash on the
+    # UNIQUE constraint. Keep one hit per chapter_number: the highest page
+    # number, since a ToC sits near the front and the chapter's real start is
+    # further in — the later match is the real one.
+    best_by_number: dict[int, dict] = {}
+    for hit in found:
+        prev = best_by_number.get(hit['chapter_number'])
+        if prev is None or hit['page'] > prev['page']:
+            best_by_number[hit['chapter_number']] = hit
+    found = sorted(best_by_number.values(), key=lambda h: h['page'])
 
     if not found:
         chapters.append({
@@ -338,6 +358,18 @@ def build_arg_parser():
     p.add_argument('--fts-only', action='store_true', help='Populate SQLite/FTS only and skip embedding/ZVEC writes.')
     p.add_argument('--force', action='store_true', help='Reprocess files even when their hash is already indexed.')
     p.add_argument('--embedding-batch-size', type=int, default=128, help='Number of chunks to embed per ZVEC batch.')
+    p.add_argument('--country', default=None,
+                    help='Tag every document from this run as belonging to one country\'s '
+                         'official curriculum (e.g. "Nepal"). Leave unset for universal/'
+                         'supplementary content (OpenStax, Wikipedia, Khan, ...) that every '
+                         'box can include regardless of country — a per-country box build '
+                         'later selects documents where country = X OR country IS NULL.')
+    p.add_argument('--no-ocr-fallback', action='store_true',
+                    help='Skip the OCR fallback for low-text PDF pages. For born-digital '
+                         'PDFs (OpenStax and similar OER) this is safe and much faster — '
+                         'low-text pages there are almost always diagrams/figures with '
+                         'little recoverable text, not scans. Keep OCR on (the default) '
+                         'for scanned source material.')
     return p
 
 
@@ -456,7 +488,7 @@ def main():
             seen_hashes.add(file_hash)
 
             grade_level, subject, language, chapter_number_hint = infer_metadata(path)
-            pages = extract_any(path, ocr_langs=args.ocr_langs)
+            pages = extract_any(path, ocr_langs=args.ocr_langs, ocr_if_low_text=not args.no_ocr_fallback)
 
             document_id = build_document_id(file_hash)
             title_hint = humanize_stem(path.stem)
@@ -471,6 +503,7 @@ def main():
                 'title': title_hint,
                 'subject': subject,
                 'grade_level': grade_level,
+                'country': args.country,
                 'total_pages': len(pages),
                 'ocr_required': 0,
                 'ingestion_status': 'indexed',

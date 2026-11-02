@@ -9,21 +9,29 @@ Corsair fans instead.
 Two parts:
 
 1. **`status_server.py`** — runs on this host (the data-server), polls the
-   5 signals below, and serves them as JSON over plain HTTP.
+   signals below (one per technology of the stack), and serves them as JSON
+   over plain HTTP.
 2. **`looma_led_status/looma_led_status.ino`** — an ESP8266 (NodeMCU)
    sketch that polls that JSON over WiFi and renders it on a 7-segment
-   digit + a 2-channel (red/green) LED strip.
+   digit + a 2-channel (red/green) LED strip. The JSON `items` order IS the
+   display cycle, so adding a technology only touches `status_server.py`
+   (the firmware draws any code in its glyph table; others show as `-`).
 
-| Code | Signal | Source | Colours |
-|------|--------|--------|---------|
-| `O` | Looma OpenSearch cluster health | `GET {OS_URL}/_cluster/health` | green/yellow/red = the API's own `status` field |
-| `H` | looma.website reachability | `GET {HEARTBEAT_URL}` | green = HTTP 200–399, red = anything else (down/timeout) |
-| `U` | `looma-vector` container state | `docker inspect` | green = running, red = anything else |
-| `d` | Size of `looma_*` Docker volumes | `docker run busybox du -csb` (every 5 min — spins a container, kept off the fast loop) | green/yellow/red vs `DISK_WARN_GB`/`DISK_CRIT_GB` |
-| `P` | `looma-prometheus` health | `GET http://<container-ip>:{PROM_PORT}{PROM_HEALTH_PATH}` (not published to the host, so the container's own Docker-network IP is looked up via `docker inspect` on every poll) | green = HTTP 200–399, red = anything else |
+| Code | Technology | Source | Colours |
+|------|------------|--------|---------|
+| `H` | web — Apache + PHP (`looma-web`) | `GET {WEB_URL}` | green = HTTP 200–399, red = anything else |
+| `d` | MongoDB (`looma-db`) | TCP connect to `{MONGO_HOST}:{MONGO_PORT}` | green = accepting, red = refused/timeout |
+| `t` | Piper TTS (`looma-piper`) | `GET http://<container-ip>:{PIPER_PORT}/health` | green = ok + voices present, yellow = a voice missing, red = down |
+| `S` | semantic search (`looma-search`) | `GET {SEARCH_URL}` | green = 200 + index open, red = down / index error |
+| `A` | AI assistant (`looma-ai`) | container state, then `GET {AI_URL}` | green = 200, red = exited/down, yellow = not installed (optional) |
+| `O` | OpenSearch cluster health | `GET {OS_URL}/_cluster/health` | the API's `status` — except a 1-node cluster whose only unassigned shards are replicas is green (a replica can never be placed on one node, so that yellow is permanent) |
+| `U` | log/trace pipeline (`looma-vector`) | `docker inspect` | green = running, red = anything else |
+| `P` | metrics (`looma-prometheus`) | `GET http://<container-ip>:{PROM_PORT}{PROM_HEALTH_PATH}` (not published to the host, so the container's Docker-network IP is looked up on every poll) | green = HTTP 200–399, red = anything else |
 
-An unreachable/failed signal reports **yellow** ("unknown"), never crashes
-the loop — check `journalctl` or the `detail` field in the JSON for why.
+`O`/`H`/`U`/`d`/`P` keep the letters of the original 5-signal firmware, so
+a panel that hasn't been re-flashed still shows those five. A probe that
+fails never crashes the loop — check `journalctl` or the `detail` field in
+the JSON for why.
 
 ## Backend: install on the data-server
 
@@ -182,8 +190,8 @@ plain "set both pins high" — see the git history of this file.
 
 ### Display cycle
 
-Every 2 s the ESP8266 advances to the next signal (`O → H → U → d → P →
-O...`), showing its letter/digit on the 7-segment and colouring the strip
+Every 2 s the ESP8266 advances to the next signal (`H → d → t → S → A →
+O → U → P → H...`), showing its letter on the 7-segment and colouring the strip
 green / red / fast-alternating-amber to match. If WiFi drops or a poll
 fails, the display shows a dash (`-`) and the strip goes to the amber
 alternation until it recovers.

@@ -34,7 +34,7 @@ logFiletypeHit('map');
                     <label id="label">Continent or Ocean:</label>
                     <select type="String" id="userGuess">
                         <?php
-                            $continents = array("North America", "South America", "Europe", "Asia", "Africa","Australia", "Antartica", "Pacific Ocean", "Atlantic Ocean", "Indian Ocean", "Arctic Ocean");
+                            $continents = array("North America", "South America", "Europe", "Asia", "Africa", "Oceania", "Antartica", "Pacific Ocean", "Atlantic Ocean", "Indian Ocean", "Arctic Ocean");
                             for ($i=0; $i<=10; $i++)
                             {
                                 ?>

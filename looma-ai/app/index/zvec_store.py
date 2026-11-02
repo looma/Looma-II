@@ -7,9 +7,16 @@ from app.paths import ZVEC_DIR, zvec_collection_path
 EMBED_DIM = 384
 
 
-def open_or_create_collection(path, name):
+def open_or_create_collection(path, name, read_only=False):
     path = str(path)
     if os.path.exists(path):
+        if read_only:
+            # Lets a reader (e.g. the per-country export script) open the
+            # live master collection alongside a running looma_server.py —
+            # the default read-write open takes an exclusive lock that
+            # conflicts with the server's own open, same as any other
+            # ingest-while-serving attempt.
+            return zvec.open(path=path, option=zvec.CollectionOption(read_only=True))
         return zvec.open(path=path)
 
     # zvec.create_and_open() will not create the intermediate directories.

@@ -1,5 +1,15 @@
 ﻿FROM php:7.4.33-apache
 RUN pecl install mongodb-1.15.0
+# This image's Debian bullseye snapshot has aged off deb.debian.org's live
+# mirrors (404s on apt-get install) — point apt at the permanent archive
+# instead and stop checking Valid-Until, since an archived repo's release
+# file is never refreshed.
+RUN sed -i \
+      -e 's|deb.debian.org/debian-security|archive.debian.org/debian-security|g' \
+      -e 's|deb.debian.org/debian|archive.debian.org/debian|g' \
+      -e 's|security.debian.org|archive.debian.org/debian-security|g' \
+      /etc/apt/sources.list \
+    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
 RUN apt-get update
 RUN apt-get install -y net-tools
 RUN apt-get install -y python3

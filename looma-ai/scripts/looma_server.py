@@ -6034,6 +6034,178 @@ class Handler(BaseHTTPRequestHandler):
 
         conn = self._get_conn()
 
+        if parsed.path == '/debug_embedding_sample':
+            # One-off diagnostic for building an embedding-space map (see
+            # scripts/embedding_map.py on the dev machine) — NOT used by the
+            # app. Samples N chunks spread evenly across the table (a modulo
+            # stride on rowid, not ORDER BY RANDOM(): on 1.15M rows the sort
+            # ORDER BY RANDOM() needs costs the same ~50s as this does, with
+            # no benefit — the stride already lands on every Nth document in
+            # ingestion order, which is not correlated with subject/chapter),
+            # then fetches each one's real zvec vector through the collection
+            # this process already has open (self._get_collection(): a fresh
+            # zvec.open() from a separate process/script fails outright with
+            # "Can't lock read-write collection" while the server holds it).
+            _otel_record('endpoint_calls', 1, route='/debug_embedding_sample', status='start')
+            try:
+                n = qint('n', 4000) or 4000
+                if n < 100:
+                    n = 100
+                if n > 10000:
+                    n = 10000
+                total = int(conn.execute('SELECT COUNT(*) AS n FROM chunks').fetchone()['n'] or 0)
+                stride = max(1, total // n)
+                rows = conn.execute(
+                    '''
+                    SELECT c.id AS id, c.chapter_id AS chapter_id, c.content_type AS content_type,
+                           d.title AS doc_title,
+                           COALESCE(ch.subject, d.subject) AS subject,
+                           COALESCE(ch.grade_level, d.grade_level) AS grade_level,
+                           COALESCE(c.language, d.language) AS language
+                    FROM chunks c
+                    LEFT JOIN documents d ON c.document_id = d.id
+                    LEFT JOIN chapters ch ON c.chapter_id = ch.id
+                    WHERE c.rowid % ? = 0
+                    ''',
+                    (stride,),
+                ).fetchall()
+
+                ids = [r['id'] for r in rows]
+                coll = self._get_collection()
+                docs = coll.fetch(ids) if ids else {}
+
+                samples = []
+                for r in rows:
+                    d = docs.get(r['id'])
+                    if d is None:
+                        continue
+                    vec = None
+                    try:
+                        vec = d.vector('embedding')
+                    except Exception:
+                        vec = (d.vectors or {}).get('embedding') if getattr(d, 'vectors', None) else None
+                    if not vec:
+                        continue
+                    samples.append({
+                        'id': r['id'],
+                        'chapter_id': r['chapter_id'],
+                        'content_type': r['content_type'],
+                        'title': r['doc_title'],
+                        'subject': r['subject'],
+                        'grade': r['grade_level'],
+                        'language': r['language'],
+                        'vector': vec,
+                    })
+
+                return self._json(200, {
+                    'ok': True,
+                    'total_chunks': total,
+                    'stride': stride,
+                    'requested': n,
+                    'count': len(samples),
+                    'samples': samples,
+                })
+            except Exception as exc:
+                return self._json(500, {'ok': False, 'error': str(exc)})
+
+        if parsed.path == '/debug_embedding_sample_by_subject':
+            # Companion to /debug_embedding_sample: that endpoint's single
+            # uniform stride over ALL chunks makes a small subject (history:
+            # 303 of 1,151,311 chunks) nearly invisible — at a stride picked
+            # to give the big subjects a few hundred points each, history
+            # gets one or two. This samples each labeled subject on its OWN
+            # stride instead, capped at `cap` points per subject (or every
+            # chunk it has, if fewer), so every discipline gets comparable
+            # visual weight regardless of how much content it actually has.
+            _otel_record('endpoint_calls', 1, route='/debug_embedding_sample_by_subject', status='start')
+            try:
+                cap = qint('cap', 700) or 700
+                if cap < 50:
+                    cap = 50
+                if cap > 3000:
+                    cap = 3000
+
+                subject_counts = conn.execute(
+                    '''
+                    SELECT COALESCE(ch.subject, d.subject) AS subject, COUNT(*) AS n
+                    FROM chunks c
+                    LEFT JOIN documents d ON c.document_id = d.id
+                    LEFT JOIN chapters ch ON c.chapter_id = ch.id
+                    WHERE COALESCE(ch.subject, d.subject) IS NOT NULL
+                    GROUP BY COALESCE(ch.subject, d.subject)
+                    '''
+                ).fetchall()
+                strides = {r['subject']: max(1, int(r['n']) // cap) for r in subject_counts}
+                if not strides:
+                    return self._json(200, {'ok': True, 'count': 0, 'samples': [], 'subjects': {}})
+
+                def _sql_str(s: str) -> str:
+                    return "'" + str(s).replace("'", "''") + "'"
+
+                case_sql = 'CASE subject ' + ' '.join(
+                    f'WHEN {_sql_str(subj)} THEN {stride}' for subj, stride in strides.items()
+                ) + ' ELSE 1 END'
+
+                rows = conn.execute(
+                    f'''
+                    WITH labeled AS (
+                        SELECT c.id AS id, c.rowid AS rid, c.chapter_id AS chapter_id,
+                               c.content_type AS content_type, d.title AS doc_title,
+                               COALESCE(ch.subject, d.subject) AS subject,
+                               COALESCE(ch.grade_level, d.grade_level) AS grade_level,
+                               COALESCE(c.language, d.language) AS language
+                        FROM chunks c
+                        LEFT JOIN documents d ON c.document_id = d.id
+                        LEFT JOIN chapters ch ON c.chapter_id = ch.id
+                        WHERE COALESCE(ch.subject, d.subject) IS NOT NULL
+                    )
+                    SELECT * FROM labeled
+                    WHERE rid % ({case_sql}) = 0
+                    '''
+                ).fetchall()
+
+                ids = [r['id'] for r in rows]
+                coll = self._get_collection()
+                docs = coll.fetch(ids) if ids else {}
+
+                samples = []
+                for r in rows:
+                    d = docs.get(r['id'])
+                    if d is None:
+                        continue
+                    try:
+                        vec = d.vector('embedding')
+                    except Exception:
+                        vec = (d.vectors or {}).get('embedding') if getattr(d, 'vectors', None) else None
+                    if not vec:
+                        continue
+                    samples.append({
+                        'id': r['id'],
+                        'chapter_id': r['chapter_id'],
+                        'content_type': r['content_type'],
+                        'title': r['doc_title'],
+                        'subject': r['subject'],
+                        'grade': r['grade_level'],
+                        'language': r['language'],
+                        'vector': vec,
+                    })
+
+                counts_by_subject = {}
+                for s in samples:
+                    counts_by_subject[s['subject']] = counts_by_subject.get(s['subject'], 0) + 1
+
+                return self._json(200, {
+                    'ok': True,
+                    'cap': cap,
+                    'subject_totals': {r['subject']: r['n'] for r in subject_counts},
+                    'subject_strides': strides,
+                    'count': len(samples),
+                    'counts_by_subject': counts_by_subject,
+                    'samples': samples,
+                })
+            except Exception as exc:
+                return self._json(500, {'ok': False, 'error': str(exc)})
+
         if parsed.path == '/chapters':
             _otel_record('endpoint_calls', 1, route='/chapters', status='start')
             _otel_record('chapter_status_calls', 1, action='chapters')

@@ -2,14 +2,17 @@
 // =========================================================================
 //
 // Polls ../status_server.py over WiFi every POLL_INTERVAL_MS and cycles
-// through 5 signals on a single 7-segment digit, one at a time, colouring
-// a plain analog RGB strip (green/yellow/red) to match the signal shown:
+// through its signals on a single 7-segment digit, one at a time, colouring
+// a plain analog RGB strip (green/yellow/red) to match the signal shown.
 //
-//   O  Looma OpenSearch cluster health
-//   H  looma.website reachability
-//   U  looma-vector container state
-//   d  Size of looma_* Docker volumes
-//   P  looma-prometheus health
+// The list of signals is NOT fixed here: the server's JSON `items` array is
+// the display cycle (code + colour, in order), so adding or re-ordering a
+// technology only needs a status_server.py change. Today:
+//
+//   H web (Apache/PHP)   d MongoDB   t Piper TTS   S search   A AI
+//   O OpenSearch         U Vector    P Prometheus
+//
+// A code the glyph table below can't draw shows as a dash.
 //
 // Board: FQBN esp8266:esp8266:nodemcuv2 ("NodeMCU 1.0 (ESP-12E Module)").
 // esptool identified the chip on /dev/ttyUSB0 as an ESP8266, not an ESP32 —
@@ -87,12 +90,39 @@ const int PIN_G = D1;
 // ---------------------------------------------------------------------- //
 struct Segments { bool a, b, c, d, e, f, g; };
 
-const Segments SEG_O  = {true,  true,  true,  true,  true,  true,  false};
-const Segments SEG_H  = {false, true,  true,  false, true,  true,  true};
-const Segments SEG_U  = {false, true,  true,  true,  true,  true,  false};
-const Segments SEG_d  = {false, true,  true,  true,  true,  false, true};  // lowercase "d"
-const Segments SEG_P  = {true,  true,  false, false, true,  true,  true};
 const Segments SEG_DASH = {false, false, false, false, false, false, true}; // "no data"
+
+// Every letter a single 7-segment digit can draw legibly, keyed by the code
+// the server sends (case matters where both forms exist: "d" vs "A").
+const Segments &glyphFor(char code) {
+  static const Segments A = {true,  true,  true,  false, true,  true,  true};
+  static const Segments b = {false, false, true,  true,  true,  true,  true};
+  static const Segments C = {true,  false, false, true,  true,  true,  false};
+  static const Segments d = {false, true,  true,  true,  true,  false, true};
+  static const Segments E = {true,  false, false, true,  true,  true,  true};
+  static const Segments F = {true,  false, false, false, true,  true,  true};
+  static const Segments H = {false, true,  true,  false, true,  true,  true};
+  static const Segments J = {false, true,  true,  true,  true,  false, false};
+  static const Segments L = {false, false, false, true,  true,  true,  false};
+  static const Segments n = {false, false, true,  false, true,  false, true};
+  static const Segments O = {true,  true,  true,  true,  true,  true,  false};
+  static const Segments o = {false, false, true,  true,  true,  false, true};
+  static const Segments P = {true,  true,  false, false, true,  true,  true};
+  static const Segments r = {false, false, false, false, true,  false, true};
+  static const Segments S = {true,  false, true,  true,  false, true,  true};
+  static const Segments t = {false, false, false, true,  true,  true,  true};
+  static const Segments U = {false, true,  true,  true,  true,  true,  false};
+  static const Segments y = {false, true,  true,  true,  false, true,  true};
+  switch (code) {
+    case 'A': return A;  case 'b': return b;  case 'C': return C;
+    case 'd': return d;  case 'E': return E;  case 'F': return F;
+    case 'H': return H;  case 'J': return J;  case 'L': return L;
+    case 'n': return n;  case 'O': return O;  case 'o': return o;
+    case 'P': return P;  case 'r': return r;  case 'S': return S;
+    case 't': return t;  case 'U': return U;  case 'y': return y;
+    default:  return SEG_DASH;
+  }
+}
 
 void showDigit(const Segments &s) {
   digitalWrite(PIN_SEG_A, s.a);
@@ -126,11 +156,12 @@ void updateStripColor(const String &color) {
 }
 
 // ---------------------------------------------------------------------- //
-// Status data — order matches the display cycle
+// Status data — filled from the server's `items`, in display-cycle order
 // ---------------------------------------------------------------------- //
-const char CODES[5] = {'O', 'H', 'U', 'd', 'P'};
-const Segments *DIGITS[5] = {&SEG_O, &SEG_H, &SEG_U, &SEG_d, &SEG_P};
-String currentColor[5] = {"yellow", "yellow", "yellow", "yellow", "yellow"};
+const int MAX_ITEMS = 12;
+char itemCode[MAX_ITEMS];
+String itemColor[MAX_ITEMS];
+int itemCount = 0;
 bool lastPollOk = false;
 String activeColor = "yellow";  // colour of whichever item is on screen right now
 
@@ -155,20 +186,28 @@ void ensureWifi() {
   }
 }
 
-// Extracts the value of "color" for the entry whose "code" is `code`,
-// e.g. {"code": "O", "label": "opensearch", "color": "green", ...}
-// Hand-rolled on purpose: the payload shape is small and fixed, so this
-// avoids pulling in ArduinoJson just for five lookups.
-String extractColorForCode(const String &json, char code) {
-  String needle = String("\"code\": \"") + code + "\"";
-  int idx = json.indexOf(needle);
-  if (idx < 0) return "";
-  int colorKey = json.indexOf("\"color\": \"", idx);
-  if (colorKey < 0) return "";
-  int start = colorKey + 10; // strlen("\"color\": \"")
-  int end = json.indexOf("\"", start);
-  if (end < 0) return "";
-  return json.substring(start, end);
+// Walks every {"code": "X", ..., "color": "..."} entry in order and fills
+// itemCode/itemColor. Hand-rolled on purpose: the payload shape is small and
+// fixed (status_server.py keeps json.dumps' default ", " / ": " separators),
+// so this avoids pulling in ArduinoJson.
+int parseItems(const String &json) {
+  const String codeKey = "\"code\": \"";
+  const String colorKey = "\"color\": \"";
+  int count = 0;
+  int pos = json.indexOf(codeKey);
+  while (pos >= 0 && count < MAX_ITEMS) {
+    char code = json.charAt(pos + codeKey.length());
+    int c = json.indexOf(colorKey, pos);
+    if (c < 0) break;
+    int start = c + colorKey.length();
+    int end = json.indexOf("\"", start);
+    if (end < 0) break;
+    itemCode[count] = code;
+    itemColor[count] = json.substring(start, end);
+    count++;
+    pos = json.indexOf(codeKey, end);
+  }
+  return count;
 }
 
 bool pollStatus() {
@@ -187,16 +226,8 @@ bool pollStatus() {
   String body = http.getString();
   http.end();
 
-  bool ok = true;
-  for (int i = 0; i < 5; i++) {
-    String c = extractColorForCode(body, CODES[i]);
-    if (c.length() == 0) {
-      ok = false;
-      continue;
-    }
-    currentColor[i] = c;
-  }
-  return ok;
+  itemCount = parseItems(body);
+  return itemCount > 0;
 }
 
 // ---------------------------------------------------------------------- //
@@ -227,9 +258,10 @@ void loop() {
 
   if (now - lastStep >= DISPLAY_STEP_MS || lastStep == 0) {
     if (lastPollOk) {
-      showDigit(*DIGITS[stepIndex]);
-      activeColor = currentColor[stepIndex];
-      stepIndex = (stepIndex + 1) % 5;
+      if (stepIndex >= itemCount) stepIndex = 0;
+      showDigit(glyphFor(itemCode[stepIndex]));
+      activeColor = itemColor[stepIndex];
+      stepIndex = (stepIndex + 1) % itemCount;
     } else {
       showDigit(SEG_DASH);
       activeColor = "yellow";

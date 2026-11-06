@@ -2748,7 +2748,8 @@ LOOMA.speak = function(text, engine, voice, rate) {
                   * sound actually started (or the attempt failed). The rest of the
                   * TTS telemetry is server-side and can't see this: it stops when
                   * looma-TTS.php answers, before the browser has played anything.
-                  * looma-telemetry.php turns it into a tts.piper.first_audio span. */
+                  * looma-telemetry.php turns it into a tts.piper.first_audio or
+                  * tts.mimic.first_audio span. */
                  function reportFirstAudio(preparedBlock, status, errorMessage) {
                      try {
                          if (!window.LOOMA || !LOOMA.telemetry || !LOOMA.telemetry.track) return;

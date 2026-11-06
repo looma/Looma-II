@@ -62,6 +62,17 @@ services:
       LOOMA_METRICBEAT_MONGO_HOST: ${LOOMA_METRICBEAT_MONGO_HOST:-looma-db}
       LOOMA_METRICBEAT_MONGO_ENABLED: "true"
       LOOMA_METRICBEAT_PERIOD: ${LOOMA_METRICBEAT_PERIOD:-30s}
+      LOOMA_METRICBEAT_DISK_ENABLED: "true"
+    volumes:
+      # The host's root filesystem, for disk use (see metricbeat.yml). Not
+      # recursive: a recursive bind would hold /snap, USB disks and every other
+      # submount busy for as long as this container runs.
+      - type: bind
+        source: /
+        target: /hostfs
+        read_only: true
+        bind:
+          recursive: disabled
 
 # The canonical observability compose declares `loomanet` as a compose-managed
 # network. On the box the network is created up-front (by the installer/looma-up.sh)

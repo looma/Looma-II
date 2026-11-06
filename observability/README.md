@@ -48,10 +48,10 @@ and `grafana/dashboards/school-usage/`, see `grafana/provisioning/dashboards/das
 
 - **Looma — Data Stack**: infra health — OpenSearch ingestion, OTel Collector,
   Vector pipeline, Prometheus, MongoDB, containers, RUM, zvec, Services RED
-  (spanmetrics), pipeline/trace-pipeline health, Go runtime, logs.
+  (spanmetrics), pipeline/trace-pipeline health, Go runtime, logs, TTS (Piper/
+  Mimic/browser speech).
 - **Looma — School Usage**: how the fleet is actually being used — exams,
-  exercises, scores, page & chapter engagement, TTS (Piper/Mimic/
-  browser speech).
+  exercises, scores, page & chapter engagement.
 
 Datasources:
 
@@ -72,6 +72,7 @@ The collector forwards traces and logs to Data Prepper (`21890`/`21892`) which w
 
 - `looma-web` (PHP): one span per PHP request via `includes/otel.php` (and child spans for TTS synthesis).
 - `looma-piper-tts` (Flask sidecar inside `looma-web`): spans per request + `piper.synthesize` span.
+- `looma-mimic-tts`, `looma-browser-speech`: no process of their own. `includes/otel.php` and `looma-telemetry.php` report one span per use under these names, so both engines get a node on the OpenSearch service map.
 - `looma-ai`, `looma-search`, `looma-search-legacy`: Python services emit OTLP traces to the collector.
 
 ### Logs from files (Vector)

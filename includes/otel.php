@@ -130,6 +130,27 @@ if (!function_exists('looma_otel_bootstrap')) {
         $GLOBALS['looma_otel_spans'][$idx] = $span;
     }
 
+    /* Report the far side of a finished CLIENT span under its own service name,
+     * for an engine that has no process of its own to emit it (Mimic is a binary
+     * that looma-TTS.php runs). Without this the engine is invisible on the
+     * service map, whose nodes are service names. Call after looma_otel_end_span. */
+    function looma_otel_add_service_span($service, $name, $ctx, $attrs = []) {
+        if (!$ctx || !is_array($ctx)) return;
+        $parent = $GLOBALS['looma_otel_spans'][$ctx['idx'] ?? -1] ?? null;
+        if (!$parent) return;
+        $GLOBALS['looma_otel_service_spans'][$service][] = [
+            'traceId' => $parent['traceId'],
+            'spanId' => looma_otel_random_hex(8),
+            'parentSpanId' => $parent['spanId'],
+            'name' => (string) $name,
+            'kind' => 2, // SERVER
+            'startTimeUnixNano' => $parent['startTimeUnixNano'],
+            'endTimeUnixNano' => $parent['endTimeUnixNano'],
+            'attributes' => looma_otel_build_attrs($attrs),
+            'status' => $parent['status'],
+        ];
+    }
+
     function looma_otel_traceparent_for_span($ctx) {
         if (!$ctx || !is_array($ctx)) return null;
         $traceIdHex = $ctx['trace_id_hex'] ?? null;
@@ -294,6 +315,14 @@ if (!function_exists('looma_otel_bootstrap')) {
                     ]],
                 ]],
             ];
+            foreach (($GLOBALS['looma_otel_service_spans'] ?? []) as $otherService => $otherSpans) {
+                $otherAttrs = $resourceAttrs;
+                $otherAttrs[0] = ['key' => 'service.name', 'value' => ['stringValue' => (string) $otherService]];
+                $payload['resourceSpans'][] = [
+                    'resource' => ['attributes' => $otherAttrs],
+                    'scopeSpans' => [['scope' => ['name' => 'looma-web.php'], 'spans' => $otherSpans]],
+                ];
+            }
 
             $body = json_encode($payload);
             if ($body === false) return;

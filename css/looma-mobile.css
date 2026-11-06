@@ -1,0 +1,57 @@
+/*  looma-mobile.css
+
+    Portrait phones. A page laid out for a wide screen fits a portrait phone fine,
+    which is what fullscreen shows: the one thing that does not fit is the toolbar,
+    whose buttons force the page to about three screens wide, so the browser zooms
+    everything out. So fit the toolbar to the screen and leave the pages alone.
+
+    Loaded last (includes/js-includes.php), after each page's own stylesheet.
+*/
+
+@media (max-width: 767px) and (orientation: portrait) {
+
+    /* The columns must not grow with what is inside them. */
+    body {
+        grid-template-rows:    [top] repeat(9, minmax(0, 1fr)) [toolbar] auto [bottom];
+        grid-template-columns: [left] repeat(16, minmax(0, 1fr)) [toolbar] minmax(0, 1fr) [right];
+    }
+
+    /* Toolbar: two rows of eight, nothing but buttons. */
+    #toolbar-container {
+        display: block;
+        width: 100%;
+        height: auto;
+        min-width: 0;
+        padding: 2px;
+        box-sizing: border-box;
+    }
+
+    #logo-div,
+    #toolbar-container .logo,
+    #toolbar-container .toolbar-logo {
+        display: none !important;
+    }
+
+    #toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        width: 100%;
+        height: auto;
+    }
+
+    #toolbar button {
+        flex: 0 0 calc(12.5% - 2px);
+        width: calc(12.5% - 2px);
+        min-width: 0;
+        height: 46px;
+        margin: 1px;
+        padding: 2px;
+    }
+
+    #toolbar button img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+}

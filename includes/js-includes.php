@@ -16,3 +16,6 @@ if (!function_exists('looma_js_v')) {
     <script src="js/looma-screenfull.js<?php echo looma_js_v('js/looma-screenfull.js'); ?>"></script>      <!-- implements FULLSCREEN mode  -->
     <script src="js/looma-keyboard.js<?php echo looma_js_v('js/looma-keyboard.js'); ?>"></script>      <!-- adds a KEYBOARD button if the page has any inputs -->
     <script src="js/looma-telemetry.js<?php echo looma_js_v('js/looma-telemetry.js'); ?>"></script>      <!-- learning/TTS events for the Grafana dashboards -->
+    <!-- Phone-sized screens only: every rule inside sits in a media query. Last on the
+         page on purpose, after each page's own stylesheet and the toolbar's. -->
+    <link rel="stylesheet" href="css/looma-mobile.css<?php echo looma_js_v('css/looma-mobile.css'); ?>">

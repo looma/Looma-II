@@ -51,6 +51,7 @@ html {
     --looma-scrollbar-track:lightgoldenrodyellow;
     background-color: white;
     height:100vh;
+    height:100dvh;   /* what is visible: 100vh on a phone includes the address bar, which hid the toolbar */
     width:100vw;
     position:relative;
     margin:0;
@@ -72,6 +73,7 @@ body {
 	margin:0;
 	padding:0;
     height:100vh;
+    height:100dvh;   /* what is visible: 100vh on a phone includes the address bar, which hid the toolbar */
     width:100vw;
 
     font-family: "Comic Neue", "Comic Sans MS", "Chalkboard", "Noteworthy",sans-serif;

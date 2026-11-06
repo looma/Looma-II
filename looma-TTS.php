@@ -33,6 +33,9 @@ if (!function_exists('looma_otel_end_span')) {
 if (!function_exists('looma_otel_traceparent_for_span')) {
     function looma_otel_traceparent_for_span($span) { return null; }
 }
+if (!function_exists('looma_otel_add_service_span')) {
+    function looma_otel_add_service_span($service, $name, $span, $attributes = array()) { }
+}
 
 if (function_exists('looma_trace_page')) {
     looma_trace_page('tts', [
@@ -101,7 +104,7 @@ if ($engine === "mimic") {
         "tts.language" => $language,
         "tts.rate" => $mimicRate,
         "tts.text_chars" => strlen($text),
-    ]);
+    ], 3); // CLIENT, so the service map draws looma-web -> looma-mimic-tts
     $t0 = microtime(true);
     $mimicResult = looma_mimic_synthesize($text, $mimicVoice, $mimicRate);
     $mimicMs = (int) round((microtime(true) - $t0) * 1000);
@@ -110,6 +113,9 @@ if ($engine === "mimic") {
         "tts.duration_ms" => $mimicMs,
         "error.message" => $mimicError,
     ], $mimicError ? 2 : 0);
+    looma_otel_add_service_span("looma-mimic-tts", "mimic.synthesize", $mimicSpan, [
+        "tts.voice" => $mimicVoice,
+    ]);
 
     if ($mimicError) $mimicFail(502, $mimicError);
 

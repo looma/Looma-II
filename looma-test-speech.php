@@ -37,7 +37,6 @@ function ttsRateSelect($id) {
 }
 ?>
 
-<link rel="stylesheet" href="css/looma.css">
 <link rel="stylesheet" href="css/looma-test-speech.css?v=<?php echo @filemtime('css/looma-test-speech.css') ?: time(); ?>">
 
 </head>

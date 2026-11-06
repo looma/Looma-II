@@ -429,22 +429,26 @@ function looma_telemetry_emit_otlp(array $doc): void {
     if ($doc['event'] === 'tts_speak' && $doc['tts_engine'] === 'piper') {
         looma_telemetry_emit_first_audio_span($doc, $endpoint, $resource, 'tts.piper.first_audio', 'piper.voice');
     }
+    if ($doc['event'] === 'tts_speak' && $doc['tts_engine'] === 'mimic') {
+        looma_telemetry_emit_first_audio_span($doc, $endpoint, $resource, 'tts.mimic.first_audio', 'tts.voice');
+    }
     // speechSynthesis runs in the browser, so no server span exists for it. The
     // "TTS · SpeechSynthesis" dashboard charts tts.synthesis on the browser's
-    // service name, so report it under that name.
+    // service name, so report it under that name. looma-browser-speech gives the
+    // engine its own node on the service map, whose nodes are service names.
     if ($doc['event'] === 'tts_speak' && $doc['tts_engine'] === 'synthesis') {
         foreach ($resource['attributes'] as &$attr) {
             if ($attr['key'] === 'service.name') $attr['value'] = ['stringValue' => 'looma-web-rum'];
         }
         unset($attr);
-        looma_telemetry_emit_first_audio_span($doc, $endpoint, $resource, 'tts.synthesis', 'tts.voice');
+        looma_telemetry_emit_first_audio_span($doc, $endpoint, $resource, 'tts.synthesis', 'tts.voice', 'looma-browser-speech', 'speechSynthesis.speak');
     }
 }
 
 // Press-to-first-audio, measured in the browser (LOOMA.speak). A span
 // because that's what the TTS dashboards chart, and it keeps each press's exact
 // duration. Ignore durations no real wait could produce (bad client clock/input).
-function looma_telemetry_emit_first_audio_span(array $doc, string $endpoint, array $resource, string $spanName, string $voiceKey): void {
+function looma_telemetry_emit_first_audio_span(array $doc, string $endpoint, array $resource, string $spanName, string $voiceKey, ?string $engineService = null, string $engineSpanName = ''): void {
     $ms = $doc['duration_ms'];
     if ($ms === null || $ms <= 0 || $ms > 600000) return;
 
@@ -459,24 +463,33 @@ function looma_telemetry_emit_first_audio_span(array $doc, string $endpoint, arr
         $attrs[] = ['key' => 'piper.cache_hit', 'value' => ['boolValue' => $doc['tts_cache'] === 'hit']];
     }
 
-    $body = json_encode([
-        'resourceSpans' => [[
-            'resource' => $resource,
-            'scopeSpans' => [[
-                'scope' => ['name' => 'looma-telemetry'],
-                'spans' => [[
-                    'traceId' => bin2hex(random_bytes(16)),
-                    'spanId'  => bin2hex(random_bytes(8)),
-                    'name'    => $spanName,
-                    'kind'    => 1, // INTERNAL
-                    'startTimeUnixNano' => (string)($endNanos - $ms * 1000000),
-                    'endTimeUnixNano'   => (string)$endNanos,
-                    'attributes' => $attrs,
-                    'status' => ['code' => $doc['tts_status'] === 'error' ? 2 : 0],
-                ]],
-            ]],
-        ]],
-    ]);
+    $span = [
+        'traceId' => bin2hex(random_bytes(16)),
+        'spanId'  => bin2hex(random_bytes(8)),
+        'name'    => $spanName,
+        'kind'    => $engineService ? 3 : 1, // CLIENT : INTERNAL
+        'startTimeUnixNano' => (string)($endNanos - $ms * 1000000),
+        'endTimeUnixNano'   => (string)$endNanos,
+        'attributes' => $attrs,
+        'status' => ['code' => $doc['tts_status'] === 'error' ? 2 : 0],
+    ];
+    $scope = ['name' => 'looma-telemetry'];
+    $resourceSpans = [['resource' => $resource, 'scopeSpans' => [['scope' => $scope, 'spans' => [$span]]]]];
+    if ($engineService) {
+        $engineResource = $resource;
+        foreach ($engineResource['attributes'] as &$attr) {
+            if ($attr['key'] === 'service.name') $attr['value'] = ['stringValue' => $engineService];
+        }
+        unset($attr);
+        $engineSpan = array_merge($span, [
+            'spanId' => bin2hex(random_bytes(8)),
+            'parentSpanId' => $span['spanId'],
+            'name' => $engineSpanName,
+            'kind' => 2, // SERVER
+        ]);
+        $resourceSpans[] = ['resource' => $engineResource, 'scopeSpans' => [['scope' => $scope, 'spans' => [$engineSpan]]]];
+    }
+    $body = json_encode(['resourceSpans' => $resourceSpans]);
     if ($body !== false) looma_telemetry_post($endpoint . '/v1/traces', $body);
 }
 ?>

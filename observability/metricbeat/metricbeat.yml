@@ -63,6 +63,19 @@ metricbeat.modules:
     period: ${LOOMA_METRICBEAT_PERIOD:30s}
     enabled: true
 
+  # Disk use of the box's root filesystem, for the gauge on the Metricbeat System
+  # dashboard. Needs the host's / mounted at /hostfs, which only
+  # docker-compose.odroid.yml does, so it is off everywhere else. The container's
+  # other mounts say nothing about the machine, so only that one event is kept.
+  - module: system
+    metricsets:
+      - filesystem
+    period: ${LOOMA_METRICBEAT_PERIOD:30s}
+    enabled: ${LOOMA_METRICBEAT_DISK_ENABLED:false}
+    processors:
+      - drop_event.when.not.equals:
+          system.filesystem.mount_point: /hostfs
+
 processors:
   - add_host_metadata: ~
   - add_docker_metadata: ~

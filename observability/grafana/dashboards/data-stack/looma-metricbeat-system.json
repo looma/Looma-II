@@ -39,6 +39,95 @@
       "panels": []
     },
     {
+      "id": 16,
+      "type": "gauge",
+      "title": "Disk used %",
+      "description": "Share of the box's root filesystem (/) in use. Orange from 80%, red from 90%: the box needs room for content, logs and Docker images.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 6,
+        "h": 6
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:system AND metricset.name:filesystem AND box_name.keyword:looma",
+          "timeField": "@timestamp",
+          "alias": "",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "avg",
+              "field": "system.filesystem.used.pct"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.8
+              },
+              {
+                "color": "red",
+                "value": 0.9
+              }
+            ]
+          },
+          "noValue": "no data",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      }
+    },
+    {
       "id": 2,
       "type": "stat",
       "title": "RAM used %",
@@ -48,10 +137,10 @@
         "uid": "opensearch-metricbeat"
       },
       "gridPos": {
-        "x": 0,
+        "x": 6,
         "y": 1,
-        "w": 4,
-        "h": 4
+        "w": 3,
+        "h": 6
       },
       "targets": [
         {
@@ -134,10 +223,10 @@
         "uid": "opensearch-metricbeat"
       },
       "gridPos": {
-        "x": 4,
+        "x": 9,
         "y": 1,
-        "w": 4,
-        "h": 4
+        "w": 3,
+        "h": 6
       },
       "targets": [
         {
@@ -212,10 +301,10 @@
         "uid": "opensearch-metricbeat"
       },
       "gridPos": {
-        "x": 8,
+        "x": 12,
         "y": 1,
-        "w": 4,
-        "h": 4
+        "w": 3,
+        "h": 6
       },
       "targets": [
         {
@@ -290,10 +379,10 @@
         "uid": "opensearch-metricbeat"
       },
       "gridPos": {
-        "x": 12,
+        "x": 15,
         "y": 1,
-        "w": 4,
-        "h": 4
+        "w": 3,
+        "h": 6
       },
       "targets": [
         {
@@ -368,10 +457,10 @@
         "uid": "opensearch-metricbeat"
       },
       "gridPos": {
-        "x": 16,
+        "x": 18,
         "y": 1,
-        "w": 4,
-        "h": 4
+        "w": 3,
+        "h": 6
       },
       "targets": [
         {
@@ -447,10 +536,10 @@
         "uid": "opensearch-metricbeat"
       },
       "gridPos": {
-        "x": 20,
+        "x": 21,
         "y": 1,
-        "w": 4,
-        "h": 4
+        "w": 3,
+        "h": 6
       },
       "targets": [
         {
@@ -522,7 +611,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 5,
+        "y": 7,
         "w": 24,
         "h": 1
       },
@@ -539,7 +628,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 6,
+        "y": 8,
         "w": 12,
         "h": 8
       },
@@ -694,7 +783,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 6,
+        "y": 8,
         "w": 12,
         "h": 8
       },
@@ -789,7 +878,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 14,
+        "y": 16,
         "w": 12,
         "h": 8
       },
@@ -977,7 +1066,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 14,
+        "y": 16,
         "w": 12,
         "h": 8
       },
@@ -1067,7 +1156,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 22,
+        "y": 24,
         "w": 24,
         "h": 1
       },
@@ -1084,7 +1173,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 23,
+        "y": 25,
         "w": 12,
         "h": 8
       },
@@ -1239,7 +1328,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 23,
+        "y": 25,
         "w": 12,
         "h": 8
       },

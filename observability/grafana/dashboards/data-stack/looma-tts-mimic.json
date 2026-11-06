@@ -2,7 +2,7 @@
   "annotations": {
     "list": []
   },
-  "description": "RED metrics and logs for the Mimic TTS engine (span tts.mimic) — the legacy English-only fallback voice, run from looma-TTS.php. Usually idle while Piper is the default.",
+  "description": "Mimic TTS engine, with the same panels as the Piper dashboard: the wait from pressing Speak to the first sound (tts.mimic.first_audio), requests and latency (tts.mimic), what is being synthesized, and logs.",
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
@@ -127,29 +127,891 @@
   },
   "panels": [
     {
-      "type": "row",
       "id": 1,
-      "title": "Mimic · health",
+      "type": "row",
+      "title": "Mimic · from pressing Speak to the first sound",
       "collapsed": false,
       "gridPos": {
         "x": 0,
         "y": 0,
         "w": 24,
         "h": 1
-      }
+      },
+      "panels": []
     },
     {
       "id": 2,
       "type": "stat",
+      "title": "Presses",
+      "description": "Speak presses that started a new Mimic reading and reached the first sound. Pausing and resuming a reading is not a new press.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Wait p50",
+      "description": "Median wait from pressing Speak until Mimic starts making sound.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 3,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "50"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Wait p95",
+      "description": "95% of presses got the first Mimic sound within this time.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Wait max",
+      "description": "The longest wait for the first Mimic sound in this time range.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 9,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "durationInNanos"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Wait p99",
+      "description": "99% of presses got the first Mimic sound within this time.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "99"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Average sentence",
+      "description": "Average length of the first sentence, in characters.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "avg",
+              "field": "span.attributes.tts@text_chars"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 8,
+      "type": "stat",
+      "title": "Failed",
+      "description": "Presses where Mimic never started: the request or playback failed.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Wait from Speak to first sound",
+      "description": "p50 and p95 of the wait per time bucket. Empty stretches mean nobody pressed Speak, not that the wait was zero.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "50",
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "date_histogram",
+              "field": "startTime",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "time_series"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "always",
+            "pointSize": 6,
+            "spanNulls": true,
+            "fillOpacity": 0
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/p50.*/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "p50"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/p95.*/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "p95"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "type": "table",
+      "title": "Latest presses",
+      "description": "Each recent press with its exact wait, voice and text length.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "raw_data",
+              "settings": {
+                "size": "50"
+              }
+            }
+          ],
+          "bucketAggs": [],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "displayName": "Time",
+            "desc": true
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {
+              "startTime": true,
+              "durationInNanos": true,
+              "span.attributes.tts@language": true,
+              "span.attributes.tts@text_chars": true,
+              "span.attributes.tts@source": true,
+              "status.code": true,
+              "resource.attributes.looma@device_name": true,
+              "span.attributes.tts@voice": true
+            },
+            "indexByName": {
+              "startTime": 0,
+              "durationInNanos": 1,
+              "span.attributes.tts@language": 3,
+              "span.attributes.tts@text_chars": 4,
+              "span.attributes.tts@source": 5,
+              "resource.attributes.looma@device_name": 6,
+              "status.code": 7,
+              "span.attributes.tts@voice": 2
+            },
+            "renameByName": {
+              "startTime": "Time",
+              "durationInNanos": "Wait",
+              "span.attributes.tts@language": "Language",
+              "span.attributes.tts@text_chars": "Characters",
+              "span.attributes.tts@source": "Page",
+              "resource.attributes.looma@device_name": "Device",
+              "status.code": "Status (2 = failed)",
+              "span.attributes.tts@voice": "Voice"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Wait"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ns"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 2000000000.0
+                    },
+                    {
+                      "color": "red",
+                      "value": 5000000000.0
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              },
+              {
+                "id": "custom.width",
+                "value": 170
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "row",
+      "id": 11,
+      "title": "Mimic · requests & synthesis latency (looma-TTS.php)",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "id": 12,
+      "type": "stat",
       "title": "Requests ($__range)",
-      "description": "Mimic synthesis calls completed in the selected time range.",
+      "description": "Sentences sent to Mimic by looma-TTS.php, one request per sentence.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 0,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -175,23 +1037,24 @@
           "unit": "short",
           "color": {
             "mode": "fixed",
-            "fixedColor": "orange"
-          }
+            "fixedColor": "green"
+          },
+          "decimals": 0
         }
       }
     },
     {
-      "id": 3,
+      "id": 13,
       "type": "stat",
       "title": "Errors ($__range)",
-      "description": "Mimic synthesis calls that ended with span status STATUS_CODE_ERROR in the selected range.",
+      "description": "Requests where Mimic failed. Piper then reads that sentence, so the listener still hears it.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 4,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -236,17 +1099,17 @@
       }
     },
     {
-      "id": 4,
+      "id": 14,
       "type": "stat",
       "title": "Error rate ($__range)",
-      "description": "Errored Mimic calls as a percentage of all Mimic calls in the selected range. Shows 0% when there is no traffic.",
+      "description": "Share of Mimic requests that failed.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 8,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -291,17 +1154,17 @@
       }
     },
     {
-      "id": 5,
+      "id": 15,
       "type": "stat",
-      "title": "p50 latency",
-      "description": "Median (50th-percentile) Mimic synthesis duration over the $rate window.",
+      "title": "Synthesis p50",
+      "description": "Median time for the mimic binary to produce one sentence.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 12,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -324,22 +1187,43 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "ms"
-        }
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000
+              },
+              {
+                "color": "red",
+                "value": 5000
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
       }
     },
     {
-      "id": 6,
+      "id": 16,
       "type": "stat",
-      "title": "p95 latency",
-      "description": "95th-percentile Mimic synthesis duration over the $rate window.",
+      "title": "Synthesis p95",
+      "description": "95% of sentences were synthesized within this time.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 16,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -372,29 +1256,33 @@
               },
               {
                 "color": "orange",
-                "value": 800
+                "value": 2000
               },
               {
                 "color": "red",
-                "value": 2000
+                "value": 5000
               }
             ]
+          },
+          "color": {
+            "mode": "thresholds"
           }
-        }
+        },
+        "overrides": []
       }
     },
     {
-      "id": 7,
+      "id": 17,
       "type": "stat",
-      "title": "p99 latency",
-      "description": "99th-percentile Mimic synthesis duration over the $rate window.",
+      "title": "Synthesis p99",
+      "description": "99% of sentences were synthesized within this time.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 20,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -417,34 +1305,997 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "ms"
-        }
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000
+              },
+              {
+                "color": "red",
+                "value": 5000
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
       }
     },
     {
       "type": "row",
-      "id": 8,
-      "title": "Mimic · throughput & latency",
+      "id": 18,
+      "title": "Mimic · what is being synthesized",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 5,
+        "y": 18,
         "w": 24,
         "h": 1
       }
     },
     {
-      "id": 9,
+      "id": 19,
+      "type": "stat",
+      "title": "Slowest synthesis",
+      "description": "The longest single Mimic sentence in this time range.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "durationInNanos"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no data",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 20,
+      "type": "stat",
+      "title": "Fastest synthesis",
+      "description": "The shortest single Mimic sentence in this time range.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 4,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "min",
+              "field": "durationInNanos"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no data",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "Average synthesis",
+      "description": "Average time per Mimic sentence.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "avg",
+              "field": "durationInNanos"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no data",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 22,
+      "type": "stat",
+      "title": "Voices used",
+      "description": "How many different Mimic voices were used.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "cardinality",
+              "field": "span.attributes.tts@voice"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "no data",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 23,
+      "type": "stat",
+      "title": "Average sentence",
+      "description": "Average sentence length, in characters.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "avg",
+              "field": "span.attributes.tts@text_chars"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "no data",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 24,
+      "type": "stat",
+      "title": "Longest sentence",
+      "description": "The longest sentence sent to Mimic, in characters.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "span.attributes.tts@text_chars"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "no data",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 25,
+      "type": "timeseries",
+      "title": "Synthesis p95 by rate",
+      "description": "Whether the reading speed changes how long synthesis takes. Normal speed is a rate of 1.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2 AND span.attributes.tts@rate:<1",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "date_histogram",
+              "field": "startTime",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "time_series",
+          "alias": "Slower than normal"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2 AND span.attributes.tts@rate:>=1",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "date_histogram",
+              "field": "startTime",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "time_series",
+          "alias": "Normal or faster"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "always",
+            "pointSize": 6,
+            "spanNulls": true,
+            "fillOpacity": 0
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 26,
+      "type": "timeseries",
+      "title": "Synthesis p95 — short vs long sentences",
+      "description": "Mimic has no cache, so its time depends on the text. Short is under 100 characters.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 23,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2 AND span.attributes.tts@text_chars:<100",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "date_histogram",
+              "field": "startTime",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "time_series",
+          "alias": "Short"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2 AND span.attributes.tts@text_chars:>=100",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "date_histogram",
+              "field": "startTime",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "time_series",
+          "alias": "Long"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "always",
+            "pointSize": 6,
+            "spanNulls": true,
+            "fillOpacity": 0
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 27,
+      "type": "timeseries",
+      "title": "Synthesis p95 by voice",
+      "description": "How long each Mimic voice takes.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "3",
+              "type": "terms",
+              "field": "span.attributes.tts@voice",
+              "settings": {
+                "size": "10",
+                "order": "desc",
+                "orderBy": "_count",
+                "min_doc_count": "1"
+              }
+            },
+            {
+              "id": "9",
+              "type": "date_histogram",
+              "field": "startTime",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "time_series",
+          "alias": ""
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "always",
+            "pointSize": 6,
+            "spanNulls": true,
+            "fillOpacity": 0
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 28,
+      "type": "timeseries",
+      "title": "First sound vs synthesis (p95)",
+      "description": "The gap between the two is what the listener waits for beyond synthesis: the network and starting playback.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "date_histogram",
+              "field": "startTime",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "time_series",
+          "alias": "First sound"
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.mimic\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "date_histogram",
+              "field": "startTime",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "time_series",
+          "alias": "Synthesis"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "always",
+            "pointSize": 6,
+            "spanNulls": true,
+            "fillOpacity": 0
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "id": 29,
+      "title": "Mimic · throughput & latency",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 39,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "id": 30,
       "type": "timeseries",
       "title": "Request rate",
-      "description": "Mimic synthesis request rate, averaged over the $rate window.",
+      "description": "Mimic requests per second, averaged over the rate window.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 0,
-        "y": 6,
+        "y": 40,
         "w": 12,
         "h": 8
       },
@@ -469,7 +2320,7 @@
           "unit": "reqps",
           "color": {
             "mode": "fixed",
-            "fixedColor": "orange"
+            "fixedColor": "green"
           },
           "custom": {
             "drawStyle": "line",
@@ -481,17 +2332,17 @@
       }
     },
     {
-      "id": 10,
+      "id": 31,
       "type": "timeseries",
-      "title": "Latency p50 / p95 / p99",
-      "description": "Mimic synthesis duration percentiles (p50, p95, p99) over the $rate window.",
+      "title": "Synthesis latency p50 / p95 / p99",
+      "description": "Time for the mimic binary to produce one sentence.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 12,
-        "y": 6,
+        "y": 40,
         "w": 12,
         "h": 8
       },
@@ -535,17 +2386,17 @@
       }
     },
     {
-      "id": 11,
+      "id": 32,
       "type": "timeseries",
       "title": "Errors over time",
-      "description": "Count of errored Mimic calls bucketed over the $rate window.",
+      "description": "Failed Mimic requests per rate window.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 0,
-        "y": 14,
+        "y": 48,
         "w": 12,
         "h": 7
       },
@@ -582,17 +2433,17 @@
       }
     },
     {
-      "id": 12,
+      "id": 33,
       "type": "timeseries",
       "title": "Calls by status",
-      "description": "Mimic request rate split by span status code (OK, ERROR, UNSET).",
+      "description": "Mimic requests per second, by span status.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 12,
-        "y": 14,
+        "y": 48,
         "w": 12,
         "h": 7
       },
@@ -631,50 +2482,50 @@
     },
     {
       "type": "row",
-      "id": 13,
+      "id": 34,
       "title": "Mimic · logs & notes",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 21,
+        "y": 55,
         "w": 24,
         "h": 1
       }
     },
     {
-      "id": 14,
+      "id": 35,
       "type": "text",
       "title": "About Mimic",
       "gridPos": {
         "x": 0,
-        "y": 22,
+        "y": 56,
         "w": 6,
         "h": 10
       },
       "options": {
         "mode": "markdown",
-        "content": "## Mimic\n\nOptional English-only offline engine, run from `looma-TTS.php` (`includes/looma-mimic.php`) with the local `mimic` binary.\n\n- Used when a teacher picks it on the Reading Settings page. **Piper** stays the default.\n- Nepali sentences are always read by Piper, and if Mimic fails Piper reads that sentence instead, so those requests count on the Piper dashboard.\n- Span: `tts.mimic`.\n\nIf this dashboard is empty, no one is reading with Mimic, which is expected while Piper is the default."
+        "content": "## Mimic\n\nOptional English-only offline engine, run from `looma-TTS.php` (`includes/looma-mimic.php`) with the local `mimic` binary.\n\n- Used when a teacher picks it on the Reading Settings page. **Piper** stays the default.\n- Nepali sentences are always read by Piper, and if Mimic fails Piper reads that sentence instead, so those requests count on the Piper dashboard.\n- Spans: `tts.mimic` (one sentence, on the server) and `tts.mimic.first_audio` (one press, measured in the browser). On the OpenSearch service map the engine is the node `looma-mimic-tts`.\n\nIf this dashboard is empty, no one is reading with Mimic, which is expected while Piper is the default."
       }
     },
     {
-      "id": 15,
+      "id": 36,
       "type": "logs",
       "title": "Recent Mimic log lines",
-      "description": "Recent log lines (looma-logs-*) mentioning Mimic.",
+      "description": "Log lines from the Looma web app that mention Mimic.",
       "datasource": {
         "type": "grafana-opensearch-datasource",
         "uid": "opensearch-logs"
       },
       "gridPos": {
         "x": 6,
-        "y": 22,
+        "y": 56,
         "w": 18,
         "h": 10
       },
       "targets": [
         {
           "refId": "A",
-          "query": "message:mimic OR message:Mimic",
+          "query": "service:\"looma-web\" AND (message:mimic OR message:Mimic)",
           "metrics": [
             {
               "type": "logs",

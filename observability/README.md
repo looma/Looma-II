@@ -50,7 +50,7 @@ and `grafana/dashboards/school-usage/`, see `grafana/provisioning/dashboards/das
   Vector pipeline, Prometheus, MongoDB, containers, RUM, zvec, Services RED
   (spanmetrics), pipeline/trace-pipeline health, Go runtime, logs.
 - **Looma — School Usage**: how the fleet is actually being used — exams,
-  exercises, scores, page & chapter engagement, TTS (Piper/ResponsiveVoice/
+  exercises, scores, page & chapter engagement, TTS (Piper/Mimic/
   browser speech).
 
 Datasources:
@@ -71,7 +71,7 @@ The collector forwards traces and logs to Data Prepper (`21890`/`21892`) which w
 ### What is traced today (out of the box)
 
 - `looma-web` (PHP): one span per PHP request via `includes/otel.php` (and child spans for TTS synthesis).
-- `piper-tts` (Flask sidecar inside `looma-web`): spans per request + `piper.synthesize` span.
+- `looma-piper-tts` (Flask sidecar inside `looma-web`): spans per request + `piper.synthesize` span.
 - `looma-ai`, `looma-search`, `looma-search-legacy`: Python services emit OTLP traces to the collector.
 
 ### Logs from files (Vector)

@@ -55,7 +55,7 @@ try:
     ).rstrip("/")
 
     _resource = Resource.create({
-        "service.name": os.environ.get("OTEL_SERVICE_NAME", "piper-tts"),
+        "service.name": os.environ.get("OTEL_SERVICE_NAME", "looma-piper-tts"),
         "deployment.environment": os.environ.get("DEPLOYMENT_ENV", "looma"),
     })
     _provider = TracerProvider(resource=_resource)
@@ -65,7 +65,7 @@ try:
         )
     )
     trace.set_tracer_provider(_provider)
-    _tracer = trace.get_tracer("piper-tts")
+    _tracer = trace.get_tracer("looma-piper-tts")
     _otel_enabled = True
 except Exception as _exc:  # pragma: no cover
     _tracer = None

@@ -63,7 +63,7 @@
         "name": "service",
         "type": "custom",
         "label": "Service",
-        "query": "looma-web,looma-ai,looma-search,piper-tts",
+        "query": "looma-web,looma-ai,looma-search,looma-piper-tts",
         "current": { "text": "looma-web", "value": "looma-web" }
       },
       {

@@ -83,6 +83,7 @@ $tts_rate       = isset($payload['tts_rate'])       ? (float)$payload['tts_rate'
 $tts_source     = trim((string)($payload['tts_source']     ?? ''));
 $tts_status     = strtolower(trim((string)($payload['tts_status']   ?? '')));
 $tts_error      = trim((string)($payload['tts_error']      ?? ''));
+$tts_cache      = strtolower(trim((string)($payload['tts_cache'] ?? '')));
 
 // Best-effort enrichment: many browser calls don't include grade/subject/chapter context.
 // Try to infer missing fields from the page URL (HTTP_REFERER) so we can slice dashboards by
@@ -125,6 +126,7 @@ $doc = [
     'tts_source'     => $tts_source     !== '' ? $tts_source     : null,
     'tts_status'     => $tts_status     !== '' ? $tts_status     : null,
     'tts_error'      => $tts_error      !== '' ? $tts_error      : null,
+    'tts_cache'      => $tts_cache      !== '' ? $tts_cache      : null,
     'utc'          => $utc,
     'time'         => date('Y-m-d\TH:i:s\Z', $utc),
     'ip'           => $_SERVER['REMOTE_ADDR'] ?? null,
@@ -249,11 +251,34 @@ function looma_telemetry_infer_context(string $referer): array {
 }
 
 function looma_telemetry_resource_attrs(): array {
-    return [
+    // Same box-name convention as includes/otel.php, so a score/chapter_time
+    // event is attributable to the machine it came from in a shared
+    // OpenSearch/Grafana, exactly like traces and logs already are.
+    $deviceName = getenv('LOOMA_BOX_NAME') ?: (function_exists('gethostname') ? (gethostname() ?: 'unknown') : 'unknown');
+    // This box's public IP, captured once at install time (empty if it had no
+    // internet then) — box_ip/LAN addresses have no real-world location, so
+    // the data server's geoip ingest pipeline resolves this one instead.
+    $publicIp = getenv('LOOMA_BOX_PUBLIC_IP') ?: '';
+    // Rough city/country from that same install-time lookup — lets Grafana
+    // filter machines/scores by location, not just by device name.
+    $geoCity    = getenv('LOOMA_BOX_GEO_CITY') ?: '';
+    $geoCountry = getenv('LOOMA_BOX_GEO_COUNTRY') ?: '';
+    $attrs = [
         ['key' => 'service.name',           'value' => ['stringValue' => getenv('OTEL_SERVICE_NAME') ?: 'looma-web']],
         ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
         ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'local']],
+        ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
     ];
+    if ($publicIp !== '') {
+        $attrs[] = ['key' => 'looma.public_ip', 'value' => ['stringValue' => $publicIp]];
+    }
+    if ($geoCity !== '') {
+        $attrs[] = ['key' => 'looma.geo_city', 'value' => ['stringValue' => $geoCity]];
+    }
+    if ($geoCountry !== '') {
+        $attrs[] = ['key' => 'looma.geo_country', 'value' => ['stringValue' => $geoCountry]];
+    }
+    return $attrs;
 }
 
 function looma_telemetry_attrs(array $doc): array {
@@ -284,6 +309,30 @@ function looma_telemetry_attrs(array $doc): array {
     return $attrs;
 }
 
+// Attributes for looma_event_total specifically — categorical dimensions
+// only (event/activity/grade/subject/...), never the per-submission numeric
+// fields (correct/total/score/duration_ms). Those are near-unique on every
+// single event (an exact score like 0.0555...), so attaching them as OTLP
+// metric attributes turns every event into its own permanent, never-repeated
+// Prometheus time series: unbounded cardinality, and rate()/sum() over the
+// counter can't work since no two events ever share a label set. The numeric
+// values themselves already have proper homes — looma_score_ratio (gauge)
+// and looma_chapter_time_ms (sum) below — as the metric's *value*, not a label.
+function looma_telemetry_event_count_attrs(array $doc): array {
+    $attrs = [];
+    foreach (['event', 'activity', 'grade', 'subject', 'chapter_id', 'chapter_name', 'language', 'page'] as $k) {
+        if (!empty($doc[$k])) {
+            $attrs[] = ['key' => "looma.$k", 'value' => ['stringValue' => (string)$doc[$k]]];
+        }
+    }
+    foreach (['tts_engine', 'tts_voice', 'tts_language', 'tts_source', 'tts_status', 'tts_error'] as $k) {
+        if (!empty($doc[$k])) {
+            $attrs[] = ['key' => "looma.$k", 'value' => ['stringValue' => (string)$doc[$k]]];
+        }
+    }
+    return $attrs;
+}
+
 function looma_telemetry_emit_otlp(array $doc): void {
     $endpoint = looma_telemetry_otlp_endpoint();
     $resource = ['attributes' => looma_telemetry_resource_attrs()];
@@ -293,6 +342,11 @@ function looma_telemetry_emit_otlp(array $doc): void {
     // the Grafana panels stay empty.
     $startNanos = (string)((int)$tNanos - 60_000_000_000);
     $attrs    = looma_telemetry_attrs($doc);
+    // Metric attributes: categorical dimensions only — see
+    // looma_telemetry_event_count_attrs() for why correct/total/score/
+    // duration_ms can't be labels here. Logs keep the full $attrs above;
+    // OpenSearch documents don't have Prometheus's cardinality problem.
+    $countAttrs = looma_telemetry_event_count_attrs($doc);
 
     // 1. Log record — flows into OpenSearch for the engagement dashboard.
     $logBody = json_encode([
@@ -322,7 +376,7 @@ function looma_telemetry_emit_otlp(array $doc): void {
             'aggregationTemporality' => 2, // CUMULATIVE
             'isMonotonic' => true,
             'dataPoints' => [[
-                'attributes'        => $attrs,
+                'attributes'        => $countAttrs,
                 'startTimeUnixNano' => $startNanos,
                 'timeUnixNano'      => $tNanos,
                 'asInt'             => '1',
@@ -337,7 +391,7 @@ function looma_telemetry_emit_otlp(array $doc): void {
             'unit' => '1',
             'gauge' => [
                 'dataPoints' => [[
-                    'attributes'   => $attrs,
+                    'attributes'   => $countAttrs,
                     'timeUnixNano' => $tNanos,
                     'asDouble'     => (float)$doc['score'],
                 ]],
@@ -352,7 +406,7 @@ function looma_telemetry_emit_otlp(array $doc): void {
                 'aggregationTemporality' => 2,
                 'isMonotonic' => true,
                 'dataPoints' => [[
-                    'attributes'        => $attrs,
+                    'attributes'        => $countAttrs,
                     'startTimeUnixNano' => $startNanos,
                     'timeUnixNano'      => $tNanos,
                     'asInt'             => (string)(int)$doc['duration_ms'],
@@ -371,5 +425,58 @@ function looma_telemetry_emit_otlp(array $doc): void {
         ]],
     ]);
     if ($metricsBody !== false) looma_telemetry_post($endpoint . '/v1/metrics', $metricsBody);
+
+    if ($doc['event'] === 'tts_speak' && $doc['tts_engine'] === 'piper') {
+        looma_telemetry_emit_first_audio_span($doc, $endpoint, $resource, 'tts.piper.first_audio', 'piper.voice');
+    }
+    // speechSynthesis runs in the browser, so no server span exists for it. The
+    // "TTS · SpeechSynthesis" dashboard charts tts.synthesis on the browser's
+    // service name, so report it under that name.
+    if ($doc['event'] === 'tts_speak' && $doc['tts_engine'] === 'synthesis') {
+        foreach ($resource['attributes'] as &$attr) {
+            if ($attr['key'] === 'service.name') $attr['value'] = ['stringValue' => 'looma-web-rum'];
+        }
+        unset($attr);
+        looma_telemetry_emit_first_audio_span($doc, $endpoint, $resource, 'tts.synthesis', 'tts.voice');
+    }
+}
+
+// Press-to-first-audio, measured in the browser (LOOMA.speak). A span
+// because that's what the TTS dashboards chart, and it keeps each press's exact
+// duration. Ignore durations no real wait could produce (bad client clock/input).
+function looma_telemetry_emit_first_audio_span(array $doc, string $endpoint, array $resource, string $spanName, string $voiceKey): void {
+    $ms = $doc['duration_ms'];
+    if ($ms === null || $ms <= 0 || $ms > 600000) return;
+
+    $endNanos = (int)round(microtime(true) * 1e9);
+    $attrs = [];
+    if (!empty($doc['tts_voice']))    $attrs[] = ['key' => $voiceKey,       'value' => ['stringValue' => (string)$doc['tts_voice']]];
+    if (!empty($doc['tts_language'])) $attrs[] = ['key' => 'tts.language',   'value' => ['stringValue' => (string)$doc['tts_language']]];
+    if (!empty($doc['tts_source']))   $attrs[] = ['key' => 'tts.source',     'value' => ['stringValue' => (string)$doc['tts_source']]];
+    if (!empty($doc['tts_error']))    $attrs[] = ['key' => 'error.message',  'value' => ['stringValue' => (string)$doc['tts_error']]];
+    if ($doc['tts_text_chars'] !== null) $attrs[] = ['key' => 'tts.text_chars', 'value' => ['intValue' => (string)$doc['tts_text_chars']]];
+    if ($doc['tts_cache'] === 'hit' || $doc['tts_cache'] === 'miss') {
+        $attrs[] = ['key' => 'piper.cache_hit', 'value' => ['boolValue' => $doc['tts_cache'] === 'hit']];
+    }
+
+    $body = json_encode([
+        'resourceSpans' => [[
+            'resource' => $resource,
+            'scopeSpans' => [[
+                'scope' => ['name' => 'looma-telemetry'],
+                'spans' => [[
+                    'traceId' => bin2hex(random_bytes(16)),
+                    'spanId'  => bin2hex(random_bytes(8)),
+                    'name'    => $spanName,
+                    'kind'    => 1, // INTERNAL
+                    'startTimeUnixNano' => (string)($endNanos - $ms * 1000000),
+                    'endTimeUnixNano'   => (string)$endNanos,
+                    'attributes' => $attrs,
+                    'status' => ['code' => $doc['tts_status'] === 'error' ? 2 : 0],
+                ]],
+            ]],
+        ]],
+    ]);
+    if ($body !== false) looma_telemetry_post($endpoint . '/v1/traces', $body);
 }
 ?>

@@ -23,6 +23,18 @@ require_once ('includes/looma-utilities.php');
 if (isset($_GET['fp'])) $filepath = $_REQUEST['fp']; else $filepath = "../content/";
 if (isset($_GET['fn'])) $filename = $_REQUEST['fn']; else $filename = null;
 
+// Chapter context, when this HTML page is a textbook chapter (see
+// js/looma-utilities.js's "htmlchapter" case and the html-resolved branch of
+// "chapter"/"section" — both now forward these from the chapter button's own
+// data-ch/data-chdn/data-class/data-subject). Absent for non-chapter HTML
+// content (Wikipedia, ePaath, PhET), which is exactly when js/looma-html.js
+// below should skip chapter_time / page telemetry.
+$html_ch_id   = isset($_GET['ch'])      ? trim($_GET['ch'])      : '';
+$html_ch_dn   = isset($_GET['chdn'])    ? trim($_GET['chdn'])    : '';
+$html_grade   = isset($_GET['grade'])   ? trim($_GET['grade'])   : '';
+$html_subject = isset($_GET['subject']) ? strtolower(trim($_GET['subject'])) : '';
+$html_lang    = isset($_GET['lang'])    ? trim($_GET['lang'])    : '';
+
 /* The SAME chapter in the other language, or null.
  *
  * A chapter is one file per language, in mirrored folders:
@@ -85,6 +97,11 @@ else if ( strpos($filepath, 'PhET'))    logFiletypeHit('PhET');
 echo "<div id='main-container-horizontal'>";
     echo "<div id='fullscreen'";
         if (isset($_GET['ep']) && $_GET['ep'] === 'keyboard') echo " class='keyboard'";
+        if ($html_ch_id)   echo " data-ch='"      . htmlspecialchars($html_ch_id, ENT_QUOTES)   . "'";
+        if ($html_ch_dn)   echo " data-chdn='"    . htmlspecialchars($html_ch_dn, ENT_QUOTES)   . "'";
+        if ($html_grade)   echo " data-grade='"   . htmlspecialchars($html_grade, ENT_QUOTES)   . "'";
+        if ($html_subject) echo " data-subject='" . htmlspecialchars($html_subject, ENT_QUOTES) . "'";
+        if ($html_lang)    echo " data-lang='"    . htmlspecialchars($html_lang, ENT_QUOTES)    . "'";
     echo ">";
         //<!-- NOTE the iframe below has name='looma-frame', and wikipedia articles in looma have <a xxx.htm target="looma-frame" -->
         // data-alt* is read by js/looma-html.js, which turns the toolbar's
@@ -104,5 +121,5 @@ echo "<div id='main-container-horizontal'>";
 
 <?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>
-<script src="js/looma-html.js"></script>
-<script src="js/looma-keyboard.js"></script>
+<script src="js/looma-html.js?v=<?php echo @filemtime('js/looma-html.js') ?: time(); ?>"></script>
+<script src="js/looma-keyboard.js?v=<?php echo @filemtime('js/looma-keyboard.js') ?: time(); ?>"></script>

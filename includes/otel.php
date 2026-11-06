@@ -28,12 +28,6 @@ if (!function_exists('looma_otel_bootstrap')) {
         }
     }
 
-    function looma_otel_hex_to_b64($hex) {
-        $bin = @hex2bin((string) $hex);
-        if ($bin === false) return null;
-        return base64_encode($bin);
-    }
-
     function looma_otel_format_traceparent($traceIdHex, $spanIdHex, $flags = '01') {
         $traceIdHex = strtolower((string) $traceIdHex);
         $spanIdHex  = strtolower((string) $spanIdHex);
@@ -81,24 +75,24 @@ if (!function_exists('looma_otel_bootstrap')) {
         }
 
         $traceIdHex = $GLOBALS['looma_otel_trace_id_hex'];
-        $traceIdB64 = $GLOBALS['looma_otel_trace_id_b64'];
         $flags      = $GLOBALS['looma_otel_trace_flags'] ?? '01';
 
         $spanIdHex = looma_otel_random_hex(8);
-        $spanIdB64 = looma_otel_hex_to_b64($spanIdHex);
-        if ($spanIdB64 === null) return null;
 
         $parentHex = $parentSpanIdHex ?: $GLOBALS['looma_otel_root_span_id_hex'];
-        $parentB64 = $parentHex ? looma_otel_hex_to_b64($parentHex) : null;
 
         if (!isset($GLOBALS['looma_otel_spans']) || !is_array($GLOBALS['looma_otel_spans'])) {
             $GLOBALS['looma_otel_spans'] = [];
         }
 
         $start = looma_otel_now_nanos();
+        // OTLP/JSON's traceId/spanId are hex strings, not base64 (despite bytes
+        // fields elsewhere in protobuf-JSON normally being base64) — the
+        // collector's pdata unmarshaler rejects base64 here with "length
+        // mismatch" and the span is silently dropped by the caller.
         $span = [
-            'traceId' => $traceIdB64,
-            'spanId' => $spanIdB64,
+            'traceId' => $traceIdHex,
+            'spanId' => $spanIdHex,
             'name' => (string) $name,
             'kind' => (int) $kind,
             'startTimeUnixNano' => $start,
@@ -106,8 +100,8 @@ if (!function_exists('looma_otel_bootstrap')) {
             'attributes' => looma_otel_build_attrs($attrs),
             'status' => ['code' => 0],
         ];
-        if ($parentB64) {
-            $span['parentSpanId'] = $parentB64;
+        if ($parentHex) {
+            $span['parentSpanId'] = $parentHex;
         }
 
         $GLOBALS['looma_otel_spans'][] = $span;
@@ -188,13 +182,9 @@ if (!function_exists('looma_otel_bootstrap')) {
         $rootSpanIdHex = looma_otel_random_hex(8);
         $flags = $incoming ? $incoming['flags'] : '01';
 
-        $traceIdB64 = looma_otel_hex_to_b64($traceIdHex);
-        $rootSpanIdB64 = looma_otel_hex_to_b64($rootSpanIdHex);
-        if ($traceIdB64 === null || $rootSpanIdB64 === null) return;
-
-        $parentSpanIdB64 = null;
+        $parentSpanIdHex = null;
         if ($incoming && isset($incoming['parent_span_id_hex'])) {
-            $parentSpanIdB64 = looma_otel_hex_to_b64($incoming['parent_span_id_hex']);
+            $parentSpanIdHex = $incoming['parent_span_id_hex'];
         }
 
         $service    = getenv('OTEL_SERVICE_NAME') ?: 'looma-web';
@@ -205,15 +195,21 @@ if (!function_exists('looma_otel_bootstrap')) {
         // from this box are distinguishable in a shared OpenSearch/Grafana the
         // same way logs already are.
         $deviceName = getenv('LOOMA_BOX_NAME') ?: (function_exists('gethostname') ? (gethostname() ?: 'unknown') : 'unknown');
+        // This box's public IP, captured once at install time (empty if it had no
+        // internet then) — box_ip/LAN addresses have no real-world location, so
+        // the data server's geoip ingest pipeline resolves this one instead.
+        $publicIp = getenv('LOOMA_BOX_PUBLIC_IP') ?: '';
+        // Rough city/country from that same install-time lookup — lets Grafana
+        // filter machines/scores by location, not just by device name.
+        $geoCity    = getenv('LOOMA_BOX_GEO_CITY') ?: '';
+        $geoCountry = getenv('LOOMA_BOX_GEO_COUNTRY') ?: '';
 
         // Keep legacy names for existing code that might read these.
         $GLOBALS['looma_otel_trace_id'] = $traceIdHex;
         $GLOBALS['looma_otel_span_id']  = $rootSpanIdHex;
 
         $GLOBALS['looma_otel_trace_id_hex'] = $traceIdHex;
-        $GLOBALS['looma_otel_trace_id_b64'] = $traceIdB64;
         $GLOBALS['looma_otel_root_span_id_hex'] = $rootSpanIdHex;
-        $GLOBALS['looma_otel_root_span_id_b64'] = $rootSpanIdB64;
         $GLOBALS['looma_otel_trace_flags'] = $flags;
         $GLOBALS['looma_otel_traceparent'] = looma_otel_format_traceparent($traceIdHex, $rootSpanIdHex, $flags);
 
@@ -227,8 +223,27 @@ if (!function_exists('looma_otel_bootstrap')) {
             $GLOBALS['looma_otel_spans'] = [];
         }
 
-        register_shutdown_function(function () use ($startNanos, $traceIdB64, $rootSpanIdB64, $parentSpanIdB64, $service, $tracesUrl, $deviceName) {
+        register_shutdown_function(function () use ($startNanos, $traceIdHex, $rootSpanIdHex, $parentSpanIdHex, $service, $tracesUrl, $deviceName, $publicIp, $geoCity, $geoCountry) {
             $endNanos = looma_otel_now_nanos();
+            // Shared resource attributes for both the trace and (optional) log
+            // payload below — built once so looma.public_ip only needs adding
+            // in one place instead of two literal arrays staying in sync.
+            $resourceAttrs = [
+                ['key' => 'service.name',           'value' => ['stringValue' => $service]],
+                ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
+                ['key' => 'service.version',        'value' => ['stringValue' => getenv('LOOMA_VERSION') ?: 'dev']],
+                ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'looma']],
+                ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
+            ];
+            if ($publicIp !== '') {
+                $resourceAttrs[] = ['key' => 'looma.public_ip', 'value' => ['stringValue' => $publicIp]];
+            }
+            if ($geoCity !== '') {
+                $resourceAttrs[] = ['key' => 'looma.geo_city', 'value' => ['stringValue' => $geoCity]];
+            }
+            if ($geoCountry !== '') {
+                $resourceAttrs[] = ['key' => 'looma.geo_country', 'value' => ['stringValue' => $geoCountry]];
+            }
 
             $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
             $uri    = $_SERVER['REQUEST_URI']    ?? '/';
@@ -238,8 +253,8 @@ if (!function_exists('looma_otel_bootstrap')) {
             $statusCode = ($status >= 500) ? 2 : 0; // 2 = ERROR, 0 = UNSET
 
             $rootSpan = [
-                'traceId'           => $traceIdB64,
-                'spanId'            => $rootSpanIdB64,
+                'traceId'           => $traceIdHex,
+                'spanId'            => $rootSpanIdHex,
                 'name'              => $method . ' ' . $route,
                 'kind'              => 2, // SERVER
                 'startTimeUnixNano' => $startNanos,
@@ -257,8 +272,8 @@ if (!function_exists('looma_otel_bootstrap')) {
                 ),
                 'status' => ['code' => $statusCode],
             ];
-            if ($parentSpanIdB64) {
-                $rootSpan['parentSpanId'] = $parentSpanIdB64;
+            if ($parentSpanIdHex) {
+                $rootSpan['parentSpanId'] = $parentSpanIdHex;
             }
 
             $spans = [$rootSpan];
@@ -271,13 +286,7 @@ if (!function_exists('looma_otel_bootstrap')) {
             $payload = [
                 'resourceSpans' => [[
                     'resource' => [
-                        'attributes' => [
-                            ['key' => 'service.name',           'value' => ['stringValue' => $service]],
-                            ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
-                            ['key' => 'service.version',        'value' => ['stringValue' => getenv('LOOMA_VERSION') ?: 'dev']],
-                            ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'looma']],
-                            ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
-                        ],
+                        'attributes' => $resourceAttrs,
                     ],
                     'scopeSpans' => [[
                         'scope' => ['name' => 'looma-web.php'],
@@ -338,20 +347,14 @@ if (!function_exists('looma_otel_bootstrap')) {
                 $logPayload = [
                     'resourceLogs' => [[
                         'resource' => [
-                            'attributes' => [
-                                ['key' => 'service.name',           'value' => ['stringValue' => $service]],
-                                ['key' => 'service.namespace',      'value' => ['stringValue' => 'looma']],
-                                ['key' => 'service.version',        'value' => ['stringValue' => getenv('LOOMA_VERSION') ?: 'dev']],
-                                ['key' => 'deployment.environment', 'value' => ['stringValue' => getenv('LOOMA_ENV') ?: 'looma']],
-                                ['key' => 'looma.device_name',      'value' => ['stringValue' => $deviceName]],
-                            ],
+                            'attributes' => $resourceAttrs,
                         ],
                         'scopeLogs' => [[
                             'scope' => ['name' => 'looma-web.php'],
                             'logRecords' => [[
                                 'timeUnixNano' => $endNanos,
-                                'traceId' => $traceIdB64,
-                                'spanId' => $rootSpanIdB64,
+                                'traceId' => $traceIdHex,
+                                'spanId' => $rootSpanIdHex,
                                 'severityText' => ($status >= 500) ? 'ERROR' : (($status >= 400) ? 'WARN' : 'INFO'),
                                 'body' => ['stringValue' => $method . ' ' . $route . ' ' . $status],
                                 'attributes' => [
@@ -394,9 +397,14 @@ if (!function_exists('looma_trace_page')) {
     function looma_trace_page($page, array $attrs = []) {
         if (getenv('OTEL_DISABLED') === '1') return;
         try {
+            // NOT 'http.route': the root span already sets that (the raw URL
+            // path) — a second, DIFFERENT value under the same key made
+            // data-prepper reject the whole span ("Duplicate key
+            // span.attributes.http@route"), silently dropping every real page
+            // trace since this auto-tagging was added.
             $base = [
                 'looma.page'  => (string)$page,
-                'http.route'  => '/' . trim((string)$page, '/'),
+                'looma.route' => '/' . trim((string)$page, '/'),
             ];
             foreach (['grade', 'class', 'subject', 'language', 'lang',
                       'chapter_id', 'ch_id', 'ch', 'fp', 'fn',

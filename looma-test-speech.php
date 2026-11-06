@@ -94,6 +94,62 @@ function ttsRateSelect($id) {
             </div>
 
             <div class="tts-engine">
+                <button id="mimic" type="button" class="tts-engine-button">Speak with Mimic</button>
+                <div class="tts-voice-field">
+                    <label for="mimic-voice-en">English voice</label>
+                    <!-- Filled in by looma-test-speech.js with the voices installed on this box. -->
+                    <select id="mimic-voice-en" class="tts-voice-select"></select>
+                </div>
+                <div class="tts-rate-field">
+                    <label for="mimic-rate-en">English speed</label>
+                    <?php ttsRateSelect('mimic-rate-en'); ?>
+                </div>
+                <div class="tts-voice-field">
+                    <label for="mimic-voice-np">Nepali voice</label>
+                    <!-- Mimic reads English only; LOOMA.speak sends Nepali sentences to Piper. -->
+                    <select id="mimic-voice-np" class="tts-voice-select" disabled>
+                        <option value="">Piper (Mimic reads English only)</option>
+                    </select>
+                </div>
+                <div class="tts-rate-field">
+                    <label for="mimic-rate-np">Nepali speed</label>
+                    <?php ttsRateSelect('mimic-rate-np'); ?>
+                </div>
+                <label class="tts-default-label">
+                    <input type="checkbox" class="tts-default" id="mimic-default" data-engine="mimic">
+                    <span>Default for reading text selections</span>
+                </label>
+                <p id="mimic-unavailable-note" class="tts-unavailable-note"></p>
+            </div>
+
+            <div class="tts-engine">
+                <button id="synthesis" type="button" class="tts-engine-button">Speak with Browser Speech</button>
+                <div class="tts-voice-field">
+                    <label for="synthesis-voice-en">English voice</label>
+                    <!-- Browser voices differ per device, so the lists are filled in
+                         by looma-test-speech.js from speechSynthesis.getVoices(). -->
+                    <select id="synthesis-voice-en" class="tts-voice-select"></select>
+                </div>
+                <div class="tts-rate-field">
+                    <label for="synthesis-rate-en">English speed</label>
+                    <?php ttsRateSelect('synthesis-rate-en'); ?>
+                </div>
+                <div class="tts-voice-field">
+                    <label for="synthesis-voice-np">Nepali voice</label>
+                    <select id="synthesis-voice-np" class="tts-voice-select"></select>
+                </div>
+                <div class="tts-rate-field">
+                    <label for="synthesis-rate-np">Nepali speed</label>
+                    <?php ttsRateSelect('synthesis-rate-np'); ?>
+                </div>
+                <label class="tts-default-label">
+                    <input type="checkbox" class="tts-default" id="synthesis-default" data-engine="synthesis">
+                    <span>Default for reading text selections</span>
+                </label>
+                <p id="synthesis-unavailable-note" class="tts-unavailable-note"></p>
+            </div>
+
+            <div class="tts-engine">
                 <button id="responsivevoice" type="button" class="tts-engine-button">Speak with ResponsiveVoice</button>
                 <div class="tts-voice-field">
                     <label for="responsivevoice-voice-en">English voice</label>
@@ -144,8 +200,10 @@ function ttsRateSelect($id) {
                 <p id="responsivevoice-unavailable-note" class="tts-unavailable-note"></p>
             </div>
 
-            <!-- The two engines are Piper (local/offline — always the default)
-                 and ResponsiveVoice (cloud — selectable only with internet). -->
+            <!-- Piper (local/offline) is always the default. Mimic (local, English
+                 only) needs its binary on the server, Browser Speech needs voices in
+                 the browser, and ResponsiveVoice (cloud) needs internet: each column
+                 locks itself when its engine cannot run here. -->
 
         </div>
 

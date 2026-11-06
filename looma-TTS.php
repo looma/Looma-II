@@ -7,8 +7,9 @@
     Usage:
         looma-TTS.php?text=TEXT&voice=VOICE&engine=ENGINE&lang=LANGUAGE&rate=RATE
 
-    This file keeps the existing Looma frontend contract, but delegates synthesis
-    to the local Flask server that wraps Piper.
+    This file keeps the existing Looma frontend contract. Piper, the default,
+    is delegated to the local Flask server that wraps it; engine=mimic runs the
+    local Mimic binary instead (includes/looma-mimic.php).
 */
 
 header("Access-Control-Allow-Origin: *");
@@ -51,10 +52,10 @@ if ($text === "") {
     exit;
 }
 
-// Piper is the ONLY server-side TTS engine (local, offline, all languages), so
-// this endpoint always synthesizes with Piper and any `engine` parameter is
-// ignored. The other supported engine, ResponsiveVoice, is cloud TTS that runs
-// entirely client-side (js/looma-utilities.js) and never reaches this file.
+// Two engines run on the server: Piper (local, offline, all languages — the
+// default) and Mimic (local, offline, English only). The other two,
+// ResponsiveVoice and the browser's speechSynthesis, run entirely client-side
+// (js/looma-utilities.js) and never reach this file.
 $engine = "piper";
 
 $requestedLang = isset($_REQUEST["lang"]) ? strtolower(trim((string) $_REQUEST["lang"])) : "";
@@ -68,6 +69,58 @@ if ($requestedLang === "english" || $requestedLang === "en") {
     $language = "ne";
 } else {
     $language = "en";
+}
+
+// Mimic cannot read Nepali, so Nepali text goes to Piper whatever was asked for.
+if (isset($_REQUEST["engine"]) && $_REQUEST["engine"] === "mimic" && $language === "en") {
+    $engine = "mimic";
+}
+
+if ($engine === "mimic") {
+    require_once(__DIR__ . "/includes/looma-mimic.php");
+
+    $mimicVoices = looma_mimic_voices();
+    $mimicVoice = looma_mimic_pick_voice(isset($_REQUEST["voice"]) ? (string) $_REQUEST["voice"] : "", $mimicVoices);
+    $mimicRate = (isset($_REQUEST["rate"]) && is_numeric($_REQUEST["rate"])
+                  && (float) $_REQUEST["rate"] > 0 && (float) $_REQUEST["rate"] <= 2)
+        ? (float) $_REQUEST["rate"] : 2 / 3;
+
+    // A failure here is not a dead end: LOOMA.speak reads the sentence with Piper.
+    $mimicFail = function ($code, $message) {
+        http_response_code($code);
+        header("Content-Type: application/json");
+        echo json_encode(["error" => $message]);
+        exit;
+    };
+    if ($mimicVoice === null) $mimicFail(503, "Mimic is not installed on this server");
+    if (strlen($text) > LOOMA_MIMIC_MAX_TEXT_CHARS) $mimicFail(413, "Text too long for Mimic");
+
+    $mimicSpan = looma_otel_start_span("tts.mimic", [
+        "tts.engine" => "mimic",
+        "tts.voice" => $mimicVoice,
+        "tts.language" => $language,
+        "tts.rate" => $mimicRate,
+        "tts.text_chars" => strlen($text),
+    ]);
+    $t0 = microtime(true);
+    $mimicResult = looma_mimic_synthesize($text, $mimicVoice, $mimicRate);
+    $mimicMs = (int) round((microtime(true) - $t0) * 1000);
+    $mimicError = $mimicResult["error"] ?? "";
+    looma_otel_end_span($mimicSpan, [
+        "tts.duration_ms" => $mimicMs,
+        "error.message" => $mimicError,
+    ], $mimicError ? 2 : 0);
+
+    if ($mimicError) $mimicFail(502, $mimicError);
+
+    header("Content-Type: audio/wav");
+    header("Content-Length: " . filesize($mimicResult["wav"]));
+    header("X-Looma-TTS-Engine: mimic");
+    header("X-Looma-TTS-Voice: " . $mimicVoice);
+    header("X-Looma-TTS-Duration-Ms: " . $mimicMs);
+    readfile($mimicResult["wav"]);
+    @unlink($mimicResult["wav"]);
+    exit;
 }
 
 $ttsRequest = [
@@ -158,9 +211,23 @@ if (function_exists("curl_init")) {
     $headerSize = (int) curl_getinfo($ch, CURLINFO_HEADER_SIZE);
     curl_close($ch);
 
+    // The Piper image carries no OpenTelemetry, so what Piper reports in its
+    // response headers is the only way a trace can show cache use and synthesis time.
+    $piperAttrs = [];
+    $piperHeaders = $response === false ? "" : substr($response, 0, $headerSize);
+    if (preg_match('/^X-Looma-TTS-Cache:\s*(hit|miss)/mi', $piperHeaders, $m)) {
+        $piperAttrs["piper.cache_hit"] = strtolower($m[1]) === "hit";
+    }
+    if (preg_match('/^X-Looma-TTS-Voice:\s*(\S+)/mi', $piperHeaders, $m)) {
+        $piperAttrs["piper.voice"] = $m[1];
+    }
+    if (preg_match('/^X-Looma-TTS-Ms:\s*(\d+)/mi', $piperHeaders, $m)) {
+        $piperAttrs["piper.duration_ms"] = (int) $m[1];
+    }
+
     looma_otel_end_span(
         $piperSpan,
-        [
+        $piperAttrs + [
             "http.response.status_code" => $httpCode,
             "tts.duration_ms" => (int) round((microtime(true) - $t0) * 1000),
             "error.message" => $curlError ? (string) $curlError : "",

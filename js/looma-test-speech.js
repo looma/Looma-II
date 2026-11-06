@@ -2,8 +2,9 @@
 LOOMA javascript file
 Filename: looma-test-speech.js
 Description: drives looma-test-speech.php — the "Reading Settings" page.
-             The two TTS engines are Piper (local/offline) and ResponsiveVoice
-             (cloud — needs internet). The page lets you pick a separate English
+             The TTS engines are Piper (local/offline, the default), Mimic
+             (local/offline, English only), the browser's speechSynthesis and
+             ResponsiveVoice (cloud — needs internet). The page lets you pick a separate English
              and Nepali voice for each engine, set the reading speed per language,
              and choose which engine is the default for reading text selections.
 
@@ -13,7 +14,7 @@ Description: drives looma-test-speech.php — the "Reading Settings" page.
              one entry per speaker.
 
              Every setting is saved to cookies and read back automatically:
-               tts-engine    — default TTS engine ('piper' or 'responsivevoice')
+               tts-engine    — default TTS engine ('piper', 'mimic', 'synthesis' or 'responsivevoice')
                tts-voice-en  — default engine's English voice
                tts-voice-np  — default engine's Nepali voice
                tts-rate-en   — English reading speed
@@ -21,14 +22,14 @@ Description: drives looma-test-speech.php — the "Reading Settings" page.
              LOOMA.speak() reads these cookies, so English text is spoken with
              the English voice and Nepali text with the Nepali voice.
 Programmer name: Skip
-Revision: Looma 2.0.x  (Piper + ResponsiveVoice only)
+Revision: Looma 2.0.x
  */
 
 'use strict';
 
 $(document).ready(function () {
 
-    var ENGINES = ['piper', 'responsivevoice'];
+    var ENGINES = ['piper', 'mimic', 'synthesis', 'responsivevoice'];
     var FALLBACK_ENGINE = 'piper';
     var DEFAULT_RATE = '0.67';   // 2/3 — Looma's default reading speed for Nepal
 
@@ -41,23 +42,31 @@ $(document).ready(function () {
     // every first visit for no reason. Speaker 0 is the same voice either way.
     var voices = {
         piper:           { en: 'en_US-amy-low.onnx', np: 'ne_NP-google-x_low.onnx#0' },
+        mimic:           { en: '',                   np: '' },
+        synthesis:       { en: '',                   np: '' },
         responsivevoice: { en: 'UK English Female',  np: 'Hindi Female' }
     };
 
     // The <select> id for each engine/language.
     var selectIds = {
         piper:           { en: 'piper-voice-en',           np: 'piper-voice-np' },
+        mimic:           { en: 'mimic-voice-en',           np: 'mimic-voice-np' },
+        synthesis:       { en: 'synthesis-voice-en',       np: 'synthesis-voice-np' },
         responsivevoice: { en: 'responsivevoice-voice-en', np: 'responsivevoice-voice-np' }
     };
 
     // Per-engine, per-language speech speed.
     var rates = {
         piper:           { en: DEFAULT_RATE, np: DEFAULT_RATE },
+        mimic:           { en: DEFAULT_RATE, np: DEFAULT_RATE },
+        synthesis:       { en: DEFAULT_RATE, np: DEFAULT_RATE },
         responsivevoice: { en: DEFAULT_RATE, np: DEFAULT_RATE }
     };
 
     var rateSelectIds = {
         piper:           { en: 'piper-rate-en',           np: 'piper-rate-np' },
+        mimic:           { en: 'mimic-rate-en',           np: 'mimic-rate-np' },
+        synthesis:       { en: 'synthesis-rate-en',       np: 'synthesis-rate-np' },
         responsivevoice: { en: 'responsivevoice-rate-en', np: 'responsivevoice-rate-np' }
     };
 
@@ -75,7 +84,7 @@ $(document).ready(function () {
         }).length > 0;
     }
 
-    /* ---- engine Speak buttons — both route through LOOMA.speak() so the page
+    /* ---- engine Speak buttons — all route through LOOMA.speak() so the page
             exercises the exact same path (and telemetry) as the rest of Looma.
             The voice is passed as { en, np }; LOOMA.speak picks the right one
             per sentence from the detected language. ---- */
@@ -122,6 +131,12 @@ $(document).ready(function () {
     $('#piper').click(function () {
         showSpinnerOn($(this));
         LOOMA.speak(phrase(), 'piper', { en: voices.piper.en, np: voices.piper.np }, rateObj('piper'));
+    });
+    ['mimic', 'synthesis'].forEach(function (engine) {
+        $('#' + engine).click(function () {
+            showSpinnerOn($(this));
+            LOOMA.speak(phrase(), engine, { en: voices[engine].en, np: voices[engine].np }, rateObj(engine));
+        });
     });
     $('#responsivevoice').click(function () {
         showSpinnerOn($(this));
@@ -254,6 +269,77 @@ $(document).ready(function () {
     // not have to reload the page after plugging in the network.
     $(window).on('online offline', refreshResponsiveVoiceAvailability);
 
+    /* ---- Mimic and Browser Speech availability ----
+       Mimic needs its binary and voices on the server; Browser Speech needs voices
+       in this browser (Chromium often has none). If an engine cannot run here its
+       column locks, and it stops being the default so nothing depends on it. */
+    function setEngineAvailable(engine, available, reason) {
+        $('#' + engine + ', #' + engine + '-default, #' + selectIds[engine].en + ', ' +
+          '#' + rateSelectIds[engine].en + ', #' + rateSelectIds[engine].np).prop('disabled', !available);
+        if (engine === 'synthesis') $('#' + selectIds.synthesis.np).prop('disabled', !available);
+        $('#' + engine + '-default').closest('.tts-engine').toggleClass('tts-engine-unavailable', !available);
+        $('#' + engine + '-unavailable-note').text(available ? '' : reason);
+        if (!available && currentDefaultEngine() === engine) {
+            showDefaultEngine(FALLBACK_ENGINE);
+            saveDefaultEngine(FALLBACK_ENGINE);
+        }
+    }
+
+    // Mimic's voice files carry no description, so the accent labels live here.
+    var MIMIC_VOICE_LABELS = {
+        cmu_us_aew: 'US male', cmu_us_ahw: 'German male', cmu_us_aup: 'Indian male',
+        cmu_us_awb: 'Scottish male', cmu_us_axb: 'Indian female', cmu_us_bdl: 'US male',
+        cmu_us_clb: 'US female', cmu_us_eey: 'US female', cmu_us_fem: 'German male',
+        cmu_us_gka: 'Indian male', cmu_us_jmk: 'US male', cmu_us_ksp: 'Indian male',
+        cmu_us_ljm: 'US female', cmu_us_rms: 'US male', cmu_us_rxr: 'US male',
+        cmu_us_slt: 'US female', 'mycroft_voice_4.0': 'English male'
+    };
+
+    function fillMimicVoices(done) {
+        var list = [];
+        $.getJSON('looma-TTS-voices.php', { engine: 'mimic' })
+            .done(function (data) {
+                list = (data && data.voices) || [];
+                var $select = $('#' + selectIds.mimic.en);
+                list.forEach(function (voice) {
+                    var label = MIMIC_VOICE_LABELS[voice.id];
+                    $('<option>').attr('value', voice.id)
+                                 .text(label ? label + ' (' + voice.id + ')' : voice.id)
+                                 .prop('selected', !!voice['default'])
+                                 .appendTo($select);
+                });
+            })
+            .always(function () {
+                done();
+                setEngineAvailable('mimic', list.length > 0, 'Mimic is not installed on this server.');
+            });
+    }
+
+    function fillSynthesisVoices(done) {
+        var available = typeof speechSynthesis !== 'undefined';
+        var finished = false;
+
+        function finish() {
+            if (finished) return;
+            finished = true;
+            var all = available ? (speechSynthesis.getVoices() || []) : [];
+            [[selectIds.synthesis.en, /^en[-_]/i], [selectIds.synthesis.np, /^(ne|hi)[-_]/i]].forEach(function (pair) {
+                var $select = $('#' + pair[0]).empty();
+                $('<option>').attr('value', '').text('Automatic').appendTo($select);
+                all.filter(function (v) { return pair[1].test(v.lang); }).forEach(function (v) {
+                    $('<option>').attr('value', v.name).text(v.name + ' (' + v.lang + ')').appendTo($select);
+                });
+            });
+            done();
+            setEngineAvailable('synthesis', all.length > 0, 'This browser has no speech voices.');
+        }
+
+        // Chrome loads its voice list asynchronously.
+        if (!available || speechSynthesis.getVoices().length) { finish(); return; }
+        speechSynthesis.onvoiceschanged = finish;
+        setTimeout(finish, 1500);
+    }
+
     /* ---- Piper voice lists ----
        Piper's voices are whatever .onnx models are installed on this box, so the
        two dropdowns are built from looma-TTS-voices.php rather than hard-coded.
@@ -305,7 +391,7 @@ $(document).ready(function () {
         var legacyRate = LOOMA.readStore('tts-rate', 'cookie');
 
         var savedEngine = LOOMA.readStore('tts-engine', 'cookie') || FALLBACK_ENGINE;
-        if (!voices[savedEngine]) savedEngine = FALLBACK_ENGINE;   // coerce removed engines to Piper
+        if (!voices[savedEngine]) savedEngine = FALLBACK_ENGINE;   // coerce unknown engines to Piper
 
         var savedEn = LOOMA.readStore('tts-voice-en', 'cookie');
         var savedNp = LOOMA.readStore('tts-voice-np', 'cookie');
@@ -337,7 +423,12 @@ $(document).ready(function () {
         saveDefaultEngine(savedEngine);
     }
 
-    fillPiperVoices(restoreSavedSettings);
+    // Everything that restores a saved voice needs its dropdown filled first.
+    fillPiperVoices(function () {
+        fillMimicVoices(function () {
+            fillSynthesisVoices(restoreSavedSettings);
+        });
+    });
     refreshResponsiveVoiceAvailability();
 
 }); //end document.ready function

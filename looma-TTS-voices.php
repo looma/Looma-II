@@ -2,8 +2,10 @@
 /*
     Looma — list the Piper voices installed on this box.
 
-    Usage:  looma-TTS-voices.php            (JSON)
-            looma-TTS-voices.php?refresh=1  (rescan the voice directory first)
+    Usage:  looma-TTS-voices.php              (JSON)
+            looma-TTS-voices.php?refresh=1    (rescan the voice directory first)
+            looma-TTS-voices.php?engine=mimic (the Mimic voices; `voices` is
+                                               empty if Mimic is not installed)
 
     The Reading Settings page builds its English/Nepali voice dropdowns from
     this, instead of hard-coding one voice per language: whatever models are on
@@ -17,6 +19,19 @@
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
+
+if (isset($_REQUEST["engine"]) && $_REQUEST["engine"] === "mimic") {
+    require_once(__DIR__ . "/includes/looma-mimic.php");
+    $installed = looma_mimic_voices();
+    $default = looma_mimic_pick_voice("", $installed);
+    echo json_encode([
+        "ok" => !empty($installed),
+        "voices" => array_map(function ($voice) use ($default) {
+            return ["id" => $voice, "language" => "en", "default" => $voice === $default];
+        }, $installed),
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
 
 $refresh = (isset($_REQUEST["refresh"]) && $_REQUEST["refresh"] === "1") ? "?refresh=1" : "";
 

@@ -149,61 +149,9 @@ function ttsRateSelect($id) {
                 <p id="synthesis-unavailable-note" class="tts-unavailable-note"></p>
             </div>
 
-            <div class="tts-engine">
-                <button id="responsivevoice" type="button" class="tts-engine-button">Speak with ResponsiveVoice</button>
-                <div class="tts-voice-field">
-                    <label for="responsivevoice-voice-en">English voice</label>
-                    <!-- ResponsiveVoice voice NAMES, exactly as its API spells them.
-                         A wider set than the four we started with so a teacher can
-                         compare accents the way they can with the Piper models. -->
-                    <select id="responsivevoice-voice-en" class="tts-voice-select">
-                        <option value="UK English Female" selected>UK English Female</option>
-                        <option value="UK English Male">UK English Male</option>
-                        <option value="US English Female">US English Female</option>
-                        <option value="US English Male">US English Male</option>
-                        <option value="Australian Female">Australian Female</option>
-                        <option value="Australian Male">Australian Male</option>
-                        <option value="Indian English Female">Indian English Female</option>
-                        <option value="Indian English Male">Indian English Male</option>
-                    </select>
-                </div>
-                <div class="tts-rate-field">
-                    <label for="responsivevoice-rate-en">English speed</label>
-                    <?php ttsRateSelect('responsivevoice-rate-en'); ?>
-                </div>
-                <div class="tts-voice-field">
-                    <label for="responsivevoice-voice-np">Nepali voice</label>
-                    <!-- ResponsiveVoice has no Nepali voice. These are the nearest
-                         South-Asian ones it does have: Hindi reads Devanagari
-                         directly, the Bangla and Tamil voices are there to be
-                         compared against it. For real Nepali, use Piper. -->
-                    <select id="responsivevoice-voice-np" class="tts-voice-select">
-                        <option value="Hindi Female" selected>Hindi Female (closest to Nepali)</option>
-                        <option value="Hindi Male">Hindi Male</option>
-                        <option value="Bangla India Female">Bangla India Female</option>
-                        <option value="Bangla India Male">Bangla India Male</option>
-                        <option value="Bangla Bangladesh Female">Bangla Bangladesh Female</option>
-                        <option value="Tamil Female">Tamil Female</option>
-                        <option value="Tamil Male">Tamil Male</option>
-                    </select>
-                </div>
-                <div class="tts-rate-field">
-                    <label for="responsivevoice-rate-np">Nepali speed</label>
-                    <?php ttsRateSelect('responsivevoice-rate-np'); ?>
-                </div>
-                <label class="tts-default-label">
-                    <input type="checkbox" class="tts-default" id="responsivevoice-default" data-engine="responsivevoice">
-                    <span>Default for reading text selections</span>
-                </label>
-                <!-- Filled in by looma-test-speech.js when ResponsiveVoice cannot
-                     be reached, so the disabled controls explain themselves. -->
-                <p id="responsivevoice-unavailable-note" class="tts-unavailable-note"></p>
-            </div>
-
-            <!-- Piper (local/offline) is always the default. Mimic (local, English
-                 only) needs its binary on the server, Browser Speech needs voices in
-                 the browser, and ResponsiveVoice (cloud) needs internet: each column
-                 locks itself when its engine cannot run here. -->
+            <!-- Piper (local/offline) is always the default. Mimic (local, English only)
+                 needs its binary on the server, and Browser Speech needs voices in the
+                 browser: each column locks itself when its engine cannot run here. -->
 
         </div>
 

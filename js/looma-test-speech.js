@@ -3,8 +3,8 @@ LOOMA javascript file
 Filename: looma-test-speech.js
 Description: drives looma-test-speech.php — the "Reading Settings" page.
              The TTS engines are Piper (local/offline, the default), Mimic
-             (local/offline, English only), the browser's speechSynthesis and
-             ResponsiveVoice (cloud — needs internet). The page lets you pick a separate English
+             (local/offline, English only) and the browser's speechSynthesis.
+             The page lets you pick a separate English
              and Nepali voice for each engine, set the reading speed per language,
              and choose which engine is the default for reading text selections.
 
@@ -14,7 +14,7 @@ Description: drives looma-test-speech.php — the "Reading Settings" page.
              one entry per speaker.
 
              Every setting is saved to cookies and read back automatically:
-               tts-engine    — default TTS engine ('piper', 'mimic', 'synthesis' or 'responsivevoice')
+               tts-engine    — default TTS engine ('piper', 'mimic' or 'synthesis')
                tts-voice-en  — default engine's English voice
                tts-voice-np  — default engine's Nepali voice
                tts-rate-en   — English reading speed
@@ -29,7 +29,7 @@ Revision: Looma 2.0.x
 
 $(document).ready(function () {
 
-    var ENGINES = ['piper', 'mimic', 'synthesis', 'responsivevoice'];
+    var ENGINES = ['piper', 'mimic', 'synthesis'];
     var FALLBACK_ENGINE = 'piper';
     var DEFAULT_RATE = '0.67';   // 2/3 — Looma's default reading speed for Nepal
 
@@ -43,31 +43,27 @@ $(document).ready(function () {
     var voices = {
         piper:           { en: 'en_US-amy-low.onnx', np: 'ne_NP-google-x_low.onnx#0' },
         mimic:           { en: '',                   np: '' },
-        synthesis:       { en: '',                   np: '' },
-        responsivevoice: { en: 'UK English Female',  np: 'Hindi Female' }
+        synthesis:       { en: '',                   np: '' }
     };
 
     // The <select> id for each engine/language.
     var selectIds = {
         piper:           { en: 'piper-voice-en',           np: 'piper-voice-np' },
         mimic:           { en: 'mimic-voice-en',           np: 'mimic-voice-np' },
-        synthesis:       { en: 'synthesis-voice-en',       np: 'synthesis-voice-np' },
-        responsivevoice: { en: 'responsivevoice-voice-en', np: 'responsivevoice-voice-np' }
+        synthesis:       { en: 'synthesis-voice-en',       np: 'synthesis-voice-np' }
     };
 
     // Per-engine, per-language speech speed.
     var rates = {
         piper:           { en: DEFAULT_RATE, np: DEFAULT_RATE },
         mimic:           { en: DEFAULT_RATE, np: DEFAULT_RATE },
-        synthesis:       { en: DEFAULT_RATE, np: DEFAULT_RATE },
-        responsivevoice: { en: DEFAULT_RATE, np: DEFAULT_RATE }
+        synthesis:       { en: DEFAULT_RATE, np: DEFAULT_RATE }
     };
 
     var rateSelectIds = {
         piper:           { en: 'piper-rate-en',           np: 'piper-rate-np' },
         mimic:           { en: 'mimic-rate-en',           np: 'mimic-rate-np' },
-        synthesis:       { en: 'synthesis-rate-en',       np: 'synthesis-rate-np' },
-        responsivevoice: { en: 'responsivevoice-rate-en', np: 'responsivevoice-rate-np' }
+        synthesis:       { en: 'synthesis-rate-en',       np: 'synthesis-rate-np' }
     };
 
     function phrase() { return $('input#text').val(); }
@@ -92,9 +88,8 @@ $(document).ready(function () {
     /* ---- "waiting for the engine" spinner ----
        LOOMA.speak's own pending/busy visuals only reach the floating `button.speak`
        control, which this page does not have — so pressing an engine button used to
-       do nothing visible until audio came out. That gap is seconds long for
-       ResponsiveVoice, which has to fetch its script from responsivevoice.org and
-       then wait on the cloud, and a teacher with no feedback just presses again.
+       do nothing visible until audio came out, and a teacher with no feedback just
+       presses again.
        The spinner runs from the click until the first audio (or the failure). */
     var $pendingButton = null;
     var sawPending = false;
@@ -137,10 +132,6 @@ $(document).ready(function () {
             showSpinnerOn($(this));
             LOOMA.speak(phrase(), engine, { en: voices[engine].en, np: voices[engine].np }, rateObj(engine));
         });
-    });
-    $('#responsivevoice').click(function () {
-        showSpinnerOn($(this));
-        LOOMA.speak(phrase(), 'responsivevoice', { en: voices.responsivevoice.en, np: voices.responsivevoice.np }, rateObj('responsivevoice'));
     });
 
     /* Report a Reading-Settings change to looma-telemetry.php (best effort). */
@@ -224,50 +215,6 @@ $(document).ready(function () {
             this.checked = true;           // there must always be one default
         }
     });
-
-    /* ---- ResponsiveVoice availability gate ----
-       ResponsiveVoice is a CLOUD engine: it cannot work without internet. So it
-       can only be picked here when the box is actually able to reach it. Piper
-       is the default and is always available (local/offline).
-
-       navigator.onLine alone is not enough — it reports true for a box on a LAN
-       with no route to the internet, which is a common Looma deployment. So an
-       offline flag is treated as definitive (no probe), while an online flag is
-       only a hint that is then CONFIRMED by actually loading the RV script via
-       LOOMA.speak.ensureResponsiveVoice() (cached, so this costs one request per
-       session at most). Until that confirms, RV stays locked. */
-    // The whole ResponsiveVoice column is locked together — the Speak button,
-    // both voice pickers, both speed pickers and the default checkbox. Leaving
-    // some of them live inside a dimmed column would just look broken.
-    var $rvControls = $('#responsivevoice, #responsivevoice-default, ' +
-                        '#' + selectIds.responsivevoice.en + ', #' + selectIds.responsivevoice.np + ', ' +
-                        '#' + rateSelectIds.responsivevoice.en + ', #' + rateSelectIds.responsivevoice.np);
-
-    function setResponsiveVoiceAvailable(available, reason) {
-        $rvControls.prop('disabled', !available);
-        $('#responsivevoice-default').closest('.tts-engine')
-            .toggleClass('tts-engine-unavailable', !available);
-        $('#responsivevoice-unavailable-note').text(available ? '' : reason || '');
-    }
-
-    function refreshResponsiveVoiceAvailability() {
-        if (!navigator.onLine) {
-            setResponsiveVoiceAvailable(false, 'Needs internet — not connected.');
-            return;
-        }
-        setResponsiveVoiceAvailable(false, 'Checking internet connection…');
-        try {
-            LOOMA.speak.ensureResponsiveVoice(function (ok) {
-                setResponsiveVoiceAvailable(ok, ok ? '' : 'Cannot reach ResponsiveVoice — no internet.');
-            });
-        } catch (e) {
-            setResponsiveVoiceAvailable(false, 'Cannot reach ResponsiveVoice — no internet.');
-        }
-    }
-
-    // Re-check when the box gains or loses its connection, so the teacher does
-    // not have to reload the page after plugging in the network.
-    $(window).on('online offline', refreshResponsiveVoiceAvailability);
 
     /* ---- Mimic and Browser Speech availability ----
        Mimic needs its binary and voices on the server; Browser Speech needs voices
@@ -429,6 +376,5 @@ $(document).ready(function () {
             fillSynthesisVoices(restoreSavedSettings);
         });
     });
-    refreshResponsiveVoiceAvailability();
 
 }); //end document.ready function

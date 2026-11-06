@@ -53,9 +53,9 @@ if ($text === "") {
 }
 
 // Two engines run on the server: Piper (local, offline, all languages — the
-// default) and Mimic (local, offline, English only). The other two,
-// ResponsiveVoice and the browser's speechSynthesis, run entirely client-side
-// (js/looma-utilities.js) and never reach this file.
+// default) and Mimic (local, offline, English only). The third, the browser's
+// speechSynthesis, runs entirely client-side (js/looma-utilities.js) and never
+// reaches this file.
 $engine = "piper";
 
 $requestedLang = isset($_REQUEST["lang"]) ? strtolower(trim((string) $_REQUEST["lang"])) : "";

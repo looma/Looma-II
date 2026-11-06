@@ -81,8 +81,8 @@ services:
       - loomanet
 
   # NOTE: there is no TTS service here. Piper (served locally inside looma-web
-  # via looma-TTS.php) is the offline engine, and ResponsiveVoice is cloud-side
-  # and client-only, so neither needs a container of its own.
+  # via looma-TTS.php) is the offline engine, and so is Mimic; speechSynthesis runs
+  # in the browser. None of them needs a container of its own.
 
   looma-ai:
     build:

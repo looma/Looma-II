@@ -102,7 +102,7 @@
     flex: 1 1 300px;
     max-width: 430px;
     /* Reserve the unavailable-note strip in EVERY column and position the note
-       inside it (below), so the note — which only exists in the ResponsiveVoice
+       inside it (below), so the note — which only some columns have
        column, and keeps a min-height even while empty — never takes part in the
        layout and cannot push that column's controls around. */
     position: relative;
@@ -122,8 +122,7 @@
 }
 
 /* Turning circle, shown from the moment the button is pressed until the first
-   audio comes out. ResponsiveVoice is a cloud engine — it has to fetch its
-   script from responsivevoice.org and then wait on the network — so without
+   audio comes out, so without
    this the button sat looking dead for several seconds and invited a second
    press. Set and cleared by looma-test-speech.js via LOOMA.speak.onStateChange().
    The keyframes (ttsPendingSpin) live in looma.css, next to the matching spinner
@@ -245,7 +244,7 @@
     accent-color: #1565d8;
 }
 
-/* ResponsiveVoice is a cloud engine, so it is locked whenever the box cannot
+/* An engine that cannot run here is locked, whenever the box cannot
    reach the internet. Dim the whole column (not just the disabled controls) so
    it is obvious at a glance that the engine is unavailable rather than broken.
    Piper, being local, is never dimmed. */

@@ -425,9 +425,9 @@ The PHP file that forwards TTS requests to Piper is:
 /var/www/html/Looma/looma-TTS.php
 ```
 
-Piper is the only server-side engine in that file, so any `engine` parameter in
-the request is ignored. The other supported engine, ResponsiveVoice, is cloud
-TTS that runs entirely in the browser and never reaches `looma-TTS.php`.
+Piper is the default engine in that file; `engine=mimic` runs Mimic instead. The
+third supported engine, the browser's speechSynthesis, runs entirely in the browser
+and never reaches `looma-TTS.php`.
 
 ## Useful Diagnostic Commands
 

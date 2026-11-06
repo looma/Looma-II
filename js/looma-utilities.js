@@ -1900,7 +1900,7 @@ LOOMA.speakCloneSnapshot = function (snapshot) {
  */
 LOOMA.speak = function(text, engine, voice, rate) {
         //speak the TEXT,
-        //using [optional] ENGINE (in {'piper', 'mimic', 'synthesis', 'responsivevoice'}; default 'piper')
+        //using [optional] ENGINE (in {'piper', 'mimic', 'synthesis'}; default 'piper')
         //using [optional] VOICE
         //using [optional] RATE sets the speed of speech. (rate > 1 is FASTER)
         //      in speechSynthesis  SpeachSynthesisUtterance.rate = rate ( e.g. if rate === 0.5 speak slower)
@@ -2032,18 +2032,6 @@ LOOMA.speak = function(text, engine, voice, rate) {
              if (LOOMA.speak.playbackPoller) {
                  clearInterval(LOOMA.speak.playbackPoller);
                  LOOMA.speak.playbackPoller = null;
-             }
-             // ResponsiveVoice plays inside its own script and owns no media
-             // element, so it is invisible to the playingAudio branch below —
-             // nothing here used to stop it, and the next reading talked over
-             // the one still running.
-             if (LOOMA.speak.rvState) {
-                 LOOMA.speak.rvState = null;
-                 try {
-                     if (typeof responsiveVoice !== 'undefined' && responsiveVoice.cancel) {
-                         responsiveVoice.cancel();
-                     }
-                 } catch (e) {}
              }
              LOOMA.speak.synthState = null;
              if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
@@ -2529,11 +2517,8 @@ LOOMA.speak = function(text, engine, voice, rate) {
     //start of LOOMA.speak code: ///
     ////////////////////////////////
 
-         // Shared by every engine that highlights as it reads (Piper and
-         // ResponsiveVoice): short sentence-level chunks so the highlight can
-         // follow along, instead of one giant utterance highlighted all at once
-         // (or, before this fix, not highlighted at all — see the ResponsiveVoice
-         // branch below).
+         // Shared by every engine: short sentence-level chunks so the highlight can
+         // follow along, instead of one giant utterance highlighted all at once.
          /* How much of the FIRST sentence to synthesize before playback starts.
           *
           * Nothing is heard until the first clip is ready, so the wait before a
@@ -2555,329 +2540,7 @@ LOOMA.speak = function(text, engine, voice, rate) {
              return LOOMA.speak.splitIntoPlaybackSegments(sourceText);
          }
 
-         if (engine === 'responsivevoice') {
-             // ResponsiveVoice — cloud TTS that runs entirely client-side. Its
-             // external script is loaded LAZILY (LOOMA.speak.ensureResponsiveVoice)
-             // the first time the user presses Speak with this engine selected, so
-             // pages that never use it make no request to responsivevoice.org. If
-             // it cannot be loaded (typically: the box has no internet right now),
-             // fall back to Piper instead of just going silent — a box that drops
-             // offline mid-session must still be able to read aloud.
-             //
-             // Show the spinner NOW: loading responsivevoice.org and waiting for
-             // the cloud to return audio takes seconds, and until onstart fires
-             // the button gave no feedback at all (the Piper path below already
-             // does this). onstart/onerror clear it via activate()/disable().
-             // PIPER IS THE DEFAULT, and the only engine that works offline. When
-             // the browser already knows it has no connection, don't spend seconds
-             // fetching responsivevoice.org just to fail: read with Piper now.
-             // (An `onLine` of true is only a hint — a LAN with no route out still
-             // reports true — so the fallback inside the callback below stays.)
-             if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-                 console.warn('offline — reading with Piper instead of ResponsiveVoice.');
-                 // No voice: the voices held here are ResponsiveVoice NAMES
-                 // ("UK English Female"), which mean nothing to Piper. Leaving it
-                 // empty lets Piper pick its own default for each language.
-                 LOOMA.speak(text, 'piper', { en: '', np: '' }, { en: rateEn, np: rateNp });
-                 return;
-             }
-
-             LOOMA.speak.buttonPending = true;
-             LOOMA.speak.applyPendingButtonState();
-             LOOMA.speak.updateButtonAvailability();
-
-             LOOMA.speak.ensureResponsiveVoice(function (rvAvailable) {
-             if (!rvAvailable) {
-                 console.warn('ResponsiveVoice is unavailable (needs internet + a valid key) — falling back to Piper.');
-                 // Surface the outage in Grafana: emit an ERROR-status span on
-                 // the same tts.responsivevoice series the dashboards already
-                 // query, plus a tts_speak event for the logs side.
-                 var rvUnavailSrc = (typeof location !== 'undefined' && location.pathname) || '';
-                 var rvUnavailLang = (LOOMA.speak.detectLanguage(text) === 'ne') ? 'np' : 'en';
-                 try {
-                     if (window.LOOMA && LOOMA.otel && LOOMA.otel.emitSpan) {
-                         var rvUnavailT = Date.now();
-                         LOOMA.otel.emitSpan('tts.responsivevoice', rvUnavailT, rvUnavailT + 1, 1, {
-                             'tts.engine':      'responsivevoice',
-                             'tts.language':    rvUnavailLang,
-                             'tts.text_chars':  (text || '').length,
-                             'tts.source':      rvUnavailSrc,
-                             'error.message':   'responsivevoice unavailable'
-                         }, { statusCode: 2 });
-                     }
-                 } catch (e) {}
-                 try {
-                     if (window.LOOMA && LOOMA.telemetry && LOOMA.telemetry.track) {
-                         LOOMA.telemetry.track('tts_speak', {
-                             tts_engine:     'responsivevoice',
-                             tts_language:   rvUnavailLang,
-                             tts_text_chars: (text || '').length,
-                             tts_source:     rvUnavailSrc,
-                             tts_status:     'error',
-                             tts_error:      'responsivevoice unavailable'
-                         });
-                     }
-                 } catch (e) {}
-                 // Hand the spinner over to the Piper path, which sets its own
-                 // pending state — otherwise it would stay spinning from here.
-                 LOOMA.speak.buttonPending = false;
-                 LOOMA.speak.clearPendingButtonState();
-                 // Same as the offline short-circuit above: hand Piper no voice
-                 // rather than a ResponsiveVoice name it cannot use.
-                 LOOMA.speak(text, 'piper', { en: '', np: '' }, rate);
-             } else {
-                 // Pressing Speak again while it is talking stops it (toggle),
-                 // matching how the other engines behave.
-                 var rvPlaying = false;
-                 try { rvPlaying = (typeof responsiveVoice.isPlaying === 'function') && responsiveVoice.isPlaying(); } catch (e) {}
-                 if (rvPlaying) {
-                     responsiveVoice.cancel();
-                     // Retire the run properly rather than just going quiet: a
-                     // leftover rvState would make the button guard offer
-                     // "resume" for a reading that no longer exists, and handing
-                     // the text to lastCompleted* is what lets the next press
-                     // repeat it. (Reached from callers that speak directly, such
-                     // as the Reading Settings page — a press on the Speak
-                     // control is intercepted by the button guard first.)
-                     if (LOOMA.speak.rvState) {
-                         LOOMA.speak.rvState = null;
-                         LOOMA.speak.lastCompletedText = LOOMA.speak.currentSourceText || '';
-                         LOOMA.speak.lastCompletedSnapshot =
-                             LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
-                         LOOMA.speak.currentSourceKey = null;
-                         LOOMA.speak.currentSourceText = null;
-                         LOOMA.speak.currentSourceSnapshot = null;
-                     }
-                     LOOMA.speak.clearBlockHighlight();
-                     LOOMA.speak.disable();
-                 } else {
-                     // ResponsiveVoice's rate runs ~0–1.5; clamp the Looma rate.
-                     var rvRate = Math.min(1.5, Math.max(0, rateForText(text) || (2/3)));
-                     // Browser-RUM span: ResponsiveVoice is a client-side cloud
-                     // engine with no server span — time the call → first audio
-                     // so its load latency shows in the TTS dashboards.
-                     var rvT0 = Date.now();
-                     // Devanagari text uses the Nepali voice, Latin text the
-                     // English one — both chosen on the Reading Settings page.
-                     // These are the PASSAGE-level values: the fallback voice, and
-                     // what the telemetry below reports. The voice and speed each
-                     // sentence is actually read with are picked per segment in
-                     // speakNextRvSegment(), the same way the Piper path does it.
-                     var rvLang = (LOOMA.speak.detectLanguage(text) === 'ne') ? 'np' : 'en';
-                     var rvVoice = ((rvLang === 'np') ? voiceNp : voiceEn) || 'UK English Female';
-                     var rvSrc = (typeof location !== 'undefined' && location.pathname) || '';
-                     // Span + telemetry attributes shared by every outcome so a
-                     // single tts.responsivevoice / tts_speak row in Grafana
-                     // carries the engine, voice, language, rate, source.
-                     var rvSpanAttrs = {
-                         'tts.engine':     'responsivevoice',
-                         'tts.voice':      rvVoice,
-                         'tts.language':   rvLang,
-                         'tts.rate':       rvRate,
-                         'tts.text_chars': (text || '').length,
-                         'tts.source':     rvSrc
-                     };
-                     var rvEventBase = {
-                         tts_engine:     'responsivevoice',
-                         tts_voice:      rvVoice,
-                         tts_language:   rvLang,
-                         tts_rate:       rvRate,
-                         tts_text_chars: (text || '').length,
-                         tts_source:     rvSrc
-                     };
-                     // Speak sentence-by-sentence (like Piper below) instead of
-                     // handing the WHOLE text to ResponsiveVoice as one utterance —
-                     // that old shape never called highlightBlock() at all, so the
-                     // reading highlight only ever showed up with Piper, never with
-                     // ResponsiveVoice. rvRunId (shared LOOMA.speak.runId counter,
-                     // same one Piper uses) stops a stale chain the moment a
-                     // new speak() call or cancel() supersedes it.
-                     var rvRunId = ++LOOMA.speak.runId;
-                     var rvSegments = splitIntoPlaybackSegments(text);
-                     LOOMA.speak.highlightContext = LOOMA.speak.buildHighlightContext();
-
-                     // The same playback bookkeeping the Piper path keeps (see the
-                     // currentSourceText/Snapshot block further down). Without it a
-                     // ResponsiveVoice reading was invisible to everything built on
-                     // top of a reading: pause/resume, the press-and-hold restart and
-                     // the "repeat" press all key off these fields, so with RV
-                     // selected the button could only ever START something.
-                     var rvSnapshot = replaySnapshot || LOOMA.speak.captureSelectionSnapshot();
-                     LOOMA.speak.selectionSnapshot = LOOMA.speakCloneSnapshot(rvSnapshot);
-                     LOOMA.speak.currentSourceKey = ['responsivevoice', rvVoice, rvRate,
-                                                     LOOMA.speak.normalizeSpeakKey(text)].join('|');
-                     LOOMA.speak.currentSourceText = text;
-                     LOOMA.speak.currentSourceSnapshot = LOOMA.speakCloneSnapshot(rvSnapshot);
-                     // RV exposes no media element to ask "are you paused?", so that
-                     // flag is ours to keep. The watchdog below and the button guard
-                     // both read it.
-                     LOOMA.speak.rvState = { runId: rvRunId, paused: false };
-
-                     // Mirrors finishBrowserPlayback() on the Piper side: hand the
-                     // text and its highlight context over to lastCompleted* so the
-                     // next press repeats this reading instead of finding nothing.
-                     function finishRvPlayback() {
-                         if (rvRunId !== LOOMA.speak.runId) return;
-                         LOOMA.speak.rvState = null;
-                         LOOMA.speak.lastCompletedText = LOOMA.speak.currentSourceText || text;
-                         LOOMA.speak.lastCompletedSnapshot =
-                             LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
-                         LOOMA.speak.currentSourceKey = null;
-                         LOOMA.speak.currentSourceText = null;
-                         LOOMA.speak.currentSourceSnapshot = null;
-                         LOOMA.speak.clearBlockHighlight();
-                         LOOMA.speak.disable();
-                     }
-
-                     function speakNextRvSegment(index) {
-                         if (rvRunId !== LOOMA.speak.runId) return;
-                         var segment = rvSegments[index];
-                         if (!segment) {
-                             finishRvPlayback();
-                             return;
-                         }
-
-                         // Voice and speed follow the SENTENCE, exactly as they do
-                         // on the Piper path. They used to be fixed for the whole
-                         // passage from the first Devanagari character found
-                         // anywhere in it, so one Nepali word made the Nepali voice
-                         // read the English sentences too — and a chapter with a
-                         // single English caption made the English voice read all
-                         // the Nepali. Mixed pages are most of Looma's content.
-                         var segLang = LOOMA.speak.detectLanguage(segment);
-                         var segVoice = ((segLang === 'ne') ? voiceNp : voiceEn) || rvVoice;
-                         // Same clamp as rvRate: ResponsiveVoice's rate runs ~0–1.5.
-                         var segRate = Math.min(1.5, Math.max(0, rateForLang(segLang) || (2 / 3)));
-
-                         // ResponsiveVoice does not always deliver onend — most
-                         // reliably on the very FIRST utterance of a session,
-                         // where RV/Chrome can drop the callback entirely. With
-                         // the chain hanging off onend alone that silently ended
-                         // the reading after sentence one. advance() is the single
-                         // way forward, is idempotent, and is additionally driven
-                         // by a watchdog that polls RV's own playing state, so a
-                         // missing callback costs a short pause instead of the
-                         // rest of the text.
-                         var advanced = false;
-                         var watchdog = null;
-                         function stopWatchdog() {
-                             if (watchdog) { clearInterval(watchdog); watchdog = null; }
-                         }
-                         function advance() {
-                             if (advanced) return;
-                             // A PAUSED reading must not roll on to the next
-                             // sentence. RV reports "not playing" while paused —
-                             // the very state the watchdog uses to detect a
-                             // dropped onend — so without this, pausing would
-                             // skip ahead a sentence a second later.
-                             if (LOOMA.speak.rvState && LOOMA.speak.rvState.paused) return;
-                             advanced = true;
-                             stopWatchdog();
-                             if (rvRunId !== LOOMA.speak.runId) return;
-                             // Leave RV's own callback stack before starting the
-                             // next utterance; speaking from inside onend can be
-                             // swallowed while RV is still tearing the last one down.
-                             setTimeout(function () { speakNextRvSegment(index + 1); }, 0);
-                         }
-                         function startWatchdog() {
-                             stopWatchdog();
-                             var idleTicks = 0;
-                             watchdog = setInterval(function () {
-                                 if (advanced || rvRunId !== LOOMA.speak.runId) { stopWatchdog(); return; }
-                                 // Hold the count still while paused, so resuming
-                                 // starts from a clean slate instead of advancing
-                                 // on the idle ticks the pause itself produced.
-                                 if (LOOMA.speak.rvState && LOOMA.speak.rvState.paused) { idleTicks = 0; return; }
-                                 var playing;
-                                 try {
-                                     playing = (typeof responsiveVoice.isPlaying === 'function')
-                                         ? responsiveVoice.isPlaying() : true;
-                                 } catch (e) { playing = true; }
-                                 // Require several consecutive idle reads: RV reports
-                                 // "not playing" briefly between its own internal chunks.
-                                 idleTicks = playing ? 0 : (idleTicks + 1);
-                                 if (idleTicks >= 4) advance();
-                             }, 250);
-                         }
-                         // If onstart never arrives either, the utterance was lost
-                         // outright — move on rather than stopping the reading.
-                         var startGuard = setTimeout(function () {
-                             if (!advanced && rvRunId === LOOMA.speak.runId) advance();
-                         }, 5000);
-
-                         responsiveVoice.speak(segment, segVoice, {
-                             rate: segRate,
-                             onstart: function () {
-                                 clearTimeout(startGuard);
-                                 if (rvRunId !== LOOMA.speak.runId) return;
-                                 startWatchdog();
-                                 if (index === 0) {
-                                     try {
-                                         if (window.LOOMA && LOOMA.otel && LOOMA.otel.emitSpan) {
-                                             LOOMA.otel.emitSpan('tts.responsivevoice', rvT0, Date.now(), 1, rvSpanAttrs);
-                                         }
-                                     } catch (e) {}
-                                     try {
-                                         if (window.LOOMA && LOOMA.telemetry && LOOMA.telemetry.track) {
-                                             LOOMA.telemetry.track('tts_speak',
-                                                 Object.assign({ tts_status: 'ok' }, rvEventBase));
-                                         }
-                                     } catch (e) {}
-                                 }
-                                 LOOMA.speak.activate();
-                                 LOOMA.speak.buttonActive = true;
-                                 LOOMA.speak.applyBusyButtonState();
-                                 LOOMA.speak.updateButtonAvailability();
-                                 LOOMA.speak.highlightBlock(segment);
-                             },
-                             onerror: function (ev) {
-                                 clearTimeout(startGuard);
-                                 advanced = true;   // an errored segment must not be retried by the watchdog
-                                 stopWatchdog();
-                                 if (rvRunId !== LOOMA.speak.runId) return;
-                                 var msg = String((ev && (ev.error || ev.message)) || 'responsivevoice error');
-                                 try {
-                                     if (window.LOOMA && LOOMA.otel && LOOMA.otel.emitSpan) {
-                                         LOOMA.otel.emitSpan('tts.responsivevoice', rvT0, Date.now(), 1,
-                                             Object.assign({ 'error.message': msg }, rvSpanAttrs),
-                                             { statusCode: 2 });
-                                     }
-                                 } catch (e) {}
-                                 try {
-                                     if (window.LOOMA && LOOMA.telemetry && LOOMA.telemetry.track) {
-                                         LOOMA.telemetry.track('tts_speak',
-                                             Object.assign({ tts_status: 'error', tts_error: msg }, rvEventBase));
-                                     }
-                                 } catch (e) {}
-                                 LOOMA.speak.rvState = null;
-                                 LOOMA.speak.clearBlockHighlight();
-                                 LOOMA.speak.disable();
-                             },
-                             onend: function () {
-                                 clearTimeout(startGuard);
-                                 advance();
-                             }
-                         });
-                     }
-
-                     responsiveVoice.cancel();
-                     if (rvSegments.length === 0) {
-                         // Nothing to say: drop the run state again, or the button
-                         // guard would offer to pause a reading that never started.
-                         LOOMA.speak.rvState = null;
-                         LOOMA.speak.currentSourceKey = null;
-                         LOOMA.speak.currentSourceText = null;
-                         LOOMA.speak.currentSourceSnapshot = null;
-                         LOOMA.speak.disable();
-                     } else {
-                         speakNextRvSegment(0);
-                     }
-                 }
-             }
-             });
-         }
-
-         else { // default path is Flask/Piper
+         { // Piper, Mimic and the browser's speechSynthesis
              // Re-fetch when the voice or the speed changes, not just when the text does.
              var textKey = LOOMA.speak.normalizeSpeakKey(text);
              var requestKey = [engine || 'piper', voiceEn + '~' + voiceNp, rate || '', textKey].join('|');
@@ -3328,91 +2991,6 @@ LOOMA.speak = function(text, engine, voice, rate) {
      LOOMA.speak.updateButtonAvailability();
  }; //end LOOMA.speak()
 
-/* LOOMA.speak.ensureResponsiveVoice(cb)
- * ResponsiveVoice is a cloud TTS whose external script is intentionally NOT
- * loaded on page load. It is fetched on demand the first time the user presses
- * Speak with the ResponsiveVoice engine selected, so pages that never use it
- * make no call to responsivevoice.org. Subsequent presses reuse the loaded
- * engine. cb(available) is called with true once responsiveVoice.speak is ready,
- * or false if the script can't load (offline / blocked / missing key). Callers
- * that arrive while it is still downloading are queued and resolved together. */
-LOOMA.speak.ensureResponsiveVoice = function (cb) {
-    function ready() {
-        if (!(typeof responsiveVoice !== 'undefined' && responsiveVoice &&
-              typeof responsiveVoice.speak === 'function')) return false;
-        return true;
-    }
-
-    // Chrome populates speechSynthesis.getVoices() asynchronously. An utterance
-    // spoken while that list is still empty does play, but its onend never
-    // fires — which is exactly why the FIRST reading of a session stopped after
-    // one sentence while every later one was fine. So hold the first speak()
-    // until the voice list exists. Browsers where the list never populates (RV
-    // then serves its own cloud audio) must NOT be punished for it, so this is a
-    // best-effort wait, not a requirement: see waitForVoices() below.
-    function voicesReady() {
-        try {
-            if (typeof speechSynthesis === 'undefined' || !speechSynthesis ||
-                typeof speechSynthesis.getVoices !== 'function') return true;
-            var voices = speechSynthesis.getVoices();
-            return !!(voices && voices.length);
-        } catch (e) { return true; }
-    }
-
-    // Poll up to ~2s for the voice list, then continue regardless.
-    function waitForVoices(done) {
-        var tries = 0;
-        (function poll() {
-            if (voicesReady() || ++tries > 20) { done(); return; }
-            setTimeout(poll, 100);
-        })();
-    }
-
-    LOOMA.speak.rvWaiters = LOOMA.speak.rvWaiters || [];
-    LOOMA.speak.rvWaiters.push(cb);
-    if (LOOMA.speak.rvLoading) return;   // a load is already in flight
-    LOOMA.speak.rvLoading = true;
-
-    function settle(ok) {
-        LOOMA.speak.rvLoading = false;
-        var waiters = LOOMA.speak.rvWaiters || [];
-        LOOMA.speak.rvWaiters = [];
-        waiters.forEach(function (fn) { try { fn(ok); } catch (e) {} });
-    }
-
-    // The RV script is already loaded and only the voice list is missing —
-    // don't re-inject it, just wait for the voices.
-    if (ready()) { waitForVoices(function () { settle(true); }); return; }
-
-    var src = window.LOOMA_RESPONSIVEVOICE_SRC ||
-              'https://code.responsivevoice.org/responsivevoice.js?key=r2w8pU3y';
-    var script = document.createElement('script');
-    script.src = src;
-    script.async = true;
-    script.onload = function () {
-        // ResponsiveVoice auto-initialises on the window 'load' event. When the
-        // script is injected dynamically (after load), that event has already
-        // fired, so init() never runs on its own and .speak() stays silent —
-        // call it explicitly here. Harmless if RV already initialised.
-        try {
-            if (typeof responsiveVoice !== 'undefined' && responsiveVoice &&
-                typeof responsiveVoice.init === 'function') {
-                responsiveVoice.init();
-            }
-        } catch (e) {}
-        // RV may need a tick to finish wiring after init; poll briefly (≈4s
-        // ceiling) until responsiveVoice.speak is callable.
-        var tries = 0;
-        (function waitReady() {
-            if (ready()) { waitForVoices(function () { settle(true); }); return; }
-            if (++tries > 40) { settle(false); return; }
-            setTimeout(waitReady, 100);
-        })();
-    };
-    script.onerror = function () { settle(false); };
-    document.head.appendChild(script);
-};
-
 /* ---- reading-band geometry on a converted chapter page --------------------
  *
  * A converted chapter is the scanned page as an image with a layer of
@@ -3664,7 +3242,7 @@ LOOMA.speak.getSelectedText = function () {
  *
  * The one answer to "are these two strings the same passage?". Every control
  * that has to tell a PAUSE press apart from a NEW SELECTION press keys off it:
- * hasNewSelection on the Piper and ResponsiveVoice paths, justRead in
+ * hasNewSelection on the audio and speechSynthesis paths, justRead in
  * updateButtonAvailability, and the currentSourceKey request key.
  *
  * It compares two strings that reach it down DIFFERENT pipelines, and that is
@@ -3702,11 +3280,9 @@ LOOMA.speak.normalizeSpeakKey = function (text) {
  * Which of Looma's two languages a piece of text is written in — the one
  * answer every engine asks for, to pick a voice and a reading speed.
  *
- * ONE definition on purpose. There used to be several, and they disagreed:
- * Piper weighed the two scripts against each other per sentence, while
- * ResponsiveVoice asked only "is there any Devanagari in the whole passage?"
- * — so a single Nepali word anywhere made the Nepali voice read the English
- * sentences too. Mixed chapters are full of exactly that.
+ * ONE definition on purpose: asking only "is there any Devanagari in the whole
+ * passage?" would make a single Nepali word send the English sentences to the
+ * Nepali voice too. Mixed chapters are full of exactly that.
  *
  * Whichever script the text is mostly written in wins, at any length: a stray
  * danda in an English sentence loses to the Latin letters around it, and a
@@ -3759,7 +3335,7 @@ LOOMA.speak.resolveVoiceAndRate = function (engine, voice, rate) {
         }
     }
     if (engine === 'speechsynthesis') engine = 'synthesis';
-    if (['piper', 'mimic', 'synthesis', 'responsivevoice'].indexOf(engine) === -1) engine = 'piper';
+    if (['piper', 'mimic', 'synthesis'].indexOf(engine) === -1) engine = 'piper';
 
     var voiceEn = '', voiceNp = '';
     if (voice && typeof voice === 'object') {
@@ -3860,8 +3436,7 @@ LOOMA.speak.prefetch = function (text) {
     if (text.length < 2) return;
     if (text === LOOMA.speak.lastPrefetchedText) return;
 
-    // Only Piper has a server round trip + cache worth warming; browser
-    // speechSynthesis and ResponsiveVoice have no equivalent to hide.
+    // Only Piper has a cache worth warming.
     var engine = LOOMA.readStore('tts-engine', 'cookie') || 'piper';
     if (engine !== 'piper') return;
 
@@ -3993,11 +3568,8 @@ LOOMA.speak.clearPendingButtonState = function () {
  *
  * The pending/busy visuals above only ever reach `button.speak` — the floating
  * Speak control. Pages with their own Speak buttons (the Reading Settings page
- * has one per engine) got no feedback at all while waiting, which is worst
- * exactly where the wait is longest: ResponsiveVoice has to fetch its script
- * from responsivevoice.org and then wait on the cloud for audio, several seconds
- * in which nothing on screen moved. Those pages subscribe here instead of
- * reaching into LOOMA.speak's internals.
+ * has one per engine) got no feedback at all while waiting. Those pages subscribe
+ * here instead of reaching into LOOMA.speak's internals.
  *
  * cb({pending, busy}) — `pending` is "asked for, no audio yet" (show a spinner),
  * `busy` is "audio is sounding". Fired only when the pair actually changes.
@@ -4034,16 +3606,13 @@ LOOMA.speak.hasSelection = function () {
  *
  *   Piper / browser audio — a real <audio> element, paused and not finished
  *   between two sentences — no element to pause, so the CHAIN is held instead
- *   ResponsiveVoice       — its own flag; RV plays inside its script and owns
- *                           no media element for us to look at
- *   speechSynthesis       — its own flag, for the same reason
+ *   speechSynthesis       — its own flag; it owns no media element to look at
  *
  * An ENDED clip also reports paused === true, which is why `ended` is excluded:
  * that one is the gap, and gapPaused is what says whether the gap is a pause.
  */
 LOOMA.speak.isPaused = function () {
     if (LOOMA.speak.gapPaused) return true;
-    if (LOOMA.speak.rvState && LOOMA.speak.rvState.paused) return true;
     if (LOOMA.speak.synthState && LOOMA.speak.synthState.paused) return true;
     var audio = LOOMA.speak.playingAudio;
     return !!(audio && audio.paused && !audio.ended);
@@ -4328,68 +3897,6 @@ LOOMA.speak.installButtonGuard = function () {
             return false;
         }
 
-        /* ResponsiveVoice plays inside its own script and never sets
-           playingAudio, so the branch below could not see an RV reading at all:
-           every press fell through to a fresh LOOMA.speak(), which is why pause
-           did nothing with RV selected. Handle it on its own terms first — RV
-           exposes pause()/resume(), a real pause rather than the
-           cancel-and-forget the engine used to do. */
-        var rvState = LOOMA.speak.rvState;
-        if (rvState && rvState.runId === LOOMA.speak.runId && typeof responsiveVoice !== 'undefined') {
-            var rvSelected = (LOOMA.speak.getSelectedText ? LOOMA.speak.getSelectedText() : '');
-            var rvSelectedKey = LOOMA.speak.normalizeSpeakKey
-                ? LOOMA.speak.normalizeSpeakKey(rvSelected) : (rvSelected || '').toLowerCase();
-            // currentSourceText is the RAW selection (what Piper/RV was actually
-            // asked to say); getSelectedText() above has been through
-            // LOOMA.cleanSelectedText() (strips PDF glyph garbage, unmixes digits
-            // wedged into words — "activity 1.5", "6m/s", any textbook chapter ID).
-            // Comparing the two as-is means any passage with a digit next to a
-            // letter — most science/maths text — never matches itself, so every
-            // pause press reads as "new selection" and restarts from the top
-            // instead of pausing. Clean this side the same way before comparing.
-            var rvCurrent = LOOMA.cleanSelectedText
-                ? LOOMA.cleanSelectedText(LOOMA.speak.currentSourceText || '')
-                : (LOOMA.speak.currentSourceText || '');
-            var rvCurrentKey = LOOMA.speak.normalizeSpeakKey
-                ? LOOMA.speak.normalizeSpeakKey(rvCurrent) : rvCurrent.toLowerCase();
-
-            // Picking new text mid-reading starts that text, exactly as it does
-            // for Piper — only a press with the SAME (or no) selection pauses.
-            if (rvSelectedKey && rvCurrentKey && rvSelectedKey !== rvCurrentKey) {
-                LOOMA.speak.cleanup();
-                return;
-            }
-
-            event.preventDefault();
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-
-            var rvCanPause = typeof responsiveVoice.pause === 'function' &&
-                             typeof responsiveVoice.resume === 'function';
-            if (!rvCanPause) {
-                // An RV build without pause/resume: stopping is the honest
-                // fallback, and lastCompleted* still lets the next press repeat.
-                try { responsiveVoice.cancel(); } catch (e) {}
-                LOOMA.speak.rvState = null;
-                LOOMA.speak.lastCompletedText = rvCurrent;
-                LOOMA.speak.lastCompletedSnapshot =
-                    LOOMA.speakCloneSnapshot(LOOMA.speak.currentSourceSnapshot);
-                LOOMA.speak.disable();
-                return false;
-            }
-
-            if (rvState.paused) {
-                rvState.paused = false;
-                try { responsiveVoice.resume(); } catch (e) {}
-                LOOMA.speak.activate();
-            } else {
-                rvState.paused = true;
-                try { responsiveVoice.pause(); } catch (e) {}
-                LOOMA.speak.disable();
-            }
-            return false;
-        }
-
         // Nothing is playing YET: the press landed while Piper is still synthesizing
         // the first sentence. The block below only handles a live audio element, so
         // this fell through to a fresh LOOMA.speak() — which sees the same request
@@ -4405,7 +3912,7 @@ LOOMA.speak.installButtonGuard = function () {
             return false;
         }
 
-        // Browser speech owns no media element either, so it pauses like RV above.
+        // Browser speech owns no media element, so its pause is handled here.
         var synthState = LOOMA.speak.synthState;
         if (synthState && synthState.runId === LOOMA.speak.runId) {
             var synthSelected = LOOMA.speak.normalizeSpeakKey(LOOMA.speak.getSelectedText());
@@ -4521,22 +4028,6 @@ LOOMA.speak.installButtonGuard = function () {
     $(document).on('mousedown', 'button.speak', function (event) {
         // Prevent the click from clearing the browser selection before we capture it for TTS/highlight.
         event.preventDefault();
-        // If ResponsiveVoice is the chosen reading engine, kick off its lazy load
-        // + init NOW, on this user gesture (mousedown), so it is ready and audio
-        // is unlocked by the time the click fires LOOMA.speak(). Without this the
-        // first press would race the async download and Chrome's autoplay policy
-        // and stay silent. No-op (and no network call) for any other engine.
-        try {
-            // Mirrors LOOMA.speak()'s own engine resolution (saved cookie, else
-            // Piper) so the preload kicks in only when the click would actually
-            // end up using ResponsiveVoice — i.e. when the teacher explicitly
-            // selected it. With no saved preference nothing is preloaded and no
-            // request to responsivevoice.org is made at all.
-            var _rvWillRun = LOOMA.readStore('tts-engine', 'cookie') || 'piper';
-            if (_rvWillRun === 'responsivevoice') {
-                LOOMA.speak.ensureResponsiveVoice(function () {});
-            }
-        } catch (e) {}
     });
 
     $(document).on('click', 'button.speak', function (event) {

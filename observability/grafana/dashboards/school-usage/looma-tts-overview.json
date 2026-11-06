@@ -1497,7 +1497,7 @@
       },
       "options": {
         "mode": "markdown",
-        "content": "## TTS engines\n\n**Piper** — the default. Neural TTS synthesized on the server (`piper_http_server.py`). Fast, offline, good quality. Span: `tts.piper`.\n\n**Mimic** — optional, English only, offline. Run on the server by `looma-TTS.php`. Span: `tts.mimic`.\n\n**Browser Speech** — the browser's own speechSynthesis, on the student device. Span: `tts.synthesis`, reported through `looma-telemetry.php`.\n\n**ResponsiveVoice** — cloud TTS, selectable only when the box has internet. It runs entirely on the student device, so it emits **no server spans** — see the *ResponsiveVoice* dashboard.\n\nAll server requests are proxied through `looma-TTS.php`.\n\nUse the **TTS dashboards** dropdown (top-right) to drill into each engine."
+        "content": "## TTS engines\n\n**Piper** — the default. Neural TTS synthesized on the server (`piper_http_server.py`). Fast, offline, good quality. Span: `tts.piper`.\n\n**Mimic** — optional, English only, offline. Run on the server by `looma-TTS.php`. Span: `tts.mimic`.\n\n**Browser Speech** — the browser's own speechSynthesis, on the student device. Span: `tts.synthesis`, reported through `looma-telemetry.php`.\n\nAll server requests are proxied through `looma-TTS.php`.\n\nUse the **TTS dashboards** dropdown (top-right) to drill into each engine."
       }
     },
     {

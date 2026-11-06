@@ -191,6 +191,8 @@ installed — a stack you started by hand with `docker compose up` still gets cl
 | `--no-kiosk` | Skip the Chromium kiosk autostart |
 | `--bundle-dir PATH` | Where the offline bundle lives (default: next to the script, on the disk). **Use it when the disk is mounted read-only** — build and install with the same `PATH` |
 
+With observability on, Metricbeat ships the `docker`, `system` and `mongodb` modules on a Docker deployment and `system` and `mongodb` on a native one, every 30 s (`LOOMA_METRICBEAT_PERIOD` changes that).
+
 > **CPU brownout guard:** on this board Piper TTS at full clock draws enough current
 > to reset the box mid-synthesis. Both deployments cap the CPU frequency at boot
 > (1.8 GHz by default) via an `ExecStartPre` on `looma.service` (Docker) or the

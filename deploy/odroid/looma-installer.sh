@@ -135,11 +135,11 @@ SWAP_GB="${SWAP_GB:-8}"
 # to its rated ceiling — no overclock needed — under Piper TTS or a full container
 # stack browns out and resets; reproduced on real hardware by pressing play in the
 # Piper UI). 0 = leave the CPUs alone. 1900000 is this board's own hardware max
-# (a no-op cap), so it does NOT protect against the brownout by itself — 1500000
-# is the lowest value confirmed on this hardware to still leave Piper usable while
-# avoiding the reset. Applied by looma.service (Docker) or looma-cpu-cap.service
+# (a no-op cap), so it does NOT protect against the brownout by itself. If a board
+# still resets at the default, drop to 1500000, the value confirmed on this hardware
+# to leave Piper usable while avoiding the reset. Applied by looma.service (Docker) or looma-cpu-cap.service
 # (native) via ExecStartPre, so it survives reboots either way.
-CPU_MAX_FREQ="${CPU_MAX_FREQ:-1500000}"    # kHz — 1500000 = 1.5 GHz
+CPU_MAX_FREQ="${CPU_MAX_FREQ:-1800000}"    # kHz — 1800000 = 1.8 GHz
 REMOTE_OBS_HOST="${REMOTE_OBS_HOST:-}"     # data server IP; empty = auto (LOOMA_DATA_SERVER_DEFAULT)
 # Identifies this box in the observability data — Vector stamps it on every log
 # and metric as `box_name` (and adds the box's LAN IP as `box_ip`). It matters
@@ -248,6 +248,41 @@ save_box_geo() {
   sed -i -e '/^LOOMA_BOX_PUBLIC_IP=/d' -e '/^LOOMA_BOX_GEO_CITY=/d' -e '/^LOOMA_BOX_GEO_COUNTRY=/d' /etc/looma-odroid.env
   printf 'LOOMA_BOX_PUBLIC_IP="%s"\nLOOMA_BOX_GEO_CITY="%s"\nLOOMA_BOX_GEO_COUNTRY="%s"\n' \
     "$box_public_ip" "$box_geo_city" "$box_geo_country" >> /etc/looma-odroid.env
+}
+
+# Let Metricbeat's mongodb module reach a host-installed MongoDB. It runs on the
+# loomanet bridge, and mongod only listens on 127.0.0.1 by default, so add that
+# network's gateway: containers on this box can reach it, the school's LAN cannot.
+# mongod refuses to start if that address does not exist yet, so it must also wait
+# for Docker at boot and retry, or a reboot could leave the box with no database.
+mongo_allow_loomanet() {
+  [ -f /etc/mongod.conf ] && command -v mongod >/dev/null 2>&1 || return 0
+  local gw svc=mongod
+  gw="$(docker network inspect loomanet --format '{{(index .IPAM.Config 0).Gateway}}' 2>/dev/null || true)"
+  [ -n "$gw" ] || { warn "could not read loomanet's gateway: the MongoDB metrics will stay empty"; return 0; }
+  systemctl list-unit-files 2>/dev/null | grep -q '^mongod\.service' || svc=mongodb
+  grep -qF "$gw" /etc/mongod.conf && return 0
+  sed -i -E "s/^(\s*bindIp:\s*)([0-9.,]+)\s*\$/\1\2,$gw/" /etc/mongod.conf
+  if ! grep -qF "$gw" /etc/mongod.conf; then
+    warn "could not add $gw to bindIp in /etc/mongod.conf: the MongoDB metrics will stay empty"
+    return 0
+  fi
+  mkdir -p "/etc/systemd/system/$svc.service.d"
+  cat > "/etc/systemd/system/$svc.service.d/looma-after-docker.conf" <<EOF
+[Unit]
+After=docker.service
+Wants=docker.service
+StartLimitIntervalSec=300
+StartLimitBurst=10
+
+[Service]
+Restart=on-failure
+RestartSec=5
+EOF
+  systemctl daemon-reload
+  log "MongoDB now also listens on loomanet's gateway ($gw) for Metricbeat"
+  systemctl restart "$svc" || warn "MongoDB did not restart with the new bindIp: check systemctl status $svc"
+  return 0
 }
 
 # Mimic: the optional English-only offline engine (includes/looma-mimic.php). It
@@ -750,7 +785,7 @@ services:
       # everyday English + Nepali pair plus one speed change.
       LOOMA_PIPER_MAX_WORKERS: "3"
       LOOMA_PIPER_PREWARM: "1"
-      OTEL_SERVICE_NAME: piper-tts
+      OTEL_SERVICE_NAME: looma-piper-tts
       OTEL_EXPORTER_OTLP_ENDPOINT: "@OTEL_ENDPOINT@"
       OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@"
     command: ["python3", "/usr/local/var/www/@REPO_NAME@/piper_server.py"]
@@ -831,13 +866,13 @@ Environment=LOOMA_PIPER_PREWARM=1
 Environment=PATH=@LOOMA_ROOT@/piper:/usr/local/bin/piper:/usr/local/bin:/usr/bin:/bin
 # OTLP: @OTEL_ENDPOINT@/@OTEL_TRACES@ are substituted by the installer; when obs is
 # disabled the endpoint is empty and the exporters become no-ops.
-Environment=OTEL_SERVICE_NAME=piper-tts
+Environment=OTEL_SERVICE_NAME=looma-piper-tts
 Environment=OTEL_EXPORTER_OTLP_ENDPOINT=@OTEL_ENDPOINT@
 Environment=OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 Environment=OTEL_TRACES_EXPORTER=@OTEL_TRACES@
 Environment=OTEL_METRICS_EXPORTER=none
 Environment=OTEL_LOGS_EXPORTER=none
-Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=piper-tts,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@
+Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=looma-piper-tts,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@
 # CPU GUARD — do NOT remove. Piper/onnxruntime inference otherwise pegs every core
 # at max frequency; on the odroid that exceeds the board's power/thermal budget and
 # it RESETS mid-synthesis. (The legacy piper.service made this worse by explicitly
@@ -1164,7 +1199,7 @@ box_name_label() {
 
 # CPU_MAX_FREQ is in kHz, because that is what /sys/.../scaling_max_freq takes.
 # The form talks MHz — that is how the board is described everywhere else — and
-# converts, so nobody has to type five zeros to ask for 1.5 GHz.
+# converts, so nobody has to type five zeros to ask for 1.8 GHz.
 cpu_freq_label() {
   if [ "${CPU_MAX_FREQ:-0}" = "0" ] || [ -z "${CPU_MAX_FREQ:-}" ]; then
     echo "unchanged (Piper TTS may brown out this board)"
@@ -1179,8 +1214,8 @@ edit_cpu_freq() {
 
 Piper TTS at full tilt pushes this board past its power/thermal budget and it
 RESETS mid-sentence — capping the CPUs is what stops that, with no overclock
-involved. 1500 is the value confirmed on this hardware to still leave Piper
-usable. 0 leaves the CPUs alone." "$mhz" || return 0
+involved. The default is 1800; drop to 1500, the value confirmed on this
+hardware to leave Piper usable, if the board still resets. 0 leaves the CPUs alone." "$mhz" || return 0
 
   case "$mhz" in
     ''|*[!0-9]*)
@@ -3158,7 +3193,8 @@ install_deploy_native() {
 
   # 10) Observability: agents only (Vector+Metricbeat, shipping to the data
   #     server) — OpenSearch/Grafana/etc. never run on this box, native or
-  #     otherwise. Vector's docker_logs source only sees the search/AI/Piper
+  #     otherwise. Metricbeat ships its system and mongodb modules here: the app
+  #     does not run in containers, so there is no docker module. Vector's docker_logs source only sees the search/AI/Piper
   #     containers this way (native Apache/PHP's own access/error logs are
   #     not container output, so they are not captured here) — the app's own
   #     OTLP traces (SetEnv in the vhost, already wired above) are unaffected.
@@ -3166,11 +3202,25 @@ install_deploy_native() {
     if docker compose version >/dev/null 2>&1; then
       log "starting the observability agents (Vector+Metricbeat -> $REMOTE_OBS_HOST)"
       docker network inspect loomanet >/dev/null 2>&1 || docker network create loomanet
+      mongo_allow_loomanet
+      local box_ip
+      box_ip="$(ip -4 route get 1.1.1.1 2>/dev/null | sed -n 's/.*[[:space:]]src[[:space:]]\{1,\}\([0-9.]\{1,\}\).*/\1/p' | head -n1)"
+      [ -n "$box_ip" ] || box_ip="$(hostname -I 2>/dev/null | awk '{print $1}')"
+      # In .env too, so a later hand-run `docker compose up` keeps the same modules.
+      local obs_env="$repo_dest/observability/.env"
+      touch "$obs_env"
+      sed -i -e '/^LOOMA_METRICBEAT_DOCKER_ENABLED=/d' -e '/^LOOMA_METRICBEAT_MONGO_HOST=/d' "$obs_env"
+      printf 'LOOMA_METRICBEAT_DOCKER_ENABLED=false\nLOOMA_METRICBEAT_MONGO_HOST=auto\n' >> "$obs_env"
+      # --build: the module list is baked into the image, so a re-install must not
+      # keep running an older one. An offline install has its images from the bundle.
+      local agent_build=(--build)
+      [ "$OFFLINE" = "1" ] && agent_build=()
       ( cd "$repo_dest/observability" && LOOMA_VECTOR_CONFIG=/etc/vector/vector-agent.toml \
-          LOOMA_BOX_NAME="$box_name" LOOMA_BOX_PUBLIC_IP="$box_public_ip" \
+          LOOMA_METRICBEAT_DOCKER_ENABLED=false LOOMA_METRICBEAT_MONGO_HOST=auto \
+          LOOMA_BOX_NAME="$box_name" LOOMA_BOX_IP="$box_ip" LOOMA_BOX_PUBLIC_IP="$box_public_ip" \
           LOOMA_BOX_GEO_CITY="$box_geo_city" LOOMA_BOX_GEO_COUNTRY="$box_geo_country" \
           docker compose -p looma-observability -f docker-compose.yml -f docker-compose.odroid.yml \
-          up -d --no-deps vector metricbeat ) \
+          up -d --no-deps "${agent_build[@]}" vector metricbeat ) \
         || warn "the observability agents did not fully start — the native app is up regardless"
     else
       warn "observability agents were requested but Docker is not installed — skipping."
@@ -3614,7 +3664,9 @@ cmd_up() {
   # so it doesn't pull the (unused) local OpenSearch/collector in.
   if [ "$WITH_AGENTS" = "1" ]; then
     echo "[looma-up] agents (Vector+Metricbeat -> this box's Vector -> remote Vector $LOOMA_VECTOR_SERVER)…"
+    # Docker deployment: Metricbeat ships its docker, system and mongodb modules.
     ( cd "$obs_dir" && LOOMA_VECTOR_CONFIG=/etc/vector/vector-agent.toml \
+        LOOMA_METRICBEAT_DOCKER_ENABLED=true \
         docker compose -f docker-compose.yml -f docker-compose.odroid.yml \
         up -d --no-deps "${build_args[@]}" "${pull_args[@]}" vector metricbeat ) \
       || echo "[looma-up] WARN: the agents did not start — the app is up regardless." >&2

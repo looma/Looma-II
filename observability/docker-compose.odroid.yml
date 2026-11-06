@@ -10,8 +10,8 @@
 # This box runs ONLY the observability AGENTS: Vector (in its "agent" role,
 # LOOMA_VECTOR_CONFIG=vector-agent.toml — ships everything to the server's
 # Vector over its native wire protocol, never touches OpenSearch directly)
-# and Metricbeat (ships Docker container stats to this box's own Vector over
-# Beats). looma-installer.sh's settle_observability() decides whether this
+# and Metricbeat (ships the modules below to this box's own Vector over Beats).
+# looma-installer.sh's settle_observability() decides whether this
 # overlay is even used at all — on by default the moment the server is
 # reachable, off otherwise (--no-observability forces it off; --remote-obs
 # picks a different server).
@@ -52,20 +52,16 @@ services:
   metricbeat:
     mem_limit: 384m
     environment:
-      # Container/Mongo infra stats only need to be hourly on a school box —
-      # what actually matters in real time (pages opened, chapters/exercises/
-      # games/exams/lessons/quizzes/maps opened, every score) ships through a
-      # completely separate path (looma-telemetry.php -> OTLP) unaffected by
-      # this. See metricbeat/metricbeat.yml.
-      LOOMA_METRICBEAT_PERIOD: ${LOOMA_METRICBEAT_PERIOD:-1h}
-      # An odroid install is native — MongoDB is host-installed, not a
-      # "looma-db" container on this bridge network (that hostname only ever
-      # resolves on a Docker-mode app deployment). "auto" makes the image's
-      # own entrypoint wrapper (metricbeat/docker-entrypoint-wrapper.sh)
-      # resolve this container's own default-route gateway at startup — the
-      # loomanet subnet Docker assigns isn't the same on every box, so a
-      # fixed IP here would only work on the one box it was measured on.
-      LOOMA_METRICBEAT_MONGO_HOST: auto
+      # Which Metricbeat modules a box ships:
+      #   Docker deployment: docker + system + mongodb
+      #   native deployment: system + mongodb
+      # looma-installer.sh sets the two variables below for a native install: the
+      # app does not run in containers there, and MongoDB is on the host, reached
+      # through this network's gateway ("auto", see docker-entrypoint-wrapper.sh).
+      LOOMA_METRICBEAT_DOCKER_ENABLED: ${LOOMA_METRICBEAT_DOCKER_ENABLED:-true}
+      LOOMA_METRICBEAT_MONGO_HOST: ${LOOMA_METRICBEAT_MONGO_HOST:-looma-db}
+      LOOMA_METRICBEAT_MONGO_ENABLED: "true"
+      LOOMA_METRICBEAT_PERIOD: ${LOOMA_METRICBEAT_PERIOD:-30s}
 
 # The canonical observability compose declares `loomanet` as a compose-managed
 # network. On the box the network is created up-front (by the installer/looma-up.sh)

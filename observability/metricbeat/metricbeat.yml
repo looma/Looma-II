@@ -19,19 +19,14 @@ metricbeat.modules:
     # both cuts the socket/OpenSearch write load 3x and raises the effective
     # fetch deadline well clear of a slow daemon response.
     #
-    # LOOMA_METRICBEAT_PERIOD overrides this — the odroid overlay
-    # (docker-compose.odroid.yml) sets it to 1h: container/Mongo stats are
-    # infrastructure health, not urgent, unlike the app's own page/chapter/
-    # exercise/exam/score telemetry (looma-telemetry.php), which ships
-    # in real time over a completely separate OTLP path regardless of this
-    # setting. The server's own self-monitoring metricbeat is unaffected
-    # (env unset there, so it keeps the 30s default below).
+    # LOOMA_METRICBEAT_PERIOD overrides this, for every module below too.
     period: ${LOOMA_METRICBEAT_PERIOD:30s}
     # Timeout stays independent of period — always give a single slow daemon
-    # response room to complete rather than being cancelled mid-flight, even
-    # when period itself is stretched out to 1h.
+    # response room to complete rather than being cancelled mid-flight.
     timeout: 30s
-    enabled: true
+    # Off on a native box, where the app does not run in containers. See
+    # docker-compose.odroid.yml for which modules each deployment gets.
+    enabled: ${LOOMA_METRICBEAT_DOCKER_ENABLED:true}
 
   # MongoDB — the Looma application database. Standalone instance, no auth in
   # this compose, so no credentials are needed.

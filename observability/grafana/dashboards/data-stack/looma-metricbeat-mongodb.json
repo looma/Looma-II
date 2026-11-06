@@ -1,0 +1,2607 @@
+{
+  "uid": "looma-metricbeat-mongodb",
+  "title": "Looma - Metricbeat MongoDB",
+  "tags": [
+    "looma",
+    "metricbeat",
+    "mongodb",
+    "opensearch"
+  ],
+  "schemaVersion": 39,
+  "version": 1,
+  "editable": true,
+  "refresh": "30s",
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "templating": {
+    "list": [
+      {
+        "name": "box",
+        "label": "Box",
+        "type": "query",
+        "datasource": {
+          "type": "grafana-opensearch-datasource",
+          "uid": "opensearch-metricbeat"
+        },
+        "query": "{\"find\": \"terms\", \"field\": \"box_name.keyword\", \"query\": \"event.module:mongodb\"}",
+        "refresh": 2,
+        "includeAll": false,
+        "multi": false,
+        "sort": 1,
+        "current": {
+          "text": "looma",
+          "value": "looma"
+        }
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Now",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Uptime",
+      "description": "Time since MongoDB last started.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.uptime.ms"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "dtdurationms",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "No data"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Connections in use",
+      "description": "Client connections open right now.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 4,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.connections.current"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "No data"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Memory in use",
+      "description": "Resident memory of the mongod process.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.memory.resident.mb"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decmbytes",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "No data"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Cache in use",
+      "description": "WiredTiger cache currently holding data.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.wired_tiger.cache.used.bytes"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "No data"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Looma data size",
+      "description": "Size of the looma database, uncompressed.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:dbstats AND box_name.keyword:\"$box\" AND mongodb.dbstats.db.keyword:looma",
+          "timeField": "@timestamp",
+          "alias": "",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.dbstats.data_size.bytes"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "No data"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Requests per minute",
+      "description": "Network requests MongoDB received in the last minute.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.network.requests",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "No data"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 8,
+      "type": "row",
+      "title": "Activity",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Operations per minute",
+      "description": "Operations by type. Counters reset to 0 when MongoDB restarts.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "query",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.ops.counters.query",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "insert",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.ops.counters.insert",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "update",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.ops.counters.update",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "delete",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.ops.counters.delete",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "getmore",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.ops.counters.getmore",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "F",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "command",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.ops.counters.command",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Documents per minute",
+      "description": "Documents returned to clients and written.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 6,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:metrics AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "returned",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.metrics.document.returned",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:metrics AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "inserted",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.metrics.document.inserted",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:metrics AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "updated",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.metrics.document.updated",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:metrics AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "deleted",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.metrics.document.deleted",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Connections",
+      "description": "Client connections open.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "in use",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.connections.current"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Network per minute",
+      "description": "Bytes received from and sent to clients.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 14,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "in",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.network.in.bytes",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "out",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.network.out.bytes",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 13,
+      "type": "row",
+      "title": "Speed",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "Average operation time",
+      "description": "Average time MongoDB took per operation in each minute.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "reads",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.ops.latencies.reads.latency",
+              "hide": true
+            },
+            {
+              "id": "4",
+              "type": "derivative",
+              "field": "1",
+              "hide": true
+            },
+            {
+              "id": "5",
+              "type": "max",
+              "field": "mongodb.status.ops.latencies.reads.count",
+              "hide": true
+            },
+            {
+              "id": "6",
+              "type": "derivative",
+              "field": "5",
+              "hide": true
+            },
+            {
+              "id": "7",
+              "type": "bucket_script",
+              "pipelineVariables": [
+                {
+                  "name": "t",
+                  "pipelineAgg": "4"
+                },
+                {
+                  "name": "n",
+                  "pipelineAgg": "6"
+                }
+              ],
+              "settings": {
+                "script": "params.n > 0 ? params.t / params.n / 1000 : 0"
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "writes",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.ops.latencies.writes.latency",
+              "hide": true
+            },
+            {
+              "id": "4",
+              "type": "derivative",
+              "field": "1",
+              "hide": true
+            },
+            {
+              "id": "5",
+              "type": "max",
+              "field": "mongodb.status.ops.latencies.writes.count",
+              "hide": true
+            },
+            {
+              "id": "6",
+              "type": "derivative",
+              "field": "5",
+              "hide": true
+            },
+            {
+              "id": "7",
+              "type": "bucket_script",
+              "pipelineVariables": [
+                {
+                  "name": "t",
+                  "pipelineAgg": "4"
+                },
+                {
+                  "name": "n",
+                  "pipelineAgg": "6"
+                }
+              ],
+              "settings": {
+                "script": "params.n > 0 ? params.t / params.n / 1000 : 0"
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "commands",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.ops.latencies.commands.latency",
+              "hide": true
+            },
+            {
+              "id": "4",
+              "type": "derivative",
+              "field": "1",
+              "hide": true
+            },
+            {
+              "id": "5",
+              "type": "max",
+              "field": "mongodb.status.ops.latencies.commands.count",
+              "hide": true
+            },
+            {
+              "id": "6",
+              "type": "derivative",
+              "field": "5",
+              "hide": true
+            },
+            {
+              "id": "7",
+              "type": "bucket_script",
+              "pipelineVariables": [
+                {
+                  "name": "t",
+                  "pipelineAgg": "4"
+                },
+                {
+                  "name": "n",
+                  "pipelineAgg": "6"
+                }
+              ],
+              "settings": {
+                "script": "params.n > 0 ? params.t / params.n / 1000 : 0"
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "Documents scanned vs returned",
+      "description": "A scanned line far above returned means queries read many documents to find few, usually a missing index.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 23,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:metrics AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "scanned",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.metrics.query_executor.scanned_documents.count",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:metrics AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "returned",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.metrics.document.returned",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Operations waiting on locks",
+      "description": "Operations queued for a lock. Above 0 for long means MongoDB is overloaded.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "readers",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.global_lock.current_queue.readers"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "writers",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.global_lock.current_queue.writers"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0,
+          "decimals": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "Page faults per minute",
+      "description": "Times MongoDB had to read from disk because the data was not in memory.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "page faults",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.extra_info.page_faults",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 18,
+      "type": "row",
+      "title": "Memory",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 39,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Memory in use",
+      "description": "Resident memory of the mongod process.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "resident",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.memory.resident.mb"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decmbytes",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Cache: used vs limit",
+      "description": "WiredTiger cache in use against its limit.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 40,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "used",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.wired_tiger.cache.used.bytes"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "limit",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.wired_tiger.cache.maximum.bytes"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 21,
+      "type": "row",
+      "title": "Errors",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 48,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "Asserts per minute",
+      "description": "Internal checks that failed. User asserts are usually harmless, such as a bad command; regular and warning deserve a look.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 49,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "regular",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.asserts.regular",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "warning",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.asserts.warning",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "msg",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.asserts.msg",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        },
+        {
+          "refId": "D",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:status AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "user",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.status.asserts.user",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 23,
+      "type": "timeseries",
+      "title": "Write conflicts per minute",
+      "description": "Writes that had to retry because another write touched the same document.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 49,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:metrics AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "conflicts",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.metrics.operation.write_conflicts",
+              "hide": true
+            },
+            {
+              "id": "3",
+              "type": "derivative",
+              "field": "1"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "0",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 24,
+      "type": "row",
+      "title": "Storage",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 57,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 25,
+      "type": "timeseries",
+      "title": "Data size by database",
+      "description": "Uncompressed size of the data in each database.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 58,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:dbstats AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "{{term mongodb.dbstats.db.keyword}}",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.dbstats.data_size.bytes"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "3",
+              "type": "terms",
+              "field": "mongodb.dbstats.db.keyword",
+              "settings": {
+                "size": "10",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            },
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 26,
+      "type": "timeseries",
+      "title": "Index size by database",
+      "description": "Size of the indexes in each database.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 58,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:dbstats AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "alias": "{{term mongodb.dbstats.db.keyword}}",
+          "format": "time_series",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.dbstats.index_size.bytes"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "3",
+              "type": "terms",
+              "field": "mongodb.dbstats.db.keyword",
+              "settings": {
+                "size": "10",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            },
+            {
+              "id": "2",
+              "type": "date_histogram",
+              "field": "@timestamp",
+              "settings": {
+                "interval": "1m",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ]
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false,
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true,
+            "axisSoftMin": 0
+          },
+          "min": 0
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 27,
+      "type": "table",
+      "title": "Databases",
+      "description": "Highest value of each database in the selected time range.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-metricbeat"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 66,
+        "w": 24,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-metricbeat"
+          },
+          "queryType": "lucene",
+          "query": "event.module:mongodb AND metricset.name:dbstats AND box_name.keyword:\"$box\"",
+          "timeField": "@timestamp",
+          "format": "table",
+          "luceneQueryType": "Metric",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "mongodb.dbstats.objects"
+            },
+            {
+              "id": "4",
+              "type": "max",
+              "field": "mongodb.dbstats.collections"
+            },
+            {
+              "id": "5",
+              "type": "max",
+              "field": "mongodb.dbstats.indexes"
+            },
+            {
+              "id": "6",
+              "type": "max",
+              "field": "mongodb.dbstats.data_size.bytes"
+            },
+            {
+              "id": "7",
+              "type": "max",
+              "field": "mongodb.dbstats.storage_size.bytes"
+            },
+            {
+              "id": "8",
+              "type": "max",
+              "field": "mongodb.dbstats.index_size.bytes"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "3",
+              "type": "terms",
+              "field": "mongodb.dbstats.db.keyword",
+              "settings": {
+                "size": "20",
+                "order": "desc",
+                "orderBy": "6",
+                "min_doc_count": "1"
+              }
+            }
+          ]
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "mongodb.dbstats.db.keyword": "Database",
+              "Max mongodb.dbstats.objects": "Documents",
+              "Max mongodb.dbstats.collections": "Collections",
+              "Max mongodb.dbstats.indexes": "Indexes",
+              "Max mongodb.dbstats.data_size.bytes": "Data size",
+              "Max mongodb.dbstats.storage_size.bytes": "On disk",
+              "Max mongodb.dbstats.index_size.bytes": "Index size"
+            }
+          }
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "displayName": "Data size",
+            "desc": true
+          }
+        ]
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Data size|On disk|Index size"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

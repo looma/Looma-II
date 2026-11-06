@@ -101,6 +101,7 @@ The three that matter, and what they cost:
 | **Deployment** | native | `docker` puts everything in containers — heavier, but identical on every box |
 | **zvec** | **off** | Turn it **on** for semantic search, the AI Assistant and exam generation. It is the heaviest part of Looma; with the prebuilt index on the disk it still installs in minutes |
 | **piper deploy** | **on the host** | Leave it. `docker` works too, but adds a container to the audio path for no gain |
+| **Mimic TTS** | installed | Optional English-only engine; Piper stays the default. It is compiled on the box unless the bundle carries it (`build-bundle native` adds it). Skip it with `--no-mimic`. |
 | **CPU max freq** | 1800 MHz | Drop to **1500** if the board resets mid-sentence during TTS |
 
 Scripted equivalent, no form:

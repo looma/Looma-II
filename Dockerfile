@@ -1,5 +1,38 @@
-﻿FROM php:7.4.33-apache
+﻿# Mimic TTS (English only, optional at runtime; includes/looma-mimic.php). It
+# publishes no Linux binary, so compile it here and copy just the result: it only
+# needs libc, and the compiler stays out of the final image. Ubuntu 20.04 has the
+# same glibc (2.31) as the Debian base image below, and unlike bullseye its build
+# tools still download: bullseye-security lists perl and openssl versions that 404.
+# 6 of its 17 voices: ~110 MB.
+FROM ubuntu:20.04 AS mimic-build
+ARG MIMIC_VERSION=1.3.0.1
+ARG MIMIC_VOICES="cmu_us_aup cmu_us_axb cmu_us_awb cmu_us_bdl cmu_us_ljm cmu_us_slt"
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends gcc g++ make pkg-config automake autoconf libtool libpcre2-dev curl ca-certificates; \
+    mkdir -p /src /voices; \
+    curl -fsSL --retry 5 "https://github.com/MycroftAI/mimic1/archive/refs/tags/$MIMIC_VERSION.tar.gz" | tar -xz --strip-components=1 -C /src; \
+    cd /src; \
+    ./autogen.sh; \
+    ./configure --with-audio=none --disable-shared; \
+    make -j"$(nproc)"; \
+    install -m 755 mimic /usr/local/bin/mimic; \
+    for voice in $MIMIC_VOICES; do \
+        curl -fsSL --retry 5 "https://github.com/MycroftAI/mimic1/raw/$MIMIC_VERSION/voices/$voice.flitevox" -o "/voices/$voice.flitevox"; \
+    done
+
+FROM php:7.4.33-apache
 RUN pecl install mongodb-1.15.0
+# This image's Debian bullseye snapshot has aged off deb.debian.org's live
+# mirrors (404s on apt-get install) — point apt at the permanent archive
+# instead and stop checking Valid-Until, since an archived repo's release
+# file is never refreshed.
+RUN sed -i \
+      -e 's|deb.debian.org/debian-security|archive.debian.org/debian-security|g' \
+      -e 's|deb.debian.org/debian|archive.debian.org/debian|g' \
+      -e 's|security.debian.org|archive.debian.org/debian-security|g' \
+      /etc/apt/sources.list \
+    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
 RUN apt-get update
 RUN apt-get install -y net-tools
 RUN apt-get install -y python3
@@ -18,11 +51,22 @@ RUN chown -R www-data:www-data /usr/local/var/www/Looma && chmod -R a+rX /usr/lo
 COPY docker_php.ini /usr/local/etc/php/php.ini
 COPY launch.sh /bin/launch.sh
 RUN pip3 install flask
+# Lets piper_server.py report its spans; it runs without them if these are missing.
+RUN pip3 install opentelemetry-sdk opentelemetry-exporter-otlp-proto-http opentelemetry-instrumentation-flask
 RUN chmod +x /bin/launch.sh
 
 # Download and install Piper TTS
-RUN apt-get update && apt-get install -y --no-install-recommends wget unzip curl libcurl4 && rm -rf /var/lib/apt/lists/*
-RUN apt-get install -y --reinstall --no-install-recommends curl libcurl4 && rm -rf /var/lib/apt/lists/*
+# wget/unzip are genuinely new here; curl/libcurl4 already exist in the base
+# image (php:7.4.33-apache) — this is only ever an UPGRADE to their latest
+# security patch. The Debian security archive occasionally has a brief sync
+# gap where the CDN edge's index lists a point release whose .deb 404s for a
+# while (confirmed upstream, not a mirror we control) — don't fail the whole
+# image build over that: wget/unzip are required and still fail the build if
+# missing, the curl/libcurl4 upgrade is best-effort and falls back to the
+# base image's already-working (if less patched) copy.
+RUN apt-get update && apt-get install -y --no-install-recommends wget unzip \
+    && (apt-get install -y --no-install-recommends curl libcurl4 || true) \
+    && rm -rf /var/lib/apt/lists/*
 RUN dpkg --print-architecture
 RUN ARCH=$(dpkg --print-architecture); wget https://github.com/rhasspy/piper/releases/download/v1.2.0/piper_$ARCH.tar.gz -O /tmp/piper.tar.gz
 RUN tar -xzf /tmp/piper.tar.gz -C /usr/local/bin
@@ -62,6 +106,10 @@ RUN set -eux; \
         }; \
     done; \
     ls -1 /usr/share/piper
+
+# Mimic: looma-mimic.php finds the binary here and the voices beside the Looma directory.
+COPY --from=mimic-build /usr/local/bin/mimic /usr/local/bin/mimic
+COPY --from=mimic-build /voices /usr/local/var/www/voices
 
 # Add Piper to PATH
 ENV PATH="/usr/local/bin/piper:${PATH}"

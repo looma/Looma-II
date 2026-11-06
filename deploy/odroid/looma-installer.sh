@@ -28,7 +28,8 @@
 # disabled so Docker takes over. Content is updated IN PLACE (rsync --size-only), so
 # a box that already has the content does not re-copy 80 GB.
 #
-# TTS is Piper only (local/offline, voices baked into the looma-web image).
+# TTS: Piper is the default (local/offline, voices baked into the looma-web image);
+# Mimic is optional (English only, see install_mimic).
 set -euo pipefail
 
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
@@ -163,6 +164,11 @@ MONGO_VERSION="${MONGO_VERSION:-5.0.27}"
 MONGO_SERIES="${MONGO_SERIES:-5.0}"
 MONGODB_EXT_VERSION="${MONGODB_EXT_VERSION:-1.15.0}"
 PIPER_VERSION="${PIPER_VERSION:-v1.2.0}"
+# Mimic TTS. Voices are 11-27 MB each; the repo has more (cmu_us_*, mycroft_voice_4.0).
+WITH_MIMIC="${WITH_MIMIC:-1}"
+MIMIC_VERSION="${MIMIC_VERSION:-1.3.0.1}"
+MIMIC_VOICES="${MIMIC_VOICES:-cmu_us_aup cmu_us_axb cmu_us_awb cmu_us_bdl cmu_us_ljm cmu_us_slt}"
+MIMIC_BUILD_JOBS="${MIMIC_BUILD_JOBS:-2}"   # low on purpose: full load browns this board out
 # Piper voice models, as huggingface paths WITHOUT the .onnx suffix.
 #   PIPER_VOICES       — mandatory: the two Looma speaks with out of the box
 #   PIPER_EXTRA_VOICES — best-effort: offered on the Reading Settings page so
@@ -205,6 +211,99 @@ mkdirs() {  # mkdir -p that explains a read-only disk instead of failing silentl
       $SCRIPT_PATH build-bundle native --bundle-dir /var/lib/looma-bundle
   and install with the same --bundle-dir."
   done
+}
+
+# Public IP + rough city/country, captured ONCE at install time: the LAN address
+# has no real-world location, and a school box may never see the internet again.
+# Sets box_public_ip / box_geo_city / box_geo_country, which callers declare local.
+# Every value falls back to empty, and an empty attribute is simply not shipped.
+lookup_box_geo() {
+  box_public_ip=""; box_geo_city=""; box_geo_country=""
+  local geo_json=""
+  [ "$OFFLINE" = "1" ] || geo_json="$(curl -fsS --max-time 5 http://ip-api.com/json/ 2>/dev/null || true)"
+  case "$geo_json" in
+    *'"status":"success"'*)
+      box_public_ip="$(printf '%s' "$geo_json" | sed -n 's/.*"query":"\([^"]*\)".*/\1/p')"
+      # These two go through sed and shell env files later, so drop what breaks those.
+      box_geo_city="$(printf '%s' "$geo_json" | sed -n 's/.*"city":"\([^"]*\)".*/\1/p' | tr -d "#&\\\\'\$\`")"
+      box_geo_country="$(printf '%s' "$geo_json" | sed -n 's/.*"country":"\([^"]*\)".*/\1/p' | tr -d "#&\\\\'\$\`")"
+      ;;
+  esac
+  case "$box_public_ip" in
+    ''|*[!0-9.]*) box_public_ip="" ;;
+  esac
+  # A re-run with no internet keeps what an earlier install captured.
+  if [ -z "$box_public_ip" ] && [ -f /etc/looma-odroid.env ]; then
+    box_public_ip="$(. /etc/looma-odroid.env; printf '%s' "${LOOMA_BOX_PUBLIC_IP:-}")"
+    box_geo_city="$(. /etc/looma-odroid.env; printf '%s' "${LOOMA_BOX_GEO_CITY:-}")"
+    box_geo_country="$(. /etc/looma-odroid.env; printf '%s' "${LOOMA_BOX_GEO_COUNTRY:-}")"
+  fi
+  return 0
+}
+
+# A native install has no env-file writer of its own, but `up` re-reads this file
+# when it restarts the agents; without these they would lose the location at boot.
+save_box_geo() {
+  touch /etc/looma-odroid.env
+  sed -i -e '/^LOOMA_BOX_PUBLIC_IP=/d' -e '/^LOOMA_BOX_GEO_CITY=/d' -e '/^LOOMA_BOX_GEO_COUNTRY=/d' /etc/looma-odroid.env
+  printf 'LOOMA_BOX_PUBLIC_IP="%s"\nLOOMA_BOX_GEO_CITY="%s"\nLOOMA_BOX_GEO_COUNTRY="%s"\n' \
+    "$box_public_ip" "$box_geo_city" "$box_geo_country" >> /etc/looma-odroid.env
+}
+
+# Mimic: the optional English-only offline engine (includes/looma-mimic.php). It
+# publishes no Linux binary, so it is compiled; the result needs only libc.
+MIMIC_SRC_URL="https://github.com/MycroftAI/mimic1/archive/refs/tags/${MIMIC_VERSION}.tar.gz"
+MIMIC_VOICE_URL="https://github.com/MycroftAI/mimic1/raw/${MIMIC_VERSION}/voices"
+
+build_mimic_binary() {  # dest_file — needs internet
+  local work; work="$(mktemp -d)"
+  apt-get install -y --no-install-recommends build-essential automake autoconf libtool \
+      pkg-config libpcre2-dev curl ca-certificates \
+    && curl -fsSL --retry 3 "$MIMIC_SRC_URL" | tar -xz --strip-components=1 -C "$work" \
+    && ( cd "$work" && ./autogen.sh && ./configure --with-audio=none --disable-shared \
+         && nice make -j"$MIMIC_BUILD_JOBS" ) \
+    && install -m 755 "$work/mimic" "$1"
+  local rc=$?
+  rm -rf "$work"
+  return $rc
+}
+
+fetch_mimic_voices() {  # dest_dir — one failed voice only costs that voice
+  local voice; mkdirs "$1"
+  for voice in $MIMIC_VOICES; do
+    [ -s "$1/$voice.flitevox" ] && continue
+    curl -fSL --retry 3 --retry-delay 2 "$MIMIC_VOICE_URL/$voice.flitevox" -o "$1/.$voice.part" \
+      && mv -f "$1/.$voice.part" "$1/$voice.flitevox" \
+      || { rm -f "$1/.$voice.part"; warn "Mimic voice $voice could not be downloaded — skipping it"; }
+  done
+  return 0
+}
+
+# Never fatal: Piper is the default, and a box without Mimic just shows its column
+# on the Reading Settings page as locked. A box that already has it is left alone.
+install_mimic() {
+  [ "$WITH_MIMIC" = "1" ] || return 0
+  local voices="$WWW/voices"
+  if [ ! -x /usr/local/bin/mimic ]; then
+    if [ -x "$NATIVE_BUNDLE/mimic/mimic" ]; then
+      install -m 755 "$NATIVE_BUNDLE/mimic/mimic" /usr/local/bin/mimic
+    elif [ "$OFFLINE" = "1" ]; then
+      warn "Mimic is not in the offline bundle — the Mimic engine will be unavailable"
+      return 0
+    else
+      log "compiling Mimic ${MIMIC_VERSION} (can take a while on this board; --no-mimic skips it)"
+      build_mimic_binary /usr/local/bin/mimic \
+        || { warn "Mimic did not build — the Mimic engine will be unavailable"; return 0; }
+    fi
+  fi
+  if [ -d "$NATIVE_BUNDLE/mimic/voices" ]; then
+    mkdirs "$voices"
+    cp -n "$NATIVE_BUNDLE"/mimic/voices/*.flitevox "$voices/" 2>/dev/null || true
+  fi
+  [ "$OFFLINE" = "1" ] || fetch_mimic_voices "$voices"
+  chmod -R a+rX "$voices" 2>/dev/null || true
+  log "Mimic voices available: $(ls -1 "$voices"/*.flitevox 2>/dev/null | wc -l || true)"
+  return 0
 }
 
 # Download the Piper voice models (model + its .json) into $1. The mandatory
@@ -358,6 +457,8 @@ Install flags (all optional; passing any flag skips the form):
   --user NAME             Desktop user for autostart/kiosk (default: $TARGET_USER)
   --kiosk-url URL         URL the kiosk opens (default: docker :48080, native :80)
   --no-kiosk              Don't install the Chromium kiosk autostart
+  --no-mimic              Don't install the optional Mimic TTS engine (compiled on the box
+                          unless the bundle carries it; Piper stays the default either way)
   --no-swap               Don't create a ${SWAP_GB}G swapfile (it is created by default)
   --remote-obs IP         Ship telemetry (Vector+Metricbeat, and the app's own OTLP) to
                           the data server at IP instead of the default
@@ -493,6 +594,12 @@ Define LOOMA_ROOT @LOOMA_ROOT@
     # (includes/otel.php) as looma.device_name, same as Vector already does for
     # logs/metrics, so a shared OpenSearch/Grafana can tell boxes apart.
     SetEnv LOOMA_BOX_NAME @BOX_NAME@
+    # Public IP and rough location from install time, so the data server's geoip
+    # pipeline and Grafana's city/country filters can place this box. Quoted:
+    # names like "United States" would otherwise split into extra arguments.
+    SetEnv LOOMA_BOX_PUBLIC_IP "@BOX_PUBLIC_IP@"
+    SetEnv LOOMA_BOX_GEO_CITY "@BOX_GEO_CITY@"
+    SetEnv LOOMA_BOX_GEO_COUNTRY "@BOX_GEO_COUNTRY@"
 
     # 0 when this box was installed WITHOUT the zvec stack. includes/looma-features.php
     # reads it and the app then hides semantic search, the AI Assistant and exam
@@ -618,7 +725,7 @@ services:
       OTEL_TRACES_EXPORTER: "@OTEL_TRACES@"
       OTEL_LOGS_EXPORTER: "@OTEL_TRACES@"
       OTEL_METRICS_EXPORTER: none
-      OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@"
+      OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@"
     volumes:
       - looma_search_index:/data
       - looma_search_hf:/models/hf
@@ -643,6 +750,9 @@ services:
       # everyday English + Nepali pair plus one speed change.
       LOOMA_PIPER_MAX_WORKERS: "3"
       LOOMA_PIPER_PREWARM: "1"
+      OTEL_SERVICE_NAME: piper-tts
+      OTEL_EXPORTER_OTLP_ENDPOINT: "@OTEL_ENDPOINT@"
+      OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@"
     command: ["python3", "/usr/local/var/www/@REPO_NAME@/piper_server.py"]
     restart: unless-stopped
 
@@ -670,7 +780,7 @@ services:
       OTEL_TRACES_EXPORTER: "@OTEL_TRACES@"
       OTEL_LOGS_EXPORTER: "@OTEL_TRACES@"
       OTEL_METRICS_EXPORTER: none
-      OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@"
+      OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@"
     volumes:
       # The host's content dir — looma-ai writes summaries/keywords back into it.
       - @WWW@/content:/looma/content
@@ -727,7 +837,7 @@ Environment=OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 Environment=OTEL_TRACES_EXPORTER=@OTEL_TRACES@
 Environment=OTEL_METRICS_EXPORTER=none
 Environment=OTEL_LOGS_EXPORTER=none
-Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=piper-tts,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@
+Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=piper-tts,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@
 # CPU GUARD — do NOT remove. Piper/onnxruntime inference otherwise pegs every core
 # at max frequency; on the odroid that exceeds the board's power/thermal budget and
 # it RESETS mid-synthesis. (The legacy piper.service made this worse by explicitly
@@ -818,7 +928,7 @@ Environment=OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 Environment=OTEL_TRACES_EXPORTER=@OTEL_TRACES@
 Environment=OTEL_LOGS_EXPORTER=@OTEL_TRACES@
 Environment=OTEL_METRICS_EXPORTER=none
-Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=looma-search,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@
+Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=looma-search,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@
 WorkingDirectory=@LOOMA_ROOT@/@REPO_NAME@/search-service
 # 1 worker (the zvec index is in memory); long timeout so the first-run
 # full-corpus embed isn't killed on ARM.
@@ -884,7 +994,7 @@ Environment=OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 Environment=OTEL_TRACES_EXPORTER=@OTEL_TRACES@
 Environment=OTEL_LOGS_EXPORTER=@OTEL_TRACES@
 Environment=OTEL_METRICS_EXPORTER=none
-Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=looma-ai,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@
+Environment=OTEL_RESOURCE_ATTRIBUTES=service.name=looma-ai,service.namespace=looma,deployment.environment=looma,looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@
 WorkingDirectory=@LOOMA_ROOT@/@REPO_NAME@/looma-ai
 ExecStart=@VENV@/bin/python scripts/looma_server.py --host 0.0.0.0 --port 8089
 Restart=always
@@ -2132,12 +2242,20 @@ install_deploy_docker() {
   # --box-name / the form field set one. The LAN IP is deliberately NOT frozen
   # here: `up` resolves it fresh on every boot (DHCP) and exports LOOMA_BOX_IP.
   local box_name="${BOX_NAME:-$(hostname)}"
+  local box_public_ip box_geo_city box_geo_country
+  lookup_box_geo
   cat > /etc/looma-odroid.env <<EOF
 # Generated by looma-installer.sh
 # Name Vector stamps on every log/metric from this box as \`box_name\`, and the
 # apps stamp on every trace as \`looma.device_name\` (\`box_ip\` is added at 'up'
 # time). Change it and re-run 'looma-installer.sh up'.
 LOOMA_BOX_NAME=$box_name
+# Public IP + rough location at install time (empty if there was no internet).
+# Feeds the data server's geoip pipeline and Grafana's city/country filters.
+# Edit by hand if they are wrong or were never set.
+LOOMA_BOX_PUBLIC_IP="$box_public_ip"
+LOOMA_BOX_GEO_CITY="$box_geo_city"
+LOOMA_BOX_GEO_COUNTRY="$box_geo_country"
 # The zvec stack. 0 = no looma-search / looma-ai containers AND no semantic
 # search, AI Assistant or exams in the app (looma-web reads LOOMA_ZVEC).
 WITH_SEARCH=$WITH_SEARCH
@@ -2260,7 +2378,8 @@ EOF
 # publish 46333 / 5002 / 8089 exactly where the native Apache/PHP looks for them —
 # no bridge network, and MongoDB is never exposed beyond the host.
 native_sidecars_docker() {
-  local repo_dest="$1" otel_endpoint="$2" otel_traces="$3" box_name="$4" u
+  local repo_dest="$1" otel_endpoint="$2" otel_traces="$3" box_name="$4" \
+        box_public_ip="$5" box_geo_city="$6" box_geo_country="$7" u
   log "zvec + Piper will run as CONTAINERS (they carry their own Python/torch/voices)"
   ensure_docker
 
@@ -2282,7 +2401,8 @@ native_sidecars_docker() {
   log "writing $f"
   tpl_native_sidecars | sed -e "s#@REPO_NAME@#$REPO_NAME#g" -e "s#@WWW@#$WWW#g" \
     -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" -e "s#@OTEL_TRACES@#$otel_traces#g" \
-    -e "s#@BOX_NAME@#$box_name#g" > "$f"
+    -e "s#@BOX_NAME@#$box_name#g" -e "s#@BOX_PUBLIC_IP@#$box_public_ip#g" -e "s#@BOX_GEO_CITY@#$box_geo_city#g" \
+    -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g" > "$f"
 
   # Only the halves that asked for Docker. Piper and the zvec stack are chosen
   # independently, so this can legitimately be Piper alone, zvec alone, or both.
@@ -2358,6 +2478,9 @@ install_deploy_native() {
   # field, else its hostname. Stamped as looma.device_name onto every
   # trace this box emits, alongside Vector's existing box_name on logs/metrics.
   local box_name="${BOX_NAME:-$(hostname)}"
+  local box_public_ip box_geo_city box_geo_country
+  lookup_box_geo
+  save_box_geo
 
   [ -f "$SRC_REPO/looma-TTS.php" ] || die "the repo at $SRC_REPO does not look like Looma"
   . /etc/os-release 2>/dev/null || true
@@ -2496,7 +2619,8 @@ install_deploy_native() {
   local otel_disabled=1; [ "$otel_enabled" = "1" ] && otel_disabled=0
   tpl_apache_conf | sed -e "s#@LOOMA_ROOT@#$WWW#g" -e "s#@REPO_NAME@#$REPO_NAME#g" \
     -e "s#@OTEL_DISABLED@#$otel_disabled#g" -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" \
-    -e "s#@BOX_NAME@#$box_name#g" \
+    -e "s#@BOX_NAME@#$box_name#g" -e "s#@BOX_PUBLIC_IP@#$box_public_ip#g" -e "s#@BOX_GEO_CITY@#$box_geo_city#g" \
+    -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g" \
     -e "s#@LOOMA_ZVEC@#$WITH_SEARCH#g" -e "s#@LOOMA_AI_ON@#$WITH_AI#g" \
     > /etc/apache2/sites-available/looma.conf
   a2dissite 000-default >/dev/null 2>&1 || true
@@ -2632,7 +2756,7 @@ install_deploy_native() {
   #     Python >= 3.9 that this script has to go and fetch.
   # So both halves can be needed in one run: e.g. zvec in Docker, Piper on the host.
   if [ "$PIPER_MODE" = "docker" ] || [ "$SIDECARS" = "docker" ]; then
-    native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces" "$box_name"
+    native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces" "$box_name" "$box_public_ip" "$box_geo_city" "$box_geo_country"
   fi
 
   if [ "$PIPER_MODE" = "host" ] || [ "$SIDECARS" = "host" ]; then
@@ -2694,7 +2818,7 @@ install_deploy_native() {
     if command -v docker >/dev/null 2>&1 && docker_bundle_present; then
       warn "  falling back to the Piper CONTAINER, which the disk does carry."
       PIPER_MODE=docker
-      native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces" "$box_name"
+      native_sidecars_docker "$repo_dest" "$otel_endpoint" "$otel_traces" "$box_name" "$box_public_ip" "$box_geo_city" "$box_geo_country"
     else
       warn "  this box will have NO text-to-speech. Add piper/ to the bundle:"
       warn "    $SCRIPT_PATH build-bundle native --bundle-dir $BUNDLE_ROOT"
@@ -2727,6 +2851,9 @@ install_deploy_native() {
     log "voice models available to Piper: $n_voices"
   fi
   fi   # end PIPER_MODE=host — Piper binary + voices
+
+  # 6b) Mimic TTS — optional, runs from PHP on the host whatever Piper's mode is
+  install_mimic
 
   # 7) Shared Python venv (Piper Flask sidecar + search + looma-ai)
   # focal's default python3 is 3.8, but looma-ai's requirements need >= 3.9 (anyio,
@@ -2941,6 +3068,8 @@ install_deploy_native() {
                  -e "s#@HF_DIR@#$HF_DIR#g" -e "s#@HF_OFFLINE@#$hf_offline#g"
                  -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" -e "s#@OTEL_TRACES@#$otel_traces#g"
                  -e "s#@OTEL_ENABLED@#$otel_enabled#g" -e "s#@BOX_NAME@#$box_name#g"
+                 -e "s#@BOX_PUBLIC_IP@#$box_public_ip#g" -e "s#@BOX_GEO_CITY@#$box_geo_city#g"
+                 -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g"
                  -e "s#@PIPER_CPUQUOTA@#$PIPER_CPUQUOTA#g" -e "s#@PIPER_THREADS@#$PIPER_THREADS#g")
   log "installing the systemd services"
   # The LEGACY `piper.service` (from piper/piper.service) raises the CPU to its
@@ -3038,6 +3167,8 @@ install_deploy_native() {
       log "starting the observability agents (Vector+Metricbeat -> $REMOTE_OBS_HOST)"
       docker network inspect loomanet >/dev/null 2>&1 || docker network create loomanet
       ( cd "$repo_dest/observability" && LOOMA_VECTOR_CONFIG=/etc/vector/vector-agent.toml \
+          LOOMA_BOX_NAME="$box_name" LOOMA_BOX_PUBLIC_IP="$box_public_ip" \
+          LOOMA_BOX_GEO_CITY="$box_geo_city" LOOMA_BOX_GEO_COUNTRY="$box_geo_country" \
           docker compose -p looma-observability -f docker-compose.yml -f docker-compose.odroid.yml \
           up -d --no-deps vector metricbeat ) \
         || warn "the observability agents did not fully start — the native app is up regardless"
@@ -3432,7 +3563,11 @@ cmd_up() {
   LOOMA_BOX_IP="$(ip -4 route get 1.1.1.1 2>/dev/null | sed -n 's/.*[[:space:]]src[[:space:]]\{1,\}\([0-9.]\{1,\}\).*/\1/p' | head -n1)"
   [ -n "$LOOMA_BOX_IP" ] || LOOMA_BOX_IP="$(hostname -I 2>/dev/null | awk '{print $1}')"
   [ -n "$LOOMA_BOX_IP" ] || LOOMA_BOX_IP="unknown"
-  export LOOMA_BOX_NAME LOOMA_BOX_IP
+  # Captured once at install time; not worth a network round-trip on every boot.
+  LOOMA_BOX_PUBLIC_IP="${LOOMA_BOX_PUBLIC_IP:-}"
+  LOOMA_BOX_GEO_CITY="${LOOMA_BOX_GEO_CITY:-}"
+  LOOMA_BOX_GEO_COUNTRY="${LOOMA_BOX_GEO_COUNTRY:-}"
+  export LOOMA_BOX_NAME LOOMA_BOX_IP LOOMA_BOX_PUBLIC_IP LOOMA_BOX_GEO_CITY LOOMA_BOX_GEO_COUNTRY
   # Same switch, two audiences: the compose profile decides whether the search
   # container starts, LOOMA_ZVEC decides whether the app offers the features.
   LOOMA_ZVEC="$WITH_SEARCH"; export LOOMA_ZVEC
@@ -3639,6 +3774,14 @@ build_bundle_native() {
     -o "$NATIVE_BUNDLE/piper/piper_arm64.tar.gz"
   fetch_piper_voices "$NATIVE_BUNDLE/piper/voices"
 
+  if [ "$WITH_MIMIC" = "1" ]; then
+    log "building Mimic ${MIMIC_VERSION} + downloading its voices"
+    mkdirs "$NATIVE_BUNDLE/mimic/voices"
+    [ -x "$NATIVE_BUNDLE/mimic/mimic" ] || build_mimic_binary "$NATIVE_BUNDLE/mimic/mimic" \
+      || warn "Mimic did not build — boxes installed from this bundle will not have it"
+    fetch_mimic_voices "$NATIVE_BUNDLE/mimic/voices"
+  fi
+
   log "pre-downloading the HuggingFace models into hf/ (best-effort)"
   [ -f "$SRC_REPO/load_models.py" ] && \
     { ( export HF_HOME="$NATIVE_BUNDLE/hf"; python3 "$SRC_REPO/load_models.py" ) \
@@ -3649,6 +3792,7 @@ OS=focal arm64
 MONGO=$MONGO_VERSION
 MONGODB_PHP_EXT=$MONGODB_EXT_VERSION
 PIPER=$PIPER_VERSION
+MIMIC=$MIMIC_VERSION
 BUILT=$(date -u +%Y-%m-%dT%H:%M:%SZ) on $(uname -m)
 EOF
   log "native offline bundle ready: $NATIVE_BUNDLE  ($(du -sh "$NATIVE_BUNDLE" | awk '{print $1}'))"
@@ -3692,6 +3836,7 @@ cmd_install() {
     --kiosk-url) KIOSK_URL="$2"; shift 2;;
     --no-kiosk) INSTALL_KIOSK=0; shift;;
     --no-swap) MAKE_SWAP=0; shift;;
+    --no-mimic) WITH_MIMIC=0; shift;;
     --observability) warn "--observability is gone — this box never runs the full obs stack any more, only agents shipping to the data server (auto-detected; see --remote-obs)"; shift;;
     --no-observability) WITH_AGENTS=0; OBS_EXPLICIT=1; shift;;
     --remote-obs) WITH_AGENTS=1; REMOTE_OBS_HOST="$2"; OBS_EXPLICIT=1; shift 2;;
